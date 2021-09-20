@@ -6,14 +6,18 @@ import styles from './index.less';
 
 const { Option } = Select;
 
-const state = { selectedRoleIds: [], selectedRolesTags: [] };
+const state = { selectedRoleIds: [] };
 
 @connect(
   ({
     loading,
-    adminSetting: { viewingPosition = {}, tempData: { listDepartments = [] } = {} } = {},
+    adminSetting: {
+      viewingPosition = {},
+      tempData: { listDepartments = [], listRoles = [] } = {},
+    } = {},
   }) => ({
     listDepartments,
+    listRoles,
     viewingPosition,
     loadingFetchDepartmentList: loading.effects['adminSetting/fetchDepartmentList'],
     loadingFetchPositionByID: loading.effects['adminSetting/fetchPositionByID'],
@@ -36,8 +40,16 @@ class EditModal extends PureComponent {
     });
   };
 
+  fetchRoleList = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'adminSetting/fetchRoleList',
+    });
+  };
+
   componentDidMount = () => {
     this.fetchDepartmentList();
+    this.fetchRoleList();
   };
 
   componentDidUpdate = (prevProps) => {
@@ -48,14 +60,19 @@ class EditModal extends PureComponent {
     }
   };
 
-  fetchPositionByID = (id) => {
+  fetchPositionByID = async (id) => {
     const { dispatch } = this.props;
-    dispatch({
+    const res = await dispatch({
       type: 'adminSetting/fetchPositionByID',
       payload: {
         id,
       },
     });
+    if (res.statusCode === 200) {
+      this.setState({
+        selectedRoleIds: res.data.roles || [],
+      });
+    }
   };
 
   renderHeaderModal = () => {
@@ -73,7 +90,9 @@ class EditModal extends PureComponent {
 
   onFinish = async (values) => {
     const { dispatch, selectedPositionID = '', onRefresh = () => {} } = this.props;
-    const { name = '', department = '', grade = '', timesheetRequired = false } = values;
+    const { name = '', department = '', grade = '', timeSheetRequired = false } = values;
+    console.log('values', values);
+    const { selectedRoleIds: roles = [] } = this.state;
 
     const addPosition = async () => {
       const res = await dispatch({
@@ -82,7 +101,8 @@ class EditModal extends PureComponent {
           name,
           grade,
           department,
-          timesheetRequired,
+          roles,
+          timeSheetRequired,
         },
       });
       if (res.statusCode === 200) {
@@ -98,7 +118,8 @@ class EditModal extends PureComponent {
           name,
           department,
           grade,
-          timesheetRequired,
+          roles,
+          timeSheetRequired,
         },
       });
       if (res.statusCode === 200) {
@@ -134,10 +155,10 @@ class EditModal extends PureComponent {
     const { selectedRoleIds } = this.state;
     const { loading } = this.props;
 
-    const checkedStatus = (id) => {
+    const checkedStatus = (idSync) => {
       let check = false;
       selectedRoleIds.forEach((itemId) => {
-        if (itemId === id) {
+        if (itemId === idSync) {
           check = true;
         }
       });
@@ -150,55 +171,40 @@ class EditModal extends PureComponent {
       return (
         <Option
           className={`${styles.optionSelect} ${className}`}
-          value={role._id}
+          value={role.idSync}
           key={`${index + 1}`}
           disabled={loading}
         >
           <Checkbox
-            value={role._id}
+            value={role.idSync}
             onChange={(e) => this.onCheckbox(e, roles)}
-            checked={checkedStatus(role._id)}
+            checked={checkedStatus(role.idSync)}
           >
-            <div>{role.name}</div>
+            <div>{role.idSync}</div>
           </Checkbox>
         </Option>
       );
     });
   };
 
-  onAddOption = (id, roles) => {
+  onAddOption = (idSync) => {
     const { selectedRoleIds } = this.state;
     const listIdsTemp = JSON.parse(JSON.stringify(selectedRoleIds));
 
-    listIdsTemp.push(id);
-    const listTagsTemp = roles.filter((item) => {
-      return listIdsTemp.includes(item._id);
-    });
-    console.log('------- ADD ----------');
-    console.log('ids', listIdsTemp);
-    console.log('tags', listTagsTemp);
+    listIdsTemp.push(idSync);
 
     this.setState({
       selectedRoleIds: listIdsTemp,
-      selectedRolesTags: listTagsTemp,
     });
   };
 
-  onRemoveOption = (id, roles) => {
-    const { selectedRoleIds, selectedRolesTags } = this.state;
+  onRemoveOption = (idSync) => {
+    const { selectedRoleIds } = this.state;
     let listIdsTemp = JSON.parse(JSON.stringify(selectedRoleIds));
-    let listTagsTemp = JSON.parse(JSON.stringify(selectedRolesTags));
 
-    listIdsTemp = listIdsTemp.filter((item) => item !== id);
-    listTagsTemp = listTagsTemp.filter((item) => item._id !== id);
-
-    console.log('------- REMOVE ----------');
-    console.log('ids', listIdsTemp);
-    console.log('tags', listTagsTemp);
-
+    listIdsTemp = listIdsTemp.filter((item) => item !== idSync);
     this.setState({
       selectedRoleIds: listIdsTemp,
-      selectedRolesTags: listTagsTemp,
     });
   };
 
@@ -213,21 +219,21 @@ class EditModal extends PureComponent {
   };
 
   renderRolesName = () => {
-    const { selectedRolesTags } = this.state;
-    if (selectedRolesTags.length === 0) return '';
+    const { selectedRoleIds } = this.state;
+    if (selectedRoleIds.length === 0) return '';
 
     return (
       <div className={styles.listTags}>
-        {selectedRolesTags.map((item) => {
+        {selectedRoleIds.map((item) => {
           return (
             <Tag
               closable
-              key={item._id}
+              key={item}
               className={styles.nameTag}
-              onClose={() => this.onRemoveOption(item._id)}
+              onClose={() => this.onRemoveOption(item)}
               closeIcon={<img alt="close-tag" src={CloseTagIcon} />}
             >
-              {item?.name}
+              {item}
             </Tag>
           );
         })}
@@ -240,6 +246,7 @@ class EditModal extends PureComponent {
       visible = false,
       action = '',
       listDepartments = [],
+      listRoles = [],
       loadingFetchDepartmentList = false,
       loadingFetchPositionByID = false,
       loadingUpdatePosition = false,
@@ -251,24 +258,6 @@ class EditModal extends PureComponent {
         timeSheetRequired: timeSheetRequiredProp = false,
       } = {},
     } = this.props;
-    const roles = [
-      {
-        _id: 1,
-        name: 'Employee',
-      },
-      {
-        _id: 2,
-        name: 'HR',
-      },
-      {
-        _id: 3,
-        name: 'Admin',
-      },
-      {
-        _id: 4,
-        name: 'Manager',
-      },
-    ];
 
     const roleClassName = `${styles.InputReportees} ${styles.placeholderReportees}`;
 
@@ -350,13 +339,13 @@ class EditModal extends PureComponent {
                   allowClear
                   className={roleClassName}
                   onSelect={(value) => {
-                    this.onAddOption(value, roles);
+                    this.onAddOption(value, listRoles);
                   }}
                   onDeselect={(value) => {
-                    this.onRemoveOption(value, roles);
+                    this.onRemoveOption(value, listRoles);
                   }}
                 >
-                  {this.renderRoles(roles)}
+                  {this.renderRoles(listRoles)}
                 </Select>
                 {this.renderRolesName()}
               </Form.Item>
@@ -383,11 +372,7 @@ class EditModal extends PureComponent {
                 </Select>
               </Form.Item>
 
-              <Form.Item
-                name="timesheetRequired"
-                labelCol={{ span: 24 }}
-                valuePropName="timeSheetRequiredProp"
-              >
+              <Form.Item name="timeSheetRequired" labelCol={{ span: 24 }} valuePropName="checked">
                 <Checkbox defaultChecked={timeSheetRequiredProp}>Timesheet Required</Checkbox>
               </Form.Item>
             </Form>

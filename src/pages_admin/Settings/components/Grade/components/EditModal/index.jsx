@@ -1,31 +1,53 @@
-import { Button, Form, Input, Modal, Select } from 'antd';
+import { Button, Form, Input, Modal, Skeleton } from 'antd';
 
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
-const { Option } = Select;
-@connect(() => ({}))
+@connect(
+  ({
+    loading,
+    adminSetting: {
+      listEmployees = [],
+      viewingGrade = {},
+      tempData: { listGrades = [] } = {},
+    } = {},
+  }) => ({
+    listGrades,
+    listEmployees,
+    viewingGrade,
+    loadingFetchGradeList: loading.effects['adminSetting/fetchGradeList'],
+    loadingFetchGradeByID: loading.effects['adminSetting/fetchGradeByID'],
+    loadingAddGrade: loading.effects['adminSetting/addGrade'],
+    loadingUpdateGrade: loading.effects['adminSetting/updateGrade'],
+  }),
+)
 class EditModal extends PureComponent {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
-    this.state = {
-      nameState: '',
-      descriptionState: '',
-      selectedList: [],
-    };
+    this.state = {};
   }
-
-  setList = (list) => {
-    this.setState({
-      selectedList: list,
-    });
-  };
 
   componentDidMount = async () => {};
 
-  handleRemove = () => {
-    this.handlePreview('');
+  componentDidUpdate = (prevProps) => {
+    const { selectedGradeID = '' } = this.props;
+
+    if (selectedGradeID && selectedGradeID !== prevProps.selectedGradeID) {
+      this.fetchGradeByID(selectedGradeID);
+    }
+  };
+
+  fetchGradeByID = (id) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'adminSetting/fetchGradeByID',
+      payload: {
+        id,
+      },
+    });
   };
 
   renderHeaderModal = () => {
@@ -41,17 +63,67 @@ class EditModal extends PureComponent {
     );
   };
 
-  onFinish = async (values) => {};
+  onFinish = async (values) => {
+    const { dispatch, selectedGradeID = '', onRefresh = () => {} } = this.props;
+    const { name = '' } = values;
+
+    const addGrade = async () => {
+      const res = await dispatch({
+        type: 'adminSetting/addGrade',
+        payload: {
+          name,
+        },
+      });
+      if (res.statusCode === 200) {
+        onRefresh();
+        this.handleCancel();
+      }
+    };
+    const editGrade = async () => {
+      const res = await dispatch({
+        type: 'adminSetting/updateGrade',
+        payload: {
+          id: selectedGradeID,
+          name,
+        },
+      });
+      if (res.statusCode === 200) {
+        onRefresh();
+        this.handleCancel();
+      }
+    };
+
+    const { action = '' } = this.props;
+    if (action === 'add') {
+      addGrade();
+    }
+    if (action === 'edit') {
+      editGrade();
+    }
+  };
 
   handleCancel = () => {
-    const { onClose = () => {} } = this.props;
-    this.setState({ nameState: '', descriptionState: '' });
+    const { dispatch, onClose = () => {} } = this.props;
+    this.formRef.current.resetFields();
+    dispatch({
+      type: 'adminSetting/save',
+      payload: {
+        viewingGrade: {},
+      },
+    });
+
     onClose(false);
   };
 
   render() {
-    const { visible = false } = this.props;
-    const { nameState, descriptionState, selectedList } = this.state;
+    const {
+      visible = false,
+      action = '',
+      loadingFetchGradeByID = false,
+      loadingUpdateGrade = false,
+      loadingAddGrade = false,
+      viewingGrade: { name: nameProp = '' } = {},
+    } = this.props;
 
     return (
       <>
@@ -69,36 +141,37 @@ class EditModal extends PureComponent {
               form="myForm"
               key="submit"
               htmlType="submit"
-              disabled={!nameState || !descriptionState || selectedList.length === 0}
-              // loading={loadingReassign}
+              loading={loadingAddGrade || loadingUpdateGrade}
             >
-              Add
+              {action === 'add' ? 'Add' : 'Update'}
             </Button>,
           ]}
           title={this.renderHeaderModal()}
           centered
           visible={visible}
         >
-          <Form
-            name="basic"
-            // ref={this.formRef}
-            id="myForm"
-            onFinish={this.onFinish}
-            initialValues={
-              {
-                // from: currentEmpId,
-              }
-            }
-          >
-            <Form.Item
-              rules={[{ required: true, message: 'Please enter grade name!' }]}
-              label="Grade Name"
-              name="name"
-              labelCol={{ span: 24 }}
+          {loadingFetchGradeByID ? (
+            <Skeleton />
+          ) : (
+            <Form
+              name="basic"
+              ref={this.formRef}
+              id="myForm"
+              onFinish={this.onFinish}
+              initialValues={{
+                name: nameProp,
+              }}
             >
-              <Input />
-            </Form.Item>
-          </Form>
+              <Form.Item
+                rules={[{ required: true, message: 'Please enter grade name!' }]}
+                label="Grade Name"
+                name="name"
+                labelCol={{ span: 24 }}
+              >
+                <Input />
+              </Form.Item>
+            </Form>
+          )}
         </Modal>
       </>
     );

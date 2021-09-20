@@ -1,6 +1,7 @@
-import { Button, Form, Input, Modal, Select, Skeleton } from 'antd';
+import { Button, Form, Input, Modal, Select, Skeleton, Spin } from 'antd';
 
 import React, { PureComponent } from 'react';
+import { debounce } from 'lodash';
 import { connect } from 'umi';
 import styles from './index.less';
 
@@ -9,14 +10,20 @@ const { Option } = Select;
 @connect(
   ({
     loading,
-    adminSetting: { viewingDepartment = {}, tempData: { listDepartments = [] } = {} } = {},
+    adminSetting: {
+      listEmployees = [],
+      viewingDepartment = {},
+      tempData: { listDepartments = [] } = {},
+    } = {},
   }) => ({
     listDepartments,
+    listEmployees,
     viewingDepartment,
     loadingFetchDepartmentList: loading.effects['adminSetting/fetchDepartmentList'],
     loadingFetchDepartmentByID: loading.effects['adminSetting/fetchDepartmentByID'],
     loadingAddDepartment: loading.effects['adminSetting/addDepartment'],
     loadingUpdateDepartment: loading.effects['adminSetting/updateDepartment'],
+    loadingFetchEmployeeList: loading.effects['adminSetting/fetchEmployeeList'],
   }),
 )
 class EditModal extends PureComponent {
@@ -25,6 +32,7 @@ class EditModal extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
+    this.onEmployeeSearch = debounce(this.onEmployeeSearch, 500);
   }
 
   fetchDepartmentList = () => {
@@ -34,8 +42,17 @@ class EditModal extends PureComponent {
     });
   };
 
+  fetchEmployeeList = (name = '') => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'adminSetting/fetchEmployeeList',
+      payload: { name },
+    });
+  };
+
   componentDidMount = async () => {
     // this.fetchDepartmentList();
+    this.fetchEmployeeList();
   };
 
   componentDidUpdate = (prevProps) => {
@@ -67,6 +84,13 @@ class EditModal extends PureComponent {
         <p className={styles.header__text}>{title}</p>
       </div>
     );
+  };
+
+  renderPOC = () => {
+    const { listEmployees = [] } = this.props;
+    return listEmployees.map((employee) => {
+      return <Option value={employee._id}>{employee.generalInfo?.legalName || ''}</Option>;
+    });
   };
 
   onFinish = async (values) => {
@@ -127,6 +151,10 @@ class EditModal extends PureComponent {
     onClose(false);
   };
 
+  onEmployeeSearch = (value) => {
+    this.fetchEmployeeList(value);
+  };
+
   render() {
     const {
       visible = false,
@@ -136,6 +164,7 @@ class EditModal extends PureComponent {
       loadingFetchDepartmentByID = false,
       loadingUpdateDepartment = false,
       loadingAddDepartment = false,
+      loadingFetchEmployeeList = false,
       viewingDepartment: {
         name: nameProp = '',
         departmentParentName: departmentParentNameProp = '',
@@ -207,9 +236,14 @@ class EditModal extends PureComponent {
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please select HR Point of Contact' }]}
               >
-                <Select showSearch>
-                  <Option value="A">A</Option>
-                  <Option value="B">B</Option>
+                <Select
+                  loading={loadingFetchEmployeeList}
+                  showSearch
+                  allowClear
+                  filterOption={false}
+                  onSearch={this.onEmployeeSearch}
+                >
+                  {this.renderPOC()}
                 </Select>
               </Form.Item>
               <Form.Item
@@ -218,9 +252,14 @@ class EditModal extends PureComponent {
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please select Finance Point of Contact' }]}
               >
-                <Select showSearch>
-                  <Option value="A">A</Option>
-                  <Option value="B">B</Option>
+                <Select
+                  loading={loadingFetchEmployeeList}
+                  showSearch
+                  allowClear
+                  filterOption={false}
+                  onSearch={this.onEmployeeSearch}
+                >
+                  {this.renderPOC()}
                 </Select>
               </Form.Item>
             </Form>

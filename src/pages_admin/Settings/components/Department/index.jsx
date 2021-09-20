@@ -1,12 +1,13 @@
-import { Button, Input, Skeleton } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+import { Button, Input } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { SearchOutlined } from '@ant-design/icons';
-import CommonTable from '../CommonTable';
+import { debounce } from 'lodash';
 import EditIcon from '@/assets/adminSetting/edit.svg';
 import DeleteIcon from '@/assets/adminSetting/del.svg';
-import styles from './index.less';
+import CommonTable from '../CommonTable';
 import EditModal from './components/EditModal';
+import styles from './index.less';
 
 @connect(({ loading, adminSetting: { tempData: { listDepartments = [] } = {} } = {} }) => ({
   listDepartments,
@@ -19,12 +20,16 @@ class Department extends PureComponent {
       modalVisible: false,
       selectedDepartmentID: '',
     };
+    this.onSearchDebounce = debounce(this.onSearchDebounce, 500);
   }
 
-  fetchDepartmentList = () => {
+  fetchDepartmentList = (name = '') => {
     const { dispatch } = this.props;
     dispatch({
       type: 'adminSetting/fetchDepartmentList',
+      payload: {
+        name,
+      },
     });
   };
 
@@ -63,21 +68,28 @@ class Department extends PureComponent {
       },
       {
         title: 'HR POC',
-        dataIndex: 'HRPOC',
-        key: 'HRPOC',
+        dataIndex: 'hrPOC',
+        key: 'hrPOC',
         width: '17%',
+        render: (hrPOC = {}) => {
+          return <span>{hrPOC.generalInfo?.legalName}</span>;
+        },
       },
       {
         title: 'Finance POC',
         dataIndex: 'financePOC',
         key: 'financePOC',
         width: '17%',
+        render: (financePOC = {}) => {
+          return <span>{financePOC.generalInfo?.legalName}</span>;
+        },
       },
 
       {
         title: 'Action',
         dataIndex: 'action',
         key: 'action',
+        align: 'center',
         render: (_, row) => {
           return (
             <div className={styles.actions}>
@@ -118,13 +130,23 @@ class Department extends PureComponent {
         <div className={styles.searchBox}>
           <Input
             className={styles.searchInput}
-            placeholder="Search messages..."
+            placeholder="Search Department"
             prefix={this.searchPrefix()}
+            onChange={this.onSearch}
           />
         </div>
         <Button onClick={() => this.handleModalVisible(true)}>Add Department</Button>
       </div>
     );
+  };
+
+  onSearch = (e = {}) => {
+    const { value = '' } = e.target;
+    this.onSearchDebounce(value);
+  };
+
+  onSearchDebounce = (value) => {
+    this.fetchDepartmentList(value);
   };
 
   // search box

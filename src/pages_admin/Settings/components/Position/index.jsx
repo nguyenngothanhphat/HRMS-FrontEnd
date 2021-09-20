@@ -2,6 +2,7 @@ import { Button, Input, Skeleton } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { SearchOutlined } from '@ant-design/icons';
+import { debounce } from 'lodash';
 import CommonTable from '../CommonTable';
 import EditIcon from '@/assets/adminSetting/edit.svg';
 import DeleteIcon from '@/assets/adminSetting/del.svg';
@@ -24,6 +25,7 @@ class Position extends PureComponent {
       page: 1,
       limit: 10,
     };
+    this.onSearchDebounce = debounce(this.onSearchDebounce, 500);
   }
 
   componentDidMount = () => {
@@ -36,12 +38,12 @@ class Position extends PureComponent {
     if (page !== prevState.page || limit !== prevState.limit) this.fetchPositionList();
   }
 
-  fetchPositionList = () => {
+  fetchPositionList = (name = '') => {
     const { dispatch } = this.props;
     const { page, limit } = this.state;
     dispatch({
       type: 'adminSetting/fetchListTitle',
-      payload: { page, limit },
+      payload: { name, page, limit },
     });
   };
 
@@ -71,9 +73,18 @@ class Position extends PureComponent {
       },
       {
         title: 'Role',
-        dataIndex: 'role',
-        key: 'role',
+        dataIndex: 'roles',
+        key: 'roles',
         width: '15%',
+        render: (roles = []) => {
+          return (
+            <div>
+              {roles.map((id) => (
+                <span className={styles.roleTag}>{id}</span>
+              ))}
+            </div>
+          );
+        },
       },
       {
         title: 'Grade Level',
@@ -83,14 +94,16 @@ class Position extends PureComponent {
       },
       {
         title: 'Timesheet Required',
-        dataIndex: 'timesheetRequired',
-        key: 'timesheetRequired',
+        dataIndex: 'timeSheetRequired',
+        key: 'timeSheetRequired',
         width: '15%',
+        render: (value) => (value ? <span>Yes</span> : <span>No</span>),
       },
       {
         title: 'Action',
         dataIndex: 'action',
         key: 'action',
+        align: 'center',
         render: (_, row) => {
           return (
             <div className={styles.actions}>
@@ -131,13 +144,23 @@ class Position extends PureComponent {
         <div className={styles.searchBox}>
           <Input
             className={styles.searchInput}
-            placeholder="Search messages..."
+            placeholder="Search Position"
             prefix={this.searchPrefix()}
+            onChange={this.onSearch}
           />
         </div>
         <Button onClick={() => this.handleModalVisible(true)}>Add Position</Button>
       </div>
     );
+  };
+
+  onSearch = (e = {}) => {
+    const { value = '' } = e.target;
+    this.onSearchDebounce(value);
+  };
+
+  onSearchDebounce = (value) => {
+    this.fetchPositionList(value);
   };
 
   // search box

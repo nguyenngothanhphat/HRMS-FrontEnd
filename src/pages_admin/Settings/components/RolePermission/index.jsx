@@ -34,9 +34,9 @@ class RolePermission extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'adminSetting/fetchPermissionList',
-      payload: {
-        type: 'ADMIN',
-      },
+      // payload: {
+      //   type: 'ADMIN',
+      // },
     });
   };
 
@@ -70,14 +70,25 @@ class RolePermission extends PureComponent {
       },
       {
         title: 'Permissions',
-        // dataIndex: 'permissions',
+        dataIndex: 'permissions',
         key: 'permissions',
         width: '30%',
+        render: (permissions = []) => {
+          const permissionName = this.getPermissionName(permissions);
+          return (
+            <div>
+              {permissionName.map((name) => (
+                <span className={styles.permissionTag}>{name}</span>
+              ))}
+            </div>
+          );
+        },
       },
       {
         title: 'Action',
         dataIndex: 'action',
         key: 'action',
+        align: 'center',
         render: (_, row) => {
           return (
             <div className={styles.actions}>
@@ -110,6 +121,14 @@ class RolePermission extends PureComponent {
     if (res.statusCode === 200) {
       this.fetchRoleList();
     }
+  };
+
+  getPermissionName = (permissionList = []) => {
+    let res = permissionList.map((item) => {
+      return item.module || '';
+    });
+    res = res.filter(val => val)
+    return [...new Set(res)];
   };
 
   renderHeader = () => {

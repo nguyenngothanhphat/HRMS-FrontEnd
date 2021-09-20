@@ -17,14 +17,15 @@ class Grade extends PureComponent {
     super(props);
     this.state = {
       modalVisible: false,
+      selectedGradeID: '',
     };
   }
 
   fetchGradeList = () => {
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'adminSetting/fetchGradeList',
-    // });
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'adminSetting/fetchGradeList',
+    });
   };
 
   componentDidMount = () => {
@@ -43,7 +44,7 @@ class Grade extends PureComponent {
         title: 'Name',
         dataIndex: 'name',
         key: 'name',
-        width: '90%',
+        width: '80%',
         // render: (id) => {
         //   return <span className={styles.roleName}>{id}</span>;
         // },
@@ -52,11 +53,12 @@ class Grade extends PureComponent {
         title: 'Action',
         dataIndex: 'action',
         key: 'action',
-        render: () => {
+        align: 'center',
+        render: (_, row) => {
           return (
             <div className={styles.actions}>
-              <img src={DeleteIcon} alt="" />
-              <img src={EditIcon} alt="" />
+              <img src={DeleteIcon} onClick={() => this.onRemoveGrade(row)} alt="" />
+              <img src={EditIcon} onClick={() => this.onEditGrade(row)} alt="" />
             </div>
           );
         },
@@ -64,6 +66,26 @@ class Grade extends PureComponent {
     ];
 
     return columns;
+  };
+
+  onEditGrade = (row) => {
+    this.setState({
+      modalVisible: true,
+      selectedGradeID: row._id,
+    });
+  };
+
+  onRemoveGrade = async (row) => {
+    const { dispatch } = this.props;
+    const res = await dispatch({
+      type: 'adminSetting/removeGrade',
+      payload: {
+        id: row._id,
+      },
+    });
+    if (res.statusCode === 200) {
+      this.fetchGradeList();
+    }
   };
 
   renderHeader = () => {
@@ -95,20 +117,28 @@ class Grade extends PureComponent {
   };
 
   render() {
-    const { modalVisible } = this.state;
+    const { modalVisible, selectedGradeID } = this.state;
     const { listGrades = [], loadingfetchGradeList = false } = this.props;
-    if (loadingfetchGradeList) {
-      return (
-        <div className={styles.Grade}>
-          <Skeleton />
-        </div>
-      );
-    }
     return (
       <div className={styles.Grade}>
         {this.renderHeader()}
-        <CommonTable columns={this.generateColumns()} list={listGrades} />
-        <EditModal visible={modalVisible} onClose={() => this.handleModalVisible(false)} />
+        <CommonTable
+          loading={loadingfetchGradeList}
+          columns={this.generateColumns()}
+          list={listGrades}
+        />
+        <EditModal
+          visible={modalVisible}
+          onClose={() => {
+            this.handleModalVisible(false);
+            this.setState({
+              selectedGradeID: '',
+            });
+          }}
+          onRefresh={this.fetchGradeList}
+          action={selectedGradeID ? 'edit' : 'add'}
+          selectedGradeID={selectedGradeID}
+        />
       </div>
     );
   }

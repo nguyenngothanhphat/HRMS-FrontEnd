@@ -25,6 +25,16 @@ import {
   countEmployee,
   addRole,
   removeRole,
+
+  // employee list
+  getEmployeeList,
+
+  // grade
+  getListGrade,
+  addGrade,
+  updateGrade,
+  removeGrade,
+  getGradeByID,
 } from '../services/adminSetting';
 
 const adminSetting = {
@@ -53,6 +63,7 @@ const adminSetting = {
     viewingPosition: {},
     viewingDepartment: {},
     viewingRole: {},
+    listEmployees: [],
   },
   effects: {
     *fetchRoleList({ payload = {} }, { call, put }) {
@@ -81,12 +92,11 @@ const adminSetting = {
         dialog(errors);
       }
     },
-    *fetchListTitle({ payload: { page, limit } }, { call, put }) {
+    *fetchListTitle({ payload = {} }, { call, put }) {
       const resp = [];
       try {
         const response = yield call(getListTitle, {
-          page,
-          limit,
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
@@ -134,9 +144,10 @@ const adminSetting = {
       return response;
     },
 
-    *fetchDepartmentList(_, { call, put }) {
+    *fetchDepartmentList({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getListDepartments, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
@@ -149,8 +160,9 @@ const adminSetting = {
       }
     },
     *fetchListPermissionOfRole({ payload: { idRoles = '' } }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getListPermissionOfRole, {
+        response = yield call(getListPermissionOfRole, {
           idRoles,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
@@ -163,6 +175,7 @@ const adminSetting = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
     *fetchRoleByID({ payload: { id: _id = '' } = {} }, { call, put }) {
       let response = {};
@@ -385,6 +398,106 @@ const adminSetting = {
         dialog(errors);
         return {};
       }
+    },
+
+    *fetchEmployeeList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getEmployeeList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listEmployees: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    // grade
+    *fetchGradeList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getListGrade, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listGrades: data } });
+        yield put({ type: 'saveTemp', payload: { listGrades: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *addGrade({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(addGrade, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *updateGrade({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(updateGrade, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *removeGrade({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(removeGrade, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchGradeByID({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getGradeByID, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { viewingGrade: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
   reducers: {

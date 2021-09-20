@@ -135,3 +135,47 @@ export async function setupComplete() {
     method: 'POST',
   });
 }
+
+// get list employee
+export async function getEmployeeList(payload) {
+  return request('/api/employeetenant/list-by-single-company', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+// grades
+export async function getListGrade(payload) {
+  return request('/api/gradetenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function addGrade(payload) {
+  return request('/api/gradetenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateGrade(payload) {
+  return request('/api/gradetenant/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function removeGrade(payload) {
+  return request('/api/gradetenant/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getGradeByID(payload) {
+  return request('/api/gradetenant/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}

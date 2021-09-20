@@ -40,14 +40,17 @@ class EditModal extends PureComponent {
     }
   };
 
-  fetchRoleByID = (id) => {
+  fetchRoleByID = async (id) => {
     const { dispatch } = this.props;
-    dispatch({
+    const res = await dispatch({
       type: 'adminSetting/fetchRoleByID',
       payload: {
         id,
       },
     });
+    if (res.statusCode === 200) {
+      this.setState({ selectedList: res.data?.permissions });
+    }
   };
 
   renderHeaderModal = () => {
@@ -66,6 +69,7 @@ class EditModal extends PureComponent {
   onFinish = async (values) => {
     const { dispatch, selectedRoleID = '', onRefresh = () => {} } = this.props;
     const { name = '', description = '' } = values;
+    const { selectedList } = this.state;
 
     const addRole = async () => {
       const res = await dispatch({
@@ -74,6 +78,7 @@ class EditModal extends PureComponent {
           idSync: name,
           name,
           description,
+          permissions: selectedList,
         },
       });
       if (res.statusCode === 200) {
@@ -88,6 +93,7 @@ class EditModal extends PureComponent {
           _id: selectedRoleID,
           name,
           description,
+          permissions: selectedList,
         },
       });
       if (res.statusCode === 200) {
@@ -120,6 +126,57 @@ class EditModal extends PureComponent {
 
   renderList = () => {
     const { permissionList = [] } = this.props;
+    // const filterFunction = (text) => {
+    //   return permissionList
+    //     .filter((item) => Object.keys(item).some((k) => item[k].includes(text)))
+    //     .map((item) => {
+    //       return { ...item, key: item._id, title: item.name };
+    //     });
+    // };
+    // const getListDIRECTORY = filterFunction('P_DIRECTORY');
+    // const getListUser = filterFunction('P_USERS');
+    // const getListEmployees = filterFunction('P_EMPLOYEES');
+    // const getProfileEmployees = filterFunction('P_PROFILE');
+    // const getListOnBoarding = filterFunction('P_ONBOARDING');
+    // const getListSETTING = filterFunction('P_SETTINGS');
+
+    // const newData = [
+    //   {
+    //     key: 1,
+    //     title: 'DIRECTORY',
+    //     children: getListDIRECTORY,
+    //   },
+    //   {
+    //     key: 2,
+    //     title: 'USER',
+    //     children: getListUser,
+    //   },
+    //   {
+    //     key: 3,
+    //     title: 'EMPLOYEES',
+
+    //     children: getListEmployees,
+    //   },
+    //   {
+    //     key: 4,
+    //     title: 'PROFILE',
+
+    //     children: getProfileEmployees,
+    //   },
+    //   {
+    //     key: 5,
+    //     title: 'ONBOARDING',
+
+    //     children: getListOnBoarding,
+    //   },
+    //   {
+    //     key: 6,
+    //     title: 'SETTING',
+
+    //     children: getListSETTING,
+    //   },
+    // ];
+
     let formatList = permissionList.map((per) => per?.module);
     formatList = formatList.filter(
       (value) => value !== undefined && value !== '' && value !== null,
@@ -149,6 +206,8 @@ class EditModal extends PureComponent {
       this.setList(checkedKeys);
     };
 
+    const { selectedList } = this.state;
+
     return (
       <>
         <span className={styles.permissionTitle}>Permission</span>
@@ -158,6 +217,7 @@ class EditModal extends PureComponent {
             defaultExpandAll={false}
             // onSelect={onSelect}
             onCheck={onCheck}
+            checkedKeys={selectedList}
             treeData={treeData}
             showLine={{ showLeafIcon: false }}
             showIcon={false}
