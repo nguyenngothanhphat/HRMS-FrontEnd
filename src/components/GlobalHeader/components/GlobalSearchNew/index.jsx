@@ -32,10 +32,7 @@ const GlobalSearchNew = (props) => {
     if (e.target.value.length >= 3) setVisible(true);
     else setVisible(false);
   };
-  // const onFocusSearch = () => {
-  //   if (text.length >= 3 && !visible) setVisible(true);
-  //   if (text.length < 3) setVisible(false);
-  // };
+
   const onClose = () => {
     setVisible(false);
   };
@@ -107,7 +104,7 @@ const GlobalSearchNew = (props) => {
             </div>
           </div>
           <div className={styles.blog__content}>
-            <Documents listDocument={employeeDoc} />
+            <Documents listDocument={employeeDoc} onClick={onClose} />
           </div>
         </div>
       )}
@@ -148,7 +145,7 @@ const GlobalSearchNew = (props) => {
         trigger={['click']}
         visible={visible}
         onVisibleChange={handleChangeVisiable}
-        destroyPopupOnHide
+        // destroyPopupOnHide
         overlayClassName={styles.searchDropdown}
       >
         <Input

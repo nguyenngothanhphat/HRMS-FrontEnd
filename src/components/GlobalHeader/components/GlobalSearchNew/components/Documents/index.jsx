@@ -4,29 +4,35 @@ import ViewDocumentModal from '@/components/ViewDocumentModal';
 import styles from './index.less';
 
 const Document = (props) => {
-  const { listDocument } = props;
-  const [openModal, setOpenModal] = useState(false);
+  const { listDocument, onClick } = props;
+  const [visable, setVisiable] = useState(false);
   const [urlDocument, setUrlDocument] = useState('');
   const [displayDocumentName, setDisplayDocumentName] = useState('');
   const viewDocument = (document) => {
-    const { attachmentName = '', attachmentUrl = '' } = document;
-    setOpenModal(true);
+    const { name: attachmentName = '', url: attachmentUrl = '' } = document;
+    setVisiable(true);
     setUrlDocument(attachmentUrl);
     setDisplayDocumentName(attachmentName);
   };
   return (
     <div className={styles.document}>
       {listDocument.map((item) => (
-        <div className={styles.document__item} onClick={() => viewDocument(item)}>
-          <div className={styles.text}>abc</div>
+        <div
+          className={styles.document__item}
+          onClick={() => {
+            onClick();
+            viewDocument(item.attachment);
+          }}
+        >
+          <div className={styles.text}>{item.key}</div>
           <img alt="pdf-img" src={iconPDF} />
         </div>
       ))}
       <ViewDocumentModal
-        visible={openModal}
+        visible={visable}
         fileName={displayDocumentName}
         url={urlDocument}
-        onClose={() => setOpenModal(false)}
+        onClose={() => setVisiable(false)}
       />
     </div>
   );

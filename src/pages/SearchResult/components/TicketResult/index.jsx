@@ -4,7 +4,7 @@ import { Table } from 'antd';
 import { formatMessage, connect, history } from 'umi';
 import styles from '../../index.less';
 
-const TicketResult = (props) => {
+const TicketResult = React.memo((props) => {
   const {
     keySearch,
     loadTableData,
@@ -133,7 +133,7 @@ const TicketResult = (props) => {
       </div>
     </div>
   );
-};
+});
 export default connect(
   ({
     loading,

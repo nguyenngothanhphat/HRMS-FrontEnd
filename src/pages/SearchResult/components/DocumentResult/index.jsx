@@ -4,7 +4,7 @@ import { Table } from 'antd';
 import { formatMessage, connect, history } from 'umi';
 import styles from '../../index.less';
 
-const DocumentResult = (props) => {
+const DocumentResult = React.memo((props) => {
   const {
     keySearch,
     loadTableData,
@@ -112,7 +112,7 @@ const DocumentResult = (props) => {
       </div>
     </div>
   );
-};
+});
 export default connect(
   ({
     loading,

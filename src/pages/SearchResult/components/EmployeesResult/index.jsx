@@ -4,7 +4,7 @@ import { Table } from 'antd';
 import { formatMessage, connect, history } from 'umi';
 import styles from '../../index.less';
 
-const EmployeeResult = (props) => {
+const EmployeeResult = React.memo((props) => {
   const {
     keySearch,
     loadTableData,
@@ -37,12 +37,8 @@ const EmployeeResult = (props) => {
       }
     }
   }, [isSearch, page, limit]);
-
+  console.log('employeeList', employeeList);
   const clickFilter = () => {
-    dispatch({
-      type: 'searchAdvance/save',
-      payload: { isSearchAdvance: true },
-    });
     history.push('employees/advanced-search');
   };
 
@@ -187,7 +183,7 @@ const EmployeeResult = (props) => {
       </div>
     </div>
   );
-};
+});
 export default connect(
   ({
     loading,

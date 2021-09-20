@@ -34,7 +34,7 @@ export default {
       employeeId: '',
       jobTitle: [],
       department: '',
-      skill: [],
+      skill: '',
       certification: '',
       location: [],
       reportingManager: '',
@@ -122,7 +122,7 @@ export default {
               employees,
               employeeDoc,
               tickets,
-              totalDocs,
+              totalDocs: totalDocs || employeeDoc.length,
               totalEmployees,
               totalTickets,
             },
@@ -258,6 +258,16 @@ export default {
         ...state,
         globalSearchAdvance: {
           ...globalSearchAdvance,
+          ...action.payload,
+        },
+      };
+    },
+    saveDefaultList(state, action) {
+      const { defaultList } = state;
+      return {
+        ...state,
+        defaultList: {
+          ...defaultList,
           ...action.payload,
         },
       };
