@@ -28,9 +28,9 @@ import 'cypress-file-upload';
 import moment from 'moment';
 
 Cypress.moment = moment;
-// code that terminates all subsequent tests if one fails
-afterEach(function () {
-  if (this.currentTest.state === 'failed') {
-    Cypress.runner.stop();
-  }
-});
+// // code that terminates all subsequent tests if one fails
+//afterEach(function () {
+//  if (this.currentTest.state === 'failed') {
+//    Cypress.runner.stop();
+//  }
+// });

@@ -9,6 +9,8 @@ import {
   handleExpiryTicket,
   reassignTicket,
   withdrawTicket,
+  getPosition,
+  getLocationList,
 } from '@/services/onboard';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
@@ -205,6 +207,10 @@ const onboarding = {
       rejectedOffers: [],
       withdrawnOffers: [],
       currentStatus: '',
+    },
+    searchOnboarding: {
+      jobTitleList: [],
+      locationList: [],
     },
   },
   effects: {
@@ -554,12 +560,55 @@ const onboarding = {
       }
       return response;
     },
+    *fetchJobTitleList({ payload = {} }, { call, put }) {
+      try {
+        const newPayload = {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+          // page: '',
+        };
+        const response = yield call(getPosition, newPayload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveSearch', payload: { jobTitleList: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchLocationList({ payload = {} }, { call, put }) {
+      try {
+        const newPayload = {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        };
+        const response = yield call(getLocationList, newPayload);
+        const { statusCode, data: locationList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveSearch',
+          payload: { locationList },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
   reducers: {
     save(state, action) {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveSearch(state, action) {
+      return {
+        ...state,
+        searchOnboarding: {
+          ...state.searchOnboarding,
+          ...action.payload,
+        },
       };
     },
     saveOnboardingOverview(state, action) {

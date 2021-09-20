@@ -4,19 +4,15 @@ import { Tabs, Button, Row, Col } from 'antd';
 import { connect, formatMessage, history } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import exportToExcel from '@/utils/exportAsExcel';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import OnboardingOverview from './components/OnboardingOverview';
 import Settings from './components/Settings';
 import styles from './index.less';
 
-@connect(
-  ({
-    user: { permissions = [] } = {},
-    onboard: { onboardingOverview: { dataAll = [] } = {} } = {},
-  }) => ({
-    permissions,
-    dataAll,
-  }),
-)
+@connect(({ user: { permissions = [] } = {}, onboarding: { onboardingOverview = {} } = {} }) => ({
+  permissions,
+  onboardingOverview,
+}))
 class Onboarding extends PureComponent {
   constructor(props) {
     super(props);
@@ -41,9 +37,64 @@ class Onboarding extends PureComponent {
     });
   };
 
+  checkPathLocation = () => {
+    const {
+      onboardingOverview: {
+        dataAll = [],
+        drafts = [],
+        profileVerifications = [],
+        documentVerifications = [],
+        salaryNegotiations = [],
+        awaitingApprovals = [],
+        offerReleased = [],
+        offerAccepted = [],
+        rejectedOffers = [],
+        withdrawnOffers = [],
+        currentStatus,
+      } = {},
+    } = this.props;
+
+    let data = '';
+
+    switch (currentStatus) {
+      case NEW_PROCESS_STATUS.DRAFT:
+        data = drafts;
+        break;
+      case NEW_PROCESS_STATUS.PROFILE_VERIFICATION:
+        data = profileVerifications;
+        break;
+      case NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION:
+        data = documentVerifications;
+        break;
+      case NEW_PROCESS_STATUS.SALARY_NEGOTIATION:
+        data = salaryNegotiations;
+        break;
+      case NEW_PROCESS_STATUS.AWAITING_APPROVALS:
+        data = awaitingApprovals;
+        break;
+      case NEW_PROCESS_STATUS.OFFER_RELEASED:
+        data = offerReleased;
+        break;
+      case NEW_PROCESS_STATUS.OFFER_ACCEPTED:
+        data = offerAccepted;
+        break;
+      case NEW_PROCESS_STATUS.OFFER_REJECTED:
+        data = rejectedOffers;
+        break;
+      case NEW_PROCESS_STATUS.OFFER_WITHDRAWN:
+        data = withdrawnOffers;
+        break;
+      default:
+        // all
+        data = dataAll;
+        break;
+    }
+    return data;
+  };
+
   downloadTemplate = () => {
-    const { dataAll } = this.props;
-    exportToExcel('test.xlsx', this.processData(dataAll));
+    const data = this.checkPathLocation();
+    exportToExcel('OnboardingData.xlsx', this.processData(data));
   };
 
   processData = (array) => {
@@ -57,9 +108,9 @@ class Onboarding extends PureComponent {
         generalInfo: { firstName: name },
       } = item.assigneeManager;
       return {
-        'Rookie Id': item.rookieId,
+        'Candidate Id': item.candidateId,
         Candidate: item.candidate,
-        'Rookie Name': item.rookieName,
+        'Candidate Name': item.candidateName,
         Position: item.position,
         Location: item.location,
         'Date of Join': item.dateJoin,
