@@ -58,13 +58,18 @@ const arrStatus = [
 @connect(
   ({
     onboarding: {
-      searchOnboarding: { jobTitleList = [], locationList = [] } = {},
+      searchOnboarding: {
+        jobTitleList = [],
+        locationList = [],
+        isFilter: isFiltering = false,
+      } = {},
       onboardingOverview: { currentStatus = '' } = {},
     } = {},
   }) => ({
     jobTitleList,
     locationList,
     currentStatus,
+    isFiltering,
   }),
 )
 class FilterForm extends Component {
@@ -90,9 +95,14 @@ class FilterForm extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { filter } = this.state;
+    const { isFiltering } = this.props;
 
     if (JSON.stringify(prevState.filter) !== JSON.stringify(filter)) {
       this.validateFilterFields(filter);
+    }
+
+    if (prevProps.isFiltering !== isFiltering) {
+      this.clearFilter();
     }
   }
 
@@ -263,16 +273,9 @@ class FilterForm extends Component {
 
     const fieldsArray = [
       {
-        label: 'BY PENDING STATUS',
+        label: 'BY STATUS',
         name: 'processStatus',
-        placeholder: 'Select pending status',
-        filterOption: 1,
-        optionArray: arrStatus,
-      },
-      {
-        label: 'BY OTHER STATUS',
-        name: 'otherStatus',
-        placeholder: 'Select other status',
+        placeholder: 'Select status',
         filterOption: 1,
         optionArray: arrStatus,
       },
@@ -309,7 +312,7 @@ class FilterForm extends Component {
                   showArrow
                   showSearch
                   filterOption={(input, option) => {
-                    if (field.name === 'location' || field.name === 'title') {
+                    if (field.filterOption === 2) {
                       const arrChild = option.props.children[1];
                       return (
                         arrChild.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0

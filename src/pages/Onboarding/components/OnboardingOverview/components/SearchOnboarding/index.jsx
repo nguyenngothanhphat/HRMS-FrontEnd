@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input, Drawer } from 'antd';
+import { Input, Popover } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 
@@ -18,29 +18,13 @@ class SearchOnboarding extends Component {
     };
   }
 
-  componentDidUpdate() {
-    this.disableScrollView();
-  }
-
-  componentWillUnmount() {
-    document.body.style.overflow = 'auto';
-  }
-
-  disableScrollView = () => {
-    const { visible } = this.state;
-    if (visible) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-  };
-
-  openFilter = (visible) => {
+  openFilter = () => {
     const { dispatch } = this.props;
+    const { visible } = this.state;
 
-    this.setState({ visible });
+    this.setState({ visible: !visible });
 
-    if (visible) {
+    if (!visible) {
       dispatch({
         type: 'onboarding/fetchJobTitleList',
         payload: {},
@@ -50,7 +34,38 @@ class SearchOnboarding extends Component {
         type: 'onboarding/fetchLocationList',
         payload: {},
       });
+
+      dispatch({
+        type: 'onboarding/saveSearch',
+        payload: { isFilter: true },
+      });
+    } else {
+      dispatch({
+        type: 'onboarding/saveSearch',
+        payload: { isFilter: false },
+      });
     }
+  };
+
+  renderTitle = () => {
+    return (
+      <div className={styles.title}>
+        <div className={styles.title__text}>Filter</div>
+        <img
+          alt="close"
+          src={closeIcon}
+          onClick={() => {
+            const { dispatch } = this.props;
+
+            this.setState({ visible: false });
+            dispatch({
+              type: 'onboarding/saveSearch',
+              payload: { isFilter: false },
+            });
+          }}
+        />
+      </div>
+    );
   };
 
   render() {
@@ -60,26 +75,16 @@ class SearchOnboarding extends Component {
     return (
       <div className={styles.search}>
         <div className="site-drawer-render-in-current-wrapper">
-          <img
-            onClick={() => this.openFilter(true)}
-            alt="filter"
-            src={filterIcon}
-            className={styles.filterIcon}
-          />
-          <Drawer
-            title="Filters"
-            placement="right"
-            destroyOnClose
-            closable
-            onClose={() => this.openFilter(false)}
+          <Popover
+            content={<FilterForm />}
+            title={this.renderTitle()}
+            trigger="click"
+            placement="bottomRight"
             visible={visible}
-            mask={false}
-            closeIcon={<img alt="close" src={closeIcon} />}
-            // getContainer={false}
-            // style={{ position: 'absolute' }}
+            onVisibleChange={this.openFilter}
           >
-            <FilterForm openFilter={this.openFilter} />
-          </Drawer>
+            <img alt="filter" src={filterIcon} className={styles.filterIcon} />
+          </Popover>
         </div>
         <Input
           onChange={(e) => onChangeSearch(e.target.value)}

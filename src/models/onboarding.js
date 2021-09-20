@@ -211,6 +211,7 @@ const onboarding = {
     searchOnboarding: {
       jobTitleList: [],
       locationList: [],
+      isFilter: false,
     },
   },
   effects: {
