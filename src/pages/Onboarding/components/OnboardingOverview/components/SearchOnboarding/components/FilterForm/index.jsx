@@ -137,6 +137,8 @@ class FilterForm extends Component {
         toDate: null,
       },
       isFilter: false,
+      durationFrom: '',
+      durationTo: '',
     });
 
     this.formRef.current.resetFields();
