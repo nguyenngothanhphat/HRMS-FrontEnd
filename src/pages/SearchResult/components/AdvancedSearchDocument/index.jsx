@@ -84,4 +84,3 @@ const AdvancedSearchDocument = (props) => {
 export default connect(({ searchAdvance: { documentAdvance = {} } }) => ({ documentAdvance }))(
   AdvancedSearchDocument,
 );
-// export default AdvancedSearchDocument;

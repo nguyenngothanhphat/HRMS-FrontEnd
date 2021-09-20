@@ -32,11 +32,15 @@ const GlobalSearchNew = (props) => {
     if (e.target.value.length >= 3) setVisible(true);
     else setVisible(false);
   };
-  const onFocusSearch = () => {
-    if (text.length >= 3) setVisible(true);
-  };
+  // const onFocusSearch = () => {
+  //   if (text.length >= 3 && !visible) setVisible(true);
+  //   if (text.length < 3) setVisible(false);
+  // };
   const onClose = () => {
     setVisible(false);
+  };
+  const handleChangeVisiable = (flag) => {
+    if (!flag || text.length >= 3) setVisible(flag);
   };
   const onShowMore = (key) => {
     dispatch({
@@ -143,6 +147,7 @@ const GlobalSearchNew = (props) => {
         overlay={menu}
         trigger={['click']}
         visible={visible}
+        onVisibleChange={handleChangeVisiable}
         destroyPopupOnHide
         overlayClassName={styles.searchDropdown}
       >
@@ -151,8 +156,6 @@ const GlobalSearchNew = (props) => {
           value={text}
           prefix={<SearchOutlined />}
           onChange={changeInput}
-          onFocus={onFocusSearch}
-          // onBlur={() => setVisible(false)}
         />
       </Dropdown>
     </div>
@@ -166,4 +169,3 @@ export default connect(
     },
   }) => ({ keySearch, employees, employeeDoc, tickets }),
 )(GlobalSearchNew);
-// export default GlobalSearchNew;
