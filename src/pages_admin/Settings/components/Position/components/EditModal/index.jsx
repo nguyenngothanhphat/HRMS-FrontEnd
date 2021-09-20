@@ -13,11 +13,12 @@ const state = { selectedRoleIds: [] };
     loading,
     adminSetting: {
       viewingPosition = {},
-      tempData: { listDepartments = [], listRoles = [] } = {},
+      tempData: { listGrades = [], listDepartments = [], listRoles = [] } = {},
     } = {},
   }) => ({
     listDepartments,
     listRoles,
+    listGrades,
     viewingPosition,
     loadingFetchDepartmentList: loading.effects['adminSetting/fetchDepartmentList'],
     loadingFetchPositionByID: loading.effects['adminSetting/fetchPositionByID'],
@@ -47,9 +48,17 @@ class EditModal extends PureComponent {
     });
   };
 
+  fetchGradeList = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'adminSetting/fetchGradeList',
+    });
+  };
+
   componentDidMount = () => {
     this.fetchDepartmentList();
     this.fetchRoleList();
+    this.fetchGradeList();
   };
 
   componentDidUpdate = (prevProps) => {
@@ -90,8 +99,8 @@ class EditModal extends PureComponent {
 
   onFinish = async (values) => {
     const { dispatch, selectedPositionID = '', onRefresh = () => {} } = this.props;
-    const { name = '', department = '', grade = '', timeSheetRequired = false } = values;
-    console.log('values', values);
+    const { name = '', department = '', gradeObj = '', timeSheetRequired = false } = values;
+
     const { selectedRoleIds: roles = [] } = this.state;
 
     const addPosition = async () => {
@@ -99,7 +108,7 @@ class EditModal extends PureComponent {
         type: 'adminSetting/addPosition',
         payload: {
           name,
-          grade,
+          gradeObj,
           department,
           roles,
           timeSheetRequired,
@@ -117,7 +126,7 @@ class EditModal extends PureComponent {
           id: selectedPositionID,
           name,
           department,
-          grade,
+          gradeObj,
           roles,
           timeSheetRequired,
         },
@@ -241,6 +250,11 @@ class EditModal extends PureComponent {
     );
   };
 
+  renderGradeList = () => {
+    const { listGrades = [] } = this.props;
+    return listGrades.map((grade) => <Option value={grade._id}>{grade.name}</Option>);
+  };
+
   render() {
     const {
       visible = false,
@@ -254,7 +268,7 @@ class EditModal extends PureComponent {
       viewingPosition: {
         department: departmentProp = '',
         name: nameProp = '',
-        grade: gradeProp = '',
+        gradeObj: gradeObjProp = '',
         timeSheetRequired: timeSheetRequiredProp = false,
       } = {},
     } = this.props;
@@ -301,7 +315,7 @@ class EditModal extends PureComponent {
                   : {
                       department: departmentProp,
                       name: nameProp,
-                      grade: gradeProp,
+                      gradeObj: gradeObjProp?._id || '',
                       timeSheetRequired: timeSheetRequiredProp,
                     }
               }
@@ -352,7 +366,7 @@ class EditModal extends PureComponent {
 
               <Form.Item
                 label="Grade Level"
-                name="grade"
+                name="gradeObj"
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please select Grade Level' }]}
               >
@@ -367,8 +381,7 @@ class EditModal extends PureComponent {
                   showSearch
                   allowClear
                 >
-                  <Option value="0">0</Option>
-                  <Option value="1">1</Option>
+                  {this.renderGradeList()}
                 </Select>
               </Form.Item>
 

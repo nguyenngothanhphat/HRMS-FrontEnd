@@ -88,9 +88,12 @@ class Position extends PureComponent {
       },
       {
         title: 'Grade Level',
-        dataIndex: 'grade',
-        key: 'grade',
+        dataIndex: 'gradeObj',
+        key: 'gradeObj',
         width: '15%',
+        render: (gradeObj = {}) => {
+          return <span>{gradeObj.name || ''}</span>;
+        },
       },
       {
         title: 'Timesheet Required',
