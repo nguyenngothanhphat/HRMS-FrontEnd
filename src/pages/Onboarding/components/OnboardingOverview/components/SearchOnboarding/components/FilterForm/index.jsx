@@ -73,8 +73,8 @@ class FilterForm extends Component {
         otherStatus: undefined,
         title: [],
         location: [],
-        dateOfJoinFrom: null,
-        dateOfJoinTo: null,
+        fromDate: null,
+        toDate: null,
       },
       isFilter: false, // check enable|disable button Apply
     };
@@ -91,13 +91,13 @@ class FilterForm extends Component {
   }
 
   validateFilterFields = (filter) => {
-    if (!filter.dateOfJoinFrom && !filter.dateOfJoinTo) {
+    if (!filter.fromDate && !filter.toDate) {
       // in case without filter date
       const isEmptyValue = values(filter).every(isEmpty);
       this.setState({
         isFilter: !isEmptyValue, // if all fields value is empty => means not filtering
       });
-    } else if (filter.dateOfJoinFrom && filter.dateOfJoinTo) {
+    } else if (filter.fromDate && filter.toDate) {
       // in case filter date, must select 2 date fields
       this.setState({
         isFilter: true,
@@ -117,8 +117,8 @@ class FilterForm extends Component {
         otherStatus: undefined,
         title: [],
         location: [],
-        dateOfJoinFrom: null,
-        dateOfJoinTo: null,
+        fromDate: null,
+        toDate: null,
       },
       isFilter: false,
     });
@@ -129,7 +129,7 @@ class FilterForm extends Component {
   disabledDate = (currentDate, type) => {
     const { durationTo, durationFrom } = this.state;
 
-    if (type === 'dateOfJoinFrom') {
+    if (type === 'fromDate') {
       return (
         (currentDate && currentDate > moment(durationTo)) ||
         moment(currentDate).day() === 0 ||
@@ -146,7 +146,7 @@ class FilterForm extends Component {
 
   onChangeDate = (currentDate, type) => {
     switch (type) {
-      case 'dateOfJoinFrom':
+      case 'fromDate':
         if (currentDate === null) {
           this.setState({
             durationFrom: '',
@@ -158,7 +158,7 @@ class FilterForm extends Component {
         }
         break;
 
-      case 'dateOfJoinTo':
+      case 'toDate':
         if (currentDate === null) {
           this.setState({
             durationTo: '',
@@ -218,6 +218,7 @@ class FilterForm extends Component {
   };
 
   onFinish = (value) => {
+    const { dispatch } = this.props;
     const payload = { ...value };
     Object.keys(payload).forEach(
       (k) =>
@@ -226,8 +227,10 @@ class FilterForm extends Component {
         (payload[k] === '' && delete payload[k]),
     );
 
-    console.log(value);
-    console.log(payload);
+    dispatch({
+      type: 'onboarding/fetchOnboardList',
+      payload,
+    });
   };
 
   render() {
@@ -308,13 +311,13 @@ class FilterForm extends Component {
                 <div className={styles.labelText}>DOJ</div>
               </div>
               <div className={styles.doj__date}>
-                <Form.Item name="dateOfJoinFrom">
+                <Form.Item name="fromDate">
                   <DatePicker
-                    disabledDate={(currentDate) => this.disabledDate(currentDate, 'dateOfJoinFrom')}
+                    disabledDate={(currentDate) => this.disabledDate(currentDate, 'fromDate')}
                     format={dateFormat}
                     placeholder="From Date"
                     onChange={(value) => {
-                      this.onChangeDate(value, 'dateOfJoinFrom');
+                      this.onChangeDate(value, 'fromDate');
                     }}
                     suffixIcon={
                       <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
@@ -322,13 +325,13 @@ class FilterForm extends Component {
                   />
                 </Form.Item>
                 <div className={`${styles.labelText} ${styles.labelTo}`}>to</div>
-                <Form.Item name="dateOfJoinTo">
+                <Form.Item name="toDate">
                   <DatePicker
-                    disabledDate={(currentDate) => this.disabledDate(currentDate, 'dateOfJoinTo')}
+                    disabledDate={(currentDate) => this.disabledDate(currentDate, 'toDate')}
                     format={dateFormat}
                     placeholder="To Date"
                     onChange={(value) => {
-                      this.onChangeDate(value, 'dateOfJoinTo');
+                      this.onChangeDate(value, 'toDate');
                     }}
                     suffixIcon={
                       <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />

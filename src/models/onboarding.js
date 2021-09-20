@@ -294,16 +294,17 @@ const onboarding = {
           OFFER_WITHDRAWN,
         } = NEW_PROCESS_STATUS;
 
-        const { processStatus = '', page, limit, name } = payload;
+        const { processStatus = [], page, limit, name } = payload;
         const tenantId = getCurrentTenant();
         const company = getCurrentCompany();
         const req = {
-          processStatus,
+          // processStatus,
           page,
           limit,
           tenantId,
-          name,
+          // name,
           company,
+          ...payload,
         };
         const response = yield call(getOnboardingList, req);
         const { statusCode } = response;
@@ -314,12 +315,12 @@ const onboarding = {
           type: 'saveOnboardingOverview',
           payload: {
             total: response.total,
-            currentStatus: processStatus,
+            currentStatus: processStatus[0],
           },
         });
 
         // Fetch data
-        switch (processStatus) {
+        switch (processStatus[0]) {
           case DRAFT: {
             yield put({
               type: 'saveOnboardingOverview',
@@ -384,6 +385,7 @@ const onboarding = {
             return response;
           }
           default:
+            console.log(returnedData);
             return response;
         }
       } catch (errors) {

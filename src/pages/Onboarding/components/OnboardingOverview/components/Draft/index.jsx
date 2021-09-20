@@ -53,7 +53,7 @@ class Draft extends PureComponent {
       dispatch({
         type: 'onboarding/fetchOnboardList',
         payload: {
-          processStatus: NEW_PROCESS_STATUS.DRAFT,
+          processStatus: [NEW_PROCESS_STATUS.DRAFT],
           name: nameSearch,
         },
       }).then(({ statusCode }) => {
