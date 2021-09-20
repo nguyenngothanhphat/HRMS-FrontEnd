@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable array-callback-return */
 import React, { useState, useEffect } from 'react';
 import { Dropdown, Input, Row, Col } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
@@ -15,11 +17,11 @@ const GlobalSearchNew = (props) => {
   useEffect(() => {
     if (text.length >= 3) {
       dispatch({
-        type: 'searchAdvance/search',
+        type: 'searchAdvance/searchGlobal',
         payload: {
           keySearch: text,
           page: 1,
-          limit: 10,
+          limit: 3,
         },
       });
     }
@@ -36,19 +38,26 @@ const GlobalSearchNew = (props) => {
   const onClose = () => {
     setVisible(false);
   };
+  const onShowMore = (key) => {
+    dispatch({
+      type: 'searchAdvance/save',
+      payload: { keySearch: text, isSearch: true },
+    });
+    onClose();
+    history.push(`/search-result/${key}`);
+  };
+
+  const onAdvancedSearch = () => {
+    onClose();
+    history.push('/search-result/employees/advanced-search');
+  };
   const menu = (
     <div className={styles.resultSearch}>
       {employees.length > 0 && (
         <div className={styles.blog}>
           <div className={styles.blog__title}>
             <div className={styles.type}>Employee</div>
-            <div
-              className={styles.showMore}
-              onClick={() => {
-                onClose();
-                history.push('/search-result/employees');
-              }}
-            >
+            <div className={styles.showMore} onClick={() => onShowMore('employees')}>
               Show more
             </div>
           </div>
@@ -56,9 +65,9 @@ const GlobalSearchNew = (props) => {
             <Row gutter={[24, 24]}>
               {employees.map((item, index) => {
                 const {
-                  titleInfo: { name: title },
+                  titleInfo: { name: title = '' } = {},
                   generalInfo: {
-                    avatar,
+                    avatar = '',
                     userId,
                     workNumber,
                     firstName = '',
@@ -89,13 +98,7 @@ const GlobalSearchNew = (props) => {
         <div className={styles.blog}>
           <div className={styles.blog__title}>
             <div className={styles.type}>Documents</div>
-            <div
-              className={styles.showMore}
-              onClick={() => {
-                onClose();
-                history.push('/search-result/documents');
-              }}
-            >
+            <div className={styles.showMore} onClick={() => onShowMore('documents')}>
               Show more
             </div>
           </div>
@@ -108,13 +111,7 @@ const GlobalSearchNew = (props) => {
         <div className={styles.blog}>
           <div className={styles.blog__title}>
             <div className={styles.type}>Tickets</div>
-            <div
-              className={styles.showMore}
-              onClick={() => {
-                onClose();
-                history.push('/search-result/tickets');
-              }}
-            >
+            <div className={styles.showMore} onClick={() => onShowMore('tickets')}>
               Show more
             </div>
           </div>
@@ -134,7 +131,7 @@ const GlobalSearchNew = (props) => {
         </div>
       )}
       <div className={styles.advancedSearch}>
-        <div className={styles.advancedSearch__text} onClick={onClose}>
+        <div className={styles.advancedSearch__text} onClick={onAdvancedSearch}>
           Advanced Search
         </div>
       </div>
@@ -165,7 +162,7 @@ export default connect(
   ({
     searchAdvance: {
       keySearch,
-      result: { employees, employeeDoc, tickets },
+      globalSearch: { employees, employeeDoc, tickets },
     },
   }) => ({ keySearch, employees, employeeDoc, tickets }),
 )(GlobalSearchNew);

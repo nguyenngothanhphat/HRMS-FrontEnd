@@ -20,3 +20,41 @@ export async function searchTicket(payload) {
     data: payload,
   });
 }
+export async function searchDocument(payload) {
+  return request('/api/searchtenant/docs-advance-search', {
+    method: 'POST',
+    data: payload,
+  });
+}
+// get list dèault
+export async function getListEmployeeType(payload) {
+  return request('/api/employeetype/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getListLocation(payload) {
+  return request('/api/locationtenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getListDepartment(payload) {
+  return request('/api/departmenttenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getListTitle(payload) {
+  return request('/api/titletenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getListTitleByDepartment(payload) {
+  return request('/api/titletenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
