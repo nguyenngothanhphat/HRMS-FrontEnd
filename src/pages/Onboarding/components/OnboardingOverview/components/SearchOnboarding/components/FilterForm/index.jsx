@@ -15,7 +15,7 @@ const { Option } = Select;
 const arrStatus = [
   {
     name: 'All',
-    _id: 'ALL',
+    _id: '',
   },
   {
     name: 'Draft',
@@ -56,9 +56,15 @@ const arrStatus = [
 ];
 
 @connect(
-  ({ onboarding: { searchOnboarding: { jobTitleList = [], locationList = [] } = {} } = {} }) => ({
+  ({
+    onboarding: {
+      searchOnboarding: { jobTitleList = [], locationList = [] } = {},
+      onboardingOverview: { currentStatus = '' } = {},
+    } = {},
+  }) => ({
     jobTitleList,
     locationList,
+    currentStatus,
   }),
 )
 class FilterForm extends Component {
@@ -69,7 +75,7 @@ class FilterForm extends Component {
       durationTo: '', // validate date
       filter: {
         // store data
-        pendingStatus: undefined,
+        processStatus: undefined,
         otherStatus: undefined,
         title: [],
         location: [],
@@ -113,7 +119,7 @@ class FilterForm extends Component {
     // press Clear button
     this.setState({
       filter: {
-        pendingStatus: undefined,
+        processStatus: undefined,
         otherStatus: undefined,
         title: [],
         location: [],
@@ -218,19 +224,36 @@ class FilterForm extends Component {
   };
 
   onFinish = (value) => {
-    const { dispatch } = this.props;
+    const { dispatch, currentStatus = '' } = this.props;
     const payload = { ...value };
     Object.keys(payload).forEach(
       (k) =>
         (payload[k] === null && delete payload[k]) ||
         (payload[k] === undefined && delete payload[k]) ||
-        (payload[k] === '' && delete payload[k]),
+        (payload[k] === '' && delete payload[k]) ||
+        (payload[k] === [] && delete payload[k]),
     );
 
-    dispatch({
-      type: 'onboarding/fetchOnboardList',
-      payload,
-    });
+    if ('processStatus' in payload) {
+      const newProcessStatus = payload.processStatus.filter((status) => status !== '');
+
+      const newPayload = {
+        ...payload,
+        processStatus: newProcessStatus.length === 0 ? '' : payload.processStatus,
+      };
+
+      dispatch({
+        type: 'onboarding/filterOnboardList',
+        payload: newPayload,
+        currentStatus,
+      });
+    } else {
+      dispatch({
+        type: 'onboarding/filterOnboardList',
+        payload,
+        currentStatus,
+      });
+    }
   };
 
   render() {
@@ -241,7 +264,7 @@ class FilterForm extends Component {
     const fieldsArray = [
       {
         label: 'BY PENDING STATUS',
-        name: 'pendingStatus',
+        name: 'processStatus',
         placeholder: 'Select pending status',
         filterOption: 1,
         optionArray: arrStatus,
