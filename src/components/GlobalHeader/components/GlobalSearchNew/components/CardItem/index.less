@@ -1,0 +1,38 @@
+.card {
+  background: #FFFFFF;
+  border: 1px solid #D6DCE0;
+  border-radius: 8px;
+  padding: 12px;
+  width: 100%;
+  min-width: fit-content;
+
+  &__top {
+    display: flex;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #EAECEF;
+    cursor: pointer;
+
+    .title {
+      margin-left: 12px;
+    }
+  }
+
+  &__content {
+    .row {
+      display: flex;
+      align-items: center;
+      margin-top: 12px;
+
+      &__text {
+        color: rgba(0, 0, 0, 0.48);
+        font-size: 12px;
+        padding-left: 10px;
+      }
+
+      &__icon {
+        width: 14px;
+      }
+    }
+  }
+}
