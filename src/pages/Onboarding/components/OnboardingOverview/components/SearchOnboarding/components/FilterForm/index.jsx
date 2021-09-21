@@ -13,10 +13,6 @@ import styles from './index.less';
 
 const { Option } = Select;
 const arrStatus = [
-  // {
-  //   name: 'All',
-  //   _id: '',
-  // },
   {
     label: 'Draft',
     value: NEW_PROCESS_STATUS.DRAFT,
@@ -240,8 +236,6 @@ class FilterForm extends Component {
     const { filter } = this.state;
     let payload = { ...value, ...filter };
 
-    console.log('payload: ', payload);
-
     if (payload.fromDate && payload.toDate) {
       const _fromDate = moment(payload.fromDate).format('YYYY-MM-DD');
       const _toDate = moment(payload.toDate).format('YYYY-MM-DD');
@@ -297,14 +291,14 @@ class FilterForm extends Component {
   };
 
   handleSelect = (value) => {
-    const { filter, checkAll } = this.state;
+    const { filter } = this.state;
     this.setState({
       isFilter: true,
       filter: {
         ...filter,
         processStatus: [...value],
       },
-      checkAll: filter.processStatus?.length === Object.keys(NEW_PROCESS_STATUS).length || checkAll,
+      checkAll: value?.length === Object.keys(NEW_PROCESS_STATUS).length,
     });
   };
 
@@ -355,6 +349,11 @@ class FilterForm extends Component {
                 dropdownRender={this.dropdownRender}
                 value={filter.processStatus}
                 onChange={this.handleSelect}
+                onClear={() =>
+                  this.setState({
+                    checkAll: false,
+                  })
+                }
               >
                 {arrStatus.map((option) => {
                   return (
