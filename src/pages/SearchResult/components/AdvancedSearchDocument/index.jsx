@@ -14,7 +14,6 @@ const AdvancedSearchDocument = (props) => {
         isSearch: true,
         isSearchAdvance: true,
         documentAdvance: { ...obj },
-        keySearch: '',
       },
     });
     history.push('/search-result/documents');

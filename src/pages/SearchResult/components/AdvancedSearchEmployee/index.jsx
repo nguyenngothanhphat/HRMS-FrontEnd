@@ -17,14 +17,12 @@ const AdvancedSearchEmployee = (props) => {
   }, []);
 
   const onFinish = (obj) => {
-    console.log('obj', obj);
     dispatch({
       type: 'searchAdvance/save',
       payload: {
         isSearch: true,
         isSearchAdvance: true,
         employeeAdvance: { ...obj },
-        keySearch: '',
       },
     });
     history.push('/search-result/employees');

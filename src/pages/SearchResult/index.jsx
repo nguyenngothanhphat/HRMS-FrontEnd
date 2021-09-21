@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Tabs } from 'antd';
 import { history, connect } from 'umi';
+import { includes } from 'lodash';
 import styles from './index.less';
 import EmployeeResult from './components/EmployeesResult/index';
 import DocumentResult from './components/DocumentResult/index';
@@ -30,6 +31,12 @@ const SearchResult = React.memo((props) => {
       history.push(`/search-result/${key}/advanced-search`);
     }
   };
+  const findRole = (roles) => {
+    return includes(roles, 'hr-manager') || includes(roles, 'hr');
+  };
+  const listRole = localStorage.getItem('antd-pro-authority');
+  const roleHR = findRole(JSON.parse(listRole));
+
   return (
     <PageContainer>
       <div className={styles.root}>
@@ -38,9 +45,11 @@ const SearchResult = React.memo((props) => {
             <TabPane tab="Employees" key="employees">
               {!advanced ? <EmployeeResult tabName="employees" /> : <AdvancedSearchEmployee />}
             </TabPane>
-            <TabPane tab="Documents" key="documents">
-              {!advanced ? <DocumentResult tabName="documents" /> : <AdvancedSearchDocument />}
-            </TabPane>
+            {roleHR && (
+              <TabPane tab="Documents" key="documents">
+                {!advanced ? <DocumentResult tabName="documents" /> : <AdvancedSearchDocument />}
+              </TabPane>
+            )}
             <TabPane tab="Tickets" key="tickets">
               {!advanced ? <TicketResult tabName="tickets" /> : <AdvancedSearchTicket />}
             </TabPane>

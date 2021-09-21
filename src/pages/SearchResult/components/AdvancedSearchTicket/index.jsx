@@ -15,7 +15,6 @@ const AdvancedSearchTicket = (props) => {
         isSearch: true,
         isSearchAdvance: true,
         ticketAdvance: { ...obj },
-        keySearch: '',
       },
     });
     history.push('/search-result/tickets');
