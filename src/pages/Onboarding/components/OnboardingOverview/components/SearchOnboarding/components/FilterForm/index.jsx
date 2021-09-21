@@ -13,10 +13,10 @@ import styles from './index.less';
 
 const { Option } = Select;
 const arrStatus = [
-  {
-    name: 'All',
-    _id: '',
-  },
+  // {
+  //   name: 'All',
+  //   _id: '',
+  // },
   {
     name: 'Draft',
     _id: NEW_PROCESS_STATUS.DRAFT,
@@ -237,56 +237,24 @@ class FilterForm extends Component {
 
   onFinish = (value) => {
     const { dispatch, currentStatus = '' } = this.props;
-    const payload = { ...value };
-    const _processStatus = payload.processStatus || [];
-    const checkEmpty = isEmpty(_processStatus);
-
-    const newProcessStatus = !checkEmpty
-      ? _processStatus.filter((status) => status !== '')
-      : undefined;
+    let payload = { ...value };
 
     if (payload.fromDate && payload.toDate) {
       const _fromDate = moment(payload.fromDate).format('YYYY-MM-DD');
       const _toDate = moment(payload.toDate).format('YYYY-MM-DD');
 
-      let newPayload = {};
-
-      if (!checkEmpty) {
-        newPayload = {
-          ...payload,
-          processStatus: newProcessStatus.length === 0 ? '' : payload.processStatus,
-          fromDate: _fromDate,
-          toDate: _toDate,
-        };
-      } else {
-        newPayload = {
-          ...payload,
-          fromDate: _fromDate,
-          toDate: _toDate,
-        };
-      }
-
-      console.log(newPayload);
-      console.log('if');
-      dispatch({
-        type: 'onboarding/filterOnboardList',
-        payload: newPayload,
-        currentStatus,
-      });
-    } else {
-      const newPayload = {
+      payload = {
         ...payload,
-        processStatus: newProcessStatus.length === 0 ? '' : payload.processStatus,
+        fromDate: _fromDate,
+        toDate: _toDate,
       };
-
-      console.log(newPayload);
-      console.log('else');
-      dispatch({
-        type: 'onboarding/filterOnboardList',
-        payload: newPayload,
-        currentStatus,
-      });
     }
+
+    dispatch({
+      type: 'onboarding/filterOnboardList',
+      payload,
+      currentStatus,
+    });
   };
 
   render() {
@@ -334,6 +302,7 @@ class FilterForm extends Component {
                   allowClear
                   showArrow
                   showSearch
+                  value={['DRAFT', 'DOCUMENT_VERIFICATION']}
                   filterOption={(input, option) => {
                     if (field.filterOption === 2) {
                       const arrChild = option.props.children[1];
