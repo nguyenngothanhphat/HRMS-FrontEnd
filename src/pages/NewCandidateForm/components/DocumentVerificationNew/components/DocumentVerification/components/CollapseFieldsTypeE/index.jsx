@@ -12,20 +12,35 @@ const { Panel } = Collapse;
   newCandidateForm,
 }))
 class CollapseFieldsType2 extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      indeterminate: true,
+      checkAll: false,
+    };
+  }
+
+  onCheckAllChange = (e) => {
+    e.stopPropagation();
+    this.setState({
+      indeterminate: false,
+      checkAll: e.target.checked,
+    });
+  };
+
   renderHeader = () => {
     const { disabled = false, previousEmployment = [] } = this.props;
     const title =
       previousEmployment.length > 0
         ? `Type ${previousEmployment[0].type}: ${previousEmployment[0].name}`
         : 'Type E: Previous Employment';
-    // const { indeterminate, checkAll } = this.state;
+    const { indeterminate, checkAll } = this.state;
     return (
       <div className={styles.header}>
         <Checkbox
-          // checked={checkAll}
-          // indeterminate={indeterminate}
-          // onClick={(e) => this.onCheckAllChange(e)}
-          checked={false}
+          checked={checkAll}
+          indeterminate={indeterminate}
+          onClick={(e) => this.onCheckAllChange(e)}
           disabled={disabled}
         />
         <span className={styles.titleText}>{title}</span>
