@@ -120,7 +120,7 @@ class Grade extends PureComponent {
     const { modalVisible, selectedGradeID } = this.state;
     const { listGrades = [], loadingfetchGradeList = false } = this.props;
     return (
-      <div className={styles.Grade}>
+      <div className={styles.Grade} style={listGrades.length === 0 ? {} : { paddingBottom: '0' }}>
         {this.renderHeader()}
         <CommonTable
           loading={loadingfetchGradeList}
