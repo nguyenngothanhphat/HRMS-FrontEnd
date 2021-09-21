@@ -51,11 +51,11 @@ const MENU_DATA = [
   },
   {
     id: 5,
-    name: 'Salary Negotiation',
+    name: 'Salary Proposal',
     key: 'salaryNegotiation',
     component: 'SalaryNegotiation',
     quantity: 0,
-    link: 'salary-negotiation',
+    link: 'salary-proposal',
   },
   {
     id: 6,

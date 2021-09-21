@@ -31,7 +31,7 @@ const pendingTaskDefault = [
   },
   {
     id: CANDIDATE_TASK_LINK.SALARY_NEGOTIATION,
-    name: 'Salary Negotiation',
+    name: 'Salary Proposal',
     dueDate: '',
     link: CANDIDATE_TASK_LINK.SALARY_NEGOTIATION,
     status: CANDIDATE_TASK_STATUS.UPCOMING,
