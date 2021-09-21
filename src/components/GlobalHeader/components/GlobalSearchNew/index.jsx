@@ -10,7 +10,7 @@ import Documents from './components/Documents';
 import Ticket from './components/Ticket';
 
 const GlobalSearchNew = (props) => {
-  const { dispatch, employees, employeeDoc, tickets } = props;
+  const { dispatch, employees, employeeDoc, tickets, keySearch } = props;
   const [visible, setVisible] = useState(false);
   const [text, setText] = useState('');
 
@@ -150,6 +150,7 @@ const GlobalSearchNew = (props) => {
       >
         <Input
           placeholder="Search"
+          defaultValue={keySearch}
           value={text}
           prefix={<SearchOutlined />}
           onChange={changeInput}

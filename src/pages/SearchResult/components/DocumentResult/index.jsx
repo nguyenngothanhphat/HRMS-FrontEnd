@@ -1,7 +1,11 @@
+/* eslint-disable react/destructuring-assignment */
 import React, { useEffect, useState } from 'react';
 import filterIcon from '@/assets/offboarding-filter.svg';
 import { Table } from 'antd';
 import { formatMessage, connect, history } from 'umi';
+import iconPDF from '@/assets/pdf-2.svg';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
+import moment from 'moment';
 import styles from '../../index.less';
 
 const DocumentResult = React.memo((props) => {
@@ -12,14 +16,21 @@ const DocumentResult = React.memo((props) => {
     isSearch,
     documnetAdvance,
     documentList,
+    isSearchAdvance,
     totalDocuments,
     loadTableData2,
+    tabName,
   } = props;
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   useEffect(() => {
-    if (isSearch) {
-      if (keySearch) {
+    if (isSearch && tabName === 'documents') {
+      if (isSearchAdvance) {
+        dispatch({
+          type: 'searchAdvance/searchDocument',
+          payload: { page, limit, ...documnetAdvance },
+        });
+      } else if (keySearch) {
         dispatch({
           type: 'searchAdvance/searchGlobalByType',
           payload: {
@@ -29,48 +40,62 @@ const DocumentResult = React.memo((props) => {
             limit,
           },
         });
-      } else {
-        dispatch({
-          type: 'searchAdvance/searchDocument',
-          payload: { page, limit, ...documnetAdvance },
-        });
       }
     }
   }, [isSearch]);
 
+  const dateFormat = 'DD.MM.YY';
+  const [visable, setVisiable] = useState(false);
+  const [urlDocument, setUrlDocument] = useState('');
+  const [displayDocumentName, setDisplayDocumentName] = useState('');
+  const viewDocument = (document) => {
+    const { name: attachmentName = '', url: attachmentUrl = '' } = document;
+    setVisiable(true);
+    setUrlDocument(attachmentUrl);
+    setDisplayDocumentName(attachmentName);
+  };
+
   const clickFilter = () => {
-    dispatch({
-      type: 'searchAdvance/save',
-      payload: { isSearchAdvance: true },
-    });
     history.push('documents/advanced-search');
   };
 
   const columns = [
     {
       title: 'Document',
-      dataIndex: 'documnet',
+      dataIndex: 'key',
       key: 'name',
+      width: 400,
+      fixed: 'left',
+      render: (key, record) => (
+        <div className={styles.document} onClick={() => viewDocument(record.attachment)}>
+          <div className={styles.text}>{key}</div>
+          <img alt="pdf-img" src={iconPDF} />
+        </div>
+      ),
     },
     {
       title: 'Owner',
-      dataIndex: 'createdBy',
-      key: 'createdBy',
+      dataIndex: 'ownerInfo',
+      key: 'ownerInfo',
+      render: (ownerInfo) => <div>{ownerInfo.name}</div>,
     },
     {
       title: 'Created On',
-      dataIndex: 'createdOn',
-      key: 'createdOn',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (createdAt) => <div>{moment(createdAt).format(dateFormat)}</div>,
     },
     {
       title: 'Last Modified On',
-      dataIndex: 'lastModifiedOn',
-      key: 'lastModifiedOn',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      render: (updatedAt) => <div>{moment(updatedAt).format(dateFormat)}</div>,
     },
     {
       title: 'Last Modified By',
-      dataIndex: 'lastModifiedBy',
-      key: 'lastModifiedBy',
+      dataIndex: 'ownerInfo',
+      key: 'ownerInfo',
+      render: (ownerInfo) => <div>{ownerInfo.name}</div>,
     },
   ];
 
@@ -110,6 +135,12 @@ const DocumentResult = React.memo((props) => {
           loading={loadTableData || loadTableData2}
         />
       </div>
+      <ViewDocumentModal
+        visible={visable}
+        fileName={displayDocumentName}
+        url={urlDocument}
+        onClose={() => setVisiable(false)}
+      />
     </div>
   );
 });
@@ -121,7 +152,7 @@ export default connect(
       isSearch,
       isSearchAdvance,
       documnetAdvance,
-      globalSearchAdvance: { employees: documentList, totalDocuments },
+      globalSearchAdvance: { employeeDoc: documentList, totalDocuments },
     },
   }) => ({
     loadTableData: loading.effects['searchAdvance/searchDocument'],

@@ -10,34 +10,33 @@ const EmployeeResult = React.memo((props) => {
     loadTableData,
     dispatch,
     isSearch,
+    isSearchAdvance,
     employeeAdvance,
     employeeList,
     totalEmployees,
     loadTableData2,
+    tabName,
   } = props;
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   useEffect(() => {
-    if (isSearch) {
-      if (keySearch) {
+    if (isSearch && tabName === 'employees') {
+      if (isSearchAdvance) {
+        dispatch({
+          type: 'searchAdvance/searchEmployee',
+          payload: { ...employeeAdvance },
+        });
+      } else if (keySearch) {
         dispatch({
           type: 'searchAdvance/searchGlobalByType',
           payload: {
             keySearch,
             searchType: 'EMPLOYEE',
-            page,
-            limit,
           },
-        });
-      } else {
-        dispatch({
-          type: 'searchAdvance/searchEmployee',
-          payload: { page, limit, ...employeeAdvance },
         });
       }
     }
-  }, [isSearch, page, limit]);
-  console.log('employeeList', employeeList);
+  }, [isSearch]);
   const clickFilter = () => {
     history.push('employees/advanced-search');
   };
@@ -159,10 +158,6 @@ const EmployeeResult = React.memo((props) => {
     pageSize: limit,
     current: page,
     onChange: (nextPage, pageSize) => {
-      dispatch({
-        type: 'searchAdvance/save',
-        payload: { isSearch: true },
-      });
       setPage(nextPage);
       setLimit(pageSize);
     },

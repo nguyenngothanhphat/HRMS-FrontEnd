@@ -1,6 +1,7 @@
 import React from 'react';
-import { Input, Form, Button } from 'antd';
+import { Input, Form, Button, Select, DatePicker } from 'antd';
 import { connect, history } from 'umi';
+import { LIST_TYPE_TICKET, LIST_STATUS_TICKET } from '@/utils/globalSearch';
 import styles from '../../index.less';
 
 const AdvancedSearchTicket = (props) => {
@@ -8,18 +9,18 @@ const AdvancedSearchTicket = (props) => {
   const [form] = Form.useForm();
 
   const onFinish = (obj) => {
-    console.log('obj', obj);
     dispatch({
       type: 'searchAdvance/save',
       payload: {
         isSearch: true,
+        isSearchAdvance: true,
         ticketAdvance: { ...obj },
         keySearch: '',
       },
     });
     history.push('/search-result/tickets');
   };
-
+  const dateFormat = 'DD/MM/YYYY';
   return (
     <Form
       form={form}
@@ -37,14 +38,20 @@ const AdvancedSearchTicket = (props) => {
         </div>
         <div className={styles.containFilter}>
           <div className={styles.filterItem}>
-            <Form.Item name="ticketId" label="Ticket ID">
+            <Form.Item name="ticketID" label="Ticket ID">
               <Input placeholder="Enter ticket ID" />
             </Form.Item>
             <Form.Item name="assignedTo" label="Assigned To">
               <Input placeholder="Enter assigned to" />
             </Form.Item>
             <Form.Item name="status" label="Status">
-              <Input placeholder="Enter Status" />
+              <Select placeholder="Enter Status">
+                {LIST_STATUS_TICKET.map((item) => (
+                  <Select.Option value={item.key} key={item.key}>
+                    {item.value}
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
           </div>
 
@@ -53,7 +60,13 @@ const AdvancedSearchTicket = (props) => {
               <Input placeholder="Enter employee name" />
             </Form.Item>
             <Form.Item name="ticketType" label="Ticket Type">
-              <Input placeholder="Enter ticket type" />
+              <Select placeholder="Enter Status">
+                {LIST_TYPE_TICKET.map((item) => (
+                  <Select.Option value={item.key} key={item.key}>
+                    {item.value}
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
             <Form.Item name="resolvedBy" label="Resolved By">
               <Input placeholder="Enter resolved by" />
@@ -64,7 +77,7 @@ const AdvancedSearchTicket = (props) => {
               <Input placeholder="Enter created by" />
             </Form.Item>
             <Form.Item name="createdOn" label="Created On">
-              <Input placeholder="Enter created On" />
+              <DatePicker placeholder="Enter created On" format={dateFormat} />
             </Form.Item>
           </div>
         </div>

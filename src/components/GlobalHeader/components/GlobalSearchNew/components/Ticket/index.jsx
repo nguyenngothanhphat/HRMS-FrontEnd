@@ -16,6 +16,9 @@ const Ticket = (props) => {
       case 'Compoff Request':
         path = `/time-off/overview/manager-timeoff/view/${id}`;
         break;
+      case 'Onboarding Ticket':
+        path = `/onboarding/list/view/${id}`;
+        break;
       default:
         break;
     }

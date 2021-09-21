@@ -11,6 +11,7 @@ const TicketResult = React.memo((props) => {
     dispatch,
     isSearch,
     ticketAdvance,
+    isSearchAdvance,
     ticketList,
     totalTickets,
     loadTableData2,
@@ -19,18 +20,18 @@ const TicketResult = React.memo((props) => {
   const [limit, setLimit] = useState(10);
   useEffect(() => {
     if (isSearch) {
-      if (keySearch) {
+      if (isSearchAdvance) {
+        dispatch({
+          type: 'searchAdvance/searchTicket',
+          payload: { ...ticketAdvance },
+        });
+      } else if (keySearch) {
         dispatch({
           type: 'searchAdvance/searchGlobalByType',
           payload: {
             keySearch,
             searchType: 'TICKET',
           },
-        });
-      } else {
-        dispatch({
-          type: 'searchAdvance/searchTicket',
-          payload: { ...ticketAdvance },
         });
       }
     }
@@ -39,24 +40,49 @@ const TicketResult = React.memo((props) => {
   const clickFilter = () => {
     history.push('tickets/advanced-search');
   };
-
+  const onClickTicket = (record) => {
+    const { id = '', title = '' } = record;
+    let path = '';
+    switch (title) {
+      case 'Offboarding Request':
+        path = `/offboarding/list/review/${id}`;
+        break;
+      case 'Leave Request':
+      case 'Compoff Request':
+        path = `/time-off/overview/manager-timeoff/view/${id}`;
+        break;
+      case 'Onboarding Ticket':
+        path = `/onboarding/list/view/${id}`;
+        break;
+      default:
+        break;
+    }
+    history.push(path);
+  };
   const columns = [
     {
       title: 'Ticket ID',
       dataIndex: 'ticketID',
       key: 'ticketId',
-      render: (ticketID) => <div className={styles.blueText}>{ticketID}</div>,
+      width: 200,
+      render: (ticketID, record) => (
+        <div className={styles.blueText} onClick={() => onClickTicket(record)}>
+          {ticketID}
+        </div>
+      ),
     },
     {
       title: 'Type',
       dataIndex: 'title',
       key: 'title',
+      width: 300,
       render: (title) => <div>{title}</div>,
     },
     {
       title: 'Employee',
       dataIndex: 'employee',
       key: 'employee',
+      width: 300,
       render: (employee) => {
         if (employee) {
           const {
@@ -72,6 +98,7 @@ const TicketResult = React.memo((props) => {
       title: 'Assignee To',
       dataIndex: 'assignee',
       key: 'assignee',
+      width: 300,
       render: (assignee) => {
         if (assignee) {
           const {
@@ -109,10 +136,6 @@ const TicketResult = React.memo((props) => {
     pageSize: limit,
     current: page,
     onChange: (nextPage, pageSize) => {
-      // dispatch({
-      //   type: 'searchAdvance/save',
-      //   payload: { isSearch: true },
-      // });
       setPage(nextPage);
       setLimit(pageSize);
     },

@@ -20,11 +20,15 @@ const SearchResult = React.memo((props) => {
     }
   }, []);
   const changeTab = (key) => {
-    dispatch({
-      type: 'searchAdvance/save',
-      payload: { isSearch: true },
-    });
-    history.push(`/search-result/${key}`);
+    if (!advanced) {
+      dispatch({
+        type: 'searchAdvance/save',
+        // payload: { isSearch: true },
+      });
+      history.push(`/search-result/${key}`);
+    } else {
+      history.push(`/search-result/${key}/advanced-search`);
+    }
   };
   return (
     <PageContainer>
@@ -32,13 +36,13 @@ const SearchResult = React.memo((props) => {
         <div className={styles.tabs}>
           <Tabs activeKey={tabName} onChange={changeTab}>
             <TabPane tab="Employees" key="employees">
-              {!advanced ? <EmployeeResult /> : <AdvancedSearchEmployee />}
+              {!advanced ? <EmployeeResult tabName="employees" /> : <AdvancedSearchEmployee />}
             </TabPane>
             <TabPane tab="Documents" key="documents">
-              {!advanced ? <DocumentResult /> : <AdvancedSearchDocument />}
+              {!advanced ? <DocumentResult tabName="documents" /> : <AdvancedSearchDocument />}
             </TabPane>
             <TabPane tab="Tickets" key="tickets">
-              {!advanced ? <TicketResult /> : <AdvancedSearchTicket />}
+              {!advanced ? <TicketResult tabName="tickets" /> : <AdvancedSearchTicket />}
             </TabPane>
           </Tabs>
         </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Form, Button } from 'antd';
+import { Input, Form, Button, Select, DatePicker } from 'antd';
 import { connect, history } from 'umi';
 import styles from '../../index.less';
 
@@ -12,13 +12,14 @@ const AdvancedSearchDocument = (props) => {
       type: 'searchAdvance/save',
       payload: {
         isSearch: true,
+        isSearchAdvance: true,
         documentAdvance: { ...obj },
         keySearch: '',
       },
     });
     history.push('/search-result/documents');
   };
-
+  const dateFormat = 'DD/MM/YY';
   return (
     <Form
       form={form}
@@ -49,10 +50,12 @@ const AdvancedSearchDocument = (props) => {
 
           <div className={styles.filterItem}>
             <Form.Item name="documentType" label="Document Type">
-              <Input placeholder="Enter document type" />
+              <Select placeholder="Enter document type">
+                <Select.Option value="ON_BOARDING">ON BOARDING</Select.Option>
+              </Select>
             </Form.Item>
             <Form.Item name="createdOn" label="Created On">
-              <Input placeholder="Enter created on" />
+              <DatePicker placeholder="Enter created on" format={dateFormat} />
             </Form.Item>
           </div>
           <div className={styles.filterItem}>
@@ -60,7 +63,7 @@ const AdvancedSearchDocument = (props) => {
               <Input placeholder="Enter document owner" />
             </Form.Item>
             <Form.Item name="modifiedOn" label="Modified On">
-              <Input placeholder="Enter modified on" />
+              <DatePicker placeholder="Enter modified on" format={dateFormat} />
             </Form.Item>
           </div>
         </div>

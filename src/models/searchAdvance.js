@@ -4,6 +4,11 @@ import {
   searchEmployee,
   searchTicket,
   searchDocument,
+  getTitleByCompany,
+  getTitleByDepartment,
+  getListDepartment,
+  getListLocation,
+  getListEmployeeType,
 } from '../services/searchAdvance';
 import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
 
@@ -46,8 +51,8 @@ export default {
       createdBy: '',
       createdOn: '',
       assignedTo: '',
-      ticketType: '',
-      status: '',
+      ticketType: null,
+      status: null,
       resolvedBy: '',
     },
     documentAdvance: {
@@ -166,17 +171,52 @@ export default {
         onBoardingTickets.forEach((item) =>
           tickets.push({ ...item, id: item._id, title: 'Onboarding Ticket' }),
         );
+        const { searchType = '' } = payload;
+        switch (searchType) {
+          case 'EMPLOYEE':
+            yield put({
+              type: 'saveSearchAdvance',
+              payload: {
+                employees,
+                totalEmployees,
+              },
+            });
+            break;
+          case 'DOCUMENT':
+            yield put({
+              type: 'saveSearchAdvance',
+              payload: {
+                employeeDoc,
+                totalDocs,
+              },
+            });
+            break;
+          case 'TICKET':
+            yield put({
+              type: 'saveSearchAdvance',
+              payload: {
+                tickets,
+                totalTickets,
+              },
+            });
+            break;
+          default:
+            yield put({
+              type: 'saveSearchAdvance',
+              payload: {
+                employees,
+                employeeDoc,
+                tickets,
+                totalDocs,
+                totalEmployees,
+                totalTickets,
+              },
+            });
+            break;
+        }
         yield put({
           type: 'save',
           payload: {
-            globalSearchAdvance: {
-              employees,
-              employeeDoc,
-              tickets,
-              totalDocs,
-              totalEmployees,
-              totalTickets,
-            },
             isSearch: false,
           },
         });
@@ -200,6 +240,13 @@ export default {
             totalEmployees: total,
           },
         });
+        yield put({
+          type: 'save',
+          payload: {
+            isSearch: false,
+            isSearchAdvance: false,
+          },
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -211,13 +258,40 @@ export default {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data, total } = response;
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
+        const {
+          compoffTickets = [],
+          leaveReqTickets = [],
+          offBoardingTickets = [],
+          onBoardingTickets = [],
+          totalTickets = 0,
+        } = data;
+        const tickets = [];
+        compoffTickets.forEach((item) =>
+          tickets.push({ ...item, id: item._id, title: 'Compoff Request' }),
+        );
+        leaveReqTickets.forEach((item) =>
+          tickets.push({ ...item, id: item._id, title: 'Leave Request' }),
+        );
+        offBoardingTickets.forEach((item) =>
+          tickets.push({ ...item, id: item._id, title: 'Offboarding Request' }),
+        );
+        onBoardingTickets.forEach((item) =>
+          tickets.push({ ...item, id: item._id, title: 'Onboarding Ticket' }),
+        );
         yield put({
           type: 'saveSearchAdvance',
           payload: {
-            tickets: data,
-            totalTickets: total,
+            tickets,
+            totalTickets,
+          },
+        });
+        yield put({
+          type: 'save',
+          payload: {
+            isSearch: false,
+            isSearchAdvance: false,
           },
         });
       } catch (errors) {
@@ -238,6 +312,108 @@ export default {
           payload: {
             employeeDoc: data,
             totalDocs: total,
+          },
+        });
+        yield put({
+          type: 'save',
+          payload: {
+            isSearch: false,
+            isSearchAdvance: false,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getTitleByCompany({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getTitleByCompany, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveDefaultList',
+          payload: {
+            listTitle: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getTitleByDepartment({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getTitleByDepartment, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveDefaultList',
+          payload: {
+            listTitle: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getListDepartment({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getListDepartment, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveDefaultList',
+          payload: {
+            listDepartment: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getListLocation({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getListLocation, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveDefaultList',
+          payload: {
+            listLocation: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getListEmployeeType({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getListEmployeeType, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveDefaultList',
+          payload: {
+            listEmployeeType: data,
           },
         });
       } catch (errors) {

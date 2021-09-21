@@ -46,14 +46,14 @@ export async function getListDepartment(payload) {
     data: payload,
   });
 }
-export async function getListTitle(payload) {
-  return request('/api/titletenant/list', {
+export async function getTitleByCompany(payload) {
+  return request('/api/titletenant/list-by-company', {
     method: 'POST',
     data: payload,
   });
 }
-export async function getListTitleByDepartment(payload) {
-  return request('/api/titletenant/list', {
+export async function getTitleByDepartment(payload) {
+  return request('/api/titletenant/list-by-department', {
     method: 'POST',
     data: payload,
   });
