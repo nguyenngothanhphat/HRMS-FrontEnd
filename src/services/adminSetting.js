@@ -1,7 +1,14 @@
 import request from '@/utils/request';
 
-export async function getListRoles(payload) {
+export async function getRoleList(payload) {
   return request('/api/roletenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getPermissionList(payload) {
+  return request('/api/permission/list', {
     method: 'POST',
     data: payload,
   });
@@ -46,21 +53,21 @@ export async function getListPermissionOfRole(payload) {
     data: payload,
   });
 }
-export async function updateRoleWithPermission(payload) {
+export async function updateRole(payload) {
   return request('/api/roletenant/update', {
     method: 'POST',
     data: payload,
   });
 }
 
-export async function getPermissionByIdRole(payload) {
+export async function getRoleByID(payload) {
   return request('/api/roletenant/get-by-id', {
     method: 'POST',
     data: payload,
   });
 }
 
-export async function DepartmentFilter(payload) {
+export async function getListDepartments(payload) {
   return request('/api/departmenttenant/list', {
     method: 'POST',
     data: payload,
@@ -74,6 +81,20 @@ export async function addPosition(payload) {
   });
 }
 
+export async function updatePosition(payload) {
+  return request('/api/titletenant/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getPositionByID(payload) {
+  return request('/api/titletenant/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function addDepartment(payload) {
   return request('/api/departmenttenant/add', {
     method: 'POST',
@@ -81,8 +102,22 @@ export async function addDepartment(payload) {
   });
 }
 
+export async function getDepartmentByID(payload) {
+  return request('/api/departmenttenant/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function removeDepartment(payload) {
   return request('/api/departmenttenant/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateDepartment(payload) {
+  return request('/api/departmenttenant/update', {
     method: 'POST',
     data: payload,
   });
@@ -98,5 +133,49 @@ export async function getRolesByCompany(payload) {
 export async function setupComplete() {
   return request('/api/company/setup-complete', {
     method: 'POST',
+  });
+}
+
+// get list employee
+export async function getEmployeeList(payload) {
+  return request('/api/employeetenant/list-by-single-company', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+// grades
+export async function getListGrade(payload) {
+  return request('/api/gradetenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function addGrade(payload) {
+  return request('/api/gradetenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateGrade(payload) {
+  return request('/api/gradetenant/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function removeGrade(payload) {
+  return request('/api/gradetenant/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getGradeByID(payload) {
+  return request('/api/gradetenant/get-by-id', {
+    method: 'POST',
+    data: payload,
   });
 }
