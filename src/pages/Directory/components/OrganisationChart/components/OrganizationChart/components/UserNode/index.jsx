@@ -28,6 +28,7 @@ class UserNode extends Component {
 
     const isActive = itemSelected === idUser;
     const isCurrentUser = idUser === idCurrentUser;
+    const listActiveEmployee = listEmployees.filter((item) => item.status === 'ACTIVE');
 
     const className = isActive ? styles.selectNode : styles.node;
     const className2 = isCurrentUser ? styles.currentUserNode : styles.userNode;
@@ -46,8 +47,8 @@ class UserNode extends Component {
               }
             >
               {isCollapsedChild
-                ? `- ${listEmployees.length} reportees`
-                : `+ ${listEmployees.length} reportees`}
+                ? `- ${listActiveEmployee.length} reportees`
+                : `+ ${listActiveEmployee.length} reportees`}
             </div>
             {isCurrentUser ? <div className={styles.node__bottom_you}>You</div> : null}
           </div>

@@ -30,6 +30,7 @@ import {
   getListCandidate,
   getReporteesList,
   getDocumentSettingList,
+  getListBenefit,
 } from '@/services/newCandidateForm';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
@@ -216,6 +217,7 @@ const defaultState = {
       settings: [],
       // title: '',
     },
+    benefits: [],
   },
   data: {
     firstName: null,
@@ -1614,6 +1616,23 @@ const newCandidateForm = {
         });
       } catch (errors) {
         dialog(errors);
+      }
+    },
+    *fetchListBenefit({ payload: { country = '' } = {} }, { call, put }) {
+      try {
+        const payload = {
+          country,
+          tenantId: getCurrentTenant(),
+        };
+        const response = yield call(getListBenefit, payload);
+        const { statusCode, data: benefits = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveTemp', payload: { benefits } });
+        yield put({ type: 'saveOrigin', payload: { benefits } });
+        return benefits;
+      } catch (errors) {
+        dialog(errors);
+        return {};
       }
     },
   },

@@ -18,30 +18,87 @@ const pendingTaskDefault = [
   {
     id: CANDIDATE_TASK_LINK.REVIEW_PROFILE,
     name: 'Review Profile',
-    dueDate: '-',
+    dueDate: '',
     link: CANDIDATE_TASK_LINK.REVIEW_PROFILE,
     status: CANDIDATE_TASK_STATUS.UPCOMING,
   },
   {
     id: CANDIDATE_TASK_LINK.UPLOAD_DOCUMENTS,
     name: 'Upload Documents',
-    dueDate: '-',
+    dueDate: '',
     link: CANDIDATE_TASK_LINK.UPLOAD_DOCUMENTS,
     status: CANDIDATE_TASK_STATUS.UPCOMING,
   },
   {
     id: CANDIDATE_TASK_LINK.SALARY_NEGOTIATION,
     name: 'Salary Negotiation',
-    dueDate: '-',
+    dueDate: '',
     link: CANDIDATE_TASK_LINK.SALARY_NEGOTIATION,
     status: CANDIDATE_TASK_STATUS.UPCOMING,
   },
   {
     id: CANDIDATE_TASK_LINK.ACCEPT_OFFER,
     name: 'Accept Offer',
-    dueDate: '-',
+    dueDate: '',
     link: CANDIDATE_TASK_LINK.ACCEPT_OFFER,
     status: CANDIDATE_TASK_STATUS.UPCOMING,
+  },
+];
+
+const steps = [
+  {
+    content: `Once documents are uploaded, you will have a formal induction to start off.`,
+  },
+  {
+    content: `This will be followed by a 1-1 call with the UX Design Lead and your Manager.`,
+  },
+  {
+    content: `You will then have an Introduction call with your team. This would be with the UX team.`,
+  },
+  {
+    content: `This will be followed by a 1-1 call with the UX Design Lead and your Manager.`,
+  },
+  {
+    content: `You will then have an Introduction call with your team. This would be with the UX team.`,
+  },
+];
+
+const events = [
+  {
+    content: `HR Induction 4PM @ Thursday July 05, 2021
+4PM - 5PM (IST)`,
+  },
+  {
+    content: `Welcome to the Pop Tribe 2:30PM @ Friday
+July 06, 2021 2:30 - 3:30 (IST)`,
+  },
+  {
+    content: `Game session with Lollypop Tribe 6PM @ Friday
+July 06, 2021 6PM - 7PM (IST)`,
+  },
+  {
+    content: `HR Induction 4PM @ Thursday July 05, 2021
+4PM - 5PM (IST)`,
+  },
+  {
+    content: `Welcome to the Pop Tribe 2:30PM @ Friday
+July 06, 2021 2:30 - 3:30 (IST)`,
+  },
+  {
+    content: `Game session with Lollypop Tribe 6PM @ Friday
+July 06, 2021 6PM - 7PM (IST)`,
+  },
+  {
+    content: `HR Induction 4PM @ Thursday July 05, 2021
+4PM - 5PM (IST)`,
+  },
+  {
+    content: `Welcome to the Pop Tribe 2:30PM @ Friday
+July 06, 2021 2:30 - 3:30 (IST)`,
+  },
+  {
+    content: `Game session with Lollypop Tribe 6PM @ Friday
+July 06, 2021 6PM - 7PM (IST)`,
   },
 ];
 
@@ -128,6 +185,8 @@ const candidatePortal = {
     isCandidateAcceptDOJ: true,
     // pending tasks
     pendingTasks: [],
+    nextSteps: steps,
+    upcomingEvents: events,
   },
   effects: {
     *fetchCandidateById({ payload }, { call, put }) {
@@ -316,14 +375,18 @@ const candidatePortal = {
           isVerifiedBasicInfo,
           salaryStructure: { status: salaryStatus = '', settings: salarySettings } = {},
           // isAcceptedJoiningDate,
+          sentDate = '',
         } = data || {};
 
+        const dueDate = sentDate ? moment(sentDate).add(5, 'days') : '-';
         switch (processStatus) {
           case NEW_PROCESS_STATUS.PROFILE_VERIFICATION:
             // review profile
             tempPendingTasks[0].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+            tempPendingTasks[0].dueDate = dueDate;
             // uploading documents
             tempPendingTasks[1].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+            tempPendingTasks[1].dueDate = dueDate;
 
             if (isVerifiedJobDetail && isVerifiedBasicInfo) {
               // review profile
@@ -340,6 +403,7 @@ const candidatePortal = {
               if (checkDocumentResubmit) {
                 tempPendingTasks[1].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
                 tempPendingTasks[1].name = 'Resubmit Documents';
+                tempPendingTasks[1].dueDate = dueDate;
               }
             } else {
               // uploading documents
@@ -351,12 +415,13 @@ const candidatePortal = {
             if (['IN-PROGRESS'].includes(salaryStatus) && salarySettings.length) {
               // salary structure
               tempPendingTasks[2].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+              tempPendingTasks[2].dueDate = dueDate;
             }
             break;
 
           case NEW_PROCESS_STATUS.OFFER_RELEASED:
-          case NEW_PROCESS_STATUS.OFFER_ACCEPTED:
-          case NEW_PROCESS_STATUS.OFFER_REJECTED:
+            // case NEW_PROCESS_STATUS.OFFER_ACCEPTED:
+            // case NEW_PROCESS_STATUS.OFFER_REJECTED:
             // offer letter
             tempPendingTasks[3].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
             tempPendingTasks[3].dueDate = expiryDate ? moment(expiryDate).format(dateFormat) : '';

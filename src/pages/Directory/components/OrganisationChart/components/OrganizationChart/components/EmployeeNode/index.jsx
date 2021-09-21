@@ -37,6 +37,7 @@ class EmployeeNode extends Component {
 
     const isActive = itemSelected === idEmpl;
     const isCurrentUser = idEmpl === idCurrentUser;
+    const listActiveEmployee = listEmployees.filter((item) => item.status === 'ACTIVE');
 
     const className = isActive ? styles.selectNode : styles.node;
     const className2 = isCurrentUser ? styles.currentUserNode : styles.employeeNode;
@@ -48,8 +49,10 @@ class EmployeeNode extends Component {
         className={`${className2} ${styles.node} ${className}`}
       >
         {renderCardInfo(employee, 'employee')}
-        {listEmployees.length > 0 && isCollapsed ? (
-          <div className={styles.node__bottom_reportees}>{`${listEmployees.length} reportees`}</div>
+        {listActiveEmployee.length > 0 && isCollapsed ? (
+          <div className={styles.node__bottom_reportees}>
+            {`${listActiveEmployee.length} reportees`}
+          </div>
         ) : null}
         {isCurrentUser ? <div className={styles.node__bottom_you1}>You</div> : null}
       </div>

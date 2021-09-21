@@ -83,6 +83,7 @@ class OfferAccepted extends PureComponent {
   render() {
     const { offerAccepted: data = [], total = 0, loading } = this.props;
     const { tabId, pageSelected, size, loadingSearch } = this.state;
+
     return (
       <div className={styles.onboardingTab}>
         <div className={styles.tabs}>
@@ -91,7 +92,7 @@ class OfferAccepted extends PureComponent {
             onChange={this.onChangeTab}
             tabBarExtraContent={<SearchOnboarding onChangeSearch={this.onChangeSearch} />}
           >
-            <TabPane tab="Offer Accepted" key="1">
+            <TabPane key="1">
               <OfferAcceptedTab
                 list={data}
                 loading={loading}

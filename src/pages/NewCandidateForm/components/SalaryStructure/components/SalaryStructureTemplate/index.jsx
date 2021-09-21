@@ -3,6 +3,7 @@ import { Button, Col, Input, Row, Spin, Space } from 'antd';
 import { toNumber, toString, trim, trimStart } from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
+import moment from 'moment';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import { getCurrentTenant } from '@/utils/authority';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
@@ -145,6 +146,7 @@ class SalaryStructureTemplate extends PureComponent {
               status: 'IN-PROGRESS',
             },
             candidate: _id,
+            sentDate: moment(),
             tenantId: getCurrentTenant(),
           },
         }).then(({ statusCode }) => {

@@ -2,18 +2,33 @@
 
 import React, { PureComponent } from 'react';
 import { Checkbox, Typography, Row } from 'antd';
+import moment from 'moment';
 import styles from './index.less';
 
 class GlobalEmpoyeeComponent extends PureComponent {
+  getCreateBenefitAt = (category) => {
+    const { listBenefits = [] } = this.props;
+    let createdAt = '';
+
+    listBenefits.forEach((item) => {
+      if (item.category === category) {
+        createdAt = item.createdAt;
+      }
+    });
+
+    if (createdAt === '') return '';
+
+    createdAt = moment(createdAt).locale('en').format('DD/MM/YYYY');
+    return createdAt ? (
+      <div className={styles.headerText}>Coverage will take effect on {createdAt}</div>
+    ) : (
+      ''
+    );
+  };
+
   render() {
-    const {
-      globalEmployeesCheckbox,
-      headerText,
-      onChange,
-      handleCheckAll,
-      handleChange,
-      benefits,
-    } = this.props;
+    const { globalEmployeesCheckbox, onChange, handleCheckAll, handleChange, benefits } =
+      this.props;
     const {
       medical,
       life,
@@ -21,17 +36,16 @@ class GlobalEmpoyeeComponent extends PureComponent {
       listSelectedMedical,
       listSelectedShortTerm,
       listSelectedLife,
+      listSelectedVision,
+      listSelectedDental,
       dental,
       vision,
     } = benefits;
-    const { name, checkBox } = globalEmployeesCheckbox;
+    const { checkBox } = globalEmployeesCheckbox;
 
     const CheckboxGroup = Checkbox.Group;
     return (
       <div className={styles.GlobalEmpoyeeComponent}>
-        <Typography.Title level={5} className={styles.headerPadding}>
-          {name}
-        </Typography.Title>
         {checkBox.map((item) =>
           item.subCheckBox.length > 1 ? (
             <div className={styles.checkBoxHeader}>
@@ -47,15 +61,17 @@ class GlobalEmpoyeeComponent extends PureComponent {
                     ? life
                     : item.title === 'shortTerm'
                     ? shortTerm
+                    : item.title === 'Dental'
+                    ? dental
+                    : item.title === 'Vision'
+                    ? vision
                     : null
                 }
               >
                 <Typography.Text className={styles.checkBoxTitle}>{item.value}</Typography.Text>
               </Checkbox>
               <div className={styles.paddingLeft}>
-                <Typography.Title className={styles.headerText} level={4}>
-                  {headerText}
-                </Typography.Title>
+                {this.getCreateBenefitAt(item.title)}
                 <CheckboxGroup
                   options={item.subCheckBox.map((data) => data.value)}
                   onChange={(e) => handleChange(e, item.subCheckBox, item.title)}
@@ -66,6 +82,10 @@ class GlobalEmpoyeeComponent extends PureComponent {
                       ? listSelectedLife
                       : item.title === 'shortTerm'
                       ? listSelectedShortTerm
+                      : item.title === 'Dental'
+                      ? listSelectedDental
+                      : item.title === 'Vision'
+                      ? listSelectedVision
                       : []
                   }
                 />
@@ -76,15 +96,26 @@ class GlobalEmpoyeeComponent extends PureComponent {
               <Typography.Paragraph className={styles.checkBoxTitle}>
                 {item.value}
               </Typography.Paragraph>
-              <Typography.Title className={styles.headerText} level={4}>
-                {headerText}
-              </Typography.Title>
+
+              {this.getCreateBenefitAt(item.title)}
               {item.subCheckBox.map((data) => (
                 <Row>
                   <Checkbox
-                    onChange={onChange}
-                    value={item.value}
-                    checked={item.title === 'Dental' ? dental : vision}
+                    onChange={(e) => onChange(e, item.value)}
+                    value={data.value}
+                    checked={
+                      item.title === 'Medical'
+                        ? medical
+                        : item.title === 'Life'
+                        ? life
+                        : item.title === 'shortTerm'
+                        ? shortTerm
+                        : item.title === 'Dental'
+                        ? dental
+                        : item.title === 'Vision'
+                        ? vision
+                        : null
+                    }
                   >
                     <Typography.Text className={styles.subCheckboxTitle}>
                       {data.value}

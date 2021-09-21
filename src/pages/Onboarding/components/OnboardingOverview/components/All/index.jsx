@@ -85,7 +85,7 @@ class OnboardingAll extends Component {
             defaultActiveKey="all"
             tabBarExtraContent={<SearchOnboarding onChangeSearch={this.onChangeSearch} />}
           >
-            <TabPane tab="all" key="1">
+            <TabPane key="1">
               <AllTab
                 list={dataAll}
                 loading={loadingAll}

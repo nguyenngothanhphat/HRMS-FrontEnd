@@ -83,6 +83,7 @@ class OfferReleased extends PureComponent {
   render() {
     const { offerReleased: data = [], total = 0, loading } = this.props;
     const { tabId, pageSelected, size, loadingSearch } = this.state;
+
     return (
       <div className={styles.onboardingTab}>
         <div className={styles.tabs}>
@@ -91,7 +92,7 @@ class OfferReleased extends PureComponent {
             onChange={this.onChangeTab}
             tabBarExtraContent={<SearchOnboarding onChangeSearch={this.onChangeSearch} />}
           >
-            <TabPane tab="Offer Released" key="1">
+            <TabPane key="1">
               <OfferReleasedTab
                 list={data}
                 loading={loading}
