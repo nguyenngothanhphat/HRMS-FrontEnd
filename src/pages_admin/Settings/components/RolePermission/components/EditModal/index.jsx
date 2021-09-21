@@ -40,6 +40,10 @@ class EditModal extends PureComponent {
     }
   };
 
+  componentWillUnmount = () => {
+    this.setList([]);
+  };
+
   fetchRoleByID = async (id) => {
     const { dispatch } = this.props;
     const res = await dispatch({
@@ -120,7 +124,7 @@ class EditModal extends PureComponent {
         viewingRole: {},
       },
     });
-
+    this.setList([]);
     onClose(false);
   };
 
