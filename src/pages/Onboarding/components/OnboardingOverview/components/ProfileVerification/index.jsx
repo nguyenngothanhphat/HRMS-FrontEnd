@@ -56,7 +56,7 @@ class ProfileVerification extends PureComponent {
       dispatch({
         type: 'onboarding/fetchOnboardList',
         payload: {
-          processStatus: NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
+          processStatus: [NEW_PROCESS_STATUS.PROFILE_VERIFICATION],
           name: nameSearch,
         },
       }).then(({ statusCode }) => {

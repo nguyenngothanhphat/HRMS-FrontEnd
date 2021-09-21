@@ -9,6 +9,7 @@ import Avatar from './AvatarDropdown';
 import GlobalEmployeeSearch from './components/GlobalEmployeeSearch';
 import SelectCompanyModal from './components/SelectCompanyModal';
 import styles from './index.less';
+import GlobalSearchNew from './components/GlobalSearchNew/index';
 
 const GlobalHeaderRight = (props) => {
   const {
@@ -48,7 +49,7 @@ const GlobalHeaderRight = (props) => {
 
   return (
     <div className={className}>
-      <HeaderSearch
+      {/* <HeaderSearch
         className={`${styles.action} ${styles.search}`}
         placeholder="Search"
         visible={visible}
@@ -57,7 +58,8 @@ const GlobalHeaderRight = (props) => {
             handleSearch(value);
           }
         }}
-      />
+      /> */}
+      <GlobalSearchNew />
       <div className={`${styles.action} ${styles.notify}`}>
         <BellOutlined />
       </div>

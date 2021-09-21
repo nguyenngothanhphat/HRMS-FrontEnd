@@ -56,7 +56,7 @@ class AwaitingApprovals extends PureComponent {
       dispatch({
         type: 'onboarding/fetchOnboardList',
         payload: {
-          processStatus: NEW_PROCESS_STATUS.AWAITING_APPROVALS,
+          processStatus: [NEW_PROCESS_STATUS.AWAITING_APPROVALS],
           name: nameSearch,
         },
       }).then(({ statusCode }) => {
