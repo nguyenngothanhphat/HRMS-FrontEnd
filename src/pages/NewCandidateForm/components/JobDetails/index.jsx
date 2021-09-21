@@ -52,9 +52,9 @@ class JobDetails extends PureComponent {
         tenantId,
       },
     });
-    dispatch({
-      type: 'newCandidateForm/getJobGradeList',
-    });
+    // dispatch({
+    //   type: 'newCandidateForm/getJobGradeList',
+    // });
   }
 
   componentDidUpdate = (prevProps) => {
@@ -141,7 +141,7 @@ class JobDetails extends PureComponent {
     const { dispatch } = this.props;
     const { tempData = {} } = this.props;
     tempData[name] = value;
-    const { department, workLocation, title, locationList = [] } = tempData;
+    const { department, workLocation, title, locationList = [], titleList } = tempData;
     const companyId = getCurrentCompany();
     const tenantId = getCurrentTenant();
 
@@ -214,10 +214,14 @@ class JobDetails extends PureComponent {
           },
         });
       } else {
+        const titleData = titleList.find((item) => item._id === value);
+        console.log('titleDataa', titleData);
         dispatch({
           type: 'newCandidateForm/saveTemp',
           payload: {
             title: value,
+            grade: titleData?.gradeObj,
+            jobGradeLevelList: [titleData?.gradeObj],
           },
         });
 
