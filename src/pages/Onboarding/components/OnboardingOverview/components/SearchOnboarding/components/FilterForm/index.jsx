@@ -255,25 +255,42 @@ class FilterForm extends Component {
   };
 
   handleCheckAll = (e) => {
-    const { checked, filter } = e.target;
+    const { filter } = this.state;
     let data = { ...filter };
-    if (checked) {
-      data = {
-        processStatus: Object.values(NEW_PROCESS_STATUS),
-      };
-    } else {
-      data = {
-        processStatus: undefined,
-      };
-    }
 
-    this.setState({
-      checkAll: checked,
-      filter: {
-        ...filter,
-        ...data,
-      },
-    });
+    if (e === 'ALL') {
+      if (!filter.processStatus) {
+        data = {
+          processStatus: Object.values(NEW_PROCESS_STATUS),
+        };
+      }
+      this.setState({
+        checkAll: !filter.processStatus,
+        filter: {
+          ...filter,
+          ...data,
+        },
+      });
+    } else {
+      const { checked } = e.target;
+      if (checked) {
+        data = {
+          processStatus: Object.values(NEW_PROCESS_STATUS),
+        };
+      } else {
+        data = {
+          processStatus: undefined,
+        };
+      }
+
+      this.setState({
+        checkAll: checked,
+        filter: {
+          ...filter,
+          ...data,
+        },
+      });
+    }
   };
 
   dropdownRender = (menu) => {
@@ -281,7 +298,7 @@ class FilterForm extends Component {
     return (
       <>
         <div className={styles.checkAll}>
-          <Checkbox checked={checkAll} onChange={this.handleCheckAll}>
+          <Checkbox checked={checkAll} onChange={(e) => this.handleCheckAll(e)}>
             Select All
           </Checkbox>
         </div>
@@ -292,19 +309,48 @@ class FilterForm extends Component {
 
   handleSelect = (value) => {
     const { filter } = this.state;
+    const isAll = value.includes('ALL');
+
+    if (isAll) {
+      this.handleCheckAll('ALL');
+    } else {
+      this.setState({
+        isFilter: true,
+        filter: {
+          ...filter,
+          processStatus: [...value],
+        },
+        checkAll: value?.length === Object.keys(NEW_PROCESS_STATUS).length,
+      });
+    }
+  };
+
+  onSelectAll = (valueAll) => {
+    const { filter } = this.state;
+    let data = { ...filter };
+
+    if (
+      valueAll === 'ALL' &&
+      data.processStatus.length === Object.keys(NEW_PROCESS_STATUS).length
+    ) {
+      data = {
+        processStatus: undefined,
+      };
+    }
+
     this.setState({
       isFilter: true,
       filter: {
         ...filter,
-        processStatus: [...value],
+        ...data,
       },
-      checkAll: value?.length === Object.keys(NEW_PROCESS_STATUS).length,
+      checkAll: data.processStatus,
     });
   };
 
   render() {
     const { jobTitleList = [], locationList = [] } = this.props;
-    const { isFilter, filter } = this.state;
+    const { isFilter, filter, checkAll } = this.state;
     const dateFormat = 'MMM DD, YYYY';
 
     const fieldsArray = [
@@ -343,18 +389,23 @@ class FilterForm extends Component {
                 filterOption={(input, option) => {
                   return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
                 }}
-                mode="multiple"
+                mode={checkAll ? null : 'multiple'}
                 tagRender={this.tagRender}
                 placeholder="Select status"
-                dropdownRender={this.dropdownRender}
-                value={filter.processStatus}
+                // dropdownRender={this.dropdownRender}
+                value={checkAll ? 'ALL' : filter.processStatus}
                 onChange={this.handleSelect}
                 onClear={() =>
                   this.setState({
                     checkAll: false,
                   })
                 }
+                onSelect={checkAll ? this.onSelectAll : null}
               >
+                <Option value="ALL">
+                  <Checkbox value="ALL" checked={checkAll} onChange={this.handleCheckAll} />
+                  <span>Select All</span>
+                </Option>
                 {arrStatus.map((option) => {
                   return (
                     <Option key={option.value} value={option.value}>
