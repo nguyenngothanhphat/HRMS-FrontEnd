@@ -18,40 +18,40 @@ const arrStatus = [
   //   _id: '',
   // },
   {
-    name: 'Draft',
-    _id: NEW_PROCESS_STATUS.DRAFT,
+    label: 'Draft',
+    value: NEW_PROCESS_STATUS.DRAFT,
   },
   {
-    name: 'Profile Verification',
-    _id: NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
+    label: 'Profile Verification',
+    value: NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
   },
   {
-    name: 'Document Verification',
-    _id: NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
+    label: 'Document Verification',
+    value: NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
   },
   {
-    name: 'Salary Negotiation',
-    _id: NEW_PROCESS_STATUS.SALARY_NEGOTIATION,
+    label: 'Salary Negotiation',
+    value: NEW_PROCESS_STATUS.SALARY_NEGOTIATION,
   },
   {
-    name: 'Awaiting approvals',
-    _id: NEW_PROCESS_STATUS.AWAITING_APPROVALS,
+    label: 'Awaiting approvals',
+    value: NEW_PROCESS_STATUS.AWAITING_APPROVALS,
   },
   {
-    name: 'Offer Released',
-    _id: NEW_PROCESS_STATUS.OFFER_RELEASED,
+    label: 'Offer Released',
+    value: NEW_PROCESS_STATUS.OFFER_RELEASED,
   },
   {
-    name: 'Offer Accepted',
-    _id: NEW_PROCESS_STATUS.OFFER_ACCEPTED,
+    label: 'Offer Accepted',
+    value: NEW_PROCESS_STATUS.OFFER_ACCEPTED,
   },
   {
-    name: 'Offer Rejected',
-    _id: NEW_PROCESS_STATUS.OFFER_REJECTED,
+    label: 'Offer Rejected',
+    value: NEW_PROCESS_STATUS.OFFER_REJECTED,
   },
   {
-    name: 'Offer Withdraw',
-    _id: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
+    label: 'Offer Withdraw',
+    value: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
   },
 ];
 
@@ -257,6 +257,17 @@ class FilterForm extends Component {
     });
   };
 
+  dropdownRender = (menu) => {
+    return (
+      <>
+        <div className={styles.checkAll}>
+          <Checkbox>Select All</Checkbox>
+        </div>
+        {menu}
+      </>
+    );
+  };
+
   render() {
     const { jobTitleList = [], locationList = [] } = this.props;
     const { isFilter } = this.state;
@@ -264,24 +275,15 @@ class FilterForm extends Component {
 
     const fieldsArray = [
       {
-        label: 'BY STATUS',
-        name: 'processStatus',
-        placeholder: 'Select status',
-        filterOption: 1,
-        optionArray: arrStatus,
-      },
-      {
         label: 'BY POSITION',
         name: 'title',
         placeholder: 'Select postion',
-        filterOption: 2,
         optionArray: jobTitleList,
       },
       {
         label: 'BY LOCATION',
         name: 'location',
         placeholder: 'Select location',
-        filterOption: 2,
         optionArray: locationList,
       },
     ];
@@ -296,22 +298,41 @@ class FilterForm extends Component {
           ref={this.formRef}
         >
           <div className={styles.form__top}>
+            <Form.Item label="BY STATUS" name="processStatus">
+              <Select
+                allowClear
+                showArrow
+                showSearch
+                filterOption={(input, option) => {
+                  return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                }}
+                mode="multiple"
+                tagRender={this.tagRender}
+                placeholder="Select status"
+                dropdownRender={this.dropdownRender}
+              >
+                {arrStatus.map((option) => {
+                  return (
+                    <Option key={option.value} value={option.value}>
+                      <Checkbox
+                        value={option.value}
+                        checked={this.checkBoxStatusChecked(option.value, 'processStatus')}
+                      />
+                      <span>{option.label}</span>
+                    </Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
             {fieldsArray.map((field) => (
               <Form.Item key={field.name} label={field.label} name={field.name}>
                 <Select
                   allowClear
                   showArrow
                   showSearch
-                  value={['DRAFT', 'DOCUMENT_VERIFICATION']}
                   filterOption={(input, option) => {
-                    if (field.filterOption === 2) {
-                      const arrChild = option.props.children[1];
-                      return (
-                        arrChild.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }
-
-                    return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                    const arrChild = option.props.children[1];
+                    return arrChild.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
                   }}
                   mode="multiple"
                   tagRender={this.tagRender}
