@@ -29,7 +29,7 @@ export async function removeRole(payload) {
 }
 
 export async function getListTitle(payload) {
-  return request('/api/titletenant/list-by-company', {
+  return request('/api/titletenant/list', {
     method: 'POST',
     data: payload,
   });
