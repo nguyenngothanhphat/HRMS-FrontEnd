@@ -72,7 +72,7 @@ class CommonLayout extends PureComponent {
 
     return (
       <div className={s.root}>
-        <Affix offsetTop={105}>
+        <Affix offsetTop={90}>
           <div className={s.viewLeft}>
             <div className={s.viewLeft__menu}>
               {listMenu.map((item) => (
@@ -87,7 +87,7 @@ class CommonLayout extends PureComponent {
           </div>
         </Affix>
         <Row className={s.viewRight} gutter={[24, 0]}>
-          <Col span={18}>{displayComponent}</Col>
+          <Col span={24}>{displayComponent}</Col>
         </Row>
       </div>
     );

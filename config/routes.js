@@ -509,22 +509,22 @@ const routes = [
             path: '/settings',
             name: 'settings',
             icon: '/assets/images/menuIcons/settings.svg',
-            component: '../pages_admin/Setting',
+            component: '../pages_admin/Settings',
             authority: ['M_SETTING_VIEW', 'owner'],
           },
           {
             path: '/settings/:tabName',
-            component: '../pages_admin/Setting',
+            component: '../pages_admin/Settings',
             hideInMenu: true,
             authority: ['M_SETTING_VIEW', 'owner'],
           },
-          {
-            path: '/settings/:tabName/:roleId',
-            name: 'permission',
-            component: '../pages_admin/Setting/Components/RolesPermission/Components/Permission',
-            hideInMenu: true,
-            authority: ['M_SETTING_VIEW', 'owner'],
-          },
+          // {
+          //   path: '/settings/:tabName/:roleId',
+          //   name: 'permission',
+          //   component: '../pages_admin/Settings/Components/RolesPermission/Components/Permission',
+          //   hideInMenu: true,
+          //   authority: ['M_SETTING_VIEW', 'owner'],
+          // },
 
           // TIMEOFF REQUEST
           {
