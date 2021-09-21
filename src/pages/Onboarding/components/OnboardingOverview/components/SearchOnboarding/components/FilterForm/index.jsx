@@ -236,17 +236,22 @@ class FilterForm extends Component {
     const { filter } = this.state;
     let payload = { ...value, ...filter };
 
+    if (payload.processStatus === undefined && currentStatus !== 'ALL') {
+      payload = {
+        ...payload,
+        processStatus: [currentStatus],
+      };
+    }
+
     if (payload.fromDate && payload.toDate) {
       const _fromDate = moment(payload.fromDate).format('YYYY-MM-DD');
       const _toDate = moment(payload.toDate).format('YYYY-MM-DD');
-
       payload = {
         ...payload,
         fromDate: _fromDate,
         toDate: _toDate,
       };
     }
-
     dispatch({
       type: 'onboarding/filterOnboardList',
       payload,

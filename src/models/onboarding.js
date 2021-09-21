@@ -420,24 +420,6 @@ const onboarding = {
         if (statusCode !== 200) throw response;
         const returnedData = formatData(response.data);
 
-        if (currentStatus === 'ALL') {
-          yield put({
-            type: 'saveOnboardingOverview',
-            payload: {
-              total: response.total,
-              currentStatus: 'All',
-            },
-          });
-        } else {
-          yield put({
-            type: 'saveOnboardingOverview',
-            payload: {
-              total: response.total,
-              currentStatus,
-            },
-          });
-        }
-
         switch (currentStatus) {
           case DRAFT:
             yield put({
