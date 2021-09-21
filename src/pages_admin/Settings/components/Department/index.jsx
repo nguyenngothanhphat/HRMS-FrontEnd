@@ -72,7 +72,7 @@ class Department extends PureComponent {
         key: 'hrPOC',
         width: '17%',
         render: (hrPOC = {}) => {
-          return <span>{hrPOC.generalInfo?.legalName}</span>;
+          return <span>{hrPOC.generalInfoInfo?.legalName}</span>;
         },
       },
       {
@@ -81,7 +81,7 @@ class Department extends PureComponent {
         key: 'financePOC',
         width: '17%',
         render: (financePOC = {}) => {
-          return <span>{financePOC.generalInfo?.legalName}</span>;
+          return <span>{financePOC.generalInfoInfo?.legalName}</span>;
         },
       },
 
