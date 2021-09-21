@@ -81,13 +81,13 @@ class FilterForm extends Component {
       filter: {
         // store data
         processStatus: undefined,
-        otherStatus: undefined,
-        title: [],
-        location: [],
-        fromDate: null,
-        toDate: null,
+        title: undefined,
+        location: undefined,
+        fromDate: undefined,
+        toDate: undefined,
       },
       isFilter: false, // check enable|disable button Apply
+      checkAll: false,
     };
 
     this.formRef = React.createRef();
@@ -130,13 +130,13 @@ class FilterForm extends Component {
     this.setState({
       filter: {
         processStatus: undefined,
-        otherStatus: undefined,
         title: [],
         location: [],
         fromDate: null,
         toDate: null,
       },
       isFilter: false,
+      checkAll: false,
       durationFrom: '',
       durationTo: '',
     });
@@ -237,7 +237,10 @@ class FilterForm extends Component {
 
   onFinish = (value) => {
     const { dispatch, currentStatus = '' } = this.props;
-    let payload = { ...value };
+    const { filter } = this.state;
+    let payload = { ...value, ...filter };
+
+    console.log('payload: ', payload);
 
     if (payload.fromDate && payload.toDate) {
       const _fromDate = moment(payload.fromDate).format('YYYY-MM-DD');
@@ -257,20 +260,57 @@ class FilterForm extends Component {
     });
   };
 
+  handleCheckAll = (e) => {
+    const { checked, filter } = e.target;
+    let data = { ...filter };
+    if (checked) {
+      data = {
+        processStatus: Object.values(NEW_PROCESS_STATUS),
+      };
+    } else {
+      data = {
+        processStatus: undefined,
+      };
+    }
+
+    this.setState({
+      checkAll: checked,
+      filter: {
+        ...filter,
+        ...data,
+      },
+    });
+  };
+
   dropdownRender = (menu) => {
+    const { checkAll } = this.state;
     return (
       <>
         <div className={styles.checkAll}>
-          <Checkbox>Select All</Checkbox>
+          <Checkbox checked={checkAll} onChange={this.handleCheckAll}>
+            Select All
+          </Checkbox>
         </div>
         {menu}
       </>
     );
   };
 
+  handleSelect = (value) => {
+    const { filter, checkAll } = this.state;
+    this.setState({
+      isFilter: true,
+      filter: {
+        ...filter,
+        processStatus: [...value],
+      },
+      checkAll: filter.processStatus?.length === Object.keys(NEW_PROCESS_STATUS).length || checkAll,
+    });
+  };
+
   render() {
     const { jobTitleList = [], locationList = [] } = this.props;
-    const { isFilter } = this.state;
+    const { isFilter, filter } = this.state;
     const dateFormat = 'MMM DD, YYYY';
 
     const fieldsArray = [
@@ -298,7 +338,10 @@ class FilterForm extends Component {
           ref={this.formRef}
         >
           <div className={styles.form__top}>
-            <Form.Item label="BY STATUS" name="processStatus">
+            <div className={styles.processStatus}>
+              <div className={styles.processStatus__label}>
+                <div className={styles.labelText}>By Other Status</div>
+              </div>
               <Select
                 allowClear
                 showArrow
@@ -310,6 +353,8 @@ class FilterForm extends Component {
                 tagRender={this.tagRender}
                 placeholder="Select status"
                 dropdownRender={this.dropdownRender}
+                value={filter.processStatus}
+                onChange={this.handleSelect}
               >
                 {arrStatus.map((option) => {
                   return (
@@ -323,7 +368,7 @@ class FilterForm extends Component {
                   );
                 })}
               </Select>
-            </Form.Item>
+            </div>
             {fieldsArray.map((field) => (
               <Form.Item key={field.name} label={field.label} name={field.name}>
                 <Select
