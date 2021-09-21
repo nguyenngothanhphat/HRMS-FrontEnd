@@ -1,11 +1,16 @@
+/* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/destructuring-assignment */
 import React, { useEffect, useState } from 'react';
 import filterIcon from '@/assets/offboarding-filter.svg';
-import { Table } from 'antd';
-import { formatMessage, connect, history } from 'umi';
+import { Table, Popover } from 'antd';
+import { formatMessage, connect, history, Link } from 'umi';
 import iconPDF from '@/assets/pdf-2.svg';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import moment from 'moment';
+import { isOwner } from '@/utils/authority';
+import { isEmpty } from 'lodash';
+import { getTimezoneViaCity } from '@/utils/times';
+import PopoverInfo from '@/components/DirectoryTable/components/ModalTerminate/PopoverInfo/index';
 import styles from '../../index.less';
 
 const DocumentResult = React.memo((props) => {
@@ -20,9 +25,35 @@ const DocumentResult = React.memo((props) => {
     totalDocuments,
     loadTableData2,
     tabName,
+    listLocationsByCompany,
   } = props;
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [timezoneList, setTimezoneList] = useState([]);
+  const [currentTime] = useState(moment());
+
+  const fetchTimezone = () => {
+    const timezoneListTemp = [];
+    listLocationsByCompany.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
+        _id = '',
+      } = location;
+      timezoneListTemp.push({
+        locationId: _id,
+        timezone:
+          getTimezoneViaCity(city) ||
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
+    setTimezoneList(timezoneListTemp);
+  };
+  useEffect(() => {
+    fetchTimezone();
+  }, []);
+
   useEffect(() => {
     if (isSearch && tabName === 'documents') {
       if (isSearchAdvance) {
@@ -59,6 +90,14 @@ const DocumentResult = React.memo((props) => {
     history.push('documents/advanced-search');
   };
 
+  const handleProfileEmployee = (_id, tenant, userId) => {
+    localStorage.setItem('tenantCurrentEmployee', tenant);
+    const pathname = isOwner()
+      ? `/employees/employee-profile/${userId}`
+      : `/directory/employee-profile/${userId}`;
+    return pathname;
+  };
+
   const columns = [
     {
       title: 'Document',
@@ -75,9 +114,53 @@ const DocumentResult = React.memo((props) => {
     },
     {
       title: 'Owner',
-      dataIndex: 'ownerInfo',
-      key: 'ownerInfo',
-      render: (ownerInfo) => <div>{ownerInfo.name}</div>,
+      dataIndex: 'Owner',
+      key: 'Owner',
+      render: (owner) => {
+        if (owner && owner[0]) {
+          const {
+            _id,
+            departmentInfo: department = {},
+            employeeId,
+            employeeTypeInfo: employeeType = {},
+            titleInfo: title = {},
+            generalInfoInfo: generalInfo = {},
+            locationInfo: location = {},
+          } = owner[0];
+          const manager = {
+            _id,
+            department,
+            employeeId,
+            title,
+            generalInfo,
+            location,
+            employeeType,
+          };
+          return (
+            <Popover
+              content={
+                <PopoverInfo
+                  listLocationsByCompany={listLocationsByCompany}
+                  propsState={{ currentTime, timezoneList }}
+                  data={manager}
+                />
+              }
+              placement="bottomRight"
+              trigger="hover"
+            >
+              <Link
+                className={styles.managerName}
+                to={() =>
+                  handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
+                }
+              >
+                {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
+              </Link>
+            </Popover>
+          );
+        }
+        return '-';
+      },
     },
     {
       title: 'Created On',
@@ -93,9 +176,53 @@ const DocumentResult = React.memo((props) => {
     },
     {
       title: 'Last Modified By',
-      dataIndex: 'ownerInfo',
-      key: 'ownerInfo',
-      render: (ownerInfo) => <div>{ownerInfo.name}</div>,
+      dataIndex: 'owner',
+      key: 'owner',
+      render: (owner) => {
+        if (owner && owner[0]) {
+          const {
+            _id,
+            departmentInfo: department = {},
+            employeeId,
+            employeeTypeInfo: employeeType = {},
+            titleInfo: title = {},
+            generalInfoInfo: generalInfo = {},
+            locationInfo: location = {},
+          } = owner[0];
+          const manager = {
+            _id,
+            department,
+            employeeId,
+            title,
+            generalInfo,
+            location,
+            employeeType,
+          };
+          return (
+            <Popover
+              content={
+                <PopoverInfo
+                  listLocationsByCompany={listLocationsByCompany}
+                  propsState={{ currentTime, timezoneList }}
+                  data={manager}
+                />
+              }
+              placement="bottomRight"
+              trigger="hover"
+            >
+              <Link
+                className={styles.managerName}
+                to={() =>
+                  handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
+                }
+              >
+                {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
+              </Link>
+            </Popover>
+          );
+        }
+        return '-';
+      },
     },
   ];
 
@@ -147,6 +274,7 @@ const DocumentResult = React.memo((props) => {
 export default connect(
   ({
     loading,
+    locationSelection: { listLocationsByCompany = [] },
     searchAdvance: {
       keySearch = '',
       isSearch,
@@ -163,5 +291,6 @@ export default connect(
     isSearch,
     isSearchAdvance,
     keySearch,
+    listLocationsByCompany,
   }),
 )(DocumentResult);

@@ -1,7 +1,14 @@
+/* eslint-disable react/jsx-curly-newline */
 import React, { useEffect, useState } from 'react';
 import filterIcon from '@/assets/offboarding-filter.svg';
-import { Table } from 'antd';
-import { formatMessage, connect, history } from 'umi';
+import { Table, Popover } from 'antd';
+import { formatMessage, connect, history, Link } from 'umi';
+import { isOwner } from '@/utils/authority';
+import { isEmpty } from 'lodash';
+import moment from 'moment';
+import { getTimezoneViaCity } from '@/utils/times';
+import PopoverInfo from '@/components/DirectoryTable/components/ModalTerminate/PopoverInfo/index';
+import { LIST_STATUS_TICKET } from '@/utils/globalSearch';
 import styles from '../../index.less';
 
 const TicketResult = React.memo((props) => {
@@ -15,11 +22,40 @@ const TicketResult = React.memo((props) => {
     ticketList,
     totalTickets,
     loadTableData2,
+    listLocationsByCompany,
+    tabName,
+    employee: currentUser,
   } = props;
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [timezoneList, setTimezoneList] = useState([]);
+  const [currentTime] = useState(moment());
+
+  const fetchTimezone = () => {
+    const timezoneListTemp = [];
+    listLocationsByCompany.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
+        _id = '',
+      } = location;
+      timezoneListTemp.push({
+        locationId: _id,
+        timezone:
+          getTimezoneViaCity(city) ||
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
+    setTimezoneList(timezoneListTemp);
+  };
+
   useEffect(() => {
-    if (isSearch) {
+    fetchTimezone();
+  }, []);
+
+  useEffect(() => {
+    if (isSearch && tabName === 'tickets') {
       if (isSearchAdvance) {
         dispatch({
           type: 'searchAdvance/searchTicket',
@@ -40,8 +76,9 @@ const TicketResult = React.memo((props) => {
   const clickFilter = () => {
     history.push('tickets/advanced-search');
   };
+
   const onClickTicket = (record) => {
-    const { id = '', title = '' } = record;
+    const { id = '', title = '', ticketID, employee: { _id: employeeId } = {} } = record;
     let path = '';
     switch (title) {
       case 'Offboarding Request':
@@ -49,15 +86,29 @@ const TicketResult = React.memo((props) => {
         break;
       case 'Leave Request':
       case 'Compoff Request':
-        path = `/time-off/overview/manager-timeoff/view/${id}`;
+        if (employeeId === currentUser?._id)
+          path = `/time-off/overview/personal-timeoff/view/${id}`;
+        else path = `/time-off/overview/manager-timeoff/view/${id}`;
         break;
       case 'Onboarding Ticket':
-        path = `/onboarding/list/view/${id}`;
+        path = `/onboarding/list/view/${ticketID}`;
         break;
       default:
         break;
     }
     history.push(path);
+  };
+
+  const handleProfileEmployee = (_id, tenant, userId) => {
+    localStorage.setItem('tenantCurrentEmployee', tenant);
+    const pathname = isOwner()
+      ? `/employees/employee-profile/${userId}`
+      : `/directory/employee-profile/${userId}`;
+    return pathname;
+  };
+  const renderStatus = (status) => {
+    const result = LIST_STATUS_TICKET.find((item) => item.key === status);
+    return result.value || '-';
   };
   const columns = [
     {
@@ -102,19 +153,54 @@ const TicketResult = React.memo((props) => {
       render: (assignee) => {
         if (assignee) {
           const {
-            generalInfo: { legalName, firstName = '', middleName = '', lastName = '' } = {},
+            _id,
+            departmentInfo: department = {},
+            employeeId,
+            employeeTypeInfo: employeeType = {},
+            titleInfo: title = {},
+            generalInfoInfo: generalInfo = {},
+            locationInfo: location = {},
           } = assignee;
-          const fullName = legalName || `${firstName} ${middleName} ${lastName}`;
-          return <div className={styles.blueText}>{fullName}</div>;
+          const manager = {
+            _id,
+            department,
+            employeeId,
+            title,
+            generalInfo,
+            location,
+            employeeType,
+          };
+          return (
+            <Popover
+              content={
+                <PopoverInfo
+                  listLocationsByCompany={listLocationsByCompany}
+                  propsState={{ currentTime, timezoneList }}
+                  data={manager}
+                />
+              }
+              placement="bottomRight"
+              trigger="hover"
+            >
+              <Link
+                className={styles.managerName}
+                to={() =>
+                  handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
+                }
+              >
+                {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
+              </Link>
+            </Popover>
+          );
         }
-        return <div>-</div>;
+        return '-';
       },
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (status) => <div>{status}</div>,
+      render: (status) => <div>{renderStatus(status)}</div>,
     },
   ];
 
@@ -160,6 +246,8 @@ const TicketResult = React.memo((props) => {
 export default connect(
   ({
     loading,
+    user: { currentUser: { employee = {} } = {} },
+    locationSelection: { listLocationsByCompany = [] },
     searchAdvance: {
       keySearch = '',
       isSearch,
@@ -176,5 +264,7 @@ export default connect(
     isSearch,
     isSearchAdvance,
     keySearch,
+    employee,
+    listLocationsByCompany,
   }),
 )(TicketResult);

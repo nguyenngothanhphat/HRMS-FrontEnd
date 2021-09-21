@@ -47,9 +47,6 @@
       .document {
         display: flex;
         align-items: center;
-        padding-top: 16px;
-        padding-bottom: 16px;
-        border-bottom: 1px solid #EAECEF;
         cursor: pointer;
 
         .text {
@@ -58,6 +55,61 @@
           padding-right: 20px;
           color: #2C6DF9;
           text-decoration: underline;
+        }
+      }
+
+      .directoryTableName {
+        display: flex;
+        align-items: center;
+
+        .avatar {
+          width: 36px;
+          height: 36px;
+        }
+
+        .avatar_emptySrc {
+          width: 36px;
+          height: 36px;
+          background-color: #ffffff;
+          border: solid 1px #707070;
+        }
+
+        &__name {
+          width: 70%;
+          margin: 0;
+          padding-left: 12px;
+          overflow: hidden;
+          color: #2c6df9;
+          font-weight: 500;
+          letter-spacing: 0.12px;
+          white-space: nowrap;
+          text-align: left;
+          text-overflow: ellipsis;
+          cursor: pointer;
+
+          &:hover {
+            opacity: 0.8;
+          }
+        }
+      }
+
+      .directoryTable_deparmentText {
+        padding: 4px 8px;
+        background-color: #f6f7f9;
+        border-radius: 5px;
+      }
+
+      .managerName {
+        overflow: hidden;
+        color: #2c6df9;
+        font-weight: 500;
+        white-space: nowrap;
+        text-align: left;
+        text-overflow: ellipsis;
+        cursor: pointer;
+
+        &:hover {
+          opacity: 0.8;
         }
       }
     }
@@ -270,4 +322,11 @@
     }
   }
 
+}
+
+.popupImg {
+  img {
+    width: 300px;
+    height: fit-content;
+  }
 }

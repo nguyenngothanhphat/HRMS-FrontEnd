@@ -102,16 +102,36 @@ export default {
         } = data;
         const tickets = [];
         compoffTickets.forEach((item) =>
-          tickets.push({ id: item._id, ticketID: item.ticketID, title: 'Compoff Request' }),
+          tickets.push({
+            id: item._id,
+            employee: item.employee,
+            ticketID: item.ticketID,
+            title: 'Compoff Request',
+          }),
         );
         leaveReqTickets.forEach((item) =>
-          tickets.push({ id: item._id, ticketID: item.ticketID, title: 'Leave Request' }),
+          tickets.push({
+            id: item._id,
+            employee: item.employee,
+            ticketID: item.ticketID,
+            title: 'Leave Request',
+          }),
         );
         offBoardingTickets.forEach((item) =>
-          tickets.push({ id: item._id, ticketID: item.ticketID, title: 'Offboarding Request' }),
+          tickets.push({
+            id: item._id,
+            employee: item.employee,
+            ticketID: item.ticketID,
+            title: 'Offboarding Request',
+          }),
         );
         onBoardingTickets.forEach((item) =>
-          tickets.push({ id: item._id, ticketID: item.ticketID, title: 'Onboarding Ticket' }),
+          tickets.push({
+            id: item._id,
+            employee: item.employee,
+            ticketID: item.ticketID,
+            title: 'Onboarding Ticket',
+          }),
         );
 
         for (let i = tickets.length - 1; i > 0; i -= 1) {

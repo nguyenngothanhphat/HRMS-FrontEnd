@@ -1,11 +1,18 @@
 import React from 'react';
 import { Avatar } from 'antd';
-import { history } from 'umi';
+import { history, connect } from 'umi';
 import styles from './index.less';
 import ticketIcon from '../icon/ticket.svg';
 
 const Ticket = (props) => {
-  const { id, ticketId, title, onClick } = props;
+  const {
+    id,
+    ticketId,
+    title,
+    onClick,
+    employee: { _id: employeeId },
+    currentUser,
+  } = props;
   const onClickTicket = () => {
     let path = '';
     switch (title) {
@@ -14,10 +21,12 @@ const Ticket = (props) => {
         break;
       case 'Leave Request':
       case 'Compoff Request':
-        path = `/time-off/overview/manager-timeoff/view/${id}`;
+        if (employeeId === currentUser?._id)
+          path = `/time-off/overview/personal-timeoff/view/${id}`;
+        else path = `/time-off/overview/manager-timeoff/view/${id}`;
         break;
       case 'Onboarding Ticket':
-        path = `/onboarding/list/view/${id}`;
+        path = `/onboarding/list/view/${ticketId}`;
         break;
       default:
         break;
@@ -35,4 +44,6 @@ const Ticket = (props) => {
     </div>
   );
 };
-export default Ticket;
+export default connect(({ user: { currentUser: { employee: currentUser = {} } = {} } }) => ({
+  currentUser,
+}))(Ticket);

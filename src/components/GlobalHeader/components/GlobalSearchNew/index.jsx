@@ -119,11 +119,17 @@ const GlobalSearchNew = (props) => {
           <div className={styles.blog__content}>
             <Row gutter={[24, 24]}>
               {tickets.map((item, index) => {
-                const { ticketID, title, id } = item;
+                const { ticketID, title, id, employee } = item;
                 if (index < 3)
                   return (
                     <Col span={8}>
-                      <Ticket ticketId={ticketID} title={title} id={id} onClick={onClose} />
+                      <Ticket
+                        ticketId={ticketID}
+                        title={title}
+                        id={id}
+                        employee={employee}
+                        onClick={onClose}
+                      />
                     </Col>
                   );
               })}
