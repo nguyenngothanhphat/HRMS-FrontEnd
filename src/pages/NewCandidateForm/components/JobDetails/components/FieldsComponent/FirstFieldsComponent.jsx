@@ -551,7 +551,6 @@ class FirstFieldsComponent extends PureComponent {
             return 0;
           })
         : [];
-    console.log('grade', grade);
 
     return (
       <>

@@ -215,7 +215,6 @@ class JobDetails extends PureComponent {
         });
       } else {
         const titleData = titleList.find((item) => item._id === value);
-        console.log('titleDataa', titleData);
         dispatch({
           type: 'newCandidateForm/saveTemp',
           payload: {
