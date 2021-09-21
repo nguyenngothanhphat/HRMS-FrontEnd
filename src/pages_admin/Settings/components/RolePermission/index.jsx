@@ -115,7 +115,7 @@ class RolePermission extends PureComponent {
     const res = await dispatch({
       type: 'adminSetting/removeRole',
       payload: {
-        id: row._id,
+        _id: row._id,
       },
     });
     if (res.statusCode === 200) {
