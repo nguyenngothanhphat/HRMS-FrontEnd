@@ -259,13 +259,11 @@ class FilterForm extends Component {
     let data = { ...filter };
 
     if (e === 'ALL') {
-      if (!filter.processStatus) {
-        data = {
-          processStatus: Object.values(NEW_PROCESS_STATUS),
-        };
-      }
+      data = {
+        processStatus: Object.values(NEW_PROCESS_STATUS),
+      };
       this.setState({
-        checkAll: !filter.processStatus,
+        checkAll: true,
         filter: {
           ...filter,
           ...data,
@@ -293,35 +291,49 @@ class FilterForm extends Component {
     }
   };
 
-  dropdownRender = (menu) => {
-    const { checkAll } = this.state;
-    return (
-      <>
-        <div className={styles.checkAll}>
-          <Checkbox checked={checkAll} onChange={(e) => this.handleCheckAll(e)}>
-            Select All
-          </Checkbox>
-        </div>
-        {menu}
-      </>
-    );
-  };
+  // dropdownRender = (menu) => {
+  //   const { checkAll } = this.state;
+  //   return (
+  //     <>
+  //       <div className={styles.checkAll}>
+  //         <Checkbox checked={checkAll} onChange={(e) => this.handleCheckAll(e)}>
+  //           Select All
+  //         </Checkbox>
+  //       </div>
+  //       {menu}
+  //     </>
+  //   );
+  // };
 
   handleSelect = (value) => {
-    const { filter } = this.state;
+    const { filter, checkAll } = this.state;
     const isAll = value.includes('ALL');
 
     if (isAll) {
       this.handleCheckAll('ALL');
     } else {
-      this.setState({
-        isFilter: true,
-        filter: {
-          ...filter,
-          processStatus: [...value],
-        },
-        checkAll: value?.length === Object.keys(NEW_PROCESS_STATUS).length,
-      });
+      let arrayStatus = checkAll ? [...filter.processStatus] : [];
+      arrayStatus = arrayStatus.filter((status) => status !== value);
+
+      if (checkAll) {
+        this.setState({
+          isFilter: true,
+          filter: {
+            ...filter,
+            processStatus: arrayStatus,
+          },
+          checkAll: arrayStatus?.length === Object.keys(NEW_PROCESS_STATUS).length,
+        });
+      } else {
+        this.setState({
+          isFilter: true,
+          filter: {
+            ...filter,
+            processStatus: [...value],
+          },
+          checkAll: value?.length === Object.keys(NEW_PROCESS_STATUS).length,
+        });
+      }
     }
   };
 
@@ -336,16 +348,15 @@ class FilterForm extends Component {
       data = {
         processStatus: undefined,
       };
+      this.setState({
+        isFilter: true,
+        filter: {
+          ...filter,
+          ...data,
+        },
+        checkAll: false,
+      });
     }
-
-    this.setState({
-      isFilter: true,
-      filter: {
-        ...filter,
-        ...data,
-      },
-      checkAll: data.processStatus,
-    });
   };
 
   render() {
@@ -400,7 +411,7 @@ class FilterForm extends Component {
                     checkAll: false,
                   })
                 }
-                onSelect={checkAll ? this.onSelectAll : null}
+                onSelect={checkAll ? this.onSelectAll : null} // use to un-select all
               >
                 <Option value="ALL">
                   <Checkbox value="ALL" checked={checkAll} onChange={this.handleCheckAll} />
