@@ -346,7 +346,7 @@ class FilterForm extends Component {
   };
 
   render() {
-    const { jobTitleList = [], locationList = [] } = this.props;
+    const { jobTitleList = [], locationList = [], currentStatus = '' } = this.props;
     const { isFilter, filter, checkAll } = this.state;
     const dateFormat = 'MMM DD, YYYY';
 
@@ -397,6 +397,7 @@ class FilterForm extends Component {
                 mode={checkAll ? null : 'multiple'}
                 value={checkAll ? 'ALL' : filter.processStatus}
                 onSelect={checkAll ? this.onSelectAll : null} // use to un-select all
+                disabled={currentStatus !== 'ALL'}
               >
                 <Option value="ALL">
                   <Checkbox value="ALL" checked={checkAll} onChange={this.handleCheckAll} />
