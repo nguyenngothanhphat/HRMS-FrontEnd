@@ -1,0 +1,13 @@
+FROM node:14-alpine
+
+LABEL maintainer="HRMS maintainer"
+
+RUN mkdir -p /usr/src/app
+
+WORKDIR /usr/src/app
+
+COPY package.json package-lock.json ./
+
+COPY . .
+
+EXPOSE 3000
