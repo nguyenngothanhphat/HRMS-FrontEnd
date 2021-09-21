@@ -20,8 +20,6 @@ const GlobalSearchNew = (props) => {
         type: 'searchAdvance/searchGlobal',
         payload: {
           keySearch: text,
-          page: 1,
-          limit: 3,
         },
       });
     }

@@ -59,7 +59,7 @@ const DocumentResult = React.memo((props) => {
       if (isSearchAdvance) {
         dispatch({
           type: 'searchAdvance/searchDocument',
-          payload: { page, limit, ...documnetAdvance },
+          payload: { ...documnetAdvance },
         });
       } else if (keySearch) {
         dispatch({
@@ -67,8 +67,6 @@ const DocumentResult = React.memo((props) => {
           payload: {
             keySearch,
             searchType: 'DOCUMENT',
-            page,
-            limit,
           },
         });
       }
