@@ -291,20 +291,6 @@ class FilterForm extends Component {
     }
   };
 
-  // dropdownRender = (menu) => {
-  //   const { checkAll } = this.state;
-  //   return (
-  //     <>
-  //       <div className={styles.checkAll}>
-  //         <Checkbox checked={checkAll} onChange={(e) => this.handleCheckAll(e)}>
-  //           Select All
-  //         </Checkbox>
-  //       </div>
-  //       {menu}
-  //     </>
-  //   );
-  // };
-
   handleSelect = (value) => {
     const { filter, checkAll } = this.state;
     const isAll = value.includes('ALL');
@@ -400,17 +386,16 @@ class FilterForm extends Component {
                 filterOption={(input, option) => {
                   return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
                 }}
-                mode={checkAll ? null : 'multiple'}
                 tagRender={this.tagRender}
                 placeholder="Select status"
-                // dropdownRender={this.dropdownRender}
-                value={checkAll ? 'ALL' : filter.processStatus}
                 onChange={this.handleSelect}
                 onClear={() =>
                   this.setState({
                     checkAll: false,
                   })
                 }
+                mode={checkAll ? null : 'multiple'}
+                value={checkAll ? 'ALL' : filter.processStatus}
                 onSelect={checkAll ? this.onSelectAll : null} // use to un-select all
               >
                 <Option value="ALL">
