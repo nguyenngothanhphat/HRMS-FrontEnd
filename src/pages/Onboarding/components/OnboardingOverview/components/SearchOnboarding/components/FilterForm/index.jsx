@@ -238,31 +238,52 @@ class FilterForm extends Component {
   onFinish = (value) => {
     const { dispatch, currentStatus = '' } = this.props;
     const payload = { ...value };
-    Object.keys(payload).forEach(
-      (k) =>
-        (payload[k] === null && delete payload[k]) ||
-        (payload[k] === undefined && delete payload[k]) ||
-        (payload[k] === '' && delete payload[k]) ||
-        (payload[k] === [] && delete payload[k]),
-    );
+    const _processStatus = payload.processStatus || [];
+    const checkEmpty = isEmpty(_processStatus);
 
-    if ('processStatus' in payload) {
-      const newProcessStatus = payload.processStatus.filter((status) => status !== '');
+    const newProcessStatus = !checkEmpty
+      ? _processStatus.filter((status) => status !== '')
+      : undefined;
 
-      const newPayload = {
-        ...payload,
-        processStatus: newProcessStatus.length === 0 ? '' : payload.processStatus,
-      };
+    if (payload.fromDate && payload.toDate) {
+      const _fromDate = moment(payload.fromDate).format('YYYY-MM-DD');
+      const _toDate = moment(payload.toDate).format('YYYY-MM-DD');
 
+      let newPayload = {};
+
+      if (!checkEmpty) {
+        newPayload = {
+          ...payload,
+          processStatus: newProcessStatus.length === 0 ? '' : payload.processStatus,
+          fromDate: _fromDate,
+          toDate: _toDate,
+        };
+      } else {
+        newPayload = {
+          ...payload,
+          fromDate: _fromDate,
+          toDate: _toDate,
+        };
+      }
+
+      console.log(newPayload);
+      console.log('if');
       dispatch({
         type: 'onboarding/filterOnboardList',
         payload: newPayload,
         currentStatus,
       });
     } else {
+      const newPayload = {
+        ...payload,
+        processStatus: newProcessStatus.length === 0 ? '' : payload.processStatus,
+      };
+
+      console.log(newPayload);
+      console.log('else');
       dispatch({
         type: 'onboarding/filterOnboardList',
-        payload,
+        payload: newPayload,
         currentStatus,
       });
     }
