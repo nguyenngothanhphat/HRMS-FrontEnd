@@ -820,6 +820,17 @@ const routes = [
             component: './SearchResult',
           },
           {
+            path: '/search-result/:tabName',
+            hideInMenu: true,
+            component: './SearchResult',
+          },
+          {
+            path: '/search-result/:tabName/:advanced(advanced-search)',
+            name: 'Advanced Search',
+            hideInMenu: true,
+            component: './SearchResult',
+          },
+          {
             component: './404',
           },
         ],

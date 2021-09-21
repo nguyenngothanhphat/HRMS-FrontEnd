@@ -56,7 +56,7 @@ class RejectedOffers extends PureComponent {
       dispatch({
         type: 'onboarding/fetchOnboardList',
         payload: {
-          processStatus: NEW_PROCESS_STATUS.OFFER_REJECTED,
+          processStatus: [NEW_PROCESS_STATUS.OFFER_REJECTED],
           name: nameSearch,
         },
       }).then(({ statusCode }) => {

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Input, Drawer, Button } from 'antd';
+import { Input, Popover } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
-import { isEmpty } from 'lodash';
 
 import filterIcon from '@/assets/offboarding-filter.svg';
 import closeIcon from '@/assets/closeIcon.svg';
@@ -16,49 +15,16 @@ class SearchOnboarding extends Component {
     super(props);
     this.state = {
       visible: false,
-      filter: {
-        processStatus: undefined,
-        title: [],
-        location: [],
-      },
-      isFilter: false,
     };
   }
 
-  componentDidUpdate() {
-    this.disableScrollView();
-  }
-
-  componentWillUnmount() {
-    document.body.style.overflow = 'auto';
-  }
-
-  disableScrollView = () => {
-    const { visible } = this.state;
-    if (visible) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-  };
-
-  clearFilter = () => {
-    this.setState({
-      filter: {
-        processStatus: undefined,
-        title: [],
-        location: [],
-      },
-      isFilter: false,
-    });
-  };
-
-  openFilter = (visible) => {
+  openFilter = () => {
     const { dispatch } = this.props;
+    const { visible } = this.state;
 
-    this.setState({ visible });
+    this.setState({ visible: !visible });
 
-    if (visible) {
+    if (!visible) {
       dispatch({
         type: 'onboarding/fetchJobTitleList',
         payload: {},
@@ -68,42 +34,36 @@ class SearchOnboarding extends Component {
         type: 'onboarding/fetchLocationList',
         payload: {},
       });
-    } else {
-      this.clearFilter();
-    }
-  };
 
-  onFilterChange = (value) => {
-    const { filter } = this.state;
-
-    if (isEmpty(value?.location) && isEmpty(value?.title) && !value?.processStatus) {
-      this.clearFilter();
+      dispatch({
+        type: 'onboarding/saveSearch',
+        payload: { isFilter: true },
+      });
     } else {
-      this.setState({
-        isFilter: true,
-        filter: {
-          ...filter,
-          ...value,
-        },
+      dispatch({
+        type: 'onboarding/saveSearch',
+        payload: { isFilter: false },
       });
     }
   };
 
-  onApply = () => {
-    const { filter } = this.state;
-    console.log(filter);
-  };
-
-  renderFooter = () => {
-    const { isFilter } = this.state;
+  renderTitle = () => {
     return (
-      <div className={styles.footer}>
-        <Button onClick={() => this.openFilter(false)} className={styles.footer__clear}>
-          Clear
-        </Button>
-        <Button onClick={this.onApply} disabled={!isFilter} className={styles.footer__apply}>
-          Apply
-        </Button>
+      <div className={styles.title}>
+        <div className={styles.title__text}>Filter</div>
+        <img
+          alt="close"
+          src={closeIcon}
+          onClick={() => {
+            const { dispatch } = this.props;
+
+            this.setState({ visible: false });
+            dispatch({
+              type: 'onboarding/saveSearch',
+              payload: { isFilter: false },
+            });
+          }}
+        />
       </div>
     );
   };
@@ -114,26 +74,17 @@ class SearchOnboarding extends Component {
 
     return (
       <div className={styles.search}>
-        <div>
-          <img
-            onClick={() => this.openFilter(true)}
-            alt="filter"
-            src={filterIcon}
-            className={styles.filterIcon}
-          />
-          <Drawer
-            title="Filters"
-            placement="right"
-            destroyOnClose
-            closable
-            onClose={() => this.openFilter(false)}
+        <div className="site-drawer-render-in-current-wrapper">
+          <Popover
+            content={<FilterForm />}
+            title={this.renderTitle()}
+            trigger="click"
+            placement="bottomRight"
             visible={visible}
-            mask={false}
-            closeIcon={<img alt="close" src={closeIcon} />}
-            footer={this.renderFooter()}
+            onVisibleChange={this.openFilter}
           >
-            <FilterForm onFilterChange={this.onFilterChange} />
-          </Drawer>
+            <img alt="filter" src={filterIcon} className={styles.filterIcon} />
+          </Popover>
         </div>
         <Input
           onChange={(e) => onChangeSearch(e.target.value)}

@@ -56,7 +56,7 @@ class WithdrawnOffers extends PureComponent {
       dispatch({
         type: 'onboarding/fetchOnboardList',
         payload: {
-          processStatus: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
+          processStatus: [NEW_PROCESS_STATUS.OFFER_WITHDRAWN],
           name: nameSearch,
         },
       }).then(({ statusCode }) => {
