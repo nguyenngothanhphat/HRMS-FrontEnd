@@ -44,7 +44,7 @@ const NEW_PROCESS_STATUS_TABLE_NAME = {
   DRAFT: 'Draft',
   PROFILE_VERIFICATION: 'Profile Verification',
   DOCUMENT_VERIFICATION: 'Document Verification',
-  SALARY_NEGOTIATION: 'Salary Negotiation',
+  SALARY_NEGOTIATION: 'Salary Proposal',
   AWAITING_APPROVALS: 'Awaiting Approvals',
   OFFER_RELEASED: 'Offer Released',
   OFFER_ACCEPTED: 'Offer Accepted',

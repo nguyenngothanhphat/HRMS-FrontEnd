@@ -26,7 +26,7 @@ const arrStatus = [
     value: NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
   },
   {
-    label: 'Salary Negotiation',
+    label: 'Salary Proposal',
     value: NEW_PROCESS_STATUS.SALARY_NEGOTIATION,
   },
   {

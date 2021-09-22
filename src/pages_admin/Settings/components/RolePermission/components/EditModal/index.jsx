@@ -59,9 +59,9 @@ class EditModal extends PureComponent {
 
   renderHeaderModal = () => {
     const { action = 'add' } = this.props;
-    let title = 'Add New Roles & Permission';
+    let title = 'Add New Role & Permissions';
     if (action === 'edit') {
-      title = 'Edit New Roles & Permission';
+      title = 'Edit Role & Permissions';
     }
     return (
       <div className={styles.header}>

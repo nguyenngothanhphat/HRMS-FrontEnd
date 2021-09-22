@@ -155,7 +155,7 @@ class SalaryStructureTemplate extends PureComponent {
     return list.join('.');
   };
 
-  _renderVaule = (item) => {
+  _renderValue = (item) => {
     return (
       <div key={item.key} className={styles.salary__right__text}>
         {this.renderSingle(item.value, item.unit)}
@@ -181,7 +181,7 @@ class SalaryStructureTemplate extends PureComponent {
                   className={styles.bottomBar__button__secondary}
                   loading={loadingSendEmail && actionType === 're-negotiate'}
                 >
-                  Re Negotiate
+                  Contact HR
                 </Button>
                 <Button
                   type="primary"
@@ -237,7 +237,7 @@ class SalaryStructureTemplate extends PureComponent {
                             : '(Basic/12) x The number of months work'}
                         </div>
                       );
-                    return this._renderVaule(item);
+                    return this._renderValue(item);
                   }
                   return '';
                 })}

@@ -131,7 +131,7 @@ const Candidate = (props) => {
       case CANDIDATE_TASK_LINK.UPLOAD_DOCUMENTS:
         return [{ id: 3, title: 'Upload Documents', disabled: true }];
       case CANDIDATE_TASK_LINK.SALARY_NEGOTIATION:
-        return [{ id: 4, title: 'Salary Negotiation', disabled: true }];
+        return [{ id: 4, title: 'Salary Proposal', disabled: true }];
       case CANDIDATE_TASK_LINK.ACCEPT_OFFER:
         return [{ id: 6, title: 'Offer Letter', disabled: true }];
 
