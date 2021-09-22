@@ -420,24 +420,6 @@ const onboarding = {
         if (statusCode !== 200) throw response;
         const returnedData = formatData(response.data);
 
-        if (currentStatus === 'ALL') {
-          yield put({
-            type: 'saveOnboardingOverview',
-            payload: {
-              total: response.total,
-              currentStatus: 'All',
-            },
-          });
-        } else {
-          yield put({
-            type: 'saveOnboardingOverview',
-            payload: {
-              total: response.total,
-              currentStatus,
-            },
-          });
-        }
-
         switch (currentStatus) {
           case DRAFT:
             yield put({
@@ -445,6 +427,62 @@ const onboarding = {
               payload: { drafts: returnedData },
             });
             break;
+          case PROFILE_VERIFICATION: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { profileVerifications: returnedData },
+            });
+            break;
+          }
+          case DOCUMENT_VERIFICATION: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { documentVerifications: returnedData },
+            });
+            break;
+          }
+          case SALARY_NEGOTIATION: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { salaryNegotiations: returnedData },
+            });
+            break;
+          }
+          case AWAITING_APPROVALS: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { awaitingApprovals: returnedData },
+            });
+            break;
+          }
+          case OFFER_RELEASED: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { offerReleased: returnedData },
+            });
+            break;
+          }
+          case OFFER_ACCEPTED: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { offerAccepted: returnedData },
+            });
+            break;
+          }
+          case OFFER_REJECTED: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { rejectedOffers: returnedData },
+            });
+            break;
+          }
+          case OFFER_WITHDRAWN: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { withdrawnOffers: returnedData },
+            });
+            break;
+          }
 
           default:
             // ALL
