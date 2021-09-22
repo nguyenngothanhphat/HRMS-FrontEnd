@@ -1,5 +1,5 @@
 import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input } from 'antd';
+import { Button, Input, notification } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
@@ -62,9 +62,12 @@ class Department extends PureComponent {
       },
       {
         title: 'Parent Department',
-        dataIndex: 'departmentParentName',
-        key: 'departmentParentName',
+        dataIndex: 'departmentParentInfo',
+        key: 'departmentParentInfo',
         width: '20%',
+        render: (departmentParentInfo = {}) => {
+          return <span>{departmentParentInfo.name || ''}</span>;
+        },
       },
       {
         title: 'HR POC',
@@ -91,9 +94,24 @@ class Department extends PureComponent {
         key: 'action',
         align: 'center',
         render: (_, row) => {
+          const disabled =
+            row.name === 'Engineering' ||
+            row.name === 'Finance' ||
+            row.name === 'Legal' ||
+            row.name === 'HR' ||
+            row.name === 'Sales' ||
+            row.name === 'Marketing' ||
+            row.name === 'Operations & Facility management';
+
           return (
             <div className={styles.actions}>
-              <img src={DeleteIcon} onClick={() => this.onRemoveDepartment(row)} alt="" />
+              <img
+                style={disabled ? { opacity: 0.5, cursor: 'default' } : {}}
+                src={DeleteIcon}
+                onClick={disabled ? () => {} : () => this.onRemoveDepartment(row)}
+                alt=""
+              />
+
               <img src={EditIcon} onClick={() => this.onEditDepartment(row)} alt="" />
             </div>
           );
@@ -113,14 +131,27 @@ class Department extends PureComponent {
 
   onRemoveDepartment = async (row) => {
     const { dispatch } = this.props;
-    const res = await dispatch({
-      type: 'adminSetting/removeDepartment',
-      payload: {
-        id: row._id,
-      },
+    const { listDepartments = [] } = this.props;
+
+    let hasChildDept = false;
+    listDepartments.forEach((item) => {
+      if (item?.departmentParentName === row.name) {
+        hasChildDept = true;
+      }
     });
-    if (res.statusCode === 200) {
-      this.fetchDepartmentList();
+
+    if (hasChildDept) {
+      notification.error('This department cannot be deleted');
+    } else {
+      const res = await dispatch({
+        type: 'adminSetting/removeDepartment',
+        payload: {
+          id: row._id,
+        },
+      });
+      if (res.statusCode === 200) {
+        this.fetchDepartmentList();
+      }
     }
   };
 
@@ -187,6 +218,7 @@ class Department extends PureComponent {
           onRefresh={this.fetchDepartmentList}
           selectedDepartmentID={selectedDepartmentID}
           action={selectedDepartmentID ? 'edit' : 'add'}
+          listDepartments={listDepartments}
         />
       </div>
     );
