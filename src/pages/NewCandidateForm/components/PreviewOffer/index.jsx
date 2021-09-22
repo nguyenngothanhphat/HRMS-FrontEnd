@@ -50,6 +50,8 @@ const PreviewOffer = (props) => {
     assigneeManager: { _id: assigneeManagerId = '' } = {},
     ticketID = '',
     offerLetterTemplate: offerLetterTemplateProp = '',
+    reasonForRejectionHR: reasonForRejectionHRProp = '',
+    reasonForWithdraw: reasonForWithdrawProp = '',
   } = tempData;
   const {
     privateEmail: candidateEmailProp = '',
@@ -76,6 +78,7 @@ const PreviewOffer = (props) => {
   const [openModal, setOpenModal] = useState(false);
   const [openModal2, setOpenModal2] = useState(false);
   const [openModal3, setOpenModal3] = useState(false);
+  const [openModal4, setOpenModal4] = useState(false);
 
   const [modalSignature, setModalSignature] = useState('');
   const [isSignatureHR, setIsSignatureHR] = useState(false);
@@ -289,6 +292,7 @@ const PreviewOffer = (props) => {
     });
     if (res.statusCode === 200) {
       setWithdrawOfferModalVisible(false);
+      setOpenModal4(true);
     }
   };
 
@@ -355,6 +359,11 @@ const PreviewOffer = (props) => {
     setOpenModal3(false);
 
     history.push(`/onboarding/list/rejected-offer`);
+  };
+
+  const closeModal4 = () => {
+    setOpenModal4(false);
+    history.push(`/onboarding/list/withdrawn-offers`);
   };
 
   const renderCandidateSignature = () => {
@@ -815,6 +824,12 @@ const PreviewOffer = (props) => {
         if (isAwaitingOffer || isNewOffer) {
           return 'Reject';
         }
+        if (isRejectedOffer) {
+          return 'Offer Rejected';
+        }
+        if (isWithdrawnOffer) {
+          return 'Offer Withdrawn';
+        }
         return 'Previous';
       };
 
@@ -822,12 +837,12 @@ const PreviewOffer = (props) => {
         if (isSentOffer || isAcceptedOffer) {
           return 'Withdraw';
         }
-        if (isRejectedOffer) {
-          return 'Rejected';
-        }
-        if (isWithdrawnOffer) {
-          return 'Withdrawn';
-        }
+        // if (isRejectedOffer) {
+        //   return 'Rejected';
+        // }
+        // if (isWithdrawnOffer) {
+        //   return 'Withdrawn';
+        // }
         return 'Approve';
       };
 
@@ -846,7 +861,7 @@ const PreviewOffer = (props) => {
           setWithdrawOfferModalVisible(true);
         }
         if (isNewOffer || isAwaitingOffer) {
-          // HR MANAGER APPROVE A TICKET HERE
+          // HR MANAGER APPROVES A TICKET HERE
           handleSendFinalOffer();
         }
       };
@@ -923,12 +938,24 @@ const PreviewOffer = (props) => {
 
   const WithdrawnNote = {
     title: 'Offer Withdrawn',
-    data: <Typography.Text>The offer has been withdrawn by the HR Manager.</Typography.Text>,
+    data: (
+      <p>
+        <Typography.Text>The offer has been withdrawn by the HR Manager.</Typography.Text>
+        <br />
+        <Typography.Text>Reason: {reasonForWithdrawProp}</Typography.Text>
+      </p>
+    ),
   };
 
   const RejectedNote = {
     title: 'Offer Rejected',
-    data: <Typography.Text>The offer has been rejected.</Typography.Text>,
+    data: (
+      <p>
+        <Typography.Text>The offer has been rejected by the HR Manager.</Typography.Text>
+        <br />
+        <Typography.Text>Reason: {reasonForRejectionHRProp}</Typography.Text>
+      </p>
+    ),
   };
 
   const SentForApprovalNote = {
@@ -1311,6 +1338,19 @@ const PreviewOffer = (props) => {
               tempData={tempData}
               candidateEmail={mail}
               type="reject"
+            />
+          }
+        />
+
+        <CustomModal
+          open={openModal4}
+          closeModal={closeModal4}
+          content={
+            <ModalContent
+              closeModal={closeModal4}
+              tempData={tempData}
+              candidateEmail={mail}
+              type="withdraw"
             />
           }
         />
