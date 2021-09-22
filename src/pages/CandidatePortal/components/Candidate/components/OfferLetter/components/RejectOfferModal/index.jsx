@@ -19,7 +19,7 @@ class RejectOfferModal extends PureComponent {
   componentDidMount = async () => {};
 
   renderModalHeader = () => {
-    const { title = 'Contact HR' } = this.props;
+    const { title = 'Reason for Rejection' } = this.props;
     return (
       <div className={styles.header}>
         <p className={styles.header__text}>{title}</p>
