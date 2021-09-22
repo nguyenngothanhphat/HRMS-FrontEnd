@@ -9,29 +9,27 @@
         cursor: pointer;
     }
 }
-:global{
+.filterPopover{
+    width: 320px;
+    height: auto;
+    background: #FFFFFF;
 
-    .ant-popover{
-        width: 320px;
-        height: auto;
+    :global{
+        .ant-popover-title, .ant-popover-inner-content{
+            border-bottom: 1px solid #D6DCE0;
 
-        background: #FFFFFF;
-    }
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+        
+        .ant-popover-inner-content{
+            padding: 0;
+            padding-bottom: 24px;
+        }
 
-    .ant-popover-title, .ant-popover-inner-content{
-        border-bottom: 1px solid #D6DCE0;
-
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
-    }
-    
-    .ant-popover-inner-content{
-        padding: 0;
-        padding-bottom: 24px;
-    }
-
-    .ant-popover-title{
-        padding: 0;
+        .ant-popover-title{
+            padding: 0;
+        }
     }
 }
 
