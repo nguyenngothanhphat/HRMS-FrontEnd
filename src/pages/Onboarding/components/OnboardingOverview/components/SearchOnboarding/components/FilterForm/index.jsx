@@ -236,17 +236,22 @@ class FilterForm extends Component {
     const { filter } = this.state;
     let payload = { ...value, ...filter };
 
+    if (payload.processStatus === undefined && currentStatus !== 'ALL') {
+      payload = {
+        ...payload,
+        processStatus: [currentStatus],
+      };
+    }
+
     if (payload.fromDate && payload.toDate) {
       const _fromDate = moment(payload.fromDate).format('YYYY-MM-DD');
       const _toDate = moment(payload.toDate).format('YYYY-MM-DD');
-
       payload = {
         ...payload,
         fromDate: _fromDate,
         toDate: _toDate,
       };
     }
-
     dispatch({
       type: 'onboarding/filterOnboardList',
       payload,
@@ -255,56 +260,99 @@ class FilterForm extends Component {
   };
 
   handleCheckAll = (e) => {
-    const { checked, filter } = e.target;
+    const { filter } = this.state;
     let data = { ...filter };
-    if (checked) {
+
+    if (e === 'ALL') {
       data = {
         processStatus: Object.values(NEW_PROCESS_STATUS),
       };
+      this.setState({
+        checkAll: true,
+        filter: {
+          ...filter,
+          ...data,
+        },
+      });
     } else {
-      data = {
-        processStatus: undefined,
-      };
+      const { checked } = e.target;
+      if (checked) {
+        data = {
+          processStatus: Object.values(NEW_PROCESS_STATUS),
+        };
+      } else {
+        data = {
+          processStatus: undefined,
+        };
+      }
+
+      this.setState({
+        checkAll: checked,
+        filter: {
+          ...filter,
+          ...data,
+        },
+      });
     }
-
-    this.setState({
-      checkAll: checked,
-      filter: {
-        ...filter,
-        ...data,
-      },
-    });
-  };
-
-  dropdownRender = (menu) => {
-    const { checkAll } = this.state;
-    return (
-      <>
-        <div className={styles.checkAll}>
-          <Checkbox checked={checkAll} onChange={this.handleCheckAll}>
-            Select All
-          </Checkbox>
-        </div>
-        {menu}
-      </>
-    );
   };
 
   handleSelect = (value) => {
+    const { filter, checkAll } = this.state;
+    const isAll = value.includes('ALL');
+
+    if (isAll) {
+      this.handleCheckAll('ALL');
+    } else {
+      let arrayStatus = checkAll ? [...filter.processStatus] : [];
+      arrayStatus = arrayStatus.filter((status) => status !== value);
+
+      if (checkAll) {
+        this.setState({
+          isFilter: true,
+          filter: {
+            ...filter,
+            processStatus: arrayStatus,
+          },
+          checkAll: arrayStatus?.length === Object.keys(NEW_PROCESS_STATUS).length,
+        });
+      } else {
+        this.setState({
+          isFilter: true,
+          filter: {
+            ...filter,
+            processStatus: [...value],
+          },
+          checkAll: value?.length === Object.keys(NEW_PROCESS_STATUS).length,
+        });
+      }
+    }
+  };
+
+  onSelectAll = (valueAll) => {
     const { filter } = this.state;
-    this.setState({
-      isFilter: true,
-      filter: {
-        ...filter,
-        processStatus: [...value],
-      },
-      checkAll: value?.length === Object.keys(NEW_PROCESS_STATUS).length,
-    });
+    let data = { ...filter };
+
+    if (
+      valueAll === 'ALL' &&
+      data.processStatus.length === Object.keys(NEW_PROCESS_STATUS).length
+    ) {
+      data = {
+        processStatus: undefined,
+      };
+      this.setState({
+        isFilter: true,
+        filter: {
+          ...filter,
+          ...data,
+        },
+        checkAll: false,
+      });
+    }
   };
 
   render() {
-    const { jobTitleList = [], locationList = [] } = this.props;
-    const { isFilter, filter } = this.state;
+    const { jobTitleList = [], locationList = [], currentStatus = '' } = this.props;
+    const { isFilter, filter, checkAll } = this.state;
     const dateFormat = 'MMM DD, YYYY';
 
     const fieldsArray = [
@@ -343,18 +391,23 @@ class FilterForm extends Component {
                 filterOption={(input, option) => {
                   return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
                 }}
-                mode="multiple"
                 tagRender={this.tagRender}
                 placeholder="Select status"
-                dropdownRender={this.dropdownRender}
-                value={filter.processStatus}
                 onChange={this.handleSelect}
                 onClear={() =>
                   this.setState({
                     checkAll: false,
                   })
                 }
+                mode={checkAll ? null : 'multiple'}
+                value={checkAll ? 'ALL' : filter.processStatus}
+                onSelect={checkAll ? this.onSelectAll : null} // use to un-select all
+                disabled={currentStatus !== 'ALL'}
               >
+                <Option value="ALL">
+                  <Checkbox value="ALL" checked={checkAll} onChange={this.handleCheckAll} />
+                  <span>Select All</span>
+                </Option>
                 {arrStatus.map((option) => {
                   return (
                     <Option key={option.value} value={option.value}>
