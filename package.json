@@ -32,7 +32,8 @@
     "test:component": "umi test ./src/components",
     "tsc": "tsc --noEmit",
     "cypress-test": "cd tests && cd ui_automation_hrms && cypress open",
-    "cypress-jenkin": "cd tests && cd ui_automation_hrms && cypress run"
+    "cypress-jenkin": "cd tests && cd ui_automation_hrms && node cypress_config_run.js"
+
   },
   "lint-staged": {
     "**/*.less": "stylelint --syntax less",
