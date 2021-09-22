@@ -23,6 +23,8 @@ class ApplicationStatus extends PureComponent {
         return <span className={`${styles.status} ${styles.accepted}`}>Offer Accepted</span>;
       case NEW_PROCESS_STATUS.OFFER_REJECTED:
         return <span className={`${styles.status} ${styles.rejected}`}>Offer Rejected</span>;
+      case NEW_PROCESS_STATUS.OFFER_WITHDRAWN:
+        return <span className={`${styles.status} ${styles.rejected}`}>Offer Withdrawn</span>;
       default:
         return <span className={styles.status}>Onboarding</span>;
     }
