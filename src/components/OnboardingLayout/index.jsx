@@ -13,6 +13,7 @@ import OfferAccepted from '@/pages/Onboarding/components/OnboardingOverview/comp
 import OfferReleased from '@/pages/Onboarding/components/OnboardingOverview/components/OfferReleased';
 import SalaryNegotiation from '@/pages/Onboarding/components/OnboardingOverview/components/SalaryNegotiation';
 import AwaitingApprovals from '@/pages/Onboarding/components/OnboardingOverview/components/AwaitingApprovals';
+import NeedsChanges from '@/pages/Onboarding/components/OnboardingOverview/components/NeedsChanges';
 
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import MenuItem from './components/MenuItem';
@@ -33,6 +34,8 @@ const getComponent = (name) => {
       return <SalaryNegotiation />;
     case 'AwaitingApprovals': // 6
       return <AwaitingApprovals />;
+    case 'NeedsChanges': // 6
+      return <NeedsChanges />;
     case 'OfferReleased': // 7
       return <OfferReleased />;
     case 'OfferAccepted': // 8
