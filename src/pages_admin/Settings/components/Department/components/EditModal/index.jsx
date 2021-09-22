@@ -95,14 +95,14 @@ class EditModal extends PureComponent {
 
   onFinish = async (values) => {
     const { dispatch, selectedDepartmentID = '', onRefresh = () => {} } = this.props;
-    const { name = '', departmentParentName = '', hrPOC = '', financePOC = '' } = values;
+    const { name = '', departmentParentId = '', hrPOC = '', financePOC = '' } = values;
 
     const addDepartment = async () => {
       const res = await dispatch({
         type: 'adminSetting/addDepartment',
         payload: {
           name,
-          departmentParentName,
+          departmentParentId,
           hrPOC,
           financePOC,
         },
@@ -118,7 +118,7 @@ class EditModal extends PureComponent {
         payload: {
           id: selectedDepartmentID,
           name,
-          departmentParentName,
+          departmentParentId,
           hrPOC,
           financePOC,
         },
@@ -159,7 +159,7 @@ class EditModal extends PureComponent {
     const {
       visible = false,
       action = '',
-      // listDepartments = [],
+      listDepartments = [],
       // loadingFetchDepartmentList = false,
       loadingFetchDepartmentByID = false,
       loadingUpdateDepartment = false,
@@ -167,7 +167,7 @@ class EditModal extends PureComponent {
       loadingFetchEmployeeList = false,
       viewingDepartment: {
         name: nameProp = '',
-        departmentParentName: departmentParentNameProp = '',
+        departmentParentId: departmentParentIdProp = '',
         hrPOC: hrPOCProp = '',
         financePOC = '',
       } = {},
@@ -209,7 +209,7 @@ class EditModal extends PureComponent {
               onFinish={this.onFinish}
               initialValues={{
                 name: nameProp,
-                departmentParentName: departmentParentNameProp,
+                departmentParentId: departmentParentIdProp,
                 hrPOC: hrPOCProp,
                 financePOC,
               }}
@@ -223,12 +223,18 @@ class EditModal extends PureComponent {
                 <Input />
               </Form.Item>
               <Form.Item
-                rules={[{ required: true, message: 'Please enter parent department name!' }]}
+                // rules={[{ required: true, message: 'Please enter parent department name!' }]}
                 label="Parent Department Name"
-                name="departmentParentName"
+                name="departmentParentId"
                 labelCol={{ span: 24 }}
               >
-                <Input />
+                <Select showSearch allowClear filterOption={false}>
+                  {listDepartments.map((d) => (
+                    <Select.Option key={d._id} value={d._id}>
+                      {d.name}
+                    </Select.Option>
+                  ))}
+                </Select>
               </Form.Item>
               <Form.Item
                 label="HR Point of Contact"
