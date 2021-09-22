@@ -2,9 +2,9 @@ import React, { PureComponent } from 'react';
 import { Row, Col, message } from 'antd';
 import moment from 'moment';
 import axios from 'axios';
-import styles from './index.less';
 import DownloadIcon from '@/assets/candidatePortal/downloadIcon.svg';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import styles from './index.less';
 
 class ApplicationStatus extends PureComponent {
   itemBox = (item, index) => {
@@ -62,7 +62,7 @@ class ApplicationStatus extends PureComponent {
         dateOfJoining = '',
         department: { name: departmentName = '' } = {} || {},
         workLocation = {} || {},
-        grade = '',
+        grade: { name: gradeName = '' } = {},
         firstName: candidateFirstName = '',
         middleName: candidateMiddleName = '',
         lastName: candidateLastName = '',
@@ -104,7 +104,7 @@ class ApplicationStatus extends PureComponent {
       },
       {
         name: 'Grade',
-        value: grade || '-',
+        value: gradeName || '-',
       },
       {
         name: 'Location',

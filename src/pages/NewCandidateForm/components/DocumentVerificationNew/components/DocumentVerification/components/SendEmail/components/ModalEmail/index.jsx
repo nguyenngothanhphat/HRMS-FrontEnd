@@ -128,7 +128,7 @@ class ModalEmail extends Component {
                     <Typography.Paragraph className={style.helper}>
                       Only authorised people can access this link
                     </Typography.Paragraph>
-                    <Row gutter={[4, 0]}>
+                    {/* <Row gutter={[4, 0]}>
                       <Col span={2}>
                         <CheckOutlined />
                       </Col>
@@ -146,7 +146,7 @@ class ModalEmail extends Component {
                       <Col span={22}>
                         <Typography.Text>HRmanager@terralogic.com</Typography.Text>
                       </Col>
-                    </Row>
+                    </Row> */}
                     {privateEmail !== '' && (
                       <Row>
                         <Col span={2}>
