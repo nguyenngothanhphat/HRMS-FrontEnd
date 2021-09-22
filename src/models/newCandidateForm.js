@@ -844,6 +844,14 @@ const newCandidateForm = {
           type: 'saveOrigin',
           payload: {
             processStatus,
+            reasonForRejection: payload.reasonForRejection,
+          },
+        });
+        yield put({
+          type: 'saveTemp',
+          payload: {
+            processStatus,
+            reasonForRejection: payload.reasonForRejection,
           },
         });
         // yield put({ type: 'save', payload: { test: data } });
@@ -1586,12 +1594,14 @@ const newCandidateForm = {
           type: 'saveOrigin',
           payload: {
             processStatus: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
+            reasonForWithdraw: payload.reasonForWithdraw,
           },
         });
         yield put({
           type: 'saveTemp',
           payload: {
             processStatus: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
+            reasonForWithdraw: payload.reasonForWithdraw,
           },
         });
       } catch (errors) {

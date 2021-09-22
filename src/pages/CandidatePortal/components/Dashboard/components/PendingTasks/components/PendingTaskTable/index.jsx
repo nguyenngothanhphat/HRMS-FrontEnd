@@ -21,7 +21,7 @@ class PendingTaskTable extends PureComponent {
             <span>{item.dueDate ? moment(item.dueDate).format('MM.DD.YY') : '-'}</span>
           </Col>
         </Row>
-        {index + 1 < listLength && <div className={styles.divider} />}
+        {index + 1 <= listLength && <div className={styles.divider} />}
       </div>
     );
   };

@@ -425,7 +425,8 @@ class BackgroundRecheck extends Component {
             </p>
             <div className={styles.backgroundRecheck__left}>
               {this.renderCollapseFields()}
-              {this.renderMarkAllDocument()}
+              {/* Aashwij asked to hide this option in task 852 */}
+              {/* {this.renderMarkAllDocument()} */}
             </div>
 
             {this._renderBottomBar()}
