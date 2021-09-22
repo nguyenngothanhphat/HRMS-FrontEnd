@@ -221,7 +221,7 @@ const OfferLetter = (props) => {
                     }}
                     className={styles.bottomBar__button__secondary}
                   >
-                    Contact HR
+                    Reject
                   </Button>
                   <Button
                     type="primary"
