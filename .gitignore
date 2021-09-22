@@ -40,6 +40,8 @@ screenshot
 
 # cypress
 tests/ui_automation_hrms/cypress/downloads
+tests/ui_automation_hrms/cypress/screenshots
+tests/ui_automation_hrms/cypress/videos
 tests/ui_automation_hrms/cypress/fixtures
 # tests/ui_automation_hrms/cypress/fixtures/offboarding_ticket.json
 
