@@ -17,6 +17,8 @@ class CollapseFieldsTypeD extends PureComponent {
     super(props);
     this.state = {
       documentName: '',
+      indeterminate: true,
+      checkAll: false,
     };
   }
 
@@ -34,16 +36,26 @@ class CollapseFieldsTypeD extends PureComponent {
     removeDocumentName(index);
   };
 
+  onCheckAllChange = (e) => {
+    e.stopPropagation();
+    this.setState({
+      indeterminate: false,
+      checkAll: e.target.checked,
+    });
+  };
+
   renderHeader = () => {
     const { disabled = false, certifications = {} } = this.props;
     const title = `Type ${certifications.type}: ${certifications.name}`;
+    const { indeterminate, checkAll } = this.state;
 
     return (
       <div className={styles.header}>
         <Checkbox
-          // checked
+          checked={checkAll}
+          indeterminate={indeterminate}
+          onClick={(e) => this.onCheckAllChange(e)}
           disabled={disabled}
-          // onClick={(event) => this.onCheckAllChange(event)}
         />
         <span className={styles.titleText}>{title}</span>
       </div>

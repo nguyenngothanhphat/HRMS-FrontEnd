@@ -56,7 +56,7 @@ class SalaryNegotiation extends PureComponent {
       dispatch({
         type: 'onboarding/fetchOnboardList',
         payload: {
-          processStatus: NEW_PROCESS_STATUS.SALARY_NEGOTIATION,
+          processStatus: [NEW_PROCESS_STATUS.SALARY_NEGOTIATION],
           name: nameSearch,
         },
       }).then(({ statusCode }) => {

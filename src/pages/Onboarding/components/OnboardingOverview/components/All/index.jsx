@@ -14,6 +14,7 @@ const { TabPane } = Tabs;
     dataAll,
     total,
     loadingAll: loading.effects['onboarding/fetchOnboardListAll'],
+    loadingFilter: loading.effects['onboarding/filterOnboardList'],
   }),
 )
 class OnboardingAll extends Component {
@@ -75,7 +76,7 @@ class OnboardingAll extends Component {
   };
 
   render() {
-    const { dataAll = [], total = 0, loadingAll } = this.props;
+    const { dataAll = [], total = 0, loadingAll, loadingFilter } = this.props;
     const { pageSelected, size, loadingSearch } = this.state;
 
     return (
@@ -88,7 +89,7 @@ class OnboardingAll extends Component {
             <TabPane key="1">
               <AllTab
                 list={dataAll}
-                loading={loadingAll}
+                loading={loadingAll || loadingFilter}
                 loadingSearch={loadingSearch}
                 pageSelected={pageSelected}
                 size={size}

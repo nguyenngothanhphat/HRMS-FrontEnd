@@ -97,13 +97,23 @@ class PopupContentHr extends Component {
               <div className={styles.contact__title}>Email id: </div>
             </Col>
             <Col span={15}>
-              <div className={styles.contact__value}>{workEmail}</div>
+              <div
+                style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
+                className={styles.contact__value}
+              >
+                {workEmail}
+              </div>
             </Col>
             <Col span={9}>
               <div className={styles.contact__title}>Location: </div>
             </Col>
             <Col span={15}>
-              <div className={styles.contact__value}>{locationName || ''}</div>
+              <div
+                style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
+                className={styles.contact__value}
+              >
+                {locationName || ''}
+              </div>
             </Col>
             <Col span={9}>
               <div className={styles.contact__title}>Local Time: </div>

@@ -62,10 +62,6 @@
             margin: 4px;
         }
 
-        .ant-tag-close-icon{
-            margin-left: 12px;
-        }
-
         .ant-tag::before{
             content: '';
             width: 4px;
@@ -85,7 +81,233 @@
         }
     }
 
+    
     .form{
-        // width: ;
+        width: 100%;
+        
+        &__top{
+            padding: 16px;
+
+
+            :global{
+                .ant-select-item-option-content{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+
+            .processStatus{
+                width: 100%;
+                margin-bottom: 24px;
+
+                &__label{
+                    height: 32px;
+                    display: flex;
+                    align-items: center;
+
+                    .labelText{
+                        font-family: Roboto;
+                        font-style: normal;
+                        font-weight: normal;
+                        font-size: 12px;
+                        line-height: 14px;
+                        text-transform: uppercase;
+                        color: #707177; 
+                    }
+                }
+
+
+                :global{
+                    .ant-select{
+                        width: 100%;
+                    }
+                }
+            }
+
+        }
+        
+        .doj{
+            width: 100%;
+            :global{
+                .ant-form-item{
+                    margin-bottom: 0 !important;
+                }
+
+                .ant-picker{
+                    width: 132px;
+                    height: 37px;
+                    background: #FFFFFF;
+                    border: 1px solid #D6DCE4;
+                    border-radius: 5px;
+                }
+
+                .ant-picker-input > input {
+                    font-family: Roboto;
+                    font-style: normal;
+                    font-weight: normal;
+                    font-size: 14px;
+                    line-height: 16px;
+
+                    color: #161C29;
+
+                    opacity: 0.5;
+                }
+            }
+
+            &__label{
+                height: 32px;
+                display: flex;
+                align-items: center;
+            }
+
+            .labelText{
+                font-family: Roboto;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 12px;
+                line-height: 14px;
+                text-transform: uppercase;
+                color: #707177;
+            }
+
+            .labelTo{
+                text-transform: lowercase;
+            }
+            
+            &__date{
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                .calendarIcon{
+                    filter: invert(27%) sepia(81%) saturate(3092%) hue-rotate(202deg) brightness(99%)
+            contrast(101%);
+                }
+            }
+        }
+
+        .divider{
+            border-top: 1px solid #E1DFDF;
+            margin: 25px 0 16px 0;
+        }
+
+        .footer{
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 16px;
+
+            :global{
+                .ant-btn{
+                    background: transparent;
+                    box-shadow: none;
+                    border: none;
+                    border-radius: 18px;
+                    padding: 10px 27px;
+                    
+                    font-family: Roboto;
+                    font-style: normal;
+                    font-weight: normal;
+                    font-size: 13px;
+                    line-height: 15px;
+                    letter-spacing: 0.2px;
+
+                    color: #464646;
+                    
+                    height: 36px;
+                    outline: none;
+                }
+            }
+            
+            &__apply{
+
+                background: #FFA100 !important;
+
+                font-weight: 500 !important;
+                font-size: 14px !important;
+                line-height: 16px !important;
+                letter-spacing: 0.13125px !important;
+
+                color: #FFFFFF !important;
+            }
+        }
+    }
+}
+
+:global{
+
+    // .ant-select-selection-item-content .ant-checkbox-wrapper .ant-checkbox-wrapper-checked,
+    .ant-tag .ant-checkbox-wrapper, .ant-select-selection-item .ant-checkbox-wrapper {
+        display: none !important;
+    }
+
+    .ant-select-selection-item > span {
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 16px;
+
+        color: #161C29;
+    }
+
+    .ant-select-item-option-content > span {
+        margin-left: 8px;
+    }
+
+    .ant-select-item-option-selected:not(.ant-select-item-option-disabled) .ant-select-item-option-state{
+        display: none !important;
+    }
+
+    .ant-select-item-option-selected:not(.ant-select-item-option-disabled){
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 16px;
+
+        color: #2C6DF9;
+    }
+
+    .ant-select-item-option-selected:not(.ant-select-item-option-disabled), .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+        background-color: #fff;
+    }
+
+    .ant-select-item{
+        padding: 7px 12px;
+    }
+
+    .ant-checkbox-inner {
+        width: 18px;
+        height: 18px;
+
+        border: 1px solid #D8D8D8;
+        border-radius: 4px;
+    }
+
+    .ant-checkbox-checked .ant-checkbox-inner {
+        background: #2C6DF9 !important;
+    }
+
+    .ant-checkbox-checked .ant-checkbox-inner::after {
+        width: 6px;
+        height: 11px;
+        border: 2px solid #fff;
+        border-top: 0;
+        border-left: 0;
+    }
+
+    .ant-select-selection-search-input{
+        margin-left: -4px !important;
+    }
+}
+
+.checkAll{
+    :global{
+        .ant-checkbox-wrapper {
+            width: 100%;
+            padding: 7px 12px;
+        }
     }
 }

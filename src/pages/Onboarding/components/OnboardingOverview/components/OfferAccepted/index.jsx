@@ -56,7 +56,7 @@ class OfferAccepted extends PureComponent {
       dispatch({
         type: 'onboarding/fetchOnboardList',
         payload: {
-          processStatus: NEW_PROCESS_STATUS.OFFER_ACCEPTED,
+          processStatus: [NEW_PROCESS_STATUS.OFFER_ACCEPTED],
           name: nameSearch,
         },
       }).then(({ statusCode }) => {
