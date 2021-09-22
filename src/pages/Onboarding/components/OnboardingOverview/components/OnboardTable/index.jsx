@@ -305,6 +305,7 @@ class OnboardTable extends Component {
             }
             trigger="hover"
             placement="bottomRight"
+            overlayClassName={styles.popupContentHr}
           >
             <span
               className={styles.renderAssignee}
@@ -333,6 +334,7 @@ class OnboardTable extends Component {
             }
             trigger="hover"
             placement="bottomRight"
+            overlayClassName={styles.popupContentHr}
           >
             <span
               className={styles.renderAssignee}

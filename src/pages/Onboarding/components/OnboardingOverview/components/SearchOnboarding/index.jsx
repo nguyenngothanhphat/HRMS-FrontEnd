@@ -82,6 +82,7 @@ class SearchOnboarding extends Component {
             placement="bottomRight"
             visible={visible}
             onVisibleChange={this.openFilter}
+            overlayClassName={styles.filterPopover}
           >
             <img alt="filter" src={filterIcon} className={styles.filterIcon} />
           </Popover>
