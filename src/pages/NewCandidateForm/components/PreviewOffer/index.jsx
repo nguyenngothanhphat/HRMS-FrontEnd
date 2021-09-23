@@ -79,6 +79,7 @@ const PreviewOffer = (props) => {
   const [openModal2, setOpenModal2] = useState(false);
   const [openModal3, setOpenModal3] = useState(false);
   const [openModal4, setOpenModal4] = useState(false);
+  const [openModal5, setOpenModal5] = useState(false);
 
   const [modalSignature, setModalSignature] = useState('');
   const [isSignatureHR, setIsSignatureHR] = useState(false);
@@ -113,6 +114,7 @@ const PreviewOffer = (props) => {
   // const isTicketManager = false;
   const isNewOffer = processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION;
   const isAwaitingOffer = processStatus === NEW_PROCESS_STATUS.AWAITING_APPROVALS;
+  const isNeedsChanges = processStatus === NEW_PROCESS_STATUS.NEEDS_CHANGES;
   const isAcceptedOffer = processStatus === NEW_PROCESS_STATUS.OFFER_ACCEPTED;
   const isRejectedOffer = processStatus === NEW_PROCESS_STATUS.OFFER_REJECTED;
   const isWithdrawnOffer = processStatus === NEW_PROCESS_STATUS.OFFER_WITHDRAWN;
@@ -243,7 +245,11 @@ const PreviewOffer = (props) => {
       payload: { hrSignature: id, candidate, options: skip, tenantId: getCurrentTenant() },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
-        setOpenModal2(true);
+        if (isNeedsChanges) {
+          setOpenModal5(true);
+        } else {
+          setOpenModal2(true);
+        }
       }
     });
   };
@@ -358,7 +364,11 @@ const PreviewOffer = (props) => {
   const closeModal3 = () => {
     setOpenModal3(false);
 
-    history.push(`/onboarding/list/rejected-offer`);
+    if (isNeedsChanges) {
+      history.push(`/onboarding/list/needs-changes`);
+    } else {
+      history.push(`/onboarding/list/rejected-offer`);
+    }
   };
 
   const closeModal4 = () => {
@@ -557,23 +567,25 @@ const PreviewOffer = (props) => {
           // Default image
           <>
             <img className={styles.signatureImg} src={whiteImg} alt="" />
-            {(isTicketAssignee || isTicketManager) && (isNewOffer || isAwaitingOffer) && (
-              <button type="submit" onClick={openModalUploadSignature}>
-                {optionSignature === 'draw' ? 'Click here to draw' : 'Upload'}
-              </button>
-            )}
+            {(isTicketAssignee || isTicketManager) &&
+              (isNewOffer || isAwaitingOffer || isNeedsChanges) && (
+                <button type="submit" onClick={openModalUploadSignature}>
+                  {optionSignature === 'draw' ? 'Click here to draw' : 'Upload'}
+                </button>
+              )}
           </>
         ) : (
           <>
             <img className={styles.signatureImg} src={hrSignature.url} alt="" />
-            {(isTicketAssignee || isTicketManager) && (isNewOffer || isAwaitingOffer) && (
-              <>
-                <button type="submit" onClick={openModalUploadSignature}>
-                  {optionSignature === 'draw' ? 'Click here to draw' : 'Upload new'}
-                </button>
-                <CancelIcon resetImg={() => resetImg('hr')} />
-              </>
-            )}
+            {(isTicketAssignee || isTicketManager) &&
+              (isNewOffer || isAwaitingOffer || isNeedsChanges) && (
+                <>
+                  <button type="submit" onClick={openModalUploadSignature}>
+                    {optionSignature === 'draw' ? 'Click here to draw' : 'Upload new'}
+                  </button>
+                  <CancelIcon resetImg={() => resetImg('hr')} />
+                </>
+              )}
           </>
         )}
       </div>
@@ -740,7 +752,7 @@ const PreviewOffer = (props) => {
           <img className={styles.signatureImg} src={hrManagerSignature.url} alt="" />
         )}
 
-        {isTicketManager && (isNewOffer || isAwaitingOffer) && (
+        {isTicketManager && (isNewOffer || isAwaitingOffer || isNeedsChanges) && (
           <>
             <button
               type="submit"
@@ -822,8 +834,9 @@ const PreviewOffer = (props) => {
           return 'Extend Offer Date';
         }
         if (isAwaitingOffer || isNewOffer) {
-          return 'Reject';
+          return 'Needs Changes';
         }
+
         if (isRejectedOffer) {
           return 'Offer Rejected';
         }
@@ -843,6 +856,11 @@ const PreviewOffer = (props) => {
         // if (isWithdrawnOffer) {
         //   return 'Withdrawn';
         // }
+
+        if (isNeedsChanges) {
+          return 'Next';
+        }
+
         return 'Approve';
       };
 
@@ -864,10 +882,14 @@ const PreviewOffer = (props) => {
           // HR MANAGER APPROVES A TICKET HERE
           handleSendFinalOffer();
         }
+
+        if (isNeedsChanges) {
+          handleSentForApproval();
+        }
       };
 
       const checkDisablePrimaryButton = () => {
-        if (isAwaitingOffer || isNewOffer) {
+        if (isAwaitingOffer || isNewOffer || isNeedsChanges) {
           if (!hrManagerSignature.url || !hrSignature.url) {
             return true;
           }
@@ -969,7 +991,7 @@ const PreviewOffer = (props) => {
   return (
     <Row gutter={[24, 0]} className={styles.previewContainer}>
       <Col xs={24} xl={16} className={styles.left}>
-        {(isAwaitingOffer || isNewOffer || isSentOffer) && (
+        {(isAwaitingOffer || isNewOffer || isSentOffer || isNeedsChanges) && (
           <div className={styles.header}>
             {/* <span className={styles.title}>Offer Letter</span> */}
             <span />
@@ -1027,7 +1049,7 @@ const PreviewOffer = (props) => {
         )}
 
         {/* HR SENT FOR APPROVAL  */}
-        {isTicketAssignee && !isTicketManager && isAwaitingOffer && (
+        {isTicketAssignee && !isTicketManager && isAwaitingOffer && isNeedsChanges && (
           <>
             <NoteComponent note={SentForApprovalNote} />
             <div style={{ marginBottom: '24px' }} />
@@ -1051,52 +1073,54 @@ const PreviewOffer = (props) => {
               <p>Undersigned</p>
             )}
 
-            {(isTicketAssignee || isTicketManager) && (isNewOffer || isAwaitingOffer) && (
-              <Row>
-                <Col span={24}>
-                  <Select
-                    value={optionSignature}
-                    style={{ width: '100%', marginBottom: '5px' }}
-                    onChange={(e) => {
-                      setOptionSignature(e);
-                    }}
-                  >
-                    <Option value="upload">Upload</Option>
-                    <Option value="draw">Draw</Option>
-                    <Option value="digital">Digital Signature</Option>
-                  </Select>
-                </Col>
-              </Row>
-            )}
+            {(isTicketAssignee || isTicketManager) &&
+              (isNewOffer || isAwaitingOffer || isNeedsChanges) && (
+                <Row>
+                  <Col span={24}>
+                    <Select
+                      value={optionSignature}
+                      style={{ width: '100%', marginBottom: '5px' }}
+                      onChange={(e) => {
+                        setOptionSignature(e);
+                      }}
+                    >
+                      <Option value="upload">Upload</Option>
+                      <Option value="draw">Draw</Option>
+                      <Option value="digital">Digital Signature</Option>
+                    </Select>
+                  </Col>
+                </Row>
+              )}
 
             {renderSignatureHr()}
 
-            {(isTicketAssignee || isTicketManager) && (isNewOffer || isAwaitingOffer) && (
-              <div className={styles.submitContainer}>
-                <Button
-                  type="primary"
-                  onClick={handleHrSignatureSubmit}
-                  disabled={
-                    !hrSignature.url &&
-                    !(isTicketAssignee || isTicketManager) &&
-                    optionSignature !== 'digital'
-                  }
-                  className={`${
-                    (hrSignature.url && (isTicketAssignee || isTicketManager)) ||
-                    optionSignature === 'digital'
-                      ? styles.active
-                      : styles.disable
-                  }`}
-                  loading={loading3}
-                >
-                  Submit
-                </Button>
+            {(isTicketAssignee || isTicketManager) &&
+              (isNewOffer || isAwaitingOffer || isNeedsChanges) && (
+                <div className={styles.submitContainer}>
+                  <Button
+                    type="primary"
+                    onClick={handleHrSignatureSubmit}
+                    disabled={
+                      !hrSignature.url &&
+                      !(isTicketAssignee || isTicketManager) &&
+                      optionSignature !== 'digital'
+                    }
+                    className={`${
+                      (hrSignature.url && (isTicketAssignee || isTicketManager)) ||
+                      optionSignature === 'digital'
+                        ? styles.active
+                        : styles.disable
+                    }`}
+                    loading={loading3}
+                  >
+                    Submit
+                  </Button>
 
-                <span className={styles.submitMessage}>
-                  {hrSignatureSubmit ? 'Signature submitted' : ''}
-                </span>
-              </div>
-            )}
+                  <span className={styles.submitMessage}>
+                    {hrSignatureSubmit ? 'Signature submitted' : ''}
+                  </span>
+                </div>
+              )}
           </div>
         )}
 
@@ -1173,7 +1197,7 @@ const PreviewOffer = (props) => {
               <p>Undersigned</p>
             )}
 
-            {!isAcceptedOffer && (isNewOffer || isAwaitingOffer) && (
+            {!isAcceptedOffer && (isNewOffer || isAwaitingOffer || isNeedsChanges) && (
               <Row>
                 <Col span={24}>
                   <Select
@@ -1192,7 +1216,7 @@ const PreviewOffer = (props) => {
             )}
             {renderSignatureHrManager()}
 
-            {isTicketManager && (isNewOffer || isAwaitingOffer) && (
+            {isTicketManager && (isNewOffer || isAwaitingOffer || isNeedsChanges) && (
               <div className={styles.submitContainer}>
                 <Button
                   type="primary"
@@ -1330,6 +1354,19 @@ const PreviewOffer = (props) => {
         />
 
         <CustomModal
+          open={openModal5}
+          closeModal={closeModal2}
+          content={
+            <ModalContent
+              closeModal={closeModal2}
+              tempData={tempData}
+              candidateEmail={mail}
+              type="needs-changes-for-approval"
+            />
+          }
+        />
+
+        <CustomModal
           open={openModal3}
           closeModal={closeModal3}
           content={
@@ -1337,7 +1374,8 @@ const PreviewOffer = (props) => {
               closeModal={closeModal3}
               tempData={tempData}
               candidateEmail={mail}
-              type="reject"
+              // type="reject"
+              type="needs-changes"
             />
           }
         />
@@ -1357,7 +1395,7 @@ const PreviewOffer = (props) => {
 
         {/* REJECT MODAL  */}
         <RejectOfferModal
-          title="Reason for Offer Rejection"
+          title="Needs Changes"
           visible={rejectModalVisible}
           onClose={() => setRejectModalVisible(false)}
           onFinish={handleRejectOffer}

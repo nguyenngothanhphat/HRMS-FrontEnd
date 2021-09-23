@@ -67,6 +67,14 @@ const MENU_DATA = [
   },
   {
     id: 7,
+    name: 'Needs Changes',
+    key: 'needsChanges',
+    component: 'NeedsChanges',
+    quantity: 0,
+    link: 'needs-changes',
+  },
+  {
+    id: 8,
     name: 'Offer Released',
     key: 'offerReleased',
     component: 'OfferReleased',
@@ -74,7 +82,7 @@ const MENU_DATA = [
     link: 'offer-released',
   },
   {
-    id: 8,
+    id: 9,
     name: 'Offer Accepted',
     key: 'offerAccepted',
     component: 'OfferAccepted',
@@ -82,7 +90,7 @@ const MENU_DATA = [
     link: 'offer-accepted',
   },
   {
-    id: 9,
+    id: 10,
     name: 'Rejected Offers',
     key: 'rejectedOffers',
     component: 'RejectedOffers',
@@ -90,7 +98,7 @@ const MENU_DATA = [
     link: 'rejected-offer',
   },
   {
-    id: 10,
+    id: 11,
     name: 'Withdrawn Offers',
     key: 'withdrawnOffers',
     component: 'WithdrawnOffers',
@@ -202,6 +210,7 @@ const onboarding = {
       documentVerifications: [],
       salaryNegotiations: [],
       awaitingApprovals: [],
+      needsChanges: [],
       offerReleased: [],
       offerAccepted: [],
       rejectedOffers: [],
@@ -289,6 +298,7 @@ const onboarding = {
           DOCUMENT_VERIFICATION,
           SALARY_NEGOTIATION,
           AWAITING_APPROVALS,
+          NEEDS_CHANGES,
           OFFER_RELEASED,
           OFFER_ACCEPTED,
           OFFER_REJECTED,
@@ -357,6 +367,13 @@ const onboarding = {
             });
             return response;
           }
+          case NEEDS_CHANGES: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { needsChanges: returnedData },
+            });
+            return response;
+          }
           case OFFER_RELEASED: {
             yield put({
               type: 'saveOnboardingOverview',
@@ -404,6 +421,7 @@ const onboarding = {
           DOCUMENT_VERIFICATION,
           SALARY_NEGOTIATION,
           AWAITING_APPROVALS,
+          NEEDS_CHANGES,
           OFFER_RELEASED,
           OFFER_ACCEPTED,
           OFFER_REJECTED,
@@ -452,6 +470,13 @@ const onboarding = {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { awaitingApprovals: returnedData },
+            });
+            break;
+          }
+          case NEEDS_CHANGES: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { needsChanges: returnedData },
             });
             break;
           }
@@ -742,6 +767,7 @@ const onboarding = {
         DOCUMENT_VERIFICATION,
         SALARY_NEGOTIATION,
         AWAITING_APPROVALS,
+        NEEDS_CHANGES,
         OFFER_RELEASED,
         OFFER_ACCEPTED,
         OFFER_REJECTED,
@@ -757,6 +783,7 @@ const onboarding = {
         documentVerification: 0,
         salaryNegotiation: 0,
         awaitingApprovals: 0,
+        needsChanges: 0,
         offerReleased: 0,
         offerAccepted: 0,
         rejectedOffers: 0,
@@ -781,6 +808,9 @@ const onboarding = {
           case AWAITING_APPROVALS:
             newTotalNumber.awaitingApprovals += count;
             break;
+          case NEEDS_CHANGES:
+            newTotalNumber.needsChanges += count;
+            break;
           case OFFER_RELEASED:
             newTotalNumber.offerReleased += count;
             break;
@@ -803,6 +833,7 @@ const onboarding = {
           newTotalNumber.documentVerification +
           newTotalNumber.salaryNegotiation +
           newTotalNumber.awaitingApprovals +
+          newTotalNumber.needsChanges +
           newTotalNumber.offerReleased +
           newTotalNumber.offerAccepted +
           newTotalNumber.rejectedOffers +
@@ -831,6 +862,9 @@ const onboarding = {
         }
         if (key === 'awaitingApprovals') {
           dataLength = newTotalNumber.awaitingApprovals;
+        }
+        if (key === 'needsChanges') {
+          dataLength = newTotalNumber.needsChanges;
         }
         if (key === 'offerReleased') {
           dataLength = newTotalNumber.offerReleased;
