@@ -235,7 +235,7 @@ class EditModal extends PureComponent {
                     option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   {listDepartments.map((d) => (
-                    <Select.Option key={d._id} value={d._id}>
+                    <Select.Option key={d.departmentId} value={d.departmentId}>
                       {d.name}
                     </Select.Option>
                   ))}
