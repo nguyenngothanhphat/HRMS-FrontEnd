@@ -24,6 +24,7 @@ class Position extends PureComponent {
       selectedPositionID: '',
       page: 1,
       limit: 10,
+      searchValue: '',
     };
     this.onSearchDebounce = debounce(this.onSearchDebounce, 500);
   }
@@ -137,7 +138,8 @@ class Position extends PureComponent {
       },
     });
     if (res.statusCode === 200) {
-      this.fetchPositionList();
+      const { searchValue } = this.state;
+      this.fetchPositionList(searchValue);
     }
   };
 
@@ -164,6 +166,9 @@ class Position extends PureComponent {
 
   onSearchDebounce = (value) => {
     this.fetchPositionList(value);
+    this.setState({
+      searchValue: value,
+    });
   };
 
   // search box
