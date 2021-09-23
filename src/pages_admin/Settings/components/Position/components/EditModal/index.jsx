@@ -371,13 +371,8 @@ class EditModal extends PureComponent {
                 rules={[{ required: true, message: 'Please select Grade Level' }]}
               >
                 <Select
-                  filterOption={(input, option) => {
-                    return (
-                      option.children[1].props.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
+                  filterOption={(input, option) =>
+                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   showSearch
                   allowClear
                 >
