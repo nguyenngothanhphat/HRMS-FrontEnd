@@ -173,15 +173,12 @@ const OfferDetail = (props) => {
     const { _id = '' } = data;
 
     dispatch({
-      type: 'newCandidateForm/save',
+      type: 'newCandidateForm/saveTemp',
       payload: {
-        tempData: {
-          ...tempData,
-          includeOffer,
-          template: file,
-          candidate: _id,
-          hidePreviewOffer: includeOffer === 1,
-        },
+        includeOffer,
+        template: file,
+        candidate: _id,
+        hidePreviewOffer: includeOffer === 1,
       },
     });
   };
@@ -430,13 +427,10 @@ const OfferDetail = (props) => {
     setUploadedOffer(offerData);
 
     dispatch({
-      type: 'newCandidateForm/save',
+      type: 'newCandidateForm/saveTemp',
       payload: {
-        tempData: {
-          ...tempData,
-          staticOfferLetter: offerData,
-          disablePreviewOffer: false,
-        },
+        staticOfferLetter: offerData,
+        disablePreviewOffer: false,
       },
     });
   };
@@ -499,12 +493,9 @@ const OfferDetail = (props) => {
     newOfferDocumentsProp = [...newOfferDocumentsProp, ...payloadNew];
 
     await dispatch({
-      type: 'newCandidateForm/save',
+      type: 'newCandidateForm/saveTemp',
       payload: {
-        tempData: {
-          ...tempData,
-          offerDocuments: newOfferDocumentsProp,
-        },
+        offerDocuments: newOfferDocumentsProp,
       },
     });
 
