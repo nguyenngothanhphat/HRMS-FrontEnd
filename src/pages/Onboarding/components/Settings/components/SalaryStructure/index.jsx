@@ -158,6 +158,7 @@ const SalaryStructure = (props) => {
       dataIndex: 'grade',
       key: 'grade',
       align: 'center',
+      render: ({ name = '' } = {}) => <div>{name}</div>,
     },
     {
       title: 'Base Salary Range',
@@ -213,6 +214,7 @@ const SalaryStructure = (props) => {
       align: 'center',
       fixed: 'left',
       width: '10%',
+      render: ({ name = '' } = {}) => <div>{name}</div>,
     },
     {
       title: 'Base Salary Range',

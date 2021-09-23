@@ -19,6 +19,7 @@ class Department extends PureComponent {
     this.state = {
       modalVisible: false,
       selectedDepartmentID: '',
+      searchValue: '',
     };
     this.onSearchDebounce = debounce(this.onSearchDebounce, 500);
   }
@@ -150,7 +151,8 @@ class Department extends PureComponent {
         },
       });
       if (res.statusCode === 200) {
-        this.fetchDepartmentList();
+        const { searchValue } = this.state;
+        this.fetchDepartmentList(searchValue);
       }
     }
   };
@@ -178,6 +180,9 @@ class Department extends PureComponent {
 
   onSearchDebounce = (value) => {
     this.fetchDepartmentList(value);
+    this.setState({
+      searchValue: value,
+    });
   };
 
   // search box

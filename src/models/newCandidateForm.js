@@ -48,7 +48,6 @@ import {
   sendDocumentStatus,
   getAdditionalQuestion,
   verifyAllDocuments,
-  fetchDocumentListOnboarding,
 } from '@/services/formCandidate';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 
@@ -95,7 +94,7 @@ const defaultState = {
     managerList: [],
     joineeEmail: '',
     employer: '',
-    grade: null,
+    grade: {},
     department: null,
     workLocation: null,
     reportees: [],
@@ -231,7 +230,7 @@ const defaultState = {
     department: null,
     reportees: [],
     title: null,
-    grade: null,
+    grade: {},
     company: null,
     joineeEmail: '',
     previousExperience: null,
@@ -1189,6 +1188,8 @@ const newCandidateForm = {
             timeOffPolicy: data.timeOffPolicy || '',
             compensationType: data.compensationType || '',
             salaryTitle: data.salaryStructure?.title?._id,
+            grade,
+            jobGradeLevelList: [grade],
             // salaryStructure: data.salaryStructure,
             salaryNote: data.salaryNote,
             includeOffer: data.includeOffer || 1,
