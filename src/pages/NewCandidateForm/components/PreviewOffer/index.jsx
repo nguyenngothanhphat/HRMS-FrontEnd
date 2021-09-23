@@ -314,7 +314,8 @@ const PreviewOffer = (props) => {
         options: 2,
         tenantId: getCurrentTenant(),
       },
-      action: 'reject',
+      // action: 'reject',
+      action: 'needschanges',
     });
     if (res.statusCode === 200) {
       setRejectModalVisible(false);
@@ -837,9 +838,10 @@ const PreviewOffer = (props) => {
           return 'Needs Changes';
         }
 
-        if (isRejectedOffer) {
-          return 'Offer Rejected';
-        }
+        // if (isRejectedOffer) {
+        //   return 'Offer Rejected';
+        // }
+
         if (isWithdrawnOffer) {
           return 'Offer Withdrawn';
         }
@@ -1393,7 +1395,7 @@ const PreviewOffer = (props) => {
           }
         />
 
-        {/* REJECT MODAL  */}
+        {/* REJECT MODAL (OLD VERSION) => UPDATE TO => NEEDS CHANGES MODAL (NEW VERSION) */}
         <RejectOfferModal
           title="Needs Changes"
           visible={rejectModalVisible}
