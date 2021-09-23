@@ -5,7 +5,7 @@ import styles from './index.less';
 
 @connect(
   ({
-    candidatePortal: { data: { department = {}, workLocation = {}, grade = '', title = {} } = {} },
+    candidatePortal: { data: { department = {}, workLocation = {}, grade = {}, title = {} } = {} },
   }) => ({
     department,
     workLocation,
@@ -18,7 +18,7 @@ class SalaryStructureInfoBoxes extends PureComponent {
     const {
       department = {} || {},
       workLocation = {} || {},
-      grade = '',
+      grade = {},
       title = {} || {},
     } = this.props;
 
@@ -28,7 +28,7 @@ class SalaryStructureInfoBoxes extends PureComponent {
           <Col xs={24} sm={24} md={6} lg={6}>
             <p className={styles.p_title_select}>Grade</p>
             <div className={styles.salaryStructureTemplate_select}>
-              <Input value={grade} size="large" disabled />
+              <Input value={grade.name} size="large" disabled />
             </div>
           </Col>
           <Col xs={24} sm={24} md={6} lg={6}>

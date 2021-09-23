@@ -16,18 +16,21 @@ const Document = (props) => {
   };
   return (
     <div className={styles.document}>
-      {listDocument.map((item) => (
-        <div
-          className={styles.document__item}
-          onClick={() => {
-            onClick();
-            viewDocument(item.attachment);
-          }}
-        >
-          <div className={styles.text}>{item.key}</div>
-          <img alt="pdf-img" src={iconPDF} />
-        </div>
-      ))}
+      {listDocument.map(
+        (item, index) =>
+          index < 3 && (
+            <div
+              className={styles.document__item}
+              onClick={() => {
+                onClick();
+                viewDocument(item.attachment);
+              }}
+            >
+              <div className={styles.text}>{item.key}</div>
+              <img alt="pdf-img" src={iconPDF} />
+            </div>
+          ),
+      )}
       <ViewDocumentModal
         visible={visable}
         fileName={displayDocumentName}
