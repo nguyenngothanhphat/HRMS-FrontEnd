@@ -8,7 +8,7 @@ class CandidateLink extends PureComponent {
     if (tokenId) {
       setToken(tokenId);
       localStorage.setItem('candidate-link-mode', true);
-      history.replace('/candidate');
+      history.replace('/candidate-portal');
     }
   };
 

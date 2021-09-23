@@ -54,9 +54,13 @@ class FirstFieldsComponent extends PureComponent {
 
   componentDidUpdate = (prevProps, prepStates) => {
     const { nameReportees } = this.state;
+    const {
+      tempData: { grade },
+    } = this.props;
     if (JSON.stringify(prepStates.nameReportees) !== JSON.stringify(nameReportees)) {
       this.fetchReportees(nameReportees);
     }
+    if (grade) this.formRef.current.setFieldsValue({ grade: grade._id });
   };
 
   fetchData = () => {
@@ -179,6 +183,7 @@ class FirstFieldsComponent extends PureComponent {
 
       case 'title': {
         _handleSelect(value, fieldName);
+
         break;
       }
 
@@ -645,8 +650,8 @@ class FirstFieldsComponent extends PureComponent {
                           })}
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'grade' &&
-                          grade !== null && {
-                            defaultValue: grade && grade !== 0 ? grade : null,
+                          !isNull(grade) && {
+                            defaultValue: grade?._id || grade,
                           })}
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'reportees' &&
@@ -676,8 +681,8 @@ class FirstFieldsComponent extends PureComponent {
                       >
                         {item.title === 'grade' ? (
                           jobGradeList.map((data) => (
-                            <Option value={data} key={data}>
-                              {data}
+                            <Option value={data?._id} key={data?._id}>
+                              {data?.name}
                             </Option>
                           ))
                         ) : item.title === 'workLocation' ? (

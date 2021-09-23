@@ -8,15 +8,24 @@ class ModalContent extends PureComponent {
     if (type === 'send-for-approval') {
       return 'Final offer has been sent to HR Manager for approval';
     }
+    if (type === 'needs-changes') {
+      return 'The needs changes request is submitted successfully';
+    }
+    if (type === 'needs-changes-for-approval') {
+      return 'The needs changes are updated';
+    }
     if (type === 'release') {
       return 'Final offer has been sent to candidate';
     }
     // if (type === 'candidate') {
     //   return 'Final offer has been sent HR';
     // }
-    if (type === 'reject') {
-      return 'Final offer has been rejected';
-    }
+    // if (type === 'reject') {
+    //   return 'Final offer has been rejected';
+    // }
+    // if (type === 'reject') {
+    //   return 'Final offer has been rejected';
+    // }
     if (type === 'withdraw') {
       return 'Final offer has been withdrawn';
     }
@@ -30,15 +39,21 @@ class ModalContent extends PureComponent {
     if (type === 'send-for-approval') {
       return 'Final offer has been sent to HR Manager';
     }
+    if (type === 'needs-changes') {
+      return 'The needs changes request has been sent to HR';
+    }
+    if (type === 'needs-changes-for-approval') {
+      return 'Final offer has been sent to HR Manager for approval';
+    }
     if (type === 'release') {
       return `Final offer has been sent to ${mail}`;
     }
     // if (type === 'candidate') {
     //   return 'Final offer has been sent HR';
     // }
-    if (type === 'reject') {
-      return 'Final offer has been rejected by HR Manager';
-    }
+    // if (type === 'reject') {
+    //   return 'Final offer has been rejected by HR Manager';
+    // }
     if (type === 'withdraw') {
       return 'Final offer has been withdrawn by HR Manager';
     }

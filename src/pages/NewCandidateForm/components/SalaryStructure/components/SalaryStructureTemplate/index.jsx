@@ -23,7 +23,7 @@ import SalaryReference from './SalaryReference/index';
       data: {
         listTitle = [],
         title = {},
-        grade = 0,
+        grade = {},
         department = {},
         workLocation = {},
         processStatus = '',
@@ -105,7 +105,7 @@ class SalaryStructureTemplate extends PureComponent {
     dispatch({
       type: 'newCandidateForm/fetchTableData',
       payload: {
-        grade,
+        grade: grade._id,
         location: _id,
         getSetting,
       },
@@ -455,7 +455,7 @@ class SalaryStructureTemplate extends PureComponent {
       workLocation = {},
       loadingFetchTable,
       settingsTempData: settings = [],
-      grade = '',
+      grade = {},
       title = {},
     } = this.props;
     const { openModal } = this.state;
@@ -465,7 +465,7 @@ class SalaryStructureTemplate extends PureComponent {
           <Col xs={24} sm={24} md={6} lg={6}>
             <p className={styles.p_title_select}>Grade</p>
             <div className={styles.salaryStructureTemplate_select}>
-              <Input value={grade} size="large" disabled />
+              <Input value={grade.name} size="large" disabled />
             </div>
           </Col>
           <Col xs={24} sm={24} md={6} lg={6}>

@@ -64,9 +64,9 @@ const ImportSalary = (props) => {
         <div className={styles.row}>
           <div className={styles.row__label}>Grade</div>
           <div className={styles.row__input}>
-            <Select defaultValue={salaryData.grade} disabled>
-              <Select.Option key={salaryData.grade} value={salaryData.grade}>
-                {salaryData.grade}
+            <Select defaultValue={salaryData.grade?._id} disabled>
+              <Select.Option key={salaryData.grade?._id} value={salaryData.grade?._id}>
+                {salaryData.grade?.name}
               </Select.Option>
             </Select>
           </div>
