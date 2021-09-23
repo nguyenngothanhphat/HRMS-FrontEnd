@@ -364,7 +364,11 @@ const PreviewOffer = (props) => {
   const closeModal3 = () => {
     setOpenModal3(false);
 
-    history.push(`/onboarding/list/rejected-offer`);
+    if (isNeedsChanges) {
+      history.push(`/onboarding/list/needs-changes`);
+    } else {
+      history.push(`/onboarding/list/rejected-offer`);
+    }
   };
 
   const closeModal4 = () => {
