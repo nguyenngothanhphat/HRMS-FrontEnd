@@ -60,7 +60,8 @@ class FirstFieldsComponent extends PureComponent {
     if (JSON.stringify(prepStates.nameReportees) !== JSON.stringify(nameReportees)) {
       this.fetchReportees(nameReportees);
     }
-    if (grade) this.formRef.current.setFieldsValue({ grade: grade._id });
+    if (grade !== prevProps.tempData.grade)
+      this.formRef.current.setFieldsValue({ grade: grade._id });
   };
 
   fetchData = () => {
