@@ -34,9 +34,8 @@ class Position extends PureComponent {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { page, limit } = this.state;
-
-    if (page !== prevState.page || limit !== prevState.limit) this.fetchPositionList();
+    const { page, limit, searchValue } = this.state;
+    if (page !== prevState.page || limit !== prevState.limit) this.fetchPositionList(searchValue);
   }
 
   fetchPositionList = (name = '') => {
