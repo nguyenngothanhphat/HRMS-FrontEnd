@@ -403,6 +403,7 @@ class FilterForm extends Component {
                 value={checkAll ? 'ALL' : filter.processStatus}
                 onSelect={checkAll ? this.onSelectAll : null} // use to un-select all
                 disabled={currentStatus !== 'ALL'}
+                dropdownClassName={styles.dropdown}
               >
                 <Option value="ALL">
                   <Checkbox value="ALL" checked={checkAll} onChange={this.handleCheckAll} />
@@ -434,6 +435,7 @@ class FilterForm extends Component {
                   mode="multiple"
                   tagRender={this.tagRender}
                   placeholder={field.placeholder}
+                  dropdownClassName={styles.dropdown}
                 >
                   {field.optionArray.map((option) => {
                     return (
