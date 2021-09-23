@@ -236,78 +236,81 @@
     }
 }
 
-:global{
 
-    // .ant-select-selection-item-content .ant-checkbox-wrapper .ant-checkbox-wrapper-checked,
-    .ant-tag .ant-checkbox-wrapper, .ant-select-selection-item .ant-checkbox-wrapper {
-        display: none !important;
-    }
-
-    .ant-select-selection-item > span {
-        font-style: normal;
-        font-weight: normal;
-        font-size: 14px;
-        line-height: 16px;
-
-        color: #161C29;
-    }
-
-    .ant-select-item-option-content > span {
-        margin-left: 8px;
-    }
-
-    .ant-select-item-option-selected:not(.ant-select-item-option-disabled) .ant-select-item-option-state{
-        display: none !important;
-    }
-
-    .ant-select-item-option-selected:not(.ant-select-item-option-disabled){
-        font-family: Roboto;
-        font-style: normal;
-        font-weight: normal;
-        font-size: 14px;
-        line-height: 16px;
-
-        color: #2C6DF9;
-    }
-
-    .ant-select-item-option-selected:not(.ant-select-item-option-disabled), .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
-        background-color: #fff;
-    }
-
-    .ant-select-item{
-        padding: 7px 12px;
-    }
-
-    .ant-checkbox-inner {
-        width: 18px;
-        height: 18px;
-
-        border: 1px solid #D8D8D8;
-        border-radius: 4px;
-    }
-
-    .ant-checkbox-checked .ant-checkbox-inner {
-        background: #2C6DF9 !important;
-    }
-
-    .ant-checkbox-checked .ant-checkbox-inner::after {
-        width: 6px;
-        height: 11px;
-        border: 2px solid #fff;
-        border-top: 0;
-        border-left: 0;
-    }
-
-    .ant-select-selection-search-input{
-        margin-left: -4px !important;
-    }
-}
 
 .checkAll{
     :global{
         .ant-checkbox-wrapper {
             width: 100%;
             padding: 7px 12px;
+        }
+    }
+}
+
+.dropdown{
+    :global{
+        // .ant-select-selection-item-content .ant-checkbox-wrapper .ant-checkbox-wrapper-checked,
+        .ant-tag .ant-checkbox-wrapper, .ant-select-selection-item .ant-checkbox-wrapper {
+            display: none !important;
+        }
+
+        .ant-select-selection-item > span {
+            font-style: normal;
+            font-weight: normal;
+            font-size: 14px;
+            line-height: 16px;
+
+            color: #161C29;
+        }
+
+        .ant-select-item-option-content > span {
+            margin-left: 8px;
+        }
+
+        .ant-select-item-option-selected:not(.ant-select-item-option-disabled) .ant-select-item-option-state{
+            display: none !important;
+        }
+
+        .ant-select-item-option-selected:not(.ant-select-item-option-disabled){
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 14px;
+            line-height: 16px;
+
+            color: #2C6DF9;
+        }
+
+        .ant-select-item-option-selected:not(.ant-select-item-option-disabled), .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+            background-color: #fff;
+        }
+
+        .ant-select-item{
+            padding: 7px 12px;
+        }
+
+        .ant-checkbox-inner {
+            width: 18px;
+            height: 18px;
+
+            border: 1px solid #D8D8D8;
+            border-radius: 4px;
+        }
+
+        .ant-checkbox-checked .ant-checkbox-inner {
+            background: #2C6DF9 !important;
+        }
+
+        .ant-checkbox-checked .ant-checkbox-inner::after {
+            width: 6px;
+            height: 11px;
+            border: 2px solid #fff;
+            border-top: 0;
+            border-left: 0;
+        }
+
+        .ant-select-selection-search-input{
+            margin-left: -4px !important;
         }
     }
 }
