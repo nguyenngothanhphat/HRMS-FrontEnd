@@ -628,7 +628,7 @@ const onboarding = {
           yield put({
             type: 'fetchOnboardList',
             payload: {
-              processStatus,
+              processStatus: [processStatus],
             },
           });
           yield put({
