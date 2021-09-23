@@ -841,7 +841,8 @@ const newCandidateForm = {
         const processStatus =
           action === 'accept'
             ? NEW_PROCESS_STATUS.OFFER_RELEASED
-            : NEW_PROCESS_STATUS.OFFER_REJECTED;
+            : // : NEW_PROCESS_STATUS.OFFER_REJECTED;
+              NEW_PROCESS_STATUS.NEEDS_CHANGES;
         yield put({
           type: 'saveOrigin',
           payload: {
