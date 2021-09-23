@@ -52,9 +52,9 @@ class JobDetails extends PureComponent {
         tenantId,
       },
     });
-    // dispatch({
-    //   type: 'newCandidateForm/getJobGradeList',
-    // });
+    dispatch({
+      type: 'newCandidateForm/getJobGradeList',
+    });
   }
 
   componentDidUpdate = (prevProps) => {
@@ -220,7 +220,7 @@ class JobDetails extends PureComponent {
           payload: {
             title: value,
             grade: titleData?.gradeObj,
-            jobGradeLevelList: [titleData?.gradeObj],
+            // jobGradeLevelList: [titleData?.gradeObj],
           },
         });
 

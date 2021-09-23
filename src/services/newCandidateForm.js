@@ -3,7 +3,7 @@ import request from '@/utils/request';
 // const jobGradeLevelList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
 export function getGradeList(params) {
-  return request('/api/salarystructuretenant/get-list-grade', {
+  return request('/api/gradetenant/list', {
     method: 'POST',
     data: params,
   });

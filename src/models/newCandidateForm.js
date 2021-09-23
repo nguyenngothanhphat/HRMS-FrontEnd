@@ -306,7 +306,10 @@ const newCandidateForm = {
   effects: {
     *getJobGradeList(_, { call, put }) {
       try {
-        const response = yield call(getGradeList);
+        const response = yield call(getGradeList, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         yield put({
           type: 'saveTemp',
           payload: { jobGradeLevelList: response.data },
@@ -1189,7 +1192,7 @@ const newCandidateForm = {
             compensationType: data.compensationType || '',
             salaryTitle: data.salaryStructure?.title?._id,
             grade,
-            jobGradeLevelList: [grade],
+            // jobGradeLevelList: [grade],
             // salaryStructure: data.salaryStructure,
             salaryNote: data.salaryNote,
             includeOffer: data.includeOffer || 1,
