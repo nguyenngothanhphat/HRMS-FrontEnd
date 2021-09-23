@@ -61,7 +61,7 @@ class MessageBox extends PureComponent {
     const { dispatch, candidate, assignTo: hrId } = this.props;
 
     this.socket.current = io(SOCKET_URL);
-    console.log('ChatEvent', ChatEvent);
+
     // realtime get message
     this.socket.current.emit(ChatEvent.ADD_USER, hrId?._id || hrId || '');
     // this.socket.current.on(ChatEvent.GET_USER, (users) => {

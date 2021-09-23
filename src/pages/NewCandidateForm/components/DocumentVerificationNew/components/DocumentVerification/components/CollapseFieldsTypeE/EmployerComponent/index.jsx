@@ -23,7 +23,7 @@ class EmployerComponent extends PureComponent {
   }
 
   componentDidMount = () => {
-    const { data = [], employer = '', dispatch } = this.props;
+    const { employer = '', dispatch } = this.props;
 
     if (employer) {
       dispatch({
@@ -34,12 +34,23 @@ class EmployerComponent extends PureComponent {
       });
     }
 
+    this.handleCheckList();
+  };
+
+  componentDidUpdate = (prevProps) => {
+    const { data = [] } = this.props;
+    if (JSON.stringify(data) !== JSON.stringify(prevProps.data)) {
+      this.handleCheckList();
+    }
+  };
+
+  handleCheckList = () => {
+    const { data = [] } = this.props;
     let checkedList = data.filter((val) => val.alias && val.value === true);
     checkedList = checkedList.map((val) => val.alias);
 
-    this.setState({
-      checkedList,
-    });
+    // eslint-disable-next-line react/no-did-update-set-state
+    this.setCheckedList(checkedList);
   };
 
   handleInputThrottled = (value) => {

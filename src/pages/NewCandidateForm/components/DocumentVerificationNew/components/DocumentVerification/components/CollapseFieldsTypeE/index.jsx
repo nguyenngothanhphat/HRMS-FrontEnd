@@ -20,12 +20,42 @@ class CollapseFieldsType2 extends PureComponent {
     };
   }
 
+  componentDidMount = () => {
+    this.checkAllStatus();
+  };
+
+  componentDidUpdate = (prevProps) => {
+    const { previousEmployment } = this.props;
+    if (JSON.stringify(previousEmployment) !== JSON.stringify(prevProps.previousEmployment)) {
+      this.checkAllStatus();
+    }
+  };
+
+  checkAllStatus = () => {
+    const { previousEmployment = [] } = this.props;
+    let checkAll = true;
+    previousEmployment.forEach((doc) => {
+      const { data = [] } = doc;
+      data.forEach((item) => {
+        if (!item.value) {
+          checkAll = false;
+        }
+      });
+    });
+    this.setState({
+      checkAll,
+      indeterminate: !checkAll,
+    });
+  };
+
   onCheckAllChange = (e) => {
+    const { handleCheckAll = () => {} } = this.props;
     e.stopPropagation();
     this.setState({
       indeterminate: false,
       checkAll: e.target.checked,
     });
+    handleCheckAll(e.target.checked);
   };
 
   renderHeader = () => {
@@ -35,6 +65,7 @@ class CollapseFieldsType2 extends PureComponent {
         ? `Type ${previousEmployment[0].type}: ${previousEmployment[0].name}`
         : 'Type E: Previous Employment';
     const { indeterminate, checkAll } = this.state;
+
     return (
       <div className={styles.header}>
         <Checkbox
