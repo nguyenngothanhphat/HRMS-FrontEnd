@@ -17,8 +17,8 @@ class CollapseFieldsTypeD extends PureComponent {
     super(props);
     this.state = {
       documentName: '',
-      indeterminate: true,
-      checkAll: false,
+      indeterminate: false,
+      checkAll: true,
     };
   }
 

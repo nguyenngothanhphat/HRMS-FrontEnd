@@ -30,8 +30,12 @@ const arrStatus = [
     value: NEW_PROCESS_STATUS.SALARY_NEGOTIATION,
   },
   {
-    label: 'Awaiting approvals',
+    label: 'Awaiting Approvals',
     value: NEW_PROCESS_STATUS.AWAITING_APPROVALS,
+  },
+  {
+    label: 'Needs Changes',
+    value: NEW_PROCESS_STATUS.NEEDS_CHANGES,
   },
   {
     label: 'Offer Released',
@@ -98,7 +102,7 @@ class FilterForm extends Component {
     }
 
     if (prevProps.isFiltering !== isFiltering) {
-      this.clearFilter();
+      // this.clearFilter();
     }
   }
 
@@ -494,7 +498,7 @@ class FilterForm extends Component {
             </Button>
             <Button
               onClick={this.onApply}
-              disabled={!isFilter}
+              // disabled={!isFilter}
               className={styles.footer__apply}
               htmlType="submit"
             >

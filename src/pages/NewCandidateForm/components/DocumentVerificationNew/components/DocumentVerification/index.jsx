@@ -409,6 +409,44 @@ class DocumentVerification extends Component {
     }
   };
 
+  handleCheckAllBlockE = (checked) => {
+    const {
+      newCandidateForm: {
+        tempData: {
+          identityProof: { checkedList: checkedListA = [] } = {},
+          addressProof: { checkedList: checkedListB = [] } = {},
+          educational: { checkedList: checkedListC = [] } = {},
+          documentChecklistSetting: docsList = [],
+        },
+      } = {},
+      dispatch,
+    } = this.props;
+
+    const docsListOther = docsList.filter((doc) => doc.type !== 'E') || [];
+    const docsListD = docsList.filter((doc) => doc.type === 'D') || [];
+    let docsListE = JSON.parse(JSON.stringify(docsList.filter((doc) => doc.type === 'E')) || []);
+    docsListE = docsListE.map((doc) => {
+      const { data = [] } = doc;
+      return {
+        ...doc,
+        data: data.map((item) => {
+          return {
+            ...item,
+            value: checked,
+          };
+        }),
+      };
+    });
+
+    dispatch({
+      type: 'newCandidateForm/saveTemp',
+      payload: {
+        documentChecklistSetting: [...docsListOther, ...docsListE],
+      },
+    });
+    this.handleUpdateByHR(docsListE, checkedListA, checkedListB, checkedListC, docsListD);
+  };
+
   // HANDLE CHANGE WHEN CLICK CHECKBOXES OF BLOCK D
   // handleChangeForD = (list) => {
   //   const { newPoe } = this.state;
@@ -1530,6 +1568,7 @@ class DocumentVerification extends Component {
                   disabled={this.disableEdit()}
                   previousEmployment={documentCLSTByCountryTypeE}
                   refresh={refreshBlockE}
+                  handleCheckAll={this.handleCheckAllBlockE}
                 />
               )}
 
