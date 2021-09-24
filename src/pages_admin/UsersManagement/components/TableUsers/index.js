@@ -108,10 +108,23 @@ class TableUsers extends PureComponent {
         // },
       },
       {
+        title: formatMessage({ id: 'component.directory.table.department' }),
+        dataIndex: 'department',
+        key: 'department',
+        render: (department) => (
+          <span className={styles.directoryTable_deparmentText}>
+            {department ? department.name : ''}
+          </span>
+        ),
+        // align: 'left',
+      },
+      {
         title: 'Role',
-        dataIndex: 'roles',
+        dataIndex: 'managePermission',
         align: 'left',
-        render: (roles = []) => {
+        render: (managePermission = []) => {
+          let roles = [];
+          if (managePermission.length && managePermission[0]) roles = managePermission[0].roles;
           return roles.map((role) => {
             const tag = roleTags.find((d) => d.name === role) || {};
             return (
