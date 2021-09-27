@@ -6,57 +6,19 @@
   background: #ffffff;
   border: 1px solid @borderColor;
   border-radius: 5px;
-  .header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px @commonSpace;
-    border-bottom: 1px solid @borderColor;
-    :global {
-      .ant-picker-range {
-        box-sizing: border-box;
-        height: 37px;
-        border: 1px solid @borderColor2;
-        border-radius: 5px;
-      }
-    }
-    &__left {
-      display: flex;
-      flex-direction: row;
-      .rangePicker {
-        margin-inline: 8px;
-        .minusSeparator {
-          color: #161c29;
-          font-size: 13px;
-          opacity: 0.5;
-        }
-      }
-      .button {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 37px;
-        background: #ffffff;
-        border: 1px solid @borderColor2;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      .prevWeek,
-      .nextWeek {
-        .button();
-      }
-    }
-    &__right {
-      font-size: 13px;
-      .hours {
-        font-weight: 500;
-      }
-    }
-  }
 
   .content {
     padding: @commonSpace;
+  }
+
+  :global {
+    .ant-table .ant-table-title,
+    .ant-table .ant-table-footer,
+    .ant-table .ant-table-thead > tr > th,
+    .ant-table .ant-table-tbody > tr > td,
+    .ant-table tfoot > tr > th,
+    .ant-table tfoot > tr > td {
+      padding: 8px 16px !important;
+    }
   }
 }

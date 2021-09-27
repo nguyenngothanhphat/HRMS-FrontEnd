@@ -1,50 +1,33 @@
-import React from 'react';
-import { DatePicker } from 'antd';
-import { MinusOutlined } from '@ant-design/icons';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-
-import PrevIcon from '@/assets/timeSheet/prev.svg';
-import NextIcon from '@/assets/timeSheet/next.svg';
+import Header from './components/Header';
+import TimelineTable from './components/TimelineTable';
 import styles from './index.less';
 
-const { RangePicker } = DatePicker;
-const datePickerFormat = 'ddd, MMM D, YYYY';
-// Mon, Sep 12, 2021 - Sun, Sep 18, 2021
 const MyTimeSheet = () => {
-  // HEADER
-  const _renderHeader = () => {
-    return (
-      <div className={styles.header}>
-        <div className={styles.header__left}>
-          <div className={styles.prevWeek}>
-            <img src={PrevIcon} alt="" />
-          </div>
-          <div className={styles.rangePicker}>
-            <RangePicker
-              format={datePickerFormat}
-              separator={<MinusOutlined className={styles.minusSeparator} />}
-            />
-          </div>
-          <div className={styles.nextWeek}>
-            <img src={NextIcon} alt="" />
-          </div>
-        </div>
-        <div className={styles.header__right}>
-          Total hours: <span className={styles.hours}>40:40:00</span>
-        </div>
-      </div>
-    );
-  };
+  const [firstDateOfWeek, setFirstDateOfWeek] = useState('');
+  const [endDateOfWeek, setEndDateOfWeek] = useState('');
 
-  // TABLE CONTENT
-  const _renderContent = () => {
-    return <div className={styles.content}>TABLE</div>;
-  };
+  // USE EFFECT AREA
+  useEffect(() => {
+    const lastSunday = moment().weekday(0);
+    const currentSunday = moment().weekday(7);
+    setFirstDateOfWeek(lastSunday);
+    setEndDateOfWeek(currentSunday);
+    return () => {};
+  }, []);
 
+  // MAIN AREA
   return (
     <div className={styles.MyTimeSheet}>
-      {_renderHeader()}
-      {_renderContent()}
+      <Header
+        firstDateOfWeek={firstDateOfWeek}
+        endDateOfWeek={endDateOfWeek}
+        setFirstDateOfWeek={setFirstDateOfWeek}
+        setEndDateOfWeek={setEndDateOfWeek}
+      />
+      <TimelineTable firstDateOfWeek={firstDateOfWeek} endDateOfWeek={endDateOfWeek} />
     </div>
   );
 };
