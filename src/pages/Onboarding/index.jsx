@@ -3,7 +3,7 @@ import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { Tabs, Button, Row, Col } from 'antd';
 import { connect, formatMessage, history } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
-import exportToExcel from '@/utils/exportAsExcel';
+import exportToCSV from '@/utils/exportAsExcel';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import OnboardingOverview from './components/OnboardingOverview';
 import Settings from './components/Settings';
@@ -48,6 +48,7 @@ class Onboarding extends PureComponent {
         awaitingApprovals = [],
         offerReleased = [],
         offerAccepted = [],
+        needsChanges = [],
         rejectedOffers = [],
         withdrawnOffers = [],
         currentStatus,
@@ -72,6 +73,9 @@ class Onboarding extends PureComponent {
       case NEW_PROCESS_STATUS.AWAITING_APPROVALS:
         data = awaitingApprovals;
         break;
+      case NEW_PROCESS_STATUS.NEEDS_CHANGES:
+        data = needsChanges;
+        break;
       case NEW_PROCESS_STATUS.OFFER_RELEASED:
         data = offerReleased;
         break;
@@ -94,7 +98,7 @@ class Onboarding extends PureComponent {
 
   downloadTemplate = () => {
     const data = this.checkPathLocation();
-    exportToExcel('OnboardingData.xlsx', this.processData(data));
+    exportToCSV(this.processData(data), 'DataOnboarding.xlsx');
   };
 
   processData = (array) => {
