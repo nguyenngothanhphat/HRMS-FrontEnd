@@ -1,0 +1,36 @@
+@commonSpace: 24px;
+.TimeSheet {
+  :global {
+    .ant-tabs-content-holder {
+      padding: @commonSpace;
+    }
+    .ant-tabs-tab-btn {
+      color: #707177;
+      opacity: 1;
+    }
+
+    .ant-tabs-tab-active .ant-tabs-tab-disabled {
+      font-weight: 500;
+    }
+
+    .ant-tabs-ink-bar {
+      display: none;
+    }
+  }
+  .requestLeave {
+    margin-right: @commonSpace;
+    padding: 7px 14px;
+    background-color: #568afa1f; // hex with alpha 0.12
+    border-radius: 5px;
+    cursor: pointer;
+    .title {
+      color: #2c6df9;
+      font-weight: 700;
+    }
+    &:hover {
+      .title {
+        opacity: 0.8;
+      }
+    }
+  }
+}
