@@ -6,7 +6,7 @@ const color = {
 
 const activityColor = [
   {
-    name: 'Working Hours',
+    name: 'Working hours',
     color: color.WORKING_HOURS,
   },
 

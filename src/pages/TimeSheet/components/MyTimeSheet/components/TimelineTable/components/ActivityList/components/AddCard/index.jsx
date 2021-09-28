@@ -64,7 +64,7 @@ const AddCard = (props) => {
         <Col span={3} className={`${styles.normalCell} ${styles.boldText}`}>
           <Form.Item name="activity" rules={[{ required: true }]}>
             <Select
-              placeholder="Select activity"
+              placeholder="Activity"
               value={activity || null}
               suffixIcon={<img src={ArrowDown} alt="" />}
             >
@@ -79,6 +79,7 @@ const AddCard = (props) => {
               value={timeIn}
               format={hourFormat}
               suffixIcon={<img src={ClockIcon} alt="" />}
+              placeholder="Time in"
             />
           </Form.Item>
         </Col>
@@ -88,13 +89,14 @@ const AddCard = (props) => {
               value={timeOut}
               format={hourFormat}
               suffixIcon={<img src={ClockIcon} alt="" />}
+              placeholder="Time out"
             />
           </Form.Item>
         </Col>
         <Col span={3} className={styles.normalCell}>
           <Form.Item name="nightshift" rules={[{ required: true }]}>
             <Select
-              placeholder="Select night shift"
+              placeholder="Night shift"
               value={nightshift}
               suffixIcon={<img src={ArrowDown} alt="" />}
             >

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { history, connect } from 'umi';
 import { Tabs } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
@@ -12,6 +12,12 @@ const TimeSheet = (props) => {
     match: { params: { tabName = '' } = {} },
     // location: { state: { status = '', tickedId = '', typeName = '', category = '' } = {} } = {},
   } = props;
+
+  useEffect(() => {
+    if (!tabName) {
+      history.replace(`/timesheet/overview`);
+    }
+  }, [tabName]);
 
   const requestLeave = () => {
     history.push('/time-off/overview/personal-timeoff/new');
@@ -35,7 +41,7 @@ const TimeSheet = (props) => {
             history.push(`/timesheet/${key}`);
           }}
         >
-          <TabPane tab="My timesheet" key="overview">
+          <TabPane tab="My time sheet" key="overview">
             <MyTimeSheet />
           </TabPane>
         </Tabs>

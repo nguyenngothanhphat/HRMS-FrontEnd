@@ -20,13 +20,12 @@ const mockMyTimeSheetData = [
     timeOut: '10:30 am',
     nightshift: false,
     totalHours: '02:30:00',
-    notes:
-      'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint non deserunt ullamco est sit aliqua dolor do amet sint ',
+    notes: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor',
   },
   {
     _id: 3,
     day: moment(),
-    activity: 'Lunch Break',
+    activity: 'PTO',
     timeIn: '10:30 am',
     timeOut: '10:30 am',
     nightshift: false,
@@ -42,8 +41,7 @@ const mockMyTimeSheetData = [
     timeOut: '10:30 am',
     nightshift: false,
     totalHours: '02:30:00',
-    notes:
-      'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint non deserunt ullamco est sit aliqua dolor do amet sint ',
+    notes: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint non',
   },
   {
     _id: 5,
