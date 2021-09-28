@@ -11,31 +11,26 @@ const { RangePicker } = DatePicker;
 const datePickerFormat = 'ddd, MMM D, YYYY';
 
 const Header = (props) => {
-  const {
-    firstDateOfWeek,
-    endDateOfWeek,
-    setFirstDateOfWeek = () => {},
-    setEndDateOfWeek = () => {},
-  } = props;
+  const { startDate, endDate, setStartDate = () => {}, setEndDate = () => {} } = props;
 
   // HEADER AREA
   const onPrevWeekClick = () => {
-    const lastSunday = moment(firstDateOfWeek).add(-1, 'weeks');
-    const currentSunday = moment(firstDateOfWeek).add(-1, 'weeks').weekday(7);
-    setFirstDateOfWeek(lastSunday);
-    setEndDateOfWeek(currentSunday);
+    const lastSunday = moment(startDate).add(-1, 'weeks');
+    const currentSunday = moment(startDate).add(-1, 'weeks').weekday(7);
+    setStartDate(lastSunday);
+    setEndDate(currentSunday);
   };
 
   const onNextWeekClick = () => {
-    const nextSunday = moment(firstDateOfWeek).add(1, 'weeks');
-    const currentSunday = moment(firstDateOfWeek).add(1, 'weeks').weekday(7);
-    setFirstDateOfWeek(nextSunday);
-    setEndDateOfWeek(currentSunday);
+    const nextSunday = moment(startDate).add(1, 'weeks');
+    const currentSunday = moment(startDate).add(1, 'weeks').weekday(7);
+    setStartDate(nextSunday);
+    setEndDate(currentSunday);
   };
 
   const onDatePickerChange = (dates = []) => {
-    setFirstDateOfWeek(dates[0]);
-    setEndDateOfWeek(dates[1]);
+    setStartDate(dates[0]);
+    setEndDate(dates[1]);
   };
 
   // MAIN AREA
@@ -49,7 +44,7 @@ const Header = (props) => {
           <RangePicker
             format={datePickerFormat}
             separator={<MinusOutlined className={styles.minusSeparator} />}
-            value={[firstDateOfWeek, endDateOfWeek]}
+            value={[startDate, endDate]}
             onChange={onDatePickerChange}
             allowClear={false}
           />

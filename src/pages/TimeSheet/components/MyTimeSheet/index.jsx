@@ -6,15 +6,15 @@ import TimelineTable from './components/TimelineTable';
 import styles from './index.less';
 
 const MyTimeSheet = () => {
-  const [firstDateOfWeek, setFirstDateOfWeek] = useState('');
-  const [endDateOfWeek, setEndDateOfWeek] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   // USE EFFECT AREA
   useEffect(() => {
     const lastSunday = moment().weekday(0);
     const currentSunday = moment().weekday(7);
-    setFirstDateOfWeek(lastSunday);
-    setEndDateOfWeek(currentSunday);
+    setStartDate(lastSunday);
+    setEndDate(currentSunday);
     return () => {};
   }, []);
 
@@ -22,12 +22,12 @@ const MyTimeSheet = () => {
   return (
     <div className={styles.MyTimeSheet}>
       <Header
-        firstDateOfWeek={firstDateOfWeek}
-        endDateOfWeek={endDateOfWeek}
-        setFirstDateOfWeek={setFirstDateOfWeek}
-        setEndDateOfWeek={setEndDateOfWeek}
+        startDate={startDate}
+        endDate={endDate}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
       />
-      <TimelineTable firstDateOfWeek={firstDateOfWeek} endDateOfWeek={endDateOfWeek} />
+      <TimelineTable startDate={startDate} endDate={endDate} />
     </div>
   );
 };

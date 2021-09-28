@@ -1,132 +1,126 @@
-import React from 'react';
-import { connect } from 'umi';
-import { Table } from 'antd';
+import { Col, Row } from 'antd';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
+import AddIcon from '@/assets/timeSheet/add.svg';
+import ActivityCard from './components/ActivityCard';
 import styles from './index.less';
-import EditIcon from '@/assets/timeSheet/edit.svg';
-import DeleteIcon from '@/assets/timeSheet/del.svg';
 
 const dateFormat = 'ddd, MMM Do';
 
 const TimelineTable = (props) => {
-  const { firstDateOfWeek = '', endDateOfWeek = '', myTimesheet = [] } = props;
+  const { startDate = '', endDate = '', myTimesheet = [] } = props;
+  const [dateList, setDateList] = useState([]);
+  const [formattedData, setFormattedData] = useState([]);
 
-  const compareDates = (dateTimeA, dateTimeB) => {
-    const momentA = moment(dateTimeA, 'DD/MM/YYYY');
-    const momentB = moment(dateTimeB, 'DD/MM/YYYY');
-    if (momentA > momentB) return 1;
-    if (momentA < momentB) return -1;
-    return 0;
+  // get dates between two dates
+  const enumerateDaysBetweenDates = (startDate1, endDate1) => {
+    const now = startDate1.clone();
+    const dates = [];
+
+    while (now.isSameOrBefore(endDate1)) {
+      dates.push(now.format('MM/DD/YYYY'));
+      now.add(1, 'days');
+    }
+    return dates;
   };
 
-  // Merge array cells - from FullStackOverFlow
-  const createNewArr = (data) => {
-    const formattedData = data.map((item) => {
+  // generate data by selected date
+  const generateData = (data) => {
+    const dataTemp = data.map((item) => {
       return {
         ...item,
         day: moment(item.day).format('MM/DD/YYYY'),
       };
     });
-    return formattedData
-      .reduce((result, item) => {
-        // First, take the name field as a new array result
-        if (result.indexOf(item.day) < 0) {
-          result.push(item.day);
-        }
-        return result;
-      }, [])
-      .reduce((result, day) => {
-        let newResult = JSON.parse(JSON.stringify(result));
-        // Take the data with the same name as a new array, and add a new field * * rowSpan inside it**
-        const children = formattedData.filter((item) => item.day === day);
-        newResult = newResult.concat(
-          children.map((item, index) => ({
-            ...item,
-            rowSpan: index === 0 ? children.length : 0, // Add the first row of data to the rowSpan field
-          })),
-        );
-        return newResult;
-      }, []);
+
+    return dateList.map((date) => {
+      return {
+        date,
+        activities: dataTemp.filter((item) => item.day === date),
+      };
+    });
   };
 
-  // COLUMNS
-  const generateColumns = () => {
-    const columns = [
-      {
-        title: 'Day',
-        dataIndex: 'day',
-        key: 'day',
-        fixed: 'left',
-        render: (_, row) => {
-          return {
-            children: row.day ? moment(row.day).locale('en').format(dateFormat) : '-',
-            props: {
-              rowSpan: row.rowSpan,
-            },
-          };
-        },
-      },
-      {
-        title: 'Activity',
-        dataIndex: 'activity',
-        key: 'activity',
-      },
-      {
-        title: 'Time In',
-        dataIndex: 'timeIn',
-        key: 'timeIn',
-      },
-      {
-        title: 'Time Out',
-        dataIndex: 'timeOut',
-        key: 'timeOut',
-      },
-      {
-        title: 'Nightshift',
-        dataIndex: 'nightshift',
-        key: 'nightshift',
-        render: (nightshift) => (nightshift ? 'Yes' : 'No'),
-      },
-      {
-        title: 'Total Hrs',
-        dataIndex: 'totalHours',
-        key: 'totalHours',
-      },
-      {
-        title: 'Notes',
-        dataIndex: 'notes',
-        key: 'notes',
-        width: '20%',
-      },
+  // USE EFFECT AREA
+  useEffect(() => {
+    const dateListTemp = enumerateDaysBetweenDates(moment(startDate), moment(endDate));
+    setDateList(dateListTemp);
+  }, [startDate, endDate]);
 
-      {
-        title: 'Action',
-        dataIndex: 'action',
-        key: 'action',
-        align: 'center',
-        render: (_, row) => {
-          return (
-            <div className={styles.actions}>
-              <img src={DeleteIcon} alt="" />
-              <img src={EditIcon} alt="" />
-            </div>
-          );
-        },
-      },
-    ];
+  useEffect(() => {
+    const formattedDataTemp = generateData(myTimesheet);
+    setFormattedData(formattedDataTemp);
+  }, [dateList]);
 
-    return columns;
+  // RENDER UI
+  const _renderTableHeader = () => {
+    return (
+      <Row className={styles.tableHeader}>
+        <Col span={3} className={`${styles.tableHeader__firstColumn} ${styles.alignCenter}`}>
+          Date
+        </Col>
+        <Col span={21}>
+          <Row className={styles.tableHeader__remainColumn}>
+            <Col span={3} className={styles.title}>
+              Activity
+            </Col>
+            <Col span={3} className={styles.title}>
+              Time In
+            </Col>
+            <Col span={3} className={styles.title}>
+              Time Out
+            </Col>
+            <Col span={3} className={styles.title}>
+              Nightshift
+            </Col>
+            <Col span={3} className={styles.title}>
+              Total Hrs
+            </Col>
+            <Col span={6} className={styles.title}>
+              Notes
+            </Col>
+            <Col span={3} className={`${styles.title} ${styles.alignCenter}`}>
+              Action
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    );
+  };
+
+  const _renderAddButton = () => {
+    return (
+      <div className={styles.addButton}>
+        <img src={AddIcon} alt="" />
+        <span>Add Activity</span>
+      </div>
+    );
+  };
+  const _renderTableContent = () => {
+    return formattedData.map((item) => {
+      return (
+        <Row className={styles.tableContent}>
+          <Col span={3} className={`${styles.tableContent__firstColumn} ${styles.alignCenter}`}>
+            {moment(item.date).locale('en').format(dateFormat)}
+          </Col>
+          <Col span={21} className={styles.tableContent__remainColumn}>
+            {item.activities.map((activity) => {
+              return <ActivityCard activity={activity} />;
+            })}
+
+            {_renderAddButton()}
+          </Col>
+        </Row>
+      );
+    });
   };
 
   // MAIN AREA
   return (
     <div className={styles.TimelineTable}>
-      <Table
-        size="middle"
-        columns={generateColumns()}
-        dataSource={createNewArr(myTimesheet)}
-        pagination={false}
-      />
+      {_renderTableHeader()}
+      {_renderTableContent()}
     </div>
   );
 };

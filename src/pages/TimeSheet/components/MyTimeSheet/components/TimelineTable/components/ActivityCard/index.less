@@ -1,0 +1,34 @@
+@blue: #2c6df9;
+
+.ActivityCard {
+  box-sizing: border-box;
+  margin: 16px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #d6dce0;
+  border-radius: 5px;
+  .alignCenter {
+    display: flex;
+    justify-content: center !important;
+  }
+  .normalCell {
+    display: flex;
+    flex-direction: row;
+    align-items: center !important;
+    font-size: 13px;
+  }
+  .readMoreBtn {
+    color: @blue;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .actionsButton {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.9;
+      transition: 0.3s;
+    }
+  }
+}

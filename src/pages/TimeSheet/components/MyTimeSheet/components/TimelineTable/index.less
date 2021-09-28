@@ -7,6 +7,7 @@
 @gray: #707177;
 @red: #ff5252;
 @blue: #2c6df9;
+@cell-padding: 8px 16px;
 
 .mixin-border-bottom-row {
   border-bottom: solid 1px #d6dce0;
@@ -14,10 +15,77 @@
 
 .TimelineTable {
   width: 100%;
+  min-width: 700px;
   padding: 24px;
   background-color: #ffffff;
   border-radius: 5px;
 
+  .alignCenter {
+    display: flex;
+    justify-content: center !important;
+  }
+
+  .tableHeader {
+    // height: 35px;
+    background-color: @blue;
+    border-radius: 4px;
+    &__firstColumn {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: @cell-padding;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 20px;
+    }
+    &__remainColumn {
+      padding-block: 8px;
+      padding-inline: 32px;
+      .title {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        color: #ffffff;
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 20px;
+      }
+    }
+  }
+
+  .tableContent {
+    width: 100%;
+    min-height: 115px;
+    &__firstColumn {
+      padding: @cell-padding;
+      color: #000000;
+      font-weight: 500;
+      font-size: 12px;
+      background-color: #fff;
+    }
+    &__remainColumn {
+      min-width: 500px;
+      // margin-top: 32px;
+      background: #f6f7f9;
+      border-top: 1px solid #cccccc;
+    }
+    .addButton {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin: 16px;
+      cursor: pointer;
+      img {
+        margin-right: 8px;
+      }
+      span {
+        color: @blue;
+        font-weight: 500;
+        font-size: 14px;
+      }
+    }
+  }
   &.inTab {
     border: none;
   }
@@ -72,28 +140,6 @@
 
     .ant-tabs-nav {
       height: 56px;
-    }
-  }
-
-  .fileName {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    img {
-      margin-right: 10px;
-    }
-    span {
-      color: #2c6df9;
-      font-weight: 700;
-    }
-  }
-  .actionsButton {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    &:hover {
-      opacity: 0.9;
-      transition: 0.3s;
     }
   }
 }
