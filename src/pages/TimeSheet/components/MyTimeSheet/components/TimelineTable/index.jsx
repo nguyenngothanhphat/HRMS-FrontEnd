@@ -2,11 +2,8 @@ import { Col, Row } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import AddIcon from '@/assets/timeSheet/add.svg';
-import ActivityCard from './components/ActivityCard';
+import ActivityList from './components/ActivityList';
 import styles from './index.less';
-
-const dateFormat = 'ddd, MMM Do';
 
 const TimelineTable = (props) => {
   const { startDate = '', endDate = '', myTimesheet = [] } = props;
@@ -58,69 +55,50 @@ const TimelineTable = (props) => {
     return (
       <Row className={styles.tableHeader}>
         <Col span={3} className={`${styles.tableHeader__firstColumn} ${styles.alignCenter}`}>
-          Date
+          Day
         </Col>
         <Col span={21}>
-          <Row className={styles.tableHeader__remainColumn}>
-            <Col span={3} className={styles.title}>
-              Activity
-            </Col>
-            <Col span={3} className={styles.title}>
-              Time In
-            </Col>
-            <Col span={3} className={styles.title}>
-              Time Out
-            </Col>
-            <Col span={3} className={styles.title}>
-              Nightshift
-            </Col>
-            <Col span={3} className={styles.title}>
-              Total Hrs
-            </Col>
-            <Col span={6} className={styles.title}>
-              Notes
-            </Col>
-            <Col span={3} className={`${styles.title} ${styles.alignCenter}`}>
-              Action
-            </Col>
-          </Row>
+          <div className={styles.tableHeader__remainColumn}>
+            <Row gutter={[12, 0]}>
+              <Col span={3} className={styles.title}>
+                Activity
+              </Col>
+              <Col span={3} className={styles.title}>
+                Time In
+              </Col>
+              <Col span={3} className={styles.title}>
+                Time Out
+              </Col>
+              <Col span={3} className={styles.title}>
+                Nightshift
+              </Col>
+              <Col span={3} className={styles.title}>
+                Total Hrs
+              </Col>
+              <Col span={6} className={styles.title}>
+                Notes
+              </Col>
+              <Col span={3} className={`${styles.title} ${styles.alignCenter}`}>
+                Action
+              </Col>
+            </Row>
+          </div>
         </Col>
       </Row>
     );
   };
 
-  const _renderAddButton = () => {
-    return (
-      <div className={styles.addButton}>
-        <img src={AddIcon} alt="" />
-        <span>Add Activity</span>
-      </div>
-    );
-  };
   const _renderTableContent = () => {
-    return formattedData.map((item) => {
-      return (
-        <Row className={styles.tableContent}>
-          <Col span={3} className={`${styles.tableContent__firstColumn} ${styles.alignCenter}`}>
-            {moment(item.date).locale('en').format(dateFormat)}
-          </Col>
-          <Col span={21} className={styles.tableContent__remainColumn}>
-            {item.activities.map((activity) => {
-              return <ActivityCard activity={activity} />;
-            })}
-
-            {_renderAddButton()}
-          </Col>
-        </Row>
-      );
-    });
+    return formattedData.map((item, index) => <ActivityList item={item} activityIndex={index} />);
   };
 
   // MAIN AREA
   return (
     <div className={styles.TimelineTable}>
-      {_renderTableHeader()}
-      {_renderTableContent()}
+      <div className={styles.tableContainer}>
+        {_renderTableHeader()}
+        {_renderTableContent()}
+      </div>
     </div>
   );
 };
