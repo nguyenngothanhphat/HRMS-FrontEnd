@@ -1,41 +1,14 @@
-/* eslint-disable no-plusplus */
-export default function exportToExcel(filename, rows) {
-  const processRow = (row) => {
-    let finalVal = '';
-    for (let j = 0; j < row.length; j++) {
-      let innerValue = row[j] === null ? '' : row[j].toString();
-      if (row[j] instanceof Date) {
-        innerValue = row[j].toLocaleString();
-      }
-      let result = innerValue.replace(/"/g, '""');
-      if (result.search(/("|,|\n)/g) >= 0) result = `"${result}"`;
-      if (j > 0) finalVal += ',';
-      finalVal += result;
-    }
-    return `${finalVal}\n`;
-  };
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 
-  let csvFile = '';
-  for (let i = 0; i < rows.length; i++) {
-    csvFile += processRow(rows[i]);
-  }
+const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 
-  const blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
-  if (navigator.msSaveBlob) {
-    // IE 10+
-    navigator.msSaveBlob(blob, filename);
-  } else {
-    const link = document.createElement('a');
-    if (link.download !== undefined) {
-      // feature detection
-      // Browsers that support HTML5 download attribute
-      const url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      link.setAttribute('download', filename);
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  }
-}
+const exportToCSV = (csvData, fileName) => {
+  const ws = XLSX.utils.json_to_sheet(csvData);
+  const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
+  const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  const data = new Blob([excelBuffer], { type: fileType });
+  FileSaver.saveAs(data, fileName);
+};
+
+export default exportToCSV;
