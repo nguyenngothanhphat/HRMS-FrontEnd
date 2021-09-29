@@ -1,4 +1,4 @@
-import { Col, Row } from 'antd';
+import { Col, Row, Tooltip } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
@@ -38,10 +38,18 @@ const ActivityCard = (props) => {
     if (notes.length <= 72) return notes;
     return (
       <span>
-        {!readMore ? handleLongString(notes) : notes}{' '}
-        <span className={styles.readMoreBtn} onClick={() => setReadMore(!readMore)}>
-          {!readMore ? 'Read More' : 'Read Less'}
-        </span>
+        {handleLongString(notes)}{' '}
+        <Tooltip
+          title={notes}
+          placement="bottomLeft"
+          // we have this prop for customizing antd tooltip
+          getPopupContainer={(trigger) => {
+            return trigger;
+          }}
+          onVisibleChange={(visible) => setReadMore(visible)}
+        >
+          <span className={styles.readMoreBtn}>Read More</span>
+        </Tooltip>
       </span>
     );
   };
