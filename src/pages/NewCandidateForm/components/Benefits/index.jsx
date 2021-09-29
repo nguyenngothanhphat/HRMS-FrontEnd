@@ -407,8 +407,8 @@ class Benefits extends PureComponent {
 
   getBenefitDocuments = (category) => {
     const { data: { benefits = [] } = {} } = this.props;
+    const getBenefits = [];
 
-    let getBenefits = [];
     benefits.forEach((benefit) => {
       if (benefit.category === category) {
         const docs = [...benefit.documents];
@@ -418,10 +418,13 @@ class Benefits extends PureComponent {
             value: doc.attachmentName,
           };
         });
-        getBenefits = [...getBenefits, ...documents];
+        getBenefits.push({
+          benefitsName: benefit.name,
+          documents,
+          createdAt: benefit.createdAt,
+        });
       }
     });
-
     return getBenefits;
   };
 

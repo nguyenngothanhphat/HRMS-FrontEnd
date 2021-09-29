@@ -6,21 +6,12 @@ import moment from 'moment';
 import styles from './index.less';
 
 class GlobalEmpoyeeComponent extends PureComponent {
-  getCreateBenefitAt = (category) => {
-    const { listBenefits = [] } = this.props;
-    let createdAt = '';
+  getCreateBenefitAt = (createdAt) => {
+    let takeEffect = '';
 
-    listBenefits.forEach((item) => {
-      if (item.category === category) {
-        createdAt = item.createdAt;
-      }
-    });
-
-    if (createdAt === '') return '';
-
-    createdAt = moment(createdAt).locale('en').format('DD/MM/YYYY');
+    takeEffect = moment(createdAt).locale('en').format('DD/MM/YYYY');
     return createdAt ? (
-      <div className={styles.headerText}>Coverage will take effect on {createdAt}</div>
+      <div className={styles.headerText}>Coverage will take effect on {takeEffect}</div>
     ) : (
       ''
     );
@@ -71,24 +62,33 @@ class GlobalEmpoyeeComponent extends PureComponent {
                 <Typography.Text className={styles.checkBoxTitle}>{item.value}</Typography.Text>
               </Checkbox>
               <div className={styles.paddingLeft}>
-                {this.getCreateBenefitAt(item.title)}
-                <CheckboxGroup
-                  options={item.subCheckBox.map((data) => data.value)}
-                  onChange={(e) => handleChange(e, item.subCheckBox, item.title)}
-                  value={
-                    item.title === 'Medical'
-                      ? listSelectedMedical
-                      : item.title === 'Life'
-                      ? listSelectedLife
-                      : item.title === 'shortTerm'
-                      ? listSelectedShortTerm
-                      : item.title === 'Dental'
-                      ? listSelectedDental
-                      : item.title === 'Vision'
-                      ? listSelectedVision
-                      : []
-                  }
-                />
+                {item.subCheckBox.map((sub) => {
+                  const { benefitsName, documents, createdAt } = sub;
+
+                  return (
+                    <>
+                      <div className={styles.benefitsName}>{benefitsName}</div>
+                      {this.getCreateBenefitAt(createdAt)}
+                      <CheckboxGroup
+                        options={documents.map((data) => data.value)}
+                        onChange={(e) => handleChange(e, item.subCheckBox, item.title)}
+                        value={
+                          item.title === 'Medical'
+                            ? listSelectedMedical
+                            : item.title === 'Life'
+                            ? listSelectedLife
+                            : item.title === 'shortTerm'
+                            ? listSelectedShortTerm
+                            : item.title === 'Dental'
+                            ? listSelectedDental
+                            : item.title === 'Vision'
+                            ? listSelectedVision
+                            : []
+                        }
+                      />
+                    </>
+                  );
+                })}
               </div>
             </div>
           ) : (
@@ -97,32 +97,39 @@ class GlobalEmpoyeeComponent extends PureComponent {
                 {item.value}
               </Typography.Paragraph>
 
-              {this.getCreateBenefitAt(item.title)}
-              {item.subCheckBox.map((data) => (
-                <Row>
-                  <Checkbox
-                    onChange={(e) => onChange(e, item.value)}
-                    value={data.value}
-                    checked={
-                      item.title === 'Medical'
-                        ? medical
-                        : item.title === 'Life'
-                        ? life
-                        : item.title === 'shortTerm'
-                        ? shortTerm
-                        : item.title === 'Dental'
-                        ? dental
-                        : item.title === 'Vision'
-                        ? vision
-                        : null
-                    }
-                  >
-                    <Typography.Text className={styles.subCheckboxTitle}>
-                      {data.value}
-                    </Typography.Text>
-                  </Checkbox>
-                </Row>
-              ))}
+              {item.subCheckBox.map((data) => {
+                const { benefitsName, documents, createdAt } = data;
+
+                return (
+                  <>
+                    <div className={styles.benefitsName}>{benefitsName}</div>
+                    {this.getCreateBenefitAt(createdAt)}
+                    {documents.map((doc) => (
+                      <Checkbox
+                        onChange={(e) => onChange(e, item.value)}
+                        value={doc.value}
+                        checked={
+                          item.title === 'Medical'
+                            ? medical
+                            : item.title === 'Life'
+                            ? life
+                            : item.title === 'shortTerm'
+                            ? shortTerm
+                            : item.title === 'Dental'
+                            ? dental
+                            : item.title === 'Vision'
+                            ? vision
+                            : null
+                        }
+                      >
+                        <Typography.Text className={styles.subCheckboxTitle}>
+                          {doc.value}
+                        </Typography.Text>
+                      </Checkbox>
+                    ))}
+                  </>
+                );
+              })}
             </div>
           ),
         )}
