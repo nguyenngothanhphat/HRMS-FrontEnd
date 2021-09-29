@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 
 import React, { PureComponent } from 'react';
-import { Checkbox, Typography, Row } from 'antd';
+import { Checkbox, Typography } from 'antd';
 import moment from 'moment';
 import styles from './index.less';
 
@@ -17,8 +17,17 @@ class GlobalEmpoyeeComponent extends PureComponent {
     );
   };
 
+  handleChecked = (list, value) => {
+    let check = false;
+    list.forEach((item) => {
+      if (item === value) check = true;
+    });
+
+    return check;
+  };
+
   render() {
-    const { globalEmployeesCheckbox, onChange, handleCheckAll, handleChange, benefits } =
+    const { globalEmployeesCheckbox, onChange, handleCheckAll, newHandleChange, benefits } =
       this.props;
     const {
       medical,
@@ -34,7 +43,6 @@ class GlobalEmpoyeeComponent extends PureComponent {
     } = benefits;
     const { checkBox } = globalEmployeesCheckbox;
 
-    const CheckboxGroup = Checkbox.Group;
     return (
       <div className={styles.GlobalEmpoyeeComponent}>
         {checkBox.map((item) =>
@@ -64,28 +72,35 @@ class GlobalEmpoyeeComponent extends PureComponent {
               <div className={styles.paddingLeft}>
                 {item.subCheckBox.map((sub) => {
                   const { benefitsName, documents, createdAt } = sub;
-
                   return (
                     <>
                       <div className={styles.benefitsName}>{benefitsName}</div>
                       {this.getCreateBenefitAt(createdAt)}
-                      <CheckboxGroup
-                        options={documents.map((data) => data.value)}
-                        onChange={(e) => handleChange(e, item.subCheckBox, item.title)}
-                        value={
-                          item.title === 'Medical'
-                            ? listSelectedMedical
-                            : item.title === 'Life'
-                            ? listSelectedLife
-                            : item.title === 'shortTerm'
-                            ? listSelectedShortTerm
-                            : item.title === 'Dental'
-                            ? listSelectedDental
-                            : item.title === 'Vision'
-                            ? listSelectedVision
-                            : []
-                        }
-                      />
+                      {documents.map((doc) => (
+                        <div>
+                          <Checkbox
+                            onChange={(e) => newHandleChange(e, item.value, item.subCheckBox)}
+                            value={doc.value}
+                            checked={
+                              item.title === 'Medical'
+                                ? this.handleChecked(listSelectedMedical, doc.value)
+                                : item.title === 'Life'
+                                ? this.handleChecked(listSelectedLife, doc.value)
+                                : item.title === 'shortTerm'
+                                ? this.handleChecked(listSelectedShortTerm, doc.value)
+                                : item.title === 'Dental'
+                                ? this.handleChecked(listSelectedDental, doc.value)
+                                : item.title === 'Vision'
+                                ? this.handleChecked(listSelectedVision, doc.value)
+                                : null
+                            }
+                          >
+                            <Typography.Text className={styles.subCheckboxTitle}>
+                              {doc.value}
+                            </Typography.Text>
+                          </Checkbox>
+                        </div>
+                      ))}
                     </>
                   );
                 })}
