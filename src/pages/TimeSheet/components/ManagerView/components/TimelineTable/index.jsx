@@ -5,7 +5,12 @@ import MockAvatar from '@/assets/timeSheet/mockAvatar.jpeg';
 import styles from './index.less';
 
 const TimelineTable = (props) => {
-  const { firstDateOfWeek = '', endDateOfWeek = '', managerTimesheet = [] } = props;
+  const {
+    firstDateOfWeek = '',
+    endDateOfWeek = '',
+    managerTimesheet = [],
+    loadingFetchManagerTimesheet = false,
+  } = props;
   const [pageSelected, setPageSelected] = useState(1);
   const _renderEmployee = (record) => {
     const { employeeName = '', employeeId = '' } = record;
@@ -83,11 +88,13 @@ const TimelineTable = (props) => {
         columns={generateColumns()}
         dataSource={managerTimesheet}
         pagination={pagination}
+        loading={loadingFetchManagerTimesheet}
       />
     </div>
   );
 };
 
-export default connect(({ timeSheet: { managerTimesheet = [] } = {} }) => ({ managerTimesheet }))(
-  TimelineTable,
-);
+export default connect(({ loading, timeSheet: { managerTimesheet = [] } = {} }) => ({
+  managerTimesheet,
+  loadingFetchManagerTimesheet: loading.effects['timeSheet/fetchManagerTimesheetEffect'],
+}))(TimelineTable);

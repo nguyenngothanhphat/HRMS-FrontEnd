@@ -5,11 +5,22 @@ import Header from './components/Header';
 import TimelineTable from './components/TimelineTable';
 import styles from './index.less';
 
-const MyTimeSheet = () => {
+const MyTimeSheet = (props) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const { dispatch } = props;
+  // FUNCTION AREA
+  const fetchMyTimesheetEffect = () => {
+    dispatch({
+      type: 'timeSheet/fetchMyTimesheetEffect',
+    });
+  };
 
   // USE EFFECT AREA
+  useEffect(() => {
+    fetchMyTimesheetEffect();
+  }, []);
+
   useEffect(() => {
     const lastSunday = moment().weekday(0);
     const currentSunday = moment().weekday(7);

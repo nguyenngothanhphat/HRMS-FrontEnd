@@ -1,100 +1,168 @@
-import moment from 'moment';
-
-const mockMyTimeSheetData = [
-  {
-    _id: 1,
-    day: moment(),
-    activity: 'Working hours',
-    timeIn: '10:30 am',
-    timeOut: '10:30 am',
-    nightshift: false,
-    totalHours: '02:30:00',
-    notes:
-      'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint non deserunt ullamco est sit aliqua dolor do amet sint ',
-  },
-  {
-    _id: 2,
-    day: moment(),
-    activity: 'Lunch Break',
-    timeIn: '10:30 am',
-    timeOut: '10:30 am',
-    nightshift: false,
-    totalHours: '02:30:00',
-    notes: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor',
-  },
-  {
-    _id: 3,
-    day: moment(),
-    activity: 'PTO',
-    timeIn: '10:30 am',
-    timeOut: '10:30 am',
-    nightshift: false,
-    totalHours: '02:30:00',
-    notes:
-      'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint non deserunt ullamco est sit aliqua dolor do amet sint ',
-  },
-  {
-    _id: 4,
-    day: moment().add(1, 'days'),
-    activity: 'Working hours',
-    timeIn: '10:30 am',
-    timeOut: '10:30 am',
-    nightshift: false,
-    totalHours: '02:30:00',
-    notes: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint non',
-  },
-  {
-    _id: 5,
-    day: moment().add(3, 'days'),
-    activity: 'Working hours',
-    timeIn: '10:30 am',
-    timeOut: '10:30 am',
-    nightshift: false,
-    totalHours: '02:30:00',
-    notes:
-      'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint non deserunt ullamco est sit aliqua dolor do amet sint ',
-  },
-];
-
-const mockManagerTimeSheetData = [
-  {
-    _id: 1,
-    employeeName: 'Bessie Cooper',
-    employeeId: 'bessiecooper',
-    workedHours: '01:30:00',
-    overtimeHours: '01:30:00',
-    pto: '',
-  },
-  {
-    _id: 2,
-    employeeName: 'Eleanor Pena',
-    employeeId: 'bessiecooper',
-    workedHours: '01:30:00',
-    overtimeHours: '01:30:00',
-    pto: '',
-  },
-  {
-    _id: 3,
-    employeeName: 'Floyd Miles',
-    employeeId: 'bessiecooper',
-    workedHours: '01:30:00',
-    overtimeHours: '01:30:00',
-    pto: '',
-  },
-];
+import { message, notification } from 'antd';
+import { dialog } from '@/utils/utils';
+import {
+  // fetch
+  getManagerTimesheet,
+  getMyTimesheet,
+  // update/add/remove
+  updateActivity,
+  addActivity,
+  removeActivity,
+} from '@/services/timeSheet';
 
 const TimeSheet = {
   namespace: 'timeSheet',
   state: {
-    myTimesheet: mockMyTimeSheetData,
-    managerTimesheet: mockManagerTimeSheetData,
+    myTimesheet: [],
+    managerTimesheet: [],
   },
-  effects: {},
+  effects: {
+    // fetch
+    *fetchMyTimesheetEffect({ payload }, { call, put }) {
+      const response = {};
+      try {
+        const res = yield call(getMyTimesheet, payload);
+        const { statusCode, data = [] } = res;
+        if (statusCode !== 200) throw res;
+
+        yield put({
+          type: 'save',
+          payload: {
+            myTimesheet: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+    *fetchManagerTimesheetEffect({ payload }, { call, put }) {
+      const response = {};
+      try {
+        const res = yield call(getManagerTimesheet, payload);
+        const { statusCode, data = [] } = res;
+        if (statusCode !== 200) throw res;
+
+        yield put({
+          type: 'save',
+          payload: {
+            managerTimesheet: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+
+    // update/edit
+    *updateActivityEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        const updating = message.loading('Updating...', 0);
+        response = yield call(updateActivity, payload);
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message: 'Update successfully' });
+        yield put({
+          type: 'onActivityUpdated',
+          payload: {
+            updatedActivity: data,
+          },
+        });
+        updating();
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+
+    // add
+    *addActivityEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        const adding = message.loading('Adding...', 0);
+        response = yield call(addActivity, payload);
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message: 'Add successfully' });
+
+        yield put({
+          type: 'onActivityAdded',
+          payload: {
+            addedActivity: data,
+          },
+        });
+        adding();
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+
+    // remove
+    *removeActivityEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        const removing = message.loading('Removing...', 0);
+        response = yield call(removeActivity, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message: 'Remove successfully' });
+
+        yield put({
+          type: 'onActivityRemoved',
+          payload: {
+            removedActivity: payload,
+          },
+        });
+        removing();
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+  },
   reducers: {
     save(state, action) {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    onActivityUpdated(state, action) {
+      const { updatedActivity = {} } = action.payload;
+      let { myTimesheet } = state;
+      myTimesheet = myTimesheet.map((item) =>
+        item._id === updatedActivity._id ? updatedActivity : item,
+      );
+      return {
+        ...state,
+        myTimesheet,
+      };
+    },
+    onActivityAdded(state, action) {
+      const { addedActivity = {} } = action.payload;
+      const { myTimesheet } = state;
+      myTimesheet.push(addedActivity);
+      return {
+        ...state,
+        myTimesheet: [...myTimesheet],
+      };
+    },
+
+    onActivityRemoved(state, action) {
+      const { removedActivity = {} } = action.payload;
+      let { myTimesheet } = state;
+      myTimesheet = myTimesheet.filter((item) => item._id !== removedActivity._id);
+      return {
+        ...state,
+        myTimesheet: [...myTimesheet],
       };
     },
   },

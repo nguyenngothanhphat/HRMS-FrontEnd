@@ -67,6 +67,7 @@ const ActivityList = (props) => {
             onEditValue={onEditValue}
             onRemoveCard={onRemoveCard}
             cardIndex={index}
+            cardDay={item.date}
           />
         ))}
         {_renderAddButton()}

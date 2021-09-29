@@ -1,15 +1,19 @@
 import { Col, Row } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
+import moment from 'moment';
 import EditIcon from '@/assets/timeSheet/edit.svg';
 import DeleteIcon from '@/assets/timeSheet/del.svg';
 import { activityColor } from '@/utils/timeSheet';
 import styles from './index.less';
 import EditCard from '../EditCard';
 
+const hourFormat = 'HH:mm';
+
 const ActivityCard = (props) => {
   const {
     card: {
+      _id = '',
       activity = '',
       timeIn = '',
       timeOut = '',
@@ -18,6 +22,7 @@ const ActivityCard = (props) => {
       notes = '',
     } = {},
     card = {},
+    dispatch,
   } = props;
   const [readMore, setReadMore] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -28,21 +33,35 @@ const ActivityCard = (props) => {
     return `${str.slice(0, 72)}...`;
   };
 
-  const renderNote = () =>
-    notes.length > 72 && !readMore ? (
+  const renderNote = () => {
+    if (notes.length <= 72) return notes;
+    return (
       <span>
-        {handleLongString(notes)}{' '}
-        <span className={styles.readMoreBtn} onClick={() => setReadMore(true)}>
-          Read More
+        {!readMore ? handleLongString(notes) : notes}{' '}
+        <span className={styles.readMoreBtn} onClick={() => setReadMore(!readMore)}>
+          {!readMore ? 'Read More' : 'Read Less'}
         </span>
       </span>
-    ) : (
-      notes
     );
+  };
 
   const getActivityBackgroundColor = (activityName) => {
     const find = activityColor.find((a) => a.name === activityName);
     return find?.color;
+  };
+
+  // main handle
+  const onEditCard = () => {
+    setEditMode(true);
+  };
+
+  const onRemoveCard = () => {
+    dispatch({
+      type: 'timeSheet/removeActivityEffect',
+      payload: {
+        _id,
+      },
+    });
   };
 
   // MAIN AREA
@@ -59,29 +78,31 @@ const ActivityCard = (props) => {
                 : null
             }
           >
-            <span>{activity.charAt(0)}</span>
+            <span>
+              {typeof activity === 'string' && activity.length > 0 ? activity.charAt(0) : 'A'}
+            </span>
           </div>
-          {activity}
+          {activity || ''}
         </Col>
         <Col span={3} className={styles.normalCell}>
-          {timeIn}
+          {timeIn ? moment(timeIn).format(hourFormat) : ''}
         </Col>
         <Col span={3} className={styles.normalCell}>
-          {timeOut}
+          {timeOut ? moment(timeOut).format(hourFormat) : ''}
         </Col>
         <Col span={3} className={styles.normalCell}>
           {nightshift ? 'Yes' : 'No'}
         </Col>
         <Col span={3} className={`${styles.normalCell} ${styles.blueText}`}>
-          {totalHours}
+          {totalHours || ''}
         </Col>
         <Col span={6} className={styles.normalCell}>
           {renderNote()}
         </Col>
         <Col span={3} className={`${styles.normalCell} ${styles.alignCenter}`}>
           <div className={styles.actionsButton}>
-            <img src={EditIcon} onClick={() => setEditMode(true)} alt="" />
-            <img src={DeleteIcon} alt="" />
+            <img src={EditIcon} onClick={onEditCard} alt="" />
+            <img src={DeleteIcon} onClick={onRemoveCard} alt="" />
           </div>
         </Col>
       </Row>

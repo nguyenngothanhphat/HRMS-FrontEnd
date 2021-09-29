@@ -1,4 +1,4 @@
-import { Col, Row } from 'antd';
+import { Col, Row, Skeleton, Spin } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -6,9 +6,10 @@ import ActivityList from './components/ActivityList';
 import styles from './index.less';
 
 const TimelineTable = (props) => {
-  const { startDate = '', endDate = '', myTimesheet = [] } = props;
+  const { startDate = '', endDate = '', myTimesheet = [], loadingFetchMyTimesheet = false } = props;
   const [dateList, setDateList] = useState([]);
   const [formattedData, setFormattedData] = useState([]);
+  const loading = loadingFetchMyTimesheet;
 
   // get dates between two dates
   const enumerateDaysBetweenDates = (startDate1, endDate1) => {
@@ -39,6 +40,11 @@ const TimelineTable = (props) => {
     });
   };
 
+  const refreshData = () => {
+    const formattedDataTemp = generateData(myTimesheet);
+    setFormattedData(formattedDataTemp);
+  };
+
   // USE EFFECT AREA
   useEffect(() => {
     const dateListTemp = enumerateDaysBetweenDates(moment(startDate), moment(endDate));
@@ -46,14 +52,24 @@ const TimelineTable = (props) => {
   }, [startDate, endDate]);
 
   useEffect(() => {
-    const formattedDataTemp = generateData(myTimesheet);
-    setFormattedData(formattedDataTemp);
+    refreshData();
+  }, [JSON.stringify(myTimesheet)]);
+
+  useEffect(() => {
+    refreshData();
   }, [dateList]);
 
   // RENDER UI
   const _renderTableHeader = () => {
     return (
-      <Row className={styles.tableHeader}>
+      <Row
+        className={styles.tableHeader}
+        style={
+          loading
+            ? { opacity: 0.7, transition: 'ease-in-out 1.5s' }
+            : { opacity: 1, transition: 'ease-in-out 1.5s' }
+        }
+      >
         <Col span={3} className={`${styles.tableHeader__firstColumn} ${styles.alignCenter}`}>
           Day
         </Col>
@@ -89,6 +105,12 @@ const TimelineTable = (props) => {
   };
 
   const _renderTableContent = () => {
+    if (loading)
+      return (
+        <div className={styles.loadingContainer}>
+          <Spin size="default" />
+        </div>
+      );
     return formattedData.map((item, index) => <ActivityList item={item} activityIndex={index} />);
   };
 
@@ -103,6 +125,7 @@ const TimelineTable = (props) => {
   );
 };
 
-export default connect(({ timeSheet: { myTimesheet = [] } = {} }) => ({ myTimesheet }))(
-  TimelineTable,
-);
+export default connect(({ loading, timeSheet: { myTimesheet = [] } = {} }) => ({
+  myTimesheet,
+  loadingFetchMyTimesheet: loading.effects['timeSheet/fetchMyTimesheetEffect'],
+}))(TimelineTable);

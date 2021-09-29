@@ -25,8 +25,11 @@ const AddCard = (props) => {
       notes = '',
     } = {},
     cardIndex,
+    cardDay = '',
     onRemoveCard = () => {},
     onEditValue = () => {},
+    dispatch,
+    card,
   } = props;
 
   useEffect(() => {
@@ -42,8 +45,18 @@ const AddCard = (props) => {
     }
   }, [refreshing]);
 
-  const onFinish = (values) => {
-    console.log('values', values);
+  // main function
+  const addActivityEffect = (values) =>
+    dispatch({
+      type: 'timeSheet/addActivityEffect',
+      payload: { ...values, day: moment(cardDay) },
+    });
+
+  const onFinish = async (values) => {
+    const res = await addActivityEffect(values);
+    if (res.statusCode === 200) {
+      onRemoveCard(cardIndex);
+    }
   };
 
   const onValuesChange = (changedValues, allValues) => {
@@ -68,8 +81,10 @@ const AddCard = (props) => {
               value={activity || null}
               suffixIcon={<img src={ArrowDown} alt="" />}
             >
-              <Option value={1}>A</Option>
-              <Option value={2}>B</Option>
+              <Option value="A">A</Option>
+              <Option value="B">B</Option>
+              <Option value="C">C</Option>
+              <Option value="D">D</Option>
             </Select>
           </Form.Item>
         </Col>
