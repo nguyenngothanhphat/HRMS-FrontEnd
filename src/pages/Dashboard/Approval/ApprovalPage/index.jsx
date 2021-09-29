@@ -11,7 +11,7 @@ import styles from './index.less';
 import DetailTicket from '../../components/TicketItem/DetailTicket';
 
 const ApprovalPage = (props) => {
-  const { dispatch, loadingTable, listTicket, isLoadData } = props;
+  const { dispatch, loadingTable, listTicket, isLoadData, loadingReject, loadingApproval } = props;
   const [openModal, setOpenModal] = useState(false);
   const [ticket, setTicket] = useState({});
   const [keySearch, setKeySearch] = useState('');
@@ -200,7 +200,7 @@ const ApprovalPage = (props) => {
           <Table
             columns={columns}
             dataSource={listData}
-            loading={loadingTable}
+            loading={loadingTable || loadingReject || loadingApproval}
             size="small"
             pagination={pagination}
           />
@@ -212,6 +212,8 @@ const ApprovalPage = (props) => {
 };
 export default connect(({ loading, dashboard: { listTicket = [], totalTicket, isLoadData } }) => ({
   loadingTable: loading.effects['dashboard/fetchListTicket'],
+  loadingReject: loading.effects['dashboard/rejectTicket'],
+  loadingApproval: loading.effects['dashboard/approvalTicket'],
   listTicket,
   totalTicket,
   isLoadData,
