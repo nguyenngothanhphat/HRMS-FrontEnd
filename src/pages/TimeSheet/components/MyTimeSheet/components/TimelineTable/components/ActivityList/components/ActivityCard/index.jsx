@@ -8,7 +8,7 @@ import { activityColor } from '@/utils/timeSheet';
 import styles from './index.less';
 import EditCard from '../EditCard';
 
-const hourFormat = 'HH:mm';
+const hourFormat = 'h:mm a';
 
 const ActivityCard = (props) => {
   const {
@@ -22,6 +22,7 @@ const ActivityCard = (props) => {
       notes = '',
     } = {},
     card = {},
+    cardDay = '',
     dispatch,
   } = props;
   const [readMore, setReadMore] = useState(false);
@@ -65,7 +66,8 @@ const ActivityCard = (props) => {
   };
 
   // MAIN AREA
-  if (editMode) return <EditCard card={card} onCancelCard={() => setEditMode(false)} />;
+  if (editMode)
+    return <EditCard card={card} onCancelCard={() => setEditMode(false)} cardDay={cardDay} />;
   return (
     <div className={styles.ActivityCard}>
       <Row gutter={[12, 0]}>

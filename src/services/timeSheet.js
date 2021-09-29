@@ -1,13 +1,13 @@
 import moment from 'moment';
-import request from '@/utils/request';
+// import request from '@/utils/request';
 
 const mockMyTimeSheetData = [
   {
     _id: 1,
     day: moment(),
     activity: 'Working hours',
-    timeIn: '10:30 am',
-    timeOut: '10:30 am',
+    timeIn: moment(),
+    timeOut: moment(),
     nightshift: false,
     totalHours: '02:30:00',
     notes:
@@ -17,8 +17,8 @@ const mockMyTimeSheetData = [
     _id: 2,
     day: moment(),
     activity: 'Lunch Break',
-    timeIn: '10:30 am',
-    timeOut: '10:30 am',
+    timeIn: moment(),
+    timeOut: moment(),
     nightshift: false,
     totalHours: '02:30:00',
     notes: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor',
@@ -27,8 +27,8 @@ const mockMyTimeSheetData = [
     _id: 3,
     day: moment(),
     activity: 'PTO',
-    timeIn: '10:30 am',
-    timeOut: '10:30 am',
+    timeIn: moment(),
+    timeOut: moment(),
     nightshift: false,
     totalHours: '02:30:00',
     notes:
@@ -38,8 +38,8 @@ const mockMyTimeSheetData = [
     _id: 4,
     day: moment().add(1, 'days'),
     activity: 'Working hours',
-    timeIn: '10:30 am',
-    timeOut: '10:30 am',
+    timeIn: moment(),
+    timeOut: moment(),
     nightshift: false,
     totalHours: '02:30:00',
     notes: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint non',
@@ -48,8 +48,8 @@ const mockMyTimeSheetData = [
     _id: 5,
     day: moment().add(3, 'days'),
     activity: 'Working hours',
-    timeIn: '10:30 am',
-    timeOut: '10:30 am',
+    timeIn: moment(),
+    timeOut: moment(),
     nightshift: false,
     totalHours: '02:30:00',
     notes:
@@ -84,16 +84,17 @@ const mockManagerTimeSheetData = [
   },
 ];
 
-const wait = (ms) => new Promise((resolve, reject) => setTimeout(resolve, ms));
+// eslint-disable-next-line compat/compat
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // fetch
-export async function getMyTimesheet(payload) {
+export async function getMyTimesheet() {
   await wait(2000);
   const res = { data: mockMyTimeSheetData, statusCode: 200 };
   return res;
 }
 
-export async function getManagerTimesheet(payload) {
+export async function getManagerTimesheet() {
   await wait(2000);
   const res = { data: mockManagerTimeSheetData, statusCode: 200 };
   return res;
@@ -106,7 +107,7 @@ export async function updateActivity(payload) {
   return res;
 }
 
-export async function removeActivity(payload) {
+export async function removeActivity() {
   await wait(1000);
   const res = { data: {}, statusCode: 200 };
   return res;

@@ -7,8 +7,9 @@ import ArrowDown from '@/assets/timeSheet/arrowDown.svg';
 import CancelIcon from '@/assets/timeSheet/cancel.svg';
 import ClockIcon from '@/assets/timeSheet/clock.svg';
 import styles from './index.less';
+import { addTimeForDate } from '@/utils/timeSheet';
 
-const hourFormat = 'HH:mm';
+const hourFormat = 'h:mm a';
 
 const { Option } = Select;
 const EditCard = (props) => {
@@ -25,22 +26,27 @@ const EditCard = (props) => {
       notes = '',
     } = {},
     cardIndex,
+    cardDay = '',
     onCancelCard = () => {},
     dispatch,
   } = props;
 
   // main function
   const updateActivityEffect = (values) => {
+    // timeIn & timeOut we selected from TimePicker have dates are today
+    // example now is 09/29/2021 - 16:08:20, after we pick a time, the value is 09/29/2021 - 16:08:20 (moment js)
+    // so we MUST change the date into the one this AddCard belongs to
+    // example this activity is in 08/15/2021
+    // result will be 08/15/2021 - 16:08:20 (moment js)
+
     const payload = {
       ...values,
       _id,
-      // activity: values.activity || activity,
-      // timeIn: values.timeIn || timeIn,
-      // timeOut: values.timeOut || timeOut,
-      // nightshift: values.nightshift || nightshift,
-      // totalHours,
-      // notes: values.notes || notes,
+      day: moment(cardDay),
+      timeIn: values.timeIn ? addTimeForDate(cardDay, values.timeIn) : '',
+      timeOut: values.timeOut ? addTimeForDate(cardDay, values.timeOut) : '',
     };
+
     return dispatch({
       type: 'timeSheet/updateActivityEffect',
       payload,
@@ -72,10 +78,7 @@ const EditCard = (props) => {
       <Row gutter={[12, 0]}>
         <Col span={3} className={`${styles.normalCell} ${styles.boldText}`}>
           <Form.Item name="activity" rules={[{ required: true }]}>
-            <Select
-              // value={activity}
-              suffixIcon={<img src={ArrowDown} alt="" />}
-            >
+            <Select suffixIcon={<img src={ArrowDown} alt="" />}>
               <Option value="A">A</Option>
               <Option value="B">B</Option>
               <Option value="C">C</Option>
@@ -85,28 +88,17 @@ const EditCard = (props) => {
         </Col>
         <Col span={3} className={styles.normalCell}>
           <Form.Item name="timeIn" rules={[{ required: true }]}>
-            <TimePicker
-              // value={timeIn ? moment(timeIn) : ''}
-              format={hourFormat}
-              suffixIcon={<img src={ClockIcon} alt="" />}
-            />
+            <TimePicker format={hourFormat} suffixIcon={<img src={ClockIcon} alt="" />} />
           </Form.Item>
         </Col>
         <Col span={3} className={styles.normalCell}>
           <Form.Item name="timeOut" rules={[{ required: true }]}>
-            <TimePicker
-              // value={timeOut ? moment(timeOut) : ''}
-              format={hourFormat}
-              suffixIcon={<img src={ClockIcon} alt="" />}
-            />
+            <TimePicker format={hourFormat} suffixIcon={<img src={ClockIcon} alt="" />} />
           </Form.Item>
         </Col>
         <Col span={3} className={styles.normalCell}>
           <Form.Item name="nightshift" rules={[{ required: true }]}>
-            <Select
-              // value={nightshift}
-              suffixIcon={<img src={ArrowDown} alt="" />}
-            >
+            <Select suffixIcon={<img src={ArrowDown} alt="" />}>
               <Option value>Yes</Option>
               <Option value={false}>No</Option>
             </Select>
@@ -123,7 +115,7 @@ const EditCard = (props) => {
         <Col span={3} className={`${styles.normalCell} ${styles.alignCenter}`}>
           <div className={styles.actionsButton}>
             <button type="submit" htmlType="submit">
-              <img type htmlType="submit" src={ApproveIcon} alt="" />{' '}
+              <img type htmlType="submit" src={ApproveIcon} alt="" />
             </button>
             <img
               src={CancelIcon}

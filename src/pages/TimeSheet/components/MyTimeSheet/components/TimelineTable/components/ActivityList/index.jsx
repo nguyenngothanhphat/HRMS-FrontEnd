@@ -59,7 +59,7 @@ const ActivityList = (props) => {
       </Col>
       <Col span={21} className={styles.ActivityList__remainColumn}>
         {item.activities.map((activity) => {
-          return <ActivityCard card={activity} />;
+          return <ActivityCard card={activity} cardDay={item.date} />;
         })}
         {cardList.map((card, index) => (
           <AddCard

@@ -6,10 +6,11 @@ import ApproveIcon from '@/assets/timeSheet/approve.svg';
 import CancelIcon from '@/assets/timeSheet/cancel.svg';
 import ClockIcon from '@/assets/timeSheet/clock.svg';
 import ArrowDown from '@/assets/timeSheet/arrowDown.svg';
+import { addTimeForDate } from '@/utils/timeSheet';
 
 import styles from './index.less';
 
-const hourFormat = 'HH:mm';
+const hourFormat = 'h:mm a';
 
 const { Option } = Select;
 const AddCard = (props) => {
@@ -29,15 +30,14 @@ const AddCard = (props) => {
     onRemoveCard = () => {},
     onEditValue = () => {},
     dispatch,
-    card,
   } = props;
 
   useEffect(() => {
     if (refreshing) {
       form.setFieldsValue({
         activity,
-        timeIn: timeIn ? moment(timeIn) : '',
-        timeOut: timeOut ? moment(timeOut) : '',
+        timeIn,
+        timeOut,
         nightshift,
         notes,
       });
@@ -60,7 +60,19 @@ const AddCard = (props) => {
   };
 
   const onValuesChange = (changedValues, allValues) => {
-    onEditValue(allValues, cardIndex);
+    // timeIn & timeOut we selected from TimePicker have dates are today
+    // example now is 09/29/2021 - 16:08:20, after we pick a time, the value is 09/29/2021 - 16:08:20 (moment js)
+    // so we MUST change the date into the one this AddCard belongs to
+    // example this activity is in 08/15/2021
+    // result will be 08/15/2021 - 16:08:20 (moment js)
+    onEditValue(
+      {
+        ...allValues,
+        timeIn: allValues.timeIn ? addTimeForDate(cardDay, allValues.timeIn) : '',
+        timeOut: allValues.timeOut ? addTimeForDate(cardDay, allValues.timeOut) : '',
+      },
+      cardIndex,
+    );
   };
 
   // MAIN AREA
