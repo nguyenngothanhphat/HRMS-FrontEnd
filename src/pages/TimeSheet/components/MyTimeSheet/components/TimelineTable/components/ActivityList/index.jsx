@@ -1,6 +1,6 @@
 import { Col, Row } from 'antd';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import AddIcon from '@/assets/timeSheet/add.svg';
 import ActivityCard from './components/ActivityCard';
@@ -12,6 +12,11 @@ const dateFormat = 'ddd, MMM Do';
 const ActivityList = (props) => {
   const { item = {}, activityIndex } = props;
   const [cardList, setCardList] = useState([]);
+
+  // reset add card when switching time
+  useEffect(() => {
+    setCardList([]);
+  }, [JSON.stringify(item)]);
 
   const onAddNewCard = () => {
     setCardList([...cardList, {}]);

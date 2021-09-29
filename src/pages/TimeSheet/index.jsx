@@ -4,6 +4,8 @@ import { Tabs } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import styles from './index.less';
 import MyTimeSheet from './components/MyTimeSheet';
+import ManagerView from './components/ManagerView';
+import Settings from './components/Settings';
 
 const { TabPane } = Tabs;
 
@@ -15,7 +17,7 @@ const TimeSheet = (props) => {
 
   useEffect(() => {
     if (!tabName) {
-      history.replace(`/timesheet/overview`);
+      history.replace(`/timesheet/my`);
     }
   }, [tabName]);
 
@@ -35,14 +37,20 @@ const TimeSheet = (props) => {
     <div className={styles.TimeSheet}>
       <PageContainer>
         <Tabs
-          activeKey={tabName || 'overview'}
+          activeKey={tabName || 'my'}
           tabBarExtraContent={options()}
           onChange={(key) => {
             history.push(`/timesheet/${key}`);
           }}
         >
-          <TabPane tab="My time sheet" key="overview">
+          <TabPane tab="My time sheet" key="my">
             <MyTimeSheet />
+          </TabPane>
+          <TabPane tab="Reports" key="reports">
+            <ManagerView />
+          </TabPane>
+          <TabPane tab="Settings" key="settings">
+            <Settings />
           </TabPane>
         </Tabs>
       </PageContainer>

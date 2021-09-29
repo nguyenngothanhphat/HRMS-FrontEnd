@@ -55,10 +55,39 @@ const mockMyTimeSheetData = [
       'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint non deserunt ullamco est sit aliqua dolor do amet sint ',
   },
 ];
+
+const mockManagerTimeSheetData = [
+  {
+    _id: 1,
+    employeeName: 'Bessie Cooper',
+    employeeId: 'bessiecooper',
+    workedHours: '01:30:00',
+    overtimeHours: '01:30:00',
+    pto: '',
+  },
+  {
+    _id: 2,
+    employeeName: 'Eleanor Pena',
+    employeeId: 'bessiecooper',
+    workedHours: '01:30:00',
+    overtimeHours: '01:30:00',
+    pto: '',
+  },
+  {
+    _id: 3,
+    employeeName: 'Floyd Miles',
+    employeeId: 'bessiecooper',
+    workedHours: '01:30:00',
+    overtimeHours: '01:30:00',
+    pto: '',
+  },
+];
+
 const TimeSheet = {
   namespace: 'timeSheet',
   state: {
     myTimesheet: mockMyTimeSheetData,
+    managerTimesheet: mockManagerTimeSheetData,
   },
   effects: {},
   reducers: {

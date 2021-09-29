@@ -110,7 +110,11 @@ const AddCard = (props) => {
         </Col>
         <Col span={6} className={styles.normalCell}>
           <Form.Item name="notes" rules={[{ required: true }]}>
-            <Input.TextArea value={notes} placeholder="Enter notes..." />
+            <Input.TextArea
+              value={notes}
+              placeholder="Enter notes..."
+              autoSize={{ minRows: 4, maxRows: 7 }}
+            />
           </Form.Item>
         </Col>
         <Col span={3} className={`${styles.normalCell} ${styles.alignCenter}`}>
