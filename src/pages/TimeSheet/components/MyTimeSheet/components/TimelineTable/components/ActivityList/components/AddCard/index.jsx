@@ -14,6 +14,8 @@ const { Option } = Select;
 const AddCard = (props) => {
   const [form] = Form.useForm();
   const [refreshing, setRefreshing] = useState(false);
+  const [timeInState, setTimeInState] = useState('');
+  const [timeOutState, setTimeOutState] = useState('');
   const {
     card: {
       activity = '',
@@ -73,6 +75,62 @@ const AddCard = (props) => {
     );
   };
 
+  const onChangeTimeIn = (value) => {
+    setTimeInState(value);
+  };
+
+  const onChangeTimeOut = (value) => {
+    setTimeOutState(value);
+  };
+
+  const disableHour = () => {
+    let hours = [];
+    const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    if (timeInState) {
+      const hour = +timeInState.format('hh');
+      const minute = +timeInState.format('mm');
+
+      if (minute === 0) {
+        hours = arr.filter((item) => item < hour); // arr hours CAN include the selected hour
+      } else {
+        hours = arr.filter((item) => item <= hour); // arr hours CAN NOT include the selected hour
+      }
+    }
+
+    // if (timeOutState) {
+    //   const hour = +timeOutState.format('hh');
+    //   const minute = +timeOutState.format('mm');
+
+    //   if (timeInState) {
+    //     hours = hours.filter((item) => item > hour);
+    //   } else {
+    //     hours = arr.filter((item) => item > hour);
+    //   }
+    // }
+
+    return hours;
+  };
+
+  // const disableHourOut = () => {
+
+  // }
+
+  const disableMinute = (selectedHour) => {
+    const arr = [0, 30];
+    let minutes = [];
+    if (selectedHour > -1) {
+      if (timeInState) {
+        const minute = +timeInState.format('mm');
+
+        if (minute !== 30) {
+          minutes = arr.filter((item) => item === minute);
+        }
+      }
+    }
+
+    return minutes;
+  };
+
   // MAIN AREA
   return (
     <Form
@@ -109,6 +167,9 @@ const AddCard = (props) => {
               minuteStep={minuteStep}
               suffixIcon={<img src={ClockIcon} alt="" />}
               placeholder="Time in"
+              onChange={onChangeTimeIn}
+              disabledHours={disableHour}
+              disabledMinutes={disableMinute}
             />
           </Form.Item>
         </Col>
@@ -120,6 +181,10 @@ const AddCard = (props) => {
               format={hourFormat}
               suffixIcon={<img src={ClockIcon} alt="" />}
               placeholder="Time out"
+              onChange={onChangeTimeOut}
+              disabledHours={disableHour}
+              disabledMinutes={disableMinute}
+              use12Hours
             />
           </Form.Item>
         </Col>
