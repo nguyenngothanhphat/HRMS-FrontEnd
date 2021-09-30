@@ -14,8 +14,18 @@ const { Option } = Select;
 const AddCard = (props) => {
   const [form] = Form.useForm();
   const [refreshing, setRefreshing] = useState(false);
-  const [timeInState, setTimeInState] = useState('');
-  const [timeOutState, setTimeOutState] = useState('');
+  // const [timeInState, setTimeInState] = useState('');
+  // const [timeOutState, setTimeOutState] = useState('');
+  const [timePicker, setTimePicker] = useState({
+    timeIn: {
+      arrHours: [],
+      arrMinutes: [],
+    },
+    timeOut: {
+      arrHours: [],
+      arrMinutes: [],
+    },
+  });
   const {
     card: {
       activity = '',
@@ -75,61 +85,89 @@ const AddCard = (props) => {
     );
   };
 
-  const onChangeTimeIn = (value) => {
-    setTimeInState(value);
+  // const onChangeTimeIn = (value) => {
+  //   setTimeInState(value);
+  // };
+
+  // const onChangeTimeOut = (value) => {
+  //   setTimeOutState(value);
+  // };
+
+  const disableHourIn = () => {
+    const hours = [...timePicker.timeIn.arrHours];
+    return hours;
   };
-
-  const onChangeTimeOut = (value) => {
-    setTimeOutState(value);
-  };
-
-  const disableHour = () => {
-    let hours = [];
-    const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-    if (timeInState) {
-      const hour = +timeInState.format('hh');
-      const minute = +timeInState.format('mm');
-
-      if (minute === 0) {
-        hours = arr.filter((item) => item < hour); // arr hours CAN include the selected hour
-      } else {
-        hours = arr.filter((item) => item <= hour); // arr hours CAN NOT include the selected hour
-      }
-    }
-
-    // if (timeOutState) {
-    //   const hour = +timeOutState.format('hh');
-    //   const minute = +timeOutState.format('mm');
-
-    //   if (timeInState) {
-    //     hours = hours.filter((item) => item > hour);
-    //   } else {
-    //     hours = arr.filter((item) => item > hour);
-    //   }
-    // }
-
+  const disableHourOut = () => {
+    const hours = [...timePicker.timeOut.arrHours];
     return hours;
   };
 
-  // const disableHourOut = () => {
+  const selectTimeIn = (value) => {
+    let hours = [...timePicker.timeIn.arrHours];
+    const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const hour = +value.format('hh');
+    const minute = +value.format('mm');
 
-  // }
-
-  const disableMinute = (selectedHour) => {
-    const arr = [0, 30];
-    let minutes = [];
-    if (selectedHour > -1) {
-      if (timeInState) {
-        const minute = +timeInState.format('mm');
-
-        if (minute !== 30) {
-          minutes = arr.filter((item) => item === minute);
-        }
-      }
+    if (minute === 0) {
+      hours = arr.filter((item) => item < hour); // arr hours CAN include the selected hour
+    } else {
+      hours = arr.filter((item) => item <= hour); // arr hours CAN NOT include the selected hour
     }
 
-    return minutes;
+    // after select Time In Picker => will disabled some hours in Time Out Picker
+    setTimePicker((prevState) => ({
+      ...prevState,
+      timeOut: {
+        ...prevState.timeOut,
+        arrHours: hours,
+      },
+    }));
   };
+
+  const selectTimeOut = (value) => {
+    let hours = [...timePicker.timeOut.arrHours]; // [1,2,3]
+    const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const hour = +value.format('hh');
+    const minute = +value.format('mm');
+
+    const newArr = arr.filter((item) => {
+      return hours.indexOf(item) < 0;
+    });
+
+    if (minute === 0) {
+      hours = newArr.filter((item) => item >= hour); // arr hours CAN include the selected hour
+    } else {
+      hours = newArr.filter((item) => item > hour); // arr hours CAN NOT include the selected hour
+    }
+    hours.push(0); // in order to disable number 12
+
+    // after select Time In Picker => will disabled some hours in Time Out Picker
+    setTimePicker((prevState) => ({
+      ...prevState,
+      timeIn: {
+        ...prevState.timeIn,
+        arrHours: hours,
+      },
+    }));
+  };
+
+  // const disableMinute = (selectedHour) => {
+  //   const arr = [0, 30];
+  //   let minutes = [];
+  //   if (selectedHour > -1) {
+  //     if (timeInState) {
+  //       const minute = +timeInState.format('mm');
+
+  //       if (minute !== 30) {
+  //         minutes = arr.filter((item) => item === minute);
+  //       }
+  //     }
+  //   }
+
+  //   return minutes;
+  // };
+
+  console.log(timePicker);
 
   // MAIN AREA
   return (
@@ -168,8 +206,9 @@ const AddCard = (props) => {
               suffixIcon={<img src={ClockIcon} alt="" />}
               placeholder="Time in"
               onChange={onChangeTimeIn}
-              disabledHours={disableHour}
-              disabledMinutes={disableMinute}
+              onSelect={selectTimeIn}
+              disabledHours={disableHourIn}
+              // disabledMinutes={disableMinute}
             />
           </Form.Item>
         </Col>
@@ -182,8 +221,9 @@ const AddCard = (props) => {
               suffixIcon={<img src={ClockIcon} alt="" />}
               placeholder="Time out"
               onChange={onChangeTimeOut}
-              disabledHours={disableHour}
-              disabledMinutes={disableMinute}
+              onSelect={selectTimeOut}
+              disabledHours={disableHourOut}
+              // disabledMinutes={disableMinute}
               use12Hours
             />
           </Form.Item>
