@@ -40,7 +40,7 @@ class LocalEmployeeComponent extends PureComponent {
         {checkBox.map((item) =>
           item.subCheckBox.length > 1 ? (
             <div className={styles.checkBoxHeader}>
-              <Checkbox
+              {/* <Checkbox
                 className={
                   item.value === 'Paytm Wallet' ? styles.checkboxMedical : styles.checkBoxHeaderTop
                 }
@@ -49,8 +49,10 @@ class LocalEmployeeComponent extends PureComponent {
                 checked={item.title === 'employeeProvident' ? employeeProvident : paytmWallet}
               >
                 <Typography.Text className={styles.checkBoxTitle}>{item.value}</Typography.Text>
-              </Checkbox>
-              <div className={styles.paddingLeft}>
+              </Checkbox> */}
+              <Typography.Text className={styles.checkBoxTitle}>{item.value}</Typography.Text>
+              {this.getCreateBenefitAt(item.title)}
+              {/* <div className={styles.paddingLeft}>
                 {this.getCreateBenefitAt(item.title)}
                 <CheckboxGroup
                   options={item.subCheckBox.map((data) => data.value)}
@@ -61,16 +63,16 @@ class LocalEmployeeComponent extends PureComponent {
                       : listSelectedPaytmWallet
                   }
                 />
-              </div>
+              </div> */}
             </div>
           ) : (
-            <div className={styles.paddingLeft}>
+            <div className={styles.checkBoxHeader}>
               <Typography.Paragraph className={styles.checkBoxTitle}>
                 {item.value}
               </Typography.Paragraph>
-
-              {this.getCreateBenefitAt(item.title)}
-              {item.subCheckBox.map((data) => (
+              <div className={styles.paddingLeft}>
+                {this.getCreateBenefitAt(item.title)}
+                {/* {item.subCheckBox.map((data) => (
                 <Row>
                   <Checkbox
                     onChange={(e) => onChange(e, item.value)}
@@ -82,7 +84,8 @@ class LocalEmployeeComponent extends PureComponent {
                     </Typography.Text>
                   </Checkbox>
                 </Row>
-              ))}
+              ))} */}
+              </div>
             </div>
           ),
         )}

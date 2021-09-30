@@ -33,6 +33,13 @@ import MessageBox from '../MessageBox';
   }),
 )
 class Benefits extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      listChecked: [],
+    };
+  }
+
   static getDerivedStateFromProps(props) {
     if ('benefits' in props) {
       return { benefits: props.benefits || {} };
@@ -57,28 +64,47 @@ class Benefits extends PureComponent {
     });
   };
 
-  handleChange = (checkedList, arr, title) => {
-    const { benefits } = this.state;
+  newHandleChange = (e, title, subCheckBox) => {
+    const { benefits, listChecked } = this.state;
     const { dispatch } = this.props;
+    const { checked, value: docVal } = e.target;
+
+    const list = [...listChecked];
+
+    const listDocuments = [];
+    subCheckBox.forEach((sub) => {
+      listDocuments.push(...sub.documents);
+    });
+
+    if (checked) {
+      list.push(docVal);
+    } else {
+      const index = list.indexOf(docVal);
+      if (index > -1) {
+        list.splice(index, 1);
+      }
+    }
+
     if (title === 'Medical') {
       dispatch({
         type: 'info/saveBenefits',
         payload: {
           benefits: {
             ...benefits,
-            listSelectedMedical: checkedList,
-            medical: checkedList.length === arr.length,
+            listSelectedMedical: list,
+            medical: list.length === listDocuments.length,
           },
         },
       });
+      this.setState({ listChecked: list });
     } else if (title === 'Dental') {
       dispatch({
         type: 'info/saveBenefits',
         payload: {
           benefits: {
             ...benefits,
-            listSelectedDental: checkedList,
-            dental: checkedList.length === arr.length,
+            listSelectedDental: list,
+            dental: list.length === listDocuments.length,
           },
         },
       });
@@ -88,8 +114,8 @@ class Benefits extends PureComponent {
         payload: {
           benefits: {
             ...benefits,
-            listSelectedVision: checkedList,
-            vision: checkedList.length === arr.length,
+            listSelectedVision: list,
+            vision: list.length === listDocuments.length,
           },
         },
       });
@@ -99,8 +125,8 @@ class Benefits extends PureComponent {
         payload: {
           benefits: {
             ...benefits,
-            listSelectedLife: checkedList,
-            life: checkedList.length === arr.length,
+            listSelectedLife: list,
+            life: list.length === listDocuments.length,
           },
         },
       });
@@ -110,8 +136,8 @@ class Benefits extends PureComponent {
         payload: {
           benefits: {
             ...benefits,
-            listSelectedShortTerm: checkedList,
-            shortTerm: checkedList.length === arr.length,
+            listSelectedShortTerm: list,
+            shortTerm: list.length === listDocuments.length,
           },
         },
       });
@@ -121,8 +147,8 @@ class Benefits extends PureComponent {
         payload: {
           benefits: {
             ...benefits,
-            listSelectedEmployee: checkedList,
-            employeeProvident: checkedList.length === arr.length,
+            listSelectedEmployee: list,
+            employeeProvident: list.length === listDocuments.length,
           },
         },
       });
@@ -217,6 +243,15 @@ class Benefits extends PureComponent {
     }
   };
 
+  getListSelectedMedical = (arr) => {
+    const list = [];
+    arr.forEach((item) => {
+      list.push(...item.documents);
+    });
+
+    return list.map((item) => item.value);
+  };
+
   handleCheckAll = (e, arr, title) => {
     const { benefits } = this.state;
     const { dispatch } = this.props;
@@ -226,7 +261,7 @@ class Benefits extends PureComponent {
         payload: {
           benefits: {
             ...benefits,
-            listSelectedMedical: e.target.checked ? arr.map((data) => data.value) : [],
+            listSelectedMedical: e.target.checked ? this.getListSelectedMedical(arr) : [],
             medical: e.target.checked,
           },
         },
@@ -237,7 +272,7 @@ class Benefits extends PureComponent {
         payload: {
           benefits: {
             ...benefits,
-            listSelectedDental: e.target.checked ? arr.map((data) => data.value) : [],
+            listSelectedDental: e.target.checked ? this.getListSelectedMedical(arr) : [],
             dental: e.target.checked,
           },
         },
@@ -248,7 +283,7 @@ class Benefits extends PureComponent {
         payload: {
           benefits: {
             ...benefits,
-            listSelectedVision: e.target.checked ? arr.map((data) => data.value) : [],
+            listSelectedVision: e.target.checked ? this.getListSelectedMedical(arr) : [],
             vision: e.target.checked,
           },
         },
@@ -259,7 +294,7 @@ class Benefits extends PureComponent {
         payload: {
           benefits: {
             ...benefits,
-            listSelectedLife: e.target.checked ? arr.map((data) => data.value) : [],
+            listSelectedLife: e.target.checked ? this.getListSelectedMedical(arr) : [],
             life: e.target.checked,
           },
         },
@@ -270,7 +305,7 @@ class Benefits extends PureComponent {
         payload: {
           benefits: {
             ...benefits,
-            listSelectedShortTerm: e.target.checked ? arr.map((data) => data.value) : [],
+            listSelectedShortTerm: e.target.checked ? this.getListSelectedMedical(arr) : [],
             shortTerm: e.target.checked,
           },
         },
@@ -281,7 +316,7 @@ class Benefits extends PureComponent {
         payload: {
           benefits: {
             ...benefits,
-            listSelectedEmployee: e.target.checked ? arr.map((data) => data.value) : [],
+            listSelectedEmployee: e.target.checked ? this.getListSelectedMedical(arr) : [],
             employeeProvident: e.target.checked,
           },
         },
@@ -292,7 +327,7 @@ class Benefits extends PureComponent {
         payload: {
           benefits: {
             ...benefits,
-            listSelectedPaytmWallet: e.target.checked ? arr.map((data) => data.value) : [],
+            listSelectedPaytmWallet: e.target.checked ? this.getListSelectedMedical(arr) : [],
             paytmWallet: e.target.checked,
           },
         },
@@ -407,8 +442,8 @@ class Benefits extends PureComponent {
 
   getBenefitDocuments = (category) => {
     const { data: { benefits = [] } = {} } = this.props;
+    const getBenefits = [];
 
-    let getBenefits = [];
     benefits.forEach((benefit) => {
       if (benefit.category === category) {
         const docs = [...benefit.documents];
@@ -418,10 +453,13 @@ class Benefits extends PureComponent {
             value: doc.attachmentName,
           };
         });
-        getBenefits = [...getBenefits, ...documents];
+        getBenefits.push({
+          benefitsName: benefit.name,
+          documents,
+          createdAt: benefit.createdAt,
+        });
       }
     });
-
     return getBenefits;
   };
 
@@ -510,6 +548,7 @@ class Benefits extends PureComponent {
                 onChange={this.onChange}
                 handleCheckAll={this.handleCheckAll}
                 handleChange={this.handleChange}
+                newHandleChange={this.newHandleChange}
                 benefits={benefits}
                 listBenefits={listBenefits}
               />
