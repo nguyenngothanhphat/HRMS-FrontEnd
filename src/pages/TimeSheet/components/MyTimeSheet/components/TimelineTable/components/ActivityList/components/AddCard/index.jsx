@@ -105,15 +105,6 @@ const AddCard = (props) => {
     setTimeOutState(value);
   };
 
-  const disableHourIn = () => {
-    const hours = [...timePicker.timeIn.arrHours];
-    return hours;
-  };
-  const disableHourOut = () => {
-    const hours = [...timePicker.timeOut.arrHours];
-    return hours;
-  };
-
   const selectTimeIn = (value) => {
     let hours = [...timePicker.timeIn.arrHours];
     const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -248,7 +239,7 @@ const AddCard = (props) => {
               placeholder="Time in"
               onChange={onChangeTimeIn}
               onSelect={selectTimeIn}
-              disabledHours={disableHourIn}
+              disabledHours={timePicker.timeIn.arrHours}
               disabledMinutes={timeOutState ? disableMinuteIn : null}
             />
           </Form.Item>
@@ -263,7 +254,7 @@ const AddCard = (props) => {
               placeholder="Time out"
               onChange={onChangeTimeOut}
               onSelect={selectTimeOut}
-              disabledHours={disableHourOut}
+              disabledHours={timePicker.timeOut.arrHours}
               disabledMinutes={timeInState ? disableMinuteOut : null}
               use12Hours
             />
