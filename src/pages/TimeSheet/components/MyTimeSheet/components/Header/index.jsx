@@ -3,10 +3,11 @@ import { DatePicker } from 'antd';
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
+import { rangePickerFormat } from '@/utils/timeSheet';
 import PrevIcon from '@/assets/timeSheet/prev.svg';
 import NextIcon from '@/assets/timeSheet/next.svg';
+import CalendarIcon from '@/assets/timeSheet/calendar.svg';
 import styles from './index.less';
-import { rangePickerFormat } from '@/utils/timeSheet';
 
 const { RangePicker } = DatePicker;
 
@@ -47,6 +48,9 @@ const Header = (props) => {
             value={[startDate, endDate]}
             onChange={onDatePickerChange}
             allowClear={false}
+            suffixIcon={
+              <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
+            }
           />
         </div>
         <div className={styles.nextWeek} onClick={onNextWeekClick}>

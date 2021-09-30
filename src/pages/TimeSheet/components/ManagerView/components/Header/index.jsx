@@ -6,6 +6,7 @@ import { connect } from 'umi';
 import PrevIcon from '@/assets/timeSheet/prev.svg';
 import NextIcon from '@/assets/timeSheet/next.svg';
 import DownloadIcon from '@/assets/timeSheet/download.svg';
+import CalendarIcon from '@/assets/timeSheet/calendar.svg';
 import { rangePickerFormat } from '@/utils/timeSheet';
 
 import styles from './index.less';
@@ -49,6 +50,9 @@ const Header = (props) => {
             value={[startDate, endDate]}
             onChange={onDatePickerChange}
             allowClear={false}
+            suffixIcon={
+              <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
+            }
           />
         </div>
         <div className={styles.nextWeek} onClick={onNextWeekClick}>
