@@ -41,7 +41,7 @@ const MyApps = () => {
     <div className={s.container}>
       <h3>my apps</h3>
 
-      <Row justify="space-around">
+      <Row justify="flex-start">
         {appList.map((app) => {
           const { name = '', icon = '', link = '' } = app;
           return (

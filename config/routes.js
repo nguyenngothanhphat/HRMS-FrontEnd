@@ -207,6 +207,13 @@ const routes = [
             component: './Dashboard',
           },
           {
+            path: '/dashboard/approvals',
+            name: 'Approvals',
+            hideInMenu: true,
+            // icon: '/assets/images/menuIcons/dashboard.svg',
+            component: './Dashboard/Approval',
+          },
+          {
             path: '/admin-app',
             name: 'adminApp',
             icon: '/assets/images/menuIcons/adminApp.svg',
