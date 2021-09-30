@@ -31,11 +31,13 @@ const Header = (props) => {
     setEndDate(currentSunday);
   };
 
-  const onDatePickerChange = (dates = []) => {
-    setStartDate(dates[0]);
-    setEndDate(dates[1]);
+  const onStartDateChange = (value) => {
+    setStartDate(value);
   };
 
+  const onEndDateChange = (value) => {
+    setEndDate(value);
+  };
   // MAIN AREA
   return (
     <div className={styles.Header}>
@@ -44,15 +46,26 @@ const Header = (props) => {
           <img src={PrevIcon} alt="" />
         </div>
         <div className={styles.rangePicker}>
-          <RangePicker
+          <DatePicker
             format={rangePickerFormat}
-            separator={<MinusOutlined className={styles.minusSeparator} />}
-            value={[startDate, endDate]}
-            onChange={onDatePickerChange}
+            value={startDate}
+            onChange={onStartDateChange}
             allowClear={false}
             suffixIcon={
               <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
             }
+            className={styles.startDate}
+            placeholder="Start Date"
+          />
+          <DatePicker
+            format={rangePickerFormat}
+            value={endDate}
+            onChange={onEndDateChange}
+            allowClear={false}
+            suffixIcon={
+              <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
+            }
+            placeholder="End Date"
           />
         </div>
         <div className={styles.nextWeek} onClick={onNextWeekClick}>
