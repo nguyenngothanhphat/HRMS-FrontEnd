@@ -40,9 +40,9 @@
 
   .main {
     max-height: 450px;
-    margin: 4px 0;
-    overflow-y: scroll;
+    overflow-y: auto;
     background: #FAFAFA;
+    padding: 12px 0 12px 12px;
 
     /* width */
     &::-webkit-scrollbar {
@@ -65,6 +65,17 @@
     }
   }
 
+  .showAll {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 24px;
+    color: #2C6DF9;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
   :global {
     .ant-tabs {
       width: 100%;
@@ -72,7 +83,6 @@
 
     .ant-tabs-nav {
       height: auto;
-      margin-bottom: 15px;
       padding: 0;
     }
 
@@ -80,9 +90,8 @@
       font-size: 14px;
     }
 
-    .ant-tabs-tab {
-      margin-right: 30px;
-      padding: 12px 0 0 0;
-    }
+    .ant-tabs-tabpane {}
+
+    .ant-tabs-tab {}
   }
 }
