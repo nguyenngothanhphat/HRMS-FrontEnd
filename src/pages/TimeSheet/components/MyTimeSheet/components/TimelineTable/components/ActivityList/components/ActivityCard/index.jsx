@@ -4,11 +4,9 @@ import { connect } from 'umi';
 import moment from 'moment';
 import EditIcon from '@/assets/timeSheet/edit.svg';
 import DeleteIcon from '@/assets/timeSheet/del.svg';
-import { activityColor } from '@/utils/timeSheet';
+import { activityColor, hourFormat } from '@/utils/timeSheet';
 import styles from './index.less';
 import EditCard from '../EditCard';
-
-const hourFormat = 'h:mm a';
 
 const ActivityCard = (props) => {
   const {
@@ -25,7 +23,6 @@ const ActivityCard = (props) => {
     cardDay = '',
     dispatch,
   } = props;
-  const [readMore, setReadMore] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
   // FUNCTION AREA
@@ -46,7 +43,6 @@ const ActivityCard = (props) => {
           getPopupContainer={(trigger) => {
             return trigger;
           }}
-          onVisibleChange={(visible) => setReadMore(visible)}
         >
           <span className={styles.readMoreBtn}>Read More</span>
         </Tooltip>

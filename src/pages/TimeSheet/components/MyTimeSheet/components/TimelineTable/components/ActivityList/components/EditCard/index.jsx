@@ -7,9 +7,7 @@ import ArrowDown from '@/assets/timeSheet/arrowDown.svg';
 import CancelIcon from '@/assets/timeSheet/cancel.svg';
 import ClockIcon from '@/assets/timeSheet/clock.svg';
 import styles from './index.less';
-import { addTimeForDate } from '@/utils/timeSheet';
-
-const hourFormat = 'h:mm a';
+import { addTimeForDate, hourFormat, minuteStep } from '@/utils/timeSheet';
 
 const { Option } = Select;
 const EditCard = (props) => {
@@ -88,12 +86,20 @@ const EditCard = (props) => {
         </Col>
         <Col span={3} className={styles.normalCell}>
           <Form.Item name="timeIn" rules={[{ required: true }]}>
-            <TimePicker format={hourFormat} suffixIcon={<img src={ClockIcon} alt="" />} />
+            <TimePicker
+              format={hourFormat}
+              minuteStep={minuteStep}
+              suffixIcon={<img src={ClockIcon} alt="" />}
+            />
           </Form.Item>
         </Col>
         <Col span={3} className={styles.normalCell}>
           <Form.Item name="timeOut" rules={[{ required: true }]}>
-            <TimePicker format={hourFormat} suffixIcon={<img src={ClockIcon} alt="" />} />
+            <TimePicker
+              format={hourFormat}
+              minuteStep={minuteStep}
+              suffixIcon={<img src={ClockIcon} alt="" />}
+            />
           </Form.Item>
         </Col>
         <Col span={3} className={styles.normalCell}>

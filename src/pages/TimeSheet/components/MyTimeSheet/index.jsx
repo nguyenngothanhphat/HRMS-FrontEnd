@@ -22,7 +22,7 @@ const MyTimeSheet = (props) => {
   }, []);
 
   useEffect(() => {
-    const lastSunday = moment().weekday(0);
+    const lastSunday = moment().weekday(1);
     const currentSunday = moment().weekday(7);
     setStartDate(lastSunday);
     setEndDate(currentSunday);

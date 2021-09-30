@@ -6,8 +6,7 @@ import AddIcon from '@/assets/timeSheet/add.svg';
 import ActivityCard from './components/ActivityCard';
 import AddCard from './components/AddCard';
 import styles from './index.less';
-
-const dateFormat = 'ddd, MMM Do';
+import { dateFormat } from '@/utils/timeSheet';
 
 const ActivityList = (props) => {
   const { item = {}, activityIndex } = props;

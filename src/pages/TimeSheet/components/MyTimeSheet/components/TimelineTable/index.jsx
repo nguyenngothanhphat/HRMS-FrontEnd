@@ -1,4 +1,4 @@
-import { Col, Row, Skeleton, Spin } from 'antd';
+import { Col, Row, Spin } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';

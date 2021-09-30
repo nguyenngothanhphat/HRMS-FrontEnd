@@ -6,11 +6,9 @@ import ApproveIcon from '@/assets/timeSheet/approve.svg';
 import CancelIcon from '@/assets/timeSheet/cancel.svg';
 import ClockIcon from '@/assets/timeSheet/clock.svg';
 import ArrowDown from '@/assets/timeSheet/arrowDown.svg';
-import { addTimeForDate } from '@/utils/timeSheet';
+import { addTimeForDate, hourFormat, minuteStep } from '@/utils/timeSheet';
 
 import styles from './index.less';
-
-const hourFormat = 'h:mm a';
 
 const { Option } = Select;
 const AddCard = (props) => {
@@ -84,6 +82,9 @@ const AddCard = (props) => {
       className={styles.AddCard}
       onFinish={onFinish}
       onValuesChange={onValuesChange}
+      initialValues={{
+        nightshift: false,
+      }}
     >
       <Row gutter={[12, 0]}>
         <Col span={3} className={`${styles.normalCell} ${styles.boldText}`}>
@@ -105,6 +106,7 @@ const AddCard = (props) => {
             <TimePicker
               value={timeIn}
               format={hourFormat}
+              minuteStep={minuteStep}
               suffixIcon={<img src={ClockIcon} alt="" />}
               placeholder="Time in"
             />
@@ -114,6 +116,7 @@ const AddCard = (props) => {
           <Form.Item name="timeOut" rules={[{ required: true }]}>
             <TimePicker
               value={timeOut}
+              minuteStep={minuteStep}
               format={hourFormat}
               suffixIcon={<img src={ClockIcon} alt="" />}
               placeholder="Time out"
@@ -140,7 +143,7 @@ const AddCard = (props) => {
             <Input.TextArea
               value={notes}
               placeholder="Enter notes..."
-              autoSize={{ minRows: 4, maxRows: 7 }}
+              autoSize={{ minRows: 3, maxRows: 7 }}
             />
           </Form.Item>
         </Col>

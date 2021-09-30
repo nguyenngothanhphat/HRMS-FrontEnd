@@ -6,9 +6,9 @@ import { connect } from 'umi';
 import PrevIcon from '@/assets/timeSheet/prev.svg';
 import NextIcon from '@/assets/timeSheet/next.svg';
 import styles from './index.less';
+import { rangePickerFormat } from '@/utils/timeSheet';
 
 const { RangePicker } = DatePicker;
-const datePickerFormat = 'ddd, MMM D, YYYY';
 
 const Header = (props) => {
   const { startDate, endDate, setStartDate = () => {}, setEndDate = () => {} } = props;
@@ -42,7 +42,7 @@ const Header = (props) => {
         </div>
         <div className={styles.rangePicker}>
           <RangePicker
-            format={datePickerFormat}
+            format={rangePickerFormat}
             separator={<MinusOutlined className={styles.minusSeparator} />}
             value={[startDate, endDate]}
             onChange={onDatePickerChange}
