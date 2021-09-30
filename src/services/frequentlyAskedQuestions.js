@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 export async function listFAQ() {
   return request('/api/faqs/list', {

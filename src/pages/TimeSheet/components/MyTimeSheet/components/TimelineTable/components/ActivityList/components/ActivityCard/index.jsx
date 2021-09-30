@@ -11,10 +11,10 @@ import EditCard from '../EditCard';
 const ActivityCard = (props) => {
   const {
     card: {
-      _id = '',
-      activity = '',
-      timeIn = '',
-      timeOut = '',
+      id = '',
+      taskName = '',
+      startDate = '',
+      endDate = '',
       nightshift = false,
       totalHours = '',
       notes = '',
@@ -64,7 +64,7 @@ const ActivityCard = (props) => {
     dispatch({
       type: 'timeSheet/removeActivityEffect',
       payload: {
-        _id,
+        id,
       },
     });
   };
@@ -79,22 +79,22 @@ const ActivityCard = (props) => {
           <div
             className={styles.activityIcon}
             style={
-              getActivityBackgroundColor(activity)
-                ? { background: getActivityBackgroundColor(activity) }
+              getActivityBackgroundColor(taskName)
+                ? { background: getActivityBackgroundColor(taskName) }
                 : null
             }
           >
             <span>
-              {typeof activity === 'string' && activity.length > 0 ? activity.charAt(0) : 'A'}
+              {typeof activity === 'string' && taskName.length > 0 ? taskName.charAt(0) : 'A'}
             </span>
           </div>
-          {activity || ''}
+          {taskName || ''}
         </Col>
         <Col span={3} className={styles.normalCell}>
-          {timeIn ? moment(timeIn).format(hourFormat) : ''}
+          {startDate ? moment(startDate).format(hourFormat) : ''}
         </Col>
         <Col span={3} className={styles.normalCell}>
-          {timeOut ? moment(timeOut).format(hourFormat) : ''}
+          {endDate ? moment(endDate).format(hourFormat) : ''}
         </Col>
         <Col span={3} className={styles.normalCell}>
           {nightshift ? 'Yes' : 'No'}
