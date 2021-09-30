@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { ReactComponent as SortIcon } from '@/assets/dashboard_sort.svg';
 import { ReactComponent as FilterIcon } from '@/assets/dashboard_filter.svg';
-import { formatMessage } from 'umi';
+import { formatMessage, connect, history } from 'umi';
 import { Tabs } from 'antd';
 
 import ActivityItem from '../ActivityItem';
 
 import s from './index.less';
+import TicketItem from '../TicketItem/index';
 
 const { TabPane } = Tabs;
 
@@ -93,7 +94,9 @@ const activityList = [
 const allListData = activityList;
 const requireListData = activityList.splice(0, 5);
 
-const ActivityLog = () => {
+const ActivityLog = (props) => {
+  const { listTicket, totalTicket, isLoadData, dispatch } = props;
+
   const [ascending, setAscending] = useState(false);
   const [allList, setAllList] = useState([]);
   const [activeTab, setActiveTab] = useState('1');
@@ -105,8 +108,17 @@ const ActivityLog = () => {
   useEffect(() => {
     setAllList(allListData);
     setRequireList(requireListData);
+    dispatch({
+      type: 'dashboard/fetchListTicket',
+    });
   }, []);
 
+  useEffect(() => {
+    if (isLoadData)
+      dispatch({
+        type: 'dashboard/fetchListTicket',
+      });
+  }, [isLoadData]);
   const sort = () => {
     let currentList;
     if (activeTab === '1') {
@@ -139,9 +151,7 @@ const ActivityLog = () => {
     setAscending((prevState) => !prevState);
   };
 
-  const filter = () => {
-    console.log('FILTER');
-  };
+  const filter = () => {};
 
   return (
     <div className={s.container}>
@@ -159,11 +169,8 @@ const ActivityLog = () => {
         </div>
       </div>
 
-      <Tabs defaultActiveKey="1" onChange={(key) => setActiveTab(key)}>
-        <TabPane
-          tab={`${formatMessage({ id: 'pages.dashboard.activityLog.all' })} (${allCount})`}
-          key="1"
-        >
+      <Tabs defaultActiveKey="2" onChange={(key) => setActiveTab(key)}>
+        <TabPane tab={`Chat (${allCount})`} key="1">
           <div className={s.main}>
             {allList.map((item) => {
               const { day = '', month = '', info = '', id = '' } = item;
@@ -172,10 +179,17 @@ const ActivityLog = () => {
           </div>
         </TabPane>
 
-        <TabPane
-          tab={`${formatMessage({ id: 'pages.dashboard.activityLog.require' })} (${requireCount})`}
-          key="2"
-        >
+        <TabPane tab={`Pending Approvals (${totalTicket})`} key="2">
+          <div className={s.main}>
+            {listTicket.map((item) => {
+              return <TicketItem infoTicket={item} />;
+            })}
+          </div>
+          <div className={s.showAll} onClick={() => history.push('dashboard/approvals')}>
+            Show all requests
+          </div>
+        </TabPane>
+        <TabPane tab={`Notifications (${requireCount})`} key="3">
           <div className={s.main}>
             {requireList.map((item) => {
               const { day = '', month = '', info = '', id = '' } = item;
@@ -188,4 +202,8 @@ const ActivityLog = () => {
   );
 };
 
-export default ActivityLog;
+export default connect(({ dashboard: { listTicket = [], totalTicket, isLoadData } = {} }) => ({
+  listTicket,
+  totalTicket,
+  isLoadData,
+}))(ActivityLog);
