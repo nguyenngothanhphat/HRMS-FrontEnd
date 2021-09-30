@@ -6,7 +6,8 @@ import ApproveIcon from '@/assets/timeSheet/approve.svg';
 import CancelIcon from '@/assets/timeSheet/cancel.svg';
 import ClockIcon from '@/assets/timeSheet/clock.svg';
 import ArrowDown from '@/assets/timeSheet/arrowDown.svg';
-import { addTimeForDate, hourFormat, minuteStep } from '@/utils/timeSheet';
+import { addTimeForDate, hourFormat, minuteStep, activityName } from '@/utils/timeSheet';
+import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
 
 import styles from './index.less';
 
@@ -16,9 +17,9 @@ const AddCard = (props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {
     card: {
-      activity = '',
-      timeIn = '',
-      timeOut = '',
+      taskName = '',
+      startTime = '',
+      endTime = '',
       nightshift = false,
       // totalHours = '',
       notes = '',
@@ -27,15 +28,16 @@ const AddCard = (props) => {
     cardDay = '',
     onRemoveCard = () => {},
     onEditValue = () => {},
-    dispatch,
   } = props;
+
+  const { dispatch, employee: { _id: employeeId = '' } = {} } = props;
 
   useEffect(() => {
     if (refreshing) {
       form.setFieldsValue({
-        activity,
-        timeIn,
-        timeOut,
+        taskName,
+        startTime,
+        endTime,
         nightshift,
         notes,
       });
@@ -44,21 +46,31 @@ const AddCard = (props) => {
   }, [refreshing]);
 
   // main function
-  const addActivityEffect = (values) =>
-    dispatch({
+  const addActivityEffect = (values) => {
+    return dispatch({
       type: 'timeSheet/addActivityEffect',
-      payload: { ...values, day: moment(cardDay) },
+      payload: {
+        taskName: values.taskName,
+        startTime: moment(values.startTime).format('hh:mm'),
+        endTime: moment(values.endTime).format('hh:mm'),
+        date: moment(cardDay).locale('en').format('YYYY-MM-DD'),
+        projectName: 'HRMS',
+        notes: values.notes,
+        employeeId,
+        companyId: getCurrentCompany(),
+        location: getCurrentLocation(),
+      },
     });
-
+  };
   const onFinish = async (values) => {
     const res = await addActivityEffect(values);
-    if (res.statusCode === 200) {
+    if (res.code === 200) {
       onRemoveCard(cardIndex);
     }
   };
 
   const onValuesChange = (changedValues, allValues) => {
-    // timeIn & timeOut we selected from TimePicker have dates are today
+    // startTime & endTime we selected from TimePicker have dates are today
     // example now is 09/29/2021 - 16:08:20, after we pick a time, the value is 09/29/2021 - 16:08:20 (moment js)
     // so we MUST change the date into the one this AddCard belongs to
     // example this activity is in 08/15/2021
@@ -66,8 +78,8 @@ const AddCard = (props) => {
     onEditValue(
       {
         ...allValues,
-        timeIn: allValues.timeIn ? addTimeForDate(cardDay, allValues.timeIn) : '',
-        timeOut: allValues.timeOut ? addTimeForDate(cardDay, allValues.timeOut) : '',
+        startTime: allValues.startTime ? addTimeForDate(cardDay, allValues.startTime) : '',
+        endTime: allValues.endTime ? addTimeForDate(cardDay, allValues.endTime) : '',
       },
       cardIndex,
     );
@@ -88,23 +100,22 @@ const AddCard = (props) => {
     >
       <Row gutter={[12, 0]}>
         <Col span={3} className={`${styles.normalCell} ${styles.boldText}`}>
-          <Form.Item name="activity" rules={[{ required: true }]}>
+          <Form.Item name="taskName" rules={[{ required: true }]}>
             <Select
               placeholder="Activity"
-              value={activity || null}
+              value={taskName || null}
               suffixIcon={<img src={ArrowDown} alt="" />}
             >
-              <Option value="A">A</Option>
-              <Option value="B">B</Option>
-              <Option value="C">C</Option>
-              <Option value="D">D</Option>
+              {activityName.map((a) => (
+                <Option value={a}>{a}</Option>
+              ))}
             </Select>
           </Form.Item>
         </Col>
         <Col span={3} className={styles.normalCell}>
-          <Form.Item name="timeIn" rules={[{ required: true }]}>
+          <Form.Item name="startTime" rules={[{ required: true }]}>
             <TimePicker
-              value={timeIn}
+              value={startTime}
               format={hourFormat}
               minuteStep={minuteStep}
               suffixIcon={<img src={ClockIcon} alt="" />}
@@ -113,9 +124,9 @@ const AddCard = (props) => {
           </Form.Item>
         </Col>
         <Col span={3} className={styles.normalCell}>
-          <Form.Item name="timeOut" rules={[{ required: true }]}>
+          <Form.Item name="endTime" rules={[{ required: true }]}>
             <TimePicker
-              value={timeOut}
+              value={endTime}
               minuteStep={minuteStep}
               format={hourFormat}
               suffixIcon={<img src={ClockIcon} alt="" />}
@@ -168,4 +179,6 @@ const AddCard = (props) => {
   );
 };
 
-export default connect(({ timeSheet: { myTimesheet = [] } = {} }) => ({ myTimesheet }))(AddCard);
+export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({ employee }))(
+  AddCard,
+);

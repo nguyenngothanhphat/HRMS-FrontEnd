@@ -7,7 +7,7 @@ import ArrowDown from '@/assets/timeSheet/arrowDown.svg';
 import CancelIcon from '@/assets/timeSheet/cancel.svg';
 import ClockIcon from '@/assets/timeSheet/clock.svg';
 import styles from './index.less';
-import { addTimeForDate, hourFormat, minuteStep } from '@/utils/timeSheet';
+import { addTimeForDate, hourFormat, minuteStep,activityName } from '@/utils/timeSheet';
 
 const { Option } = Select;
 const EditCard = (props) => {
@@ -16,9 +16,9 @@ const EditCard = (props) => {
   const {
     card: {
       _id = '',
-      activity = '',
-      timeIn = '',
-      timeOut = '',
+      taskName = '',
+      startDate = '',
+      endDate = '',
       nightshift = false,
       // totalHours = '',
       notes = '',
@@ -31,7 +31,7 @@ const EditCard = (props) => {
 
   // main function
   const updateActivityEffect = (values) => {
-    // timeIn & timeOut we selected from TimePicker have dates are today
+    // startDate & endDate we selected from TimePicker have dates are today
     // example now is 09/29/2021 - 16:08:20, after we pick a time, the value is 09/29/2021 - 16:08:20 (moment js)
     // so we MUST change the date into the one this AddCard belongs to
     // example this activity is in 08/15/2021
@@ -41,8 +41,8 @@ const EditCard = (props) => {
       ...values,
       _id,
       day: moment(cardDay),
-      timeIn: values.timeIn ? addTimeForDate(cardDay, values.timeIn) : '',
-      timeOut: values.timeOut ? addTimeForDate(cardDay, values.timeOut) : '',
+      startDate: values.startDate ? addTimeForDate(cardDay, values.startDate) : '',
+      endDate: values.endDate ? addTimeForDate(cardDay, values.endDate) : '',
     };
 
     return dispatch({
@@ -52,7 +52,7 @@ const EditCard = (props) => {
   };
   const onFinish = async (values) => {
     const res = await updateActivityEffect(values);
-    if (res.statusCode === 200) {
+    if (res.code === 200) {
       onCancelCard();
     }
   };
@@ -66,26 +66,23 @@ const EditCard = (props) => {
       className={styles.EditCard}
       onFinish={onFinish}
       initialValues={{
-        activity,
-        timeIn: timeIn ? moment(timeIn) : '',
-        timeOut: timeOut ? moment(timeOut) : '',
+        taskName,
+        startDate: startDate ? moment(startDate) : '',
+        endDate: endDate ? moment(endDate) : '',
         nightshift,
         notes,
       }}
     >
       <Row gutter={[12, 0]}>
         <Col span={3} className={`${styles.normalCell} ${styles.boldText}`}>
-          <Form.Item name="activity" rules={[{ required: true }]}>
+          <Form.Item name="taskName" rules={[{ required: true }]}>
             <Select suffixIcon={<img src={ArrowDown} alt="" />}>
-              <Option value="A">A</Option>
-              <Option value="B">B</Option>
-              <Option value="C">C</Option>
-              <Option value="D">D</Option>
+              {activityName.map(a => <Option value={a}>{a}</Option>)}
             </Select>
           </Form.Item>
         </Col>
         <Col span={3} className={styles.normalCell}>
-          <Form.Item name="timeIn" rules={[{ required: true }]}>
+          <Form.Item name="startDate" rules={[{ required: true }]}>
             <TimePicker
               format={hourFormat}
               minuteStep={minuteStep}
@@ -94,7 +91,7 @@ const EditCard = (props) => {
           </Form.Item>
         </Col>
         <Col span={3} className={styles.normalCell}>
-          <Form.Item name="timeOut" rules={[{ required: true }]}>
+          <Form.Item name="endDate" rules={[{ required: true }]}>
             <TimePicker
               format={hourFormat}
               minuteStep={minuteStep}

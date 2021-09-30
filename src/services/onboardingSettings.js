@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 export async function getInsuranceList(payload) {
   return request('/api/insurancetenant/fetch-setting', {

@@ -28,14 +28,14 @@ const TimelineTable = (props) => {
     const dataTemp = data.map((item) => {
       return {
         ...item,
-        day: moment(item.day).format('MM/DD/YYYY'),
+        day: moment(item.date).format('MM/DD/YYYY'),
       };
     });
 
     return dateList.map((date) => {
       return {
         date,
-        activities: dataTemp.filter((item) => item.day === date),
+        activities: dataTemp.filter((item) => item.date === date),
       };
     });
   };

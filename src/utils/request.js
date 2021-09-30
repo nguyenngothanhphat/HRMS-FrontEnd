@@ -1,12 +1,10 @@
-/**
- * request 网络请求工具
- * 更详细的 api 文档: https://github.com/umijs/umi-request
- */
+import { notification } from 'antd';
+import axios from 'axios';
 import { getDvaApp } from 'umi';
 import { extend } from 'umi-request';
-import { notification } from 'antd';
-import { getCurrentTenant } from '@/utils/authority';
+import proxy from '../../config/proxy';
 import { getToken } from './token';
+import { dialog } from './utils';
 
 const codeMessage = {
   200: 'The server successfully returned the requested data.',
@@ -25,9 +23,6 @@ const codeMessage = {
   503: 'The service is unavailable, the server is temporarily overloaded or maintained.',
   504: 'The gateway timed out.',
 };
-/**
- * 异常处理程序
- */
 
 const errorHandler = (error) => {
   const { response } = error;
@@ -55,11 +50,7 @@ const errorHandler = (error) => {
   return { statusCode: response.status, message: response.message };
 };
 
-/**
- * 配置request请求时的默认参数
- */
 const request = (url, options = {}, noAuth) => {
-  const tenantId = getCurrentTenant();
   let headers = options.headers || {};
   if (!noAuth) {
     const token = getToken();
@@ -68,15 +59,43 @@ const request = (url, options = {}, noAuth) => {
       ...headers,
     };
   }
-  headers = {
-    tenantId,
-    ...headers,
-  };
   return extend({
-    errorHandler, // 默认错误处理
-    credentials: 'include', // 默认请求是否带上cookie
+    errorHandler,
+    credentials: 'include',
     headers,
   })(url, options);
 };
 
-export default request;
+const request2 = async (url, options = {}, noAuth, apiUrlName = 'API_SQL') => {
+  const { method = 'GET', data = {} } = options;
+  const token = getToken();
+
+  const baseURL = proxy.dev[apiUrlName];
+
+  const instance = axios.create({
+    baseURL,
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+      accept: 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      Authorization: !noAuth ? `Bearer ${token}` : '',
+    },
+    params: method === 'GET' ? data : {},
+  });
+
+  instance.interceptors.response.use(
+    (config) => config,
+    (error) => {
+      // eslint-disable-next-line compat/compat
+      return Promise.reject(error);
+    },
+  );
+  try {
+    const res = await instance[method.toLowerCase()](url, { ...data });
+    return res?.data;
+  } catch (e) {
+    return dialog(e);
+  }
+};
+
+export { request, request2 };

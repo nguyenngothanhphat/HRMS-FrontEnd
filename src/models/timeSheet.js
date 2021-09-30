@@ -22,8 +22,8 @@ const TimeSheet = {
       const response = {};
       try {
         const res = yield call(getMyTimesheet, payload);
-        const { statusCode, data = [] } = res;
-        if (statusCode !== 200) throw res;
+        const { code, data = [] } = res;
+        if (code !== 200) throw res;
 
         yield put({
           type: 'save',
@@ -41,8 +41,8 @@ const TimeSheet = {
       const response = {};
       try {
         const res = yield call(getManagerTimesheet, payload);
-        const { statusCode, data = [] } = res;
-        if (statusCode !== 200) throw res;
+        const { code, data = [] } = res;
+        if (code !== 200) throw res;
 
         yield put({
           type: 'save',
@@ -63,9 +63,9 @@ const TimeSheet = {
       try {
         const updating = message.loading('Updating...', 0);
         response = yield call(updateActivity, payload);
-        const { statusCode, data = {} } = response;
-        if (statusCode !== 200) throw response;
-        notification.success({ message: 'Update successfully' });
+        const { code, data = {}, msg = '' } = response;
+        if (code !== 200) throw response;
+        notification.success({ message: msg });
         yield put({
           type: 'onActivityUpdated',
           payload: {
@@ -86,9 +86,9 @@ const TimeSheet = {
       try {
         const adding = message.loading('Adding...', 0);
         response = yield call(addActivity, payload);
-        const { statusCode, data = {} } = response;
-        if (statusCode !== 200) throw response;
-        notification.success({ message: 'Add successfully' });
+        const { code, data = {}, msg = '' } = response;
+        if (code !== 200) throw response;
+        notification.success({ message: msg });
 
         yield put({
           type: 'onActivityAdded',
@@ -110,9 +110,9 @@ const TimeSheet = {
       try {
         const removing = message.loading('Removing...', 0);
         response = yield call(removeActivity, payload);
-        const { statusCode } = response;
-        if (statusCode !== 200) throw response;
-        notification.success({ message: 'Remove successfully' });
+        const { code, msg } = response;
+        if (code !== 200) throw response;
+        notification.success({ message: msg });
 
         yield put({
           type: 'onActivityRemoved',

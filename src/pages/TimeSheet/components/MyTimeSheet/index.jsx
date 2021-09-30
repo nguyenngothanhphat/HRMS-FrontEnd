@@ -1,6 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { getCurrentCompany } from '@/utils/authority';
 import Header from './components/Header';
 import TimelineTable from './components/TimelineTable';
 import styles from './index.less';
@@ -8,11 +9,15 @@ import styles from './index.less';
 const MyTimeSheet = (props) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const { dispatch } = props;
+  const { dispatch, employee: { _id: employeeId = '' } = {} } = props;
   // FUNCTION AREA
   const fetchMyTimesheetEffect = () => {
     dispatch({
       type: 'timeSheet/fetchMyTimesheetEffect',
+      payload: {
+        companyId: getCurrentCompany(),
+        employeeId,
+      },
     });
   };
 
@@ -43,4 +48,6 @@ const MyTimeSheet = (props) => {
   );
 };
 
-export default connect(() => ({}))(MyTimeSheet);
+export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({ employee }))(
+  MyTimeSheet,
+);

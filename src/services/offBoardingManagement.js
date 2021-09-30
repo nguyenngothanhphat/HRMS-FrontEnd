@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 const getListOffBoarding = async (payload) => {
   return request('/api/offboardingrequesttenant/search-detail', {
