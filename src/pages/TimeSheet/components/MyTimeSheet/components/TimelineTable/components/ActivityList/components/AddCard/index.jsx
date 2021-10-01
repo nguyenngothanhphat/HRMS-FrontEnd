@@ -239,7 +239,7 @@ const AddCard = (props) => {
               placeholder="Time in"
               onChange={onChangeTimeIn}
               onSelect={selectTimeIn}
-              disabledHours={timePicker.timeIn.arrHours}
+              disabledHours={() => timePicker.timeIn.arrHours}
               disabledMinutes={timeOutState ? disableMinuteIn : null}
             />
           </Form.Item>
@@ -254,7 +254,7 @@ const AddCard = (props) => {
               placeholder="Time out"
               onChange={onChangeTimeOut}
               onSelect={selectTimeOut}
-              disabledHours={timePicker.timeOut.arrHours}
+              disabledHours={() => timePicker.timeOut.arrHours}
               disabledMinutes={timeInState ? disableMinuteOut : null}
               use12Hours
             />
