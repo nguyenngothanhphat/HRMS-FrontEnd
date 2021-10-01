@@ -466,7 +466,7 @@ class OnboardTable extends Component {
     //   SENT_FINAL_OFFERS,
     // } = PROCESS_STATUS; // old status
 
-    const { DRAFT, OFFER_RELEASED } = NEW_PROCESS_STATUS; // new status
+    const { DRAFT, OFFER_RELEASED, OFFER_ACCEPTED } = NEW_PROCESS_STATUS; // new status
 
     const isRemovable = processStatusId === DRAFT;
     const isHRManager = this.checkPermission('hr-manager');
@@ -589,19 +589,20 @@ class OnboardTable extends Component {
 
         break;
 
-      // case ACCEPTED_FINAL_OFFERS:
-      //   menuItem = (
-      //     <Menu.Item>
-      //       <span
-      //         onClick={() => {
-      //           this.openModal();
-      //         }}
-      //       >
-      //         Create Profile
-      //       </span>
-      //     </Menu.Item>
-      //   );
-      //   break;
+      case OFFER_ACCEPTED:
+        menuItem = (
+          <>
+            <Menu.Item>
+              <Link className={styles.actionText} to={`/onboarding/list/view/${id}/${find.link}`}>
+                <span>{actionText}</span>
+              </Link>
+            </Menu.Item>
+            <Menu.Item>
+              <span>Initiate joining formalities</span>
+            </Menu.Item>
+          </>
+        );
+        break;
       default:
         menuItem = (
           <Menu.Item>
@@ -616,7 +617,7 @@ class OnboardTable extends Component {
     return (
       <Menu className={styles.menu}>
         {menuItem}
-        {isHRManager && (
+        {isHRManager && !(processStatusId === OFFER_ACCEPTED) && (
           <Menu.Item>
             <div
               onClick={() =>
