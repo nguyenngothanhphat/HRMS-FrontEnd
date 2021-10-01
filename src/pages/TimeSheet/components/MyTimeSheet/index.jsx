@@ -5,7 +5,7 @@ import { getCurrentCompany } from '@/utils/authority';
 import Header from './components/Header';
 import TimelineTable from './components/TimelineTable';
 import styles from './index.less';
-import { dateFormatAPI } from '@/utils/timeSheet';
+import { dateFormatAPI, convertMsToTime } from '@/utils/timeSheet';
 
 const MyTimeSheet = (props) => {
   const [startDate, setStartDate] = useState('');
@@ -33,7 +33,8 @@ const MyTimeSheet = (props) => {
         duration += v.duration;
       });
     });
-    return moment.utc(duration).format('HH:mm:ss');
+    return convertMsToTime(duration);
+    // return moment.utc(duration).format('HH:mm:ss');
   };
 
   // USE EFFECT AREA
@@ -45,7 +46,6 @@ const MyTimeSheet = (props) => {
 
   useEffect(() => {
     const totalHours = calculateTotalHours(myTimesheet);
-    console.log('totalHours', totalHours);
     setMyTotalHours(totalHours);
   }, [JSON.stringify(myTimesheet)]);
 

@@ -9,6 +9,7 @@ import {
   updateActivity,
 } from '@/services/timeSheet';
 import { dialog } from '@/utils/utils';
+import { convertMsToTime } from '@/utils/timeSheet';
 
 const TimeSheet = {
   namespace: 'timeSheet',
@@ -42,8 +43,8 @@ const TimeSheet = {
       const response = {};
       try {
         const res = yield call(getManagerTimesheet, payload);
-        const { statusCode, data = [] } = res;
-        if (statusCode !== 200) throw res;
+        const { code, data = [] } = res;
+        if (code !== 200) throw res;
 
         yield put({
           type: 'save',
@@ -189,7 +190,10 @@ const TimeSheet = {
       myTimesheet = myTimesheet.map((item) => {
         if (item.date === date) {
           const timesheetTemp = JSON.parse(JSON.stringify(item.timesheet));
-          timesheetTemp.push(addedActivity);
+          timesheetTemp.push({
+            ...addedActivity,
+            totalHours: convertMsToTime(addedActivity.duration),
+          });
           return {
             ...item,
             timesheet: timesheetTemp,

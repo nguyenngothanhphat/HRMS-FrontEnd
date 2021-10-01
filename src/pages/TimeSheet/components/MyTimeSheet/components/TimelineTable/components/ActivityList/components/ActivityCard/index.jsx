@@ -4,7 +4,12 @@ import { connect } from 'umi';
 import moment from 'moment';
 import DeleteIcon from '@/assets/timeSheet/del.svg';
 import EditIcon from '@/assets/timeSheet/edit.svg';
-import { activityColor, dateFormatAPI, MT_SECONDARY_COL_SPAN } from '@/utils/timeSheet';
+import {
+  activityColor,
+  convertMsToTime,
+  dateFormatAPI,
+  MT_SECONDARY_COL_SPAN,
+} from '@/utils/timeSheet';
 import EditCard from '../EditCard';
 import styles from './index.less';
 import { getCurrentCompany } from '@/utils/authority';
@@ -20,7 +25,8 @@ const ActivityCard = (props) => {
       startTime = '',
       endTime = '',
       nightShift = false,
-      totalHours = '',
+      // totalHours = '',
+      duration = 0,
       notes = '',
     } = {},
     card = {},
@@ -107,7 +113,7 @@ const ActivityCard = (props) => {
           {nightShift ? 'Yes' : 'No'}
         </Col>
         <Col span={TOTAL_HOURS} className={`${styles.normalCell} ${styles.blueText}`}>
-          {totalHours ? totalHours.toString().slice(0, -5) : ''}
+          {convertMsToTime(duration)}
         </Col>
         <Col span={NOTES} className={styles.normalCell}>
           {renderNote(notes || '')}

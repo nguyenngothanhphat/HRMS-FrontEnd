@@ -1,6 +1,8 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { dateFormatAPI } from '@/utils/timeSheet';
+import { getCurrentCompany } from '@/utils/authority';
 import Header from './components/Header';
 import TimelineTable from './components/TimelineTable';
 import styles from './index.less';
@@ -8,12 +10,18 @@ import styles from './index.less';
 const ManagerView = (props) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const { dispatch } = props;
+  const { dispatch, employee: { _id: employeeId = '' } = {} } = props;
 
   // FUNCTION AREA
   const fetchManagerTimesheetEffect = () => {
     dispatch({
       type: 'timeSheet/fetchManagerTimesheetEffect',
+      payload: {
+        companyId: getCurrentCompany(),
+        managerId: employeeId,
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
+      },
     });
   };
 
@@ -46,4 +54,12 @@ const ManagerView = (props) => {
   );
 };
 
-export default connect(() => ({}))(ManagerView);
+export default connect(
+  ({
+    timeSheet: { managerTimesheet = [] } = {},
+    user: { currentUser: { employee = {} } = {} },
+  }) => ({
+    employee,
+    managerTimesheet,
+  }),
+)(ManagerView);
