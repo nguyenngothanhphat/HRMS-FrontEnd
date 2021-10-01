@@ -13,14 +13,15 @@ import {
 } from '@/utils/onboarding';
 import { getAuthority, getCurrentTenant } from '@/utils/authority';
 import { getTimezoneViaCity } from '@/utils/times';
+import AcceptIcon from '@/assets/Accept-icon-onboarding.svg';
+
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 import { getActionText, getColumnWidth } from './utils';
-
 import ReassignModal from './components/ReassignModal';
 import RenewModal from './components/RenewModal';
+import PopupContentHr from './components/PopupContentHr';
 
 import styles from './index.less';
-import PopupContentHr from './components/PopupContentHr';
 
 const compare = (dateTimeA, dateTimeB) => {
   const momentA = moment(dateTimeA, 'DD/MM/YYYY');
@@ -173,7 +174,12 @@ class OnboardTable extends Component {
   renderName = (id) => {
     const { list } = this.props;
     const selectedPerson = list.find((item) => item.candidateId === id);
-    const { candidateName: name = '', isNew, offerExpiryDate = '' } = selectedPerson;
+    const {
+      candidateName: name = '',
+      isNew,
+      offerExpiryDate = '',
+      processStatusId,
+    } = selectedPerson;
     const isExpired = compare(moment(), moment(offerExpiryDate)) === 1;
 
     if (isExpired) {
@@ -184,12 +190,23 @@ class OnboardTable extends Component {
         </p>
       );
     }
-    if (isNew) {
+    if (isNew && !(processStatusId === NEW_PROCESS_STATUS.OFFER_ACCEPTED)) {
       return (
         <p>
           {name && <span className={styles.name}>{name}</span>}
           <span className={styles.new}>
             {formatMessage({ id: 'component.onboardingOverview.new' })}
+          </span>
+        </p>
+      );
+    }
+
+    if (processStatusId === NEW_PROCESS_STATUS.OFFER_ACCEPTED) {
+      return (
+        <p>
+          {name && <span className={styles.name}>{name}</span>}
+          <span>
+            <img alt="accepte-icon" src={AcceptIcon} />
           </span>
         </p>
       );
@@ -353,7 +370,15 @@ class OnboardTable extends Component {
         title: 'Status',
         dataIndex: 'processStatus',
         key: 'processStatus',
-        render: (processStatus) => <span className={styles.processStatus}>{processStatus}</span>,
+        render: (processStatus) => (
+          <span
+            className={`${processStatus === 'Offer Accepted' ? styles.processStatusAccepted : ''}
+              ${styles.processStatus}
+            `}
+          >
+            {processStatus}
+          </span>
+        ),
         columnName: PROCESS_STATUS_1,
         width: getColumnWidth('processStatus', type, list.length),
         align: 'left',
