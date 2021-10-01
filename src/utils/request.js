@@ -66,7 +66,7 @@ const request = (url, options = {}, noAuth) => {
   })(url, options);
 };
 
-const request2 = async (url, options = {}, noAuth, apiUrlName = 'API_SQL') => {
+const request2 = async (url, options = {}, noAuth, apiUrlName = 'API_SQL', hasParams) => {
   const { method = 'GET', data = {} } = options;
   const token = getToken();
 
@@ -80,7 +80,7 @@ const request2 = async (url, options = {}, noAuth, apiUrlName = 'API_SQL') => {
       'Access-Control-Allow-Origin': '*',
       Authorization: !noAuth ? `Bearer ${token}` : '',
     },
-    params: method === 'GET' ? data : {},
+    params: hasParams ? data : {},
   });
 
   instance.interceptors.response.use(

@@ -19,8 +19,10 @@ const ManagerView = (props) => {
 
   // USE EFFECT AREA
   useEffect(() => {
-    fetchManagerTimesheetEffect();
-  }, []);
+    if (startDate && endDate) {
+      fetchManagerTimesheetEffect();
+    }
+  }, [startDate, endDate]);
 
   useEffect(() => {
     const lastSunday = moment().weekday(1);

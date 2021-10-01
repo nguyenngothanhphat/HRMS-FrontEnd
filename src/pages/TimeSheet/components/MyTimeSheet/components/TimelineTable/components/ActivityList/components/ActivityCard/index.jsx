@@ -2,20 +2,24 @@ import { Col, Row, Tooltip } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
-import EditIcon from '@/assets/timeSheet/edit.svg';
 import DeleteIcon from '@/assets/timeSheet/del.svg';
-import { activityColor, hourFormat } from '@/utils/timeSheet';
-import styles from './index.less';
+import EditIcon from '@/assets/timeSheet/edit.svg';
+import { activityColor, dateFormatAPI, MT_SECONDARY_COL_SPAN } from '@/utils/timeSheet';
 import EditCard from '../EditCard';
+import styles from './index.less';
+import { getCurrentCompany } from '@/utils/authority';
+
+const { ACTIVITY, START_TIME, END_TIME, NIGHT_SHIFT, TOTAL_HOURS, NOTES, ACTIONS } =
+  MT_SECONDARY_COL_SPAN;
 
 const ActivityCard = (props) => {
   const {
     card: {
       id = '',
       taskName = '',
-      startDate = '',
-      endDate = '',
-      nightshift = false,
+      startTime = '',
+      endTime = '',
+      nightShift = false,
       totalHours = '',
       notes = '',
     } = {},
@@ -23,6 +27,8 @@ const ActivityCard = (props) => {
     cardDay = '',
     dispatch,
   } = props;
+  const { employee: { _id: employeeId = '' } = {} } = props;
+
   const [editMode, setEditMode] = useState(false);
 
   // FUNCTION AREA
@@ -31,13 +37,13 @@ const ActivityCard = (props) => {
     return `${str.slice(0, 72)}...`;
   };
 
-  const renderNote = () => {
-    if (notes.length <= 72) return notes;
+  const renderNote = (note = '') => {
+    if (note.length <= 72) return note;
     return (
       <span>
-        {handleLongString(notes)}{' '}
+        {handleLongString(note)}{' '}
         <Tooltip
-          title={notes}
+          title={note}
           placement="bottomLeft"
           // we have this prop for customizing antd tooltip
           getPopupContainer={(trigger) => {
@@ -65,7 +71,10 @@ const ActivityCard = (props) => {
       type: 'timeSheet/removeActivityEffect',
       payload: {
         id,
+        employeeId,
+        companyId: getCurrentCompany(),
       },
+      date: moment(cardDay).format(dateFormatAPI),
     });
   };
 
@@ -75,7 +84,7 @@ const ActivityCard = (props) => {
   return (
     <div className={styles.ActivityCard}>
       <Row gutter={[12, 0]}>
-        <Col span={3} className={`${styles.normalCell} ${styles.boldText}`}>
+        <Col span={ACTIVITY} className={`${styles.normalCell} ${styles.boldText}`}>
           <div
             className={styles.activityIcon}
             style={
@@ -84,28 +93,26 @@ const ActivityCard = (props) => {
                 : null
             }
           >
-            <span>
-              {typeof activity === 'string' && taskName.length > 0 ? taskName.charAt(0) : 'A'}
-            </span>
+            <span>{taskName ? taskName.toString()?.charAt(0) : 'A'}</span>
           </div>
           {taskName || ''}
         </Col>
-        <Col span={3} className={styles.normalCell}>
-          {startDate ? moment(startDate).format(hourFormat) : ''}
+        <Col span={START_TIME} className={styles.normalCell}>
+          {startTime}
         </Col>
-        <Col span={3} className={styles.normalCell}>
-          {endDate ? moment(endDate).format(hourFormat) : ''}
+        <Col span={END_TIME} className={styles.normalCell}>
+          {endTime}
         </Col>
-        <Col span={3} className={styles.normalCell}>
-          {nightshift ? 'Yes' : 'No'}
+        <Col span={NIGHT_SHIFT} className={styles.normalCell}>
+          {nightShift ? 'Yes' : 'No'}
         </Col>
-        <Col span={3} className={`${styles.normalCell} ${styles.blueText}`}>
-          {totalHours || ''}
+        <Col span={TOTAL_HOURS} className={`${styles.normalCell} ${styles.blueText}`}>
+          {totalHours ? totalHours.toString().slice(0, -5) : ''}
         </Col>
-        <Col span={6} className={styles.normalCell}>
-          {renderNote()}
+        <Col span={NOTES} className={styles.normalCell}>
+          {renderNote(notes || '')}
         </Col>
-        <Col span={3} className={`${styles.normalCell} ${styles.alignCenter}`}>
+        <Col span={ACTIONS} className={`${styles.normalCell} ${styles.alignCenter}`}>
           <div className={styles.actionsButton}>
             <img src={EditIcon} onClick={onEditCard} alt="" />
             <img src={DeleteIcon} onClick={onRemoveCard} alt="" />
@@ -116,6 +123,6 @@ const ActivityCard = (props) => {
   );
 };
 
-export default connect(({ timeSheet: { myTimesheet = [] } = {} }) => ({ myTimesheet }))(
+export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({ employee }))(
   ActivityCard,
 );

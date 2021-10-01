@@ -5,11 +5,13 @@ import { getCurrentCompany } from '@/utils/authority';
 import Header from './components/Header';
 import TimelineTable from './components/TimelineTable';
 import styles from './index.less';
+import { dateFormatAPI } from '@/utils/timeSheet';
 
 const MyTimeSheet = (props) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const { dispatch, employee: { _id: employeeId = '' } = {} } = props;
+  const [myTotalHours, setMyTotalHours] = useState('');
+  const { dispatch, employee: { _id: employeeId = '' } = {}, myTimesheet = [] } = props;
   // FUNCTION AREA
   const fetchMyTimesheetEffect = () => {
     dispatch({
@@ -17,14 +19,35 @@ const MyTimeSheet = (props) => {
       payload: {
         companyId: getCurrentCompany(),
         employeeId,
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
       },
     });
   };
 
+  const calculateTotalHours = (list) => {
+    let duration = 0;
+    list.forEach((item) => {
+      const { timesheet = [] } = item;
+      timesheet.forEach((v) => {
+        duration += v.duration;
+      });
+    });
+    return moment.utc(duration).format('HH:mm:ss');
+  };
+
   // USE EFFECT AREA
   useEffect(() => {
-    fetchMyTimesheetEffect();
-  }, []);
+    if (startDate && endDate) {
+      fetchMyTimesheetEffect();
+    }
+  }, [startDate, endDate]);
+
+  useEffect(() => {
+    const totalHours = calculateTotalHours(myTimesheet);
+    console.log('totalHours', totalHours);
+    setMyTotalHours(totalHours);
+  }, [JSON.stringify(myTimesheet)]);
 
   useEffect(() => {
     const lastSunday = moment().weekday(1);
@@ -42,12 +65,16 @@ const MyTimeSheet = (props) => {
         endDate={endDate}
         setStartDate={setStartDate}
         setEndDate={setEndDate}
+        myTotalHours={myTotalHours}
       />
       <TimelineTable startDate={startDate} endDate={endDate} />
     </div>
   );
 };
 
-export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({ employee }))(
-  MyTimeSheet,
-);
+export default connect(
+  ({ timeSheet: { myTimesheet = [] } = {}, user: { currentUser: { employee = {} } = {} } }) => ({
+    employee,
+    myTimesheet,
+  }),
+)(MyTimeSheet);

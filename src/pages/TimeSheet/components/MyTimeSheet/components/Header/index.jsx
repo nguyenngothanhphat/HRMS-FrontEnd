@@ -12,7 +12,13 @@ import styles from './index.less';
 const { RangePicker } = DatePicker;
 
 const Header = (props) => {
-  const { startDate, endDate, setStartDate = () => {}, setEndDate = () => {} } = props;
+  const {
+    startDate,
+    endDate,
+    myTotalHours,
+    setStartDate = () => {},
+    setEndDate = () => {},
+  } = props;
 
   // HEADER AREA
   const onPrevWeekClick = () => {
@@ -58,7 +64,7 @@ const Header = (props) => {
         </div>
       </div>
       <div className={styles.Header__right}>
-        Total hours: <span className={styles.hours}>40:40:00</span>
+        Total hours: <span className={styles.hours}>{myTotalHours}</span>
       </div>
     </div>
   );

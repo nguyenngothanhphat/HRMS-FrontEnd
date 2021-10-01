@@ -6,7 +6,9 @@ import AddIcon from '@/assets/timeSheet/add.svg';
 import ActivityCard from './components/ActivityCard';
 import AddCard from './components/AddCard';
 import styles from './index.less';
-import { dateFormat } from '@/utils/timeSheet';
+import { dateFormat, MT_MAIN_COL_SPAN } from '@/utils/timeSheet';
+
+const { DATE, REMAINING } = MT_MAIN_COL_SPAN;
 
 const ActivityList = (props) => {
   const { item = {}, activityIndex } = props;
@@ -45,7 +47,7 @@ const ActivityList = (props) => {
   // MAIN AREA
   return (
     <Row className={styles.ActivityList}>
-      <Col span={3} className={`${styles.ActivityList__firstColumn} ${styles.alignCenter}`}>
+      <Col span={DATE} className={`${styles.ActivityList__firstColumn} ${styles.alignCenter}`}>
         <span
           style={
             activityIndex === 0
@@ -56,8 +58,8 @@ const ActivityList = (props) => {
           {moment(item.date).locale('en').format(dateFormat)}
         </span>
       </Col>
-      <Col span={21} className={styles.ActivityList__remainColumn}>
-        {item.activities.map((activity) => {
+      <Col span={REMAINING} className={styles.ActivityList__remainColumn}>
+        {item.timesheet.map((activity) => {
           return <ActivityCard card={activity} cardDay={item.date} />;
         })}
         {cardList.map((card, index) => (

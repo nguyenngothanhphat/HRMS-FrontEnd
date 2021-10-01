@@ -2,8 +2,13 @@ import { Col, Row, Spin } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { MT_MAIN_COL_SPAN, MT_SECONDARY_COL_SPAN } from '@/utils/timeSheet';
 import ActivityList from './components/ActivityList';
 import styles from './index.less';
+
+const { DATE, REMAINING } = MT_MAIN_COL_SPAN;
+const { ACTIVITY, START_TIME, END_TIME, NIGHT_SHIFT, TOTAL_HOURS, NOTES, ACTIONS } =
+  MT_SECONDARY_COL_SPAN;
 
 const TimelineTable = (props) => {
   const { startDate = '', endDate = '', myTimesheet = [], loadingFetchMyTimesheet = false } = props;
@@ -28,14 +33,16 @@ const TimelineTable = (props) => {
     const dataTemp = data.map((item) => {
       return {
         ...item,
-        day: moment(item.date).format('MM/DD/YYYY'),
+        date: moment(item.date).format('MM/DD/YYYY'),
       };
     });
 
     return dateList.map((date) => {
+      const find = dataTemp.find((item) => item.date === date);
       return {
+        ...find,
         date,
-        activities: dataTemp.filter((item) => item.date === date),
+        timesheet: find?.timesheet || [],
       };
     });
   };
@@ -70,31 +77,31 @@ const TimelineTable = (props) => {
             : { opacity: 1, transition: 'ease-in-out 1.5s' }
         }
       >
-        <Col span={3} className={`${styles.tableHeader__firstColumn} ${styles.alignCenter}`}>
+        <Col span={DATE} className={`${styles.tableHeader__firstColumn} ${styles.alignCenter}`}>
           Day
         </Col>
-        <Col span={21}>
+        <Col span={REMAINING}>
           <div className={styles.tableHeader__remainColumn}>
             <Row gutter={[12, 0]}>
-              <Col span={3} className={styles.title}>
+              <Col span={ACTIVITY} className={styles.title}>
                 Activity
               </Col>
-              <Col span={3} className={styles.title}>
+              <Col span={START_TIME} className={styles.title}>
                 Time In
               </Col>
-              <Col span={3} className={styles.title}>
+              <Col span={END_TIME} className={styles.title}>
                 Time Out
               </Col>
-              <Col span={3} className={styles.title}>
+              <Col span={NIGHT_SHIFT} className={styles.title}>
                 Nightshift
               </Col>
-              <Col span={3} className={styles.title}>
+              <Col span={TOTAL_HOURS} className={styles.title}>
                 Total Hrs
               </Col>
-              <Col span={6} className={styles.title}>
+              <Col span={NOTES} className={styles.title}>
                 Notes
               </Col>
-              <Col span={3} className={`${styles.title} ${styles.alignCenter}`}>
+              <Col span={ACTIONS} className={`${styles.title} ${styles.alignCenter}`}>
                 Action
               </Col>
             </Row>

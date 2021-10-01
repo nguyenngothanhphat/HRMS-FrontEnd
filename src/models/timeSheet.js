@@ -1,20 +1,21 @@
 import { message, notification } from 'antd';
-import { dialog } from '@/utils/utils';
 import {
   // fetch
   getManagerTimesheet,
   getMyTimesheet,
-  // update/add/remove
-  updateActivity,
-  addActivity,
   removeActivity,
+  // update/add/remove
+  addActivity,
+  updateActivity,
 } from '@/services/timeSheet';
+import { dialog } from '@/utils/utils';
 
 const TimeSheet = {
   namespace: 'timeSheet',
   state: {
     myTimesheet: [],
     managerTimesheet: [],
+    myTotalHours: '',
   },
   effects: {
     // fetch
@@ -41,8 +42,8 @@ const TimeSheet = {
       const response = {};
       try {
         const res = yield call(getManagerTimesheet, payload);
-        const { code, data = [] } = res;
-        if (code !== 200) throw res;
+        const { statusCode, data = [] } = res;
+        if (statusCode !== 200) throw res;
 
         yield put({
           type: 'save',
@@ -58,18 +59,21 @@ const TimeSheet = {
     },
 
     // update/edit
-    *updateActivityEffect({ payload }, { call, put }) {
+    *updateActivityEffect({ payload, date }, { call, put }) {
       let response = {};
       try {
         const updating = message.loading('Updating...', 0);
         response = yield call(updateActivity, payload);
-        const { code, data = {}, msg = '' } = response;
+        const { code, msg = '', data = {} } = response;
         if (code !== 200) throw response;
         notification.success({ message: msg });
+
+        // for refresh immediately - no need to call API to refresh list
         yield put({
           type: 'onActivityUpdated',
           payload: {
             updatedActivity: data,
+            date,
           },
         });
         updating();
@@ -81,7 +85,7 @@ const TimeSheet = {
     },
 
     // add
-    *addActivityEffect({ payload }, { call, put }) {
+    *addActivityEffect({ payload, date }, { call, put }) {
       let response = {};
       try {
         const adding = message.loading('Adding...', 0);
@@ -90,10 +94,12 @@ const TimeSheet = {
         if (code !== 200) throw response;
         notification.success({ message: msg });
 
+        // for refresh immediately - no need to call API to refresh list
         yield put({
           type: 'onActivityAdded',
           payload: {
             addedActivity: data,
+            date,
           },
         });
         adding();
@@ -105,7 +111,7 @@ const TimeSheet = {
     },
 
     // remove
-    *removeActivityEffect({ payload }, { call, put }) {
+    *removeActivityEffect({ payload, date }, { call, put }) {
       let response = {};
       try {
         const removing = message.loading('Removing...', 0);
@@ -114,10 +120,12 @@ const TimeSheet = {
         if (code !== 200) throw response;
         notification.success({ message: msg });
 
+        // for refresh immediately - no need to call API to refresh list
         yield put({
           type: 'onActivityRemoved',
           payload: {
             removedActivity: payload,
+            date,
           },
         });
         removing();
@@ -136,20 +144,60 @@ const TimeSheet = {
       };
     },
     onActivityUpdated(state, action) {
-      const { updatedActivity = {} } = action.payload;
+      const { updatedActivity = {}, date = '' } = action.payload;
+      const {
+        startTime = '',
+        endTime = '',
+        taskName = '',
+        nightShift = false,
+        notes = '',
+        duration = '',
+      } = updatedActivity || {};
       let { myTimesheet } = state;
-      myTimesheet = myTimesheet.map((item) =>
-        item._id === updatedActivity._id ? updatedActivity : item,
-      );
+      myTimesheet = myTimesheet.map((item) => {
+        if (item.date === date) {
+          const timesheetTemp = item.timesheet.map((val) => {
+            if (val.id === updatedActivity.id) {
+              return {
+                ...val,
+                startTime,
+                endTime,
+                taskName,
+                nightShift,
+                notes,
+                duration,
+              };
+            }
+            return val;
+          });
+          return {
+            ...item,
+            timesheet: timesheetTemp,
+          };
+        }
+        return item;
+      });
+
       return {
         ...state,
-        myTimesheet,
+        myTimesheet: [...myTimesheet],
       };
     },
     onActivityAdded(state, action) {
-      const { addedActivity = {} } = action.payload;
-      const { myTimesheet } = state;
-      myTimesheet.push(addedActivity);
+      const { addedActivity = {}, date = '' } = action.payload;
+      let { myTimesheet } = state;
+      myTimesheet = myTimesheet.map((item) => {
+        if (item.date === date) {
+          const timesheetTemp = JSON.parse(JSON.stringify(item.timesheet));
+          timesheetTemp.push(addedActivity);
+          return {
+            ...item,
+            timesheet: timesheetTemp,
+          };
+        }
+        return item;
+      });
+
       return {
         ...state,
         myTimesheet: [...myTimesheet],
@@ -157,9 +205,19 @@ const TimeSheet = {
     },
 
     onActivityRemoved(state, action) {
-      const { removedActivity = {} } = action.payload;
+      const { removedActivity = {}, date = '' } = action.payload;
       let { myTimesheet } = state;
-      myTimesheet = myTimesheet.filter((item) => item._id !== removedActivity._id);
+      myTimesheet = myTimesheet.map((item) => {
+        if (item.date === date) {
+          const timesheetTemp = item.timesheet.filter((val) => val.id !== removedActivity.id);
+          return {
+            ...item,
+            timesheet: timesheetTemp,
+          };
+        }
+        return item;
+      });
+
       return {
         ...state,
         myTimesheet: [...myTimesheet],

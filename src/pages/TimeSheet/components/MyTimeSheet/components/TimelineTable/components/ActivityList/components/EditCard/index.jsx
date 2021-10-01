@@ -7,19 +7,31 @@ import ArrowDown from '@/assets/timeSheet/arrowDown.svg';
 import CancelIcon from '@/assets/timeSheet/cancel.svg';
 import ClockIcon from '@/assets/timeSheet/clock.svg';
 import styles from './index.less';
-import { addTimeForDate, hourFormat, minuteStep,activityName } from '@/utils/timeSheet';
+import {
+  hourFormat,
+  minuteStep,
+  activityName,
+  hourFormatAPI,
+  dateFormatAPI,
+  MT_SECONDARY_COL_SPAN,
+} from '@/utils/timeSheet';
+import { getCurrentCompany } from '@/utils/authority';
 
 const { Option } = Select;
+
+const { ACTIVITY, START_TIME, END_TIME, NIGHT_SHIFT, TOTAL_HOURS, NOTES, ACTIONS } =
+  MT_SECONDARY_COL_SPAN;
+
 const EditCard = (props) => {
   const [form] = Form.useForm();
 
   const {
     card: {
-      _id = '',
+      id = '',
       taskName = '',
-      startDate = '',
-      endDate = '',
-      nightshift = false,
+      startTime = '',
+      endTime = '',
+      nightShift = false,
       // totalHours = '',
       notes = '',
     } = {},
@@ -31,25 +43,21 @@ const EditCard = (props) => {
 
   // main function
   const updateActivityEffect = (values) => {
-    // startDate & endDate we selected from TimePicker have dates are today
-    // example now is 09/29/2021 - 16:08:20, after we pick a time, the value is 09/29/2021 - 16:08:20 (moment js)
-    // so we MUST change the date into the one this AddCard belongs to
-    // example this activity is in 08/15/2021
-    // result will be 08/15/2021 - 16:08:20 (moment js)
-
     const payload = {
       ...values,
-      _id,
-      day: moment(cardDay),
-      startDate: values.startDate ? addTimeForDate(cardDay, values.startDate) : '',
-      endDate: values.endDate ? addTimeForDate(cardDay, values.endDate) : '',
+      id,
+      startTime: moment(values.startTime).format(hourFormatAPI),
+      endTime: moment(values.endTime).format(hourFormatAPI),
+      companyId: getCurrentCompany(),
     };
 
     return dispatch({
       type: 'timeSheet/updateActivityEffect',
       payload,
+      date: moment(cardDay).format(dateFormatAPI),
     });
   };
+
   const onFinish = async (values) => {
     const res = await updateActivityEffect(values);
     if (res.code === 200) {
@@ -67,22 +75,24 @@ const EditCard = (props) => {
       onFinish={onFinish}
       initialValues={{
         taskName,
-        startDate: startDate ? moment(startDate) : '',
-        endDate: endDate ? moment(endDate) : '',
-        nightshift,
+        startTime: startTime ? moment(startTime, hourFormatAPI) : '',
+        endTime: endTime ? moment(endTime, hourFormatAPI) : '',
+        nightShift,
         notes,
       }}
     >
       <Row gutter={[12, 0]}>
-        <Col span={3} className={`${styles.normalCell} ${styles.boldText}`}>
+        <Col span={ACTIVITY} className={`${styles.normalCell} ${styles.boldText}`}>
           <Form.Item name="taskName" rules={[{ required: true }]}>
             <Select suffixIcon={<img src={ArrowDown} alt="" />}>
-              {activityName.map(a => <Option value={a}>{a}</Option>)}
+              {activityName.map((a) => (
+                <Option value={a}>{a}</Option>
+              ))}
             </Select>
           </Form.Item>
         </Col>
-        <Col span={3} className={styles.normalCell}>
-          <Form.Item name="startDate" rules={[{ required: true }]}>
+        <Col span={START_TIME} className={styles.normalCell}>
+          <Form.Item name="startTime" rules={[{ required: true }]}>
             <TimePicker
               format={hourFormat}
               minuteStep={minuteStep}
@@ -90,8 +100,8 @@ const EditCard = (props) => {
             />
           </Form.Item>
         </Col>
-        <Col span={3} className={styles.normalCell}>
-          <Form.Item name="endDate" rules={[{ required: true }]}>
+        <Col span={END_TIME} className={styles.normalCell}>
+          <Form.Item name="endTime" rules={[{ required: true }]}>
             <TimePicker
               format={hourFormat}
               minuteStep={minuteStep}
@@ -99,23 +109,23 @@ const EditCard = (props) => {
             />
           </Form.Item>
         </Col>
-        <Col span={3} className={styles.normalCell}>
-          <Form.Item name="nightshift" rules={[{ required: true }]}>
+        <Col span={NIGHT_SHIFT} className={styles.normalCell}>
+          <Form.Item name="nightShift" rules={[{ required: true }]}>
             <Select suffixIcon={<img src={ArrowDown} alt="" />}>
               <Option value>Yes</Option>
               <Option value={false}>No</Option>
             </Select>
           </Form.Item>
         </Col>
-        <Col span={3} className={`${styles.normalCell} ${styles.blueText}`}>
+        <Col span={TOTAL_HOURS} className={`${styles.normalCell} ${styles.blueText}`}>
           <Form.Item name="totalHours" />
         </Col>
-        <Col span={6} className={styles.normalCell}>
+        <Col span={NOTES} className={styles.normalCell}>
           <Form.Item name="notes" rules={[{ required: true }]}>
             <Input.TextArea autoSize={{ minRows: 4, maxRows: 10 }} />
           </Form.Item>
         </Col>
-        <Col span={3} className={`${styles.normalCell} ${styles.alignCenter}`}>
+        <Col span={ACTIONS} className={`${styles.normalCell} ${styles.alignCenter}`}>
           <div className={styles.actionsButton}>
             <button type="submit" htmlType="submit">
               <img type htmlType="submit" src={ApproveIcon} alt="" />

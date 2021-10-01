@@ -1,20 +1,4 @@
-import moment from 'moment';
 import { request, request2 } from '@/utils/request';
-import { API_SQL } from '@/utils/timeSheet';
-
-const mockMyTimeSheetData = [
-  {
-    _id: 1,
-    day: moment(),
-    activity: 'Working hours',
-    timeIn: moment(),
-    timeOut: moment(),
-    nightshift: false,
-    totalHours: '02:30:00',
-    notes:
-      'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint non deserunt ullamco est sit aliqua dolor do amet sint ',
-  },
-];
 
 const mockManagerTimeSheetData = [
   {
@@ -48,12 +32,14 @@ const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function getMyTimesheet(payload) {
   return request2(
-    `/api/timesheet`,
+    `/api/timesheet/filter`,
     {
       method: 'GET',
       data: payload,
     },
+    false,
     'API_SQL',
+    true, // hasParams
   );
 }
 
@@ -65,15 +51,29 @@ export async function getManagerTimesheet() {
 
 // edit/update
 export async function updateActivity(payload) {
-  await wait(1000);
-  const res = { data: payload, statusCode: 200 };
-  return res;
+  return request2(
+    `/api/timesheet`,
+    {
+      method: 'PATCH',
+      data: payload,
+    },
+    false,
+    'API_SQL',
+    true, // hasParams
+  );
 }
 
-export async function removeActivity() {
-  await wait(1000);
-  const res = { data: {}, statusCode: 200 };
-  return res;
+export async function removeActivity(payload) {
+  return request2(
+    `/api/timesheet`,
+    {
+      method: 'DELETE',
+      data: payload,
+    },
+    false,
+    'API_SQL',
+    true, // hasParams
+  );
 }
 
 export async function addActivity(payload) {
@@ -83,6 +83,7 @@ export async function addActivity(payload) {
       method: 'POST',
       data: payload,
     },
+    false,
     'API_SQL',
   );
 }
