@@ -124,6 +124,7 @@ const AddCard = (props) => {
       hours = arr.filter((item) => item <= hour); // arr hours CAN include the selected hour. Ex: [1,2,3,4]
     }
 
+    console.log('time in ISBEFORE: ', isBeforeTime);
     if (isBeforeTime) hours = [];
 
     // after select Time IN Picker => will disabled some hours (based on timeOut.arrHours) in Time OUT Picker
@@ -160,6 +161,7 @@ const AddCard = (props) => {
     }
 
     hours.push(0); // in order to disable number 12
+    console.log('time out ISAFTER: ', isAfterTime);
     if (isAfterTime) hours = [];
 
     // after select Time OUT Picker => will disabled some hours (based on timeIn.arrHours) in Time IN Picker
