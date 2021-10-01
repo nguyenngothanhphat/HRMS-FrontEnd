@@ -20,6 +20,7 @@ import { getActionText, getColumnWidth } from './utils';
 import ReassignModal from './components/ReassignModal';
 import RenewModal from './components/RenewModal';
 import PopupContentHr from './components/PopupContentHr';
+import JoiningFormalitiesModal from './components/JoiningFormalitiesModal';
 
 import styles from './index.less';
 
@@ -48,6 +49,9 @@ class OnboardTable extends Component {
       selectedExpiryTicketId: '',
       expiryStatus: '',
       expiryType: '',
+
+      // Joining Formalities
+      joiningFormalitiesVisible: false,
 
       // popup hover name
       timezoneList: [],
@@ -598,7 +602,9 @@ class OnboardTable extends Component {
               </Link>
             </Menu.Item>
             <Menu.Item>
-              <span>Initiate joining formalities</span>
+              <div onClick={() => this.handleOpenJoiningFormalitiesModal(true)}>
+                Initiate joining formalities
+              </div>
             </Menu.Item>
           </>
         );
@@ -655,6 +661,12 @@ class OnboardTable extends Component {
         )}
       </Menu>
     );
+  };
+
+  handleOpenJoiningFormalitiesModal = (value) => {
+    this.setState({
+      joiningFormalitiesVisible: value,
+    });
   };
 
   handleReassignModal = (value, currentEmpId, id, processStatusId, type) => {
@@ -721,6 +733,7 @@ class OnboardTable extends Component {
       reassignType = '',
       selectedExpiryTicketId,
       renewModalVisible,
+      joiningFormalitiesVisible,
       expiryStatus,
       expiryType,
     } = this.state;
@@ -821,6 +834,10 @@ class OnboardTable extends Component {
           type={expiryType}
           page={pageSelected}
           limit={size}
+        />
+        <JoiningFormalitiesModal
+          visible={joiningFormalitiesVisible}
+          handleOpenJoiningFormalitiesModal={this.handleOpenJoiningFormalitiesModal}
         />
       </>
     );
