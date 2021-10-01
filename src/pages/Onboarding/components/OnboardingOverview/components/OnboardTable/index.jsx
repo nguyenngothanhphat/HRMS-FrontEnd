@@ -52,6 +52,7 @@ class OnboardTable extends Component {
 
       // Joining Formalities
       joiningFormalitiesVisible: false,
+      dateJoinCandidate: '',
 
       // popup hover name
       timezoneList: [],
@@ -404,7 +405,9 @@ class OnboardTable extends Component {
             offerExpiryDate = '',
             candidate = '',
             currentStep = 0,
+            dateJoin = '',
           } = row;
+
           const actionText = getActionText(type, processStatusId);
 
           const id = candidateId.replace('#', '') || '';
@@ -422,6 +425,7 @@ class OnboardTable extends Component {
             processStatusId,
             offerExpiryDate,
             currentStep,
+            dateJoin,
           };
           if (checkPermission)
             return (
@@ -454,6 +458,7 @@ class OnboardTable extends Component {
       processStatusId = '',
       offerExpiryDate = '',
       currentStep = 0,
+      dateJoin = '',
     } = payload;
 
     // const {
@@ -602,7 +607,7 @@ class OnboardTable extends Component {
               </Link>
             </Menu.Item>
             <Menu.Item>
-              <div onClick={() => this.handleOpenJoiningFormalitiesModal(true)}>
+              <div onClick={() => this.handleOpenJoiningFormalitiesModal(true, dateJoin)}>
                 Initiate joining formalities
               </div>
             </Menu.Item>
@@ -663,9 +668,10 @@ class OnboardTable extends Component {
     );
   };
 
-  handleOpenJoiningFormalitiesModal = (value) => {
+  handleOpenJoiningFormalitiesModal = (value, dateJoin = '') => {
     this.setState({
       joiningFormalitiesVisible: value,
+      dateJoinCandidate: dateJoin,
     });
   };
 
@@ -734,6 +740,7 @@ class OnboardTable extends Component {
       selectedExpiryTicketId,
       renewModalVisible,
       joiningFormalitiesVisible,
+      dateJoinCandidate,
       expiryStatus,
       expiryType,
     } = this.state;
@@ -838,6 +845,7 @@ class OnboardTable extends Component {
         <JoiningFormalitiesModal
           visible={joiningFormalitiesVisible}
           handleOpenJoiningFormalitiesModal={this.handleOpenJoiningFormalitiesModal}
+          dateJoinCandidate={dateJoinCandidate}
         />
       </>
     );
