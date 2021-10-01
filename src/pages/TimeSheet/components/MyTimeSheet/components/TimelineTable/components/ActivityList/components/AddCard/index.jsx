@@ -45,12 +45,20 @@ const AddCard = (props) => {
     dispatch,
     employee: {
       _id: employeeId = '',
-      generalInfo: { legalName: empName = '', workEmail: empWorkEmail } = {} || {},
-      department: { name: empDepartmentName, _id: empDepartmentId } = {} || {},
+      generalInfo: {
+        legalName: empName = '',
+        workEmail: empWorkEmail = '',
+        userId: empUserId = '',
+      } = {} || {},
+      department: { name: empDepartmentName = '', _id: empDepartmentId = '' } = {} || {},
       manager: {
         _id: managerId = '',
-        generalInfo: { legalName: managerName = '', workEmail: managerWorkEmail } = {} || {},
-        department: { name: managerDepartmentName, _id: managerDepartmentId } = {} || {},
+        generalInfo: {
+          legalName: managerName = '',
+          workEmail: managerWorkEmail = '',
+          userId: managerUserId = '',
+        } = {} || {},
+        department: { name: managerDepartmentName = '', _id: managerDepartmentId = '' } = {} || {},
       } = {} || {},
     } = {} || {},
   } = props;
@@ -85,7 +93,7 @@ const AddCard = (props) => {
         nightShift: values.nightShift,
         employee: {
           employeeName: empName,
-          employeeId,
+          employeeCode: empUserId,
           workEmail: empWorkEmail,
           department: {
             name: empDepartmentName,
@@ -95,6 +103,7 @@ const AddCard = (props) => {
         managerInfo: {
           employeeName: managerName,
           employeeId: managerId,
+          employeeCode: managerUserId,
           workEmail: managerWorkEmail,
           department: {
             name: managerDepartmentName,

@@ -187,21 +187,28 @@ const TimeSheet = {
     onActivityAdded(state, action) {
       const { addedActivity = {}, date = '' } = action.payload;
       let { myTimesheet } = state;
-      myTimesheet = myTimesheet.map((item) => {
-        if (item.date === date) {
-          const timesheetTemp = JSON.parse(JSON.stringify(item.timesheet));
-          timesheetTemp.push({
-            ...addedActivity,
-            totalHours: convertMsToTime(addedActivity.duration),
-          });
-          return {
-            ...item,
-            timesheet: timesheetTemp,
-          };
-        }
-        return item;
-      });
+      const newItem = { ...addedActivity, totalHours: convertMsToTime(addedActivity.duration) };
 
+      if (myTimesheet.length === 0) {
+        myTimesheet = [
+          {
+            date,
+            timesheet: [newItem],
+          },
+        ];
+      } else {
+        myTimesheet = myTimesheet.map((item) => {
+          if (item.date === date) {
+            const timesheetTemp = JSON.parse(JSON.stringify(item.timesheet));
+            timesheetTemp.push(newItem);
+            return {
+              ...item,
+              timesheet: timesheetTemp,
+            };
+          }
+          return item;
+        });
+      }
       return {
         ...state,
         myTimesheet: [...myTimesheet],
@@ -222,6 +229,15 @@ const TimeSheet = {
         return item;
       });
 
+      // if there no timesheet after remove, clear myTimesheet state
+      if (myTimesheet.length === 1) {
+        if (myTimesheet[0].timesheet.length === 0) {
+          return {
+            ...state,
+            myTimesheet: [],
+          };
+        }
+      }
       return {
         ...state,
         myTimesheet: [...myTimesheet],

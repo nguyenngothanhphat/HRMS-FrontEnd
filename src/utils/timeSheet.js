@@ -56,21 +56,18 @@ const MT_SECONDARY_COL_SPAN = {
 };
 
 // convert milisecond to time HH:mm:ss
+// source: https://stackoverflow.com/questions/19700283/how-to-convert-time-in-milliseconds-to-hours-min-sec-format-in-javascript
 const convertMsToTime = (milliseconds) => {
-  // Get hours from milliseconds
-  const hours = milliseconds / (1000 * 60 * 60);
-  const absoluteHours = Math.floor(hours);
-  const h = absoluteHours > 9 ? absoluteHours : `0${absoluteHours}`;
+  let h = Math.floor(milliseconds / 1000 / 60 / 60);
+  let m = Math.floor((milliseconds / 1000 / 60 / 60 - h) * 60);
+  let s = Math.floor(((milliseconds / 1000 / 60 / 60 - h) * 60 - m) * 60);
 
-  // Get remainder from hours and convert to minutes
-  const minutes = (hours - absoluteHours) * 60;
-  const absoluteMinutes = Math.floor(minutes);
-  const m = absoluteMinutes > 9 ? absoluteMinutes : `0${absoluteMinutes}`;
-
-  // Get remainder from minutes and convert to seconds
-  const seconds = (minutes - absoluteMinutes) * 60;
-  const absoluteSeconds = Math.floor(seconds);
-  const s = absoluteSeconds > 9 ? absoluteSeconds : `0${absoluteSeconds}`;
+  if (s < 10) s = `0${s}`;
+  else s = `${s}`;
+  if (m < 10) m = `0${m}`;
+  else m = `${m}`;
+  if (h < 10) h = `0${h}`;
+  else h = `${h}`;
 
   return `${h}:${m}:${s}`;
   // return moment.utc(duration).format('HH:mm:ss');
