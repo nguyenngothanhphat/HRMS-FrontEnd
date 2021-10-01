@@ -108,6 +108,10 @@ const AddCard = (props) => {
   const selectTimeIn = (value) => {
     let hours = [...timePicker.timeIn.arrHours];
     const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+    const midDay = moment('12:00pm', hourFormat); // 12:00PM
+    const isBeforeTime = value.isBefore(midDay);
+
     const hour = +value.format('hh');
     const minute = +value.format('mm');
 
@@ -119,6 +123,8 @@ const AddCard = (props) => {
       // 4:30
       hours = arr.filter((item) => item <= hour); // arr hours CAN include the selected hour. Ex: [1,2,3,4]
     }
+
+    if (isBeforeTime) hours = [];
 
     // after select Time IN Picker => will disabled some hours (based on timeOut.arrHours) in Time OUT Picker
     setTimePicker((prevState) => ({
@@ -134,6 +140,10 @@ const AddCard = (props) => {
   const selectTimeOut = (value) => {
     let hours = [...timePicker.timeOut.arrHours]; // If Time IN was selected 4:00 so hours = [1,2,3]
     const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+    const midDay = moment('12:00pm', hourFormat); // 12:00PM
+    const isAfterTime = value.isAfter(midDay);
+
     const hour = +value.format('hh');
     const minute = +value.format('mm');
 
@@ -148,7 +158,9 @@ const AddCard = (props) => {
     } else {
       hours = newArr.filter((item) => item > hour); // arr hours CAN NOT include the selected hour. Ex: [7,8,9,10,11,12]
     }
+
     hours.push(0); // in order to disable number 12
+    if (isAfterTime) hours = [];
 
     // after select Time OUT Picker => will disabled some hours (based on timeIn.arrHours) in Time IN Picker
     setTimePicker((prevState) => ({
