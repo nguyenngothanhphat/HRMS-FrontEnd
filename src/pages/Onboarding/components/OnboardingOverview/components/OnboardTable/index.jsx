@@ -13,14 +13,16 @@ import {
 } from '@/utils/onboarding';
 import { getAuthority, getCurrentTenant } from '@/utils/authority';
 import { getTimezoneViaCity } from '@/utils/times';
+import AcceptIcon from '@/assets/Accept-icon-onboarding.svg';
+
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 import { getActionText, getColumnWidth } from './utils';
-
 import ReassignModal from './components/ReassignModal';
 import RenewModal from './components/RenewModal';
+import PopupContentHr from './components/PopupContentHr';
+import JoiningFormalitiesModal from './components/JoiningFormalitiesModal';
 
 import styles from './index.less';
-import PopupContentHr from './components/PopupContentHr';
 
 const compare = (dateTimeA, dateTimeB) => {
   const momentA = moment(dateTimeA, 'DD/MM/YYYY');
@@ -47,6 +49,10 @@ class OnboardTable extends Component {
       selectedExpiryTicketId: '',
       expiryStatus: '',
       expiryType: '',
+
+      // Joining Formalities
+      joiningFormalitiesVisible: false,
+      dateJoinCandidate: '',
 
       // popup hover name
       timezoneList: [],
@@ -173,7 +179,12 @@ class OnboardTable extends Component {
   renderName = (id) => {
     const { list } = this.props;
     const selectedPerson = list.find((item) => item.candidateId === id);
-    const { candidateName: name = '', isNew, offerExpiryDate = '' } = selectedPerson;
+    const {
+      candidateName: name = '',
+      isNew,
+      offerExpiryDate = '',
+      processStatusId,
+    } = selectedPerson;
     const isExpired = compare(moment(), moment(offerExpiryDate)) === 1;
 
     if (isExpired) {
@@ -184,12 +195,23 @@ class OnboardTable extends Component {
         </p>
       );
     }
-    if (isNew) {
+    if (isNew && !(processStatusId === NEW_PROCESS_STATUS.OFFER_ACCEPTED)) {
       return (
         <p>
           {name && <span className={styles.name}>{name}</span>}
           <span className={styles.new}>
             {formatMessage({ id: 'component.onboardingOverview.new' })}
+          </span>
+        </p>
+      );
+    }
+
+    if (processStatusId === NEW_PROCESS_STATUS.OFFER_ACCEPTED) {
+      return (
+        <p>
+          {name && <span className={styles.name}>{name}</span>}
+          <span>
+            <img alt="accepte-icon" src={AcceptIcon} />
           </span>
         </p>
       );
@@ -353,7 +375,15 @@ class OnboardTable extends Component {
         title: 'Status',
         dataIndex: 'processStatus',
         key: 'processStatus',
-        render: (processStatus) => <span className={styles.processStatus}>{processStatus}</span>,
+        render: (processStatus) => (
+          <span
+            className={`${processStatus === 'Offer Accepted' ? styles.processStatusAccepted : ''}
+              ${styles.processStatus}
+            `}
+          >
+            {processStatus}
+          </span>
+        ),
         columnName: PROCESS_STATUS_1,
         width: getColumnWidth('processStatus', type, list.length),
         align: 'left',
@@ -375,7 +405,9 @@ class OnboardTable extends Component {
             offerExpiryDate = '',
             candidate = '',
             currentStep = 0,
+            dateJoin = '',
           } = row;
+
           const actionText = getActionText(type, processStatusId);
 
           const id = candidateId.replace('#', '') || '';
@@ -393,6 +425,7 @@ class OnboardTable extends Component {
             processStatusId,
             offerExpiryDate,
             currentStep,
+            dateJoin,
           };
           if (checkPermission)
             return (
@@ -425,6 +458,7 @@ class OnboardTable extends Component {
       processStatusId = '',
       offerExpiryDate = '',
       currentStep = 0,
+      dateJoin = '',
     } = payload;
 
     // const {
@@ -441,7 +475,7 @@ class OnboardTable extends Component {
     //   SENT_FINAL_OFFERS,
     // } = PROCESS_STATUS; // old status
 
-    const { DRAFT, OFFER_RELEASED } = NEW_PROCESS_STATUS; // new status
+    const { DRAFT, OFFER_RELEASED, OFFER_ACCEPTED } = NEW_PROCESS_STATUS; // new status
 
     const isRemovable = processStatusId === DRAFT;
     const isHRManager = this.checkPermission('hr-manager');
@@ -564,19 +598,22 @@ class OnboardTable extends Component {
 
         break;
 
-      // case ACCEPTED_FINAL_OFFERS:
-      //   menuItem = (
-      //     <Menu.Item>
-      //       <span
-      //         onClick={() => {
-      //           this.openModal();
-      //         }}
-      //       >
-      //         Create Profile
-      //       </span>
-      //     </Menu.Item>
-      //   );
-      //   break;
+      case OFFER_ACCEPTED:
+        menuItem = (
+          <>
+            <Menu.Item>
+              <Link className={styles.actionText} to={`/onboarding/list/view/${id}/${find.link}`}>
+                <span>{actionText}</span>
+              </Link>
+            </Menu.Item>
+            <Menu.Item>
+              <div onClick={() => this.handleOpenJoiningFormalitiesModal(true, dateJoin)}>
+                Initiate joining formalities
+              </div>
+            </Menu.Item>
+          </>
+        );
+        break;
       default:
         menuItem = (
           <Menu.Item>
@@ -591,7 +628,7 @@ class OnboardTable extends Component {
     return (
       <Menu className={styles.menu}>
         {menuItem}
-        {isHRManager && (
+        {isHRManager && !(processStatusId === OFFER_ACCEPTED) && (
           <Menu.Item>
             <div
               onClick={() =>
@@ -629,6 +666,13 @@ class OnboardTable extends Component {
         )}
       </Menu>
     );
+  };
+
+  handleOpenJoiningFormalitiesModal = (value, dateJoin = '') => {
+    this.setState({
+      joiningFormalitiesVisible: value,
+      dateJoinCandidate: dateJoin,
+    });
   };
 
   handleReassignModal = (value, currentEmpId, id, processStatusId, type) => {
@@ -695,6 +739,8 @@ class OnboardTable extends Component {
       reassignType = '',
       selectedExpiryTicketId,
       renewModalVisible,
+      joiningFormalitiesVisible,
+      dateJoinCandidate,
       expiryStatus,
       expiryType,
     } = this.state;
@@ -795,6 +841,11 @@ class OnboardTable extends Component {
           type={expiryType}
           page={pageSelected}
           limit={size}
+        />
+        <JoiningFormalitiesModal
+          visible={joiningFormalitiesVisible}
+          handleOpenJoiningFormalitiesModal={this.handleOpenJoiningFormalitiesModal}
+          dateJoinCandidate={dateJoinCandidate}
         />
       </>
     );
