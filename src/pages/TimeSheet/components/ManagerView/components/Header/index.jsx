@@ -1,4 +1,3 @@
-import { MinusOutlined } from '@ant-design/icons';
 import { Button, DatePicker } from 'antd';
 import moment from 'moment';
 import React from 'react';
@@ -11,10 +10,14 @@ import { rangePickerFormat } from '@/utils/timeSheet';
 
 import styles from './index.less';
 
-const { RangePicker } = DatePicker;
-
 const Header = (props) => {
-  const { startDate, endDate, setStartDate = () => {}, setEndDate = () => {} } = props;
+  const {
+    managerTotalHours = 0,
+    startDate,
+    endDate,
+    setStartDate = () => {},
+    setEndDate = () => {},
+  } = props;
 
   // HEADER AREA
   const onPrevWeekClick = () => {
@@ -77,7 +80,7 @@ const Header = (props) => {
           Export
         </Button>
         <div className={styles.totalHours}>
-          Total hours: <span className={styles.hours}>40:40:00</span>
+          Total hours: <span className={styles.hours}>{managerTotalHours}</span>
         </div>
       </div>
     </div>

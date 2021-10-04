@@ -13,14 +13,17 @@ import { dialog } from '@/utils/utils';
 import { convertMsToTime } from '@/utils/timeSheet';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
+const initialState = {
+  myTimesheet: [],
+  managerTimesheet: [],
+  // myTotalHours: '',
+  managerTotalHours: 0,
+  employeeList: [],
+};
+
 const TimeSheet = {
   namespace: 'timeSheet',
-  state: {
-    myTimesheet: [],
-    managerTimesheet: [],
-    myTotalHours: '',
-    employeeList: [],
-  },
+  state: initialState,
   effects: {
     // fetch
     *fetchMyTimesheetEffect({ payload }, { call, put }) {
@@ -46,13 +49,16 @@ const TimeSheet = {
       const response = {};
       try {
         const res = yield call(getManagerTimesheet, payload);
-        const { code, data = [] } = res;
+        const { code, data = [], additionInfo = {} } = res;
         if (code !== 200) throw res;
 
+        const { workingHours = 0 } = additionInfo || {};
         yield put({
           type: 'save',
           payload: {
             managerTimesheet: data,
+            // convert hour to milisecond
+            managerTotalHours: convertMsToTime(workingHours * 3600 * 1000) || 0,
           },
         });
       } catch (errors) {
@@ -165,6 +171,9 @@ const TimeSheet = {
         ...action.payload,
       };
     },
+    clearState() {
+      return initialState;
+    },
     onActivityUpdated(state, action) {
       const { updatedActivity = {}, date = '' } = action.payload;
       const {
@@ -185,7 +194,7 @@ const TimeSheet = {
                 startTime,
                 endTime,
                 taskName,
-                nightShift,
+                nightShift: !!(nightShift === 1 || nightShift),
                 notes,
                 duration,
               };
@@ -210,7 +219,8 @@ const TimeSheet = {
       let { myTimesheet } = state;
       const newItem = { ...addedActivity, totalHours: convertMsToTime(addedActivity.duration) };
 
-      if (myTimesheet.length === 0) {
+      const findDateExist = myTimesheet.find((t) => t.date === date);
+      if (myTimesheet.length === 0 || !findDateExist) {
         myTimesheet = [
           {
             date,

@@ -10,7 +10,12 @@ import styles from './index.less';
 const ManagerView = (props) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const { dispatch, employee: { _id: employeeId = '' } = {}, managerTimesheet = [] } = props;
+  const {
+    dispatch,
+    managerTotalHours = 0,
+    employee: { _id: employeeId = '' } = {},
+    managerTimesheet = [],
+  } = props;
 
   // FUNCTION AREA
   const fetchManagerTimesheetEffect = () => {
@@ -62,6 +67,7 @@ const ManagerView = (props) => {
         endDate={endDate}
         setStartDate={setStartDate}
         setEndDate={setEndDate}
+        managerTotalHours={managerTotalHours}
       />
       <TimelineTable />
     </div>
@@ -70,10 +76,11 @@ const ManagerView = (props) => {
 
 export default connect(
   ({
-    timeSheet: { managerTimesheet = [] } = {},
+    timeSheet: { managerTimesheet = [], managerTotalHours } = {},
     user: { currentUser: { employee = {} } = {} },
   }) => ({
     employee,
     managerTimesheet,
+    managerTotalHours,
   }),
 )(ManagerView);

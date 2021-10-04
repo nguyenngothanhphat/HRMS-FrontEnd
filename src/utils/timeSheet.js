@@ -74,8 +74,8 @@ const convertMsToTime = (milliseconds) => {
 };
 
 // API return time format: '07:00:00.0000'
-const parseTimeAPI = (string = '') => {
-  return string.slice(0, -5);
+const parseTimeAPI = (time = '') => {
+  return time ? time.slice(0, -5) : '';
 };
 
 export {

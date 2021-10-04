@@ -1,6 +1,6 @@
 import { Col, Form, Input, Row, Select, TimePicker } from 'antd';
 import moment from 'moment';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import ApproveIcon from '@/assets/timeSheet/approve.svg';
 import ArrowDown from '@/assets/timeSheet/arrowDown.svg';
@@ -41,6 +41,19 @@ const EditCard = (props) => {
     dispatch,
   } = props;
 
+  const [timeInState, setTimeInState] = useState('');
+  const [timeOutState, setTimeOutState] = useState('');
+
+  // use effect
+  useEffect(() => {
+    if (startTime) {
+      setTimeInState(moment(startTime, hourFormatAPI));
+    }
+    if (endTime) {
+      setTimeOutState(moment(endTime, hourFormatAPI));
+    }
+  }, [startTime, endTime]);
+
   // main function
   const updateActivityEffect = (values) => {
     const payload = {
@@ -63,6 +76,67 @@ const EditCard = (props) => {
     if (res.code === 200) {
       onCancelCard();
     }
+  };
+
+  // DISABLE TIMEPICKER
+  const onChangeTimeIn = (value) => {
+    setTimeInState(value);
+  };
+
+  const onChangeTimeOut = (value) => {
+    setTimeOutState(value);
+  };
+
+  // HOURS
+  const getDisabledHoursTimeIn = () => {
+    if (!timeOutState) return [];
+    const hour = moment(timeOutState).hours();
+    const minute = moment(timeOutState).minutes();
+
+    const hours = [];
+    for (let i = 0; i < 24; i += 1) {
+      if (i > hour || (i === hour && minute === 0)) hours.push(i);
+    }
+    return hours;
+  };
+
+  const getDisabledHoursTimeOut = () => {
+    if (!timeInState) return [];
+    const hour = moment(timeInState).hours();
+    const minute = moment(timeInState).minutes();
+
+    const hours = [];
+    for (let i = 0; i < 24; i += 1) {
+      if (i < hour || (i === hour && minute === 30)) hours.push(i);
+    }
+    return hours;
+  };
+
+  // MINUTES
+  const getDisabledMinutesTimeIn = (selectingHour) => {
+    if (!timeOutState) return [];
+
+    const minute = moment(timeOutState).minutes();
+    const hour = moment(timeOutState).hours();
+
+    const minutes = [];
+    for (let i = 0; i < 60; i += 1) {
+      if (i >= minute && selectingHour === hour) minutes.push(i);
+    }
+    return minutes;
+  };
+
+  const getDisabledMinutesTimeOut = (selectingHour) => {
+    if (!timeInState) return [];
+
+    const minute = moment(timeInState).minute();
+    const hour = moment(timeInState).hours();
+
+    const minutes = [];
+    for (let i = 0; i < 60; i += 1) {
+      if (i <= minute && selectingHour === hour) minutes.push(i);
+    }
+    return minutes;
   };
 
   // MAIN AREA
@@ -97,6 +171,14 @@ const EditCard = (props) => {
               format={hourFormat}
               minuteStep={minuteStep}
               suffixIcon={<img src={ClockIcon} alt="" />}
+              placeholder="Time In"
+              disabledHours={getDisabledHoursTimeIn}
+              disabledMinutes={getDisabledMinutesTimeIn}
+              onChange={onChangeTimeIn}
+              allowClear={false}
+              use12Hours
+              onOpenChange={() => form.validateFields()}
+              showNow={false}
             />
           </Form.Item>
         </Col>
@@ -106,6 +188,13 @@ const EditCard = (props) => {
               format={hourFormat}
               minuteStep={minuteStep}
               suffixIcon={<img src={ClockIcon} alt="" />}
+              placeholder="Time Out"
+              disabledHours={getDisabledHoursTimeOut}
+              disabledMinutes={getDisabledMinutesTimeOut}
+              onChange={onChangeTimeOut}
+              allowClear={false}
+              use12Hours
+              showNow={false}
             />
           </Form.Item>
         </Col>

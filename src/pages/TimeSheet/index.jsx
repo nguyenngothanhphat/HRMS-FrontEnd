@@ -13,6 +13,7 @@ const TimeSheet = (props) => {
   const {
     match: { params: { tabName = '' } = {} },
     permissions = {},
+    dispatch,
     // location: { state: { status = '', tickedId = '', typeName = '', category = '' } = {} } = {},
   } = props;
 
@@ -21,6 +22,15 @@ const TimeSheet = (props) => {
       history.replace(`/timesheet/my`);
     }
   }, [tabName]);
+
+  // clear state when unmounting
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: 'timeSheet/clearState',
+      });
+    };
+  }, []);
 
   const requestLeave = () => {
     history.push('/time-off/overview/personal-timeoff/new');
@@ -34,6 +44,7 @@ const TimeSheet = (props) => {
     );
   };
 
+  // PERMISSION TO VIEW TABS
   // const viewMyTimesheet = permissions.viewMyTimesheet === 1;
   const viewManagerTimesheet = permissions.viewManagerTimesheet === 1;
   const viewSettingTimesheet = permissions.viewSettingTimesheet === 1;

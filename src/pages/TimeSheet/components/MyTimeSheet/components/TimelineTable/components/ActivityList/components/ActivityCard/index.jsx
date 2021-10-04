@@ -1,18 +1,20 @@
 import { Col, Row, Tooltip } from 'antd';
+import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
 import DeleteIcon from '@/assets/timeSheet/del.svg';
 import EditIcon from '@/assets/timeSheet/edit.svg';
+import { getCurrentCompany } from '@/utils/authority';
 import {
   activityColor,
   convertMsToTime,
   dateFormatAPI,
+  hourFormat,
+  hourFormatAPI,
   MT_SECONDARY_COL_SPAN,
 } from '@/utils/timeSheet';
 import EditCard from '../EditCard';
 import styles from './index.less';
-import { getCurrentCompany } from '@/utils/authority';
 
 const { ACTIVITY, START_TIME, END_TIME, NIGHT_SHIFT, TOTAL_HOURS, NOTES, ACTIONS } =
   MT_SECONDARY_COL_SPAN;
@@ -104,10 +106,10 @@ const ActivityCard = (props) => {
           {taskName || ''}
         </Col>
         <Col span={START_TIME} className={styles.normalCell}>
-          {startTime}
+          {moment(startTime, hourFormatAPI).format(hourFormat)}
         </Col>
         <Col span={END_TIME} className={styles.normalCell}>
-          {endTime}
+          {moment(endTime, hourFormatAPI).format(hourFormat)}
         </Col>
         <Col span={NIGHT_SHIFT} className={styles.normalCell}>
           {nightShift ? 'Yes' : 'No'}
