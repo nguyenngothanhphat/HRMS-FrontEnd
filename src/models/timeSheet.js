@@ -7,9 +7,11 @@ import {
   // update/add/remove
   addActivity,
   updateActivity,
+  getEmployeeList,
 } from '@/services/timeSheet';
 import { dialog } from '@/utils/utils';
 import { convertMsToTime } from '@/utils/timeSheet';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
 const TimeSheet = {
   namespace: 'timeSheet',
@@ -17,6 +19,7 @@ const TimeSheet = {
     myTimesheet: [],
     managerTimesheet: [],
     myTotalHours: '',
+    employeeList: [],
   },
   effects: {
     // fetch
@@ -133,6 +136,24 @@ const TimeSheet = {
       } catch (errors) {
         dialog(errors);
         return [];
+      }
+      return response;
+    },
+
+    // others
+    *fetchEmployeeList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getEmployeeList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { employeeList: data } });
+      } catch (errors) {
+        dialog(errors);
       }
       return response;
     },

@@ -10,7 +10,7 @@ import styles from './index.less';
 const ManagerView = (props) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const { dispatch, employee: { _id: employeeId = '' } = {} } = props;
+  const { dispatch, employee: { _id: employeeId = '' } = {}, managerTimesheet = [] } = props;
 
   // FUNCTION AREA
   const fetchManagerTimesheetEffect = () => {
@@ -21,6 +21,16 @@ const ManagerView = (props) => {
         managerId: employeeId,
         fromDate: moment(startDate).format(dateFormatAPI),
         toDate: moment(endDate).format(dateFormatAPI),
+      },
+    });
+  };
+
+  // for updated employee's information
+  const fetchEmployeeList = () => {
+    dispatch({
+      type: 'timeSheet/fetchEmployeeList',
+      payload: {
+        company: getCurrentCompany(),
       },
     });
   };
@@ -40,6 +50,10 @@ const ManagerView = (props) => {
     return () => {};
   }, []);
 
+  useEffect(() => {
+    fetchEmployeeList();
+  }, [JSON.stringify(managerTimesheet)]);
+
   // MAIN AREA
   return (
     <div className={styles.ManagerView}>
@@ -49,7 +63,7 @@ const ManagerView = (props) => {
         setStartDate={setStartDate}
         setEndDate={setEndDate}
       />
-      <TimelineTable startDate={startDate} endDate={endDate} />
+      <TimelineTable />
     </div>
   );
 };

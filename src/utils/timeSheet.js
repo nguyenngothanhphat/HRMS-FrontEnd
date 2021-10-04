@@ -73,6 +73,11 @@ const convertMsToTime = (milliseconds) => {
   // return moment.utc(duration).format('HH:mm:ss');
 };
 
+// API return time format: '07:00:00.0000'
+const parseTimeAPI = (string = '') => {
+  return string.slice(0, -5);
+};
+
 export {
   activityName,
   activityColor,
@@ -86,4 +91,5 @@ export {
   MT_MAIN_COL_SPAN,
   MT_SECONDARY_COL_SPAN,
   convertMsToTime,
+  parseTimeAPI,
 };

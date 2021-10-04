@@ -1,27 +1,27 @@
 import { Table } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import MockAvatar from '@/assets/timeSheet/mockAvatar.jpeg';
+import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
+import { parseTimeAPI } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const TimelineTable = (props) => {
-  const {
-    firstDateOfWeek = '',
-    endDateOfWeek = '',
-    managerTimesheet = [],
-    loadingFetchManagerTimesheet = false,
-  } = props;
+  const { managerTimesheet = [], loadingFetchManagerTimesheet = false, employeeList = [] } = props;
   const [pageSelected, setPageSelected] = useState(1);
+
   const _renderEmployee = (record) => {
-    const { employeeName = '', employeeId = '' } = record;
+    const { employeeId = '', employee: { employeeName = '', employeeCode = '' } = {} || {} } =
+      record;
+    const employeeInfo = employeeList.find((e) => e._id === employeeId) || {};
+    const { generalInfo: { avatar = '' } = {} || {} } = employeeInfo;
     return (
       <div className={styles.renderEmployee}>
         <div className={styles.avatar}>
-          <img src={MockAvatar} alt="" />
+          <img src={avatar || MockAvatar} alt="" />
         </div>
         <div className={styles.right}>
           <span className={styles.name}>{employeeName}</span>
-          <span className={styles.id}>({employeeId})</span>
+          <span className={styles.id}>({employeeCode})</span>
         </div>
       </div>
     );
@@ -41,13 +41,19 @@ const TimelineTable = (props) => {
       },
       {
         title: 'No.of hours worked',
-        dataIndex: 'workedHours',
-        key: 'workedHours',
+        dataIndex: 'totalWorkedTime',
+        key: 'totalWorkedTime',
+        render: (totalWorkedTime = '') => {
+          return parseTimeAPI(totalWorkedTime);
+        },
       },
       {
         title: 'No.of overtime hours',
-        dataIndex: 'overtimeHours',
-        key: 'overtimeHours',
+        dataIndex: 'totalOTTime',
+        key: 'totalOTTime',
+        render: (totalOTTime = '') => {
+          return parseTimeAPI(totalOTTime);
+        },
       },
       {
         title: 'PTO',
@@ -94,7 +100,10 @@ const TimelineTable = (props) => {
   );
 };
 
-export default connect(({ loading, timeSheet: { managerTimesheet = [] } = {} }) => ({
-  managerTimesheet,
-  loadingFetchManagerTimesheet: loading.effects['timeSheet/fetchManagerTimesheetEffect'],
-}))(TimelineTable);
+export default connect(
+  ({ loading, timeSheet: { managerTimesheet = [], employeeList = [] } = {} }) => ({
+    managerTimesheet,
+    employeeList,
+    loadingFetchManagerTimesheet: loading.effects['timeSheet/fetchManagerTimesheetEffect'],
+  }),
+)(TimelineTable);

@@ -12,6 +12,7 @@ const { TabPane } = Tabs;
 const TimeSheet = (props) => {
   const {
     match: { params: { tabName = '' } = {} },
+    permissions = {},
     // location: { state: { status = '', tickedId = '', typeName = '', category = '' } = {} } = {},
   } = props;
 
@@ -33,6 +34,10 @@ const TimeSheet = (props) => {
     );
   };
 
+  // const viewMyTimesheet = permissions.viewMyTimesheet === 1;
+  const viewManagerTimesheet = permissions.viewManagerTimesheet === 1;
+  const viewSettingTimesheet = permissions.viewSettingTimesheet === 1;
+
   return (
     <div className={styles.TimeSheet}>
       <PageContainer>
@@ -42,20 +47,25 @@ const TimeSheet = (props) => {
           onChange={(key) => {
             history.push(`/timesheet/${key}`);
           }}
+          destroyInactiveTabPane
         >
           <TabPane tab="My time sheet" key="my">
             <MyTimeSheet />
           </TabPane>
-          <TabPane tab="Reports" key="reports">
-            <ManagerView />
-          </TabPane>
-          <TabPane tab="Settings" key="settings">
-            <Settings />
-          </TabPane>
+          {viewManagerTimesheet && (
+            <TabPane tab="Reports" key="reports">
+              <ManagerView />
+            </TabPane>
+          )}
+          {viewSettingTimesheet && (
+            <TabPane tab="Settings" key="settings">
+              <Settings />
+            </TabPane>
+          )}
         </Tabs>
       </PageContainer>
     </div>
   );
 };
 
-export default connect(() => ({}))(TimeSheet);
+export default connect(({ user: { permissions = [] } = {} }) => ({ permissions }))(TimeSheet);

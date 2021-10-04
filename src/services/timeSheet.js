@@ -1,19 +1,5 @@
 import { request, request2 } from '@/utils/request';
 
-// const mockManagerTimeSheetData = [
-//   {
-//     _id: 1,
-//     employeeName: 'Bessie Cooper',
-//     employeeId: 'bessiecooper',
-//     workedHours: '01:30:00',
-//     overtimeHours: '01:30:00',
-//     pto: '',
-//   },
-// ];
-
-// eslint-disable-next-line compat/compat
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
 export async function getMyTimesheet(payload) {
   return request2(
     `/api/timesheet/filter`,
@@ -77,4 +63,12 @@ export async function addActivity(payload) {
     false,
     'API_SQL',
   );
+}
+
+// get list employee
+export async function getEmployeeList(payload) {
+  return request('/api/employeetenant/list-by-single-company', {
+    method: 'POST',
+    data: payload,
+  });
 }
