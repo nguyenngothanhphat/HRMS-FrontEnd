@@ -1,6 +1,6 @@
 export default {
   dev: {
-    // for umi request
+    // for umi request - all in project
     '/api/': {
       // target: 'http://localhost:4500',
       target: 'http://api-stghrms.paxanimi.ai',
@@ -9,7 +9,8 @@ export default {
         '^': '',
       },
     },
-    // for axios request
-    API_SQL: 'http://10.20.29.171:8000',
+    // for axios request - timesheet
+    API_TIMESHEET: 'https://stghrms.paxanimi.ai/timesheet',
+    // API_TIMESHEET: 'http://10.20.29.171:8000',
   },
 };

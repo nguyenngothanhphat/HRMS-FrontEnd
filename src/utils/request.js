@@ -66,7 +66,7 @@ const request = (url, options = {}, noAuth) => {
   })(url, options);
 };
 
-const request2 = async (url, options = {}, noAuth, apiUrlName = 'API_SQL', hasParams) => {
+const request2 = async (url, options = {}, noAuth, apiUrlName = 'API_TIMESHEET', hasParams) => {
   const { method = 'GET', data = {} } = options;
   const token = getToken();
 

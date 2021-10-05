@@ -8,7 +8,7 @@ export async function getMyTimesheet(payload) {
       data: payload,
     },
     false,
-    'API_SQL',
+    'API_TIMESHEET',
     true, // hasParams
   );
 }
@@ -21,7 +21,7 @@ export async function getManagerTimesheet(payload) {
       data: payload,
     },
     false,
-    'API_SQL',
+    'API_TIMESHEET',
     true, // hasParams
   );
 }
@@ -35,7 +35,7 @@ export async function updateActivity(payload) {
       data: payload,
     },
     false,
-    'API_SQL',
+    'API_TIMESHEET',
     true, // hasParams
   );
 }
@@ -48,7 +48,7 @@ export async function removeActivity(payload) {
       data: payload,
     },
     false,
-    'API_SQL',
+    'API_TIMESHEET',
     true, // hasParams
   );
 }
@@ -61,7 +61,7 @@ export async function addActivity(payload) {
       data: payload,
     },
     false,
-    'API_SQL',
+    'API_TIMESHEET',
   );
 }
 

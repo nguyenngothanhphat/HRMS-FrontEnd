@@ -13,6 +13,8 @@ import { dialog } from '@/utils/utils';
 import { convertMsToTime } from '@/utils/timeSheet';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
+const tenantId = getCurrentTenant();
+
 const initialState = {
   myTimesheet: [],
   managerTimesheet: [],
@@ -29,7 +31,7 @@ const TimeSheet = {
     *fetchMyTimesheetEffect({ payload }, { call, put }) {
       const response = {};
       try {
-        const res = yield call(getMyTimesheet, payload);
+        const res = yield call(getMyTimesheet, { ...payload, tenantId });
         const { code, data = [] } = res;
         if (code !== 200) throw res;
 
@@ -48,7 +50,7 @@ const TimeSheet = {
     *fetchManagerTimesheetEffect({ payload }, { call, put }) {
       const response = {};
       try {
-        const res = yield call(getManagerTimesheet, payload);
+        const res = yield call(getManagerTimesheet, { ...payload, tenantId });
         const { code, data = [], additionInfo = {} } = res;
         if (code !== 200) throw res;
 
@@ -73,9 +75,13 @@ const TimeSheet = {
       let response = {};
       try {
         const updating = message.loading('Updating...', 0);
-        response = yield call(updateActivity, payload);
-        const { code, msg = '', data = {} } = response;
-        if (code !== 200) throw response;
+        response = yield call(updateActivity, { ...payload, tenantId });
+        updating();
+        const { code, msg = '', data = {}, errors = [] } = response;
+        if (code !== 200) {
+          notification.error({ message: errors[0].msg });
+          return [];
+        }
         notification.success({ message: msg });
 
         // for refresh immediately - no need to call API to refresh list
@@ -86,7 +92,6 @@ const TimeSheet = {
             date,
           },
         });
-        updating();
       } catch (errors) {
         dialog(errors);
         return [];
@@ -99,9 +104,13 @@ const TimeSheet = {
       let response = {};
       try {
         const adding = message.loading('Adding...', 0);
-        response = yield call(addActivity, payload);
-        const { code, data = {}, msg = '' } = response;
-        if (code !== 200) throw response;
+        response = yield call(addActivity, { ...payload, tenantId });
+        const { code, data = {}, msg = '', errors = [] } = response;
+        adding();
+        if (code !== 200) {
+          notification.error({ message: errors[0].msg });
+          return [];
+        }
         notification.success({ message: msg });
 
         // for refresh immediately - no need to call API to refresh list
@@ -112,7 +121,6 @@ const TimeSheet = {
             date,
           },
         });
-        adding();
       } catch (errors) {
         dialog(errors);
         return [];
@@ -125,7 +133,8 @@ const TimeSheet = {
       let response = {};
       try {
         const removing = message.loading('Removing...', 0);
-        response = yield call(removeActivity, payload);
+        response = yield call(removeActivity, { ...payload, tenantId });
+        removing();
         const { code, msg } = response;
         if (code !== 200) throw response;
         notification.success({ message: msg });
@@ -138,7 +147,6 @@ const TimeSheet = {
             date,
           },
         });
-        removing();
       } catch (errors) {
         dialog(errors);
         return [];
@@ -152,7 +160,7 @@ const TimeSheet = {
       try {
         response = yield call(getEmployeeList, {
           ...payload,
-          tenantId: getCurrentTenant(),
+          tenantId,
           company: getCurrentCompany(),
         });
         const { statusCode, data = {} } = response;

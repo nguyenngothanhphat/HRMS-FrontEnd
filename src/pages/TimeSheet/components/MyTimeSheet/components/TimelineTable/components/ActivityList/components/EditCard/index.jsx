@@ -38,7 +38,28 @@ const EditCard = (props) => {
     cardIndex,
     cardDay = '',
     onCancelCard = () => {},
+  } = props;
+
+  const {
     dispatch,
+    employee: {
+      _id: employeeId = '',
+      generalInfo: {
+        legalName: empName = '',
+        workEmail: empWorkEmail = '',
+        userId: empUserId = '',
+      } = {} || {},
+      departmentInfo: { name: empDepartmentName = '', _id: empDepartmentId = '' } = {} || {},
+      managerInfo: {
+        _id: managerId = '',
+        generalInfo: {
+          legalName: managerName = '',
+          workEmail: managerWorkEmail = '',
+          userId: managerUserId = '',
+        } = {} || {},
+        department: { name: managerDepartmentName = '', _id: managerDepartmentId = '' } = {} || {},
+      } = {} || {},
+    } = {} || {},
   } = props;
 
   const [timeInState, setTimeInState] = useState('');
@@ -61,6 +82,38 @@ const EditCard = (props) => {
       id,
       startTime: moment(values.startTime).format(hourFormatAPI),
       endTime: moment(values.endTime).format(hourFormatAPI),
+      employeeId,
+      projectName: 'HRMS',
+      employee: {
+        employeeName: empName,
+        employeeCode: empUserId,
+        workEmail: empWorkEmail,
+        department: {
+          name: empDepartmentName,
+          id: empDepartmentId,
+        },
+      },
+      // managerInfo: {
+      //   employeeName: 'Lewis Manager',
+      //   employeeId: '615a5d6bdb04f89a75e7f2e0',
+      //   employeeCode: 'lewis-manager',
+      //   workEmail: 'lewis-manager@mailinator.com',
+      //   department: {
+      //     name: 'Engineering',
+      //     id: '6153e2ecb51335302899a375',
+      //   },
+      // },
+      managerInfo: {
+        employeeName: managerName,
+        employeeId: managerId,
+        employeeCode: managerUserId,
+        workEmail: managerWorkEmail,
+        department: {
+          name: managerDepartmentName,
+          id: managerDepartmentId,
+        },
+      },
+      date: moment(cardDay).format(dateFormatAPI),
       companyId: getCurrentCompany(),
     };
 
@@ -233,4 +286,9 @@ const EditCard = (props) => {
   );
 };
 
-export default connect(({ timeSheet: { myTimesheet = [] } = {} }) => ({ myTimesheet }))(EditCard);
+export default connect(
+  ({ user: { currentUser: { employee = {} } = {} }, timeSheet: { myTimesheet = [] } = {} }) => ({
+    myTimesheet,
+    employee,
+  }),
+)(EditCard);

@@ -52,8 +52,8 @@ const AddCard = (props) => {
         workEmail: empWorkEmail = '',
         userId: empUserId = '',
       } = {} || {},
-      department: { name: empDepartmentName = '', _id: empDepartmentId = '' } = {} || {},
-      manager: {
+      departmentInfo: { name: empDepartmentName = '', _id: empDepartmentId = '' } = {} || {},
+      managerInfo: {
         _id: managerId = '',
         generalInfo: {
           legalName: managerName = '',
@@ -68,7 +68,7 @@ const AddCard = (props) => {
   useEffect(() => {
     if (refreshing) {
       form.setFieldsValue({
-        taskName,
+        taskName: taskName || null,
         startTime,
         endTime,
         nightShift,
@@ -102,26 +102,26 @@ const AddCard = (props) => {
             id: empDepartmentId,
           },
         },
-        // managerInfo: {
-        //   employeeName: managerName,
-        //   employeeId: managerId,
-        //   employeeCode: managerUserId,
-        //   workEmail: managerWorkEmail,
-        //   department: {
-        //     name: managerDepartmentName,
-        //     id: managerDepartmentId,
-        //   },
-        // },
         managerInfo: {
-          employeeName: 'Lewis Manager',
-          employeeId: '615a5d6bdb04f89a75e7f2e0',
-          employeeCode: 'lewis-manager',
-          workEmail: 'lewis-manager@mailinator.com',
+          employeeName: managerName,
+          employeeId: managerId,
+          employeeCode: managerUserId,
+          workEmail: managerWorkEmail,
           department: {
-            name: 'Engineering',
-            id: '6153e2ecb51335302899a375',
+            name: managerDepartmentName,
+            id: managerDepartmentId,
           },
         },
+        // managerInfo: {
+        //   employeeName: 'Lewis Manager',
+        //   employeeId: '615a5d6bdb04f89a75e7f2e0',
+        //   employeeCode: 'lewis-manager',
+        //   workEmail: 'lewis-manager@mailinator.com',
+        //   department: {
+        //     name: 'Engineering',
+        //     id: '6153e2ecb51335302899a375',
+        //   },
+        // },
       },
       date: moment(cardDay).format(dateFormatAPI),
     });
@@ -235,6 +235,7 @@ const AddCard = (props) => {
               onChange={onChangeTimeIn}
               allowClear={false}
               use12Hours
+              showNow={false}
             />
           </Form.Item>
         </Col>
@@ -251,6 +252,7 @@ const AddCard = (props) => {
               onChange={onChangeTimeOut}
               allowClear={false}
               use12Hours
+              showNow={false}
             />
           </Form.Item>
         </Col>
