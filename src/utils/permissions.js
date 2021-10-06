@@ -305,6 +305,11 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'hr',
   ]);
 
+  // TIMESHEET
+  const indexMyTimesheet = isAuthorized(permissionList, ['employee']);
+  const indexManagerTimesheet = isAuthorized(permissionList, ['manager', 'hr-manager']);
+  const indexSettingTimesheet = isAuthorized(permissionList, ['manager', 'hr-manager']);
+
   return {
     // Directory Page
     viewTabActive: findIndexActive,
@@ -346,5 +351,10 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewOnboardingSettingTab: indexOnboardingSettings,
     addTeamMemberOnboarding: indexAddTeamMemberOnboarding,
     viewOnboardingOverviewTab: indexOverviewViewOnboarding,
+
+    // timesheet
+    viewMyTimesheet: indexMyTimesheet,
+    viewManagerTimesheet: indexManagerTimesheet,
+    viewSettingTimesheet: indexSettingTimesheet,
   };
 }

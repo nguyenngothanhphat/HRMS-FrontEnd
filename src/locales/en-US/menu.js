@@ -78,4 +78,5 @@ export default {
   'menu.change-password': 'Change Password',
   'menu.Createcustomfieldsection': 'Create custom field section',
   'menu.projectManagement': 'Projects Management',
+  'menu.timeSheet': 'Timesheet',
 };

@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 export async function getListTicket(payload) {
   return request('/api/approvaltenant/get-list-ticket', {
