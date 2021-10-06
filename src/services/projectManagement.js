@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 export async function listProjectByCompany(payload) {
   return request('/api/projecttenant/list-by-company', {

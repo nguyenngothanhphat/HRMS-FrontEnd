@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 export async function getPermissionList(payload) {
   return request('/api/permission/list', {
@@ -40,7 +40,6 @@ export async function updateLocation(payload) {
     data: payload,
   });
 }
-
 
 export async function removeLocation(payload) {
   return request('/api/locationtenant/remove', {

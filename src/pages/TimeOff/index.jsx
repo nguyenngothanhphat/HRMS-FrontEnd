@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Tabs, notification } from 'antd';
-import { PageContainer } from '@/layouts/layout/src';
 import { history, connect } from 'umi';
+import { PageContainer } from '@/layouts/layout/src';
 import EmployeeLandingPage from './components/EmployeeLandingPage';
 import ManagerLandingPage from './components/ManagerLandingPage';
 import HRManagerLandingPage from './components/HRManagerLandingPage';
@@ -112,8 +112,8 @@ class TimeOff extends PureComponent {
       statusCode,
       data: {
         headQuarterAddress: {
-          country: { _id },
-        },
+          country: { _id } = {} || {},
+        } = {} || {},
       },
     } = response;
     if (statusCode === 200)

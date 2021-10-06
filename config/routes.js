@@ -594,7 +594,6 @@ const routes = [
             component: './TimeOff/components/ManagerLandingPage/components/ManagerViewCompoffForm',
             authority: ['hr-manager', 'manager', 'owner'],
           },
-
           {
             path: '/directory/employee-profile/:reId',
             name: 'employeeProfile',
@@ -789,6 +788,19 @@ const routes = [
           //   hideInMenu: true,
           //   authority: ['M_SETTING_VIEW', 'P_SETTING_VIEW', 'owner'], // TEMP
           // },
+          {
+            path: '/timesheet',
+            name: 'timeSheet',
+            icon: '/assets/images/menuIcons/timeSheet.svg',
+            component: './TimeSheet',
+            authority: ['hr-manager', 'hr', 'employee', 'manager'],
+          },
+          {
+            path: '/timesheet/:tabName',
+            component: './TimeSheet',
+            authority: ['hr-manager', 'hr', 'employee', 'manager'],
+            hideInMenu: true,
+          },
           {
             path: '/view-document/:documentId',
             name: 'viewDocument',

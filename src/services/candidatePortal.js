@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 export function getCandidate(payload) {
   return request('/api/candidatetenant/get-by-ticket', {

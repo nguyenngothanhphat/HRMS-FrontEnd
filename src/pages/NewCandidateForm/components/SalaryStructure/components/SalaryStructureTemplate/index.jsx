@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { Button, Col, Input, Row, Spin, Space } from 'antd';
+import { Button, Col, Input, Row, Spin, Space, Slider } from 'antd';
 import { toNumber, toString, trim, trimStart } from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
@@ -202,39 +202,66 @@ class SalaryStructureTemplate extends PureComponent {
     this.handleEditSalary(false);
   };
 
-  handleChange = (e, key) => {
+  checkKey = (key) => {
+    const { settingsTempData: settings = [] } = this.props;
+    let check = false;
+    settings.forEach((item) => {
+      if (item.key === key) check = true;
+    });
+    return check;
+  };
+
+  getValueByKey = (arr, key) => {
+    let value;
+    arr.forEach((item) => {
+      if (item.key === key) {
+        value = item.value;
+      }
+    });
+    return value;
+  };
+
+  onChangeSilde = (value = [], key) => {
     const { dispatch, settingsTempData: settings = [] } = this.props;
-    const { value } = e.target;
-    const newValue = value.replace(/,/g, '');
-
-    const reg = /^\d*(\.\d*)?$/;
-
-    if (reg.test(newValue) || newValue === '') {
+    if (value.length === 2) {
+      const newValue = value[1];
       const tempTableData = JSON.parse(JSON.stringify(settings));
 
       const index = tempTableData.findIndex((data) => data.key === key);
       tempTableData[index].value = newValue;
-      // const indexBasic = tempTableData.findIndex((data) => data.key === 'basic');
-      // const basic = tempTableData[indexBasic].value;
-      // let sum = 0;
-      // tempTableData.forEach((item) => {
-      //   if (item.operator) {
-      //     let { value: valueSalary } = item;
-      //     if (item.period === 'day') {
-      //       valueSalary *= 22;
-      //     }
+      dispatch({
+        type: 'newCandidateForm/saveSalaryStructure',
+        payload: {
+          settings: tempTableData,
+        },
+      });
+    }
+  };
 
-      //     if (item.unit === '%') {
-      //       if (item.operator === 'plus') sum += basic * (valueSalary / 100);
-      //       if (item.operator === 'minus') sum -= (basic * valueSalary) / 100;
-      //     } else {
-      //       if (item.operator === 'plus') sum += valueSalary;
-      //       if (item.operator === 'minus') sum -= valueSalary;
-      //     }
-      //   }
-      // });
-      // const indexTotal = tempTableData.findIndex((data) => data.key === 'total_compensation');
-      // tempTableData[indexTotal].value = Math.round(sum);
+  handleChange = (e, key) => {
+    const {
+      dispatch,
+      settingsTempData = [],
+      salaryTempData: { base_salary: { maximum = 0 } = {}, settings = [] },
+    } = this.props;
+    const { value } = e.target;
+    let newValue = value.replace(/,/g, '');
+
+    const reg = /^\d*(\.\d*)?$/;
+
+    if (reg.test(newValue) || newValue === '') {
+      if (key === 'basic' && toNumber(newValue) > maximum) newValue = maximum;
+      if (
+        (key === 'lunch_allowance' ||
+          key === 'petrol_allowance' ||
+          key === 'mobile_internet_allowance') &&
+        toNumber(newValue) > this.getValueByKey(settings, key)
+      )
+        newValue = this.getValueByKey(settings, key);
+      const tempTableData = JSON.parse(JSON.stringify(settingsTempData));
+
+      const index = tempTableData.findIndex((data) => data.key === key);
+      tempTableData[index].value = newValue;
       dispatch({
         type: 'newCandidateForm/saveSalaryStructure',
         payload: {
@@ -245,13 +272,19 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   onBlur = (e, key) => {
-    const { dispatch, settingsTempData: settings = [] } = this.props;
+    const {
+      dispatch,
+      settingsTempData: settings = [],
+      salaryTempData: { base_salary: { minimum = 0 } = {} },
+    } = this.props;
     const { value } = e.target;
-    const newValue = value.replace(/,/g, '');
+    let newValue = value.replace(/,/g, '');
 
     const reg = /^\d*(\.\d*)?$/;
 
     if (reg.test(newValue) || newValue === '') {
+      if (key === 'basic' && toNumber(newValue) < minimum) newValue = minimum;
+
       const tempTableData = JSON.parse(JSON.stringify(settings));
 
       const index = tempTableData.findIndex((data) => data.key === key);
@@ -262,18 +295,8 @@ class SalaryStructureTemplate extends PureComponent {
       tempTableData.forEach((item) => {
         if (item.operator) {
           const { value: valueSalary } = item;
-          // if (item.period === 'day') {
-          //   valueSalary *= 22;
-          // }
           if (item.unit === '%') sum += basic * (valueSalary / 100);
           else sum += valueSalary;
-          // if (item.unit === '%') {
-          //   if (item.operator === 'plus') sum += basic * (valueSalary / 100);
-          //   if (item.operator === 'minus') sum -= (basic * valueSalary) / 100;
-          // } else {
-          //   if (item.operator === 'plus') sum += valueSalary;
-          //   if (item.operator === 'minus') sum -= valueSalary;
-          // }
         }
       });
       const indexTotal = tempTableData.findIndex((data) => data.key === 'total_compensation');
@@ -366,8 +389,16 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   _renderVaule = (item) => {
-    const { isEditingSalary } = this.props;
-
+    const {
+      isEditingSalary,
+      settingsTempData = [],
+      salaryTempData: {
+        country = '',
+        base_salary: { minimum = 0, maximum = 0 } = {},
+        settings = [],
+      } = {},
+    } = this.props;
+    const marks = {};
     if (!isEditingSalary)
       return (
         <div key={item.key} className={styles.salary__right__text}>
@@ -385,8 +416,65 @@ class SalaryStructureTemplate extends PureComponent {
           />
         </div>
       );
+    if (country === 'VN') {
+      if (item.key === 'basic') {
+        marks[minimum] = `VND ${this.convertValue(minimum)}`;
+        marks[maximum] = `VND ${this.convertValue(maximum)}`;
+        return (
+          <>
+            <div key={item.key} className={styles.inputBefore}>
+              <Input
+                addonBefore={item.unit}
+                value={this.convertValue(item.value)}
+                onChange={(e) => this.handleChange(e, item.key)}
+                onBlur={(e) => this.onBlur(e, item.key)}
+              />
+            </div>
+            <div>
+              <Slider
+                range
+                min={minimum}
+                max={maximum}
+                tipFormatter={this.convertValue}
+                step={1000}
+                marks={marks}
+                value={[minimum, this.getValueByKey(settingsTempData, item.key)]}
+                onChange={(value) => this.onChangeSilde(value, item.key)}
+              />
+            </div>
+          </>
+        );
+      }
+      const maxValue = this.getValueByKey(settings, item.key);
+      marks[0] = 'VND 0';
+      marks[maxValue] = `VND ${this.convertValue(maxValue)}`;
+      return (
+        <>
+          <div key={item.key} className={styles.inputBefore}>
+            <Input
+              addonBefore={item.unit}
+              value={this.convertValue(item.value)}
+              onChange={(e) => this.handleChange(e, item.key)}
+              onBlur={(e) => this.onBlur(e, item.key)}
+            />
+          </div>
+          <div>
+            <Slider
+              range
+              min={0}
+              max={maxValue}
+              tipFormatter={this.convertValue}
+              step={1000}
+              marks={marks}
+              value={[0, this.getValueByKey(settingsTempData, item.key)]}
+              onChange={(value) => this.onChangeSilde(value, item.key)}
+            />
+          </div>
+        </>
+      );
+    }
     return (
-      <div key={item.key} className={styles.salary__right__inputBefore}>
+      <div key={item.key} className={styles.inputBefore}>
         <Input
           addonBefore={item.unit}
           value={this.convertValue(item.value)}
@@ -450,13 +538,15 @@ class SalaryStructureTemplate extends PureComponent {
 
   render() {
     const {
-      salaryTempData,
+      // salaryTempData,
       department = {},
       workLocation = {},
       loadingFetchTable,
+      salaryTempData: { country = '' } = {},
       settingsTempData: settings = [],
       grade = {},
       title = {},
+      isEditingSalary,
     } = this.props;
     const { openModal } = this.state;
     return (
@@ -484,7 +574,6 @@ class SalaryStructureTemplate extends PureComponent {
               <Input
                 value={workLocation ? workLocation.name : workLocation || null}
                 size="large"
-                // style={{ width: 280 }}
                 disabled
               />
             </div>
@@ -492,48 +581,12 @@ class SalaryStructureTemplate extends PureComponent {
           <Col xs={24} sm={24} md={6} lg={6}>
             <p className={styles.p_title_select}> Job title</p>
             <div className={styles.salaryStructureTemplate_select}>
-              <Input
-                value={title ? title.name : title || null}
-                size="large"
-                // style={{ width: 280 }}
-                disabled
-              />
+              <Input value={title ? title.name : title || null} size="large" disabled />
             </div>
           </Col>
         </Row>
-        {salaryTempData && (
-          <Row className={styles.range}>
-            <Col span={16}>
-              <Row>
-                <Col span={8} className={styles.range__col__text}>
-                  Base Salary Range
-                </Col>
-                <Col span={16} className={styles.range__col}>
-                  {this.renderValue(salaryTempData.base_salary, salaryTempData.currency_unit)}
-                </Col>
-              </Row>
-              <Row>
-                <Col span={8} className={styles.range__col__text}>
-                  Allowances Range
-                </Col>
-                <Col span={16} className={styles.range__col}>
-                  {this.renderValue(salaryTempData.allowances_range, salaryTempData.currency_unit)}
-                </Col>
-              </Row>
-            </Col>
-            <Col span={8}>
-              <Row justify="end" align="middle" className={styles.alignButton}>
-                <Col>
-                  <Button
-                    className={styles.btnReference}
-                    onClick={() => this.setState({ openModal: 'SalaryReference' })}
-                  >
-                    Salary Reference
-                  </Button>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
+        {this.checkKey('lunch_allowance') && (
+          <Row className={styles.noteAllowance}>Allowances value as per month</Row>
         )}
         {loadingFetchTable ? (
           <Spin className={styles.spin} />
@@ -545,13 +598,32 @@ class SalaryStructureTemplate extends PureComponent {
                   {settings.map(
                     (item) =>
                       item.key !== 'total_compensation' && (
-                        <div key={item.key} className={styles.salary__left__text}>
+                        <div
+                          key={item.key}
+                          className={
+                            isEditingSalary &&
+                            country === 'VN' &&
+                            (item.key === 'basic' ||
+                              item.key === 'lunch_allowance' ||
+                              item.key === 'petrol_allowance' ||
+                              item.key === 'mobile_internet_allowance')
+                              ? styles.salary__left__textEdit
+                              : styles.salary__left__text
+                          }
+                        >
                           {item.title}
                         </div>
                       ),
                   )}
                 </Col>
-                <Col span={12} className={styles.salary__right}>
+                <Col
+                  span={12}
+                  className={
+                    isEditingSalary && country === 'VN'
+                      ? styles.salary__right && styles.salary__right__VN
+                      : styles.salary__right
+                  }
+                >
                   {settings.map((item) => {
                     if (item.key !== 'total_compensation') {
                       if (item.key === 'salary_13')

@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 export function getLeaveBalanceOfUser(payload) {
   return request('/api/leavebalancetenant/get-by-user', {

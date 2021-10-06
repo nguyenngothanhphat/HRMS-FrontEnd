@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 export const getListDocuments = async (payload) => {
   return request('/api/documenttenant/list', {
