@@ -1,18 +1,19 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Input, Button, Checkbox, Spin } from 'antd';
+import { Form, Input, Button, Checkbox } from 'antd';
 import { EyeFilled } from '@ant-design/icons';
 import logoGoogle from '@/assets/logo_google.png';
-import GoogleLogin from 'react-google-login';
+// import GoogleLogin from 'react-google-login';
 import { Link, connect, formatMessage, history } from 'umi';
 import { removeLocalStorage } from '@/utils/authority';
 
 import styles from './index.less';
 
-@connect(({ loading, login: { messageError = '' } = {} }) => ({
+@connect(({ loading, login: { messageError = '', urlGoogle = '' } = {} }) => ({
   loading: loading.effects['login/login'],
   loadingLoginThirdParty: loading.effects['login/loginThirdParty'],
   messageError,
+  urlGoogle,
 }))
 class FormLogin extends Component {
   formRef = React.createRef();
@@ -26,8 +27,9 @@ class FormLogin extends Component {
   }
 
   componentDidMount = () => {
-    const { location: { state: { autoFillEmail = '' } = {} } = {} } = this.props;
+    const { dispatch } = this.props;
     removeLocalStorage();
+    dispatch({ type: 'login/getURLGoogle' });
     // this.formRef.current.setFieldsValue({
     //   email: autoFillEmail,
     // });
@@ -55,7 +57,7 @@ class FormLogin extends Component {
     });
   };
 
-  _renderButton = (getFieldValue) => {
+  _renderButton = () => {
     const { loading } = this.props;
     // const valueEmail = getFieldValue('userEmail');
     // const valuePsw = getFieldValue('password');
@@ -103,7 +105,7 @@ class FormLogin extends Component {
   };
 
   render() {
-    const { loadingLoginThirdParty, messageError = '' } = this.props;
+    const { messageError = '', urlGoogle } = this.props;
     const { checkValidationEmail, isMessageValidationEmail } = this.state;
 
     const messageValidationEmail = this.returnMessageValidationEmail(messageError);
@@ -180,7 +182,7 @@ class FormLogin extends Component {
             {({ getFieldValue }) => this._renderButton(getFieldValue)}
           </Form.Item>
           <div className={styles.textOr}>or sign in with</div>
-          <GoogleLogin
+          {/* <GoogleLogin
             clientId="569320903794-k9h03nao8e8sq4mm6tq5rv5enjs0dlo6.apps.googleusercontent.com"
             render={(renderProps) => (
               <Button
@@ -195,7 +197,13 @@ class FormLogin extends Component {
               </Button>
             )}
             onSuccess={this.responseGoogle}
-          />
+          /> */}
+          <a href={urlGoogle}>
+            <Button type="primary" className={styles.btnSignInGG}>
+              <img src={logoGoogle} alt="logo" />
+              <span>Login with Google</span>
+            </Button>
+          </a>
           <Link to="/forgot-password">
             <p className={styles.forgotPassword}>
               {formatMessage({ id: 'pages.login.forgotPassword' })}
