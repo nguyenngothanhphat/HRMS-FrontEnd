@@ -4,6 +4,16 @@ const routes = [
     redirect: '/dashboard',
   },
   {
+    path: '/signin-google',
+    component: './SignupGoogle',
+    routes: [
+      {
+        path: '/signin-google',
+        component: './SignupGoogle',
+      },
+    ],
+  },
+  {
     path: '/login',
     component: '../layouts/AuthLayout',
     routes: [
