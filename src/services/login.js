@@ -25,3 +25,23 @@ export async function signInThirdParty(payload) {
     true,
   );
 }
+export async function signinGoogle(payload) {
+  return request(
+    '/api/sign-in-google',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    true,
+  );
+}
+
+export async function getURLGoogle() {
+  return request(
+    '/api/url-sign-in-google',
+    {
+      method: 'GET',
+    },
+    true,
+  );
+}
