@@ -308,16 +308,21 @@ for r in sheet.rows:    # POPULATING THE CSV FILE WE JUST CREATED WITH THE CONTE
     col.writerow([cell.value for cell in r])
 
 
-
-# CSV FILE GENERATED
-command = 'open ' + csv_file_name
 print("Name of the CSV file created:", csv_file_name)
-os.system(command)  # command to open the created CSV file
+
+
+# If you want the generated CSV file to open immediately, uncomment the code between the Start and End lines below:
+
+# STARTS HERE
+# # CSV FILE GENERATED
+# command = 'open ' + csv_file_name
+# os.system(command)  # command to open the created CSV file
+# ENDS HERE
 
 
 
-# #  IF YOU WANTED TO OPEN THE XLSX FILE GENERATED
-# command = 'open ' + name_of_file
-print("Name of the XLSX spreadsheet created:", name_of_file)
-# os.system(command)  # command to open the created XLSX spreadsheet
+# # #  IF YOU WANTED TO OPEN THE XLSX FILE GENERATED
+# # command = 'open ' + name_of_file
+# print("Name of the XLSX spreadsheet created:", name_of_file)
+# # os.system(command)  # command to open the created XLSX spreadsheet
 
