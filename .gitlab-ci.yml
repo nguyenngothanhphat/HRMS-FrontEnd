@@ -25,3 +25,17 @@ build-job:       # This job runs in the build stage, which runs first.
   script:
     - kubectl get po -o wide
     - kubectl get no -o wide
+  
+test-job:       # This job runs in the build stage, which runs first.
+  stage: test
+  tags:
+    - worker-1
+  script:
+    - docker ps -a
+
+deploy-job:       # This job runs in the build stage, which runs first.
+  stage: deploy
+  tags:
+    - worker-2
+  script:
+    - docker images
