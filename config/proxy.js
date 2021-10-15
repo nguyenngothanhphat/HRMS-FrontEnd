@@ -2,8 +2,8 @@ export default {
   dev: {
     // for umi request - all in project
     '/api/': {
-      // target: 'http://localhost:4500',
-      target: 'http://api-stghrms.paxanimi.ai',
+      target: 'http://localhost:4500',
+      // target: 'http://api-stghrms.paxanimi.ai',
       changeOrigin: true,
       pathRewrite: {
         '^': '',
