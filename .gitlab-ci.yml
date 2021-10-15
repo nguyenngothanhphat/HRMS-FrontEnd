@@ -15,27 +15,48 @@
 
 stages:          # List of stages for jobs, and their order of execution
   - build
-  - test
   - deploy
+  - deploy-master
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
   tags:
     - master
   script:
-    - kubectl get po -o wide
-    - kubectl get no -o wide
-  
-test-job:       # This job runs in the build stage, which runs first.
-  stage: test
+    - pwd
+    - npm install
+    - npm run build
+    - docker login -u khoa.le -p K1hoa@95 gitlab.paxanimi.ai:8150
+    #- docker rmi gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
+    - docker build -t gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest -f Dockerfile .
+    - docker push gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
+    - cd /home/frontend
+    - ls -all
+    #- kubectl delete -f frontend-deployment.yaml
+
+deploy-job-worker-1:
+  stage: deploy
   tags:
     - worker-1
   script:
-    - docker ps -a
+    - docker login -u khoa.le -p K1hoa@95 gitlab.paxanimi.ai:8150
+    #- docker rmi gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
+    - docker pull gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
 
-deploy-job:       # This job runs in the build stage, which runs first.
+deploy-job-worker-2:
   stage: deploy
   tags:
     - worker-2
   script:
-    - docker images
+    - docker login -u khoa.le -p K1hoa@95 gitlab.paxanimi.ai:8150
+    #- docker rmi gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
+    - docker pull gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
+
+deploy-job-master:
+  stage: deploy-master
+  tags:
+    - master
+  script:
+    - cd /home/frontend
+    #- kubectl apply -f frontend-deployment.yaml
+    - kubectl get po -A
