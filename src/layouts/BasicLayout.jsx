@@ -4,6 +4,10 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
+import { Button, Result } from 'antd';
+import classnames from 'classnames';
+import React from 'react';
+import { connect, Link, Redirect, useIntl } from 'umi';
 import Feedback from '@/components/Feedback';
 import Footer from '@/components/Footer';
 import RightContent from '@/components/GlobalHeader/RightContent';
@@ -13,11 +17,7 @@ import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 // import { UserOutlined, UserSwitchOutlined } from '@ant-design/icons';
 // import { Affix, Button, notification, Result, Spin, Switch, Tooltip } from 'antd';
-import { Button, Result } from 'antd';
-import classnames from 'classnames';
 // import React, { useEffect, useState } from 'react';
-import React from 'react';
-import { connect, Link, Redirect, useIntl } from 'umi';
 import logo from '../assets/logo.svg';
 // import iconMenu from '../assets/menuIcon.svg';
 import styles from './BasicLayout.less';

@@ -1,80 +1,97 @@
-import React, { Component } from 'react';
-import { Modal, Form, Button, Checkbox, Tooltip } from 'antd';
-import { connect } from 'umi';
+import React, { useEffect, useState } from 'react';
+import { Modal, Button, Checkbox, Tooltip } from 'antd';
 import moment from 'moment';
 import TooltipIcon from '@/assets/tooltip.svg';
 
-import styles from './index.less';
+import { connect } from 'umi';
+import styles from '../../index.less';
 
-class JoiningFormalitiesModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+const JoiningFormalitiesModal = (props) => {
+  const {
+    onCancel = () => {},
+    onOk = () => {},
+    visible,
+    candidate: { dateOfJoining = '', candidateId = '' },
+    listJoiningFormalities,
+    loadingGetEmployeeId,
+    dispatch,
+  } = props;
+  const [checkList, setCheckList] = useState([]);
 
-  renderHeaderModal = () => <div className={styles.headerText}>Initiate Joining Formalities</div>;
+  useEffect(() => {
+    dispatch({
+      type: 'onboard/getListJoiningFormalities',
+    });
+    setCheckList([]);
+  }, [candidateId]);
 
-  contentTooltip = () => (
-    <div className={styles.contentTooltip}>
-      Ensure that all the documents have been verified beforehand
-    </div>
+  const renderHeaderModal = () => (
+    <div className={styles.headerText}>Initiate Joining Formalities</div>
   );
 
-  convertToEmployee = () => (
+  const converToEmployee = async () => {
+    const response = await dispatch({
+      type: 'onboard/getEmployeeId',
+      payload: {
+        candidateId,
+      },
+    });
+    const { statusCode = '' } = response;
+    if (statusCode === 200) onOk();
+  };
+
+  const convertToEmployee = () => (
     <>
       <div className={styles.headerContent}>
         Please ensure that the joining formalities checklist have been completed before converting
         the candidate to an employee.
       </div>
-      <Form name="basic" id="myForm" onFinish={this.onFinish}>
-        <div className={styles.documentVerification}>
-          <Form.Item name="documentVerification">
-            <Checkbox>
-              <div className={styles.labelCheckbox}>Documents Verification</div>
+      <Checkbox.Group
+        style={{ width: '100%' }}
+        onChange={(value) => setCheckList(value)}
+        value={checkList}
+      >
+        {listJoiningFormalities.map((item) => (
+          <div key={item.name}>
+            <Checkbox value={item._id}>
+              <div className={styles.labelCheckbox}>{item.name}</div>
             </Checkbox>
-          </Form.Item>
-          <Tooltip
-            title={this.contentTooltip}
-            color="#fff"
-            placement="right"
-            overlayClassName={styles.tooltipOverlay}
-          >
-            <img className={styles.tooltip} alt="tool-tip" src={TooltipIcon} />
-          </Tooltip>
-        </div>
-      </Form>
+            <Tooltip
+              title={<div className={styles.contentTooltip}>{item.description}</div>}
+              color="#fff"
+              placement="right"
+              overlayClassName={styles.tooltipOverlay}
+            >
+              <img className={styles.tooltip} alt="tool-tip" src={TooltipIcon} />
+            </Tooltip>
+          </div>
+        ))}
+      </Checkbox.Group>
     </>
   );
 
-  emptyModal = (dateJoinCandidate) => (
+  const emptyModal = (date) => (
     <div className={styles.headerContent}>
-      The date of joining <span className={styles}>{dateJoinCandidate}</span> of this candidate has
-      not arrived yet. Please try again!
+      The date of joining <span className={styles}>{date}</span> of this candidate has not arrived
+      yet. Please try again!
     </div>
   );
-
-  onFinish = (value) => {
-    console.log(value);
+  const onCloseModal = () => {
+    setCheckList([]);
+    onCancel();
   };
-
-  renderFooter = (isTodayDateJoin) => {
-    const { handleOpenJoiningFormalitiesModal = () => {} } = this.props;
-
+  const renderFooter = (isTodayDateJoin) => {
     if (isTodayDateJoin) {
       return [
-        <Button
-          onClick={() => handleOpenJoiningFormalitiesModal(false)}
-          className={styles.btnCancel}
-        >
+        <Button onClick={onCloseModal} className={styles.btnCancel}>
           Cancel
         </Button>,
         <Button
           className={styles.btnSubmit}
           type="primary"
-          form="myForm"
-          key="submit"
-          htmlType="submit"
-          //   loading={loadingReassign}
+          disabled={checkList.length !== listJoiningFormalities.length}
+          loading={loadingGetEmployeeId}
+          onClick={() => converToEmployee()}
         >
           Convert to Employee
         </Button>,
@@ -82,34 +99,31 @@ class JoiningFormalitiesModal extends Component {
     }
 
     return [
-      <Button onClick={() => handleOpenJoiningFormalitiesModal(false)} className={styles.btnCancel}>
+      <Button onClick={onCloseModal} className={styles.btnCancel}>
         Cancel
       </Button>,
     ];
   };
+  const getDayJoin = moment(dateOfJoining);
+  const isTodayDateJoin = moment().isAfter(getDayJoin);
+  return (
+    <Modal
+      className={styles.joiningFormalitiesModal}
+      onCancel={onCloseModal}
+      footer={renderFooter(isTodayDateJoin)}
+      title={renderHeaderModal()}
+      destroyOnClose
+      centered
+      visible={visible}
+    >
+      {isTodayDateJoin ? convertToEmployee() : emptyModal(dateOfJoining)}
+    </Modal>
+  );
+};
 
-  render() {
-    const {
-      handleOpenJoiningFormalitiesModal = () => {},
-      visible,
-      dateJoinCandidate = '',
-    } = this.props;
-    const getDayJoin = moment(dateJoinCandidate);
-    const isTodayDateJoin = moment().isSame(getDayJoin, 'd');
-    return (
-      <Modal
-        className={styles.joiningFormalitiesModal}
-        onCancel={() => handleOpenJoiningFormalitiesModal(false)}
-        destroyOnClose
-        footer={this.renderFooter(isTodayDateJoin)}
-        title={this.renderHeaderModal()}
-        centered
-        visible={visible}
-      >
-        {isTodayDateJoin ? this.convertToEmployee() : this.emptyModal(dateJoinCandidate)}
-      </Modal>
-    );
-  }
-}
-
-export default JoiningFormalitiesModal;
+export default connect(
+  ({ loading, onboard: { joiningFormalities: { listJoiningFormalities = [] } } = {} }) => ({
+    listJoiningFormalities,
+    loadingGetEmployeeId: loading.effects['onboard/getEmployeeId'],
+  }),
+)(JoiningFormalitiesModal);

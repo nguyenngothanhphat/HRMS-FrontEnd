@@ -1,0 +1,57 @@
+@rowPaddingBlock: 16px;
+@tagPadding: 12px;
+@greenColor: #1ab88f;
+@blueColour: #2c6df9;
+.PendingApprovalTag {
+  align-items: center;
+  padding: @tagPadding 29px @tagPadding @tagPadding;
+  font-size: 13px;
+  line-height: 20px;
+  background: #ffffff;
+  border: 1px solid #d8dde9;
+  border-radius: 8px;
+
+  .leftPart {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    .dateTime {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      padding: 8px 12px;
+      background: #f2f6fa;
+      border-radius: 8px;
+      span {
+        display: block;
+        color: #000000;
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 16px;
+      }
+    }
+    .content {
+      color: #707177;
+      font-size: 12px;
+      line-height: 18px;
+      .userId {
+        color: @blueColour;
+        font-weight: 500;
+        cursor: pointer;
+      }
+    }
+  }
+  .rightPart {
+    .viewBtn {
+      display: flex;
+      justify-content: flex-end;
+      span {
+        color: @blueColour;
+        font-weight: 500;
+        cursor: pointer;
+      }
+    }
+  }
+}

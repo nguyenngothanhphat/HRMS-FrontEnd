@@ -23,6 +23,8 @@ import PopupContentHr from './components/PopupContentHr';
 import JoiningFormalitiesModal from './components/JoiningFormalitiesModal';
 
 import styles from './index.less';
+import CandidateUserName from './components/CandidateUserName/index';
+import ConfirmModal from './components/ConfirmModal/index';
 
 const compare = (dateTimeA, dateTimeB) => {
   const momentA = moment(dateTimeA, 'DD/MM/YYYY');
@@ -36,7 +38,6 @@ class OnboardTable extends Component {
     super(props);
     this.state = {
       // pageSelected: 1,
-      openModal: false,
       // currentRecord: {},
       reassignModalVisible: false,
       currentEmpId: '',
@@ -51,8 +52,9 @@ class OnboardTable extends Component {
       expiryType: '',
 
       // Joining Formalities
-      joiningFormalitiesVisible: false,
+      openModalName: '',
       dateJoinCandidate: '',
+      selectedCandidateId: '',
 
       // popup hover name
       timezoneList: [],
@@ -141,17 +143,17 @@ class OnboardTable extends Component {
     });
   };
 
-  closeModal = () => {
-    this.setState({
-      openModal: false,
-    });
-  };
+  // closeModal = () => {
+  //   this.setState({
+  //     openModal: false,
+  //   });
+  // };
 
-  openModal = () => {
-    this.setState({
-      openModal: true,
-    });
-  };
+  // openModal = () => {
+  //   this.setState({
+  //     openModal: true,
+  //   });
+  // };
 
   // getModalContent = () => {
   //   const { dispatch } = this.props;
@@ -607,7 +609,10 @@ class OnboardTable extends Component {
               </Link>
             </Menu.Item>
             <Menu.Item>
-              <div onClick={() => this.handleOpenJoiningFormalitiesModal(true, dateJoin)}>
+              <div
+                onClick={() =>
+                  this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate)}
+              >
                 Initiate joining formalities
               </div>
             </Menu.Item>
@@ -632,8 +637,7 @@ class OnboardTable extends Component {
           <Menu.Item>
             <div
               onClick={() =>
-                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)
-              }
+                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)}
               className={styles.actionText}
             >
               Re-assign
@@ -668,12 +672,55 @@ class OnboardTable extends Component {
     );
   };
 
-  handleOpenJoiningFormalitiesModal = (value, dateJoin = '') => {
+  // JoiningFormalitiesModal
+  handleOpenJoiningFormalitiesModal = (value, dateJoin = '', selectedId = '') => {
     this.setState({
-      joiningFormalitiesVisible: value,
+      openModalName: value,
       dateJoinCandidate: dateJoin,
+      selectedCandidateId: selectedId,
     });
   };
+
+  cancelJoiningFormalities = () => {
+    this.setState({
+      openModalName: '',
+      dateJoinCandidate: '',
+      selectedCandidateId: '',
+    });
+  };
+
+  onConvertEmployee = () => {
+    this.setState({
+      openModalName: 'username',
+    });
+  };
+
+  // userName modal
+  cancelCandidateUserName = () => {
+    this.setState({
+      openModalName: 'initiate',
+    });
+  };
+
+  onSubmitUserName = () => {
+    this.setState({
+      openModalName: 'detail',
+    });
+  };
+
+  // detail infor candidate modal
+  onMaybeLater = () => {
+    const {dispatch}=this.props
+    dispatch({
+      type:'onboard/save',
+      payload:{reloadTableData:true}
+    })
+    this.setState({
+      openModalName: '',
+    });
+  };
+
+  // end
 
   handleReassignModal = (value, currentEmpId, id, processStatusId, type) => {
     this.setState({
@@ -739,8 +786,8 @@ class OnboardTable extends Component {
       reassignType = '',
       selectedExpiryTicketId,
       renewModalVisible,
-      joiningFormalitiesVisible,
       dateJoinCandidate,
+      selectedCandidateId,
       expiryStatus,
       expiryType,
     } = this.state;
@@ -778,7 +825,7 @@ class OnboardTable extends Component {
 
     const { columnArr, type, inTab, hasCheckbox, loading, loadingFetch, loadingSearch } =
       this.props;
-    const { openModal } = this.state;
+    const { openModalName } = this.state;
 
     return (
       <>
@@ -843,9 +890,21 @@ class OnboardTable extends Component {
           limit={size}
         />
         <JoiningFormalitiesModal
-          visible={joiningFormalitiesVisible}
-          handleOpenJoiningFormalitiesModal={this.handleOpenJoiningFormalitiesModal}
-          dateJoinCandidate={dateJoinCandidate}
+          visible={openModalName === 'initiate'}
+          onCancel={this.cancelJoiningFormalities}
+          onOk={this.onConvertEmployee}
+          candidate={{ dateOfJoining: dateJoinCandidate, candidateId: selectedCandidateId }}
+        />
+        <CandidateUserName
+          visible={openModalName === 'username'}
+          onCancel={this.cancelCandidateUserName}
+          onOk={this.onSubmitUserName}
+          candidateId={selectedCandidateId}
+        />
+        <ConfirmModal
+          visible={openModalName === 'detail'}
+          onCancel={this.onMaybeLater}
+          onOk={this.onMaybeLater}
         />
       </>
     );

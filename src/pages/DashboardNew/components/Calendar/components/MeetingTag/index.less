@@ -1,0 +1,181 @@
+@rowPaddingBlock: 16px;
+@tagPadding: 16px;
+@greenColor: #1ab88f;
+.MeetingTag {
+  cursor: pointer;
+  div {
+    align-items: center;
+    padding: @tagPadding;
+    font-size: 13px;
+    line-height: 20px;
+    border-radius: 8px;
+  }
+  .greenTag {
+    color: @greenColor;
+    background: #f9fffe;
+    border: 1px solid @greenColor;
+  }
+  .orangeTag {
+    color: #ffa100;
+    background: #fffdf9;
+    border: 1px solid #ffa100;
+  }
+  .redTag {
+    color: #fd4546;
+    background: #fff9f9;
+    border: 1px solid #fd4546;
+  }
+  .whiteTag {
+    color: #707177;
+    background: #fff;
+    border: 1px solid #eaecef;
+  }
+}
+.popupEventContainer {
+  :global {
+    .ant-popover-inner {
+      min-width: 400px;
+      max-width: 400px;
+      padding: 0 18px;
+      border: 1px solid #eaecef;
+      border-radius: 8px;
+    }
+    .ant-popover-inner-content {
+      padding: 0 !important;
+    }
+    .ant-popover-arrow {
+      //   left: -2.5px !important;
+      width: 18px;
+      height: 18px;
+      .ant-popover-arrow-content {
+        width: 12px;
+        height: 12px;
+        box-shadow: none;
+      }
+    }
+  }
+  .popupEvent {
+    position: relative;
+    .closeButton {
+      position: absolute;
+      top: 12px;
+      right: -5px;
+      z-index: 5;
+      display: block;
+      cursor: pointer;
+    }
+    .divider {
+      border-bottom: 1px solid #eaecef;
+      margin-block: 24px;
+    }
+    &__header {
+      padding-top: 24px;
+      .rightPart {
+        .title {
+          display: block;
+          margin-bottom: 10px;
+          color: #161c29;
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 19px;
+        }
+        .time {
+          display: block;
+          color: rgba(0, 0, 0, 0.48);
+          font-size: 13px;
+          line-height: 20px;
+          letter-spacing: 0.075px;
+        }
+      }
+    }
+    &__link {
+      .rightPart {
+        .button {
+          overflow: none;
+          color: #fff;
+          font-weight: 500;
+          font-size: 13px;
+          background: #3474e0;
+          border: none;
+          border-radius: 6px;
+          box-shadow: none;
+        }
+        .url {
+          display: block;
+          margin-top: 10px;
+        }
+      }
+    }
+    &__employeeContainer {
+      max-height: 200px;
+      overflow-y: auto;
+      .employee {
+        cursor: default;
+        margin-block: 16px;
+        .avatar {
+          img,
+          .textAvatar {
+            border: 2px solid #4663c8;
+          }
+          img {
+            width: 32px;
+            height: 32px;
+            object-fit: cover;
+            border-radius: 50%;
+          }
+          .textAvatar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            background-color: #4663c8;
+            border-radius: 50%;
+          }
+        }
+        .organizer {
+          border-color: #ffa100 !important;
+        }
+        .self {
+          border-color: #1ab88f !important;
+        }
+        .right {
+          display: flex;
+          flex-direction: column;
+          .name {
+            color: #212020;
+            font-size: 13px;
+            line-height: 20px;
+          }
+          .id {
+            color: #2c6df9;
+            font-weight: 500;
+            font-size: 12px;
+          }
+        }
+      }
+    }
+    &__alarmBell {
+      display: flex;
+      align-items: center;
+      padding-bottom: 24px;
+      img {
+        margin-right: 10px;
+        color: #212020;
+        font-size: 13px;
+        line-height: 15px;
+        letter-spacing: 0.075px;
+      }
+    }
+    .guestNumber {
+      color: #212020;
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 15px;
+    }
+  }
+}

@@ -1,0 +1,210 @@
+@darkColour: #161c29;
+@darkColour2: #212020;
+@blueColour: #2c6df9;
+@lightGrayColor: #d8dde9;
+@lightGrayColor2: #707177;
+@padding1: 24px;
+@padding2: 16px;
+@borderColor: #d6dce0;
+
+.MyTeam {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  height: 100%;
+  margin-bottom: @padding1;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid @borderColor;
+  border-radius: 8px;
+  transform: translate(0, 0);
+  :global {
+    .ant-tabs-nav {
+      height: 44px;
+      padding-left: @padding1;
+      .ant-tabs-tab-btn {
+        font-weight: normal;
+        font-size: 13px;
+      }
+      .ant-tabs-tab-active {
+        .ant-tabs-tab-btn {
+          color: @darkColour2 !important;
+          font-weight: 500;
+        }
+      }
+    }
+    .ant-tabs-content-holder {
+    }
+    // .ant-tabs-content-holder {
+    //   padding-inline: @padding2 @padding1;
+    // }
+    .ant-tabs-top > .ant-tabs-nav::before,
+    .ant-tabs-bottom > .ant-tabs-nav::before,
+    .ant-tabs-top > div > .ant-tabs-nav::before,
+    .ant-tabs-bottom > div > .ant-tabs-nav::before {
+      border-color: @borderColor;
+    }
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: @padding1;
+    border-bottom: 1px solid @borderColor;
+
+    cursor: move; /* fallback if grab cursor is unsupported */
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+    &__headerText {
+      color: #000;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 20px;
+    }
+    &__actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      span {
+        color: @blueColour;
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 19px;
+        margin-inline: 12px;
+      }
+      img {
+        cursor: pointer;
+      }
+    }
+  }
+  .content {
+    :global {
+      .ant-picker-calendar-header {
+        display: none;
+      }
+      .ant-picker-calendar .ant-picker-panel .ant-picker-body {
+        padding: 0 !important;
+      }
+      .ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date {
+        margin: 0 !important;
+        padding: 16px 8px 0;
+        border-top: 1px solid @lightGrayColor;
+
+        // border-bottom: 2px solid #f0f0f0 !important;
+      }
+      .ant-picker-content {
+        thead tr {
+          // border-bottom: 2px solid #f0f0f0 !important;
+          height: 53px;
+        }
+        thead th {
+          padding: 0 !important;
+          color: #707177;
+          font-weight: 500;
+          font-size: 13px;
+          line-height: 30px;
+          text-transform: uppercase;
+          // border-right: 2px solid #f0f0f0 !important;
+          border-right: 1px solid @lightGrayColor;
+          &:last-child {
+            border-right: none !important;
+          }
+        }
+        tbody td {
+          background: #f7f9fe;
+          border-right: 1px solid @lightGrayColor;
+          &:last-child {
+            border-right: none !important;
+          }
+        }
+      }
+      .ant-picker-cell .ant-picker-cell-inner {
+        z-index: unset;
+      }
+
+      // hide column saturday & sunday
+      .ant-picker-content thead tr th {
+        &:first-child,
+        &:last-child {
+          display: none;
+        }
+      }
+      .ant-picker-content tbody tr td {
+        &:first-child,
+        &:last-child {
+          display: none;
+        }
+      }
+      .ant-picker-calendar-full .ant-picker-panel {
+        text-align: center;
+      }
+      .ant-picker-calendar-date-value {
+        color: #707177;
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 20px;
+        text-transform: uppercase;
+      }
+      .ant-picker-calendar-date-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      // to prevent clicking on date of prev/next month to change month
+      .ant-picker-cell-disabled {
+        pointer-events: unset;
+      }
+
+      // TOOLTIP
+      .ant-avatar-group .ant-avatar:not(:first-child) {
+        margin-left: -18px;
+      }
+      .ant-avatar-lg {
+        width: 32px;
+        height: 32px;
+      }
+      .ant-avatar-group .ant-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 20px;
+        text-transform: uppercase;
+        background-color: @blueColour;
+        border-width: 2px;
+      }
+      .ant-tooltip-inner {
+        z-index: 10;
+        padding: 8px;
+        color: #ffffff;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 20px;
+        background: #1a1a46;
+        border: none;
+        border-radius: 4px;
+      }
+    }
+  }
+  .viewAllBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: @padding2 @padding1;
+    color: @blueColour;
+    font-weight: 500;
+    font-size: 16px;
+    border-top: 1px solid @borderColor;
+    cursor: pointer;
+    img {
+      margin-left: 10px;
+    }
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}

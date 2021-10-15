@@ -35,6 +35,10 @@ import {
   updateGrade,
   removeGrade,
   getGradeByID,
+
+  // domain
+  setEmailDomain,
+  getCompanyById,
 } from '../services/adminSetting';
 
 const adminSetting = {
@@ -51,6 +55,7 @@ const adminSetting = {
       listPermissions: [],
       listDepartments: [],
       listGrades: [],
+      emailDomain: '',
     },
     tempData: {
       listTitles: [],
@@ -499,6 +504,37 @@ const adminSetting = {
       }
       return response;
     },
+
+    // domain
+    *saveDomain({payload}, {call, put}) {
+      let response = {};
+      try {
+        response = yield call(setEmailDomain, {...payload, tenantId: getCurrentTenant(), 
+        company: getCurrentCompany()});
+        const {statusCode, message} = response;
+        if(statusCode !== 200) throw response;
+        yield put({
+          type: 'getDomain',
+        });
+        // yield put({ type: 'save', payload: { emailDomain: data} })
+        notification.success({message});
+        
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *getDomain(_, {call, put}){
+      let response = {};
+      try {
+        response = yield call(getCompanyById, {id: getCurrentCompany(), tenantId:getCurrentTenant()});
+        const {statusCode, data = {}} = response;
+        if(statusCode !== 200) throw response;
+        yield put({type: 'saveOrigin', payload: {emailDomain: data.emailDomain}})
+      } catch (error) {
+        dialog(error);
+      }
+    }
   },
   reducers: {
     save(state, action) {

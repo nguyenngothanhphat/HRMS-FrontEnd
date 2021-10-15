@@ -1,0 +1,51 @@
+@rowPaddingBlock: 16px;
+@tagPadding: 16px;
+@greenColor: #1ab88f;
+.MyCalendar {
+  .greenTag {
+    color: @greenColor;
+    background: #f9fffe;
+    border: 1px solid @greenColor;
+  }
+  .orangeTag {
+    color: #ffa100;
+    background: #fffdf9;
+    border: 1px solid #ffa100;
+  }
+  .redTag {
+    color: #fd4546;
+    background: #fff9f9;
+    border: 1px solid #fd4546;
+  }
+  .whiteTag {
+    color: #707177;
+    background: #fff;
+    border: 1px solid #eaecef;
+  }
+  .mainContainer {
+    max-height: 400px;
+    overflow-y: auto;
+    .eachRow {
+      &__left {
+        height: 100%;
+        background-color: #fff;
+        div {
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          height: 100%;
+          margin-left: 24px;
+          color: #464646;
+          font-size: 13px;
+          line-height: 19px;
+        }
+      }
+      &__right {
+        height: 100%;
+        min-height: 60px;
+        padding: @rowPaddingBlock / 2 @rowPaddingBlock @rowPaddingBlock / 2;
+        background-color: #f7f9fe;
+      }
+    }
+  }
+}

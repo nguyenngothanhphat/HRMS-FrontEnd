@@ -1,21 +1,35 @@
-import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
+import { dialog } from '@/utils/utils';
 import {
   getListTicket,
   aprovalCompoffRequest,
   aprovalLeaveRequest,
   rejectLeaveRequest,
   rejectCompoffRequest,
+
+  // NEW DASHBOARD
+  syncGoogleCalendar,
+  getWidgets,
+  updateWidgets,
+  getMyTeam,
+  getMyTimesheet,
 } from '../services/dashboard';
 import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
 
+const defaultState = {
+  listTicket: [],
+  isLoadData: false,
+  totalTicket: 0,
+  googleCalendarList: [],
+  employeeInfo: {},
+  employeeWidgets: [],
+  employeeId: '',
+  myTeam: [],
+  myTimesheet: [],
+};
 const dashboard = {
   namespace: 'dashboard',
-  state: {
-    listTicket: [],
-    isLoadData: false,
-    totalTicket: 0,
-  },
+  state: defaultState,
   effects: {
     *fetchListTicket({ payload = {} }, { call, put }) {
       try {
@@ -107,6 +121,113 @@ const dashboard = {
         return {};
       }
     },
+
+    *syncGoogleCalendarEffect({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(syncGoogleCalendar, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        // console.log('googleCalendarList', googleCalendarList);
+        yield put({ type: 'save', payload: { googleCalendarList: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *getWidgetsEffect({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getWidgets, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            employeeInfo: data,
+            // employeeWidgets: data.widgetDashboardShow || [],
+            // employeeId: data._id,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *updateWidgetsEffect({ payload = {} }, { call, put, select }) {
+      let response = {};
+      try {
+        const { employeeId } = yield select((state) => state.dashboard);
+
+        response = yield call(updateWidgets, {
+          ...payload,
+          id: employeeId,
+          tenantId: getCurrentTenant(),
+        });
+
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+
+        // refresh the dashboard
+        yield put({
+          type: 'save',
+          payload: {
+            employeeWidgets: data.widgetDashboardShow,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *fetchMyTeam({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getMyTeam, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({ type: 'save', payload: { myTeam: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    // TIMESHEET
+    *fetchMyTimesheetEffect({ payload }, { call, put }) {
+      const response = {};
+      try {
+        const res = yield call(getMyTimesheet, { ...payload, tenantId: getCurrentTenant() });
+        const { code, data = [] } = res;
+        if (code !== 200) throw res;
+
+        yield put({
+          type: 'save',
+          payload: {
+            myTimesheet: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
   },
   reducers: {
     save(state, action) {
@@ -114,6 +235,9 @@ const dashboard = {
         ...state,
         ...action.payload,
       };
+    },
+    clearState() {
+      return defaultState;
     },
   },
 };

@@ -82,3 +82,80 @@ export async function getLocationList(payload) {
     data: payload,
   });
 }
+
+export async function getListJoiningFormalities(payload) {
+  return request('/api/joiningformalitiestenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateJoiningFormalities(payload) {
+  return request('/api/joiningformalitiestenant/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function addJoiningFormalities(payload) {
+  return request('/api/joiningformalitiestenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function removeJoiningFormalities(payload) {
+  return request('/api/joiningformalitiestenant/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function createUserName(payload) {
+  return request('/api/joiningformalitiestenant/create-user-name', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function checkExistingUserName(payload) {
+  return request('/api/joiningformalitiestenant/check-existing-username', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function createEmployee(payload) {
+  return request('/api/joiningformalitiestenant/create-employee', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getListNewComer(payload) {
+  return request('/api/joiningformalitiestenant/get-list-new-comer', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getSettingEmployeeId(payload) {
+  return request('/api/joiningformalitiestenant/get-list-setting-employeeId', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateSettingEmployeeId(payload) {
+  return request('/api/joiningformalitiestenant/update-setting-employeeId', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getCandidateById(payload) {
+  return request('/api/joiningformalitiestenant/get-candidate-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
