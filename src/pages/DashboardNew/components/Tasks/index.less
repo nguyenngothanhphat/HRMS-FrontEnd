@@ -1,0 +1,100 @@
+@darkColour: #161c29;
+@darkColour2: #212020;
+@blueColour: #2c6df9;
+@lightGrayColor: #d8dde9;
+@lightGrayColor2: #707177;
+@padding1: 24px;
+@padding2: 16px;
+@borderColor: #d6dce0;
+
+.Tasks {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  height: 100%;
+  margin-bottom: @padding1;
+  background: #fff;
+  border: 1px solid @borderColor;
+  border-radius: 8px;
+  transform: translate(0, 0);
+  :global {
+    .ant-tabs-nav {
+      height: 44px;
+      padding-left: @padding1;
+      .ant-tabs-tab-btn {
+        font-weight: 500;
+        font-size: 13px;
+      }
+      .ant-tabs-tab-active {
+        .ant-tabs-tab-btn {
+          color: @darkColour2 !important;
+          font-weight: 500;
+        }
+      }
+    }
+    .ant-tabs-content-holder {
+      min-height: 400px;
+      background-color: #f7f9fe;
+    }
+    // .ant-tabs-content-holder {
+    //   padding-inline: @padding2 @padding1;
+    // }
+    .ant-tabs-top > .ant-tabs-nav::before,
+    .ant-tabs-bottom > .ant-tabs-nav::before,
+    .ant-tabs-top > div > .ant-tabs-nav::before,
+    .ant-tabs-bottom > div > .ant-tabs-nav::before {
+      border-color: @borderColor;
+    }
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: @padding1;
+    border-bottom: 1px solid @borderColor;
+
+    cursor: move; /* fallback if grab cursor is unsupported */
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+    &__headerText {
+      color: #000;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 20px;
+    }
+    &__actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      cursor: pointer;
+      span {
+        color: @blueColour;
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 19px;
+        margin-inline: 12px;
+      }
+    }
+  }
+  .content {
+  }
+  .viewAllBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: @padding2 @padding1;
+    color: @blueColour;
+    font-weight: 500;
+    font-size: 16px;
+    border-top: 1px solid @borderColor;
+    cursor: pointer;
+    img {
+      margin-left: 10px;
+    }
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}

@@ -1,0 +1,59 @@
+import { Modal } from 'antd';
+import React from 'react';
+import { connect } from 'umi';
+import HolidayCalendar from '../HolidayCalendar';
+import MyCalendar from '../MyCalendar';
+import styles from './index.less';
+
+const CommonModal = (props) => {
+  const {
+    visible = false,
+    tabKey = '',
+    data = [],
+    loading = false,
+    title = '',
+    onClose = () => {},
+  } = props;
+
+  const renderModalHeader = () => {
+    return (
+      <div className={styles.header}>
+        <p className={styles.header__text}>{title}</p>
+      </div>
+    );
+  };
+
+  const handleCancel = () => {
+    onClose();
+  };
+
+  const renderModalContent = () => {
+    switch (tabKey) {
+      case '1':
+        return <MyCalendar isInModal data={data} loading={loading} />;
+      case '2':
+        return <HolidayCalendar isInModal />;
+      default:
+        return '';
+    }
+  };
+
+  return (
+    <>
+      <Modal
+        className={`${styles.CommonModal} ${styles.noPadding}`}
+        onCancel={handleCancel}
+        destroyOnClose
+        footer={null}
+        title={renderModalHeader()}
+        centered
+        visible={visible}
+        width={750}
+      >
+        {renderModalContent()}
+      </Modal>
+    </>
+  );
+};
+
+export default connect(() => ({}))(CommonModal);

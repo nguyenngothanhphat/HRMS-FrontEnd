@@ -1,0 +1,57 @@
+.Domain{
+    box-sizing: border-box;
+    width: 100%;
+    height: fit-content;
+    background: #ffffff;
+    border: 1px solid #d6dce0;
+    border-radius: 5px;
+    .domainTitleContainer{
+        padding: 26px 24px;
+        border-bottom: 1px solid #E2E4E8;   
+        .domainTitle{
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0;
+        }
+    }
+    .domainContent{
+        padding: 40px 38px;
+        .contentInside{
+            font-size: 13px;
+            line-height: 2;
+            color: #464646;
+        }
+        .formSetDomain{
+            margin-top: 32px;
+            color: #707177;
+            .btnSave{
+                background-color: #FFA100;
+                height: auto;
+                font-size: 14px;
+                font-weight: 500;
+                color: #fff;
+                border-radius: 25px;
+
+                border-color: #fff;
+                text-shadow: none;
+                box-shadow: none;
+               
+                display: inline-block;
+                padding: 12px 24px;
+            }
+            .inpDomain{
+                padding: 13px 16px;
+            }
+            :global{
+                .ant-form-item-label label{
+                    color: #707177;
+                }
+                .ant-input{
+                    padding: 13px 16px;
+                    color: #161C29;
+                }
+            }
+        }
+    }
+    
+}

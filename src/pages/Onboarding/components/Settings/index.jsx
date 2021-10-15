@@ -8,6 +8,7 @@ import NonExtempNotice from './components/NonExtempNotice';
 import OptionalOnboardingQuestions from './components/OptionalOnboardingQuestions';
 import BenefitsManagement from './components/BenefitsManagement';
 import SalaryStructure from './components/SalaryStructure/index';
+import JoiningFormalities from './components/JoiningFormalities/index';
 
 export const listMenu = [
   {
@@ -60,10 +61,17 @@ export const listMenu = [
   },
   {
     id: 7,
-    name: 'Benefits Management ',
+    name: 'Benefits Management',
     key: 'benefitsManagement',
     component: <BenefitsManagement />,
     link: 'benefits-management',
+  },
+  {
+    id: 8,
+    name: 'Joining Formalities',
+    key: 'joiningFormalities',
+    component: <JoiningFormalities />,
+    link: 'joining-formalities',
   },
 ];
 

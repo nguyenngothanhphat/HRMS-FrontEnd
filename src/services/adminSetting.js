@@ -179,3 +179,17 @@ export async function getGradeByID(payload) {
     data: payload,
   });
 }
+
+export async function setEmailDomain(payload) {
+  return request('/api/companytenant/set-email-domain', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getCompanyById(payload) {
+  return request('/api/companytenant/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}

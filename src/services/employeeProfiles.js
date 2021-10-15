@@ -227,7 +227,12 @@ export async function getChangeHistories(payload) {
     data: payload,
   });
 }
-
+export async function addMultiCertification(payload) {
+  return request('/api/certificationtenant/add-multi', {
+    method: 'POST',
+    data: payload,
+  });
+}
 export async function removeCertification(payload) {
   return request('/api/certificationtenant/delete', {
     method: 'POST',
@@ -249,6 +254,12 @@ export async function getAddBank(payload) {
   });
 }
 
+export async function addMultiBank(payload) {
+  return request('/api/bankacctenant/add-multi', {
+    method: 'POST',
+    data: payload,
+  });
+}
 export async function updateBank(payload) {
   return request('/api/bankacctenant/update', {
     method: 'POST',

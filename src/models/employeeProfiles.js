@@ -53,6 +53,8 @@ import {
   updateDependentsById,
   removeDependentsById,
   getBenefitPlans,
+  addMultiBank,
+  addMultiCertification,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 import { getCurrentTenant } from '@/utils/authority';
@@ -498,7 +500,6 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-
     *updateGeneralInfo(
       { payload = {}, dataTempKept = {}, key = '', isUpdateMyAvt = false },
       { put, call, select },
@@ -565,8 +566,109 @@ const employeeProfile = {
             type: 'user/fetchCurrent',
           });
         }
+        return response;
       } catch (errors) {
         dialog(errors);
+        return {};
+      }
+    },
+    *updateFirstGeneralInfo(
+      { payload = {}, dataTempKept = {}, key = '', isUpdateMyAvt = false },
+      { put, call, select },
+    ) {
+      try {
+        const { bankDetails = [], certifications = [], taxDetails = {} } = payload;
+        if (bankDetails.length !== 0) {
+          const res = yield call(addMultiBank, {
+            listBank: bankDetails,
+            tenantId: getCurrentTenant(),
+          });
+          const { statusCode } = res;
+          if (statusCode !== 200) throw res;
+        }
+        if (taxDetails) {
+          const res = yield call(getAddTax, { ...taxDetails, tenantId: getCurrentTenant() });
+          const { statusCode } = res;
+          if (statusCode !== 200) throw res;
+        }
+        let arrCertification = [];
+        if (certifications.length !== 0) {
+          const res = yield call(addMultiCertification, {
+            certifications,
+            tenantId: getCurrentTenant(),
+          });
+          const { statusCode, data } = res;
+          if (statusCode !== 200) throw res;
+          arrCertification = data;
+        }
+        const response = yield call(updateGeneralInfo, {
+          ...payload,
+          certification: arrCertification,
+        });
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
+        yield put({
+          type: 'fetchGeneralInfo',
+          payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
+          dataTempKept,
+        });
+        switch (key) {
+          case 'openContactDetails':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openContactDetails: false },
+            });
+            break;
+          case 'openEmployeeInfor':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openEmployeeInfor: false },
+            });
+            break;
+          case 'openPassport':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openPassport: false },
+            });
+            break;
+          case 'openVisa':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openVisa: false },
+            });
+            break;
+          case 'openPersonnalInfor':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openPersonnalInfor: false },
+            });
+            break;
+          case 'openAcademic':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openAcademic: false },
+            });
+            break;
+          default:
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openContactDetails: false },
+            });
+        }
+        if (isUpdateMyAvt) {
+          yield put({
+            type: 'user/fetchCurrent',
+          });
+        }
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
       }
     },
     *fetchListTitle({ payload = {} }, { call, put }) {
@@ -906,6 +1008,24 @@ const employeeProfile = {
             payload: { openBank: false },
           });
         }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *addMultiBank({ payload = {} }, { call }) {
+      try {
+        const response = yield call(addMultiBank, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *addNewTax({ payload = {} }, { call }) {
+      try {
+        const response = yield call(getAddTax, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
       } catch (errors) {
         dialog(errors);
       }

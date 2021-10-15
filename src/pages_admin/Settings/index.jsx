@@ -8,6 +8,7 @@ import Grade from './components/Grade';
 import Position from './components/Position';
 import RolePermission from './components/RolePermission';
 import styles from './index.less';
+import Domain from './components/Domain';
 
 @connect(() => ({}))
 class Settings extends PureComponent {
@@ -53,6 +54,12 @@ class Settings extends PureComponent {
         name: 'Grades',
         component: <Grade />,
         link: 'grades',
+      },
+      {
+        id: 5,
+        name: 'Domain',
+        component: <Domain />,
+        link: 'domain',
       },
     ];
 

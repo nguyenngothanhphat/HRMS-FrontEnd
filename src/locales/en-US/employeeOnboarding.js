@@ -1,6 +1,7 @@
 export default {
   'component.employeeOnboarding.onboardingOverview': 'Onboarding overview',
   'component.employeeOnboarding.settings': 'Settings',
+  'component.employeeOnboarding.newJoinees': 'New Joiness',
   'component.employeeOnboarding.customFields': 'Custom fields',
   'component.employeeOnboarding.generate': 'Export as excel',
   'component.employeeOnboarding.viewActivityLogs': 'View Activity log ',

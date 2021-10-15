@@ -12,6 +12,18 @@ import {
   getListEmployee,
   getFilterList,
   handleExpiryTicket,
+  getListJoiningFormalities,
+  addJoiningFormalities,
+  updateJoiningFormalities,
+  removeJoiningFormalities,
+  updateSettingEmployeeId,
+  getSettingEmployeeId,
+  createUserName,
+  checkExistingUserName,
+  createEmployee,
+  getListNewComer,
+  getCandidateById,
+  getPosition,
 } from '@/services/onboard';
 import { dialog } from '@/utils/utils';
 import { PROCESS_STATUS_TABLE_NAME, PROCESS_STATUS } from '@/utils/onboarding';
@@ -281,7 +293,22 @@ const onboard = {
       },
     },
     hrList: [],
+    hrManagerList: [],
+    jobTitleList: [],
     filterList: {},
+    joiningFormalities: {
+      listJoiningFormalities: [],
+      listNewComer: [],
+      itemNewComer: {},
+      totalComer: 0,
+      userName: '',
+      messageErr: '',
+      employeeData: {},
+      generatedId: '',
+      prefix: '',
+      idItem: '',
+    },
+    reloadTableData: false,
   },
 
   effects: {
@@ -777,6 +804,233 @@ const onboard = {
         return [];
       }
     },
+    *fetchHRManagerList(
+      { payload: { company = [], department = [], location = [], roles = [] } = {} },
+      { call, put },
+    ) {
+      try {
+        const response = yield call(getListEmployee, {
+          status: ['ACTIVE'],
+          company,
+          department,
+          location,
+          roles,
+        });
+        const { statusCode, data: hrManagerList = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({ type: 'save', payload: { hrManagerList } });
+        return hrManagerList;
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+    },
+    *fetchJobTitleList({ payload = {} }, { call, put }) {
+      try {
+        const newPayload = {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+          // page: '',
+        };
+        const response = yield call(getPosition, newPayload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { jobTitleList: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    // joiningFormalities
+    *getListJoiningFormalities({ payload }, { call, put }) {
+      try {
+        const response = yield call(getListJoiningFormalities, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({ type: 'saveJoiningFormalities', payload: { listJoiningFormalities: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateJoiningFormalities({ payload }, { call }) {
+      try {
+        const response = yield call(updateJoiningFormalities, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message: 'Update successfully' });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return errors;
+      }
+    },
+    *addJoiningFormalities({ payload }, { call }) {
+      try {
+        const response = yield call(addJoiningFormalities, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message: 'Add successfully' });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return errors;
+      }
+    },
+    *removeJoiningFormalities({ payload }, { call }) {
+      try {
+        const response = yield call(removeJoiningFormalities, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message: 'Remove successfully' });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getSettingEmployeeId({ payload }, { call, put }) {
+      try {
+        const response = yield call(getSettingEmployeeId, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        const { generatedId = '', prefix = '', _id } = data;
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { generatedId, prefix, idItem: _id },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateSettingEmployeeId({ payload }, { call, put }) {
+      try {
+        const response = yield call(updateSettingEmployeeId, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        const { generatedId = '', prefix = '' } = payload;
+        yield put({ type: 'saveJoiningFormalities', payload: { generatedId, prefix } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return errors;
+      }
+    },
+    *getEmployeeId({ payload }, { call, put }) {
+      try {
+        const response = yield call(createUserName, {
+          tenantId: getCurrentTenant(),
+          ...payload,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        const { userName = '' } = data;
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { userName },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *checkExistedUserName({ payload }, { call }) {
+      try {
+        const response = yield call(checkExistingUserName, {
+          tenantId: getCurrentTenant(),
+          ...payload,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        const { isExistingUserName = false } = data;
+        return isExistingUserName;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *createEmployee({ payload }, { call, put }) {
+      try {
+        const response = yield call(createEmployee, {
+          tenantId: getCurrentTenant(),
+          ...payload,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { employeeData: data },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *getListNewComer({ payload }, { call, put }) {
+      try {
+        const response = yield call(getListNewComer, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode, data, total } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { listNewComer: data, totalComer: total },
+        });
+        yield put({
+          type: 'saveFilter',
+          payload: { isSearch: false },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getCandidateById({ payload }, { call, put }) {
+      try {
+        const response = yield call(getCandidateById, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { itemNewComer: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
   reducers: {
     save(state, action) {
@@ -1196,6 +1450,17 @@ const onboard = {
             provisionalOfferDrafts: newList,
           },
           dataAll: newAllList,
+        },
+      };
+    },
+    // joiningFormalities
+    saveJoiningFormalities(state, action) {
+      const { joiningFormalities } = state;
+      return {
+        ...state,
+        joiningFormalities: {
+          ...joiningFormalities,
+          ...action.payload,
         },
       };
     },

@@ -221,7 +221,8 @@ const routes = [
             name: 'Approvals',
             hideInMenu: true,
             // icon: '/assets/images/menuIcons/dashboard.svg',
-            component: './Dashboard/Approval',
+            component: './DashboardNew/components/Approval',
+            authority: ['employee', 'hr', 'hr-manager', 'manager'],
           },
           {
             path: '/admin-app',
@@ -268,19 +269,26 @@ const routes = [
             name: 'Onboarding',
             icon: '/assets/images/menuIcons/onboarding.svg',
             component: './Onboarding',
-            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'hr', 'hr-manager'],
+            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'hr', 'hr-manager', 'manager'],
           },
           {
             path: '/onboarding/:tabName',
             hideInMenu: true,
             component: './Onboarding',
-            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'hr', 'hr-manager'],
+            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'hr', 'hr-manager', 'manager'],
           },
           {
             path: '/onboarding/:tabName/:type',
             hideInMenu: true,
             component: './Onboarding',
             authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'hr', 'hr-manager'],
+          },
+          {
+            path: '/onboarding/newJoinees/view-detail/:userId',
+            name: 'Candidate Profile',
+            hideInMenu: true,
+            component: './Onboarding/components/NewJoinees/CandidateProfile',
+            authority: ['manager'],
           },
           // {
           //   path: '/onboarding',

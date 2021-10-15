@@ -18,7 +18,6 @@
   }
 
   :global {
-
     .ant-dropdown-menu-item,
     .ant-dropdown-menu-submenu-title {
       padding: 8px 24px;
@@ -43,9 +42,8 @@
   min-width: 240px;
   text-align: center;
   border-radius: 4%;
-  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.5),
-  0 9px 28px 0 rgba(0, 0, 0, 0.05),
-  0 12px 48px 16px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.5), 0 9px 28px 0 rgba(0, 0, 0, 0.05),
+    0 12px 48px 16px rgba(0, 0, 0, 0.03);
 
   &__customItem {
     all: unset !important;
@@ -85,6 +83,20 @@
     // if the location name is too long, I solve this issue by three lines of css
     white-space: nowrap;
     text-overflow: ellipsis;
+    &__withIcon {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      img {
+        width: 16px;
+        margin-right: 9px;
+      }
+      span {
+        color: #161c29;
+        font-size: 14px;
+        line-height: 21px;
+      }
+    }
   }
 
   .menuItemLink2 {
@@ -167,9 +179,9 @@
   justify-content: flex-end;
   // float: right;
   height: 100%;
-  line-height: normal;
   margin-left: auto;
   overflow: hidden;
+  line-height: normal;
 
   .action {
     display: flex;
@@ -179,7 +191,7 @@
     cursor: pointer;
     transition: all 0.1s;
 
-    >span {
+    > span {
       vertical-align: middle;
     }
 
@@ -271,13 +283,13 @@
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
       box-sizing: border-box;
-      margin:~'calc((@{layout-header-height} - 24px) / 2)'0;
+      // margin:~'calc((@{layout-header-height} - 24px) / 2)'0;
       margin-right: 7px;
       color: @primary-color;
       color: #fff;
       vertical-align: top;
       background: @black;
-      box-shadow: 0 0 0 1.75px @white, 0 0 0 3.75px #99a9cd;
+      // box-shadow: 0 0 0 1.75px @white, 0 0 0 3.75px #99a9cd;
     }
   }
 }
@@ -286,7 +298,7 @@
   .action {
     color: rgba(255, 255, 255, 0.85);
 
-    >span {
+    > span {
       color: rgba(255, 255, 255, 0.85);
     }
 
@@ -302,14 +314,14 @@
     .action {
       color: @text-color;
 
-      >span {
+      > span {
         color: @text-color;
       }
 
       &:hover {
         color: rgba(255, 255, 255, 0.85);
 
-        >span {
+        > span {
           color: rgba(255, 255, 255, 0.85);
         }
       }

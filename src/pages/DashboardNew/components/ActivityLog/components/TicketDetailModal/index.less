@@ -1,0 +1,175 @@
+@darkColour: #161c29;
+@blueColour: #2c6df9;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@contentPadding: 24px;
+@borderColor: #d6dce0;
+
+.TicketDetailModal {
+  :global {
+    .ant-modal-body {
+      // max-height: 500px;
+      // overflow-y: auto;
+    }
+    .ant-form-item-explain {
+      div {
+        font-size: 13px;
+      }
+    }
+    .ant-select-selection-item {
+      color: #161c29 !important;
+    }
+    .ant-select-selector,
+    .ant-input {
+      height: 42px !important;
+
+      padding: 5px 11px !important;
+
+      background: transparent !important;
+      border-radius: 5px !important;
+    }
+    .ant-select-selection-search-input {
+      height: 42px !important;
+      border-radius: 5px;
+    }
+    .ant-form-item-label
+      > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+      display: none;
+    }
+    .ant-form-item-label label {
+      height: 0;
+      color: #707177;
+      font-size: 12px;
+    }
+    .ant-btn {
+      height: 40px;
+      padding: 0 25px;
+      object-fit: contain;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: Roboto;
+      letter-spacing: 0.13px;
+
+      text-shadow: none;
+      background-color: #ffa100;
+      border: solid 1px #ffa100;
+      border-radius: 25px;
+      box-shadow: none;
+      &:hover {
+        color: #ffffff;
+        background-color: #ffa100;
+      }
+    }
+
+    .ant-modal-header {
+      padding: 24px;
+      border-top-left-radius: 8px;
+    }
+    .ant-modal-content {
+      border-top-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+    .ant-form-item {
+      margin-bottom: 12px;
+    }
+    .ant-modal-footer {
+      padding: 13px 24px;
+    }
+    .ant-modal-close-x {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 54px;
+      height: 48px;
+      color: #fff;
+      background-color: #2c6df9;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+      &:active {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &__text {
+      margin: 0;
+      color: #161c29;
+      font-weight: 600;
+      font-size: 16px;
+    }
+  }
+
+  // CONTENT
+  .container {
+    &__details {
+      background: #ffffff;
+      border: 1px solid #d6dce0;
+      border-radius: 5px;
+      .abovePart {
+        padding: 24px;
+        .title {
+          color: #707177;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 16px;
+        }
+        .value {
+          color: #161c29;
+          font-size: 14px;
+          line-height: 16px;
+        }
+        .ticketID {
+          color: #2c6df9;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 16px;
+        }
+        .priority {
+          padding: 4px 8px;
+          color: #161c29;
+          font-size: 11px;
+          line-height: 18px;
+          background: #ffb6b6;
+          border-radius: 12px;
+        }
+      }
+      .belowPart {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 24px;
+        border-top: 1px solid #d6dce0;
+        .status {
+          span {
+            display: inline-block;
+            margin-right: 10px;
+            color: #707177;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
+}
+
+.noPadding {
+  :global {
+    .ant-modal-body {
+      padding: 0 0 @contentPadding 0;
+    }
+  }
+}
+.withPadding {
+  :global {
+    .ant-modal-body {
+      padding: @contentPadding;
+    }
+  }
+}

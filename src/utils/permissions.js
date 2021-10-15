@@ -24,7 +24,14 @@ const isAuthorized = (permissionList, arrTextToCheck) => {
   });
   return response;
 };
-
+const isRole = (permissionList, arrTextToCheck) => {
+  let response = -1;
+  arrTextToCheck.forEach((text) => {
+    const check = permissionList.includes(text.toLowerCase());
+    if (check) response = 1;
+  });
+  return response;
+};
 export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   if (isOwner) {
     return {
@@ -68,6 +75,16 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
       viewOnboardingSettingTab: 1,
       addTeamMemberOnboarding: -1,
       viewOnboardingOverviewTab: 1,
+      viewOnboardingNewJoinees: 1,
+
+      // timesheet
+      viewMyTimesheet: -1,
+      viewManagerTimesheet: -1,
+      viewSettingTimesheet: -1,
+
+      // dashboard
+      viewPendingApprovalDashboard: -1,
+      viewMyTeamDashboard: -1,
     };
   }
   // const permissionList = groupPermissions(roles);
@@ -304,11 +321,16 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'hr-manager',
     'hr',
   ]);
+  const indexNewJoinees = isRole(permissionList, ['manager']);
 
   // TIMESHEET
   const indexMyTimesheet = isAuthorized(permissionList, ['employee']);
   const indexManagerTimesheet = isAuthorized(permissionList, ['manager', 'hr-manager']);
   const indexSettingTimesheet = isAuthorized(permissionList, ['manager', 'hr-manager']);
+
+  // DASHBOARD
+  const indexPendingApprovalDashboard = isAuthorized(permissionList, ['manager', 'hr-manager']);
+  const indexMyTeamDashboard = isAuthorized(permissionList, ['manager', 'hr-manager']);
 
   return {
     // Directory Page
@@ -351,10 +373,15 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewOnboardingSettingTab: indexOnboardingSettings,
     addTeamMemberOnboarding: indexAddTeamMemberOnboarding,
     viewOnboardingOverviewTab: indexOverviewViewOnboarding,
+    viewOnboardingNewJoinees: indexNewJoinees,
 
     // timesheet
     viewMyTimesheet: indexMyTimesheet,
     viewManagerTimesheet: indexManagerTimesheet,
     viewSettingTimesheet: indexSettingTimesheet,
+
+    // dashboard
+    viewPendingApprovalDashboard: indexPendingApprovalDashboard,
+    viewMyTeamDashboard: indexMyTeamDashboard,
   };
 }

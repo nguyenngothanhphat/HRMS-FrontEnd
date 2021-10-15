@@ -8,6 +8,7 @@ import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import OnboardingOverview from './components/OnboardingOverview';
 import Settings from './components/Settings';
 import styles from './index.less';
+import NewJoinees from './components/NewJoinees/index';
 
 @connect(({ user: { permissions = [] } = {}, onboarding: { onboardingOverview = {} } = {} }) => ({
   permissions,
@@ -193,11 +194,11 @@ class Onboarding extends PureComponent {
 
     const viewOnboardingSettingTab = permissions.viewOnboardingSettingTab !== -1;
     const viewOnboardingOverviewTab = permissions.viewOnboardingOverviewTab !== -1;
+    const viewOnboardingNewJoinees = permissions.viewOnboardingNewJoinees !== -1;
 
     const {
       match: { params: { tabName = '', type = '' } = {} },
     } = this.props;
-
     return (
       <PageContainer>
         <div className={styles.containerOnboarding}>
@@ -224,6 +225,16 @@ class Onboarding extends PureComponent {
                     key="settings"
                   >
                     <Settings type={type} />
+                  </TabPane>
+                </>
+              ) : null}
+              {viewOnboardingNewJoinees ? (
+                <>
+                  <TabPane
+                    tab={formatMessage({ id: 'component.employeeOnboarding.newJoinees' })}
+                    key="newJoinees"
+                  >
+                    <NewJoinees type={type} />
                   </TabPane>
                 </>
               ) : null}

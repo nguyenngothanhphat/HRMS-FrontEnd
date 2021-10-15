@@ -14,10 +14,14 @@ const { TabPane } = Tabs;
 @connect(
   ({
     loading,
-    onboarding: { onboardingOverview: { offerAccepted = [], total = 0 } = {} } = {},
+    onboarding: {
+      onboardingOverview: { offerAccepted = [], total = 0 } = {},
+      reloadTableData = false,
+    } = {},
   }) => ({
     offerAccepted,
     total,
+    reloadTableData,
     loading: loading.effects['onboarding/fetchOnboardList'],
   }),
 )
@@ -44,8 +48,16 @@ class OfferAccepted extends PureComponent {
 
   componentDidUpdate = (prepProps, prepStates) => {
     const { nameSearch } = this.state;
+    const { reloadTableData, dispatch } = this.props;
     if (prepStates.nameSearch !== nameSearch) {
       this.fetchOnboardingOfferAccepted(nameSearch);
+    }
+    if (prepProps.reloadTableData !== reloadTableData && reloadTableData) {
+      this.fetchOnboardingOfferAccepted(nameSearch);
+      dispatch({
+        type: 'onboard/save',
+        payload: { reloadTableData: false },
+      });
     }
   };
 

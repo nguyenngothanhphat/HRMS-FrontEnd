@@ -299,7 +299,7 @@ class DirectoryComponent extends PureComponent {
       companiesOfUser = [],
       filterList: { listCountry = [] } = {},
       listLocationsByCompany = [],
-      currentUser: { employee: { department: { name: departmentName = '' } = {} } = {} } = {},
+      currentUser: { employee: { departmentInfo: { name: departmentName = '' } = {} } = {} } = {},
     } = this.props;
 
     const {

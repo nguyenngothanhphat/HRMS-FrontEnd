@@ -33,7 +33,6 @@
     "tsc": "tsc --noEmit",
     "cypress-test": "cd tests && cd ui_automation_hrms && cypress open",
     "cypress-jenkin": "cd tests && cd ui_automation_hrms && node cypress_config_run.js"
-
   },
   "lint-staged": {
     "**/*.less": "stylelint --syntax less",
@@ -80,7 +79,7 @@
     "qs": "^6.9.0",
     "quill-mention": "^3.0.0",
     "react": "^16.8.6",
-    "react-beautiful-dnd": "^13.0.0",
+    "react-beautiful-dnd": "^13.1.0",
     "react-collapse": "^5.1.0",
     "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.8.6",
@@ -95,6 +94,7 @@
     "react-quill": "^1.3.5",
     "react-scroll": "^1.8.2",
     "react-signature-canvas": "^1.0.3",
+    "react-sortable-hoc": "^2.0.0",
     "react-to-print": "^2.12.3",
     "socket.io-client": "^4.1.3",
     "tslint": "^6.1.3",

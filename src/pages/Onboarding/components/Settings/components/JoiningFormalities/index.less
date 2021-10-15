@@ -1,0 +1,274 @@
+.page {
+  margin: 24px 32px 24px 24px;
+
+  .pageHeader {
+    background-color: #f6f7f9;
+    margin-bottom: 24px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    .leftPart {
+      .title {
+        height: 21px;
+        font-family: 'Roboto';
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.17;
+        letter-spacing: 0.3px;
+        color: #161c29;
+        margin-bottom: 17px;
+      }
+
+      .subTitle {
+        width: 734px;
+        font-family: 'Roboto';
+        font-size: 13px;
+        line-height: 20px;
+        letter-spacing: 0.12px;
+        text-align: left;
+        color: #707177;
+      }
+    }
+
+    .rightPart {
+      .addButton {
+        padding: 9px 12px;
+        background: rgba(86, 138, 250, 0.12);
+        border-radius: 5px;
+        cursor: pointer;
+
+        span {
+          display: block;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 16px;
+          color: #2c6df9;
+        }
+
+        &:hover {
+          background: rgba(86, 138, 250, 0.048);
+        }
+      }
+    }
+
+
+  }
+
+  :global {
+    .ant-tabs-nav {
+      background-color: #f6f7f9;
+    }
+
+    .ant-tabs-top>.ant-tabs-nav::before,
+    .ant-tabs-bottom>.ant-tabs-nav::before,
+    .ant-tabs-top>div>.ant-tabs-nav::before,
+    .ant-tabs-bottom>div>.ant-tabs-nav::before {
+      border-bottom: 1px solid #D6DCE0;
+    }
+
+    .ant-tabs-tab>.ant-tabs-tab-btn {
+      font-size: 14px;
+    }
+  }
+
+  .checkList {
+    background: #FFFFFF;
+    border: 1px solid #D6DCE0;
+    box-sizing: border-box;
+    border-radius: 5px;
+    padding: 16px;
+    margin-top: 24px;
+    min-height: 400px;
+
+    .footer {
+      margin: 32px 0;
+
+      &__btn {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        .text {
+          font-weight: 500;
+          font-size: 14px;
+          color: #2C6DF9;
+        }
+      }
+    }
+  }
+
+  .employeeId {
+    background: #FFFFFF;
+    border: 1px solid #D6DCE0;
+    box-sizing: border-box;
+    border-radius: 5px;
+    padding: 40px 40px 0 40px;
+    margin-top: 24px;
+    min-height: 400px;
+
+    .question {
+      font-size: 13px;
+      color: #464646;
+      margin-bottom: 24px;
+    }
+
+    :global {
+      .ant-form-item-label>label {
+        font-size: 13px;
+        color: #707177;
+      }
+
+      .ant-input {
+        width: 360px;
+        height: 42px;
+        border: 1px solid #D6DCE4;
+        box-sizing: border-box;
+        border-radius: 5px;
+      }
+
+      .ant-btn-primary {
+        height: 40px;
+        min-width: 70px;
+        background: #FFA100;
+        border: 1px solid #FFA100;
+        box-sizing: border-box;
+        border-radius: 25px;
+      }
+    }
+
+    .btnCancel {
+      border: 1px solid #de0e0e;
+      box-sizing: border-box;
+      border-radius: 25px;
+      height: 40px;
+      color: #de0e0e;
+    }
+  }
+
+  .groupBtn {
+
+    .btn {
+      background: #FFFFFF;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.23);
+    }
+  }
+
+
+}
+
+.modalCustom {
+  :global {
+    .ant-modal-header {
+      padding: 24px;
+      border-top-left-radius: 8px;
+    }
+
+    .ant-modal-body {
+      min-height: 100px;
+      height: auto;
+    }
+
+    .ant-modal-content {
+      // min-width: 1000px;
+      border-top-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+
+    .ant-modal-footer {
+      padding: 24px;
+    }
+
+    .ant-modal-close-x {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 54px;
+      height: 48px;
+      color: #fff;
+      background-color: #2c6df9;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+
+      &:active {
+        opacity: 0.5;
+      }
+    }
+
+    //form
+    .ant-form {
+      .ant-form-item-label>label {
+        color: #707177;
+        font-size: 13px;
+
+        ::before {
+          display: none;
+        }
+      }
+
+      .ant-form-item-label>label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+        display: none;
+      }
+
+      .ant-input {
+        height: 42px;
+        border: 1px solid #D6DCE4;
+        box-sizing: border-box;
+        border-radius: 5px;
+      }
+
+      textarea.ant-input {
+        max-height: 200px;
+        min-height: 200px;
+      }
+
+      .ant-input-textarea-show-count::after {
+        position: absolute;
+        bottom: 22px;
+        right: 6px;
+      }
+    }
+
+  }
+
+  .btnSubmit {
+    min-width: 95px;
+    width: auto;
+    height: 40px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    background-color: #ffa100;
+    border: none;
+    border-radius: 25px;
+  }
+
+  .btnSubmit:disabled {
+    color: #fff;
+    opacity: 0.5;
+  }
+
+  .btnCancel {
+    display: inline-block;
+    margin-right: 40px;
+    color: #ffa100;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:active {
+      opacity: 0.5;
+    }
+  }
+
+
+}
+
+.blueText {
+  font-weight: 500;
+  font-size: 13px;
+  color: #2C6DF9;
+}
