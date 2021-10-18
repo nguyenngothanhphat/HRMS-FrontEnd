@@ -1,0 +1,59 @@
+# This file is a template, and might need editing before it works on your project.
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
+
+# This is a sample GitLab CI/CD configuration file that should run without any modifications.
+# It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
+# it uses echo commands to simulate the pipeline execution.
+#
+# A pipeline is composed of independent jobs that run scripts, grouped into stages.
+# Stages run in sequential order, but jobs within stages run in parallel.
+#
+# For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
+
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - deploy
+  - deploy-master
+
+build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  tags:
+    - master
+  script:
+    - npm install
+    - npm run build
+    - docker login -u khoa.le -p K1hoa@95 gitlab.paxanimi.ai:8150
+    - docker rmi gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
+    - docker build -t gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest -f Dockerfile .
+    - docker push gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
+    - cd /home/frontend
+    - kubectl delete -f frontend-deployment.yaml
+
+deploy-job-worker-1:
+  stage: deploy
+  tags:
+    - worker-1
+  script:
+    - docker login -u khoa.le -p K1hoa@95 gitlab.paxanimi.ai:8150
+    - docker rmi gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
+    - docker pull gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
+
+deploy-job-worker-2:
+  stage: deploy
+  tags:
+    - worker-2
+  script:
+    - docker login -u khoa.le -p K1hoa@95 gitlab.paxanimi.ai:8150
+    - docker rmi gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
+    - docker pull gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
+
+deploy-job-master:
+  stage: deploy-master
+  tags:
+    - master
+  script:
+    - cd /home/frontend
+    - kubectl apply -f frontend-deployment.yaml
