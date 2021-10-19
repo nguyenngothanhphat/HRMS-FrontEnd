@@ -1,14 +1,31 @@
 @rowPaddingBlock: 16px;
 @tagPadding: 16px;
 @greenColor: #1ab88f;
+@commonHeight: 49px;
 .MeetingTag {
+  height: 100%;
   cursor: pointer;
+
+  .div1 {
+    height: @commonHeight;
+  }
+  .div2 {
+    height: @commonHeight*2+ @tagPadding*1;
+  }
+  .div3 {
+    height: @commonHeight*3+ @tagPadding*3;
+  }
+  .div4 {
+    height: @commonHeight*4+ @tagPadding*5;
+  }
   div {
-    align-items: center;
-    padding: @tagPadding;
+    height: 49px;
+    // padding: @tagPadding;
+    padding-top: 13px;
     font-size: 13px;
     line-height: 20px;
     border-radius: 8px;
+    padding-inline: @tagPadding;
   }
   .greenTag {
     color: @greenColor;

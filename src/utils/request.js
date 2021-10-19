@@ -50,20 +50,48 @@ const errorHandler = (error) => {
   return { statusCode: response.status, message: response.message };
 };
 
-const request = (url, options = {}, noAuth) => {
-  let headers = options.headers || {};
-  if (!noAuth) {
-    const token = getToken();
-    headers = {
-      Authorization: `Bearer ${token}`,
-      ...headers,
-    };
+const request = async (url, options = {}, noAuth) => {
+  // let headers = options.headers || {};
+  // if (!noAuth) {
+  //   const token = getToken();
+  //   headers = {
+  //     Authorization: `Bearer ${token}`,
+  //     ...headers,
+  //   };
+  // }
+  // return extend({
+  //   errorHandler,
+  //   credentials: 'include',
+  //   headers,
+  // })(url, options);
+  const { method = 'POST', data = {} } = options;
+  const token = getToken();
+
+  const baseURL = 'https://stghrms.paxanimi.ai';
+
+  const instance = axios.create({
+    baseURL,
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+      accept: 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      Authorization: !noAuth ? `Bearer ${token}` : '',
+    },
+  });
+
+  instance.interceptors.response.use(
+    (config) => config,
+    (error) => {
+      // eslint-disable-next-line compat/compat
+      return Promise.reject(error);
+    },
+  );
+  try {
+    const res = await instance[method.toLowerCase()](url, { ...data });
+    return res?.data;
+  } catch (e) {
+    return dialog(e);
   }
-  return extend({
-    errorHandler,
-    credentials: 'include',
-    headers,
-  })(url, options);
 };
 
 const request2 = async (url, options = {}, noAuth, apiUrlName = 'API_TIMESHEET', hasParams) => {
