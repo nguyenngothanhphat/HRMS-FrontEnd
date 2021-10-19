@@ -50,7 +50,7 @@ const CustomCalendar = (props) => {
   };
 
   const onFillTimesheet = () => {
-    history.push('/timesheet');
+    history.push('/time-sheet');
   };
 
   // RENDER

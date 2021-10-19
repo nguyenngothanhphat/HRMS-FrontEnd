@@ -21,7 +21,7 @@ const Timesheets = (props) => {
 
   // FUNCTION
   const onFillTimesheet = () => {
-    history.push('/timesheet');
+    history.push('/time-sheet');
   };
 
   const getStartDate = () => {

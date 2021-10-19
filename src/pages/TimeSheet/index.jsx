@@ -19,7 +19,7 @@ const TimeSheet = (props) => {
 
   useEffect(() => {
     if (!tabName) {
-      history.replace(`/timesheet/my`);
+      history.replace(`/time-sheet/my`);
     }
   }, [tabName]);
 
@@ -56,7 +56,7 @@ const TimeSheet = (props) => {
           activeKey={tabName || 'my'}
           tabBarExtraContent={options()}
           onChange={(key) => {
-            history.push(`/timesheet/${key}`);
+            history.push(`/time-sheet/${key}`);
           }}
           destroyInactiveTabPane
         >
