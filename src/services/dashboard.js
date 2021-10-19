@@ -1,4 +1,4 @@
-import { request, request2 } from '@/utils/request';
+import { request } from '@/utils/request';
 
 export async function getListTicket(payload) {
   return request('/api/approvaltenant/get-list-ticket', {
@@ -64,14 +64,14 @@ export async function getMyTeam(payload) {
 
 // TIMESHEET
 export async function getMyTimesheet(payload) {
-  return request2(
+  return request(
     `/api/timesheet/filter`,
     {
       method: 'GET',
       data: payload,
     },
     false,
-    'API_TIMESHEET',
+    'TIMESHEET_API',
     true, // hasParams
   );
 }
