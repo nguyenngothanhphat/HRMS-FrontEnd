@@ -50,10 +50,10 @@ const UserModel = {
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
         const candidateLinkMode = localStorage.getItem('candidate-link-mode') === 'true';
-        // if (isFirstLogin && !candidateLinkMode) {
-        //   history.replace('/first-change-password');
-        //   return {};
-        // }
+        if (isFirstLogin && !candidateLinkMode) {
+          history.replace('/first-change-password');
+          return {};
+        }
 
         const isCandidate = formatRole.indexOf('candidate') > -1;
         const isOnlyCandidate = isCandidate && formatRole.length === 1;

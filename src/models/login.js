@@ -34,10 +34,10 @@ const Model = {
         const { user: { signInRole = [], isFirstLogin = false } = {}, listCompany = [] } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
-        // if (isFirstLogin) {
-        //   history.replace('/first-change-password');
-        //   return {};
-        // }
+        if (isFirstLogin) {
+          history.replace('/first-change-password');
+          return {};
+        }
 
         // CANDIDATE
         const isCandidate = formatRole.indexOf('candidate') > -1;
@@ -192,19 +192,13 @@ const Model = {
         setToken(response.data.token);
 
         let formatArrRoles = [];
-        const {
-          user: {
-            signInRole = [],
-            // isFirstLogin = false
-          } = {},
-          listCompany = [],
-        } = data;
+        const { user: { signInRole = [], isFirstLogin = false } = {}, listCompany = [] } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
-        // if (isFirstLogin) {
-        //   history.replace('/first-change-password');
-        //   return {};
-        // }
+        if (isFirstLogin) {
+          history.replace('/first-change-password');
+          return {};
+        }
 
         if (formatRole.indexOf('candidate') > -1) {
           yield put({
