@@ -1,5 +1,5 @@
 import { Button, Col, Popover, Row } from 'antd';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
 import Bell from '@/assets/dashboard/bell.svg';
@@ -9,9 +9,10 @@ import GoogleMeet from '@/assets/dashboard/googleMeet.svg';
 import MockAvatar from '@/assets/dashboard/mockAvatar.jpg';
 import styles from './index.less';
 
+const timeFormat = 'HH:mm a';
 const MeetingTag = (props) => {
   const myRef = useRef(null);
-  const { event: eventProp, span: spanProp, isFirstHourHasData = false } = props;
+  const { event: eventProp, span: spanProp, hourSpan: hourSpanProp = 1 } = props;
   const [showPopover, setShowPopover] = useState(false);
 
   // FUNCTIONS
@@ -30,24 +31,16 @@ const MeetingTag = (props) => {
     }
   };
 
+  const getTagClassName = () => {
+    if (hourSpanProp === 2) return styles.div2;
+    if (hourSpanProp === 3) return styles.div3;
+    if (hourSpanProp === 4) return styles.div4;
+    return null;
+  };
+
   const joinGGMeet = (link) => {
     window.open(link, '_blank').focus();
   };
-
-  const executeScroll = () => {
-    if (myRef && myRef.current) {
-      myRef.current.scrollIntoView({
-        behavior: 'smooth',
-      });
-    }
-  };
-
-  // USE EFFECT
-  // useEffect(() => {
-  //   if (isFirstHourHasData) {
-  //     executeScroll();
-  //   }
-  // }, []);
 
   // RENDER POPUP EVENT
   const renderGuest = (attendee) => {
@@ -147,6 +140,7 @@ const MeetingTag = (props) => {
     const max = Math.floor(4);
     const colorType = Math.floor(Math.random() * (max - min) + min);
     const colorClassName = getColorClassName(colorType);
+    const tagClassName = getTagClassName(hourSpanProp);
     return (
       <Popover
         placement="rightTop"
@@ -158,7 +152,15 @@ const MeetingTag = (props) => {
         onVisibleChange={() => setShowPopover(!showPopover)}
       >
         <Col span={span} className={styles.MeetingTag} ref={myRef}>
-          <div className={colorClassName}>{event.summary}</div>
+          <div className={`${colorClassName} ${tagClassName}`}>
+            {event.summary}
+            {hourSpanProp > 1 && (
+              <span className={styles.extraTime}>
+                {moment(event.start.dateTime).format(timeFormat)} -{' '}
+                {moment(event.end.dateTime).format(timeFormat)}
+              </span>
+            )}
+          </div>
         </Col>
       </Popover>
     );
