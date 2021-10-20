@@ -226,18 +226,17 @@ const TimeSheet = {
       const { addedActivity = {}, date = '' } = action.payload;
       let { myTimesheet } = state;
       const newItem = { ...addedActivity, totalHours: convertMsToTime(addedActivity.duration) };
-
       const findDateExist = myTimesheet.find((t) => t.date === date);
-      if (myTimesheet.length === 0 || !findDateExist) {
+      if (myTimesheet.length === 0) {
         myTimesheet = [
           {
             date,
             timesheet: [newItem],
           },
         ];
-      } else {
+      } else if (findDateExist) {
         myTimesheet = myTimesheet.map((item) => {
-          if (item.date === date) {
+          if (item.date === date && findDateExist) {
             const timesheetTemp = JSON.parse(JSON.stringify(item.timesheet));
             timesheetTemp.push(newItem);
             return {
@@ -246,6 +245,11 @@ const TimeSheet = {
             };
           }
           return item;
+        });
+      } else {
+        myTimesheet.push({
+          date,
+          timesheet: [newItem],
         });
       }
       return {

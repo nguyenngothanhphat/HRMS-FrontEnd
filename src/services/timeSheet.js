@@ -61,7 +61,7 @@ export async function addActivity(payload) {
       data: payload,
     },
     false,
-    'API_TIMESHEET',
+    'TIMESHEET_API',
   );
 }
 
