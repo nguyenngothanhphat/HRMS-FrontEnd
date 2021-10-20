@@ -9,6 +9,7 @@ import GoogleMeet from '@/assets/dashboard/googleMeet.svg';
 import MockAvatar from '@/assets/dashboard/mockAvatar.jpg';
 import styles from './index.less';
 
+const timeFormat = 'HH:mm a';
 const MeetingTag = (props) => {
   const myRef = useRef(null);
   const { event: eventProp, span: spanProp, hourSpan: hourSpanProp = 1 } = props;
@@ -151,7 +152,15 @@ const MeetingTag = (props) => {
         onVisibleChange={() => setShowPopover(!showPopover)}
       >
         <Col span={span} className={styles.MeetingTag} ref={myRef}>
-          <div className={`${colorClassName} ${tagClassName}`}>{event.summary}</div>
+          <div className={`${colorClassName} ${tagClassName}`}>
+            {event.summary}
+            {hourSpanProp > 1 && (
+              <span className={styles.extraTime}>
+                {moment(event.start.dateTime).format(timeFormat)} -{' '}
+                {moment(event.end.dateTime).format(timeFormat)}
+              </span>
+            )}
+          </div>
         </Col>
       </Popover>
     );

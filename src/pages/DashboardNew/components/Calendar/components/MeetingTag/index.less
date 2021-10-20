@@ -10,13 +10,13 @@
     height: @commonHeight;
   }
   .div2 {
-    height: @commonHeight*2+ @tagPadding*1;
+    height: @commonHeight*2+ @tagPadding*2;
   }
   .div3 {
-    height: @commonHeight*3+ @tagPadding*3;
+    height: @commonHeight*3+ @tagPadding*2;
   }
   .div4 {
-    height: @commonHeight*4+ @tagPadding*5;
+    height: @commonHeight*4+ @tagPadding*2;
   }
   div {
     height: 49px;
@@ -26,6 +26,13 @@
     line-height: 20px;
     border-radius: 8px;
     padding-inline: @tagPadding;
+    .extraTime {
+      display: block;
+      margin-top: 16px;
+      color: #212020;
+      font-size: 13px;
+      line-height: 20px;
+    }
   }
   .greenTag {
     color: @greenColor;
