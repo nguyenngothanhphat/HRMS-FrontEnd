@@ -1,5 +1,5 @@
 import { Col, Row, Spin } from 'antd';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
 import MeetingTag from '../MeetingTag';
