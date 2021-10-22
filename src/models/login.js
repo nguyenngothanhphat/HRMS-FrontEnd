@@ -5,6 +5,7 @@ import {
   setTenantId,
   setCurrentCompany,
   removeLocalStorage,
+  setIsGoogleSignin,
 } from '@/utils/authority';
 import { setToken } from '@/utils/token';
 import { dialog } from '@/utils/utils';
@@ -190,6 +191,7 @@ const Model = {
           payload: response,
         });
         setToken(response.data.token);
+        setIsGoogleSignin(true);
 
         let formatArrRoles = [];
         const { user: { signInRole = [], isFirstLogin = false } = {}, listCompany = [] } = data;

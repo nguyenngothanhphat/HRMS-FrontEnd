@@ -129,3 +129,13 @@ export function initViewOffboarding() {
   if (view === 'true') return true;
   return false;
 }
+
+export function setIsGoogleSignin(value) {
+  localStorage.setItem('isGoogleSignin', value);
+  reloadAuthorized();
+}
+export function getIsGoogleSignin() {
+  const isGoogleSignin = localStorage.getItem('isGoogleSignin');
+  if (isGoogleSignin === 'true') return true;
+  return false;
+}
