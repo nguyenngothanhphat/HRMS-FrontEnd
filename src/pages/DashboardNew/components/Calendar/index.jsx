@@ -8,27 +8,40 @@ import LeftArrow from '@/assets/dashboard/leftArrow.svg';
 import styles from './index.less';
 import MyCalendar from './components/MyCalendar';
 import HolidayCalendar from './components/HolidayCalendar';
+import GoogleSync from './components/GoogleSync';
 import CommonModal from './components/CommonModal';
+import { getIsGoogleSignin } from '@/utils/authority';
 
 const { TabPane } = Tabs;
 const dateFormat = 'DD MMM YYYY';
+const isGoogleSignIn = getIsGoogleSignin();
 
 const Calendar = (props) => {
   const [activeKey, setActiveKey] = useState('1');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(moment());
   const [selectedYear, setSelectedYear] = useState(moment().year());
+  const [isSyncSuccess, setIsSyncSuccess] = useState(false);
   const { dispatch, googleCalendarList = [], loadingSyncGoogleCalendar = false } = props;
 
   // API
-  const syncGoogleCalendarAPI = (date) => {
-    dispatch({
+  const syncGoogleCalendarAPI = async (date) => {
+    const res = await dispatch({
       type: 'dashboard/syncGoogleCalendarEffect',
       payload: { date },
     });
+    if (res?.statusCode === 200) {
+      setIsSyncSuccess(true);
+    }
   };
 
   // USE EFFECT
+  useEffect(() => {
+    return () => {
+      setIsSyncSuccess(false);
+    };
+  }, []);
+
   useEffect(() => {
     syncGoogleCalendarAPI(selectedDate);
   }, [selectedDate]);
@@ -88,7 +101,11 @@ const Calendar = (props) => {
         <div className={styles.content}>
           <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
             <TabPane tab="My Calendar" key="1">
-              <MyCalendar data={googleCalendarList} loading={loadingSyncGoogleCalendar} />
+              {isSyncSuccess && isGoogleSignIn ? (
+                <MyCalendar data={googleCalendarList} loading={loadingSyncGoogleCalendar} />
+              ) : (
+                <GoogleSync />
+              )}
             </TabPane>
             <TabPane tab="Holiday Calendar" key="2">
               <HolidayCalendar />
