@@ -1,0 +1,50 @@
+.TableTickets{
+    :global {
+        .ant-table-thead > tr > th{
+            background: #2C6DF9 !important;
+        }
+        .ant-table-pagination-right {
+            justify-content: flex-start !important;
+        }
+        .ant-table-body{
+            max-height: 533px !important;
+        }
+    }
+}
+:global{
+    .dropDown{
+        .ant-dropdown-menu{
+            background: #FFFFFF;
+            border-radius: 6px;
+            width: 200px;
+            max-height: 258px;
+            margin-top: 12px;
+            right: 74px;
+        }
+        .ant-table-row:hover .ant-dropdown-trigger{
+            background: #fafafa !important;
+        }
+    }
+    .ant-dropdown-trigger{
+        border: none !important;
+        box-shadow: none !important;
+        color: #2C6DF9 !important;
+        &:hover{
+            cursor: pointer;
+        }
+    }
+    .inputSearch{
+        margin: 8px;
+        .ant-input-affix-wrapper{
+            width: 184px;
+            height: 37px;
+            background: #FFFEFE;
+            border: 1pxsolid #D6DCE0 !important;
+            box-sizing: border-box;
+            border-radius: 6px;
+            .ant-input{
+                padding: 8px;
+            }
+        }
+    }
+}

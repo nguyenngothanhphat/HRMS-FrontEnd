@@ -11,12 +11,13 @@ import {
   Upload,
   message,
 } from 'antd';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
 import HelpIcon from '@/assets/dashboard/help.svg';
 import BlueAddIcon from '@/assets/dashboard/blueAdd.svg';
 import { SUPPORT_TEAM, PRIORITY } from '@/utils/dashboard';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
 import styles from './index.less';
 
@@ -25,11 +26,28 @@ const dateFormat = 'MM/DD/YYYY';
 
 const RaiseTicketModal = (props) => {
   const formRef = React.createRef();
-  const { visible = false, title = '', onClose = () => {} } = props;
+  const { visible = false, title = '', onClose = () => { } } = props;
   const { maxFileSize = 2, dispatch } = props;
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
   const [queryTypeList, setQueryTypeList] = useState([]);
+  const [attachments, setAttachments] = useState("");
+  const [supportTeam, setSupportTeam] = useState("");
+  const [supportTeamID, setSupportTeamID] = useState("");
+  const [state, setState] = useState({
+    payload: {
+      employeeRaise: "",
+      employeeAssignee: "",
+      status: "",
+      queryType: "",
+      subject: "",
+      priority: "",
+      ccList: [],
+      attachments: "",
+    }
+  })
 
+  const { myEmployeeID, listEmployee, listDepartment } = props;
+  console.log(myEmployeeID)
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>
@@ -37,13 +55,40 @@ const RaiseTicketModal = (props) => {
       </div>
     );
   };
-
   const handleCancel = () => {
     onClose();
   };
+  useEffect(() => {
+    dispatch({
+      type: 'ticketManagement/fetchListEmployee',
+      payload: {
+        tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
+      }
+    });
+    dispatch({
+      type: 'ticketManagement/fetchDepartments',
+      payload: {
+        tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
+      }
+    });
+  }, []);
 
-  const handleFinish = () => {
-    // finish
+  const handleFinish  = (value) => {
+    dispatch({
+      type: 'ticketManagement/addTicket',
+      payload: {
+        employeeRaise: supportTeamID,
+        employeeAssignee: myEmployeeID,
+        status: value.status,
+        queryType: value.queryType,
+        subject: value.subject,
+        priority: value.priority,
+        ccList: value.interestList,
+        attachments,
+      }
+    })
   };
 
   const beforeUpload = (file) => {
@@ -77,6 +122,8 @@ const RaiseTicketModal = (props) => {
     });
     if (res.statusCode === 200) {
       const { data = [] } = res;
+      const idUpload = data[0].id;
+      setAttachments(idUpload);
       if (data.length > 0) {
         const uploadedAttachmentsTemp = JSON.parse(JSON.stringify(uploadedAttachments));
         uploadedAttachmentsTemp.push(data[0]);
@@ -94,10 +141,12 @@ const RaiseTicketModal = (props) => {
   };
 
   const onSupportTeamChange = (value) => {
+    setSupportTeam(value);
     const queryTypeListTemp = SUPPORT_TEAM.find((val) => val.name === value);
     setQueryTypeList(queryTypeListTemp.queryType || []);
+    const idDepartment = listDepartment.find((val) => val.name === value)
+    setSupportTeamID(idDepartment._id)
   };
-
   const renderModalContent = () => {
     return (
       <div className={styles.content}>
@@ -107,7 +156,7 @@ const RaiseTicketModal = (props) => {
           id="myForm"
           onFinish={handleFinish}
           initialValues={{
-            status: 'new',
+            status: 'New',
             requestDate: moment(),
           }}
         >
@@ -153,7 +202,7 @@ const RaiseTicketModal = (props) => {
                 rules={[{ required: true, message: 'Please select Status' }]}
               >
                 <Select disabled>
-                  <Option value="new">New</Option>
+                  <Option value="New">New</Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -212,8 +261,17 @@ const RaiseTicketModal = (props) => {
                 labelCol={{ span: 24 }}
               >
                 <Select showSearch mode="multiple" allowClear>
-                  <Option value="A">Test</Option>
-                  <Option value="B">Test B</Option>
+                  {listEmployee ? listEmployee.map((val) => {
+                    const departmentName = val.department.name;
+                    if (departmentName === "HR" && supportTeam === "HR") {
+                      return <Option value={val._id}>{val.generalInfo.legalName}</Option>;
+                    } if (departmentName === "IT" && supportTeam === "IT") {
+                      return <Option value={val._id}>{val.generalInfo.legalName}</Option>;
+                    } if (departmentName === "OPERATION" && supportTeam === "OPERATION") {
+                      return <Option value={val._id}>{val.generalInfo.legalName}</Option>;
+                    }
+                  }
+                  ) : ""}
                 </Select>
               </Form.Item>
             </Col>
@@ -225,12 +283,11 @@ const RaiseTicketModal = (props) => {
                 beforeUpload={beforeUpload}
                 onRemove={(file) => handleRemove(file)}
                 openFileDialogOnClick={!(uploadedAttachments.length === 2)}
-                // multiple
+              // multiple
               >
                 <div
-                  className={`${styles.addAttachments} ${
-                    uploadedAttachments.length === 2 ? styles.disableUpload : {}
-                  }`}
+                  className={`${styles.addAttachments} ${uploadedAttachments.length === 2 ? styles.disableUpload : {}
+                    }`}
                 >
                   <div className={styles.btn}>
                     <img src={BlueAddIcon} alt="" />
@@ -279,4 +336,15 @@ const RaiseTicketModal = (props) => {
   );
 };
 
-export default connect(() => ({}))(RaiseTicketModal);
+export default connect(
+  ({
+    loading,
+    ticketManagement: { listEmployee = [], listDepartment = [] } = {},
+    user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} || {}, roles = [] } = {} } = {},
+  }) => ({
+    listEmployee,
+    listDepartment,
+    myEmployeeID,
+    roles,
+  }),
+)(RaiseTicketModal);
