@@ -9,19 +9,6 @@ const { DATE_OF_HOURS, REMAINING } = EMP_MT_MAIN_COL_SPAN;
 
 const ActivityList = (props) => {
   const { data: { timesheet = [], date = '' } = {}, hourList = [] } = props;
-  const [cardList, setCardList] = useState([]);
-
-  const onRemoveCard = (index) => {
-    const tempList = JSON.parse(JSON.stringify(cardList));
-    tempList.splice(index, 1);
-    setCardList(tempList);
-  };
-
-  const onEditValue = (values, cardIndex) => {
-    const tempCardList = JSON.parse(JSON.stringify(cardList));
-    tempCardList[cardIndex] = values;
-    setCardList(tempCardList);
-  };
 
   // RENDER UI
   const renderHour = (hour) => {
