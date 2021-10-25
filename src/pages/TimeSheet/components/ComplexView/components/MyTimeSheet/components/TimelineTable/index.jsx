@@ -2,7 +2,12 @@ import { Col, Row, Spin } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { dateFormatAPI, EMP_MT_MAIN_COL_SPAN, EMP_MT_SECONDARY_COL_SPAN } from '@/utils/timeSheet';
+import {
+  dateFormatAPI,
+  EMP_MT_MAIN_COL_SPAN,
+  EMP_MT_SECONDARY_COL_SPAN,
+  WORKING_HOURS,
+} from '@/utils/timeSheet';
 import ActivityList from './components/ActivityList';
 import styles from './index.less';
 
@@ -54,7 +59,7 @@ const mockData = [
         dailyId: 17,
         projectName: 'HRMS',
         employeeId: '61765b19b9b27400abf50719',
-        startTime: '08:00',
+        startTime: '08:30',
         nightShift: false,
         endTime: '12:00',
         type: 'TASK',
@@ -84,7 +89,7 @@ const mockData = [
         dailyId: 17,
         projectName: 'HRMS',
         employeeId: '61765b19b9b27400abf50719',
-        startTime: '13:00',
+        startTime: '13:30',
         nightShift: false,
         endTime: '17:00',
         type: 'TASK',
@@ -124,7 +129,7 @@ const TimelineTable = (props) => {
     if (hourList.length === 0) {
       const hourListTemp = [];
       // from 8 AM to 9 PM
-      for (let i = 8; i < 22; i += 1) {
+      for (let i = WORKING_HOURS.START; i <= WORKING_HOURS.END; i += 1) {
         hourListTemp.push(i);
       }
       setHourList(hourListTemp);

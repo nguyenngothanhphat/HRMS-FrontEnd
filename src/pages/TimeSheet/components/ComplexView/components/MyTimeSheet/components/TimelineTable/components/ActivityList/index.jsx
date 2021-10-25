@@ -1,17 +1,14 @@
 import { Col, Row } from 'antd';
-import moment from 'moment';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'umi';
-import AddIcon from '@/assets/timeSheet/add.svg';
-import ActivityCard from './components/ActivityCard';
-import AddCard from './components/AddCard';
-import styles from './index.less';
 import { EMP_MT_MAIN_COL_SPAN } from '@/utils/timeSheet';
+import ActivityCard from './components/ActivityCard';
+import styles from './index.less';
 
 const { DATE_OF_HOURS, REMAINING } = EMP_MT_MAIN_COL_SPAN;
 
 const ActivityList = (props) => {
-  const { data: { date = '' } = {}, hourList = [] } = props;
+  const { data: { timesheet = [], date = '' } = {}, hourList = [] } = props;
   const [cardList, setCardList] = useState([]);
 
   const onRemoveCard = (index) => {
@@ -56,6 +53,9 @@ const ActivityList = (props) => {
             </div>
           );
         })}
+        {timesheet.map((item, index) => (
+          <ActivityCard card={item} cardDay={date} cardIndex={index} />
+        ))}
       </Col>
     </Row>
   );

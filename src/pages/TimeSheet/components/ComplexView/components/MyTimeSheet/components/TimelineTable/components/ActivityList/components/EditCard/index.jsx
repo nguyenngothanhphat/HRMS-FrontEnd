@@ -38,6 +38,8 @@ const EditCard = (props) => {
     cardIndex,
     cardDay = '',
     onCancelCard = () => {},
+    top = '',
+    height = '',
   } = props;
 
   const {
@@ -199,6 +201,10 @@ const EditCard = (props) => {
       name="editForm"
       autoComplete="off"
       className={styles.EditCard}
+      style={{
+        top,
+        height,
+      }}
       onFinish={onFinish}
       initialValues={{
         taskName,

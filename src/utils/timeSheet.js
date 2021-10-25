@@ -71,6 +71,8 @@ const EMP_MT_SECONDARY_COL_SPAN = {
   ACTIONS: 3,
 };
 
+const EMP_ROW_HEIGHT = 60; // px
+
 // convert milisecond to time HH:mm:ss
 // source: https://stackoverflow.com/questions/19700283/how-to-convert-time-in-milliseconds-to-hours-min-sec-format-in-javascript
 const convertMsToTime = (milliseconds) => {
@@ -94,6 +96,12 @@ const parseTimeAPI = (time = '') => {
   return time ? time.slice(0, -5) : '';
 };
 
+// WORKING HOURS
+const WORKING_HOURS = {
+  START: 8,
+  END: 21,
+};
+
 export {
   activityName,
   activityColor,
@@ -108,7 +116,9 @@ export {
   MT_SECONDARY_COL_SPAN,
   convertMsToTime,
   parseTimeAPI,
+  WORKING_HOURS,
   // COMPLEX VIEW
   EMP_MT_MAIN_COL_SPAN,
   EMP_MT_SECONDARY_COL_SPAN,
+  EMP_ROW_HEIGHT,
 };

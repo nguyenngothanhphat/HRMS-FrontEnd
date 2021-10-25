@@ -1,6 +1,6 @@
 import { Col, Row, Tooltip } from 'antd';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import DeleteIcon from '@/assets/timeSheet/del.svg';
 import EditIcon from '@/assets/timeSheet/edit.svg';
@@ -10,26 +10,25 @@ import {
   convertMsToTime,
   dateFormatAPI,
   hourFormat,
-  hourFormatAPI,
-  MT_SECONDARY_COL_SPAN,
+  EMP_MT_SECONDARY_COL_SPAN,
+  WORKING_HOURS,
+  EMP_ROW_HEIGHT,
 } from '@/utils/timeSheet';
 import EditCard from '../EditCard';
 import styles from './index.less';
 
-const { ACTIVITY, START_TIME, END_TIME, NIGHT_SHIFT, TOTAL_HOURS, NOTES, ACTIONS } =
-  MT_SECONDARY_COL_SPAN;
+const { PROJECT, TASK, DESCRIPTION, TIME, TOTAL_HOURS, ACTIONS } = EMP_MT_SECONDARY_COL_SPAN;
 
 const ActivityCard = (props) => {
   const {
     card: {
       id = '',
+      projectName = '',
       taskName = '',
       startTime = '',
       endTime = '',
-      nightShift = false,
-      // totalHours = '',
       duration = 0,
-      notes = '',
+      notes: description = '',
     } = {},
     card = {},
     cardDay = '',
@@ -37,7 +36,41 @@ const ActivityCard = (props) => {
   } = props;
   const { employee: { _id: employeeId = '' } = {} } = props;
 
+  const [top, setTop] = useState(0);
+  const [height, setHeight] = useState(0);
+
   const [editMode, setEditMode] = useState(false);
+
+  // USE EFFECT AREA
+  const calculateCardPosition = () => {
+    const marginBlock = 10;
+
+    let topTemp = EMP_ROW_HEIGHT / 2;
+    let heightTemp = 0;
+
+    if (startTime && endTime) {
+      const startTimeHourTemp = moment(startTime, 'HH:mm').hour();
+      const startTimeMinuteTemp = moment(startTime, 'HH:mm').minute();
+
+      for (let i = WORKING_HOURS.START; i <= WORKING_HOURS.END; i += 1) {
+        if (i < startTimeHourTemp) {
+          topTemp += EMP_ROW_HEIGHT;
+        } else if (i === startTimeHourTemp) {
+          topTemp += (startTimeMinuteTemp / 60) * EMP_ROW_HEIGHT;
+        }
+      }
+
+      const diff = moment.duration(moment(endTime, 'HH:mm').diff(moment(startTime, 'HH:mm')));
+
+      heightTemp = diff.asHours() * EMP_ROW_HEIGHT;
+      setTop(topTemp + marginBlock / 2);
+      setHeight(heightTemp - marginBlock);
+    }
+  };
+
+  useEffect(() => {
+    calculateCardPosition();
+  }, [JSON.stringify(card)]);
 
   // FUNCTION AREA
   const handleLongString = (str) => {
@@ -45,13 +78,13 @@ const ActivityCard = (props) => {
     return `${str.slice(0, 72)}...`;
   };
 
-  const renderNote = (note = '') => {
-    if (note.length <= 72) return note;
+  const renderDescription = (text = '') => {
+    if (text.length <= 72) return text;
     return (
       <span>
-        {handleLongString(note)}{' '}
+        {handleLongString(text)}{' '}
         <Tooltip
-          title={note}
+          title={text}
           placement="bottomLeft"
           // we have this prop for customizing antd tooltip
           getPopupContainer={(trigger) => {
@@ -88,37 +121,49 @@ const ActivityCard = (props) => {
 
   // MAIN AREA
   if (editMode)
-    return <EditCard card={card} onCancelCard={() => setEditMode(false)} cardDay={cardDay} />;
+    return (
+      <EditCard
+        card={card}
+        onCancelCard={() => setEditMode(false)}
+        cardDay={cardDay}
+        top={top}
+        height={height}
+      />
+    );
   return (
-    <div className={styles.ActivityCard}>
+    <div
+      className={styles.ActivityCard}
+      style={{
+        top,
+        height,
+      }}
+    >
       <Row gutter={[12, 0]}>
-        <Col span={ACTIVITY} className={`${styles.normalCell} ${styles.boldText}`}>
+        <Col span={PROJECT} className={`${styles.normalCell} ${styles.boldText}`}>
           <div
             className={styles.activityIcon}
             style={
-              getActivityBackgroundColor(taskName)
-                ? { background: getActivityBackgroundColor(taskName) }
+              getActivityBackgroundColor(projectName)
+                ? { background: getActivityBackgroundColor(projectName) }
                 : null
             }
           >
-            <span>{taskName ? taskName.toString()?.charAt(0) : 'A'}</span>
+            <span>{projectName ? projectName.toString()?.charAt(0) : 'A'}</span>
           </div>
-          {taskName || ''}
+          {projectName || ''}
         </Col>
-        <Col span={START_TIME} className={styles.normalCell}>
-          {moment(startTime, hourFormatAPI).format(hourFormat)}
+        <Col span={TASK} className={styles.normalCell}>
+          {taskName}
         </Col>
-        <Col span={END_TIME} className={styles.normalCell}>
-          {moment(endTime, hourFormatAPI).format(hourFormat)}
+        <Col span={DESCRIPTION} className={styles.normalCell}>
+          {renderDescription(description)}
         </Col>
-        <Col span={NIGHT_SHIFT} className={styles.normalCell}>
-          {nightShift ? 'Yes' : 'No'}
+        <Col span={TIME} className={`${styles.normalCell} ${styles.blueText}`}>
+          {moment(startTime, 'HH:mm').format(hourFormat)} -{' '}
+          {moment(endTime, 'HH:mm').format(hourFormat)}
         </Col>
         <Col span={TOTAL_HOURS} className={`${styles.normalCell} ${styles.blueText}`}>
           {convertMsToTime(duration)}
-        </Col>
-        <Col span={NOTES} className={styles.normalCell}>
-          {renderNote(notes || '')}
         </Col>
         <Col span={ACTIONS} className={`${styles.normalCell} ${styles.alignCenter}`}>
           <div className={styles.actionsButton}>
