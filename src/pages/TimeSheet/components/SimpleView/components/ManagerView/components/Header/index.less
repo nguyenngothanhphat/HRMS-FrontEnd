@@ -1,0 +1,83 @@
+@borderColor: #d6dce0;
+@borderColor2: #d6dce4;
+@orangeColor: #ffa100;
+@commonSpace: 24px;
+.Header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px @commonSpace;
+  border-bottom: 1px solid @borderColor;
+  :global {
+    .ant-picker {
+      box-sizing: border-box;
+      height: 37px;
+      border: 1px solid @borderColor2;
+      border-radius: 5px;
+    }
+  }
+  &__left {
+    display: flex;
+    flex-direction: row;
+    .rangePicker {
+      margin-inline: 8px;
+      .minusSeparator {
+        color: #161c29;
+        font-size: 13px;
+        opacity: 0.5;
+      }
+      .calendarIcon {
+        filter: invert(57%) sepia(76%) saturate(7481%) hue-rotate(216deg) brightness(102%)
+          contrast(95%);
+      }
+      .startDate {
+        margin-right: 8px;
+      }
+    }
+    .button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 37px;
+      background: #ffffff;
+      border: 1px solid @borderColor2;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .prevWeek,
+    .nextWeek {
+      .button();
+    }
+  }
+  &__right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-size: 13px;
+    .exportBtn {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 40px;
+      color: @orangeColor;
+      border: none;
+      outline: none;
+      box-shadow: none;
+      img {
+        width: 16px;
+        height: 16px;
+        margin-right: 10px;
+      }
+      span {
+        font-weight: 500;
+        font-size: 14px;
+      }
+    }
+    .totalHours {
+      .hours {
+        font-weight: 500;
+      }
+    }
+  }
+}

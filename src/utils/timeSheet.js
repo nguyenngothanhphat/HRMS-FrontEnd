@@ -39,7 +39,7 @@ const minuteStep = 30; // in time picker, only allows minute 0 and 30
 const dateFormatAPI = 'YYYY-MM-DD';
 const hourFormatAPI = 'HH:mm';
 
-// MT - MY TIMESHEET
+// MT - MY TIMESHEET SIMPLE VIEW
 const MT_MAIN_COL_SPAN = {
   DATE: 3,
   REMAINING: 21,
@@ -52,6 +52,22 @@ const MT_SECONDARY_COL_SPAN = {
   NIGHT_SHIFT: 3,
   TOTAL_HOURS: 3,
   NOTES: 5,
+  ACTIONS: 3,
+};
+
+// MT - MY TIMESHEET COMPLEX VIEW
+// EMPLOYEE VIEW
+const EMP_MT_MAIN_COL_SPAN = {
+  DATE_OF_HOURS: 2,
+  REMAINING: 22,
+};
+
+const EMP_MT_SECONDARY_COL_SPAN = {
+  PROJECT: 4,
+  TASK: 4,
+  DESCRIPTION: 6,
+  TIME: 4,
+  TOTAL_HOURS: 3,
   ACTIONS: 3,
 };
 
@@ -92,4 +108,7 @@ export {
   MT_SECONDARY_COL_SPAN,
   convertMsToTime,
   parseTimeAPI,
+  // COMPLEX VIEW
+  EMP_MT_MAIN_COL_SPAN,
+  EMP_MT_SECONDARY_COL_SPAN,
 };

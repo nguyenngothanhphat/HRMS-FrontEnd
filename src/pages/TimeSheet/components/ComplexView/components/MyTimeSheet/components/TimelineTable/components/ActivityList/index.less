@@ -1,0 +1,72 @@
+// @border-color: #d6dce0;
+@orange: #fe5d27;
+@new-background: #fff4f1;
+@border-color: #d6dce0;
+@checkbox-background: #e7eaee;
+@checkbox-border: #707177;
+@gray: #707177;
+@red: #ff5252;
+@blue: #2c6df9;
+@cell-padding: 8px 16px;
+@rowHeight: 60px;
+
+.ActivityList {
+  width: 100%;
+  min-height: 115px;
+
+  .alignCenter {
+    display: flex;
+    justify-content: center !important;
+  }
+
+  &__firstColumn {
+    display: flex;
+    flex-direction: column;
+    color: #666666;
+    font-size: 12px;
+    background-color: #fff;
+    padding-inline: 16px;
+    .hourBlock {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      height: @rowHeight;
+      span {
+        display: block;
+      }
+    }
+  }
+
+  &__remainColumn {
+    min-width: 500px;
+    // margin-top: 32px;
+    background: #f6f7f9;
+    .row {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: @rowHeight;
+      .divider {
+        // margin-top: @rowHeight;
+        width: 100%;
+        border-top: 1px solid #cccccc;
+      }
+    }
+  }
+  .addButton {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: fit-content;
+    margin: 16px;
+    cursor: pointer;
+    img {
+      margin-right: 8px;
+    }
+    span {
+      color: @blue;
+      font-weight: 500;
+      font-size: 14px;
+    }
+  }
+}
