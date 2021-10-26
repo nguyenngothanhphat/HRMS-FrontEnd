@@ -1,20 +1,20 @@
-import { DatePicker, Button, Radio } from 'antd';
+import { Button, DatePicker } from 'antd';
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
+import AddIcon from '@/assets/timeSheet/add.svg';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';
 import NextIcon from '@/assets/timeSheet/next.svg';
 import PrevIcon from '@/assets/timeSheet/prev.svg';
-import AddIcon from '@/assets/timeSheet/add.svg';
 import { rangePickerFormat } from '@/utils/timeSheet';
 import styles from './index.less';
 
-const Header = (props) => {
+const DailyHeader = (props) => {
   const {
     selectedDate,
     setSelectedDate = () => {},
-    selectedView = '',
     setSelectedView = () => {},
+    viewChangeComponent = '',
   } = props;
 
   // HEADER AREA
@@ -32,15 +32,10 @@ const Header = (props) => {
     setSelectedDate(date);
   };
 
-  const onViewChange = (e) => {
-    const { target: { value = '' } = {} || {} } = e;
-    setSelectedView(value);
-  };
-
   // MAIN AREA
   return (
-    <div className={styles.Header}>
-      <div className={styles.Header__left}>
+    <div className={styles.DailyHeader}>
+      <div className={styles.DailyHeader__left}>
         <div className={styles.prevWeek} onClick={onPrevDateClick}>
           <img src={PrevIcon} alt="" />
         </div>
@@ -59,14 +54,8 @@ const Header = (props) => {
           <img src={NextIcon} alt="" />
         </div>
       </div>
-      <div className={styles.Header__middle}>
-        <Radio.Group value={selectedView} onChange={onViewChange} buttonStyle="solid">
-          <Radio.Button value="daily">Daily</Radio.Button>
-          <Radio.Button value="weekly">Weekly</Radio.Button>
-          <Radio.Button value="monthly">Monthly</Radio.Button>
-        </Radio.Group>
-      </div>
-      <div className={styles.Header__right}>
+      <div className={styles.DailyHeader__middle}>{viewChangeComponent()}</div>
+      <div className={styles.DailyHeader__right}>
         <Button icon={<img src={AddIcon} alt="" />}>Add Task</Button>
         <Button>Import</Button>
       </div>
@@ -74,4 +63,4 @@ const Header = (props) => {
   );
 };
 
-export default connect(() => ({}))(Header);
+export default connect(() => ({}))(DailyHeader);

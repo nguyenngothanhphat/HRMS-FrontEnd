@@ -23,6 +23,7 @@ const activityColor = [
   },
 ];
 
+const projectColor = ['#A42BA8', '#7BCD00', '#FFBD14', '#F97457', '#1956DA', '#7BCDFF'];
 // functions
 const addTimeForDate = (date, time) => {
   const dateToString = moment(date).format('MM/DD/YYYY').toString();
@@ -105,6 +106,7 @@ const WORKING_HOURS = {
 export {
   activityName,
   activityColor,
+  projectColor,
   addTimeForDate,
   rangePickerFormat,
   dateFormat,

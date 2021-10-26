@@ -2,7 +2,7 @@
 @borderColor2: #d6dce4;
 @blueColor: #2c6df9;
 @commonSpace: 24px;
-.Header {
+.DailyHeader {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -30,6 +30,12 @@
         margin-right: 5px;
       }
     }
+  }
+  // the middle item will be always centered
+  &__left,
+  &__right {
+    flex-basis: 0;
+    flex-grow: 1;
   }
   &__left {
     display: flex;
