@@ -64,5 +64,6 @@ deploy-job-master:
     - master
   script:
     - kubectl apply -f /home/frontend/frontend-deployment.yaml
+    - kubectl get po -A
   only:
     - staging
