@@ -71,6 +71,7 @@ const RaiseTicketModal = (props) => {
   const handleUpload = async (file) => {
     const formData = new FormData();
     formData.append('uri', file);
+    console.log('formData.values()', formData.entries());
     const res = await dispatch({
       type: 'upload/uploadFile',
       payload: formData,

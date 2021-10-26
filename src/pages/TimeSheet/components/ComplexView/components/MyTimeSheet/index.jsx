@@ -3,11 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { getCurrentCompany } from '@/utils/authority';
 import Header from './components/Header';
-import TimelineTable from './components/TimelineTable';
-import Footer from './components/Footer';
+import DailyTable from './components/DailyTable';
+import WeeklyTable from './components/WeeklyTable';
+import DailyFooter from './components/DailyFooter';
 import styles from './index.less';
 import { dateFormatAPI } from '@/utils/timeSheet';
-
 
 const mockData = [
   {
@@ -35,7 +35,7 @@ const mockData = [
       employeeName: 'Lewis Employee',
     },
     department: {},
-    date: '2021-10-25',
+    date: '2021-10-26',
     location: '',
     createdAt: '2021-10-25T07:30:55.000Z',
     updatedAt: '2021-10-25T07:30:55.000Z',
@@ -99,8 +99,9 @@ const mockData = [
 
 const MyTimeSheet = (props) => {
   const [selectedDate, setSelectedDate] = useState(moment());
-  const [selectedView, setSelectedView] = useState('daily');
+  const [selectedView, setSelectedView] = useState('weekly');
   const { dispatch, employee: { _id: employeeId = '' } = {} } = props;
+
   // FUNCTION AREA
   const fetchMyTimesheetEffect = () => {
     dispatch({
@@ -121,6 +122,33 @@ const MyTimeSheet = (props) => {
     }
   }, [selectedDate]);
 
+  // RENDER UI
+  const renderTable = () => {
+    switch (selectedView) {
+      case 'daily':
+        return <DailyTable selectedDate={selectedDate} data={mockData} />;
+      case 'weekly':
+        return <WeeklyTable selectedDate={selectedDate} data={mockData} />;
+      case 'monthly':
+        return null;
+      default:
+        return null;
+    }
+  };
+
+  const renderFooter = () => {
+    switch (selectedView) {
+      case 'daily':
+        return <DailyFooter data={mockData} />;
+      case 'weekly':
+        return null;
+      case 'monthly':
+        return null;
+      default:
+        return null;
+    }
+  };
+
   // MAIN AREA
   return (
     <div className={styles.MyTimeSheet}>
@@ -130,8 +158,8 @@ const MyTimeSheet = (props) => {
         selectedView={selectedView}
         setSelectedView={setSelectedView}
       />
-      <TimelineTable selectedDate={selectedDate} data={mockData} />
-      <Footer data={mockData} />
+      {renderTable()}
+      {renderFooter()}
     </div>
   );
 };

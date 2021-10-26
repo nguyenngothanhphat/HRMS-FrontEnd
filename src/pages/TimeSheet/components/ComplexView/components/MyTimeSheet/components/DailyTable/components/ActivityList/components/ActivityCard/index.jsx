@@ -138,7 +138,7 @@ const ActivityCard = (props) => {
         height,
       }}
     >
-      <Row gutter={[12, 0]}>
+      <Row gutter={[12, 0]} className={styles.container}>
         <Col span={PROJECT} className={`${styles.normalCell} ${styles.boldText}`}>
           <div
             className={styles.activityIcon}

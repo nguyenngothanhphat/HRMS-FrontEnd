@@ -6,7 +6,7 @@ import styles from './index.less';
 
 const { DATE_OF_HOURS, REMAINING } = EMP_MT_MAIN_COL_SPAN;
 
-const Header = (props) => {
+const DailyFooter = (props) => {
   const { data = {} } = props;
   const [totalHours, setTotalHours] = useState('');
 
@@ -29,7 +29,7 @@ const Header = (props) => {
 
   // MAIN AREA
   return (
-    <Row align="middle" className={styles.Footer}>
+    <Row align="middle" className={styles.DailyFooter}>
       <Col span={DATE_OF_HOURS}>
         <div className={styles.text}>Total</div>
       </Col>
@@ -40,4 +40,4 @@ const Header = (props) => {
   );
 };
 
-export default connect(() => ({}))(Header);
+export default connect(() => ({}))(DailyFooter);

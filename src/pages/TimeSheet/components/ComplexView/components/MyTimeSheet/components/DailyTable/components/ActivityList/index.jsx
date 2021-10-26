@@ -14,7 +14,8 @@ const ActivityList = (props) => {
   const renderHour = (hour) => {
     const hourTemp = `${hour}:00`;
     if (hour < 12) return `${hourTemp} AM`;
-    return `${hourTemp} PM`;
+    if (hour === 12) return `${hourTemp} PM`;
+    return `${hour * 1 - 12}:00 PM`;
   };
 
   // MAIN AREA

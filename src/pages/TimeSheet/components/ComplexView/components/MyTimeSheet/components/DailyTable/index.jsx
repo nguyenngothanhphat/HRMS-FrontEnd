@@ -14,7 +14,7 @@ import styles from './index.less';
 const { DATE_OF_HOURS, REMAINING } = EMP_MT_MAIN_COL_SPAN;
 const { PROJECT, TASK, DESCRIPTION, TIME, TOTAL_HOURS, ACTIONS } = EMP_MT_SECONDARY_COL_SPAN;
 
-const TimelineTable = (props) => {
+const DailyTable = (props) => {
   const {
     selectedDate = '',
     loadingFetchMyTimesheet = false,
@@ -115,7 +115,7 @@ const TimelineTable = (props) => {
 
   // MAIN AREA
   return (
-    <div className={styles.TimelineTable}>
+    <div className={styles.DailyTable}>
       <div className={styles.tableContainer}>
         {_renderTableHeader()}
         {_renderTableContent()}
@@ -127,4 +127,4 @@ const TimelineTable = (props) => {
 export default connect(({ loading, timeSheet: { myTimesheet = [] } = {} }) => ({
   myTimesheet,
   loadingFetchMyTimesheet: loading.effects['timeSheet/fetchMyTimesheetEffect'],
-}))(TimelineTable);
+}))(DailyTable);

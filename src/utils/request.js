@@ -73,14 +73,15 @@ const request = async (url, options = {}, noAuth, apiUrlName = 'BASE_API', hasPa
 
   const baseURL = proxy[apiUrlName];
 
+  const headers = {
+    'Content-Type': 'application/json;charset=UTF-8',
+    'Access-Control-Allow-Origin': '*',
+    Authorization: !noAuth ? `Bearer ${token}` : '',
+  };
+
   const instance = axios.create({
     baseURL,
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8',
-      accept: 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      Authorization: !noAuth ? `Bearer ${token}` : '',
-    },
+    headers,
     params: hasParams ? data : {},
   });
 
@@ -92,7 +93,7 @@ const request = async (url, options = {}, noAuth, apiUrlName = 'BASE_API', hasPa
     },
   );
   try {
-    const res = await instance[method.toLowerCase()](url, { ...data });
+    const res = await instance[method.toLowerCase()](url, data);
     return res?.data;
   } catch (e) {
     // dialog(e);
