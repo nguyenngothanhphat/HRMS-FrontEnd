@@ -77,7 +77,7 @@ const request = async (url, options = {}, noAuth, apiUrlName = 'BASE_API', hasPa
     baseURL,
     headers: {
       'Content-Type': 'application/json;charset=UTF-8',
-      // accept: 'application/json',
+      accept: 'application/json',
       'Access-Control-Allow-Origin': '*',
       Authorization: !noAuth ? `Bearer ${token}` : '',
     },
@@ -92,7 +92,7 @@ const request = async (url, options = {}, noAuth, apiUrlName = 'BASE_API', hasPa
     },
   );
   try {
-    const res = await instance[method.toLowerCase()](url, { ...data });
+    const res = await instance[method.toLowerCase()](url, data);
     return res?.data;
   } catch (e) {
     // dialog(e);
