@@ -1,13 +1,14 @@
 import { MinusOutlined } from '@ant-design/icons';
 import { Button, DatePicker } from 'antd';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'umi';
 import AddIcon from '@/assets/timeSheet/add.svg';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';
 import NextIcon from '@/assets/timeSheet/next.svg';
 import PrevIcon from '@/assets/timeSheet/prev.svg';
 import { rangePickerFormat } from '@/utils/timeSheet';
+import AddTaskModal from '@/pages/TimeSheet/components/ComplexView/components/AddTaskModal';
 import styles from './index.less';
 
 const { RangePicker } = DatePicker;
@@ -20,6 +21,7 @@ const WeeklyHeader = (props) => {
     setEndDate = () => {},
     viewChangeComponent = '',
   } = props;
+  const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
 
   // HEADER AREA
   const onPrevWeekClick = () => {
@@ -66,10 +68,15 @@ const WeeklyHeader = (props) => {
         </div>
       </div>
       <div className={styles.WeeklyHeader__middle}>{viewChangeComponent()}</div>
-      <div className={styles.WeeklyHeader__right}>
+      <div className={styles.WeeklyHeader__right} onClick={() => setAddTaskModalVisible(true)}>
         <Button icon={<img src={AddIcon} alt="" />}>Add Task</Button>
         <Button>Import</Button>
       </div>
+      <AddTaskModal
+        visible={addTaskModalVisible}
+        onClose={() => setAddTaskModalVisible(false)}
+        mode="multiple"
+      />
     </div>
   );
 };
