@@ -85,6 +85,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
       // dashboard
       viewPendingApprovalDashboard: -1,
       viewMyTeamDashboard: -1,
+      viewTimesheetDashboard: -1,
     };
   }
   // const permissionList = groupPermissions(roles);
@@ -383,5 +384,6 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     // dashboard
     viewPendingApprovalDashboard: indexPendingApprovalDashboard,
     viewMyTeamDashboard: indexMyTeamDashboard,
+    viewTimesheetDashboard: 1,
   };
 }

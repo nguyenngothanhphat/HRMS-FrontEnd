@@ -221,7 +221,7 @@ const routes = [
             name: 'Approvals',
             hideInMenu: true,
             // icon: '/assets/images/menuIcons/dashboard.svg',
-            component: './DashboardNew/components/Approval',
+            component: './Dashboard/components/Approval',
             authority: ['employee', 'hr', 'hr-manager', 'manager'],
           },
           {
