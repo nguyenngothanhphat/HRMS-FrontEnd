@@ -3,18 +3,31 @@
 @commonSpace: 24px;
 .MyTimeSheet {
   width: 100%;
+  overflow: hidden;
   background: #ffffff;
   border: 1px solid @borderColor;
   border-radius: 5px;
-
   :global {
     .ant-table .ant-table-title,
-    .ant-table .ant-table-footer,
     .ant-table .ant-table-thead > tr > th,
     .ant-table .ant-table-tbody > tr > td,
     .ant-table tfoot > tr > th,
     .ant-table tfoot > tr > td {
-      padding: 8px 16px !important;
+      padding: 0px !important;
+    }
+    .ant-table-measure-row {
+      display: none;
+    }
+    .ant-table .ant-table-footer {
+      padding: 0 !important;
+      border: none;
+      // enable this line if you enable scroll in weekly table
+      // box-shadow: 4px 0px 40px rgba(0, 0, 0, 0.1);
+    }
+    .ant-table {
+      ::-webkit-scrollbar {
+        display: none;
+      }
     }
   }
 
@@ -28,6 +41,8 @@
       display: none;
     }
     .ant-radio-button-wrapper {
+      height: 35px;
+      line-height: 35px;
       border: none;
       span {
         color: #6c717a;

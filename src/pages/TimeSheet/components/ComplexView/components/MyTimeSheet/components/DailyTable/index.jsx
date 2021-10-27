@@ -55,7 +55,7 @@ const DailyTable = (props) => {
 
   useEffect(() => {
     refreshData();
-  }, [JSON.stringify(mockData)]);
+  }, [JSON.stringify(mockData), selectedDate]);
 
   // RENDER UI
   const _renderTableHeader = () => {

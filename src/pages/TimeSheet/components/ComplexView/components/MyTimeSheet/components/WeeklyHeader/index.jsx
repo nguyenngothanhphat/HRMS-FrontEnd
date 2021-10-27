@@ -55,6 +55,7 @@ const WeeklyHeader = (props) => {
             value={[startDate, endDate]}
             onChange={onDatePickerChange}
             allowClear={false}
+            disabled
             suffixIcon={
               <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
             }

@@ -101,10 +101,18 @@
       }
     }
   }
+
+  .hourValue {
+    color: #3e3e3e;
+    font-weight: 500;
+    font-size: 13px;
+  }
+
   .projectName {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    margin-left: 15px;
     .icon {
       position: relative;
       display: flex;
@@ -130,7 +138,73 @@
       color: #212020;
       font-weight: 500;
       font-size: 13px;
-      line-height: 15px;
+      text-align: left;
+    }
+  }
+
+  .eventColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+    padding-block: 36px;
+    img {
+      width: 32px;
+      height: 32px;
+      margin-bottom: 10px;
+    }
+    span {
+      display: block;
+      line-height: 20px;
+    }
+    .title {
+      color: #ffa100;
+      font-weight: 500;
+      font-size: 12px;
+    }
+    .description {
+      color: #464646;
+      font-size: 10px;
+    }
+  }
+
+  .holidayColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+    padding-top: 22px;
+    background-color: #eaf0fe;
+  }
+
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 70px;
+    background-color: #fff;
+    .item {
+      flex-basis: 100%;
+      text-align: center;
+    }
+    .text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333333;
+      font-weight: 500;
+      font-size: 16px;
+    }
+    .value {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      color: @blue;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 19px;
     }
   }
 

@@ -25,7 +25,7 @@ const WeeklyFooter = (props) => {
         return <span className={styles.text}>Total</span>;
 
       default:
-        return '';
+        return '-';
     }
   };
 

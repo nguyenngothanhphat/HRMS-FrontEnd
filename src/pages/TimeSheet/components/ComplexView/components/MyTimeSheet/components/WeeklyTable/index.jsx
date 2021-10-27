@@ -3,6 +3,9 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { projectColor } from '@/utils/timeSheet';
+import CompleteIcon from '@/assets/timeSheet/complete.svg';
+import FailIcon from '@/assets/timeSheet/fail.svg';
+import PendingIcon from '@/assets/timeSheet/pending.svg';
 import styles from './index.less';
 
 const WeeklyTable = (props) => {
@@ -81,6 +84,80 @@ const WeeklyTable = (props) => {
   }, [dateList]);
 
   // RENDER UI
+  const getIcon = (key) => {
+    switch (key) {
+      case 'pending':
+        return PendingIcon;
+      case 'completed':
+        return CompleteIcon;
+      case 'rejected':
+        return FailIcon;
+
+      default:
+        return PendingIcon;
+    }
+  };
+
+  const getBackgroundColor = (key) => {
+    switch (key) {
+      case 'pending':
+        return '#FFFBF5';
+      case 'completed':
+        return '#F4FFFD';
+      case 'rejected':
+        return '#FFF4F4';
+
+      default:
+        return '#fff';
+    }
+  };
+
+  const getTitleColor = (key) => {
+    switch (key) {
+      case 'pending':
+        return '#FFA100;';
+      case 'completed':
+        return '#00C598';
+      case 'rejected':
+        return '#F44E21';
+
+      default:
+        return '#000';
+    }
+  };
+
+  const renderEventColumn = (type = 'completed') => {
+    return (
+      <div className={styles.eventColumn} style={{ backgroundColor: getBackgroundColor(type) }}>
+        <img src={getIcon(type)} alt="" />
+        <span className={styles.title} style={{ color: getTitleColor(type) }}>
+          Leave Applied
+        </span>
+        <span className={styles.description}>Waiting for approval</span>
+      </div>
+    );
+  };
+
+  const renderDateHeaderItem = (date) => {
+    return (
+      <div className={styles.timeStamp}>
+        <div className={styles.left}>{moment(date, 'MM/DD/YYYY').locale('en').format('DD')}</div>
+        <div className={styles.right}>
+          <span className={styles.date}>
+            {moment(date, 'MM/DD/YYYY').locale('en').format('dddd')}
+          </span>
+          <span className={styles.month}>
+            {moment(date, 'MM/DD/YYYY').locale('en').format('MMMM')}
+          </span>
+        </div>
+      </div>
+    );
+  };
+
+  const renderHoliday = (date) => {
+    return <div className={styles.holidayColumn}>{renderDateHeaderItem(date)}</div>;
+  };
+
   const columns = () => {
     const dateColumns = dateList.map((date) => {
       return {
@@ -89,25 +166,51 @@ const WeeklyTable = (props) => {
         key: date,
         align: 'center',
         width: `${100 / 9}%`,
-        render: (value, _, index) => {
-          if (index === 0) {
-            return (
-              <div className={styles.timeStamp}>
-                <div className={styles.left}>
-                  {moment(date, 'MM/DD/YYYY').locale('en').format('DD')}
-                </div>
-                <div className={styles.right}>
-                  <span className={styles.date}>
-                    {moment(date, 'MM/DD/YYYY').locale('en').format('dddd')}
-                  </span>
-                  <span className={styles.month}>
-                    {moment(date, 'MM/DD/YYYY').locale('en').format('MMMM')}
-                  </span>
-                </div>
-              </div>
-            );
+        render: (value, row, index) => {
+          const valueTemp = () => {
+            if (index === 0 && date !== '10/29/2021') {
+              return renderDateHeaderItem(date);
+            }
+            // if this date has a leave request
+            if (date === '10/27/2021') {
+              return renderEventColumn();
+            }
+
+            // if this date is holiday
+            if (date === '10/29/2021') {
+              return renderHoliday(date);
+            }
+
+            // console.log('row', row);
+            return <span className={styles.hourValue}>{date}</span>;
+          };
+          const obj = {
+            children: valueTemp(),
+            props: {},
+          };
+
+          // pretend 10/27/2021 is a leave day
+          if (index === 1 && date === '10/27/2021') {
+            obj.props.rowSpan = formattedData.length;
           }
-          return 'Hello';
+          for (let i = 2; i < formattedData.length; i += 1) {
+            // These ones are merged into above cell
+            if (index === i && date === '10/27/2021') {
+              obj.props.rowSpan = 0;
+            }
+          }
+
+          // pretend 10/29/2021 is holiday day
+          if (index === 0 && date === '10/29/2021') {
+            obj.props.rowSpan = formattedData.length;
+          }
+          for (let i = 1; i < formattedData.length; i += 1) {
+            // These ones are merged into above cell
+            if (index === i && date === '10/29/2021') {
+              obj.props.rowSpan = 0;
+            }
+          }
+          return obj;
         },
       };
     });
@@ -151,11 +254,36 @@ const WeeklyTable = (props) => {
     return result;
   };
 
+  const renderFooter = (values) => {
+    console.log('values', values);
+    return (
+      <div className={styles.footer}>
+        <div className={styles.item}>
+          <span className={styles.text}>Total</span>
+        </div>
+        <div className={styles.item}>Item</div>
+        <div className={styles.item}>Item</div>
+        <div className={styles.item}>Item</div>
+        <div className={styles.item}>Item</div>
+        <div className={styles.item}>Item</div>
+        <div className={styles.item}>Item</div>
+        <div className={styles.item}>Item</div>
+        <div className={styles.item} />
+      </div>
+    );
+  };
   // MAIN AREA
   return (
     <div className={styles.WeeklyTable}>
       <div className={styles.tableContainer}>
-        <Table columns={columns()} dataSource={formattedData} bordered pagination={false} />
+        <Table
+          columns={columns()}
+          dataSource={formattedData}
+          bordered
+          pagination={false}
+          // scroll={{ y: 440 }}
+          footer={renderFooter}
+        />
       </div>
     </div>
   );
