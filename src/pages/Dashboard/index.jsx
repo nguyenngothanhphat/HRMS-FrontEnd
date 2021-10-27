@@ -107,7 +107,7 @@ const Dashboard = (props) => {
     const viewTimesheetDashboard = permissions.viewTimesheetDashboard !== -1;
 
     const getShowingWidgets = () => {
-      let result = [];
+      let result = [...employeeWidgets];
       if (!viewMyTeamDashboard) {
         result = employeeWidgets.filter((w) => w !== WIDGET_IDS.MYTEAM);
       }
