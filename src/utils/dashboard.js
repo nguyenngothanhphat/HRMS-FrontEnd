@@ -50,7 +50,7 @@ const SUPPORT_TEAM = [
     queryType: ['Software', 'Hardware', 'Network/Connectivity', 'Account/Permission', 'Printing'],
   },
   {
-    name: 'Operations',
+    name: 'OPERATION',
     queryType: [
       'Floor Issue',
       'Purchasing',
@@ -63,6 +63,6 @@ const SUPPORT_TEAM = [
   },
 ];
 
-const PRIORITY = ['Low', 'Normal', 'High', 'Urgent', 'Immediate'];
+const PRIORITY = ['Low', 'Normal', 'High', 'Urgent'];
 
 export { WIDGET_IDS, WIDGETS, SUPPORT_TEAM, PRIORITY };

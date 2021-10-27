@@ -819,6 +819,20 @@ const routes = [
             authority: ['hr-manager', 'hr', 'employee', 'manager'],
             hideInMenu: true,
           },
+           // TICKET MANAGEMENT
+           {
+            path: '/ticket-management',
+            name: 'Ticket Management',
+            icon: '/assets/images/menuIcons/ticketManagement.svg',
+            component: './TicketManagement',
+            authority: ['hr-manager', 'hr', 'employee', 'manager'],
+          },
+          {
+            path: '/ticket-management/:tabName',
+            component: './TicketManagement',
+            authority: ['hr-manager', 'hr', 'employee', 'manager'],
+            hideInMenu: true,
+          },
           {
             path: '/view-document/:documentId',
             name: 'viewDocument',
