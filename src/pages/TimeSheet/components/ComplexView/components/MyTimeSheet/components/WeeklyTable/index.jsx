@@ -6,6 +6,7 @@ import { projectColor } from '@/utils/timeSheet';
 import CompleteIcon from '@/assets/timeSheet/complete.svg';
 import FailIcon from '@/assets/timeSheet/fail.svg';
 import PendingIcon from '@/assets/timeSheet/pending.svg';
+import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
 
 const WeeklyTable = (props) => {
@@ -182,7 +183,11 @@ const WeeklyTable = (props) => {
             }
 
             // console.log('row', row);
-            return <span className={styles.hourValue}>{date}</span>;
+            return (
+              <TaskPopover>
+                <span className={styles.hourValue}>{date}</span>
+              </TaskPopover>
+            );
           };
           const obj = {
             children: valueTemp(),
@@ -255,7 +260,6 @@ const WeeklyTable = (props) => {
   };
 
   const renderFooter = (values) => {
-    console.log('values', values);
     return (
       <div className={styles.footer}>
         <div className={styles.item}>
