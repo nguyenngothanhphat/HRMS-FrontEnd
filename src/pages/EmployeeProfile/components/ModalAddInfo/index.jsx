@@ -13,7 +13,7 @@ const { Step } = Steps;
 
 const ModalAddInfo = (props) => {
   const {
-    onCancel = () => {},
+    onCancel = () => { },
     visible,
     dispatch,
     listRelation,
@@ -21,6 +21,7 @@ const ModalAddInfo = (props) => {
     generalId,
     loading,
     idCurrentEmployee,
+    location
   } = props;
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -88,7 +89,6 @@ const ModalAddInfo = (props) => {
   };
 
   const onFinishCertification = (values) => {
-    console.log('value', values);
     const { certificationName, otherSkills, qualification, skills, totalExp } = values;
     const certifications = [];
     arrCertification.forEach((item) => {
@@ -134,7 +134,7 @@ const ModalAddInfo = (props) => {
 
   const onFinishBank = (values) => {
     const {
-      accountName,
+      // accountName,
       accountNumber,
       accountType,
       bankName,
@@ -142,6 +142,35 @@ const ModalAddInfo = (props) => {
       micrCode,
       ifscCode,
       uanNumber,
+      // swiftcode,
+    } = values;
+    const arr = [];
+    arrBankAccount.forEach((item) =>
+      arr.push({
+        // accountName: accountName[`accountName${item}`],
+        accountNumber: accountNumber[`accountNumber${item}`],
+        accountType: accountType[`accountType${item}`],
+        bankName: bankName[`bankName${item}`],
+        branchName: branchName[`branchName${item}`],
+        micrCode: micrCode[`micrCode${item}`],
+        ifscCode: ifscCode[`ifscCode${item}`],
+        uanNumber: uanNumber[`uanNumber${item}`],
+        // swiftcode: swiftcode[`swiftcode${item}`],
+        employee: idCurrentEmployee,
+      }),
+    );
+    const obj = { ...resultForm, bankDetails: arr };
+    setResultForm(obj);
+    setCurrentStep(currentStep + 1);
+  };
+  const onFinishBankVN = (values) => {
+    const {
+      accountName,
+      accountNumber,
+      accountType,
+      bankName,
+      branchName,
+      swiftcode,
     } = values;
     const arr = [];
     arrBankAccount.forEach((item) =>
@@ -151,9 +180,7 @@ const ModalAddInfo = (props) => {
         accountType: accountType[`accountType${item}`],
         bankName: bankName[`bankName${item}`],
         branchName: branchName[`branchName${item}`],
-        micrCode: micrCode[`micrCode${item}`],
-        ifscCode: ifscCode[`ifscCode${item}`],
-        uanNumber: uanNumber[`uanNumber${item}`],
+        swiftcode: swiftcode[`swiftcode${item}`],
         employee: idCurrentEmployee,
       }),
     );
@@ -176,7 +203,7 @@ const ModalAddInfo = (props) => {
     setArrBankAccount(tempArr);
   };
   // tax detail
-  const onFinishTax = (values) => {
+  const onFinishTaxIN = (values) => {
     const { maritalStatus, noOfDependants } = values;
     const taxDetails = { ...values, panNum: noOfDependants, employee: idCurrentEmployee };
     const obj = { ...resultForm, taxDetails, maritalStatus };
@@ -191,6 +218,23 @@ const ModalAddInfo = (props) => {
       },
     });
   };
+  const onFinishTax = (values) => {
+    const { maritalStatus, noOfDependants } = values;
+    const incomeTaxRule = ""
+    const taxDetails = { ...values, panNum: noOfDependants, employee: idCurrentEmployee, incomeTaxRule };
+    const obj = { ...resultForm, taxDetails, maritalStatus };
+    dispatch({
+      type: 'employeeProfile/updateFirstGeneralInfo',
+      payload: {
+        tenantId: getCurrentTenant(),
+        id: generalId,
+        isUpdatedProfile: true,
+        isNewComer: false,
+        ...obj,
+      },
+    });
+  };
+
 
   const renderContent = () => {
     switch (currentStep) {
@@ -386,133 +430,269 @@ const ModalAddInfo = (props) => {
         if (arrBankAccount.length === 0) {
           addBank(numOfBank);
         }
-        return (
-          <Form name="BankAccount" onFinish={onFinishBank} autoComplete="off" layout="vertical">
-            <div className={styles.form__title}>Bank Details</div>
-            <div className={styles.form__description}>
-              You are required to fill in certain deatils to proceed further
-            </div>
-            <div className={styles.form__block}>
-              {arrBankAccount.length > 0 &&
-                arrBankAccount.map(
-                  (item, index) =>
-                    index < 4 && (
-                      <div key={item} className={styles.containBlock}>
-                        {arrBankAccount.length > 1 && (
-                          <div className={styles.deleteBlock}>
-                            <Button
-                              type="link"
-                              className={styles.btnRemove}
-                              onClick={() => removeBank(index)}
-                            >
-                              <DeleteOutlined className={styles.action__icon} />
-                              <span>Delete</span>
-                            </Button>
-                          </div>
-                        )}
-                        <Form.Item name={['bankName', `bankName${item}`]} label="Bank Name">
-                          <Input placeholder="Bank Name" />
-                        </Form.Item>
-                        <Form.Item label="Branch Name" name={['branchName', `branchName${item}`]}>
-                          <Input placeholder="Branch Name" />
-                        </Form.Item>
-                        <Form.Item
-                          label="Account Type"
-                          name={['accountType', `accountType${item}`]}
-                        >
-                          <Select
-                            placeholder="Please select a choice"
-                            showArrow
-                            className={styles.inputForm}
+        if (location.headQuarterAddress.country === "VN") {
+          return (
+            <Form name="BankAccount" onFinish={onFinishBankVN} autoComplete="off" layout="vertical">
+              <div className={styles.form__title}>Bank Details</div>
+              <div className={styles.form__description}>
+                You are required to fill in certain deatils to proceed further
+              </div>
+              <div className={styles.form__block}>
+                {arrBankAccount.length > 0 &&
+                  arrBankAccount.map(
+                    (item, index) =>
+                      index < 4 && (
+                        <div key={item} className={styles.containBlock}>
+                          {arrBankAccount.length > 1 && (
+                            <div className={styles.deleteBlock}>
+                              <Button
+                                type="link"
+                                className={styles.btnRemove}
+                                onClick={() => removeBank(index)}
+                              >
+                                <DeleteOutlined className={styles.action__icon} />
+                                <span>Delete</span>
+                              </Button>
+                            </div>
+                          )}
+                          <Form.Item name={['bankName', `bankName${item}`]} label="Bank Name">
+                            <Input placeholder="Bank Name" />
+                          </Form.Item>
+                          <Form.Item label="Branch Name" name={['branchName', `branchName${item}`]}>
+                            <Input placeholder="Branch Name" />
+                          </Form.Item>
+                          <Form.Item
+                            label="Account Type"
+                            name={['accountType', `accountType${item}`]}
                           >
-                            <Select.Option value="Salary Account">Salary Account</Select.Option>
-                            <Select.Option value="Personal Account">Personal Account</Select.Option>
-                          </Select>
-                        </Form.Item>
-                        <Form.Item
-                          label="Account Number"
-                          name={['accountNumber', `accountNumber${item}`]}
-                          rules={[
-                            {
-                              pattern: /^[\d]{0,10}$/,
-                              message: 'Input only number',
-                            },
-                          ]}
-                        >
-                          <Input placeholder="Account Number" />
-                        </Form.Item>
-                        <Form.Item label="MICR Code" name={['micrCode', `micrCode${item}`]}>
-                          <Input placeholder="MICR Code" />
-                        </Form.Item>
-                        <Form.Item label="IFSC Code" name={['ifscCode', `ifscCode${item}`]}>
-                          <Input placeholder="IFSC Code" />
-                        </Form.Item>
-                        <Form.Item
-                          label="UAN Number"
-                          name={['uanNumber', `uanNumber${item}`]}
-                          rules={[
-                            {
-                              pattern: /^[\d]{0,10}$/,
-                              message: 'Input only number',
-                            },
-                          ]}
-                        >
-                          <Input placeholder="UAN Number" />
-                        </Form.Item>
-                        <Form.Item
-                          label="Account Name"
-                          name={['accountName', `accountName${item}`]}
-                        >
-                          <Input placeholder="Account Name" />
-                        </Form.Item>
-                      </div>
-                    ),
-                )}
-            </div>
-            <Form.Item>
-              <Button type="link" className={styles.btnAdd} onClick={() => addBank(numOfBank)}>
-                <img src={plusIcon} alt="plusIcon" />
-                <span className={styles.text}>
-                  Add another <span>(You can add upto 4 accounts)</span>
-                </span>
-              </Button>
-            </Form.Item>
-          </Form>
-        );
+                            <Select
+                              placeholder="Please select a choice"
+                              showArrow
+                              className={styles.inputForm}
+                            >
+                              <Select.Option value="Salary Account">Salary Account</Select.Option>
+                              <Select.Option value="Personal Account">Personal Account</Select.Option>
+                            </Select>
+                          </Form.Item>
+                          <Form.Item
+                            label="Account Number"
+                            name={['accountNumber', `accountNumber${item}`]}
+                            rules={[
+                              {
+                                pattern: /^[\d]{0,10}$/,
+                                message: 'Input only number',
+                              },
+                            ]}
+                          >
+                            <Input placeholder="Account Number" />
+                          </Form.Item>
+                          <Form.Item label="Swift Code" name={['swiftcode', `swiftcode${item}`]}>
+                            <Input placeholder="Swift Code" />
+                          </Form.Item>
+                          <Form.Item
+                            label="Account Name"
+                            name={['accountName', `accountName${item}`]}
+                          >
+                            <Input placeholder="Account Name" />
+                          </Form.Item>
+                        </div>
+                      ),
+                  )}
+              </div>
+              <Form.Item>
+                <Button type="link" className={styles.btnAdd} onClick={() => addBank(numOfBank)}>
+                  <img src={plusIcon} alt="plusIcon" />
+                  <span className={styles.text}>
+                    Add another <span>(You can add upto 4 accounts)</span>
+                  </span>
+                </Button>
+              </Form.Item>
+            </Form>
+          )
+        }
+        else {
+          return (
+            <Form name="BankAccount" onFinish={onFinishBank} autoComplete="off" layout="vertical">
+              <div className={styles.form__title}>Bank Details</div>
+              <div className={styles.form__description}>
+                You are required to fill in certain deatils to proceed further
+              </div>
+              <div className={styles.form__block}>
+                {arrBankAccount.length > 0 &&
+                  arrBankAccount.map(
+                    (item, index) =>
+                      index < 4 && (
+                        <div key={item} className={styles.containBlock}>
+                          {arrBankAccount.length > 1 && (
+                            <div className={styles.deleteBlock}>
+                              <Button
+                                type="link"
+                                className={styles.btnRemove}
+                                onClick={() => removeBank(index)}
+                              >
+                                <DeleteOutlined className={styles.action__icon} />
+                                <span>Delete</span>
+                              </Button>
+                            </div>
+                          )}
+                          <Form.Item name={['bankName', `bankName${item}`]} label="Bank Name">
+                            <Input placeholder="Bank Name" />
+                          </Form.Item>
+                          <Form.Item label="Branch Name" name={['branchName', `branchName${item}`]}>
+                            <Input placeholder="Branch Name" />
+                          </Form.Item>
+                          <Form.Item
+                            label="Account Type"
+                            name={['accountType', `accountType${item}`]}
+                          >
+                            <Select
+                              placeholder="Please select a choice"
+                              showArrow
+                              className={styles.inputForm}
+                            >
+                              <Select.Option value="Salary Account">Salary Account</Select.Option>
+                              <Select.Option value="Personal Account">Personal Account</Select.Option>
+                            </Select>
+                          </Form.Item>
+                          <Form.Item
+                            label="Account Number"
+                            name={['accountNumber', `accountNumber${item}`]}
+                            rules={[
+                              {
+                                pattern: /^[\d]{0,10}$/,
+                                message: 'Input only number',
+                              },
+                            ]}
+                          >
+                            <Input placeholder="Account Number" />
+                          </Form.Item>
+                          <Form.Item label="MICR Code" name={['micrCode', `micrCode${item}`]}>
+                            <Input placeholder="MICR Code" />
+                          </Form.Item>
+                          <Form.Item label="IFSC Code" name={['ifscCode', `ifscCode${item}`]}>
+                            <Input placeholder="IFSC Code" />
+                          </Form.Item>
+                          <Form.Item
+                            label="UAN Number"
+                            name={['uanNumber', `uanNumber${item}`]}
+                            rules={[
+                              {
+                                pattern: /^[\d]{0,10}$/,
+                                message: 'Input only number',
+                              },
+                            ]}
+                          >
+                            <Input placeholder="UAN Number" />
+                          </Form.Item>
+                        </div>
+                      ),
+                  )}
+              </div>
+              <Form.Item>
+                <Button type="link" className={styles.btnAdd} onClick={() => addBank(numOfBank)}>
+                  <img src={plusIcon} alt="plusIcon" />
+                  <span className={styles.text}>
+                    Add another <span>(You can add upto 4 accounts)</span>
+                  </span>
+                </Button>
+              </Form.Item>
+            </Form>
+          )
+        };
       case 3:
-        return (
-          <Form name="TaxDetail" onFinish={onFinishTax} autoComplete="off" layout="vertical">
-            <div className={styles.form__title}>Tax Details</div>
-            <div className={styles.form__description}>
-              You are required to fill in certain deatils to proceed further
-            </div>
-            <Form.Item label="Income Tax Rule" name="incomeTaxRule" style={{ marginTop: '24px' }}>
-              <Select placeholder="Income Tax Rule" showArrow>
-                <Select.Option value="Old Tax Regime">Old Tax Regime</Select.Option>
-                <Select.Option value="New Tax Regime">New Tax Regime</Select.Option>
-              </Select>
-            </Form.Item>
-            <Form.Item label="National ID Card Number" name="nationalId">
-              <Input maxLength={50} placeholder="National ID Card Number" />
-            </Form.Item>
-            <Form.Item label="Marital Status" name="maritalStatus">
-              <Select placeholder="Marital Status" showArrow>
-                <Select.Option value="Single">Single</Select.Option>
-                <Select.Option value="Married">Married</Select.Option>
-                <Select.Option value="Rather not mention">Rather not mention</Select.Option>
-              </Select>
-            </Form.Item>
-            <Form.Item label="No. of Dependants" name="noOfDependants">
-              <Input maxLength={50} placeholder="No. of Dependants" />
-            </Form.Item>
-            <Form.Item label="Residency Status" name="residencyStatus">
-              <Select placeholder="Residency Status" showArrow>
-                <Select.Option value="Resident">Resident</Select.Option>
-                <Select.Option value="Non Resident">Non Resident</Select.Option>
-              </Select>
-            </Form.Item>
-          </Form>
-        );
+        if (location.headQuarterAddress.country === "VN") {
+          return (
+            <Form name="TaxDetail" onFinish={onFinishTax} autoComplete="off" layout="vertical">
+              <div className={styles.form__title}>Tax Details</div>
+              <div className={styles.form__description}>
+                You are required to fill in certain deatils to proceed further
+              </div>
+              <Form.Item label="National ID Card Number" name="nationalId" style={{ marginTop: '24px' }}>
+                <Input maxLength={50} placeholder="National ID Card Number" />
+              </Form.Item>
+              <Form.Item label="Marital Status" name="maritalStatus">
+                <Select placeholder="Marital Status" showArrow>
+                  <Select.Option value="Single">Single</Select.Option>
+                  <Select.Option value="Married">Married</Select.Option>
+                  <Select.Option value="Rather not mention">Rather not mention</Select.Option>
+                </Select>
+              </Form.Item>
+              <Form.Item label="No. of Dependants" name="noOfDependants">
+                <Input maxLength={50} placeholder="No. of Dependants" />
+              </Form.Item>
+              <Form.Item label="Residency Status" name="residencyStatus">
+                <Select placeholder="Residency Status" showArrow>
+                  <Select.Option value="Resident">Resident</Select.Option>
+                  <Select.Option value="Non Resident">Non Resident</Select.Option>
+                </Select>
+              </Form.Item>
+            </Form>
+          )
+        }
+        else if (location.headQuarterAddress.country === "IN") {
+          return (
+            <Form name="TaxDetail" onFinish={onFinishTaxIN} autoComplete="off" layout="vertical">
+              <div className={styles.form__title}>Tax Details</div>
+              <div className={styles.form__description}>
+                You are required to fill in certain deatils to proceed further
+              </div>
+              <Form.Item label="Income Tax Rule" name="incomeTaxRule" style={{ marginTop: '24px' }}>
+                <Select placeholder="Income Tax Rule" showArrow>
+                  <Select.Option value="Old Tax Regime">Old Tax Regime</Select.Option>
+                  <Select.Option value="New Tax Regime">New Tax Regime</Select.Option>
+                </Select>
+              </Form.Item>
+              <Form.Item label="PAN Number" name="panNum">
+                <Input maxLength={50} placeholder="PAN Number" />
+              </Form.Item>
+              <Form.Item label="Marital Status" name="maritalStatus">
+                <Select placeholder="Marital Status" showArrow>
+                  <Select.Option value="Single">Single</Select.Option>
+                  <Select.Option value="Married">Married</Select.Option>
+                  <Select.Option value="Rather not mention">Rather not mention</Select.Option>
+                </Select>
+              </Form.Item>
+              <Form.Item label="No. of Dependants" name="noOfDependants">
+                <Input maxLength={50} placeholder="No. of Dependants" />
+              </Form.Item>
+              <Form.Item label="Residency Status" name="residencyStatus">
+                <Select placeholder="Residency Status" showArrow>
+                  <Select.Option value="Resident">Resident</Select.Option>
+                  <Select.Option value="Non Resident">Non Resident</Select.Option>
+                </Select>
+              </Form.Item>
+            </Form>
+          )
+        }
+        else {
+          return (
+            <Form name="TaxDetail" onFinish={onFinishTax} autoComplete="off" layout="vertical">
+              <div className={styles.form__title}>Tax Details</div>
+              <div className={styles.form__description}>
+                You are required to fill in certain deatils to proceed further
+              </div>
+              <Form.Item label="Social Security Card Number" name="cardNumber" style={{ marginTop: '24px' }}>
+                <Input maxLength={50} placeholder="Social Security Card Number" />
+              </Form.Item>
+              <Form.Item label="Marital Status" name="maritalStatus">
+                <Select placeholder="Marital Status" showArrow>
+                  <Select.Option value="Single">Single</Select.Option>
+                  <Select.Option value="Married">Married</Select.Option>
+                  <Select.Option value="Rather not mention">Rather not mention</Select.Option>
+                </Select>
+              </Form.Item>
+              <Form.Item label="No. of Dependants" name="noOfDependants">
+                <Input maxLength={50} placeholder="No. of Dependants" />
+              </Form.Item>
+              <Form.Item label="Residency Status" name="residencyStatus">
+                <Select placeholder="Residency Status" showArrow>
+                  <Select.Option value="Resident">Resident</Select.Option>
+                  <Select.Option value="Non Resident">Non Resident</Select.Option>
+                </Select>
+              </Form.Item>
+            </Form>
+          )
+        }
       default:
         return '';
     }
@@ -630,7 +810,7 @@ export default connect(
   ({
     loading,
     employeeProfile: {
-      originData: { generalData: { _id: generalId = '' } = {} } = {},
+      originData: { generalData: { _id: generalId = '' } = {}, employmentData: { location = {} } = {} } = {},
       tempData: { generalData = {} } = {},
       listRelation = [],
       listSkill = [],
@@ -639,6 +819,7 @@ export default connect(
     } = {},
   }) => ({
     loading: loading.effects['employeeProfile/updateFirstGeneralInfo'],
+    location,
     generalId,
     generalData,
     listSkill,

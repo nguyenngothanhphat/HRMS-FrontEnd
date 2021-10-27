@@ -1,11 +1,8 @@
 import React, { PureComponent } from 'react';
-import { Table, Dropdown, Button, Menu, Input } from 'antd';
+import { Table, Dropdown, Menu, Input } from 'antd';
 import moment from 'moment';
-import { isEmpty } from 'lodash';
-import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import { DownOutlined, SearchOutlined } from '@ant-design/icons';
-import { history, connect } from 'umi';
-import { getCurrentTimeOfTimezoneOption } from '@/utils/times';
+import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import styles from './index.less';
 
 class TableTickets extends PureComponent {
@@ -48,14 +45,26 @@ class TableTickets extends PureComponent {
     });
 
     if (id) {
-      history.push(`/offboarding/list/review/${id}`);
+      // history.push(`/offboarding/list/review/${id}`);
     }
   };
-  
+
+  handleSelect = (e) => {
+    e.preventDefault();
+  };
+
   render() {
+    const {
+      data = [],
+      textEmpty = 'No resignation request is submitted',
+      loading,
+      pageSelected,
+      size,
+      getPageAndSize = () => {},
+    } = this.props;
     const pagination = {
       position: ['bottomLeft'],
-      total: 30, //totalAll,
+      total: 30, // totalAll,
       showTotal: (total, range) => (
         <span>
           Showing{' '}
@@ -65,110 +74,145 @@ class TableTickets extends PureComponent {
           of {data.length}
         </span>
       ),
-      pageSize: 10, //size
-      current: 1, //pageSelected,
+      pageSize: size,
+      current: pageSelected,
       onChange: (page, pageSize) => {
-        //getPageAndSize(page, pageSize);
+        getPageAndSize(page, pageSize);
       },
     };
-    //dropdown select
-    const children = [];
-  for (let i = 10; i < 36; i++) {
-  children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
-  }
+    // dropdown select
+
     const menu = (
       <Menu>
         <div className="inputSearch">
-           <Input 
-            placeholder="Search by name" 
-            prefix={<SearchOutlined />} 
-           />
+          <Input placeholder="Search by name" prefix={<SearchOutlined />} />
         </div>
         <Menu.Divider />
-        <Menu.Item> Lewis Tuan</Menu.Item>
-        <Menu.Item>Vo Nghia</Menu.Item>
+        {data.map((item) => (
+          <Menu.Item> {item.employeeRaise.generalInfo.legalName}</Menu.Item>
+        ))}
+        {/* <Menu.Item> Lewis Tuan</Menu.Item>
+        <Menu.Item>Vo Nghia</Menu.Item> */}
       </Menu>
     );
     // Thay thế data khi co du lieu
     const columns = [
-        {
-            title: 'Ticket ID',
-            dataIndex: 'name',
-            key: 'name',
+      {
+        title: 'Ticket ID',
+        dataIndex: 'id',
+        key: 'id',
+        render: (id) => {
+          return (
+            <span className={styles.ticketID} onClick={() => this.openViewTicket(id)}>
+              {id}
+            </span>
+          );
         },
-        {
-            title: 'User ID',
-            dataIndex: 'age',
-            key: 'age',
+        fixed: 'left',
+      },
+      {
+        title: 'User ID',
+        dataIndex: 'employeeRaise',
+        key: 'userID',
+        render: (employeeRaise) => {
+          const { generalInfo: { userId = '' } = {} } = employeeRaise;
+          return <span className={styles.userID}>{userId}</span>;
         },
-        {
-            title: 'Name',
-            dataIndex: 'address',
-            key: '1',
+      },
+      {
+        title: 'Name',
+        dataIndex: 'employeeRaise',
+        key: 'name',
+        render: (employeeRaise) => {
+          const { generalInfo: { legalName = '' } = {} } = employeeRaise;
+          return <span>{legalName}</span>;
         },
-        {
-            title: 'Request Date',
-            dataIndex: 'address',
-            key: '2',
+      },
+      {
+        title: 'Request Date',
+        dataIndex: 'created_at',
+        key: 'requestDate',
+        render: (created_at) => {
+          return <span>{moment(created_at).format('DD/MM/YYYY')}</span>;
         },
-        {
-            title: 'Request Type',
-            dataIndex: 'address',
-            key: '3',
+      },
+      {
+        title: 'Request Type',
+        dataIndex: 'query_type',
+        key: 'query_type',
+      },
+      {
+        title: 'Priority',
+        dataIndex: 'priority',
+        key: 'priority',
+        render: (priority) => {
+          if (priority === 'High') {
+            return <span className={styles.priorityHigh}>{priority}</span>;
+          }
+          if (priority === 'Normal') {
+            return <span className={styles.priorityMedium}>{priority}</span>;
+          }
+          return <span className={styles.priorityLow}>{priority}</span>;
         },
-        {
-            title: 'Priority',
-            dataIndex: 'address',
-            key: '4',
+      },
+      {
+        title: 'Loacation',
+        dataIndex: 'employeeRaise',
+        key: 'loacation',
+        render: (employeeRaise) => {
+          const {
+            location: {
+              headQuarterAddress: {
+                country: { name = '' },
+              },
+            } = {},
+          } = employeeRaise;
+          return <span>{name}</span>;
         },
-        {
-            title: 'Loacation',
-            dataIndex: 'address',
-            key: '5',
+      },
+      {
+        title: 'Subject',
+        dataIndex: 'subject',
+        key: 'subject',
+      },
+      {
+        title: 'Assign To',
+        key: 'operation',
+        fixed: 'right',
+        render: () => {
+          return (
+            <Dropdown overlayClassName="dropDown" overlay={menu} trigger={['click']}>
+              <div onClick={(e) => this.handleSelect(e)}>
+                Select User &emsp;
+                <DownOutlined />
+              </div>
+            </Dropdown>
+          );
         },
-        {
-            title: 'Subject',
-            dataIndex: 'address',
-            key: '6',
-        },
-        {
-            title: 'Assign To',
-            key: 'operation',
-            fixed: 'right',
-            render: () => {
-              return (
-                <Dropdown overlayClassName="dropDown" overlay={ menu } trigger={['click']}>
-                  <div onClick={e => e.preventDefault()}>
-                    Select User &emsp;
-                    <DownOutlined/>
-                  </div>
-              </Dropdown>
-              )
-            }
-        },
+      },
     ];
-    const data = [];
-    for (let i = 0; i < 50; i++) {
-        data.push({
-            key: i,
-            name: `Edrward ${i}`,
-            age: 32,
-            address: `London Park no. ${i}`,
-        });
-    }
 
     return (
       <div className={styles.TableTickets}>
-            <Table
-                columns={columns}
-                dataSource={data}
-                scroll={{ x: 1500, y: 487 }}
-                pagination={{
-                    ...pagination,
-                    total: 30,
-                }}
-            />
-        </div>
+        <Table
+          locale={{
+            emptyText: (
+              <div className={styles.viewEmpty}>
+                <img src={empty} alt="" />
+                <p className={styles.textEmpty}>{textEmpty}</p>
+              </div>
+            ),
+          }}
+          loading={loading}
+          columns={columns}
+          dataSource={data}
+          hideOnSinglePage
+          pagination={pagination}
+          onChange={this.handleChangeTable}
+          rowKey="id"
+          scroll={{ x: 1500, y: 487 }}
+        />
+      </div>
     );
   }
 }

@@ -5,6 +5,7 @@ import {
   setTenantId,
   setCurrentCompany,
   removeLocalStorage,
+  setIsGoogleSignin,
 } from '@/utils/authority';
 import { setToken } from '@/utils/token';
 import { dialog } from '@/utils/utils';
@@ -34,10 +35,10 @@ const Model = {
         const { user: { signInRole = [], isFirstLogin = false } = {}, listCompany = [] } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
-        // if (isFirstLogin) {
-        //   history.replace('/first-change-password');
-        //   return {};
-        // }
+        if (isFirstLogin) {
+          history.replace('/first-change-password');
+          return {};
+        }
 
         // CANDIDATE
         const isCandidate = formatRole.indexOf('candidate') > -1;
@@ -190,21 +191,16 @@ const Model = {
           payload: response,
         });
         setToken(response.data.token);
+        setIsGoogleSignin(true);
 
         let formatArrRoles = [];
-        const {
-          user: {
-            signInRole = [],
-            // isFirstLogin = false
-          } = {},
-          listCompany = [],
-        } = data;
+        const { user: { signInRole = [], isFirstLogin = false } = {}, listCompany = [] } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
-        // if (isFirstLogin) {
-        //   history.replace('/first-change-password');
-        //   return {};
-        // }
+        if (isFirstLogin) {
+          history.replace('/first-change-password');
+          return {};
+        }
 
         if (formatRole.indexOf('candidate') > -1) {
           yield put({

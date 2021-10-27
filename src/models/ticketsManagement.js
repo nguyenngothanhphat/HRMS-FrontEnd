@@ -5,6 +5,7 @@ import {
   getListEmployee,
   getOffAllTicketList,
   getDepartmentList,
+  getOffToTalList,
 } from '../services/ticketsManagement';
 
 const ticketManagement = {
@@ -43,7 +44,24 @@ const ticketManagement = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { listOffAllTicket, totalList, totalAll },
+          payload: { listOffAllTicket: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *fetchToTalList({ payload }, { call, put }) {
+      try {
+        const response = yield call(getOffToTalList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { totalList: data },
         });
       } catch (error) {
         dialog(error);

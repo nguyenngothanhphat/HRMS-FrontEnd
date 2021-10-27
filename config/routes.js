@@ -807,14 +807,14 @@ const routes = [
           //   authority: ['M_SETTING_VIEW', 'P_SETTING_VIEW', 'owner'], // TEMP
           // },
           {
-            path: '/timesheet',
+            path: '/time-sheet',
             name: 'timeSheet',
             icon: '/assets/images/menuIcons/timeSheet.svg',
             component: './TimeSheet',
             authority: ['hr-manager', 'hr', 'employee', 'manager'],
           },
           {
-            path: '/timesheet/:tabName',
+            path: '/time-sheet/:tabName',
             component: './TimeSheet',
             authority: ['hr-manager', 'hr', 'employee', 'manager'],
             hideInMenu: true,

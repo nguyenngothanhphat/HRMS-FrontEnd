@@ -4,10 +4,10 @@ import DashboardOld from '../DashboardOld';
 import DashboardNew from '../DashboardNew';
 
 const Dashboard = () => {
-  // if (isOwner()) {
-  //   return <DashboardOld />;
-  // }
-  // return <DashboardNew />;
-  return <DashboardOld />
+  if (isOwner()) {
+    return <DashboardOld />;
+  }
+  return <DashboardNew />;
+  // return <DashboardOld />
 };
 export default Dashboard;

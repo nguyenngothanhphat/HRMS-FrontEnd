@@ -25,29 +25,17 @@ const { Option } = Select;
 const dateFormat = 'MM/DD/YYYY';
 
 const RaiseTicketModal = (props) => {
+  const [form] = Form.useForm();
   const formRef = React.createRef();
-  const { visible = false, title = '', onClose = () => { } } = props;
+  const { visible = false, title = '', onClose = () => {} } = props;
   const { maxFileSize = 2, dispatch } = props;
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
   const [queryTypeList, setQueryTypeList] = useState([]);
-  const [attachments, setAttachments] = useState("");
-  const [supportTeam, setSupportTeam] = useState("");
-  const [supportTeamID, setSupportTeamID] = useState("");
-  const [state, setState] = useState({
-    payload: {
-      employeeRaise: "",
-      employeeAssignee: "",
-      status: "",
-      queryType: "",
-      subject: "",
-      priority: "",
-      ccList: [],
-      attachments: "",
-    }
-  })
+  const [attachment, setAttachment] = useState('');
+  const [supportTeam, setSupportTeam] = useState('');
+  const [supportTeamID, setSupportTeamID] = useState('');
 
-  const { myEmployeeID, listEmployee, listDepartment } = props;
-  console.log(myEmployeeID)
+  const { myEmployeeID, listEmployee, listDepartment, locationID } = props;
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>
@@ -64,33 +52,40 @@ const RaiseTicketModal = (props) => {
       payload: {
         tenantId: getCurrentTenant(),
         company: getCurrentCompany(),
-      }
+      },
     });
     dispatch({
       type: 'ticketManagement/fetchDepartments',
       payload: {
         tenantId: getCurrentTenant(),
         company: getCurrentCompany(),
-      }
+      },
     });
   }, []);
 
-  const handleFinish  = (value) => {
+  const handleFinish = (value) => {
     dispatch({
       type: 'ticketManagement/addTicket',
       payload: {
-        employeeRaise: supportTeamID,
-        employeeAssignee: myEmployeeID,
+        department_assign: supportTeamID,
+        employeeRaise: myEmployeeID,
+        employeeAssignee: supportTeamID,
         status: value.status,
-        queryType: value.queryType,
+        query_type: value.queryType,
         subject: value.subject,
+        description: value.description,
         priority: value.priority,
         ccList: value.interestList,
-        attachments,
-      }
-    })
+        attachments: attachment,
+        location: locationID,
+      },
+    });
+    form.resetFields();
   };
 
+  const handleReset = () => {
+    form.resetFields();
+  };
   const beforeUpload = (file) => {
     const checkType =
       file.type === 'application/pdf' ||
@@ -123,7 +118,7 @@ const RaiseTicketModal = (props) => {
     if (res.statusCode === 200) {
       const { data = [] } = res;
       const idUpload = data[0].id;
-      setAttachments(idUpload);
+      setAttachment(idUpload);
       if (data.length > 0) {
         const uploadedAttachmentsTemp = JSON.parse(JSON.stringify(uploadedAttachments));
         uploadedAttachmentsTemp.push(data[0]);
@@ -144,13 +139,14 @@ const RaiseTicketModal = (props) => {
     setSupportTeam(value);
     const queryTypeListTemp = SUPPORT_TEAM.find((val) => val.name === value);
     setQueryTypeList(queryTypeListTemp.queryType || []);
-    const idDepartment = listDepartment.find((val) => val.name === value)
-    setSupportTeamID(idDepartment._id)
+    const idDepartment = listDepartment.find((val) => val.name === value);
+    setSupportTeamID(idDepartment._id);
   };
   const renderModalContent = () => {
     return (
       <div className={styles.content}>
         <Form
+          form={form}
           name="basic"
           ref={formRef}
           id="myForm"
@@ -261,17 +257,20 @@ const RaiseTicketModal = (props) => {
                 labelCol={{ span: 24 }}
               >
                 <Select showSearch mode="multiple" allowClear>
-                  {listEmployee ? listEmployee.map((val) => {
-                    const departmentName = val.department.name;
-                    if (departmentName === "HR" && supportTeam === "HR") {
-                      return <Option value={val._id}>{val.generalInfo.legalName}</Option>;
-                    } if (departmentName === "IT" && supportTeam === "IT") {
-                      return <Option value={val._id}>{val.generalInfo.legalName}</Option>;
-                    } if (departmentName === "OPERATION" && supportTeam === "OPERATION") {
-                      return <Option value={val._id}>{val.generalInfo.legalName}</Option>;
-                    }
-                  }
-                  ) : ""}
+                  {listEmployee
+                    ? listEmployee.map((val) => {
+                        const departmentName = val.department.name;
+                        if (departmentName === 'HR' && supportTeam === 'HR') {
+                          return <Option value={val._id}>{val.generalInfo.legalName}</Option>;
+                        }
+                        if (departmentName === 'IT' && supportTeam === 'IT') {
+                          return <Option value={val._id}>{val.generalInfo.legalName}</Option>;
+                        }
+                        if (departmentName === 'OPERATION' && supportTeam === 'OPERATION') {
+                          return <Option value={val._id}>{val.generalInfo.legalName}</Option>;
+                        }
+                      })
+                    : ''}
                 </Select>
               </Form.Item>
             </Col>
@@ -283,11 +282,12 @@ const RaiseTicketModal = (props) => {
                 beforeUpload={beforeUpload}
                 onRemove={(file) => handleRemove(file)}
                 openFileDialogOnClick={!(uploadedAttachments.length === 2)}
-              // multiple
+                // multiple
               >
                 <div
-                  className={`${styles.addAttachments} ${uploadedAttachments.length === 2 ? styles.disableUpload : {}
-                    }`}
+                  className={`${styles.addAttachments} ${
+                    uploadedAttachments.length === 2 ? styles.disableUpload : {}
+                  }`}
                 >
                   <div className={styles.btn}>
                     <img src={BlueAddIcon} alt="" />
@@ -314,7 +314,9 @@ const RaiseTicketModal = (props) => {
         width={650}
         footer={
           <>
-            <Button className={styles.btnCancel}>Reset</Button>
+            <Button className={styles.btnCancel} onClick={handleReset}>
+              Reset
+            </Button>
             <Button
               className={styles.btnSubmit}
               type="primary"
@@ -338,11 +340,17 @@ const RaiseTicketModal = (props) => {
 
 export default connect(
   ({
-    loading,
     ticketManagement: { listEmployee = [], listDepartment = [] } = {},
-    user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} || {}, roles = [] } = {} } = {},
+    user: {
+      currentUser: {
+        location: { _id: locationID = '' } = {},
+        employee: { _id: myEmployeeID = '' } = {} || {},
+        roles = [],
+      } = {},
+    } = {},
   }) => ({
     listEmployee,
+    locationID,
     listDepartment,
     myEmployeeID,
     roles,
