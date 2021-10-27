@@ -7,6 +7,7 @@ import WidgetCard from './components/WidgetCard';
 import SettingIcon from '@/assets/dashboard/setting.svg';
 
 const ManageWidgetsModal = (props) => {
+  const { currentUser: { _id: userMapId = '', firstName: userMapFirstName = '' } = {} } = props;
   const { dispatch, loadingUpdateWidgets = false, employeeWidgets = [], permissions = {} } = props;
   const [selectedWidgets, setSelectedWidgets] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -30,6 +31,8 @@ const ManageWidgetsModal = (props) => {
     return dispatch({
       type: 'dashboard/updateWidgetsEffect',
       payload: {
+        id: userMapId,
+        firstName: userMapFirstName,
         widgetDashboardShow,
       },
     });
@@ -98,10 +101,20 @@ const ManageWidgetsModal = (props) => {
 
   const renderContent = () => {
     const viewMyTeamDashboard = permissions.viewMyTeamDashboard !== -1;
-    const showingWidgets = viewMyTeamDashboard
-      ? WIDGETS
-      : WIDGETS.filter((w) => w.id !== WIDGET_IDS.MYTEAM);
+    const viewTimesheetDashboard = permissions.viewTimesheetDashboard !== -1;
 
+    const getShowingWidgets = () => {
+      let result = [];
+      if (!viewMyTeamDashboard) {
+        result = WIDGETS.filter((w) => w.id !== WIDGET_IDS.MYTEAM);
+      }
+      if (!viewTimesheetDashboard) {
+        result = result.filter((w) => w.id !== WIDGET_IDS.TIMESHEET);
+      }
+      return result;
+    };
+
+    const showingWidgets = getShowingWidgets();
     return (
       <div className={styles.content}>
         <div className={styles.widgets}>
@@ -154,8 +167,13 @@ const ManageWidgetsModal = (props) => {
 };
 
 export default connect(
-  ({ dashboard: { employeeWidgets = [] } = {}, loading, user: { permissions = {} } = {} }) => ({
+  ({
+    dashboard: { employeeWidgets = [] } = {},
+    loading,
+    user: { currentUser = {}, permissions = {} } = {},
+  }) => ({
     loadingUpdateWidgets: loading.effects['dashboard/updateWidgetsEffect'],
+    currentUser,
     permissions,
     employeeWidgets,
   }),

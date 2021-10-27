@@ -163,16 +163,10 @@ const dashboard = {
       }
       return response;
     },
-    *updateWidgetsEffect({ payload = {} }, { call, put, select }) {
+    *updateWidgetsEffect({ payload = {} }, { call, put }) {
       let response = {};
       try {
-        const { employeeId } = yield select((state) => state.dashboard);
-
-        response = yield call(updateWidgets, {
-          ...payload,
-          id: employeeId,
-          tenantId: getCurrentTenant(),
-        });
+        response = yield call(updateWidgets, payload);
 
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
@@ -181,7 +175,7 @@ const dashboard = {
         yield put({
           type: 'save',
           payload: {
-            employeeWidgets: data.widgetDashboardShow,
+            employeeWidgets: data?.userMap?.widgetDashboardShow || [],
           },
         });
       } catch (errors) {
