@@ -11,12 +11,13 @@ import {
   Upload,
   message,
 } from 'antd';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
 import HelpIcon from '@/assets/dashboard/help.svg';
 import BlueAddIcon from '@/assets/dashboard/blueAdd.svg';
 import { SUPPORT_TEAM, PRIORITY } from '@/utils/dashboard';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
 import styles from './index.less';
 
@@ -24,12 +25,17 @@ const { Option } = Select;
 const dateFormat = 'MM/DD/YYYY';
 
 const RaiseTicketModal = (props) => {
+  const [form] = Form.useForm();
   const formRef = React.createRef();
   const { visible = false, title = '', onClose = () => {} } = props;
   const { maxFileSize = 2, dispatch } = props;
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
   const [queryTypeList, setQueryTypeList] = useState([]);
+  const [attachment, setAttachment] = useState('');
+  const [supportTeam, setSupportTeam] = useState('');
+  const [supportTeamID, setSupportTeamID] = useState('');
 
+  const { myEmployeeID, listEmployee, listDepartment, locationID } = props;
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>
@@ -37,15 +43,49 @@ const RaiseTicketModal = (props) => {
       </div>
     );
   };
-
   const handleCancel = () => {
     onClose();
   };
+  useEffect(() => {
+    dispatch({
+      type: 'ticketManagement/fetchListEmployee',
+      payload: {
+        tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
+      },
+    });
+    dispatch({
+      type: 'ticketManagement/fetchDepartments',
+      payload: {
+        tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
+      },
+    });
+  }, []);
 
-  const handleFinish = () => {
-    // finish
+  const handleFinish = (value) => {
+    dispatch({
+      type: 'ticketManagement/addTicket',
+      payload: {
+        department_assign: supportTeamID,
+        employeeRaise: myEmployeeID,
+        employeeAssignee: supportTeamID,
+        status: value.status,
+        query_type: value.queryType,
+        subject: value.subject,
+        description: value.description,
+        priority: value.priority,
+        ccList: value.interestList,
+        attachments: attachment,
+        location: locationID,
+      },
+    });
+    form.resetFields();
   };
 
+  const handleReset = () => {
+    form.resetFields();
+  };
   const beforeUpload = (file) => {
     const checkType =
       file.type === 'application/pdf' ||
@@ -77,6 +117,8 @@ const RaiseTicketModal = (props) => {
     });
     if (res.statusCode === 200) {
       const { data = [] } = res;
+      const idUpload = data[0].id;
+      setAttachment(idUpload);
       if (data.length > 0) {
         const uploadedAttachmentsTemp = JSON.parse(JSON.stringify(uploadedAttachments));
         uploadedAttachmentsTemp.push(data[0]);
@@ -94,20 +136,23 @@ const RaiseTicketModal = (props) => {
   };
 
   const onSupportTeamChange = (value) => {
+    setSupportTeam(value);
     const queryTypeListTemp = SUPPORT_TEAM.find((val) => val.name === value);
     setQueryTypeList(queryTypeListTemp.queryType || []);
+    const idDepartment = listDepartment.find((val) => val.name === value);
+    setSupportTeamID(idDepartment._id);
   };
-
   const renderModalContent = () => {
     return (
       <div className={styles.content}>
         <Form
+          form={form}
           name="basic"
           ref={formRef}
           id="myForm"
           onFinish={handleFinish}
           initialValues={{
-            status: 'new',
+            status: 'New',
             requestDate: moment(),
           }}
         >
@@ -153,7 +198,7 @@ const RaiseTicketModal = (props) => {
                 rules={[{ required: true, message: 'Please select Status' }]}
               >
                 <Select disabled>
-                  <Option value="new">New</Option>
+                  <Option value="New">New</Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -212,8 +257,20 @@ const RaiseTicketModal = (props) => {
                 labelCol={{ span: 24 }}
               >
                 <Select showSearch mode="multiple" allowClear>
-                  <Option value="A">Test</Option>
-                  <Option value="B">Test B</Option>
+                  {listEmployee
+                    ? listEmployee.map((val) => {
+                        const departmentName = val.department.name;
+                        if (departmentName === 'HR' && supportTeam === 'HR') {
+                          return <Option value={val._id}>{val.generalInfo.legalName}</Option>;
+                        }
+                        if (departmentName === 'IT' && supportTeam === 'IT') {
+                          return <Option value={val._id}>{val.generalInfo.legalName}</Option>;
+                        }
+                        if (departmentName === 'OPERATION' && supportTeam === 'OPERATION') {
+                          return <Option value={val._id}>{val.generalInfo.legalName}</Option>;
+                        }
+                      })
+                    : ''}
                 </Select>
               </Form.Item>
             </Col>
@@ -257,7 +314,9 @@ const RaiseTicketModal = (props) => {
         width={650}
         footer={
           <>
-            <Button className={styles.btnCancel}>Reset</Button>
+            <Button className={styles.btnCancel} onClick={handleReset}>
+              Reset
+            </Button>
             <Button
               className={styles.btnSubmit}
               type="primary"
@@ -279,4 +338,21 @@ const RaiseTicketModal = (props) => {
   );
 };
 
-export default connect(() => ({}))(RaiseTicketModal);
+export default connect(
+  ({
+    ticketManagement: { listEmployee = [], listDepartment = [] } = {},
+    user: {
+      currentUser: {
+        location: { _id: locationID = '' } = {},
+        employee: { _id: myEmployeeID = '' } = {} || {},
+        roles = [],
+      } = {},
+    } = {},
+  }) => ({
+    listEmployee,
+    locationID,
+    listDepartment,
+    myEmployeeID,
+    roles,
+  }),
+)(RaiseTicketModal);
