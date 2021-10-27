@@ -27,15 +27,24 @@ const dateFormat = 'MM/DD/YYYY';
 const RaiseTicketModal = (props) => {
   const [form] = Form.useForm();
   const formRef = React.createRef();
-  const { visible = false, title = '', onClose = () => {} } = props;
+  const {
+    visible = false,
+    title = '',
+    onClose = () => {},
+    currentUser: {
+      location = {} || {},
+      employee: { _id: myEmployeeID = '' } = {} || {},
+    } = {} || {},
+  } = props;
+  const locationID = location?._id;
+
   const { maxFileSize = 2, dispatch } = props;
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
   const [queryTypeList, setQueryTypeList] = useState([]);
   const [attachment, setAttachment] = useState('');
   const [supportTeam, setSupportTeam] = useState('');
   const [supportTeamID, setSupportTeamID] = useState('');
-
-  const { myEmployeeID, listEmployee, listDepartment, locationID } = props;
+  const { listEmployee, listDepartment } = props;
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>
@@ -139,7 +148,7 @@ const RaiseTicketModal = (props) => {
     setSupportTeam(value);
     const queryTypeListTemp = SUPPORT_TEAM.find((val) => val.name === value);
     setQueryTypeList(queryTypeListTemp.queryType || []);
-    const idDepartment = listDepartment.find((val) => val.name === value);
+    const idDepartment = listDepartment.find((val) => val.name === value) || {};
     setSupportTeamID(idDepartment._id);
   };
   const renderModalContent = () => {
@@ -261,13 +270,13 @@ const RaiseTicketModal = (props) => {
                     ? listEmployee.map((val) => {
                         const departmentName = val.department.name;
                         if (departmentName === 'HR' && supportTeam === 'HR') {
-                          return <Option value={val._id}>{val.generalInfo.legalName}</Option>;
+                          return <Option value={val?._id}>{val?.generalInfo?.legalName}</Option>;
                         }
                         if (departmentName === 'IT' && supportTeam === 'IT') {
-                          return <Option value={val._id}>{val.generalInfo.legalName}</Option>;
+                          return <Option value={val?._id}>{val?.generalInfo?.legalName}</Option>;
                         }
                         if (departmentName === 'OPERATION' && supportTeam === 'OPERATION') {
-                          return <Option value={val._id}>{val.generalInfo.legalName}</Option>;
+                          return <Option value={val?._id}>{val?.generalInfo?.legalName}</Option>;
                         }
                       })
                     : ''}
@@ -341,18 +350,10 @@ const RaiseTicketModal = (props) => {
 export default connect(
   ({
     ticketManagement: { listEmployee = [], listDepartment = [] } = {},
-    user: {
-      currentUser: {
-        location: { _id: locationID = '' } = {},
-        employee: { _id: myEmployeeID = '' } = {} || {},
-        roles = [],
-      } = {},
-    } = {},
+    user: { currentUser = {} } = {},
   }) => ({
     listEmployee,
-    locationID,
     listDepartment,
-    myEmployeeID,
-    roles,
+    currentUser,
   }),
 )(RaiseTicketModal);

@@ -104,9 +104,9 @@ const ManageWidgetsModal = (props) => {
     const viewTimesheetDashboard = permissions.viewTimesheetDashboard !== -1;
 
     const getShowingWidgets = () => {
-      let result = [];
+      let result = WIDGETS;
       if (!viewMyTeamDashboard) {
-        result = WIDGETS.filter((w) => w.id !== WIDGET_IDS.MYTEAM);
+        result = result.filter((w) => w.id !== WIDGET_IDS.MYTEAM);
       }
       if (!viewTimesheetDashboard) {
         result = result.filter((w) => w.id !== WIDGET_IDS.TIMESHEET);
