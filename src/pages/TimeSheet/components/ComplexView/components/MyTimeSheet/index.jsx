@@ -8,387 +8,10 @@ import WeeklyHeader from './components/WeeklyHeader';
 import DailyTable from './components/DailyTable';
 import WeeklyTable from './components/WeeklyTable';
 import DailyFooter from './components/DailyFooter';
-import WeeklyFooter from './components/WeeklyFooter';
+// import WeeklyFooter from './components/WeeklyFooter';
 
 import styles from './index.less';
-import { dateFormatAPI } from '@/utils/timeSheet';
-
-const mockDataDaily = [
-  {
-    id: 17,
-    companyId: '6153e2ebb51335302899a366',
-    employeeId: '61765b19b9b27400abf50719',
-    managerId: '61765abcb9b27400abf50710',
-    manager: {
-      workEmail: 'lewis-manager@mailinator.com',
-      department: {
-        id: '6153e2ecb51335302899a375',
-        name: 'Engineering',
-      },
-      employeeId: '61765abcb9b27400abf50710',
-      employeeCode: 'lewis-manager',
-      employeeName: 'Lewis Manager',
-    },
-    employee: {
-      workEmail: 'lewis-employee@mailinator.com',
-      department: {
-        id: '6153e2ecb51335302899a375',
-        name: 'Engineering',
-      },
-      employeeCode: 'lewis-employee',
-      employeeName: 'Lewis Employee',
-    },
-    department: {},
-    date: '2021-10-27',
-    location: '',
-    createdAt: '2021-10-25T07:30:55.000Z',
-    updatedAt: '2021-10-25T07:30:55.000Z',
-    deletedAt: 0,
-    status: 'SUBMITTED',
-    approverInfo: null,
-    approvedOn: null,
-    totalLeaveTime: 0,
-    totalOTTime: 3600000,
-    totalWorkingTime: 32400000,
-    totalHours: '09:00:00.0000',
-    timesheet: [
-      {
-        id: 30,
-        taskName: 'Working hours',
-        dailyId: 17,
-        projectName: 'HRMS',
-        employeeId: '61765b19b9b27400abf50719',
-        startTime: '08:30',
-        nightShift: false,
-        endTime: '12:00',
-        type: 'TASK',
-        deletedAt: 0,
-        duration: 14400000,
-        notes: 'Working on HRMS',
-        totalHours: '04:00:00.0000',
-      },
-      {
-        id: 31,
-        taskName: 'Lunch Break',
-        dailyId: 17,
-        projectName: 'HRMS',
-        employeeId: '61765b19b9b27400abf50719',
-        startTime: '12:00',
-        nightShift: false,
-        endTime: '13:00',
-        type: 'TASK',
-        deletedAt: 0,
-        duration: 3600000,
-        notes: 'Lunch Break',
-        totalHours: '01:00:00.0000',
-      },
-      {
-        id: 32,
-        taskName: 'Working hours',
-        dailyId: 17,
-        projectName: 'HRMS',
-        employeeId: '61765b19b9b27400abf50719',
-        startTime: '13:30',
-        nightShift: false,
-        endTime: '17:00',
-        type: 'TASK',
-        deletedAt: 0,
-        duration: 14400000,
-        notes: 'Working on Intranet',
-        totalHours: '04:00:00.0000',
-      },
-      {
-        id: 32,
-        taskName: 'Working hours',
-        dailyId: 17,
-        projectName: 'Intranet',
-        employeeId: '61765b19b9b27400abf50719',
-        startTime: '17:30',
-        nightShift: false,
-        endTime: '20:00',
-        type: 'TASK',
-        deletedAt: 0,
-        duration: 14400000,
-        notes: 'Working on Intranet',
-        totalHours: '04:00:00.0000',
-      },
-    ],
-  },
-  {
-    id: 17,
-    companyId: '6153e2ebb51335302899a366',
-    employeeId: '61765b19b9b27400abf50719',
-    managerId: '61765abcb9b27400abf50710',
-    manager: {
-      workEmail: 'lewis-manager@mailinator.com',
-      department: {
-        id: '6153e2ecb51335302899a375',
-        name: 'Engineering',
-      },
-      employeeId: '61765abcb9b27400abf50710',
-      employeeCode: 'lewis-manager',
-      employeeName: 'Lewis Manager',
-    },
-    employee: {
-      workEmail: 'lewis-employee@mailinator.com',
-      department: {
-        id: '6153e2ecb51335302899a375',
-        name: 'Engineering',
-      },
-      employeeCode: 'lewis-employee',
-      employeeName: 'Lewis Employee',
-    },
-    department: {},
-    date: '2021-10-28',
-    location: '',
-    createdAt: '2021-10-25T07:30:55.000Z',
-    updatedAt: '2021-10-25T07:30:55.000Z',
-    deletedAt: 0,
-    status: 'SUBMITTED',
-    approverInfo: null,
-    approvedOn: null,
-    totalLeaveTime: 0,
-    totalOTTime: 3600000,
-    totalWorkingTime: 32400000,
-    totalHours: '09:00:00.0000',
-    timesheet: [
-      {
-        id: 30,
-        taskName: 'Working hours',
-        dailyId: 17,
-        projectName: 'HRMS',
-        employeeId: '61765b19b9b27400abf50719',
-        startTime: '08:30',
-        nightShift: false,
-        endTime: '12:00',
-        type: 'TASK',
-        deletedAt: 0,
-        duration: 14400000,
-        notes: 'Working on HRMS',
-        totalHours: '04:00:00.0000',
-      },
-      {
-        id: 31,
-        taskName: 'Lunch Break',
-        dailyId: 17,
-        projectName: 'HRMS',
-        employeeId: '61765b19b9b27400abf50719',
-        startTime: '12:00',
-        nightShift: false,
-        endTime: '13:00',
-        type: 'TASK',
-        deletedAt: 0,
-        duration: 3600000,
-        notes: 'Lunch Break',
-        totalHours: '01:00:00.0000',
-      },
-      {
-        id: 32,
-        taskName: 'Working hours',
-        dailyId: 17,
-        projectName: 'Intranet',
-        employeeId: '61765b19b9b27400abf50719',
-        startTime: '17:30',
-        nightShift: false,
-        endTime: '20:00',
-        type: 'TASK',
-        deletedAt: 0,
-        duration: 14400000,
-        notes: 'Working on Intranet',
-        totalHours: '04:00:00.0000',
-      },
-    ],
-  },
-];
-
-const mockDataWeekly = [
-  {
-    id: 17,
-    companyId: '6153e2ebb51335302899a366',
-    employeeId: '61765b19b9b27400abf50719',
-    managerId: '61765abcb9b27400abf50710',
-    manager: {
-      workEmail: 'lewis-manager@mailinator.com',
-      department: {
-        id: '6153e2ecb51335302899a375',
-        name: 'Engineering',
-      },
-      employeeId: '61765abcb9b27400abf50710',
-      employeeCode: 'lewis-manager',
-      employeeName: 'Lewis Manager',
-    },
-    employee: {
-      workEmail: 'lewis-employee@mailinator.com',
-      department: {
-        id: '6153e2ecb51335302899a375',
-        name: 'Engineering',
-      },
-      employeeCode: 'lewis-employee',
-      employeeName: 'Lewis Employee',
-    },
-    department: {},
-    date: '2021-10-26',
-    location: '',
-    createdAt: '2021-10-25T07:30:55.000Z',
-    updatedAt: '2021-10-25T07:30:55.000Z',
-    deletedAt: 0,
-    status: 'SUBMITTED',
-    approverInfo: null,
-    approvedOn: null,
-    totalLeaveTime: 0,
-    totalOTTime: 3600000,
-    totalWorkingTime: 32400000,
-    totalHours: '09:00:00.0000',
-    timesheet: [
-      {
-        id: 30,
-        taskName: 'Working hours',
-        dailyId: 17,
-        projectName: 'HRMS',
-        employeeId: '61765b19b9b27400abf50719',
-        startTime: '08:30',
-        nightShift: false,
-        endTime: '12:00',
-        type: 'TASK',
-        deletedAt: 0,
-        duration: 14400000,
-        notes: 'Working on HRMS',
-        totalHours: '04:00:00.0000',
-      },
-      {
-        id: 31,
-        taskName: 'Lunch Break',
-        dailyId: 17,
-        projectName: 'HRMS',
-        employeeId: '61765b19b9b27400abf50719',
-        startTime: '12:00',
-        nightShift: false,
-        endTime: '13:00',
-        type: 'TASK',
-        deletedAt: 0,
-        duration: 3600000,
-        notes: 'Lunch Break',
-        totalHours: '01:00:00.0000',
-      },
-      {
-        id: 32,
-        taskName: 'Working hours',
-        dailyId: 17,
-        projectName: 'HRMS',
-        employeeId: '61765b19b9b27400abf50719',
-        startTime: '13:30',
-        nightShift: false,
-        endTime: '17:00',
-        type: 'TASK',
-        deletedAt: 0,
-        duration: 14400000,
-        notes: 'Working on Intranet',
-        totalHours: '04:00:00.0000',
-      },
-    ],
-  },
-
-  {
-    id: 18,
-    companyId: '6153e2ebb51335302899a366',
-    employeeId: '61765b19b9b27400abf50719',
-    managerId: '61765abcb9b27400abf50710',
-    manager: {
-      workEmail: 'lewis-manager@mailinator.com',
-      department: {
-        id: '6153e2ecb51335302899a375',
-        name: 'Engineering',
-      },
-      employeeId: '61765abcb9b27400abf50710',
-      employeeCode: 'lewis-manager',
-      employeeName: 'Lewis Manager',
-    },
-    employee: {
-      workEmail: 'lewis-employee@mailinator.com',
-      department: {
-        id: '6153e2ecb51335302899a375',
-        name: 'Engineering',
-      },
-      employeeCode: 'lewis-employee',
-      employeeName: 'Lewis Employee',
-    },
-    department: {},
-    date: '2021-10-28',
-    location: '',
-    createdAt: '2021-10-25T07:30:55.000Z',
-    updatedAt: '2021-10-25T07:30:55.000Z',
-    deletedAt: 0,
-    status: 'SUBMITTED',
-    approverInfo: null,
-    approvedOn: null,
-    totalLeaveTime: 0,
-    totalOTTime: 3600000,
-    totalWorkingTime: 32400000,
-    totalHours: '09:00:00.0000',
-    timesheet: [
-      {
-        id: 30,
-        taskName: 'Working hours',
-        dailyId: 17,
-        projectName: 'Syscloud',
-        employeeId: '61765b19b9b27400abf50719',
-        startTime: '08:30',
-        nightShift: false,
-        endTime: '12:00',
-        type: 'TASK',
-        deletedAt: 0,
-        duration: 14400000,
-        notes: 'Working on Syscloud',
-        totalHours: '04:00:00.0000',
-      },
-      {
-        id: 31,
-        taskName: 'Lunch Break',
-        dailyId: 17,
-        projectName: 'Lifecell',
-        employeeId: '61765b19b9b27400abf50719',
-        startTime: '12:00',
-        nightShift: false,
-        endTime: '13:00',
-        type: 'TASK',
-        deletedAt: 0,
-        duration: 3600000,
-        notes: 'Lunch Break',
-        totalHours: '01:00:00.0000',
-      },
-      {
-        id: 31,
-        taskName: 'Lunch Break',
-        dailyId: 17,
-        projectName: 'Udaan',
-        employeeId: '61765b19b9b27400abf50719',
-        startTime: '12:00',
-        nightShift: false,
-        endTime: '13:00',
-        type: 'TASK',
-        deletedAt: 0,
-        duration: 3600000,
-        notes: 'Lunch Break',
-        totalHours: '01:00:00.0000',
-      },
-      {
-        id: 31,
-        taskName: 'Lunch Break',
-        dailyId: 17,
-        projectName: 'Ramco',
-        employeeId: '61765b19b9b27400abf50719',
-        startTime: '12:00',
-        nightShift: false,
-        endTime: '13:00',
-        type: 'TASK',
-        deletedAt: 0,
-        duration: 3600000,
-        notes: 'Lunch Break',
-        totalHours: '01:00:00.0000',
-      },
-    ],
-  },
-];
+import { dateFormatAPI, VIEW_TYPE } from '@/utils/timeSheet';
 
 const MyTimeSheet = (props) => {
   // daily
@@ -399,28 +22,53 @@ const MyTimeSheet = (props) => {
   const [endDate, setEndDate] = useState('');
 
   // others
-  const [selectedView, setSelectedView] = useState('daily'); // daily, weekly, monthly
-  const { dispatch, employee: { _id: employeeId = '' } = {} } = props;
+  const [selectedView, setSelectedView] = useState(VIEW_TYPE.W); // D: daily, W: weekly, M: monthly
+  const {
+    dispatch,
+    myTimesheetByDay = [],
+    myTimesheetByWeek = [],
+    employee: { _id: employeeId = '' } = {},
+  } = props;
 
   // FUNCTION AREA
-  const fetchMyTimesheetEffect = () => {
+  const fetchMyTimesheetEffectByDate = () => {
     dispatch({
-      type: 'timeSheet/fetchMyTimesheetEffect',
+      type: 'timeSheet/fetchMyTimesheetByTypeEffect',
       payload: {
         companyId: getCurrentCompany(),
         employeeId,
         fromDate: moment(selectedDate).format(dateFormatAPI),
         toDate: moment(selectedDate).format(dateFormatAPI),
+        viewType: selectedView,
+      },
+    });
+  };
+
+  const fetchMyTimesheetEffectByWeek = () => {
+    dispatch({
+      type: 'timeSheet/fetchMyTimesheetByTypeEffect',
+      payload: {
+        companyId: getCurrentCompany(),
+        employeeId,
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
+        viewType: selectedView,
       },
     });
   };
 
   // USE EFFECT AREA
   useEffect(() => {
-    if (selectedDate) {
-      fetchMyTimesheetEffect();
+    if (selectedDate && selectedView === VIEW_TYPE.D) {
+      fetchMyTimesheetEffectByDate();
     }
-  }, [selectedDate]);
+  }, [selectedDate, selectedView]);
+
+  useEffect(() => {
+    if (startDate && selectedView === VIEW_TYPE.W) {
+      fetchMyTimesheetEffectByWeek();
+    }
+  }, [startDate, selectedView]);
 
   useEffect(() => {
     const lastSunday = moment().weekday(1);
@@ -437,7 +85,7 @@ const MyTimeSheet = (props) => {
 
   const renderHeader = () => {
     switch (selectedView) {
-      case 'daily':
+      case VIEW_TYPE.D:
         return (
           <DailyHeader
             selectedDate={selectedDate}
@@ -447,8 +95,8 @@ const MyTimeSheet = (props) => {
             viewChangeComponent={viewChangeComponent}
           />
         );
-      case 'weekly':
-      case 'monthly':
+      case VIEW_TYPE.W:
+      case VIEW_TYPE.M:
         return (
           <WeeklyHeader
             startDate={startDate}
@@ -466,11 +114,11 @@ const MyTimeSheet = (props) => {
 
   const renderTable = () => {
     switch (selectedView) {
-      case 'daily':
-        return <DailyTable selectedDate={selectedDate} data={mockDataDaily} />;
-      case 'weekly':
-        return <WeeklyTable startDate={startDate} endDate={endDate} data={mockDataWeekly} />;
-      case 'monthly':
+      case VIEW_TYPE.D:
+        return <DailyTable selectedDate={selectedDate} data={myTimesheetByDay} />;
+      case VIEW_TYPE.W:
+        return <WeeklyTable startDate={startDate} endDate={endDate} data={myTimesheetByWeek} />;
+      case VIEW_TYPE.M:
         return null;
       default:
         return null;
@@ -479,11 +127,11 @@ const MyTimeSheet = (props) => {
 
   const renderFooter = () => {
     switch (selectedView) {
-      case 'daily':
-        return <DailyFooter data={mockDataDaily} />;
-      case 'weekly':
+      case VIEW_TYPE.D:
+        return <DailyFooter data={myTimesheetByDay} />;
+      case VIEW_TYPE.W:
         return null;
-      case 'monthly':
+      case VIEW_TYPE.M:
         return null;
       default:
         return null;
@@ -501,8 +149,13 @@ const MyTimeSheet = (props) => {
 };
 
 export default connect(
-  ({ timeSheet: { myTimesheet = [] } = {}, user: { currentUser: { employee = {} } = {} } }) => ({
+  ({
+    timeSheet: { myTimesheetByDay = [], myTimesheetByWeek = [], myTimesheetByMonth = [] } = {},
+    user: { currentUser: { employee = {} } = {} },
+  }) => ({
     employee,
-    myTimesheet,
+    myTimesheetByDay,
+    myTimesheetByWeek,
+    myTimesheetByMonth,
   }),
 )(MyTimeSheet);

@@ -7,10 +7,12 @@ import CompleteIcon from '@/assets/timeSheet/complete.svg';
 import FailIcon from '@/assets/timeSheet/fail.svg';
 import PendingIcon from '@/assets/timeSheet/pending.svg';
 import TaskPopover from './components/TaskPopover';
+import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
+
 import styles from './index.less';
 
 const WeeklyTable = (props) => {
-  const { startDate = '', endDate = '', loadingFetchMyTimesheet = false, data = [] } = props;
+  const { startDate = '', endDate = '', loadingFetchMyTimesheetByType = false, data = [] } = props;
   const [dateList, setDateList] = useState([]);
   const [formattedData, setFormattedData] = useState([]);
 
@@ -27,43 +29,21 @@ const WeeklyTable = (props) => {
     return dates;
   };
 
+  // get dates between two dates
+  const isTheSameDay = (date1, date2) => {
+    return moment(date1).format('MM/DD/YYYY') === moment(date2).format('MM/DD/YYYY');
+  };
+
   // format data
   const formatData = () => {
-    let projectList = [];
-    // get project lists
-    data.forEach((item) => {
-      item.timesheet.forEach((x) => projectList.push(x.projectName));
-    });
-    projectList = [...new Set(projectList)];
-
-    // get timesheet by date
-    const result = projectList.map((project) => {
-      const resultTemp = dateList.map((date) => {
-        const find = data.find(
-          (item) =>
-            moment(item.date).format('MM/DD/YYYY') === date &&
-            item.timesheet.some((e) => e.projectName === project),
-        );
-        return {
-          ...find,
-          date,
-          timesheet: find?.timesheet || [],
-        };
-      });
-      return {
-        project,
-        listByDate: resultTemp,
-      };
-    });
-
     const dates = {};
     for (let i = 0; i < dateList.length; i += 1) dates[dateList[i]] = dateList[i];
     const header = {
-      project: 'All Projects',
-      totalHours: 'Total Hours',
+      projectName: 'All Projects',
+      totalProjectTimeHours: 'Total Hours',
       ...dates,
     };
-    setFormattedData([header].concat(result));
+    setFormattedData([header].concat(data));
   };
 
   const getColorByIndex = (index) => {
@@ -167,54 +147,58 @@ const WeeklyTable = (props) => {
         key: date,
         align: 'center',
         width: `${100 / 9}%`,
-        render: (value, row, index) => {
-          const valueTemp = () => {
-            if (index === 0 && date !== '10/29/2021') {
+        render: (_, row, index) => {
+          const { projectName = '', days = [] } = row;
+          const value = days.find((d) => isTheSameDay(d.date, date));
+          const getCellValue = () => {
+            if (index === 0 /* / FOR HOLIDAY & LEAVE REQUEST && date !== '10/29/2021' */) {
               return renderDateHeaderItem(date);
             }
-            // if this date has a leave request
-            if (date === '10/27/2021') {
-              return renderEventColumn();
-            }
 
-            // if this date is holiday
-            if (date === '10/29/2021') {
-              return renderHoliday(date);
-            }
+            // FOR HOLIDAY & LEAVE REQUEST
+            // // if this date has a leave request
+            // if (date === '10/27/2021') {
+            //   return renderEventColumn();
+            // }
 
-            // console.log('row', row);
+            // // if this date is holiday
+            // if (date === '10/29/2021') {
+            //   return renderHoliday(date);
+            // }
+            if (!value) return <img src={EmptyLine} alt="" />;
             return (
-              <TaskPopover>
-                <span className={styles.hourValue}>{date}</span>
+              <TaskPopover projectName={projectName} date={date} tasks={value.dailyProjectTask}>
+                <span className={styles.hourValue}>{value?.dailyProjectHours}</span>
               </TaskPopover>
             );
           };
           const obj = {
-            children: valueTemp(),
+            children: getCellValue(),
             props: {},
           };
 
-          // pretend 10/27/2021 is a leave day
-          if (index === 1 && date === '10/27/2021') {
-            obj.props.rowSpan = formattedData.length;
-          }
-          for (let i = 2; i < formattedData.length; i += 1) {
-            // These ones are merged into above cell
-            if (index === i && date === '10/27/2021') {
-              obj.props.rowSpan = 0;
-            }
-          }
+          // FOR HOLIDAY & LEAVE REQUEST
+          // // pretend 10/27/2021 is a leave day
+          // if (index === 1 && date === '10/27/2021') {
+          //   obj.props.rowSpan = formattedData.length;
+          // }
+          // for (let i = 2; i < formattedData.length; i += 1) {
+          //   // These ones are merged into above cell
+          //   if (index === i && date === '10/27/2021') {
+          //     obj.props.rowSpan = 0;
+          //   }
+          // }
 
-          // pretend 10/29/2021 is holiday day
-          if (index === 0 && date === '10/29/2021') {
-            obj.props.rowSpan = formattedData.length;
-          }
-          for (let i = 1; i < formattedData.length; i += 1) {
-            // These ones are merged into above cell
-            if (index === i && date === '10/29/2021') {
-              obj.props.rowSpan = 0;
-            }
-          }
+          // // pretend 10/29/2021 is holiday day
+          // if (index === 0 && date === '10/29/2021') {
+          //   obj.props.rowSpan = formattedData.length;
+          // }
+          // for (let i = 1; i < formattedData.length; i += 1) {
+          //   // These ones are merged into above cell
+          //   if (index === i && date === '10/29/2021') {
+          //     obj.props.rowSpan = 0;
+          //   }
+          // }
           return obj;
         },
       };
@@ -223,20 +207,20 @@ const WeeklyTable = (props) => {
     const result = [
       {
         title: 'All Projects',
-        dataIndex: 'project',
-        key: 'project',
+        dataIndex: 'projectName',
+        key: 'projectName',
         align: 'center',
         width: `${100 / 9}%`,
-        render: (project, _, index) => {
+        render: (projectName, _, index) => {
           if (index === 0) {
-            return project;
+            return projectName;
           }
           return (
             <div className={styles.projectName}>
               <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
-                <span>{project ? project.toString()?.charAt(0) : 'P'}</span>
+                <span>{projectName ? projectName.toString()?.charAt(0) : 'P'}</span>
               </div>
-              <span className={styles.name}>{project}</span>
+              <span className={styles.name}>{projectName}</span>
             </div>
           );
         },
@@ -244,15 +228,13 @@ const WeeklyTable = (props) => {
       ...dateColumns,
       {
         title: 'Total Hours',
-        dataIndex: 'totalHours',
-        key: 'totalHours',
+        dataIndex: 'totalProjectTimeHours',
+        key: 'totalProjectTimeHours',
         align: 'center',
         width: `${100 / 9}%`,
         render: (value, _, index) => {
-          if (index === 0) {
-            return value;
-          }
-          return 'Total';
+          if (index === 0) return <span className={styles.totalHeader}>{value}</span>;
+          return <span className={styles.totalValue}>{value}</span>;
         },
       },
     ];
@@ -287,6 +269,7 @@ const WeeklyTable = (props) => {
           pagination={false}
           // scroll={{ y: 440 }}
           footer={renderFooter}
+          loading={loadingFetchMyTimesheetByType}
         />
       </div>
     </div>
@@ -295,5 +278,5 @@ const WeeklyTable = (props) => {
 
 export default connect(({ loading, timeSheet: { myTimesheet = [] } = {} }) => ({
   myTimesheet,
-  loadingFetchMyTimesheet: loading.effects['timeSheet/fetchMyTimesheetEffect'],
+  loadingFetchMyTimesheetByType: loading.effects['timeSheet/fetchMyTimesheetByTypeEffect'],
 }))(WeeklyTable);

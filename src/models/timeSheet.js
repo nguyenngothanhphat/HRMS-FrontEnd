@@ -8,6 +8,9 @@ import {
   addActivity,
   updateActivity,
   getEmployeeList,
+
+  // complex view
+  getMyTimesheetByType,
 } from '@/services/timeSheet';
 import { dialog } from '@/utils/utils';
 import { convertMsToTime } from '@/utils/timeSheet';
@@ -21,6 +24,10 @@ const initialState = {
   // myTotalHours: '',
   managerTotalHours: 0,
   employeeList: [],
+  // complex view
+  myTimesheetByDay: [],
+  myTimesheetByWeek: [],
+  myTimesheetByMonth: [],
 };
 
 const TimeSheet = {
@@ -69,6 +76,41 @@ const TimeSheet = {
       }
       return response;
     },
+    // complex view fetch
+    *fetchMyTimesheetByTypeEffect({ payload }, { call, put }) {
+      const response = {};
+      try {
+        const res = yield call(getMyTimesheetByType, { ...payload, tenantId });
+        const { code, data = [] } = res;
+        if (code !== 200) throw res;
+        const { viewType } = payload;
+        let stateVar = 'myTimesheetByDay';
+
+        switch (viewType) {
+          case 'D':
+            break;
+          case 'W':
+            stateVar = 'myTimesheetByWeek';
+            break;
+          case 'M':
+            stateVar = 'myTimesheetByMonth';
+            break;
+          default:
+            break;
+        }
+
+        yield put({
+          type: 'save',
+          payload: {
+            [stateVar]: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
 
     // update/edit
     *updateActivityEffect({ payload, date }, { call, put }) {
@@ -83,15 +125,16 @@ const TimeSheet = {
           return [];
         }
         notification.success({ message: msg });
-
-        // for refresh immediately - no need to call API to refresh list
-        yield put({
-          type: 'onActivityUpdated',
-          payload: {
-            updatedActivity: data,
-            date,
-          },
-        });
+        if (date) {
+          // for refresh immediately - no need to call API to refresh list
+          yield put({
+            type: 'onActivityUpdated',
+            payload: {
+              updatedActivity: data,
+              date,
+            },
+          });
+        }
       } catch (errors) {
         dialog(errors);
         return [];
@@ -113,14 +156,16 @@ const TimeSheet = {
         }
         notification.success({ message: msg });
 
-        // for refresh immediately - no need to call API to refresh list
-        yield put({
-          type: 'onActivityAdded',
-          payload: {
-            addedActivity: data,
-            date,
-          },
-        });
+        if (date) {
+          // for refresh immediately - no need to call API to refresh list
+          yield put({
+            type: 'onActivityAdded',
+            payload: {
+              addedActivity: data,
+              date,
+            },
+          });
+        }
       } catch (errors) {
         dialog(errors);
         return [];
@@ -139,14 +184,16 @@ const TimeSheet = {
         if (code !== 200) throw response;
         notification.success({ message: msg });
 
-        // for refresh immediately - no need to call API to refresh list
-        yield put({
-          type: 'onActivityRemoved',
-          payload: {
-            removedActivity: payload,
-            date,
-          },
-        });
+        if (date) {
+          // for refresh immediately - no need to call API to refresh list
+          yield put({
+            type: 'onActivityRemoved',
+            payload: {
+              removedActivity: payload,
+              date,
+            },
+          });
+        }
       } catch (errors) {
         dialog(errors);
         return [];

@@ -65,6 +65,21 @@ export async function addActivity(payload) {
   );
 }
 
+// complex view
+export async function getMyTimesheetByType(payload) {
+  // date, week, month
+  return request(
+    `/api/timesheet/view`,
+    {
+      method: 'GET',
+      data: payload,
+    },
+    false,
+    'TIMESHEET_API',
+    true, // hasParams
+  );
+}
+
 // get list employee
 export async function getEmployeeList(payload) {
   return request('/api/employeetenant/list-by-single-company', {

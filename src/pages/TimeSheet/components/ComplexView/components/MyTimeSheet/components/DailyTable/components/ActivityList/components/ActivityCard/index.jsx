@@ -170,7 +170,10 @@ const ActivityCard = (props) => {
         <span style={{ textAlign: 'center' }}>
           Are you sure you want to delete
           <br />
-          <span style={{ fontWeight: 'bold' }}>Oorwin - Brainstorming</span>?
+          <span style={{ fontWeight: 'bold' }}>
+            {projectName} - {taskName}
+          </span>
+          ?
         </span>
       </ActionModal>
     </div>

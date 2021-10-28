@@ -1,7 +1,7 @@
 import {
   Alert,
-  Checkbox,
   Button,
+  Checkbox,
   Col,
   DatePicker,
   Form,
@@ -11,14 +11,17 @@ import {
   Select,
   TimePicker,
 } from 'antd';
+import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
+import { dateFormatAPI, hourFormat, hourFormatAPI, TASKS } from '@/utils/timeSheet';
+import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
 import AddIcon from '@/assets/timeSheet/add.svg';
 import styles from './index.less';
 
 const { Option } = Select;
 const dateFormat = 'MM/DD/YYYY';
-const hourFormat = 'HH:mm a';
+const projects = ['Syscloud', 'HRMS', 'Udaan', 'Ramco'];
 
 const AddTaskModal = (props) => {
   const formRef = React.createRef();
@@ -27,9 +30,32 @@ const AddTaskModal = (props) => {
     title = 'Add Task',
     onClose = () => {},
     date = '',
+    projectName = '',
     mode = 'single',
   } = props;
-  const { dispatch } = props;
+
+  const {
+    dispatch,
+    loadingAddTask = false,
+    employee: {
+      _id: employeeId = '',
+      generalInfo: {
+        legalName: empName = '',
+        workEmail: empWorkEmail = '',
+        userId: empUserId = '',
+      } = {} || {},
+      departmentInfo: { name: empDepartmentName = '', _id: empDepartmentId = '' } = {} || {},
+      managerInfo: {
+        _id: managerId = '',
+        generalInfo: {
+          legalName: managerName = '',
+          workEmail: managerWorkEmail = '',
+          userId: managerUserId = '',
+        } = {} || {},
+        department: { name: managerDepartmentName = '', _id: managerDepartmentId = '' } = {} || {},
+      } = {} || {},
+    } = {} || {},
+  } = props;
 
   const renderModalHeader = () => {
     return (
@@ -43,15 +69,51 @@ const AddTaskModal = (props) => {
     onClose();
   };
 
-  const handleFinish = () => {
-    // finish
+  // main function
+  const addActivityEffect = (submitDate, values) => {
+    return dispatch({
+      type: 'timeSheet/addActivityEffect',
+      payload: {
+        taskName: values.taskName,
+        startTime: moment(values.startTime).format(hourFormatAPI),
+        endTime: moment(values.endTime).format(hourFormatAPI),
+        date: moment(submitDate).locale('en').format(dateFormatAPI),
+        projectName: values.projectName,
+        notes: values.notes,
+        employeeId,
+        companyId: getCurrentCompany(),
+        location: getCurrentLocation(),
+        nightShift: values.nightShift,
+        employee: {
+          employeeName: empName,
+          employeeCode: empUserId,
+          workEmail: empWorkEmail,
+          department: {
+            name: empDepartmentName,
+            id: empDepartmentId,
+          },
+        },
+        managerInfo: {
+          employeeName: managerName,
+          employeeId: managerId,
+          employeeCode: managerUserId,
+          workEmail: managerWorkEmail,
+          department: {
+            name: managerDepartmentName,
+            id: managerDepartmentId,
+          },
+        },
+      },
+    });
   };
 
-  // useEffect(() => {
-  //   formRef.setFieldsValue({
-  //     tasks: {},
-  //   });
-  // }, []);
+  const handleFinish = async (values) => {
+    const { date: submitDate, tasks = [] } = values;
+    await tasks.forEach(async (task) => {
+      await addActivityEffect(submitDate, task);
+    });
+    onClose();
+  };
 
   const renderFormList = () => {
     return (
@@ -67,11 +129,11 @@ const AddTaskModal = (props) => {
                       label="Project*"
                       labelCol={{ span: 24 }}
                       rules={[{ required: true, message: 'Select a project' }]}
-                      name={[name, 'project']}
-                      fieldKey={[fieldKey, 'project']}
+                      name={[name, 'projectName']}
+                      fieldKey={[fieldKey, 'projectName']}
                     >
                       <Select showSearch placeholder="Select a project">
-                        {['A', 'B', 'C'].map((val) => (
+                        {projects.map((val) => (
                           <Option value={val}>{val}</Option>
                         ))}
                       </Select>
@@ -82,11 +144,11 @@ const AddTaskModal = (props) => {
                       label="Task*"
                       labelCol={{ span: 24 }}
                       rules={[{ required: true, message: 'Select a task' }]}
-                      name={[name, 'task']}
-                      fieldKey={[fieldKey, 'task']}
+                      name={[name, 'taskName']}
+                      fieldKey={[fieldKey, 'taskName']}
                     >
                       <Select showSearch placeholder="Select a task">
-                        {[].map((val) => (
+                        {TASKS.map((val) => (
                           <Option value={val}>{val}</Option>
                         ))}
                       </Select>
@@ -122,8 +184,8 @@ const AddTaskModal = (props) => {
                       label="Description*"
                       labelCol={{ span: 24 }}
                       rules={[{ required: true, message: 'Please enter Description' }]}
-                      name={[name, 'description']}
-                      fieldKey={[fieldKey, 'description']}
+                      name={[name, 'notes']}
+                      fieldKey={[fieldKey, 'notes']}
                     >
                       <Input.TextArea autoSize={{ minRows: 3 }} />
                     </Form.Item>
@@ -162,8 +224,8 @@ const AddTaskModal = (props) => {
           id="myForm"
           onFinish={handleFinish}
           initialValues={{
-            tasks: [''],
-            date,
+            tasks: [{ projectName: projectName || null }],
+            date: date ? moment(date) : '',
           }}
         >
           <Row gutter={[24, 0]} className={styles.abovePart}>
@@ -212,6 +274,7 @@ const AddTaskModal = (props) => {
               form="myForm"
               key="submit"
               htmlType="submit"
+              loading={loadingAddTask}
             >
               Submit
             </Button>
@@ -227,4 +290,7 @@ const AddTaskModal = (props) => {
   );
 };
 
-export default connect(() => ({}))(AddTaskModal);
+export default connect(({ loading, user: { currentUser: { employee = {} } = {} } }) => ({
+  employee,
+  loadingAddTask: loading.effects['timeSheet/addActivityEffect'],
+}))(AddTaskModal);

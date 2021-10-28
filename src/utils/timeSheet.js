@@ -1,5 +1,10 @@
 import moment from 'moment';
 
+const VIEW_TYPE = {
+  D: 'D', // day
+  W: 'W', // week
+  M: 'M', // month
+};
 const color = {
   WORKING_HOURS: '#71A82B',
   LUNCH_BREAK: '#315ED2',
@@ -103,7 +108,16 @@ const WORKING_HOURS = {
   END: 21,
 };
 
+const TASKS = [
+  'Brainstorming',
+  'Client Meeting',
+  'UI Feedback',
+  'UI Presentation to client',
+  'UI Support',
+  'Feedback changes on WFs',
+];
 export {
+  VIEW_TYPE,
   activityName,
   activityColor,
   projectColor,
@@ -123,4 +137,5 @@ export {
   EMP_MT_MAIN_COL_SPAN,
   EMP_MT_SECONDARY_COL_SPAN,
   EMP_ROW_HEIGHT,
+  TASKS,
 };
