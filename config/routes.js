@@ -221,7 +221,7 @@ const routes = [
             name: 'Approvals',
             hideInMenu: true,
             // icon: '/assets/images/menuIcons/dashboard.svg',
-            component: './DashboardNew/components/Approval',
+            component: './Dashboard/components/Approval',
             authority: ['employee', 'hr', 'hr-manager', 'manager'],
           },
           {
@@ -816,6 +816,20 @@ const routes = [
           {
             path: '/time-sheet/:tabName',
             component: './TimeSheet',
+            authority: ['hr-manager', 'hr', 'employee', 'manager'],
+            hideInMenu: true,
+          },
+           // TICKET MANAGEMENT
+           {
+            path: '/ticket-management',
+            name: 'Ticket Management',
+            icon: '/assets/images/menuIcons/ticketManagement.svg',
+            component: './TicketManagement',
+            authority: ['hr-manager', 'hr', 'employee', 'manager'],
+          },
+          {
+            path: '/ticket-management/:tabName',
+            component: './TicketManagement',
             authority: ['hr-manager', 'hr', 'employee', 'manager'],
             hideInMenu: true,
           },

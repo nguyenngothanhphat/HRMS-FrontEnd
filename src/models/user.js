@@ -198,7 +198,7 @@ const UserModel = {
         yield put({
           type: 'dashboard/save',
           payload: {
-            employeeWidgets: data.employee?.widgetDashboardShow || [],
+            employeeWidgets: data.widgetDashboardShow || [],
           },
         });
 

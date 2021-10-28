@@ -9,6 +9,7 @@ import CommonModal from '@/components/CommonModal';
 import QuickLinks from '@/components/QuickLinks';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
+import { isOwner } from '@/utils/authority';
 import RaiseTicketModal from '../RaiseTicketModal';
 
 @connect(() => ({}))
@@ -62,12 +63,14 @@ class QuestionDropdown extends React.Component {
           </div>
         </Menu.Item>
         {/* <Menu.Divider className={styles.secondDivider} /> */}
-        <Menu.Item key={RAISE_TICKET} className={styles.menuItemLink}>
-          <div className={styles.menuItemLink__withIcon}>
-            <img src={RaiseTicketIcon} alt="" />
-            <span>Raise Ticket</span>
-          </div>
-        </Menu.Item>
+        {!isOwner() && (
+          <Menu.Item key={RAISE_TICKET} className={styles.menuItemLink}>
+            <div className={styles.menuItemLink__withIcon}>
+              <img src={RaiseTicketIcon} alt="" />
+              <span>Raise Ticket</span>
+            </div>
+          </Menu.Item>
+        )}
         {/* <Menu.Divider className={styles.secondDivider} /> */}
         <Menu.Item key={FAQ} className={styles.menuItemLink}>
           <div className={styles.menuItemLink__withIcon}>
@@ -92,11 +95,13 @@ class QuestionDropdown extends React.Component {
           hasFooter={false}
           content={<QuickLinks />}
         />
-        <RaiseTicketModal
-          visible={raiseTicketModalVisible}
-          title="Raise Ticket"
-          onClose={this.onToggleRaiseTicketModal}
-        />
+        {!isOwner() && (
+          <RaiseTicketModal
+            visible={raiseTicketModalVisible}
+            title="Raise Ticket"
+            onClose={this.onToggleRaiseTicketModal}
+          />
+        )}
       </>
     );
   }
