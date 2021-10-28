@@ -8,11 +8,13 @@ import NextIcon from '@/assets/timeSheet/next.svg';
 import PrevIcon from '@/assets/timeSheet/prev.svg';
 import { rangePickerFormat } from '@/utils/timeSheet';
 import AddTaskModal from '@/pages/TimeSheet/components/ComplexView/components/AddTaskModal';
+import ImportModal from '@/pages/TimeSheet/components/ComplexView/components/ImportModal';
 import styles from './index.less';
 
 const DailyHeader = (props) => {
   const { selectedDate, setSelectedDate = () => {}, viewChangeComponent = '' } = props;
   const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
+  const [importModalVisible, setImportModalVisible] = useState(false);
 
   // HEADER AREA
   const onPrevDateClick = () => {
@@ -52,15 +54,22 @@ const DailyHeader = (props) => {
         </div>
       </div>
       <div className={styles.DailyHeader__middle}>{viewChangeComponent()}</div>
-      <div className={styles.DailyHeader__right} onClick={() => setAddTaskModalVisible(true)}>
-        <Button icon={<img src={AddIcon} alt="" />}>Add Task</Button>
-        <Button>Import</Button>
+      <div className={styles.DailyHeader__right}>
+        <Button icon={<img src={AddIcon} alt="" />} onClick={() => setAddTaskModalVisible(true)}>
+          Add Task
+        </Button>
+        <Button onClick={() => setImportModalVisible(true)}>Import</Button>
       </div>
       <AddTaskModal
         visible={addTaskModalVisible}
         onClose={() => setAddTaskModalVisible(false)}
         date={selectedDate}
-        mode="multiple" 
+        mode="multiple"
+      />
+      <ImportModal
+        visible={importModalVisible}
+        onClose={() => setImportModalVisible(false)}
+        date={selectedDate}
       />
     </div>
   );

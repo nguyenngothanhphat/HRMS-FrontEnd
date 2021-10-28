@@ -399,7 +399,7 @@ const MyTimeSheet = (props) => {
   const [endDate, setEndDate] = useState('');
 
   // others
-  const [selectedView, setSelectedView] = useState('weekly');
+  const [selectedView, setSelectedView] = useState('daily'); // daily, weekly, monthly
   const { dispatch, employee: { _id: employeeId = '' } = {} } = props;
 
   // FUNCTION AREA

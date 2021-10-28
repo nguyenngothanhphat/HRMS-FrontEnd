@@ -61,29 +61,6 @@ const AddTaskModal = (props) => {
             {fields.map(({ key, name, fieldKey }) => (
               <>
                 {key !== 0 && <div className={styles.divider} />}
-                <Row gutter={[24, 0]} className={styles.abovePart}>
-                  <Col xs={24} md={12}>
-                    <Form.Item
-                      rules={[{ required: true, message: 'Please select Timesheet Period' }]}
-                      label="Select Timesheet Period"
-                      name={[name, 'date']}
-                      fieldKey={[fieldKey, 'date']}
-                      labelCol={{ span: 24 }}
-                    >
-                      <DatePicker format={dateFormat} />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} md={12}>
-                    <Alert
-                      message="Info"
-                      showIcon
-                      type="info"
-                      description="The same tasks will be updated for the selected date range"
-                      closable
-                    />
-                  </Col>
-                </Row>
-
                 <Row gutter={[24, 0]} className={styles.belowPart}>
                   <Col xs={24} md={12}>
                     <Form.Item
@@ -185,9 +162,32 @@ const AddTaskModal = (props) => {
           id="myForm"
           onFinish={handleFinish}
           initialValues={{
-            tasks: [{ date }],
+            tasks: [''],
+            date,
           }}
         >
+          <Row gutter={[24, 0]} className={styles.abovePart}>
+            <Col xs={24} md={12}>
+              <Form.Item
+                rules={[{ required: true, message: 'Please select Timesheet Period' }]}
+                label="Select Timesheet Period"
+                name="date"
+                fieldKey="date"
+                labelCol={{ span: 24 }}
+              >
+                <DatePicker format={dateFormat} />
+              </Form.Item>
+            </Col>
+            <Col xs={24} md={12}>
+              <Alert
+                message="Info"
+                showIcon
+                type="info"
+                description="The same tasks will be updated for the selected date range"
+                closable
+              />
+            </Col>
+          </Row>
           {renderFormList()}
         </Form>
       </div>
