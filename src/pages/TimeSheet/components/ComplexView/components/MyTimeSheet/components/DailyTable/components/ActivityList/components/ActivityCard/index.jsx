@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import DeleteIcon from '@/assets/timeSheet/del.svg';
 import EditIcon from '@/assets/timeSheet/edit.svg';
+import ModalImage from '@/assets/timeSheet/modalImage1.png';
 import { getCurrentCompany } from '@/utils/authority';
 import {
   activityColor,
@@ -14,7 +15,7 @@ import {
   WORKING_HOURS,
   EMP_ROW_HEIGHT,
 } from '@/utils/timeSheet';
-import EditCard from '../EditCard';
+import ActionModal from '@/pages/TimeSheet/components/ActionModal';
 import styles from './index.less';
 
 const { PROJECT, TASK, DESCRIPTION, TIME, TOTAL_HOURS, ACTIONS } = EMP_MT_SECONDARY_COL_SPAN;
@@ -39,7 +40,7 @@ const ActivityCard = (props) => {
   const [top, setTop] = useState(0);
   const [height, setHeight] = useState(0);
 
-  const [editMode, setEditMode] = useState(false);
+  const [removeModalVisibe, setRemoveModalVisibe] = useState(false);
 
   // USE EFFECT AREA
   const calculateCardPosition = () => {
@@ -103,10 +104,6 @@ const ActivityCard = (props) => {
   };
 
   // main handle
-  const onEditCard = () => {
-    setEditMode(true);
-  };
-
   const onRemoveCard = () => {
     dispatch({
       type: 'timeSheet/removeActivityEffect',
@@ -120,16 +117,6 @@ const ActivityCard = (props) => {
   };
 
   // MAIN AREA
-  if (editMode)
-    return (
-      <EditCard
-        card={card}
-        onCancelCard={() => setEditMode(false)}
-        cardDay={cardDay}
-        top={top}
-        height={height}
-      />
-    );
   return (
     <div
       className={styles.ActivityCard}
@@ -167,11 +154,25 @@ const ActivityCard = (props) => {
         </Col>
         <Col span={ACTIONS} className={`${styles.normalCell} ${styles.alignCenter}`}>
           <div className={styles.actionsButton}>
-            <img src={EditIcon} onClick={onEditCard} alt="" />
-            <img src={DeleteIcon} onClick={onRemoveCard} alt="" />
+            <img src={EditIcon} alt="" />
+            <img src={DeleteIcon} onClick={() => setRemoveModalVisibe(true)} alt="" />
           </div>
         </Col>
       </Row>
+      <ActionModal
+        visible={removeModalVisibe}
+        onClose={() => setRemoveModalVisibe(false)}
+        buttonText="Yes"
+        width={400}
+        onFinish={onRemoveCard}
+      >
+        <img src={ModalImage} alt="" />
+        <span style={{ textAlign: 'center' }}>
+          Are you sure you want to delete
+          <br />
+          <span style={{ fontWeight: 'bold' }}>Oorwin - Brainstorming</span>?
+        </span>
+      </ActionModal>
     </div>
   );
 };
