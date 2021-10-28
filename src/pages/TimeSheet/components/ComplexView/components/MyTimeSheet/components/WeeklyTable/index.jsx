@@ -2,7 +2,7 @@ import { Table } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { projectColor } from '@/utils/timeSheet';
+import { projectColor, convertMsToTime } from '@/utils/timeSheet';
 import CompleteIcon from '@/assets/timeSheet/complete.svg';
 import FailIcon from '@/assets/timeSheet/fail.svg';
 import PendingIcon from '@/assets/timeSheet/pending.svg';
@@ -29,7 +29,7 @@ const WeeklyTable = (props) => {
     return dates;
   };
 
-  // get dates between two dates
+  // check if the same date
   const isTheSameDay = (date1, date2) => {
     return moment(date1).format('MM/DD/YYYY') === moment(date2).format('MM/DD/YYYY');
   };
@@ -65,6 +65,7 @@ const WeeklyTable = (props) => {
   }, [dateList]);
 
   // RENDER UI
+  // BODY
   const getIcon = (key) => {
     switch (key) {
       case 'pending':
@@ -241,20 +242,53 @@ const WeeklyTable = (props) => {
     return result;
   };
 
-  const renderFooter = (values) => {
+  // FOOTER
+  const getDurationByDate = () => {
+    let tempData = [];
+    data.forEach((d) => {
+      tempData = [...tempData, ...d.days];
+    });
+    return dateList.map((date) => {
+      const groupByDate = tempData.filter((v) => isTheSameDay(v.date, date));
+      let tasks = [];
+      groupByDate.forEach((d) => {
+        tasks = [...tasks, ...d.dailyProjectTask];
+      });
+      const duration = groupByDate.reduce((sum, item) => sum + item.projectDailyTime, 0);
+      return {
+        date,
+        duration,
+        tasks,
+      };
+    });
+  };
+
+  const renderFooter = () => {
+    const durationByDate = getDurationByDate();
+    console.log('durationByDate', durationByDate);
     return (
       <div className={styles.footer}>
         <div className={styles.item}>
           <span className={styles.text}>Total</span>
         </div>
-        <div className={styles.item}>Item</div>
-        <div className={styles.item}>Item</div>
-        <div className={styles.item}>Item</div>
-        <div className={styles.item}>Item</div>
-        <div className={styles.item}>Item</div>
-        <div className={styles.item}>Item</div>
-        <div className={styles.item}>Item</div>
-        <div className={styles.item} />
+        {durationByDate.map((item) => {
+          return (
+            <TaskPopover date={item.date} tasks={item.tasks}>
+              {item.tasks.length > 0 ? (
+                <div className={styles.item}>
+                  <span className={styles.value}>{convertMsToTime(item.duration)}</span>
+                </div>
+              ) : (
+                <div className={styles.item}>
+                  <img src={EmptyLine} alt="" />
+                </div>
+              )}
+            </TaskPopover>
+          );
+        })}
+        <div className={styles.item}>
+          <img src={EmptyLine} alt="" />
+        </div>
       </div>
     );
   };

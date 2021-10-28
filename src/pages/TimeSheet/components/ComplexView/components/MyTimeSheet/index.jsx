@@ -8,7 +8,6 @@ import WeeklyHeader from './components/WeeklyHeader';
 import DailyTable from './components/DailyTable';
 import WeeklyTable from './components/WeeklyTable';
 import DailyFooter from './components/DailyFooter';
-// import WeeklyFooter from './components/WeeklyFooter';
 
 import styles from './index.less';
 import { dateFormatAPI, VIEW_TYPE } from '@/utils/timeSheet';
