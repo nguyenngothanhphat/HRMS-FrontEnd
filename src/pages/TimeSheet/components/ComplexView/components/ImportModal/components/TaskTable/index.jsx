@@ -1,42 +1,62 @@
 import { Empty, Table } from 'antd';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import EmptyImage from '@/assets/timeSheet/emptyImage.png';
+import { isTheSameDay } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const TaskTable = (props) => {
-  const { list = [], selectedDate = '', loading = false } = props;
+  const { list = [], selectedDate = '', loading = false, dispatch, importingIds = [] } = props;
   const [selectedTask, setSelectedTask] = useState([]);
+
+  useEffect(() => {
+    const selectRowsRedux = importingIds.find((v) => isTheSameDay(v.date, selectedDate));
+    if (selectRowsRedux) {
+      setSelectedTask(selectRowsRedux.selectedIds);
+    }
+  }, [JSON.stringify(list)]);
 
   const generateColumns = () => {
     return [
       {
         title: 'Project',
-        dataIndex: 'project',
-        key: 'project',
-        render: (project) => <span className={styles.boldText}>{project}</span>,
+        dataIndex: 'projectName',
+        key: 'projectName',
+        render: (projectName) => <span className={styles.boldText}>{projectName}</span>,
+        width: '25%',
       },
       {
         title: 'Task',
-        dataIndex: 'task',
-        key: 'task',
+        dataIndex: 'taskName',
+        key: 'taskName',
+        width: '25%',
       },
       {
         title: 'Description',
-        dataIndex: 'description',
-        key: 'description',
+        dataIndex: 'notes',
+        key: 'notes',
       },
     ];
   };
 
+  const saveImportingIds = (selectedIds) => {
+    dispatch({
+      type: 'timeSheet/saveImportingIds',
+      payload: {
+        selectedIds,
+        date: selectedDate,
+      },
+    });
+  };
+
   const onSelectChange = (selectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    saveImportingIds(selectedRowKeys);
     setSelectedTask(selectedRowKeys);
   };
 
   const rowSelection = {
-    selectedTask,
+    selectedRowKeys: selectedTask,
     onChange: onSelectChange,
   };
 
@@ -61,6 +81,7 @@ const TaskTable = (props) => {
           pagination={false}
           rowSelection={rowSelection}
           rowKey={(row) => row.id}
+          scroll={{ y: 245 }}
         />
       </div>
     </>

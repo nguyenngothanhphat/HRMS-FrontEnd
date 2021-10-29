@@ -13,6 +13,9 @@
 }
 
 .TaskTable {
+  // ::-webkit-scrollbar {
+  //   display: none;
+  // }
   padding: 24px;
   // padding-bottom: 0;
   background-color: #ffffff;
@@ -77,6 +80,10 @@
   }
 
   :global {
+    .ant-table-body {
+      min-height: 245px;
+      overflow-y: auto !important;
+    }
     .ant-empty {
       margin-block: 45px;
       .ant-empty-image {

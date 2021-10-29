@@ -116,6 +116,11 @@ const TASKS = [
   'UI Support',
   'Feedback changes on WFs',
 ];
+
+const isTheSameDay = (date1, date2) => {
+  return moment(date1).format('MM/DD/YYYY') === moment(date2).format('MM/DD/YYYY');
+};
+
 export {
   VIEW_TYPE,
   activityName,
@@ -138,4 +143,5 @@ export {
   EMP_MT_SECONDARY_COL_SPAN,
   EMP_ROW_HEIGHT,
   TASKS,
+  isTheSameDay,
 };

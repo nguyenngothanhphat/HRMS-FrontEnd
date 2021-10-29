@@ -5,12 +5,22 @@ import { connect } from 'umi';
 import DateSwitcher from './components/DateSwitcher';
 import TaskTable from './components/TaskTable';
 import styles from './index.less';
+import { getCurrentCompany } from '@/utils/authority';
+import { dateFormatAPI, VIEW_TYPE } from '@/utils/timeSheet';
 
 const dateFormat = 'MM/DD/YYYY';
 
 const ImportModal = (props) => {
-  const { visible = false, title = 'Import rows from yesterday', onClose = () => {} } = props;
-  // const { dispatch } = props;
+  const {
+    dispatch,
+    visible = false,
+    title = 'Import rows from yesterday',
+    onClose = () => {},
+    employee: { _id: employeeId = '' } = {},
+    timesheetDataImporting = [],
+    importingIds = [],
+    loadingFetchTasks = false,
+  } = props;
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [selectedDate, setSelectedDate] = useState(moment());
@@ -45,6 +55,20 @@ const ImportModal = (props) => {
     setEndDate(nextSaturday);
   };
 
+  const addZeroToNumber = (number) => {
+    if (number < 10 && number >= 0) return `0${number}`.slice(-2);
+    return number;
+  };
+
+  const getSumImportingIds = () => {
+    let temp = 0;
+    importingIds.forEach((v) => {
+      temp += v.selectedIds.length;
+    });
+    return temp;
+  };
+
+  // USE EFFECT
   useEffect(() => {
     const lastSunday = moment().add(-1, 'weeks').weekday(7);
     const currentSaturday = moment().weekday(6);
@@ -52,6 +76,25 @@ const ImportModal = (props) => {
     setEndDate(currentSaturday);
     return () => {};
   }, []);
+
+  const fetchTimesheetBySelectedDate = () => {
+    dispatch({
+      type: 'timeSheet/fetchImportDataByDateEffect',
+      payload: {
+        companyId: getCurrentCompany(),
+        employeeId,
+        fromDate: moment(selectedDate).format(dateFormatAPI),
+        toDate: moment(selectedDate).format(dateFormatAPI),
+        viewType: VIEW_TYPE.D,
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (visible) {
+      fetchTimesheetBySelectedDate();
+    }
+  }, [selectedDate, visible]);
 
   // RENDER UI
   const renderModalHeader = () => {
@@ -75,26 +118,7 @@ const ImportModal = (props) => {
 
   const renderModalContent = () => {
     const dates = enumerateDaysBetweenDates(startDate, endDate) || [];
-    const mockProject = [
-      {
-        id: 1,
-        project: 'HRMS',
-        task: 'Brainstorming',
-        description: 'Concepts & understanding of the flows',
-      },
-      {
-        id: 2,
-        project: 'HRMS',
-        task: 'Brainstorming',
-        description: 'Concepts & understanding of the flows',
-      },
-      {
-        id: 3,
-        project: 'HRMS',
-        task: 'Brainstorming',
-        description: 'Concepts & understanding of the flows',
-      },
-    ];
+    const tasks = timesheetDataImporting.length > 0 ? timesheetDataImporting[0].timesheet : [];
     return (
       <div className={styles.content}>
         <DateSwitcher
@@ -103,8 +127,14 @@ const ImportModal = (props) => {
           onNextWeekClick={onNextWeekClick}
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
+          importingIds={importingIds}
         />
-        <TaskTable list={[]} selectedDate={selectedDate} />
+        <TaskTable
+          list={tasks}
+          selectedDate={selectedDate}
+          loading={loadingFetchTasks}
+          importingIds={importingIds}
+        />
       </div>
     );
   };
@@ -119,8 +149,12 @@ const ImportModal = (props) => {
         footer={
           <>
             <div className={styles.taskNumberCount}>
-              <span className={styles.descText}>Tasks Selected:</span>
-              <span className={styles.number}>05</span>
+              {getSumImportingIds() > 0 && (
+                <>
+                  <span className={styles.descText}>Tasks Selected:</span>
+                  <span className={styles.number}>{addZeroToNumber(getSumImportingIds())}</span>
+                </>
+              )}
             </div>
             <div className={styles.mainButtons}>
               <Button className={styles.btnCancel} onClick={handleCancel}>
@@ -142,4 +176,15 @@ const ImportModal = (props) => {
   );
 };
 
-export default connect(() => ({}))(ImportModal);
+export default connect(
+  ({
+    timeSheet: { timesheetDataImporting = [], importingIds = [] } = {},
+    user: { currentUser: { employee = {} } = {} },
+    loading,
+  }) => ({
+    timesheetDataImporting,
+    employee,
+    loadingFetchTasks: loading.effects['timeSheet/fetchImportDataByDateEffect'],
+    importingIds,
+  }),
+)(ImportModal);

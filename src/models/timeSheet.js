@@ -13,7 +13,7 @@ import {
   getMyTimesheetByType,
 } from '@/services/timeSheet';
 import { dialog } from '@/utils/utils';
-import { convertMsToTime } from '@/utils/timeSheet';
+import { convertMsToTime, isTheSameDay } from '@/utils/timeSheet';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
 const tenantId = getCurrentTenant();
@@ -30,6 +30,9 @@ const initialState = {
   myTimesheetByMonth: [],
   // store payload for refreshing
   viewingPayload: {},
+  // for importing
+  timesheetDataImporting: [],
+  importingIds: [],
 };
 
 const TimeSheet = {
@@ -111,6 +114,25 @@ const TimeSheet = {
           payload: {
             viewingPayload: payloadTemp,
             [stateVar]: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+
+    *fetchImportDataByDateEffect({ payload }, { call, put }) {
+      const response = {};
+      try {
+        const res = yield call(getMyTimesheetByType, { ...payload, tenantId });
+        const { code, data = [] } = res;
+        if (code !== 200) throw res;
+        yield put({
+          type: 'save',
+          payload: {
+            timesheetDataImporting: data,
           },
         });
       } catch (errors) {
@@ -232,6 +254,30 @@ const TimeSheet = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveImportingIds(state, action) {
+      const { importingIds } = state;
+      const { selectedIds = [], date = '' } = action.payload;
+      const tempImportingIds = JSON.parse(JSON.stringify(importingIds));
+      const index = tempImportingIds.findIndex((w) => isTheSameDay(w.date, date));
+
+      if (index > -1) {
+        tempImportingIds[index].selectedIds = [...selectedIds];
+        // if there is no ids, remove the object with date
+        if (selectedIds.length === 0) {
+          tempImportingIds.splice(index, 1);
+        }
+      } else {
+        tempImportingIds.push({
+          date,
+          selectedIds,
+        });
+      }
+
+      return {
+        ...state,
+        importingIds: [...tempImportingIds],
       };
     },
     clearState() {

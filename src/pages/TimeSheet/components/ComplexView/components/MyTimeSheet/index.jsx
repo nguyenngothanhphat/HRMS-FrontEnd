@@ -28,7 +28,7 @@ const MyTimeSheet = (props) => {
   const [weeksOfMonth, setWeeksOfMonth] = useState([]);
 
   // others
-  const [selectedView, setSelectedView] = useState(VIEW_TYPE.M); // D: daily, W: weekly, M: monthly
+  const [selectedView, setSelectedView] = useState(VIEW_TYPE.D); // D: daily, W: weekly, M: monthly
   const {
     dispatch,
     myTimesheetByDay = [],
