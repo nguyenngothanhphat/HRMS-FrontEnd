@@ -9,6 +9,7 @@ import EditIcon from '@/assets/timeSheet/edit.svg';
 import ModalImage from '@/assets/timeSheet/modalImage1.png';
 import ActionModal from '@/pages/TimeSheet/components/ActionModal';
 import AddTaskModal from '@/pages/TimeSheet/components/ComplexView/components/AddTaskModal';
+import EditTaskModal from '@/pages/TimeSheet/components/ComplexView/components/EditTaskModal';
 import { getCurrentCompany } from '@/utils/authority';
 import { convertMsToTime } from '@/utils/timeSheet';
 
@@ -18,9 +19,13 @@ const TaskPopover = (props) => {
   const { children, dispatch, tasks = [], date = '', projectName = '', placement = 'top' } = props;
   const [showPopover, setShowPopover] = useState(false);
   const [showingTasks, setShowingTasks] = useState([]);
+
+  // modals
   const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
+  const [editTaskModalVisible, setEditTaskModalVisible] = useState(false);
   const [removeModalVisibe, setRemoveModalVisibe] = useState(false);
-  const [removingPackage, setRemovingPackage] = useState({});
+  const [handlingPackage, setHandlingPackage] = useState({});
+
   const { employee: { _id: employeeId = '' } = {} } = props;
 
   const generateShowingTask = (value) => {
@@ -36,7 +41,7 @@ const TaskPopover = (props) => {
   };
 
   const onRemoveCard = async () => {
-    const { id } = removingPackage;
+    const { id } = handlingPackage;
     const res = await dispatch({
       type: 'timeSheet/removeActivityEffect',
       payload: {
@@ -78,12 +83,20 @@ const TaskPopover = (props) => {
                 <Col span={18} className={styles.taskName}>
                   <span>{task.taskName || 'No name'}</span>
                   <div className={styles.actionBtn}>
-                    <img src={EditIcon} alt="" />
+                    <img
+                      src={EditIcon}
+                      alt=""
+                      onClick={() => {
+                        setHandlingPackage(task);
+                        setShowPopover(false);
+                        setEditTaskModalVisible(true);
+                      }}
+                    />
                     <img
                       src={DelIcon}
                       alt=""
                       onClick={() => {
-                        setRemovingPackage(task);
+                        setHandlingPackage(task);
                         setShowPopover(false);
                         setRemoveModalVisibe(true);
                       }}
@@ -162,6 +175,12 @@ const TaskPopover = (props) => {
         date={date}
         projectName={projectName}
       />
+      <EditTaskModal
+        visible={editTaskModalVisible}
+        onClose={() => setEditTaskModalVisible(false)}
+        date={date}
+        task={handlingPackage}
+      />
       <ActionModal
         visible={removeModalVisibe}
         onClose={() => setRemoveModalVisibe(false)}
@@ -174,7 +193,7 @@ const TaskPopover = (props) => {
           Are you sure you want to delete
           <br />
           <span style={{ fontWeight: 'bold' }}>
-            {removingPackage?.projectName} - {removingPackage?.taskName}
+            {handlingPackage?.projectName} - {handlingPackage?.taskName}
           </span>
           ?
         </span>

@@ -16,6 +16,7 @@ import {
   EMP_ROW_HEIGHT,
 } from '@/utils/timeSheet';
 import ActionModal from '@/pages/TimeSheet/components/ActionModal';
+import EditTaskModal from '@/pages/TimeSheet/components/ComplexView/components/EditTaskModal';
 import styles from './index.less';
 
 const { PROJECT, TASK, DESCRIPTION, TIME, TOTAL_HOURS, ACTIONS } = EMP_MT_SECONDARY_COL_SPAN;
@@ -40,7 +41,9 @@ const ActivityCard = (props) => {
   const [top, setTop] = useState(0);
   const [height, setHeight] = useState(0);
 
+  // modals
   const [removeModalVisibe, setRemoveModalVisibe] = useState(false);
+  const [editTaskModalVisible, setEditTaskModalVisble] = useState(false);
 
   // USE EFFECT AREA
   const calculateCardPosition = () => {
@@ -154,7 +157,7 @@ const ActivityCard = (props) => {
         </Col>
         <Col span={ACTIONS} className={`${styles.normalCell} ${styles.alignCenter}`}>
           <div className={styles.actionsButton}>
-            <img src={EditIcon} alt="" />
+            <img src={EditIcon} alt="" onClick={() => setEditTaskModalVisble(true)} />
             <img src={DeleteIcon} onClick={() => setRemoveModalVisibe(true)} alt="" />
           </div>
         </Col>
@@ -176,6 +179,13 @@ const ActivityCard = (props) => {
           ?
         </span>
       </ActionModal>
+
+      <EditTaskModal
+        task={card}
+        date={cardDay}
+        visible={editTaskModalVisible}
+        onClose={() => setEditTaskModalVisble(false)}
+      />
     </div>
   );
 };

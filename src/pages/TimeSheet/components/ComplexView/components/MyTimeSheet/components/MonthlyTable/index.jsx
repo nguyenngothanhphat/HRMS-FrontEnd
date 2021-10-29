@@ -63,7 +63,13 @@ const MonthlyTable = (props) => {
         render: (value, row, index) => {
           const { weeks = [] } = row;
           if (index === 0) return renderHeaderItem(weekItem);
-          const find = weeks.find((w) => w.week === weekItem.week);
+          const find = weeks.find((w) => w.week === weekItem.week) || {};
+          if (find?.weekProjectTime === 0 || !find?.weekProjectTime)
+            return (
+              <span className={styles.hourValue}>
+                <img src={EmptyLine} alt="" />
+              </span>
+            );
           return (
             <span className={styles.hourValue}>{convertMsToTime(find?.weekProjectTime || 0)}</span>
           );

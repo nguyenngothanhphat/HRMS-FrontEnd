@@ -72,7 +72,7 @@ const AddTaskModal = (props) => {
   const refreshData = () => {
     dispatch({
       type: 'timeSheet/fetchMyTimesheetByTypeEffect',
-      isRefreshing: true
+      isRefreshing: true,
     });
   };
 
@@ -176,7 +176,11 @@ const AddTaskModal = (props) => {
                       name={[name, 'startTime']}
                       fieldKey={[fieldKey, 'startTime']}
                     >
-                      <TimePicker format={hourFormat} placeholder="Select start time" />
+                      <TimePicker
+                        minuteStep={30}
+                        format={hourFormat}
+                        placeholder="Select start time"
+                      />
                     </Form.Item>
                   </Col>
 
@@ -188,7 +192,11 @@ const AddTaskModal = (props) => {
                       name={[name, 'endTime']}
                       fieldKey={[fieldKey, 'endTime']}
                     >
-                      <TimePicker format={hourFormat} placeholder="Select end time" />
+                      <TimePicker
+                        minuteStep={30}
+                        format={hourFormat}
+                        placeholder="Select end time"
+                      />
                     </Form.Item>
                   </Col>
 

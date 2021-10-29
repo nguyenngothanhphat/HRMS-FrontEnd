@@ -146,7 +146,7 @@ const TimeSheet = {
     *updateActivityEffect({ payload, date }, { call, put }) {
       let response = {};
       try {
-        const updating = message.loading('Updating...', 0);
+        const updating = date ? message.loading('Updating...', 0) : () => {}; // only loading in simple view
         response = yield call(updateActivity, { ...payload, tenantId });
         updating();
         const { code, msg = '', data = {}, errors = [] } = response;
