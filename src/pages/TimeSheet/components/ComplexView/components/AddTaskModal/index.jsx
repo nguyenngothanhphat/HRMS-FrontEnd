@@ -69,6 +69,13 @@ const AddTaskModal = (props) => {
     onClose();
   };
 
+  const refreshData = () => {
+    dispatch({
+      type: 'timeSheet/fetchMyTimesheetByTypeEffect',
+      isRefreshing: true
+    });
+  };
+
   // main function
   const addActivityEffect = (submitDate, values) => {
     return dispatch({
@@ -109,10 +116,16 @@ const AddTaskModal = (props) => {
 
   const handleFinish = async (values) => {
     const { date: submitDate, tasks = [] } = values;
-    await tasks.forEach(async (task) => {
-      await addActivityEffect(submitDate, task);
+    const requests = tasks.map(async (task) => {
+      const res = await addActivityEffect(submitDate, task);
+      return res;
     });
-    onClose();
+
+    // eslint-disable-next-line compat/compat
+    return Promise.all(requests).then(() => {
+      onClose();
+      refreshData();
+    });
   };
 
   const renderFormList = () => {

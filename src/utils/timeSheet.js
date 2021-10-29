@@ -104,7 +104,7 @@ const parseTimeAPI = (time = '') => {
 
 // WORKING HOURS
 const WORKING_HOURS = {
-  START: 8,
+  START: 7,
   END: 21,
 };
 

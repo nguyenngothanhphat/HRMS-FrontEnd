@@ -28,6 +28,8 @@ const initialState = {
   myTimesheetByDay: [],
   myTimesheetByWeek: [],
   myTimesheetByMonth: [],
+  // store payload for refreshing
+  viewingPayload: {},
 };
 
 const TimeSheet = {
@@ -77,13 +79,18 @@ const TimeSheet = {
       return response;
     },
     // complex view fetch
-    *fetchMyTimesheetByTypeEffect({ payload }, { call, put }) {
+    *fetchMyTimesheetByTypeEffect({ payload, isRefreshing }, { call, put, select }) {
       const response = {};
       try {
-        const res = yield call(getMyTimesheetByType, { ...payload, tenantId });
+        let payloadTemp = payload;
+        if (isRefreshing) {
+          const { viewingPayload } = yield select((state) => state.timeSheet);
+          payloadTemp = viewingPayload;
+        }
+        const res = yield call(getMyTimesheetByType, { ...payloadTemp, tenantId });
         const { code, data = [] } = res;
         if (code !== 200) throw res;
-        const { viewType } = payload;
+        const { viewType } = payloadTemp;
         let stateVar = 'myTimesheetByDay';
 
         switch (viewType) {
@@ -102,6 +109,7 @@ const TimeSheet = {
         yield put({
           type: 'save',
           payload: {
+            viewingPayload: payloadTemp,
             [stateVar]: data,
           },
         });
@@ -146,7 +154,7 @@ const TimeSheet = {
     *addActivityEffect({ payload, date }, { call, put }) {
       let response = {};
       try {
-        const adding = message.loading('Adding...', 0);
+        const adding = date ? message.loading('Adding...', 0) : () => {}; // only loading in simple view
         response = yield call(addActivity, { ...payload, tenantId });
         const { code, data = {}, msg = '', errors = [] } = response;
         adding();

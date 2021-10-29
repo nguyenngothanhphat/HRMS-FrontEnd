@@ -17,13 +17,12 @@ const { PROJECT, TASK, DESCRIPTION, TIME, TOTAL_HOURS, ACTIONS } = EMP_MT_SECOND
 const DailyTable = (props) => {
   const {
     selectedDate = '',
-    loadingFetchMyTimesheet = false,
+    loadingFetchMyTimesheetByType = false,
     data: mockData = [], // mock
   } = props;
 
   const [hourList, setHourList] = useState([]);
   const [formattedData, setFormattedData] = useState({});
-  const loading = loadingFetchMyTimesheet;
 
   // generate data by selected date
   const generateData = (data) => {
@@ -45,7 +44,7 @@ const DailyTable = (props) => {
   useEffect(() => {
     if (hourList.length === 0) {
       const hourListTemp = [];
-      // from 8 AM to 9 PM
+      // from 7 AM to 9 PM
       for (let i = WORKING_HOURS.START; i <= WORKING_HOURS.END; i += 1) {
         hourListTemp.push(i);
       }
@@ -63,7 +62,7 @@ const DailyTable = (props) => {
       <Row
         className={styles.tableHeader}
         style={
-          loading
+          loadingFetchMyTimesheetByType
             ? { opacity: 0.7, transition: 'ease-in-out 1.5s' }
             : { opacity: 1, transition: 'ease-in-out 1.5s' }
         }
@@ -103,7 +102,7 @@ const DailyTable = (props) => {
   };
 
   const _renderTableContent = () => {
-    if (loading)
+    if (loadingFetchMyTimesheetByType)
       return (
         <div className={styles.loadingContainer}>
           <Spin size="default" />
@@ -126,5 +125,5 @@ const DailyTable = (props) => {
 
 export default connect(({ loading, timeSheet: { myTimesheet = [] } = {} }) => ({
   myTimesheet,
-  loadingFetchMyTimesheet: loading.effects['timeSheet/fetchMyTimesheetEffect'],
+  loadingFetchMyTimesheetByType: loading.effects['timeSheet/fetchMyTimesheetByTypeEffect'],
 }))(DailyTable);

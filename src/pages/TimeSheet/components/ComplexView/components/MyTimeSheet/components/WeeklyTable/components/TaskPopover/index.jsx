@@ -1,24 +1,54 @@
-import { Popover, Row, Col, Button } from 'antd';
-import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
+import { Button, Col, Popover, Row } from 'antd';
 import moment from 'moment';
-import EditIcon from '@/assets/timeSheet/edit.svg';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
 import CloseX from '@/assets/dashboard/closeX.svg';
-import DelIcon from '@/assets/timeSheet/del.svg';
 import AddSolidIcon from '@/assets/timeSheet/addSolid.png';
+import DelIcon from '@/assets/timeSheet/del.svg';
+import EditIcon from '@/assets/timeSheet/edit.svg';
+import ModalImage from '@/assets/timeSheet/modalImage1.png';
+import ActionModal from '@/pages/TimeSheet/components/ActionModal';
 import AddTaskModal from '@/pages/TimeSheet/components/ComplexView/components/AddTaskModal';
+import { getCurrentCompany } from '@/utils/authority';
+import { convertMsToTime } from '@/utils/timeSheet';
 
 import styles from './index.less';
 
 const TaskPopover = (props) => {
-  const { children, tasks = [], date = '', projectName = '' } = props;
+  const { children, dispatch, tasks = [], date = '', projectName = '', placement = 'top' } = props;
   const [showPopover, setShowPopover] = useState(false);
   const [showingTasks, setShowingTasks] = useState([]);
   const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
+  const [removeModalVisibe, setRemoveModalVisibe] = useState(false);
+  const [removingPackage, setRemovingPackage] = useState({});
+  const { employee: { _id: employeeId = '' } = {} } = props;
 
   const generateShowingTask = (value) => {
     if (!value) setShowingTasks(tasks);
     else setShowingTasks(tasks.slice(0, value - 1));
+  };
+
+  const refreshData = () => {
+    dispatch({
+      type: 'timeSheet/fetchMyTimesheetByTypeEffect',
+      isRefreshing: true,
+    });
+  };
+
+  const onRemoveCard = async () => {
+    const { id } = removingPackage;
+    const res = await dispatch({
+      type: 'timeSheet/removeActivityEffect',
+      payload: {
+        id,
+        employeeId,
+        companyId: getCurrentCompany(),
+      },
+    });
+    if (res.code === 200) {
+      setRemoveModalVisibe(false);
+      refreshData();
+    }
   };
 
   useEffect(() => {
@@ -35,6 +65,13 @@ const TaskPopover = (props) => {
           </Col>
         </Row>
         <div className={styles.taskTable__body}>
+          {showingTasks.length === 0 && (
+            <Row className={styles.eachRow} justify="space-between" align="middle">
+              <Col span={24} className={styles.taskName}>
+                <span>No tasks</span>
+              </Col>
+            </Row>
+          )}
           {showingTasks.map((task) => {
             return (
               <Row className={styles.eachRow} justify="space-between" align="middle">
@@ -42,11 +79,19 @@ const TaskPopover = (props) => {
                   <span>{task.taskName || 'No name'}</span>
                   <div className={styles.actionBtn}>
                     <img src={EditIcon} alt="" />
-                    <img src={DelIcon} alt="" />
+                    <img
+                      src={DelIcon}
+                      alt=""
+                      onClick={() => {
+                        setRemovingPackage(task);
+                        setShowPopover(false);
+                        setRemoveModalVisibe(true);
+                      }}
+                    />
                   </div>
                 </Col>
                 <Col span={6} className={styles.right}>
-                  {task.totalHours}
+                  {convertMsToTime(task.duration)}
                 </Col>
               </Row>
             );
@@ -98,7 +143,7 @@ const TaskPopover = (props) => {
   return (
     <>
       <Popover
-        placement="top"
+        placement={placement}
         content={() => renderPopup()}
         title={null}
         trigger="click"
@@ -117,8 +162,27 @@ const TaskPopover = (props) => {
         date={date}
         projectName={projectName}
       />
+      <ActionModal
+        visible={removeModalVisibe}
+        onClose={() => setRemoveModalVisibe(false)}
+        buttonText="Yes"
+        width={400}
+        onFinish={onRemoveCard}
+      >
+        <img src={ModalImage} alt="" />
+        <span style={{ textAlign: 'center' }}>
+          Are you sure you want to delete
+          <br />
+          <span style={{ fontWeight: 'bold' }}>
+            {projectName} - {removingPackage?.taskName}
+          </span>
+          ?
+        </span>
+      </ActionModal>
     </>
   );
 };
 
-export default connect(() => ({}))(TaskPopover);
+export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({ employee }))(
+  TaskPopover,
+);

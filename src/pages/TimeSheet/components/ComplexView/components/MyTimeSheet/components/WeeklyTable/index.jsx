@@ -40,7 +40,7 @@ const WeeklyTable = (props) => {
     for (let i = 0; i < dateList.length; i += 1) dates[dateList[i]] = dateList[i];
     const header = {
       projectName: 'All Projects',
-      totalProjectTimeHours: 'Total Hours',
+      totalProjectTime: 'Total Hours',
       ...dates,
     };
     setFormattedData([header].concat(data));
@@ -166,10 +166,23 @@ const WeeklyTable = (props) => {
             // if (date === '10/29/2021') {
             //   return renderHoliday(date);
             // }
-            if (!value) return <img src={EmptyLine} alt="" />;
+
             return (
-              <TaskPopover projectName={projectName} date={date} tasks={value.dailyProjectTask}>
-                <span className={styles.hourValue}>{value?.dailyProjectHours}</span>
+              <TaskPopover
+                projectName={projectName}
+                date={date}
+                tasks={value?.dailyProjectTask}
+                placement="bottomLeft"
+              >
+                {!value ? (
+                  <span className={styles.hourValue}>
+                    <img src={EmptyLine} alt="" />
+                  </span>
+                ) : (
+                  <span className={styles.hourValue}>
+                    {convertMsToTime(value?.projectDailyTime)}
+                  </span>
+                )}
               </TaskPopover>
             );
           };
@@ -229,13 +242,13 @@ const WeeklyTable = (props) => {
       ...dateColumns,
       {
         title: 'Total Hours',
-        dataIndex: 'totalProjectTimeHours',
-        key: 'totalProjectTimeHours',
+        dataIndex: 'totalProjectTime',
+        key: 'totalProjectTime',
         align: 'center',
         width: `${100 / 9}%`,
         render: (value, _, index) => {
           if (index === 0) return <span className={styles.totalHeader}>{value}</span>;
-          return <span className={styles.totalValue}>{value}</span>;
+          return <span className={styles.totalValue}>{convertMsToTime(value)}</span>;
         },
       },
     ];
