@@ -278,7 +278,6 @@ const WeeklyTable = (props) => {
 
   const renderFooter = () => {
     const durationByDate = getDurationByDate();
-    console.log('durationByDate', durationByDate);
     return (
       <div className={styles.footer}>
         <div className={styles.item}>

@@ -174,7 +174,7 @@ const TaskPopover = (props) => {
           Are you sure you want to delete
           <br />
           <span style={{ fontWeight: 'bold' }}>
-            {projectName} - {removingPackage?.taskName}
+            {removingPackage?.projectName} - {removingPackage?.taskName}
           </span>
           ?
         </span>
