@@ -32,3 +32,9 @@ export async function getDepartmentList(payload) {
     data: payload,
   });
 }
+export async function getLocationList(payload) {
+  return request('/api/locationtenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}

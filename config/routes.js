@@ -834,6 +834,13 @@ const routes = [
             hideInMenu: true,
           },
           {
+            path: '/ticket-management/detail/:id',
+            name: 'Detail Ticket',
+            component: './TicketManagement/components/TicketDetails',
+            hideInMenu: true,
+            // authority: ['employee', 'leader', 'manager', 'hr', 'hr-manager'],
+          },
+          {
             path: '/view-document/:documentId',
             name: 'viewDocument',
             hideInMenu: true,

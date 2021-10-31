@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Table, Dropdown, Menu, Input } from 'antd';
 import moment from 'moment';
 import { DownOutlined, SearchOutlined } from '@ant-design/icons';
+import { history, connect } from 'umi';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import styles from './index.less';
 
@@ -10,42 +11,21 @@ class TableTickets extends PureComponent {
     super(props);
     this.state = {
       // pageNavigation: '1',
-      currentTime: moment(),
     };
   }
-
-  componentDidMount = () => {
-    this.setCurrentTime();
-  };
-
-  setCurrentTime = () => {
-    // compare two time by hour & minute. If minute changes, get new time
-    const timeFormat = 'HH:mm';
-    const { currentTime } = this.state;
-    const parseTime = (timeString) => moment(timeString, timeFormat);
-    const check = parseTime(moment().format(timeFormat)).isAfter(
-      parseTime(moment(currentTime).format(timeFormat)),
-    );
-
-    if (check) {
-      this.setState({
-        currentTime: moment(),
-      });
-    }
-  };
 
   openViewTicket = (ticketID) => {
     const { data = [] } = this.props;
     let id = '';
 
     data.forEach((item) => {
-      if (item.ticketID === ticketID) {
-        id = item._id;
+      if (item.id === ticketID) {
+        id = item.id;
       }
     });
 
     if (id) {
-      // history.push(`/offboarding/list/review/${id}`);
+      history.push(`/ticket-management/detail/${id}`);
     }
   };
 
@@ -60,11 +40,12 @@ class TableTickets extends PureComponent {
       loading,
       pageSelected,
       size,
+      loadingFilter,
       getPageAndSize = () => {},
     } = this.props;
     const pagination = {
       position: ['bottomLeft'],
-      total: 30, // totalAll,
+      total: data.length,
       showTotal: (total, range) => (
         <span>
           Showing{' '}
@@ -204,6 +185,7 @@ class TableTickets extends PureComponent {
             ),
           }}
           loading={loading}
+          loadingSearch={loadingFilter}
           columns={columns}
           dataSource={data}
           hideOnSinglePage
@@ -216,4 +198,7 @@ class TableTickets extends PureComponent {
     );
   }
 }
-export default TableTickets;
+
+export default connect(({ ticketManagement: { listEmployee = [] } = {} }) => ({
+  listEmployee,
+}))(TableTickets);

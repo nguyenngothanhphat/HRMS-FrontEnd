@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
+import { debounce } from 'lodash';
 import styles from './index.less';
 import Summary from '../Summary';
 import SearchTable from '../SearchTable';
@@ -7,6 +8,7 @@ import TableTickets from '../TableTickets';
 
 @connect(({ loading = {} }) => ({
   loading: loading.effects['ticketManagement/fetchListAllTicket'],
+  loadingFilter: loading.effects['ticketManagement/fetchListAllTicketSearch'],
 }))
 class AllTicket extends Component {
   constructor(props) {
@@ -15,154 +17,68 @@ class AllTicket extends Component {
       selectedFilterTab: '1',
       pageSelected: 1,
       size: 10,
+      nameSearch: '',
     };
+
+    this.setDebounce = debounce((nameSearch) => {
+      this.setState({
+        nameSearch,
+      });
+    }, 500);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { selectedFilterTab, pageSelected, size } = this.state;
-    const { dispatch, location = [] } = this.props;
-    if (prevState.pageSelected !== pageSelected || prevState.size !== size) {
-      this.initDataTable(selectedFilterTab);
-    }
-    if (prevState.selectedFilterTab !== selectedFilterTab) {
-      if (selectedFilterTab === '1') {
-        dispatch({
-          type: 'ticketManagement/fetchListAllTicket',
-          payload: {
-            status: 'New',
-            page: 1,
-            limit: size,
-            // location,
-          },
-        });
-      }
-      if (selectedFilterTab === '2') {
-        dispatch({
-          type: 'ticketManagement/fetchListAllTicket',
-          payload: {
-            status: 'Assigned',
-            page: 1,
-            limit: size,
-            // location,
-          },
-        });
-      }
-      if (selectedFilterTab === '3') {
-        dispatch({
-          type: 'ticketManagement/fetchListAllTicket',
-          payload: {
-            status: 'In Progress',
-            page: 1,
-            limit: size,
-            // location,
-          },
-        });
-      }
-      if (selectedFilterTab === '4') {
-        dispatch({
-          type: 'ticketManagement/fetchListAllTicket',
-          payload: {
-            status: 'Client Pending',
-            page: 1,
-            limit: size,
-            // location,
-          },
-        });
-      }
-      if (selectedFilterTab === '5') {
-        dispatch({
-          type: 'ticketManagement/fetchListAllTicket',
-          payload: {
-            status: 'Resolved',
-            page: 1,
-            limit: size,
-            // location,
-          },
-        });
-      }
-      if (selectedFilterTab === '6') {
-        dispatch({
-          type: 'ticketManagement/fetchListAllTicket',
-          payload: {
-            status: 'Closed',
-            page: 1,
-            limit: size,
-            // location,
-          },
-        });
-      }
+    const { selectedFilterTab, pageSelected, size, nameSearch } = this.state;
+
+    if (
+      prevState.pageSelected !== pageSelected ||
+      prevState.size !== size ||
+      prevState.selectedFilterTab !== selectedFilterTab ||
+      prevState.nameSearch !== nameSearch
+    ) {
+      this.initDataTable(selectedFilterTab, nameSearch);
     }
   }
 
-  initDataTable = (tabId) => {
-    const { dispatch, location } = this.props;
+  getStatus = (selectedTab) => {
+    switch (selectedTab) {
+      case '1':
+        return 'New';
+      case '2':
+        return 'Assigned';
+      case '3':
+        return 'In Progress';
+      case '4':
+        return 'Client Pending';
+      case '5':
+        return 'Resolved';
+      case '6':
+        return 'Closed';
+
+      default:
+        return 'New';
+    }
+  };
+
+  initDataTable = (tabId, nameSearch) => {
+    const { dispatch } = this.props;
     const { pageSelected, size } = this.state;
 
-    if (tabId === '1') {
-      dispatch({
-        type: 'ticketManagement/fetchListAllTicket',
-        payload: {
-          status: 'New',
-          page: pageSelected,
-          limit: size,
-          // location,
-        },
-      });
+    let payload = {
+      status: this.getStatus(tabId),
+      page: pageSelected,
+      limit: size,
+    };
+    if (nameSearch) {
+      payload = {
+        ...payload,
+        name: nameSearch,
+      };
     }
-    if (tabId === '2') {
-      dispatch({
-        type: 'ticketManagement/fetchListAllTicket',
-        payload: {
-          status: 'Assigned',
-          limit: size,
-          // location,
-        },
-      });
-    }
-    if (tabId === '3') {
-      dispatch({
-        type: 'ticketManagement/fetchListAllTicket',
-        payload: {
-          status: 'In Progress',
-          page: pageSelected,
-          limit: size,
-          // location,
-        },
-      });
-    }
-    if (tabId === '4') {
-      dispatch({
-        type: 'ticketManagement/fetchListAllTicket',
-        payload: {
-          status: 'Client Pending',
-          page: pageSelected,
-          limit: size,
-          // location,
-        },
-      });
-    }
-    if (tabId === '5') {
-      dispatch({
-        type: 'ticketManagement/fetchListAllTicket',
-        payload: {
-          status: 'Resolved',
-          page: pageSelected,
-          limit: size,
-          // location,
-        },
-      });
-    }
-    if (tabId === '6') {
-      dispatch({
-        type: 'ticketManagement/fetchListAllTicket',
-        payload: {
-          status: 'Closed',
-          page: pageSelected,
-          limit: size,
-          // location,
-        },
-      });
-    }
+    dispatch({
+      type: 'ticketManagement/fetchListAllTicket',
+      payload,
+    });
   };
 
   setSelectedTab = (id) => {
@@ -178,18 +94,23 @@ class AllTicket extends Component {
     });
   };
 
+  onChangeSearch = (value) => {
+    const formatValue = value.toLowerCase();
+    this.setDebounce(formatValue);
+  };
+
   render() {
-    const { data = [], loading, loadingSearch, countData = [] } = this.props;
+    const { data = [], loading, loadingFilter, countData = [] } = this.props;
     const { pageSelected, size } = this.state;
     return (
       <div className={styles.containerTickets}>
         <div className={styles.tabTickets}>
           <Summary setSelectedTab={this.setSelectedTab} countData={countData} />
-          <SearchTable />
+          <SearchTable onChangeSearch={this.onChangeSearch} />
         </div>
         <TableTickets
           data={data}
-          loading={loading || loadingSearch}
+          loading={loading || loadingFilter}
           pageSelected={pageSelected}
           size={size}
           getPageAndSize={this.getPageAndSize}

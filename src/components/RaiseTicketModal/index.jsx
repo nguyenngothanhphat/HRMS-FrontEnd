@@ -17,7 +17,7 @@ import moment from 'moment';
 import HelpIcon from '@/assets/dashboard/help.svg';
 import BlueAddIcon from '@/assets/dashboard/blueAdd.svg';
 import { SUPPORT_TEAM, PRIORITY } from '@/utils/dashboard';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 
 import styles from './index.less';
 
@@ -35,7 +35,7 @@ const RaiseTicketModal = (props) => {
   const [supportTeam, setSupportTeam] = useState('');
   const [supportTeamID, setSupportTeamID] = useState('');
 
-  const { myEmployeeID, listEmployee, listDepartment, locationID } = props;
+  const { myEmployeeID, listEmployee, listDepartment } = props;
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>
@@ -67,20 +67,19 @@ const RaiseTicketModal = (props) => {
     dispatch({
       type: 'ticketManagement/addTicket',
       payload: {
-        department_assign: supportTeamID,
         employeeRaise: myEmployeeID,
-        employeeAssignee: supportTeamID,
+        employeeAssignee: '',
         status: value.status,
-        query_type: value.queryType,
+        queryType: value.queryType,
         subject: value.subject,
         description: value.description,
         priority: value.priority,
         ccList: value.interestList,
         attachments: attachment,
-        location: locationID,
+        departmentAssign: supportTeamID,
+        location: getCurrentLocation(),
       },
     });
-    form.resetFields();
   };
 
   const handleReset = () => {
