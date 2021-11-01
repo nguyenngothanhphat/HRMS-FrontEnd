@@ -3,21 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { getCurrentCompany } from '@/utils/authority';
 import ViewChange from './components/ViewChange';
-import DailyHeader from './components/DailyHeader';
-import WeeklyHeader from './components/WeeklyHeader';
-import MonthlyHeader from './components/MonthlyHeader';
-import DailyTable from './components/DailyTable';
+import Header from './components/Header';
 import WeeklyTable from './components/WeeklyTable';
 import MonthlyTable from './components/MonthlyTable';
-import DailyFooter from './components/DailyFooter';
 
 import styles from './index.less';
 import { dateFormatAPI, VIEW_TYPE } from '@/utils/timeSheet';
 
-const MyTimeSheet = (props) => {
-  // daily
-  const [selectedDate, setSelectedDate] = useState(moment());
-
+const ProjectView = (props) => {
   // weekly
   const [startDateWeek, setStartDateWeek] = useState('');
   const [endDateWeek, setEndDateWeek] = useState('');
@@ -28,10 +21,12 @@ const MyTimeSheet = (props) => {
   const [weeksOfMonth, setWeeksOfMonth] = useState([]);
 
   // others
-  const [selectedView, setSelectedView] = useState(VIEW_TYPE.D); // D: daily, W: weekly, M: monthly
+  const [selectedView, setSelectedView] = useState(VIEW_TYPE.W); // D: daily, W: weekly, M: monthly
+
+  const [currentProject, setCurrentProject] = useState(1);
+
   const {
     dispatch,
-    myTimesheetByDay = [],
     myTimesheetByWeek = [],
     myTimesheetByMonth = [],
     employee: { _id: employeeId = '' } = {},
@@ -52,12 +47,6 @@ const MyTimeSheet = (props) => {
   };
 
   // USE EFFECT AREA
-  useEffect(() => {
-    if (selectedDate && selectedView === VIEW_TYPE.D) {
-      fetchMyTimesheetEffectByType(selectedDate, selectedDate);
-    }
-  }, [selectedDate, selectedView]);
-
   useEffect(() => {
     if (startDateWeek && selectedView === VIEW_TYPE.W) {
       fetchMyTimesheetEffectByType(startDateWeek, endDateWeek);
@@ -123,35 +112,31 @@ const MyTimeSheet = (props) => {
 
   const renderHeader = () => {
     switch (selectedView) {
-      case VIEW_TYPE.D:
-        return (
-          <DailyHeader
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-            selectedView={selectedView}
-            setSelectedView={setSelectedView}
-            viewChangeComponent={viewChangeComponent}
-          />
-        );
       case VIEW_TYPE.W:
         return (
-          <WeeklyHeader
+          <Header
             startDate={startDateWeek}
             endDate={endDateWeek}
             setStartDate={setStartDateWeek}
             setEndDate={setEndDateWeek}
             viewChangeComponent={viewChangeComponent}
+            type={VIEW_TYPE.W}
+            currentProject={currentProject}
+            setCurrentProject={setCurrentProject}
           />
         );
 
       case VIEW_TYPE.M:
         return (
-          <MonthlyHeader
+          <Header
             startDate={startDateMonth}
             endDate={endDateMonth}
             setStartDate={setStartDateMonth}
             setEndDate={setEndDateMonth}
             viewChangeComponent={viewChangeComponent}
+            type={VIEW_TYPE.M}
+            currentProject={currentProject}
+            setCurrentProject={setCurrentProject}
           />
         );
 
@@ -162,8 +147,6 @@ const MyTimeSheet = (props) => {
 
   const renderTable = () => {
     switch (selectedView) {
-      case VIEW_TYPE.D:
-        return <DailyTable selectedDate={selectedDate} data={myTimesheetByDay} />;
       case VIEW_TYPE.W:
         return (
           <WeeklyTable startDate={startDateWeek} endDate={endDateWeek} data={myTimesheetByWeek} />
@@ -184,8 +167,6 @@ const MyTimeSheet = (props) => {
 
   const renderFooter = () => {
     switch (selectedView) {
-      case VIEW_TYPE.D:
-        return <DailyFooter data={myTimesheetByDay} />;
       case VIEW_TYPE.W:
         return null;
       case VIEW_TYPE.M:
@@ -197,7 +178,7 @@ const MyTimeSheet = (props) => {
 
   // MAIN AREA
   return (
-    <div className={styles.MyTimeSheet}>
+    <div className={styles.ProjectView}>
       {renderHeader()}
       {renderTable()}
       {renderFooter()}
@@ -207,12 +188,11 @@ const MyTimeSheet = (props) => {
 
 export default connect(
   ({
-    timeSheet: { myTimesheetByDay = [], myTimesheetByWeek = [], myTimesheetByMonth = [] } = {},
+    timeSheet: { myTimesheetByWeek = [], myTimesheetByMonth = [] } = {},
     user: { currentUser: { employee = {} } = {} },
   }) => ({
     employee,
-    myTimesheetByDay,
     myTimesheetByWeek,
     myTimesheetByMonth,
   }),
-)(MyTimeSheet);
+)(ProjectView);

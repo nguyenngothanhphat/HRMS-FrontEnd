@@ -4,7 +4,7 @@ import { connect, history } from 'umi';
 import ModalImage from '@/assets/timeSheet/modalImage1.png';
 import { PageContainer } from '@/layouts/layout/src';
 import ActionModal from '@/pages/TimeSheet/components/ActionModal';
-import ManagerView from './components/ManagerView';
+import ManagerReport from './components/ManagerReport';
 import MyTimeSheet from './components/MyTimeSheet';
 import Settings from './components/Settings';
 import styles from './index.less';
@@ -46,16 +46,16 @@ const ComplexView = (props) => {
           <TabPane tab="My time sheet" key="my">
             <MyTimeSheet />
           </TabPane>
-          {viewManagerTimesheet && (
-            <TabPane tab="Reports" key="reports">
-              <ManagerView />
-            </TabPane>
-          )}
-          {viewSettingTimesheet && (
-            <TabPane tab="Settings" key="settings">
-              <Settings />
-            </TabPane>
-          )}
+          {/* {viewManagerTimesheet && ( */}
+          <TabPane tab="Reports" key="reports">
+            <ManagerReport />
+          </TabPane>
+          {/* )} */}
+          {/* {viewSettingTimesheet && ( */}
+          <TabPane tab="Settings" key="settings">
+            <Settings />
+          </TabPane>
+          {/* )} */}
         </Tabs>
         <ActionModal
           visible={navToTimeoffModalVisible}
