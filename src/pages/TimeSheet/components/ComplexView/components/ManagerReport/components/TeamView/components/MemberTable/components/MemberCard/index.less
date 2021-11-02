@@ -3,21 +3,38 @@
 .MemberCard {
   box-sizing: border-box;
   margin: 16px;
-  padding: 16px;
+  padding-left: 16px;
+  overflow: hidden;
   background: #ffffff;
   border: 1px solid #d6dce0;
-  border-left: 6px solid #04aa6d !important;
   border-radius: 6px;
   .alignCenter {
     display: flex;
     justify-content: center !important;
+  }
+  .groupCell {
+    padding: 0 !important;
+    border-left: 1px solid #d6dce0;
+    .groupRow {
+      padding: 16px 10px;
+    }
+    .groupRow:not(:last-child) {
+      border-bottom: 1px solid #d6dce0;
+    }
   }
   .normalCell {
     display: flex;
     flex-direction: row;
     align-items: center !important;
     font-size: 13px;
-    .activityIcon {
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    .icon {
       position: relative;
       display: flex;
       align-items: center;

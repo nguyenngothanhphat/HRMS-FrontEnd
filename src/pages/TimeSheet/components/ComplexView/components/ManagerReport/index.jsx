@@ -10,7 +10,7 @@ const { TabPane } = Tabs;
 
 const ManagerReport = (props) => {
   // others
-  const [activeKey, setActiveKey] = useState('team-view');
+  const [activeKey, setActiveKey] = useState('project-view');
 
   const options = () => {
     return (

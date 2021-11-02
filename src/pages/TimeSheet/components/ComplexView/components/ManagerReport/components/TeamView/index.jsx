@@ -4,16 +4,19 @@ import { connect } from 'umi';
 import { dateFormatAPI } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import Header from './components/Header';
+import MemberTable from './components/MemberTable';
+import Pagination from './components/Pagination';
 import styles from './index.less';
 
 const TeamView = (props) => {
-  // daily
-  const [selectedDate, setSelectedDate] = useState(moment());
+  // weekly
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const { dispatch, employee: { _id: employeeId = '' } = {} } = props;
 
   // FUNCTION AREA
-  const fetchMyTimesheetEffectByType = (startDate, endDate) => {
+  const fetchMyTimesheetEffectByType = () => {
     dispatch({
       type: 'timeSheet/fetchMyTimesheetByTypeEffect',
       payload: {
@@ -28,31 +31,30 @@ const TeamView = (props) => {
 
   // USE EFFECT AREA
   useEffect(() => {
-    if (selectedDate) {
-      fetchMyTimesheetEffectByType(selectedDate, selectedDate);
+    if (startDate) {
+      fetchMyTimesheetEffectByType();
     }
-  }, [selectedDate]);
+  }, [startDate]);
 
-  // RENDER UI
-
-  const renderHeader = () => {
-    return <Header selectedDate={selectedDate} setSelectedDate={setSelectedDate} />;
-  };
-
-  const renderTable = () => {
-    return <span>Hello</span>;
-  };
-
-  const renderFooter = () => {
-    return <span>Hello</span>;
-  };
+  // generate dates for week
+  useEffect(() => {
+    const lastSunday = moment().weekday(1);
+    const currentSunday = moment().weekday(7);
+    setStartDate(lastSunday);
+    setEndDate(currentSunday);
+  }, []);
 
   // MAIN AREA
   return (
     <div className={styles.TeamView}>
-      {renderHeader()}
-      {renderTable()}
-      {renderFooter()}
+      <Header
+        startDate={startDate}
+        endDate={endDate}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+      />
+      <MemberTable />
+      <Pagination />
     </div>
   );
 };

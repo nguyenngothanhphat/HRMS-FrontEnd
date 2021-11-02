@@ -1,130 +1,68 @@
-import { Col, Row, Tooltip } from 'antd';
-import moment from 'moment';
+import { Col, Row } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import DeleteIcon from '@/assets/timeSheet/del.svg';
-import EditIcon from '@/assets/timeSheet/edit.svg';
-import { getCurrentCompany } from '@/utils/authority';
-import {
-  activityColor,
-  convertMsToTime,
-  dateFormatAPI,
-  hourFormat,
-  hourFormatAPI,
-  MT_SECONDARY_COL_SPAN,
-} from '@/utils/timeSheet';
-import EditCard from '../EditCard';
+import { MNG_MT_SECONDARY_COL_SPAN, MNG_MT_THIRD_COL_SPAN } from '@/utils/timeSheet';
+import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
+import UserProfilePopover from '../../../../../UserProfilePopover';
 import styles from './index.less';
 
-const { ACTIVITY, START_TIME, END_TIME, NIGHT_SHIFT, TOTAL_HOURS, NOTES, ACTIONS } =
-  MT_SECONDARY_COL_SPAN;
+const { DESIGNATION, DEPARTMENT, PROJECT_GROUP } = MNG_MT_SECONDARY_COL_SPAN;
+const { PROJECTS, PROJECT_MANAGER, TOTAL_HOURS } = MNG_MT_THIRD_COL_SPAN;
 
 const MemberCard = (props) => {
-  const {
-    card: {
-      id = '',
-      taskName = '',
-      startTime = '',
-      endTime = '',
-      nightShift = false,
-      // totalHours = '',
-      duration = 0,
-      notes = '',
-    } = {},
-    card = {},
-    cardDay = '',
-    dispatch,
-  } = props;
-  const { employee: { _id: employeeId = '' } = {} } = props;
-
-  const [editMode, setEditMode] = useState(false);
-
-  // FUNCTION AREA
-  const handleLongString = (str) => {
-    if (str.length <= 72) return str;
-    return `${str.slice(0, 72)}...`;
-  };
-
-  const renderNote = (note = '') => {
-    if (note.length <= 72) return note;
-    return (
-      <span>
-        {handleLongString(note)}{' '}
-        <Tooltip
-          title={note}
-          placement="bottomLeft"
-          // we have this prop for customizing antd tooltip
-          getPopupContainer={(trigger) => {
-            return trigger;
-          }}
-        >
-          <span className={styles.readMoreBtn}>Read More</span>
-        </Tooltip>
-      </span>
-    );
-  };
-
-  const getActivityBackgroundColor = (activityName) => {
-    const find = activityColor.find((a) => a.name === activityName);
-    return find?.color;
-  };
-
-  // main handle
-  const onEditCard = () => {
-    setEditMode(true);
-  };
-
-  const onRemoveCard = () => {
-    dispatch({
-      type: 'timeSheet/removeActivityEffect',
-      payload: {
-        id,
-        employeeId,
-        companyId: getCurrentCompany(),
-      },
-      date: moment(cardDay).format(dateFormatAPI),
-    });
-  };
+  const { card: { designation = '', projects = '', department = '' } = {} } = props;
+  const [mode, setMode] = useState(2); // 1: people manager, 2: project manager
 
   // MAIN AREA
-  if (editMode)
-    return <EditCard card={card} onCancelCard={() => setEditMode(false)} cardDay={cardDay} />;
   return (
     <div className={styles.MemberCard}>
       <Row gutter={[12, 0]}>
-        <Col span={ACTIVITY} className={`${styles.normalCell} ${styles.boldText}`}>
-          <div
-            className={styles.activityIcon}
-            style={
-              getActivityBackgroundColor(taskName)
-                ? { background: getActivityBackgroundColor(taskName) }
-                : null
+        <Col span={DESIGNATION} className={styles.normalCell}>
+          {designation}
+        </Col>
+        <Col span={DEPARTMENT} className={styles.normalCell}>
+          {department}
+        </Col>
+        <Col span={PROJECT_GROUP} className={styles.groupCell}>
+          {projects.map((pj) => {
+            if (mode === 1) {
+              return (
+                <Row className={styles.groupRow}>
+                  <Col span={PROJECTS} className={styles.normalCell}>
+                    {pj.name}
+                  </Col>
+                  <Col span={PROJECT_MANAGER} className={styles.normalCell}>
+                    {pj.projectManager}
+                  </Col>
+                  <Col span={TOTAL_HOURS} className={styles.normalCell}>
+                    {pj.totalHours}
+                  </Col>
+                </Row>
+              );
             }
-          >
-            <span>{taskName ? taskName.toString()?.charAt(0) : 'A'}</span>
-          </div>
-          {taskName || ''}
-        </Col>
-        <Col span={START_TIME} className={styles.normalCell}>
-          {moment(startTime, hourFormatAPI).format(hourFormat)}
-        </Col>
-        <Col span={END_TIME} className={styles.normalCell}>
-          {moment(endTime, hourFormatAPI).format(hourFormat)}
-        </Col>
-        <Col span={NIGHT_SHIFT} className={styles.normalCell}>
-          {nightShift ? 'Yes' : 'No'}
-        </Col>
-        <Col span={TOTAL_HOURS} className={`${styles.normalCell} ${styles.blueText}`}>
-          {convertMsToTime(duration)}
-        </Col>
-        <Col span={NOTES} className={styles.normalCell}>
-          {renderNote(notes || '')}
-        </Col>
-        <Col span={ACTIONS} className={`${styles.normalCell} ${styles.alignCenter}`}>
-          <div className={styles.actionsButton}>
-            <img src={EditIcon} onClick={onEditCard} alt="" />
-            <img src={DeleteIcon} onClick={onRemoveCard} alt="" />
-          </div>
+
+            return (
+              <Row className={styles.groupRow}>
+                <Col span={PROJECTS} className={styles.normalCell}>
+                  {pj.name}
+                </Col>
+                <Col span={PROJECT_MANAGER} className={styles.normalCell}>
+                  {pj.totalHours}
+                </Col>
+                <Col span={TOTAL_HOURS} className={`${styles.normalCell} ${styles.alignCenter}`}>
+                  <UserProfilePopover placement="leftTop">
+                    {pj.avatar ? (
+                      <img src={pj.avatar || MockAvatar} className={styles.avatar} alt="" />
+                    ) : (
+                      <div className={styles.icon}>
+                        <span>{pj.name ? pj.name.toString()?.charAt(0) : 'P'}</span>
+                      </div>
+                    )}
+                  </UserProfilePopover>
+                </Col>
+              </Row>
+            );
+          })}
         </Col>
       </Row>
     </div>

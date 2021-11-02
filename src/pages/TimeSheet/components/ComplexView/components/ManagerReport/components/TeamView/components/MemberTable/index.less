@@ -30,6 +30,13 @@
     justify-content: center;
     height: 200px;
   }
+
+  .groupCell {
+    padding: 0 !important;
+    .groupRow {
+      padding-inline: 10px;
+    }
+  }
   .alignCenter {
     display: flex;
     justify-content: center !important;
@@ -51,8 +58,7 @@
       box-shadow: 1px 0px 6px rgba(0, 0, 0, 0.15);
     }
     &__remainColumn {
-      padding-block: 8px;
-      padding-inline: 32px;
+      padding: 8px 16px 8px 32px;
       .title {
         display: flex;
         align-items: center;
@@ -62,6 +68,79 @@
         font-size: 13px;
         line-height: 20px;
       }
+    }
+  }
+
+  .member {
+    width: 100%;
+
+    .renderEmployee {
+      display: flex;
+      align-items: center;
+      cursor: default;
+      .avatar {
+        img {
+          width: 32px;
+          height: 32px;
+          object-fit: cover;
+          border-radius: 50%;
+        }
+        .icon {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 32px;
+          height: 32px;
+          margin-right: 12px;
+          background: #a42ba8;
+          border: 1px solid rgba(255, 255, 255, 0);
+          border-radius: 50%;
+          outline: none;
+          cursor: default;
+          span {
+            color: #fff;
+            font-weight: 500;
+            font-size: 13px;
+          }
+        }
+      }
+      .right {
+        display: flex;
+        flex-direction: column;
+        .name {
+          color: #212020;
+          font-weight: 500;
+          font-size: 13px;
+          line-height: 20px;
+        }
+        .id {
+          color: #2c6df9;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .alignCenter {
+      display: flex;
+      justify-content: center !important;
+    }
+
+    &__firstColumn {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: @cell-padding;
+      color: #000000;
+      font-weight: 500;
+      font-size: 12px;
+      background-color: #fff;
+    }
+
+    &__remainColumn {
+      min-width: 500px;
+      // margin-top: 32px;
+      background: #f6f7f9;
     }
   }
 

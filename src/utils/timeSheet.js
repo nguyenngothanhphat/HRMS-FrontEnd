@@ -79,6 +79,24 @@ const EMP_MT_SECONDARY_COL_SPAN = {
 
 const EMP_ROW_HEIGHT = 60; // px
 
+// MANAGER VIEW
+const MNG_MT_MAIN_COL_SPAN = {
+  EMPLOYEE: 4,
+  REMAINING: 20,
+};
+
+const MNG_MT_SECONDARY_COL_SPAN = {
+  DESIGNATION: 4,
+  DEPARTMENT: 6,
+  PROJECT_GROUP: 14,
+};
+
+const MNG_MT_THIRD_COL_SPAN = {
+  PROJECTS: 10,
+  PROJECT_MANAGER: 10,
+  TOTAL_HOURS: 4,
+};
+
 // convert milisecond to time HH:mm:ss
 // source: https://stackoverflow.com/questions/19700283/how-to-convert-time-in-milliseconds-to-hours-min-sec-format-in-javascript
 const convertMsToTime = (milliseconds) => {
@@ -142,6 +160,9 @@ export {
   EMP_MT_MAIN_COL_SPAN,
   EMP_MT_SECONDARY_COL_SPAN,
   EMP_ROW_HEIGHT,
+  MNG_MT_MAIN_COL_SPAN,
+  MNG_MT_SECONDARY_COL_SPAN,
+  MNG_MT_THIRD_COL_SPAN,
   TASKS,
   isTheSameDay,
 };

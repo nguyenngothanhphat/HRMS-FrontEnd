@@ -1,5 +1,5 @@
-import { SearchOutlined } from '@ant-design/icons';
-import { DatePicker, Input } from 'antd';
+import { MinusOutlined, SearchOutlined } from '@ant-design/icons';
+import { Input, DatePicker } from 'antd';
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
@@ -10,22 +10,30 @@ import PrevIcon from '@/assets/timeSheet/prev.svg';
 import { rangePickerFormat } from '@/utils/timeSheet';
 import styles from './index.less';
 
+const { RangePicker } = DatePicker;
+
 const Header = (props) => {
-  const { selectedDate, setSelectedDate = () => {} } = props;
+  const { startDate, endDate, setStartDate = () => {}, setEndDate = () => {} } = props;
 
   // HEADER AREA
-  const onPrevDateClick = () => {
-    const prevDate = moment(selectedDate).add(-1, 'days');
-    setSelectedDate(prevDate);
+  // HEADER AREA FOR MONTH
+  const onPrevClick = () => {
+    const lastSunday = moment(startDate).add(-1, 'weeks');
+    const currentSunday = moment(startDate).add(-1, 'weeks').weekday(7);
+    setStartDate(lastSunday);
+    setEndDate(currentSunday);
   };
 
-  const onNextDateClick = () => {
-    const nextDate = moment(selectedDate).add(1, 'days');
-    setSelectedDate(nextDate);
+  const onNextClick = () => {
+    const nextSunday = moment(startDate).add(1, 'weeks');
+    const currentSunday = moment(startDate).add(1, 'weeks').weekday(7);
+    setStartDate(nextSunday);
+    setEndDate(currentSunday);
   };
 
-  const onDatePickerChange = (date) => {
-    setSelectedDate(date);
+  const onDatePickerChange = (dates = []) => {
+    setStartDate(dates[0]);
+    setEndDate(dates[1]);
   };
 
   const searchPrefix = () => {
@@ -44,21 +52,23 @@ const Header = (props) => {
   return (
     <div className={styles.Header}>
       <div className={styles.Header__left}>
-        <div className={styles.prevWeek} onClick={onPrevDateClick}>
+        <div className={styles.prevWeek} onClick={onPrevClick}>
           <img src={PrevIcon} alt="" />
         </div>
         <div className={styles.rangePicker}>
-          <DatePicker
+          <RangePicker
             format={rangePickerFormat}
-            value={selectedDate}
+            separator={<MinusOutlined className={styles.minusSeparator} />}
+            value={[startDate, endDate]}
             onChange={onDatePickerChange}
             allowClear={false}
+            disabled
             suffixIcon={
               <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
             }
           />
         </div>
-        <div className={styles.nextWeek} onClick={onNextDateClick}>
+        <div className={styles.nextWeek} onClick={onNextClick}>
           <img src={NextIcon} alt="" />
         </div>
       </div>
