@@ -1,0 +1,34 @@
+.ContactInfo {
+    background-color: #fff;
+    border-radius: 5px;
+    .contactInfoHeader{
+      padding: 32px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #D6DCE0;
+      p{
+        margin: 0;
+        &>img{
+          margin-right: 16px;
+        }
+        &.contactInfoHeaderTitle{
+          font-weight: 700;
+        }
+      }
+    }
+
+    .btnEdit{
+      font-weight: 700;
+      cursor: pointer;
+      color: #2C6DF9;
+    }
+
+    .contactInfoBody{
+      padding: 32px 0 0 32px;
+      :global{
+        .ant-col{
+            margin-bottom: 32px;
+        }
+      }
+    }
+}

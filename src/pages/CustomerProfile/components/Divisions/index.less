@@ -1,0 +1,93 @@
+.Divisions {
+    background-color: #fff;
+    border-radius: 5px;
+    .divisionsHeader{
+      padding: 32px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #D6DCE0;
+      p{
+        margin: 0;
+        &>img{
+          margin-right: 16px;
+        }
+        &.contactInfoHeaderTitle{
+          font-weight: 700;
+        }
+      }
+    }
+
+    .btnEdit{
+      font-weight: 700;
+      cursor: pointer;
+      color: #2C6DF9;
+    }
+
+    .divisionsBody{
+        padding: 0 8px;
+        :global{
+          .ant-col{
+              margin-bottom: 32px;
+          }
+        }
+        .divisionPrimary{
+            width: 100%;
+            background-color: #F6F7F9;
+            padding: 24px;
+            padding-right: 0;
+            margin-bottom: 8px;
+        }
+        .divisionSecondary{
+            padding: 24px 0 24px 32px;
+        }
+      }
+    
+    .divisionFooter{
+        padding: 24px;
+        border-top: 1px solid #D6DCE0;
+    }
+
+    .buttonAddImport {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: flex-start;
+        font-weight: 700;
+        height: 42px;
+        margin: 0;
+        background-color: white;
+        color: #2C6DF9;
+        border-radius: 30px;
+        cursor: pointer;
+        img {
+          margin-right: 10px;
+        }
+        &_imgImport {
+          margin-right: 15px !important;
+          transform: scale(1.5);
+        }
+        &_text {
+          margin-bottom: 0px;
+          color: #2C6DF9;
+          font-weight: 700;
+          font-size: 14px;
+          font-style: normal;
+          font-stretch: normal;
+          line-height: 1.38;
+          letter-spacing: normal;
+          text-align: left;
+        }
+        :global {
+          .anticon {
+            padding: 6px;
+            border-radius: 50px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.23);
+            background-color: #fff;
+            margin-right: 9px;
+            margin-bottom: 1px;
+            color: #2C6DF9;
+            font-size: 20px;
+          }
+        }
+      }
+}
