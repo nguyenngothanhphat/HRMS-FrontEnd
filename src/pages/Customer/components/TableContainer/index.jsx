@@ -1,0 +1,254 @@
+import React, { PureComponent } from 'react';
+import { Tabs, Layout, Popover, Button, Input, Select } from 'antd';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
+import styles from './index.less';
+import TableCustomers from '../TableCustomers';
+import MenuFilter from './components/MenuFilter';
+import cancelIcon from '../../../../assets/cancelIcon.svg';
+import ModalAdd from './components/ModalAdd';
+import { FilterIcon } from './components/FilterIcon';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+
+@connect(
+  ({
+    loading,
+    user: { currentUser: { employee: { _id = '' } = {} } = {} } = {},
+    customerManagement: { listCustomer = [] } = {},
+  }) => ({
+    listCustomer,
+    _id,
+    loadingCustomer: loading.effects['customerManagement/fetchCustomerList'],
+  }),
+)
+class TableContainer extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      tabs: [{ id: 1, name: 'Customers' }],
+      visible: false,
+      isShown: false,
+    };
+  }
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'customerManagement/fetchCustomerList',
+    });
+  }
+
+  // componentDidUpdate(props) {
+  //   const { listCustomer, dispatch } = this.props;
+  //   if (props.listCustomer.length !== listCustomer.length) {
+  //     dispatch({
+  //       type: 'customerManagement/fetchCustomerList',
+  //     });
+  //   }
+  // }
+
+  // submit filter
+  handleSubmit = (values) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'customerManagement/filterListCustomer',
+      payload: {
+        status: values.byStatus,
+        tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
+      },
+    });
+  };
+
+  // close popover
+  handleClose = () => {
+    const { visible } = this.state;
+    this.setState({
+      visible: !visible,
+    });
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'customerManagement/fetchCustomerList',
+    });
+  };
+
+  // show popover
+  handleVisible = () => {
+    const { visible } = this.state;
+    this.setState({
+      visible: !visible,
+    });
+  };
+
+  // show modal
+  showModal = () => {
+    const { isShown } = this.state;
+    // form.resetFields();
+    this.setState({
+      isShown: !isShown,
+    });
+  };
+
+  // cancel and reset fill in modal
+  onCloseModal = () => {
+    const { isShown } = this.state;
+    this.setState({
+      // reset fill
+      isShown: !isShown,
+    });
+    // this.refForm.current.resetFields();
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'customerManagement/fetchCustomerList',
+    });
+  };
+
+  // add new Customer
+  handleAddNew = (values) => {
+    const { dispatch, _id } = this.props;
+    const {
+      customerID,
+      status,
+      legalName,
+      dba,
+      phone,
+      email,
+      addressLine1,
+      addressLine2,
+      country,
+      state,
+      city,
+      zipCode,
+      website,
+      tags,
+      comments,
+    } = values;
+    const newTags = tags.map((item) => parseInt(item, 10));
+
+    dispatch({
+      type: 'customerManagement/addNewCustomer',
+      payload: {
+        tenantId: getCurrentTenant(),
+        customerId: customerID,
+        status,
+        legalName,
+        dba,
+        contactPhone: phone,
+        contactEmail: email,
+        addressLine1,
+        addressLine2,
+        city,
+        state,
+        country,
+        postalCode: zipCode,
+        accountOwner: _id,
+        tagIds: newTags,
+        comments: comments || '',
+        website: website || '',
+      },
+    }).then(() => {
+      dispatch({
+        type: 'customerManagement/fetchCustomerList',
+      });
+    });
+  };
+
+  render() {
+    const { Content } = Layout;
+    const { TabPane } = Tabs;
+    const { listCustomer, loadingCustomer } = this.props;
+    const { tabs, visible, isShown } = this.state;
+
+    const listStatus = [
+      <Select.Option key="Engaging">Engaging</Select.Option>,
+      <Select.Option key="Active">Active</Select.Option>,
+      <Select.Option key="Inactive">Inactive</Select.Option>,
+      // <Select.Option key="negotiation">Negotiation</Select.Option>,
+    ];
+    const filter = (
+      <>
+        <MenuFilter onSubmit={this.handleSubmit} listStatus={listStatus} />
+        <div className={styles.btnForm}>
+          <Button className={styles.btnClose} onClick={this.handleClose}>
+            Close
+          </Button>
+          <Button className={styles.btnApply} form="filter" htmlType="submit" key="submit">
+            Apply
+          </Button>
+        </div>
+      </>
+    );
+
+    const menu = (
+      <div className={styles.tabExtraContent}>
+        <p className={styles.buttonAddImport} onClick={this.showModal}>
+          <PlusOutlined />
+          Add new customer
+        </p>
+        <Popover
+          placement="bottomRight"
+          content={filter}
+          title={() => (
+            <div className={styles.popoverHeader}>
+              <p className={styles.headTitle}>Filters</p>
+              <p
+                className={styles.closeIcon}
+                style={{ cursor: 'pointer' }}
+                onClick={this.handleClose}
+              >
+                <img src={cancelIcon} alt="close" />
+              </p>
+            </div>
+          )}
+          trigger="click"
+          visible={visible}
+          onVisibleChange={this.handleVisible}
+        >
+          <div className={styles.filterButton}>
+            <FilterIcon />
+            <p className={styles.textButtonFilter}>Filter</p>
+          </div>
+        </Popover>
+        <div className={styles.searchInp}>
+          <Input
+            placeholder="Search by Company Name, ID, Account Owner"
+            prefix={<SearchOutlined />}
+          />
+        </div>
+      </div>
+    );
+
+    return (
+      <div className={styles.tableContainer}>
+        <div className={styles.tableContent}>
+          <Tabs
+            defaultActiveKey="1"
+            className={styles.tabComponent}
+            onTabClick={this.handleClickTabPane}
+            tabBarExtraContent={menu}
+          >
+            {tabs.map((tab) => (
+              <TabPane tab={tab.name} key={tab.id}>
+                <Layout className={styles.managementLayout}>
+                  <Content className="site-layout-background">
+                    <TableCustomers listCustomer={listCustomer} loadingCustomer={loadingCustomer} />
+                  </Content>
+                  <ModalAdd
+                    isShown={isShown}
+                    listStatus={listStatus}
+                    handleAddNew={this.handleAddNew}
+                    onCloseModal={this.onCloseModal}
+                    ref={this.refForm}
+                  />
+                  {/* <TabFilter /> */}
+                </Layout>
+              </TabPane>
+            ))}
+          </Tabs>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default TableContainer;
