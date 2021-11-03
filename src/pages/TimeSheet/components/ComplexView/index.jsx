@@ -5,6 +5,7 @@ import ModalImage from '@/assets/timeSheet/modalImage1.png';
 import { PageContainer } from '@/layouts/layout/src';
 import ActionModal from '@/pages/TimeSheet/components/ActionModal';
 import ManagerReport from './components/ManagerReport';
+import HumanResourceReport from './components/HumanResourceReport';
 import MyTimeSheet from './components/MyTimeSheet';
 import Settings from './components/Settings';
 import styles from './index.less';
@@ -48,7 +49,8 @@ const ComplexView = (props) => {
           </TabPane>
           {/* {viewManagerTimesheet && ( */}
           <TabPane tab="Reports" key="reports">
-            <ManagerReport />
+            {/* <ManagerReport /> */}
+            <HumanResourceReport />
           </TabPane>
           {/* )} */}
           {/* {viewSettingTimesheet && ( */}

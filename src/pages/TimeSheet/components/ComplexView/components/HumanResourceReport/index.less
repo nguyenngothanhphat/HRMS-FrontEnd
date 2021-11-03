@@ -1,0 +1,45 @@
+@borderColor: #d6dce0;
+@borderColor2: #d6dce4;
+@commonSpace: 24px;
+.HumanResourceReport {
+  width: 100%;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid @borderColor;
+  border-radius: 5px;
+  :global {
+    // border color
+    th.ant-table-cell {
+      padding: 8px 16px;
+      font-size: 13px;
+    }
+  }
+
+  :global {
+    .ant-radio-group {
+      overflow: hidden;
+      border: 1px solid #d6dce0;
+      border-radius: 6px;
+    }
+    .ant-radio-button-wrapper:not(:first-child)::before {
+      display: none;
+    }
+    .ant-radio-button-wrapper {
+      height: 35px;
+      line-height: 35px;
+      border: none;
+      span {
+        color: #6c717a;
+        font-size: 13px;
+      }
+    }
+    .ant-radio-group-solid
+      .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+      background-color: #2c6df9;
+      border-radius: 5px;
+      span {
+        color: #fff;
+      }
+    }
+  }
+}
