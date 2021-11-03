@@ -82,9 +82,9 @@ class Divisions extends PureComponent {
   };
 
   onSubmit = async (values) => {
-    const { dispatch, info } = this.props;
+    const { dispatch, info, reId } = this.props;
     const {
-      accountOwner,
+      // accountOwner,
       addressLine1,
       addressLine2,
       city,
@@ -130,6 +130,13 @@ class Divisions extends PureComponent {
       this.setState({
         isShown: false,
       });
+
+      dispatch({
+        type: 'customerProfile/fetchDivision',
+        payload: {
+          id: reId,
+        },
+      });
     });
   };
 
@@ -159,15 +166,17 @@ class Divisions extends PureComponent {
           </p>
         </div>
         {/* Body */}
-        <div className={styles.divisionsBody}>
-          {divisions.map((item) => {
-            return (
-              <>
+
+        {divisions.map((item) => {
+          return (
+            <>
+              <div className={styles.divisionsBody} style={{ marginBottom: '32px' }}>
                 <DivisionItem item={item} />
-              </>
-            );
-          })}
-        </div>
+              </div>
+            </>
+          );
+        })}
+
         <div className={styles.divisionFooter}>
           <p className={styles.buttonAddImport} onClick={this.showModal}>
             <PlusOutlined />

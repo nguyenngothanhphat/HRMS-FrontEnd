@@ -57,3 +57,10 @@ export async function getStateListByCountry(payload){
     data: payload
   })
 }
+
+export async function exportCustomer(payload) {
+  return request(`${BASE_URL}/api-customer/customertenant/export`, {
+    method: 'POST',
+    data: payload,
+  })
+}

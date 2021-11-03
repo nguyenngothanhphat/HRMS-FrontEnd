@@ -2,6 +2,7 @@ import { Col, Form, Modal, Row, Input, Select, Button, Popover } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
+import warnIcon from '@/assets/warnIcon.svg';
 
 @connect(
   ({
@@ -64,7 +65,7 @@ class ModalAdd extends PureComponent {
 
   // change Country
   handleChangeCountry = (id) => {
-    const { dispatch } = this.props;
+    const { dispatch, country } = this.props;
     dispatch({
       type: 'customerManagement/fetchStateByCountry',
       payload: id,
@@ -74,8 +75,20 @@ class ModalAdd extends PureComponent {
     });
   };
 
+  handleSubmit = (values) => {
+    const { handleAddNew, country } = this.props;
+    const nameCountry = country?.find((item) => item._id === values.country);
+
+    handleAddNew(values, nameCountry);
+  };
+
   render() {
-    const content = <p>Customer ID is auto-generated</p>;
+    const content = (
+      <p style={{ marginBottom: '0', color: '#fff' }}>Customer ID is auto-generated</p>
+    );
+    const contentStatus = (
+      <p style={{ marginBottom: '0', color: '#fff' }}>Status is auto-generated</p>
+    );
     const { isCountryChosen } = this.state;
     const {
       isShown,
@@ -140,7 +153,7 @@ class ModalAdd extends PureComponent {
             initialValues={{ customerID, status: 'Engaging', accountOwner }}
             onFinish={(values) => {
               this.refForm.current.resetFields();
-              handleAddNew(values);
+              this.handleSubmit(values);
             }}
           >
             {/* Basic Customer Detail */}
@@ -152,22 +165,41 @@ class ModalAdd extends PureComponent {
                 <Col span={12}>
                   <Form.Item
                     // loading={loadingCustomerID}
-                    label={() => (
+                    label={
                       <>
-                        <p>Customer ID</p>
+                        <p style={{ marginBottom: '0', marginRight: '10px' }}>Customer ID</p>
                         <Popover placement="right" content={content}>
-                          <span>i</span>
+                          <img src={warnIcon} alt="warning" className={styles.addNewPopover} />
                         </Popover>
                       </>
-                    )}
+                    }
                     name="customerID"
                   >
-                    <Input disabled placeholder="Enter Customer ID" />
+                    <Input style={{ color: '#000' }} disabled placeholder="Enter Customer ID" />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Status" name="status">
-                    <Select disabled loading={loadingTagList} placeholder="Enter status">
+                  <Form.Item
+                    label={
+                      <>
+                        <p style={{ marginBottom: '0', marginRight: '10px' }}>Status</p>
+                        <Popover
+                          className={styles.addNewPopover}
+                          placement="right"
+                          content={contentStatus}
+                        >
+                          <img src={warnIcon} alt="warning" />
+                        </Popover>
+                      </>
+                    }
+                    name="status"
+                  >
+                    <Select
+                      className={styles.selectGroup}
+                      disabled
+                      loading={loadingTagList}
+                      placeholder="Enter status"
+                    >
                       {listStatus}
                     </Select>
                   </Form.Item>
@@ -213,7 +245,9 @@ class ModalAdd extends PureComponent {
                     >
                       {country.map((countryItem) => {
                         return (
-                          <Select.Option key={countryItem._id}>{countryItem.name}</Select.Option>
+                          <Select.Option value={countryItem.id} key={countryItem._id}>
+                            {countryItem.name}
+                          </Select.Option>
                         );
                       })}
                     </Select>

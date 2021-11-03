@@ -39,6 +39,7 @@ class Documents extends PureComponent {
       fileName: '',
       link: '',
       viewDocumentModal: false,
+      file: null,
     };
   }
 
@@ -93,10 +94,24 @@ class Documents extends PureComponent {
     }
   };
 
+  handleRemove = (file) => {
+    const { uploadedAttachments } = this.state;
+    let uploadedAttachmentsTemp = JSON.parse(JSON.stringify(uploadedAttachments));
+    uploadedAttachmentsTemp = uploadedAttachmentsTemp.filter(
+      (att) => att.name !== file.name && att.size !== file.size,
+    );
+    this.setState({
+      uploadedAttachments: uploadedAttachmentsTemp,
+    });
+  };
+
   handleUpload = (file) => {
     const { dispatch } = this.props;
     const formData = new FormData();
     formData.append('uri', file);
+    this.setState({
+      file,
+    });
 
     dispatch({
       type: 'customerProfile/uploadDoc',
@@ -188,6 +203,28 @@ class Documents extends PureComponent {
           id: reId,
         },
       });
+      const { visible } = this.state;
+      this.setState({
+        visible: !visible,
+      });
+      window.location.reload(true);
+    });
+  };
+
+  removeDoc = (id) => {
+    const { dispatch, reId } = this.props;
+    dispatch({
+      type: 'customerProfile/removeDoc',
+      payload: {
+        id,
+      },
+    }).then(() => {
+      dispatch({
+        type: 'customerProfile/fetchDocuments',
+        payload: {
+          id: reId,
+        },
+      });
     });
   };
 
@@ -247,7 +284,10 @@ class Documents extends PureComponent {
                 <img src={eye} alt="adf" />
               </span>
 
-              <span style={{ cursor: 'pointer', display: 'inline-block', marginLeft: '8px' }}>
+              <span
+                onClick={() => this.removeDoc(document.id)}
+                style={{ cursor: 'pointer', display: 'inline-block', marginLeft: '8px' }}
+              >
                 <img src={bin} alt="dfa" />
               </span>
             </div>

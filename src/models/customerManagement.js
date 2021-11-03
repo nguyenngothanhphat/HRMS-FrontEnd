@@ -1,6 +1,6 @@
 import { notification } from "antd";
 import { getCurrentCompany, getCurrentTenant } from "@/utils/authority";
-import {getCustomerList, addCustomer, genCustomerID, getTagList, getCountryList, getStateListByCountry, getCustomerFilterList } from '../services/customerManagement';
+import {getCustomerList, addCustomer, genCustomerID, getTagList, getCountryList, getStateListByCountry, getCustomerFilterList, exportCustomer } from '../services/customerManagement';
 import { dialog } from "@/utils/utils";
 
 const customerManagement = {
@@ -47,7 +47,8 @@ const customerManagement = {
 
       *addNewCustomer({payload}, {call}){
         try {
-          const response = yield call(addCustomer, payload);
+          const newPayload = JSON.stringify(payload)
+          const response = yield call(addCustomer, newPayload);
           const {statusCode, message} = response;
           if(statusCode !== 200) throw response;
           notification.success({message});
@@ -101,6 +102,22 @@ const customerManagement = {
           dialog()
         }
       },
+
+      *exportReport(_, {call}){
+        let response = {};
+        try {
+          response = yield call(exportCustomer, {
+            tenantId: getCurrentTenant(),
+            company: getCurrentCompany(),
+          })
+          const { statusCode } = response;
+          if(statusCode!==200) throw response;
+
+        } catch (error) {
+          dialog(error);
+        }
+        return response;
+      }
 
     },
     reducers: {

@@ -91,7 +91,7 @@ class TableContainer extends PureComponent {
   };
 
   // add new Customer
-  handleAddNew = (values) => {
+  handleAddNew = (values, countryName) => {
     const { dispatch, _id } = this.props;
     const {
       customerID,
@@ -111,26 +111,25 @@ class TableContainer extends PureComponent {
       comments,
     } = values;
     const newTags = tags.map((item) => parseInt(item, 10));
-    console.log(this.refForm.current);
     dispatch({
       type: 'customerManagement/addNewCustomer',
       payload: {
         tenantId: getCurrentTenant(),
         customerId: customerID,
         status,
-        legalName,
-        dba,
-        contactPhone: phone,
+        legalName: legalName || '',
+        dba: dba || '',
+        contactPhone: phone || '',
         contactEmail: email,
-        addressLine1,
-        addressLine2,
-        city,
-        state,
-        country,
-        postalCode: zipCode,
-        accountOwner: _id,
-        tagIds: newTags,
-        comments: comments || '',
+        addressLine1: addressLine1 || '',
+        addressLine2: addressLine2 || '',
+        city: city || '',
+        state: state || "''",
+        country: countryName.name || '',
+        postalCode: zipCode || '',
+        accountOwner: _id || '',
+        tagIds: newTags || [],
+        comment: comments || '',
         website: website || '',
       },
     }).then(() => {

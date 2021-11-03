@@ -1,5 +1,20 @@
 import { notification } from 'antd';
-import getCustomerInfo, { getDivisions, addDivision, updateDivision, getDocumentType, filterDocument, addDocument, uploadDocument, getDocument, getAuditTrail, getNotes, addNotes, getDivisionsId, getTagList } from '../services/customerProfile';
+import getCustomerInfo, { 
+    getDivisions, 
+    addDivision, 
+    updateDivision, 
+    getDocumentType, 
+    filterDocument, 
+    addDocument, 
+    uploadDocument, 
+    getDocument, 
+    getAuditTrail, 
+    getNotes, 
+    addNotes, 
+    getDivisionsId, 
+    getTagList,
+    removeDocument,
+ } from '../services/customerProfile';
 import { dialog } from '@/utils/utils';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
@@ -170,6 +185,20 @@ const customerProfile = {
                 const {statusCode, data} = response;
                 if(statusCode !== 200) throw response;
                 yield put({type: 'save', payload: {documents: data}})
+            } catch (error) {
+                dialog(error);
+            }
+        },
+
+        *removeDoc({payload}, {call}) {
+            try {
+                const response = yield call(removeDocument, {
+                    tenantId: getCurrentTenant(),
+                    ...payload,
+                });
+                const {statusCode} = response;
+                if(statusCode !== 200) throw response;
+                notification.success({message: "Remove successfully"})
             } catch (error) {
                 dialog(error);
             }
