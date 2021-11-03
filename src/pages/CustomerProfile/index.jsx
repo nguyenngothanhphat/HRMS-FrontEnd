@@ -54,7 +54,7 @@ class CustomerProfile extends Component {
     dispatch({
       type: 'customerProfile/fetchTagList',
       payload: {
-        id: reId,
+        customerId: reId,
       },
     });
 
@@ -90,7 +90,7 @@ class CustomerProfile extends Component {
       {
         id: 1,
         name: 'Contact Info',
-        component: <ContactInfo info={info} />,
+        component: <ContactInfo />,
         link: 'contact-info',
       },
       {

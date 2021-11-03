@@ -1,6 +1,6 @@
 import { notification } from "antd";
 import { getCurrentCompany, getCurrentTenant } from "@/utils/authority";
-import {getCustomerList, addCustomer, genCustomerID, getTagList, getCountryList, getStateListByCountry } from '../services/customerManagement';
+import {getCustomerList, addCustomer, genCustomerID, getTagList, getCountryList, getStateListByCountry, getCustomerFilterList } from '../services/customerManagement';
 import { dialog } from "@/utils/utils";
 
 const customerManagement = {
@@ -24,6 +24,19 @@ const customerManagement = {
       *fetchCustomerList(_, {call, put}){
         try {
           const response = yield call(getCustomerList, {tenantId: getCurrentTenant(), company: getCurrentCompany()});
+          const {statusCode, data} = response;
+          if(statusCode !== 200) throw response;
+          yield put({type: 'save', payload: {listCustomer: data}})
+        } catch (error) {
+          dialog(error);
+        }
+      },
+
+      *filterListCustomer({payload}, {call, put}) {
+        try {
+          const response = yield call(getCustomerFilterList, {
+            ...payload
+          });
           const {statusCode, data} = response;
           if(statusCode !== 200) throw response;
           yield put({type: 'save', payload: {listCustomer: data}})

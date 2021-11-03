@@ -3,6 +3,11 @@ import React, { PureComponent } from 'react';
 import style from './index.less';
 
 class MenuFilter extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.refForm = React.createRef();
+  }
+
   handleChange = () => {
     console.log('acacadfadf');
   };
@@ -16,7 +21,14 @@ class MenuFilter extends PureComponent {
     const { onSubmit = () => {} } = this.props;
     return (
       <div className={style.menuFilter} style={{ padding: '20px', width: '320px' }}>
-        <Form layout="vertical" name="filter" onFinish={(values) => onSubmit(values)}>
+        <Form
+          ref={this.refForm}
+          layout="vertical"
+          name="filter"
+          onFinish={(values) => {
+            onSubmit(values);
+          }}
+        >
           <Form.Item label="By Status" name="byStatus">
             <Select
               // mode="multiple"

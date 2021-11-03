@@ -106,9 +106,12 @@ class ModalAdd extends PureComponent {
             <div className={styles.btnForm}>
               <Button
                 className={styles.btnCancel}
+                htmlType="reset"
+                key="reset"
+                form="formAdd"
                 onClick={() => {
                   onCloseModal();
-                  // this.refForm.current.resetFields();
+                  this.refForm.current.resetFields();
                 }}
               >
                 Cancel
@@ -132,10 +135,13 @@ class ModalAdd extends PureComponent {
         >
           <Form
             name="formAdd"
-            ref={ref}
+            ref={this.refForm}
             layout="vertical"
             initialValues={{ customerID, status: 'Engaging', accountOwner }}
-            onFinish={(values) => handleAddNew(values)}
+            onFinish={(values) => {
+              this.refForm.current.resetFields();
+              handleAddNew(values);
+            }}
           >
             {/* Basic Customer Detail */}
             <div className={styles.basicInfoForm}>
@@ -145,7 +151,7 @@ class ModalAdd extends PureComponent {
               <Row gutter={48}>
                 <Col span={12}>
                   <Form.Item
-                    loading={loadingCustomerID}
+                    // loading={loadingCustomerID}
                     label={() => (
                       <>
                         <p>Customer ID</p>
@@ -156,12 +162,12 @@ class ModalAdd extends PureComponent {
                     )}
                     name="customerID"
                   >
-                    <Input placeholder="Enter Customer ID" />
+                    <Input disabled placeholder="Enter Customer ID" />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
                   <Form.Item label="Status" name="status">
-                    <Select loading={loadingTagList} placeholder="Enter status">
+                    <Select disabled loading={loadingTagList} placeholder="Enter status">
                       {listStatus}
                     </Select>
                   </Form.Item>
@@ -207,7 +213,7 @@ class ModalAdd extends PureComponent {
                     >
                       {country.map((countryItem) => {
                         return (
-                          <Select.Option key={countryItem.name}>{countryItem.name}</Select.Option>
+                          <Select.Option key={countryItem._id}>{countryItem.name}</Select.Option>
                         );
                       })}
                     </Select>

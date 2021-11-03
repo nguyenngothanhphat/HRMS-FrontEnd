@@ -38,6 +38,11 @@ class Customer extends PureComponent {
             onChange={(key) => {
               history.push(`/customer-management/${key}`);
             }}
+            tabBarExtraContent={
+              <>
+                <p>Export</p>
+              </>
+            }
           >
             <TabPane
               tab={formatMessage({ id: 'page.customermanagement.customerTab' })}

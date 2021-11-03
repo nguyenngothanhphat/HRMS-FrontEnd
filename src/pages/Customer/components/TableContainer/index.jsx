@@ -13,10 +13,11 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 @connect(
   ({
     loading,
-    user: { currentUser: { employee: { _id = '' } = {} } = {} } = {},
+    user: { companiesOfUser = [], currentUser: { employee: { _id = '' } = {} } = {} } = {},
     customerManagement: { listCustomer = [] } = {},
   }) => ({
     listCustomer,
+    companiesOfUser,
     _id,
     loadingCustomer: loading.effects['customerManagement/fetchCustomerList'],
   }),
@@ -29,6 +30,7 @@ class TableContainer extends PureComponent {
       visible: false,
       isShown: false,
     };
+    this.refForm = React.createRef();
   }
 
   componentDidMount() {
@@ -38,24 +40,20 @@ class TableContainer extends PureComponent {
     });
   }
 
-  // componentDidUpdate(props) {
-  //   const { listCustomer, dispatch } = this.props;
-  //   if (props.listCustomer.length !== listCustomer.length) {
-  //     dispatch({
-  //       type: 'customerManagement/fetchCustomerList',
-  //     });
-  //   }
-  // }
-
   // submit filter
   handleSubmit = (values) => {
-    const { dispatch } = this.props;
+    const { dispatch, companiesOfUser } = this.props;
+    const companyID = getCurrentCompany();
+    const company = [...companiesOfUser];
+    const i = company.find((item) => item._id === companyID);
+
     dispatch({
       type: 'customerManagement/filterListCustomer',
       payload: {
         status: values.byStatus,
         tenantId: getCurrentTenant(),
         company: getCurrentCompany(),
+        companyName: i.name,
       },
     });
   };
@@ -65,10 +63,6 @@ class TableContainer extends PureComponent {
     const { visible } = this.state;
     this.setState({
       visible: !visible,
-    });
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'customerManagement/fetchCustomerList',
     });
   };
 
@@ -83,7 +77,6 @@ class TableContainer extends PureComponent {
   // show modal
   showModal = () => {
     const { isShown } = this.state;
-    // form.resetFields();
     this.setState({
       isShown: !isShown,
     });
@@ -93,13 +86,7 @@ class TableContainer extends PureComponent {
   onCloseModal = () => {
     const { isShown } = this.state;
     this.setState({
-      // reset fill
       isShown: !isShown,
-    });
-    // this.refForm.current.resetFields();
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'customerManagement/fetchCustomerList',
     });
   };
 
@@ -124,7 +111,7 @@ class TableContainer extends PureComponent {
       comments,
     } = values;
     const newTags = tags.map((item) => parseInt(item, 10));
-
+    console.log(this.refForm.current);
     dispatch({
       type: 'customerManagement/addNewCustomer',
       payload: {
@@ -150,6 +137,11 @@ class TableContainer extends PureComponent {
       dispatch({
         type: 'customerManagement/fetchCustomerList',
       });
+      const { isShown } = this.state;
+      // form.resetFields();
+      this.setState({
+        isShown: !isShown,
+      });
     });
   };
 
@@ -169,7 +161,12 @@ class TableContainer extends PureComponent {
       <>
         <MenuFilter onSubmit={this.handleSubmit} listStatus={listStatus} />
         <div className={styles.btnForm}>
-          <Button className={styles.btnClose} onClick={this.handleClose}>
+          <Button
+            className={styles.btnClose}
+            htmlType="reset"
+            form="filter"
+            onClick={this.handleClose}
+          >
             Close
           </Button>
           <Button className={styles.btnApply} form="filter" htmlType="submit" key="submit">
@@ -238,7 +235,6 @@ class TableContainer extends PureComponent {
                     listStatus={listStatus}
                     handleAddNew={this.handleAddNew}
                     onCloseModal={this.onCloseModal}
-                    ref={this.refForm}
                   />
                   {/* <TabFilter /> */}
                 </Layout>
