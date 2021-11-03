@@ -31,6 +31,7 @@ const customerProfile = {
               const {statusCode, data} = response;
               if(statusCode !== 200) throw response;
               yield put({type: 'save', payload: {info: data}})
+              yield put({type: 'fetchTagList', payload:{customerId: payload.id}})
             } catch (error) {
                 dialog(error);
             }

@@ -139,7 +139,6 @@ class Documents extends PureComponent {
 
   showModal = () => {
     const { visible } = this.state;
-    const { dispatch } = this.props;
     this.setState({
       visible: !visible,
     });
@@ -182,15 +181,14 @@ class Documents extends PureComponent {
         owner: id,
         ownerName: firstName,
       },
+    }).then(() => {
+      dispatch({
+        type: 'customerProfile/fetchDocuments',
+        payload: {
+          id: reId,
+        },
+      });
     });
-    // .then(() => {
-    //   dispatch({
-    //     type: 'customerProfile/fetchDocuments',
-    //     payload: {
-    //       id: reId,
-    //     },
-    //   });
-    // });
   };
 
   setViewDocumentModal = (value) => {
@@ -223,7 +221,7 @@ class Documents extends PureComponent {
       },
       {
         title: 'Uploaded By',
-        dataIndex: 'uploadedBy',
+        dataIndex: 'ownerName',
         width: '10%',
         align: 'center',
       },
@@ -243,7 +241,6 @@ class Documents extends PureComponent {
         width: '10%',
         align: 'center',
         render: (document) => {
-          console.log(document);
           return (
             <div className={styles.action}>
               <span style={{ cursor: 'pointer' }} onClick={() => this.viewDocument(document)}>

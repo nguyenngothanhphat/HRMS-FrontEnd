@@ -51,13 +51,6 @@ class CustomerProfile extends Component {
       },
     });
 
-    dispatch({
-      type: 'customerProfile/fetchTagList',
-      payload: {
-        customerId: reId,
-      },
-    });
-
     // this.fetchTab(selectedItem);
   };
 
