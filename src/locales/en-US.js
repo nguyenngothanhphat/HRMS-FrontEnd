@@ -26,6 +26,7 @@ import usersManagementPage from './en-US/usersManagementPage';
 import documentsManagementPage from './en-US/documentsManagementPage';
 import employeesManagementPage from './en-US/employeesManagementPage';
 import companiesManagementPage from './en-US/companiesManagementPage';
+import customerManagementPage from './en-US/customer';
 import adminSetting from './en-US/adminSetting';
 import footer from './en-US/footer';
 
@@ -64,6 +65,7 @@ export default {
   ...documentsManagementPage,
   ...employeesManagementPage,
   ...companiesManagementPage,
+  ...customerManagementPage,
   ...onBoardingCustomFields,
   ...adminSetting,
   ...footer,
