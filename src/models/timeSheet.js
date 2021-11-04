@@ -11,6 +11,8 @@ import {
 
   // complex view
   getMyTimesheetByType,
+  getImportData,
+  importTimesheet,
 } from '@/services/timeSheet';
 import { dialog } from '@/utils/utils';
 import { convertMsToTime, isTheSameDay } from '@/utils/timeSheet';
@@ -123,25 +125,6 @@ const TimeSheet = {
       return response;
     },
 
-    *fetchImportDataByDateEffect({ payload }, { call, put }) {
-      const response = {};
-      try {
-        const res = yield call(getMyTimesheetByType, { ...payload, tenantId });
-        const { code, data = [] } = res;
-        if (code !== 200) throw res;
-        yield put({
-          type: 'save',
-          payload: {
-            timesheetDataImporting: data,
-          },
-        });
-      } catch (errors) {
-        dialog(errors);
-        return [];
-      }
-      return response;
-    },
-
     // update/edit
     *updateActivityEffect({ payload, date }, { call, put }) {
       let response = {};
@@ -230,6 +213,48 @@ const TimeSheet = {
       }
       return response;
     },
+    // import
+    *fetchImportData({ payload }, { call, put }) {
+      const response = {};
+      try {
+        const res = yield call(getImportData, { ...payload, tenantId });
+        const { code, data = [] } = res;
+        if (code !== 200) throw res;
+
+        yield put({
+          type: 'save',
+          payload: {
+            timesheetDataImporting: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+
+    *importTimesheet({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(importTimesheet, { ...payload, tenantId });
+        const { code, msg = '', data = {}, errors = [] } = response;
+        if (code !== 200) {
+          notification.error({ message: errors[0].msg });
+          return [];
+        }
+        notification.success({ message: msg });
+
+        yield put({
+          type: 'save',
+          payload: {},
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
 
     // others
     *fetchEmployeeList({ payload }, { call, put }) {
@@ -254,6 +279,12 @@ const TimeSheet = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    clearImportModalData(state) {
+      return {
+        ...state,
+        importingIds: [],
       };
     },
     saveImportingIds(state, action) {

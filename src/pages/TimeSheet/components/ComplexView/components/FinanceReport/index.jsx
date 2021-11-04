@@ -7,110 +7,28 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import ViewChange from './components/ViewChange';
 import WeeklyTable from './components/WeeklyTable';
+import MonthlyTable from './components/MonthlyTable';
 import styles from './index.less';
 
 const mockData = [
   {
     id: 1,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
+    project: 'Cisco',
+    type: 'Proof of Concept',
+    resources: [],
+    totalDays: '20 Days',
     totalHours: '160 hours',
   },
   {
     id: 2,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 3,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 4,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 5,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 6,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 7,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 8,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 9,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 10,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 11,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
+    project: 'Cameron',
+    type: 'Fixed Bid',
+    resources: [],
+    totalDays: '20 Days',
     totalHours: '160 hours',
   },
 ];
-const HumanResourceReport = (props) => {
+const FinanceReport = (props) => {
   // weekly
   const [startDateWeek, setStartDateWeek] = useState('');
   const [endDateWeek, setEndDateWeek] = useState('');
@@ -122,7 +40,8 @@ const HumanResourceReport = (props) => {
 
   // others
   const [selectedView, setSelectedView] = useState(VIEW_TYPE.W); // D: daily, W: weekly, M: monthly
-  const [selectedEmployees, setSelectedEmployees] = useState([]); // D: daily, W: weekly, M: monthly
+  const [selectedProjects, setSelectedProjects] = useState([]);
+
   const { dispatch, employee: { _id: employeeId = '' } = {} } = props;
 
   // FUNCTION AREA
@@ -242,19 +161,19 @@ const HumanResourceReport = (props) => {
             startDate={startDateWeek}
             endDate={endDateWeek}
             data={mockData}
-            selectedEmployees={selectedEmployees}
-            setSelectedEmployees={setSelectedEmployees}
+            selectedProjects={selectedProjects}
+            setSelectedProjects={setSelectedProjects}
           />
         );
       case VIEW_TYPE.M:
         return (
-          <WeeklyTable
+          <MonthlyTable
             startDate={startDateMonth}
             endDate={endDateMonth}
             weeksOfMonth={weeksOfMonth}
-            data={mockData}
-            selectedEmployees={selectedEmployees}
-            setSelectedEmployees={setSelectedEmployees}
+            data={[]}
+            selectedProjects={selectedProjects}
+            setSelectedProjects={setSelectedProjects}
           />
         );
       default:
@@ -263,13 +182,13 @@ const HumanResourceReport = (props) => {
   };
 
   const renderFooter = () => {
-    if (selectedEmployees.length === 0) return null;
-    return <Footer selectedEmployees={selectedEmployees} />;
+    if (selectedProjects.length === 0) return null;
+    return <Footer selectedProjects={selectedProjects} />;
   };
 
   // MAIN AREA
   return (
-    <div className={styles.HumanResourceReport}>
+    <div className={styles.FinanceReport}>
       {renderHeader()}
       {renderTable()}
       {renderFooter()}
@@ -279,4 +198,4 @@ const HumanResourceReport = (props) => {
 
 export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({
   employee,
-}))(HumanResourceReport);
+}))(FinanceReport);

@@ -6,6 +6,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import ActionModal from '@/pages/TimeSheet/components/ActionModal';
 import ManagerReport from './components/ManagerReport';
 import HumanResourceReport from './components/HumanResourceReport';
+import FinanceReport from './components/FinanceReport';
 import MyTimeSheet from './components/MyTimeSheet';
 import Settings from './components/Settings';
 import styles from './index.less';
@@ -50,7 +51,8 @@ const ComplexView = (props) => {
           {/* {viewManagerTimesheet && ( */}
           <TabPane tab="Reports" key="reports">
             {/* <ManagerReport /> */}
-            <HumanResourceReport />
+            {/* <HumanResourceReport /> */}
+            <FinanceReport />
           </TabPane>
           {/* )} */}
           {/* {viewSettingTimesheet && ( */}

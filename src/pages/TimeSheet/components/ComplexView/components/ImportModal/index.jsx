@@ -2,11 +2,11 @@ import { Button, Modal } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { dateFormatAPI } from '@/utils/timeSheet';
+import { getCurrentCompany } from '@/utils/authority';
 import DateSwitcher from './components/DateSwitcher';
 import TaskTable from './components/TaskTable';
 import styles from './index.less';
-import { getCurrentCompany } from '@/utils/authority';
-import { dateFormatAPI, VIEW_TYPE } from '@/utils/timeSheet';
 
 const dateFormat = 'MM/DD/YYYY';
 
@@ -20,6 +20,8 @@ const ImportModal = (props) => {
     timesheetDataImporting = [],
     importingIds = [],
     loadingFetchTasks = false,
+    loadingImportTimesheet = false,
+    date: importDate = '',
   } = props;
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -77,22 +79,21 @@ const ImportModal = (props) => {
     return () => {};
   }, []);
 
-  const fetchTimesheetBySelectedDate = () => {
+  const fetchImportData = () => {
     dispatch({
-      type: 'timeSheet/fetchImportDataByDateEffect',
+      type: 'timeSheet/fetchImportData',
       payload: {
         companyId: getCurrentCompany(),
         employeeId,
         fromDate: moment(selectedDate).format(dateFormatAPI),
         toDate: moment(selectedDate).format(dateFormatAPI),
-        viewType: VIEW_TYPE.D,
       },
     });
   };
 
   useEffect(() => {
     if (visible) {
-      fetchTimesheetBySelectedDate();
+      fetchImportData();
     }
   }, [selectedDate, visible]);
 
@@ -109,16 +110,35 @@ const ImportModal = (props) => {
   };
 
   const handleCancel = () => {
+    dispatch({ type: 'timeSheet/clearImportModalData' });
     onClose();
   };
 
-  const handleFinish = () => {
-    // finish
+  const onImport = () => {
+    let ids = [];
+    importingIds.forEach((item) => {
+      ids = [...ids, ...item.selectedIds];
+    });
+    return dispatch({
+      type: 'timeSheet/importTimesheet',
+      payload: {
+        companyId: getCurrentCompany(),
+        employeeId,
+        date: moment(importDate).locale('en').format(dateFormatAPI),
+        ids,
+      },
+    });
+  };
+  const handleFinish = async () => {
+    const res = await onImport();
+    if (res.code === 200) {
+      handleCancel();
+    }
   };
 
   const renderModalContent = () => {
     const dates = enumerateDaysBetweenDates(startDate, endDate) || [];
-    const tasks = timesheetDataImporting.length > 0 ? timesheetDataImporting[0].timesheet : [];
+    const tasks = timesheetDataImporting.notAssignedTask || [];
     return (
       <div className={styles.content}>
         <DateSwitcher
@@ -130,7 +150,7 @@ const ImportModal = (props) => {
           importingIds={importingIds}
         />
         <TaskTable
-          list={tasks}
+          list={tasks.length > 0 ? tasks[0].dailyTasks : []}
           selectedDate={selectedDate}
           loading={loadingFetchTasks}
           importingIds={importingIds}
@@ -160,7 +180,12 @@ const ImportModal = (props) => {
               <Button className={styles.btnCancel} onClick={handleCancel}>
                 Cancel
               </Button>
-              <Button className={styles.btnSubmit} type="primary" onClick={handleFinish}>
+              <Button
+                className={styles.btnSubmit}
+                type="primary"
+                onClick={handleFinish}
+                loading={loadingImportTimesheet}
+              >
                 Import
               </Button>
             </div>
@@ -184,7 +209,8 @@ export default connect(
   }) => ({
     timesheetDataImporting,
     employee,
-    loadingFetchTasks: loading.effects['timeSheet/fetchImportDataByDateEffect'],
+    loadingFetchTasks: loading.effects['timeSheet/fetchImportData'],
+    loadingImportTimesheet: loading.effects['timeSheet/importTimesheet'],
     importingIds,
   }),
 )(ImportModal);

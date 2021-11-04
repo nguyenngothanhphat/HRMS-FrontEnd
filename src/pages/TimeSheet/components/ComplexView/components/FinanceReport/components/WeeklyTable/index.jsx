@@ -1,12 +1,11 @@
 import { Table } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import { employeeColor } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const WeeklyTable = (props) => {
-  const { data = [], limit = 10, selectedEmployees = [], setSelectedEmployees = () => {} } = props;
+  const { data = [], limit = 10, selectedProjects = [], setSelectedProjects = () => {} } = props;
   const [pageSelected, , setPageSelected] = useState(1);
 
   const getColorByIndex = (index) => {
@@ -16,46 +15,36 @@ const WeeklyTable = (props) => {
   const generateColumns = () => {
     const columns = [
       {
-        title: 'Employee',
-        dataIndex: 'user',
-        key: 'user',
-        render: (user, _, index) => (
-          <div className={styles.renderEmployee}>
+        title: 'Project Name',
+        dataIndex: 'project',
+        key: 'project',
+        render: (project, _, index) => (
+          <div className={styles.renderProject}>
             <div className={styles.avatar}>
-              {user.avatar ? (
-                <img src={user.avatar || MockAvatar} alt="" />
-              ) : (
-                <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
-                  <span>{user.name ? user.name.toString()?.charAt(0) : 'P'}</span>
-                </div>
-              )}
+              <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
+                <span>{project ? project.toString()?.charAt(0) : 'P'}</span>
+              </div>
             </div>
             <div className={styles.right}>
-              <span className={styles.name}>{user.name}</span>
-              <span className={styles.id}>{user.employeeId}</span>
+              <span className={styles.name}>{project}</span>
             </div>
           </div>
         ),
       },
       {
-        title: 'Department',
-        dataIndex: 'department',
-        key: 'department',
+        title: 'Type',
+        dataIndex: 'type',
+        key: 'type',
       },
       {
-        title: 'Projects',
-        dataIndex: 'project',
-        key: 'project',
+        title: 'Resources',
+        dataIndex: 'resources',
+        key: 'resources',
       },
       {
-        title: 'Working Days',
-        dataIndex: 'workingDays',
-        key: 'workingDays',
-      },
-      {
-        title: 'Leaves Taken',
-        dataIndex: 'leavesTaken',
-        key: 'leavesTaken',
+        title: 'Total Days',
+        dataIndex: 'totalDays',
+        key: 'totalDays',
       },
       {
         title: 'Total Hours',
@@ -67,11 +56,11 @@ const WeeklyTable = (props) => {
   };
 
   const onSelectChange = (values) => {
-    setSelectedEmployees(values);
+    setSelectedProjects(values);
   };
 
   const rowSelection = {
-    selectedRowKeys: selectedEmployees,
+    selectedRowKeys: selectedProjects,
     onChange: onSelectChange,
   };
 
@@ -106,7 +95,7 @@ const WeeklyTable = (props) => {
         rowSelection={rowSelection}
         rowKey={(record) => record.id}
         pagination={false}
-        scroll={selectedEmployees.length > 0 ? { y: 400 } : {}}
+        scroll={selectedProjects.length > 0 ? { y: 400 } : {}}
         // pagination={pagination}
       />
     </div>
