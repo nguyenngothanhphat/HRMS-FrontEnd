@@ -190,6 +190,21 @@ const customerProfile = {
             }
         },
 
+        *searchDocuments({payload}, {call, put}){
+            try {
+                const response = yield call(getDocument, {
+                    tenantId: getCurrentTenant(),
+                    customerId: payload.id,
+                    searchKey:  payload.searchKey
+                });
+                const {statusCode, data} = response;
+                if(statusCode !== 200) throw response;
+                yield put({type: 'save', payload: {documents: data}})
+            } catch (error) {
+                dialog(error);
+            }
+        },
+
         *removeDoc({payload}, {call}) {
             try {
                 const response = yield call(removeDocument, {

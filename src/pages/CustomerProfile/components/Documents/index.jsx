@@ -3,6 +3,7 @@ import { Popover, Input, Button, Table, Row, Col, message } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
+import { debounce } from 'lodash';
 import DocumentFilter from './components/DocumentFilter';
 import styles from './index.less';
 import cancelIcon from '../../../../assets/cancelIcon.svg';
@@ -41,6 +42,9 @@ class Documents extends PureComponent {
       viewDocumentModal: false,
       file: null,
     };
+    this.delaySearch = debounce((value) => {
+      this.handleSearch(value);
+    }, 1000);
   }
 
   componentDidMount() {
@@ -241,6 +245,17 @@ class Documents extends PureComponent {
     });
   };
 
+  handleSearch = (value) => {
+    const { dispatch, reId } = this.props;
+    dispatch({
+      type: 'customerProfile/searchDocuments',
+      payload: {
+        id: reId,
+        searchKey: value,
+      },
+    });
+  };
+
   generateColumns = () => {
     const columns = [
       {
@@ -404,7 +419,11 @@ class Documents extends PureComponent {
             </div>
             {/* Search */}
             <div className={styles.searchInp}>
-              <Input placeholder="Search by Document Type" prefix={<SearchOutlined />} />
+              <Input
+                onChange={(e) => this.delaySearch(e.target.value)}
+                placeholder="Search by Document Type"
+                prefix={<SearchOutlined />}
+              />
             </div>
           </div>
         </div>

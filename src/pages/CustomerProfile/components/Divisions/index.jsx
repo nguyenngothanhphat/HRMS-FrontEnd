@@ -27,6 +27,7 @@ class Divisions extends PureComponent {
     this.state = {
       isShown: false,
       isCountrySelected: true,
+      visible: false,
     };
   }
 
@@ -152,7 +153,7 @@ class Divisions extends PureComponent {
   };
 
   render() {
-    const { isShown, isCountrySelected } = this.state;
+    const { isShown, isCountrySelected, visible } = this.state;
     const { divisions, listTags, info, reId, divisionId, country, state } = this.props;
 
     return (

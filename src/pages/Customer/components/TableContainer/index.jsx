@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Tabs, Layout, Popover, Button, Input, Select } from 'antd';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
+import { debounce } from 'lodash';
 import styles from './index.less';
 import TableCustomers from '../TableCustomers';
 import MenuFilter from './components/MenuFilter';
@@ -31,6 +32,9 @@ class TableContainer extends PureComponent {
       isShown: false,
     };
     this.refForm = React.createRef();
+    this.delaySearch = debounce((value) => {
+      this.handleSearch(value);
+    }, 500);
   }
 
   componentDidMount() {
@@ -88,6 +92,14 @@ class TableContainer extends PureComponent {
     this.setState({
       isShown: !isShown,
     });
+  };
+
+  handleSearch = (e) => {
+    const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'customerProfile/fetch'
+    // })
+    console.log(e);
   };
 
   // add new Customer
@@ -209,6 +221,7 @@ class TableContainer extends PureComponent {
           <Input
             placeholder="Search by Company Name, ID, Account Owner"
             prefix={<SearchOutlined />}
+            onChange={(e) => this.delaySearch(e)}
           />
         </div>
       </div>
