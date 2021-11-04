@@ -8,6 +8,9 @@
         .ant-modal-close-x{
             color: #fff;
         }
+        .ant-popover-inner{
+            background-color: #000;
+        }
       }
       .ant-modal-body{
           padding: 0;
@@ -52,6 +55,23 @@
             padding: 12px 24px;
             border-radius: 25px;
             font-weight: 700;
+        }
+    }
+    .selectGroup{
+        :global{
+            .ant-select-selection-item{
+                color: #000;
+            }
+        }
+    }
+}
+div{
+    :global{
+        .ant-popover-inner{
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .ant-popover-arrow-content{
+            background-color: rgba(0, 0, 0, 0.8);
         }
     }
 }

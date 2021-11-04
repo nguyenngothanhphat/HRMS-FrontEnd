@@ -1,10 +1,12 @@
 import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage, history } from 'umi';
+import { DownloadOutlined } from '@ant-design/icons';
 import { PageContainer } from '@/layouts/layout/src';
 import Settings from './components/Settings';
 import TableContainer from './components/TableContainer';
 import style from './index.less';
+import exportToCSV from '@/utils/exportAsExcel';
 
 @connect()
 class Customer extends PureComponent {
@@ -23,6 +25,16 @@ class Customer extends PureComponent {
     // });
   }
 
+  exportFile = () => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'customerManagement/exportReport',
+    });
+  };
+
+  processData = (data) => {};
+
   render() {
     const { TabPane } = Tabs;
     const {
@@ -38,6 +50,22 @@ class Customer extends PureComponent {
             onChange={(key) => {
               history.push(`/customer-management/${key}`);
             }}
+            tabBarExtraContent={
+              <>
+                <p
+                  style={{
+                    marginBottom: '0',
+                    marginRight: '32px',
+                    color: '#ffa100',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                  }}
+                  onClick={this.exportFile}
+                >
+                  <DownloadOutlined /> Export
+                </p>
+              </>
+            }
           >
             <TabPane
               tab={formatMessage({ id: 'page.customermanagement.customerTab' })}

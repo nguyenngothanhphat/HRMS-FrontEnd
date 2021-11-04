@@ -7,12 +7,15 @@ import PDFIcon from '@/assets/pdf_icon.png';
 import ImageIcon from '@/assets/image_icon.png';
 
 class ModalAddDoc extends PureComponent {
-  // onChange = ({ file }) => {
-  //     const { status, name, originFileObj } = file;
-  //     if(status === 'done') {
+  constructor(props) {
+    super(props);
+    this.refForm = React.createRef();
+  }
 
-  //     }
-  // }
+  onAction = (file) => {
+    const { action } = this.props;
+    action(file);
+  };
 
   render() {
     const {
@@ -40,7 +43,13 @@ class ModalAddDoc extends PureComponent {
         title="Add Document"
         footer={[
           <div className={s.btnForm}>
-            <Button className={s.btnCancel} onClick={closeModal}>
+            <Button
+              className={s.btnCancel}
+              onClick={() => {
+                closeModal();
+                this.refForm.current.resetFileds();
+              }}
+            >
               Cancel
             </Button>
             <Button htmlType="submit" key="submit" form="addDoc" className={s.btnAdd}>
@@ -50,7 +59,15 @@ class ModalAddDoc extends PureComponent {
         ]}
         onCancel={closeModal}
       >
-        <Form layout="vertical" name="addDoc" onFinish={(values) => onAddDoc(values)}>
+        <Form
+          ref={this.refForm}
+          layout="vertical"
+          name="addDoc"
+          onFinish={(values) => {
+            this.refForm.current.resetFields();
+            onAddDoc(values);
+          }}
+        >
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item label="Document Type" name="documentType">
@@ -70,44 +87,46 @@ class ModalAddDoc extends PureComponent {
           <Form.Item label="Comments (Optional)" name="comments">
             <Input.TextArea rows={6} placeholder="Enter Comments" />
           </Form.Item>
-          <Upload.Dragger
-            {...propsUpload}
-            action={(file) => action(file)}
-            beforeUpload={beforeUpload}
-            onRemove={(file) => onRemove(file)}
-            openFileDialogOnClick={!(uploadedAttachments.length === 2)}
-          >
-            {fileName !== '' ? (
-              <div className={s.fileUploadedContainer}>
-                <p className={s.previewIcon}>
-                  {identifyImageOrPdf(fileName) === 1 ? (
-                    <img src={PDFIcon} alt="pdf" />
-                  ) : (
-                    <img src={ImageIcon} alt="img" />
-                  )}
-                </p>
-                <p className={s.fileName}>
-                  Uploaded: <a>{fileName}</a>
-                </p>
-                <Button>Choose an another file</Button>
-              </div>
-            ) : (
-              <div className={s.content}>
-                <div className={s.viewIconDownload}>
-                  <div className={s.viewIconDownload__circle}>
-                    <img src={upload} alt="upload" />
-                  </div>
+          <Form.Item name="file">
+            <Upload.Dragger
+              {...propsUpload}
+              action={(file) => this.onAction(file)}
+              beforeUpload={beforeUpload}
+              onRemove={(file) => onRemove(file)}
+              openFileDialogOnClick={!(uploadedAttachments.length === 2)}
+            >
+              {fileName !== '' ? (
+                <div className={s.fileUploadedContainer}>
+                  <p className={s.previewIcon}>
+                    {identifyImageOrPdf(fileName) === 1 ? (
+                      <img src={PDFIcon} alt="pdf" />
+                    ) : (
+                      <img src={ImageIcon} alt="img" />
+                    )}
+                  </p>
+                  <p className={s.fileName}>
+                    Uploaded: <a>{fileName}</a>
+                  </p>
+                  <Button>Choose an another file</Button>
                 </div>
-                <p className={s.title}>Drag and drop your file here</p>
-                <p className={s.text}>
-                  or <span className={s.browse}>browse</span> to upload a file
-                </p>
-                <p className={s.helpText}>
-                  File size should not be more than 25mb. Supported file for view: pdf &amp; jpeg{' '}
-                </p>
-              </div>
-            )}
-          </Upload.Dragger>
+              ) : (
+                <div className={s.content}>
+                  <div className={s.viewIconDownload}>
+                    <div className={s.viewIconDownload__circle}>
+                      <img src={upload} alt="upload" />
+                    </div>
+                  </div>
+                  <p className={s.title}>Drag and drop your file here</p>
+                  <p className={s.text}>
+                    or <span className={s.browse}>browse</span> to upload a file
+                  </p>
+                  <p className={s.helpText}>
+                    File size should not be more than 25mb. Supported file for view: pdf &amp; jpeg{' '}
+                  </p>
+                </div>
+              )}
+            </Upload.Dragger>
+          </Form.Item>
         </Form>
       </Modal>
     );

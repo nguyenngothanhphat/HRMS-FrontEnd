@@ -44,6 +44,13 @@ export async function filterDocument(payload) {
     })
 }
 
+export async function removeDocument(payload) {
+    return request(`${BASE_URL}/api-customer/documenttenant/remove`, {
+        type: 'POST',
+        data: payload,
+    })
+}
+
 export async function getDocumentType() {
     return request(`${BASE_URL}/api-customer/documenttenant/list-doc-types`, {
         method: 'GET',

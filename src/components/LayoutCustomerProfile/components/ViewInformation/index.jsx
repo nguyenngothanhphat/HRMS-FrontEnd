@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { Divider, Tooltip, Tag, Row, Col } from 'antd';
+import { Divider, Button, Tooltip, Tag, Row, Col } from 'antd';
 
 import { connect, Link } from 'umi';
 
 import { UserOutlined } from '@ant-design/icons';
 import plusIcon from '../../../../assets/plus-Icon.svg';
 import avtDefault from '@/assets/avtDefault.jpg';
+import linkedinIcon from '@/assets/linkedinIcon.svg';
+import websiteIcon from '@/assets/websiteIcon.svg';
 import s from '../../index.less';
 // import { getCurrentTenant } from '@/utils/authority';
 
@@ -51,7 +53,8 @@ class ViewInformation extends Component {
     //     </div>
     //   );
     return (
-      <div className={s.viewRight__infoEmployee}>
+      <div className={s.viewRight__infoEmployee} style={{ position: 'relative' }}>
+        <Button className={s.btnEdit}>Edit</Button>
         <img
           src="/assets/images/img-cover.jpg"
           alt="img-cover"
@@ -175,19 +178,15 @@ class ViewInformation extends Component {
           })}
 
           <Divider />
-          <div className={s.infoEmployee__socialMedia}>
-            <Tooltip title="LinkedIn">
+          <div style={{ textAlign: 'center' }} className={s.infoEmployee__socialMedia}>
+            <Tooltip title="LinkedIn" style={{ marginRight: '10px' }}>
               <a href="" target="_blank" rel="noopener noreferrer">
-                <img
-                  src="/assets/images/iconLinkedin.svg"
-                  alt="img-arrow"
-                  style={{ cursor: 'pointer' }}
-                />
+                <img src={linkedinIcon} alt="img-arrow" style={{ cursor: 'pointer' }} />
               </a>
             </Tooltip>
-            <Tooltip title="Email">
+            <Tooltip title="website">
               <img
-                src="/assets/images/iconMail.svg"
+                src={websiteIcon}
                 alt="img-arrow"
                 style={{ marginLeft: '5px', cursor: 'pointer' }}
               />
