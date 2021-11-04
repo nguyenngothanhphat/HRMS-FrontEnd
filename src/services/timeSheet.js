@@ -9,7 +9,7 @@ export async function getMyTimesheet(payload) {
     },
     false,
     'TIMESHEET_API',
-    true, // hasParams
+    payload, // hasParams
   );
 }
 
@@ -22,7 +22,7 @@ export async function getManagerTimesheet(payload) {
     },
     false,
     'TIMESHEET_API',
-    true, // hasParams
+    payload, // hasParams
   );
 }
 
@@ -36,7 +36,7 @@ export async function updateActivity(payload) {
     },
     false,
     'TIMESHEET_API',
-    true, // hasParams
+    payload, // hasParams
   );
 }
 
@@ -49,7 +49,7 @@ export async function removeActivity(payload) {
     },
     false,
     'TIMESHEET_API',
-    true, // hasParams
+    payload, // hasParams
   );
 }
 
@@ -65,6 +65,23 @@ export async function addActivity(payload) {
   );
 }
 
+export async function addMultipleActivity(payload) {
+  const params = {
+    companyId: payload.companyId,
+    employeeId: payload.employeeId,
+  };
+  return request(
+    `/api/timesheet/multiple`,
+    {
+      method: 'POST',
+      data: payload.data,
+    },
+    false,
+    'TIMESHEET_API',
+    params,
+  );
+}
+
 // complex view
 export async function getMyTimesheetByType(payload) {
   // date, week, month
@@ -76,7 +93,7 @@ export async function getMyTimesheetByType(payload) {
     },
     false,
     'TIMESHEET_API',
-    true, // hasParams
+    payload, // hasParams
   );
 }
 
@@ -91,7 +108,7 @@ export async function getImportData(payload) {
     },
     false,
     'TIMESHEET_API',
-    true, // hasParams
+    payload, // hasParams
   );
 }
 
@@ -105,7 +122,7 @@ export async function importTimesheet(payload) {
     },
     false,
     'TIMESHEET_API',
-    true, // hasParams
+    payload, // hasParams
   );
 }
 

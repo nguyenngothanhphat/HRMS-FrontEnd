@@ -15,7 +15,7 @@ import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
 import { dateFormatAPI, hourFormat, hourFormatAPI, TASKS } from '@/utils/timeSheet';
-import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import AddIcon from '@/assets/timeSheet/add.svg';
 import styles from './index.less';
 
@@ -77,20 +77,21 @@ const AddTaskModal = (props) => {
   };
 
   // main function
-  const addActivityEffect = (submitDate, values) => {
-    return dispatch({
-      type: 'timeSheet/addActivityEffect',
-      payload: {
-        taskName: values.taskName,
-        startTime: moment(values.startTime).format(hourFormatAPI),
-        endTime: moment(values.endTime).format(hourFormatAPI),
+  const addMultipleActivityEffect = (submitDate, tasks) => {
+    const data = tasks.map((item) => {
+      return {
+        tenantId: getCurrentTenant(),
+        taskName: item.taskName,
+        startTime: moment(item.startTime).format(hourFormatAPI),
+        endTime: moment(item.endTime).format(hourFormatAPI),
         date: moment(submitDate).locale('en').format(dateFormatAPI),
-        projectName: values.projectName,
-        notes: values.notes,
+        clientLocation: item.clientLocation,
+        projectName: item.projectName,
+        notes: item.notes,
         employeeId,
         companyId: getCurrentCompany(),
         location: getCurrentLocation(),
-        nightShift: values.nightShift,
+        nightShift: item.nightShift,
         employee: {
           employeeName: empName,
           employeeCode: empUserId,
@@ -110,22 +111,25 @@ const AddTaskModal = (props) => {
             id: managerDepartmentId,
           },
         },
+      };
+    });
+    return dispatch({
+      type: 'timeSheet/addMultipleActivityEffect',
+      payload: {
+        employeeId,
+        companyId: getCurrentCompany(),
+        data,
       },
     });
   };
 
   const handleFinish = async (values) => {
     const { date: submitDate, tasks = [] } = values;
-    const requests = tasks.map(async (task) => {
-      const res = await addActivityEffect(submitDate, task);
-      return res;
-    });
-
-    // eslint-disable-next-line compat/compat
-    return Promise.all(requests).then(() => {
+    const res = await addMultipleActivityEffect(submitDate, tasks);
+    if (res.code === 200) {
       onClose();
       refreshData();
-    });
+    }
   };
 
   const renderFormList = () => {
@@ -214,8 +218,8 @@ const AddTaskModal = (props) => {
                   <Col xs={24}>
                     <Form.Item
                       labelCol={{ span: 24 }}
-                      name={[name, 'isClientLocation']}
-                      fieldKey={[fieldKey, 'isClientLocation']}
+                      name={[name, 'clientLocation']}
+                      fieldKey={[fieldKey, 'clientLocation']}
                       valuePropName="checked"
                     >
                       <Checkbox>Client Location</Checkbox>
@@ -313,5 +317,5 @@ const AddTaskModal = (props) => {
 
 export default connect(({ loading, user: { currentUser: { employee = {} } = {} } }) => ({
   employee,
-  loadingAddTask: loading.effects['timeSheet/addActivityEffect'],
+  loadingAddTask: loading.effects['timeSheet/addMultipleActivityEffect'],
 }))(AddTaskModal);

@@ -1,22 +1,22 @@
 import { message, notification } from 'antd';
 import {
+  // update/add/remove
+  addActivity,
+  addMultipleActivity,
+  getEmployeeList,
+  getImportData,
   // fetch
   getManagerTimesheet,
   getMyTimesheet,
-  removeActivity,
-  // update/add/remove
-  addActivity,
-  updateActivity,
-  getEmployeeList,
-
   // complex view
   getMyTimesheetByType,
-  getImportData,
   importTimesheet,
+  removeActivity,
+  updateActivity,
 } from '@/services/timeSheet';
-import { dialog } from '@/utils/utils';
-import { convertMsToTime, isTheSameDay } from '@/utils/timeSheet';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { convertMsToTime, isTheSameDay } from '@/utils/timeSheet';
+import { dialog } from '@/utils/utils';
 
 const tenantId = getCurrentTenant();
 
@@ -179,6 +179,24 @@ const TimeSheet = {
             },
           });
         }
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+
+    // add
+    *addMultipleActivityEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(addMultipleActivity, payload);
+        const { code, msg = '', errors = [] } = response;
+        if (code !== 200) {
+          notification.error({ message: errors[0].msg });
+          return [];
+        }
+        notification.success({ message: msg });
       } catch (errors) {
         dialog(errors);
         return [];

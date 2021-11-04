@@ -67,7 +67,7 @@ import { getToken } from './token';
 //   })(url, options);
 // };
 
-const request = async (url, options = {}, noAuth, apiUrlName = 'BASE_API', hasParams) => {
+const request = async (url, options = {}, noAuth, apiUrlName = 'BASE_API', params) => {
   const { method = 'POST', data = {} } = options;
   const token = getToken();
 
@@ -82,7 +82,7 @@ const request = async (url, options = {}, noAuth, apiUrlName = 'BASE_API', hasPa
   const instance = axios.create({
     baseURL,
     headers,
-    params: hasParams ? data : {},
+    params,
   });
 
   instance.interceptors.response.use(
