@@ -1,7 +1,9 @@
 import { Table } from 'antd';
+import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, Link } from 'umi';
 import styles from './index.less';
+import docPDF from '@/assets/docPDF.svg';
 
 @connect(({ loading, customerProfile: { auditTrail = [] } = {} }) => ({
   auditTrail,
@@ -23,9 +25,13 @@ class AuditTrail extends PureComponent {
     const columns = [
       {
         title: 'Time',
-        dataIndex: 'time',
+        dataIndex: 'created_at',
         align: 'left',
         width: '10%',
+        render: (created_at) => {
+          const time = moment(created_at).format('MMM D, HH:mm');
+          return <p style={{ textTransform: 'capitalize' }}>{time}</p>;
+        },
       },
       {
         title: 'User',
@@ -39,9 +45,23 @@ class AuditTrail extends PureComponent {
       },
       {
         title: 'Changes',
-        dataIndex: 'changes',
+        dataIndex: 'attachmentInfo',
         width: '10%',
         align: 'left',
+        render: (attachmentInfo, doc) => {
+          return (
+            <>
+              <p>{doc?.action}</p>
+              <p>
+                <img src={docPDF} alt="doc" />
+                <span style={{ display: 'inline-block', marginLeft: '10px', color: '#2C6DF9' }}>
+                  {attachmentInfo?.name.slice(0, -4)}
+                </span>
+                .pdf
+              </p>
+            </>
+          );
+        },
       },
     ];
 

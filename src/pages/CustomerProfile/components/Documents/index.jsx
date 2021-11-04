@@ -3,6 +3,7 @@ import { Popover, Input, Button, Table, Row, Col, message } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
+import { debounce } from 'lodash';
 import DocumentFilter from './components/DocumentFilter';
 import styles from './index.less';
 import cancelIcon from '../../../../assets/cancelIcon.svg';
@@ -39,7 +40,11 @@ class Documents extends PureComponent {
       fileName: '',
       link: '',
       viewDocumentModal: false,
+      file: null,
     };
+    this.delaySearch = debounce((value) => {
+      this.handleSearch(value);
+    }, 1000);
   }
 
   componentDidMount() {
@@ -93,10 +98,24 @@ class Documents extends PureComponent {
     }
   };
 
+  handleRemove = (file) => {
+    const { uploadedAttachments } = this.state;
+    let uploadedAttachmentsTemp = JSON.parse(JSON.stringify(uploadedAttachments));
+    uploadedAttachmentsTemp = uploadedAttachmentsTemp.filter(
+      (att) => att.name !== file.name && att.size !== file.size,
+    );
+    this.setState({
+      uploadedAttachments: uploadedAttachmentsTemp,
+    });
+  };
+
   handleUpload = (file) => {
     const { dispatch } = this.props;
     const formData = new FormData();
     formData.append('uri', file);
+    this.setState({
+      file,
+    });
 
     dispatch({
       type: 'customerProfile/uploadDoc',
@@ -139,7 +158,6 @@ class Documents extends PureComponent {
 
   showModal = () => {
     const { visible } = this.state;
-    const { dispatch } = this.props;
     this.setState({
       visible: !visible,
     });
@@ -182,15 +200,36 @@ class Documents extends PureComponent {
         owner: id,
         ownerName: firstName,
       },
+    }).then(() => {
+      dispatch({
+        type: 'customerProfile/fetchDocuments',
+        payload: {
+          id: reId,
+        },
+      });
+      const { visible } = this.state;
+      this.setState({
+        visible: !visible,
+      });
+      window.location.reload(true);
     });
-    // .then(() => {
-    //   dispatch({
-    //     type: 'customerProfile/fetchDocuments',
-    //     payload: {
-    //       id: reId,
-    //     },
-    //   });
-    // });
+  };
+
+  removeDoc = (id) => {
+    const { dispatch, reId } = this.props;
+    dispatch({
+      type: 'customerProfile/removeDoc',
+      payload: {
+        id,
+      },
+    }).then(() => {
+      dispatch({
+        type: 'customerProfile/fetchDocuments',
+        payload: {
+          id: reId,
+        },
+      });
+    });
   };
 
   setViewDocumentModal = (value) => {
@@ -203,6 +242,17 @@ class Documents extends PureComponent {
     this.setViewDocumentModal(true);
     this.setState({
       link: doc.attachmentInfo.url,
+    });
+  };
+
+  handleSearch = (value) => {
+    const { dispatch, reId } = this.props;
+    dispatch({
+      type: 'customerProfile/searchDocuments',
+      payload: {
+        id: reId,
+        searchKey: value,
+      },
     });
   };
 
@@ -223,7 +273,7 @@ class Documents extends PureComponent {
       },
       {
         title: 'Uploaded By',
-        dataIndex: 'uploadedBy',
+        dataIndex: 'ownerName',
         width: '10%',
         align: 'center',
       },
@@ -243,14 +293,16 @@ class Documents extends PureComponent {
         width: '10%',
         align: 'center',
         render: (document) => {
-          console.log(document);
           return (
             <div className={styles.action}>
               <span style={{ cursor: 'pointer' }} onClick={() => this.viewDocument(document)}>
                 <img src={eye} alt="adf" />
               </span>
 
-              <span style={{ cursor: 'pointer', display: 'inline-block', marginLeft: '8px' }}>
+              <span
+                onClick={() => this.removeDoc(document.id)}
+                style={{ cursor: 'pointer', display: 'inline-block', marginLeft: '8px' }}
+              >
                 <img src={bin} alt="dfa" />
               </span>
             </div>
@@ -367,7 +419,11 @@ class Documents extends PureComponent {
             </div>
             {/* Search */}
             <div className={styles.searchInp}>
-              <Input placeholder="Search by Document Type" prefix={<SearchOutlined />} />
+              <Input
+                onChange={(e) => this.delaySearch(e.target.value)}
+                placeholder="Search by Document Type"
+                prefix={<SearchOutlined />}
+              />
             </div>
           </div>
         </div>
