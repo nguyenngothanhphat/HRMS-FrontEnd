@@ -1,15 +1,46 @@
-import { Table } from 'antd';
+import { Avatar, Table, Tooltip } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import { employeeColor } from '@/utils/timeSheet';
+import ProjectDetailModal from '../../../ProjectDetailModal';
+import SampleAvatar1 from '@/assets/dashboard/sampleAvatar1.png';
+import SampleAvatar2 from '@/assets/dashboard/sampleAvatar2.png';
+import SampleAvatar3 from '@/assets/dashboard/sampleAvatar3.png';
 import styles from './index.less';
+
+const members = [
+  {
+    name: 'Lewis',
+    avatar: SampleAvatar1,
+  },
+  {
+    name: 'Trung',
+    avatar: SampleAvatar2,
+  },
+  {
+    name: 'Anh',
+    avatar: SampleAvatar3,
+  },
+];
 
 const WeeklyTable = (props) => {
   const { data = [], limit = 10, selectedProjects = [], setSelectedProjects = () => {} } = props;
-  const [pageSelected, , setPageSelected] = useState(1);
+  const [pageSelected, setPageSelected] = useState(1);
+  const [projectDetailModalVisible, setProjectDetailModalVisible] = useState(false);
+  const [handlingProject, setHandlingProject] = useState('');
 
   const getColorByIndex = (index) => {
     return employeeColor[index % employeeColor.length];
+  };
+
+  const renderTooltipTitle = (list) => {
+    return (
+      <div>
+        {list.map((member) => (
+          <span style={{ display: 'block' }}>{member.name}</span>
+        ))}
+      </div>
+    );
   };
 
   const generateColumns = () => {
@@ -19,7 +50,13 @@ const WeeklyTable = (props) => {
         dataIndex: 'project',
         key: 'project',
         render: (project, _, index) => (
-          <div className={styles.renderProject}>
+          <div
+            className={styles.renderProject}
+            onClick={() => {
+              setProjectDetailModalVisible(true);
+              setHandlingProject(project);
+            }}
+          >
             <div className={styles.avatar}>
               <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
                 <span>{project ? project.toString()?.charAt(0) : 'P'}</span>
@@ -40,6 +77,25 @@ const WeeklyTable = (props) => {
         title: 'Resources',
         dataIndex: 'resources',
         key: 'resources',
+        render: () => {
+          return (
+            <Tooltip
+              title={renderTooltipTitle(members)}
+              placement="rightTop"
+              getPopupContainer={(trigger) => {
+                return trigger;
+              }}
+            >
+              <div className={styles.taskMembers}>
+                <Avatar.Group maxCount={4}>
+                  {members.map((member) => {
+                    return <Avatar size="small" src={member.avatar} />;
+                  })}
+                </Avatar.Group>
+              </div>
+            </Tooltip>
+          );
+        },
       },
       {
         title: 'Total Days',
@@ -97,6 +153,11 @@ const WeeklyTable = (props) => {
         pagination={false}
         scroll={selectedProjects.length > 0 ? { y: 400 } : {}}
         // pagination={pagination}
+      />
+      <ProjectDetailModal
+        visible={projectDetailModalVisible}
+        onClose={() => setProjectDetailModalVisible(false)}
+        projectId={handlingProject}
       />
     </div>
   );

@@ -71,6 +71,10 @@ const FinanceReport = (props) => {
     }
   }, [startDateMonth, selectedView]);
 
+  useEffect(() => {
+    setSelectedProjects([])
+  }, [selectedView])
+
   // generate dates for week
   useEffect(() => {
     const lastSunday = moment().weekday(1);
