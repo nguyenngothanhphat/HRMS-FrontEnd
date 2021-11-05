@@ -33,22 +33,15 @@ class Notes extends PureComponent {
     this.state = {
       isUnhide: false,
     };
+    this.refForm = React.createRef();
   }
 
   componentDidMount() {
-    const { dispatch, customerId, companiesOfUser, listLocationsByCompany } = this.props;
+    const { dispatch, customerId } = this.props;
     dispatch({
       type: 'customerProfile/fetchNotes',
       payload: {
         id: customerId,
-      },
-    });
-
-    dispatch({
-      type: 'employee/fetchListEmployeeActive',
-      payload: {
-        company: companiesOfUser,
-        location: listLocationsByCompany,
       },
     });
   }
@@ -116,6 +109,8 @@ class Notes extends PureComponent {
         owner_id: _id,
         customerId: reId,
       },
+    }).then(() => {
+      this.refForm.current.resetFields();
     });
   };
 
@@ -179,7 +174,7 @@ class Notes extends PureComponent {
             </div>
             {/* Search */}
             <div className={styles.searchInp}>
-              <Input placeholder="Search by Project name" prefix={<SearchOutlined />} />
+              <Input placeholder="Search by Key Words" prefix={<SearchOutlined />} />
             </div>
           </div>
         </div>
@@ -192,7 +187,7 @@ class Notes extends PureComponent {
           />
         </div>
         <div className={styles.notesFooter}>
-          <Form layout="horizontal" onFinish={(values) => this.addNote(values)}>
+          <Form ref={this.refForm} layout="horizontal" onFinish={(values) => this.addNote(values)}>
             <Row gutter={48}>
               <Col span={20}>
                 <Form.Item name="note">

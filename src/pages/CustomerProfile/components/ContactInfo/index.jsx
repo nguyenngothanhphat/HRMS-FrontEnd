@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
+import { connect } from 'umi';
 import editIcon from '../../../../assets/edit-customField-cm.svg';
 import styles from './index.less';
 
+@connect(({ customerProfile: { info = {} } = {} }) => ({ info }))
 class ContactInfo extends PureComponent {
   render() {
     const {

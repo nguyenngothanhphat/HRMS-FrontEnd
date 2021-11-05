@@ -4,11 +4,18 @@ import { connect } from 'umi';
 import styles from './index.less';
 import iconNote from '../../../../../../assets/icon-note.svg';
 
-@connect(({ loading, customerProfile: { divisionId = '' } = {} }) => ({
+@connect(({ loading, customerProfile: { info = {}, divisionId = '' } = {} }) => ({
   loadingId: loading.effects['customerProfile/generateDivisionId'],
   divisionId,
+  info,
 }))
 class ModalAddDivisions extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.refForm = React.createRef();
+  }
+
   componentDidMount() {
     const { dispatch, reId } = this.props;
     dispatch({
@@ -18,6 +25,29 @@ class ModalAddDivisions extends PureComponent {
       },
     });
   }
+
+  handleChange = (e) => {
+    const {
+      info: {
+        addressLine1 = '',
+        addressLine2 = '',
+        city = '',
+        state = '',
+        country = '',
+        postalCode = '',
+      } = {},
+    } = this.props;
+    if (e.target.checked) {
+      this.refForm.current.setFieldsValue({
+        addressLine1,
+        addressLine2,
+        country,
+        state,
+        city,
+        zipCode: postalCode,
+      });
+    }
+  };
 
   render() {
     const {
@@ -60,6 +90,7 @@ class ModalAddDivisions extends PureComponent {
           <Form
             name="formAdd"
             layout="vertical"
+            ref={this.refForm}
             initialValues={{ accountOwner: legalName, divisionId }}
             onFinish={(values) => onSubmit(values)}
           >
@@ -89,7 +120,7 @@ class ModalAddDivisions extends PureComponent {
                     }
                     name="divisionId"
                   >
-                    <Input placeholder="Enter Division ID" />
+                    <Input disabled style={{ color: '#000' }} placeholder="Enter Division ID" />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
@@ -156,7 +187,7 @@ class ModalAddDivisions extends PureComponent {
               </Row>
 
               <Form.Item name="sameAsHQ">
-                <Checkbox>Same address as HQ</Checkbox>
+                <Checkbox onChange={(e) => this.handleChange(e)}>Same address as HQ</Checkbox>
               </Form.Item>
 
               <Form.Item label="Address Line 1" name="addressLine1">
