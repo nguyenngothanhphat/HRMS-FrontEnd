@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Tabs } from 'antd';
-import { history, connect } from 'umi';
+import { Button, Col, Row, Tabs } from 'antd';
+import { history, connect, formatMessage } from 'umi';
 import { debounce } from 'lodash';
+import { DownloadOutlined } from '@ant-design/icons';
 import { PageContainer } from '@/layouts/layout/src';
 import AllTicket from './components/ResourceList';
 import styles from './index.less';
@@ -81,7 +82,7 @@ this.dummyData();
       if(i % 15 === 0) {
         const obj = {
         employeeId : (i < 5 ? 1 : i),
-        employeeName: (i < 5 ? 'Multiple Project' : (`Project ${i}`)),
+        employeeName: `employee ${i}`,
         division: 'division',
         designation: 'designation',
         experience: (Math.random(i) * i).toFixed(1),
@@ -94,7 +95,7 @@ this.dummyData();
       } else if(i < 5) {
       const obj = {
         employeeId : (i < 5 ? 1 : i),
-        employeeName: (i < 5 ? 'Multiple Project' : (`Project ${i}`)),
+        employeeName: (i < 5 ? 'employee 1' : (`employee ${i}`)),
         division: 'division',
         designation: 'designation',
         billStatus: 'Billed',
@@ -159,6 +160,43 @@ this.dummyData();
     this.setDebounce(filterData);
   };
 
+  renderActionButton = () => {
+    return (
+      <div className={styles.options}>
+        <Row gutter={[24, 0]}>
+          <Col>
+            <Button
+              icon={<DownloadOutlined />}
+              className={styles.generate}
+              type="Export"
+              onClick={this.downloadTemplate}
+            >
+              {formatMessage({ id: 'component.employeeOnboarding.generate' })}
+            </Button>
+          </Col>
+  
+          {/* {tabName === 'settings' && (type === '' || type === 'documents-templates') && (
+            <Col>
+              <Button
+                icon={<UploadOutlined />}
+                className={styles.generate}
+                type="text"
+                onClick={this.onUploadDocument}
+              >
+                Upload
+              </Button>
+            </Col>
+          )}
+          <Col>
+            <Button className={styles.view} type="link">
+              {formatMessage({ id: 'component.employeeOnboarding.viewActivityLogs' })} (15)
+            </Button>
+          </Col> */}
+        </Row>
+      </div>
+    );
+  };
+
   render() {
     const { TabPane } = Tabs;
     const { locationID = '', totalList = [] } = this.props;
@@ -172,6 +210,7 @@ this.dummyData();
             onChange={(key) => {
               history.push(`/ticket-management/${key}`);
             }}
+            tabBarExtraContent={this.renderActionButton()}
           >
             <TabPane tab="OverView" key="overview">
               <OverView /> 

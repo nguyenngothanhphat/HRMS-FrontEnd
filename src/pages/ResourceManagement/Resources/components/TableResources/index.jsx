@@ -106,6 +106,19 @@ class TableTickets extends PureComponent {
       }
       return obj;
     };
+    
+    const localCompare = (a, b) => {
+      if (!a && !b) {
+        return 0;
+      }
+      if (!a && b) {
+        return -1;
+      }
+      if (a && !b) {
+        return 1;
+      }
+      return a.localeCompare(b);
+    };
     const columns = [
       {
         title: 'Name',
@@ -129,7 +142,7 @@ class TableTickets extends PureComponent {
           return renderCell(value, row);
         },
         sorter: (a, b) => {
-          return a.division.localeCompare(b.division);
+          return localCompare(a.division, b.division);
         },
         sortDirections: ['ascend', 'descend']
       },
@@ -142,7 +155,7 @@ class TableTickets extends PureComponent {
           return renderCell(value, row);
         },
         sorter: (a, b) => {
-          return a.designation.localeCompare(b.designation);
+          return localCompare(a.designation, b.designation)
         },
         // defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend'],
@@ -165,7 +178,7 @@ class TableTickets extends PureComponent {
         dataIndex: 'projectName',
         width: '10%',
         sorter: (a, b) => {
-          return a.projectName.localeCompare(b.projectName);
+          return localCompare(a.projectName, b.projectName);
         },
         // defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend'],
@@ -185,7 +198,7 @@ class TableTickets extends PureComponent {
           return <span className={styles.priorityLow}>{billStatus}</span>;
         },
         sorter: (a, b) => {
-          return a.billStatus.localeCompare(b.billStatus);
+          return localCompare(a.billStatus, b.billStatus)
         },
         // defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend'],

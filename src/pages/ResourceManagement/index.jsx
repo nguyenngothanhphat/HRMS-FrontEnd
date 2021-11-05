@@ -1,8 +1,7 @@
 // class components
 
 import React, { PureComponent } from 'react';
-import { initViewOffboarding } from '@/utils/authority';
-// import EmployeeTicket from './EmployeeTickets'
+
 import ManagerTicket from './Resources'
 
 class ResourceManagement extends PureComponent {
