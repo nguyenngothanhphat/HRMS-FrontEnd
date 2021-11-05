@@ -49,6 +49,7 @@ const WeeklyHeader = (props) => {
           onPrevClick={onPrevWeekClick}
           onNextClick={onNextWeekClick}
           onChange={onDatePickerChange}
+          disabled
         />
       </div>
       <div className={styles.WeeklyHeader__middle}>{viewChangeComponent()}</div>

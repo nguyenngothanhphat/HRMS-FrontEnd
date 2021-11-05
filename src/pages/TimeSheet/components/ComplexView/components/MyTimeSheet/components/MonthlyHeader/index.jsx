@@ -49,6 +49,7 @@ const MonthlyHeader = (props) => {
           onPrevClick={onPrevMonthClick}
           onNextClick={onNextMonthClick}
           onChange={onDatePickerChange}
+          disabled
         />
       </div>
       <div className={styles.MonthlyHeader__middle}>{viewChangeComponent()}</div>

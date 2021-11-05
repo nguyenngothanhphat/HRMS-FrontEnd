@@ -79,7 +79,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
 
       // timesheet
       viewMyTimesheet: -1,
-      viewManagerTimesheet: -1,
+      viewReportTimesheet: -1,
       viewSettingTimesheet: -1,
 
       // dashboard
@@ -326,7 +326,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
 
   // TIMESHEET
   const indexMyTimesheet = isAuthorized(permissionList, ['employee']);
-  const indexManagerTimesheet = isAuthorized(permissionList, ['manager', 'hr-manager']);
+  const indexReportTimesheet = isAuthorized(permissionList, ['manager', 'hr-manager']);
   const indexSettingTimesheet = isAuthorized(permissionList, ['manager', 'hr-manager']);
 
   // DASHBOARD
@@ -378,7 +378,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
 
     // timesheet
     viewMyTimesheet: indexMyTimesheet,
-    viewManagerTimesheet: indexManagerTimesheet,
+    viewReportTimesheet: indexReportTimesheet,
     viewSettingTimesheet: indexSettingTimesheet,
 
     // dashboard

@@ -14,7 +14,8 @@ import styles from './index.less';
 const { TabPane } = Tabs;
 
 const ComplexView = (props) => {
-  const { permissions = {}, tabName = '' } = props;
+  const { permissions = {}, tabName = '', currentUserRole = '' } = props;
+
   const [navToTimeoffModalVisible, setNavToTimeoffModalVisible] = useState(false);
 
   const requestLeave = () => {
@@ -31,8 +32,30 @@ const ComplexView = (props) => {
 
   // PERMISSION TO VIEW TABS
   // const viewMyTimesheet = permissions.viewMyTimesheet === 1;
-  const viewManagerTimesheet = permissions.viewManagerTimesheet === 1;
+  const viewReportTimesheet = permissions.viewReportTimesheet === 1;
   const viewSettingTimesheet = permissions.viewSettingTimesheet === 1;
+
+  const renderOtherTabs = () => {
+    const visible = currentUserRole !== 'employee';
+    return (
+      <>
+        {visible && viewReportTimesheet && (
+          <TabPane tab="Reports" key="reports">
+            {['people-manager', 'project-manager', 'manager'].includes(currentUserRole) && (
+              <ManagerReport />
+            )}
+            {['hr-manager'].includes(currentUserRole) && <HumanResourceReport />}
+            {['finance'].includes(currentUserRole) && <FinanceReport />}
+          </TabPane>
+        )}
+        {viewSettingTimesheet && (
+          <TabPane tab="Settings" key="settings">
+            <Settings />
+          </TabPane>
+        )}
+      </>
+    );
+  };
 
   return (
     <div className={styles.ComplexView}>
@@ -48,18 +71,7 @@ const ComplexView = (props) => {
           <TabPane tab="My time sheet" key="my">
             <MyTimeSheet />
           </TabPane>
-          {/* {viewManagerTimesheet && ( */}
-          <TabPane tab="Reports" key="reports">
-            {/* <ManagerReport /> */}
-            {/* <HumanResourceReport /> */}
-            <FinanceReport />
-          </TabPane>
-          {/* )} */}
-          {/* {viewSettingTimesheet && ( */}
-          <TabPane tab="Settings" key="settings">
-            <Settings />
-          </TabPane>
-          {/* )} */}
+          {renderOtherTabs()}
         </Tabs>
         <ActionModal
           visible={navToTimeoffModalVisible}
@@ -79,4 +91,13 @@ const ComplexView = (props) => {
   );
 };
 
-export default connect(({ user: { permissions = [] } = {} }) => ({ permissions }))(ComplexView);
+export default connect(
+  ({
+    timeSheet: { currentUserRole = '' } = {},
+    user: { currentUser = {}, permissions = [] } = {},
+  }) => ({
+    currentUser,
+    permissions,
+    currentUserRole,
+  }),
+)(ComplexView);

@@ -35,6 +35,8 @@ const initialState = {
   // for importing
   timesheetDataImporting: [],
   importingIds: [],
+  // for role & permission
+  currentUserRole: 'employee',
 };
 
 const TimeSheet = {

@@ -26,7 +26,7 @@ const SimpleView = (props) => {
 
   // PERMISSION TO VIEW TABS
   // const viewMyTimesheet = permissions.viewMyTimesheet === 1;
-  const viewManagerTimesheet = permissions.viewManagerTimesheet === 1;
+  const viewReportTimesheet = permissions.viewReportTimesheet === 1;
   const viewSettingTimesheet = permissions.viewSettingTimesheet === 1;
 
   return (
@@ -43,7 +43,7 @@ const SimpleView = (props) => {
           <TabPane tab="My time sheet" key="my">
             <MyTimeSheet />
           </TabPane>
-          {viewManagerTimesheet && (
+          {viewReportTimesheet && (
             <TabPane tab="Reports" key="reports">
               <ManagerView />
             </TabPane>
