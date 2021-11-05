@@ -72,6 +72,17 @@ class ManagerTicket extends Component {
     }
   }
 
+  dummyData = () => {
+    const data = []
+    for(let i = 0; i < 100; i+=1) {
+      const obj = {
+
+      }
+      data.push(obj)
+    }
+    return data
+  }
+
   updateData = (listOffAllTicket) => {
     this.setState({
       dataListAllTickets: listOffAllTicket,

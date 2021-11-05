@@ -192,21 +192,6 @@ class TableTickets extends PureComponent {
           </Button>
         }
       }
-      // {
-      //   title: 'Assign To',
-      //   key: 'operation',
-      //   fixed: 'right',
-      //   render: () => {
-      //     return (
-      //       <Dropdown overlayClassName="dropDown" overlay={menu} trigger={['click']}>
-      //         <div onClick={(e) => this.handleSelect(e)}>
-      //           Select User &emsp;
-      //           <DownOutlined />
-      //         </div>
-      //       </Dropdown>
-      //     );
-      //   },
-      // },
     ];
 
     return (
