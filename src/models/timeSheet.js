@@ -1,17 +1,22 @@
 import { message, notification } from 'antd';
 import {
+  // update/add/remove
+  addActivity,
+  addMultipleActivity,
+  getEmployeeList,
+  getImportData,
   // fetch
   getManagerTimesheet,
   getMyTimesheet,
+  // complex view
+  getMyTimesheetByType,
+  importTimesheet,
   removeActivity,
-  // update/add/remove
-  addActivity,
   updateActivity,
-  getEmployeeList,
 } from '@/services/timeSheet';
-import { dialog } from '@/utils/utils';
-import { convertMsToTime } from '@/utils/timeSheet';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { convertMsToTime, isTheSameDay } from '@/utils/timeSheet';
+import { dialog } from '@/utils/utils';
 
 const tenantId = getCurrentTenant();
 
@@ -21,6 +26,17 @@ const initialState = {
   // myTotalHours: '',
   managerTotalHours: 0,
   employeeList: [],
+  // complex view
+  myTimesheetByDay: [],
+  myTimesheetByWeek: [],
+  myTimesheetByMonth: [],
+  // store payload for refreshing
+  viewingPayload: {},
+  // for importing
+  timesheetDataImporting: [],
+  importingIds: [],
+  // for role & permission
+  currentUserRole: 'employee',
 };
 
 const TimeSheet = {
@@ -31,7 +47,7 @@ const TimeSheet = {
     *fetchMyTimesheetEffect({ payload }, { call, put }) {
       const response = {};
       try {
-        const res = yield call(getMyTimesheet, { ...payload, tenantId });
+        const res = yield call(getMyTimesheet, {}, { ...payload, tenantId });
         const { code, data = [] } = res;
         if (code !== 200) throw res;
 
@@ -50,7 +66,7 @@ const TimeSheet = {
     *fetchManagerTimesheetEffect({ payload }, { call, put }) {
       const response = {};
       try {
-        const res = yield call(getManagerTimesheet, { ...payload, tenantId });
+        const res = yield call(getManagerTimesheet, {}, { ...payload, tenantId });
         const { code, data = [], additionInfo = {} } = res;
         if (code !== 200) throw res;
 
@@ -69,13 +85,58 @@ const TimeSheet = {
       }
       return response;
     },
+    // complex view fetch
+    *fetchMyTimesheetByTypeEffect({ payload, isRefreshing }, { call, put, select }) {
+      const response = {};
+      try {
+        let payloadTemp = payload;
+        if (isRefreshing) {
+          const { viewingPayload } = yield select((state) => state.timeSheet);
+          payloadTemp = viewingPayload;
+        }
+        const res = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId });
+        const { code, data = [] } = res;
+        if (code !== 200) throw res;
+        const { viewType } = payloadTemp;
+        let stateVar = 'myTimesheetByDay';
+
+        switch (viewType) {
+          case 'D':
+            break;
+          case 'W':
+            stateVar = 'myTimesheetByWeek';
+            break;
+          case 'M':
+            stateVar = 'myTimesheetByMonth';
+            break;
+          default:
+            break;
+        }
+
+        yield put({
+          type: 'save',
+          payload: {
+            viewingPayload: payloadTemp,
+            [stateVar]: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
 
     // update/edit
     *updateActivityEffect({ payload, date }, { call, put }) {
       let response = {};
       try {
-        const updating = message.loading('Updating...', 0);
-        response = yield call(updateActivity, { ...payload, tenantId });
+        const updating = date ? message.loading('Updating...', 0) : () => {}; // only loading in simple view
+        const params = {
+          companyId: payload.companyId,
+          id: payload.id,
+        };
+        response = yield call(updateActivity, { ...payload, tenantId }, params);
         updating();
         const { code, msg = '', data = {}, errors = [] } = response;
         if (code !== 200) {
@@ -83,15 +144,16 @@ const TimeSheet = {
           return [];
         }
         notification.success({ message: msg });
-
-        // for refresh immediately - no need to call API to refresh list
-        yield put({
-          type: 'onActivityUpdated',
-          payload: {
-            updatedActivity: data,
-            date,
-          },
-        });
+        if (date) {
+          // for refresh immediately - no need to call API to refresh list
+          yield put({
+            type: 'onActivityUpdated',
+            payload: {
+              updatedActivity: data,
+              date,
+            },
+          });
+        }
       } catch (errors) {
         dialog(errors);
         return [];
@@ -103,7 +165,7 @@ const TimeSheet = {
     *addActivityEffect({ payload, date }, { call, put }) {
       let response = {};
       try {
-        const adding = message.loading('Adding...', 0);
+        const adding = date ? message.loading('Adding...', 0) : () => {}; // only loading in simple view
         response = yield call(addActivity, { ...payload, tenantId });
         const { code, data = {}, msg = '', errors = [] } = response;
         adding();
@@ -113,14 +175,38 @@ const TimeSheet = {
         }
         notification.success({ message: msg });
 
-        // for refresh immediately - no need to call API to refresh list
-        yield put({
-          type: 'onActivityAdded',
-          payload: {
-            addedActivity: data,
-            date,
-          },
-        });
+        if (date) {
+          // for refresh immediately - no need to call API to refresh list
+          yield put({
+            type: 'onActivityAdded',
+            payload: {
+              addedActivity: data,
+              date,
+            },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+
+    // add
+    *addMultipleActivityEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        const params = {
+          companyId: payload.companyId,
+          employeeId: payload.employeeId,
+        };
+        response = yield call(addMultipleActivity, payload.data, params);
+        const { code, msg = '', errors = [] } = response;
+        if (code !== 200) {
+          notification.error({ message: errors[0].msg });
+          return [];
+        }
+        notification.success({ message: msg });
       } catch (errors) {
         dialog(errors);
         return [];
@@ -133,19 +219,63 @@ const TimeSheet = {
       let response = {};
       try {
         const removing = message.loading('Removing...', 0);
-        response = yield call(removeActivity, { ...payload, tenantId });
+        response = yield call(removeActivity, {}, { ...payload, tenantId });
         removing();
         const { code, msg } = response;
         if (code !== 200) throw response;
         notification.success({ message: msg });
 
-        // for refresh immediately - no need to call API to refresh list
+        if (date) {
+          // for refresh immediately - no need to call API to refresh list
+          yield put({
+            type: 'onActivityRemoved',
+            payload: {
+              removedActivity: payload,
+              date,
+            },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+    // import
+    *fetchImportData({ payload }, { call, put }) {
+      const response = {};
+      try {
+        const res = yield call(getImportData, {}, { ...payload, tenantId });
+        const { code, data = [] } = res;
+        if (code !== 200) throw res;
+
         yield put({
-          type: 'onActivityRemoved',
+          type: 'save',
           payload: {
-            removedActivity: payload,
-            date,
+            timesheetDataImporting: data,
           },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+
+    *importTimesheet({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(importTimesheet, {}, { ...payload, tenantId });
+        const { code, msg = '', errors = [] } = response;
+        if (code !== 200) {
+          notification.error({ message: errors[0].msg });
+          return [];
+        }
+        notification.success({ message: msg });
+
+        yield put({
+          type: 'save',
+          payload: {},
         });
       } catch (errors) {
         dialog(errors);
@@ -177,6 +307,36 @@ const TimeSheet = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    clearImportModalData(state) {
+      return {
+        ...state,
+        importingIds: [],
+      };
+    },
+    saveImportingIds(state, action) {
+      const { importingIds } = state;
+      const { selectedIds = [], date = '' } = action.payload;
+      const tempImportingIds = JSON.parse(JSON.stringify(importingIds));
+      const index = tempImportingIds.findIndex((w) => isTheSameDay(w.date, date));
+
+      if (index > -1) {
+        tempImportingIds[index].selectedIds = [...selectedIds];
+        // if there is no ids, remove the object with date
+        if (selectedIds.length === 0) {
+          tempImportingIds.splice(index, 1);
+        }
+      } else {
+        tempImportingIds.push({
+          date,
+          selectedIds,
+        });
+      }
+
+      return {
+        ...state,
+        importingIds: [...tempImportingIds],
       };
     },
     clearState() {

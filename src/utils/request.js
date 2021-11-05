@@ -67,21 +67,22 @@ import { getToken } from './token';
 //   })(url, options);
 // };
 
-const request = async (url, options = {}, noAuth, apiUrlName = 'BASE_API', hasParams) => {
-  const { method = 'POST', data = {} } = options;
+const request = async (url, options = {}, noAuth, apiUrlName = 'BASE_API') => {
+  const { method = 'POST', data = {}, params = {} } = options;
   const token = getToken();
 
   const baseURL = proxy[apiUrlName];
 
+  const headers = {
+    'Content-Type': 'application/json;charset=UTF-8',
+    'Access-Control-Allow-Origin': '*',
+    Authorization: !noAuth ? `Bearer ${token}` : '',
+  };
+
   const instance = axios.create({
     baseURL,
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8',
-      accept: 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      Authorization: !noAuth ? `Bearer ${token}` : '',
-    },
-    params: hasParams ? data : {},
+    headers,
+    params,
   });
 
   instance.interceptors.response.use(

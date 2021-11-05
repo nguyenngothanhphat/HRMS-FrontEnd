@@ -1,5 +1,10 @@
 import moment from 'moment';
 
+const VIEW_TYPE = {
+  D: 'D', // day
+  W: 'W', // week
+  M: 'M', // month
+};
 const color = {
   WORKING_HOURS: '#71A82B',
   LUNCH_BREAK: '#315ED2',
@@ -23,6 +28,9 @@ const activityColor = [
   },
 ];
 
+const projectColor = ['#A42BA8', '#7BCD00', '#FFBD14', '#F97457', '#1956DA', '#7BCDFF'];
+const employeeColor = ['#A459BE', '#6759BE', '#599ABE', '#5BBE59', '#59BE94', '#BE9C59', '#BE5F59'];
+
 // functions
 const addTimeForDate = (date, time) => {
   const dateToString = moment(date).format('MM/DD/YYYY').toString();
@@ -39,7 +47,7 @@ const minuteStep = 30; // in time picker, only allows minute 0 and 30
 const dateFormatAPI = 'YYYY-MM-DD';
 const hourFormatAPI = 'HH:mm';
 
-// MT - MY TIMESHEET
+// MT - MY TIMESHEET SIMPLE VIEW
 const MT_MAIN_COL_SPAN = {
   DATE: 3,
   REMAINING: 21,
@@ -53,6 +61,42 @@ const MT_SECONDARY_COL_SPAN = {
   TOTAL_HOURS: 3,
   NOTES: 5,
   ACTIONS: 3,
+};
+
+// MT - MY TIMESHEET COMPLEX VIEW
+// EMPLOYEE VIEW
+const EMP_MT_MAIN_COL_SPAN = {
+  DATE_OF_HOURS: 2,
+  REMAINING: 22,
+};
+
+const EMP_MT_SECONDARY_COL_SPAN = {
+  PROJECT: 4,
+  TASK: 4,
+  DESCRIPTION: 6,
+  TIME: 4,
+  TOTAL_HOURS: 3,
+  ACTIONS: 3,
+};
+
+const EMP_ROW_HEIGHT = 60; // px
+
+// MANAGER VIEW
+const MNG_MT_MAIN_COL_SPAN = {
+  EMPLOYEE: 4,
+  REMAINING: 20,
+};
+
+const MNG_MT_SECONDARY_COL_SPAN = {
+  DESIGNATION: 4,
+  DEPARTMENT: 6,
+  PROJECT_GROUP: 14,
+};
+
+const MNG_MT_THIRD_COL_SPAN = {
+  PROJECTS: 10,
+  PROJECT_MANAGER: 10,
+  TOTAL_HOURS: 4,
 };
 
 // convert milisecond to time HH:mm:ss
@@ -78,9 +122,31 @@ const parseTimeAPI = (time = '') => {
   return time ? time.slice(0, -5) : '';
 };
 
+// WORKING HOURS
+const WORKING_HOURS = {
+  START: 7,
+  END: 21,
+};
+
+const TASKS = [
+  'Brainstorming',
+  'Client Meeting',
+  'UI Feedback',
+  'UI Presentation to client',
+  'UI Support',
+  'Feedback changes on WFs',
+];
+
+const isTheSameDay = (date1, date2) => {
+  return moment(date1).format('MM/DD/YYYY') === moment(date2).format('MM/DD/YYYY');
+};
+
 export {
+  VIEW_TYPE,
   activityName,
   activityColor,
+  projectColor,
+  employeeColor,
   addTimeForDate,
   rangePickerFormat,
   dateFormat,
@@ -92,4 +158,14 @@ export {
   MT_SECONDARY_COL_SPAN,
   convertMsToTime,
   parseTimeAPI,
+  WORKING_HOURS,
+  // COMPLEX VIEW
+  EMP_MT_MAIN_COL_SPAN,
+  EMP_MT_SECONDARY_COL_SPAN,
+  EMP_ROW_HEIGHT,
+  MNG_MT_MAIN_COL_SPAN,
+  MNG_MT_SECONDARY_COL_SPAN,
+  MNG_MT_THIRD_COL_SPAN,
+  TASKS,
+  isTheSameDay,
 };

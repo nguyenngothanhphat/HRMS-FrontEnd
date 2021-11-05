@@ -1,0 +1,38 @@
+@borderColor: #d6dce0;
+@borderColor2: #d6dce4;
+@blueColor: #2c6df9;
+@commonSpace: 24px;
+.Footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+  .left {
+    color: #212020;
+    font-weight: 500;
+    font-size: 12px;
+  }
+  .right {
+    :global {
+      .ant-btn {
+        height: 40px;
+        color: #fff;
+        line-height: 1.9;
+        background: #ffa100;
+        border: none;
+        border-radius: 25px;
+        outline: none;
+        box-shadow: none;
+        img {
+          margin-right: 9px;
+        }
+        span {
+          color: #ffffff;
+          font-weight: 500;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}

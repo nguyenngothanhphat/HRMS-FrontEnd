@@ -1,0 +1,99 @@
+import { Col, Row } from 'antd';
+import React from 'react';
+import { connect } from 'umi';
+import TaskCard from '../TaskCard';
+import styles from './index.less';
+
+const mockTasks = [
+  {
+    department: 'Design',
+    task: 'Walk through',
+    description: 'Flow understanding',
+    taskList: [
+      {
+        resources: 'Kathryn Murphy',
+        timeTaken: '8hrs',
+        totalTime: '60hrs',
+      },
+      {
+        resources: 'Kathryn Murphy',
+        timeTaken: '8hrs',
+        totalTime: '60hrs',
+      },
+      {
+        resources: 'Kathryn Murphy',
+        timeTaken: '8hrs',
+        totalTime: '60hrs',
+      },
+    ],
+  },
+  {
+    department: 'Development',
+    task: 'Walk through',
+    description: 'Flow understanding',
+    taskList: [
+      {
+        resources: 'Kathryn Murphy',
+        timeTaken: '8hrs',
+        totalTime: '60hrs',
+      },
+    ],
+  },
+];
+
+const TaskTable = (props) => {
+  const renderHeader = () => {
+    return (
+      <Row className={styles.tableHeader}>
+        <Col span={4} className={styles.title}>
+          Department
+        </Col>
+        <Col span={4} className={styles.title}>
+          Task
+        </Col>
+        <Col span={4} className={styles.title}>
+          Description
+        </Col>
+
+        <Col span={12} className={styles.groupCell}>
+          <Row className={styles.groupRow}>
+            <Col span={8} className={styles.title}>
+              Resources
+            </Col>
+            <Col span={8} className={`${styles.title} ${styles.alignCenter}`}>
+              Time taken
+            </Col>
+            <Col span={8} className={`${styles.title} ${styles.alignCenter}`}>
+              Total time (task)
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    );
+  };
+
+  const renderTable = () => {
+    if (mockTasks.length === 0) {
+      return <div className={styles.emptyContent}>No data</div>;
+    }
+    return (
+      <div className={styles.content}>
+        {mockTasks.map((m, i) => (
+          <TaskCard card={m} index={i} />
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <>
+      <div className={styles.TaskTable}>
+        {renderHeader()}
+        {renderTable()}
+      </div>
+    </>
+  );
+};
+
+// export default TaskTable;
+export default connect(() => ({}))(TaskTable);
