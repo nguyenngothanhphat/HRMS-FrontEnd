@@ -8,7 +8,7 @@ import TableTickets from '../TableResources';
 @connect(({ loading = {} }) => ({
   loading: loading.effects['ticketManagement/fetchListAllTicket'],
 }))
-class ResourceList extends Component {
+class AllTicket extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,9 +21,7 @@ class ResourceList extends Component {
   componentDidUpdate(prevProps, prevState) {
     console.log('All ticket init call')
     const { selectedFilterTab, pageSelected, size } = this.state;
-    const { dispatch, 
-      // location = [] 
-    } = this.props;
+    const { dispatch, location = [] } = this.props;
     if (prevState.pageSelected !== pageSelected || prevState.size !== size) {
       this.initDataTable(selectedFilterTab);
     }
@@ -202,4 +200,4 @@ class ResourceList extends Component {
   }
 }
 
-export default ResourceList;
+export default AllTicket;

@@ -47,41 +47,96 @@ class ManagerTicket extends Component {
     if (!tabName) {
       history.replace(`${baseModuleUrl}/all-resources`);
     } else {
-      const { dispatch, listOffAllTicket } = this.props;
-      if (!dispatch) {
-        return;
-      }
-      dispatch({
-        type: 'ticketManagement/fetchListAllTicket',
-        payload: {
-          // status: 'New',
-        },
-      });
-      dispatch({
-        type: 'ticketManagement/fetchToTalList',
-        payload: {},
-      });
-      if (listOffAllTicket.length > 0) this.updateData(listOffAllTicket);
+// const { dispatch, listOffAllTicket } = this.props;
+// if (!dispatch) {
+//   return;
+// }
+// dispatch({
+//   type: 'ticketManagement/fetchListAllTicket',
+//   payload: {
+//     // status: 'New',
+//   },
+// });
+// dispatch({
+//   type: 'ticketManagement/fetchToTalList',
+//   payload: {},
+// });
+this.dummyData();
+// if (listOffAllTicket.length > 0) this.updateData(listOffAllTicket);
+
     }
   }
 
-  componentDidUpdate(prevProps) {
-    const { listOffAllTicket = [] } = this.props;
-    if (JSON.stringify(listOffAllTicket) !== JSON.stringify(prevProps.listOffAllTicket)) {
-      this.updateData(listOffAllTicket);
-    }
+  componentDidUpdate() {
+    // const { listOffAllTicket = [] } = this.props;
+    // if (JSON.stringify(listOffAllTicket) !== JSON.stringify(prevProps.listOffAllTicket)) {
+    //   this.updateData(listOffAllTicket);
+    // }
+    // this.dummyData()
   }
 
   dummyData = () => {
     const data = []
-    for(let i = 0; i < 100; i+=1) {
-      const obj = {
-
+    for(let i = 1; i <= 100; i+=1) {
+      if(i % 15 === 0) {
+        const obj = {
+        employeeId : (i < 5 ? 1 : i),
+        employeeName: (i < 5 ? 'Multiple Project' : (`Project ${i}`)),
+        division: 'division',
+        designation: 'designation',
+        experience: (Math.random(i) * i).toFixed(1),
+        projectName: '',
+        utilization: 0,
+        startDate: '',
+        endDate: ''
       }
       data.push(obj)
+      } else if(i < 5) {
+      const obj = {
+        employeeId : (i < 5 ? 1 : i),
+        employeeName: (i < 5 ? 'Multiple Project' : (`Project ${i}`)),
+        division: 'division',
+        designation: 'designation',
+        billStatus: 'Billed',
+        experience: 1,
+        projectName: `Project ${Math.floor(Math.random(i) * i)}`,
+        utilization: (i < 5 ? 25 : 100),
+        startDate: '2021-01-01',
+        endDate: '2021-01-01'
+      }
+      data.push(obj)
+      } else if(i > 11 && i < 15) {
+      const obj = {
+        employeeId : 12,
+        employeeName: 'Multiple Project page 2',
+        division: 'division',
+        designation: 'designation',
+        experience: 2,
+        projectName: `Project ${Math.floor(Math.random(i) * i)}`,
+        utilization: (i < 5 ? 25 : 100),
+        startDate: '2021-01-01',
+        endDate: '2021-01-01'
+      }
+      data.push(obj)
+      } else {
+      const obj = {
+        employeeId : i,
+        employeeName: `Employee ${ i }`,
+        division: 'division',
+        designation: 'designation',
+        billStatus: 'Bench',
+        experience: i< 5? 2: (Math.random(i) * i).toFixed(1),
+        projectName: `Project ${Math.floor(Math.random(i) * i)}`,
+        utilization: (i < 5 ? 25 : 100),
+        startDate: '2021-01-01',
+        endDate: '2021-01-01'
+      }
+      data.push(obj)
+      }
+      
     }
-    return data
-  }
+    this.updateData(data)
+  };
 
   updateData = (listOffAllTicket) => {
     this.setState({
