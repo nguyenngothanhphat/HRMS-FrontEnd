@@ -45,7 +45,7 @@ const TimeSheet = {
     *fetchMyTimesheetEffect({ payload }, { call, put }) {
       const response = {};
       try {
-        const res = yield call(getMyTimesheet, { ...payload, tenantId });
+        const res = yield call(getMyTimesheet, {}, { ...payload, tenantId });
         const { code, data = [] } = res;
         if (code !== 200) throw res;
 
@@ -64,7 +64,7 @@ const TimeSheet = {
     *fetchManagerTimesheetEffect({ payload }, { call, put }) {
       const response = {};
       try {
-        const res = yield call(getManagerTimesheet, { ...payload, tenantId });
+        const res = yield call(getManagerTimesheet, {}, { ...payload, tenantId });
         const { code, data = [], additionInfo = {} } = res;
         if (code !== 200) throw res;
 
@@ -92,7 +92,7 @@ const TimeSheet = {
           const { viewingPayload } = yield select((state) => state.timeSheet);
           payloadTemp = viewingPayload;
         }
-        const res = yield call(getMyTimesheetByType, { ...payloadTemp, tenantId });
+        const res = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId });
         const { code, data = [] } = res;
         if (code !== 200) throw res;
         const { viewType } = payloadTemp;
@@ -130,7 +130,11 @@ const TimeSheet = {
       let response = {};
       try {
         const updating = date ? message.loading('Updating...', 0) : () => {}; // only loading in simple view
-        response = yield call(updateActivity, { ...payload, tenantId });
+        const params = {
+          companyId: payload.companyId,
+          id: payload.id,
+        };
+        response = yield call(updateActivity, { ...payload, tenantId }, params);
         updating();
         const { code, msg = '', data = {}, errors = [] } = response;
         if (code !== 200) {
@@ -190,7 +194,11 @@ const TimeSheet = {
     *addMultipleActivityEffect({ payload }, { call }) {
       let response = {};
       try {
-        response = yield call(addMultipleActivity, payload);
+        const params = {
+          companyId: payload.companyId,
+          employeeId: payload.employeeId,
+        };
+        response = yield call(addMultipleActivity, payload.data, params);
         const { code, msg = '', errors = [] } = response;
         if (code !== 200) {
           notification.error({ message: errors[0].msg });
@@ -209,7 +217,7 @@ const TimeSheet = {
       let response = {};
       try {
         const removing = message.loading('Removing...', 0);
-        response = yield call(removeActivity, { ...payload, tenantId });
+        response = yield call(removeActivity, {}, { ...payload, tenantId });
         removing();
         const { code, msg } = response;
         if (code !== 200) throw response;
@@ -235,7 +243,7 @@ const TimeSheet = {
     *fetchImportData({ payload }, { call, put }) {
       const response = {};
       try {
-        const res = yield call(getImportData, { ...payload, tenantId });
+        const res = yield call(getImportData, {}, { ...payload, tenantId });
         const { code, data = [] } = res;
         if (code !== 200) throw res;
 
@@ -255,8 +263,8 @@ const TimeSheet = {
     *importTimesheet({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(importTimesheet, { ...payload, tenantId });
-        const { code, msg = '', data = {}, errors = [] } = response;
+        response = yield call(importTimesheet, {}, { ...payload, tenantId });
+        const { code, msg = '', errors = [] } = response;
         if (code !== 200) {
           notification.error({ message: errors[0].msg });
           return [];

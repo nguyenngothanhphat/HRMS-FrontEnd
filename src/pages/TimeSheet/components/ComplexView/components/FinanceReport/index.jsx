@@ -5,7 +5,7 @@ import { dateFormatAPI, VIEW_TYPE } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import ViewChange from './components/ViewChange';
+import ViewTypeSelector from '@/pages/TimeSheet/components/ComplexView/components/ViewTypeSelector';
 import WeeklyTable from './components/WeeklyTable';
 import MonthlyTable from './components/MonthlyTable';
 import styles from './index.less';
@@ -72,8 +72,8 @@ const FinanceReport = (props) => {
   }, [startDateMonth, selectedView]);
 
   useEffect(() => {
-    setSelectedProjects([])
-  }, [selectedView])
+    setSelectedProjects([]);
+  }, [selectedView]);
 
   // generate dates for week
   useEffect(() => {
@@ -123,7 +123,11 @@ const FinanceReport = (props) => {
 
   // RENDER UI
   const viewChangeComponent = () => (
-    <ViewChange selectedView={selectedView} setSelectedView={setSelectedView} />
+    <ViewTypeSelector
+      showDay={false}
+      selectedView={selectedView}
+      setSelectedView={setSelectedView}
+    />
   );
 
   const renderHeader = () => {

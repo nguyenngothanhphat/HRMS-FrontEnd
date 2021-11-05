@@ -17,6 +17,7 @@ import { connect } from 'umi';
 import { dateFormatAPI, hourFormat, hourFormatAPI, TASKS } from '@/utils/timeSheet';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import AddIcon from '@/assets/timeSheet/add.svg';
+import RemoveIcon from '@/assets/timeSheet/recycleBin.svg';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -215,7 +216,7 @@ const AddTaskModal = (props) => {
                       <Input.TextArea autoSize={{ minRows: 3 }} />
                     </Form.Item>
                   </Col>
-                  <Col xs={24}>
+                  <Col xs={12}>
                     <Form.Item
                       labelCol={{ span: 24 }}
                       name={[name, 'clientLocation']}
@@ -224,6 +225,14 @@ const AddTaskModal = (props) => {
                     >
                       <Checkbox>Client Location</Checkbox>
                     </Form.Item>
+                  </Col>
+                  <Col xs={12} className={styles.removeBtn}>
+                    {fields.length > 1 && (
+                      <div className={styles.btn} onClick={() => remove(name)}>
+                        <img src={RemoveIcon} alt="" />
+                        <span>Delete</span>
+                      </div>
+                    )}
                   </Col>
                 </Row>
               </>

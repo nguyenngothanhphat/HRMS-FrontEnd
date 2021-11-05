@@ -1,0 +1,44 @@
+@borderColor: #d6dce0;
+@borderColor2: #d6dce4;
+@blueColor: #2c6df9;
+@commonSpace: 24px;
+.CustomRangePicker {
+  :global {
+    .ant-picker {
+      box-sizing: border-box;
+      height: 37px;
+      border: 1px solid @borderColor2;
+      border-radius: 5px;
+    }
+  }
+
+  display: flex;
+  flex-direction: row;
+  .rangePicker {
+    margin-inline: 8px;
+    .minusSeparator {
+      color: #161c29;
+      font-size: 13px;
+      opacity: 0.5;
+    }
+    .calendarIcon {
+      filter: invert(57%) sepia(76%) saturate(7481%) hue-rotate(216deg) brightness(102%)
+        contrast(95%);
+    }
+  }
+  .button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 37px;
+    background: #ffffff;
+    border: 1px solid @borderColor2;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .prevBtn,
+  .nextBtn {
+    .button();
+  }
+}

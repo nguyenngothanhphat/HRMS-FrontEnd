@@ -106,9 +106,15 @@ const ActivityCard = (props) => {
     return find?.color;
   };
 
-  // main handle
-  const onRemoveCard = () => {
+  const refreshTable = () => {
     dispatch({
+      type: 'timeSheet/fetchMyTimesheetByTypeEffect',
+      isRefreshing: true,
+    });
+  };
+  // main handle
+  const onRemoveCard = async () => {
+    const res = await dispatch({
       type: 'timeSheet/removeActivityEffect',
       payload: {
         id,
@@ -117,6 +123,10 @@ const ActivityCard = (props) => {
       },
       date: moment(cardDay).format(dateFormatAPI),
     });
+    if (res.code === 200) {
+      setRemoveModalVisibe(false);
+      refreshTable();
+    }
   };
 
   // MAIN AREA

@@ -1,14 +1,13 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import ViewTypeSelector from '@/pages/TimeSheet/components/ComplexView/components/ViewTypeSelector';
 import { getCurrentCompany } from '@/utils/authority';
-import ViewChange from './components/ViewChange';
-import Header from './components/Header';
-import WeeklyTable from './components/WeeklyTable';
-import MonthlyTable from './components/MonthlyTable';
-
-import styles from './index.less';
 import { dateFormatAPI, VIEW_TYPE } from '@/utils/timeSheet';
+import Header from './components/Header';
+import MonthlyTable from './components/MonthlyTable';
+import WeeklyTable from './components/WeeklyTable';
+import styles from './index.less';
 
 const ProjectView = (props) => {
   // weekly
@@ -107,7 +106,11 @@ const ProjectView = (props) => {
 
   // RENDER UI
   const viewChangeComponent = () => (
-    <ViewChange selectedView={selectedView} setSelectedView={setSelectedView} />
+    <ViewTypeSelector
+      showDay={false}
+      selectedView={selectedView}
+      setSelectedView={setSelectedView}
+    />
   );
 
   const renderHeader = () => {

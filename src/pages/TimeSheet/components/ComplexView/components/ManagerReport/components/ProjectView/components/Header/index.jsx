@@ -1,16 +1,13 @@
-import { MinusOutlined, SearchOutlined } from '@ant-design/icons';
-import { DatePicker, Select, Input } from 'antd';
+import { Select } from 'antd';
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
-import { rangePickerFormat, VIEW_TYPE, projectColor } from '@/utils/timeSheet';
-import PrevIcon from '@/assets/timeSheet/prev.svg';
-import NextIcon from '@/assets/timeSheet/next.svg';
 import FilterIcon from '@/assets/timeSheet/filter.svg';
-import CalendarIcon from '@/assets/timeSheet/calendar.svg';
+import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
+import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
+import { projectColor, VIEW_TYPE } from '@/utils/timeSheet';
 import styles from './index.less';
 
-const { RangePicker } = DatePicker;
 const { Option } = Select;
 
 const mockProjects = [
@@ -101,18 +98,6 @@ const Header = (props) => {
     textAlign: 'left',
   };
 
-  const searchPrefix = () => {
-    return (
-      <SearchOutlined
-        style={{
-          fontSize: 16,
-          color: 'black',
-          marginRight: '10px',
-        }}
-      />
-    );
-  };
-
   // MAIN AREA
   return (
     <div className={styles.Header}>
@@ -148,25 +133,13 @@ const Header = (props) => {
             ))}
           </Select>
         </div>
-        <div className={styles.prevMonth} onClick={onPrevClick}>
-          <img src={PrevIcon} alt="" />
-        </div>
-        <div className={styles.rangePicker}>
-          <RangePicker
-            format={rangePickerFormat}
-            separator={<MinusOutlined className={styles.minusSeparator} />}
-            value={[startDate, endDate]}
-            onChange={onDatePickerChange}
-            allowClear={false}
-            disabled
-            suffixIcon={
-              <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
-            }
-          />
-        </div>
-        <div className={styles.nextMonth} onClick={onNextClick}>
-          <img src={NextIcon} alt="" />
-        </div>
+        <CustomRangePicker
+          startDate={startDate}
+          endDate={endDate}
+          onPrevClick={onPrevClick}
+          onNextClick={onNextClick}
+          onChange={onDatePickerChange}
+        />
       </div>
       <div className={styles.Header__middle}>{viewChangeComponent()}</div>
       <div className={styles.Header__right}>
@@ -174,13 +147,7 @@ const Header = (props) => {
           <img src={FilterIcon} alt="" />
           <span>Filter</span>
         </div>
-        <div className={styles.searchBox}>
-          <Input
-            className={styles.searchInput}
-            placeholder="Search by Name, Task..."
-            prefix={searchPrefix()}
-          />
-        </div>
+        <SearchBar />
       </div>
     </div>
   );

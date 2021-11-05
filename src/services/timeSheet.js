@@ -1,55 +1,55 @@
 import { request } from '@/utils/request';
 
-export async function getMyTimesheet(payload) {
+export async function getMyTimesheet(payload, params) {
   return request(
     `/api/timesheet/filter`,
     {
       method: 'GET',
       data: payload,
+      params,
     },
     false,
     'TIMESHEET_API',
-    payload, // hasParams
   );
 }
 
-export async function getManagerTimesheet(payload) {
+export async function getManagerTimesheet(payload, params) {
   return request(
     `/api/timesheet/manager`,
     {
       method: 'GET',
       data: payload,
+      params,
     },
     false,
     'TIMESHEET_API',
-    payload, // hasParams
   );
 }
 
 // edit/update
-export async function updateActivity(payload) {
+export async function updateActivity(payload, params) {
   return request(
     `/api/timesheet`,
     {
       method: 'PATCH',
       data: payload,
+      params,
     },
     false,
     'TIMESHEET_API',
-    payload, // hasParams
   );
 }
 
-export async function removeActivity(payload) {
+export async function removeActivity(payload, params) {
   return request(
     `/api/timesheet`,
     {
       method: 'DELETE',
       data: payload,
+      params,
     },
     false,
     'TIMESHEET_API',
-    payload, // hasParams
   );
 }
 
@@ -65,64 +65,60 @@ export async function addActivity(payload) {
   );
 }
 
-export async function addMultipleActivity(payload) {
-  const params = {
-    companyId: payload.companyId,
-    employeeId: payload.employeeId,
-  };
+export async function addMultipleActivity(payload, params) {
   return request(
     `/api/timesheet/multiple`,
     {
       method: 'POST',
-      data: payload.data,
+      data: payload,
+      params,
     },
     false,
     'TIMESHEET_API',
-    params,
   );
 }
 
 // complex view
-export async function getMyTimesheetByType(payload) {
+export async function getMyTimesheetByType(payload, params) {
   // date, week, month
   return request(
     `/api/timesheet/view`,
     {
       method: 'GET',
       data: payload,
+      params,
     },
     false,
     'TIMESHEET_API',
-    payload, // hasParams
   );
 }
 
 // import
-export async function getImportData(payload) {
+export async function getImportData(payload, params) {
   // date, week, month
   return request(
     `/api/timesheet/import`,
     {
       method: 'GET',
       data: payload,
+      params,
     },
     false,
     'TIMESHEET_API',
-    payload, // hasParams
   );
 }
 
-export async function importTimesheet(payload) {
+export async function importTimesheet(payload, params) {
   // date, week, month
   return request(
     `/api/timesheet/import`,
     {
       method: 'POST',
       data: payload,
+      params,
     },
     false,
     'TIMESHEET_API',
-    payload, // hasParams
   );
 }
 

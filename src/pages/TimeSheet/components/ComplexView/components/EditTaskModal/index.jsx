@@ -8,7 +8,7 @@ import {
   Modal,
   Row,
   Select,
-  TimePicker
+  TimePicker,
 } from 'antd';
 import moment from 'moment';
 import React from 'react';
@@ -35,6 +35,7 @@ const EditTaskModal = (props) => {
       startTime = '',
       endTime = '',
       taskName = '',
+      clientLocation = false,
     } = {},
   } = props;
 
@@ -141,6 +142,7 @@ const EditTaskModal = (props) => {
             startTime: startTime ? moment(startTime, hourFormatAPI) : '',
             endTime: endTime ? moment(endTime, hourFormatAPI) : '',
             notes,
+            clientLocation,
           }}
         >
           <Row gutter={[24, 0]} className={styles.abovePart}>
@@ -220,7 +222,7 @@ const EditTaskModal = (props) => {
               </Form.Item>
             </Col>
             <Col xs={24}>
-              <Form.Item labelCol={{ span: 24 }} name="isClientLocation" valuePropName="checked">
+              <Form.Item labelCol={{ span: 24 }} name="clientLocation" valuePropName="checked">
                 <Checkbox>Client Location</Checkbox>
               </Form.Item>
             </Col>

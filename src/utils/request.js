@@ -67,8 +67,8 @@ import { getToken } from './token';
 //   })(url, options);
 // };
 
-const request = async (url, options = {}, noAuth, apiUrlName = 'BASE_API', params) => {
-  const { method = 'POST', data = {} } = options;
+const request = async (url, options = {}, noAuth, apiUrlName = 'BASE_API') => {
+  const { method = 'POST', data = {}, params = {} } = options;
   const token = getToken();
 
   const baseURL = proxy[apiUrlName];

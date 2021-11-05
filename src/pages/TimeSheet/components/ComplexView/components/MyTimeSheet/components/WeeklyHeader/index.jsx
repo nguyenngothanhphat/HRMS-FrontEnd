@@ -1,18 +1,12 @@
-import { MinusOutlined } from '@ant-design/icons';
-import { Button, DatePicker } from 'antd';
+import { Button } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import AddIcon from '@/assets/timeSheet/add.svg';
-import CalendarIcon from '@/assets/timeSheet/calendar.svg';
-import NextIcon from '@/assets/timeSheet/next.svg';
-import PrevIcon from '@/assets/timeSheet/prev.svg';
-import { rangePickerFormat } from '@/utils/timeSheet';
 import AddTaskModal from '@/pages/TimeSheet/components/ComplexView/components/AddTaskModal';
+import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import ImportModal from '@/pages/TimeSheet/components/ComplexView/components/ImportModal';
 import styles from './index.less';
-
-const { RangePicker } = DatePicker;
 
 const WeeklyHeader = (props) => {
   const {
@@ -49,25 +43,13 @@ const WeeklyHeader = (props) => {
   return (
     <div className={styles.WeeklyHeader}>
       <div className={styles.WeeklyHeader__left}>
-        <div className={styles.prevWeek} onClick={onPrevWeekClick}>
-          <img src={PrevIcon} alt="" />
-        </div>
-        <div className={styles.rangePicker}>
-          <RangePicker
-            format={rangePickerFormat}
-            separator={<MinusOutlined className={styles.minusSeparator} />}
-            value={[startDate, endDate]}
-            onChange={onDatePickerChange}
-            allowClear={false}
-            disabled
-            suffixIcon={
-              <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
-            }
-          />
-        </div>
-        <div className={styles.nextWeek} onClick={onNextWeekClick}>
-          <img src={NextIcon} alt="" />
-        </div>
+        <CustomRangePicker
+          startDate={startDate}
+          endDate={endDate}
+          onPrevClick={onPrevWeekClick}
+          onNextClick={onNextWeekClick}
+          onChange={onDatePickerChange}
+        />
       </div>
       <div className={styles.WeeklyHeader__middle}>{viewChangeComponent()}</div>
       <div className={styles.WeeklyHeader__right}>

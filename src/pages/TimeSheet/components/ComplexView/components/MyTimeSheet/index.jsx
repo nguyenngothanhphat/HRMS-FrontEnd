@@ -2,7 +2,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { getCurrentCompany } from '@/utils/authority';
-import ViewChange from './components/ViewChange';
+import ViewTypeSelector from '@/pages/TimeSheet/components/ComplexView/components/ViewTypeSelector';
 import DailyHeader from './components/DailyHeader';
 import WeeklyHeader from './components/WeeklyHeader';
 import MonthlyHeader from './components/MonthlyHeader';
@@ -118,7 +118,7 @@ const MyTimeSheet = (props) => {
 
   // RENDER UI
   const viewChangeComponent = () => (
-    <ViewChange selectedView={selectedView} setSelectedView={setSelectedView} />
+    <ViewTypeSelector selectedView={selectedView} setSelectedView={setSelectedView} />
   );
 
   const renderHeader = () => {

@@ -8,7 +8,7 @@
 .AddTaskModal {
   :global {
     .ant-modal-body {
-      max-height: 500px;
+      max-height: 530px;
       overflow-y: auto;
     }
     .ant-form-item-explain {
@@ -198,6 +198,30 @@
     .abovePart,
     .belowPart {
       padding: 16px 24px !important;
+      .removeBtn {
+        display: flex;
+        justify-content: flex-end;
+        .btn {
+          display: flex;
+          align-items: center;
+          margin-top: -8px;
+          cursor: pointer;
+          img {
+            height: 16px;
+            margin-top: -2px;
+            padding-right: 5px;
+          }
+          span {
+            display: inline-block;
+            color: #f44e21;
+            font-weight: 500;
+            font-size: 12px;
+          }
+          &:hover {
+            opacity: 0.8;
+          }
+        }
+      }
     }
     .abovePart {
       border-bottom: 1px solid #d6dce0;
