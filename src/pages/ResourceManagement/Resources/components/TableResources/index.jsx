@@ -233,6 +233,29 @@ class TableTickets extends PureComponent {
           }
           console.log(`value: ${JSON.stringify(obj)}`);
           return obj;
+          // {
+          //   title: 'Actions',
+          //   //dataIndex: 'subject',
+          //   key: 'action',
+          //   //render: ({ row }) => (<button onClick={(e) => this.handleButtonClick(e, row)}>Click Me</button>)
+          //   render: (action) => (<Button.Group>
+          //     <Button style={{marginRight: '15px', width: '45px', height: '45px',borderRadius: '50%'}} 
+          //     onClick={() => this.showAlert(action)}>
+          //       <img src={addAction} alt="attachIcon"/>
+          //       </Button>
+          //     <Button style={{width: '45px', height: '45px',borderRadius: '50%'}}>
+          //       <img src={historyIcon} alt="historyIcon"/>
+          //     </Button>
+          //   </Button.Group>)
+          // }
+          // showAlert = (row) => {
+          //   alert(JSON.stringify(row))
+        
+          //   // Modal.confirm({
+          //   //   title: checkPropss
+          //   // })
+          // }
+        
         },
       },
     ];
