@@ -27,7 +27,6 @@ class TableContainer extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      tabs: [{ id: 1, name: 'Customers' }],
       visible: false,
       isShown: false,
     };
@@ -161,11 +160,17 @@ class TableContainer extends PureComponent {
     });
   };
 
+  addZeroToNumber = (number) => {
+    if (number < 10 && number >= 0) return `0${number}`.slice(-2);
+    return number;
+  };
+
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { listCustomer, loadingCustomer } = this.props;
-    const { tabs, visible, isShown } = this.state;
+    const { listCustomer, loadingCustomer, companiesOfUser = [] } = this.props;
+    const { visible, isShown } = this.state;
+    const tabs = [{ id: 1, name: `Customers (${this.addZeroToNumber(listCustomer.length)})` }];
 
     const listStatus = [
       <Select.Option key="Engaging">Engaging</Select.Option>,
@@ -175,7 +180,11 @@ class TableContainer extends PureComponent {
     ];
     const filter = (
       <>
-        <MenuFilter onSubmit={this.handleSubmit} listStatus={listStatus} />
+        <MenuFilter
+          onSubmit={this.handleSubmit}
+          listStatus={listStatus}
+          listCompany={companiesOfUser}
+        />
         <div className={styles.btnForm}>
           <Button
             className={styles.btnClose}

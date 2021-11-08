@@ -115,7 +115,7 @@ class Projects extends PureComponent {
       <div className={styles.Projects}>
         <div className={styles.documentHeader}>
           <div className={styles.documentHeaderTitle}>
-            <p>Projects</p>
+            <span>Projects</span>
           </div>
           <div className={styles.documentHeaderFunction}>
             {/* Filter */}
@@ -125,23 +125,24 @@ class Projects extends PureComponent {
                 content={filter}
                 title={() => (
                   <div className={styles.popoverHeader}>
-                    <p className={styles.headTitle}>Filters</p>
-                    <p
+                    <span className={styles.headTitle}>Filters</span>
+                    <span
                       className={styles.closeIcon}
                       style={{ cursor: 'pointer' }}
                       onClick={this.handleVisible}
                     >
                       <img src={cancelIcon} alt="close" />
-                    </p>
+                    </span>
                   </div>
                 )}
                 trigger="click"
                 visible={isUnhide}
                 onVisibleChange={this.handleVisible}
+                overlayClassName={styles.FilterPopover}
               >
                 <div className={styles.filterButton} style={{ cursor: 'pointer' }}>
                   <FilterIcon />
-                  <p className={styles.textButtonFilter}>Filter</p>
+                  <span className={styles.textButtonFilter}>Filter</span>
                 </div>
               </Popover>
             </div>

@@ -8,6 +8,7 @@
       border-radius: 0 8px 8px 0;
       .ant-modal-close-x {
         color: #fff;
+        line-height: 48px;
       }
       .ant-popover-inner {
         background-color: #000;
@@ -50,15 +51,13 @@
       border-radius: 5px !important;
     }
     .ant-select-selection-item,
-    .ant-select-single .ant-select-selector .ant-select-selection-item,
-    .ant-select-single .ant-select-selector .ant-select-selection-placeholder {
+    .ant-select-selection-placeholder {
       font-size: 13px !important;
       line-height: 38px !important;
     }
     .ant-select-multiple {
-      .ant-select-selection-item,
-      .ant-select-single .ant-select-selector .ant-select-selection-item,
-      .ant-select-single .ant-select-selector .ant-select-selection-placeholder {
+      .ant-select-selection-item {
+        font-size: 13px;
         line-height: unset !important;
         background: #ffffff;
         border: 1px solid #d6dce0;
@@ -72,6 +71,9 @@
           border-radius: 50%;
         }
       }
+    }
+    .ant-select-multiple .ant-select-selection-item-remove > * {
+      line-height: 0;
     }
     .ant-input {
       height: 40px;

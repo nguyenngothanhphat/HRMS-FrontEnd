@@ -2,6 +2,7 @@ import { Form, Select } from 'antd';
 import React, { PureComponent } from 'react';
 import style from './index.less';
 
+const { Option } = Select;
 class MenuFilter extends PureComponent {
   constructor(props) {
     super(props);
@@ -13,7 +14,7 @@ class MenuFilter extends PureComponent {
   };
 
   render() {
-    const { listStatus } = this.props;
+    const { listStatus = [], listCompany = [] } = this.props;
     const yesNo = [
       <Select.Option key="yes">Yes</Select.Option>,
       <Select.Option key="no">No</Select.Option>,
@@ -48,7 +49,9 @@ class MenuFilter extends PureComponent {
               placeholder="Please select"
               onChange={this.handleChange}
             >
-              {listStatus}
+              {listCompany.map((company) => (
+                <Option value={company._id}>{company.name}</Option>
+              ))}
             </Select>
           </Form.Item>
           <Form.Item label="By Open Leads" name="byOpenLeads">
