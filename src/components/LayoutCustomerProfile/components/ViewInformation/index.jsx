@@ -1,14 +1,13 @@
+import { Button, Col, Divider, Row, Tag, Tooltip } from 'antd';
 import React, { Component } from 'react';
-import { Divider, Button, Tooltip, Tag, Row, Col } from 'antd';
-
 import { connect, Link } from 'umi';
-
-import { UserOutlined } from '@ant-design/icons';
-import plusIcon from '../../../../assets/plus-Icon.svg';
 import avtDefault from '@/assets/avtDefault.jpg';
 import linkedinIcon from '@/assets/linkedinIcon.svg';
+import MockCustomerLogo from '@/assets/mockCustomerLogo.png';
 import websiteIcon from '@/assets/websiteIcon.svg';
+import plusIcon from '../../../../assets/plus-Icon.svg';
 import s from '../../index.less';
+
 // import { getCurrentTenant } from '@/utils/authority';
 
 @connect(({ loading, customerProfile: { listTag = [], info = {} } = {} }) => ({
@@ -60,7 +59,7 @@ class ViewInformation extends Component {
           alt="img-cover"
           className={s.infoEmployee__imgCover}
         />
-        <img src={<UserOutlined /> || avatar} alt="img-avt" className={s.infoEmployee__imgAvt} />
+        <img src={avatar || MockCustomerLogo} alt="img-avt" className={s.infoEmployee__imgAvt} />
         {/* {(permissions.updateAvatarEmployee !== -1 || profileOwner) && ( */}
         <img
           src="/assets/images/iconUploadImage.svg"
@@ -82,36 +81,36 @@ class ViewInformation extends Component {
           <div className={s.infoEmployee__viewBottom__row}>
             <Row>
               <Col span={18}>
-                <p>Company alias (DBA):</p>
+                <p className={s.label}>Company alias (DBA):</p>
               </Col>
               <Col span={6}>
-                <p>{name}</p>
+                <p className={s.value}>{name}</p>
               </Col>
             </Row>
             <Row>
               <Col span={18}>
-                <p>Customer ID:</p>
+                <p className={s.label}>Customer ID:</p>
               </Col>
               <Col span={6}>
-                <p>{customerId}</p>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col span={18}>
-                <p>Status:</p>
-              </Col>
-              <Col span={6}>
-                <p>{status}</p>
+                <p className={s.value}>{customerId}</p>
               </Col>
             </Row>
 
             <Row>
               <Col span={18}>
-                <p>Account Owner:</p>
+                <p className={s.label}>Status:</p>
               </Col>
               <Col span={6}>
-                <Link>{nameLegal}</Link>
+                <p className={s.value}>{status}</p>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col span={18}>
+                <p className={s.label}>Account Owner:</p>
+              </Col>
+              <Col span={6}>
+                <Link className={s.value}>{nameLegal}</Link>
               </Col>
             </Row>
           </div>
@@ -121,28 +120,28 @@ class ViewInformation extends Component {
           <div className={s.infoEmployee__viewBottom__row}>
             <Row>
               <Col span={18}>
-                <p>Open Leads:</p>
+                <p className={s.label}>Open Leads:</p>
               </Col>
               <Col span={6}>
-                <p>{openLeads}</p>
+                <p className={s.value}>{openLeads}</p>
               </Col>
             </Row>
 
             <Row>
               <Col span={18}>
-                <p>Active Projects:</p>
+                <p className={s.label}>Active Projects:</p>
               </Col>
               <Col span={6}>
-                <Link>{activeProject}</Link>
+                <Link className={s.value}>{activeProject}</Link>
               </Col>
             </Row>
 
             <Row>
               <Col span={18}>
-                <p>Open Tickets:</p>
+                <p className={s.label}>Open Tickets:</p>
               </Col>
               <Col span={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <p>{pendingTickets}</p>
+                <p className={s.value}>{pendingTickets}</p>
                 <img
                   style={{ display: 'inline-block', paddingBottom: '13px', paddingLeft: '8px' }}
                   src={plusIcon}
@@ -153,10 +152,10 @@ class ViewInformation extends Component {
 
             <Row>
               <Col span={18}>
-                <p>Open Tasks:</p>
+                <p className={s.label}>Open Tasks:</p>
               </Col>
               <Col span={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <p>{pendingTasks}</p>
+                <p className={s.value}>{pendingTasks}</p>
                 <img
                   style={{ display: 'inline-block', paddingBottom: '13px', paddingLeft: '8px' }}
                   src={plusIcon}
@@ -181,15 +180,13 @@ class ViewInformation extends Component {
           <div style={{ textAlign: 'center' }} className={s.infoEmployee__socialMedia}>
             <Tooltip title="LinkedIn" style={{ marginRight: '10px' }}>
               <a href="" target="_blank" rel="noopener noreferrer">
-                <img src={linkedinIcon} alt="img-arrow" style={{ cursor: 'pointer' }} />
+                <img src={linkedinIcon} alt="img-arrow" />
               </a>
             </Tooltip>
             <Tooltip title="website">
-              <img
-                src={websiteIcon}
-                alt="img-arrow"
-                style={{ marginLeft: '5px', cursor: 'pointer' }}
-              />
+              <a href="" target="_blank" rel="noopener noreferrer">
+                <img src={websiteIcon} alt="img-arrow" />
+              </a>
             </Tooltip>
           </div>
         </div>

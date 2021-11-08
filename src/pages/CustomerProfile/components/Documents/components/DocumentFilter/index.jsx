@@ -6,7 +6,7 @@ class DocumentFilter extends PureComponent {
   render() {
     const { onFilter, documentType, companiesOfUser } = this.props;
     return (
-      <div className={style.docFilter} style={{ width: '350px' }}>
+      <div className={style.docFilter}>
         <Form layout="vertical" name="filter" onFinish={(values) => onFilter(values)}>
           <Form.Item label="By Type" name="byType">
             <Select

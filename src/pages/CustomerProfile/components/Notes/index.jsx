@@ -67,35 +67,26 @@ class Notes extends PureComponent {
     });
   };
 
-  generateColumns = () => {
-    const columns = [
-      {
-        // title: 'Project ID',
-        dataIndex: 'text',
-        align: 'left',
-        fixed: 'left',
-        width: '10%',
-        render: (text, item) => {
-          const time = moment(item.created_at).format('DD MMM, YY');
+  renderNotes = () => {
+    const { notes } = this.props;
+
+    return (
+      <div className={styles.documentBody}>
+        {notes.map((note) => {
+          const { owner = '', text = '' } = note;
+          const time = moment(note.created_at).locale('en').format('DD MMM YY');
           return (
-            <div className={styles.tableRow}>
-              <div className={styles.itemTop}>
-                <p className={styles.itemTopTitle}>{text}</p>
-                <Link>{item.owner}</Link>
-                <span style={{ textTransform: 'capitalize' }} className={styles.itemSpan}>
-                  {time}
-                </span>
+            <div className={styles.note}>
+              <p>{text}</p>
+              <div className={styles.smallText}>
+                <span className={styles.author}>{owner}</span>
+                <span className={styles.time}>{time}</span>
               </div>
             </div>
           );
-        },
-      },
-    ];
-
-    return columns.map((col) => ({
-      ...col,
-      title: col.title,
-    }));
+        })}
+      </div>
+    );
   };
 
   addNote = (values) => {
@@ -116,7 +107,7 @@ class Notes extends PureComponent {
 
   render() {
     const { isUnhide } = this.state;
-    const { notes, listEmployeeActive } = this.props;
+    const { listEmployeeActive } = this.props;
 
     const filter = (
       <>
@@ -142,7 +133,7 @@ class Notes extends PureComponent {
       <div className={styles.Notes}>
         <div className={styles.documentHeader}>
           <div className={styles.documentHeaderTitle}>
-            <p>Notes</p>
+            <span>Notes</span>
           </div>
           <div className={styles.documentHeaderFunction}>
             {/* Filter */}
@@ -152,23 +143,24 @@ class Notes extends PureComponent {
                 content={filter}
                 title={() => (
                   <div className={styles.popoverHeader}>
-                    <p className={styles.headTitle}>Filters</p>
-                    <p
+                    <span className={styles.headTitle}>Filters</span>
+                    <span
                       className={styles.closeIcon}
                       style={{ cursor: 'pointer' }}
                       onClick={this.handleVisible}
                     >
                       <img src={cancelIcon} alt="close" />
-                    </p>
+                    </span>
                   </div>
                 )}
                 trigger="click"
                 visible={isUnhide}
                 onVisibleChange={this.handleVisible}
+                overlayClassName={styles.FilterPopover}
               >
                 <div className={styles.filterButton} style={{ cursor: 'pointer' }}>
                   <FilterIcon />
-                  <p className={styles.textButtonFilter}>Filter</p>
+                  <span className={styles.textButtonFilter}>Filter</span>
                 </div>
               </Popover>
             </div>
@@ -178,17 +170,12 @@ class Notes extends PureComponent {
             </div>
           </div>
         </div>
-        <div className={styles.documentBody}>
-          <Table
-            columns={this.generateColumns()}
-            dataSource={notes}
-            pagination={false}
-            scroll={{ y: 500 }}
-          />
-        </div>
+
+        {this.renderNotes()}
+
         <div className={styles.notesFooter}>
           <Form ref={this.refForm} layout="horizontal" onFinish={(values) => this.addNote(values)}>
-            <Row gutter={48}>
+            <Row gutter={48} align="middle">
               <Col span={20}>
                 <Form.Item name="note">
                   <Input placeholder="Add a note for reference" />

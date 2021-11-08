@@ -27,14 +27,11 @@ class TableContainer extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      tabs: [{ id: 1, name: 'Customers' }],
       visible: false,
       isShown: false,
     };
     this.refForm = React.createRef();
-    this.delaySearch = debounce((value) => {
-      this.handleSearch(value);
-    }, 500);
+    this.onSearchDebounce = debounce(this.onSearchDebounce, 500);
   }
 
   componentDidMount() {
@@ -94,12 +91,19 @@ class TableContainer extends PureComponent {
     });
   };
 
-  handleSearch = (e) => {
+  onSearch = (e = {}) => {
+    const { value = '' } = e.target;
+    this.onSearchDebounce(value);
+  };
+
+  onSearchDebounce = (value) => {
     const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'customerProfile/fetch'
-    // })
-    console.log(e);
+    dispatch({
+      type: 'customerManagement/fetchCustomerList',
+      payload: {
+        searchKey: value,
+      },
+    });
   };
 
   // add new Customer
@@ -156,11 +160,17 @@ class TableContainer extends PureComponent {
     });
   };
 
+  addZeroToNumber = (number) => {
+    if (number < 10 && number >= 0) return `0${number}`.slice(-2);
+    return number;
+  };
+
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { listCustomer, loadingCustomer } = this.props;
-    const { tabs, visible, isShown } = this.state;
+    const { listCustomer, loadingCustomer, companiesOfUser = [] } = this.props;
+    const { visible, isShown } = this.state;
+    const tabs = [{ id: 1, name: `Customers (${this.addZeroToNumber(listCustomer.length)})` }];
 
     const listStatus = [
       <Select.Option key="Engaging">Engaging</Select.Option>,
@@ -170,7 +180,11 @@ class TableContainer extends PureComponent {
     ];
     const filter = (
       <>
-        <MenuFilter onSubmit={this.handleSubmit} listStatus={listStatus} />
+        <MenuFilter
+          onSubmit={this.handleSubmit}
+          listStatus={listStatus}
+          listCompany={companiesOfUser}
+        />
         <div className={styles.btnForm}>
           <Button
             className={styles.btnClose}
@@ -189,10 +203,10 @@ class TableContainer extends PureComponent {
 
     const menu = (
       <div className={styles.tabExtraContent}>
-        <p className={styles.buttonAddImport} onClick={this.showModal}>
+        <div className={styles.buttonAddImport} onClick={this.showModal}>
           <PlusOutlined />
           Add new customer
-        </p>
+        </div>
         <Popover
           placement="bottomRight"
           content={filter}
@@ -211,6 +225,7 @@ class TableContainer extends PureComponent {
           trigger="click"
           visible={visible}
           onVisibleChange={this.handleVisible}
+          overlayClassName={styles.FilterPopover}
         >
           <div className={styles.filterButton}>
             <FilterIcon />
@@ -221,7 +236,7 @@ class TableContainer extends PureComponent {
           <Input
             placeholder="Search by Company Name, ID, Account Owner"
             prefix={<SearchOutlined />}
-            onChange={(e) => this.delaySearch(e)}
+            onChange={(e) => this.onSearch(e)}
           />
         </div>
       </div>

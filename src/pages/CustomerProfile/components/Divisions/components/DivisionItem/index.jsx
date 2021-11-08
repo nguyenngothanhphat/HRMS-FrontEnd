@@ -44,92 +44,104 @@ class DivisionItem extends PureComponent {
       <div>
         <Row className={styles.divisionSecondary}>
           <Col span={12}>
-            <p>Division ID:</p>
+            <p className={styles.label}>Division ID:</p>
           </Col>
           <Col span={12}>
-            <p>{devisionId}</p>
+            <p className={styles.value}>{devisionId}</p>
           </Col>
 
           <Col span={12}>
-            <p>Division Name:</p>
+            <p className={styles.label}>Division Name:</p>
           </Col>
           <Col span={12}>
-            <p>{devisionName}</p>
+            <p className={styles.value}>{devisionName}</p>
           </Col>
 
           <Col span={12} style={{ marginBottom: '0' }}>
-            <p style={{ marginBottom: '0' }}>Primary POC Name:</p>
+            <p className={styles.label} style={{ marginBottom: '0' }}>
+              Primary POC Name:
+            </p>
           </Col>
           <Col span={12} style={{ marginBottom: '0' }}>
-            <p style={{ marginBottom: '0' }}>{primaryPOCName}</p>
+            <p className={styles.value} style={{ marginBottom: '0' }}>
+              {primaryPOCName}
+            </p>
           </Col>
         </Row>
         <Row className={styles.divisionPrimary}>
           <Col span={12}>
-            <p>Primary POC Name:</p>
+            <p className={styles.label}>Primary POC Name:</p>
           </Col>
           <Col span={12}>
-            <p>{primaryPOCName}</p>
-          </Col>
-
-          <Col span={12}>
-            <p>Primary POC Ph No.</p>
-          </Col>
-          <Col span={12}>
-            <p>{primaryPOCNumber}</p>
+            <p className={styles.value}>{primaryPOCName}</p>
           </Col>
 
           <Col span={12}>
-            <p>Primary POC Email ID:</p>
+            <p className={styles.label}>Primary POC Ph No.</p>
           </Col>
           <Col span={12}>
-            <p>{primaryPOCEmail}</p>
+            <p className={styles.value}>{primaryPOCNumber}</p>
+          </Col>
+
+          <Col span={12}>
+            <p className={styles.label}>Primary POC Email ID:</p>
+          </Col>
+          <Col span={12}>
+            <p className={styles.value}>{primaryPOCEmail}</p>
           </Col>
 
           <Col span={12} style={{ marginBottom: '0' }}>
-            <p style={{ marginBottom: '0' }}>Primary POC Designation:</p>
+            <p className={styles.label} style={{ marginBottom: '0' }}>
+              Primary POC Designation:
+            </p>
           </Col>
           <Col span={12} style={{ marginBottom: '0' }}>
-            <p style={{ marginBottom: '0' }}>{primaryPOCDesignation}</p>
+            <p className={styles.value} style={{ marginBottom: '0' }}>
+              {primaryPOCDesignation}
+            </p>
           </Col>
         </Row>
 
         <Row className={styles.divisionPrimary}>
           <Col span={12}>
-            <p>Secondary POC Name:</p>
+            <p className={styles.label}>Secondary POC Name:</p>
           </Col>
           <Col span={12}>
-            <p>{secondaryPOCName}</p>
-          </Col>
-
-          <Col span={12}>
-            <p>Secondary POC Ph No.</p>
-          </Col>
-          <Col span={12}>
-            <p>{secondaryPOCNumber}</p>
+            <p className={styles.value}>{secondaryPOCName}</p>
           </Col>
 
           <Col span={12}>
-            <p>Secondary POC Email ID:</p>
+            <p className={styles.label}>Secondary POC Ph No.</p>
           </Col>
           <Col span={12}>
-            <p>{secondaryPOCEmail}</p>
+            <p className={styles.value}>{secondaryPOCNumber}</p>
+          </Col>
+
+          <Col span={12}>
+            <p className={styles.label}>Secondary POC Email ID:</p>
+          </Col>
+          <Col span={12}>
+            <p className={styles.value}>{secondaryPOCEmail}</p>
           </Col>
 
           <Col span={12} style={{ marginBottom: '0' }}>
-            <p style={{ marginBottom: '0' }}>Secondary POC Designation:</p>
+            <p className={styles.label} style={{ marginBottom: '0' }}>
+              Secondary POC Designation:
+            </p>
           </Col>
           <Col span={12} style={{ marginBottom: '0' }}>
-            <p style={{ marginBottom: '0' }}>{secondaryPOCDesignation}</p>
+            <p className={styles.value} style={{ marginBottom: '0' }}>
+              {secondaryPOCDesignation}
+            </p>
           </Col>
         </Row>
 
         <Row style={{ padding: '24px 0 5px 32px' }}>
           <Col span={12} style={{ margin: '0' }}>
-            <p>Address Line 1</p>
+            <p className={styles.label}>Address Line 1</p>
           </Col>
           <Col span={12} style={{ margin: '0' }}>
-            <p>{addressLine1}</p>
+            <p className={styles.value}>{addressLine1}</p>
           </Col>
         </Row>
         <div
@@ -138,45 +150,45 @@ class DivisionItem extends PureComponent {
         >
           <Row>
             <Col span={12}>
-              <p>Address Line 1</p>
+              <p className={styles.label}>Address Line 1</p>
             </Col>
             <Col span={12}>
-              <p>{addressLine1}</p>
-            </Col>
-
-            <Col span={12}>
-              <p>Address Line 2</p>
-            </Col>
-            <Col span={12}>
-              <p>{addressLine2}</p>
+              <p className={styles.value}>{addressLine1}</p>
             </Col>
 
             <Col span={12}>
-              <p>City</p>
+              <p className={styles.label}>Address Line 2</p>
             </Col>
             <Col span={12}>
-              <p>{city}</p>
-            </Col>
-
-            <Col span={12}>
-              <p>State</p>
-            </Col>
-            <Col span={12}>
-              <p>{state}</p>
+              <p className={styles.value}>{addressLine2}</p>
             </Col>
 
             <Col span={12}>
-              <p>Country</p>
+              <p className={styles.label}>City</p>
             </Col>
             <Col span={12}>
-              <p>{country}</p>
+              <p className={styles.value}>{city}</p>
             </Col>
 
             <Col span={12}>
-              <p>Zip/Postal Code</p>
+              <p className={styles.label}>State</p>
             </Col>
             <Col span={12}>
-              <p>{postalCode}</p>
+              <p className={styles.value}>{state}</p>
+            </Col>
+
+            <Col span={12}>
+              <p className={styles.label}>Country</p>
+            </Col>
+            <Col span={12}>
+              <p className={styles.value}>{country}</p>
+            </Col>
+
+            <Col span={12}>
+              <p className={styles.label}>Zip/Postal Code</p>
+            </Col>
+            <Col span={12}>
+              <p className={styles.value}>{postalCode}</p>
             </Col>
           </Row>
         </div>

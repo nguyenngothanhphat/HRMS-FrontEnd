@@ -20,6 +20,45 @@ class ContactInfo extends PureComponent {
         contactEmail = '',
       } = {},
     } = this.props;
+
+    const items = [
+      {
+        name: 'Contact Phone',
+        value: contactPhone,
+      },
+      {
+        name: 'Contact Email',
+        value: contactEmail,
+      },
+      {
+        name: 'Website',
+        value: website,
+      },
+      {
+        name: 'Address Line 1',
+        value: addressLine1,
+      },
+      {
+        name: 'Address Line 2',
+        value: addressLine2,
+      },
+      {
+        name: 'City',
+        value: city,
+      },
+      {
+        name: 'State',
+        value: state,
+      },
+      {
+        name: 'Country',
+        value: country,
+      },
+      {
+        name: 'Zip/Postal Code',
+        value: postalCode,
+      },
+    ];
     return (
       <div className={styles.ContactInfo}>
         {/* header */}
@@ -33,75 +72,18 @@ class ContactInfo extends PureComponent {
         {/* body */}
         <div className={styles.contactInfoBody}>
           <Row>
-            <Col span={12}>
-              <p>Contact Phone</p>
-            </Col>
-            <Col span={12}>
-              <p> {contactPhone} </p>
-            </Col>
-
-            <Col span={12}>
-              <p>Contact Email</p>
-            </Col>
-            <Col span={12}>
-              <p>{contactEmail}</p>
-            </Col>
-
-            <Col span={12}>
-              <p>Website</p>
-            </Col>
-            <Col span={12}>
-              <p>{website}</p>
-            </Col>
-
-            <Col span={12}>
-              <p>Address Line 1</p>
-            </Col>
-            <Col span={12}>
-              <p>{addressLine1}</p>
-            </Col>
-
-            <Col span={12}>
-              <p>Address Line 1</p>
-            </Col>
-            <Col span={12}>
-              <p>{addressLine1}</p>
-            </Col>
-
-            <Col span={12}>
-              <p>Address Line 2</p>
-            </Col>
-            <Col span={12}>
-              <p>{addressLine2}</p>
-            </Col>
-
-            <Col span={12}>
-              <p>City</p>
-            </Col>
-            <Col span={12}>
-              <p>{city}</p>
-            </Col>
-
-            <Col span={12}>
-              <p>State</p>
-            </Col>
-            <Col span={12}>
-              <p>{state}</p>
-            </Col>
-
-            <Col span={12}>
-              <p>Country</p>
-            </Col>
-            <Col span={12}>
-              <p>{country}</p>
-            </Col>
-
-            <Col span={12}>
-              <p>Zip/Postal Code</p>
-            </Col>
-            <Col span={12}>
-              <p>{postalCode}</p>
-            </Col>
+            {items.map((val) => {
+              return (
+                <>
+                  <Col span={8}>
+                    <p className={styles.label}>{val.name}</p>
+                  </Col>
+                  <Col span={16}>
+                    <p className={styles.value}>{val.value}</p>
+                  </Col>
+                </>
+              );
+            })}
           </Row>
         </div>
       </div>

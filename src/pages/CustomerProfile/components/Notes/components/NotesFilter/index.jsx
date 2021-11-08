@@ -6,7 +6,7 @@ class NotestFilter extends PureComponent {
   render() {
     const { onSubmit, listEmployeeActive } = this.props;
     return (
-      <div className={style.docFilter} style={{ width: '350px' }}>
+      <div className={style.docFilter}>
         <Form layout="vertical" name="filter" onFinish={(values) => onSubmit(values)}>
           <Form.Item label="By Author" name="byAuthor">
             <Select allowClear style={{ width: '100%' }} placeholder="Please select">
@@ -27,7 +27,7 @@ class NotestFilter extends PureComponent {
                 </Form.Item>
               </Col>
               <Col span={2}>
-                <p>to</p>
+                <span>to</span>
               </Col>
               <Col span={11}>
                 <Form.Item name="toDate">

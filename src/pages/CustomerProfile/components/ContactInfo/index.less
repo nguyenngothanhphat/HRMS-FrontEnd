@@ -1,34 +1,50 @@
 .ContactInfo {
-    background-color: #fff;
-    border-radius: 5px;
-    .contactInfoHeader{
-      padding: 32px;
-      display: flex;
-      justify-content: space-between;
-      border-bottom: 1px solid #D6DCE0;
-      p{
-        margin: 0;
-        &>img{
-          margin-right: 16px;
-        }
-        &.contactInfoHeaderTitle{
-          font-weight: 700;
-        }
+  box-sizing: border-box;
+  background-color: #fff;
+  border: 1px solid #d6dce0;
+  border-radius: 5px;
+  p {
+    margin-bottom: 0;
+  }
+  .contactInfoHeader {
+    display: flex;
+    justify-content: space-between;
+    padding: 32px;
+    border-bottom: 1px solid #d6dce0;
+    p {
+      margin: 0;
+      & > img {
+        margin-right: 16px;
+      }
+      &.contactInfoHeaderTitle {
+        color: #161c29;
+        font-weight: 700;
+        font-size: 16px;
       }
     }
+  }
 
-    .btnEdit{
-      font-weight: 700;
-      cursor: pointer;
-      color: #2C6DF9;
-    }
+  .label {
+    color: #707177;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  .value {
+    color: #161c29;
+    font-size: 16px;
+  }
+  .btnEdit {
+    color: #2c6df9;
+    font-weight: 700;
+    cursor: pointer;
+  }
 
-    .contactInfoBody{
-      padding: 32px 0 0 32px;
-      :global{
-        .ant-col{
-            margin-bottom: 32px;
-        }
+  .contactInfoBody {
+    padding: 32px 0 0 32px;
+    :global {
+      .ant-col {
+        margin-bottom: 32px;
       }
     }
+  }
 }
