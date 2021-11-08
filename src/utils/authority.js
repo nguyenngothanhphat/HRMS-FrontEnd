@@ -132,7 +132,7 @@ export function initViewOffboarding() {
 
 export function setIsSigninGoogle(value) {
   localStorage.setItem('isSigninGoogle', value);
-  reloadAuthorized();
+  // reloadAuthorized();
 }
 export function getIsSigninGoogle() {
   const isSigninGoogle = localStorage.getItem('isSigninGoogle');
