@@ -10,11 +10,11 @@ import MyCalendar from './components/MyCalendar';
 import HolidayCalendar from './components/HolidayCalendar';
 import GoogleSync from './components/GoogleSync';
 import CommonModal from './components/CommonModal';
-import { getIsGoogleSignin } from '@/utils/authority';
+import { getIsSigninGoogle } from '@/utils/authority';
 
 const { TabPane } = Tabs;
 const dateFormat = 'DD MMM YYYY';
-const isGoogleSignIn = getIsGoogleSignin();
+const isGoogleSignIn = getIsSigninGoogle();
 
 const Calendar = (props) => {
   const [activeKey, setActiveKey] = useState('1');
