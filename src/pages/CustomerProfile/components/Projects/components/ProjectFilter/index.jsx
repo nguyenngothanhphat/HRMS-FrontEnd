@@ -6,7 +6,7 @@ class ProjectFilter extends PureComponent {
   render() {
     const { onSubmit, listTypes } = this.props;
     return (
-      <div className={style.docFilter} style={{ width: '350px' }}>
+      <div className={style.docFilter}>
         <Form layout="vertical" name="filter" onFinish={(values) => onSubmit(values)}>
           <Form.Item label="By Project Name" name="byProjectName">
             <Select
@@ -62,14 +62,14 @@ class ProjectFilter extends PureComponent {
             </Select>
           </Form.Item>
           <Form.Item label="By Start Date">
-            <Row gutter={24}>
+            <Row gutter={16}>
               <Col span={11}>
                 <Form.Item name="fromDateFrom">
                   <DatePicker format="MMM DD, YYYY" />
                 </Form.Item>
               </Col>
               <Col span={2}>
-                <p>to</p>
+                <span>to</span>
               </Col>
               <Col span={11} name="fromDateTo">
                 <Form.Item>
@@ -79,14 +79,14 @@ class ProjectFilter extends PureComponent {
             </Row>
           </Form.Item>
           <Form.Item label="By End Date">
-            <Row gutter={24}>
+            <Row gutter={16}>
               <Col span={11}>
                 <Form.Item name="toDateFrom">
                   <DatePicker format="MMM DD, YYYY" />
                 </Form.Item>
               </Col>
               <Col span={2}>
-                <p>to</p>
+                <span>to</span>
               </Col>
               <Col span={11} name="toDateTo">
                 <Form.Item>

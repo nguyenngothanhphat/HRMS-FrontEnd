@@ -1,7 +1,7 @@
+import { Table } from 'antd';
 import React, { PureComponent } from 'react';
-import { Col, Popover, Table, Row } from 'antd';
-import { formatMessage, history, connect, Link } from 'umi';
-import moment from 'moment';
+import { formatMessage, history } from 'umi';
+import UserProfilePopover from '../UserProfilePopover';
 import styles from './index.less';
 
 class TableCustomers extends PureComponent {
@@ -35,12 +35,12 @@ class TableCustomers extends PureComponent {
         width: '10%',
         render: (customerId) => {
           return (
-            <p
+            <div
               style={{ fontWeight: '700', color: '#2C6DF9' }}
               onClick={() => this.handleProfile(customerId)}
             >
               {customerId}
-            </p>
+            </div>
           );
         },
       },
@@ -49,31 +49,35 @@ class TableCustomers extends PureComponent {
         dataIndex: 'dba',
         align: 'center',
         width: '10%',
-        className: `${styles.employeeId} `,
+        render: (dba) => <span className={styles.blueText}>{dba}</span>,
       },
       {
         title: formatMessage({ id: 'page.customermanagement.openLeads' }),
         dataIndex: 'openLeads',
         width: '10%',
         align: 'center',
+        render: (openLeads) => <span className={styles.blueText}>{openLeads}</span>,
       },
       {
         title: formatMessage({ id: 'page.customermanagement.pendingTickets' }),
         dataIndex: 'pendingTickets',
         width: '10%',
         align: 'center',
+        render: (pendingTickets) => <span className={styles.blueText}>{pendingTickets}</span>,
       },
       {
         title: formatMessage({ id: 'page.customermanagement.pendingTasks' }),
         dataIndex: 'pendingTasks',
         width: '10%',
         align: 'center',
+        render: (pendingTasks) => <span className={styles.blueText}>{pendingTasks}</span>,
       },
       {
         title: formatMessage({ id: 'page.customermanagement.activeProjects' }),
         dataIndex: 'activeProjects',
         width: '10%',
         align: 'center',
+        render: (activeProjects) => <span className={styles.blueText}>{activeProjects}</span>,
       },
       {
         title: formatMessage({ id: 'page.customermanagement.status' }),
@@ -89,102 +93,11 @@ class TableCustomers extends PureComponent {
         width: '10%',
         render: (accountOwner) => {
           return (
-            <Popover
-              placement="left"
-              content={() => (
-                <div style={{ width: '380px', padding: '12px', borderRadius: '5px' }}>
-                  <div style={{ borderBottom: '1px solid #EAECEF' }}>
-                    <Row>
-                      <Col span={8}>
-                        <img
-                          src={
-                            accountOwner?.generalInfo.avatar ? accountOwner?.generalInfo.avatar : ''
-                          }
-                          alt="avatar"
-                        />
-                      </Col>
-                      <Col span={16}>
-                        <p style={{ fontWeight: '700' }}>
-                          {accountOwner?.generalInfo?.legalName
-                            ? accountOwner?.generalInfo?.legalName
-                            : ''}
-                        </p>
-                        <p>{accountOwner?.title?.name ? accountOwner?.title?.name : ''}</p>
-                        <p>
-                          {accountOwner?.department?.name ? accountOwner?.department?.name : ''}
-                        </p>
-                      </Col>
-                    </Row>
-                  </div>
-                  <div>
-                    <Row>
-                      <Col span={12}>
-                        <p>Reporting Manager:</p>
-                      </Col>
-                      <Col span={12}>
-                        <p>
-                          {accountOwner?.manager?.generalInfo?.firstName
-                            ? accountOwner?.manager?.generalInfo?.firstName
-                            : ''}
-                        </p>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={12}>
-                        <p>Mobile:</p>
-                      </Col>
-                      <Col span={12}>
-                        <p>{/* {accountOwner?.generalInfo?.firstName} */}</p>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={12}>
-                        <p>Email:</p>
-                      </Col>
-                      <Col span={12}>
-                        <p>
-                          {accountOwner?.generalInfo?.personalEmail
-                            ? accountOwner?.generalInfo.personalEmail
-                            : ''}
-                        </p>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={12}>
-                        <p>Location:</p>
-                      </Col>
-                      <Col span={12}>
-                        <p>
-                          {accountOwner?.location?.headQuarterAddress?.addressLine1
-                            ? accountOwner?.location?.headQuarterAddress?.addressLine1
-                            : ''}
-                        </p>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={12}>
-                        <p>Locaton Time:</p>
-                      </Col>
-                      <Col span={12}>
-                        <p />
-                      </Col>
-                    </Row>
-                  </div>
-                  <div style={{ borderTop: '1px solid #EAECEF', paddingTop: '20px' }}>
-                    <Link
-                      to={`/employees/employee-profile/${accountOwner?._id}`}
-                      style={{ textDecoration: 'underline' }}
-                    >
-                      View full profile
-                    </Link>
-                  </div>
-                </div>
-              )}
-            >
-              <p>
+            <UserProfilePopover data={accountOwner} placement="leftTop">
+              <span className={styles.blueText}>
                 {accountOwner?.generalInfo?.legalName ? accountOwner?.generalInfo?.legalName : ''}
-              </p>
-            </Popover>
+              </span>
+            </UserProfilePopover>
           );
         },
       },
@@ -267,7 +180,7 @@ class TableCustomers extends PureComponent {
     return (
       <div className={styles.tableCustomers}>
         <Table
-          size="small"
+          size="middle"
           loading={loadingCustomer}
           onRow={(record) => {
             return {

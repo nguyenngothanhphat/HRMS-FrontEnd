@@ -68,7 +68,7 @@ class CommonLayout extends PureComponent {
           className={s.affix}
         >
           <div className={s.viewLeft}>
-            <div className={s.viewLeft__menu} style={{ padding: '24px 0 24px 40px' }}>
+            <div className={s.viewLeft__menu}>
               {listMenu.map((item) => (
                 <ItemMenu
                   key={item.id}

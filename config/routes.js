@@ -479,7 +479,7 @@ const routes = [
           {
             path: '/customer-management',
             name: 'Customer Management',
-            icon: './assets/images/menuIcons/customer.svg',
+            icon: '/assets/images/menuIcons/customer.svg',
             // hideInMenu: true,
             component: './Customer',
             authority: [
@@ -496,7 +496,6 @@ const routes = [
           },
           {
             path: '/customer-management/:tabName',
-            icon: './assets/images/menuIcons/customer.svg',
             hideInMenu: true,
             component: './Customer',
             authority: [
@@ -514,7 +513,6 @@ const routes = [
           {
             path: '/customer-management/customers/customer-profile/:reId',
             hideInMenu: true,
-            icon: './assets/images/menuIcons/customer.svg',
             component: './CustomerProfile',
             authority: [
               'hr-manager',
@@ -531,7 +529,6 @@ const routes = [
           {
             path: '/customer-management/customers/customer-profile/:reId/:tabName',
             hideInMenu: true,
-            icon: './assets/images/menuIcons/customer.svg',
             component: './CustomerProfile',
             authority: [
               'hr-manager',

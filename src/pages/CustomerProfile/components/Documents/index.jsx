@@ -284,7 +284,7 @@ class Documents extends PureComponent {
         align: 'center',
         render: (createdAt) => {
           const time = moment(createdAt).format('M/DD/YY');
-          return <p>{time}</p>;
+          return <span>{time}</span>;
         },
       },
       {
@@ -337,7 +337,7 @@ class Documents extends PureComponent {
   render() {
     const { viewDocumentModal, visible, isUnhide, uploadedAttachments, link, fileName } =
       this.state;
-    const { documents, documentType, companiesOfUser } = this.props;
+    const { documents, documentType, companiesOfUser, loadingDocument = false } = this.props;
 
     const filter = (
       <>
@@ -367,16 +367,16 @@ class Documents extends PureComponent {
       <div className={styles.Documents}>
         <div className={styles.documentHeader}>
           <div className={styles.documentHeaderTitle}>
-            <p>Documents</p>
+            <span>Documents</span>
           </div>
           <div className={styles.documentHeaderFunction}>
             {/* Add doc */}
-            <div>
-              <p className={styles.buttonAddImport} onClick={this.showModal}>
-                <PlusOutlined />
-                Add Document
-              </p>
+
+            <div className={styles.buttonAddImport} onClick={this.showModal}>
+              <PlusOutlined />
+              Add Document
             </div>
+
             <ModalAddDoc
               visible={visible}
               showModal={this.showModal}
@@ -391,29 +391,30 @@ class Documents extends PureComponent {
               onAddDoc={this.onAddDoc}
             />
             {/* Filter */}
-            <div>
+            <div className={styles.filterPopover}>
               <Popover
                 placement="bottomLeft"
                 content={filter}
                 title={() => (
                   <div className={styles.popoverHeader}>
-                    <p className={styles.headTitle}>Filters</p>
-                    <p
+                    <span className={styles.headTitle}>Filters</span>
+                    <span
                       className={styles.closeIcon}
                       style={{ cursor: 'pointer' }}
                       onClick={this.closeFilter}
                     >
                       <img src={cancelIcon} alt="close" />
-                    </p>
+                    </span>
                   </div>
                 )}
                 trigger="click"
                 visible={isUnhide}
                 onVisibleChange={this.closeFilter}
+                overlayClassName={styles.FilterPopover}
               >
                 <div className={styles.filterButton} style={{ cursor: 'pointer' }}>
                   <FilterIcon />
-                  <p className={styles.textButtonFilter}>Filter</p>
+                  <span className={styles.textButtonFilter}>Filter</span>
                 </div>
               </Popover>
             </div>
@@ -428,7 +429,7 @@ class Documents extends PureComponent {
           </div>
         </div>
         <div className={styles.documentBody}>
-          <Table columns={this.generateColumns()} dataSource={documents} pagination={false} />
+          <Table columns={this.generateColumns()} dataSource={documents} pagination={false} loading={loadingDocument} />
           <ViewDocumentModal
             url={link}
             visible={viewDocumentModal}
