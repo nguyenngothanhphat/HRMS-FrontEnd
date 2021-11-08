@@ -1,21 +1,29 @@
-.menuFilter{
-    padding: 20px;
-    width: 320px;
-    .btnForm{
-        width: 100%;
-        text-align: right;
-        .btnApply{
-            padding: 10px 27px;
-            margin-left: 20px;
-            border-radius: 25px;
-            background-color: #FFA100;
-            color: #fff;
-            border: none;
-            outline: none;
-        }
-        .btnClose{
-            border: none;
-            background-color: #fff;
-        }
+.menuFilter {
+  max-height: 400px;
+  padding: 16px;
+  overflow-y: auto;
+  :global {
+    .ant-form-item-label {
+      label {
+        color: #707177;
+        font-size: 12px;
+        text-transform: uppercase;
+      }
     }
+
+    .ant-select {
+      width: 100% !important;
+    }
+    .ant-select-selector {
+      height: 37px !important;
+      border: 1px solid #d6dce4 !important;
+      border-radius: 5px !important;
+    }
+    .ant-select-selection-item,
+    .ant-select-single .ant-select-selector .ant-select-selection-item,
+    .ant-select-single .ant-select-selector .ant-select-selection-placeholder {
+      font-size: 13px !important;
+      line-height: 35px !important;
+    }
+  }
 }

@@ -20,7 +20,7 @@ class MenuFilter extends PureComponent {
     ];
     const { onSubmit = () => {} } = this.props;
     return (
-      <div className={style.menuFilter} style={{ padding: '20px', width: '320px' }}>
+      <div className={style.menuFilter}>
         <Form
           ref={this.refForm}
           layout="vertical"

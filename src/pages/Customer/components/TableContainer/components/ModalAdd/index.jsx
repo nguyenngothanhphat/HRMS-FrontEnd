@@ -12,10 +12,12 @@ import warnIcon from '@/assets/warnIcon.svg';
       country = [],
       listTags = [],
       temp: { customerID = '' } = {},
+      employeeList = [],
     } = {},
     user: {
       currentUser: {
         employee: {
+          _id: accountOwnerId = '',
           generalInfo: { _id = '', firstName = '', middleName = '', lastName = '' } = {},
         } = {},
       } = {},
@@ -29,9 +31,12 @@ import warnIcon from '@/assets/warnIcon.svg';
     firstName,
     middleName,
     lastName,
+    employeeList,
+    accountOwnerId,
     loadingCustomerID: loading.effects['customerManagement/getCustomerID'],
     loadingTagList: loading.effects['customerManagement/fetchTagList'],
     loadingStateList: loading.effects['customerManagement/fetchStateByCountry'],
+    loadingEmployeeList: loading.effects['customerManagement/fetchEmployeeList'],
   }),
 )
 class ModalAdd extends PureComponent {
@@ -53,6 +58,9 @@ class ModalAdd extends PureComponent {
     });
     dispatch({
       type: 'customerManagement/fetchCountryList',
+    });
+    dispatch({
+      type: 'customerManagement/fetchEmployeeList',
     });
   }
 
@@ -100,15 +108,13 @@ class ModalAdd extends PureComponent {
       country,
       state,
       _id,
-      firstName,
-      middleName,
-      lastName,
+      accountOwnerId = '',
       loadingCustomerID,
       loadingTagList,
       loadingStateList,
       ref,
+      employeeList = [],
     } = this.props;
-    const accountOwner = `${firstName} ${middleName} ${lastName}`;
 
     return (
       <div className={styles.modalAdd}>
@@ -150,7 +156,7 @@ class ModalAdd extends PureComponent {
             name="formAdd"
             ref={this.refForm}
             layout="vertical"
-            initialValues={{ customerID, status: 'Engaging', accountOwner }}
+            initialValues={{ customerID, status: 'Engaging', accountOwner: accountOwnerId }}
             onFinish={(values) => {
               this.refForm.current.resetFields();
               this.handleSubmit(values);
@@ -289,7 +295,15 @@ class ModalAdd extends PureComponent {
               <Row gutter={48}>
                 <Col span={12}>
                   <Form.Item label="Account Owner" name="accountOwner">
-                    <Input placeholder="Enter Account Owner" />
+                    <Select placeholder="Enter Account Owner">
+                      {employeeList.map((employee) => {
+                        return (
+                          <Select.Option key={employee._id} value={employee._id}>
+                            {employee?.generalInfo?.legalName}
+                          </Select.Option>
+                        );
+                      })}
+                    </Select>
                   </Form.Item>
                 </Col>
                 <Col span={12}>

@@ -7,6 +7,14 @@ export default async function getCompaniesList(payload) {
   });
 }
 
+// get list employee
+export async function getEmployeeList(payload) {
+  return request('/api/employeetenant/list-by-single-company', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getCustomerList(payload) {
   return request(`/api-customer/customertenant/list`, {
     method: 'POST',

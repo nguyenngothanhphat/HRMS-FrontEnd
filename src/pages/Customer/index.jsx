@@ -15,10 +15,8 @@ class Customer extends PureComponent {
       match: { params: { tabName = '' } = {} },
       // dispatch,
     } = this.props;
-    if (tabName === 'customers') {
+    if (!tabName) {
       history.replace('/customer-management/customers');
-    } else if (tabName === 'settings') {
-      history.replace('/customer-management/settings');
     }
     // dispatch({
     //   type: 'customerManagement/fetchCustomerList',
@@ -46,7 +44,7 @@ class Customer extends PureComponent {
       <PageContainer>
         <div className={style.customerManagement}>
           <Tabs
-            activeKey={tabName === '' || tabName === 'customers' ? 'customers' || '' : 'settings'}
+            activeKey={tabName || 'customers'}
             onChange={(key) => {
               history.push(`/customer-management/${key}`);
             }}

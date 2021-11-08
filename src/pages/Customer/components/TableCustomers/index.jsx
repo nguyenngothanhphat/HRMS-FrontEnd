@@ -35,12 +35,12 @@ class TableCustomers extends PureComponent {
         width: '10%',
         render: (customerId) => {
           return (
-            <p
+            <div
               style={{ fontWeight: '700', color: '#2C6DF9' }}
               onClick={() => this.handleProfile(customerId)}
             >
               {customerId}
-            </p>
+            </div>
           );
         },
       },
@@ -181,9 +181,9 @@ class TableCustomers extends PureComponent {
                 </div>
               )}
             >
-              <p>
+              <div>
                 {accountOwner?.generalInfo?.legalName ? accountOwner?.generalInfo?.legalName : ''}
-              </p>
+              </div>
             </Popover>
           );
         },
@@ -267,7 +267,7 @@ class TableCustomers extends PureComponent {
     return (
       <div className={styles.tableCustomers}>
         <Table
-          size="small"
+          size="middle"
           loading={loadingCustomer}
           onRow={(record) => {
             return {
