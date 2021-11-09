@@ -34,7 +34,6 @@ const SearchTable = () => {
 
     const onChangeInput = (e) => {
         e.preventDefault();
-
     };
     const { visible } = state;
     return (

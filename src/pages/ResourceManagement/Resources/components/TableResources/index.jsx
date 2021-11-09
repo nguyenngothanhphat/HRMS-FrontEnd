@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import {
+  Button,
   Table,
   // , Dropdown, Menu, Input
 } from 'antd';
@@ -7,7 +8,9 @@ import moment from 'moment';
 // import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
-// import addAction from '@/assets/resource-action-add.svg';
+import addIcon from '@/assets/resource-action-add.svg';
+import historyIcon from '@/assets/resource-management-edit.svg';
+
 import styles from './index.less';
 
 class TableTickets extends PureComponent {
@@ -41,7 +44,7 @@ class TableTickets extends PureComponent {
 
   openViewTicket = (ticketID) => {
     const { data = [] } = this.props;
-    let id = '';
+    const id = '';
 
     data.forEach((item) => {
       if (item.ticketID === ticketID) {
@@ -58,6 +61,10 @@ class TableTickets extends PureComponent {
     e.preventDefault();
   };
 
+  onTableChange = (pagination, filters, sorter, extra) => {
+    console.log('params', pagination, filters, sorter, extra);
+  };
+
   render() {
     const {
       data = [],
@@ -67,6 +74,11 @@ class TableTickets extends PureComponent {
       size,
       getPageAndSize = () => {},
     } = this.props;
+    data.forEach((x, index) => {
+      x.page = Math.floor(index / size) + 1;
+      // console.log(`page item ${Math.floor(index / size)}`);
+    });
+
     const pagination = {
       position: ['bottomLeft'],
       total: data.length, // totalAll,
@@ -85,28 +97,46 @@ class TableTickets extends PureComponent {
         getPageAndSize(page, pageSize);
       },
     };
+    const showAlert = (row) => {
+      alert(JSON.stringify(row));
+
+      // Modal.confirm({
+      //   title: checkPropss,
+      // });
+    };
+
     const mapping = new Set();
     const rowRendered = (record, index) => {
+      // console.log(`row renders: ${ index} ${JSON.stringify(record)}`)
       if (index === size - 1) {
-        mapping.clear();
+        // mapping.clear();
       }
     };
-    const renderCell = (value, row) => {
+    const renderCell = (value, row, display) => {
       const obj = {
-        children: value,
+        children: display,
         props: {
           rowSpan: 0,
+          class: styles.disableHover,
         },
       };
-      const template = `${row.employeeId}_${value}`;
+      const template = `${row.employeeId}_${pageSelected}_${value}`;
+      // if(col) {
+      //   console.log(`page ${pageSelected}`)
+      // }
+
       if (!mapping.has(template)) {
-        const count = data.filter((x) => x.employeeId === row.employeeId).length;
-        mapping.add(template);
+        const count = data.filter((x) => {
+          // console.log(JSON.stringify(x))
+          return x.employeeId === row.employeeId && x.page === pageSelected;
+        }).length;
+        // console.log(`count: ${count}`)
         obj.props.rowSpan = count;
+        mapping.add(template);
       }
       return obj;
     };
-    
+
     const localCompare = (a, b) => {
       if (!a && !b) {
         return 0;
@@ -119,18 +149,42 @@ class TableTickets extends PureComponent {
       }
       return a.localeCompare(b);
     };
+    const resourceStatusClass = (resourceStatus) => {
+      try {
+        console.log(resourceStatus);
+        if (resourceStatus && resourceStatus.includes('Now')) {
+          return 'now';
+        }
+        if (resourceStatus && resourceStatus.includes('Soon')) {
+          return 'soon';
+        }
+        return 'available';
+      } catch (ex) {
+        return 'available';
+      }
+    };
     const columns = [
       {
         title: 'Name',
         dataIndex: 'employeeName',
-        key: 'userId',
+        key: 'employeeName',
         width: '12%',
         render: (value, row) => {
-          return renderCell(value, row);
+          const statusClass = resourceStatusClass(row.availableStatus);
+          const div = (
+            <div className={styles.employeeName}>
+              {value}
+              <div>
+                <div className={styles[statusClass]}>{row.availableStatus}</div>
+              </div>
+            </div>
+          );
+          return renderCell(value, row, div);
         },
         sorter: (a, b) => {
           return a.employeeName.localeCompare(b.employeeName);
         },
+        className: 'right-left-border',
         sortDirections: ['ascend', 'descend'],
       },
       {
@@ -139,12 +193,13 @@ class TableTickets extends PureComponent {
         key: 'division',
         width: '10%',
         render: (value, row) => {
-          return renderCell(value, row);
+          const display = <span className={styles.division}>{value}</span>;
+          return renderCell(value, row, display);
         },
         sorter: (a, b) => {
           return localCompare(a.division, b.division);
         },
-        sortDirections: ['ascend', 'descend']
+        sortDirections: ['ascend', 'descend'],
       },
       {
         title: 'Designation',
@@ -152,10 +207,11 @@ class TableTickets extends PureComponent {
         width: '12%',
         key: 'designation',
         render: (value, row) => {
-          return renderCell(value, row);
+          const display = <span className={styles.basicCellField}>{value}</span>;
+          return renderCell(value, row, display);
         },
         sorter: (a, b) => {
-          return localCompare(a.designation, b.designation)
+          return localCompare(a.designation, b.designation);
         },
         // defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend'],
@@ -165,7 +221,8 @@ class TableTickets extends PureComponent {
         dataIndex: 'experience',
         width: '7%',
         render: (value, row) => {
-          return renderCell(value, row);
+          const display = <span className={styles.basicCellField}>{value}</span>;
+          return renderCell(value, row, display);
         },
         sorter: (a, b) => {
           return a.experience - b.experience;
@@ -177,7 +234,22 @@ class TableTickets extends PureComponent {
         title: 'Current Project',
         dataIndex: 'projectName',
         width: '10%',
+        render: (value) => {
+          const display = <span className={styles.employeeName}> {value}</span>;
+          const obj = {
+            children: display,
+            props: {
+              rowSpan: 1,
+              className: 'left-border',
+            },
+          };
+          return obj;
+        },
         sorter: (a, b) => {
+          // const templateA = a.projectName ? `${a.employeeId}_${a.projectName}` : a.projectName
+          // const templateB = b.projectName ? `${b.employeeId}_${b.projectName}` : b.projectName
+          // return localCompare(templateA, templateB);
+
           return localCompare(a.projectName, b.projectName);
         },
         // defaultSortOrder: 'ascend',
@@ -186,19 +258,13 @@ class TableTickets extends PureComponent {
       {
         title: 'Status',
         dataIndex: 'billStatus',
-        width: '7%',
-        key: 'priority',
+        width: '6%',
+        key: 'billStatus',
         render: (billStatus) => {
-          // if (priority === 'High') {
-          //   return <span className={styles.priorityHigh}>{billStatus}</span>;
-          // }
-          // if (priority === 'Normal') {
-          //   return <span className={styles.priorityMedium}>{billStatus}</span>;
-          // }
-          return <span className={styles.priorityLow}>{billStatus}</span>;
+          return <span className={styles.basicCellField}> {billStatus}</span>;
         },
         sorter: (a, b) => {
-          return localCompare(a.billStatus, b.billStatus)
+          return localCompare(a.billStatus, b.billStatus);
         },
         // defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend'],
@@ -217,64 +283,52 @@ class TableTickets extends PureComponent {
       {
         title: 'Start Date',
         dataIndex: 'startDate',
-        width: '6%',
-        key: 'subject',
+        width: '7%',
+        key: 'startDate',
+        render: (value) => {
+          return <span className={styles.basicCellField}>{value}</span>;
+        },
       },
       {
         title: 'End Date',
         dataIndex: 'endDate',
-        width: '6%',
-        key: 'subject',
+        width: '7%',
+        key: 'endDate',
+        render: (value) => {
+          return <span className={styles.basicCellField}>{value}</span>;
+        },
       },
       {
         title: 'Actions',
-        width: '6%',
+        width: '3%',
         // dataIndex: 'subject',
         key: 'action',
-        render: (value, row) => {
-          const obj = {
-            children: '',
-            props: { rowSpan: 0 },
-          };
-          const template = `${row.employeeId}_add`;
-          if (!mapping.has(template)) {
-            const count = data.filter((x) => x.employeeId === row.employeeId).length;
-            console.log(`count user record: ${count}`);
-            mapping.add(template);
-            obj.props.rowSpan = count;
-            // return obj
+        render: (value, row, col) => {
+          const buttonGroup = (
+            <Button.Group>
+              <Button
+                style={{ marginRight: '15px', width: '45px', height: '45px', borderRadius: '50%' }}
+                onClick={() => showAlert(value)}
+              >
+                <img src={addIcon} alt="attachIcon" />
+              </Button>
+              <Button style={{ width: '45px', height: '45px', borderRadius: '50%' }}>
+                <img src={historyIcon} alt="historyIcon" />
+              </Button>
+            </Button.Group>
+          );
+          const obj = renderCell('add', row, buttonGroup);
+          if (col === size - 1) {
+            mapping.clear();
           }
-          console.log(`value: ${JSON.stringify(obj)}`);
           return obj;
-          // {
-          //   title: 'Actions',
-          //   //dataIndex: 'subject',
-          //   key: 'action',
-          //   //render: ({ row }) => (<button onClick={(e) => this.handleButtonClick(e, row)}>Click Me</button>)
-          //   render: (action) => (<Button.Group>
-          //     <Button style={{marginRight: '15px', width: '45px', height: '45px',borderRadius: '50%'}} 
-          //     onClick={() => this.showAlert(action)}>
-          //       <img src={addAction} alt="attachIcon"/>
-          //       </Button>
-          //     <Button style={{width: '45px', height: '45px',borderRadius: '50%'}}>
-          //       <img src={historyIcon} alt="historyIcon"/>
-          //     </Button>
-          //   </Button.Group>)
-          // }
-          // showAlert = (row) => {
-          //   alert(JSON.stringify(row))
-        
-          //   // Modal.confirm({
-          //   //   title: checkPropss
-          //   // })
-          // }
-        
         },
+        className: 'right-left-border',
       },
     ];
 
     return (
-      <div className={styles.TableTickets}>
+      <div className={styles.TableResources}>
         <Table
           width="100%"
           locale={{
@@ -290,10 +344,10 @@ class TableTickets extends PureComponent {
           dataSource={data}
           hideOnSinglePage
           pagination={pagination}
-          onChange={this.handleChangeTable}
+          onChange={this.onTableChange}
           rowKey="id"
           onRow={rowRendered}
-          scroll={{ x: 1500, y: 487 }}
+          scroll={{ y: 500 }}
         />
       </div>
     );

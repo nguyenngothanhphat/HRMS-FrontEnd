@@ -100,7 +100,6 @@ class ResourceList extends Component {
   initDataTable = (tabId) => {
     const { dispatch, location } = this.props;
     const { pageSelected, size } = this.state;
-
     if (tabId === '1') {
       dispatch({
         type: 'ticketManagement/fetchListAllTicket',
@@ -112,60 +111,60 @@ class ResourceList extends Component {
         },
       });
     }
-    if (tabId === '2') {
-      dispatch({
-        type: 'ticketManagement/fetchListAllTicket',
-        payload: {
-          status: 'Assigned',
-          limit: size,
-          // location,
-        },
-      });
-    }
-    if (tabId === '3') {
-      dispatch({
-        type: 'ticketManagement/fetchListAllTicket',
-        payload: {
-          status: 'In Progress',
-          page: pageSelected,
-          limit: size,
-          // location,
-        },
-      });
-    }
-    if (tabId === '4') {
-      dispatch({
-        type: 'ticketManagement/fetchListAllTicket',
-        payload: {
-          status: 'Client Pending',
-          page: pageSelected,
-          limit: size,
-          // location,
-        },
-      });
-    }
-    if (tabId === '5') {
-      dispatch({
-        type: 'ticketManagement/fetchListAllTicket',
-        payload: {
-          status: 'Resolved',
-          page: pageSelected,
-          limit: size,
-          // location,
-        },
-      });
-    }
-    if (tabId === '6') {
-      dispatch({
-        type: 'ticketManagement/fetchListAllTicket',
-        payload: {
-          status: 'Closed',
-          page: pageSelected,
-          limit: size,
-          // location,
-        },
-      });
-    }
+    // if (tabId === '2') {
+    //   dispatch({
+    //     type: 'ticketManagement/fetchListAllTicket',
+    //     payload: {
+    //       status: 'Assigned',
+    //       limit: size,
+    //       // location,
+    //     },
+    //   });
+    // }
+    // if (tabId === '3') {
+    //   dispatch({
+    //     type: 'ticketManagement/fetchListAllTicket',
+    //     payload: {
+    //       status: 'In Progress',
+    //       page: pageSelected,
+    //       limit: size,
+    //       // location,
+    //     },
+    //   });
+    // }
+    // if (tabId === '4') {
+    //   dispatch({
+    //     type: 'ticketManagement/fetchListAllTicket',
+    //     payload: {
+    //       status: 'Client Pending',
+    //       page: pageSelected,
+    //       limit: size,
+    //       // location,
+    //     },
+    //   });
+    // }
+    // if (tabId === '5') {
+    //   dispatch({
+    //     type: 'ticketManagement/fetchListAllTicket',
+    //     payload: {
+    //       status: 'Resolved',
+    //       page: pageSelected,
+    //       limit: size,
+    //       // location,
+    //     },
+    //   });
+    // }
+    // if (tabId === '6') {
+    //   dispatch({
+    //     type: 'ticketManagement/fetchListAllTicket',
+    //     payload: {
+    //       status: 'Closed',
+    //       page: pageSelected,
+    //       limit: size,
+    //       // location,
+    //     },
+    //   });
+    // }
   };
 
   setSelectedTab = (id) => {

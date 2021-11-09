@@ -82,8 +82,6 @@ const pagination = {
     onChange: onChangePagination,
 };
 
-
-
 const TableTickets = () => {
     return (
       <div className={styles.TableTickets}>
