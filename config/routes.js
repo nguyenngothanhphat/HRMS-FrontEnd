@@ -461,13 +461,13 @@ const routes = [
             component: '../pages_admin/CompaniesManagement/components/AddCompany',
             authority: ['admin-sa', 'owner'],
           },
-          {
-            path: '/project-management',
-            name: 'projectManagement',
-            icon: '/assets/images/iconOffboarding.svg',
-            component: '../pages_admin/ProjectManagement',
-            authority: ['M_PROJECT_MANAGEMENT_VIEW', 'owner'],
-          },
+          // {
+          //   path: '/project-management',
+          //   name: 'projectManagement',
+          //   icon: '/assets/images/iconOffboarding.svg',
+          //   component: '../pages_admin/ProjectManagement',
+          //   authority: ['M_PROJECT_MANAGEMENT_VIEW', 'owner'],
+          // },
           {
             path: '/companies-management/company-detail/:reId',
             name: 'companyDetail',
@@ -886,8 +886,8 @@ const routes = [
             authority: ['hr-manager', 'hr', 'employee', 'manager'],
             hideInMenu: true,
           },
-           // TICKET MANAGEMENT
-           {
+          // TICKET MANAGEMENT
+          {
             path: '/ticket-management',
             name: 'Ticket Management',
             icon: '/assets/images/menuIcons/ticketManagement.svg',
@@ -900,6 +900,22 @@ const routes = [
             authority: ['hr-manager', 'hr', 'employee', 'manager'],
             hideInMenu: true,
           },
+
+          // PROJECTS MANAGEMENT
+          {
+            path: '/project-management',
+            name: 'Project Management',
+            icon: '/assets/images/menuIcons/ticketManagement.svg',
+            component: './ProjectManagement',
+            authority: ['hr-manager', 'hr', 'employee', 'manager'],
+          },
+          {
+            path: '/project-management/:tabName',
+            component: './ProjectManagement',
+            authority: ['hr-manager', 'hr', 'employee', 'manager'],
+            hideInMenu: true,
+          },
+
           {
             path: '/view-document/:documentId',
             name: 'viewDocument',
