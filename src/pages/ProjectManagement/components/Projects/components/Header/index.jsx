@@ -5,17 +5,15 @@ import React from 'react';
 import { connect } from 'umi';
 import { TYPE_LIST } from '@/utils/projectManagement';
 import FilterIcon from '@/assets/projectManagement/filter.svg';
+import ArrowDown from '@/assets/projectManagement/arrowDown.svg';
 import AddIcon from '@/assets/projectManagement/add.svg';
+import FilterPopover from '../FilterPopover';
 import styles from './index.less';
 
 const { Option } = Select;
 
 const Header = (props) => {
-  const {
-    projectStatus = 'All',
-    setProjectStatus = () => {},
-    fetchProjectList = () => {},
-  } = props;
+  const { projectStatus = 'All', setProjectStatus = () => {}, fetchProjectList = () => {} } = props;
 
   const onSearchDebounce = debounce((value) => {
     fetchProjectList(value);
@@ -43,7 +41,11 @@ const Header = (props) => {
     <div className={styles.Header}>
       <div className={styles.Header__left}>
         <div className={styles.projectSelector}>
-          <Select value={projectStatus} onChange={(val) => setProjectStatus(val)}>
+          <Select
+            value={projectStatus}
+            onChange={(val) => setProjectStatus(val)}
+            suffixIcon={<img src={ArrowDown} alt="" />}
+          >
             {TYPE_LIST.map((v) => (
               <Option value={v.id}>{v.name}</Option>
             ))}
@@ -53,10 +55,12 @@ const Header = (props) => {
 
       <div className={styles.Header__right}>
         <Button icon={<img src={AddIcon} alt="" />}>Add new Project</Button>
-        <div className={styles.filterIcon}>
-          <img src={FilterIcon} alt="" />
-          <span>Filter</span>
-        </div>
+        <FilterPopover placement="bottomRight">
+          <div className={styles.filterIcon}>
+            <img src={FilterIcon} alt="" />
+            <span>Filter</span>
+          </div>
+        </FilterPopover>
         <div className={styles.searchBar}>
           <Input
             className={styles.searchInput}

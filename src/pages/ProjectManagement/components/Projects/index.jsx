@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { Button } from 'antd';
 import CommonTable from './components/CommonTable';
+import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
 import Header from './components/Header';
 import styles from './index.less';
 
@@ -27,11 +29,17 @@ const Projects = (props) => {
         title: 'Project Name',
         dataIndex: 'projectName',
         key: 'projectName',
+        render: (projectName) => {
+          return <span className={styles.clickableTag}>{projectName || '-'}</span>;
+        },
       },
       {
         title: 'Customer',
         dataIndex: 'customerId',
         key: 'customerId',
+        render: (customerId) => {
+          return <span className={styles.clickableTag}>{customerId || '-'}</span>;
+        },
       },
       {
         title: 'Type',
@@ -44,7 +52,7 @@ const Projects = (props) => {
         key: 'projectManager',
         render: (projectManager) => {
           return (
-            <span className={styles.projectManager}>
+            <span className={styles.clickableTag}>
               {projectManager?.generalInfo?.legalName || '-'}
             </span>
           );
@@ -71,7 +79,7 @@ const Projects = (props) => {
         dataIndex: 'division',
         key: 'division',
         render: (division = {}) => {
-          return <span>{division.name}</span>;
+          return <span className={styles.colorTag}>{division.name}</span>;
         },
       },
       {
@@ -87,7 +95,14 @@ const Projects = (props) => {
         dataIndex: 'resource',
         key: 'resource',
         render: (resource = '') => {
-          return <span>{resource || '-'}</span>;
+          if (!resource) {
+            return (
+              <Button className={styles.addResourceBtn} icon={<img src={OrangeAddIcon} alt="" />}>
+                Add resources
+              </Button>
+            );
+          }
+          return <span className={styles.blueText}>{resource || '-'}</span>;
         },
       },
     ];
