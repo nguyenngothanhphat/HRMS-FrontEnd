@@ -60,7 +60,7 @@ class Edit extends PureComponent {
     const { dispatch, info, onClose = () => {} } = this.props;
     const res = await dispatch({
       type: 'customerProfile/updateContactInfo',
-      payload: { id: info.id, customerId: info.customerId, ...values },
+      payload: { id: info.id, customerId: info.customerId, locationId: info.locationId, ...values },
     });
     if (res.statusCode) {
       onClose();
