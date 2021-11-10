@@ -15,12 +15,14 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
   ({
     loading,
     user: { companiesOfUser = [], currentUser: { employee: { _id = '' } = {} } = {} } = {},
-    customerManagement: { listCustomer = [] } = {},
+    customerManagement: { listCustomer = [], companyList = [] } = {},
   }) => ({
     listCustomer,
+    companyList,
     companiesOfUser,
     _id,
     loadingCustomer: loading.effects['customerManagement/fetchCustomerList'],
+    loadingFilter: loading.effects['customerManagement/filterListCustomer'],
   }),
 )
 class TableContainer extends PureComponent {
@@ -39,14 +41,14 @@ class TableContainer extends PureComponent {
     dispatch({
       type: 'customerManagement/fetchCustomerList',
     });
+    dispatch({
+      type: 'customerManagement/fetchCompanyList',
+    });
   }
 
   // submit filter
-  handleSubmit = (values) => {
-    const { dispatch, companiesOfUser } = this.props;
-    const companyID = getCurrentCompany();
-    const company = [...companiesOfUser];
-    const i = company.find((item) => item._id === companyID);
+  handleSubmit = async (values) => {
+    const { dispatch } = this.props;
 
     dispatch({
       type: 'customerManagement/filterListCustomer',
@@ -54,7 +56,7 @@ class TableContainer extends PureComponent {
         status: values.byStatus,
         tenantId: getCurrentTenant(),
         company: getCurrentCompany(),
-        companyName: i.name,
+        // companyName: i.name,
       },
     });
   };
@@ -168,7 +170,7 @@ class TableContainer extends PureComponent {
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { listCustomer, loadingCustomer, companiesOfUser = [] } = this.props;
+    const { listCustomer, loadingCustomer, companyList = [], loadingFilter = false } = this.props;
     const { visible, isShown } = this.state;
     const tabs = [{ id: 1, name: `Customers (${this.addZeroToNumber(listCustomer.length)})` }];
 
@@ -183,7 +185,7 @@ class TableContainer extends PureComponent {
         <MenuFilter
           onSubmit={this.handleSubmit}
           listStatus={listStatus}
-          listCompany={companiesOfUser}
+          companyList={companyList}
         />
         <div className={styles.btnForm}>
           <Button
@@ -194,7 +196,13 @@ class TableContainer extends PureComponent {
           >
             Close
           </Button>
-          <Button className={styles.btnApply} form="filter" htmlType="submit" key="submit">
+          <Button
+            className={styles.btnApply}
+            form="filter"
+            htmlType="submit"
+            key="submit"
+            loading={loadingFilter}
+          >
             Apply
           </Button>
         </div>

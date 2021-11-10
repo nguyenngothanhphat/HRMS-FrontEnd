@@ -21,6 +21,8 @@ import ViewDocumentModal from '@/components/ViewDocumentModal';
   }) => ({
     loadingDocument: loading.effects['customerProfile/fetchDocuments'],
     loadingDocumentType: loading.effects['customerProfile/fetchDocumentsTypes'],
+    loadingSearchDocument: loading.effects['customerProfile/searchDocuments'],
+    loadingFilterDocument: loading.effects['customerProfile/filterDoc'],
     documents,
     info,
     _id,
@@ -172,10 +174,11 @@ class Documents extends PureComponent {
 
   onFilter = (values) => {
     const { byType, fromDate, toDate, byCompany } = values;
-    const { dispatch } = this.props;
+    const { dispatch, info: { customerId = '' } = {} } = this.props;
     dispatch({
       type: 'customerProfile/filterDoc',
       payload: {
+        customerId,
         type: parseInt(byType, 10) || '',
         uploadedBy: byCompany || '',
         fromDate: fromDate || '',
@@ -267,7 +270,7 @@ class Documents extends PureComponent {
       },
       {
         title: 'Document Type',
-        dataIndex: 'documentType',
+        dataIndex: 'documentTypeName',
         align: 'center',
         width: '10%',
       },
@@ -337,7 +340,14 @@ class Documents extends PureComponent {
   render() {
     const { viewDocumentModal, visible, isUnhide, uploadedAttachments, link, fileName } =
       this.state;
-    const { documents, documentType, companiesOfUser, loadingDocument = false } = this.props;
+    const {
+      documents,
+      documentType,
+      companiesOfUser,
+      loadingDocument = false,
+      loadingFilterDocument = false,
+      loadingSearchDocument = false,
+    } = this.props;
 
     const filter = (
       <>
@@ -429,7 +439,12 @@ class Documents extends PureComponent {
           </div>
         </div>
         <div className={styles.documentBody}>
-          <Table columns={this.generateColumns()} dataSource={documents} pagination={false} loading={loadingDocument} />
+          <Table
+            columns={this.generateColumns()}
+            dataSource={documents}
+            pagination={false}
+            loading={loadingDocument || loadingSearchDocument || loadingFilterDocument}
+          />
           <ViewDocumentModal
             url={link}
             visible={viewDocumentModal}
