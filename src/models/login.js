@@ -17,6 +17,8 @@ const Model = {
     candidate: '',
     messageError: '',
     urlGoogle: '',
+    urlLollypop:
+      'https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar.events%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&prompt=consent&response_type=code&client_id=241318584040-13k8uvat56vn6e879aab44lestt98d8v.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fstghrms.paxanimi.ai%2Fapi%2Fauth-google-lollypop&flowName=GeneralOAuthFlow',
   },
   effects: {
     *login({ payload }, { call, put }) {
