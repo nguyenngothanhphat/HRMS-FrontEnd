@@ -176,7 +176,7 @@ const AddProjectModal = (props) => {
                 fieldKey="startDate"
                 labelCol={{ span: 24 }}
               >
-                <Input placeholder="Select Start Date" />
+                <DatePicker placeholder="Select Start Date" />
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
