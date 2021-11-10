@@ -1,19 +1,21 @@
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Select } from 'antd';
 import { debounce } from 'lodash';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'umi';
 import { TYPE_LIST } from '@/utils/projectManagement';
 import FilterIcon from '@/assets/projectManagement/filter.svg';
 import ArrowDown from '@/assets/projectManagement/arrowDown.svg';
 import AddIcon from '@/assets/projectManagement/add.svg';
 import FilterPopover from '../FilterPopover';
+import AddProjectModal from '../AddProjectModal';
 import styles from './index.less';
 
 const { Option } = Select;
 
 const Header = (props) => {
   const { projectStatus = 'All', setProjectStatus = () => {}, fetchProjectList = () => {} } = props;
+  const [addProjectModalVisible, setAddProjectModalVisible] = useState(false);
 
   const onSearchDebounce = debounce((value) => {
     fetchProjectList(value);
@@ -54,7 +56,9 @@ const Header = (props) => {
       </div>
 
       <div className={styles.Header__right}>
-        <Button icon={<img src={AddIcon} alt="" />}>Add new Project</Button>
+        <Button onClick={() => setAddProjectModalVisible(true)} icon={<img src={AddIcon} alt="" />}>
+          Add new Project
+        </Button>
         <FilterPopover placement="bottomRight">
           <div className={styles.filterIcon}>
             <img src={FilterIcon} alt="" />
@@ -70,6 +74,11 @@ const Header = (props) => {
           />
         </div>
       </div>
+
+      <AddProjectModal
+        visible={addProjectModalVisible}
+        onClose={() => setAddProjectModalVisible(false)}
+      />
     </div>
   );
 };
