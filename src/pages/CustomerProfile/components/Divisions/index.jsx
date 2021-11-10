@@ -121,7 +121,7 @@ class Divisions extends PureComponent {
       secondaryPOCName,
       secondaryPOCNumber: secondaryPOCPhNo,
       state,
-      tagIds: tags || [],
+      tagIds: tags.map((t) => t * 1) || [],
       postalCode: zipCode,
     };
     await dispatch({
@@ -168,12 +168,13 @@ class Divisions extends PureComponent {
         </div>
         {/* Body */}
 
-        {divisions.map((item) => {
+        {divisions.map((item, index) => {
           return (
             <>
-              <div className={styles.divisionsBody} style={{ marginBottom: '32px' }}>
+              <div className={styles.divisionsBody}>
                 <DivisionItem item={item} />
               </div>
+              {index + 1 < divisions.length && <div className={styles.divider} />}
             </>
           );
         })}

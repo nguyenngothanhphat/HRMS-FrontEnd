@@ -80,9 +80,11 @@ class CommonLayout extends PureComponent {
             </div>
           </div>
         </Affix>
-        <Row className={s.viewRight} gutter={[24, 0]}>
-          <Col span={18}>{displayComponentActions || displayComponent}</Col>
-          <Col span={6}>
+        <Row className={s.viewRight} gutter={[24, 24]}>
+          <Col xs={24} xl={18}>
+            {displayComponentActions || displayComponent}
+          </Col>
+          <Col xs={24} xl={6}>
             {/* {isCompanyProfile ? (
               <UploadLogoCompany />
             ) : ( */}
