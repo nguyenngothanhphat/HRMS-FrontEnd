@@ -1,0 +1,123 @@
+@border-color: #d6dce0;
+@orange: #fe5d27;
+@new-background: #fff4f1;
+@border-color: #d6dce0;
+@checkbox-background: #e7eaee;
+@checkbox-border: #707177;
+@gray: #707177;
+@red: #ff5252;
+@blue: #2c6df9;
+@cell-padding: 8px 16px;
+
+.mixin-border-bottom-row {
+  border-bottom: solid 1px #d6dce0;
+}
+
+.DailyTable {
+  width: 100%;
+  min-width: 700px;
+  padding: 24px 24px 0;
+  background-color: #ffffff;
+  border-radius: 5px;
+
+  .tableContainer {
+    // box-shadow: 1px 0px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  .loadingContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+  }
+  .alignCenter {
+    display: flex;
+    justify-content: center !important;
+  }
+
+  .tableHeader {
+    // height: 35px;
+    background-color: @blue;
+    border-radius: 4px;
+    &__firstColumn {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: @cell-padding;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 20px;
+      box-shadow: 1px 0px 6px rgba(0, 0, 0, 0.15);
+    }
+    &__remainColumn {
+      padding: 8px 39px 8px 32px; // 39px = 32px + scroll bar width in global.less
+      .title {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        color: #ffffff;
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 20px;
+      }
+    }
+  }
+
+  &.inTab {
+    border: none;
+  }
+
+  :global {
+    .ant-table-tbody > tr > td {
+      border: none;
+    }
+
+    td.ant-table-cell {
+      width: 84px;
+      height: 15px;
+      color: #464646;
+      font-weight: normal;
+      font-size: 13px;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.12px;
+    }
+    .ant-table-thead > tr > th {
+      background-color: @blue !important;
+      opacity: 1 !important;
+    }
+
+    .ant-checkbox-inner {
+      background-color: @checkbox-background;
+
+      &:after {
+        border-color: blue;
+      }
+    }
+
+    .ant-checkbox-wrapper {
+      border-color: @checkbox-border;
+    }
+
+    .ant-table-selection,
+    .ant-table-selection-column {
+      height: fit-content;
+    }
+
+    thead {
+      tr {
+        height: 35px;
+      }
+
+      .ant-table-selection {
+        height: 18px;
+      }
+    }
+
+    .ant-tabs-nav {
+      height: 56px;
+    }
+  }
+}

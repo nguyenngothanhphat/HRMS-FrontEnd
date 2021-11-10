@@ -1,8 +1,8 @@
 import { UserOutlined } from '@ant-design/icons';
 import { Avatar, Button, Menu, Spin, notification } from 'antd';
-import avtDefault from '@/assets/avtDefault.jpg';
 import React from 'react';
 import { connect, formatMessage, history } from 'umi';
+import avtDefault from '@/assets/avtDefault.jpg';
 import {
   setCurrentLocation,
   setTenantId,
@@ -94,7 +94,7 @@ class AvatarDropdown extends React.Component {
     //     });
     //   }
     // });
-    let authority = JSON.parse(localStorage.getItem('antd-pro-authority'));
+    let authority = JSON.parse(localStorage.getItem('antd-pro-authority')) || [];
     authority = authority.filter(
       (item) => item === 'owner' || item === 'admin' || item === 'employee',
     );

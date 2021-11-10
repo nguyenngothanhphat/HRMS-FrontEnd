@@ -1,0 +1,118 @@
+.TaskPopover {
+  :global {
+    .ant-popover-inner {
+      min-width: 400px;
+      max-width: 400px;
+      padding: 0;
+      border: 1px solid #eaecef;
+      border-radius: 8px;
+    }
+    .ant-popover-inner-content {
+      padding: 0 !important;
+    }
+    .ant-popover-arrow {
+      //   left: -2.5px !important;
+      width: 18px;
+      height: 18px;
+      .ant-popover-arrow-content {
+        width: 12px;
+        height: 12px;
+        box-shadow: none;
+      }
+    }
+
+    // TOOLTIP
+    .ant-avatar-group .ant-avatar:not(:first-child) {
+      margin-left: -9px;
+    }
+    .ant-avatar-lg {
+      width: 32px;
+      height: 32px;
+    }
+    .ant-avatar-group .ant-avatar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 20px;
+      text-transform: uppercase;
+      background-color: #2c6df9;
+      border-width: 2px;
+    }
+    .ant-tooltip-inner {
+      z-index: 10;
+      padding: 8px;
+      color: #ffffff;
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 20px;
+      background: #1a1a46;
+      border: none;
+      border-radius: 4px;
+    }
+  }
+  .popupContainer {
+    position: relative;
+    .taskMembers {
+      width: -moz-fit-content;
+      width: fit-content;
+    }
+    .closeButton {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 5;
+      display: block;
+      cursor: pointer;
+    }
+    .divider {
+      border-bottom: 1px solid #eaecef;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 16px 16px;
+      .left {
+        display: block;
+        color: #3e3e3e;
+        font-weight: 500 !important;
+        font-size: 13px;
+      }
+    }
+    .taskTable {
+      padding: 16px;
+      .right {
+        text-align: right;
+      }
+      &__header {
+        padding-bottom: 5px;
+        color: #3e3e3e;
+        font-size: 12px;
+        border-bottom: 1px solid #eaecef;
+      }
+      &__body {
+        .eachRow {
+          height: 49px;
+          color: #3e3e3e;
+          font-weight: 500;
+          font-size: 13px;
+          border-bottom: 1px solid #eaecef;
+          padding-inline: 7px;
+          .taskName {
+            display: inline-flex;
+            align-items: center;
+            span {
+              display: block;
+            }
+          }
+        }
+        .eachRow:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+  }
+}

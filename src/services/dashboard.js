@@ -41,7 +41,7 @@ export async function syncGoogleCalendar(payload) {
 
 // WIDGETS
 export async function updateWidgets(payload) {
-  return request('/api/employeetenant/update', {
+  return request('/api/usermap/update', {
     method: 'POST',
     data: payload,
   });

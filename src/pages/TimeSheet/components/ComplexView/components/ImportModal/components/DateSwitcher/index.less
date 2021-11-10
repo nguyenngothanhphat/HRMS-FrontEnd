@@ -1,0 +1,100 @@
+.DateSwitcher {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-bottom: 1px solid #d6dce0;
+  .nextIcon,
+  .prevIcon {
+    cursor: pointer;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+  .dates {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    .hasValueDate {
+      .icon {
+        border-color: #e8ecef !important;
+      }
+    }
+    .currentDate {
+      transition: 0.3s;
+      .dateName {
+        color: #2c6df9 !important;
+      }
+      .icon {
+        background-color: #2c6df9 !important;
+        border-color: #2c6df9 !important;
+        span {
+          color: #fff !important;
+        }
+      }
+    }
+    .dateItem {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.3s;
+      .dateName {
+        color: #979797;
+        font-weight: 500;
+        font-size: 10px;
+        text-align: center;
+        text-transform: uppercase;
+      }
+      .dateNumber {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .icon {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 38px;
+          height: 38px;
+          margin-top: 5px;
+          background: #fff;
+          border: 1px solid #fff;
+          border-radius: 50%;
+          outline: none;
+          span {
+            color: #464646;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 16px;
+            text-align: center;
+          }
+        }
+      }
+      .badgeNumber {
+        position: absolute;
+        right: 0;
+        bottom: -5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 16px;
+        height: 16px;
+        margin-top: 5px;
+        background: #2c6df9;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        outline: none;
+        span {
+          color: #ffffff;
+
+          font-weight: 500;
+          font-size: 10px;
+        }
+      }
+    }
+  }
+}

@@ -9,6 +9,7 @@ import {
   setIsSwitchingRole,
   setTenantId,
   setCurrentCompany,
+  getIsSigninGoogle,
 } from '@/utils/authority';
 
 import { checkPermissions } from '@/utils/permissions';
@@ -50,7 +51,9 @@ const UserModel = {
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
         const candidateLinkMode = localStorage.getItem('candidate-link-mode') === 'true';
-        if (isFirstLogin && !candidateLinkMode) {
+        const isSigninGoogle = getIsSigninGoogle();
+
+        if (isFirstLogin && !candidateLinkMode && !isSigninGoogle) {
           history.replace('/first-change-password');
           return {};
         }
@@ -198,7 +201,7 @@ const UserModel = {
         yield put({
           type: 'dashboard/save',
           payload: {
-            employeeWidgets: data.employee?.widgetDashboardShow || [],
+            employeeWidgets: data.widgetDashboardShow || [],
           },
         });
 

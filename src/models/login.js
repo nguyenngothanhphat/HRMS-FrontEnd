@@ -5,7 +5,7 @@ import {
   setTenantId,
   setCurrentCompany,
   removeLocalStorage,
-  setIsGoogleSignin,
+  setIsSigninGoogle,
 } from '@/utils/authority';
 import { setToken } from '@/utils/token';
 import { dialog } from '@/utils/utils';
@@ -191,13 +191,18 @@ const Model = {
           payload: response,
         });
         setToken(response.data.token);
-        setIsGoogleSignin(true);
 
         let formatArrRoles = [];
-        const { user: { signInRole = [], isFirstLogin = false } = {}, listCompany = [] } = data;
+        const {
+          user: { signInRole = [], isFirstLogin = false, isLoginGoogle = false } = {},
+          listCompany = [],
+        } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
-        if (isFirstLogin) {
+        // save if google signin
+        setIsSigninGoogle(isLoginGoogle);
+
+        if (isFirstLogin && !isLoginGoogle) {
           history.replace('/first-change-password');
           return {};
         }

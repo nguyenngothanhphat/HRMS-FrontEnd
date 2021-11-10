@@ -1,0 +1,59 @@
+@commonSpace: 24px;
+@blueColor: #2c6df9;
+@grayColor: #707177;
+@greenColor: #00c598;
+
+.ComplexView {
+  :global {
+    .ant-tabs-content-holder {
+      padding: @commonSpace;
+    }
+    .ant-tabs-tab-btn {
+      color: #707177;
+      opacity: 1;
+    }
+
+    .ant-tabs-tab-active .ant-tabs-tab-disabled {
+      font-weight: 500;
+    }
+    .ant-tabs-nav {
+      box-shadow: 0px 1px 2px #eeeeee;
+    }
+    .ant-tabs-tab + .ant-tabs-tab {
+      margin-left: 30px;
+    }
+    .ant-tabs-tab-btn {
+      color: @grayColor;
+      font-weight: 500;
+      font-size: 16px;
+      opacity: 1;
+    }
+    .ant-tabs-tab-active {
+      .ant-tabs-tab-btn {
+        color: @blueColor;
+        font-weight: 500;
+      }
+    }
+    .ant-tabs-ink-bar {
+      height: 3px;
+      background: @blueColor;
+      border-radius: 3px 3px 0px 0px;
+    }
+  }
+  .requestLeave {
+    margin-right: @commonSpace;
+    padding: 7px 14px;
+    background-color: #568afa1f; // hex with alpha 0.12
+    border-radius: 5px;
+    cursor: pointer;
+    .title {
+      color: #2c6df9;
+      font-weight: 700;
+    }
+    &:hover {
+      .title {
+        opacity: 0.8;
+      }
+    }
+  }
+}
