@@ -4,13 +4,13 @@ import style from './index.less';
 
 class NotestFilter extends PureComponent {
   render() {
-    const { onSubmit, listEmployeeActive } = this.props;
+    const { employeeList = [], onFilter = () => {} } = this.props;
     return (
       <div className={style.docFilter}>
-        <Form layout="vertical" name="filter" onFinish={(values) => onSubmit(values)}>
+        <Form layout="vertical" name="filter" onFinish={(values) => onFilter(values)}>
           <Form.Item label="By Author" name="byAuthor">
             <Select allowClear style={{ width: '100%' }} placeholder="Please select">
-              {listEmployeeActive.map((item) => {
+              {employeeList.map((item) => {
                 return (
                   <Select.Option value={item._id} key={item._id}>
                     {item.generalInfo?.legalName}

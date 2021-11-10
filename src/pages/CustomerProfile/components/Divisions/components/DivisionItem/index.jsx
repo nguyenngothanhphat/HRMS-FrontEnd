@@ -56,17 +56,6 @@ class DivisionItem extends PureComponent {
           <Col span={12}>
             <p className={styles.value}>{devisionName}</p>
           </Col>
-
-          <Col span={12} style={{ marginBottom: '0' }}>
-            <p className={styles.label} style={{ marginBottom: '0' }}>
-              Primary POC Name:
-            </p>
-          </Col>
-          <Col span={12} style={{ marginBottom: '0' }}>
-            <p className={styles.value} style={{ marginBottom: '0' }}>
-              {primaryPOCName}
-            </p>
-          </Col>
         </Row>
         <Row className={styles.divisionPrimary}>
           <Col span={12}>
@@ -136,26 +125,17 @@ class DivisionItem extends PureComponent {
           </Col>
         </Row>
 
-        <Row style={{ padding: '24px 0 5px 32px' }}>
-          <Col span={12} style={{ margin: '0' }}>
-            <p className={styles.label}>Address Line 1</p>
-          </Col>
-          <Col span={12} style={{ margin: '0' }}>
-            <p className={styles.value}>{addressLine1}</p>
-          </Col>
-        </Row>
         <div
           className={styles.divisionSecondary}
           style={visible ? { display: 'block' } : { display: 'none' }}
         >
           <Row>
-            <Col span={12}>
+            <Col span={12} style={{ margin: '0' }}>
               <p className={styles.label}>Address Line 1</p>
             </Col>
-            <Col span={12}>
+            <Col span={12} style={{ margin: '0' }}>
               <p className={styles.value}>{addressLine1}</p>
             </Col>
-
             <Col span={12}>
               <p className={styles.label}>Address Line 2</p>
             </Col>

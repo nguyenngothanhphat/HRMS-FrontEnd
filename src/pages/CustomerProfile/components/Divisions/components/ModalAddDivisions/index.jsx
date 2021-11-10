@@ -4,11 +4,18 @@ import { connect } from 'umi';
 import styles from './index.less';
 import iconNote from '../../../../../../assets/icon-note.svg';
 
-@connect(({ loading, customerProfile: { info = {}, divisionId = '' } = {} }) => ({
-  loadingId: loading.effects['customerProfile/generateDivisionId'],
-  divisionId,
-  info,
-}))
+@connect(
+  ({
+    loading,
+    customerManagement: { employeeList = [] } = {},
+    customerProfile: { info = {}, divisionId = '' } = {},
+  }) => ({
+    loadingId: loading.effects['customerProfile/generateDivisionId'],
+    divisionId,
+    employeeList,
+    info,
+  }),
+)
 class ModalAddDivisions extends PureComponent {
   constructor(props) {
     super(props);
@@ -55,13 +62,14 @@ class ModalAddDivisions extends PureComponent {
       onCloseModal = () => {},
       onSubmit,
       listTags = [],
-      info: { accountOwner: { generalInfo: { legalName } = {} } = {} } = {},
+      info: { accountOwner: { _id: accountOwnerId = '' } = {} } = {},
       divisionId,
       isCountrySelected,
       handelSelectCountry,
       country,
       state,
       loadingId,
+      employeeList = [],
     } = this.props;
     return (
       <div className={styles.modalAdd}>
@@ -91,7 +99,7 @@ class ModalAddDivisions extends PureComponent {
             name="formAdd"
             layout="vertical"
             ref={this.refForm}
-            initialValues={{ accountOwner: legalName, divisionId }}
+            initialValues={{ accountOwner: accountOwnerId, divisionId }}
             onFinish={(values) => onSubmit(values)}
           >
             {/* Basic Customer Detail */}
@@ -245,14 +253,22 @@ class ModalAddDivisions extends PureComponent {
               <Row gutter={48}>
                 <Col span={12}>
                   <Form.Item label="Account Owner" name="accountOwner">
-                    <Input placeholder="Enter Account Owner" />
+                    <Select placeholder="Enter Account Owner">
+                      {employeeList.map((employee) => {
+                        return (
+                          <Select.Option key={employee._id} value={employee._id}>
+                            {employee?.generalInfo?.legalName}
+                          </Select.Option>
+                        );
+                      })}
+                    </Select>
                   </Form.Item>
                 </Col>
                 <Col span={12}>
                   <Form.Item label="Tags (Optional)" name="tags">
                     <Select mode="multiple" placeholder="Enter tags">
                       {listTags.map((item) => {
-                        return <Select.Option key={item.id}>{item.tag_name}</Select.Option>;
+                        return <Select.Option key={item.id * 1}>{item.tag_name}</Select.Option>;
                       })}
                     </Select>
                   </Form.Item>

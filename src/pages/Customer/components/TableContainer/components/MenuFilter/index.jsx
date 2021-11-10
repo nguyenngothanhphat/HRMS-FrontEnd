@@ -14,7 +14,7 @@ class MenuFilter extends PureComponent {
   };
 
   render() {
-    const { listStatus = [], listCompany = [] } = this.props;
+    const { listStatus = [], companyList = [] } = this.props;
     const yesNo = [
       <Select.Option key="yes">Yes</Select.Option>,
       <Select.Option key="no">No</Select.Option>,
@@ -49,8 +49,8 @@ class MenuFilter extends PureComponent {
               placeholder="Please select"
               onChange={this.handleChange}
             >
-              {listCompany.map((company) => (
-                <Option value={company._id}>{company.name}</Option>
+              {companyList.map((company) => (
+                <Option value={company.legalName}>{company.legalName}</Option>
               ))}
             </Select>
           </Form.Item>

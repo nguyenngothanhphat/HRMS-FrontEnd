@@ -26,50 +26,22 @@ import Notes from './components/Notes';
   selectedTab,
 }))
 class CustomerProfile extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedItem: '',
-    };
-  }
-
   componentDidMount = async () => {
     const { dispatch, match: { params: { reId = '', tabName = '' } = {} } = {} } = this.props;
-    const { selectedItem } = this.state;
-
     if (!tabName) {
       history.replace(`/customer-management/customers/customer-profile/${reId}`);
     } else {
       history.replace(`/customer-management/customers/customer-profile/${reId}/${tabName}`);
       // this.fetchData();
     }
-
     dispatch({
       type: 'customerProfile/fetchCustomerInfo',
       payload: {
         id: reId,
       },
     });
-
-    // this.fetchTab(selectedItem);
-  };
-
-  // fetchData = async () => {
-  // };
-
-  // componentWillUnmount = () => {
-  //   const { dispatch } = this.props;
-  //   localStorage.removeItem('tenantCurrentEmployee');
-  //   localStorage.removeItem('companyCurrentEmployee');
-  //   localStorage.removeItem('idCurrentEmployee');
-  //   dispatch({
-  //     type: 'employeeProfile/clearState',
-  //   });
-  // };
-
-  setItem = (value) => {
-    this.setState({
-      selectedItem: value,
+    dispatch({
+      type: 'customerManagement/fetchEmployeeList',
     });
   };
 
@@ -77,7 +49,6 @@ class CustomerProfile extends Component {
     const {
       match: { params: { reId = '', tabName = '' } = {} },
       info = {},
-      listTag,
     } = this.props;
     const listMenu = [
       {
