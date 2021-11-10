@@ -2,6 +2,7 @@ import { notification } from 'antd';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import {
   getCustomerList,
+  getCompaniesList,
   getEmployeeList,
   addCustomer,
   genCustomerID,
@@ -30,6 +31,7 @@ const customerManagement = {
       tag: [],
     },
     employeeList: [],
+    companyList: [],
   },
   effects: {
     *fetchCustomerList({ payload }, { call, put }) {
@@ -48,8 +50,9 @@ const customerManagement = {
     },
 
     *filterListCustomer({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getCustomerFilterList, {
+        response = yield call(getCustomerFilterList, {
           ...payload,
         });
         const { statusCode, data } = response;
@@ -58,6 +61,7 @@ const customerManagement = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *addNewCustomer({ payload }, { call }) {
@@ -147,6 +151,23 @@ const customerManagement = {
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { employeeList: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *fetchCompanyList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getCompaniesList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { companyList: data } });
       } catch (errors) {
         dialog(errors);
       }

@@ -31,10 +31,8 @@ const RaiseTicketModal = (props) => {
     visible = false,
     title = '',
     onClose = () => {},
-    currentUser: {
-      location = {} || {},
-      employee: { _id: myEmployeeID = '' } = {} || {},
-    } = {} || {},
+    currentUser: { location = {} || {}, employee: { _id: myEmployeeID = '' } = {} || {} } = {} ||
+      {},
   } = props;
   const locationID = location?._id;
 
@@ -56,13 +54,15 @@ const RaiseTicketModal = (props) => {
     onClose();
   };
   useEffect(() => {
-    dispatch({
-      type: 'ticketManagement/fetchListEmployee',
-      payload: {
-        tenantId: getCurrentTenant(),
-        company: getCurrentCompany(),
-      },
-    });
+    if (visible) {
+      dispatch({
+        type: 'ticketManagement/fetchListEmployee',
+        payload: {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        },
+      });
+    }
     dispatch({
       type: 'ticketManagement/fetchDepartments',
       payload: {
