@@ -106,7 +106,7 @@ class AllTicket extends Component {
       <div className={styles.containerTickets}>
         <div className={styles.tabTickets}>
           <Summary setSelectedTab={this.setSelectedTab} countData={countData} />
-          <SearchTable onChangeSearch={this.onChangeSearch} />
+          <SearchTable onChangeSearch={this.onChangeSearch} className={styles.searchTable} />
         </div>
         <TableTickets
           data={data}

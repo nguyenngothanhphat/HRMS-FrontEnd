@@ -159,7 +159,6 @@ class FilterForm extends Component {
   checkBoxStatusChecked = (id, field) => {
     const { filter } = this.state;
     let check = false;
-
     if (isEmpty(filter[field])) return check;
 
     filter[field].forEach((itemId) => {
@@ -203,95 +202,63 @@ class FilterForm extends Component {
     });
   };
 
-  handleCheckAll = (e) => {
-    const { filter } = this.state;
-    const { locationList } = this.props;
-    let data = { ...filter };
+  // handleCheckAll = (e) => {
+  //   const { filter } = this.state;
+  //   const { locationList } = this.props;
+  //   let data = { ...filter };
 
-    if (e === 'ALL') {
-      data = {
-        location: locationList,
-      };
-      this.setState({
-        checkAll: true,
-        filter: {
-          ...filter,
-          ...data,
-        },
-      });
-    } else {
-      const { checked } = e.target;
-      if (checked) {
-        data = {
-          location: locationList,
-        };
-      } else {
-        data = {
-          location: undefined,
-        };
-      }
+  //   if (e === 'ALL') {
+  //     data = {
+  //       location: locationList,
+  //     };
+  //     this.setState({
+  //       checkAll: true,
+  //       filter: {
+  //         ...filter,
+  //         ...data,
+  //       },
+  //     });
+  //   } else {
+  //     const { checked } = e.target;
+  //     if (checked) {
+  //       data = {
+  //         location: locationList,
+  //       };
+  //     } else {
+  //       data = {
+  //         location: undefined,
+  //       };
+  //     }
 
-      this.setState({
-        checkAll: checked,
-        filter: {
-          ...filter,
-          ...data,
-        },
-      });
-    }
-  };
+  //     this.setState({
+  //       checkAll: checked,
+  //       filter: {
+  //         ...filter,
+  //         ...data,
+  //       },
+  //     });
+  //   }
+  // };
 
-  handleSelect = (value) => {
-    const { filter, checkAll } = this.state;
-    const { locationList } = this.props;
-    const isAll = value.includes('ALL');
-    if (isAll) {
-      this.handleCheckAll('ALL');
-    } else {
-      let arrayLocation = checkAll ? [...filter.location] : [];
-      arrayLocation = arrayLocation.filter((location) => location !== value);
+  // onSelectAll = (valueAll) => {
+  //   const { filter } = this.state;
+  //   const { locationList } = this.props;
+  //   let data = { ...filter };
 
-      if (checkAll) {
-        this.setState({
-          isFilter: true,
-          filter: {
-            ...filter,
-            location: arrayLocation,
-          },
-          checkAll: arrayLocation?.length === locationList.length,
-        });
-      } else {
-        this.setState({
-          isFilter: true,
-          filter: {
-            ...filter,
-            location: [...value],
-          },
-          checkAll: value?.length === locationList.length,
-        });
-      }
-    }
-  };
-
-  onSelectAll = (valueAll) => {
-    const { filter } = this.state;
-    const { locationList } = this.props;
-    let data = { ...filter };
-
-    if (valueAll === 'ALL' && data.location.length === locationList.length) {
-      data = {
-        location: undefined,
-      };
-      this.setState({
-        isFilter: true,
-        filter: {
-          ...filter,
-          ...data,
-        },
-        checkAll: false,
-      });
-    }
-  };
+  //   if (valueAll === 'ALL' && data.location.length === locationList.length) {
+  //     data = {
+  //       location: undefined,
+  //     };
+  //     this.setState({
+  //       isFilter: true,
+  //       filter: {
+  //         ...filter,
+  //         ...data,
+  //       },
+  //       checkAll: false,
+  //     });
+  //   }
+  // };
 
   render() {
     const { listOffAllTicketSearch = [], locationList = [] } = this.props;
@@ -352,15 +319,15 @@ class FilterForm extends Component {
                   }}
                   tagRender={this.tagRender}
                   placeholder={field.placeholder}
-                  onChange={this.handleSelect}
                   onClear={() =>
                     this.setState({
                       checkAll: false,
                     })}
-                  mode={checkAll ? null : 'multiple'}
-                  value={checkAll ? 'ALL' : filter.location}
-                  onSelect={checkAll ? this.onSelectAll : null} // use to un-select all
-                  // disabled={currentStatus !== 'ALL'}
+                  mode="multiple"
+                  // mode={checkAll ? null : 'multiple'}
+                  // value={checkAll ? 'ALL' : filter.location}
+                  // onSelect={checkAll ? this.onSelectAll : null} // use to un-select all
+                  // // disabled={locationList !== 'ALL'}
                   dropdownClassName={styles.dropdown}
                 >
                   {field.name === 'name' &&
@@ -369,7 +336,10 @@ class FilterForm extends Component {
                         <Option key={option.id} value={option.employeeRaise.generalInfo.legalName}>
                           <Checkbox
                             value={option.employeeRaise.generalInfo.legalName}
-                            checked={this.checkBoxStatusChecked(option.id, field.name)}
+                            checked={this.checkBoxStatusChecked(
+                              option.employeeRaise.generalInfo.legalName,
+                              field.name,
+                            )}
                           />
                           <span>{option.employeeRaise.generalInfo.legalName}</span>
                         </Option>
@@ -378,10 +348,10 @@ class FilterForm extends Component {
                   {field.name === 'requestType' &&
                     field.optionArray.map((option) => {
                       return (
-                        <Option key={option.id} value={option.id}>
+                        <Option key={option.id} value={option.query_type}>
                           <Checkbox
-                            value={option.id}
-                            checked={this.checkBoxStatusChecked(option.id, field.name)}
+                            value={option.query_type}
+                            checked={this.checkBoxStatusChecked(option.query_type, field.name)}
                           />
                           <span>{option.query_type}</span>
                         </Option>
@@ -393,7 +363,7 @@ class FilterForm extends Component {
                         <Option key={option.id} value={option.priority}>
                           <Checkbox
                             value={option.priority}
-                            checked={this.checkBoxStatusChecked(option.id, field.name)}
+                            checked={this.checkBoxStatusChecked(option.priority, field.name)}
                           />
                           <span>{option.priority}</span>
                         </Option>
@@ -421,10 +391,10 @@ class FilterForm extends Component {
                   {field.name === 'assign' &&
                     field.optionArray.map((option) => {
                       return (
-                        <Option key={option.id} value={option.id}>
+                        <Option key={option.id} value={option.priority}>
                           <Checkbox
-                            value={option.id}
-                            checked={this.checkBoxStatusChecked(option.id, field.name)}
+                            value={option.priority}
+                            checked={this.checkBoxStatusChecked(option.priority, field.name)}
                           />
                           <span>{option.priority}</span>
                         </Option>

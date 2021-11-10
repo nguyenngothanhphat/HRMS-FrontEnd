@@ -13,6 +13,12 @@ export async function addTicket(payload) {
     data: payload,
   });
 }
+export async function addChat(payload) {
+  return request(`/api-ticket/tickettenant/chat`, {
+    method: 'POST',
+    data: payload,
+  });
+}
 export async function getOffToTalList(payload) {
   return request(`/api-ticket/tickettenant/summary-priority`, {
     method: 'POST',

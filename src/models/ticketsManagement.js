@@ -2,6 +2,7 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
   addTicket,
+  addChat,
   getListEmployee,
   getOffAllTicketList,
   getDepartmentList,
@@ -22,6 +23,9 @@ const ticketManagement = {
       locationList: [],
       isFilter: false,
     },
+    ticketDetail: {
+      ticketDetail: {},
+    },
   },
   effects: {
     *addTicket({ payload }, { call, put }) {
@@ -38,6 +42,21 @@ const ticketManagement = {
       } catch (error) {
         dialog(error);
       }
+    },
+    *addChat({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(addChat, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        console.log(data);
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
     },
     *fetchListAllTicket({ payload }, { call, put }) {
       let response;
@@ -124,6 +143,12 @@ const ticketManagement = {
       }
       return response;
     },
+    *fetchListAllTicketID({ payload }, { put }) {
+      yield put({
+        type: 'saveTicket',
+        payload: { ticketDetail: payload },
+      });
+    },
     *fetchLocationList({ payload = {} }, { call, put }) {
       try {
         const newPayload = {
@@ -155,6 +180,15 @@ const ticketManagement = {
         ...state,
         searchTicket: {
           ...state.searchTicket,
+          ...action.payload,
+        },
+      };
+    },
+    saveTicket(state, action) {
+      return {
+        ...state,
+        ticketDetail: {
+          ...state.ticketDetail,
           ...action.payload,
         },
       };

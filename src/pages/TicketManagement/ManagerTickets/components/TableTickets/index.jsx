@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Table, Dropdown, Menu, Input } from 'antd';
 import moment from 'moment';
-import { DownOutlined, SearchOutlined } from '@ant-design/icons';
+import { DownOutlined, UpOutlined, SearchOutlined } from '@ant-design/icons';
 import { history, connect } from 'umi';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import styles from './index.less';
@@ -10,7 +10,9 @@ class TableTickets extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      // pageNavigation: '1',
+      idAssigned: '',
+      visible: false,
+      employeeAssigned: '',
     };
   }
 
@@ -29,8 +31,16 @@ class TableTickets extends PureComponent {
     }
   };
 
-  handleSelect = (e) => {
+  handleClickSelect = (e) => {
     e.preventDefault();
+    const { visible } = this.state;
+    this.setState({ visible: !visible });
+  };
+
+  handleSelectChange = ({ key }) => {
+    const { listEmployee } = this.props;
+    const employeeAssigned = listEmployee.find((val) => val._id === key);
+    this.setState({ employeeAssigned: employeeAssigned.generalInfo.legalName });
   };
 
   render() {
@@ -61,22 +71,8 @@ class TableTickets extends PureComponent {
         getPageAndSize(page, pageSize);
       },
     };
-    // dropdown select
-
-    const menu = (
-      <Menu>
-        <div className="inputSearch">
-          <Input placeholder="Search by name" prefix={<SearchOutlined />} />
-        </div>
-        <Menu.Divider />
-        {data.map((item) => (
-          <Menu.Item> {item.employeeRaise.generalInfo.legalName}</Menu.Item>
-        ))}
-        {/* <Menu.Item> Lewis Tuan</Menu.Item>
-        <Menu.Item>Vo Nghia</Menu.Item> */}
-      </Menu>
-    );
-    // Thay thế data khi co du lieu
+    const { visible, idAssigned } = this.state;
+    const { listEmployee } = this.props;
     const columns = [
       {
         title: 'Ticket ID',
@@ -95,9 +91,13 @@ class TableTickets extends PureComponent {
         title: 'User ID',
         dataIndex: 'employeeRaise',
         key: 'userID',
-        render: (employeeRaise) => {
+        render: (employeeRaise, id) => {
           const { generalInfo: { userId = '' } = {} } = employeeRaise;
-          return <span className={styles.userID}>{userId}</span>;
+          return (
+            <span className={styles.userID} onClick={() => this.openViewTicket(id.id)}>
+              {userId}
+            </span>
+          );
         },
       },
       {
@@ -128,12 +128,15 @@ class TableTickets extends PureComponent {
         key: 'priority',
         render: (priority) => {
           if (priority === 'High') {
-            return <span className={styles.priorityHigh}>{priority}</span>;
+            return <div className={styles.priorityHigh}>{priority}</div>;
           }
           if (priority === 'Normal') {
-            return <span className={styles.priorityMedium}>{priority}</span>;
+            return <div className={styles.priorityMedium}>{priority}</div>;
           }
-          return <span className={styles.priorityLow}>{priority}</span>;
+          if (priority === 'Urgent') {
+            return <div className={styles.priorityUrgent}>{priority}</div>;
+          }
+          return <div className={styles.priorityLow}>{priority}</div>;
         },
       },
       {
@@ -158,14 +161,48 @@ class TableTickets extends PureComponent {
       },
       {
         title: 'Assign To',
-        key: 'operation',
+        dataIndex: ['department_assign', 'employee_assignee'],
+        key: 'assign',
         fixed: 'right',
-        render: () => {
+        render: (department_assign, employee_assignee) => {
+          if (employee_assignee.employee_assignee !== '') {
+            const employeeAssigned = listEmployee.find(
+              (val) => val._id === employee_assignee.employee_assignee,
+            );
+            return <span>{employeeAssigned ? employeeAssigned.generalInfo.legalName : ''}</span>;
+          }
           return (
-            <Dropdown overlayClassName="dropDown" overlay={menu} trigger={['click']}>
-              <div onClick={(e) => this.handleSelect(e)}>
+            <Dropdown
+              overlayClassName="dropDown"
+              overlay={
+                <Menu>
+                  <div className="inputSearch">
+                    <Input placeholder="Search by name" prefix={<SearchOutlined />} />
+                  </div>
+                  <Menu.Divider />
+                  {listEmployee
+                    ? listEmployee.map((val) => {
+                        const departmentID = val.department._id;
+                        if (departmentID === employee_assignee.department_assign) {
+                          return (
+                            <Menu.Item
+                              onClick={this.handleSelectChange}
+                              key={val._id}
+                              value={val._id}
+                            >
+                              {val.generalInfo.legalName}
+                            </Menu.Item>
+                          );
+                        }
+                      })
+                    : ''}
+                </Menu>
+              }
+              trigger={['click']}
+            >
+              <div onClick={(e) => this.handleClickSelect(e)}>
                 Select User &emsp;
-                <DownOutlined />
+                {visible ? <UpOutlined /> : <DownOutlined />}
               </div>
             </Dropdown>
           );
