@@ -6,6 +6,7 @@ import LayoutProjectInformation from '@/components/LayoutProjectInformation';
 import Summary from './components/Summary';
 import Documents from './components/Documents';
 import Planning from './components/Planning';
+import Resources from './components/Resources';
 import styles from './index.less';
 
 const ProjectInformation = (props) => {
@@ -26,7 +27,7 @@ const ProjectInformation = (props) => {
     {
       id: 3,
       name: 'Resources',
-      component: '',
+      component: <Resources />,
       link: 'resources',
     },
     {
