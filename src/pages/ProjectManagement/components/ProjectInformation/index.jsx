@@ -5,6 +5,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import LayoutProjectInformation from '@/components/LayoutProjectInformation';
 import Summary from './components/Summary';
 import Documents from './components/Documents';
+import Planning from './components/Planning';
 import styles from './index.less';
 
 const ProjectInformation = (props) => {
@@ -24,24 +25,30 @@ const ProjectInformation = (props) => {
     },
     {
       id: 3,
-      name: 'Planning',
+      name: 'Resources',
       component: '',
-      link: 'planning',
+      link: 'resources',
     },
     {
       id: 4,
+      name: 'Planning',
+      component: <Planning />,
+      link: 'planning',
+    },
+    {
+      id: 5,
       name: 'Tracking',
       component: '',
       link: 'tracking',
     },
     {
-      id: 5,
+      id: 6,
       name: 'Reporting',
       component: '',
       link: 'reporting',
     },
     {
-      id: 6,
+      id: 7,
       name: 'Audit Trail',
       component: '',
       link: 'audit-trail',

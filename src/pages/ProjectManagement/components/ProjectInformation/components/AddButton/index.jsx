@@ -4,10 +4,14 @@ import AddIcon from '@/assets/projectManagement/add.svg';
 import styles from './index.less';
 
 const AddButton = (props) => {
-  const { text = 'Add', onClick = () => {} } = props;
+  const { text = 'Add', onClick = () => {}, icon = '' } = props;
 
   return (
-    <Button onClick={onClick} icon={<img src={AddIcon} alt="" />} className={styles.AddButton}>
+    <Button
+      onClick={onClick}
+      icon={<img src={icon || AddIcon} alt="" />}
+      className={styles.AddButton}
+    >
       {text}
     </Button>
   );
