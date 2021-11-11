@@ -915,7 +915,18 @@ const routes = [
             authority: ['hr-manager', 'hr', 'employee', 'manager'],
             hideInMenu: true,
           },
-
+          {
+            path: '/project-management/list/:reId',
+            hideInMenu: true,
+            component: './ProjectManagement/components/ProjectInformation',
+            authority: ['hr-manager', 'hr', 'employee', 'manager'],
+          },
+          {
+            path: '/project-management/list/:reId/:tabName',
+            hideInMenu: true,
+            component: './ProjectManagement/components/ProjectInformation',
+            authority: ['hr-manager', 'hr', 'employee', 'manager'],
+          },
           {
             path: '/view-document/:documentId',
             name: 'viewDocument',

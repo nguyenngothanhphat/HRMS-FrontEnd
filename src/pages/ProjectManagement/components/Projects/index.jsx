@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import { Button } from 'antd';
 import CommonTable from './components/CommonTable';
 import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
@@ -19,6 +19,10 @@ const Projects = (props) => {
     });
   };
 
+  const viewProjectInformation = () => {
+    history.push(`/project-management/list/id`);
+  };
+
   useEffect(() => {
     fetchProjectList();
   }, []);
@@ -30,7 +34,11 @@ const Projects = (props) => {
         dataIndex: 'projectName',
         key: 'projectName',
         render: (projectName) => {
-          return <span className={styles.clickableTag}>{projectName || '-'}</span>;
+          return (
+            <span className={styles.clickableTag} onClick={() => viewProjectInformation()}>
+              {projectName || '-'}
+            </span>
+          );
         },
       },
       {
