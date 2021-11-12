@@ -6,7 +6,6 @@ import CommonModal from '../CommonModal';
 import AddResourceTypeContent from './components/AddResourceTypeContent';
 import ResourcesCard from './components/ResourcesCard';
 import ResourceTypeCard from './components/ResourceTypeCard';
-import ResourceTableCard from './components/ResourceTableCard';
 
 import styles from './index.less';
 
@@ -41,7 +40,6 @@ const Resources = (props) => {
       <div className={styles.contentCard}>
         <Tabs>
           <TabPane tab="Resource Type" key="1">
-            <ResourceTableCard />
             <ResourceTypeCard />
           </TabPane>
           <TabPane tab="Resources" key="2">

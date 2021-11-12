@@ -2,24 +2,30 @@ import { Button, Modal, Row, Col } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import BackIcon from '@/assets/projectManagement/back.svg';
+import ResourceTableCard from './components/ResourceTableCard';
+import ReviewResourceTable from './components/ReviewResourceTable';
+import ActionModal from '@/pages/ProjectManagement/components/ProjectInformation/components/ActionModal';
+import ModalImage from '@/assets/projectManagement/modalImage1.png';
+
 import styles from './index.less';
 
 const AssignResourcesModal = (props) => {
-  const {
-    visible = false,
-    title = 'Assign resources',
-    onClose = () => {},
-    content = '',
-    width = 700,
-  } = props;
+  const { visible = false, onClose = () => {}, width = 850 } = props;
+  const [sucessModalVisible, setSuccessModalVisible] = useState(false);
 
   const [step, setStep] = useState(1);
+
+  const onBack = () => {
+    if (step > 1) setStep(step - 1);
+  };
 
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>
-        <img src={BackIcon} alt="" />
-        <p className={styles.header__text}>{title}</p>
+        <img src={BackIcon} alt="" onClick={onBack} />
+        <p className={styles.header__text}>
+          {step === 1 ? 'Assign resources' : 'Review resources'}
+        </p>
       </div>
     );
   };
@@ -28,7 +34,7 @@ const AssignResourcesModal = (props) => {
     onClose();
   };
 
-  const renderModalContent = () => {
+  const renderStep1 = () => {
     return (
       <div className={styles.container}>
         <Row gutter={[0, 24]} className={styles.abovePart}>
@@ -54,9 +60,61 @@ const AssignResourcesModal = (props) => {
             </div>
           </Col>
         </Row>
-        Hello
+
+        <Row gutter={[0, 24]} className={styles.belowPart}>
+          <ResourceTableCard />
+        </Row>
       </div>
     );
+  };
+  const renderStep2 = () => {
+    return (
+      <div className={styles.container}>
+        <Row gutter={[0, 24]} className={styles.abovePart}>
+          <ReviewResourceTable />
+        </Row>
+      </div>
+    );
+  };
+  const renderModalContent = () => {
+    if (step === 2) {
+      return renderStep2();
+    }
+    return renderStep1();
+  };
+
+  // buttons
+  const renderPrimaryButtonText = () => {
+    if (step === 1) {
+      return 'Next';
+    }
+    return 'Assign';
+  };
+
+  const renderSecondaryButtonText = () => {
+    if (step === 1) {
+      return 'Maybe Later';
+    }
+    return 'Back';
+  };
+
+  const onPrimaryButtonClick = () => {
+    if (step === 1) {
+      setStep(2);
+    }
+    if (step === 2) {
+      onClose();
+      setSuccessModalVisible(true);
+    }
+  };
+
+  const onSecondaryButtonClick = () => {
+    if (step === 1) {
+      handleCancel();
+    }
+    if (step === 2) {
+      setStep(1);
+    }
   };
 
   return (
@@ -68,18 +126,22 @@ const AssignResourcesModal = (props) => {
         width={width}
         footer={
           <>
-            <Button className={styles.btnCancel} onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button
-              className={styles.btnSubmit}
-              type="primary"
-              form="myForm"
-              key="submit"
-              htmlType="submit"
-            >
-              OK
-            </Button>
+            <div className={styles.rightContent}>
+              {step === 1 && (
+                <>
+                  <span className={styles.descText}>Need more resources? </span>
+                  <span className={styles.raiseRequest}>Raise Request</span>
+                </>
+              )}
+            </div>
+            <div className={styles.mainButtons}>
+              <Button className={styles.btnCancel} onClick={onSecondaryButtonClick}>
+                {renderSecondaryButtonText()}
+              </Button>
+              <Button className={styles.btnSubmit} type="primary" onClick={onPrimaryButtonClick}>
+                {renderPrimaryButtonText()}
+              </Button>
+            </div>
           </>
         }
         title={renderModalHeader()}
@@ -88,6 +150,19 @@ const AssignResourcesModal = (props) => {
       >
         {renderModalContent()}
       </Modal>
+      <ActionModal
+        visible={sucessModalVisible}
+        onClose={() => setSuccessModalVisible(false)}
+        buttonText="Close"
+        width={400}
+      >
+        <img src={ModalImage} alt="" />
+        <span style={{ fontWeight: 'bold' }}>Resources assigned!</span>
+        <br />
+        <span style={{ textAlign: 'center' }}>
+          The resources have been successfully assigned to the project
+        </span>
+      </ActionModal>
     </>
   );
 };

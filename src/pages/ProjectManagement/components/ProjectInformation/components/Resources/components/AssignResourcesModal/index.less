@@ -72,6 +72,9 @@
       margin-bottom: 12px;
     }
     .ant-modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       padding: 13px 24px;
       border-top: 1px solid #d6dce0;
     }
@@ -94,33 +97,47 @@
       }
     }
   }
-  .btnSubmit {
-    color: #fff;
-
-    font-weight: 600;
-    font-size: 14px;
-    background-color: #ffa100;
-    border: none;
-    border-radius: 25px;
-  }
-  .btnSubmit:disabled {
-    color: #fff;
-    opacity: 0.5;
-  }
-  .btnCancel {
-    display: inline-block;
-    margin-right: 20px;
-    color: #fd4546;
-    font-weight: 500;
-    font-size: 14px;
-    border: none;
-    box-shadow: none;
-    cursor: pointer;
-    &:active {
-      opacity: 0.5;
+  .rightContent {
+    .descText {
+      color: #000000;
+      font-weight: 500;
+      font-size: 16px;
+    }
+    .raiseRequest {
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 16px;
+      text-decoration-line: underline;
     }
   }
+  .mainButtons {
+    .btnSubmit {
+      color: #fff;
 
+      font-weight: 600;
+      font-size: 14px;
+      background-color: #ffa100;
+      border: none;
+      border-radius: 25px;
+    }
+    .btnSubmit:disabled {
+      color: #fff;
+      opacity: 0.5;
+    }
+    .btnCancel {
+      display: inline-block;
+      margin-right: 20px;
+      color: #fd4546;
+      font-weight: 500;
+      font-size: 14px;
+      border: none;
+      box-shadow: none;
+      cursor: pointer;
+      &:active {
+        opacity: 0.5;
+      }
+    }
+  }
   .header {
     display: flex;
     align-items: center;
