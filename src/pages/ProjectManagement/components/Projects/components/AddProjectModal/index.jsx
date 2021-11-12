@@ -1,38 +1,76 @@
-import {
-  Alert,
-  Button,
-  Checkbox,
-  Col,
-  DatePicker,
-  Form,
-  Input,
-  Modal,
-  Row,
-  Select,
-  TimePicker,
-} from 'antd';
-import moment from 'moment';
-import React from 'react';
+import { Button, Col, DatePicker, Form, Input, Modal, Row, Select } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
-import AddIcon from '@/assets/timeSheet/add.svg';
-import RemoveIcon from '@/assets/timeSheet/recycleBin.svg';
 import styles from './index.less';
 
+const dateFormat = 'MM-DD-YYYY';
 const { Option } = Select;
 
 const AddProjectModal = (props) => {
-  const formRef = React.createRef();
+  const [form] = Form.useForm();
+  const { visible = false, title = 'Add new Project', onClose = () => {}, dispatch } = props;
+  const [customerId, setCustomerId] = useState('');
+
+  // redux
   const {
-    visible = false,
-    title = 'Add new Project',
-    onClose = () => {},
-    date = '',
-    projectName = '',
-    mode = 'single',
+    projectManagement: {
+      customerList = [],
+      projectTypeList = [],
+      projectStatusList = [],
+      tagList = [],
+      departmentList = [],
+      employeeList = [],
+      newProjectId = '',
+    } = {},
+    // loadingGenId = false,
+    loadingAddProject = false,
+    loadingFetchEmployeeList = false,
+    loadingFetchCustomerList = false,
   } = props;
 
-  const { dispatch, employee: { _id: employeeId = '' } = {} || {} } = props;
+  useEffect(() => {
+    if (visible) {
+      dispatch({
+        type: 'projectManagement/fetchCustomerListEffect',
+      });
+      dispatch({
+        type: 'projectManagement/fetchProjectTypeListEffect',
+      });
+      dispatch({
+        type: 'projectManagement/fetchProjectStatusListEffect',
+      });
+      dispatch({
+        type: 'projectManagement/fetchTagListEffect',
+      });
+      dispatch({
+        type: 'projectManagement/fetchDepartmentListEffect',
+      });
+      dispatch({
+        type: 'projectManagement/fetchEmployeeListEffect',
+      });
+    }
+  }, [visible]);
+
+  useEffect(() => {
+    form.setFieldsValue({
+      projectId: newProjectId,
+    });
+  }, [newProjectId]);
+
+  useEffect(() => {
+    const find = customerList.find((x) => x.customerId === customerId);
+    if (find) {
+      dispatch({
+        type: 'projectManagement/generateProjectIdEffect',
+        payload: {
+          customerId,
+          customerName: find.legalName,
+        },
+      });
+    }
+  }, [customerId]);
+
+  const { employee: { _id: employeeId = '' } = {} || {} } = props;
 
   const renderModalHeader = () => {
     return (
@@ -46,29 +84,28 @@ const AddProjectModal = (props) => {
     onClose();
   };
 
-  const refreshData = () => {
-    dispatch({
-      type: 'timeSheet/fetchMyTimesheetByTypeEffect',
-      isRefreshing: true,
-    });
-  };
-
   // main function
-  const addMultipleActivityEffect = (submitDate, tasks) => {};
-
-  const handleFinish = async (values) => {};
+  const handleFinish = async (values) => {
+    console.log('values', values);
+    const res = await dispatch({
+      type: 'projectManagement/addProjectEffect',
+      payload: { ...values, tagIds: values.tagIds.map((x) => x * 1) },
+    });
+    if (res.statusCode === 200) {
+      handleCancel();
+    }
+  };
 
   const renderModalContent = () => {
     return (
       <div className={styles.content}>
         <Form
           name="basic"
-          ref={formRef}
+          form={form}
           id="myForm"
           onFinish={handleFinish}
           initialValues={{
-            tasks: [{ projectName: projectName || null }],
-            date: date ? moment(date) : '',
+            accountOwner: employeeId,
           }}
         >
           <Row gutter={[24, 0]} className={styles.abovePart}>
@@ -76,13 +113,17 @@ const AddProjectModal = (props) => {
               <Form.Item
                 rules={[{ required: true, message: 'Select Customer' }]}
                 label="Customer"
-                name="customer"
-                fieldKey="customer"
+                name="customerId"
+                fieldKey="customerId"
                 labelCol={{ span: 24 }}
               >
-                <Select placeholder="Select Customer">
-                  {['A', 'B'].map((x) => (
-                    <Option value={x}>{x}</Option>
+                <Select
+                  loading={loadingFetchCustomerList}
+                  placeholder="Select Customer"
+                  onChange={(val) => setCustomerId(val)}
+                >
+                  {customerList.map((x) => (
+                    <Option value={x.customerId}>{x.legalName}</Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -96,8 +137,8 @@ const AddProjectModal = (props) => {
                 labelCol={{ span: 24 }}
               >
                 <Select placeholder="Select Engagement Type">
-                  {['A', 'B'].map((x) => (
-                    <Option value={x}>{x}</Option>
+                  {projectTypeList.map((x) => (
+                    <Option value={x.id}>{x.type_name}</Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -110,9 +151,13 @@ const AddProjectModal = (props) => {
                 fieldKey="accountOwner"
                 labelCol={{ span: 24 }}
               >
-                <Select placeholder="Select Account Owner">
-                  {['A', 'B'].map((x) => (
-                    <Option value={x}>{x}</Option>
+                <Select
+                  loading={loadingFetchEmployeeList}
+                  disabled
+                  placeholder="Select Account Owner"
+                >
+                  {employeeList.map((x) => (
+                    <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -122,50 +167,49 @@ const AddProjectModal = (props) => {
           <Row gutter={[24, 0]} className={styles.middlePart}>
             <Col xs={24} md={12}>
               <Form.Item
-                rules={[{ required: true, message: 'Select Project ID' }]}
+                rules={[{ required: true, message: 'Project ID' }]}
                 label="Project ID"
                 name="projectId"
                 fieldKey="projectId"
                 labelCol={{ span: 24 }}
               >
-                <Input placeholder="Select Project ID" />
+                <Input disabled placeholder="Project ID" />
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Select Project Status' }]}
                 label="Project Status"
-                name="engagementType"
-                fieldKey="engagementType"
+                name="projectStatus"
+                fieldKey="projectStatus"
                 labelCol={{ span: 24 }}
               >
                 <Select placeholder="Select Project Status">
-                  {['A', 'B'].map((x) => (
-                    <Option value={x}>{x}</Option>
+                  {projectStatusList.map((x) => (
+                    <Option value={x.id}>{x.status}</Option>
                   ))}
                 </Select>
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
               <Form.Item
-                rules={[{ required: true, message: 'Select Project Name' }]}
+                rules={[{ required: true, message: 'Enter Project Name' }]}
                 label="Project Name"
                 name="projectName"
                 fieldKey="projectName"
                 labelCol={{ span: 24 }}
               >
-                <Input placeholder="Select Project Name" />
+                <Input placeholder="Enter Project Name" />
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
               <Form.Item
-                rules={[{ required: true, message: 'Select Project Alias' }]}
                 label="Project Alias (Optional)"
                 name="projectAlias"
                 fieldKey="projectAlias"
                 labelCol={{ span: 24 }}
               >
-                <Input placeholder="Select Project Alias" />
+                <Input placeholder="Enter Project Alias" />
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
@@ -176,7 +220,7 @@ const AddProjectModal = (props) => {
                 fieldKey="startDate"
                 labelCol={{ span: 24 }}
               >
-                <DatePicker placeholder="Select Start Date" />
+                <DatePicker format={dateFormat} placeholder="Select Start Date" />
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
@@ -187,25 +231,54 @@ const AddProjectModal = (props) => {
                 fieldKey="tentativeEndDate"
                 labelCol={{ span: 24 }}
               >
-                <DatePicker placeholder="Select Tentative End Date" />
+                <DatePicker format={dateFormat} placeholder="Select Tentative End Date" />
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
               <Form.Item
-                rules={[{ required: true, message: 'Select Project Owner' }]}
-                label="Project Owner"
-                name="projectOwner"
-                fieldKey="projectOwner"
+                rules={[{ required: true, message: 'Select Project Manager' }]}
+                label="Project Manager"
+                name="projectManager"
+                fieldKey="projectManager"
                 labelCol={{ span: 24 }}
               >
-                <Select placeholder="Select Project Owner">
-                  {['A', 'B'].map((x) => (
-                    <Option value={x}>{x}</Option>
+                <Select loading={loadingFetchEmployeeList} placeholder="Select Project Manager">
+                  {employeeList.map((x) => (
+                    <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
                   ))}
                 </Select>
               </Form.Item>
             </Col>
-            <Col xs={0} md={12} />
+            <Col xs={24} md={12}>
+              <Form.Item
+                label="Estimation (Man Months)"
+                name="estimation"
+                fieldKey="estimation"
+                labelCol={{ span: 24 }}
+              >
+                <Input placeholder="Enter Estimation" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} md={12}>
+              <Form.Item
+                label="Billable Head Count"
+                name="billableHeadCount"
+                fieldKey="billableHeadCount"
+                labelCol={{ span: 24 }}
+              >
+                <Input placeholder="Enter Billable Head Count" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} md={12}>
+              <Form.Item
+                label="Buffer Head Count"
+                name="bufferHeadCount"
+                fieldKey="bufferHeadCount"
+                labelCol={{ span: 24 }}
+              >
+                <Input placeholder="Enter Buffer Head Count" />
+              </Form.Item>
+            </Col>
 
             <Col xs={24}>
               <Form.Item
@@ -229,9 +302,9 @@ const AddProjectModal = (props) => {
                 fieldKey="engineeringOwner"
                 labelCol={{ span: 24 }}
               >
-                <Select placeholder="Select Engineering Owner">
-                  {['A', 'B'].map((x) => (
-                    <Option value={x}>{x}</Option>
+                <Select loading={loadingFetchEmployeeList} placeholder="Select Engineering Owner">
+                  {employeeList.map((x) => (
+                    <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -245,8 +318,8 @@ const AddProjectModal = (props) => {
                 labelCol={{ span: 24 }}
               >
                 <Select placeholder="Select Division">
-                  {['A', 'B'].map((x) => (
-                    <Option value={x}>{x}</Option>
+                  {departmentList.map((x) => (
+                    <Option value={x._id}>{x.name}</Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -255,13 +328,13 @@ const AddProjectModal = (props) => {
               <Form.Item
                 rules={[{ required: true, message: 'Select Tags' }]}
                 label="Tags"
-                name="tags"
-                fieldKey="tags"
+                name="tagIds"
+                fieldKey="tagIds"
                 labelCol={{ span: 24 }}
               >
-                <Select placeholder="Select Groups">
-                  {['A', 'B'].map((x) => (
-                    <Option value={x}>{x}</Option>
+                <Select mode="multiple" placeholder="Select Groups">
+                  {tagList.map((x) => (
+                    <Option value={x.id}>{x.tag_name}</Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -291,6 +364,7 @@ const AddProjectModal = (props) => {
               form="myForm"
               key="submit"
               htmlType="submit"
+              loading={loadingAddProject}
             >
               Submit
             </Button>
@@ -306,7 +380,13 @@ const AddProjectModal = (props) => {
   );
 };
 
-export default connect(({ loading, user: { currentUser: { employee = {} } = {} } }) => ({
-  employee,
-  loadingAddTask: loading.effects['timeSheet/addMultipleActivityEffect'],
-}))(AddProjectModal);
+export default connect(
+  ({ projectManagement = {}, loading, user: { currentUser: { employee = {} } = {} } }) => ({
+    employee,
+    projectManagement,
+    loadingGenId: loading.effects['projectManagement/generateProjectIdEffect'],
+    loadingAddProject: loading.effects['projectManagement/addProjectEffect'],
+    loadingFetchEmployeeList: loading.effects['projectManagement/fetchEmployeeListEffect'],
+    loadingFetchCustomerList: loading.effects['projectManagement/fetchCustomerListEffect'],
+  }),
+)(AddProjectModal);

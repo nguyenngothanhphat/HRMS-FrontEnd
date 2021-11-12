@@ -7,6 +7,7 @@ import Summary from './components/Summary';
 import Documents from './components/Documents';
 import Planning from './components/Planning';
 import Resources from './components/Resources';
+import AuditTrail from './components/AuditTrail';
 import styles from './index.less';
 
 const ProjectInformation = (props) => {
@@ -51,7 +52,7 @@ const ProjectInformation = (props) => {
     {
       id: 7,
       name: 'Audit Trail',
-      component: '',
+      component: <AuditTrail />,
       link: 'audit-trail',
     },
   ];

@@ -63,7 +63,7 @@ const CommonTable = (props) => {
           locale={{
             emptyText: <Empty description="No data" />,
           }}
-          rowSelection={selectable ? rowSelection : {}}
+          rowSelection={selectable ? rowSelection : null}
           columns={columns}
           dataSource={list}
           loading={loading}

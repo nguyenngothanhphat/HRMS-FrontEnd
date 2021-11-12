@@ -2,13 +2,12 @@ import { Card } from 'antd';
 import { debounce } from 'lodash';
 import React from 'react';
 import { connect } from 'umi';
-import ViewIcon from '@/assets/projectManagement/view.svg';
 import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
+import EditIcon from '@/assets/projectManagement/edit2.svg';
 import CommonTable from '../../../CommonTable';
 import FilterButton from '../../../FilterButton';
 import FilterPopover from '../../../FilterPopover';
 import SearchBar from '../../../SearchBar';
-
 import FilterResourcesContent from './components/FilterResourcesContent';
 import styles from './index.less';
 
@@ -25,35 +24,43 @@ const ResourcesCard = () => {
   const generateColumns = () => {
     const columns = [
       {
-        title: 'Document Name',
-        dataIndex: 'documentName',
-        key: 'documentName',
-        render: (documentName) => {
-          return <span className={styles.clickableTag}>{documentName || '-'}</span>;
+        title: 'Resource Type',
+        dataIndex: 'resourceType',
+        key: 'resourceType',
+        render: (resourceType) => {
+          return <span>{resourceType || '-'}</span>;
         },
       },
       {
-        title: 'Document Type',
-        dataIndex: 'documentType',
-        key: 'documentType',
-        render: (documentType) => {
-          return <span className={styles.clickableTag}>{documentType || '-'}</span>;
+        title: 'Division',
+        dataIndex: 'division',
+        key: 'division',
+        render: (division) => {
+          return <span>{division || '-'}</span>;
         },
       },
       {
-        title: 'Uploaded By',
-        dataIndex: 'uploadedBy',
-        key: 'uploadedBy',
-        render: (uploadedBy) => {
-          return <span className={styles.clickableTag}>{uploadedBy || '-'}</span>;
+        title: 'Billing Status',
+        dataIndex: 'billingStatus',
+        key: 'billingStatus',
+        render: (billingStatus) => {
+          return <span>{billingStatus || '-'}</span>;
         },
       },
       {
-        title: 'Uploaded On',
-        dataIndex: 'uploadedOn',
-        key: 'uploadedOn',
-        render: (uploadedOn) => {
-          return <span>{uploadedOn || '-'}</span>;
+        title: 'No. of Resources',
+        dataIndex: 'noOfResources',
+        key: 'noOfResources',
+        render: (noOfResources) => {
+          return <span>{noOfResources || '-'}</span>;
+        },
+      },
+      {
+        title: 'Comments/Notes',
+        dataIndex: 'comments',
+        key: 'comments',
+        render: (comments) => {
+          return <span>{comments || '-'}</span>;
         },
       },
       {
@@ -62,8 +69,8 @@ const ResourcesCard = () => {
         key: 'action',
         render: () => {
           return (
-            <div className={styles.action}>
-              <img src={ViewIcon} alt="" />
+            <div className={styles.actions}>
+              <img src={EditIcon} alt="" />
               <img src={DeleteIcon} alt="" />
             </div>
           );
