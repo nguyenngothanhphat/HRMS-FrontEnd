@@ -1,6 +1,7 @@
-import { Col, Form, Input, Row, DatePicker, Tag } from 'antd';
+import { Col, DatePicker, Form, Input, Row } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import CustomTag from '../../../CustomTag';
 import styles from './index.less';
 
 const colors = ['#006BEC', '#FF6CA1', '#6236FF', '#FE5D27'];
@@ -42,7 +43,7 @@ const AddContent = () => {
               <span className={styles.label}>Tags:</span>
               <div className={styles.tags}>
                 {tags.map((t, i) => (
-                  <Tag color={getColor(i)}>{t}</Tag>
+                  <CustomTag color={getColor(i)}>{t}</CustomTag>
                 ))}
               </div>
             </div>

@@ -11,6 +11,7 @@ const CommonModal = (props) => {
     firstText = 'Submit',
     secondText = 'Cancel',
     content = '',
+    width = 700,
   } = props;
 
   const renderModalHeader = () => {
@@ -35,7 +36,7 @@ const CommonModal = (props) => {
         className={`${styles.CommonModal} ${styles.noPadding}`}
         onCancel={handleCancel}
         destroyOnClose
-        width={650}
+        width={width}
         footer={
           <>
             <Button className={styles.btnCancel} onClick={handleCancel}>

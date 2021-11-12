@@ -7,6 +7,21 @@
 
 .AddResourceTypeContent {
   :global {
+    .ant-input-group {
+      .ant-input {
+        border-radius: 5px 0 0 5px !important;
+      }
+      .ant-input-group-addon {
+        width: 78%;
+        color: #161c29;
+        font-size: 12px;
+        line-height: 14px;
+        text-align: left;
+        background: #f4f6f7;
+        border-radius: 0 5px 5px 0 !important;
+        opacity: 0.5;
+      }
+    }
     .ant-form-item-explain {
       div {
         font-size: 13px;
@@ -78,7 +93,7 @@
     }
     .ant-form-item-label label {
       height: 0;
-      color: #707177;
+      color: #161c29;
       font-size: 13px;
     }
     .ant-form-item .ant-upload.ant-upload-drag {
@@ -241,6 +256,9 @@
   .abovePart {
     border-bottom: 1px solid #d6dce0;
     .item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
       .label {
         display: inline-block;
         margin-right: 8px;

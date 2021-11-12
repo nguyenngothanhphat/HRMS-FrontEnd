@@ -9,7 +9,7 @@ import SearchBar from '../SearchBar';
 import CommonModal from '../CommonModal';
 import AddContent from './components/AddContent';
 import FilterContent from './components/FilterContent';
-import CommonTable from '../../../Projects/components/CommonTable';
+import CommonTable from '../CommonTable';
 import ViewIcon from '@/assets/projectManagement/view.svg';
 import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
 import styles from './index.less';
@@ -94,7 +94,9 @@ const Documents = (props) => {
   return (
     <div className={styles.Documents}>
       <Card title="Documents" extra={renderOption()}>
-        <CommonTable columns={generateColumns()} list={[]} />
+        <div className={styles.tableContainer}>
+          <CommonTable columns={generateColumns()} list={[]} />
+        </div>
       </Card>
       <CommonModal
         visible={addDocumentModalVisible}

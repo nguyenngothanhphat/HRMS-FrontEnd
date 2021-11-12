@@ -4,7 +4,7 @@ import React from 'react';
 import { connect } from 'umi';
 import ViewIcon from '@/assets/projectManagement/view.svg';
 import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
-import CommonTable from '../../../../../Projects/components/CommonTable';
+import CommonTable from '../../../CommonTable';
 import FilterButton from '../../../FilterButton';
 import FilterPopover from '../../../FilterPopover';
 import SearchBar from '../../../SearchBar';
@@ -89,7 +89,9 @@ const ResourcesCard = () => {
   return (
     <div className={styles.ResourcesCard}>
       <Card title="Resource" extra={renderOption()}>
-        <CommonTable columns={generateColumns()} list={[]} />
+        <div className={styles.tableContainer}>
+          <CommonTable columns={generateColumns()} list={[]} />
+        </div>
       </Card>
     </div>
   );

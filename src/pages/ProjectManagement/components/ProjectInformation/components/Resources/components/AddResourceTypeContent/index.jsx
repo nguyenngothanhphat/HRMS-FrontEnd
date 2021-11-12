@@ -1,8 +1,10 @@
-import { Col, Form, Input, Row, DatePicker, Tag } from 'antd';
+import { Col, Select, Form, Input, Row } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import CustomTag from '../../../CustomTag';
 import styles from './index.less';
 
+const { Option } = Select;
 const colors = ['#006BEC', '#FF6CA1', '#6236FF', '#FE5D27'];
 
 const AddResourceTypeContent = () => {
@@ -21,58 +23,77 @@ const AddResourceTypeContent = () => {
     <div className={styles.AddResourceTypeContent}>
       <Form name="basic" ref={formRef} id="myForm" onFinish={handleFinish} initialValues={{}}>
         <Row gutter={[24, 0]} className={styles.abovePart}>
-          <Col xs={24} md={12}>
-            <Row gutter={[24, 10]}>
-              <Col xs={24}>
-                <div className={styles.item}>
-                  <span className={styles.label}>Project Name:</span>
-                  <span className={styles.value}>ABC Website</span>
-                </div>
-              </Col>
-              <Col xs={24}>
-                <div className={styles.item}>
-                  <span className={styles.label}>Engagement Type:</span>
-                  <span className={styles.value}>T&M</span>
-                </div>
-              </Col>
-            </Row>
+          <Col xs={24} md={7}>
+            <div className={styles.item}>
+              <span className={styles.label}>Project Name:</span>
+              <span className={styles.value}>ABC Website</span>
+            </div>
           </Col>
-          <Col xs={24} md={12}>
+          <Col xs={24} md={7}>
+            <div className={styles.item}>
+              <span className={styles.label}>Engagement Type:</span>
+              <span className={styles.value}>T&M</span>
+            </div>
+          </Col>
+
+          <Col xs={24} md={10}>
             <div className={styles.item}>
               <span className={styles.label}>Tags:</span>
               <div className={styles.tags}>
                 {tags.map((t, i) => (
-                  <Tag color={getColor(i)}>{t}</Tag>
+                  <CustomTag color={getColor(i)}>{t}</CustomTag>
                 ))}
               </div>
             </div>
           </Col>
         </Row>
         <Row gutter={[24, 0]} className={styles.belowPart}>
-          <Col xs={24}>
-            <Form.Item label="Milestone Name" name="milestoneName" labelCol={{ span: 24 }}>
-              <Input placeholder="Enter Milestone Name" />
+          <Col xs={24} md={12}>
+            <Form.Item label="Division" name="division" labelCol={{ span: 24 }}>
+              <Input placeholder="Enter Division" />
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
-            <Form.Item label="Start Date" name="startDate" labelCol={{ span: 24 }}>
-              <DatePicker />
+            <Form.Item label="Resource Type" name="Resource Type" labelCol={{ span: 24 }}>
+              <Select placeholder="Select Resource Type">
+                {[].map((x) => (
+                  <Option value={x}>{x}</Option>
+                ))}
+              </Select>
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
-            <Form.Item label="End Date*" name="endDate" labelCol={{ span: 24 }}>
-              <DatePicker />
+            <Form.Item label="No. of Resources" name="noOfResources" labelCol={{ span: 24 }}>
+              <Input placeholder="Enter No. of Resources" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item label="Billing Status" name="billingStatus" labelCol={{ span: 24 }}>
+              <Select placeholder="Select Billing Status">
+                {[].map((x) => (
+                  <Option value={x}>{x}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item label="Estimated effort" name="estimatedEffort" labelCol={{ span: 24 }}>
+              <Input addonAfter={<span>month/resource</span>} />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item label="Technologies Used" name="technologies" labelCol={{ span: 24 }}>
+              <Select mode="multiple" placeholder="Select Technologies Used">
+                {['React', 'Java'].map((x) => (
+                  <Option value={x}>{x}</Option>
+                ))}
+              </Select>
             </Form.Item>
           </Col>
 
           <Col xs={24}>
-            <Form.Item label="Description" name="description" labelCol={{ span: 24 }}>
-              <Input.TextArea autoSize={{ minRows: 4 }} />
-            </Form.Item>
-          </Col>
-          <Col xs={24}>
-            <Form.Item>
-              <span className={styles.someNotes}>*Tentative End Date</span>
+            <Form.Item label="Comments/Notes" name="description" labelCol={{ span: 24 }}>
+              <Input.TextArea placeholder="Add comments/notes" autoSize={{ minRows: 4 }} />
             </Form.Item>
           </Col>
         </Row>
