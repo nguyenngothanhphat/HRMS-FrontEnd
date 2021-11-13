@@ -386,7 +386,7 @@ class FilterForm extends Component {
           <div className={styles.form__top}>
             <div className={styles.processStatus}>
               <div className={styles.processStatus__label}>
-                <div className={styles.labelText}>By Other Status</div>
+                <div className={styles.labelText}>By Status</div>
               </div>
               <Select
                 allowClear
@@ -457,7 +457,7 @@ class FilterForm extends Component {
             ))}
             <div className={styles.doj}>
               <div className={styles.doj__label}>
-                <div className={styles.labelText}>DOJ</div>
+                <div className={styles.labelText}>By Date Of Joining</div>
               </div>
               <div className={styles.doj__date}>
                 <Form.Item name="fromDate">
