@@ -271,7 +271,7 @@ const ModalAddInfo = (props) => {
                     )}
                     <Form.Item
                       name={['emergencyContact', `contact${item}`]}
-                      label="Emeregncy Contact"
+                      label="Emergency Contact"
                       rules={[
                         {
                           pattern: /^[+]*[\d]{0,10}$/,
@@ -281,7 +281,7 @@ const ModalAddInfo = (props) => {
                         },
                       ]}
                     >
-                      <Input placeholder="Emeregncy Contact" />
+                      <Input placeholder="Emergency Contact" />
                     </Form.Item>
                     <Form.Item
                       label="Person’s Name"
