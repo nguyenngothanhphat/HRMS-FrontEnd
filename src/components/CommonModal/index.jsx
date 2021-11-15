@@ -68,4 +68,4 @@ const CommonModal = (props) => {
   );
 };
 
-export default connect(() => ({}))(CommonModal);
+export default CommonModal;

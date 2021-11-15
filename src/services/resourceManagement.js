@@ -1,10 +1,10 @@
 import { request } from '@/utils/request';
 
-export async function getOffAllTicketList(payload) {
-    return request('/api-ticket/tickettenant/list', {
-        method: 'POST',
-        data: payload,
-    });
+export async function getResources(payload) {
+  return request('/api-project/resourcetenant/list', {
+    method: 'POST',
+    data: payload,
+  });
 }
 
 export async function addTicket(payload) {
@@ -37,4 +37,11 @@ export async function postAssignToProject(payload) {
         method: 'POST',
         data: payload,
     });
+}
+
+export async function getProjectList(payload) {
+  return request('/api-project/projecttenant/list', {
+    method: 'POST',
+    data: payload,
+  });
 }

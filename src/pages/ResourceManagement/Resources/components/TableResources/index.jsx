@@ -1,31 +1,21 @@
-import React, { PureComponent, useState } from 'react';
+import React, { PureComponent } from 'react';
 import {
   Table,
   Row,
   Col,
-  Button,
-  Modal,
-  Form,
-  Input,
-  Select,
-  DatePicker,
-  Tooltip,
-  Card,
+  Button
 } from 'antd';
 import moment from 'moment';
-import { InfoCircleOutlined } from '@ant-design/icons';
-import addAction from '@/assets/resource-action-add1.svg';
-import historyIcon from '@/assets/resource-management-edit1.svg';
-import datePickerIcon from '@/assets/resource-management-datepicker.svg';
+import { PlusCircleFilled } from '@ant-design/icons';
+import {formatMessage} from 'umi'
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import AddActionBTN from './components/Add';
 import EditActionBTN from './components/Edit';
 import styles from './index.less';
-
-const { TextArea } = Input;
-const { Option } = Select;
-
-class TableTickets extends PureComponent {
+import ProjectProfile from '../ComplexView/components/PopoverProfiles/components/ProjectProfile';
+import UserProfile from '../ComplexView/components/PopoverProfiles/components/UserProfile';
+import CommonModal from '@/components/CommonModal';
+class TableResources extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -54,21 +44,6 @@ class TableTickets extends PureComponent {
     }
   };
 
-  openViewTicket = (ticketID) => {
-    const { data = [] } = this.props;
-    const id = '';
-
-    data.forEach((item) => {
-      if (item.ticketID === ticketID) {
-        id = item._id;
-      }
-    });
-
-    if (id) {
-      // history.push(`/offboarding/list/review/${id}`);
-    }
-  };
-
   handleSelect = (e) => {
     e.preventDefault();
   };
@@ -77,8 +52,97 @@ class TableTickets extends PureComponent {
     console.log('params', pagination, filters, sorter, extra);
   };
 
-  getComponent = () => {
-    return <addActionBTN />;
+  parseDate = (dateText) => {
+    if(!dateText) {
+      return '-'
+    }
+    return moment(dateText).format('MM/DD/YYYY')
+  }
+
+  handleLongText = (text, length) => {
+    console.log(`text: ${text}`)
+    if(!text) {
+      return ''
+    }
+    if (text.length < length) {
+      return text;
+    }
+
+    const formatText = text.substring(0, length)
+    return `${formatText}...${formatText.includes('(') ? ')' : ''}`
+  }
+
+  cloneObj = (obj) => {
+    const newObj = {}
+    // eslint-disable-next-line no-restricted-syntax
+    for(const [key, value] of Object.entries(obj)) {
+      newObj[key] = value
+    }
+    return newObj
+  }
+
+  formatResource = (resourceList) => {
+    const { projectList } = this.props
+    // console.log('formating resource')
+    const dataList = [];
+    // eslint-disable-next-line no-restricted-syntax
+    resourceList.forEach((obj, index) => {
+      const { departmentInfo, titleInfo, generalInfo, projects} = obj;
+      const availableStatus = 'Available Now'
+      const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'))
+      const employeeName = `${ generalInfo.firstName } ${generalInfo.firstName} ${ userName ? (`(${  userName  })`) : ''}`;
+      const newObj = {
+        employeeId: obj._id,
+        employeeName: this.handleLongText(employeeName.trim(), 25),
+        availableStatus,
+        division: departmentInfo.name,
+        designation: titleInfo.name,
+        experience: generalInfo.totalExp,
+        projectName: '-',
+        utilization: 0,
+        billStatus: '-',
+        startDate: '-',
+        endDate: '-',
+        comment: ''
+      };
+      if(projects.length === 0){
+        if(index % 2 === 0) {
+          projects.push(
+            {name: 'Abc Project', billStatus: 'Billing', utilization: 50},
+          )
+          projects.push(
+            {name: 'Abc Project 2', billStatus: 'Billing', utilization: 50},
+          )
+        }
+      }
+      let ability = 0
+      // eslint-disable-next-line no-restricted-syntax
+      for(const p of projects) {
+        ability += p.utilization
+      }
+      newObj.availableStatus = ability < 100 ? 'Available Now' : 'Available Soon'
+      console.log(`project length ${  projects.length}`)
+      if(projects.length === 0) {
+        dataList.push(newObj);
+      } else {
+        // eslint-disable-next-line no-restricted-syntax
+        for(const p of projects) {
+          const project = projectList.find(x => x.id === p.projectId)
+          console.log(`loop in projects: ${ JSON.stringify(p) }`)
+          const pObj = this.cloneObj(newObj)
+          pObj.projectName = project.name || '-'
+          pObj.utilization = p.utilization || 0
+          pObj.startDate = this.parseDate(p.startDate)
+          pObj.endDate = this.parseDate(p.endDate)
+          pObj.billStatus = p.billStatus || '-'
+          pObj.project = project
+          dataList.push(pObj);
+        }
+      }
+    })
+    // for (const obj, index of resourceList) {
+    console.log(`formatDataSource: ${JSON.stringify(dataList)}`);
+    return dataList;
   };
 
   render() {
@@ -86,60 +150,44 @@ class TableTickets extends PureComponent {
       data = [],
       textEmpty = 'No resignation request is submitted',
       loading,
+      total,
       pageSelected,
       size,
-      getPageAndSize = () => {},
+      getPageAndSize,
     } = this.props;
-    data.forEach((x, index) => {
-      x.page = Math.floor(index / size) + 1;
-      // console.log(`page item ${Math.floor(index / size)}`);
-    });
-
+    // const formatData = this.formatResource(data)
     const pagination = {
       position: ['bottomLeft'],
-      total: data.length, // totalAll,
-      showTotal: (total, range) => (
+      total, // totalAll,
+      showTotal: () => (
         <span>
           Showing{' '}
           <b>
-            {range[0]} - {range[1]}
+            {(pageSelected-1) * size} - {pageSelected * size}
           </b>{' '}
-          of {data.length}
+          of {total}
         </span>
       ),
-      pageSize: size,
+      pageSize: data.length,
       current: pageSelected,
-      onChange: (page, pageSize) => {
-        getPageAndSize(page, pageSize);
-      },
+      onChange: (page) => getPageAndSize(page, size),
     };
 
     const mapping = new Set();
-    const rowRendered = (record, index) => {
-      // console.log(`row renders: ${ index} ${JSON.stringify(record)}`)
-      if (index === size - 1) {
-        // mapping.clear();
-      }
-    };
+
     const renderCell = (value, row, display) => {
       const obj = {
         children: display,
         props: {
           rowSpan: 0,
-          class: styles.disableHover,
+          className: styles.disableHover,
         },
       };
-      const template = `${row.employeeId}_${pageSelected}_${value}`;
-      // if(col) {
-      //   console.log(`page ${pageSelected}`)
-      // }
-
+      const template = `${row.employeeId}_${value}`;
       if (!mapping.has(template)) {
         const count = data.filter((x) => {
-          // console.log(JSON.stringify(x))
-          return x.employeeId === row.employeeId && x.page === pageSelected;
+          return x.employeeId === row.employeeId;
         }).length;
-        // console.log(`count: ${count}`)
         obj.props.rowSpan = count;
         mapping.add(template);
       }
@@ -160,7 +208,6 @@ class TableTickets extends PureComponent {
     };
     const resourceStatusClass = (resourceStatus) => {
       try {
-        console.log(resourceStatus);
         if (resourceStatus && resourceStatus.includes('Now')) {
           return 'now';
         }
@@ -177,15 +224,20 @@ class TableTickets extends PureComponent {
         title: 'Name',
         dataIndex: 'employeeName',
         key: 'employeeName',
-        width: '10%',
+        // width: '12%',
         render: (value, row) => {
           const statusClass = resourceStatusClass(row.availableStatus);
           const div = (
-            <div className={styles.employeeName}>
-              {value}
+            <div>
               <div>
-                <div className={styles[statusClass]}>{row.availableStatus}</div>
+                <div className={styles.resourceStatus}>
+                  <span className={styles[statusClass]}>{row.availableStatus}</span>
+                </div>
               </div>
+              <UserProfile placement="leftTop">
+                <div className={styles.employeeName}>{value}</div>
+              </UserProfile>
+              
             </div>
           );
           return renderCell(value, row, div);
@@ -193,14 +245,15 @@ class TableTickets extends PureComponent {
         sorter: (a, b) => {
           return a.employeeName.localeCompare(b.employeeName);
         },
-        className: 'right-left-border',
+        fixed: 'left',
+        className: 'firstColumn',
         sortDirections: ['ascend', 'descend'],
       },
       {
         title: 'Division',
         dataIndex: 'division',
         key: 'division',
-        width: '10%',
+        // width: '10%',
         render: (value, row) => {
           const display = <span className={styles.division}>{value}</span>;
           return renderCell(value, row, display);
@@ -213,7 +266,7 @@ class TableTickets extends PureComponent {
       {
         title: 'Designation',
         dataIndex: 'designation',
-        width: '10%',
+        // width: '12%',
         key: 'designation',
         render: (value, row) => {
           const display = <span className={styles.basicCellField}>{value}</span>;
@@ -228,7 +281,7 @@ class TableTickets extends PureComponent {
       {
         title: 'Experience',
         dataIndex: 'experience',
-        width: '7%',
+        // width: '7%',
         render: (value, row) => {
           const display = <span className={styles.basicCellField}>{value}</span>;
           return renderCell(value, row, display);
@@ -242,32 +295,28 @@ class TableTickets extends PureComponent {
       {
         title: 'Current Project',
         dataIndex: 'projectName',
-        width: '10%',
-        render: (value) => {
-          const display = <span className={styles.employeeName}> {value}</span>;
+        // width: '10%',
+        render: (value, row) => {
+          const employeeRowCount = data.filter(x => x.employeeId === row.employeeId).length
+          const display = <ProjectProfile placement="leftTop"><span className={styles.employeeName}> {value}</span></ProjectProfile>;
           const obj = {
             children: display,
             props: {
               rowSpan: 1,
-              className: 'left-border',
+              className: employeeRowCount > 1 ? 'left-border' : '',
             },
           };
           return obj;
         },
         sorter: (a, b) => {
-          // const templateA = a.projectName ? `${a.employeeId}_${a.projectName}` : a.projectName
-          // const templateB = b.projectName ? `${b.employeeId}_${b.projectName}` : b.projectName
-          // return localCompare(templateA, templateB);
-
           return localCompare(a.projectName, b.projectName);
         },
-        // defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend'],
       },
       {
         title: 'Status',
         dataIndex: 'billStatus',
-        width: '6%',
+        // width: '6%',
         key: 'billStatus',
         render: (billStatus) => {
           return <span className={styles.basicCellField}> {billStatus}</span>;
@@ -281,7 +330,7 @@ class TableTickets extends PureComponent {
       {
         title: 'Utilization',
         dataIndex: 'utilization',
-        width: '6%',
+        // width: '6%',
         key: 'utilization',
         sorter: (a, b) => {
           return a.utilization - b.utilization;
@@ -290,52 +339,80 @@ class TableTickets extends PureComponent {
         sortDirections: ['ascend', 'descend'],
       },
       {
-        title: 'Start Date',
+        title: (<div className={styles.dateHeaderContainer}><div>Start Date</div><div>(MM/dd/yyyy)</div></div>),
         dataIndex: 'startDate',
-        width: '7%',
+        // width: '7%',
         key: 'startDate',
         render: (value) => {
           return <span className={styles.basicCellField}>{value}</span>;
         },
       },
       {
-        title: 'End Date',
+        title: (<div className={styles.dateHeaderContainer}><div>End Date</div><div>(MM/dd/yyyy)</div></div>),
         dataIndex: 'endDate',
-        width: '7%',
+        // width: '7%',
         key: 'endDate',
         render: (value) => {
           return <span className={styles.basicCellField}>{value}</span>;
         },
       },
       {
+        title: (<div className={styles.dateHeaderContainer}><div>Revised End Date</div><div>(MM/dd/yyyy)</div></div>),
+        dataIndex: 'endDate',
+        // width: '7%',
+        key: 'revisedEndDate',
+        render: (value) => {
+          return <span className={styles.basicCellField}>{value}</span>;
+        },
+      },
+      {
+        title: 'Comment',
+        // width: '10%',
+        dataIndex: 'comment',
+        key: 'comment',
+        render: (value, row) => {
+          const employeeRowCount = data.filter(x => x.employeeId === row.employeeId).length
+          let text
+          if(value) {
+            text = (<span className={styles.comment}>{value}</span>)
+          } else {
+            text = (
+              <span><CommonModal data={row} /></span>
+            );
+          }
+          const obj = renderCell('comment', row, text);
+          obj.props.className = employeeRowCount > 1 ? 'left-border' : '';
+          return obj;
+        },
+        // className: 'right-left-border',
+      },
+      {
         title: 'Actions',
-        width: '7%',
+        // width: '3%',
         // dataIndex: 'subject',
         key: 'action',
         render: (value, row, col) => {
           // const buttonGroup = actionAddAndEdit(row);
-          console.log('value', value);
-          console.log('row', row);
-          console.log('col', col);
           const buttonGroup = (
             <span>
               <AddActionBTN dataPassRow={row} /> <EditActionBTN dataPassRow={row} />
             </span>
           );
           const obj = renderCell('add', row, buttonGroup);
-          if (col === size - 1) {
+          if (col === data.length - 1) {
             mapping.clear();
           }
           return obj;
         },
         className: 'right-left-border',
+        fixed: 'right'
       },
     ];
 
     return (
       <div className={styles.TableResources}>
         <Table
-          width="100%"
+          // width="100%"
           locale={{
             emptyText: (
               <div className={styles.viewEmpty}>
@@ -351,11 +428,10 @@ class TableTickets extends PureComponent {
           pagination={pagination}
           onChange={this.onTableChange}
           rowKey="id"
-          onRow={rowRendered}
-          scroll={{ y: 500 }}
+          scroll={{ x: 'max-content' }}
         />
       </div>
     );
   }
 }
-export default TableTickets;
+export default TableResources;

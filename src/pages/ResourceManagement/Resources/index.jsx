@@ -4,7 +4,7 @@ import { history, connect, formatMessage } from 'umi';
 import { debounce } from 'lodash';
 import { DownloadOutlined } from '@ant-design/icons';
 import { PageContainer } from '@/layouts/layout/src';
-import AllTicket from './components/ResourceList';
+import ResourceList from './components/ResourceList';
 import styles from './index.less';
 import OverView from '@/pages/ResourceManagement/components/OverView';
 
@@ -12,7 +12,7 @@ const baseModuleUrl = '/resource-management';
 
 @connect(
   ({
-    ticketManagement: { listOffAllTicket = [], totalList = [] } = {},
+    resourceManagement: { resourceList = [], totalList = [] } = {},
     user: {
       currentUser: {
         location: { _id: locationID = '' } = {},
@@ -21,23 +21,23 @@ const baseModuleUrl = '/resource-management';
     } = {},
     locationSelection: { listLocationsByCompany = [] },
   }) => ({
-    listOffAllTicket,
+    resourceList,
     totalList,
     locationID,
     companyID,
     listLocationsByCompany,
   }),
 )
-class ManagerTicket extends Component {
+class Resources extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dataListAllTickets: [],
+      // resourceList: [],
       loadingSearch: false,
     };
     this.setDebounce = debounce((query) => {
       this.setState({
-        dataListAllTickets: query,
+        // resourceList: query,
         loadingSearch: false,
       });
     }, 1000);
@@ -48,13 +48,16 @@ class ManagerTicket extends Component {
     if (!tabName) {
       history.replace(`${baseModuleUrl}/all-resources`);
     } else {
-      // const { dispatch, listOffAllTicket } = this.props;
+      // const { dispatch, resourceList } = this.props;
       // if (!dispatch) {
       //   return;
       // }
       // dispatch({
-      //   type: 'ticketManagement/fetchListAllTicket',
+      //   type: 'resourceManagement/getResources',
       //   payload: {
+      //     page: 1,
+      //     limit: 10,
+      //     company: [company],
       //     // status: 'New',
       //   },
       // });
@@ -62,95 +65,110 @@ class ManagerTicket extends Component {
       //   type: 'ticketManagement/fetchToTalList',
       //   payload: {},
       // });
-      this.dummyData();
-      // if (listOffAllTicket.length > 0) this.updateData(listOffAllTicket);
+      // this.dummyData();
+      // if (resourceList.length > 0) {
+      //   this.updateData(resourceList);
+      // }
     }
   }
 
   componentDidUpdate() {
-    // const { listOffAllTicket = [] } = this.props;
-    // if (JSON.stringify(listOffAllTicket) !== JSON.stringify(prevProps.listOffAllTicket)) {
-    //   this.updateData(listOffAllTicket);
+    // const { resourceList = [], prevProps } = this.props;
+    // if (JSON.stringify(resourceList) !== JSON.stringify(prevProps.resourceList)) {
+    //   this.updateData(resourceList);
     // }
     // this.dummyData()
   }
 
-  dummyData = () => {
-    const data = [];
-    for (let i = 1; i <= 100; i += 1) {
-      if (i % 15 === 0) {
-        const obj = {
-          employeeId: 15,
-          employeeName: `employee 15`,
-          division: 'division',
-          designation: 'designation',
-          experience: (Math.random(i) * i).toFixed(1),
-          projectName: '',
-          availableStatus: 'Available Soon',
-          utilization: 0,
-          startDate: '',
-          endDate: '',
-        };
-        data.push(obj);
-      } else if (i < 5) {
-        const obj = {
-          employeeId: i < 5 ? 1 : i,
-          employeeName: i < 5 ? 'employee 1' : `employee ${i}`,
-          division: 'division',
-          designation: 'designation',
-          billStatus: 'Billed',
-          experience: 1,
-          availableStatus: 'Available Now',
-          projectName: `Project ${Math.floor(Math.random(i) * i)}`,
-          utilization: i < 5 ? 25 : 100,
-          startDate: '2021-01-01',
-          endDate: '2021-01-01',
-        };
-        data.push(obj);
-      } else if (i > 11 && i < 15) {
-        const obj = {
-          employeeId: 12,
-          employeeName: 'Multiple Project page 2',
-          division: 'division',
-          designation: 'designation',
-          experience: 2,
-          availableStatus: 'Available Now',
-          projectName: `Project ${Math.floor(Math.random(i) * i)}`,
-          utilization: i < 5 ? 25 : 100,
-          startDate: '2021-01-01',
-          endDate: '2021-01-01',
-        };
-        data.push(obj);
-      } else {
-        const obj = {
-          employeeId: i,
-          employeeName: `Employee ${i}`,
-          division: 'division',
-          designation: 'designation',
-          billStatus: 'Bench',
-          availableStatus: 'Available Now',
-          experience: i < 5 ? 2 : (Math.random(i) * i).toFixed(1),
-          projectName: `Project ${Math.floor(Math.random(i) * i)}`,
-          utilization: i < 5 ? 25 : 100,
-          startDate: '2021-01-01',
-          endDate: '2021-01-01',
-        };
-        data.push(obj);
-      }
-    }
-    this.updateData(data);
-  };
+  
 
-  updateData = (listOffAllTicket) => {
-    this.setState({
-      dataListAllTickets: listOffAllTicket,
-    });
-  };
+  // dummyData = () => {
+  //   const data = [];
+  //   for (let i = 1; i <= 100; i += 1) {
+  //     if (i % 15 === 0) {
+  //       const obj = {
+  //         employeeId: 15,
+  //         employeeName: `employee 15`,
+  //         division: 'division',
+  //         designation: 'designation',
+  //         experience: (Math.random(i) * i).toFixed(1),
+  //         projectName: '',
+  //         availableStatus: 'Available Soon',
+  //         comment:
+  //           'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint nt. ullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint...Read More',
+  //         utilization: 0,
+  //         startDate: '',
+  //         endDate: '',
+  //       };
+  //       data.push(obj);
+  //     } else if (i < 5) {
+  //       const obj = {
+  //         employeeId: i < 5 ? 1 : i,
+  //         employeeName: i < 5 ? 'employee 1' : `employee ${i}`,
+  //         division: 'division',
+  //         designation: 'designation',
+  //         billStatus: 'Billed',
+  //         experience: 1,
+  //         comment:
+  //           'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint nt. ullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint...Read More',
+  //         availableStatus: i < 5 ? 'Available Now' : 'Available Soon',
+  //         projectName: `Project ${Math.floor(Math.random(i) * i)}`,
+  //         utilization: i < 5 ? 25 : 100,
+  //         startDate: '2021-01-01',
+  //         endDate: '2021-01-01',
+  //       };
+  //       data.push(obj);
+  //     } else if (i > 11 && i < 15) {
+  //       const obj = {
+  //         employeeId: 12,
+  //         employeeName: 'Multiple Project page 2',
+  //         division: 'division',
+  //         designation: 'designation',
+  //         experience: 2,
+  //         availableStatus: 'Available Now',
+  //         comment:
+  //           'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint nt. ullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint...Read More',
+  //         projectName: `Project ${Math.floor(Math.random(i) * i)}`,
+  //         utilization: i < 5 ? 25 : 100,
+  //         startDate: '2021-01-01',
+  //         endDate: '2021-01-01',
+  //       };
+  //       data.push(obj);
+  //     } else {
+  //       const obj = {
+  //         employeeId: i,
+  //         employeeName: `Randy Dias (randydias)`,
+  //         division: 'division',
+  //         designation: 'designation',
+  //         billStatus: 'Bench',
+  //         availableStatus: i < 10 && i > 5 ? 'Available Soon' : 'Available Now',
+  //         comment:
+  //           i < 10 && i > 8
+  //             ? 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint nt. ullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint...Read More'
+  //             : '',
+  //         experience: i < 5 ? 2 : (Math.random(i) * i).toFixed(1),
+  //         projectName: `Project ${Math.floor(Math.random(i) * i)}`,
+  //         utilization: i < 5 ? 25 : 100,
+  //         startDate: '2021-01-01',
+  //         endDate: '2021-01-01',
+  //       };
+  //       data.push(obj);
+  //     }
+  //   }
+  //   this.updateData(data);
+  // };
+
+  // updateData = (listOffAllTicket) => {
+  //   const array = this.formatDataSource(listOffAllTicket)
+  //   this.setState({
+  //     resourceList: array,
+  //   });
+  // };
 
   onSearch = (value) => {
-    const { listOffAllTicket = [] } = this.props;
+    const { resourceList = [] } = this.props;
     const formatValue = value.toLowerCase();
-    const filterData = listOffAllTicket.filter((item) => {
+    const filterData = resourceList.filter((item) => {
       const { employeeRaise: { generalInfo: { userId = '', legalName = '' } = {} } = {} } = item;
       const formatUserIDTicket = userId.toLowerCase();
       const formatLegalName = legalName.toLowerCase();
@@ -184,7 +202,7 @@ class ManagerTicket extends Component {
   render() {
     const { TabPane } = Tabs;
     const { locationID = '', totalList = [] } = this.props;
-    const { dataListAllTickets, loadingSearch } = this.state;
+    const { loadingSearch } = this.state;
     return (
       <div className={styles.ResourcesManagement}>
         <PageContainer>
@@ -199,9 +217,9 @@ class ManagerTicket extends Component {
               <OverView />
             </TabPane>
             <TabPane tab="Resource List" key="resource-list">
-              <AllTicket
+              <ResourceList
                 location={[locationID]}
-                data={dataListAllTickets}
+                // data={resourceList}
                 loadingSearch={loadingSearch}
                 countData={totalList}
               />
@@ -213,4 +231,4 @@ class ManagerTicket extends Component {
   }
 }
 
-export default ManagerTicket;
+export default Resources;
