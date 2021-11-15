@@ -54,6 +54,7 @@
     .form {
       padding: 24px;
     }
+
     .btnForm {
       width: 100%;
       padding: 24px;
@@ -108,6 +109,14 @@
       }
       textarea {
         width: 100% !important;
+      }
+      // for disabled input
+      .ant-picker-input > input[disabled],
+      .ant-picker-disabled,
+      .ant-input-disabled {
+        color: #161c29;
+        background-color: #fff;
+        cursor: pointer;
       }
     }
   }

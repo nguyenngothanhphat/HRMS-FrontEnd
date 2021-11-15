@@ -1,7 +1,9 @@
-import { Button, Col, DatePicker, Form, Input, Modal, Row, Select } from 'antd';
+import { Button, Col, DatePicker, Form, Input, Modal, Tooltip, Row, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
+import CalendarIcon from '@/assets/projectManagement/calendar.svg';
+import HelpIcon from '@/assets/projectManagement/help.svg';
 import styles from './index.less';
 
 const dateFormat = 'MM-DD-YYYY';
@@ -174,7 +176,14 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Project ID' }]}
-                label="Project ID"
+                label={
+                  <span>
+                    Project ID{' '}
+                    <Tooltip placement="rightBottom" title="Some texts here">
+                      <img src={HelpIcon} alt="" />
+                    </Tooltip>
+                  </span>
+                }
                 name="projectId"
                 fieldKey="projectId"
                 labelCol={{ span: 24 }}
@@ -185,7 +194,14 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Select Project Status' }]}
-                label="Project Status"
+                label={
+                  <span>
+                    Project Status{' '}
+                    <Tooltip placement="rightBottom" title="Some texts here">
+                      <img src={HelpIcon} alt="" />
+                    </Tooltip>
+                  </span>
+                }
                 name="projectStatus"
                 fieldKey="projectStatus"
                 labelCol={{ span: 24 }}
@@ -226,7 +242,11 @@ const AddProjectModal = (props) => {
                 fieldKey="startDate"
                 labelCol={{ span: 24 }}
               >
-                <DatePicker format={dateFormat} placeholder="Select Start Date" />
+                <DatePicker
+                  format={dateFormat}
+                  placeholder="Select Start Date"
+                  suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
+                />
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
@@ -237,7 +257,11 @@ const AddProjectModal = (props) => {
                 fieldKey="tentativeEndDate"
                 labelCol={{ span: 24 }}
               >
-                <DatePicker format={dateFormat} placeholder="Select Tentative End Date" />
+                <DatePicker
+                  format={dateFormat}
+                  placeholder="Select Tentative End Date"
+                  suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
+                />
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>

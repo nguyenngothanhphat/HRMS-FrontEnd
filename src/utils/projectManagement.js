@@ -1,12 +1,12 @@
-const PROJECT_STATUSES = ['Engaging', 'Active', 'On Hold', 'Complete'];
-
 const PM_STATUS = {
   ENGAGING: 'Engaging',
   ACTIVE: 'Active',
+  ONGOING: 'Ongoing',
   ON_HOLD: 'On Hold',
   COMPLETED: 'Complete',
 };
 
+// show above the main list
 const TYPE_LIST = [
   {
     id: 'All',
@@ -14,11 +14,19 @@ const TYPE_LIST = [
   },
   {
     id: PM_STATUS.ENGAGING,
-    name: 'Upcoming',
+    name: 'Engaging',
   },
   {
     id: PM_STATUS.ACTIVE,
-    name: 'In Progress',
+    name: 'Active',
+  },
+  {
+    id: PM_STATUS.ONGOING,
+    name: 'Ongoing',
+  },
+  {
+    id: PM_STATUS.ON_HOLD,
+    name: 'On Hold',
   },
   {
     id: PM_STATUS.COMPLETED,
@@ -30,4 +38,4 @@ const TYPE_LIST = [
 // export const DOCUMENT_TYPES = ['NDA', 'MSA', 'SOW', 'PO', 'OTHER']
 // export const PROJECT_TYPES = ['T&M', 'Fixed Bid', 'Retainer', 'Staff Augmentation', 'JV', 'Internal']
 
-export { PM_STATUS, TYPE_LIST, PROJECT_STATUSES };
+export { PM_STATUS, TYPE_LIST };

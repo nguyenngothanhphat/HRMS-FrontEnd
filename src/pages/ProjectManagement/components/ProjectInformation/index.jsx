@@ -1,5 +1,5 @@
 import { Affix } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import LayoutProjectInformation from '@/components/LayoutProjectInformation';
@@ -11,7 +11,21 @@ import AuditTrail from './components/AuditTrail';
 import styles from './index.less';
 
 const ProjectInformation = (props) => {
-  const { match: { params: { reId = '', tabName = '' } = {} } = {} } = props;
+  const { dispatch, match: { params: { reId = '', tabName = '' } = {} } = {} } = props;
+
+  const fetchProjectByID = () => {
+    dispatch({
+      type: 'projectDetails/fetchProjectByIdEffect',
+      payload: {
+        id: reId,
+      },
+    });
+  };
+
+  useEffect(() => {
+    fetchProjectByID();
+  }, []);
+
   const listMenu = [
     {
       id: 1,

@@ -5,12 +5,8 @@
 @contentPadding: 24px;
 @borderColor: #d6dce0;
 
-.AddProjectModal {
+.EditEndDateContent {
   :global {
-    .ant-modal-body {
-      // max-height: 530px;
-      // overflow-y: auto;
-    }
     .ant-form-item-explain {
       div {
         font-size: 13px;
@@ -29,15 +25,9 @@
       font-size: 13px !important;
       line-height: 30px !important;
     }
+    .ant-select-selector,
     .ant-input {
       height: 42px !important;
-      padding: 5px 11px !important;
-      font-size: 13px;
-      // background: transparent !important;
-      border-radius: 5px !important;
-    }
-    .ant-select-selector {
-      min-height: 42px !important;
       padding: 5px 11px !important;
       font-size: 13px;
       // background: transparent !important;
@@ -91,7 +81,9 @@
       color: #161c29;
       font-size: 13px;
     }
-
+    .ant-form-item .ant-upload.ant-upload-drag {
+      background-color: #fff;
+    }
     .ant-btn-primary {
       height: 40px;
       padding: 0 30px;
@@ -161,33 +153,6 @@
         opacity: 0.5;
       }
     }
-
-    // alert
-    .ant-alert {
-      padding: 10px;
-      border: 1px solid #2c6df9;
-      border-radius: 5px;
-      .ant-alert-icon {
-        font-size: 16px;
-      }
-      .ant-alert-message {
-        color: #000000;
-        font-weight: 500;
-        font-size: 12px;
-      }
-      .ant-alert-description {
-        color: #808080;
-        font-size: 10px;
-        line-height: 16px;
-      }
-    }
-
-    // checkbox
-    .ant-checkbox-wrapper {
-      span {
-        font-size: 13px;
-      }
-    }
   }
   .btnSubmit {
     color: #fff;
@@ -216,91 +181,33 @@
     }
   }
 
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    &__text {
-      margin: 0;
-      color: #161c29;
-      font-weight: 600;
-      font-size: 16px;
-    }
-  }
-  .content {
-    position: relative;
-    overflow-x: hidden;
-    .abovePart,
-    .middlePart,
-    .belowPart {
-      padding: 16px 24px !important;
-      .removeBtn {
-        display: flex;
-        justify-content: flex-end;
-        .btn {
-          display: flex;
-          align-items: center;
-          margin-top: -8px;
-          cursor: pointer;
-          img {
-            height: 16px;
-            margin-top: -2px;
-            padding-right: 5px;
-          }
-          span {
-            display: inline-block;
-            color: #f44e21;
-            font-weight: 500;
-            font-size: 12px;
-          }
-          &:hover {
-            opacity: 0.8;
-          }
-        }
-      }
-    }
-    .abovePart,
-    .middlePart {
-      border-bottom: 1px solid #d6dce0;
-    }
-    .divider {
-      border-bottom: 1px solid #d6dce0;
-    }
-    .addButton {
-      align-items: center;
-      justify-content: flex-start;
-      width: fit-content;
-      width: 100%;
-      padding: 8px 16px;
-      border-top: 1px solid #d6dce0;
-      cursor: pointer;
-      img {
-        margin-right: 8px;
-      }
-      span {
-        color: @blueColour;
-        font-weight: 500;
-        font-size: 14px;
-      }
-    }
+  position: relative;
+  overflow-x: hidden;
+  .abovePart {
+    padding: 16px 24px !important;
     .calendarIcon {
       filter: invert(57%) sepia(76%) saturate(7481%) hue-rotate(216deg) brightness(102%)
         contrast(95%);
     }
+    .item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      .label {
+        display: inline-block;
+        margin-right: 8px;
+        color: #707177;
+        font-size: 13px;
+      }
+      .value {
+        color: #161c29;
+        font-weight: 500;
+        font-size: 13px;
+      }
+    }
   }
-}
 
-.noPadding {
-  :global {
-    .ant-modal-body {
-      padding: 0;
-    }
-  }
-}
-.withPadding {
-  :global {
-    .ant-modal-body {
-      padding: @contentPadding;
-    }
+  .divider {
+    border-bottom: 1px solid #d6dce0;
   }
 }

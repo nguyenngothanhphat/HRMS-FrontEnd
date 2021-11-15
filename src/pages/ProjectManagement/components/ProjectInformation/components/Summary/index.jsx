@@ -4,10 +4,15 @@ import { connect } from 'umi';
 import EditIcon from '@/assets/projectManagement/edit.svg';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';
 import CommonTable from '../CommonTable';
+import CommonModal from '../CommonModal';
+import EditEndDateContent from './components/EditEndDateContent';
+import EditBillableHeadCountContent from './components/EditBillableHeadCountContent';
 import styles from './index.less';
 
 const Summary = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const [editEndDateModalVisible, setEditEndDateModalVisible] = useState(false);
+  const [editBillableModalVisible, setEditBillableModalVisible] = useState(false);
 
   const renderOption = () => {
     if (isEditing) return null;
@@ -41,7 +46,9 @@ const Summary = () => {
 
           <Form.Item label="End Date:" name="endDate">
             <DatePicker
+              onClick={() => setEditEndDateModalVisible(true)}
               suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
+              disabled
             />
           </Form.Item>
 
@@ -49,17 +56,19 @@ const Summary = () => {
             <Input.TextArea autoSize={{ minRows: 4 }} />
           </Form.Item>
 
-          <Form.Item label="Billable Head Count:" name="billableHeadeCount">
-            <Input />
+          <Form.Item
+            onClick={() => setEditBillableModalVisible(true)}
+            label="Billable Head Count:"
+            name="billableHeadCount"
+          >
+            <Input disabled defaultValue="ABC" />
           </Form.Item>
 
           <Form.Item label="Buffer Head Count:" name="bufferHeadCount">
             <Input />
           </Form.Item>
           <Form.Item label="Estimation (Man Months):" name="estimation">
-            <DatePicker
-              suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
-            />
+            <Input />
           </Form.Item>
         </Form>
         <div className={styles.btnForm}>
@@ -140,9 +149,9 @@ const Summary = () => {
         key: 'comments',
       },
       {
-        title: 'Uploaded By',
-        dataIndex: 'uploadedBy',
-        key: 'uploadedBy',
+        title: 'Updated By',
+        dataIndex: 'updatedBy',
+        key: 'updatedBy',
       },
     ];
     return columns;
@@ -155,6 +164,24 @@ const Summary = () => {
           <Card title="Overview" extra={renderOption()}>
             {isEditing ? _renderEditMode() : _renderViewMode()}
           </Card>
+          <CommonModal
+            visible={editEndDateModalVisible}
+            onClose={() => setEditEndDateModalVisible(false)}
+            firstText="Save Changes"
+            secondText="Cancel"
+            title="Reason for Editing the End Date"
+            content={<EditEndDateContent />}
+            width={600}
+          />
+          <CommonModal
+            visible={editBillableModalVisible}
+            onClose={() => setEditBillableModalVisible(false)}
+            firstText="Save Changes"
+            secondText="Cancel"
+            title="Reason for Editing Billable Head Count"
+            content={<EditBillableHeadCountContent />}
+            width={600}
+          />
         </Col>
         <Col span={24}>
           <Card title="Project History">

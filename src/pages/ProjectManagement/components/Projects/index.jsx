@@ -10,13 +10,17 @@ const Projects = (props) => {
   const { projectList = [], dispatch, loadingFetchProjectList = false } = props;
   const [projectStatus, setProjectStatus] = useState('All');
 
-  const fetchProjectList = (payload) => {
-    dispatch({
-      type: 'projectManagement/fetchProjectListEffect',
-      payload: {
+  const fetchProjectList = (payload, isAll) => {
+    let tempPayload = payload;
+    if (!isAll) {
+      tempPayload = {
         ...payload,
         projectStatus,
-      },
+      };
+    }
+    dispatch({
+      type: 'projectManagement/fetchProjectListEffect',
+      payload: tempPayload,
     });
   };
 
@@ -30,7 +34,7 @@ const Projects = (props) => {
 
   useEffect(() => {
     if (projectStatus === 'All') {
-      fetchProjectList();
+      fetchProjectList({}, true);
     } else {
       fetchProjectList({ projectStatus });
     }
