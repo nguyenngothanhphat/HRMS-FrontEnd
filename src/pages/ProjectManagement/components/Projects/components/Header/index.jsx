@@ -1,7 +1,7 @@
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Select } from 'antd';
 import { debounce } from 'lodash';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import { TYPE_LIST } from '@/utils/projectManagement';
 import FilterIcon from '@/assets/projectManagement/filter.svg';
@@ -17,14 +17,26 @@ const Header = (props) => {
   const { projectStatus = 'All', setProjectStatus = () => {}, fetchProjectList = () => {} } = props;
   const [addProjectModalVisible, setAddProjectModalVisible] = useState(false);
 
+  // if reselect project status or search, clear filter form
+  const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
+
+  const onFilter = (payload) => {
+    fetchProjectList(payload);
+  };
+
   const onSearchDebounce = debounce((value) => {
-    fetchProjectList(value);
+    fetchProjectList({ searchKey: value });
+    setNeedResetFilterForm(true);
   }, 1000);
 
   const onSearch = (e = {}) => {
     const { value = '' } = e.target;
     onSearchDebounce(value);
   };
+
+  useEffect(() => {
+    setNeedResetFilterForm(true);
+  }, [projectStatus]);
 
   const searchPrefix = () => {
     return (
@@ -59,7 +71,12 @@ const Header = (props) => {
         <Button onClick={() => setAddProjectModalVisible(true)} icon={<img src={AddIcon} alt="" />}>
           Add new Project
         </Button>
-        <FilterPopover placement="bottomRight">
+        <FilterPopover
+          placement="bottomRight"
+          onSubmit={onFilter}
+          needResetFilterForm={needResetFilterForm}
+          setNeedResetFilterForm={setNeedResetFilterForm}
+        >
           <div className={styles.filterIcon}>
             <img src={FilterIcon} alt="" />
             <span>Filter</span>

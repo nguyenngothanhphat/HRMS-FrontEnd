@@ -1,6 +1,7 @@
 import { Button, Col, DatePicker, Form, Input, Modal, Row, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import moment from 'moment';
 import styles from './index.less';
 
 const dateFormat = 'MM-DD-YYYY';
@@ -89,7 +90,12 @@ const AddProjectModal = (props) => {
     console.log('values', values);
     const res = await dispatch({
       type: 'projectManagement/addProjectEffect',
-      payload: { ...values, tagIds: values.tagIds.map((x) => x * 1) },
+      payload: {
+        ...values,
+        startDate: moment(values.startDate).format(dateFormat),
+        tentativeEndDate: moment(values.tentativeEndDate).format(dateFormat),
+        tagIds: values.tagIds.map((x) => x * 1),
+      },
     });
     if (res.statusCode === 200) {
       handleCancel();

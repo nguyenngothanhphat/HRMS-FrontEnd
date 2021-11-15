@@ -1,41 +1,94 @@
-import { Col, DatePicker, Button, Form, Popover, Row, Select } from 'antd';
-import React, { useState } from 'react';
+import { Col, DatePicker, Button, Form, Popover, Row, Select, Input } from 'antd';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import CloseIcon from '@/assets/projectManagement/closeX.svg';
 import styles from './index.less';
 
 const FilterPopover = (props) => {
-  const { children, placement = 'bottom', onSubmit = () => {}, listEmployeeActive = [] } = props;
+  const [form] = Form.useForm();
+  const {
+    children,
+    placement = 'bottom',
+    onSubmit = () => {},
+    dispatch,
+    needResetFilterForm = false,
+    setNeedResetFilterForm = () => {},
+  } = props;
   const [showPopover, setShowPopover] = useState(false);
 
+  // redux
+  const {
+    projectManagement: {
+      customerList = [],
+      projectTypeList = [],
+      projectStatusList = [],
+      departmentList = [],
+      employeeList = [],
+    } = {},
+    loadingFetchEmployeeList = false,
+  } = props;
+
+  useEffect(() => {
+    if (showPopover) {
+      dispatch({
+        type: 'projectManagement/fetchCustomerListEffect',
+      });
+      dispatch({
+        type: 'projectManagement/fetchProjectTypeListEffect',
+      });
+      dispatch({
+        type: 'projectManagement/fetchProjectStatusListEffect',
+      });
+      dispatch({
+        type: 'projectManagement/fetchDepartmentListEffect',
+      });
+      dispatch({
+        type: 'projectManagement/fetchEmployeeListEffect',
+      });
+    }
+  }, [showPopover]);
+
   const onFormSubmit = (values) => {
-    //
+    onSubmit(values);
   };
+
+  // clear values
+  useEffect(() => {
+    if (needResetFilterForm) {
+      form.resetFields();
+      setNeedResetFilterForm(false);
+    }
+  }, [needResetFilterForm]);
 
   const renderPopup = () => {
     return (
       <>
         <div className={styles.popupContainer}>
-          <Form layout="vertical" name="filter" onFinish={(values) => onSubmit(values)}>
-            <Form.Item label="By Project ID" name="byProjectID">
-              <Select allowClear style={{ width: '100%' }} placeholder="Please select">
-                {['A', 'B'].map((item) => {
-                  return (
-                    <Select.Option value={item} key={item}>
-                      {item}
-                    </Select.Option>
-                  );
-                })}
-              </Select>
+          <Form form={form} layout="vertical" name="filterForm" onFinish={onFormSubmit}>
+            <Form.Item label="By Project ID" name="projectId">
+              <Input placeholder="Project ID" />
             </Form.Item>
-            <Form.Item label="By division" name="byDivision">
+            <Form.Item label="By division" name="division">
               <Select
                 allowClear
                 mode="multiple"
                 style={{ width: '100%' }}
-                placeholder="Please select"
+                placeholder="Select Division"
               >
-                {['A', 'B'].map((item) => {
+                {departmentList.map((x) => {
+                  return <Select.Option value={x._id}>{x.name}</Select.Option>;
+                })}
+              </Select>
+            </Form.Item>
+
+            <Form.Item label="By PROJECT NAME" name="projectName">
+              <Select
+                allowClear
+                mode="multiple"
+                style={{ width: '100%' }}
+                placeholder="Select Project Name"
+              >
+                {[].map((item) => {
                   return (
                     <Select.Option value={item} key={item}>
                       {item}
@@ -45,88 +98,55 @@ const FilterPopover = (props) => {
               </Select>
             </Form.Item>
 
-            <Form.Item label="By PROJECT NAME" name="byProjectName">
+            <Form.Item label="By customer" name="customerId">
               <Select
                 allowClear
                 mode="multiple"
                 style={{ width: '100%' }}
-                placeholder="Please select"
+                placeholder="Select Customer"
               >
-                {['A', 'B'].map((item) => {
-                  return (
-                    <Select.Option value={item} key={item}>
-                      {item}
-                    </Select.Option>
-                  );
+                {customerList.map((x) => {
+                  return <Select.Option value={x.customerId}>{x.legalName}</Select.Option>;
                 })}
               </Select>
             </Form.Item>
 
-            <Form.Item label="By customer" name="byCustomer">
+            <Form.Item label="By engagement type" name="engagementType">
               <Select
                 allowClear
                 mode="multiple"
                 style={{ width: '100%' }}
-                placeholder="Please select"
+                placeholder="Select Engagement Type"
               >
-                {['A', 'B'].map((item) => {
-                  return (
-                    <Select.Option value={item} key={item}>
-                      {item}
-                    </Select.Option>
-                  );
-                })}
+                {projectTypeList.map((x) => (
+                  <Select.Option value={x.id}>{x.type_name}</Select.Option>
+                ))}
               </Select>
             </Form.Item>
 
-            <Form.Item label="By engagement type" name="byEngagementType">
+            <Form.Item label="By PROJECT manager" name="projectManager">
               <Select
-                allowClear
                 mode="multiple"
                 style={{ width: '100%' }}
-                placeholder="Please select"
+                loading={loadingFetchEmployeeList}
+                placeholder="Select Project Manager"
               >
-                {['A', 'B'].map((item) => {
-                  return (
-                    <Select.Option value={item} key={item}>
-                      {item}
-                    </Select.Option>
-                  );
-                })}
+                {employeeList.map((x) => (
+                  <Select.Option value={x._id}>{x?.generalInfo?.legalName}</Select.Option>
+                ))}
               </Select>
             </Form.Item>
 
-            <Form.Item label="By PROJECT manager" name="byProjectManager">
+            <Form.Item label="By status" name="projectStatus">
               <Select
                 allowClear
                 mode="multiple"
                 style={{ width: '100%' }}
-                placeholder="Please select"
+                placeholder="Select Status"
               >
-                {['A', 'B'].map((item) => {
-                  return (
-                    <Select.Option value={item} key={item}>
-                      {item}
-                    </Select.Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
-
-            <Form.Item label="By status" name="byStatus">
-              <Select
-                allowClear
-                mode="multiple"
-                style={{ width: '100%' }}
-                placeholder="Please select"
-              >
-                {['A', 'B'].map((item) => {
-                  return (
-                    <Select.Option value={item} key={item}>
-                      {item}
-                    </Select.Option>
-                  );
-                })}
+                {projectStatusList.map((x) => (
+                  <Select.Option value={x.id}>{x.status}</Select.Option>
+                ))}
               </Select>
             </Form.Item>
 
@@ -171,13 +191,7 @@ const FilterPopover = (props) => {
           <Button className={styles.btnClose} onClick={() => setShowPopover(false)}>
             Close
           </Button>
-          <Button
-            className={styles.btnApply}
-            form="filter"
-            htmlType="submit"
-            key="submit"
-            onClick={onFormSubmit}
-          >
+          <Button className={styles.btnApply} form="filterForm" htmlType="submit" key="submit">
             Apply
           </Button>
         </div>
@@ -213,6 +227,7 @@ const FilterPopover = (props) => {
   );
 };
 
-export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({ employee }))(
-  FilterPopover,
-);
+export default connect(({ projectManagement, user: { currentUser: { employee = {} } = {} } }) => ({
+  projectManagement,
+  employee,
+}))(FilterPopover);

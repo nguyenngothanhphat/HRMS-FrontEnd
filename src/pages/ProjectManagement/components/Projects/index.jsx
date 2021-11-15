@@ -10,11 +10,12 @@ const Projects = (props) => {
   const { projectList = [], dispatch, loadingFetchProjectList = false } = props;
   const [projectStatus, setProjectStatus] = useState('All');
 
-  const fetchProjectList = (name = '') => {
+  const fetchProjectList = (payload) => {
     dispatch({
       type: 'projectManagement/fetchProjectListEffect',
       payload: {
-        name,
+        ...payload,
+        projectStatus,
       },
     });
   };
@@ -26,6 +27,14 @@ const Projects = (props) => {
   useEffect(() => {
     fetchProjectList();
   }, []);
+
+  useEffect(() => {
+    if (projectStatus === 'All') {
+      fetchProjectList();
+    } else {
+      fetchProjectList({ projectStatus });
+    }
+  }, [projectStatus]);
 
   const generateColumns = () => {
     const columns = [
