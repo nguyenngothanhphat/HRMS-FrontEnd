@@ -15,6 +15,13 @@ export async function updateProjectOverview(payload) {
   });
 }
 
+export async function getProjectTagList(payload) {
+  return request(`/api-project/tagtenant/list`, {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 // milestone
 export async function getMilestoneList(payload) {
   return request(`/api-project/milestonetenant/list`, {
@@ -44,6 +51,27 @@ export async function addResourceType(payload) {
   });
 }
 
+export async function getTechnologyList(payload) {
+  return request(`/api-project/technologytenant/default-list`, {
+    method: 'GET',
+    data: payload,
+  });
+}
+
+export async function getTitleList(payload) {
+  return request('/api/titletenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getDepartmentList(payload) {
+  return request('/api/departmenttenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 // documents
 export async function getDocumentList(payload) {
   return request(`/api-project/documenttenant/list`, {
@@ -55,6 +83,20 @@ export async function getDocumentList(payload) {
 export async function addDocument(payload) {
   return request(`/api-project/documenttenant/add`, {
     method: 'POST',
+    data: payload,
+  });
+}
+
+export async function removeDocument(payload) {
+  return request(`/api-project/documenttenant/remove`, {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getDocumentTypeList(payload) {
+  return request(`/api-project/documenttenant/list-doc-types`, {
+    method: 'GET',
     data: payload,
   });
 }

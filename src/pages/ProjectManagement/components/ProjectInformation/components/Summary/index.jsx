@@ -1,19 +1,91 @@
 import React, { useState } from 'react';
 import { Card, Button, Row, Col, Form, Input, DatePicker } from 'antd';
 import { connect } from 'umi';
+import moment from 'moment';
 import EditIcon from '@/assets/projectManagement/edit.svg';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';
 import CommonTable from '../CommonTable';
 import CommonModal from '../CommonModal';
 import EditEndDateContent from './components/EditEndDateContent';
 import EditBillableHeadCountContent from './components/EditBillableHeadCountContent';
+import EditBufferHeadCountContent from './components/EditBufferHeadCountContent';
+import { DATE_FORMAT_2 } from '@/utils/projectManagement';
 import styles from './index.less';
 
-const Summary = () => {
+const Summary = (props) => {
+  const [overviewForm] = Form.useForm();
+
   const [isEditing, setIsEditing] = useState(false);
   const [editEndDateModalVisible, setEditEndDateModalVisible] = useState(false);
   const [editBillableModalVisible, setEditBillableModalVisible] = useState(false);
+  const [editBufferModalVisible, setEditBufferModalVisible] = useState(false);
 
+  const [newEndDate, setNewEndDate] = useState({});
+  const [newBufferHeadCount, setNewBufferHeadCount] = useState({});
+  const [newBillableHeadCount, setNewBillableHeadCount] = useState({});
+
+  const {
+    projectDetails: {
+      projectId = '',
+      projectDetail: {
+        startDate = '',
+        tentativeEndDate = '',
+        projectDescription = '',
+        billableHeadCount = '',
+        bufferHeadCount = '',
+        estimation = '',
+      } = {},
+    } = {},
+    dispatch,
+    loadingUpdateProjectOverview = false,
+  } = props;
+
+  // FUNCTION
+  const clearState = () => {
+    setNewEndDate({});
+    setNewBufferHeadCount({});
+    setNewBillableHeadCount({});
+  };
+
+  const onSubmitHardField = (payload, type) => {
+    const { value = '' } = payload;
+
+    if (type === 'endDate') {
+      setNewEndDate(payload);
+      overviewForm.setFieldsValue({
+        tentativeEndDate: value ? moment(value) : null,
+      });
+    }
+    if (type === 'buffer') {
+      setNewBufferHeadCount(payload);
+      overviewForm.setFieldsValue({
+        bufferHeadCount: value,
+      });
+    }
+    if (type === 'billable') {
+      setNewBillableHeadCount(payload);
+      overviewForm.setFieldsValue({
+        billableHeadCount: value,
+      });
+    }
+  };
+
+  // ON FINISH
+  const onFinish = async (values) => {
+    const res = await dispatch({
+      type: 'projectDetails/updateProjectOverviewEffect',
+      payload: {
+        ...values,
+        projectId,
+      },
+    });
+    if (res.statusCode === 200) {
+      setIsEditing(false);
+      clearState();
+    }
+  };
+
+  // RENDER UI
   const renderOption = () => {
     if (isEditing) return null;
     return (
@@ -33,22 +105,33 @@ const Summary = () => {
         <Form
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
-          name="myForm"
+          name="overviewForm"
           // onFinish={this.onSubmit}
-          initialValues={{}}
+          initialValues={{
+            startDate: startDate ? moment(startDate) : null,
+            tentativeEndDate: tentativeEndDate ? moment(tentativeEndDate) : null,
+            projectDescription,
+            billableHeadCount,
+            bufferHeadCount,
+            estimation,
+          }}
+          form={overviewForm}
           className={styles.form}
+          onFinish={onFinish}
         >
           <Form.Item label="Start Date:" name="startDate">
             <DatePicker
               suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
+              placeholder="Select Start Date"
             />
           </Form.Item>
 
-          <Form.Item label="End Date:" name="endDate">
+          <Form.Item label="End Date:" name="tentativeEndDate">
             <DatePicker
               onClick={() => setEditEndDateModalVisible(true)}
               suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
               disabled
+              placeholder="Select End Date"
             />
           </Form.Item>
 
@@ -61,21 +144,31 @@ const Summary = () => {
             label="Billable Head Count:"
             name="billableHeadCount"
           >
-            <Input disabled defaultValue="ABC" />
+            <Input disabled placeholder="Enter Billable Head Count" />
           </Form.Item>
 
-          <Form.Item label="Buffer Head Count:" name="bufferHeadCount">
-            <Input />
+          <Form.Item
+            onClick={() => setEditBufferModalVisible(true)}
+            label="Buffer Head Count:"
+            name="bufferHeadCount"
+          >
+            <Input disabled placeholder="Enter Buffer Head Count" />
           </Form.Item>
           <Form.Item label="Estimation (Man Months):" name="estimation">
-            <Input />
+            <Input placeholder="Enter Estimation" />
           </Form.Item>
         </Form>
         <div className={styles.btnForm}>
           <Button className={styles.btnClose} onClick={() => setIsEditing(false)}>
             Cancel
           </Button>
-          <Button className={styles.btnApply} form="myForm" htmlType="submit" key="submit">
+          <Button
+            className={styles.btnApply}
+            form="overviewForm"
+            htmlType="submit"
+            key="submit"
+            loading={loadingUpdateProjectOverview}
+          >
             Update
           </Button>
         </div>
@@ -87,28 +180,27 @@ const Summary = () => {
     const items = [
       {
         name: 'Start Date',
-        value: '3rd July 2021',
+        value: startDate ? moment(startDate).locale('en').format(DATE_FORMAT_2) : '-',
       },
       {
         name: 'End Date',
-        value: '10th September 2021',
+        value: tentativeEndDate ? moment(tentativeEndDate).locale('en').format(DATE_FORMAT_2) : '-',
       },
       {
         name: 'Project Description',
-        value:
-          'The client want’s a complete redesign of their website which needs to be a proper research driven process. Also, we would be handling the front and backend along.',
+        value: projectDescription,
       },
       {
         name: 'Billable Head Count',
-        value: '04',
+        value: billableHeadCount,
       },
       {
         name: 'Buffer Head Count',
-        value: '01',
+        value: bufferHeadCount,
       },
       {
         name: 'Estimation (Man Months)',
-        value: '1 Month',
+        value: estimation,
       },
     ];
     return (
@@ -170,7 +262,14 @@ const Summary = () => {
             firstText="Save Changes"
             secondText="Cancel"
             title="Reason for Editing the End Date"
-            content={<EditEndDateContent />}
+            content={
+              <EditEndDateContent
+                initialValue={tentativeEndDate}
+                newValues={newEndDate}
+                onClose={() => setEditEndDateModalVisible(false)}
+                onSubmit={onSubmitHardField}
+              />
+            }
             width={600}
           />
           <CommonModal
@@ -179,7 +278,30 @@ const Summary = () => {
             firstText="Save Changes"
             secondText="Cancel"
             title="Reason for Editing Billable Head Count"
-            content={<EditBillableHeadCountContent />}
+            content={
+              <EditBillableHeadCountContent
+                initialValue={billableHeadCount}
+                newValues={newBillableHeadCount}
+                onClose={() => setEditBillableModalVisible(false)}
+                onSubmit={onSubmitHardField}
+              />
+            }
+            width={600}
+          />
+          <CommonModal
+            visible={editBufferModalVisible}
+            onClose={() => setEditBufferModalVisible(false)}
+            firstText="Save Changes"
+            secondText="Cancel"
+            title="Reason for Editing Buffer Head Count"
+            content={
+              <EditBufferHeadCountContent
+                initialValue={bufferHeadCount}
+                newValues={newBufferHeadCount}
+                onClose={() => setEditBufferModalVisible(false)}
+                onSubmit={onSubmitHardField}
+              />
+            }
             width={600}
           />
         </Col>
@@ -194,4 +316,7 @@ const Summary = () => {
     </div>
   );
 };
-export default connect(() => ({}))(Summary);
+export default connect(({ projectDetails, loading }) => ({
+  projectDetails,
+  loadingUpdateProjectOverview: loading.effects['projectDetails/updateProjectOverviewEffect'],
+}))(Summary);

@@ -1,31 +1,65 @@
 import { Card } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
+import moment from 'moment';
 import CommonTable from '../CommonTable';
 import styles from './index.less';
 
-const AuditTrail = () => {
+const AuditTrail = (props) => {
+  const { dispatch, projectDetails: { projectId = '', auditTrailList = [] } = {} } = props;
+
+  const fetchAuditTrailList = () => {
+    dispatch({
+      type: 'projectDetails/fetchAuditTrailListEffect',
+      payload: {
+        projectId,
+      },
+    });
+  };
+
+  useEffect(() => {
+    fetchAuditTrailList();
+  }, []);
+
+  const getActionInfo = (record) => {
+    const { attachmentInfo } = record;
+    if (attachmentInfo) {
+      return ` - ${attachmentInfo.name}`;
+    }
+  };
+
   const getColumns = () => {
     const columns = [
       {
         title: 'Time',
-        dataIndex: 'time',
-        key: 'time',
+        dataIndex: 'timeTaken',
+        key: 'timeTaken',
+        render: (timeTaken) => {
+          return (
+            <span>
+              {timeTaken ? moment(timeTaken).locale('en').format('MM-DD-YYYY HH:mm:ss') : '-'}
+            </span>
+          );
+        },
       },
       {
-        title: 'Description',
-        dataIndex: 'description',
-        key: 'description',
+        title: 'User',
+        dataIndex: 'user',
+        key: 'user',
+        render: (user) => <span className={styles.clickableTag}>{user}</span>,
       },
       {
-        title: 'Comments',
-        dataIndex: 'comments',
-        key: 'comments',
-      },
-      {
-        title: 'Uploaded By',
-        dataIndex: 'uploadedBy',
-        key: 'uploadedBy',
+        title: 'Changes',
+        dataIndex: 'action',
+        key: 'action',
+        render: (action, row) => {
+          return (
+            <span>
+              {action}
+              <span className={styles.clickableTag}>{getActionInfo(row)}</span>
+            </span>
+          );
+        },
       },
     ];
     return columns;
@@ -35,10 +69,10 @@ const AuditTrail = () => {
     <div className={styles.AuditTrail}>
       <Card title="Audit Trail">
         <div className={styles.tableContainer}>
-          <CommonTable list={[]} columns={getColumns()} />
+          <CommonTable list={auditTrailList} columns={getColumns()} />
         </div>
       </Card>
     </div>
   );
 };
-export default connect(() => ({}))(AuditTrail);
+export default connect(({ projectDetails }) => ({ projectDetails }))(AuditTrail);

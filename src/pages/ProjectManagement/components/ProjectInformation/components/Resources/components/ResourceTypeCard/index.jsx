@@ -135,7 +135,12 @@ const ResourceTypeCard = () => {
           visible={addResourceTypeModalVisible}
           onClose={() => setAddResourceTypeModalVisible(false)}
           firstText="Add Resource Type"
-          content={<AddResourceTypeContent />}
+          content={
+            <AddResourceTypeContent
+              visible={addResourceTypeModalVisible}
+              onClose={() => setAddResourceTypeModalVisible(false)}
+            />
+          }
           title="Add Resource Type"
         />
         <AssignResourcesModal

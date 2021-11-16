@@ -56,7 +56,12 @@ const Resources = (props) => {
       <CommonModal
         visible={addResourceTypeModalVisible}
         onClose={() => setAddResourceTypeModalVisible(false)}
-        content={<AddResourceTypeContent />}
+        content={
+          <AddResourceTypeContent
+            visible={addResourceTypeModalVisible}
+            onClose={() => setAddResourceTypeModalVisible(false)}
+          />
+        }
         title="Add Resource Type"
         firstText="Add"
         width={800}

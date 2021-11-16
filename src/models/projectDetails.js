@@ -1,27 +1,35 @@
 import { notification } from 'antd';
 import {
   addDocument,
+  removeDocument,
+  getDocumentTypeList,
   addMilestone,
   addResourceType,
+  getTechnologyList,
+  getTitleList,
+  getDepartmentList,
   getAuditTrailList,
   getDocumentList,
   getMilestoneList,
   getProjectByID,
   getResourceTypeList,
   updateProjectOverview,
+  getProjectTagList,
 } from '@/services/projectDetails';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 
-const tenantId = getCurrentTenant();
-const company = getCurrentCompany();
-
 const initialState = {
+  projectId: '',
   projectDetail: {},
   milestoneList: [],
   resourceTypeList: [],
   documentList: [],
   auditTrailList: [],
+  titleList: [],
+  technologyList: [],
+  departmentList: [],
+  projectTagList: [],
 };
 
 const ProjectDetails = {
@@ -29,16 +37,21 @@ const ProjectDetails = {
   state: initialState,
   effects: {
     *fetchProjectByIdEffect({ payload }, { call, put }) {
-      const response = {};
+      let response = {};
       try {
-        const res = yield call(getProjectByID, { ...payload, company, tenantId });
-        const { statusCode, data = {} } = res;
-        if (statusCode !== 200) throw res;
+        response = yield call(getProjectByID, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
 
         yield put({
           type: 'save',
           payload: {
             projectDetail: data,
+            projectId: data?.projectId,
           },
         });
       } catch (errors) {
@@ -46,12 +59,39 @@ const ProjectDetails = {
       }
       return response;
     },
-    *fetchDocumentListEffect({ payload }, { call, put }) {
-      const response = {};
+    *fetchProjectTagListEffect({ payload }, { call, put }) {
+      let response = {};
       try {
-        const res = yield call(getDocumentList, { ...payload, company, tenantId });
-        const { statusCode, data = [] } = res;
-        if (statusCode !== 200) throw res;
+        response = yield call(getProjectTagList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            projectTagList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *fetchDocumentListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getDocumentList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
 
         yield put({
           type: 'save',
@@ -65,11 +105,15 @@ const ProjectDetails = {
       return response;
     },
     *fetchMilestoneListEffect({ payload }, { call, put }) {
-      const response = {};
+      let response = {};
       try {
-        const res = yield call(getMilestoneList, { ...payload, company, tenantId });
-        const { statusCode, data = [] } = res;
-        if (statusCode !== 200) throw res;
+        response = yield call(getMilestoneList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
 
         yield put({
           type: 'save',
@@ -82,12 +126,16 @@ const ProjectDetails = {
       }
       return response;
     },
-    *fetchResourceTypeList({ payload }, { call, put }) {
-      const response = {};
+    *fetchResourceTypeListEffect({ payload }, { call, put }) {
+      let response = {};
       try {
-        const res = yield call(getResourceTypeList, { ...payload, company, tenantId });
-        const { statusCode, data = [] } = res;
-        if (statusCode !== 200) throw res;
+        response = yield call(getResourceTypeList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
 
         yield put({
           type: 'save',
@@ -100,12 +148,82 @@ const ProjectDetails = {
       }
       return response;
     },
-    *fetchAuditTrailList({ payload }, { call, put }) {
-      const response = {};
+    *fetchTechnologyListEffect({ payload }, { call, put }) {
+      let response = {};
       try {
-        const res = yield call(getAuditTrailList, { ...payload, company, tenantId });
-        const { statusCode, data = [] } = res;
-        if (statusCode !== 200) throw res;
+        response = yield call(getTechnologyList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            technologyList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchTitleListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getTitleList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            titleList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchDepartmentListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getDepartmentList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            departmentList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchAuditTrailListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getAuditTrailList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
 
         yield put({
           type: 'save',
@@ -119,12 +237,56 @@ const ProjectDetails = {
       return response;
     },
 
-    *addDocumentEffect({ payload }, { call }) {
-      const response = {};
+    *fetchDocumentTypeListEffect({ payload }, { call, put }) {
+      let response = {};
       try {
-        const res = yield call(addDocument, { ...payload, company, tenantId });
-        const { statusCode, message } = res;
-        if (statusCode !== 200) throw res;
+        response = yield call(getDocumentTypeList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            documentTypeList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *addDocumentEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(addDocument, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *removeDocumentEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(removeDocument, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
         notification.success({
           message,
         });
@@ -134,11 +296,15 @@ const ProjectDetails = {
       return response;
     },
     *addResourceTypeEffect({ payload }, { call }) {
-      const response = {};
+      let response = {};
       try {
-        const res = yield call(addResourceType, { ...payload, company, tenantId });
-        const { statusCode, message } = res;
-        if (statusCode !== 200) throw res;
+        response = yield call(addResourceType, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
         notification.success({
           message,
         });
@@ -148,11 +314,15 @@ const ProjectDetails = {
       return response;
     },
     *addMilestoneEffect({ payload }, { call }) {
-      const response = {};
+      let response = {};
       try {
-        const res = yield call(addMilestone, { ...payload, company, tenantId });
-        const { statusCode, message } = res;
-        if (statusCode !== 200) throw res;
+        response = yield call(addMilestone, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
         notification.success({
           message,
         });
@@ -161,14 +331,22 @@ const ProjectDetails = {
       }
       return response;
     },
-    *updateProjectOverviewEffect({ payload }, { call }) {
-      const response = {};
+    *updateProjectOverviewEffect({ payload }, { call, put }) {
+      let response = {};
       try {
-        const res = yield call(updateProjectOverview, { ...payload, company, tenantId });
-        const { statusCode, message } = res;
-        if (statusCode !== 200) throw res;
+        response = yield call(updateProjectOverview, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
         notification.success({
           message,
+        });
+        yield put({
+          type: 'updateOverview',
+          payload,
         });
       } catch (errors) {
         dialog(errors);
@@ -181,6 +359,13 @@ const ProjectDetails = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    updateOverview(state, action) {
+      const { projectDetail = {} } = state;
+      return {
+        ...state,
+        projectDetail: { ...projectDetail, ...action.payload },
       };
     },
     clearState() {

@@ -12,6 +12,7 @@ const CommonModal = (props) => {
     secondText = 'Cancel',
     content = '',
     width = 700,
+    loading = false,
   } = props;
 
   const renderModalHeader = () => {
@@ -48,6 +49,7 @@ const CommonModal = (props) => {
               form="myForm"
               key="submit"
               htmlType="submit"
+              loading={loading}
             >
               {firstText}
             </Button>
@@ -63,7 +65,6 @@ const CommonModal = (props) => {
   );
 };
 
-export default connect(({ loading, user: { currentUser: { employee = {} } = {} } }) => ({
+export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({
   employee,
-  loadingAddTask: loading.effects['timeSheet/addMultipleActivityEffect'],
 }))(CommonModal);

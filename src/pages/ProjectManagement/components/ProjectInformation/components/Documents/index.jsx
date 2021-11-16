@@ -1,7 +1,9 @@
 import { Card } from 'antd';
 import { debounce } from 'lodash';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
+import moment from 'moment';
+import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
 import AddButton from '../AddButton';
 import FilterButton from '../FilterButton';
 import FilterPopover from '../FilterPopover';
@@ -15,10 +17,47 @@ import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
 import styles from './index.less';
 
 const Documents = (props) => {
+  const {
+    dispatch,
+    projectDetails: { projectId = '', documentList = [] } = {},
+    loadingAddDocument = false,
+  } = props;
   const [addDocumentModalVisible, setAddDocumentModalVisible] = useState(false);
 
+  const viewProfile = (id) => {
+    const url = `/directory/employee-profile/${id}`;
+    window.open(url, '_blank');
+  };
+
+  const fetchDocumentList = (searchKey) => {
+    dispatch({
+      type: 'projectDetails/fetchDocumentListEffect',
+      payload: {
+        projectId,
+        searchKey,
+      },
+    });
+  };
+
+  const removeDocument = async (id) => {
+    const res = await dispatch({
+      type: 'projectDetails/removeDocumentEffect',
+      payload: {
+        projectId,
+        id,
+      },
+    });
+    if (res.statusCode === 200) {
+      fetchDocumentList();
+    }
+  };
+
+  useEffect(() => {
+    fetchDocumentList();
+  }, []);
+
   const onSearchDebounce = debounce((value) => {
-    console.log('value', value);
+    fetchDocumentList(value);
   }, 1000);
 
   const onSearch = (e = {}) => {
@@ -33,7 +72,7 @@ const Documents = (props) => {
         dataIndex: 'documentName',
         key: 'documentName',
         render: (documentName) => {
-          return <span className={styles.clickableTag}>{documentName || '-'}</span>;
+          return <span>{documentName || '-'}</span>;
         },
       },
       {
@@ -41,34 +80,41 @@ const Documents = (props) => {
         dataIndex: 'documentType',
         key: 'documentType',
         render: (documentType) => {
-          return <span className={styles.clickableTag}>{documentType || '-'}</span>;
+          return <span>{documentType || '-'}</span>;
         },
       },
       {
         title: 'Uploaded By',
         dataIndex: 'uploadedBy',
         key: 'uploadedBy',
-        render: (uploadedBy) => {
-          return <span className={styles.clickableTag}>{uploadedBy || '-'}</span>;
+        render: (_, row) => {
+          const { owner = '', ownerName = '' } = row;
+          return (
+            <span className={styles.clickableTag} onClick={() => viewProfile(owner)}>
+              {ownerName || '-'}
+            </span>
+          );
         },
       },
       {
         title: 'Uploaded On',
-        dataIndex: 'uploadedOn',
-        key: 'uploadedOn',
-        render: (uploadedOn) => {
-          return <span>{uploadedOn || '-'}</span>;
+        dataIndex: 'timeTaken',
+        key: 'timeTaken',
+        render: (timeTaken) => {
+          return (
+            <span>{timeTaken ? moment(timeTaken).locale('en').format(DATE_FORMAT_LIST) : '-'}</span>
+          );
         },
       },
       {
         title: 'Action',
         dataIndex: 'action',
         key: 'action',
-        render: () => {
+        render: (_, row) => {
           return (
             <div className={styles.action}>
               <img src={ViewIcon} alt="" />
-              <img src={DeleteIcon} alt="" />
+              <img src={DeleteIcon} alt="" onClick={() => removeDocument(row?.id)} />
             </div>
           );
         },
@@ -95,17 +141,28 @@ const Documents = (props) => {
     <div className={styles.Documents}>
       <Card title="Documents" extra={renderOption()}>
         <div className={styles.tableContainer}>
-          <CommonTable columns={generateColumns()} list={[]} />
+          <CommonTable columns={generateColumns()} list={documentList} />
         </div>
       </Card>
       <CommonModal
         visible={addDocumentModalVisible}
         onClose={() => setAddDocumentModalVisible(false)}
         firstText="Add Document"
-        content={<AddContent />}
+        content={
+          <AddContent
+            visible={addDocumentModalVisible}
+            onClose={() => setAddDocumentModalVisible(false)}
+            refreshData={fetchDocumentList}
+          />
+        }
         title="Add Document"
+        loading={loadingAddDocument}
       />
     </div>
   );
 };
-export default connect(() => ({}))(Documents);
+export default connect(({ projectDetails, loading }) => ({
+  projectDetails,
+  loadingAddDocument:
+    loading.effects['projectDetails/addDocumentEffect'] || loading.effects['upload/uploadFile'],
+}))(Documents);

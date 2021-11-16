@@ -3,7 +3,6 @@ import { Button, Input, Select } from 'antd';
 import { debounce } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
-import { TYPE_LIST } from '@/utils/projectManagement';
 import FilterIcon from '@/assets/projectManagement/filter.svg';
 import ArrowDown from '@/assets/projectManagement/arrowDown.svg';
 import AddIcon from '@/assets/projectManagement/add.svg';
@@ -14,8 +13,16 @@ import styles from './index.less';
 const { Option } = Select;
 
 const Header = (props) => {
-  const { projectStatus = 'All', setProjectStatus = () => {}, fetchProjectList = () => {} } = props;
+  const {
+    statusSummary = [],
+    projectStatus = 'All',
+    setProjectStatus = () => {},
+    fetchProjectList = () => {},
+  } = props;
   const [addProjectModalVisible, setAddProjectModalVisible] = useState(false);
+
+  // redux
+  const { projectManagement: { projectStatusList = [] } = {} } = props;
 
   // if reselect project status or search, clear filter form
   const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
@@ -50,6 +57,8 @@ const Header = (props) => {
     );
   };
 
+  const allCount = statusSummary.find((x) => x.statusName === 'All Projects');
+
   // MAIN AREA
   return (
     <div className={styles.Header}>
@@ -60,9 +69,15 @@ const Header = (props) => {
             onChange={(val) => setProjectStatus(val)}
             suffixIcon={<img src={ArrowDown} alt="" />}
           >
-            {TYPE_LIST.map((v) => (
-              <Option value={v.id}>{v.name}</Option>
-            ))}
+            <Option value="All">All Projects ({allCount.count || 0})</Option>
+            {projectStatusList.map((v) => {
+              const find = statusSummary.find((x) => x.statusName === v.status);
+              return (
+                <Option value={v.id}>
+                  {v.status} ({find?.count || 0})
+                </Option>
+              );
+            })}
           </Select>
         </div>
       </div>
@@ -100,4 +115,4 @@ const Header = (props) => {
   );
 };
 
-export default connect(() => ({}))(Header);
+export default connect(({ projectManagement }) => ({ projectManagement }))(Header);

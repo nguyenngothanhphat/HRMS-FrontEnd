@@ -40,9 +40,6 @@ const AddProjectModal = (props) => {
         type: 'projectManagement/fetchProjectTypeListEffect',
       });
       dispatch({
-        type: 'projectManagement/fetchProjectStatusListEffect',
-      });
-      dispatch({
         type: 'projectManagement/fetchTagListEffect',
       });
       dispatch({
@@ -89,7 +86,6 @@ const AddProjectModal = (props) => {
 
   // main function
   const handleFinish = async (values) => {
-    console.log('values', values);
     const res = await dispatch({
       type: 'projectManagement/addProjectEffect',
       payload: {

@@ -1,5 +1,6 @@
 import { Col, Select, Form, Input, Row } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { debounce } from 'lodash';
 import { connect } from 'umi';
 import CustomTag from '../../../CustomTag';
 import styles from './index.less';
@@ -7,16 +8,65 @@ import styles from './index.less';
 const { Option } = Select;
 const colors = ['#006BEC', '#FF6CA1', '#6236FF', '#FE5D27'];
 
-const AddResourceTypeContent = () => {
+const AddResourceTypeContent = (props) => {
   const formRef = React.createRef();
+  const {
+    visible = false,
+    dispatch,
+    projectDetails: {
+      projectId = '',
+      departmentList = [],
+      technologyList = [],
+      titleList = [],
+    } = {},
+    loadingFetchTitleList = false,
+    onClose = () => {},
+  } = props;
 
   const tags = ['Design', 'Application Dev', 'Backend Dev', 'Frontend Dev'];
   const getColor = (index) => {
     return colors[index % colors.length];
   };
 
-  const handleFinish = (values) => {
-    console.log('values', values);
+  useEffect(() => {
+    if (visible) {
+      dispatch({
+        type: 'projectDetails/fetchTitleListEffect',
+      });
+      dispatch({
+        type: 'projectDetails/fetchTechnologyListEffect',
+      });
+      dispatch({
+        type: 'projectDetails/fetchDepartmentListEffect',
+      });
+    }
+  }, [visible]);
+
+  // search
+  const onSearchDebounce = debounce((value) => {
+    dispatch({
+      type: 'projectDetails/fetchTitleListEffect',
+      payload: {
+        name: value,
+      },
+    });
+  }, 500);
+
+  const onTitleSearch = (value) => {
+    onSearchDebounce(value);
+  };
+
+  const handleFinish = async (values) => {
+    const res = await dispatch({
+      type: 'projectDetails/addResourceTypeEffect',
+      payload: {
+        ...values,
+        projectId,
+      },
+    });
+    if (res.statusCode === 200) {
+      onClose();
+    }
   };
 
   return (
@@ -50,14 +100,25 @@ const AddResourceTypeContent = () => {
         <Row gutter={[24, 0]} className={styles.belowPart}>
           <Col xs={24} md={12}>
             <Form.Item label="Division" name="division" labelCol={{ span: 24 }}>
-              <Input placeholder="Enter Division" />
+              <Select placeholder="Select Division">
+                {departmentList.map((x) => (
+                  <Option value={x._id}>{x.name}</Option>
+                ))}
+              </Select>
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
-            <Form.Item label="Resource Type" name="Resource Type" labelCol={{ span: 24 }}>
-              <Select placeholder="Select Resource Type">
-                {[].map((x) => (
-                  <Option value={x}>{x}</Option>
+            <Form.Item label="Resource Type" name="resourceType" labelCol={{ span: 24 }}>
+              <Select
+                loading={loadingFetchTitleList}
+                allowClear
+                filterOption={false}
+                placeholder="Select Resource Type"
+                onSearch={onTitleSearch}
+                showSearch
+              >
+                {titleList.map((x) => (
+                  <Option value={x._id}>{x.name}</Option>
                 ))}
               </Select>
             </Form.Item>
@@ -84,15 +145,15 @@ const AddResourceTypeContent = () => {
           <Col xs={24} md={12}>
             <Form.Item label="Technologies Used" name="technologies" labelCol={{ span: 24 }}>
               <Select mode="multiple" placeholder="Select Technologies Used">
-                {['React', 'Java'].map((x) => (
-                  <Option value={x}>{x}</Option>
+                {technologyList.map((x) => (
+                  <Option value={x.id}>{x.technology_name}</Option>
                 ))}
               </Select>
             </Form.Item>
           </Col>
 
           <Col xs={24}>
-            <Form.Item label="Comments/Notes" name="description" labelCol={{ span: 24 }}>
+            <Form.Item label="Comments/Notes" name="comments" labelCol={{ span: 24 }}>
               <Input.TextArea placeholder="Add comments/notes" autoSize={{ minRows: 4 }} />
             </Form.Item>
           </Col>
@@ -102,6 +163,10 @@ const AddResourceTypeContent = () => {
   );
 };
 
-export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({
-  employee,
-}))(AddResourceTypeContent);
+export default connect(
+  ({ loading, projectDetails, user: { currentUser: { employee = {} } = {} } }) => ({
+    employee,
+    projectDetails,
+    loadingFetchTitleList: loading.effects['projectDetails/fetchTitleListEffect'],
+  }),
+)(AddResourceTypeContent);

@@ -257,6 +257,37 @@
       font-size: 14px;
     }
   }
+
+  .fileUploadedContainer {
+    position: relative;
+    width: 100%;
+    max-height: 350px;
+    overflow-y: auto;
+    img {
+      width: 100%;
+    }
+    .trashIcon {
+      position: absolute;
+      top: -71px;
+      right: -52px;
+      display: block;
+      cursor: pointer;
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+
+    .previewIcon {
+      margin-bottom: 20px;
+    }
+    .fileName {
+      font-size: 14px;
+      a {
+        color: #2c6df9;
+      }
+    }
+  }
+
   .content {
     display: flex;
     flex-direction: column;

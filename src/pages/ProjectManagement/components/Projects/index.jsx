@@ -1,43 +1,59 @@
+import { Button } from 'antd';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import { Button } from 'antd';
-import CommonTable from './components/CommonTable';
+import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
 import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
+import CommonTable from './components/CommonTable';
 import Header from './components/Header';
 import styles from './index.less';
 
 const Projects = (props) => {
-  const { projectList = [], dispatch, loadingFetchProjectList = false } = props;
+  const { projectList = [], statusSummary = [], dispatch, loadingFetchProjectList = false } = props;
   const [projectStatus, setProjectStatus] = useState('All');
 
-  const fetchProjectList = (payload, isAll) => {
-    let tempPayload = payload;
-    if (!isAll) {
-      tempPayload = {
-        ...payload,
-        projectStatus,
-      };
-    }
+  const fetchStatusSummary = () => {
     dispatch({
-      type: 'projectManagement/fetchProjectListEffect',
-      payload: tempPayload,
+      type: 'projectManagement/fetchStatusSummaryEffect',
     });
   };
 
-  const viewProjectInformation = () => {
-    history.push(`/project-management/list/id`);
+  const fetchProjectList = async (payload) => {
+    let tempPayload = payload;
+    if (projectStatus !== 'All') {
+      tempPayload = {
+        ...payload,
+        projectStatus: [projectStatus],
+      };
+    }
+    const res = await dispatch({
+      type: 'projectManagement/fetchProjectListEffect',
+      payload: tempPayload,
+    });
+    if (res.statusCode === 200) {
+      fetchStatusSummary();
+    }
+  };
+
+  const viewProjectInformation = (projectId) => {
+    history.push(`/project-management/list/${projectId}/summary`);
+  };
+
+  const viewProfile = (id) => {
+    const url = `/directory/employee-profile/${id}`;
+    window.open(url, '_blank');
   };
 
   useEffect(() => {
-    fetchProjectList();
+    dispatch({
+      type: 'projectManagement/fetchProjectStatusListEffect',
+    });
   }, []);
 
   useEffect(() => {
-    if (projectStatus === 'All') {
-      fetchProjectList({}, true);
-    } else {
-      fetchProjectList({ projectStatus });
-    }
+    if (projectStatus !== 'All') {
+      fetchProjectList({ projectStatus: [projectStatus] });
+    } else fetchProjectList();
   }, [projectStatus]);
 
   const generateColumns = () => {
@@ -46,9 +62,12 @@ const Projects = (props) => {
         title: 'Project Name',
         dataIndex: 'projectName',
         key: 'projectName',
-        render: (projectName) => {
+        render: (projectName, row) => {
           return (
-            <span className={styles.clickableTag} onClick={() => viewProjectInformation()}>
+            <span
+              className={styles.clickableTag}
+              onClick={() => viewProjectInformation(row?.projectId)}
+            >
               {projectName || '-'}
             </span>
           );
@@ -63,9 +82,10 @@ const Projects = (props) => {
         },
       },
       {
-        title: 'Type',
-        dataIndex: 'type',
-        key: 'type',
+        title: 'Project Type',
+        dataIndex: 'engagementType',
+        key: 'engagementType',
+        render: (engagementType) => <span>{engagementType || '-'}</span>,
       },
       {
         title: 'Project Manager',
@@ -73,7 +93,10 @@ const Projects = (props) => {
         key: 'projectManager',
         render: (projectManager) => {
           return (
-            <span className={styles.clickableTag}>
+            <span
+              className={styles.clickableTag}
+              onClick={() => viewProfile(projectManager?.generalInfo?.userId)}
+            >
               {projectManager?.generalInfo?.legalName || '-'}
             </span>
           );
@@ -84,7 +107,9 @@ const Projects = (props) => {
         dataIndex: 'startDate',
         key: 'startDate',
         render: (startDate = '') => {
-          return <span>{startDate || '-'}</span>;
+          return (
+            <span>{startDate ? moment(startDate).locale('en').format(DATE_FORMAT_LIST) : '-'}</span>
+          );
         },
       },
       {
@@ -92,7 +117,13 @@ const Projects = (props) => {
         dataIndex: 'tentativeEndDate',
         key: 'tentativeEndDate',
         render: (tentativeEndDate = '') => {
-          return <span>{tentativeEndDate || '-'}</span>;
+          return (
+            <span>
+              {tentativeEndDate
+                ? moment(tentativeEndDate).locale('en').format(DATE_FORMAT_LIST)
+                : '-'}
+            </span>
+          );
         },
       },
       {
@@ -108,22 +139,23 @@ const Projects = (props) => {
         dataIndex: 'projectStatus',
         key: 'projectStatus',
         render: (pmStatus = '') => {
-          return <span>{pmStatus}</span>;
+          return <span>{pmStatus || '-'}</span>;
         },
       },
       {
-        title: 'Resource',
-        dataIndex: 'resource',
-        key: 'resource',
-        render: (resource = '') => {
-          if (!resource) {
+        title: 'Resources',
+        dataIndex: 'resources',
+        key: 'resources',
+        width: '7%',
+        render: (resources = '') => {
+          if (!resources) {
             return (
               <Button className={styles.addResourceBtn} icon={<img src={OrangeAddIcon} alt="" />}>
-                Add resources
+                Add
               </Button>
             );
           }
-          return <span className={styles.blueText}>{resource || '-'}</span>;
+          return <span className={styles.blueText}>{resources || '-'}</span>;
         },
       },
     ];
@@ -138,6 +170,7 @@ const Projects = (props) => {
           projectStatus={projectStatus}
           setProjectStatus={setProjectStatus}
           fetchProjectList={fetchProjectList}
+          statusSummary={statusSummary}
         />
       </div>
       <div
@@ -155,13 +188,14 @@ const Projects = (props) => {
 };
 export default connect(
   ({
-    projectManagement: { projectList = [] } = {},
+    projectManagement: { projectList = [], statusSummary = [] } = {},
     user: { currentUser = {}, permissions = [] } = {},
     loading,
   }) => ({
     currentUser,
     permissions,
     projectList,
+    statusSummary,
     loadingFetchProjectList: loading.effects['projectManagement/fetchProjectListEffect'],
   }),
 )(Projects);

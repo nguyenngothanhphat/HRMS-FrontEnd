@@ -1,17 +1,49 @@
-import { Button, Col, Form, Input, message, Row, Select, Upload } from 'antd';
-import React from 'react';
+import { Col, Form, Input, message, Row, Select, Upload } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import ImageIcon from '@/assets/image_icon.png';
-import PDFIcon from '@/assets/pdf_icon.png';
 import UploadIcon from '@/assets/upload-icon.svg';
 import styles from './index.less';
 
 const AddContent = (props) => {
   const formRef = React.createRef();
-  const { date = '', projectName = '', fileName = '' } = props;
+  const {
+    dispatch,
+    visible = false,
+    projectDetails: { projectId = '', documentTypeList = [] } = {},
+    currentUser: { employee = {} } = {} || {},
+    onClose = () => {},
+    refreshData = () => {},
+  } = props;
 
-  const onAction = (file) => {
-    //
+  const { generalInfo: { userId: employeeId = '', legalName: employeeName = '' } = {} || {} } =
+    employee;
+
+  const [uploadedPreview, setUploadedPreview] = useState('');
+  const [uploadedFile, setUploadedFile] = useState({});
+
+  const fetchDocumentTypeList = () => {
+    dispatch({
+      type: 'projectDetails/fetchDocumentTypeListEffect',
+    });
+  };
+
+  useEffect(() => {
+    if (visible) {
+      fetchDocumentTypeList();
+    }
+  }, [visible]);
+
+  const handleUpload = async (file) => {
+    const getBase64 = (img, callback) => {
+      const reader = new FileReader();
+      reader.addEventListener('load', () => callback(reader.result));
+      reader.readAsDataURL(img);
+    };
+
+    if (!file.url && !file.preview) {
+      getBase64(file, (imageUrl) => setUploadedPreview(imageUrl));
+    }
+    setUploadedFile(file);
   };
 
   const identifyImageOrPdf = (name) => {
@@ -20,9 +52,7 @@ const AddContent = (props) => {
     switch (ext.toLowerCase()) {
       case 'jpg':
       case 'jpeg':
-        // case 'gif':
-        // case 'bmp':
-        // case 'png':
+      case 'png':
         return 0;
       case 'pdf':
         return 1;
@@ -33,7 +63,7 @@ const AddContent = (props) => {
 
   const beforeUpload = (file) => {
     const maxFileSize = 25;
-    const checkType = file.type === 'application/pdf' || file.type === 'image/jpeg';
+    const checkType = identifyImageOrPdf(file.name) === 0 || identifyImageOrPdf(file.name) === 1;
 
     if (!checkType) {
       message.error('You can only upload JPG/PNG/PDF file!');
@@ -50,27 +80,62 @@ const AddContent = (props) => {
     return checkType && isLtMaxFileSize;
   };
 
+  // finish
+  const addDocument = async (values, attachment) => {
+    const res = await dispatch({
+      type: 'projectDetails/addDocumentEffect',
+      payload: {
+        ...values,
+        projectId,
+        attachment,
+        owner: employeeId,
+        ownerName: employeeName,
+      },
+    });
+    if (res.statusCode === 200) {
+      refreshData();
+      onClose();
+    }
+  };
+
+  const handleFinish = (values) => {
+    const formData = new FormData();
+    formData.append('uri', uploadedFile);
+    dispatch({
+      type: 'upload/uploadFile',
+      payload: formData,
+    }).then((response) => {
+      const { data: imageData = [] } = response;
+      const { id = '' } = imageData[0];
+      addDocument(values, id);
+    });
+  };
+
   return (
     <div className={styles.AddContent}>
-      <Form
-        name="basic"
-        ref={formRef}
-        id="myForm"
-        // onFinish={handleFinish}
-        initialValues={{}}
-      >
+      <Form name="basic" ref={formRef} id="myForm" onFinish={handleFinish} initialValues={{}}>
         <Row gutter={[24, 0]} className={styles.abovePart}>
           <Col xs={24} md={12}>
-            <Form.Item label="Document Type" name="documentType" labelCol={{ span: 24 }}>
-              <Select placeholder="Enter Document Type">
-                {[].map((item) => {
+            <Form.Item
+              label="Document Type"
+              name="documentType"
+              labelCol={{ span: 24 }}
+              rules={[{ required: true, message: 'Select Document Type' }]}
+            >
+              <Select placeholder="Select Document Type">
+                {documentTypeList.map((item) => {
                   return <Select.Option key={item.id}>{item.type_name}</Select.Option>;
                 })}
               </Select>
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
-            <Form.Item label="Document Name" name="documentName" labelCol={{ span: 24 }}>
+            <Form.Item
+              label="Document Name"
+              name="documentName"
+              labelCol={{ span: 24 }}
+              rules={[{ required: true, message: 'Enter Document Name' }]}
+            >
               <Input placeholder="Enter Document Name" />
             </Form.Item>
           </Col>
@@ -83,25 +148,14 @@ const AddContent = (props) => {
           <Col xs={24}>
             <Form.Item name="file">
               <Upload.Dragger
-                name="file"
                 multiple={false}
                 showUploadList={false}
-                action={(file) => onAction(file)}
+                action={(file) => handleUpload(file)}
                 beforeUpload={beforeUpload}
               >
-                {fileName !== '' ? (
+                {uploadedPreview ? (
                   <div className={styles.fileUploadedContainer}>
-                    <p className={styles.previewIcon}>
-                      {identifyImageOrPdf(fileName) === 1 ? (
-                        <img src={PDFIcon} alt="pdf" />
-                      ) : (
-                        <img src={ImageIcon} alt="img" />
-                      )}
-                    </p>
-                    <p className={styles.fileName}>
-                      Uploaded: <a>{fileName}</a>
-                    </p>
-                    <Button>Choose an another file</Button>
+                    <img src={uploadedPreview} alt="preview" />
                   </div>
                 ) : (
                   <div className={styles.content}>
@@ -129,6 +183,7 @@ const AddContent = (props) => {
   );
 };
 
-export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({
-  employee,
+export default connect(({ projectDetails, user: { currentUser = {} } }) => ({
+  projectDetails,
+  currentUser,
 }))(AddContent);

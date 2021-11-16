@@ -7,6 +7,13 @@ export async function getProjectList(payload) {
   });
 }
 
+export async function getStatusSummary(payload) {
+  return request(`/api-project/projecttenant/get-status-summary`, {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function generateProjectId(payload) {
   return request(`/api-project/projecttenant/gen-project-id`, {
     method: 'POST',

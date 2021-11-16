@@ -128,15 +128,22 @@
               font-size: 12px;
             }
             .value {
-              color: #161c29;
+              color: #161c2980; // hex with alpha 50%
               font-size: 12px;
               text-align: right;
-              opacity: 0.5;
             }
             :global {
               .ant-col-6 {
                 text-align: right;
               }
+            }
+            .blueText {
+              color: #2c6df9;
+              font-weight: 500;
+            }
+            .clickable {
+              .blueText();
+              cursor: pointer;
             }
           }
 

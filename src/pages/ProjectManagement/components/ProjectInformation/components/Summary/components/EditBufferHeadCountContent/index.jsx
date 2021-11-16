@@ -3,39 +3,39 @@ import React from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
-const EditBillableHeadCountContent = (props) => {
+const EditBufferHeadCountContent = (props) => {
   const { initialValue = '', newValues = {}, onClose = () => {}, onSubmit = () => {} } = props;
   const formRef = React.createRef();
 
   const handleFinish = (values) => {
     onSubmit(
       {
-        value: values.newBillableHeadCount,
+        value: values.newBufferHeadCount,
         reason: values.reason,
       },
-      'billable',
+      'buffer',
     );
     onClose();
   };
 
   return (
-    <div className={styles.EditBillableHeadCountContent}>
+    <div className={styles.EditBufferHeadCountContent}>
       <Form
         name="basic"
         ref={formRef}
         id="myForm"
         onFinish={handleFinish}
         initialValues={{
-          initialBillableHeadCount: initialValue || null,
-          newBillableHeadCount: newValues.value || null,
+          initialBufferHeadCount: initialValue || null,
+          newBufferHeadCount: newValues.value || null,
           reason: newValues.reason || null,
         }}
       >
         <Row gutter={[24, 0]} className={styles.abovePart}>
           <Col span={24}>
             <Form.Item
-              label="Initial Billable Head Count"
-              name="initialBillableHeadCount"
+              label="Initial Buffer Head Count"
+              name="initialBufferHeadCount"
               labelCol={{ span: 24 }}
             >
               <Input disabled />
@@ -43,12 +43,12 @@ const EditBillableHeadCountContent = (props) => {
           </Col>
           <Col span={24}>
             <Form.Item
-              label="New Billable Head Count"
-              name="newBillableHeadCount"
+              label="New Buffer Head Count"
+              name="newBufferHeadCount"
               labelCol={{ span: 24 }}
               rules={[{ required: true, message: 'Required field!' }]}
             >
-              <Input placeholder="Enter New Billable Head Count" />
+              <Input placeholder="Enter New Buffer Head Count" />
             </Form.Item>
           </Col>
 
@@ -70,4 +70,4 @@ const EditBillableHeadCountContent = (props) => {
 
 export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({
   employee,
-}))(EditBillableHeadCountContent);
+}))(EditBufferHeadCountContent);

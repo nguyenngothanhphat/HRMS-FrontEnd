@@ -13,13 +13,21 @@ import styles from './index.less';
 const ProjectInformation = (props) => {
   const { dispatch, match: { params: { reId = '', tabName = '' } = {} } = {} } = props;
 
-  const fetchProjectByID = () => {
-    dispatch({
+  const fetchProjectByID =async () => {
+   const res = await dispatch({
       type: 'projectDetails/fetchProjectByIdEffect',
       payload: {
-        id: reId,
+        projectId: reId,
       },
     });
+    if (res.statusCode ===200) {
+      dispatch({
+        type: 'projectDetails/fetchProjectTagListEffect',
+        payload: {
+          projectId: reId,
+        },
+      });
+    }
   };
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 import { notification } from 'antd';
 import {
   getProjectList,
+  getStatusSummary,
   generateProjectId,
   getCustomerList,
   getProjectTypeList,
@@ -13,11 +14,9 @@ import {
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 
-const tenantId = getCurrentTenant();
-const company = getCurrentCompany();
-
 const initialState = {
   projectList: [],
+  statusSummary: [],
   newProjectId: '',
   customerList: [],
   projectTypeList: [],
@@ -33,11 +32,15 @@ const ProjectManagement = {
   effects: {
     // fetch
     *fetchProjectListEffect({ payload }, { call, put }) {
-      const response = {};
+      let response = {};
       try {
-        const res = yield call(getProjectList, { ...payload, company, tenantId });
-        const { statusCode, data = [] } = res;
-        if (statusCode !== 200) throw res;
+        response = yield call(getProjectList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
 
         yield put({
           type: 'save',
@@ -50,13 +53,38 @@ const ProjectManagement = {
       }
       return response;
     },
-
-    *generateProjectIdEffect({ payload }, { call, put }) {
-      const response = {};
+    *fetchStatusSummaryEffect({ payload }, { call, put }) {
+      let response = {};
       try {
-        const res = yield call(generateProjectId, { ...payload, company, tenantId });
-        const { statusCode, data = '' } = res;
-        if (statusCode !== 200) throw res;
+        response = yield call(getStatusSummary, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            statusSummary: data?.statuses || [],
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *generateProjectIdEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(generateProjectId, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = '' } = response;
+        if (statusCode !== 200) throw response;
 
         yield put({
           type: 'save',
@@ -71,11 +99,15 @@ const ProjectManagement = {
     },
 
     *fetchCustomerListEffect({ payload }, { call, put }) {
-      const response = {};
+      let response = {};
       try {
-        const res = yield call(getCustomerList, { ...payload, company, tenantId });
-        const { statusCode, data = [] } = res;
-        if (statusCode !== 200) throw res;
+        response = yield call(getCustomerList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
 
         yield put({
           type: 'save',
@@ -90,11 +122,15 @@ const ProjectManagement = {
     },
 
     *fetchProjectTypeListEffect({ payload }, { call, put }) {
-      const response = {};
+      let response = {};
       try {
-        const res = yield call(getProjectTypeList, { ...payload, company, tenantId });
-        const { statusCode, data = [] } = res;
-        if (statusCode !== 200) throw res;
+        response = yield call(getProjectTypeList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
 
         yield put({
           type: 'save',
@@ -109,11 +145,15 @@ const ProjectManagement = {
     },
 
     *fetchProjectStatusListEffect({ payload }, { call, put }) {
-      const response = {};
+      let response = {};
       try {
-        const res = yield call(getProjectStatusList, { ...payload, company, tenantId });
-        const { statusCode, data = [] } = res;
-        if (statusCode !== 200) throw res;
+        response = yield call(getProjectStatusList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
 
         yield put({
           type: 'save',
@@ -127,11 +167,15 @@ const ProjectManagement = {
       return response;
     },
     *fetchTagListEffect({ payload }, { call, put }) {
-      const response = {};
+      let response = {};
       try {
-        const res = yield call(getTagList, { ...payload, company, tenantId });
-        const { statusCode, data = [] } = res;
-        if (statusCode !== 200) throw res;
+        response = yield call(getTagList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
 
         yield put({
           type: 'save',
@@ -146,11 +190,15 @@ const ProjectManagement = {
     },
 
     *fetchDepartmentListEffect({ payload }, { call, put }) {
-      const response = {};
+      let response = {};
       try {
-        const res = yield call(getDepartmentList, { ...payload, company, tenantId });
-        const { statusCode, data = [] } = res;
-        if (statusCode !== 200) throw res;
+        response = yield call(getDepartmentList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
 
         yield put({
           type: 'save',
@@ -165,11 +213,15 @@ const ProjectManagement = {
     },
 
     *fetchEmployeeListEffect({ payload }, { call, put }) {
-      const response = {};
+      let response = {};
       try {
-        const res = yield call(getEmployeeList, { ...payload, company, tenantId });
-        const { statusCode, data = [] } = res;
-        if (statusCode !== 200) throw res;
+        response = yield call(getEmployeeList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
 
         yield put({
           type: 'save',
@@ -185,11 +237,15 @@ const ProjectManagement = {
 
     // add
     *addProjectEffect({ payload }, { call }) {
-      const response = {};
+      let response = {};
       try {
-        const res = yield call(addProject, { ...payload, company, tenantId });
-        const { statusCode, message } = res;
-        if (statusCode !== 200) throw res;
+        response = yield call(addProject, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
         notification.success({
           message,
         });
