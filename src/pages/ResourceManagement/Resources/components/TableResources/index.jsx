@@ -1,17 +1,29 @@
-
 import React, { PureComponent, useState } from 'react';
-import { Table, Row, Col, Button, Modal, Form, Input, Select, DatePicker, Tooltip, Card} from 'antd';
-const { TextArea } = Input;
-const {Option} = Select;
+import {
+  Table,
+  Row,
+  Col,
+  Button,
+  Modal,
+  Form,
+  Input,
+  Select,
+  DatePicker,
+  Tooltip,
+  Card,
+} from 'antd';
 import moment from 'moment';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import addAction from '@/assets/resource-action-add1.svg';
 import historyIcon from '@/assets/resource-management-edit1.svg';
-import datePickerIcon from '@/assets/resource-management-datepicker.svg'
+import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import AddActionBTN from './components/Add';
 import EditActionBTN from './components/Edit';
 import styles from './index.less';
+
+const { TextArea } = Input;
+const { Option } = Select;
 
 class TableTickets extends PureComponent {
   constructor(props) {
@@ -37,7 +49,7 @@ class TableTickets extends PureComponent {
 
     if (check) {
       this.setState({
-        currentTime: moment()
+        currentTime: moment(),
       });
     }
   };
@@ -60,12 +72,15 @@ class TableTickets extends PureComponent {
   handleSelect = (e) => {
     e.preventDefault();
   };
+
   onTableChange = (pagination, filters, sorter, extra) => {
     console.log('params', pagination, filters, sorter, extra);
   };
+
   getComponent = () => {
-    return <addActionBTN/>
-  }
+    return <addActionBTN />;
+  };
+
   render() {
     const {
       data = [],
@@ -97,13 +112,6 @@ class TableTickets extends PureComponent {
       onChange: (page, pageSize) => {
         getPageAndSize(page, pageSize);
       },
-    };
-    const showAlert = (row) => {
-      alert(JSON.stringify(row));
-
-      // Modal.confirm({
-      //   title: checkPropss,
-      // });
     };
 
     const mapping = new Set();
@@ -305,8 +313,15 @@ class TableTickets extends PureComponent {
         // dataIndex: 'subject',
         key: 'action',
         render: (value, row, col) => {
-          //const buttonGroup = actionAddAndEdit(row);
-          const buttonGroup = <span><AddActionBTN dataPassRow = {row}/> <EditActionBTN dataPassRow = {row}/></span>
+          // const buttonGroup = actionAddAndEdit(row);
+          console.log('value', value);
+          console.log('row', row);
+          console.log('col', col);
+          const buttonGroup = (
+            <span>
+              <AddActionBTN dataPassRow={row} /> <EditActionBTN dataPassRow={row} />
+            </span>
+          );
           const obj = renderCell('add', row, buttonGroup);
           if (col === size - 1) {
             mapping.clear();

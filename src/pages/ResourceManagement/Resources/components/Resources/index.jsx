@@ -6,7 +6,7 @@ import SearchTable from '../SearchTable';
 import TableTickets from '../TableResources';
 
 @connect(({ loading = {} }) => ({
-  loading: loading.effects['ticketManagement/fetchListAllTicket'],
+  loading: loading.effects['resourceManagement/fetchListAllTicket'],
 }))
 class AllTicket extends Component {
   constructor(props) {
@@ -19,7 +19,7 @@ class AllTicket extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('All ticket init call')
+    console.log('All ticket init call');
     const { selectedFilterTab, pageSelected, size } = this.state;
     const { dispatch, location = [] } = this.props;
     if (prevState.pageSelected !== pageSelected || prevState.size !== size) {
