@@ -12,12 +12,6 @@ const Projects = (props) => {
   const { projectList = [], statusSummary = [], dispatch, loadingFetchProjectList = false } = props;
   const [projectStatus, setProjectStatus] = useState('All');
 
-  const fetchStatusSummary = () => {
-    dispatch({
-      type: 'projectManagement/fetchStatusSummaryEffect',
-    });
-  };
-
   const fetchProjectList = async (payload) => {
     let tempPayload = payload;
     if (projectStatus !== 'All') {
@@ -26,13 +20,13 @@ const Projects = (props) => {
         projectStatus: [projectStatus],
       };
     }
-    const res = await dispatch({
+    dispatch({
       type: 'projectManagement/fetchProjectListEffect',
       payload: tempPayload,
     });
-    if (res.statusCode === 200) {
-      fetchStatusSummary();
-    }
+    dispatch({
+      type: 'projectManagement/fetchStatusSummaryEffect',
+    });
   };
 
   const viewProjectInformation = (projectId) => {
@@ -188,7 +182,7 @@ const Projects = (props) => {
 };
 export default connect(
   ({
-    projectManagement: { projectList = [], statusSummary = [] } = {},
+    projectManagement: { projectList = [], statusSummary = [], projectListPayload = {} } = {},
     user: { currentUser = {}, permissions = [] } = {},
     loading,
   }) => ({
@@ -196,6 +190,7 @@ export default connect(
     permissions,
     projectList,
     statusSummary,
+    projectListPayload,
     loadingFetchProjectList: loading.effects['projectManagement/fetchProjectListEffect'],
   }),
 )(Projects);

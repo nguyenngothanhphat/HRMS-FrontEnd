@@ -85,6 +85,12 @@ const AddProjectModal = (props) => {
   };
 
   // main function
+  const refreshData = () => {
+    dispatch({
+      type: 'projectManagement/refreshProjectList',
+    });
+  };
+
   const handleFinish = async (values) => {
     const res = await dispatch({
       type: 'projectManagement/addProjectEffect',
@@ -97,6 +103,7 @@ const AddProjectModal = (props) => {
     });
     if (res.statusCode === 200) {
       handleCancel();
+      refreshData();
     }
   };
 

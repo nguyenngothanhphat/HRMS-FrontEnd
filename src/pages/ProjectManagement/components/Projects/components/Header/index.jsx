@@ -69,7 +69,7 @@ const Header = (props) => {
             onChange={(val) => setProjectStatus(val)}
             suffixIcon={<img src={ArrowDown} alt="" />}
           >
-            <Option value="All">All Projects ({allCount.count || 0})</Option>
+            <Option value="All">All Projects ({allCount?.count || 0})</Option>
             {projectStatusList.map((v) => {
               const find = statusSummary.find((x) => x.statusName === v.status);
               return (

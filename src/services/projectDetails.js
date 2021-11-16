@@ -35,6 +35,12 @@ export async function addMilestone(payload) {
     data: payload,
   });
 }
+export async function updateMilestone(payload) {
+  return request(`/api-project/milestonetenant/update`, {
+    method: 'POST',
+    data: payload,
+  });
+}
 
 // resources
 export async function getResourceTypeList(payload) {

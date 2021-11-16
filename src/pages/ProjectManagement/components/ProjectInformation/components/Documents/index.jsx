@@ -21,6 +21,7 @@ const Documents = (props) => {
     dispatch,
     projectDetails: { projectId = '', documentList = [] } = {},
     loadingAddDocument = false,
+    loadingFetchDocument = false,
   } = props;
   const [addDocumentModalVisible, setAddDocumentModalVisible] = useState(false);
 
@@ -77,10 +78,10 @@ const Documents = (props) => {
       },
       {
         title: 'Document Type',
-        dataIndex: 'documentType',
-        key: 'documentType',
-        render: (documentType) => {
-          return <span>{documentType || '-'}</span>;
+        dataIndex: 'documentTypeName ',
+        key: 'documentTypeName ',
+        render: (documentTypeName) => {
+          return <span>{documentTypeName || '-'}</span>;
         },
       },
       {
@@ -141,7 +142,11 @@ const Documents = (props) => {
     <div className={styles.Documents}>
       <Card title="Documents" extra={renderOption()}>
         <div className={styles.tableContainer}>
-          <CommonTable columns={generateColumns()} list={documentList} />
+          <CommonTable
+            columns={generateColumns()}
+            list={documentList}
+            loading={loadingFetchDocument}
+          />
         </div>
       </Card>
       <CommonModal
@@ -165,4 +170,5 @@ export default connect(({ projectDetails, loading }) => ({
   projectDetails,
   loadingAddDocument:
     loading.effects['projectDetails/addDocumentEffect'] || loading.effects['upload/uploadFile'],
+  loadingFetchDocument: loading.effects['projectDetails/fetchDocumentListEffect'],
 }))(Documents);

@@ -188,19 +188,19 @@ const Summary = (props) => {
       },
       {
         name: 'Project Description',
-        value: projectDescription,
+        value: projectDescription || '-',
       },
       {
         name: 'Billable Head Count',
-        value: billableHeadCount,
+        value: billableHeadCount || '-',
       },
       {
         name: 'Buffer Head Count',
-        value: bufferHeadCount,
+        value: bufferHeadCount || '-',
       },
       {
         name: 'Estimation (Man Months)',
-        value: estimation,
+        value: estimation || '-',
       },
     ];
     return (

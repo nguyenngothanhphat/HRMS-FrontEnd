@@ -6,7 +6,11 @@ import CommonTable from '../CommonTable';
 import styles from './index.less';
 
 const AuditTrail = (props) => {
-  const { dispatch, projectDetails: { projectId = '', auditTrailList = [] } = {} } = props;
+  const {
+    dispatch,
+    projectDetails: { projectId = '', auditTrailList = [] } = {},
+    loadingFetch = false,
+  } = props;
 
   const fetchAuditTrailList = () => {
     dispatch({
@@ -26,6 +30,7 @@ const AuditTrail = (props) => {
     if (attachmentInfo) {
       return ` - ${attachmentInfo.name}`;
     }
+    return '';
   };
 
   const getColumns = () => {
@@ -69,10 +74,13 @@ const AuditTrail = (props) => {
     <div className={styles.AuditTrail}>
       <Card title="Audit Trail">
         <div className={styles.tableContainer}>
-          <CommonTable list={auditTrailList} columns={getColumns()} />
+          <CommonTable list={auditTrailList} columns={getColumns()} loading={loadingFetch} />
         </div>
       </Card>
     </div>
   );
 };
-export default connect(({ projectDetails }) => ({ projectDetails }))(AuditTrail);
+export default connect(({ projectDetails, loading }) => ({
+  projectDetails,
+  loadingFetch: loading.effects['projectDetails/fetchAuditTrailListEffect'],
+}))(AuditTrail);

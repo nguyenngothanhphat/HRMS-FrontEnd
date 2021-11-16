@@ -11,6 +11,7 @@ import {
   getAuditTrailList,
   getDocumentList,
   getMilestoneList,
+  updateMilestone,
   getProjectByID,
   getResourceTypeList,
   updateProjectOverview,
@@ -331,6 +332,28 @@ const ProjectDetails = {
       }
       return response;
     },
+    *updateMilestoneEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(updateMilestone, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'updateMilestone',
+          payload,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
     *updateProjectOverviewEffect({ payload }, { call, put }) {
       let response = {};
       try {
@@ -366,6 +389,23 @@ const ProjectDetails = {
       return {
         ...state,
         projectDetail: { ...projectDetail, ...action.payload },
+      };
+    },
+    updateMilestone(state, action) {
+      const { milestoneList = {} } = state;
+      let tempMilestoneList = JSON.parse(JSON.stringify(milestoneList));
+      tempMilestoneList = tempMilestoneList.map((ml) => {
+        if (ml.id === action.payload.id) {
+          return {
+            ...ml,
+            ...action.payload,
+          };
+        }
+        return ml;
+      });
+      return {
+        ...state,
+        milestoneList: [...tempMilestoneList],
       };
     },
     clearState() {

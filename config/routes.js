@@ -918,6 +918,7 @@ const routes = [
           {
             path: '/project-management/list/:reId',
             hideInMenu: true,
+            name: 'View Project',
             component: './ProjectManagement/components/ProjectInformation',
             authority: ['hr-manager', 'hr', 'employee', 'manager'],
           },

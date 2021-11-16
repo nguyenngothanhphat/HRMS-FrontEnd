@@ -1,5 +1,5 @@
-import { Button, Card, Tabs } from 'antd';
-import React, { useState } from 'react';
+import { Button, Card, Tabs, Skeleton } from 'antd';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import WhiteAddIcon from '@/assets/projectManagement/whitePlus.svg';
 import AddContent from './components/AddContent';
@@ -11,23 +11,26 @@ import styles from './index.less';
 const { TabPane } = Tabs;
 
 const Planning = (props) => {
-  const [addMilestoneModalVisible, setAddMilestoneModalVisible] = useState(false);
   const {
-    milestones = [
-      {
-        id: 1,
-        name: 'Research',
-      },
-      {
-        id: 2,
-        name: 'Design',
-      },
-      {
-        id: 3,
-        name: 'Engineering',
-      },
-    ],
+    dispatch,
+    projectDetails: { projectId = '', milestoneList = [] } = {},
+    loadingFetch = false,
+    loadingAdd = false
   } = props;
+  const [addMilestoneModalVisible, setAddMilestoneModalVisible] = useState(false);
+
+  const fetchMilestoneList = () => {
+    dispatch({
+      type: 'projectDetails/fetchMilestoneListEffect',
+      payload: {
+        projectId,
+      },
+    });
+  };
+
+  useEffect(() => {
+    fetchMilestoneList();
+  }, []);
 
   const renderEmptyCard = () => {
     return (
@@ -50,10 +53,6 @@ const Planning = (props) => {
     );
   };
 
-  const getMilestoneContent = () => {
-    return <MilestoneCard />;
-  };
-
   const renderDataCard = () => {
     const operations = (
       <AddButton text="Add Milestone" onClick={() => setAddMilestoneModalVisible(true)} />
@@ -62,10 +61,10 @@ const Planning = (props) => {
     return (
       <div className={styles.contentCard}>
         <Tabs tabBarExtraContent={operations}>
-          {milestones.map((m, i) => {
+          {milestoneList.map((m) => {
             return (
-              <TabPane tab={m.name} key={m.id}>
-                {getMilestoneContent(i)}
+              <TabPane tab={m.milestone_name} key={m.id}>
+                <MilestoneCard data={m} projectId={projectId} />;
               </TabPane>
             );
           })}
@@ -74,17 +73,34 @@ const Planning = (props) => {
     );
   };
 
+  if (loadingFetch) {
+    return (
+      <div className={styles.Planning}>
+        <Skeleton />
+      </div>
+    );
+  }
   return (
     <div className={styles.Planning}>
-      {milestones.length === 0 ? renderEmptyCard() : renderDataCard()}
+      {milestoneList.length === 0 ? renderEmptyCard() : renderDataCard()}
       <CommonModal
         visible={addMilestoneModalVisible}
         onClose={() => setAddMilestoneModalVisible(false)}
-        content={<AddContent />}
+        content={
+          <AddContent
+            refreshData={fetchMilestoneList}
+            onClose={() => setAddMilestoneModalVisible(false)}
+          />
+        }
         title="Add Milestones"
         firstText="Add"
+        loading={loadingAdd}
       />
     </div>
   );
 };
-export default connect(() => ({}))(Planning);
+export default connect(({ projectDetails, loading }) => ({
+  projectDetails,
+  loadingFetch: loading.effects['projectDetails/fetchMilestoneListEffect'],
+  loadingAdd: loading.effects['projectDetails/addMilestoneEffect']
+}))(Planning);

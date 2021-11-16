@@ -16,6 +16,7 @@ import { dialog } from '@/utils/utils';
 
 const initialState = {
   projectList: [],
+  projectListPayload: {}, // for refresh data
   statusSummary: [],
   newProjectId: '',
   customerList: [],
@@ -46,12 +47,27 @@ const ProjectManagement = {
           type: 'save',
           payload: {
             projectList: data,
+            projectListPayload: payload,
           },
         });
       } catch (errors) {
         dialog(errors);
       }
       return response;
+    },
+    *refreshProjectList(_, { select, put }) {
+      try {
+        const { projectListPayload = {} } = yield select((state) => state.projectManagement);
+        yield put({
+          type: 'fetchProjectListEffect',
+          payload: projectListPayload,
+        });
+        yield put({
+          type: 'fetchStatusSummaryEffect',
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
     },
     *fetchStatusSummaryEffect({ payload }, { call, put }) {
       let response = {};

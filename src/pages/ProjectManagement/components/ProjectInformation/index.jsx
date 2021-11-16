@@ -11,16 +11,20 @@ import AuditTrail from './components/AuditTrail';
 import styles from './index.less';
 
 const ProjectInformation = (props) => {
-  const { dispatch, match: { params: { reId = '', tabName = '' } = {} } = {} } = props;
+  const {
+    dispatch,
+    match: { params: { reId = '', tabName = '' } = {} } = {},
+    projectDetail: { projectName = '' } = {},
+  } = props;
 
-  const fetchProjectByID =async () => {
-   const res = await dispatch({
+  const fetchProjectByID = async () => {
+    const res = await dispatch({
       type: 'projectDetails/fetchProjectByIdEffect',
       payload: {
         projectId: reId,
       },
     });
-    if (res.statusCode ===200) {
+    if (res.statusCode === 200) {
       dispatch({
         type: 'projectDetails/fetchProjectTagListEffect',
         payload: {
@@ -84,7 +88,7 @@ const ProjectInformation = (props) => {
       <div className={styles.ProjectInformation}>
         <Affix offsetTop={30}>
           <div className={styles.titlePage}>
-            <p className={styles.titlePage__text}>Project Information</p>
+            <p className={styles.titlePage__text}>{projectName || 'View Project'}</p>
           </div>
         </Affix>
 
@@ -93,7 +97,6 @@ const ProjectInformation = (props) => {
     </PageContainer>
   );
 };
-export default connect(({ user: { currentUser = {}, permissions = [] } = {} }) => ({
-  currentUser,
-  permissions,
+export default connect(({ projectDetails: { projectDetail = {} } }) => ({
+  projectDetail,
 }))(ProjectInformation);
