@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Component } from 'react';
 import { Row, Col, Modal, Input, Select, Button } from 'antd';
 import { PlusCircleFilled } from '@ant-design/icons';
 import styles from './index.less';
@@ -6,7 +6,7 @@ import styles from './index.less';
 const { TextArea } = Input;
 const { Option } = Select;
 
-class CommentModal extends PureComponent {
+class CommentModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -33,13 +33,13 @@ class CommentModal extends PureComponent {
   };
 
   render() {
-    const {row} = this.props;
-    const {visible} = this.state;
+    const { row } = this.props;
+    const { visible } = this.state;
     return (
       <div>
-      <div>test</div>
+        <p>test</p>
         {/* <div className={styles.options}> */}
-        <Row gutter={[24, 0]}>
+        {/* <Row gutter={[24, 0]}>
           <Col>
             <Button
               icon={<PlusCircleFilled />}
@@ -50,7 +50,8 @@ class CommentModal extends PureComponent {
               Add
             </Button>
           </Col>
-        </Row>
+          
+        </Row> */}
         {/* </div> */}
         <Modal
           className={styles.modalAdd}

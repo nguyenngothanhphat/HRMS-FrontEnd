@@ -203,6 +203,7 @@ class EditActionBTN extends Component {
           </p>
           <br />
           <br />
+          <p>{JSON.stringify(row)}</p>
           <Table dataSource={dataSource} columns={columns} pagination={false} />;
         </Modal>
       </div>

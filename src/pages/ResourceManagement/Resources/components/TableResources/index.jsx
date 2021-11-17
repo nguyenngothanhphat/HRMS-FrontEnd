@@ -1,13 +1,8 @@
 import React, { PureComponent } from 'react';
-import {
-  Table,
-  Row,
-  Col,
-  Button
-} from 'antd';
+import { Table, Row, Col, Button } from 'antd';
 import moment from 'moment';
 import { PlusCircleFilled } from '@ant-design/icons';
-import {formatMessage} from 'umi'
+import { formatMessage } from 'umi';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import AddActionBTN from './components/Add';
 import EditActionBTN from './components/Edit';
@@ -15,6 +10,7 @@ import styles from './index.less';
 import ProjectProfile from '../ComplexView/components/PopoverProfiles/components/ProjectProfile';
 import UserProfile from '../ComplexView/components/PopoverProfiles/components/UserProfile';
 import CommonModal from '@/components/CommonModal';
+
 class TableResources extends PureComponent {
   constructor(props) {
     super(props);
@@ -53,44 +49,46 @@ class TableResources extends PureComponent {
   };
 
   parseDate = (dateText) => {
-    if(!dateText) {
-      return '-'
+    if (!dateText) {
+      return '-';
     }
-    return moment(dateText).format('MM/DD/YYYY')
-  }
+    return moment(dateText).format('MM/DD/YYYY');
+  };
 
   handleLongText = (text, length) => {
-    console.log(`text: ${text}`)
-    if(!text) {
-      return ''
+    console.log(`text: ${text}`);
+    if (!text) {
+      return '';
     }
     if (text.length < length) {
       return text;
     }
 
-    const formatText = text.substring(0, length)
-    return `${formatText}...${formatText.includes('(') ? ')' : ''}`
-  }
+    const formatText = text.substring(0, length);
+    return `${formatText}...${formatText.includes('(') ? ')' : ''}`;
+  };
 
   cloneObj = (obj) => {
-    const newObj = {}
+    const newObj = {};
     // eslint-disable-next-line no-restricted-syntax
-    for(const [key, value] of Object.entries(obj)) {
-      newObj[key] = value
+    for (const [key, value] of Object.entries(obj)) {
+      newObj[key] = value;
     }
-    return newObj
-  }
+    return newObj;
+  };
 
   formatResource = (resourceList) => {
-    const { projectList } = this.props
+    const { projectList } = this.props;
     // console.log('formating resource')
     const dataList = [];
     // eslint-disable-next-line no-restricted-syntax
     resourceList.forEach((obj, index) => {
-      const { departmentInfo, titleInfo, generalInfo, projects} = obj;
-      const availableStatus = 'Available Now'
-      const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'))
-      const employeeName = `${ generalInfo.firstName } ${generalInfo.firstName} ${ userName ? (`(${  userName  })`) : ''}`;
+      const { departmentInfo, titleInfo, generalInfo, projects } = obj;
+      const availableStatus = 'Available Now';
+      const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'));
+      const employeeName = `${generalInfo.firstName} ${generalInfo.firstName} ${
+        userName ? `(${userName})` : ''
+      }`;
       const newObj = {
         employeeId: obj._id,
         employeeName: this.handleLongText(employeeName.trim(), 25),
@@ -103,43 +101,39 @@ class TableResources extends PureComponent {
         billStatus: '-',
         startDate: '-',
         endDate: '-',
-        comment: ''
+        comment: '',
       };
-      if(projects.length === 0){
-        if(index % 2 === 0) {
-          projects.push(
-            {name: 'Abc Project', billStatus: 'Billing', utilization: 50},
-          )
-          projects.push(
-            {name: 'Abc Project 2', billStatus: 'Billing', utilization: 50},
-          )
+      if (projects.length === 0) {
+        if (index % 2 === 0) {
+          projects.push({ name: 'Abc Project', billStatus: 'Billing', utilization: 50 });
+          projects.push({ name: 'Abc Project 2', billStatus: 'Billing', utilization: 50 });
         }
       }
-      let ability = 0
+      let ability = 0;
       // eslint-disable-next-line no-restricted-syntax
-      for(const p of projects) {
-        ability += p.utilization
+      for (const p of projects) {
+        ability += p.utilization;
       }
-      newObj.availableStatus = ability < 100 ? 'Available Now' : 'Available Soon'
-      console.log(`project length ${  projects.length}`)
-      if(projects.length === 0) {
+      newObj.availableStatus = ability < 100 ? 'Available Now' : 'Available Soon';
+      console.log(`project length ${projects.length}`);
+      if (projects.length === 0) {
         dataList.push(newObj);
       } else {
         // eslint-disable-next-line no-restricted-syntax
-        for(const p of projects) {
-          const project = projectList.find(x => x.id === p.projectId)
-          console.log(`loop in projects: ${ JSON.stringify(p) }`)
-          const pObj = this.cloneObj(newObj)
-          pObj.projectName = project.name || '-'
-          pObj.utilization = p.utilization || 0
-          pObj.startDate = this.parseDate(p.startDate)
-          pObj.endDate = this.parseDate(p.endDate)
-          pObj.billStatus = p.billStatus || '-'
-          pObj.project = project
+        for (const p of projects) {
+          const project = projectList.find((x) => x.id === p.projectId);
+          console.log(`loop in projects: ${JSON.stringify(p)}`);
+          const pObj = this.cloneObj(newObj);
+          pObj.projectName = project.name || '-';
+          pObj.utilization = p.utilization || 0;
+          pObj.startDate = this.parseDate(p.startDate);
+          pObj.endDate = this.parseDate(p.endDate);
+          pObj.billStatus = p.billStatus || '-';
+          pObj.project = project;
           dataList.push(pObj);
         }
       }
-    })
+    });
     // for (const obj, index of resourceList) {
     console.log(`formatDataSource: ${JSON.stringify(dataList)}`);
     return dataList;
@@ -163,7 +157,7 @@ class TableResources extends PureComponent {
         <span>
           Showing{' '}
           <b>
-            {(pageSelected-1) * size} - {pageSelected * size}
+            {(pageSelected - 1) * size} - {pageSelected * size}
           </b>{' '}
           of {total}
         </span>
@@ -237,7 +231,6 @@ class TableResources extends PureComponent {
               <UserProfile placement="leftTop">
                 <div className={styles.employeeName}>{value}</div>
               </UserProfile>
-              
             </div>
           );
           return renderCell(value, row, div);
@@ -297,8 +290,12 @@ class TableResources extends PureComponent {
         dataIndex: 'projectName',
         // width: '10%',
         render: (value, row) => {
-          const employeeRowCount = data.filter(x => x.employeeId === row.employeeId).length
-          const display = <ProjectProfile placement="leftTop"><span className={styles.employeeName}> {value}</span></ProjectProfile>;
+          const employeeRowCount = data.filter((x) => x.employeeId === row.employeeId).length;
+          const display = (
+            <ProjectProfile placement="leftTop">
+              <span className={styles.employeeName}> {value}</span>
+            </ProjectProfile>
+          );
           const obj = {
             children: display,
             props: {
@@ -339,7 +336,12 @@ class TableResources extends PureComponent {
         sortDirections: ['ascend', 'descend'],
       },
       {
-        title: (<div className={styles.dateHeaderContainer}><div>Start Date</div><div>(MM/dd/yyyy)</div></div>),
+        title: (
+          <div className={styles.dateHeaderContainer}>
+            <div>Start Date</div>
+            <div>(MM/dd/yyyy)</div>
+          </div>
+        ),
         dataIndex: 'startDate',
         // width: '7%',
         key: 'startDate',
@@ -348,7 +350,12 @@ class TableResources extends PureComponent {
         },
       },
       {
-        title: (<div className={styles.dateHeaderContainer}><div>End Date</div><div>(MM/dd/yyyy)</div></div>),
+        title: (
+          <div className={styles.dateHeaderContainer}>
+            <div>End Date</div>
+            <div>(MM/dd/yyyy)</div>
+          </div>
+        ),
         dataIndex: 'endDate',
         // width: '7%',
         key: 'endDate',
@@ -357,7 +364,12 @@ class TableResources extends PureComponent {
         },
       },
       {
-        title: (<div className={styles.dateHeaderContainer}><div>Revised End Date</div><div>(MM/dd/yyyy)</div></div>),
+        title: (
+          <div className={styles.dateHeaderContainer}>
+            <div>Revised End Date</div>
+            <div>(MM/dd/yyyy)</div>
+          </div>
+        ),
         dataIndex: 'endDate',
         // width: '7%',
         key: 'revisedEndDate',
@@ -371,15 +383,18 @@ class TableResources extends PureComponent {
         dataIndex: 'comment',
         key: 'comment',
         render: (value, row) => {
-          const employeeRowCount = data.filter(x => x.employeeId === row.employeeId).length
-          let text
-          if(value) {
-            text = (<span className={styles.comment}>{value}</span>)
+          const employeeRowCount = data.filter((x) => x.employeeId === row.employeeId).length;
+          let text;
+          if (value) {
+            text = <span className={styles.comment}>{value}</span>;
           } else {
             text = (
-              <span><CommonModal data={row} /></span>
+              <span>
+                <CommonModal data={row} />
+              </span>
             );
           }
+          const check = <div>comment</div>;
           const obj = renderCell('comment', row, text);
           obj.props.className = employeeRowCount > 1 ? 'left-border' : '';
           return obj;
@@ -388,7 +403,7 @@ class TableResources extends PureComponent {
       },
       {
         title: 'Actions',
-        // width: '3%',
+        width: '6%',
         // dataIndex: 'subject',
         key: 'action',
         render: (value, row, col) => {
@@ -405,7 +420,7 @@ class TableResources extends PureComponent {
           return obj;
         },
         className: 'right-left-border',
-        fixed: 'right'
+        fixed: 'right',
       },
     ];
 

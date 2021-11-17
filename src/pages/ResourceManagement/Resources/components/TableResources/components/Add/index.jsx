@@ -11,6 +11,8 @@ import {
   DatePicker,
   Tooltip,
   Card,
+  notification,
+  message,
 } from 'antd';
 import moment from 'moment';
 import { InfoCircleOutlined } from '@ant-design/icons';
@@ -24,20 +26,16 @@ import styles from './index.less';
 const { TextArea } = Input;
 const { Option } = Select;
 
-@connect(({ loading = {} }) => ({
+@connect(({ loading = {}, resourceManagement: { projectList = [], resourceList = [] } = {} }) => ({
   loading: loading.effects['resourceManagement/fetchAssignToProject'],
+  projectList,
+  resourceList,
 }))
 class AddActionBTN extends Component {
   constructor(props) {
     super(props);
     this.state = {
       visible: false,
-      utilization: '',
-      Comment: '',
-      startDate: '',
-      endDate: '',
-      reservedEndDate: '',
-      project: '',
     };
   }
 
@@ -53,28 +51,43 @@ class AddActionBTN extends Component {
     });
   };
 
-  handleSubmitAssign = (e) => {
-    e.preventDefault();
-    console.log('ddd', this.state);
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'resourceManagement/fetchAssignToProject',
-      payload: {
-        employee: '61552f6d1b293f2508f61d02',
-        project: this.state.project,
-        status: this.state.status,
-        utilization: this.state.utilization,
-        startDate: this.state.startDate,
-        endDate: this.state.endDate,
-        comment: this.state.Comment,
-        milestone: '',
-      },
-    });
+  handleSubmitAssign = (values) => {
+    const { dispatch, dataPassRow } = this.props;
+    const { project, status, utilization, startDate, endDate, comment } = values;
+    if (parseInt(utilization) > 100 || parseInt(utilization) < 0) {
+      notification.error({
+        message: 'error validate',
+      });
+    } else {
+      dispatch({
+        type: 'resourceManagement/fetchAssignToProject',
+        payload: {
+          employee: dataPassRow.employeeId,
+          project,
+          status,
+          utilization,
+          startDate: moment(startDate).format('YYYY-MM-DD'),
+          endDate: moment(endDate).format('YYYY-MM-DD'),
+          comment,
+          milestone: '',
+        },
+      });
+      this.setState({
+        visible: false,
+      });
+    }
   };
 
   render() {
-    const { dataPassRow } = this.props;
-    const { optionsProject } = this.state;
+    const { dataPassRow, projectList, resourceList } = this.props;
+    const dateFormat = 'YYYY-MM-DD';
+    const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
+    const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
+    let sumUtilization = 0;
+    for (const obj of listProjectsOfEmp) {
+      sumUtilization += obj.utilization;
+    }
+    const maxEnterUtilization = 100 - sumUtilization;
     return (
       <div>
         <img
@@ -88,100 +101,75 @@ class AddActionBTN extends Component {
           title="Assign to project"
           width="60%"
           visible={this.state.visible}
-          onOk={this.handleSubmitAssign}
-          onCancel={() => this.handleCancel()}
-          okText="Assign to project"
-          cancelButtonProps={{ style: { color: 'red', border: '1px solid white' } }}
-          okButtonProps={{
-            style: {
-              background: '#FFA100',
-              border: '1px solid #FFA100',
-              color: 'white',
-              borderRadius: '25px',
-            },
-          }}
+          footer={null}
+          onCancel={this.handleCancel}
         >
           <Form
             layout="vertical"
             className={styles.formAdd}
             method="POST"
-            action={this.handleSubmitAssign}
+            onFinish={(values) => this.handleSubmitAssign(values)}
           >
             <Row>
               <Col span={12}>
-                <Form.Item label="Project">
+                <Form.Item label="Project" name="project">
                   <Select
                     defaultValue={dataPassRow.projectName}
-                    name="project"
-                    onChange={(event) => {
-                      this.setState({ project: event });
-                    }}
                     style={{ width: '95%', borderRadius: '2px' }}
                   >
-                    <Option value="project 1">project 1</Option>
-                    <Option value="project 2">project 2</Option>
-                    <Option value="project 3">project 3</Option>
+                    {projectList.map((project) => (
+                      <Option value={project.projectId}>{project.projectName}</Option>
+                    ))}
                   </Select>
                 </Form.Item>
-                <Form.Item label="Status">
+                <Form.Item label="Status" name="status">
                   <Select
                     defaultValue={dataPassRow.billStatus}
-                    name="status"
-                    onChange={(event) => {
-                      this.setState({ status: event });
-                    }}
                     style={{ width: '95%', borderRadius: '2px' }}
                   >
-                    <Option value="billStatus">billStatus</Option>
-                    <Option value="billStatus 1">billStatus 1</Option>
-                    <Option value="billStatus 2">billStatus 2</Option>
+                    <Option value="Billable">Billable</Option>
+                    <Option value="Buffer">Buffer</Option>
+                    <Option value="Bench">Bench</Option>
                   </Select>
                 </Form.Item>
-                <Form.Item label="Bandwith Allocation (%)">
+                <Form.Item
+                  label="Bandwith Allocation (%)"
+                  name="utilization"
+                  rules={[
+                    {
+                      max: maxEnterUtilization,
+                      message: `Your cannot enter a value that is more than ${maxEnterUtilization}.`,
+                    },
+                  ]}
+                  // validateTrigger="onBlur"
+                >
                   <Input
-                    placeholder={dataPassRow.utilization}
+                    placeholder={sumUtilization}
                     style={{ width: '95%', color: 'black' }}
                     addonAfter="%"
-                    name="utilization"
-                    value={this.state.utilization}
-                    onChange={(event) => {
-                      this.setState({ utilization: event.target.value });
-                    }}
                   />
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label="Start Date">
+                <Form.Item label="Start Date" name="startDate">
                   <DatePicker
                     placeholder="Enter Start Date"
-                    name="startDate"
-                    onChange={(event) => {
-                      this.setState({ startDate: moment(event).format('YYYY-MM-DD') });
-                    }}
-                    style={{ width: '95%', borderRadius: '2px', color: 'blue' }}
+                    style={{ width: '100%', borderRadius: '2px', color: 'blue' }}
                     suffixIcon={<img src={datePickerIcon} />}
                   />
                 </Form.Item>
-                <Form.Item label="End Date">
+                <Form.Item label="End Date" name="endDate">
                   <DatePicker
                     placeholder="Enter End Date"
-                    name="endDate"
-                    onChange={(event) => {
-                      this.setState({ endDate: moment(event).format('YYYY-MM-DD') });
-                    }}
-                    style={{ width: '95%', borderRadius: '2px', color: 'blue' }}
+                    style={{ width: '100%', borderRadius: '2px', color: 'blue' }}
                     suffixIcon={<img src={datePickerIcon} />}
                   />
                 </Form.Item>
-                <Form.Item label="Reserved End Date">
+                <Form.Item label="Reserved End Date" name="reservedEndDate">
                   <DatePicker
                     placeholder="Enter Date"
-                    name="reservedEndDate"
-                    onChange={(event) => {
-                      this.setState({ reservedEndDate: moment(event).format('YYYY-MM-DD') });
-                    }}
                     style={{
-                      width: '95%',
+                      width: '100%',
                       borderRadius: '2px',
                       color: 'blue',
                       background: '#F4F6F7',
@@ -191,18 +179,9 @@ class AddActionBTN extends Component {
                 </Form.Item>
               </Col>
             </Row>
-            <Form.Item label="Comments (optional)">
-              <TextArea
-                placeholder="Enter Comments"
-                name="Comment"
-                value={this.state.Comment}
-                onChange={(event) => {
-                  this.setState({ Comment: event.target.value });
-                }}
-                autoSize={{ minRows: 4, maxRows: 8 }}
-              />
+            <Form.Item label="Comments (optional)" name="Comment">
+              <TextArea placeholder="Enter Comments" autoSize={{ minRows: 4, maxRows: 8 }} />
             </Form.Item>
-            <p style={{ color: 'lightgray' }}>*Tentative End Date</p>
             <Form.Item label="Project Detail">
               <Card style={{ background: '#F6F7F9' }}>
                 <Row>
@@ -241,6 +220,14 @@ class AddActionBTN extends Component {
                 </Row>
               </Card>
             </Form.Item>
+            <div className={styles.spaceFooter}>
+              <div className={styles.btnCancel} onClick={this.handleCancel}>
+                Cancel
+              </div>
+              <Button type="primary" htmlType="submit" className={styles.btnSubmit}>
+                Assign To Project
+              </Button>
+            </div>
           </Form>
         </Modal>
       </div>
