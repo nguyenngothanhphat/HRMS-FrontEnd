@@ -81,6 +81,14 @@ const AddProjectModal = (props) => {
   };
 
   const handleCancel = () => {
+    form.resetFields();
+    // clear generated project id in redux
+    dispatch({
+      type: 'projectManagement/save',
+      payload: {
+        newProjectId: ''
+      }
+    });
     onClose();
   };
 
@@ -96,8 +104,8 @@ const AddProjectModal = (props) => {
       type: 'projectManagement/addProjectEffect',
       payload: {
         ...values,
-        startDate: moment(values.startDate).format(dateFormat),
-        tentativeEndDate: moment(values.tentativeEndDate).format(dateFormat),
+        startDate: moment(values.startDate).format('YYYY-MM-DD'),
+        tentativeEndDate: moment(values.tentativeEndDate).format('YYYY-MM-DD'),
         tagIds: values.tagIds.map((x) => x * 1),
       },
     });

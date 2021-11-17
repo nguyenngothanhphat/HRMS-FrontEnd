@@ -78,8 +78,8 @@ const Documents = (props) => {
       },
       {
         title: 'Document Type',
-        dataIndex: 'documentTypeName ',
-        key: 'documentTypeName ',
+        dataIndex: 'documentTypeName',
+        key: 'documentTypeName',
         render: (documentTypeName) => {
           return <span>{documentTypeName || '-'}</span>;
         },

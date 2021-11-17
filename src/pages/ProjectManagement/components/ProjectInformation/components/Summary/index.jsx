@@ -29,16 +29,24 @@ const Summary = (props) => {
       projectId = '',
       projectDetail: {
         startDate = '',
-        tentativeEndDate = '',
+        tentativeEndDate: originEndDate = '',
         projectDescription = '',
-        billableHeadCount = '',
-        bufferHeadCount = '',
+        billableHeadCount: originBillableHeadCount = '',
+        bufferHeadCount: originBufferHeadCount = '',
         estimation = '',
+        newEndDate: newEndDateProp = '',
+        newBillableHeadCount: newBillableHeadCountProp = '',
+        newBufferHeadCount: newBufferHeadCountProp = '',
       } = {},
     } = {},
     dispatch,
     loadingUpdateProjectOverview = false,
   } = props;
+
+  // new data than old data
+  const tentativeEndDate = newEndDateProp || originEndDate;
+  const billableHeadCount = newBillableHeadCountProp || originBillableHeadCount;
+  const bufferHeadCount = newBufferHeadCountProp || originBufferHeadCount;
 
   // FUNCTION
   const clearState = () => {
@@ -77,6 +85,15 @@ const Summary = (props) => {
       payload: {
         ...values,
         projectId,
+        tentativeEndDate, // origin
+        newEndDate: values.tentativeEndDate, // new end date
+        reasonChangeEndDate: newEndDate.reason,
+        billableHeadCount, // origin
+        newBillableHeadCount: values.billableHeadCount, // new value
+        reasonChangeBillableHeadCount: newBillableHeadCount.reason,
+        bufferHeadCount,
+        newBufferHeadCount: values.bufferHeadCount,
+        reasonChangeBufferHeadCount: newBufferHeadCount.reason,
       },
     });
     if (res.statusCode === 200) {

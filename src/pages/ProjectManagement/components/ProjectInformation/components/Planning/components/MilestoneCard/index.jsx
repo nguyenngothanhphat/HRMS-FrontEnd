@@ -29,7 +29,7 @@ const MilestoneCard = (props) => {
       type: 'projectDetails/updateMilestoneEffect',
       payload: {
         ...values,
-        id,
+        milestoneId: id,
         projectId,
       },
     });

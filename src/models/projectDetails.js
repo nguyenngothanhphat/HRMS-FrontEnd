@@ -386,16 +386,30 @@ const ProjectDetails = {
     },
     updateOverview(state, action) {
       const { projectDetail = {} } = state;
+      const {
+        newEndDate = '',
+        tentativeEndDate = '',
+        newBillableHeadCount = '',
+        billableHeadCount = '',
+        newBufferHeadCount = '',
+        bufferHeadCount = '',
+      } = action.payload;
       return {
         ...state,
-        projectDetail: { ...projectDetail, ...action.payload },
+        projectDetail: {
+          ...projectDetail,
+          ...action.payload,
+          billableHeadCount: newBillableHeadCount || billableHeadCount,
+          tentativeEndDate: newEndDate || tentativeEndDate,
+          bufferHeadCount: newBufferHeadCount || bufferHeadCount,
+        },
       };
     },
     updateMilestone(state, action) {
       const { milestoneList = {} } = state;
       let tempMilestoneList = JSON.parse(JSON.stringify(milestoneList));
       tempMilestoneList = tempMilestoneList.map((ml) => {
-        if (ml.id === action.payload.id) {
+        if (ml.id === action.payload.milestoneId) {
           return {
             ...ml,
             ...action.payload,
