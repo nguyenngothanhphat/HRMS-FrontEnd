@@ -400,7 +400,7 @@ const ProjectDetails = {
       }
       return response;
     },
-    *updateProjectOverviewEffect({ payload }, { call, put }) {
+    *updateProjectOverviewEffect({ payload }, { call }) {
       let response = {};
       try {
         response = yield call(updateProjectOverview, {
@@ -412,10 +412,6 @@ const ProjectDetails = {
         if (statusCode !== 200) throw response;
         notification.success({
           message,
-        });
-        yield put({
-          type: 'updateOverview',
-          payload,
         });
       } catch (errors) {
         dialog(errors);
@@ -433,27 +429,6 @@ const ProjectDetails = {
     clearState() {
       return initialState;
     },
-    updateOverview(state, action) {
-      const { projectDetail = {} } = state;
-      const {
-        newEndDate = '',
-        tentativeEndDate = '',
-        newBillableHeadCount = '',
-        billableHeadCount = '',
-        newBufferHeadCount = '',
-        bufferHeadCount = '',
-      } = action.payload;
-      return {
-        ...state,
-        projectDetail: {
-          ...projectDetail,
-          ...action.payload,
-          billableHeadCount: newBillableHeadCount || billableHeadCount,
-          tentativeEndDate: newEndDate || tentativeEndDate,
-          bufferHeadCount: newBufferHeadCount || bufferHeadCount,
-        },
-      };
-    },
     updateMilestone(state, action) {
       const { milestoneList = {} } = state;
       let tempMilestoneList = JSON.parse(JSON.stringify(milestoneList));
@@ -470,9 +445,6 @@ const ProjectDetails = {
         ...state,
         milestoneList: [...tempMilestoneList],
       };
-    },
-    clearState() {
-      return initialState;
     },
   },
 };

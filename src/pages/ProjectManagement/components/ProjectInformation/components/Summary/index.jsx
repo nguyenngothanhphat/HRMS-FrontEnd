@@ -80,24 +80,50 @@ const Summary = (props) => {
   };
 
   // ON FINISH
-  const onFinish = async (values) => {
-    const res = await dispatch({
-      type: 'projectDetails/updateProjectOverviewEffect',
+  const refreshData = () => {
+    dispatch({
+      type: 'projectDetails/fetchProjectByIdEffect',
       payload: {
-        ...values,
         projectId,
-        tentativeEndDate, // origin
-        newEndDate: values.tentativeEndDate, // new end date
-        reasonChangeEndDate: newEndDate.reason,
-        billableHeadCount, // origin
-        newBillableHeadCount: values.billableHeadCount, // new value
-        reasonChangeBillableHeadCount: newBillableHeadCount.reason,
-        bufferHeadCount,
-        newBufferHeadCount: values.bufferHeadCount,
-        reasonChangeBufferHeadCount: newBufferHeadCount.reason,
       },
     });
+  };
+
+  const onFinish = async (values) => {
+    let newPayload = {
+      ...values,
+      projectId,
+      tentativeEndDate, // origin
+      billableHeadCount, // origin
+      bufferHeadCount, // origin
+    };
+    if (newEndDate.value) {
+      newPayload = {
+        ...newPayload,
+        newEndDate: values.tentativeEndDate, // new end date
+        reasonChangeEndDate: newEndDate.reason,
+      };
+    }
+    if (newBillableHeadCount.value) {
+      newPayload = {
+        ...newPayload,
+        newBillableHeadCount: values.billableHeadCount, // new value
+        reasonChangeBillableHeadCount: newBillableHeadCount.reason,
+      };
+    }
+    if (newBufferHeadCount.value) {
+      newPayload = {
+        ...newPayload,
+        newBufferHeadCount: values.bufferHeadCount,
+        reasonChangeBufferHeadCount: newBufferHeadCount.reason,
+      };
+    }
+    const res = await dispatch({
+      type: 'projectDetails/updateProjectOverviewEffect',
+      payload: newPayload,
+    });
     if (res.statusCode === 200) {
+      refreshData();
       setIsEditing(false);
       clearState();
     }
@@ -288,7 +314,7 @@ const Summary = (props) => {
             title="Reason for Editing the End Date"
             content={
               <EditEndDateContent
-                initialValue={tentativeEndDate}
+                initialValue={originEndDate}
                 newValues={newEndDate}
                 onClose={() => setEditEndDateModalVisible(false)}
                 onSubmit={onSubmitHardField}
@@ -304,7 +330,7 @@ const Summary = (props) => {
             title="Reason for Editing Billable Head Count"
             content={
               <EditBillableHeadCountContent
-                initialValue={billableHeadCount}
+                initialValue={originBillableHeadCount}
                 newValues={newBillableHeadCount}
                 onClose={() => setEditBillableModalVisible(false)}
                 onSubmit={onSubmitHardField}
@@ -320,7 +346,7 @@ const Summary = (props) => {
             title="Reason for Editing Buffer Head Count"
             content={
               <EditBufferHeadCountContent
-                initialValue={bufferHeadCount}
+                initialValue={originBufferHeadCount}
                 newValues={newBufferHeadCount}
                 onClose={() => setEditBufferModalVisible(false)}
                 onSubmit={onSubmitHardField}
