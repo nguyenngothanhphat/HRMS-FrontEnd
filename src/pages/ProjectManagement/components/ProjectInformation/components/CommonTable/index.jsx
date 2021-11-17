@@ -16,9 +16,11 @@ const CommonTable = (props) => {
     selectable = false,
     rowKey = '',
     scrollable = false,
+    showPagination = true,
+    selectedRowKeys = [],
+    setSelectedRowKeys = () => {},
   } = props;
   const [pageSelected, setPageSelected] = useState(1);
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const onChangePagination = (pageNumber) => {
     if (isBackendPaging) {
@@ -68,7 +70,7 @@ const CommonTable = (props) => {
           dataSource={list}
           loading={loading}
           // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
-          pagination={pagination}
+          pagination={showPagination ? pagination : null}
           scroll={scrollable ? { x: '101%', y: 'fit-content' } : {}}
           rowKey={rowKey ? (record) => record[rowKey] : null}
         />

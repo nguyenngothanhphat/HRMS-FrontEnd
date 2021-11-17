@@ -1,5 +1,5 @@
 import { Button, Modal, Row, Col } from 'antd';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import BackIcon from '@/assets/projectManagement/back.svg';
 import ResourceTableCard from './components/ResourceTableCard';
@@ -10,15 +10,58 @@ import ModalImage from '@/assets/projectManagement/modalImage1.png';
 import styles from './index.less';
 
 const AssignResourcesModal = (props) => {
-  const { visible = false, onClose = () => {}, width = 850 } = props;
+  const {
+    visible = false,
+    onClose = () => {},
+    width = 850,
+    data: {
+      comments = '',
+      division: { _id: divisionId = '' } = {},
+      resourceType: { name: resourceTypeName = '' } = {},
+      noOfResources = 0,
+    } = {},
+  } = props;
+  const {
+    dispatch,
+    projectDetails: { projectDetail = {}, resourceList = [], resourceListTotal = 0 } = {},
+    loadingFetchResourceList = false,
+  } = props;
+  const { projectName = '', engagementType = '' } = projectDetail;
+
   const [sucessModalVisible, setSuccessModalVisible] = useState(false);
-
   const [step, setStep] = useState(1);
+  const [selectedResources, setSelectedResources] = useState([]);
 
+  // functions
   const onBack = () => {
     if (step > 1) setStep(step - 1);
   };
 
+  const removeResource = (id) => {
+    const temp = JSON.parse(JSON.stringify(selectedResources));
+    const result = temp.filter((x) => x._id !== id);
+    setSelectedResources(result);
+  };
+
+  const fetchResourceList = (name = '', page = 1, limit = 5) => {
+    dispatch({
+      type: 'projectDetails/fetchResourceListEffect',
+      payload: {
+        page,
+        limit,
+        name,
+        department: [divisionId],
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (visible) {
+      fetchResourceList();
+    }
+  }, [visible]);
+
+  // render ui
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>
@@ -31,6 +74,8 @@ const AssignResourcesModal = (props) => {
   };
 
   const handleCancel = () => {
+    setStep(1);
+    setSelectedResources([]);
     onClose();
   };
 
@@ -41,28 +86,34 @@ const AssignResourcesModal = (props) => {
           <Col xs={24} md={7}>
             <div className={styles.item}>
               <span className={styles.label}>Project Name:</span>
-              <span className={styles.value}>ABC Website</span>
+              <span className={styles.value}>{projectName}</span>
             </div>
           </Col>
           <Col xs={24} md={7}>
             <div className={styles.item}>
               <span className={styles.label}>Engagement Type:</span>
-              <span className={styles.value}>T&M</span>
+              <span className={styles.value}>{engagementType}</span>
             </div>
           </Col>
           <Col xs={24} md={10}>
             <div className={styles.item}>
               <span className={styles.label}>Description:</span>
-              <span className={styles.value}>
-                1 Senior UX designer, UI Designer must know animation, UX Designer with 2+ years
-                exp.
-              </span>
+              <span className={styles.value}>{comments}</span>
             </div>
           </Col>
         </Row>
 
         <Row gutter={[0, 24]} className={styles.belowPart}>
-          <ResourceTableCard />
+          <ResourceTableCard
+            fetchData={fetchResourceList}
+            data={resourceList}
+            loading={loadingFetchResourceList}
+            total={resourceListTotal}
+            selectedResources={selectedResources}
+            setSelectedResources={setSelectedResources}
+            resourceTypeName={resourceTypeName}
+            noOfResources={noOfResources}
+          />
         </Row>
       </div>
     );
@@ -71,7 +122,13 @@ const AssignResourcesModal = (props) => {
     return (
       <div className={styles.container}>
         <Row gutter={[0, 24]} className={styles.abovePart}>
-          <ReviewResourceTable />
+          <ReviewResourceTable
+            fetchData={fetchResourceList}
+            data={resourceList}
+            selectedResources={selectedResources}
+            setSelectedResources={setSelectedResources}
+            removeResource={removeResource}
+          />
         </Row>
       </div>
     );
@@ -167,7 +224,10 @@ const AssignResourcesModal = (props) => {
   );
 };
 
-export default connect(({ loading, user: { currentUser: { employee = {} } = {} } }) => ({
-  employee,
-  loadingAddTask: loading.effects['timeSheet/addMultipleActivityEffect'],
-}))(AssignResourcesModal);
+export default connect(
+  ({ projectDetails, loading, user: { currentUser: { employee = {} } = {} } }) => ({
+    employee,
+    projectDetails,
+    loadingFetchResourceList: loading.effects['projectDetails/fetchResourceListEffect'],
+  }),
+)(AssignResourcesModal);

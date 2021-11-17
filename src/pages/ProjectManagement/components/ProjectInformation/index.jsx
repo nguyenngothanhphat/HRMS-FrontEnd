@@ -36,6 +36,11 @@ const ProjectInformation = (props) => {
 
   useEffect(() => {
     fetchProjectByID();
+    return () => {
+      dispatch({
+        type: 'projectDetails/clearState',
+      });
+    };
   }, []);
 
   const listMenu = [

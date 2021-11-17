@@ -1,6 +1,6 @@
 import { Card, Col, Row } from 'antd';
 import { debounce } from 'lodash';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import TimeIcon from '@/assets/projectManagement/time.svg';
 import CommonTable from '@/pages/ProjectManagement/components/ProjectInformation/components/CommonTable';
@@ -10,9 +10,33 @@ import SearchBar from '@/pages/ProjectManagement/components/ProjectInformation/c
 import FilterResourcesListContent from './components/FilterResourcesListContent';
 import styles from './index.less';
 
-const ResourceTableCard = () => {
+const ResourceTableCard = (props) => {
+  const {
+    data = [],
+    fetchData = () => {},
+    loading = false,
+    total = 0,
+    selectedResources = [],
+    setSelectedResources = () => {},
+    resourceTypeName = '',
+    noOfResources = 0,
+  } = props;
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [searchValue, setSearchValue] = useState('');
+
+  useEffect(() => {
+    fetchData(searchValue, page, limit);
+  }, [page, limit]);
+
+  const onChangePage = (p, l) => {
+    setPage(p);
+    setLimit(l || limit);
+  };
+
   const onSearchDebounce = debounce((value) => {
-    console.log('value', value);
+    setSearchValue(value);
+    fetchData(value);
   }, 1000);
 
   const onSearch = (e = {}) => {
@@ -20,60 +44,20 @@ const ResourceTableCard = () => {
     onSearchDebounce(value);
   };
 
-  const data = [
-    {
-      id: 1,
-      user: {
-        name: 'Randy Dias',
-        userId: 'randydias',
-        available: true,
-      },
-      division: 'Design',
-      designation: 'Associate Senior UX Designer',
-      experience: 3,
-      projects: [
-        {
-          id: 1,
-          name: 'ABC Project',
-        },
-        {
-          id: 2,
-          name: 'ABC Redesign Project',
-        },
-        {
-          id: 3,
-          name: 'ABC Redesign Project',
-        },
-      ],
-    },
-    {
-      id: 2,
-      user: {
-        name: 'Brandon Carder',
-        userId: 'brandon',
-        available: false,
-      },
-      division: 'Design',
-      designation: 'Associate Senior UX Designer',
-      experience: 3,
-      projects: [
-        {
-          id: 1,
-          name: 'ABC Project',
-        },
-      ],
-    },
-  ];
+  const setSelectedRowKeys = (ids = []) => {
+    const result = data.filter((x) => ids.includes(x._id));
+    setSelectedResources(result);
+  };
 
   const generateColumns = () => {
     const columns = [
       {
         title: 'Name',
-        dataIndex: 'user',
-        key: 'user',
+        dataIndex: 'generalInfo',
+        key: 'generalInfo',
         fixed: 'left',
-        render: (user, row, index) => {
-          const { name = '', userId = '', available = false } = user;
+        render: (generalInfo = {}) => {
+          const { legalName = '', userId = '', available = true } = generalInfo;
           return (
             <div className={styles.cell}>
               <div className={styles.resourceName}>
@@ -83,7 +67,7 @@ const ResourceTableCard = () => {
                   <span className={styles.availableSoonTag}>Available Soon</span>
                 )}
                 <span className={styles.selectableTag}>
-                  {name} ({userId})
+                  {legalName} {`${userId ? `(${userId})` : ''}`}
                 </span>
               </div>
             </div>
@@ -92,36 +76,36 @@ const ResourceTableCard = () => {
       },
       {
         title: 'Division',
-        dataIndex: 'division',
-        key: 'division',
-        render: (division) => {
+        dataIndex: 'departmentInfo',
+        key: 'departmentInfo',
+        render: (departmentInfo) => {
           return (
             <div className={styles.cell}>
-              <span className={styles.division}>{division}</span>
+              <span className={styles.division}>{departmentInfo?.name}</span>
             </div>
           );
         },
       },
       {
         title: 'Designation',
-        dataIndex: 'designation',
-        key: 'designation',
-        render: (designation) => {
+        dataIndex: 'titleInfo',
+        key: 'titleInfo',
+        render: (titleInfo) => {
           return (
             <div className={styles.cell}>
-              <span>{designation}</span>
+              <span>{titleInfo.name}</span>
             </div>
           );
         },
       },
       {
         title: 'Experience',
-        dataIndex: 'experience',
-        key: 'experience',
-        render: (experience) => {
+        dataIndex: 'generalInfo',
+        key: 'generalInfo',
+        render: (generalInfo = {}) => {
           return (
             <div className={styles.cell}>
-              <span>{experience}</span>
+              <span>{generalInfo?.totalExp}</span>
             </div>
           );
         },
@@ -148,7 +132,7 @@ const ResourceTableCard = () => {
                           : {}
                       }
                     >
-                      <span className={styles.selectableTag}>{p.name}</span>
+                      <span className={styles.selectableTag}>{p.projectName || 'Null value'}</span>
                     </Col>
                   </>
                 );
@@ -185,10 +169,39 @@ const ResourceTableCard = () => {
     );
   };
 
+  const renderTitle = () => {
+    return (
+      <span>
+        {resourceTypeName} -{' '}
+        <span
+          style={{
+            color: '#2c6df9',
+          }}
+        >
+          {selectedResources.length}
+        </span>
+        /{noOfResources}
+      </span>
+    );
+  };
   return (
     <div className={styles.ResourceTableCard}>
-      <Card title="UX Designers - 0/2" extra={renderOption()}>
-        <CommonTable columns={generateColumns()} list={data} selectable rowKey="id" />
+      <Card title={renderTitle()} extra={renderOption()}>
+        <CommonTable
+          columns={generateColumns()}
+          list={data}
+          selectable
+          rowKey="_id"
+          fetchData={fetchData}
+          isBackendPaging
+          page={page}
+          limit={limit}
+          onChangePage={onChangePage}
+          loading={loading}
+          total={total}
+          selectedRowKeys={selectedResources.map((x) => x._id)}
+          setSelectedRowKeys={setSelectedRowKeys}
+        />
       </Card>
     </div>
   );

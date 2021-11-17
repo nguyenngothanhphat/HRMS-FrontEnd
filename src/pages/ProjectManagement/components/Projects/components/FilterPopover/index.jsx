@@ -49,7 +49,20 @@ const FilterPopover = (props) => {
   }, [showPopover]);
 
   const onFormSubmit = (values) => {
-    onSubmit(values);
+    const newValues = { ...values };
+
+    // remove empty fields
+    // eslint-disable-next-line no-return-assign
+    const result = Object.entries(newValues).reduce(
+      // eslint-disable-next-line no-return-assign
+      (a, [k, v]) =>
+        v == null || v.length === 0
+          ? a
+          : // eslint-disable-next-line no-param-reassign
+            ((a[k] = v), a),
+      {},
+    );
+    onSubmit(result);
   };
 
   // clear values

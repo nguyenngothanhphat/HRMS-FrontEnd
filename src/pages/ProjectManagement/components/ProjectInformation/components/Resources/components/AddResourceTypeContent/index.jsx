@@ -9,21 +9,25 @@ const { Option } = Select;
 const colors = ['#006BEC', '#FF6CA1', '#6236FF', '#FE5D27'];
 
 const AddResourceTypeContent = (props) => {
-  const formRef = React.createRef();
+  const [form] = Form.useForm();
   const {
     visible = false,
     dispatch,
     projectDetails: {
-      projectId = '',
       departmentList = [],
       technologyList = [],
       titleList = [],
+      projectDetail = {},
+      projectTagList = [],
     } = {},
     loadingFetchTitleList = false,
     onClose = () => {},
+    refreshData = () => {},
   } = props;
 
-  const tags = ['Design', 'Application Dev', 'Backend Dev', 'Frontend Dev'];
+  const { projectId = '', projectName = '', engagementType = '' } = projectDetail;
+
+  // functions
   const getColor = (index) => {
     return colors[index % colors.length];
   };
@@ -65,24 +69,26 @@ const AddResourceTypeContent = (props) => {
       },
     });
     if (res.statusCode === 200) {
+      form.resetFields();
       onClose();
+      refreshData();
     }
   };
 
   return (
     <div className={styles.AddResourceTypeContent}>
-      <Form name="basic" ref={formRef} id="myForm" onFinish={handleFinish} initialValues={{}}>
+      <Form name="basic" form={form} id="myForm" onFinish={handleFinish} initialValues={{}}>
         <Row gutter={[24, 0]} className={styles.abovePart}>
           <Col xs={24} md={7}>
             <div className={styles.item}>
               <span className={styles.label}>Project Name:</span>
-              <span className={styles.value}>ABC Website</span>
+              <span className={styles.value}>{projectName}</span>
             </div>
           </Col>
           <Col xs={24} md={7}>
             <div className={styles.item}>
               <span className={styles.label}>Engagement Type:</span>
-              <span className={styles.value}>T&M</span>
+              <span className={styles.value}>{engagementType}</span>
             </div>
           </Col>
 
@@ -90,8 +96,8 @@ const AddResourceTypeContent = (props) => {
             <div className={styles.item}>
               <span className={styles.label}>Tags:</span>
               <div className={styles.tags}>
-                {tags.map((t, i) => (
-                  <CustomTag color={getColor(i)}>{t}</CustomTag>
+                {projectTagList.map((t, i) => (
+                  <CustomTag color={getColor(i)}>{t.tagName}</CustomTag>
                 ))}
               </div>
             </div>

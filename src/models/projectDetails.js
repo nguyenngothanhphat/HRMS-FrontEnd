@@ -5,6 +5,9 @@ import {
   getDocumentTypeList,
   addMilestone,
   addResourceType,
+  addResource,
+  getResourceList,
+  countStatusResource,
   getTechnologyList,
   getTitleList,
   getDepartmentList,
@@ -25,6 +28,8 @@ const initialState = {
   projectDetail: {},
   milestoneList: [],
   resourceTypeList: [],
+  resourceList: [],
+  resourceListTotal: 0,
   documentList: [],
   auditTrailList: [],
   titleList: [],
@@ -259,6 +264,29 @@ const ProjectDetails = {
       }
       return response;
     },
+    *fetchResourceListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getResourceList, {
+          ...payload,
+          company: [getCurrentCompany()],
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [], total = 0 } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            resourceList: data,
+            resourceListTotal: total,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
 
     *addDocumentEffect({ payload }, { call }) {
       let response = {};
@@ -300,6 +328,24 @@ const ProjectDetails = {
       let response = {};
       try {
         response = yield call(addResourceType, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *addResourceEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(addResource, {
           ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
@@ -383,6 +429,9 @@ const ProjectDetails = {
         ...state,
         ...action.payload,
       };
+    },
+    clearState() {
+      return initialState;
     },
     updateOverview(state, action) {
       const { projectDetail = {} } = state;

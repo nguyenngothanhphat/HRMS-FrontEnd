@@ -1,5 +1,5 @@
-import { Button, Card, Tabs } from 'antd';
-import React, { useState } from 'react';
+import { Button, Card, Tabs, Skeleton } from 'antd';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import WhiteAddIcon from '@/assets/projectManagement/whitePlus.svg';
 import CommonModal from '../CommonModal';
@@ -12,9 +12,29 @@ import styles from './index.less';
 const { TabPane } = Tabs;
 
 const Resources = (props) => {
-  const { resourceTypes = [1] } = props;
+  const {
+    dispatch,
+    projectDetails: { resourceTypeList = [], projectDetail: { projectId = '' } = {} } = {},
+    loadingAdd = false,
+    loadingFetch = false,
+  } = props;
   const [addResourceTypeModalVisible, setAddResourceTypeModalVisible] = useState(false);
 
+  const fetchResourceTypeList = (name) => {
+    dispatch({
+      type: 'projectDetails/fetchResourceTypeListEffect',
+      payload: {
+        projectId,
+        name,
+      },
+    });
+  };
+
+  useEffect(() => {
+    fetchResourceTypeList();
+  }, []);
+
+  // render ui
   const renderEmptyCard = () => {
     return (
       <Card>
@@ -40,7 +60,7 @@ const Resources = (props) => {
       <div className={styles.contentCard}>
         <Tabs>
           <TabPane tab="Resource Type" key="1">
-            <ResourceTypeCard />
+            <ResourceTypeCard data={resourceTypeList} refreshData={fetchResourceTypeList} />
           </TabPane>
           <TabPane tab="Resources" key="2">
             <ResourcesCard />
@@ -50,9 +70,15 @@ const Resources = (props) => {
     );
   };
 
+  if (loadingFetch && resourceTypeList.length === 0)
+    return (
+      <div className={styles.Resources}>
+        <Skeleton />
+      </div>
+    );
   return (
     <div className={styles.Resources}>
-      {resourceTypes.length === 0 ? renderEmptyCard() : renderDataCard()}
+      {resourceTypeList.length === 0 ? renderEmptyCard() : renderDataCard()}
       <CommonModal
         visible={addResourceTypeModalVisible}
         onClose={() => setAddResourceTypeModalVisible(false)}
@@ -60,13 +86,19 @@ const Resources = (props) => {
           <AddResourceTypeContent
             visible={addResourceTypeModalVisible}
             onClose={() => setAddResourceTypeModalVisible(false)}
+            refreshData={fetchResourceTypeList}
           />
         }
         title="Add Resource Type"
         firstText="Add"
         width={800}
+        loading={loadingAdd}
       />
     </div>
   );
 };
-export default connect(() => ({}))(Resources);
+export default connect(({ projectDetails, loading }) => ({
+  projectDetails,
+  loadingAdd: loading.effects['projectDetails/addResourceTypeEffect'],
+  loadingFetch: loading.effects['projectDetails/fetchResourceTypeListEffect'],
+}))(Resources);

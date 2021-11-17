@@ -38,6 +38,10 @@ const Projects = (props) => {
     window.open(url, '_blank');
   };
 
+  const addResource = (id) => {
+    history.push(`/project-management/list/${id}/resources`)
+  };
+
   useEffect(() => {
     dispatch({
       type: 'projectManagement/fetchProjectStatusListEffect',
@@ -141,10 +145,10 @@ const Projects = (props) => {
         dataIndex: 'resources',
         key: 'resources',
         width: '7%',
-        render: (resources = '') => {
+        render: (resources = '', row) => {
           if (!resources) {
             return (
-              <Button className={styles.addResourceBtn} icon={<img src={OrangeAddIcon} alt="" />}>
+              <Button className={styles.addResourceBtn} icon={<img src={OrangeAddIcon} alt="" />} onClick={() => addResource(row?.projectId)}>
                 Add
               </Button>
             );

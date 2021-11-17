@@ -1,26 +1,53 @@
+import { DatePicker } from 'antd';
+import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
-import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
 import CommonTable from '@/pages/ProjectManagement/components/ProjectInformation/components/CommonTable';
+import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
 import styles from './index.less';
 
-const ReviewResourceTable = () => {
+const ReviewResourceTable = (props) => {
+  const {
+    removeResource = () => {},
+    selectedResources = [],
+    setSelectedResources = () => {},
+  } = props;
+
+  const onDateChange = (value, row, type) => {
+    const temp = JSON.parse(JSON.stringify(selectedResources));
+    const result = temp.map((v) => {
+      if (v._id === row._id) {
+        return {
+          ...v,
+          [type]: value,
+        };
+      }
+      return v;
+    });
+    setSelectedResources(result);
+  };
+
   const generateColumns = () => {
     const columns = [
       {
-        title: 'Resource Type',
-        dataIndex: 'resourceType',
-        key: 'resourceType',
-        render: (resourceType) => {
-          return <span>{resourceType || '-'}</span>;
+        title: 'Name',
+        dataIndex: 'generalInfo',
+        key: 'generalInfo',
+        render: (generalInfo = {}) => {
+          const { legalName = '' } = generalInfo;
+          return <span>{legalName}</span>;
         },
       },
       {
-        title: 'Division',
-        dataIndex: 'division',
-        key: 'division',
-        render: (division) => {
-          return <span>{division || '-'}</span>;
+        title: 'Designation',
+        dataIndex: 'titleInfo',
+        key: 'titleInfo',
+        render: (titleInfo) => {
+          return (
+            <div className={styles.cell}>
+              <span>{titleInfo.name}</span>
+            </div>
+          );
         },
       },
       {
@@ -32,27 +59,39 @@ const ReviewResourceTable = () => {
         },
       },
       {
-        title: 'No. of Resources',
-        dataIndex: 'noOfResources',
-        key: 'noOfResources',
-        render: (noOfResources) => {
-          return <span>{noOfResources || '-'}</span>;
+        title: 'Start Date',
+        dataIndex: 'startDate',
+        key: 'startDate',
+        render: (startDate, row) => {
+          const value = startDate ? moment(startDate) : null;
+          return (
+            <DatePicker value={value} onChange={(val) => onDateChange(val, row, 'startDate')} />
+          );
         },
       },
       {
-        title: 'Comments/Notes',
-        dataIndex: 'comments',
-        key: 'comments',
-        render: (comments) => {
-          return <span>{comments || '-'}</span>;
+        title: 'End Date',
+        dataIndex: 'endDate',
+        key: 'endDate',
+        render: (endDate, row) => {
+          const value = endDate ? moment(endDate) : null;
+          return <DatePicker value={value} onChange={(val) => onDateChange(val, row, 'endDate')} />;
         },
       },
       {
         title: 'Action',
         dataIndex: 'action',
         key: 'action',
-        render: () => {
-          return <img src={DeleteIcon} alt="" />;
+        align: 'center',
+        render: (_, row) => {
+          return (
+            <img
+              src={DeleteIcon}
+              style={{ cursor: 'pointer' }}
+              alt=""
+              onClick={() => removeResource(row?._id)}
+            />
+          );
         },
       },
     ];
@@ -62,7 +101,7 @@ const ReviewResourceTable = () => {
 
   return (
     <div className={styles.ReviewResourceTable}>
-      <CommonTable columns={generateColumns()} list={[]} />
+      <CommonTable columns={generateColumns()} list={selectedResources} showPagination={false} />
     </div>
   );
 };

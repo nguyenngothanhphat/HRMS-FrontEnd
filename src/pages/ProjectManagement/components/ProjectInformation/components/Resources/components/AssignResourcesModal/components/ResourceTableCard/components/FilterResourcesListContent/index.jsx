@@ -35,24 +35,6 @@ const FilterResourcesListContent = (props) => {
           </Col>
         </Row>
       </Form.Item>
-
-      <Form.Item label="By Tentative end date">
-        <Row>
-          <Col span={11}>
-            <Form.Item name="e_fromDate">
-              <DatePicker format="MMM DD, YYYY" />
-            </Form.Item>
-          </Col>
-          <Col span={2} className={styles.separator}>
-            <span>to</span>
-          </Col>
-          <Col span={11}>
-            <Form.Item name="e_toDate">
-              <DatePicker format="MMM DD, YYYY" />
-            </Form.Item>
-          </Col>
-        </Row>
-      </Form.Item>
     </Form>
   );
 };
