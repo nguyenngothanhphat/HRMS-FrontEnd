@@ -513,6 +513,7 @@ const routes = [
           {
             path: '/customer-management/customers/customer-profile/:reId',
             hideInMenu: true,
+            name: 'View Customer',
             component: './CustomerProfile',
             authority: [
               'hr-manager',
@@ -886,8 +887,8 @@ const routes = [
             authority: ['hr-manager', 'hr', 'employee', 'manager'],
             hideInMenu: true,
           },
-           // TICKET MANAGEMENT
-           {
+          // TICKET MANAGEMENT
+          {
             path: '/ticket-management',
             name: 'Ticket Management',
             icon: '/assets/images/menuIcons/ticketManagement.svg',

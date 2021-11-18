@@ -20,11 +20,14 @@ import Appointments from './components/Appointments';
 import Tasks from './components/Tasks';
 import Notes from './components/Notes';
 
-@connect(({ customerProfile: { info, listTag = [], temp: { selectedTab = '' } = {} } = {} }) => ({
-  info,
-  listTag,
-  selectedTab,
-}))
+@connect(
+  ({ loading, customerProfile: { info, listTag = [], temp: { selectedTab = '' } = {} } = {} }) => ({
+    info,
+    listTag,
+    selectedTab,
+    loadingFetchCustomer: loading.effects['customerProfile/fetchCustomerInfo'],
+  }),
+)
 class CustomerProfile extends Component {
   componentDidMount = async () => {
     const { dispatch, match: { params: { reId = '', tabName = '' } = {} } = {} } = this.props;
@@ -49,6 +52,8 @@ class CustomerProfile extends Component {
     const {
       match: { params: { reId = '', tabName = '' } = {} },
       info = {},
+      loadingFetchCustomer = false,
+      info: { dba = '',legalName ='' } = {},
     } = this.props;
     const listMenu = [
       {
@@ -130,22 +135,17 @@ class CustomerProfile extends Component {
         <div className={styles.containerEmployeeProfile}>
           <Affix offsetTop={30}>
             <div className={styles.titlePage}>
-              <p className={styles.titlePage__text}>Customer Profile</p>
+              <p className={styles.titlePage__text}>{dba || legalName || 'Customer Profile'}</p>
             </div>
           </Affix>
 
           <LayoutCustomerProfile
-            // listTag={listTag}
             info={info}
             listMenu={listMenu}
             reId={reId}
             tabName={tabName}
+            loading={loadingFetchCustomer}
           />
-          {/* ) : (
-            <div style={{ padding: '24px' }}>
-              <Skeleton />
-            </div>
-          )} */}
         </div>
       </PageContainer>
     );
