@@ -5,7 +5,7 @@ import CloseX from '@/assets/dashboard/closeX.svg';
 
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 
-import {getTimezoneViaCity, getCurrentTimeOfTimezoneOption} from '@/utils/times'
+import { getTimezoneViaCity, getCurrentTimeOfTimezoneOption } from '@/utils/times';
 
 import styles from './index.less';
 
@@ -14,37 +14,43 @@ const UserProfile = (props) => {
   const [showPopover, setShowPopover] = useState(false);
 
   const renderHeader = (employee) => {
-    if(!employee) {
-      return null
+    if (!employee) {
+      return null;
     }
-    const {titleInfo = {},  generalInfo = {workEmail:''}, departmentInfo = {}} = employee
-    const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'))
-    const employeeName = `${ generalInfo.legalName } ${ userName ? (`(${  userName  })`) : ''}`;
-    console.log('avatar: ',generalInfo.avatar)
+    const { titleInfo = {}, generalInfo = { workEmail: '' }, departmentInfo = {} } = employee;
+    const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'));
+    const employeeName = `${generalInfo.legalName} ${userName ? `(${userName})` : ''}`;
     return (
       <div className={styles.header}>
         <div className={styles.avatar}>
-          <img src={generalInfo.avatar || MockAvatar} alt="" />
+          <img src={generalInfo.avatar || MockAvatar} alt="" onError={`this.src=${MockAvatar}`} />
         </div>
         <div className={styles.information}>
           <span className={styles.name}>{employeeName}</span>
           <span className={styles.position}>{titleInfo ? titleInfo.name : '-'}</span>
-          <span className={styles.department}>{departmentInfo ? (`${departmentInfo.name} Dept`) : '-' }</span>
+          <span className={styles.department}>
+            {departmentInfo ? `${departmentInfo.name} Dept` : '-'}
+          </span>
         </div>
       </div>
     );
   };
   const userInfo = (employee) => {
-    const {generalInfo = {workEmail: ''}, managerInfo = {}, locationInfo = {}} = employee || {}
-    const {headQuarterAddress = {}} = locationInfo || {}
-    const {country = {}, state = ''} = headQuarterAddress || {}
-    const getTimezone = getTimezoneViaCity(state) || ''
-    const timezone = getTimezone !== '' ? getTimezone : Intl.DateTimeFormat().resolvedOptions().timeZone
-    const time = getCurrentTimeOfTimezoneOption(new Date(),timezone)
+    const { generalInfo = { workEmail: '' }, managerInfo = {}, locationInfo = {} } = employee || {};
+    const { headQuarterAddress = {} } = locationInfo || {};
+    const { country = {}, state = '' } = headQuarterAddress || {};
+    const getTimezone = getTimezoneViaCity(state) || '';
+    const timezone =
+      getTimezone !== '' ? getTimezone : Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const time = getCurrentTimeOfTimezoneOption(new Date(), timezone);
     const items = [
       {
         label: 'Reporting Manager',
-        value: <span className={styles.managerName}>{managerInfo && managerInfo.generalInfo ? managerInfo.generalInfo.legalName : '-'}</span>,
+        value: (
+          <span className={styles.managerName}>
+            {managerInfo && managerInfo.generalInfo ? managerInfo.generalInfo.legalName : '-'}
+          </span>
+        ),
         link: '#',
       },
       {
@@ -53,7 +59,7 @@ const UserProfile = (props) => {
       },
       {
         label: 'Email id',
-        value: `${generalInfo.workEmail}`
+        value: `${generalInfo.workEmail}`,
       },
       {
         label: 'Location',
@@ -82,11 +88,11 @@ const UserProfile = (props) => {
   };
 
   const renderPopup = () => {
-    const {resourceList, employeeId} = props;
-    const employee = resourceList.find(x => x._id === employeeId)
-    const {generalInfo = {workEmail: ''}} = employee || {}
+    const { resourceList, employeeId } = props;
+    const employee = resourceList.find((x) => x._id === employeeId);
+    const { generalInfo = { workEmail: '' } } = employee || {};
     const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'));
-    const profileUrl = `/directory/employee-profile/${userName}/general-info` 
+    const profileUrl = `/directory/employee-profile/${userName}/general-info`;
     return (
       <div className={styles.popupContainer}>
         <img
@@ -99,7 +105,9 @@ const UserProfile = (props) => {
         <div className={styles.divider} />
         {userInfo(employee)}
         <div className={styles.divider} />
-        <div className={styles.viewFullProfile}><a href={profileUrl}>View full profile</a></div>
+        <div className={styles.viewFullProfile}>
+          <a href={profileUrl}>View full profile</a>
+        </div>
       </div>
     );
   };
@@ -123,6 +131,6 @@ const UserProfile = (props) => {
   );
 };
 
-export default connect(({ resourceManagement: { resourceList = [] }}) => ({ resourceList }))(
+export default connect(({ resourceManagement: { resourceList = [] } }) => ({ resourceList }))(
   UserProfile,
 );
