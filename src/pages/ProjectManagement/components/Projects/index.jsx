@@ -39,7 +39,7 @@ const Projects = (props) => {
   };
 
   const addResource = (id) => {
-    history.push(`/project-management/list/${id}/resources`)
+    history.push(`/project-management/list/${id}/resources`);
   };
 
   useEffect(() => {
@@ -142,18 +142,31 @@ const Projects = (props) => {
       },
       {
         title: 'Resources',
-        dataIndex: 'resources',
-        key: 'resources',
+        dataIndex: 'numberOfResource',
+        key: 'numberOfResource',
         width: '7%',
-        render: (resources = '', row) => {
-          if (!resources) {
+        align: 'center',
+        render: (numberOfResource, row) => {
+          if (!numberOfResource || numberOfResource === 0) {
             return (
-              <Button className={styles.addResourceBtn} icon={<img src={OrangeAddIcon} alt="" />} onClick={() => addResource(row?.projectId)}>
+              <Button
+                className={styles.addResourceBtn}
+                icon={<img src={OrangeAddIcon} alt="" />}
+                onClick={() => addResource(row?.projectId)}
+              >
                 Add
               </Button>
             );
           }
-          return <span className={styles.blueText}>{resources || '-'}</span>;
+          return (
+            <span
+              className={styles.blueText}
+              onClick={() => addResource(row?.projectId)}
+              style={{ cursor: 'pointer' }}
+            >
+              {numberOfResource || '-'}
+            </span>
+          );
         },
       },
     ];
