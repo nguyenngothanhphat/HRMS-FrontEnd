@@ -1,20 +1,17 @@
 import React, { PureComponent } from 'react';
-import { Table, Row, Col, Button } from 'antd';
+import {
+  Table
+} from 'antd';
 import moment from 'moment';
-import { PlusCircleFilled } from '@ant-design/icons';
-import { formatMessage, connect } from 'umi';
-
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import AddActionBTN from './components/Add';
 import EditActionBTN from './components/Edit';
 import styles from './index.less';
 import ProjectProfile from '../ComplexView/components/PopoverProfiles/components/ProjectProfile';
 import UserProfile from '../ComplexView/components/PopoverProfiles/components/UserProfile';
-import CommonModal from '@/components/CommonModal';
+import CommentModal from './components/Comment';
+import CommentOverlay from '../ComplexView/components/Overlay';
 
-@connect(({ resourceManagement: { resourceList = [] } = {} }) => ({
-  resourceList,
-}))
 class TableResources extends PureComponent {
   constructor(props) {
     super(props);
@@ -50,97 +47,6 @@ class TableResources extends PureComponent {
 
   onTableChange = (pagination, filters, sorter, extra) => {
     console.log('params', pagination, filters, sorter, extra);
-  };
-
-  parseDate = (dateText) => {
-    if (!dateText) {
-      return '-';
-    }
-    return moment(dateText).format('MM/DD/YYYY');
-  };
-
-  handleLongText = (text, length) => {
-    console.log(`text: ${text}`);
-    if (!text) {
-      return '';
-    }
-    if (text.length < length) {
-      return text;
-    }
-
-    const formatText = text.substring(0, length);
-    return `${formatText}...${formatText.includes('(') ? ')' : ''}`;
-  };
-
-  cloneObj = (obj) => {
-    const newObj = {};
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [key, value] of Object.entries(obj)) {
-      newObj[key] = value;
-    }
-    return newObj;
-  };
-
-  formatResource = (resourceList) => {
-    const { projectList } = this.props;
-    // console.log('formating resource')
-    const dataList = [];
-    // eslint-disable-next-line no-restricted-syntax
-    resourceList.forEach((obj, index) => {
-      const { departmentInfo, titleInfo, generalInfo, projects } = obj;
-      const availableStatus = 'Available Now';
-      const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'));
-      const employeeName = `${generalInfo.firstName} ${generalInfo.firstName} ${
-        userName ? `(${userName})` : ''
-      }`;
-      const newObj = {
-        employeeId: obj._id,
-        employeeName: this.handleLongText(employeeName.trim(), 25),
-        availableStatus,
-        division: departmentInfo.name,
-        designation: titleInfo.name,
-        experience: generalInfo.totalExp,
-        projectName: '-',
-        utilization: 0,
-        billStatus: '-',
-        startDate: '-',
-        endDate: '-',
-        comment: '',
-      };
-      if (projects.length === 0) {
-        if (index % 2 === 0) {
-          projects.push({ name: 'Abc Project', billStatus: 'Billing', utilization: 50 });
-          projects.push({ name: 'Abc Project 2', billStatus: 'Billing', utilization: 50 });
-        }
-      }
-      let ability = 0;
-      // eslint-disable-next-line no-restricted-syntax
-      for (const p of projects) {
-        ability += p.utilization;
-      }
-      newObj.availableStatus = ability < 100 ? 'Available Now' : 'Available Soon';
-      console.log(`project length ${projects.length}`);
-      if (projects.length === 0) {
-        dataList.push(newObj);
-      } else {
-        // eslint-disable-next-line no-restricted-syntax
-        for (const p of projects) {
-          const project = projectList.find((x) => x.id === p.projectId);
-          console.log(`loop in projects: ${JSON.stringify(p)}`);
-          const pObj = this.cloneObj(newObj);
-          pObj.projectName = project.name || '-';
-          pObj.utilization = p.utilization || 0;
-          pObj.startDate = this.parseDate(p.startDate);
-          pObj.endDate = this.parseDate(p.endDate);
-          pObj.billStatus = p.billStatus || '-';
-          pObj.project = project;
-          dataList.push(pObj);
-        }
-      }
-    });
-    // for (const obj, index of resourceList) {
-    console.log(`formatDataSource: ${JSON.stringify(dataList)}`);
-    return dataList;
   };
 
   render() {
@@ -233,7 +139,7 @@ class TableResources extends PureComponent {
                   <span className={styles[statusClass]}>{row.availableStatus}</span>
                 </div>
               </div>
-              <UserProfile placement="leftTop">
+              <UserProfile placement="leftTop" employeeId={row.employeeId}>
                 <div className={styles.employeeName}>{value}</div>
               </UserProfile>
             </div>
@@ -295,10 +201,10 @@ class TableResources extends PureComponent {
         dataIndex: 'projectName',
         // width: '10%',
         render: (value, row) => {
-          const employeeRowCount = data.filter((x) => x.employeeId === row.employeeId).length;
+          const employeeRowCount = data.filter(x => x.employeeId === row.employeeId).length
           const display = (
-            <ProjectProfile placement="leftTop">
-              <span className={styles.employeeName}> {value}</span>
+            <ProjectProfile placement="leftTop" projectId={row.projectId}>
+              <span className={styles.employeeName}>{value}</span>
             </ProjectProfile>
           );
           const obj = {
@@ -388,13 +294,21 @@ class TableResources extends PureComponent {
         dataIndex: 'comment',
         key: 'comment',
         render: (value, row) => {
-          const employeeRowCount = data.filter((x) => x.employeeId === row.employeeId).length;
-          let text;
-          if (value) {
-            text = <span className={styles.comment}>{value}</span>;
-          } else {text = <CommonModal row={row} /> }
+          const employeeRowCount = data.filter(x => x.employeeId === row.employeeId).length
+          let text
+          if(value) {
+            // webkit-line-clamp
+            const line = employeeRowCount === 0 || employeeRowCount === 1 ? 3 : (employeeRowCount * 3)
+            text = (
+              <CommentOverlay row={row} line={line} />
+            );
+          } else {
+            text = (
+              <span><CommentModal data={row} /></span>
+            );
+          }
           const obj = renderCell('comment', row, text);
-          obj.props.className = employeeRowCount > 1 ? 'left-border' : '';
+          obj.props.className = employeeRowCount > 1 ? 'commentCellLeftBorder' : 'commentCell';
           return obj;
         },
         // className: 'right-left-border',

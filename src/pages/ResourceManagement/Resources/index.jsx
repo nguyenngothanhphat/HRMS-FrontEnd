@@ -47,28 +47,6 @@ class Resources extends Component {
     const { tabName = '' } = this.props;
     if (!tabName) {
       history.replace(`${baseModuleUrl}/all-resources`);
-    } else {
-      // const { dispatch, resourceList } = this.props;
-      // if (!dispatch) {
-      //   return;
-      // }
-      // dispatch({
-      //   type: 'resourceManagement/getResources',
-      //   payload: {
-      //     page: 1,
-      //     limit: 10,
-      //     company: [company],
-      //     // status: 'New',
-      //   },
-      // });
-      // dispatch({
-      //   type: 'ticketManagement/fetchToTalList',
-      //   payload: {},
-      // });
-      // this.dummyData();
-      // if (resourceList.length > 0) {
-      //   this.updateData(resourceList);
-      // }
     }
   }
 
@@ -79,91 +57,6 @@ class Resources extends Component {
     // }
     // this.dummyData()
   }
-
-  
-
-  // dummyData = () => {
-  //   const data = [];
-  //   for (let i = 1; i <= 100; i += 1) {
-  //     if (i % 15 === 0) {
-  //       const obj = {
-  //         employeeId: 15,
-  //         employeeName: `employee 15`,
-  //         division: 'division',
-  //         designation: 'designation',
-  //         experience: (Math.random(i) * i).toFixed(1),
-  //         projectName: '',
-  //         availableStatus: 'Available Soon',
-  //         comment:
-  //           'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint nt. ullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint...Read More',
-  //         utilization: 0,
-  //         startDate: '',
-  //         endDate: '',
-  //       };
-  //       data.push(obj);
-  //     } else if (i < 5) {
-  //       const obj = {
-  //         employeeId: i < 5 ? 1 : i,
-  //         employeeName: i < 5 ? 'employee 1' : `employee ${i}`,
-  //         division: 'division',
-  //         designation: 'designation',
-  //         billStatus: 'Billed',
-  //         experience: 1,
-  //         comment:
-  //           'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint nt. ullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint...Read More',
-  //         availableStatus: i < 5 ? 'Available Now' : 'Available Soon',
-  //         projectName: `Project ${Math.floor(Math.random(i) * i)}`,
-  //         utilization: i < 5 ? 25 : 100,
-  //         startDate: '2021-01-01',
-  //         endDate: '2021-01-01',
-  //       };
-  //       data.push(obj);
-  //     } else if (i > 11 && i < 15) {
-  //       const obj = {
-  //         employeeId: 12,
-  //         employeeName: 'Multiple Project page 2',
-  //         division: 'division',
-  //         designation: 'designation',
-  //         experience: 2,
-  //         availableStatus: 'Available Now',
-  //         comment:
-  //           'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint nt. ullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint...Read More',
-  //         projectName: `Project ${Math.floor(Math.random(i) * i)}`,
-  //         utilization: i < 5 ? 25 : 100,
-  //         startDate: '2021-01-01',
-  //         endDate: '2021-01-01',
-  //       };
-  //       data.push(obj);
-  //     } else {
-  //       const obj = {
-  //         employeeId: i,
-  //         employeeName: `Randy Dias (randydias)`,
-  //         division: 'division',
-  //         designation: 'designation',
-  //         billStatus: 'Bench',
-  //         availableStatus: i < 10 && i > 5 ? 'Available Soon' : 'Available Now',
-  //         comment:
-  //           i < 10 && i > 8
-  //             ? 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint nt. ullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint...Read More'
-  //             : '',
-  //         experience: i < 5 ? 2 : (Math.random(i) * i).toFixed(1),
-  //         projectName: `Project ${Math.floor(Math.random(i) * i)}`,
-  //         utilization: i < 5 ? 25 : 100,
-  //         startDate: '2021-01-01',
-  //         endDate: '2021-01-01',
-  //       };
-  //       data.push(obj);
-  //     }
-  //   }
-  //   this.updateData(data);
-  // };
-
-  // updateData = (listOffAllTicket) => {
-  //   const array = this.formatDataSource(listOffAllTicket)
-  //   this.setState({
-  //     resourceList: array,
-  //   });
-  // };
 
   onSearch = (value) => {
     const { resourceList = [] } = this.props;

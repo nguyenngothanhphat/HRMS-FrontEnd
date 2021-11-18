@@ -2,57 +2,56 @@ import { Col, Popover, Row, Progress } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import CloseX from '@/assets/dashboard/closeX.svg';
-import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
-import { getCurrentCompany } from '@/utils/authority';
-import { convertMsToTime } from '@/utils/timeSheet';
 
 import styles from './index.less';
 import CapitalNameIcon from '../../../CapitalNameIcon';
 
 const ProjectProfile = (props) => {
-  const { children, placement = 'top' } = props;
+  const { children, placement = 'top', projectId } = props;
   const [showPopover, setShowPopover] = useState(false);
 
   const renderHeader = () => {
+    const {projectList} = props;
+    const project = projectList.find(x => x.projectId === projectId)
+    const {division = {}} = project || {}
+    const projectName = project ? project.projectName : '-'
     return (
       <div className={styles.header}>
-        <CapitalNameIcon text="TTTT" />
-        {/* <div className={styles.avatar}>
-          <img src={MockAvatar} alt="" />
-        </div> */}
+        <CapitalNameIcon text={projectName} />
         <div className={styles.information}>
-          <span className={styles.name}>Jane Cooper (janecopper)</span>
-          <span className={styles.position}>Software engineer II</span>
+          <span className={styles.name}>{projectName}</span>
+          <span className={styles.position}>{division ? division.name : '-'}</span>
           {/* <span className={styles.department}>Engineering Dept</span> */}
         </div>
       </div>
     );
   };
-  const userInfo = () => {
-    const company = props.company || {name: 'Project ABCDEF', statusProgress: 40}
+  const projectInfo = () => {
+    const {projectList} = props;
+    const project = projectList.find(x => x.projectId === projectId) || {name: 'Project ABCDEF', statusProgress: 40}
     const items = [
       {
         label: 'Customer',
-        value: 'ABC Company 1',
+        value: `${project ? project.customerName : '-' }`,
         // link: '#',
       },
       {
         label: 'Account Owner',
-        value: <span className={styles.managerName}>Brandon Mango</span>,
+        value: <span className={styles.managerName}>{project && project.accountOwner ? project.accountOwner.generaInfo.name : '-'}</span>,
         link: '#',
       },
       {
         label: 'Engineering Owner',
-        value: <span className={styles.managerName}>Omar Donin</span>,
+        value: <span className={styles.managerName}>{project && project.engineeringOwner ? project.engineeringOwner.generaInfo.name : '-'}</span>,
         link: '#',
       },
       {
         label: 'Project ID',
-        value: 'ID 1234',
+        value: `${project ? project.projectId : '-'}`,
       },
       {
         label: 'Status',
-        value: <div><Progress percent={company.statusProgress} showInfo={false} /><div className={styles.rightPosition}><span>{company.statusProgress}%</span></div></div>,
+        value: <div><Progress percent={project.statusProgress} showInfo={false} /><div className={styles.rightPosition}><span>{project.statusProgress}%</span></div></div>,
       },
     ];
 
@@ -83,7 +82,7 @@ const ProjectProfile = (props) => {
         />
         {renderHeader()}
         <div className={styles.divider} />
-        {userInfo()}
+        {projectInfo(projectId)}
         <div className={styles.divider} />
         <div className={styles.viewFullProfile}>View more details</div>
       </div>
@@ -109,6 +108,6 @@ const ProjectProfile = (props) => {
   );
 };
 
-export default connect(({ user: { currentUser: { employee = {} } = {} }}) => ({ employee }))(
+export default connect(({resourceManagement: { projectList=[]}}) => ({projectList}))(
   ProjectProfile,
 );

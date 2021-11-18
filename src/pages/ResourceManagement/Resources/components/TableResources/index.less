@@ -99,10 +99,12 @@
   }
 
   .comment {
+    width: 140px;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    //-webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    word-wrap: break-word;
     //font-family: Roboto;
     font-size: 13px;
     font-style: normal;
@@ -110,11 +112,9 @@
     line-height: 18px;
     letter-spacing: 0em;
     text-align: left;
+    position: relative;
+    // display: flex;
     text-overflow: ellipsis;
-  }
-
-  .ellipsis .text {
-
   }
 
   .division {
@@ -139,6 +139,14 @@
     border-radius: 12px;
   }
 
+  .overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+
   :global {
     .ant-table-thead > tr > th {
       background: #2c6df9 !important;
@@ -159,7 +167,7 @@
     // .ant-table-tbody > tr.ant-table-row:hover > td:nth-child(10),
     // .ant-table-tbody > tr.ant-table-row:hover > td:last-child 
     {
-      background: none;
+      background: #FFF;
     }
 
     thead > tr > th {
@@ -170,6 +178,7 @@
     .right-left-border {
       border-right: 1px solid #e2e4e8;
       border-left: 1px solid #e2e4e8;
+      box-shadow: yellow;
     }
     .left-border {
       border-right: unset !important;
@@ -188,7 +197,20 @@
     }
 
     .ant-table-tbody > tr.ant-table-row > td {
-      padding: 8px !important;
+      padding: 8px;
+      background: #FFF;
+    }
+
+    .commentCell {
+      padding: 0px !important;
+      background: #FFF;
+    }
+    
+    .commentCellLeftBorder {
+      border-right: unset !important;
+      border-left: 1px solid #e2e4e8;
+      padding: 0px !important;
+      background: #FFF;
     }
 
     .ant-btn-text {

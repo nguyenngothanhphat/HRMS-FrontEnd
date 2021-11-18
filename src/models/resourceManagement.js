@@ -1,14 +1,13 @@
-import { notification, message } from 'antd';
-import { getAdhaarcardAdd } from '@/services/employeeProfiles';
+import { notification } from 'antd';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
-    addTicket,
-    getResources,
-    getDepartmentList,
-    getOffToTalList,
-    getProjectList,
-    postAssignToProject,
+  addTicket,
+  getResources,
+  getDepartmentList,
+  getProjectList,
+  postAssignToProject,
+  updateComment,
 } from '../services/resourceManagement';
 
 const resourceManagement = {
@@ -38,8 +37,7 @@ const resourceManagement = {
                 dialog(error);
             }
         },
-        * getProjectList({ payload }, { call, put }) {
-            console.log('get projects');
+        *getProjectList({ payload }, { call, put }) {
             try {
                 const response = yield call(getProjectList, {
                     ...payload,
@@ -58,7 +56,7 @@ const resourceManagement = {
                 dialog(error);
             }
         },
-        * getResources({ payload }, { call, put }) {
+        *getResources({ payload }, { call, put }) {
             try {
                 const response = yield call(getResources, {
                     ...payload,
@@ -77,7 +75,7 @@ const resourceManagement = {
                 dialog(error);
             }
         },
-        * fetchAssignToProject({ payload }, { call }) {
+        *fetchAssignToProject({ payload }, { call }) {
             try {
                 const response = yield call(postAssignToProject, {
                     ...payload,
@@ -89,6 +87,26 @@ const resourceManagement = {
             } catch (error) {
                 dialog(error);
             }
+        },
+        *updateComment({ payload }, { call, put }) {
+          try {
+            const response = yield call(updateComment, {
+              ...payload,
+              tenantId: getCurrentTenant(),
+              company: getCurrentCompany(),
+            });
+            const { statusCode, data } = response;
+            if (statusCode !== 200) throw response;
+            notification.success({
+              message: 'Add assign to project Successfully',
+            });
+            yield put({
+              type: 'save',
+              payload: { postAssignStatus: data },
+            });
+          } catch (error) {
+            dialog(error);
+          }
         },
     },
     reducers: {

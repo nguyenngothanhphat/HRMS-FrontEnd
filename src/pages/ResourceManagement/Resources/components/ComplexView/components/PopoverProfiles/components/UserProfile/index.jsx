@@ -1,5 +1,5 @@
 import { Button, Col, Popover, Row } from 'antd';
-import moment from 'moment';
+// import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import CloseX from '@/assets/dashboard/closeX.svg';
@@ -7,48 +7,63 @@ import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import { getCurrentCompany } from '@/utils/authority';
 import { convertMsToTime } from '@/utils/timeSheet';
 
+import {getTimezoneViaCity, getCurrentTimeOfTimezoneOption} from '@/utils/times'
+
 import styles from './index.less';
 
-const UserProfilePopover = (props) => {
-  const { children, dispatch, placement = 'top' } = props;
+const moment = require('moment-timezone')
+
+const UserProfile = (props) => {
+  const { children, placement = 'top' } = props;
   const [showPopover, setShowPopover] = useState(false);
 
-  const renderHeader = () => {
+  const renderHeader = (employee) => {
+    if(!employee) {
+      return null
+    }
+    const {titleInfo,  generalInfo, departmentInfo} = employee
+    const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'))
+      const employeeName = `${ generalInfo.legalName } ${ userName ? (`(${  userName  })`) : ''}`;
     return (
       <div className={styles.header}>
         <div className={styles.avatar}>
           <img src={MockAvatar} alt="" />
         </div>
         <div className={styles.information}>
-          <span className={styles.name}>Jane Cooper (janecopper)</span>
-          <span className={styles.position}>Software engineer II</span>
-          <span className={styles.department}>Engineering Dept</span>
+          <span className={styles.name}>{employeeName}</span>
+          <span className={styles.position}>{titleInfo ? titleInfo.name : '-'}</span>
+          <span className={styles.department}>{departmentInfo ? (`${departmentInfo.name} Dept`) : '-' }</span>
         </div>
       </div>
     );
   };
-  const userInfo = () => {
+  const userInfo = (employee) => {
+    const {generalInfo, managerInfo, locationInfo = {}} = employee
+    const {headQuarterAddress} = locationInfo
+    const {country, state} = headQuarterAddress
+    const timezone = getTimezoneViaCity(state)
+    const time = getCurrentTimeOfTimezoneOption(new Date(),timezone)
     const items = [
       {
         label: 'Reporting Manager',
-        value: <span className={styles.managerName}>Annette Black</span>,
+        value: <span className={styles.managerName}>{managerInfo ? managerInfo.generalInfo.legalName : '-'}</span>,
         link: '#',
       },
       {
         label: 'Mobile',
-        value: '+91 9876543211',
+        value: `${generalInfo.workNumber || '-'}`,
       },
       {
         label: 'Email id',
-        value: 'bessiecooper@gmail.com',
+        value: `${generalInfo.workEmail}`
       },
       {
         label: 'Location',
-        value: 'Thanh Pho Ho Chi Minh, Viet Nam',
+        value: `${state}, ${country.name}`,
       },
       {
         label: 'Local Time',
-        value: '-',
+        value: `${time}`,
       },
     ];
 
@@ -69,6 +84,11 @@ const UserProfilePopover = (props) => {
   };
 
   const renderPopup = () => {
+    const {resourceList, employeeId} = props;
+    const employee = resourceList.find(x => x._id === employeeId)
+    const {generalInfo} = employee
+    const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'));
+    const profileUrl = `/directory/employee-profile/${userName}/general-info` 
     return (
       <div className={styles.popupContainer}>
         <img
@@ -77,11 +97,11 @@ const UserProfilePopover = (props) => {
           alt=""
           onClick={() => setShowPopover(!showPopover)}
         />
-        {renderHeader()}
+        {renderHeader(employee)}
         <div className={styles.divider} />
-        {userInfo()}
+        {userInfo(employee)}
         <div className={styles.divider} />
-        <div className={styles.viewFullProfile}>View full profile</div>
+        <div className={styles.viewFullProfile}><a href={profileUrl}>View full profile</a></div>
       </div>
     );
   };
@@ -105,6 +125,6 @@ const UserProfilePopover = (props) => {
   );
 };
 
-export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({ employee }))(
-  UserProfilePopover,
+export default connect(({ resourceManagement: { resourceList = [] }}) => ({ resourceList }))(
+  UserProfile,
 );

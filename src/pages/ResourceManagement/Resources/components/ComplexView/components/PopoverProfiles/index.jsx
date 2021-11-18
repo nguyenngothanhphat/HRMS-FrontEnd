@@ -41,4 +41,4 @@ const ManagerReport = (props) => {
   );
 };
 
-export default connect(() => ({}))(ManagerReport);
+export default connect(({resourceManagement: { projectList=[]}}) => ({projectList}))(ManagerReport);

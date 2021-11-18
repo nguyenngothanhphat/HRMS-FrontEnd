@@ -1,6 +1,5 @@
-import React, { PureComponent, useState, Component } from 'react';
+import React, { Component } from 'react';
 import {
-  Table,
   Row,
   Col,
   Button,
@@ -9,18 +8,12 @@ import {
   Input,
   Select,
   DatePicker,
-  Tooltip,
   Card,
-  notification,
-  message,
 } from 'antd';
 import moment from 'moment';
-import { InfoCircleOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import addAction from '@/assets/resource-action-add1.svg';
-import historyIcon from '@/assets/resource-management-edit1.svg';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
-import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
 import styles from './index.less';
 
@@ -89,6 +82,7 @@ class AddActionBTN extends Component {
     const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
     const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
     let sumUtilization = 0;
+    // eslint-disable-next-line no-restricted-syntax
     for (const obj of listProjectsOfEmp) {
       sumUtilization += obj.utilization;
     }

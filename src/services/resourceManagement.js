@@ -45,3 +45,10 @@ export async function getProjectList(payload) {
     data: payload,
   });
 }
+
+export async function updateComment(payload) {
+  return request('/api/employeetenant/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
