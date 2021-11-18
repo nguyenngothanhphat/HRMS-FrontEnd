@@ -130,11 +130,8 @@ const ProjectDetails = {
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, message } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
       } catch (errors) {
         dialog(errors);
       }

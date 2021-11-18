@@ -3,80 +3,9 @@ import React from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
-const FilterContent = (props) => {
+const FilterContent = () => {
   return (
     <Form layout="vertical" name="filter">
-      <Form.Item label="By Project ID" name="byProjectID">
-        <Select allowClear style={{ width: '100%' }} placeholder="Please select">
-          {['A', 'B'].map((item) => {
-            return (
-              <Select.Option value={item} key={item}>
-                {item}
-              </Select.Option>
-            );
-          })}
-        </Select>
-      </Form.Item>
-      <Form.Item label="By division" name="byDivision">
-        <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Please select">
-          {['A', 'B'].map((item) => {
-            return (
-              <Select.Option value={item} key={item}>
-                {item}
-              </Select.Option>
-            );
-          })}
-        </Select>
-      </Form.Item>
-
-      <Form.Item label="By PROJECT NAME" name="byProjectName">
-        <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Please select">
-          {['A', 'B'].map((item) => {
-            return (
-              <Select.Option value={item} key={item}>
-                {item}
-              </Select.Option>
-            );
-          })}
-        </Select>
-      </Form.Item>
-
-      <Form.Item label="By customer" name="byCustomer">
-        <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Please select">
-          {['A', 'B'].map((item) => {
-            return (
-              <Select.Option value={item} key={item}>
-                {item}
-              </Select.Option>
-            );
-          })}
-        </Select>
-      </Form.Item>
-
-      <Form.Item label="By engagement type" name="byEngagementType">
-        <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Please select">
-          {['A', 'B'].map((item) => {
-            return (
-              <Select.Option value={item} key={item}>
-                {item}
-              </Select.Option>
-            );
-          })}
-        </Select>
-      </Form.Item>
-
-      <Form.Item label="By PROJECT manager" name="byProjectManager">
-        <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Please select">
-          {['A', 'B'].map((item) => {
-            return (
-              <Select.Option value={item} key={item}>
-                {item}
-              </Select.Option>
-            );
-          })}
-        </Select>
-      </Form.Item>
-
       <Form.Item label="By status" name="byStatus">
         <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Please select">
           {['A', 'B'].map((item) => {
