@@ -37,6 +37,7 @@ import warnIcon from '@/assets/warnIcon.svg';
     loadingTagList: loading.effects['customerManagement/fetchTagList'],
     loadingStateList: loading.effects['customerManagement/fetchStateByCountry'],
     loadingEmployeeList: loading.effects['customerManagement/fetchEmployeeList'],
+    loadingAdd: loading.effects['customerManagement/addNewCustomer'],
   }),
 )
 class ModalAdd extends PureComponent {
@@ -100,20 +101,17 @@ class ModalAdd extends PureComponent {
     const { isCountryChosen } = this.state;
     const {
       isShown,
-      handleAddNew = () => {},
       onCloseModal = () => {},
       customerID,
       listStatus,
       listTags,
       country,
       state,
-      _id,
       accountOwnerId = '',
-      loadingCustomerID,
       loadingTagList,
       loadingStateList,
-      ref,
       employeeList = [],
+      loadingAdd = false,
     } = this.props;
 
     return (
@@ -121,6 +119,7 @@ class ModalAdd extends PureComponent {
         <Modal
           className={styles.modalAdd}
           title="Add new customer"
+          width={700}
           footer={[
             <div className={styles.btnForm}>
               <Button
@@ -140,7 +139,7 @@ class ModalAdd extends PureComponent {
                 form="formAdd"
                 key="submit"
                 htmlType="submit"
-                // onClick={(values) => handleAddNew(values)}
+                loading={loadingAdd}
               >
                 Add Customer
               </Button>

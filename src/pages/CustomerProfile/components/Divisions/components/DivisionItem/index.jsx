@@ -13,7 +13,6 @@ class DivisionItem extends PureComponent {
 
   showMoreLess = () => {
     const { visible } = this.state;
-    console.log('assss');
     this.setState({
       visible: !visible,
     });
@@ -23,8 +22,8 @@ class DivisionItem extends PureComponent {
     const { visible } = this.state;
     const { item } = this.props;
     const {
-      devisionId = '',
-      devisionName = '',
+      divisionId = '',
+      divisionName = '',
       primaryPOCName = '',
       primaryPOCNumber = '',
       primaryPOCEmail = '',
@@ -47,14 +46,14 @@ class DivisionItem extends PureComponent {
             <p className={styles.label}>Division ID:</p>
           </Col>
           <Col span={12}>
-            <p className={styles.value}>{devisionId}</p>
+            <p className={styles.value}>{divisionId}</p>
           </Col>
 
           <Col span={12}>
             <p className={styles.label}>Division Name:</p>
           </Col>
           <Col span={12}>
-            <p className={styles.value}>{devisionName}</p>
+            <p className={styles.value}>{divisionName}</p>
           </Col>
         </Row>
         <Row className={styles.divisionPrimary}>
@@ -130,7 +129,7 @@ class DivisionItem extends PureComponent {
           style={visible ? { display: 'block' } : { display: 'none' }}
         >
           <Row>
-            <Col span={12} style={{ margin: '0' }}>
+            <Col span={12}>
               <p className={styles.label}>Address Line 1</p>
             </Col>
             <Col span={12} style={{ margin: '0' }}>
