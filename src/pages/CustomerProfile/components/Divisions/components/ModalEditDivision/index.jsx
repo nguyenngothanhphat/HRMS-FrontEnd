@@ -2,36 +2,23 @@ import { Col, Form, Modal, Row, Input, Select, Button, Popover, Checkbox } from 
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
-import iconNote from '../../../../../../assets/icon-note.svg';
+import iconNote from '@/assets/icon-note.svg';
 
 @connect(
   ({
     loading,
     customerManagement: { employeeList = [] } = {},
-    customerProfile: { info = {}, divisionId = '' } = {},
+    customerProfile: { info = {} } = {},
   }) => ({
-    loadingId: loading.effects['customerProfile/generateDivisionId'],
-    loadingAdd: loading.effects['customerProfile/addDivision'],
-    divisionId,
+    loadingUpdate: loading.effects['customerProfile/updateDivision'],
     employeeList,
     info,
   }),
 )
-class ModalAddDivisions extends PureComponent {
+class ModalEditDivision extends PureComponent {
   constructor(props) {
     super(props);
-
     this.refForm = React.createRef();
-  }
-
-  componentDidMount() {
-    const { dispatch, reId } = this.props;
-    dispatch({
-      type: 'customerProfile/generateDivisionId',
-      payload: {
-        id: reId,
-      },
-    });
   }
 
   handleChange = (e) => {
@@ -52,116 +39,115 @@ class ModalAddDivisions extends PureComponent {
         country,
         state,
         city,
-        zipCode: postalCode,
+        postalCode,
       });
     }
   };
 
-  onSubmit = async (values) => {
-    const { dispatch, info, reId, onCloseModal = () => {} } = this.props;
-    const {
-      accountOwner,
-      addressLine1,
-      addressLine2,
-      city,
-      country,
-      divisionId,
-      divisionName,
-      primaryPOCDesignation,
-      primaryPOCEmail,
-      primaryPOCName,
-      primaryPOCPhNo,
-      secondaryPOCDesignation,
-      secondaryPOCEmail,
-      secondaryPOCName,
-      secondaryPOCPhNo,
-      state,
-      tags,
-      zipCode,
-      comments,
-    } = values;
+  onEditDivision = async (values) => {
+    const { dispatch, info, onClose = () => {} } = this.props;
     const payload = {
+      ...values,
       customerId: info.customerId,
-      addressLine1,
-      addressLine2,
-      city,
-      country,
-      divisionId,
-      divisionName,
-      primaryPOCName,
-      primaryPOCDesignation,
-      primaryPOCEmail,
-      primaryPOCNumber: primaryPOCPhNo,
-      secondaryPOCDesignation,
-      secondaryPOCEmail,
-      secondaryPOCName,
-      secondaryPOCNumber: secondaryPOCPhNo,
-      state,
-      tagIds: tags ? tags.map((t) => t * 1) : [],
-      postalCode: zipCode,
-      comments,
-      accountOwner,
+      tagIds: values.tags.map((t) => t * 1) || [],
     };
-
-    await dispatch({
-      type: 'customerProfile/addDivision',
+    const res = await dispatch({
+      type: 'customerProfile/updateDivision',
       payload,
-    }).then(() => {
-      onCloseModal();
-      dispatch({
-        type: 'customerProfile/fetchDivision',
-        payload: {
-          id: reId,
-        },
-      });
-      this.refForm.current.resetFields()
     });
+    if (res.statusCode === 200) {
+      onClose();
+    }
   };
 
   render() {
     const {
       visible,
-      onCloseModal = () => {},
+      onClose = () => {},
       listTags = [],
-      info: { accountOwner: { _id: accountOwnerId = '' } = {} } = {},
-      divisionId,
       isCountrySelected,
       handelSelectCountry,
-      country,
-      state,
-      loadingAdd = false,
+      country: countryList = [],
+      state: stateList = [],
       employeeList = [],
+      data = {},
+      loadingUpdate = false,
     } = this.props;
+
+    const {
+      accountOwner = '',
+      divisionId = '',
+      divisionName = '',
+      primaryPOCName = '',
+      primaryPOCNumber = '',
+      primaryPOCEmail = '',
+      primaryPOCDesignation = '',
+      secondaryPOCName = '',
+      secondaryPOCNumber = '',
+      secondaryPOCEmail = '',
+      secondaryPOCDesignation = '',
+      sameAsHQ = '',
+      addressLine1 = '',
+      addressLine2 = '',
+      country = '',
+      state = '',
+      city = '',
+      postalCode = '',
+      tags = [],
+      comments = '',
+    } = data;
+
     return (
-      <div className={styles.modalAdd}>
+      <div>
         <Modal
-          className={styles.modalAdd}
-          title="Add Division"
+          title="Edit Division"
+          className={styles.ModalEditDivision}
           footer={[
             <div className={styles.btnForm}>
-              <Button className={styles.btnCancel} onClick={onCloseModal}>
+              <Button className={styles.btnCancel} onClick={onClose}>
                 Cancel
               </Button>
               <Button
                 className={styles.btnAdd}
-                form="formAdd"
+                form="formEdit"
                 key="submit"
                 htmlType="submit"
-                loading={loadingAdd}
+                // onClick={(values) => handleAddNew(values)}
+                loading={loadingUpdate}
               >
-                Add Division
+                Save Changes
               </Button>
             </div>,
           ]}
-          onCancel={onCloseModal}
+          onCancel={onClose}
           visible={visible}
         >
           <Form
-            name="formAdd"
+            name="formEdit"
             layout="vertical"
             ref={this.refForm}
-            initialValues={{ accountOwner: accountOwnerId, divisionId }}
-            onFinish={this.onSubmit}
+            initialValues={{
+              accountOwner,
+              divisionId,
+              divisionName,
+              primaryPOCName,
+              primaryPOCNumber,
+              primaryPOCEmail,
+              primaryPOCDesignation,
+              secondaryPOCName,
+              secondaryPOCNumber,
+              secondaryPOCEmail,
+              secondaryPOCDesignation,
+              sameAsHQ,
+              addressLine1,
+              addressLine2,
+              country,
+              state,
+              city,
+              postalCode,
+              comments,
+            }}
+            onFinish={this.onEditDivision}
           >
             {/* Basic Customer Detail */}
             <div className={styles.basicInfoForm}>
@@ -212,7 +198,7 @@ class ModalAddDivisions extends PureComponent {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Primary POC Ph No." name="primaryPOCPhNo">
+                  <Form.Item label="Primary POC Ph No." name="primaryPOCNumber">
                     <Input placeholder="Enter Primary POC Ph No." />
                   </Form.Item>
                 </Col>
@@ -237,7 +223,7 @@ class ModalAddDivisions extends PureComponent {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Secondary POC Ph No." name="secondaryPOCPhNo">
+                  <Form.Item label="Secondary POC Ph No." name="secondaryPOCNumber">
                     <Input placeholder="Enter Secondary POC Ph No." />
                   </Form.Item>
                 </Col>
@@ -272,7 +258,7 @@ class ModalAddDivisions extends PureComponent {
                       placeholder="Select Country"
                       onChange={(value) => handelSelectCountry(value)}
                     >
-                      {country.map((item) => {
+                      {countryList.map((item) => {
                         return (
                           <Select.Option value={item._id} key={item.name}>
                             {item.name}
@@ -285,7 +271,7 @@ class ModalAddDivisions extends PureComponent {
                 <Col span={12}>
                   <Form.Item label="State" name="state">
                     <Select disabled={isCountrySelected} placeholder="Select State">
-                      {state.map((stateItem) => {
+                      {stateList.map((stateItem) => {
                         return <Select.Option key={stateItem}>{stateItem}</Select.Option>;
                       })}
                     </Select>
@@ -299,7 +285,7 @@ class ModalAddDivisions extends PureComponent {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Zip/Postal Code" name="zipCode">
+                  <Form.Item label="Zip/Postal Code" name="postalCode">
                     <Input placeholder="Enter Postal Code" />
                   </Form.Item>
                 </Col>
@@ -349,4 +335,4 @@ class ModalAddDivisions extends PureComponent {
   }
 }
 
-export default ModalAddDivisions;
+export default ModalEditDivision;
