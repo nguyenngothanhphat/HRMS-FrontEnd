@@ -1,4 +1,4 @@
-import { Col, Row } from 'antd';
+import { Col, Row, Skeleton } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
 import ItemMenu from './components/ItemMenu';
@@ -44,7 +44,7 @@ class LayoutProjectInformation extends Component {
   };
 
   render() {
-    const { listMenu = [] } = this.props;
+    const { listMenu = [], loading = false } = this.props;
     const { displayComponent, selectedItemId } = this.state;
 
     return (
@@ -64,7 +64,7 @@ class LayoutProjectInformation extends Component {
         <Col xs={24} md={18} xl={20} className={s.viewRight}>
           <Row gutter={[24, 24]}>
             <Col xs={24} xl={18}>
-              {displayComponent}
+              {loading? <Skeleton /> : displayComponent}
             </Col>
             <Col xs={24} xl={6}>
               <ViewInformation />

@@ -15,6 +15,7 @@ const ProjectInformation = (props) => {
     dispatch,
     match: { params: { reId = '', tabName = '' } = {} } = {},
     projectDetail: { projectName = '' } = {},
+    loadingFetchProjectById = false,
   } = props;
 
   const fetchProjectByID = async () => {
@@ -97,11 +98,17 @@ const ProjectInformation = (props) => {
           </div>
         </Affix>
 
-        <LayoutProjectInformation listMenu={listMenu} reId={reId} tabName={tabName} />
+        <LayoutProjectInformation
+          listMenu={listMenu}
+          reId={reId}
+          tabName={tabName}
+          loading={loadingFetchProjectById}
+        />
       </div>
     </PageContainer>
   );
 };
-export default connect(({ projectDetails: { projectDetail = {} } }) => ({
+export default connect(({ loading, projectDetails: { projectDetail = {} } }) => ({
   projectDetail,
+  loadingFetchProjectById: loading.effects['projectDetails/fetchProjectByIdEffect'],
 }))(ProjectInformation);

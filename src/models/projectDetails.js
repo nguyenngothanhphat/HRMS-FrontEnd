@@ -1,25 +1,34 @@
 import { notification } from 'antd';
 import {
+  // documents
   addDocument,
   removeDocument,
   getDocumentTypeList,
+  getDocumentList,
+  // milestone
   addMilestone,
+  getMilestoneList,
+  updateMilestone,
+  // resource type + resource
   addResourceType,
   addResource,
   assignResources,
   getResourceList,
+  getResourceTypeList,
   countStatusResource,
+  getResourceOfProject,
+  updateResourceOfProject,
+  removeResourceOfProject,
+  // audit trail
+  getAuditTrailList,
+  // overview
+  getProjectByID,
+  updateProjectOverview,
+  // other
+  getProjectTagList,
   getTechnologyList,
   getTitleList,
   getDepartmentList,
-  getAuditTrailList,
-  getDocumentList,
-  getMilestoneList,
-  updateMilestone,
-  getProjectByID,
-  getResourceTypeList,
-  updateProjectOverview,
-  getProjectTagList,
 } from '@/services/projectDetails';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
@@ -282,6 +291,65 @@ const ProjectDetails = {
             resourceList: data,
             resourceListTotal: total,
           },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchResourceOfProjectEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getResourceOfProject, {
+          ...payload,
+          company: [getCurrentCompany()],
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [], total = 0 } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            projectResourceList: data,
+            projectResourceListTotal: total,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *updateResourceOfProjectEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(updateResourceOfProject, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *removeResourceOfProjectEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(removeResourceOfProject, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
         });
       } catch (errors) {
         dialog(errors);

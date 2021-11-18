@@ -172,6 +172,42 @@ export async function countStatusResource(payload) {
   );
 }
 
+export async function getResourceOfProject(payload) {
+  return request(
+    '/api-project/resourcetenant/list',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    'PROJECT_API',
+  );
+}
+
+export async function updateResourceOfProject(payload) {
+  return request(
+    '/api-project/resourcetenant/update',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    'PROJECT_API',
+  );
+}
+
+export async function removeResourceOfProject(payload) {
+  return request(
+    '/api-project/resourcetenant/delete',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    'PROJECT_API',
+  );
+}
+
 // documents
 export async function getDocumentList(payload) {
   return request(

@@ -41,7 +41,6 @@ const Summary = (props) => {
     } = {},
     dispatch,
     loadingUpdateProjectOverview = false,
-    loadingFetchProjectById = false,
   } = props;
 
   // new data than old data
@@ -293,12 +292,6 @@ const Summary = (props) => {
     return columns;
   };
 
-  if (loadingFetchProjectById)
-    return (
-      <div className={styles.Summary}>
-        <Skeleton />
-      </div>
-    );
   return (
     <div className={styles.Summary}>
       <Row gutter={[24, 24]}>
@@ -369,5 +362,4 @@ const Summary = (props) => {
 export default connect(({ projectDetails, loading }) => ({
   projectDetails,
   loadingUpdateProjectOverview: loading.effects['projectDetails/updateProjectOverviewEffect'],
-  loadingFetchProjectById: loading.effects['projectDetails/fetchProjectByIdEffect'],
 }))(Summary);

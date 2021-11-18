@@ -105,7 +105,7 @@ const ResourceTypeCard = (props) => {
         key: 'comments',
         width: '25%',
         render: (comments) => {
-          return renderComment(comments);
+          return renderComment(comments || '');
         },
       },
       {
