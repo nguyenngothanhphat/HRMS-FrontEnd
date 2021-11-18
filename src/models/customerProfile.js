@@ -129,9 +129,8 @@ const customerProfile = {
           tenantId: getCurrentTenant(),
           customerId: payload.id,
         });
-        const { statusCode, data, message } = response;
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        notification.success({ message });
         yield put({ type: 'save', payload: { auditTrail: data } });
       } catch (error) {
         dialog(error);

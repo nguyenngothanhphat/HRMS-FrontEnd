@@ -121,6 +121,7 @@ class ModalEditDivision extends PureComponent {
           ]}
           onCancel={onClose}
           visible={visible}
+          width={700}
         >
           <Form
             name="formEdit"

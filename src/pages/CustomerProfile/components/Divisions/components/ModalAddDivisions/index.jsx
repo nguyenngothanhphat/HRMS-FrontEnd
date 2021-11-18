@@ -155,6 +155,7 @@ class ModalAddDivisions extends PureComponent {
           ]}
           onCancel={onCloseModal}
           visible={visible}
+          width={700}
         >
           <Form
             name="formAdd"
