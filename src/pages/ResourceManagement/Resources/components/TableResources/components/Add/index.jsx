@@ -21,6 +21,7 @@ import addAction from '@/assets/resource-action-add1.svg';
 import historyIcon from '@/assets/resource-management-edit1.svg';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
+import imageAddSuccess from '@/assets/resource-management-success.svg';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -36,6 +37,7 @@ class AddActionBTN extends Component {
     super(props);
     this.state = {
       visible: false,
+      visibleSuccess: false,
     };
   }
 
@@ -51,36 +53,39 @@ class AddActionBTN extends Component {
     });
   };
 
+  handleCancelModelSuccess = () => {
+    this.setState({
+      visibleSuccess: false,
+    });
+    window.location.reload(false);
+  };
+
   handleSubmitAssign = (values) => {
     const { dispatch, dataPassRow } = this.props;
     const { project, status, utilization, startDate, endDate, comment } = values;
-    if (parseInt(utilization) > 100 || parseInt(utilization) < 0) {
-      notification.error({
-        message: 'error validate',
-      });
-    } else {
-      dispatch({
-        type: 'resourceManagement/fetchAssignToProject',
-        payload: {
-          employee: dataPassRow.employeeId,
-          project,
-          status,
-          utilization,
-          startDate: moment(startDate).format('YYYY-MM-DD'),
-          endDate: moment(endDate).format('YYYY-MM-DD'),
-          comment,
-          milestone: '',
-        },
-      });
-      this.setState({
-        visible: false,
-      });
-    }
+    dispatch({
+      type: 'resourceManagement/fetchAssignToProject',
+      payload: {
+        employee: dataPassRow.employeeId,
+        project,
+        status,
+        utilization,
+        startDate: moment(startDate).format('YYYY-MM-DD'),
+        endDate: moment(endDate).format('YYYY-MM-DD'),
+        comment,
+        milestone: '',
+      },
+    });
+    this.setState({
+      visible: false,
+    });
+    this.setState({
+      visibleSuccess: true,
+    });
   };
 
   render() {
     const { dataPassRow, projectList, resourceList } = this.props;
-    const dateFormat = 'YYYY-MM-DD';
     const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
     const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
     let sumUtilization = 0;
@@ -136,12 +141,27 @@ class AddActionBTN extends Component {
                   label="Bandwith Allocation (%)"
                   name="utilization"
                   rules={[
-                    {
-                      max: maxEnterUtilization,
-                      message: `Your cannot enter a value that is more than ${maxEnterUtilization}.`,
-                    },
+                    () => ({
+                      validator(_, value) {
+                        if (!value) {
+                          return Promise.reject();
+                        }
+                        if (isNaN(value)) {
+                          return Promise.reject(`Value enter has to be a number.`);
+                        }
+                        if (value > maxEnterUtilization) {
+                          return Promise.reject(
+                            `Your cannot enter a value that is more than ${maxEnterUtilization}.`,
+                          );
+                        }
+                        if (value < 0) {
+                          return Promise.reject(`Your cannot enter a value that is less than 0`);
+                        }
+                        return Promise.resolve();
+                      },
+                    }),
                   ]}
-                  // validateTrigger="onBlur"
+                  validateTrigger="onBlur"
                 >
                   <Input
                     placeholder={sumUtilization}
@@ -179,7 +199,7 @@ class AddActionBTN extends Component {
                 </Form.Item>
               </Col>
             </Row>
-            <Form.Item label="Comments (optional)" name="Comment">
+            <Form.Item label="Comments (optional)" name="comment">
               <TextArea placeholder="Enter Comments" autoSize={{ minRows: 4, maxRows: 8 }} />
             </Form.Item>
             <Form.Item label="Project Detail">
@@ -229,6 +249,32 @@ class AddActionBTN extends Component {
               </Button>
             </div>
           </Form>
+        </Modal>
+
+        <Modal
+          visible={this.state.visibleSuccess}
+          className={styles.modalAdd}
+          footer={null}
+          width="30%"
+          onCancel={this.handleCancelModelSuccess}
+        >
+          <div style={{ textAlign: 'center' }}>
+            <img src={imageAddSuccess} alt="add success" />
+          </div>
+          <br />
+          <br />
+          <h3 style={{ textAlign: 'center' }}>Resource assigned!</h3>
+          <p style={{ textAlign: 'center', color: '#707177' }}>
+            The resource has been successfully assigned to the project
+          </p>
+          <div className={styles.spaceFooterModalSuccess}>
+            <div className={styles.btnCancel} onClick={this.handleCancelModelSuccess}>
+              View Project
+            </div>
+            <Button onClick={this.handleCancelModelSuccess} className={styles.btnSubmit}>
+              Close
+            </Button>
+          </div>
         </Modal>
       </div>
     );

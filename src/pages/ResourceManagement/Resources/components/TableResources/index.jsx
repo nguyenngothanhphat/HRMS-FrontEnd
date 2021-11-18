@@ -2,7 +2,8 @@ import React, { PureComponent } from 'react';
 import { Table, Row, Col, Button } from 'antd';
 import moment from 'moment';
 import { PlusCircleFilled } from '@ant-design/icons';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
+
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import AddActionBTN from './components/Add';
 import EditActionBTN from './components/Edit';
@@ -11,6 +12,9 @@ import ProjectProfile from '../ComplexView/components/PopoverProfiles/components
 import UserProfile from '../ComplexView/components/PopoverProfiles/components/UserProfile';
 import CommonModal from '@/components/CommonModal';
 
+@connect(({ resourceManagement: { resourceList = [] } = {} }) => ({
+  resourceList,
+}))
 class TableResources extends PureComponent {
   constructor(props) {
     super(props);
@@ -148,6 +152,7 @@ class TableResources extends PureComponent {
       pageSelected,
       size,
       getPageAndSize,
+      resourceList,
     } = this.props;
     // const formatData = this.formatResource(data)
     const pagination = {
@@ -387,14 +392,7 @@ class TableResources extends PureComponent {
           let text;
           if (value) {
             text = <span className={styles.comment}>{value}</span>;
-          } else {
-            text = (
-              <span>
-                <CommonModal data={row} />
-              </span>
-            );
-          }
-          const check = <div>comment</div>;
+          } else {text = <CommonModal row={row} /> }
           const obj = renderCell('comment', row, text);
           obj.props.className = employeeRowCount > 1 ? 'left-border' : '';
           return obj;
@@ -410,7 +408,8 @@ class TableResources extends PureComponent {
           // const buttonGroup = actionAddAndEdit(row);
           const buttonGroup = (
             <span>
-              <AddActionBTN dataPassRow={row} /> <EditActionBTN dataPassRow={row} />
+              <AddActionBTN dataPassRow={row} />
+              <EditActionBTN sendData={resourceList} dataPassRow={row} />
             </span>
           );
           const obj = renderCell('add', row, buttonGroup);

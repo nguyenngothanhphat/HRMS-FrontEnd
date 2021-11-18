@@ -77,22 +77,15 @@ const resourceManagement = {
                 dialog(error);
             }
         },
-        * fetchAssignToProject({ payload }, { call, put }) {
+        * fetchAssignToProject({ payload }, { call }) {
             try {
                 const response = yield call(postAssignToProject, {
                     ...payload,
                     tenantId: getCurrentTenant(),
                     company: getCurrentCompany(),
                 });
-                const { statusCode, data } = response;
+                const { statusCode } = response;
                 if (statusCode !== 200) throw response;
-                notification.success({
-                    message: 'Add assign to project Successfully',
-                });
-                // yield put({
-                //   type: 'save',
-                //   payload: { postAssignStatus: data },
-                // });
             } catch (error) {
                 dialog(error);
             }

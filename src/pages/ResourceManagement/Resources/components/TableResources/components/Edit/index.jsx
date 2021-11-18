@@ -50,50 +50,23 @@ class EditActionBTN extends Component {
     });
   };
 
-  showBTNEdit = (row) => {
-    alert(JSON.stringify(row));
-  };
-
   render() {
-    const row = this.props.dataPassRow;
-    const dataSource = [
-      {
-        key: '1',
-        ProjectName: 'Maxlife',
-        StartDate: '24-11-2021',
-        EndDate: '24-11-2021',
-        Billing: 'Bilable',
-        Description:
-          'To display a collection of structured data. To display a collection of structured data.',
-      },
-      {
-        key: '2',
-        ProjectName: 'Maxlife',
-        StartDate: '24-11-2021',
-        EndDate: '24-11-2021',
-        Billing: 'Bilable',
-        Description:
-          'To display a collection of structured data. To display a collection of structured data.',
-      },
-      {
-        key: '3',
-        ProjectName: 'Project 3',
-        StartDate: '24-11-2021',
-        EndDate: '24-11-2021',
-        Billing: 'Bilable',
-        Description:
-          'To display a collection of structured data. To display a collection of structured data.',
-      },
-      {
-        key: '4',
-        ProjectName: 'Project 3',
-        StartDate: '24-11-2021',
-        EndDate: '24-11-2021',
-        Billing: 'Bilable',
-        Description:
-          'To display a collection of structured data. To display a collection of structured data.',
-      },
-    ];
+    const { sendData, dataPassRow } = this.props;
+    const getEmpInListResource = sendData.find((obj) => obj._id === dataPassRow.employeeId);
+    const listProjectsOfEmp = getEmpInListResource ? getEmpInListResource.projects : [];
+    const managerInfoOfEmp = getEmpInListResource ? getEmpInListResource.managerInfo : [];
+    const { employeeId } = managerInfoOfEmp;
+    const dataSource = [];
+    for (let i = 0; i < listProjectsOfEmp.length; i++) {
+      dataSource.push({
+        key: i + 1,
+        ProjectName: listProjectsOfEmp[i].ProjectName || '-',
+        StartDate: moment(listProjectsOfEmp[i].startDate).format('MM-DD-YYYY') || '-',
+        EndDate: moment(listProjectsOfEmp[i].endDate).format('MM-DD-YYYY') || '-',
+        Billing: listProjectsOfEmp[i].projectStatus || '-',
+        Description: listProjectsOfEmp[i].projectDescription || '-',
+      });
+    }
 
     const columns = [
       {
@@ -187,24 +160,24 @@ class EditActionBTN extends Component {
           }}
         >
           <p className={styles.showInfo}>
-            Emp Id : <span className={styles.showInfoEmp}> {row.employeeId}</span>
+            Emp Id : PS-<span className={styles.showInfoEmp}> {employeeId}</span>
           </p>
           <p className={styles.showInfo}>
-            Name : <span className={styles.showInfoEmp}> {row.employeeName}</span>
+            Name : <span className={styles.showInfoEmp}> {dataPassRow.employeeName}</span>
           </p>
           <p className={styles.showInfo}>
-            Designation : <span className={styles.showInfoEmp}> {row.designation}</span>
+            Designation : <span className={styles.showInfoEmp}> {dataPassRow.designation}</span>
           </p>
           <p className={styles.showInfo}>
-            Experience : <span className={styles.showInfoEmp}> {row.experience}</span>
+            Experience : <span className={styles.showInfoEmp}> {dataPassRow.experience}</span>
           </p>
           <p className={styles.showInfo}>
-            Total project : <span className={styles.showInfoEmp}> 2</span>
+            Total project : <span className={styles.showInfoEmp}>{listProjectsOfEmp.length}</span>
           </p>
           <br />
           <br />
-          <p>{JSON.stringify(row)}</p>
-          <Table dataSource={dataSource} columns={columns} pagination={false} />;
+          {/* <p>{JSON.stringify(listProjectsOfEmp)}</p> */}
+          <Table dataSource={dataSource} columns={columns} pagination={false} />
         </Modal>
       </div>
     );
