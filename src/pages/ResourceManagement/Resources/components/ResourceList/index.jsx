@@ -4,11 +4,11 @@ import styles from './index.less';
 import Summary from '../Summary';
 import SearchTable from '../SearchTable';
 import TableResources from '../TableResources';
-import {formatData} from '@/utils/resourceManagement'
+import { formatData } from '@/utils/resourceManagement';
 
 @connect(
   ({
-    resourceManagement: { resourceList = [], projectList=[], total = 0 } = {},
+    resourceManagement: { resourceList = [], projectList = [], total = 0 } = {},
     user: {
       currentUser: {
         location: { _id: locationID = '' } = {},
@@ -29,8 +29,10 @@ import {formatData} from '@/utils/resourceManagement'
 )
 class ResourceList extends Component {
   fetchStatus = {
-    START: 'Start', FETCHING: 'loading', COMPLETED:'completed'
-  }
+    START: 'Start',
+    FETCHING: 'loading',
+    COMPLETED: 'completed',
+  };
 
   fetchData = this.fetchStatus.START;
 
@@ -46,13 +48,13 @@ class ResourceList extends Component {
     };
   }
 
-  componentDidMount = async () =>  {
+  componentDidMount = async () => {
     this.fetchProjectList();
     this.fetchResourceList();
-  }
+  };
 
-  componentDidUpdate(prevProps, prevState) {
-    this.fetchResourceList()
+  componentDidUpdate() {
+    this.fetchResourceList();
   }
 
   changePagination = (page, limit) => {
@@ -61,25 +63,24 @@ class ResourceList extends Component {
       pageSelected: page,
       size: limit,
     });
-  }
+  };
 
   updateData = (listOffAllTicket) => {
-    const {projectList} = this.props
+    const { projectList } = this.props;
     const array = formatData(listOffAllTicket, projectList);
     this.setState({
       resourceList: array,
     });
   };
 
-
-  fetchResourceList = async() => {
+  fetchResourceList = async () => {
     // console.log(`this.fetchData${  this.fetchData}`)
-    if(this.fetchData !== this.fetchStatus.START) {
+    if (this.fetchData !== this.fetchStatus.START) {
       return;
     }
     const { pageSelected, size, sort, filter } = this.state;
     const { dispatch } = this.props;
-    
+
     this.fetchData = this.fetchStatus.FETCHING;
     dispatch({
       type: 'resourceManagement/getResources',
@@ -88,29 +89,21 @@ class ResourceList extends Component {
         page: pageSelected,
         limit: size,
         ...sort,
-        ...filter
+        ...filter,
         // location,
       },
     }).then(() => {
-      this.fetchData = this.fetchStatus.COMPLETED
+      this.fetchData = this.fetchStatus.COMPLETED;
       const { resourceList } = this.props;
-      this.updateData(resourceList)
+      this.updateData(resourceList);
       // console.log('Completed dispatch')
     });
   };
 
-  fetchProjectList = async() => {
+  fetchProjectList = async () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'resourceManagement/getProjectList'
-    });
-  };
-
-
-
-  setSelectedTab = (id) => {
-    this.setState({
-      selectedFilterTab: id,
+      type: 'resourceManagement/getProjectList',
     });
   };
 
@@ -124,7 +117,7 @@ class ResourceList extends Component {
   };
 
   render() {
-    const { resourceList = [], projectList, } = this.state;
+    const { resourceList = [], projectList } = this.state;
     const { loading, loadingSearch, countData = [], total = 0 } = this.props;
     const { pageSelected, size } = this.state;
     // console.log(`render - total: ${  total}`)

@@ -1,29 +1,12 @@
-import React, { PureComponent, useState, Component } from 'react';
-import {
-  Table,
-  Row,
-  Col,
-  Button,
-  Modal,
-  Form,
-  Input,
-  Select,
-  DatePicker,
-  Tooltip,
-  Card,
-} from 'antd';
+import React, { Component } from 'react';
+import { Table, Modal } from 'antd';
 import moment from 'moment';
-import { InfoCircleOutlined } from '@ant-design/icons';
-import addAction from '@/assets/resource-action-add1.svg';
+import { connect } from 'umi';
 import historyIcon from '@/assets/resource-management-edit1.svg';
 import editIcon from '@/assets/resource-management-edit-history.svg';
-import datePickerIcon from '@/assets/resource-management-datepicker.svg';
-import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import styles from './index.less';
 
-const { TextArea } = Input;
-const { Option } = Select;
-
+@connect(({ resourceManagement: { resourceList } }) => ({ resourceList }))
 class EditActionBTN extends Component {
   constructor(props) {
     super(props);
@@ -51,22 +34,27 @@ class EditActionBTN extends Component {
   };
 
   render() {
-    const { sendData = [], dataPassRow = {} } = this.props;
-    const getEmpInListResource = sendData.find((obj) => obj._id === dataPassRow.employeeId);
-    const listProjectsOfEmp = getEmpInListResource ? getEmpInListResource.projects : [];
-    const managerInfoOfEmp = getEmpInListResource ? getEmpInListResource.managerInfo : [];
-    const { employeeId } = managerInfoOfEmp;
-    const dataSource = [];
-    for (let i = 0; i < listProjectsOfEmp.length; i++) {
-      dataSource.push({
-        key: i + 1,
-        ProjectName: listProjectsOfEmp[i].ProjectName || '-',
-        StartDate: moment(listProjectsOfEmp[i].startDate).format('MM-DD-YYYY') || '-',
-        EndDate: moment(listProjectsOfEmp[i].endDate).format('MM-DD-YYYY') || '-',
-        Billing: listProjectsOfEmp[i].projectStatus || '-',
-        Description: listProjectsOfEmp[i].projectDescription || '-',
+    const { resourceList = [], dataPassRow = {} } = this.props;
+    const getEmpInListResource = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
+    const { projects = [] } = getEmpInListResource || {};
+    const { managerInfo = {} } = getEmpInListResource || {};
+    const dataSource = projects
+      .map((x, index) => {
+        return {
+          key: index + 1,
+          ProjectName: x.ProjectName || '-',
+          StartDate: moment(x.startDate).format('MM-DD-YYYY') || '-',
+          EndDate: moment(x.endDate).format('MM-DD-YYYY') || '-',
+          Billing: x.projectStatus || '-',
+          Description: x.projectDescription || '-',
+        };
+      })
+      .sort((a, b) => {
+        if (!a.endDate || !b.endDate) {
+          return 0;
+        }
+        return new Date(a.endDate).getTime() - new Date(b.endDate).getTime();
       });
-    }
 
     const columns = [
       {
@@ -75,12 +63,14 @@ class EditActionBTN extends Component {
         key: 'ProjectName',
         width: '25%',
         render: (value) => {
-          if (value === 'Project 3') {
-            return <p>{value}</p>;
-          }
+          const active = true;
           return (
             <p>
-              {value} <span className={styles.lableProject}>Current</span>
+              {value}{' '}
+              <span className={styles.labelProject}>
+                {value}
+                {active ? 'Current' : ''}
+              </span>
             </p>
           );
         },
@@ -132,6 +122,7 @@ class EditActionBTN extends Component {
         },
       },
     ];
+    const { visible } = this.state;
     return (
       <div className={styles.btnEdit}>
         <img
@@ -144,7 +135,7 @@ class EditActionBTN extends Component {
           className={styles.modalAdd}
           title="Resource History"
           width="60%"
-          visible={this.state.visible}
+          visible={visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
           closable={{ style: { color: 'blue', with: '100px' } }}
@@ -160,19 +151,19 @@ class EditActionBTN extends Component {
           }}
         >
           <p className={styles.showInfo}>
-            Emp Id : PS-<span className={styles.showInfoEmp}> {employeeId}</span>
+            Emp Id:<span className={styles.showInfoEmp}> {managerInfo.employeeId || '-'}</span>
           </p>
           <p className={styles.showInfo}>
-            Name : <span className={styles.showInfoEmp}> {dataPassRow.employeeName}</span>
+            Name: <span className={styles.showInfoEmp}> {dataPassRow.employeeName}</span>
           </p>
           <p className={styles.showInfo}>
-            Designation : <span className={styles.showInfoEmp}> {dataPassRow.designation}</span>
+            Designation: <span className={styles.showInfoEmp}> {dataPassRow.designation}</span>
           </p>
           <p className={styles.showInfo}>
-            Experience : <span className={styles.showInfoEmp}> {dataPassRow.experience}</span>
+            Experience: <span className={styles.showInfoEmp}> {dataPassRow.experience}</span>
           </p>
           <p className={styles.showInfo}>
-            Total project : <span className={styles.showInfoEmp}>{listProjectsOfEmp.length}</span>
+            Total project: <span className={styles.showInfoEmp}>{projects.length}</span>
           </p>
           <br />
           <br />

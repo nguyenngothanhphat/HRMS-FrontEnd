@@ -1,15 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Row,
-  Col,
-  Button,
-  Modal,
-  Form,
-  Input,
-  Select,
-  DatePicker,
-  Card,
-} from 'antd';
+import { Row, Col, Button, Modal, Form, Input, Select, DatePicker, Card } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
 import addAction from '@/assets/resource-action-add1.svg';
@@ -53,7 +43,7 @@ class AddActionBTN extends Component {
     // window.location.reload(false);
   };
 
-  handleSubmitAssign = async(values) => {
+  handleSubmitAssign = async (values) => {
     const { dispatch, dataPassRow } = this.props;
     const { project, status, utilization, startDate, endDate, comment, revisedEndDate } = values;
     const result = await dispatch({
@@ -69,8 +59,10 @@ class AddActionBTN extends Component {
         comment,
         milestone: '',
       },
-    }).then((data) => {return data})
-    console.log(`test: ${  JSON.stringify(result)}`)
+    }).then((data) => {
+      return data;
+    });
+    console.log(`test: ${JSON.stringify(result)}`);
     this.setState({
       visible: false,
     });
@@ -92,6 +84,7 @@ class AddActionBTN extends Component {
       sumUtilization += obj.utilization;
     }
     const maxEnterUtilization = 100 - sumUtilization;
+    const { visible, visibleSuccess } = this.state;
     return (
       <div>
         <img
@@ -104,7 +97,7 @@ class AddActionBTN extends Component {
           className={styles.modalAdd}
           title="Assign to project"
           width="60%"
-          visible={this.state.visible}
+          visible={visible}
           footer={null}
           onCancel={this.handleCancel}
         >
@@ -142,21 +135,36 @@ class AddActionBTN extends Component {
                   rules={[
                     () => ({
                       validator(_, value) {
-                        if (!value) {
-                          return Promise.reject();
-                        }
-                        if (isNaN(value)) {
-                          return Promise.reject(`Value enter has to be a number.`);
-                        }
-                        if (value > maxEnterUtilization) {
-                          return Promise.reject(
-                            `Your cannot enter a value that is more than ${maxEnterUtilization}.`,
-                          );
-                        }
-                        if (value < 0) {
-                          return Promise.reject(`Your cannot enter a value that is less than 0`);
-                        }
-                        return Promise.resolve();
+                        return Promise((resolve, reject) => {
+                          if (!value || value < 0) {
+                            reject('Utilization value could not be empty and must greater than 0');
+                          }
+                          if (Number.isNaN(value)) {
+                            reject(`Value enter has to be a number.`);
+                          }
+                          if (value > maxEnterUtilization) {
+                            reject(
+                              `Your cannot enter a value that is more than ${maxEnterUtilization}.`,
+                            );
+                          }
+                          resolve();
+                          return true;
+                        });
+                        // if (!value) {
+                        //   return Promise.reject();
+                        // }
+                        // if (isNaN(value)) {
+                        //   return Promise.reject(`Value enter has to be a number.`);
+                        // }
+                        // if (value > maxEnterUtilization) {
+                        //   return Promise.reject(
+                        //     `Your cannot enter a value that is more than ${maxEnterUtilization}.`,
+                        //   );
+                        // }
+                        // if (value < 0) {
+                        //   return Promise.reject(`Your cannot enter a value that is less than 0`);
+                        // }
+                        // return Promise.resolve();
                       },
                     }),
                   ]}
@@ -174,14 +182,14 @@ class AddActionBTN extends Component {
                   <DatePicker
                     placeholder="Enter Start Date"
                     style={{ width: '100%', borderRadius: '2px', color: 'blue' }}
-                    suffixIcon={<img src={datePickerIcon} />}
+                    suffixIcon={<img src={datePickerIcon} alt="" />}
                   />
                 </Form.Item>
                 <Form.Item label="End Date" name="endDate">
                   <DatePicker
                     placeholder="Enter End Date"
                     style={{ width: '100%', borderRadius: '2px', color: 'blue' }}
-                    suffixIcon={<img src={datePickerIcon} />}
+                    suffixIcon={<img src={datePickerIcon} alt="" />}
                   />
                 </Form.Item>
                 <Form.Item label="Reserved End Date" name="reservedEndDate">
@@ -193,7 +201,7 @@ class AddActionBTN extends Component {
                       color: 'blue',
                       background: '#F4F6F7',
                     }}
-                    suffixIcon={<img src={datePickerIcon} />}
+                    suffixIcon={<img src={datePickerIcon} alt="" />}
                   />
                 </Form.Item>
               </Col>
@@ -251,7 +259,7 @@ class AddActionBTN extends Component {
         </Modal>
 
         <Modal
-          visible={this.state.visibleSuccess}
+          visible={visibleSuccess}
           className={styles.modalAdd}
           footer={null}
           width="30%"

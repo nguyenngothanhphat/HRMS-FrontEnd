@@ -1,7 +1,5 @@
 import React, { PureComponent } from 'react';
-import {
-  Table
-} from 'antd';
+import { Table } from 'antd';
 import moment from 'moment';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import AddActionBTN from './components/Add';
@@ -58,7 +56,6 @@ class TableResources extends PureComponent {
       pageSelected,
       size,
       getPageAndSize,
-      resourceList,
     } = this.props;
     // const formatData = this.formatResource(data)
     const pagination = {
@@ -201,7 +198,7 @@ class TableResources extends PureComponent {
         dataIndex: 'projectName',
         // width: '10%',
         render: (value, row) => {
-          const employeeRowCount = data.filter(x => x.employeeId === row.employeeId).length
+          const employeeRowCount = data.filter((x) => x.employeeId === row.employeeId).length;
           const display = (
             <ProjectProfile placement="leftTop" projectId={row.project}>
               <span className={styles.employeeName}>{value}</span>
@@ -294,17 +291,18 @@ class TableResources extends PureComponent {
         dataIndex: 'comment',
         key: 'comment',
         render: (value, row) => {
-          const employeeRowCount = data.filter(x => x.employeeId === row.employeeId).length
-          let text
-          if(value) {
+          const employeeRowCount = data.filter((x) => x.employeeId === row.employeeId).length;
+          let text;
+          if (value) {
             // webkit-line-clamp
-            const line = employeeRowCount === 0 || employeeRowCount === 1 ? 3 : (employeeRowCount * 3)
-            text = (
-              <CommentOverlay row={row} line={line} />
-            );
+            const line =
+              employeeRowCount === 0 || employeeRowCount === 1 ? 3 : employeeRowCount * 3;
+            text = <CommentOverlay row={row} line={line} />;
           } else {
             text = (
-              <span><CommentModal data={row} /></span>
+              <span>
+                <CommentModal data={row} />
+              </span>
             );
           }
           const obj = renderCell('comment', row, text);
@@ -323,7 +321,7 @@ class TableResources extends PureComponent {
           const buttonGroup = (
             <span>
               <AddActionBTN dataPassRow={row} />
-              <EditActionBTN sendData={resourceList} dataPassRow={row} />
+              <EditActionBTN dataPassRow={row} />
             </span>
           );
           const obj = renderCell('add', row, buttonGroup);
