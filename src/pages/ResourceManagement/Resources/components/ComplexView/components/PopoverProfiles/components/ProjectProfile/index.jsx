@@ -6,13 +6,15 @@ import CloseX from '@/assets/dashboard/closeX.svg';
 import styles from './index.less';
 import CapitalNameIcon from '../../../CapitalNameIcon';
 
+import {getProjectById} from '@/utils/resourceManagement'
+
 const ProjectProfile = (props) => {
   const { children, placement = 'top', projectId } = props;
   const [showPopover, setShowPopover] = useState(false);
 
   const renderHeader = () => {
     const {projectList} = props;
-    const project = projectList.find(x => x.projectId === projectId)
+    const project = getProjectById(projectList, projectId)
     const {division = {}} = project || {}
     const projectName = project ? project.projectName : '-'
     return (
@@ -28,7 +30,7 @@ const ProjectProfile = (props) => {
   };
   const projectInfo = () => {
     const {projectList} = props;
-    const project = projectList.find(x => x.projectId === projectId) || {name: 'Project ABCDEF', statusProgress: 40}
+    const project = getProjectById(projectList, projectId)
     const items = [
       {
         label: 'Customer',
@@ -37,12 +39,12 @@ const ProjectProfile = (props) => {
       },
       {
         label: 'Account Owner',
-        value: <span className={styles.managerName}>{project && project.accountOwner ? project.accountOwner.generaInfo.name : '-'}</span>,
+        value: <span className={styles.managerName}>{project && project.accountOwner && project.accountOwner.generalInfo ? project.accountOwner.generalInfo.legalName : '-'}</span>,
         link: '#',
       },
       {
         label: 'Engineering Owner',
-        value: <span className={styles.managerName}>{project && project.engineeringOwner ? project.engineeringOwner.generaInfo.name : '-'}</span>,
+        value: <span className={styles.managerName}>{project && project.engineeringOwner && project.engineeringOwner.generalInfo ? project.engineeringOwner.generalInfo.legalName : '-'}</span>,
         link: '#',
       },
       {
@@ -51,7 +53,7 @@ const ProjectProfile = (props) => {
       },
       {
         label: 'Status',
-        value: <div><Progress percent={project.statusProgress} showInfo={false} /><div className={styles.rightPosition}><span>{project.statusProgress}%</span></div></div>,
+        value: <div><Progress percent={project ? (project.statusProgress||0) : 0} showInfo={false} /><div className={styles.rightPosition}><span>{project ? (project.statusProgress||0) : 0}%</span></div></div>,
       },
     ];
 

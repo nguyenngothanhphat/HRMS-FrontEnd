@@ -50,13 +50,13 @@ class AddActionBTN extends Component {
     this.setState({
       visibleSuccess: false,
     });
-    window.location.reload(false);
+    // window.location.reload(false);
   };
 
-  handleSubmitAssign = (values) => {
+  handleSubmitAssign = async(values) => {
     const { dispatch, dataPassRow } = this.props;
-    const { project, status, utilization, startDate, endDate, comment } = values;
-    dispatch({
+    const { project, status, utilization, startDate, endDate, comment, revisedEndDate } = values;
+    const result = await dispatch({
       type: 'resourceManagement/fetchAssignToProject',
       payload: {
         employee: dataPassRow.employeeId,
@@ -65,16 +65,21 @@ class AddActionBTN extends Component {
         utilization,
         startDate: moment(startDate).format('YYYY-MM-DD'),
         endDate: moment(endDate).format('YYYY-MM-DD'),
+        revisedEndDate: moment(revisedEndDate).format('YYYY-MM-DD'),
         comment,
         milestone: '',
       },
-    });
+    }).then((data) => {return data})
+    console.log(`test: ${  JSON.stringify(result)}`)
     this.setState({
       visible: false,
     });
-    this.setState({
-      visibleSuccess: true,
-    });
+    const { statusCode } = result;
+    if (statusCode === 200) {
+      this.setState({
+        visibleSuccess: true,
+      });
+    }
   };
 
   render() {
@@ -117,7 +122,7 @@ class AddActionBTN extends Component {
                     style={{ width: '95%', borderRadius: '2px' }}
                   >
                     {projectList.map((project) => (
-                      <Option value={project.projectId}>{project.projectName}</Option>
+                      <Option value={project.id}>{project.projectName}</Option>
                     ))}
                   </Select>
                 </Form.Item>

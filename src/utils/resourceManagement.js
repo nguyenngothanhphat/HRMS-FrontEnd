@@ -75,16 +75,18 @@ export function formatData(rawData, projectList) {
     } else {
       // eslint-disable-next-line no-restricted-syntax
       for (const p of projects) {
-        const project = projectList.find((x) => x.projectId === p.project);
+        const project = projectList.find((x) => x.id === p.project);
         const {projectName = ''} = project || {}
         const pObj = cloneObj(newObj);
         pObj.projectName = projectName;
-        pObj.projectId = p.project
+        pObj.projectId = p.projectId
         pObj.utilization = (`${p.utilization}${p.utilization > 0 ? ` %`: ''}`) || 0;
         pObj.startDate = parseDate(p.startDate);
         pObj.endDate = parseDate(p.endDate);
         pObj.billStatus = p.billStatus || '-';
-        pObj.project = project;
+        pObj.project = p.project
+        pObj.revisedEndDate = parseDate(p.revisedEndDate)
+        // pObj.project = project;
         // pObj.comment = p.commentResource
         dataList.push(pObj);
       }
@@ -93,3 +95,12 @@ export function formatData(rawData, projectList) {
   // console.log(`formatDataSource: ${JSON.stringify(dataList)}`);
   return dataList
 };
+
+export function getProjectById(projectList, id){
+  if(!projectList || projectList.length === 0) {
+    return {}
+  }
+
+  return projectList.find(x => x.id === id)
+
+}

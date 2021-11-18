@@ -203,7 +203,7 @@ class TableResources extends PureComponent {
         render: (value, row) => {
           const employeeRowCount = data.filter(x => x.employeeId === row.employeeId).length
           const display = (
-            <ProjectProfile placement="leftTop" projectId={row.projectId}>
+            <ProjectProfile placement="leftTop" projectId={row.project}>
               <span className={styles.employeeName}>{value}</span>
             </ProjectProfile>
           );
@@ -281,7 +281,7 @@ class TableResources extends PureComponent {
             <div>(MM/dd/yyyy)</div>
           </div>
         ),
-        dataIndex: 'endDate',
+        dataIndex: 'revisedEndDate',
         // width: '7%',
         key: 'revisedEndDate',
         render: (value) => {
