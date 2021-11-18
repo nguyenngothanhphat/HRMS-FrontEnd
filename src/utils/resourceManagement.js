@@ -27,6 +27,20 @@ const cloneObj = (obj) => {
     return newObj
   };
 
+
+  // obj = {
+  //   employeeId: 15,
+  //   employeeName: `employee 15`,
+  //   division: 'division',
+  //   designation: 'designation',
+  //   experience: (Math.random(i) * i).toFixed(1),
+  //   projectName: '',
+  //   availableStatus: 'Available Soon',
+  //   comment: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint nt. ullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint...Read More',
+  //   utilization: 0,
+  //   startDate: '',
+  //   endDate: '',
+  // };
 // eslint-disable-next-line import/prefer-default-export
 export function formatData(rawData, projectList) {
   const dataList = [];
@@ -36,6 +50,7 @@ export function formatData(rawData, projectList) {
     const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'));
     const employeeName = `${generalInfo.legalName} ${userName ? `(${userName})` : ''}`;
     const newObj = {
+      avatar: generalInfo.avatar,
       employeeId: obj._id,
       employeeName: handleLongText(employeeName.trim(), 25),
       availableStatus,
@@ -58,12 +73,12 @@ export function formatData(rawData, projectList) {
     if (projects.length === 0) {
       dataList.push(newObj);
     } else {
-      console.log(`test: ${JSON.stringify(projectList)}`)
       // eslint-disable-next-line no-restricted-syntax
       for (const p of projects) {
         const project = projectList.find((x) => x.projectId === p.project);
+        const {projectName = ''} = project || {}
         const pObj = cloneObj(newObj);
-        pObj.projectName = project.projectName;
+        pObj.projectName = projectName;
         pObj.projectId = p.project
         pObj.utilization = (`${p.utilization}${p.utilization > 0 ? ` %`: ''}`) || 0;
         pObj.startDate = parseDate(p.startDate);

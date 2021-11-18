@@ -1,17 +1,13 @@
-import { Button, Col, Popover, Row } from 'antd';
-// import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import { Col, Popover, Row } from 'antd';
+import React, { useState } from 'react';
 import { connect } from 'umi';
 import CloseX from '@/assets/dashboard/closeX.svg';
+
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
-import { getCurrentCompany } from '@/utils/authority';
-import { convertMsToTime } from '@/utils/timeSheet';
 
 import {getTimezoneViaCity, getCurrentTimeOfTimezoneOption} from '@/utils/times'
 
 import styles from './index.less';
-
-const moment = require('moment-timezone')
 
 const UserProfile = (props) => {
   const { children, placement = 'top' } = props;
@@ -21,13 +17,14 @@ const UserProfile = (props) => {
     if(!employee) {
       return null
     }
-    const {titleInfo,  generalInfo, departmentInfo} = employee
+    const {titleInfo = {},  generalInfo = {workEmail:''}, departmentInfo = {}} = employee
     const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'))
-      const employeeName = `${ generalInfo.legalName } ${ userName ? (`(${  userName  })`) : ''}`;
+    const employeeName = `${ generalInfo.legalName } ${ userName ? (`(${  userName  })`) : ''}`;
+    console.log('avatar: ',generalInfo.avatar)
     return (
       <div className={styles.header}>
         <div className={styles.avatar}>
-          <img src={MockAvatar} alt="" />
+          <img src={generalInfo.avatar || MockAvatar} alt="" />
         </div>
         <div className={styles.information}>
           <span className={styles.name}>{employeeName}</span>
@@ -38,15 +35,16 @@ const UserProfile = (props) => {
     );
   };
   const userInfo = (employee) => {
-    const {generalInfo, managerInfo, locationInfo = {}} = employee
-    const {headQuarterAddress} = locationInfo
-    const {country, state} = headQuarterAddress
-    const timezone = getTimezoneViaCity(state)
+    const {generalInfo = {workEmail: ''}, managerInfo = {}, locationInfo = {}} = employee || {}
+    const {headQuarterAddress = {}} = locationInfo || {}
+    const {country = {}, state = ''} = headQuarterAddress || {}
+    const getTimezone = getTimezoneViaCity(state) || ''
+    const timezone = getTimezone !== '' ? getTimezone : Intl.DateTimeFormat().resolvedOptions().timeZone
     const time = getCurrentTimeOfTimezoneOption(new Date(),timezone)
     const items = [
       {
         label: 'Reporting Manager',
-        value: <span className={styles.managerName}>{managerInfo ? managerInfo.generalInfo.legalName : '-'}</span>,
+        value: <span className={styles.managerName}>{managerInfo && managerInfo.generalInfo ? managerInfo.generalInfo.legalName : '-'}</span>,
         link: '#',
       },
       {
@@ -86,7 +84,7 @@ const UserProfile = (props) => {
   const renderPopup = () => {
     const {resourceList, employeeId} = props;
     const employee = resourceList.find(x => x._id === employeeId)
-    const {generalInfo} = employee
+    const {generalInfo = {workEmail: ''}} = employee || {}
     const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'));
     const profileUrl = `/directory/employee-profile/${userName}/general-info` 
     return (

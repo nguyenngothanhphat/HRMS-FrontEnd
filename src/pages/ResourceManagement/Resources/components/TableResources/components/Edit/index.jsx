@@ -51,7 +51,7 @@ class EditActionBTN extends Component {
   };
 
   render() {
-    const { sendData, dataPassRow } = this.props;
+    const { sendData = [], dataPassRow = {} } = this.props;
     const getEmpInListResource = sendData.find((obj) => obj._id === dataPassRow.employeeId);
     const listProjectsOfEmp = getEmpInListResource ? getEmpInListResource.projects : [];
     const managerInfoOfEmp = getEmpInListResource ? getEmpInListResource.managerInfo : [];

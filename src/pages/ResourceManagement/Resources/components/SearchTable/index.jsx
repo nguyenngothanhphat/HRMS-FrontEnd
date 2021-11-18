@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Input, Popover } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import filterIcon from '@/assets/ticketManagement-filter.svg';
@@ -6,7 +6,7 @@ import closeIcon from '@/assets/closeIcon.svg';
 import FilterForm from './components/FilterForm';
 import styles from './index.less';
 
-export class SearchTable extends Component {
+class SearchTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {

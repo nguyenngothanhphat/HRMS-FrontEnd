@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
 import styles from './index.less';
 import Summary from '../Summary';
 import SearchTable from '../SearchTable';
@@ -42,15 +41,14 @@ class ResourceList extends Component {
       pageSelected: 1,
       size: 10,
       sort: {},
-      filter: {}
+      filter: {},
       // fetchData: this.fetchStatus.START
     };
   }
 
   componentDidMount = async () =>  {
     this.fetchProjectList();
-    this.fetchResourceList();   
-    console.log('componentDidMount');
+    this.fetchResourceList();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -65,18 +63,6 @@ class ResourceList extends Component {
     });
   }
 
-  // handleLongText = (text, length) => {
-  //   if(!text) {
-  //     return ''
-  //   }
-  //   if (text.length < length) {
-  //     return text;
-  //   }
-
-  //   const formatText = text.substring(0, length)
-  //   return `${formatText}...${formatText.includes('(') ? ')' : ''}`
-  // }
-
   updateData = (listOffAllTicket) => {
     const {projectList} = this.props
     const array = formatData(listOffAllTicket, projectList);
@@ -85,90 +71,6 @@ class ResourceList extends Component {
     });
   };
 
-  // obj = {
-  //   employeeId: 15,
-  //   employeeName: `employee 15`,
-  //   division: 'division',
-  //   designation: 'designation',
-  //   experience: (Math.random(i) * i).toFixed(1),
-  //   projectName: '',
-  //   availableStatus: 'Available Soon',
-  //   comment: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint nt. ullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint...Read More',
-  //   utilization: 0,
-  //   startDate: '',
-  //   endDate: '',
-  // };
-  parseDate = (dateText) => {
-    if(!dateText) {
-      return '-'
-    }
-    return moment(dateText).format('MM/DD/YYYY')
-  }
-
-  // formatDataSource = (resourceList) => {
-  //   const dataList = [];
-  //   const {projectList} = this.props
-  //   // console.log(`loaded projects: ${  JSON.stringify(projectList)}`)
-  //   // eslint-disable-next-line no-restricted-syntax
-  //   resourceList.forEach((obj) => {
-  //     const { departmentInfo, titleInfo, generalInfo, projects} = obj;
-  //     const availableStatus = 'Available Now'
-  //     const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'))
-  //     const employeeName = `${ generalInfo.legalName } ${ userName ? (`(${  userName  })`) : ''}`;
-  //     const newObj = {
-  //       employeeId: obj._id,
-  //       employeeName: this.handleLongText(employeeName.trim(), 25),
-  //       availableStatus,
-  //       division: departmentInfo.name,
-  //       designation: titleInfo.name,
-  //       experience: generalInfo.totalExp,
-  //       comment: obj.commentResource,
-  //       projectName: '-',
-  //       utilization: 0,
-  //       billStatus: '-',
-  //       startDate: '-',
-  //       endDate: '-',
-  //     };
-  //     let ability = 0
-  //     // eslint-disable-next-line no-restricted-syntax
-  //     for(const p of projects) {
-  //       ability += p.utilization
-  //     }
-  //     newObj.availableStatus = ability < 100 ? 'Available Now' : 'Available Soon'
-  //     // console.log(`project length ${  projects.length}`)
-  //     if(projects.length === 0) {
-  //       dataList.push(newObj);
-  //     } else {
-  //       // eslint-disable-next-line no-restricted-syntax
-  //       for(const p of projects) {
-  //         const project = projectList.find(x => x.projectId === p.projectId)
-  //         // console.log(`loop in projects: ${ JSON.stringify(p) }`)
-  //         const pObj = this.cloneObj(newObj)
-  //         pObj.projectName = p.projectName || '-'
-  //         pObj.utilization = p.utilization || 0
-  //         pObj.startDate = this.parseDate(p.startDate)
-  //         pObj.endDate = this.parseDate(p.endDate)
-  //         pObj.billStatus = p.billStatus || '-'
-  //         pObj.project = project
-  //         // pObj.comment = p.commentResource
-  //         dataList.push(pObj);
-  //       }
-  //     }
-  //   })
-  //   // for (const obj, index of resourceList) {
-      
-  //   console.log(`formatDataSource: ${JSON.stringify(dataList)}`);
-  //   return dataList;
-  // };
-
-  cloneObj = (obj) => {
-    const newObj = {}
-    // eslint-disable-next-line no-restricted-syntax
-    for(const [key, value] of Object.entries(obj)) {
-      newObj[key] = value
-    }
-    return newObj
-  }
 
   fetchResourceList = async() => {
     // console.log(`this.fetchData${  this.fetchData}`)
