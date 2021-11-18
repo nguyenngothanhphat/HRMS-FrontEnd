@@ -1,8 +1,11 @@
 import { Col, Form, Input, message, Row, Select, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { Document, Page, pdfjs } from 'react-pdf';
 import { connect } from 'umi';
 import UploadIcon from '@/assets/upload-icon.svg';
 import styles from './index.less';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const AddContent = (props) => {
   const formRef = React.createRef();
@@ -20,6 +23,7 @@ const AddContent = (props) => {
 
   const [uploadedPreview, setUploadedPreview] = useState('');
   const [uploadedFile, setUploadedFile] = useState({});
+  const [numPages, setNumPages] = useState({});
 
   const fetchDocumentTypeList = () => {
     dispatch({
@@ -111,6 +115,39 @@ const AddContent = (props) => {
     });
   };
 
+  const onDocumentLoadSuccess = ({ numPages: n }) => {
+    setNumPages(n);
+  };
+
+  const _renderPreview = () => {
+    if (uploadedPreview.includes('pdf')) {
+      return (
+        <div className={styles.fileUploadedContainer}>
+          <Document
+            className={styles.pdfFrame}
+            file={uploadedPreview}
+            noData="Document Not Found"
+            onDocumentLoadSuccess={onDocumentLoadSuccess}
+          >
+            {Array.from(new Array(numPages), (el, index) => (
+              <Page
+                loading=""
+                className={styles.pdfPage}
+                key={`page_${index + 1}`}
+                pageNumber={index + 1}
+              />
+            ))}
+          </Document>
+        </div>
+      );
+    }
+    return (
+      <div className={styles.fileUploadedContainer}>
+        <img src={uploadedPreview} alt="preview" />
+      </div>
+    );
+  };
+
   return (
     <div className={styles.AddContent}>
       <Form name="basic" ref={formRef} id="myForm" onFinish={handleFinish} initialValues={{}}>
@@ -154,9 +191,7 @@ const AddContent = (props) => {
                 beforeUpload={beforeUpload}
               >
                 {uploadedPreview ? (
-                  <div className={styles.fileUploadedContainer}>
-                    <img src={uploadedPreview} alt="preview" />
-                  </div>
+                  _renderPreview()
                 ) : (
                   <div className={styles.content}>
                     <div className={styles.viewIconDownload}>

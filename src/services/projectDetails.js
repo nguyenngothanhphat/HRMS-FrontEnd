@@ -148,6 +148,18 @@ export async function addResource(payload) {
   );
 }
 
+export async function assignResources(payload) {
+  return request(
+    '/api-project/resourcetenant/add-multi',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    'PROJECT_API',
+  );
+}
+
 export async function countStatusResource(payload) {
   return request(
     '/api-project/resourcetenant/count-status',

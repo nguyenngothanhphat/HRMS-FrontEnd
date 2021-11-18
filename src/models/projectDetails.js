@@ -6,6 +6,7 @@ import {
   addMilestone,
   addResourceType,
   addResource,
+  assignResources,
   getResourceList,
   countStatusResource,
   getTechnologyList,
@@ -350,6 +351,20 @@ const ProjectDetails = {
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *assignResourcesEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(assignResources, payload);
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({

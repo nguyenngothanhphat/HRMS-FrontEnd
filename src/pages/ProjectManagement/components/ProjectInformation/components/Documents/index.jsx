@@ -14,6 +14,7 @@ import FilterContent from './components/FilterContent';
 import CommonTable from '../CommonTable';
 import ViewIcon from '@/assets/projectManagement/view.svg';
 import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import styles from './index.less';
 
 const Documents = (props) => {
@@ -24,6 +25,8 @@ const Documents = (props) => {
     loadingFetchDocument = false,
   } = props;
   const [addDocumentModalVisible, setAddDocumentModalVisible] = useState(false);
+  const [viewFileModalVisible, setViewFileModalVisible] = useState(false);
+  const [fileUrl, setFileUrl] = useState('');
 
   const viewProfile = (id) => {
     const url = `/directory/employee-profile/${id}`;
@@ -114,7 +117,14 @@ const Documents = (props) => {
         render: (_, row) => {
           return (
             <div className={styles.action}>
-              <img src={ViewIcon} alt="" />
+              <img
+                src={ViewIcon}
+                alt=""
+                onClick={() => {
+                  setFileUrl(row.attachmentInfo?.url);
+                  setViewFileModalVisible(true);
+                }}
+              />
               <img src={DeleteIcon} alt="" onClick={() => removeDocument(row?.id)} />
             </div>
           );
@@ -162,6 +172,11 @@ const Documents = (props) => {
         }
         title="Add Document"
         loading={loadingAddDocument}
+      />
+      <ViewDocumentModal
+        visible={viewFileModalVisible}
+        onClose={() => setViewFileModalVisible(false)}
+        url={fileUrl}
       />
     </div>
   );

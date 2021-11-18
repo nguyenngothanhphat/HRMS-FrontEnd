@@ -64,7 +64,7 @@ const AddProjectModal = (props) => {
         type: 'projectManagement/generateProjectIdEffect',
         payload: {
           customerId,
-          customerName: find.legalName,
+          customerName: find?.legalName,
         },
       });
     }
@@ -100,6 +100,7 @@ const AddProjectModal = (props) => {
   };
 
   const handleFinish = async (values) => {
+    const customer = customerList.find(x => x.customerId === customerId)
     const res = await dispatch({
       type: 'projectManagement/addProjectEffect',
       payload: {
@@ -107,6 +108,7 @@ const AddProjectModal = (props) => {
         startDate: moment(values.startDate).format('YYYY-MM-DD'),
         tentativeEndDate: moment(values.tentativeEndDate).format('YYYY-MM-DD'),
         tagIds: values.tagIds.map((x) => x * 1),
+        customerName: customer?.legalName
       },
     });
     if (res.statusCode === 200) {

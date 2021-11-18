@@ -1,6 +1,8 @@
 import { Button, Modal, Row, Col } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
+import moment from 'moment';
+import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
 import BackIcon from '@/assets/projectManagement/back.svg';
 import ResourceTableCard from './components/ResourceTableCard';
 import ReviewResourceTable from './components/ReviewResourceTable';
@@ -26,7 +28,16 @@ const AssignResourcesModal = (props) => {
     projectDetails: { projectDetail = {}, resourceList = [], resourceListTotal = 0 } = {},
     loadingFetchResourceList = false,
   } = props;
-  const { projectName = '', engagementType = '' } = projectDetail;
+  const {
+    projectId = '',
+    projectName = '',
+    engagementType = '',
+    startDate = '',
+    tentativeEndDate = '',
+    newEndDate = '',
+  } = projectDetail;
+
+  const endDate = newEndDate || tentativeEndDate;
 
   const [sucessModalVisible, setSuccessModalVisible] = useState(false);
   const [step, setStep] = useState(1);
@@ -61,6 +72,25 @@ const AssignResourcesModal = (props) => {
     }
   }, [visible]);
 
+  const assignResources = () => {
+    const payload = selectedResources.map((x) => {
+      return {
+        tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
+        project: projectId,
+        status: 'Billing',
+        utilization: '',
+        startDate: x.startDate ? moment(x.startDate).format('YYYY-MM-DD') : '',
+        endDate: x.endDate ? moment(x.endDate).format('YYYY-MM-DD') : '',
+        employee: x._id,
+      };
+    });
+    return dispatch({
+      type: 'projectDetails/assignResourcesEffect',
+      payload,
+    });
+  };
+
   // render ui
   const renderModalHeader = () => {
     return (
@@ -84,20 +114,45 @@ const AssignResourcesModal = (props) => {
       <div className={styles.container}>
         <Row gutter={[0, 24]} className={styles.abovePart}>
           <Col xs={24} md={7}>
-            <div className={styles.item}>
-              <span className={styles.label}>Project Name:</span>
-              <span className={styles.value}>{projectName}</span>
-            </div>
+            <Row gutter={[24, 10]}>
+              <Col span={24}>
+                <div className={styles.item}>
+                  <span className={styles.label}>Project Name:</span>
+                  <span className={styles.value}>{projectName}</span>
+                </div>
+              </Col>
+              <Col span={24}>
+                <div className={styles.item}>
+                  <span className={styles.label}>Engagement Type:</span>
+                  <span className={styles.value}>{engagementType}</span>
+                </div>
+              </Col>
+            </Row>
           </Col>
           <Col xs={24} md={7}>
-            <div className={styles.item}>
-              <span className={styles.label}>Engagement Type:</span>
-              <span className={styles.value}>{engagementType}</span>
-            </div>
+            <Row gutter={[24, 10]}>
+              <Col span={24}>
+                <div className={styles.item}>
+                  <span className={styles.label}>Start Date:</span>
+                  <span className={styles.value}>
+                    {startDate ? moment(startDate).locale('en').format('MM/DD/YYYY') : ''}
+                  </span>
+                </div>
+              </Col>
+              <Col span={24}>
+                <div className={styles.item}>
+                  <span className={styles.label}>End Date:</span>
+                  <span className={styles.value}>
+                    {endDate ? moment(endDate).locale('en').format('MM/DD/YYYY') : ''}
+                  </span>
+                </div>
+              </Col>
+            </Row>
           </Col>
+
           <Col xs={24} md={10}>
-            <div className={styles.item}>
-              <span className={styles.label}>Description:</span>
+            <div className={styles.item2}>
+              <span className={styles.label}>Notes/Comments:</span>
               <span className={styles.value}>{comments}</span>
             </div>
           </Col>
@@ -155,13 +210,16 @@ const AssignResourcesModal = (props) => {
     return 'Back';
   };
 
-  const onPrimaryButtonClick = () => {
+  const onPrimaryButtonClick = async () => {
     if (step === 1) {
       setStep(2);
     }
     if (step === 2) {
-      onClose();
-      setSuccessModalVisible(true);
+      const res = await assignResources();
+      if (res.statusCode === 200) {
+        onClose();
+        setSuccessModalVisible(true);
+      }
     }
   };
 
@@ -195,7 +253,12 @@ const AssignResourcesModal = (props) => {
               <Button className={styles.btnCancel} onClick={onSecondaryButtonClick}>
                 {renderSecondaryButtonText()}
               </Button>
-              <Button className={styles.btnSubmit} type="primary" onClick={onPrimaryButtonClick}>
+              <Button
+                className={styles.btnSubmit}
+                type="primary"
+                onClick={onPrimaryButtonClick}
+                disabled={selectedResources.length === 0}
+              >
                 {renderPrimaryButtonText()}
               </Button>
             </div>
