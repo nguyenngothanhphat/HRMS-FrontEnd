@@ -6,9 +6,18 @@ import CalendarIcon from '@/assets/timeSheet/calendar.svg';
 import styles from './index.less';
 
 const EditEndDateContent = (props) => {
-  const { initialValue = '', newValues = {}, onClose = () => {}, onSubmit = () => {} } = props;
+  const {
+    initialValue = '',
+    newValues = {},
+    onClose = () => {},
+    onSubmit = () => {},
+    addProjectHistory = () => {},
+    fetchProjectHistory = () => {},
+    projectId = '',
+    employee: { _id: employeeId = '' } = {},
+  } = props;
 
-  const handleFinish = (values) => {
+  const handleFinish = async (values) => {
     onSubmit(
       {
         value: values.newEndDate,
@@ -16,6 +25,15 @@ const EditEndDateContent = (props) => {
       },
       'endDate',
     );
+    const res = await addProjectHistory({
+      updatedBy: employeeId,
+      comments: values.reason,
+      description: 'End date changed',
+      projectId,
+    });
+    if (res.statusCode === 200) {
+      fetchProjectHistory();
+    }
     onClose();
   };
 

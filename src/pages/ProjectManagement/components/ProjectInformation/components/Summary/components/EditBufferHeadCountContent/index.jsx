@@ -4,10 +4,19 @@ import { connect } from 'umi';
 import styles from './index.less';
 
 const EditBufferHeadCountContent = (props) => {
-  const { initialValue = '', newValues = {}, onClose = () => {}, onSubmit = () => {} } = props;
+  const {
+    initialValue = '',
+    newValues = {},
+    onClose = () => {},
+    onSubmit = () => {},
+    addProjectHistory = () => {},
+    fetchProjectHistory = () => {},
+    projectId = '',
+    employee: { _id: employeeId = '' } = {},
+  } = props;
   const formRef = React.createRef();
 
-  const handleFinish = (values) => {
+  const handleFinish = async (values) => {
     onSubmit(
       {
         value: values.newBufferHeadCount,
@@ -15,6 +24,15 @@ const EditBufferHeadCountContent = (props) => {
       },
       'buffer',
     );
+    const res = await addProjectHistory({
+      updatedBy: employeeId,
+      comments: values.reason,
+      description: 'Buffer Head Count changed',
+      projectId,
+    });
+    if (res.statusCode === 200) {
+      fetchProjectHistory();
+    }
     onClose();
   };
 

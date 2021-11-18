@@ -1,5 +1,4 @@
 import { request } from '@/utils/request';
-// audit trail
 
 export async function getProjectByID(payload) {
   return request(
@@ -28,6 +27,30 @@ export async function updateProjectOverview(payload) {
 export async function getProjectTagList(payload) {
   return request(
     `/api-project/tagtenant/list`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    'PROJECT_API',
+  );
+}
+
+export async function addProjectHistory(payload) {
+  return request(
+    `/api-project/projecthistorytenant/add`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    'PROJECT_API',
+  );
+}
+
+export async function getProjectHistoryList(payload) {
+  return request(
+    `/api-project/projecthistorytenant/list`,
     {
       method: 'POST',
       data: payload,

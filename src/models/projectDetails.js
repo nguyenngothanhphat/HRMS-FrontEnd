@@ -24,6 +24,8 @@ import {
   // overview
   getProjectByID,
   updateProjectOverview,
+  getProjectHistoryList,
+  addProjectHistory,
   // other
   getProjectTagList,
   getTechnologyList,
@@ -36,6 +38,7 @@ import { dialog } from '@/utils/utils';
 const initialState = {
   projectId: '',
   projectDetail: {},
+  projectHistoryList: [],
   milestoneList: [],
   resourceTypeList: [],
   resourceList: [],
@@ -91,6 +94,46 @@ const ProjectDetails = {
           payload: {
             projectTagList: data,
           },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchProjectHistoryListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getProjectHistoryList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            projectHistoryList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *addProjectHistoryEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(addProjectHistory, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
         });
       } catch (errors) {
         dialog(errors);

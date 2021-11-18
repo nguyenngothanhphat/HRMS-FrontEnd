@@ -4,10 +4,19 @@ import { connect } from 'umi';
 import styles from './index.less';
 
 const EditBillableHeadCountContent = (props) => {
-  const { initialValue = '', newValues = {}, onClose = () => {}, onSubmit = () => {} } = props;
+  const {
+    initialValue = '',
+    newValues = {},
+    onClose = () => {},
+    onSubmit = () => {},
+    addProjectHistory = () => {},
+    fetchProjectHistory = () => {},
+    projectId = '',
+    employee: { _id: employeeId = '' } = {},
+  } = props;
   const formRef = React.createRef();
 
-  const handleFinish = (values) => {
+  const handleFinish = async (values) => {
     onSubmit(
       {
         value: values.newBillableHeadCount,
@@ -15,6 +24,15 @@ const EditBillableHeadCountContent = (props) => {
       },
       'billable',
     );
+    const res = await addProjectHistory({
+      updatedBy: employeeId,
+      comments: values.reason,
+      description: 'Billable Head Count changed',
+      projectId,
+    });
+    if (res.statusCode === 200) {
+      fetchProjectHistory();
+    }
     onClose();
   };
 

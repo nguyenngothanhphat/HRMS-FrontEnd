@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Card, Button, Row, Col, Form, Input, DatePicker, Skeleton } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Card, Button, Row, Col, Form, Input, DatePicker } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import EditIcon from '@/assets/projectManagement/edit.svg';
@@ -38,9 +38,11 @@ const Summary = (props) => {
         newBillableHeadCount: newBillableHeadCountProp = '',
         newBufferHeadCount: newBufferHeadCountProp = '',
       } = {},
+      projectHistoryList = [],
     } = {},
     dispatch,
     loadingUpdateProjectOverview = false,
+    loadingFetchProjectHistory = false,
   } = props;
 
   // new data than old data
@@ -53,6 +55,20 @@ const Summary = (props) => {
     setNewEndDate({});
     setNewBufferHeadCount({});
     setNewBillableHeadCount({});
+  };
+
+  const viewProfile = (id) => {
+    const url = `/directory/employee-profile/${id}`;
+    window.open(url, '_blank');
+  };
+
+  const fetchProjectHistory = () => {
+    return dispatch({
+      type: 'projectDetails/fetchProjectHistoryListEffect',
+      payload: {
+        projectId,
+      },
+    });
   };
 
   const onSubmitHardField = (payload, type) => {
@@ -76,7 +92,22 @@ const Summary = (props) => {
         billableHeadCount: value,
       });
     }
+
+    // refresh project history list after editing
+    fetchProjectHistory();
   };
+
+  const addProjectHistory = (payload) => {
+    return dispatch({
+      type: 'projectDetails/addProjectHistoryEffect',
+      payload,
+    });
+  };
+
+  // USE EFFECT
+  useEffect(() => {
+    fetchProjectHistory();
+  }, []);
 
   // ON FINISH
   const refreshData = () => {
@@ -270,8 +301,15 @@ const Summary = (props) => {
     const columns = [
       {
         title: 'Time',
-        dataIndex: 'time',
-        key: 'time',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        render: (createdAt) => {
+          return (
+            <span>
+              {createdAt ? moment(createdAt).locale('en').format('MM-DD-YYYY HH:mm:ss') : '-'}
+            </span>
+          );
+        },
       },
       {
         title: 'Description',
@@ -285,8 +323,16 @@ const Summary = (props) => {
       },
       {
         title: 'Updated By',
-        dataIndex: 'updatedBy',
-        key: 'updatedBy',
+        dataIndex: 'updatedByInfo',
+        key: 'updatedByInfo',
+        render: (updatedByInfo = {}) => {
+          const { generalInfo: { legalName = '', userId = '' } = {} || {} } = updatedByInfo;
+          return (
+            <span className={styles.clickableTag} onClick={() => viewProfile(userId)}>
+              {legalName}
+            </span>
+          );
+        },
       },
     ];
     return columns;
@@ -311,6 +357,9 @@ const Summary = (props) => {
                 newValues={newEndDate}
                 onClose={() => setEditEndDateModalVisible(false)}
                 onSubmit={onSubmitHardField}
+                addProjectHistory={addProjectHistory}
+                fetchProjectHistory={fetchProjectHistory}
+                projectId={projectId}
               />
             }
             width={600}
@@ -327,6 +376,9 @@ const Summary = (props) => {
                 newValues={newBillableHeadCount}
                 onClose={() => setEditBillableModalVisible(false)}
                 onSubmit={onSubmitHardField}
+                addProjectHistory={addProjectHistory}
+                fetchProjectHistory={fetchProjectHistory}
+                projectId={projectId}
               />
             }
             width={600}
@@ -343,6 +395,9 @@ const Summary = (props) => {
                 newValues={newBufferHeadCount}
                 onClose={() => setEditBufferModalVisible(false)}
                 onSubmit={onSubmitHardField}
+                addProjectHistory={addProjectHistory}
+                fetchProjectHistory={fetchProjectHistory}
+                projectId={projectId}
               />
             }
             width={600}
@@ -351,7 +406,11 @@ const Summary = (props) => {
         <Col span={24}>
           <Card title="Project History">
             <div className={styles.tableContainer}>
-              <CommonTable list={[]} columns={getProjectHistoryColumns()} />
+              <CommonTable
+                list={projectHistoryList}
+                columns={getProjectHistoryColumns()}
+                loading={loadingFetchProjectHistory}
+              />
             </div>
           </Card>
         </Col>
@@ -362,4 +421,5 @@ const Summary = (props) => {
 export default connect(({ projectDetails, loading }) => ({
   projectDetails,
   loadingUpdateProjectOverview: loading.effects['projectDetails/updateProjectOverviewEffect'],
+  loadingFetchProjectHistory: loading.effects['projectDetails/fetchProjectHistoryListEffect'],
 }))(Summary);
