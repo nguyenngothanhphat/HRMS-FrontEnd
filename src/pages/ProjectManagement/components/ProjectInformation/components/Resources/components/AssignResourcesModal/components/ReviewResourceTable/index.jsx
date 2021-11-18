@@ -27,6 +27,15 @@ const ReviewResourceTable = (props) => {
     setSelectedResources(result);
   };
 
+  const renderTimeTitle = (title) => {
+    return (
+      <span className={styles.timeTitle}>
+        <span>{title}</span>
+        <span className={styles.smallText}>(mm/dd/yyyy)</span>
+      </span>
+    );
+  };
+
   const generateColumns = () => {
     const columns = [
       {
@@ -59,9 +68,10 @@ const ReviewResourceTable = (props) => {
         },
       },
       {
-        title: 'Start Date',
+        title: renderTimeTitle('Start Date'),
         dataIndex: 'startDate',
         key: 'startDate',
+        align: 'center',
         render: (startDate, row) => {
           const value = startDate ? moment(startDate) : null;
           return (
@@ -70,9 +80,10 @@ const ReviewResourceTable = (props) => {
         },
       },
       {
-        title: 'End Date',
+        title: renderTimeTitle('End Date'),
         dataIndex: 'endDate',
         key: 'endDate',
+        align: 'center',
         render: (endDate, row) => {
           const value = endDate ? moment(endDate) : null;
           return <DatePicker value={value} onChange={(val) => onDateChange(val, row, 'endDate')} />;

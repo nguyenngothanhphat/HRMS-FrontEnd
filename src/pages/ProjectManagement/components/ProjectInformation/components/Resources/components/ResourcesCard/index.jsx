@@ -22,7 +22,7 @@ const ResourcesCard = (props) => {
   const {
     dispatch,
     projectDetails: {
-      projectDetail: { projectId = '' } = {},
+      projectDetail: { id = '' } = {},
       projectResourceList = [],
       projectResourceListTotal: total = '',
     } = {},
@@ -33,7 +33,7 @@ const ResourcesCard = (props) => {
     dispatch({
       type: 'projectDetails/fetchResourceOfProjectEffect',
       payload: {
-        project: [projectId],
+        project: [id],
         name,
         page: p,
         limit: l,
@@ -62,6 +62,15 @@ const ResourcesCard = (props) => {
   const onSearch = (e = {}) => {
     const { value = '' } = e.target;
     onSearchDebounce(value);
+  };
+
+  const renderTimeTitle = (title) => {
+    return (
+      <span className={styles.timeTitle}>
+        <span>{title}</span>
+        <span className={styles.smallText}>(mm/dd/yyyy)</span>
+      </span>
+    );
   };
 
   const generateColumns = () => {
@@ -97,25 +106,28 @@ const ResourcesCard = (props) => {
         },
       },
       {
-        title: 'Start Date',
+        title: renderTimeTitle('Start Date'),
         dataIndex: 'startDate',
         key: 'startDate',
+        align: 'center',
         render: (startDate) => {
           return <span>{startDate || '-'}</span>;
         },
       },
       {
-        title: 'End Date',
+        title: renderTimeTitle('End Date'),
         dataIndex: 'endDate',
         key: 'endDate',
+        align: 'center',
         render: (endDate) => {
           return <span>{endDate || '-'}</span>;
         },
       },
       {
-        title: 'Revised End Date',
+        title: renderTimeTitle('Revised End Date'),
         dataIndex: 'revisedEndDate',
         key: 'revisedEndDate',
+        align: 'center',
         render: (revisedEndDate) => {
           return <span>{revisedEndDate || '-'}</span>;
         },
@@ -124,6 +136,7 @@ const ResourcesCard = (props) => {
         title: 'Action',
         dataIndex: 'action',
         key: 'action',
+        align: 'center',
         render: () => {
           return (
             <div className={styles.actions}>

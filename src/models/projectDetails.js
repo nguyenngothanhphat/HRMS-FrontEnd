@@ -469,7 +469,7 @@ const ProjectDetails = {
       }
       return response;
     },
-    *assignResourcesEffect({ payload }, { call }) {
+    *assignResourcesEffect({ payload }, { call, put, select }) {
       let response = {};
       try {
         response = yield call(assignResources, payload);
@@ -477,6 +477,14 @@ const ProjectDetails = {
         if (statusCode !== 200) throw response;
         notification.success({
           message,
+        });
+        // refresh resources table
+        const { projectId } = yield select((state) => state.projectDetails);
+        yield put({
+          type: 'fetchResourceOfProjectEffect',
+          payload: {
+            projectId,
+          },
         });
       } catch (errors) {
         dialog(errors);

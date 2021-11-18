@@ -22,14 +22,17 @@ const AssignResourcesModal = (props) => {
       resourceType: { name: resourceTypeName = '' } = {},
       noOfResources = 0,
     } = {},
+    refreshResourceType = () => {},
   } = props;
+
   const {
     dispatch,
     projectDetails: { projectDetail = {}, resourceList = [], resourceListTotal = 0 } = {},
     loadingFetchResourceList = false,
   } = props;
+
   const {
-    projectId = '',
+    id: projectNumberId = '',
     projectName = '',
     engagementType = '',
     startDate = '',
@@ -77,9 +80,9 @@ const AssignResourcesModal = (props) => {
       return {
         tenantId: getCurrentTenant(),
         company: getCurrentCompany(),
-        project: projectId,
-        status: 'Billing',
-        utilization: '',
+        project: projectNumberId,
+        // status: 'Billing',
+        // utilization: '',
         startDate: x.startDate ? moment(x.startDate).format('YYYY-MM-DD') : '',
         endDate: x.endDate ? moment(x.endDate).format('YYYY-MM-DD') : '',
         employee: x._id,
@@ -272,7 +275,10 @@ const AssignResourcesModal = (props) => {
       </Modal>
       <ActionModal
         visible={sucessModalVisible}
-        onClose={() => setSuccessModalVisible(false)}
+        onClose={() => {
+          setSuccessModalVisible(false);
+          refreshResourceType();
+        }}
         buttonText="Close"
         width={400}
       >

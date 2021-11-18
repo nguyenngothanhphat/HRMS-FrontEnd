@@ -60,7 +60,7 @@ const Resources = (props) => {
       <div className={styles.contentCard}>
         <Tabs>
           <TabPane tab="Resource Type" key="1">
-            <ResourceTypeCard data={resourceTypeList} refreshData={fetchResourceTypeList} />
+            <ResourceTypeCard data={resourceTypeList} refreshResourceType={fetchResourceTypeList} />
           </TabPane>
           <TabPane tab="Resources" key="2">
             <ResourcesCard />

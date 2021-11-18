@@ -16,13 +16,18 @@ import FilterResourceTypeContent from './components/FilterResourceTypeContent';
 import styles from './index.less';
 
 const ResourceTypeCard = (props) => {
-  const { loadingFetch = false, data = [], refreshData = () => {}, loadingAdd = false } = props;
+  const {
+    loadingFetch = false,
+    data = [],
+    refreshResourceType = () => {},
+    loadingAdd = false,
+  } = props;
   const [addResourceTypeModalVisible, setAddResourceTypeModalVisible] = useState(false);
   const [assignResourceModalVisible, setAssignResourceModalVisible] = useState(false);
   const [assigningRecord, setAssigningRecord] = useState({});
 
   const onSearchDebounce = debounce((value) => {
-    refreshData(value);
+    refreshResourceType(value);
   }, 1000);
 
   const onSearch = (e = {}) => {
@@ -105,7 +110,7 @@ const ResourceTypeCard = (props) => {
         key: 'comments',
         width: '25%',
         render: (comments) => {
-          return renderComment(comments || '');
+          return renderComment(comments || '-');
         },
       },
       {
@@ -167,7 +172,7 @@ const ResourceTypeCard = (props) => {
             <AddResourceTypeContent
               visible={addResourceTypeModalVisible}
               onClose={() => setAddResourceTypeModalVisible(false)}
-              refreshData={refreshData}
+              refreshResourceType={refreshResourceType}
             />
           }
           title="Add Resource Type"
@@ -177,7 +182,7 @@ const ResourceTypeCard = (props) => {
           visible={assignResourceModalVisible}
           onClose={() => setAssignResourceModalVisible(false)}
           data={assigningRecord}
-          refreshData={refreshData}
+          refreshResourceType={refreshResourceType}
         />
       </Card>
     </div>

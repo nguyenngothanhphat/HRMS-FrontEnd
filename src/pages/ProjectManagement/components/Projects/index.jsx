@@ -54,6 +54,15 @@ const Projects = (props) => {
     } else fetchProjectList();
   }, [projectStatus]);
 
+  const renderTimeTitle = (title) => {
+    return (
+      <span className={styles.timeTitle}>
+        <span>{title}</span>
+        <span className={styles.smallText}>(mm/dd/yyyy)</span>
+      </span>
+    );
+  };
+
   const generateColumns = () => {
     const columns = [
       {
@@ -73,10 +82,10 @@ const Projects = (props) => {
       },
       {
         title: 'Customer',
-        dataIndex: 'customerId',
-        key: 'customerId',
-        render: (customerId) => {
-          return <span className={styles.clickableTag}>{customerId || '-'}</span>;
+        dataIndex: 'customerName',
+        key: 'customerName',
+        render: (customerName) => {
+          return <span className={styles.clickableTag}>{customerName || '-'}</span>;
         },
       },
       {
@@ -101,9 +110,10 @@ const Projects = (props) => {
         },
       },
       {
-        title: 'Start Date',
+        title: renderTimeTitle('Start Date'),
         dataIndex: 'startDate',
         key: 'startDate',
+        align: 'center',
         render: (startDate = '') => {
           return (
             <span>{startDate ? moment(startDate).locale('en').format(DATE_FORMAT_LIST) : '-'}</span>
@@ -111,9 +121,10 @@ const Projects = (props) => {
         },
       },
       {
-        title: 'End Date*',
+        title: renderTimeTitle('End Date*'),
         dataIndex: 'tentativeEndDate',
         key: 'tentativeEndDate',
+        align: 'center',
         render: (tentativeEndDate = '') => {
           return (
             <span>
