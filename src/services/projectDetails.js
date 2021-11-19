@@ -146,6 +146,18 @@ export async function getDivisionList(payload) {
   });
 }
 
+export async function getBillingStatusList(payload) {
+  return request(
+    '/api-project/resourcetenant/list-status',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    'PROJECT_API',
+  );
+}
+
 // resoures + project
 export async function getResourceList(payload) {
   return request(

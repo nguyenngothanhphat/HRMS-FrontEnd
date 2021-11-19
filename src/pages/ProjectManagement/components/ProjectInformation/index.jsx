@@ -19,20 +19,12 @@ const ProjectInformation = (props) => {
   } = props;
 
   const fetchProjectByID = async () => {
-    const res = await dispatch({
+    dispatch({
       type: 'projectDetails/fetchProjectByIdEffect',
       payload: {
         projectId: reId,
       },
     });
-    if (res.statusCode === 200) {
-      dispatch({
-        type: 'projectDetails/fetchProjectTagListEffect',
-        payload: {
-          projectId: reId,
-        },
-      });
-    }
   };
 
   useEffect(() => {

@@ -19,6 +19,7 @@ import {
   getResourceOfProject,
   updateResourceOfProject,
   removeResourceOfProject,
+  getBillingStatusList,
   // audit trail
   getAuditTrailList,
   // overview
@@ -49,6 +50,7 @@ const initialState = {
   technologyList: [],
   divisionList: [],
   projectTagList: [],
+  billingStatusList: [],
 };
 
 const ProjectDetails = {
@@ -241,6 +243,28 @@ const ProjectDetails = {
           type: 'save',
           payload: {
             titleList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchBillingStatusListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getBillingStatusList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            billingStatusList: data,
           },
         });
       } catch (errors) {

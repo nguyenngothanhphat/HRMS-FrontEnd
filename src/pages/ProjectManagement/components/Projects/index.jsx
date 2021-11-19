@@ -139,8 +139,8 @@ const Projects = (props) => {
         title: 'Division',
         dataIndex: 'division',
         key: 'division',
-        render: (division = {}) => {
-          return <span className={styles.colorTag}>{division.name}</span>;
+        render: (division) => {
+          return <span className={styles.colorTag}>{division || ''}</span>;
         },
       },
       {

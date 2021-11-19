@@ -10,11 +10,11 @@ const AddContent = (props) => {
   const {
     dispatch,
     projectDetail = {},
-    projectTagList = [],
     refreshData = () => {},
     onClose = () => {},
+    employee: { generalInfo: { legalName: ownerName = '' } = {} } = {} || {},
   } = props;
-  const { projectId = '', projectName = '', engagementType = '' } = projectDetail;
+  const { projectId = '', projectName = '', engagementType = '', tags = [] } = projectDetail;
 
   const getColor = (index) => {
     return colors[index % colors.length];
@@ -26,6 +26,7 @@ const AddContent = (props) => {
       payload: {
         ...values,
         projectId,
+        ownerName,
       },
     });
     if (res.statusCode === 200) {
@@ -58,8 +59,8 @@ const AddContent = (props) => {
             <div className={styles.item}>
               <span className={styles.label}>Tags:</span>
               <div className={styles.tags}>
-                {projectTagList.map((t, i) => (
-                  <CustomTag color={getColor(i)}>{t.tagName}</CustomTag>
+                {tags.map((t, i) => (
+                  <CustomTag color={getColor(i)}>{t}</CustomTag>
                 ))}
               </div>
             </div>
@@ -120,11 +121,10 @@ const AddContent = (props) => {
 
 export default connect(
   ({
-    projectDetails: { projectDetail = {}, projectTagList = [] } = {},
+    projectDetails: { projectDetail = {} } = {},
     user: { currentUser: { employee = {} } = {} },
   }) => ({
     employee,
     projectDetail,
-    projectTagList
   }),
 )(AddContent);

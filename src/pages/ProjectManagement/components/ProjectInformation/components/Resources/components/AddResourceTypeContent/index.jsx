@@ -18,14 +18,15 @@ const AddResourceTypeContent = (props) => {
       technologyList = [],
       titleList = [],
       projectDetail = {},
-      projectTagList = [],
+      billingStatusList = [],
     } = {},
     loadingFetchTitleList = false,
     onClose = () => {},
     refreshData = () => {},
+    employee: { generalInfo: { legalName: ownerName = '' } = {} } = {} || {},
   } = props;
 
-  const { projectId = '', projectName = '', engagementType = '' } = projectDetail;
+  const { projectId = '', projectName = '', engagementType = '', tags = [] } = projectDetail;
 
   // functions
   const getColor = (index) => {
@@ -45,6 +46,9 @@ const AddResourceTypeContent = (props) => {
         payload: {
           name: 'Engineering',
         },
+      });
+      dispatch({
+        type: 'projectDetails/fetchBillingStatusListEffect',
       });
     }
   }, [visible]);
@@ -69,6 +73,7 @@ const AddResourceTypeContent = (props) => {
       payload: {
         ...values,
         projectId,
+        ownerName,
       },
     });
     if (res.statusCode === 200) {
@@ -99,8 +104,8 @@ const AddResourceTypeContent = (props) => {
             <div className={styles.item}>
               <span className={styles.label}>Tags:</span>
               <div className={styles.tags}>
-                {projectTagList.map((t, i) => (
-                  <CustomTag color={getColor(i)}>{t.tagName}</CustomTag>
+                {tags.map((t, i) => (
+                  <CustomTag color={getColor(i)}>{t}</CustomTag>
                 ))}
               </div>
             </div>
@@ -140,7 +145,7 @@ const AddResourceTypeContent = (props) => {
           <Col xs={24} md={12}>
             <Form.Item label="Billing Status" name="billingStatus" labelCol={{ span: 24 }}>
               <Select placeholder="Select Billing Status">
-                {[].map((x) => (
+                {billingStatusList.map((x) => (
                   <Option value={x}>{x}</Option>
                 ))}
               </Select>

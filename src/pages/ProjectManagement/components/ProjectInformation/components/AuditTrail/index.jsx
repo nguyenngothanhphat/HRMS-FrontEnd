@@ -26,11 +26,8 @@ const AuditTrail = (props) => {
   }, []);
 
   const getActionInfo = (record) => {
-    const { attachmentInfo } = record;
-    if (attachmentInfo) {
-      return ` - ${attachmentInfo.name}`;
-    }
-    return '';
+    const { changes } = record;
+    return changes ? ` - ${changes}` : '';
   };
 
   const getColumns = () => {
