@@ -1,49 +1,51 @@
-.btnEdit {
-  float: right;
-  margin-top: -29px;
+// .btnEdit {
+//   float: right;
+//   margin-top: -15px;
+//   margin-right: 20px;
+// }
+.spaceFooter {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 24px;
+  border-top: solid 1px #d6dce0;
 }
-.buttonEdit {
-  width: 29px;
-  height: 29px;
-  border: 1px solid lightgray;
-  // float: right;
-  border-radius: 50%;
+.spaceFooterModalSuccess {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 24px;
 }
-.buttonEdit:hover {
-  border: 1px solid #2c6df9;
-}
-.showInfo {
-  display: inline;
-  padding-right: 30px;
-  color: gray;
-}
-.showInfoEmp {
-  color: black;
-}
-.labelProject {
-  height: 18px;
-  padding: 0px 8px;
-  font-weight: 400;
-  text-align: left;
-  background: #ffe9c5;
-  border-radius: 12px;
-}
-.iconEdit {
-  display: none;
-  width: 29px;
-  height: 29px;
-  border-radius: 50%;
-}
-.rowHover:hover {
-  color: #e5e5e5;
-  background-image: linear-gradient(to right, white, #e5e5e5);
-  .iconEdit {
-    display: inline;
-    float: right;
-    margin-top: -15px;
+.btnSubmit {
+  width: 120px;
+  height: 40px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  background-color: #ffa100;
+  border: none;
+  border-radius: 25px;
+
+  &:hover {
+    color: #fff;
+    background-color: #ffa100;
   }
-  .readMore {
-    color: #e5e5e5;
+}
+.btnSubmit:disabled {
+  color: #fff;
+  opacity: 0.5;
+}
+.btnCancel {
+  display: inline-block;
+  margin-right: 40px;
+  color: red;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  &:active {
+    opacity: 0.5;
   }
 }
 .modalAdd {
@@ -64,10 +66,6 @@
     }
     .ant-table-thead > tr > th {
       background: #2c6df9 !important;
-    }
-    .ant-table-tbody > .ant-table-row-level-0:hover {
-      color: gray;
-      background-image: linear-gradient(to right, white, #e5e5e5);
     }
   }
 }

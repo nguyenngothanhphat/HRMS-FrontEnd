@@ -4,6 +4,8 @@ import moment from 'moment';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import AddActionBTN from './components/Add';
 import EditActionBTN from './components/Edit';
+import HistoryActionBTN from './components/History';
+import editIcon from '@/assets/resource-management-edit-history.svg';
 import styles from './index.less';
 import ProjectProfile from '../ComplexView/components/PopoverProfiles/components/ProjectProfile';
 import UserProfile from '../ComplexView/components/PopoverProfiles/components/UserProfile';
@@ -21,6 +23,10 @@ class TableResources extends PureComponent {
 
   componentDidMount = () => {
     this.setCurrentTime();
+  };
+
+  showBTNEdit = (row) => {
+    alert(JSON.stringify(row));
   };
 
   setCurrentTime = () => {
@@ -281,8 +287,16 @@ class TableResources extends PureComponent {
         dataIndex: 'revisedEndDate',
         // width: '7%',
         key: 'revisedEndDate',
-        render: (value) => {
-          return <span className={styles.basicCellField}>{value}</span>;
+        render: (value, row) => {
+          // return <span className={styles.basicCellField}>{value}</span>;
+          return (
+            <span className={styles.basicCellField}>
+              {value}
+              <span className={styles.iconEdit}>
+                <EditActionBTN dataPassRow={row} />
+              </span>
+            </span>
+          );
         },
       },
       {
@@ -321,7 +335,7 @@ class TableResources extends PureComponent {
           const buttonGroup = (
             <span>
               <AddActionBTN dataPassRow={row} />
-              <EditActionBTN dataPassRow={row} />
+              <HistoryActionBTN dataPassRow={row} />
             </span>
           );
           const obj = renderCell('add', row, buttonGroup);

@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
-import { Table, Modal } from 'antd';
+import { Row, Col, Button, Modal, Form, Input, Select, DatePicker, notification } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
-import historyIcon from '@/assets/resource-management-edit1.svg';
 import editIcon from '@/assets/resource-management-edit-history.svg';
+import datePickerIcon from '@/assets/resource-management-datepicker.svg';
+
 import styles from './index.less';
 
-@connect(({ resourceManagement: { resourceList } }) => ({ resourceList }))
+const { Option } = Select;
+
+@connect(({ resourceManagement: { resourceList = [], projectList = [] } }) => ({
+  resourceList,
+  projectList,
+}))
 class EditActionBTN extends Component {
   constructor(props) {
     super(props);
@@ -21,154 +27,174 @@ class EditActionBTN extends Component {
     });
   };
 
-  handleOk = () => {
-    this.setState({
-      visible: false,
-    });
-  };
-
   handleCancel = () => {
     this.setState({
       visible: false,
     });
   };
 
-  render() {
-    const { resourceList = [], dataPassRow = {} } = this.props;
-    const getEmpInListResource = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
-    const { projects = [] } = getEmpInListResource || {};
-    const { managerInfo = {} } = getEmpInListResource || {};
-    const dataSource = projects
-      .map((x, index) => {
-        return {
-          key: index + 1,
-          ProjectName: x.ProjectName || '-',
-          StartDate: moment(x.startDate).format('MM-DD-YYYY') || '-',
-          EndDate: moment(x.endDate).format('MM-DD-YYYY') || '-',
-          Billing: x.projectStatus || '-',
-          Description: x.projectDescription || '-',
-        };
-      })
-      .sort((a, b) => {
-        if (!a.endDate || !b.endDate) {
-          return 0;
-        }
-        return new Date(a.endDate).getTime() - new Date(b.endDate).getTime();
+  handleSubmitAssign = async (values) => {
+    const { dispatch, dataPassRow = {} } = this.props;
+    const { project, status, utilization, startDate, endDate, revisedEndDate } = values;
+    const compareEndDateAndStartDate = new Date(endDate).getTime() - new Date(startDate).getTime();
+    const compRevisedAndStart = new Date(revisedEndDate).getTime() - new Date(startDate).getTime();
+    if (compareEndDateAndStartDate < 0 || compRevisedAndStart < 0) {
+      notification.error({
+        message: 'End date or resived end date cannot less than start date',
       });
+    } else {
+      dispatch({
+        type: 'resourceManagement/updateProject',
+        payload: {
+          id: dataPassRow.project,
+          project,
+          status,
+          utilization,
+          startDate: moment(startDate).format('YYYY-MM-DD'),
+          endDate: moment(endDate).format('YYYY-MM-DD'),
+          revisedEndDate: moment(revisedEndDate).format('YYYY-MM-DD'),
+        },
+      });
+    }
+    this.setState({
+      visible: false,
+    });
+  };
 
-    const columns = [
-      {
-        title: 'Project Name',
-        dataIndex: 'ProjectName',
-        key: 'ProjectName',
-        width: '25%',
-        render: (value) => {
-          const active = true;
-          return (
-            <p>
-              {value}{' '}
-              <span className={styles.labelProject}>
-                {value}
-                {active ? 'Current' : ''}
-              </span>
-            </p>
-          );
-        },
-      },
-      {
-        title: 'Start Date',
-        dataIndex: 'StartDate',
-        key: 'StartDate',
-        width: '15%',
-      },
-      {
-        title: 'End Date',
-        dataIndex: 'EndDate',
-        key: 'EndDate',
-        width: '15%',
-      },
-      {
-        title: 'Billing Status',
-        dataIndex: 'Billing',
-        key: 'Billing',
-        width: '20%',
-      },
-      {
-        title: 'Project Description',
-        dataIndex: 'Description',
-        key: 'Description',
-        width: '25%',
-        render: (value, row) => {
-          if (value.length < 35) {
-            return <p>{value}</p>;
-          }
-          return (
-            <p className={styles.rowHover}>
-              {value.slice(0, 35)}
-              <span>
-                ...{' '}
-                <a href="#" className={styles.readMore}>
-                  Read More
-                </a>
-                <img
-                  src={editIcon}
-                  onClick={() => this.showBTNEdit(row)}
-                  alt=""
-                  className={styles.iconEdit}
-                />
-              </span>
-            </p>
-          );
-        },
-      },
-    ];
+  render() {
+    const { dataPassRow = {}, projectList = [], resourceList = [] } = this.props;
+    const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
+    const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
+    let sumUtilization = 0;
+    let customerName = '';
+    let engagementType = '';
+    let statusProject = '';
+    for (const obj of listProjectsOfEmp) {
+      sumUtilization += obj.utilization;
+      statusProject = obj.status;
+    }
+
+    for (const obj of projectList) {
+      engagementType = obj.engagementType;
+      customerName = obj.customerName;
+    }
+
+    const maxEnterUtilization = 100 - sumUtilization + parseInt(dataPassRow.utilization);
+
     const { visible } = this.state;
     return (
       <div className={styles.btnEdit}>
-        <img
-          src={historyIcon}
-          alt="historyIcon"
-          onClick={() => this.showModal()}
-          className={styles.buttonEdit}
-        />
+        <img src={editIcon} alt="historyIcon" onClick={() => this.showModal()} />
         <Modal
           className={styles.modalAdd}
-          title="Resource History"
+          title="Edit Project Details"
           width="60%"
           visible={visible}
-          onOk={this.handleOk}
+          footer={null}
           onCancel={this.handleCancel}
-          closable={{ style: { color: 'blue', with: '100px' } }}
-          okText="Done"
-          cancelButtonProps={{ style: { color: 'red', border: '1px solid white' } }}
-          okButtonProps={{
-            style: {
-              background: '#FFA100',
-              border: '1px solid #FFA100',
-              color: 'white',
-              borderRadius: '25px',
-            },
-          }}
         >
-          <p className={styles.showInfo}>
-            Emp Id:<span className={styles.showInfoEmp}> {managerInfo.employeeId || '-'}</span>
-          </p>
-          <p className={styles.showInfo}>
-            Name: <span className={styles.showInfoEmp}> {dataPassRow.employeeName}</span>
-          </p>
-          <p className={styles.showInfo}>
-            Designation: <span className={styles.showInfoEmp}> {dataPassRow.designation}</span>
-          </p>
-          <p className={styles.showInfo}>
-            Experience: <span className={styles.showInfoEmp}> {dataPassRow.experience}</span>
-          </p>
-          <p className={styles.showInfo}>
-            Total project: <span className={styles.showInfoEmp}>{projects.length}</span>
-          </p>
-          <br />
-          <br />
-          {/* <p>{JSON.stringify(listProjectsOfEmp)}</p> */}
-          <Table dataSource={dataSource} columns={columns} pagination={false} />
+          <Form
+            layout="vertical"
+            className={styles.formAdd}
+            method="POST"
+            onFinish={(values) => this.handleSubmitAssign(values)}
+          >
+            <Row>
+              <Col span={12}>
+                <Form.Item label="Project" name="project">
+                  <Select
+                    defaultValue={dataPassRow.projectName}
+                    style={{ width: '95%', borderRadius: '2px' }}
+                  >
+                    {projectList.map((project) => (
+                      <Option value={project.id}>{project.projectName}</Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+                <Form.Item label="Status" name="status">
+                  <Select
+                    defaultValue={statusProject}
+                    style={{ width: '95%', borderRadius: '2px' }}
+                  >
+                    <Option value="Billable">Billable</Option>
+                    <Option value="Buffer">Buffer</Option>
+                    <Option value="Bench">Bench</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item
+                  label="Bandwith Allocation (%)"
+                  name="utilization"
+                  rules={[
+                    () => ({
+                      validator(_, value) {
+                        if (!value) {
+                          return Promise.reject('Utilization value could not be empty');
+                        }
+
+                        if (isNaN(value)) {
+                          return Promise.reject(`Value enter has to be a number.`);
+                        }
+                        if (value > maxEnterUtilization) {
+                          return Promise.reject(
+                            `Your cannot enter a value that is more than ${maxEnterUtilization}.`,
+                          );
+                        }
+                        if (value < 0) {
+                          return Promise.reject(`Your cannot enter a value that is less than 0`);
+                        }
+                        return Promise.resolve();
+                      },
+                    }),
+                  ]}
+                  validateTrigger="onBlur"
+                >
+                  <Input
+                    placeholder={dataPassRow.utilization}
+                    style={{ width: '95%', color: 'black' }}
+                    addonAfter="%"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Start Date" name="startDate">
+                  <DatePicker
+                    placeholder={dataPassRow.startDate}
+                    style={{ width: '100%', borderRadius: '2px', color: 'blue' }}
+                    suffixIcon={<img src={datePickerIcon} alt="" />}
+                  />
+                </Form.Item>
+                <Form.Item label="End Date" name="endDate">
+                  <DatePicker
+                    placeholder={dataPassRow.endDate}
+                    style={{ width: '100%', borderRadius: '2px', color: 'blue' }}
+                    suffixIcon={<img src={datePickerIcon} alt="" />}
+                  />
+                </Form.Item>
+                <Form.Item label="Revised End Date" name="revisedEndDate">
+                  <DatePicker
+                    placeholder={dataPassRow.revisedEndDate}
+                    style={{
+                      width: '100%',
+                      borderRadius: '2px',
+                      color: 'blue',
+                      background: '#F4F6F7',
+                    }}
+                    suffixIcon={<img src={datePickerIcon} alt="" />}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <br />
+            <br />
+            <div className={styles.spaceFooter}>
+              <div className={styles.btnCancel} onClick={this.handleCancel}>
+                Cancel
+              </div>
+              <Button type="primary" htmlType="submit" className={styles.btnSubmit}>
+                Save Changes
+              </Button>
+            </div>
+          </Form>
         </Modal>
       </div>
     );

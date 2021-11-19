@@ -55,7 +55,7 @@
     // height: 18px;
     font-family: Roboto;
     font-style: normal;
-    background: #FFA100;
+    background: #ffa100;
     border-radius: 48px;
   }
   .available {
@@ -71,6 +71,7 @@
 
   .ticketID,
   .employeeName {
+    width: 200px;
     color: #2c6df9;
     font-weight: 500;
     font-size: 13px;
@@ -78,11 +79,21 @@
     font-style: normal;
     line-height: 15px;
     letter-spacing: 0em;
-    text-align: left;
     white-space: nowrap;
-    width: 200px;
+    text-align: left;
     &:hover {
       cursor: pointer;
+    }
+  }
+  .iconEdit {
+    display: none;
+  }
+  .basicCellField:hover {
+    color: white;
+    //background-image: linear-gradient(to right, white, #e5e5e5);
+    .iconEdit {
+      display: inline-block;
+      // float: right;
     }
   }
   .resourceStatus {
@@ -99,22 +110,22 @@
   }
 
   .comment {
-    width: 140px;
+    position: relative;
     display: -webkit-box;
-    //-webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
+    width: 140px;
     overflow: hidden;
-    word-wrap: break-word;
+    font-weight: 400;
     //font-family: Roboto;
     font-size: 13px;
     font-style: normal;
-    font-weight: 400;
     line-height: 18px;
     letter-spacing: 0em;
     text-align: left;
-    position: relative;
     // display: flex;
     text-overflow: ellipsis;
+    word-wrap: break-word;
+    //-webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
   }
 
   .division {
@@ -141,10 +152,10 @@
 
   .overlay {
     position: absolute;
-    width: 100%;
-    height: 100%;
     top: 0;
     left: 0;
+    width: 100%;
+    height: 100%;
   }
 
   :global {
@@ -165,9 +176,9 @@
     // .ant-table-tbody > tr.ant-table-row:hover > td:nth-child(3),
     // .ant-table-tbody > tr.ant-table-row:hover > td:nth-child(4),
     // .ant-table-tbody > tr.ant-table-row:hover > td:nth-child(10),
-    // .ant-table-tbody > tr.ant-table-row:hover > td:last-child 
+    // .ant-table-tbody > tr.ant-table-row:hover > td:last-child
     {
-      background: #FFF;
+      background: #fff;
     }
 
     thead > tr > th {
@@ -198,19 +209,19 @@
 
     .ant-table-tbody > tr.ant-table-row > td {
       padding: 8px;
-      background: #FFF;
+      background: #fff;
     }
 
     .commentCell {
       padding: 0px !important;
-      background: #FFF;
+      background: #fff;
     }
-    
+
     .commentCellLeftBorder {
+      padding: 0px !important;
+      background: #fff;
       border-right: unset !important;
       border-left: 1px solid #e2e4e8;
-      padding: 0px !important;
-      background: #FFF;
     }
 
     .ant-btn-text {

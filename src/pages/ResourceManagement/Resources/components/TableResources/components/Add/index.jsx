@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Button, Modal, Form, Input, Select, DatePicker, Card } from 'antd';
+import { Row, Col, Button, Modal, Form, Input, Select, DatePicker, Card, notification } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
 import addAction from '@/assets/resource-action-add1.svg';
@@ -46,42 +46,51 @@ class AddActionBTN extends Component {
   handleSubmitAssign = async (values) => {
     const { dispatch, dataPassRow } = this.props;
     const { project, status, utilization, startDate, endDate, comment, revisedEndDate } = values;
-    const result = await dispatch({
-      type: 'resourceManagement/fetchAssignToProject',
-      payload: {
-        employee: dataPassRow.employeeId,
-        project,
-        status,
-        utilization,
-        startDate: moment(startDate).format('YYYY-MM-DD'),
-        endDate: moment(endDate).format('YYYY-MM-DD'),
-        revisedEndDate: moment(revisedEndDate).format('YYYY-MM-DD'),
-        comment,
-        milestone: '',
-      },
-    }).then((data) => {
-      return data;
-    });
-    console.log(`test: ${JSON.stringify(result)}`);
-    this.setState({
-      visible: false,
-    });
-    const { statusCode } = result;
-    if (statusCode === 200) {
+    const compareEndDateAndStartDate = new Date(endDate).getTime() - new Date(startDate).getTime();
+    const compRevisedAndStart = new Date(revisedEndDate).getTime() - new Date(startDate).getTime();
+    if (compareEndDateAndStartDate < 0 || compRevisedAndStart < 0) {
+      notification.error({
+        message: 'End date or resived end date cannot less than start date',
+      });
+    } else {
+      dispatch({
+        type: 'resourceManagement/fetchAssignToProject',
+        payload: {
+          employee: dataPassRow.employeeId,
+          project,
+          status,
+          utilization,
+          startDate: moment(startDate).format('YYYY-MM-DD'),
+          endDate: moment(endDate).format('YYYY-MM-DD'),
+          revisedEndDate: moment(revisedEndDate).format('YYYY-MM-DD'),
+          comment,
+          milestone: '',
+        },
+      });
       this.setState({
         visibleSuccess: true,
       });
     }
+    this.setState({
+      visible: false,
+    });
   };
 
   render() {
-    const { dataPassRow, projectList, resourceList } = this.props;
+    const { dataPassRow = {}, projectList = [], resourceList = [] } = this.props;
     const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
     const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
     let sumUtilization = 0;
-    // eslint-disable-next-line no-restricted-syntax
+    let customerName = '';
+    let engagementType = '';
+    let projectName = '';
     for (const obj of listProjectsOfEmp) {
       sumUtilization += obj.utilization;
+    }
+    for (const obj of projectList) {
+      engagementType = obj.engagementType;
+      customerName = obj.customerName;
+      projectName = obj.projectName;
     }
     const maxEnterUtilization = 100 - sumUtilization;
     const { visible, visibleSuccess } = this.state;
@@ -121,7 +130,7 @@ class AddActionBTN extends Component {
                 </Form.Item>
                 <Form.Item label="Status" name="status">
                   <Select
-                    defaultValue={dataPassRow.billStatus}
+                    defaultValue={dataPassRow.status}
                     style={{ width: '95%', borderRadius: '2px' }}
                   >
                     <Option value="Billable">Billable</Option>
@@ -135,36 +144,22 @@ class AddActionBTN extends Component {
                   rules={[
                     () => ({
                       validator(_, value) {
-                        return Promise((resolve, reject) => {
-                          if (!value || value < 0) {
-                            reject('Utilization value could not be empty and must greater than 0');
-                          }
-                          if (Number.isNaN(value)) {
-                            reject(`Value enter has to be a number.`);
-                          }
-                          if (value > maxEnterUtilization) {
-                            reject(
-                              `Your cannot enter a value that is more than ${maxEnterUtilization}.`,
-                            );
-                          }
-                          resolve();
-                          return true;
-                        });
-                        // if (!value) {
-                        //   return Promise.reject();
-                        // }
-                        // if (isNaN(value)) {
-                        //   return Promise.reject(`Value enter has to be a number.`);
-                        // }
-                        // if (value > maxEnterUtilization) {
-                        //   return Promise.reject(
-                        //     `Your cannot enter a value that is more than ${maxEnterUtilization}.`,
-                        //   );
-                        // }
-                        // if (value < 0) {
-                        //   return Promise.reject(`Your cannot enter a value that is less than 0`);
-                        // }
-                        // return Promise.resolve();
+                        if (!value) {
+                          return Promise.reject('Utilization value could not be empty');
+                        }
+
+                        if (isNaN(value)) {
+                          return Promise.reject(`Value enter has to be a number.`);
+                        }
+                        if (value > maxEnterUtilization) {
+                          return Promise.reject(
+                            `Your cannot enter a value that is more than ${maxEnterUtilization}.`,
+                          );
+                        }
+                        if (value < 0) {
+                          return Promise.reject(`Your cannot enter a value that is less than 0`);
+                        }
+                        return Promise.resolve();
                       },
                     }),
                   ]}
@@ -192,7 +187,7 @@ class AddActionBTN extends Component {
                     suffixIcon={<img src={datePickerIcon} alt="" />}
                   />
                 </Form.Item>
-                <Form.Item label="Reserved End Date" name="reservedEndDate">
+                <Form.Item label="Revised End Date" name="revisedEndDate">
                   <DatePicker
                     placeholder="Enter Date"
                     style={{
@@ -214,15 +209,15 @@ class AddActionBTN extends Component {
                 <Row>
                   <Col span={12}>
                     <p>
-                      Customer:{' '}
-                      <span style={{ color: '#2C6DF9' }}> {dataPassRow.employeeName}</span>
+                      Customer:
+                      <span style={{ color: '#2C6DF9' }}> {customerName}</span>
                     </p>
                     <p>
-                      Project: <span style={{ color: '#2C6DF9' }}> {dataPassRow.projectName}</span>
+                      Project: <span style={{ color: '#2C6DF9' }}> {projectName}</span>
                     </p>
                     <p>
-                      Engagement Type:{' '}
-                      <span style={{ color: '#2C6DF9' }}> {dataPassRow.billStatus}</span>
+                      Engagement Type:
+                      <span style={{ color: '#2C6DF9' }}> {engagementType}</span>
                     </p>
                     <p>
                       Start Date: <span style={{ color: '#2C6DF9' }}> {dataPassRow.startDate}</span>

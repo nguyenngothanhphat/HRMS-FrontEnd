@@ -1,17 +1,17 @@
 import moment from "moment";
 
 const parseDate = (dateText) => {
-    if(!dateText) {
-      return '-'
+    if (!dateText) {
+        return '-'
     }
     return moment(dateText).format('MM/DD/YYYY')
-  }
+}
 const handleLongText = (text, length) => {
-    if(!text) {
-      return ''
+    if (!text) {
+        return ''
     }
     if (text.length < length) {
-      return text;
+        return text;
     }
 
     const formatText = text.substring(0, length)
@@ -20,35 +20,35 @@ const handleLongText = (text, length) => {
 
 const cloneObj = (obj) => {
     const newObj = {}
-    // eslint-disable-next-line no-restricted-syntax
-    for(const [key, value] of Object.entries(obj)) {
-      newObj[key] = value
+        // eslint-disable-next-line no-restricted-syntax
+    for (const [key, value] of Object.entries(obj)) {
+        newObj[key] = value
     }
     return newObj
-  };
+};
 
 
-  // obj = {
-  //   employeeId: 15,
-  //   employeeName: `employee 15`,
-  //   division: 'division',
-  //   designation: 'designation',
-  //   experience: (Math.random(i) * i).toFixed(1),
-  //   projectName: '',
-  //   availableStatus: 'Available Soon',
-  //   comment: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint nt. ullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint...Read More',
-  //   utilization: 0,
-  //   startDate: '',
-  //   endDate: '',
-  // };
+// obj = {
+//   employeeId: 15,
+//   employeeName: `employee 15`,
+//   division: 'division',
+//   designation: 'designation',
+//   experience: (Math.random(i) * i).toFixed(1),
+//   projectName: '',
+//   availableStatus: 'Available Soon',
+//   comment: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint nt. ullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint...Read More',
+//   utilization: 0,
+//   startDate: '',
+//   endDate: '',
+// };
 // eslint-disable-next-line import/prefer-default-export
 export function formatData(rawData, projectList) {
-  const dataList = [];
-  rawData.forEach((obj) => {
-    const { titleInfo, generalInfo, projects } = obj;
-    const availableStatus = 'Available Now';
-    const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'));
-    const employeeName = `${generalInfo.legalName} ${userName ? `(${userName})` : ''}`;
+    const dataList = [];
+    rawData.forEach((obj) => {
+                const { titleInfo, generalInfo, projects } = obj;
+                const availableStatus = 'Available Now';
+                const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'));
+                const employeeName = `${generalInfo.legalName} ${userName ? `(${userName})` : ''}`;
     const newObj = {
       avatar: generalInfo.avatar,
       employeeId: obj._id,
@@ -84,7 +84,7 @@ export function formatData(rawData, projectList) {
         pObj.startDate = parseDate(p.startDate);
         pObj.endDate = parseDate(p.endDate);
         pObj.billStatus = p.billStatus || '-';
-        pObj.project = p.project
+        pObj.project = p.id
         pObj.revisedEndDate = parseDate(p.revisedEndDate)
         // pObj.project = project;
         // pObj.comment = p.commentResource
