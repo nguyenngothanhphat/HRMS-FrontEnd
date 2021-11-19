@@ -54,6 +54,9 @@ class Divisions extends PureComponent {
 
     dispatch({
       type: 'customerManagement/fetchTagList',
+      payload: {
+        name: 'Engineering'
+      }
     });
     dispatch({
       type: 'customerProfile/generateDivisionId',

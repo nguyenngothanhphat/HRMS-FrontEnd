@@ -26,6 +26,7 @@ class ModalAddDivisions extends PureComponent {
 
   componentDidMount() {
     const { dispatch, reId } = this.props;
+
     dispatch({
       type: 'customerProfile/generateDivisionId',
       payload: {
@@ -97,7 +98,7 @@ class ModalAddDivisions extends PureComponent {
       secondaryPOCName,
       secondaryPOCNumber: secondaryPOCPhNo,
       state,
-      tagIds: tags ? tags.map((t) => t * 1) : [],
+      tags: tags || [],
       postalCode: zipCode,
       comments,
       accountOwner,
@@ -114,7 +115,7 @@ class ModalAddDivisions extends PureComponent {
           id: reId,
         },
       });
-      this.refForm.current.resetFields()
+      this.refForm?.current?.resetFields();
     });
   };
 
@@ -331,7 +332,7 @@ class ModalAddDivisions extends PureComponent {
                   <Form.Item label="Tags (Optional)" name="tags">
                     <Select mode="multiple" placeholder="Enter tags">
                       {listTags.map((item) => {
-                        return <Select.Option key={item.id * 1}>{item.tag_name}</Select.Option>;
+                        return <Select.Option key={item}>{item}</Select.Option>;
                       })}
                     </Select>
                   </Form.Item>
