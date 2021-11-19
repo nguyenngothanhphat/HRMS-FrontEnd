@@ -63,7 +63,7 @@ const Planning = (props) => {
         <Tabs tabBarExtraContent={operations}>
           {milestoneList.map((m) => {
             return (
-              <TabPane tab={m.milestone_name} key={m.id}>
+              <TabPane tab={m.milestoneName} key={m.id}>
                 <MilestoneCard data={m} projectId={projectId} />;
               </TabPane>
             );

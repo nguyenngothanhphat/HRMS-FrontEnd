@@ -9,13 +9,7 @@ import { DATE_FORMAT_2 } from '@/utils/projectManagement';
 
 const MilestoneCard = (props) => {
   const {
-    data: {
-      description = '',
-      endDate = '',
-      id = '',
-      milestone_name: milestoneName = '',
-      startDate = '',
-    } = {},
+    data: { description = '', endDate = '', id = '', milestoneName = '', startDate = '' } = {},
     dispatch,
     projectId = '',
     loadingEditMilestone = false,

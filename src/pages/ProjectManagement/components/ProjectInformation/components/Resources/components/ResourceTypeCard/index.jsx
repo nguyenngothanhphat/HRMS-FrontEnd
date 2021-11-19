@@ -73,8 +73,8 @@ const ResourceTypeCard = (props) => {
         title: 'Division',
         dataIndex: 'division',
         key: 'division',
-        render: (division = {}) => {
-          return <span>{division.name || '-'}</span>;
+        render: (division) => {
+          return <span>{division || '-'}</span>;
         },
       },
       {

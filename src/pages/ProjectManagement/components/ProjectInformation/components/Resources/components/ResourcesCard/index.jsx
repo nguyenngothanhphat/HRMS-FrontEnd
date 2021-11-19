@@ -2,6 +2,7 @@ import { Card, Form, DatePicker, Popconfirm } from 'antd';
 import { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import moment from 'moment';
 import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
 import EditIcon from '@/assets/projectManagement/edit2.svg';
 import CancelXIcon from '@/assets/projectManagement/cancelX.svg';
@@ -67,21 +68,47 @@ const ResourcesCard = (props) => {
     loadingFetchList = false,
   } = props;
 
+  // function
+  const updateResourceOfProject = (record) => {
+    return dispatch({
+      type: 'projectDetails/updateResourceOfProjectEffect',
+      payload: {
+        id,
+        startDate: record.startDate ? moment(record.startDate).format('YYYY-MM-DD') : null,
+        revisedEndDate: record.revisedEndDate
+          ? moment(record.revisedEndDate).format('YYYY-MM-DD')
+          : null,
+      },
+    });
+  };
+
+  const removeResourceOfProject = (key) => {
+    return dispatch({
+      type: 'projectDetails/removeResourceOfProjectEffect',
+      payload: {
+        id: key,
+      },
+    });
+  };
+
   // editable table
   const [form] = Form.useForm();
-  const [data, setData] = useState(projectResourceList);
+  const [data, setData] = useState();
   const [editingKey, setEditingKey] = useState('');
 
-  const isEditing = (record) => record.key === editingKey;
+  useEffect(() => {
+    setData(projectResourceList);
+  }, [JSON.stringify(projectResourceList)]);
+
+  const isEditing = (record) => record._id === editingKey;
 
   const edit = (record) => {
     form.setFieldsValue({
-      name: '',
-      age: '',
-      address: '',
+      startDate: '',
+      revisedEndDate: '',
       ...record,
     });
-    setEditingKey(record.key);
+    setEditingKey(record._id);
   };
 
   const cancel = () => {
@@ -92,7 +119,7 @@ const ResourcesCard = (props) => {
     try {
       const row = await form.validateFields();
       const newData = [...data];
-      const index = newData.findIndex((item) => key === item.key);
+      const index = newData.findIndex((item) => key === item._id);
 
       if (index > -1) {
         const item = newData[index];
@@ -104,6 +131,8 @@ const ResourcesCard = (props) => {
         setData(newData);
         setEditingKey('');
       }
+
+      updateResourceOfProject(row);
     } catch (errInfo) {
       // eslint-disable-next-line no-console
       console.log('Validate Failed:', errInfo);
@@ -163,7 +192,7 @@ const ResourcesCard = (props) => {
         key: 'generalInfo',
         fixed: 'left',
         render: (generalInfo = {}) => {
-          const { legalName = '', userId = '' } = generalInfo;
+          const { legalName = '', userId = '' } = generalInfo || {};
           return (
             <span className={styles.nameContainer}>
               <span className={styles.name}>{legalName}</span>
@@ -179,7 +208,7 @@ const ResourcesCard = (props) => {
         render: (titleInfo) => {
           return (
             <div className={styles.cell}>
-              <span>{titleInfo.name}</span>
+              <span>{titleInfo?.name}</span>
             </div>
           );
         },
@@ -199,7 +228,9 @@ const ResourcesCard = (props) => {
         align: 'center',
         editable: true,
         render: (startDate) => {
-          return <span>{startDate || '-'}</span>;
+          return (
+            <span>{startDate ? moment(startDate).locale('en').format(DATE_FORMAT_LIST) : '-'}</span>
+          );
         },
       },
       {
@@ -208,7 +239,9 @@ const ResourcesCard = (props) => {
         key: 'endDate',
         align: 'center',
         render: (endDate) => {
-          return <span>{endDate || '-'}</span>;
+          return (
+            <span>{endDate ? moment(endDate).locale('en').format(DATE_FORMAT_LIST) : '-'}</span>
+          );
         },
       },
       {
@@ -218,7 +251,9 @@ const ResourcesCard = (props) => {
         align: 'center',
         editable: true,
         render: (revisedEndDate) => {
-          return <span>{revisedEndDate || '-'}</span>;
+          return (
+            <span>{revisedEndDate ? moment(revisedEndDate).locale('en').format(DATE_FORMAT_LIST) : '-'}</span>
+          );
         },
       },
       {
@@ -231,7 +266,7 @@ const ResourcesCard = (props) => {
           if (editable) {
             return (
               <div className={styles.actions}>
-                <img src={ApproveCheckIcon} alt="" onClick={() => save(record.key)} />
+                <img src={ApproveCheckIcon} alt="" onClick={() => save(record._id)} />
                 <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
                   <img src={CancelXIcon} alt="" />
                 </Popconfirm>
@@ -241,7 +276,13 @@ const ResourcesCard = (props) => {
           return (
             <div className={styles.actions}>
               <img src={EditIcon} alt="" onClick={() => edit(record)} />
-              <img src={DeleteIcon} alt="" />
+
+              <Popconfirm
+                title="Sure to delete?"
+                onConfirm={() => removeResourceOfProject(record._id)}
+              >
+                <img src={DeleteIcon} alt="" />
+              </Popconfirm>
             </div>
           );
         },
@@ -250,6 +291,23 @@ const ResourcesCard = (props) => {
 
     return columns;
   };
+
+  const mergedColumns = generateColumns().map((col) => {
+    if (!col.editable) {
+      return col;
+    }
+
+    return {
+      ...col,
+      onCell: (record) => ({
+        record,
+        inputType: 'text',
+        dataIndex: col.dataIndex,
+        title: col.title,
+        editing: isEditing(record),
+      }),
+    };
+  });
 
   const renderOption = () => {
     const content = <FilterResourcesContent />;
@@ -268,16 +326,23 @@ const ResourcesCard = (props) => {
     <div className={styles.ResourcesCard}>
       <Card title="Resource" extra={renderOption()}>
         <div className={styles.tableContainer}>
-          <CommonTable
-            columns={generateColumns()}
-            list={data}
-            page={page}
-            limit={limit}
-            onChangePage={onChangePage}
-            loading={loadingFetchList}
-            total={total}
-            isBackendPaging
-          />
+          <Form form={form} component={false}>
+            <CommonTable
+              columns={mergedColumns}
+              list={data}
+              page={page}
+              limit={limit}
+              onChangePage={onChangePage}
+              loading={loadingFetchList}
+              total={total}
+              isBackendPaging
+              components={{
+                body: {
+                  cell: EditableCell,
+                },
+              }}
+            />
+          </Form>
         </div>
       </Card>
       <AddResourcesModal

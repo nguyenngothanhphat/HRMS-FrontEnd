@@ -19,6 +19,7 @@ const CommonTable = (props) => {
     showPagination = true,
     selectedRowKeys = [],
     setSelectedRowKeys = () => {},
+    components,
   } = props;
   const [pageSelected, setPageSelected] = useState(1);
 
@@ -61,6 +62,8 @@ const CommonTable = (props) => {
     <>
       <div className={styles.CommonTable}>
         <Table
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          components={components}
           size="small"
           locale={{
             emptyText: <Empty description="No data" />,
