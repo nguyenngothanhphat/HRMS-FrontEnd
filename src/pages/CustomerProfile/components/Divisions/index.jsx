@@ -1,11 +1,12 @@
-import React, { PureComponent } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
+import { Skeleton } from 'antd';
+import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import styles from './index.less';
 import editIcon from '../../../../assets/edit-customField-cm.svg';
+import DivisionItem from './components/DivisionItem';
 import ModalAddDivisions from './components/ModalAddDivisions';
 import ModalEditDivision from './components/ModalEditDivision';
-import DivisionItem from './components/DivisionItem';
+import styles from './index.less';
 
 @connect(
   ({
@@ -116,9 +117,10 @@ class Divisions extends PureComponent {
       reId = '',
       country = [],
       state = [],
+      loadingDivisions = false,
     } = this.props;
 
-    console.log('handlingPackage', handlingPackage);
+    if (loadingDivisions) return <Skeleton />;
     return (
       <div className={styles.Divisions}>
         {divisions.map((item, i) => {

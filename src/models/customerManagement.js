@@ -1,4 +1,4 @@
-import { notification } from 'antd';
+import { message, notification } from 'antd';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import {
   getCustomerList,
@@ -127,6 +127,7 @@ const customerManagement = {
 
     *exportReport(_, { call }) {
       let response = '';
+      const hide = message.loading('Exporting data...', 0);
       try {
         response = yield call(exportCustomer, {
           tenantId: getCurrentTenant(),
@@ -137,6 +138,7 @@ const customerManagement = {
       } catch (error) {
         dialog(error);
       }
+      hide();
       return response;
     },
 
