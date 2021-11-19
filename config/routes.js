@@ -513,6 +513,7 @@ const routes = [
           {
             path: '/customer-management/customers/customer-profile/:reId',
             hideInMenu: true,
+            name: 'View Customer',
             component: './CustomerProfile',
             authority: [
               'hr-manager',

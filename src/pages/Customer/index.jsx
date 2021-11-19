@@ -4,9 +4,9 @@ import { connect, formatMessage, history } from 'umi';
 import { DownloadOutlined } from '@ant-design/icons';
 import { PageContainer } from '@/layouts/layout/src';
 import Settings from './components/Settings';
+import exportToCSV from '@/utils/exportAsExcel';
 import TableContainer from './components/TableContainer';
 import style from './index.less';
-import exportToCSV from '@/utils/exportAsExcel';
 
 @connect()
 class Customer extends PureComponent {
@@ -23,15 +23,24 @@ class Customer extends PureComponent {
     // });
   }
 
-  exportFile = () => {
+  exportCustomers = async () => {
     const { dispatch } = this.props;
 
-    dispatch({
+    const getListExport = await dispatch({
       type: 'customerManagement/exportReport',
     });
-  };
 
-  processData = (data) => {};
+    const downloadLink = document.createElement('a');
+    const universalBOM = '\uFEFF';
+    // downloadLink.href = `data:text/csv;charset=utf-8,${escape(getListExport)}`;
+    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
+      universalBOM + getListExport,
+    )}`;
+    downloadLink.download = 'customers.csv';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
 
   render() {
     const { TabPane } = Tabs;
@@ -58,7 +67,7 @@ class Customer extends PureComponent {
                     fontWeight: '700',
                     cursor: 'pointer',
                   }}
-                  onClick={this.exportFile}
+                  onClick={this.exportCustomers}
                 >
                   <DownloadOutlined /> Export
                 </p>

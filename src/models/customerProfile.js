@@ -88,13 +88,13 @@ const customerProfile = {
           tenantId: getCurrentTenant(),
           ...payload,
         });
-        const { statusCode, message, data } = response;
+        const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message });
 
         yield put({
           type: 'fetchDivision',
-          payload: { tenantId: getCurrentTenant(), customerId: data.customerId },
+          payload: { tenantId: getCurrentTenant(), customerId: payload.customerId },
         });
       } catch (error) {
         dialog(error);
@@ -102,22 +102,25 @@ const customerProfile = {
     },
 
     *updateDivision({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(updateDivision, {
-          // tenantId: getCurrentTenant(),
-          // customerId: payload.id
+        response = yield call(updateDivision, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         });
-        const { statusCode, message, data } = response;
+        const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message });
 
         yield put({
           type: 'fetchDivision',
-          payload: { tenantId: getCurrentTenant(), customerId: data.customerId },
+          payload: { tenantId: getCurrentTenant(), customerId: payload.customerId },
         });
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *fetchAuditTrail({ payload }, { call, put }) {
@@ -126,9 +129,8 @@ const customerProfile = {
           tenantId: getCurrentTenant(),
           customerId: payload.id,
         });
-        const { statusCode, data, message } = response;
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        notification.success({ message });
         yield put({ type: 'save', payload: { auditTrail: data } });
       } catch (error) {
         dialog(error);

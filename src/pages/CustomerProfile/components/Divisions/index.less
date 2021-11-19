@@ -1,85 +1,85 @@
 .Divisions {
-  box-sizing: border-box;
-  overflow: hidden;
   background-color: #fff;
   border: 1px solid #d6dce0;
   border-radius: 5px;
-  .divisionsHeader {
-    display: flex;
-    justify-content: space-between;
-    padding: 32px;
+  .DivisionCard {
+    box-sizing: border-box;
+    overflow: hidden;
+    background-color: #fff;
     border-bottom: 1px solid #d6dce0;
-    p {
-      margin: 0;
-      & > img {
-        margin-right: 16px;
-      }
-      &.contactInfoHeaderTitle {
-        color: #161c29;
-        font-weight: 700;
-        font-size: 16px;
-      }
-    }
-  }
-
-  .label {
-    color: #707177;
-    font-weight: 500;
-    font-size: 14px;
-  }
-  .value {
-    color: #161c29;
-    font-size: 16px;
-  }
-
-  .btnEdit {
-    color: #2c6df9;
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-  .divisionsBody {
-    padding: 0 8px;
-    background-color: #fff;
-    :global {
-      .ant-col {
-        margin-bottom: 32px;
+    .divisionsHeader {
+      display: flex;
+      justify-content: space-between;
+      padding: 32px;
+      border-bottom: 1px solid #d6dce0;
+      p {
+        margin: 0;
+        & > img {
+          margin-right: 16px;
+        }
+        &.contactInfoHeaderTitle {
+          color: #161c29;
+          font-weight: 700;
+          font-size: 16px;
+        }
       }
     }
-    .divisionPrimary {
-      width: 100%;
-      margin-bottom: 8px;
+
+    .label {
+      color: #707177;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    .value {
+      color: #161c29;
+      font-size: 16px;
+    }
+
+    .btnEdit {
+      color: #2c6df9;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .divisionsBody {
+      padding: 0 8px;
+      background-color: #fff;
+      :global {
+        .ant-col {
+          margin-bottom: 32px;
+        }
+      }
+      .divisionPrimary {
+        width: 100%;
+        margin-bottom: 8px;
+        padding: 24px;
+        padding-right: 0;
+        padding-left: 34px;
+        background-color: #f6f7f9;
+      }
+      .divisionSecondary {
+        padding: 24px 0 0 32px;
+      }
+    }
+
+    .divider {
+      border-top: 1px solid #d6dce0;
+    }
+
+    .divisionFooter {
       padding: 24px;
-      padding-right: 0;
-      padding-left: 34px;
-      background-color: #f6f7f9;
-    }
-    .divisionSecondary {
-      padding: 24px 0 0 32px;
+      background-color: #fff;
+      border-top: 1px solid #d6dce0;
     }
   }
-
-  .divider {
-    border-top: 1px solid #d6dce0;
-  }
-
-  .divisionFooter {
-    padding: 24px;
-    background-color: #fff;
-    border-top: 1px solid #d6dce0;
-  }
-
   .buttonAddImport {
     display: flex;
-    flex-flow: row nowrap;
     align-items: center;
     justify-content: flex-start;
-    height: 42px;
-    margin: 0;
+    margin: 24px 32px;
     color: #2c6df9;
     font-weight: 700;
     background-color: white;
-    border-radius: 30px;
     cursor: pointer;
     img {
       margin-right: 10px;

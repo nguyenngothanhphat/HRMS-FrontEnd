@@ -204,8 +204,8 @@ const ModalAddInfo = (props) => {
   };
   // tax detail
   const onFinishTaxIN = (values) => {
-    const { maritalStatus, noOfDependants } = values;
-    const taxDetails = { ...values, panNum: noOfDependants, employee: idCurrentEmployee };
+    const { maritalStatus, noOfDependents } = values;
+    const taxDetails = { ...values, panNum: noOfDependents, employee: idCurrentEmployee };
     const obj = { ...resultForm, taxDetails, maritalStatus };
     dispatch({
       type: 'employeeProfile/updateFirstGeneralInfo',
@@ -219,9 +219,9 @@ const ModalAddInfo = (props) => {
     });
   };
   const onFinishTax = (values) => {
-    const { maritalStatus, noOfDependants } = values;
+    const { maritalStatus, noOfDependents } = values;
     const incomeTaxRule = ""
-    const taxDetails = { ...values, panNum: noOfDependants, employee: idCurrentEmployee, incomeTaxRule };
+    const taxDetails = { ...values, panNum: noOfDependents, employee: idCurrentEmployee, incomeTaxRule };
     const obj = { ...resultForm, taxDetails, maritalStatus };
     dispatch({
       type: 'employeeProfile/updateFirstGeneralInfo',
@@ -271,7 +271,7 @@ const ModalAddInfo = (props) => {
                     )}
                     <Form.Item
                       name={['emergencyContact', `contact${item}`]}
-                      label="Emeregncy Contact"
+                      label="Emergency Contact"
                       rules={[
                         {
                           pattern: /^[+]*[\d]{0,10}$/,
@@ -281,7 +281,7 @@ const ModalAddInfo = (props) => {
                         },
                       ]}
                     >
-                      <Input placeholder="Emeregncy Contact" />
+                      <Input placeholder="Emergency Contact" />
                     </Form.Item>
                     <Form.Item
                       label="Person’s Name"
@@ -617,8 +617,8 @@ const ModalAddInfo = (props) => {
                   <Select.Option value="Rather not mention">Rather not mention</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="No. of Dependants" name="noOfDependants">
-                <Input maxLength={50} placeholder="No. of Dependants" />
+              <Form.Item label="No. of Dependents" name="noOfDependents">
+                <Input maxLength={50} placeholder="No. of Dependents" />
               </Form.Item>
               <Form.Item label="Residency Status" name="residencyStatus">
                 <Select placeholder="Residency Status" showArrow>
@@ -652,8 +652,8 @@ const ModalAddInfo = (props) => {
                   <Select.Option value="Rather not mention">Rather not mention</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="No. of Dependants" name="noOfDependants">
-                <Input maxLength={50} placeholder="No. of Dependants" />
+              <Form.Item label="No. of Dependents" name="noOfDependents">
+                <Input maxLength={50} placeholder="No. of Dependents" />
               </Form.Item>
               <Form.Item label="Residency Status" name="residencyStatus">
                 <Select placeholder="Residency Status" showArrow>
@@ -681,8 +681,8 @@ const ModalAddInfo = (props) => {
                   <Select.Option value="Rather not mention">Rather not mention</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="No. of Dependants" name="noOfDependants">
-                <Input maxLength={50} placeholder="No. of Dependants" />
+              <Form.Item label="No. of Dependents" name="noOfDependents">
+                <Input maxLength={50} placeholder="No. of Dependents" />
               </Form.Item>
               <Form.Item label="Residency Status" name="residencyStatus">
                 <Select placeholder="Residency Status" showArrow>

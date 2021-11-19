@@ -126,7 +126,7 @@ const customerManagement = {
     },
 
     *exportReport(_, { call }) {
-      let response = {};
+      let response = '';
       try {
         response = yield call(exportCustomer, {
           tenantId: getCurrentTenant(),
