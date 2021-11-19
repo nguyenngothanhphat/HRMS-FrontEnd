@@ -69,6 +69,7 @@ const ResourcesCard = (props) => {
       projectResourceListTotal: total = '',
     } = {},
     loadingFetchList = false,
+    loadingRemove = false
   } = props;
 
   // function
@@ -365,6 +366,7 @@ const ResourcesCard = (props) => {
         title="Delete Resource"
         firstText="Yes, Delete"
         width={500}
+        loading={loadingRemove}
         content={
           <Form
             name="myForm"
@@ -387,4 +389,5 @@ const ResourcesCard = (props) => {
 export default connect(({ projectDetails, loading }) => ({
   projectDetails,
   loadingFetchList: loading.effects['projectDetails/fetchResourceOfProjectEffect'],
+  loadingRemove: loading.effects['projectDetails/removeResourceOfProjectEffect'],
 }))(ResourcesCard);
