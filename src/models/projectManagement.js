@@ -7,7 +7,7 @@ import {
   getProjectTypeList,
   getProjectStatusList,
   getTagList,
-  getDepartmentList,
+  getDivisionList,
   getEmployeeList,
   addProject,
 } from '@/services/projectManagement';
@@ -23,7 +23,7 @@ const initialState = {
   projectTypeList: [],
   projectStatusList: [],
   tagList: [],
-  departmentList: [],
+  divisionList: [],
   employeeList: [],
 };
 
@@ -205,10 +205,10 @@ const ProjectManagement = {
       return response;
     },
 
-    *fetchDepartmentListEffect({ payload }, { call, put }) {
+    *fetchDivisionListEffect({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getDepartmentList, {
+        response = yield call(getDivisionList, {
           ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
@@ -216,12 +216,14 @@ const ProjectManagement = {
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
 
-        yield put({
-          type: 'save',
-          payload: {
-            departmentList: data,
-          },
-        });
+        if (data.length > 0) {
+          yield put({
+            type: 'save',
+            payload: {
+              divisionList: data[0].tagDivision,
+            },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }

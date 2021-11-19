@@ -22,7 +22,7 @@ const FilterPopover = (props) => {
       customerList = [],
       projectTypeList = [],
       projectStatusList = [],
-      departmentList = [],
+      divisionList = [],
       employeeList = [],
     } = {},
     loadingFetchEmployeeList = false,
@@ -40,7 +40,10 @@ const FilterPopover = (props) => {
         type: 'projectManagement/fetchProjectStatusListEffect',
       });
       dispatch({
-        type: 'projectManagement/fetchDepartmentListEffect',
+        type: 'projectManagement/fetchDivisionListEffect',
+        payload: {
+          name: 'Engineering'
+        }
       });
       dispatch({
         type: 'projectManagement/fetchEmployeeListEffect',
@@ -88,8 +91,8 @@ const FilterPopover = (props) => {
                 style={{ width: '100%' }}
                 placeholder="Select Division"
               >
-                {departmentList.map((x) => {
-                  return <Select.Option value={x._id}>{x.name}</Select.Option>;
+                {divisionList.map((x) => {
+                  return <Select.Option value={x}>{x}</Select.Option>;
                 })}
               </Select>
             </Form.Item>

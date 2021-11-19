@@ -96,7 +96,7 @@ export async function getTagList(payload) {
   );
 }
 
-export async function getDepartmentList(payload) {
+export async function getDivisionList(payload) {
   return request('/api/departmenttenant/list', {
     method: 'POST',
     data: payload,

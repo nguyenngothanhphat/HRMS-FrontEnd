@@ -6,7 +6,7 @@ import s from '../../index.less';
 import CustomTag from '../CustomTag';
 
 const ViewInformation = (props) => {
-  const { projectDetail, projectTagList = [] } = props;
+  const { projectDetail } = props;
   const {
     avatar = '',
     customerId = '',
@@ -15,13 +15,14 @@ const ViewInformation = (props) => {
     projectName = '',
     projectStatus = '',
     engagementType = '',
-    division: { name: divisionName = '' } = {},
+    division = '',
     accountOwner: {
       generalInfo: { userId: accountOwnerId = '', legalName: accountOwnerName = '' } = {},
     } = {},
     engineeringOwner: {
       generalInfo: { userId: engineeringOwnerId = '', legalName: engineeringOwnerName = '' } = {},
     } = {},
+    tags = [],
   } = projectDetail;
 
   const viewProfile = (id) => {
@@ -52,7 +53,7 @@ const ViewInformation = (props) => {
     },
     {
       name: 'Division',
-      value: divisionName,
+      value: division,
     },
     {
       name: 'Account Owner',
@@ -108,8 +109,8 @@ const ViewInformation = (props) => {
 
         <Divider />
         <p className={s.projectInfo__viewBottom__tagLabel}>Tags</p>
-        {projectTagList.map((t, i) => (
-          <CustomTag color={getColor(i)}>{t.tagName}</CustomTag>
+        {tags.map((t, i) => (
+          <CustomTag color={getColor(i)}>{t}</CustomTag>
         ))}
       </div>
     </div>

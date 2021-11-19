@@ -30,7 +30,7 @@ import {
   getProjectTagList,
   getTechnologyList,
   getTitleList,
-  getDepartmentList,
+  getDivisionList,
 } from '@/services/projectDetails';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
@@ -47,7 +47,7 @@ const initialState = {
   auditTrailList: [],
   titleList: [],
   technologyList: [],
-  departmentList: [],
+  divisionList: [],
   projectTagList: [],
 };
 
@@ -248,23 +248,24 @@ const ProjectDetails = {
       }
       return response;
     },
-    *fetchDepartmentListEffect({ payload }, { call, put }) {
+    *fetchDivisionListEffect({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getDepartmentList, {
+        response = yield call(getDivisionList, {
           ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
-
-        yield put({
-          type: 'save',
-          payload: {
-            departmentList: data,
-          },
-        });
+        if (data.length > 0) {
+          yield put({
+            type: 'save',
+            payload: {
+              divisionList: data[0].tagDivision,
+            },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }

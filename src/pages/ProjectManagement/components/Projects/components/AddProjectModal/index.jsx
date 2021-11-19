@@ -21,10 +21,11 @@ const AddProjectModal = (props) => {
       projectTypeList = [],
       projectStatusList = [],
       tagList = [],
-      departmentList = [],
+      divisionList = [],
       employeeList = [],
       newProjectId = '',
     } = {},
+    employee: { generalInfo: { legalName: ownerName = '' } = {} } = {} || {},
     // loadingGenId = false,
     loadingAddProject = false,
     loadingFetchEmployeeList = false,
@@ -43,7 +44,10 @@ const AddProjectModal = (props) => {
         type: 'projectManagement/fetchTagListEffect',
       });
       dispatch({
-        type: 'projectManagement/fetchDepartmentListEffect',
+        type: 'projectManagement/fetchDivisionListEffect',
+        payload: {
+          name: 'Engineering',
+        },
       });
       dispatch({
         type: 'projectManagement/fetchEmployeeListEffect',
@@ -86,8 +90,8 @@ const AddProjectModal = (props) => {
     dispatch({
       type: 'projectManagement/save',
       payload: {
-        newProjectId: ''
-      }
+        newProjectId: '',
+      },
     });
     onClose();
   };
@@ -100,15 +104,15 @@ const AddProjectModal = (props) => {
   };
 
   const handleFinish = async (values) => {
-    const customer = customerList.find(x => x.customerId === customerId)
+    const customer = customerList.find((x) => x.customerId === customerId);
     const res = await dispatch({
       type: 'projectManagement/addProjectEffect',
       payload: {
         ...values,
         startDate: moment(values.startDate).format('YYYY-MM-DD'),
         tentativeEndDate: moment(values.tentativeEndDate).format('YYYY-MM-DD'),
-        tagIds: values.tagIds.map((x) => x * 1),
-        customerName: customer?.legalName
+        customerName: customer?.legalName,
+        ownerName,
       },
     });
     if (res.statusCode === 200) {
@@ -361,8 +365,8 @@ const AddProjectModal = (props) => {
                 labelCol={{ span: 24 }}
               >
                 <Select placeholder="Select Division">
-                  {departmentList.map((x) => (
-                    <Option value={x._id}>{x.name}</Option>
+                  {divisionList.map((x) => (
+                    <Option value={x}>{x}</Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -371,13 +375,13 @@ const AddProjectModal = (props) => {
               <Form.Item
                 rules={[{ required: true, message: 'Select Tags' }]}
                 label="Tags"
-                name="tagIds"
-                fieldKey="tagIds"
+                name="tags"
+                fieldKey="tags"
                 labelCol={{ span: 24 }}
               >
                 <Select mode="multiple" placeholder="Select Groups">
                   {tagList.map((x) => (
-                    <Option value={x.id}>{x.tag_name}</Option>
+                    <Option value={x.tag_name}>{x.tag_name}</Option>
                   ))}
                 </Select>
               </Form.Item>

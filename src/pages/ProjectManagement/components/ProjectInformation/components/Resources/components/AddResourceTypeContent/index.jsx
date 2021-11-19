@@ -14,7 +14,7 @@ const AddResourceTypeContent = (props) => {
     visible = false,
     dispatch,
     projectDetails: {
-      departmentList = [],
+      divisionList = [],
       technologyList = [],
       titleList = [],
       projectDetail = {},
@@ -41,7 +41,10 @@ const AddResourceTypeContent = (props) => {
         type: 'projectDetails/fetchTechnologyListEffect',
       });
       dispatch({
-        type: 'projectDetails/fetchDepartmentListEffect',
+        type: 'projectDetails/fetchDivisionListEffect',
+        payload: {
+          name: 'Engineering',
+        },
       });
     }
   }, [visible]);
@@ -107,8 +110,8 @@ const AddResourceTypeContent = (props) => {
           <Col xs={24} md={12}>
             <Form.Item label="Division" name="division" labelCol={{ span: 24 }}>
               <Select placeholder="Select Division">
-                {departmentList.map((x) => (
-                  <Option value={x._id}>{x.name}</Option>
+                {divisionList.map((x) => (
+                  <Option value={x}>{x}</Option>
                 ))}
               </Select>
             </Form.Item>
