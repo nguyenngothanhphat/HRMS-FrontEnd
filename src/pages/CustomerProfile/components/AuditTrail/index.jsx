@@ -23,8 +23,8 @@ const AuditTrail = (props) => {
   }, []);
 
   const getActionInfo = (record) => {
-    const { change = '' } = record;
-    return change ? ` - ${change}` : '';
+    const { changes = '' } = record;
+    return changes ? ` - ${changes}` : '';
   };
 
   const getColumns = () => {
