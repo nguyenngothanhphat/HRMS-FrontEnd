@@ -2,49 +2,49 @@ import { request } from '@/utils/request';
 
 export default async function getCustomerInfo(payload) {
   return request(`/api-customer/customertenant/get-customer-info`, {
-    type: 'POST',
+    method: 'POST',
     data: payload,
   });
 }
 
 export async function getAuditTrail(payload) {
   return request(`/api-customer/audittrailtenant/list`, {
-    type: 'POST',
+    method: 'POST',
     data: payload,
   });
 }
 
 export async function getDocument(payload) {
   return request(`/api-customer/documenttenant/list`, {
-    type: 'POST',
+    method: 'POST',
     data: payload,
   });
 }
 
 export async function uploadDocument(payload) {
   return request(`/api/attachments/upload`, {
-    type: 'POST',
+    method: 'POST',
     data: payload,
   });
 }
 
 export async function addDocument(payload) {
   return request(`/api-customer/documenttenant/add`, {
-    type: 'POST',
+    method: 'POST',
     data: payload,
   });
 }
 
 export async function filterDocument(payload) {
   return request(`/api-customer/documenttenant/filter`, {
-    type: 'POST',
+    method: 'POST',
     data: payload,
   });
 }
 
 export async function removeDocument(payload) {
   return request(`/api-customer/documenttenant/remove`, {
-    type: 'POST',
+    method: 'POST',
     data: payload,
   });
 }
@@ -104,8 +104,15 @@ export async function addNotes(payload) {
   });
 }
 
+// export async function getTagList(payload) {
+//   return request(`/api-customer/tagtenant/list`, {
+//     method: 'POST',
+//     data: payload,
+//   });
+// }
+
 export async function getTagList(payload) {
-  return request(`/api-customer/tagtenant/list`, {
+  return request('/api/departmenttenant/list', {
     method: 'POST',
     data: payload,
   });

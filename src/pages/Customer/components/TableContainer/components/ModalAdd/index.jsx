@@ -56,6 +56,9 @@ class ModalAdd extends PureComponent {
     });
     dispatch({
       type: 'customerManagement/fetchTagList',
+      payload: {
+        name: 'Engineering'
+      }
     });
     dispatch({
       type: 'customerManagement/fetchCountryList',
@@ -315,7 +318,7 @@ class ModalAdd extends PureComponent {
                 <Select mode="multiple" placeholder="Select tags">
                   {listTags.map((tagItem) => {
                     return (
-                      <Select.Option key={parseFloat(tagItem.id)}>{tagItem.tag_name}</Select.Option>
+                      <Select.Option key={tagItem}>{tagItem}</Select.Option>
                     );
                   })}
                 </Select>
