@@ -43,9 +43,16 @@ export async function genCustomerID(payload) {
   });
 }
 
+// export async function getTagList(payload) {
+//   return request(`/api-customer/tagtenant/default-list`, {
+//     method: 'GET',
+//     data: payload,
+//   });
+// }
+
 export async function getTagList(payload) {
-  return request(`/api-customer/tagtenant/default-list`, {
-    method: 'GET',
+  return request('/api/departmenttenant/list', {
+    method: 'POST',
     data: payload,
   });
 }

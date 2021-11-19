@@ -10,9 +10,8 @@ import s from '../../index.less';
 
 // import { getCurrentTenant } from '@/utils/authority';
 
-@connect(({ loading, customerProfile: { listTag = [], info = {} } = {} }) => ({
+@connect(({ loading, customerProfile: { info = {} } = {} }) => ({
   info,
-  listTag,
   loadingInfo: loading.effects['customerProfile/fetchCustomerInfo'],
 }))
 class ViewInformation extends Component {
@@ -30,6 +29,7 @@ class ViewInformation extends Component {
         generalInfo: { legalName: nameLegal = '', avatar = '' } = {},
         company: { name = '' } = {},
       } = {},
+      tags = [],
       legalName = '',
       status = '',
       pendingTickets = '',
@@ -172,8 +172,8 @@ class ViewInformation extends Component {
           {/* </div> */}
           <Divider />
           <p>Tags</p>
-          {listTag.map((item) => {
-            return <Tag key={item.tagId}>{item.tagName}</Tag>;
+          {tags.map((item) => {
+            return <Tag key={item}>{item}</Tag>;
           })}
 
           <Divider />

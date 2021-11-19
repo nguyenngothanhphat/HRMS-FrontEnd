@@ -127,9 +127,9 @@ class TableContainer extends PureComponent {
       website,
       tags,
       comments,
-      accountOwner
+      accountOwner,
     } = values;
-    const newTags = tags.map((item) => parseInt(item, 10));
+
     dispatch({
       type: 'customerManagement/addNewCustomer',
       payload: {
@@ -147,7 +147,7 @@ class TableContainer extends PureComponent {
         country: countryName.name || '',
         postalCode: zipCode || '',
         accountOwner: accountOwner || '',
-        tagIds: newTags || [],
+        tags: tags || [],
         comment: comments || '',
         website: website || '',
       },

@@ -104,8 +104,15 @@ export async function addNotes(payload) {
   });
 }
 
+// export async function getTagList(payload) {
+//   return request(`/api-customer/tagtenant/list`, {
+//     method: 'POST',
+//     data: payload,
+//   });
+// }
+
 export async function getTagList(payload) {
-  return request(`/api-customer/tagtenant/list`, {
+  return request('/api/departmenttenant/list', {
     method: 'POST',
     data: payload,
   });

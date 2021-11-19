@@ -23,7 +23,7 @@ class ModalEditDivision extends PureComponent {
 
   handleClose = () => {
     const { onClose = () => {} } = this.props;
-    this.refForm.current.resetFields();
+    this.refForm?.current?.resetFields();
     onClose();
   };
 
@@ -55,7 +55,7 @@ class ModalEditDivision extends PureComponent {
     const payload = {
       ...values,
       customerId: info.customerId,
-      tagIds: values.tagIds.map((t) => t * 1) || [],
+      tags: values.tags || [],
     };
     const res = await dispatch({
       type: 'customerProfile/updateDivision',
@@ -98,7 +98,7 @@ class ModalEditDivision extends PureComponent {
       state = '',
       city = '',
       postalCode = '',
-      tagIds = [],
+      tags = [],
       comments = '',
     } = data;
 
@@ -153,7 +153,7 @@ class ModalEditDivision extends PureComponent {
               city,
               postalCode,
               comments,
-              tagIds,
+              tags,
             }}
             onFinish={this.onEditDivision}
           >
@@ -321,10 +321,10 @@ class ModalEditDivision extends PureComponent {
                 </Col>
                 <Col span={12} />
                 <Col span={24}>
-                  <Form.Item label="Tags (Optional)" name="tagIds">
+                  <Form.Item label="Tags (Optional)" name="tags">
                     <Select mode="multiple" placeholder="Enter tags">
                       {listTags.map((item) => {
-                        return <Select.Option key={item.id * 1}>{item.tag_name}</Select.Option>;
+                        return <Select.Option key={item}>{item}</Select.Option>;
                       })}
                     </Select>
                   </Form.Item>
