@@ -1,0 +1,98 @@
+@blueColor: #2c6df9;
+@orangeColor: #ffa100;
+.ResourceTableCard {
+  width: 100%;
+  :global {
+    .ant-card,
+    .ant-card-bordered {
+      border-radius: 5px;
+    }
+    .ant-card-body {
+      padding-bottom: 0;
+    }
+    td.ant-table-cell {
+      padding: 0 !important;
+    }
+    .ant-table-tbody > tr > td {
+      border-bottom: 1px solid #d6dce0;
+    }
+  }
+  .options {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  :global {
+    // disalbe  row hover
+    .ant-table-tbody > tr.ant-table-row-level-0:hover > td {
+      background: unset;
+    }
+    .ant-table-tbody > tr.ant-table-row-selected > td {
+      background: unset;
+    }
+  }
+  .blueText {
+    color: @blueColor;
+    font-weight: 500;
+  }
+  .selectableTag {
+    .blueText();
+    cursor: pointer;
+  }
+  .resourceName {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    span {
+      display: block;
+    }
+    .tag {
+      display: block;
+      margin-bottom: 5px;
+      padding: 4px 8px;
+      font-size: 11px;
+      border: none;
+      border-radius: 48px;
+    }
+    .availableNowTag {
+      .tag();
+      color: white;
+      font-size: 8px;
+      background-color: #00c598;
+    }
+    .availableSoonTag {
+      .tag();
+      color: black;
+      font-size: 8px;
+      background-color: #ffa100;
+    }
+    .selectableTag {
+      text-align: right;
+    }
+  }
+  .division {
+    padding: 4px 8px;
+    font-size: 11px;
+    background-color: #e2f6ff;
+    border: none;
+    border-radius: 12px;
+  }
+  .cell {
+    padding: 16px 8px;
+  }
+  .projectContainer {
+    height: 100%;
+    .project {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 70px;
+      padding: 16px 8px;
+    }
+    .hasBorder {
+      border-right: 1px solid #d6dce0;
+      border-left: 1px solid #d6dce0;
+    }
+  }
+}
