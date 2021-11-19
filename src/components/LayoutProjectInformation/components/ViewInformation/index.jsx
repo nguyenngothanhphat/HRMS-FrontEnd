@@ -107,7 +107,7 @@ const ViewInformation = (props) => {
         </div>
 
         <Divider />
-        <p>Tags</p>
+        <p className={s.projectInfo__viewBottom__tagLabel}>Tags</p>
         {projectTagList.map((t, i) => (
           <CustomTag color={getColor(i)}>{t.tagName}</CustomTag>
         ))}

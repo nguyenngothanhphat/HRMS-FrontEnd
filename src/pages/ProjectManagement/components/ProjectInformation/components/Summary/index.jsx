@@ -193,14 +193,22 @@ const Summary = (props) => {
           className={styles.form}
           onFinish={onFinish}
         >
-          <Form.Item label="Start Date:" name="startDate">
+          <Form.Item
+            label="Start Date:"
+            name="startDate"
+            rules={[{ required: true, message: 'Required field!' }]}
+          >
             <DatePicker
               suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
               placeholder="Select Start Date"
             />
           </Form.Item>
 
-          <Form.Item label="End Date:" name="tentativeEndDate">
+          <Form.Item
+            label="End Date:"
+            name="tentativeEndDate"
+            rules={[{ required: true, message: 'Required field!' }]}
+          >
             <DatePicker
               onClick={() => setEditEndDateModalVisible(true)}
               suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
@@ -209,7 +217,11 @@ const Summary = (props) => {
             />
           </Form.Item>
 
-          <Form.Item label="Project Description:" name="projectDescription">
+          <Form.Item
+            label="Project Description:"
+            name="projectDescription"
+            rules={[{ required: true, message: 'Required field!' }]}
+          >
             <Input.TextArea autoSize={{ minRows: 4 }} />
           </Form.Item>
 
