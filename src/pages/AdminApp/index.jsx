@@ -19,7 +19,7 @@ import styles from './index.less';
     departmentManagement: { listByCompany: listDepartment = [] } = {},
   }) => ({
     currentUser,
-    listDepartment,
+            listDepartment,
     loading: loading.effects['companiesManagement/fetchCompanyDetails'],
   }),
 )

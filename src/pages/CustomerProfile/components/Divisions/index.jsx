@@ -118,6 +118,7 @@ class Divisions extends PureComponent {
       state = [],
     } = this.props;
 
+    console.log('handlingPackage', handlingPackage);
     return (
       <div className={styles.Divisions}>
         {divisions.map((item, i) => {
@@ -145,7 +146,7 @@ class Divisions extends PureComponent {
           <ModalEditDivision
             data={handlingPackage}
             visible={editModalVisible}
-            onClose={() => this.setState({ editModalVisible: false })}
+            onClose={() => this.setState({ editModalVisible: false, handlingPackage: {} })}
             listTags={listTags}
             info={info}
             isCountrySelected={isCountrySelected}
