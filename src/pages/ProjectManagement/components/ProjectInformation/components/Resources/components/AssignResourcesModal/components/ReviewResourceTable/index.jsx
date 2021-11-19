@@ -1,31 +1,19 @@
-import { DatePicker } from 'antd';
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
-import CommonTable from '@/pages/ProjectManagement/components/ProjectInformation/components/CommonTable';
 import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
+import CommonTable from '@/pages/ProjectManagement/components/ProjectInformation/components/CommonTable';
+import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
 import styles from './index.less';
 
 const ReviewResourceTable = (props) => {
   const {
     removeResource = () => {},
     selectedResources = [],
-    setSelectedResources = () => {},
+    billingStatus = '',
+    startDate = '',
+    endDate = '',
   } = props;
-
-  const onDateChange = (value, row, type) => {
-    const temp = JSON.parse(JSON.stringify(selectedResources));
-    const result = temp.map((v) => {
-      if (v._id === row._id) {
-        return {
-          ...v,
-          [type]: value,
-        };
-      }
-      return v;
-    });
-    setSelectedResources(result);
-  };
 
   const renderTimeTitle = (title) => {
     return (
@@ -63,7 +51,7 @@ const ReviewResourceTable = (props) => {
         title: 'Billing Status',
         dataIndex: 'billingStatus',
         key: 'billingStatus',
-        render: (billingStatus) => {
+        render: () => {
           return <span>{billingStatus || '-'}</span>;
         },
       },
@@ -72,11 +60,9 @@ const ReviewResourceTable = (props) => {
         dataIndex: 'startDate',
         key: 'startDate',
         align: 'center',
-        render: (startDate, row) => {
-          const value = startDate ? moment(startDate) : null;
-          return (
-            <DatePicker value={value} onChange={(val) => onDateChange(val, row, 'startDate')} />
-          );
+        render: () => {
+          const value = startDate ? moment(startDate).format(DATE_FORMAT_LIST) : null;
+          return <span>{value || '-'}</span>;
         },
       },
       {
@@ -84,9 +70,9 @@ const ReviewResourceTable = (props) => {
         dataIndex: 'endDate',
         key: 'endDate',
         align: 'center',
-        render: (endDate, row) => {
-          const value = endDate ? moment(endDate) : null;
-          return <DatePicker value={value} onChange={(val) => onDateChange(val, row, 'endDate')} />;
+        render: () => {
+          const value = endDate ? moment(endDate).format(DATE_FORMAT_LIST) : null;
+          return <span>{value || '-'}</span>;
         },
       },
       {

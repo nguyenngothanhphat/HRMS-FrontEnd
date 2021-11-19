@@ -21,6 +21,7 @@ const AssignResourcesModal = (props) => {
       division: { _id: divisionId = '' } = {},
       resourceType: { name: resourceTypeName = '' } = {},
       noOfResources = 0,
+      billingStatus = '',
     } = {},
     refreshResourceType = () => {},
   } = props;
@@ -29,6 +30,7 @@ const AssignResourcesModal = (props) => {
     dispatch,
     projectDetails: { projectDetail = {}, resourceList = [], resourceListTotal = 0 } = {},
     loadingFetchResourceList = false,
+    loadingAssign = false
   } = props;
 
   const {
@@ -81,10 +83,10 @@ const AssignResourcesModal = (props) => {
         tenantId: getCurrentTenant(),
         company: getCurrentCompany(),
         project: projectNumberId,
-        // status: 'Billing',
+        status: billingStatus,
         // utilization: '',
-        startDate: x.startDate ? moment(x.startDate).format('YYYY-MM-DD') : '',
-        endDate: x.endDate ? moment(x.endDate).format('YYYY-MM-DD') : '',
+        startDate: startDate ? moment(startDate).format('YYYY-MM-DD') : '',
+        endDate: endDate ? moment(endDate).format('YYYY-MM-DD') : '',
         employee: x._id,
       };
     });
@@ -184,8 +186,10 @@ const AssignResourcesModal = (props) => {
             fetchData={fetchResourceList}
             data={resourceList}
             selectedResources={selectedResources}
-            setSelectedResources={setSelectedResources}
             removeResource={removeResource}
+            billingStatus={billingStatus}
+            startDate={startDate}
+            endDate={endDate}
           />
         </Row>
       </div>
@@ -261,6 +265,7 @@ const AssignResourcesModal = (props) => {
                 type="primary"
                 onClick={onPrimaryButtonClick}
                 disabled={selectedResources.length === 0}
+                loading={loadingAssign}
               >
                 {renderPrimaryButtonText()}
               </Button>
@@ -298,5 +303,6 @@ export default connect(
     employee,
     projectDetails,
     loadingFetchResourceList: loading.effects['projectDetails/fetchResourceListEffect'],
+    loadingAssign: loading.effects['projectDetails/assignResourcesEffect']
   }),
 )(AssignResourcesModal);
