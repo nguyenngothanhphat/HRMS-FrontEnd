@@ -193,8 +193,9 @@ const customerProfile = {
     },
 
     *addNote({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(addNotes, {
+        response = yield call(addNotes, {
           tenantId: getCurrentTenant(),
           ...payload,
         });
@@ -212,6 +213,7 @@ const customerProfile = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *fetchDocumentsTypes(_, { call, put }) {

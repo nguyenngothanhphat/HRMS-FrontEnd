@@ -1,92 +1,83 @@
-import { Table } from 'antd';
+// export default AuditTrail;
+import { Card } from 'antd';
+import React, { useEffect } from 'react';
+import { connect } from 'umi';
 import moment from 'moment';
-import React, { PureComponent } from 'react';
-import { connect, Link } from 'umi';
+import CommonTable from '../CommonTable';
 import styles from './index.less';
-import docPDF from '@/assets/docPDF.svg';
 
-@connect(({ loading, customerProfile: { auditTrail = [] } = {} }) => ({
-  auditTrail,
-  loadingAuditTrail: loading.effects['customerProfile/fetchAuditTrail'],
-}))
-class AuditTrail extends PureComponent {
-  componentDidMount() {
-    const { dispatch, reId } = this.props;
+const AuditTrail = (props) => {
+  const { dispatch, auditTrail = [], loadingFetch = false, reId = '' } = props;
 
+  const fetchAuditTrailList = () => {
     dispatch({
       type: 'customerProfile/fetchAuditTrail',
       payload: {
         id: reId,
       },
     });
-  }
+  };
 
-  generateColumns = () => {
+  useEffect(() => {
+    fetchAuditTrailList();
+  }, []);
+
+  const getActionInfo = (record) => {
+    const { attachmentInfo } = record;
+    if (attachmentInfo) {
+      return ` - ${attachmentInfo.name}`;
+    }
+    return '';
+  };
+
+  const getColumns = () => {
     const columns = [
       {
         title: 'Time',
-        dataIndex: 'created_at',
-        align: 'left',
-        width: '10%',
-        render: (created_at) => {
-          const time = moment(created_at).format('MMM D, HH:mm');
-          return <p style={{ textTransform: 'capitalize' }}>{time}</p>;
+        dataIndex: 'timeTaken',
+        key: 'timeTaken',
+        render: (timeTaken) => {
+          return (
+            <span>
+              {timeTaken ? moment(timeTaken).locale('en').format('MM-DD-YYYY HH:mm:ss') : '-'}
+            </span>
+          );
         },
       },
       {
         title: 'User',
         dataIndex: 'user',
-        align: 'left',
-        fixed: 'left',
-        width: '10%',
-        render: (user) => {
-          return <Link style={{ fontWeight: '700' }}>{user}</Link>;
-        },
+        key: 'user',
+        render: (user) => <span className={styles.clickableTag}>{user}</span>,
       },
       {
         title: 'Changes',
-        dataIndex: 'attachmentInfo',
-        width: '10%',
-        align: 'left',
-        render: (attachmentInfo, doc) => {
+        dataIndex: 'action',
+        key: 'action',
+        render: (action, row) => {
           return (
-            <>
-              <p>{doc?.action}</p>
-              <p>
-                <img src={docPDF} alt="doc" />
-                <span style={{ display: 'inline-block', marginLeft: '10px', color: '#2C6DF9' }}>
-                  {attachmentInfo?.name.slice(0, -4)}
-                </span>
-                .pdf
-              </p>
-            </>
+            <span>
+              {action}
+              <span className={styles.clickableTag}>{getActionInfo(row)}</span>
+            </span>
           );
         },
       },
     ];
-
-    return columns.map((col) => ({
-      ...col,
-      title: col.title,
-    }));
+    return columns;
   };
 
-  render() {
-    const { auditTrail } = this.props;
-
-    return (
-      <div className={styles.AuditTrail}>
-        <div className={styles.documentHeader}>
-          <div className={styles.documentHeaderTitle}>
-            <p>Audit Trail</p>
-          </div>
+  return (
+    <div className={styles.AuditTrail}>
+      <Card title="Audit Trail">
+        <div className={styles.tableContainer}>
+          <CommonTable list={auditTrail} columns={getColumns()} loading={loadingFetch} />
         </div>
-        <div className={styles.documentBody}>
-          <Table columns={this.generateColumns()} dataSource={auditTrail} />
-        </div>
-      </div>
-    );
-  }
-}
-
-export default AuditTrail;
+      </Card>
+    </div>
+  );
+};
+export default connect(({ customerProfile: { auditTrail = [] } = {}, loading }) => ({
+  auditTrail,
+  loadingFetch: loading.effects['customerProfile/fetchAuditTrail'],
+}))(AuditTrail);

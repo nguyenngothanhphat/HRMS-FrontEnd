@@ -21,6 +21,12 @@ class ModalEditDivision extends PureComponent {
     this.refForm = React.createRef();
   }
 
+  handleClose = () => {
+    const { onClose = () => {} } = this.props;
+    this.refForm.current.resetFields();
+    onClose();
+  };
+
   handleChange = (e) => {
     const {
       info: {
@@ -45,25 +51,24 @@ class ModalEditDivision extends PureComponent {
   };
 
   onEditDivision = async (values) => {
-    const { dispatch, info, onClose = () => {} } = this.props;
+    const { dispatch, info } = this.props;
     const payload = {
       ...values,
       customerId: info.customerId,
-      tagIds: values.tags.map((t) => t * 1) || [],
+      tagIds: values.tagIds.map((t) => t * 1) || [],
     };
     const res = await dispatch({
       type: 'customerProfile/updateDivision',
       payload,
     });
     if (res.statusCode === 200) {
-      onClose();
+      this.handleClose();
     }
   };
 
   render() {
     const {
       visible,
-      onClose = () => {},
       listTags = [],
       isCountrySelected,
       handelSelectCountry,
@@ -93,7 +98,7 @@ class ModalEditDivision extends PureComponent {
       state = '',
       city = '',
       postalCode = '',
-      tags = [],
+      tagIds = [],
       comments = '',
     } = data;
 
@@ -104,7 +109,7 @@ class ModalEditDivision extends PureComponent {
           className={styles.ModalEditDivision}
           footer={[
             <div className={styles.btnForm}>
-              <Button className={styles.btnCancel} onClick={onClose}>
+              <Button className={styles.btnCancel} onClick={this.handleClose}>
                 Cancel
               </Button>
               <Button
@@ -119,8 +124,9 @@ class ModalEditDivision extends PureComponent {
               </Button>
             </div>,
           ]}
-          onCancel={onClose}
+          onCancel={this.handleClose}
           visible={visible}
+          destroyOnClose
           width={700}
         >
           <Form
@@ -147,6 +153,7 @@ class ModalEditDivision extends PureComponent {
               city,
               postalCode,
               comments,
+              tagIds,
             }}
             onFinish={this.onEditDivision}
           >
@@ -314,7 +321,7 @@ class ModalEditDivision extends PureComponent {
                 </Col>
                 <Col span={12} />
                 <Col span={24}>
-                  <Form.Item label="Tags (Optional)" name="tags">
+                  <Form.Item label="Tags (Optional)" name="tagIds">
                     <Select mode="multiple" placeholder="Enter tags">
                       {listTags.map((item) => {
                         return <Select.Option key={item.id * 1}>{item.tag_name}</Select.Option>;

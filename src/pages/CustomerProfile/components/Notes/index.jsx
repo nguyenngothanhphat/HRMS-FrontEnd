@@ -29,12 +29,13 @@ import styles from './index.less';
   }),
 )
 class Notes extends PureComponent {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = {
       isUnhide: false,
     };
-    this.refForm = React.createRef();
     this.delaySearch = debounce((value) => {
       this.handleSearch(value);
     }, 1000);
@@ -116,7 +117,7 @@ class Notes extends PureComponent {
         customerId: reId,
       },
     }).then(() => {
-      this.refForm.current.resetFields();
+      this.formRef?.current?.resetFields();
     });
   };
 
@@ -220,7 +221,7 @@ class Notes extends PureComponent {
         {this.renderNotes()}
 
         <div className={styles.notesFooter}>
-          <Form ref={this.refForm} layout="horizontal" onFinish={(values) => this.addNote(values)}>
+          <Form ref={this.formRef} layout="horizontal" onFinish={(values) => this.addNote(values)}>
             <Row gutter={[24, 0]} align="middle" justify="space-between">
               <Col lg={18} xl={20}>
                 <Form.Item name="note">
