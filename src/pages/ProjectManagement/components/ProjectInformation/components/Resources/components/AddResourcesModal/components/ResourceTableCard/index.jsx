@@ -169,24 +169,9 @@ const ResourceTableCard = (props) => {
     );
   };
 
-  const renderTitle = () => {
-    return (
-      <span>
-        {resourceTypeName} -{' '}
-        <span
-          style={{
-            color: '#2c6df9',
-          }}
-        >
-          {selectedResources.length}
-        </span>
-        /{noOfResources}
-      </span>
-    );
-  };
   return (
     <div className={styles.ResourceTableCard}>
-      <Card title={renderTitle()} extra={renderOption()}>
+      <Card extra={renderOption()}>
         <CommonTable
           columns={generateColumns()}
           list={data}

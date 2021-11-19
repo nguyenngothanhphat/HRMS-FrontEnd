@@ -97,7 +97,7 @@ const AssignResourcesModal = (props) => {
       <div className={styles.header}>
         <img src={BackIcon} alt="" onClick={onBack} />
         <p className={styles.header__text}>
-          {step === 1 ? 'Assign resources' : 'Review resources'}
+          {step === 1 ? 'Add resources' : 'Review resources'}
         </p>
       </div>
     );
@@ -110,52 +110,35 @@ const AssignResourcesModal = (props) => {
   };
 
   const renderStep1 = () => {
+    const items = [
+      {
+        label: 'Project Name',
+        value: projectName,
+      },
+      {
+        label: 'Engagement Type',
+        value: engagementType,
+      },
+      {
+        label: 'Start Date',
+        value: startDate ? moment(startDate).locale('en').format('MM/DD/YYYY') : '',
+      },
+      {
+        label: 'End Date',
+        value: endDate ? moment(endDate).locale('en').format('MM/DD/YYYY') : '',
+      },
+    ];
     return (
       <div className={styles.container}>
         <Row gutter={[0, 24]} className={styles.abovePart}>
-          <Col xs={24} md={7}>
-            <Row gutter={[24, 10]}>
-              <Col span={24}>
-                <div className={styles.item}>
-                  <span className={styles.label}>Project Name:</span>
-                  <span className={styles.value}>{projectName}</span>
-                </div>
-              </Col>
-              <Col span={24}>
-                <div className={styles.item}>
-                  <span className={styles.label}>Engagement Type:</span>
-                  <span className={styles.value}>{engagementType}</span>
-                </div>
-              </Col>
-            </Row>
-          </Col>
-          <Col xs={24} md={7}>
-            <Row gutter={[24, 10]}>
-              <Col span={24}>
-                <div className={styles.item}>
-                  <span className={styles.label}>Start Date:</span>
-                  <span className={styles.value}>
-                    {startDate ? moment(startDate).locale('en').format('MM/DD/YYYY') : ''}
-                  </span>
-                </div>
-              </Col>
-              <Col span={24}>
-                <div className={styles.item}>
-                  <span className={styles.label}>End Date:</span>
-                  <span className={styles.value}>
-                    {endDate ? moment(endDate).locale('en').format('MM/DD/YYYY') : ''}
-                  </span>
-                </div>
-              </Col>
-            </Row>
-          </Col>
-
-          <Col xs={24} md={10}>
-            <div className={styles.item2}>
-              <span className={styles.label}>Notes/Comments:</span>
-              <span className={styles.value}>{comments}</span>
-            </div>
-          </Col>
+          {items.map((x, index) => (
+            <Col xs={24} md={8} lg={6}>
+              <div className={styles.item} key={`${index + 1}`}>
+                <span className={styles.label}>{x.label}:</span>
+                <span className={styles.value}>{x.value}</span>
+              </div>
+            </Col>
+          ))}
         </Row>
 
         <Row gutter={[0, 24]} className={styles.belowPart}>
@@ -277,10 +260,10 @@ const AssignResourcesModal = (props) => {
         width={400}
       >
         <img src={ModalImage} alt="" />
-        <span style={{ fontWeight: 'bold' }}>Resources assigned!</span>
+        <span style={{ fontWeight: 'bold' }}>Resources added!</span>
         <br />
         <span style={{ textAlign: 'center' }}>
-          The resources have been successfully assigned to the project
+          The resources have been successfully added to the project
         </span>
       </ActionModal>
     </>

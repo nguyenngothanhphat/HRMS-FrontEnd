@@ -16,6 +16,7 @@ import AddResourcesModal from '../AddResourcesModal';
 import FilterResourcesContent from './components/FilterResourcesContent';
 import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
 import styles from './index.less';
+import CommonModal from '../../../CommonModal';
 
 const EditableCell = ({
   editing,
@@ -57,6 +58,8 @@ const ResourcesCard = (props) => {
   const [limit, setLimit] = useState(10);
   const [searchValue, setSearchValue] = useState('');
   const [addResourceModalVisible, setAddResourceModalVisible] = useState('');
+  const [removeResourceModalVisible, setRemoveResourceModalVisible] = useState('');
+  const [removingPackage, setRemovingPackage] = useState('');
 
   const {
     dispatch,
@@ -66,6 +69,7 @@ const ResourcesCard = (props) => {
       projectResourceListTotal: total = '',
     } = {},
     loadingFetchList = false,
+    loadingRemove = false
   } = props;
 
   // function
@@ -252,7 +256,9 @@ const ResourcesCard = (props) => {
         editable: true,
         render: (revisedEndDate) => {
           return (
-            <span>{revisedEndDate ? moment(revisedEndDate).locale('en').format(DATE_FORMAT_LIST) : '-'}</span>
+            <span>
+              {revisedEndDate ? moment(revisedEndDate).locale('en').format(DATE_FORMAT_LIST) : '-'}
+            </span>
           );
         },
       },
@@ -277,12 +283,14 @@ const ResourcesCard = (props) => {
             <div className={styles.actions}>
               <img src={EditIcon} alt="" onClick={() => edit(record)} />
 
-              <Popconfirm
-                title="Sure to delete?"
-                onConfirm={() => removeResourceOfProject(record._id)}
-              >
-                <img src={DeleteIcon} alt="" />
-              </Popconfirm>
+              <img
+                src={DeleteIcon}
+                alt=""
+                onClick={() => {
+                  setRemoveResourceModalVisible(true);
+                  setRemovingPackage(record);
+                }}
+              />
             </div>
           );
         },
@@ -349,10 +357,37 @@ const ResourcesCard = (props) => {
         visible={addResourceModalVisible}
         onClose={() => setAddResourceModalVisible(false)}
       />
+      <CommonModal
+        visible={removeResourceModalVisible}
+        onClose={() => {
+          setRemoveResourceModalVisible(false);
+          setRemovingPackage('');
+        }}
+        title="Delete Resource"
+        firstText="Yes, Delete"
+        width={500}
+        loading={loadingRemove}
+        content={
+          <Form
+            name="myForm"
+            id="myForm"
+            onFinish={() => removeResourceOfProject(removingPackage._id)}
+          >
+            <div style={{ padding: '24px' }}>
+              Are you sure you want to delete the resource{' '}
+              <span style={{ color: '#2C6DF9', fontWeight: 500 }}>
+                {removingPackage?.generalInfo?.legalName}
+              </span>
+              ?
+            </div>
+          </Form>
+        }
+      />
     </div>
   );
 };
 export default connect(({ projectDetails, loading }) => ({
   projectDetails,
   loadingFetchList: loading.effects['projectDetails/fetchResourceOfProjectEffect'],
+  loadingRemove: loading.effects['projectDetails/removeResourceOfProjectEffect'],
 }))(ResourcesCard);
