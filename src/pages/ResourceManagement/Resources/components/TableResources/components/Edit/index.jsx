@@ -9,7 +9,8 @@ import styles from './index.less';
 
 const { Option } = Select;
 
-@connect(({ resourceManagement: { resourceList = [], projectList = [] } }) => ({
+@connect(({ loading = {}, resourceManagement: { resourceList = [], projectList = [] } }) => ({
+  loading: loading.effects['resourceManagement/updateProject'],
   resourceList,
   projectList,
 }))
