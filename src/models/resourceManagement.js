@@ -8,12 +8,13 @@ import {
   postAssignToProject,
   updateComment,
   getListEmployee,
-  fetchResourceStatus,
+  fetchResourceAvailableStatus,
   fetchDivisions,
-  updateProjectDetail
+  updateProjectDetail,
+  fetchResourceStatus,
 } from '../services/resourceManagement';
 
-import {handlingResourceStatus} from '@/utils/resourceManagement'
+import {handlingResourceAvailableStatus} from '@/utils/resourceManagement'
 
 const resourceManagement = {
     namespace: 'resourceManagement',
@@ -114,9 +115,9 @@ const resourceManagement = {
                 dialog(error);
             }
         },
-        *fetchResourceStatus({ payload }, { call, put }) {
+        *fetchResourceAvailableStatus({ payload }, { call, put }) {
           try {
-            const response = yield call(fetchResourceStatus, {
+            const response = yield call(fetchResourceAvailableStatus, {
               ...payload,
               tenantId: getCurrentTenant(),
               company: getCurrentCompany(),
@@ -128,7 +129,7 @@ const resourceManagement = {
             // });
             yield put({
               type: 'save',
-              payload: { resourceStatuses: handlingResourceStatus(data) },
+              payload: { resourceStatuses: handlingResourceAvailableStatus(data) },
             });
           } catch (error) {
             dialog(error);
@@ -166,10 +167,10 @@ const resourceManagement = {
             // notification.success({
             //   message: 'Add assign to project Successfully',
             // });
-            const divisions = 
-            data.map((x) => {
+            const divisions = []
+            data.forEach((x) => {
               const { tagDivision } = x;
-              return {...tagDivision}
+              divisions.push(...tagDivision)
             });
             console.log(divisions.length, ' data ', JSON.stringify(divisions) )
             yield put({
@@ -180,8 +181,26 @@ const resourceManagement = {
             dialog(error);
           }
         },
-
-        
+        *fetchResourceStatus({ payload }, { call, put }) {
+            try {
+              const response = yield call(fetchResourceStatus, {
+                ...payload,
+                tenantId: getCurrentTenant(),
+                company: getCurrentCompany(),
+              });
+              const { statusCode, data } = response;
+              if (statusCode !== 200) throw response;
+              // notification.success({
+              //   message: 'Add assign to project Successfully',
+              // });
+              yield put({
+                type: 'save',
+                payload: { statusList: data },
+              });
+            } catch (error) {
+              dialog(error);
+            }
+          },      
     },
     reducers: {
         save(state, action) {

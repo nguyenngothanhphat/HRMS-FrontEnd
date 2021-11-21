@@ -188,6 +188,10 @@ class FilterForm extends Component {
     const division = divisions.map((x) => {
         return {_id: x, name: x} 
     })
+const projects = projectList.map((x) => {
+  return { _id: x.id, name: x.projectName };
+});
+
     const { isFilter, filter, checkAll } = this.state;
     const dateFormat = 'MMM DD, YYYY';
     const fieldsArray = [
@@ -227,7 +231,8 @@ class FilterForm extends Component {
         label: 'BY CURRENT PROJECT',
         name: 'loacation',
         placeholder: 'Select location',
-        optionArray: projectList,
+        mode : "multiple",
+        optionArray: projects,
       },
       {
         label: 'BY BILLING STATUS',
@@ -261,16 +266,17 @@ class FilterForm extends Component {
                   showSearch
                   optionFilterProp="children"
                   filterOption={(input, option) => {
-                      console.log('input ' , input, ' vs ', option.label)
-                      console.log(option.key, ' - ma: ', option.title)
+                    console.log('input ', input, ' vs ', option.label);
+                    console.log(option.key, ' - ma: ', option.title);
                     return (
-                        input && (
-                        (option.key && option.key.toLowerCase().indexOf(input.toLowerCase()) >= 0) ||
-                        (option.label && option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0))
-                      );
-                    }}
-                    // const arrChild = option.props.children[1];
-                    // return arrChild.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                      input &&
+                      ((option.key && option.key.toLowerCase().indexOf(input.toLowerCase()) >= 0) ||
+                        (option.label &&
+                          option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0))
+                    );
+                  }}
+                  // const arrChild = option.props.children[1];
+                  // return arrChild.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
                   mode={field.mode || ''}
                   tagRender={this.tagRender}
                   placeholder={field.placeholder}
@@ -316,6 +322,42 @@ class FilterForm extends Component {
                     placeholder="To Date"
                     onChange={(value) => {
                       this.onChangeDate(value, 'toDate');
+                    }}
+                    suffixIcon={
+                      <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
+                    }
+                  />
+                </Form.Item>
+              </div>
+            </div>
+            <div className={styles.doj}>
+              <div className={styles.doj__label}>
+                <div className={styles.labelText}>BY TENTATIVE END DATE</div>
+              </div>
+              <div className={styles.doj__date}>
+                <Form.Item name="tentativeEndDateStart">
+                  <DatePicker
+                    disabledDate={(currentDate) =>
+                      this.disabledDate(currentDate, 'tentativeEndDateStart')}
+                    format={dateFormat}
+                    placeholder="From Date"
+                    onChange={(value) => {
+                      this.onChangeDate(value, 'tentativeEndDateStart');
+                    }}
+                    suffixIcon={
+                      <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
+                    }
+                  />
+                </Form.Item>
+                <div className={`${styles.labelText} ${styles.labelTo}`}>to</div>
+                <Form.Item name="tentativeEndDateEnd">
+                  <DatePicker
+                    disabledDate={(currentDate) =>
+                      this.disabledDate(currentDate, 'tentativeEndDateEnd')}
+                    format={dateFormat}
+                    placeholder="To Date"
+                    onChange={(value) => {
+                      this.onChangeDate(value, 'tentativeEndDateEnd');
                     }}
                     suffixIcon={
                       <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />

@@ -51,6 +51,7 @@ class ResourceList extends Component {
 
   componentDidMount = async () => {
     this.fetchProjectList();
+    this.fetchStatusList();
     this.fetchResourceList();
     this.fetchEmployeeList()
     this.fetchDivisions();
@@ -139,6 +140,16 @@ class ResourceList extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'resourceManagement/fetchDivisions',
+      payload: {
+          name: 'Engineering'
+      }
+    });
+  };
+
+  fetchStatusList = async () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'resourceManagement/fetchResourceStatus',
       payload: {
           name: 'Engineering'
       }

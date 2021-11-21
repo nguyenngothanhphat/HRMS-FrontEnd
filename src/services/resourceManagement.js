@@ -47,7 +47,7 @@ export async function updateComment(payload) {
   });
 }
 
-export async function fetchResourceStatus(payload) {
+export async function fetchResourceAvailableStatus(payload) {
   return request('/api-project/resourcetenant/count-status', {
     method: 'POST',
     data: payload,
@@ -56,6 +56,13 @@ export async function fetchResourceStatus(payload) {
 
 export async function fetchDivisions(payload) {
   return request('/api/departmenttenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function fetchResourceStatus(payload) {
+  return request('api-project/resourcetenant/list-status', {
     method: 'POST',
     data: payload,
   });

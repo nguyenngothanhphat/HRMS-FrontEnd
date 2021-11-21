@@ -103,7 +103,7 @@ export function getProjectById(projectList, id){
   return projectList.find(x => x.id === id)
 }
 
-export function handlingResourceStatus (data) {
+export function handlingResourceAvailableStatus (data) {
   const statusData = [
     { availableStatus: 'ALL', compareKey: 'totalResource', display: 'All Resources', number: 10 },
     { availableStatus: 'AVAILABLE_NOW', compareKey: 'totalAvailableNow', display: 'Available now', number: 10 },

@@ -25,7 +25,7 @@ class AvailableStatus extends PureComponent {
   fetchAvailableStatus = () => {
     const {dispatch} = this.props
     dispatch({
-      type: 'resourceManagement/fetchResourceStatus'
+      type: 'resourceManagement/fetchResourceAvailableStatus'
     }).then(() => {
       const {resourceStatuses = []} = this.props || {};
       this.setState({
