@@ -125,7 +125,7 @@ class TicketDetailsForm extends Component {
   };
 
   handleSubmit = () => {
-    const { dispatch, ticketDetail: { id = '' } = {}, employee } = this.props;
+    const { dispatch, ticketDetail: { id:idTicket = '' } = {}, employee } = this.props;
     const { _id = '' } = employee;
     const { value, uploadedFileList } = this.state;
     const requestDate = moment();
@@ -138,47 +138,47 @@ class TicketDetailsForm extends Component {
       };
     });
 
-    if (value !== '') {
-      if (!isEmpty(uploadedFileList)) {
-        const payload = {
-          id,
-          chat: {
-            employee: _id,
-            message: value,
-            attachments: documents,
-            createdAt: requestDate,
-          },
-        };
+     if (value !== '') {
+       if (!isEmpty(uploadedFileList)) {
+         const payload = {
+           id:idTicket,
+           chat: {
+             employee: _id,
+             message: value,
+             attachments: documents,
+             createdAt: requestDate,
+           },
+         };
 
-        dispatch({
-          type: 'ticketManagement/addChat',
-          payload,
-        }).then((response) => {
-          const { statusCode } = response;
-          if (statusCode === 200) {
-            this.setState({ uploadedFileList: [], fileNameList: [], value: '' });
-          }
-        });
-      } else {
-        const payload = {
-          id,
-          chat: {
-            employee: _id,
-            message: value,
-            createdAt: requestDate,
-          },
-        };
-        dispatch({
-          type: 'ticketManagement/addChat',
-          payload,
-        }).then((response) => {
-          const { statusCode } = response;
-          if (statusCode === 200) {
-            this.setState({ value: '' });
-          }
-        });
-      }
-    }
+         dispatch({
+           type: 'ticketManagement/addChat',
+           payload,
+         }).then((response) => {
+           const { statusCode } = response;
+           if (statusCode === 200) {
+             this.setState({ uploadedFileList: [], fileNameList: [], value: '' });
+           }
+         });
+       } else {
+         const payload = {
+           id:idTicket,
+           chat: {
+             employee: _id,
+             message: value,
+             createdAt: requestDate,
+           },
+         };
+         dispatch({
+           type: 'ticketManagement/addChat',
+           payload,
+         }).then((response) => {
+           const { statusCode } = response;
+           if (statusCode === 200) {
+             this.setState({ value: '' });
+           }
+         });
+       }
+     }
   };
 
   render() {

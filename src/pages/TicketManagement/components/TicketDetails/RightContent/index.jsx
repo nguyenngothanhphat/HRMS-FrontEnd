@@ -85,21 +85,21 @@ class RightContent extends PureComponent {
       employee: _id,
       time_taken: time,
     };
-    console.log(payload)
-    // if (status) {
-    //   if (status === 'Resolved' && !timeTaken) {
-    //     notification.error({
-    //       message: 'Please input time taken',
-    //     });
-    //   } else {
-    //     dispatch({
-    //       type: 'ticketManagement/updateTicket',
-    //       payload: {
-    //         payload,
-    //       },
-    //     });
-    //   }
-    // }
+
+    if (status) {
+      if (status === 'Resolved' && !timeTaken) {
+        notification.error({
+          message: 'Please input time taken',
+        });
+      } else {
+        dispatch({
+          type: 'ticketManagement/updateTicket',
+          payload: {
+            payload,
+          },
+        });
+      }
+    }
   };
 
   render() {
