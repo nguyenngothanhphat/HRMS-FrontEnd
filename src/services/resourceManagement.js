@@ -7,19 +7,6 @@ export async function getResources(payload) {
     });
 }
 
-export async function addTicket(payload) {
-    return request(`/api-ticket/tickettenant/add`, {
-        method: 'POST',
-        data: payload,
-    });
-}
-export async function getOffToTalList(payload) {
-    return request(`/api-ticket/tickettenant/summary-priority`, {
-        method: 'POST',
-        data: payload,
-    });
-}
-
 export async function getListEmployee(payload) {
     return request('/api/employeetenant/list-by-single-company', {
         method: 'POST',
@@ -54,8 +41,22 @@ export async function getProjectList(payload) {
 }
 
 export async function updateComment(payload) {
-    return request('/api/employeetenant/update', {
-        method: 'POST',
-        data: payload,
-    });
+  return request('/api/employeetenant/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function fetchResourceStatus(payload) {
+  return request('/api-project/resourcetenant/count-status', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function fetchDivisions(payload) {
+  return request('/api/departmenttenant/list', {
+    method: 'POST',
+    data: payload,
+  });
 }

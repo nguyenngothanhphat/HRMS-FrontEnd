@@ -27,20 +27,19 @@ const cloneObj = (obj) => {
     return newObj
 };
 
-
-// obj = {
-//   employeeId: 15,
-//   employeeName: `employee 15`,
-//   division: 'division',
-//   designation: 'designation',
-//   experience: (Math.random(i) * i).toFixed(1),
-//   projectName: '',
-//   availableStatus: 'Available Soon',
-//   comment: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint nt. ullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint...Read More',
-//   utilization: 0,
-//   startDate: '',
-//   endDate: '',
-// };
+  // obj = {
+  //   employeeId: 15,
+  //   employeeName: `employee 15`,
+  //   division: 'division',
+  //   designation: 'designation',
+  //   experience: (Math.random(i) * i).toFixed(1),
+  //   projectName: '',
+  //   availableStatus: 'Available Soon',
+  //   comment: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint nt. ullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint...Read More',
+  //   utilization: 0,
+  //   startDate: '',
+  //   endDate: '',
+  // };
 // eslint-disable-next-line import/prefer-default-export
 export function formatData(rawData, projectList) {
     const dataList = [];
@@ -57,7 +56,7 @@ export function formatData(rawData, projectList) {
       division: obj.tagDivision,
       designation: titleInfo.name,
       experience: generalInfo.totalExp,
-      comment: obj.commentResource,
+      comment: obj.commentEmployee,
       projectName: '',
       utilization: 0,
       billStatus: '-',
@@ -75,12 +74,12 @@ export function formatData(rawData, projectList) {
     } else {
       // eslint-disable-next-line no-restricted-syntax
       for (const p of projects) {
-        const project = projectList.find((x) => x.id === p.project);
+        const project = projectList.find((x) => x.id === p.id);
         const {projectName = ''} = project || {}
         const pObj = cloneObj(newObj);
         pObj.projectName = projectName;
         pObj.projectId = p.projectId
-        pObj.utilization = (`${p.utilization}${p.utilization > 0 ? ` %`: ''}`) || 0;
+        pObj.utilization = (`${p.utilizationEmployee}${p.utilizationEmployee > 0 ? ` %`: ''}`) || 0;
         pObj.startDate = parseDate(p.startDate);
         pObj.endDate = parseDate(p.endDate);
         pObj.billStatus = p.billStatus || '-';
@@ -102,5 +101,18 @@ export function getProjectById(projectList, id){
   }
 
   return projectList.find(x => x.id === id)
+}
 
+export function handlingResourceStatus (data) {
+  const statusData = [
+    { availableStatus: 'ALL', compareKey: 'totalResource', display: 'All Resources', number: 10 },
+    { availableStatus: 'AVAILABLE_NOW', compareKey: 'totalAvailableNow', display: 'Available now', number: 10 },
+    { availableStatus: 'AVAILABLE_SOON', compareKey: 'totalAvailableSoon', display: 'Available soon', number: 10 },
+  ];
+  // eslint-disable-next-line no-restricted-syntax
+  for(const[key, value] of Object.entries(data)) {
+    const obj = statusData.find((x) => x.compareKey === key)
+    obj.number = value
+  }
+  return statusData
 }

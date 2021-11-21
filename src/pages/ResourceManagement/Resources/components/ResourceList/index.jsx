@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
-import Summary from '../Summary';
+import ResourceStatus from './components/ResourceStatus';
 import SearchTable from '../SearchTable';
 import TableResources from '../TableResources';
 import { formatData } from '@/utils/resourceManagement';
@@ -41,6 +41,7 @@ class ResourceList extends Component {
     this.state = {
       // selectedFilterTab: '1',
       pageSelected: 1,
+      availableStatus: 'ALL',
       size: 10,
       sort: {},
       filter: {},
@@ -51,6 +52,8 @@ class ResourceList extends Component {
   componentDidMount = async () => {
     this.fetchProjectList();
     this.fetchResourceList();
+    this.fetchEmployeeList()
+    this.fetchDivisions();
   };
 
   componentDidUpdate() {
@@ -78,7 +81,7 @@ class ResourceList extends Component {
     if (this.fetchData !== this.fetchStatus.START) {
       return;
     }
-    const { pageSelected, size, sort, filter } = this.state;
+    const { pageSelected, size, sort, filter, availableStatus } = this.state;
     const { dispatch } = this.props;
 
     this.fetchData = this.fetchStatus.FETCHING;
@@ -88,6 +91,7 @@ class ResourceList extends Component {
         // status: 'New',
         page: pageSelected,
         limit: size,
+        availableStatus,
         ...sort,
         ...filter,
         // location,
@@ -116,15 +120,40 @@ class ResourceList extends Component {
     });
   };
 
+  changeAvailableStatus = (status) => {
+    // console.log('trigger change page')
+    this.fetchData = this.fetchStatus.START;
+    this.setState({
+      availableStatus: status
+    });
+  };
+
+  fetchEmployeeList = async () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'resourceManagement/getListEmployee',
+    });
+  };
+
+  fetchDivisions = async () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'resourceManagement/fetchDivisions',
+      payload: {
+          name: 'Engineering'
+      }
+    });
+  };
+
   render() {
-    const { resourceList = [], projectList } = this.state;
-    const { loading, loadingSearch, countData = [], total = 0 } = this.props;
+    const { resourceList = [], projectList, availableStatus } = this.state;
+    const { loading, loadingSearch, total = 0 } = this.props;
     const { pageSelected, size } = this.state;
     // console.log(`render - total: ${  total}`)
     return (
       <div className={styles.containerTickets}>
         <div className={styles.tabTickets}>
-          <Summary setSelectedTab={this.setSelectedTab} countData={countData} />
+          <ResourceStatus currentStatus={availableStatus} changeAvailableStatus={this.changeAvailableStatus} />
           <SearchTable />
         </div>
         <TableResources

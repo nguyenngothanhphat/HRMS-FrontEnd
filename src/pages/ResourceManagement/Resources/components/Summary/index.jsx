@@ -23,11 +23,6 @@ export default class Summary extends PureComponent {
   renderTab = (value) => {
     return <div>{value}</div>;
   };
-
-  getCount = (value) => {
-    // const { countdata = [] } = this.props;
-    console.log(value);
-  };
   
   handleSelect = (value) => {
     // console.log(value);

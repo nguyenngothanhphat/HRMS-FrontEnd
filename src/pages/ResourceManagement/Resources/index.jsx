@@ -12,7 +12,7 @@ const baseModuleUrl = '/resource-management';
 
 @connect(
   ({
-    resourceManagement: { resourceList = [], totalList = [] } = {},
+    resourceManagement: { resourceList = [] } = {},
     user: {
       currentUser: {
         location: { _id: locationID = '' } = {},
@@ -22,7 +22,6 @@ const baseModuleUrl = '/resource-management';
     locationSelection: { listLocationsByCompany = [] },
   }) => ({
     resourceList,
-    totalList,
     locationID,
     companyID,
     listLocationsByCompany,

@@ -60,7 +60,7 @@ const ProjectProfile = (props) => {
     return (
       <div className={styles.userInfo}>
         {items.map((i) => (
-          <Row className={styles.eachRow}>
+          <Row className={styles.eachRow} key={i.label}>
             <Col className={styles.eachRow__label} span={8}>
               {i.label}:
             </Col>

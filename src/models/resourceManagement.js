@@ -2,14 +2,18 @@ import { notification } from 'antd';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
-    addTicket,
-    getResources,
-    getDepartmentList,
-    getProjectList,
-    postAssignToProject,
-    updateComment,
-    updateProjectDetail
+  getResources,
+  getDepartmentList,
+  getProjectList,
+  postAssignToProject,
+  updateComment,
+  getListEmployee,
+  fetchResourceStatus,
+  fetchDivisions,
+  updateProjectDetail
 } from '../services/resourceManagement';
+
+import {handlingResourceStatus} from '@/utils/resourceManagement'
 
 const resourceManagement = {
     namespace: 'resourceManagement',
@@ -20,25 +24,10 @@ const resourceManagement = {
         listEmployee: [],
         listDepartment: [],
         projectList: [],
+        resourceStatuses: []
     },
     effects: {
-        * addTicket({ payload }, { call, put }) {
-            try {
-                const response = yield call(addTicket, {
-                    ...payload,
-                    tenantId: getCurrentTenant(),
-                    company: getCurrentCompany(),
-                    // department: getDepartmentList()
-                });
-                const {
-                    statusCode,
-                    data: {},
-                } = response;
-            } catch (error) {
-                dialog(error);
-            }
-        },
-        * getProjectList({ payload }, { call, put }) {
+        *getProjectList({ payload }, { call, put }) {
             try {
                 const response = yield call(getProjectList, {
                     ...payload,
@@ -125,6 +114,74 @@ const resourceManagement = {
                 dialog(error);
             }
         },
+        *fetchResourceStatus({ payload }, { call, put }) {
+          try {
+            const response = yield call(fetchResourceStatus, {
+              ...payload,
+              tenantId: getCurrentTenant(),
+              company: getCurrentCompany(),
+            });
+            const { statusCode, data } = response;
+            if (statusCode !== 200) throw response;
+            // notification.success({
+            //   message: 'Add assign to project Successfully',
+            // });
+            yield put({
+              type: 'save',
+              payload: { resourceStatuses: handlingResourceStatus(data) },
+            });
+          } catch (error) {
+            dialog(error);
+          }
+        },
+        *getListEmployee({ payload }, { call, put }) {
+          try {
+            const response = yield call(getListEmployee, {
+              ...payload,
+              tenantId: getCurrentTenant(),
+              company: getCurrentCompany(),
+            });
+            const { statusCode, data } = response;
+            if (statusCode !== 200) throw response;
+            // notification.success({
+            //   message: 'Add assign to project Successfully',
+            // });
+            yield put({
+              type: 'save',
+              payload: { employeeList: data },
+            });
+          } catch (error) {
+            dialog(error);
+          }
+        },
+        *fetchDivisions({ payload }, { call, put }) {
+          try {
+            const response = yield call(fetchDivisions, {
+              ...payload,
+              tenantId: getCurrentTenant(),
+              company: getCurrentCompany(),
+            });
+            const { statusCode, data } = response;
+            if (statusCode !== 200) throw response;
+            // notification.success({
+            //   message: 'Add assign to project Successfully',
+            // });
+            const divisions = 
+            data.map((x) => {
+              const { tagDivision } = x;
+              return {...tagDivision}
+            });
+            console.log(divisions.length, ' data ', JSON.stringify(divisions) )
+            yield put({
+              type: 'save',
+              payload: { divisions },
+            });
+          } catch (error) {
+            dialog(error);
+          }
+        },
+
+        
     },
     reducers: {
         save(state, action) {
@@ -135,4 +192,6 @@ const resourceManagement = {
         },
     },
 };
+
+
 export default resourceManagement;

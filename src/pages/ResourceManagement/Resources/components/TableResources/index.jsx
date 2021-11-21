@@ -71,7 +71,7 @@ class TableResources extends PureComponent {
         <span>
           Showing{' '}
           <b>
-            {(pageSelected - 1) * size} - {pageSelected * size}
+            {((pageSelected - 1) * size) + 1} - {pageSelected * size}
           </b>{' '}
           of {total}
         </span>
