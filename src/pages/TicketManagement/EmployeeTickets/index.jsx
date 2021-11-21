@@ -14,7 +14,7 @@ class EmployeeTicket extends Component {
   componentDidMount() {
     const { tabName = '' } = this.props;
     if (!tabName) {
-      history.replace(`/ticket-management/alltickets`);
+      history.replace(`/ticket-management/ticket-queue`);
     } else {
       const { dispatch } = this.props;
       if (!dispatch) {
@@ -23,7 +23,7 @@ class EmployeeTicket extends Component {
       dispatch({
         type: 'ticketManagement/fetchListAllTicket',
         payload: {
-          status: 'New',
+          status: ['New'],
         },
       });
       dispatch({
@@ -33,6 +33,26 @@ class EmployeeTicket extends Component {
     }
   }
 
+  handleChangeTable = (key) => {
+    history.push(`/ticket-management/${key}`);
+    const { dispatch } = this.props;
+    if (key === 'ticket-queue') {
+      dispatch({
+        type: 'ticketManagement/fetchListAllTicket',
+        payload: {
+          status: ['New'],
+        },
+      });
+    } else {
+      dispatch({
+        type: 'ticketManagement/fetchListAllTicket',
+        payload: {
+          status: ['Assigned'],
+        },
+      });
+    }
+  };
+
   render() {
     const { TabPane } = Tabs;
     const { listOffAllTicket = [], totalList = [] } = this.props;
@@ -41,15 +61,15 @@ class EmployeeTicket extends Component {
       <div className={styles.TicketManagement}>
         <PageContainer>
           <Tabs
-            activeKey={tabName || 'ticketqueue'}
+            activeKey={tabName || 'ticket-queue'}
             onChange={(key) => {
-              history.push(`/ticket-management/${key}`);
+              this.handleChangeTable(key);
             }}
           >
-            <TabPane tab="TicketQueue" key="ticketqueue">
+            <TabPane tab="TicketQueue" key="ticket-queue">
               <TicketQueue data={listOffAllTicket} countData={totalList} />
             </TabPane>
-            <TabPane tab="MyTickets" key="mytickets">
+            <TabPane tab="MyTickets" key="my-tickets">
               <MyTickets data={listOffAllTicket} countData={totalList} />
             </TabPane>
           </Tabs>

@@ -6,9 +6,26 @@ export async function getOffAllTicketList(payload) {
     data: payload,
   });
 }
-
+export async function deleteTicketAll(payload) {
+  return request('/api-ticket/tickettenant/delete-all', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getTicketById(payload) {
+  return request(`/api-ticket/tickettenant/get-by-id`, {
+    method: 'POST',
+    data: payload,
+  });
+}
 export async function addTicket(payload) {
   return request(`/api-ticket/tickettenant/add`, {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function updateTicket(payload) {
+  return request(`/api-ticket/tickettenant/update`, {
     method: 'POST',
     data: payload,
   });

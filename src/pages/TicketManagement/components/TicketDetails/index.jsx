@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { Affix, Row, Col } from 'antd';
+import { Affix, Row, Col, Skeleton } from 'antd';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import styles from './index.less';
 import TicketDetailsForm from './TicketDetailsForm';
 import RightContent from './RightContent';
 
-@connect(({ ticketManagement: { listOffAllTicket = [] } = {} }) => ({
-  listOffAllTicket,
+@connect(({ loading, ticketManagement: { ticketDetail = {} } = {} }) => ({
+  ticketDetail,
+  loadingFetchTicketById: loading.effects['ticketManagement/fetchTicketByID'],
 }))
 class TicketDetails extends Component {
   componentDidMount() {
@@ -16,7 +17,7 @@ class TicketDetails extends Component {
       match: { params: { id: code = '' } = {} },
     } = this.props;
     dispatch({
-      type: 'ticketManagement/fetchListAllTicket',
+      type: 'ticketManagement/fetchTicketByID',
       payload: {
         id: code,
       },
@@ -25,15 +26,19 @@ class TicketDetails extends Component {
 
   render() {
     const {
-      dispatch,
       match: { params: { id: code = '' } = {} },
+      loadingFetchTicketById = false,
     } = this.props;
-    const { listOffAllTicket } = this.props;
-    const data = listOffAllTicket.find((val) => val.id == code);
-    dispatch({
-      type: 'ticketManagement/fetchListAllTicketID',
-      payload: data,
-    });
+    const { ticketDetail = {} } = this.props;
+
+    if (loadingFetchTicketById)
+      return (
+        <PageContainer>
+          <div className={styles.TicketDetails}>
+            <Skeleton />
+          </div>
+        </PageContainer>
+      );
     return (
       <PageContainer>
         <div className={styles.TicketDetails}>
@@ -47,7 +52,7 @@ class TicketDetails extends Component {
               <TicketDetailsForm />
             </Col>
             <Col xs={24} lg={8}>
-              <RightContent />
+              <RightContent data={ticketDetail} />
             </Col>
           </Row>
         </div>

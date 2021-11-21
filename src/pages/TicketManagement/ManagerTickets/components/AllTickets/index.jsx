@@ -3,7 +3,7 @@ import { connect } from 'umi';
 import { debounce } from 'lodash';
 import styles from './index.less';
 import Summary from '../Summary';
-import SearchTable from '../SearchTable';
+import SearchTable from '../../../components/SearchTable';
 import TableTickets from '../TableTickets';
 
 @connect(({ loading = {} }) => ({
@@ -65,7 +65,7 @@ class AllTicket extends Component {
     const { pageSelected, size } = this.state;
 
     let payload = {
-      status: this.getStatus(tabId),
+      status: [this.getStatus(tabId)],
       page: pageSelected,
       limit: size,
     };

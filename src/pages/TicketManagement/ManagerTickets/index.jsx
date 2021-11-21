@@ -22,7 +22,7 @@ class ManagerTicket extends Component {
       dispatch({
         type: 'ticketManagement/fetchListAllTicket',
         payload: {
-          status: 'New',
+          status: ['New'],
         },
       });
       dispatch({

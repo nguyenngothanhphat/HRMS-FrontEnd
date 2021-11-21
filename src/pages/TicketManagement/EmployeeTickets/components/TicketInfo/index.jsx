@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
-import styles from './index.less';
+
+import { connect } from 'umi';
+
 import priorityIcon from '@/assets/ticketManagement-priority.svg';
 import assignIcon from '@/assets/ticketManagement-assign.svg';
 import unresolvedIcon from '@/assets/ticketManagement-unresolved.svg';
 
+import styles from './index.less';
+
+@connect()
 class TicketInfo extends Component {
   render() {
     const { countData = [] } = this.props;

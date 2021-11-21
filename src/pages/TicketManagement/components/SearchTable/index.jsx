@@ -17,32 +17,9 @@ class SearchTable extends Component {
   }
 
   openFilter = () => {
-    const { dispatch } = this.props;
     const { visible } = this.state;
 
     this.setState({ visible: !visible });
-
-    if (!visible) {
-      dispatch({
-        type: 'ticketManagement/fetchListAllTicketSearch',
-        payload: {},
-      });
-
-      dispatch({
-        type: 'ticketManagement/fetchLocationList',
-        payload: {},
-      });
-
-      dispatch({
-        type: 'ticketManagement/saveSearch',
-        payload: { isFilter: true },
-      });
-    } else {
-      dispatch({
-        type: 'ticketManagement/saveSearch',
-        payload: { isFilter: false },
-      });
-    }
   };
 
   renderTitle = () => {
@@ -53,13 +30,7 @@ class SearchTable extends Component {
           alt="close"
           src={closeIcon}
           onClick={() => {
-            const { dispatch } = this.props;
-
             this.setState({ visible: false });
-            dispatch({
-              type: 'ticketManagement/saveSearch',
-              payload: { isFilter: false },
-            });
           }}
         />
       </div>

@@ -1,23 +1,14 @@
 import React, { Component } from 'react';
-import {
-  Row,
-  Col,
-  Input,
-  Upload,
-  message,
-  Avatar,
-  Tooltip,
-  Spin,
-  Button,
-  Timeline,
-  Icon,
-} from 'antd';
+import { Row, Col, Input, Upload, message, Avatar, Tooltip, Spin, Button, Timeline } from 'antd';
 import moment from 'moment';
+
 import { isEmpty } from 'lodash';
 import { connect } from 'umi';
+import { UserOutlined } from '@ant-design/icons';
 
 import AttachmentIcon from '@/assets/ticketsManagement-attach.svg';
-import TrashIcon from '@/assets/trash.svg';
+import AttachmenUploadtIcon from '@/assets/attach-upload.svg';
+import TrashIcon from '@/assets/ticketManagement-trashIcon.svg';
 import ImageIcon from '@/assets/image_icon.png';
 import PDFIcon from '@/assets/pdf_icon.png';
 
@@ -28,10 +19,13 @@ const { Dragger } = Upload;
 @connect(
   ({
     loading,
-    ticketManagement: { listEmployee = [], ticketDetail: { ticketDetail = {} } = {} } = {},
+    ticketManagement: { listEmployee = [], ticketDetail = {} } = {},
+    user: { currentUser: { employee = {}, roles = [] } = {} } = {},
   }) => ({
-    ticketDetail,
+    employee,
+    roles,
     listEmployee,
+    ticketDetail,
     loadingUploadAttachment: loading.effects['upload/uploadFile'],
     loadingAddChat: loading.effects['ticketManagement/addChat'],
   }),
@@ -49,81 +43,6 @@ class TicketDetailsForm extends Component {
 
   onChange = ({ target: { value } }) => {
     this.setState({ value });
-  };
-
-  handleSubmit = () => {
-    const {
-      dispatch,
-      ticketDetail: {
-        id = '',
-        priority = '',
-        description = '',
-        subject = '',
-        created_at: requestDate = '',
-        cc_List: ccList = [],
-        query_type: queryType = '',
-      } = {},
-    } = this.props;
-
-    const { value, uploadedFileList } = this.state;
-
-    const documents = uploadedFileList?.map((item) => {
-      const { id = '', url = '', name = '' } = item;
-      return {
-        attachment: id,
-        attachmentName: name,
-        attachmentUrl: url,
-      };
-    });
-    if (value !== '') {
-      if (!isEmpty(uploadedFileList)) {
-        const payload = {
-          id,
-          priority,
-          subject,
-          ccList,
-          queryType,
-          description,
-          requestDate,
-          chat: value,
-          attachment: documents,
-        };
-        dispatch({
-          type: 'ticketManagement/addChat',
-          payload,
-        }).then((response) => {
-          const { statusCode } = response;
-          if (statusCode === 200) {
-            this.setState({ uploadedFileList: [], fileNameList: [] });
-          }
-        });
-      } else {
-        const payload = {
-          id,
-          priority,
-          subject,
-          ccList,
-          queryType,
-          description,
-          requestDate,
-          chat: value,
-        };
-        dispatch({
-          type: 'ticketManagement/addChat',
-          payload,
-        }).then((response) => {
-          const { statusCode } = response;
-          if (statusCode === 200) {
-            this.setState({ value: '' });
-          }
-        });
-      }
-    }
-  };
-
-  avatarTicket = () => {
-    const { listEmployee } = this.props;
-    const { ticketDetail: { cc_list: list = [] } = {} } = this.props;
   };
 
   identifyImageOrPdf = (fileNameList) => {
@@ -205,40 +124,175 @@ class TicketDetailsForm extends Component {
     this.setState({ uploadedFileList: filterUploadedFile, fileNameList: filterFileName });
   };
 
+  handleSubmit = () => {
+    const { dispatch, ticketDetail: { id = '' } = {}, employee } = this.props;
+    const { _id = '' } = employee;
+    const { value, uploadedFileList } = this.state;
+    const requestDate = moment();
+    const documents = uploadedFileList?.map((item) => {
+      const { id = '', url = '', name = '' } = item;
+      return {
+        attachment: id,
+        attachmentName: name,
+        attachmentUrl: url,
+      };
+    });
+
+    if (value !== '') {
+      if (!isEmpty(uploadedFileList)) {
+        const payload = {
+          id,
+          chat: {
+            employee: _id,
+            message: value,
+            attachments: documents,
+            createdAt: requestDate,
+          },
+        };
+
+        dispatch({
+          type: 'ticketManagement/addChat',
+          payload,
+        }).then((response) => {
+          const { statusCode } = response;
+          if (statusCode === 200) {
+            this.setState({ uploadedFileList: [], fileNameList: [], value: '' });
+          }
+        });
+      } else {
+        const payload = {
+          id,
+          chat: {
+            employee: _id,
+            message: value,
+            createdAt: requestDate,
+          },
+        };
+        dispatch({
+          type: 'ticketManagement/addChat',
+          payload,
+        }).then((response) => {
+          const { statusCode } = response;
+          if (statusCode === 200) {
+            this.setState({ value: '' });
+          }
+        });
+      }
+    }
+  };
+
   render() {
-    const { ticketDetail } = this.props;
+    const { ticketDetail = {}, loadingUploadAttachment = false } = this.props;
     const {
       id = '',
       priority = '',
       description = '',
       subject = '',
       created_at: requestDate = '',
-      cc_List: ccList = [],
       query_type: queryType = '',
-      loadingUploadAttachment = false,
-      employeeRaise: { generalInfo: { legalName = '' } = {} } = {},
+      attachments = [],
+      chats = [],
+      employeeRaise = [],
     } = ticketDetail;
-    // const { uploadedAttachments } = this.state;
-    const { fileNameList, loadingAddChat, value } = this.state;
-    const chat = [
-      {
-        label: 'Registered',
-        date: '2017-07-03',
-      },
-      {
-        label: '1',
-        date: '2017-07-04',
-      },
-      {
-        label: '2',
-        date: '2017-08-01',
-      },
-      {
-        label: '3',
-        date: '2017-09-01',
-      },
-    ];
 
+    const { fileNameList, loadingAddChat, value } = this.state;
+
+    const getColor = () => {
+      switch (priority) {
+        case 'High':
+          return '#ffb6b6';
+        case 'Normal':
+          return '#eefffb';
+        case 'Low':
+          return '#ffe9c5';
+
+        default:
+          return '#ffffff';
+      }
+    };
+    const avatarTicket = () => {
+      const { listEmployee } = this.props;
+      const { cc_list: list = [] } = ticketDetail;
+      const intersection = listEmployee.filter((element) => list.includes(element._id));
+      return intersection.map((val) => {
+        const { generalInfo: { avatar = '' } = {} } = val;
+        if (avatar !== '') {
+          return (
+            <Avatar>
+              <img src={avatar} alt="avatar" />
+            </Avatar>
+          );
+        }
+        return <Avatar>{val.generalInfo.legalName.substring(0, 1) || '-'}</Avatar>;
+      });
+    };
+    const getOpenBy = () => {
+      if (employeeRaise) {
+        if (employeeRaise.length > 0) {
+          const { generalInfo: { legalName = '' } = {} } = employeeRaise[0];
+          return legalName;
+        }
+      }
+      return '';
+    };
+
+    const chatsLeft = chats.filter((chat) => !isEmpty(chat.employee.managePermission));
+    const attachsLeft = chatsLeft.filter((chat) => chat.attachments !== undefined);
+    const chatsRight = chats.filter((chat) => isEmpty(chat.employee.managePermission));
+    const attachsRight = chatsRight.filter((chat) => chat.attachments !== undefined);
+
+    const getAttachmentChatLeft = () => {
+      if (!isEmpty(attachsLeft)) {
+        return attachsLeft.map((val) => {
+          return val.attachments.map((e) => {
+            const attachmentSlice = () => {
+              if (e.attachmentName.length > 35) {
+                return `${e.attachmentName.substr(0, 8)}...${e.attachmentName.substr(
+                  e.attachmentName.length - 6,
+                  e.attachmentName.length,
+                )}`;
+              }
+              return e.attachmentName;
+            };
+            return (
+              <div key={e.attachment} className={styles.attachments__file}>
+                <a href={e.attachmentUrl} target="_blank" rel="noreferrer">
+                  {attachmentSlice()}
+                </a>
+                <img className={styles.attachments__file__img} src={PDFIcon} alt="pdf" />
+              </div>
+            );
+          });
+        });
+      }
+      return '';
+    };
+    const getAttachmentChatRight = () => {
+      if (!isEmpty(attachsRight)) {
+        return attachsRight.map((val) => {
+          return val.attachments.map((e) => {
+            const attachmentSlice = () => {
+              if (e.attachmentName.length > 35) {
+                return `${e.attachmentName.substr(0, 8)}...${e.attachmentName.substr(
+                  e.attachmentName.length - 6,
+                  e.attachmentName.length,
+                )}`;
+              }
+              return e.attachmentName;
+            };
+            return (
+              <div className={styles.attachments__file}>
+                <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
+                  {attachmentSlice()}
+                </a>
+                <img className={styles.attachments__file__img} src={PDFIcon} alt="pdf" />
+              </div>
+            );
+          });
+        });
+      }
+      return '';
+    };
     return (
       <div className={styles.TicketDetails}>
         <div className={styles.formDetails}>
@@ -249,28 +303,32 @@ class TicketDetailsForm extends Component {
             <div className={styles.formContent__container}>
               <Row>
                 <Col span={8} className={styles.formContent__title}>
-                  Ticket ID: <span>{id}</span>
+                  Ticket ID: <span className={styles.formContent__title__color}>{id}</span>
                 </Col>
                 <Col span={8} className={styles.formContent__title}>
                   Request Date: <span>{moment(requestDate).format('DD/MM/YYYY')}</span>
                 </Col>
+                {/** check laf nguoi assigned, raised */}
                 <Col span={8} className={styles.formContent__title}>
-                  Open by: <span>{legalName}</span>
+                  Open by: <span>{getOpenBy()}</span>
                 </Col>
               </Row>
               <Row>
                 <Col span={8} className={styles.formContent__title}>
                   Query Type: <span>{queryType}</span>
                 </Col>
-                <Col span={8} className={styles.formContent__title}>
-                  Priority: <span>{priority}</span>
+                <Col span={8} className={styles.formContent__priority}>
+                  Priority:
+                  <span className={styles.priority} style={{ background: getColor() }}>
+                    {priority}
+                  </span>
                 </Col>
                 <Col span={8} className={styles.formContent__title}>
                   Subject: <span>{subject}</span>
                 </Col>
               </Row>
               <Row>
-                <Col span={8} className={styles.formContent__title}>
+                <Col span={8} className={styles.formContent__titleQC}>
                   QC:
                   <span>
                     <Avatar.Group
@@ -280,12 +338,44 @@ class TicketDetailsForm extends Component {
                         backgroundColor: '#fde3cf',
                       }}
                     >
-                      {this.avatarTicket()}
+                      {avatarTicket()}
                     </Avatar.Group>
                   </span>
                 </Col>
-                <Col span={16} className={styles.formContent__title}>
-                  Attachments: <span>12/03/2019</span>
+
+                <Col span={16} className={styles.formContent__attachments}>
+                  Attachments:
+                  <div className={styles.attachments}>
+                    {!isEmpty(attachments)
+                      ? attachments.map((val) => {
+                          const attachmentSlice = () => {
+                            if (val.attachmentName.length > 35) {
+                              return `${val.attachmentName.substr(
+                                0,
+                                8,
+                              )}...${val.attachmentName.substr(
+                                val.attachmentName.length - 6,
+                                val.attachmentName.length,
+                              )}`;
+                            }
+                            return val.attachmentName;
+                          };
+
+                          return (
+                            <div className={styles.attachments__file}>
+                              <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
+                                {attachmentSlice()}
+                              </a>
+                              <img
+                                className={styles.attachments__file__img}
+                                src={PDFIcon}
+                                alt="pdf"
+                              />
+                            </div>
+                          );
+                        })
+                      : ''}
+                  </div>
                 </Col>
               </Row>
               <Row>
@@ -339,13 +429,13 @@ class TicketDetailsForm extends Component {
                       <div className={styles.fileUploadedContainer__listFiles__files}>
                         <div className={styles.previewIcon}>
                           {this.identifyImageOrPdf(item.nameFile) === 1 ? (
-                            <img src={PDFIcon} alt="pdf" />
+                            <img src={AttachmenUploadtIcon} alt="pdf" />
                           ) : (
                             <img src={ImageIcon} alt="img" />
                           )}
                         </div>
                         <div className={styles.fileName}>
-                          Uploaded: <a>{item.nameFile}</a>
+                          <a>{item.nameFile}</a>
                         </div>
                       </div>
                       <Tooltip title="Remove">
@@ -359,53 +449,64 @@ class TicketDetailsForm extends Component {
                     </div>
                   ))}
                 </>
-                {/* <Upload
-                  maxCount={2}
-                  action={(file) => this.handleUpload(file)}
-                  beforeUpload={this.beforeUpload}
-                  onRemove={(file) => this.handleRemove(file)}
-                  openFileDialogOnClick={!(uploadedAttachments.length === 2)}
-                  listType="picture"
-                  className="upload-list-inline"
-                >
-                  <div
-                    className={`${styles.addAttachments} ${
-                      uploadedAttachments.length === 2 ? styles.disableUpload : {}
-                    }`}
-                  >
-                    <div className={styles.btn}>
-                      <img src={attachIcon} alt="" />
-                    </div>
-                  </div>
-                </Upload> */}
               </Col>
             </div>
           </div>
-          <div className={styles.container__btnSend}>
+          <div
+            className={`${
+              !isEmpty(chats) ? styles.container__btnSend : styles.container__margin__btnSend
+            }`}
+          >
             <Button
               htmlType="submit"
               loading={loadingAddChat}
-              className={styles.btnSend}
+              className={`${value === '' ? styles.btnSend__disable : styles.btnSend}`}
               onClick={this.handleSubmit}
             >
               Send
             </Button>
           </div>
           <div className={styles.timeline}>
-            <Timeline mode="alternate">
-              {chat.map((e, index) => {
-                return (
-                  <Timeline.Item key={index}>
-                    <div>{e.label}</div>
-                    <div>{moment(e.date).format('DD MMM YYYY')}</div>
-                  </Timeline.Item>
-                );
-              })}
-            </Timeline>
+            <Row>
+              <Col span={12}>
+                <Timeline mode="right">
+                  {chatsLeft.map((e) => {
+                    return (
+                      <Timeline.Item dot={<UserOutlined />}>
+                        <div>{e.title}</div>
+                        <div>{e.message}</div>
+                        <>{e.attachments ? <div>{getAttachmentChatLeft()}</div> : ''}</>
+                        <div>{moment(e.createdAt).format('LT')}</div>
+                      </Timeline.Item>
+                    );
+                  })}
+                </Timeline>
+              </Col>
+              <Col span={12}>
+                <Timeline mode="left">
+                  {chatsRight.map((e) => {
+                    return (
+                      <Timeline.Item dot={<UserOutlined />}>
+                        <div>{e.title}</div>
+                        <div>{e.message}</div>
+                        <>{e.attachments ? <div>{getAttachmentChatRight()}</div> : ''}</>
+                        <div>{moment(e.createdAt).format('LT')}</div>
+                      </Timeline.Item>
+                    );
+                  })}
+                </Timeline>
+              </Col>
+            </Row>
           </div>
-          <div className={styles.container__btnStart}>
-            <Button className={styles.btnStart}>Start</Button>
-          </div>
+          <>
+            {!isEmpty(chats) ? (
+              <div className={styles.container__btnStart}>
+                <div className={styles.btnStart}>Start</div>
+              </div>
+            ) : (
+              ''
+            )}
+          </>
         </div>
       </div>
     );

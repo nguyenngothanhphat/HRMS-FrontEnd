@@ -1,8 +1,12 @@
+import { notification } from 'antd';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
   addTicket,
+  deleteTicketAll,
   addChat,
+  updateTicket,
+  getTicketById,
   getListEmployee,
   getOffAllTicketList,
   getDepartmentList,
@@ -14,6 +18,7 @@ const ticketManagement = {
   namespace: 'ticketManagement',
   state: {
     listOffAllTicket: [],
+    currentStatus: [],
     totalList: [],
     totalAll: [],
     listEmployee: [],
@@ -23,22 +28,100 @@ const ticketManagement = {
       locationList: [],
       isFilter: false,
     },
-    ticketDetail: {
-      ticketDetail: {},
-    },
+    ticketDetail: {},
   },
   effects: {
     *addTicket({ payload }, { call, put }) {
+      let response;
       try {
-        const response = yield call(addTicket, {
+        response = yield call(addTicket, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const {
-          statusCode,
-          data: {},
-        } = response;
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+        yield put({
+          type: 'refeshfetchListAllTicket',
+          payload: {
+            status: ['New'],
+            tenantId: getCurrentTenant(),
+            company: getCurrentCompany(),
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    // Delete Ticket
+    *deleteAll({ payload }, { call }) {
+      try {
+        const response = yield call(deleteTicketAll, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message: 'Delete successfully' });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *refeshfetchListAllTicket({ payload }, { call, put }) {
+      try {
+        const response = yield call(getOffAllTicketList, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        const ticketList = data.filter((val) => val.status === 'New');
+        yield put({
+          type: 'save',
+          payload: { listOffAllTicket: ticketList },
+        });
+        yield put({
+          type: 'fetchToTalList',
+          payload: {
+            payload: {},
+            tenantId: getCurrentTenant(),
+            company: getCurrentCompany(),
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *updateTicket({ payload }, { call, put }) {
+      try {
+        const response = yield call(updateTicket, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+        yield put({
+          type: 'save',
+          payload: { ticketDetail: data },
+        });
+        yield put({
+          type: 'refeshfetchListAllTicket',
+          payload: {
+            status: ['New'],
+            tenantId: getCurrentTenant(),
+            company: getCurrentCompany(),
+          },
+        });
+        yield put({
+          type: 'fetchTicketByID',
+          payload: {
+            id: payload.id,
+            tenantId: getCurrentTenant(),
+            company: getCurrentCompany(),
+          },
+        });
       } catch (error) {
         dialog(error);
       }
@@ -52,7 +135,11 @@ const ticketManagement = {
           company: getCurrentCompany(),
         });
         const { statusCode, data } = response;
-        console.log(data);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { ticketDetail: data },
+        });
       } catch (error) {
         dialog(error);
       }
@@ -70,7 +157,7 @@ const ticketManagement = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { listOffAllTicket: data },
+          payload: { listOffAllTicket: data, currentStatus: payload.status },
         });
       } catch (error) {
         dialog(error);
@@ -124,30 +211,27 @@ const ticketManagement = {
         dialog(error);
       }
     },
-    *fetchListAllTicketSearch({ payload }, { call, put }) {
+
+    *fetchTicketByID({ payload }, { call, put }) {
       let response;
       try {
-        response = yield call(getOffAllTicketList, {
+        response = yield call(getTicketById, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({
-          type: 'saveSearch',
-          payload: { listOffAllTicketSearch: data },
-        });
+        if (data) {
+          yield put({
+            type: 'save',
+            payload: { ticketDetail: data },
+          });
+        }
       } catch (error) {
         dialog(error);
       }
       return response;
-    },
-    *fetchListAllTicketID({ payload }, { put }) {
-      yield put({
-        type: 'saveTicket',
-        payload: { ticketDetail: payload },
-      });
     },
     *fetchLocationList({ payload = {} }, { call, put }) {
       try {

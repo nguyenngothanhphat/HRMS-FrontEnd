@@ -1,16 +1,31 @@
 import React, { PureComponent } from 'react';
-import { Table, Dropdown, Menu, Input } from 'antd';
+
+import { Table, Dropdown, Menu, Button } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
+
 import moment from 'moment';
-import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import { history, connect } from 'umi';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
+
 import styles from './index.less';
 
+@connect(
+  ({
+    loading,
+    ticketManagement: { listEmployee = [] } = {},
+    user: { currentUser: { employee = {} } = {} } = {},
+  }) => ({
+    listEmployee,
+    employee,
+    loadingUpdate: loading.effects['ticketManagement/updateTicket'],
+  }),
+)
 class TableTickets extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      // pageNavigation: '1',
+      ticket: {},
+      search: [],
     };
   }
 
@@ -29,20 +44,83 @@ class TableTickets extends PureComponent {
     }
   };
 
+  handleClickSelect = (value) => {
+    const { data = [] } = this.props;
+    const ticket = data.find((val) => val.id === value);
+    this.setState({ ticket });
+  };
+
+  handleSelectChange = () => {
+    const { ticket } = this.state;
+    const { dispatch, employee: { _id = '' } = {} } = this.props;
+    const {
+      id = '',
+      employee_raise: employeeRaise = '',
+      query_type: queryType = '',
+      subject = '',
+      description = '',
+      priority = '',
+      cc_list: ccList = [],
+      attachments = [],
+      department_assign: departmentAssign = '',
+    } = ticket;
+    dispatch({
+      type: 'ticketManagement/updateTicket',
+      payload: {
+        id,
+        employeeRaise,
+        employeeAssignee: _id,
+        status: 'Assigned',
+        queryType,
+        subject,
+        description,
+        priority,
+        ccList,
+        attachments,
+        departmentAssign,
+        employee: _id,
+      },
+    });
+  };
+
+  handleSearch = (e) => {
+    const { listEmployee } = this.props;
+    this.setState({ search: e.target.value.split(' ') });
+    const { search = [] } = this.state;
+    console.log('search', search);
+
+    let options;
+    if (search.length) {
+      const searchPattern = new RegExp(search.map((term) => `(?=.*${term})`).join(''), 'i');
+      options = listEmployee.filter((option) => option.generalInfo.legalName.match(searchPattern));
+      console.log(options);
+    } else {
+      options = listEmployee;
+    }
+  };
+
   handleSelect = (e) => {
     e.preventDefault();
   };
 
+  // handleDelete = () => {
+  //   const { dispatch } = this.props;
+  //   dispatch({
+  //     type: 'ticketManagement/deleteAll',
+  //     payload: {},
+  //   });
+  // };
+
   render() {
     const {
       data = [],
-      textEmpty = 'No resignation request is submitted',
+      textEmpty = 'No rasie ticket  is submitted',
       loading,
       pageSelected,
       size,
-      loadingFilter,
       getPageAndSize = () => {},
     } = this.props;
+
     const pagination = {
       position: ['bottomLeft'],
       total: data.length,
@@ -61,22 +139,9 @@ class TableTickets extends PureComponent {
         getPageAndSize(page, pageSize);
       },
     };
-    // dropdown select
 
-    const menu = (
-      <Menu>
-        <div className="inputSearch">
-          <Input placeholder="Search by name" prefix={<SearchOutlined />} />
-        </div>
-        <Menu.Divider />
-        {data.map((item) => (
-          <Menu.Item> {item.employeeRaise.generalInfo.legalName}</Menu.Item>
-        ))}
-        {/* <Menu.Item> Lewis Tuan</Menu.Item>
-        <Menu.Item>Vo Nghia</Menu.Item> */}
-      </Menu>
-    );
-    // Thay thế data khi co du lieu
+    const { listEmployee } = this.props;
+
     const columns = [
       {
         title: 'Ticket ID',
@@ -95,9 +160,13 @@ class TableTickets extends PureComponent {
         title: 'User ID',
         dataIndex: 'employeeRaise',
         key: 'userID',
-        render: (employeeRaise) => {
+        render: (employeeRaise, id) => {
           const { generalInfo: { userId = '' } = {} } = employeeRaise;
-          return <span className={styles.userID}>{userId}</span>;
+          return (
+            <span className={styles.userID} onClick={() => this.openViewTicket(id.id)}>
+              {userId}
+            </span>
+          );
         },
       },
       {
@@ -113,8 +182,8 @@ class TableTickets extends PureComponent {
         title: 'Request Date',
         dataIndex: 'created_at',
         key: 'requestDate',
-        render: (created_at) => {
-          return <span>{moment(created_at).format('DD/MM/YYYY')}</span>;
+        render: (createdAt) => {
+          return <span>{moment(createdAt).format('DD/MM/YYYY')}</span>;
         },
       },
       {
@@ -128,12 +197,15 @@ class TableTickets extends PureComponent {
         key: 'priority',
         render: (priority) => {
           if (priority === 'High') {
-            return <span className={styles.priorityHigh}>{priority}</span>;
+            return <div className={styles.priorityHigh}>{priority}</div>;
           }
           if (priority === 'Normal') {
-            return <span className={styles.priorityMedium}>{priority}</span>;
+            return <div className={styles.priorityMedium}>{priority}</div>;
           }
-          return <span className={styles.priorityLow}>{priority}</span>;
+          if (priority === 'Urgent') {
+            return <div className={styles.priorityUrgent}>{priority}</div>;
+          }
+          return <div className={styles.priorityLow}>{priority}</div>;
         },
       },
       {
@@ -141,13 +213,7 @@ class TableTickets extends PureComponent {
         dataIndex: 'employeeRaise',
         key: 'loacation',
         render: (employeeRaise) => {
-          const {
-            location: {
-              headQuarterAddress: {
-                country: { name = '' },
-              },
-            } = {},
-          } = employeeRaise;
+          const { location: { name = '' } = {} } = employeeRaise;
           return <span>{name}</span>;
         },
       },
@@ -158,12 +224,31 @@ class TableTickets extends PureComponent {
       },
       {
         title: 'Assign To',
-        key: 'operation',
+        dataIndex: ['department_assign', 'employee_assignee', 'id'],
+        key: 'assign',
         fixed: 'right',
-        render: () => {
+        render: (departmentAssign, employeeAssignee) => {
+          if (employeeAssignee.employee_assignee !== '') {
+            const employeeAssigned = listEmployee.find(
+              (val) => val._id === employeeAssignee.employee_assignee,
+            );
+            return (
+              <span style={{ color: '#2c6df9' }}>
+                {employeeAssigned ? employeeAssigned.generalInfo.legalName : ''}
+              </span>
+            );
+          }
           return (
-            <Dropdown overlayClassName="dropDown" overlay={menu} trigger={['click']}>
-              <div onClick={(e) => this.handleSelect(e)}>
+            <Dropdown
+              overlayClassName="dropDown__employee"
+              overlay={
+                <Menu>
+                  <Menu.Item onClick={this.handleSelectChange}>Assign to self</Menu.Item>
+                </Menu>
+              }
+              trigger={['click']}
+            >
+              <div onClick={() => this.handleClickSelect(employeeAssignee.id)}>
                 Select User &emsp;
                 <DownOutlined />
               </div>
@@ -179,13 +264,12 @@ class TableTickets extends PureComponent {
           locale={{
             emptyText: (
               <div className={styles.viewEmpty}>
-                <img src={empty} alt="" />
+                <img src={empty} alt="emty" />
                 <p className={styles.textEmpty}>{textEmpty}</p>
               </div>
             ),
           }}
           loading={loading}
-          loadingSearch={loadingFilter}
           columns={columns}
           dataSource={data}
           hideOnSinglePage
@@ -194,11 +278,12 @@ class TableTickets extends PureComponent {
           rowKey="id"
           scroll={{ x: 1500, y: 487 }}
         />
+        {/* <Button htmlType="submit" onClick={this.handleDelete}>
+          DeleteTickket
+        </Button> */}
       </div>
     );
   }
 }
 
-export default connect(({ ticketManagement: { listEmployee = [] } = {} }) => ({
-  listEmployee,
-}))(TableTickets);
+export default TableTickets;

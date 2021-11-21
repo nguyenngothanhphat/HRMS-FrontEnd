@@ -32,6 +32,9 @@
           font-family: Roboto;
           font-style: normal;
           line-height: 16px;
+          &__color {
+            color: #2c6df9 !important;
+          }
           span {
             padding-left: 8px;
             color: #161c29;
@@ -40,6 +43,91 @@
             font-family: Roboto;
             font-style: normal;
             line-height: 16px;
+          }
+        }
+        .formContent__priority {
+          color: #707177;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: Roboto;
+          font-style: normal;
+          line-height: 16px;
+          &__color {
+            color: #2c6df9 !important;
+          }
+          span {
+            margin-left: 8px;
+            padding: 1px 10px;
+            color: #161c29;
+            font-weight: normal;
+            font-size: 14px;
+            font-family: Roboto;
+            font-style: normal;
+            line-height: 16px;
+            border-radius: 12px;
+          }
+        }
+        .formContent__titleQC {
+          display: flex;
+          align-items: center;
+          color: #707177;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: Roboto;
+          font-style: normal;
+          line-height: 16px;
+
+          &__color {
+            color: #2c6df9 !important;
+          }
+          :global {
+            .ant-avatar-string {
+              color: white !important;
+              transform: translate(-74%, 38%) !important;
+            }
+            .ant-avatar {
+              background: #7a2cf9;
+            }
+          }
+          span {
+            padding-left: 8px;
+            color: #161c29;
+            font-weight: normal;
+            font-size: 14px;
+            font-family: Roboto;
+            font-style: normal;
+            line-height: 16px;
+          }
+        }
+        .formContent__attachments {
+          display: flex;
+          align-items: center;
+          color: #707177;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: Roboto;
+          font-style: normal;
+          line-height: 16px;
+          .attachments {
+            display: flex;
+            align-items: center;
+            &__file {
+              padding-left: 8px;
+              &__img {
+                width: 20px;
+                height: 20px;
+                margin-left: 8px;
+              }
+              a {
+                color: #2c6df9;
+                font-weight: normal;
+                font-size: 14px;
+                font-family: Roboto;
+                font-style: normal;
+                line-height: 16px;
+                text-decoration: underline;
+              }
+            }
           }
         }
       }
@@ -117,6 +205,7 @@
           }
           .trashIcon {
             display: block;
+            margin-left: 8px;
             cursor: pointer;
             &:hover {
               opacity: 0.9;
@@ -124,70 +213,6 @@
           }
         }
       }
-      // :global {
-      //   .upload-list-inline {
-      //     display: flex;
-      //     align-items: center;
-      //   }
-      //   .ant-upload {
-      //     order: 1;
-      //   }
-      //   .ant-upload-list {
-      //     display: flex;
-      //     height: 16px;
-      //   }
-      //   .ant-upload-list-picture .ant-upload-list-item,
-      //   .ant-upload-list-picture-card .ant-upload-list-item {
-      //     border: none;
-      //   }
-      //   .ant-upload-list-picture .ant-upload-list-item {
-      //     height: 0;
-      //     padding: 0;
-      //   }
-      //   .ant-upload-list-picture .ant-upload-list-item-thumbnail {
-      //     width: 16px;
-      //   }
-      //   .ant-upload-list-picture .ant-upload-list-item-thumbnail .anticon {
-      //     font-size: 20px;
-      //   }
-      //   .ant-upload-list-item-card-actions .anticon {
-      //     color: #fd4546;
-      //   }
-      //   .ant-upload-list-picture .ant-upload-list-item-name {
-      //     color: #2c6df9;
-      //     text-decoration: underline;
-      //   }
-      // }
-      // .btn {
-      //   display: flex;
-      //   align-items: center;
-      //   justify-content: flex-start;
-      //   padding: 8px;
-      //   text-align: center;
-      //   background: #f1f6ff;
-      //   border-radius: 50%;
-      //   cursor: pointer;
-      //   .text {
-      //     display: inline-block;
-      //     margin-right: 10px;
-      //     color: #2c6df9;
-      //     font-weight: 500;
-      //     font-size: 14px;
-      //   }
-      // }
-      // .description {
-      //   color: #707177;
-      //   font-size: 13px;
-      //   line-height: 15px;
-      // }
-
-      // .disableUpload {
-      //   cursor: not-allowed !important;
-      //   opacity: 0.7;
-      //   .btn {
-      //     cursor: not-allowed !important;
-      //   }
-      // }
     }
     .container__btnSend {
       text-align: center;
@@ -217,57 +242,222 @@
         letter-spacing: 0.13125px !important;
         background: #2c6df9 !important;
       }
+      .btnSend__disable {
+        color: #ffffff !important;
+        font-weight: 500 !important;
+        font-size: 14px !important;
+        line-height: 16px !important;
+        letter-spacing: 0.13125px !important;
+        background: #95b6fc !important;
+      }
+    }
+    .container__margin__btnSend {
+      margin-bottom: 29px;
+      text-align: center;
+      :global {
+        .ant-btn {
+          height: 36px;
+          padding: 10px 27px;
+          color: #ffffff;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: Roboto;
+          font-style: normal;
+          line-height: 16px;
+          letter-spacing: 0.13125px;
+          background: #2c6df9;
+          border: none;
+          border-radius: 18px;
+          outline: none;
+          box-shadow: none;
+        }
+      }
+      .btnSend__disable {
+        color: #ffffff !important;
+        font-weight: 500 !important;
+        font-size: 14px !important;
+        line-height: 16px !important;
+        letter-spacing: 0.13125px !important;
+        background: #95b6fc !important;
+      }
     }
     .container__btnStart {
       margin-bottom: 24px;
       text-align: center;
     }
     .btnStart {
+      width: 79px;
       height: 36px;
+      margin: 0 auto;
       padding: 10px 27px;
-      color: #ffffff !important;
-      color: #464646;
+      color: #ffffff;
       font-weight: 500;
       font-size: 14px !important;
       font-family: Roboto;
       font-style: normal;
       line-height: 16px !important;
       letter-spacing: 0.13125px !important;
-      background: gray !important;
-      border: none;
+      background: #707177 !important;
       border-radius: 18px;
-      outline: none;
-      box-shadow: none;
     }
     .timeline {
       margin: 0 24px;
       :global {
-        .ant-timeline-item:nth-child(1) {
-          padding-top: 60px;
-        }
-        .ant-timeline-item {
-          display: flex;
-          align-items: center;
-          .ant-timeline-item-content {
-            top: 0;
+        .ant-timeline-right {
+          .ant-timeline-item {
+            padding: 50px 0;
+          }
+          .ant-timeline-item {
+            display: flex;
+            align-items: center;
+            .ant-timeline-item-content {
+              top: 0;
+              width: 420px;
+              //edit
+              margin: 0 26px 0 0;
+              padding: 16px 19px 16px 16px;
+              border: 2px solid #f0f0f0;
+              border-radius: 8px;
+
+              img {
+                width: 20px;
+                margin-left: 8px;
+              }
+              a {
+                font-weight: normal;
+                font-size: 13px;
+                font-family: Roboto;
+                font-style: normal;
+                line-height: 15px;
+                text-decoration: underline !important;
+              }
+
+              div:nth-child(1) {
+                padding-bottom: 8px;
+                color: #212020;
+                font-weight: 500;
+                font-size: 14px;
+                font-style: normal;
+                line-height: 21px;
+              }
+              div:nth-child(3) {
+                padding-top: 8px;
+                color: #848c90;
+                font-weight: normal;
+                font-size: 11px;
+                font-family: Roboto;
+                font-style: normal;
+                line-height: 13px;
+              }
+            }
+            .ant-timeline-item-tail {
+              top: 0;
+              left: 100%;
+              height: calc(100%);
+              border-left: 3px solid #f0f0f0;
+            }
+          }
+          .ant-timeline-item-last > .ant-timeline-item-tail {
+            display: block;
+          }
+          .ant-timeline.ant-timeline-alternate .ant-timeline-item-left .ant-timeline-item-content {
+            margin: 0 0 0 32px !important;
+          }
+          .ant-timeline.ant-timeline-alternate .ant-timeline-item-right .ant-timeline-item-content {
+            text-align: left;
+          }
+          .ant-timeline-item-head-custom {
+            top: auto;
+            //edit
+            left: 100%;
+            z-index: 1;
             padding: 10px;
-            border: 2px solid #f0f0f0;
-            border-radius: 15px;
-          }
-          .ant-timeline-item-tail {
-            top: 0;
-            height: calc(100%);
-            border-left: 4px solid #f0f0f0;
+            color: #ffffff;
+            font-size: 20px;
+            background: #7a2cf9;
+            border-radius: 50%;
+            transform: translate(-50%, 0);
           }
         }
-        .ant-timeline-item-last {
-          padding-bottom: 60px !important;
-        }
-        .ant-timeline-item-last > .ant-timeline-item-tail {
-          display: block;
-        }
-        .ant-timeline.ant-timeline-alternate .ant-timeline-item-left .ant-timeline-item-content {
-          margin: 0 0 0 18px !important;
+      }
+      :global {
+        .ant-timeline-left {
+          .ant-timeline-item:nth-child(1) {
+            padding: 126px 0;
+          }
+          .ant-timeline-item {
+            display: flex;
+            align-items: center;
+            .ant-timeline-item-content {
+              top: 0;
+              width: 420px;
+              margin: 0 0 0 26px;
+              padding: 16px 19px 16px 16px;
+              border: 2px solid #f0f0f0;
+              border-radius: 8px;
+              img {
+                width: 20px;
+                margin-left: 8px;
+              }
+              a {
+                font-weight: normal;
+                font-size: 13px;
+                font-family: Roboto;
+                font-style: normal;
+                line-height: 15px;
+                text-decoration: underline !important;
+              }
+              div:nth-child(1) {
+                padding-bottom: 8px;
+                color: #212020;
+                font-weight: 500;
+                font-size: 14px;
+                font-style: normal;
+                line-height: 21px;
+              }
+              div:nth-child(3) {
+                padding-top: 8px;
+                color: #848c90;
+                font-weight: normal;
+                font-size: 11px;
+                font-family: Roboto;
+                font-style: normal;
+                line-height: 13px;
+              }
+            }
+            .ant-timeline-item-tail {
+              top: 0;
+              left: -1 !important;
+              left: unset;
+              height: calc(100%);
+              border-right: 3px solid #f0f0f0;
+              border-left: none;
+            }
+          }
+          .ant-timeline-item-last {
+            padding-bottom: 50px !important;
+          }
+          .ant-timeline-item-last > .ant-timeline-item-tail {
+            display: block;
+          }
+          .ant-timeline.ant-timeline-alternate .ant-timeline-item-left .ant-timeline-item-content {
+            margin: 0 0 0 32px !important;
+          }
+          .ant-timeline.ant-timeline-alternate .ant-timeline-item-right .ant-timeline-item-content {
+            text-align: left;
+          }
+          .ant-timeline-item-head-custom {
+            top: auto;
+            //edit
+            left: unset;
+            left: 2 !important;
+            padding: 10px;
+            color: #ffffff;
+            font-size: 20px;
+            background: #fcc095;
+            border-radius: 50%;
+            transform: translate(-50%, 0);
+          }
         }
       }
     }

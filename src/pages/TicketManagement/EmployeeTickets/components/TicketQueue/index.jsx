@@ -1,15 +1,26 @@
 import React, { Component } from 'react';
+
 import { connect } from 'umi';
 import { debounce } from 'lodash';
-import styles from './index.less';
-import SearchTable from '../SearchTable';
+
+import SearchTable from '../../../components/SearchTable';
 import TableTickets from '../TableTickets';
 import TicketInfo from '../TicketInfo';
 
-@connect(({ loading = {} }) => ({
-  loading: loading.effects['ticketManagement/fetchListAllTicket'],
-  loadingFilter: loading.effects['ticketManagement/fetchListAllTicketSearch'],
-}))
+import styles from './index.less';
+
+@connect(
+  ({
+    loading,
+    ticketManagement: { listDepartment = [] } = {},
+    user: { currentUser: { employee = {} } = {} } = {},
+  }) => ({
+    listDepartment,
+    employee,
+    loading: loading.effects['ticketManagement/fetchListAllTicket'],
+    loadingFilter: loading.effects['ticketManagement/fetchListAllTicketSearch'],
+  }),
+)
 class TicketQueue extends Component {
   constructor(props) {
     super(props);
@@ -28,14 +39,15 @@ class TicketQueue extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { pageSelected, size, nameSearch } = this.state;
+    const { selectedFilterTab, pageSelected, size, nameSearch } = this.state;
 
     if (
       prevState.pageSelected !== pageSelected ||
       prevState.size !== size ||
+      prevState.selectedFilterTab !== selectedFilterTab ||
       prevState.nameSearch !== nameSearch
     ) {
-      this.initDataTable(nameSearch);
+      this.initDataTable(selectedFilterTab, nameSearch);
     }
   }
 
@@ -44,7 +56,7 @@ class TicketQueue extends Component {
     const { pageSelected, size } = this.state;
 
     let payload = {
-      status: 'New',
+      status: ['New'],
       page: pageSelected,
       limit: size,
     };
@@ -73,7 +85,16 @@ class TicketQueue extends Component {
   };
 
   render() {
-    const { data = [], loading, loadingFilter, countData = [] } = this.props;
+    const {
+      data = [],
+      loading,
+      loadingFilter,
+      countData = [],
+      employee: { departmentInfo: { _id = '' } = {} } = [],
+    } = this.props;
+    const dataTableDeparment = data.filter((item) => {
+      return item.department_assign === _id;
+    });
     const { pageSelected, size } = this.state;
     return (
       <>
@@ -85,7 +106,7 @@ class TicketQueue extends Component {
             <SearchTable onChangeSearch={this.onChangeSearch} />
           </div>
           <TableTickets
-            data={data}
+            data={dataTableDeparment}
             loading={loading || loadingFilter}
             pageSelected={pageSelected}
             size={size}

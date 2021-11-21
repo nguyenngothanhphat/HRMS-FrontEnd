@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
 import styles from './index.less';
-import SearchTable from '../SearchTable';
+import SearchTable from '../../../components/SearchTable';
 import TableTickets from '../TableTickets';
 import TicketInfo from '../TicketInfo';
 import Summary from '../Summary';
 
-@connect(({ loading = {} }) => ({
+@connect(({ loading, user: { currentUser: { employee = {} } = {} } = {} }) => ({
+  employee,
   loading: loading.effects['ticketManagement/fetchListAllTicket'],
   loadingFilter: loading.effects['ticketManagement/fetchListAllTicketSearch'],
 }))
@@ -64,7 +65,7 @@ class MyTickets extends Component {
     const { pageSelected, size } = this.state;
 
     let payload = {
-      status: this.getStatus(tabId),
+      status: [this.getStatus(tabId)],
       page: pageSelected,
       limit: size,
     };
@@ -99,8 +100,17 @@ class MyTickets extends Component {
   };
 
   render() {
-    const { data = [], loading, loadingFilter, countData = [] } = this.props;
+    const {
+      data = [],
+      loading,
+      loadingFilter,
+      countData = [],
+      employee: { _id = '' },
+    } = this.props;
     const { pageSelected, size } = this.state;
+    const dataTableEmployee = data.filter((item) => {
+      return item.employee_assignee === _id;
+    });
     return (
       <>
         <div>
@@ -112,7 +122,7 @@ class MyTickets extends Component {
             <SearchTable onChangeSearch={this.onChangeSearch} />
           </div>
           <TableTickets
-            data={data}
+            data={dataTableEmployee}
             loading={loading || loadingFilter}
             pageSelected={pageSelected}
             size={size}
