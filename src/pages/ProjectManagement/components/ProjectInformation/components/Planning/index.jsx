@@ -15,7 +15,7 @@ const Planning = (props) => {
     dispatch,
     projectDetails: { projectId = '', milestoneList = [] } = {},
     loadingFetch = false,
-    loadingAdd = false
+    loadingAdd = false,
   } = props;
   const [addMilestoneModalVisible, setAddMilestoneModalVisible] = useState(false);
 
@@ -76,7 +76,7 @@ const Planning = (props) => {
   if (loadingFetch) {
     return (
       <div className={styles.Planning}>
-        <Skeleton />
+        <Skeleton active />
       </div>
     );
   }
@@ -102,5 +102,5 @@ const Planning = (props) => {
 export default connect(({ projectDetails, loading }) => ({
   projectDetails,
   loadingFetch: loading.effects['projectDetails/fetchMilestoneListEffect'],
-  loadingAdd: loading.effects['projectDetails/addMilestoneEffect']
+  loadingAdd: loading.effects['projectDetails/addMilestoneEffect'],
 }))(Planning);

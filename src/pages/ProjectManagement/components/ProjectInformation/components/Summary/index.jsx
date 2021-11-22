@@ -222,7 +222,7 @@ const Summary = (props) => {
             name="projectDescription"
             rules={[{ required: true, message: 'Required field!' }]}
           >
-            <Input.TextArea autoSize={{ minRows: 4 }} />
+            <Input.TextArea autoSize={{ minRows: 5 }} />
           </Form.Item>
 
           <Form.Item

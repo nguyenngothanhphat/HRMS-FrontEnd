@@ -61,19 +61,31 @@ const MilestoneCard = (props) => {
           }}
           className={styles.form}
         >
-          <Form.Item label="Start Date:" name="startDate">
+          <Form.Item
+            label="Start Date:"
+            name="startDate"
+            rules={[{ required: true, message: 'Required field!' }]}
+          >
             <DatePicker
               suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
             />
           </Form.Item>
 
-          <Form.Item label="End Date:" name="endDate">
+          <Form.Item
+            label="End Date:"
+            name="endDate"
+            rules={[{ required: true, message: 'Required field!' }]}
+          >
             <DatePicker
               suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
             />
           </Form.Item>
 
-          <Form.Item label="Description:" name="description">
+          <Form.Item
+            label="Description:"
+            name="description"
+            rules={[{ required: true, message: 'Required field!' }]}
+          >
             <Input.TextArea autoSize={{ minRows: 4 }} />
           </Form.Item>
         </Form>

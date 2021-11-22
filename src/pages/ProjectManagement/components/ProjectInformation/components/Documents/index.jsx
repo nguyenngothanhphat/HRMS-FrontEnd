@@ -115,6 +115,7 @@ const Documents = (props) => {
         title: 'Action',
         dataIndex: 'action',
         key: 'action',
+        align: 'center',
         render: (_, row) => {
           return (
             <div className={styles.action}>

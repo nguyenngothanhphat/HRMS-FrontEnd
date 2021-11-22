@@ -85,7 +85,7 @@ const FilterResourcesContent = (props) => {
       </Form.Item>
 
       <Form.Item label="By End Date">
-        <Row>
+        <Row style={{ width: '100%' }}>
           <Col span={11}>
             <Form.Item name="e_fromDate">
               <DatePicker format="MMM DD, YYYY" />
