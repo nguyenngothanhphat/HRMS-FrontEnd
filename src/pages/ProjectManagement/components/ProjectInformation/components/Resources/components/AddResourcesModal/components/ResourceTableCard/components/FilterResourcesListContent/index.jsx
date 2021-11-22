@@ -1,44 +1,63 @@
-import { Col, DatePicker, Form, Row, Select } from 'antd';
-import React from 'react';
+import { Form, Select } from 'antd';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
+const { Option } = Select;
+
 const FilterResourcesListContent = (props) => {
+  const {
+    dispatch,
+    projectDetails: { divisionList = [], titleList = [] } = {},
+    onFilter = () => {},
+  } = props;
+
+  const fetchDataList = () => {
+    dispatch({
+      type: 'projectDetails/fetchTitleListEffect',
+    });
+    dispatch({
+      type: 'projectDetails/fetchDivisionListEffect',
+      payload: {
+        name: 'Engineering',
+      },
+    });
+    dispatch({
+      type: 'projectDetails/fetchBillingStatusListEffect',
+    });
+  };
+
+  useEffect(() => {
+    fetchDataList();
+  }, []);
+
   return (
-    <Form layout="vertical" name="filter">
-      <Form.Item label="By division" name="byDivision">
-        <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Please select">
-          {['A', 'B'].map((item) => {
-            return (
-              <Select.Option value={item} key={item}>
-                {item}
-              </Select.Option>
-            );
-          })}
+    <Form
+      layout="vertical"
+      name="filter"
+      onFinish={onFilter}
+      className={styles.FilterResourcesListContent}
+    >
+      <Form.Item label="By division" name="division">
+        <Select allowClear style={{ width: '100%' }} placeholder="Please select">
+          {divisionList.map((x) => (
+            <Option value={x}>{x}</Option>
+          ))}
         </Select>
       </Form.Item>
 
-      <Form.Item label="By Start Date">
-        <Row>
-          <Col span={11}>
-            <Form.Item name="s_fromDate">
-              <DatePicker format="MMM DD, YYYY" />
-            </Form.Item>
-          </Col>
-          <Col span={2} className={styles.separator}>
-            <span>to</span>
-          </Col>
-          <Col span={11}>
-            <Form.Item name="s_toDate">
-              <DatePicker format="MMM DD, YYYY" />
-            </Form.Item>
-          </Col>
-        </Row>
+      <Form.Item label="By designation" name="designation">
+        <Select allowClear style={{ width: '100%' }} placeholder="Please select">
+          {titleList.map((x) => (
+            <Option value={x._id}>{x.name}</Option>
+          ))}
+        </Select>
       </Form.Item>
     </Form>
   );
 };
 
-export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({ employee }))(
-  FilterResourcesListContent,
-);
+export default connect(({ projectDetails, user: { currentUser: { employee = {} } = {} } }) => ({
+  employee,
+  projectDetails,
+}))(FilterResourcesListContent);

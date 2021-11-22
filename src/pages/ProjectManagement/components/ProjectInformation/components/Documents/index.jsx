@@ -33,12 +33,13 @@ const Documents = (props) => {
     window.open(url, '_blank');
   };
 
-  const fetchDocumentList = (searchKey) => {
+  const fetchDocumentList = (searchKey, filterPayload) => {
     dispatch({
       type: 'projectDetails/fetchDocumentListEffect',
       payload: {
         projectId,
         searchKey,
+        ...filterPayload,
       },
     });
   };
@@ -136,7 +137,7 @@ const Documents = (props) => {
   };
 
   const renderOption = () => {
-    const content = <FilterContent />;
+    const content = <FilterContent onFilter={(values) => fetchDocumentList('', values)} />;
     return (
       <div className={styles.options}>
         <AddButton text="Add new Document" onClick={() => setAddDocumentModalVisible(true)} />

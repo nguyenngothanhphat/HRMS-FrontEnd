@@ -20,12 +20,13 @@ const Resources = (props) => {
   } = props;
   const [addResourceTypeModalVisible, setAddResourceTypeModalVisible] = useState(false);
 
-  const fetchResourceTypeList = (name) => {
+  const fetchResourceTypeList = (name, filter) => {
     dispatch({
       type: 'projectDetails/fetchResourceTypeListEffect',
       payload: {
         projectId,
         name,
+        ...filter,
       },
     });
   };

@@ -54,7 +54,7 @@ const AssignResourcesModal = (props) => {
     setSelectedResources(result);
   };
 
-  const fetchResourceList = (name = '', page = 1, limit = 5) => {
+  const fetchResourceList = (name = '', page = 1, limit = 5, filter) => {
     dispatch({
       type: 'projectDetails/fetchResourceListEffect',
       payload: {
@@ -62,6 +62,7 @@ const AssignResourcesModal = (props) => {
         limit,
         name,
         department: [divisionId],
+        ...filter
       },
     });
   };
