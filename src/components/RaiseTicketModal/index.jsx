@@ -10,14 +10,16 @@ import {
   Tooltip,
   Upload,
   message,
+  notification,
 } from 'antd';
 import React, { useState, useEffect } from 'react';
+import { isEmpty } from 'lodash';
 import { connect } from 'umi';
 import moment from 'moment';
 import HelpIcon from '@/assets/dashboard/help.svg';
 import BlueAddIcon from '@/assets/dashboard/blueAdd.svg';
 import { SUPPORT_TEAM, PRIORITY } from '@/utils/dashboard';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 
 import styles from './index.less';
 
@@ -31,10 +33,8 @@ const RaiseTicketModal = (props) => {
     visible = false,
     title = '',
     onClose = () => {},
-    currentUser: { location = {} || {}, employee: { _id: myEmployeeID = '' } = {} || {} } = {} ||
-      {},
+    currentUser: { employee: { _id: myEmployeeID = '' } = {} || {} } = {} || {},
   } = props;
-  const locationID = location?._id;
 
   const { maxFileSize = 2, dispatch } = props;
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
@@ -42,6 +42,7 @@ const RaiseTicketModal = (props) => {
   const [attachment, setAttachment] = useState('');
   const [supportTeam, setSupportTeam] = useState('');
   const [supportTeamID, setSupportTeamID] = useState('');
+
   const { listEmployee, listDepartment } = props;
   const renderModalHeader = () => {
     return (
@@ -72,28 +73,10 @@ const RaiseTicketModal = (props) => {
     });
   }, []);
 
-  const handleFinish = (value) => {
-    dispatch({
-      type: 'ticketManagement/addTicket',
-      payload: {
-        department_assign: supportTeamID,
-        employeeRaise: myEmployeeID,
-        employeeAssignee: supportTeamID,
-        status: value.status,
-        query_type: value.queryType,
-        subject: value.subject,
-        description: value.description,
-        priority: value.priority,
-        ccList: value.interestList,
-        attachments: attachment,
-        location: locationID,
-      },
-    });
-    form.resetFields();
-  };
-
   const handleReset = () => {
     form.resetFields();
+    setUploadedAttachments([]);
+    setAttachment('');
   };
   const beforeUpload = (file) => {
     const checkType =
@@ -120,7 +103,6 @@ const RaiseTicketModal = (props) => {
   const handleUpload = async (file) => {
     const formData = new FormData();
     formData.append('uri', file);
-    console.log('formData.values()', formData.entries());
     const res = await dispatch({
       type: 'upload/uploadFile',
       payload: formData,
@@ -152,6 +134,44 @@ const RaiseTicketModal = (props) => {
     const idDepartment = listDepartment.find((val) => val.name === value) || {};
     setSupportTeamID(idDepartment._id);
   };
+
+  const handleFinish = (value) => {
+    const documents = uploadedAttachments?.map((item) => {
+      const { id = '', url = '', name = '' } = item;
+      return {
+        attachment: id,
+        attachmentName: name,
+        attachmentUrl: url,
+      };
+    });
+    if (!isEmpty(documents)) {
+      dispatch({
+        type: 'ticketManagement/addTicket',
+        payload: {
+          employeeRaise: myEmployeeID,
+          employeeAssignee: '',
+          status: value.status,
+          queryType: value.queryType,
+          subject: value.subject,
+          description: value.description,
+          priority: value.priority,
+          ccList: value.interestList,
+          attachments: documents,
+          departmentAssign: supportTeamID,
+          location: getCurrentLocation(),
+        },
+      }).then((response) => {
+        const { statusCode } = response;
+        if (statusCode === 200) {
+          onClose();
+          form.resetFields();
+          setUploadedAttachments([]);
+          setAttachment('');
+        }
+      });
+    }
+  };
+
   const renderModalContent = () => {
     return (
       <div className={styles.content}>
@@ -292,6 +312,7 @@ const RaiseTicketModal = (props) => {
                 beforeUpload={beforeUpload}
                 onRemove={(file) => handleRemove(file)}
                 openFileDialogOnClick={!(uploadedAttachments.length === 2)}
+                showUploadList={uploadedAttachments.length > 0}
                 // multiple
               >
                 <div

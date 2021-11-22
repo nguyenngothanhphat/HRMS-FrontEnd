@@ -1,10 +1,67 @@
-.TableTickets{
-    :global {
-        .ant-table-thead > tr > th{
-            background: #2C6DF9 !important;
-        }
-        .ant-table-pagination-right {
-            justify-content: flex-start !important;
-        }
+.TableTickets {
+  .priorityHigh {
+    width: 45px;
+    text-align: center;
+    background: #ffb6b6;
+    border-radius: 12px;
+  }
+  .priorityMedium {
+    width: 45px;
+    text-align: center;
+    background: #eefffb;
+    border-radius: 12px;
+  }
+  .priorityUrgent {
+    width: 45px;
+    text-align: center;
+    background: #fafafa;
+    border-radius: 12px;
+  }
+  .priorityLow {
+    width: 45px;
+    text-align: center;
+    background: #ffe9c5;
+    border-radius: 12px;
+  }
+  .ticketID,
+  .userID {
+    color: #2c6df9;
+    &:hover {
+      cursor: pointer;
     }
+  }
+  :global {
+    .ant-table-thead > tr > th {
+      background: #2c6df9 !important;
+    }
+    .ant-table-pagination-right {
+      justify-content: flex-start !important;
+    }
+    .ant-table-body {
+      max-height: 533px !important;
+    }
+  }
+}
+:global {
+  .dropDown__employee {
+    .ant-dropdown-menu {
+      right: 40px !important;
+      width: unset !important;
+      padding: 8px;
+      overflow-y: unset !important;
+      background: #ffffff;
+      border-radius: 6px;
+    }
+    .ant-table-row:hover .ant-dropdown-trigger {
+      background: #fafafa !important;
+    }
+  }
+  .ant-dropdown-trigger {
+    color: #2c6df9 !important;
+    border: none !important;
+    box-shadow: none !important;
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }

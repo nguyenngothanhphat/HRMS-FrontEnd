@@ -1,18 +1,26 @@
 import React, { Component } from 'react';
 import { Input, Popover } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
 import filterIcon from '@/assets/ticketManagement-filter.svg';
 import closeIcon from '@/assets/closeIcon.svg';
 import FilterForm from './components/FilterForm';
 import styles from './index.less';
 
-export class SearchTable extends Component {
+@connect()
+class SearchTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
       visible: false,
     };
   }
+
+  openFilter = () => {
+    const { visible } = this.state;
+
+    this.setState({ visible: !visible });
+  };
 
   renderTitle = () => {
     return (
@@ -22,28 +30,21 @@ export class SearchTable extends Component {
           alt="close"
           src={closeIcon}
           onClick={() => {
+            const { dispatch } = this.props;
+
             this.setState({ visible: false });
+            dispatch({
+              type: 'ticketManagement/saveSearch',
+              payload: { isFilter: false },
+            });
           }}
         />
       </div>
     );
   };
 
-  onPressEnter = ({ target: { value } }) => {};
-
-  onChangeInput = (e) => {
-    e.preventDefault();
-    const { onSearch = () => {} } = this.props;
-    onSearch(e.target.value);
-  };
-
-  openFilter = () => {
-    const { visible } = this.state;
-
-    this.setState({ visible: !visible });
-  };
-
   render() {
+    const { onChangeSearch = () => {} } = this.props;
     const { visible } = this.state;
     return (
       <div className={styles.searchFilter}>
@@ -63,9 +64,8 @@ export class SearchTable extends Component {
         <Input
           size="large"
           placeholder="Search by Name, user ID"
-          onChange={this.onChangeInput}
+          onChange={(e) => onChangeSearch(e.target.value)}
           prefix={<SearchOutlined />}
-          onPressEnter={this.onPressEnter}
           className={styles.searchFilter__input}
         />
       </div>
