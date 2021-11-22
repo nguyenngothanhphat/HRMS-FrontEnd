@@ -143,7 +143,9 @@ const ResourceTypeCard = (props) => {
   };
 
   const renderOption = () => {
-    const content = <FilterResourceTypeContent onFilter={(values) => refreshResourceType('',values)} />;
+    const content = (
+      <FilterResourceTypeContent onFilter={(values) => refreshResourceType('', values)} />
+    );
     return (
       <div className={styles.options}>
         <FilterPopover placement="bottomRight" content={content}>

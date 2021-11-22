@@ -14,18 +14,18 @@ const { TabPane } = Tabs;
 const Resources = (props) => {
   const {
     dispatch,
-    projectDetails: { resourceTypeList = [], projectDetail: { projectId = '' } = {} } = {},
+    projectDetails: { resourceTypeList = [], projectId = '' } = {},
     loadingAdd = false,
     loadingFetch = false,
   } = props;
   const [addResourceTypeModalVisible, setAddResourceTypeModalVisible] = useState(false);
 
-  const fetchResourceTypeList = (name, filter) => {
+  const fetchResourceTypeList = (searchKey, filter) => {
     dispatch({
       type: 'projectDetails/fetchResourceTypeListEffect',
       payload: {
         projectId,
-        name,
+        searchKey,
         ...filter,
       },
     });
@@ -57,9 +57,14 @@ const Resources = (props) => {
   };
 
   const renderDataCard = () => {
+    const onTabClick = (key) => {
+      if (key === '1') {
+        fetchResourceTypeList();
+      }
+    };
     return (
       <div className={styles.contentCard}>
-        <Tabs>
+        <Tabs destroyInactiveTabPane onTabClick={onTabClick}>
           <TabPane tab="Resource Type" key="1">
             <ResourceTypeCard data={resourceTypeList} refreshResourceType={fetchResourceTypeList} />
           </TabPane>
@@ -74,7 +79,7 @@ const Resources = (props) => {
   if (loadingFetch && resourceTypeList.length === 0)
     return (
       <div className={styles.Resources}>
-        <Skeleton />
+        <Skeleton active />
       </div>
     );
   return (

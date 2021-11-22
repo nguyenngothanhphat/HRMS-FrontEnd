@@ -195,10 +195,7 @@ const Projects = (props) => {
           statusSummary={statusSummary}
         />
       </div>
-      <div
-        className={styles.tableContainer}
-        style={projectList.length === 0 ? {} : { paddingBottom: '0' }}
-      >
+      <div className={styles.tableContainer}>
         <CommonTable
           columns={generateColumns()}
           list={projectList}

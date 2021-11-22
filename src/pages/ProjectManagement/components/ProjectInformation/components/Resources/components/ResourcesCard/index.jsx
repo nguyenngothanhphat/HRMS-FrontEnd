@@ -40,7 +40,7 @@ const EditableCell = ({
           rules={[
             {
               required: true,
-              message: `Please Input ${title}!`,
+              message: `Required fields!`,
             },
           ]}
         >
