@@ -1,0 +1,213 @@
+.Projects {
+  box-sizing: border-box;
+  background-color: #fff;
+  border: 1px solid #d6dce0;
+  border-radius: 5px;
+
+  .documentHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    border-bottom: 1px solid #d6dce0;
+    padding-inline: 24px;
+    .documentHeaderTitle {
+      line-height: 3;
+      span {
+        font-weight: 700;
+        font-size: 16px;
+      }
+    }
+    .documentHeaderFunction {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .documentBody {
+    padding: 16px 27px;
+    :global {
+      .ant-col {
+        margin-bottom: 24px;
+      }
+      td.ant-table-cell {
+        width: 84px;
+        height: 15px;
+        color: #464646;
+        font-weight: normal;
+        font-size: 13px;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: normal;
+        letter-spacing: 0.12px;
+      }
+      .ant-table-thead > tr > th {
+        padding: 8px 16px;
+        background-color: #2c6df9;
+      }
+    }
+    .divisionPrimary {
+      width: 100%;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      margin-left: 8px;
+      padding: 24px;
+      padding-right: 0;
+      background-color: #f6f7f9;
+    }
+    .divisionSecondary {
+      padding: 24px 0 24px 32px;
+    }
+  }
+
+  .filterButton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 15px;
+    line-height: 3;
+    .textButtonFilter {
+      display: block;
+      margin-left: 10px;
+      color: #ffa100;
+      font-weight: 500;
+      font-size: 12px;
+    }
+  }
+
+  .searchInp {
+    input {
+      min-width: 200px;
+      max-width: 300px;
+    }
+    :global {
+      .ant-input-affix-wrapper {
+        height: 40px;
+        border-radius: 25px;
+      }
+    }
+  }
+
+  .buttonAddImport {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    color: #2c6df9;
+    font-weight: 500;
+    background-color: white;
+    border-radius: 30px;
+    cursor: pointer;
+    img {
+      margin-right: 10px;
+    }
+    &_imgImport {
+      margin-right: 15px !important;
+      transform: scale(1.5);
+    }
+    &_text {
+      margin-bottom: 0px;
+      color: #2c6df9;
+      font-weight: 700;
+      font-size: 14px;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.38;
+      letter-spacing: normal;
+      text-align: left;
+    }
+    :global {
+      .anticon {
+        margin-right: 9px;
+        margin-bottom: 1px;
+        padding: 4px;
+        color: #2c6df9;
+        font-size: 13px;
+        background-color: #fff;
+        border-radius: 50px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.23);
+      }
+    }
+  }
+  .action {
+    span {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+
+      margin-right: 9px;
+      margin-bottom: 1px;
+      // padding: 4px;
+      font-size: 20px;
+      background-color: #fff;
+      border-radius: 50%;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.23);
+      img {
+        margin-top: -4px;
+      }
+    }
+  }
+}
+.FilterPopover {
+  .btnForm {
+    width: 100%;
+    padding: 16px;
+    text-align: right;
+    border-top: 1px solid #e1dfdf;
+    .btnApply {
+      height: auto;
+      height: 36px;
+      margin-left: 20px;
+      color: #fff;
+      background-color: #ffa100;
+      border: none;
+      border-radius: 25px;
+      outline: none;
+      padding-inline: 25px;
+    }
+    .btnClose {
+      background-color: #fff;
+      border: none;
+    }
+  }
+
+  .popoverHeader {
+    display: flex;
+    justify-content: space-between;
+
+    .headTitle {
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 16px;
+    }
+  }
+
+  :global {
+    .ant-popover-inner {
+      min-width: 400px;
+      max-width: 400px;
+      padding: 0;
+      border: 1px solid #eaecef;
+      border-radius: 8px;
+    }
+    .ant-popover-inner-content {
+      padding: 0 !important;
+    }
+    .ant-popover-arrow {
+      //   left: -2.5px !important;
+      width: 18px;
+      height: 18px;
+      .ant-popover-arrow-content {
+        width: 12px;
+        height: 12px;
+        box-shadow: none;
+      }
+    }
+
+    .ant-popover-title {
+      padding: 16px;
+    }
+  }
+}

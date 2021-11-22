@@ -1,0 +1,149 @@
+.FilterPopover {
+  :global {
+    .ant-popover-inner {
+      min-width: 400px;
+      max-width: 400px;
+      padding: 0;
+      border: 1px solid #eaecef;
+      border-radius: 8px;
+    }
+    .ant-popover-inner-content {
+      padding: 0 !important;
+    }
+    .ant-popover-arrow {
+      //   left: -2.5px !important;
+      width: 18px;
+      height: 18px;
+      .ant-popover-arrow-content {
+        width: 12px;
+        height: 12px;
+        box-shadow: none;
+      }
+    }
+    .ant-popover-title {
+      padding: 16px;
+    }
+
+    .ant-form-item {
+      margin-bottom: 16px;
+    }
+    .ant-form-item-label {
+      label {
+        color: #707177;
+        font-size: 12px;
+        text-transform: uppercase;
+      }
+    }
+
+    .ant-select {
+      width: 100% !important;
+    }
+    .ant-select-selector,
+    .ant-picker {
+      height: 37px !important;
+      border: 1px solid #d6dce4 !important;
+      border-radius: 5px !important;
+    }
+    .ant-picker {
+      input {
+        font-size: 13px;
+      }
+    }
+    .ant-select-selection-item,
+    .ant-select-selection-placeholder {
+      font-size: 13px !important;
+      line-height: 35px !important;
+    }
+    .ant-select-multiple {
+      .ant-select-selection-item {
+        font-size: 13px;
+        line-height: unset !important;
+        background: #ffffff;
+        border: 1px solid #d6dce0;
+        border-left: 4px solid #2c6df9;
+        border-radius: 5px;
+      }
+      .ant-select-selection-item-remove {
+        margin-top: 2px;
+
+        .anticon-close {
+          border: 0.75px solid #707177;
+          border-radius: 50%;
+        }
+      }
+    }
+    .ant-select-multiple .ant-select-selection-item-remove > * {
+      line-height: 0;
+    }
+  }
+  .popoverHeader {
+    display: flex;
+    justify-content: space-between;
+
+    .headTitle {
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 16px;
+    }
+  }
+
+  .buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 16px;
+    text-align: right;
+    // border-top: 1px solid #e1dfdf;
+    box-shadow: 0px 1px 40px rgba(0, 0, 0, 0.1);
+    .btnApply {
+      height: auto;
+      height: 36px;
+      margin-left: 20px;
+      color: #fff;
+      background-color: #ffa100;
+      border: none;
+      border-radius: 25px;
+      outline: none;
+      padding-inline: 25px;
+    }
+    .btnClose {
+      background-color: #fff;
+      border: none;
+    }
+  }
+
+  .popupContainer {
+    position: relative;
+    max-height: 450px;
+    padding: 16px 16px 0;
+    overflow-y: auto;
+    .closeButton {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 5;
+      display: block;
+      cursor: pointer;
+    }
+    .divider {
+      border-bottom: 1px solid #eaecef;
+    }
+    .separator {
+      span {
+        display: block;
+        margin-top: 9px;
+        color: #707177;
+        font-size: 12px;
+      }
+    }
+    .header {
+      padding: 20px 16px 16px;
+      span {
+        color: #3e3e3e;
+        font-weight: 500;
+        font-size: 13px;
+      }
+    }
+  }
+}
