@@ -110,7 +110,7 @@ class TableContainer extends PureComponent {
 
   // add new Customer
   handleAddNew = (values, countryName) => {
-    const { dispatch, _id } = this.props;
+    const { dispatch } = this.props;
     const {
       customerID,
       status,
@@ -120,15 +120,16 @@ class TableContainer extends PureComponent {
       email,
       addressLine1,
       addressLine2,
-      country,
+      // country,
       state,
       city,
       zipCode,
       website,
       tags,
       comments,
+      accountOwner,
     } = values;
-    const newTags = tags.map((item) => parseInt(item, 10));
+
     dispatch({
       type: 'customerManagement/addNewCustomer',
       payload: {
@@ -145,8 +146,8 @@ class TableContainer extends PureComponent {
         state: state || "''",
         country: countryName.name || '',
         postalCode: zipCode || '',
-        accountOwner: _id || '',
-        tagIds: newTags || [],
+        accountOwner: accountOwner || '',
+        tags: tags || [],
         comment: comments || '',
         website: website || '',
       },

@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-curly-newline */
-import { Affix, Col, Row } from 'antd';
+import { Affix, Col, Row, Skeleton } from 'antd';
 // import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
@@ -58,7 +58,7 @@ class CommonLayout extends PureComponent {
   };
 
   render() {
-    const { listMenu = [] } = this.props;
+    const { listMenu = [], loading = false } = this.props;
     const { selectedItemId, displayComponent, displayComponentActions } = this.state;
     return (
       <div className={s.root}>
@@ -82,7 +82,7 @@ class CommonLayout extends PureComponent {
         </Affix>
         <Row className={s.viewRight} gutter={[24, 24]}>
           <Col xs={24} xl={18}>
-            {displayComponentActions || displayComponent}
+            {loading ? <Skeleton /> : displayComponentActions || displayComponent}
           </Col>
           <Col xs={24} xl={6}>
             {/* {isCompanyProfile ? (

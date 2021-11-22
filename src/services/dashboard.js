@@ -63,12 +63,13 @@ export async function getMyTeam(payload) {
 }
 
 // TIMESHEET
-export async function getMyTimesheet(payload) {
+export async function getMyTimesheet(payload, params) {
   return request(
     `/api/timesheet/filter`,
     {
       method: 'GET',
       data: payload,
+      params,
     },
     false,
     'TIMESHEET_API',

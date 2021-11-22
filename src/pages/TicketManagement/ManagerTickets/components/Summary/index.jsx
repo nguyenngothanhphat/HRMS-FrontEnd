@@ -15,9 +15,9 @@ export default class Summary extends PureComponent {
   };
 
   getCount = (value) => {
-    const { countdata = [] } = this.props;
-
-    console.log(value);
+    const { countData: { totalStatus = [] } = {} } = this.props;
+    const find = totalStatus.find((val) => val.status === value);
+    return find?.total || 0;
   };
 
   render() {
@@ -26,37 +26,37 @@ export default class Summary extends PureComponent {
         value: '1',
         title: 'New',
         count: this.getCount('New'),
-        renderTab: this.renderTab('NeW'),
+        renderTab: this.renderTab('New'),
       },
       {
         value: '2',
         title: 'Assigned',
-        count: 6,
-        renderTab: this.renderTab('ASSIGNED'),
+        count: this.getCount('Assigned'),
+        renderTab: this.renderTab('Assigned'),
       },
       {
         value: '3',
         title: 'In Progress',
-        count: 6,
-        renderTab: this.renderTab('IN_PROGRESS'),
+        count: this.getCount('In Progress'),
+        renderTab: this.renderTab('In Progress'),
       },
       {
         value: '4',
         title: 'Client Pending',
-        count: 6,
-        renderTab: this.renderTab('CLIENT_PENDING'),
+        count: this.getCount('Client Pending'),
+        renderTab: this.renderTab('Client Pending'),
       },
       {
         value: '5',
         title: 'Resolved',
-        count: 6,
-        renderTab: this.renderTab('RESOLVED'),
+        count: this.getCount('Resolved'),
+        renderTab: this.renderTab('Resolved'),
       },
       {
         value: '6',
         title: 'Closed',
-        count: 6,
-        renderTab: this.renderTab('CLOSED'),
+        count: this.getCount('Closed'),
+        renderTab: this.renderTab('Closed'),
       },
     ];
 

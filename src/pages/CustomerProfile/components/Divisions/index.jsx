@@ -1,10 +1,12 @@
-import React, { PureComponent } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
+import { Skeleton } from 'antd';
+import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import styles from './index.less';
 import editIcon from '../../../../assets/edit-customField-cm.svg';
-import ModalAddDivisions from './components/ModalAddDivisions';
 import DivisionItem from './components/DivisionItem';
+import ModalAddDivisions from './components/ModalAddDivisions';
+import ModalEditDivision from './components/ModalEditDivision';
+import styles from './index.less';
 
 @connect(
   ({
@@ -25,9 +27,10 @@ class Divisions extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      isShown: false,
+      addModalVisible: false,
       isCountrySelected: true,
-      visible: false,
+      editModalVisible: false,
+      handlingPackage: {},
     };
   }
 
@@ -42,27 +45,18 @@ class Divisions extends PureComponent {
     });
   }
 
-  // componentDidUpdate(props) {
-  //   const { divisions, dispatch, reId } = this.props;
-  //   if (props.divisions !== divisions) {
-  //     dispatch({
-  //       type: 'customerProfile/fetchDivision',
-  //       payload: {
-  //         id: reId,
-  //       },
-  //     });
-  //   }
-  // }
-
   showModal = () => {
     const { dispatch, reId } = this.props;
 
     this.setState({
-      isShown: true,
+      addModalVisible: true,
     });
 
     dispatch({
       type: 'customerManagement/fetchTagList',
+      payload: {
+        name: 'Engineering'
+      }
     });
     dispatch({
       type: 'customerProfile/generateDivisionId',
@@ -78,66 +72,7 @@ class Divisions extends PureComponent {
 
   onCloseModal = () => {
     this.setState({
-      isShown: false,
-    });
-  };
-
-  onSubmit = async (values) => {
-    const { dispatch, info, reId } = this.props;
-    const {
-      // accountOwner,
-      addressLine1,
-      addressLine2,
-      city,
-      country,
-      divisionId,
-      divisionName,
-      primaryPOCDesignation,
-      primaryPOCEmail,
-      primaryPOCName,
-      primaryPOCPhNo,
-      secondaryPOCDesignation,
-      secondaryPOCEmail,
-      secondaryPOCName,
-      secondaryPOCPhNo,
-      state,
-      tags,
-      zipCode,
-    } = values;
-    const payload = {
-      customerId: info.customerId,
-      addressLine1,
-      addressLine2,
-      city,
-      country,
-      divisionId,
-      divisionName,
-      primaryPOCName,
-      primaryPOCDesignation,
-      primaryPOCEmail,
-      primaryPOCNumber: primaryPOCPhNo,
-      secondaryPOCDesignation,
-      secondaryPOCEmail,
-      secondaryPOCName,
-      secondaryPOCNumber: secondaryPOCPhNo,
-      state,
-      tagIds: tags.map((t) => t * 1) || [],
-      postalCode: zipCode,
-    };
-    await dispatch({
-      type: 'customerProfile/addDivision',
-      payload,
-    }).then(() => {
-      this.setState({
-        isShown: false,
-      });
-
-      dispatch({
-        type: 'customerProfile/fetchDivision',
-        payload: {
-          id: reId,
-        },
-      });
+      addModalVisible: false,
     });
   };
 
@@ -152,45 +87,73 @@ class Divisions extends PureComponent {
     });
   };
 
-  render() {
-    const { isShown, isCountrySelected, visible } = this.state;
-    const { divisions, listTags, info, reId, divisionId, country, state } = this.props;
-
+  renderDivisionCard = (division, index) => {
     return (
-      <div className={styles.Divisions}>
+      <div className={styles.DivisionCard}>
         {/* Header */}
         <div className={styles.divisionsHeader}>
-          <p className={styles.contactInfoHeaderTitle}>Divisions</p>
-          <p className={styles.btnEdit}>
+          <p className={styles.contactInfoHeaderTitle}>Division {index + 1}</p>
+          <p
+            className={styles.btnEdit}
+            onClick={() => {
+              this.setState({ editModalVisible: true, handlingPackage: division });
+            }}
+          >
             <img src={editIcon} alt="edit" />
             Edit
           </p>
         </div>
-        {/* Body */}
 
-        {divisions.map((item, index) => {
-          return (
-            <>
-              <div className={styles.divisionsBody}>
-                <DivisionItem item={item} />
-              </div>
-              {index + 1 < divisions.length && <div className={styles.divider} />}
-            </>
-          );
+        <div className={styles.divisionsBody}>
+          <DivisionItem item={division} />
+        </div>
+      </div>
+    );
+  };
+
+  render() {
+    const { addModalVisible, isCountrySelected, editModalVisible, handlingPackage } = this.state;
+    const {
+      divisions = [],
+      listTags = [],
+      info = {},
+      reId = '',
+      country = [],
+      state = [],
+      loadingDivisions = false,
+    } = this.props;
+
+    if (loadingDivisions) return <Skeleton />;
+    return (
+      <div className={styles.Divisions}>
+        {divisions.map((item, i) => {
+          return this.renderDivisionCard(item, i);
         })}
 
         <div className={styles.divisionFooter}>
           <p className={styles.buttonAddImport} onClick={this.showModal}>
             <PlusOutlined />
-            Add another Divisions
+            Add another Division
           </p>
           <ModalAddDivisions
-            isShown={isShown}
+            visible={addModalVisible}
             onCloseModal={this.onCloseModal}
             onSubmit={this.onSubmit}
             listTags={listTags}
             info={info}
             // divisionId={divisionId}
+            isCountrySelected={isCountrySelected}
+            handelSelectCountry={this.handelSelectCountry}
+            country={country}
+            state={state}
+            reId={reId}
+          />
+          <ModalEditDivision
+            data={handlingPackage}
+            visible={editModalVisible}
+            onClose={() => this.setState({ editModalVisible: false, handlingPackage: {} })}
+            listTags={listTags}
+            info={info}
             isCountrySelected={isCountrySelected}
             handelSelectCountry={this.handelSelectCountry}
             country={country}

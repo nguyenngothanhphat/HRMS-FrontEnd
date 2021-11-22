@@ -48,7 +48,6 @@ const customerProfile = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { info: data } });
-        yield put({ type: 'fetchTagList', payload: { customerId: payload.id } });
       } catch (error) {
         dialog(error);
       }
@@ -88,13 +87,13 @@ const customerProfile = {
           tenantId: getCurrentTenant(),
           ...payload,
         });
-        const { statusCode, message, data } = response;
+        const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message });
 
         yield put({
           type: 'fetchDivision',
-          payload: { tenantId: getCurrentTenant(), customerId: data.customerId },
+          payload: { tenantId: getCurrentTenant(), customerId: payload.customerId },
         });
       } catch (error) {
         dialog(error);
@@ -102,22 +101,25 @@ const customerProfile = {
     },
 
     *updateDivision({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(updateDivision, {
-          // tenantId: getCurrentTenant(),
-          // customerId: payload.id
+        response = yield call(updateDivision, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         });
-        const { statusCode, message, data } = response;
+        const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message });
 
         yield put({
           type: 'fetchDivision',
-          payload: { tenantId: getCurrentTenant(), customerId: data.customerId },
+          payload: { tenantId: getCurrentTenant(), customerId: payload.customerId },
         });
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *fetchAuditTrail({ payload }, { call, put }) {
@@ -126,9 +128,8 @@ const customerProfile = {
           tenantId: getCurrentTenant(),
           customerId: payload.id,
         });
-        const { statusCode, data, message } = response;
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        notification.success({ message });
         yield put({ type: 'save', payload: { auditTrail: data } });
       } catch (error) {
         dialog(error);
@@ -191,8 +192,9 @@ const customerProfile = {
     },
 
     *addNote({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(addNotes, {
+        response = yield call(addNotes, {
           tenantId: getCurrentTenant(),
           ...payload,
         });
@@ -210,6 +212,7 @@ const customerProfile = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *fetchDocumentsTypes(_, { call, put }) {
@@ -333,14 +336,11 @@ const customerProfile = {
           company: getCurrentCompany(),
           ...payload,
         });
-        const { statusCode, data } = response;
+        const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: {
-            listTag: data,
-          },
-        });
+        if (data.length > 0) {
+          yield put({ type: 'save', payload: { listTags: data[0]?.tagDivision } });
+        }
       } catch (error) {
         dialog(error);
       }

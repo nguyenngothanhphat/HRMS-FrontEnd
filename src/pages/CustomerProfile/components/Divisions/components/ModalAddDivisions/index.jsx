@@ -11,6 +11,7 @@ import iconNote from '../../../../../../assets/icon-note.svg';
     customerProfile: { info = {}, divisionId = '' } = {},
   }) => ({
     loadingId: loading.effects['customerProfile/generateDivisionId'],
+    loadingAdd: loading.effects['customerProfile/addDivision'],
     divisionId,
     employeeList,
     info,
@@ -25,6 +26,7 @@ class ModalAddDivisions extends PureComponent {
 
   componentDidMount() {
     const { dispatch, reId } = this.props;
+
     dispatch({
       type: 'customerProfile/generateDivisionId',
       payload: {
@@ -56,11 +58,71 @@ class ModalAddDivisions extends PureComponent {
     }
   };
 
+  onSubmit = async (values) => {
+    const { dispatch, info, reId, onCloseModal = () => {} } = this.props;
+    const {
+      accountOwner,
+      addressLine1,
+      addressLine2,
+      city,
+      country,
+      divisionId,
+      divisionName,
+      primaryPOCDesignation,
+      primaryPOCEmail,
+      primaryPOCName,
+      primaryPOCPhNo,
+      secondaryPOCDesignation,
+      secondaryPOCEmail,
+      secondaryPOCName,
+      secondaryPOCPhNo,
+      state,
+      tags,
+      zipCode,
+      comments,
+    } = values;
+    const payload = {
+      customerId: info.customerId,
+      addressLine1,
+      addressLine2,
+      city,
+      country,
+      divisionId,
+      divisionName,
+      primaryPOCName,
+      primaryPOCDesignation,
+      primaryPOCEmail,
+      primaryPOCNumber: primaryPOCPhNo,
+      secondaryPOCDesignation,
+      secondaryPOCEmail,
+      secondaryPOCName,
+      secondaryPOCNumber: secondaryPOCPhNo,
+      state,
+      tags: tags || [],
+      postalCode: zipCode,
+      comments,
+      accountOwner,
+    };
+
+    await dispatch({
+      type: 'customerProfile/addDivision',
+      payload,
+    }).then(() => {
+      onCloseModal();
+      dispatch({
+        type: 'customerProfile/fetchDivision',
+        payload: {
+          id: reId,
+        },
+      });
+      this.refForm?.current?.resetFields();
+    });
+  };
+
   render() {
     const {
-      isShown,
+      visible,
       onCloseModal = () => {},
-      onSubmit,
       listTags = [],
       info: { accountOwner: { _id: accountOwnerId = '' } = {} } = {},
       divisionId,
@@ -68,7 +130,7 @@ class ModalAddDivisions extends PureComponent {
       handelSelectCountry,
       country,
       state,
-      loadingId,
+      loadingAdd = false,
       employeeList = [],
     } = this.props;
     return (
@@ -86,21 +148,22 @@ class ModalAddDivisions extends PureComponent {
                 form="formAdd"
                 key="submit"
                 htmlType="submit"
-                // onClick={(values) => handleAddNew(values)}
+                loading={loadingAdd}
               >
                 Add Division
               </Button>
             </div>,
           ]}
           onCancel={onCloseModal}
-          visible={isShown}
+          visible={visible}
+          width={700}
         >
           <Form
             name="formAdd"
             layout="vertical"
             ref={this.refForm}
             initialValues={{ accountOwner: accountOwnerId, divisionId }}
-            onFinish={(values) => onSubmit(values)}
+            onFinish={this.onSubmit}
           >
             {/* Basic Customer Detail */}
             <div className={styles.basicInfoForm}>
@@ -264,13 +327,19 @@ class ModalAddDivisions extends PureComponent {
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col span={12}>
+                <Col span={12} />
+                <Col span={24}>
                   <Form.Item label="Tags (Optional)" name="tags">
                     <Select mode="multiple" placeholder="Enter tags">
                       {listTags.map((item) => {
-                        return <Select.Option key={item.id * 1}>{item.tag_name}</Select.Option>;
+                        return <Select.Option key={item}>{item}</Select.Option>;
                       })}
                     </Select>
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item label="Comments (Optional)" name="comments">
+                    <Input.TextArea placeholder="Enter Comments" autoSize={{ minRows: 5 }} />
                   </Form.Item>
                 </Col>
               </Row>
