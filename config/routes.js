@@ -931,7 +931,7 @@ const routes = [
           },
           {
             path: '/ticket-management/detail/:id',
-            name: 'Detail Ticket',
+            name: 'ticketManagement.viewTicket',
             component: './TicketManagement/components/TicketDetails',
             hideInMenu: true,
             // authority: ['employee', 'leader', 'manager', 'hr', 'hr-manager'],

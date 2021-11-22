@@ -97,6 +97,7 @@ export default {
   'menu.projectManagement.viewProject': 'View Project',
   // ticket management
   'menu.ticketManagement': 'Ticket Management',
+  'menu.ticketManagement.viewTicket': 'View Ticket',
   // resource management
   // customer management
   'menu.viewCustomer': 'View Customer',
