@@ -206,9 +206,11 @@ const dashboard = {
     *fetchMyTimesheetEffect({ payload }, { call, put }) {
       const response = {};
       try {
-        const res = yield call(getMyTimesheet, { ...payload, tenantId: getCurrentTenant() });
+        const res = yield call(getMyTimesheet, {}, { ...payload, tenantId: getCurrentTenant() });
         const { code, data = [] } = res;
-        if (code !== 200) throw res;
+        if (code !== 200) {
+          notification.error('Error occurred when fetching timesheet in dashboard');
+        }
 
         yield put({
           type: 'save',

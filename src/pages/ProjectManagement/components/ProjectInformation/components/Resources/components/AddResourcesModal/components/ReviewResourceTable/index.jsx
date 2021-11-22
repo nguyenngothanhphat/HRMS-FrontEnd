@@ -1,0 +1,108 @@
+import { DatePicker } from 'antd';
+import moment from 'moment';
+import React from 'react';
+import { connect } from 'umi';
+import CommonTable from '@/pages/ProjectManagement/components/ProjectInformation/components/CommonTable';
+import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
+import styles from './index.less';
+
+const ReviewResourceTable = (props) => {
+  const {
+    removeResource = () => {},
+    selectedResources = [],
+    setSelectedResources = () => {},
+  } = props;
+
+  const onDateChange = (value, row, type) => {
+    const temp = JSON.parse(JSON.stringify(selectedResources));
+    const result = temp.map((v) => {
+      if (v._id === row._id) {
+        return {
+          ...v,
+          [type]: value,
+        };
+      }
+      return v;
+    });
+    setSelectedResources(result);
+  };
+
+  const generateColumns = () => {
+    const columns = [
+      {
+        title: 'Name',
+        dataIndex: 'generalInfo',
+        key: 'generalInfo',
+        render: (generalInfo = {}) => {
+          const { legalName = '' } = generalInfo;
+          return <span>{legalName}</span>;
+        },
+      },
+      {
+        title: 'Designation',
+        dataIndex: 'titleInfo',
+        key: 'titleInfo',
+        render: (titleInfo) => {
+          return (
+            <div className={styles.cell}>
+              <span>{titleInfo.name}</span>
+            </div>
+          );
+        },
+      },
+      {
+        title: 'Billing Status',
+        dataIndex: 'billingStatus',
+        key: 'billingStatus',
+        render: (billingStatus) => {
+          return <span>{billingStatus || '-'}</span>;
+        },
+      },
+      {
+        title: 'Start Date',
+        dataIndex: 'startDate',
+        key: 'startDate',
+        render: (startDate, row) => {
+          const value = startDate ? moment(startDate) : null;
+          return (
+            <DatePicker value={value} onChange={(val) => onDateChange(val, row, 'startDate')} />
+          );
+        },
+      },
+      {
+        title: 'End Date',
+        dataIndex: 'endDate',
+        key: 'endDate',
+        render: (endDate, row) => {
+          const value = endDate ? moment(endDate) : null;
+          return <DatePicker value={value} onChange={(val) => onDateChange(val, row, 'endDate')} />;
+        },
+      },
+      {
+        title: 'Action',
+        dataIndex: 'action',
+        key: 'action',
+        align: 'center',
+        render: (_, row) => {
+          return (
+            <img
+              src={DeleteIcon}
+              style={{ cursor: 'pointer' }}
+              alt=""
+              onClick={() => removeResource(row?._id)}
+            />
+          );
+        },
+      },
+    ];
+
+    return columns;
+  };
+
+  return (
+    <div className={styles.ReviewResourceTable}>
+      <CommonTable columns={generateColumns()} list={selectedResources} showPagination={false} />
+    </div>
+  );
+};
+export default connect(() => ({}))(ReviewResourceTable);

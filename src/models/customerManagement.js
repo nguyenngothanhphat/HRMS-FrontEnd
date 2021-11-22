@@ -1,7 +1,8 @@
-import { notification } from 'antd';
+import { message, notification } from 'antd';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import {
   getCustomerList,
+  getCompaniesList,
   getEmployeeList,
   addCustomer,
   genCustomerID,
@@ -30,6 +31,7 @@ const customerManagement = {
       tag: [],
     },
     employeeList: [],
+    companyList: [],
   },
   effects: {
     *fetchCustomerList({ payload }, { call, put }) {
@@ -48,8 +50,9 @@ const customerManagement = {
     },
 
     *filterListCustomer({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getCustomerFilterList, {
+        response = yield call(getCustomerFilterList, {
           ...payload,
         });
         const { statusCode, data } = response;
@@ -58,6 +61,7 @@ const customerManagement = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *addNewCustomer({ payload }, { call }) {
@@ -83,12 +87,18 @@ const customerManagement = {
       }
     },
 
-    *fetchTagList(_, { call, put }) {
+    *fetchTagList({ payload }, { call, put }) {
       try {
-        const response = yield call(getTagList);
-        const { statusCode, data } = response;
+        const response = yield call(getTagList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listTags: data } });
+        if (data.length > 0) {
+          yield put({ type: 'save', payload: { listTags: data[0]?.tagDivision } });
+        }
       } catch (error) {
         dialog(error);
       }
@@ -122,7 +132,8 @@ const customerManagement = {
     },
 
     *exportReport(_, { call }) {
-      let response = {};
+      let response = '';
+      const hide = message.loading('Exporting data...', 0);
       try {
         response = yield call(exportCustomer, {
           tenantId: getCurrentTenant(),
@@ -133,6 +144,7 @@ const customerManagement = {
       } catch (error) {
         dialog(error);
       }
+      hide();
       return response;
     },
 
@@ -147,6 +159,23 @@ const customerManagement = {
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { employeeList: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *fetchCompanyList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getCompaniesList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { companyList: data } });
       } catch (errors) {
         dialog(errors);
       }
