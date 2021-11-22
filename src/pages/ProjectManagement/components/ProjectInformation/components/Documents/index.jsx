@@ -155,7 +155,7 @@ const Documents = (props) => {
         <div className={styles.tableContainer}>
           <CommonTable
             columns={generateColumns()}
-            list={documentList}
+            list={documentList.reverse()}
             loading={loadingFetchDocument}
           />
         </div>
