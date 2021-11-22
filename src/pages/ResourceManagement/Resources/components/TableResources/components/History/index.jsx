@@ -3,7 +3,6 @@ import { Table, Modal } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
 import historyIcon from '@/assets/resource-management-edit1.svg';
-import editIcon from '@/assets/resource-management-edit-history.svg';
 import styles from './index.less';
 
 @connect(({ resourceManagement: { resourceList } }) => ({ resourceList }))
@@ -42,7 +41,7 @@ class HistoryActionBTN extends Component {
       .map((x, index) => {
         return {
           key: index + 1,
-          ProjectName: x.ProjectName || '-',
+          ProjectName: x.project.projectName || '-',
           StartDate: moment(x.startDate).format('MM-DD-YYYY') || '-',
           EndDate: moment(x.endDate).format('MM-DD-YYYY') || '-',
           Billing: x.status || '-',
@@ -65,13 +64,13 @@ class HistoryActionBTN extends Component {
         render: (value) => {
           const active = true;
           return (
-            <p>
-              {value}{' '}
+            <span>
+              {value}
               <span className={styles.labelProject}>
                 {value}
                 {active ? 'Current' : ''}
               </span>
-            </p>
+            </span>
           );
         },
       },
@@ -108,7 +107,7 @@ class HistoryActionBTN extends Component {
         dataIndex: 'Description',
         key: 'Description',
         width: '25%',
-        render: (value, row) => {
+        render: (value) => {
           if (value.length < 35) {
             return <p>{value}</p>;
           }

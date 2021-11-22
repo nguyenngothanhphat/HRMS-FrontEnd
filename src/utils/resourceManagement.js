@@ -27,19 +27,19 @@ const cloneObj = (obj) => {
     return newObj
 };
 
-  // obj = {
-  //   employeeId: 15,
-  //   employeeName: `employee 15`,
-  //   division: 'division',
-  //   designation: 'designation',
-  //   experience: (Math.random(i) * i).toFixed(1),
-  //   projectName: '',
-  //   availableStatus: 'Available Soon',
-  //   comment: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint nt. ullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint...Read More',
-  //   utilization: 0,
-  //   startDate: '',
-  //   endDate: '',
-  // };
+// obj = {
+//   employeeId: 15,
+//   employeeName: `employee 15`,
+//   division: 'division',
+//   designation: 'designation',
+//   experience: (Math.random(i) * i).toFixed(1),
+//   projectName: '',
+//   availableStatus: 'Available Soon',
+//   comment: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint nt. ullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint...Read More',
+//   utilization: 0,
+//   startDate: '',
+//   endDate: '',
+// };
 // eslint-disable-next-line import/prefer-default-export
 export function formatData(rawData, projectList) {
     const dataList = [];
@@ -75,16 +75,15 @@ export function formatData(rawData, projectList) {
     } else {
       // eslint-disable-next-line no-restricted-syntax
       for (const p of projects) {
-        const project = projectList.find((x) => x.id === p.project.id) || p.project;
-        // const {projectName = ''} = project || {}
+        const project = projectList.find((x) => x.id === p.project.id);
         const pObj = cloneObj(newObj);
         pObj.projectName = project.projectName;
         pObj.projectId = p.projectId
-        pObj.utilization = (`${p.utilization}${p.utilization > 0 ? ` %`: ''}`) || 0;
         pObj.startDate = parseDate(p.startDate);
         pObj.endDate = parseDate(p.endDate);
         pObj.billStatus = p.status || '-';
         pObj.project = project.id
+        pObj.utilization = p.utilization || 0;
         pObj.revisedEndDate = parseDate(p.revisedEndDate)
         pObj.resourceId = p.id
         dataList.push(pObj);

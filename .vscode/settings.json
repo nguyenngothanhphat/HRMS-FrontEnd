@@ -16,7 +16,7 @@
   //   "titleBar.activeForeground": "#ffffff"
   // },
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": false
   },
   "git.ignoreLimitWarning": true,
   "cSpell.words": [
@@ -27,5 +27,6 @@
     "Unmount",
     "admincla",
     "ted"
-  ]
+  ],
+  "editor.formatOnSaveMode": "modifications"
 }
