@@ -5,7 +5,6 @@ import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import AddActionBTN from './components/Add';
 import EditActionBTN from './components/Edit';
 import HistoryActionBTN from './components/History';
-import editIcon from '@/assets/resource-management-edit-history.svg';
 import styles from './index.less';
 import ProjectProfile from '../ComplexView/components/PopoverProfiles/components/ProjectProfile';
 import UserProfile from '../ComplexView/components/PopoverProfiles/components/UserProfile';

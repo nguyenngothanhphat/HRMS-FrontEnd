@@ -9,11 +9,18 @@ import styles from './index.less';
 
 const { Option } = Select;
 
-@connect(({ loading, resourceManagement: { projectList = [], employeeList = [], divisions = [] } = {} }) => ({
+@connect(({ loading, resourceManagement: 
+  { 
+    projectList = [], 
+    employeeList = [], 
+    divisions = [],
+    statusList=[]
+  } = {} }) => ({
   loading: loading.effects['resourceManagement/getListEmployee'],
   projectList,
   employeeList,
-  divisions
+  divisions,
+  statusList
 }))
 class FilterForm extends Component {
   constructor(props) {
@@ -30,8 +37,8 @@ class FilterForm extends Component {
         fromDate: undefined,
         toDate: undefined,
       },
-      isFilter: false, // check enable|disable button Apply
-      checkAll: false,
+      // isFilter: false, // check enable|disable button Apply
+      // checkAll: false,
     };
 
     this.formRef = React.createRef();
@@ -70,8 +77,8 @@ class FilterForm extends Component {
         fromDate: null,
         toDate: null,
       },
-      isFilter: false,
-      checkAll: false,
+      // isFilter: false,
+      // checkAll: false,
       durationFrom: '',
       durationTo: '',
     });
@@ -161,7 +168,7 @@ class FilterForm extends Component {
     const { filter } = this.state;
 
     this.setState({
-      isFilter: true,
+      // isFilter: true,
       filter: {
         ...filter,
         ...value,
@@ -181,18 +188,22 @@ class FilterForm extends Component {
   onSelectAll = (valueAll) => {};
 
   render() {
-    const { TicketsList = [], locationList = [], currentStatus = '', projectList = [], employeeList = [], divisions = [] } = this.props;
+    const { TicketsList = [], locationList = [], currentStatus = '', projectList = [], employeeList = [], divisions = [], statusList=[] } = this.props;
     const employees = employeeList.map(x => {
         return {_id: x._id, name: x.generalInfo.legalName}
     })
     const division = divisions.map((x) => {
         return {_id: x, name: x} 
     })
-const projects = projectList.map((x) => {
-  return { _id: x.id, name: x.projectName };
-});
+    const projects = projectList.map((x) => {
+      return { _id: x.id, name: x.projectName };
+    });
 
-    const { isFilter, filter, checkAll } = this.state;
+    const status = statusList.map((x) => {
+      return { _id: x, name: x };
+    })
+
+    // const { isFilter, filter, checkAll } = this.state;
     const dateFormat = 'MMM DD, YYYY';
     const fieldsArray = [
       {
@@ -217,28 +228,28 @@ const projects = projectList.map((x) => {
       },
       {
         label: 'BY DESIGNATION',
-        name: 'loacation',
+        name: 'designations',
         placeholder: 'Select location',
         optionArray: locationList,
       },
       {
         label: 'BY SKILL',
-        name: 'loacation',
+        name: 'skills',
         placeholder: 'Select location',
         optionArray: locationList,
       },
       {
         label: 'BY CURRENT PROJECT',
-        name: 'loacation',
+        name: 'projects',
         placeholder: 'Select location',
         mode : "multiple",
         optionArray: projects,
       },
       {
         label: 'BY BILLING STATUS',
-        name: 'loacation',
+        name: 'statuses',
         placeholder: 'Select location',
-        optionArray: locationList,
+        optionArray: status,
       },
       {
         label: 'BY ASSIGN',
