@@ -30,7 +30,7 @@ const AssignResourcesModal = (props) => {
     dispatch,
     projectDetails: { projectDetail = {}, resourceList = [], resourceListTotal = 0 } = {},
     loadingFetchResourceList = false,
-    loadingAssign = false
+    loadingAssign = false,
   } = props;
 
   const {
@@ -59,7 +59,7 @@ const AssignResourcesModal = (props) => {
     setSelectedResources(result);
   };
 
-  const fetchResourceList = (name = '', page = 1, limit = 5) => {
+  const fetchResourceList = (name = '', page = 1, limit = 5, filter) => {
     dispatch({
       type: 'projectDetails/fetchResourceListEffect',
       payload: {
@@ -67,6 +67,7 @@ const AssignResourcesModal = (props) => {
         limit,
         name,
         department: [divisionId],
+        ...filter,
       },
     });
   };
@@ -303,6 +304,6 @@ export default connect(
     employee,
     projectDetails,
     loadingFetchResourceList: loading.effects['projectDetails/fetchResourceListEffect'],
-    loadingAssign: loading.effects['projectDetails/assignResourcesEffect']
+    loadingAssign: loading.effects['projectDetails/assignResourcesEffect'],
   }),
 )(AssignResourcesModal);

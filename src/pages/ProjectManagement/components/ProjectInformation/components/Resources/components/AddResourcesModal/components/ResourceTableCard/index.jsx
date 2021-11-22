@@ -158,7 +158,11 @@ const ResourceTableCard = (props) => {
   };
 
   const renderOption = () => {
-    const content = <FilterResourcesListContent />;
+    const content = (
+      <FilterResourcesListContent
+        onFilter={(values) => fetchData(searchValue, page, limit, values)}
+      />
+    );
     return (
       <div className={styles.options}>
         <FilterPopover placement="bottomRight" content={content}>

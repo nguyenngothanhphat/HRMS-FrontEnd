@@ -304,3 +304,11 @@ export async function getAuditTrailList(payload) {
     'PROJECT_API',
   );
 }
+
+// other
+export async function getEmployeeList(payload) {
+  return request('/api/employeetenant/list-by-single-company', {
+    method: 'POST',
+    data: payload,
+  });
+}
