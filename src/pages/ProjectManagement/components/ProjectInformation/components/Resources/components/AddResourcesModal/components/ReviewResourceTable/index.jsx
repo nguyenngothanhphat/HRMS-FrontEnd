@@ -1,30 +1,27 @@
-import { DatePicker } from 'antd';
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
-import CommonTable from '@/pages/ProjectManagement/components/ProjectInformation/components/CommonTable';
 import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
+import CommonTable from '@/pages/ProjectManagement/components/ProjectInformation/components/CommonTable';
+import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
 import styles from './index.less';
 
 const ReviewResourceTable = (props) => {
   const {
     removeResource = () => {},
     selectedResources = [],
-    setSelectedResources = () => {},
+    billingStatus = '',
+    startDate = '',
+    endDate = '',
   } = props;
 
-  const onDateChange = (value, row, type) => {
-    const temp = JSON.parse(JSON.stringify(selectedResources));
-    const result = temp.map((v) => {
-      if (v._id === row._id) {
-        return {
-          ...v,
-          [type]: value,
-        };
-      }
-      return v;
-    });
-    setSelectedResources(result);
+  const renderTimeTitle = (title) => {
+    return (
+      <span className={styles.timeTitle}>
+        <span>{title}</span>
+        <span className={styles.smallText}>(mm/dd/yyyy)</span>
+      </span>
+    );
   };
 
   const generateColumns = () => {
@@ -54,28 +51,28 @@ const ReviewResourceTable = (props) => {
         title: 'Billing Status',
         dataIndex: 'billingStatus',
         key: 'billingStatus',
-        render: (billingStatus) => {
+        render: () => {
           return <span>{billingStatus || '-'}</span>;
         },
       },
       {
-        title: 'Start Date',
+        title: renderTimeTitle('Start Date'),
         dataIndex: 'startDate',
         key: 'startDate',
-        render: (startDate, row) => {
-          const value = startDate ? moment(startDate) : null;
-          return (
-            <DatePicker value={value} onChange={(val) => onDateChange(val, row, 'startDate')} />
-          );
+        align: 'center',
+        render: () => {
+          const value = startDate ? moment(startDate).format(DATE_FORMAT_LIST) : null;
+          return <span>{value || '-'}</span>;
         },
       },
       {
-        title: 'End Date',
+        title: renderTimeTitle('End Date'),
         dataIndex: 'endDate',
         key: 'endDate',
-        render: (endDate, row) => {
-          const value = endDate ? moment(endDate) : null;
-          return <DatePicker value={value} onChange={(val) => onDateChange(val, row, 'endDate')} />;
+        align: 'center',
+        render: () => {
+          const value = endDate ? moment(endDate).format(DATE_FORMAT_LIST) : null;
+          return <span>{value || '-'}</span>;
         },
       },
       {

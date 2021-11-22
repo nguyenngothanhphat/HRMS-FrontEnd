@@ -44,7 +44,7 @@ const AssignResourcesModal = (props) => {
 
   const endDate = newEndDate || tentativeEndDate;
 
-  const [sucessModalVisible, setSuccessModalVisible] = useState(false);
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [step, setStep] = useState(1);
   const [selectedResources, setSelectedResources] = useState([]);
 
@@ -280,7 +280,7 @@ const AssignResourcesModal = (props) => {
         {renderModalContent()}
       </Modal>
       <ActionModal
-        visible={sucessModalVisible}
+        visible={successModalVisible}
         onClose={() => {
           setSuccessModalVisible(false);
           refreshResourceType();

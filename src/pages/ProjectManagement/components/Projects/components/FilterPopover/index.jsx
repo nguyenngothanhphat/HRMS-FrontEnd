@@ -24,6 +24,7 @@ const FilterPopover = (props) => {
       projectStatusList = [],
       divisionList = [],
       employeeList = [],
+      projectNameList = [],
     } = {},
     loadingFetchEmployeeList = false,
   } = props;
@@ -34,6 +35,9 @@ const FilterPopover = (props) => {
         type: 'projectManagement/fetchCustomerListEffect',
       });
       dispatch({
+        type: 'projectManagement/fetchProjectNameListEffect',
+      });
+      dispatch({
         type: 'projectManagement/fetchProjectTypeListEffect',
       });
       dispatch({
@@ -42,8 +46,8 @@ const FilterPopover = (props) => {
       dispatch({
         type: 'projectManagement/fetchDivisionListEffect',
         payload: {
-          name: 'Engineering'
-        }
+          name: 'Engineering',
+        },
       });
       dispatch({
         type: 'projectManagement/fetchEmployeeListEffect',
@@ -104,10 +108,10 @@ const FilterPopover = (props) => {
                 style={{ width: '100%' }}
                 placeholder="Select Project Name"
               >
-                {[].map((item) => {
+                {projectNameList.map((item) => {
                   return (
-                    <Select.Option value={item} key={item}>
-                      {item}
+                    <Select.Option value={item.projectName} key={item}>
+                      {item.projectName}
                     </Select.Option>
                   );
                 })}
@@ -166,7 +170,7 @@ const FilterPopover = (props) => {
               </Select>
             </Form.Item>
 
-            <Form.Item label="By Start Date">
+            {/* <Form.Item label="By Start Date">
               <Row>
                 <Col span={11}>
                   <Form.Item name="s_fromDate">
@@ -184,7 +188,7 @@ const FilterPopover = (props) => {
               </Row>
             </Form.Item>
 
-            <Form.Item label="By Tentative end date">
+            <Form.Item label="By end date">
               <Row>
                 <Col span={11}>
                   <Form.Item name="e_fromDate">
@@ -200,7 +204,7 @@ const FilterPopover = (props) => {
                   </Form.Item>
                 </Col>
               </Row>
-            </Form.Item>
+            </Form.Item> */}
           </Form>
         </div>
         <div className={styles.buttons}>

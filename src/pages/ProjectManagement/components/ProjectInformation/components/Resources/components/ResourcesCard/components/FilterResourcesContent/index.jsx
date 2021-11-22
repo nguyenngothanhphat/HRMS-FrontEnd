@@ -21,6 +21,24 @@ const FilterResourcesContent = (props) => {
     });
   };
 
+  const onFinish = (values) => {
+    const newValues = { ...values };
+
+    // remove empty fields
+    // eslint-disable-next-line no-return-assign
+    const result = Object.entries(newValues).reduce(
+      // eslint-disable-next-line no-return-assign
+      (a, [k, v]) =>
+        v == null || v.length === 0
+          ? a
+          : // eslint-disable-next-line no-param-reassign
+            ((a[k] = v), a),
+      {},
+    );
+
+    onFilter(result);
+  };
+
   useEffect(() => {
     fetchDataList();
   }, []);
@@ -29,11 +47,11 @@ const FilterResourcesContent = (props) => {
     <Form
       layout="vertical"
       name="filter"
-      onFinish={onFilter}
+      onFinish={onFinish}
       className={styles.FilterResourcesContent}
     >
       <Form.Item label="By designation" name="designation">
-        <Select allowClear style={{ width: '100%' }} placeholder="Please select">
+        <Select mode="multiple" allowClear style={{ width: '100%' }} placeholder="Please select">
           {titleList.map((x) => (
             <Option value={x._id}>{x.name}</Option>
           ))}
@@ -41,7 +59,7 @@ const FilterResourcesContent = (props) => {
       </Form.Item>
 
       <Form.Item label="By billing status" name="billingStatus">
-        <Select allowClear style={{ width: '100%' }} placeholder="Please select">
+        <Select mode="multiple" allowClear style={{ width: '100%' }} placeholder="Please select">
           {billingStatusList.map((x) => (
             <Option value={x}>{x}</Option>
           ))}
@@ -105,6 +123,7 @@ const FilterResourcesContent = (props) => {
   );
 };
 
-export default connect(({ projectDetails, user: { currentUser: { employee = {} } = {} } }) => ({ projectDetails, employee }))(
-  FilterResourcesContent,
-);
+export default connect(({ projectDetails, user: { currentUser: { employee = {} } = {} } }) => ({
+  projectDetails,
+  employee,
+}))(FilterResourcesContent);

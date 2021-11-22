@@ -71,7 +71,11 @@ const AuditTrail = (props) => {
     <div className={styles.AuditTrail}>
       <Card title="Audit Trail">
         <div className={styles.tableContainer}>
-          <CommonTable list={auditTrailList} columns={getColumns()} loading={loadingFetch} />
+          <CommonTable
+            list={auditTrailList.reverse()}
+            columns={getColumns()}
+            loading={loadingFetch}
+          />
         </div>
       </Card>
     </div>
