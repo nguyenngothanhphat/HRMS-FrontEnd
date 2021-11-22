@@ -18,8 +18,6 @@ const ResourceTableCard = (props) => {
     total = 0,
     selectedResources = [],
     setSelectedResources = () => {},
-    resourceTypeName = '',
-    noOfResources = 0,
   } = props;
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);

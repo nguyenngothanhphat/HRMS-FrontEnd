@@ -274,7 +274,9 @@ const Summary = (props) => {
       },
       {
         name: 'Project Description',
-        value: projectDescription || '-',
+        value: projectDescription
+          ? projectDescription.split('\n').map((e) => <span style={{ display: 'block' }}>{e}</span>)
+          : '-',
       },
       {
         name: 'Billable Head Count',
@@ -419,7 +421,7 @@ const Summary = (props) => {
           <Card title="Project History">
             <div className={styles.tableContainer}>
               <CommonTable
-                list={projectHistoryList}
+                list={projectHistoryList.reverse()}
                 columns={getProjectHistoryColumns()}
                 loading={loadingFetchProjectHistory}
               />

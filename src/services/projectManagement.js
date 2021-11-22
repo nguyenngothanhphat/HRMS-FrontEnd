@@ -12,6 +12,18 @@ export async function getProjectList(payload) {
   );
 }
 
+export async function getProjectNameList(payload) {
+  return request(
+    `/api-project/projecttenant/list-project-name`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    'PROJECT_API',
+  );
+}
+
 export async function getStatusSummary(payload) {
   return request(
     `/api-project/projecttenant/get-status-summary`,

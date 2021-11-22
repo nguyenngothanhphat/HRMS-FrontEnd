@@ -115,9 +115,13 @@ const MilestoneCard = (props) => {
         <div className={styles.description}>
           <span className={styles.label}>Description:</span>
           <br />
-          <span className={styles.value}>{description}</span>
+          <span className={styles.value}>
+            {description
+              ? description.split('\n').map((e) => <span style={{ display: 'block' }}>{e}</span>)
+              : ''}
+          </span>
           <br />
-          <span className={styles.someNotes}>*Tentative End date </span>
+          <span className={styles.someNotes}>*Tentative End date</span>
         </div>
       </div>
     );

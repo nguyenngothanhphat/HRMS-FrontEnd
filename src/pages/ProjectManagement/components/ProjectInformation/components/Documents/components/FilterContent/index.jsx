@@ -9,7 +9,7 @@ const FilterContent = (props) => {
     projectDetails: { documentTypeList = [], employeeList = [] } = {},
     onFilter = () => {},
   } = props;
-  
+
   const fetchDocumentTypeList = () => {
     dispatch({
       type: 'projectDetails/fetchDocumentTypeListEffect',
@@ -19,14 +19,32 @@ const FilterContent = (props) => {
     });
   };
 
+  const onFinish = (values) => {
+    const newValues = { ...values };
+
+    // remove empty fields
+    // eslint-disable-next-line no-return-assign
+    const result = Object.entries(newValues).reduce(
+      // eslint-disable-next-line no-return-assign
+      (a, [k, v]) =>
+        v == null || v.length === 0
+          ? a
+          : // eslint-disable-next-line no-param-reassign
+            ((a[k] = v), a),
+      {},
+    );
+
+    onFilter(result);
+  };
+
   useEffect(() => {
     fetchDocumentTypeList();
   }, []);
 
   return (
-    <Form layout="vertical" name="filter" onFinish={onFilter} className={styles.FilterContent}>
+    <Form layout="vertical" name="filter" onFinish={onFinish} className={styles.FilterContent}>
       <Form.Item label="By document type" name="type">
-        <Select allowClear style={{ width: '100%' }} placeholder="Please select">
+        <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Please select">
           {documentTypeList.map((item) => {
             return (
               <Select.Option value={item.id} key={item}>
@@ -38,7 +56,7 @@ const FilterContent = (props) => {
       </Form.Item>
 
       <Form.Item label="By employee" name="uploadedBy">
-        <Select allowClear style={{ width: '100%' }} placeholder="Please select">
+        <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Please select">
           {employeeList.map((item) => {
             return (
               <Select.Option value={item._id} key={item}>
