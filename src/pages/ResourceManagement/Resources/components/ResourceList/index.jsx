@@ -36,6 +36,16 @@ class ResourceList extends Component {
 
   fetchData = this.fetchStatus.START;
 
+  filter = {
+    name: undefined,
+    tagDivision: [],
+    title: [],
+    skill: [],
+    project: [],
+    expYearBegin: undefined,
+    expYearEnd: undefined,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -44,7 +54,7 @@ class ResourceList extends Component {
       availableStatus: 'ALL',
       size: 10,
       sort: {},
-      filter: {},
+      filter: this.filter,
       // fetchData: this.fetchStatus.START
     };
   }
@@ -53,8 +63,9 @@ class ResourceList extends Component {
     this.fetchProjectList();
     this.fetchStatusList();
     this.fetchResourceList();
-    this.fetchEmployeeList()
+    this.fetchEmployeeList();
     this.fetchDivisions();
+    this.fetchTitleList();
   };
 
   componentDidUpdate() {
@@ -77,14 +88,23 @@ class ResourceList extends Component {
     });
   };
 
+  onFilterChange = (filters) => {
+    console.log('trigger onFilterChange', JSON.stringify(filters))
+    this.fetchData = this.fetchStatus.START;
+    this.setState({
+      filter: {...filters},
+    });
+  };
+
   fetchResourceList = async () => {
     // console.log(`this.fetchData${  this.fetchData}`)
     if (this.fetchData !== this.fetchStatus.START) {
       return;
     }
-    const { pageSelected, size, sort, filter, availableStatus } = this.state;
+    const { pageSelected, size, sort, availableStatus } = this.state;
     const { dispatch } = this.props;
-
+    const filter = this.convertFilter()
+    console.log('payload filter', JSON.stringify(filter))
     this.fetchData = this.fetchStatus.FETCHING;
     dispatch({
       type: 'resourceManagement/getResources',
@@ -103,6 +123,25 @@ class ResourceList extends Component {
       this.updateData(resourceList);
       // console.log('Completed dispatch')
     });
+  };
+
+  convertFilter = () => {
+    const { filter } = this.state;
+    // console.log('filter after update: ', JSON.stringify(filter))
+    const newFilterObj = {};
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [key, value] of Object.entries(filter)) {
+      if (value) {
+        // check if backend accept empty obj
+        newFilterObj[key] = value;
+        // if (Array.isArray(value) && value.length > 0) {
+        // newFilterObj[key] = value;
+        // } else if(!Array.isArray(value)) {
+        //   newFilterObj[key] = value;
+        // }
+      }
+    }
+    return newFilterObj
   };
 
   fetchProjectList = async () => {
@@ -125,7 +164,7 @@ class ResourceList extends Component {
     // console.log('trigger change page')
     this.fetchData = this.fetchStatus.START;
     this.setState({
-      availableStatus: status
+      availableStatus: status,
     });
   };
 
@@ -140,9 +179,6 @@ class ResourceList extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'resourceManagement/fetchDivisions',
-      payload: {
-          name: 'Engineering'
-      }
     });
   };
 
@@ -151,21 +187,41 @@ class ResourceList extends Component {
     dispatch({
       type: 'resourceManagement/fetchResourceStatus',
       payload: {
-          name: 'Engineering'
-      }
+        name: 'Engineering',
+      },
+    });
+  };
+
+  fetchTitleList = async () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'resourceManagement/fetchTitleList',
+      // payload: {
+      //     name: 'Engineering'
+      // }
+    });
+  };
+
+  onSort = (sort) => {
+    this.fetchData = this.fetchStatus.START;
+    this.setState({
+      sort,
     });
   };
 
   render() {
     const { resourceList = [], projectList, availableStatus } = this.state;
     const { loading, loadingSearch, total = 0 } = this.props;
-    const { pageSelected, size } = this.state;
+    const { pageSelected, size, filter } = this.state;
     // console.log(`render - total: ${  total}`)
     return (
       <div className={styles.containerTickets}>
         <div className={styles.tabTickets}>
-          <ResourceStatus currentStatus={availableStatus} changeAvailableStatus={this.changeAvailableStatus} />
-          <SearchTable />
+          <ResourceStatus
+            currentStatus={availableStatus}
+            changeAvailableStatus={this.changeAvailableStatus}
+          />
+          <SearchTable onFilterChange={this.onFilterChange} filter={filter} />
         </div>
         <TableResources
           data={resourceList}
@@ -174,6 +230,7 @@ class ResourceList extends Component {
           pageSelected={pageSelected}
           total={total}
           size={size}
+          onSort={this.onSort}
           getPageAndSize={this.getPageAndSize}
         />
       </div>

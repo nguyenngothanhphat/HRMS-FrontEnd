@@ -29,7 +29,9 @@ class SearchTable extends PureComponent {
     );
   };
 
-  onPressEnter = ({ target: { value } }) => {};
+  onPressEnter = ({ target: { value } }) => {
+    console.log(value);
+  };
 
   onChangeInput = (e) => {
     e.preventDefault();
@@ -39,17 +41,18 @@ class SearchTable extends PureComponent {
 
   openFilter = () => {
     const { visible } = this.state;
-
     this.setState({ visible: !visible });
   };
 
   render() {
-    const { visible } = this.state;
+    const {visible} = this.state;
+    const {filter, onFilterChange} = this.props
     return (
       <div className={styles.searchFilter}>
         <div>
           <Popover
-            content={<FilterForm />}
+            on
+            content={<FilterForm onFilterChange={onFilterChange} filter={filter} />}
             title={this.renderTitle()}
             trigger="click"
             placement="bottomRight"

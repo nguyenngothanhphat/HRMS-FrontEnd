@@ -67,3 +67,10 @@ export async function fetchResourceStatus(payload) {
     data: payload,
   });
 }
+
+export async function fetchTitleList(payload) {
+  return request('/api/titletenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}

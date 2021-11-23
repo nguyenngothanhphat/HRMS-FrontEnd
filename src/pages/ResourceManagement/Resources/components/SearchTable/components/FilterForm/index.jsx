@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import { Button, Checkbox, DatePicker, Divider, Form, Select, Tag } from 'antd';
+import { Button, DatePicker, Divider, Form, Input, Select, Tag } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
-import { isEmpty } from '@umijs/deps/compiled/lodash';
 import CloseTagIcon from '@/assets/closeTagIcon.svg';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import styles from './index.less';
@@ -14,13 +13,15 @@ const { Option } = Select;
     projectList = [], 
     employeeList = [], 
     divisions = [],
-    statusList=[]
+    statusList=[],
+    titleList=[],
   } = {} }) => ({
   loading: loading.effects['resourceManagement/getListEmployee'],
   projectList,
   employeeList,
   divisions,
-  statusList
+  statusList,
+  titleList
 }))
 class FilterForm extends Component {
   constructor(props) {
@@ -28,15 +29,7 @@ class FilterForm extends Component {
     this.state = {
       durationFrom: '', // validate date
       durationTo: '', // validate date
-      filter: {
-        name: undefined,
-        title: undefined,
-        priority: undefined,
-        location: undefined,
-        assign: undefined,
-        fromDate: undefined,
-        toDate: undefined,
-      },
+      filter: {...props.filter},
       // isFilter: false, // check enable|disable button Apply
       // checkAll: false,
     };
@@ -47,29 +40,10 @@ class FilterForm extends Component {
   componentDidMount() {
   }
 
-  //   validateFilterFields = (filter) => {
-  //     if (!filter.fromDate && !filter.toDate) {
-  //       // in case without filter date
-  //       const isEmptyValue = Object.values(filter).every(isEmpty);
-  //       this.setState({
-  //         isFilter: !isEmptyValue, // if all fields value is empty => means not filtering
-  //       });
-  //     } else if (filter.fromDate && filter.toDate) {
-  //       // in case filter date, must select 2 date fields
-  //       this.setState({
-  //         isFilter: true,
-  //       });
-  //     } else {
-  //       this.setState({
-  //         isFilter: false,
-  //       });
-  //     }
-  //   };
-
   clearFilter = () => {
     this.setState({
       filter: {
-        legalName: undefined,
+        nam: undefined,
         title: [],
         priority: undefined,
         assign: undefined,
@@ -103,40 +77,39 @@ class FilterForm extends Component {
     );
   };
 
-  onChangeDate = (currentDate, type) => {
-    switch (type) {
-      case 'fromDate':
-        if (currentDate === null) {
-          this.setState({
-            durationFrom: '',
-          });
-        } else {
-          this.setState({
-            durationFrom: currentDate,
-          });
-        }
-        break;
+  // onChangeDate = (currentDate, type) => {
+  //   switch (type) {
+  //     case 'fromDate':
+  //       if (currentDate === null) {
+  //         this.setState({
+  //           durationFrom: '',
+  //         });
+  //       } else {
+  //         this.setState({
+  //           durationFrom: currentDate,
+  //         });
+  //       }
+  //       break;
 
-      case 'toDate':
-        if (currentDate === null) {
-          this.setState({
-            durationTo: '',
-          });
-        } else {
-          this.setState({
-            durationTo: currentDate,
-          });
-        }
-        break;
+  //     case 'toDate':
+  //       if (currentDate === null) {
+  //         this.setState({
+  //           durationTo: '',
+  //         });
+  //       } else {
+  //         this.setState({
+  //           durationTo: currentDate,
+  //         });
+  //       }
+  //       break;
 
-      default:
-        break;
-    }
-  };
+  //     default:
+  //       break;
+  //   }
+  // };
 
   tagRender = (props) => {
     const { label, closable, onClose } = props;
-
     return (
       <Tag
         className={styles.tags}
@@ -149,46 +122,36 @@ class FilterForm extends Component {
     );
   };
 
-  checkBoxStatusChecked = (id, field) => {
-    const { filter } = this.state;
-    let check = false;
-
-    if (isEmpty(filter[field])) return check;
-
-    filter[field].forEach((itemId) => {
-      if (itemId === id) {
-        check = true;
-      }
-    });
-
-    return check;
-  };
-
   onValuesChange = (value) => {
-    const { filter } = this.state;
-
+    // const { filter } = this.state;
     this.setState({
       // isFilter: true,
-      filter: {
-        ...filter,
-        ...value,
-      },
+      filter: {...value}
+      // filter: {
+      //   ...filter,
+      //   ...value,
+      // },
     });
   };
 
   onFinish = (value) => {
+    const {onFilterChange} = this.props
+    console.log('onFinish with value: ', JSON.stringify(value))
     const { filter } = this.state;
-    const payload = { ...value, ...filter };
+    onFilterChange({...filter, ...value})
+    // const payload = { ...value, ...filter };
   };
 
-  handleCheckAll = (e) => {};
-
-  handleSelect = (value) => {};
-
-  onSelectAll = (valueAll) => {};
+  // onChange = e => {
+  //   const { value } = e.target;
+  //   const reg = /^-?\d*(\.\d*)?$/;
+  //   if ((!Number.isNaN(value) && reg.test(value)) || value === '' || value === '-') {
+  //     this.props.onChange(value);
+  //   }
+  // };
 
   render() {
-    const { TicketsList = [], locationList = [], currentStatus = '', projectList = [], employeeList = [], divisions = [], statusList=[] } = this.props;
+    const { statusList = [], projectList = [], employeeList = [], divisions = [], titleList=[] } = this.props;
     const employees = employeeList.map(x => {
         return {_id: x._id, name: x.generalInfo.legalName}
     })
@@ -199,44 +162,40 @@ class FilterForm extends Component {
       return { _id: x.id, name: x.projectName };
     });
 
-    const status = statusList.map((x) => {
+    const statuses = statusList.map((x) => {
       return { _id: x, name: x };
     })
 
-    // const { isFilter, filter, checkAll } = this.state;
+    const titles = titleList.map((x) => {
+      return { _id: x._id, name: x.name };
+    })
     const dateFormat = 'MMM DD, YYYY';
     const fieldsArray = [
       {
         label: 'BY NAME/USER ID',
-        name: 'legalName',
+        name: 'name',
         placeholder: 'Select name',
         optionArray: employees,
       },
-    //   {
-    //     label: 'BY AVAILABLE STATUS',
-    //     name: 'requestType',
-    //     mode : "multiple",
-    //     placeholder: 'Select request type',
-    //     optionArray: TicketsList,
-    //   },
       {
         label: 'BY DIVISION',
-        name: 'priority',
+        name: 'tagDivision',
         mode : "multiple",
         placeholder: 'Select priority',
         optionArray: division,
       },
       {
         label: 'BY DESIGNATION',
-        name: 'designations',
-        placeholder: 'Select location',
-        optionArray: locationList,
+        name: 'title',
+        mode : "multiple",
+        placeholder: 'Select designation',
+        optionArray: titles,
       },
       {
         label: 'BY SKILL',
-        name: 'skills',
+        name: 'skill',
         placeholder: 'Select location',
-        optionArray: locationList,
+        optionArray: statuses,
       },
       {
         label: 'BY CURRENT PROJECT',
@@ -248,23 +207,25 @@ class FilterForm extends Component {
       {
         label: 'BY BILLING STATUS',
         name: 'statuses',
-        placeholder: 'Select location',
-        optionArray: status,
+        // mode : "multiple",
+        placeholder: 'Select billing status',
+        optionArray: statuses,
       },
-      {
-        label: 'BY ASSIGN',
-        name: 'assign',
-        placeholder: 'Select assign',
-        optionArray: TicketsList,
-      },
+      // {
+      //   label: 'BY ASSIGN',
+      //   name: 'assign',
+      //   placeholder: 'Select assign',
+      //   optionArray: TicketsList,
+      // },
     ];
-
+    const {filter} = this.props
     return (
       <div className={styles.filterForm}>
         <Form
           layout="horizontal"
           className={styles.form}
-          onValuesChange={this.onValuesChange}
+          initialValues={filter}
+          // onValuesChange={this.onValuesChange}
           onFinish={this.onFinish}
           ref={this.formRef}
         >
@@ -275,10 +236,8 @@ class FilterForm extends Component {
                   allowClear
                   showArrow
                   showSearch
-                  optionFilterProp="children"
+                  // optionFilterProp="children"
                   filterOption={(input, option) => {
-                    console.log('input ', input, ' vs ', option.label);
-                    console.log(option.key, ' - ma: ', option.title);
                     return (
                       input &&
                       ((option.key && option.key.toLowerCase().indexOf(input.toLowerCase()) >= 0) ||
@@ -296,10 +255,6 @@ class FilterForm extends Component {
                   {field.optionArray.map((option) => {
                     return (
                       <Option key={option._id} value={option._id} label={option.name}>
-                        {/* <Checkbox
-                          value={option._id}
-                          // checked={this.checkBoxStatusChecked(option._id, field.name)}
-                        /> */}
                         <span>{option.name}</span>
                       </Option>
                     );
@@ -307,6 +262,43 @@ class FilterForm extends Component {
                 </Select>
               </Form.Item>
             ))}
+            <div className={styles.doj}>
+              <div className={styles.doj__label}>
+                <div className={styles.labelText}>BY EXPERIENCE</div>
+              </div>
+              <div className={styles.doj__date}>
+                <Form.Item
+                  name="expYearBegin"
+                  rules={[
+                    {
+                      pattern: /^-?\d*(\.\d*)?$/,
+                      message: 'Only accept number',
+                    },
+                  ]}
+                >
+                  <Input className={styles.experience} placeholder="Input number" />
+                </Form.Item>
+                <div className={`${styles.labelText} ${styles.labelTo}`}>to</div>
+                <Form.Item
+                  name="expYearEnd"
+                  rules={[
+                    {
+                      pattern: /^-?\d*(\.\d*)?$/,
+                      message: 'Only accept number',
+                    },
+                  ]}
+                >
+                  <Input
+                    // onChange={this.onChange}
+                    // disabledDate={(currentDate) => this.disabledDate(currentDate, 'fromDate')}
+                    // format={dateFormat}
+                    className={styles.experience}
+                    placeholder="Input number"
+                  />
+                </Form.Item>
+              </div>
+            </div>
+
             <div className={styles.doj}>
               <div className={styles.doj__label}>
                 <div className={styles.labelText}>BY REQUEST DATE</div>
@@ -363,8 +355,7 @@ class FilterForm extends Component {
                 <div className={`${styles.labelText} ${styles.labelTo}`}>to</div>
                 <Form.Item name="tentativeEndDateEnd">
                   <DatePicker
-                    disabledDate={(currentDate) =>
-                      this.disabledDate(currentDate, 'tentativeEndDateEnd')}
+                    disabledDate={(currentDate) => this.disabledDate(currentDate, 'tentativeEndDateEnd')}
                     format={dateFormat}
                     placeholder="To Date"
                     onChange={(value) => {

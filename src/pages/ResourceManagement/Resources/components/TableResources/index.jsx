@@ -48,9 +48,36 @@ class TableResources extends PureComponent {
     e.preventDefault();
   };
 
-  onTableChange = (pagination, filters, sorter, extra) => {
-    console.log('params', pagination, filters, sorter, extra);
+  onTableChange = (sorter) => {
+    const {onSort} = this.props
+    if(sorter) {
+      const {order} = sorter
+      const sort = {}
+      if(order) {
+        // const sortField = 
+        sort.sortBy=this.sortFieldByKey(sorter.columnKey)
+        sort.sortType=order === 'ascend' ? 1 : -1
+      }
+      onSort(sort)
+    }
   };
+
+  /**
+   * sort obj { sortBy: 'column', sortType: 'ascend' ? 1 : -1}
+   * @param {*} key columnKey
+   * @returns match key define to sort from server
+   */
+  sortFieldByKey = (key) => {
+    switch(key) {
+      case 'employeeName':
+        return 'legalName'
+      case 'designation':
+        return 'title';
+      case 'experience':
+        return 'totalExp';
+      default: return key;
+    }
+  }
 
   render() {
     const {
@@ -218,10 +245,10 @@ class TableResources extends PureComponent {
           };
           return obj;
         },
-        sorter: (a, b) => {
-          return localCompare(a.projectName, b.projectName);
-        },
-        sortDirections: ['ascend', 'descend'],
+        // sorter: (a, b) => {
+        //   return localCompare(a.projectName, b.projectName);
+        // },
+        // sortDirections: ['ascend', 'descend'],
       },
       {
         title: 'Status',
@@ -231,22 +258,22 @@ class TableResources extends PureComponent {
         render: (billStatus) => {
           return <span className={styles.basicCellField}> {billStatus}</span>;
         },
-        sorter: (a, b) => {
-          return localCompare(a.billStatus, b.billStatus);
-        },
-        // defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend'],
+        // sorter: (a, b) => {
+        //   return localCompare(a.billStatus, b.billStatus);
+        // },
+        // // defaultSortOrder: 'ascend',
+        // sortDirections: ['ascend', 'descend'],
       },
       {
         title: 'Utilization',
         dataIndex: 'utilization',
         // width: '6%',
         key: 'utilization',
-        sorter: (a, b) => {
-          return a.utilization - b.utilization;
-        },
+        // sorter: (a, b) => {
+        //   return a.utilization - b.utilization;
+        // },
         // defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend'],
+        // sortDirections: ['ascend', 'descend'],
       },
       {
         title: (
