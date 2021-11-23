@@ -10,11 +10,17 @@ import styles from './index.less';
 const { TextArea } = Input;
 const { Option } = Select;
 
-@connect(({ loading = {}, resourceManagement: { projectList = [], resourceList = [] } = {} }) => ({
-  loading: loading.effects['resourceManagement/fetchAssignToProject'],
-  projectList,
-  resourceList,
-}))
+@connect(
+  ({
+    loading = {},
+    resourceManagement: { projectList = [], resourceList = [], statusList = [] } = {},
+  }) => ({
+    loading: loading.effects['resourceManagement/fetchAssignToProject'],
+    projectList,
+    resourceList,
+    statusList,
+  }),
+)
 class AddActionBTN extends Component {
   constructor(props) {
     super(props);
@@ -77,21 +83,11 @@ class AddActionBTN extends Component {
   };
 
   render() {
-    const { dataPassRow = {}, projectList = [], resourceList = [] } = this.props;
+    const { dataPassRow = {}, projectList = [], resourceList = [], statusList = [] } = this.props;
     const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
     const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
-    let sumUtilization = 0;
-    let customerName = '';
-    let engagementType = '';
-    let projectName = '';
-    for (const obj of listProjectsOfEmp) {
-      sumUtilization += obj.utilization;
-    }
-    for (const obj of projectList) {
-      engagementType = obj.engagementType;
-      customerName = obj.customerName;
-      projectName = obj.projectName;
-    }
+    const sumUtilization = listProjectsOfEmp.reduce( (prevValue, currentValue) => prevValue + currentValue.utilization,0);
+    const projectDetail = projectList.find((obj) => obj.id === dataPassRow.project) || {};
     const maxEnterUtilization = 100 - sumUtilization;
     const { visible, visibleSuccess } = this.state;
     return (
@@ -130,12 +126,12 @@ class AddActionBTN extends Component {
                 </Form.Item>
                 <Form.Item label="Status" name="status">
                   <Select
-                    defaultValue={dataPassRow.status}
+                    defaultValue={dataPassRow.billStatus}
                     style={{ width: '95%', borderRadius: '2px' }}
                   >
-                    <Option value="Billable">Billable</Option>
-                    <Option value="Buffer">Buffer</Option>
-                    <Option value="Bench">Bench</Option>
+                    {statusList.map((status) => (
+                      <Option value={status}>{status}</Option>
+                    ))}
                   </Select>
                 </Form.Item>
                 <Form.Item
@@ -143,24 +139,23 @@ class AddActionBTN extends Component {
                   name="utilization"
                   rules={[
                     () => ({
-                      validator(_, value) {
+                      validator(_, value) {     
                         if (!value) {
                           return Promise.reject('Utilization value could not be empty');
                         }
-
                         if (isNaN(value)) {
                           return Promise.reject(`Value enter has to be a number.`);
                         }
                         if (value > maxEnterUtilization) {
                           return Promise.reject(
-                            `Your cannot enter a value that is more than ${maxEnterUtilization}.`,
+                            `Your cannot enter a value that is more than ${maxEnterUtilization}.`
                           );
                         }
                         if (value < 0) {
                           return Promise.reject(`Your cannot enter a value that is less than 0`);
                         }
                         return Promise.resolve();
-                      },
+                      }
                     }),
                   ]}
                   validateTrigger="onBlur"
@@ -210,17 +205,17 @@ class AddActionBTN extends Component {
                   <Col span={12}>
                     <p>
                       Customer:
-                      <span style={{ color: '#2C6DF9' }}> {customerName}</span>
+                      <span style={{ color: '#2C6DF9' }}> {projectDetail.customerName || ''}</span>
                     </p>
                     <p>
-                      Project: <span style={{ color: '#2C6DF9' }}> {projectName}</span>
+                      Project: <span style={{ color: '#2C6DF9' }}> {projectDetail.projectName || ''}</span>
                     </p>
                     <p>
                       Engagement Type:
-                      <span style={{ color: '#2C6DF9' }}> {engagementType}</span>
+                      <span style={{ color: '#2C6DF9' }}> {projectDetail.engagementType || ''}</span>
                     </p>
                     <p>
-                      Start Date: <span style={{ color: '#2C6DF9' }}> {dataPassRow.startDate}</span>
+                      Start Date: <span style={{ color: '#2C6DF9' }}> { dataPassRow.startDate}</span>
                     </p>
                     <p>
                       End Date: <span style={{ color: '#2C6DF9' }}> {dataPassRow.endDate}</span>

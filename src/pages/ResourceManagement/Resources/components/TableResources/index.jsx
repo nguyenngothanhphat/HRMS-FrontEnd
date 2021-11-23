@@ -24,10 +24,6 @@ class TableResources extends PureComponent {
     this.setCurrentTime();
   };
 
-  showBTNEdit = (row) => {
-    alert(JSON.stringify(row));
-  };
-
   setCurrentTime = () => {
     // compare two time by hour & minute. If minute changes, get new time
     const timeFormat = 'HH:mm';
@@ -97,7 +93,7 @@ class TableResources extends PureComponent {
         <span>
           Showing{' '}
           <b>
-            {((pageSelected - 1) * size) + 1} - {pageSelected * size}
+            {(pageSelected - 1) * size + 1} - {pageSelected * size}
           </b>{' '}
           of {total}
         </span>
@@ -272,6 +268,9 @@ class TableResources extends PureComponent {
         // sorter: (a, b) => {
         //   return a.utilization - b.utilization;
         // },
+        render: (value) => {
+          return <span>{value} %</span>;
+        },
         // defaultSortOrder: 'ascend',
         // sortDirections: ['ascend', 'descend'],
       },
@@ -316,7 +315,7 @@ class TableResources extends PureComponent {
         render: (value, row) => {
           // return <span className={styles.basicCellField}>{value}</span>;
           return (
-            <span className={styles.basicCellField}>
+            <span className={styles.basicCellFieldShowEdit}>
               {value}
               <span className={styles.iconEdit}>
                 <EditActionBTN dataPassRow={row} />

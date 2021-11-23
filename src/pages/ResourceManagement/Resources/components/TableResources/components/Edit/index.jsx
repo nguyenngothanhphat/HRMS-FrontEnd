@@ -4,16 +4,21 @@ import moment from 'moment';
 import { connect } from 'umi';
 import editIcon from '@/assets/resource-management-edit-history.svg';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
-
 import styles from './index.less';
 
 const { Option } = Select;
 
-@connect(({ loading = {}, resourceManagement: { resourceList = [], projectList = [] } }) => ({
-  loading: loading.effects['resourceManagement/updateProject'],
-  resourceList,
-  projectList,
-}))
+@connect(
+  ({
+    loading = {},
+    resourceManagement: { resourceList = [], projectList = [], statusList = [] },
+  }) => ({
+    loading: loading.effects['resourceManagement/updateProject'],
+    resourceList,
+    projectList,
+    statusList,
+  }),
+)
 class EditActionBTN extends Component {
   constructor(props) {
     super(props);
@@ -63,25 +68,11 @@ class EditActionBTN extends Component {
   };
 
   render() {
-    const { dataPassRow = {}, projectList = [], resourceList = [] } = this.props;
+    const { dataPassRow = {}, projectList = [], resourceList = [], statusList = [] } = this.props;
     const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
     const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
-    let sumUtilization = 0;
-    let customerName = '';
-    let engagementType = '';
-    let statusProject = '';
-    for (const obj of listProjectsOfEmp) {
-      sumUtilization += obj.utilization;
-      statusProject = obj.status;
-    }
-
-    for (const obj of projectList) {
-      engagementType = obj.engagementType;
-      customerName = obj.customerName;
-    }
-
-    const maxEnterUtilization = 100 - sumUtilization + parseInt(dataPassRow.utilization);
-
+    const sumUtilization = listProjectsOfEmp.reduce( (prevValue, currentValue) => prevValue + currentValue.utilization,0);
+    const maxEnterUtilization = 100 - sumUtilization + dataPassRow.utilization;
     const { visible } = this.state;
     return (
       <div className={styles.btnEdit}>
@@ -114,12 +105,12 @@ class EditActionBTN extends Component {
                 </Form.Item>
                 <Form.Item label="Status" name="status">
                   <Select
-                    defaultValue={statusProject}
+                    defaultValue={dataPassRow.billStatus}
                     style={{ width: '95%', borderRadius: '2px' }}
                   >
-                    <Option value="Billable">Billable</Option>
-                    <Option value="Buffer">Buffer</Option>
-                    <Option value="Bench">Bench</Option>
+                    {statusList.map((status) => (
+                      <Option value={status}>{status}</Option>
+                    ))}
                   </Select>
                 </Form.Item>
                 <Form.Item
@@ -159,21 +150,21 @@ class EditActionBTN extends Component {
               <Col span={12}>
                 <Form.Item label="Start Date" name="startDate">
                   <DatePicker
-                    placeholder={dataPassRow.startDate}
+                    placeholder={moment(dataPassRow.startDate).format('YYYY-MM-DD')}
                     style={{ width: '100%', borderRadius: '2px', color: 'blue' }}
                     suffixIcon={<img src={datePickerIcon} alt="" />}
                   />
                 </Form.Item>
                 <Form.Item label="End Date" name="endDate">
                   <DatePicker
-                    placeholder={dataPassRow.endDate}
+                    placeholder={moment(dataPassRow.endDate).format('YYYY-MM-DD')}
                     style={{ width: '100%', borderRadius: '2px', color: 'blue' }}
                     suffixIcon={<img src={datePickerIcon} alt="" />}
                   />
                 </Form.Item>
                 <Form.Item label="Revised End Date" name="revisedEndDate">
                   <DatePicker
-                    placeholder={dataPassRow.revisedEndDate}
+                    placeholder={moment(dataPassRow.revisedEndDate).format('YYYY-MM-DD')}
                     style={{
                       width: '100%',
                       borderRadius: '2px',
