@@ -3,7 +3,7 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
   getResources,
-  getDepartmentList,
+  // getDepartmentList,
   getProjectList,
   postAssignToProject,
   updateComment,
@@ -12,6 +12,7 @@ import {
   fetchDivisions,
   updateProjectDetail,
   fetchResourceStatus,
+  fetchTitleList
 } from '../services/resourceManagement';
 
 import {handlingResourceAvailableStatus} from '@/utils/resourceManagement'
@@ -54,7 +55,6 @@ const resourceManagement = {
                     tenantId: getCurrentTenant(),
                     // company: getCurrentCompany(),
                     company: [getCurrentCompany()],
-                    department: getDepartmentList(),
                 });
                 const { statusCode, data, total } = response;
                 if (statusCode !== 200) throw response;
@@ -200,7 +200,27 @@ const resourceManagement = {
             } catch (error) {
               dialog(error);
             }
-          },      
+          },
+          *fetchTitleList({ payload }, { call, put }) {
+            try {
+              const response = yield call(fetchTitleList, {
+                ...payload,
+                tenantId: getCurrentTenant(),
+                company: getCurrentCompany(),
+              });
+              const { statusCode, data } = response;
+              if (statusCode !== 200) throw response;
+              // notification.success({
+              //   message: 'Add assign to project Successfully',
+              // });
+              yield put({
+                type: 'save',
+                payload: { titleList: data },
+              });
+            } catch (error) {
+              dialog(error);
+            }
+          },   
     },
     reducers: {
         save(state, action) {
