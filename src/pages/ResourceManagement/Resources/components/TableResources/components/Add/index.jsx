@@ -27,6 +27,7 @@ class AddActionBTN extends Component {
     this.state = {
       visible: false,
       visibleSuccess: false,
+      projectId: -1
     };
   }
 
@@ -49,34 +50,49 @@ class AddActionBTN extends Component {
     // window.location.reload(false);
   };
 
-  handleSubmitAssign = async (values) => {
+  handleOnchange = (event) => {
+    this.setState({projectId: event})
+  }
+
+  handleSubmitAssign = (values) => {
     const { dispatch, dataPassRow } = this.props;
     const { project, status, utilization, startDate, endDate, comment, revisedEndDate } = values;
-    const compareEndDateAndStartDate = new Date(endDate).getTime() - new Date(startDate).getTime();
-    const compRevisedAndStart = new Date(revisedEndDate).getTime() - new Date(startDate).getTime();
-    if (compareEndDateAndStartDate < 0 || compRevisedAndStart < 0) {
+    console.log('value', values)
+    if (new Date(endDate).getTime() < new Date(startDate).getTime() || new Date(revisedEndDate).getTime() < new Date(startDate).getTime()) {
       notification.error({
         message: 'End date or resived end date cannot less than start date',
       });
-    } else {
-      dispatch({
-        type: 'resourceManagement/fetchAssignToProject',
-        payload: {
-          employee: dataPassRow.employeeId,
-          project,
-          status,
-          utilization,
-          startDate: moment(startDate).format('YYYY-MM-DD'),
-          endDate: moment(endDate).format('YYYY-MM-DD'),
-          revisedEndDate: moment(revisedEndDate).format('YYYY-MM-DD'),
-          comment,
-          milestone: '',
-        },
+      return
+    } 
+    if(project === undefined || status === undefined){
+      notification.error({
+        message: 'project or status cannot empty',
       });
-      this.setState({
-        visibleSuccess: true,
-      });
+      return
     }
+    if(startDate === undefined || endDate === undefined){
+      notification.error({
+        message: 'start date or end date cannot empty',
+      });
+      return
+    }
+    dispatch({
+      type: 'resourceManagement/fetchAssignToProject',
+      payload: {
+        employee: dataPassRow.employeeId,
+        project,
+        status,
+        utilization,
+        startDate: moment(startDate).format('YYYY-MM-DD'),
+        endDate: moment(endDate).format('YYYY-MM-DD'),
+        revisedEndDate: moment(revisedEndDate).format('YYYY-MM-DD'),
+        comment,
+        milestone: '',
+      },
+    });
+    this.setState({
+      visibleSuccess: true,
+    });
     this.setState({
       visible: false,
     });
@@ -87,9 +103,12 @@ class AddActionBTN extends Component {
     const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
     const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
     const sumUtilization = listProjectsOfEmp.reduce( (prevValue, currentValue) => prevValue + currentValue.utilization,0);
-    const projectDetail = projectList.find((obj) => obj.id === dataPassRow.project) || {};
+    const { visible, visibleSuccess, projectId } = this.state;
+    const projectFist = projectList.length > 0 ? projectList[0] : {};
+    const statusBill = statusList.length > 0 ? statusList[0] : 'Billable';
     const maxEnterUtilization = 100 - sumUtilization;
-    const { visible, visibleSuccess } = this.state;
+    const projectId1 = (projectId !== -1 ? projectId : projectFist.id) || -1;
+    const projectDetail = projectList.find((obj) => obj.id === projectId1) || {};
     return (
       <div>
         <img
@@ -111,13 +130,19 @@ class AddActionBTN extends Component {
             className={styles.formAdd}
             method="POST"
             onFinish={(values) => this.handleSubmitAssign(values)}
+            initialValues={{ 
+              utilization: 100 - maxEnterUtilization,
+              project: projectDetail.id,
+              status: statusBill
+            }}
           >
             <Row>
               <Col span={12}>
                 <Form.Item label="Project" name="project">
                   <Select
-                    defaultValue={dataPassRow.projectName}
+                    defaultValue={projectId}
                     style={{ width: '95%', borderRadius: '2px' }}
+                    onChange={(event) => this.handleOnchange(event)}
                   >
                     {projectList.map((project) => (
                       <Option value={project.id}>{project.projectName}</Option>
@@ -126,7 +151,7 @@ class AddActionBTN extends Component {
                 </Form.Item>
                 <Form.Item label="Status" name="status">
                   <Select
-                    defaultValue={dataPassRow.billStatus}
+                    defaultValue={statusBill}
                     style={{ width: '95%', borderRadius: '2px' }}
                   >
                     {statusList.map((status) => (
@@ -161,7 +186,7 @@ class AddActionBTN extends Component {
                   validateTrigger="onBlur"
                 >
                   <Input
-                    placeholder={sumUtilization}
+                    defaultValue={sumUtilization}
                     style={{ width: '95%', color: 'black' }}
                     addonAfter="%"
                   />
@@ -215,10 +240,10 @@ class AddActionBTN extends Component {
                       <span style={{ color: '#2C6DF9' }}> {projectDetail.engagementType || ''}</span>
                     </p>
                     <p>
-                      Start Date: <span style={{ color: '#2C6DF9' }}> { dataPassRow.startDate}</span>
+                      Start Date: <span style={{ color: '#2C6DF9' }}> { moment(projectDetail.startDate).format("DD MM YYYY")}</span>
                     </p>
                     <p>
-                      End Date: <span style={{ color: '#2C6DF9' }}> {dataPassRow.endDate}</span>
+                      End Date: <span style={{ color: '#2C6DF9' }}> {moment(projectDetail.endDate).format("DD MM YYYY")}</span>
                     </p>
                   </Col>
                   <Col span={12}>
