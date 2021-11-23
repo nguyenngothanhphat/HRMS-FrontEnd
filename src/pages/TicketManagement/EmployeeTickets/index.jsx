@@ -6,13 +6,22 @@ import TicketQueue from './components/TicketQueue';
 import MyTickets from './components/MyTickets';
 import styles from './index.less';
 
-@connect(({ ticketManagement: { listOffAllTicket = [], totalList = [] } = {} }) => ({
-  listOffAllTicket,
-  totalList,
-}))
+@connect(
+  ({
+    ticketManagement: { listOffAllTicket = [], totalList = [] } = {},
+    user: { currentUser: { employee = {} } = {} } = {},
+  }) => ({
+    employee,
+    listOffAllTicket,
+    totalList,
+  }),
+)
 class EmployeeTicket extends Component {
   componentDidMount() {
-    const { tabName = '' } = this.props;
+    const {
+      tabName = '',
+      employee: { departmentInfo: { _id: idDepart = '' } = {} },
+    } = this.props;
     if (!tabName) {
       history.replace(`/ticket-management/ticket-queue`);
     } else {
@@ -28,14 +37,20 @@ class EmployeeTicket extends Component {
       });
       dispatch({
         type: 'ticketManagement/fetchToTalList',
-        payload: {},
+        payload: {
+          departmentAssign: idDepart,
+        },
       });
     }
   }
 
   handleChangeTable = (key) => {
     history.push(`/ticket-management/${key}`);
-    const { dispatch } = this.props;
+    const {
+      dispatch,
+      employee: { _id = '' },
+      employee: { departmentInfo: { _id: idDepart = '' } = {} },
+    } = this.props;
     if (key === 'ticket-queue') {
       dispatch({
         type: 'ticketManagement/fetchListAllTicket',
@@ -43,11 +58,24 @@ class EmployeeTicket extends Component {
           status: ['New'],
         },
       });
+      dispatch({
+        type: 'ticketManagement/fetchToTalList',
+        payload: {
+          departmentAssign: idDepart,
+        },
+      });
     } else {
       dispatch({
         type: 'ticketManagement/fetchListAllTicket',
         payload: {
           status: ['Assigned'],
+        },
+      });
+      dispatch({
+        type: 'ticketManagement/fetchToTalList',
+        payload: {
+          employeeAssignee: _id,
+          departmentAssign: idDepart,
         },
       });
     }

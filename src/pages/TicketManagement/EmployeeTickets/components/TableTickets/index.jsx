@@ -25,7 +25,6 @@ class TableTickets extends PureComponent {
     super(props);
     this.state = {
       ticket: {},
-      search: [],
     };
   }
 
@@ -83,33 +82,17 @@ class TableTickets extends PureComponent {
     });
   };
 
-  handleSearch = (e) => {
-    const { listEmployee } = this.props;
-    this.setState({ search: e.target.value.split(' ') });
-    const { search = [] } = this.state;
-    console.log('search', search);
-
-    let options;
-    if (search.length) {
-      const searchPattern = new RegExp(search.map((term) => `(?=.*${term})`).join(''), 'i');
-      options = listEmployee.filter((option) => option.generalInfo.legalName.match(searchPattern));
-      console.log(options);
-    } else {
-      options = listEmployee;
-    }
-  };
-
   handleSelect = (e) => {
     e.preventDefault();
   };
 
-  // handleDelete = () => {
-  //   const { dispatch } = this.props;
-  //   dispatch({
-  //     type: 'ticketManagement/deleteAll',
-  //     payload: {},
-  //   });
-  // };
+  handleDelete = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'ticketManagement/deleteAll',
+      payload: {},
+    });
+  };
 
   render() {
     const {
@@ -278,9 +261,9 @@ class TableTickets extends PureComponent {
           rowKey="id"
           scroll={{ x: 1500, y: 487 }}
         />
-        {/* <Button htmlType="submit" onClick={this.handleDelete}>
+        <Button htmlType="submit" onClick={this.handleDelete}>
           DeleteTickket
-        </Button> */}
+        </Button>
       </div>
     );
   }

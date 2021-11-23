@@ -26,7 +26,7 @@ const { Dragger } = Upload;
     roles,
     listEmployee,
     ticketDetail,
-    loadingUploadAttachment: loading.effects['upload/uploadFile'],
+    loadingUploadAttachment: loading.effects['ticketManagement/uploadFileAttachments'],
     loadingAddChat: loading.effects['ticketManagement/addChat'],
   }),
 )
@@ -103,7 +103,7 @@ class TicketDetailsForm extends Component {
     formData.append('uri', file);
 
     dispatch({
-      type: 'upload/uploadFile',
+      type: 'ticketManagement/uploadFileAttachments',
       payload: formData,
     }).then((resp) => {
       const { data = [] } = resp;
@@ -125,7 +125,7 @@ class TicketDetailsForm extends Component {
   };
 
   handleSubmit = () => {
-    const { dispatch, ticketDetail: { id:idTicket = '' } = {}, employee } = this.props;
+    const { dispatch, ticketDetail: { id: idTicket = '' } = {}, employee } = this.props;
     const { _id = '' } = employee;
     const { value, uploadedFileList } = this.state;
     const requestDate = moment();
@@ -138,47 +138,47 @@ class TicketDetailsForm extends Component {
       };
     });
 
-     if (value !== '') {
-       if (!isEmpty(uploadedFileList)) {
-         const payload = {
-           id:idTicket,
-           chat: {
-             employee: _id,
-             message: value,
-             attachments: documents,
-             createdAt: requestDate,
-           },
-         };
+    if (value !== '') {
+      if (!isEmpty(uploadedFileList)) {
+        const payload = {
+          id: idTicket,
+          chat: {
+            employee: _id,
+            message: value,
+            attachments: documents,
+            createdAt: requestDate,
+          },
+        };
 
-         dispatch({
-           type: 'ticketManagement/addChat',
-           payload,
-         }).then((response) => {
-           const { statusCode } = response;
-           if (statusCode === 200) {
-             this.setState({ uploadedFileList: [], fileNameList: [], value: '' });
-           }
-         });
-       } else {
-         const payload = {
-           id:idTicket,
-           chat: {
-             employee: _id,
-             message: value,
-             createdAt: requestDate,
-           },
-         };
-         dispatch({
-           type: 'ticketManagement/addChat',
-           payload,
-         }).then((response) => {
-           const { statusCode } = response;
-           if (statusCode === 200) {
-             this.setState({ value: '' });
-           }
-         });
-       }
-     }
+        dispatch({
+          type: 'ticketManagement/addChat',
+          payload,
+        }).then((response) => {
+          const { statusCode } = response;
+          if (statusCode === 200) {
+            this.setState({ uploadedFileList: [], fileNameList: [], value: '' });
+          }
+        });
+      } else {
+        const payload = {
+          id: idTicket,
+          chat: {
+            employee: _id,
+            message: value,
+            createdAt: requestDate,
+          },
+        };
+        dispatch({
+          type: 'ticketManagement/addChat',
+          payload,
+        }).then((response) => {
+          const { statusCode } = response;
+          if (statusCode === 200) {
+            this.setState({ value: '' });
+          }
+        });
+      }
+    }
   };
 
   render() {
@@ -194,7 +194,6 @@ class TicketDetailsForm extends Component {
       chats = [],
       employeeRaise = [],
     } = ticketDetail;
-
     const { fileNameList, loadingAddChat, value } = this.state;
 
     const getColor = () => {
@@ -235,7 +234,6 @@ class TicketDetailsForm extends Component {
       }
       return '';
     };
-
     const chatsLeft = chats.filter((chat) => !isEmpty(chat.employee.managePermission));
     const attachsLeft = chatsLeft.filter((chat) => chat.attachments !== undefined);
     const chatsRight = chats.filter((chat) => isEmpty(chat.employee.managePermission));
@@ -346,35 +344,37 @@ class TicketDetailsForm extends Component {
                 <Col span={16} className={styles.formContent__attachments}>
                   Attachments:
                   <div className={styles.attachments}>
-                    {!isEmpty(attachments)
-                      ? attachments.map((val) => {
-                          const attachmentSlice = () => {
-                            if (val.attachmentName.length > 35) {
-                              return `${val.attachmentName.substr(
-                                0,
-                                8,
-                              )}...${val.attachmentName.substr(
-                                val.attachmentName.length - 6,
-                                val.attachmentName.length,
-                              )}`;
-                            }
-                            return val.attachmentName;
-                          };
+                    {!isEmpty(attachments) ? (
+                      attachments.map((val) => {
+                        const attachmentSlice = () => {
+                          if (val.attachmentName.length > 35) {
+                            return `${val.attachmentName.substr(
+                              0,
+                              8,
+                            )}...${val.attachmentName.substr(
+                              val.attachmentName.length - 6,
+                              val.attachmentName.length,
+                            )}`;
+                          }
+                          return val.attachmentName;
+                        };
 
-                          return (
-                            <div className={styles.attachments__file}>
-                              <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
-                                {attachmentSlice()}
-                              </a>
-                              <img
-                                className={styles.attachments__file__img}
-                                src={PDFIcon}
-                                alt="pdf"
-                              />
-                            </div>
-                          );
-                        })
-                      : ''}
+                        return (
+                          <div className={styles.attachments__file}>
+                            <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
+                              {attachmentSlice()}
+                            </a>
+                            <img
+                              className={styles.attachments__file__img}
+                              src={PDFIcon}
+                              alt="pdf"
+                            />
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <span style={{ paddingLeft: '8px' }}> _ </span>
+                    )}
                   </div>
                 </Col>
               </Row>
@@ -435,7 +435,14 @@ class TicketDetailsForm extends Component {
                           )}
                         </div>
                         <div className={styles.fileName}>
-                          <a>{item.nameFile}</a>
+                          <a>
+                            {item.nameFile.length > 35
+                              ? `${item.nameFile.substr(0, 8)}...${item.nameFile.substr(
+                                  item.nameFile.length - 6,
+                                  item.nameFile.length,
+                                )}`
+                              : item.nameFile}
+                          </a>
                         </div>
                       </div>
                       <Tooltip title="Remove">
