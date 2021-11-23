@@ -210,7 +210,7 @@ class SalaryStructureTemplate extends PureComponent {
     const modalContent =
       actionType === 'accept'
         ? 'Upon reviewing, the HR team shall get it touch with you for the final phase of discussions.'
-        : 'Your response has been noted. The HR will get back to you 1-2 days to neogotiate the offer.';
+        : 'Your response has been noted. The HR will get back to you 1-2 days to discuss the offer.';
     return (
       <div className={styles.salaryStructureTemplate}>
         {!loadingSalary && (
