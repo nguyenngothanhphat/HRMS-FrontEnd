@@ -39,29 +39,34 @@ class EditActionBTN extends Component {
     });
   };
 
+  parseDate = (date, formatDate) => {
+    if(!date || date === ''){
+      return ''
+    }
+    return moment(date, formatDate);
+  }
+
   handleSubmitAssign = async (values) => {
     const { dispatch, dataPassRow = {} } = this.props;
     const { project, status, utilization, startDate, endDate, revisedEndDate } = values;
-    const compareEndDateAndStartDate = new Date(endDate).getTime() - new Date(startDate).getTime();
-    const compRevisedAndStart = new Date(revisedEndDate).getTime() - new Date(startDate).getTime();
-    if (compareEndDateAndStartDate < 0 || compRevisedAndStart < 0) {
+    if (new Date(endDate).getTime() < new Date(startDate).getTime() || new Date(revisedEndDate).getTime() < new Date(startDate).getTime()) {
       notification.error({
         message: 'End date or resived end date cannot less than start date',
       });
-    } else {
-      dispatch({
-        type: 'resourceManagement/updateProject',
-        payload: {
-          id: dataPassRow.project,
-          project,
-          status,
-          utilization,
-          startDate: moment(startDate).format('YYYY-MM-DD'),
-          endDate: moment(endDate).format('YYYY-MM-DD'),
-          revisedEndDate: moment(revisedEndDate).format('YYYY-MM-DD'),
-        },
-      });
+      return
     }
+    dispatch({
+      type: 'resourceManagement/updateProject',
+      payload: {
+        id: dataPassRow.resourceId,
+        project,
+        status,
+        utilization,
+        startDate: moment(startDate).format('YYYY-MM-DD'),
+        endDate: moment(endDate).format('YYYY-MM-DD'),
+        revisedEndDate: moment(revisedEndDate).format('YYYY-MM-DD'),
+      },
+    });
     this.setState({
       visible: false,
     });
@@ -90,6 +95,14 @@ class EditActionBTN extends Component {
             className={styles.formAdd}
             method="POST"
             onFinish={(values) => this.handleSubmitAssign(values)}
+            initialValues={{ 
+              startDate: this.parseDate(dataPassRow.startDate, 'MM/DD/YYYY'),
+              endDate: this.parseDate(dataPassRow.endDate, 'MM/DD/YYYY'),
+              revisedEndDate: this.parseDate(dataPassRow.endDate, 'MM/DD/YYYY'),
+              projectName: dataPassRow.projectName,
+              utilization: dataPassRow.utilization,
+              billStatus: dataPassRow.billStatus
+            }}
           >
             <Row>
               <Col span={12}>
@@ -141,7 +154,7 @@ class EditActionBTN extends Component {
                   validateTrigger="onBlur"
                 >
                   <Input
-                    placeholder={dataPassRow.utilization}
+                    defaultValue={dataPassRow.utilization}
                     style={{ width: '95%', color: 'black' }}
                     addonAfter="%"
                   />
@@ -150,21 +163,27 @@ class EditActionBTN extends Component {
               <Col span={12}>
                 <Form.Item label="Start Date" name="startDate">
                   <DatePicker
-                    placeholder={moment(dataPassRow.startDate).format('YYYY-MM-DD')}
+                    placeholder='Start Date'
+                    defaultValue={this.parseDate(dataPassRow.startDate, 'MM/DD/YYYY')}
+                    format='MM/DD/YYYY'
                     style={{ width: '100%', borderRadius: '2px', color: 'blue' }}
                     suffixIcon={<img src={datePickerIcon} alt="" />}
                   />
                 </Form.Item>
                 <Form.Item label="End Date" name="endDate">
                   <DatePicker
-                    placeholder={moment(dataPassRow.endDate).format('YYYY-MM-DD')}
+                    placeholder='Enter End Date'
+                    defaultValue={this.parseDate(dataPassRow.endDate, 'MM/DD/YYYY')}
+                    format='MM/DD/YYYY'
                     style={{ width: '100%', borderRadius: '2px', color: 'blue' }}
                     suffixIcon={<img src={datePickerIcon} alt="" />}
                   />
                 </Form.Item>
                 <Form.Item label="Revised End Date" name="revisedEndDate">
                   <DatePicker
-                    placeholder={moment(dataPassRow.revisedEndDate).format('YYYY-MM-DD')}
+                    placeholder='Enter Date'
+                    defaultValue={this.parseDate(dataPassRow.revisedEndDate, 'MM/DD/YYYY')}
+                    format='MM/DD/YYYY'
                     style={{
                       width: '100%',
                       borderRadius: '2px',

@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import styles from './index.less';
-import listEditCommentButton from '@/assets/resourceManagement/list-edit-comment.svg';
+import EditCommentModal from './components/EditComment';
+import ViewCommentModal from './components/ViewComment';
 
 class CommentOverlay extends PureComponent {
   render() {
@@ -10,11 +11,17 @@ class CommentOverlay extends PureComponent {
         <span className={styles.comment} style={{ WebkitLineClamp: line }}>
           {row.comment}
         </span>
-        <div id={`${row.employeeId}`} className={styles.overlay}>
+        {/* <div id={`${row.employeeId}`} className={styles.overlay}>
           <button className={styles.buttonContainer} type="button">
             <img src={listEditCommentButton} alt="" className={styles.image} />
           </button>
-        </div>
+        </div> */}
+        <span className={styles.showViewComment}>
+          <ViewCommentModal dataRow={row} />
+        </span>
+        <span className={styles.showEditComment}>
+          <EditCommentModal dataRow={row} />
+        </span>
       </div>
     );
   }
