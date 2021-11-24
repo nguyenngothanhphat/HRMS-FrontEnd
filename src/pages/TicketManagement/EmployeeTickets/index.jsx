@@ -22,8 +22,8 @@ class EmployeeTicket extends Component {
       tabName = '',
       employee: {
         departmentInfo: { _id: idDepart = '' },
-        employee: { _id = '' } = {},
       },
+      employee: { _id = '' } = {},
     } = this.props;
     if (!tabName) {
       history.replace(`/ticket-management/ticket-queue`);

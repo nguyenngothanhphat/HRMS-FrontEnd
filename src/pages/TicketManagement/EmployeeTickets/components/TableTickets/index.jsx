@@ -86,6 +86,14 @@ class TableTickets extends PureComponent {
     e.preventDefault();
   };
 
+  // handleDelete = () => {
+  //   const { dispatch } = this.props;
+  //   dispatch({
+  //     type: 'ticketManagement/deleteAll',
+  //     payload: {},
+  //   });
+  // };
+
   render() {
     const {
       data = [],
@@ -253,6 +261,9 @@ class TableTickets extends PureComponent {
           rowKey="id"
           scroll={{ x: 1500, y: 487 }}
         />
+        {/* <Button htmlType="submit" onClick={this.handleDelete}>
+          DeleteTickket
+        </Button> */}
       </div>
     );
   }
