@@ -7,6 +7,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import ResourceList from './components/ResourceList';
 import styles from './index.less';
 import OverView from '@/pages/ResourceManagement/components/OverView';
+import ProjectList from './components/Projects'
 
 const baseModuleUrl = '/resource-management';
 
@@ -34,7 +35,7 @@ class Resources extends Component {
       // resourceList: [],
       loadingSearch: false,
     };
-    this.setDebounce = debounce((query) => {
+    this.setDebounce = debounce(() => {
       this.setState({
         // resourceList: query,
         loadingSearch: false,
@@ -99,7 +100,7 @@ class Resources extends Component {
       <div className={styles.ResourcesManagement}>
         <PageContainer>
           <Tabs
-            activeKey="resource-list"
+            defaultActiveKey="resource-list"
             onChange={(key) => {
               history.push(`${baseModuleUrl}/${key}`);
             }}
@@ -115,6 +116,9 @@ class Resources extends Component {
                 loadingSearch={loadingSearch}
                 countData={totalList}
               />
+            </TabPane>
+            <TabPane tab="Projects" key="projects">
+              <ProjectList />
             </TabPane>
           </Tabs>
         </PageContainer>

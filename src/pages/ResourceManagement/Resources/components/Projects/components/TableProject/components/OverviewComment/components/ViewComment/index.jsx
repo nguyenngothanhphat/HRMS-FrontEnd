@@ -30,7 +30,7 @@ class ViewCommentModal extends PureComponent {
       <div className={styles.btnView}>
         <img src={listEditCommentButton} style={{width: '39px', height: '39px'}} alt="historyIcon" onClick={this.openCommentView} />
         <Modal
-          className={styles.modalAdd}
+          className={styles.modalViewComment}
           title="View Comments"
           width="40%"
           visible={visible}

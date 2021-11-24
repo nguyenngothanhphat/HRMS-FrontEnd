@@ -16,11 +16,11 @@ class CommentOverlay extends PureComponent {
             <img src={listEditCommentButton} alt="" className={styles.image} />
           </button>
         </div> */}
-        <span className={styles.showViewComment}>
-          <ViewCommentModal dataRow={row} />
-        </span>
         <span className={styles.showEditComment}>
           <EditCommentModal dataRow={row} />
+        </span>
+        <span className={styles.showViewComment}>
+          <ViewCommentModal dataRow={row} />
         </span>
       </div>
     );

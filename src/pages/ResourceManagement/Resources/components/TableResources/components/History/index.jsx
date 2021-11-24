@@ -67,7 +67,6 @@ class HistoryActionBTN extends Component {
             <span>
               {value}
               <span className={styles.labelProject}>
-                {value}
                 {active ? 'Current' : ''}
               </span>
             </span>
@@ -163,10 +162,10 @@ class HistoryActionBTN extends Component {
             Designation: <span className={styles.showInfoEmp}> {dataPassRow.designation}</span>
           </p>
           <p className={styles.showInfo}>
-            Experience: <span className={styles.showInfoEmp}> {dataPassRow.experience}</span>
+            Experience: <span className={styles.showInfoEmp}> {dataPassRow.experience} yrs</span>
           </p>
           <p className={styles.showInfo}>
-            Total project: <span className={styles.showInfoEmp}>{projects.length}</span>
+            Total Projects: <span className={styles.showInfoEmp}>{projects.length}</span>
           </p>
           <br />
           <br />

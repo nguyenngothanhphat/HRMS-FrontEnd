@@ -1,0 +1,45 @@
+.OverviewComment {
+    // width: 100%;
+    .comment {
+      position: relative;
+      padding-left: 10px;
+      display: -webkit-box;
+      width: 200px;
+      overflow: hidden;
+      font-weight: 400;
+      font-size: 13px;
+      font-style: normal;
+      line-height: 18px;
+      letter-spacing: 0em;
+      text-align: left;
+      text-overflow: ellipsis;
+      word-wrap: break-word;
+      -webkit-box-orient: vertical;
+    }
+    .showEditComment {
+      overflow: hidden;
+      display: none;
+      float: right;
+    }
+    .showViewComment {
+      overflow: hidden;
+      display: none;
+      float: right;
+    }
+  }
+  .OverviewComment:hover {
+    color: white;
+    .comment{
+      display: none;
+    }
+    .showEditComment {
+      display:flex;
+      align-items:center;
+      margin-right: 10px;
+    }
+    .showViewComment {
+      display:flex;
+      align-items:center;
+      margin-right: 10px;
+    }
+  }

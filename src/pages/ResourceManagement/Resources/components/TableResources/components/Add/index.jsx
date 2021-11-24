@@ -57,7 +57,6 @@ class AddActionBTN extends Component {
   handleSubmitAssign = (values) => {
     const { dispatch, dataPassRow } = this.props;
     const { project, status, utilization, startDate, endDate, comment, revisedEndDate } = values;
-    console.log('value', values)
     if (new Date(endDate).getTime() < new Date(startDate).getTime() || new Date(revisedEndDate).getTime() < new Date(startDate).getTime()) {
       notification.error({
         message: 'End date or resived end date cannot less than start date',
