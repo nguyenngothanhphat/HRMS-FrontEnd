@@ -55,8 +55,8 @@ class Divisions extends PureComponent {
     dispatch({
       type: 'customerManagement/fetchTagList',
       payload: {
-        name: 'Engineering'
-      }
+        name: 'Engineering',
+      },
     });
     dispatch({
       type: 'customerProfile/generateDivisionId',
@@ -87,12 +87,12 @@ class Divisions extends PureComponent {
     });
   };
 
-  renderDivisionCard = (division, index) => {
+  renderDivisionCard = (division) => {
     return (
       <div className={styles.DivisionCard}>
         {/* Header */}
         <div className={styles.divisionsHeader}>
-          <p className={styles.contactInfoHeaderTitle}>Division {index + 1}</p>
+          <p className={styles.contactInfoHeaderTitle}>{division?.divisionName || 'Division'}</p>
           <p
             className={styles.btnEdit}
             onClick={() => {
