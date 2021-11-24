@@ -75,7 +75,16 @@ const EditSalaryID = (props) => {
   const convertValue = (value) => {
     const str = toString(value);
     const list = str.split('.');
-    let num = list[0] !== '' ? trimStart(list[0], '0') : '0';
+
+    // Handling the case where the number is 0
+    let num;
+    if (list[0] === "0") {
+      num = "0"
+    }
+    else {
+      num = list[0] !== '' ? trimStart(list[0], '0') : '0';
+    }
+
     let result = '';
     while (num.length > 3) {
       result = `,${num.slice(-3)}${result}`;
