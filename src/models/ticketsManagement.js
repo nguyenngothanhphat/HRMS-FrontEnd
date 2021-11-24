@@ -257,6 +257,12 @@ const ticketManagement = {
       }
       return response;
     },
+    *fetchListAllTicketID({ payload }, { put }) {
+      yield put({
+        type: 'saveTicket',
+        payload: { ticketDetail: payload },
+      });
+    },
     *fetchLocationList({ payload = {} }, { call, put }) {
       try {
         const newPayload = {
