@@ -30,13 +30,7 @@ class SearchTable extends Component {
           alt="close"
           src={closeIcon}
           onClick={() => {
-            const { dispatch } = this.props;
-
             this.setState({ visible: false });
-            dispatch({
-              type: 'ticketManagement/saveSearch',
-              payload: { isFilter: false },
-            });
           }}
         />
       </div>

@@ -97,7 +97,6 @@ class TableTickets extends PureComponent {
       loading,
       pageSelected,
       size,
-      loadingFilter,
       getPageAndSize = () => {},
     } = this.props;
     const pagination = {
@@ -284,7 +283,6 @@ class TableTickets extends PureComponent {
             ),
           }}
           loading={loading}
-          loadingSearch={loadingFilter}
           columns={columns}
           dataSource={data}
           hideOnSinglePage

@@ -9,6 +9,7 @@ import {
   DatePicker,
   Tooltip,
   Upload,
+  Spin,
   message,
   notification,
 } from 'antd';
@@ -41,9 +42,8 @@ const RaiseTicketModal = (props) => {
   const [queryTypeList, setQueryTypeList] = useState([]);
   const [attachment, setAttachment] = useState('');
   const [supportTeam, setSupportTeam] = useState('');
-  const [supportTeamID, setSupportTeamID] = useState('');
 
-  const { listEmployee, listDepartment } = props;
+  const { listEmployee, loadingUploadAttachment = false } = props;
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>
@@ -104,7 +104,7 @@ const RaiseTicketModal = (props) => {
     const formData = new FormData();
     formData.append('uri', file);
     const res = await dispatch({
-      type: 'upload/uploadFile',
+      type: 'ticketManagement/uploadFileAttachments',
       payload: formData,
     });
     if (res.statusCode === 200) {
@@ -129,10 +129,8 @@ const RaiseTicketModal = (props) => {
 
   const onSupportTeamChange = (value) => {
     setSupportTeam(value);
-    const queryTypeListTemp = SUPPORT_TEAM.find((val) => val.name === value);
+    const queryTypeListTemp = SUPPORT_TEAM.find((val) => val._id === value);
     setQueryTypeList(queryTypeListTemp.queryType || []);
-    const idDepartment = listDepartment.find((val) => val.name === value) || {};
-    setSupportTeamID(idDepartment._id);
   };
 
   const handleFinish = (value) => {
@@ -144,32 +142,31 @@ const RaiseTicketModal = (props) => {
         attachmentUrl: url,
       };
     });
-    if (!isEmpty(documents)) {
-      dispatch({
-        type: 'ticketManagement/addTicket',
-        payload: {
-          employeeRaise: myEmployeeID,
-          employeeAssignee: '',
-          status: value.status,
-          queryType: value.queryType,
-          subject: value.subject,
-          description: value.description,
-          priority: value.priority,
-          ccList: value.interestList,
-          attachments: documents,
-          departmentAssign: supportTeamID,
-          location: getCurrentLocation(),
-        },
-      }).then((response) => {
-        const { statusCode } = response;
-        if (statusCode === 200) {
-          onClose();
-          form.resetFields();
-          setUploadedAttachments([]);
-          setAttachment('');
-        }
-      });
-    }
+
+    dispatch({
+      type: 'ticketManagement/addTicket',
+      payload: {
+        employeeRaise: myEmployeeID,
+        employeeAssignee: '',
+        status: value.status,
+        queryType: value.queryType,
+        subject: value.subject,
+        description: value.description,
+        priority: value.priority,
+        ccList: value.interestList,
+        attachments: documents,
+        departmentAssign: supportTeam,
+        location: getCurrentLocation(),
+      },
+    }).then((response) => {
+      const { statusCode } = response;
+      if (statusCode === 200) {
+        onClose();
+        form.resetFields();
+        setUploadedAttachments([]);
+        setAttachment('');
+      }
+    });
   };
 
   const renderModalContent = () => {
@@ -196,7 +193,7 @@ const RaiseTicketModal = (props) => {
               >
                 <Select showSearch onChange={onSupportTeamChange}>
                   {SUPPORT_TEAM.map((val) => (
-                    <Option value={val.name}>{val.name}</Option>
+                    <Option value={val._id}>{val.name}</Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -289,14 +286,14 @@ const RaiseTicketModal = (props) => {
                 <Select showSearch mode="multiple" allowClear>
                   {listEmployee
                     ? listEmployee.map((val) => {
-                        const departmentName = val.department.name;
-                        if (departmentName === 'HR' && supportTeam === 'HR') {
+                        const departmentID = val.department._id;
+                        if (departmentID === supportTeam) {
                           return <Option value={val?._id}>{val?.generalInfo?.legalName}</Option>;
                         }
-                        if (departmentName === 'IT' && supportTeam === 'IT') {
+                        if (departmentID === supportTeam) {
                           return <Option value={val?._id}>{val?.generalInfo?.legalName}</Option>;
                         }
-                        if (departmentName === 'OPERATION' && supportTeam === 'OPERATION') {
+                        if (departmentID === supportTeam) {
                           return <Option value={val?._id}>{val?.generalInfo?.legalName}</Option>;
                         }
                       })
@@ -315,19 +312,55 @@ const RaiseTicketModal = (props) => {
                 showUploadList={uploadedAttachments.length > 0}
                 // multiple
               >
-                <div
+                {isEmpty(uploadedAttachments) ? (
+                  <>
+                    {loadingUploadAttachment ? (
+                      <Spin />
+                    ) : (
+                      <div
+                        className={`${styles.addAttachments} ${
+                          uploadedAttachments.length === 2 ? styles.disableUpload : {}
+                        }`}
+                      >
+                        <div className={styles.btn}>
+                          <img src={BlueAddIcon} alt="blueAddIcon" />
+                          <span className={styles.text}>Add attachments</span>
+                        </div>
+                        <span className={styles.description}>
+                          (You can upload upto 2 documents of 2MB each)
+                        </span>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div
+                    className={`${styles.addAttachments} ${
+                      uploadedAttachments.length === 2 ? styles.disableUpload : {}
+                    }`}
+                  >
+                    <div className={styles.btn}>
+                      <img src={BlueAddIcon} alt="blueAddIcon" />
+                      <span className={styles.text}>Add attachments</span>
+                    </div>
+                    <span className={styles.description}>
+                      (You can upload upto 2 documents of 2MB each)
+                    </span>
+                  </div>
+                )}
+
+                {/* <div
                   className={`${styles.addAttachments} ${
                     uploadedAttachments.length === 2 ? styles.disableUpload : {}
                   }`}
                 >
                   <div className={styles.btn}>
-                    <img src={BlueAddIcon} alt="" />
+                    <img src={BlueAddIcon} alt="blueAddIcon" />
                     <span className={styles.text}>Add attachments</span>
                   </div>
                   <span className={styles.description}>
                     (You can upload upto 2 documents of 2MB each)
                   </span>
-                </div>
+                </div> */}
               </Upload>
             </Col>
           </Row>
@@ -370,12 +403,9 @@ const RaiseTicketModal = (props) => {
 };
 
 export default connect(
-  ({
-    ticketManagement: { listEmployee = [], listDepartment = [] } = {},
-    user: { currentUser = {} } = {},
-  }) => ({
+  ({ loading, ticketManagement: { listEmployee = [] } = {}, user: { currentUser = {} } = {} }) => ({
     listEmployee,
-    listDepartment,
     currentUser,
+    loadingUploadAttachment: loading.effects['ticketManagement/uploadFileAttachments'],
   }),
 )(RaiseTicketModal);
