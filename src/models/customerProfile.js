@@ -93,7 +93,7 @@ const customerProfile = {
 
         yield put({
           type: 'fetchDivision',
-          payload: { tenantId: getCurrentTenant(), customerId: payload.customerId },
+          payload: { tenantId: getCurrentTenant(), id: payload.customerId },
         });
       } catch (error) {
         dialog(error);
@@ -206,7 +206,7 @@ const customerProfile = {
           type: 'fetchNotes',
           payload: {
             tenantId: getCurrentTenant(),
-            id: payload.customerIdv,
+            id: payload.customerId,
           },
         });
       } catch (error) {
