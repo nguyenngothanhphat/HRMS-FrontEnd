@@ -9,6 +9,7 @@ import { UserOutlined } from '@ant-design/icons';
 import AttachmentIcon from '@/assets/ticketsManagement-attach.svg';
 import AttachmenUploadtIcon from '@/assets/attach-upload.svg';
 import TrashIcon from '@/assets/ticketManagement-trashIcon.svg';
+import ChatIcon from '@/assets/ticketManagement-avatarChat.svg';
 import ImageIcon from '@/assets/image_icon.png';
 import PDFIcon from '@/assets/pdf_icon.png';
 
@@ -493,7 +494,7 @@ class TicketDetailsForm extends Component {
                 <Timeline mode="left">
                   {chatsRight.map((e) => {
                     return (
-                      <Timeline.Item dot={<UserOutlined />}>
+                      <Timeline.Item dot={<img src={ChatIcon} alt="AvatarIcon" />}>
                         <div>{e.title}</div>
                         <div>{e.message}</div>
                         <>{e.attachments ? <div>{getAttachmentChatRight()}</div> : ''}</>

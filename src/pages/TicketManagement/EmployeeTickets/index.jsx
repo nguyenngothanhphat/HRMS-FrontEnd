@@ -20,7 +20,10 @@ class EmployeeTicket extends Component {
   componentDidMount() {
     const {
       tabName = '',
-      employee: { departmentInfo: { _id: idDepart = '' } = {} },
+      employee: {
+        departmentInfo: { _id: idDepart = '' },
+        employee: { _id = '' } = {},
+      },
     } = this.props;
     if (!tabName) {
       history.replace(`/ticket-management/ticket-queue`);
@@ -38,6 +41,7 @@ class EmployeeTicket extends Component {
       dispatch({
         type: 'ticketManagement/fetchToTalList',
         payload: {
+          employeeAssignee: _id,
           departmentAssign: idDepart,
         },
       });
@@ -61,6 +65,7 @@ class EmployeeTicket extends Component {
       dispatch({
         type: 'ticketManagement/fetchToTalList',
         payload: {
+          employeeAssignee: _id,
           departmentAssign: idDepart,
         },
       });

@@ -445,13 +445,13 @@ class FilterForm extends Component {
                   const { employeeRaise: { location: { name = '' } = {} } = {} } = option;
                   return (
                     <Option
-                      key={option.employeeRaise.location.name}
-                      value={option.employeeRaise.location.name}
+                      key={option.employeeRaise.location._id}
+                      value={option.employeeRaise.location._id}
                     >
                       <Checkbox
-                        value={option.employeeRaise.location.name}
+                        value={option.employeeRaise.location._id}
                         checked={this.checkBoxStatusChecked(
-                          option.employeeRaise.location.name,
+                          option.employeeRaise.location._id,
                           'location',
                         )}
                       />

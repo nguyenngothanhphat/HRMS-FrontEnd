@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import { Table, Dropdown, Menu, Button } from 'antd';
+import { Table, Dropdown, Menu } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 
 import moment from 'moment';
@@ -84,14 +84,6 @@ class TableTickets extends PureComponent {
 
   handleSelect = (e) => {
     e.preventDefault();
-  };
-
-  handleDelete = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'ticketManagement/deleteAll',
-      payload: {},
-    });
   };
 
   render() {
@@ -261,9 +253,6 @@ class TableTickets extends PureComponent {
           rowKey="id"
           scroll={{ x: 1500, y: 487 }}
         />
-        <Button htmlType="submit" onClick={this.handleDelete}>
-          DeleteTickket
-        </Button>
       </div>
     );
   }
