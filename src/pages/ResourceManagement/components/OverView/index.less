@@ -1,29 +1,30 @@
-@commonSpace: 24px;
-@blueColor: #2c6df9;
-@grayColor: #707177;
-@greenColor: #00c598;
-@whiteColor: #FFFFFF;
-@blackColor: #161C29;
-
-.title{
-    width: 430px;
-    height: 108px;
-    background-color: @whiteColor;
-    border-radius: 10px;
-    padding: 24px 32px;
-    h1{
-        font-family: Roboto;
-        font-style: normal;
-        font-weight: bold;
-        font-size: 26px;
-        line-height: 30px;
-        color: @blackColor;
+.Overview {
+   padding: 24px;
+   :global {
+    .ant-card {
+      overflow: hidden;
+      border: 1px solid #d6dce0;
+      border-radius: 5px;
+      .ant-card-head {
+        display: flex;
+        align-items: center;
+        height: 75px;
+        border-bottom: 1px solid #d6dce0;
+        .ant-card-head-wrapper {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          .ant-card-head-title {
+            color: #161c29;
+            font-weight: 500;
+            font-size: 16px;
+          }
+        }
+      }
+      .ant-card-body {
+        padding: 0px;
+        border-top: 1px solid #d6dce0;
+      }
     }
-    p{
-        font-family: Roboto;
-        font-style: normal;
-        font-weight: normal;
-        font-size: 14px;
-        line-height: 22px;
-    }
+  }
 }

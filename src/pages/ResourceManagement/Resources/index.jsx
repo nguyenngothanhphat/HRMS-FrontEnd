@@ -34,7 +34,7 @@ class Resources extends Component {
       // resourceList: [],
       loadingSearch: false,
     };
-    this.setDebounce = debounce((query) => {
+    this.setDebounce = debounce(() => {
       this.setState({
         // resourceList: query,
         loadingSearch: false,
@@ -47,14 +47,6 @@ class Resources extends Component {
     if (!tabName) {
       history.replace(`${baseModuleUrl}/all-resources`);
     }
-  }
-
-  componentDidUpdate() {
-    // const { resourceList = [], prevProps } = this.props;
-    // if (JSON.stringify(resourceList) !== JSON.stringify(prevProps.resourceList)) {
-    //   this.updateData(resourceList);
-    // }
-    // this.dummyData()
   }
 
   onSearch = (value) => {
@@ -99,13 +91,13 @@ class Resources extends Component {
       <div className={styles.ResourcesManagement}>
         <PageContainer>
           <Tabs
-            activeKey="resource-list"
+            activeKey="overview"
             onChange={(key) => {
               history.push(`${baseModuleUrl}/${key}`);
             }}
             tabBarExtraContent={this.renderActionButton()}
           >
-            <TabPane tab="OverView" key="overview">
+            <TabPane tab="Overview" key="overview">
               <OverView />
             </TabPane>
             <TabPane tab="Resource List" key="resource-list">

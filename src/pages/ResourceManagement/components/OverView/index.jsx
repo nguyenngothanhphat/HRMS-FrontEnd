@@ -1,32 +1,26 @@
+import { Col, Row } from 'antd';
 import React from 'react';
-import { Typography , Row, Col } from 'antd';
+import NewJoinees from './components/NewJoinees';
+import People from './components/People';
+import Utilization from './components/Utilization';
 import styles from './index.less';
-import Tickets from './components/Tickets'
 
-const { Title } = Typography;
+const Overview = () => {
+  return (
+    <div className={styles.Overview}>
+      <Row gutter={[24, 24]}>
+        <Col span={24}>
+          <Utilization />
+        </Col>
+        <Col xs={24} lg={12}>
+          <People />
+        </Col>
+        <Col xs={24} lg={12}>
+          <NewJoinees />
+        </Col>
+      </Row>
+    </div>
+  );
+};
 
-const OverView = () => {
-    return (
-      <div>
-        <Row gutter={[25, 27]}>
-          <Col span={8}>
-            <div className={styles.title}>
-              <h1>Hello HR Manager!</h1>
-              <p>You have 4 new tickets that needs your attention!</p>
-            </div>
-            <div>
-              <Tickets />
-            </div>
-          </Col>
-          <Col span={16} />
-        </Row>
-        <Row gutter={[19, 27]}>
-          <Col span={12} />
-          <Col span={12} />
-          <Col span={24} />
-        </Row>
-      </div>
-    )
-}
-
-export default OverView
+export default Overview;

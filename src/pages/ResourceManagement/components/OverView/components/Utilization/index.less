@@ -1,0 +1,33 @@
+@darkColour: #161c29;
+@blueColour: #2c6df9;
+@lightGrayColor: #707177;
+@commonPadding: 24px;
+@borderColor: #d6dce0;
+
+.Utilization {
+  :global {
+    .ant-tabs-nav {
+      height: 52px;
+      padding-inline: @commonPadding !important;
+      .ant-tabs-tab-btn {
+        font-weight: normal;
+        font-size: 13px;
+      }
+      .ant-tabs-tab-active {
+        .ant-tabs-tab-btn {
+          color: @blueColour;
+          font-weight: 500;
+        }
+      }
+    }
+    .ant-tabs-content-holder {
+      padding: @commonPadding !important;
+    }
+    .ant-tabs-top > .ant-tabs-nav::before,
+    .ant-tabs-bottom > .ant-tabs-nav::before,
+    .ant-tabs-top > div > .ant-tabs-nav::before,
+    .ant-tabs-bottom > div > .ant-tabs-nav::before {
+      border-color: @borderColor;
+    }
+  }
+}
