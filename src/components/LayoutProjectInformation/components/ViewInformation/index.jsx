@@ -9,7 +9,7 @@ const ViewInformation = (props) => {
   const { projectDetail } = props;
   const {
     avatar = '',
-    customerId = '',
+    customerName = '',
     projectAlias = '',
     projectId = '',
     projectName = '',
@@ -33,7 +33,7 @@ const ViewInformation = (props) => {
   const items = [
     {
       name: 'Customer',
-      value: customerId,
+      value: customerName,
     },
     {
       name: 'Project alias',

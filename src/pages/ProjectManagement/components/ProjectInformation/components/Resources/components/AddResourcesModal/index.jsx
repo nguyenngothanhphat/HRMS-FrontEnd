@@ -11,17 +11,12 @@ import ModalImage from '@/assets/projectManagement/modalImage1.png';
 
 import styles from './index.less';
 
-const AssignResourcesModal = (props) => {
+const AddResourcesModal = (props) => {
   const {
     visible = false,
     onClose = () => {},
     width = 850,
-    data: {
-      comments = '',
-      division: { _id: divisionId = '' } = {},
-      resourceType: { name: resourceTypeName = '' } = {},
-      noOfResources = 0,
-    } = {},
+    refreshResourceList = () => {},
   } = props;
   const {
     dispatch,
@@ -29,7 +24,7 @@ const AssignResourcesModal = (props) => {
     loadingFetchResourceList = false,
   } = props;
   const {
-    projectId = '',
+    id: projectNumberId = '',
     projectName = '',
     engagementType = '',
     startDate = '',
@@ -39,7 +34,7 @@ const AssignResourcesModal = (props) => {
 
   const endDate = newEndDate || tentativeEndDate;
 
-  const [sucessModalVisible, setSuccessModalVisible] = useState(false);
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [step, setStep] = useState(1);
   const [selectedResources, setSelectedResources] = useState([]);
 
@@ -54,14 +49,14 @@ const AssignResourcesModal = (props) => {
     setSelectedResources(result);
   };
 
-  const fetchResourceList = (name = '', page = 1, limit = 5) => {
+  const fetchResourceList = (name = '', page = 1, limit = 5, filter) => {
     dispatch({
       type: 'projectDetails/fetchResourceListEffect',
       payload: {
         page,
         limit,
         name,
-        department: [divisionId],
+        ...filter,
       },
     });
   };
@@ -77,11 +72,11 @@ const AssignResourcesModal = (props) => {
       return {
         tenantId: getCurrentTenant(),
         company: getCurrentCompany(),
-        project: projectId,
-        status: 'Billing',
-        utilization: '',
-        startDate: x.startDate ? moment(x.startDate).format('YYYY-MM-DD') : '',
-        endDate: x.endDate ? moment(x.endDate).format('YYYY-MM-DD') : '',
+        project: projectNumberId,
+        // status: 'Billable',
+        // utilization: '',
+        startDate: startDate ? moment(startDate).format('YYYY-MM-DD') : '',
+        endDate: endDate ? moment(endDate).format('YYYY-MM-DD') : '',
         employee: x._id,
       };
     });
@@ -96,9 +91,7 @@ const AssignResourcesModal = (props) => {
     return (
       <div className={styles.header}>
         <img src={BackIcon} alt="" onClick={onBack} />
-        <p className={styles.header__text}>
-          {step === 1 ? 'Add resources' : 'Review resources'}
-        </p>
+        <p className={styles.header__text}>{step === 1 ? 'Add resources' : 'Review resources'}</p>
       </div>
     );
   };
@@ -149,8 +142,6 @@ const AssignResourcesModal = (props) => {
             total={resourceListTotal}
             selectedResources={selectedResources}
             setSelectedResources={setSelectedResources}
-            resourceTypeName={resourceTypeName}
-            noOfResources={noOfResources}
           />
         </Row>
       </div>
@@ -164,8 +155,10 @@ const AssignResourcesModal = (props) => {
             fetchData={fetchResourceList}
             data={resourceList}
             selectedResources={selectedResources}
-            setSelectedResources={setSelectedResources}
             removeResource={removeResource}
+            billingStatus="Billable"
+            startDate={startDate}
+            endDate={endDate}
           />
         </Row>
       </div>
@@ -218,7 +211,7 @@ const AssignResourcesModal = (props) => {
   return (
     <>
       <Modal
-        className={`${styles.AssignResourcesModal} ${styles.noPadding}`}
+        className={`${styles.AddResourcesModal} ${styles.noPadding}`}
         onCancel={handleCancel}
         destroyOnClose
         width={width}
@@ -254,8 +247,11 @@ const AssignResourcesModal = (props) => {
         {renderModalContent()}
       </Modal>
       <ActionModal
-        visible={sucessModalVisible}
-        onClose={() => setSuccessModalVisible(false)}
+        visible={successModalVisible}
+        onClose={() => {
+          setSuccessModalVisible(false);
+          refreshResourceList();
+        }}
         buttonText="Close"
         width={400}
       >
@@ -276,4 +272,4 @@ export default connect(
     projectDetails,
     loadingFetchResourceList: loading.effects['projectDetails/fetchResourceListEffect'],
   }),
-)(AssignResourcesModal);
+)(AddResourcesModal);

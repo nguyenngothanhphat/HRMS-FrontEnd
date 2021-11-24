@@ -930,6 +930,13 @@ const routes = [
             authority: ['hr-manager', 'hr', 'employee', 'manager'],
           },
           {
+            path: '/ticket-management/detail/:id',
+            name: 'ticketManagement.viewTicket',
+            component: './TicketManagement/components/TicketDetails',
+            hideInMenu: true,
+            // authority: ['employee', 'leader', 'manager', 'hr', 'hr-manager'],
+          },
+          {
             path: '/view-document/:documentId',
             name: 'viewDocument',
             hideInMenu: true,

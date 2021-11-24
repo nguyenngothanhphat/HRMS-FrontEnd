@@ -33,12 +33,13 @@ const Documents = (props) => {
     window.open(url, '_blank');
   };
 
-  const fetchDocumentList = (searchKey) => {
+  const fetchDocumentList = (searchKey, filterPayload) => {
     dispatch({
       type: 'projectDetails/fetchDocumentListEffect',
       payload: {
         projectId,
         searchKey,
+        ...filterPayload,
       },
     });
   };
@@ -114,6 +115,7 @@ const Documents = (props) => {
         title: 'Action',
         dataIndex: 'action',
         key: 'action',
+        align: 'center',
         render: (_, row) => {
           return (
             <div className={styles.action}>
@@ -136,7 +138,7 @@ const Documents = (props) => {
   };
 
   const renderOption = () => {
-    const content = <FilterContent />;
+    const content = <FilterContent onFilter={(values) => fetchDocumentList('', values)} />;
     return (
       <div className={styles.options}>
         <AddButton text="Add new Document" onClick={() => setAddDocumentModalVisible(true)} />
@@ -154,7 +156,7 @@ const Documents = (props) => {
         <div className={styles.tableContainer}>
           <CommonTable
             columns={generateColumns()}
-            list={documentList}
+            list={documentList.reverse()}
             loading={loadingFetchDocument}
           />
         </div>

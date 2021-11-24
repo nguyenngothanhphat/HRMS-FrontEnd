@@ -94,9 +94,10 @@ export default {
   'menu.viewCompoffRequest': 'View compoff request',
   // project management
   'menu.projectManagement': 'Project Management',
-  'menu.projectManagement.viewProject': 'Project Management',
+  'menu.projectManagement.viewProject': 'View Project',
   // ticket management
   'menu.ticketManagement': 'Ticket Management',
+  'menu.ticketManagement.viewTicket': 'View Ticket',
   // resource management
   // customer management
   'menu.viewCustomer': 'View Customer',

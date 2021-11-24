@@ -32,6 +32,7 @@ import {
   getTechnologyList,
   getTitleList,
   getDivisionList,
+  getEmployeeList,
 } from '@/services/projectDetails';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
@@ -51,6 +52,9 @@ const initialState = {
   divisionList: [],
   projectTagList: [],
   billingStatusList: [],
+  documentTypeList: [],
+  projectResourceList: [],
+  projectResourceListTotal: 0,
 };
 
 const ProjectDetails = {
@@ -494,7 +498,7 @@ const ProjectDetails = {
       }
       return response;
     },
-    *assignResourcesEffect({ payload }, { call, put, select }) {
+    *assignResourcesEffect({ payload }, { call }) {
       let response = {};
       try {
         response = yield call(assignResources, payload);
@@ -502,14 +506,6 @@ const ProjectDetails = {
         if (statusCode !== 200) throw response;
         notification.success({
           message,
-        });
-        // refresh resources table
-        const { projectId } = yield select((state) => state.projectDetails);
-        yield put({
-          type: 'fetchResourceOfProjectEffect',
-          payload: {
-            projectId,
-          },
         });
       } catch (errors) {
         dialog(errors);
@@ -568,6 +564,29 @@ const ProjectDetails = {
         if (statusCode !== 200) throw response;
         notification.success({
           message,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *fetchEmployeeListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getEmployeeList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            employeeList: data,
+          },
         });
       } catch (errors) {
         dialog(errors);

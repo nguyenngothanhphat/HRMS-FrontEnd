@@ -251,7 +251,7 @@ const ModalAddInfo = (props) => {
           >
             <div className={styles.form__title}>Emergency Contact Details</div>
             <div className={styles.form__description}>
-              You are required to fill in certain deatils to proceed further
+              You are required to fill in certain details to proceed further
             </div>
             <div className={styles.form__block}>
               {arrContactDetail.length > 0 &&
@@ -270,21 +270,7 @@ const ModalAddInfo = (props) => {
                       </div>
                     )}
                     <Form.Item
-                      name={['emergencyContact', `contact${item}`]}
-                      label="Emergency Contact"
-                      rules={[
-                        {
-                          pattern: /^[+]*[\d]{0,10}$/,
-                          message: formatMessage({
-                            id: 'pages.employeeProfile.validateWorkNumber',
-                          }),
-                        },
-                      ]}
-                    >
-                      <Input placeholder="Emergency Contact" />
-                    </Form.Item>
-                    <Form.Item
-                      label="Person’s Name"
+                      label="Emergency Contact Name"
                       name={['emergencyPersonName', `personName${item}`]}
                       rules={[
                         {
@@ -293,7 +279,7 @@ const ModalAddInfo = (props) => {
                         },
                       ]}
                     >
-                      <Input placeholder="Person’s Name" />
+                      <Input placeholder="Emergency Contact Name" />
                     </Form.Item>
                     <Form.Item
                       label="Relation"
@@ -323,6 +309,20 @@ const ModalAddInfo = (props) => {
                           );
                         })}
                       </Select>
+                    </Form.Item>
+                    <Form.Item
+                      name={['emergencyContact', `contact${item}`]}
+                      label="Emergency Contact's Number"
+                      rules={[
+                        {
+                          pattern: /^[+]*[\d]{0,10}$/,
+                          message: formatMessage({
+                            id: 'pages.employeeProfile.validateWorkNumber',
+                          }),
+                        },
+                      ]}
+                    >
+                      <Input placeholder="Emergency Contact's Number" />
                     </Form.Item>
                   </div>
                 ))}

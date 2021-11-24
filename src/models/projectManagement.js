@@ -1,6 +1,7 @@
 import { notification } from 'antd';
 import {
   getProjectList,
+  getProjectNameList,
   getStatusSummary,
   generateProjectId,
   getCustomerList,
@@ -16,6 +17,7 @@ import { dialog } from '@/utils/utils';
 
 const initialState = {
   projectList: [],
+  projectNameList: [],
   projectListPayload: {}, // for refresh data
   statusSummary: [],
   newProjectId: '',
@@ -55,6 +57,29 @@ const ProjectManagement = {
       }
       return response;
     },
+    *fetchProjectNameListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getProjectNameList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            projectNameList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
     *refreshProjectList(_, { select, put }) {
       try {
         const { projectListPayload = {} } = yield select((state) => state.projectManagement);

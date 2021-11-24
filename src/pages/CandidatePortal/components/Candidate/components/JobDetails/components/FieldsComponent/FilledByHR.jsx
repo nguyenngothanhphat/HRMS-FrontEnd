@@ -49,7 +49,7 @@ class FilledByHR extends PureComponent {
                       : item.title === 'reportingManager'
                       ? fullNameManager
                       : item.title === 'grade'
-                      ? grade
+                      ? grade.name
                       : null
                   }
                 />

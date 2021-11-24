@@ -40,7 +40,7 @@ const EditableCell = ({
           rules={[
             {
               required: true,
-              message: `Please Input ${title}!`,
+              message: `Required fields!`,
             },
           ]}
         >
@@ -69,48 +69,81 @@ const ResourcesCard = (props) => {
       projectResourceListTotal: total = '',
     } = {},
     loadingFetchList = false,
-    loadingRemove = false
+    loadingRemove = false,
   } = props;
-
-  // function
-  const updateResourceOfProject = (record) => {
-    return dispatch({
-      type: 'projectDetails/updateResourceOfProjectEffect',
-      payload: {
-        id,
-        startDate: record.startDate ? moment(record.startDate).format('YYYY-MM-DD') : null,
-        revisedEndDate: record.revisedEndDate
-          ? moment(record.revisedEndDate).format('YYYY-MM-DD')
-          : null,
-      },
-    });
-  };
-
-  const removeResourceOfProject = (key) => {
-    return dispatch({
-      type: 'projectDetails/removeResourceOfProjectEffect',
-      payload: {
-        id: key,
-      },
-    });
-  };
 
   // editable table
   const [form] = Form.useForm();
   const [data, setData] = useState();
   const [editingKey, setEditingKey] = useState('');
 
+  // function
+  const updateResourceOfProject = (record, key) => {
+    const findRecord = data.find((x) => x._id === key);
+    if (findRecord) {
+      dispatch({
+        type: 'projectDetails/updateResourceOfProjectEffect',
+        payload: {
+          id: findRecord.resourceId,
+          startDate: record.startDate ? moment(record.startDate).format('YYYY-MM-DD') : null,
+          revisedEndDate: record.revisedEndDate
+            ? moment(record.revisedEndDate).format('YYYY-MM-DD')
+            : null,
+        },
+      });
+    }
+  };
+
+  const removeResourceOfProject = async (key) => {
+    const findRecord = data.find((x) => x._id === key);
+    if (findRecord) {
+      const res = await dispatch({
+        type: 'projectDetails/removeResourceOfProjectEffect',
+        payload: {
+          id: findRecord.resourceId,
+        },
+      });
+      if (res.statusCode === 200) {
+        setRemoveResourceModalVisible(false);
+        setRemovingPackage('');
+        const tempData = data.filter((x) => x._id !== key);
+        setData(tempData);
+      }
+    }
+  };
+
+  const formatData = (originData) => {
+    const tempData = JSON.parse(JSON.stringify(originData));
+    return tempData.map((item) => {
+      const { projects = [] } = item;
+      if (projects.length > 0) {
+        const [firstProject] = projects;
+        return {
+          ...item,
+          startDate: firstProject.startDate,
+          endDate: firstProject.endDate,
+          revisedEndDate: firstProject.revisedEndDate,
+          billingStatus: firstProject.status,
+          utilization: firstProject.utilization,
+          resourceId: firstProject.id,
+        };
+      }
+      return item;
+    });
+  };
+
   useEffect(() => {
-    setData(projectResourceList);
+    const formattedData = formatData(projectResourceList);
+    setData(formattedData);
   }, [JSON.stringify(projectResourceList)]);
 
   const isEditing = (record) => record._id === editingKey;
 
   const edit = (record) => {
     form.setFieldsValue({
-      startDate: '',
-      revisedEndDate: '',
-      ...record,
+      startDate: record.startDate ? moment(record.startDate) : null,
+      endDate: record.endDate ? moment(record.endDate) : null,
+      revisedEndDate: record.revisedEndDate ? moment(record.revisedEndDate) : null,
     });
     setEditingKey(record._id);
   };
@@ -136,7 +169,7 @@ const ResourcesCard = (props) => {
         setEditingKey('');
       }
 
-      updateResourceOfProject(row);
+      updateResourceOfProject(row, key);
     } catch (errInfo) {
       // eslint-disable-next-line no-console
       console.log('Validate Failed:', errInfo);
@@ -356,6 +389,7 @@ const ResourcesCard = (props) => {
       <AddResourcesModal
         visible={addResourceModalVisible}
         onClose={() => setAddResourceModalVisible(false)}
+        refreshResourceList={() => fetchResourceOfProject(searchValue, page, limit)}
       />
       <CommonModal
         visible={removeResourceModalVisible}

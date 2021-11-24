@@ -18,8 +18,6 @@ const ResourceTableCard = (props) => {
     total = 0,
     selectedResources = [],
     setSelectedResources = () => {},
-    resourceTypeName = '',
-    noOfResources = 0,
   } = props;
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
@@ -158,7 +156,11 @@ const ResourceTableCard = (props) => {
   };
 
   const renderOption = () => {
-    const content = <FilterResourcesListContent />;
+    const content = (
+      <FilterResourcesListContent
+        onFilter={(values) => fetchData(searchValue, page, limit, values)}
+      />
+    );
     return (
       <div className={styles.options}>
         <FilterPopover placement="bottomRight" content={content}>

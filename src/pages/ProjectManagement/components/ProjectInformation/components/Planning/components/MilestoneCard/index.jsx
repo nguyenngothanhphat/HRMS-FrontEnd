@@ -61,19 +61,31 @@ const MilestoneCard = (props) => {
           }}
           className={styles.form}
         >
-          <Form.Item label="Start Date:" name="startDate">
+          <Form.Item
+            label="Start Date:"
+            name="startDate"
+            rules={[{ required: true, message: 'Required field!' }]}
+          >
             <DatePicker
               suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
             />
           </Form.Item>
 
-          <Form.Item label="End Date:" name="endDate">
+          <Form.Item
+            label="End Date:"
+            name="endDate"
+            rules={[{ required: true, message: 'Required field!' }]}
+          >
             <DatePicker
               suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
             />
           </Form.Item>
 
-          <Form.Item label="Description:" name="description">
+          <Form.Item
+            label="Description:"
+            name="description"
+            rules={[{ required: true, message: 'Required field!' }]}
+          >
             <Input.TextArea autoSize={{ minRows: 4 }} />
           </Form.Item>
         </Form>
@@ -115,9 +127,13 @@ const MilestoneCard = (props) => {
         <div className={styles.description}>
           <span className={styles.label}>Description:</span>
           <br />
-          <span className={styles.value}>{description}</span>
+          <span className={styles.value}>
+            {description
+              ? description.split('\n').map((e) => <span style={{ display: 'block' }}>{e}</span>)
+              : ''}
+          </span>
           <br />
-          <span className={styles.someNotes}>*Tentative End date </span>
+          <span className={styles.someNotes}>*Tentative End date</span>
         </div>
       </div>
     );
