@@ -85,13 +85,14 @@ class Resources extends Component {
 
   render() {
     const { TabPane } = Tabs;
-    const { locationID = '', totalList = [] } = this.props;
+   
+    const { locationID = '', totalList = [], tabName = '' } = this.props;
     const { loadingSearch } = this.state;
     return (
       <div className={styles.ResourcesManagement}>
         <PageContainer>
           <Tabs
-            activeKey="overview"
+            activeKey={tabName || 'overview'}
             onChange={(key) => {
               history.push(`${baseModuleUrl}/${key}`);
             }}

@@ -12,7 +12,9 @@ import {
   fetchDivisions,
   updateProjectDetail,
   fetchResourceStatus,
-  fetchTitleList
+  fetchTitleList,
+  // utilization
+  getResourceUtilizationChart,
 } from '../services/resourceManagement';
 
 import { handlingResourceAvailableStatus } from '@/utils/resourceManagement';
@@ -27,6 +29,7 @@ const resourceManagement = {
     listDepartment: [],
     projectList: [],
     resourceStatuses: [],
+    resourceUtilizationChartData: [],
   },
   effects: {
     *getProjectList({ payload }, { call, put }) {
@@ -219,6 +222,27 @@ const resourceManagement = {
       } catch (error) {
         dialog(error);
       }
+    },
+
+    // UTILIZATION
+    *fetchResourceUtilizationChart({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getResourceUtilizationChart, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { resourceUtilizationChartData: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
     },
   },
   reducers: {
