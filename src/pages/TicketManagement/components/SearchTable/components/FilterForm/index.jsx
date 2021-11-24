@@ -311,8 +311,8 @@ class FilterForm extends Component {
     const priorityList = getUniqueListBy(listOffAllTicket, 'priority');
     const assigned = getUniqueListBy(listOffAllTicket, 'employee_assignee');
     const assginedList = assigned.filter((val) => val.employee_assignee !== '');
-    const legalNameList = getUniqueListBy(listOffAllTicket, 'legalName');
-    const locationList = getUniqueListBy(listOffAllTicket, 'name');
+    const legalNameList = getUniqueListBy(listOffAllTicket, 'employee_raise');
+    const locationList = getUniqueListBy(listOffAllTicket, 'employee_raise');
     // const { isFilter, checkItem, checkAll, checkedList } = this.state;
     const dateFormat = 'MMM DD, YYYY';
 
@@ -426,7 +426,7 @@ class FilterForm extends Component {
                 mode="multiple"
                 tagRender={this.tagRender}
                 placeholder="Select location"
-                onChange={() => this.handleSelect(locationList)}
+                // onChange={() => this.handleSelect(locationList)}
                 // onClear={() =>
                 //   this.setState({
                 //     checkAll: false,
@@ -437,19 +437,24 @@ class FilterForm extends Component {
                 // disabled={currentStatus !== 'ALL'}
                 dropdownClassName={styles.dropdown}
               >
-                {/* <Option value="ALL" onChange={this.onCheckAllChange}>
-                  <Checkbox value="ALL" checked={checkAll} />
+                {/* <Option value="ALL" >
+                  <Checkbox value="ALL" checked={checkAll} onChange={this.onCheckAllChange} />
                   <span>Select All</span>
                 </Option> */}
                 {locationList.map((option) => {
                   const { employeeRaise: { location: { name = '' } = {} } = {} } = option;
                   return (
                     <Option
-                      key={option.employeeRaise.location.name}
-                      value={option.employeeRaise.location.name}
-                      onChange={this.onChange}
+                      key={option.employeeRaise.location._id}
+                      value={option.employeeRaise.location._id}
                     >
-                      <Checkbox value={option.employeeRaise.location.name} />
+                      <Checkbox
+                        value={option.employeeRaise.location._id}
+                        checked={this.checkBoxStatusChecked(
+                          option.employeeRaise.location._id,
+                          'location',
+                        )}
+                      />
                       <span>{name}</span>
                     </Option>
                   );

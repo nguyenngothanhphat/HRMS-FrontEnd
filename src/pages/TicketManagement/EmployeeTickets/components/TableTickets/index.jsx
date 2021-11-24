@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import { Table, Dropdown, Menu, Button } from 'antd';
+import { Table, Dropdown, Menu } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 
 import moment from 'moment';
@@ -25,7 +25,6 @@ class TableTickets extends PureComponent {
     super(props);
     this.state = {
       ticket: {},
-      search: [],
     };
   }
 
@@ -81,22 +80,6 @@ class TableTickets extends PureComponent {
         employee: _id,
       },
     });
-  };
-
-  handleSearch = (e) => {
-    const { listEmployee } = this.props;
-    this.setState({ search: e.target.value.split(' ') });
-    const { search = [] } = this.state;
-    console.log('search', search);
-
-    let options;
-    if (search.length) {
-      const searchPattern = new RegExp(search.map((term) => `(?=.*${term})`).join(''), 'i');
-      options = listEmployee.filter((option) => option.generalInfo.legalName.match(searchPattern));
-      console.log(options);
-    } else {
-      options = listEmployee;
-    }
   };
 
   handleSelect = (e) => {

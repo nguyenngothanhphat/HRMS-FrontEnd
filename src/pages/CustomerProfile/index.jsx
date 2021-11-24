@@ -83,7 +83,7 @@ class CustomerProfile extends Component {
       {
         id: 5,
         name: 'Projects',
-        component: <Projects />,
+        component: <Projects reId={reId} />,
         link: 'projects',
       },
       {

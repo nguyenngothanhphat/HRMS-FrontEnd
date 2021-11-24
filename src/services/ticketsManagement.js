@@ -42,7 +42,12 @@ export async function getOffToTalList(payload) {
     data: payload,
   });
 }
-
+export async function uploadFile(data) {
+  return request('/api/attachments/upload', {
+    method: 'POST',
+    data,
+  });
+}
 export async function getListEmployee(payload) {
   return request('/api/employeetenant/list-by-single-company', {
     method: 'POST',
