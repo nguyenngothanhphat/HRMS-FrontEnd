@@ -109,12 +109,6 @@ class ModalAddDivisions extends PureComponent {
       payload,
     }).then(() => {
       onCloseModal();
-      dispatch({
-        type: 'customerProfile/fetchDivision',
-        payload: {
-          id: reId,
-        },
-      });
       this.refForm?.current?.resetFields();
     });
   };

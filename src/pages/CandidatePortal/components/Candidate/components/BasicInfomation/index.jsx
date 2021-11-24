@@ -261,7 +261,7 @@ class BasicInformation extends PureComponent {
               rules={[
                 {
                   pattern: /^[0-9]*$/,
-                  message: 'Year of experience invalid!',
+                  message: 'Years of experience is invalid!',
                 },
               ]}
             >

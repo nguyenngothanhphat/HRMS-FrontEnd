@@ -130,7 +130,7 @@ const SalaryStructure = (props) => {
         break;
     }
     if (obj) {
-      if (obj.minimum && obj.maximum)
+      if ((obj.minimum || obj.minimum === 0) && (obj.maximum || obj.maximum === 0))
         return `${prefix} ${formatNumber(obj.minimum)} - ${prefix} ${formatNumber(obj.maximum)}`;
       return (obj.minimum && `${prefix} ${formatNumber(obj.minimum)}`) || '0';
     }
