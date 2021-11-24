@@ -21,15 +21,7 @@ class View extends PureComponent {
                 <>
                   <Fragment key={item.label}>
                     <Col span={6} className={styles.textLabel}>
-                      Emergency Contact
-                    </Col>
-                    <Col span={18} className={styles.textValue}>
-                      {emergencyContact}
-                    </Col>
-                  </Fragment>
-                  <Fragment key={item.label}>
-                    <Col span={6} className={styles.textLabel}>
-                      Person’s Name
+                      Emergency Contact Name
                     </Col>
                     <Col span={18} className={styles.textValue}>
                       {emergencyPersonName}
@@ -43,6 +35,14 @@ class View extends PureComponent {
                       {emergencyRelation}
                     </Col>
                   </Fragment>
+                  <Fragment key={item.label}>
+                    <Col span={6} className={styles.textLabel}>
+                      Emergency Contact Number
+                    </Col>
+                    <Col span={18} className={styles.textValue}>
+                      {emergencyContact}
+                    </Col>
+                  </Fragment>
                   {index === emergencyContactDetails.length - 1 ? null : (
                     <div className={styles.line} />
                   )}
@@ -54,17 +54,17 @@ class View extends PureComponent {
           <Row gutter={[0, 16]} className={styles.rootNoValue}>
             <Fragment>
               <Col span={6} className={styles.textLabel}>
-                Emergency Contact
-              </Col>
-            </Fragment>
-            <Fragment>
-              <Col span={6} className={styles.textLabel}>
-                Person’s Name
+                Emergency Contact Name
               </Col>
             </Fragment>
             <Fragment>
               <Col span={6} className={styles.textLabel}>
                 Relation
+              </Col>
+            </Fragment>
+            <Fragment>
+              <Col span={6} className={styles.textLabel}>
+                Emergency Contact's Number
               </Col>
             </Fragment>
           </Row>

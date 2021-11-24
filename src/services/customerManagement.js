@@ -1,7 +1,7 @@
 import { request } from '@/utils/request';
 
-export default async function getCompaniesList(payload) {
-  return request('/api/companytenant/list-of-user', {
+export async function getCompaniesList(payload) {
+  return request('/api-customer/customertenant/list-company', {
     method: 'POST',
     data: payload,
   });
@@ -43,9 +43,16 @@ export async function genCustomerID(payload) {
   });
 }
 
+// export async function getTagList(payload) {
+//   return request(`/api-customer/tagtenant/default-list`, {
+//     method: 'GET',
+//     data: payload,
+//   });
+// }
+
 export async function getTagList(payload) {
-  return request(`/api-customer/tagtenant/default-list`, {
-    method: 'GET',
+  return request('/api/departmenttenant/list', {
+    method: 'POST',
     data: payload,
   });
 }

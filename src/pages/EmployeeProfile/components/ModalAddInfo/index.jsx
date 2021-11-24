@@ -204,8 +204,8 @@ const ModalAddInfo = (props) => {
   };
   // tax detail
   const onFinishTaxIN = (values) => {
-    const { maritalStatus, noOfDependants } = values;
-    const taxDetails = { ...values, panNum: noOfDependants, employee: idCurrentEmployee };
+    const { maritalStatus, noOfDependents } = values;
+    const taxDetails = { ...values, panNum: noOfDependents, employee: idCurrentEmployee };
     const obj = { ...resultForm, taxDetails, maritalStatus };
     dispatch({
       type: 'employeeProfile/updateFirstGeneralInfo',
@@ -219,9 +219,9 @@ const ModalAddInfo = (props) => {
     });
   };
   const onFinishTax = (values) => {
-    const { maritalStatus, noOfDependants } = values;
+    const { maritalStatus, noOfDependents } = values;
     const incomeTaxRule = ""
-    const taxDetails = { ...values, panNum: noOfDependants, employee: idCurrentEmployee, incomeTaxRule };
+    const taxDetails = { ...values, panNum: noOfDependents, employee: idCurrentEmployee, incomeTaxRule };
     const obj = { ...resultForm, taxDetails, maritalStatus };
     dispatch({
       type: 'employeeProfile/updateFirstGeneralInfo',
@@ -251,7 +251,7 @@ const ModalAddInfo = (props) => {
           >
             <div className={styles.form__title}>Emergency Contact Details</div>
             <div className={styles.form__description}>
-              You are required to fill in certain deatils to proceed further
+              You are required to fill in certain details to proceed further
             </div>
             <div className={styles.form__block}>
               {arrContactDetail.length > 0 &&
@@ -270,21 +270,7 @@ const ModalAddInfo = (props) => {
                       </div>
                     )}
                     <Form.Item
-                      name={['emergencyContact', `contact${item}`]}
-                      label="Emeregncy Contact"
-                      rules={[
-                        {
-                          pattern: /^[+]*[\d]{0,10}$/,
-                          message: formatMessage({
-                            id: 'pages.employeeProfile.validateWorkNumber',
-                          }),
-                        },
-                      ]}
-                    >
-                      <Input placeholder="Emeregncy Contact" />
-                    </Form.Item>
-                    <Form.Item
-                      label="Person’s Name"
+                      label="Emergency Contact Name"
                       name={['emergencyPersonName', `personName${item}`]}
                       rules={[
                         {
@@ -293,7 +279,7 @@ const ModalAddInfo = (props) => {
                         },
                       ]}
                     >
-                      <Input placeholder="Person’s Name" />
+                      <Input placeholder="Emergency Contact Name" />
                     </Form.Item>
                     <Form.Item
                       label="Relation"
@@ -323,6 +309,20 @@ const ModalAddInfo = (props) => {
                           );
                         })}
                       </Select>
+                    </Form.Item>
+                    <Form.Item
+                      name={['emergencyContact', `contact${item}`]}
+                      label="Emergency Contact's Number"
+                      rules={[
+                        {
+                          pattern: /^[+]*[\d]{0,10}$/,
+                          message: formatMessage({
+                            id: 'pages.employeeProfile.validateWorkNumber',
+                          }),
+                        },
+                      ]}
+                    >
+                      <Input placeholder="Emergency Contact's Number" />
                     </Form.Item>
                   </div>
                 ))}
@@ -617,8 +617,8 @@ const ModalAddInfo = (props) => {
                   <Select.Option value="Rather not mention">Rather not mention</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="No. of Dependants" name="noOfDependants">
-                <Input maxLength={50} placeholder="No. of Dependants" />
+              <Form.Item label="No. of Dependents" name="noOfDependents">
+                <Input maxLength={50} placeholder="No. of Dependents" />
               </Form.Item>
               <Form.Item label="Residency Status" name="residencyStatus">
                 <Select placeholder="Residency Status" showArrow>
@@ -652,8 +652,8 @@ const ModalAddInfo = (props) => {
                   <Select.Option value="Rather not mention">Rather not mention</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="No. of Dependants" name="noOfDependants">
-                <Input maxLength={50} placeholder="No. of Dependants" />
+              <Form.Item label="No. of Dependents" name="noOfDependents">
+                <Input maxLength={50} placeholder="No. of Dependents" />
               </Form.Item>
               <Form.Item label="Residency Status" name="residencyStatus">
                 <Select placeholder="Residency Status" showArrow>
@@ -681,8 +681,8 @@ const ModalAddInfo = (props) => {
                   <Select.Option value="Rather not mention">Rather not mention</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="No. of Dependants" name="noOfDependants">
-                <Input maxLength={50} placeholder="No. of Dependants" />
+              <Form.Item label="No. of Dependents" name="noOfDependents">
+                <Input maxLength={50} placeholder="No. of Dependents" />
               </Form.Item>
               <Form.Item label="Residency Status" name="residencyStatus">
                 <Select placeholder="Residency Status" showArrow>

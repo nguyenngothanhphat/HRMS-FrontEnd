@@ -1,19 +1,19 @@
 /* eslint-disable react/jsx-curly-newline */
-import React, { Component } from 'react';
-import { Form, Input, Button, Checkbox } from 'antd';
 import { EyeFilled } from '@ant-design/icons';
-import logoGoogle from '@/assets/logo_google.png';
+import { Button, Checkbox, Form, Input } from 'antd';
+import React, { Component } from 'react';
 // import GoogleLogin from 'react-google-login';
-import { Link, connect, formatMessage, history } from 'umi';
+import { connect, formatMessage, history, Link } from 'umi';
 import { removeLocalStorage } from '@/utils/authority';
-
+import logoGoogle from '@/assets/logo_google.png';
 import styles from './index.less';
 
-@connect(({ loading, login: { messageError = '', urlGoogle = '' } = {} }) => ({
+@connect(({ loading, login: { messageError = '', urlGoogle = '', urlLollypop = '' } = {} }) => ({
   loading: loading.effects['login/login'],
   loadingLoginThirdParty: loading.effects['login/loginThirdParty'],
   messageError,
   urlGoogle,
+  urlLollypop,
 }))
 class FormLogin extends Component {
   formRef = React.createRef();
@@ -105,7 +105,7 @@ class FormLogin extends Component {
   };
 
   render() {
-    const { messageError = '', urlGoogle } = this.props;
+    const { messageError = '', urlGoogle = '', urlLollypop = '' } = this.props;
     const { checkValidationEmail, isMessageValidationEmail } = this.state;
 
     const messageValidationEmail = this.returnMessageValidationEmail(messageError);
@@ -202,6 +202,12 @@ class FormLogin extends Component {
             <Button type="primary" className={styles.btnSignInGG}>
               <img src={logoGoogle} alt="logo" />
               <span>Login with Google</span>
+            </Button>
+          </a>
+          <a href={urlLollypop}>
+            <Button type="primary" className={styles.btnSignInLollypop}>
+              <img src={logoGoogle} alt="logo" />
+              <span>Login with Lollypop</span>
             </Button>
           </a>
           <Link to="/forgot-password">

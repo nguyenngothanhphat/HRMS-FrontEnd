@@ -55,13 +55,15 @@ const RaiseTicketModal = (props) => {
     onClose();
   };
   useEffect(() => {
-    dispatch({
-      type: 'ticketManagement/fetchListEmployee',
-      payload: {
-        tenantId: getCurrentTenant(),
-        company: getCurrentCompany(),
-      },
-    });
+    if (visible) {
+      dispatch({
+        type: 'ticketManagement/fetchListEmployee',
+        payload: {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        },
+      });
+    }
     dispatch({
       type: 'ticketManagement/fetchDepartments',
       payload: {

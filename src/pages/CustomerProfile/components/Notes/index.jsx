@@ -1,42 +1,58 @@
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { Popover, Input, Button, Table, Form, Row, Col } from 'antd';
-import React, { PureComponent } from 'react';
-import { Link, connect } from 'umi';
+import { Button, Col, Form, Input, Popover, Row, Skeleton } from 'antd';
+import { debounce } from 'lodash';
 import moment from 'moment';
-import NotesFilter from './components/NotesFilter';
-import styles from './index.less';
+import React, { PureComponent } from 'react';
+import { connect } from 'umi';
 import cancelIcon from '../../../../assets/cancelIcon.svg';
 import { FilterIcon } from './components/FilterIcon';
-import { getCurrentTenant } from '@/utils/authority';
+import NotesFilter from './components/NotesFilter';
+import styles from './index.less';
 
 @connect(
   ({
     loading,
-    employee: { listEmployeeActive = [] } = {},
     locationSelection: { listLocationsByCompany = [] } = {},
     user: { companiesOfUser = [], currentUser: { _id = '', firstName = '' } = {} } = {},
     customerProfile: { info: { customerId = '' } = {}, notes = [] } = {},
+    customerManagement: { employeeList = [] } = {},
   }) => ({
     loadingNotes: loading.effects['customerProfile/fetchNotes'],
+    loadingFilterNotes: loading.effects['customerProfile/filterNotes'],
     notes,
-    listEmployeeActive,
     customerId,
     _id,
     firstName,
     listLocationsByCompany,
     companiesOfUser,
+    employeeList,
   }),
 )
 class Notes extends PureComponent {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = {
       isUnhide: false,
     };
-    this.refForm = React.createRef();
+    this.delaySearch = debounce((value) => {
+      this.handleSearch(value);
+    }, 1000);
   }
 
   componentDidMount() {
+    this.fetchNotes();
+  }
+
+  componentDidUpdate = (prevProps) => {
+    const { customerId } = this.props;
+    if (prevProps.customerId !== customerId) {
+      this.fetchNotes();
+    }
+  };
+
+  fetchNotes = () => {
     const { dispatch, customerId } = this.props;
     dispatch({
       type: 'customerProfile/fetchNotes',
@@ -44,7 +60,7 @@ class Notes extends PureComponent {
         id: customerId,
       },
     });
-  }
+  };
 
   handleVisible = () => {
     const { isUnhide } = this.state;
@@ -101,17 +117,42 @@ class Notes extends PureComponent {
         customerId: reId,
       },
     }).then(() => {
-      this.refForm.current.resetFields();
+      this.formRef?.current?.resetFields();
+    });
+  };
+
+  handleSearch = (value) => {
+    const { dispatch, reId } = this.props;
+    dispatch({
+      type: 'customerProfile/searchNotes',
+      payload: {
+        id: reId,
+        searchKey: value,
+      },
+    });
+  };
+
+  onFilter = (values) => {
+    const { byAuthor, fromDate, toDate } = values;
+    const { dispatch, info: { customerId = '' } = {} } = this.props;
+    dispatch({
+      type: 'customerProfile/filterNotes',
+      payload: {
+        customerId,
+        author: byAuthor,
+        fromDate: fromDate || '',
+        toDate: toDate || '',
+      },
     });
   };
 
   render() {
     const { isUnhide } = this.state;
-    const { listEmployeeActive } = this.props;
+    const { employeeList = [], loadingNotes = false, loadingFilterNotes = false } = this.props;
 
     const filter = (
       <>
-        <NotesFilter listEmployeeActive={listEmployeeActive} />
+        <NotesFilter employeeList={employeeList} onFilter={this.onFilter} />
         <div className={styles.btnForm}>
           <Button className={styles.btnClose} onClick={this.handleVisible}>
             Close
@@ -122,6 +163,7 @@ class Notes extends PureComponent {
             htmlType="submit"
             key="submit"
             onClick={this.handleSubmit}
+            loading={loadingFilterNotes}
           >
             Apply
           </Button>
@@ -129,6 +171,7 @@ class Notes extends PureComponent {
       </>
     );
 
+    if (loadingNotes) return <Skeleton />;
     return (
       <div className={styles.Notes}>
         <div className={styles.documentHeader}>
@@ -166,7 +209,11 @@ class Notes extends PureComponent {
             </div>
             {/* Search */}
             <div className={styles.searchInp}>
-              <Input placeholder="Search by Key Words" prefix={<SearchOutlined />} />
+              <Input
+                placeholder="Search by Key Words"
+                prefix={<SearchOutlined />}
+                onChange={(e) => this.delaySearch(e.target.value)}
+              />
             </div>
           </div>
         </div>
@@ -174,14 +221,14 @@ class Notes extends PureComponent {
         {this.renderNotes()}
 
         <div className={styles.notesFooter}>
-          <Form ref={this.refForm} layout="horizontal" onFinish={(values) => this.addNote(values)}>
-            <Row gutter={48} align="middle">
-              <Col span={20}>
+          <Form ref={this.formRef} layout="horizontal" onFinish={(values) => this.addNote(values)}>
+            <Row gutter={[24, 0]} align="middle" justify="space-between">
+              <Col lg={18} xl={20}>
                 <Form.Item name="note">
                   <Input placeholder="Add a note for reference" />
                 </Form.Item>
               </Col>
-              <Col span={4}>
+              <Col lg={6} xl={4}>
                 <Form.Item>
                   <Button htmlType="submit" className={styles.btnAdd}>
                     <PlusOutlined />
