@@ -1,7 +1,21 @@
+@blueColour: #2c6df9;
 .People {
   :global {
     .ant-table-content {
         padding: 24px;
       }
+  }
+  .options {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+    span {
+      color: @blueColour;
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 19px;
+      margin-inline: 12px;
+    }
   }
 }

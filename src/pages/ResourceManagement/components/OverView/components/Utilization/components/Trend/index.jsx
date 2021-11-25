@@ -1,3 +1,4 @@
+import EmptyImage from '@/assets/resourceManagement/emptyImage.png';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import {
@@ -10,11 +11,10 @@ import {
   YAxis,
 } from 'recharts';
 import { connect } from 'umi';
-
 import styles from './index.less';
 
 const Trend = (props) => {
-  const { dispatch, startDate = '', endDate = '' } = props;
+  const { dispatch, startDate = '', endDate = '', mode = 'X' } = props;
 
   // redux
   const { resourceManagement: { resourceUtilizationChartData = [] } = {} } = props;
@@ -37,6 +37,16 @@ const Trend = (props) => {
     }
   }, [startDate, endDate]);
 
+  const getNameByMode = (x) => {
+    if (mode === 'W') {
+      return x.week;
+    }
+    if (mode === 'D') {
+      return x.date ? moment(x.date).format('DD') : '';
+    }
+    return '';
+  };
+
   const formatData = () => {
     return resourceUtilizationChartData.map((x) => {
       const { summary = [] } = x;
@@ -45,8 +55,10 @@ const Trend = (props) => {
 
       return {
         ...x,
-        name: x.week,
-        utilization: billable && total && total?.count !== 0 ? (billable.count / total.count)*100 : 0,
+        // eslint-disable-next-line no-nested-ternary
+        name: getNameByMode(x),
+        utilization:
+          billable && total && total?.count !== 0 ? (billable.count / total.count) * 100 : 0,
       };
     });
   };
@@ -56,6 +68,65 @@ const Trend = (props) => {
     setData(tempData);
   }, [JSON.stringify(resourceUtilizationChartData)]);
 
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const { payload: { summary = [] } = {} || {} } = payload[0] || {};
+
+      const billable = summary.find((x) => x.status === 'Billable');
+      const bench = summary.find((x) => x.status === 'Bench');
+      const buffer = summary.find((x) => x.status === 'Buffer');
+      const total = summary.find((x) => x.status === 'Total');
+
+      const items = [
+        {
+          name: 'Current Utilization',
+          value: total && total.count !== 0 ? (billable?.count / total?.count) * 100 : '-',
+        },
+        {
+          name: 'Total Resources',
+          value: total?.count || 0,
+        },
+        {
+          name: 'Total Billable resources',
+          value: `${billable?.count} (${Math.round(billable?.percent * 100)}%)`,
+        },
+        {
+          name: 'Total Buffer resources',
+          value: `${buffer?.count} (${Math.round(buffer?.percent * 100)}%)`,
+        },
+        {
+          name: 'Total Benched resources',
+          value: `${bench?.count} (${Math.round(bench?.percent * 100)}%)`,
+        },
+      ];
+      return (
+        <div className={styles.customTooltip}>
+          {items.map((x) => (
+            <div className={styles.tooltipItem}>
+              <span className={styles.left}>{x.name}</span>
+              <span className={styles.right}>{x.value}</span>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  if (mode === 'X') {
+    return (
+      <div className={styles.Trend}>
+        <div className={styles.emptyContainer}>
+          <img src={EmptyImage} alt="" />
+          <p>
+            The selected time range is too small. <br />
+            Minimum time range should be 1 month.
+          </p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className={styles.Trend}>
       <ResponsiveContainer width="100%" height={250}>
@@ -77,10 +148,13 @@ const Trend = (props) => {
               <stop offset="95%" stopColor="rgba(226, 235, 255, 0)" stopOpacity={1} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid horizontal={false} vertical={false} max={100} />
           <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
+          <YAxis /> {/* domain={[0, 100]} */}
+          <Tooltip
+            wrapperStyle={{ background: '#1A1A46', borderRadius: '4px', padding: '16px' }}
+            content={<CustomTooltip />}
+          />
           <Area
             dataKey="utilization"
             strokeWidth={2}

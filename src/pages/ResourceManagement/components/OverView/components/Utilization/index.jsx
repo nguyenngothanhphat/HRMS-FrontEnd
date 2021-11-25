@@ -12,6 +12,7 @@ const Utilization = () => {
   const [activeKey, setActiveKey] = useState('2');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [timeMode, setTimeMode] = useState('W'); // X: unvalid, D: ,W
 
   useEffect(() => {
     const theFirst = moment().startOf('year');
@@ -23,6 +24,17 @@ const Utilization = () => {
   const onDatePickerChange = (dates = []) => {
     setStartDate(dates[0]);
     setEndDate(dates[1]);
+    const duration = moment.duration(dates[1].diff(dates[0])).asDays() + 1;
+    console.log('🚀 ~ onDatePickerChange ~ duration', duration);
+    if (duration < 28) {
+      setTimeMode('X');
+    }
+    if (duration >= 28 && duration <= 31) {
+      setTimeMode('D');
+    }
+    if (duration > 31) {
+      setTimeMode('W');
+    }
   };
 
   const options = () => {
@@ -43,7 +55,7 @@ const Utilization = () => {
           <Latest />
         </TabPane>
         <TabPane tab="Trend" key="2">
-          <Trend startDate={startDate} endDate={endDate} />
+          <Trend startDate={startDate} endDate={endDate} mode={timeMode} />
         </TabPane>
       </Tabs>
     </Card>

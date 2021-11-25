@@ -113,3 +113,10 @@ export async function getResourceUtilizationChart(payload) {
     'PROJECT_API',
   );
 }
+
+export async function getNewJoineesList(payload) {
+  return request('/api/joiningformalitiestenant/get-list-new-comer', {
+    method: 'POST',
+    data: payload,
+  });
+}

@@ -15,6 +15,10 @@ import {
   fetchTitleList,
   // utilization
   getResourceUtilizationChart,
+  getUtilizationOverviewDivision,
+  getUtilizationOverviewTitle,
+  getResourceUtilization,
+  getNewJoineesList
 } from '../services/resourceManagement';
 
 import { handlingResourceAvailableStatus } from '@/utils/resourceManagement';
@@ -30,6 +34,9 @@ const resourceManagement = {
     projectList: [],
     resourceStatuses: [],
     resourceUtilizationChartData: [],
+    utilizationOverviewList: [],
+    resourceUtilizationList: [],
+    newJoineeList: []
   },
   effects: {
     *getProjectList({ payload }, { call, put }) {
@@ -238,6 +245,82 @@ const resourceManagement = {
         yield put({
           type: 'save',
           payload: { resourceUtilizationChartData: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchUtilizationOverviewDivisionList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getUtilizationOverviewDivision, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { utilizationOverviewList: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchUtilizationOverviewTitleList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getUtilizationOverviewTitle, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { utilizationOverviewList: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchResourceUtilizationList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getResourceUtilization, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { resourceUtilizationList: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchNewJoineeList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getNewJoineesList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { newJoineeList: data },
         });
       } catch (error) {
         dialog(error);

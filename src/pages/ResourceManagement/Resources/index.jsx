@@ -45,7 +45,7 @@ class Resources extends Component {
   componentDidMount() {
     const { tabName = '' } = this.props;
     if (!tabName) {
-      history.replace(`${baseModuleUrl}/all-resources`);
+      history.replace(`${baseModuleUrl}/overview`);
     }
   }
 
