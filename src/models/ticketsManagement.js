@@ -209,6 +209,8 @@ const ticketManagement = {
       try {
         const response = yield call(getListEmployee, {
           ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;

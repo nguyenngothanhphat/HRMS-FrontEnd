@@ -33,6 +33,10 @@ class EmployeeTicket extends Component {
         return;
       }
       dispatch({
+        type: 'ticketManagement/fetchListEmployee',
+        payload: {},
+      });
+      dispatch({
         type: 'ticketManagement/fetchListAllTicket',
         payload: {
           status: ['New'],
