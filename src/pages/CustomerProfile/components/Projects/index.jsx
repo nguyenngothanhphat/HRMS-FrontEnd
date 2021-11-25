@@ -1,46 +1,49 @@
-import { SearchOutlined } from '@ant-design/icons';
-import { Popover, Input, Button, Table } from 'antd';
-import React, { PureComponent } from 'react';
-import ProjectFilter from './components/ProjectFilter';
+import { debounce } from 'lodash';
+import React, { useEffect } from 'react';
+import { connect } from 'umi';
+import CommonTable from '../CommonTable';
+import FilterButton from '../FilterButton';
+import FilterPopover from '../FilterPopover';
+import SearchBar from '../SearchBar';
+import FilterContent from './components/FilterContent';
 import styles from './index.less';
-import cancelIcon from '../../../../assets/cancelIcon.svg';
-import { FilterIcon } from './components/FilterIcon';
 
-class Projects extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isUnhide: false,
-    };
-  }
+const Projects = (props) => {
+  const {
+    dispatch,
+    loadingFetch = false,
+    reId = '',
+    customerProfile: { projectList = [] } = {},
+  } = props;
 
-  handleVisible = () => {
-    const { isUnhide } = this.state;
-    this.setState({
-      isUnhide: !isUnhide,
+  const fetchProjectList = async (payload) => {
+    dispatch({
+      type: 'customerProfile/fetchProjectListEffect',
+      payload: {
+        customerId: [reId],
+        ...payload,
+      },
     });
   };
 
-  showModal = () => {
-    const { visible } = this.state;
-    this.setState({
-      visible: !visible,
-    });
+  useEffect(() => {
+    fetchProjectList();
+  }, []);
+
+  const onSearchDebounce = debounce((value) => {
+    fetchProjectList({ searchKey: value });
+  }, 1000);
+
+  const onSearch = (e = {}) => {
+    const { value = '' } = e.target;
+    onSearchDebounce(value);
   };
 
-  closeModal = () => {
-    const { visible } = this.state;
-    this.setState({
-      visible: !visible,
-    });
-  };
-
-  generateColumns = () => {
+  const generateColumns = () => {
     const columns = [
       {
         title: 'Project ID',
-        dataIndex: 'projectID',
-        align: 'center',
+        dataIndex: 'projectId',
         fixed: 'left',
         width: '10%',
         render: (projectID) => {
@@ -50,26 +53,25 @@ class Projects extends PureComponent {
       {
         title: 'Project Name',
         dataIndex: 'projectName',
-        align: 'center',
         width: '10%',
       },
       {
         title: 'Divisions',
-        dataIndex: 'divisions',
+        dataIndex: 'division',
         width: '10%',
-        align: 'center',
       },
       {
         title: 'Engagement Type',
         dataIndex: 'engagementType',
         width: '10%',
-        align: 'center',
       },
       {
         title: 'Proj. Manager',
         dataIndex: 'projectManager',
         width: '10%',
-        align: 'center',
+        render: (projectManager) => {
+          return <span>{projectManager?.generalInfo?.legalName || '-'}</span>;
+        },
       },
     ];
 
@@ -79,85 +81,27 @@ class Projects extends PureComponent {
     }));
   };
 
-  render() {
-    const { isUnhide } = this.state;
-
-    const filter = (
-      <>
-        <ProjectFilter />
-        <div className={styles.btnForm}>
-          <Button className={styles.btnClose} onClick={this.handleVisible}>
-            Close
-          </Button>
-          <Button
-            className={styles.btnApply}
-            form="filter"
-            htmlType="submit"
-            key="submit"
-            onClick={this.handleSubmit}
-          >
-            Apply
-          </Button>
+  return (
+    <div className={styles.Projects}>
+      <div className={styles.documentHeader}>
+        <div className={styles.documentHeaderTitle}>
+          <span>Projects</span>
         </div>
-      </>
-    );
-
-    const data = [
-      {
-        projectID: 'TER1001',
-        projectName: 'HRMS',
-        divisions: 'Finance',
-        engagementType: 'T&M',
-        projectManager: 'Tuan Luong',
-      },
-    ];
-    return (
-      <div className={styles.Projects}>
-        <div className={styles.documentHeader}>
-          <div className={styles.documentHeaderTitle}>
-            <span>Projects</span>
-          </div>
-          <div className={styles.documentHeaderFunction}>
-            {/* Filter */}
-            <div>
-              <Popover
-                placement="bottomRight"
-                content={filter}
-                title={() => (
-                  <div className={styles.popoverHeader}>
-                    <span className={styles.headTitle}>Filters</span>
-                    <span
-                      className={styles.closeIcon}
-                      style={{ cursor: 'pointer' }}
-                      onClick={this.handleVisible}
-                    >
-                      <img src={cancelIcon} alt="close" />
-                    </span>
-                  </div>
-                )}
-                trigger="click"
-                visible={isUnhide}
-                onVisibleChange={this.handleVisible}
-                overlayClassName={styles.FilterPopover}
-              >
-                <div className={styles.filterButton} style={{ cursor: 'pointer' }}>
-                  <FilterIcon />
-                  <span className={styles.textButtonFilter}>Filter</span>
-                </div>
-              </Popover>
-            </div>
-            {/* Search */}
-            <div className={styles.searchInp}>
-              <Input placeholder="Search by Project name" prefix={<SearchOutlined />} />
-            </div>
-          </div>
-        </div>
-        <div className={styles.documentBody}>
-          <Table columns={this.generateColumns()} dataSource={data} />
+        <div className={styles.documentHeaderFunction}>
+          <FilterPopover placement="bottomRight" content={<FilterContent />}>
+            <FilterButton />
+          </FilterPopover>
+          <SearchBar placeholder="Search by Project Name" onSearch={onSearch} />
         </div>
       </div>
-    );
-  }
-}
+      <div className={styles.documentBody}>
+        <CommonTable loading={loadingFetch} columns={generateColumns()} list={projectList} />
+      </div>
+    </div>
+  );
+};
 
-export default Projects;
+export default connect(({ customerProfile, loading }) => ({
+  customerProfile,
+  loadingFetch: loading.effects['customerProfile/fetchProjectListEffect'],
+}))(Projects);

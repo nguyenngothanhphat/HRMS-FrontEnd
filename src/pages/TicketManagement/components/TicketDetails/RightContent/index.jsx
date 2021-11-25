@@ -53,9 +53,19 @@ class RightContent extends PureComponent {
     );
   };
 
+  getTimeTaken = () => {
+    const { timeTaken } = this.state;
+    const { data: { status: statusProps = '', time_taken: timeTakenProps = '' } = {} } = this.props;
+    const time = Number(timeTaken);
+    if (statusProps === 'Resolved') {
+      return timeTakenProps;
+    }
+    return time;
+  };
+
   onSubmitUpdate = () => {
     const { status, timeTaken } = this.state;
-    const time = Number(timeTaken);
+    // const time = Number(timeTaken);
     const { dispatch, data = {}, employee: { _id = '' } = {} } = this.props;
     const {
       id = '',
@@ -69,7 +79,6 @@ class RightContent extends PureComponent {
       attachments = [],
       department_assign: departmentAssign = '',
     } = data;
-
     const payload = {
       id,
       status,
@@ -83,9 +92,8 @@ class RightContent extends PureComponent {
       attachments,
       departmentAssign,
       employee: _id,
-      time_taken: time,
+      timeTaken: this.getTimeTaken(),
     };
-
     if (status) {
       if (status === 'Resolved' && !timeTaken) {
         notification.error({
@@ -94,9 +102,7 @@ class RightContent extends PureComponent {
       } else {
         dispatch({
           type: 'ticketManagement/updateTicket',
-          payload: {
-            payload,
-          },
+          payload,
         });
       }
     }
@@ -109,7 +115,7 @@ class RightContent extends PureComponent {
       loadingUpdateTicket = false,
     } = this.props;
     const getPlaceholder = () => {
-      if (statusProps === 'Closed') {
+      if (statusProps === 'Closed' || status === 'Resolved') {
         return timeTakenProps;
       }
       return 'Time';

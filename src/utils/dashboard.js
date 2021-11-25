@@ -42,14 +42,17 @@ const WIDGETS = [
 
 const SUPPORT_TEAM = [
   {
+    _id: '6153e2ecb51335302899a36f',
     name: 'HR',
     queryType: ['Policy Query', 'Leave Query', 'Other issues', 'Other Query', 'Paycheck Query'],
   },
   {
+    _id: '6155659fe19a81c65dc1b01f',
     name: 'IT',
     queryType: ['Software', 'Hardware', 'Network/Connectivity', 'Account/Permission', 'Printing'],
   },
   {
+    _id: '6155659fe19a81c65dc1b020',
     name: 'OPERATION',
     queryType: [
       'Floor Issue',

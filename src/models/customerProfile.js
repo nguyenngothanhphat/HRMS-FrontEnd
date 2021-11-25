@@ -1,24 +1,33 @@
 import { notification } from 'antd';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { dialog } from '@/utils/utils';
 import getCustomerInfo, {
-  getDivisions,
   addDivision,
-  updateDivision,
-  getDocumentType,
-  filterDocument,
   addDocument,
-  uploadDocument,
-  getDocument,
-  getAuditTrail,
-  getNotes,
-  filterNotes,
   addNotes,
+  filterDocument,
+  filterNotes,
+  getAuditTrail,
+  getDivisions,
   getDivisionsId,
+  getDocument,
+  getDocumentType,
+  getNotes,
+  // project
+  getProjectList,
   getTagList,
   removeDocument,
   updateContactInfo,
+  updateDivision,
+  uploadDocument,
 } from '../services/customerProfile';
-import { dialog } from '@/utils/utils';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import {
+  getDivisionList,
+  getEmployeeList, // other
+  getProjectTypeList,
+  getProjectNameList,
+  getProjectStatusList,
+} from '../services/projectManagement';
 
 const customerProfile = {
   namespace: 'customerProfile',
@@ -36,6 +45,13 @@ const customerProfile = {
     temp: {
       selectedTab: '',
     },
+    projectList: [],
+    titleList: [],
+    divisionList: [],
+    employeeList: [],
+    projectTypeList: [],
+    projectNameList: [],
+    projectStatusList: [],
   },
   effects: {
     *fetchCustomerInfo({ payload }, { call, put }) {
@@ -93,7 +109,7 @@ const customerProfile = {
 
         yield put({
           type: 'fetchDivision',
-          payload: { tenantId: getCurrentTenant(), customerId: payload.customerId },
+          payload: { tenantId: getCurrentTenant(), id: payload.customerId },
         });
       } catch (error) {
         dialog(error);
@@ -114,7 +130,7 @@ const customerProfile = {
 
         yield put({
           type: 'fetchDivision',
-          payload: { tenantId: getCurrentTenant(), customerId: payload.customerId },
+          payload: { tenantId: getCurrentTenant(), id: payload.customerId },
         });
       } catch (error) {
         dialog(error);
@@ -205,8 +221,7 @@ const customerProfile = {
         yield put({
           type: 'fetchNotes',
           payload: {
-            tenantId: getCurrentTenant(),
-            id: payload.customerIdv,
+            id: payload.customerId,
           },
         });
       } catch (error) {
@@ -363,6 +378,142 @@ const customerProfile = {
         });
       } catch (error) {
         dialog(error);
+      }
+      return response;
+    },
+    *fetchProjectListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getProjectList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            projectList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    // OTHERS
+    *fetchProjectTypeListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getProjectTypeList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            projectTypeList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchDivisionListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getDivisionList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        if (data.length > 0) {
+          yield put({
+            type: 'save',
+            payload: {
+              divisionList: data[0].tagDivision,
+            },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *fetchEmployeeListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getEmployeeList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            employeeList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchProjectNameListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getProjectNameList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            projectNameList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchProjectStatusListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getProjectStatusList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            projectStatusList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
       }
       return response;
     },

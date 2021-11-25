@@ -12,6 +12,7 @@ import {
   getDepartmentList,
   getOffToTalList,
   getLocationList,
+  uploadFile,
 } from '../services/ticketsManagement';
 
 const ticketManagement = {
@@ -39,9 +40,9 @@ const ticketManagement = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, message } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({ message });
+        notification.success({ message: 'Raise Ticket Successfully' });
         yield put({
           type: 'refeshfetchListAllTicket',
           payload: {
@@ -55,6 +56,21 @@ const ticketManagement = {
       }
       return response;
     },
+    *uploadFileAttachments({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(uploadFile, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Upload File Successfully',
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
     // Delete Ticket
     *deleteAll({ payload }, { call }) {
       try {
@@ -99,12 +115,12 @@ const ticketManagement = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data, message } = response;
+        const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
-        notification.success({ message });
+        notification.success({ message: 'Update Ticket successfully' });
         yield put({
           type: 'save',
-          payload: { ticketDetail: data },
+          payload: { ticketDetail: data.length > 0 ? data[0] : [] },
         });
         yield put({
           type: 'refeshfetchListAllTicket',
@@ -134,11 +150,19 @@ const ticketManagement = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data } = response;
+        const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { ticketDetail: data },
+          payload: { ticketDetail: data.length > 0 ? data[0] : [] },
+        });
+        yield put({
+          type: 'fetchTicketByID',
+          payload: {
+            id: payload.id,
+            tenantId: getCurrentTenant(),
+            company: getCurrentCompany(),
+          },
         });
       } catch (error) {
         dialog(error);
@@ -185,6 +209,8 @@ const ticketManagement = {
       try {
         const response = yield call(getListEmployee, {
           ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;

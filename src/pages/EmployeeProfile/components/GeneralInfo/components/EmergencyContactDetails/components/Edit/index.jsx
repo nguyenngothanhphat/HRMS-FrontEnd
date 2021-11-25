@@ -198,25 +198,7 @@ class Edit extends Component {
               <div key={`${index + 1}`}>
                 {index > 0 ? <div className={styles.line} /> : null}
                 <Form.Item
-                  label="Emergency Contact"
-                  name={`emergencyContact ${index}`}
-                  rules={[
-                    {
-                      pattern: /^[+]*[\d]{0,10}$/,
-                      message: formatMessage({
-                        id: 'pages.employeeProfile.validateWorkNumber',
-                      }),
-                    },
-                  ]}
-                >
-                  <Input
-                    defaultValue={emergencyContact}
-                    className={styles.inputForm}
-                    onChange={(e) => this.handleChangeField(e.target.id, e.target.value, index)}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label="Person’s Name"
+                  label="Emergency Contact’s Name"
                   name={`emergencyPersonName ${index}`}
                   validateTrigger="onChange"
                   rules={[
@@ -263,6 +245,24 @@ class Edit extends Component {
                       );
                     })}
                   </Select>
+                </Form.Item>
+                <Form.Item
+                  label="Emergency Contact Number"
+                  name={`emergencyContact ${index}`}
+                  rules={[
+                    {
+                      pattern: /^[+]*[\d]{0,10}$/,
+                      message: formatMessage({
+                        id: 'pages.employeeProfile.validateWorkNumber',
+                      }),
+                    },
+                  ]}
+                >
+                  <Input
+                    defaultValue={emergencyContact}
+                    className={styles.inputForm}
+                    onChange={(e) => this.handleChangeField(e.target.id, e.target.value, index)}
+                  />
                 </Form.Item>
               </div>
             );

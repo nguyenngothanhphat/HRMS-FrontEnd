@@ -107,7 +107,7 @@ export default {
   'component.salaryAcceptance.note1':
     'You have gone through all the contents of the table and accept the salary as terms of your employment.',
   'component.salaryAcceptance.title2':
-    'A re-negotiation as been asked by the candidate on the salary structure',
+    'A re-negotiation has been asked by the candidate on the salary structure',
   'component.salaryAcceptance.note2':
     'You have gone through all the contents of the table. However, I would like to renegotiate.',
   'component.salaryAcceptance.title3': 'The salary structure has been rejected by the candidate.',
