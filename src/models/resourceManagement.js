@@ -35,8 +35,8 @@ const resourceManagement = {
     resourceStatuses: [],
     resourceUtilizationChartData: [],
     utilizationOverviewList: [],
-    resourceUtilizationList: [],
-    newJoineeList: []
+    resourceUtilizationList: {},
+    newJoineeList: [],
   },
   effects: {
     *getProjectList({ payload }, { call, put }) {

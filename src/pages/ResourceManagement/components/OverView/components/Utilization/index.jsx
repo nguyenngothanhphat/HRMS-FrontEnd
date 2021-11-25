@@ -9,10 +9,10 @@ import styles from './index.less';
 const { TabPane } = Tabs;
 
 const Utilization = () => {
-  const [activeKey, setActiveKey] = useState('2');
+  const [activeKey, setActiveKey] = useState('1'); // 1: latest, 2: trend
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [timeMode, setTimeMode] = useState('W'); // X: unvalid, D: ,W
+  const [invalidDates, setInvalidDates] = useState(false); 
 
   useEffect(() => {
     const theFirst = moment().startOf('year');
@@ -25,15 +25,10 @@ const Utilization = () => {
     setStartDate(dates[0]);
     setEndDate(dates[1]);
     const duration = moment.duration(dates[1].diff(dates[0])).asDays() + 1;
-    console.log('🚀 ~ onDatePickerChange ~ duration', duration);
     if (duration < 28) {
-      setTimeMode('X');
-    }
-    if (duration >= 28 && duration <= 31) {
-      setTimeMode('D');
-    }
-    if (duration > 31) {
-      setTimeMode('W');
+      setInvalidDates(true);
+    } else {
+      setInvalidDates(false)
     }
   };
 
@@ -50,16 +45,17 @@ const Utilization = () => {
         activeKey={activeKey}
         onChange={(key) => setActiveKey(key)}
         tabBarExtraContent={options()}
+        destroyInactiveTabPane
       >
         <TabPane tab="Latest" key="1">
           <Latest />
         </TabPane>
         <TabPane tab="Trend" key="2">
-          <Trend startDate={startDate} endDate={endDate} mode={timeMode} />
+          <Trend startDate={startDate} endDate={endDate} invalidDates={invalidDates} />
         </TabPane>
       </Tabs>
     </Card>
   );
-};
+};;
 
 export default Utilization;

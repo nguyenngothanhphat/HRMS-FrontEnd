@@ -1,4 +1,3 @@
-import EmptyImage from '@/assets/resourceManagement/emptyImage.png';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import {
@@ -11,13 +10,17 @@ import {
   YAxis,
 } from 'recharts';
 import { connect } from 'umi';
+// import CustomDot from '@/assets/resourceManagement/customDot.svg';
+import EmptyImage from '@/assets/resourceManagement/emptyImage.png';
 import styles from './index.less';
 
 const Trend = (props) => {
-  const { dispatch, startDate = '', endDate = '', mode = 'X' } = props;
+  const { dispatch, startDate = '', endDate = '', invalidDates = false } = props;
 
   // redux
-  const { resourceManagement: { resourceUtilizationChartData = [] } = {} } = props;
+  const {
+    resourceManagement: { resourceUtilizationChartData: { type = '', result = [] } = {} } = {},
+  } = props;
 
   const [data, setData] = useState([]);
 
@@ -38,17 +41,17 @@ const Trend = (props) => {
   }, [startDate, endDate]);
 
   const getNameByMode = (x) => {
-    if (mode === 'W') {
+    if (type === 'W') {
       return x.week;
     }
-    if (mode === 'D') {
+    if (type === 'D') {
       return x.date ? moment(x.date).format('DD') : '';
     }
     return '';
   };
 
   const formatData = () => {
-    return resourceUtilizationChartData.map((x) => {
+    return result.map((x) => {
       const { summary = [] } = x;
       const billable = summary.find((y) => y.status === 'Unpaid');
       const total = summary.find((y) => y.status === 'Total');
@@ -64,9 +67,9 @@ const Trend = (props) => {
   };
 
   useEffect(() => {
-    const tempData = formatData(resourceUtilizationChartData);
+    const tempData = formatData(result);
     setData(tempData);
-  }, [JSON.stringify(resourceUtilizationChartData)]);
+  }, [JSON.stringify(result)]);
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -102,7 +105,10 @@ const Trend = (props) => {
       return (
         <div className={styles.customTooltip}>
           {items.map((x) => (
-            <div className={styles.tooltipItem}>
+            <div
+              className={styles.tooltipItem}
+              style={x.name === 'Current Utilization' ? { marginBottom: '10px' } : {}}
+            >
               <span className={styles.left}>{x.name}</span>
               <span className={styles.right}>{x.value}</span>
             </div>
@@ -114,7 +120,23 @@ const Trend = (props) => {
     return null;
   };
 
-  if (mode === 'X') {
+  // const CustomizeDot = (values) => {
+  //   const { cx, cy } = values;
+  //   return (
+  //     <svg
+  //       cx={cx - 6}
+  //       cy={cy - 6}
+  //       width="12"
+  //       height="12"
+  //       viewBox="0 0 12 12"
+  //       fill="none"
+  //       xmlns="http://www.w3.org/2000/svg"
+  //     >
+  //       <circle cx="6" cy="6" r="5" fill="white" stroke="#2C6DF9" strokeWidth="2" />
+  //     </svg>
+  //   );
+  // };
+  if (invalidDates) {
     return (
       <div className={styles.Trend}>
         <div className={styles.emptyContainer}>
@@ -127,14 +149,14 @@ const Trend = (props) => {
       </div>
     );
   }
+
   return (
     <div className={styles.Trend}>
-      <ResponsiveContainer width="100%" height={250}>
+      <ResponsiveContainer width="100%" height={350}>
         <AreaChart
           width={500}
-          height={200}
+          height={300}
           data={data}
-          syncId="anyId"
           margin={{
             top: 10,
             right: 30,
@@ -149,13 +171,14 @@ const Trend = (props) => {
             </linearGradient>
           </defs>
           <CartesianGrid horizontal={false} vertical={false} max={100} />
-          <XAxis dataKey="name" />
+          <XAxis dataKey="name" tickCount={36} domain={[0, 36]} />
           <YAxis /> {/* domain={[0, 100]} */}
           <Tooltip
             wrapperStyle={{ background: '#1A1A46', borderRadius: '4px', padding: '16px' }}
             content={<CustomTooltip />}
           />
           <Area
+            // dot={CustomizeDot}
             dataKey="utilization"
             strokeWidth={2}
             stroke="#2C6DF9"
