@@ -11,7 +11,6 @@ import {
   Upload,
   Spin,
   message,
-  notification,
 } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { isEmpty } from 'lodash';
