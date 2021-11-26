@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Col, Row, Tabs } from 'antd';
+import { Button, Col, Row, Tabs, Dropdown, Menu } from 'antd';
 import { history, connect, formatMessage } from 'umi';
 import { debounce } from 'lodash';
 import { DownloadOutlined } from '@ant-design/icons';
@@ -7,6 +7,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import ResourceList from './components/ResourceList';
 import styles from './index.less';
 import OverView from '@/pages/ResourceManagement/components/OverView';
+import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
 
 const baseModuleUrl = '/resource-management';
 
@@ -65,6 +66,43 @@ class Resources extends Component {
   };
 
   renderActionButton = () => {
+    const { tabName = '' } = this.props;
+    if (tabName === 'overview') {
+      const locationMenu = (
+        <Menu>
+          <Menu.Item key={1}>All</Menu.Item>
+        </Menu>
+      );
+
+      const divisionMenu = (
+        <Menu>
+          <Menu.Item key={1}>Design</Menu.Item>
+        </Menu>
+      );
+
+      return (
+        <div className={styles.options}>
+          <div className={styles.dropdownItem}>
+            <span className={styles.label}>Location</span>
+            <Dropdown overlay={locationMenu}>
+              <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
+                <span>All</span>
+                <img src={SmallDownArrow} alt="" />
+              </div>
+            </Dropdown>
+          </div>
+          <div className={styles.dropdownItem}>
+            <span className={styles.label}>Division</span>
+            <Dropdown overlay={divisionMenu}>
+              <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
+                <span>Design</span>
+                <img src={SmallDownArrow} alt="" />
+              </div>
+            </Dropdown>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className={styles.options}>
         <Row gutter={[24, 0]}>
@@ -85,7 +123,7 @@ class Resources extends Component {
 
   render() {
     const { TabPane } = Tabs;
-   
+
     const { locationID = '', totalList = [], tabName = '' } = this.props;
     const { loadingSearch } = this.state;
     return (

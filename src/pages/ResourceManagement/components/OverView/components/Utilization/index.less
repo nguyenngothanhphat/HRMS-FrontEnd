@@ -3,6 +3,7 @@
 @lightGrayColor: #707177;
 @commonPadding: 24px;
 @borderColor: #d6dce0;
+@orangeColor: #ffa100;
 
 .Utilization {
   :global {
@@ -28,6 +29,23 @@
     .ant-tabs-top > div > .ant-tabs-nav::before,
     .ant-tabs-bottom > div > .ant-tabs-nav::before {
       border-color: @borderColor;
+    }
+  }
+  .exportBtn {
+    display: inline-flex;
+    align-items: center;
+    color: @orangeColor;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    img {
+      width: 16px;
+      height: 16px;
+      margin-right: 10px;
+    }
+    span {
+      font-weight: 500;
+      font-size: 14px;
     }
   }
 }
