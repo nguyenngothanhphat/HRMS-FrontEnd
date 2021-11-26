@@ -954,7 +954,20 @@ const routes = [
               'admin',
             ],
           },
-
+          // RESOURCE MANAGEMENT
+          {
+            path: '/resource-management',
+            name: 'Resource Management',
+            icon: '/assets/images/menuIcons/ticketManagement.svg',
+            component: './ResourceManagement',
+            authority: ['hr-manager', 'hr', 'employee', 'manager'],
+          },
+          {
+            path: '/resource-management/:tabName',
+            component: './ResourceManagement',
+            authority: ['hr-manager', 'hr', 'employee', 'manager'],
+            hideInMenu: true,
+          },
           {
             path: '/change-password',
             name: 'change-password',

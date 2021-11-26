@@ -27,5 +27,6 @@
     "Unmount",
     "admincla",
     "ted"
-  ]
+  ],
+  "editor.formatOnSaveMode": "modifications"
 }
