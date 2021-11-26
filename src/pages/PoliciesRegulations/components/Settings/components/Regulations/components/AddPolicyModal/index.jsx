@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Col, Form, Input, Modal, Row } from 'antd';
 import styles from './index.less';
 
-class AddCategoriesModal extends Component {
+class AddPolicyModal extends Component {
   formRef = React.createRef();
 
   constructor(props) {
@@ -23,7 +23,7 @@ class AddCategoriesModal extends Component {
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>
-          <p className={styles.header__text}>Add Policies Categories</p>
+          <p className={styles.header__text}>Add Policy</p>
         </div>
       );
     };
@@ -50,7 +50,7 @@ class AddCategoriesModal extends Component {
     return (
       <>
         <Modal
-          className={`${styles.AddTaskModal} ${styles.noPadding}`}
+          className={`${styles.AddPolicyModal} ${styles.noPadding}`}
           onCancel={this.handleCancel}
           destroyOnClose
           width={696}
@@ -82,4 +82,4 @@ class AddCategoriesModal extends Component {
   }
 }
 
-export default AddCategoriesModal;
+export default AddPolicyModal;
