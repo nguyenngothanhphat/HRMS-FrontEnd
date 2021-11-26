@@ -974,6 +974,12 @@ const routes = [
             component: './PoliciesRegulations',
           },
           {
+            path: '/policies-regulations/settings',
+            name: 'settings',
+            hideInMenu: true,
+            component: './PoliciesRegulations/components/Settings',
+          },
+          {
             path: '/search-result',
             name: 'searchResult',
             hideInMenu: true,

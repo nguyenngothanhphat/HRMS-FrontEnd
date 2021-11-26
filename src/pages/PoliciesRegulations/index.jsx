@@ -1,53 +1,41 @@
 import React, { PureComponent } from 'react';
-import { Affix, Row, Col } from 'antd';
-import { formatMessage, connect } from 'umi';
+import { Row, Col, Button } from 'antd';
+import { connect, Link } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
-// import ContactPage from './components/ContactPage';
-// import ListQuestions from './components/ListQuestions';
+
+import Polices from './components/Policies';
 import styles from './index.less';
 
-@connect(
-  ({
-    user: { currentUser = {} } = {},
-    frequentlyAskedQuestions: { list = [], listDefault = {}, getListByCompany = {} } = {},
-  }) => ({
-    list,
-    listDefault,
-    currentUser,
-    getListByCompany,
-  }),
-)
+@connect(({ user: { currentUser = {} } = {} }) => ({
+  currentUser,
+}))
 class PoliciesRegulations extends PureComponent {
-  componentDidMount() {
-    const { dispatch, currentUser: { company: { _id: idCompany = '' } = {} } = {} } = this.props;
-    if (dispatch) {
-      dispatch({
-        type: 'frequentlyAskedQuestions/getListByCompany',
-        payload: { company: idCompany },
-      });
-    }
-  }
+  componentDidMount() {}
 
   render() {
-    const { location: { query = {} } = {}, getListByCompany = {} } = this.props;
-    const { faq = [] } = getListByCompany;
     return (
       <PageContainer>
-        <div className={styles.root}>
-          <Affix offsetTop={30}>
-            <div className={styles.titlePage}>
-              <div className={styles.titlePage__text}>
-                {formatMessage({ id: 'pages.frequentlyAskedQuestions.title' })}
+        <Row className={styles.PoliciesRegulations}>
+          <Col span={24}>
+            <div className={styles.header}>
+              <div className={styles.header__left}>Policies</div>
+              <div className={styles.header__right}>
+                <Button className={styles.buttonSetting}>
+                  {/** cần sửa lại  */}
+                  <Link to="/policies-regulations/settings">
+                    <span className={styles.buttonSetting__text}>Settings</span>
+                  </Link>
+                </Button>
               </div>
             </div>
-          </Affix>
-          <Row>
-            <Col span={17}>{/* <ListQuestions list={faq} idQuestion={query} /> */}</Col>
-            <Col span={7} className={styles.contactPage}>
-              {/* <ContactPage /> */}
-            </Col>
-          </Row>
-        </div>
+          </Col>
+          <Col span={24} />
+          <Col span={24}>
+            <div className={styles.containerPolicies}>
+              <Polices />
+            </div>
+          </Col>
+        </Row>
       </PageContainer>
     );
   }
