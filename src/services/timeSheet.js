@@ -2,7 +2,7 @@ import { request } from '@/utils/request';
 
 export async function getMyTimesheet(payload, params) {
   return request(
-    `/api/timesheet/filter`,
+    `/api/filter`,
     {
       method: 'GET',
       data: payload,
@@ -15,7 +15,7 @@ export async function getMyTimesheet(payload, params) {
 
 export async function getManagerTimesheet(payload, params) {
   return request(
-    `/api/timesheet/manager`,
+    `/api/manager`,
     {
       method: 'GET',
       data: payload,
@@ -29,7 +29,7 @@ export async function getManagerTimesheet(payload, params) {
 // edit/update
 export async function updateActivity(payload, params) {
   return request(
-    `/api/timesheet`,
+    `/api`,
     {
       method: 'PATCH',
       data: payload,
@@ -42,7 +42,7 @@ export async function updateActivity(payload, params) {
 
 export async function removeActivity(payload, params) {
   return request(
-    `/api/timesheet`,
+    `/api`,
     {
       method: 'DELETE',
       data: payload,
@@ -55,7 +55,7 @@ export async function removeActivity(payload, params) {
 
 export async function addActivity(payload) {
   return request(
-    `/api/timesheet`,
+    `/api`,
     {
       method: 'POST',
       data: payload,
@@ -67,7 +67,7 @@ export async function addActivity(payload) {
 
 export async function addMultipleActivity(payload, params) {
   return request(
-    `/api/timesheet/multiple`,
+    `/api/multiple`,
     {
       method: 'POST',
       data: payload,
@@ -82,7 +82,7 @@ export async function addMultipleActivity(payload, params) {
 export async function getMyTimesheetByType(payload, params) {
   // date, week, month
   return request(
-    `/api/timesheet/view`,
+    `/api/view`,
     {
       method: 'GET',
       data: payload,
@@ -97,7 +97,7 @@ export async function getMyTimesheetByType(payload, params) {
 export async function getImportData(payload, params) {
   // date, week, month
   return request(
-    `/api/timesheet/import`,
+    `/api/import`,
     {
       method: 'GET',
       data: payload,
@@ -111,7 +111,7 @@ export async function getImportData(payload, params) {
 export async function importTimesheet(payload, params) {
   // date, week, month
   return request(
-    `/api/timesheet/import`,
+    `/api/import`,
     {
       method: 'POST',
       data: payload,
