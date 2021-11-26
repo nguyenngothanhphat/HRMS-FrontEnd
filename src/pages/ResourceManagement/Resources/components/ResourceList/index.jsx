@@ -133,12 +133,12 @@ class ResourceList extends Component {
     for (const [key, value] of Object.entries(filter)) {
       if (value) {
         // check if backend accept empty obj
-        newFilterObj[key] = value;
-        // if (Array.isArray(value) && value.length > 0) {
         // newFilterObj[key] = value;
-        // } else if(!Array.isArray(value)) {
-        //   newFilterObj[key] = value;
-        // }
+        if (Array.isArray(value) && value.length > 0) {
+        newFilterObj[key] = value;
+        } else if(!Array.isArray(value)) {
+          newFilterObj[key] = value;
+        }
       }
     }
     return newFilterObj

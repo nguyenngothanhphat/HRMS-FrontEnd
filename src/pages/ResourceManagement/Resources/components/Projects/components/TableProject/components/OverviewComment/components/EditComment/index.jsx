@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react';
 import { Modal, Input, Form } from 'antd';
-import { connect } from 'umi';
+// import { connect } from 'umi';
 import styles from './index.less';
 import editIcon from '@/assets/resource-management-edit-history.svg';
 
 const { TextArea } = Input;
-@connect(({ loading }) => ({
-  loading: loading.effects['resourceManagement/updateComment'],
-}))
-class EditCommentModal extends PureComponent {
+// @connect(({ loading }) => ({
+//   loading: loading.effects['resourceManagement/updateComment'],
+// }))
+class EditComment extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,20 +28,24 @@ class EditCommentModal extends PureComponent {
     });
   };
 
-  onFinish = async (values, obj) => {
-    const payload = {
-      commentResource: values.comment,
-      id: obj.employeeId,
-    };
-    const { dispatch } = this.props;
-    await dispatch({
-      type: 'resourceManagement/updateComment',
-      payload: {
-        ...payload,
-      },
-    });
+  onFinish = async () => {
     this.handleCancel();
   };
+
+  // onFinish = async (values, obj) => {
+  //   const payload = {
+  //     commentResource: values.comment,
+  //     id: obj.employeeId,
+  //   };
+  //   const { dispatch } = this.props;
+  //   await dispatch({
+  //     type: 'resourceManagement/updateComment',
+  //     payload: {
+  //       ...payload,
+  //     },
+  //   });
+  //   this.handleCancel();
+  // };
 
   render() {
     const { dataRow } = this.props;
@@ -50,7 +54,7 @@ class EditCommentModal extends PureComponent {
       <div className={styles.btnEdit}>
         <img src={editIcon} alt="historyIcon" style={{width: '39px', height: '39px'}} onClick={this.openCommentView} />
         <Modal
-          className={styles.modalAdd}
+          className={styles.modalEditComment}
           title="Edit Comments"
           width="40%"
           visible={visible}
@@ -88,4 +92,4 @@ class EditCommentModal extends PureComponent {
   }
 }
 
-export default EditCommentModal;
+export default EditComment;
