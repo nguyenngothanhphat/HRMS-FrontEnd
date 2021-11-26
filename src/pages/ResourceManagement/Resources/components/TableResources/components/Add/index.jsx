@@ -109,7 +109,7 @@ class AddActionBTN extends Component {
     const projectId1 = (projectId !== -1 ? projectId : projectFist.id) || -1;
     const projectDetail = projectList.find((obj) => obj.id === projectId1) || {};
     return (
-      <div>
+      <div className={styles.Add}>
         <img
           src={addAction}
           alt="attachIcon"

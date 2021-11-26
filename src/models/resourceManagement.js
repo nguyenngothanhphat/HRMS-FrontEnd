@@ -1,4 +1,4 @@
-import { notification } from 'antd';
+import { notification, message } from 'antd';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
@@ -12,7 +12,11 @@ import {
   fetchDivisions,
   updateProjectDetail,
   fetchResourceStatus,
-  fetchTitleList
+  fetchTitleList,
+  fetchStatusProject,
+  fetchProjectListTable,
+  addAndUpdateComments,
+  exportProject,
 } from '../services/resourceManagement';
 
 import { handlingResourceAvailableStatus } from '@/utils/resourceManagement';
@@ -27,6 +31,8 @@ const resourceManagement = {
     listDepartment: [],
     projectList: [],
     resourceStatuses: [],
+    statusProject: [],
+    projectTable: [],
   },
   effects: {
     *getProjectList({ payload }, { call, put }) {
@@ -220,6 +226,72 @@ const resourceManagement = {
         dialog(error);
       }
     },
+    *fetchProjectList({ payload }, { call, put }) {
+      try {
+        const response = yield call(fetchProjectListTable, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { projectTable: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *fetchStatusProjectList({ payload }, { call, put }) {
+      try {
+        const response = yield call(fetchStatusProject, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { statusProject: data?.statuses || [] },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *addAndUpdateCommentsProject({ payload }, { call }) {
+      try {
+        const response = yield call(addAndUpdateComments, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Add comments Successfully',
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *exportReportProject(_, { call }) {
+      let response = '';
+      const hide = message.loading('Exporting data...', 0);
+      try {
+        response = yield call(exportProject, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      hide();
+      return response;
+    },
   },
   reducers: {
     save(state, action) {
@@ -230,6 +302,5 @@ const resourceManagement = {
     },
   },
 };
-
 
 export default resourceManagement;

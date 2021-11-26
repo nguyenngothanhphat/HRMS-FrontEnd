@@ -47,7 +47,7 @@ class CommentModal extends PureComponent {
     const { data } = this.props;
     const { visible } = this.state;
     return (
-      <div>
+      <div className={styles.CommentModal}>
         <div className={styles.options}>
           <Row gutter={[24, 0]}>
             <Col>

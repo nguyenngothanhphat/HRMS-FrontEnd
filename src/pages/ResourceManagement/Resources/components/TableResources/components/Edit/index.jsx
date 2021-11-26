@@ -80,10 +80,10 @@ class EditActionBTN extends Component {
     const maxEnterUtilization = 100 - sumUtilization + dataPassRow.utilization;
     const { visible } = this.state;
     return (
-      <div className={styles.btnEdit}>
+      <div className={styles.EditActionBTN}>
         <img src={editIcon} alt="historyIcon" onClick={() => this.showModal()} />
         <Modal
-          className={styles.modalAdd}
+          className={styles.modalEditProjectDetail}
           title="Edit Project Details"
           width="60%"
           visible={visible}

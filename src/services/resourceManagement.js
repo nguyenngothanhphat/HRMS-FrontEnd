@@ -74,3 +74,31 @@ export async function fetchTitleList(payload) {
     data: payload,
   });
 }
+
+export async function fetchStatusProject(payload) {
+  return request('/api-project/projecttenant/get-status-summary', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function fetchProjectListTable(payload) {
+  return request('/api-project/resourcetenant/list-project', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function addAndUpdateComments(payload) {
+  return request('/api-project/projecttenant/update-comment', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function exportProject(payload) {
+  return request('/api-project/resourcetenant/export', {
+    method: 'POST',
+    data: payload,
+  });
+}

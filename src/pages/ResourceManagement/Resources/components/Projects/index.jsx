@@ -1,55 +1,58 @@
-import React, { Component } from 'react';
-// import { Row, Col, Button, Modal, Form } from 'antd';
-import ProjectStatictis from './components/ProjectStatictis';
-import SearchProject from './components/SearchProject';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
+import HeaderProject from './components/HeaderProject';
 import TableProject from './components/TableProject';
 import styles from './index.less';
 
-class ProjectList extends Component {
-    fetchStatus = {
-        START: 'Start',
-        FETCHING: 'loading',
-        COMPLETED: 'completed',
+const ProjectList = (props) => {
+  const {
+    projectTable = [],
+    statusProject = [],
+    dispatch,
+    loadingFetchProjectList = false,
+  } = props;
+  const [projectStatus, setProjectStatus] = useState('All');
+
+  const fetchProjectList = async (payload) => {
+    let tempPayload = payload;
+    if (projectStatus !== 'All') {
+      tempPayload = {
+        ...payload,
+        projectStatus: [projectStatus],
       };
-    
-    fetchData = this.fetchStatus.START;
-
-    filter = {
-        name: undefined,
-        tagDivision: [],
-        title: [],
-        skill: [],
-        project: [],
-        expYearBegin: undefined,
-        expYearEnd: undefined,
-    };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-        filter: this.filter
-    };
-  }
-
-  onFilterChange = (filters) =>{
-    this.fetchData = this.fetchStatus.START;
-    this.setState({
-      filter: {...filters},
+    }
+    dispatch({
+      type: 'resourceManagement/fetchProjectList',
+      payload: tempPayload,
     });
-  }
+    dispatch({
+      type: 'resourceManagement/fetchStatusProjectList',
+    });
+  };
 
-  render() {
-    const {filter} = this.state;
-    return (
-      <div className={styles.projects}>
-        <div className={styles.tabMenu}>
-          <ProjectStatictis />
-          <SearchProject onFilterChange={this.onFilterChange} filter={filter} />
-        </div>
-        <TableProject />
+  useEffect(() => {
+    if (projectStatus !== 'All') {
+      fetchProjectList({ projectStatus: [projectStatus] });
+    } else fetchProjectList();
+  }, [projectStatus]);
+  return (
+    <div className={styles.ProjectList}>
+      <div className={styles.tabMenu}>
+        <HeaderProject
+          data={statusProject}
+          setProjectStatus={setProjectStatus}
+          fetchProjectList={fetchProjectList}
+        />
       </div>
-    );
-  }
-}
+      <TableProject data={projectTable} loading={loadingFetchProjectList} />
+    </div>
+  );
+};
 
-export default ProjectList;
+export default connect(
+  ({ resourceManagement: { projectTable = [], statusProject = [] } = {}, loading }) => ({
+    loadingFetchProjectList: loading.effects['resourceManagement/fetchProjectList'],
+    projectTable,
+    statusProject,
+  }),
+)(ProjectList);

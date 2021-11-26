@@ -126,7 +126,7 @@ class HistoryActionBTN extends Component {
     ];
     const { visible } = this.state;
     return (
-      <div className={styles.btnEdit}>
+      <div className={styles.HistoryActionBTN}>
         <img
           src={historyIcon}
           alt="historyIcon"
@@ -134,7 +134,7 @@ class HistoryActionBTN extends Component {
           className={styles.buttonEdit}
         />
         <Modal
-          className={styles.modalAdd}
+          className={styles.modalViewHistoryProject}
           title="Resource History"
           width="60%"
           visible={visible}

@@ -47,10 +47,10 @@ class EditCommentModal extends PureComponent {
     const { dataRow } = this.props;
     const { visible } = this.state;
     return (
-      <div className={styles.btnEdit}>
+      <div className={styles.EditCommentModal}>
         <img src={editIcon} alt="historyIcon" style={{width: '39px', height: '39px'}} onClick={this.openCommentView} />
         <Modal
-          className={styles.modalAdd}
+          className={styles.modalEditComment}
           title="Edit Comments"
           width="40%"
           visible={visible}
