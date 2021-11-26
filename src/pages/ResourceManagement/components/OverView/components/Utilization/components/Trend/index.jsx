@@ -56,7 +56,7 @@ const Trend = (props) => {
   const formatData = () => {
     return result.map((x) => {
       const { summary = [] } = x;
-      const billable = summary.find((y) => y.status === 'Billable');
+      const billable = summary.find((y) => y.status === 'Unpaid');
       const total = summary.find((y) => y.status === 'Total');
 
       return {

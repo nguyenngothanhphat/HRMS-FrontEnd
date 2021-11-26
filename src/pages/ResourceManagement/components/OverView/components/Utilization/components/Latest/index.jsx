@@ -46,16 +46,16 @@ const Latest = (props) => {
     return {
       datasets: [
         {
-          // data: [15, 35, 40, 10],
-          data: [
-            renderPercent(billableToday?.percent),
-            renderPercent(bufferToday?.percent),
-            renderPercent(benchToday?.percent),
-            renderPercent(
-              totalToday?.percent -
-                (billableToday?.percent + bufferToday?.percent + benchToday?.percent),
-            ),
-          ],
+          data: [15, 35, 40, 10],
+          // data: [
+          //   renderPercent(billableToday?.percent),
+          //   renderPercent(bufferToday?.percent),
+          //   renderPercent(benchToday?.percent),
+          //   renderPercent(
+          //     totalToday?.percent -
+          //       (billableToday?.percent + bufferToday?.percent + benchToday?.percent),
+          //   ),
+          // ],
           backgroundColor: colors,
           borderWidth: 0,
         },
