@@ -61,7 +61,7 @@ const AddContent = (props) => {
       case 'pdf':
         return 1;
       default:
-        return 0;
+        return 2;
     }
   };
 
@@ -120,7 +120,7 @@ const AddContent = (props) => {
   };
 
   const _renderPreview = () => {
-    if (uploadedPreview.includes('pdf')) {
+    if (uploadedPreview.includes('application/pdf')) {
       return (
         <div className={styles.fileUploadedContainer}>
           <Document
