@@ -64,7 +64,7 @@ const CommonTable = (props) => {
         <Table
           // eslint-disable-next-line react/jsx-props-no-spreading
           components={components}
-          size="small"
+          size="middle"
           locale={{
             emptyText: <Empty description="No data" />,
           }}
