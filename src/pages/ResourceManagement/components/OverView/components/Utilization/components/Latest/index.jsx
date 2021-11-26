@@ -2,15 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import { connect } from 'umi';
-import CenterImage from '@/assets/resourceManagement/chartCenterImage.svg';
-
 import { Col, Row, Tooltip as TooltipAntd } from 'antd';
-
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import CenterImage from '@/assets/resourceManagement/chartCenterImage.svg';
 import styles from './index.less';
 import TopArrowIcon from '@/assets/resourceManagement/topArrow.svg';
 import HelpIcon from '@/assets/resourceManagement/helpIcon.svg';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 const Latest = (props) => {
   const { dispatch, resourceManagement: { resourceUtilizationList = {} } = {} } = props;
@@ -32,22 +31,33 @@ const Latest = (props) => {
 
   const colors = ['#FC6A22', '#FCB96C', '#66B03F', '#D6DCE0'];
 
+  const renderPercent = (x) => {
+    if (x === 0 || Number.isInteger(x)) return x;
+    return parseFloat(x).toFixed(2);
+  };
+
   const formatData = () => {
-    const billableToday = summaryToday.find((x) => x.status === 'Billable') || {};
-    const benchToday = summaryToday.find((x) => x.status === 'Bench') || {};
-    const bufferToday = summaryToday.find((x) => x.status === 'Buffer') || {};
-    const totalToday = summaryToday.find((x) => x.status === 'Total') || {};
+    const billableToday = summaryToday.find((x) => x.status === 'Billable') || { percent: 0 };
+    const benchToday = summaryToday.find((x) => x.status === 'Bench') || { percent: 0 };
+    const bufferToday = summaryToday.find((x) => x.status === 'Buffer') || { percent: 0 };
+    const totalToday = summaryToday.find((x) => x.status === 'Total') || { percent: 0 };
 
     // generate data for chart
     return {
       datasets: [
         {
-          data: [10, 20, 50, 20],
-          // data: [billable?.percent, buffer?.percent, bench?.percent, 100-(billable?.percent+ buffer?.percent+ bench?.percent)],
+          data: [15, 35, 40, 10],
+          // data: [
+          //   renderPercent(billableToday?.percent),
+          //   renderPercent(bufferToday?.percent),
+          //   renderPercent(benchToday?.percent),
+          //   renderPercent(
+          //     totalToday?.percent -
+          //       (billableToday?.percent + bufferToday?.percent + benchToday?.percent),
+          //   ),
+          // ],
           backgroundColor: colors,
-          borderColor: colors,
-          borderWidth: 1,
-          text: '23%',
+          borderWidth: 0,
         },
       ],
     };
@@ -94,22 +104,25 @@ const Latest = (props) => {
       },
       {
         name: 'Total Billable resources',
-        value: `${billableToday?.count} (${Math.round(billableToday?.percent * 100)}%)`,
+        value: `${billableToday?.count} (${renderPercent(billableToday?.percent)}%)`,
       },
       // {
       //   name: 'Total Unpaid resources',
-      //   value: `${unpaidToday?.count} (${Math.round(unpaidToday?.percent * 100)}%)`,
+      //   value: `${unpaidToday?.count} (${Math.round(unpaidToday?.percent)}%)`,
       // },
       {
         name: 'Total Buffer resources',
-        value: `${bufferToday?.count} (${Math.round(bufferToday?.percent * 100)}%)`,
+        value: `${bufferToday?.count} (${renderPercent(bufferToday?.percent)}%)`,
       },
       {
         name: 'Total Benched resources',
-        value: `${benchToday?.count} (${Math.round(benchToday?.percent * 100)}%)`,
+        value: `${benchToday?.count} (${renderPercent(benchToday?.percent)}%)`,
       },
     ];
   };
+
+  const numSectors = formatData().datasets[0].data.length;
+  const sectorDegree = 180 / numSectors;
 
   return (
     <div className={styles.Latest}>
@@ -122,7 +135,46 @@ const Latest = (props) => {
                 options={{
                   rotation: 270,
                   circumference: 180,
-                  cutout: 80,
+                  cutout: 85,
+                  layout: {
+                    padding: {
+                      top: 24,
+                      bottom: 14,
+                      left: 24,
+                      right: 24,
+                    },
+                  },
+                  plugins: {
+                    tooltip: {
+                      enabled: false,
+                    },
+                    datalabels: {
+                      anchor: 'end',
+                      align: (context) => {
+                        return sectorDegree * context.dataIndex + 20;
+                      },
+                      offset: () => {
+                        return -32;
+                      },
+                      display: (context) => {
+                        const { dataset } = context;
+                        const count = dataset.data.length;
+                        return (
+                          context.dataIndex !== count - 1 && dataset.data[context.dataIndex] !== 0
+                        );
+                      },
+
+                      color: '#161C29',
+                      labels: {
+                        title: {
+                          font: {
+                            weight: '500',
+                            size: 16,
+                          },
+                        },
+                      },
+                    },
+                  },
                 }}
                 plugins={[
                   {
@@ -142,32 +194,42 @@ const Latest = (props) => {
                       ctx.restore();
                     },
                   },
+                  ChartDataLabels,
                 ]}
               />
             </div>
             <div className={styles.numbers}>
               <div className={styles.numbers__above}>
                 <span className={styles.bigNumber}>
-                  {parseFloat(calculatedData.utilization).toFixed(2)}%
+                  {renderPercent(calculatedData.utilization)}%
                 </span>
                 <span className={styles.smallNumber}>
                   <img src={TopArrowIcon} alt="" />
-                  <span>{calculatedData.increasePercent}%</span>
+                  <span>{renderPercent(calculatedData.increasePercent)}%</span>
                 </span>
               </div>
               <div className={styles.numbers__below}>
                 <div>
                   Current Utilization{' '}
                   <TooltipAntd
-                    placement="right"
                     title={
-                      <div>
+                      <div style={{ fontSize: '12px' }}>
                         Current utilization is calculated as a percentage of Total Billable
                         resources / Total Resources
                         <br />
-                        Compared to the previous week, the Resource utilization has increased by 25%
+                        <br />
+                        Compared to the previous week, the Resource utilization has increased by{' '}
+                        {calculatedData.increasePercent}%
                       </div>
                     }
+                    placement="rightTop"
+                    color="#1A1A46"
+                    overlayInnerStyle={{
+                      padding: '7px 15px',
+                    }}
+                    overlayStyle={{
+                      borderRadius: '5px',
+                    }}
                   >
                     <img src={HelpIcon} alt="" />
                   </TooltipAntd>

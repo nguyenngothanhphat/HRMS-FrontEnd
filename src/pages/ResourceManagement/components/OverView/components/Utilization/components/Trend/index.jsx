@@ -41,11 +41,14 @@ const Trend = (props) => {
   }, [startDate, endDate]);
 
   const getNameByMode = (x) => {
-    if (type === 'W') {
-      return x.week;
-    }
     if (type === 'M') {
-      return x.date ? moment(x.date).format('DD') : '';
+      return moment(x.date).format('DD');
+    }
+    if (type === 'W') {
+      return `Week ${x.week}`;
+    }
+    if (type === 'Y') {
+      return x.month;
     }
     return '';
   };
@@ -152,7 +155,7 @@ const Trend = (props) => {
 
   return (
     <div className={styles.Trend}>
-      <ResponsiveContainer width="100%" height={350}>
+      <ResponsiveContainer width="100%" height={400}>
         <AreaChart
           width={500}
           height={300}
@@ -171,7 +174,7 @@ const Trend = (props) => {
             </linearGradient>
           </defs>
           <CartesianGrid horizontal={false} vertical={false} max={100} />
-          <XAxis dataKey="name" tickCount={36} domain={[0, 36]} />
+          <XAxis dataKey="name" />
           <YAxis /> {/* domain={[0, 100]} */}
           <Tooltip
             wrapperStyle={{ background: '#1A1A46', borderRadius: '4px', padding: '16px' }}

@@ -58,6 +58,7 @@
     "axios": "^0.21.1",
     "babel-eslint": "^10.1.0",
     "chart.js": "^3.6.0",
+    "chartjs-plugin-datalabels": "^2.0.0",
     "city-timezones": "^1.2.0",
     "classnames": "^2.2.6",
     "csvtojson": "^2.0.10",
