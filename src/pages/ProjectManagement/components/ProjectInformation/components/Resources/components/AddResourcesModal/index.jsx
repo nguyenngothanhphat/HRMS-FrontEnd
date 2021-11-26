@@ -61,12 +61,6 @@ const AddResourcesModal = (props) => {
     });
   };
 
-  useEffect(() => {
-    if (visible) {
-      fetchResourceList();
-    }
-  }, [visible]);
-
   const assignResources = () => {
     const payload = selectedResources.map((x) => {
       return {

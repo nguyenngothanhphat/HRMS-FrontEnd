@@ -57,7 +57,8 @@ const ResourceTableCard = (props) => {
         key: 'generalInfo',
         fixed: 'left',
         render: (generalInfo = {}) => {
-          const { legalName = '', userId = '', available = true } = generalInfo;
+          const { legalName = '', available = true, workEmail = '' } = generalInfo;
+          const userId = workEmail.substring(0, workEmail.lastIndexOf('@'));
           return (
             <div className={styles.cell}>
               <div className={styles.resourceName}>
@@ -76,12 +77,13 @@ const ResourceTableCard = (props) => {
       },
       {
         title: 'Division',
-        dataIndex: 'departmentInfo',
-        key: 'departmentInfo',
-        render: (departmentInfo) => {
+        dataIndex: 'tagDivision',
+        key: 'tagDivision',
+        width: '14%',
+        render: (tagDivision) => {
           return (
             <div className={styles.cell}>
-              <span className={styles.division}>{departmentInfo?.name}</span>
+              <span className={styles.division}>{tagDivision}</span>
             </div>
           );
         },
@@ -116,6 +118,7 @@ const ResourceTableCard = (props) => {
         key: 'projects',
         width: '20%',
         render: (projects = []) => {
+          if (!projects || projects.length === 0) return '';
           return (
             <Row className={styles.projectContainer} align="middle">
               {projects.map((p, i) => {
@@ -132,7 +135,9 @@ const ResourceTableCard = (props) => {
                           : {}
                       }
                     >
-                      <span className={styles.selectableTag}>{p.projectName || 'Null value'}</span>
+                      <span className={styles.selectableTag}>
+                        {p.project?.projectName || 'Null value'}
+                      </span>
                     </Col>
                   </>
                 );
