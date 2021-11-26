@@ -74,7 +74,7 @@ class TablePolicy extends Component {
           return (
             <div className={styles.policy}>
               <img src={PdfIcon} alt="PdfIcon" />
-              <span> {attachmentSlice()}</span>
+              <span style={{ color: '#2c6df9' }}> {attachmentSlice()}</span>
             </div>
           );
         },
@@ -100,7 +100,8 @@ class TablePolicy extends Component {
         render: () => {
           return (
             <Dropdown
-              className={styles.menuIcon}
+              overlayStyle={{ width: '200px', marginRight: '8px' }}
+              overlayClassName="dropdownPolicies"
               overlay={this.actionMenu()}
               placement="bottomRight"
               arrow

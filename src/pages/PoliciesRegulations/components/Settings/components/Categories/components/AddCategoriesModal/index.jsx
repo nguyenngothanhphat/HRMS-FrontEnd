@@ -35,6 +35,7 @@ class AddCategoriesModal extends Component {
               <Col>
                 <Form.Item
                   label="Categories Name"
+                  name="key"
                   labelCol={{ span: 24 }}
                   rules={[{ required: true, message: 'Please enter the categories name' }]}
                 >
