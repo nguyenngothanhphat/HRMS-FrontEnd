@@ -17,7 +17,13 @@ import {
   fetchProjectListTable,
   addAndUpdateComments,
   exportProject,
-} from '../services/resourceManagement';
+  // utilization
+  getResourceUtilizationChart,
+  getUtilizationOverviewDivision,
+  getUtilizationOverviewTitle,
+  getResourceUtilization,
+  getNewJoineesList
+} from '@/services/resourceManagement';
 
 import { handlingResourceAvailableStatus } from '@/utils/resourceManagement';
 
@@ -33,6 +39,10 @@ const resourceManagement = {
     resourceStatuses: [],
     statusProject: [],
     projectTable: [],
+    resourceUtilizationChartData: [],
+    utilizationOverviewList: [],
+    resourceUtilizationList: {},
+    newJoineeList: [],
   },
   effects: {
     *getProjectList({ payload }, { call, put }) {
@@ -243,6 +253,25 @@ const resourceManagement = {
         dialog(error);
       }
     },
+    // UTILIZATION
+    *fetchResourceUtilizationChart({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getResourceUtilizationChart, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { resourceUtilizationChartData: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
     *fetchStatusProjectList({ payload }, { call, put }) {
       try {
         const response = yield call(fetchStatusProject, {
@@ -255,6 +284,44 @@ const resourceManagement = {
         yield put({
           type: 'save',
           payload: { statusProject: data?.statuses || [] },
+        })
+        } catch (error) {
+          dialog(error);
+        }
+    },
+    *fetchUtilizationOverviewDivisionList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getUtilizationOverviewDivision, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { utilizationOverviewList: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *fetchUtilizationOverviewTitleList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getUtilizationOverviewTitle, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { utilizationOverviewList: data },
         });
       } catch (error) {
         dialog(error);
@@ -276,6 +343,24 @@ const resourceManagement = {
         dialog(error);
       }
     },
+    *fetchResourceUtilizationList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getResourceUtilization, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { resourceUtilizationList: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
     *exportReportProject(_, { call }) {
       let response = '';
       const hide = message.loading('Exporting data...', 0);
@@ -290,6 +375,25 @@ const resourceManagement = {
         dialog(error);
       }
       hide();
+      return response;
+    },
+    *fetchNewJoineeList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getNewJoineesList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { newJoineeList: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
       return response;
     },
   },

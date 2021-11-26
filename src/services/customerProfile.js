@@ -124,3 +124,16 @@ export async function updateContactInfo(payload) {
     data: payload,
   });
 }
+
+// project tab
+export async function getProjectList(payload) {
+  return request(
+    `/api-project/projecttenant/list`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    'PROJECT_API',
+  );
+}

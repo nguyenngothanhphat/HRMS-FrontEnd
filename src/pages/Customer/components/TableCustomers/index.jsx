@@ -150,7 +150,7 @@ class TableCustomers extends PureComponent {
     const { pageSelected, selectedRowKeys, visible } = this.state;
     const rowSize = 10;
     const scroll = {
-      x: '100vw',
+      x: 'max-content',
       y: 'max-content',
     };
     const pagination = {

@@ -55,6 +55,7 @@ const initialState = {
   documentTypeList: [],
   projectResourceList: [],
   projectResourceListTotal: 0,
+  employeeList: [],
 };
 
 const ProjectDetails = {

@@ -1,43 +1,43 @@
 import { request } from '@/utils/request';
 
 export async function getResources(payload) {
-    return request('/api-project/resourcetenant/list', {
-        method: 'POST',
-        data: payload,
-    });
+  return request('/api-project/resourcetenant/list', {
+    method: 'POST',
+    data: payload,
+  });
 }
 
 export async function getListEmployee(payload) {
-    return request('/api/employeetenant/list-by-single-company', {
-        method: 'POST',
-        data: payload,
-    });
+  return request('/api/employeetenant/list-by-single-company', {
+    method: 'POST',
+    data: payload,
+  });
 }
 export async function getDepartmentList(payload) {
-    return request('/api/departmenttenant/list', {
-        method: 'POST',
-        data: payload,
-    });
+  return request('/api/departmenttenant/list', {
+    method: 'POST',
+    data: payload,
+  });
 }
 export async function postAssignToProject(payload) {
-    return request('/api-project/resourcetenant/add', {
-        method: 'POST',
-        data: payload,
-    });
+  return request('/api-project/resourcetenant/add', {
+    method: 'POST',
+    data: payload,
+  });
 }
 
 export async function updateProjectDetail(payload) {
-    return request('/api-project/resourcetenant/update', {
-        method: 'POST',
-        data: payload,
-    });
+  return request('/api-project/resourcetenant/update', {
+    method: 'POST',
+    data: payload,
+  });
 }
 
 export async function getProjectList(payload) {
-    return request('/api-project/projecttenant/list', {
-        method: 'POST',
-        data: payload,
-    });
+  return request('/api-project/projecttenant/list', {
+    method: 'POST',
+    data: payload,
+  });
 }
 
 export async function updateComment(payload) {
@@ -82,8 +82,23 @@ export async function fetchStatusProject(payload) {
   });
 }
 
+// UTILIZATION
+export async function getUtilizationOverviewDivision(payload) {
+  return request('/api/employeetenant/utilization-overview-division', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function fetchProjectListTable(payload) {
   return request('/api-project/resourcetenant/list-project', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getUtilizationOverviewTitle(payload) {
+  return request('/api/employeetenant/utilization-overview-title', {
     method: 'POST',
     data: payload,
   });
@@ -98,6 +113,37 @@ export async function addAndUpdateComments(payload) {
 
 export async function exportProject(payload) {
   return request('/api-project/resourcetenant/export', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getResourceUtilization(payload) {
+  return request(
+    '/api-project/resourcetenant/utilization',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    'PROJECT_API',
+  );
+}
+
+export async function getResourceUtilizationChart(payload) {
+  return request(
+    '/api-project/resourcetenant/utilization-chart',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    'PROJECT_API',
+  );
+}
+
+export async function getNewJoineesList(payload) {
+  return request('/api/joiningformalitiestenant/get-list-new-comer', {
     method: 'POST',
     data: payload,
   });

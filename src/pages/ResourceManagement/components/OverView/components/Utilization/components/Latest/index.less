@@ -1,0 +1,86 @@
+.Latest {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  .container {
+    width: 70%;
+    // background-color: red;
+    .left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-top: -45px;
+      .chart {
+        max-width: 300px;
+      }
+      .numbers {
+        &__above {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding-left: 60px;
+          span {
+            display: block;
+          }
+          .bigNumber {
+            margin-right: 20px;
+            color: #161c29;
+            font-weight: 700;
+            font-size: 40px;
+            line-height: 47px;
+          }
+          .smallNumber {
+            color: #04af04;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 19px;
+            display: flex;
+            align-items: center;
+            img {
+              margin-right: 7px;
+            }
+          }
+        }
+        &__below {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-top: 16px;
+          span {
+            display: inline-block;
+            color: #161c29;
+            font-size: 16px;
+            line-height: 19px;
+          }
+          img {
+            margin-left: 10px;
+          }
+        }
+      }
+    }
+    .right {
+      .information {
+        max-width: 400px;
+        margin-top: 55px;
+        .item {
+          display: flex;
+          align-content: center;
+          justify-content: space-between;
+          margin-bottom: 24px;
+          span {
+            color: #161c29;
+            font-size: 16px;
+            line-height: 19px;
+          }
+          .label {
+          }
+          .value {
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
+}

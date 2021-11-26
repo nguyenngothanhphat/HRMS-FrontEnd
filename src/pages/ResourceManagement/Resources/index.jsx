@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Col, Row, Tabs } from 'antd';
+import { Button, Col, Row, Tabs, Dropdown, Menu } from 'antd';
 import { history, connect, formatMessage } from 'umi';
 import { debounce } from 'lodash';
 import { DownloadOutlined } from '@ant-design/icons';
@@ -8,6 +8,7 @@ import ResourceList from './components/ResourceList';
 import styles from './index.less';
 import OverView from '@/pages/ResourceManagement/components/OverView';
 import ProjectList from './components/Projects'
+import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
 
 const baseModuleUrl = '/resource-management';
 
@@ -46,16 +47,8 @@ class Resources extends Component {
   componentDidMount() {
     const { tabName = '' } = this.props;
     if (!tabName) {
-      history.replace(`${baseModuleUrl}/all-resources`);
+      history.replace(`${baseModuleUrl}/overview`);
     }
-  }
-
-  componentDidUpdate() {
-    // const { resourceList = [], prevProps } = this.props;
-    // if (JSON.stringify(resourceList) !== JSON.stringify(prevProps.resourceList)) {
-    //   this.updateData(resourceList);
-    // }
-    // this.dummyData()
   }
 
   onSearch = (value) => {
@@ -74,6 +67,43 @@ class Resources extends Component {
   };
 
   renderActionButton = () => {
+    const { tabName = '' } = this.props;
+    if (tabName === 'overview') {
+      const locationMenu = (
+        <Menu>
+          <Menu.Item key={1}>All</Menu.Item>
+        </Menu>
+      );
+
+      const divisionMenu = (
+        <Menu>
+          <Menu.Item key={1}>Design</Menu.Item>
+        </Menu>
+      );
+
+      return (
+        <div className={styles.options}>
+          <div className={styles.dropdownItem}>
+            <span className={styles.label}>Location</span>
+            <Dropdown overlay={locationMenu}>
+              <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
+                <span>All</span>
+                <img src={SmallDownArrow} alt="" />
+              </div>
+            </Dropdown>
+          </div>
+          <div className={styles.dropdownItem}>
+            <span className={styles.label}>Division</span>
+            <Dropdown overlay={divisionMenu}>
+              <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
+                <span>Design</span>
+                <img src={SmallDownArrow} alt="" />
+              </div>
+            </Dropdown>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className={styles.options}>
         <Row gutter={[24, 0]}>
@@ -94,19 +124,20 @@ class Resources extends Component {
 
   render() {
     const { TabPane } = Tabs;
-    const { locationID = '', totalList = [] } = this.props;
+
+    const { locationID = '', totalList = [], tabName = '' } = this.props;
     const { loadingSearch } = this.state;
     return (
       <div className={styles.ResourcesManagement}>
         <PageContainer>
           <Tabs
-            defaultActiveKey="resource-list"
+            activeKey={tabName || 'overview'}
             onChange={(key) => {
               history.push(`${baseModuleUrl}/${key}`);
             }}
             tabBarExtraContent={this.renderActionButton()}
           >
-            <TabPane tab="OverView" key="overview">
+            <TabPane tab="Overview" key="overview">
               <OverView />
             </TabPane>
             <TabPane tab="Resource List" key="resource-list">
