@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Table } from 'antd';
 import moment from 'moment';
+import { connect, formatMessage } from 'umi';
 import AddComment from './components/AddComment';
 import OverviewComment from './components/OverviewComment';
 import styles from './index.less';
@@ -8,110 +9,88 @@ import styles from './index.less';
 class TableProject extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { pageSelected: 1 };
   }
 
-  render() {
-    const { total, pageSelected, size, getPageAndSize } = this.props;
-    const pagination = {
-      position: ['bottomLeft'],
-      total,
-      showTotal: () => (
-        <span>
-          Showing{' '}
-          <b>
-            {(pageSelected - 1) * size + 1} - {pageSelected * size}
-          </b>{' '}
-          of {total}
-        </span>
-      ),
-      pageSize: 100,
-      current: pageSelected,
-      onChange: (page) => getPageAndSize(page, size),
-    };
+  formatDate = (date, typeFormat) => {
+    if (!date) {
+      return '-';
+    }
+    return moment(date).format(typeFormat);
+  };
 
-    const dataSource = [
-      {
-        key: '1',
-        projectName: 'HRMS (TL-Comp)',
-        customer: 'Terralogic Company',
-        projectType: 'M&M',
-        projectManager: 'Randy Dias',
-        startDate: '12/23/2021',
-        endDate: '09/16/2022',
-        resivedEndDate: '02/12/2022',
-        status: 'Engaging',
-        resourcePlan: 2,
-        resourceAssigned: 3,
-        billableResource: 2,
-        bufferResource: 1,
-        billEfficiency: '85%',
-        billableEffor: 3,
-        spentEffor: 5,
-        variance: 2,
-        comment: 'Lorem Ipsum is'
-      },
-      {
-        key: '2',
-        projectName: 'Entrible',
-        customer: 'Terralogic Company',
-        projectType: 'T&M',
-        projectManager: 'Nolan Rhiel',
-        startDate: '05/17/2021',
-        endDate: '02/11/2022',
-        resivedEndDate: '02/12/2022',
-        status: 'Lang',
-        resourcePlan: 1,
-        resourceAssigned: 3,
-        billableResource: 4,
-        bufferResource: 5,
-        billEfficiency: '60%',
-        billableEffor: 7,
-        spentEffor: 3,
-        variance: 4,
-        comment: ''
-      },
-      {
-        key: '3',
-        projectName: 'Billable',
-        customer: 'Terra-Comp',
-        projectType: 'K&M',
-        projectManager: 'Nolan Rhiel',
-        startDate: '02/12/2021',
-        endDate: '02/11/2022',
-        resivedEndDate: '02/12/2022',
-        status: 'Billable',
-        resourcePlan: 2,
-        resourceAssigned: 5,
-        billableResource: 3,
-        bufferResource: 4,
-        billEfficiency: '70%',
-        billableEffor: 2,
-        spentEffor: 3,
-        variance: 1,
-        comment: 'dummy text of the printing and typesetting industry.'
-      },
-      {
-        key: '4',
-        projectName: 'Alska comp',
-        customer: 'Terra-Comp',
-        projectType: 'L&M',
-        projectManager: 'Nolan Rhiel',
-        startDate: '10/07/2021',
-        endDate: '04/03/2022',
-        resivedEndDate: '02/12/2022',
-        status: 'inprocess',
-        resourcePlan: 8,
-        resourceAssigned: 6,
-        billableResource: 3,
-        bufferResource: 9,
-        billEfficiency: '90%',
-        billableEffor: 4,
-        spentEffor: 1,
-        variance: 3,
-        comment: 'printing and typesetting industry.'
-      },
-    ];
+  getProjectManage = (obj) => {
+    if(!obj) { return '-' }
+    const getInfo = obj ? obj.generalInfo : {};
+    const getProjectManager = getInfo ? getInfo.legalName : '-';
+    return getProjectManager
+  }
+
+  onChangePagination = (pageNumber) => {
+    const { onChangePage = () => {}, isBackendPaging = false } = this.props;
+
+    if (isBackendPaging) {
+      onChangePage(pageNumber);
+    } else {
+      this.setState({
+        pageSelected: pageNumber,
+      });
+    }
+  };
+
+  render() {
+    const { pageSelected } = this.state;
+    const {
+      data = [],
+      loading = false,
+      page = 1,
+      limit = 3,
+      total: totalProp,
+      isBackendPaging = false,
+    } = this.props;
+
+    const pagination = {
+        position: ['bottomLeft'],
+        total: isBackendPaging ? totalProp : data.length,
+        showTotal: (total, range) => (
+          <span>
+            {' '}
+            {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
+            <b>
+              {range[0]} - {range[1]}
+            </b>{' '}
+            {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
+          </span>
+        ),
+        pageSize: limit,
+        current: isBackendPaging ? page : pageSelected,
+        onChange: this.onChangePagination,
+      };
+
+    const dataSource = data.map((obj, x) => {
+      return {
+        key: x + 1,
+        id: obj.id,
+        projectId: obj.projectId,
+        projectName: obj.projectName || '-',
+        customer: obj.customerName || '-',
+        projectType: obj.engagementType || '-',
+        projectManager: this.getProjectManage(obj.projectManager),
+        startDate: this.formatDate(obj.startDate, 'MM/DD/YYYY'),
+        endDate: this.formatDate(obj.endDate, 'MM/DD/YYYY'),
+        resivedEndDate: this.formatDate(obj.newEndDate, 'MM/DD/YYYY'),
+        status: obj.projectStatus || '-',
+        resourcePlan: obj.resourcesPlanned || '-',
+        resourceAssigned: obj.resourcesAssigned || '-',
+        billableResource: obj.billableResources || '-',
+        bufferResource: obj.bufferResources || '-',
+        billEfficiency: `${obj.billingEfficiency ? obj.billingEfficiency : 0}%` || '-',
+        billableEffor: obj.billableEffort || '-',
+        spentEffor: obj.spentEffort || '-',
+        variance: obj.variance || '-',
+        comment: obj.comments || '-',
+      };
+    });
 
     const columns = [
       {
@@ -119,33 +98,33 @@ class TableProject extends Component {
         dataIndex: 'projectName',
         key: 'projectName',
         render: (value) => {
-            return <span className={styles.projectName}>{value}</span>
+          return <span className={styles.projectName}>{value}</span>;
         },
-        sorter: (a, b) => a.projectName.localeCompare(b.projectName)
+        sorter: (a, b) => a.projectName.localeCompare(b.projectName),
       },
       {
         title: 'Customer',
         dataIndex: 'customer',
         key: 'customer',
         render: (value) => {
-            return <span className={styles.projectName}>{value}</span>
+          return <span className={styles.projectName}>{value}</span>;
         },
-        sorter: (a, b) => a.customer.localeCompare(b.customer)
+        sorter: (a, b) => a.customer.localeCompare(b.customer),
       },
       {
         title: 'Project Type',
         dataIndex: 'projectType',
         key: 'projectType',
-        sorter: (a, b) => a.projectType.localeCompare(b.projectType)
+        sorter: (a, b) => a.projectType.localeCompare(b.projectType),
       },
       {
         title: 'Project Manager',
         dataIndex: 'projectManager',
         key: 'projectManager',
         render: (value) => {
-            return <span className={styles.projectName}>{value}</span>
+          return <span className={styles.projectName}>{value}</span>;
         },
-        sorter: (a, b) => a.projectManager.localeCompare(b.projectManager)
+        sorter: (a, b) => a.projectManager.localeCompare(b.projectManager),
       },
       {
         title: (
@@ -156,7 +135,7 @@ class TableProject extends Component {
         ),
         dataIndex: 'startDate',
         key: 'startDate',
-        sorter: (a, b) => moment(a.startDate).unix() - moment(b.startDate).unix()
+        sorter: (a, b) => moment(a.startDate).unix() - moment(b.startDate).unix(),
       },
       {
         title: (
@@ -167,7 +146,7 @@ class TableProject extends Component {
         ),
         dataIndex: 'endDate',
         key: 'endDate',
-        sorter: (a, b) => moment(a.endDate).unix() - moment(b.endDate).unix()
+        sorter: (a, b) => moment(a.endDate).unix() - moment(b.endDate).unix(),
       },
       {
         title: (
@@ -178,13 +157,13 @@ class TableProject extends Component {
         ),
         dataIndex: 'resivedEndDate',
         key: 'resivedEndDate',
-        sorter: (a, b) => moment(a.resivedEndDate).unix() - moment(b.resivedEndDate).unix()
+        sorter: (a, b) => moment(a.resivedEndDate).unix() - moment(b.resivedEndDate).unix(),
       },
       {
         title: 'Status',
         dataIndex: 'status',
         key: 'status',
-        sorter: (a, b) => a.status.localeCompare(b.status)
+        sorter: (a, b) => a.status.localeCompare(b.status),
       },
       {
         title: 'Resource Planed',
@@ -214,7 +193,7 @@ class TableProject extends Component {
         title: 'Billing Efficiency',
         dataIndex: 'billEfficiency',
         key: 'billEfficiency',
-        sorter: (a, b) => a.billEfficiency - b.billEfficiency,
+        sorter: (a, b) => a.billEfficiency.localeCompare(b.billEfficiency),
       },
       {
         title: 'Billable Effor (days)',
@@ -239,22 +218,32 @@ class TableProject extends Component {
         dataIndex: 'comment',
         key: 'comment',
         render: (value, row) => {
-            if(value ){
-                const getRow = dataSource.filter((x) => x.key === row.key).length;
-                const line = getRow === 0 || getRow === 1 ? 3 : getRow * 3;
-                return <span><OverviewComment row={row} line={line} /></span>
-            } 
-            return <span><AddComment data={row} /></span>
+          if (value !== '-') {
+            const getRow = dataSource.filter((x) => x.id === row.id).length;
+            const line = getRow === 0 || getRow === 1 ? 3 : getRow * 3;
+            return (
+              <span>
+                <OverviewComment row={row} line={line} />
+              </span>
+            );
+          }
+          return (
+            <span>
+              <AddComment data={row} />
+            </span>
+          );
         },
         sorter: (a, b) => a.comment.localeCompare(b.comment),
       },
     ];
 
     return (
-      <div className={styles.tableProject}>
+      <div className={styles.TableProject}>
         <Table
+          className={styles.tableProject}
           dataSource={dataSource}
           columns={columns}
+          loading={loading}
           pagination={pagination}
           rowKey="id"
           scroll={{ x: 'max-content' }}
@@ -264,4 +253,4 @@ class TableProject extends Component {
   }
 }
 
-export default TableProject;
+export default connect(() => ({}))(TableProject);

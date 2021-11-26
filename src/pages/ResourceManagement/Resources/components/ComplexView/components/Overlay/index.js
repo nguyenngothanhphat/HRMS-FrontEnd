@@ -7,7 +7,7 @@ class CommentOverlay extends PureComponent {
   render() {
     const { row, line } = this.props;
     return (
-      <div className={styles.Overlay}>
+      <div className={styles.CommentOverlay}>
         <span className={styles.comment} style={{ WebkitLineClamp: line }}>
           {row.comment}
         </span>
