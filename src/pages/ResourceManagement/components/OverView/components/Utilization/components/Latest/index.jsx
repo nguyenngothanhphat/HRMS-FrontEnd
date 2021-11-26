@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import { connect } from 'umi';
+import CenterImage from '@/assets/resourceManagement/chartCenterImage.svg';
 
-import { Col, Row } from 'antd';
+import { Col, Row, Tooltip as TooltipAntd } from 'antd';
 
 import styles from './index.less';
 import TopArrowIcon from '@/assets/resourceManagement/topArrow.svg';
@@ -46,6 +47,7 @@ const Latest = (props) => {
           backgroundColor: colors,
           borderColor: colors,
           borderWidth: 1,
+          text: '23%',
         },
       ],
     };
@@ -108,13 +110,40 @@ const Latest = (props) => {
       },
     ];
   };
+
   return (
     <div className={styles.Latest}>
       <Row className={styles.container} gutter={[50, 0]} justify="center">
         <Col span={12}>
           <div className={styles.left}>
             <div className={styles.chart}>
-              <Doughnut data={formatData()} options={{ rotation: 270, circumference: 180 }} />
+              <Doughnut
+                data={formatData()}
+                options={{
+                  rotation: 270,
+                  circumference: 180,
+                  cutout: 80,
+                }}
+                plugins={[
+                  {
+                    afterDatasetDraw: (chart) => {
+                      const { ctx } = chart;
+                      ctx.save();
+                      const image = new Image();
+                      image.src = CenterImage;
+                      const imageSize = 105;
+                      ctx.drawImage(
+                        image,
+                        chart.width / 2 - imageSize / 2,
+                        chart.height / 2 + 20,
+                        imageSize,
+                        imageSize,
+                      );
+                      ctx.restore();
+                    },
+                  },
+                ]}
+              />
             </div>
             <div className={styles.numbers}>
               <div className={styles.numbers__above}>
@@ -127,9 +156,22 @@ const Latest = (props) => {
                 </span>
               </div>
               <div className={styles.numbers__below}>
-                <span>
-                  Current Utilization <img src={HelpIcon} alt="" />
-                </span>
+                <div>
+                  Current Utilization{' '}
+                  <TooltipAntd
+                    placement="right"
+                    title={
+                      <div>
+                        Current utilization is calculated as a percentage of Total Billable
+                        resources / Total Resources
+                        <br />
+                        Compared to the previous week, the Resource utilization has increased by 25%
+                      </div>
+                    }
+                  >
+                    <img src={HelpIcon} alt="" />
+                  </TooltipAntd>
+                </div>
               </div>
             </div>
           </div>

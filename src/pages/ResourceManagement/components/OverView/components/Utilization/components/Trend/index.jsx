@@ -44,7 +44,7 @@ const Trend = (props) => {
     if (type === 'W') {
       return x.week;
     }
-    if (type === 'D') {
+    if (type === 'M') {
       return x.date ? moment(x.date).format('DD') : '';
     }
     return '';
@@ -120,22 +120,22 @@ const Trend = (props) => {
     return null;
   };
 
-  // const CustomizeDot = (values) => {
-  //   const { cx, cy } = values;
-  //   return (
-  //     <svg
-  //       cx={cx - 6}
-  //       cy={cy - 6}
-  //       width="12"
-  //       height="12"
-  //       viewBox="0 0 12 12"
-  //       fill="none"
-  //       xmlns="http://www.w3.org/2000/svg"
-  //     >
-  //       <circle cx="6" cy="6" r="5" fill="white" stroke="#2C6DF9" strokeWidth="2" />
-  //     </svg>
-  //   );
-  // };
+  const CustomizeDot = ({ cx, cy }) => {
+    return (
+      <svg
+        cx={cx - 6}
+        cy={cy - 6}
+        width="12"
+        height="12"
+        viewBox="0 0 12 12"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="6" cy="6" r="5" fill="white" stroke="#2C6DF9" strokeWidth="2" />
+      </svg>
+    );
+  };
+
   if (invalidDates) {
     return (
       <div className={styles.Trend}>
@@ -178,7 +178,6 @@ const Trend = (props) => {
             content={<CustomTooltip />}
           />
           <Area
-            // dot={CustomizeDot}
             dataKey="utilization"
             strokeWidth={2}
             stroke="#2C6DF9"
