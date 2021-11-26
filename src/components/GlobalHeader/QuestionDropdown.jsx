@@ -2,6 +2,7 @@ import { Menu } from 'antd';
 import React from 'react';
 import { connect, history } from 'umi';
 import FAQIcon from '@/assets/dashboard/faq.svg';
+import PoliciesIcon from '@/assets/dashboard/policies.svg';
 import QuestionIcon from '@/assets/dashboard/question.svg';
 import QuickLinkIcon from '@/assets/dashboard/quickLink.svg';
 import RaiseTicketIcon from '@/assets/dashboard/raiseTicket.svg';
@@ -20,6 +21,7 @@ class QuestionDropdown extends React.Component {
       QUICK_LINKS: 'QUICK_LINKS',
       FAQ: 'FAQ',
       RAISE_TICKET: 'RAISE_TICKET',
+      POLICIES_REGULATION: 'POLICIES_REGULATION',
       quickLinkModalVisible: false,
       raiseTicketModalVisible: false,
     };
@@ -39,7 +41,7 @@ class QuestionDropdown extends React.Component {
 
   onMenuClick = async (event) => {
     const { key } = event;
-    const { QUICK_LINKS, FAQ, RAISE_TICKET } = this.state;
+    const { QUICK_LINKS, FAQ, RAISE_TICKET, POLICIES_REGULATION } = this.state;
     if (key === QUICK_LINKS) {
       this.onToggleQuickLinkModal();
     }
@@ -49,11 +51,20 @@ class QuestionDropdown extends React.Component {
     if (key === RAISE_TICKET) {
       this.onToggleRaiseTicketModal();
     }
+    if (key === POLICIES_REGULATION) {
+      history.push('/policies-regulations');
+    }
   };
 
   render() {
-    const { QUICK_LINKS, FAQ, RAISE_TICKET, quickLinkModalVisible, raiseTicketModalVisible } =
-      this.state;
+    const {
+      QUICK_LINKS,
+      FAQ,
+      RAISE_TICKET,
+      POLICIES_REGULATION,
+      quickLinkModalVisible,
+      raiseTicketModalVisible,
+    } = this.state;
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
         <Menu.Item key={QUICK_LINKS} className={styles.menuItemLink}>
@@ -76,6 +87,12 @@ class QuestionDropdown extends React.Component {
           <div className={styles.menuItemLink__withIcon}>
             <img src={FAQIcon} alt="" />
             <span>FAQ</span>
+          </div>
+        </Menu.Item>
+        <Menu.Item key={POLICIES_REGULATION} className={styles.menuItemLink}>
+          <div className={styles.menuItemLink__withIconPolici}>
+            <img src={PoliciesIcon} alt="PoliciesIcon" />
+            <span>Policies & Regulations</span>
           </div>
         </Menu.Item>
         {/* <Menu.Divider className={styles.secondDivider} /> */}

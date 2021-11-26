@@ -968,6 +968,12 @@ const routes = [
             component: './FAQs',
           },
           {
+            path: '/policies-regulations',
+            name: 'Policies & Regulations',
+            hideInMenu: true,
+            component: './PoliciesRegulations',
+          },
+          {
             path: '/search-result',
             name: 'searchResult',
             hideInMenu: true,
