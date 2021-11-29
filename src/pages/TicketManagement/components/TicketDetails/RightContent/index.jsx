@@ -77,6 +77,7 @@ class RightContent extends PureComponent {
       priority = '',
       cc_list: ccList = [],
       attachments = [],
+      status: statusProps = '',
       department_assign: departmentAssign = '',
     } = data;
     const payload = {
@@ -94,7 +95,7 @@ class RightContent extends PureComponent {
       employee: _id,
       timeTaken: this.getTimeTaken(),
     };
-    if (status) {
+    if (status && status !== statusProps && statusProps !== 'New') {
       if (status === 'Resolved' && !timeTaken) {
         notification.error({
           message: 'Please input time taken',
@@ -114,17 +115,11 @@ class RightContent extends PureComponent {
       data: { status: statusProps = '', time_taken: timeTakenProps = '' } = {},
       loadingUpdateTicket = false,
     } = this.props;
-    const getPlaceholder = () => {
-      if (statusProps === 'Closed' || status === 'Resolved') {
-        return timeTakenProps;
-      }
-      return 'Time';
-    };
 
     return (
       <div className={styles.RightContent}>
         <div className={styles.RightContent__title}>Action</div>
-        <Form name="basic" ref={this.formRef} id="myForm" onFinish={this.onSubmitUpdate}>
+        <Form name="formUpdate" ref={this.formRef} id="formUpdate" onFinish={this.onSubmitUpdate}>
           <Form.Item
             rules={[
               {
@@ -136,7 +131,8 @@ class RightContent extends PureComponent {
             <div className={styles.RightContent__time}>
               <p>Time taken:</p>
               <Input
-                placeholder={getPlaceholder()}
+                addonAfter="Hours"
+                placeholder={timeTakenProps}
                 onChange={(e) =>
                   this.setState({
                     timeTaken: e.target.value,
