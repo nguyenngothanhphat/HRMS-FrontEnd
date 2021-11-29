@@ -7,6 +7,7 @@ import {
   getDocumentList,
   // milestone
   addMilestone,
+  removeMilestone,
   getMilestoneList,
   updateMilestone,
   // resource type + resource
@@ -30,6 +31,7 @@ import {
   // other
   getProjectTagList,
   getTechnologyList,
+  getSkillList,
   getTitleList,
   getDivisionList,
   getEmployeeList,
@@ -49,6 +51,7 @@ const initialState = {
   auditTrailList: [],
   titleList: [],
   technologyList: [],
+  skillList: [],
   divisionList: [],
   projectTagList: [],
   billingStatusList: [],
@@ -232,6 +235,16 @@ const ProjectDetails = {
         dialog(errors);
       }
       return response;
+    },
+    *fetchSkillListEffect(_, { call, put }) {
+      try {
+        const response = yield call(getSkillList);
+        const { statusCode, data: skillList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { skillList } });
+      } catch (errors) {
+        dialog(errors);
+      }
     },
     *fetchTitleListEffect({ payload }, { call, put }) {
       let response = {};
@@ -547,6 +560,30 @@ const ProjectDetails = {
         yield put({
           type: 'updateMilestone',
           payload,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *removeMilestoneEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(removeMilestone, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchMilestoneListEffect',
+          payload: {
+            projectId: payload.projectId
+          }
         });
       } catch (errors) {
         dialog(errors);
