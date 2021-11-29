@@ -135,7 +135,7 @@ const Latest = (props) => {
                 options={{
                   rotation: 270,
                   circumference: 180,
-                  cutout: 85,
+                  cutout: 95,
                   layout: {
                     padding: {
                       top: 24,
