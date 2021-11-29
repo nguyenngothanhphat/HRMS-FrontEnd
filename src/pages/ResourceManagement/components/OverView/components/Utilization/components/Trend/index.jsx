@@ -53,10 +53,15 @@ const Trend = (props) => {
     return '';
   };
 
+  const renderPercent = (x) => {
+    if (x === 0 || Number.isInteger(x)) return x;
+    return parseFloat(x).toFixed(2);
+  };
+
   const formatData = () => {
     return result.map((x) => {
       const { summary = [] } = x;
-      const billable = summary.find((y) => y.status === 'Unpaid');
+      const billable = summary.find((y) => y.status === 'Billable');
       const total = summary.find((y) => y.status === 'Total');
 
       return {
@@ -86,7 +91,8 @@ const Trend = (props) => {
       const items = [
         {
           name: 'Current Utilization',
-          value: total && total.count !== 0 ? (billable?.count / total?.count) * 100 : '-',
+          value:
+            total && total.count !== 0 ? `${renderPercent((billable?.count / total?.count) *100)}%` : '-',
         },
         {
           name: 'Total Resources',
@@ -94,15 +100,15 @@ const Trend = (props) => {
         },
         {
           name: 'Total Billable resources',
-          value: `${billable?.count} (${Math.round(billable?.percent * 100)}%)`,
+          value: `${billable?.count} (${renderPercent(billable?.percent)}%)`,
         },
         {
           name: 'Total Buffer resources',
-          value: `${buffer?.count} (${Math.round(buffer?.percent * 100)}%)`,
+          value: `${buffer?.count} (${renderPercent(buffer?.percent)}%)`,
         },
         {
           name: 'Total Benched resources',
-          value: `${bench?.count} (${Math.round(bench?.percent * 100)}%)`,
+          value: `${bench?.count} (${renderPercent(bench?.percent)}%)`,
         },
       ];
       return (
