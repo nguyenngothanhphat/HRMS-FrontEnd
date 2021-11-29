@@ -7,6 +7,7 @@ import {
   getDocumentList,
   // milestone
   addMilestone,
+  removeMilestone,
   getMilestoneList,
   updateMilestone,
   // resource type + resource
@@ -559,6 +560,30 @@ const ProjectDetails = {
         yield put({
           type: 'updateMilestone',
           payload,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *removeMilestoneEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(removeMilestone, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchMilestoneListEffect',
+          payload: {
+            projectId: payload.projectId
+          }
         });
       } catch (errors) {
         dialog(errors);

@@ -94,6 +94,17 @@ export async function updateMilestone(payload) {
     'PROJECT_API',
   );
 }
+export async function removeMilestone(payload) {
+  return request(
+    `/api-project/milestonetenant/remove`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    'PROJECT_API',
+  );
+}
 
 // resources
 export async function getResourceTypeList(payload) {
