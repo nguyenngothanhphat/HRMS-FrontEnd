@@ -15,7 +15,7 @@ const AddResourceTypeContent = (props) => {
     dispatch,
     projectDetails: {
       divisionList = [],
-      technologyList = [],
+      skillList = [],
       titleList = [],
       projectDetail = {},
       billingStatusList = [],
@@ -39,7 +39,7 @@ const AddResourceTypeContent = (props) => {
         type: 'projectDetails/fetchTitleListEffect',
       });
       dispatch({
-        type: 'projectDetails/fetchTechnologyListEffect',
+        type: 'projectDetails/fetchSkillListEffect',
       });
       dispatch({
         type: 'projectDetails/fetchDivisionListEffect',
@@ -113,7 +113,12 @@ const AddResourceTypeContent = (props) => {
         </Row>
         <Row gutter={[24, 0]} className={styles.belowPart}>
           <Col xs={24} md={12}>
-            <Form.Item label="Division" name="division" labelCol={{ span: 24 }}>
+            <Form.Item
+              label="Division"
+              name="division"
+              labelCol={{ span: 24 }}
+              rules={[{ required: true, message: 'Required field!' }]}
+            >
               <Select placeholder="Select Division">
                 {divisionList.map((x) => (
                   <Option value={x}>{x}</Option>
@@ -122,7 +127,12 @@ const AddResourceTypeContent = (props) => {
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
-            <Form.Item label="Resource Type" name="resourceType" labelCol={{ span: 24 }}>
+            <Form.Item
+              label="Resource Type"
+              name="resourceType"
+              labelCol={{ span: 24 }}
+              rules={[{ required: true, message: 'Required field!' }]}
+            >
               <Select
                 loading={loadingFetchTitleList}
                 allowClear
@@ -138,12 +148,22 @@ const AddResourceTypeContent = (props) => {
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
-            <Form.Item label="No. of Resources" name="noOfResources" labelCol={{ span: 24 }}>
+            <Form.Item
+              label="No. of Resources"
+              name="noOfResources"
+              labelCol={{ span: 24 }}
+              rules={[{ required: true, message: 'Required field!' }]}
+            >
               <Input placeholder="Enter No. of Resources" />
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
-            <Form.Item label="Billing Status" name="billingStatus" labelCol={{ span: 24 }}>
+            <Form.Item
+              label="Billing Status"
+              name="billingStatus"
+              labelCol={{ span: 24 }}
+              rules={[{ required: true, message: 'Required field!' }]}
+            >
               <Select placeholder="Select Billing Status">
                 {billingStatusList.map((x) => (
                   <Option value={x}>{x}</Option>
@@ -152,15 +172,20 @@ const AddResourceTypeContent = (props) => {
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
-            <Form.Item label="Estimated effort" name="estimatedEffort" labelCol={{ span: 24 }}>
+            <Form.Item
+              label="Estimated effort"
+              name="estimatedEffort"
+              labelCol={{ span: 24 }}
+              rules={[{ required: true, message: 'Required field!' }]}
+            >
               <Input addonAfter={<span>month/resource</span>} />
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
             <Form.Item label="Technologies Used" name="technologies" labelCol={{ span: 24 }}>
               <Select mode="multiple" placeholder="Select Technologies Used">
-                {technologyList.map((x) => (
-                  <Option value={x.id}>{x.technology_name}</Option>
+                {skillList.map((x) => (
+                  <Option value={x._id}>{x.name}</Option>
                 ))}
               </Select>
             </Form.Item>

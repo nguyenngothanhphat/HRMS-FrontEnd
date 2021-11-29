@@ -132,6 +132,12 @@ export async function getTechnologyList(payload) {
   );
 }
 
+export async function getSkillList() {
+  return request('/api/skilltype/list', {
+    method: 'POST',
+  });
+}
+
 export async function getTitleList(payload) {
   return request('/api/titletenant/list', {
     method: 'POST',

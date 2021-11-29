@@ -30,6 +30,7 @@ import {
   // other
   getProjectTagList,
   getTechnologyList,
+  getSkillList,
   getTitleList,
   getDivisionList,
   getEmployeeList,
@@ -49,6 +50,7 @@ const initialState = {
   auditTrailList: [],
   titleList: [],
   technologyList: [],
+  skillList: [],
   divisionList: [],
   projectTagList: [],
   billingStatusList: [],
@@ -232,6 +234,16 @@ const ProjectDetails = {
         dialog(errors);
       }
       return response;
+    },
+    *fetchSkillListEffect(_, { call, put }) {
+      try {
+        const response = yield call(getSkillList);
+        const { statusCode, data: skillList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { skillList } });
+      } catch (errors) {
+        dialog(errors);
+      }
     },
     *fetchTitleListEffect({ payload }, { call, put }) {
       let response = {};
