@@ -106,6 +106,30 @@ class RightContent extends PureComponent {
           payload,
         });
       }
+    }else if(status && status === statusProps && statusProps !== 'New'){
+      if (status === 'Resolved' && !timeTaken) {
+        notification.error({
+          message: 'Please input time taken',
+        });
+      } else {
+        dispatch({
+          type: 'ticketManagement/updateTicket',
+          payload:{
+            id,
+            employeeRaise,
+            employeeAssignee,
+            priority,
+            description,
+            subject,
+            ccList,
+            queryType,
+            attachments,
+            departmentAssign,
+            employee: _id,
+            timeTaken: this.getTimeTaken(),
+          },
+        });
+      }
     }
   };
 
