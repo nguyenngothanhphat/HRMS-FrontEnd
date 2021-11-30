@@ -1,0 +1,260 @@
+.TableResources {
+  .priorityHigh {
+    width: 39px;
+    height: 18px;
+    padding: 0px 8px;
+    background: #ffb6b6;
+    border-radius: 12px;
+  }
+  .priorityMedium {
+    width: 39px;
+    height: 18px;
+    padding: 0px 8px;
+    background: #eefffb;
+    border-radius: 12px;
+  }
+  .priorityLow {
+    width: 39px;
+    height: 18px;
+    padding: 0px 8px;
+    background: #ffe9c5;
+    border-radius: 12px;
+  }
+  .now {
+    display: inline-block;
+    justify-content: center;
+    padding: 5px;
+    //height: 18px;
+    padding: 8px;
+    padding: 4px 8px;
+    // width: 39px;
+    color: #000;
+    font-weight: normal;
+    font-weight: normal;
+    font-size: 8px;
+    font-size: 13px;
+    // height: 18px;
+    font-family: Roboto;
+    font-style: normal;
+    background: #00c598;
+    border-radius: 48px;
+  }
+  .soon {
+    display: inline-block;
+    justify-content: center;
+    padding: 5px;
+    //height: 18px;
+    padding: 8px;
+    padding: 4px 8px;
+    // width: 39px;
+    color: #000;
+    font-weight: normal;
+    font-weight: normal;
+    font-size: 8px;
+    font-size: 13px;
+    // height: 18px;
+    font-family: Roboto;
+    font-style: normal;
+    background: #ffa100;
+    border-radius: 48px;
+  }
+  .available {
+    // width: 39px;
+    height: 18px;
+    padding: 0px 8px;
+    background: #34c765;
+    border-radius: 12px;
+  }
+  .employeeName {
+    text-align: center;
+  }
+
+  .ticketID,
+  .employeeName {
+    width: 200px;
+    color: #2c6df9;
+    font-weight: 500;
+    font-size: 13px;
+    font-family: Roboto;
+    font-style: normal;
+    line-height: 15px;
+    letter-spacing: 0em;
+    white-space: nowrap;
+    text-align: left;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  .iconEdit {
+    display: none;
+  }
+  .resourceStatus {
+    margin: 4px;
+    padding: 5px;
+    color: #000;
+    font-weight: 400;
+    font-size: 13px;
+    text-align: right;
+  }
+
+  .dateHeaderContainer {
+    text-align: center;
+  }
+
+  .comment {
+    position: relative;
+    display: -webkit-box;
+    width: 140px;
+    overflow: hidden;
+    font-weight: 400;
+    //font-family: Roboto;
+    font-size: 13px;
+    font-style: normal;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    // display: flex;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    //-webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  .division {
+    height: 18px;
+    padding: 0px 8px;
+    font-weight: 400;
+    text-align: left;
+    background: #e2f6ff;
+    border-radius: 12px;
+  }
+
+  .basicCellField {
+    color: #000;
+    font-weight: 400;
+    font-size: 13px;
+    font-family: Roboto;
+    font-style: normal;
+    line-height: 15px;
+    letter-spacing: 0em;
+    text-align: left;
+    text-align: left;
+    border-radius: 12px;
+  }
+  .basicCellFieldShowEdit {
+    color: #000;
+    font-weight: 400;
+    font-size: 13px;
+    font-family: Roboto;
+    font-style: normal;
+    line-height: 15px;
+    letter-spacing: 0em;
+    text-align: left;
+    text-align: left;
+    border-radius: 12px;
+  }
+  .basicCellFieldShowEdit:hover {
+    color: white;
+    //background-image: linear-gradient(to right, white, #e5e5e5);
+    .iconEdit {
+      display: inline-block;
+      // float: right;
+    }
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  :global {
+    .ant-table-thead > tr > th {
+      background: #2c6df9 !important;
+    }
+    .ant-table-pagination-right {
+      justify-content: flex-start !important;
+    }
+    .ant-table-body > table {
+      // width: auto !important;
+      height: auto !important;
+      //max-height: 533px !important;
+    }
+    .ant-table-tbody > tr.ant-table-row:hover > td
+    // :nth-child(1),
+    // .ant-table-tbody > tr.ant-table-row:hover > td:nth-child(2),
+    // .ant-table-tbody > tr.ant-table-row:hover > td:nth-child(3),
+    // .ant-table-tbody > tr.ant-table-row:hover > td:nth-child(4),
+    // .ant-table-tbody > tr.ant-table-row:hover > td:nth-child(10),
+    // .ant-table-tbody > tr.ant-table-row:hover > td:last-child
+    {
+      background: #fff;
+    }
+
+    thead > tr > th {
+      border-right: unset !important;
+      border-left: unset !important;
+    }
+
+    .right-left-border {
+      border-right: 1px solid #e2e4e8;
+      border-left: 1px solid #e2e4e8;
+      box-shadow: yellow;
+    }
+    .left-border {
+      border-right: unset !important;
+      border-left: 1px solid #e2e4e8;
+    }
+
+    .firstColumn {
+      border-right: 1px solid #e2e4e8;
+      border-left: 1px solid #e2e4e8;
+      //scroll: { x: max-content; }
+    }
+
+    .right-border {
+      border-right: 1px solid #e2e4e8;
+      border-left: unset;
+    }
+
+    .ant-table-tbody > tr.ant-table-row > td {
+      padding: 8px;
+      background: #fff;
+    }
+
+    .commentCell {
+      padding: 0px !important;
+      background: #fff;
+    }
+
+    .commentCellLeftBorder {
+      padding: 0px !important;
+      background: #fff;
+      border-right: unset !important;
+      border-left: 1px solid #e2e4e8;
+    }
+
+    .ant-btn-text {
+      box-sizing: border-box;
+      color: #ffa100;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 16px;
+      letter-spacing: 0.13125px;
+      background: #ffffff;
+      border: none;
+      border-color: transparent !important;
+      border-radius: 21px;
+      .ant-icon-download {
+        font-size: 20px;
+        svg {
+          font-weight: 400;
+          line-height: 16px;
+          letter-spacing: 0.13125px;
+        }
+      }
+    }
+  }
+}

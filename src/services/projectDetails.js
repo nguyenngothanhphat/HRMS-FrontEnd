@@ -94,6 +94,17 @@ export async function updateMilestone(payload) {
     'PROJECT_API',
   );
 }
+export async function removeMilestone(payload) {
+  return request(
+    `/api-project/milestonetenant/remove`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    'PROJECT_API',
+  );
+}
 
 // resources
 export async function getResourceTypeList(payload) {
@@ -130,6 +141,12 @@ export async function getTechnologyList(payload) {
     false,
     'PROJECT_API',
   );
+}
+
+export async function getSkillList() {
+  return request('/api/skilltype/list', {
+    method: 'POST',
+  });
 }
 
 export async function getTitleList(payload) {

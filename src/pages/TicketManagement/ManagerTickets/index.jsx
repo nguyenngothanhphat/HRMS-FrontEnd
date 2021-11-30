@@ -20,14 +20,18 @@ class ManagerTicket extends Component {
         return;
       }
       dispatch({
-        type: 'ticketManagement/fetchListAllTicket',
-        payload: {
-          status: ['New'],
-        },
+        type: 'ticketManagement/fetchListEmployee',
+        payload: {},
       });
       dispatch({
         type: 'ticketManagement/fetchToTalList',
         payload: {},
+      });
+      dispatch({
+        type: 'ticketManagement/fetchListAllTicket',
+        payload: {
+          status: ['New'],
+        },
       });
     }
   }
