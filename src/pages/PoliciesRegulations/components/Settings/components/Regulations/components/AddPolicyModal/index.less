@@ -48,6 +48,20 @@
       border: 1px solid #d6dce4;
       border-radius: 5px;
     }
+    .ant-select-show-search.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+      box-sizing: border-box;
+
+      background: #ffffff;
+      border: 1px solid #d6dce4;
+      border-radius: 5px;
+    }
+    .ant-form-item-label > label {
+      color: #707177;
+    }
+    .ant-form-item-label
+      > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+      display: none;
+    }
   }
   .btnSubmit {
     color: #fff;
@@ -123,27 +137,39 @@
           display: inline-block;
           margin-left: 5px;
           color: #2c6df9;
-          font-weight: 500;
-          font-size: 16px;
-          line-height: 1.4;
+          font-weight: normal;
+          font-size: 14px;
+          font-style: normal;
+          line-height: 22px;
+          text-decoration: underline;
         }
         .uploadText {
           display: inline-block;
           margin-left: 5px;
-          color: #464646;
-          font-size: 16px;
-          line-height: 1.4;
+          color: #000000;
+          font-weight: 500;
+          font-size: 14px;
+          font-style: normal;
+          line-height: 16px;
+        }
+        .uploadbrowseText {
+          color: #707177;
+          font-weight: normal;
+          font-size: 14px;
+          font-style: normal;
+          line-height: 22px;
         }
       }
       .belowText {
         color: #707177;
         font-size: 12px;
         line-height: 12px;
+        opacity: 0.5;
       }
     }
     :global {
       .ant-upload.ant-upload-drag {
-        padding: 68px;
+        padding: 9px;
         background: #fff;
         border-radius: 8px;
       }

@@ -1,17 +1,25 @@
 import React, { Component } from 'react';
-import { Button, Col, Form, Input, Modal, Row, message, Spin, Upload, Tooltip } from 'antd';
+import { Button, Col, Form, Input, Modal, Row, message, Spin, Upload, Tooltip, Select } from 'antd';
+
+import { connect } from 'umi';
+
+import TrashIcon from '@/assets/policiesRegulations/delete.svg';
+import UploadIcon from '@/assets/policiesRegulations/upload.svg';
+import PDFIcon from '@/assets/policiesRegulations/pdf-2.svg';
+import ImageIcon from '@/assets/policiesRegulations/image_icon.png';
+
 import styles from './index.less';
-import TrashIcon from '@/assets/trash.svg';
-import ImageIcon from '@/assets/image_icon.png';
-import PDFIcon from '@/assets/pdf_icon.png';
 
 const { Dragger } = Upload;
+const { Option } = Select;
+@connect(({ loading }) => ({
+  loadingUploadAttachment: loading.effects['upload/uploadFile'],
+}))
 class AddPolicyModal extends Component {
   formRef = React.createRef();
 
   constructor(props) {
     super(props);
-
     this.state = {
       uploadedFile: {},
       fileName: '',
@@ -114,8 +122,31 @@ class AddPolicyModal extends Component {
   };
 
   render() {
+    const POLICY_CATEGORIES = [
+      {
+        id: 1,
+        name: 'Employee conduct',
+      },
+      {
+        id: 2,
+        name: 'Leave Policy',
+      },
+      {
+        id: 3,
+        name: 'Company Asset Policy',
+      },
+      {
+        id: 4,
+        name: 'Technology usage',
+      },
+      {
+        id: 5,
+        name: 'Travel Policy',
+      },
+    ];
     const { loadingUploadAttachment, visible = false } = this.props;
     const { fileName = '' } = this.state;
+    const onPolicyCategories = () => {};
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>
@@ -127,6 +158,19 @@ class AddPolicyModal extends Component {
       return (
         <div className={styles.content}>
           <Form name="basic" id="addForm" ref={this.formRef} onFinish={this.onFinish}>
+            <Form.Item
+              rules={[{ required: true, message: 'Please Policy Categories' }]}
+              label="Policy Categories"
+              name="policyCategories"
+              labelCol={{ span: 24 }}
+            >
+              <Select showSearch onChange={onPolicyCategories}>
+                {POLICY_CATEGORIES.map((val) => (
+                  <Option value={val.id}>{val.name}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+
             <Form.Item
               label="Categories Name"
               name="key"
@@ -162,7 +206,6 @@ class AddPolicyModal extends Component {
                     <p className={styles.fileName}>
                       Uploaded: <a>{fileName}</a>
                     </p>
-                    {/* <Button disabled={selectExistDocument}>Choose an another file</Button> */}
                   </div>
                 ) : (
                   <div className={styles.drapperBlock}>
@@ -170,13 +213,18 @@ class AddPolicyModal extends Component {
                       <Spin />
                     ) : (
                       <>
-                        {/* <img className={styles.uploadIcon} src={AttachmentIcon} alt="upload" /> */}
                         <div className={styles.aboveText}>
-                          <span className={styles.uploadText}>Drop file here or</span>
-                          <span className={styles.browseText}> browse</span>
+                          <div>
+                            <img src={UploadIcon} alt="upload" />
+                          </div>
+                          <div className={styles.uploadText}>Drop file here</div>
+                          <div className={styles.uploadbrowseText}>
+                            or <span className={styles.browseText}>browse</span> to upload file
+                          </div>
                         </div>
                         <span className={styles.belowText}>
-                          Maximum file size 300 mb, Supported file format png, jpeg, pdf.
+                          File size should not be more than 25mb. Supported file for view: pdf &
+                          jpeg.
                         </span>
                       </>
                     )}
@@ -209,7 +257,7 @@ class AddPolicyModal extends Component {
                 htmlType="submit"
                 // loading={loadingAddTask}
               >
-                Submit
+                Add Policy
               </Button>
             </>
           }

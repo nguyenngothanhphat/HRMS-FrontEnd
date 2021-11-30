@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { Row, Col, Button, Menu } from 'antd';
 import IconContact from '@/assets/policiesRegulations/policies-icon-contact.svg';
+import PdfIcon from '@/assets/policiesRegulations/pdf-2.svg';
+import ViewIcon from '@/assets/policiesRegulations/view.svg';
 
 import EmployeeConduct from './components/EmployeeConduct';
 import LeavePolicy from './components/LeavePolicy';
@@ -11,6 +13,102 @@ import TravelPolicy from './components/TravelPolicy';
 
 import styles from './index.less';
 
+const data = [
+  {
+    id: 'employee-conduct',
+    category: 'Employee Conduct',
+    attachment: [
+      {
+        id: 1,
+        name: 'Leave Managaement 2020',
+      },
+      {
+        id: 2,
+        name: 'Relieving Formalities',
+      },
+      {
+        id: 3,
+        name: 'Variable Pay Policy',
+      },
+      {
+        id: 4,
+        name: 'Employee Handbook 2020',
+      },
+      {
+        id: 5,
+        name: 'Referral Bonus Policy',
+      },
+    ],
+  },
+  {
+    id: 'travel-policy',
+    category: 'Travel Policy',
+    attachment: [
+      {
+        id: 1,
+        name: 'Leave Managaement 2020',
+      },
+      {
+        id: 2,
+        name: 'Relieving Formalities',
+      },
+    ],
+  },
+  {
+    id: 'technology-usage',
+    category: 'Technology usage',
+    attachment: [
+      {
+        id: 1,
+        name: 'Leave Managaement 2020',
+      },
+      {
+        id: 2,
+        name: 'Relieving Formalities',
+      },
+      {
+        id: 3,
+        name: 'Variable Pay Policy',
+      },
+      {
+        id: 4,
+        name: 'Employee Handbook 2020',
+      },
+    ],
+  },
+  {
+    id: 'company-asset-policy',
+    category: 'Company Asset Policy',
+    attachment: [
+      {
+        id: 1,
+        name: 'Leave Managaement 2020',
+      },
+      {
+        id: 2,
+        name: 'Relieving Formalities',
+      },
+      {
+        id: 3,
+        name: 'Variable Pay Policy',
+      },
+    ],
+  },
+  {
+    id: 'leave-policy',
+    category: 'Leave Policy',
+    attachment: [
+      {
+        id: 1,
+        name: 'Leave Managaement 2020',
+      },
+      {
+        id: 2,
+        name: 'Relieving Formalities',
+      },
+    ],
+  },
+];
 @connect(({ info: { currentStep = 0, displayComponent = {} } = {} }) => ({
   currentStep,
   displayComponent,
@@ -19,7 +117,7 @@ class Policies extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      content: '',
+      content: 'employee-conduct',
     };
   }
 
@@ -30,23 +128,58 @@ class Policies extends PureComponent {
   render() {
     const getContent = () => {
       const { content } = this.state;
-      switch (content) {
-        case 'employee-conduct':
-          return <EmployeeConduct />;
-        case 'leave-policy':
-          return <LeavePolicy />;
-        case 'company-asset-policy':
-          return <CompanyAssetPolicy />;
-        case 'technology-usage':
-          return <TechnologyUsage />;
-        case 'travel-policy':
-          return <TravelPolicy />;
+      const policy = data.filter((val) => val.id === content);
 
-        default:
-          return <EmployeeConduct />;
+      if (policy) {
+        const item = policy[0];
+        return item.attachment.map((val) => {
+          return (
+            <div className={styles.viewCenter__content}>
+              <div>
+                <img src={PdfIcon} alt="pdf" />
+                <span>{val.name}</span>
+              </div>
+              <div>
+                <img src={ViewIcon} alt="view" />
+                <span>View</span>
+              </div>
+            </div>
+          );
+        });
       }
+      return '';
     };
+    // switch (content) {
+    //   case 'employee-conduct':
+    //     // return <EmployeeConduct />;
+    //     return renderPolicy('Variable Pay Policy');
+    //   case 'leave-policy':
+    //     return <LeavePolicy />;
+    //   case 'company-asset-policy':
+    //     return <CompanyAssetPolicy />;
+    //   case 'technology-usage':
+    //     return <TechnologyUsage />;
+    //   case 'travel-policy':
+    //     return <TravelPolicy />;
 
+    //   default:
+    //     return <EmployeeConduct />;
+    // }
+    // };
+    // const renderPolicy = (name) => {
+    //   return (
+    //     <div className={styles.viewCenter__content}>
+    //       <div>
+    //         <img src={PdfIcon} alt="pdf" />
+    //         <span>{name}</span>
+    //       </div>
+    //       <div>
+    //         <img src={ViewIcon} alt="view" />
+    //         <span>View</span>
+    //       </div>
+    //     </div>
+    //   );
+    // };
     return (
       <div className={styles.PoliciesLayout}>
         <Row>
