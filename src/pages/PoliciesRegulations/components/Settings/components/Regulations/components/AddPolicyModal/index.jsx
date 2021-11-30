@@ -119,6 +119,7 @@ class AddPolicyModal extends Component {
       onAdd(payload);
       this.setState({ uploadedFile: {}, fileName: '' });
     }
+    console.log(values);
   };
 
   render() {
@@ -252,7 +253,7 @@ class AddPolicyModal extends Component {
               <Button
                 className={styles.btnSubmit}
                 type="primary"
-                form="myForm"
+                form="addForm"
                 key="submit"
                 htmlType="submit"
                 // loading={loadingAddTask}

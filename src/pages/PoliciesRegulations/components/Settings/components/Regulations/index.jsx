@@ -52,7 +52,7 @@ class Regulations extends Component {
             </div>
             <div className={styles.searchInp}>
               <Input
-                placeholder="Search by policy"
+                placeholder="Search by Policy name"
                 prefix={<SearchOutlined />}
                 onChange={(e) => this.onSearch(e)}
               />

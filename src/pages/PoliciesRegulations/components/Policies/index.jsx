@@ -5,6 +5,7 @@ import IconContact from '@/assets/policiesRegulations/policies-icon-contact.svg'
 import PdfIcon from '@/assets/policiesRegulations/pdf-2.svg';
 import ViewIcon from '@/assets/policiesRegulations/view.svg';
 
+import DocumentModal from './components/DocumentModal';
 import EmployeeConduct from './components/EmployeeConduct';
 import LeavePolicy from './components/LeavePolicy';
 import CompanyAssetPolicy from './components/CompanyAssetPolicy';
@@ -118,6 +119,7 @@ class Policies extends PureComponent {
     super(props);
     this.state = {
       content: 'employee-conduct',
+      viewDocument: false,
     };
   }
 
@@ -126,6 +128,7 @@ class Policies extends PureComponent {
   };
 
   render() {
+    const { viewDocument } = this.state;
     const getContent = () => {
       const { content } = this.state;
       const policy = data.filter((val) => val.id === content);
@@ -134,15 +137,18 @@ class Policies extends PureComponent {
         const item = policy[0];
         return item.attachment.map((val) => {
           return (
-            <div className={styles.viewCenter__content}>
-              <div>
+            <div key={val.id} className={styles.viewCenter__title}>
+              <div className={styles.viewCenter__title__text}>
                 <img src={PdfIcon} alt="pdf" />
-                <span>{val.name}</span>
+                <span className={styles.viewCenter__title__text__category}>{val.name}</span>
               </div>
-              <div>
-                <img src={ViewIcon} alt="view" />
-                <span>View</span>
-              </div>
+              <Button
+                className={styles.viewCenter__title__view}
+                icon={<img src={ViewIcon} alt="view" />}
+                onClick={() => this.setState({ viewDocument: true })}
+              >
+                <span className={styles.viewCenter__title__view__text}>View</span>
+              </Button>
             </div>
           );
         });
@@ -200,6 +206,10 @@ class Policies extends PureComponent {
           </Col>
           <Col sm={24} md={8} xl={13} className={styles.viewCenter}>
             {getContent()}
+            <DocumentModal
+              visible={viewDocument}
+              onClose={() => this.setState({ viewDocument: false })}
+            />
           </Col>
           <Col sm={24} md={10} xl={6} className={styles.viewRight}>
             <div className={styles.viewRight__title}>

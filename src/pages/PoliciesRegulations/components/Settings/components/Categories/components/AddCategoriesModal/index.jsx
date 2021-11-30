@@ -16,7 +16,9 @@ class AddCategoriesModal extends Component {
     onClose();
   };
 
-  handleFinish = () => {};
+  handleFinish = (value) => {
+    console.log(value);
+  };
 
   render() {
     const { visible } = this.props;
@@ -63,7 +65,7 @@ class AddCategoriesModal extends Component {
               <Button
                 className={styles.btnSubmit}
                 type="primary"
-                form="myForm"
+                form="addForm"
                 key="submit"
                 htmlType="submit"
                 // loading={loadingAddTask}
