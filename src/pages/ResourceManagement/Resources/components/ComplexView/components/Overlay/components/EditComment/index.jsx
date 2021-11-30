@@ -33,13 +33,16 @@ class EditCommentModal extends PureComponent {
       commentResource: values.comment,
       id: obj.employeeId,
     };
-    const { dispatch } = this.props;
+    const { dispatch, refreshData } = this.props;
     await dispatch({
       type: 'resourceManagement/updateComment',
       payload: {
         ...payload,
       },
-    });
+    }).then(() => {
+      refreshData()
+    })
+    
     this.handleCancel();
   };
 

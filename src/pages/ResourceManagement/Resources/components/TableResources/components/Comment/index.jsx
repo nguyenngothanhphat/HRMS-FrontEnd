@@ -5,8 +5,8 @@ import { connect } from 'umi';
 import styles from './index.less';
 
 const { TextArea } = Input;
-@connect(({loading}) => ({
-    loading: loading.effects['resourceManagement/updateComment']
+@connect(({ loading }) => ({
+  loading: loading.effects['resourceManagement/updateComment'],
 }))
 class CommentModal extends PureComponent {
   constructor(props) {
@@ -28,20 +28,22 @@ class CommentModal extends PureComponent {
     });
   };
 
-  onFinish = async(values, obj) => {
-      const payload = {
-        commentResource: values.comment,
-        id: obj.employeeId
-      }
-      const { dispatch } = this.props
-        await dispatch({
-        type: 'resourceManagement/updateComment',
-        payload: {
-          ...payload
-        },
-      });
-      this.handleCancel()
-  }
+  onFinish = async (values, obj) => {
+    const payload = {
+      commentResource: values.comment,
+      id: obj.employeeId,
+    };
+    const { dispatch, refreshData } = this.props;
+    await dispatch({
+      type: 'resourceManagement/updateComment',
+      payload: {
+        ...payload,
+      },
+    }).then(() => {
+      refreshData()
+    })
+    this.handleCancel();
+  };
 
   render() {
     const { data } = this.props;
@@ -64,23 +66,31 @@ class CommentModal extends PureComponent {
         </div>
         <Modal
           className={styles.modalAdd}
-          title="Edit Comment"
+          title="Add Comment"
           width="40%"
           visible={visible}
           // onOk={() => this.handleOk()}
           onCancel={() => this.handleCancel()}
-          okText="Update"
-          cancelButtonProps={{ style: { color: 'red', border: '1px solid white' }}}
+          okText="Add"
+          cancelButtonProps={{ style: { color: 'red', border: '1px solid white' } }}
           okButtonProps={{
             style: {
               background: '#FFA100',
               border: '1px solid #FFA100',
               color: 'white',
               borderRadius: '25px',
-            }, form:'commentForm', key: 'submit', htmlType: 'submit'
+            },
+            form: 'commentForm',
+            key: 'submit',
+            htmlType: 'submit',
           }}
         >
-          <Form id="commentForm" layout="vertical" className={styles.formComment} onFinish={(values) => this.onFinish(values, data)}>
+          <Form
+            id="commentForm"
+            layout="vertical"
+            className={styles.formComment}
+            onFinish={(values) => this.onFinish(values, data)}
+          >
             <Form.Item label="Comments" name="comment">
               <TextArea placeholder="Enter Comments" autoSize={{ minRows: 4, maxRows: 8 }} />
             </Form.Item>

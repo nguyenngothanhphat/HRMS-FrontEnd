@@ -5,7 +5,7 @@ import ViewCommentModal from './components/ViewComment';
 
 class CommentOverlay extends PureComponent {
   render() {
-    const { row, line } = this.props;
+    const { row, line, refreshData } = this.props;
     return (
       <div className={styles.CommentOverlay}>
         <span className={styles.comment} style={{ WebkitLineClamp: line }}>
@@ -17,7 +17,7 @@ class CommentOverlay extends PureComponent {
           </button>
         </div> */}
         <span className={styles.showEditComment}>
-          <EditCommentModal dataRow={row} />
+          <EditCommentModal dataRow={row} refreshData={refreshData} />
         </span>
         <span className={styles.showViewComment}>
           <ViewCommentModal dataRow={row} />

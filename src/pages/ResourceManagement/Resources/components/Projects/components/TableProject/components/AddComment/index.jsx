@@ -6,8 +6,7 @@ import styles from './index.less';
 
 const { TextArea } = Input;
 @connect(({ loading }) => ({
-  loading: loading.effects['resourceManagement/addAndUpdateCommentsProject'],
-  loadingRefesherList: loading.effects['resourceManagement/fetchProjectList']
+  loadingAddComments: loading.effects['resourceManagement/addAndUpdateCommentsProject'],
 }))
 class AddComment extends PureComponent {
   constructor(props) {
@@ -46,17 +45,16 @@ class AddComment extends PureComponent {
       projectId: obj.projectId,
       comments: values.comment,
     };
-    const { dispatch } = this.props;
+    const { dispatch, fetchProjectList } = this.props;
     await dispatch({
       type: 'resourceManagement/addAndUpdateCommentsProject',
       payload: {
         ...payload,
       },
-    });
-    await dispatch({
-      type: 'resourceManagement/fetchProjectList',
-    });
-    this.handleCancel();
+    }).then(() => {
+      fetchProjectList()
+      this.handleCancel();
+    })
   };
 
   render() {

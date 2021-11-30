@@ -78,8 +78,10 @@ const resourceManagement = {
           type: 'save',
           payload: { resourceList: data, total },
         });
+        return response
       } catch (error) {
         dialog(error);
+        return null
       }
     },
     *fetchAssignToProject({ payload }, { call }) {
@@ -112,8 +114,9 @@ const resourceManagement = {
       }
     },
     *updateComment({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(updateComment, {
+        response = yield call(updateComment, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -121,7 +124,7 @@ const resourceManagement = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message: 'Add assign to project Successfully',
+          message: 'Add comment Successfully',
         });
         yield put({
           type: 'save',
@@ -130,6 +133,7 @@ const resourceManagement = {
       } catch (error) {
         dialog(error);
       }
+      return response
     },
     *fetchResourceAvailableStatus({ payload }, { call, put }) {
       try {
@@ -237,8 +241,9 @@ const resourceManagement = {
       }
     },
     *fetchProjectList({ payload }, { call, put }) {
+      let response = {}
       try {
-        const response = yield call(fetchProjectListTable, {
+        response = yield call(fetchProjectListTable, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -252,6 +257,7 @@ const resourceManagement = {
       } catch (error) {
         dialog(error);
       }
+      return response
     },
     // UTILIZATION
     *fetchResourceUtilizationChart({ payload }, { call, put }) {
@@ -273,8 +279,9 @@ const resourceManagement = {
       }
     },
     *fetchStatusProjectList({ payload }, { call, put }) {
+      let response = {}
       try {
-        const response = yield call(fetchStatusProject, {
+        response = yield call(fetchStatusProject, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -326,10 +333,12 @@ const resourceManagement = {
       } catch (error) {
         dialog(error);
       }
+      return response
     },
     *addAndUpdateCommentsProject({ payload }, { call }) {
+      let response = {}
       try {
-        const response = yield call(addAndUpdateComments, {
+        response = yield call(addAndUpdateComments, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -339,9 +348,11 @@ const resourceManagement = {
         notification.success({
           message: 'Add comments Successfully',
         });
+        return response
       } catch (error) {
         dialog(error);
-      }
+        return null
+      }    
     },
     *fetchResourceUtilizationList({ payload }, { call, put }) {
       let response = {};

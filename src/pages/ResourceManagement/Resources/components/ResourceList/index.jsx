@@ -168,6 +168,11 @@ class ResourceList extends Component {
     });
   };
 
+  refreshData = () => {
+    this.fetchData = this.fetchStatus.START;
+    this.fetchResourceList();
+  }
+
   fetchEmployeeList = async () => {
     const { dispatch } = this.props;
     dispatch({
@@ -224,6 +229,7 @@ class ResourceList extends Component {
           <SearchTable onFilterChange={this.onFilterChange} filter={filter} />
         </div>
         <TableResources
+          refreshData={this.refreshData}
           data={resourceList}
           projectList={projectList}
           loading={loading || loadingSearch}

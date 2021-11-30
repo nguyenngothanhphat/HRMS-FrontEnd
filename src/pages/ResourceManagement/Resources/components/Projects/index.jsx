@@ -44,7 +44,11 @@ const ProjectList = (props) => {
           fetchProjectList={fetchProjectList}
         />
       </div>
-      <TableProject data={projectTable} loading={loadingFetchProjectList} />
+      <TableProject
+        data={projectTable}
+        loading={loadingFetchProjectList}
+        fetchProjectList={fetchProjectList}
+      />
     </div>
   );
 };

@@ -54,8 +54,8 @@ class AddActionBTN extends Component {
     this.setState({projectId: event})
   }
 
-  handleSubmitAssign = (values) => {
-    const { dispatch, dataPassRow } = this.props;
+  handleSubmitAssign = async (values) => {
+    const { dispatch, dataPassRow, refreshData } = this.props;
     const { project, status, utilization, startDate, endDate, comment, revisedEndDate } = values;
     if (new Date(endDate).getTime() < new Date(startDate).getTime() || new Date(revisedEndDate).getTime() < new Date(startDate).getTime()) {
       notification.error({
@@ -75,7 +75,7 @@ class AddActionBTN extends Component {
       });
       return
     }
-    dispatch({
+    await dispatch({
       type: 'resourceManagement/fetchAssignToProject',
       payload: {
         employee: dataPassRow.employeeId,
@@ -88,7 +88,10 @@ class AddActionBTN extends Component {
         comment,
         milestone: '',
       },
-    });
+    }).then(() => {
+      refreshData();
+    })
+    
     this.setState({
       visibleSuccess: true,
     });
