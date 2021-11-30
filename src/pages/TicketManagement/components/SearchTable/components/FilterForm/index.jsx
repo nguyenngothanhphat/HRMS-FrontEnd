@@ -462,7 +462,7 @@ class FilterForm extends Component {
               </Select>
             </Form.Item>
 
-            <Form.Item key="employeeAssignee" label="BY ASSIGN" name="employeeAssignee">
+            <Form.Item key="employeeAssignee" label="BY ASSIGNED TO" name="employeeAssignee">
               <Select
                 allowClear
                 showArrow
@@ -482,14 +482,11 @@ class FilterForm extends Component {
                       const { employeeAssignee: { generalInfo: { legalName = '' } = {} } = {} } =
                         option;
                       return (
-                        <Option
-                          key={option.id}
-                          value={option.employeeAssignee.generalInfo.legalName}
-                        >
+                        <Option key={option.employee_assignee} value={option.employee_assignee}>
                           <Checkbox
-                            value={option.employeeAssignee.generalInfo.legalName}
+                            value={option.employee_assignee}
                             checked={this.checkBoxStatusChecked(
-                              option.employeeAssignee.generalInfo.legalName,
+                              option.employee_assignee,
                               'employeeAssignee',
                             )}
                           />
