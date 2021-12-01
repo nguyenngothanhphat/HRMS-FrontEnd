@@ -1,31 +1,54 @@
 import React, { Component } from 'react';
 import { Table, Dropdown, Menu, Divider } from 'antd';
-import { connect, Link } from 'umi';
+import { connect } from 'umi';
 import moment from 'moment';
+
+import AddPolicyModal from '../AddPolicyModal';
+import DeletePolicyModal from '../DeletePolicyModal';
+import ModalViewPDF from '@/components/ModalViewPDF';
 
 import MoreIcon from '@/assets/policiesRegulations/more.svg';
 import PdfIcon from '@/assets/policiesRegulations/pdf-2.svg';
 import styles from './index.less';
 
+connect(({ policiesRegulations: { listPolicy = [] } = {} }) => ({
+  listPolicy,
+}));
 class TablePolicy extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      openModal: '',
+      deletePolicy: false,
+      modalVisiblePDF: false,
+      linkFile: '',
+    };
   }
 
-  handleDelete = () => {};
+  handleCancel = () => {
+    this.setState({
+      modalVisiblePDF: false,
+      linkFile: '',
+    });
+  };
 
-  handleUpdateDocument = () => {};
+  handleDelete = () => {
+    this.setState({ deletePolicy: true });
+  };
 
-  handleActionClick = () => {};
+  handleUpdateDocument = () => {
+    this.setState({ openModal: 'edit' });
+  };
+
+  handleViewDocument = () => {
+    this.setState({ modalVisiblePDF: true });
+  };
 
   actionMenu = () => {
     return (
       <Menu>
         <Menu.Item>
-          <Link>
-            <span onClick={() => this.handleActionClick()}>View Document</span>
-          </Link>
+          <span onClick={() => this.handleViewDocument()}>View Document</span>
         </Menu.Item>
         <Divider />
         <Menu.Item>
@@ -40,6 +63,7 @@ class TablePolicy extends Component {
   };
 
   render() {
+    const { openModal, deletePolicy, modalVisiblePDF, linkFile } = this.state;
     const columns = [
       {
         title: 'Policy Name',
@@ -161,6 +185,21 @@ class TablePolicy extends Component {
     return (
       <div className={styles.TablePolicy}>
         <Table columns={columns} dataSource={data} pagination={pagination} />
+        <AddPolicyModal
+          openModal={openModal === 'edit'}
+          onClose={() => this.setState({ openModal: '' })}
+          mode={openModal}
+        />
+        <DeletePolicyModal
+          visible={deletePolicy}
+          onClose={() => this.setState({ deletePolicy: false })}
+          mode="multiple"
+        />
+        <ModalViewPDF
+          visible={modalVisiblePDF}
+          handleCancel={this.handleCancel}
+          // link={linkFile}
+        />
       </div>
     );
   }

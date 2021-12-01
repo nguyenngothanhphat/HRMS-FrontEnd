@@ -14,6 +14,8 @@ const { Dragger } = Upload;
 const { Option } = Select;
 @connect(({ loading }) => ({
   loadingUploadAttachment: loading.effects['upload/uploadFile'],
+  loadingAdd: loading.effects['policiesRegulations/addPolicy'],
+  loadingUpdate: loading.effects['policiesRegulations/updatePolicy'],
 }))
 class AddPolicyModal extends Component {
   formRef = React.createRef();
@@ -103,7 +105,7 @@ class AddPolicyModal extends Component {
   };
 
   onFinish = async (values) => {
-    const { onAdd = () => {} } = this.props;
+    const { mode, dispatch } = this.props;
 
     const { key = '' } = values;
     const { uploadedFile = {} } = this.state;
@@ -113,13 +115,25 @@ class AddPolicyModal extends Component {
       uploadedFile,
     };
 
-    if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
-      message.error('Invalid file');
+    if (mode === 'add') {
+      if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
+        message.error('Invalid file');
+      } else {
+        //   dispatch({
+        //     type: 'policiesRegulations/addpolicy',
+        //     payload: values,
+        //   });
+        //   this.setState({ uploadedFile: {}, fileName: '' });
+      }
     } else {
-      onAdd(payload);
-      this.setState({ uploadedFile: {}, fileName: '' });
+      // const { _id } = item;
+      // dispatch({
+      //   type: 'policiesRegulations/updatePolicy',
+      //   payload: {
+      //     ...values,
+      //   },
+      // });
     }
-    console.log(values);
   };
 
   render() {
@@ -145,13 +159,13 @@ class AddPolicyModal extends Component {
         name: 'Travel Policy',
       },
     ];
-    const { loadingUploadAttachment, visible = false } = this.props;
+    const { loadingUploadAttachment, loadingAdd, loadingUpdate, openModal, mode } = this.props;
     const { fileName = '' } = this.state;
     const onPolicyCategories = () => {};
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>
-          <p className={styles.header__text}>Add Policy</p>
+          <p className={styles.header__text}>{mode === 'add' ? 'Add Policy' : 'Edit Policy'}</p>
         </div>
       );
     };
@@ -256,15 +270,15 @@ class AddPolicyModal extends Component {
                 form="addForm"
                 key="submit"
                 htmlType="submit"
-                // loading={loadingAddTask}
+                loading={loadingAdd && loadingUpdate}
               >
-                Add Policy
+                {mode === 'add' ? '  Add Policy' : 'Save Changes'}
               </Button>
             </>
           }
           title={renderModalHeader()}
           centered
-          visible={visible}
+          visible={openModal}
         >
           {renderModalContent()}
         </Modal>

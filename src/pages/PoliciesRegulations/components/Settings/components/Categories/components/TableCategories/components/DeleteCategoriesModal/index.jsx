@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { Button, Col, Form, Input, Modal, Row } from 'antd';
+import { Button, Modal } from 'antd';
 import { connect } from 'umi';
-
 import styles from './index.less';
 
 connect(({ loading }) => ({
-  loadingAdd: loading.effects['policiesRegulations/addCategory'],
+  loadingDelete: loading.effects['policiesregulations/deleteCategory'],
 }));
-class AddCategoriesModal extends Component {
+class DeleteCategoriesModal extends Component {
   formRef = React.createRef();
 
   constructor(props) {
@@ -24,7 +23,7 @@ class AddCategoriesModal extends Component {
   handleFinish = (value) => {
     const { dispatch, onClose = () => {} } = this.props;
     // dispatch({
-    //   type: 'policiesRegulations/addCategory',
+    //   type: 'policiesRegulations/deleteCategory',
     //   payload: value,
     // }).then((response) => {
     //   const { statusCode } = response;
@@ -35,31 +34,11 @@ class AddCategoriesModal extends Component {
   };
 
   render() {
-    const { visible, loadingAdd = false } = this.props;
+    const { visible, loadingDelete = false } = this.props;
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>
-          <p className={styles.header__text}>Add Policies Categories</p>
-        </div>
-      );
-    };
-    const renderModalContent = () => {
-      return (
-        <div className={styles.content}>
-          <Form name="basic" id="addForm" ref={this.formRef} onFinish={this.handleFinish}>
-            <Row>
-              <Col>
-                <Form.Item
-                  label="Categories Name"
-                  name="category"
-                  labelCol={{ span: 24 }}
-                  rules={[{ required: true, message: 'Please enter the categories name' }]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
+          <p className={styles.header__text}>Delete Policies Categories</p>
         </div>
       );
     };
@@ -67,7 +46,7 @@ class AddCategoriesModal extends Component {
     return (
       <>
         <Modal
-          className={`${styles.AddTaskModal} ${styles.noPadding}`}
+          className={`${styles.DeleteTaskModal} ${styles.noPadding}`}
           onCancel={this.handleCancel}
           destroyOnClose
           width={696}
@@ -82,9 +61,9 @@ class AddCategoriesModal extends Component {
                 form="addForm"
                 key="submit"
                 htmlType="submit"
-                loading={loadingAdd}
+                loading={loadingDelete}
               >
-                Submit
+                Yes, Delete
               </Button>
             </>
           }
@@ -92,11 +71,11 @@ class AddCategoriesModal extends Component {
           centered
           visible={visible}
         >
-          {renderModalContent()}
+          Are you sure you want to delete the item <strong>Categories</strong>?
         </Modal>
       </>
     );
   }
 }
 
-export default AddCategoriesModal;
+export default DeleteCategoriesModal;

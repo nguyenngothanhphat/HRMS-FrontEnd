@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Modal, Row } from 'antd';
 import { connect } from 'umi';
-
 import styles from './index.less';
 
 connect(({ loading }) => ({
-  loadingAdd: loading.effects['policiesRegulations/addCategory'],
+  loadingUpdate: loading.effects['policiesregulations/updateCategory'],
 }));
-class AddCategoriesModal extends Component {
+
+class EditCategoriesModal extends Component {
   formRef = React.createRef();
 
   constructor(props) {
@@ -24,7 +24,7 @@ class AddCategoriesModal extends Component {
   handleFinish = (value) => {
     const { dispatch, onClose = () => {} } = this.props;
     // dispatch({
-    //   type: 'policiesRegulations/addCategory',
+    //   type: 'policiesRegulations/updateCategory',
     //   payload: value,
     // }).then((response) => {
     //   const { statusCode } = response;
@@ -35,11 +35,11 @@ class AddCategoriesModal extends Component {
   };
 
   render() {
-    const { visible, loadingAdd = false } = this.props;
+    const { visible, loadingUpdate = false } = this.props;
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>
-          <p className={styles.header__text}>Add Policies Categories</p>
+          <p className={styles.header__text}>Edit Policies Categories</p>
         </div>
       );
     };
@@ -51,7 +51,7 @@ class AddCategoriesModal extends Component {
               <Col>
                 <Form.Item
                   label="Categories Name"
-                  name="category"
+                  name="key"
                   labelCol={{ span: 24 }}
                   rules={[{ required: true, message: 'Please enter the categories name' }]}
                 >
@@ -67,7 +67,7 @@ class AddCategoriesModal extends Component {
     return (
       <>
         <Modal
-          className={`${styles.AddTaskModal} ${styles.noPadding}`}
+          className={`${styles.EditTaskModal} ${styles.noPadding}`}
           onCancel={this.handleCancel}
           destroyOnClose
           width={696}
@@ -82,9 +82,9 @@ class AddCategoriesModal extends Component {
                 form="addForm"
                 key="submit"
                 htmlType="submit"
-                loading={loadingAdd}
+                loading={loadingUpdate}
               >
-                Submit
+                Save Change
               </Button>
             </>
           }
@@ -99,4 +99,4 @@ class AddCategoriesModal extends Component {
   }
 }
 
-export default AddCategoriesModal;
+export default EditCategoriesModal;

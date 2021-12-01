@@ -13,7 +13,8 @@ class Regulations extends Component {
     super(props);
 
     this.state = {
-      addPolicy: false,
+      // addPolicy: false,
+      openModal: '',
     };
     this.refForm = React.createRef();
     this.onSearchDebounce = debounce(this.onSearchDebounce, 500);
@@ -35,7 +36,7 @@ class Regulations extends Component {
   };
 
   render() {
-    const { addPolicy } = this.state;
+    const { openModal } = this.state;
     return (
       <div className={styles.containerPolicy}>
         <div className={styles.headerPolicy}>
@@ -43,7 +44,7 @@ class Regulations extends Component {
           <div className={styles.headerPolicy__btnAdd}>
             <Button
               icon={<img src={AddIcon} alt="AddIcon" />}
-              onClick={() => this.setState({ addPolicy: true })}
+              onClick={() => this.setState({ openModal: 'add' })}
             >
               Add Policy
             </Button>
@@ -59,9 +60,9 @@ class Regulations extends Component {
             </div>
           </div>
           <AddPolicyModal
-            visible={addPolicy}
-            onClose={() => this.setState({ addPolicy: false })}
-            mode="multiple"
+            openModal={openModal === 'add'}
+            onClose={() => this.setState({ openModal: '' })}
+            mode={openModal}
           />
         </div>
         <Row>
