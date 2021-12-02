@@ -23,6 +23,7 @@ const { TextArea } = Input;
         firstName: candidateFN = '',
         middleName: candidateMN = '',
         lastName: candidateLN = '',
+        privateEmail: candidateEmail = '',
       },
     } = {},
     conversation = {},
@@ -35,6 +36,7 @@ const { TextArea } = Input;
     candidateFN,
     candidateMN,
     candidateLN,
+    candidateEmail,
     assignTo,
     activeConversationMessages,
     companiesOfUser,
@@ -279,7 +281,7 @@ class MessageBox extends PureComponent {
   };
 
   onSendClick = async (values) => {
-    const { dispatch, assignTo: hrId, candidate = '' } = this.props;
+    const { dispatch, assignTo: hrId, candidate = '', candidateEmail = '' } = this.props;
     const { activeId } = this.state;
     const { message } = values;
     if (activeId && message) {
@@ -296,6 +298,7 @@ class MessageBox extends PureComponent {
           conversationId: activeId,
           sender: hrId,
           text: message,
+          candidateEmail,
         },
       });
 
