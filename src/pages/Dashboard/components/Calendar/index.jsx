@@ -43,7 +43,9 @@ const Calendar = (props) => {
   }, []);
 
   useEffect(() => {
-    syncGoogleCalendarAPI(selectedDate);
+    if (isGoogleSignIn) {
+      syncGoogleCalendarAPI(selectedDate);
+    }
   }, [selectedDate]);
 
   useEffect(() => {
