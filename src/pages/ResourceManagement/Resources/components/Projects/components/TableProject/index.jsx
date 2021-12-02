@@ -44,7 +44,7 @@ class TableProject extends Component {
       data = [],
       loading = false,
       page = 1,
-      limit = 3,
+      limit = 6,
       total: totalProp,
       isBackendPaging = false,
     } = this.props;
