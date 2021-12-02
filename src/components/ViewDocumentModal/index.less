@@ -3,8 +3,9 @@
   :global {
     .ant-modal-body {
       padding: 0;
-      border-radius: 3px;
-      overflow: hidden;
+    }
+    .ant-modal-content {
+      border-radius: 5px;
     }
     .ant-modal-close {
       display: none;
@@ -37,8 +38,8 @@
     position: relative;
     .contentViewPDF {
       .content();
-      height: 75vh;
-      padding: 44px 48px 80px;
+      // height: 75vh;
+      padding: 32px 48px 100px;
     }
     .contentViewImage {
       .content();
@@ -47,17 +48,21 @@
       padding: 20px;
     }
     .content {
-      overflow: auto;
+      overflow: hidden;
       .fileName {
         font-weight: bold;
         font-size: 16px;
+        margin-bottom: 24px;
       }
       .pdfFrame {
+        // background-color: #7071772a;
         // margin: 0 auto;
-        border: none !important;
+        border: 1px solid #7071772a;
+        border-radius: 5px;
         overflow-y: auto;
         .pdfPage {
           margin-bottom: 20px;
+          box-shadow: 0px 1px 40px rgba(0, 0, 0, 0.1);
           canvas {
             width: 100% !important;
             height: auto !important;
@@ -76,6 +81,8 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        height: 300px;
+        width: 100%;
       }
     }
     .stickyFooter {
@@ -86,7 +93,7 @@
       padding: 17px 48px;
       width: 100%;
       overflow: hidden;
-      // border-radius: 0 0 3px 3px;
+      border-radius: 0 0 5px 5px;
     }
     :global {
       .ant-btn {
@@ -107,23 +114,4 @@
     }
   }
 
-  /* width */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #888;
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
 }

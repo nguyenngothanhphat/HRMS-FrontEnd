@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect, history } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import Layout from '@/components/LayoutAdminApp';
-import { getCurrentCompany } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import CompanyDetails from './components/CompanyDetails';
 import WorkLocations from './components/WorkLocations';
 import PlanInfo from './components/PlanInfo';
@@ -19,7 +19,7 @@ import styles from './index.less';
     departmentManagement: { listByCompany: listDepartment = [] } = {},
   }) => ({
     currentUser,
-            listDepartment,
+    listDepartment,
     loading: loading.effects['companiesManagement/fetchCompanyDetails'],
   }),
 )
@@ -51,7 +51,7 @@ class AdminApp extends Component {
       if (id) {
         dispatch({
           type: 'companiesManagement/fetchCompanyDetails',
-          payload: { id },
+          payload: { id, tenantId: getCurrentTenant() },
         });
       }
       window.scrollTo({
