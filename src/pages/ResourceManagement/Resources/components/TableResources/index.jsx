@@ -85,6 +85,7 @@ class TableResources extends PureComponent {
       pageSelected,
       size,
       getPageAndSize,
+      refreshData,
     } = this.props;
     // const formatData = this.formatResource(data)
     const pagination = {
@@ -320,7 +321,7 @@ class TableResources extends PureComponent {
             <span className={styles.basicCellFieldShowEdit}>
               {value}
               <span className={styles.iconEdit}>
-                <EditActionBTN dataPassRow={row} />
+                <EditActionBTN dataPassRow={row} refreshData={refreshData} />
               </span>
             </span>
           );
@@ -338,11 +339,11 @@ class TableResources extends PureComponent {
             // webkit-line-clamp
             const line =
               employeeRowCount === 0 || employeeRowCount === 1 ? 3 : employeeRowCount * 3;
-            text = <CommentOverlay row={row} line={line} />;
+            text = <CommentOverlay row={row} line={line} refreshData={refreshData} />;
           } else {
             text = (
               <span>
-                <CommentModal data={row} />
+                <CommentModal data={row} refreshData={refreshData} />
               </span>
             );
           }
@@ -361,7 +362,7 @@ class TableResources extends PureComponent {
           // const buttonGroup = actionAddAndEdit(row);
           const buttonGroup = (
             <span>
-              <AddActionBTN dataPassRow={row} />
+              <AddActionBTN dataPassRow={row} refreshData={refreshData} />
               <HistoryActionBTN dataPassRow={row} />
             </span>
           );
