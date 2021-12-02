@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Select } from 'antd';
 import { connect } from 'umi';
-import styles from './index.less'
+import styles from './index.less';
 
 const { Option } = Select;
 
@@ -23,16 +23,16 @@ class AvailableStatus extends PureComponent {
   };
 
   fetchAvailableStatus = () => {
-    const {dispatch} = this.props
+    const { dispatch } = this.props;
     dispatch({
-      type: 'resourceManagement/fetchResourceAvailableStatus'
+      type: 'resourceManagement/fetchResourceAvailableStatus',
     }).then(() => {
-      const {resourceStatuses = []} = this.props || {};
+      const { resourceStatuses = [] } = this.props || {};
       this.setState({
-        resourceStatuses: resourceStatuses || []
-      })
-    })
-  }
+        resourceStatuses: resourceStatuses || [],
+      });
+    });
+  };
 
   renderTab = (value) => {
     return <div>{value}</div>;
@@ -46,9 +46,8 @@ class AvailableStatus extends PureComponent {
   };
 
   render() {
-    console.log('status render')
     const { resourceStatuses = [], currentType = 'ALL' } = this.state;
-    const {changeAvailableStatus} = this.props
+    const { changeAvailableStatus } = this.props;
     // const statusData = [
     //   { availableStatus: 'ALL', compareKey: 'totalResource', display: 'All Resources', number: 10 },
     //   { availableStatus: 'AVAILABLE_NOW', compareKey: 'totalAvailableNow', display: 'Available now', number: 10 },
@@ -66,7 +65,6 @@ class AvailableStatus extends PureComponent {
           placement="bottomCenter"
           onChange={(value) => changeAvailableStatus(value)}
           defaultValue={currentType}
-          className={styles.select}
         >
           {resourceStatuses.map((item) => (
             <Option value={item.availableStatus} key={item.availableStatus}>
