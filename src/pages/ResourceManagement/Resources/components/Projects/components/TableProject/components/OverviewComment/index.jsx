@@ -4,20 +4,15 @@ import EditComment from './components/EditComment';
 import ViewComment from './components/ViewComment';
 
 class OverviewComment extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
   render() {
-    const { row, line } = this.props;
+    const { row, line, fetchProjectList } = this.props;
     return (
       <span className={styles.OverviewComment}>
         <span className={styles.comment} style={{ WebkitLineClamp: line }}>
           {row.comment}
         </span>
         <span className={styles.showEditComment}>
-          <EditComment dataRow={row} />
+          <EditComment dataRow={row} fetchProjectList={fetchProjectList} />
         </span>
         <span className={styles.showViewComment}>
           <ViewComment dataRow={row} />

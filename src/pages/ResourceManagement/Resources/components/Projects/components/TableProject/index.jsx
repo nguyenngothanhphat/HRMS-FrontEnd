@@ -46,7 +46,7 @@ class TableProject extends Component {
       data = [],
       loading = false,
       page = 1,
-      limit = 6,
+      limit = 10,
       total: totalProp,
       isBackendPaging = false,
     } = this.props;
@@ -90,7 +90,7 @@ class TableProject extends Component {
         billableEffor: obj.billableEffort || '-',
         spentEffor: obj.spentEffort || '-',
         variance: obj.variance || '-',
-        comment: obj.comments || '-',
+        comment: obj.comments,
       };
     });
 
@@ -220,20 +220,16 @@ class TableProject extends Component {
         dataIndex: 'comment',
         key: 'comment',
         render: (value, row) => {
-          if (value !== '-') {
+          const {fetchProjectList} = this.props;
+          let displayValue;
+          if (value) {
             const getRow = dataSource.filter((x) => x.id === row.id).length;
             const line = getRow === 0 || getRow === 1 ? 3 : getRow * 3;
-            return (
-              <span>
-                <OverviewComment row={row} line={line} />
-              </span>
-            );
+            displayValue = <span><OverviewComment row={row} line={line} fetchProjectList={fetchProjectList} /></span>
+          } else {
+            displayValue = <span><AddComment data={row} fetchProjectList={fetchProjectList} /></span>
           }
-          return (
-            <span>
-              <AddComment data={row} />
-            </span>
-          );
+          return ( displayValue );
         },
         sorter: (a, b) => a.comment.localeCompare(b.comment),
       },
