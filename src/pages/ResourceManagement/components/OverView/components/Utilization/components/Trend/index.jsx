@@ -41,13 +41,13 @@ const Trend = (props) => {
   }, [startDate, endDate]);
 
   const getNameByMode = (x) => {
-    if (type === 'M') {
+    if (type === 'D') {
       return moment(x.date).format('DD');
     }
     if (type === 'W') {
       return `Week ${x.week}`;
     }
-    if (type === 'Y') {
+    if (type === 'M') {
       return x.month;
     }
     return '';
