@@ -84,7 +84,13 @@
   }
 
   .dateHeaderContainer {
-    text-align: center;
+    text-align: left;
+    .dateFormat {
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 9px;
+      line-height: 11px;
+    }
   }
 
   .comment {
@@ -184,7 +190,9 @@
       border-right: unset !important;
       border-left: unset !important;
     }
-
+    .ant-table-thead > tr > th {
+      padding: 8px !important;
+    }
     .right-left-border {
       border-right: 1px solid #e2e4e8;
       border-left: 1px solid #e2e4e8;

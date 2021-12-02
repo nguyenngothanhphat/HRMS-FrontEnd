@@ -7,7 +7,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import ResourceList from './components/ResourceList';
 import styles from './index.less';
 import OverView from '@/pages/ResourceManagement/components/OverView';
-import ProjectList from './components/Projects'
+import ProjectList from './components/Projects';
 import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
 
 const baseModuleUrl = '/resource-management';
@@ -140,7 +140,7 @@ class Resources extends Component {
             <TabPane tab="Overview" key="overview">
               <OverView />
             </TabPane>
-            <TabPane tab="Resource List" key="resource-list">
+            <TabPane tab="Resources" key="resources">
               <ResourceList
                 location={[locationID]}
                 // data={resourceList}
