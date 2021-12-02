@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import { Form, Input, Skeleton, Select, Button, Checkbox, Row, Col } from 'antd';
 import classnames from 'classnames';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { connect } from 'umi';
 import { CloseOutlined } from '@ant-design/icons';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import s from './index.less';
 
@@ -49,22 +49,17 @@ class CompanyDetails extends Component {
   }
 
   componentDidMount = async () => {
-    const { dispatch, companyId } = this.props;
-    const res = await dispatch({
-      type: 'companiesManagement/fetchCompanyDetails',
-      payload: { id: companyId },
+    const { companyDetails = {} } = this.props;
+
+    const {
+      headQuarterAddress: { country: countryHeadquarter } = {},
+      legalAddress: { country: countryLegal } = {},
+    } = companyDetails;
+    this.setState({
+      countryHeadquarter,
+      countryLegal,
     });
-    const { statusCode, data: company = {} } = res;
-    if (statusCode === 200) {
-      const {
-        headQuarterAddress: { country: countryHeadquarter } = {},
-        legalAddress: { country: countryLegal } = {},
-      } = company;
-      this.setState({
-        countryHeadquarter,
-        countryLegal,
-      });
-    }
+
     this.compareHeadquarterLegalAddress();
   };
 

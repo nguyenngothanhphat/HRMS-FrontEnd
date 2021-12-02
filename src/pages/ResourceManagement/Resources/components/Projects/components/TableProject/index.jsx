@@ -130,9 +130,9 @@ class TableProject extends Component {
       },
       {
         title: (
-          <div>
+          <div className={styles.dateHeaderContainer}>
             <div>Start Date</div>
-            <div>(mm/dd/yyyy)</div>
+            <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
           </div>
         ),
         dataIndex: 'startDate',
@@ -141,9 +141,9 @@ class TableProject extends Component {
       },
       {
         title: (
-          <div>
+          <div className={styles.dateHeaderContainer}>
             <div>End Date</div>
-            <div>(mm/dd/yyyy)</div>
+            <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
           </div>
         ),
         dataIndex: 'endDate',
@@ -152,9 +152,9 @@ class TableProject extends Component {
       },
       {
         title: (
-          <div>
-            <div>Resived End Date</div>
-            <div>(mm/dd/yyyy)</div>
+          <div className={styles.dateHeaderContainer}>
+            <div>Revised End Date</div>
+            <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
           </div>
         ),
         dataIndex: 'resivedEndDate',

@@ -63,14 +63,15 @@ class SearchTable extends PureComponent {
             <img alt="filter" src={filterIcon} className={styles.filterIcon} />
           </Popover>
         </div>
-        <Input
-          size="large"
-          placeholder="Search by Name, user ID"
-          onChange={this.onChangeInput}
-          prefix={<SearchOutlined />}
-          onPressEnter={this.onPressEnter}
-          className={styles.searchFilter__input}
-        />
+        <div className={styles.searchFilter__input}>
+          <Input
+            size="large"
+            placeholder="Search by Name, user ID"
+            onChange={this.onChangeInput}
+            prefix={<SearchOutlined />}
+            onPressEnter={this.onPressEnter}
+          />
+        </div>
       </div>
     );
   }

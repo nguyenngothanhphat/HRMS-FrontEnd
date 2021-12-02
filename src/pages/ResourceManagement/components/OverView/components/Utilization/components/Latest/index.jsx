@@ -64,10 +64,10 @@ const Latest = (props) => {
   };
 
   const calculateUtilization = () => {
-    const billableToday = summaryToday.find((x) => x.status === 'Unpaid') || {};
+    const billableToday = summaryToday.find((x) => x.status === 'Billable') || {};
     const totalToday = summaryToday.find((x) => x.status === 'Total') || {};
 
-    const billableYesterday = summaryYesterday.find((x) => x.status === 'Unpaid') || {};
+    const billableYesterday = summaryYesterday.find((x) => x.status === 'Billable') || {};
     const totalYesterday = summaryYesterday.find((x) => x.status === 'Total') || {};
 
     // other
@@ -135,7 +135,7 @@ const Latest = (props) => {
                 options={{
                   rotation: 270,
                   circumference: 180,
-                  cutout: 85,
+                  cutout: 95,
                   layout: {
                     padding: {
                       top: 24,

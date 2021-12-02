@@ -65,7 +65,7 @@ export async function getMyTeam(payload) {
 // TIMESHEET
 export async function getMyTimesheet(payload, params) {
   return request(
-    `/api/timesheet/filter`,
+    `/api/filter`,
     {
       method: 'GET',
       data: payload,

@@ -1,4 +1,5 @@
 .TableResources {
+  padding: 24px 24px 0;
   .priorityHigh {
     width: 39px;
     height: 18px;
@@ -23,17 +24,9 @@
   .now {
     display: inline-block;
     justify-content: center;
-    padding: 5px;
-    //height: 18px;
-    padding: 8px;
     padding: 4px 8px;
-    // width: 39px;
-    color: #000;
-    font-weight: normal;
-    font-weight: normal;
+    color: #fff;
     font-size: 8px;
-    font-size: 13px;
-    // height: 18px;
     font-family: Roboto;
     font-style: normal;
     background: #00c598;
@@ -42,16 +35,9 @@
   .soon {
     display: inline-block;
     justify-content: center;
-    padding: 5px;
-    //height: 18px;
-    padding: 8px;
     padding: 4px 8px;
-    // width: 39px;
     color: #000;
-    font-weight: normal;
-    font-weight: normal;
     font-size: 8px;
-    font-size: 13px;
     // height: 18px;
     font-family: Roboto;
     font-style: normal;
@@ -98,7 +84,13 @@
   }
 
   .dateHeaderContainer {
-    text-align: center;
+    text-align: left;
+    .dateFormat {
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 9px;
+      line-height: 11px;
+    }
   }
 
   .comment {
@@ -122,8 +114,9 @@
 
   .division {
     height: 18px;
-    padding: 0px 8px;
+    padding: 4px 8px;
     font-weight: 400;
+    font-size: 11px;
     text-align: left;
     background: #e2f6ff;
     border-radius: 12px;
@@ -197,7 +190,9 @@
       border-right: unset !important;
       border-left: unset !important;
     }
-
+    .ant-table-thead > tr > th {
+      padding: 8px !important;
+    }
     .right-left-border {
       border-right: 1px solid #e2e4e8;
       border-left: 1px solid #e2e4e8;

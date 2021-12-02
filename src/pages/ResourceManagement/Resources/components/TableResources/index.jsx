@@ -253,6 +253,7 @@ class TableResources extends PureComponent {
         dataIndex: 'billStatus',
         // width: '6%',
         key: 'billStatus',
+        align: 'center',
         render: (billStatus) => {
           return <span className={styles.basicCellField}> {billStatus}</span>;
         },
@@ -280,7 +281,7 @@ class TableResources extends PureComponent {
         title: (
           <div className={styles.dateHeaderContainer}>
             <div>Start Date</div>
-            <div>(MM/dd/yyyy)</div>
+            <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
           </div>
         ),
         dataIndex: 'startDate',
@@ -294,7 +295,7 @@ class TableResources extends PureComponent {
         title: (
           <div className={styles.dateHeaderContainer}>
             <div>End Date</div>
-            <div>(MM/dd/yyyy)</div>
+            <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
           </div>
         ),
         dataIndex: 'endDate',
@@ -308,7 +309,7 @@ class TableResources extends PureComponent {
         title: (
           <div className={styles.dateHeaderContainer}>
             <div>Revised End Date</div>
-            <div>(MM/dd/yyyy)</div>
+            <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
           </div>
         ),
         dataIndex: 'revisedEndDate',

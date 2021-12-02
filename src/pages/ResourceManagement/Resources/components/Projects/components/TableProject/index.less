@@ -1,13 +1,24 @@
 .TableProject {
+  padding: 24px 24px 0;
   .tableProject {
     .projectName {
       color: #2c6df9;
+      font-weight: 500;
       font-size: 13px;
-      line-height: 15px;
-      vertical-align: top;
+      cursor: pointer;
+    }
+    .dateHeaderContainer {
+      text-align: left;
+      .dateFormat {
+        color: #ffffff;
+        font-weight: 500;
+        font-size: 9px;
+        line-height: 11px;
+      }
     }
     :global {
       .ant-table-thead > tr > th {
+        padding: 8px 16px !important;
         background: #2c6df9 !important;
       }
       .ant-table-tbody > .ant-table-row-level-0 {

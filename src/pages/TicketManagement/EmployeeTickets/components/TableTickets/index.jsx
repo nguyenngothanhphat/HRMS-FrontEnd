@@ -206,7 +206,7 @@ class TableTickets extends PureComponent {
         key: 'subject',
       },
       {
-        title: 'Assign To',
+        title: 'Assigned To',
         dataIndex: ['department_assign', 'employee_assignee', 'id'],
         key: 'assign',
         fixed: 'right',
