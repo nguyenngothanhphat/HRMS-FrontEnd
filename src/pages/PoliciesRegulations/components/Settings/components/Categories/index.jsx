@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { Col, Row, Button } from 'antd';
+import { connect } from 'umi';
 import AddIcon from '@/assets/policiesRegulations/add.svg';
 import TableCatergories from './components/TableCategories';
 import AddCategoriesModal from './components/AddCategoriesModal';
 import styles from './index.less';
+
+@connect()
 
 class Categories extends Component {
   constructor(props) {
@@ -12,6 +15,13 @@ class Categories extends Component {
       addCategoriesModal: false,
     };
   }
+
+componentDidMount(){
+const {dispatch}=this.props
+dispatch({
+  type:'policiesRegulations/fetchListCategory'
+})
+}
 
   render() {
     const { addCategoriesModal } = this.state;

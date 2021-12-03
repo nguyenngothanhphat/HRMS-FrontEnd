@@ -12,7 +12,9 @@ import styles from './index.less';
 
 const { Dragger } = Upload;
 const { Option } = Select;
-@connect(({ loading }) => ({
+@connect(({ loading, policiesRegulations:{listCategory=[]}={}, user: { currentUser: { employee = {} } = {} } }) => ({
+  listCategory,
+  employee,
   loadingUploadAttachment: loading.effects['upload/uploadFile'],
   loadingAdd: loading.effects['policiesRegulations/addPolicy'],
   loadingUpdate: loading.effects['policiesRegulations/updatePolicy'],
@@ -104,61 +106,45 @@ class AddPolicyModal extends Component {
     onClose();
   };
 
-  onFinish = async (values) => {
-    const { mode, dispatch } = this.props;
-
-    const { key = '' } = values;
+  onFinish = async ({categoryPolicy,namePolicy}) => {
+    const { mode, dispatch,item={}, employee:{_id=''}={} } = this.props;
     const { uploadedFile = {} } = this.state;
-
-    const payload = {
-      key,
-      uploadedFile,
-    };
-
-    if (mode === 'add') {
-      if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
-        message.error('Invalid file');
-      } else {
-        //   dispatch({
-        //     type: 'policiesRegulations/addpolicy',
-        //     payload: values,
-        //   });
-        //   this.setState({ uploadedFile: {}, fileName: '' });
-      }
-    } else {
-      // const { _id } = item;
-      // dispatch({
-      //   type: 'policiesRegulations/updatePolicy',
-      //   payload: {
-      //     ...values,
-      //   },
-      // });
+    const attachment ={
+      id:uploadedFile.id,
+      name:uploadedFile.name,
+      url:uploadedFile.url
     }
+    
+    const payload = {
+      employee:_id,
+      categoryPolicy,
+      namePolicy,
+      attachment
+    };
+      if (mode === 'add') {
+        if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
+          message.error('Invalid file');
+        } else {
+             dispatch({
+               type: 'policiesRegulations/addPolicy',
+               payload
+             });
+             this.setState({ uploadedFile: {}, fileName: '' });
+        }
+    //  } else {
+    //    const { _id:id } = item;
+    //    dispatch({
+    //      type: 'policiesRegulations/updatePolicy',
+    //      payload: {
+    //          id,
+    //        ...payload,
+    //      },
+    //    });
+       }
   };
 
   render() {
-    const POLICY_CATEGORIES = [
-      {
-        id: 1,
-        name: 'Employee conduct',
-      },
-      {
-        id: 2,
-        name: 'Leave Policy',
-      },
-      {
-        id: 3,
-        name: 'Company Asset Policy',
-      },
-      {
-        id: 4,
-        name: 'Technology usage',
-      },
-      {
-        id: 5,
-        name: 'Travel Policy',
-      },
-    ];
+    const {listCategory=[]}=this.props
     const { loadingUploadAttachment, loadingAdd, loadingUpdate, openModal, mode } = this.props;
     const { fileName = '' } = this.state;
     const onPolicyCategories = () => {};
@@ -176,19 +162,19 @@ class AddPolicyModal extends Component {
             <Form.Item
               rules={[{ required: true, message: 'Please Policy Categories' }]}
               label="Policy Categories"
-              name="policyCategories"
+              name="categoryPolicy"
               labelCol={{ span: 24 }}
             >
               <Select showSearch onChange={onPolicyCategories}>
-                {POLICY_CATEGORIES.map((val) => (
-                  <Option value={val.id}>{val.name}</Option>
+                {listCategory.map((val) => (
+                  <Option value={val._id}>{val.name}</Option>
                 ))}
               </Select>
             </Form.Item>
 
             <Form.Item
               label="Categories Name"
-              name="key"
+              name="namePolicy"
               labelCol={{ span: 24 }}
               rules={[{ required: true, message: 'Please enter the categories name' }]}
             >

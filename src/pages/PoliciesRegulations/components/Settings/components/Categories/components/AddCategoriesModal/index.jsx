@@ -4,9 +4,9 @@ import { connect } from 'umi';
 
 import styles from './index.less';
 
-connect(({ loading }) => ({
+@connect(({ loading }) => ({
   loadingAdd: loading.effects['policiesRegulations/addCategory'],
-}));
+}))
 class AddCategoriesModal extends Component {
   formRef = React.createRef();
 
@@ -21,21 +21,24 @@ class AddCategoriesModal extends Component {
     onClose();
   };
 
-  handleFinish = (value) => {
-    const { dispatch, onClose = () => {} } = this.props;
-    // dispatch({
-    //   type: 'policiesRegulations/addCategory',
-    //   payload: value,
-    // }).then((response) => {
-    //   const { statusCode } = response;
-    //   if (statusCode === 200) {
-    //     onClose();
-    //   }
-    // });
+  handleFinish = ({category}) => {
+    const { onClose = () => {} } = this.props;
+    const {dispatch } = this.props;
+     dispatch({
+       type: 'policiesRegulations/addCategory',
+       payload: {
+         name:category
+       },
+     }).then((response) => {
+       const { statusCode } = response;
+       if (statusCode === 200) {
+         onClose();
+       }
+     });
   };
 
   render() {
-    const { visible, loadingAdd = false } = this.props;
+    const { visible, loadingAdd  } = this.props;
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>

@@ -22,6 +22,7 @@ class TablePolicy extends Component {
       deletePolicy: false,
       modalVisiblePDF: false,
       linkFile: '',
+      item:{}
     };
   }
 
@@ -32,38 +33,40 @@ class TablePolicy extends Component {
     });
   };
 
-  handleDelete = () => {
-    this.setState({ deletePolicy: true });
+  handleDelete = (record) => {
+    this.setState({ deletePolicy: true , item:{record}});
+
   };
 
-  handleUpdateDocument = () => {
-    this.setState({ openModal: 'edit' });
+  handleUpdateDocument = (record) => {
+    this.setState({ openModal: 'edit', item:{record} });
   };
 
-  handleViewDocument = () => {
-    this.setState({ modalVisiblePDF: true });
+  handleViewDocument = (record) => {
+    this.setState({ modalVisiblePDF: true , item:{record}});
   };
 
-  actionMenu = () => {
+  actionMenu = (record) => {
     return (
       <Menu>
         <Menu.Item>
-          <span onClick={() => this.handleViewDocument()}>View Document</span>
+          <span onClick={() => this.handleViewDocument(record)}>View Document</span>
         </Menu.Item>
         <Divider />
         <Menu.Item>
-          <span onClick={() => this.handleUpdateDocument()}>Update Document</span>
+          <span onClick={() => this.handleUpdateDocument(record)}>Update Document</span>
         </Menu.Item>
         <Divider />
         <Menu.Item>
-          <span onClick={() => this.handleDelete()}>Delete</span>
+          <span onClick={() => this.handleDelete(record)}>Delete</span>
         </Menu.Item>
       </Menu>
     );
   };
 
   render() {
-    const { openModal, deletePolicy, modalVisiblePDF, linkFile } = this.state;
+    const { openModal, deletePolicy, modalVisiblePDF, linkFile, item } = this.state;
+    const {listPolicy=[]}=this.props
     const columns = [
       {
         title: 'Policy Name',
@@ -121,12 +124,12 @@ class TablePolicy extends Component {
         title: 'Action',
         dataIndex: 'action',
         key: 'action',
-        render: () => {
+        render: (record) => {
           return (
             <Dropdown
               overlayStyle={{ width: '200px', marginRight: '8px' }}
               overlayClassName="dropdownPolicies"
-              overlay={this.actionMenu()}
+              overlay={()=>this.actionMenu(record)}
               placement="bottomRight"
               arrow
             >
@@ -189,16 +192,18 @@ class TablePolicy extends Component {
           openModal={openModal === 'edit'}
           onClose={() => this.setState({ openModal: '' })}
           mode={openModal}
+          item={item}
         />
         <DeletePolicyModal
           visible={deletePolicy}
           onClose={() => this.setState({ deletePolicy: false })}
           mode="multiple"
+          item={item}
         />
         <ModalViewPDF
           visible={modalVisiblePDF}
           handleCancel={this.handleCancel}
-          // link={linkFile}
+          link={linkFile}
         />
       </div>
     );
