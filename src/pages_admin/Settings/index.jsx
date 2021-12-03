@@ -67,7 +67,7 @@ class Settings extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.Settings}>
-          <Affix offsetTop={30}>
+          <Affix offsetTop={42}>
             <div className={styles.headerText}>
               <span>Settings</span>
             </div>

@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { Row, Col, Affix, Spin, Skeleton, DatePicker, Button } from 'antd';
+import { connect, history } from 'umi';
+import moment from 'moment';
+import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { PageContainer } from '@/layouts/layout/src';
 import ModalSet1On1 from '@/components/ModalSet1On1';
 import StatusRequest from '@/components/StatusRequest';
-import { connect, history } from 'umi';
 
 import icon1 from '@/assets/offboarding-meeting.svg';
 import icon2 from '@/assets/offboarding-close.svg';
 
-import moment from 'moment';
-import Checkbox from 'antd/lib/checkbox/Checkbox';
 import Reason from './Reason';
 import WorkFlow from './WorkFlow';
 import WithDraw from './WithDraw';
@@ -189,7 +189,7 @@ class ResignationRequest extends Component {
     return (
       <PageContainer>
         <div className={styles.request}>
-          <Affix offsetTop={30}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>Terminate work relations with the company</p>
             </div>

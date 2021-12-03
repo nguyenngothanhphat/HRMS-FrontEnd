@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import PageContainer from '@/layouts/layout/src/PageContainer';
 import { Affix, Button, Row, Col } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
+import PageContainer from '@/layouts/layout/src/PageContainer';
 import styles from './index.less';
 
 const CandidateProfile = (props) => {
@@ -33,7 +33,7 @@ const CandidateProfile = (props) => {
   return (
     <PageContainer>
       <div className={styles.container}>
-        <Affix offsetTop={30}>
+        <Affix offsetTop={42}>
           <div className={styles.titlePage}>
             <p className={styles.titlePage__text}>Candidate Profile</p>
             <Button className={styles.btnAction}>Action</Button>

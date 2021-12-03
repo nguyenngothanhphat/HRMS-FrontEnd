@@ -1,7 +1,7 @@
-import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Col, Row, Spin } from 'antd';
 import React, { Component, Fragment } from 'react';
 import { connect } from 'umi';
+import { PageContainer } from '@/layouts/layout/src';
 import Comment from './components/Comment';
 import ClosingComment from '../../../../ManagerOffBoarding/component/DetailTicket/components/ClosingComment';
 import ModalNotice from '../../../../ManagerOffBoarding/component/DetailTicket/components/ModalNotice';
@@ -200,7 +200,7 @@ class HRDetailTicket extends Component {
       <>
         <PageContainer>
           <div className={styles.hrDetailTicket}>
-            <Affix offsetTop={30}>
+            <Affix offsetTop={42}>
               <div className={styles.titlePage}>
                 <p className={styles.titlePage__text}>
                   [Ticket ID: {ticketID}] Terminate work relationship with {firstNameEmp} [

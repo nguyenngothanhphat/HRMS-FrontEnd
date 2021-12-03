@@ -12,7 +12,7 @@
       height: 52px;
       padding-inline: @commonPadding !important;
       .ant-tabs-tab-btn {
-        font-weight: normal;
+        font-weight: 500;
         font-size: 13px;
       }
       .ant-tabs-tab-active {
@@ -30,6 +30,9 @@
     .ant-tabs-top > div > .ant-tabs-nav::before,
     .ant-tabs-bottom > div > .ant-tabs-nav::before {
       border-color: @borderColor;
+    }
+    .ant-tabs-tab + .ant-tabs-tab {
+      margin-left: 34px !important;
     }
   }
   .exportBtn {

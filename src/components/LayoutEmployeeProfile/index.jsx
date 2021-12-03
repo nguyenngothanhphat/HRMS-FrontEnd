@@ -1,11 +1,11 @@
 /* eslint-disable react/jsx-curly-newline */
-import PutOnLeave from '@/pages/EmployeeProfile/components/PutOnLeave';
-import RaiseTermination from '@/pages/EmployeeProfile/components/RaiseTermination';
-import RequestDetails from '@/pages/EmployeeProfile/components/RequestDetails';
 import { Affix, Col, Row } from 'antd';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
+import RequestDetails from '@/pages/EmployeeProfile/components/RequestDetails';
+import RaiseTermination from '@/pages/EmployeeProfile/components/RaiseTermination';
+import PutOnLeave from '@/pages/EmployeeProfile/components/PutOnLeave';
 import { isOwner } from '@/utils/authority';
 import ItemMenu from './components/ItemMenu';
 import UploadLogoCompany from './components/UploadLogoCompany';
@@ -136,7 +136,7 @@ class CommonLayout extends PureComponent {
       <div className={s.root}>
         <Affix
           // offsetTop={isCompanyProfile ? 0 : 100}
-          offsetTop={isAddingCompany ? 75 : 90}
+          offsetTop={isAddingCompany ? 87 : 102}
           className={s.affix}
         >
           <div className={s.viewLeft}>

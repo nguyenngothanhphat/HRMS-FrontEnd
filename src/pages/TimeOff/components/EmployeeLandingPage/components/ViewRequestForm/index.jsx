@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
-import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col } from 'antd';
 import { connect } from 'umi';
+import { PageContainer } from '@/layouts/layout/src';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
@@ -85,7 +85,7 @@ class ViewRequestForm extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.ViewRequestForm}>
-          <Affix offsetTop={30}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>[Ticket ID: {ticketID}]</p>
               <div className={this.getColorOfStatus(status)}>

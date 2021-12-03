@@ -53,7 +53,7 @@ class CustomerProfile extends Component {
       match: { params: { reId = '', tabName = '' } = {} },
       info = {},
       loadingFetchCustomer = false,
-      info: { dba = '',legalName ='' } = {},
+      info: { dba = '', legalName = '' } = {},
     } = this.props;
     const listMenu = [
       {
@@ -133,7 +133,7 @@ class CustomerProfile extends Component {
     return (
       <PageContainer>
         <div className={styles.containerEmployeeProfile}>
-          <Affix offsetTop={30}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>{dba || legalName || 'Customer Profile'}</p>
             </div>

@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Select } from 'antd';
 import styles from './index.less';
+import BlueArrowDownIcon from '@/assets/resourceManagement/blueArrowDown.svg';
 
 const { Option } = Select;
 
@@ -42,6 +43,7 @@ export default class Summary extends PureComponent {
           placement="bottomCenter"
           onChange={() => this.handleSelect()}
           defaultValue={resourceType}
+          suffixIcon={<img src={BlueArrowDownIcon} alt="" />}
         >
           {statusData.map((item) => (
             <Option value={item.billStatus}>

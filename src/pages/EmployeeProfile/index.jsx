@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Affix, Skeleton } from 'antd';
-import { PageContainer } from '@/layouts/layout/src';
 import { connect, history } from 'umi';
+import { PageContainer } from '@/layouts/layout/src';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
@@ -256,7 +256,7 @@ class EmployeeProfile extends Component {
     return (
       <PageContainer>
         <div className={styles.containerEmployeeProfile}>
-          <Affix offsetTop={30}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>Employee Profile</p>
             </div>

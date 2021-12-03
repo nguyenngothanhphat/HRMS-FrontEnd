@@ -139,7 +139,7 @@ class Resources extends Component {
       return selectedDivisions[0] || '';
     }
     if (selectedDivisions.length > 0 && selectedDivisions.length < divisionList.length) {
-      return `${selectedDivisions.length} locations selected`;
+      return `${selectedDivisions.length} divisions selected`;
     }
     if (selectedDivisions.length === divisionList.length || selectedDivisions.length === 0) {
       return 'All';

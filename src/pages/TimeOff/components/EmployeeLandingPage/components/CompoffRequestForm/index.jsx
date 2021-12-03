@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
-import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
+import { PageContainer } from '@/layouts/layout/src';
 import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
@@ -99,7 +99,7 @@ class CompoffRequestForm extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.CompoffRequestForm}>
-          <Affix offsetTop={30}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text} />
               {action === TIMEOFF_LINK_ACTION.newCompoffRequest && (
@@ -150,24 +150,24 @@ class CompoffRequestForm extends PureComponent {
             (action === TIMEOFF_LINK_ACTION.editCompoffRequest &&
               !loadingFetchCompoffRequestById &&
               (status === TIMEOFF_STATUS.drafts || status === TIMEOFF_STATUS.inProgress))) && (
-            <>
-              <Row className={styles.container} gutter={[20, 20]}>
-                <Col xs={24} lg={16}>
-                  <RequestInformation
-                    action={action}
-                    status={status}
-                    ticketID={ticketID}
-                    viewingCompoffRequest={viewingCompoffRequest}
-                  />
-                </Col>
-                <Col xs={24} lg={8}>
-                  <RightContent
-                    compoffApprovalFlow={compoffApprovalFlow}
-                    loading={loadingFetchCompoffApprovalFlow}
-                  />
-                </Col>
-              </Row>
-            </>
+              <>
+                <Row className={styles.container} gutter={[20, 20]}>
+                  <Col xs={24} lg={16}>
+                    <RequestInformation
+                      action={action}
+                      status={status}
+                      ticketID={ticketID}
+                      viewingCompoffRequest={viewingCompoffRequest}
+                    />
+                  </Col>
+                  <Col xs={24} lg={8}>
+                    <RightContent
+                      compoffApprovalFlow={compoffApprovalFlow}
+                      loading={loadingFetchCompoffApprovalFlow}
+                    />
+                  </Col>
+                </Row>
+              </>
           )}
         </div>
       </PageContainer>
