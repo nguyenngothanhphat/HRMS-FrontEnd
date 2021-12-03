@@ -1,6 +1,7 @@
-import { Button, Card, Tabs } from 'antd';
+import { Button, Card, Tabs, Spin } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
 import CustomRangePicker from '../CustomRangePicker';
 import Latest from './components/Latest';
 import Trend from './components/Trend';
@@ -9,7 +10,8 @@ import styles from './index.less';
 
 const { TabPane } = Tabs;
 
-const Utilization = () => {
+const Utilization = (props) => {
+  const { loadingFetch = false } = props;
   const [activeKey, setActiveKey] = useState('1'); // 1: latest, 2: trend
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -49,8 +51,19 @@ const Utilization = () => {
     );
   };
 
+  const loading = () => {
+    if (loadingFetch)
+      return (
+        <div className={styles.loadingContainer}>
+          <Spin />
+        </div>
+      );
+    return '';
+  };
+
   return (
     <Card title="Resource Utilization" className={styles.Utilization} extra={exportBtn()}>
+      {loading()}
       <Tabs
         activeKey={activeKey}
         onChange={(key) => setActiveKey(key)}
@@ -68,4 +81,9 @@ const Utilization = () => {
   );
 };
 
-export default Utilization;
+export default connect(({ resourceManagement, loading }) => ({
+  resourceManagement,
+  loadingFetch:
+    loading.effects['resourceManagement/fetchResourceUtilizationList'] ||
+    loading.effects['resourceManagement/fetchResourceUtilizationChart'],
+}))(Utilization);

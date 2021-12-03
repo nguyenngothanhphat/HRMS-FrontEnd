@@ -1,0 +1,47 @@
+.CheckboxMenu {
+  :global {
+    .ant-popover-inner {
+      padding: 0;
+      border: 1px solid #eaecef;
+      border-radius: 8px;
+    }
+    .ant-popover-inner-content {
+      padding: 11px !important;
+    }
+    .ant-popover-arrow {
+      display: none;
+    }
+    .ant-checkbox-wrapper-checked {
+      span {
+        color: #2c6df9;
+        font-size: 14px;
+      }
+    }
+  }
+  .content {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  /* width */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+    border-radius: 4px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #fff;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: rgb(218, 218, 218);
+    border-radius: 4px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}

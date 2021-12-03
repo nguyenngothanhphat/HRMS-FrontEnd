@@ -22,7 +22,7 @@ import {
   getUtilizationOverviewDivision,
   getUtilizationOverviewTitle,
   getResourceUtilization,
-  getNewJoineesList
+  getNewJoineesList,
 } from '@/services/resourceManagement';
 
 import { handlingResourceAvailableStatus } from '@/utils/resourceManagement';
@@ -39,10 +39,14 @@ const resourceManagement = {
     resourceStatuses: [],
     statusProject: [],
     projectTable: [],
+
+    // for utilization
     resourceUtilizationChartData: [],
     utilizationOverviewList: [],
     resourceUtilizationList: {},
     newJoineeList: [],
+    selectedDivisions: [],
+    selectedLocations: [], // empty for all
   },
   effects: {
     *getProjectList({ payload }, { call, put }) {
@@ -78,10 +82,10 @@ const resourceManagement = {
           type: 'save',
           payload: { resourceList: data, total },
         });
-        return response
+        return response;
       } catch (error) {
         dialog(error);
-        return null
+        return null;
       }
     },
     *fetchAssignToProject({ payload }, { call }) {
@@ -133,7 +137,7 @@ const resourceManagement = {
       } catch (error) {
         dialog(error);
       }
-      return response
+      return response;
     },
     *fetchResourceAvailableStatus({ payload }, { call, put }) {
       try {
@@ -241,7 +245,7 @@ const resourceManagement = {
       }
     },
     *fetchProjectList({ payload }, { call, put }) {
-      let response = {}
+      let response = {};
       try {
         response = yield call(fetchProjectListTable, {
           ...payload,
@@ -257,7 +261,7 @@ const resourceManagement = {
       } catch (error) {
         dialog(error);
       }
-      return response
+      return response;
     },
     // UTILIZATION
     *fetchResourceUtilizationChart({ payload }, { call, put }) {
@@ -279,7 +283,7 @@ const resourceManagement = {
       }
     },
     *fetchStatusProjectList({ payload }, { call, put }) {
-      let response = {}
+      let response = {};
       try {
         response = yield call(fetchStatusProject, {
           ...payload,
@@ -291,10 +295,10 @@ const resourceManagement = {
         yield put({
           type: 'save',
           payload: { statusProject: data?.statuses || [] },
-        })
-        } catch (error) {
-          dialog(error);
-        }
+        });
+      } catch (error) {
+        dialog(error);
+      }
     },
     *fetchUtilizationOverviewDivisionList({ payload }, { call, put }) {
       let response = {};
@@ -333,10 +337,10 @@ const resourceManagement = {
       } catch (error) {
         dialog(error);
       }
-      return response
+      return response;
     },
     *addAndUpdateCommentsProject({ payload }, { call }) {
-      let response = {}
+      let response = {};
       try {
         response = yield call(addAndUpdateComments, {
           ...payload,
@@ -348,11 +352,11 @@ const resourceManagement = {
         notification.success({
           message: 'Add comments Successfully',
         });
-        return response
+        return response;
       } catch (error) {
         dialog(error);
-        return null
-      }    
+        return null;
+      }
     },
     *fetchResourceUtilizationList({ payload }, { call, put }) {
       let response = {};
