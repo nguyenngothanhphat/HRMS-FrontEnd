@@ -208,7 +208,7 @@ const Projects = (props) => {
 export default connect(
   ({
     projectManagement: { projectList = [], statusSummary = [], projectListPayload = {} } = {},
-    user: { currentUser = {}, permissions = [] } = {},
+    user: { currentUser = {}, permissions = {} } = {},
     loading,
   }) => ({
     currentUser,

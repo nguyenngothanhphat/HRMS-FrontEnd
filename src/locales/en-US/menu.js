@@ -99,6 +99,7 @@ export default {
   'menu.ticketManagement': 'Ticket Management',
   'menu.ticketManagement.viewTicket': 'View Ticket',
   // resource management
+  'menu.resourceManagement':'Resource Management',
   // customer management
   'menu.viewCustomer': 'View Customer',
   'menu.customerManagement': 'Customer Management',

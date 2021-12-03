@@ -136,6 +136,7 @@ class Resources extends Component {
               history.push(`${baseModuleUrl}/${key}`);
             }}
             tabBarExtraContent={this.renderActionButton()}
+            destroyInactiveTabPane
           >
             <TabPane tab="Overview" key="overview">
               <OverView />

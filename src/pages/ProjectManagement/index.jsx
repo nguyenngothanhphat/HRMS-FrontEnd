@@ -40,7 +40,7 @@ const ProjectManagement = (props) => {
     </div>
   );
 };
-export default connect(({ user: { currentUser = {}, permissions = [] } = {} }) => ({
+export default connect(({ user: { currentUser = {}, permissions = {} } = {} }) => ({
   currentUser,
   permissions,
 }))(ProjectManagement);

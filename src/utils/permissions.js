@@ -333,6 +333,14 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const indexPendingApprovalDashboard = isAuthorized(permissionList, ['manager', 'hr-manager']);
   const indexMyTeamDashboard = isAuthorized(permissionList, ['manager', 'hr-manager']);
 
+  // PROJECT MANAGEMENT
+  const indexViewProjectManagement = isAuthorized(permissionList, ['P_PROJECT_MANAGEMENT_VIEW']);
+  const indexAddProjectManagement = isAuthorized(permissionList, ['P_PROJECT_MANAGEMENT_ADD']);
+
+  // RESOURCE MANAGEMENT
+  const indexViewResourceManagement = isAuthorized(permissionList, ['P_RESOURCE_MANAGEMENT_VIEW']);
+  const indexAddResourceManagement = isAuthorized(permissionList, ['P_RESOURCE_MANAGEMENT_ADD']);
+
   return {
     // Directory Page
     viewTabActive: findIndexActive,
@@ -385,5 +393,11 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewPendingApprovalDashboard: indexPendingApprovalDashboard,
     viewMyTeamDashboard: indexMyTeamDashboard,
     viewTimesheetDashboard: 1,
+
+    // project manamgement
+    viewProjectManagement: indexViewProjectManagement,
+    addProjectManagement: indexAddProjectManagement,
+    viewResourceManagement: indexViewResourceManagement,
+    addResourceManagement: indexAddResourceManagement,
   };
 }
