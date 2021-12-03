@@ -6,7 +6,7 @@ import editIcon from '@/assets/resource-management-edit-history.svg';
 
 const { TextArea } = Input;
 @connect(({ loading }) => ({
-  loadingEditComment: loading.effects['resourceManagement/addAndUpdateCommentsProject'],
+  loadingEditComment: loading.effects['resourceManagement/addAndUpdateCommentsProject']
 }))
 class EditComment extends PureComponent {
   constructor(props) {
@@ -45,15 +45,14 @@ class EditComment extends PureComponent {
       projectId: obj.projectId,
       comments: values.comment,
     };
-    const { dispatch } = this.props;
+    const { dispatch, fetchProjectList } = this.props;
     await dispatch({
       type: 'resourceManagement/addAndUpdateCommentsProject',
       payload: {
         ...payload,
       },
-    });
-    await dispatch({
-      type: 'resourceManagement/fetchProjectList',
+    }).then(() => {
+      fetchProjectList();
     });
     this.handleCancel();
   };

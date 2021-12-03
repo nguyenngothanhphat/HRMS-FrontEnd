@@ -62,14 +62,14 @@ const RaiseTicketModal = (props) => {
           company: getCurrentCompany(),
         },
       });
+      dispatch({
+        type: 'ticketManagement/fetchDepartments',
+        payload: {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        },
+      });
     }
-    dispatch({
-      type: 'ticketManagement/fetchDepartments',
-      payload: {
-        tenantId: getCurrentTenant(),
-        company: getCurrentCompany(),
-      },
-    });
   }, []);
 
   const handleReset = () => {

@@ -45,16 +45,16 @@ class TableResources extends PureComponent {
   };
 
   onTableChange = (sorter) => {
-    const {onSort} = this.props
-    if(sorter) {
-      const {order} = sorter
-      const sort = {}
-      if(order) {
-        // const sortField = 
-        sort.sortBy=this.sortFieldByKey(sorter.columnKey)
-        sort.sortType=order === 'ascend' ? 1 : -1
+    const { onSort } = this.props;
+    if (sorter) {
+      const { order } = sorter;
+      const sort = {};
+      if (order) {
+        // const sortField =
+        sort.sortBy = this.sortFieldByKey(sorter.columnKey);
+        sort.sortType = order === 'ascend' ? 1 : -1;
       }
-      onSort(sort)
+      onSort(sort);
     }
   };
 
@@ -64,16 +64,17 @@ class TableResources extends PureComponent {
    * @returns match key define to sort from server
    */
   sortFieldByKey = (key) => {
-    switch(key) {
+    switch (key) {
       case 'employeeName':
-        return 'legalName'
+        return 'legalName';
       case 'designation':
         return 'title';
       case 'experience':
         return 'totalExp';
-      default: return key;
+      default:
+        return key;
     }
-  }
+  };
 
   render() {
     const {
@@ -84,6 +85,7 @@ class TableResources extends PureComponent {
       pageSelected,
       size,
       getPageAndSize,
+      refreshData,
     } = this.props;
     // const formatData = this.formatResource(data)
     const pagination = {
@@ -251,6 +253,7 @@ class TableResources extends PureComponent {
         dataIndex: 'billStatus',
         // width: '6%',
         key: 'billStatus',
+        align: 'center',
         render: (billStatus) => {
           return <span className={styles.basicCellField}> {billStatus}</span>;
         },
@@ -278,7 +281,7 @@ class TableResources extends PureComponent {
         title: (
           <div className={styles.dateHeaderContainer}>
             <div>Start Date</div>
-            <div>(MM/dd/yyyy)</div>
+            <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
           </div>
         ),
         dataIndex: 'startDate',
@@ -292,7 +295,7 @@ class TableResources extends PureComponent {
         title: (
           <div className={styles.dateHeaderContainer}>
             <div>End Date</div>
-            <div>(MM/dd/yyyy)</div>
+            <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
           </div>
         ),
         dataIndex: 'endDate',
@@ -306,7 +309,7 @@ class TableResources extends PureComponent {
         title: (
           <div className={styles.dateHeaderContainer}>
             <div>Revised End Date</div>
-            <div>(MM/dd/yyyy)</div>
+            <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
           </div>
         ),
         dataIndex: 'revisedEndDate',
@@ -318,7 +321,7 @@ class TableResources extends PureComponent {
             <span className={styles.basicCellFieldShowEdit}>
               {value}
               <span className={styles.iconEdit}>
-                <EditActionBTN dataPassRow={row} />
+                <EditActionBTN dataPassRow={row} refreshData={refreshData} />
               </span>
             </span>
           );
@@ -336,11 +339,11 @@ class TableResources extends PureComponent {
             // webkit-line-clamp
             const line =
               employeeRowCount === 0 || employeeRowCount === 1 ? 3 : employeeRowCount * 3;
-            text = <CommentOverlay row={row} line={line} />;
+            text = <CommentOverlay row={row} line={line} refreshData={refreshData} />;
           } else {
             text = (
               <span>
-                <CommentModal data={row} />
+                <CommentModal data={row} refreshData={refreshData} />
               </span>
             );
           }
@@ -359,7 +362,7 @@ class TableResources extends PureComponent {
           // const buttonGroup = actionAddAndEdit(row);
           const buttonGroup = (
             <span>
-              <AddActionBTN dataPassRow={row} />
+              <AddActionBTN dataPassRow={row} refreshData={refreshData} />
               <HistoryActionBTN dataPassRow={row} />
             </span>
           );

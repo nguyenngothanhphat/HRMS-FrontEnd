@@ -47,7 +47,7 @@ class EditActionBTN extends Component {
   }
 
   handleSubmitAssign = async (values) => {
-    const { dispatch, dataPassRow = {} } = this.props;
+    const { dispatch, dataPassRow = {}, refreshData } = this.props;
     const { project, status, utilization, startDate, endDate, revisedEndDate } = values;
     if (new Date(endDate).getTime() < new Date(startDate).getTime() || new Date(revisedEndDate).getTime() < new Date(startDate).getTime()) {
       notification.error({
@@ -66,7 +66,9 @@ class EditActionBTN extends Component {
         endDate: moment(endDate).format('YYYY-MM-DD'),
         revisedEndDate: moment(revisedEndDate).format('YYYY-MM-DD'),
       },
-    });
+    }).then(() => {
+      refreshData();
+    })
     this.setState({
       visible: false,
     });

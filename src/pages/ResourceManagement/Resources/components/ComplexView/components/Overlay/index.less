@@ -1,9 +1,9 @@
 .CommentOverlay {
-  width: 150px;
+  width: 200px;
   .comment {
     position: relative;
     display: -webkit-box;
-    width: 140px;
+    width: 190px;
     padding-left: 10px;
     overflow: hidden;
     font-weight: 400;
@@ -54,17 +54,17 @@
   }
 }
 .CommentOverlay:hover {
-  color: white;
+  .comment{
+    display: none;
+  }
   .showEditComment {
     display: flex;
     align-items: center;
-    margin-top: -10px;
     margin-right: 10px;
   }
   .showViewComment {
     display: flex;
     align-items: center;
-    margin-top: -10px;
     margin-right: 10px;
   }
 }

@@ -20,11 +20,13 @@ class TableProject extends Component {
   };
 
   getProjectManage = (obj) => {
-    if(!obj) { return '-' }
+    if (!obj) {
+      return '-';
+    }
     const getInfo = obj ? obj.generalInfo : {};
     const getProjectManager = getInfo ? getInfo.legalName : '-';
-    return getProjectManager
-  }
+    return getProjectManager;
+  };
 
   onChangePagination = (pageNumber) => {
     const { onChangePage = () => {}, isBackendPaging = false } = this.props;
@@ -44,28 +46,28 @@ class TableProject extends Component {
       data = [],
       loading = false,
       page = 1,
-      limit = 3,
+      limit = 10,
       total: totalProp,
       isBackendPaging = false,
     } = this.props;
 
     const pagination = {
-        position: ['bottomLeft'],
-        total: isBackendPaging ? totalProp : data.length,
-        showTotal: (total, range) => (
-          <span>
-            {' '}
-            {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
-            <b>
-              {range[0]} - {range[1]}
-            </b>{' '}
-            {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
-          </span>
-        ),
-        pageSize: limit,
-        current: isBackendPaging ? page : pageSelected,
-        onChange: this.onChangePagination,
-      };
+      position: ['bottomLeft'],
+      total: isBackendPaging ? totalProp : data.length,
+      showTotal: (total, range) => (
+        <span>
+          {' '}
+          {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
+          <b>
+            {range[0]} - {range[1]}
+          </b>{' '}
+          {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
+        </span>
+      ),
+      pageSize: limit,
+      current: isBackendPaging ? page : pageSelected,
+      onChange: this.onChangePagination,
+    };
 
     const dataSource = data.map((obj, x) => {
       return {
@@ -88,7 +90,7 @@ class TableProject extends Component {
         billableEffor: obj.billableEffort || '-',
         spentEffor: obj.spentEffort || '-',
         variance: obj.variance || '-',
-        comment: obj.comments || '-',
+        comment: obj.comments,
       };
     });
 
@@ -128,9 +130,9 @@ class TableProject extends Component {
       },
       {
         title: (
-          <div>
+          <div className={styles.dateHeaderContainer}>
             <div>Start Date</div>
-            <div>(mm/dd/yyyy)</div>
+            <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
           </div>
         ),
         dataIndex: 'startDate',
@@ -139,9 +141,9 @@ class TableProject extends Component {
       },
       {
         title: (
-          <div>
+          <div className={styles.dateHeaderContainer}>
             <div>End Date</div>
-            <div>(mm/dd/yyyy)</div>
+            <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
           </div>
         ),
         dataIndex: 'endDate',
@@ -150,9 +152,9 @@ class TableProject extends Component {
       },
       {
         title: (
-          <div>
-            <div>Resived End Date</div>
-            <div>(mm/dd/yyyy)</div>
+          <div className={styles.dateHeaderContainer}>
+            <div>Revised End Date</div>
+            <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
           </div>
         ),
         dataIndex: 'resivedEndDate',
@@ -218,20 +220,16 @@ class TableProject extends Component {
         dataIndex: 'comment',
         key: 'comment',
         render: (value, row) => {
-          if (value !== '-') {
+          const {fetchProjectList} = this.props;
+          let displayValue;
+          if (value) {
             const getRow = dataSource.filter((x) => x.id === row.id).length;
             const line = getRow === 0 || getRow === 1 ? 3 : getRow * 3;
-            return (
-              <span>
-                <OverviewComment row={row} line={line} />
-              </span>
-            );
+            displayValue = <span><OverviewComment row={row} line={line} fetchProjectList={fetchProjectList} /></span>
+          } else {
+            displayValue = <span><AddComment data={row} fetchProjectList={fetchProjectList} /></span>
           }
-          return (
-            <span>
-              <AddComment data={row} />
-            </span>
-          );
+          return ( displayValue );
         },
         sorter: (a, b) => a.comment.localeCompare(b.comment),
       },

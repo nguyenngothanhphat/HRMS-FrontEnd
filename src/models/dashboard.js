@@ -40,10 +40,12 @@ const dashboard = {
         });
         const {
           statusCode,
+        } = response;
+        if (statusCode !== 200) throw response;
+        const {
           data: { compoffRequest = [], leaveRequest = [] },
           total = 0,
         } = response;
-        if (statusCode !== 200) throw response;
         const listTicket = [];
         compoffRequest.forEach((item) =>
           listTicket.push({ typeTicket: 'compoffRequest', ...item }),
