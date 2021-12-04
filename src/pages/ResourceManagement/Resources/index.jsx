@@ -1,20 +1,21 @@
-import React, { Component } from 'react';
-import { Button, Col, Row, Tabs, Dropdown, Menu } from 'antd';
-import { history, connect, formatMessage } from 'umi';
-import { debounce } from 'lodash';
 import { DownloadOutlined } from '@ant-design/icons';
+import { Button, Col, Row, Tabs } from 'antd';
+import { debounce } from 'lodash';
+import React, { Component } from 'react';
+import { connect, formatMessage, history } from 'umi';
+import OverView from '@/pages/ResourceManagement/components/OverView';
 import { PageContainer } from '@/layouts/layout/src';
+import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
+import CheckboxMenu from './components/CheckboxMenu';
+import ProjectList from './components/Projects';
 import ResourceList from './components/ResourceList';
 import styles from './index.less';
-import OverView from '@/pages/ResourceManagement/components/OverView';
-import ProjectList from './components/Projects';
-import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
 
 const baseModuleUrl = '/resource-management';
 
 @connect(
   ({
-    resourceManagement: { resourceList = [] } = {},
+    resourceManagement: { resourceList = [], divisions: divisionList = [] } = {},
     user: {
       currentUser: {
         location: { _id: locationID = '' } = {},
@@ -24,6 +25,7 @@ const baseModuleUrl = '/resource-management';
     locationSelection: { listLocationsByCompany = [] },
   }) => ({
     resourceList,
+    divisionList,
     locationID,
     companyID,
     listLocationsByCompany,
@@ -35,6 +37,8 @@ class Resources extends Component {
     this.state = {
       // resourceList: [],
       loadingSearch: false,
+      selectedDivisions: [],
+      selectedLocations: [],
     };
     this.setDebounce = debounce(() => {
       this.setState({
@@ -45,9 +49,16 @@ class Resources extends Component {
   }
 
   componentDidMount() {
-    const { tabName = '' } = this.props;
+    const { dispatch, tabName = '' } = this.props;
     if (!tabName) {
       history.replace(`${baseModuleUrl}/overview`);
+    } else {
+      dispatch({
+        type: 'resourceManagement/fetchDivisions',
+        payload: {
+          name: 'Engineering',
+        },
+      });
     }
   }
 
@@ -66,40 +77,121 @@ class Resources extends Component {
     this.setDebounce(filterData);
   };
 
+  onLocationChange = (selection) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'resourceManagement/save',
+      payload: {
+        selectedLocations: [...selection],
+      },
+    });
+    this.setState({
+      selectedLocations: [...selection],
+    });
+  };
+
+  onDivisionChange = (selection) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'resourceManagement/save',
+      payload: {
+        selectedDivisions: [...selection],
+      },
+    });
+    this.setState({
+      selectedDivisions: [...selection],
+    });
+  };
+
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'resourceManagement/save',
+      payload: {
+        selectedDivisions: [],
+        selectedLocations: [],
+      },
+    });
+  };
+
+  getSelectedLocationName = () => {
+    const { listLocationsByCompany = [] } = this.props;
+    const { selectedLocations } = this.state;
+    if (selectedLocations.length === 1) {
+      return listLocationsByCompany.find((x) => x._id === selectedLocations[0])?.name || '';
+    }
+    if (selectedLocations.length > 0 && selectedLocations.length < listLocationsByCompany.length) {
+      return `${selectedLocations.length} locations selected`;
+    }
+    if (
+      selectedLocations.length === listLocationsByCompany.length ||
+      selectedLocations.length === 0
+    ) {
+      return 'All';
+    }
+    return 'All';
+  };
+
+  getSelectedDivisionName = () => {
+    const { divisionList = [] } = this.props;
+    const { selectedDivisions } = this.state;
+    if (selectedDivisions.length === 1) {
+      return selectedDivisions[0] || '';
+    }
+    if (selectedDivisions.length > 0 && selectedDivisions.length < divisionList.length) {
+      return `${selectedDivisions.length} divisions selected`;
+    }
+    if (selectedDivisions.length === divisionList.length || selectedDivisions.length === 0) {
+      return 'All';
+    }
+    return 'All';
+  };
+
   renderActionButton = () => {
-    const { tabName = '' } = this.props;
+    const { tabName = '', divisionList = [], listLocationsByCompany = [] } = this.props;
+
+    // if only one selected
+    const selectedLocationName = this.getSelectedLocationName();
+    const selectedDivisionName = this.getSelectedDivisionName();
+
     if (tabName === 'overview') {
-      const locationMenu = (
-        <Menu>
-          <Menu.Item key={1}>All</Menu.Item>
-        </Menu>
-      );
-
-      const divisionMenu = (
-        <Menu>
-          <Menu.Item key={1}>Design</Menu.Item>
-        </Menu>
-      );
-
+      const divisionOptions = divisionList.map((x) => {
+        return {
+          _id: x,
+          name: x,
+        };
+      });
+      const locationOptions = listLocationsByCompany.map((x) => {
+        return {
+          _id: x._id,
+          name: x.name,
+        };
+      });
       return (
         <div className={styles.options}>
           <div className={styles.dropdownItem}>
             <span className={styles.label}>Location</span>
-            <Dropdown overlay={locationMenu}>
+
+            <CheckboxMenu
+              options={locationOptions}
+              onChange={this.onLocationChange}
+              list={listLocationsByCompany}
+            >
               <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
-                <span>All</span>
+                <span>{selectedLocationName}</span>
                 <img src={SmallDownArrow} alt="" />
               </div>
-            </Dropdown>
+            </CheckboxMenu>
           </div>
           <div className={styles.dropdownItem}>
             <span className={styles.label}>Division</span>
-            <Dropdown overlay={divisionMenu}>
+
+            <CheckboxMenu options={divisionOptions} onChange={this.onDivisionChange}>
               <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
-                <span>Design</span>
+                <span>{selectedDivisionName}</span>
                 <img src={SmallDownArrow} alt="" />
               </div>
-            </Dropdown>
+            </CheckboxMenu>
           </div>
         </div>
       );

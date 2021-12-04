@@ -110,11 +110,7 @@ class TimeOff extends PureComponent {
     });
     const {
       statusCode,
-      data: {
-        headQuarterAddress: {
-          country: { _id } = {} || {},
-        } = {} || {},
-      },
+      data: { headQuarterAddress: { country: { _id } = {} || {} } = {} || {} },
     } = response;
     if (statusCode === 200)
       dispatch({

@@ -12,7 +12,14 @@ import HelpIcon from '@/assets/resourceManagement/helpIcon.svg';
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 const Latest = (props) => {
-  const { dispatch, resourceManagement: { resourceUtilizationList = {} } = {} } = props;
+  const {
+    dispatch,
+    resourceManagement: {
+      resourceUtilizationList = {},
+      selectedLocations = [],
+      selectedDivisions = [],
+    } = {},
+  } = props;
   const { summaryToday = [], summaryYesterday = [] } = resourceUtilizationList;
   const [calculatedData, setCalculatedData] = useState({
     utilization: 0,
@@ -22,12 +29,16 @@ const Latest = (props) => {
   const fetchData = () => {
     dispatch({
       type: 'resourceManagement/fetchResourceUtilizationList',
+      payload: {
+        location: selectedLocations,
+        division: selectedDivisions,
+      },
     });
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [JSON.stringify(selectedLocations), JSON.stringify(selectedDivisions)]);
 
   const colors = ['#FC6A22', '#FCB96C', '#66B03F', '#D6DCE0'];
 

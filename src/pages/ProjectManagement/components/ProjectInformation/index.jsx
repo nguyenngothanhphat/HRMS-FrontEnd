@@ -84,7 +84,7 @@ const ProjectInformation = (props) => {
   return (
     <PageContainer>
       <div className={styles.ProjectInformation}>
-        <Affix offsetTop={30}>
+        <Affix offsetTop={42}>
           <div className={styles.titlePage}>
             <p className={styles.titlePage__text}>{projectName || 'View Project'}</p>
           </div>

@@ -597,7 +597,7 @@ class HollidayCalendar extends Component {
                 </div>
               </Col>
               <Col span={6} justify="center">
-                <Affix offsetTop={30} className={s.affix}>
+                <Affix offsetTop={42} className={s.affix}>
                   <div className={s.rightSection}>
                     <InputNumber
                       min={2020}

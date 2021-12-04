@@ -19,7 +19,11 @@ const Trend = (props) => {
 
   // redux
   const {
-    resourceManagement: { resourceUtilizationChartData: { type = '', result = [] } = {} } = {},
+    resourceManagement: {
+      resourceUtilizationChartData: { type = '', result = [] } = {},
+      selectedLocations = [],
+      selectedDivisions = [],
+    } = {},
   } = props;
 
   const [data, setData] = useState([]);
@@ -30,6 +34,8 @@ const Trend = (props) => {
       payload: {
         startDate: start ? moment(start) : '',
         endDate: end ? moment(end) : '',
+        location: selectedLocations,
+        division: selectedDivisions,
       },
     });
   };
@@ -38,7 +44,7 @@ const Trend = (props) => {
     if (startDate && endDate) {
       fetchResourceUtilizationChart(startDate, endDate);
     }
-  }, [startDate, endDate]);
+  }, [startDate, endDate, JSON.stringify(selectedLocations), JSON.stringify(selectedDivisions)]);
 
   const getNameByMode = (x) => {
     if (type === 'D') {
@@ -92,7 +98,9 @@ const Trend = (props) => {
         {
           name: 'Current Utilization',
           value:
-            total && total.count !== 0 ? `${renderPercent((billable?.count / total?.count) *100)}%` : '-',
+            total && total.count !== 0
+              ? `${renderPercent((billable?.count / total?.count) * 100)}%`
+              : '-',
         },
         {
           name: 'Total Resources',

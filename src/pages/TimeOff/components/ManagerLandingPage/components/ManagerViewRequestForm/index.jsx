@@ -96,7 +96,7 @@ class ManagerViewRequestForm extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.ManagerViewRequestForm}>
-          <Affix offsetTop={30}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>[Ticket ID: {ticketID}]</p>
               <div className={this.getColorOfStatus(status)}>

@@ -1,7 +1,7 @@
-import { PageContainer } from '@/layouts/layout/src';
 import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage, history } from 'umi';
+import { PageContainer } from '@/layouts/layout/src';
 import {
   getAuthority,
   isOwner,

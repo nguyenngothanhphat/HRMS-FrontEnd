@@ -111,7 +111,7 @@
             justify-content: space-between;
           }
 
-          &__certifications{
+          &__certifications {
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
@@ -138,13 +138,13 @@
           }
           &__description {
             margin: 0;
+            padding-bottom: 12px;
             color: #161c29;
             font-size: 12px;
             line-height: 1.5;
             // text-align: justify;
             text-align: center;
             opacity: 0.5;
-            padding-bottom: 12px;
           }
           :global {
             .ant-divider-horizontal {
@@ -165,30 +165,29 @@
       }
     }
     .viewBtnAction {
-
       width: 100%;
       padding-bottom: 24px;
-      
-      .actionBtn{
+
+      .actionBtn {
         display: flex;
         align-items: center;
         justify-content: center;
-
-        background: rgba(86,138,250, 0.07); // #568AFA;
-        height: 40px;
         width: 100%;
+        height: 40px;
         padding: 24px;
-        cursor: pointer;
-        border-radius: 4px;
-        
-        font-family: Roboto;
-        font-size: 14px;
+        color: #2c6df9;
         font-weight: 500;
-        font-stretch: normal;
+        font-size: 14px;
+
+        font-family: Roboto;
         font-style: normal;
+        font-stretch: normal;
         line-height: normal;
         letter-spacing: 0.13px;
-        color: #2c6df9;
+
+        background: rgba(86, 138, 250, 0.07); // #568AFA;
+        border-radius: 4px;
+        cursor: pointer;
         img {
           padding-left: 4px;
         }
@@ -263,49 +262,47 @@
   }
 }
 
-.menuDropdown{
+.menuDropdown {
   width: 100%;
 
-  .subMenu{
-
-    :global{
-      .ant-dropdown-menu-submenu-title{
-        font-family: Roboto;
-        font-size: 14px;
+  .subMenu {
+    :global {
+      .ant-dropdown-menu-submenu-title {
+        color: #8a8d93;
         font-weight: normal;
-        font-stretch: normal;
+        font-size: 14px;
+        font-family: Roboto;
         font-style: normal;
+        font-stretch: normal;
         line-height: normal;
         letter-spacing: normal;
-        color: #8a8d93;
 
-         &:hover{
-           color: #2C6DF9;
-         }
+        &:hover {
+          color: #2c6df9;
+        }
       }
     }
   }
 
-  .menuItem{
-      font-family: Roboto;
-      font-size: 14px;
-      font-weight: normal;
-      font-stretch: normal;
-      font-style: normal;
-      line-height: normal;
-      letter-spacing: normal;
-      color: #8a8d93;
+  .menuItem {
+    color: #8a8d93;
+    font-weight: normal;
+    font-size: 14px;
+    font-family: Roboto;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
 
-      &:hover{
-        color: #2C6DF9;
-      }
+    &:hover {
+      color: #2c6df9;
+    }
   }
 
-  :global{
-    .ant-dropdown-menu-item:hover, .ant-dropdown-menu-submenu-title:hover{
-      background-color: rgba(86,138,250, 0.07);
+  :global {
+    .ant-dropdown-menu-item:hover,
+    .ant-dropdown-menu-submenu-title:hover {
+      background-color: rgba(86, 138, 250, 0.07);
     }
   }
 }
-
-

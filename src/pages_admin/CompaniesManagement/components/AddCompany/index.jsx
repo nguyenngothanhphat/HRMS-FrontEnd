@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
-import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Steps } from 'antd';
 import { connect } from 'umi';
+import { PageContainer } from '@/layouts/layout/src';
 import Step1 from './components/Step1';
 import Step2 from './components/Step2';
 import Step3 from './components/Step3';
@@ -68,7 +68,7 @@ class AddCompany extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.addCompany}>
-          <Affix offsetTop={30}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <Steps className={styles.steps} current={currentStep} onChange={this.onChangeStep}>
                 <Step icon={this.customStep(0)} />
