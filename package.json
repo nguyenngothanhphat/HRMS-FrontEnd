@@ -57,7 +57,7 @@
     "antd": "^4.5.3",
     "axios": "^0.21.1",
     "babel-eslint": "^10.1.0",
-    "chart.js": "^3.6.0",
+    "chart.js": "^3.6.1",
     "chartjs-plugin-datalabels": "^2.0.0",
     "city-timezones": "^1.2.0",
     "classnames": "^2.2.6",

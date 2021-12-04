@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Steps, Form, Input, Select, Tag } from 'antd';
 import { DeleteOutlined, CloseCircleOutlined } from '@ant-design/icons';
-import plusIcon from '@/assets/add-adminstrator.svg';
 import { connect, formatMessage } from 'umi';
+import plusIcon from '@/assets/add-adminstrator.svg';
 import { getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
 // import UploadCertification from './components/Upload/index';
@@ -12,6 +12,7 @@ import UploadCertification from './components/UploadCertification/index';
 const { Step } = Steps;
 
 const ModalAddInfo = (props) => {
+  const [form] = Form.useForm();
   const {
     onCancel = () => { },
     visible,
@@ -50,8 +51,8 @@ const ModalAddInfo = (props) => {
         emergencyRelation: emergencyRelation[`relation${key}`],
       });
     });
-    setResultForm({ emergencyContactDetails: arr });
-    setCurrentStep(currentStep + 1);
+      setResultForm({ emergencyContactDetails: arr });
+      setCurrentStep(currentStep + 1);
   };
 
   const addContact = (key) => {
@@ -244,6 +245,7 @@ const ModalAddInfo = (props) => {
         }
         return (
           <Form
+            form={form}
             name="ContactDetails"
             onFinish={onFinishContact}
             autoComplete="off"
@@ -274,6 +276,10 @@ const ModalAddInfo = (props) => {
                       name={['emergencyPersonName', `personName${item}`]}
                       rules={[
                         {
+                          required: true,
+                          message: "Please enter emergency contact name!"
+                        },
+                        {
                           pattern: /^[a-zA-Z ]*$/,
                           message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
                         },
@@ -286,6 +292,10 @@ const ModalAddInfo = (props) => {
                       name={['emergencyRelation', `relation${item}`]}
                       rules={[
                         {
+                          required: true,
+                          message: "Please enter  relation!"
+                        },
+                        {
                           pattern: /^[a-zA-Z ]*$/,
                           message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
                         },
@@ -297,8 +307,7 @@ const ModalAddInfo = (props) => {
                         showArrow
                         showSearch
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                         className={styles.inputForm}
                       >
                         {listRelation.map((value, i) => {
@@ -314,6 +323,10 @@ const ModalAddInfo = (props) => {
                       name={['emergencyContact', `contact${item}`]}
                       label="Emergency Contact's Number"
                       rules={[
+                        {
+                          required: true,
+                          message: "Please enter emergency contact's number!"
+                        },
                         {
                           pattern: /^[+]*[\d]{0,10}$/,
                           message: formatMessage({
@@ -344,7 +357,7 @@ const ModalAddInfo = (props) => {
           addCertification(numOfCertification);
         }
         return (
-          <Form name="Certification" onFinish={onFinishCertification} layout="vertical">
+          <Form form={form} name="Certification" onFinish={onFinishCertification} layout="vertical">
             <div className={styles.form__title}>Professional & Academic Background</div>
             <div className={styles.form__description}>
               You are required to fill in certain deatils to proceed further
@@ -353,10 +366,25 @@ const ModalAddInfo = (props) => {
               label="Relevant Years of Experience"
               name="totalExp"
               style={{ marginTop: '24px' }}
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter relevant years of experience!"
+                },
+              ]}
             >
               <Input placeholder="Relevant Years of Experience" />
             </Form.Item>
-            <Form.Item label="Highest Educational Qualification" name="qualification">
+            <Form.Item
+              label="Highest Educational Qualification"
+              name="qualification"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter highest educational qualification!"
+                },
+              ]}
+            >
               <Input placeholder="Highest Educational Qualification" />
             </Form.Item>
             <div className={styles.form__block}>
@@ -378,6 +406,12 @@ const ModalAddInfo = (props) => {
                     <Form.Item
                       name={['certificationName', `certification${item}`]}
                       label="Certifications"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please enter certifications!"
+                        },
+                      ]}
                     >
                       <Input placeholder="Certifications" />
                     </Form.Item>
@@ -401,7 +435,16 @@ const ModalAddInfo = (props) => {
                 <span className={styles.text}>Add another</span>
               </Button>
             </Form.Item>
-            <Form.Item label="Skills" name="skills">
+            <Form.Item
+              label="Skills"
+              name="skills"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter skills"
+                },
+              ]}
+            >
               <Select
                 placeholder="Select skill"
                 mode="multiple"
@@ -409,8 +452,7 @@ const ModalAddInfo = (props) => {
                 showArrow
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 onChange={changeSkill}
               >
                 {listSkill.map((item) => (
@@ -420,7 +462,16 @@ const ModalAddInfo = (props) => {
               </Select>
             </Form.Item>
             {newSkill && (
-              <Form.Item label="Other Skill" name="otherSkills">
+              <Form.Item
+                label="Other Skill"
+                name="otherSkills"
+                rules={[
+                {
+                  required: true,
+                  message: "Please enter other skill!"
+                },
+              ]}
+              >
                 <Input />
               </Form.Item>
             )}
@@ -432,7 +483,7 @@ const ModalAddInfo = (props) => {
         }
         if (location.headQuarterAddress.country === "VN") {
           return (
-            <Form name="BankAccount" onFinish={onFinishBankVN} autoComplete="off" layout="vertical">
+            <Form form={form} name="BankAccount" onFinish={onFinishBankVN} autoComplete="off" layout="vertical">
               <div className={styles.form__title}>Bank Details</div>
               <div className={styles.form__description}>
                 You are required to fill in certain deatils to proceed further
@@ -455,15 +506,39 @@ const ModalAddInfo = (props) => {
                               </Button>
                             </div>
                           )}
-                          <Form.Item name={['bankName', `bankName${item}`]} label="Bank Name">
+                          <Form.Item
+                            name={['bankName', `bankName${item}`]}
+                            label="Bank Name"
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please enter bank name!"
+                              },
+                            ]}
+                          >
                             <Input placeholder="Bank Name" />
                           </Form.Item>
-                          <Form.Item label="Branch Name" name={['branchName', `branchName${item}`]}>
+                          <Form.Item
+                            label="Branch Name"
+                            name={['branchName', `branchName${item}`]}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please enter branch name!"
+                              },
+                            ]}
+                          >
                             <Input placeholder="Branch Name" />
                           </Form.Item>
                           <Form.Item
                             label="Account Type"
                             name={['accountType', `accountType${item}`]}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please enter account type!"
+                              },
+                            ]}
                           >
                             <Select
                               placeholder="Please select a choice"
@@ -479,6 +554,10 @@ const ModalAddInfo = (props) => {
                             name={['accountNumber', `accountNumber${item}`]}
                             rules={[
                               {
+                                required: true,
+                                message: "Please enter account number!"
+                              },
+                              {
                                 pattern: /^[\d]{0,10}$/,
                                 message: 'Input only number',
                               },
@@ -486,12 +565,27 @@ const ModalAddInfo = (props) => {
                           >
                             <Input placeholder="Account Number" />
                           </Form.Item>
-                          <Form.Item label="Swift Code" name={['swiftcode', `swiftcode${item}`]}>
+                          <Form.Item
+                            label="Swift Code"
+                            name={['swiftcode', `swiftcode${item}`]}
+                            rules={[
+                            {
+                              required: true,
+                              message: "Please enter swift code!"
+                            },
+                          ]}
+                          >
                             <Input placeholder="Swift Code" />
                           </Form.Item>
                           <Form.Item
                             label="Account Name"
                             name={['accountName', `accountName${item}`]}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please enter account name!"
+                              },
+                            ]}
                           >
                             <Input placeholder="Account Name" />
                           </Form.Item>
@@ -510,9 +604,9 @@ const ModalAddInfo = (props) => {
             </Form>
           )
         }
-        else {
+        
           return (
-            <Form name="BankAccount" onFinish={onFinishBank} autoComplete="off" layout="vertical">
+            <Form form={form} name="BankAccount" onFinish={onFinishBank} autoComplete="off" layout="vertical">
               <div className={styles.form__title}>Bank Details</div>
               <div className={styles.form__description}>
                 You are required to fill in certain deatils to proceed further
@@ -535,15 +629,39 @@ const ModalAddInfo = (props) => {
                               </Button>
                             </div>
                           )}
-                          <Form.Item name={['bankName', `bankName${item}`]} label="Bank Name">
+                          <Form.Item
+                            name={['bankName', `bankName${item}`]}
+                            label="Bank Name"
+                            rules={[
+                            {
+                              required: true,
+                              message: "Please enter bank name!"
+                            },
+                          ]}
+                          >
                             <Input placeholder="Bank Name" />
                           </Form.Item>
-                          <Form.Item label="Branch Name" name={['branchName', `branchName${item}`]}>
+                          <Form.Item
+                            label="Branch Name"
+                            name={['branchName', `branchName${item}`]}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please enter branch name!"
+                              },
+                            ]}
+                          >
                             <Input placeholder="Branch Name" />
                           </Form.Item>
                           <Form.Item
                             label="Account Type"
                             name={['accountType', `accountType${item}`]}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please enter account type!"
+                              },
+                            ]}
                           >
                             <Select
                               placeholder="Please select a choice"
@@ -559,6 +677,10 @@ const ModalAddInfo = (props) => {
                             name={['accountNumber', `accountNumber${item}`]}
                             rules={[
                               {
+                                required: true,
+                                message: "Please enter account number!"
+                              },
+                              {
                                 pattern: /^[\d]{0,10}$/,
                                 message: 'Input only number',
                               },
@@ -566,7 +688,16 @@ const ModalAddInfo = (props) => {
                           >
                             <Input placeholder="Account Number" />
                           </Form.Item>
-                          <Form.Item label="MICR Code" name={['micrCode', `micrCode${item}`]}>
+                          <Form.Item
+                            label="MICR Code"
+                            name={['micrCode', `micrCode${item}`]}
+                            rules={[
+                            {
+                              required: true,
+                              message: "Please enter MICR code!"
+                            },
+                          ]}
+                          >
                             <Input placeholder="MICR Code" />
                           </Form.Item>
                           <Form.Item label="IFSC Code" name={['ifscCode', `ifscCode${item}`]}>
@@ -576,6 +707,10 @@ const ModalAddInfo = (props) => {
                             label="UAN Number"
                             name={['uanNumber', `uanNumber${item}`]}
                             rules={[
+                              {
+                                required: true,
+                                message: "Please enter UAN number!"
+                              },
                               {
                                 pattern: /^[\d]{0,10}$/,
                                 message: 'Input only number',
@@ -598,29 +733,66 @@ const ModalAddInfo = (props) => {
               </Form.Item>
             </Form>
           )
-        };
+        ;
       case 3:
         if (location.headQuarterAddress.country === "VN") {
           return (
-            <Form name="TaxDetail" onFinish={onFinishTax} autoComplete="off" layout="vertical">
+            <Form form={form} name="TaxDetail" onFinish={onFinishTax} autoComplete="off" layout="vertical">
               <div className={styles.form__title}>Tax Details</div>
               <div className={styles.form__description}>
                 You are required to fill in certain deatils to proceed further
               </div>
-              <Form.Item label="National ID Card Number" name="nationalId" style={{ marginTop: '24px' }}>
+              <Form.Item
+                label="National ID Card Number"
+                name="nationalId"
+                style={{ marginTop: '24px' }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter national id card number!"
+                  },
+                ]}
+              >
                 <Input maxLength={50} placeholder="National ID Card Number" />
               </Form.Item>
-              <Form.Item label="Marital Status" name="maritalStatus">
+              <Form.Item
+                label="Marital Status"
+                name="maritalStatus"
+                rules={[
+                {
+                  required: true,
+                  message: "Please enter marital status!"
+                },
+              ]}
+              >
                 <Select placeholder="Marital Status" showArrow>
                   <Select.Option value="Single">Single</Select.Option>
                   <Select.Option value="Married">Married</Select.Option>
                   <Select.Option value="Rather not mention">Rather not mention</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="No. of Dependents" name="noOfDependents">
+              <Form.Item
+                label="No. of Dependents"
+                name="noOfDependents"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter no. of dependents!"
+                  },
+                ]}
+              >
                 <Input maxLength={50} placeholder="No. of Dependents" />
               </Form.Item>
-              <Form.Item label="Residency Status" name="residencyStatus">
+              <Form.Item
+                label="Residency Status"
+                name="residencyStatus"
+                rules={[
+                {
+                  required: true,
+                  message: "Please enter residency status!"
+                },
+              ]}
+              >
                 <Select placeholder="Residency Status" showArrow>
                   <Select.Option value="Resident">Resident</Select.Option>
                   <Select.Option value="Non Resident">Non Resident</Select.Option>
@@ -629,33 +801,79 @@ const ModalAddInfo = (props) => {
             </Form>
           )
         }
-        else if (location.headQuarterAddress.country === "IN") {
+        if (location.headQuarterAddress.country === "IN") {
           return (
-            <Form name="TaxDetail" onFinish={onFinishTaxIN} autoComplete="off" layout="vertical">
+            <Form form={form} name="TaxDetail" onFinish={onFinishTaxIN} autoComplete="off" layout="vertical">
               <div className={styles.form__title}>Tax Details</div>
               <div className={styles.form__description}>
                 You are required to fill in certain deatils to proceed further
               </div>
-              <Form.Item label="Income Tax Rule" name="incomeTaxRule" style={{ marginTop: '24px' }}>
+              <Form.Item
+                label="Income Tax Rule"
+                name="incomeTaxRule"
+                style={{ marginTop: '24px' }}
+                rules={[
+                {
+                  required: true,
+                  message: "Please enter income tax rule!"
+                },
+              ]}
+              >
                 <Select placeholder="Income Tax Rule" showArrow>
                   <Select.Option value="Old Tax Regime">Old Tax Regime</Select.Option>
                   <Select.Option value="New Tax Regime">New Tax Regime</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="PAN Number" name="panNum">
+              <Form.Item
+                label="PAN Number"
+                name="panNum"
+                rules={[
+                {
+                  required: true,
+                  message: "Please enter pan number!"
+                },
+              ]}
+              >
                 <Input maxLength={50} placeholder="PAN Number" />
               </Form.Item>
-              <Form.Item label="Marital Status" name="maritalStatus">
+              <Form.Item
+                label="Marital Status"
+                name="maritalStatus"
+                rules={[
+                {
+                  required: true,
+                  message: "Please enter marital status!"
+                },
+              ]}
+              >
                 <Select placeholder="Marital Status" showArrow>
                   <Select.Option value="Single">Single</Select.Option>
                   <Select.Option value="Married">Married</Select.Option>
                   <Select.Option value="Rather not mention">Rather not mention</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="No. of Dependents" name="noOfDependents">
+              <Form.Item
+                label="No. of Dependents"
+                name="noOfDependents"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter no. of dependents!"
+                  },
+                ]}
+              >
                 <Input maxLength={50} placeholder="No. of Dependents" />
               </Form.Item>
-              <Form.Item label="Residency Status" name="residencyStatus">
+              <Form.Item
+                label="Residency Status"
+                name="residencyStatus"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter residency status!"
+                  },
+                ]}
+              >
                 <Select placeholder="Residency Status" showArrow>
                   <Select.Option value="Resident">Resident</Select.Option>
                   <Select.Option value="Non Resident">Non Resident</Select.Option>
@@ -664,27 +882,64 @@ const ModalAddInfo = (props) => {
             </Form>
           )
         }
-        else {
+        
           return (
-            <Form name="TaxDetail" onFinish={onFinishTax} autoComplete="off" layout="vertical">
+            <Form form={form} name="TaxDetail" onFinish={onFinishTax} autoComplete="off" layout="vertical">
               <div className={styles.form__title}>Tax Details</div>
               <div className={styles.form__description}>
                 You are required to fill in certain deatils to proceed further
               </div>
-              <Form.Item label="Social Security Card Number" name="cardNumber" style={{ marginTop: '24px' }}>
+              <Form.Item
+                label="Social Security Card Number"
+                name="cardNumber"
+                style={{ marginTop: '24px' }}
+                rules={[
+                    {
+                      required: true,
+                      message: "Please enter social security card number!"
+                    },
+                  ]}
+              >
                 <Input maxLength={50} placeholder="Social Security Card Number" />
               </Form.Item>
-              <Form.Item label="Marital Status" name="maritalStatus">
+              <Form.Item
+                label="Marital Status"
+                name="maritalStatus"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter marital status!"
+                  },
+                ]}
+              >
                 <Select placeholder="Marital Status" showArrow>
                   <Select.Option value="Single">Single</Select.Option>
                   <Select.Option value="Married">Married</Select.Option>
                   <Select.Option value="Rather not mention">Rather not mention</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="No. of Dependents" name="noOfDependents">
+              <Form.Item
+                label="No. of Dependents"
+                name="noOfDependents"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter no. of dependents!"
+                  },
+                ]}
+              >
                 <Input maxLength={50} placeholder="No. of Dependents" />
               </Form.Item>
-              <Form.Item label="Residency Status" name="residencyStatus">
+              <Form.Item
+                label="Residency Status"
+                name="residencyStatus"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter residency status!"
+                  },
+                ]}
+              >
                 <Select placeholder="Residency Status" showArrow>
                   <Select.Option value="Resident">Resident</Select.Option>
                   <Select.Option value="Non Resident">Non Resident</Select.Option>
@@ -692,7 +947,7 @@ const ModalAddInfo = (props) => {
               </Form.Item>
             </Form>
           )
-        }
+        
       default:
         return '';
     }
