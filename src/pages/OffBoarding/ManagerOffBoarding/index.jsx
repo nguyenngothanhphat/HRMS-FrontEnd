@@ -1,9 +1,9 @@
 /* eslint-disable import/no-cycle */
 import React, { Component } from 'react';
 import { Col, Tabs, Row, Affix, Button } from 'antd';
-import { PageContainer } from '@/layouts/layout/src';
 import { Link, connect, history } from 'umi';
 import { debounce } from 'lodash';
+import { PageContainer } from '@/layouts/layout/src';
 // import TableAssigned from '@/components/TableAssigned';
 import { getTimezoneViaCity } from '@/utils/times';
 import TeamRequest from './component/TeamRequest';

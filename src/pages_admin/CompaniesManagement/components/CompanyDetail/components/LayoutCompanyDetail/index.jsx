@@ -77,7 +77,7 @@ class LayoutCompanyDetail extends PureComponent {
 
     return (
       <div className={s.layoutCompanyDetail}>
-        <Affix offsetTop={105}>
+        <Affix offsetTop={117}>
           <div className={s.viewLeft}>
             <div className={s.viewLeft__menu}>
               {listMenu.map((item) => (

@@ -1,6 +1,6 @@
+import { message, notification } from 'antd';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
-import { message, notification } from 'antd';
 import {
   LocationFilter,
   LocationOwnerFilter,
@@ -124,7 +124,7 @@ const employee = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'listEmployeeMyTeam',
-          payload: { listEmployeeMyTeam, myTeam: response.total },
+          payload: { listEmployeeMyTeam, totalMyTeam: response.total },
         });
         yield put({
           type: 'save',

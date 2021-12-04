@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col, Spin } from 'antd';
 import { formatMessage, connect } from 'umi';
+import { PageContainer } from '@/layouts/layout/src';
 import EditComment from './components/EditComment';
 import StatusComponent from './components/StatusComponent';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
@@ -262,7 +262,7 @@ class DetailTicket extends Component {
       <>
         <PageContainer>
           <div className={styles.detailTicket}>
-            <Affix offsetTop={30}>
+            <Affix offsetTop={42}>
               <div className={styles.titlePage}>
                 <p className={styles.titlePage__text}>
                   Terminate work relationship with {nameEmployee} [{employeeId}]

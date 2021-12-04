@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { Tabs, Affix } from 'antd';
 import { getCurrentCompany } from '@/utils/authority';
 import { PageContainer } from '@/layouts/layout/src';
-import { Tabs, Affix } from 'antd';
 import AddIcon from '../../../public/assets/images/addMemberIcon.svg';
 import ActiveProject from './components/ActiveProject';
 import InactiveProject from './components/InactiveProject';
@@ -89,7 +89,7 @@ const ProjectManagement = (props) => {
   return (
     <PageContainer>
       <div className={s.containerDashboard}>
-        <Affix offsetTop={30}>
+        <Affix offsetTop={42}>
           <div className={s.titlePage}>
             <p className={s.titlePage__text}>Projects Management</p>
           </div>

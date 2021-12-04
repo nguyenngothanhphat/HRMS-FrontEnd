@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
-import { PageContainer } from '@/layouts/layout/src';
 import { history } from 'umi';
 import { Tabs } from 'antd';
+import { PageContainer } from '@/layouts/layout/src';
 import HRrequestTable from './component/HrRequestTable';
 import RelievingFormalities from './component/RelievingFormalities';
 import Settings from './component/Settings';

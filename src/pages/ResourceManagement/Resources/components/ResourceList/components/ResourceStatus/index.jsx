@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Select } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
+import BlueArrowDownIcon from '@/assets/resourceManagement/blueArrowDown.svg';
 
 const { Option } = Select;
 
@@ -65,6 +66,7 @@ class AvailableStatus extends PureComponent {
           placement="bottomCenter"
           onChange={(value) => changeAvailableStatus(value)}
           defaultValue={currentType}
+          suffixIcon={<img src={BlueArrowDownIcon} alt="" />}
         >
           {resourceStatuses.map((item) => (
             <Option value={item.availableStatus} key={item.availableStatus}>
