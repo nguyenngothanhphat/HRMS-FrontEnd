@@ -15,11 +15,11 @@ const { TabPane } = Tabs;
   ({
     loading,
     onboarding: {
-      onboardingOverview: { joined = [], total = 0 } = {},
+      onboardingOverview: { joinedOffers = [], total = 0 } = {},
       reloadTableData = false,
     } = {},
   }) => ({
-    joined,
+    joinedOffers,
     total,
     reloadTableData,
     loading: loading.effects['onboarding/fetchOnboardList'],
@@ -93,7 +93,7 @@ class Joined extends PureComponent {
   };
 
   render() {
-    const { joined: data = [], total = 0, loading } = this.props;
+    const { joinedOffers: data = [], total = 0, loading } = this.props;
     const { tabId, pageSelected, size, loadingSearch } = this.state;
 
     return (
