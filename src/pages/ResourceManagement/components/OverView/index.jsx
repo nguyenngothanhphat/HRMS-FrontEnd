@@ -1,11 +1,25 @@
 import { Col, Row } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'umi';
 import NewJoinees from './components/NewJoinees';
 import People from './components/People';
 import Utilization from './components/Utilization';
 import styles from './index.less';
 
-const Overview = () => {
+const Overview = (props) => {
+  const { dispatch } = props;
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: 'resourceManagement/save',
+        payload: {
+          selectedDivisions: [],
+          selectedLocations: [],
+        },
+      });
+    };
+  }, []);
+
   return (
     <div className={styles.Overview}>
       <Row gutter={[24, 24]}>
@@ -23,4 +37,4 @@ const Overview = () => {
   );
 };
 
-export default Overview;
+export default connect(() => ({}))(Overview);

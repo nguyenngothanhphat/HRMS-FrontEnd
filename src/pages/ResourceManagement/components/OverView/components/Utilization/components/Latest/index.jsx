@@ -1,15 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Doughnut } from 'react-chartjs-2';
 import { connect } from 'umi';
+import { Gauge } from '@ant-design/charts';
 import { Col, Row, Tooltip as TooltipAntd } from 'antd';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
-import CenterImage from '@/assets/resourceManagement/chartCenterImage.svg';
 import styles from './index.less';
 import TopArrowIcon from '@/assets/resourceManagement/topArrow.svg';
 import HelpIcon from '@/assets/resourceManagement/helpIcon.svg';
 
-ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
+const UtilizationGauge = ({ percent = 0 }) => {
+  const config = {
+    percent,
+    innerRadius: 0.8,
+    range: {
+      ticks: [0, 100],
+      color: ['l(0) 0:#F4664A 0.5:#FAAD14 1:#30BF78'],
+    },
+    axis: {
+      label: {
+        formatter: (text) => {
+          return text * 100;
+        },
+      },
+    },
+    indicator: {
+      pointer: {
+        style: {
+          stroke: '#2C6DF9',
+        },
+      },
+      pin: {
+        style: {
+          stroke: '#2C6DF9',
+        },
+      },
+    },
+  };
+
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  return <Gauge width={310} height={310} {...config} />;
+};
 
 const Latest = (props) => {
   const {
@@ -40,38 +68,9 @@ const Latest = (props) => {
     fetchData();
   }, [JSON.stringify(selectedLocations), JSON.stringify(selectedDivisions)]);
 
-  const colors = ['#FC6A22', '#FCB96C', '#66B03F', '#D6DCE0'];
-
   const renderPercent = (x) => {
     if (x === 0 || Number.isInteger(x)) return x;
     return parseFloat(x).toFixed(2);
-  };
-
-  const formatData = () => {
-    const billableToday = summaryToday.find((x) => x.status === 'Billable') || { percent: 0 };
-    const benchToday = summaryToday.find((x) => x.status === 'Bench') || { percent: 0 };
-    const bufferToday = summaryToday.find((x) => x.status === 'Buffer') || { percent: 0 };
-    const totalToday = summaryToday.find((x) => x.status === 'Total') || { percent: 0 };
-
-    // generate data for chart
-    return {
-      datasets: [
-        {
-          data: [15, 35, 40, 10],
-          // data: [
-          //   renderPercent(billableToday?.percent),
-          //   renderPercent(bufferToday?.percent),
-          //   renderPercent(benchToday?.percent),
-          //   renderPercent(
-          //     totalToday?.percent -
-          //       (billableToday?.percent + bufferToday?.percent + benchToday?.percent),
-          //   ),
-          // ],
-          backgroundColor: colors,
-          borderWidth: 0,
-        },
-      ],
-    };
   };
 
   const calculateUtilization = () => {
@@ -132,82 +131,13 @@ const Latest = (props) => {
     ];
   };
 
-  const numSectors = formatData().datasets[0].data.length;
-  const sectorDegree = 180 / numSectors;
-
   return (
     <div className={styles.Latest}>
       <Row className={styles.container} gutter={[50, 0]} justify="center">
         <Col span={12}>
           <div className={styles.left}>
             <div className={styles.chart}>
-              <Doughnut
-                data={formatData()}
-                options={{
-                  rotation: 270,
-                  circumference: 180,
-                  cutout: 95,
-                  layout: {
-                    padding: {
-                      top: 24,
-                      bottom: 14,
-                      left: 24,
-                      right: 24,
-                    },
-                  },
-                  plugins: {
-                    tooltip: {
-                      enabled: false,
-                    },
-                    datalabels: {
-                      anchor: 'end',
-                      align: (context) => {
-                        return sectorDegree * context.dataIndex + 20;
-                      },
-                      offset: () => {
-                        return -32;
-                      },
-                      display: (context) => {
-                        const { dataset } = context;
-                        const count = dataset.data.length;
-                        return (
-                          context.dataIndex !== count - 1 && dataset.data[context.dataIndex] !== 0
-                        );
-                      },
-
-                      color: '#161C29',
-                      labels: {
-                        title: {
-                          font: {
-                            weight: '500',
-                            size: 16,
-                          },
-                        },
-                      },
-                    },
-                  },
-                }}
-                plugins={[
-                  {
-                    afterDatasetDraw: (chart) => {
-                      const { ctx } = chart;
-                      ctx.save();
-                      const image = new Image();
-                      image.src = CenterImage;
-                      const imageSize = 105;
-                      ctx.drawImage(
-                        image,
-                        chart.width / 2 - imageSize / 2,
-                        chart.height / 2 + 20,
-                        imageSize,
-                        imageSize,
-                      );
-                      ctx.restore();
-                    },
-                  },
-                  ChartDataLabels,
-                ]}
-              />
+              <UtilizationGauge percent={calculatedData.utilization} />
             </div>
             <div className={styles.numbers}>
               <div className={styles.numbers__above}>
