@@ -69,7 +69,7 @@ export async function getCustomerList(payload) {
       data: payload,
     },
     false,
-    API_KEYS.PROJECT_API,
+    API_KEYS.CUSTOMER_API,
   );
 }
 

@@ -1,3 +1,4 @@
+import { API_KEYS } from '../../config/proxy';
 import request from '@/utils/request';
 
 export async function getListTicket(payload) {
@@ -72,7 +73,6 @@ export async function getMyTimesheet(payload, params) {
       params,
     },
     false,
-    'TIMESHEET_API',
-    true, // hasParams
+    API_KEYS.TIMESHEET_API,
   );
 }
