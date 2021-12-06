@@ -1,4 +1,5 @@
-import { request } from '@/utils/request';
+import request from '@/utils/request';
+import { API_KEYS } from '../../config/proxy';
 
 export async function getProjectByID(payload) {
   return request(
@@ -8,7 +9,7 @@ export async function getProjectByID(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 // overview
@@ -20,7 +21,7 @@ export async function updateProjectOverview(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -32,7 +33,7 @@ export async function getProjectTagList(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -44,7 +45,7 @@ export async function addProjectHistory(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -56,7 +57,7 @@ export async function getProjectHistoryList(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -69,7 +70,7 @@ export async function getMilestoneList(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 export async function addMilestone(payload) {
@@ -80,7 +81,7 @@ export async function addMilestone(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 export async function updateMilestone(payload) {
@@ -91,7 +92,7 @@ export async function updateMilestone(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 export async function removeMilestone(payload) {
@@ -102,7 +103,7 @@ export async function removeMilestone(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -115,7 +116,7 @@ export async function getResourceTypeList(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -127,7 +128,7 @@ export async function addResourceType(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -139,7 +140,7 @@ export async function getTechnologyList(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -171,7 +172,7 @@ export async function getBillingStatusList(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -184,7 +185,7 @@ export async function getResourceList(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -196,7 +197,7 @@ export async function addResource(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -208,7 +209,7 @@ export async function assignResources(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -220,7 +221,7 @@ export async function countStatusResource(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -232,7 +233,7 @@ export async function getResourceOfProject(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -244,7 +245,7 @@ export async function updateResourceOfProject(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -256,7 +257,7 @@ export async function removeResourceOfProject(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -269,7 +270,7 @@ export async function getDocumentList(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -281,7 +282,7 @@ export async function addDocument(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -293,7 +294,7 @@ export async function removeDocument(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -305,7 +306,7 @@ export async function getDocumentTypeList(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -318,7 +319,7 @@ export async function getAuditTrailList(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 

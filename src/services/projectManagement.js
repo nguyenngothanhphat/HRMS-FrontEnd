@@ -1,4 +1,5 @@
-import { request } from '@/utils/request';
+import request from '@/utils/request';
+import { API_KEYS } from '../../config/proxy';
 
 export async function getProjectList(payload) {
   return request(
@@ -8,7 +9,7 @@ export async function getProjectList(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -20,7 +21,7 @@ export async function getProjectNameList(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -32,7 +33,7 @@ export async function getStatusSummary(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -44,7 +45,7 @@ export async function generateProjectId(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -56,7 +57,7 @@ export async function addProject(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -68,7 +69,7 @@ export async function getCustomerList(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.CUSTOMER_API,
   );
 }
 
@@ -80,7 +81,7 @@ export async function getProjectTypeList(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -92,7 +93,7 @@ export async function getProjectStatusList(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -104,7 +105,7 @@ export async function getTagList(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
