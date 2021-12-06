@@ -52,6 +52,7 @@ class Onboarding extends PureComponent {
         needsChanges = [],
         rejectedOffers = [],
         withdrawnOffers = [],
+        joinedOffers = [],
         currentStatus,
       } = {},
     } = this.props;
@@ -88,6 +89,9 @@ class Onboarding extends PureComponent {
         break;
       case NEW_PROCESS_STATUS.OFFER_WITHDRAWN:
         data = withdrawnOffers;
+        break;
+      case NEW_PROCESS_STATUS.JOINED:
+        data = joinedOffers;
         break;
       default:
         // all
