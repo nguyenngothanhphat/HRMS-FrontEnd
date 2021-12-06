@@ -1,12 +1,23 @@
 import { Checkbox, Col, Popover, Row } from 'antd';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './index.less';
 
 const CheckboxMenu = (props) => {
-  const { children, onChange: onChangeProp = () => {}, options = [] } = props;
+  const {
+    children,
+    onChange: onChangeProp = () => {},
+    options = [],
+    default: defaultChecks = [],
+  } = props;
   const [indeterminate, setIndeterminate] = React.useState(false);
   const [checkAll, setCheckAll] = React.useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
+
+  useEffect(() => {
+    if (selectedItems.length === 0 && defaultChecks.length > 0) {
+      setSelectedItems([...defaultChecks]);
+    }
+  }, []);
 
   const onCheckAllChange = (e) => {
     const selectedItemsTemp = e.target.checked ? options.map((x) => x._id) : [];
