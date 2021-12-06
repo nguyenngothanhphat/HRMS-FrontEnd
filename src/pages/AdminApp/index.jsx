@@ -63,7 +63,7 @@ class AdminApp extends Component {
   }
 
   componentWillUnmount() {
-    const { dispatch } = this.props;
+          const { dispatch } = this.props;
     dispatch({
       type: 'companiesManagement/saveOrigin',
       payload: { companyDetails: {} },
