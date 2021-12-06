@@ -197,7 +197,11 @@ class OnboardTable extends Component {
         </p>
       );
     }
-    if (isNew && !(processStatusId === NEW_PROCESS_STATUS.OFFER_ACCEPTED)) {
+    if (
+      isNew &&
+      processStatusId !== NEW_PROCESS_STATUS.OFFER_ACCEPTED &&
+      processStatusId !== NEW_PROCESS_STATUS.JOINED
+    ) {
       return (
         <p>
           {name && <span className={styles.name}>{name}</span>}
