@@ -103,17 +103,6 @@ class Resources extends Component {
     });
   };
 
-  componentWillUnmount = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'resourceManagement/save',
-      payload: {
-        selectedDivisions: [],
-        selectedLocations: [],
-      },
-    });
-  };
-
   getSelectedLocationName = () => {
     const { listLocationsByCompany = [] } = this.props;
     const { selectedLocations } = this.state;
@@ -149,7 +138,7 @@ class Resources extends Component {
 
   renderActionButton = () => {
     const { tabName = '', divisionList = [], listLocationsByCompany = [] } = this.props;
-
+    const { selectedDivisions, selectedLocations } = this.state;
     // if only one selected
     const selectedLocationName = this.getSelectedLocationName();
     const selectedDivisionName = this.getSelectedDivisionName();
@@ -176,6 +165,7 @@ class Resources extends Component {
               options={locationOptions}
               onChange={this.onLocationChange}
               list={listLocationsByCompany}
+              default={selectedLocations}
             >
               <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
                 <span>{selectedLocationName}</span>
@@ -186,7 +176,11 @@ class Resources extends Component {
           <div className={styles.dropdownItem}>
             <span className={styles.label}>Division</span>
 
-            <CheckboxMenu options={divisionOptions} onChange={this.onDivisionChange}>
+            <CheckboxMenu
+              options={divisionOptions}
+              onChange={this.onDivisionChange}
+              default={selectedDivisions}
+            >
               <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
                 <span>{selectedDivisionName}</span>
                 <img src={SmallDownArrow} alt="" />
