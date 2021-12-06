@@ -14,6 +14,7 @@ import OfferReleased from '@/pages/Onboarding/components/OnboardingOverview/comp
 import SalaryNegotiation from '@/pages/Onboarding/components/OnboardingOverview/components/SalaryNegotiation';
 import AwaitingApprovals from '@/pages/Onboarding/components/OnboardingOverview/components/AwaitingApprovals';
 import NeedsChanges from '@/pages/Onboarding/components/OnboardingOverview/components/NeedsChanges';
+import Joined from '@/pages/Onboarding/components/OnboardingOverview/components/Joined';
 
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import MenuItem from './components/MenuItem';
@@ -42,6 +43,8 @@ const getComponent = (name) => {
       return <OfferAccepted />;
     case 'RejectedOffers': // 9
       return <RejectedOffers />;
+    case 'Joined':
+      return <Joined />;
     default:
       // 10
       return <WithdrawnOffers />;
