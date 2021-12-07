@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Form, Input, Modal, message, Spin, Upload, Tooltip, Select } from 'antd';
 
+import { isEmpty } from 'lodash';
 import { connect } from 'umi';
 
 import TrashIcon from '@/assets/policiesRegulations/delete.svg';
@@ -21,10 +22,10 @@ const { Option } = Select;
     listCategory,
     employee,
     loadingUploadAttachment: loading.effects['policiesRegulations/uploadFileAttachments'],
-    loadingAdd: loading.effects['policiesRegulations/addPolicy'],
+    loadingUpdate: loading.effects['policiesRegulations/updatePolicy'],
   }),
 )
-class AddPolicyModal extends Component {
+class EditPolicyModal extends Component {
   formRef = React.createRef();
 
   constructor(props) {
@@ -32,14 +33,8 @@ class AddPolicyModal extends Component {
     this.state = {
       uploadedFile: {},
       fileName: '',
+      idCategory: '',
     };
-  }
-
-  componentDidMount() {
-    const { item: { attachment: { name = '' } = {} } = {} } = this.props;
-    if (name !== '') {
-      this.setState({ fileName: name });
-    }
   }
 
   identifyImageOrPdf = (fileName) => {
@@ -111,6 +106,11 @@ class AddPolicyModal extends Component {
     this.handlePreview('');
   };
 
+  handleDeleteFileName = () => {
+    const { onDelete = () => {} } = this.props;
+    onDelete();
+  };
+
   handleCancel = () => {
     const { onClose = () => {} } = this.props;
     this.setState({ uploadedFile: {} });
@@ -118,9 +118,15 @@ class AddPolicyModal extends Component {
     onClose();
   };
 
-  onFinish = async ({ categoryPolicy, namePolicies }) => {
-    const { dispatch, employee: { _id = '' } = {}, onClose = () => {} } = this.props;
-    const { uploadedFile = {} } = this.state;
+  onFinish = async ({ namePolicies }) => {
+    const {
+      dispatch,
+      item: { _id: id = '', category = [] } = {},
+      employee: { _id = '' } = {},
+      onClose = () => {},
+    } = this.props;
+    const categoryID = !isEmpty(category) ? category[0]._id : '  ';
+    const { uploadedFile = {}, idCategory } = this.state;
     const attachment = {
       id: uploadedFile.id,
       name: uploadedFile.name,
@@ -128,17 +134,17 @@ class AddPolicyModal extends Component {
     };
 
     const payload = {
+      id,
       employee: _id,
-      categoryPolicy,
+      categoryPolicy: idCategory === '' ? categoryID : idCategory,
       namePolicy: namePolicies,
       attachment,
     };
-
     if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
       message.error('Invalid file');
     } else {
       dispatch({
-        type: 'policiesRegulations/addPolicy',
+        type: 'policiesRegulations/updatePolicy',
         payload,
       }).then((response) => {
         const { statusCode } = response;
@@ -151,28 +157,46 @@ class AddPolicyModal extends Component {
   };
 
   render() {
-    const { visible } = this.props;
-    const { loadingUploadAttachment, loadingAdd, listCategory = [] } = this.props;
+    const { listCategory = [], item = {}, visible, filePDF = '' } = this.props;
+    const { loadingUploadAttachment, loadingUpdate } = this.props;
     const { fileName = '' } = this.state;
-    const onPolicyCategories = () => {};
+    const { namePolicy = '', category = [] } = item;
+    const categoryName = !isEmpty(category) ? category[0].name : '  ';
+    const categoryID = !isEmpty(category) ? category[0]._id : '  ';
+    const onPolicyCategories = (value) => {
+      this.setState({ idCategory: value });
+    };
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>
-          <p className={styles.header__text}>Add Policy</p>
+          <p className={styles.header__text}> Edit Policy</p>
         </div>
       );
     };
     const renderModalContent = () => {
       return (
         <div className={styles.content}>
-          <Form name="basic" id="addForm" ref={this.formRef} onFinish={this.onFinish}>
+          <Form
+            name="basic"
+            initialValues={{
+              namePolicies: namePolicy,
+              categoryPolicy: categoryName,
+            }}
+            id="addForm"
+            ref={this.formRef}
+            onFinish={this.onFinish}
+          >
             <Form.Item
               rules={[{ required: true, message: 'Please Policy Categories' }]}
               label="Policy Categories"
               name="categoryPolicy"
               labelCol={{ span: 24 }}
             >
-              <Select showSearch onChange={onPolicyCategories}>
+              <Select
+                defaultValue={categoryID}
+                showSearch
+                onChange={() => onPolicyCategories(categoryID)}
+              >
                 {listCategory.map((val) => (
                   <Option value={val._id}>{val.name}</Option>
                 ))}
@@ -194,49 +218,74 @@ class AddPolicyModal extends Component {
                 disabled={fileName}
                 action={(file) => this.handleUpload(file)}
               >
-                {fileName !== '' ? (
+                {filePDF !== '' ? (
                   <div className={styles.fileUploadedContainer}>
                     <Tooltip title="Remove">
                       <img
-                        onClick={() => this.handleRemove()}
+                        onClick={() => this.handleDeleteFileName()}
                         className={styles.trashIcon}
                         src={TrashIcon}
                         alt="remove"
                       />
                     </Tooltip>
                     <p className={styles.previewIcon}>
-                      {this.identifyImageOrPdf(fileName) === 1 ? (
+                      {this.identifyImageOrPdf(filePDF) === 1 ? (
                         <img src={PDFIcon} alt="pdf" />
                       ) : (
                         <img src={ImageIcon} alt="img" />
                       )}
                     </p>
                     <p className={styles.fileName}>
-                      Uploaded: <a>{fileName}</a>
+                      Uploaded: <a>{filePDF}</a>
                     </p>
                   </div>
                 ) : (
-                  <div className={styles.drapperBlock}>
-                    {loadingUploadAttachment ? (
-                      <Spin />
+                  <>
+                    {fileName !== '' ? (
+                      <div className={styles.fileUploadedContainer}>
+                        <Tooltip title="Remove">
+                          <img
+                            onClick={() => this.handleRemove()}
+                            className={styles.trashIcon}
+                            src={TrashIcon}
+                            alt="remove"
+                          />
+                        </Tooltip>
+                        <p className={styles.previewIcon}>
+                          {this.identifyImageOrPdf(fileName) === 1 ? (
+                            <img src={PDFIcon} alt="pdf" />
+                          ) : (
+                            <img src={ImageIcon} alt="img" />
+                          )}
+                        </p>
+                        <p className={styles.fileName}>
+                          Uploaded: <a>{fileName}</a>
+                        </p>
+                      </div>
                     ) : (
-                      <>
-                        <div className={styles.aboveText}>
-                          <div>
-                            <img src={UploadIcon} alt="upload" />
-                          </div>
-                          <div className={styles.uploadText}>Drop file here</div>
-                          <div className={styles.uploadbrowseText}>
-                            or <span className={styles.browseText}>browse</span> to upload file
-                          </div>
-                        </div>
-                        <span className={styles.belowText}>
-                          File size should not be more than 25mb. Supported file for view: pdf &
-                          jpeg.
-                        </span>
-                      </>
+                      <div className={styles.drapperBlock}>
+                        {loadingUploadAttachment ? (
+                          <Spin />
+                        ) : (
+                          <>
+                            <div className={styles.aboveText}>
+                              <div>
+                                <img src={UploadIcon} alt="upload" />
+                              </div>
+                              <div className={styles.uploadText}>Drop file here</div>
+                              <div className={styles.uploadbrowseText}>
+                                or <span className={styles.browseText}>browse</span> to upload file
+                              </div>
+                            </div>
+                            <span className={styles.belowText}>
+                              File size should not be more than 25mb. Supported file for view: pdf &
+                              jpeg.
+                            </span>
+                          </>
+                        )}
+                      </div>
                     )}
-                  </div>
+                  </>
                 )}
               </Dragger>
             </div>
@@ -248,7 +297,7 @@ class AddPolicyModal extends Component {
     return (
       <>
         <Modal
-          className={`${styles.AddPolicyModal} ${styles.noPadding}`}
+          className={`${styles.EditPolicyModal} ${styles.noPadding}`}
           onCancel={this.handleCancel}
           destroyOnClose
           width={696}
@@ -263,9 +312,9 @@ class AddPolicyModal extends Component {
                 form="addForm"
                 key="submit"
                 htmlType="submit"
-                loading={loadingAdd}
+                loading={loadingUpdate}
               >
-                Add Policy
+                Save Changes
               </Button>
             </>
           }
@@ -280,4 +329,4 @@ class AddPolicyModal extends Component {
   }
 }
 
-export default AddPolicyModal;
+export default EditPolicyModal;

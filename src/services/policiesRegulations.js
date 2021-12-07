@@ -12,7 +12,7 @@ export async function getListCategory(payload) {
     method: 'POST',
     data: payload,
   });
-};
+}
 
 export async function updateCategory(payload) {
   return request('/api/policy/update ', {
@@ -35,6 +35,13 @@ export async function addPolicy(payload) {
   });
 }
 
+export async function getListPolicy(payload) {
+  return request('api/policyregulatenent/list ', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function updatePolicy(payload) {
   return request('/api/policyregulatenent/update ', {
     method: 'POST',
@@ -43,8 +50,21 @@ export async function updatePolicy(payload) {
 }
 
 export async function deletePolicy(payload) {
-  return request('/api-ticket', {
+  return request('api/policyregulatenent/delete', {
     method: 'POST',
     data: payload,
+  });
+}
+export async function searchNamePolicy(payload) {
+  return request('/api/policyregulatenent/search-policy', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function uploadFile(data) {
+  return request('/api/attachments/upload', {
+    method: 'POST',
+    data,
   });
 }

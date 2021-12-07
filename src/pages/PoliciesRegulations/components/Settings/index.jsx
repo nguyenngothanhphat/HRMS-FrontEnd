@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Affix, Spin, Skeleton, DatePicker, Button, Menu } from 'antd';
-import { connect, history } from 'umi';
+import { Row, Col, Menu } from 'antd';
 import Regulations from './components/Regulations';
 import Categories from './components/Categories';
 import { PageContainer } from '@/layouts/layout/src';

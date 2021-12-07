@@ -7,7 +7,6 @@ import AddCategoriesModal from './components/AddCategoriesModal';
 import styles from './index.less';
 
 @connect()
-
 class Categories extends Component {
   constructor(props) {
     super(props);
@@ -16,12 +15,12 @@ class Categories extends Component {
     };
   }
 
-componentDidMount(){
-const {dispatch}=this.props
-dispatch({
-  type:'policiesRegulations/fetchListCategory'
-})
-}
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'policiesRegulations/fetchListCategory',
+    });
+  }
 
   render() {
     const { addCategoriesModal } = this.state;

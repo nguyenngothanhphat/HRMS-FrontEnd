@@ -21,24 +21,24 @@ class AddCategoriesModal extends Component {
     onClose();
   };
 
-  handleFinish = ({category}) => {
+  handleFinish = ({ category }) => {
     const { onClose = () => {} } = this.props;
-    const {dispatch } = this.props;
-     dispatch({
-       type: 'policiesRegulations/addCategory',
-       payload: {
-         name:category
-       },
-     }).then((response) => {
-       const { statusCode } = response;
-       if (statusCode === 200) {
-         onClose();
-       }
-     });
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'policiesRegulations/addCategory',
+      payload: {
+        name: category,
+      },
+    }).then((response) => {
+      const { statusCode } = response;
+      if (statusCode === 200) {
+        onClose();
+      }
+    });
   };
 
   render() {
-    const { visible, loadingAdd  } = this.props;
+    const { visible, loadingAdd } = this.props;
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>

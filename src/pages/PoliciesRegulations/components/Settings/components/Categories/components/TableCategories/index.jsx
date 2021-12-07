@@ -10,33 +10,33 @@ import DeleteCategoriesModal from './components/DeleteCategoriesModal';
 
 import styles from './index.less';
 
-@connect(({ policiesRegulations: { listCategory = [] } = {} }) => ({
+@connect(({ loading, policiesRegulations: { listCategory = [] } = {} }) => ({
+  loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
   listCategory,
 }))
-
 class TableCatergory extends Component {
   constructor(props) {
     super(props);
     this.state = {
       editCategoriesModal: false,
       deleteCategoriesModal: false,
-      item:{}
+      item: {},
     };
   }
 
   handleUpdateCategories = (value) => {
     this.setState({ editCategoriesModal: true });
-   this.setState({item:value})
+    this.setState({ item: value });
   };
 
   handleDeleteCategories = (value) => {
     this.setState({ deleteCategoriesModal: true });
-    this.setState({item:value})
+    this.setState({ item: value });
   };
 
   render() {
-    const{listCategory=[]}=this.props
-    const { editCategoriesModal, deleteCategoriesModal,item } = this.state;
+    const { listCategory = [], loadingGetList } = this.props;
+    const { editCategoriesModal, deleteCategoriesModal, item } = this.state;
     const columns = [
       {
         title: 'Categories Name',
@@ -45,8 +45,11 @@ class TableCatergory extends Component {
       },
       {
         title: 'Document Count',
-        dataIndex: '0',
+        dataIndex: 'policyregulations',
         key: 'documentCount',
+        render: (policyregulations) => {
+          return <span>{policyregulations ? policyregulations.length : 0}</span>;
+        },
       },
       {
         title: 'Action',
@@ -54,10 +57,18 @@ class TableCatergory extends Component {
         render: (record) => {
           return (
             <div className={styles.btnAction}>
-              <Button type="link" shape="circle" onClick={() => this.handleUpdateCategories(record)}>
+              <Button
+                type="link"
+                shape="circle"
+                onClick={() => this.handleUpdateCategories(record)}
+              >
                 <img src={EditIcon} alt="Edit" />
               </Button>
-              <Button type="link" shape="circle" onClick={() => this.handleDeleteCategories(record)}>
+              <Button
+                type="link"
+                shape="circle"
+                onClick={() => this.handleDeleteCategories(record)}
+              >
                 <img src={DeleteIcon} alt="delete" />
               </Button>
             </div>
@@ -65,10 +76,10 @@ class TableCatergory extends Component {
         },
       },
     ];
- 
+
     return (
       <div className={styles.TableCatergory}>
-        <Table columns={columns} dataSource={listCategory} />
+        <Table columns={columns} dataSource={listCategory} loading={loadingGetList} />
         <EditCategoriesModal
           visible={editCategoriesModal}
           onClose={() => this.setState({ editCategoriesModal: false })}

@@ -2,27 +2,31 @@ import React, { Component } from 'react';
 import { Table, Dropdown, Menu, Divider } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
+import { isEmpty } from 'lodash';
 
-import AddPolicyModal from '../AddPolicyModal';
 import DeletePolicyModal from '../DeletePolicyModal';
-import ModalViewPDF from '@/components/ModalViewPDF';
+import EditPolicyModal from '../EditPolicyModal';
+import DocumentModal from '../../../../../Policies/components/DocumentModal';
 
 import MoreIcon from '@/assets/policiesRegulations/more.svg';
 import PdfIcon from '@/assets/policiesRegulations/pdf-2.svg';
 import styles from './index.less';
 
-connect(({ policiesRegulations: { listPolicy = [] } = {} }) => ({
+@connect(({ loading, policiesRegulations: { listPolicy = [] } = {} }) => ({
+  loadingGetList: loading.effects['policiesRegulations/fetchListPolicy'],
+  loadingSearch: loading.effects['policiesRegulations/searchNamePolicy'],
   listPolicy,
-}));
+}))
 class TablePolicy extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openModal: '',
       deletePolicy: false,
+      editPolicy: false,
       modalVisiblePDF: false,
       linkFile: '',
-      item:{}
+      filePDF: '',
+      item: {},
     };
   }
 
@@ -34,16 +38,17 @@ class TablePolicy extends Component {
   };
 
   handleDelete = (record) => {
-    this.setState({ deletePolicy: true , item:{record}});
-
+    this.setState({ deletePolicy: true, item: record });
   };
 
   handleUpdateDocument = (record) => {
-    this.setState({ openModal: 'edit', item:{record} });
+    const { attachment: { name = '' } = {} } = record;
+    this.setState({ editPolicy: true, item: record, filePDF: name });
   };
 
   handleViewDocument = (record) => {
-    this.setState({ modalVisiblePDF: true , item:{record}});
+    const { attachment: { url = '' } = {} } = record;
+    this.setState({ modalVisiblePDF: true, linkFile: url });
   };
 
   actionMenu = (record) => {
@@ -65,38 +70,50 @@ class TablePolicy extends Component {
   };
 
   render() {
-    const { openModal, deletePolicy, modalVisiblePDF, linkFile, item } = this.state;
-    const {listPolicy=[]}=this.props
+    const { deletePolicy, editPolicy, modalVisiblePDF, linkFile, item, filePDF } = this.state;
+    const {
+      listPolicy = [],
+      loadingGetList,
+      loadingSearch,
+      pageSelected,
+      size,
+      getPageAndSize = () => {},
+    } = this.props;
+
     const columns = [
       {
         title: 'Policy Name',
-        dataIndex: 'policyName',
+        dataIndex: 'namePolicy',
         sorter: {
-          compare: (a, b) => a.policyName.localeCompare(b.policyName),
+          compare: (a, b) => a.namePolicy.localeCompare(b.namePolicy),
         },
       },
       {
         title: 'Categories Name',
-        dataIndex: 'categoriesName',
+        dataIndex: 'category',
         sorter: {
-          compare: (a, b) => a.categoriesName.localeCompare(b.categoriesName),
+          compare: (a, b) => a.category[0].name.localeCompare(b.category[0].name),
+        },
+        render: (category) => {
+          const categoryyName = !isEmpty(category) ? category[0].name : ' _ ';
+          return <span>{categoryyName}</span>;
         },
       },
       {
         title: 'Policy Document',
-        dataIndex: 'policyDocument',
+        dataIndex: 'attachment',
         sorter: {
-          compare: (a, b) => a.policyDocument.localeCompare(b.policyDocument),
+          compare: (a, b) => a.attachment.name.localeCompare(b.attachment.name),
         },
-        render: (policyDocument) => {
+        render: (attachment) => {
           const attachmentSlice = () => {
-            if (policyDocument.length > 20) {
-              return `${policyDocument.substr(0, 8)}...${policyDocument.substr(
-                policyDocument.length - 10,
-                policyDocument.length,
+            if (attachment.name.length > 20) {
+              return `${attachment.name.substr(0, 8)}...${attachment.name.substr(
+                attachment.name.length - 10,
+                attachment.name.length,
               )}`;
             }
-            return policyDocument;
+            return attachment.name;
           };
           return (
             <div className={styles.policy}>
@@ -108,28 +125,41 @@ class TablePolicy extends Component {
       },
       {
         title: 'Added By',
-        dataIndex: 'addedBy',
+        dataIndex: 'infoEmployee',
         sorter: {
-          compare: (a, b) => a.addedBy.localeCompare(b.addedBy),
+          compare: (a, b) =>
+            a.infoEmployee[0].generalInfoInfo.legalName.localeCompare(
+              b.infoEmployee[0].generalInfoInfo.legalName,
+            ),
+        },
+        render: (infoEmployee) => {
+          if (!isEmpty(infoEmployee)) {
+            const { generalInfoInfo: { legalName = '' } = {} } = infoEmployee[0];
+            return <span>{legalName}</span>;
+          }
+          return '';
         },
       },
       {
         title: 'Added On',
-        dataIndex: 'addedOn',
+        dataIndex: 'updatedAt',
         sorter: {
-          compare: (a, b) => moment(a.addedOn).unix() - moment(b.addedOn).unix(),
+          compare: (a, b) => moment(a.updatedAt).unix() - moment(b.updatedAt).unix(),
+        },
+        render: (updatedAt) => {
+          const date = updatedAt ? moment(updatedAt).format('DD/MM/YYYY') : ' _ ';
+          return <span>{date}</span>;
         },
       },
       {
         title: 'Action',
-        dataIndex: 'action',
         key: 'action',
         render: (record) => {
           return (
             <Dropdown
               overlayStyle={{ width: '200px', marginRight: '8px' }}
               overlayClassName="dropdownPolicies"
-              overlay={()=>this.actionMenu(record)}
+              overlay={() => this.actionMenu(record)}
               placement="bottomRight"
               arrow
             >
@@ -141,58 +171,41 @@ class TablePolicy extends Component {
         },
       },
     ];
-    const data = [
-      {
-        key: 1,
-        policyName: 'Domestic Travel Policy',
-        categoriesName: 'Cmployee conduct',
-        policyDocument: 'Domestic Travel Policy.pdf',
-        addedBy: 'Jakob Korsgaard',
-        addedOn: '4/15/17',
-      },
-      {
-        key: 2,
-        policyName: 'Aomestic Travel Policy',
-        categoriesName: 'Employee conduct',
-        policyDocument: 'Domestic Travel Policy.pdf',
-        addedBy: 'Jakob Korsgaard',
-        addedOn: '5/15/17',
-      },
-      {
-        key: 3,
-        policyName: 'Fomestic Travel Policy',
-        categoriesName: 'Gmployee conduct',
-        policyDocument: 'Domestic Travel Policy.pdf',
-        addedBy: 'Jakob Korsgaard',
-        addedOn: '7/15/17',
-      },
-    ];
+
     const pagination = {
       position: ['bottomLeft'],
-      total: data.length,
+      total: listPolicy.length,
       showTotal: (total, range) => (
         <span>
           Showing{' '}
           <b>
             {range[0]} - {range[1]}
           </b>{' '}
-          of {data.length}
+          of {listPolicy.length}
         </span>
       ),
-      pageSize: 10,
-      current: 1,
-      // onChange: (page, pageSize) => {
-      //   getPageAndSize(page, pageSize);
-      // },
+      pageSize: size,
+      current: pageSelected,
+      onChange: (page, pageSize) => {
+        getPageAndSize(page, pageSize);
+      },
     };
     return (
       <div className={styles.TablePolicy}>
-        <Table columns={columns} dataSource={data} pagination={pagination} />
-        <AddPolicyModal
-          openModal={openModal === 'edit'}
-          onClose={() => this.setState({ openModal: '' })}
-          mode={openModal}
+        <Table
+          columns={columns}
+          dataSource={listPolicy}
+          pagination={pagination}
+          loading={loadingGetList || loadingSearch}
+        />
+
+        <EditPolicyModal
+          visible={editPolicy}
+          onDelete={() => this.setState({ filePDF: '' })}
+          onClose={() => this.setState({ editPolicy: false })}
+          mode="multiple"
           item={item}
+          filePDF={filePDF}
         />
         <DeletePolicyModal
           visible={deletePolicy}
@@ -200,11 +213,7 @@ class TablePolicy extends Component {
           mode="multiple"
           item={item}
         />
-        <ModalViewPDF
-          visible={modalVisiblePDF}
-          handleCancel={this.handleCancel}
-          link={linkFile}
-        />
+        <DocumentModal visible={modalVisiblePDF} handleCancel={this.handleCancel} link={linkFile} />
       </div>
     );
   }

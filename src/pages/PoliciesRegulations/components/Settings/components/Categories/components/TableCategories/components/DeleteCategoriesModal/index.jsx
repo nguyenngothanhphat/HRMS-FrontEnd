@@ -6,7 +6,6 @@ import styles from './index.less';
 @connect(({ loading }) => ({
   loadingDelete: loading.effects['policiesRegulations/deleteCategory'],
 }))
-
 class DeleteCategoriesModal extends Component {
   formRef = React.createRef();
 
@@ -22,22 +21,22 @@ class DeleteCategoriesModal extends Component {
   };
 
   handleFinish = () => {
-    const { dispatch, onClose = () => {}, item:{_id:id=''}={} } = this.props;
-     dispatch({
-       type: 'policiesRegulations/deleteCategory',
-       payload: {
-         id
-       },
-     }).then((response) => {
-       const { statusCode } = response;
-       if (statusCode === 200) {
-         onClose();
-       }
-     });
+    const { dispatch, onClose = () => {}, item: { _id: id = '' } = {} } = this.props;
+    dispatch({
+      type: 'policiesRegulations/deleteCategory',
+      payload: {
+        id,
+      },
+    }).then((response) => {
+      const { statusCode } = response;
+      if (statusCode === 200) {
+        onClose();
+      }
+    });
   };
 
   render() {
-    const { visible, loadingDelete  , item:{name=''}={}} = this.props;
+    const { visible, loadingDelete, item: { name = '' } = {} } = this.props;
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>

@@ -1,45 +1,85 @@
 import React, { Component } from 'react';
-import { Button, Col, Form, Input, Modal, Row } from 'antd';
-
+import { Modal } from 'antd';
+import { Document, Page, pdfjs } from 'react-pdf';
 import styles from './index.less';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 class DocumentModal extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {};
+    this.state = {
+      numPages: null,
+    };
   }
 
-  handleCancel = () => {
-    const { onClose = () => {} } = this.props;
-    onClose();
+  documentWarning = (msg) => (
+    <div className={styles.viewLoading}>
+      <p>{msg}</p>
+    </div>
+  );
+
+  onDocumentLoadSuccess = ({ numPages }) => {
+    this.setState({
+      numPages,
+    });
+  };
+
+  identifyImageOrPdf = (fileName) => {
+    const parts = fileName.split('.');
+    const ext = parts[parts.length - 1];
+    switch (ext.toLowerCase()) {
+      case 'jpg':
+      case 'jpeg':
+      case 'gif':
+      case 'bmp':
+      case 'png':
+        return 0;
+      case 'pdf':
+        return 1;
+      default:
+        return 0;
+    }
   };
 
   render() {
-    const { visible } = this.props;
-    const renderModalContent = () => {
-      return (
-        <iframe
-          src="http://www.africau.edu/images/default/sample.pdf"
-          style={{ width: '100%', height: '100vh' }}
-          frameBorder="0"
-        />
-      );
-    };
+    const { visible, handleCancel = () => {}, link = '', title = '' } = this.props;
+    const { numPages } = this.state;
     return (
-      <>
-        <Modal
-          className={`${styles.DocumentModal} ${styles.noPadding}`}
-          onCancel={this.handleCancel}
-          destroyOnClose
-          width={800}
-          footer={null}
-          centered
-          visible={visible}
-        >
-          {renderModalContent()}
-        </Modal>
-      </>
+      <Modal
+        title={title}
+        visible={visible}
+        onOk={this.handleOk}
+        onCancel={handleCancel}
+        className={styles.root}
+        destroyOnClose
+        footer={null}
+        centered
+      >
+        <div className={styles.viewDocument}>
+          {this.identifyImageOrPdf(link) === 0 ? (
+            <div className={styles.imageFrame}>
+              <img alt="preview" src={link} />
+            </div>
+          ) : (
+            <Document
+              file={link}
+              onLoadSuccess={this.onDocumentLoadSuccess}
+              loading={this.documentWarning('Loading document. Please wait...')}
+              noData={this.documentWarning('URL is not available.')}
+            >
+              {Array.from(new Array(numPages), (el, index) => (
+                <Page
+                  loading=""
+                  className={styles.pdfPage}
+                  key={`page_${index + 1}`}
+                  pageNumber={index + 1}
+                />
+              ))}
+            </Document>
+          )}
+        </div>
+      </Modal>
     );
   }
 }
