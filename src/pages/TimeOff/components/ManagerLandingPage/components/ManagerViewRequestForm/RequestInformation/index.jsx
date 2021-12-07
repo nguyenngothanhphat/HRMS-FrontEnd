@@ -43,10 +43,9 @@ class RequestInformation extends PureComponent {
 
   // FETCH LEAVE REQUEST DETAIL
   componentDidMount = () => {
-    const { dispatch, employeeId = '' } = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/fetchProjectsListByEmployee',
-      payload: { employee: employeeId },
     });
   };
 
@@ -287,13 +286,13 @@ class RequestInformation extends PureComponent {
                     <>
                       {projectsList.map((project) => {
                         const {
-                          name: prName = '',
-                          manager: {
+                          projectName: prName = '',
+                          projectManager: {
                             // _id: pjManagerId = '',
                             generalInfo: {
                               firstName: fn = '',
                               lastName: ln = '',
-                              userId = '',
+                              userId: managerUserId = '',
                             } = {},
                           } = {},
                           projectHealth = 0,
@@ -304,7 +303,7 @@ class RequestInformation extends PureComponent {
                               name={prName}
                               projectManager={`${fn} ${ln}`}
                               projectHealth={projectHealth}
-                              employeeId={userId}
+                              employeeId={managerUserId}
                             />
                             {/* {index + 1 < projects.length && <div className={styles.divider} />} */}
                           </>
