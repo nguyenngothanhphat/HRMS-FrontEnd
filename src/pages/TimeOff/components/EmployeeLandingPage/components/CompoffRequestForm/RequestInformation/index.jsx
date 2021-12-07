@@ -67,11 +67,9 @@ class RequestInformation extends PureComponent {
   };
 
   fetchProjectsListByEmployee = () => {
-    const { dispatch, user: { currentUser: { employee: { _id: employee = '' } = {} } = {} } = {} } =
-      this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/fetchProjectsListByEmployee',
-      payload: { employee },
     });
   };
 
@@ -91,7 +89,7 @@ class RequestInformation extends PureComponent {
     if (action === TIMEOFF_LINK_ACTION.editCompoffRequest) {
       const { viewingCompoffRequest = {} } = this.props;
       const {
-        project: { _id: projectId = '' } = {},
+        project: { id: projectId = '' } = {},
         extraTime = [],
         description = '',
         cc = [],
@@ -151,12 +149,16 @@ class RequestInformation extends PureComponent {
   // GENERATE PROJECT LIST DATA
   generateProjectsList = () => {
     const { timeOff: { projectsList = [] } = {} } = this.props;
-    console.log(projectsList);
     return projectsList.map((project) => {
-      const { _id = '', name = '' } = project;
+      const {
+        id = '',
+        projectName = '',
+        projectManager: { _id: projectManager = '' } = {},
+      } = project;
       return {
-        _id,
-        name,
+        _id: id,
+        name: projectName,
+        projectManager,
       };
     });
   };
@@ -214,10 +216,16 @@ class RequestInformation extends PureComponent {
     const { dateLists, buttonState, viewingCompoffRequestId, totalHours } = this.state;
     // const { timeOff: { compoffApprovalFlow = {} } = {} } = this.props;
 
+    const { timeOff: { projectsList = [] } = {} } = this.props;
+    const project = projectsList.find((x) => x.id === projectId) || {};
+    const { projectName = '', projectManager: { _id: projectManager = '' } = {} } = project;
+
     const action = buttonState === 1 ? 'saveDraft' : 'submit';
 
     const sendData = {
       project: projectId,
+      projectName,
+      projectManager,
       extraTime: dateLists,
       description,
       action,

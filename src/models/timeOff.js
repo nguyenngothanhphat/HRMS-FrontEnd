@@ -1,6 +1,6 @@
+import { notification } from 'antd';
 import { getCurrentCompany, getCurrentTenant, getCurrentLocation } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
-import { notification } from 'antd';
 import {
   getHolidaysList,
   getLeaveBalanceOfUser,
@@ -627,6 +627,7 @@ const timeOff = {
       try {
         const response = yield call(getProjectsListByEmployee, {
           ...payload,
+          company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
         const { statusCode, data: projectsList = [] } = response;
