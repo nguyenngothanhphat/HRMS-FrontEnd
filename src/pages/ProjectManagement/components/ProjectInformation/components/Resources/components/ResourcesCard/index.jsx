@@ -72,6 +72,9 @@ const ResourcesCard = (props) => {
     loadingRemove = false,
   } = props;
 
+  // permissions
+  const { allowModify = false } = props;
+
   // editable table
   const [form] = Form.useForm();
   const [data, setData] = useState();
@@ -302,6 +305,7 @@ const ResourcesCard = (props) => {
         key: 'action',
         align: 'center',
         render: (_, record) => {
+          if (!allowModify) return '';
           const editable = isEditing(record);
           if (editable) {
             return (
@@ -358,7 +362,9 @@ const ResourcesCard = (props) => {
         <FilterPopover placement="bottomRight" content={content}>
           <FilterButton />
         </FilterPopover>
-        <OrangeAddButton text="Add Resources" onClick={() => setAddResourceModalVisible(true)} />
+        {allowModify && (
+          <OrangeAddButton text="Add Resources" onClick={() => setAddResourceModalVisible(true)} />
+        )}
         <SearchBar onSearch={onSearch} placeholder="Search by Resource Type" />
       </div>
     );

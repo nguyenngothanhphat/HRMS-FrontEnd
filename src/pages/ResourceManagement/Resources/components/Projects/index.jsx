@@ -10,7 +10,12 @@ const ProjectList = (props) => {
     statusProject = [],
     dispatch,
     loadingFetchProjectList = false,
+    permissions = {},
   } = props;
+
+  // permissions
+  const modifyResourcePermission = permissions.modifyResource !== -1;
+
   const [projectStatus, setProjectStatus] = useState('All');
 
   const fetchProjectList = async (payload) => {
@@ -48,15 +53,21 @@ const ProjectList = (props) => {
         data={projectTable}
         loading={loadingFetchProjectList}
         fetchProjectList={fetchProjectList}
+        allowModify={modifyResourcePermission}
       />
     </div>
   );
 };
 
 export default connect(
-  ({ resourceManagement: { projectTable = [], statusProject = [] } = {}, loading }) => ({
+  ({
+    user: { permissions },
+    resourceManagement: { projectTable = [], statusProject = [] } = {},
+    loading,
+  }) => ({
     loadingFetchProjectList: loading.effects['resourceManagement/fetchProjectList'],
     projectTable,
     statusProject,
+    permissions,
   }),
 )(ProjectList);

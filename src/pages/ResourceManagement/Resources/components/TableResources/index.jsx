@@ -86,6 +86,7 @@ class TableResources extends PureComponent {
       size,
       getPageAndSize,
       refreshData,
+      allowModify = false,
     } = this.props;
     // const formatData = this.formatResource(data)
     const pagination = {
@@ -320,9 +321,11 @@ class TableResources extends PureComponent {
           return (
             <span className={styles.basicCellFieldShowEdit}>
               {value}
-              <span className={styles.iconEdit}>
-                <EditActionBTN dataPassRow={row} refreshData={refreshData} />
-              </span>
+              {allowModify && (
+                <span className={styles.iconEdit}>
+                  <EditActionBTN dataPassRow={row} refreshData={refreshData} />
+                </span>
+              )}
             </span>
           );
         },
@@ -339,12 +342,17 @@ class TableResources extends PureComponent {
             // webkit-line-clamp
             const line =
               employeeRowCount === 0 || employeeRowCount === 1 ? 3 : employeeRowCount * 3;
-            text = <CommentOverlay row={row} line={line} refreshData={refreshData} />;
+            text = (
+              <CommentOverlay
+                row={row}
+                line={line}
+                refreshData={refreshData}
+                allowModify={allowModify}
+              />
+            );
           } else {
             text = (
-              <span>
-                <CommentModal data={row} refreshData={refreshData} />
-              </span>
+              <span>{allowModify && <CommentModal data={row} refreshData={refreshData} />}</span>
             );
           }
           const obj = renderCell('comment', row, text);
@@ -362,7 +370,7 @@ class TableResources extends PureComponent {
           // const buttonGroup = actionAddAndEdit(row);
           const buttonGroup = (
             <span>
-              <AddActionBTN dataPassRow={row} refreshData={refreshData} />
+              {allowModify && <AddActionBTN dataPassRow={row} refreshData={refreshData} />}
               <HistoryActionBTN dataPassRow={row} />
             </span>
           );

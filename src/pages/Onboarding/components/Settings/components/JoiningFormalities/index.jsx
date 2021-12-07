@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Space, Tabs, Form, Input } from 'antd';
+import { connect } from 'umi';
+import moment from 'moment';
 import deleteIcon from '@/assets/delete.svg';
 import editIcon from '@/assets/edit-template-icon.svg';
-import { connect } from 'umi';
 import plusIcon from '@/assets/add-adminstrator.svg';
-import moment from 'moment';
 import styles from './index.less';
 import ModalDelete from './components/ModalDelete/index';
 import ModalAdd from './components/ModalAdd/index';

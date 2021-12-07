@@ -16,6 +16,7 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 
 const initialState = {
+  currentUserRole: [],
   projectList: [],
   projectNameList: [],
   projectListPayload: {}, // for refresh data

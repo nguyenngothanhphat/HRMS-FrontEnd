@@ -22,6 +22,10 @@ const ResourceTypeCard = (props) => {
     refreshResourceType = () => {},
     loadingAdd = false,
   } = props;
+
+  // permissions
+  const { allowModify = false } = props;
+
   const [addResourceTypeModalVisible, setAddResourceTypeModalVisible] = useState(false);
   const [assignResourceModalVisible, setAssignResourceModalVisible] = useState(false);
   const [assigningRecord, setAssigningRecord] = useState({});
@@ -120,7 +124,7 @@ const ResourceTypeCard = (props) => {
         width: '7%',
         align: 'center',
         render: (resourceType, row) => {
-          if (!resourceType) {
+          if (!resourceType && allowModify) {
             return (
               <Button
                 className={styles.assignBtn}
@@ -151,10 +155,12 @@ const ResourceTypeCard = (props) => {
         <FilterPopover placement="bottomRight" content={content}>
           <FilterButton />
         </FilterPopover>
-        <OrangeAddButton
-          text="Add Resource Type"
-          onClick={() => setAddResourceTypeModalVisible(true)}
-        />
+        {allowModify && (
+          <OrangeAddButton
+            text="Add Resource Type"
+            onClick={() => setAddResourceTypeModalVisible(true)}
+          />
+        )}
         <SearchBar onSearch={onSearch} placeholder="Search by Resource Type" />
       </div>
     );

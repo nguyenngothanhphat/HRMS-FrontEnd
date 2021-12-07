@@ -1,3 +1,65 @@
+import { deprecationHandler } from 'moment';
+import ROLES from '@/utils/roles';
+
+const {
+  HR_MANAGER,
+  HR,
+  EMPLOYEE,
+  REGION_HEAD,
+  CEO,
+  MANAGER,
+  ADMIN,
+  DEPARTMENT_HEAD,
+  OWNER,
+  PROJECT_MANAGER,
+  PEOPLE_MANAGER,
+  FINANCE,
+  CANDIDATE,
+} = ROLES;
+
+export const getCurrentUserRoles = (roles, userTitle = '') => {
+  const isOwner = roles.find((item) => item === ROLES.OWNER);
+  const isCEO = roles.find((item) => item === ROLES.CEO);
+  const isHRManager = roles.find((item) => item === ROLES.HR_MANAGER);
+  const isHR = roles.find((item) => item === ROLES.HR);
+  const isManager = roles.find((item) => item === ROLES.MANAGER);
+  const isEmployee = roles.find((item) => item === ROLES.EMPLOYEE);
+  const isRegionHead = roles.find((item) => item === ROLES.REGION_HEAD);
+  const isDepartmentHead = roles.find((item) => item === ROLES.DEPARTMENT_HEAD);
+
+  let isProjectManager = '';
+  let isPeopleManager = '';
+  let isFinance = '';
+
+  const nameTemp = userTitle.toLowerCase();
+  if (isManager) {
+    if (nameTemp.includes('project') && nameTemp.includes('manager')) {
+      isProjectManager = ROLES.PROJECT_MANAGER;
+    }
+    if (nameTemp.includes('people') && nameTemp.includes('manager')) {
+      isPeopleManager = ROLES.PEOPLE_MANAGER;
+    }
+  }
+  if (nameTemp.includes('finance')) {
+    isFinance = ROLES.FINANCE;
+  }
+
+  const result = [
+    isOwner,
+    isCEO,
+    isRegionHead,
+    isDepartmentHead,
+    isHRManager,
+    isProjectManager,
+    isPeopleManager,
+    isFinance,
+    isManager,
+    isHR,
+    isEmployee,
+  ];
+  return result.filter((x) => x);
+};
+
 /* eslint-disable no-plusplus */
 export function groupPermissions(roles) {
   let permissionsList = [];
@@ -24,6 +86,7 @@ const isAuthorized = (permissionList, arrTextToCheck) => {
   });
   return response;
 };
+
 const isRole = (permissionList, arrTextToCheck) => {
   let response = -1;
   arrTextToCheck.forEach((text) => {
@@ -32,6 +95,7 @@ const isRole = (permissionList, arrTextToCheck) => {
   });
   return response;
 };
+
 export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   if (isOwner) {
     return {
@@ -125,7 +189,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'T_DIRECTORY_B_ADD_EMPLOYEE',
   ]);
 
-  const indexViewActionButton = isAuthorized(permissionList, ['hr-manager', 'hr', 'admin']);
+  const indexViewActionButton = isAuthorized(permissionList, [HR_MANAGER, HR, ADMIN]);
 
   // Directory Page - Tab general info - Public/Private Personal phone/email
   const indexEditPersonalInfo = isAdmin
@@ -151,9 +215,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
       ]);
 
   // View others personal information
-  const indexViewOthersInformaton = isAdmin
-    ? 1
-    : isAuthorized(permissionList, ['hr', 'hr-manager']);
+  const indexViewOthersInformaton = isAdmin ? 1 : isAuthorized(permissionList, [HR, HR_MANAGER]);
 
   // Directory Page - Filter - Display location
   const findIndexShowLocationActive = isAuthorized(permissionList, [
@@ -303,43 +365,73 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
       ]);
 
   // View avatar employee
-  const indexViewAvatar = isAdmin ? 1 : isAuthorized(permissionList, ['hr', 'hr-manager']);
+  const indexViewAvatar = isAdmin ? 1 : isAuthorized(permissionList, [HR, HR_MANAGER]);
 
   // Edit show avatar employee
-  const indexEditShowAvatar = isAdmin ? 1 : isAuthorized(permissionList, ['hr-manager']);
+  const indexEditShowAvatar = isAdmin ? 1 : isAuthorized(permissionList, [HR_MANAGER]);
 
   // ONBOARDING
   const indexOnboardingSettings = isAuthorized(permissionList, [
-    'hr-manager',
+    HR_MANAGER,
     'ONBOARDING_T_SETTINGS_VIEW',
   ]);
 
   const indexAddTeamMemberOnboarding = isAdmin
     ? -1
-    : isAuthorized(permissionList, ['hr-manager', 'hr']);
+    : isAuthorized(permissionList, [HR_MANAGER, HR]);
   const indexOverviewViewOnboarding = isAuthorized(permissionList, [
     'ONBOARDING_OVERVIEW_VIEW',
-    'hr-manager',
-    'hr',
+    HR_MANAGER,
+    HR,
   ]);
-  const indexNewJoinees = isRole(permissionList, ['manager']);
+  const indexNewJoinees = isRole(permissionList, [MANAGER]);
 
   // TIMESHEET
-  const indexMyTimesheet = isAuthorized(permissionList, ['employee']);
-  const indexReportTimesheet = isAuthorized(permissionList, ['manager', 'hr-manager']);
-  const indexSettingTimesheet = isAuthorized(permissionList, ['manager', 'hr-manager']);
+  const indexMyTimesheet = isAuthorized(permissionList, [EMPLOYEE]);
+  const indexReportTimesheet = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
+  const indexSettingTimesheet = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
 
   // DASHBOARD
-  const indexPendingApprovalDashboard = isAuthorized(permissionList, ['manager', 'hr-manager']);
-  const indexMyTeamDashboard = isAuthorized(permissionList, ['manager', 'hr-manager']);
+  const indexPendingApprovalDashboard = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
+  const indexMyTeamDashboard = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
 
   // PROJECT MANAGEMENT
-  const indexViewProjectManagement = isAuthorized(permissionList, ['P_PROJECT_MANAGEMENT_VIEW']);
-  const indexAddProjectManagement = isAuthorized(permissionList, ['P_PROJECT_MANAGEMENT_ADD']);
+  // https://docs.google.com/document/d/1RQ66VdevjGUHB3-4_VDU-DIPF0HCbcfKzKJevEwooLc/edit
+  const indexViewProjectListTab = isAuthorized(permissionList, [
+    'PROJECT_MANAGEMENT_VIEW',
+    PROJECT_MANAGER,
+  ]);
+  const indexAddProject = isAuthorized(permissionList, ['PROJECT_MANAGEMENT_ADD', PROJECT_MANAGER]);
+  const indexModifyProject = isAuthorized(permissionList, [
+    'PROJECT_MANAGEMENT_UPDATE',
+    PROJECT_MANAGER,
+  ]);
+  const indexViewProjectSettingTab = isAuthorized(permissionList, [
+    'PROJECT_MANAGEMENT_SETTINGS_VIEW',
+  ]);
 
   // RESOURCE MANAGEMENT
-  const indexViewResourceManagement = isAuthorized(permissionList, ['P_RESOURCE_MANAGEMENT_VIEW']);
-  const indexAddResourceManagement = isAuthorized(permissionList, ['P_RESOURCE_MANAGEMENT_ADD']);
+  // https://docs.google.com/document/d/1cEexRGiw0NaMEtcgEZCPlnh_LmiHLwYokjjaV02itcI/edit
+  const indexViewResourceListTab = isAuthorized(permissionList, ['RESOURCE_MANAGEMENT_VIEW']);
+  const indexViewResourceProjectListTab = isAuthorized(permissionList, [
+    'RESOURCE_MANAGEMENT_T_PROJECT_VIEW',
+    PROJECT_MANAGER,
+  ]);
+  const indexViewResourceSettingTab = isAuthorized(permissionList, [
+    'RESOURCE_MANAGEMENT_SETTINGS_VIEW',
+    PROJECT_MANAGER,
+  ]);
+  const indexViewUtilizationTab = isAuthorized(permissionList, [
+    'RESOURCE_MANAGEMENT_UTILIZATION_VIEW',
+  ]);
+  const indexAddResource = isAuthorized(permissionList, [
+    'RESOURCE_MANAGEMENT_ADD',
+    PROJECT_MANAGER,
+  ]);
+  const indexModifyResource = isAuthorized(permissionList, [
+    'RESOURCE_MANAGEMENT_UPDATE',
+    PROJECT_MANAGER,
+  ]);
 
   return {
     // Directory Page
@@ -395,9 +487,17 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewTimesheetDashboard: 1,
 
     // project manamgement
-    viewProjectManagement: indexViewProjectManagement,
-    addProjectManagement: indexAddProjectManagement,
-    viewResourceManagement: indexViewResourceManagement,
-    addResourceManagement: indexAddResourceManagement,
+    viewProjectListTab: indexViewProjectListTab,
+    viewProjectSettingTab: indexViewProjectSettingTab,
+    addProject: indexAddProject,
+    modifyProject: indexModifyProject,
+
+    // resource management
+    viewResourceListTab: indexViewResourceListTab,
+    viewResourceProjectListTab: indexViewResourceProjectListTab,
+    viewResourceSettingTab: indexViewResourceSettingTab,
+    viewUtilizationTab: indexViewUtilizationTab,
+    addResource: indexAddResource,
+    modifyResource: indexModifyResource,
   };
 }

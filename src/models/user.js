@@ -12,7 +12,7 @@ import {
   getIsSigninGoogle,
 } from '@/utils/authority';
 
-import { checkPermissions } from '@/utils/permissions';
+import { checkPermissions, getCurrentUserRoles } from '@/utils/permissions';
 
 const UserModel = {
   namespace: 'user',
@@ -47,7 +47,13 @@ const UserModel = {
 
         let formatArrRoles = [];
         let switchRoleAbility = false;
-        const { signInRole = [], roles = [], candidate = {}, isFirstLogin = false } = data;
+        const {
+          signInRole = [],
+          roles = [],
+          candidate = {},
+          isFirstLogin = false,
+          employee = {},
+        } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
         const candidateLinkMode = localStorage.getItem('candidate-link-mode') === 'true';
@@ -159,6 +165,11 @@ const UserModel = {
           }
 
           // DONE
+
+          const { title: { name: titleName = '' } = {} || {} } = employee || {};
+          const currentUserRoles = [...getCurrentUserRoles(formatArrRoles, titleName)];
+          formatArrRoles = [...formatArrRoles, ...currentUserRoles].filter((x) => x);
+
           setAuthority(formatArrRoles);
           localStorage.setItem('switchRoleAbility', switchRoleAbility);
 
@@ -184,6 +195,7 @@ const UserModel = {
               permissions: {
                 ...checkPermissions(formatArrRoles, checkIsOwner, checkIsAdmin, checkIsEmployee),
               },
+              currentUserRoles,
             },
           });
         }

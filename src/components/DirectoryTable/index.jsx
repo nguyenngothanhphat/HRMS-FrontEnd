@@ -217,7 +217,7 @@ class DirectoryTable extends Component {
               )
             : null;
         },
-        // sortOrder: sortedName.columnKey === 'employeePack' && sortedName.order,
+        sortOrder: sortedName.columnKey === 'employeePack' && sortedName.order,
         fixed: 'left',
         width: '16%',
         defaultSortOrder: 'ascend',

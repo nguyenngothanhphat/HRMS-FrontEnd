@@ -14,6 +14,7 @@ import { formatData } from '@/utils/resourceManagement';
         location: { _id: locationID = '' } = {},
         company: { _id: companyID } = {},
       } = {},
+      permissions = {},
     } = {},
     loading,
     locationSelection: { listLocationsByCompany = [] },
@@ -25,6 +26,7 @@ import { formatData } from '@/utils/resourceManagement';
     companyID,
     projectList,
     listLocationsByCompany,
+    permissions,
   }),
 )
 class ResourceList extends Component {
@@ -89,10 +91,10 @@ class ResourceList extends Component {
   };
 
   onFilterChange = (filters) => {
-    console.log('trigger onFilterChange', JSON.stringify(filters))
+    console.log('trigger onFilterChange', JSON.stringify(filters));
     this.fetchData = this.fetchStatus.START;
     this.setState({
-      filter: {...filters},
+      filter: { ...filters },
     });
   };
 
@@ -103,8 +105,8 @@ class ResourceList extends Component {
     }
     const { pageSelected, size, sort, availableStatus } = this.state;
     const { dispatch } = this.props;
-    const filter = this.convertFilter()
-    console.log('payload filter', JSON.stringify(filter))
+    const filter = this.convertFilter();
+    console.log('payload filter', JSON.stringify(filter));
     this.fetchData = this.fetchStatus.FETCHING;
     dispatch({
       type: 'resourceManagement/getResources',
@@ -135,13 +137,13 @@ class ResourceList extends Component {
         // check if backend accept empty obj
         // newFilterObj[key] = value;
         if (Array.isArray(value) && value.length > 0) {
-        newFilterObj[key] = value;
-        } else if(!Array.isArray(value)) {
+          newFilterObj[key] = value;
+        } else if (!Array.isArray(value)) {
           newFilterObj[key] = value;
         }
       }
     }
-    return newFilterObj
+    return newFilterObj;
   };
 
   fetchProjectList = async () => {
@@ -171,7 +173,7 @@ class ResourceList extends Component {
   refreshData = () => {
     this.fetchData = this.fetchStatus.START;
     this.fetchResourceList();
-  }
+  };
 
   fetchEmployeeList = async () => {
     const { dispatch } = this.props;
@@ -216,9 +218,12 @@ class ResourceList extends Component {
 
   render() {
     const { resourceList = [], projectList, availableStatus } = this.state;
-    const { loading, loadingSearch, total = 0 } = this.props;
+    const { loading, loadingSearch, total = 0, permissions } = this.props;
     const { pageSelected, size, filter } = this.state;
     // console.log(`render - total: ${  total}`)
+    // permissions
+    const modifyResourcePermission = permissions.modifyResource !== -1;
+
     return (
       <div className={styles.containerTickets}>
         <div className={styles.tabTickets}>
@@ -238,6 +243,7 @@ class ResourceList extends Component {
           size={size}
           onSort={this.onSort}
           getPageAndSize={this.getPageAndSize}
+          allowModify={modifyResourcePermission}
         />
       </div>
     );

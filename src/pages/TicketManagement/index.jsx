@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import EmployyeTicket from './EmployeeTickets';
+import EmployeeTicket from './EmployeeTickets';
 import ManagerTicket from './ManagerTickets';
 
 class TicketsManagement extends PureComponent {
@@ -19,7 +19,7 @@ class TicketsManagement extends PureComponent {
     const renderComponent = {
       manager: <ManagerTicket tabName={tabName} />,
       'hr-manager': <ManagerTicket tabName={tabName} />,
-      employee: <EmployyeTicket tabName={tabName} />,
+      employee: <EmployeeTicket tabName={tabName} />,
     };
 
     const listRole = localStorage.getItem('antd-pro-authority');
