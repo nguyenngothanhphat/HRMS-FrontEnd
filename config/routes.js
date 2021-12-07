@@ -908,12 +908,12 @@ const routes = [
             name: 'projectManagement',
             icon: '/assets/images/menuIcons/ticketManagement.svg',
             component: './ProjectManagement',
-            authority: ['hr-manager', 'hr', 'employee', 'manager'],
+            authority: ['hr-manager', 'hr', 'employee', 'manager', 'P_PROJECT_MANAGEMENT_VIEW'],
           },
           {
             path: '/project-management/:tabName',
             component: './ProjectManagement',
-            authority: ['hr-manager', 'hr', 'employee', 'manager'],
+            authority: ['hr-manager', 'hr', 'employee', 'manager', 'P_PROJECT_MANAGEMENT_VIEW'],
             hideInMenu: true,
           },
           {
@@ -921,13 +921,13 @@ const routes = [
             hideInMenu: true,
             name: 'projectManagement.viewProject',
             component: './ProjectManagement/components/ProjectInformation',
-            authority: ['hr-manager', 'hr', 'employee', 'manager'],
+            authority: ['hr-manager', 'hr', 'employee', 'manager', 'P_PROJECT_MANAGEMENT_VIEW'],
           },
           {
             path: '/project-management/list/:reId/:tabName',
             hideInMenu: true,
             component: './ProjectManagement/components/ProjectInformation',
-            authority: ['hr-manager', 'hr', 'employee', 'manager'],
+            authority: ['hr-manager', 'hr', 'employee', 'manager','P_PROJECT_MANAGEMENT_VIEW'],
           },
           {
             path: '/ticket-management/detail/:id',
@@ -954,7 +954,20 @@ const routes = [
               'admin',
             ],
           },
-
+          // RESOURCE MANAGEMENT
+          {
+            path: '/resource-management',
+            name: 'resourceManagement',
+            icon: '/assets/images/menuIcons/ticketManagement.svg',
+            component: './ResourceManagement',
+            authority: ['hr-manager', 'hr', 'employee', 'manager','P_RESOURCE_MANAGEMENT_VIEW'],
+          },
+          {
+            path: '/resource-management/:tabName',
+            component: './ResourceManagement',
+            authority: ['hr-manager', 'hr', 'employee', 'manager','P_RESOURCE_MANAGEMENT_VIEW'],
+            hideInMenu: true,
+          },
           {
             path: '/change-password',
             name: 'change-password',

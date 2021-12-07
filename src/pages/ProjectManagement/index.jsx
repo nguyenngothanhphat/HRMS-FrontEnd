@@ -16,8 +16,9 @@ const ProjectManagement = (props) => {
     if (!tabName) {
       history.replace(`/project-management/list`);
     }
-  }, [tabName]);
+  }, []);
 
+  if (!tabName) return '';
   return (
     <div className={styles.ProjectManagement}>
       <PageContainer>
@@ -40,7 +41,7 @@ const ProjectManagement = (props) => {
     </div>
   );
 };
-export default connect(({ user: { currentUser = {}, permissions = [] } = {} }) => ({
+export default connect(({ user: { currentUser = {}, permissions = {} } = {} }) => ({
   currentUser,
   permissions,
 }))(ProjectManagement);

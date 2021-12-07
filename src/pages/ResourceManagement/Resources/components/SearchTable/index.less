@@ -1,0 +1,119 @@
+.searchFilter {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  .filterIcon {
+    margin-right: 22px;
+    cursor: pointer;
+  }
+  :global {
+    .ant-input-prefix {
+      margin-right: 16px;
+    }
+
+    .ant-input .nt-input-lg {
+      color: #707177;
+      font-weight: normal;
+      font-size: 14px;
+      font-style: normal;
+      line-height: 16px;
+      opacity: 0.5;
+
+      mix-blend-mode: normal;
+    }
+
+    .ant-input-affix-wrapper-focused {
+      box-shadow: none;
+    }
+  }
+
+  &__icon {
+    margin-right: 14px;
+    // cursor: pointer;
+  }
+
+  &__input {
+    min-width: 250px;
+    max-width: 350px;
+    input {
+      font-size: 13px;
+    }
+    :global {
+      .ant-input-affix-wrapper {
+        box-sizing: border-box;
+        // padding: 8px 16px;
+        height: 37px;
+        background: #fffefe;
+        border: 1px solid #d6dce0;
+        border-radius: 33px;
+      }
+      .ant-input-affix-wrapper-focused {
+        border-color: #2c6df9;
+        box-shadow: none;
+      }
+    }
+  }
+}
+.filterPopover {
+  width: 320px;
+  height: auto;
+  background: #ffffff;
+
+  :global {
+    .ant-popover-inner {
+      min-width: 400px;
+      max-width: 400px;
+      padding: 0;
+      border: 1px solid #eaecef;
+      border-radius: 8px;
+    }
+
+    .ant-popover-arrow {
+      //   left: -2.5px !important;
+      width: 18px;
+      height: 18px;
+      .ant-popover-arrow-content {
+        width: 12px;
+        height: 12px;
+        box-shadow: none;
+      }
+    }
+
+    .ant-popover-title,
+    .ant-popover-inner-content {
+      //   border-bottom: 1px solid #d6dce0;
+
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+
+    .ant-popover-inner-content {
+      padding: 0;
+      padding-bottom: 16px;
+    }
+
+    .ant-popover-title {
+      padding: 0;
+    }
+  }
+}
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 16px;
+
+  &__text {
+    color: #2c6df9;
+    font-weight: 500;
+    font-size: 16px;
+    font-family: Roboto;
+    font-style: normal;
+    line-height: 19px;
+  }
+
+  img {
+    cursor: pointer;
+  }
+}

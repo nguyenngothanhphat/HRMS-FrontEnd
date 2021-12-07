@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { PageContainer } from '@/layouts/layout/src';
 import { formatMessage, connect } from 'umi';
 import { Affix } from 'antd';
+import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentTenant } from '@/utils/authority';
 import ComponyInformation from './components/CompanyInformation';
 import WorkLocation from './components/WorkLocation';
@@ -60,7 +60,7 @@ class CompanyDetail extends Component {
       <div className={styles.companyDetail}>
         <PageContainer>
           <div className={styles.companyDetailContent}>
-            <Affix offsetTop={30}>
+            <Affix offsetTop={42}>
               <div className={styles.titlePage}>
                 <p className={styles.titlePage_text}>
                   {formatMessage({ id: 'pages_admin.companies.companyDetail' })}

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Card, Button, Row, Col, Form, Input, DatePicker } from 'antd';
+import { Card, Button, Row, Col, Form, Input, DatePicker, Popconfirm } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
-import EditIcon from '@/assets/projectManagement/edit.svg';
+import EditIcon from '@/assets/projectManagement/edit2.svg';
+import RemoveIcon from '@/assets/projectManagement/recycleBin.svg';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';
 import styles from './index.less';
 import { DATE_FORMAT_2 } from '@/utils/projectManagement';
@@ -32,17 +33,26 @@ const MilestoneCard = (props) => {
     }
   };
 
+  const onRemove = () => {
+    dispatch({
+      type: 'projectDetails/removeMilestoneEffect',
+      payload: {
+        id,
+        projectId,
+      },
+    });
+  };
+
   // render UI
   const renderOption = () => {
     if (isEditing) return null;
     return (
-      <Button
-        onClick={() => setIsEditing(true)}
-        icon={<img src={EditIcon} alt="" />}
-        className={styles.editButton}
-      >
-        Edit
-      </Button>
+      <div className={styles.options}>
+        <img onClick={() => setIsEditing(true)} src={EditIcon} alt="" />
+        <Popconfirm title="Sure to remove?" onConfirm={onRemove}>
+          <img src={RemoveIcon} alt="" />
+        </Popconfirm>
+      </div>
     );
   };
 

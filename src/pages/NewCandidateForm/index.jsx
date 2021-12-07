@@ -36,10 +36,8 @@ class NewCandidateForm extends PureComponent {
 
     if (!tabName) {
       history.push(`/onboarding/list/view/${reId}/${ONBOARDING_FORM_LINK.BASIC_INFORMATION}`);
-    }
-
-    // check action is add or review. If isReview fetch candidate by reID
-    if (action === 'view' || action === 'candidate-detail') {
+    } else if (action === 'view' || action === 'candidate-detail') {
+      // check action is add or review. If isReview fetch candidate by reID
       dispatch({
         type: 'newCandidateForm/fetchCandidateByRookie',
         payload: {
@@ -262,7 +260,7 @@ class NewCandidateForm extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.containerNewCandidateForm}>
-          <Affix offsetTop={30}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>{title}</p>
               {action === 'view' && (

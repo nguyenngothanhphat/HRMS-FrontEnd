@@ -1,15 +1,15 @@
 /* eslint-disable react/jsx-curly-newline */
-import { Affix, Col, Row } from 'antd';
-import _ from 'lodash';
+import { Affix, Col, Row, Skeleton } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
 import UploadLogoCompany from './components/UploadLogoCompany';
 import ItemMenu from './components/ItemMenu';
 import s from './index.less';
 
-@connect(({ employeeProfile: { isModified } = {}, user: { currentUser } = {} }) => ({
+@connect(({ loading, employeeProfile: { isModified } = {}, user: { currentUser } = {} }) => ({
   isModified,
   currentUser,
+  loadingFetchCompanyById: loading.effects['companiesManagement/fetchCompanyDetails'],
 }))
 class CommonLayout extends PureComponent {
   constructor(props) {
@@ -52,17 +52,17 @@ class CommonLayout extends PureComponent {
   };
 
   render() {
-    const { listMenu = [] } = this.props;
+    const { listMenu = [], loadingFetchCompanyById = false } = this.props;
     const { displayComponent, selectedItemId } = this.state;
 
     return (
       <div className={s.LayoutAdminApp}>
-        <Affix offsetTop={30}>
+        <Affix offsetTop={42}>
           <div className={s.titlePage}>Admin App</div>
         </Affix>
 
         <div className={s.root}>
-          <Affix offsetTop={90} className={s.affix}>
+          <Affix offsetTop={102} className={s.affix}>
             <div className={s.viewLeft}>
               <div className={s.viewLeft__menu}>
                 {listMenu.map((item) => (
@@ -77,10 +77,16 @@ class CommonLayout extends PureComponent {
             </div>
           </Affix>
           <Row className={s.viewRight} gutter={[24, 0]}>
-            <Col span={16}>{displayComponent}</Col>
-            <Col span={8}>
-              <UploadLogoCompany />
-            </Col>
+            {loadingFetchCompanyById ? (
+              <Skeleton />
+            ) : (
+              <>
+                <Col span={16}>{displayComponent}</Col>
+                <Col span={8}>
+                  <UploadLogoCompany />
+                </Col>
+              </>
+            )}
           </Row>
         </div>
       </div>

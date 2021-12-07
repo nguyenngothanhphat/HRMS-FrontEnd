@@ -43,16 +43,14 @@ const Projects = (props) => {
   };
 
   useEffect(() => {
+    fetchProjectList();
+  }, [projectStatus]);
+
+  useEffect(() => {
     dispatch({
       type: 'projectManagement/fetchProjectStatusListEffect',
     });
   }, []);
-
-  useEffect(() => {
-    if (projectStatus !== 'All') {
-      fetchProjectList({ projectStatus: [projectStatus] });
-    } else fetchProjectList();
-  }, [projectStatus]);
 
   const renderTimeTitle = (title) => {
     return (
@@ -208,7 +206,7 @@ const Projects = (props) => {
 export default connect(
   ({
     projectManagement: { projectList = [], statusSummary = [], projectListPayload = {} } = {},
-    user: { currentUser = {}, permissions = [] } = {},
+    user: { currentUser = {}, permissions = {} } = {},
     loading,
   }) => ({
     currentUser,

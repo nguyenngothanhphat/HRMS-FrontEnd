@@ -55,24 +55,6 @@ class TimeOff extends PureComponent {
         },
       });
     }
-
-    // let activeKey = '1';
-    // switch (role) {
-    //   case 'employee':
-    //     activeKey = '1';
-    //     break;
-    //   case 'manager':
-    //     activeKey = '2';
-    //     break;
-    //   case 'hr-manager':
-    //     activeKey = '3';
-    //     break;
-    //   default:
-    //     break;
-    // }
-    // this.setState({
-    //   activeKey,
-    // });
     return role;
   };
 
@@ -102,33 +84,29 @@ class TimeOff extends PureComponent {
       this.setState({
         role,
       });
-    }
 
-    const { dispatch } = this.props;
-    const response = await dispatch({
-      type: 'timeOff/getTimeOffTypeByLocation',
-    });
-    const {
-      statusCode,
-      data: {
-        headQuarterAddress: {
-          country: { _id } = {} || {},
-        } = {} || {},
-      },
-    } = response;
-    if (statusCode === 200)
-      dispatch({
-        type: 'timeOff/fetchTimeOffTypesByCountry',
-        payload: {
-          country: _id,
-          company: getCurrentCompany(),
-          tenantId: getCurrentTenant(),
-        },
+      const { dispatch } = this.props;
+      const response = await dispatch({
+        type: 'timeOff/getTimeOffTypeByLocation',
       });
-    dispatch({
-      type: 'timeOff/savePaging',
-      payload: { page: 1 },
-    });
+      const {
+        statusCode,
+        data: { headQuarterAddress: { country: { _id } = {} || {} } = {} || {} },
+      } = response;
+      if (statusCode === 200)
+        dispatch({
+          type: 'timeOff/fetchTimeOffTypesByCountry',
+          payload: {
+            country: _id,
+            company: getCurrentCompany(),
+            tenantId: getCurrentTenant(),
+          },
+        });
+      dispatch({
+        type: 'timeOff/savePaging',
+        payload: { page: 1 },
+      });
+    }
     if (status === 'WITHDRAW') {
       if (category === 'TIMEOFF') {
         notification.success({
@@ -165,6 +143,8 @@ class TimeOff extends PureComponent {
     const {
       match: { params: { tabName = '', type = '' } = {} },
     } = this.props;
+
+    if (!tabName) return '';
     return (
       // <Breadcrumb routes={routes}>
       <div className={styles.TimeOff}>

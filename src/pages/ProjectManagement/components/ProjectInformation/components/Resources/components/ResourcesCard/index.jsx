@@ -229,7 +229,8 @@ const ResourcesCard = (props) => {
         key: 'generalInfo',
         fixed: 'left',
         render: (generalInfo = {}) => {
-          const { legalName = '', userId = '' } = generalInfo || {};
+          const { legalName = '', workEmail = '' } = generalInfo || {};
+          const userId = workEmail.substring(0, workEmail.lastIndexOf('@'));
           return (
             <span className={styles.nameContainer}>
               <span className={styles.name}>{legalName}</span>

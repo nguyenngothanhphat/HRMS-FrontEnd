@@ -1,0 +1,33 @@
+.TableProject {
+  padding: 24px 24px 0;
+  .tableProject {
+    .projectName {
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .dateHeaderContainer {
+      text-align: left;
+      .dateFormat {
+        color: #ffffff;
+        font-weight: 500;
+        font-size: 9px;
+        line-height: 11px;
+      }
+    }
+    :global {
+      .ant-table-thead > tr > th {
+        padding: 8px 16px !important;
+        background: #2c6df9 !important;
+      }
+      .ant-table-tbody > .ant-table-row-level-0 {
+        color: #464646;
+      }
+      .ant-table-tbody > .ant-table-row-level-0:hover {
+        background: repeating-linear-gradient(90deg, rgba(246, 247, 249, 0) 0%, #F6F7F9 100%);
+        // background: linear-gradient(90deg, rgba(246, 247, 249, 0) 0%, #02102c 100%);
+      }
+    }
+  }
+}

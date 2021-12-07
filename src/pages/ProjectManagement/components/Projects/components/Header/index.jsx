@@ -18,8 +18,12 @@ const Header = (props) => {
     projectStatus = 'All',
     setProjectStatus = () => {},
     fetchProjectList = () => {},
+    permissions = {},
   } = props;
   const [addProjectModalVisible, setAddProjectModalVisible] = useState(false);
+
+  // permissions
+  const addProjectPermission = permissions.addProjectManagement !== -1;
 
   // redux
   const { projectManagement: { projectStatusList = [] } = {} } = props;
@@ -83,9 +87,14 @@ const Header = (props) => {
       </div>
 
       <div className={styles.Header__right}>
-        <Button onClick={() => setAddProjectModalVisible(true)} icon={<img src={AddIcon} alt="" />}>
-          Add new Project
-        </Button>
+        {addProjectPermission && (
+          <Button
+            onClick={() => setAddProjectModalVisible(true)}
+            icon={<img src={AddIcon} alt="" />}
+          >
+            Add new Project
+          </Button>
+        )}
         <FilterPopover
           placement="bottomRight"
           onSubmit={onFilter}
@@ -115,4 +124,7 @@ const Header = (props) => {
   );
 };
 
-export default connect(({ projectManagement }) => ({ projectManagement }))(Header);
+export default connect(({ projectManagement, user: { permissions = {} } }) => ({
+  permissions,
+  projectManagement,
+}))(Header);

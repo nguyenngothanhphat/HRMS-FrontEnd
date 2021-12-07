@@ -42,6 +42,14 @@ class TicketDetailsForm extends Component {
     };
   }
 
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'ticketManagement/fetchListEmployee',
+      payload: {},
+    });
+  }
+
   onChange = ({ target: { value } }) => {
     this.setState({ value });
   };
@@ -184,6 +192,7 @@ class TicketDetailsForm extends Component {
 
   render() {
     const { ticketDetail = {}, loadingUploadAttachment = false } = this.props;
+    const { listEmployee } = this.props;
     const {
       id = '',
       priority = '',
@@ -194,9 +203,9 @@ class TicketDetailsForm extends Component {
       attachments = [],
       chats = [],
       employeeRaise = [],
+      cc_list: ccList = [],
     } = ticketDetail;
     const { fileNameList, loadingAddChat, value } = this.state;
-
     const getColor = () => {
       switch (priority) {
         case 'High':
@@ -205,15 +214,14 @@ class TicketDetailsForm extends Component {
           return '#eefffb';
         case 'Low':
           return '#ffe9c5';
-
+        case 'Urgent':
+          return '#FF8484';
         default:
           return '#ffffff';
       }
     };
     const avatarTicket = () => {
-      const { listEmployee } = this.props;
-      const { cc_list: list = [] } = ticketDetail;
-      const intersection = listEmployee.filter((element) => list.includes(element._id));
+      const intersection = listEmployee.filter((element) => ccList.includes(element._id));
       return intersection.map((val) => {
         const { generalInfo: { avatar = '' } = {} } = val;
         if (avatar !== '') {
@@ -236,9 +244,11 @@ class TicketDetailsForm extends Component {
       return '';
     };
     const chatsLeft = chats.filter((chat) => !isEmpty(chat.employee.managePermission));
-    const attachsLeft = chatsLeft.filter((chat) => chat.attachments !== undefined);
+    const chatsManager = chatsLeft.reverse();
+    const attachsLeft = chatsManager.filter((chat) => chat.attachments !== undefined);
     const chatsRight = chats.filter((chat) => isEmpty(chat.employee.managePermission));
-    const attachsRight = chatsRight.filter((chat) => chat.attachments !== undefined);
+    const chatsEmployee = chatsRight.reverse();
+    const attachsRight = chatsEmployee.filter((chat) => chat.attachments !== undefined);
 
     const getAttachmentChatLeft = () => {
       if (!isEmpty(attachsLeft)) {
@@ -330,15 +340,19 @@ class TicketDetailsForm extends Component {
                 <Col span={8} className={styles.formContent__titleQC}>
                   QC:
                   <span>
-                    <Avatar.Group
-                      maxCount={2}
-                      maxStyle={{
-                        color: '#f56a00',
-                        backgroundColor: '#fde3cf',
-                      }}
-                    >
-                      {avatarTicket()}
-                    </Avatar.Group>
+                    {!isEmpty(ccList) ? (
+                      <Avatar.Group
+                        maxCount={2}
+                        maxStyle={{
+                          color: '#f56a00',
+                          backgroundColor: '#fde3cf',
+                        }}
+                      >
+                        {avatarTicket()}
+                      </Avatar.Group>
+                    ) : (
+                      ' _ '
+                    )}
                   </span>
                 </Col>
 
@@ -348,16 +362,19 @@ class TicketDetailsForm extends Component {
                     {!isEmpty(attachments) ? (
                       attachments.map((val) => {
                         const attachmentSlice = () => {
-                          if (val.attachmentName.length > 35) {
-                            return `${val.attachmentName.substr(
-                              0,
-                              8,
-                            )}...${val.attachmentName.substr(
-                              val.attachmentName.length - 6,
-                              val.attachmentName.length,
-                            )}`;
+                          if (val.attachmentName) {
+                            if (val.attachmentName.length > 35) {
+                              return `${val.attachmentName.substr(
+                                0,
+                                8,
+                              )}...${val.attachmentName.substr(
+                                val.attachmentName.length - 6,
+                                val.attachmentName.length,
+                              )}`;
+                            }
+                            return val.attachmentName;
                           }
-                          return val.attachmentName;
+                          return '';
                         };
 
                         return (
@@ -478,7 +495,7 @@ class TicketDetailsForm extends Component {
             <Row>
               <Col span={12}>
                 <Timeline mode="right">
-                  {chatsLeft.map((e) => {
+                  {chatsManager.map((e) => {
                     return (
                       <Timeline.Item dot={<UserOutlined />}>
                         <div>{e.title}</div>
@@ -492,7 +509,7 @@ class TicketDetailsForm extends Component {
               </Col>
               <Col span={12}>
                 <Timeline mode="left">
-                  {chatsRight.map((e) => {
+                  {chatsEmployee.map((e) => {
                     return (
                       <Timeline.Item dot={<img src={ChatIcon} alt="AvatarIcon" />}>
                         <div>{e.title}</div>

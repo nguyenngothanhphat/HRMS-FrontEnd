@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Affix, Skeleton } from 'antd';
-import { PageContainer } from '@/layouts/layout/src';
 import { connect, history } from 'umi';
+import { PageContainer } from '@/layouts/layout/src';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
@@ -36,51 +36,25 @@ class EmployeeProfile extends Component {
 
   componentDidMount = async () => {
     const { dispatch, match: { params: { reId = '', tabName = '' } = {} } = {} } = this.props;
-    // const tenantCurrentEmployee = localStorage.getItem('tenantCurrentEmployee');
-    // const companyCurrentEmployee = localStorage.getItem('companyCurrentEmployee');
-    // const idCurrentEmployee = localStorage.getItem('idCurrentEmployee');
-    await dispatch({
-      type: 'employeeProfile/fetchEmployeeIdByUserId',
-      payload: {
-        userId: reId,
-        company: getCurrentCompany(),
-        tenantId: getCurrentTenant(),
-      },
-    });
-    // await dispatch({
-    //   type: 'employeeProfile/save',
-    //   payload: {
-    //     tenantCurrentEmployee,
-    //     companyCurrentEmployee,
-    //     idCurrentEmployee,
-    //   },
-    // });
 
     if (!tabName) {
       const link = isOwner() ? 'employees' : 'directory';
       history.replace(`/${link}/employee-profile/${reId}/general-info`);
     } else {
+      await dispatch({
+        type: 'employeeProfile/fetchEmployeeIdByUserId',
+        payload: {
+          userId: reId,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        },
+      });
       this.fetchData();
     }
   };
 
-  componentDidUpdate(prevProps) {
-    const { location } = this.props;
-    if (prevProps.location.pathname !== location.pathname) {
-      // this.fetchData();
-    }
-  }
-
   fetchData = async () => {
-    const {
-      employeeProfile: { employee = '' } = {},
-      // match: { params: { reId: employee = '' } = {} },
-      dispatch,
-      // employeeProfile: {
-      //   tenantCurrentEmployee: tenantId1 = '',
-      //   companyCurrentEmployee = ''
-      // } = {},
-    } = this.props;
+    const { employeeProfile: { employee = '' } = {}, dispatch } = this.props;
     let tenantId1 = localStorage.getItem('tenantCurrentEmployee');
     tenantId1 = tenantId1 && tenantId1 !== 'undefined' ? tenantId1 : '';
 
@@ -241,7 +215,7 @@ class EmployeeProfile extends Component {
       currentUser: { employee: { generalInfo: { userId = '' } = {} } = {} },
       permissions = {},
       location: { state: { location = '' } = {} } = {},
-      loadingFetchEmployee,
+      // loadingFetchEmployee,
       // employeeProfile,
     } = this.props;
 
@@ -249,32 +223,28 @@ class EmployeeProfile extends Component {
 
     const profileOwner = this.checkProfileOwner(userId, employee);
 
-    const tenant = localStorage.getItem('tenantCurrentEmployee');
-    const company = localStorage.getItem('companyCurrentEmployee');
-    const id = localStorage.getItem('idCurrentEmployee');
+    // const tenant = localStorage.getItem('tenantCurrentEmployee');
+    // const company = localStorage.getItem('companyCurrentEmployee');
+    // const id = localStorage.getItem('idCurrentEmployee');
 
+    if (!tabName) return '';
     return (
       <PageContainer>
         <div className={styles.containerEmployeeProfile}>
-          <Affix offsetTop={30}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>Employee Profile</p>
             </div>
           </Affix>
-          {tenant && company && id && !loadingFetchEmployee ? (
-            <LayoutEmployeeProfile
-              listMenu={listMenu}
-              tabName={tabName}
-              reId={employee}
-              employeeLocation={location}
-              permissions={permissions}
-              profileOwner={profileOwner}
-            />
-          ) : (
-            <div style={{ padding: '24px' }}>
-              <Skeleton />
-            </div>
-          )}
+
+          <LayoutEmployeeProfile
+            listMenu={listMenu}
+            tabName={tabName}
+            reId={employee}
+            employeeLocation={location}
+            permissions={permissions}
+            profileOwner={profileOwner}
+          />
         </div>
       </PageContainer>
     );

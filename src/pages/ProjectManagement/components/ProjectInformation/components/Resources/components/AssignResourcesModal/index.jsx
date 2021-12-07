@@ -18,8 +18,7 @@ const AssignResourcesModal = (props) => {
     width = 850,
     data: {
       comments = '',
-      division: { _id: divisionId = '' } = {},
-      resourceType: { name: resourceTypeName = '' } = {},
+      resourceType: { department = '', _id: titleId = '', name: resourceTypeName = '' } = {},
       noOfResources = 0,
       billingStatus = '',
     } = {},
@@ -66,17 +65,12 @@ const AssignResourcesModal = (props) => {
         page,
         limit,
         name,
-        department: [divisionId],
+        // department: [department],
+        title: [titleId],
         ...filter,
       },
     });
   };
-
-  useEffect(() => {
-    if (visible) {
-      fetchResourceList();
-    }
-  }, [visible]);
 
   const assignResources = () => {
     const payload = selectedResources.map((x) => {

@@ -1,4 +1,5 @@
-import { request } from '@/utils/request';
+import { API_KEYS } from '../../config/proxy';
+import request from '@/utils/request';
 
 export async function getListTicket(payload) {
   return request('/api/approvaltenant/get-list-ticket', {
@@ -65,14 +66,13 @@ export async function getMyTeam(payload) {
 // TIMESHEET
 export async function getMyTimesheet(payload, params) {
   return request(
-    `/api/timesheet/filter`,
+    `/api/filter`,
     {
       method: 'GET',
       data: payload,
       params,
     },
     false,
-    'TIMESHEET_API',
-    true, // hasParams
+    API_KEYS.TIMESHEET_API,
   );
 }

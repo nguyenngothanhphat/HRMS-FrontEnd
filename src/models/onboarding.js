@@ -91,6 +91,14 @@ const MENU_DATA = [
   },
   {
     id: 10,
+    name: 'Joined',
+    key: 'joined',
+    component: 'Joined',
+    quantity: 0,
+    link: 'joined',
+  },
+  {
+    id: 11,
     name: 'Rejected Offers',
     key: 'rejectedOffers',
     component: 'RejectedOffers',
@@ -98,7 +106,7 @@ const MENU_DATA = [
     link: 'rejected-offer',
   },
   {
-    id: 11,
+    id: 12,
     name: 'Withdrawn Offers',
     key: 'withdrawnOffers',
     component: 'WithdrawnOffers',
@@ -215,6 +223,7 @@ const onboarding = {
       offerAccepted: [],
       rejectedOffers: [],
       withdrawnOffers: [],
+      joinedOffers: [],
       currentStatus: '',
     },
     searchOnboarding: {
@@ -303,6 +312,7 @@ const onboarding = {
           OFFER_ACCEPTED,
           OFFER_REJECTED,
           OFFER_WITHDRAWN,
+          JOINED,
         } = NEW_PROCESS_STATUS;
 
         const { processStatus = [], page, limit } = payload;
@@ -402,6 +412,13 @@ const onboarding = {
             });
             return response;
           }
+          case JOINED: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { joinedOffers: returnedData },
+            });
+            return response;
+          }
           default:
             return response;
         }
@@ -426,6 +443,7 @@ const onboarding = {
           OFFER_ACCEPTED,
           OFFER_REJECTED,
           OFFER_WITHDRAWN,
+          JOINED,
         } = NEW_PROCESS_STATUS;
 
         const response = yield call(getOnboardingList, {
@@ -515,7 +533,13 @@ const onboarding = {
             });
             break;
           }
-
+          case JOINED: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { joinedOffers: returnedData },
+            });
+            return response;
+          }
           default:
             // ALL
             yield put({
@@ -779,6 +803,7 @@ const onboarding = {
         OFFER_ACCEPTED,
         OFFER_REJECTED,
         OFFER_WITHDRAWN,
+        JOINED,
       } = NEW_PROCESS_STATUS;
       const { listMenu } = state.menu.onboardingOverviewTab;
       const { totalNumber } = action.payload;
@@ -795,6 +820,7 @@ const onboarding = {
         offerAccepted: 0,
         rejectedOffers: 0,
         withdrawnOffers: 0,
+        joined: 0,
       };
 
       totalNumber.forEach((status) => {
@@ -829,6 +855,9 @@ const onboarding = {
             break;
           case OFFER_WITHDRAWN:
             newTotalNumber.withdrawnOffers += count;
+            break;
+          case JOINED:
+            newTotalNumber.joined += count;
             break;
           default:
             break;
@@ -884,6 +913,9 @@ const onboarding = {
         }
         if (key === 'withdrawnOffers') {
           dataLength = newTotalNumber.withdrawnOffers;
+        }
+        if (key === 'joined') {
+          dataLength = newTotalNumber.joined;
         }
 
         newQuantity = dataLength;

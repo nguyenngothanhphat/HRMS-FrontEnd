@@ -1,0 +1,54 @@
+@orangeColor: #ffa100;
+.ManagerReport {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #d6dce0;
+  border-radius: 5px;
+  :global {
+    .ant-tabs-content-holder {
+      padding: 0 !important;
+    }
+    .ant-tabs-tab + .ant-tabs-tab {
+      margin-left: 74px !important;
+    }
+    .ant-tabs-nav {
+      height: 45px !important;
+      padding-left: 24px !important;
+      box-shadow: none !important;
+    }
+    .ant-tabs-top > .ant-tabs-nav::before,
+    .ant-tabs-bottom > .ant-tabs-nav::before,
+    .ant-tabs-top > div > .ant-tabs-nav::before,
+    .ant-tabs-bottom > div > .ant-tabs-nav::before {
+      border-color: #d6dce0 !important;
+    }
+    .ant-tabs-tab-btn {
+      font-weight: 500;
+      font-size: 14px !important;
+      opacity: 1;
+    }
+  }
+  .options {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    .exportBtn {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 40px;
+      color: @orangeColor;
+      border: none;
+      outline: none;
+      box-shadow: none;
+      img {
+        width: 16px;
+        height: 16px;
+        margin-right: 10px;
+      }
+      span {
+        font-weight: 500;
+        font-size: 14px;
+      }
+    }
+  }
+}

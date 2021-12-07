@@ -1,4 +1,4 @@
-import { request } from '@/utils/request';
+import request from '@/utils/request';
 
 const getListHoliday = async () => {
   return request(`/server/apigoogle/en.indian%23holiday%40group.v.calendar.google.com/events`, {

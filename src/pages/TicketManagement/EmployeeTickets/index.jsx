@@ -33,6 +33,10 @@ class EmployeeTicket extends Component {
         return;
       }
       dispatch({
+        type: 'ticketManagement/fetchListEmployee',
+        payload: {},
+      });
+      dispatch({
         type: 'ticketManagement/fetchListAllTicket',
         payload: {
           status: ['New'],
@@ -90,6 +94,7 @@ class EmployeeTicket extends Component {
     const { TabPane } = Tabs;
     const { listOffAllTicket = [], totalList = [] } = this.props;
     const { tabName = '' } = this.props;
+    if (!tabName) return '';
     return (
       <div className={styles.TicketManagement}>
         <PageContainer>

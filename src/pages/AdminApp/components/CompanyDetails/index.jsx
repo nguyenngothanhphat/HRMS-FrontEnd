@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import { Form, Input, Skeleton, Select, Button, Checkbox, Row, Col } from 'antd';
 import classnames from 'classnames';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { connect } from 'umi';
 import { CloseOutlined } from '@ant-design/icons';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import s from './index.less';
 
@@ -44,27 +44,22 @@ class CompanyDetails extends Component {
       checkLegalSameHeadQuarter: false,
       isEditCompanyDetails: false,
       isEditAddresses: false,
-      isEditContactInfomation: false,
+      isEditContactInformation: false,
     };
   }
 
   componentDidMount = async () => {
-    const { dispatch, companyId } = this.props;
-    const res = await dispatch({
-      type: 'companiesManagement/fetchCompanyDetails',
-      payload: { id: companyId },
+    const { companyDetails = {} } = this.props;
+
+    const {
+      headQuarterAddress: { country: countryHeadquarter } = {},
+      legalAddress: { country: countryLegal } = {},
+    } = companyDetails;
+    this.setState({
+      countryHeadquarter,
+      countryLegal,
     });
-    const { statusCode, data: company = {} } = res;
-    if (statusCode === 200) {
-      const {
-        headQuarterAddress: { country: countryHeadquarter } = {},
-        legalAddress: { country: countryLegal } = {},
-      } = company;
-      this.setState({
-        countryHeadquarter,
-        countryLegal,
-      });
-    }
+
     this.compareHeadquarterLegalAddress();
   };
 
@@ -251,7 +246,7 @@ class CompanyDetails extends Component {
         this.setState({
           isEditAddresses: false,
           isEditCompanyDetails: false,
-          isEditContactInfomation: false,
+          isEditContactInformation: false,
         });
       }
     } else {
@@ -441,7 +436,7 @@ class CompanyDetails extends Component {
   };
 
   handleEdit = (key) => {
-    const { isEditContactInfomation, isEditCompanyDetails, isEditAddresses } = this.state;
+    const { isEditContactInformation, isEditCompanyDetails, isEditAddresses } = this.state;
     switch (key) {
       case 1:
         if (isEditCompanyDetails) this.handleCancel(1);
@@ -456,9 +451,9 @@ class CompanyDetails extends Component {
         });
         break;
       case 3:
-        if (isEditContactInfomation) this.handleCancel(3);
+        if (isEditContactInformation) this.handleCancel(3);
         this.setState({
-          isEditContactInfomation: !isEditContactInfomation,
+          isEditContactInformation: !isEditContactInformation,
         });
         break;
       default:
@@ -479,7 +474,7 @@ class CompanyDetails extends Component {
       countryHeadquarter = '',
       countryLegal = '',
       checkLegalSameHeadQuarter = false,
-      isEditContactInfomation,
+      isEditContactInformation,
       isEditCompanyDetails,
       isEditAddresses,
     } = this.state;
@@ -601,604 +596,583 @@ class CompanyDetails extends Component {
         email: 'Wrong email format!',
       },
     };
-
-    const { loadingGetCompanyDetails = false } = this.props;
-    // const checkAddresses = this.compareHeadquarterLegalAddress();
-
     const currentCompany = getCurrentCompany();
     return (
-      <>
-        {!loadingGetCompanyDetails ? (
-          <Form
-            className={s.root}
-            ref={this.formRef}
-            onFinish={this.onFinish}
-            // onFinish={(values) => console.log('values', values)}
-            autoComplete="off"
-            validateMessages={validateMessages}
-            initialValues={{
-              name,
-              dba,
-              ein,
-              website,
-              industry,
-              companyType,
-              headquarterAddressLine1,
-              headquarterAddressLine2,
-              cityHeadquarter,
-              countryHeadquarterProps,
-              stateHeadquarter,
-              zipHeadquarter,
-              legalAddressLine1,
-              legalAddressLine2,
-              cityLegal,
-              countryLegalProps,
-              stateLegal,
-              zipLegal,
-              ownerEmail: email,
-              isSameAsHeadquarter,
-              hrName,
-              hrEmail,
-              hrPhone,
-              isNewTenant: false,
-              isHeadquarter: true,
-              parentCompany: childOfCompany || undefined,
-              // logoUrl,
-            }}
-          >
-            <div className={s.blockContent}>
-              <div className={s.content__viewTop}>
-                <p className={s.title}>Company Details</p>
-                <div className={s.editBtn} onClick={() => this.handleEdit(1)}>
-                  {isEditCompanyDetails ? (
-                    <div className={s.wrapBtn}>
-                      <CloseOutlined className={s.buttonIcon} />
-                      <span className={s.cancelText}>Cancel</span>
-                    </div>
-                  ) : (
-                    <div className={s.wrapBtn}>
-                      <img src={EditIcon} alt="edit" />
-                      <span>Edit</span>
-                    </div>
-                  )}
+      <Form
+        className={s.root}
+        ref={this.formRef}
+        onFinish={this.onFinish}
+        // onFinish={(values) => console.log('values', values)}
+        autoComplete="off"
+        validateMessages={validateMessages}
+        initialValues={{
+          name,
+          dba,
+          ein,
+          website,
+          industry,
+          companyType,
+          headquarterAddressLine1,
+          headquarterAddressLine2,
+          cityHeadquarter,
+          countryHeadquarterProps,
+          stateHeadquarter,
+          zipHeadquarter,
+          legalAddressLine1,
+          legalAddressLine2,
+          cityLegal,
+          countryLegalProps,
+          stateLegal,
+          zipLegal,
+          ownerEmail: email,
+          isSameAsHeadquarter,
+          hrName,
+          hrEmail,
+          hrPhone,
+          isNewTenant: false,
+          isHeadquarter: true,
+          parentCompany: childOfCompany || undefined,
+          // logoUrl,
+        }}
+      >
+        <div className={s.blockContent}>
+          <div className={s.content__viewTop}>
+            <p className={s.title}>Company Details</p>
+            <div className={s.editBtn} onClick={() => this.handleEdit(1)}>
+              {isEditCompanyDetails ? (
+                <div className={s.wrapBtn}>
+                  <CloseOutlined className={s.buttonIcon} />
+                  <span className={s.cancelText}>Cancel</span>
                 </div>
-              </div>
-              <div className={s.content__viewBottom}>
-                <Row className={s.content__viewBottom__row}>
-                  <Col span={8}>
-                    <p className={s.content__viewBottom__row__textLabel}>Industry</p>
-                  </Col>
-                  <Col span={16}>
-                    <Form.Item name="industry">
-                      <Select
-                        placeholder="Select Industry"
-                        showArrow
-                        showSearch
-                        allowClear
-                        disabled={!isEditCompanyDetails}
-                        className={s.parentCompanySelect}
-                        filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        {industryList.map((item) => (
-                          <Option key={item._id}>{item.name}</Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row className={s.content__viewBottom__row}>
-                  <Col span={8}>
-                    <p className={s.content__viewBottom__row__textLabel}>Company Type</p>
-                  </Col>
-                  <Col span={16}>
-                    <Form.Item name="companyType">
-                      <Select
-                        placeholder="Select Company Type"
-                        showArrow
-                        showSearch
-                        allowClear
-                        disabled={!isEditCompanyDetails}
-                        // defaultValue=""
-                        className={s.parentCompanySelect}
-                        filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        {companyTypeList.map((item) => (
-                          <Option key={item._id}>{item.name}</Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                  </Col>
-                </Row>
-                {fieldCompanyDetail.map(
-                  ({ label, name: nameField, required = false, message }, index) => (
-                    <Row key={nameField} className={s.content__viewBottom__row}>
-                      <Col span={8}>
-                        <p className={s.content__viewBottom__row__textLabel}>{label}</p>
-                      </Col>
-                      <Col span={16}>
-                        <Form.Item
-                          name={nameField}
-                          rules={[
-                            {
-                              required,
-                              message,
-                            },
-                            {
-                              pattern: this.getRegexPatternCompanyDetails(index),
-                              message: this.getRegexMessageCompanyDetails(index),
-                            },
-                          ]}
-                        >
-                          <Input disabled={!isEditCompanyDetails} placeholder={label} />
-                        </Form.Item>
-                      </Col>
-                    </Row>
-                  ),
-                )}
-                <Row className={s.content__viewBottom__row}>
-                  <Col span={8}>
-                    <p className={s.content__viewBottom__row__textLabel}>Parent Company</p>
-                  </Col>
-                  <Col span={16}>
-                    <Form.Item name="parentCompany">
-                      <Select
-                        placeholder="Select Parent Company"
-                        showArrow
-                        showSearch
-                        allowClear
-                        disabled={!isEditCompanyDetails}
-                        className={s.parentCompanySelect}
-                        // onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
-                        filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        {listCompany.map((item) => (
-                          <Option
-                            disabled={
-                              currentCompany === item?.childOfCompany || item._id === companyId
-                            }
-                            key={item._id}
-                          >
-                            {item.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </div>
-            </div>
-            <div className={s.blockContent} style={{ marginTop: '24px' }}>
-              <div className={s.content__viewTop}>
-                <p className={s.title}>Headquarter Address</p>
-                <div className={s.editBtn} onClick={() => this.handleEdit(2)}>
-                  {isEditAddresses ? (
-                    <div className={s.wrapBtn}>
-                      <CloseOutlined className={s.buttonIcon} />
-                      <span className={s.cancelText}>Cancel</span>
-                    </div>
-                  ) : (
-                    <div className={s.wrapBtn}>
-                      <img src={EditIcon} alt="edit" />
-                      <span>Edit</span>
-                    </div>
-                  )}
+              ) : (
+                <div className={s.wrapBtn}>
+                  <img src={EditIcon} alt="edit" />
+                  <span>Edit</span>
                 </div>
-              </div>
-              <div className={s.content__viewBottom}>
-                <Row className={s.content__viewBottom__row}>
-                  <Col span={8}>
-                    <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
-                  </Col>
-                  <Col span={16}>
-                    <Form.Item
-                      name="headquarterAddressLine1"
-                      label={false}
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Please enter Address!',
-                        },
-                      ]}
-                    >
-                      <Input disabled={!isEditAddresses} placeholder="Address Line 1" />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row className={s.content__viewBottom__row}>
-                  <Col span={8}>
-                    <p className={s.content__viewBottom__row__textLabel}>Address Line 2</p>
-                  </Col>
-                  <Col span={16}>
-                    <Form.Item
-                      name="headquarterAddressLine2"
-                      label={false}
-                      rules={[
-                        {
-                          required: false,
-                          message: 'Please enter Address!',
-                        },
-                      ]}
-                    >
-                      <Input disabled={!isEditAddresses} placeholder="Address Line 2" />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row className={s.content__viewBottom__row}>
-                  <Col span={8}>
-                    <p className={s.content__viewBottom__row__textLabel}>City Name*</p>
-                  </Col>
-                  <Col span={16}>
-                    <Form.Item
-                      name="cityHeadquarter"
-                      label={false}
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Please enter City Name!',
-                        },
-                      ]}
-                    >
-                      <Input disabled={!isEditAddresses} placeholder="City Name" />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row gutter={[24, 24]} className={s.content__viewBottom__row}>
-                  <Col span={8} className={s.viewFormVertical}>
-                    <p
-                      className={classnames(
-                        s.content__viewBottom__row__textLabel,
-                        s.content__viewBottom__row__textLabelVertical,
-                      )}
-                    >
-                      Country*
-                    </p>
-                    <Form.Item
-                      name="countryHeadquarterProps"
-                      label={false}
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Please enter Country!',
-                        },
-                      ]}
-                    >
-                      <Select
-                        placeholder="Select Country"
-                        showArrow
-                        showSearch
-                        disabled={!isEditAddresses}
-                        onChange={(value) => this.onChangeCountry(value, 'countryHeadquarterProps')}
-                        filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        {listCountry.map((item) => (
-                          <Option key={item._id}>{item.name}</Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                  </Col>
-                  <Col span={8} className={s.viewFormVertical}>
-                    <p
-                      className={classnames(
-                        s.content__viewBottom__row__textLabel,
-                        s.content__viewBottom__row__textLabelVertical,
-                      )}
-                    >
-                      State*
-                    </p>
-                    <Form.Item
-                      name="stateHeadquarter"
-                      label={false}
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Please enter State!',
-                        },
-                      ]}
-                    >
-                      <Select
-                        placeholder="Select State"
-                        onChange={this.onChangeState}
-                        showArrow
-                        showSearch
-                        disabled={!countryHeadquarter || !isEditAddresses}
-                        filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        {listStateHead.map((item) => (
-                          <Option key={item}>{item}</Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                  </Col>
-                  <Col span={8} className={s.viewFormVertical}>
-                    <p
-                      className={classnames(
-                        s.content__viewBottom__row__textLabel,
-                        s.content__viewBottom__row__textLabelVertical,
-                      )}
-                    >
-                      Zip / Postal Code*
-                    </p>
-                    <Form.Item
-                      name="zipHeadquarter"
-                      label={false}
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Please enter Zip/Postal Code!',
-                        },
-                      ]}
-                    >
-                      <Input disabled={!isEditAddresses} placeholder="Zip Code" />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </div>
-              <div
-                className={classnames(
-                  s.content__viewTop,
-                  s.content__viewTop__legalAddress,
-                  checkLegalSameHeadQuarter ? s.content__viewTopWithoutBorder : '',
-                )}
-              >
-                <p className={s.title}>Legal Address</p>
-                <Checkbox
-                  // defaultChecked={checkLegalSameHeadQuarter}
-                  disabled={!isEditAddresses}
-                  onChange={this.onChangeCheckbox}
-                  defaultChecked={isSameAsHeadquarter}
-                  checked={checkLegalSameHeadQuarter}
-                >
-                  Same as Headquarters address
-                </Checkbox>
-              </div>
-              <div
-                className={classnames(s.content__viewBottom, {
-                  [s.hidden]: checkLegalSameHeadQuarter,
-                })}
-              >
-                <Row className={s.content__viewBottom__row}>
-                  <Col span={8}>
-                    <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
-                  </Col>
-                  <Col span={16}>
-                    <Form.Item
-                      name="legalAddressLine1"
-                      label={false}
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Please enter Address Line 1!',
-                        },
-                      ]}
-                    >
-                      <Input disabled={!isEditAddresses} placeholder="Address Line 1" />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row className={s.content__viewBottom__row}>
-                  <Col span={8}>
-                    <p className={s.content__viewBottom__row__textLabel}>Address Line 2</p>
-                  </Col>
-                  <Col span={16}>
-                    <Form.Item
-                      name="legalAddressLine2"
-                      label={false}
-                      rules={[
-                        {
-                          required: false,
-                          message: 'Please enter Address Line 2!',
-                        },
-                      ]}
-                    >
-                      <Input disabled={!isEditAddresses} placeholder="Address Line 2" />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row className={s.content__viewBottom__row}>
-                  <Col span={8}>
-                    <p className={s.content__viewBottom__row__textLabel}>City Name*</p>
-                  </Col>
-                  <Col span={16}>
-                    <Form.Item
-                      name="cityLegal"
-                      label={false}
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Please enter City Name!',
-                        },
-                      ]}
-                    >
-                      <Input disabled={!isEditAddresses} placeholder="City Name" />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row gutter={[24, 24]} className={s.content__viewBottom__row}>
-                  <Col span={8} className={s.viewFormVertical}>
-                    <p
-                      className={classnames(
-                        s.content__viewBottom__row__textLabel,
-                        s.content__viewBottom__row__textLabelVertical,
-                      )}
-                    >
-                      Country*
-                    </p>
-                    <Form.Item
-                      name="countryLegalProps"
-                      label={false}
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Please enter Country!',
-                        },
-                      ]}
-                    >
-                      <Select
-                        placeholder="Select Country"
-                        showArrow
-                        showSearch
-                        disabled={!isEditAddresses}
-                        onChange={(value) => this.onChangeCountry(value, 'countryLegalProps')}
-                        filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        {listCountry.map((item) => (
-                          <Option key={item._id}>{item.name}</Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                  </Col>
-                  <Col span={8} className={s.viewFormVertical}>
-                    <p
-                      className={classnames(
-                        s.content__viewBottom__row__textLabel,
-                        s.content__viewBottom__row__textLabelVertical,
-                      )}
-                    >
-                      State*
-                    </p>
-                    <Form.Item
-                      name="stateLegal"
-                      label={false}
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Please enter State!',
-                        },
-                      ]}
-                    >
-                      <Select
-                        placeholder="Select State"
-                        showArrow
-                        showSearch
-                        disabled={!isEditAddresses || !countryLegal}
-                        filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        {listStateLegal.map((item) => (
-                          <Option key={item}>{item}</Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                  </Col>
-                  <Col span={8} className={s.viewFormVertical}>
-                    <p
-                      className={classnames(
-                        s.content__viewBottom__row__textLabel,
-                        s.content__viewBottom__row__textLabelVertical,
-                      )}
-                    >
-                      Zip / Postal Code*
-                    </p>
-                    <Form.Item
-                      name="zipLegal"
-                      label={false}
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Please enter Zip/Postal Code!',
-                        },
-                      ]}
-                    >
-                      <Input disabled={!isEditAddresses} placeholder="Zip/Postal Code" />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </div>
+              )}
             </div>
-            <div className={s.blockContent} style={{ marginTop: '24px' }}>
-              <div className={s.content__viewTop}>
-                <p className={s.title}>Contact information</p>
-                <div className={s.editBtn} onClick={() => this.handleEdit(3)}>
-                  {isEditContactInfomation ? (
-                    <div className={s.wrapBtn}>
-                      <CloseOutlined className={s.buttonIcon} />
-                      <span className={s.cancelText}>Cancel</span>
-                    </div>
-                  ) : (
-                    <div className={s.wrapBtn}>
-                      <img src={EditIcon} alt="edit" />
-                      <span>Edit</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className={s.content__viewBottom}>
-                {fieldContactInformation.map(
-                  (
-                    {
-                      label,
-                      name: nameField,
-                      required = false,
-                      message,
-                      placeholder,
-                      defaultValue,
-                    },
-                    index,
-                  ) => (
-                    <Row key={nameField} className={s.content__viewBottom__row}>
-                      <Col span={8}>
-                        <p className={s.content__viewBottom__row__textLabel}>{label}</p>
-                      </Col>
-                      <Col span={16}>
-                        <Form.Item
-                          name={nameField}
-                          rules={[
-                            {
-                              required,
-                              message,
-                            },
-                            {
-                              pattern: this.getRegexPatternContact(index),
-                              message: this.getRegexMessageContact(index),
-                            },
-                            {
-                              type: this.getTypeContact(index),
-                            },
-                          ]}
-                        >
-                          <Input
-                            disabled={!isEditContactInfomation}
-                            placeholder={placeholder}
-                            defaultValue={defaultValue}
-                          />
-                        </Form.Item>
-                      </Col>
-                    </Row>
-                  ),
-                )}
-              </div>
-            </div>
-
-            <div className={s.viewBtn}>
-              <Button
-                className={s.btnSubmit}
-                htmlType="submit"
-                disabled={!(isEditAddresses || isEditCompanyDetails || isEditContactInfomation)}
-                loading={companyId ? loadingUpdate : loadingAdd}
-              >
-                Save
-              </Button>
-            </div>
-          </Form>
-        ) : (
-          <div>
-            <Skeleton active />
           </div>
-        )}
-      </>
+          <div className={s.content__viewBottom}>
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>Industry</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item name="industry">
+                  <Select
+                    placeholder="Select Industry"
+                    showArrow
+                    showSearch
+                    allowClear
+                    disabled={!isEditCompanyDetails}
+                    className={s.parentCompanySelect}
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {industryList.map((item) => (
+                      <Option key={item._id}>{item.name}</Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>Company Type</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item name="companyType">
+                  <Select
+                    placeholder="Select Company Type"
+                    showArrow
+                    showSearch
+                    allowClear
+                    disabled={!isEditCompanyDetails}
+                    // defaultValue=""
+                    className={s.parentCompanySelect}
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {companyTypeList.map((item) => (
+                      <Option key={item._id}>{item.name}</Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            {fieldCompanyDetail.map(
+              ({ label, name: nameField, required = false, message }, index) => (
+                <Row key={nameField} className={s.content__viewBottom__row}>
+                  <Col span={8}>
+                    <p className={s.content__viewBottom__row__textLabel}>{label}</p>
+                  </Col>
+                  <Col span={16}>
+                    <Form.Item
+                      name={nameField}
+                      rules={[
+                        {
+                          required,
+                          message,
+                        },
+                        {
+                          pattern: this.getRegexPatternCompanyDetails(index),
+                          message: this.getRegexMessageCompanyDetails(index),
+                        },
+                      ]}
+                    >
+                      <Input disabled={!isEditCompanyDetails} placeholder={label} />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              ),
+            )}
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>Parent Company</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item name="parentCompany">
+                  <Select
+                    placeholder="Select Parent Company"
+                    showArrow
+                    showSearch
+                    allowClear
+                    disabled={!isEditCompanyDetails}
+                    className={s.parentCompanySelect}
+                    // onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {listCompany.map((item) => (
+                      <Option
+                        disabled={currentCompany === item?.childOfCompany || item._id === companyId}
+                        key={item._id}
+                      >
+                        {item.name}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+          </div>
+        </div>
+        <div className={s.blockContent} style={{ marginTop: '24px' }}>
+          <div className={s.content__viewTop}>
+            <p className={s.title}>Headquarter Address</p>
+            <div className={s.editBtn} onClick={() => this.handleEdit(2)}>
+              {isEditAddresses ? (
+                <div className={s.wrapBtn}>
+                  <CloseOutlined className={s.buttonIcon} />
+                  <span className={s.cancelText}>Cancel</span>
+                </div>
+              ) : (
+                <div className={s.wrapBtn}>
+                  <img src={EditIcon} alt="edit" />
+                  <span>Edit</span>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className={s.content__viewBottom}>
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item
+                  name="headquarterAddressLine1"
+                  label={false}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter Address!',
+                    },
+                  ]}
+                >
+                  <Input disabled={!isEditAddresses} placeholder="Address Line 1" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>Address Line 2</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item
+                  name="headquarterAddressLine2"
+                  label={false}
+                  rules={[
+                    {
+                      required: false,
+                      message: 'Please enter Address!',
+                    },
+                  ]}
+                >
+                  <Input disabled={!isEditAddresses} placeholder="Address Line 2" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>City Name*</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item
+                  name="cityHeadquarter"
+                  label={false}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter City Name!',
+                    },
+                  ]}
+                >
+                  <Input disabled={!isEditAddresses} placeholder="City Name" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={[24, 24]} className={s.content__viewBottom__row}>
+              <Col span={8} className={s.viewFormVertical}>
+                <p
+                  className={classnames(
+                    s.content__viewBottom__row__textLabel,
+                    s.content__viewBottom__row__textLabelVertical,
+                  )}
+                >
+                  Country*
+                </p>
+                <Form.Item
+                  name="countryHeadquarterProps"
+                  label={false}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter Country!',
+                    },
+                  ]}
+                >
+                  <Select
+                    placeholder="Select Country"
+                    showArrow
+                    showSearch
+                    disabled={!isEditAddresses}
+                    onChange={(value) => this.onChangeCountry(value, 'countryHeadquarterProps')}
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {listCountry.map((item) => (
+                      <Option key={item._id}>{item.name}</Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={8} className={s.viewFormVertical}>
+                <p
+                  className={classnames(
+                    s.content__viewBottom__row__textLabel,
+                    s.content__viewBottom__row__textLabelVertical,
+                  )}
+                >
+                  State*
+                </p>
+                <Form.Item
+                  name="stateHeadquarter"
+                  label={false}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter State!',
+                    },
+                  ]}
+                >
+                  <Select
+                    placeholder="Select State"
+                    onChange={this.onChangeState}
+                    showArrow
+                    showSearch
+                    disabled={!countryHeadquarter || !isEditAddresses}
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {listStateHead.map((item) => (
+                      <Option key={item}>{item}</Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={8} className={s.viewFormVertical}>
+                <p
+                  className={classnames(
+                    s.content__viewBottom__row__textLabel,
+                    s.content__viewBottom__row__textLabelVertical,
+                  )}
+                >
+                  Zip / Postal Code*
+                </p>
+                <Form.Item
+                  name="zipHeadquarter"
+                  label={false}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter Zip/Postal Code!',
+                    },
+                  ]}
+                >
+                  <Input disabled={!isEditAddresses} placeholder="Zip Code" />
+                </Form.Item>
+              </Col>
+            </Row>
+          </div>
+          <div
+            className={classnames(
+              s.content__viewTop,
+              s.content__viewTop__legalAddress,
+              checkLegalSameHeadQuarter ? s.content__viewTopWithoutBorder : '',
+            )}
+          >
+            <p className={s.title}>Legal Address</p>
+            <Checkbox
+              // defaultChecked={checkLegalSameHeadQuarter}
+              disabled={!isEditAddresses}
+              onChange={this.onChangeCheckbox}
+              defaultChecked={isSameAsHeadquarter}
+              checked={checkLegalSameHeadQuarter}
+            >
+              Same as Headquarters address
+            </Checkbox>
+          </div>
+          <div
+            className={classnames(s.content__viewBottom, {
+              [s.hidden]: checkLegalSameHeadQuarter,
+            })}
+          >
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item
+                  name="legalAddressLine1"
+                  label={false}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter Address Line 1!',
+                    },
+                  ]}
+                >
+                  <Input disabled={!isEditAddresses} placeholder="Address Line 1" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>Address Line 2</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item
+                  name="legalAddressLine2"
+                  label={false}
+                  rules={[
+                    {
+                      required: false,
+                      message: 'Please enter Address Line 2!',
+                    },
+                  ]}
+                >
+                  <Input disabled={!isEditAddresses} placeholder="Address Line 2" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>City Name*</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item
+                  name="cityLegal"
+                  label={false}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter City Name!',
+                    },
+                  ]}
+                >
+                  <Input disabled={!isEditAddresses} placeholder="City Name" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={[24, 24]} className={s.content__viewBottom__row}>
+              <Col span={8} className={s.viewFormVertical}>
+                <p
+                  className={classnames(
+                    s.content__viewBottom__row__textLabel,
+                    s.content__viewBottom__row__textLabelVertical,
+                  )}
+                >
+                  Country*
+                </p>
+                <Form.Item
+                  name="countryLegalProps"
+                  label={false}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter Country!',
+                    },
+                  ]}
+                >
+                  <Select
+                    placeholder="Select Country"
+                    showArrow
+                    showSearch
+                    disabled={!isEditAddresses}
+                    onChange={(value) => this.onChangeCountry(value, 'countryLegalProps')}
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {listCountry.map((item) => (
+                      <Option key={item._id}>{item.name}</Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={8} className={s.viewFormVertical}>
+                <p
+                  className={classnames(
+                    s.content__viewBottom__row__textLabel,
+                    s.content__viewBottom__row__textLabelVertical,
+                  )}
+                >
+                  State*
+                </p>
+                <Form.Item
+                  name="stateLegal"
+                  label={false}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter State!',
+                    },
+                  ]}
+                >
+                  <Select
+                    placeholder="Select State"
+                    showArrow
+                    showSearch
+                    disabled={!isEditAddresses || !countryLegal}
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {listStateLegal.map((item) => (
+                      <Option key={item}>{item}</Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={8} className={s.viewFormVertical}>
+                <p
+                  className={classnames(
+                    s.content__viewBottom__row__textLabel,
+                    s.content__viewBottom__row__textLabelVertical,
+                  )}
+                >
+                  Zip / Postal Code*
+                </p>
+                <Form.Item
+                  name="zipLegal"
+                  label={false}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter Zip/Postal Code!',
+                    },
+                  ]}
+                >
+                  <Input disabled={!isEditAddresses} placeholder="Zip/Postal Code" />
+                </Form.Item>
+              </Col>
+            </Row>
+          </div>
+        </div>
+        <div className={s.blockContent} style={{ marginTop: '24px' }}>
+          <div className={s.content__viewTop}>
+            <p className={s.title}>Contact information</p>
+            <div className={s.editBtn} onClick={() => this.handleEdit(3)}>
+              {isEditContactInformation ? (
+                <div className={s.wrapBtn}>
+                  <CloseOutlined className={s.buttonIcon} />
+                  <span className={s.cancelText}>Cancel</span>
+                </div>
+              ) : (
+                <div className={s.wrapBtn}>
+                  <img src={EditIcon} alt="edit" />
+                  <span>Edit</span>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className={s.content__viewBottom}>
+            {fieldContactInformation.map(
+              (
+                { label, name: nameField, required = false, message, placeholder, defaultValue },
+                index,
+              ) => (
+                <Row key={nameField} className={s.content__viewBottom__row}>
+                  <Col span={8}>
+                    <p className={s.content__viewBottom__row__textLabel}>{label}</p>
+                  </Col>
+                  <Col span={16}>
+                    <Form.Item
+                      name={nameField}
+                      rules={[
+                        {
+                          required,
+                          message,
+                        },
+                        {
+                          pattern: this.getRegexPatternContact(index),
+                          message: this.getRegexMessageContact(index),
+                        },
+                        {
+                          type: this.getTypeContact(index),
+                        },
+                      ]}
+                    >
+                      <Input
+                        disabled={!isEditContactInformation}
+                        placeholder={placeholder}
+                        defaultValue={defaultValue}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              ),
+            )}
+          </div>
+        </div>
+
+        <div className={s.viewBtn}>
+          <Button
+            className={s.btnSubmit}
+            htmlType="submit"
+            disabled={!(isEditAddresses || isEditCompanyDetails || isEditContactInformation)}
+            loading={companyId ? loadingUpdate : loadingAdd}
+          >
+            Save
+          </Button>
+        </div>
+      </Form>
     );
   }
 }

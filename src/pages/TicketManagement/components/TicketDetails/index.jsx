@@ -42,7 +42,7 @@ class TicketDetails extends Component {
     return (
       <PageContainer>
         <div className={styles.TicketDetails}>
-          <Affix offsetTop={30}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>{`[Ticket ID: ${code}]`}</p>
             </div>

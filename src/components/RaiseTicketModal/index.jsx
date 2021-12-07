@@ -11,7 +11,6 @@ import {
   Upload,
   Spin,
   message,
-  notification,
 } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { isEmpty } from 'lodash';
@@ -63,14 +62,14 @@ const RaiseTicketModal = (props) => {
           company: getCurrentCompany(),
         },
       });
+      dispatch({
+        type: 'ticketManagement/fetchDepartments',
+        payload: {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        },
+      });
     }
-    dispatch({
-      type: 'ticketManagement/fetchDepartments',
-      payload: {
-        tenantId: getCurrentTenant(),
-        company: getCurrentCompany(),
-      },
-    });
   }, []);
 
   const handleReset = () => {
@@ -283,19 +282,16 @@ const RaiseTicketModal = (props) => {
                 name="interestList"
                 labelCol={{ span: 24 }}
               >
-                <Select showSearch mode="multiple" allowClear>
+                <Select
+                  showSearch
+                  mode="multiple"
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
                   {listEmployee
                     ? listEmployee.map((val) => {
-                        const departmentID = val.department._id;
-                        if (departmentID === supportTeam) {
-                          return <Option value={val?._id}>{val?.generalInfo?.legalName}</Option>;
-                        }
-                        if (departmentID === supportTeam) {
-                          return <Option value={val?._id}>{val?.generalInfo?.legalName}</Option>;
-                        }
-                        if (departmentID === supportTeam) {
-                          return <Option value={val?._id}>{val?.generalInfo?.legalName}</Option>;
-                        }
+                        return <Option value={val?._id}>{val?.generalInfo?.legalName}</Option>;
                       })
                     : ''}
                 </Select>
