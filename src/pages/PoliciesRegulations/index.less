@@ -1,0 +1,36 @@
+.PoliciesRegulations {
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 32px 15px 20px;
+    background: #ffffff;
+    box-shadow: 0px 1px 2px #eeeeee;
+    &__left {
+      color: #161c29;
+      font-weight: 500;
+      font-size: 18px;
+      font-family: Roboto;
+      font-style: normal;
+      line-height: 21px;
+    }
+    &__right {
+      :global {
+        .ant-btn {
+          background: #eaf0fe;
+          border: none;
+          border-radius: 5px;
+        }
+        a {
+          color: #2c6df9;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 16px;
+        }
+      }
+    }
+  }
+  .containerPolicies {
+    padding-right: 40px;
+  }
+}

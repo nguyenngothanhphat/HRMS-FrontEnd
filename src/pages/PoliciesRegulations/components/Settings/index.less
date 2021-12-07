@@ -1,0 +1,40 @@
+.Settings {
+  .header {
+    padding: 15px 32px 15px 20px;
+    background: #ffffff;
+    box-shadow: 0px 1px 2px #eeeeee;
+    &__left {
+      color: #161c29;
+      font-weight: 500;
+      font-size: 18px;
+      font-family: Roboto;
+      font-style: normal;
+      line-height: 21px;
+    }
+  }
+  .containerPolicies {
+    .setttingsTabs {
+      height: 100vh;
+      padding-left: 20px;
+      background: #ffffff;
+      :global {
+        .ant-menu-item-only-child {
+          height: 51px;
+          color: #707177;
+          font-size: 14px;
+          line-height: 16px;
+          background: #ffffff;
+          border-bottom: none;
+          border-top-left-radius: 100px;
+          border-bottom-left-radius: 100px;
+        }
+        .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+          color: #2c6df9;
+          font-weight: bold;
+          background: rgba(44, 109, 249, 0.12);
+          border-right: none !important;
+        }
+      }
+    }
+  }
+}
