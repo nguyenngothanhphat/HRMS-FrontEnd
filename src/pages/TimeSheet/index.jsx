@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { history, connect } from 'umi';
 import SimpleView from './components/SimpleView';
 import ComplexView from './components/ComplexView';
+import ROLES from '@/utils/roles';
 
 const TimeSheet = (props) => {
   const {
@@ -19,32 +20,33 @@ const TimeSheet = (props) => {
   }, [tabName]);
 
   const findRole = (roles) => {
-    const isHRManager = roles.find((item) => item === 'hr-manager');
-    const isManager = roles.find((item) => item === 'manager');
-    const isEmployee = roles.find((item) => item === 'employee');
+    const isHRManager = roles.find((item) => item === ROLES.HR_MANAGER);
+    const isManager = roles.find((item) => item === ROLES.MANAGER);
+    const isEmployee = roles.find((item) => item === ROLES.EMPLOYEE);
 
     const { title: { name = '' } = {} || {} } = employee;
 
     let isProjectManager = '';
     let isPeopleManager = '';
+    let isFinance = '';
     const nameTemp = name.toLowerCase();
     if (isManager) {
       if (nameTemp.includes('project') && nameTemp.includes('manager')) {
-        isProjectManager = 'project-manager';
+        isProjectManager = ROLES.PROJECT_MANAGER;
       }
       if (nameTemp.includes('people') && nameTemp.includes('manager')) {
-        isPeopleManager = 'people-manager';
+        isPeopleManager = ROLES.PEOPLE_MANAGER;
       }
     }
     if (nameTemp.includes('finance')) {
-      isPeopleManager = 'finance';
+      isFinance = ROLES.FINANCE;
     }
 
     dispatch({
       type: 'timeSheet/save',
       payload: {
         currentUserRole:
-          isHRManager || isProjectManager || isPeopleManager || isManager || isEmployee,
+          isHRManager || isProjectManager || isPeopleManager || isFinance || isManager || isEmployee,
       },
     });
   };

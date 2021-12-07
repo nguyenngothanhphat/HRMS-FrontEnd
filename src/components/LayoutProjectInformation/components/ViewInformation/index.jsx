@@ -6,7 +6,7 @@ import s from '../../index.less';
 import CustomTag from '../CustomTag';
 
 const ViewInformation = (props) => {
-  const { projectDetail } = props;
+  const { projectDetail, permissions = {} } = props;
   const {
     avatar = '',
     customerName = '',
@@ -24,6 +24,9 @@ const ViewInformation = (props) => {
     } = {},
     tags = [],
   } = projectDetail;
+
+  // permissions
+  const modifyProjectPermission = permissions.modifyProject !== -1;
 
   const viewProfile = (id) => {
     const url = `/directory/employee-profile/${id}`;
@@ -80,14 +83,16 @@ const ViewInformation = (props) => {
 
   return (
     <div className={s.viewRight__projectInfo} style={{ position: 'relative' }}>
-      <Button className={s.btnEdit}>Edit</Button>
+      {modifyProjectPermission && <Button className={s.btnEdit}>Edit</Button>}
       <img src="/assets/images/img-cover.jpg" alt="img-cover" className={s.projectInfo__imgCover} />
       <img src={avatar || MockCustomerLogo} alt="img-avt" className={s.projectInfo__imgAvt} />
-      <img
-        src="/assets/images/iconUploadImage.svg"
-        alt="img-upload"
-        className={s.projectInfo__imgAvt__upload}
-      />
+      {modifyProjectPermission && (
+        <img
+          src="/assets/images/iconUploadImage.svg"
+          alt="img-upload"
+          className={s.projectInfo__imgAvt__upload}
+        />
+      )}
       <div className={s.projectInfo__textNameAndTitle}>
         <p className={s.projectInfo__textNameAndTitle__name}>{projectName}</p>
       </div>
@@ -117,7 +122,13 @@ const ViewInformation = (props) => {
   );
 };
 
-export default connect(({ projectDetails: { projectDetail = {}, projectTagList = [] } = {} }) => ({
-  projectDetail,
-  projectTagList,
-}))(ViewInformation);
+export default connect(
+  ({
+    user: { permissions },
+    projectDetails: { projectDetail = {}, projectTagList = [] } = {},
+  }) => ({
+    projectDetail,
+    projectTagList,
+    permissions,
+  }),
+)(ViewInformation);

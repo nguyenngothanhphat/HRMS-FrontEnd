@@ -49,6 +49,7 @@ class TableProject extends Component {
       limit = 10,
       total: totalProp,
       isBackendPaging = false,
+      allowModify = false,
     } = this.props;
 
     const pagination = {
@@ -220,16 +221,24 @@ class TableProject extends Component {
         dataIndex: 'comment',
         key: 'comment',
         render: (value, row) => {
-          const {fetchProjectList} = this.props;
+          const { fetchProjectList } = this.props;
           let displayValue;
           if (value) {
             const getRow = dataSource.filter((x) => x.id === row.id).length;
             const line = getRow === 0 || getRow === 1 ? 3 : getRow * 3;
-            displayValue = <span><OverviewComment row={row} line={line} fetchProjectList={fetchProjectList} /></span>
+            displayValue = (
+              <span>
+                <OverviewComment row={row} line={line} fetchProjectList={fetchProjectList} />
+              </span>
+            );
           } else {
-            displayValue = <span><AddComment data={row} fetchProjectList={fetchProjectList} /></span>
+            displayValue = (
+              <span>
+                {allowModify ? <AddComment data={row} fetchProjectList={fetchProjectList} /> : '-'}
+              </span>
+            );
           }
-          return ( displayValue );
+          return displayValue;
         },
         sorter: (a, b) => a.comment.localeCompare(b.comment),
       },

@@ -17,6 +17,10 @@ const Planning = (props) => {
     loadingFetch = false,
     loadingAdd = false,
   } = props;
+
+  // permissions
+  const { allowModify = false } = props;
+
   const [addMilestoneModalVisible, setAddMilestoneModalVisible] = useState(false);
 
   const fetchMilestoneList = () => {
@@ -60,11 +64,11 @@ const Planning = (props) => {
 
     return (
       <div className={styles.contentCard}>
-        <Tabs tabBarExtraContent={operations}>
+        <Tabs tabBarExtraContent={allowModify ? operations : null}>
           {milestoneList.map((m) => {
             return (
               <TabPane tab={m.milestoneName} key={m.id}>
-                <MilestoneCard data={m} projectId={projectId} />;
+                <MilestoneCard data={m} projectId={projectId} allowModify={allowModify} />;
               </TabPane>
             );
           })}

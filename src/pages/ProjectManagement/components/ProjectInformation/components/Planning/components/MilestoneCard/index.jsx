@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { Card, Button, Row, Col, Form, Input, DatePicker, Popconfirm } from 'antd';
-import { connect } from 'umi';
+import { Button, Card, DatePicker, Form, Input, Popconfirm } from 'antd';
 import moment from 'moment';
+import React, { useState } from 'react';
+import { connect } from 'umi';
 import EditIcon from '@/assets/projectManagement/edit2.svg';
 import RemoveIcon from '@/assets/projectManagement/recycleBin.svg';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';
-import styles from './index.less';
 import { DATE_FORMAT_2 } from '@/utils/projectManagement';
+import styles from './index.less';
 
 const MilestoneCard = (props) => {
   const {
@@ -17,6 +17,9 @@ const MilestoneCard = (props) => {
   } = props;
 
   const [isEditing, setIsEditing] = useState(false);
+
+  // permissions
+  const { allowModify = false } = props;
 
   // function
   const onFinish = async (values) => {
@@ -45,7 +48,7 @@ const MilestoneCard = (props) => {
 
   // render UI
   const renderOption = () => {
-    if (isEditing) return null;
+    if (isEditing || !allowModify) return null;
     return (
       <div className={styles.options}>
         <img onClick={() => setIsEditing(true)} src={EditIcon} alt="" />
