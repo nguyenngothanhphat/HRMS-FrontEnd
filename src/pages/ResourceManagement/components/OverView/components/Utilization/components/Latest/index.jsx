@@ -11,7 +11,7 @@ const UtilizationGauge = ({ percent = 0 }) => {
     percent,
     innerRadius: 0.8,
     range: {
-      ticks: [0, 100],
+      ticks: [0, 1],
       color: ['l(0) 0:#F4664A 0.5:#FAAD14 1:#30BF78'],
     },
     axis: {
@@ -137,7 +137,7 @@ const Latest = (props) => {
         <Col span={12}>
           <div className={styles.left}>
             <div className={styles.chart}>
-              <UtilizationGauge percent={calculatedData.utilization} />
+              <UtilizationGauge percent={calculatedData.utilization / 100} />
             </div>
             <div className={styles.numbers}>
               <div className={styles.numbers__above}>

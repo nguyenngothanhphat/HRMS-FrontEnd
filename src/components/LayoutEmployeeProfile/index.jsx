@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-curly-newline */
-import { Affix, Col, Row } from 'antd';
+import { Affix, Col, Row, Skeleton } from 'antd';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
@@ -14,6 +14,7 @@ import s from './index.less';
 
 @connect(
   ({
+    loading,
     companiesManagement: { selectedNewCompanyTab = 1 },
     employeeProfile: { isModified } = {},
     user: { currentUser } = {},
@@ -21,6 +22,10 @@ import s from './index.less';
     isModified,
     currentUser,
     selectedNewCompanyTab,
+    loadingFetchEmployee:
+      loading.effects['employeeProfile/fetchGeneralInfo'] ||
+      loading.effects['employeeProfile/fetchEmployeeIdByUserId'] ||
+      loading.effects['employeeProfile/fetchEmploymentInfo'],
   }),
 )
 class CommonLayout extends PureComponent {
@@ -129,6 +134,7 @@ class CommonLayout extends PureComponent {
       profileOwner = false,
       isCompanyProfile = false,
       isAddingCompany = false,
+      loadingFetchEmployee = false,
     } = this.props;
     const { displayComponent, selectedItemId, displayComponentActions } = this.state;
 
@@ -153,37 +159,34 @@ class CommonLayout extends PureComponent {
                   isAddingCompany={isAddingCompany}
                 />
               ))}
-              {/* {isCompanyProfile && (
-                <Button
-                  className={s.viewLeft__menu__btn}
-                  disabled={currentUser?.firstCreated}
-                  onClick={() =>
-                    history.push({
-                      pathname: '/',
-                    })
-                  }
-                >
-                  Go to dashboard
-                </Button>
-              )} */}
             </div>
           </div>
         </Affix>
-        <Row className={s.viewRight} gutter={[24, 0]}>
-          <Col span={isCompanyProfile ? 16 : 18}>{displayComponentActions || displayComponent}</Col>
-          <Col span={isCompanyProfile ? 8 : 6}>
-            {isCompanyProfile ? (
-              <UploadLogoCompany />
-            ) : (
-              <ViewInformation
-                permissions={permissions}
-                profileOwner={profileOwner}
-                employeeLocation={employeeLocation}
-                handleClickOnActions={this.handleClickOnActions}
-              />
-            )}
-          </Col>
-        </Row>
+        {loadingFetchEmployee ? (
+          <Row className={s.viewRight} gutter={[24, 0]}>
+            <Col span={24}>
+              <Skeleton />
+            </Col>
+          </Row>
+        ) : (
+          <Row xs={24} md={18} xl={20} gutter={[24, 24]} className={s.viewRight}>
+            <Col xl={isCompanyProfile ? 16 : 18} xs={24}>
+              {displayComponentActions || displayComponent}
+            </Col>
+            <Col xl={isCompanyProfile ? 8 : 6} xs={24}>
+              {isCompanyProfile ? (
+                <UploadLogoCompany />
+              ) : (
+                <ViewInformation
+                  permissions={permissions}
+                  profileOwner={profileOwner}
+                  employeeLocation={employeeLocation}
+                  handleClickOnActions={this.handleClickOnActions}
+                />
+              )}
+            </Col>
+          </Row>
+        )}
       </div>
     );
   }

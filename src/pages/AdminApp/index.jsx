@@ -14,13 +14,11 @@ import styles from './index.less';
 
 @connect(
   ({
-    loading,
     user: { currentUser = {} } = {},
     departmentManagement: { listByCompany: listDepartment = [] } = {},
   }) => ({
     currentUser,
     listDepartment,
-    loading: loading.effects['companiesManagement/fetchCompanyDetails'],
   }),
 )
 class AdminApp extends Component {
@@ -33,6 +31,17 @@ class AdminApp extends Component {
     } else {
       const { dispatch } = this.props;
       const id = getCurrentCompany();
+      if (id) {
+        dispatch({
+          type: 'companiesManagement/fetchCompanyDetails',
+          payload: { id, tenantId: getCurrentTenant() },
+        });
+      }
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth',
+      });
       dispatch({
         type: 'country/fetchListCountry',
       });
@@ -48,22 +57,11 @@ class AdminApp extends Component {
       dispatch({
         type: 'companiesManagement/fetchIndustryList',
       });
-      if (id) {
-        dispatch({
-          type: 'companiesManagement/fetchCompanyDetails',
-          payload: { id, tenantId: getCurrentTenant() },
-        });
-      }
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'smooth',
-      });
     }
   }
 
   componentWillUnmount() {
-          const { dispatch } = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'companiesManagement/saveOrigin',
       payload: { companyDetails: {} },
@@ -111,7 +109,6 @@ class AdminApp extends Component {
       {
         id: 6,
         name: 'Permission',
-        // component: <CompanySignatory companyId={id} />,
         link: 'permission',
       },
       {
@@ -129,7 +126,6 @@ class AdminApp extends Component {
     return (
       <PageContainer>
         <div className={styles.root}>
-          {/* <div className={styles.titlePage}>Admin App</div> */}
           <Layout listMenu={listMenu} tabName={tabName} />
         </div>
       </PageContainer>
