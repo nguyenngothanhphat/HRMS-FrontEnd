@@ -16,7 +16,11 @@ const ProjectInformation = (props) => {
     match: { params: { reId = '', tabName = '' } = {} } = {},
     projectDetail: { projectName = '' } = {},
     loadingFetchProjectById = false,
+    permissions = {},
   } = props;
+
+  // permissions
+  const modifyProjectPermission = permissions.modifyProject !== -1;
 
   const fetchProjectByID = async () => {
     dispatch({
@@ -40,25 +44,25 @@ const ProjectInformation = (props) => {
     {
       id: 1,
       name: 'Summary',
-      component: <Summary />,
+      component: <Summary allowModify={modifyProjectPermission} />,
       link: 'summary',
     },
     {
       id: 2,
       name: 'Documents',
-      component: <Documents />,
+      component: <Documents allowModify={modifyProjectPermission} />,
       link: 'documents',
     },
     {
       id: 3,
       name: 'Resources',
-      component: <Resources />,
+      component: <Resources allowModify={modifyProjectPermission} />,
       link: 'resources',
     },
     {
       id: 4,
       name: 'Planning',
-      component: <Planning />,
+      component: <Planning allowModify={modifyProjectPermission} />,
       link: 'planning',
     },
     {
@@ -76,7 +80,7 @@ const ProjectInformation = (props) => {
     {
       id: 7,
       name: 'Audit Trail',
-      component: <AuditTrail />,
+      component: <AuditTrail allowModify={modifyProjectPermission} />,
       link: 'audit-trail',
     },
   ];
@@ -100,7 +104,10 @@ const ProjectInformation = (props) => {
     </PageContainer>
   );
 };
-export default connect(({ loading, projectDetails: { projectDetail = {} } }) => ({
-  projectDetail,
-  loadingFetchProjectById: loading.effects['projectDetails/fetchProjectByIdEffect'],
-}))(ProjectInformation);
+export default connect(
+  ({ loading, user: { permissions = {} }, projectDetails: { projectDetail = {} } }) => ({
+    projectDetail,
+    permissions,
+    loadingFetchProjectById: loading.effects['projectDetails/fetchProjectByIdEffect'],
+  }),
+)(ProjectInformation);

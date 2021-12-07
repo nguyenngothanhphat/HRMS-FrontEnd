@@ -166,20 +166,14 @@ class RequestInformation extends PureComponent {
   // GET MANAGER ID & NAME OF SELECTED PROJECT
   onEnterProjectNameChange = (value) => {
     const { timeOff: { projectsList = [] } = {} } = this.props;
-    let projectManagerId = '';
-    let projectManagerName = '';
 
-    projectsList.forEach((project) => {
-      const {
-        _id = '',
-        manager: { generalInfo: { employeeId = '', lastName = '', firstName = '' } = {} } = {},
-      } = project;
-
-      if (_id === value) {
-        projectManagerId = employeeId;
-        projectManagerName = `${firstName} ${lastName}`;
-      }
-    });
+    const find = projectsList.find((x) => x.id === value) || {};
+    const {
+      projectManager: {
+        _id: projectManagerId = '',
+        generalInfo: { legalName: projectManagerName = '' } = {},
+      } = {},
+    } = find;
 
     this.setState({
       projectManagerId,
@@ -194,6 +188,7 @@ class RequestInformation extends PureComponent {
       payload: {
         employeeId: userId,
         projectId: value,
+        projectManager: projectManagerId,
       },
     });
   };
