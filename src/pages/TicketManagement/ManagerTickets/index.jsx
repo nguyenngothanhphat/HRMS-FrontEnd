@@ -13,7 +13,7 @@ class ManagerTicket extends Component {
   componentDidMount() {
     const { tabName = '' } = this.props;
     if (!tabName) {
-      history.replace(`/ticket-management/alltickets`);
+      history.replace(`/ticket-management/all-tickets`);
     } else {
       const { dispatch } = this.props;
       if (!dispatch) {
