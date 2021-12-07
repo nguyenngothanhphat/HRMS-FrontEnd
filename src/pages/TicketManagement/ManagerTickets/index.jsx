@@ -38,13 +38,14 @@ class ManagerTicket extends Component {
 
   render() {
     const { TabPane } = Tabs;
-    const { listOffAllTicket = [], totalList = [] } = this.props;
+    const { listOffAllTicket = [], totalList = [], tabName = '' } = this.props;
 
+    if (!tabName) return '';
     return (
       <div className={styles.TicketManagement}>
         <PageContainer>
           <Tabs
-            activeKey="all-tickets"
+            activeKey={tabName || 'all-tickets'}
             onChange={(key) => {
               history.push(`/ticket-management/${key}`);
             }}

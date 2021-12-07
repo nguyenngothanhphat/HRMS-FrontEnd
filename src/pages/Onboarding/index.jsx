@@ -15,12 +15,6 @@ import NewJoinees from './components/NewJoinees/index';
   onboardingOverview,
 }))
 class Onboarding extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-  }
-
   componentDidMount = () => {
     const {
       match: { params: { tabName = '' } = {} },
@@ -203,6 +197,8 @@ class Onboarding extends PureComponent {
     const {
       match: { params: { tabName = '', type = '' } = {} },
     } = this.props;
+
+    if (!tabName) return '';
     return (
       <PageContainer>
         <div className={styles.containerOnboarding}>

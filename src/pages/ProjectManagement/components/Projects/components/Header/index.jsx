@@ -22,7 +22,7 @@ const Header = (props) => {
   } = props;
   const [addProjectModalVisible, setAddProjectModalVisible] = useState(false);
 
-  // permissions 
+  // permissions
   const addProjectPermission = permissions.addProjectManagement !== -1;
 
   // redux

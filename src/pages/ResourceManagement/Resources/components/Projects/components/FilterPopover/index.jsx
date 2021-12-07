@@ -41,9 +41,6 @@ const FilterPopover = (props) => {
         type: 'projectManagement/fetchProjectTypeListEffect',
       });
       dispatch({
-        type: 'projectManagement/fetchProjectStatusListEffect',
-      });
-      dispatch({
         type: 'projectManagement/fetchDivisionListEffect',
         payload: {
           name: 'Engineering',
@@ -209,6 +206,6 @@ const FilterPopover = (props) => {
 };
 
 export default connect(({ projectManagement, user: { currentUser: { employee = {} } = {} } }) => ({
-    projectManagement,
+  projectManagement,
   employee,
 }))(FilterPopover);

@@ -16,8 +16,9 @@ const ProjectManagement = (props) => {
     if (!tabName) {
       history.replace(`/project-management/list`);
     }
-  }, [tabName]);
+  }, []);
 
+  if (!tabName) return '';
   return (
     <div className={styles.ProjectManagement}>
       <PageContainer>

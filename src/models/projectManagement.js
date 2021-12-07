@@ -102,7 +102,7 @@ const ProjectManagement = {
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, data = [] } = response;
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
 
         yield put({
