@@ -151,6 +151,7 @@ class ManagerOffBoading extends Component {
       totalList = [],
       hrManager = {},
       locationID = '',
+      tabName = '',
     } = this.props;
     const { dataListTeamRequest, loadingSearch, timezoneList } = this.state;
 
@@ -159,6 +160,7 @@ class ManagerOffBoading extends Component {
 
     const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
 
+    if (!tabName) return '';
     return (
       <PageContainer>
         <div className={styles.managerContainer}>

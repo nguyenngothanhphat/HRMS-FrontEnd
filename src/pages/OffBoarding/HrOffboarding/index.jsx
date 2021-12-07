@@ -18,7 +18,7 @@ class HROffboarding extends PureComponent {
   render() {
     const { TabPane } = Tabs;
     const { tabName = '', type = '' } = this.props;
-
+    if (!tabName) return '';
     return (
       <PageContainer>
         <div className={styles.containerEmployeeOffboarding}>

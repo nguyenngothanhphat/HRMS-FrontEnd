@@ -4,7 +4,7 @@ import { connect, formatMessage, history } from 'umi';
 import { DownloadOutlined } from '@ant-design/icons';
 import { PageContainer } from '@/layouts/layout/src';
 import Settings from './components/Settings';
-import exportToCSV from '@/utils/exportAsExcel';
+// import exportToCSV from '@/utils/exportAsExcel';
 import TableContainer from './components/TableContainer';
 import style from './index.less';
 
@@ -18,9 +18,6 @@ class Customer extends PureComponent {
     if (!tabName) {
       history.replace('/customer-management/customers');
     }
-    // dispatch({
-    //   type: 'customerManagement/fetchCustomerList',
-    // });
   }
 
   exportCustomers = async () => {
@@ -49,6 +46,8 @@ class Customer extends PureComponent {
         params: { tabName = '' },
       },
     } = this.props;
+
+    if (!tabName) return '';
     return (
       <PageContainer>
         <div className={style.customerManagement}>

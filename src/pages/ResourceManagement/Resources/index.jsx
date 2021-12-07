@@ -213,6 +213,7 @@ class Resources extends Component {
 
     const { locationID = '', totalList = [], tabName = '' } = this.props;
     const { loadingSearch } = this.state;
+    if (!tabName) return '';
     return (
       <div className={styles.ResourcesManagement}>
         <PageContainer>

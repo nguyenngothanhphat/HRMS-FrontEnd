@@ -57,6 +57,7 @@ const ComplexView = (props) => {
     );
   };
 
+  if (!tabName) return '';
   return (
     <div className={styles.ComplexView}>
       <PageContainer>
