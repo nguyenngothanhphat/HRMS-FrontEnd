@@ -121,12 +121,12 @@ class EditPolicyModal extends Component {
   onFinish = async ({ namePolicies }) => {
     const {
       dispatch,
-      item: { _id: id = '', category = [] } = {},
+      item: { _id: id = '', category = [], attachment: attachmentProps = [] } = {},
       employee: { _id = '' } = {},
       onClose = () => {},
     } = this.props;
     const categoryID = !isEmpty(category) ? category[0]._id : '  ';
-    const { uploadedFile = {}, idCategory } = this.state;
+    const { uploadedFile = {}, idCategory, fileName } = this.state;
     const attachment = {
       id: uploadedFile.id,
       name: uploadedFile.name,
@@ -138,9 +138,19 @@ class EditPolicyModal extends Component {
       employee: _id,
       categoryPolicy: idCategory === '' ? categoryID : idCategory,
       namePolicy: namePolicies,
-      attachment,
+      attachment: fileName === '' ? attachmentProps : attachment,
     };
-    if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
+    if (Object.keys(uploadedFile).length === 0 && Object.keys(attachmentProps).length !== 0) {
+      dispatch({
+        type: 'policiesRegulations/updatePolicy',
+        payload,
+      }).then((response) => {
+        const { statusCode } = response;
+        if (statusCode === 200) {
+          onClose();
+        }
+      });
+    } else if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
       message.error('Invalid file');
     } else {
       dispatch({
