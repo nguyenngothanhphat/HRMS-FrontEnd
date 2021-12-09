@@ -32,7 +32,7 @@
 
 :global {
   .dropdownPolicies {
-    left: 1243px !important;
+    padding-top: 0 !important;
     .ant-dropdown-menu-item {
       margin: 4px;
     }
@@ -45,6 +45,14 @@
     }
     .ant-divider-horizontal {
       margin: 0;
+    }
+    .ant-dropdown-arrow {
+      top: -5px !important;
+    }
+    @media only screen and (min-width: 1340px) {
+      .ant-dropdown-arrow {
+        right: 28px;
+      }
     }
   }
 }
