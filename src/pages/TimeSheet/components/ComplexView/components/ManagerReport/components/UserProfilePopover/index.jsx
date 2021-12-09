@@ -10,8 +10,24 @@ import { convertMsToTime } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const UserProfilePopover = (props) => {
-  const { children, dispatch, placement = 'top' } = props;
+  const {
+    children,
+    placement = 'top',
+    data: {
+      legalName = '',
+      userId = '',
+      department = {},
+      title = {},
+      workEmail = '',
+      workNumber = '',
+    } = {},
+  } = props;
   const [showPopover, setShowPopover] = useState(false);
+
+  const onViewProfile = (id) => {
+    const url = `/directory/employee-profile/${id}`;
+    window.open(url, '_blank');
+  };
 
   const renderHeader = () => {
     return (
@@ -20,9 +36,11 @@ const UserProfilePopover = (props) => {
           <img src={MockAvatar} alt="" />
         </div>
         <div className={styles.information}>
-          <span className={styles.name}>Jane Cooper (janecopper)</span>
-          <span className={styles.position}>Software engineer II</span>
-          <span className={styles.department}>Engineering Dept</span>
+          <span className={styles.name}>
+            {legalName} ({userId})
+          </span>
+          <span className={styles.position}>{department?.name}</span>
+          <span className={styles.department}>{title?.name}</span>
         </div>
       </div>
     );
@@ -31,24 +49,24 @@ const UserProfilePopover = (props) => {
     const items = [
       {
         label: 'Reporting Manager',
-        value: <span className={styles.managerName}>Annette Black</span>,
+        value: <span className={styles.managerName} />,
         link: '#',
       },
       {
         label: 'Mobile',
-        value: '+91 9876543211',
+        value: workNumber,
       },
       {
         label: 'Email id',
-        value: 'bessiecooper@gmail.com',
+        value: workEmail,
       },
       {
         label: 'Location',
-        value: 'Thanh Pho Ho Chi Minh, Viet Nam',
+        value: '',
       },
       {
         label: 'Local Time',
-        value: '-',
+        value: '',
       },
     ];
 
@@ -81,7 +99,9 @@ const UserProfilePopover = (props) => {
         <div className={styles.divider} />
         {userInfo()}
         <div className={styles.divider} />
-        <div className={styles.viewFullProfile}>View full profile</div>
+        <div className={styles.viewFullProfile} onClick={() => onViewProfile(userId)}>
+          View full profile
+        </div>
       </div>
     );
   };

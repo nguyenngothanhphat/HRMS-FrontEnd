@@ -14,7 +14,7 @@ import styles from './index.less';
 const { TabPane } = Tabs;
 
 const ComplexView = (props) => {
-  const { permissions = {}, tabName = '', currentUserRoles = [] } = props;
+  const { permissions = {}, tabName = '' } = props;
 
   const [navToTimeoffModalVisible, setNavToTimeoffModalVisible] = useState(false);
 
@@ -32,26 +32,33 @@ const ComplexView = (props) => {
 
   // PERMISSION TO VIEW TABS
   // const viewMyTimesheet = permissions.viewMyTimesheet === 1;
-  const viewReportTimesheet = permissions.viewReportTimesheet === 1;
+  // const viewReportTimesheet = permissions.viewReportTimesheet === 1;
+  const viewHRReport = permissions.viewHRReportCVTimesheet === 1;
+  const viewFinanceReport = permissions.viewFinanceReportCVTimesheet === 1;
+  const viewPeopleManagerReport = permissions.viewPeopleManagerCVTimesheet === 1;
+  const viewPMReport = permissions.viewProjectManagerCVTimesheet === 1;
+
   const viewSettingTimesheet = permissions.viewSettingTimesheet === 1;
 
   const renderOtherTabs = () => {
-    const mainTabs = () => {
-      if (
-        currentUserRoles.some((r) => ['people-manager', 'project-manager', 'manager'].includes(r))
-      )
-        return <ManagerReport />;
-      if (currentUserRoles.some((r) => ['hr-manager'].includes(r))) return <HumanResourceReport />;
-      if (currentUserRoles.some((r) => ['finance'].includes(r))) return <FinanceReport />;
-      return '';
-    };
     return (
       <>
-        {viewReportTimesheet && (
-          <TabPane tab="Reports" key="reports">
-            {mainTabs()}
+        {viewHRReport && (
+          <TabPane tab="Reports" key="hr-reports">
+            <HumanResourceReport />
           </TabPane>
         )}
+        {viewFinanceReport && (
+          <TabPane tab="Reports" key="finance-reports">
+            <FinanceReport />
+          </TabPane>
+        )}
+        {(viewPeopleManagerReport || viewPMReport) && (
+          <TabPane tab="Reports" key="pm-reports">
+            <ManagerReport />
+          </TabPane>
+        )}
+
         {viewSettingTimesheet && (
           <TabPane tab="Settings" key="settings">
             <Settings />

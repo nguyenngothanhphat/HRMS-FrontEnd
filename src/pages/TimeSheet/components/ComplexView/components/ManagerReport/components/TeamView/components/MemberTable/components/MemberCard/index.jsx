@@ -28,7 +28,7 @@ const MemberCard = (props) => {
         </Col>
         <Col span={PROJECT_GROUP} className={styles.groupCell}>
           {projects.map((pj) => {
-            const { projectName = '', projectManger = {}, userProjectSpentTime = 0 } = pj;
+            const { projectName = '', projectManager = {}, userProjectSpentTime = 0 } = pj;
             if (viewType === VIEW_TYPE.PEOPLE_MANAGER) {
               return (
                 <Row className={styles.groupRow}>
@@ -36,10 +36,10 @@ const MemberCard = (props) => {
                     {projectName}
                   </Col>
                   <Col span={PROJECT_MANAGER} className={styles.normalCell}>
-                    {projectManger?.legalName}
+                    {projectManager?.legalName}
                   </Col>
                   <Col span={TOTAL_HOURS} className={styles.normalCell}>
-                    {userProjectSpentTime}
+                    {userProjectSpentTime} hours
                   </Col>
                 </Row>
               );
@@ -51,21 +51,21 @@ const MemberCard = (props) => {
                   {projectName}
                 </Col>
                 <Col span={PROJECT_MANAGER} className={styles.normalCell}>
-                  {userProjectSpentTime}
+                  {userProjectSpentTime} hours
                 </Col>
                 <Col span={TOTAL_HOURS} className={`${styles.normalCell} ${styles.alignCenter}`}>
-                  <UserProfilePopover placement="leftTop">
-                    {projectManger.avatar ? (
+                  <UserProfilePopover placement="leftTop" data={projectManager}>
+                    {projectManager.avatar ? (
                       <img
-                        src={projectManger.avatar || MockAvatar}
+                        src={projectManager.avatar || MockAvatar}
                         className={styles.avatar}
                         alt=""
                       />
                     ) : (
                       <div className={styles.icon}>
                         <span>
-                          {projectManger.legalName
-                            ? projectManger.legalName.toString()?.charAt(0)
+                          {projectManager.legalName
+                            ? projectManager.legalName.toString()?.charAt(0)
                             : 'P'}
                         </span>
                       </div>

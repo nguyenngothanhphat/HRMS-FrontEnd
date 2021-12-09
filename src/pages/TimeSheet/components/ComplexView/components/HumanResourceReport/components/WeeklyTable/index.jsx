@@ -6,8 +6,14 @@ import { employeeColor } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const WeeklyTable = (props) => {
-  const { data = [], limit = 10, selectedEmployees = [], setSelectedEmployees = () => {} } = props;
-  const [pageSelected, , setPageSelected] = useState(1);
+  const {
+    data = [],
+    limit = 10,
+    selectedEmployees = [],
+    setSelectedEmployees = () => {},
+    loadingFetch = false,
+  } = props;
+  const [pageSelected, setPageSelected] = useState(1);
 
   const getColorByIndex = (index) => {
     return employeeColor[index % employeeColor.length];
@@ -19,28 +25,33 @@ const WeeklyTable = (props) => {
         title: 'Employee',
         dataIndex: 'user',
         key: 'user',
-        render: (user, _, index) => (
-          <div className={styles.renderEmployee}>
-            <div className={styles.avatar}>
-              {user.avatar ? (
-                <img src={user.avatar || MockAvatar} alt="" />
-              ) : (
-                <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
-                  <span>{user.name ? user.name.toString()?.charAt(0) : 'P'}</span>
-                </div>
-              )}
+        render: (user, row, index) => {
+          const { avatar = '', legalName = '', userId = '' } = row;
+
+          return (
+            <div className={styles.renderEmployee}>
+              <div className={styles.avatar}>
+                {avatar ? (
+                  <img src={avatar || MockAvatar} alt="" />
+                ) : (
+                  <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
+                    <span>{legalName ? legalName.toString()?.charAt(0) : 'P'}</span>
+                  </div>
+                )}
+              </div>
+              <div className={styles.right}>
+                <span className={styles.name}>{legalName}</span>
+                <span className={styles.id}>{userId}</span>
+              </div>
             </div>
-            <div className={styles.right}>
-              <span className={styles.name}>{user.name}</span>
-              <span className={styles.id}>{user.employeeId}</span>
-            </div>
-          </div>
-        ),
+          );
+        },
       },
       {
         title: 'Department',
         dataIndex: 'department',
         key: 'department',
+        render: (department = {}) => department.name,
       },
       {
         title: 'Projects',
@@ -51,16 +62,26 @@ const WeeklyTable = (props) => {
         title: 'Working Days',
         dataIndex: 'workingDays',
         key: 'workingDays',
+        render: (workingDays, row) => {
+          const { totalWorkingDay = 0, userSpentInDay = 0, totalWorkingDayInHours = 0 } = row;
+          // 4/5 (30 hours)
+          return `${userSpentInDay}/${totalWorkingDay} (${totalWorkingDayInHours} hours)`;
+        },
       },
       {
         title: 'Leaves Taken',
-        dataIndex: 'leavesTaken',
-        key: 'leavesTaken',
+        dataIndex: 'leaveTaken',
+        key: 'leaveTaken',
+        render: (leaveTaken, row) => {
+          const { totalLeave = 0 } = row;
+          return `${leaveTaken}/${totalLeave}`;
+        },
       },
       {
         title: 'Total Hours',
-        dataIndex: 'totalHours',
-        key: 'totalHours',
+        dataIndex: 'userSpentInHours',
+        key: 'userSpentInHours',
+        render: (userSpentInHours) => `${userSpentInHours} hours`,
       },
     ];
     return columns;
@@ -107,6 +128,7 @@ const WeeklyTable = (props) => {
         rowKey={(record) => record.id}
         pagination={false}
         scroll={selectedEmployees.length > 0 ? { y: 400 } : {}}
+        loading={loadingFetch}
         // pagination={pagination}
       />
     </div>

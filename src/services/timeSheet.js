@@ -164,6 +164,36 @@ export async function getManagerTimesheetOfProjectView(payload, params) {
   );
 }
 
+// HR VIEW
+export async function getHRTimesheet(payload, params) {
+  // date, week, month
+  return request(
+    `/api/hr/report`,
+    {
+      method: 'GET',
+      data: payload,
+      params,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
+
+// FINANCE VIEW
+export async function getFinanceTimesheet(payload, params) {
+  // date, week, month
+  return request(
+    `/api/finance/report`,
+    {
+      method: 'GET',
+      data: payload,
+      params,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
+
 // get list employee
 export async function getEmployeeList(payload) {
   return request('/api/employeetenant/list-by-single-company', {

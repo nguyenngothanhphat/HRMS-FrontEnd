@@ -1,4 +1,4 @@
-import { Col, Row } from 'antd';
+import { Col, Row, Spin } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import {
@@ -22,7 +22,7 @@ const VIEW_TYPE = {
 
 const MemberTable = (props) => {
   const [viewType, setViewType] = useState(VIEW_TYPE.PEOPLE_MANAGER);
-  const { data = [], currentUserRoles = [] } = props;
+  const { data = [], currentUserRoles = [], loadingFetch = false } = props;
 
   useEffect(() => {
     if (currentUserRoles.some((r) => ['people-manager'].includes(r))) {
@@ -93,7 +93,7 @@ const MemberTable = (props) => {
     return (
       <Row className={styles.member}>
         <Col span={EMPLOYEE} className={`${styles.member__firstColumn}`}>
-          <UserProfilePopover placement="rightTop">
+          <UserProfilePopover placement="rightTop" data={item.employee}>
             <div className={styles.renderEmployee}>
               <div className={styles.avatar}>
                 {avatar ? (
@@ -119,6 +119,12 @@ const MemberTable = (props) => {
   };
 
   const _renderTableContent = () => {
+    if (loadingFetch)
+      return (
+        <div className={styles.loadingContainer}>
+          <Spin size="default" />
+        </div>
+      );
     return data.map((m, i) => _renderEmployee(m, i));
   };
 

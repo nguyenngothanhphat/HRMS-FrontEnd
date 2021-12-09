@@ -12,7 +12,19 @@ import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
 import styles from './index.less';
 
 const WeeklyTable = (props) => {
-  const { startDate = '', endDate = '', loadingFetch = false, data = [] } = props;
+  const {
+    startDate = '',
+    endDate = '',
+    loadingFetch = false,
+    data = [],
+    tablePagination: {
+      page = 0,
+      // pageCount = 0,
+      pageSize = 0,
+      rowCount = 0,
+    } = {},
+    onChangePage = () => {},
+  } = props;
   const [dateList, setDateList] = useState([]);
   const [formattedData, setFormattedData] = useState([]);
 
@@ -179,9 +191,7 @@ const WeeklyTable = (props) => {
                     <img src={EmptyLine} alt="" />
                   </span>
                 ) : (
-                  <span className={styles.hourValue}>
-                    {convertMsToTime(value.duration)}
-                  </span>
+                  <span className={styles.hourValue}>{convertMsToTime(value.duration)}</span>
                 )}
               </TaskPopover>
             );
@@ -255,9 +265,13 @@ const WeeklyTable = (props) => {
     return result;
   };
 
+  const onChangePagination = (pageNumber) => {
+    onChangePage(pageNumber);
+  };
+
   const pagination = {
     position: ['bottomLeft'],
-    total: 30,
+    total: rowCount,
     showTotal: (total, range) => (
       <span>
         Showing{' '}
@@ -267,9 +281,9 @@ const WeeklyTable = (props) => {
         of {total}{' '}
       </span>
     ),
-    pageSize: 5,
-    current: 1,
-    // onChange: onChangePagination,
+    pageSize,
+    current: page,
+    onChange: onChangePagination,
   };
 
   // MAIN AREA

@@ -10,12 +10,12 @@ import styles from './index.less';
 
 const MonthlyTable = (props) => {
   const {
-    startDate = '',
-    endDate = '',
-    loadingFetchMyTimesheetByType = false,
+    loadingFetch = false,
     weeksOfMonth = [],
-    data: { weeks: weeksProp = [], summary: summaryProp = [] } = {},
-    data = {},
+    // data: { weeks: weeksProp = [], summary: summaryProp = [] } = {},
+    data = [],
+    selectedProjects = [],
+    setSelectedProjects = () => {},
   } = props;
   const [formattedData, setFormattedData] = useState([]);
 
@@ -24,8 +24,10 @@ const MonthlyTable = (props) => {
   const formatData = () => {
     const header = {
       projectName: 'All Projects',
+      totalDuration: 'Total Hours',
+      projectId: 'All',
     };
-    setFormattedData([header].concat(weeksProp));
+    setFormattedData([header].concat(data));
   };
 
   const getColorByIndex = (index) => {
@@ -64,14 +66,14 @@ const MonthlyTable = (props) => {
           const { weeks = [] } = row;
           if (index === 0) return renderHeaderItem(weekItem);
           const find = weeks.find((w) => w.week === weekItem.week) || {};
-          if (find?.weekProjectTime === 0 || !find?.weekProjectTime)
+          if (!find)
             return (
               <span className={styles.hourValue}>
                 <img src={EmptyLine} alt="" />
               </span>
             );
           return (
-            <span className={styles.hourValue}>{convertMsToTime(find?.weekProjectTime || 0)}</span>
+            <span className={styles.hourValue}>{convertMsToTime(find.weekProjectTime || 0)}</span>
           );
         },
       };
@@ -82,11 +84,11 @@ const MonthlyTable = (props) => {
         title: 'All Projects',
         dataIndex: 'projectName',
         key: 'projectName',
-        align: 'center',
+        align: 'left',
         width: `${100 / columnLength}%`,
         render: (projectName, _, index) => {
           if (index === 0) {
-            return projectName;
+            return <div style={{ paddingLeft: '24px' }}>{projectName}</div>;
           }
           return (
             <div className={styles.projectName}>
@@ -99,42 +101,53 @@ const MonthlyTable = (props) => {
         },
       },
       ...dateColumns,
+      {
+        title: 'Total Hours',
+        dataIndex: 'totalDuration',
+        key: 'totalDuration',
+        align: 'center',
+        width: `${100 / 9}%`,
+        render: (value = 0, _, index) => {
+          if (index === 0) return <span className={styles.totalHeader}>{value}</span>;
+          return <span className={styles.totalValue}>{convertMsToTime(value)}</span>;
+        },
+      },
     ];
     return result;
   };
 
-  // FOOTER
-  const renderFooter = () => {
-    return (
-      <div className={styles.footer}>
-        <div className={styles.item}>
-          <span className={styles.text}>Total</span>
-        </div>
-        {weeksOfMonth.map((weekItem) => {
-          const find = summaryProp.find((w) => w.week === weekItem.week) || {};
-          const { week = '', dailies = [], weekTotalTime = '' } = find;
-          return (
-            <TaskPopover
-              week={week}
-              startDate={weekItem.startDate}
-              endDate={weekItem.endDate}
-              tasks={dailies}
-            >
-              {dailies.length > 0 ? (
-                <div className={styles.item}>
-                  <span className={styles.value}>{convertMsToTime(weekTotalTime || 0)}</span>
-                </div>
-              ) : (
-                <div className={styles.item}>
-                  <img src={EmptyLine} alt="" />
-                </div>
-              )}
-            </TaskPopover>
-          );
-        })}
-      </div>
-    );
+  const onSelectChange = (selectedRowKeys) => {
+    console.log('🚀 ~ onSelectChange ~ selectedRowKeys', selectedRowKeys);
+    let temp = [...selectedRowKeys];
+    const projectListLength = data.length;
+    const selectedListLength = selectedRowKeys.length;
+
+    if (projectListLength === selectedListLength) {
+      if (!selectedRowKeys.includes('All')) {
+        temp = [...data.map((x) => x.projectId), 'All'];
+      }
+    } else if (selectedRowKeys.includes('All')) {
+      temp = [...data.map((x) => x.projectId), 'All'];
+    }
+
+    if (temp.length === 1 && temp.includes('All')) {
+      temp = [];
+    }
+    // if (
+    //   (selectedRowKeys.includes('All') && selectedRowKeys.length !== 1) ||
+    //   (projectListLength === selectedListLength && !selectedRowKeys.includes('All'))
+    // ) {
+    //   temp = [...data.map((x) => x.projectId), 'All'];
+    // }
+
+    setSelectedProjects([...temp]);
   };
+
+  const rowSelection = {
+    selectedRowKeys: selectedProjects,
+    onChange: onSelectChange,
+  };
+
   // MAIN AREA
   return (
     <div className={styles.MonthlyTable}>
@@ -143,16 +156,15 @@ const MonthlyTable = (props) => {
           columns={columns()}
           dataSource={formattedData}
           bordered
+          rowSelection={rowSelection}
           pagination={false}
           // scroll={{ y: 440 }}
-          footer={renderFooter}
-          loading={loadingFetchMyTimesheetByType}
+          loading={loadingFetch}
+          rowKey={(row) => row.projectId}
         />
       </div>
     </div>
   );
 };
 
-export default connect(({ loading }) => ({
-  loadingFetchMyTimesheetByType: loading.effects['timeSheet/fetchMyTimesheetByTypeEffect'],
-}))(MonthlyTable);
+export default connect(() => ({}))(MonthlyTable);

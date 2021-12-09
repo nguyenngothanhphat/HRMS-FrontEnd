@@ -17,6 +17,9 @@ import {
   getManagerTimesheetOfTeamView,
   getManagerTimesheetOfProjectView,
   getProjectList,
+  // complex view hr & finance
+  getHRTimesheet,
+  getFinanceTimesheet,
 } from '@/services/timeSheet';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { convertMsToTime, isTheSameDay } from '@/utils/timeSheet';
@@ -41,8 +44,13 @@ const initialState = {
   importingIds: [],
   // manager complex view
   managerTeamViewList: [],
+  managerTeamViewPagination: {},
   managerProjectViewList: [],
+  managerProjectViewPagination: {},
   projectList: [],
+  // hr & finance complex view
+  hrViewList: [],
+  financeViewList: [],
 };
 
 const TimeSheet = {
@@ -313,13 +321,14 @@ const TimeSheet = {
       const response = {};
       try {
         const res = yield call(getManagerTimesheetOfTeamView, {}, { ...payload, tenantId });
-        const { code, data = [] } = res;
+        const { code, data = [], pagination = {} } = res;
         if (code !== 200) throw res;
 
         yield put({
           type: 'save',
           payload: {
             managerTeamViewList: data,
+            managerTeamViewPagination: pagination,
           },
         });
       } catch (errors) {
@@ -332,13 +341,14 @@ const TimeSheet = {
       const response = {};
       try {
         const res = yield call(getManagerTimesheetOfProjectView, {}, { ...payload, tenantId });
-        const { code, data = [] } = res;
+        const { code, data = [], pagination = {} } = res;
         if (code !== 200) throw res;
 
         yield put({
           type: 'save',
           payload: {
             managerProjectViewList: data,
+            managerProjectViewPagination: pagination,
           },
         });
       } catch (errors) {
@@ -366,6 +376,46 @@ const TimeSheet = {
         });
       } catch (errors) {
         dialog(errors);
+      }
+      return response;
+    },
+
+    // HR & FINANCE COMPLEX VIEW
+    *fetchHRTimesheetEffect({ payload }, { call, put }) {
+      const response = {};
+      try {
+        const res = yield call(getHRTimesheet, {}, { ...payload, tenantId });
+        const { code, data = [] } = res;
+        if (code !== 200) throw res;
+
+        yield put({
+          type: 'save',
+          payload: {
+            hrViewList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+    *fetchFinanceTimesheetEffect({ payload }, { call, put }) {
+      const response = {};
+      try {
+        const res = yield call(getFinanceTimesheet, {}, { ...payload, tenantId });
+        const { code, data = [] } = res;
+        if (code !== 200) throw res;
+
+        yield put({
+          type: 'save',
+          payload: {
+            financeViewList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
       }
       return response;
     },

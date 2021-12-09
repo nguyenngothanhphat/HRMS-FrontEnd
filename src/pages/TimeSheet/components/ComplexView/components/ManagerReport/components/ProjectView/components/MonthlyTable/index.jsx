@@ -9,7 +9,18 @@ import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
 import styles from './index.less';
 
 const MonthlyTable = (props) => {
-  const { loadingFetch = false, weeksOfMonth = [], data = [] } = props;
+  const {
+    loadingFetch = false,
+    weeksOfMonth = [],
+    data = [],
+    tablePagination: {
+      page = 0,
+      // pageCount = 0,
+      pageSize = 0,
+      rowCount = 0,
+    } = {},
+    onChangePage = () => {},
+  } = props;
   const [formattedData, setFormattedData] = useState([]);
 
   // FUNCTIONS
@@ -105,9 +116,13 @@ const MonthlyTable = (props) => {
     return result;
   };
 
+  const onChangePagination = (pageNumber) => {
+    onChangePage(pageNumber);
+  };
+
   const pagination = {
     position: ['bottomLeft'],
-    total: 30,
+    total: rowCount,
     showTotal: (total, range) => (
       <span>
         Showing{' '}
@@ -117,9 +132,9 @@ const MonthlyTable = (props) => {
         of {total}{' '}
       </span>
     ),
-    pageSize: 5,
-    current: 1,
-    // onChange: onChangePagination,
+    pageSize,
+    current: page,
+    onChange: onChangePagination,
   };
 
   // MAIN AREA

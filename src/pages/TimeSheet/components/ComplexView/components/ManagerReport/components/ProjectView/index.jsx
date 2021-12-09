@@ -21,12 +21,17 @@ const ProjectView = (props) => {
 
   // others
   const [selectedView, setSelectedView] = useState(VIEW_TYPE.W); // W: weekly, M: monthly
-
   const [currentProject, setCurrentProject] = useState();
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
 
   const {
     dispatch,
-    timeSheet: { projectList = [], managerProjectViewList = [] } = {},
+    timeSheet: {
+      projectList = [],
+      managerProjectViewList = [],
+      managerProjectViewPagination = {},
+    } = {},
     employee: { _id: userId = '' } = {},
   } = props;
 
@@ -42,6 +47,8 @@ const ProjectView = (props) => {
           toDate: moment(endDate).format(dateFormatAPI),
           viewType: selectedView,
           projectId: currentProject,
+          page,
+          limit,
         },
       });
     }
@@ -51,6 +58,10 @@ const ProjectView = (props) => {
     dispatch({
       type: 'timeSheet/fetchProjectListEffect',
     });
+  };
+
+  const onChangePage = (pageNumber) => {
+    setPage(pageNumber);
   };
 
   // USE EFFECT AREA
@@ -68,13 +79,13 @@ const ProjectView = (props) => {
     if (startDateWeek && selectedView === VIEW_TYPE.W) {
       fetchManagerTimesheetOfProjectView(startDateWeek, endDateWeek);
     }
-  }, [startDateWeek, selectedView, currentProject]);
+  }, [startDateWeek, selectedView, currentProject, page]);
 
   useEffect(() => {
     if (startDateMonth && selectedView === VIEW_TYPE.M) {
       fetchManagerTimesheetOfProjectView(startDateMonth, endDateMonth);
     }
-  }, [startDateMonth, selectedView, currentProject]);
+  }, [startDateMonth, selectedView, currentProject, page]);
 
   // generate dates for week
   useEffect(() => {
@@ -176,6 +187,8 @@ const ProjectView = (props) => {
             startDate={startDateWeek}
             endDate={endDateWeek}
             data={managerProjectViewList}
+            tablePagination={managerProjectViewPagination}
+            onChangePage={onChangePage}
           />
         );
       case VIEW_TYPE.M:
@@ -185,6 +198,8 @@ const ProjectView = (props) => {
             endDate={endDateMonth}
             weeksOfMonth={weeksOfMonth}
             data={managerProjectViewList}
+            tablePagination={managerProjectViewPagination}
+            onChangePage={onChangePage}
           />
         );
       default:
