@@ -6,6 +6,9 @@ import { PageContainer } from '@/layouts/layout/src';
 import Polices from './components/Policies';
 import styles from './index.less';
 
+const HR_MANAGER = 'HR-MANAGER';
+const HR_EMPLOYEE = 'HR';
+const MANAGER = 'MANAGER';
 @connect(({ user: { currentUser = {} } = {} }) => ({
   currentUser,
 }))
@@ -13,6 +16,11 @@ class PoliciesRegulations extends PureComponent {
   componentDidMount() {}
 
   render() {
+    const {
+      currentUser: { roles = [] },
+    } = this.props;
+    const checkRoleHrAndManager =
+      roles.includes(HR_MANAGER) || roles.includes(HR_EMPLOYEE) || roles.includes(MANAGER);
     return (
       <PageContainer>
         <Row className={styles.PoliciesRegulations}>
@@ -20,12 +28,17 @@ class PoliciesRegulations extends PureComponent {
             <div className={styles.header}>
               <div className={styles.header__left}>Policies</div>
               <div className={styles.header__right}>
-                <Button className={styles.buttonSetting}>
-                  {/** cần sửa lại  */}
-                  <Link to="/policies-regulations/settings">
+                {checkRoleHrAndManager ? (
+                  <Button>
+                    <Link to="/policies-regulations/settings">
+                      <span className={styles.buttonSetting__text}>Settings</span>
+                    </Link>
+                  </Button>
+                ) : (
+                  <div className={styles.buttonSetting}>
                     <span className={styles.buttonSetting__text}>Settings</span>
-                  </Link>
-                </Button>
+                  </div>
+                )}
               </div>
             </div>
           </Col>

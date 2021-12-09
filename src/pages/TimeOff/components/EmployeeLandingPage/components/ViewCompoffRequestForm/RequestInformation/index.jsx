@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col, Spin, Input } from 'antd';
-import EditIcon from '@/assets/editBtnBlue.svg';
 import { connect, history } from 'umi';
-import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
 import moment from 'moment';
+import EditIcon from '@/assets/editBtnBlue.svg';
+import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
 import WithdrawModal from '../WithdrawModal';
 
 import styles from './index.less';
@@ -61,12 +61,18 @@ class RequestInformation extends PureComponent {
 
   // ON PROCEED withDraw
   onProceed = async () => {
-    const { timeOff: { viewingCompoffRequest: { _id: id = '', ticketID = '' } = {} } = {} } =
-      this.props;
+    const {
+      timeOff: {
+        viewingCompoffRequest: { _id: id = '', ticketID = '', projectManager = {} } = {},
+      } = {},
+    } = this.props;
     const { dispatch } = this.props;
     const statusCode = await dispatch({
       type: 'timeOff/withdrawCompoffRequest',
-      id,
+      payload: {
+        id,
+        projectManager: projectManager?._id,
+      },
     });
     if (statusCode === 200) {
       history.push({
@@ -90,20 +96,16 @@ class RequestInformation extends PureComponent {
       _id = '',
       extraTime = [],
       description = '',
-      project: {
-        name = '',
-        manager: {
-          employeeId: projectManagerId = '',
-          generalInfo: { firstName = '', lastName = '' } = {},
-        } = {},
+      project: { projectName = '' } = {},
+      projectManager: {
+        employeeId: projectManagerId = '',
+        generalInfoInfo: { legalName: projectManagerName = '' } = {},
       } = {},
       commentPM = '',
       commentCLA = '',
       currentStep = 0,
       totalHours = 0,
     } = viewingCompoffRequest;
-
-    const projectManagerName = `${firstName} ${lastName}`;
 
     const formatDurationTime = this.formatDurationTime(extraTime);
 
@@ -136,7 +138,7 @@ class RequestInformation extends PureComponent {
               <Row>
                 <Col span={6}>Project</Col>
                 <Col span={18} className={styles.detailColumn}>
-                  <span className={styles.fieldValue}>{name}</span>
+                  <span className={styles.fieldValue}>{projectName}</span>
                   <div className={styles.smallNotice}>
                     <span className={styles.normalText}>
                       Managed by [{projectManagerId}] - {projectManagerName}

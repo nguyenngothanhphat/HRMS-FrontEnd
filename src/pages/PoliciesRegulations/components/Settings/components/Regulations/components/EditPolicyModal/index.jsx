@@ -16,10 +16,11 @@ const { Option } = Select;
 @connect(
   ({
     loading,
-    policiesRegulations: { listCategory = [] } = {},
+    policiesRegulations: { listCategory = [], listPolicy = [] } = {},
     user: { currentUser: { employee = {} } = {} },
   }) => ({
     listCategory,
+    listPolicy,
     employee,
     loadingUploadAttachment: loading.effects['policiesRegulations/uploadFileAttachments'],
     loadingUpdate: loading.effects['policiesRegulations/updatePolicy'],
@@ -168,7 +169,7 @@ class EditPolicyModal extends Component {
 
   render() {
     const { listCategory = [], item = {}, visible, filePDF = '' } = this.props;
-    const { loadingUploadAttachment, loadingUpdate } = this.props;
+    const { loadingUploadAttachment, loadingUpdate, listPolicy = [] } = this.props;
     const { fileName = '' } = this.state;
     const { namePolicy = '', category = [] } = item;
     const categoryName = !isEmpty(category) ? category[0].name : '  ';
@@ -214,10 +215,23 @@ class EditPolicyModal extends Component {
             </Form.Item>
 
             <Form.Item
-              label="Categories Name"
+              label="Policy Name"
               name="namePolicies"
               labelCol={{ span: 24 }}
-              rules={[{ required: true, message: 'Please enter the categories name' }]}
+              rules={[
+                { required: true, message: 'Please enter policy name' },
+                () => ({
+                  validator(_, value) {
+                    const duplicate = listPolicy.find(
+                      (val) => val.namePolicy === value && value !== namePolicy,
+                    );
+                    if (duplicate) {
+                      return Promise.reject('Policy Name is exist ');
+                    }
+                    return Promise.resolve();
+                  },
+                }),
+              ]}
             >
               <Input />
             </Form.Item>

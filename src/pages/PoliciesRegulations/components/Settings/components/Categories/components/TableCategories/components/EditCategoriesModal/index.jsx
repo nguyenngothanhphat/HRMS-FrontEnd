@@ -3,8 +3,9 @@ import { Button, Col, Form, Input, Modal, Row } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ loading }) => ({
+@connect(({ loading, policiesRegulations: { listCategory = [] } = {} }) => ({
   loadingUpdate: loading.effects['policiesRegulations/updateCategory'],
+  listCategory,
 }))
 class EditCategoriesModal extends Component {
   formRef = React.createRef();
@@ -37,7 +38,7 @@ class EditCategoriesModal extends Component {
   };
 
   render() {
-    const { visible, loadingUpdate, item: { name = '' } = {} } = this.props;
+    const { visible, loadingUpdate, item: { name = '' } = {}, listCategory = [] } = this.props;
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>
@@ -61,7 +62,18 @@ class EditCategoriesModal extends Component {
                   label="Categories Name"
                   name="category"
                   labelCol={{ span: 24 }}
-                  rules={[{ required: true, message: 'Please enter the categories name' }]}
+                  rules={[
+                    { required: true, message: 'Please enter the categories name' },
+                    () => ({
+                      validator(_, value) {
+                        const duplicate = listCategory.find((val) => val.name === value);
+                        if (duplicate) {
+                          return Promise.reject('Categories Name is exist ');
+                        }
+                        return Promise.resolve();
+                      },
+                    }),
+                  ]}
                 >
                   <Input />
                 </Form.Item>

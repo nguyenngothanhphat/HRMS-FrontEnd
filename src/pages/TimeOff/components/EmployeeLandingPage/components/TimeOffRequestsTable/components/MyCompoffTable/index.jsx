@@ -33,7 +33,7 @@ class MyCompoffTable extends PureComponent {
       title: 'Project',
       dataIndex: 'project',
       align: 'left',
-      render: (project) => <span>{project ? project.name : '-'}</span>,
+      render: (project) => <span>{project ? project.projectName : '-'}</span>,
       // sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {

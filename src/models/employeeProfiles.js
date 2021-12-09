@@ -1,3 +1,4 @@
+import { notification } from 'antd';
 import { dialog } from '@/utils/utils';
 import {
   getCompensationList,
@@ -56,7 +57,6 @@ import {
   addMultiBank,
   addMultiCertification,
 } from '@/services/employeeProfiles';
-import { notification } from 'antd';
 import { getCurrentTenant } from '@/utils/authority';
 
 // const documentCategories = [
@@ -134,6 +134,7 @@ const employeeProfile = {
     listRelation: [],
     listStates: [],
     revoke: [],
+    visibleSuccess: false
   },
   effects: {
     *fetchEmployeeIdByUserId({ payload }, { call, put }) {
@@ -507,16 +508,20 @@ const employeeProfile = {
       try {
         const response = yield call(updateGeneralInfo, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
-        const { statusCode, message } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
+        // notification.success({
+        //   message,
+        // });
         const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
         yield put({
           type: 'fetchGeneralInfo',
           payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
           dataTempKept,
+        });
+        yield put({
+          type: 'save',
+          payload: {visibleSuccess: true}
         });
         switch (key) {
           case 'openContactDetails':
@@ -566,10 +571,10 @@ const employeeProfile = {
             type: 'user/fetchCurrent',
           });
         }
-        return response;
+        // return response;
       } catch (errors) {
         dialog(errors);
-        return {};
+        // return {};
       }
     },
     *updateFirstGeneralInfo(
@@ -1035,16 +1040,20 @@ const employeeProfile = {
         const response = yield call(updateBank, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
         const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
-        const { statusCode, message } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
+        // notification.success({
+        //   message,
+        // });
         yield put({
           type: 'fetchBank',
           payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
           dataTempKept,
         });
+        yield put({
+          type: 'save', 
+          payload: {visibleSuccess: true}
+        })
         if (key === 'openBank') {
           yield put({
             type: 'saveOpenEdit',
@@ -1116,16 +1125,20 @@ const employeeProfile = {
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
         const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
 
-        const { statusCode, message } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
+        // notification.success({
+        //   message,
+        // });
         yield put({
           type: 'fetchTax',
           payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
           dataTempKept,
         });
+        yield put({
+          type: 'save',
+          payload: {visibleSuccess: true}
+        })
         if (key === 'openTax') {
           yield put({
             type: 'saveOpenEdit',
@@ -1180,17 +1193,21 @@ const employeeProfile = {
       let isUpdateEmployment = false;
       try {
         const response = yield call(updateEmployment, payload);
-        const { statusCode, message } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
+        // notification.success({
+        //   message,
+        // });
         const employment = yield call(getEmploymentInfo, {
           id: payload.id,
           tenantId: payload.tenantId,
         });
         yield put({ type: 'saveOrigin', payload: { employmentData: employment.data } });
         isUpdateEmployment = true;
+        yield put({
+          type: 'save',
+          payload: {visibleSuccess: true}
+        })
       } catch (errors) {
         dialog(errors);
       }
