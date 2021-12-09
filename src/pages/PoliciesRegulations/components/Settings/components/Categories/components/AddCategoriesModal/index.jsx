@@ -4,8 +4,9 @@ import { connect } from 'umi';
 
 import styles from './index.less';
 
-@connect(({ loading }) => ({
+@connect(({ loading, policiesRegulations: { listCategory = [] } = {} }) => ({
   loadingAdd: loading.effects['policiesRegulations/addCategory'],
+  listCategory,
 }))
 class AddCategoriesModal extends Component {
   formRef = React.createRef();
@@ -38,7 +39,7 @@ class AddCategoriesModal extends Component {
   };
 
   render() {
-    const { visible, loadingAdd } = this.props;
+    const { visible, loadingAdd, listCategory = [] } = this.props;
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>
@@ -56,7 +57,18 @@ class AddCategoriesModal extends Component {
                   label="Categories Name"
                   name="category"
                   labelCol={{ span: 24 }}
-                  rules={[{ required: true, message: 'Please enter the categories name' }]}
+                  rules={[
+                    { required: true, message: 'Please enter the categories name' },
+                    () => ({
+                      validator(_, value) {
+                        const duplicate = listCategory.find((val) => val.name === value);
+                        if (duplicate) {
+                          return Promise.reject('Categories Name is exist ');
+                        }
+                        return Promise.resolve();
+                      },
+                    }),
+                  ]}
                 >
                   <Input />
                 </Form.Item>

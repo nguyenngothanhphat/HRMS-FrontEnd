@@ -15,10 +15,11 @@ const { Option } = Select;
 @connect(
   ({
     loading,
-    policiesRegulations: { listCategory = [] } = {},
+    policiesRegulations: { listCategory = [], listPolicy = [] } = {},
     user: { currentUser: { employee = {} } = {} },
   }) => ({
     listCategory,
+    listPolicy,
     employee,
     loadingUploadAttachment: loading.effects['policiesRegulations/uploadFileAttachments'],
     loadingAdd: loading.effects['policiesRegulations/addPolicy'],
@@ -152,7 +153,7 @@ class AddPolicyModal extends Component {
 
   render() {
     const { visible } = this.props;
-    const { loadingUploadAttachment, loadingAdd, listCategory = [] } = this.props;
+    const { loadingUploadAttachment, loadingAdd, listCategory = [], listPolicy = [] } = this.props;
     const { fileName = '' } = this.state;
     const onPolicyCategories = () => {};
     const renderModalHeader = () => {
@@ -180,10 +181,21 @@ class AddPolicyModal extends Component {
             </Form.Item>
 
             <Form.Item
-              label="Categories Name"
+              label="Policy Name"
               name="namePolicies"
               labelCol={{ span: 24 }}
-              rules={[{ required: true, message: 'Please enter the categories name' }]}
+              rules={[
+                { required: true, message: 'Please enter Policy Name' },
+                () => ({
+                  validator(_, value) {
+                    const duplicate = listPolicy.find((val) => val.namePolicy === value);
+                    if (duplicate) {
+                      return Promise.reject('Policy Name is exist ');
+                    }
+                    return Promise.resolve();
+                  },
+                }),
+              ]}
             >
               <Input />
             </Form.Item>
