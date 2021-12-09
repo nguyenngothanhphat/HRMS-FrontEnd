@@ -588,18 +588,19 @@ const timeOff = {
       }
     },
 
-    *withdrawCompoffRequest({ id = '' }, { call, put }) {
+    *withdrawCompoffRequest({ payload }, { call, put }) {
       try {
-        if (id !== '') {
-          const response = yield call(withdrawCompoffRequest, { id, tenantId: getCurrentTenant() });
-          const { statusCode, data: withdrawnCompoffRequest = [] } = response;
-          if (statusCode !== 200) throw response;
-          yield put({
-            type: 'save',
-            payload: { withdrawnCompoffRequest },
-          });
-          return statusCode;
-        }
+        const response = yield call(withdrawCompoffRequest, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data: withdrawnCompoffRequest = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { withdrawnCompoffRequest },
+        });
+        return statusCode;
       } catch (errors) {
         dialog(errors);
       }

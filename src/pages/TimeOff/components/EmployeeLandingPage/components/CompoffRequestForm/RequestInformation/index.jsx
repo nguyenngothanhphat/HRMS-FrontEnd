@@ -103,9 +103,6 @@ class RequestInformation extends PureComponent {
         });
       }
 
-      // set project name
-      this.onEnterProjectNameChange(projectId);
-
       // set dates
       let durationFrom = '';
       let durationTo = '';
@@ -146,6 +143,16 @@ class RequestInformation extends PureComponent {
     }
   };
 
+  componentDidUpdate = (prevProps) => {
+    const { timeOff: { projectsList } = {} } = this.props;
+    if (JSON.stringify(prevProps.timeOff.projectsList) !== JSON.stringify(projectsList)) {
+      const { viewingCompoffRequest = {} } = this.props;
+      const { project: { id: projectId = '' } = {} } = viewingCompoffRequest;
+      // set project name
+      this.onEnterProjectNameChange(projectId);
+    }
+  };
+
   // GENERATE PROJECT LIST DATA
   generateProjectsList = () => {
     const { timeOff: { projectsList = [] } = {} } = this.props;
@@ -166,12 +173,11 @@ class RequestInformation extends PureComponent {
   // GET MANAGER ID & NAME OF SELECTED PROJECT
   onEnterProjectNameChange = (value) => {
     const { timeOff: { projectsList = [] } = {} } = this.props;
-
     const find = projectsList.find((x) => x.id === value) || {};
     const {
       projectManager: {
-        _id: projectManagerId = '',
-        generalInfo: { legalName: projectManagerName = '' } = {},
+        _id,
+        generalInfo: { legalName: projectManagerName = '', userId: projectManagerId = '' } = {},
       } = {},
     } = find;
 
@@ -180,17 +186,19 @@ class RequestInformation extends PureComponent {
       projectManagerName,
     });
 
-    const { dispatch, user: { currentUser: { employee: { _id: userId } = {} } = {} } = {} } =
+    const { dispatch, user: { currentUser: { employee: { _id: employeeId } = {} } = {} } = {} } =
       this.props;
 
-    dispatch({
-      type: 'timeOff/getCompoffApprovalFlow',
-      payload: {
-        employeeId: userId,
-        projectId: value,
-        projectManager: projectManagerId,
-      },
-    });
+    if (find) {
+      dispatch({
+        type: 'timeOff/getCompoffApprovalFlow',
+        payload: {
+          employeeId,
+          projectId: value,
+          projectManager: _id,
+        },
+      });
+    }
   };
 
   // ON FINISH & SHOW SUCCESS MODAL WHEN CLICKING ON SUBMIT
