@@ -14,17 +14,17 @@ const TeamView = (props) => {
   const [endDate, setEndDate] = useState('');
 
   const { dispatch, employee: { _id: employeeId = '' } = {} } = props;
+  const { timeSheet: { managerTeamViewList = [] } = {} } = props;
 
   // FUNCTION AREA
-  const fetchMyTimesheetEffectByType = () => {
+  const fetchManagerTimesheetOfTeamView = () => {
     dispatch({
-      type: 'timeSheet/fetchMyTimesheetByTypeEffect',
+      type: 'timeSheet/fetchManagerTimesheetOfTeamViewEffect',
       payload: {
         companyId: getCurrentCompany(),
-        employeeId,
+        userId: employeeId,
         fromDate: moment(startDate).format(dateFormatAPI),
         toDate: moment(endDate).format(dateFormatAPI),
-        viewType: 'D',
       },
     });
   };
@@ -32,9 +32,9 @@ const TeamView = (props) => {
   // USE EFFECT AREA
   useEffect(() => {
     if (startDate) {
-      fetchMyTimesheetEffectByType();
+      fetchManagerTimesheetOfTeamView();
     }
-  }, [startDate]);
+  }, [startDate, endDate]);
 
   // generate dates for week
   useEffect(() => {
@@ -53,12 +53,14 @@ const TeamView = (props) => {
         setStartDate={setStartDate}
         setEndDate={setEndDate}
       />
-      <MemberTable />
+      <MemberTable data={managerTeamViewList} />
       <Pagination />
     </div>
   );
 };
 
-export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({
+export default connect(({ user: { currentUser: { employee = {} } = {} }, timeSheet }) => ({
   employee,
+
+  timeSheet,
 }))(TeamView);

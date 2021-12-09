@@ -123,6 +123,47 @@ export async function importTimesheet(payload, params) {
   );
 }
 
+// MANAGER
+export async function getProjectList(payload) {
+  return request(
+    `/api-project/projecttenant/list`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
+}
+
+export async function getManagerTimesheetOfTeamView(payload, params) {
+  // date, week, month
+  return request(
+    `/api/manager/team-view`,
+    {
+      method: 'GET',
+      data: payload,
+      params,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
+
+export async function getManagerTimesheetOfProjectView(payload, params) {
+  // date, week, month
+  return request(
+    `/api/manager/report`,
+    {
+      method: 'GET',
+      data: payload,
+      params,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
+
 // get list employee
 export async function getEmployeeList(payload) {
   return request('/api/employeetenant/list-by-single-company', {

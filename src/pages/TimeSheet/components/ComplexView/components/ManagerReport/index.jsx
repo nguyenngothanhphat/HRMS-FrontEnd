@@ -1,5 +1,5 @@
 import { Tabs, Button } from 'antd';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import ProjectView from './components/ProjectView';
 import TeamView from './components/TeamView';
@@ -8,9 +8,13 @@ import DownloadIcon from '@/assets/timeSheet/download.svg';
 
 const { TabPane } = Tabs;
 
-const ManagerReport = (props) => {
+const VIEW_TYPE = {
+  TEAM_VIEW: 'team-view',
+  PROJECT_VIEW: 'project-view',
+};
+const ManagerReport = () => {
   // others
-  const [activeKey, setActiveKey] = useState('project-view');
+  const [activeKey, setActiveKey] = useState(VIEW_TYPE.PROJECT_VIEW);
 
   const options = () => {
     return (
@@ -30,10 +34,10 @@ const ManagerReport = (props) => {
         onChange={(key) => setActiveKey(key)}
         tabBarExtraContent={options()}
       >
-        <TabPane tab="Project View" key="project-view">
+        <TabPane tab="Project View" key={VIEW_TYPE.PROJECT_VIEW}>
           <ProjectView />
         </TabPane>
-        <TabPane tab="Team View" key="team-view">
+        <TabPane tab="Team View" key={VIEW_TYPE.TEAM_VIEW}>
           <TeamView />
         </TabPane>
       </Tabs>
@@ -41,4 +45,6 @@ const ManagerReport = (props) => {
   );
 };
 
-export default connect(() => ({}))(ManagerReport);
+export default connect(({ user: { currentUserRoles = [] } }) => ({ currentUserRoles }))(
+  ManagerReport,
+);

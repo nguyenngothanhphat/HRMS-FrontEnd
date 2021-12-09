@@ -10,16 +10,6 @@ import styles from './index.less';
 
 const { Option } = Select;
 
-const mockProjects = [
-  {
-    id: 1,
-    name: 'HRMS',
-  },
-  {
-    id: 2,
-    name: 'Udaan',
-  },
-];
 const Header = (props) => {
   const {
     startDate,
@@ -30,6 +20,7 @@ const Header = (props) => {
     setCurrentProject = () => {},
     viewChangeComponent = '',
     type = '',
+    projectList = [],
   } = props;
 
   // HEADER AREA FOR MONTH
@@ -104,7 +95,7 @@ const Header = (props) => {
       <div className={styles.Header__left}>
         <div className={styles.projectSelector}>
           <Select value={currentProject} onChange={(val) => setCurrentProject(val)}>
-            {mockProjects.map((v, index) => (
+            {projectList.map((v, index) => (
               <Option value={v.id}>
                 <div
                   className={styles.projectName}
@@ -122,11 +113,11 @@ const Header = (props) => {
                         fontSize: '13px',
                       }}
                     >
-                      {v.name ? v.name.toString()?.charAt(0) : 'P'}
+                      {v.projectName ? v.projectName.toString()?.charAt(0) : 'P'}
                     </span>
                   </div>
                   <span className={styles.name} style={projectNameStyle}>
-                    {v.name}
+                    {v.projectName}
                   </span>
                 </div>
               </Option>

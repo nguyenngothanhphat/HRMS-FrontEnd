@@ -13,6 +13,10 @@ import {
   importTimesheet,
   removeActivity,
   updateActivity,
+  // complex view manager
+  getManagerTimesheetOfTeamView,
+  getManagerTimesheetOfProjectView,
+  getProjectList,
 } from '@/services/timeSheet';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { convertMsToTime, isTheSameDay } from '@/utils/timeSheet';
@@ -35,8 +39,10 @@ const initialState = {
   // for importing
   timesheetDataImporting: [],
   importingIds: [],
-  // for role & permission
-  currentUserRole: 'employee',
+  // manager complex view
+  managerTeamViewList: [],
+  managerProjectViewList: [],
+  projectList: [],
 };
 
 const TimeSheet = {
@@ -296,6 +302,68 @@ const TimeSheet = {
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { employeeList: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    // MANAGER COMPLEX VIEW
+    *fetchManagerTimesheetOfTeamViewEffect({ payload }, { call, put }) {
+      const response = {};
+      try {
+        const res = yield call(getManagerTimesheetOfTeamView, {}, { ...payload, tenantId });
+        const { code, data = [] } = res;
+        if (code !== 200) throw res;
+
+        yield put({
+          type: 'save',
+          payload: {
+            managerTeamViewList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+    *fetchManagerTimesheetOfProjectViewEffect({ payload }, { call, put }) {
+      const response = {};
+      try {
+        const res = yield call(getManagerTimesheetOfProjectView, {}, { ...payload, tenantId });
+        const { code, data = [] } = res;
+        if (code !== 200) throw res;
+
+        yield put({
+          type: 'save',
+          payload: {
+            managerProjectViewList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+    *fetchProjectListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getProjectList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            projectList: data,
+          },
+        });
       } catch (errors) {
         dialog(errors);
       }

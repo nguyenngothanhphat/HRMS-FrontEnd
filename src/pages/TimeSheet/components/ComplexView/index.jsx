@@ -14,7 +14,7 @@ import styles from './index.less';
 const { TabPane } = Tabs;
 
 const ComplexView = (props) => {
-  const { permissions = {}, tabName = '', currentUserRole = '' } = props;
+  const { permissions = {}, tabName = '', currentUserRoles = [] } = props;
 
   const [navToTimeoffModalVisible, setNavToTimeoffModalVisible] = useState(false);
 
@@ -36,16 +36,20 @@ const ComplexView = (props) => {
   const viewSettingTimesheet = permissions.viewSettingTimesheet === 1;
 
   const renderOtherTabs = () => {
-    const visible = currentUserRole !== 'employee';
+    const mainTabs = () => {
+      if (
+        currentUserRoles.some((r) => ['people-manager', 'project-manager', 'manager'].includes(r))
+      )
+        return <ManagerReport />;
+      if (currentUserRoles.some((r) => ['hr-manager'].includes(r))) return <HumanResourceReport />;
+      if (currentUserRoles.some((r) => ['finance'].includes(r))) return <FinanceReport />;
+      return '';
+    };
     return (
       <>
-        {visible && viewReportTimesheet && (
+        {viewReportTimesheet && (
           <TabPane tab="Reports" key="reports">
-            {['people-manager', 'project-manager', 'manager'].includes(currentUserRole) && (
-              <ManagerReport />
-            )}
-            {['hr-manager'].includes(currentUserRole) && <HumanResourceReport />}
-            {['finance'].includes(currentUserRole) && <FinanceReport />}
+            {mainTabs()}
           </TabPane>
         )}
         {viewSettingTimesheet && (
@@ -93,12 +97,9 @@ const ComplexView = (props) => {
 };
 
 export default connect(
-  ({
-    timeSheet: { currentUserRole = '' } = {},
-    user: { currentUser = {}, permissions = [] } = {},
-  }) => ({
+  ({ user: { currentUser = {}, permissions = [], currentUserRoles = [] } = {} }) => ({
     currentUser,
     permissions,
-    currentUserRole,
+    currentUserRoles,
   }),
 )(ComplexView);
