@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react';
 import { Table, Avatar, Tooltip, Spin } from 'antd';
 import { history, connect } from 'umi';
+import moment from 'moment';
+import { LoadingOutlined } from '@ant-design/icons';
 import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
 // import DefaultAvatar from '@/assets/defaultAvatar.png';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
-import moment from 'moment';
-import { LoadingOutlined } from '@ant-design/icons';
 import RejectCommentModal from '../RejectCommentModal';
 
 import styles from './index.less';
@@ -55,7 +55,7 @@ class TeamCompoffTable extends PureComponent {
       title: 'Project',
       dataIndex: 'project',
       align: 'left',
-      render: (project) => <span>{project ? project.name : '-'}</span>,
+      render: (project) => <span>{project ? project.projectName : '-'}</span>,
       // sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
