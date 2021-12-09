@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
-import { Button, div } from 'antd';
+import { Button, Modal } from 'antd';
 import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 // import { checkPermissions } from '@/utils/permissions';
@@ -10,6 +10,7 @@ import CurrentInfo from './components/CurrentInfo';
 import HandleChanges from './components/HandleChanges';
 import ChangeHistoryTable from './components/ChangeHistoryTable';
 import EditCurrentInfo from './components/EditCurrentInfo';
+import imageAddSuccess from '@/assets/resource-management-success.svg';
 import styles from './index.less';
 
 const steps = [
@@ -133,7 +134,17 @@ class EmploymentTab extends Component {
     this.setState({ current: current - 1 });
   };
 
+  handleCancelModelSuccess = () => {
+    const {dispatch} = this.props;
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: {visibleSuccess: false}
+    })
+  };
+
   render() {
+    const {employeeProfile} = this.props;
+    const visibleSuccess = employeeProfile ? employeeProfile.visibleSuccess : false;
     const { isChanging, current, currentData, isEdit } = this.state;
     const {
       dispatch,
@@ -226,6 +237,25 @@ class EmploymentTab extends Component {
             </div>
           ) : null}
         </div>
+        <Modal
+          visible={visibleSuccess}
+          className={styles.modalUpdateSuccess}
+          footer={null}
+          width="30%"
+          onCancel={this.handleCancelModelSuccess}
+        >
+          <div style={{ textAlign: 'center' }}>
+            <img src={imageAddSuccess} alt="update success" />
+          </div>
+          <br />
+          <br />
+          <p style={{ textAlign: 'center', color: '#707177' }}>Update infomation successfully</p>
+          <div className={styles.spaceFooterModalSuccess}>
+            <Button onClick={this.handleCancelModelSuccess} className={styles.btnOkModalSuccess}>
+              Okay
+            </Button>
+          </div>
+        </Modal>
       </div>
     );
   }

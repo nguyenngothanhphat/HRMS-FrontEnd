@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Collapse, Skeleton } from 'antd';
+import { Row, Col, Collapse, Skeleton, Button, Modal } from 'antd';
 import { connect } from 'umi';
 import { PlusOutlined, MinusOutlined, EditFilled } from '@ant-design/icons';
 import ViewBank from './components/View/ViewBank';
@@ -7,6 +7,7 @@ import EditBank from './components/Edit/EditBank';
 import ViewTax from './components/View/ViewTax';
 import EditTax from './components/Edit/EditTax';
 import PaySlipMonth from './components/PayslipMonth';
+import imageAddSuccess from '@/assets/resource-management-success.svg';
 import styles from './index.less';
 
 @connect(
@@ -16,6 +17,7 @@ import styles from './index.less';
       editGeneral: { openTax, openBank } = {},
       originData: { bankData: bankDataOrigin = {}, taxData: taxDataOrigin = {} },
       tempData: { bankData = {}, taxData = {} } = {},
+      visibleSuccess = false
     } = {},
   }) => ({
     loadingTax: loading.effects['employeeProfile/fetchTax'],
@@ -23,6 +25,7 @@ import styles from './index.less';
     openTax,
     openBank,
     bankDataOrigin,
+    visibleSuccess,
     taxDataOrigin,
     bankData,
     taxData,
@@ -103,8 +106,16 @@ class AccountsPaychecks extends PureComponent {
     }
   };
 
+  handleCancelModelSuccess = () => {
+    const {dispatch} = this.props;
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: {visibleSuccess: false}
+    })
+  };
+
   render() {
-    const { openTax, loadingTax, openBank, loadingBank } = this.props;
+    const { openTax, loadingTax, openBank, loadingBank, visibleSuccess } = this.props;
     const { Panel } = Collapse;
     const getyear = new Date();
     const year = getyear.getFullYear();
@@ -179,6 +190,25 @@ class AccountsPaychecks extends PureComponent {
             </Collapse>
           </Col>
         </Row>
+        <Modal
+          visible={visibleSuccess}
+          className={styles.modalUpdateSuccess}
+          footer={null}
+          width="30%"
+          onCancel={this.handleCancelModelSuccess}
+        >
+          <div style={{ textAlign: 'center' }}>
+            <img src={imageAddSuccess} alt="update success" />
+          </div>
+          <br />
+          <br />
+          <p style={{ textAlign: 'center', color: '#707177' }}>Update infomation successfully</p>
+          <div className={styles.spaceFooterModalSuccess}>
+            <Button onClick={this.handleCancelModelSuccess} className={styles.btnOkModalSuccess}>
+              Okay
+            </Button>
+          </div>
+        </Modal>
       </div>
     );
   }
