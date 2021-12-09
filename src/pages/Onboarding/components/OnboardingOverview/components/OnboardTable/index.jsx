@@ -254,6 +254,20 @@ class OnboardTable extends Component {
     return check;
   };
 
+  getColorClassName = (type) => {
+    const tempType = type.toLowerCase().replace(/ +/g, '');
+    if (tempType === 'draft' || tempType === 'needchanges') {
+      return styles.blueTag;
+    }
+    if (tempType === 'offerreleased' || tempType === 'offeraccepted' || tempType === 'joined') {
+      return styles.greenTag;
+    }
+    if (tempType === 'offerrejected' || tempType === 'offerwithdrawn') {
+      return styles.redTag;
+    }
+    return styles.yellowTag;
+  };
+
   generateColumns = (columnArr = ['id'], type = TABLE_TYPE.ALL) => {
     const {
       ID,
@@ -386,11 +400,7 @@ class OnboardTable extends Component {
         key: 'processStatus',
         render: (processStatus) => (
           <span
-            className={`${
-              processStatus === 'Offer Accepted' || processStatus === 'Joined'
-                ? styles.processStatusAccepted
-                : ''
-            }
+            className={`${this.getColorClassName(processStatus)}
               ${styles.processStatus}
             `}
           >

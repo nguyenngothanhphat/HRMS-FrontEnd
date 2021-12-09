@@ -9,7 +9,7 @@
 @gray: #707177;
 @red: #ff5252;
 @blue: #2c6df9;
-@white: #FFFFFF;
+@white: #ffffff;
 @yelow: #ffa100;
 
 .mixin-border-bottom-row {
@@ -20,9 +20,8 @@
   padding: 24px;
   padding-bottom: 0;
   background-color: @white;
-  border-radius: 8px;
   border: solid 1px @border-color;
-
+  border-radius: 8px;
 
   /* width */
   ::-webkit-scrollbar {
@@ -45,7 +44,6 @@
     background: #555;
   }
 
-
   &.inTab {
     border: none;
   }
@@ -53,7 +51,6 @@
   :global {
     .ant-table-body {
       border-bottom: 1px solid @border-color;
-
     }
 
     .ant-dropdown-menu-title-content {
@@ -70,16 +67,16 @@
     align-items: center;
 
     span {
-      cursor: pointer;
-      text-align: left;
-      white-space: nowrap;
-      overflow: hidden;
       margin: 0;
-      letter-spacing: 0.12px;
+      overflow: hidden;
       color: @blue;
       font-weight: 500;
+      letter-spacing: 0.12px;
+      white-space: nowrap;
+      text-align: left;
       // margin-right: 10px;
       text-transform: capitalize;
+      cursor: pointer;
 
       svg {
         transform: rotate(90deg);
@@ -106,14 +103,13 @@
   .dateJoin,
   .location,
   .actionText {
-    font-family: Roboto;
-    font-style: normal;
+    color: #464646;
     font-weight: normal;
     font-size: 13px;
+    font-family: Roboto;
+    font-style: normal;
     line-height: 15px;
     letter-spacing: 0.121875px;
-
-    color: #464646;
   }
 
   .actionText {
@@ -121,12 +117,12 @@
   }
 
   .ticketTag {
-    font-size: 11px;
-    font-weight: 500;
-    text-transform: capitalize;
-    font-family: 'Roboto';
     display: inline-block;
     padding: 0 8px;
+    font-weight: 500;
+    font-size: 11px;
+    font-family: 'Roboto';
+    text-transform: capitalize;
   }
 
   .new {
@@ -162,7 +158,7 @@
       &:hover {
         svg {
           path {
-            fill: @red  !important;
+            fill: @red !important;
           }
         }
 
@@ -170,21 +166,21 @@
       }
 
       svg {
+        color: @blue !important;
         transform: initial !important;
-        color: @blue  !important;
       }
     }
 
     td.ant-table-cell {
       width: 84px;
       height: 15px;
-      font-size: 13px;
+      color: #464646;
       font-weight: normal;
-      font-stretch: normal;
+      font-size: 13px;
       font-style: normal;
+      font-stretch: normal;
       line-height: normal;
       letter-spacing: 0.12px;
-      color: #464646;
     }
 
     .ant-table-tbody {
@@ -193,7 +189,7 @@
       }
     }
 
-    .ant-table-tbody>tr>td {
+    .ant-table-tbody > tr > td {
       .mixin-border-bottom-row();
     }
 
@@ -238,12 +234,12 @@
       align-items: center;
 
       button {
-        font-size: 13px !important;
-        border: none !important;
-        padding: 0 !important;
-        background-color: transparent !important;
-        box-shadow: none !important;
         height: 20px;
+        padding: 0 !important;
+        font-size: 13px !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
       }
     }
 
@@ -253,15 +249,14 @@
       letter-spacing: 0.12px;
     }
 
-    .ant-table-thead>tr>th {
-      font-family: Roboto;
-      font-style: normal;
+    .ant-table-thead > tr > th {
+      color: @white;
       font-weight: 500;
       font-size: 13px;
+      font-family: Roboto;
+      font-style: normal;
       line-height: 15px;
       letter-spacing: 0.121875px;
-
-      color: @white;
     }
   }
 
@@ -270,24 +265,43 @@
   }
 
   .renderAssignee,
-  .processStatus,
   .candidateId {
-    font-family: Roboto;
-    font-style: normal;
+    color: @blue;
     font-weight: 500;
     font-size: 13px;
+    font-family: Roboto;
+    font-style: normal;
     line-height: 15px;
     letter-spacing: 0.121875px;
 
-    color: @blue;
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+  .processStatus {
+    font-weight: 500;
+    font-size: 13px;
+    font-family: Roboto;
+    font-style: normal;
+    line-height: 15px;
+    letter-spacing: 0.121875px;
 
     &:hover {
       opacity: 0.9;
     }
   }
 
-  .processStatusAccepted {
-    color: #04AA6D;
+  .blueTag {
+    color: #2c6df9;
+  }
+  .greenTag {
+    color: #00c598;
+  }
+  .yellowTag {
+    color: #ffa100;
+  }
+  .redTag {
+    color: #fd4546;
   }
 
   .renderAssignee,
@@ -296,32 +310,32 @@
   }
 
   .menuIcon {
-    cursor: pointer;
     width: 15px;
+    cursor: pointer;
     padding-block: 10px;
   }
 }
 
 .menu {
-  background-color: #fff;
-  box-shadow: 1px 0px 6px rgba(0, 0, 0, 0.15);
   padding: 8px;
+  background-color: #fff;
   border-radius: 5px;
+  box-shadow: 1px 0px 6px rgba(0, 0, 0, 0.15);
 
   &::after {
-    height: 8px;
-    width: 10px;
-    content: '';
-    background-color: #fff;
-    box-shadow: 1px 1px 3px -1px rgb(0 0 0 / 15%) !important;
     position: absolute;
     top: -3px;
     right: 6px;
+    z-index: 1003 !important;
+    width: 10px;
+    height: 8px;
     margin-left: -5px;
+    background-color: #fff;
     border-top: #fff solid 1px;
     border-left: #fff solid 1px;
+    box-shadow: 1px 1px 3px -1px rgb(0 0 0 / 15%) !important;
     transform: rotate(225deg);
-    z-index: 1003 !important;
+    content: '';
   }
 }
 
@@ -334,7 +348,6 @@
     }
   }
 }
-
 
 //modal
 .joiningFormalitiesModal {
@@ -381,9 +394,9 @@
     }
 
     .ant-modal-content {
-      border-bottom-left-radius: 8px;
-      border-bottom-right-radius: 8px;
       border-top-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
     }
 
     .ant-form-item {
@@ -396,13 +409,13 @@
 
     .ant-modal-close-x {
       position: absolute;
-      background-color: @blue;
-      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 54px;
       height: 48px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      color: #fff;
+      background-color: @blue;
       border-top-right-radius: 8px;
       border-bottom-right-radius: 8px;
 
@@ -415,12 +428,12 @@
       width: 18px;
       height: 18px;
       background-color: #fff;
-      border: 1px solid #D8D8D8;
+      border: 1px solid #d8d8d8;
       border-radius: 4px;
     }
 
     .ant-checkbox-checked .ant-checkbox-inner {
-      background-color: #F0F3F9;
+      background-color: #f0f3f9;
     }
 
     .ant-checkbox-checked .ant-checkbox-inner::after {
@@ -430,10 +443,10 @@
     }
 
     .ant-input {
-      height: 42px;
-      width: 100%;
-      border: 1px solid #D6DCE4;
       box-sizing: border-box;
+      width: 100%;
+      height: 42px;
+      border: 1px solid #d6dce4;
       border-radius: 5px;
     }
   }
@@ -447,14 +460,14 @@
   }
 
   .btnSubmit {
-    font-size: 14px;
     width: fit-content;
+    color: #fff;
     // height: 40px;
     font-weight: 600;
-    border-radius: 25px;
-    color: #fff;
+    font-size: 14px;
     background-color: @yelow;
     border: none;
+    border-radius: 25px;
   }
 
   .btnSubmit:disabled {
@@ -463,12 +476,12 @@
   }
 
   .btnCancel {
-    border: none;
     display: inline-block;
-    color: @yelow;
-    font-size: 14px;
-    font-weight: 500;
     margin-right: 20px;
+    color: @yelow;
+    font-weight: 500;
+    font-size: 14px;
+    border: none;
     cursor: pointer;
 
     &:active {
@@ -477,21 +490,21 @@
   }
 
   .btnLater {
-    border: none;
     display: inline-block;
     color: @gray;
     font-size: 14px;
+    border: none;
   }
 
   .headerContent {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 13px;
-    line-height: 20px;
-    padding-bottom: 24PX;
+    padding-bottom: 24px;
 
     color: #464646;
+    font-weight: normal;
+    font-size: 13px;
+    font-family: Roboto;
+    font-style: normal;
+    line-height: 20px;
 
     span {
       font-weight: 700;
@@ -499,23 +512,21 @@
   }
 
   .headerText {
-    font-family: Roboto;
-    font-style: normal;
+    color: #161c29;
     font-weight: bold;
     font-size: 16px;
+    font-family: Roboto;
+    font-style: normal;
     line-height: 19px;
-
-    color: #161C29;
   }
 
   .labelCheckbox {
-    font-family: Roboto;
-    font-style: normal;
+    color: #161c29;
     font-weight: normal;
     font-size: 14px;
+    font-family: Roboto;
+    font-style: normal;
     line-height: 16px;
-
-    color: #161C29;
   }
 
   .documentVerification {
@@ -539,53 +550,51 @@
 
     &__title {
       margin-top: 8px;
+      color: #161c29;
       font-weight: 500;
       font-size: 18px;
-      color: #161C29;
     }
 
     &__description {
       margin-top: 12px;
-      font-size: 13px;
       color: @gray;
+      font-size: 13px;
     }
   }
 
   .pageBottom {
-    background: #FAFCFF;
-    border: 1px solid #D6DCE0;
     box-sizing: border-box;
-    border-radius: 5px;
     margin-top: 24px;
     padding: 24px 24px 0 24px;
+    background: #fafcff;
+    border: 1px solid #d6dce0;
+    border-radius: 5px;
 
     &__text {
-      font-size: 14px;
-      color: #000000;
       margin-bottom: 24px;
+      color: #000000;
+      font-size: 14px;
     }
   }
 }
 
 .tooltipOverlay {
-
   :global {
     .ant-tooltip-inner {
-      background: @white;
-      box-shadow: 1px 0px 6px rgba(0, 0, 0, 0.15);
-      border-radius: 5px;
       padding: 14px;
+      background: @white;
+      border-radius: 5px;
+      box-shadow: 1px 0px 6px rgba(0, 0, 0, 0.15);
     }
   }
 }
 
 .contentTooltip {
-  font-family: Roboto;
-  font-style: normal;
+  color: @gray;
   font-weight: normal;
   font-size: 11px;
+  font-family: Roboto;
+  font-style: normal;
   line-height: 18px;
   letter-spacing: 0.121875px;
-
-  color: @gray;
 }
