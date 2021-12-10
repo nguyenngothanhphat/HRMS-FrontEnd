@@ -13,7 +13,7 @@ const { Option } = Select;
     employeeProfile,
     loading,
     employeeProfile: { tenantCurrentEmployee = '', compensationTypes = [] } = {},
-    locationSelection: { listLocationsByCompany = {}} = {},
+    locationSelection: { listLocationsByCompany = {} } = {},
   }) => ({
     employeeProfile,
     compensationTypes,
@@ -21,7 +21,7 @@ const { Option } = Select;
     loadingLocationsList: loading.effects['employeeProfile/fetchLocationsByCompany'],
     loadingTitleList: loading.effects['employeeProfile/fetchTitleByDepartment'],
     loadingCompensationList: loading.effects['employeeProfile/fetchCompensationList'],
-    listLocationsByCompany
+    listLocationsByCompany,
 
     // loadingEmployeeTypes: loading.effects['employeeProfile/fetchEmployeeTypes'],
   }),
@@ -106,7 +106,7 @@ class EditCurrentInfo extends PureComponent {
       loadingLocationsList,
       handleCancel = () => {},
       profileOwner,
-      listLocationsByCompany
+      listLocationsByCompany,
     } = this.props;
     // console.log(employees)
     // const filteredList = employees.filter((item) => item._id !== employeeProfile.idCurrentEmployee);
@@ -262,12 +262,12 @@ class EditCurrentInfo extends PureComponent {
               filterOption={(input, option) =>
                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
-              defaultValue={manager.generalInfo.legalName}
+              defaultValue={manager._id}
             >
               {employees.map((item, index) => {
                 return (
-                  <Option key={`${index + 1}`} value={item.manager._id}>
-                    {item?.manager.generalInfo?.firstName || item?.manager.generalInfo?.legalName || null}
+                  <Option key={`${index + 1}`} value={item._id}>
+                    {item?.generalInfo?.legalName}
                   </Option>
                 );
               })}

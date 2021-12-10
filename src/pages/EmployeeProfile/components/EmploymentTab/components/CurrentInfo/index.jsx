@@ -27,7 +27,7 @@ function CurrentInfo(props) {
     employType: employeeType?.name || 'Missing employment type',
     compenType: compensationType || 'This person is missing payment method',
     annualSalary: String(currentAnnualCTC || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-    manager: manager?.generalInfo?.firstName || 'Missing reporting manager',
+    manager: manager?.generalInfo?.legalName || 'Missing reporting manager',
     timeOff: timeOffPolicy || 'This person is not allowed to take time off',
   };
   return (
