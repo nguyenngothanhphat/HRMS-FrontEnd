@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Row, Form, Input, Button, Col, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
+import removeIcon from '../assets/removeIcon.svg';
+
 import styles from './index.less';
 
 @connect(
@@ -61,6 +63,18 @@ class Edit extends Component {
         payload: { generalData: { emergencyContactDetails: newEmergencyContactDetails } },
       });
     }
+  };
+
+  handleRemove = (index) => {
+    const { generalData, dispatch } = this.props;
+    const { emergencyContactDetails = [] } = generalData;
+    const newList = [...emergencyContactDetails];
+    newList.splice(index, 1);
+
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { generalData: { emergencyContactDetails: newList } },
+    });
   };
 
   handleChange = (changedValues) => {
@@ -195,8 +209,13 @@ class Edit extends Component {
           {formEmergency.map((item, index) => {
             const { emergencyContact, emergencyPersonName, emergencyRelation } = item;
             return (
-              <div key={`${index + 1}`}>
+              <div key={`${index + 1}`} className={styles.containerForm}>
                 {index > 0 ? <div className={styles.line} /> : null}
+                {index >= 1 ? (
+                  <div className={styles.removeIcon}>
+                    <img onClick={() => this.handleRemove(index)} src={removeIcon} alt="remove" />
+                  </div>
+                ) : null}
                 <Form.Item
                   label="Emergency Contact’s Name"
                   name={`emergencyPersonName ${index}`}
