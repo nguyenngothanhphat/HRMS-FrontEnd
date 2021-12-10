@@ -10,12 +10,12 @@ import styles from './index.less';
 
 const MonthlyTable = (props) => {
   const {
-    startDate = '',
-    endDate = '',
-    loadingFetchMyTimesheetByType = false,
+    loadingFetch = false,
     weeksOfMonth = [],
-    data: { weeks: weeksProp = [], summary: summaryProp = [] } = {},
-    data = {},
+    // data: { weeks: weeksProp = [], summary: summaryProp = [] } = {},
+    data = [],
+    selectedProjects = [],
+    setSelectedProjects = () => {},
   } = props;
   const [formattedData, setFormattedData] = useState([]);
 
@@ -24,8 +24,10 @@ const MonthlyTable = (props) => {
   const formatData = () => {
     const header = {
       projectName: 'All Projects',
+      totalDuration: 'Total Hours',
+      projectId: 'All',
     };
-    setFormattedData([header].concat(weeksProp));
+    setFormattedData([header].concat(data));
   };
 
   const getColorByIndex = (index) => {
@@ -63,15 +65,22 @@ const MonthlyTable = (props) => {
         render: (value, row, index) => {
           const { weeks = [] } = row;
           if (index === 0) return renderHeaderItem(weekItem);
-          const find = weeks.find((w) => w.week === weekItem.week) || {};
-          if (find?.weekProjectTime === 0 || !find?.weekProjectTime)
-            return (
-              <span className={styles.hourValue}>
-                <img src={EmptyLine} alt="" />
-              </span>
-            );
+          const find = weeks.find((w) => w.week === weekItem.week);
           return (
-            <span className={styles.hourValue}>{convertMsToTime(find?.weekProjectTime || 0)}</span>
+            <TaskPopover
+              week={weekItem.week}
+              startDate={weekItem.startDate}
+              endDate={weekItem.endDate}
+              tasks={find?.timesheet}
+            >
+              {!find || find?.weekProjectTime === 0 ? (
+                <span className={styles.hourValue}>
+                  <img src={EmptyLine} alt="" />
+                </span>
+              ) : (
+                <span className={styles.hourValue}>{convertMsToTime(find.weekProjectTime)}</span>
+              )}
+            </TaskPopover>
           );
         },
       };
@@ -82,59 +91,75 @@ const MonthlyTable = (props) => {
         title: 'All Projects',
         dataIndex: 'projectName',
         key: 'projectName',
-        align: 'center',
+        align: 'left',
         width: `${100 / columnLength}%`,
-        render: (projectName, _, index) => {
+        render: (projectName, row, index) => {
+          const { engagementType = '' } = row;
           if (index === 0) {
-            return projectName;
+            return <div style={{ paddingLeft: '24px' }}>{projectName}</div>;
           }
           return (
             <div className={styles.projectName}>
               <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
                 <span>{projectName ? projectName.toString()?.charAt(0) : 'P'}</span>
               </div>
-              <span className={styles.name}>{projectName}</span>
+              <div className={styles.rightPart}>
+                <span className={styles.name}>{projectName}</span>
+                <span className={styles.type}>{engagementType}</span>
+              </div>
             </div>
           );
         },
       },
       ...dateColumns,
+      {
+        title: 'Total Hours',
+        dataIndex: 'totalDuration',
+        key: 'totalDuration',
+        align: 'center',
+        width: `${100 / 9}%`,
+        render: (value = 0, _, index) => {
+          if (index === 0) return <span className={styles.totalHeader}>{value}</span>;
+          if (value === 0) return '';
+          return <span className={styles.totalValue}>{convertMsToTime(value)}</span>;
+        },
+      },
     ];
     return result;
   };
 
-  // FOOTER
-  const renderFooter = () => {
-    return (
-      <div className={styles.footer}>
-        <div className={styles.item}>
-          <span className={styles.text}>Total</span>
-        </div>
-        {weeksOfMonth.map((weekItem) => {
-          const find = summaryProp.find((w) => w.week === weekItem.week) || {};
-          const { week = '', dailies = [], weekTotalTime = '' } = find;
-          return (
-            <TaskPopover
-              week={week}
-              startDate={weekItem.startDate}
-              endDate={weekItem.endDate}
-              tasks={dailies}
-            >
-              {dailies.length > 0 ? (
-                <div className={styles.item}>
-                  <span className={styles.value}>{convertMsToTime(weekTotalTime || 0)}</span>
-                </div>
-              ) : (
-                <div className={styles.item}>
-                  <img src={EmptyLine} alt="" />
-                </div>
-              )}
-            </TaskPopover>
-          );
-        })}
-      </div>
-    );
+  const onSelectChange = (selectedRowKeys) => {
+    console.log('🚀 ~ onSelectChange ~ selectedRowKeys', selectedRowKeys);
+    let temp = [...selectedRowKeys];
+    const projectListLength = data.length;
+    const selectedListLength = selectedRowKeys.length;
+
+    if (projectListLength === selectedListLength) {
+      if (!selectedRowKeys.includes('All')) {
+        temp = [...data.map((x) => x.projectId), 'All'];
+      }
+    } else if (selectedRowKeys.includes('All')) {
+      temp = [...data.map((x) => x.projectId), 'All'];
+    }
+
+    if (temp.length === 1 && temp.includes('All')) {
+      temp = [];
+    }
+    // if (
+    //   (selectedRowKeys.includes('All') && selectedRowKeys.length !== 1) ||
+    //   (projectListLength === selectedListLength && !selectedRowKeys.includes('All'))
+    // ) {
+    //   temp = [...data.map((x) => x.projectId), 'All'];
+    // }
+
+    setSelectedProjects([...temp]);
   };
+
+  const rowSelection = {
+    selectedRowKeys: selectedProjects,
+    onChange: onSelectChange,
+  };
+
   // MAIN AREA
   return (
     <div className={styles.MonthlyTable}>
@@ -143,16 +168,15 @@ const MonthlyTable = (props) => {
           columns={columns()}
           dataSource={formattedData}
           bordered
+          // rowSelection={rowSelection} // NOT WOKRING YET
           pagination={false}
           // scroll={{ y: 440 }}
-          footer={renderFooter}
-          loading={loadingFetchMyTimesheetByType}
+          loading={loadingFetch}
+          rowKey={(row) => row.projectId}
         />
       </div>
     </div>
   );
 };
 
-export default connect(({ loading }) => ({
-  loadingFetchMyTimesheetByType: loading.effects['timeSheet/fetchMyTimesheetByTypeEffect'],
-}))(MonthlyTable);
+export default connect(() => ({}))(MonthlyTable);

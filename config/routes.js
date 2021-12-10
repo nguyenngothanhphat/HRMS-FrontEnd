@@ -387,34 +387,6 @@ const routes = [
             hideInMenu: true,
             authority: [OWNER],
           },
-          // customer-management
-          {
-            path: '/customer-management',
-            name: 'customerManagement',
-            icon: '/assets/images/menuIcons/customer.svg',
-            // hideInMenu: true,
-            component: './Customer',
-            authority: [HR_MANAGER, HR, REGION_HEAD, ADMIN, OWNER], // TEMPORARY VALUES
-          },
-          {
-            path: '/customer-management/:tabName',
-            hideInMenu: true,
-            component: './Customer',
-            authority: [HR_MANAGER, HR, REGION_HEAD, ADMIN, OWNER], // TEMPORARY VALUES
-          },
-          {
-            path: '/customer-management/customers/customer-profile/:reId',
-            hideInMenu: true,
-            name: 'viewCustomer',
-            component: './CustomerProfile',
-            authority: [HR_MANAGER, HR, REGION_HEAD, ADMIN, OWNER], // TEMPORARY VALUES
-          },
-          {
-            path: '/customer-management/customers/customer-profile/:reId/:tabName',
-            hideInMenu: true,
-            component: './CustomerProfile',
-            authority: [HR_MANAGER, HR, REGION_HEAD, ADMIN, OWNER], // TEMPORARY VALUES
-          },
           {
             path: '/candidates-management',
             name: 'candidates',
@@ -706,6 +678,34 @@ const routes = [
             component: './TimeSheet',
             authority: [HR_MANAGER, HR, EMPLOYEE, MANAGER], // TEMPORARY VALUES
             hideInMenu: true,
+          },
+          // customer-management
+          {
+            path: '/customer-management',
+            name: 'customerManagement',
+            icon: '/assets/images/menuIcons/customer.svg',
+            // hideInMenu: true,
+            component: './Customer',
+            authority: [HR_MANAGER, HR, REGION_HEAD, ADMIN, OWNER], // TEMPORARY VALUES
+          },
+          {
+            path: '/customer-management/:tabName',
+            hideInMenu: true,
+            component: './Customer',
+            authority: [HR_MANAGER, HR, REGION_HEAD, ADMIN, OWNER], // TEMPORARY VALUES
+          },
+          {
+            path: '/customer-management/customers/customer-profile/:reId',
+            hideInMenu: true,
+            name: 'viewCustomer',
+            component: './CustomerProfile',
+            authority: [HR_MANAGER, HR, REGION_HEAD, ADMIN, OWNER], // TEMPORARY VALUES
+          },
+          {
+            path: '/customer-management/customers/customer-profile/:reId/:tabName',
+            hideInMenu: true,
+            component: './CustomerProfile',
+            authority: [HR_MANAGER, HR, REGION_HEAD, ADMIN, OWNER], // TEMPORARY VALUES
           },
           // TICKET MANAGEMENT
           {

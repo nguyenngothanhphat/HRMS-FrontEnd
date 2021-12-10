@@ -161,6 +161,12 @@
       > td {
       border-color: #d6dce0;
     }
+
+    .ant-table th.ant-table-selection-column,
+    td.ant-table-selection-column {
+      width: 5px !important;
+      border-right: none !important;
+    }
   }
 
   .loadingContainer {
@@ -258,7 +264,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    margin-left: 15px;
+    margin-left: 24px;
     .icon {
       position: relative;
       display: flex;
@@ -276,15 +282,23 @@
         color: #fff;
         font-weight: 500;
         font-size: 13px;
+        text-transform: uppercase;
       }
     }
-    .name {
-      display: block;
+    .rightPart {
       padding-left: 2px;
-      color: #212020;
-      font-weight: 500;
-      font-size: 13px;
-      text-align: left;
+      .name {
+        display: block;
+        color: #212020;
+        font-weight: 500;
+        font-size: 13px;
+        text-align: left;
+      }
+      .type {
+        color: #464646;
+        font-size: 11px;
+        text-align: left;
+      }
     }
   }
 

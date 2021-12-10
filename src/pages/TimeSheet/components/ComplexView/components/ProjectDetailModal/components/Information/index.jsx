@@ -1,35 +1,20 @@
 import React from 'react';
 import { connect } from 'umi';
 import { Row, Col, Tooltip, Avatar } from 'antd';
-import SampleAvatar1 from '@/assets/dashboard/sampleAvatar1.png';
-import SampleAvatar2 from '@/assets/dashboard/sampleAvatar2.png';
-import SampleAvatar3 from '@/assets/dashboard/sampleAvatar3.png';
+import MockAvatar from '@/assets/dashboard/mockAvatar.jpg';
 import styles from './index.less';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';
 
-const members = [
-  {
-    name: 'Lewis',
-    avatar: SampleAvatar1,
-  },
-  {
-    name: 'Trung',
-    avatar: SampleAvatar2,
-  },
-  {
-    name: 'Anh',
-    avatar: SampleAvatar3,
-  },
-];
-
 const Information = (props) => {
-  const { projectName = 'Cisco' } = props;
+  const {
+    data: { projectName = '', projectSpentInHours = 0, projectSpentInDay = 0, resource = [] } = {},
+  } = props;
 
   const renderTooltipTitle = (list) => {
     return (
       <div>
         {list.map((member) => (
-          <span style={{ display: 'block' }}>{member.name}</span>
+          <span style={{ display: 'block' }}>{member.employee?.legalName}</span>
         ))}
       </div>
     );
@@ -53,13 +38,13 @@ const Information = (props) => {
     },
     {
       name: 'Total Days',
-      value: <span className={styles.boldText}>20</span>,
+      value: <span className={styles.boldText}>{projectSpentInDay}</span>,
     },
     {
       name: 'Resources',
       value: (
         <Tooltip
-          title={renderTooltipTitle(members)}
+          title={renderTooltipTitle(resource)}
           placement="rightTop"
           getPopupContainer={(trigger) => {
             return trigger;
@@ -67,8 +52,9 @@ const Information = (props) => {
         >
           <div className={styles.taskMembers}>
             <Avatar.Group maxCount={4}>
-              {members.map((member) => {
-                return <Avatar size="small" src={member.avatar} />;
+              {resource.map((member = {}) => {
+                const { employee: { avatar = '' } = {} } = member;
+                return <Avatar size="small" src={avatar || MockAvatar} />;
               })}
             </Avatar.Group>
           </div>
@@ -77,18 +63,18 @@ const Information = (props) => {
     },
     {
       name: 'Project Type',
-      value: 'Proof of Concept',
+      value: '',
     },
     {
       name: 'Total Hours',
-      value: <span className={styles.boldText}>600 Hours</span>,
+      value: <span className={styles.boldText}>{projectSpentInHours} Hours</span>,
     },
     {
       name: 'Payment Due Date',
       value: (
         <div className={styles.dueDate}>
           <img className={styles.calendarIcon} src={CalendarIcon} alt="" />
-          <span>14 July 2021</span>
+          <span />
         </div>
       ),
     },

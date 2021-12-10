@@ -10,10 +10,16 @@ import styles from './index.less';
 
 const MonthlyTable = (props) => {
   const {
-    loadingFetchMyTimesheetByType = false,
+    loadingFetch = false,
     weeksOfMonth = [],
-    data: { weeks: weeksProp = [], summary: summaryProp = [] } = {},
-    data = {},
+    data = [],
+    tablePagination: {
+      page = 0,
+      // pageCount = 0,
+      pageSize = 0,
+      rowCount = 0,
+    } = {},
+    onChangePage = () => {},
   } = props;
   const [formattedData, setFormattedData] = useState([]);
 
@@ -21,9 +27,9 @@ const MonthlyTable = (props) => {
   // format data
   const formatData = () => {
     const header = {
-      projectName: 'Functional Area',
+      functionalArea: 'Functional Area',
     };
-    setFormattedData([header].concat(weeksProp));
+    setFormattedData([header].concat(data));
   };
 
   const getColorByIndex = (index) => {
@@ -67,9 +73,9 @@ const MonthlyTable = (props) => {
               week={weekItem.week}
               startDate={weekItem.startDate}
               endDate={weekItem.endDate}
-              tasks={[]}
+              tasks={find?.timesheet}
             >
-              {find?.weekProjectTime === 0 || !find?.weekProjectTime ? (
+              {(!find || find?.weekProjectTime === 0) ? (
                 <div className={styles.hourValue}>
                   <img src={EmptyLine} alt="" />
                 </div>
@@ -87,20 +93,20 @@ const MonthlyTable = (props) => {
     const result = [
       {
         title: 'All Projects',
-        dataIndex: 'projectName',
-        key: 'projectName',
+        dataIndex: 'functionalArea',
+        key: 'functionalArea',
         align: 'center',
         width: `${100 / columnLength}%`,
-        render: (projectName, _, index) => {
+        render: (functionalArea, _, index) => {
           if (index === 0) {
-            return projectName;
+            return functionalArea;
           }
           return (
-            <div className={styles.projectName}>
+            <div className={styles.functionalArea}>
               <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
-                <span>{projectName ? projectName.toString()?.charAt(0) : 'P'}</span>
+                <span>{functionalArea ? functionalArea.toString()?.charAt(0) : 'P'}</span>
               </div>
-              <span className={styles.name}>{projectName}</span>
+              <span className={styles.name}>{functionalArea}</span>
             </div>
           );
         },
@@ -110,9 +116,13 @@ const MonthlyTable = (props) => {
     return result;
   };
 
+  const onChangePagination = (pageNumber) => {
+    onChangePage(pageNumber);
+  };
+
   const pagination = {
     position: ['bottomLeft'],
-    total: 30,
+    total: rowCount,
     showTotal: (total, range) => (
       <span>
         Showing{' '}
@@ -122,9 +132,9 @@ const MonthlyTable = (props) => {
         of {total}{' '}
       </span>
     ),
-    pageSize: 5,
-    current: 1,
-    // onChange: onChangePagination,
+    pageSize,
+    current: page,
+    onChange: onChangePagination,
   };
 
   // MAIN AREA
@@ -137,7 +147,7 @@ const MonthlyTable = (props) => {
           bordered
           pagination={pagination}
           // scroll={{ y: 440 }}
-          loading={loadingFetchMyTimesheetByType}
+          loading={loadingFetch}
         />
       </div>
     </div>
@@ -145,5 +155,5 @@ const MonthlyTable = (props) => {
 };
 
 export default connect(({ loading }) => ({
-  loadingFetchMyTimesheetByType: loading.effects['timeSheet/fetchMyTimesheetByTypeEffect'],
+  loadingFetch: loading.effects['timeSheet/fetchManagerTimesheetOfProjectViewEffect'],
 }))(MonthlyTable);
