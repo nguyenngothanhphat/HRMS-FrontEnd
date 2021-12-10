@@ -393,7 +393,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
 
   // CV = COMPLEX VIEW
   const indexHRReportCVTimesheet = isAuthorized(permissionList, [HR, HR_MANAGER]);
-  const indexFinanceReportCVTimesheet = isAuthorized(permissionList, [FINANCE, HR_MANAGER]); // ONLY FINANCE IS RIGHT, HR_MANAGER IS FOR TESTING
+  const indexFinanceReportCVTimesheet = isAuthorized(permissionList, [FINANCE]);
   const indexPeopleManagerCVTimesheet = isAuthorized(permissionList, [MANAGER]);
   const indexProjectManagerCVTimesheet = isAuthorized(permissionList, [PROJECT_MANAGER]);
 
