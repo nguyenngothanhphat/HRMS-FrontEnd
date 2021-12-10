@@ -13,6 +13,7 @@ const { Option } = Select;
     employeeProfile,
     loading,
     employeeProfile: { tenantCurrentEmployee = '', compensationTypes = [] } = {},
+    locationSelection: { listLocationsByCompany = {}} = {},
   }) => ({
     employeeProfile,
     compensationTypes,
@@ -20,6 +21,7 @@ const { Option } = Select;
     loadingLocationsList: loading.effects['employeeProfile/fetchLocationsByCompany'],
     loadingTitleList: loading.effects['employeeProfile/fetchTitleByDepartment'],
     loadingCompensationList: loading.effects['employeeProfile/fetchCompensationList'],
+    listLocationsByCompany
 
     // loadingEmployeeTypes: loading.effects['employeeProfile/fetchEmployeeTypes'],
   }),
@@ -104,9 +106,10 @@ class EditCurrentInfo extends PureComponent {
       loadingLocationsList,
       handleCancel = () => {},
       profileOwner,
+      listLocationsByCompany
     } = this.props;
     // console.log(employees)
-    const filteredList = employees.filter((item) => item._id !== employeeProfile.idCurrentEmployee);
+    // const filteredList = employees.filter((item) => item._id !== employeeProfile.idCurrentEmployee);
     const {
       _id = '',
       title = '',
@@ -184,7 +187,7 @@ class EditCurrentInfo extends PureComponent {
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
             >
-              {employeeProfile.listLocationsByCompany.map((item) => (
+              {listLocationsByCompany.map((item) => (
                 <Option key={item._id}>{item.name}</Option>
               ))}
             </Select>
@@ -259,11 +262,12 @@ class EditCurrentInfo extends PureComponent {
               filterOption={(input, option) =>
                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
+              defaultValue={manager.generalInfo.legalName}
             >
-              {filteredList.map((item, index) => {
+              {employees.map((item, index) => {
                 return (
-                  <Option key={`${index + 1}`} value={item._id}>
-                    {item?.generalInfo?.firstName || item?.generalInfo?.legalName || null}
+                  <Option key={`${index + 1}`} value={item.manager._id}>
+                    {item?.manager.generalInfo?.firstName || item?.manager.generalInfo?.legalName || null}
                   </Option>
                 );
               })}
