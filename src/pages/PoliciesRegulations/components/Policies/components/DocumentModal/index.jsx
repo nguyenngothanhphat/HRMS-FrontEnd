@@ -42,6 +42,17 @@ class DocumentModal extends Component {
     }
   };
 
+  _renderStickyFooter = () => {
+    return (
+      <div className={styles.stickyFooter}>
+        <span>
+          For any queries, e-mail at{' '}
+          <span style={{ fontWeight: 'bold' }}>hrmanager@companyname.com</span>
+        </span>
+      </div>
+    );
+  };
+
   render() {
     const { visible, handleCancel = () => {}, link = '', title = '' } = this.props;
     const { numPages } = this.state;
@@ -62,21 +73,25 @@ class DocumentModal extends Component {
               <img alt="preview" src={link} />
             </div>
           ) : (
-            <Document
-              file={link}
-              onLoadSuccess={this.onDocumentLoadSuccess}
-              loading={this.documentWarning('Loading document. Please wait...')}
-              noData={this.documentWarning('URL is not available.')}
-            >
-              {Array.from(new Array(numPages), (el, index) => (
-                <Page
-                  loading=""
-                  className={styles.pdfPage}
-                  key={`page_${index + 1}`}
-                  pageNumber={index + 1}
-                />
-              ))}
-            </Document>
+            <>
+              <Document
+                className={styles.pdfFrame}
+                file={link}
+                onLoadSuccess={this.onDocumentLoadSuccess}
+                loading={this.documentWarning('Loading document. Please wait...')}
+                noData={this.documentWarning('URL is not available.')}
+              >
+                {Array.from(new Array(numPages), (el, index) => (
+                  <Page
+                    loading=""
+                    className={styles.pdfPage}
+                    key={`page_${index + 1}`}
+                    pageNumber={index + 1}
+                  />
+                ))}
+              </Document>
+              {this._renderStickyFooter()}
+            </>
           )}
         </div>
       </Modal>
