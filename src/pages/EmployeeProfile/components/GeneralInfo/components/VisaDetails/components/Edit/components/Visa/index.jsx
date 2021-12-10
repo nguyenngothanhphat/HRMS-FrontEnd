@@ -1,9 +1,11 @@
 import React, { Fragment, Component } from 'react';
 import { Col, DatePicker, Form, Input, Select, Spin, Tag } from 'antd';
-import { DownOutlined, PlusOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { PlusOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
 import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
+import removeIcon from '../../assets/removeIcon.svg';
+
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import UploadImage from '../../../UploadImage';
 import styles from '../../index.less';
@@ -79,6 +81,16 @@ class VisaGeneral extends Component {
         payload: { visaData: newList },
       });
     }
+  };
+
+  handleRemove = (index) => {
+    const { visaData = [], dispatch } = this.props;
+    const newList = [...visaData];
+    newList.splice(index, 1);
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { visaData: newList },
+    });
   };
 
   handleCanCelIcon = (index) => {
@@ -413,7 +425,16 @@ class VisaGeneral extends Component {
                           }}
                         />
                       </Form.Item>
-
+                      {index >= 1 ? (
+                        <div>
+                          <img
+                            className={styles.removeIcon}
+                            onClick={() => this.handleRemove(index)}
+                            src={removeIcon}
+                            alt="remove"
+                          />
+                        </div>
+                      ) : null}
                       {!item.urlFile ? (
                         <div className={styles.textUpload}>
                           {loadingVisaTest[index] === false ||
@@ -495,6 +516,9 @@ class VisaGeneral extends Component {
                           this.handleFieldChange(index, 'visaIssuedCountry', value);
                         }}
                         showArrow
+                        showSearch
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       >
                         {formatCountryList.map((itemCountry) => {
                           return (
