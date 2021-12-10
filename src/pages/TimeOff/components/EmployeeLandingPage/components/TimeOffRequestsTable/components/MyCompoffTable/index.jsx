@@ -68,9 +68,9 @@ class MyCompoffTable extends PureComponent {
               }}
             >
               {assigned.map((user) => {
-                const { firstName = '', lastName = '', avatar = '' } = user;
+                const { legalName = '', avatar = '' } = user;
                 return (
-                  <Tooltip title={`${firstName} ${lastName}`} placement="top">
+                  <Tooltip title={legalName} placement="top">
                     <Avatar size="small" style={{ backgroundColor: '#EAF0FF' }} src={avatar} />
                   </Tooltip>
                 );
@@ -148,11 +148,10 @@ class MyCompoffTable extends PureComponent {
 
       const oneAssign = (step) => {
         const {
-          employee: { generalInfo: { firstName = '', lastName = '', avatar = '' } = {} } = {},
+          employee: { generalInfo: { legalName = '', avatar = '' } = {} } = {},
         } = step;
         return {
-          firstName,
-          lastName,
+          legalName,
           avatar,
         };
       };

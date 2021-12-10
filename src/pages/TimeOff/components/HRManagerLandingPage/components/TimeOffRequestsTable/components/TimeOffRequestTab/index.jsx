@@ -15,7 +15,16 @@ import styles from './index.less';
     timeOff,
     loading,
     user,
-    timeOff: { currentUserRole = '', filter = {}, timeOffTypesByCountry, paging } = {},
+    timeOff: {
+      currentUserRole = '',
+      filter = {},
+      timeOffTypesByCountry,
+      paging,
+      compoffRequests = [],
+      leaveRequests = [],
+      teamCompoffRequests = [],
+      teamLeaveRequests = [],
+    } = {},
   }) => ({
     timeOff,
     paging,
@@ -23,6 +32,10 @@ import styles from './index.less';
     filter,
     timeOffTypesByCountry,
     currentUserRole,
+    teamCompoffRequests,
+    teamLeaveRequests,
+    compoffRequests,
+    leaveRequests,
     loading1: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
     loading2: loading.effects['timeOff/fetchTeamLeaveRequests'],
     loading3: loading.effects['timeOff/fetchMyCompoffRequests'],
@@ -33,8 +46,6 @@ class TimeOffRequestTab extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      formatData: [],
-      formatMainTabData: [],
       inProgressLength: 0,
       approvedLength: 0,
       rejectedLength: 0,
@@ -157,16 +168,9 @@ class TimeOffRequestTab extends Component {
     }
 
     const commonFunction = (res = {}) => {
-      const { data: { items = [], total = [] } = {}, statusCode } = res;
+      const { data: { total = [] } = {}, statusCode } = res;
       if (statusCode === 200) {
-        const newData = items;
-
         this.countTotal(total);
-        const formatMainTabData = newData;
-        this.setState({
-          formatMainTabData,
-          formatData: newData,
-        });
       }
     };
 
@@ -228,31 +232,31 @@ class TimeOffRequestTab extends Component {
     arrTotal.forEach((item) => {
       switch (item._id) {
         case TIMEOFF_STATUS.inProgress: {
-          inProgressLength = item.count;
+          inProgressLength += item.count;
           break;
         }
         case TIMEOFF_STATUS.inProgressNext: {
-          inProgressLength = item.count;
+          inProgressLength += item.count;
           break;
         }
         case TIMEOFF_STATUS.accepted: {
-          approvedLength = item.count;
+          approvedLength += item.count;
           break;
         }
         case TIMEOFF_STATUS.rejected: {
-          rejectedLength = item.count;
+          rejectedLength += item.count;
           break;
         }
         case TIMEOFF_STATUS.drafts: {
-          draftLength = item.count;
+          draftLength += item.count;
           break;
         }
         case TIMEOFF_STATUS.onHold: {
-          onHoldLength = item.count;
+          onHoldLength += item.count;
           break;
         }
         case TIMEOFF_STATUS.deleted: {
-          deletedLength = item.count;
+          deletedLength += item.count;
           break;
         }
         default:
@@ -339,10 +343,21 @@ class TimeOffRequestTab extends Component {
   };
 
   render() {
-    const { type = 0, category = '', tab = 0, loading1, loading2, loading3, loading4 } = this.props;
+    const {
+      type = 0,
+      category = '',
+      tab = 0,
+      loading1,
+      loading2,
+      loading3,
+      loading4,
+      compoffRequests = [],
+      leaveRequests = [],
+      teamCompoffRequests = [],
+      teamLeaveRequests = [],
+    } = this.props;
 
     const {
-      formatData,
       inProgressLength,
       approvedLength,
       rejectedLength,
@@ -352,7 +367,6 @@ class TimeOffRequestTab extends Component {
       onHoldLength,
       deletedLength,
       handlePackage,
-      formatMainTabData,
     } = this.state;
 
     const dataNumber = {
@@ -364,7 +378,7 @@ class TimeOffRequestTab extends Component {
       deletedLength,
     };
 
-    const checkEmptyTable = formatMainTabData.length === 0;
+    const checkEmptyTable = false;
 
     const emptyTableContent = this.renderEmptyTableContent(tab, category);
 
@@ -387,14 +401,14 @@ class TimeOffRequestTab extends Component {
             ) : (
               <>
                 {type === 1 && category === 'MY' && (
-                  <MyLeaveTable data={formatData} selectedTab={selectedTab} />
+                  <MyLeaveTable data={leaveRequests} selectedTab={selectedTab} />
                 )}
                 {type === 2 && category === 'MY' && (
-                  <MyCompoffTable data={formatData} selectedTab={selectedTab} />
+                  <MyCompoffTable data={compoffRequests} selectedTab={selectedTab} />
                 )}
                 {type === 1 && category === 'TEAM' && (
                   <TeamLeaveTable
-                    data={formatData}
+                    data={teamLeaveRequests}
                     category={category}
                     selectedTab={selectedTab}
                     onRefreshTable={this.setSelectedFilterTab}
@@ -403,7 +417,7 @@ class TimeOffRequestTab extends Component {
                 )}
                 {type === 2 && category === 'TEAM' && (
                   <TeamCompoffTable
-                    data={formatData}
+                    data={teamCompoffRequests}
                     category={category}
                     selectedTab={selectedTab}
                     onRefreshTable={this.setSelectedFilterTab}
@@ -412,7 +426,7 @@ class TimeOffRequestTab extends Component {
                 )}
                 {type === 1 && category === 'ALL' && (
                   <TeamLeaveTable
-                    data={formatData}
+                    data={teamLeaveRequests}
                     selectedTab={selectedTab}
                     onRefreshTable={this.setSelectedFilterTab}
                     onHandle={this.onApproveRejectHandle}
@@ -421,7 +435,7 @@ class TimeOffRequestTab extends Component {
 
                 {type === 2 && category === 'ALL' && (
                   <TeamCompoffTable
-                    data={formatData}
+                    data={teamCompoffRequests}
                     selectedTab={selectedTab}
                     onRefreshTable={this.setSelectedFilterTab}
                     onHandle={this.onApproveRejectHandle}

@@ -70,12 +70,11 @@ const timeOff = {
     holidaysList: [],
     holidaysListByLocation: [],
     holidaysListByCountry: {},
-    allMyLeaveRequests: {},
+    leaveHistory: [],
     leavingList: [],
     totalLeaveBalance: {},
-    leaveRequests: {},
-    compoffRequests: {},
-    allMyCompoffRequests: {},
+    leaveRequests: [],
+    compoffRequests: [],
     timeOffTypes: [],
     timeOffTypesByCountry: [],
     employeeInfo: {},
@@ -84,8 +83,8 @@ const timeOff = {
     viewingLeaveRequest: {},
     viewingCompoffRequest: {},
     savedDraftLR: {},
-    teamCompoffRequests: {},
-    teamLeaveRequests: {},
+    teamCompoffRequests: [],
+    teamLeaveRequests: [],
     urlExcel: undefined,
     updateSchedule: {},
     balances: {},
@@ -270,46 +269,25 @@ const timeOff = {
       }
     },
     *fetchLeaveRequestOfEmployee({ payload }, { call, put }) {
-      const { status = '' } = payload;
       try {
         const tenantId = getCurrentTenant();
-        if (status !== '') {
-          const response = yield call(getLeaveRequestOfEmployee, {
-            ...payload,
-            tenantId,
-            company: getCurrentCompany(),
-          });
-          const { statusCode, data: leaveRequests = [], total } = response;
-          if (statusCode !== 200) throw response;
+        const response = yield call(getLeaveRequestOfEmployee, {
+          ...payload,
+          tenantId,
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data: { items: leaveRequests = [], total = [] } = {} } = response;
+        if (statusCode !== 200) throw response;
 
-          yield put({
-            type: 'save',
-            payload: { leaveRequests },
-          });
-          yield put({
-            type: 'savePaging',
-            payload: { total },
-          });
-          return response;
-        }
-        if (status === '') {
-          const response = yield call(getLeaveRequestOfEmployee, {
-            ...payload,
-            tenantId,
-            company: getCurrentCompany(),
-          });
-          const { statusCode, data: allMyLeaveRequests = [], total } = response;
-          if (statusCode !== 200) throw response;
-          yield put({
-            type: 'save',
-            payload: { allMyLeaveRequests },
-          });
-          yield put({
-            type: 'savePaging',
-            payload: { total },
-          });
-          return response;
-        }
+        yield put({
+          type: 'save',
+          payload: { leaveRequests },
+        });
+        yield put({
+          type: 'savePaging',
+          payload: { total },
+        });
+        return response;
       } catch (errors) {
         dialog(errors);
       }
@@ -325,11 +303,11 @@ const timeOff = {
           tenantId,
           company: getCurrentCompany(),
         });
-        const { statusCode, data: allMyLeaveRequests = [] } = response;
+        const { statusCode, data: { items: leaveHistory = [] } = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { allMyLeaveRequests },
+          payload: { leaveHistory },
         });
       } catch (errors) {
         dialog(errors);
@@ -530,43 +508,23 @@ const timeOff = {
       }
     },
     *fetchMyCompoffRequests({ payload }, { call, put }) {
-      const { status = [] } = payload;
       try {
-        if (status !== '') {
-          const response = yield call(getMyCompoffRequests, {
-            ...payload,
-            tenantId: getCurrentTenant(),
-          });
-          const { statusCode, data: compoffRequests = {}, total } = response;
-          // console.log('response', response);
-          if (statusCode !== 200) throw response;
-          yield put({
-            type: 'save',
-            payload: { compoffRequests },
-          });
-          yield put({
-            type: 'savePaging',
-            payload: { total },
-          });
-          return response;
-        }
-        if (status === '') {
-          const response = yield call(getMyCompoffRequests, {
-            ...payload,
-            tenantId: getCurrentTenant(),
-          });
-          const { statusCode, data: allMyCompoffRequests = {}, total } = response;
-          if (statusCode !== 200) throw response;
-          yield put({
-            type: 'save',
-            payload: { allMyCompoffRequests },
-          });
-          yield put({
-            type: 'savePaging',
-            payload: { total },
-          });
-          return response;
-        }
+        const response = yield call(getMyCompoffRequests, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data: { result: compoffRequests = [], total = [] } = {} } = response;
+        // console.log('response', response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { compoffRequests },
+        });
+        yield put({
+          type: 'savePaging',
+          payload: { total },
+        });
+        return response;
       } catch (errors) {
         // dialog(errors);
       }
@@ -644,40 +602,26 @@ const timeOff = {
 
     // MANAGER
     *fetchTeamCompoffRequests({ payload }, { call, put }) {
-      const { status = [] } = payload;
       try {
-        if (status !== '') {
-          const response = yield call(getTeamCompoffRequests, {
-            ...payload,
-            tenantId: getCurrentTenant(),
-          });
-          const { statusCode, data: teamCompoffRequests = {}, total } = response;
-          // console.log('response', response);
-          if (statusCode !== 200) throw response;
-          yield put({
-            type: 'save',
-            payload: { teamCompoffRequests },
-          });
-          yield put({
-            type: 'savePaging',
-            payload: { total },
-          });
-          return response;
-        }
-        if (status === '') {
-          const response = yield call(getTeamCompoffRequests, {
-            ...payload,
-            tenantId: getCurrentTenant(),
-          });
-          const { statusCode, data: allTeamCompoffRequests = {} } = response;
-          // console.log('response', response);
-          if (statusCode !== 200) throw response;
-          yield put({
-            type: 'save',
-            payload: { allTeamCompoffRequests },
-          });
-          return response;
-        }
+        const response = yield call(getTeamCompoffRequests, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const {
+          statusCode,
+          data: { items: teamCompoffRequests = [], total },
+        } = response;
+        // console.log('response', response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { teamCompoffRequests },
+        });
+        yield put({
+          type: 'savePaging',
+          payload: { total },
+        });
+        return response;
       } catch (errors) {
         dialog(errors);
       }
@@ -685,46 +629,27 @@ const timeOff = {
     },
 
     *fetchTeamLeaveRequests({ payload }, { call, put }) {
-      const { status = '' } = payload;
       try {
-        if (status !== '') {
-          const response = yield call(getTeamLeaveRequests, {
-            ...payload,
-            tenantId: getCurrentTenant(),
-            company: getCurrentCompany(),
-          });
-          const { statusCode, data: teamLeaveRequests = {}, total } = response;
-          // console.log('response', response);
-          if (statusCode !== 200) throw response;
-          yield put({
-            type: 'save',
-            payload: { teamLeaveRequests },
-          });
-          yield put({
-            type: 'savePaging',
-            payload: { total },
-          });
-          return response;
-        }
-        if (status === '') {
-          const response = yield call(getTeamLeaveRequests, {
-            ...payload,
-            tenantId: getCurrentTenant(),
-            company: getCurrentCompany(),
-          });
-          const { statusCode, data: allTeamLeaveRequests = {}, total } = response;
-          // console.log('response', response);
-          if (statusCode !== 200) throw response;
-          yield put({
-            type: 'save',
-            payload: { allTeamLeaveRequests },
-          });
-          yield put({
-            type: 'savePaging',
-            payload: { total },
-          });
-          return response;
-        }
+        const response = yield call(getTeamLeaveRequests, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const {
+          statusCode,
+          data: { items: teamLeaveRequests = [], total },
+        } = response;
+        // console.log('response', response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { teamLeaveRequests },
+        });
+        yield put({
+          type: 'savePaging',
+          payload: { total },
+        });
+        return response;
       } catch (errors) {
         // dialog(errors);
       }
