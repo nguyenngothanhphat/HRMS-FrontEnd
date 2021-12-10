@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col, Spin, Progress, Input } from 'antd';
-import TimeOffModal from '@/components/TimeOffModal';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import { connect, history } from 'umi';
 import moment from 'moment';
+import TimeOffModal from '@/components/TimeOffModal';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 
 import styles from './index.less';
 
@@ -85,11 +85,13 @@ class RequestInformation extends PureComponent {
 
   // APPROVE CLICKED
   onApproveClicked = async (_id) => {
-    const { dispatch } = this.props;
+    const { dispatch, timeOff: { viewingCompoffRequest: { projectManager = {} } = {} } = {} } =
+      this.props;
     const res = await dispatch({
       type: 'timeOff/approveCompoffRequest',
       payload: {
         _id,
+        projectManager: projectManager?._id,
       },
     });
     const { statusCode = 0 } = res;
@@ -119,12 +121,14 @@ class RequestInformation extends PureComponent {
   // ON REJECT SUBMIT
   onRejectSubmit = async (_id) => {
     const { commentContent } = this.state;
-    const { dispatch } = this.props;
+    const { dispatch, timeOff: { viewingCompoffRequest: { projectManager = {} } = {} } = {} } =
+      this.props;
     const res = await dispatch({
       type: 'timeOff/rejectCompoffRequest',
       payload: {
         _id,
         comment: commentContent,
+        projectManager: projectManager?._id,
       },
     });
     const { statusCode = 0 } = res;
@@ -146,32 +150,23 @@ class RequestInformation extends PureComponent {
       status = '',
       _id = '',
       employee: {
-        generalInfo: { firstName = '', lastName = '', userId: employeeUserId = '' } = {},
+        generalInfo: { legalName: employeeName = '', userId: employeeUserId = '' } = {},
         // _id: employeeId = '',
         employeeId: employeeIdText = '',
         position: { name: position = '' } = {},
       } = {},
       extraTime = [],
       description = '',
-      project: {
-        name = '',
-        manager: {
-          // _id: managerId = '',
-          generalInfo: {
-            firstName: firstName1 = '',
-            lastName: lastName1 = '',
-            userId: managerUserId = '',
-          } = {},
-        } = {},
-        projectHealth = 0,
+      project: { projectName = '', projectHealth = 0 } = {},
+      projectManager: {
+        // _id: managerId = '',
+        generalInfoInfo: { legalName: projectManagerName = '', userId: managerUserId = '' } = {},
       } = {},
       currentStep = 0,
       commentPM = '',
       commentCLA = '',
       totalHours = 0,
     } = viewingCompoffRequest;
-
-    const projectManagerName = `${firstName1} ${lastName1}`;
 
     const formatDurationTime = this.formatDurationTime(extraTime);
 
@@ -195,7 +190,7 @@ class RequestInformation extends PureComponent {
                   onClick={() => this.onViewEmployeeProfile(employeeUserId)}
                   className={styles.employeeLink}
                 >
-                  {`${firstName} ${lastName}`}
+                  {employeeName}
                 </span>
               </Col>
             </Row>
@@ -208,7 +203,7 @@ class RequestInformation extends PureComponent {
             <Row>
               <Col span={6}>Current Project</Col>
               <Col span={18} className={styles.detailColumn}>
-                <span>{name}</span>
+                <span>{projectName}</span>
               </Col>
             </Row>
             <Row>
@@ -263,7 +258,7 @@ class RequestInformation extends PureComponent {
                 <Row>
                   <Col span={6}>Project</Col>
                   <Col span={18} className={styles.detailColumn}>
-                    <span className={styles.fieldValue}>{`${name}`}</span>
+                    <span className={styles.fieldValue}>{projectName}</span>
                   </Col>
                 </Row>
                 <Row>
