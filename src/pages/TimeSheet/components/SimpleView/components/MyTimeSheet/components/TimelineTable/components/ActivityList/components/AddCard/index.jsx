@@ -1,4 +1,4 @@
-import { Col, Form, Input, Row, Select, TimePicker } from 'antd';
+import { Col, Form, Input, notification, Row, Select, TimePicker } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -6,7 +6,7 @@ import ApproveIcon from '@/assets/timeSheet/approve.svg';
 import ArrowDown from '@/assets/timeSheet/arrowDown.svg';
 import CancelIcon from '@/assets/timeSheet/cancel.svg';
 import ClockIcon from '@/assets/timeSheet/clock.svg';
-import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
+import { getCurrentCompany } from '@/utils/authority';
 import {
   activityName,
   dateFormatAPI,
@@ -43,27 +43,9 @@ const AddCard = (props) => {
     onEditValue = () => {},
   } = props;
 
-  const {
-    dispatch,
-    employee: {
-      _id: employeeId = '',
-      generalInfo: {
-        legalName: empName = '',
-        workEmail: empWorkEmail = '',
-        userId: empUserId = '',
-      } = {} || {},
-      departmentInfo: { name: empDepartmentName = '', _id: empDepartmentId = '' } = {} || {},
-      managerInfo: {
-        _id: managerId = '',
-        generalInfo: {
-          legalName: managerName = '',
-          workEmail: managerWorkEmail = '',
-          userId: managerUserId = '',
-        } = {} || {},
-        department: { name: managerDepartmentName = '', _id: managerDepartmentId = '' } = {} || {},
-      } = {} || {},
-    } = {} || {},
-  } = props;
+  const { dispatch, user: { currentUser: { employee = {}, location = {} } = {} } = {} } = props;
+
+  const { _id: employeeId = '' } = employee;
 
   useEffect(() => {
     if (refreshing) {
@@ -80,6 +62,11 @@ const AddCard = (props) => {
 
   // main function
   const addActivityEffect = (values) => {
+    if (!employee?.managerInfo) {
+      notification.error({ message: 'User does not have manager' });
+      return {};
+    }
+
     return dispatch({
       type: 'timeSheet/addActivityEffect',
       payload: {
@@ -87,41 +74,21 @@ const AddCard = (props) => {
         startTime: moment(values.startTime).format(hourFormatAPI),
         endTime: moment(values.endTime).format(hourFormatAPI),
         date: moment(cardDay).locale('en').format(dateFormatAPI),
-        projectName: 'HRMS',
         notes: values.notes,
         employeeId,
         companyId: getCurrentCompany(),
-        location: getCurrentLocation(),
         nightShift: values.nightShift,
+        location,
+        type: 'TASK',
         employee: {
-          employeeName: empName,
-          employeeCode: empUserId,
-          workEmail: empWorkEmail,
-          department: {
-            name: empDepartmentName,
-            id: empDepartmentId,
+          _id: employee._id,
+          department: employee.department,
+          generalInfo: employee.generalInfo,
+          manager: {
+            _id: employee.managerInfo._id,
+            generalInfo: employee.managerInfo.generalInfo,
           },
         },
-        managerInfo: {
-          employeeName: managerName,
-          employeeId: managerId,
-          employeeCode: managerUserId,
-          workEmail: managerWorkEmail,
-          department: {
-            name: managerDepartmentName,
-            id: managerDepartmentId,
-          },
-        },
-        // managerInfo: {
-        //   employeeName: 'Lewis Manager',
-        //   employeeId: '615a5d6bdb04f89a75e7f2e0',
-        //   employeeCode: 'lewis-manager',
-        //   workEmail: 'lewis-manager@mailinator.com',
-        //   department: {
-        //     name: 'Engineering',
-        //     id: '6153e2ecb51335302899a375',
-        //   },
-        // },
       },
       date: moment(cardDay).format(dateFormatAPI),
     });
@@ -301,6 +268,4 @@ const AddCard = (props) => {
   );
 };
 
-export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({ employee }))(
-  AddCard,
-);
+export default connect(({ user }) => ({ user }))(AddCard);
