@@ -183,7 +183,7 @@ const WeeklyTable = (props) => {
               <TaskPopover
                 projectName={projectName}
                 date={date}
-                tasks={value?.dailyProjectTask}
+                tasks={value?.dailyTask}
                 placement="bottomLeft"
               >
                 {!value ? (
@@ -191,7 +191,7 @@ const WeeklyTable = (props) => {
                     <img src={EmptyLine} alt="" />
                   </span>
                 ) : (
-                  <span className={styles.hourValue}>{convertMsToTime(value.duration)}</span>
+                  <span className={styles.hourValue}>{convertMsToTime(value.spentTime)}</span>
                 )}
               </TaskPopover>
             );

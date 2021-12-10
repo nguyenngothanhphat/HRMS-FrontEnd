@@ -1,11 +1,8 @@
-import { Button, Col, Popover, Row } from 'antd';
-import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import { Col, Popover, Row } from 'antd';
+import React, { useState } from 'react';
 import { connect } from 'umi';
 import CloseX from '@/assets/dashboard/closeX.svg';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
-import { getCurrentCompany } from '@/utils/authority';
-import { convertMsToTime } from '@/utils/timeSheet';
 
 import styles from './index.less';
 
@@ -20,6 +17,7 @@ const UserProfilePopover = (props) => {
       title = {},
       workEmail = '',
       workNumber = '',
+      location: { state = '', countryName = '' } = {},
     } = {},
   } = props;
   const [showPopover, setShowPopover] = useState(false);
@@ -62,7 +60,7 @@ const UserProfilePopover = (props) => {
       },
       {
         label: 'Location',
-        value: '',
+        value: `${state}, ${countryName}`,
       },
       {
         label: 'Local Time',

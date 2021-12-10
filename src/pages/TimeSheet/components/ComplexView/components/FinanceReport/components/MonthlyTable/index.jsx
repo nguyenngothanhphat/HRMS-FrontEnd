@@ -65,15 +65,22 @@ const MonthlyTable = (props) => {
         render: (value, row, index) => {
           const { weeks = [] } = row;
           if (index === 0) return renderHeaderItem(weekItem);
-          const find = weeks.find((w) => w.week === weekItem.week) || {};
-          if (!find)
-            return (
-              <span className={styles.hourValue}>
-                <img src={EmptyLine} alt="" />
-              </span>
-            );
+          const find = weeks.find((w) => w.week === weekItem.week);
           return (
-            <span className={styles.hourValue}>{convertMsToTime(find.weekProjectTime || 0)}</span>
+            <TaskPopover
+              week={weekItem.week}
+              startDate={weekItem.startDate}
+              endDate={weekItem.endDate}
+              tasks={find?.timesheet}
+            >
+              {!find || find?.weekProjectTime === 0 ? (
+                <span className={styles.hourValue}>
+                  <img src={EmptyLine} alt="" />
+                </span>
+              ) : (
+                <span className={styles.hourValue}>{convertMsToTime(find.weekProjectTime)}</span>
+              )}
+            </TaskPopover>
           );
         },
       };
@@ -86,7 +93,8 @@ const MonthlyTable = (props) => {
         key: 'projectName',
         align: 'left',
         width: `${100 / columnLength}%`,
-        render: (projectName, _, index) => {
+        render: (projectName, row, index) => {
+          const { engagementType = '' } = row;
           if (index === 0) {
             return <div style={{ paddingLeft: '24px' }}>{projectName}</div>;
           }
@@ -95,7 +103,10 @@ const MonthlyTable = (props) => {
               <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
                 <span>{projectName ? projectName.toString()?.charAt(0) : 'P'}</span>
               </div>
-              <span className={styles.name}>{projectName}</span>
+              <div className={styles.rightPart}>
+                <span className={styles.name}>{projectName}</span>
+                <span className={styles.type}>{engagementType}</span>
+              </div>
             </div>
           );
         },
@@ -109,6 +120,7 @@ const MonthlyTable = (props) => {
         width: `${100 / 9}%`,
         render: (value = 0, _, index) => {
           if (index === 0) return <span className={styles.totalHeader}>{value}</span>;
+          if (value === 0) return '';
           return <span className={styles.totalValue}>{convertMsToTime(value)}</span>;
         },
       },
@@ -156,7 +168,7 @@ const MonthlyTable = (props) => {
           columns={columns()}
           dataSource={formattedData}
           bordered
-          rowSelection={rowSelection}
+          // rowSelection={rowSelection} // NOT WOKRING YET
           pagination={false}
           // scroll={{ y: 440 }}
           loading={loadingFetch}

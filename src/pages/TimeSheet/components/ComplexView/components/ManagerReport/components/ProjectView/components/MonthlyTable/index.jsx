@@ -73,9 +73,9 @@ const MonthlyTable = (props) => {
               week={weekItem.week}
               startDate={weekItem.startDate}
               endDate={weekItem.endDate}
-              tasks={[]}
+              tasks={find?.timesheet}
             >
-              {!find ? (
+              {(!find || find?.weekProjectTime === 0) ? (
                 <div className={styles.hourValue}>
                   <img src={EmptyLine} alt="" />
                 </div>

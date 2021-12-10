@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { dateFormatAPI, VIEW_TYPE } from '@/utils/timeSheet';
+import { dateFormatAPI, VIEW_TYPE, generateAllWeeks } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -28,7 +28,7 @@ const FinanceReport = (props) => {
     dispatch,
     employee: { _id: employeeId = '' } = {},
     timeSheet: { financeViewList = [] } = {},
-    loadingFetch = false
+    loadingFetch = false,
   } = props;
 
   // FUNCTION AREA
@@ -69,30 +69,6 @@ const FinanceReport = (props) => {
     setStartDateWeek(lastSunday);
     setEndDateWeek(currentSunday);
   }, []);
-
-  // generate weeks for month
-  const generateAllWeeks = (fromDate, toDate) => {
-    const weeks = [];
-    let fd = new Date(fromDate);
-    const weekNo = moment(fromDate, 'YYYY-MM-DD').week();
-    const td = new Date(toDate);
-    while (fd.getTime() < td.getTime()) {
-      // const weekNumber = getWeekInMonth(fd)
-      const weekNumber = moment(fd).week() - weekNo + 1;
-      const startWeek = moment(fd).startOf('week').toDate();
-      const endWeek = moment(fd).endOf('week').toDate();
-      const existed = weeks.find((x) => x.week === weekNumber);
-      fd = new Date(fd.getFullYear(), fd.getMonth(), fd.getDate() + 1);
-      if (!existed) {
-        weeks.push({
-          week: weekNumber,
-          startDate: moment(startWeek).format('YYYY-MM-DD'),
-          endDate: moment(endWeek).format('YYYY-MM-DD'),
-        });
-      }
-    }
-    return weeks;
-  };
 
   // get current month
   useEffect(() => {
@@ -196,5 +172,5 @@ const FinanceReport = (props) => {
 export default connect(({ timeSheet, loading, user: { currentUser: { employee = {} } = {} } }) => ({
   employee,
   timeSheet,
-  loadingFetch: loading.effects['timeSheet/fetchFinanceTimesheetEffect']
+  loadingFetch: loading.effects['timeSheet/fetchFinanceTimesheetEffect'],
 }))(FinanceReport);

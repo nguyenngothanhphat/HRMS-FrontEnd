@@ -58,8 +58,8 @@ const WeeklyTable = (props) => {
       },
       {
         title: 'Type',
-        dataIndex: 'type',
-        key: 'type',
+        dataIndex: 'engagementType',
+        key: 'engagementType',
       },
       {
         title: 'Resources',

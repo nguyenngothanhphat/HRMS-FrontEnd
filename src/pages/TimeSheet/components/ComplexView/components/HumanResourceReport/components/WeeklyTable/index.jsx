@@ -55,8 +55,14 @@ const WeeklyTable = (props) => {
       },
       {
         title: 'Projects',
-        dataIndex: 'project',
-        key: 'project',
+        dataIndex: 'projects',
+        key: 'projects',
+        render: (projects = []) => {
+          return projects.map((x, i) => {
+            if (i + 1 !== projects.length) return `${x}, `;
+            return x;
+          });
+        },
       },
       {
         title: 'Working Days',
@@ -81,6 +87,7 @@ const WeeklyTable = (props) => {
         title: 'Total Hours',
         dataIndex: 'userSpentInHours',
         key: 'userSpentInHours',
+        align: 'center',
         render: (userSpentInHours) => `${userSpentInHours} hours`,
       },
     ];
