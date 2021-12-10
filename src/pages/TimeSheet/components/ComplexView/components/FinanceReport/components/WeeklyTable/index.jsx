@@ -3,28 +3,17 @@ import React, { useState } from 'react';
 import { connect } from 'umi';
 import { employeeColor } from '@/utils/timeSheet';
 import ProjectDetailModal from '../../../ProjectDetailModal';
-import SampleAvatar1 from '@/assets/dashboard/sampleAvatar1.png';
-import SampleAvatar2 from '@/assets/dashboard/sampleAvatar2.png';
-import SampleAvatar3 from '@/assets/dashboard/sampleAvatar3.png';
+import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import styles from './index.less';
 
-const members = [
-  {
-    name: 'Lewis',
-    avatar: SampleAvatar1,
-  },
-  {
-    name: 'Trung',
-    avatar: SampleAvatar2,
-  },
-  {
-    name: 'Anh',
-    avatar: SampleAvatar3,
-  },
-];
-
 const WeeklyTable = (props) => {
-  const { data = [], limit = 10, selectedProjects = [], setSelectedProjects = () => {} } = props;
+  const {
+    data = [],
+    limit = 10,
+    selectedProjects = [],
+    setSelectedProjects = () => {},
+    loadingFetch = false,
+  } = props;
   const [pageSelected, setPageSelected] = useState(1);
   const [projectDetailModalVisible, setProjectDetailModalVisible] = useState(false);
   const [handlingProject, setHandlingProject] = useState('');
@@ -37,50 +26,49 @@ const WeeklyTable = (props) => {
     return (
       <div>
         {list.map((member) => (
-          <span style={{ display: 'block' }}>{member.name}</span>
+          <span style={{ display: 'block' }}>{member.employee.legalName}</span>
         ))}
       </div>
     );
+  };
+
+  const onProjectClick = (projectId) => {
+    setProjectDetailModalVisible(true);
+    setHandlingProject(projectId);
   };
 
   const generateColumns = () => {
     const columns = [
       {
         title: 'Project Name',
-        dataIndex: 'project',
-        key: 'project',
-        render: (project, _, index) => (
-          <div
-            className={styles.renderProject}
-            onClick={() => {
-              setProjectDetailModalVisible(true);
-              setHandlingProject(project);
-            }}
-          >
+        dataIndex: 'projectName',
+        key: 'projectName',
+        render: (projectName, row, index) => (
+          <div className={styles.renderProject} onClick={() => onProjectClick(row?.projectId)}>
             <div className={styles.avatar}>
               <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
-                <span>{project ? project.toString()?.charAt(0) : 'P'}</span>
+                <span>{projectName ? projectName.toString()?.charAt(0) : 'P'}</span>
               </div>
             </div>
             <div className={styles.right}>
-              <span className={styles.name}>{project}</span>
+              <span className={styles.name}>{projectName}</span>
             </div>
           </div>
         ),
       },
       {
         title: 'Type',
-        dataIndex: 'type',
-        key: 'type',
+        dataIndex: 'engagementType',
+        key: 'engagementType',
       },
       {
         title: 'Resources',
-        dataIndex: 'resources',
-        key: 'resources',
-        render: () => {
+        dataIndex: 'resource',
+        key: 'resource',
+        render: (resource = []) => {
           return (
             <Tooltip
-              title={renderTooltipTitle(members)}
+              title={renderTooltipTitle(resource)}
               placement="rightTop"
               getPopupContainer={(trigger) => {
                 return trigger;
@@ -88,8 +76,8 @@ const WeeklyTable = (props) => {
             >
               <div className={styles.taskMembers}>
                 <Avatar.Group maxCount={4}>
-                  {members.map((member) => {
-                    return <Avatar size="small" src={member.avatar} />;
+                  {resource.map((member) => {
+                    return <Avatar size="small" src={member.avatar || MockAvatar} />;
                   })}
                 </Avatar.Group>
               </div>
@@ -99,13 +87,15 @@ const WeeklyTable = (props) => {
       },
       {
         title: 'Total Days',
-        dataIndex: 'totalDays',
-        key: 'totalDays',
+        dataIndex: 'projectSpentInDay',
+        key: 'projectSpentInDay',
+        render: (projectSpentInDay = 0) => <span>{projectSpentInDay} Days</span>,
       },
       {
         title: 'Total Hours',
-        dataIndex: 'totalHours',
-        key: 'totalHours',
+        dataIndex: 'projectSpentInHours',
+        key: 'projectSpentInHours',
+        render: (projectSpentInHours = 0) => <span>{projectSpentInHours} Hours</span>,
       },
     ];
     return columns;
@@ -153,11 +143,13 @@ const WeeklyTable = (props) => {
         pagination={false}
         scroll={selectedProjects.length > 0 ? { y: 400 } : {}}
         // pagination={pagination}
+        loading={loadingFetch}
       />
       <ProjectDetailModal
         visible={projectDetailModalVisible}
         onClose={() => setProjectDetailModalVisible(false)}
         projectId={handlingProject}
+        dataSource={data}
       />
     </div>
   );

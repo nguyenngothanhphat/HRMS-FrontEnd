@@ -141,6 +141,35 @@ const isTheSameDay = (date1, date2) => {
   return moment(date1).format('MM/DD/YYYY') === moment(date2).format('MM/DD/YYYY');
 };
 
+const generateAllWeeks = (fromDate, toDate) => {
+  const weeks = [];
+  let fd = new Date(fromDate);
+  const weekNo = moment(fromDate, 'YYYY-MM-DD').week();
+  const td = new Date(toDate);
+  let previousWeek;
+  while (fd.getTime() < td.getTime()) {
+    const weekNumber = moment(fd).week() - weekNo + 1;
+    if (weekNumber > 0) {
+      previousWeek = weekNumber;
+    } else {
+      previousWeek += 1;
+    }
+    const startWeek = moment(fd).startOf('week').toDate();
+    const endWeek = moment(fd).endOf('week').toDate();
+    const existed = weeks.find((x) => x.compare === weekNumber);
+    fd = new Date(fd.getFullYear(), fd.getMonth(), fd.getDate() + 1);
+    if (!existed) {
+      weeks.push({
+        week: previousWeek,
+        compare: weekNumber,
+        startDate: moment(startWeek).format('YYYY-MM-DD'),
+        endDate: moment(endWeek).format('YYYY-MM-DD'),
+      });
+    }
+  }
+  return weeks;
+};
+
 export {
   VIEW_TYPE,
   activityName,
@@ -168,4 +197,5 @@ export {
   MNG_MT_THIRD_COL_SPAN,
   TASKS,
   isTheSameDay,
+  generateAllWeeks,
 };

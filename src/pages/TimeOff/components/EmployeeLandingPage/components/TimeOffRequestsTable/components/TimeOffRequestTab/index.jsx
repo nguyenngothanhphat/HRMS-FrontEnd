@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
-import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import { connect } from 'umi';
+import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import MyLeaveTable from '../MyLeaveTable';
 import MyCompoffTable from '../MyCompoffTable';
@@ -12,7 +12,14 @@ import styles from './index.less';
     timeOff,
     loading,
     user,
-    timeOff: { currentUserRole = '', filter = {}, timeOffTypesByCountry, paging } = {},
+    timeOff: {
+      currentUserRole = '',
+      filter = {},
+      timeOffTypesByCountry,
+      paging,
+      compoffRequests = [],
+      leaveRequests = [],
+    } = {},
   }) => ({
     timeOff,
     paging,
@@ -20,6 +27,8 @@ import styles from './index.less';
     filter,
     timeOffTypesByCountry,
     currentUserRole,
+    compoffRequests,
+    leaveRequests,
     loading1: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
     loading2: loading.effects['timeOff/fetchTeamLeaveRequests'],
     loading3: loading.effects['timeOff/fetchMyCompoffRequests'],
@@ -30,8 +39,6 @@ class TimeOffRequestTab extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      formatData: [],
-      formatMainTabData: [],
       inProgressLength: 0,
       approvedLength: 0,
       rejectedLength: 0,
@@ -130,16 +137,9 @@ class TimeOffRequestTab extends PureComponent {
       }
     }
     const commonFunction = (res = {}) => {
-      const { data: { items = [], total = [] } = {}, statusCode } = res;
+      const { data: { total = [] } = {}, statusCode } = res;
       if (statusCode === 200) {
-        const newData = items;
-
         this.countTotal(total);
-        const formatMainTabData = newData;
-        this.setState({
-          formatMainTabData,
-          formatData: newData,
-        });
       }
     };
 
@@ -192,23 +192,23 @@ class TimeOffRequestTab extends PureComponent {
       const { status = '' } = item;
       switch (status) {
         case TIMEOFF_STATUS.inProgress: {
-          inProgressLength = item.count;
+          inProgressLength += item.count;
           break;
         }
         case TIMEOFF_STATUS.accepted: {
-          approvedLength = item.count;
+          approvedLength += item.count;
           break;
         }
         case TIMEOFF_STATUS.rejected: {
-          rejectedLength = item.count;
+          rejectedLength += item.count;
           break;
         }
         case TIMEOFF_STATUS.drafts: {
-          draftLength = item.count;
+          draftLength += item.count;
           break;
         }
         case TIMEOFF_STATUS.onHold: {
-          onHoldLength = item.count;
+          onHoldLength += item.count;
           break;
         }
         default:
@@ -254,21 +254,16 @@ class TimeOffRequestTab extends PureComponent {
   };
 
   render() {
-    const {
-      formatData,
-      inProgressLength,
-      approvedLength,
-      rejectedLength,
-      draftLength,
-      onHoldLength,
-      formatMainTabData,
-    } = this.state;
+    const { inProgressLength, approvedLength, rejectedLength, draftLength, onHoldLength } =
+      this.state;
 
     const {
       type = 0,
       tab = 0,
       loadingFetchLeaveRequests,
       loadingFetchMyCompoffRequests,
+      compoffRequests = [],
+      leaveRequests = [],
     } = this.props;
 
     const dataNumber = {
@@ -279,7 +274,8 @@ class TimeOffRequestTab extends PureComponent {
       onHoldLength,
     };
 
-    const checkEmptyTable = formatMainTabData.length === 0;
+    const checkEmptyTable = false;
+    // (type === 2 && compoffRequests.length === 0) || (type === 1 && leaveRequests.length === 0);
 
     const emptyTableContent = this.renderEmptyTableContent(tab);
 
@@ -296,12 +292,12 @@ class TimeOffRequestTab extends PureComponent {
             <div>
               {type === 1 && (
                 <>
-                  <MyLeaveTable data={formatData} />
+                  <MyLeaveTable data={leaveRequests} />
                 </>
               )}
               {type === 2 && (
                 <>
-                  <MyCompoffTable data={formatData} />
+                  <MyCompoffTable data={compoffRequests} />
                 </>
               )}
             </div>

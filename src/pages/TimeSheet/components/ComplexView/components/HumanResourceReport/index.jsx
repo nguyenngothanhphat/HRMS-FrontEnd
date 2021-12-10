@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { dateFormatAPI, VIEW_TYPE } from '@/utils/timeSheet';
+import { dateFormatAPI, VIEW_TYPE, generateAllWeeks } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -9,107 +9,6 @@ import ViewTypeSelector from '@/pages/TimeSheet/components/ComplexView/component
 import WeeklyTable from './components/WeeklyTable';
 import styles from './index.less';
 
-const mockData = [
-  {
-    id: 1,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 2,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 3,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 4,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 5,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 6,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 7,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 8,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 9,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 10,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-  {
-    id: 11,
-    user: { name: 'Bessie Cooper', employeeId: 'PSI - 2244' },
-    department: 'UX Mumbai',
-    project: 'Udaan Retainer',
-    workingDays: '5/5 (40 hours)',
-    leavesTaken: '0/3',
-    totalHours: '160 hours',
-  },
-];
 const HumanResourceReport = (props) => {
   // weekly
   const [startDateWeek, setStartDateWeek] = useState('');
@@ -123,18 +22,17 @@ const HumanResourceReport = (props) => {
   // others
   const [selectedView, setSelectedView] = useState(VIEW_TYPE.W); // D: daily, W: weekly, M: monthly
   const [selectedEmployees, setSelectedEmployees] = useState([]); // D: daily, W: weekly, M: monthly
-  const { dispatch, employee: { _id: employeeId = '' } = {} } = props;
+  const { dispatch, timeSheet: { hrViewList = [] } = {}, loadingFetch = false } = props;
 
   // FUNCTION AREA
-  const fetchMyTimesheetEffectByType = (startDate, endDate) => {
+  const fetchHRTimesheet = (startDate, endDate) => {
     dispatch({
-      type: 'timeSheet/fetchMyTimesheetByTypeEffect',
+      type: 'timeSheet/fetchHRTimesheetEffect',
       payload: {
         companyId: getCurrentCompany(),
-        employeeId,
+        // employeeId,
         fromDate: moment(startDate).format(dateFormatAPI),
         toDate: moment(endDate).format(dateFormatAPI),
-        viewType: selectedView,
       },
     });
   };
@@ -142,15 +40,19 @@ const HumanResourceReport = (props) => {
   // USE EFFECT AREA
   useEffect(() => {
     if (startDateWeek && selectedView === VIEW_TYPE.W) {
-      fetchMyTimesheetEffectByType(startDateWeek, endDateWeek);
+      fetchHRTimesheet(startDateWeek, endDateWeek);
     }
   }, [startDateWeek, selectedView]);
 
   useEffect(() => {
     if (startDateMonth && selectedView === VIEW_TYPE.M) {
-      fetchMyTimesheetEffectByType(startDateMonth, endDateMonth);
+      fetchHRTimesheet(startDateMonth, endDateMonth);
     }
   }, [startDateMonth, selectedView]);
+
+  useEffect(() => {
+    setSelectedEmployees([]);
+  }, [selectedView]);
 
   // generate dates for week
   useEffect(() => {
@@ -158,31 +60,7 @@ const HumanResourceReport = (props) => {
     const currentSunday = moment().weekday(7);
     setStartDateWeek(lastSunday);
     setEndDateWeek(currentSunday);
-  }, []);
-
-  // generate weeks for month
-  const generateAllWeeks = (fromDate, toDate) => {
-    const weeks = [];
-    let fd = new Date(fromDate);
-    const weekNo = moment(fromDate, 'YYYY-MM-DD').week();
-    const td = new Date(toDate);
-    while (fd.getTime() < td.getTime()) {
-      // const weekNumber = getWeekInMonth(fd)
-      const weekNumber = moment(fd).week() - weekNo + 1;
-      const startWeek = moment(fd).startOf('week').toDate();
-      const endWeek = moment(fd).endOf('week').toDate();
-      const existed = weeks.find((x) => x.week === weekNumber);
-      fd = new Date(fd.getFullYear(), fd.getMonth(), fd.getDate() + 1);
-      if (!existed) {
-        weeks.push({
-          week: weekNumber,
-          startDate: moment(startWeek).format('YYYY-MM-DD'),
-          endDate: moment(endWeek).format('YYYY-MM-DD'),
-        });
-      }
-    }
-    return weeks;
-  };
+  }, [])
 
   // get current month
   useEffect(() => {
@@ -245,9 +123,10 @@ const HumanResourceReport = (props) => {
           <WeeklyTable
             startDate={startDateWeek}
             endDate={endDateWeek}
-            data={mockData}
+            data={hrViewList}
             selectedEmployees={selectedEmployees}
             setSelectedEmployees={setSelectedEmployees}
+            loadingFetch={loadingFetch}
           />
         );
       case VIEW_TYPE.M:
@@ -256,9 +135,10 @@ const HumanResourceReport = (props) => {
             startDate={startDateMonth}
             endDate={endDateMonth}
             weeksOfMonth={weeksOfMonth}
-            data={mockData}
+            data={hrViewList}
             selectedEmployees={selectedEmployees}
             setSelectedEmployees={setSelectedEmployees}
+            loadingFetch={loadingFetch}
           />
         );
       default:
@@ -281,6 +161,8 @@ const HumanResourceReport = (props) => {
   );
 };
 
-export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({
+export default connect(({ timeSheet, loading, user: { currentUser: { employee = {} } = {} } }) => ({
   employee,
+  timeSheet,
+  loadingFetch: loading.effects['timeSheet/fetchHRTimesheetEffect'],
 }))(HumanResourceReport);

@@ -388,8 +388,14 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
 
   // TIMESHEET
   const indexMyTimesheet = isAuthorized(permissionList, [EMPLOYEE]);
-  const indexReportTimesheet = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
-  const indexSettingTimesheet = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
+  const indexReportTimesheet = isAuthorized(permissionList, [MANAGER, HR_MANAGER]); // TEMP
+  const indexSettingTimesheet = isAuthorized(permissionList, [MANAGER, HR_MANAGER]); // TEMP
+
+  // CV = COMPLEX VIEW
+  const indexHRReportCVTimesheet = isAuthorized(permissionList, [HR, HR_MANAGER]);
+  const indexFinanceReportCVTimesheet = isAuthorized(permissionList, [FINANCE, HR_MANAGER]); // ONLY FINANCE IS RIGHT, HR_MANAGER IS FOR TESTING
+  const indexPeopleManagerCVTimesheet = isAuthorized(permissionList, [MANAGER]);
+  const indexProjectManagerCVTimesheet = isAuthorized(permissionList, [PROJECT_MANAGER]);
 
   // DASHBOARD
   const indexPendingApprovalDashboard = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
@@ -480,6 +486,10 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewMyTimesheet: indexMyTimesheet,
     viewReportTimesheet: indexReportTimesheet,
     viewSettingTimesheet: indexSettingTimesheet,
+    viewHRReportCVTimesheet: indexHRReportCVTimesheet,
+    viewFinanceReportCVTimesheet: indexFinanceReportCVTimesheet,
+    viewPeopleManagerCVTimesheet: indexPeopleManagerCVTimesheet,
+    viewProjectManagerCVTimesheet: indexProjectManagerCVTimesheet,
 
     // dashboard
     viewPendingApprovalDashboard: indexPendingApprovalDashboard,

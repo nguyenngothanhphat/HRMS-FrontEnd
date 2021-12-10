@@ -1,12 +1,25 @@
 import { Button, Modal } from 'antd';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import Information from './components/Information';
 import TaskTable from './components/TaskTable';
 import styles from './index.less';
 
 const ProjectDetailModal = (props) => {
-  const { visible = false, title = 'Project details', onClose = () => {} } = props;
+  const {
+    visible = false,
+    title = 'Project Details',
+    onClose = () => {},
+    projectId = '',
+    dataSource = [],
+  } = props;
+
+  const [data, setData] = useState();
+
+  useEffect(() => {
+    const find = dataSource.find((x) => x.projectId === projectId);
+    setData(find);
+  }, [projectId]);
 
   const handleCancel = () => {
     onClose();
@@ -27,7 +40,7 @@ const ProjectDetailModal = (props) => {
   const renderModalContent = () => {
     return (
       <div className={styles.content}>
-        <Information />
+        <Information data={data} />
         <TaskTable list={[]} />
       </div>
     );

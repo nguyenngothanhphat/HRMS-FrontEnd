@@ -511,7 +511,7 @@ class RequestInformation extends PureComponent {
       action = '',
       user: { currentUser: { employee = {} } = {} } = {},
     } = this.props;
-    const { _id: employeeId = '', manager = '' } = employee;
+    const { _id: employeeId = '', managerInfo: { _id: managerId = '' } = {} } = employee;
     const {
       viewingLeaveRequestId,
       // totalDayOfSelectedType,
@@ -562,7 +562,6 @@ class RequestInformation extends PureComponent {
           const data = {
             type: timeOffType,
             status: TIMEOFF_STATUS.inProgress,
-            employee: employeeId,
             subject,
             fromDate: durationFrom,
             toDate: durationTo,
@@ -570,7 +569,6 @@ class RequestInformation extends PureComponent {
             leaveDates,
             onDate: moment(),
             description,
-            approvalManager: manager, // id
             cc: personCC,
             tenantId: getCurrentTenant(),
             company: employee.company,
@@ -578,6 +576,8 @@ class RequestInformation extends PureComponent {
 
           let type = '';
           if (action === TIMEOFF_LINK_ACTION.newLeaveRequest) {
+            data.employee = employeeId;
+            data.approvalManager = managerId; // id
             type = 'timeOff/addLeaveRequest';
           } else if (action === TIMEOFF_LINK_ACTION.editLeaveRequest) {
             data._id = viewingLeaveRequestId;

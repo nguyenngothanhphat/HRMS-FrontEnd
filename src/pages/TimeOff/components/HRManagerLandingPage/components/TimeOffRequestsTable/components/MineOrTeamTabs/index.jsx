@@ -29,12 +29,7 @@ class MineOrTeamTabs extends Component {
   };
 
   render() {
-    const {
-      tab = 0,
-      type = 0,
-      tabName = '',
-      timeOff: { currentMineOrTeamTab = '' } = {},
-    } = this.props;
+    const { tab = 0, type = 0, timeOff: { currentMineOrTeamTab = '' } = {} } = this.props;
     const renderTableTitle = {
       right: <SearchTimeOff />,
     };
@@ -48,13 +43,13 @@ class MineOrTeamTabs extends Component {
           onTabClick={(activeKey) => this.saveCurrentTab(activeKey)}
           activeKey={currentMineOrTeamTab}
         >
-          <TabPane tab={`Team ${tabName}`} key="1">
+          <TabPane tab="Team Requests" key="1">
             <TimeOffRequestTab tab={tab} type={type} category="TEAM" />
           </TabPane>
-          <TabPane tab={`My ${tabName}`} key="2">
+          <TabPane tab="My Requests" key="2">
             <TimeOffRequestTab tab={tab} type={type} category="MY" />
           </TabPane>
-          <TabPane tab={`All ${tabName}`} key="3">
+          <TabPane tab="All Requests" key="3">
             <TimeOffRequestTab tab={tab} type={type} category="ALL" />
           </TabPane>
         </Tabs>

@@ -1,5 +1,5 @@
-import { Col, Row } from 'antd';
-import React, { useState } from 'react';
+import { Col, Row, Spin } from 'antd';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import {
   MNG_MT_MAIN_COL_SPAN,
@@ -15,60 +15,23 @@ import styles from './index.less';
 const { EMPLOYEE, REMAINING } = MNG_MT_MAIN_COL_SPAN;
 const { DESIGNATION, DEPARTMENT, PROJECT_GROUP } = MNG_MT_SECONDARY_COL_SPAN;
 const { PROJECTS, PROJECT_MANAGER, TOTAL_HOURS } = MNG_MT_THIRD_COL_SPAN;
-
-const mockMembers = [
-  {
-    id: 1,
-    name: 'Bessie Cooper',
-    userId: 'bessiecooper',
-    designation: 'UX Designer',
-    department: 'UX, Mumbai',
-    projects: [
-      {
-        id: 1,
-        name: 'Udaan - Retainer',
-        projectManager: 'Dianne Russell',
-        totalHours: 160,
-      },
-      {
-        id: 2,
-        name: 'HRMS',
-        projectManager: 'Savannah Nguyen',
-        totalHours: 160,
-      },
-      {
-        id: 3,
-        name: 'Udaan - Retainer',
-        projectManager: 'Dianne Russell',
-        totalHours: 160,
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: 'Bessie Cooper',
-    userId: 'bessiecooper',
-    designation: 'UX Designer',
-    department: 'UX, Mumbai',
-    projects: [
-      {
-        id: 1,
-        name: 'Udaan - Retainer',
-        projectManager: 'Dianne Russell',
-        totalHours: 160,
-      },
-      {
-        id: 2,
-        name: 'HRMS',
-        projectManager: 'Savannah Nguyen',
-        totalHours: 160,
-      },
-    ],
-  },
-];
+const VIEW_TYPE = {
+  PEOPLE_MANAGER: 1,
+  PROJECT_MANAGER: 2,
+};
 
 const MemberTable = (props) => {
-  const [mode, setMode] = useState(2); // 1: people manager, 2: project manager
+  const [viewType, setViewType] = useState(VIEW_TYPE.PEOPLE_MANAGER);
+  const { data = [], currentUserRoles = [], loadingFetch = false } = props;
+
+  useEffect(() => {
+    if (currentUserRoles.some((r) => ['people-manager'].includes(r))) {
+      setViewType(VIEW_TYPE.PEOPLE_MANAGER);
+    }
+    if (currentUserRoles.some((r) => ['project-manager'].includes(r))) {
+      setViewType(VIEW_TYPE.PROJECT_MANAGER);
+    }
+  }, []);
 
   // RENDER UI
   const _renderTableHeader = () => {
@@ -93,7 +56,7 @@ const MemberTable = (props) => {
                     Projects
                   </Col>
 
-                  {mode === 1 ? (
+                  {viewType === VIEW_TYPE.PEOPLE_MANAGER ? (
                     <>
                       <Col span={PROJECT_MANAGER} className={styles.title}>
                         Project Manager
@@ -126,36 +89,43 @@ const MemberTable = (props) => {
   };
 
   const _renderEmployee = (item = {}, index) => {
+    const { employee: { legalName = '', userId = '', avatar = '' } = {} } = item;
     return (
       <Row className={styles.member}>
         <Col span={EMPLOYEE} className={`${styles.member__firstColumn}`}>
-          <UserProfilePopover placement="rightTop">
+          <UserProfilePopover placement="rightTop" data={item.employee}>
             <div className={styles.renderEmployee}>
               <div className={styles.avatar}>
-                {item.avatar ? (
-                  <img src={item.avatar || MockAvatar} alt="" />
+                {avatar ? (
+                  <img src={avatar || MockAvatar} alt="" />
                 ) : (
                   <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
-                    <span>{item.name ? item.name.toString()?.charAt(0) : 'P'}</span>
+                    <span>{legalName ? legalName.toString()?.charAt(0) : 'P'}</span>
                   </div>
                 )}
               </div>
               <div className={styles.right}>
-                <span className={styles.name}>{item.name}</span>
-                <span className={styles.id}>({item.userId})</span>
+                <span className={styles.name}>{legalName}</span>
+                <span className={styles.id}>({userId})</span>
               </div>
             </div>
           </UserProfilePopover>
         </Col>
         <Col span={REMAINING} className={styles.member__remainColumn}>
-          <MemberCard card={item} />
+          <MemberCard card={item} viewType={viewType} VIEW_TYPE={VIEW_TYPE} />
         </Col>
       </Row>
     );
   };
 
   const _renderTableContent = () => {
-    return mockMembers.map((m, i) => _renderEmployee(m, i));
+    if (loadingFetch)
+      return (
+        <div className={styles.loadingContainer}>
+          <Spin size="default" />
+        </div>
+      );
+    return data.map((m, i) => _renderEmployee(m, i));
   };
 
   // MAIN AREA
@@ -169,4 +139,6 @@ const MemberTable = (props) => {
   );
 };
 
-export default connect(() => ({}))(MemberTable);
+export default connect(({ user: { currentUserRoles = [] } }) => ({ currentUserRoles }))(
+  MemberTable,
+);
