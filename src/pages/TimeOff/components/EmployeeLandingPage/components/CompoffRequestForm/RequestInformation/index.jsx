@@ -67,11 +67,9 @@ class RequestInformation extends PureComponent {
   };
 
   fetchProjectsListByEmployee = () => {
-    const { dispatch, user: { currentUser: { employee: { _id: employee = '' } = {} } = {} } = {} } =
-      this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/fetchProjectsListByEmployee',
-      payload: { employee },
     });
   };
 
@@ -91,7 +89,7 @@ class RequestInformation extends PureComponent {
     if (action === TIMEOFF_LINK_ACTION.editCompoffRequest) {
       const { viewingCompoffRequest = {} } = this.props;
       const {
-        project: { _id: projectId = '' } = {},
+        project: { id: projectId = '' } = {},
         extraTime = [],
         description = '',
         cc = [],
@@ -104,9 +102,6 @@ class RequestInformation extends PureComponent {
           isEditingDrafts: true,
         });
       }
-
-      // set project name
-      this.onEnterProjectNameChange(projectId);
 
       // set dates
       let durationFrom = '';
@@ -148,15 +143,29 @@ class RequestInformation extends PureComponent {
     }
   };
 
+  componentDidUpdate = (prevProps) => {
+    const { timeOff: { projectsList } = {} } = this.props;
+    if (JSON.stringify(prevProps.timeOff.projectsList) !== JSON.stringify(projectsList)) {
+      const { viewingCompoffRequest = {} } = this.props;
+      const { project: { id: projectId = '' } = {} } = viewingCompoffRequest;
+      // set project name
+      this.onEnterProjectNameChange(projectId);
+    }
+  };
+
   // GENERATE PROJECT LIST DATA
   generateProjectsList = () => {
     const { timeOff: { projectsList = [] } = {} } = this.props;
-    console.log(projectsList);
     return projectsList.map((project) => {
-      const { _id = '', name = '' } = project;
+      const {
+        id = '',
+        projectName = '',
+        projectManager: { _id: projectManager = '' } = {},
+      } = project;
       return {
-        _id,
-        name,
+        _id: id,
+        name: projectName,
+        projectManager,
       };
     });
   };
@@ -164,36 +173,32 @@ class RequestInformation extends PureComponent {
   // GET MANAGER ID & NAME OF SELECTED PROJECT
   onEnterProjectNameChange = (value) => {
     const { timeOff: { projectsList = [] } = {} } = this.props;
-    let projectManagerId = '';
-    let projectManagerName = '';
-
-    projectsList.forEach((project) => {
-      const {
-        _id = '',
-        manager: { generalInfo: { employeeId = '', lastName = '', firstName = '' } = {} } = {},
-      } = project;
-
-      if (_id === value) {
-        projectManagerId = employeeId;
-        projectManagerName = `${firstName} ${lastName}`;
-      }
-    });
+    const find = projectsList.find((x) => x.id === value) || {};
+    const {
+      projectManager: {
+        _id,
+        generalInfo: { legalName: projectManagerName = '', userId: projectManagerId = '' } = {},
+      } = {},
+    } = find;
 
     this.setState({
       projectManagerId,
       projectManagerName,
     });
 
-    const { dispatch, user: { currentUser: { employee: { _id: userId } = {} } = {} } = {} } =
+    const { dispatch, user: { currentUser: { employee: { _id: employeeId } = {} } = {} } = {} } =
       this.props;
 
-    dispatch({
-      type: 'timeOff/getCompoffApprovalFlow',
-      payload: {
-        employeeId: userId,
-        projectId: value,
-      },
-    });
+    if (find) {
+      dispatch({
+        type: 'timeOff/getCompoffApprovalFlow',
+        payload: {
+          employeeId,
+          projectId: value,
+          projectManager: _id,
+        },
+      });
+    }
   };
 
   // ON FINISH & SHOW SUCCESS MODAL WHEN CLICKING ON SUBMIT
@@ -214,10 +219,16 @@ class RequestInformation extends PureComponent {
     const { dateLists, buttonState, viewingCompoffRequestId, totalHours } = this.state;
     // const { timeOff: { compoffApprovalFlow = {} } = {} } = this.props;
 
+    const { timeOff: { projectsList = [] } = {} } = this.props;
+    const project = projectsList.find((x) => x.id === projectId) || {};
+    const { projectName = '', projectManager: { _id: projectManager = '' } = {} } = project;
+
     const action = buttonState === 1 ? 'saveDraft' : 'submit';
 
     const sendData = {
       project: projectId,
+      projectName,
+      projectManager,
       extraTime: dateLists,
       description,
       action,

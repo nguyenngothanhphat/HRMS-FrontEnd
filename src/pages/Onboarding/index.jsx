@@ -15,12 +15,6 @@ import NewJoinees from './components/NewJoinees/index';
   onboardingOverview,
 }))
 class Onboarding extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-  }
-
   componentDidMount = () => {
     const {
       match: { params: { tabName = '' } = {} },
@@ -52,6 +46,7 @@ class Onboarding extends PureComponent {
         needsChanges = [],
         rejectedOffers = [],
         withdrawnOffers = [],
+        joinedOffers = [],
         currentStatus,
       } = {},
     } = this.props;
@@ -88,6 +83,9 @@ class Onboarding extends PureComponent {
         break;
       case NEW_PROCESS_STATUS.OFFER_WITHDRAWN:
         data = withdrawnOffers;
+        break;
+      case NEW_PROCESS_STATUS.JOINED:
+        data = joinedOffers;
         break;
       default:
         // all
@@ -199,6 +197,8 @@ class Onboarding extends PureComponent {
     const {
       match: { params: { tabName = '', type = '' } = {} },
     } = this.props;
+
+    if (!tabName) return '';
     return (
       <PageContainer>
         <div className={styles.containerOnboarding}>

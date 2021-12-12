@@ -1,4 +1,5 @@
-import { request } from '@/utils/request';
+import request from '@/utils/request';
+import { API_KEYS } from '../../config/proxy';
 
 export function getLeaveBalanceOfUser(payload) {
   return request('/api/leavebalancetenant/get-by-user', {
@@ -132,12 +133,25 @@ export async function getEmailsListByCompany(payload) {
   });
 }
 
+// export async function getProjectsListByEmployee(payload) {
+//   return request('/api/projecttenant/get-by-employee', {
+//     method: 'POST',
+//     data: payload,
+//   });
+// }
+
 export async function getProjectsListByEmployee(payload) {
-  return request('/api/projecttenant/get-by-employee', {
-    method: 'POST',
-    data: payload,
-  });
+  return request(
+    `/api-project/projecttenant/list`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
 }
+
 // Holidays
 export async function getHolidaysList(payload) {
   return request('/api/holidaycalendartenant/list', {

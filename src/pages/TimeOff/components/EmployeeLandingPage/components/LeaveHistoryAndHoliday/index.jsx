@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import { Tabs, Tooltip } from 'antd';
+import { connect } from 'umi';
+import moment from 'moment';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
-import { connect } from 'umi';
-import moment from 'moment';
 import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
 import Holiday from './components/Holiday';
 import LeaveHistory from './components/LeaveHistory';
@@ -179,12 +179,10 @@ class LeaveHistoryAndHoliday extends PureComponent {
 
   render() {
     const { activeShowType } = this.state;
-    const {
-      timeOff: { holidaysListByLocation = [], allMyLeaveRequests: { items = [] } = {} } = {},
-    } = this.props;
+    const { timeOff: { holidaysListByLocation = [], leaveHistory = [] } = {} } = this.props;
     // const formatHolidayLists = this.formatHolidayLists(holidaysList);
-    const formatLeavingList = this.formatLeavingList(items);
-    const formatLeavingListCalendar = this.formatLeavingListCalendar(items);
+    const formatLeavingList = this.formatLeavingList(leaveHistory);
+    const formatLeavingListCalendar = this.formatLeavingListCalendar(leaveHistory);
 
     return (
       <div className={styles.LeaveHistoryAndHoliday}>

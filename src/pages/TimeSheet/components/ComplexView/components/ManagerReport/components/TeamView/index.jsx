@@ -12,29 +12,40 @@ const TeamView = (props) => {
   // weekly
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
 
   const { dispatch, employee: { _id: employeeId = '' } = {} } = props;
+  const {
+    timeSheet: { managerTeamViewList = [], managerTeamViewPagination = {} } = {},
+    loadingFetch = false,
+  } = props;
 
   // FUNCTION AREA
-  const fetchMyTimesheetEffectByType = () => {
+  const fetchManagerTimesheetOfTeamView = () => {
     dispatch({
-      type: 'timeSheet/fetchMyTimesheetByTypeEffect',
+      type: 'timeSheet/fetchManagerTimesheetOfTeamViewEffect',
       payload: {
         companyId: getCurrentCompany(),
-        employeeId,
+        userId: employeeId,
         fromDate: moment(startDate).format(dateFormatAPI),
         toDate: moment(endDate).format(dateFormatAPI),
-        viewType: 'D',
+        page,
+        limit,
       },
     });
+  };
+
+  const onChangePage = (pageNumber) => {
+    setPage(pageNumber);
   };
 
   // USE EFFECT AREA
   useEffect(() => {
     if (startDate) {
-      fetchMyTimesheetEffectByType();
+      fetchManagerTimesheetOfTeamView();
     }
-  }, [startDate]);
+  }, [startDate, endDate, page]);
 
   // generate dates for week
   useEffect(() => {
@@ -53,12 +64,14 @@ const TeamView = (props) => {
         setStartDate={setStartDate}
         setEndDate={setEndDate}
       />
-      <MemberTable />
-      <Pagination />
+      <MemberTable data={managerTeamViewList} loadingFetch={loadingFetch} />
+      <Pagination tablePagination={managerTeamViewPagination} onChangePage={onChangePage} />
     </div>
   );
 };
 
-export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({
+export default connect(({ loading, user: { currentUser: { employee = {} } = {} }, timeSheet }) => ({
   employee,
+  loadingFetch: loading.effects['timeSheet/fetchManagerTimesheetOfTeamViewEffect'],
+  timeSheet,
 }))(TeamView);

@@ -14,7 +14,7 @@ import styles from './index.less';
 const { TabPane } = Tabs;
 
 const ComplexView = (props) => {
-  const { permissions = {}, tabName = '', currentUserRole = '' } = props;
+  const { permissions = {}, tabName = '' } = props;
 
   const [navToTimeoffModalVisible, setNavToTimeoffModalVisible] = useState(false);
 
@@ -32,22 +32,33 @@ const ComplexView = (props) => {
 
   // PERMISSION TO VIEW TABS
   // const viewMyTimesheet = permissions.viewMyTimesheet === 1;
-  const viewReportTimesheet = permissions.viewReportTimesheet === 1;
+  // const viewReportTimesheet = permissions.viewReportTimesheet === 1;
+  const viewHRReport = permissions.viewHRReportCVTimesheet === 1;
+  const viewFinanceReport = permissions.viewFinanceReportCVTimesheet === 1;
+  const viewPeopleManagerReport = permissions.viewPeopleManagerCVTimesheet === 1;
+  const viewPMReport = permissions.viewProjectManagerCVTimesheet === 1;
+
   const viewSettingTimesheet = permissions.viewSettingTimesheet === 1;
 
   const renderOtherTabs = () => {
-    const visible = currentUserRole !== 'employee';
     return (
       <>
-        {visible && viewReportTimesheet && (
-          <TabPane tab="Reports" key="reports">
-            {['people-manager', 'project-manager', 'manager'].includes(currentUserRole) && (
-              <ManagerReport />
-            )}
-            {['hr-manager'].includes(currentUserRole) && <HumanResourceReport />}
-            {['finance'].includes(currentUserRole) && <FinanceReport />}
+        {viewHRReport && (
+          <TabPane tab="Reports" key="hr-reports">
+            <HumanResourceReport />
           </TabPane>
         )}
+        {viewFinanceReport && (
+          <TabPane tab="Reports" key="finance-reports">
+            <FinanceReport />
+          </TabPane>
+        )}
+        {(viewPeopleManagerReport || viewPMReport) && (
+          <TabPane tab="Reports" key="pm-reports">
+            <ManagerReport />
+          </TabPane>
+        )}
+
         {viewSettingTimesheet && (
           <TabPane tab="Settings" key="settings">
             <Settings />
@@ -57,6 +68,7 @@ const ComplexView = (props) => {
     );
   };
 
+  if (!tabName) return '';
   return (
     <div className={styles.ComplexView}>
       <PageContainer>
@@ -92,12 +104,9 @@ const ComplexView = (props) => {
 };
 
 export default connect(
-  ({
-    timeSheet: { currentUserRole = '' } = {},
-    user: { currentUser = {}, permissions = [] } = {},
-  }) => ({
+  ({ user: { currentUser = {}, permissions = [], currentUserRoles = [] } = {} }) => ({
     currentUser,
     permissions,
-    currentUserRole,
+    currentUserRoles,
   }),
 )(ComplexView);

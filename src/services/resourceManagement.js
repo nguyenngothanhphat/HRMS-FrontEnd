@@ -1,10 +1,16 @@
-import { request } from '@/utils/request';
+import { API_KEYS } from '../../config/proxy';
+import request from '@/utils/request';
 
 export async function getResources(payload) {
-  return request('/api-project/resourcetenant/list', {
-    method: 'POST',
-    data: payload,
-  });
+  return request(
+    '/api-project/resourcetenant/list',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
 }
 
 export async function getListEmployee(payload) {
@@ -20,24 +26,39 @@ export async function getDepartmentList(payload) {
   });
 }
 export async function postAssignToProject(payload) {
-  return request('/api-project/resourcetenant/add', {
-    method: 'POST',
-    data: payload,
-  });
+  return request(
+    '/api-project/resourcetenant/add',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
 }
 
 export async function updateProjectDetail(payload) {
-  return request('/api-project/resourcetenant/update', {
-    method: 'POST',
-    data: payload,
-  });
+  return request(
+    '/api-project/resourcetenant/update',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
 }
 
 export async function getProjectList(payload) {
-  return request('/api-project/projecttenant/list', {
-    method: 'POST',
-    data: payload,
-  });
+  return request(
+    '/api-project/projecttenant/list',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
 }
 
 export async function updateComment(payload) {
@@ -48,10 +69,15 @@ export async function updateComment(payload) {
 }
 
 export async function fetchResourceAvailableStatus(payload) {
-  return request('/api-project/resourcetenant/count-status', {
-    method: 'POST',
-    data: payload,
-  });
+  return request(
+    '/api-project/resourcetenant/count-status',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
 }
 
 export async function fetchDivisions(payload) {
@@ -62,10 +88,15 @@ export async function fetchDivisions(payload) {
 }
 
 export async function fetchResourceStatus(payload) {
-  return request('api-project/resourcetenant/list-status', {
-    method: 'POST',
-    data: payload,
-  });
+  return request(
+    'api-project/resourcetenant/list-status',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
 }
 
 export async function fetchTitleList(payload) {
@@ -76,10 +107,15 @@ export async function fetchTitleList(payload) {
 }
 
 export async function fetchStatusProject(payload) {
-  return request('/api-project/projecttenant/get-status-summary', {
-    method: 'POST',
-    data: payload,
-  });
+  return request(
+    '/api-project/projecttenant/get-status-summary',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
 }
 
 // UTILIZATION
@@ -91,10 +127,15 @@ export async function getUtilizationOverviewDivision(payload) {
 }
 
 export async function fetchProjectListTable(payload) {
-  return request('/api-project/resourcetenant/list-project', {
-    method: 'POST',
-    data: payload,
-  });
+  return request(
+    '/api-project/resourcetenant/list-project',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
 }
 
 export async function getUtilizationOverviewTitle(payload) {
@@ -105,17 +146,27 @@ export async function getUtilizationOverviewTitle(payload) {
 }
 
 export async function addAndUpdateComments(payload) {
-  return request('/api-project/projecttenant/update-comment', {
-    method: 'POST',
-    data: payload,
-  });
+  return request(
+    '/api-project/projecttenant/update-comment',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
 }
 
 export async function exportProject(payload) {
-  return request('/api-project/resourcetenant/export', {
-    method: 'POST',
-    data: payload,
-  });
+  return request(
+    '/api-project/resourcetenant/export',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
 }
 
 export async function getResourceUtilization(payload) {
@@ -126,7 +177,7 @@ export async function getResourceUtilization(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 
@@ -138,7 +189,7 @@ export async function getResourceUtilizationChart(payload) {
       data: payload,
     },
     false,
-    'PROJECT_API',
+    API_KEYS.PROJECT_API,
   );
 }
 

@@ -33,8 +33,9 @@ export default defineConfig({
     'pagination-item-link-bg': '#f0f2f6',
     // tabs
     'tabs-title-font-size': '18px',
+    'tabs-active-color': '#2c6df9',
     // table
-    'table-header-bg': '#568afa',
+    'table-header-bg': '#2c6df9',
     'table-header-color': '#ffffff',
   },
   // @ts-ignore

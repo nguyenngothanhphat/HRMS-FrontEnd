@@ -7,22 +7,22 @@ import {
   Form,
   Input,
   Modal,
+  notification,
   Row,
   Select,
   TimePicker,
 } from 'antd';
 import moment from 'moment';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import { dateFormatAPI, hourFormat, hourFormatAPI, TASKS } from '@/utils/timeSheet';
-import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import AddIcon from '@/assets/timeSheet/add.svg';
 import RemoveIcon from '@/assets/timeSheet/recycleBin.svg';
 import styles from './index.less';
 
 const { Option } = Select;
 const dateFormat = 'MM/DD/YYYY';
-const projects = ['Syscloud', 'HRMS', 'Udaan', 'Ramco'];
 
 const AddTaskModal = (props) => {
   const formRef = React.createRef();
@@ -33,30 +33,28 @@ const AddTaskModal = (props) => {
     date = '',
     projectName = '',
     mode = 'single',
+    timeSheet: { projectList = [] } = {},
   } = props;
 
   const {
     dispatch,
     loadingAddTask = false,
-    employee: {
-      _id: employeeId = '',
-      generalInfo: {
-        legalName: empName = '',
-        workEmail: empWorkEmail = '',
-        userId: empUserId = '',
-      } = {} || {},
-      departmentInfo: { name: empDepartmentName = '', _id: empDepartmentId = '' } = {} || {},
-      managerInfo: {
-        _id: managerId = '',
-        generalInfo: {
-          legalName: managerName = '',
-          workEmail: managerWorkEmail = '',
-          userId: managerUserId = '',
-        } = {} || {},
-        department: { name: managerDepartmentName = '', _id: managerDepartmentId = '' } = {} || {},
-      } = {} || {},
-    } = {} || {},
+    user: { currentUser: { employee = {}, location = {} } = {} } = {},
   } = props;
+
+  const { _id: employeeId = '' } = employee;
+
+  const fetchProjectList = () => {
+    dispatch({
+      type: 'timeSheet/fetchProjectListEffect',
+    });
+  };
+
+  useEffect(() => {
+    if (visible) {
+      fetchProjectList();
+    }
+  }, [visible]);
 
   const renderModalHeader = () => {
     return (
@@ -79,7 +77,13 @@ const AddTaskModal = (props) => {
 
   // main function
   const addMultipleActivityEffect = (submitDate, tasks) => {
+    if (!employee?.managerInfo) {
+      notification.error({ message: 'User does not have manager' });
+      return {};
+    }
+
     const data = tasks.map((item) => {
+      const findPrj = projectList.find((x) => x.id === item.projectId);
       return {
         tenantId: getCurrentTenant(),
         taskName: item.taskName,
@@ -87,33 +91,47 @@ const AddTaskModal = (props) => {
         endTime: moment(item.endTime).format(hourFormatAPI),
         date: moment(submitDate).locale('en').format(dateFormatAPI),
         clientLocation: item.clientLocation,
-        projectName: item.projectName,
+        project: {
+          projectName: findPrj.projectName,
+          projectId: item.projectId,
+        },
+        type: 'TASK',
         notes: item.notes,
         employeeId,
         companyId: getCurrentCompany(),
-        location: getCurrentLocation(),
+        location,
         nightShift: item.nightShift,
         employee: {
-          employeeName: empName,
-          employeeCode: empUserId,
-          workEmail: empWorkEmail,
-          department: {
-            name: empDepartmentName,
-            id: empDepartmentId,
+          _id: employee._id,
+          department: employee.department,
+          generalInfo: employee.generalInfo,
+          manager: {
+            _id: employee.managerInfo._id,
+            generalInfo: employee.managerInfo.generalInfo,
           },
         },
-        managerInfo: {
-          employeeName: managerName,
-          employeeId: managerId,
-          employeeCode: managerUserId,
-          workEmail: managerWorkEmail,
-          department: {
-            name: managerDepartmentName,
-            id: managerDepartmentId,
-          },
-        },
+        // employee: {
+        //   employeeName: empName,
+        //   employeeCode: empUserId,
+        //   workEmail: empWorkEmail,
+        //   department: {
+        //     name: empDepartmentName,
+        //     id: empDepartmentId,
+        //   },
+        // },
+        // managerInfo: {
+        //   employeeName: managerName,
+        //   employeeId: managerId,
+        //   employeeCode: managerUserId,
+        //   workEmail: managerWorkEmail,
+        //   department: {
+        //     name: managerDepartmentName,
+        //     id: managerDepartmentId,
+        //   },
+        // },
       };
     });
+
     return dispatch({
       type: 'timeSheet/addMultipleActivityEffect',
       payload: {
@@ -147,12 +165,12 @@ const AddTaskModal = (props) => {
                       label="Project*"
                       labelCol={{ span: 24 }}
                       rules={[{ required: true, message: 'Select a project' }]}
-                      name={[name, 'projectName']}
-                      fieldKey={[fieldKey, 'projectName']}
+                      name={[name, 'projectId']}
+                      fieldKey={[fieldKey, 'projectId']}
                     >
                       <Select showSearch placeholder="Select a project">
-                        {projects.map((val) => (
-                          <Option value={val}>{val}</Option>
+                        {projectList.map((val) => (
+                          <Option value={val.id}>{val.projectName}</Option>
                         ))}
                       </Select>
                     </Form.Item>
@@ -324,7 +342,9 @@ const AddTaskModal = (props) => {
   );
 };
 
-export default connect(({ loading, user: { currentUser: { employee = {} } = {} } }) => ({
-  employee,
+export default connect(({ loading, timeSheet, locationSelection, user }) => ({
+  user,
+  timeSheet,
+  locationSelection,
   loadingAddTask: loading.effects['timeSheet/addMultipleActivityEffect'],
 }))(AddTaskModal);

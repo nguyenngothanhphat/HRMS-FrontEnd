@@ -29,6 +29,7 @@ const SimpleView = (props) => {
   const viewReportTimesheet = permissions.viewReportTimesheet === 1;
   const viewSettingTimesheet = permissions.viewSettingTimesheet === 1;
 
+  if (!tabName) return '';
   return (
     <div className={styles.SimpleView}>
       <PageContainer>

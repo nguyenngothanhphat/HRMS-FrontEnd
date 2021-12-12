@@ -12,7 +12,19 @@ import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
 import styles from './index.less';
 
 const WeeklyTable = (props) => {
-  const { startDate = '', endDate = '', loadingFetchMyTimesheetByType = false, data = [] } = props;
+  const {
+    startDate = '',
+    endDate = '',
+    loadingFetch = false,
+    data = [],
+    tablePagination: {
+      page = 0,
+      // pageCount = 0,
+      pageSize = 0,
+      rowCount = 0,
+    } = {},
+    onChangePage = () => {},
+  } = props;
   const [dateList, setDateList] = useState([]);
   const [formattedData, setFormattedData] = useState([]);
 
@@ -31,7 +43,7 @@ const WeeklyTable = (props) => {
 
   // check if the same date
   const isTheSameDay = (date1, date2) => {
-    return moment(date1).format('MM/DD/YYYY') === moment(date2).format('MM/DD/YYYY');
+    return moment(date1, 'YYYY-MM-DD').format('MM/DD/YYYY') === moment(date2).format('MM/DD/YYYY');
   };
 
   // format data
@@ -39,8 +51,8 @@ const WeeklyTable = (props) => {
     const dates = {};
     for (let i = 0; i < dateList.length; i += 1) dates[dateList[i]] = dateList[i];
     const header = {
-      projectName: 'Functional Area',
-      totalProjectTime: 'Total Hours',
+      functionalArea: 'Functional Area',
+      totalDuration: 'Total Hours',
       ...dates,
     };
     setFormattedData([header].concat(data));
@@ -149,8 +161,8 @@ const WeeklyTable = (props) => {
         align: 'center',
         width: `${100 / 9}%`,
         render: (_, row, index) => {
-          const { projectName = '', days = [] } = row;
-          const value = days.find((d) => isTheSameDay(d.date, date));
+          const { projectName = '', dailyList = [] } = row;
+          const value = dailyList.find((d) => isTheSameDay(d.date, date));
           const getCellValue = () => {
             if (index === 0 /* / FOR HOLIDAY & LEAVE REQUEST && date !== '10/29/2021' */) {
               return renderDateHeaderItem(date);
@@ -162,7 +174,7 @@ const WeeklyTable = (props) => {
             //   return renderEventColumn();
             // }
 
-            // // if this date is holiday
+            // if this date is holiday
             // if (date === '10/29/2021') {
             //   return renderHoliday(date);
             // }
@@ -171,7 +183,7 @@ const WeeklyTable = (props) => {
               <TaskPopover
                 projectName={projectName}
                 date={date}
-                tasks={value?.dailyProjectTask}
+                tasks={value?.dailyTask}
                 placement="bottomLeft"
               >
                 {!value ? (
@@ -179,9 +191,7 @@ const WeeklyTable = (props) => {
                     <img src={EmptyLine} alt="" />
                   </span>
                 ) : (
-                  <span className={styles.hourValue}>
-                    {convertMsToTime(value?.projectDailyTime)}
-                  </span>
+                  <span className={styles.hourValue}>{convertMsToTime(value.spentTime)}</span>
                 )}
               </TaskPopover>
             );
@@ -221,20 +231,20 @@ const WeeklyTable = (props) => {
     const result = [
       {
         title: 'Functional Area',
-        dataIndex: 'projectName',
-        key: 'projectName',
+        dataIndex: 'functionalArea',
+        key: 'functionalArea',
         align: 'center',
         width: `${100 / 9}%`,
-        render: (projectName, _, index) => {
+        render: (functionalArea, _, index) => {
           if (index === 0) {
-            return projectName;
+            return functionalArea;
           }
           return (
             <div className={styles.projectName}>
               <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
-                <span>{projectName ? projectName.toString()?.charAt(0) : 'P'}</span>
+                <span>{functionalArea ? functionalArea.toString()?.charAt(0) : 'P'}</span>
               </div>
-              <span className={styles.name}>{projectName}</span>
+              <span className={styles.name}>{functionalArea}</span>
             </div>
           );
         },
@@ -242,8 +252,8 @@ const WeeklyTable = (props) => {
       ...dateColumns,
       {
         title: 'Total Hours',
-        dataIndex: 'totalProjectTime',
-        key: 'totalProjectTime',
+        dataIndex: 'totalDuration',
+        key: 'totalDuration',
         align: 'center',
         width: `${100 / 9}%`,
         render: (value, _, index) => {
@@ -255,9 +265,13 @@ const WeeklyTable = (props) => {
     return result;
   };
 
+  const onChangePagination = (pageNumber) => {
+    onChangePage(pageNumber);
+  };
+
   const pagination = {
     position: ['bottomLeft'],
-    total: 30,
+    total: rowCount,
     showTotal: (total, range) => (
       <span>
         Showing{' '}
@@ -267,9 +281,9 @@ const WeeklyTable = (props) => {
         of {total}{' '}
       </span>
     ),
-    pageSize: 5,
-    current: 1,
-    // onChange: onChangePagination,
+    pageSize,
+    current: page,
+    onChange: onChangePagination,
   };
 
   // MAIN AREA
@@ -282,7 +296,7 @@ const WeeklyTable = (props) => {
           bordered
           pagination={pagination}
           // scroll={{ y: 440 }}
-          loading={loadingFetchMyTimesheetByType}
+          loading={loadingFetch}
         />
       </div>
     </div>
@@ -291,5 +305,5 @@ const WeeklyTable = (props) => {
 
 export default connect(({ loading, timeSheet: { myTimesheet = [] } = {} }) => ({
   myTimesheet,
-  loadingFetchMyTimesheetByType: loading.effects['timeSheet/fetchMyTimesheetByTypeEffect'],
+  loadingFetch: loading.effects['timeSheet/fetchManagerTimesheetOfProjectViewEffect'],
 }))(WeeklyTable);

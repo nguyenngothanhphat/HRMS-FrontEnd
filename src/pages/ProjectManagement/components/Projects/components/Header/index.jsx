@@ -22,8 +22,8 @@ const Header = (props) => {
   } = props;
   const [addProjectModalVisible, setAddProjectModalVisible] = useState(false);
 
-  // permissions 
-  const addProjectPermission = permissions.addProjectManagement !== -1;
+  // permissions
+  const addProjectPermission = permissions.addProject !== -1;
 
   // redux
   const { projectManagement: { projectStatusList = [] } = {} } = props;

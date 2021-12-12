@@ -39,31 +39,20 @@ class AvailableStatus extends PureComponent {
     return <div>{value}</div>;
   };
 
-  handleSelect = (value) => {
-    // console.log(value);
-    this.setState({
-      currentType: value,
-    });
-  };
+  // handleSelect = (value) => {
+  //   // console.log(value);
+  //   this.setState({
+  //     currentType: value,
+  //   });
+  // };
 
   render() {
     const { resourceStatuses = [], currentType = 'ALL' } = this.state;
     const { changeAvailableStatus } = this.props;
-    // const statusData = [
-    //   { availableStatus: 'ALL', compareKey: 'totalResource', display: 'All Resources', number: 10 },
-    //   { availableStatus: 'AVAILABLE_NOW', compareKey: 'totalAvailableNow', display: 'Available now', number: 10 },
-    //   { availableStatus: 'AVAILABLE_SOON', compareKey: 'totalAvailableSoon', display: 'Available soon', number: 10 },
-    // ];
-    // // eslint-disable-next-line no-restricted-syntax
-    // for(const[key, value] of Object.entries(resourceStatuses)) {
-    //   const obj = statusData.find((x) => x.compareKey === key)
-    //   obj.number = value
-    // }
-    // {"totalResource":857,"totalAvailableNow":854,"totalAvailableSoon":3}
     return (
       <div className={styles.ResourceStatus}>
         <Select
-          placement="bottomCenter"
+          // placement="bottomCenter"
           onChange={(value) => changeAvailableStatus(value)}
           defaultValue={currentType}
           suffixIcon={<img src={BlueArrowDownIcon} alt="" />}

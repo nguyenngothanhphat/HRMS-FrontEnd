@@ -18,42 +18,6 @@ const TimeSheet = (props) => {
     }
   }, [tabName]);
 
-  const findRole = (roles) => {
-    const isHRManager = roles.find((item) => item === 'hr-manager');
-    const isManager = roles.find((item) => item === 'manager');
-    const isEmployee = roles.find((item) => item === 'employee');
-
-    const { title: { name = '' } = {} || {} } = employee;
-
-    let isProjectManager = '';
-    let isPeopleManager = '';
-    const nameTemp = name.toLowerCase();
-    if (isManager) {
-      if (nameTemp.includes('project') && nameTemp.includes('manager')) {
-        isProjectManager = 'project-manager';
-      }
-      if (nameTemp.includes('people') && nameTemp.includes('manager')) {
-        isPeopleManager = 'people-manager';
-      }
-    }
-    if (nameTemp.includes('finance')) {
-      isPeopleManager = 'finance';
-    }
-
-    dispatch({
-      type: 'timeSheet/save',
-      payload: {
-        currentUserRole:
-          isHRManager || isProjectManager || isPeopleManager || isManager || isEmployee,
-      },
-    });
-  };
-
-  useEffect(() => {
-    const listRole = localStorage.getItem('antd-pro-authority');
-    findRole(JSON.parse(listRole));
-  }, []);
-
   // clear state when unmounting
   useEffect(() => {
     return () => {

@@ -15,7 +15,16 @@ import styles from './index.less';
     timeOff,
     loading,
     user,
-    timeOff: { currentUserRole = '', filter = {}, timeOffTypesByCountry, paging } = {},
+    timeOff: {
+      currentUserRole = '',
+      filter = {},
+      timeOffTypesByCountry,
+      paging,
+      compoffRequests = [],
+      leaveRequests = [],
+      teamCompoffRequests = [],
+      teamLeaveRequests = [],
+    } = {},
   }) => ({
     timeOff,
     paging,
@@ -23,6 +32,10 @@ import styles from './index.less';
     filter,
     timeOffTypesByCountry,
     currentUserRole,
+    compoffRequests,
+    leaveRequests,
+    teamCompoffRequests,
+    teamLeaveRequests,
     loading1: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
     loading2: loading.effects['timeOff/fetchTeamLeaveRequests'],
     loading3: loading.effects['timeOff/fetchMyCompoffRequests'],
@@ -33,8 +46,6 @@ class TimeOffRequestTab extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      formatData: [],
-      formatMainTabData: [],
       inProgressLength: 0,
       approvedLength: 0,
       rejectedLength: 0,
@@ -140,16 +151,9 @@ class TimeOffRequestTab extends PureComponent {
     }
 
     const commonFunction = (res = {}) => {
-      const { data: { items = [], total = [] } = {}, statusCode } = res;
+      const { data: { total = [] } = {}, statusCode } = res;
       if (statusCode === 200) {
-        const newData = items;
-
         this.countTotal(total);
-        const formatMainTabData = newData;
-        this.setState({
-          formatMainTabData,
-          formatData: newData,
-        });
       }
     };
 
@@ -219,7 +223,7 @@ class TimeOffRequestTab extends PureComponent {
       if (currentUserRole === 'REGION-HEAD') {
         switch (status) {
           case TIMEOFF_STATUS.inProgressNext: {
-            inProgressLength = item.count;
+            inProgressLength += item.count;
             break;
           }
           default:
@@ -228,7 +232,7 @@ class TimeOffRequestTab extends PureComponent {
       } else if (currentUserRole !== 'REGION-HEAD') {
         switch (status) {
           case TIMEOFF_STATUS.inProgressNext: {
-            approvedLength = item.count;
+            approvedLength += item.count;
             break;
           }
           default:
@@ -238,23 +242,23 @@ class TimeOffRequestTab extends PureComponent {
 
       switch (status) {
         case TIMEOFF_STATUS.inProgress: {
-          inProgressLength = item.count;
+          inProgressLength += item.count;
           break;
         }
         case TIMEOFF_STATUS.accepted: {
-          approvedLength = item.count;
+          approvedLength += item.count;
           break;
         }
         case TIMEOFF_STATUS.rejected: {
-          rejectedLength = item.count;
+          rejectedLength += item.count;
           break;
         }
         case TIMEOFF_STATUS.drafts: {
-          draftLength = item.count;
+          draftLength += item.count;
           break;
         }
         case TIMEOFF_STATUS.onHold: {
-          onHoldLength = item.count;
+          onHoldLength += item.count;
           break;
         }
         default:
@@ -340,10 +344,21 @@ class TimeOffRequestTab extends PureComponent {
   };
 
   render() {
-    const { type = 0, category = '', tab = 0, loading1, loading2, loading3, loading4 } = this.props;
+    const {
+      type = 0,
+      category = '',
+      tab = 0,
+      loading1,
+      loading2,
+      loading3,
+      loading4,
+      compoffRequests = [],
+      leaveRequests = [],
+      teamCompoffRequests = [],
+      teamLeaveRequests = [],
+    } = this.props;
 
     const {
-      formatData,
       inProgressLength,
       approvedLength,
       rejectedLength,
@@ -351,7 +366,6 @@ class TimeOffRequestTab extends PureComponent {
       selectedTab,
       onHoldLength,
       handlePackage,
-      formatMainTabData,
     } = this.state;
 
     const dataNumber = {
@@ -362,7 +376,7 @@ class TimeOffRequestTab extends PureComponent {
       onHoldLength,
     };
 
-    const checkEmptyTable = formatMainTabData.length === 0;
+    const checkEmptyTable = false;
 
     const emptyTableContent = this.renderEmptyTableContent(tab, category);
 
@@ -385,7 +399,7 @@ class TimeOffRequestTab extends PureComponent {
               <>
                 {type === 1 && category === 'TEAM' && (
                   <TeamLeaveTable
-                    data={formatData}
+                    data={teamLeaveRequests}
                     category={category}
                     selectedTab={selectedTab}
                     onRefreshTable={this.setSelectedFilterTab}
@@ -393,11 +407,11 @@ class TimeOffRequestTab extends PureComponent {
                   />
                 )}
                 {type === 1 && category === 'MY' && (
-                  <MyLeaveTable data={formatData} selectedTab={selectedTab} />
+                  <MyLeaveTable data={leaveRequests} selectedTab={selectedTab} />
                 )}
                 {type === 2 && category === 'TEAM' && (
                   <TeamCompoffTable
-                    data={formatData}
+                    data={teamCompoffRequests}
                     category={category}
                     selectedTab={selectedTab}
                     onRefreshTable={this.setSelectedFilterTab}
@@ -405,7 +419,7 @@ class TimeOffRequestTab extends PureComponent {
                   />
                 )}
                 {type === 2 && category === 'MY' && (
-                  <MyCompoffTable data={formatData} selectedTab={selectedTab} />
+                  <MyCompoffTable data={compoffRequests} selectedTab={selectedTab} />
                 )}
               </>
             )}

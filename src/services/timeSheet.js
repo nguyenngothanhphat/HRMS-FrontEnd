@@ -1,4 +1,5 @@
-import { request } from '@/utils/request';
+import request from '@/utils/request';
+import { API_KEYS } from '../../config/proxy';
 
 export async function getMyTimesheet(payload, params) {
   return request(
@@ -9,7 +10,7 @@ export async function getMyTimesheet(payload, params) {
       params,
     },
     false,
-    'TIMESHEET_API',
+    API_KEYS.TIMESHEET_API,
   );
 }
 
@@ -22,7 +23,7 @@ export async function getManagerTimesheet(payload, params) {
       params,
     },
     false,
-    'TIMESHEET_API',
+    API_KEYS.TIMESHEET_API,
   );
 }
 
@@ -36,7 +37,7 @@ export async function updateActivity(payload, params) {
       params,
     },
     false,
-    'TIMESHEET_API',
+    API_KEYS.TIMESHEET_API,
   );
 }
 
@@ -49,7 +50,7 @@ export async function removeActivity(payload, params) {
       params,
     },
     false,
-    'TIMESHEET_API',
+    API_KEYS.TIMESHEET_API,
   );
 }
 
@@ -61,7 +62,7 @@ export async function addActivity(payload) {
       data: payload,
     },
     false,
-    'TIMESHEET_API',
+    API_KEYS.TIMESHEET_API,
   );
 }
 
@@ -74,7 +75,7 @@ export async function addMultipleActivity(payload, params) {
       params,
     },
     false,
-    'TIMESHEET_API',
+    API_KEYS.TIMESHEET_API,
   );
 }
 
@@ -89,7 +90,7 @@ export async function getMyTimesheetByType(payload, params) {
       params,
     },
     false,
-    'TIMESHEET_API',
+    API_KEYS.TIMESHEET_API,
   );
 }
 
@@ -104,7 +105,7 @@ export async function getImportData(payload, params) {
       params,
     },
     false,
-    'TIMESHEET_API',
+    API_KEYS.TIMESHEET_API,
   );
 }
 
@@ -118,7 +119,78 @@ export async function importTimesheet(payload, params) {
       params,
     },
     false,
-    'TIMESHEET_API',
+    API_KEYS.TIMESHEET_API,
+  );
+}
+
+// MANAGER
+export async function getProjectList(payload) {
+  return request(
+    `/api-project/projecttenant/list`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
+}
+
+export async function getManagerTimesheetOfTeamView(payload, params) {
+  // date, week, month
+  return request(
+    `/api/manager/team-view`,
+    {
+      method: 'GET',
+      data: payload,
+      params,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
+
+export async function getManagerTimesheetOfProjectView(payload, params) {
+  // date, week, month
+  return request(
+    `/api/manager/report`,
+    {
+      method: 'GET',
+      data: payload,
+      params,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
+
+// HR VIEW
+export async function getHRTimesheet(payload, params) {
+  // date, week, month
+  return request(
+    `/api/hr/report`,
+    {
+      method: 'GET',
+      data: payload,
+      params,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
+
+// FINANCE VIEW
+export async function getFinanceTimesheet(payload, params) {
+  // date, week, month
+  return request(
+    `/api/finance/report`,
+    {
+      method: 'GET',
+      data: payload,
+      params,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
   );
 }
 

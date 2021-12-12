@@ -16,6 +16,7 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 
 const initialState = {
+  currentUserRole: [],
   projectList: [],
   projectNameList: [],
   projectListPayload: {}, // for refresh data
@@ -102,7 +103,7 @@ const ProjectManagement = {
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, data = [] } = response;
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
 
         yield put({

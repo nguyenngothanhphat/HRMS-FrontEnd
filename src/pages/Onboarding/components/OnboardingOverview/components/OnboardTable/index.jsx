@@ -165,7 +165,7 @@ class OnboardTable extends Component {
   //   // return <ModalContent closeModal={this.closeModal} />;
   // };
 
-  renderCandidateId = (candidateId, row) => {
+  renderCandidateId = (candidateId = '', row) => {
     const id = candidateId.replace('#', '') || '';
     const { currentStep = 0 } = row;
     const find = ONBOARDING_FORM_STEP_LINK.find((v) => v.id === currentStep) || {
@@ -197,7 +197,11 @@ class OnboardTable extends Component {
         </p>
       );
     }
-    if (isNew && !(processStatusId === NEW_PROCESS_STATUS.OFFER_ACCEPTED)) {
+    if (
+      isNew &&
+      processStatusId !== NEW_PROCESS_STATUS.OFFER_ACCEPTED &&
+      processStatusId !== NEW_PROCESS_STATUS.JOINED
+    ) {
       return (
         <p>
           {name && <span className={styles.name}>{name}</span>}
@@ -208,12 +212,15 @@ class OnboardTable extends Component {
       );
     }
 
-    if (processStatusId === NEW_PROCESS_STATUS.OFFER_ACCEPTED) {
+    if (
+      processStatusId === NEW_PROCESS_STATUS.OFFER_ACCEPTED ||
+      processStatusId === NEW_PROCESS_STATUS.JOINED
+    ) {
       return (
         <p>
           {name && <span className={styles.name}>{name}</span>}
           <span>
-            <img alt="accepte-icon" src={AcceptIcon} />
+            <img alt="accepted-icon" src={AcceptIcon} />
           </span>
         </p>
       );
@@ -247,6 +254,20 @@ class OnboardTable extends Component {
     return check;
   };
 
+  getColorClassName = (type) => {
+    const tempType = type.toLowerCase().replace(/ +/g, '');
+    if (tempType === 'draft' || tempType === 'needchanges') {
+      return styles.blueTag;
+    }
+    if (tempType === 'offerreleased' || tempType === 'offeraccepted' || tempType === 'joined') {
+      return styles.greenTag;
+    }
+    if (tempType === 'offerrejected' || tempType === 'offerwithdrawn') {
+      return styles.redTag;
+    }
+    return styles.yellowTag;
+  };
+
   generateColumns = (columnArr = ['id'], type = TABLE_TYPE.ALL) => {
     const {
       ID,
@@ -270,7 +291,7 @@ class OnboardTable extends Component {
         dataIndex: 'candidateId',
         key: 'candidateId',
         width: getColumnWidth('candidateId', type, list.length),
-        render: (candidateId, row) => this.renderCandidateId(candidateId, row),
+        render: (candidateId = '', row) => this.renderCandidateId(candidateId, row),
         columnName: ID,
         fixed: 'left',
       },
@@ -379,7 +400,7 @@ class OnboardTable extends Component {
         key: 'processStatus',
         render: (processStatus) => (
           <span
-            className={`${processStatus === 'Offer Accepted' ? styles.processStatusAccepted : ''}
+            className={`${this.getColorClassName(processStatus)}
               ${styles.processStatus}
             `}
           >
@@ -477,7 +498,7 @@ class OnboardTable extends Component {
     //   SENT_FINAL_OFFERS,
     // } = PROCESS_STATUS; // old status
 
-    const { DRAFT, OFFER_RELEASED, OFFER_ACCEPTED } = NEW_PROCESS_STATUS; // new status
+    const { DRAFT, OFFER_RELEASED, OFFER_ACCEPTED, JOINED } = NEW_PROCESS_STATUS; // new status
 
     const isRemovable = processStatusId === DRAFT;
     const isHRManager = this.checkPermission('hr-manager');
@@ -633,7 +654,7 @@ class OnboardTable extends Component {
     return (
       <Menu className={styles.menu}>
         {menuItem}
-        {isHRManager && !(processStatusId === OFFER_ACCEPTED) && (
+        {isHRManager && processStatusId !== OFFER_ACCEPTED && processStatusId !== JOINED && (
           <Menu.Item>
             <div
               onClick={() =>
@@ -654,7 +675,7 @@ class OnboardTable extends Component {
             </div>
           </Menu.Item>
         )}
-        {!isRemovable && (
+        {!isRemovable && processStatusId !== JOINED && (
           <Menu.Item>
             <div
               onClick={
@@ -710,11 +731,11 @@ class OnboardTable extends Component {
 
   // detail infor candidate modal
   onMaybeLater = () => {
-    const {dispatch}=this.props
+    const { dispatch } = this.props;
     dispatch({
-      type:'onboard/save',
-      payload:{reloadTableData:true}
-    })
+      type: 'onboard/save',
+      payload: { reloadTableData: true },
+    });
     this.setState({
       openModalName: '',
     });

@@ -1,37 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { connect } from 'umi';
 import PrevIcon from '@/assets/timeSheet/prevPagination.svg';
 import NextIcon from '@/assets/timeSheet/nextPagination.svg';
 import styles from './index.less';
 
-const rowCount = 5;
-
 const Pagination = (props) => {
-  const { list = [1, 2, 3, 4, 5, 6, 7, 8] } = props;
-  const [currentPage, setCurrentPage] = useState(1);
+  const {
+    tablePagination: {
+      page: currentPage = 0,
+      // pageCount = 0,
+      pageSize = 0,
+      rowCount = 0,
+    } = {},
+    onChangePage = () => {},
+  } = props;
 
   const onPrevPage = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+      onChangePage(currentPage - 1);
     }
   };
 
   const onNextPage = () => {
-    if (currentPage < list.length / rowCount) {
-      setCurrentPage(currentPage + 1);
+    if (currentPage < rowCount / pageSize) {
+      onChangePage(currentPage + 1);
     }
   };
 
-  const lastIndex = currentPage * rowCount > list.length ? list.length : currentPage * rowCount;
+  const lastIndex = currentPage * pageSize > rowCount ? rowCount : currentPage * pageSize;
   // MAIN AREA
   return (
     <div className={styles.Pagination}>
       <span>
         Showing{' '}
         <span className={styles.currentPage}>
-          {currentPage * rowCount - rowCount + 1}-{lastIndex}
+          {currentPage * pageSize - pageSize + 1}-{lastIndex}
         </span>{' '}
-        of {list.length}
+        of {rowCount}
       </span>
       <img src={PrevIcon} alt="" onClick={onPrevPage} />
       <img src={NextIcon} alt="" onClick={onNextPage} />

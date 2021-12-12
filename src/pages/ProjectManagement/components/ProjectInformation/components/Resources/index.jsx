@@ -20,6 +20,9 @@ const Resources = (props) => {
   } = props;
   const [addResourceTypeModalVisible, setAddResourceTypeModalVisible] = useState(false);
 
+  // permissions
+  const { allowModify = false } = props;
+
   const fetchResourceTypeList = (searchKey, filter) => {
     dispatch({
       type: 'projectDetails/fetchResourceTypeListEffect',
@@ -48,6 +51,7 @@ const Resources = (props) => {
             icon={<img src={WhiteAddIcon} alt="" />}
             className={styles.addResources}
             onClick={() => setAddResourceTypeModalVisible(true)}
+            disabled={!allowModify}
           >
             Add Resource Type
           </Button>
@@ -66,10 +70,14 @@ const Resources = (props) => {
       <div className={styles.contentCard}>
         <Tabs destroyInactiveTabPane onTabClick={onTabClick}>
           <TabPane tab="Resource Type" key="1">
-            <ResourceTypeCard data={resourceTypeList} refreshResourceType={fetchResourceTypeList} />
+            <ResourceTypeCard
+              data={resourceTypeList}
+              refreshResourceType={fetchResourceTypeList}
+              allowModify={allowModify}
+            />
           </TabPane>
           <TabPane tab="Resources" key="2">
-            <ResourcesCard />
+            <ResourcesCard allowModify={allowModify} />
           </TabPane>
         </Tabs>
       </div>

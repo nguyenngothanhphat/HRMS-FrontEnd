@@ -12,7 +12,11 @@ import ResourceList from './components/ResourceList';
 import styles from './index.less';
 
 const baseModuleUrl = '/resource-management';
-
+const TABS = {
+  OVERVIEW: 'overview',
+  RESOURCES: 'resources',
+  PROJECTS: 'projects',
+};
 @connect(
   ({
     resourceManagement: { resourceList = [], divisions: divisionList = [] } = {},
@@ -21,11 +25,13 @@ const baseModuleUrl = '/resource-management';
         location: { _id: locationID = '' } = {},
         company: { _id: companyID } = {},
       } = {},
+      permissions = {},
     } = {},
     locationSelection: { listLocationsByCompany = [] },
   }) => ({
     resourceList,
     divisionList,
+    permissions,
     locationID,
     companyID,
     listLocationsByCompany,
@@ -49,9 +55,12 @@ class Resources extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, tabName = '' } = this.props;
+    const { dispatch, tabName = '', permissions = {} } = this.props;
+    const viewUtilizationPermission = permissions.viewUtilizationTab !== -1;
     if (!tabName) {
-      history.replace(`${baseModuleUrl}/overview`);
+      history.replace(
+        `${baseModuleUrl}/${viewUtilizationPermission ? TABS.OVERVIEW : TABS.RESOURCES}`,
+      );
     } else {
       dispatch({
         type: 'resourceManagement/fetchDivisions',
@@ -103,17 +112,6 @@ class Resources extends Component {
     });
   };
 
-  componentWillUnmount = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'resourceManagement/save',
-      payload: {
-        selectedDivisions: [],
-        selectedLocations: [],
-      },
-    });
-  };
-
   getSelectedLocationName = () => {
     const { listLocationsByCompany = [] } = this.props;
     const { selectedLocations } = this.state;
@@ -149,7 +147,7 @@ class Resources extends Component {
 
   renderActionButton = () => {
     const { tabName = '', divisionList = [], listLocationsByCompany = [] } = this.props;
-
+    const { selectedDivisions, selectedLocations } = this.state;
     // if only one selected
     const selectedLocationName = this.getSelectedLocationName();
     const selectedDivisionName = this.getSelectedDivisionName();
@@ -176,6 +174,7 @@ class Resources extends Component {
               options={locationOptions}
               onChange={this.onLocationChange}
               list={listLocationsByCompany}
+              default={selectedLocations}
             >
               <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
                 <span>{selectedLocationName}</span>
@@ -186,7 +185,11 @@ class Resources extends Component {
           <div className={styles.dropdownItem}>
             <span className={styles.label}>Division</span>
 
-            <CheckboxMenu options={divisionOptions} onChange={this.onDivisionChange}>
+            <CheckboxMenu
+              options={divisionOptions}
+              onChange={this.onDivisionChange}
+              default={selectedDivisions}
+            >
               <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
                 <span>{selectedDivisionName}</span>
                 <img src={SmallDownArrow} alt="" />
@@ -217,33 +220,46 @@ class Resources extends Component {
   render() {
     const { TabPane } = Tabs;
 
-    const { locationID = '', totalList = [], tabName = '' } = this.props;
+    const { locationID = '', totalList = [], tabName = '', permissions = {} } = this.props;
     const { loadingSearch } = this.state;
+    if (!tabName) return '';
+
+    // permissions
+    const viewResourceListPermission = permissions.viewResourceListTab !== -1;
+    const viewUtilizationPermission = permissions.viewUtilizationTab !== -1;
+    const viewResourceProjectListPermission = permissions.viewResourceProjectListTab !== -1;
+
     return (
       <div className={styles.ResourcesManagement}>
         <PageContainer>
           <Tabs
-            activeKey={tabName || 'overview'}
+            activeKey={tabName || (viewUtilizationPermission ? TABS.OVERVIEW : TABS.RESOURCES)}
             onChange={(key) => {
               history.push(`${baseModuleUrl}/${key}`);
             }}
             tabBarExtraContent={this.renderActionButton()}
             destroyInactiveTabPane
           >
-            <TabPane tab="Overview" key="overview">
-              <OverView />
-            </TabPane>
-            <TabPane tab="Resources" key="resources">
-              <ResourceList
-                location={[locationID]}
-                // data={resourceList}
-                loadingSearch={loadingSearch}
-                countData={totalList}
-              />
-            </TabPane>
-            <TabPane tab="Projects" key="projects">
-              <ProjectList />
-            </TabPane>
+            {viewUtilizationPermission && (
+              <TabPane tab="Overview" key={TABS.OVERVIEW}>
+                <OverView />
+              </TabPane>
+            )}
+            {viewResourceListPermission && (
+              <TabPane tab="Resources" key={TABS.RESOURCES}>
+                <ResourceList
+                  location={[locationID]}
+                  // data={resourceList}
+                  loadingSearch={loadingSearch}
+                  countData={totalList}
+                />
+              </TabPane>
+            )}
+            {viewResourceProjectListPermission && (
+              <TabPane tab="Projects" key={TABS.PROJECTS}>
+                <ProjectList />
+              </TabPane>
+            )}
           </Tabs>
         </PageContainer>
       </div>

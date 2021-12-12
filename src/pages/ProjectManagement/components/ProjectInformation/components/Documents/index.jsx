@@ -24,6 +24,10 @@ const Documents = (props) => {
     loadingAddDocument = false,
     loadingFetchDocument = false,
   } = props;
+
+  // permissions
+  const { allowModify = false } = props;
+
   const [addDocumentModalVisible, setAddDocumentModalVisible] = useState(false);
   const [viewFileModalVisible, setViewFileModalVisible] = useState(false);
   const [fileUrl, setFileUrl] = useState('');
@@ -127,7 +131,9 @@ const Documents = (props) => {
                   setViewFileModalVisible(true);
                 }}
               />
-              <img src={DeleteIcon} alt="" onClick={() => removeDocument(row?.id)} />
+              {allowModify && (
+                <img src={DeleteIcon} alt="" onClick={() => removeDocument(row?.id)} />
+              )}
             </div>
           );
         },
@@ -141,7 +147,9 @@ const Documents = (props) => {
     const content = <FilterContent onFilter={(values) => fetchDocumentList('', values)} />;
     return (
       <div className={styles.options}>
-        <AddButton text="Add new Document" onClick={() => setAddDocumentModalVisible(true)} />
+        {allowModify && (
+          <AddButton text="Add new Document" onClick={() => setAddDocumentModalVisible(true)} />
+        )}
         <FilterPopover placement="bottomRight" content={content}>
           <FilterButton />
         </FilterPopover>

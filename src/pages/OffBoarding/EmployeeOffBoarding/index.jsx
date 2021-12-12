@@ -141,6 +141,7 @@ class EmployeeOffBoading extends Component {
     } = this.props;
     const { relievingInQueue, dataDraft = [], dataRequest = [], loadingFetchList } = this.state;
 
+    if (!tabName) return ''
     return (
       <PageContainer>
         <div className={styles.EmployeeOffboarding}>

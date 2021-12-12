@@ -45,6 +45,9 @@ const Summary = (props) => {
     loadingFetchProjectHistory = false,
   } = props;
 
+  // permissions
+  const { allowModify = false } = props;
+
   // new data than old data
   const tentativeEndDate = newEndDateProp || originEndDate;
   const billableHeadCount = newBillableHeadCountProp || originBillableHeadCount;
@@ -161,7 +164,7 @@ const Summary = (props) => {
 
   // RENDER UI
   const renderOption = () => {
-    if (isEditing) return null;
+    if (isEditing || !allowModify) return null;
     return (
       <Button
         onClick={() => setIsEditing(true)}

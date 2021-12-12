@@ -1,6 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { generateAllWeeks, dateFormatAPI, VIEW_TYPE } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import ViewTypeSelector from '@/pages/TimeSheet/components/ComplexView/components/ViewTypeSelector';
 import DailyHeader from './components/DailyHeader';
@@ -12,7 +13,6 @@ import MonthlyTable from './components/MonthlyTable';
 import DailyFooter from './components/DailyFooter';
 
 import styles from './index.less';
-import { dateFormatAPI, VIEW_TYPE } from '@/utils/timeSheet';
 
 const MyTimeSheet = (props) => {
   // daily
@@ -77,30 +77,6 @@ const MyTimeSheet = (props) => {
     setStartDateWeek(lastSunday);
     setEndDateWeek(currentSunday);
   }, []);
-
-  // generate weeks for month
-  const generateAllWeeks = (fromDate, toDate) => {
-    const weeks = [];
-    let fd = new Date(fromDate);
-    const weekNo = moment(fromDate, 'YYYY-MM-DD').week();
-    const td = new Date(toDate);
-    while (fd.getTime() < td.getTime()) {
-      // const weekNumber = getWeekInMonth(fd)
-      const weekNumber = moment(fd).week() - weekNo + 1;
-      const startWeek = moment(fd).startOf('week').toDate();
-      const endWeek = moment(fd).endOf('week').toDate();
-      const existed = weeks.find((x) => x.week === weekNumber);
-      fd = new Date(fd.getFullYear(), fd.getMonth(), fd.getDate() + 1);
-      if (!existed) {
-        weeks.push({
-          week: weekNumber,
-          startDate: moment(startWeek).format('YYYY-MM-DD'),
-          endDate: moment(endWeek).format('YYYY-MM-DD'),
-        });
-      }
-    }
-    return weeks;
-  };
 
   // get current month
   useEffect(() => {
