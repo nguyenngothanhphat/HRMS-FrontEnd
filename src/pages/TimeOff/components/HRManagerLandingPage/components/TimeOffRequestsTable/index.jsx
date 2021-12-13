@@ -28,6 +28,7 @@ class TimeOffRequestsTable extends PureComponent {
       },
     });
     let arr = [];
+
     switch (type) {
       case '1':
         arr = timeOffTypesByCountry.filter((timeOffType) => timeOffType.type === 'A');

@@ -200,7 +200,7 @@ class RequestInformation extends PureComponent {
       // }
 
       // set values from server to fields
-      this.formRef.current.setFieldsValue({
+      this.formRef?.current?.setFieldsValue({
         timeOffType: typeId,
         subject,
         durationFrom: fromDate === null ? null : moment(fromDate),

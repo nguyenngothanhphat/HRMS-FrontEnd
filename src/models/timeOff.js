@@ -135,6 +135,7 @@ const timeOff = {
     *getTimeOffTypeByLocation(_, { call }) {
       try {
         const response = yield call(getLocationById, {
+          tenantId: getCurrentTenant(),
           id: getCurrentLocation(),
         });
         return response;

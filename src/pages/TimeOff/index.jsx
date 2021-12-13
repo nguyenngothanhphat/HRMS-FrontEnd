@@ -7,14 +7,15 @@ import ManagerLandingPage from './components/ManagerLandingPage';
 import HRManagerLandingPage from './components/HRManagerLandingPage';
 // import Balances from './components/Balances';
 import SetupTimeoff from './components/SetupTimeoff';
+import { getCurrentCompany, getCurrentTenant, getCurrentLocation } from '@/utils/authority';
 
 import styles from './index.less';
-import { getCurrentCompany, getCurrentTenant } from '../../utils/authority';
 
 const { TabPane } = Tabs;
-@connect(({ dispatch, timeOff }) => ({
+@connect(({ dispatch, timeOff, locationSelection: { listLocationsByCompany = [] } }) => ({
   timeOff,
   dispatch,
+  listLocationsByCompany,
 }))
 class TimeOff extends PureComponent {
   constructor(props) {
@@ -85,15 +86,10 @@ class TimeOff extends PureComponent {
         role,
       });
 
-      const { dispatch } = this.props;
-      const response = await dispatch({
-        type: 'timeOff/getTimeOffTypeByLocation',
-      });
-      const {
-        statusCode,
-        data: { headQuarterAddress: { country: { _id } = {} || {} } = {} || {} },
-      } = response;
-      if (statusCode === 200)
+      const { dispatch, listLocationsByCompany = [] } = this.props;
+      const find = listLocationsByCompany.find((x) => x._id === getCurrentLocation());
+      if (find) {
+        const { headQuarterAddress: { country: { _id } = {} || {} } = {} || {} } = find;
         dispatch({
           type: 'timeOff/fetchTimeOffTypesByCountry',
           payload: {
@@ -102,10 +98,11 @@ class TimeOff extends PureComponent {
             tenantId: getCurrentTenant(),
           },
         });
-      dispatch({
-        type: 'timeOff/savePaging',
-        payload: { page: 1 },
-      });
+        dispatch({
+          type: 'timeOff/savePaging',
+          payload: { page: 1 },
+        });
+      }
     }
     if (status === 'WITHDRAW') {
       if (category === 'TIMEOFF') {
