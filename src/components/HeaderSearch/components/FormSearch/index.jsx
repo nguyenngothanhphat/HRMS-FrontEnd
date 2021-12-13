@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { AutoComplete, Button, DatePicker, Form, Input } from 'antd';
+import { Button, DatePicker, Form, Select } from 'antd';
 import React, { Component } from 'react';
 import styles from './index.less';
 
-// const { Option } = Select;
+const { Option } = Select;
 
 const listType = [
   { value: 'doc' },
@@ -29,14 +29,6 @@ const listAssigned = [
 //   'Timesheet',
 //   'Performance ',
 // ];
-
-const CustomInput = (props) => {
-  return (
-    <Input.Group compact>
-      <AutoComplete style={{ width: '100%' }} {...props} />
-    </Input.Group>
-  );
-};
 
 class FormSearch extends Component {
   formRef = React.createRef();
@@ -98,20 +90,18 @@ class FormSearch extends Component {
         >
           <div className={styles.formField}>
             <Form.Item name="type" label="Type">
-              {/* <Select placeholder="Event, .doc, .xlsx, csv" allowClear>
+              <Select placeholder="Event, .doc, .xlsx, csv" allowClear>
                 {listType.map((item) => (
-                  <Option key={item}>{item}</Option>
+                  <Option key={item.value}>{item.value}</Option>
                 ))}
-              </Select> */}
-              <CustomInput placeholder="Event, .doc, .xlsx, csv" options={listType} />
+              </Select>
             </Form.Item>
             <Form.Item name="assigned" defaultValue="haha" label="Assignee">
-              {/* <Select placeholder="Enter name of assignee" allowClear>
+              <Select placeholder="Enter name of assignee" allowClear>
                 {listAssigned.map((item) => (
                   <Option key={item.value}>{item.value}</Option>
                 ))}
-              </Select> */}
-              <CustomInput placeholder="Enter name of assignee" options={listAssigned} />
+              </Select>
             </Form.Item>
             <Form.Item name="dateModified" label="Date Modified">
               <DatePicker />

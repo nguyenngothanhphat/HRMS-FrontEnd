@@ -108,10 +108,23 @@ class TableUsers extends PureComponent {
         // },
       },
       {
+        title: formatMessage({ id: 'component.directory.table.department' }),
+        dataIndex: 'department',
+        key: 'department',
+        render: (department) => (
+          <span className={styles.directoryTable_deparmentText}>
+            {department ? department.name : ''}
+          </span>
+        ),
+        // align: 'left',
+      },
+      {
         title: 'Role',
-        dataIndex: 'roles',
+        dataIndex: 'managePermission',
         align: 'left',
-        render: (roles = []) => {
+        render: (managePermission = []) => {
+          let roles = [];
+          if (managePermission.length && managePermission[0]) roles = managePermission[0].roles;
           return roles.map((role) => {
             const tag = roleTags.find((d) => d.name === role) || {};
             return (
@@ -254,11 +267,11 @@ class TableUsers extends PureComponent {
   };
 
   // pagination
-  onChangePagination = (pageNumber) => {
-    this.setState({
-      pageSelected: pageNumber,
-    });
-  };
+  // onChangePagination = (pageNumber) => {
+  //   this.setState({
+  //     pageSelected: pageNumber,
+  //   });
+  // };
 
   setFirstPage = () => {
     this.setState({
@@ -293,37 +306,44 @@ class TableUsers extends PureComponent {
   };
 
   render() {
-    const { data = [], loading } = this.props;
+    const { data = [], loading, total: totalPage = '', size, pageSelected } = this.props;
     const newData = this.formatData(data);
-
     const {
-      pageSelected,
+      // pageSelected,
       selectedRowKeys,
       editModalVisible,
       deleteConfirmModalVisible,
       resetPasswordModalVisible,
     } = this.state;
-    const rowSize = 10;
+    // const rowSize = 10;
     const scroll = {
       x: '100vw',
       y: '',
     };
     const pagination = {
       position: ['bottomLeft'],
-      total: data.length,
-      showTotal: (total, range) => (
-        <span>
-          {' '}
-          {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
-          <b>
-            {range[0]} - {range[1]}
-          </b>{' '}
-          {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
-        </span>
-      ),
-      pageSize: rowSize,
+      total: totalPage,
+      showTotal: (total, range) => {
+        return (
+          <span>
+            {' '}
+            {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
+            <b>
+              {range[0]} - {range[1]}
+            </b>{' '}
+            {formatMessage({ id: 'component.directory.pagination.of' })} {totalPage}{' '}
+          </span>
+        );
+      },
+      defaultPageSize: size,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
+      pageSize: size,
       current: pageSelected,
-      onChange: this.onChangePagination,
+      onChange: (page, pageSize) => {
+        const { getPageAndSize } = this.props;
+        getPageAndSize(page, pageSize);
+      },
     };
 
     const rowSelection = {
@@ -361,7 +381,7 @@ class TableUsers extends PureComponent {
           //     onClick: () => this.editUser(record.userIndentity), // click row
           //   };
           // }}
-          pagination={{ ...pagination, total: newData.length }}
+          pagination={pagination}
           columns={this.generateColumns()}
           dataSource={newData}
           scroll={scroll}

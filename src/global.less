@@ -2,11 +2,35 @@
 @import (css)
   url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
+@font-face {
+  font-weight: 'bold';
+  font-family: 'Airin';
+  src: local('Airin'), url(./fonts/Airin.ttf) format('truetype');
+}
+
+@font-face {
+  font-weight: 'bold';
+  font-family: 'GermanyScript';
+  src: local('GermanyScript'), url(./fonts/GermanyScript.ttf) format('truetype');
+}
+
+@font-face {
+  font-weight: 'bold';
+  font-family: 'SH Imogen Agnes';
+  src: local('SH Imogen Agnes'), url(./fonts/SH_Imogen_Agnes.ttf) format('truetype');
+}
+
+@font-face {
+  font-weight: 'bold';
+  font-family: 'AudreyAndReynold';
+  src: local('AudreyAndReynold'), url(./fonts/AudreyAndReynold.ttf) format('truetype');
+}
+
 html,
 body,
 #root {
   height: 100%;
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Roboto', sans-serif, 'Airin', 'GermanyScript', 'SH Imogen Agnes', 'AudreyAndReynold';
   scrollbar-color: #e0e4e9 transparent !important;
 }
 
@@ -28,6 +52,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Change the white to any color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+  box-shadow: 0 0 0 30px white inset !important;
+}
+
 ul,
 ol {
   list-style: none;
@@ -41,17 +74,21 @@ ol {
   padding-left: 20px;
   background-color: #ffffff;
 }
+
 .ant-tabs-tab {
   // margin: 0 30px 0 0;
 }
+
 .ant-tabs-tab-btn {
   color: #161c29;
   font-weight: 500;
   opacity: 0.3;
 }
+
 .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
   opacity: 1;
 }
+
 /*End Tabs*/
 
 /* Pagination */
@@ -85,6 +122,7 @@ button.ant-pagination-item-link {
   font-size: 10px !important;
   border-radius: 50% !important;
 }
+
 /* End Pagination */
 
 /* Table */
@@ -102,7 +140,6 @@ button.ant-pagination-item-link {
   border-radius: 5px;
 }
 
-
 li.ant-pagination-jump-next.ant-pagination-jump-next-custom-icon,
 li.ant-pagination-jump-prev.ant-pagination-jump-prev-custom-icon {
   display: none;
@@ -111,6 +148,7 @@ li.ant-pagination-jump-prev.ant-pagination-jump-prev-custom-icon {
 li.ant-pagination-options {
   display: none;
 }
+
 /* End Table*/
 
 /* Google Chart*/
@@ -119,17 +157,20 @@ li.ant-pagination-options {
   margin-top: 10px;
   border: none !important;
 }
+
 /* End Google Chart*/
 
 @media (max-width: @screen-xs) {
   .ant-table {
     width: 100%;
     overflow-x: auto;
+
     &-thead > tr,
     &-tbody > tr {
       > th,
       > td {
         white-space: pre;
+
         > span {
           display: block;
         }
@@ -147,34 +188,55 @@ li.ant-pagination-options {
 
 .ant-notification-notice {
   width: 100%;
-  max-width: 350px;
+  min-width: 150px;
+  max-width: 370px;
   padding: 16px 16px 12px 10px !important;
+  // border: 1px solid #00c598;
+  border: 1px solid #fff;
   border-left: 6px solid #00c598;
   border-radius: 5px !important;
+
   .ant-notification-notice-message {
     align-items: center;
-    margin-right: 10px;
-    font-weight: bold;
+    margin-top: -4px;
+    margin-right: 24px;
+    font-weight: 700;
     font-size: 14px;
     letter-spacing: 1.1;
   }
+
+  .ant-notification-notice-icon {
+    color: #00c598;
+  }
+
   .ant-notification-notice-description {
-    font-size: 14px;
+    font-size: 13px;
     letter-spacing: 1.1;
+    .ant-list-item {
+      font-size: 13px;
+    }
   }
+
   .ant-notification-notice-close {
+    margin-top: -5px;
     .anticon {
       font-size: 12px !important;
     }
   }
 }
 
-
-
+.ant-notification-notice-error {
+  // border: 1px solid #fd4546 !important;
+  border: 1px solid #fff !important;
+  border-left: 6px solid #fd4546 !important;
+  .ant-notification-notice-icon-error {
+    color: #fd4546 !important;
+  }
+}
 /* width */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 9px;
+  height: 9px;
 }
 
 /* Track */
@@ -190,4 +252,9 @@ li.ant-pagination-options {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+// fix breaking layout in 11/25/2021 - only in staging server
+.ant-form-item-control {
+  min-width: unset !important;
 }

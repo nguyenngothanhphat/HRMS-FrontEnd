@@ -1,5 +1,4 @@
 .root {
-  margin-bottom: 24px;
   .titleHeader {
     display: flex;
     align-items: center;
@@ -8,7 +7,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 80px;
+      width: 70px;
       height: 100%;
       background-color: #161c29;
       cursor: pointer;
@@ -46,10 +45,14 @@
       > span:nth-child(n):not(:last-child):not(:first-child) {
         a {
           display: inline-block;
-          padding: 8px 14px;
-          color: #000;
+          padding: 8px;
+
+          color: #707177;
           font-weight: 500;
-          opacity: 1;
+          font-size: 13px;
+          font-family: Roboto;
+          font-style: normal;
+          line-height: 15px;
         }
         span.ant-breadcrumb-link {
           position: relative;
@@ -57,19 +60,11 @@
           align-items: center;
           justify-content: center;
           height: 30px;
-          padding: 4px 14px;
 
           &::after {
-            position: absolute;
-            top: 0px;
-            left: 0;
-            z-index: 0;
             display: block;
-            width: 100%;
-            height: 30px;
-            border: 1px solid #ccc;
-            transform: skewX(-32deg);
-            content: '';
+            height: 16px;
+            content: url('../../public/assets/images/arrowBreakcum.svg');
           }
         }
         span.ant-breadcrumb-separator {
@@ -83,10 +78,15 @@
       > span:first-child {
         a {
           display: inline-block;
-          padding: 8px 20px;
-          color: #000;
+          padding: 8px;
+          padding-left: 20px;
+
+          color: #707177;
           font-weight: 500;
-          opacity: 1;
+          font-size: 13px;
+          font-family: Roboto;
+          font-style: normal;
+          line-height: 15px;
         }
         span.ant-breadcrumb-link {
           position: relative;
@@ -97,19 +97,9 @@
           padding: 4px 0px;
 
           &::after {
-            position: absolute;
-            top: 0px;
-            left: 0px;
-            z-index: 0;
             display: block;
-            width: 100%;
-            height: 34px;
-            border: 1px solid #ccc;
-            border-right: none !important;
-            border-left: none !important;
-            transform: perspective(63px) rotateX(-30deg);
-            transform-origin: left center;
-            content: '';
+            height: 16px;
+            content: url('../../public/assets/images/arrowBreakcum.svg');
           }
         }
         span.ant-breadcrumb-separator {
@@ -133,6 +123,19 @@
       background-color: #f6f7f9;
     }
 
+    // .ant-layout-header{
+    //   // margin-left: 70px;
+    //   z-index: 1001 !important;
+    // }
+
+    // .ant-pro-sider{
+    //   position: fixed !important;
+    // }
+
+    // .ant-layout-content{
+    //   // overflow: initial !important;
+    // }
+
     .ant-pro-global-header-layout-mix {
       background-color: #fff;
     }
@@ -154,6 +157,11 @@
       cursor: pointer;
     }
 
+    .ant-pro-global-header {
+      padding: 0;
+      padding-right: 16px;
+    }
+
     .ant-pro-global-header-logo {
       display: none;
     }
@@ -165,13 +173,14 @@
     .ant-page-header {
       width: 100%;
       padding: 0;
-      background-color: #eeeeee;
+      background-color: #f6f7f9;
     }
 
     .ant-breadcrumb {
       display: flex;
       align-items: center;
-      height: 30px;
+      height: 42px;
+      border-bottom: 1px solid #e4e7eb;
       span {
         display: flex;
         align-items: center;
@@ -183,9 +192,9 @@
     }
 
     .ant-pro-sider-light {
-      width: 80px !important;
-      min-width: 80px !important;
-      max-width: 80px !important;
+      width: 70px !important;
+      min-width: 70px !important;
+      max-width: 70px !important;
       transition: min-width 0.3s, max-width 0.3s;
       .ant-menu-item .anticon + span,
       .ant-menu-submenu-title .anticon + span {
@@ -205,6 +214,15 @@
         justify-content: center;
         padding: 0 !important;
       }
+
+      .ant-pro-sider-logo {
+        img {
+          width: 19.7px;
+          height: 18.8px;
+          margin: auto;
+        }
+      }
+
       &:hover {
         z-index: 1000;
         width: 242px !important;
@@ -212,6 +230,16 @@
         max-width: 242px !important;
         box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.456);
         transition: min-width 0.3s, max-width 0.3s;
+
+        .ant-pro-sider-logo {
+          img {
+            width: 19.7px;
+            height: 18.8px;
+            margin: 0;
+            margin-left: 30.5px;
+          }
+        }
+
         .ant-menu-vertical .ant-menu-item,
         .ant-menu-vertical-left .ant-menu-item,
         .ant-menu-vertical-right .ant-menu-item,
@@ -319,7 +347,106 @@
     background-color: #fff;
     box-shadow: 0 10px 30px 3px #c7bcbc;
   }
+
+  .rootLogo {
+    display: flex;
+    align-items: center;
+    width: auto;
+    height: 76px;
+
+    .currentName {
+      margin-left: 20px;
+      color: #212020;
+      font-weight: 500;
+      // padding-left: 16px;
+      font-size: 18px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .logoSection {
+      // height: 76px;
+      display: flex;
+      width: 70px;
+      padding: 5px;
+      box-shadow: 1px 0px 1px rgba(0, 0, 0, 0.05);
+
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+    }
+  }
 }
+
+// .expandMenu{
+//   :global{
+//     .ant-pro-sider-light{
+//       width: 242px !important;
+//       min-width: 242px !important;
+//       max-width: 242px !important;
+//       box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.456);
+
+//       transition: min-width 0.3s, max-width 0.3s all ease-in-out;
+//       -moz-transition: min-width 0.3s, max-width 0.3s all ease-in-out;
+//       -ms-transition: min-width 0.3s, max-width 0.3s all ease-in-out;
+//       -o-transition: min-width 0.3s, max-width 0.3s all ease-in-out;
+//       -webkit-transition: min-width 0.3s, max-width 0.3s all ease-in-out;
+
+//       .ant-pro-sider-logo{
+//           img{
+//             margin: 0;
+//             margin-left: 30.5px;
+//             width: 19.7px;
+//             height: 18.8px;
+//           }
+//         }
+
+//         .ant-menu-vertical .ant-menu-item,
+//         .ant-menu-vertical-left .ant-menu-item,
+//         .ant-menu-vertical-right .ant-menu-item,
+//         .ant-menu-inline .ant-menu-item,
+//         .ant-menu-vertical .ant-menu-submenu-title,
+//         .ant-menu-vertical-left .ant-menu-submenu-title,
+//         .ant-menu-vertical-right .ant-menu-submenu-title,
+//         .ant-menu-inline .ant-menu-submenu-title {
+//           justify-content: start;
+//           padding-left: 24px !important;
+//         }
+//         .ant-pro-menu-item {
+//           justify-content: flex-start;
+//         }
+//         .ant-menu-item .anticon + span,
+//         .ant-menu-submenu-title .anticon + span {
+//           display: inline-block;
+//           margin-left: 10px !important;
+//           color: #fff;
+//           font-weight: 600;
+//           font-size: 13px;
+//         }
+//     }
+//   }
+// }
+
+// .collapseMenu{
+//   :global{
+
+//     .ant-pro-sider-light{
+//       transition: min-width 0.3s, max-width 0.3s all ease-in-out;
+//       -moz-transition: min-width 0.3s, max-width 0.3s all ease-in-out;
+//       -ms-transition: min-width 0.3s, max-width 0.3s all ease-in-out;
+//       -o-transition: min-width 0.3s, max-width 0.3s all ease-in-out;
+//       -webkit-transition: min-width 0.3s, max-width 0.3s all ease-in-out;
+//       min-width: 70px !important;
+//       max-width: 70px !important;
+
+//     }
+
+//     // .ant-layout-header{
+//     //   margin-left: 0 !important;
+//     // }
+//   }
+// }
 
 .breadCrumbA {
   :global {
@@ -331,9 +458,7 @@
       color: #161c29;
       font-weight: 500;
       font-size: 13px;
-      background-color: #fff;
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
+      background: none;
       opacity: 1;
     }
   }
@@ -342,32 +467,34 @@
 .breadCrumbB {
   :global {
     .ant-breadcrumb > span:last-child a {
-      position: relative;
       display: flex;
       align-items: center;
       height: 30px;
-      padding: 4px 28px;
-      color: #161c29;
-      color: rgb(44, 109, 249);
+      padding: 8px;
+
+      color: #2c6df9;
       font-weight: 500;
       font-size: 13px;
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
+      font-family: Roboto;
+      font-style: normal;
+      line-height: 15px;
+      background: none;
+
       opacity: 1;
 
-      &::after {
-        position: absolute;
-        top: 0;
-        left: 0;
-        display: block;
-        width: 100%;
-        height: 30px;
-        border: 1px solid rgb(44, 109, 249);
-        border-radius: 0 0 20px 0;
+      // &::after {
+      //   position: absolute;
+      //   top: 0;
+      //   left: 0;
+      //   display: block;
+      //   width: 100%;
+      //   height: 30px;
+      //   border: 1px solid rgb(44, 109, 249);
+      //   border-radius: 0 0 20px 0;
 
-        transform: skewX(-32deg);
-        content: '';
-      }
+      //   transform: skewX(-32deg);
+      //   content: '';
+      // }
     }
   }
 }

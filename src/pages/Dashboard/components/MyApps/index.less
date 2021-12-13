@@ -1,20 +1,62 @@
-.container {
-  background-color: white;
-  padding: 24px;
-  padding-bottom: 32px;
-  border: 1px solid #ebeff2;
+@darkColour: #161c29;
+@darkColour2: #212020;
+@blueColour: #2c6df9;
+@lightGrayColor: #d8dde9;
+@lightGrayColor2: #707177;
+@padding1: 24px;
+@padding2: 16px;
+@borderColor: #d6dce0;
+
+.MyApps {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   box-sizing: border-box;
-  border-radius: 5px;
-  margin-bottom: 12px;
 
-  h3 {
-    font-weight: 700;
-    text-transform: capitalize;
-    margin-bottom: 24px;
+  margin-bottom: @padding1;
+  background: #fff;
+  border: 1px solid @borderColor;
+  border-radius: 8px;
+  transform: translate(0, 0);
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: @padding1;
+    border-bottom: 1px solid @borderColor;
+
+    cursor: move; /* fallback if grab cursor is unsupported */
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+    span {
+      color: #000;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 20px;
+    }
   }
-
-  .appContainer {
-    // display: flex;
-    // flex-basis: 300px;
+  .content {
+    height: 400px;
+    padding: 24px;
+    overflow-y: auto;
+    background: #f7f9fe;
+  }
+  .manageAppsBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: @padding2 @padding1;
+    color: @blueColour;
+    font-weight: 500;
+    font-size: 16px;
+    border-top: 1px solid @borderColor;
+    cursor: pointer;
+    img {
+      margin-left: 10px;
+    }
+    &:hover {
+      opacity: 0.8;
+    }
   }
 }

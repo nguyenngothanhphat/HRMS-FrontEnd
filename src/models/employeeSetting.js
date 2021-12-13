@@ -1,6 +1,6 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-console */
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant, getCurrentLocation } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
 import { history } from 'umi';
@@ -31,10 +31,18 @@ import {
   removeFormOffBoardingById,
 
   // optional on boarding question
-  getListOptionalOnboardQuestions,
-  removeOptionalOnboardQuestions,
-  updateOptionalOnboardQuestions,
   addOptionalOnboardQuestions,
+  getListPageOnboarding,
+
+  // setting > document
+  addDocumentSetting,
+  removeDocumentSetting,
+  getDocumentSettingList,
+  // setting> salary structure
+  getListSalaryByLocation,
+  getSalaryById,
+  updateSalary,
+  importSalary,
 } from '../services/employeeSetting';
 
 const employeeSetting = {
@@ -42,12 +50,15 @@ const employeeSetting = {
   state: {
     triggerEventList: [],
     isAbleToSubmit: false,
+    documentListOnboarding: [],
     defaultTemplateListOnboarding: [],
     customTemplateListOnboarding: [],
+    documentListOffboarding: [],
     defaultTemplateListOffboarding: [],
     customTemplateListOffboarding: [],
     currentTemplate: {},
     tempSettings: [],
+    newDocument: {},
     newTemplate: {},
     newTemplateData: {
       settings: [],
@@ -71,122 +82,66 @@ const employeeSetting = {
     currentFormOffBoarding: {
       settings: [],
     },
+    total: '',
     // optional on boarding question
-    optionalOnboardQuestionList: [],
+    optionalOnboardQuestion: {},
+    listPageOnboarding: [],
+
+    // Document & Templates
+    activeTabDocument: '1',
+    // Custom Email
+    activeTabCustomEmail: '1',
+    // salary structure
+    listSalary: [],
+    salaryData: {},
   },
   effects: {
-    // =================== optional on boarding question
-    *fetchListOptionalOnboardQuestions({ payload = {} }, { call, put }) {
+    // list page on boarding
+    *fetchListPageOnboard(_, { call, put }) {
       try {
-        const response = yield call(getListOptionalOnboardQuestions, payload);
-        const { statusCode, data: optionalOnboardQuestionList = [] } = response;
+        const response = yield call(getListPageOnboarding, {
+          tenantId: getCurrentTenant(),
+          location: getCurrentLocation(),
+        });
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
           payload: {
-            optionalOnboardQuestionList: optionalOnboardQuestionList.map((item) => {
-              if (!('multiChoice' in item)) {
-                return { ...item, multiChoice: {} };
-              }
-              if (!('rating' in item)) {
-                return { ...item, rating: {} };
-              }
-              return item;
-            }),
+            listPageOnboarding: data.listPage,
           },
         });
-        return optionalOnboardQuestionList;
+        return data;
       } catch (errors) {
         // dialog(errors);
         return {};
       }
     },
-
-    *updateOptionalOnboardQuestions({ payload = {} }, { call, put }) {
-      try {
-        const response = yield call(updateOptionalOnboardQuestions, {
-          tenantId: getCurrentTenant(),
-          id: payload._id,
-          ...payload,
-        });
-
-        const { statusCode } = response;
-        let { data: optionalOnboardQuestion = {} } = response;
-        if (!('multiChoice' in optionalOnboardQuestion)) {
-          optionalOnboardQuestion = { ...optionalOnboardQuestion, multiChoice: {} };
-        }
-        if (!('rating' in optionalOnboardQuestion)) {
-          optionalOnboardQuestion = { ...optionalOnboardQuestion, rating: {} };
-        }
-        if (statusCode !== 200) throw response;
-        notification.success({
-          message: `Update the question successfully!`,
-          duration: 3,
-        });
-
-        yield put({
-          type: 'updateQuestion',
-          payload: optionalOnboardQuestion,
-        });
-        return response;
-      } catch (errors) {
-        // dialog(errors);
-        return {};
-      }
-    },
+    // =================== optional on boarding question
 
     *addOptionalOnboardQuestions({ payload = {} }, { call, put }) {
       try {
         const response = yield call(addOptionalOnboardQuestions, {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
+          location: getCurrentLocation(),
           ...payload,
         });
         const { statusCode } = response;
-        let { data: optionalOnboardQuestion = {} } = response;
-        if (!('multiChoice' in optionalOnboardQuestion)) {
-          optionalOnboardQuestion = { ...optionalOnboardQuestion, multiChoice: {} };
-        }
-        if (!('rating' in optionalOnboardQuestion)) {
-          optionalOnboardQuestion = { ...optionalOnboardQuestion, rating: {} };
-        }
-        if (statusCode !== 200) throw response;
-        notification.success({
-          message: `Add the question successfully!`,
-          duration: 3,
-        });
-        yield put({
-          type: 'saveQuestion',
-          payload: optionalOnboardQuestion,
-        });
-        return response;
-      } catch (errors) {
-        // dialog(errors);
-        return {};
-      }
-    },
 
-    *removeOptionalOnboardQuestions({ payload = {} }, { call, put }) {
-      try {
-        const response = yield call(removeOptionalOnboardQuestions, {
-          tenantId: getCurrentTenant(),
-          id: payload._id,
-          ...payload,
-        });
-        const { statusCode, data: optionalOnboardQuestion = {} } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message: `Remove the question successfully!`,
+          message: `Add new page successfully!`,
           duration: 3,
         });
         yield put({
-          type: 'removeQuestion',
-          payload: optionalOnboardQuestion,
+          type: 'save',
+          payload: { optionalOnboardQuestion: response },
         });
         return response;
       } catch (errors) {
-        // dialog(errors);
-        return {};
+        dialog(errors);
+        return errors;
       }
     },
 
@@ -270,7 +225,7 @@ const employeeSetting = {
         notification.success({
           message: 'Add new custom form successfully',
         });
-        history.push(`/offboarding/forms/${data._id}/view`);
+        history.push(`/offboarding/settings/forms/form-detail/${data._id}/view`);
         return statusCode;
       } catch (errors) {
         dialog(errors);
@@ -291,7 +246,7 @@ const employeeSetting = {
         notification.success({
           message: 'Update form successfully',
         });
-        history.push(`/offboarding/forms/${data._id}/view`);
+        history.push(`/offboarding/settings/forms/form-detail/${data._id}/view`);
         return statusCode;
       } catch (errors) {
         dialog(errors);
@@ -315,6 +270,28 @@ const employeeSetting = {
             //   value.type.includes('ON_BOARDING'),
             // ),
             defaultTemplateListOnboarding: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchDocumentListOnboarding({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getDocumentSettingList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            // defaultTemplateListOnboarding: data.filter((value) =>
+            //   value.type.includes('ON_BOARDING'),
+            // ),
+            documentListOnboarding: data,
           },
         });
       } catch (errors) {
@@ -418,6 +395,26 @@ const employeeSetting = {
         return 0;
       }
     },
+
+    *removeDocumentSettingById({ payload = {} }, { call }) {
+      try {
+        const response = yield call(removeDocumentSetting, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Remove document successfully',
+        });
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return 0;
+      }
+    },
+
     *uploadFile({ payload, isUploadSignature = false }, { call, put }) {
       let response = {};
       try {
@@ -450,6 +447,26 @@ const employeeSetting = {
       }
       return response;
     },
+
+    // upload document & add template
+    *addDocumentSetting({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(addDocumentSetting, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message, data } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+        yield put({ type: 'save', payload: { newDocument: data } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+
     *addCustomTemplate({ payload = {} }, { call, put }) {
       try {
         const response = yield call(addCustomTemplate, {
@@ -460,12 +477,14 @@ const employeeSetting = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { newTemplate: data } });
-        return statusCode;
+        return response;
       } catch (errors) {
         dialog(errors);
-        return 0;
+        return {};
       }
     },
+
+    // custom emails
     *fetchTriggerEventList({ payload }, { call, put }) {
       try {
         const response = yield call(getTriggerEventList, {
@@ -612,7 +631,10 @@ const employeeSetting = {
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listCustomEmailOnboarding: data } });
+        yield put({
+          type: 'save',
+          payload: { listCustomEmailOnboarding: data, total: response.total },
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -668,7 +690,7 @@ const employeeSetting = {
       let response;
       try {
         response = yield call(deleteCustomEmailItem, {
-          ...payload,
+          id: payload.id,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
@@ -676,7 +698,7 @@ const employeeSetting = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'fetchListCustomEmailOnboarding',
-          payload: { default: false },
+          payload: { default: false, page: payload.page, limit: payload.limit },
         });
         yield put({
           type: 'fetchListCustomEmailOffboarding',
@@ -712,6 +734,72 @@ const employeeSetting = {
       }
       return response;
     },
+    *fetchListSalaryByLocation({ payload = {} }, { call, put }) {
+      let response = '';
+      try {
+        response = yield call(getListSalaryByLocation, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listSalary: data } });
+      } catch (errors) {
+        dialog(errors.message);
+      }
+      return response;
+    },
+    *getSalaryById({ payload = {} }, { call, put }) {
+      let response = '';
+      try {
+        response = yield call(getSalaryById, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { salaryData: data } });
+      } catch (errors) {
+        dialog(errors.message);
+      }
+      return response;
+    },
+    *updateSalary({ payload = {} }, { call, put }) {
+      let response = '';
+      try {
+        response = yield call(updateSalary, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: response.message,
+        });
+        yield put({ type: 'save', payload: {} });
+      } catch (errors) {
+        dialog(errors.message);
+      }
+      return response;
+    },
+    *importSalary({ payload = {} }, { call, put }) {
+      let response = '';
+      try {
+        response = yield call(importSalary, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: response.message,
+        });
+        yield put({ type: 'save', payload: {} });
+      } catch (errors) {
+        dialog(errors.message);
+      }
+      return response;
+    },
   },
   reducers: {
     save(state, action) {
@@ -722,49 +810,6 @@ const employeeSetting = {
     },
 
     // ========== optional on boarding question
-    saveQuestion(state, action) {
-      return {
-        ...state,
-        optionalOnboardQuestionList: [action.payload, ...state.optionalOnboardQuestionList],
-      };
-    },
-
-    removeQuestion(state, action) {
-      const { optionalOnboardQuestionList } = state;
-      const indexOfQuestion = optionalOnboardQuestionList.findIndex(
-        (item) => item._id === action.payload._id,
-      );
-
-      if (indexOfQuestion > -1) {
-        return {
-          ...state,
-          optionalOnboardQuestionList: [
-            ...optionalOnboardQuestionList.slice(0, indexOfQuestion),
-            ...optionalOnboardQuestionList.slice(indexOfQuestion + 1),
-          ],
-        };
-      }
-      return state;
-    },
-
-    updateQuestion(state, action) {
-      const { optionalOnboardQuestionList } = state;
-      const indexOfQuestion = optionalOnboardQuestionList.findIndex(
-        (item) => item._id === action.payload._id,
-      );
-
-      if (indexOfQuestion > -1) {
-        return {
-          ...state,
-          optionalOnboardQuestionList: [
-            ...optionalOnboardQuestionList.slice(0, indexOfQuestion),
-            action.payload,
-            ...optionalOnboardQuestionList.slice(indexOfQuestion + 1),
-          ],
-        };
-      }
-      return state;
-    },
     // remove form item by id
     saveRemoveFormOffBoardingById(state, action) {
       const { _id } = action.payload;

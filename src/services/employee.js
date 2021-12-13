@@ -42,9 +42,17 @@ export async function getListEmployee(payload) {
   });
 }
 
-export async function getDataOrgChart() {
-  return request('/api/employee/get-chart-organisation', {
+export async function getListExportEmployees(payload) {
+  return request('/api/employeetenant/export-csv', {
     method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getDataOrgChart(payload) {
+  return request('/api/employeetenant/get-chart-organisation', {
+    method: 'POST',
+    data: payload,
   });
 }
 

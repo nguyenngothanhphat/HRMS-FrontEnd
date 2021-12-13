@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Col, Tabs, Row, Button } from 'antd';
 import { Link, connect } from 'umi';
 import { debounce } from 'lodash';
-
+import { getTimezoneViaCity } from '@/utils/times';
 import TeamRequest from './TeamRequest';
 import MyRequestContent from '../../../components/TabMyRequest';
 import TableSearch from './TableSearch';
@@ -16,6 +16,7 @@ import styles from './index.less';
       listOffboarding = [],
       totalList = [],
       hrManager = {},
+      total = '',
     } = {},
     user: {
       currentUser: {
@@ -23,14 +24,17 @@ import styles from './index.less';
         company: { _id: companyID } = {},
       } = {},
     } = {},
+    locationSelection: { listLocationsByCompany = [] },
   }) => ({
     listOffboarding,
     totalListTeamRequest,
+    total,
     totalList,
     locationID,
     companyID,
     listTeamRequest,
     hrManager,
+    listLocationsByCompany,
   }),
 )
 class HRrequestTable extends Component {
@@ -38,50 +42,98 @@ class HRrequestTable extends Component {
     super(props);
     this.state = {
       dataListTeamRequest: [],
+      dataListMyRequest: [],
       loadingSearch: false,
+      timezoneList: [],
+      tabId: '1',
     };
-    this.setDebounce = debounce((query) => {
-      this.setState({
-        dataListTeamRequest: query,
-        loadingSearch: false,
-      });
+    this.setDebounce = debounce((query, key) => {
+      if (key === '1') {
+        this.setState({
+          dataListTeamRequest: query,
+          loadingSearch: false,
+        });
+      } else {
+        this.setState({
+          dataListMyRequest: query,
+          loadingSearch: false,
+        });
+      }
     }, 1000);
   }
 
   componentDidMount() {
-    const { dispatch, locationID, listTeamRequest = [] } = this.props;
+    const { dispatch, locationID, listTeamRequest = [], listOffboarding = [] } = this.props;
     if (!dispatch) {
       return;
     }
     dispatch({
       type: 'offboarding/fetchListTeamRequest',
       payload: {
-        status: 'IN-PROGRESS',
         location: [locationID],
       },
     });
+    dispatch({
+      type: 'offboarding/getListAssigneeHr',
+    });
 
-    if (listTeamRequest.length > 0) this.updateData(listTeamRequest);
+    this.fetchTimezone();
+    if (listTeamRequest.length > 0) this.updateData(listTeamRequest, 1);
+    if (listOffboarding.length > 0) this.updateData(listOffboarding, 2);
   }
 
   componentDidUpdate(prevProps) {
-    const { listTeamRequest = [] } = this.props;
+    const { listTeamRequest = [], listLocationsByCompany = [], listOffboarding = [] } = this.props;
     if (JSON.stringify(listTeamRequest) !== JSON.stringify(prevProps.listTeamRequest)) {
-      this.updateData(listTeamRequest);
+      this.updateData(listTeamRequest, 1);
+    }
+    if (JSON.stringify(listOffboarding) !== JSON.stringify(prevProps.listOffboarding)) {
+      this.updateData(listOffboarding, 2);
+    }
+    if (
+      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+    ) {
+      this.fetchTimezone();
     }
   }
 
-  updateData = (listTeamRequest) => {
+  fetchTimezone = () => {
+    const { listLocationsByCompany = [] } = this.props;
+    const timezoneList = [];
+    listLocationsByCompany.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
+        _id = '',
+      } = location;
+      timezoneList.push({
+        locationId: _id,
+        timezone:
+          getTimezoneViaCity(city) ||
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
     this.setState({
-      dataListTeamRequest: listTeamRequest,
+      timezoneList,
     });
   };
 
-  onSearch = (value) => {
-    const { listTeamRequest = [] } = this.props;
-    const formatValue = value.toLowerCase();
+  updateData = (list, key) => {
+    if (key === 1) {
+      this.setState({
+        dataListTeamRequest: list,
+      });
+    } else {
+      this.setState({
+        dataListMyRequest: list,
+      });
+    }
+  };
 
-    const filterData = listTeamRequest.filter((item) => {
+  filterDataSearch = (list, value, tabId) => {
+    const formatValue = value.toLowerCase();
+    const filterData = list.filter((item) => {
       const {
         ticketID = '',
         employee: { employeeId = '', generalInfo: { firstName = '', lastName = '' } = {} } = {},
@@ -96,26 +148,44 @@ class HRrequestTable extends Component {
         fortmatEmployeeID.includes(formatValue) ||
         formatFirstName.includes(formatValue) ||
         formatLastName.includes(formatValue)
-      )
+      ) {
         return item;
+      }
       return 0;
     });
+
     this.setState({ loadingSearch: true });
 
-    this.setDebounce(filterData);
+    this.setDebounce(filterData, tabId);
+  };
+
+  onSearch = (value) => {
+    const { listTeamRequest = [], listOffboarding = [] } = this.props;
+    const { tabId } = this.state;
+
+    if (tabId === '1') {
+      this.filterDataSearch(listTeamRequest, value, tabId);
+    } else {
+      this.filterDataSearch(listOffboarding, value, tabId);
+    }
+  };
+
+  onChangeTabId = (value) => {
+    this.setState({ tabId: value });
   };
 
   render() {
     const { TabPane } = Tabs;
     const {
       totalListTeamRequest = [],
-      listOffboarding = [],
+      // listTeamRequest = [],
+      // listOffboarding = [],
       totalList = [],
       hrManager = {},
       locationID = '',
     } = this.props;
 
-    const { dataListTeamRequest, loadingSearch } = this.state;
+    const { dataListTeamRequest, dataListMyRequest, loadingSearch, timezoneList } = this.state;
 
     return (
       <Row className={styles.hrContent}>
@@ -124,7 +194,7 @@ class HRrequestTable extends Component {
             <div className={styles.header__left}>Team Requests</div>
             <div className={styles.header__right}>
               <Button className={styles.buttonRequest}>
-                <Link to="offboarding/resignation-request">
+                <Link to="/offboarding/list/my-request/new">
                   <span className={styles.buttonRequest__text}>Initiate Resignation Request</span>
                 </Link>
               </Button>
@@ -134,6 +204,7 @@ class HRrequestTable extends Component {
         <Col span={24}>
           <Tabs
             defaultActiveKey="1"
+            onChange={this.onChangeTabId}
             className={styles.tabComponent}
             tabBarExtraContent={<TableSearch onSearch={this.onSearch} />}
           >
@@ -145,15 +216,18 @@ class HRrequestTable extends Component {
                   countdata={totalListTeamRequest}
                   hrManager={hrManager}
                   location={[locationID]}
+                  timezoneList={timezoneList}
                 />
               </div>
             </TabPane>
             <TabPane tab="My Requests" key="2">
               <div className={styles.tableTab}>
                 <MyRequestContent
-                  data={listOffboarding}
+                  data={dataListMyRequest}
                   countdata={totalList}
                   hrManager={hrManager}
+                  timezoneList={timezoneList}
+                  loadingSearch={loadingSearch}
                 />
               </div>
             </TabPane>

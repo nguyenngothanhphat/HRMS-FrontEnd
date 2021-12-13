@@ -1,0 +1,29 @@
+
+@darkColour: #161C29;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@borderColor: #D6DCE0;
+
+.NextSteps {
+  .eachItem {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 90px;
+
+    padding-block: @commonPadding;
+    .stepIcon {
+      width: 50px;
+      margin-right: 10px;
+    }
+    .stepContent {
+      font-size: 13px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+  }
+  .divider {
+    border-bottom: 1px solid @borderColor;
+  }
+}

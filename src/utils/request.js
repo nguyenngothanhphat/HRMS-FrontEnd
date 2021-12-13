@@ -1,11 +1,10 @@
-/**
- * request 网络请求工具
- * 更详细的 api 文档: https://github.com/umijs/umi-request
- */
-import { extend } from 'umi-request';
 import { notification } from 'antd';
-import { getCurrentTenant } from '@/utils/authority';
+import axios from 'axios';
+import { getDvaApp } from 'umi';
+// import { extend } from 'umi-request';
+import proxy, { API_KEYS } from '../../config/proxy';
 import { getToken } from './token';
+// import { dialog } from './utils';
 
 const codeMessage = {
   200: 'The server successfully returned the requested data.',
@@ -24,15 +23,12 @@ const codeMessage = {
   503: 'The service is unavailable, the server is temporarily overloaded or maintained.',
   504: 'The gateway timed out.',
 };
-/**
- * 异常处理程序
- */
 
 const errorHandler = (error) => {
   const { response } = error;
-  const { status, statusText, url } = response;
+  const { status, statusText, config: { url } = {} } = response || {};
   if (status === 401) {
-    window.g_app._store.dispatch({
+    getDvaApp()._store.dispatch({
       type: 'login/logout',
     });
     return { statusCode: 401 };
@@ -51,31 +47,55 @@ const errorHandler = (error) => {
     });
   }
 
-  return { statusCode: response.status, message: response.message };
+  return { statusCode: response?.status, message: response?.statusText };
 };
 
-/**
- * 配置request请求时的默认参数
- */
-const request = (url, options = {}, noAuth) => {
-  const tenantId = getCurrentTenant();
-  let headers = options.headers || {};
-  if (!noAuth) {
-    const token = getToken();
-    headers = {
-      Authorization: `Bearer ${token}`,
-      ...headers,
-    };
-  }
-  headers = {
-    tenantId,
-    ...headers,
+// UMI ANTD REQUEST
+// const request = (url, options = {}, noAuth) => {
+//   let headers = options.headers || {};
+//   if (!noAuth) {
+//     const token = getToken();
+//     headers = {
+//       Authorization: `Bearer ${token}`,
+//       ...headers,
+//     };
+//   }
+//   return extend({
+//     errorHandler,
+//     credentials: 'include',
+//     headers,
+//   })(url, options);
+// };
+
+const request = async (url, options = {}, noAuth, apiKey = API_KEYS.BASE_API) => {
+  const { method = 'POST', data = {}, params = {} } = options;
+  const token = getToken();
+
+  const headers = {
+    'Content-Type': 'application/json;charset=UTF-8',
+    'Access-Control-Allow-Origin': '*',
+    Authorization: !noAuth ? `Bearer ${token}` : '',
   };
-  return extend({
-    errorHandler, // 默认错误处理
-    credentials: 'include', // 默认请求是否带上cookie
+
+  const instance = axios.create({
+    baseURL: proxy[apiKey],
     headers,
-  })(url, options);
+    params,
+  });
+
+  instance.interceptors.response.use(
+    (config) => config,
+    (error) => {
+      // eslint-disable-next-line compat/compat
+      return Promise.reject(error);
+    },
+  );
+  try {
+    const res = await instance[method.toLowerCase()](url, data);
+    return res.data;
+  } catch (e) {
+    return errorHandler(e);
+  }
 };
 
 export default request;

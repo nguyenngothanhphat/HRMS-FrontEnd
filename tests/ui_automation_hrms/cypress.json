@@ -1,0 +1,21 @@
+{
+    "env": {
+        "owner_email":"comp1-superad@mailinator.com",
+        "hrManager_email":"comp1-hr-manager@mailinator.com",
+        "hr_email":"comp1-employee-hre1@mailinator.com",
+        "employee_email": "huu.nguyen@mailinator.com",
+        "manager_email" : "comp1-manager@mailinator.com",
+        "password" : "12345678@Tc",
+        "fromDate" : "09.29.21",
+        "toDate" : "09.30.21"
+    },
+    "baseUrl":"https://stghrms.paxanimi.ai",
+    "watchForFileChanges":true,
+    "defaultComandTimeout": 10000,
+    "viewportWidth": 1280,
+    "viewportHeight": 1024,
+    "chromeWebSecurity": false
+    
+}
+
+

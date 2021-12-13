@@ -1,4 +1,4 @@
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
 import {
@@ -33,6 +33,9 @@ import {
   sendClosePackage,
   closeEmplRecord,
   submitToHr,
+  getListAssigneeHr,
+  assignToHr,
+  sendRequestUpdate,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -43,12 +46,13 @@ const offboarding = {
     listTeamRequest: [],
     request: [],
     sendrequest: false,
-    myRequest: {},
+    listMyRequest: [],
     list1On1: [],
     approvalflow: [],
     listMeetingTime: [],
     listProjectByEmployee: [],
     itemNewCreate1On1: {},
+    totalAll: [],
     totalList: [],
     totalListTeamRequest: [],
     showModalSuccessfully: false,
@@ -58,6 +62,7 @@ const offboarding = {
     customExitPackage: [],
     customClosingPackage: [],
     currentTemplate: {},
+    listRelievingFormalities: [],
     inQueuesList: [],
     closeRecordsList: [],
     itemCreateScheduleInterview: {},
@@ -65,8 +70,10 @@ const offboarding = {
     listAssignee: [],
     hrManager: {},
     terminateData: {},
+    listAssigneeHr: [],
   },
   effects: {
+    // my request
     *fetchList({ payload }, { call, put }) {
       let response;
       try {
@@ -78,15 +85,20 @@ const offboarding = {
         const {
           statusCode,
           data: { items: listOffboarding = [], total: totalList = [], hrManager = {} } = {},
+          total: totalAll = 0,
         } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listOffboarding, totalList, hrManager } });
+        yield put({
+          type: 'save',
+          payload: { listOffboarding, totalList, hrManager, totalAll },
+        });
         return listOffboarding;
       } catch (errors) {
         dialog(errors);
       }
       return response;
     },
+    // team request
     *fetchListTeamRequest({ payload }, { call, put }) {
       try {
         const response = yield call(teamRequestList, {
@@ -101,9 +113,13 @@ const offboarding = {
             total: totalListTeamRequest = [],
             hrManager = {},
           } = {},
+          total: totalAll = [],
         } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listTeamRequest, totalListTeamRequest, hrManager } });
+        yield put({
+          type: 'save',
+          payload: { listTeamRequest, totalListTeamRequest, hrManager, totalAll },
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -117,7 +133,10 @@ const offboarding = {
         });
         const { statusCode, data: { items: acceptedRequest = [] } = {} } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { acceptedRequest } });
+        yield put({
+          type: 'save',
+          payload: { acceptedRequest, totalAcceptedList: response.total },
+        });
         return acceptedRequest;
       } catch (errors) {
         dialog(errors);
@@ -128,6 +147,26 @@ const offboarding = {
       let response;
       try {
         response = yield call(sendRequest, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data: request = [] } = response;
+
+        if (statusCode !== 200) throw response;
+
+        yield put({ type: 'save', payload: { request, sendrequest: true } });
+        notification.success({ message: `Submit Request successfully!` });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *sendRequestUpdate({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(sendRequestUpdate, {
           ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
@@ -398,19 +437,21 @@ const offboarding = {
           ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
+          location: [getCurrentLocation()],
         });
         const { relievingStatus } = payload;
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         switch (relievingStatus) {
           case 'CLOSE-RECORDS':
-            yield put({ type: 'save', payload: { closeRecordsList: data.result } });
+            yield put({ type: 'save', payload: { closeRecordsList: data.items } });
             break;
           case 'IN-QUEUES':
-            yield put({ type: 'save', payload: { inQueuesList: data.result } });
+            yield put({ type: 'save', payload: { inQueuesList: data.items } });
             break;
           default:
-            return null;
+            yield put({ type: 'save', payload: { listRelievingFormalities: data.items } });
+            break;
         }
       } catch (errors) {
         dialog(errors);
@@ -707,6 +748,46 @@ const offboarding = {
       } catch (error) {
         dialog(error);
       }
+    },
+    *getListAssigneeHr(_, { put, call }) {
+      try {
+        const response = yield call(getListAssigneeHr, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          location: getCurrentLocation(),
+        });
+        const { statusCode, data: listAssigneeHr = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { listAssigneeHr },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *assignToHr({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(assignToHr, {
+          tenantId: getCurrentTenant(),
+          ...payload,
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchListTeamRequest',
+          payload: {
+            location: [getCurrentLocation()],
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
     },
   },
   reducers: {

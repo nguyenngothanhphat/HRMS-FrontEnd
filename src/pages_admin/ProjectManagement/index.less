@@ -39,42 +39,57 @@
 
   .addNewProject {
     display: flex;
-    justify-content: flex-end;
     align-items: center;
-    margin-right: 24px;
+    justify-content: space-between;
+    // width: 100%;
+    height: 42px;
+    margin: 25px 26px 22px 0;
+    background-color: white;
+    border-radius: 30px;
     cursor: pointer;
-    img {
-      margin-right: 15px;
-    }
-    span {
+    .titleText {
+      margin-bottom: 0px;
+      margin-left: 7px;
+      color: #ffa100;
       font-weight: 500;
-      color: #2c6df9
+      font-size: 14px;
     }
-    &:hover {
-      opacity: 0.8;
+    :global {
+      .anticon {
+        margin-right: 9px;
+        margin-bottom: 1px;
+        color: #ffa100;
+        font-size: 20px;
+      }
     }
   }
   :global {
     .ant-tabs-tabpane {
       padding: 24px;
     }
-
-    .ant-table-thead {
-      .ant-table-cell {
-        padding-top: 0;
-        padding-bottom: 0;
-        height: 35px;
-        font-weight: normal;
-        font-size: 14px;
-        line-height: 16px;
-      }
+    .ant-tabs-nav {
+      height: 50px;
     }
+    // .ant-table-thead {
+    //   .ant-table-cell {
+    //     padding-top: 0;
+    //     padding-bottom: 0;
+    //     height: 35px;
+    //     font-weight: normal;
+    //     font-size: 14px;
+    //     line-height: 16px;
+    //   }
+    // }
 
-    .ant-table-tbody {
-      .ant-table-cell {
-        font-size: 13px;
-        line-height: 15px;
-      }
+    // .ant-table-tbody {
+    //   .ant-table-cell {
+    //     font-size: 13px;
+    //     line-height: 15px;
+    //   }
+    // }
+
+    th.ant-table-cell {
+      padding-block: 8px !important;
     }
 
     .ant-tabs {

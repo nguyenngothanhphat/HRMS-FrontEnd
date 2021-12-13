@@ -1,15 +1,17 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Tabs } from 'antd';
 import { connect } from 'umi';
 import TimeOffRequestTab from '../TimeOffRequestTab';
 import styles from './index.less';
+import SearchTimeOff from '../../../../../SearchTimeOff/index';
 
 const { TabPane } = Tabs;
 
-@connect(({ timeOff }) => ({
+@connect(({ timeOff, timeOff: { filter = {} } }) => ({
   timeOff,
+  filter,
 }))
-class MineOrTeamTabs extends PureComponent {
+class MineOrTeamTabs extends Component {
   saveCurrentTab = (type) => {
     const { dispatch, timeOff: { currentMineOrTeamTab = '' } = {} } = this.props;
     if (currentMineOrTeamTab !== String(type))
@@ -20,31 +22,34 @@ class MineOrTeamTabs extends PureComponent {
           currentFilterTab: '1',
         },
       });
+    dispatch({
+      type: 'timeOff/savePaging',
+      payload: { page: 1 },
+    });
   };
 
   render() {
-    const {
-      tab = 0,
-      type = 0,
-      tabName = '',
-      timeOff: { currentMineOrTeamTab = '' } = {},
-    } = this.props;
+    const { tab = 0, type = 0, timeOff: { currentMineOrTeamTab = '' } = {} } = this.props;
+    const renderTableTitle = {
+      right: <SearchTimeOff />,
+    };
     return (
       <div className={styles.MineOrTeamTabs}>
         <Tabs
           destroyInactiveTabPane
           tabPosition="top"
           // tabBarGutter={40}
+          tabBarExtraContent={renderTableTitle}
           onTabClick={(activeKey) => this.saveCurrentTab(activeKey)}
           activeKey={currentMineOrTeamTab}
         >
-          <TabPane tab={`Team ${tabName}`} key="1">
+          <TabPane tab="Team Requests" key="1">
             <TimeOffRequestTab tab={tab} type={type} category="TEAM" />
           </TabPane>
-          <TabPane tab={`My ${tabName}`} key="2">
+          <TabPane tab="My Requests" key="2">
             <TimeOffRequestTab tab={tab} type={type} category="MY" />
           </TabPane>
-          <TabPane tab={`All ${tabName}`} key="3">
+          <TabPane tab="All Requests" key="3">
             <TimeOffRequestTab tab={tab} type={type} category="ALL" />
           </TabPane>
         </Tabs>

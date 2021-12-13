@@ -1,0 +1,109 @@
+@border-color: #d6dce0;
+@orange: #fe5d27;
+@new-background: #fff4f1;
+@border-color: #d6dce0;
+@checkbox-background: #e7eaee;
+@checkbox-border: #707177;
+@gray: #707177;
+@red: #ff5252;
+@blue: #2c6df9;
+@cell-padding: 8px 16px;
+
+.mixin-border-bottom-row {
+  border-bottom: solid 1px #d6dce0;
+}
+
+.WeeklyTable {
+  width: 100%;
+  min-width: 700px;
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  &.inTab {
+    border: none;
+  }
+  // FIRST COLUMNS
+  .renderEmployee {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    .avatar {
+      width: 32px;
+      height: 32px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .icon {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      background: #a42ba8;
+      border: 1px solid rgba(255, 255, 255, 0);
+      border-radius: 50%;
+      outline: none;
+      cursor: default;
+      span {
+        color: #fff;
+        font-weight: 500;
+        font-size: 13px;
+        text-transform: uppercase;
+      }
+    }
+    .right {
+      padding-left: 10px;
+      .name {
+        display: block;
+        color: #212020;
+        font-weight: 500;
+        font-size: 12px;
+        text-align: left;
+      }
+      .id {
+        color: #464646;
+        font-size: 11px;
+      }
+    }
+  }
+
+  :global {
+    .ant-table-thead > tr > th {
+      background-color: @blue !important;
+      opacity: 1 !important;
+    }
+
+    .ant-checkbox-inner {
+      background-color: @checkbox-background;
+
+      &:after {
+        border-color: blue;
+      }
+    }
+
+    .ant-checkbox-wrapper {
+      border-color: @checkbox-border;
+    }
+
+    .ant-table-selection,
+    .ant-table-selection-column {
+      height: fit-content;
+    }
+
+    thead {
+      tr {
+        height: 35px;
+      }
+
+      .ant-table-selection {
+        height: 18px;
+      }
+    }
+
+    .ant-tabs-nav {
+      height: 56px;
+    }
+  }
+}

@@ -6,7 +6,9 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
 // loading
-@connect(({ loading }) => ({
+@connect(({ loading, dispatch, timeOff: { paging } }) => ({
+  paging,
+  dispatch,
   loadingFetchLeaveRequests: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
 }))
 class MyLeaveTable extends PureComponent {
@@ -32,7 +34,7 @@ class MyLeaveTable extends PureComponent {
       title: 'Type',
       dataIndex: 'type',
       align: 'center',
-      render: (type) => <span>{type ? type.shortType : '-'}</span>,
+      render: (type) => <span>{type ? type.name : '-'}</span>,
       // defaultSortOrder: ['ascend'],
       sorter: {
         compare: (a, b) => {
@@ -52,7 +54,7 @@ class MyLeaveTable extends PureComponent {
       render: (leaveTimes) => <span>{leaveTimes !== '' ? leaveTimes : '-'}</span>,
     },
     {
-      title: `Req’ted on `,
+      title: `Requested on `,
       dataIndex: 'onDate',
       align: 'center',
       // width: '30%',
@@ -113,7 +115,7 @@ class MyLeaveTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      pageSelected: 1,
+      // pageSelected: 1,
       selectedRowKeys: [],
     };
   }
@@ -121,23 +123,27 @@ class MyLeaveTable extends PureComponent {
   // view request
   viewRequest = (_id) => {
     history.push({
-      pathname: `/time-off/view-request/${_id}`,
+      pathname: `/time-off/overview/personal-timeoff/view/${_id}`,
       // state: { location: name },
     });
   };
 
   // pagination
   onChangePagination = (pageNumber) => {
-    this.setState({
-      pageSelected: pageNumber,
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/savePaging',
+      payload: {
+        page: pageNumber,
+      },
     });
   };
 
-  setFirstPage = () => {
-    this.setState({
-      pageSelected: 1,
-    });
-  };
+  // setFirstPage = () => {
+  //   this.setState({
+  //     pageSelected: 1,
+  //   });
+  // };
 
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
@@ -151,7 +157,7 @@ class MyLeaveTable extends PureComponent {
         fromDate = '',
         toDate = '',
         approvalManager: { generalInfo: generalInfoA = {} } = {},
-        cc = [],
+        // cc = [],
         ticketID = '',
         _id = '',
         updated = false,
@@ -164,12 +170,12 @@ class MyLeaveTable extends PureComponent {
           .format('MM.DD.YY')}`;
       }
 
-      let employeeFromCC = [];
-      if (cc.length > 0) {
-        employeeFromCC = cc[0].map((each) => {
-          return each;
-        });
-      }
+      // let employeeFromCC = [];
+      // if (cc.length > 0) {
+      //   employeeFromCC = cc[0].map((each) => {
+      //     return each;
+      //   });
+      // }
       // const assigned = [generalInfoA, ...employeeFromCC];
 
       return {
@@ -188,9 +194,13 @@ class MyLeaveTable extends PureComponent {
   };
 
   render() {
-    const { data = [], loadingFetchLeaveRequests = false } = this.props;
-    const { selectedRowKeys, pageSelected } = this.state;
-    const rowSize = 10;
+    const {
+      data = [],
+      loadingFetchLeaveRequests = false,
+      paging: { page, limit, total },
+    } = this.props;
+    const { selectedRowKeys } = this.state;
+    // const rowSize = 10;
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -203,19 +213,19 @@ class MyLeaveTable extends PureComponent {
 
     const pagination = {
       position: ['bottomLeft'],
-      total: parsedData.length,
-      showTotal: (total, range) => (
+      total,
+      showTotal: (totals, range) => (
         <span>
           {' '}
           Showing{'  '}
           <b>
             {range[0]} - {range[1]}
           </b>{' '}
-          of {total}{' '}
+          of {totals}{' '}
         </span>
       ),
-      pageSize: rowSize,
-      current: pageSelected,
+      pageSize: limit,
+      current: page,
       onChange: this.onChangePagination,
     };
 
@@ -236,7 +246,7 @@ class MyLeaveTable extends PureComponent {
           size="middle"
           loading={tableLoading}
           rowSelection={rowSelection}
-          pagination={{ ...pagination, total: parsedData.length }}
+          pagination={{ ...pagination, total }}
           columns={this.columns}
           dataSource={parsedData}
           scroll={scroll}

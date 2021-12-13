@@ -113,7 +113,7 @@ class FormWorkLocation extends Component {
                 rules={[
                   {
                     required: true,
-                    message: 'Please enter location name',
+                    message: 'Please enter location name!',
                   },
                   ({ getFieldValue }) => ({
                     validator(_, value) {
@@ -166,6 +166,27 @@ class FormWorkLocation extends Component {
                 fieldKey={[field.fieldKey, 'addressLine2']}
               >
                 <Input placeholder="Address Line 2" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row className={s.FormWorkLocation__viewBottom__row}>
+            <Col span={8}>
+              <p className={s.FormWorkLocation__viewBottom__row__textLabel}>City Name*</p>
+            </Col>
+            <Col span={16}>
+              <Form.Item
+                {...field}
+                label={false}
+                name={[field.name, 'city']}
+                fieldKey={[field.fieldKey, 'city']}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter City Name!',
+                  },
+                ]}
+              >
+                <Input placeholder="City Name" />
               </Form.Item>
             </Col>
           </Row>
@@ -234,7 +255,7 @@ class FormWorkLocation extends Component {
             </Col>
             <Col span={8} className={s.viewFormVertical}>
               <p className={classnames(s.FormWorkLocation__viewBottom__row__textLabel, s.mgb10)}>
-                Zip*
+                Zip/Postal Code*
               </p>
               <Form.Item
                 {...field}
@@ -244,11 +265,11 @@ class FormWorkLocation extends Component {
                 rules={[
                   {
                     required: true,
-                    message: 'Please enter Zip Code!',
+                    message: 'Please enter Zip/Postal Code!',
                   },
                 ]}
               >
-                <Input placeholder="Zip Code" />
+                <Input placeholder="Zip/Postal Code" />
               </Form.Item>
             </Col>
           </Row>

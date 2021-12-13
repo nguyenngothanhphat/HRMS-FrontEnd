@@ -63,6 +63,7 @@ class Edit extends PureComponent {
     } = companiesManagement;
     const payload = {
       ...companyDetails,
+      isSameAsHeadquarter: false,
       id: companyDetails._id,
       tenantId: tenantCurrentCompany,
       legalAddress: {
@@ -153,7 +154,7 @@ class Edit extends PureComponent {
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item label="Zip Code" name="zipCode">
+              <Form.Item label="Zip/Postal Code" name="zipCode">
                 <Input />
               </Form.Item>
             </>

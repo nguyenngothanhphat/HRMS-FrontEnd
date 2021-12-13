@@ -65,9 +65,14 @@
     &__value{
       color: #2C6DF9;
       font-weight: 500;
+      font-size: 13px;
+      font-style: normal;
+      line-height: 15px;
+      text-decoration-line: underline;
+      cursor: pointer;
     }
 
-    &__requteeName{
+    &__requteeName, &__assignee, &__hrManager{
       text-decoration: underline;
       // font-weight: 500;
     }
@@ -82,5 +87,111 @@
     color: blue;
     cursor: pointer;
     display: flex;
+  }
+}
+
+:global {
+  .ant-popover-inner{
+    border-radius: 8px;
+  }
+
+  .ant-divider{
+    border-top: 0.2px solid #B6B6B6;
+    opacity: 0.3;
+  }
+
+  .ant-divider-horizontal{
+    margin: 18px 0;
+  }
+}  
+
+.popupContent{
+  width: 346px; 
+
+  .generalInfo{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    .employeeInfo{
+      text-align: left;
+      padding-left: 16px;
+
+      &__name{
+        margin-bottom: 0;
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 21px;
+        color: #161C29;
+
+        padding-bottom: 6px;
+      }
+  
+      &__department, &__emplId{
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 13px;
+        line-height: 15px;
+        color: #707177;
+
+        padding-bottom: 6px;
+      }
+    }
+
+
+    .avatar{
+      
+    }
+  }
+
+  .contact{
+    &__title {
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 15px;
+
+      color: #707177;
+    }
+
+    &__value{
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 16px;
+
+      color: #161C29;
+
+      opacity: 0.91;
+    }
+  }
+
+  .popupActions{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    &__link{
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 13px;
+      font-style: normal;
+      line-height: 15px;
+      text-decoration-line: underline;
+      cursor: pointer;
+    }
+
+    &__actions {
+      width: 106px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
   }
 }

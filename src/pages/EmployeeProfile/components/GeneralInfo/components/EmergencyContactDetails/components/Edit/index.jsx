@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Row, Form, Input, Button, Col, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
+import removeIcon from '../assets/removeIcon.svg';
+
 import styles from './index.less';
 
 @connect(
@@ -61,6 +63,18 @@ class Edit extends Component {
         payload: { generalData: { emergencyContactDetails: newEmergencyContactDetails } },
       });
     }
+  };
+
+  handleRemove = (index) => {
+    const { generalData, dispatch } = this.props;
+    const { emergencyContactDetails = [] } = generalData;
+    const newList = [...emergencyContactDetails];
+    newList.splice(index, 1);
+
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { generalData: { emergencyContactDetails: newList } },
+    });
   };
 
   handleChange = (changedValues) => {
@@ -195,28 +209,15 @@ class Edit extends Component {
           {formEmergency.map((item, index) => {
             const { emergencyContact, emergencyPersonName, emergencyRelation } = item;
             return (
-              <div key={`${index + 1}`}>
+              <div key={`${index + 1}`} className={styles.containerForm}>
                 {index > 0 ? <div className={styles.line} /> : null}
+                {index >= 1 ? (
+                  <div className={styles.removeIcon}>
+                    <img onClick={() => this.handleRemove(index)} src={removeIcon} alt="remove" />
+                  </div>
+                ) : null}
                 <Form.Item
-                  label="Emergency Contact"
-                  name={`emergencyContact ${index}`}
-                  rules={[
-                    {
-                      pattern: /^[+]*[\d]{0,10}$/,
-                      message: formatMessage({
-                        id: 'pages.employeeProfile.validateWorkNumber',
-                      }),
-                    },
-                  ]}
-                >
-                  <Input
-                    defaultValue={emergencyContact}
-                    className={styles.inputForm}
-                    onChange={(e) => this.handleChangeField(e.target.id, e.target.value, index)}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label="Person’s Name"
+                  label="Emergency Contact’s Name"
                   name={`emergencyPersonName ${index}`}
                   validateTrigger="onChange"
                   rules={[
@@ -263,6 +264,24 @@ class Edit extends Component {
                       );
                     })}
                   </Select>
+                </Form.Item>
+                <Form.Item
+                  label="Emergency Contact Number"
+                  name={`emergencyContact ${index}`}
+                  rules={[
+                    {
+                      pattern: /^[+]*[\d]{0,10}$/,
+                      message: formatMessage({
+                        id: 'pages.employeeProfile.validateWorkNumber',
+                      }),
+                    },
+                  ]}
+                >
+                  <Input
+                    defaultValue={emergencyContact}
+                    className={styles.inputForm}
+                    onChange={(e) => this.handleChangeField(e.target.id, e.target.value, index)}
+                  />
                 </Form.Item>
               </div>
             );

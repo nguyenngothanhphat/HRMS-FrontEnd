@@ -52,9 +52,7 @@ class ViewLeftInitial extends Component {
     };
   }
 
-  onChangeSteps = (values) => {
-
-  };
+  onChangeSteps = (values) => {};
 
   onCancel = () => {
     this.setState({
@@ -72,7 +70,7 @@ class ViewLeftInitial extends Component {
     const { hrManager } = this.props;
 
     if (hrManager !== null) {
-      history.push('offboarding/resignation-request');
+      history.push('/offboarding/list/my-request/new');
     } else {
       notification.error({
         message: 'Notification',

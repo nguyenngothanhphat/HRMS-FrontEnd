@@ -10,8 +10,8 @@ class EditEmailHeader extends PureComponent {
       <div className={styles.EditEmailHeader}>
         <Link
           to={{
-            pathname: '/offboarding',
-            state: { defaultActiveKey: '2', settingsDisplayComponent: true },
+            pathname: '/offboarding/settings/custom-emails',
+            state: { settingsDisplayComponent: true },
           }}
         >
           <img src={blueBackIcon} alt="back icon" />

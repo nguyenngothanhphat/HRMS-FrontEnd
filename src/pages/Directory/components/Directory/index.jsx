@@ -1,16 +1,15 @@
+import { Layout, message, Skeleton, Tabs } from 'antd';
+import { debounce } from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
-import { Tabs, Layout, Skeleton } from 'antd';
+import iconDownload from '@/assets/download-icon-yellow.svg';
 import DirectoryTable from '@/components/DirectoryTable';
-import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
-
-import { debounce } from 'lodash';
 import AddEmployeeForm from '@/pages_admin/EmployeesManagement/components/TableContainer/components/AddEmployeeForm';
 import ModalImportEmployee from '@/pages_admin/EmployeesManagement/components/TableContainer/components/ModalImportEmployee';
+import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
 import exportToCsv from '@/utils/exportToCsv';
-import iconDownload from '@/assets/download-icon-yellow.svg';
-import styles from './index.less';
 import TableFilter from '../TableFilter';
+import styles from './index.less';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -20,18 +19,30 @@ const { TabPane } = Tabs;
     locationSelection: { listLocationsByCompany = [] } = {},
     employee,
     user: { currentUser = {}, permissions = {}, companiesOfUser = [] },
-    employee: { filterList = {} } = {},
+    employee: {
+      currentPayload = {},
+      filterList = {},
+      totalActiveEmployee = '',
+      totalInactiveEmployee = '',
+      totalMyTeam = '',
+    } = {},
   }) => ({
     loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
     loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
     loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
     loadingCompaniesOfUser: loading.effects['user/fetchCompanyOfUser'],
+    loadingFetchFilterList: loading.effects['employee/fetchFilterList'],
+    loadingExportCSV: loading.effects['employee/exportEmployees'],
     employee,
     currentUser,
     permissions,
     listLocationsByCompany,
     companiesOfUser,
     filterList,
+    currentPayload,
+    totalActiveEmployee,
+    totalInactiveEmployee,
+    totalMyTeam,
   }),
 )
 class DirectoryComponent extends PureComponent {
@@ -44,12 +55,14 @@ class DirectoryComponent extends PureComponent {
       let state = [];
       let company = [];
       let title = [];
+      let skill = [];
       const employeeTypeConst = 'Employment Type';
       const departmentConst = 'Department';
       const countryConst = 'Country';
       const stateConst = 'State';
       const companyConst = 'Company';
       const titleConst = 'Title';
+      const titleSkill = 'Skill';
       filter.map((item) => {
         if (item.actionFilter.name === employeeTypeConst) {
           employeeType = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
@@ -69,6 +82,9 @@ class DirectoryComponent extends PureComponent {
         if (item.actionFilter.name === titleConst) {
           title = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
+        if (item.actionFilter.name === titleSkill) {
+          skill = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        }
         return { employeeType, department, countryConst, company, title };
       });
       return {
@@ -79,6 +95,7 @@ class DirectoryComponent extends PureComponent {
         employeeType,
         company,
         title,
+        skill,
       };
     }
     return null;
@@ -102,6 +119,7 @@ class DirectoryComponent extends PureComponent {
       changeTab: false,
       collapsed: true,
       pageSelected: 1,
+      size: 10,
       bottabs: [],
       visible: false,
       visibleImportEmployee: false,
@@ -134,6 +152,9 @@ class DirectoryComponent extends PureComponent {
       filterName,
       tabId,
       changeTab,
+      skill,
+      pageSelected,
+      size,
     } = this.state;
     // const isOwnerCheck = isOwner();
     // const currentLocation = getCurrentLocation();
@@ -146,20 +167,24 @@ class DirectoryComponent extends PureComponent {
       employeeType,
       company,
       title,
+      skill,
+      page: 1,
+      limit: size,
     };
-
     if (
       prevState.tabId !== tabId ||
-      (changeTab && prevState.tabId === tabId) ||
+      (changeTab && prevState.tabId !== tabId) ||
       prevState.department.length !== department.length ||
       prevState.country.length !== country.length ||
       prevState.state.length !== state.length ||
       prevState.employeeType.length !== employeeType.length ||
+      JSON.stringify(prevState.skill) !== JSON.stringify(skill) ||
       JSON.stringify(prevState.title) !== JSON.stringify(title) ||
       prevState.filterName !== filterName ||
-      prevState.company.length !== company.length
+      prevState.company.length !== company.length ||
+      prevState.size !== size
     ) {
-      this.onChangeTab(params, tabId);
+      this.renderData(params, tabId);
     }
 
     const { filterList = {}, listLocationsByCompany = [] } = this.props;
@@ -170,18 +195,33 @@ class DirectoryComponent extends PureComponent {
     // console.log('prevProps.listLocationsByCompany', prevProps.listLocationsByCompany);
 
     if (
-      JSON.stringify(prevProps.filterList) !== JSON.stringify(filterList) &&
-      listLocationsByCompany.length > 0
+      JSON.stringify(prevProps.filterList) !== JSON.stringify(filterList) ||
+      JSON.stringify(prevProps?.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
     ) {
-      // console.log('OK');
-      this.renderData();
+      this.renderData({}, tabId);
+    }
+
+    if (prevState.pageSelected !== pageSelected) {
+      const paramsPage = {
+        name: filterName,
+        department,
+        country,
+        state,
+        employeeType,
+        company,
+        title,
+        skill,
+        page: pageSelected,
+        limit: size,
+      };
+      this.renderData(paramsPage, tabId);
     }
     // console.log('--------------------------------------');
   }
 
   componentWillUnmount = async () => {
     this.setState = () => {
-      return { tabId: 'active', changeTab: false };
+      return { tabId: 'active', changeTab: false, pageSelected: 1, size: 10 };
     };
     const { dispatch } = this.props;
     dispatch({
@@ -234,109 +274,19 @@ class DirectoryComponent extends PureComponent {
     });
   };
 
-  renderData = () => {
-    const { dispatch, permissions = {} } = this.props;
-    const {
-      companiesOfUser = [],
-      filterList: { listCountry = [] } = {},
-      listLocationsByCompany = [],
-      currentUser: { employee: { department: { name: departmentName = '' } = {} } = {} } = {},
-    } = this.props;
-
-    const currentCompany = getCurrentCompany();
-    const currentLocation = getCurrentLocation();
-    const isOwnerCheck = isOwner();
-
-    // OWNER
-    // if location selected, render data of current company
-    // else, multiple companies
-    let companyPayload = [];
-    const companyList = companiesOfUser.filter(
-      (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
-    );
-    if (!currentLocation && isOwnerCheck) {
-      companyPayload = [...companyList];
-    } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
-
-    let locationPayload = [];
-
-    if (!currentLocation) {
-      locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
-        let stateList = [];
-        listCountry.forEach(
-          ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
-            if (countryItem1 === countryItem2) {
-              stateList = [...stateList, stateItem2];
-            }
-          },
-        );
-        return {
-          country: countryItem1,
-          state: stateList,
-        };
-      });
-    } else {
-      const currentLocationObj = listLocationsByCompany.find((loc) => loc?._id === currentLocation);
-      const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
-      const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
-
-      locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
-        let stateList = [];
-        listCountry.forEach(
-          ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
-            if (
-              countryItem1 === countryItem2 &&
-              currentLocationCountry === countryItem2 &&
-              currentLocationState === stateItem2
-            ) {
-              stateList = [...stateList, stateItem2];
-            }
-          },
-        );
-        return {
-          country: countryItem1,
-          state: stateList,
-        };
-      });
-    }
-
-    const viewTabActive = permissions.viewTabActive !== -1;
-    const viewTabInActive = permissions.viewTabInActive !== -1;
-    const viewTabMyTeam = permissions.viewTabMyTeam !== -1;
-
-    if (viewTabMyTeam) {
-      dispatch({
-        type: 'employee/fetchListEmployeeMyTeam',
-        payload: {
-          company: companyPayload,
-          department: [departmentName],
-          location: locationPayload,
-        },
-      });
-    }
-
-    if (viewTabActive) {
-      dispatch({
-        type: 'employee/fetchListEmployeeActive',
-        payload: {
-          company: companyPayload,
-          location: locationPayload,
-        },
-      });
-    }
-    if (viewTabInActive) {
-      dispatch({
-        type: 'employee/fetchListEmployeeInActive',
-        payload: {
-          company: companyPayload,
-
-          location: locationPayload,
-        },
-      });
-    }
+  getPageSelected = (page) => {
+    this.setState({
+      pageSelected: page,
+    });
   };
 
-  onChangeTab = (params, tabId) => {
+  getSize = (size) => {
+    this.setState({
+      size,
+    });
+  };
+
+  renderData = (params = {}, tabId = 'active') => {
     const {
       tabList: { active, myTeam, inActive },
     } = this.state;
@@ -344,48 +294,116 @@ class DirectoryComponent extends PureComponent {
     const currentLocation = getCurrentLocation();
     const currentCompany = getCurrentCompany();
 
-    const { dispatch } = this.props;
+    const { dispatch, permissions = {} } = this.props;
     const {
       companiesOfUser = [],
       filterList: { listCountry = [] } = {},
       listLocationsByCompany = [],
-      currentUser: { employee: { department: { name: departmentName = '' } = {} } = {} } = {},
+      currentUser: { employee: { departmentInfo: { name: departmentName = '' } = {} } = {} } = {},
     } = this.props;
-    const { name, department, country, state, employeeType, company, title } = params;
 
-    // MULTI COMPANY & LOCATION PAYLOAD
-    let companyPayload = [];
-    const companyList = companiesOfUser.filter(
-      (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
-    );
-    const isOwnerCheck = isOwner();
+    const {
+      name = '',
+      department = [],
+      country = [],
+      state = [],
+      employeeType,
+      company = [],
+      title = [],
+      skill = [],
+      page = 1,
+      limit,
+    } = params;
 
-    // OWNER
-    if (!currentLocation && isOwnerCheck) {
-      if (company.length !== 0) {
-        companyPayload = companyList.filter((lo) => company.includes(lo?._id));
-      } else {
-        companyPayload = [...companyList];
+    // if there are location & company, call API
+    const checkCallAPI =
+      companiesOfUser.length > 0 && listLocationsByCompany.length > 0 && listCountry.length > 0;
+
+    if (checkCallAPI) {
+      // MULTI COMPANY & LOCATION PAYLOAD
+      let companyPayload = [];
+      const companyList = companiesOfUser.filter(
+        (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
+      );
+      const isOwnerCheck = isOwner();
+
+      // OWNER
+      if (!currentLocation && isOwnerCheck) {
+        if (company.length !== 0) {
+          companyPayload = companyList.filter((lo) => company.includes(lo?._id));
+        } else {
+          companyPayload = [...companyList];
+        }
+      } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
+
+      let locationPayload = [];
+
+      // for all employees & super admin that is in ALL location mode
+      if (!currentLocation || !isOwnerCheck) {
+        if (country.length === 0) {
+          locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
+            let stateList = [];
+            listCountry.forEach(
+              ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
+                if (countryItem1 === countryItem2) {
+                  if (state.length !== 0) {
+                    if (state.includes(stateItem2)) {
+                      stateList = [...stateList, stateItem2];
+                    }
+                  } else {
+                    stateList = [...stateList, stateItem2];
+                  }
+                }
+              },
+            );
+            return {
+              country: countryItem1,
+              state: stateList,
+            };
+          });
+        } else {
+          locationPayload = country.map((item) => {
+            let stateList = [];
+
+            listCountry.forEach(
+              ({ country: { _id: countryItem = '' } = {}, state: stateItem = '' }) => {
+                if (item === countryItem) {
+                  if (state.length !== 0) {
+                    if (state.includes(stateItem)) {
+                      stateList = [...stateList, stateItem];
+                    }
+                  } else {
+                    stateList = [...stateList, stateItem];
+                  }
+                }
+              },
+            );
+
+            return {
+              country: item,
+              state: stateList,
+            };
+          });
+        }
       }
-    } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
 
-    let locationPayload = [];
-
-    // if country is not selected, select all
-    if (!currentLocation) {
-      if (country.length === 0) {
+      // only super admin can see directory list by selected location in the dropdown menu
+      if (currentLocation && isOwnerCheck) {
+        const currentLocationObj = listLocationsByCompany.find(
+          (loc) => loc?._id === currentLocation,
+        );
+        const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
+        const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
         locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
           let stateList = [];
           listCountry.forEach(
             ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
-              if (countryItem1 === countryItem2) {
-                if (state.length !== 0) {
-                  if (state.includes(stateItem2)) {
-                    stateList = [...stateList, stateItem2];
-                  }
-                } else {
-                  stateList = [...stateList, stateItem2];
-                }
+              if (
+                countryItem1 === countryItem2 &&
+                currentLocationCountry === countryItem2 &&
+                currentLocationState === stateItem2
+              ) {
+                stateList = [...stateList, stateItem2];
               }
             },
           );
@@ -394,84 +412,48 @@ class DirectoryComponent extends PureComponent {
             state: stateList,
           };
         });
-      } else {
-        locationPayload = country.map((item) => {
-          let stateList = [];
+      }
 
-          listCountry.forEach(
-            ({ country: { _id: countryItem = '' } = {}, state: stateItem = '' }) => {
-              if (item === countryItem) {
-                if (state.length !== 0) {
-                  if (state.includes(stateItem)) {
-                    stateList = [...stateList, stateItem];
-                  }
-                } else {
-                  stateList = [...stateList, stateItem];
-                }
-              }
-            },
-          );
+      const payload = {
+        company: companyPayload,
+        name,
+        department,
+        location: locationPayload,
+        employeeType,
+        title,
+        skill,
+        page,
+        limit,
+      };
+      this.setState({ pageSelected: page || 1 });
 
-          return {
-            country: item,
-            state: stateList,
-          };
+      // permissions to view tab
+      const viewTabActive = permissions.viewTabActive !== -1;
+      const viewTabInActive = permissions.viewTabInActive !== -1;
+      const viewTabMyTeam = permissions.viewTabMyTeam !== -1;
+
+      if (viewTabActive && tabId === active) {
+        dispatch({
+          type: 'employee/fetchListEmployeeActive',
+          payload,
         });
       }
-    } else {
-      const currentLocationObj = listLocationsByCompany.find((loc) => loc?._id === currentLocation);
-      const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
-      const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
 
-      locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
-        let stateList = [];
-        listCountry.forEach(
-          ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
-            if (
-              countryItem1 === countryItem2 &&
-              currentLocationCountry === countryItem2 &&
-              currentLocationState === stateItem2
-            ) {
-              stateList = [...stateList, stateItem2];
-            }
+      if (viewTabMyTeam && tabId === myTeam) {
+        dispatch({
+          type: 'employee/fetchListEmployeeMyTeam',
+          payload: {
+            ...payload,
+            department: [departmentName],
           },
-        );
-        return {
-          country: countryItem1,
-          state: stateList,
-        };
-      });
-    }
-
-    const payload = {
-      company: companyPayload,
-      name,
-      department,
-      location: locationPayload,
-      employeeType,
-      title,
-    };
-
-    if (tabId === active) {
-      dispatch({
-        type: 'employee/fetchListEmployeeActive',
-        payload,
-      });
-    }
-    if (tabId === myTeam) {
-      dispatch({
-        type: 'employee/fetchListEmployeeMyTeam',
-        payload: {
-          ...payload,
-          department: [departmentName],
-        },
-      });
-    }
-    if (tabId === inActive) {
-      dispatch({
-        type: 'employee/fetchListEmployeeInActive',
-        payload,
-      });
+        });
+      }
+      if (viewTabInActive && tabId === inActive) {
+        dispatch({
+          type: 'employee/fetchListEmployeeInActive',
+          payload,
+        });
+      }
     }
   };
 
@@ -513,6 +495,8 @@ class DirectoryComponent extends PureComponent {
       tabId,
       changeTab: true,
       filterName: '',
+      // pageSelected: 1,
+      // size: 10,
     });
     const { dispatch } = this.props;
     await dispatch({
@@ -522,6 +506,26 @@ class DirectoryComponent extends PureComponent {
     this.setState({
       changeTab: false,
     });
+  };
+
+  exportEmployees = async () => {
+    const { dispatch, currentPayload = {} } = this.props;
+
+    const getListExport = await dispatch({
+      type: 'employee/exportEmployees',
+      payload: currentPayload,
+    });
+
+    const downloadLink = document.createElement('a');
+    const universalBOM = '\uFEFF';
+    // downloadLink.href = `data:text/csv;charset=utf-8,${escape(getListExport)}`;
+    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
+      universalBOM + getListExport,
+    )}`;
+    downloadLink.download = 'data.csv';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
   };
 
   importEmployees = () => {
@@ -616,6 +620,16 @@ class DirectoryComponent extends PureComponent {
             </p>
           </div>
         )}
+
+        {findIndexImport && (
+          <div className={styles.buttonAddImport} onClick={this.exportEmployees}>
+            <img src={iconDownload} alt="Download Template" />
+            <p className={styles.buttonAddImport_text}>
+              {formatMessage({ id: 'pages_admin.employees.table.exportEmployees' })}
+            </p>
+          </div>
+        )}
+
         {findIndexImport && (
           <div className={styles.buttonAddImport} onClick={this.importEmployees}>
             <img
@@ -644,12 +658,16 @@ class DirectoryComponent extends PureComponent {
   };
 
   renderButtonFilter = (tabId, collapsed) => {
+    const { loadingListActive, loadingListMyTeam, loadingListInActive, loadingFetchFilterList } =
+      this.props;
+    const loading =
+      loadingListActive || loadingListMyTeam || loadingListInActive || loadingFetchFilterList;
     return (
-      <div className={styles.filterSider} onClick={this.handleToggle}>
+      <div className={styles.filterSider} onClick={loading ? null : this.handleToggle}>
         <div
           className={`${styles.filterButton} ${
             collapsed ? '' : `${styles.filterBackgroundButton}`
-          }`}
+          } ${loading ? styles.loadingFilterBtn : ''} `}
         >
           <img src="/assets/images/iconFilter.svg" alt="filter" />
           <p className={styles.textButtonFilter}>Filter</p>
@@ -667,6 +685,7 @@ class DirectoryComponent extends PureComponent {
       loadingListMyTeam,
       loadingListInActive,
       permissions = {},
+      loadingFetchFilterList,
     } = this.props;
 
     const findIndexActive = permissions.viewTabActive;
@@ -681,7 +700,7 @@ class DirectoryComponent extends PureComponent {
           this.renderTab(
             formatMessage({ id: 'pages.directory.directory.activeEmployeesTab' }),
             active,
-            loadingListActive,
+            loadingListActive || loadingFetchFilterList,
             findIndexShowLocationActive,
           )}
         {findIndexMyTeam !== -1 && (
@@ -689,7 +708,7 @@ class DirectoryComponent extends PureComponent {
             {this.renderTab(
               formatMessage({ id: 'pages.directory.directory.myTeamTab' }),
               myTeam,
-              loadingListMyTeam,
+              loadingListMyTeam || loadingFetchFilterList,
             )}
           </>
         )}
@@ -697,7 +716,7 @@ class DirectoryComponent extends PureComponent {
           this.renderTab(
             formatMessage({ id: 'pages.directory.directory.inactiveEmployeesTab' }),
             inActive,
-            loadingListInActive,
+            loadingListInActive || loadingFetchFilterList,
             findIndexShowLocationInActive,
           )}
       </>
@@ -705,7 +724,8 @@ class DirectoryComponent extends PureComponent {
   };
 
   renderTab = (tabName, key, loading, indexShowLocation) => {
-    const { tabId, collapsed, changeTab } = this.state;
+    const { tabId, collapsed, changeTab, pageSelected, size } = this.state;
+    const { totalActiveEmployee, totalInactiveEmployee, totalMyTeam } = this.props;
     return (
       <TabPane tab={tabName} key={key}>
         <Layout className={styles.directoryLayout_inner}>
@@ -715,6 +735,14 @@ class DirectoryComponent extends PureComponent {
               loading={loading}
               list={this.renderListEmployee(key)}
               keyTab={key}
+              getPageSelected={this.getPageSelected}
+              getSize={this.getSize}
+              pageSelected={pageSelected}
+              rowSize={size}
+              tabName={tabName}
+              totalActiveEmployee={totalActiveEmployee}
+              totalInactiveEmployee={totalInactiveEmployee}
+              totalMyTeam={totalMyTeam}
             />
           </Content>
           <TableFilter
@@ -743,6 +771,7 @@ class DirectoryComponent extends PureComponent {
       currentUser: { company, roles = [] },
       companiesOfUser = [],
       loadingCompaniesOfUser = false,
+      loadingExportCSV = false,
     } = this.props;
     const { collapsed, visible, visibleImportEmployee } = this.state;
 

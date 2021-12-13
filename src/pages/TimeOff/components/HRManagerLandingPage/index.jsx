@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Row, Col } from 'antd';
 import { history } from 'umi';
 import LeaveInformation from '../EmployeeLandingPage/components/LeaveInformation';
@@ -6,17 +6,17 @@ import ApplyRequest from '../EmployeeLandingPage/components/ApplyRequest';
 import LeaveHistoryAndHoliday from '../EmployeeLandingPage/components/LeaveHistoryAndHoliday';
 import QuickLinks from '../EmployeeLandingPage/components/QuickLinks';
 import TimeOffRequestsTable from './components/TimeOffRequestsTable';
-import FeedbackBar from '../EmployeeLandingPage/components/FeedbackBar';
+// import FeedbackBar from '../EmployeeLandingPage/components/FeedbackBar';
 import TimeOffTypesInfo from '../EmployeeLandingPage/components/TimeOffTypesInfo';
 
 import styles from './index.less';
 
-export default class HRManagerLandingPage extends PureComponent {
+export default class HRManagerLandingPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       viewInformation: false,
-      closeFeedbackBar: false,
+      // closeFeedbackBar: false,
     };
   }
 
@@ -24,25 +24,26 @@ export default class HRManagerLandingPage extends PureComponent {
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
   };
 
-  onCloseFeedbackBar = () => {
-    this.setState({
-      closeFeedbackBar: true,
-    });
-  };
+  // onCloseFeedbackBar = () => {
+  //   this.setState({
+  //     closeFeedbackBar: true,
+  //   });
+  // };
 
   buttonOnClickCompoff = () => {
     history.push({
-      pathname: `/time-off/new-compoff-request`,
+      pathname: `/time-off/overview/personal-compoff/new`,
     });
   };
 
   buttonOnClickLeave = () => {
     history.push({
-      pathname: `/time-off/new-leave-request`,
+      pathname: `/time-off/overview/personal-timeoff/new`,
     });
   };
 
   onInformationClick = () => {
+    window.scroll({ top: 150, left: 0, behavior: 'smooth' });
     const { viewInformation } = this.state;
     this.setState({
       viewInformation: !viewInformation,
@@ -50,15 +51,15 @@ export default class HRManagerLandingPage extends PureComponent {
   };
 
   render() {
-    const describeText = [
-      <p className={styles.subText}>
-        Apply for leaves with/without pay, work from home or client office.
-      </p>,
-      <p className={styles.subText}>
-        Request for a compensation leave if you have worked for extra days/hours.
-      </p>,
-    ];
-    const { viewInformation, closeFeedbackBar } = this.state;
+    // const describeText = [
+    //   <p className={styles.subText}>
+    //     Apply for leaves with/without pay, work from home or client office.
+    //   </p>,
+    //   <p className={styles.subText}>
+    //     Request for a compensation leave if you have worked for extra days/hours.
+    //   </p>,
+    // ];
+    const { viewInformation } = this.state;
     return (
       <>
         <div className={styles.HRManagerLandingPage}>
@@ -66,7 +67,10 @@ export default class HRManagerLandingPage extends PureComponent {
             <Col xs={24} md={6}>
               <Row gutter={[20, 20]}>
                 <Col span={24}>
-                  <LeaveInformation onInformationClick={this.onInformationClick} />
+                  <LeaveInformation
+                    viewDocumentVisible={viewInformation}
+                    onInformationClick={this.onInformationClick}
+                  />
                 </Col>
                 <Col span={24}>
                   <LeaveHistoryAndHoliday />
@@ -82,7 +86,7 @@ export default class HRManagerLandingPage extends PureComponent {
                 <Col xs={24} lg={15}>
                   <ApplyRequest
                     title="Apply for Timeoff from Office"
-                    describe={describeText[0]}
+                    // describe={describeText[0]}
                     buttonText="Request Time Off"
                     onClick={this.buttonOnClickLeave}
                     type={1}
@@ -91,7 +95,7 @@ export default class HRManagerLandingPage extends PureComponent {
                 <Col xs={24} lg={9}>
                   <ApplyRequest
                     title="Apply for Compoff"
-                    describe={describeText[1]}
+                    // describe={describeText[1]}
                     onClick={this.buttonOnClickCompoff}
                     buttonText="Request Compoff"
                     type={2}
@@ -103,13 +107,13 @@ export default class HRManagerLandingPage extends PureComponent {
                   <TimeOffRequestsTable />
                 </Col>
               </Row>
-              {!closeFeedbackBar && (
+              {/* {!closeFeedbackBar && (
                 <Row gutter={[20, 20]}>
                   <Col span={24}>
                     <FeedbackBar onClose={this.onCloseFeedbackBar} />
                   </Col>
                 </Row>
-              )}
+              )} */}
               <TimeOffTypesInfo onClose={this.onInformationClick} visible={viewInformation} />
             </Col>
           </Row>

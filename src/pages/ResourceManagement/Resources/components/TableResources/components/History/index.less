@@ -1,0 +1,75 @@
+.HistoryActionBTN {
+  float: right;
+  margin-top: -29px;
+  font-size: 13px;
+}
+.buttonEdit {
+  width: 29px;
+  height: 29px;
+  border: 1px solid lightgray;
+  // float: right;
+  border-radius: 50%;
+}
+.buttonEdit:hover {
+  border: 1px solid #2c6df9;
+}
+.showInfo {
+  display: inline;
+  padding-right: 30px;
+  color: gray;
+}
+.showInfoEmp {
+  color: black;
+}
+.labelProject {
+  height: 18px;
+  padding: 0px 8px;
+  margin-left: 10px;
+  font-weight: 400;
+  text-align: left;
+  background: #ffe9c5;
+  border-radius: 12px;
+}
+.iconEdit {
+  display: none;
+  width: 29px;
+  height: 29px;
+  border-radius: 50%;
+}
+.rowHover:hover {
+  color: #e5e5e5;
+  background-image: linear-gradient(to right, white, #e5e5e5);
+  .iconEdit {
+    display: inline;
+    float: right;
+    margin-top: -15px;
+  }
+  .readMore {
+    color: #e5e5e5;
+  }
+}
+.modalViewHistoryProject {
+  :global {
+    .ant-modal-close {
+      right: -57px;
+      height: 48px;
+      color: #fff;
+      background-color: #2c6df9;
+      border-radius: 0 8px 8px 0;
+      .ant-modal-close-x {
+        color: #fff;
+        line-height: 48px;
+      }
+      .ant-popover-inner {
+        background-color: #000;
+      }
+    }
+    .ant-table-thead > tr > th {
+      background: #2c6df9 !important;
+    }
+    // .ant-table-tbody > .ant-table-row.ant-table-row-level-0:hover {
+    //   color: gray;
+    //   background-image: linear-gradient(to right, white, #e5e5e5);
+    // }
+  }
+}

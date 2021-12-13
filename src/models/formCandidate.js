@@ -1,25 +1,17 @@
-// import {
-//   LocationFilter,
-//   DepartmentFilter,
-//   EmployeeTypeFilter,
-//   getListEmployeeMyTeam,
-//   getListEmployeeActive,
-//   getListEmployeeInActive,
-// } from '../services/employee';
-import {
-  getDocumentList,
-  getDepartmentList,
-  getTitleListByDepartment,
-  getLocation,
-  getEmployeeTypeList,
-  getManagerList,
-  addCandidate,
-  updateByHR,
-} from '@/services/addNewMember';
 import { history } from 'umi';
-import { dialog } from '@/utils/utils';
-
 import { addTeamMember } from '@/services/formCandidate';
+import {
+  addCandidate,
+  getDepartmentList,
+  getDocumentList,
+  getEmployeeTypeList,
+  getLocation,
+  getManagerList,
+  getTitleListByDepartment,
+  updateByHR,
+} from '@/services/newCandidateForm';
+import { dialog } from '@/utils/utils';
+import { ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 
 const info = {
   namespace: 'info',
@@ -131,14 +123,26 @@ const info = {
       medical: false,
       life: false,
       shortTerm: false,
-      listSelectedMedical: [],
-      listSelectedLife: [],
-      listSelectedShortTerm: [],
       dental: false,
       vision: false,
       employeeProvident: false,
       paytmWallet: false,
+
+      listSelectedMedical: [],
+      listSelectedLife: [],
+      listSelectedDental: [],
+      listSelectedVision: [],
+      listSelectedShortTerm: [],
+      listSelectedPaytmWallet: [],
       listSelectedEmployee: [],
+
+      selectedMedical: '',
+      selectedDental: '',
+      selectedVision: '',
+      selectedLife: '',
+      selectedShortTerm: '',
+      selectedPaytmWallet: '',
+      selectedEmployeeProvident: '',
     },
 
     customField: {
@@ -316,7 +320,7 @@ const info = {
         const { ticketID = '', _id = '' } = data;
         const rookieId = ticketID;
         yield put({ type: 'save', payload: { rookieId, _id } });
-        history.push(`/employee-onboarding/review/${rookieId}`);
+        history.push(`/onboarding/list/view/${rookieId}/${ONBOARDING_FORM_LINK.BASIC_INFORMATION}`);
       } catch (error) {
         dialog(error);
       }

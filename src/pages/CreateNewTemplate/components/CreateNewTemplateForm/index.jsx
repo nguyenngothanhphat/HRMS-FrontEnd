@@ -64,12 +64,12 @@ class CreateNewTemplateForm extends PureComponent {
       payload: {
         html: content,
         settings,
-        type,
+        type: type || 'ON_BOARDING',
         title,
         tenantId,
       },
-    }).then((statusCode) => {
-      if (statusCode === 200) {
+    }).then((res) => {
+      if (res.statusCode === 200) {
         notification.success({
           message: 'Create new template successfully',
         });

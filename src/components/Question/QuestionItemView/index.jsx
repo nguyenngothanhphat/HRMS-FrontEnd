@@ -1,8 +1,8 @@
 import EditIcon from '@/assets/editBtnBlue.svg';
 import RemoveIcon from '@/assets/remove.svg';
-import { Button, Checkbox, Col, Input, Radio, Row, Space } from 'antd';
-import React, { useState } from 'react';
-import { TYPE_QUESTION, SPECIFY } from '../utils';
+import { Button, Checkbox, Col, Input, Radio, Row, Space, Select } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { TYPE_QUESTION, SPECIFY, MODE } from '../utils';
 import styles from './index.less';
 
 export default function QuestionItemView({
@@ -10,8 +10,8 @@ export default function QuestionItemView({
   keyQuestion,
   openModalEdit,
   openModalRemove,
-  control = true,
-
+  mode = MODE.EDIT,
+  errorMessage,
   onChangeEmployeeAnswers = () => {},
 }) {
   const {
@@ -22,13 +22,15 @@ export default function QuestionItemView({
     rating = {},
     defaultAnswers = [],
     employeeAnswers = [],
-    errorMessage = '',
+    // errorMessage = '',
   } = questionItem;
 
   const [errMessage, setErrMessage] = useState(errorMessage);
-
+  useEffect(() => {
+    setErrMessage(errorMessage);
+  }, [errorMessage]);
   const changeMultiChoice = (values) => {
-    const { specify, num } = multiChoice;
+    const { specify = {}, num } = multiChoice || {};
     onChangeEmployeeAnswers(values, keyQuestion);
     if (!isRequired && !values.length) {
       return setErrMessage('');
@@ -44,7 +46,10 @@ export default function QuestionItemView({
     }
     return true;
   };
-
+  const onChangeRating = (e, i) => {
+    defaultAnswers[i] = `${e.target.value}`;
+    onChangeEmployeeAnswers(defaultAnswers, keyQuestion);
+  };
   const _renderAnswer = () => {
     switch (answerType) {
       case TYPE_QUESTION.SINGLE_CHOICE.key:
@@ -52,6 +57,7 @@ export default function QuestionItemView({
           <Radio.Group
             onChange={(e) => onChangeEmployeeAnswers([e.target.value], keyQuestion)}
             value={employeeAnswers[0]}
+            disabled={mode !== MODE.ANSWER}
           >
             <Space direction="vertical">
               {defaultAnswers.map((answer) => (
@@ -66,6 +72,7 @@ export default function QuestionItemView({
             defaultValue={employeeAnswers}
             onChange={(values) => changeMultiChoice(values)}
             style={{ width: '100%' }}
+            disabled={mode !== MODE.ANSWER}
           >
             {defaultAnswers.map((answer) => (
               <div style={{ marginBottom: '5px' }}>
@@ -81,6 +88,7 @@ export default function QuestionItemView({
             onChange={(e) => onChangeEmployeeAnswers([e.target.value], keyQuestion)}
             value={employeeAnswers[0]}
             rows={4}
+            disabled={mode !== MODE.ANSWER}
           />
         );
       case TYPE_QUESTION.RATING_CHOICE.key:
@@ -90,6 +98,7 @@ export default function QuestionItemView({
             <Radio.Group
               onChange={(e) => onChangeEmployeeAnswers([e.target.value], keyQuestion)}
               value={parseInt(employeeAnswers[0], 10)}
+              disabled={mode !== MODE.ANSWER}
             >
               {[...Array(Math.abs(rating.columns[0] - rating.columns[1]) + 1)].map(
                 (item, index) => (
@@ -100,20 +109,53 @@ export default function QuestionItemView({
             <span>{rating.rows[1]}</span>
           </div>
         );
-      // case TYPE_QUESTION.SELECT_OPTION.key:
-      //   return (
-      //     <Select
-      //       defaultValue={employeeAnswers[0] && employeeAnswers[0]}
-      //       placeholder="Select a option"
-      //       onChange={(value) => onChangeEmployeeAnswers([value], keyQuestion)}
-      //       style={{ width: '100%' }}
-      //       showSearch
-      //     >
-      //       {defaultAnswers.map((answer) => (
-      //         <Option value={answer}>{answer}</Option>
-      //       ))}
-      //     </Select>
-      //   );
+      case TYPE_QUESTION.MULTI_RATING_CHOICE.key:
+        return (
+          <div>
+            <Row>
+              <Col flex="100px" key={0} />
+              {rating.columns?.map((item) => (
+                <Col flex={1}>
+                  <div className={styles.contentColumns}>{item}</div>
+                </Col>
+              ))}
+            </Row>
+            {rating.rows?.map((item, i) => (
+              <Row>
+                <Col flex="100px">{item}</Col>
+                <Col flex="auto">
+                  <Radio.Group
+                    style={{ width: '100%' }}
+                    onChange={(e) => onChangeRating(e, i)}
+                    value={parseInt(employeeAnswers[i], 10)}
+                    disabled={mode !== MODE.ANSWER}
+                  >
+                    <Space direction="horizontal" className={styles.radioGroup}>
+                      {[...Array(rating.columns.length)].map((k, j) => (
+                        <Radio value={j} />
+                      ))}
+                    </Space>
+                  </Radio.Group>
+                </Col>
+              </Row>
+            ))}
+          </div>
+        );
+      case TYPE_QUESTION.SELECT_OPTION.key:
+        return (
+          <Select
+            value={employeeAnswers[0] && employeeAnswers[0]}
+            placeholder="Select a option"
+            onChange={(value) => onChangeEmployeeAnswers([value], keyQuestion)}
+            style={{ width: '100%' }}
+            showSearch
+            disabled={mode !== MODE.ANSWER}
+          >
+            {defaultAnswers.map((answer) => (
+              <Select.Option value={answer}>{answer}</Select.Option>
+            ))}
+          </Select>
+        );
       default:
         return null;
     }
@@ -121,13 +163,12 @@ export default function QuestionItemView({
 
   return (
     <Row className={styles.questionItem}>
-      <Col span={18}>
+      <Col span={mode === MODE.EDIT ? 18 : 24}>
         <div className={styles.questionItem__question}>
-          {keyQuestion + 1}. {question}{' '}
-          {isRequired && !control && <span className={styles.required}> &nbsp;(*)</span>}
+          {keyQuestion + 1}. {question} {isRequired && <span className={styles.required}>(*)</span>}
         </div>
         <Col className={styles.questionItem__answer}>
-          {_renderAnswer()}{' '}
+          {_renderAnswer()}
           {errMessage && (
             <div className={styles.errorMessage} role="alert">
               {errMessage}
@@ -135,7 +176,7 @@ export default function QuestionItemView({
           )}
         </Col>
       </Col>
-      {control && (
+      {mode === 'edit' && (
         <div className={styles.questionItem__manage}>
           <Button
             type="link"

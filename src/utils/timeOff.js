@@ -8,8 +8,8 @@ export const TIMEOFF_STATUS = {
   drafts: 'DRAFTS',
 };
 export const TIMEOFF_LINK_ACTION = {
-  editLeaveRequest: 'edit-leave-request',
-  newLeaveRequest: 'new-leave-request',
-  editCompoffRequest: 'edit-compoff-request',
-  newCompoffRequest: 'new-compoff-request',
+  editLeaveRequest: 'edit',
+  newLeaveRequest: 'new',
+  editCompoffRequest: 'edit',
+  newCompoffRequest: 'new',
 };

@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Col, Row, Affix } from 'antd';
 import { connect, formatMessage } from 'umi';
-import { PageContainer } from '@/layouts/layout/src';
 import { CheckCircleFilled } from '@ant-design/icons';
+import { PageContainer } from '@/layouts/layout/src';
 import SecurityImage from '@/assets/changePassword.svg';
 import styles from './index.less';
 
@@ -62,11 +62,11 @@ class ChangePassword extends Component {
     const arrText = [
       'Use a minimum of 8 characters.',
       'Avoid common words and repetition (eg. password, 12121212)',
-      'Avoid keyboard patterns (eg. Asdf )',
+      'At least one letter, one number and special character!',
     ];
     return (
       <PageContainer>
-        <Affix offsetTop={30}>
+        <Affix offsetTop={42}>
           <div className={styles.titlePage}>
             <p className={styles.titlePage_text}>Change Password</p>
           </div>

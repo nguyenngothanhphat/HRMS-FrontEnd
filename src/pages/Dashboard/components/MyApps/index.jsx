@@ -1,58 +1,60 @@
-/* eslint-disable array-callback-return */
 import React from 'react';
-import { Row, Col } from 'antd';
-import { ReactComponent as Onboarding } from './icons/icon_Onboarding.svg';
-import { ReactComponent as Timeoff } from './icons/icon_Timeoff.svg';
-import { ReactComponent as Directory } from './icons/icon_Directory.svg';
-// import { ReactComponent as Offboarding } from './icons/icon_Offboarding.svg';
-import AppItem from '../AppItem';
+import { connect } from 'umi';
+import { Row } from 'antd';
+import LeftArrow from '@/assets/dashboard/leftArrow.svg';
+import TimesheetIcon from '@/assets/dashboard/timesheet.svg';
+import TimeoffIcon from '@/assets/dashboard/timeoff.svg';
+import DirectoryIcon from '@/assets/dashboard/directory.svg';
+import ExpensoIcon from '@/assets/dashboard/expenso.svg';
+import ReportIcon from '@/assets/dashboard/reports.svg';
 
-import s from './index.less';
+import styles from './index.less';
+import AppCard from './components/AppCard';
 
-const appList = [
+const myApps = [
   {
-    id: 1,
-    name: 'Directory',
-    icon: <Directory />,
-    link: '/directory',
+    icon: TimesheetIcon,
+    name: 'Timesheets',
   },
   {
-    id: 2,
-    name: 'Onboarding',
-    icon: <Onboarding />,
-    link: '/employee-onboarding',
-  },
-  {
-    id: 3,
+    icon: TimeoffIcon,
     name: 'Timeoff',
-    icon: <Timeoff />,
-    link: '/time-off',
   },
-  // {
-  //   id: 4,
-  //   name: 'Offboarding',
-  //   icon: <Offboarding />,
-  //   link: '/offboarding',
-  // },
+  {
+    icon: DirectoryIcon,
+    name: 'Directory',
+  },
+  {
+    icon: ExpensoIcon,
+    name: 'Expenso',
+  },
+  {
+    icon: ReportIcon,
+    name: 'Reports',
+  },
 ];
 
 const MyApps = () => {
   return (
-    <div className={s.container}>
-      <h3>my apps</h3>
-
-      <Row justify="space-around">
-        {appList.map((app) => {
-          const { name = '', icon = '', link = '' } = app;
-          return (
-            <Col span={3}>
-              <AppItem Icon={icon} name={name} link={link} />
-            </Col>
-          );
-        })}
-      </Row>
+    <div className={styles.MyApps}>
+      <div>
+        <div className={styles.header}>
+          <span>My Apps</span>
+        </div>
+        <div className={styles.content}>
+          <Row gutter={[24, 24]}>
+            {myApps.map((app) => (
+              <AppCard app={app} />
+            ))}
+          </Row>
+        </div>
+      </div>
+      <div className={styles.manageAppsBtn}>
+        <span>Show all</span>
+        <img src={LeftArrow} alt="expand" />
+      </div>
     </div>
   );
 };
 
-export default MyApps;
+export default connect(() => ({}))(MyApps);

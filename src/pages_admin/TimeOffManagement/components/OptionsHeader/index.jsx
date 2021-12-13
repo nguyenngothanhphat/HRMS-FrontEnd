@@ -2,13 +2,46 @@ import React, { PureComponent } from 'react';
 import { Row, Col, Form, Select, DatePicker, Button, Checkbox } from 'antd';
 import exportToCsv from '@/utils/exportToCsv';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { setFilter, getFilter } from '@/utils/timeoffManagement';
+import moment from 'moment';
 import styles from './index.less';
 
 const { Option } = Select;
 export default class OptionsHeader extends PureComponent {
+  formRef = React.createRef();
+
+  constructor(props) {
+    super(props);
+    this.state = { fromDate: '', toDate: '' };
+  }
+
+  componentDidMount = () => {
+    const preState = getFilter();
+    if (preState) {
+      this.formRef.current.setFieldsValue({
+        userIdName: preState.userIdName,
+        durationFrom: preState.durationFrom ? moment(preState.durationFrom) : '',
+        durationTo: preState.durationTo ? moment(preState.durationTo) : '',
+        status: preState.status,
+      });
+    }
+  };
+
+  // DISABLE DATE OF DATE PICKER
+  disabledFromDate = (current) => {
+    const { toDate } = this.state;
+    return current && current >= moment(toDate);
+  };
+
+  disabledToDate = (current) => {
+    const { fromDate } = this.state;
+    return current && current <= moment(fromDate);
+  };
+
   onFinish = (values) => {
     const { reloadData } = this.props;
-    return reloadData(values);
+    setFilter(values);
+    reloadData(values);
   };
 
   downloadCSVFile = () => {
@@ -100,13 +133,23 @@ export default class OptionsHeader extends PureComponent {
                   <Row gutter={['20', '20']}>
                     <Col xs={12}>
                       <Form.Item name="durationFrom">
-                        <DatePicker placeholder="From Date" format={dateFormat} />
+                        <DatePicker
+                          placeholder="From Date"
+                          format={dateFormat}
+                          disabledDate={this.disabledFromDate}
+                          onChange={(val) => this.setState({ fromDate: val })}
+                        />
                       </Form.Item>
                     </Col>
                     <Col xs={12}>
                       <span />
                       <Form.Item name="durationTo">
-                        <DatePicker placeholder="To Date" format={dateFormat} />
+                        <DatePicker
+                          placeholder="To Date"
+                          format={dateFormat}
+                          disabledDate={this.disabledToDate}
+                          onChange={(val) => this.setState({ toDate: val })}
+                        />
                       </Form.Item>
                     </Col>
                   </Row>

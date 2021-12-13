@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { NavLink, connect, formatMessage } from 'umi';
 import { Tabs, Layout } from 'antd';
+import { getCurrentTenant } from '@/utils/authority';
 import addDocument from '../../../../../public/assets/images/addMemberIcon.svg';
 import importDocuments from '../../../../../public/assets/images/import.svg';
 import TableDocuments from '../TableDocuments';
@@ -15,6 +16,8 @@ class TableContainer extends PureComponent {
     super(props);
     this.state = {
       tabId: 1,
+      pageSelected: 1,
+      size: 10,
       bottabs: [
         {
           id: 1,
@@ -33,24 +36,47 @@ class TableContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { tabId } = this.state;
+    const { tabId, pageSelected, size } = this.state;
 
-    if (prevState.tabId !== tabId) {
+    if (
+      prevState.tabId !== tabId ||
+      prevState.pageSelected !== pageSelected ||
+      prevState.size !== size
+    ) {
       this.getDataTable();
     }
   }
 
   initDataTable = () => {
     const { dispatch } = this.props;
+    const { pageSelected, size } = this.state;
     dispatch({
       type: 'documentsManagement/fetchListDocuments',
+      payload: {
+        tenantId: getCurrentTenant(),
+        page: pageSelected,
+        limit: size,
+      },
     });
   };
 
   getDataTable = () => {
     const { dispatch } = this.props;
+    const { pageSelected, size } = this.state;
     dispatch({
       type: 'documentsManagement/fetchListDocuments',
+      payload: {
+        tenantId: getCurrentTenant(),
+        page: pageSelected,
+        limit: size,
+      },
+    });
+  };
+
+  getPageAndSize = (page, pageSize) => {
+    this.setState({
+      pageSelected: page,
+      size: pageSize,
     });
   };
 
@@ -103,8 +129,8 @@ class TableContainer extends PureComponent {
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { bottabs } = this.state;
-    const { loadingList } = this.props;
+    const { bottabs, pageSelected, size } = this.state;
+    const { loadingList, documentsManagement: { totalActive = '' } = {} } = this.props;
 
     return (
       <div className={styles.DocumentTableContainer}>
@@ -121,6 +147,10 @@ class TableContainer extends PureComponent {
                     <TableDocuments
                       loading={loadingList || loadingList}
                       data={this.renderListDocuments(tab.id)}
+                      total={totalActive}
+                      pageSelected={pageSelected}
+                      size={size}
+                      getPageAndSize={this.getPageAndSize}
                     />
                   </Content>
                 </Layout>

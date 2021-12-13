@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Modal, Affix } from 'antd';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import ItemMenu from './components/ItemMenu';
 import s from './index.less';
 
@@ -19,23 +19,34 @@ class CommonLayout extends PureComponent {
   }
 
   componentDidMount() {
-    const { listMenu } = this.props;
-    this.setState({
-      selectedItemId: listMenu[0].id,
-      displayComponent: listMenu[0].component,
-    });
-  }
-
-  handleCLickItemMenu = (item) => {
-    this.setState({
-      selectedItemId: item.id,
-      displayComponent: item.component,
-    });
+    this.fetchTab();
     window.scrollTo({
       top: 0,
       left: 0,
       behavior: 'smooth',
     });
+  }
+
+  componentDidUpdate(prevProps) {
+    const { tabName = '' } = this.props;
+
+    if (prevProps.tabName !== tabName) {
+      this.fetchTab();
+    }
+  }
+
+  fetchTab = () => {
+    const { listMenu, tabName = '' } = this.props;
+    const findTab = listMenu.find((menu) => menu.link === tabName) || listMenu[0];
+
+    this.setState({
+      selectedItemId: findTab.id || 1,
+      displayComponent: findTab.component,
+    });
+  };
+
+  handleCLickItemMenu = (item) => {
+    history.push(`/settings/${item.link}`);
   };
 
   showConfirm = (item) => {
@@ -61,7 +72,7 @@ class CommonLayout extends PureComponent {
 
     return (
       <div className={s.root}>
-        <Affix offsetTop={105}>
+        <Affix offsetTop={102}>
           <div className={s.viewLeft}>
             <div className={s.viewLeft__menu}>
               {listMenu.map((item) => (
@@ -76,7 +87,7 @@ class CommonLayout extends PureComponent {
           </div>
         </Affix>
         <Row className={s.viewRight} gutter={[24, 0]}>
-          <Col span={18}>{displayComponent}</Col>
+          <Col span={24}>{displayComponent}</Col>
         </Row>
       </div>
     );

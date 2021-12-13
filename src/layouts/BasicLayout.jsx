@@ -4,6 +4,12 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
+import { Button, Result } from 'antd';
+import classnames from 'classnames';
+import React from 'react';
+import { connect, Link, Redirect, useIntl } from 'umi';
+import Feedback from '@/components/Feedback';
+import Footer from '@/components/Footer';
 import RightContent from '@/components/GlobalHeader/RightContent';
 // import { getCurrentCompany, getSwitchRoleAbility } from '@/utils/authority';
 import { getCurrentCompany } from '@/utils/authority';
@@ -11,13 +17,9 @@ import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 // import { UserOutlined, UserSwitchOutlined } from '@ant-design/icons';
 // import { Affix, Button, notification, Result, Spin, Switch, Tooltip } from 'antd';
-import { Button, Result } from 'antd';
-import classnames from 'classnames';
 // import React, { useEffect, useState } from 'react';
-import React from 'react';
-import { connect, Link, Redirect, useIntl } from 'umi';
-import Footer from '@/components/Footer';
 import logo from '../assets/logo.svg';
+// import iconMenu from '../assets/menuIcon.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
 
@@ -33,6 +35,10 @@ const noMatch = (
     }
   />
 );
+
+const HR_MANAGER = 'HR-MANAGER';
+const HR_EMPLOYEE = 'HR';
+const MANAGER = 'MANAGER';
 
 const menuDataRender = (menuList) =>
   menuList.map((item) => {
@@ -57,6 +63,8 @@ const BasicLayout = (props) => {
     logoCompany,
   } = props;
 
+  // const [openMenu, setOpenMenu] = useState(false);
+
   /**
    * init variables
    */
@@ -67,6 +75,12 @@ const BasicLayout = (props) => {
     return currentComp?.logoUrl;
   };
 
+  const getCurrentName = () => {
+    const currentCompanyId = getCurrentCompany();
+    const currentComp = companies.find((cp) => cp._id === currentCompanyId);
+    return currentComp?.name;
+  };
+
   const handleMenuCollapse = (payload) => {
     if (dispatch) {
       dispatch({
@@ -75,6 +89,16 @@ const BasicLayout = (props) => {
       });
     }
   };
+
+  // const handleClickMenuSideBar = () => {
+  //   setOpenMenu(!openMenu);
+  //   if (dispatch) {
+  //     dispatch({
+  //       type: 'global/collapseExpandMenuSidebar',
+  //       payload: !openMenu,
+  //     });
+  //   }
+  // };
 
   const _renderLogo = () => {
     // const checkRole = (roleName) => {
@@ -88,24 +112,23 @@ const BasicLayout = (props) => {
     // const isAdmin = checkRole('admin');
 
     const logoUrl = getCurrentLogo();
+    const currentName = getCurrentName();
     return (
-      <>
-        {logoUrl || logoCompany ? (
-          <Link to="/">
-            <img
-              src={logoCompany || logoUrl || logo}
-              alt="logo"
-              style={{
-                objectFit: 'contain',
-                marginBottom: '4px',
-                height: '100%',
-                padding: '12px 0',
-                // marginLeft: '-9px',
-              }}
-            />
-          </Link>
-        ) : null}
-      </>
+      <div className={styles.rootLogo}>
+        <div className={styles.logoSection}>
+          {/* <Button className={styles.logoSection__button}>
+           <img alt="icon-menu" src={iconMenu} />
+        </Button> */}
+          {logoUrl || logoCompany ? (
+            <Link to="/">
+              <img src={logoCompany || logoUrl || logo} alt="logo" />
+            </Link>
+          ) : null}
+        </div>
+        <Link to="/">
+          <div className={styles.currentName}>{currentName}</div>
+        </Link>
+      </div>
     );
   };
 
@@ -131,10 +154,20 @@ const BasicLayout = (props) => {
     return <Redirect to="/control-panel" />;
   }
 
+  const handleClickMenu = (path) => {
+    const { roles = [] } = currentUser;
+    const checkRoleHrAndManager =
+      roles.includes(HR_MANAGER) || roles.includes(HR_EMPLOYEE) || roles.includes(MANAGER);
+
+    if (path === '/offboarding' && checkRoleHrAndManager) {
+      localStorage.setItem('initViewOffboarding', false);
+    }
+  };
+
   return (
     <>
       <div
-        className={classnames(styles.root, classNameBreadCrumb, {
+        className={classnames(`${styles.root}`, classNameBreadCrumb, {
           [styles.hiddenBreadCrumb]: pathname === '/dashboard',
         })}
       >
@@ -151,7 +184,11 @@ const BasicLayout = (props) => {
               return defaultDom;
             }
 
-            return <Link to={menuItemProps.path}>{defaultDom}</Link>;
+            return (
+              <Link onClick={() => handleClickMenu(menuItemProps.path)} to={menuItemProps.path}>
+                {defaultDom}
+              </Link>
+            );
           }}
           breadcrumbLayoutRender={(routers = []) => {
             let listPath = routers;
@@ -190,17 +227,16 @@ const BasicLayout = (props) => {
           </Authorized>
         </ProLayout>
       </div>
+      <Feedback />
       <Footer />
     </>
   );
 };
 
-export default connect(
-  ({ global, settings, user, companiesManagement: { logoCompany = '' } = {} }) => ({
-    collapsed: global.collapsed,
-    settings,
-    currentUser: user.currentUser,
-    companies: user.companiesOfUser,
-    logoCompany,
-  }),
-)(BasicLayout);
+export default connect(({ settings, user, companiesManagement: { logoCompany = '' } = {} }) => ({
+  // collapsed: global.collapsed,
+  settings,
+  currentUser: user.currentUser,
+  companies: user.companiesOfUser,
+  logoCompany,
+}))(BasicLayout);

@@ -1,0 +1,247 @@
+// color:
+@background-grey: #f6f7f9;
+@red: #ff5252;
+@gray: #464646;
+@border-gray: #d6dce0;
+@spacing-xxs: 4px;
+@darkColour: #161c29;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@commonPadding2: 24px;
+
+.textNote {
+  color: #ffa100;
+  font-weight: 500;
+  font-size: 14px;
+  font-family: Roboto;
+  font-style: normal;
+  line-height: 16px;
+  letter-spacing: 0.13125px;
+}
+
+.backgroundRecheck {
+  font-size: 13px;
+
+  &__title {
+    color: #161c29;
+    font-weight: 500;
+    font-size: 16px;
+  }
+
+  &__subTitle {
+    margin-bottom: 32px;
+    color: #707177;
+    font-size: 13px;
+  }
+
+  &__left {
+    .markAllDocs {
+      padding: 32px;
+      background-color: #fff;
+      border: solid 1px #d6dce0;
+      border-radius: 5px;
+      margin-block: @commonPadding2;
+
+      .checkbox {
+        padding-right: 1rem;
+        color: #161c29;
+        font-size: 14px;
+
+        &:hover {
+          border-radius: 5px;
+        }
+
+        :global {
+          .ant-checkbox-checked {
+            &:hover {
+              border-radius: 4px;
+            }
+
+            .ant-checkbox-inner {
+              background: #f6f7f9;
+              border-radius: 4px;
+
+              &:hover {
+                border-radius: 4px;
+              }
+
+              &:after {
+                border: 2px solid #2c6df9;
+                border-top: 0;
+                border-left: 0;
+              }
+            }
+          }
+
+          .ant-checkbox {
+            .ant-checkbox-inner {
+              background: #f6f7f9;
+              border-radius: 4px;
+            }
+          }
+
+          .ant-checkbox-disabled .ant-checkbox-inner {
+            border: 1px solid #2c6df9 !important;
+          }
+        }
+
+        span {
+          &:last-child {
+            // padding-top: 1rem;
+            padding-left: 1rem;
+          }
+        }
+      }
+
+      :global {
+        .ant-checkbox + span {
+          padding-left: 1rem;
+        }
+      }
+
+      &__text {
+        color: #161c29;
+        font-weight: normal;
+        font-size: 14px;
+        font-family: Roboto;
+        font-style: normal;
+        line-height: 16px;
+      }
+    }
+  }
+
+  &__right {
+    .boldText {
+      margin-top: 16px;
+      font-weight: 700;
+    }
+
+    .closeWrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      margin-top: 10px;
+      padding: 25px 0 20px;
+      background-color: white;
+      border: 1px solid @border-gray;
+      border-radius: 5px;
+
+      h3 {
+        // text-align: center;
+        color: @gray;
+      }
+
+      p {
+        font-size: 13px;
+      }
+
+      .close {
+        margin: 0 auto;
+        padding: 7px 20px;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: capitalize;
+        background-color: @red;
+        border: none;
+        border-radius: 25px;
+        outline: none;
+        cursor: pointer;
+      }
+    }
+  }
+
+  :global {
+    .anticon-minus,
+    .anticon-plus {
+      top: 31px !important;
+    }
+  }
+
+  .bottomBar {
+    padding: @commonPadding;
+    background-color: #ffffff;
+    border: solid 1px #d6dce0;
+    border-radius: 5px;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
+    margin-block: @commonPadding2;
+
+    .normalText {
+      display: flex;
+      color: #707177;
+      font-size: 13px;
+      font-family: 'Roboto';
+      font-style: italic;
+    }
+
+    .redText {
+      color: #ff4949;
+      font-size: 13px;
+      font-family: 'Roboto';
+      font-style: italic;
+    }
+
+    .greenText {
+      color: #47c97f;
+      font-size: 13px;
+      font-family: 'Roboto';
+      font-style: italic;
+    }
+
+    &__button {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      justify-content: space-between;
+
+      &__disabled {
+        opacity: 0.3;
+      }
+
+      :global {
+        .ant-btn-primary {
+          height: 40px;
+          object-fit: contain;
+          color: #ffffff;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: 'Roboto';
+          letter-spacing: 0.13px;
+          text-shadow: none;
+          background-color: #ffa100;
+          border: solid 1px #ffa100;
+          border-radius: 25px;
+          box-shadow: none;
+          // display: none;
+          padding-inline: 25px;
+
+          &:hover {
+            color: #ffffff;
+            background-color: #ffa100;
+          }
+        }
+
+        .ant-btn-secondary {
+          height: 40px;
+          object-fit: contain;
+          color: #ffa100;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: 'Roboto';
+          letter-spacing: 0.13px;
+          border: solid 0;
+          border-radius: 25px;
+          padding-inline: 25px;
+          // padding-right: 41px;
+        }
+      }
+    }
+  }
+}
+
+.viewLoading {
+  width: 300px;
+  height: 500px;
+  margin: 0 auto;
+}

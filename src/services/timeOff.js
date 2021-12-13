@@ -1,4 +1,5 @@
 import request from '@/utils/request';
+import { API_KEYS } from '../../config/proxy';
 
 export function getLeaveBalanceOfUser(payload) {
   return request('/api/leavebalancetenant/get-by-user', {
@@ -29,6 +30,13 @@ export async function updateTimeOffType(payload) {
 
 export async function addTimeOffType(payload) {
   return request('/api/timeofftypetenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function removeTimeOffType(payload) {
+  return request('/api/timeofftypetenant/remove', {
     method: 'POST',
     data: payload,
   });
@@ -125,12 +133,25 @@ export async function getEmailsListByCompany(payload) {
   });
 }
 
+// export async function getProjectsListByEmployee(payload) {
+//   return request('/api/projecttenant/get-by-employee', {
+//     method: 'POST',
+//     data: payload,
+//   });
+// }
+
 export async function getProjectsListByEmployee(payload) {
-  return request('/api/projecttenant/get-by-employee', {
-    method: 'POST',
-    data: payload,
-  });
+  return request(
+    `/api-project/projecttenant/list`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
 }
+
 // Holidays
 export async function getHolidaysList(payload) {
   return request('/api/holidaycalendartenant/list', {
@@ -320,9 +341,17 @@ export async function getDefaultTimeoffTypesList() {
   };
 }
 
-export async function getCountryList() {
-  return request('/api/country/list', {
+export async function getLocationByCompany(payload) {
+  return request('/api/locationtenant/list-by-company-parent', {
     method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getTimeOffTypeByCountry(payload) {
+  return request('/api/timeofftypetenant/get-by-country', {
+    method: 'POST',
+    data: payload,
   });
 }
 
@@ -352,6 +381,12 @@ export async function addHoliday(payload) {
 }
 export async function updateEmployeeSchedule(payload) {
   return request('/api/employeescheduletenant/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getLocationById(payload) {
+  return request('/api/locationtenant/get-by-id', {
     method: 'POST',
     data: payload,
   });

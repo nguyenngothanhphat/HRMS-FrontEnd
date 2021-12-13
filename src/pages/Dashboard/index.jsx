@@ -1,219 +1,179 @@
-import React, { PureComponent } from 'react';
-import { PageContainer } from '@/layouts/layout/src';
-import { Row, Col, Affix, Button } from 'antd';
-import { FormOutlined } from '@ant-design/icons';
-
+import { Col, Row } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import { connect } from 'umi';
-import { isAdmin, isOwner } from '@/utils/authority';
-import Greeting from './components/Greeting';
+import { WIDGET_IDS } from '@/utils/dashboard';
 import ActivityLog from './components/ActivityLog';
+import Calendar from './components/Calendar';
+import ManageWidgetsModal from './components/ManageWidgetsModal';
 import MyApps from './components/MyApps';
-import TabManageTeamWork from './components/TabManageTeamWork';
-import Links from './components/Links';
-import Carousel from './components/Carousel';
-import ModalFeedback from './components/ModalFeedback';
+import MyTeam from './components/MyTeam';
+import Tasks from './components/Tasks';
+import Timesheets from './components/Timesheets';
 import styles from './index.less';
 
-const listQuickLinks = [
-  {
-    name: 'Coronavirus resources',
-    href: 'http://api-stghrms.paxanimi.ai/api/attachments/5f76c618d140e1d5b28833dc/sample_2.pdf',
-    isNew: true,
-  },
-  {
-    name: 'Work From Home guidelines',
-    href: 'http://api-stghrms.paxanimi.ai/api/attachments/5f76c618d140e1d5b28833dc/sample_2.pdf',
-    isNew: true,
-  },
-  {
-    name: 'Employee Handbook',
-    href: 'http://api-stghrms.paxanimi.ai/api/attachments/5f76c618d140e1d5b28833dc/sample_2.pdf',
-  },
-  {
-    name: 'Annual Report 2020',
-    href: 'http://api-stghrms.paxanimi.ai/api/attachments/5f76c618d140e1d5b28833dc/sample_2.pdf',
-  },
-  {
-    name: 'Training Program 2020',
-    href: 'http://api-stghrms.paxanimi.ai/api/attachments/5f76c618d140e1d5b28833dc/sample_2.pdf',
-  },
-  {
-    name: 'Submit Commuter Claim',
-    href: 'http://api-stghrms.paxanimi.ai/api/attachments/5f76c618d140e1d5b28833dc/sample_2.pdf',
-  },
-];
+const SortableItem = SortableElement(({ widgets, value }) => {
+  const find = widgets.find((w1) => w1.id === value);
+  return (
+    <Col xs={24} lg={12}>
+      {find.component}
+    </Col>
+  );
+});
 
-@connect(
-  ({
-    loading,
-    user: { currentUser = {}, currentUser: { roles = [] } = {} } = {},
-    employee: { listEmployeeMyTeam = [] } = {},
-    offboarding: { listProjectByEmployee = [] } = {},
-    frequentlyAskedQuestions: { getListByCompany = {} } = {},
-    locationSelection,
-    locationSelection: { listLocationsByCompany = [] } = {},
-  }) => ({
-    fetchMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
-    fetchListProject: loading.effects['offboarding/getListProjectByEmployee'],
-    fetchLocationList: loading.effects['locationSelection/fetchLocationsByCompany'],
-    fetchLocationListParent: loading.effects['locationSelection/fetchLocationListByParentCompany'],
-    currentUser,
-    roles,
-    listEmployeeMyTeam,
-    listProjectByEmployee,
-    getListByCompany,
-    locationSelection,
-    listLocationsByCompany,
-  }),
-)
-class Dashboard extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      visible: false,
-    };
-  }
+const SortableList = SortableContainer(({ widgets, items }) => {
+  return (
+    <Row gutter={[24]} className={styles.dashboardContainer}>
+      {items.map((widgetId, index) => (
+        <SortableItem key={`item-${widgetId}}`} index={index} value={widgetId} widgets={widgets} />
+      ))}
+    </Row>
+  );
+});
 
-  componentDidMount = async () => {
-    // const {
-    // dispatch,
-    //   currentUser: {
-    //     location: { _id: locationId = '' } = {},
-    //     company: { _id: companyId = '' } = {},
-    //     employee: { _id: employee = '' } = {},
-    //     company: { _id: idCompany = '' } = {},
-    //   } = {},
-    // } = this.props;
-    // dispatch({
-    //   type: 'employee/fetchListEmployeeMyTeam',
-    //   payload: {
-    //     location: [locationId],
-    //   },
-    // });
-    // dispatch({
-    //   type: 'offboarding/getListProjectByEmployee',
-    //   payload: {
-    //     employee,
-    //   },
-    // });
+const Dashboard = (props) => {
+  const {
+    employeeWidgets = [],
+    currentUser: {
+      _id: userMapId = '',
+      firstName: userMapFirstName = '',
+      employee = {} || {},
+    } = {},
+    dispatch,
+    permissions = {},
+  } = props;
+  const { _id = '', generalInfo: { legalName = '' } = {} || {} } = employee;
+  const [visibleWidgets, setVisibleWidgets] = useState([]);
 
-    // dispatch({
-    //   type: 'frequentlyAskedQuestions/getListInit',
-    // }).then(
-    //   dispatch({
-    //     type: 'frequentlyAskedQuestions/getListByCompany',
-    //     payload: { company: companyId },
-    //   }),
-    // );
-
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
-    });
-  };
-
-  // componentDidUpdate(prevProps) {
-  //   const { listLocationsByCompany = [] } = this.props;
-  //   const {currentLocation}
-  //   if (JSON.stringify(listLocationsByCompany) !== JSON.stringify(prevProps.fetchLocationList)) {
-  //     this.setLocation();
-  //   }
-  // }
-
-  componentWillUnmount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'offboarding/save',
+  // FUNCTIONS
+  const updateWidgets = (widgetDashboardShow) => {
+    return dispatch({
+      type: 'dashboard/updateWidgetsEffect',
       payload: {
-        listProjectByEmployee: [],
+        id: userMapId,
+        firstName: userMapFirstName,
+        widgetDashboardShow,
       },
     });
-  }
-
-  openFeedback = () => {
-    this.setState({
-      visible: true,
-    });
   };
 
-  handleCandelModal = () => {
-    this.setState({
-      visible: false,
-    });
+  const onSortEnd = ({ oldIndex, newIndex }) => {
+    if (oldIndex !== newIndex) {
+      const visibleWidgetsTemp = JSON.parse(JSON.stringify(visibleWidgets));
+      const arrayMove = (arr, fromIndex, toIndex) => {
+        const element = arr[fromIndex];
+        arr.splice(fromIndex, 1);
+        arr.splice(toIndex, 0, element);
+        return arr;
+      };
+      const result = arrayMove(visibleWidgetsTemp, oldIndex, newIndex);
+      updateWidgets(result);
+      setVisibleWidgets(result);
+    }
   };
 
-  render() {
-    const {
-      listEmployeeMyTeam = [],
-      fetchMyTeam,
-      currentUser = {},
-      listProjectByEmployee = [],
-      fetchListProject,
-      getListByCompany = {},
-    } = this.props;
-    const { visible } = this.state;
-    const { faq = [] } = getListByCompany;
+  // CONST
+  const widgets = [
+    {
+      id: WIDGET_IDS.CALENDAR,
+      component: <Calendar boxId={WIDGET_IDS.CALENDAR} />,
+    },
+    {
+      id: WIDGET_IDS.TASK,
+      component: <Tasks boxId={WIDGET_IDS.TASK} />,
+    },
+    {
+      id: WIDGET_IDS.ACTIVITY,
+      component: <ActivityLog boxId={WIDGET_IDS.ACTIVITY} />,
+    },
+    {
+      id: WIDGET_IDS.MYTEAM,
+      component: <MyTeam boxId={WIDGET_IDS.MYTEAM} />,
+    },
+    {
+      id: WIDGET_IDS.MYAPP,
+      component: <MyApps boxId={WIDGET_IDS.MYAPP} />,
+    },
+    {
+      id: WIDGET_IDS.TIMESHEET,
+      component: <Timesheets boxId={WIDGET_IDS.TIMESHEET} />,
+    },
+  ];
 
-    const listQuestion = [];
-    faq.forEach(({ questionAndAnswer, category }) => {
-      const listQAs = questionAndAnswer.map((qa) => ({ ...qa, category }));
-      listQuestion.push(...listQAs);
-      return listQuestion;
+  // USE EFFECT
+  useEffect(() => {
+    // only manager / hr manager see My Team Widget
+    const viewMyTeamDashboard = permissions.viewMyTeamDashboard !== -1;
+    const viewTimesheetDashboard = permissions.viewTimesheetDashboard !== -1;
+
+    const getShowingWidgets = () => {
+      let result = [...employeeWidgets];
+      if (!viewMyTeamDashboard) {
+        result = employeeWidgets.filter((w) => w !== WIDGET_IDS.MYTEAM);
+      }
+      if (!viewTimesheetDashboard) {
+        result = result.filter((w) => w !== WIDGET_IDS.TIMESHEET);
+      }
+      return result;
+    };
+
+    const showingWidgets = getShowingWidgets();
+
+    setVisibleWidgets([...showingWidgets]);
+  }, [JSON.stringify(employeeWidgets)]);
+
+  // useEffect(() => {
+  //   if (employeeWidgets.length === 0) {
+  //     setManageWGVisible(true);
+  //   }
+  // }, []);
+
+  // set employee id to dashboard redux
+  useEffect(() => {
+    dispatch({
+      type: 'dashboard/save',
+      payload: {
+        employeeId: _id,
+      },
     });
+  }, [_id]);
 
+  // RENDER UI
+  const renderHello = (name = '') => {
     return (
-      <PageContainer>
-        <div className={styles.containerDashboard}>
-          <Row gutter={[24, 24]} style={{ padding: '24px 20px 0 0' }}>
-            <Col span={8}>
-              <Affix offsetTop={10}>
-                <Greeting name={currentUser?.firstName} />
-                <div className={styles.leftContainer}>
-                  <ActivityLog />
-                </div>
-              </Affix>
-            </Col>
-            <Col span={16}>
-              <Carousel />
-              <MyApps />
-
-              {!isOwner() && !isAdmin() && (
-                <Row gutter={[12, 12]}>
-                  <Col span={24}>
-                    <TabManageTeamWork
-                      listMyTeam={listEmployeeMyTeam}
-                      loadingMyTeam={fetchMyTeam}
-                      listProject={listProjectByEmployee}
-                      loadingProject={fetchListProject}
-                    />
-                  </Col>
-                  <Col span={14}>
-                    <Links title="FAQs" showButton listData={listQuestion} type="link" />
-                  </Col>
-                  <Col span={10}>
-                    <Links title="Quick Links" listData={listQuickLinks} type="viewPDF" />
-                  </Col>
-                </Row>
-              )}
-
-              <Affix offsetBottom={60}>
-                <div className={styles.feedback}>
-                  <Button onClick={this.openFeedback} className={styles.btnFeedback}>
-                    <div className={styles.spanText}>
-                      <FormOutlined className={styles.feedbackIcon} />
-                      <span className={styles.feedbackText}>Feedback</span>
-                    </div>
-                  </Button>
-                </div>
-              </Affix>
-            </Col>
-          </Row>
-          <ModalFeedback visible={visible} handleCandelModal={this.handleCandelModal} />
-        </div>
-      </PageContainer>
+      <div className={styles.helloContainer}>
+        <span>Hello {name}! 👋🏻</span>
+      </div>
     );
-  }
-}
+  };
+  const renderWidgets = () => {
+    return (
+      <SortableList
+        items={visibleWidgets}
+        axis="xy"
+        onSortEnd={onSortEnd}
+        distance={10}
+        widgets={widgets}
+      />
+    );
+  };
 
-export default Dashboard;
+  return (
+    <div className={styles.Dashboard}>
+      {renderHello(legalName || userMapFirstName)}
+      {renderWidgets()}
+      <ManageWidgetsModal />
+    </div>
+  );
+};
+
+export default connect(
+  ({
+    dashboard: { employeeWidgets = [] } = {},
+    user: { currentUser = {}, permissions = {} } = {},
+  }) => ({
+    currentUser,
+    permissions,
+    employeeWidgets,
+  }),
+)(Dashboard);

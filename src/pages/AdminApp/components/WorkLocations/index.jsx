@@ -31,7 +31,9 @@ class WorkLocations extends PureComponent {
   constructor(props) {
     super(props);
     this.formRef = React.createRef();
-    this.state = {};
+    this.state = {
+      isFillingIn: false,
+    };
   }
 
   componentDidMount() {
@@ -66,6 +68,7 @@ class WorkLocations extends PureComponent {
         name = '',
         addressLine1 = '',
         addressLine2 = '',
+        city = '',
         country = '',
         state = '',
         zipCode = '',
@@ -75,6 +78,7 @@ class WorkLocations extends PureComponent {
         headQuarterAddress: {
           addressLine1,
           addressLine2,
+          city,
           country: country || country?._id || '',
           state,
           zipCode,
@@ -82,6 +86,7 @@ class WorkLocations extends PureComponent {
         legalAddress: {
           addressLine1,
           addressLine2,
+          city,
           country: country || country?._id || '',
           state,
           zipCode,
@@ -167,6 +172,7 @@ class WorkLocations extends PureComponent {
         headQuarterAddress: {
           addressLine1 = '',
           addressLine2 = '',
+          city = '',
           country = {},
           state = '',
           zipCode = '',
@@ -178,6 +184,7 @@ class WorkLocations extends PureComponent {
         name,
         addressLine1,
         addressLine2,
+        city,
         country: country?._id || '',
         state,
         zipCode,
@@ -192,6 +199,12 @@ class WorkLocations extends PureComponent {
     return list;
   };
 
+  trackingEditButton = (value) => {
+    this.setState({
+      isFillingIn: value,
+    });
+  };
+
   render() {
     const {
       listCountry = [],
@@ -200,6 +213,8 @@ class WorkLocations extends PureComponent {
       loadingCountry,
       loadingAddMultiLocation = false,
     } = this.props;
+
+    const { isFillingIn } = this.state;
 
     const listLocation = this.formatListLocation();
 
@@ -246,6 +261,7 @@ class WorkLocations extends PureComponent {
                   listCountry={listCountry}
                   listLocation={listLocation}
                   locationInfo={location}
+                  trackingEditButton={this.trackingEditButton}
                   removeLocation={this.removeLocation}
                   listLength={formatCurrentLocationsList.length}
                   index={index}
@@ -287,17 +303,20 @@ class WorkLocations extends PureComponent {
                       />
                     ))}
                     <div className={s.actions}>
-                      <div
+                      <Button
+                        disabled={isFillingIn}
                         className={s.viewAddWorkLocation}
+                        icon={
+                          <p className={s.viewAddWorkLocation__icon}>
+                            <PlusOutlined />
+                          </p>
+                        }
                         onClick={() => {
                           add();
                         }}
                       >
-                        <p className={s.viewAddWorkLocation__icon}>
-                          <PlusOutlined />
-                        </p>
                         <p className={s.viewAddWorkLocation__text}>Add work location</p>
-                      </div>
+                      </Button>
                       {fields.length !== 0 && (
                         <div className={s.viewBtn}>
                           <Button

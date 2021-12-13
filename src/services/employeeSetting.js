@@ -1,5 +1,26 @@
 import request from '@/utils/request';
 
+export async function addDocumentSetting(payload) {
+  return request('/api/documentcompanytenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function removeDocumentSetting(payload) {
+  return request('/api/documentcompanytenant/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getDocumentSettingList(payload) {
+  return request('/api/documentcompanytenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getDefaultTemplateList(payload) {
   return request('/api/templatetenant/get-default', {
     method: 'POST',
@@ -171,28 +192,65 @@ export async function removeFormOffBoardingById(data) {
 /** ================== optional on boarding question */
 
 export async function getListOptionalOnboardQuestions(payload) {
-  return request('/api/templatequestiononboardingtenant/list', {
+  return request('/api/questiononboardingtenant/list', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function updateOptionalOnboardQuestions(payload) {
-  return request('/api/templatequestiononboardingtenant/update', {
+  return request('/api/questiononboardingtenant/update', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function addOptionalOnboardQuestions(payload) {
-  return request('/api/templatequestiononboardingtenant/add', {
+  return request('/api/questiononboardingtenant/add', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function removeOptionalOnboardQuestions(payload) {
-  return request('/api/templatequestiononboardingtenant/remove', {
+  return request('/api/questiononboardingtenant/remove-question-candidate', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getQuestionOnboardingById(payload) {
+  return request('/api/questiononboardingtenant/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getListPageOnboarding(payload) {
+  return request('/api/listpageonboardingtenant/get-default', {
+    method: 'POST',
+    data: payload,
+  });
+}
+// salary setting
+export async function getListSalaryByLocation(payload) {
+  return request('/api/salarystructuretenant/list-by-location', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getSalaryById(payload) {
+  return request('/api/salarystructuretenant/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function updateSalary(payload) {
+  return request('/api/salarystructuretenant/update-salary', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function importSalary(payload) {
+  return request('/api/salarystructuretenant/import', {
     method: 'POST',
     data: payload,
   });

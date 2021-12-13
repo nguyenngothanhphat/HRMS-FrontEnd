@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Tabs, notification } from 'antd';
-import { PageContainer } from '@/layouts/layout/src';
 import { history, connect } from 'umi';
+import { PageContainer } from '@/layouts/layout/src';
 import EmployeeLandingPage from './components/EmployeeLandingPage';
 import ManagerLandingPage from './components/ManagerLandingPage';
 import HRManagerLandingPage from './components/HRManagerLandingPage';
@@ -9,10 +9,12 @@ import HRManagerLandingPage from './components/HRManagerLandingPage';
 import SetupTimeoff from './components/SetupTimeoff';
 
 import styles from './index.less';
+import { getCurrentCompany, getCurrentTenant } from '../../utils/authority';
 
 const { TabPane } = Tabs;
-@connect(({ timeOff }) => ({
+@connect(({ dispatch, timeOff }) => ({
   timeOff,
+  dispatch,
 }))
 class TimeOff extends PureComponent {
   constructor(props) {
@@ -53,24 +55,6 @@ class TimeOff extends PureComponent {
         },
       });
     }
-
-    // let activeKey = '1';
-    // switch (role) {
-    //   case 'employee':
-    //     activeKey = '1';
-    //     break;
-    //   case 'manager':
-    //     activeKey = '2';
-    //     break;
-    //   case 'hr-manager':
-    //     activeKey = '3';
-    //     break;
-    //   default:
-    //     break;
-    // }
-    // this.setState({
-    //   activeKey,
-    // });
     return role;
   };
 
@@ -86,33 +70,60 @@ class TimeOff extends PureComponent {
     });
   };
 
-  componentDidMount = () => {
-    const listRole = localStorage.getItem('antd-pro-authority');
-    const role = this.findRole(JSON.parse(listRole));
-    this.setState({
-      role,
-    });
-
+  componentDidMount = async () => {
     const {
+      match: { params: { tabName = '' } = {} },
       location: { state: { status = '', tickedId = '', typeName = '', category = '' } = {} } = {},
     } = this.props;
+
+    if (!tabName) {
+      history.replace(`/time-off/overview`);
+    } else {
+      const listRole = localStorage.getItem('antd-pro-authority');
+      const role = this.findRole(JSON.parse(listRole));
+      this.setState({
+        role,
+      });
+
+      const { dispatch } = this.props;
+      const response = await dispatch({
+        type: 'timeOff/getTimeOffTypeByLocation',
+      });
+      const {
+        statusCode,
+        data: { headQuarterAddress: { country: { _id } = {} || {} } = {} || {} },
+      } = response;
+      if (statusCode === 200)
+        dispatch({
+          type: 'timeOff/fetchTimeOffTypesByCountry',
+          payload: {
+            country: _id,
+            company: getCurrentCompany(),
+            tenantId: getCurrentTenant(),
+          },
+        });
+      dispatch({
+        type: 'timeOff/savePaging',
+        payload: { page: 1 },
+      });
+    }
     if (status === 'WITHDRAW') {
       if (category === 'TIMEOFF') {
         notification.success({
           message: 'Timeoff request',
-          description: `Timeoff request [Ticket id: ${tickedId}] [Type: ${typeName}] was withdrawn & deleted.`,
+          description: `Timeoff request [Ticket ID: ${tickedId}] [Type: ${typeName}] was withdrawn & deleted.`,
         });
       }
       if (category === 'DRAFTS') {
         notification.success({
           message: 'Timeoff request',
-          description: `Draft request [Ticket id: ${tickedId}] [Type: ${typeName}] was deleted.`,
+          description: `Draft request [Ticket ID: ${tickedId}] [Type: ${typeName}] was deleted.`,
         });
       }
       if (category === 'COMPOFF') {
         notification.success({
           message: 'Compoff request',
-          description: `Compoff request [Ticket id: ${tickedId}] was withdrawn & deleted.`,
+          description: `Compoff request [Ticket ID: ${tickedId}] was withdrawn & deleted.`,
         });
       }
       history.replace();
@@ -129,31 +140,32 @@ class TimeOff extends PureComponent {
 
   render() {
     const { role } = this.state;
+    const {
+      match: { params: { tabName = '', type = '' } = {} },
+    } = this.props;
+
+    if (!tabName) return '';
     return (
       // <Breadcrumb routes={routes}>
       <div className={styles.TimeOff}>
         <PageContainer>
           {/* tabBarExtraContent={this.options()} */}
           {/* <Tabs activeKey={activeKey} onTabClick={this.onTabClick}> */}
-          <Tabs defaultActiveKey={1}>
-            {role === 'employee' && (
-              <TabPane tab={<span className={styles.employeeTabPane}>Timeoff</span>} key="1">
-                <EmployeeLandingPage />
-              </TabPane>
-            )}
-            {role === 'manager' && (
-              <TabPane tab={<span className={styles.managerTabPane}>Timeoff</span>} key="2">
-                <ManagerLandingPage />
-              </TabPane>
-            )}
+          <Tabs
+            activeKey={tabName || 'overview'}
+            onChange={(key) => {
+              history.push(`/time-off/${key}`);
+            }}
+          >
+            <TabPane tab={<span className={styles.employeeTabPane}>Timeoff</span>} key="overview">
+              {role === 'employee' && <EmployeeLandingPage />}
+              {role === 'manager' && <ManagerLandingPage />}
+              {role === 'hr-manager' && <HRManagerLandingPage />}
+            </TabPane>
+
             {role === 'hr-manager' && (
-              <TabPane tab="Timeoff" key="3">
-                <HRManagerLandingPage />
-              </TabPane>
-            )}
-            {role === 'hr-manager' && (
-              <TabPane tab="Setup Timeoff policy" key="4">
-                <SetupTimeoff />
+              <TabPane tab="Setup Timeoff policy" key="setup">
+                <SetupTimeoff type={type} />
               </TabPane>
             )}
           </Tabs>

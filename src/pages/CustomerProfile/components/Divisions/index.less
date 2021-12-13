@@ -1,0 +1,115 @@
+.Divisions {
+  overflow: hidden;
+  background-color: #fff;
+  border: 1px solid #d6dce0;
+  border-radius: 5px;
+  .DivisionCard {
+    box-sizing: border-box;
+    background-color: #fff;
+    border-bottom: 1px solid #d6dce0;
+    .divisionsHeader {
+      display: flex;
+      justify-content: space-between;
+      padding: 32px;
+      border-bottom: 1px solid #d6dce0;
+      p {
+        margin: 0;
+        & > img {
+          margin-right: 16px;
+        }
+        &.contactInfoHeaderTitle {
+          color: #161c29;
+          font-weight: 700;
+          font-size: 16px;
+        }
+      }
+    }
+
+    .label {
+      color: #707177;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    .value {
+      color: #161c29;
+      font-size: 16px;
+    }
+
+    .btnEdit {
+      color: #2c6df9;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .divisionsBody {
+      padding: 0 8px;
+      background-color: #fff;
+      :global {
+        .ant-col {
+          margin-bottom: 32px;
+        }
+      }
+      .divisionPrimary {
+        width: 100%;
+        margin-bottom: 8px;
+        padding: 24px;
+        padding-right: 0;
+        padding-left: 34px;
+        background-color: #f6f7f9;
+      }
+      .divisionSecondary {
+        padding: 24px 0 0 32px;
+      }
+    }
+
+    .divider {
+      border-top: 1px solid #d6dce0;
+    }
+
+    .divisionFooter {
+      padding: 24px;
+      background-color: #fff;
+      border-top: 1px solid #d6dce0;
+    }
+  }
+  .buttonAddImport {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 24px 32px;
+    color: #2c6df9;
+    font-weight: 700;
+    background-color: white;
+    cursor: pointer;
+    img {
+      margin-right: 10px;
+    }
+    &_imgImport {
+      margin-right: 15px !important;
+      transform: scale(1.5);
+    }
+    &_text {
+      margin-bottom: 0px;
+      color: #2c6df9;
+      font-weight: 700;
+      font-size: 14px;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.38;
+      letter-spacing: normal;
+      text-align: left;
+    }
+    :global {
+      .anticon {
+        margin-right: 9px;
+        margin-bottom: 1px;
+        padding: 6px;
+        color: #2c6df9;
+        font-size: 20px;
+        background-color: #fff;
+        border-radius: 50px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.23);
+      }
+    }
+  }
+}

@@ -1,10 +1,11 @@
 /* eslint-disable import/no-cycle */
 import React, { Component } from 'react';
 import { Col, Tabs, Row, Affix, Button } from 'antd';
-import { PageContainer } from '@/layouts/layout/src';
-import { Link, connect } from 'umi';
+import { Link, connect, history } from 'umi';
 import { debounce } from 'lodash';
+import { PageContainer } from '@/layouts/layout/src';
 // import TableAssigned from '@/components/TableAssigned';
+import { getTimezoneViaCity } from '@/utils/times';
 import TeamRequest from './component/TeamRequest';
 import MyRequestContent from '../components/TabMyRequest';
 import TableSearch from './component/TableSearch';
@@ -25,6 +26,7 @@ import styles from './index.less';
         company: { _id: companyID } = {},
       } = {},
     } = {},
+    locationSelection: { listLocationsByCompany = [] },
   }) => ({
     listOffboarding,
     totalList,
@@ -33,6 +35,7 @@ import styles from './index.less';
     companyID,
     listTeamRequest,
     hrManager,
+    listLocationsByCompany,
   }),
 )
 class ManagerOffBoading extends Component {
@@ -41,6 +44,7 @@ class ManagerOffBoading extends Component {
     this.state = {
       dataListTeamRequest: [],
       loadingSearch: false,
+      timezoneList: [],
     };
     this.setDebounce = debounce((query) => {
       this.setState({
@@ -51,32 +55,59 @@ class ManagerOffBoading extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, listTeamRequest } = this.props;
-    if (!dispatch) {
-      return;
-    }
-    dispatch({
-      type: 'offboarding/fetchListTeamRequest',
-      payload: {
-        status: 'IN-PROGRESS',
-      },
-    });
-    dispatch({
-      type: 'offboarding/fetchList',
-      payload: {
-        status: 'IN-PROGRESS',
-      },
-    });
+    const { tabName = '' } = this.props;
+    if (!tabName) {
+      history.replace(`/offboarding/list`);
+    } else {
+      const { dispatch, listTeamRequest, locationID } = this.props;
+      if (!dispatch) {
+        return;
+      }
+      dispatch({
+        type: 'offboarding/fetchListTeamRequest',
+        payload: {
+          location: [locationID],
+        },
+      });
 
-    if (listTeamRequest.length > 0) this.updateData(listTeamRequest);
+      this.fetchTimezone();
+      if (listTeamRequest.length > 0) this.updateData(listTeamRequest);
+    }
   }
 
   componentDidUpdate(prevProps) {
-    const { listTeamRequest = [] } = this.props;
+    const { listTeamRequest = [], listLocationsByCompany = [] } = this.props;
     if (JSON.stringify(listTeamRequest) !== JSON.stringify(prevProps.listTeamRequest)) {
       this.updateData(listTeamRequest);
     }
+    if (
+      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+    ) {
+      this.fetchTimezone();
+    }
   }
+
+  fetchTimezone = () => {
+    const { listLocationsByCompany = [] } = this.props;
+    const timezoneList = [];
+    listLocationsByCompany.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
+        _id = '',
+      } = location;
+      timezoneList.push({
+        locationId: _id,
+        timezone:
+          getTimezoneViaCity(city) ||
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
+    this.setState({
+      timezoneList,
+    });
+  };
 
   updateData = (listTeamRequest) => {
     this.setState({
@@ -119,14 +150,17 @@ class ManagerOffBoading extends Component {
       listOffboarding = [],
       totalList = [],
       hrManager = {},
+      locationID = '',
+      tabName = '',
     } = this.props;
-    const { dataListTeamRequest, loadingSearch } = this.state;
+    const { dataListTeamRequest, loadingSearch, timezoneList } = this.state;
 
     const checkInprogress = totalList.find(({ _id }) => _id === 'IN-PROGRESS') || {};
     const checkAccepted = totalList.find(({ _id }) => _id === 'ACCEPTED') || {};
 
     const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
 
+    if (!tabName) return '';
     return (
       <PageContainer>
         <div className={styles.managerContainer}>
@@ -144,7 +178,7 @@ class ManagerOffBoading extends Component {
                 <>
                   {!checkSendRequest && (
                     <Button className={styles.btnInitiate}>
-                      <Link to="/offboarding/resignation-request">
+                      <Link to="/offboarding/list/my-request/new">
                         <span className={styles.btnText}>Initiate Resignation Request</span>
                       </Link>
                     </Button>
@@ -165,6 +199,8 @@ class ManagerOffBoading extends Component {
                       countdata={totalListTeamRequest}
                       hrManager={hrManager}
                       loadingSearch={loadingSearch}
+                      timezoneList={timezoneList}
+                      location={[locationID]}
                     />
                   </div>
                 </TabPane>
@@ -174,6 +210,7 @@ class ManagerOffBoading extends Component {
                       data={listOffboarding}
                       countdata={totalList}
                       hrManager={hrManager}
+                      timezoneList={timezoneList}
                     />
                   </div>
                 </TabPane>

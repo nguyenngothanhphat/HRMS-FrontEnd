@@ -1,0 +1,584 @@
+@spacing-xxs: 4px;
+
+.firstColumn {
+  padding-left: 62px;
+}
+
+.p_title_select {
+  width: 80%;
+  margin-bottom: 8px;
+  color: #707177;
+  font-size: 13px;
+}
+
+.spin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 50px;
+}
+
+.salaryStructureTemplate {
+  .noteAllowance {
+    margin: 24px 0 8px 0;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    color: #161C29;
+  }
+
+  .range {
+    margin: 24px 0;
+    background: #FFFFFF;
+    border: 1px solid #D6DCE0;
+    box-sizing: border-box;
+    border-radius: 5px;
+
+    &__col {
+      padding: 12px 20px;
+      font-size: 13px;
+    }
+
+    &__col__text {
+      padding: 12px 20px;
+      font-size: 13px;
+      color: #707177;
+    }
+
+    .alignButton {
+      height: 100%;
+      margin-right: 32px;
+
+      .btnReference {
+        height: 40px;
+        background: #E4EDFF;
+        border: none;
+        border-radius: 5px;
+        color: #2C6DF9;
+        font-weight: 500;
+        font-size: 14px;
+      }
+    }
+  }
+
+  :global {
+    .ant-btn.ant-btn-primary {
+      display: flex;
+      align-items: center;
+    }
+
+    .ant-table-placeholder {
+
+      // display: none;
+      td.ant-table-cell {
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+      }
+
+      .ant-empty-description {
+        // margin: 0 !important;
+        width: unset !important;
+      }
+    }
+
+    .ant-input {
+      box-sizing: border-box;
+      font-size: 14px;
+      padding: 13px 20px;
+      height: 42px;
+      background: #ffffff;
+      border: 1px solid #D6DCE4;
+      border-radius: 5px;
+    }
+
+    .ant-input:disabled {
+      color: #161C29;
+    }
+
+    .ant-input-number {
+      max-width: 50px;
+      margin-right: 5px;
+    }
+
+    .ant-input-number-handler-wrap {
+      display: none;
+    }
+
+    .blue-text {
+      color: #2c6df9;
+    }
+
+    .big-text {
+      margin-top: 5px;
+      padding-left: 15px;
+    }
+
+    // .ant-form-item-control {
+    //   height: 0;
+    // }
+
+    .ant-btn:focus .ant-btn.focus {
+      background-color: red !important;
+    }
+
+    .ant-form-item {
+      margin-bottom: 0;
+    }
+
+    .ant-btn-primary {
+
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      color: #ffa100;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.13px;
+      text-shadow: none;
+      background-color: transparent;
+      border: none;
+      border-radius: 25px;
+      box-shadow: none;
+      box-shadow: none;
+
+      &:hover {
+        color: #ffa100;
+        background-color: transparent;
+      }
+    }
+
+    .ant-table-cell.thirdColumn {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .ant-table-thead {
+      display: none;
+    }
+
+    .ant-table table {
+      border-collapse: collapse;
+    }
+
+    .ant-table-tbody {
+      tr {
+        td {
+          border: none;
+        }
+
+        td:first-child {
+          padding-left: 50px;
+        }
+
+        td:nth-child(2) {
+          text-align: center;
+          border-left: 1px solid #d6dce0;
+        }
+
+        td:last-child {
+          padding-left: 62px;
+        }
+      }
+
+
+    }
+
+    .ant-form-item-label>label {
+      color: #464646;
+      font-weight: normal;
+      font-size: 13px;
+      font-style: normal;
+      line-height: 19px;
+    }
+
+    .ant-select {
+      // width: 245px;
+    }
+
+    .ant-select-placeholder {
+      color: red !important;
+      font-weight: bolder;
+    }
+  }
+
+  &_select {
+
+    // margin-bottom: 30px;
+    :global {
+      .ant-input {
+        width: 100% !important;
+      }
+
+      .ant-form-item {
+        display: block;
+      }
+
+      .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+        box-sizing: border-box;
+        background: #ffffff;
+        border: 1px solid #d6dce0;
+        border-radius: 5px;
+      }
+
+      .ant-select-arrow {
+        color: #464646;
+      }
+    }
+
+    p {
+      color: #464646;
+      font-size: 13px;
+      font-family: 'Roboto';
+      line-height: 19px;
+    }
+  }
+
+  .buttons {
+    img {
+      margin-right: 5px;
+      margin-bottom: 2px;
+    }
+
+    .actionBtn {
+      .cancelBtn {
+        margin-right: 100px;
+      }
+    }
+  }
+
+  &_table {
+    height: max-content;
+    margin-top: 16px;
+    padding: 0;
+    background-color: #ffffff;
+    border: solid 1px #d6dce0;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+
+    p {
+      width: 448px;
+      height: 36px;
+      color: #707177;
+      font-size: 13px;
+      font-family: 'Roboto';
+      line-height: 1.38;
+      letter-spacing: 0.12px;
+      text-align: center;
+    }
+
+    .salary {
+      min-height: 450px;
+      border-bottom: solid 1px #D6DCE0;
+
+      &__left {
+        padding: 32px 0 32px 50px;
+        border-right: solid 1px #D6DCE0;
+
+        &__text {
+          margin-bottom: 24px;
+        }
+
+        &__textEdit {
+          margin-bottom: 63px;
+        }
+      }
+
+      &__right {
+        padding: 32px 0 32px 120px;
+
+        &__VN {
+          padding: 32px;
+
+          :global {
+            .ant-slider-track {
+              background-color: #00C598 !important;
+            }
+
+            .ant-slider:hover .ant-slider-track {
+              background-color: #00C598 !important
+            }
+
+            .ant-slider-mark {
+              font-size: 10px;
+            }
+
+            .ant-slider-mark-text {
+              width: fit-content;
+            }
+          }
+
+          .inputBefore {
+            :global {
+              .ant-input-group-wrapper {
+                width: 100%;
+
+                .ant-input-group {
+                  box-sizing: border-box;
+                  width: 100%;
+                  height: 32px;
+                  font-size: 14px;
+                  background: #ffffff;
+                  border: 1px solid #d6dce4;
+                  border-radius: 5px !important;
+
+                  .ant-input-group-addon {
+
+                    width: 36px;
+                    background-color: #f4f6f7;
+                    border: none;
+                  }
+
+                  .ant-input {
+                    height: 32px !important;
+                    padding-left: 20px;
+                    border: none;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        .inputBefore {
+          margin-bottom: 12px;
+
+          :global {
+            .ant-slider-track {
+              background-color: #00C598 !important;
+            }
+
+            .ant-slider:hover .ant-slider-track {
+              background-color: #00C598 !important
+            }
+
+            .ant-input-group-wrapper {
+              width: 170px;
+
+              .ant-input-group {
+                box-sizing: border-box;
+                width: 100%;
+                height: 32px;
+                font-size: 14px;
+                background: #ffffff;
+                border: 1px solid #d6dce4;
+                border-radius: 5px !important;
+
+                .ant-input-group-addon {
+
+                  width: 36px;
+                  background-color: #f4f6f7;
+                  border: none;
+                }
+
+                .ant-input {
+                  height: 32px !important;
+                  padding-left: 20px;
+                  border: none;
+                }
+              }
+            }
+          }
+        }
+
+        &__inputAfter {
+          margin-bottom: 12px;
+
+          :global {
+            .ant-input-group-wrapper {
+              width: 170px;
+
+              .ant-input-group {
+                box-sizing: border-box;
+                height: 32px !important;
+                font-size: 14px;
+                background: #ffffff;
+                border: 1px solid #d6dce4 !important;
+                border-radius: 5px !important;
+
+                .ant-input-group-addon {
+                  // width: 100%;
+                  padding-left: 12px;
+                  color: rgba(22, 28, 41, 0.5);
+                  text-align: left;
+                  background-color: #f4f6f7;
+                  border: none;
+                }
+
+                .ant-input {
+                  // width: 36px;
+                  height: 32px !important;
+                  padding-left: 20px;
+                  border: none;
+                }
+              }
+            }
+          }
+        }
+
+        &__text {
+          margin-bottom: 24px;
+
+        }
+
+        .ofBasic {
+          color: rgba(22, 28, 41, 0.5);
+        }
+      }
+    }
+
+    .salaryTotal {
+      &__left {
+        padding: 24px 0 24px 50px;
+
+        &__text {
+          color: #2C6DF9;
+          font-weight: bold;
+        }
+      }
+
+      &__right {
+        padding: 24px 0 24px 120px;
+
+
+      }
+    }
+
+    .formNumber {
+      display: flex;
+
+      input {
+        width: 100%;
+        padding: 4px 11px;
+        font-size: 13px;
+        text-align: center;
+        border: 1px solid #d6dce0;
+        outline: 0;
+      }
+    }
+
+    .formInput {
+      &__field {
+        width: 162px;
+        height: 32px;
+      }
+    }
+  }
+
+  &_footer {
+    display: grid;
+    grid-template-columns: 30% 30%;
+    height: max-content;
+    min-height: 79px;
+    margin-bottom: 8 * @spacing-xxs;
+    padding: 12px 62px;
+    background-color: #ffffff;
+    border: solid 1px #d6dce0;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+
+    &_info {
+      .title {
+        margin-bottom: 10px;
+        color: #707177;
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 21px;
+      }
+
+      .value {
+        color: #707177;
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 21px;
+      }
+    }
+  }
+
+  // Custom table
+  .bottomBar {
+    // position: fixed;
+    // bottom: 0;
+    // width: inherit;
+    margin-top: 32px;
+    position: relative;
+    display: grid;
+    height: 72px;
+    padding: 4 * @spacing-xxs;
+    background-color: #ffffff;
+    border: solid 1px #d6dce0;
+    border-radius: 5px;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
+
+    .normalText {
+      display: flex;
+      color: #707177;
+      font-size: 13px;
+      font-family: 'Roboto';
+      font-style: italic;
+    }
+
+    .redText {
+      color: #ff4949;
+      font-size: 13px;
+      font-family: 'Roboto';
+      font-style: italic;
+    }
+
+    .greenText {
+      color: #47c97f;
+      font-size: 13px;
+      font-family: 'Roboto';
+      font-style: italic;
+    }
+
+    &__button {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      justify-content: space-between;
+
+      &__disabled {
+        opacity: 0.3;
+      }
+
+      :global {
+        .ant-btn-primary {
+          // display: none;
+          display: flex;
+          align-items: center;
+          padding-inline: 25px;
+          height: 40px;
+          object-fit: contain;
+          color: #ffffff;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: 'Roboto';
+          letter-spacing: 0.13px;
+          text-shadow: none;
+          background-color: #ffa100;
+          border: solid 1px #ffa100;
+          border-radius: 25px;
+          box-shadow: none;
+
+          &:hover {
+            color: #ffffff;
+            background-color: #ffa100;
+          }
+        }
+
+        .ant-btn-secondary {
+          padding-inline: 25px;
+          height: 40px;
+          object-fit: contain;
+          color: #ffa100;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: 'Roboto';
+          letter-spacing: 0.13px;
+          border: solid 0;
+          border-radius: 25px;
+        }
+      }
+    }
+  }
+}

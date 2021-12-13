@@ -40,7 +40,9 @@ class TableCandidates extends PureComponent {
         width: '12%',
         render: (nameAndId) => (
           <span onClick={() => this.viewCandidate(nameAndId.ticketID)} className={styles.fullName}>
-            {nameAndId ? nameAndId.fullName : ''}
+            {nameAndId
+              ? `${nameAndId.firstName} ${nameAndId.lastName} ${nameAndId.middleName}`
+              : ''}
           </span>
         ),
         // sortDirections: ['ascend', 'descend', 'ascend'],
@@ -141,7 +143,9 @@ class TableCandidates extends PureComponent {
       return {
         ...value,
         nameAndId: {
-          fullName: value.fullName,
+          firstName: value.firstName,
+          middleName: value.middleName,
+          lastName: value.lastName,
           ticketID: value.ticketID,
         },
       };
@@ -149,9 +153,9 @@ class TableCandidates extends PureComponent {
   };
 
   render() {
-    const { loading, data = [] } = this.props;
-    const { pageSelected, selectedRowKeys } = this.state;
-    const rowSize = 10;
+    const { loading, data = [], pageSelected, size, getPageAndSize, total: totalData } = this.props;
+    const { selectedRowKeys } = this.state;
+    // const rowSize = 10;
     const newData = this.getData();
     const scroll = {
       x: '',
@@ -159,7 +163,7 @@ class TableCandidates extends PureComponent {
     };
     const pagination = {
       position: ['bottomLeft'],
-      total: data.length,
+      total: totalData,
       showTotal: (total, range) => (
         <span>
           {' '}
@@ -170,9 +174,14 @@ class TableCandidates extends PureComponent {
           {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
         </span>
       ),
-      pageSize: rowSize,
+      defaultPageSize: size,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
+      pageSize: size,
       current: pageSelected,
-      onChange: this.onChangePagination,
+      onChange: (page, pageSize) => {
+        getPageAndSize(page, pageSize);
+      },
     };
 
     const rowSelection = {
@@ -187,7 +196,7 @@ class TableCandidates extends PureComponent {
           size="middle"
           loading={loading}
           rowSelection={rowSelection}
-          pagination={{ ...pagination, total: data.length }}
+          pagination={{ ...pagination, total: totalData }}
           columns={this.generateColumns()}
           dataSource={newData}
           scroll={scroll}

@@ -70,16 +70,13 @@ class ViewDocumentModal extends PureComponent {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
     return (
       <div className={styles.loading}>
-        <Spin indicator={antIcon} />,
+        <Spin indicator={antIcon} />
       </div>
     );
   };
 
   _renderHandleButtons = () => {
-    const {
-      onClose = () => {},
-      url = 'http://api-stghrms.paxanimi.ai/api/attachments/5f744ecfd44f6745847c0eea/Payslip_Apr20.pdf',
-    } = this.props;
+    const { onClose = () => {}, url = '' } = this.props;
     return (
       <div className={styles.handleButtons}>
         <img src={DownloadIcon} alt="download" onClick={() => this.onDownload(url)} />
@@ -93,9 +90,7 @@ class ViewDocumentModal extends PureComponent {
   };
 
   _renderViewImage = () => {
-    const {
-      url = 'http://api-stghrms.paxanimi.ai/api/attachments/5f744ecfd44f6745847c0eea/Payslip_Apr20.pdf',
-    } = this.props;
+    const { url = '' } = this.props;
     return (
       <div className={styles.imageFrame} ref={(el) => (this.componentRef = el)}>
         {/* <Image width="100%" height="100%" src={url} /> */}
@@ -105,10 +100,7 @@ class ViewDocumentModal extends PureComponent {
   };
 
   _renderViewPDF = () => {
-    const {
-      url = 'http://api-stghrms.paxanimi.ai/api/attachments/5f744ecfd44f6745847c0eea/Payslip_Apr20.pdf',
-      fileName = 'View Document',
-    } = this.props;
+    const { url = '', fileName = 'View Document' } = this.props;
     const { numPages } = this.state;
 
     return (
@@ -147,11 +139,7 @@ class ViewDocumentModal extends PureComponent {
   };
 
   render() {
-    const {
-      visible,
-      onClose = () => {},
-      url = 'http://api-stghrms.paxanimi.ai/api/attachments/5f744ecfd44f6745847c0eea/Payslip_Apr20.pdf',
-    } = this.props;
+    const { visible, onClose = () => {}, url = '' } = this.props;
 
     const viewType = this.identifyImageOrPdf(url); // 0: images, 1: pdf
 
@@ -163,7 +151,7 @@ class ViewDocumentModal extends PureComponent {
         width={viewType === 0 ? 500 : 900}
         visible={visible}
         footer={null}
-        onCancel={onClose}
+        onCancel={() => onClose(false)}
         centered
         maskClosable
       >

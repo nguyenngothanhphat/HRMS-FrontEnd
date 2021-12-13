@@ -1,10 +1,11 @@
 import { history } from 'umi';
-import { accountLogin, signInThirdParty } from '@/services/login';
+import { accountLogin, signInThirdParty, signinGoogle, getURLGoogle } from '@/services/login';
 import {
   setAuthority,
   setTenantId,
   setCurrentCompany,
   removeLocalStorage,
+  setIsSigninGoogle,
 } from '@/utils/authority';
 import { setToken } from '@/utils/token';
 import { dialog } from '@/utils/utils';
@@ -15,6 +16,9 @@ const Model = {
     status: undefined,
     candidate: '',
     messageError: '',
+    urlGoogle: '',
+    urlLollypop:
+      'https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar.events%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&prompt=consent&response_type=code&client_id=241318584040-13k8uvat56vn6e879aab44lestt98d8v.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fstghrms.paxanimi.ai%2Fapi%2Fauth-google-lollypop&flowName=GeneralOAuthFlow',
   },
   effects: {
     *login({ payload }, { call, put }) {
@@ -30,8 +34,115 @@ const Model = {
         setToken(response.data.token);
 
         let formatArrRoles = [];
-        const { user: { signInRole = [] } = {}, listCompany = [] } = data;
+        const { user: { signInRole = [], isFirstLogin = false } = {}, listCompany = [] } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
+
+        if (isFirstLogin) {
+          history.replace('/first-change-password');
+          return {};
+        }
+
+        // CANDIDATE
+        const isCandidate = formatRole.indexOf('candidate') > -1;
+        const isOnlyCandidate = isCandidate && formatRole.length === 1;
+
+        if (isOnlyCandidate) {
+          yield put({
+            type: 'saveCandidateId',
+            payload: response,
+          });
+          setAuthority([...formatArrRoles, ...formatRole]);
+          history.replace('/candidate-portal');
+        } else {
+          // ELSE
+          let isAdminOrOwner = false;
+          if (formatRole.includes('owner')) {
+            isAdminOrOwner = true;
+          }
+          // if (formatRole.includes('admin')) {
+          //   isAdminOrOwner = true;
+          // }
+          formatArrRoles = [...formatArrRoles, ...formatRole];
+          setAuthority(formatArrRoles);
+
+          // redirect
+          if (isAdminOrOwner || isCandidate) {
+            history.replace('/control-panel');
+          } else if (listCompany.length === 1) {
+            const { tenant: tenantId = '', _id: selectedCompany = '' } = listCompany[0];
+            setTenantId(tenantId);
+            setCurrentCompany(selectedCompany);
+            yield put({
+              type: 'user/fetchCurrent',
+              refreshCompanyList: false,
+            });
+            history.push('/');
+          } else {
+            history.replace('/control-panel');
+          }
+        }
+      } catch (errors) {
+        const { data = [] } = errors;
+        if (data.length > 0) {
+          const [firstError] = data;
+          const { defaultMessage: messageError = '' } = firstError;
+          yield put({ type: 'save', payload: { messageError } });
+        }
+      }
+      return {};
+    },
+
+    *logout(_, { put }) {
+      setToken('');
+      setAuthority('');
+      removeLocalStorage();
+      yield put({
+        type: 'user/saveCurrentUser',
+        payload: {
+          currentUser: {},
+        },
+      });
+      yield put({
+        type: 'user/save',
+        payload: {
+          permissions: {},
+        },
+      });
+      history.replace('/login');
+    },
+    *loginThirdParty({ payload }, { call, put }) {
+      try {
+        const { accessToken = '', profileObj: { email = '' } = {} } = payload;
+        const password = '*';
+        const value = { accessToken, email, password };
+        const response = yield call(signInThirdParty, value);
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'changeLoginStatus',
+          payload: response,
+        });
+        setToken(response.data.token);
+
+        // const arrayRoles = response.data.user.roles;
+        // let formatArrRoles = [];
+        // arrayRoles.forEach((e) => {
+        //   formatArrRoles = [...formatArrRoles, e._id.toLowerCase(), ...e.permissions];
+        // });
+        // setAuthority(formatArrRoles);
+        // if (formatArrRoles.indexOf('candidate') > -1) {
+        //   history.replace('/candidate');
+        //   return;
+        // }
+        // history.replace('/');
+        let formatArrRoles = [];
+        const { user: { signInRole = [], isFirstLogin = false } = {}, listCompany = [] } = data;
+        const formatRole = signInRole.map((role) => role.toLowerCase());
+
+        if (isFirstLogin) {
+          history.replace('/first-change-password');
+          return {};
+        }
 
         // CANDIDATE
         if (formatRole.indexOf('candidate') > -1) {
@@ -40,7 +151,6 @@ const Model = {
             payload: response,
           });
           history.replace('/candidate');
-          return;
         }
         // ELSE
         let isAdminOrOwner = false;
@@ -69,59 +179,85 @@ const Model = {
           history.replace('/control-panel');
         }
       } catch (errors) {
-        const { data = [] } = errors;
-        if (data.length > 0) {
-          const [firstError] = data;
-          const { defaultMessage: messageError = '' } = firstError;
-          yield put({ type: 'save', payload: { messageError } });
-        }
+        dialog(errors);
       }
+      return {};
     },
-
-    *logout(_, { put }) {
-      setToken('');
-      setAuthority('');
-      removeLocalStorage();
-      yield put({
-        type: 'user/saveCurrentUser',
-        payload: {
-          currentUser: {},
-        },
-      });
-      yield put({
-        type: 'user/save',
-        payload: {
-          permissions: {},
-        },
-      });
-      history.replace('/login');
-    },
-    *loginThirdParty({ payload }, { call, put }) {
+    *loginGoogle({ payload }, { call, put }) {
       try {
-        const { accessToken = '', profileObj: { email = '' } = {} } = payload;
-        const password = '*';
-        const value = { accessToken, email, password };
-        const response = yield call(signInThirdParty, value);
-        if (response.statusCode !== 200) throw response;
+        const response = yield call(signinGoogle, { ...payload, email: '*', password: '*' });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
         yield put({
           type: 'changeLoginStatus',
           payload: response,
         });
         setToken(response.data.token);
-        const arrayRoles = response.data.user.roles;
+
         let formatArrRoles = [];
-        arrayRoles.forEach((e) => {
-          formatArrRoles = [...formatArrRoles, e._id.toLowerCase(), ...e.permissions];
-        });
-        setAuthority(formatArrRoles);
-        if (formatArrRoles.indexOf('candidate') > -1) {
-          history.replace('/candidate');
-          return;
+        const {
+          user: { signInRole = [], isFirstLogin = false, isLoginGoogle = false } = {},
+          listCompany = [],
+        } = data;
+        const formatRole = signInRole.map((role) => role.toLowerCase());
+
+        // save if google signin
+        setIsSigninGoogle(isLoginGoogle);
+
+        if (isFirstLogin && !isLoginGoogle) {
+          history.replace('/first-change-password');
+          return {};
         }
-        history.replace('/');
+
+        if (formatRole.indexOf('candidate') > -1) {
+          yield put({
+            type: 'saveCandidateId',
+            payload: response,
+          });
+          history.replace('/candidate');
+        }
+        let isAdminOrOwner = false;
+        if (formatRole.includes('owner')) {
+          isAdminOrOwner = true;
+        }
+
+        formatArrRoles = [...formatArrRoles, ...formatRole];
+        setAuthority(formatArrRoles);
+
+        // redirect
+        if (isAdminOrOwner) {
+          history.replace('/control-panel');
+        } else if (listCompany.length === 1) {
+          const { tenant: tenantId = '', _id: selectedCompany = '' } = listCompany[0];
+          setTenantId(tenantId);
+          setCurrentCompany(selectedCompany);
+          yield put({
+            type: 'user/fetchCurrent',
+            refreshCompanyList: false,
+          });
+          history.push('/');
+        } else {
+          history.replace('/control-panel');
+        }
+      } catch (errors) {
+        dialog(errors);
+        history.push('/');
+      }
+      return {};
+    },
+    *getURLGoogle({ payload }, { call, put }) {
+      try {
+        const response = yield call(getURLGoogle, payload);
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { urlGoogle: data },
+        });
       } catch (errors) {
         dialog(errors);
       }
+      return {};
     },
   },
   reducers: {

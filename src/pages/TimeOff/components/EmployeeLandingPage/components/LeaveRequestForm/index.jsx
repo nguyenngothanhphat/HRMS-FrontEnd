@@ -2,9 +2,9 @@
 // and for editing (updating) a exist one
 
 import React, { PureComponent } from 'react';
-import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
+import { PageContainer } from '@/layouts/layout/src';
 import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
@@ -88,7 +88,7 @@ class LeaveRequestForm extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.leaveRequest}>
-          <Affix offsetTop={30}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               {action === TIMEOFF_LINK_ACTION.newLeaveRequest && (
                 <>
@@ -115,7 +115,7 @@ class LeaveRequestForm extends PureComponent {
                 padding: '100px 0',
               }}
             >
-              <Spin size="medium" />
+              <Spin size="large" />
             </div>
           )}
           {!loadingFetchLeaveRequestById &&
@@ -137,21 +137,21 @@ class LeaveRequestForm extends PureComponent {
             (action === TIMEOFF_LINK_ACTION.editLeaveRequest &&
               !loadingFetchLeaveRequestById &&
               (status === TIMEOFF_STATUS.drafts || status === TIMEOFF_STATUS.inProgress))) && (
-            <>
-              <Row className={styles.container} gutter={[20, 20]}>
-                <Col xs={24} lg={16}>
-                  <RequestInformation
-                    action={action}
-                    status={status}
-                    ticketID={ticketID}
-                    viewingLeaveRequest={viewingLeaveRequest}
-                  />
-                </Col>
-                <Col xs={24} lg={8}>
-                  <RightContent />
-                </Col>
-              </Row>
-            </>
+              <>
+                <Row className={styles.container} gutter={[20, 20]}>
+                  <Col xs={24} lg={16}>
+                    <RequestInformation
+                      action={action}
+                      status={status}
+                      ticketID={ticketID}
+                      viewingLeaveRequest={viewingLeaveRequest}
+                    />
+                  </Col>
+                  <Col xs={24} lg={8}>
+                    <RightContent />
+                  </Col>
+                </Row>
+              </>
           )}
         </div>
       </PageContainer>

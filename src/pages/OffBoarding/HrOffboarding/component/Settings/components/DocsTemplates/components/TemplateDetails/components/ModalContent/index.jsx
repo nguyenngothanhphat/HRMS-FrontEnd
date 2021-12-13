@@ -108,8 +108,7 @@ class ModalContent extends Component {
         ) : (
           <Link
             to={{
-              pathname: '/offboarding',
-              state: { defaultActiveKey: '3' },
+              pathname: '/offboarding/settings/documents-templates',
             }}
           >
             <Button type="primary">{modalContent[content].button}</Button>

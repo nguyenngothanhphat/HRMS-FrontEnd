@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
 import { Tabs, Tooltip } from 'antd';
+import { connect } from 'umi';
+import moment from 'moment';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
-import { connect } from 'umi';
-import moment from 'moment';
-import { getCurrentLocation } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
 import Holiday from './components/Holiday';
 import LeaveHistory from './components/LeaveHistory';
 import styles from './index.less';
@@ -27,7 +27,11 @@ class LeaveHistoryAndHoliday extends PureComponent {
     const { dispatch, location = {} } = this.props;
     dispatch({
       type: 'timeOff/fetchHolidaysListBylocation',
-      payload: { location: getCurrentLocation(), country: location.headQuarterAddress.country._id },
+      payload: {
+        location: getCurrentLocation(),
+        country: location.headQuarterAddress.country._id,
+        company: getCurrentCompany(),
+      },
     });
     dispatch({
       type: 'timeOff/fetchLeaveHistory',
@@ -45,30 +49,30 @@ class LeaveHistoryAndHoliday extends PureComponent {
     const { activeShowType } = this.state;
     return (
       <div className={styles.menu}>
-        {activeShowType === 2 && (
-          <Tooltip title="List View">
-            <div className={styles.iconContainer}>
-              <img
-                src={ListIcon}
-                className={activeShowType === 1 ? styles.activeShowType : ''}
-                onClick={() => this.handleSelectShowType(1)}
-                alt="list"
-              />
-            </div>
-          </Tooltip>
-        )}
-        {activeShowType === 1 && (
-          <Tooltip title="Calendar View">
-            <div className={styles.iconContainer}>
-              <img
-                src={CalendarIcon}
-                className={activeShowType === 2 ? styles.activeShowType : ''}
-                onClick={() => this.handleSelectShowType(2)}
-                alt="calendar"
-              />
-            </div>
-          </Tooltip>
-        )}
+        {/* {activeShowType === 2 && ( */}
+        <Tooltip title="List View">
+          <div className={styles.iconContainer}>
+            <img
+              src={ListIcon}
+              className={activeShowType === 1 ? styles.activeShowType : ''}
+              onClick={() => this.handleSelectShowType(1)}
+              alt="list"
+            />
+          </div>
+        </Tooltip>
+        {/* )} */}
+        {/* {activeShowType === 1 && ( */}
+        <Tooltip title="Calendar View">
+          <div className={styles.iconContainer}>
+            <img
+              src={CalendarIcon}
+              className={activeShowType === 2 ? styles.activeShowType : ''}
+              onClick={() => this.handleSelectShowType(2)}
+              alt="calendar"
+            />
+          </div>
+        </Tooltip>
+        {/* )} */}
       </div>
     );
   };
@@ -104,25 +108,67 @@ class LeaveHistoryAndHoliday extends PureComponent {
         duration = 0,
         fromDate: from = '',
         toDate: to = '',
-        subject = '',
-        type: { shortType = '' } = {},
+        type: { name: typeName = '' } = {},
         _id = '',
       } = each;
 
-      if (status === TIMEOFF_STATUS.accepted) {
+      if (
+        status === TIMEOFF_STATUS.accepted ||
+        status === TIMEOFF_STATUS.rejected ||
+        status === TIMEOFF_STATUS.inProgress ||
+        status === TIMEOFF_STATUS.inProgressNext
+      ) {
         const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
         const toDate = moment(to).locale('en').format('MM/DD/YYYY');
-        const now = moment().locale('en').format('MM/DD/YYYY');
-        if (moment(now).isAfter(moment(toDate))) {
-          return {
-            _id,
-            name: subject,
-            fromDate,
-            toDate,
-            duration,
-            type: shortType,
-          };
-        }
+        // const now = moment().locale('en').format('MM/DD/YYYY');
+        // if (moment(now).isAfter(moment(toDate))) {
+        //   return {
+        //     _id,
+        //     name: subject,
+        //     fromDate,
+        //     toDate,
+        //     duration,
+        //     type: shortType,
+        //   };
+        // }
+        return {
+          _id,
+          fromDate,
+          toDate,
+          duration,
+          typeName,
+          status,
+        };
+      }
+      return null;
+    });
+    result = result.filter((value) => value !== null);
+    result = result.sort(this.compareDates);
+    return result;
+  };
+
+  formatLeavingListCalendar = (allLeaveRequests) => {
+    let result = allLeaveRequests.map((each) => {
+      const {
+        status = '',
+        duration = 0,
+        fromDate: from = '',
+        toDate: to = '',
+        type: { name: typeName = '' } = {},
+        _id = '',
+      } = each;
+
+      if (status !== TIMEOFF_STATUS.drafts) {
+        const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
+        const toDate = moment(to).locale('en').format('MM/DD/YYYY');
+        return {
+          _id,
+          fromDate,
+          toDate,
+          duration,
+          typeName,
+          status,
+        };
       }
       return null;
     });
@@ -133,17 +179,20 @@ class LeaveHistoryAndHoliday extends PureComponent {
 
   render() {
     const { activeShowType } = this.state;
-    const {
-      timeOff: { holidaysListByLocation = [], allMyLeaveRequests: { items = [] } = {} } = {},
-    } = this.props;
+    const { timeOff: { holidaysListByLocation = [], leaveHistory = [] } = {} } = this.props;
     // const formatHolidayLists = this.formatHolidayLists(holidaysList);
-    const formatLeavingList = this.formatLeavingList(items);
+    const formatLeavingList = this.formatLeavingList(leaveHistory);
+    const formatLeavingListCalendar = this.formatLeavingListCalendar(leaveHistory);
 
     return (
       <div className={styles.LeaveHistoryAndHoliday}>
         <Tabs destroyInactiveTabPane defaultActiveKey="1" tabBarExtraContent={this.operations()}>
-          <TabPane tab="Leave History" key="1">
-            <LeaveHistory leavingList={formatLeavingList} activeShowType={activeShowType} />
+          <TabPane tab="Time off Calendar" key="1">
+            <LeaveHistory
+              leavingListCalendar={formatLeavingListCalendar}
+              leavingList={formatLeavingList}
+              activeShowType={activeShowType}
+            />
           </TabPane>
           <TabPane tab="Holidays" key="2">
             <Holiday holidaysList={holidaysListByLocation} activeShowType={activeShowType} />

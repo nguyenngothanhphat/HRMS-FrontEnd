@@ -1,0 +1,23 @@
+.RenderAddQuestion {
+  width: 400px;
+
+  &__row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .btn {
+      text-decoration: underline;
+    }
+  }
+
+  :global {
+    .ant-btn {
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      font-size: 13px;
+      padding-inline: 0 !important;
+    }
+  }
+}

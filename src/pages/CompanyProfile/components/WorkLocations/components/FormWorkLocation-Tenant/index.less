@@ -1,4 +1,10 @@
 .content {
+    :global {
+      .ant-input-disabled, .ant-select-disabled span {
+        color: #000
+      }
+
+    }
     p {
       margin: 0;
     }
@@ -31,6 +37,33 @@
       color: #161c29;
       font-size: 13px;
       line-height: 15px;
+      :global{
+        .ant-row{
+          .ant-col{
+            p{
+              font-size: 13px;
+              line-height: 42px;
+            }
+          }
+          .ant-form-item{
+            .ant-form-item-control{
+              .ant-form-item-control-input{
+                .ant-form-item-control-input-content{
+                  .ant-input{
+                    padding: 13px;
+                  }
+                  .ant-select {
+                    .ant-select-selector{
+                      padding: 9px;
+                      height: auto;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
       &__viewTitle {
         display: flex;
         align-items: center;
@@ -38,9 +71,6 @@
         margin-bottom: 16px;
       }
       &__row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
         margin-bottom: 20px;
         .viewFormVertical {
           width: fit-content;
@@ -68,20 +98,6 @@
             }
           }
         }
-        &__textLabel {
-          width: 151px;
-        }
-        :global {
-          .ant-form-item {
-            margin-bottom: 0px;
-          }
-          .ant-input {
-            .textInput();
-          }
-        }
-      }
-      div:last-child {
-        margin-bottom: 0;
       }
     }
   }

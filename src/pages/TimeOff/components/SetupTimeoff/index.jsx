@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import HollidayCalendar from './components/HollidayCalendar';
 import WorkShedule from './components/WorkShedule';
 import TimeoffType from './components/TimeoffType';
@@ -13,30 +14,21 @@ import ScreenBegin from './components/ScreenBegin';
   pageStart,
 }))
 class SetupTimeoff extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+  componentDidMount = () => {};
 
-  componentDidMount = () => {
+  componentWillUnmount = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'timeOff/getCountryList',
-    });
-  };
-
-  changePage = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'timeOff/save',
+      type: 'timeOff/saveTemp',
       payload: {
-        pageStart: false,
+        type: {},
+        countrySelected: '',
       },
     });
   };
 
   render() {
-    const { timeOffTypes, pageStart } = this.props;
+    const { timeOffTypes, type = '' } = this.props;
     const listMenu = [
       {
         id: 1,
@@ -44,6 +36,7 @@ class SetupTimeoff extends Component {
         key: 'timeoffType',
         component: <TimeoffType timeOffTypes={timeOffTypes} />,
         progress: 70,
+        link: 'types-rules',
       },
       {
         id: 2,
@@ -51,13 +44,15 @@ class SetupTimeoff extends Component {
         key: 'workShedule',
         component: <WorkShedule />,
         progress: 30,
+        link: 'work-schedule',
       },
       {
         id: 3,
-        name: 'Holliday Calendar',
+        name: 'Holiday Calendar',
         key: 'hollidayCalander',
         component: <HollidayCalendar />,
         progress: 10,
+        link: 'holiday-calendar',
       },
       {
         id: 4,
@@ -65,6 +60,7 @@ class SetupTimeoff extends Component {
         key: 'manageBalances',
         component: <ManageBalance />,
         progress: 100,
+        link: 'manage-balances',
       },
       {
         id: 5,
@@ -72,15 +68,16 @@ class SetupTimeoff extends Component {
         key: 'assignPolicies',
         component: <AssignPolicies />,
         progress: 100,
+        link: 'assign-policies',
       },
     ];
     return (
       <div>
-        {pageStart ? (
+        {/* {timeOffTypes.length !== 0 ? (
           <ScreenBegin handleChange={this.changePage} />
-        ) : (
-          <TimeOffLayout listMenu={listMenu} />
-        )}
+        ) : ( */}
+        <TimeOffLayout listMenu={listMenu} tabName={type} />
+        {/* )} */}
       </div>
     );
   }

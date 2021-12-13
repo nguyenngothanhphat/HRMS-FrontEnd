@@ -35,7 +35,7 @@ export function setAuthority(authority) {
 
 export function removeLocalStorage() {
   localStorage.clear();
-  // localStorage.removeItem('dataRoles');
+
   // localStorage.removeItem('Rolesname');
   // localStorage.removeItem('currentCompanyId');
   // localStorage.removeItem('tenantId');
@@ -121,5 +121,21 @@ export function getIsSwitchingRole() {
 export function getSwitchRoleAbility() {
   const isSwitch = localStorage.getItem('switchRoleAbility');
   if (isSwitch === 'true') return true;
+  return false;
+}
+
+export function initViewOffboarding() {
+  const view = localStorage.getItem('initViewOffboarding');
+  if (view === 'true') return true;
+  return false;
+}
+
+export function setIsSigninGoogle(value) {
+  localStorage.setItem('isSigninGoogle', value);
+  // reloadAuthorized();
+}
+export function getIsSigninGoogle() {
+  const isSigninGoogle = localStorage.getItem('isSigninGoogle');
+  if (isSigninGoogle === 'true') return true;
   return false;
 }

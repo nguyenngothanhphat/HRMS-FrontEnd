@@ -33,6 +33,8 @@ class FormWorkLocationTenant extends Component {
       isSaved: false,
       locationName: '',
       removeModalVisible: false,
+      notification: 'This location is updated successfully.',
+      notificationColor: '#00c598',
     };
   }
 
@@ -45,28 +47,34 @@ class FormWorkLocationTenant extends Component {
   }
 
   handleEdit = () => {
+    const { trackingEditButton = () => {} } = this.props;
     const { isEditing, locationName } = this.state;
     if (!isEditing) {
       this.formRef.current.setFieldsValue({
         name: locationName,
       });
     }
+    trackingEditButton(!isEditing);
     this.setState({
       isEditing: !isEditing,
     });
   };
 
   handleCancel = () => {
+    const { trackingEditButton = () => {} } = this.props;
     const { isEditing, locationName } = this.state;
     this.setState({
       isEditing: !isEditing,
     });
+
+    trackingEditButton(!isEditing);
 
     const {
       locationInfo: {
         name = '',
         addressLine1 = '',
         addressLine2 = '',
+        city = '',
         country = '',
         state = '',
         zipCode = '',
@@ -76,6 +84,7 @@ class FormWorkLocationTenant extends Component {
       name: locationName || name,
       addressLine1,
       addressLine2,
+      city: city || undefined,
       country,
       state,
       zipCode,
@@ -123,8 +132,43 @@ class FormWorkLocationTenant extends Component {
     }
   };
 
+  compareValues = (beforeVals, afterVals) => {
+    const {
+      name,
+      addressLine1 = '',
+      addressLine2 = '',
+      city = '',
+      country = '',
+      state = '',
+      zipCode = '',
+    } = beforeVals;
+    const {
+      name: newName,
+      addressLine1: newAddressLine1 = '',
+      addressLine2: newAddressLine2 = '',
+      city: newCity = '',
+      country: newCountry = '',
+      state: newState = '',
+      zipCode: newZipCode = '',
+    } = afterVals;
+    return (
+      name === newName &&
+      addressLine1 === newAddressLine1 &&
+      addressLine2 === newAddressLine2 &&
+      city === newCity &&
+      country === newCountry &&
+      state === newState &&
+      zipCode === newZipCode
+    );
+  };
+
   saveLocationAPI = async (values, locationId) => {
-    const { dispatch, manageTenant = [] } = this.props;
+    const {
+      dispatch,
+      manageTenant = [],
+      locationInfo = {},
+      trackingEditButton = () => {},
+    } = this.props;
     const tenantId = getCurrentTenant();
     const companyId = getCurrentCompany();
 
@@ -132,60 +176,86 @@ class FormWorkLocationTenant extends Component {
       name,
       addressLine1 = '',
       addressLine2 = '',
+      city = '',
       country = '',
       state = '',
       zipCode = '',
     } = values;
 
-    const payload = {
-      tenantId,
-      id: locationId,
-      name,
-      headQuarterAddress: {
-        addressLine1,
-        addressLine2,
-        country,
-        state,
-        zipCode,
-      },
-      // legalAddress: {
-      //   addressLine1,
-      //   addressLine2,
-      //   country,
-      //   state,
-      //   zipCode,
-      // },
-    };
-    const res = await dispatch({
-      type: 'adminApp/updateLocation',
-      payload,
-    });
+    const checkTheSame = this.compareValues(values, locationInfo);
 
-    const { statusCode } = res;
-    if (statusCode === 200) {
+    if (checkTheSame) {
       this.setState({
+        notification: 'Nothing changed.',
+        notificationColor: '#FD4546',
         isSaved: true,
-        isEditing: false,
-        locationName: name,
-      });
-      // refresh locations in dropdown menu (owner)
-      dispatch({
-        type: 'locationSelection/fetchLocationListByParentCompany',
-        payload: {
-          company: companyId,
-          tenantIds: manageTenant,
-        },
       });
       setTimeout(() => {
         this.setState({
           isSaved: false,
         });
       }, 2500);
+    } else {
+      const payload = {
+        tenantId,
+        id: locationId,
+        name,
+        headQuarterAddress: {
+          addressLine1,
+          addressLine2,
+          city,
+          country,
+          state,
+          zipCode,
+        },
+        // legalAddress: {
+        //   addressLine1,
+        //   addressLine2,
+        //   country,
+        //   state,
+        //   zipCode,
+        // },
+      };
+      const res = await dispatch({
+        type: 'adminApp/updateLocation',
+        payload,
+      });
+
+      const { statusCode } = res;
+      if (statusCode === 200) {
+        this.setState({
+          isSaved: true,
+          isEditing: false,
+          locationName: name,
+        });
+        // refresh locations in dropdown menu (owner)
+        dispatch({
+          type: 'locationSelection/fetchLocationListByParentCompany',
+          payload: {
+            company: companyId,
+            tenantIds: manageTenant,
+          },
+        });
+        setTimeout(() => {
+          this.setState({
+            isSaved: false,
+          });
+          trackingEditButton(false);
+        }, 2500);
+      }
     }
   };
 
   render() {
-    const { newCountry = '', isEditing, isSaved, locationName, removeModalVisible } = this.state;
+    const {
+      newCountry = '',
+      notification,
+      notificationColor,
+      isEditing,
+      isSaved,
+      locationName,
+      removeModalVisible,
+    } = this.state;
     const {
       listCountry = [],
       field = {},
@@ -194,6 +264,7 @@ class FormWorkLocationTenant extends Component {
         _id = '',
         addressLine1 = '',
         addressLine2 = '',
+        city = '',
         country = '',
         state = '',
         zipCode = '',
@@ -219,18 +290,19 @@ class FormWorkLocationTenant extends Component {
               name: name || locationName,
               addressLine1,
               addressLine2,
+              city,
               country,
               state,
               zipCode,
             }}
           >
             {isSaved && (
-              <div className={s.savedBanner}>
-                <span>This location is updated successfully.</span>
+              <div style={{ backgroundColor: `${notificationColor}` }} className={s.savedBanner}>
+                <span>{notification}</span>
               </div>
             )}
             <Row className={s.content__viewBottom__viewTitle}>
-              <p className={s.title}>{isHeadQuarter ? 'Headquarter' : locationName}</p>
+              <p className={s.title}>{locationName}</p>
 
               <div className={s.actionBtn}>
                 {!isEditing ? (
@@ -312,6 +384,19 @@ class FormWorkLocationTenant extends Component {
                 </Form.Item>
               </Col>
             </Row>
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>City Name*</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item
+                  rules={[{ required: true, message: 'Please input City Name' }]}
+                  name="city"
+                >
+                  <Input disabled={disableInput} placeholder="City Name" />
+                </Form.Item>
+              </Col>
+            </Row>
             <Row gutter={[24, 24]} className={s.content__viewBottom__row}>
               <Col span={8} className={s.viewFormVertical}>
                 <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>
@@ -359,12 +444,14 @@ class FormWorkLocationTenant extends Component {
                 </Form.Item>
               </Col>
               <Col span={8} className={s.viewFormVertical}>
-                <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>Zip*</p>
+                <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>
+                  Zip/Postal Code*
+                </p>
                 <Form.Item
-                  rules={[{ required: true, message: 'Please input Zip Code' }]}
+                  rules={[{ required: true, message: 'Please input Zip/Postall Code' }]}
                   name="zipCode"
                 >
-                  <Input disabled={disableInput} placeholder="Zip Code" />
+                  <Input disabled={disableInput} placeholder="Zip/Postal Code" />
                 </Form.Item>
               </Col>
             </Row>

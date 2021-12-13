@@ -30,11 +30,17 @@
     }
     .eventOfDay {
       padding-left: 10px;
-      color: #161c29;
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 16px;
+
+      color: #161C29;
     }
     .dateAndMonth {
       border-radius: 5px;
-      background-color: #f4f4f6;
+      background-color: #F4F4F7;
       padding: 5px;
       display: flex;
       flex-direction: row;
@@ -59,9 +65,26 @@
         }
       }
     }
-    .dayInWeek {
+    .text {
       text-align: right;
-      color: #ff5252;
+      
+      .status {
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 14px;
+      }
+
+      .approved{
+        color: #00C598;
+      }
+      .rejected{
+        color: #FD4546;
+      }
+      .applied{
+        color: #FFA100;
+      }
     }
   }
 }

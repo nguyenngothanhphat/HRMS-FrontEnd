@@ -34,29 +34,23 @@ class RightContent extends PureComponent {
   getFlow = () => {
     const {
       compoffApprovalFlow: {
-        step1: {
-          generalInfo: { firstName: fn1 = '', lastName: ln1 = '', avatar: av1 = '' } = {},
-        } = {},
-        step2: {
-          generalInfo: { firstName: fn2 = '', lastName: ln2 = '', avatar: av2 = '' } = {},
-        } = {},
-        step3: {
-          generalInfo: { firstName: fn3 = '', lastName: ln3 = '', avatar: av3 = '' } = {},
-        } = {},
+        step1: { generalInfo: { legalName: legalName1 = '', avatar: av1 = '' } = {} } = {},
+        step2: { generalInfo: { legalName: legalName2 = '', avatar: av2 = '' } = {} } = {},
+        step3: { generalInfo: { legalName: legalName3 = '', avatar: av3 = '' } = {} } = {},
       } = {},
     } = this.props;
 
     const arr = [];
     arr.push({
-      name: `${fn1} ${ln1}`,
+      name: legalName1,
       avatar: av1 === '' ? DefaultAvatar : av1,
     });
     arr.push({
-      name: `${fn2} ${ln2}`,
+      name: legalName2,
       avatar: av2 === '' ? DefaultAvatar : av2,
     });
     arr.push({
-      name: `${fn3} ${ln3}`,
+      name: legalName3,
       avatar: av3 === '' ? DefaultAvatar : av3,
     });
     return arr;

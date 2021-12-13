@@ -1,0 +1,86 @@
+@darkColour: #161c29;
+@blueColour: #2c6df9;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@borderColor: #d6dce0;
+
+.CompanyProfile {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  min-height: 100%;
+  max-height: 100%;
+  background: #fff;
+  border: 1px solid @borderColor;
+  border-radius: 5px;
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: @commonPadding;
+    border-bottom: 1px solid @borderColor;
+    span {
+      color: @darkColour;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 16px;
+    }
+  }
+  .content {
+    position: relative;
+    // max-height: 520px;
+    padding: @commonPadding;
+    overflow-y: auto;
+    span,
+    p {
+      display: block;
+      font-size: 13px;
+      line-height: 20px;
+    }
+    .videoPreview {
+      width: 100%;
+      margin-bottom: @commonPadding;
+      img {
+        width: 100%;
+        cursor: pointer;
+      }
+    }
+    .contentTitle {
+      margin-bottom: 5px;
+    }
+    .contentBody {
+      margin-bottom: 10px;
+      color: @lightGrayColor;
+    }
+  }
+  .sliderHandle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px @commonPadding;
+    color: @lightGrayColor;
+    font-weight: 500;
+    border-top: 1px solid @borderColor;
+    .customDot {
+      width: 13px;
+      height: 13px;
+      margin: 8px;
+      background-color: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.3);
+      border-radius: 50%;
+      outline: none;
+      cursor: pointer;
+      &:hover {
+        background-color: @blueColour;
+        border-color: @blueColour;
+        opacity: 0.6;
+        transition: 0.2s;
+      }
+    }
+    .active {
+      background-color: @blueColour;
+      border-color: @blueColour;
+    }
+  }
+}

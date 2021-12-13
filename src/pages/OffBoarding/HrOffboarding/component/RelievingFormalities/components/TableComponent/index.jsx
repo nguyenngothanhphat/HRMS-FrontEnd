@@ -1,35 +1,211 @@
 import React, { PureComponent } from 'react';
-import { Table } from 'antd';
+import { Avatar, Col, Divider, message, Popover, Row, Table, Tooltip } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import { Link } from 'umi';
+import { Link, history } from 'umi';
+import { getCurrentTimeOfTimezoneOption } from '@/utils/times';
+
 import styles from './index.less';
 
 class TableComponent extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      currentTime: moment(),
+    };
   }
+
+  componentDidMount = () => {
+    this.setCurrentTime();
+  };
+
+  setCurrentTime = () => {
+    // compare two time by hour & minute. If minute changes, get new time
+    const timeFormat = 'HH:mm';
+    const { currentTime } = this.state;
+    const parseTime = (timeString) => moment(timeString, timeFormat);
+    const check = parseTime(moment().format(timeFormat)).isAfter(
+      parseTime(moment(currentTime).format(timeFormat)),
+    );
+
+    if (check) {
+      this.setState({
+        currentTime: moment(),
+      });
+    }
+  };
+
+  popupContent = (dataRow) => {
+    const { timezoneList } = this.props;
+    const { currentTime } = this.state;
+    const {
+      employee: {
+        title: { name: titleName = 'UX Lead' } = {},
+        employeeType: { name: typeName = 'Full Time' } = {},
+        employeeId = '',
+        generalInfo: {
+          avatar = '',
+          firstName = '',
+          lastName = '',
+          middleName = '',
+          linkedIn = '',
+          userId = '',
+          workEmail = '',
+          workNumber = '',
+        } = {},
+        location: {
+          _id = '',
+          headQuarterAddress: { country: countryName = '', state = '' } = {} || {},
+        } = {},
+      } = {},
+      department: { name: departmentName = '' } = {},
+    } = dataRow;
+    const locationName = `${state}, ${countryName}`;
+    const fullName = `${firstName} ${middleName} ${lastName}`;
+
+    const findTimezone = timezoneList?.find((timezone) => timezone.locationId === _id) || {};
+    return (
+      <div className={styles.popupContent}>
+        <div className={styles.generalInfo}>
+          <div className={styles.avatar}>
+            <Avatar src={avatar} size={55} icon={<UserOutlined />} />
+          </div>
+          <div className={styles.employeeInfo}>
+            <div className={styles.employeeInfo__name}>{fullName}</div>
+            <div className={styles.employeeInfo__department}>
+              {titleName}, {departmentName} Dept.
+            </div>
+            <div className={styles.employeeInfo__emplId}>
+              {employeeId} | {typeName}
+            </div>
+          </div>
+        </div>
+        <Divider />
+        <div className={styles.contact}>
+          <Row gutter={[24, 24]}>
+            <Col span={7}>
+              <div className={styles.contact__title}>Mobile: </div>
+            </Col>
+            <Col span={17}>
+              <div className={styles.contact__value}>{workNumber}</div>
+            </Col>
+            <Col span={7}>
+              <div className={styles.contact__title}>Email id: </div>
+            </Col>
+            <Col span={17}>
+              <div className={styles.contact__value}>{workEmail}</div>
+            </Col>
+            <Col span={7}>
+              <div className={styles.contact__title}>Location: </div>
+            </Col>
+            <Col span={17}>
+              <div className={styles.contact__value}>{locationName || ''}</div>
+            </Col>
+            <Col span={7}>
+              <div className={styles.contact__title}>Local Time: </div>
+            </Col>
+            <Col span={17}>
+              <div className={styles.contact__value}>
+                {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
+                  ? getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone)
+                  : 'Not enough data in address'}
+              </div>
+            </Col>
+          </Row>
+        </div>
+        <Divider />
+        <div className={styles.popupActions}>
+          <div
+            className={styles.popupActions__link}
+            onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+          >
+            View full profile
+          </div>
+          <div className={styles.popupActions__actions}>
+            <Tooltip title="Message">
+              {/* <a href={linkedIn === '' ? null : linkedIn} target="_blank" rel="noopener noreferrer"> */}
+              <img
+                src="/assets/images/messageIcon.svg"
+                alt="img-arrow"
+                style={{ cursor: 'pointer' }}
+              />
+              {/* </a> */}
+            </Tooltip>
+            <Tooltip title="Email">
+              <a
+                disabled={!workEmail}
+                href={`mailto:${workEmail}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src="/assets/images/iconMail.svg"
+                  alt="img-arrow"
+                  style={{ cursor: 'pointer' }}
+                />
+              </a>
+            </Tooltip>
+            <Tooltip title="LinkedIn">
+              <a
+                onClick={() => {
+                  if (linkedIn === '') message.warning('LinkedIn is empty');
+                }}
+                href={linkedIn === '' ? null : linkedIn}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src="/assets/images/iconLinkedin.svg"
+                  alt="img-arrow"
+                  style={{ cursor: 'pointer' }}
+                />
+              </a>
+            </Tooltip>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   renderAction = (id) => {
     return (
       <div className={styles.rowAction}>
-        <Link className={styles.rowAction__link} to={`/offboarding/relieving-detail/${id}`}>
+        <Link
+          className={styles.rowAction__link}
+          to={`/offboarding/hr-relieving-formalities/relieving-detail/${id}`}
+        >
           Start Relieving Formalities
         </Link>
       </div>
     );
   };
 
-  _renderEmployeeId = (id) => {
-    const { data = [] } = this.props;
-    const newItem = data?.filter((item) => item._id === id);
-    return newItem[0].employee.generalInfo.employeeId;
+  _renderEmployeeId = (employee) => {
+    // const { data = [] } = this.props;
+    // const newItem = data?.filter((item) => item._id === id);
+    // return newItem[0].employee.generalInfo.employeeId;
+    const { employeeId = '' } = employee;
+    return employeeId;
   };
 
-  _renderEmployeeName = (id) => {
-    const { data = [] } = this.props;
-    const newItem = data?.filter((item) => item._id === id);
-    return <span className={styles.requteeName}>{newItem[0].employee.generalInfo.legalName}</span>;
+  _renderEmployeeName = (employee, row) => {
+    const { generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {} } =
+      employee;
+    const fullName = `${firstName} ${middleName} ${lastName}`;
+    return (
+      <Popover
+        content={() => this.popupContent(row)}
+        // title={location.name}
+        trigger="hover"
+      >
+        <span
+          onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+          className={styles.requteeName}
+        >
+          {fullName}
+        </span>
+      </Popover>
+    );
   };
 
   _renderDepartment = (id) => {
@@ -65,22 +241,47 @@ class TableComponent extends PureComponent {
     };
 
     const columns = [
+      // {
+      //   title: <span className={styles.title}>Ticket ID </span>,
+      //   dataIndex: 'ticketID',
+      //   fixed: 'left',
+      //   width: 150,
+      //   render: (ticketID) => <span className={styles.ticketId}>{ticketID}</span>,
+      // },
       {
         title: <span className={styles.title}>Ticket ID </span>,
         dataIndex: 'ticketID',
         fixed: 'left',
         width: 150,
-        render: (ticketID) => <span className={styles.ticketId}>{ticketID}</span>,
+        render: (ticketID) => {
+          let getId = '';
+          data.forEach((item) => {
+            if (item.ticketID === ticketID) getId = item._id;
+          });
+          if (isClosedTable)
+            return (
+              <span
+                onClick={() =>
+                  history.push(`/offboarding/hr-relieving-formalities/relieving-detail/${getId}`)
+                }
+                className={styles.ticketId}
+              >
+                {ticketID}
+              </span>
+            );
+
+          return <span className={styles.ticketId}>{ticketID}</span>;
+        },
       },
       {
         title: <span className={styles.title}>Employee ID </span>,
-        dataIndex: '_id',
-        render: (_id) => this._renderEmployeeId(_id),
+        dataIndex: 'employee',
+        render: (employee) => this._renderEmployeeId(employee),
       },
       {
         title: <span className={styles.title}>Requ’tee Name </span>,
-        dataIndex: '_id',
-        render: (_id) => this._renderEmployeeName(_id),
+        dataIndex: 'employee',
+        render: (employee, row) => this._renderEmployeeName(employee, row),
         width: 180,
       },
       {
@@ -104,24 +305,10 @@ class TableComponent extends PureComponent {
       },
     ];
 
-    const rowSelection = {
-      onChange: (selectedRowKeys, selectedRows) => {
-        // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-      },
-      getCheckboxProps: (record) => ({
-        disabled: record.name === 'Disabled User',
-        // Column configuration not to be checked
-        name: record.name,
-      }),
-    };
-
     return (
       <div className={styles.tableComponent}>
         <Table
           loading={loadingSearchList}
-          rowSelection={{
-            ...rowSelection,
-          }}
           columns={columns}
           dataSource={data}
           pagination={{ ...pagination, total: data.length }}

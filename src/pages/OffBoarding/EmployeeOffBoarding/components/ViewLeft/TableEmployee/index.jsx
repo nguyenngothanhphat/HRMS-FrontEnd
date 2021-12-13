@@ -13,23 +13,27 @@ class TableEmployee extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageNavigation: 1,
+      // pageNavigation: 1,
     };
   }
 
-  onChangePagination = (pageNumber) => {
-    this.setState({
-      pageNavigation: pageNumber,
-    });
-  };
+  // onChangePagination = (pageNumber) => {
+  //   this.setState({
+  //     pageNavigation: pageNumber,
+  //   });
+  // };
 
   push = (data) => {
-    history.push(`/offboarding/review/${data}`);
+    history.push(`/offboarding/list/review/${data}`);
   };
 
   handleWithDraw = (id) => {
-    const { dispatch, data = [], fetchData = () => {} } = this.props;
-    const getStatus = data.map((item) => (item._id === id ? item.status : null)).join('');
+    const {
+      dispatch,
+      // data = [],
+      fetchData = () => {},
+    } = this.props;
+    // const getStatus = data.map((item) => (item._id === id ? item.status : null)).join('');
 
     // if (getStatus === 'ACCEPTED' || getStatus === 'REJECTED') {
     //   dispatch({
@@ -61,9 +65,13 @@ class TableEmployee extends Component {
       textEmpty = 'No resignation request is submitted',
       loading,
       tabId,
+      pageSelected,
+      size,
+      getPageAndSize = () => {},
+      total: totalData,
     } = this.props;
 
-    const { pageNavigation } = this.state;
+    // const { pageNavigation } = this.state;
 
     const confirm = (id) => {
       this.handleWithDraw(id);
@@ -71,10 +79,10 @@ class TableEmployee extends Component {
 
     const cancel = (e) => {};
 
-    const rowSize = 10;
+    // const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
-      total: data.length,
+      total: totalData,
       showTotal: (total, range) => (
         <span>
           Showing{' '}
@@ -84,9 +92,11 @@ class TableEmployee extends Component {
           total
         </span>
       ),
-      pageSize: rowSize,
-      current: pageNavigation,
-      onChange: this.onChangePagination,
+      pageSize: size,
+      current: pageSelected,
+      onChange: (page, pageSize) => {
+        getPageAndSize(page, pageSize);
+      },
     };
 
     const columnsRequest = [
@@ -221,10 +231,7 @@ class TableEmployee extends Component {
           columns={tabId === '1' ? columnsRequest : columnsDraft}
           dataSource={data}
           hideOnSinglePage
-          // pagination={{
-          //   ...pagination,
-          //   total: data.length,
-          // }}
+          pagination={pagination}
           rowKey="id"
           // scroll={{ x: 'max-content' }}
           onChange={this.handleChangeTable}

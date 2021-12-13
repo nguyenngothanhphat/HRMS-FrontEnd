@@ -3,6 +3,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Button, Form, Input, Select } from 'antd';
 import { connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from '../../../CompanyInformation/components/Information/Edit/index.less';
 
 const { Option } = Select;
@@ -22,12 +23,16 @@ class Edit extends PureComponent {
     this.formRefLegal = React.createRef();
     this.state = {
       listStateHead: [],
+      isSaved: false,
+      notification: 'This location is updated successfully.',
+      notificationColor: '#00c598',
     };
   }
 
   componentDidMount() {
     const { location } = this.props;
     const { country = '' } = location;
+
     if (country) {
       const listStateHead = this.findListState(country._id);
       this.setState({
@@ -55,32 +60,107 @@ class Edit extends PureComponent {
     return listState;
   };
 
-  handleUpdateLocation = (values, location) => {
+  compareValues = (beforeVals, afterVals) => {
     const {
-      dispatch,
-      companiesManagement: { idCurrentCompany = '', tenantCurrentCompany = '' },
-      handleCancelEdit = () => {},
-    } = this.props;
-
-    const payload = {
+      name,
+      addressLine1 = '',
+      addressLine2 = '',
+      city = '',
+      country = '',
+      state = '',
+      zipCode = '',
+    } = beforeVals;
+    const {
       headQuarterAddress: {
-        ...values,
-      },
-      company: idCurrentCompany,
-      tenantId: tenantCurrentCompany,
-      id: location?._id,
-      name: location?.name,
-    };
+        addressLine1: newAddressLine1 = '',
+        addressLine2: newAddressLine2 = '',
+        city: newCity = '',
+        country: { _id: newCountry = '' } = {},
+        state: newState = '',
+        zipCode: newZipCode = '',
+      } = {},
+      name: newName,
+    } = afterVals;
 
-    dispatch({
-      type: 'companiesManagement/updateLocation',
-      payload,
-    }).then((resp) => {
-      const { statusCode } = resp;
-      if (statusCode === 200) {
+    return (
+      name === newName &&
+      addressLine1 === newAddressLine1 &&
+      addressLine2 === newAddressLine2 &&
+      city === newCity &&
+      country === newCountry &&
+      state === newState &&
+      zipCode === newZipCode
+    );
+  };
+
+  handleUpdateLocation = (values, location) => {
+    const { dispatch, handleCancelEdit = () => {} } = this.props;
+    const tenantId = getCurrentTenant();
+
+    const {
+      name,
+      addressLine1 = '',
+      addressLine2 = '',
+      city = '',
+      country = '',
+      state = '',
+      zipCode = '',
+    } = values;
+
+    const checkTheSame = this.compareValues(values, location);
+
+    if (checkTheSame) {
+      this.setState({
+        notification: 'Nothing changed.',
+        notificationColor: '#FD4546',
+        isSaved: true,
+      });
+      setTimeout(() => {
+        this.setState({
+          isSaved: false,
+        });
         handleCancelEdit();
-      }
-    });
+      }, 2500);
+    } else {
+      const payload = {
+        tenantId,
+        id: location?._id,
+        name,
+        headQuarterAddress: {
+          addressLine1,
+          addressLine2,
+          city,
+          country,
+          state,
+          zipCode,
+        },
+        // legalAddress: {
+        //   addressLine1,
+        //   addressLine2,
+        //   country,
+        //   state,
+        //   zipCode,
+        // },
+      };
+
+      dispatch({
+        type: 'companiesManagement/updateLocation',
+        payload,
+      }).then((resp) => {
+        const { statusCode } = resp;
+        if (statusCode === 200) {
+          this.setState({
+            isSaved: true,
+          });
+          setTimeout(() => {
+            this.setState({
+              isSaved: false,
+            });
+            handleCancelEdit();
+          }, 2500);
+        }
+      });
+    }
   };
 
   render() {
@@ -93,16 +173,23 @@ class Edit extends PureComponent {
         country = {},
         state = '',
         zipCode = '',
+        city = '',
       } = {},
     } = location;
-    const { listStateHead = [] } = this.state;
+    const { listStateHead = [], notification, notificationColor, isSaved } = this.state;
     const formLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 12 },
     };
+
     return (
       <div className={styles.edit}>
         <div className={styles.edit_form}>
+          {isSaved && (
+            <div style={{ backgroundColor: `${notificationColor}` }} className={styles.savedBanner}>
+              <span>{notification}</span>
+            </div>
+          )}
           <Form
             name="formEditLocation"
             requiredMark={false}
@@ -113,6 +200,7 @@ class Edit extends PureComponent {
               name,
               addressLine1,
               addressLine2,
+              city,
               country: country?._id,
               state,
               zipCode,
@@ -134,15 +222,45 @@ class Edit extends PureComponent {
                   },
                 ]}
               >
-                <Input />
+                <Input placeholder="Location Name" />
               </Form.Item>
-              <Form.Item label="Address line 1" name="addressLine1">
-                <Input />
+              <Form.Item
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter address line 1!',
+                  },
+                ]}
+                label="Address line 1"
+                name="addressLine1"
+              >
+                <Input placeholder="Address Line 1" />
               </Form.Item>
               <Form.Item label="Address line 2" name="addressLine2">
-                <Input />
+                <Input placeholder="Address Line 2" />
               </Form.Item>
-              <Form.Item label="Country" name="country">
+              <Form.Item
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter City Name!',
+                  },
+                ]}
+                label="City Name"
+                name="city"
+              >
+                <Input placeholder="City Name" />
+              </Form.Item>
+              <Form.Item
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please select Country!',
+                  },
+                ]}
+                label="Country"
+                name="country"
+              >
                 <Select
                   placeholder="Select Country"
                   showArrow
@@ -157,7 +275,16 @@ class Edit extends PureComponent {
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item label="State" name="state">
+              <Form.Item
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please select State!',
+                  },
+                ]}
+                label="State"
+                name="state"
+              >
                 <Select
                   placeholder="Select State"
                   showArrow
@@ -172,20 +299,25 @@ class Edit extends PureComponent {
                 </Select>
               </Form.Item>
               <Form.Item
-                label="Zip Code"
+                label="Zip/Postal Code"
                 name="zipCode"
                 rules={[
                   {
                     pattern: /^[0-9]*$/,
-                    message: 'Zip Code is not a valid number',
+                    message: 'Zip/Postal Code is not a valid number',
                   },
                 ]}
               >
-                <Input />
+                <Input placeholder="Zip/Postal Code" />
               </Form.Item>
             </>
             <div className={styles.edit_btn}>
-              <Button type="text" className={styles.edit_btn_cancel} onClick={handleCancelEdit}>
+              <Button
+                disabled={isSaved}
+                type="text"
+                className={styles.edit_btn_cancel}
+                onClick={handleCancelEdit}
+              >
                 Cancel
               </Button>
               <Button
@@ -193,6 +325,7 @@ class Edit extends PureComponent {
                 type="primary"
                 htmlType="submit"
                 className={styles.edit_btn_save}
+                disabled={isSaved}
               >
                 Save
               </Button>

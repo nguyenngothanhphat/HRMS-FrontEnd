@@ -4,7 +4,7 @@ import menu from './en-US/menu';
 import pwa from './en-US/pwa';
 import settingDrawer from './en-US/settingDrawer';
 import settings from './en-US/settings';
-import formTeamMember from './en-US/formTeamMember';
+import newCandidateForm from './en-US/newCandidateForm';
 import commonLayout from './en-US/commonLayout';
 import authLayout from './en-US/authLayout';
 import notFoundPage from './en-US/notFoundPage';
@@ -26,6 +26,7 @@ import usersManagementPage from './en-US/usersManagementPage';
 import documentsManagementPage from './en-US/documentsManagementPage';
 import employeesManagementPage from './en-US/employeesManagementPage';
 import companiesManagementPage from './en-US/companiesManagementPage';
+import customerManagementPage from './en-US/customer';
 import adminSetting from './en-US/adminSetting';
 import footer from './en-US/footer';
 
@@ -43,7 +44,7 @@ export default {
   ...settings,
   ...pwa,
   ...component,
-  ...formTeamMember,
+  ...newCandidateForm,
   ...commonLayout,
   ...authLayout,
   ...notFoundPage,
@@ -64,6 +65,7 @@ export default {
   ...documentsManagementPage,
   ...employeesManagementPage,
   ...companiesManagementPage,
+  ...customerManagementPage,
   ...onBoardingCustomFields,
   ...adminSetting,
   ...footer,

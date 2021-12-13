@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
-
+import { Button, DatePicker, Form, Input, Modal, Select } from 'antd';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { getCurrentCompany } from '@/utils/authority';
 import { connect } from 'umi';
-import { Form, Input, Select, DatePicker, Button } from 'antd';
-import Modal from 'antd/lib/modal/Modal';
-
-import s from './index.less';
+import styles from './index.less';
 
 const dateFormat = 'MM.DD.YY';
 const { Item } = Form;
 const { Option } = Select;
 
 const AddProjectModal = (props) => {
+  const [form] = Form.useForm();
+
   const {
     dispatch,
     visible = false,
@@ -20,9 +21,21 @@ const AddProjectModal = (props) => {
     loadingEmployeeList = false,
     loadingAddProject = false,
     onDone = () => {},
+    locationList = [],
+    loadingLocation = false,
   } = props;
   const [selectedCompany, setSelectedCompany] = useState('');
-  const [form] = Form.useForm();
+  const [beginDate, setBeginDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  const renderHeaderModal = () => {
+    const { titleModal = 'Add Project' } = props;
+    return (
+      <div className={styles.header}>
+        <p className={styles.header__text}>{titleModal}</p>
+      </div>
+    );
+  };
 
   useEffect(() => {
     if (selectedCompany) {
@@ -57,86 +70,183 @@ const AddProjectModal = (props) => {
     return () => {};
   }, [selectedCompany, companiesOfUser, listLocationsByCompany]);
 
-  const onFinish = (values) => {
+  // DISABLE DATE OF DATE PICKER
+  const disabledBeginDate = (current) => {
+    return current >= moment(endDate);
+  };
+
+  const disabledEndDate = (current) => {
+    return current <= moment(beginDate);
+  };
+
+  const onFinish = async (values) => {
     dispatch({
       type: 'projectManagement/addNewProject',
       payload: values,
     }).then((res) => {
       if (res.statusCode === 200) {
         onDone();
+        form.resetFields();
       }
     });
   };
 
-  const layout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 16 },
+  // const layout = {
+  //   labelCol: { span: 8 },
+  //   wrapperCol: { span: 16 },
+  // };
+
+  const companyList = () => {
+    return companiesOfUser.filter(
+      (comp) => comp?._id === getCurrentCompany() || comp?.childOfCompany === getCurrentCompany(),
+    );
   };
 
   return (
-    <Modal onCancel={() => onDone()} className={s.AddProjectModal} visible={visible} footer={null}>
-      <h3>Add new project</h3>
-      <Form {...layout} onFinish={onFinish} form={form} name="myForm">
-        <Item rules={[{ required: true }]} label="Project Name" name="name">
-          <Input placeholder="Name" />
-        </Item>
-        <Item rules={[{ required: true }]} label="Location" name="location">
-          <Select placeholder="Select Location" allowClear>
-            {listLocationsByCompany.map((location) => {
-              return <Option value={location._id}>{location.name || ''}</Option>;
-            })}
-          </Select>
-        </Item>
-        <Item rules={[{ required: true }]} label="Company" name="company">
-          <Select
-            onChange={(value) => {
-              setSelectedCompany(value);
+    <>
+      <Modal
+        className={styles.AddProjectModal}
+        onCancel={() => {
+          form.resetFields();
+          onDone();
+        }}
+        destroyOnClose
+        footer={[
+          <Button
+            onClick={() => {
+              form.resetFields();
+              onDone();
             }}
-            placeholder="Select Company"
-            allowClear
+            className={styles.btnCancel}
           >
-            {companiesOfUser.map((company) => {
-              return <Option value={company._id}>{company.name || ''}</Option>;
-            })}
-          </Select>
-        </Item>
-        <Item rules={[{ required: true }]} label="Manager" name="manager">
-          <Select
-            placeholder="Manager"
-            loading={loadingEmployeeList}
-            disabled={!selectedCompany || loadingEmployeeList}
-            allowClear
+            Cancel
+          </Button>,
+          <Button
+            className={styles.btnSubmit}
+            type="primary"
+            form="myForm"
+            key="submit"
+            loading={loadingAddProject}
+            htmlType="submit"
+            // loading={loadingReassign}
           >
-            {employeeList.map((emp) => {
-              return <Option value={emp.id}>{emp.name || ''}</Option>;
-            })}
-          </Select>
-        </Item>
-        <Item rules={[{ required: true }]} label="Project Health" name="projectHealth">
-          <Input placeholder="Project Health" />
-        </Item>
-        <Item rules={[{ required: true }]} label="Begin date" name="beginDate">
-          <DatePicker format={dateFormat} />
-        </Item>
-        <Item rules={[{ required: true }]} label="End date" name="endDate">
-          <DatePicker format={dateFormat} />
-        </Item>
-      </Form>
-      <div className={s.footer}>
-        <Button className={s.cancelButton} type="link" htmlType="button" onClick={() => onDone()}>
-          <span>Cancel</span>
-        </Button>
-        <Button
-          loading={loadingAddProject}
-          type="submit"
-          htmlType="submit"
-          key="submit"
-          form="myForm"
-        >
-          Submit
-        </Button>
-      </div>
-    </Modal>
+            Submit
+          </Button>,
+        ]}
+        title={renderHeaderModal()}
+        centered
+        visible={visible}
+      >
+        <Form onFinish={onFinish} form={form} name="myForm">
+          <Item
+            rules={[{ required: true }]}
+            labelAlign="left"
+            labelCol={{ span: 24 }}
+            label="Project Name"
+            name="name"
+          >
+            <Input placeholder="Name" />
+          </Item>
+
+          <Item
+            rules={[{ required: true }]}
+            labelAlign="left"
+            labelCol={{ span: 24 }}
+            label="Company"
+            name="company"
+          >
+            <Select
+              onChange={(value) => {
+                setSelectedCompany(value);
+                form.setFieldsValue({
+                  location: undefined,
+                });
+                const tenants = companyList().find((val) => val._id === value);
+                dispatch({
+                  type: 'employeesManagement/fetchLocationList',
+                  payload: {
+                    tenantId: tenants.tenant,
+                    company: value,
+                  },
+                });
+              }}
+              placeholder="Select Company"
+              allowClear
+            >
+              {companyList().map((company) => {
+                return <Option value={company._id}>{company.name || ''}</Option>;
+              })}
+            </Select>
+          </Item>
+          <Item
+            rules={[{ required: true }]}
+            labelAlign="left"
+            labelCol={{ span: 24 }}
+            label="Location"
+            name="location"
+          >
+            <Select loading={loadingLocation} placeholder="Select Location" allowClear>
+              {locationList.map((location) => {
+                return <Option value={location._id}>{location.name || ''}</Option>;
+              })}
+            </Select>
+          </Item>
+          <Item
+            rules={[{ required: true }]}
+            labelAlign="left"
+            labelCol={{ span: 24 }}
+            label="Manager"
+            name="manager"
+          >
+            <Select
+              placeholder="Manager"
+              loading={loadingEmployeeList}
+              disabled={!selectedCompany || loadingEmployeeList}
+              allowClear
+            >
+              {employeeList.map((emp) => {
+                return <Option value={emp.id}>{emp.name || ''}</Option>;
+              })}
+            </Select>
+          </Item>
+          <Item
+            rules={[{ required: true }]}
+            labelAlign="left"
+            labelCol={{ span: 24 }}
+            label="Project Health"
+            name="projectHealth"
+          >
+            <Input placeholder="Project Health" />
+          </Item>
+          <Item
+            rules={[{ required: true }]}
+            labelAlign="left"
+            labelCol={{ span: 24 }}
+            label="Begin date"
+            name="beginDate"
+          >
+            <DatePicker
+              format={dateFormat}
+              onChange={(val) => setBeginDate(val)}
+              disabledDate={disabledBeginDate}
+            />
+          </Item>
+          <Item
+            rules={[{ required: true }]}
+            labelAlign="left"
+            labelCol={{ span: 24 }}
+            label="End date"
+            name="endDate"
+          >
+            <DatePicker
+              format={dateFormat}
+              onChange={(val) => setEndDate(val)}
+              disabledDate={disabledEndDate}
+            />
+          </Item>
+        </Form>
+      </Modal>
+    </>
   );
 };
 
@@ -145,12 +255,15 @@ export default connect(
     locationSelection: { listLocationsByCompany = [] } = {},
     user: { companiesOfUser = [] } = {},
     projectManagement: { employeeList = [] } = {},
+    employeesManagement: { locationList = [] } = {},
     loading,
   }) => ({
     listLocationsByCompany,
     companiesOfUser,
     employeeList,
+    locationList,
     loadingEmployeeList: loading.effects['projectManagement/getEmployees'],
     loadingAddProject: loading.effects['projectManagement/addNewProject'],
+    loadingLocation: loading.effects['employeesManagement/fetchLocationList'],
   }),
 )(AddProjectModal);

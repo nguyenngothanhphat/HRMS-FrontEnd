@@ -1,17 +1,18 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col, Spin, Input } from 'antd';
-import TimeOffModal from '@/components/TimeOffModal';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import { connect, history } from 'umi';
 import moment from 'moment';
+import TimeOffModal from '@/components/TimeOffModal';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import Project from './components/Project';
 
 import styles from './index.less';
 
 const { TextArea } = Input;
 
-@connect(({ timeOff, loading }) => ({
+@connect(({ timeOff, user: { currentUser = {} } = {}, loading }) => ({
   timeOff,
+  currentUser,
   loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
   loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
   loadingApproveRequest: loading.effects['timeOff/reportingManagerApprove'],
@@ -42,10 +43,9 @@ class RequestInformation extends PureComponent {
 
   // FETCH LEAVE REQUEST DETAIL
   componentDidMount = () => {
-    const { dispatch, employeeId = '' } = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/fetchProjectsListByEmployee',
-      payload: { employee: employeeId },
     });
   };
 
@@ -84,9 +84,9 @@ class RequestInformation extends PureComponent {
   };
 
   // ON VIEW EMPLOYEE PROFILE
-  onViewEmployeeProfile = (_id) => {
+  onViewEmployeeProfile = (userId) => {
     history.push({
-      pathname: `/directory/employee-profile/${_id}`,
+      pathname: `/directory/employee-profile/${userId}`,
     });
   };
 
@@ -186,6 +186,7 @@ class RequestInformation extends PureComponent {
     const { showModal, showWithdrawModal, isReject, acceptWithdraw } = this.state;
     const {
       timeOff: { viewingLeaveRequest = {}, projectsList = [] } = {},
+      currentUser: { employee: { _id: myId = '' } = {} } = {},
       loadingFetchLeaveRequestById,
       loadingApproveRequest,
       loadingRejectRequest,
@@ -202,10 +203,10 @@ class RequestInformation extends PureComponent {
       duration = '',
       // onDate = '',
       description = '',
-      type: { name = '', shortType = '' } = {},
+      type: { name = '' } = {},
       employee: {
-        _id: employeeId = '',
-        generalInfo: { firstName = '', lastName = '' } = {},
+        // _id: employeeId = '',
+        generalInfo: { firstName = '', lastName = '', userId = '' } = {},
         employeeId: employeeIdText = '',
         position: { name: position = '' } = {},
       } = {},
@@ -215,9 +216,13 @@ class RequestInformation extends PureComponent {
         reason = '',
       } = {},
       withdraw = {},
+      approvalManager: { _id: managerId = '' } = {},
     } = viewingLeaveRequest;
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate);
+
+    // only manager accept/reject a ticket
+    const isMyTicket = myId === managerId;
 
     return (
       <div className={styles.RequestInformation}>
@@ -236,7 +241,7 @@ class RequestInformation extends PureComponent {
               <Col span={6}>Employee Name</Col>
               <Col span={18} className={styles.detailColumn}>
                 <span
-                  onClick={() => this.onViewEmployeeProfile(employeeId)}
+                  onClick={() => this.onViewEmployeeProfile(userId)}
                   className={styles.employeeLink}
                 >
                   {`${firstName} ${lastName}`}
@@ -281,10 +286,14 @@ class RequestInformation extends PureComponent {
                     <>
                       {projectsList.map((project) => {
                         const {
-                          name: prName = '',
-                          manager: {
-                            _id: pjManagerId = '',
-                            generalInfo: { firstName: fn = '', lastName: ln = '' } = {},
+                          projectName: prName = '',
+                          projectManager: {
+                            // _id: pjManagerId = '',
+                            generalInfo: {
+                              firstName: fn = '',
+                              lastName: ln = '',
+                              userId: managerUserId = '',
+                            } = {},
                           } = {},
                           projectHealth = 0,
                         } = project;
@@ -294,7 +303,7 @@ class RequestInformation extends PureComponent {
                               name={prName}
                               projectManager={`${fn} ${ln}`}
                               projectHealth={projectHealth}
-                              employeeId={pjManagerId}
+                              employeeId={managerUserId}
                             />
                             {/* {index + 1 < projects.length && <div className={styles.divider} />} */}
                           </>
@@ -329,7 +338,7 @@ class RequestInformation extends PureComponent {
                 <Row>
                   <Col span={6}>Timeoff Type</Col>
                   <Col span={18} className={styles.detailColumn}>
-                    <span className={styles.fieldValue}>{`${name} (${shortType})`}</span>
+                    <span className={styles.fieldValue}>{name}</span>
                   </Col>
                 </Row>
                 <Row>
@@ -425,7 +434,7 @@ class RequestInformation extends PureComponent {
         )}
 
         {/* IN PROGRESS */}
-        {!isReject && status === TIMEOFF_STATUS.inProgress && (
+        {!isReject && status === TIMEOFF_STATUS.inProgress && isMyTicket && (
           <div className={styles.footer}>
             <span className={styles.note}>
               By default notifications will be sent to HR, your manager and recursively loop to your
@@ -436,7 +445,7 @@ class RequestInformation extends PureComponent {
                 Reject
               </Button>
               <Button loading={loadingApproveRequest} onClick={() => this.onApproveClicked(_id)}>
-                Accept
+                Approve
               </Button>
             </div>
           </div>

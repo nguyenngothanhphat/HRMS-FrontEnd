@@ -6,7 +6,7 @@ export async function query() {
 export async function queryCurrent(payload) {
   return request('/api/usermap/get-current-user', {
     method: 'POST',
-    data: payload
+    data: payload,
   });
 }
 export async function queryNotices() {
@@ -18,7 +18,7 @@ export async function getUserInfo(data) {
     '/api/security-register-tenant',
     {
       method: 'POST',
-      data, // {firstName, email}
+      data, // {firstName, middleName, lastName, email}
     },
     true,
   );
@@ -62,4 +62,35 @@ export async function fetchCompanyOfUser(data) {
     method: 'POST',
     data,
   });
+}
+
+export async function getCompanyTypeListInSignUp() {
+  return request(
+    '/api/companytype/list',
+    {
+      method: 'POST',
+    },
+    true,
+  );
+}
+
+export async function getIndustryListInSignUp() {
+  return request(
+    '/api/industry/list',
+    {
+      method: 'POST',
+    },
+    true,
+  );
+}
+
+export async function sendAgainSecurityCode(data) {
+  return request(
+    '/api/resend-security-register',
+    {
+      method: 'POST',
+      data,
+    },
+    true,
+  );
 }

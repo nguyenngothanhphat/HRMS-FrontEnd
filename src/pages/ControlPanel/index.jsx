@@ -183,6 +183,9 @@ class ControlPanel extends Component {
               {(isOwner || isAdmin) && (
                 <p style={{ marginTop: '8px' }}>You have administrative privileges.</p>
               )}
+              <div className={s.blockUserLogin__info__login} onClick={this.handleLogout}>
+                Log in with another account
+              </div>
             </div>
             <div className={s.blockUserLogin__action}>
               <Tooltip title="Settings">

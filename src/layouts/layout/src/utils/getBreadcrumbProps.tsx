@@ -33,11 +33,11 @@ const defaultItemRender: AntdBreadcrumbProps['itemRender'] = ({ breadcrumbName, 
     case 'Ticket Id':
       name = `${breadcrumbName}: ${path.split('/').pop()}`;
       break;
-    case 'Review team member':
-      name = `${breadcrumbName} [${path.split('/').pop()}]`;
-      break;
-    case 'Add team member':
-      name = `${breadcrumbName} [${path.split('/').pop()}]`;
+    // case 'Review team member':
+    //   name = `${breadcrumbName} [${path.split('/').pop()}]`;
+    //   break;
+    case 'Add a team member':
+      name = `[${path.split('/').pop()}] ${breadcrumbName}`;
       break;
     default:
       name = breadcrumbName;

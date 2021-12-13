@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import { Affix, Skeleton } from 'antd';
+import { connect, history } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
-import { connect } from 'umi';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 // import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant, isOwner } from '@/utils/authority';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 // import Test from './components/test';
 import Documents from './components/Documents';
 import styles from './index.less';
+import PerformanceHistory from './components/PerformanceHistory';
 
 @connect(
   ({
@@ -24,7 +25,7 @@ import styles from './index.less';
     currentUser,
     listEmployeeActive,
     permissions,
-    loadingFetchEmployee: loading.effects['employeeProfile/fetchEmploymentInfo'],
+    loadingFetchEmployee: loading.effects['employeeProfile/fetchGeneralInfo'],
   }),
 )
 class EmployeeProfile extends Component {
@@ -34,40 +35,26 @@ class EmployeeProfile extends Component {
   }
 
   componentDidMount = async () => {
-    // const { dispatch } = this.props;
-    // const tenantCurrentEmployee = localStorage.getItem('tenantCurrentEmployee');
-    // const companyCurrentEmployee = localStorage.getItem('companyCurrentEmployee');
-    // const idCurrentEmployee = localStorage.getItem('idCurrentEmployee');
+    const { dispatch, match: { params: { reId = '', tabName = '' } = {} } = {} } = this.props;
 
-    // await dispatch({
-    //   type: 'employeeProfile/save',
-    //   payload: {
-    //     tenantCurrentEmployee,
-    //     companyCurrentEmployee,
-    //     idCurrentEmployee,
-    //   },
-    // });
-    this.fetchData();
-  };
-
-  componentDidUpdate(prevProps) {
-    const { location } = this.props;
-    if (prevProps.location.pathname !== location.pathname) {
+    if (!tabName) {
+      const link = isOwner() ? 'employees' : 'directory';
+      history.replace(`/${link}/employee-profile/${reId}/general-info`);
+    } else {
+      await dispatch({
+        type: 'employeeProfile/fetchEmployeeIdByUserId',
+        payload: {
+          userId: reId,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        },
+      });
       this.fetchData();
     }
-  }
+  };
 
   fetchData = async () => {
-    const {
-      // employeeProfile,
-      match: { params: { reId: employee = '' } = {} },
-      dispatch,
-      // employeeProfile: {
-      //   tenantCurrentEmployee: tenantId1 = '',
-      //   companyCurrentEmployee = ''
-      // } = {},
-    } = this.props;
-
+    const { employeeProfile: { employee = '' } = {}, dispatch } = this.props;
     let tenantId1 = localStorage.getItem('tenantCurrentEmployee');
     tenantId1 = tenantId1 && tenantId1 !== 'undefined' ? tenantId1 : '';
 
@@ -76,15 +63,16 @@ class EmployeeProfile extends Component {
       payload: { id: employee, tenantId: tenantId1 || getCurrentTenant() },
     });
 
-    const { statusCode, data } = res;
+    const tenantId = getCurrentTenant();
+    dispatch({
+      type: 'employeeProfile/fetchGeneralInfo',
+      payload: { employee, tenantId },
+    });
+
+    const { statusCode } = res;
     if (statusCode === 200) {
-      const tenantId = getCurrentTenant();
       const companyCurrentEmployee = getCurrentCompany();
 
-      dispatch({
-        type: 'employeeProfile/fetchGeneralInfo',
-        payload: { employee, tenantId },
-      });
       dispatch({
         type: 'employeeProfile/fetchCompensation',
         payload: { employee, tenantId },
@@ -175,25 +163,47 @@ class EmployeeProfile extends Component {
       id: 1,
       name: 'General Info',
       component: <GeneralInfo permissions={permissions} profileOwner={profileOwner} />,
+      link: 'general-info',
     });
     if (permissions.viewTabEmployment !== -1 || profileOwner) {
       listMenu.push({
         id: 2,
         name: `Employment & Compensation`,
-        component: <EmploymentTab listEmployeeActive={listEmployeeActive} />,
+        component: (
+          <EmploymentTab listEmployeeActive={listEmployeeActive} profileOwner={profileOwner} />
+        ),
+        link: 'employment-compensation',
       });
     }
     if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
-      listMenu.push({ id: 3, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> });
+      listMenu.push({
+        id: 3,
+        name: 'Performance History',
+        component: <PerformanceHistory />,
+        link: 'performance-history',
+      });
+    }
+    if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
+      listMenu.push({
+        id: 4,
+        name: 'Accounts and Paychecks',
+        component: <AccountsPaychecks />,
+        link: 'accounts-paychecks',
+      });
     }
     if (permissions.viewTabDocument !== -1 || profileOwner) {
-      listMenu.push({ id: 4, name: 'Documents', component: <Documents /> });
+      listMenu.push({ id: 5, name: 'Documents', component: <Documents />, link: 'documents' });
     }
     // if (permissions.viewTabTimeSchedule !== -1 || profileOwner) {
     //   listMenu.push({ id: 5, name: 'Time & Scheduling', component: <Test /> });
     // }
     if (permissions.viewTabBenefitPlans !== -1 || profileOwner) {
-      listMenu.push({ id: 5, name: 'Benefit Plans', component: <BenefitTab /> });
+      listMenu.push({
+        id: 6,
+        name: 'Benefit Plans',
+        component: <BenefitTab />,
+        link: 'benefit-plans',
+      });
     }
 
     return listMenu;
@@ -201,41 +211,40 @@ class EmployeeProfile extends Component {
 
   render() {
     const {
-      match: { params: { reId: employee = '' } = {} },
-      currentUser: { employee: currentEmployee = {} },
+      match: { params: { reId: employee = '', tabName = '' } = {} },
+      currentUser: { employee: { generalInfo: { userId = '' } = {} } = {} },
       permissions = {},
       location: { state: { location = '' } = {} } = {},
-      loadingFetchEmployee,
+      // loadingFetchEmployee,
+      // employeeProfile,
     } = this.props;
 
-    const listMenu = this.renderListMenu(employee, currentEmployee?._id);
+    const listMenu = this.renderListMenu(employee, userId);
 
-    const profileOwner = this.checkProfileOwner(currentEmployee?._id, employee);
+    const profileOwner = this.checkProfileOwner(userId, employee);
 
-    const tenant = localStorage.getItem('tenantCurrentEmployee');
-    const company = localStorage.getItem('companyCurrentEmployee');
-    const id = localStorage.getItem('idCurrentEmployee');
+    // const tenant = localStorage.getItem('tenantCurrentEmployee');
+    // const company = localStorage.getItem('companyCurrentEmployee');
+    // const id = localStorage.getItem('idCurrentEmployee');
 
+    if (!tabName) return '';
     return (
       <PageContainer>
         <div className={styles.containerEmployeeProfile}>
-          <Affix offsetTop={30}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>Employee Profile</p>
             </div>
           </Affix>
-          {tenant && company && id && !loadingFetchEmployee ? (
-            <LayoutEmployeeProfile
-              listMenu={listMenu}
-              employeeLocation={location}
-              permissions={permissions}
-              profileOwner={profileOwner}
-            />
-          ) : (
-            <div style={{ padding: '24px' }}>
-              <Skeleton />
-            </div>
-          )}
+
+          <LayoutEmployeeProfile
+            listMenu={listMenu}
+            tabName={tabName}
+            reId={employee}
+            employeeLocation={location}
+            permissions={permissions}
+            profileOwner={profileOwner}
+          />
         </div>
       </PageContainer>
     );

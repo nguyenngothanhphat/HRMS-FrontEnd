@@ -76,26 +76,37 @@
           }
           .wrapBtn {
             display: flex;
+            align-items: center;
             flex-direction: row;
+
+            .buttonIcon {
+              color: #666;
+              margin: 1px 0px 0 0;
+            }
             img {
               margin-right: 10px;
             }
             .cancelText {
               color: #666;
+              margin-left: 8px;
+            }
+            span {
+              display: inline-block;
+              margin-top: 4px;
             }
           }
         }
       }
       &__viewBottom {
         height: auto;
-        padding: 30px;
+        padding: 24px;
         font-size: 13px;
         line-height: 15px;
         color: #161c29;
         &__row {
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          // align-items: center;
           margin-bottom: 20px;
           .viewFormVertical {
             width: fit-content;
@@ -124,9 +135,10 @@
               }
             }
           }
-          // &__textLabel {
-          //   width: 151px;
-          // }
+          &__textLabel {
+            // width: 151px;
+            padding-top: 11px;
+          }
           &__textLabelVertical {
             margin-bottom: 10px;
           }
@@ -136,6 +148,10 @@
             }
             .ant-input {
               .textInput();
+            }
+
+            .ant-select-disabled.ant-select:not(.ant-select-customize-input) .ant-select-selector{
+              background: #ffffff;
             }
           }
         }

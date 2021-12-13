@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
-import { Divider, Button, Spin, Input, Tooltip } from 'antd';
+import { Divider, Button, Spin, Input, Tooltip, Menu, Dropdown, Checkbox, Tag } from 'antd';
+
 import avtDefault from '@/assets/avtDefault.jpg';
-import { connect } from 'umi';
+import bioSvg from '@/assets/bioActions.svg';
+import { connect, history } from 'umi';
 import moment from 'moment';
 import ModalUpload from '@/components/ModalUpload';
 import CustomModal from '@/components/CustomModal';
 import s from '@/components/LayoutEmployeeProfile/index.less';
 import { getCurrentTenant } from '@/utils/authority';
-import Checkbox from 'antd/lib/checkbox/Checkbox';
 
 const { TextArea } = Input;
+const { SubMenu } = Menu;
+
+const HR_MANAGER = 'HR-MANAGER';
+const HR_EMPLOYEE = 'HR';
+const MANAGER = 'MANAGER';
 
 @connect(
   ({
@@ -27,7 +33,7 @@ const { TextArea } = Input;
         } = {},
       } = {},
     } = {},
-    user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} } = {} } = {},
+    user: { currentUser: { employee: { _id: myEmployeeID = '' } = {}, roles = [] } = {} } = {},
   }) => ({
     generalData,
     compensationData,
@@ -39,6 +45,7 @@ const { TextArea } = Input;
     department,
     joinDate,
     title,
+    roles,
   }),
 )
 class ViewInformation extends Component {
@@ -48,8 +55,15 @@ class ViewInformation extends Component {
       visible: false,
       openEditBio: false,
       bio: '',
+      placementText: 'topCenter',
     };
+
+    this.actionBtnRef = React.createRef();
   }
+
+  componentDidMount = () => {
+    this.onScroll('addEventListener');
+  };
 
   shouldComponentUpdate(nextProps) {
     const { generalData: { bioInfo = '' } = {} } = this.props;
@@ -61,6 +75,42 @@ class ViewInformation extends Component {
     }
     return true;
   }
+
+  componentDidUpdate = () => {
+    this.onScroll('addEventListener');
+  };
+
+  componentWillUnmount = () => {
+    this.onScroll('removeEventListener');
+  };
+
+  onScroll = (name) => {
+    if (name === 'addEventListener') {
+      window.addEventListener('scroll', this.handleScroll, { passive: true });
+    } else {
+      window.removeEventListener('scroll', this.handleScroll);
+    }
+  };
+
+  handleScroll = () => {
+    const positionY = window.scrollY;
+
+    if (positionY > 300) {
+      this.setState({
+        placementText: 'bottomCenter',
+      });
+    } else {
+      this.setState({
+        placementText: 'topCenter',
+      });
+    }
+  };
+
+  getPlacement = (placement) => {
+    this.setState({
+      placementText: placement,
+    });
+  };
 
   handleEditBio = () => {
     const { openEditBio } = this.state;
@@ -83,7 +133,7 @@ class ViewInformation extends Component {
 
   formatListSkill = (skills, colors) => {
     let temp = 0;
-    const listFormat = skills.map((item) => {
+    const listFormat = skills?.map((item) => {
       if (temp >= 5) {
         temp -= 5;
       }
@@ -194,6 +244,88 @@ class ViewInformation extends Component {
     return avtDefault;
   };
 
+  handleClickMenu = (menu) => {
+    const { handleClickOnActions = () => {} } = this.props;
+    const { key = '' } = menu;
+    handleClickOnActions(key);
+  };
+
+  redirectOffboarding = () => {
+    const { roles = [] } = this.props;
+    const checkRoleHrAndManager =
+      roles.includes(HR_MANAGER) || roles.includes(HR_EMPLOYEE) || roles.includes(MANAGER);
+    if (checkRoleHrAndManager) {
+      localStorage.setItem('initViewOffboarding', true);
+      history.push({
+        pathname: '/offboarding',
+        state: { isEmployeeMode: true },
+      });
+    } else {
+      history.push({
+        pathname: '/offboarding',
+        state: { isEmployeeMode: false },
+      });
+    }
+  };
+
+  btnAction = (permissions, profileOwner) => {
+    const { placementText } = this.state;
+
+    const subDropdown = (
+      <SubMenu className={s.subMenu} key="sub1" title="Job Change">
+        <Menu.Item key="offboarding" className={s.menuItem} onClick={this.redirectOffboarding}>
+          Offboarding
+        </Menu.Item>
+      </SubMenu>
+    );
+
+    const menu = (
+      <Menu className={s.menuDropdown} mode="inline" onClick={this.handleClickMenu}>
+        {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
+          <Menu.Item key="editBio" className={s.menuItem} onClick={this.handleEditBio}>
+            Edit Bio
+          </Menu.Item>
+        )}
+        {subDropdown}
+        <Menu.Item key="0" className={s.menuItem}>
+          Put on Leave (LWP)
+        </Menu.Item>
+        <Menu.Item key="1" className={s.menuItem}>
+          Raise Termination
+        </Menu.Item>
+        <Menu.Item key="2" className={s.menuItem}>
+          Request Details
+        </Menu.Item>
+      </Menu>
+    );
+
+    return (
+      <>
+        <Dropdown
+          className={s.actionBtn}
+          overlay={menu}
+          trigger={['click']}
+          placement={placementText}
+        >
+          <div ref={this.actionBtnRef} onClick={(e) => e.preventDefault()}>
+            Actions <img alt="bio" src={bioSvg} />
+          </div>
+        </Dropdown>
+      </>
+    );
+  };
+
+  _renderListCertification = (list) => {
+    return list.map((item) => {
+      const { name = '', _id = '' } = item;
+      return (
+        <div key={_id} className={s.infoEmployee__textNameAndTitle__title}>
+          <div className={s.textValue}>{name}</div>
+        </div>
+      );
+    });
+  };
+
   render() {
     const {
       generalData,
@@ -218,6 +350,7 @@ class ViewInformation extends Component {
       linkedIn = '',
       workEmail = '',
       workNumber = '',
+      certification = [],
     } = generalData;
 
     // const { tittle: { name: title = '' } = {} } = compensationData;
@@ -225,8 +358,29 @@ class ViewInformation extends Component {
     const joiningDate = joinDate ? moment(joinDate).format('MM.DD.YY') : '-';
     const { generalInfo: { firstName: managerFN = '', lastName: managerLN = '' } = {} } = manager;
     // const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
-    // const listColors = ['#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0'];
-    // const formatListSkill = this.formatListSkill(generalData.skills, listColors) || [];
+    const listColors = [
+      {
+        bg: '#E0F4F0',
+        colorText: '#00c598',
+      },
+      {
+        bg: '#ffefef',
+        colorText: '#fd4546',
+      },
+      {
+        bg: '#f1edff',
+        colorText: '#6236ff',
+      },
+      {
+        bg: '#f1f8ff',
+        colorText: '#006bec',
+      },
+      {
+        bg: '#fff7fa',
+        colorText: '#ff6ca1',
+      },
+    ];
+    const formatListSkill = this.formatListSkill(generalData.skills, listColors) || [];
 
     const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
 
@@ -263,13 +417,6 @@ class ViewInformation extends Component {
           <p className={s.infoEmployee__viewBottom__description} style={{ marginTop: '10px' }}>
             {bioInfo}
           </p>
-          <div className={s.viewBtnAction}>
-            {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
-              <Button onClick={this.handleEditBio} className={s.btnEditBio}>
-                Edit Bio
-              </Button>
-            )}
-          </div>
           {(permissions.editShowAvatarEmployee !== -1 || profileOwner) && (
             <>
               <Divider />
@@ -284,6 +431,26 @@ class ViewInformation extends Component {
               </div>
             </>
           )}
+          <Divider />
+          <p className={s.titleTag}>Skills</p>
+          <div>
+            {formatListSkill.map((item) => (
+              <Tag
+                style={{
+                  color: `${item.color.colorText}`,
+                }}
+                key={item.id}
+                color={item.color.bg}
+              >
+                {item.name}
+              </Tag>
+            ))}
+          </div>
+          <Divider />
+          <p className={s.titleTag}>Certifications</p>
+          <div className={s.infoEmployee__viewBottom__certifications}>
+            {this._renderListCertification(certification)}
+          </div>
           <Divider />
           {checkVisible ? (
             <div className={s.infoEmployee__viewBottom__row}>
@@ -305,14 +472,6 @@ class ViewInformation extends Component {
             </p>
           </div>
           <Divider />
-          {/* <p className={s.titleTag}>Skills</p>
-          <div>
-            {formatListSkill.map((item) => (
-              <Tag key={item.id} color={item.color}>
-                {item.name}
-              </Tag>
-            ))}
-          </div> */}
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag1}>Email</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{workEmail}</p>
@@ -342,13 +501,16 @@ class ViewInformation extends Component {
               </a>
             </Tooltip>
             <Tooltip title="Email">
-              <img
-                src="/assets/images/iconMail.svg"
-                alt="img-arrow"
-                style={{ marginLeft: '5px', cursor: 'pointer' }}
-              />
+              <a href={`mailto:${workEmail}`}>
+                <img
+                  src="/assets/images/iconMail.svg"
+                  alt="img-arrow"
+                  style={{ marginLeft: '5px', cursor: 'pointer' }}
+                />
+              </a>
             </Tooltip>
           </div>
+          <div className={s.viewBtnAction}>{this.btnAction(permissions, profileOwner)}</div>
         </div>
         <ModalUpload
           titleModal="Profile Picture Update"

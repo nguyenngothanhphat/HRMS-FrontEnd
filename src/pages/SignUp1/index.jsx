@@ -31,15 +31,19 @@ const SignUp1 = (props) => {
   };
 
   const onFinish = async (values) => {
-    const { email, fullname } = values;
+    const { email = '', firstName = '', middleName = '', lastName = '' } = values;
+
+    const payload = {
+      firstName,
+      middleName,
+      lastName,
+      email,
+    };
 
     if (dispatch) {
       const res = await dispatch({
         type: 'signup/fetchUserInfo',
-        payload: {
-          firstName: fullname,
-          email,
-        },
+        payload,
       });
       const { statusCode } = res;
       if (statusCode === 400) {
@@ -47,10 +51,7 @@ const SignUp1 = (props) => {
       }
     }
 
-    storeData({
-      firstName: fullname,
-      email,
-    });
+    storeData(payload);
   };
 
   const emailValidator = (rule, value, callback) => {
@@ -119,22 +120,48 @@ const SignUp1 = (props) => {
 
         <Form.Item
           className={styles.fullNameForm}
-          label={formatMessage({
-            id: 'page.signUp.enterFullName',
-          })}
-          name="fullname"
+          label="Enter first name"
+          name="firstName"
           rules={[
             {
               required: true,
-              message: formatMessage({
-                id: 'page.signUp.inputFullNameMsg',
-              }),
+              message: 'Please input your first name!',
             },
             {
               pattern: /^[a-zA-Z ]*$/,
-              message: formatMessage({
-                id: 'page.signUp.inputFullNameInvalid',
-              }),
+              message: 'First name is invalid',
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          className={styles.fullNameForm}
+          label="Enter middle name"
+          name="middleName"
+          rules={[
+            {
+              pattern: /^[a-zA-Z ]*$/,
+              message: 'Middle name is invalid',
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          className={styles.fullNameForm}
+          label="Enter last name"
+          name="lastName"
+          rules={[
+            {
+              required: true,
+              message: 'Please input your last name!',
+            },
+            {
+              pattern: /^[a-zA-Z ]*$/,
+              message: 'Last name is invalid',
             },
           ]}
         >

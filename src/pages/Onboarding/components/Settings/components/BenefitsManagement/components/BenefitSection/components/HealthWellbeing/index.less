@@ -1,0 +1,245 @@
+.healthWellbeing{
+    width: 100%;
+
+    .loadingSpin{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+    }
+
+    .formItem{
+        width: 100%;
+        height: auto;
+
+        :global{
+            .ant-divider-horizontal{
+                margin: 0;
+            }
+
+            .ant-divider{
+                border-top: 1px solid #D6DCE0;
+            }
+        }
+        
+        .benefit{
+            padding: 30px 33px;
+
+            &__title{
+                font-family: Roboto;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 14px;
+                line-height: 16px;
+
+                color: #161C29;
+                padding-bottom: 16px;
+            }
+
+            &__subTitle{
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                font-family: Roboto;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 13px;
+                line-height: 12px;
+                &__left{
+                    color: #707177;
+                }
+
+                &__right{
+                    color: #FF5252;
+                }
+            }
+
+            &__bottom{
+                width: 100%;
+
+                  .addDocs{
+                    display: flex;
+                    align-items: center;
+                    cursor: pointer;
+                    width: fit-content;
+
+                    &__text{
+                        padding-left: 16px;
+                        font-family: Roboto;
+                        font-style: normal;
+                        font-weight: 500;
+                        font-size: 13px;
+                        line-height: 15px;
+                        /* identical to box height */
+
+                        letter-spacing: 0.121875px;
+
+                        color: #2C6DF9;
+                    }
+                }
+            }
+
+            .planDocuments{
+                padding-top: 16px;
+                :global{
+                    .ant-select-selector, .ant-input-affix-wrapper {
+                        background: #FFFFFF;
+                        border: 1px solid #D6DCE4;
+                        box-sizing: border-box;
+                        border-radius: 5px;
+
+                        height: 42px;
+                    }
+
+                    .ant-select-selection-search-input{
+                        height: 100%;
+                    }
+
+                    .ant-select-single.ant-select-show-arrow .ant-select-selection-item, .ant-select-single.ant-select-show-arrow .ant-select-selection-placeholder, 
+                    .ant-select-single.ant-select-show-arrow .ant-select-selection-search{
+                        display: flex;
+                        align-items: center;
+                    }
+
+                    .ant-select-disabled.ant-select:not(.ant-select-customize-input) .ant-select-selector{
+                        font-family: Roboto;
+                        font-style: normal;
+                        font-weight: normal;
+                        font-size: 14px;
+                        line-height: 16px;
+
+                        color: #161C29;
+                        cursor: pointer;
+                    }
+
+                    .ant-input-affix-wrapper-disabled{
+                        font-family: Roboto;
+                        font-style: normal;
+                        font-weight: normal;
+                        font-size: 14px;
+                        line-height: 16px;
+
+                        color: #161C29;
+                    }
+
+                    .ant-input[disabled]{
+                        font-family: Roboto;
+                        font-style: normal;
+                        font-weight: normal;
+                        font-size: 13px;
+                        line-height: 12px;
+
+                        color: #161C29;
+                    }
+                }
+                
+                .documents{                
+                    &__first{
+                        width: 100%;
+
+                        .documentName{
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+
+                            background: rgb(255, 255, 255);
+                            border: 1px solid rgb(214, 220, 228);
+                            box-sizing: border-box;
+                            border-radius: 5px;
+                            height: 42px;
+
+                            padding: 4px 11px;
+                            margin-bottom: 24px;
+                            cursor: pointer;
+
+                            &__text{
+                                font-family: Roboto;
+                                font-style: normal;
+                                font-weight: normal;
+                                font-size: 14px;
+                                line-height: 16px;
+                                text-decoration-line: underline;
+            
+                                color: #2C6DF9 !important;
+                            }
+                        }
+                    }
+                    
+                    &__second{
+                        padding-bottom: 24px;
+                        :global {
+                            .ant-select-arrow{
+                                font-family: Roboto;
+                                font-style: normal;
+                                font-weight: normal;
+                                font-size: 14px;
+                                line-height: 16px;
+    
+                                color: #161C29;
+                            }
+    
+                            .ant-form-item{
+                                margin-bottom: 0;
+                            }
+                        }
+    
+                        .inputNumber{
+                            width: 180px;
+                        }
+    
+                        .label{
+                            font-family: Roboto;
+                            font-style: normal;
+                            font-weight: normal;
+                            font-size: 13px;
+                            line-height: 15px;
+    
+                            color: #707177;
+                            padding-bottom: 8px;
+                        }
+    
+                    }
+
+                    .labelDocs{
+                        font-family: Roboto;
+                        font-style: normal;
+                        font-weight: bold;
+                        font-size: 13px;
+                        line-height: 15px;
+
+                        color: #707177;
+                        
+                        padding-bottom: 16px;
+                    }                
+                }
+
+            }
+        }
+    }
+}
+
+.emptyDiv{
+    width: 100%;
+    padding: 32px;
+
+    .box {
+        background-color: #fff4d1;
+        border: 1px solid #ffa100;
+        padding: 24px;
+        border-radius: 8px;
+    
+        &__content{
+            text-align: center;
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 14px;
+            line-height: 16px;
+    
+            color: #161C29;
+        }
+
+    }
+}

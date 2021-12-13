@@ -1,66 +1,46 @@
 import React, { PureComponent } from 'react';
-import { PageContainer } from '@/layouts/layout/src';
-import { Tabs, Button, Row, Col } from 'antd';
 import { history } from 'umi';
+import { Tabs } from 'antd';
+import { PageContainer } from '@/layouts/layout/src';
 import HRrequestTable from './component/HrRequestTable';
 import RelievingFormalities from './component/RelievingFormalities';
 import Settings from './component/Settings';
 import styles from './index.less';
 
 class HROffboarding extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tabKey: '1',
-    };
-  }
-
   componentDidMount = () => {
-    const { defaultActiveKey = '' } = this.props;
-    this.setState({
-      tabKey: defaultActiveKey,
-    });
-  };
-
-  onChangeTab = (key) => {
-    this.setState({ tabKey: key });
+    const { tabName = '' } = this.props;
+    if (!tabName) {
+      history.replace(`/offboarding/list`);
+    }
   };
 
   render() {
     const { TabPane } = Tabs;
-    const { tabKey } = this.state;
+    const { tabName = '', type = '' } = this.props;
+    if (!tabName) return '';
     return (
       <PageContainer>
         <div className={styles.containerEmployeeOffboarding}>
           <div className={styles.tabs}>
-            <Tabs onTabClick={(key) => this.onChangeTab(key)} activeKey={tabKey}>
-              <TabPane tab="Terminate work relationship" key="1">
+            <Tabs
+              activeKey={tabName || 'list'}
+              onChange={(key) => {
+                history.push(`/offboarding/${key}`);
+              }}
+            >
+              <TabPane tab="Terminate work relationship" key="list">
                 <div className={styles.paddingHR}>
                   <HRrequestTable onChangeTab={this.onChangeTab} />
                 </div>
               </TabPane>
-              <TabPane tab="Relieving Formalities" key="2">
+              <TabPane tab="Relieving Formalities" key="hr-relieving-formalities">
                 <RelievingFormalities />
               </TabPane>
-              <TabPane tab="Settings" key="3">
-                <Settings />
+              <TabPane tab="Settings" key="settings">
+                <Settings type={type} />
               </TabPane>
             </Tabs>
-
-            {/* <div className={styles.options}>
-              <Row gutter={[24, 0]}>
-                <Col>
-                  <Button className={styles.generate} type="primary">
-                    Generate Report
-                  </Button>
-                </Col>
-                <Col>
-                  <Button className={styles.view} type="secondary">
-                    View Activity log (15)
-                  </Button>
-                </Col>
-              </Row>
-            </div> */}
           </div>
         </div>
       </PageContainer>

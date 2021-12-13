@@ -41,7 +41,6 @@ export async function updateLocation(payload) {
   });
 }
 
-
 export async function removeLocation(payload) {
   return request('/api/locationtenant/remove', {
     method: 'POST',

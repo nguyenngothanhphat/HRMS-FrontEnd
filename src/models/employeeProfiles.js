@@ -1,7 +1,9 @@
+import { notification } from 'antd';
 import { dialog } from '@/utils/utils';
 import {
   getCompensationList,
   getGeneralInfo,
+  getGeneralInfoByUserId,
   getCompensation,
   getListSkill,
   updateGeneralInfo,
@@ -52,8 +54,9 @@ import {
   updateDependentsById,
   removeDependentsById,
   getBenefitPlans,
+  addMultiBank,
+  addMultiCertification,
 } from '@/services/employeeProfiles';
-import { notification } from 'antd';
 import { getCurrentTenant } from '@/utils/authority';
 
 // const documentCategories = [
@@ -95,6 +98,7 @@ const employeeProfile = {
     employeeTypes: [],
     departments: [],
     compensationTypes: [],
+    employee: '',
     employees: [],
     jobTitleList: [],
     originData: {
@@ -130,8 +134,26 @@ const employeeProfile = {
     listRelation: [],
     listStates: [],
     revoke: [],
+    visibleSuccess: false
   },
   effects: {
+    *fetchEmployeeIdByUserId({ payload }, { call, put }) {
+      try {
+        const response = yield call(getGeneralInfoByUserId, payload);
+        const { statusCode, data } = response;
+        // console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            employee: data,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
     *fetchGeneralInfo(
       { payload: { employee = '', tenantId = '' }, dataTempKept = {} },
       { call, put },
@@ -479,13 +501,115 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-
     *updateGeneralInfo(
       { payload = {}, dataTempKept = {}, key = '', isUpdateMyAvt = false },
       { put, call, select },
     ) {
       try {
         const response = yield call(updateGeneralInfo, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // notification.success({
+        //   message,
+        // });
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
+        yield put({
+          type: 'fetchGeneralInfo',
+          payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
+          dataTempKept,
+        });
+        yield put({
+          type: 'save',
+          payload: {visibleSuccess: true}
+        });
+        switch (key) {
+          case 'openContactDetails':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openContactDetails: false },
+            });
+            break;
+          case 'openEmployeeInfor':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openEmployeeInfor: false },
+            });
+            break;
+          case 'openPassport':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openPassport: false },
+            });
+            break;
+          case 'openVisa':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openVisa: false },
+            });
+            break;
+          case 'openPersonnalInfor':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openPersonnalInfor: false },
+            });
+            break;
+          case 'openAcademic':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openAcademic: false },
+            });
+            break;
+          default:
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openContactDetails: false },
+            });
+        }
+        if (isUpdateMyAvt) {
+          yield put({
+            type: 'user/fetchCurrent',
+          });
+        }
+        // return response;
+      } catch (errors) {
+        dialog(errors);
+        // return {};
+      }
+    },
+    *updateFirstGeneralInfo(
+      { payload = {}, dataTempKept = {}, key = '', isUpdateMyAvt = false },
+      { put, call, select },
+    ) {
+      try {
+        const { bankDetails = [], certifications = [], taxDetails = {} } = payload;
+        if (bankDetails.length !== 0) {
+          const res = yield call(addMultiBank, {
+            listBank: bankDetails,
+            tenantId: getCurrentTenant(),
+          });
+          const { statusCode } = res;
+          if (statusCode !== 200) throw res;
+        }
+        if (taxDetails) {
+          const res = yield call(getAddTax, { ...taxDetails, tenantId: getCurrentTenant() });
+          const { statusCode } = res;
+          if (statusCode !== 200) throw res;
+        }
+        let arrCertification = [];
+        if (certifications.length !== 0) {
+          const res = yield call(addMultiCertification, {
+            certifications,
+            tenantId: getCurrentTenant(),
+          });
+          const { statusCode, data } = res;
+          if (statusCode !== 200) throw res;
+          arrCertification = data;
+        }
+        const response = yield call(updateGeneralInfo, {
+          ...payload,
+          certification: arrCertification,
+        });
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
@@ -546,8 +670,10 @@ const employeeProfile = {
             type: 'user/fetchCurrent',
           });
         }
+        return response;
       } catch (errors) {
         dialog(errors);
+        return {};
       }
     },
     *fetchListTitle({ payload = {} }, { call, put }) {
@@ -578,7 +704,7 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchEmploymentInfo({ payload: { tenantId = '', id = '' } }, { call, put, select }) {
+    *fetchEmploymentInfo({ payload: { tenantId = '', id = '' } }, { call, put }) {
       let response = '';
       try {
         response = yield call(getEmploymentInfo, { tenantId, id });
@@ -891,21 +1017,43 @@ const employeeProfile = {
         dialog(errors);
       }
     },
+    *addMultiBank({ payload = {} }, { call }) {
+      try {
+        const response = yield call(addMultiBank, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *addNewTax({ payload = {} }, { call }) {
+      try {
+        const response = yield call(getAddTax, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *updateBank({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
         const response = yield call(updateBank, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
         const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
-        const { statusCode, message } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
+        // notification.success({
+        //   message,
+        // });
         yield put({
           type: 'fetchBank',
           payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
           dataTempKept,
         });
+        yield put({
+          type: 'save', 
+          payload: {visibleSuccess: true}
+        })
         if (key === 'openBank') {
           yield put({
             type: 'saveOpenEdit',
@@ -977,16 +1125,20 @@ const employeeProfile = {
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
         const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
 
-        const { statusCode, message } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
+        // notification.success({
+        //   message,
+        // });
         yield put({
           type: 'fetchTax',
           payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
           dataTempKept,
         });
+        yield put({
+          type: 'save',
+          payload: {visibleSuccess: true}
+        })
         if (key === 'openTax') {
           yield put({
             type: 'saveOpenEdit',
@@ -1041,17 +1193,21 @@ const employeeProfile = {
       let isUpdateEmployment = false;
       try {
         const response = yield call(updateEmployment, payload);
-        const { statusCode, message } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
+        // notification.success({
+        //   message,
+        // });
         const employment = yield call(getEmploymentInfo, {
           id: payload.id,
           tenantId: payload.tenantId,
         });
         yield put({ type: 'saveOrigin', payload: { employmentData: employment.data } });
         isUpdateEmployment = true;
+        yield put({
+          type: 'save',
+          payload: {visibleSuccess: true}
+        })
       } catch (errors) {
         dialog(errors);
       }

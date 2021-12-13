@@ -1,0 +1,88 @@
+@rowPaddingBlock: 16px;
+@tagPadding: 16px;
+@greenColor: #1ab88f;
+.TaskTag {
+  align-items: center;
+  padding: @tagPadding;
+  font-size: 13px;
+  line-height: 20px;
+  background: #ffffff;
+  border: 1px solid #d8dde9;
+  border-radius: 8px;
+  cursor: pointer;
+
+  .greenTag {
+    background: #eefffb;
+    border: 1px solid #eefffb;
+  }
+  .orangeTag {
+    background: #ffe9c5;
+    border: 1px solid #ffe9c5;
+  }
+  .violetTag {
+    background: #e4edff;
+    border: 1px solid #e4edff;
+  }
+
+  .leftPart {
+    .taskName {
+      color: #000000;
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 24px;
+    }
+    .taskDescription {
+      display: inline;
+      color: #000000;
+      font-size: 11px;
+      line-height: 24px;
+      .employeeTag {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin-top: 5px;
+        img {
+          width: 32px;
+          height: 32px;
+          margin-right: 10px;
+          object-fit: cover;
+          border-radius: 50%;
+        }
+        span {
+          color: #707177;
+          font-size: 11px;
+          line-height: 20px;
+        }
+      }
+    }
+  }
+  .rightPart {
+    display: flex;
+    justify-content: flex-end;
+    .progressTag {
+      color: #161c29;
+      font-size: 11px;
+      border-radius: 12px;
+      padding-inline: 8px;
+    }
+  }
+
+  :global {
+    .ant-checkbox-inner {
+      border-radius: 50%;
+    }
+    .ant-checkbox-wrapper:hover .ant-checkbox-inner,
+    .ant-checkbox:hover .ant-checkbox-inner,
+    .ant-checkbox-input:focus + .ant-checkbox-inner {
+      border-color: @greenColor !important;
+    }
+    .ant-checkbox-checked::after {
+      border-color: @greenColor!important;
+      border-radius: 50%;
+    }
+    .ant-checkbox-checked .ant-checkbox-inner {
+      background-color: @greenColor !important;
+      border-color: @greenColor!important;
+    }
+  }
+}

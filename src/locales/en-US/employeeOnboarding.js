@@ -1,16 +1,17 @@
 export default {
   'component.employeeOnboarding.onboardingOverview': 'Onboarding overview',
   'component.employeeOnboarding.settings': 'Settings',
+  'component.employeeOnboarding.newJoinees': 'New Joinees',
   'component.employeeOnboarding.customFields': 'Custom fields',
-  'component.employeeOnboarding.generate': 'Generate Report for onboarding',
+  'component.employeeOnboarding.generate': 'Export as excel',
   'component.employeeOnboarding.viewActivityLogs': 'View Activity log ',
   'component.onboardingOverview.viewActivityLogs': 'View Activity log ',
   'component.onboardingOverview.sentEligibilityForms': 'Sent Eligibility forms ',
   'component.onboardingOverview.receivedSubmittedDocuments': 'Received Submitted Documents',
   'component.receivedSubmittedDocuments.rookieId': 'Rookie Id',
   // Onboard Table
-  'component.onboardingOverview.rookieId': 'Rookie Id',
-  'component.onboardingOverview.rookieName': 'Rookie Name',
+  'component.onboardingOverview.candidateId': 'Candidate Id',
+  'component.onboardingOverview.candidateName': 'Candidate Name',
   'component.onboardingOverview.position': 'Position',
   'component.onboardingOverview.location': 'Location',
   'component.onboardingOverview.dateSent': 'Date sent',
@@ -36,7 +37,7 @@ export default {
   'component.onboardingOverview.noData': 'No data',
   // Left menu
   'component.onboardingOverview.pendingEligibilityChecks': 'Pending Eligibility Checks',
-  'component.onboardingOverview.addTeamMember': 'Add Team Member',
+  'component.onboardingOverview.addTeamMember': 'Add team member',
   // Settings document and templates
   'component.documentAndTemplates.title': 'Document & Templates',
   'component.documentAndTemplates.subTitle':
@@ -116,6 +117,7 @@ export default {
   'component.editEmailNote.note3':
     'You can use the Auto Text feature to generate personalized emails from a template.',
   'component.customEmailsTableField.editEmail': 'Edit email',
+  'component.editEmailHeader.defaultTitle': 'View a system default email',
   'component.editEmailHeader.title': 'Edit a custom email reminder',
   'component.editEmailForm.addCondition': '+ Add another condition',
   'component.editEmailForm.triggerNote': 'You can add additional events with',

@@ -1,191 +1,192 @@
-import React, { useState, useEffect } from 'react';
-import { ReactComponent as SortIcon } from '@/assets/dashboard_sort.svg';
-// import { ReactComponent as FilterIcon } from '@/assets/dashboard_filter.svg';
-import { formatMessage } from 'umi';
 import { Tabs } from 'antd';
-
-import ActivityItem from '../ActivityItem';
-
-import s from './index.less';
+import React, { useState, useEffect } from 'react';
+import { connect, history } from 'umi';
+import LeftArrow from '@/assets/dashboard/leftArrow.svg';
+import CommonModal from './components/CommonModal';
+import styles from './index.less';
+import CommonTab from './components/CommonTab';
 
 const { TabPane } = Tabs;
 
-const activityList = [
+const mockNotification = [
   {
+    date: '09/23/2021',
     id: 1,
-    day: 22,
-    month: 'May',
-    year: 2020,
-    info: (
-      <p>
-        Resource allocation sheet for Week 17 <strong>[08.22.20 - 08.28.20]</strong> received.
-      </p>
-    ),
+    name: 'Aditya Venkatasan',
+    type: 'Asset',
+    userId: 'adityav',
   },
   {
+    date: '09/23/2021',
     id: 2,
-    day: 15,
-    month: 'June',
-    year: 2020,
-    info: (
-      <p>
-        Resource allocation sheet for Week 17 <strong>[08.22.20 - 08.28.20]</strong> received.
-      </p>
-    ),
+    name: 'Aditya Venkatasan',
+    type: 'Asset',
+    userId: 'adityav',
   },
   {
+    date: '09/23/2021',
     id: 3,
-    day: 4,
-    month: 'May',
-    year: 2020,
-    info: (
-      <p>
-        Resource allocation sheet for Week 17 <strong>[08.22.20 - 08.28.20]</strong> received.
-      </p>
-    ),
+    name: 'Aditya Venkatasan',
+    type: 'Asset',
+    userId: 'adityav',
   },
   {
+    date: '09/23/2021',
     id: 4,
-    day: 8,
-    month: 'July',
-    year: 2020,
-    info: (
-      <p>
-        Resource allocation sheet for Week 17 <strong>[08.22.20 - 08.28.20]</strong> received.
-      </p>
-    ),
+    name: 'Aditya Venkatasan',
+    type: 'Asset',
+    userId: 'adityav',
   },
   {
+    date: '09/23/2021',
     id: 5,
-    day: 13,
-    month: 'Feb',
-    year: 2020,
-    info: (
-      <p>
-        Resource allocation sheet for Week 17 <strong>[08.22.20 - 08.28.20]</strong> received.
-      </p>
-    ),
-  },
-  {
-    id: 6,
-    day: 17,
-    month: 'Oct',
-    year: 2020,
-    info: (
-      <p>
-        Resource allocation sheet for Week 17 <strong>[08.22.20 - 08.28.20]</strong> received.
-      </p>
-    ),
-  },
-  {
-    id: 7,
-    day: 23,
-    month: 'Aug',
-    year: 2020,
-    info: (
-      <p>
-        Resource allocation sheet for Week 17 <strong>[08.22.20 - 08.28.20]</strong> received.
-      </p>
-    ),
+    name: 'Aditya Venkatasan',
+    type: 'Asset',
+    userId: 'adityav',
   },
 ];
 
-const allListData = activityList;
-const requireListData = activityList.splice(0, 5);
+const mockTicket = [
+  {
+    date: '09/23/2021',
+    id: 1,
+    ticketID: '123123',
+  },
+  {
+    date: '09/23/2021',
+    id: 2,
+    ticketID: '123123',
+  },
+  {
+    date: '09/23/2021',
+    id: 3,
+    ticketID: '123123',
+  },
+  {
+    date: '09/23/2021',
+    id: 4,
+    ticketID: '123123',
+  },
+];
 
-const ActivityLog = () => {
-  const [ascending, setAscending] = useState(false);
-  const [allList, setAllList] = useState([]);
-  const [activeTab, setActiveTab] = useState('1');
-  const [requireList, setRequireList] = useState([]);
+const ActivityLog = (props) => {
+  const [activeKey, setActiveKey] = useState('1');
+  const [modalVisible, setModalVisible] = useState(false);
+  const { dispatch, listTicket: listPendingApprovals = [], permissions = {} } = props;
 
-  const allCount = allList.length < 10 ? `0${allList.length}` : allList.length;
-  const requireCount = requireList.length < 10 ? `0${requireList.length}` : requireList.length;
+  const viewPendingApprovalDashboard = permissions.viewPendingApprovalDashboard !== -1;
 
+  // USE EFFECT
   useEffect(() => {
-    setAllList(allListData);
-    setRequireList(requireListData);
+    dispatch({
+      type: 'dashboard/fetchListTicket',
+    });
   }, []);
 
-  const sort = () => {
-    let currentList;
-    if (activeTab === '1') {
-      currentList = [...allList];
-    } else {
-      currentList = [...requireList];
+  // if employee, no render the pending approval tab, set active key to the second tab
+  useEffect(() => {
+    if (!viewPendingApprovalDashboard) {
+      setActiveKey('2')
     }
+  }, [viewPendingApprovalDashboard]);
 
-    if (currentList.length === 0) {
-      return;
-    }
-
-    // sort
-    const newList = currentList.sort((item1, item2) => {
-      const date1 = new Date(`${item1.month} ${item1.day},${item1.year}`);
-      const date2 = new Date(`${item2.month} ${item2.day},${item2.year}`);
-      if (ascending) {
-        return date2.getTime() - date1.getTime();
-      }
-      return date1.getTime() - date2.getTime();
-    });
-
-    // Update correspond list
-    if (activeTab === '1') {
-      setAllList(newList);
-    } else {
-      setRequireList(newList);
-    }
-
-    setAscending((prevState) => !prevState);
+  const renderShowAll = () => {
+    return 'Show all requests';
   };
 
-  // const filter = () => {
-  //   console.log('FILTER');
-  // };
+  const onViewAllClick = () => {
+    switch (activeKey) {
+      case '1':
+        history.push('/dashboard/approvals');
+        break;
+      default:
+        setModalVisible(true);
+        break;
+    }
+  };
 
+  const renderTabName = (key, number = 0) => {
+    const addZeroToNumber = () => {
+      if (number < 10 && number >= 0) return `0${number}`.slice(-2);
+      return number;
+    };
+
+    let result = '';
+    switch (key) {
+      case '1':
+        result = `Pending Approvals`;
+        break;
+      case '2':
+        result = `Notifications`;
+        break;
+      case '3':
+        result = `My Tickets`;
+        break;
+      default:
+        break;
+    }
+    if (number > 0) {
+      result += ` (${addZeroToNumber()})`;
+    }
+    return result;
+  };
+
+  const getDataOfModal = () => {
+    switch (activeKey) {
+      case '1':
+        return listPendingApprovals;
+      case '2':
+        return mockNotification;
+      case '3':
+        return mockTicket;
+      default:
+        return '';
+    }
+  };
+
+  // MAIN
   return (
-    <div className={s.container}>
-      <h3>{formatMessage({ id: 'pages.dashboard.activityLog.title' })}</h3>
-
-      <div className={s.actionContainer}>
-        <div className={s.action} onClick={() => sort()}>
-          <SortIcon />
-          <span>{formatMessage({ id: 'pages.dashboard.activityLog.sort' })}</span>
+    <div className={styles.ActivityLog}>
+      <div>
+        <div className={styles.header}>
+          <span className={styles.header__headerText}>Activity Log</span>
         </div>
-
-        {/* <div className={s.action} onClick={() => filter()}>
-          <FilterIcon />
-          <span>{formatMessage({ id: 'pages.dashboard.activityLog.filter' })}</span>
-        </div> */}
+        <div className={styles.content}>
+          <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
+            {/* only manager / hr manager see this tab */}
+            {viewPendingApprovalDashboard && (
+              <TabPane tab={renderTabName('1', listPendingApprovals.length)} key="1">
+                <CommonTab type="1" data={listPendingApprovals} />
+              </TabPane>
+            )}
+            <TabPane tab={renderTabName('2', mockNotification.length)} key="2">
+              <CommonTab type="2" data={mockNotification} />
+            </TabPane>
+            <TabPane tab={renderTabName('3', mockTicket.length)} key="3">
+              <CommonTab type="3" data={mockTicket} />
+            </TabPane>
+          </Tabs>
+        </div>
       </div>
-
-      <Tabs defaultActiveKey="1" onChange={(key) => setActiveTab(key)}>
-        <TabPane
-          tab={`${formatMessage({ id: 'pages.dashboard.activityLog.all' })} (${allCount})`}
-          key="1"
-        >
-          <div className={s.main}>
-            {allList.map((item) => {
-              const { day = '', month = '', info = '', id = '' } = item;
-              return <ActivityItem key={id} day={day} month={month} info={info} />;
-            })}
-          </div>
-        </TabPane>
-
-        <TabPane
-          tab={`${formatMessage({ id: 'pages.dashboard.activityLog.require' })} (${requireCount})`}
-          key="2"
-        >
-          <div className={s.main}>
-            {requireList.map((item) => {
-              const { day = '', month = '', info = '', id = '' } = item;
-              return <ActivityItem key={id} day={day} month={month} info={info} />;
-            })}
-          </div>
-        </TabPane>
-      </Tabs>
+      <div className={styles.viewAllBtn} onClick={() => onViewAllClick(activeKey)}>
+        {renderShowAll()}
+        <img src={LeftArrow} alt="expand" />
+      </div>
+      <CommonModal
+        visible={modalVisible}
+        title={renderTabName(activeKey)}
+        onClose={() => setModalVisible(false)}
+        tabKey={activeKey}
+        data={getDataOfModal()}
+      />
     </div>
   );
 };
 
-export default ActivityLog;
+export default connect(
+  ({ dashboard: { listTicket = [] } = {}, loading, user: { permissions = {} } = {} }) => ({
+    listTicket,
+    permissions,
+    loadingFetchListTicket: loading.effects['dashboard/fetchListTicket'],
+  }),
+)(ActivityLog);

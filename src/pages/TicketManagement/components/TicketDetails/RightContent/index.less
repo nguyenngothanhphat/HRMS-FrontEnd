@@ -1,0 +1,121 @@
+.RightContent {
+  background: #ffffff;
+  border: 1px solid #d6dce0;
+  border-radius: 8px;
+  :global {
+    .ant-form-item-explain {
+      padding-left: 24px !important;
+    }
+    .ant-form-item {
+      margin-bottom: 0;
+    }
+    .ant-form-item-control:nth-child(1) {
+      height: 120px;
+    }
+    .ant-input-group-addon {
+      width: 85%;
+      padding-left: 20px;
+      color: #161c29;
+      font-weight: normal;
+      font-size: 12px;
+      font-style: normal;
+      line-height: 14px;
+      text-align: left;
+      background: #f4f6f7;
+      opacity: 0.5;
+    }
+  }
+  &__title {
+    padding: 24px;
+    color: #161c29;
+    font-weight: bold;
+    font-size: 16px;
+    font-family: Roboto;
+    font-style: normal;
+    line-height: 19px;
+  }
+  &__time {
+    padding: 24px 24px 0 24px;
+    border-top: 1px solid #d6dce0;
+    :global {
+      .ant-input {
+        width: 100%;
+        height: 35px;
+        background: #ffffff;
+        border-right: none;
+        border-radius: 4px;
+      }
+      .ant-select {
+        width: 100% !important;
+        margin-bottom: 16px;
+      }
+      .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+        height: 35px;
+        border-radius: 4px;
+      }
+    }
+  }
+  &__status {
+    padding: 24px;
+    border-bottom: 1px solid #d6dce0;
+    :global {
+      .ant-input {
+        width: 100%;
+        height: 35px;
+        background: #ffffff;
+        border-radius: 4px;
+      }
+      .ant-select {
+        width: 100% !important;
+        margin-bottom: 16px;
+      }
+      .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+        height: 35px;
+        border-radius: 4px;
+      }
+    }
+  }
+  &__btn {
+    padding: 24px 0;
+    text-align: center;
+  }
+  :global {
+    .ant-btn {
+      height: 36px;
+      padding: 10px 27px;
+      color: #464646;
+      font-weight: 500;
+      font-size: 13px;
+      font-family: Roboto;
+      font-style: normal;
+      line-height: 15px;
+      letter-spacing: 0.2px;
+      background: transparent;
+      border: none;
+      border-radius: 18px;
+      outline: none;
+      box-shadow: none;
+    }
+    .ant-btn[disabled],
+    .ant-btn[disabled]:hover {
+      opacity: 0.5;
+    }
+  }
+  .btnUpdate {
+    color: #ffffff !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    line-height: 16px !important;
+    letter-spacing: 0.13125px !important;
+    background: #ffa100 !important;
+  }
+  .btnUpdate__disable {
+    color: #ffffff !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    line-height: 16px !important;
+    letter-spacing: 0.13125px !important;
+    background: #ffa100 !important;
+    opacity: 0.5;
+  }
+}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Input, Button } from 'antd';
-import { CheckCircleFilled } from '@ant-design/icons';
+import { CheckCircleFilled, EyeFilled } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
 
 import styles from './index.less';
@@ -91,7 +91,12 @@ class ResetPassword extends Component {
               },
             ]}
           >
-            <Input.Password className={styles.inputPassword} />
+            <Input.Password
+              iconRender={(visible) =>
+                visible ? <EyeFilled style={{ color: '#2c6df9' }} /> : <EyeFilled />
+              }
+              className={styles.inputPassword}
+            />
           </Form.Item>
           <Form.Item
             label={formatMessage({ id: 'pages.resetPassword.confirmPasswordLabel' })}
@@ -114,7 +119,13 @@ class ResetPassword extends Component {
               }),
             ]}
           >
-            <Input.Password className={styles.inputPassword} style={{ marginBottom: '1rem' }} />
+            <Input.Password
+              iconRender={(visible) =>
+                visible ? <EyeFilled style={{ color: '#2c6df9' }} /> : <EyeFilled />
+              }
+              className={styles.inputPassword}
+              style={{ marginBottom: '1rem' }}
+            />
           </Form.Item>
           <Form.Item
             noStyle

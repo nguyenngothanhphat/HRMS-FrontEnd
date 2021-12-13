@@ -403,7 +403,6 @@ class EditEmailForm extends PureComponent {
   };
 
   onChangeSendingDate = (value) => {
-
     // this.setState({ _sendingDate: value.target.value });
   };
 
@@ -578,7 +577,6 @@ class EditEmailForm extends PureComponent {
     }
 
     newConditionsData[index][name] = value;
-
 
     this.setState({
       conditionsData: newConditionsData,
@@ -1065,7 +1063,7 @@ class EditEmailForm extends PureComponent {
                 <Form.Item name="subject" label="Email subject">
                   <Input
                     defaultValue={subject}
-                    // disabled
+                    disabled={_isDefault}
                     onChange={(e) => this.onChangeEmailSubject(e.target.value)}
                   />
                 </Form.Item>
@@ -1076,6 +1074,7 @@ class EditEmailForm extends PureComponent {
                 {/* <Form.Item name="message" label="Email message"> */}
                 <p className={styles.label}>Email message :</p>
                 <EditorQuill
+                  _isDefault={_isDefault}
                   messages={messages}
                   handleChangeEmail={this.handleChangeEmail}
                   listAutoText={listAutoText}
@@ -1085,8 +1084,7 @@ class EditEmailForm extends PureComponent {
               <Col className={styles.buttons} span={8} offset={16}>
                 <Link
                   to={{
-                    pathname: '/employee-onboarding',
-                    state: { defaultActiveKey: '2' },
+                    pathname: '/onboarding/settings/custom-emails',
                   }}
                 >
                   <Button type="secondary">
@@ -1098,7 +1096,7 @@ class EditEmailForm extends PureComponent {
                   <Button
                     type="primary"
                     htmlType="submit"
-                    disabled={disabled}
+                    disabled={disabled || _isDefault}
                     loading={loadingUpdateCustomEmail}
                   >
                     {formatMessage({ id: 'component.editEmailForm.submit' })}

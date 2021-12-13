@@ -1,0 +1,73 @@
+.approvalPage {
+  margin: 24px;
+
+  &__table {
+    background: #FFFFFF;
+    border: 1px solid #D6DCE0;
+    border-radius: 8px;
+
+    .tableApproval {
+      margin: 0 12px
+    }
+
+    .searchFilter {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin: 24px;
+
+      :global {
+        .ant-input-prefix {
+          margin-right: 16px;
+        }
+
+        .ant-input .nt-input-lg {
+          font-style: normal;
+          font-weight: normal;
+          font-size: 14px;
+          line-height: 16px;
+
+          color: #707177;
+
+          mix-blend-mode: normal;
+          opacity: 0.5;
+        }
+
+        .ant-input-affix-wrapper-focused {
+          box-shadow: none;
+        }
+      }
+
+      &__icon {
+        margin-right: 14px;
+        // cursor: pointer;
+      }
+
+      &__input {
+        background: #FFFEFE;
+        border: 1px solid #D6DCE0;
+        border-radius: 33px;
+        width: 240px;
+        height: 37px;
+      }
+    }
+
+    .btnDetail {
+      font-weight: 500;
+      font-size: 12px;
+      text-decoration-line: underline;
+      color: #FFA100;
+    }
+
+    .btnAction {
+      padding: 0;
+    }
+
+    .blueText {
+      font-weight: 500;
+      font-size: 13px;
+      color: #2C6DF9;
+
+    }
+  }
+}

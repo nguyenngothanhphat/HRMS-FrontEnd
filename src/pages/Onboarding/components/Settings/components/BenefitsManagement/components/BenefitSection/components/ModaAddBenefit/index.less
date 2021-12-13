@@ -1,0 +1,264 @@
+.addBenefitModal{
+  .loadingModal{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+  }
+
+    :global{
+        .ant-modal-content {
+        box-sizing: border-box;
+        width: 590px;
+        height: auto;
+        background-color: #fff;
+        border-right: 1px solid #d6dce0;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 10px 0 10px 10px;
+      }
+      .ant-modal-body {
+        padding: 0px 0px 1px 0px;
+      }
+
+      .ant-modal-close-x {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 54px;
+        height: 48px;
+        color: #fff;
+        background-color: #2c6df9;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+        &:active {
+          opacity: 0.5;
+        }
+      }
+
+      .ant-modal-footer {
+        padding: 10px 67px;
+      }
+    }
+
+    .addBenefit{
+        width: 100%;
+        &__header{
+            padding: 24px;
+            border-bottom: 1px solid #D6DCE0;
+
+            &__title{
+                font-family: Roboto;
+                font-style: normal;
+                font-weight: bold;
+                font-size: 16px;
+                line-height: 19px;
+                color: #161C29;
+            }
+        }
+
+        &__body{
+            padding: 24px;
+            border-bottom: 1px solid #D6DCE0;
+
+            :global{
+              .ant-select-selector, .ant-picker, .ant-input-affix-wrapper{
+                width: 100%;
+                height: 42px;
+                background: #FFFFFF;
+                box-sizing: border-box;
+                border-radius: 4px;
+                border: 1px solid #D6DCE0;
+             }
+
+              .ant-select-selection-search-input{
+                  height: 100%;
+              }
+
+             .ant-select-arrow{
+                font-family: Roboto;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 14px;
+                line-height: 16px;
+
+                color: #161C29;
+             }
+
+              .ant-select-single.ant-select-show-arrow .ant-select-selection-item, .ant-select-single.ant-select-show-arrow .ant-select-selection-placeholder, 
+              .ant-select-single.ant-select-show-arrow .ant-select-selection-search{
+                  display: flex;
+                  align-items: center;
+              }
+            }
+
+            &_label{
+              font-family: Roboto;
+              font-style: normal;
+              font-weight: normal;
+              font-size: 13px;
+              line-height: 15px;
+
+              color: #707177;
+
+              padding-bottom: 8px;
+            }
+
+            .documentSection{
+              width: 100%;
+              .uploadIcon {
+                margin-right: 10px;
+              }
+              .chooseFileText {
+                display: inline-block;
+                font-family: Roboto;
+                font-style: normal;
+                font-weight: 500;
+                font-size: 14px;
+                line-height: 16px;
+                letter-spacing: 0.13125px;
+
+                color: #2C6DF9;
+              }
+              .uploadText {
+                display: inline-block;
+                margin-left: 5px;
+                font-family: Roboto;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 13px;
+                line-height: 15px;
+
+                color: #707177;
+                opacity: 0.6;
+              }
+
+              :global {
+                .ant-upload.ant-upload-drag {
+                  min-height: 200px;
+                  background: #fff;
+                  border-radius: 8px;
+                }
+                .ant-btn {
+                  height: 35px;
+                  padding: 0 35px;
+                  background-color: #ffa100;
+                  border: none;
+                  border-radius: 40px;
+                  span {
+                    color: white;
+                    font-weight: 700;
+                    font-size: 14px;
+                  }
+                }
+
+                .ant-upload.ant-upload-drag .ant-upload{
+                  padding: 0;
+                  min-height: 200px;
+                  cursor: pointer;
+                }
+              }
+
+              .chooseFile{
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+              }
+
+              .fileUploadedContainer{
+
+                .dragAndDrop{
+                  padding-bottom: 8px;
+                }
+                
+                &__listFiles {
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  padding: 16px;
+                  padding-bottom: 0;
+
+                  &__files{
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    .previewIcon {
+                      img {
+                        width: 20px;
+                        margin-bottom: 2px;
+                      }
+                    }
+                    .fileName {
+                      font-size: 14px;
+                      padding-left: 8px;
+                      a {
+                        color: #2c6df9;
+                      }
+                    }
+                  }
+                  .trashIcon {
+                    // position: absolute;
+                    // top: -24px;
+                    // right: -5px;
+                    display: block;
+                    cursor: pointer;
+                    &:hover {
+                      opacity: 0.9;
+                    }
+                  }
+  
+
+                }
+
+              }
+            }
+          }
+          
+          &__bottom{
+            padding: 24px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+
+            &_btn{
+                font-family: Roboto;
+                font-style: normal;
+                font-weight: 500;
+                font-size: 14px;
+                line-height: 16px;
+                letter-spacing: 0.13125px;
+
+                box-sizing: border-box;
+                border-radius: 25px;
+
+                padding: 12px 32px;
+                height: 40px;
+            }
+            
+            .cancelBtn{
+                color: #FFA100;
+                background: transparent;
+                border: none;
+                margin-right: 10px;
+            }
+            
+            .addBtn{
+                color: #FFFFFF;
+                background: #FFA100;
+                border: 1px solid #FFA100;
+            }
+        }
+    }
+}
+
+.calendar{
+  width: 540px;
+
+  :global{
+    .ant-picker-panel, .ant-picker-date-panel, .ant-picker-date-panel .ant-picker-content {
+      width: 100%;
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Modal, Affix } from 'antd';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import ItemMenu from './components/ItemMenu';
 import s from './index.less';
 
@@ -18,26 +18,35 @@ class CommonLayout extends PureComponent {
     };
   }
 
-  componentDidMount() {
-    const { listMenu } = this.props;
-    const getName = localStorage.getItem('Rolesname');
-    const listMenuFilter = listMenu.filter((item) => item.name === getName);
-    this.setState({
-      selectedItemId: listMenuFilter[0].id,
-      displayComponent: listMenuFilter[0].component,
-    });
-  }
-
-  handleCLickItemMenu = (item) => {
-    this.setState({
-      selectedItemId: item.id,
-      displayComponent: item.component,
-    });
+  componentDidMount = () => {
+    this.fetchTab();
     window.scrollTo({
       top: 0,
       left: 0,
       behavior: 'smooth',
     });
+  };
+
+  componentDidUpdate(prevProps) {
+    const { tabName = '' } = this.props;
+
+    if (prevProps.tabName !== tabName) {
+      this.fetchTab();
+    }
+  }
+
+  fetchTab = () => {
+    const { listMenu, roleId = '' } = this.props;
+    const findTab = listMenu.find((menu) => menu.link === roleId) || listMenu[0];
+
+    this.setState({
+      selectedItemId: findTab.id || 1,
+      displayComponent: findTab.component,
+    });
+  };
+
+  handleCLickItemMenu = (item) => {
+    history.push(`/settings/roles-permissions/${item.link}`);
   };
 
   showConfirm = (item) => {
@@ -63,7 +72,7 @@ class CommonLayout extends PureComponent {
 
     return (
       <div className={s.root}>
-        <Affix offsetTop={105}>
+        <Affix offsetTop={117}>
           <div className={s.viewLeft}>
             <div className={s.viewLeft__menu}>
               {listMenu.map((item) => (

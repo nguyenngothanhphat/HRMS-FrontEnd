@@ -1,0 +1,311 @@
+@border-color: #d6dce0;
+@orange: #fe5d27;
+@darkBlue: #253c6b;
+@expired-background: #cddcfc;
+@new-background: #fff4f1;
+@border-color: #d6dce0;
+@checkbox-background: #e7eaee;
+@checkbox-border: #707177;
+@gray: #707177;
+@red: #ff5252;
+@blue: #2c6df9;
+@white: #FFFFFF;
+@yelow: #ffa100;
+
+.modalCustom {
+  :global {
+    .ant-btn-primary {
+      width: 94px;
+      height: 40px;
+      object-fit: contain;
+      color: @white;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: Roboto;
+      letter-spacing: 0.13px;
+      // display: none;
+      text-shadow: none;
+      background-color: @yelow;
+      border: solid 1px @yelow;
+      border-radius: 25px;
+      box-shadow: none;
+
+      &:hover {
+        color: @white;
+        background-color: @yelow;
+      }
+    }
+
+    .ant-btn-secondary {
+      width: 94px;
+      height: 40px;
+      padding-right: 41px;
+      object-fit: contain;
+      color: @yelow;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: Roboto;
+      letter-spacing: 0.13px;
+      border: solid 0;
+      border-radius: 25px;
+    }
+
+    .ant-modal-header {
+      padding: 24px;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+
+    .ant-modal-body {
+      padding: 32px;
+    }
+
+    .ant-modal-content {
+      border-radius: 8px;
+    }
+
+    .ant-form-item {
+      margin-bottom: 0;
+    }
+
+    .ant-modal-footer {
+      padding: 24px;
+    }
+
+    .ant-modal-close-x {
+      position: absolute;
+      background-color: @blue;
+      color: #fff;
+      width: 54px;
+      height: 48px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+
+      &:active {
+        opacity: 0.5;
+      }
+    }
+
+    .ant-checkbox-inner {
+      width: 18px;
+      height: 18px;
+      background-color: #fff;
+      border: 1px solid #D8D8D8;
+      border-radius: 4px;
+    }
+
+    .ant-checkbox-checked .ant-checkbox-inner {
+      background-color: #F0F3F9;
+    }
+
+    .ant-checkbox-checked .ant-checkbox-inner::after {
+      border: 2px solid @blue;
+      border-top: 0;
+      border-left: 0;
+    }
+
+    .ant-input {
+      height: 42px;
+      width: 100%;
+      border: 1px solid #D6DCE4;
+      box-sizing: border-box;
+      border-radius: 5px;
+    }
+
+    .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+      box-shadow: none;
+    }
+
+    .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+      box-sizing: border-box;
+      height: 42px;
+      padding: 5px 11px 0;
+      background: #ffffff;
+      border-radius: 5px;
+    }
+
+    .ant-select-single:not(.ant-select-customize-input) .ant-select-selector .ant-select-selection-search-input {
+      height: 36px;
+    }
+
+    .ant-form-item {
+      margin-bottom: 24px;
+    }
+
+    .ant-form-item-label>label {
+      font-size: 13px;
+      color: #707177;
+    }
+
+    .ant-select-multiple.ant-select-show-arrow .ant-select-selector,
+    .ant-select-multiple.ant-select-allow-clear .ant-select-selector {
+      min-height: 40px;
+      border-radius: 5px;
+      border: solid 1px #d6dce4;
+    }
+
+    .ant-select-multiple.ant-select-show-arrow .ant-select-selector,
+    .ant-select-multiple.ant-select-allow-clear .ant-select-selector :focus {
+      box-shadow: none;
+    }
+
+    .ant-tag {
+      border: none;
+      /* height: 25px; */
+      border-radius: 5px;
+      font-weight: 500;
+      /* align-items: center; */
+      /* text-align: center; */
+      color: #707177;
+    }
+    .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before{
+      display: none;
+    }
+  }
+
+
+  .btnSubmit {
+    font-size: 14px;
+    width: fit-content;
+    // height: 40px;
+    font-weight: 600;
+    border-radius: 25px;
+    color: #fff;
+    background-color: @yelow;
+    border: none;
+  }
+
+  .btnSubmit:disabled {
+    color: #fff;
+    opacity: 0.5;
+  }
+
+  .btnCancel {
+    border: none;
+    display: inline-block;
+    color: @yelow;
+    font-size: 14px;
+    font-weight: 500;
+    margin-right: 20px;
+    cursor: pointer;
+
+    &:active {
+      opacity: 0.5;
+    }
+  }
+
+  .btnLater {
+    border: none;
+    display: inline-block;
+    color: @gray;
+    font-size: 14px;
+  }
+
+  .mainTop {
+    display: flex;
+    justify-content: center;
+
+    .step {
+      width: 300px;
+
+      :global {
+        .ant-steps-item {
+          padding-left: 0 !important;
+        }
+
+        .ant-steps-item-icon {
+          margin: 0;
+          ;
+        }
+
+        .ant-steps-item-title {
+          padding: 0;
+        }
+
+        .ant-steps-item-finish {
+          .ant-steps-item-title {
+            color: #7d7d7d !important;
+          }
+
+          .ant-steps-item-icon {
+            background-color: @blue  !important;
+
+            path {
+              fill: white !important;
+            }
+          }
+
+
+        }
+
+        .ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item {
+          padding: 0;
+        }
+
+        .ant-steps-item-title::after {
+          height: 2px;
+        }
+      }
+
+    }
+  }
+
+  .mainContent {
+    margin-top: 45px;
+
+    .form {
+      &__title {
+        font-weight: 500;
+        font-size: 16px;
+        color: #161C29;
+      }
+
+      &__description {
+        font-size: 13px;
+        color: #464646;
+      }
+
+      &__block {
+        .containBlock {
+          position: relative;
+          margin-top: 24px;
+          border-bottom: 1px solid #D6DCE4;
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          .deleteBlock {
+            position: absolute;
+            right: 0;
+            top: -4px;
+            z-index: 10;
+
+            .btnRemove {
+              color: @red;
+
+              &:hover {
+                color: @red
+              }
+            }
+          }
+        }
+      }
+
+    }
+  }
+
+  .btnAdd {
+    padding: 0 !important;
+    color: @blue  !important;
+    font-weight: 500;
+    font-size: 14px;
+
+    .text {
+      margin-left: 10px;
+    }
+  }
+}

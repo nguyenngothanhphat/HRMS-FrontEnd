@@ -1,17 +1,26 @@
+/* eslint-disable prefer-promise-reject-errors */
+/* eslint-disable compat/compat */
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent, Fragment } from 'react';
-import { Button, Form, Input, Select } from 'antd';
+import { Button, Form, Input, notification, Select } from 'antd';
 import { connect } from 'umi';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 const { Option } = Select;
 
 @connect(
-  ({ country: { listState = [], listCountry = [] } = {}, companiesManagement = {}, loading }) => ({
+  ({
+    country: { listState = [], listCountry = [] } = {},
+    companiesManagement = {},
+    loading,
+    user: { currentUser: { manageTenant = [] } = {} } = {},
+  }) => ({
     listState,
     listCountry,
     companiesManagement,
+    manageTenant,
     loadingAddLocation: loading.effects['companiesManagement/addLocation'],
   }),
 )
@@ -50,29 +59,74 @@ class AddWorkLocationForm extends PureComponent {
 
   handleCancelAdd = () => {};
 
-  handleAddLocation = (values) => {
-    const { handleCancelAdd = () => {} } = this.props;
+  handleAddLocation = async (values) => {
+    const { dispatch, handleCancelAdd = () => {}, manageTenant = [] } = this.props;
+    const tenantId = getCurrentTenant();
+    const companyId = getCurrentCompany();
 
-    const {
-      companiesManagement: { idCurrentCompany = '' },
-      dispatch,
-    } = this.props;
+    const workLocations = [{ ...values }];
 
-    if (idCurrentCompany) {
-      const payload = {
-        ...values,
-        company: idCurrentCompany,
+    const formatListLocation = workLocations.map((location) => {
+      const {
+        name = '',
+        addressLine1 = '',
+        addressLine2 = '',
+        city = '',
+        country = '',
+        state = '',
+        zipCode = '',
+      } = location;
+      return {
+        name,
+        headQuarterAddress: {
+          addressLine1,
+          addressLine2,
+          city,
+          country: country || country?._id || '',
+          state,
+          zipCode,
+        },
+        legalAddress: {
+          addressLine1,
+          addressLine2,
+          city,
+          country: country || country?._id || '',
+          state,
+          zipCode,
+        },
+        isHeadQuarter: false,
       };
+    });
+
+    const payload = {
+      locations: formatListLocation,
+      company: companyId,
+      tenantId,
+    };
+
+    const res = await dispatch({
+      type: 'companiesManagement/addMultiLocation',
+      payload,
+    });
+    const { statusCode } = res;
+    if (statusCode === 200) {
+      notification.success({
+        message: 'Add new locations successfully.',
+      });
+      // refresh locations in dropdown menu (owner)
+      // dispatch({
+      //   type: 'locationSelection/fetchLocationListByParentCompany',
+      //   payload: {
+      //     company: companyId,
+      //     tenantIds: manageTenant,
+      //   },
+      // });
+      // refresh work locations list
       dispatch({
-        type: 'companiesManagement/addLocation',
-        payload,
-      }).then((resp) => {
-        if (resp) {
-          const { statusCode } = resp;
-          if (statusCode === 200) {
-            handleCancelAdd();
-          }
-        }
+        type: 'companiesManagement/fetchLocationsList',
+        payload: { company: companyId, tenantId },
+      }).then(() => {
+        handleCancelAdd();
       });
     }
   };
@@ -95,7 +149,7 @@ class AddWorkLocationForm extends PureComponent {
             {...formLayout}
             colon={false}
             ref={this.formRef}
-            onValuesChange={this.handleFormAddLocation}
+            // onValuesChange={this.handleFormAddLocation}
             onFinish={this.handleAddLocation}
           >
             <>
@@ -105,6 +159,7 @@ class AddWorkLocationForm extends PureComponent {
                 rules={[
                   {
                     required: true,
+                    message: 'Please enter location name!',
                   },
                   {
                     pattern: /^([a-zA-Z0-9]((?!__|--)[a-zA-Z0-9_\-\s])+[a-zA-Z0-9])$/,
@@ -112,18 +167,34 @@ class AddWorkLocationForm extends PureComponent {
                   },
                 ]}
               >
-                <Input />
+                <Input placeholder="Location Name" />
               </Form.Item>
               <Form.Item
-                label="Address"
-                name="address"
+                label="Address line 1"
+                name="addressLine1"
                 rules={[
                   {
                     required: true,
+                    message: 'Please enter address line 1!',
                   },
                 ]}
               >
-                <Input />
+                <Input placeholder="Address Line 1" />
+              </Form.Item>
+              <Form.Item label="Address line 2" name="addressLine2">
+                <Input placeholder="Address Line 2" />
+              </Form.Item>
+              <Form.Item
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter City Name!',
+                  },
+                ]}
+                label="City Name"
+                name="city"
+              >
+                <Input placeholder="City Name" />
               </Form.Item>
               <Form.Item
                 label="Country"
@@ -131,6 +202,7 @@ class AddWorkLocationForm extends PureComponent {
                 rules={[
                   {
                     required: true,
+                    message: 'Please select Country!',
                   },
                 ]}
               >
@@ -154,6 +226,7 @@ class AddWorkLocationForm extends PureComponent {
                 rules={[
                   {
                     required: true,
+                    message: 'Please select State!',
                   },
                 ]}
               >
@@ -172,12 +245,12 @@ class AddWorkLocationForm extends PureComponent {
                 </Select>
               </Form.Item>
               <Form.Item
-                label="Zip Code"
+                label="Zip/Postal Code"
                 name="zipCode"
                 rules={[
                   {
                     pattern: /^[0-9]*$/,
-                    message: 'Zip Code is not a valid number',
+                    message: 'Zip/Postal Code is not a valid number',
                   },
                 ]}
               >

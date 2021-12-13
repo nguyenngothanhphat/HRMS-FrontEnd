@@ -8,13 +8,18 @@ import LocationForm from './components/LocationForm/index';
 import styles from './index.less';
 
 const { Option } = Select;
-@connect(({ // signup: { headQuarterAddress = {}, company: { name = '' } = {} } = {},
-  companiesManagement: { locations = [] }, country: { listCountry = [] } = {} }) => ({
-  // name,
-  // headQuarterAddress,
-  locations,
-  listCountry,
-}))
+@connect(
+  ({
+    // signup: { headQuarterAddress = {}, company: { name = '' } = {} } = {},
+    companiesManagement: { locations = [] },
+    country: { listCountry = [] } = {},
+  }) => ({
+    // name,
+    // headQuarterAddress,
+    locations,
+    listCountry,
+  }),
+)
 class Step2 extends PureComponent {
   constructor(props) {
     super(props);
@@ -195,7 +200,7 @@ class Step2 extends PureComponent {
                       </Col>
                       <Col span={12}>
                         <Form.Item
-                          label="Zip Code"
+                          label="Zip/Postal Code"
                           name="zipCode"
                           rules={[
                             {

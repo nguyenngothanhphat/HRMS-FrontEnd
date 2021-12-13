@@ -1,15 +1,9 @@
 .TimeOffTypesInfo {
-  // border: 1px solid #ebeff2;
-  // border-radius: 10px;
-  // background-color: white;
-  // padding: 24px;
-  // margin: 10px;
-  // position: absolute;
-  // left: 0;
-  // // right: 100px;
-  // top: 0;
-  // box-shadow: 0 0 100px rgba(0, 0, 0, 0.171);
-
+  position: fixed;
+  top: 39px !important;
+  width: 65vw !important;
+  margin: 0 0 100px 30%;
+  // overflow-y: hidden;
   :global {
     .ant-modal-close {
       display: none;
@@ -20,8 +14,13 @@
     .ant-modal-body {
       padding: 32px;
     }
+    .ant-modal-wrap {
+      z-index: 1003 !important;
+    }
   }
+
   .container {
+    max-height: 100%;
     .title {
       font-size: 18px;
       font-weight: 700;
@@ -29,7 +28,11 @@
       display: flex;
       justify-content: space-between;
       padding: 5px 0;
+      display: relative;
       .closeIcon {
+        position: absolute;
+        top: 16px;
+        right: 16px;
         color: #161c29;
         border-radius: 50%;
         height: 26px;
@@ -53,15 +56,20 @@
     :global {
       .ant-collapse {
         background-color: white;
+        max-height: 50vh;
+        overflow-y: auto;
       }
       .ant-collapse > .ant-collapse-item {
         border: none;
       }
       .ant-collapse-item {
         background-color: #fafafa;
+        border-radius: 6px;
+      }
+      .ant-collapse-item:not(:last-child) {
+        margin-bottom: 15px;
       }
       .ant-collapse-header {
-        margin-top: 15px;
         font-weight: 700;
         color: #161c29;
         font-size: 14px;
@@ -94,17 +102,18 @@
       }
     }
   }
-  // &::after {
-  //   height: 25px;
-  //   content: '';
-  //   width: 25px;
-  //   background-color: white;
-  //   position: absolute;
-  //   top: 28px;
-  //   left: 0;
-  //   margin-left: -13px;
-  //   border-top: #d6dce0 solid 1px;
-  //   border-left: #d6dce0 solid 1px;
-  //   transform: rotate(315deg);
-  // }
+  &::after {
+    height: 25px;
+    content: '';
+    width: 25px;
+    background-color: #fff;
+    position: absolute;
+    top: 28px;
+    left: 0;
+    margin-left: -5px;
+    border-top: #fff solid 1px;
+    border-left: #fff solid 1px;
+    transform: rotate(315deg);
+    z-index: 1003 !important;
+  }
 }

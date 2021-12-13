@@ -14,6 +14,7 @@ const { TabPane } = Tabs;
   ({
     loading,
     user: { currentUser = {} } = {},
+    global: { fromCompanyManagement = '' } = {},
     departmentManagement: { listByCompany: listDepartment = [] } = {},
     companiesManagement: {
       originData: { companyDetails: { company: companyDetails = {} } = {} } = {},
@@ -23,14 +24,21 @@ const { TabPane } = Tabs;
     listDepartment,
     loading: loading.effects['companiesManagement/fetchCompanyDetails'],
     companyDetails,
+    fromCompanyManagement,
   }),
 )
 class CompanyProfile extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   componentDidMount() {
     const {
       dispatch,
       // match: { params: { id = '' } = {} },
     } = this.props;
+
     dispatch({
       type: 'country/fetchListCountry',
     });
@@ -40,6 +48,13 @@ class CompanyProfile extends Component {
     dispatch({
       type: 'user/fetchCompanyOfUser',
     });
+    dispatch({
+      type: 'companiesManagement/fetchCompanyTypeList',
+    });
+    dispatch({
+      type: 'companiesManagement/fetchIndustryList',
+    });
+
     // if (id) {
     //   dispatch({
     //     type: 'companiesManagement/fetchCompanyDetails',
@@ -65,7 +80,16 @@ class CompanyProfile extends Component {
   };
 
   onCancel = () => {
-    history.push('/control-panel');
+    const { fromCompanyManagement = '', dispatch } = this.props;
+    if (fromCompanyManagement) {
+      dispatch({
+        type: 'global/save',
+        payload: { fromCompanyManagement: '' },
+      });
+      history.push(fromCompanyManagement);
+    } else {
+      history.push('/control-panel');
+    }
   };
 
   cancelButton = () => {
@@ -82,6 +106,7 @@ class CompanyProfile extends Component {
       match: { params: { id = '' } = {} },
       loading = false,
     } = this.props;
+
     const routes = [
       { name: 'Control Panel', path: '/control-panel' },
       {
@@ -95,13 +120,19 @@ class CompanyProfile extends Component {
         id: 1,
         name: 'Company Details',
         component: <CompanyDetails companyId={id} />,
+        link: 'company-details',
       },
       {
         id: 2,
         name: 'Work Locations',
         component: <WorkLocations companyId={id} />,
+        link: 'work-locations',
       },
     ];
+
+    const {
+      match: { params: { tabName = '' } = {} },
+    } = this.props;
 
     return (
       <div className={styles.CompanyProfile}>
@@ -114,7 +145,7 @@ class CompanyProfile extends Component {
                   <Spin size="large" />
                 </div>
               ) : (
-                <Layout listMenu={listMenu} isCompanyProfile isAddingCompany />
+                <Layout listMenu={listMenu} isCompanyProfile isAddingCompany tabName={tabName} />
               )}
             </TabPane>
           </Tabs>

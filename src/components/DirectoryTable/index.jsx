@@ -3,10 +3,12 @@ import avtDefault from '@/assets/avtDefault.jpg';
 import { isOwner } from '@/utils/authority';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import { Avatar, Button, Popover, Table, Tag, Tooltip } from 'antd';
+import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { Component } from 'react';
-import { connect, formatMessage, history } from 'umi';
+import { connect, formatMessage, history, Link } from 'umi';
 import ModalTerminate from './components/ModalTerminate';
+import PopoverInfo from './components/ModalTerminate/PopoverInfo';
 import styles from './index.less';
 
 const departmentTag = [
@@ -42,13 +44,14 @@ class DirectoryTable extends Component {
     super(props);
     this.state = {
       sortedName: {},
-      pageSelected: 1,
-      rowSize: 10,
+      // pageSelected: 1,
+      // rowSize: 10,
       isSort: false,
       openModal: false,
       rowData: {},
       valueReason: '',
       timezoneList: [],
+      selectColumn: false,
       currentTime: moment(),
     };
   }
@@ -74,12 +77,13 @@ class DirectoryTable extends Component {
     const timezoneList = [];
     listLocationsByCompany.forEach((location) => {
       const {
-        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '' } = {},
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
         _id = '',
       } = location;
       timezoneList.push({
         locationId: _id,
         timezone:
+          getTimezoneViaCity(city) ||
           getTimezoneViaCity(state) ||
           getTimezoneViaCity(addressLine1) ||
           getTimezoneViaCity(addressLine2),
@@ -92,28 +96,44 @@ class DirectoryTable extends Component {
 
   getAvatarUrl = (avatar, isShowAvatar) => {
     const { permissions = {}, profileOwner = false } = this.props;
-    if (isShowAvatar) return avatar;
+    if (isShowAvatar) return avatar || avtDefault;
     if (permissions.viewAvatarEmployee !== -1 || profileOwner) {
       if (avatar) return avatar;
-      return null;
+      return avtDefault;
     }
     return avtDefault;
   };
+
+  ac = (val) => `/time-off/${val}`;
 
   renderUser = (employeePack) => {
     const { _id = '', generalInfo = {}, tenant = '' } = employeePack;
     const { isShowAvatar = true, avatar = '' } = generalInfo;
     const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
+
+    const popupImg = () => {
+      return (
+        <div className={styles.popupImg}>
+          <img src={avatarUrl} alt="avatar" />
+        </div>
+      );
+    };
+
     return (
       <div className={styles.directoryTableName}>
-        {avatarUrl ? (
-          <Avatar size="medium" className={styles.avatar} src={avatarUrl} alt="avatar" />
-        ) : (
-          <Avatar className={styles.avatar_emptySrc} alt="avatar" />
-        )}
-        <p onClick={() => this.handleProfileEmployee(_id, tenant)}>
-          {`${generalInfo.firstName} ${generalInfo.lastName}`}
-        </p>
+        <Popover placement="rightTop" content={popupImg} trigger="hover">
+          {avatarUrl ? (
+            <Avatar size="medium" className={styles.avatar} src={avatarUrl} alt="avatar" />
+          ) : (
+            <Avatar className={styles.avatar_emptySrc} alt="avatar" />
+          )}
+        </Popover>
+        <Link
+          className={styles.directoryTableName__name}
+          to={() => this.handleProfileEmployee(_id, tenant, generalInfo?.userId)}
+        >
+          {generalInfo?.legalName}
+        </Link>
       </div>
     );
   };
@@ -175,9 +195,9 @@ class DirectoryTable extends Component {
   // };
 
   generateColumns = (sortedName, keyTab) => {
-    const { permissions = {} } = this.props;
+    const { permissions = {}, listLocationsByCompany } = this.props;
+    const { currentTime, timezoneList } = this.state;
 
-    // const { isSort } = this.state;
     const columns = [
       {
         title: (
@@ -190,39 +210,57 @@ class DirectoryTable extends Component {
         key: 'employeePack',
         render: (employeePack) => (employeePack ? this.renderUser(employeePack) : ''),
         align: 'left',
-        sorter: (a, b) =>
-          a.employeePack.generalInfo && a.employeePack.generalInfo.firstName
-            ? `${a.employeePack.generalInfo.firstName} ${a.employeePack.generalInfo.lastName}`.localeCompare(
-                `${b.employeePack.generalInfo.firstName} ${b.employeePack.generalInfo.lastName}`,
+        sorter: (a, b) => {
+          return a.employeePack.generalInfo && a.employeePack.generalInfo?.legalName
+            ? a.employeePack.generalInfo?.legalName.localeCompare(
+                `${b.employeePack.generalInfo?.legalName}`,
               )
-            : null,
-        // sortOrder: sortedName.columnKey === 'employeePack' && sortedName.order,
+            : null;
+        },
+        sortOrder: sortedName.columnKey === 'employeePack' && sortedName.order,
         fixed: 'left',
-        width: '18%',
+        width: '16%',
         defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend', 'ascend'],
+        // className: `${styles.col} `,
       },
-      // {
-      //   title: formatMessage({ id: 'component.directory.table.employeeID' }),
-      //   dataIndex: 'generalInfo',
-      //   key: 'employeeId',
-      //   className: `${styles.employeeId} `,
-      //   render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
-      //   width: '10%',
-      //   align: 'left',
-      // },
       {
-        title: formatMessage({ id: 'component.directory.table.email' }),
+        title: formatMessage({ id: 'component.directory.table.userID' }),
+        dataIndex: 'generalInfo',
+        key: 'userName',
+        render: (generalInfo) => (
+          <span style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}>
+            {generalInfo?.userId}
+          </span>
+        ),
+        width: '10%',
+        align: 'left',
+        sorter: (a, b) => {
+          return a.generalInfo && a.generalInfo?.userId
+            ? a.generalInfo?.userId.localeCompare(`${b.generalInfo?.userId}`)
+            : null;
+        },
+        sortDirections: ['ascend', 'descend', 'ascend'],
+      },
+      {
+        title: formatMessage({ id: 'component.directory.table.employeeID' }),
         dataIndex: 'generalInfo',
         key: 'employeeId',
-        render: (generalInfo) => <span>{generalInfo?.workEmail}</span>,
-        width: '18%',
+        className: `${styles.employeeId} `,
+        render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
+        width: '10%',
         align: 'left',
+        sorter: (a, b) => {
+          return a.generalInfo && a.generalInfo?.employeeId
+            ? a.generalInfo?.employeeId.localeCompare(`${b.generalInfo?.employeeId}`)
+            : null;
+        },
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: 'Work Number',
         dataIndex: 'generalInfo',
-        key: 'employeeId',
+        key: 'workNumber',
         render: (generalInfo) => (
           <span style={{ fontSize: '13px' }}>
             {generalInfo?.workNumber ? generalInfo.workNumber : '-'}
@@ -230,6 +268,26 @@ class DirectoryTable extends Component {
         ),
         width: '10%',
         align: 'left',
+        sorter: (a, b) => {
+          return a.generalInfo && a.generalInfo?.workNumber
+            ? a.generalInfo?.workNumber.localeCompare(`${b.generalInfo?.workNumber}`)
+            : null;
+        },
+        sortDirections: ['ascend', 'descend', 'ascend'],
+      },
+      {
+        title: formatMessage({ id: 'component.directory.table.email' }),
+        dataIndex: 'generalInfo',
+        key: 'workEmail',
+        render: (generalInfo) => <span>{generalInfo?.workEmail}</span>,
+        width: '16%',
+        align: 'left',
+        sorter: (a, b) => {
+          return a.generalInfo && a.generalInfo?.workEmail
+            ? a.generalInfo?.workEmail.localeCompare(`${b.generalInfo?.workEmail}`)
+            : null;
+        },
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: formatMessage({ id: 'component.directory.table.title' }),
@@ -244,6 +302,73 @@ class DirectoryTable extends Component {
         ),
         width: '12%',
         align: 'left',
+        sorter: (a, b) => {
+          return a.title && a.title?.name ? a.title?.name.localeCompare(`${b.title?.name}`) : null;
+        },
+        sortDirections: ['ascend', 'descend', 'ascend'],
+      },
+      {
+        title: formatMessage({ id: 'component.directory.table.location' }),
+        dataIndex: 'location',
+        key: 'location',
+        render: (location) => (
+          <Popover
+            content={() => this.locationContent(location)}
+            title={location.name}
+            trigger="hover"
+          >
+            <span
+              style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
+              onMouseEnter={this.setCurrentTime}
+            >
+              {location ? location.name : ''}
+            </span>
+          </Popover>
+        ),
+        width: '10%',
+        ellipsis: true,
+        align: 'left',
+        sorter: (a, b) => {
+          return a.location && a.location?.name
+            ? a.location?.name.localeCompare(`${b.location?.name}`)
+            : null;
+        },
+        sortDirections: ['ascend', 'descend', 'ascend'],
+      },
+      {
+        title: formatMessage({ id: 'component.directory.table.reportingManager' }),
+        dataIndex: 'manager',
+        key: 'manager',
+        render: (manager) => (
+          <Popover
+            content={
+              <PopoverInfo
+                listLocationsByCompany={listLocationsByCompany}
+                propsState={{ currentTime, timezoneList }}
+                data={manager}
+              />
+            }
+            placement="bottomRight"
+            trigger="hover"
+          >
+            <Link
+              className={styles.managerName}
+              to={() =>
+                this.handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
+              }
+            >
+              {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
+            </Link>
+          </Popover>
+        ),
+        align: 'left',
+        width: '14%',
+        sorter: (a, b) => {
+          return a.manager.generalInfo && a.manager.generalInfo?.legalName
+            ? a.manager.generalInfo?.legalName.localeCompare(`${b.manager.generalInfo?.legalName}`)
+            : null;
+        },
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: formatMessage({ id: 'component.directory.table.department' }),
@@ -266,41 +391,14 @@ class DirectoryTable extends Component {
           //   {department ? department.name : ''}
           // </span>
         },
-        width: '14%',
+        width: '10%',
         align: 'left',
-      },
-      {
-        title: formatMessage({ id: 'component.directory.table.location' }),
-        dataIndex: 'location',
-        key: 'location',
-        render: (location) => (
-          <Popover
-            content={() => this.locationContent(location)}
-            title={location.name}
-            trigger="hover"
-          >
-            <span onMouseEnter={this.setCurrentTime}>{location ? location.name : ''}</span>
-          </Popover>
-        ),
-        width: '14%',
-        align: 'left',
-      },
-      {
-        title: formatMessage({ id: 'component.directory.table.reportingManager' }),
-        dataIndex: 'managerPack',
-        key: 'managerPack',
-        render: (managerPack) => (
-          <span
-            className={styles.managerName}
-            onClick={() => this.handleProfileEmployee(managerPack._id, managerPack.tenant)}
-          >
-            {managerPack.generalInfo
-              ? `${managerPack?.generalInfo?.firstName} ${managerPack?.generalInfo?.lastName}`
-              : ''}
-          </span>
-        ),
-        align: 'left',
-        width: '12%',
+        sorter: (a, b) => {
+          return a.department && a.department?.name
+            ? a.department?.name.localeCompare(`${b.department?.name}`)
+            : null;
+        },
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: formatMessage({ id: 'component.directory.table.employmentType' }),
@@ -308,7 +406,13 @@ class DirectoryTable extends Component {
         key: 'employmentType',
         render: (employeeType) => <span>{employeeType ? employeeType.name : ''}</span>,
         align: 'left',
-        width: '12%',
+        width: '10%',
+        sorter: (a, b) => {
+          return a.employmentType && a.employmentType?.name
+            ? a.employmentType?.name.localeCompare(`${b.employmentType?.name}`)
+            : null;
+        },
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: formatMessage({ id: 'component.directory.table.action' }),
@@ -327,6 +431,7 @@ class DirectoryTable extends Component {
             </div>
           );
         },
+        sorter: () => null,
       },
     ];
 
@@ -342,23 +447,25 @@ class DirectoryTable extends Component {
   };
 
   handleChangeTable = (_pagination, _filters, sorter) => {
-    const descend = 'descend';
-    const ascend = 'ascend';
-    let isSort = false;
-    if (sorter.order === descend || sorter.order === ascend) {
-      isSort = true;
-    }
+    // const descend = 'descend';
+    // const ascend = 'ascend';
+    // let isSort = false;
+    // if (sorter.order === descend || sorter.order === ascend) {
+    //   isSort = true;
+    // }
     this.setState({
       sortedName: sorter,
-      isSort,
+      // isSort,
     });
   };
 
-  onChangePagination = (pageNumber) => {
-    this.setState({
-      pageSelected: pageNumber,
-    });
-  };
+  // onChangePagination = (pageNumber) => {
+  //   const { getPageSelected } = this.props;
+  //   this.setState({
+  //     pageSelected: pageNumber,
+  //   });
+  //   getPageSelected(pageNumber);
+  // };
 
   setFirstPage = () => {
     this.setState({
@@ -366,7 +473,7 @@ class DirectoryTable extends Component {
     });
   };
 
-  handleProfileEmployee = async (_id, tenant) => {
+  handleProfileEmployee = (_id, tenant, userId) => {
     // const { _id = '', location: { name = '' } = {}, tenant = '', company = {} } = row;
     // const { dispatch } = this.props;
     // await dispatch({
@@ -376,19 +483,15 @@ class DirectoryTable extends Component {
     //     companyCurrentEmployee: company?._id,
     //   },
     // });
+
     localStorage.setItem('tenantCurrentEmployee', tenant);
     // localStorage.setItem('companyCurrentEmployee', company?._id);
     // localStorage.setItem('idCurrentEmployee', _id);
 
     const pathname = isOwner()
-      ? `/employees/employee-profile/${_id}`
-      : `/directory/employee-profile/${_id}`;
-    setTimeout(() => {
-      history.push({
-        pathname,
-        // state: { location: name },
-      });
-    }, 200);
+      ? `/employees/employee-profile/${userId}`
+      : `/directory/employee-profile/${userId}`;
+    return pathname;
   };
 
   checkPermissionViewProfile = (permissions) => {
@@ -498,68 +601,102 @@ class DirectoryTable extends Component {
           tenant: item.tenant,
         },
         managerPack: {
-          _id: item.manager._id,
-          generalInfo: item.manager.generalInfo,
+          _id: item?.manager?._id,
+          generalInfo: item?.manager?.generalInfo,
           tenant: item.tenant,
         },
       };
     });
   };
 
+  renderTotal = () => {
+    const { totalActiveEmployee, totalInactiveEmployee, tabName } = this.props;
+    if (tabName === 'Active Employees') {
+      return totalActiveEmployee;
+    }
+    if (tabName === 'Inactive Employees') {
+      return totalInactiveEmployee;
+    }
+    return 0;
+  };
+
   render() {
     const {
       sortedName = {},
-      pageSelected,
+      // pageSelected,
       openModal = false,
       valueReason = '',
-      rowSize,
+      // rowSize,
+      selectColumn,
     } = this.state;
-    const { list = [], loading, keyTab, loadingTerminateReason } = this.props;
+    const {
+      list = [],
+      loading,
+      keyTab,
+      loadingTerminateReason,
+      totalActiveEmployee,
+      totalInactiveEmployee,
+      totalMyTeam,
+      tabName,
+      pageSelected,
+      rowSize,
+    } = this.props;
     const newList = this.getNewList(list);
-
     const pagination = {
       position: ['bottomLeft'],
-      total: list.length,
-      showTotal: (total, range) => (
-        <span>
-          {' '}
-          {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
-          <b>
-            {range[0]} - {range[1]}
-          </b>{' '}
-          {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
-        </span>
-      ),
-      defaultPageSize: 10,
+      total:
+        // eslint-disable-next-line no-nested-ternary
+        tabName === 'Active Employees'
+          ? totalActiveEmployee
+          : tabName === 'Inactive Employees'
+          ? totalInactiveEmployee
+          : totalMyTeam,
+      showTotal: (total, range) => {
+        return (
+          <span>
+            {' '}
+            {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
+            <b>
+              {' '}
+              {range[0]} - {range[1]}{' '}
+            </b>{' '}
+            {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
+          </span>
+        );
+      },
+      defaultPageSize: rowSize,
       showSizeChanger: true,
       pageSizeOptions: ['10', '25', '50', '100'],
-      // pageSize: rowSize,
+      pageSize: rowSize,
       current: pageSelected,
-      onChange: this.onChangePagination,
+      onChange: (page, pageSize) => {
+        const { getPageSelected, getSize } = this.props;
+        getPageSelected(page);
+        getSize(pageSize);
+      },
     };
     const scroll = {
-      x: '100vw',
+      x: '140vw',
       y: 'max-content',
     };
 
     return (
       <>
-        <div className={styles.directoryTable}>
+        <div className={`${styles.directoryTable} ${selectColumn ? styles.selectCol : null}`}>
           <Table
             size="small"
             columns={this.generateColumns(sortedName, keyTab)}
-            // onRow={(record) => {
-            //   return {
-            //     onClick: () => this.handleProfileEmployee(record), // click row
-            //   };
-            // }}
             dataSource={newList}
             rowKey={(record) => record._id}
-            // pagination={{ ...pagination, total: list.length }}
-            pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
+            pagination={pagination}
             loading={loading}
             onChange={this.handleChangeTable}
             scroll={scroll}
+            onHeaderRow={() => {
+              return {
+                onClick: () => this.setState({ selectColumn: true }), // if select column, the whole column will be highlighted.
+              };
+            }}
           />
         </div>
         <ModalTerminate

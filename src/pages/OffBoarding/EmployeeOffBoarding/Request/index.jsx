@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import { Row, Col, Affix, Spin, Skeleton, DatePicker } from 'antd';
+import { Row, Col, Affix, Spin, Skeleton, DatePicker, Button } from 'antd';
+import { connect, history } from 'umi';
+import moment from 'moment';
+import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { PageContainer } from '@/layouts/layout/src';
 import ModalSet1On1 from '@/components/ModalSet1On1';
 import StatusRequest from '@/components/StatusRequest';
-import { connect } from 'umi';
 
 import icon1 from '@/assets/offboarding-meeting.svg';
 import icon2 from '@/assets/offboarding-close.svg';
 
-import moment from 'moment';
-import Checkbox from 'antd/lib/checkbox/Checkbox';
 import Reason from './Reason';
 import WorkFlow from './WorkFlow';
 import WithDraw from './WithDraw';
@@ -37,6 +37,7 @@ class ResignationRequest extends Component {
       keyModal: '',
       changeLWD: '',
       lastWorkingDay: '',
+      reason: '',
     };
   }
 
@@ -102,6 +103,12 @@ class ResignationRequest extends Component {
     });
   };
 
+  onChangeReason = (reason) => {
+    this.setState({
+      reason,
+    });
+  };
+
   handleLWD = (value) => {
     this.setState({
       lastLWD: value,
@@ -116,6 +123,31 @@ class ResignationRequest extends Component {
       return 1;
     }
     return 0;
+  };
+
+  handleSubmitTicket = () => {
+    const { dispatch, myRequest: { _id = '', reasonForLeaving = '' } = {} } = this.props;
+    const { reason } = this.state;
+
+    let newReason = reasonForLeaving;
+    if (reason) {
+      newReason = reason;
+    }
+
+    dispatch({
+      type: 'offboarding/sendRequestUpdate',
+      payload: {
+        id: _id,
+        reasonForLeaving: newReason,
+        action: 'submit',
+        status: 'IN-PROGRESS',
+      },
+    }).then((response) => {
+      const { statusCode } = response;
+      if (statusCode === 200) {
+        history.replace('/offboarding/list');
+      }
+    });
   };
 
   render() {
@@ -140,6 +172,7 @@ class ResignationRequest extends Component {
       relievingStatus = '',
       employee: { generalInfo: { firstName: nameEmployee = '', employeeId = '' } = {} } = {},
       ticketID = '',
+      assigneeHR = {},
     } = myRequest;
     if (loadingGetById) {
       return (
@@ -156,7 +189,7 @@ class ResignationRequest extends Component {
     return (
       <PageContainer>
         <div className={styles.request}>
-          <Affix offsetTop={30}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>Terminate work relations with the company</p>
             </div>
@@ -181,10 +214,19 @@ class ResignationRequest extends Component {
                 handleRequestToChange={this.handleRequestToChange}
                 changeLWD={changeLWD}
                 handleLWD={this.handleLWD}
+                status={status}
+                onChangeReason={this.onChangeReason}
               />
               {arrStatus.indexOf(status) > -1 && (
-                <div className={styles.viewWithDraw}>
-                  <WithDraw />
+                <div className={styles.btn}>
+                  <div className={styles.viewWithDraw}>
+                    <WithDraw />
+                  </div>
+                  <div className={styles.btn__submit}>
+                    <Button disabled={status !== 'DRAFT'} onClick={this.handleSubmitTicket}>
+                      Submit
+                    </Button>
+                  </div>
                 </div>
               )}
             </Col>
@@ -194,6 +236,7 @@ class ResignationRequest extends Component {
                 nameManager={nameManager}
                 avatarManager={avatarManager}
                 hrManager={hrManager}
+                assigneeHR={assigneeHR}
               />
               <div className={styles.viewSet1On1}>
                 <div className={styles.viewSet1On1__request}>

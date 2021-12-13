@@ -33,14 +33,16 @@ const documentsManagement = {
     generalInfoId: '',
     companyList: [],
     listDocumentAccountSetup: [],
+    totalActive: '',
+    totalInactive: '',
   },
   effects: {
-    *fetchListDocuments(_, { call, put }) {
+    *fetchListDocuments({ payload }, { call, put }) {
       try {
-        const response = yield call(getListDocuments);
+        const response = yield call(getListDocuments, payload);
         const { statusCode, data: listDocuments = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listDocuments } });
+        yield put({ type: 'save', payload: { listDocuments, totalActive: response.total } });
       } catch (errors) {
         dialog(errors);
       }

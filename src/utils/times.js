@@ -4,6 +4,10 @@ const moment = require('moment-timezone');
 const cityTimezones = require('city-timezones');
 
 export const getTimezoneViaCity = (city) => {
+  // check if city is empty return the current timezone
+  if(!city) {
+    return ''
+  }
   const cityWords = city.split(' ');
   let cityLookup = [];
   cityWords.forEach((c) => {
@@ -20,4 +24,8 @@ export const getTimezoneViaCity = (city) => {
 
 export const getCurrentTimeOfTimezone = (currentTime, timezone) => {
   return moment(currentTime).tz(timezone).locale('en').format('LLLL');
+};
+
+export const getCurrentTimeOfTimezoneOption = (currentTime, timezone) => {
+  return moment(currentTime).tz(timezone).locale('en').format('DD/MM/YYYY | HH:mm A');
 };

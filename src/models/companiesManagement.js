@@ -11,9 +11,12 @@ import {
   upsertLocationsList,
   removeLocation,
   getLocationsListTenant,
+  getCompanyTypeList,
+  getIndustryList,
 } from '@/services/companiesManangement';
-// import { history } from 'umi';
+import { history } from 'umi';
 import { notification } from 'antd';
+import { getCurrentCompany } from '@/utils/authority';
 
 const companiesManagement = {
   namespace: 'companiesManagement',
@@ -39,6 +42,8 @@ const companiesManagement = {
     isOpenEditWorkLocation: false,
     selectedNewCompanyTab: 1,
     logoCompany: '',
+    companyTypeList: [],
+    industryList: [],
   },
   effects: {
     *fetchCompanyDetails({ payload = {}, dataTempKept = {} }, { call, put }) {
@@ -219,6 +224,7 @@ const companiesManagement = {
           type: 'saveOrigin',
           payload: { companyDetails: payload },
         });
+        history.push(`/control-panel/add-company/work-locations`);
         yield put({
           type: 'save',
           payload: {
@@ -233,6 +239,7 @@ const companiesManagement = {
     *updateLocation({ payload = {} }, { call, put }) {
       let resp = '';
       try {
+        const company = getCurrentCompany();
         const response = yield call(updateLocation, payload);
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
@@ -241,7 +248,7 @@ const companiesManagement = {
         });
         yield put({
           type: 'fetchLocationsList',
-          payload: { company: payload.company },
+          payload: { company },
         });
         resp = response;
       } catch (errors) {
@@ -277,6 +284,26 @@ const companiesManagement = {
         yield put({
           type: 'user/fetchCurrent',
         });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchCompanyTypeList(_, { call, put }) {
+      try {
+        const response = yield call(getCompanyTypeList);
+        const { statusCode, data: companyTypeList = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { companyTypeList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchIndustryList(_, { call, put }) {
+      try {
+        const response = yield call(getIndustryList);
+        const { statusCode, data: industryList = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { industryList } });
       } catch (errors) {
         dialog(errors);
       }
@@ -358,6 +385,20 @@ const companiesManagement = {
               ...company,
               ...action.payload,
             },
+          },
+        },
+      };
+    },
+
+    saveHeadquarterName(state, action) {
+      const { originData = {} } = state;
+      return {
+        ...state,
+        originData: {
+          ...originData,
+          companyDetails: {
+            ...originData.companyDetails,
+            ...action.payload,
           },
         },
       };

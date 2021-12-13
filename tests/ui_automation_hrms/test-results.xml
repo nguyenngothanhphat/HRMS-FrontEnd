@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="0.0000" tests="1" failures="1">
+  <testsuite name="Root Suite" timestamp="2021-09-22T09:30:40" tests="0" file="cypress/integration/timeOff/timeoff.spec.js" time="0.0000" failures="0">
+  </testsuite>
+  <testsuite name="Timeoff Automation" timestamp="2021-09-22T09:30:40" tests="1" time="0.0000" failures="1">
+    <testcase name="Timeoff Automation Applies For and Accepts Timeoff" time="0.0000" classname="Applies For and Accepts Timeoff">
+      <failure message="Timed out retrying after 10000ms: Expected to find content: &apos;Timeoff&apos; but never did." type="AssertionError"><![CDATA[AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Timeoff' but never did.
+    at Context.eval (https://stghrms.paxanimi.ai/__cypress/tests?p=cypress\integration\timeOff\timeoff.spec.js:116:8)]]></failure>
+    </testcase>
+  </testsuite>
+</testsuites>

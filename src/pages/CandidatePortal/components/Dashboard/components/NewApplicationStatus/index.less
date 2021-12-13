@@ -1,0 +1,79 @@
+@darkColor: #161c29;
+@lightGrayColor: #707177;
+@orangeColor: #ffa100;
+@redColor: #fd4546;
+@greenColor: #00c598;
+@commonPadding: 15px;
+@borderColor: #d6dce0;
+
+.ApplicationStatus {
+  box-sizing: border-box;
+  background: #fff;
+  border: 1px solid @borderColor;
+  border-radius: 5px;
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 49px;
+    padding: @commonPadding;
+    border-bottom: 1px solid @borderColor;
+    .left {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      span {
+        color: @darkColor;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 16px;
+      }
+      .status {
+        display: block;
+        margin-left: @commonPadding;
+        color: @orangeColor;
+        font-weight: 500;
+        font-size: 14px;
+      }
+      .accepted {
+        color: @greenColor;
+      }
+      .rejected {
+        color: @redColor;
+      }
+    }
+    .right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      cursor: pointer;
+      img {
+        margin-right: 10px;
+      }
+      .downloadOfferText {
+        color: @orangeColor;
+        font-weight: 500;
+        font-size: 14px;
+      }
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+  .content {
+    height: 100%;
+    padding: @commonPadding;
+    span {
+      display: block;
+      font-size: 13px;
+      line-height: 20px;
+    }
+    .status {
+      margin-bottom: 5px;
+    }
+    .dateOfJoining {
+      margin-bottom: 10px;
+      color: @lightGrayColor;
+    }
+  }
+}

@@ -1,0 +1,56 @@
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+
+  .filterIcon {
+    margin-right: 22px;
+    cursor: pointer;
+  }
+}
+.filterPopover {
+  width: 320px;
+  height: auto;
+  background: #ffffff;
+
+  :global {
+    .ant-popover-title,
+    .ant-popover-inner-content {
+      //   border-bottom: 1px solid #d6dce0;
+
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+
+    .ant-popover-inner-content {
+      padding: 0;
+      padding-bottom: 16px;
+    }
+
+    .ant-popover-title {
+      padding: 0;
+    }
+  }
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 16px;
+
+  &__text {
+    color: #2c6df9;
+    font-weight: 500;
+    font-size: 16px;
+    font-family: Roboto;
+    font-style: normal;
+    line-height: 19px;
+  }
+
+  img {
+    cursor: pointer;
+  }
+}

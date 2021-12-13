@@ -175,9 +175,8 @@ class TableDocuments extends PureComponent {
   };
 
   render() {
-    const { data = [], loading } = this.props;
+    const { data = [], loading, pageSelected, size, total: totalData, getPageAndSize } = this.props;
     const {
-      pageSelected,
       selectedRowKeys,
       documentId,
       documentName,
@@ -185,14 +184,14 @@ class TableDocuments extends PureComponent {
       viewDocumentModalVisible,
       viewingUrl,
     } = this.state;
-    const rowSize = 10;
+    // const rowSize = 10;
     const scroll = {
       x: '100%',
       y: '',
     };
     const pagination = {
       position: ['bottomLeft'],
-      total: data.length,
+      total: totalData,
       showTotal: (total, range) => (
         <span>
           {' '}
@@ -203,9 +202,14 @@ class TableDocuments extends PureComponent {
           {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
         </span>
       ),
-      pageSize: rowSize,
+      defaultPageSize: size,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
+      pageSize: size,
       current: pageSelected,
-      onChange: this.onChangePagination,
+      onChange: (page, pageSize) => {
+        getPageAndSize(page, pageSize);
+      },
     };
 
     const rowSelection = {
@@ -245,7 +249,7 @@ class TableDocuments extends PureComponent {
             };
           }}
           rowSelection={rowSelection}
-          pagination={{ ...pagination, total: data.length }}
+          pagination={pagination}
           columns={this.columns}
           dataSource={data}
           scroll={scroll}

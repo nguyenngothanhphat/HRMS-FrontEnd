@@ -1,15 +1,14 @@
-import { PageContainer } from '@/layouts/layout/src';
 import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
-import { connect, formatMessage } from 'umi';
+import { connect, formatMessage, history } from 'umi';
+import { PageContainer } from '@/layouts/layout/src';
 import {
-  getCurrentCompany,
-  getCurrentTenant,
   getAuthority,
   isOwner,
-  isAdmin,
+  // isAdmin,
 } from '@/utils/authority';
 import DirectoryComponent from './components/Directory';
+import OrganizationChart from './components/OrganisationChart';
 import styles from './index.less';
 
 @connect(
@@ -31,72 +30,38 @@ class Directory extends PureComponent {
       roles: {
         employee: 'EMPLOYEE',
       },
-      checkRoleEmployee: false,
     };
   }
 
   componentDidMount = async () => {
-    const { dispatch, roles = [], signInRole = [], filterList = {} } = this.props;
+    const {
+      match: { params: { tabName = '' } = {} },
+      dispatch,
+      roles = [],
+      signInRole = [],
+      filterList = {},
+    } = this.props;
     const checkRoleEmployee = this.checkRoleEmployee(roles, signInRole);
 
-    this.setState({
-      checkRoleEmployee,
-    });
-
-    if (Object.keys(filterList).length > 0 && filterList) {
+    if (!tabName) {
+      if (isOwner()) {
+        history.replace(`/employees/list`);
+      } else if (checkRoleEmployee) history.replace(`/directory/org-chart`);
+      else history.replace(`/directory/list`);
+    } else {
+      if (Object.keys(filterList).length > 0 && filterList) {
+        await dispatch({
+          type: 'employee/save',
+          payload: {
+            filterList: {},
+          },
+        });
+      }
       await dispatch({
-        type: 'employee/save',
-        payload: {
-          filterList: {},
-        },
+        type: 'employeeProfile/fetchListSkill',
       });
     }
-
-    // this.fetchFilterList();
   };
-
-  componentDidUpdate = (prevProps) => {
-    // const { filterList = {} } = this.props;
-    if (!prevProps.filterList || Object.keys(prevProps.filterList).length === 0) {
-      this.fetchFilterList();
-    }
-  };
-
-  fetchFilterList = async () => {
-    const { dispatch } = this.props;
-    await dispatch({
-      type: 'employee/fetchFilterList',
-      payload: {
-        id: getCurrentCompany(),
-        tenantId: getCurrentTenant(),
-      },
-    });
-  };
-
-  // fetchData = async () => {
-  //   const { dispatch, manageTenant = [] } = this.props;
-  //   const companyId = getCurrentCompany();
-  //   const tenantId = getCurrentTenant();
-  //   const checkIsOwner = isOwner();
-
-  //   if (checkIsOwner) {
-  //     await dispatch({
-  //       type: 'locationSelection/fetchLocationListByParentCompany',
-  //       payload: {
-  //         company: companyId,
-  //         tenantIds: manageTenant,
-  //       },
-  //     });
-  //   } else {
-  //     await dispatch({
-  //       type: 'locationSelection/fetchLocationsByCompany',
-  //       payload: {
-  //         company: companyId,
-  //         tenantId,
-  //       },
-  //     });
-  //   }
-  // };
 
   componentWillUnmount = () => {
     const { dispatch } = this.props;
@@ -133,61 +98,25 @@ class Directory extends PureComponent {
     this.setState({ open: !open });
   };
 
-  // operations = () => {
-  //   const { open } = this.state;
-  //   const array = [
-  //     'Aditya Venkatesh has been onboarded successfully, set up his employee profile here.',
-  //     'Aditya Venkatesh has been onboarded successfully, set up his employee profile here.',
-  //     'Past TDS Form 19 forms are yet to be uploaded for Parul Sharma, Upload or Request',
-  //     'Aditya Venkatesh has been onboarded successfully, set up his employee profile here.',
-  //   ];
-  //   const data = (
-  //     <Menu style={{ width: '347px' }}>
-  //       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-  //         <CloseOutlined
-  //           onClick={this.handleLogClick}
-  //           style={{ color: '#2c6df9', fontSize: '18px', margin: '12px' }}
-  //         />
-  //       </div>
-  //       {array.map((item, index) => (
-  //         <Menu.Item
-  //           key={`${index + 1}`}
-  //           style={{ display: 'flex', whiteSpace: 'normal', padding: '0 24px 24px 16px' }}
-  //         >
-  //           <ThunderboltFilled style={{ paddingTop: '6px', fontSize: '14px', color: '#2c6df9' }} />
-  //           <a target="_blank" rel="noopener noreferrer" href="/">
-  //             {item}
-  //           </a>
-  //         </Menu.Item>
-  //       ))}
-  //     </Menu>
-  //   );
-  //   return (
-  //     <div className={styles.viewActivityBox}>
-  //       <Dropdown
-  //         visible={open}
-  //         onClick={this.handleLogClick}
-  //         overlay={data}
-  //         placement="bottomRight"
-  //       >
-  //         <Button className={styles.viewActivityButton}>
-  //           {formatMessage({ id: 'pages.directory.viewActivityLog' })} ({array.length})
-  //         </Button>
-  //       </Dropdown>
-  //     </div>
-  //   );
-  // };
-
   render() {
     const { TabPane } = Tabs;
-    const { checkRoleEmployee } = this.state;
+    const {
+      match: { params: { tabName = '' } = {} },
+      roles = [],
+      signInRole = [],
+    } = this.props;
+
+    const checkRoleEmployee = this.checkRoleEmployee(roles, signInRole);
+
+    if (!tabName) return '';
     return (
       <PageContainer>
         <div className={styles.containerDirectory}>
           <Tabs
-            defaultActiveKey="1"
-            tabBarExtraContent={checkRoleEmployee ? '' : null}
-            // tabBarExtraContent={checkRoleEmployee ? '' : this.operations()}
+            activeKey={checkRoleEmployee && !tabName ? 'org-chart' : tabName || 'list'}
+            onChange={(key) => {
+              history.push(isOwner() ? `/employees/${key}` : `/directory/${key}`);
+            }}
           >
             <TabPane
               tab={
@@ -195,13 +124,16 @@ class Directory extends PureComponent {
                   ? 'Employees Management'
                   : formatMessage({ id: 'pages.directory.directoryTab' })
               }
-              key="1"
+              key="list"
             >
               <DirectoryComponent />
             </TabPane>
-            {/* <TabPane tab={formatMessage({ id: 'pages.directory.organisationChartTab' })} key="2">
-              <OrganChart />
-            </TabPane> */}
+            <TabPane
+              tab={formatMessage({ id: 'pages.directory.organisationChartTab' })}
+              key="org-chart"
+            >
+              <OrganizationChart />
+            </TabPane>
           </Tabs>
         </div>
       </PageContainer>

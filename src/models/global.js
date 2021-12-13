@@ -4,7 +4,9 @@ const GlobalModel = {
   namespace: 'global',
   state: {
     collapsed: false,
+    expandMenuSidebar: false,
     notices: [],
+    fromCompanyManagement: '',
   },
   effects: {
     *fetchNotices(_, { call, put, select }) {
@@ -69,6 +71,17 @@ const GlobalModel = {
     },
   },
   reducers: {
+    save(
+      state = {
+        collapsed: false,
+        expandMenuSidebar: false,
+        notices: [],
+        fromCompanyManagement: '',
+      },
+      { payload },
+    ) {
+      return { ...state, ...payload };
+    },
     changeLayoutCollapsed(
       state = {
         notices: [],
@@ -77,6 +90,15 @@ const GlobalModel = {
       { payload },
     ) {
       return { ...state, collapsed: payload };
+    },
+    collapseExpandMenuSidebar(
+      state = {
+        notices: [],
+        collapsed: true,
+      },
+      { payload },
+    ) {
+      return { ...state, expandMenuSidebar: payload };
     },
 
     saveNotices(state, { payload }) {

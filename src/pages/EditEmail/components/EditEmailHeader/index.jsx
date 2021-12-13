@@ -6,18 +6,23 @@ import styles from './index.less';
 
 class EditEmailHeader extends PureComponent {
   render() {
+    const { isDefault = false } = this.props;
     return (
       <div className={styles.EditEmailHeader}>
         <Link
           to={{
-            pathname: '/employee-onboarding',
-            state: { defaultActiveKey: '2', settingsDisplayComponent: true },
+            pathname: '/onboarding/settings/custom-emails',
+            state: { settingsDisplayComponent: true },
           }}
         >
           <img src={blueBackIcon} alt="back icon" />
         </Link>
 
-        <p>{formatMessage({ id: 'component.editEmailHeader.title' })}</p>
+        {isDefault ? (
+          <p>{formatMessage({ id: 'component.editEmailHeader.defaultTitle' })}</p>
+        ) : (
+          <p>{formatMessage({ id: 'component.editEmailHeader.title' })}</p>
+        )}
       </div>
     );
   }

@@ -15,11 +15,24 @@ export default class RenderTable extends PureComponent {
   getCount = (value) => {
     const { countdata = [] } = this.props;
     const result = countdata.find(({ _id }) => _id === value) || {};
-    let count = 0;
-    if (result.count > 0) {
-      count = result.count;
+    // if (result.count < 10) {
+    //   result.count = `0${result.count}`;
+    // }
+    return result.count || 0;
+  };
+
+  getTotalCount = () => {
+    const { countdata = [] } = this.props;
+    let total = 0;
+
+    if (countdata.length > 0) {
+      if (countdata.length === 1) {
+        total = countdata[0].count;
+      } else {
+        total = countdata.reduce((a, b) => a + b.count, 0);
+      }
     }
-    return count;
+    return total;
   };
 
   renderTab = (value) => {
@@ -30,36 +43,42 @@ export default class RenderTable extends PureComponent {
     const data = [
       {
         value: '1',
+        title: 'All',
+        count: this.getTotalCount(),
+        renderTab: this.renderTab('ALL'),
+      },
+      {
+        value: '2',
         title: 'In Progress',
         count: this.getCount('IN-PROGRESS'),
         renderTab: this.renderTab('DRAFT'),
       },
       {
-        value: '2',
+        value: '3',
         title: 'On-hold',
         count: this.getCount('ON-HOLD'),
         renderTab: this.renderTab('ON-HOLD'),
       },
       {
-        value: '3',
+        value: '4',
         title: 'Accepted',
         count: this.getCount('ACCEPTED'),
         renderTab: this.renderTab('ACCEPTED'),
       },
       {
-        value: '4',
+        value: '5',
         title: 'Rejected',
         count: this.getCount('REJECTED'),
         renderTab: this.renderTab('REJECTED'),
       },
       {
-        value: '5',
+        value: '6',
         title: 'Draft',
         count: this.getCount('DRAFT'),
         renderTab: this.renderTab('DRAFT'),
       },
       {
-        value: '6',
+        value: '7',
         title: 'Withdraw',
         count: this.getCount('WITHDRAW'),
         renderTab: this.renderTab('WITHDRAW'),

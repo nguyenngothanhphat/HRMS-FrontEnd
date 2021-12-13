@@ -1,0 +1,225 @@
+@darkColour: #161c29;
+@blueColour: #2c6df9;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@contentPadding: 24px;
+@borderColor: #d6dce0;
+
+.AssignResourcesModal {
+  :global {
+    .ant-modal-body {
+      // max-height: 530px;
+      // overflow-y: auto;
+    }
+
+    .ant-btn-primary {
+      height: 40px;
+      padding: 0 30px;
+      object-fit: contain;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: Roboto;
+      letter-spacing: 0.13px;
+
+      text-shadow: none;
+      background-color: #ffa100;
+      border: solid 1px #ffa100;
+      border-radius: 25px;
+      box-shadow: none;
+      &:hover {
+        color: #ffffff;
+        background-color: #ffa100;
+      }
+    }
+    .ant-btn-secondary {
+      width: 94px;
+      height: 40px;
+      padding-right: 41px;
+      object-fit: contain;
+      color: #ffa100;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: Roboto;
+      letter-spacing: 0.13px;
+      border: solid 0;
+      border-radius: 25px;
+      box-shadow: none;
+    }
+    .ant-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 12px 24px 12px 12px;
+      border-bottom: 1px solid #d6dce0;
+      border-top-left-radius: 8px;
+      img {
+        margin-right: 12px;
+        padding: 10px;
+        cursor: pointer;
+        &:hover {
+          background-color: #d6dce048;
+          border-radius: 5px;
+        }
+      }
+    }
+    .ant-modal-content {
+      border-top-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+    .ant-form-item {
+      margin-bottom: 12px;
+    }
+    .ant-modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 24px;
+      border-top: 1px solid #d6dce0;
+    }
+    .ant-select-selection-overflow-item .ant-select-selection-overflow-item-suffix {
+      display: none;
+    }
+    .ant-modal-close-x {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 54px;
+      height: 48px;
+      color: #fff;
+      background-color: #2c6df9;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+      &:active {
+        opacity: 0.5;
+      }
+    }
+  }
+  .rightContent {
+    .descText {
+      color: #000000;
+      font-weight: 500;
+      font-size: 16px;
+    }
+    .raiseRequest {
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 16px;
+      text-decoration-line: underline;
+    }
+  }
+  .mainButtons {
+    .btnSubmit {
+      color: #fff;
+
+      font-weight: 600;
+      font-size: 14px;
+      background-color: #ffa100;
+      border: none;
+      border-radius: 25px;
+    }
+    .btnSubmit:disabled {
+      color: #fff;
+      opacity: 0.5;
+    }
+    .btnCancel {
+      display: inline-block;
+      margin-right: 20px;
+      color: #fd4546;
+      font-weight: 500;
+      font-size: 14px;
+      border: none;
+      box-shadow: none;
+      cursor: pointer;
+      &:active {
+        opacity: 0.5;
+      }
+    }
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &__text {
+      margin: 0;
+      color: #161c29;
+      font-weight: 600;
+      font-size: 16px;
+    }
+  }
+
+  .abovePart,
+  .belowPart {
+    padding: 16px 24px !important;
+    .removeBtn {
+      display: flex;
+      justify-content: flex-end;
+      .btn {
+        display: flex;
+        align-items: center;
+        margin-top: -8px;
+        cursor: pointer;
+        img {
+          height: 16px;
+          margin-top: -2px;
+          padding-right: 5px;
+        }
+        span {
+          display: inline-block;
+          color: #f44e21;
+          font-weight: 500;
+          font-size: 12px;
+        }
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+  .abovePart {
+    border-bottom: 1px solid #d6dce0;
+    .item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      .label {
+        display: inline-block;
+        margin-right: 8px;
+        color: #707177;
+        font-size: 13px;
+      }
+      .value {
+        color: #161c29;
+        font-weight: 500;
+        font-size: 13px;
+      }
+    }
+    .item2 {
+      .item();
+      flex-direction: column;
+      .label {
+        margin-bottom: 7px;
+      }
+    }
+  }
+  .divider {
+    border-bottom: 1px solid #d6dce0;
+  }
+}
+
+.noPadding {
+  :global {
+    .ant-modal-body {
+      padding: 0;
+    }
+  }
+}
+.withPadding {
+  :global {
+    .ant-modal-body {
+      padding: @contentPadding;
+    }
+  }
+}

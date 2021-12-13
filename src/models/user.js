@@ -1,3 +1,4 @@
+import { history } from 'umi';
 import { queryCurrent, query as queryUsers, fetchCompanyOfUser } from '@/services/user';
 import {
   getCurrentCompany,
@@ -8,10 +9,10 @@ import {
   setIsSwitchingRole,
   setTenantId,
   setCurrentCompany,
+  getIsSigninGoogle,
 } from '@/utils/authority';
 
-import { history } from 'umi';
-import { checkPermissions } from '@/utils/permissions';
+import { checkPermissions, getCurrentUserRoles } from '@/utils/permissions';
 
 const UserModel = {
   namespace: 'user',
@@ -39,19 +40,41 @@ const UserModel = {
         };
         const response = yield call(queryCurrent, payload);
         const { statusCode, data = {} } = response;
-        if (statusCode !== 200) throw response;
+        if (statusCode !== 200) {
+          history.replace('/login');
+          throw response;
+        }
 
         let formatArrRoles = [];
         let switchRoleAbility = false;
-        const { signInRole = [], roles = [], candidate = {} } = data;
+        const {
+          signInRole = [],
+          roles = [],
+          candidate = {},
+          isFirstLogin = false,
+          employee = {},
+        } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
-        if (formatRole.indexOf('candidate') > -1) {
+        const candidateLinkMode = localStorage.getItem('candidate-link-mode') === 'true';
+        const isSigninGoogle = getIsSigninGoogle();
+
+        if (isFirstLogin && !candidateLinkMode && !isSigninGoogle) {
+          history.replace('/first-change-password');
+          return {};
+        }
+
+        const isCandidate = formatRole.indexOf('candidate') > -1;
+        const isOnlyCandidate = isCandidate && formatRole.length === 1;
+
+        if (isOnlyCandidate) {
           setAuthority(...formatRole);
           setTenantId(candidate.tenant);
           setCurrentCompany(candidate.company);
           setCurrentLocation(candidate.location);
-          history.replace('/candidate');
+          if (!window.location.href.includes('candidate')) {
+            history.replace('/candidate-portal');
+          }
           yield put({
             type: 'saveCurrentUser',
             payload: {
@@ -64,7 +87,7 @@ const UserModel = {
         }
 
         // if there's no tenantId and companyId, return to control panel
-        if (!tenantId || !company) {
+        if ((!tenantId || !company) && !window.location.href.includes('add-company')) {
           formatArrRoles = [...formatRole];
           setAuthority(formatArrRoles);
           history.replace('/control-panel');
@@ -142,6 +165,11 @@ const UserModel = {
           }
 
           // DONE
+
+          const { title: { name: titleName = '' } = {} || {} } = employee || {};
+          const currentUserRoles = [...getCurrentUserRoles(formatArrRoles, titleName)];
+          formatArrRoles = [...formatArrRoles, ...currentUserRoles].filter((x) => x);
+
           setAuthority(formatArrRoles);
           localStorage.setItem('switchRoleAbility', switchRoleAbility);
 
@@ -167,6 +195,7 @@ const UserModel = {
               permissions: {
                 ...checkPermissions(formatArrRoles, checkIsOwner, checkIsAdmin, checkIsEmployee),
               },
+              currentUserRoles,
             },
           });
         }
@@ -177,6 +206,14 @@ const UserModel = {
             ...data,
             name: data?.firstName,
             isSwitchingRole,
+          },
+        });
+
+        // save dashboard widgets
+        yield put({
+          type: 'dashboard/save',
+          payload: {
+            employeeWidgets: data.widgetDashboardShow || [],
           },
         });
 
