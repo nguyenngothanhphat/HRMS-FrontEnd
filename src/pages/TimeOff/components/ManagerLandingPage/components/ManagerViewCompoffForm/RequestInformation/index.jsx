@@ -4,8 +4,10 @@ import { connect, history } from 'umi';
 import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
-
 import styles from './index.less';
+import ROLES from '@/utils/roles';
+
+const { REGION_HEAD } = ROLES;
 
 const { TextArea } = Input;
 
@@ -365,7 +367,7 @@ class RequestInformation extends PureComponent {
         {/* IN PROGRESS */}
         {!isReject &&
           (status === TIMEOFF_STATUS.inProgress ||
-            (currentUserRole === 'REGION-HEAD' && status === TIMEOFF_STATUS.inProgressNext)) && (
+            (currentUserRole === REGION_HEAD && status === TIMEOFF_STATUS.inProgressNext)) && (
             <div className={styles.footer}>
               <span className={styles.note}>
                 By default notifications will be sent to HR, the requestee and recursively loop to
@@ -385,7 +387,7 @@ class RequestInformation extends PureComponent {
         {/* ACCEPTED OR REJECTED  */}
         {!isReject &&
           (status === TIMEOFF_STATUS.accepted ||
-            (currentUserRole !== 'REGION-HEAD' && status === TIMEOFF_STATUS.inProgressNext) ||
+            (currentUserRole !== REGION_HEAD && status === TIMEOFF_STATUS.inProgressNext) ||
             status === TIMEOFF_STATUS.rejected) && (
             <div className={styles.footer}>
               <span className={styles.note}>
@@ -395,7 +397,7 @@ class RequestInformation extends PureComponent {
               <div className={styles.formButtons}>
                 <Button type="link" disabled>
                   {(status === TIMEOFF_STATUS.accepted ||
-                    (currentUserRole !== 'REGION-HEAD' &&
+                    (currentUserRole !== REGION_HEAD &&
                       status === TIMEOFF_STATUS.inProgressNext)) &&
                     'Approved'}
                   {status === TIMEOFF_STATUS.rejected && 'Rejected'}

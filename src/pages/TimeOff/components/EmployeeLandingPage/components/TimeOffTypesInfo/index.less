@@ -1,7 +1,7 @@
 .TimeOffTypesInfo {
   position: fixed;
-  top: 39px !important;
-  width: 65vw !important;
+  top: 51px !important;
+  width: 60vw !important;
   margin: 0 0 100px 30%;
   // overflow-y: hidden;
   :global {
@@ -22,27 +22,27 @@
   .container {
     max-height: 100%;
     .title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #161c29;
       display: flex;
+      display: relative;
       justify-content: space-between;
       padding: 5px 0;
-      display: relative;
+      color: #161c29;
+      font-weight: 700;
+      font-size: 18px;
       .closeIcon {
         position: absolute;
         top: 16px;
         right: 16px;
-        color: #161c29;
-        border-radius: 50%;
-        height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 26px;
-        background: rgba(44, 109, 249, 0.08);
+        height: 26px;
+        color: #161c29;
         font-weight: 700;
         font-size: 13px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        background: rgba(44, 109, 249, 0.08);
+        border-radius: 50%;
         cursor: pointer;
         &:hover {
           opacity: 0.8;
@@ -50,14 +50,14 @@
       }
     }
     .description {
-      margin: 10px 0;
+      margin: 10px 0 20px 0;
       color: #707177;
     }
     :global {
       .ant-collapse {
-        background-color: white;
         max-height: 50vh;
         overflow-y: auto;
+        background-color: white;
       }
       .ant-collapse > .ant-collapse-item {
         border: none;
@@ -70,16 +70,16 @@
         margin-bottom: 15px;
       }
       .ant-collapse-header {
-        font-weight: 700;
         color: #161c29;
+        font-weight: 700;
         font-size: 14px;
       }
       .ant-collapse-content-box {
         background-color: #fafafa;
         p {
+          margin-bottom: 0;
           color: #707177;
           font-size: 14px;
-          margin-bottom: 0;
         }
       }
       .ant-collapse-item-active {
@@ -103,17 +103,17 @@
     }
   }
   &::after {
-    height: 25px;
-    content: '';
-    width: 25px;
-    background-color: #fff;
     position: absolute;
     top: 28px;
     left: 0;
+    z-index: 1003 !important;
+    width: 25px;
+    height: 25px;
     margin-left: -5px;
+    background-color: #fff;
     border-top: #fff solid 1px;
     border-left: #fff solid 1px;
     transform: rotate(315deg);
-    z-index: 1003 !important;
+    content: '';
   }
 }

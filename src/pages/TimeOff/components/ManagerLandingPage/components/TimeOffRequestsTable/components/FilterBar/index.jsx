@@ -31,7 +31,8 @@ class FilterBar extends PureComponent {
   };
 
   addZeroToNumber = (number) => {
-    if (number < 10 && number >= 0) return `0${number}`.slice(-2);
+    if (number === 0) return 0;
+    if (number < 10 && number > 0) return `0${number}`.slice(-2);
     return number;
   };
 
@@ -55,7 +56,7 @@ class FilterBar extends PureComponent {
         approvedLength = '',
         rejectedLength = '',
         draftLength = '',
-        // onHoldLength = '',
+        onHoldLength = '',
       } = {},
       category = '',
       timeOff: { currentFilterTab = '' } = {},
@@ -92,10 +93,7 @@ class FilterBar extends PureComponent {
           {category === 'MY' && (
             <TabPane tab={`Drafts (${this.addZeroToNumber(draftLength)})`} key="4" />
           )}
-          {/* ONLY HR-MANAGER CAN SEE THE WITHDRAW LIST */}
-          {/* {onHoldLength !== 0 && (
-            <TabPane tab={`Withdraw (${this.addZeroToNumber(onHoldLength)})`} key="5" />
-          )} */}
+          <TabPane tab={`Withdrawn (${this.addZeroToNumber(onHoldLength)})`} key="5" />
         </Tabs>
       </div>
     );

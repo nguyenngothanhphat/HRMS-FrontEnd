@@ -1,4 +1,3 @@
-import { deprecationHandler } from 'moment';
 import ROLES from '@/utils/roles';
 
 const {
