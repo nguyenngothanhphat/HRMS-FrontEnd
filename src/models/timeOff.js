@@ -277,7 +277,7 @@ const timeOff = {
           tenantId,
           company: getCurrentCompany(),
         });
-        const { statusCode, data: { items: leaveRequests = [], total = [] } = {} } = response;
+        const { statusCode, data: { items: leaveRequests = [] } = {}, total = 0 } = response;
         if (statusCode !== 200) throw response;
 
         yield put({
@@ -514,7 +514,7 @@ const timeOff = {
           ...payload,
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, data: { result: compoffRequests = [], total = [] } = {} } = response;
+        const { statusCode, data: { result: compoffRequests = [] } = {}, total = 0 } = response;
         // console.log('response', response);
         if (statusCode !== 200) throw response;
         yield put({
@@ -610,7 +610,7 @@ const timeOff = {
         });
         const {
           statusCode,
-          data: { items: teamCompoffRequests = [], total },
+          data: { items: teamCompoffRequests = [] },total = 0
         } = response;
         // console.log('response', response);
         if (statusCode !== 200) throw response;
@@ -638,7 +638,7 @@ const timeOff = {
         });
         const {
           statusCode,
-          data: { items: teamLeaveRequests = [], total },
+          data: { items: teamLeaveRequests = [],  },total = 0
         } = response;
         // console.log('response', response);
         if (statusCode !== 200) throw response;
