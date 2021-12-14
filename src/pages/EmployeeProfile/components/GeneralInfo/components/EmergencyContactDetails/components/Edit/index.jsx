@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Form, Input, Button, Col, Select } from 'antd';
+import { Row, Form, Input, Button, Col, Select, notification } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
 import removeIcon from '../assets/removeIcon.svg';
@@ -166,6 +166,19 @@ class Edit extends Component {
     const payload = this.processDataChanges() || {};
     const dataTempKept = this.processDataKept() || {};
 
+    const listContact = payload.emergencyContactDetails || [];
+    const findContactNull = listContact.filter(
+      (obj) =>
+        obj.emergencyContact === undefined ||
+        obj.emergencyPersonName === undefined ||
+        obj.emergencyRelation === undefined,
+    );
+    if(findContactNull.length > 0){
+      notification.error({
+        message: 'All fileds cannot empty!',
+      });
+      return
+    }
     dispatch({
       type: 'employeeProfile/updateGeneralInfo',
       payload,
