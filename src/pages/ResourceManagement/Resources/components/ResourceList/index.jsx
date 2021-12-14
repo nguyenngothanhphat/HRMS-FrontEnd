@@ -175,6 +175,28 @@ class ResourceList extends Component {
     this.fetchResourceList();
   };
 
+  searchTable = (searchKey) => {
+    const { dispatch } = this.props;
+    const {pageSelected, availableStatus} = this.state;
+    dispatch({
+      type: 'resourceManagement/getResources',
+      payload: {
+        page: pageSelected,
+        availableStatus
+      }
+    }).then(() => {
+      const { resourceList, projectList } = this.props;
+      const array = formatData(resourceList, projectList);
+      const value = searchKey.searchKey || '';
+      const listFilterResource = array.filter(
+        (obj) => obj.employeeName.toLowerCase().indexOf(value.toLowerCase()) >= 0
+      ) || [];
+      this.setState({
+        resourceList: listFilterResource,
+      });
+    });
+  };
+
   fetchEmployeeList = async () => {
     const { dispatch } = this.props;
     dispatch({
@@ -231,7 +253,11 @@ class ResourceList extends Component {
             currentStatus={availableStatus}
             changeAvailableStatus={this.changeAvailableStatus}
           />
-          <SearchTable onFilterChange={this.onFilterChange} filter={filter} />
+          <SearchTable
+            onFilterChange={this.onFilterChange}
+            filter={filter}
+            searchTable={this.searchTable}
+          />
         </div>
         <TableResources
           refreshData={this.refreshData}
