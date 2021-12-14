@@ -191,8 +191,9 @@ const timeOff = {
       }
     },
     *fetchTimeOffTypesByCountry({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getTimeOffTypeByCountry, payload);
+        response = yield call(getTimeOffTypeByCountry, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -202,6 +203,7 @@ const timeOff = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
     *fetchTimeOffTypes({ payload }, { call, put }) {
       try {
@@ -252,8 +254,9 @@ const timeOff = {
       }
     },
     *fetchLeaveBalanceOfUser({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getLeaveBalanceOfUser, {
+        response = yield call(getLeaveBalanceOfUser, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -268,6 +271,7 @@ const timeOff = {
       } catch (errors) {
         // dialog(errors);
       }
+      return response;
     },
     *fetchLeaveRequestOfEmployee({ payload }, { call, put }) {
       try {
@@ -386,7 +390,7 @@ const timeOff = {
       return response;
     },
     *fetchHolidaysByCountry({ payload = {} }, { call, put }) {
-      let response;
+      let response = {};
       try {
         response = yield call(getHolidaysByCountry, { ...payload, tenantId: getCurrentTenant() });
         const { statusCode, data: holidaysListByCountry = {} } = response;
@@ -610,7 +614,8 @@ const timeOff = {
         });
         const {
           statusCode,
-          data: { items: teamCompoffRequests = [] },total = 0
+          data: { items: teamCompoffRequests = [] },
+          total = 0,
         } = response;
         // console.log('response', response);
         if (statusCode !== 200) throw response;
@@ -638,7 +643,8 @@ const timeOff = {
         });
         const {
           statusCode,
-          data: { items: teamLeaveRequests = [],  },total = 0
+          data: { items: teamLeaveRequests = [] },
+          total = 0,
         } = response;
         // console.log('response', response);
         if (statusCode !== 200) throw response;

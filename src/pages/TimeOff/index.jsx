@@ -8,15 +8,23 @@ import HRManagerLandingPage from './components/HRManagerLandingPage';
 // import Balances from './components/Balances';
 import SetupTimeoff from './components/SetupTimeoff';
 import { getCurrentCompany, getCurrentTenant, getCurrentLocation } from '@/utils/authority';
-
 import styles from './index.less';
+import ROLES from '@/utils/roles';
+
+const { HR_MANAGER, EMPLOYEE, REGION_HEAD, MANAGER } = ROLES;
 
 const { TabPane } = Tabs;
-@connect(({ dispatch, timeOff, locationSelection: { listLocationsByCompany = [] } }) => ({
-  timeOff,
-  dispatch,
-  listLocationsByCompany,
-}))
+@connect(
+  ({
+    user: { currentUserRoles } = {},
+    timeOff,
+    locationSelection: { listLocationsByCompany = [] },
+  }) => ({
+    timeOff,
+    currentUserRoles,
+    listLocationsByCompany,
+  }),
+)
 class TimeOff extends PureComponent {
   constructor(props) {
     super(props);
@@ -34,13 +42,14 @@ class TimeOff extends PureComponent {
   findRole = (roles) => {
     const { dispatch } = this.props;
 
-    const hrManager = roles.find((item) => item === 'hr-manager');
-    const manager = roles.find((item) => item === 'manager');
-    const employee = roles.find((item) => item === 'employee');
-    const admincla = roles.find((item) => item === 'region-head');
+    const hrManager = roles.find((item) => item === HR_MANAGER);
+    const manager = roles.find((item) => item === MANAGER);
+    const employee = roles.find((item) => item === EMPLOYEE);
+    const regionHead = roles.find((item) => item === REGION_HEAD);
 
     let role = '';
     role = hrManager || manager || employee || 'employee';
+
     dispatch({
       type: 'timeOff/save',
       payload: {
@@ -48,11 +57,11 @@ class TimeOff extends PureComponent {
       },
     });
 
-    if (admincla) {
+    if (regionHead) {
       dispatch({
         type: 'timeOff/save',
         payload: {
-          currentUserRole: 'REGION-HEAD',
+          currentUserRole: REGION_HEAD,
         },
       });
     }
@@ -75,13 +84,13 @@ class TimeOff extends PureComponent {
     const {
       match: { params: { tabName = '' } = {} },
       location: { state: { status = '', tickedId = '', typeName = '', category = '' } = {} } = {},
+      currentUserRoles = [],
     } = this.props;
 
     if (!tabName) {
       history.replace(`/time-off/overview`);
     } else {
-      const listRole = localStorage.getItem('antd-pro-authority');
-      const role = this.findRole(JSON.parse(listRole));
+      const role = this.findRole(currentUserRoles);
       this.setState({
         role,
       });

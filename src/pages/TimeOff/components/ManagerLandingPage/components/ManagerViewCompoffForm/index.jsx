@@ -6,7 +6,9 @@ import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
 import styles from './index.less';
+import ROLES from '@/utils/roles';
 
+const { HR_MANAGER, REGION_HEAD } = ROLES;
 @connect(({ timeOff, timeOff: { currentUserRole = '' } = {}, loading }) => ({
   timeOff,
   currentUserRole,
@@ -18,37 +20,8 @@ class ManagerViewCompoffForm extends PureComponent {
     this.state = {};
   }
 
-  findRole = (roles) => {
-    const { dispatch } = this.props;
-
-    const hrManager = roles.find((item) => item === 'hr-manager');
-    const manager = roles.find((item) => item === 'manager');
-    const employee = roles.find((item) => item === 'employee');
-    const admincla = roles.find((item) => item === 'region-head');
-
-    let role = '';
-    role = hrManager || manager || employee || 'employee';
-    dispatch({
-      type: 'timeOff/save',
-      payload: {
-        currentUserRole: role,
-      },
-    });
-
-    if (admincla) {
-      dispatch({
-        type: 'timeOff/save',
-        payload: {
-          currentUserRole: 'REGION-HEAD',
-        },
-      });
-    }
-  };
-
   // FETCH LEAVE REQUEST DETAIL
   componentDidMount = () => {
-    const listRole = localStorage.getItem('antd-pro-authority');
-    this.findRole(JSON.parse(listRole));
     const {
       dispatch,
       match: { params: { reId: id = '' } = {} },
@@ -70,7 +43,7 @@ class ManagerViewCompoffForm extends PureComponent {
 
   getColorOfStatus = (status) => {
     const { currentUserRole = '' } = this.props;
-    if (currentUserRole === 'REGION-HEAD') {
+    if (currentUserRole === REGION_HEAD) {
       if (status === TIMEOFF_STATUS.inProgressNext)
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
     } else if (status === TIMEOFF_STATUS.inProgressNext)
@@ -96,7 +69,7 @@ class ManagerViewCompoffForm extends PureComponent {
 
   getNameOfStatus = (status) => {
     const { currentUserRole = '' } = this.props;
-    if (currentUserRole === 'REGION-HEAD' || currentUserRole === 'hr-manager') {
+    if (currentUserRole === REGION_HEAD || currentUserRole === HR_MANAGER) {
       if (status === TIMEOFF_STATUS.inProgressNext) return 'In Progress (PM Approved)';
     } else if (status === TIMEOFF_STATUS.inProgressNext) return 'Approved (PM Approved)';
 
