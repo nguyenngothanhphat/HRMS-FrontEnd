@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col, Spin, notification } from 'antd';
-import EditIcon from '@/assets/editBtnBlue.svg';
 import { connect, history } from 'umi';
 import moment from 'moment';
+import EditIcon from '@/assets/editBtnBlue.svg';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import WithdrawModal from '../WithdrawModal';
@@ -206,7 +206,7 @@ class RequestInformation extends PureComponent {
         {!loadingFetchLeaveRequestById && (
           <>
             <div className={styles.formContent}>
-              <Row>
+              <Row align="middle" gutter={[0, 12]}>
                 <Col span={6}>Timeoff Type</Col>
                 <Col span={18} className={styles.detailColumn}>
                   <span className={styles.fieldValue}>{`${name}`}</span>
@@ -220,33 +220,15 @@ class RequestInformation extends PureComponent {
                       </span>
                     </span>
                   )}
-                  {
-                    //   type === 'B' && (
-                    //   <span
-                    //     style={{
-                    //       marginLeft: '10px',
-                    //       color: '#00C598',
-                    //       padding: '5px 10px',
-                    //       fontSize: '10px',
-                    //       boxShadow: '0px 1px 5px rgba(0, 0, 0, 0.14)',
-                    //       borderRadius: '4px',
-                    //     }}
-                    //   >
-                    //     Advanced leave activated
-                    //   </span>
-                    // )
-                  }
                 </Col>
-              </Row>
-              <Row>
+
                 <Col span={6}>Subject</Col>
                 <Col span={18} className={styles.detailColumn}>
                   <span>{subject}</span>
                 </Col>
-              </Row>
-              <Row>
+
                 <Col span={6}>Duration</Col>
-                {formatDurationTime !== '' && (
+                {formatDurationTime ? (
                   <>
                     <Col span={18} className={styles.detailColumn}>
                       <span>{formatDurationTime}</span>{' '}
@@ -267,22 +249,24 @@ class RequestInformation extends PureComponent {
                       )}
                     </Col>
                   </>
+                ) : (
+                  <Col span={18} />
                 )}
-              </Row>
-              <Row>
+
                 <Col span={6}>Description</Col>
                 <Col span={18} className={styles.detailColumn}>
                   <span>{description}</span>
                 </Col>
+
+                {status === TIMEOFF_STATUS.rejected && (
+                  <>
+                    <Col span={6}>Request Rejection Comments</Col>
+                    <Col span={18} className={styles.detailColumn}>
+                      <span>{comment}</span>
+                    </Col>
+                  </>
+                )}
               </Row>
-              {status === TIMEOFF_STATUS.rejected && (
-                <Row>
-                  <Col span={6}>Request Rejection Comments</Col>
-                  <Col span={18} className={styles.detailColumn}>
-                    <span>{comment}</span>
-                  </Col>
-                </Row>
-              )}
             </div>
             {(status === TIMEOFF_STATUS.drafts ||
               status === TIMEOFF_STATUS.inProgress ||
