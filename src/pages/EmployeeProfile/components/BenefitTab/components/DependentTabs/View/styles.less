@@ -1,11 +1,15 @@
 .tab {
-  padding: 24px;
+  padding: 24px 24px 0 24px;
   border-bottom: solid 1px #d6dce0;
   .dependent {
-    padding-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    padding: 24px 0;
     color: #161c29;
     font-weight: 700;
     font-size: 16px;
+    border-top: solid 1px #d6dce0;
+    cursor: pointer;
   }
 
   .info {
@@ -25,5 +29,33 @@
     width: auto;
     margin: 20px 0;
     border-top: solid 1px #d6dce0;
+  }
+  .selft {
+    &__title {
+      padding-bottom: 24px;
+      color: #161c29;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    div:last-child {
+      margin-bottom: 24px;
+    }
+  }
+
+  .containerSelft {
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+    height: 15px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    &__title {
+      width: 50%;
+      font-weight: 500;
+    }
+    &__content {
+      width: 50%;
+      color: #707177;
+    }
   }
 }

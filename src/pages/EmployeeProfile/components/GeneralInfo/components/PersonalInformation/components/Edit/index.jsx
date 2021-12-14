@@ -484,8 +484,7 @@ class Edit extends PureComponent {
                         showArrow
                         showSearch
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       >
                         {formatCountryList.map((itemCountry) => {
                           return (
@@ -507,8 +506,7 @@ class Edit extends PureComponent {
                         onChange={(e) => this.handleChangeAddress('r_state', e)}
                         showSearch
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       >
                         {loadingStates ? (
                           <div className={styles.selectForm_loading}>
@@ -585,8 +583,7 @@ class Edit extends PureComponent {
                         disabled={profileOwner}
                         showSearch
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       >
                         {formatCountryList.map((itemCountry) => {
                           return (
@@ -609,8 +606,7 @@ class Edit extends PureComponent {
                         disabled={profileOwner}
                         showSearch
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       >
                         {loadingStates ? (
                           <div className={styles.selectForm_loading}>
