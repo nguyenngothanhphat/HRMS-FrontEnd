@@ -82,7 +82,7 @@ const AddCard = (props) => {
         type: 'TASK',
         employee: {
           _id: employee._id,
-          department: employee.department,
+          department: employee.departmentInfo,
           generalInfo: employee.generalInfo,
           manager: {
             _id: employee.managerInfo._id,

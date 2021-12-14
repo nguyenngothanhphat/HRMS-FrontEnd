@@ -85,6 +85,7 @@ class LeaveRequestForm extends PureComponent {
       } = {},
       loadingFetchLeaveRequestById,
     } = this.props;
+
     return (
       <PageContainer>
         <div className={styles.leaveRequest}>

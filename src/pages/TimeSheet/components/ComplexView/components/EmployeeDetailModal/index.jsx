@@ -3,23 +3,24 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import Information from './components/Information';
 import TaskTable from './components/TaskTable';
+import WhiteDownloadIcon from '@/assets/timeSheet/whiteDownload.svg';
 import styles from './index.less';
 
-const ProjectDetailModal = (props) => {
+const EmployeeDetailModal = (props) => {
   const {
     visible = false,
-    title = 'Project Details',
+    title = 'Employee Details',
     onClose = () => {},
-    projectId = '',
+    employeeId = '',
     dataSource = [],
   } = props;
 
-  const [data, setData] = useState({});
+  const [data, setData] = useState();
 
   useEffect(() => {
-    const find = dataSource.find((x) => x.projectId === projectId);
+    const find = dataSource.find((x) => x.id === employeeId);
     setData(find);
-  }, [projectId]);
+  }, [employeeId]);
 
   const handleCancel = () => {
     onClose();
@@ -41,7 +42,7 @@ const ProjectDetailModal = (props) => {
     return (
       <div className={styles.content}>
         <Information data={data} />
-        <TaskTable list={data?.resource} />
+        <TaskTable list={[]} />
       </div>
     );
   };
@@ -49,13 +50,19 @@ const ProjectDetailModal = (props) => {
   return (
     <>
       <Modal
-        className={`${styles.ProjectDetailModal} ${styles.noPadding}`}
+        className={`${styles.EmployeeDetailModal} ${styles.noPadding}`}
         onCancel={handleCancel}
         destroyOnClose
-        width={750}
+        width={800}
         footer={
           <>
-            <Button className={styles.btnSubmit} type="primary" onClick={handleFinish}>
+            <Button type="secondary">Approve timing</Button>
+            <Button
+              className={styles.btnSubmit}
+              type="primary"
+              onClick={handleFinish}
+              icon={<img src={WhiteDownloadIcon} alt="" />}
+            >
               Download
             </Button>
           </>
@@ -70,4 +77,4 @@ const ProjectDetailModal = (props) => {
   );
 };
 
-export default connect(() => ({}))(ProjectDetailModal);
+export default connect(() => ({}))(EmployeeDetailModal);

@@ -11,7 +11,7 @@ import {
   TimePicker,
 } from 'antd';
 import moment from 'moment';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import { dateFormatAPI, hourFormat, hourFormatAPI, TASKS } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
@@ -19,7 +19,6 @@ import styles from './index.less';
 
 const { Option } = Select;
 const dateFormat = 'MM/DD/YYYY';
-const projects = ['Syscloud', 'HRMS', 'Udaan', 'Ramco'];
 
 const EditTaskModal = (props) => {
   const formRef = React.createRef();
@@ -30,36 +29,24 @@ const EditTaskModal = (props) => {
     date = '',
     task: {
       id = '',
-      projectName = '',
+      projectId = '',
       notes = '',
       startTime = '',
       endTime = '',
       taskName = '',
       clientLocation = false,
     } = {},
+    timeSheet: { projectList = [] } = {},
   } = props;
 
   const {
     dispatch,
     loadingUpdateTask = false,
-    employee: {
-      _id: employeeId = '',
-      generalInfo: {
-        legalName: empName = '',
-        workEmail: empWorkEmail = '',
-        userId: empUserId = '',
-      } = {} || {},
-      departmentInfo: { name: empDepartmentName = '', _id: empDepartmentId = '' } = {} || {},
-      managerInfo: {
-        _id: managerId = '',
-        generalInfo: {
-          legalName: managerName = '',
-          workEmail: managerWorkEmail = '',
-          userId: managerUserId = '',
-        } = {} || {},
-        department: { name: managerDepartmentName = '', _id: managerDepartmentId = '' } = {} || {},
-      } = {} || {},
-    } = {} || {},
+    currentUser: {
+      employee: { _id: employeeId = '' } = {} || {},
+      employee = {},
+      location = {},
+    } = {},
   } = props;
 
   const renderModalHeader = () => {
@@ -69,6 +56,18 @@ const EditTaskModal = (props) => {
       </div>
     );
   };
+
+  const fetchProjectList = () => {
+    dispatch({
+      type: 'timeSheet/fetchProjectListEffect',
+    });
+  };
+
+  useEffect(() => {
+    if (visible) {
+      fetchProjectList();
+    }
+  }, [visible]);
 
   const handleCancel = () => {
     onClose();
@@ -83,34 +82,30 @@ const EditTaskModal = (props) => {
 
   // main function
   const updateActivityEffect = (values) => {
+    const findPrj = projectList.find((x) => x.id === values.projectId);
     const payload = {
       ...values,
       id,
       startTime: moment(values.startTime).format(hourFormatAPI),
       endTime: moment(values.endTime).format(hourFormatAPI),
       employeeId,
-      projectName: values.projectName,
-      employee: {
-        employeeName: empName,
-        employeeCode: empUserId,
-        workEmail: empWorkEmail,
-        department: {
-          name: empDepartmentName,
-          id: empDepartmentId,
-        },
+      type: 'TASK',
+      project: {
+        projectName: findPrj.projectName,
+        projectId: values.projectId,
       },
-      managerInfo: {
-        employeeName: managerName,
-        employeeId: managerId,
-        employeeCode: managerUserId,
-        workEmail: managerWorkEmail,
-        department: {
-          name: managerDepartmentName,
-          id: managerDepartmentId,
+      employee: {
+        _id: employee._id,
+        department: employee.departmentInfo,
+        generalInfo: employee.generalInfo,
+        manager: {
+          _id: employee.managerInfo._id,
+          generalInfo: employee.managerInfo.generalInfo,
         },
       },
       date: moment(date).format(dateFormatAPI),
       companyId: getCurrentCompany(),
+      location,
     };
 
     return dispatch({
@@ -138,7 +133,7 @@ const EditTaskModal = (props) => {
           initialValues={{
             date: date ? moment(date) : '',
             taskName,
-            projectName,
+            projectId,
             startTime: startTime ? moment(startTime, hourFormatAPI) : '',
             endTime: endTime ? moment(endTime, hourFormatAPI) : '',
             notes,
@@ -165,11 +160,11 @@ const EditTaskModal = (props) => {
                 label="Project*"
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Select a project' }]}
-                name="projectName"
+                name="projectId"
               >
                 <Select showSearch placeholder="Select a project">
-                  {projects.map((val) => (
-                    <Option value={val}>{val}</Option>
+                  {projectList.map((val) => (
+                    <Option value={val.id}>{val.projectName}</Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -266,7 +261,8 @@ const EditTaskModal = (props) => {
   );
 };
 
-export default connect(({ loading, user: { currentUser: { employee = {} } = {} } }) => ({
-  employee,
+export default connect(({ loading, timeSheet, user: { currentUser } }) => ({
+  currentUser,
+  timeSheet,
   loadingUpdateTask: loading.effects['timeSheet/updateActivityEffect'],
 }))(EditTaskModal);

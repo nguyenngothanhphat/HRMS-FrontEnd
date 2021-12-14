@@ -60,7 +60,7 @@ export default class ManagerLandingPage extends PureComponent {
       <>
         <div className={styles.ManagerLandingPage}>
           <Row gutter={[20, 20]}>
-            <Col xs={24} md={6}>
+            <Col xs={24} lg={6}>
               <Row gutter={[20, 20]}>
                 <Col span={24}>
                   <LeaveInformation
@@ -77,7 +77,7 @@ export default class ManagerLandingPage extends PureComponent {
               </Row>
             </Col>
 
-            <Col xs={24} md={18}>
+            <Col xs={24} lg={18}>
               <Row gutter={[20, 20]} style={{ marginBottom: '20px' }}>
                 <Col xs={24} lg={15}>
                   <ApplyRequest
