@@ -42,8 +42,11 @@ const EditTaskModal = (props) => {
   const {
     dispatch,
     loadingUpdateTask = false,
-    employee: { _id: employeeId = '' } = {} || {},
-    employee = {},
+    currentUser: {
+      employee: { _id: employeeId = '' } = {} || {},
+      employee = {},
+      location = {},
+    } = {},
   } = props;
 
   const renderModalHeader = () => {
@@ -102,6 +105,7 @@ const EditTaskModal = (props) => {
       },
       date: moment(date).format(dateFormatAPI),
       companyId: getCurrentCompany(),
+      location,
     };
 
     return dispatch({
@@ -257,8 +261,8 @@ const EditTaskModal = (props) => {
   );
 };
 
-export default connect(({ loading, timeSheet, user: { currentUser: { employee = {} } = {} } }) => ({
-  employee,
+export default connect(({ loading, timeSheet, user: { currentUser } }) => ({
+  currentUser,
   timeSheet,
   loadingUpdateTask: loading.effects['timeSheet/updateActivityEffect'],
 }))(EditTaskModal);

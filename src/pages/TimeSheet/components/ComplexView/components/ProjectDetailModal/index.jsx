@@ -14,7 +14,7 @@ const ProjectDetailModal = (props) => {
     dataSource = [],
   } = props;
 
-  const [data, setData] = useState();
+  const [data, setData] = useState({});
 
   useEffect(() => {
     const find = dataSource.find((x) => x.projectId === projectId);
@@ -41,7 +41,7 @@ const ProjectDetailModal = (props) => {
     return (
       <div className={styles.content}>
         <Information data={data} />
-        <TaskTable list={[]} />
+        <TaskTable list={data?.resource} />
       </div>
     );
   };

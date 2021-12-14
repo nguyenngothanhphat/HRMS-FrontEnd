@@ -30,7 +30,7 @@ const Information = (props) => {
   ];
   return (
     <div className={styles.Information}>
-      <Row gutter={[0, 12]}>
+      <Row gutter={[12, 12]} align="top">
         {items.map((i) => {
           return (
             <Col span={8} className={styles.eachItem}>

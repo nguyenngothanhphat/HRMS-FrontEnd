@@ -64,7 +64,7 @@ const MonthlyTable = (props) => {
           const { weeks = [] } = row;
           if (index === 0) return renderHeaderItem(weekItem);
           const find = weeks.find((w) => w.week === weekItem.week) || {};
-          if (find?.weekProjectTime === 0 || !find?.weekProjectTime)
+          if (!find || find?.weekProjectTime === 0)
             return (
               <span className={styles.hourValue}>
                 <img src={EmptyLine} alt="" />
@@ -120,9 +120,9 @@ const MonthlyTable = (props) => {
               endDate={weekItem.endDate}
               tasks={dailies}
             >
-              {dailies.length > 0 ? (
+              {weekTotalTime && weekTotalTime !== 0 ? (
                 <div className={styles.item}>
-                  <span className={styles.value}>{convertMsToTime(weekTotalTime || 0)}</span>
+                  <span className={styles.value}>{convertMsToTime(weekTotalTime)}</span>
                 </div>
               ) : (
                 <div className={styles.item}>
