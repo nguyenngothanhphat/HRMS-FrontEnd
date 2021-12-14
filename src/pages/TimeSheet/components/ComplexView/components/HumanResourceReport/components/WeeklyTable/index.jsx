@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { connect } from 'umi';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import { employeeColor } from '@/utils/timeSheet';
+import EmployeeDetailModal from '../../../EmployeeDetailModal';
 import styles from './index.less';
 
 const WeeklyTable = (props) => {
@@ -14,6 +15,8 @@ const WeeklyTable = (props) => {
     loadingFetch = false,
   } = props;
   const [pageSelected, setPageSelected] = useState(1);
+  const [handlingEmployee, setHandlingEmployee] = useState();
+  const [employeeDetailModalVisible, setEmployeeDetailModalVisible] = useState(false);
 
   const getColorByIndex = (index) => {
     return employeeColor[index % employeeColor.length];
@@ -26,10 +29,16 @@ const WeeklyTable = (props) => {
         dataIndex: 'user',
         key: 'user',
         render: (user, row, index) => {
-          const { avatar = '', legalName = '', userId = '' } = row;
+          const { avatar = '', legalName = '', userId = '', id = '' } = row;
 
           return (
-            <div className={styles.renderEmployee}>
+            <div
+              className={styles.renderEmployee}
+              onClick={() => {
+                setHandlingEmployee(id);
+                setEmployeeDetailModalVisible(true);
+              }}
+            >
               <div className={styles.avatar}>
                 {avatar ? (
                   <img src={avatar || MockAvatar} alt="" />
@@ -137,6 +146,12 @@ const WeeklyTable = (props) => {
         scroll={selectedEmployees.length > 0 ? { y: 400 } : {}}
         loading={loadingFetch}
         // pagination={pagination}
+      />
+      <EmployeeDetailModal
+        visible={employeeDetailModalVisible}
+        onClose={() => setEmployeeDetailModalVisible(false)}
+        employeeId={handlingEmployee}
+        dataSource={data}
       />
     </div>
   );

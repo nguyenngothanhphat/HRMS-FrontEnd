@@ -40,7 +40,7 @@ const initialState = {
   // store payload for refreshing
   viewingPayload: {},
   // for importing
-  timesheetDataImporting: [],
+  timesheetDataImporting: {},
   importingIds: [],
   // manager complex view
   managerTeamViewList: [],
@@ -260,7 +260,7 @@ const TimeSheet = {
       const response = {};
       try {
         const res = yield call(getImportData, {}, { ...payload, tenantId });
-        const { code, data = [] } = res;
+        const { code, data = {} } = res;
         if (code !== 200) throw res;
 
         yield put({
@@ -279,7 +279,7 @@ const TimeSheet = {
     *importTimesheet({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(importTimesheet, {}, { ...payload, tenantId });
+        response = yield call(importTimesheet, { ids: payload.ids }, { ...payload, tenantId });
         const { code, msg = '', errors = [] } = response;
         if (code !== 200) {
           notification.error({ message: errors[0].msg });

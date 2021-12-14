@@ -17,7 +17,7 @@ const ImportModal = (props) => {
     title = 'Import rows from yesterday',
     onClose = () => {},
     employee: { _id: employeeId = '' } = {},
-    timesheetDataImporting = [],
+    timesheetDataImporting = {},
     importingIds = [],
     loadingFetchTasks = false,
     loadingImportTimesheet = false,
@@ -150,7 +150,7 @@ const ImportModal = (props) => {
           importingIds={importingIds}
         />
         <TaskTable
-          list={tasks.length > 0 ? tasks[0].dailyTasks : []}
+          list={tasks}
           selectedDate={selectedDate}
           loading={loadingFetchTasks}
           importingIds={importingIds}

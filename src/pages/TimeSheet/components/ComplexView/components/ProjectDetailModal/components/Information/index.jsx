@@ -7,7 +7,13 @@ import CalendarIcon from '@/assets/timeSheet/calendar.svg';
 
 const Information = (props) => {
   const {
-    data: { projectName = '', projectSpentInHours = 0, projectSpentInDay = 0, resource = [] } = {},
+    data: {
+      projectName = '',
+      engagementType = '',
+      projectSpentInHours = 0,
+      projectSpentInDay = 0,
+      resource = [],
+    } = {},
   } = props;
 
   const renderTooltipTitle = (list) => {
@@ -63,7 +69,7 @@ const Information = (props) => {
     },
     {
       name: 'Project Type',
-      value: '',
+      value: <span className={styles.boldText}>{engagementType}</span>,
     },
     {
       name: 'Total Hours',

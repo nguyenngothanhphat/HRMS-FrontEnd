@@ -103,32 +103,13 @@ const AddTaskModal = (props) => {
         nightShift: item.nightShift,
         employee: {
           _id: employee._id,
-          department: employee.department,
+          department: employee.departmentInfo,
           generalInfo: employee.generalInfo,
           manager: {
             _id: employee.managerInfo._id,
             generalInfo: employee.managerInfo.generalInfo,
           },
         },
-        // employee: {
-        //   employeeName: empName,
-        //   employeeCode: empUserId,
-        //   workEmail: empWorkEmail,
-        //   department: {
-        //     name: empDepartmentName,
-        //     id: empDepartmentId,
-        //   },
-        // },
-        // managerInfo: {
-        //   employeeName: managerName,
-        //   employeeId: managerId,
-        //   employeeCode: managerUserId,
-        //   workEmail: managerWorkEmail,
-        //   department: {
-        //     name: managerDepartmentName,
-        //     id: managerDepartmentId,
-        //   },
-        // },
       };
     });
 
