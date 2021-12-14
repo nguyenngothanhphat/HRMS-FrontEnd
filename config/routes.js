@@ -679,6 +679,22 @@ const routes = [
             authority: [HR_MANAGER, HR, EMPLOYEE, MANAGER], // TEMPORARY VALUES
             hideInMenu: true,
           },
+
+          // TICKET MANAGEMENT
+          {
+            path: '/ticket-management',
+            name: 'ticketManagement',
+            icon: '/assets/images/menuIcons/ticketManagement.svg',
+            component: './TicketManagement',
+            authority: [HR_MANAGER, HR, EMPLOYEE, MANAGER], // TEMPORARY VALUES
+          },
+          {
+            path: '/ticket-management/:tabName',
+            component: './TicketManagement',
+            authority: [HR_MANAGER, HR, EMPLOYEE, MANAGER], // TEMPORARY VALUES
+            hideInMenu: true,
+          },
+
           // customer-management
           {
             path: '/customer-management',
@@ -707,26 +723,12 @@ const routes = [
             component: './CustomerProfile',
             authority: [HR_MANAGER, HR, REGION_HEAD, ADMIN, OWNER], // TEMPORARY VALUES
           },
-          // TICKET MANAGEMENT
-          {
-            path: '/ticket-management',
-            name: 'ticketManagement',
-            icon: '/assets/images/menuIcons/ticketManagement.svg',
-            component: './TicketManagement',
-            authority: [HR_MANAGER, HR, EMPLOYEE, MANAGER], // TEMPORARY VALUES
-          },
-          {
-            path: '/ticket-management/:tabName',
-            component: './TicketManagement',
-            authority: [HR_MANAGER, HR, EMPLOYEE, MANAGER], // TEMPORARY VALUES
-            hideInMenu: true,
-          },
 
           // PROJECTS MANAGEMENT
           {
             path: '/project-management',
             name: 'projectManagement',
-            icon: '/assets/images/menuIcons/ticketManagement.svg',
+            icon: '/assets/images/menuIcons/project.svg',
             component: './ProjectManagement',
             authority: ['P_PROJECT_MANAGEMENT_VIEW', 'M_PROJECT_MANAGEMENT_VIEW'],
           },
@@ -767,7 +769,7 @@ const routes = [
           {
             path: '/resource-management',
             name: 'resourceManagement',
-            icon: '/assets/images/menuIcons/ticketManagement.svg',
+            icon: '/assets/images/menuIcons/resource.svg',
             component: './ResourceManagement',
             authority: ['P_RESOURCE_MANAGEMENT_VIEW', 'M_RESOURCE_MANAGEMENT_VIEW'],
           },
