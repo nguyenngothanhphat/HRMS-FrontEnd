@@ -5,6 +5,7 @@ import { connect } from 'umi';
 import { projectColor, convertMsToTime } from '@/utils/timeSheet';
 import TaskPopover from './components/TaskPopover';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
+import EmptyComponent from '@/pages/TimeSheet/components/ComplexView/components/Empty';
 
 import styles from './index.less';
 
@@ -168,11 +169,12 @@ const MonthlyTable = (props) => {
           columns={columns()}
           dataSource={formattedData}
           bordered
-          // rowSelection={rowSelection} // NOT WOKRING YET
+          // rowSelection={rowSelection} // NOT WORKING YET
           pagination={false}
           // scroll={{ y: 440 }}
           loading={loadingFetch}
           rowKey={(row) => row.projectId}
+          footer={data.length > 0 ? null : EmptyComponent}
         />
       </div>
     </div>

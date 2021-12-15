@@ -4,6 +4,7 @@ import { connect } from 'umi';
 import { employeeColor } from '@/utils/timeSheet';
 import ProjectDetailModal from '../../../ProjectDetailModal';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
+import EmptyComponent from '@/pages/TimeSheet/components/ComplexView/components/Empty';
 import styles from './index.less';
 
 const WeeklyTable = (props) => {
@@ -144,6 +145,9 @@ const WeeklyTable = (props) => {
         scroll={selectedProjects.length > 0 ? { y: 400 } : {}}
         // pagination={pagination}
         loading={loadingFetch}
+        locale={{
+          emptyText: <EmptyComponent />,
+        }}
       />
       <ProjectDetailModal
         visible={projectDetailModalVisible}
