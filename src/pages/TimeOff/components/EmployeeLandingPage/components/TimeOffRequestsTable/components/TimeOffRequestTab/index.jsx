@@ -189,7 +189,7 @@ class TimeOffRequestTab extends PureComponent {
     let onHoldLength = 0;
 
     newData.forEach((item) => {
-      const { status = '' } = item;
+      const { _id: status = '' } = item;
       switch (status) {
         case TIMEOFF_STATUS.inProgress: {
           inProgressLength += item.count;
