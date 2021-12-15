@@ -138,8 +138,8 @@ const ActivityCard = (props) => {
         height,
       }}
     >
-      <Row gutter={[12, 0]} className={styles.container}>
-        <Col span={PROJECT} className={`${styles.normalCell} ${styles.boldText}`}>
+      <Row gutter={[12, 12]} className={styles.container} align="top">
+        <Col span={PROJECT} className={`${styles.flexCell} ${styles.boldText}`}>
           <div
             className={styles.activityIcon}
             style={
@@ -165,7 +165,7 @@ const ActivityCard = (props) => {
         <Col span={TOTAL_HOURS} className={`${styles.normalCell} ${styles.blueText}`}>
           {convertMsToTime(duration)}
         </Col>
-        <Col span={ACTIONS} className={`${styles.normalCell} ${styles.alignCenter}`}>
+        <Col span={ACTIONS} className={`${styles.flexCell} ${styles.alignCenter}`}>
           <div className={styles.actionsButton}>
             <img src={EditIcon} alt="" onClick={() => setEditTaskModalVisble(true)} />
             <img src={DeleteIcon} onClick={() => setRemoveModalVisibe(true)} alt="" />

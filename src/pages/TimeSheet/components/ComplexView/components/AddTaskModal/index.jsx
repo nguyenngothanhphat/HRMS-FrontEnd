@@ -218,7 +218,7 @@ const AddTaskModal = (props) => {
                       name={[name, 'notes']}
                       fieldKey={[fieldKey, 'notes']}
                     >
-                      <Input.TextArea autoSize={{ minRows: 3 }} />
+                      <Input.TextArea autoSize={{ minRows: 4 }} placeholder="Enter description" />
                     </Form.Item>
                   </Col>
                   <Col xs={12}>
