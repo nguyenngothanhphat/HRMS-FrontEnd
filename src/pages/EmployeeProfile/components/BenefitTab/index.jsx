@@ -1,15 +1,15 @@
 import React, { PureComponent } from 'react';
 import { Skeleton, Tabs } from 'antd';
 import { formatMessage, connect } from 'umi';
-import { isEmpty } from 'lodash';
-import { EditFilled } from '@ant-design/icons';
+// import { isEmpty } from 'lodash';
+// import { EditFilled } from '@ant-design/icons';
 import IconAdd from './components/DependentTabs/Edit/assets/AddIcon.svg';
 import HealthWellbeing from './components/HealthWellbeing';
 import Financial from './components/Financial';
 import Legal from './components/Legal';
 import DependentTabs from './components/DependentTabs';
 import ModalAddDependant from './components/DependentTabs/ModalAddDependant';
-import ModalEditDependant from './components/DependentTabs/Edit';
+// import ModalEditDependant from './components/DependentTabs/Edit';
 import styles from './styles.less';
 
 const { TabPane } = Tabs;
@@ -51,7 +51,7 @@ class BenefitTab extends PureComponent {
       isEditing: false,
       isAdding: false,
       addDependant: false,
-      editDependant: false,
+      // editDependant: false,
       activeKey: '1',
     };
   }
@@ -83,9 +83,9 @@ class BenefitTab extends PureComponent {
     } else this.setEditing(true);
   };
 
-  handleEditDependant = () => {
-    this.setState({ editDependant: true });
-  };
+  // handleEditDependant = () => {
+  //   this.setState({ editDependant: true });
+  // };
 
   handeAddDependant = () => {
     this.setState({ addDependant: true });
@@ -93,7 +93,7 @@ class BenefitTab extends PureComponent {
 
   render() {
     const { loading, dependentDetails: { dependents = [] } = {} } = this.props;
-    const { isEditing, isAdding, addDependant, activeKey, editDependant } = this.state;
+    const { isEditing, isAdding, addDependant, activeKey } = this.state;
     if (loading) return <Skeleton />;
     return (
       <div style={{ backgroundColor: '#f6f7f9' }}>
@@ -111,7 +111,7 @@ class BenefitTab extends PureComponent {
                   </div>
                 )} */}
                 {/** Edit after update data */}
-                {!isEmpty(dependents) ? (
+                {/* {!isEmpty(dependents) ? (
                   <>
                     {!isEditing && !isAdding && (
                       <div className={styles.editButton} onClick={this.handleEditDependant}>
@@ -128,7 +128,7 @@ class BenefitTab extends PureComponent {
                   visible={editDependant}
                   onClose={() => this.setState({ editDependant: false })}
                   mode="multiple"
-                />
+                /> */}
               </div>
               <div>
                 <DependentTabs

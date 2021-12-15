@@ -28,11 +28,19 @@ const DependentTabs = (props) => {
   const dob = formatMessage({
     id: 'pages.employeeProfile.BenefitTab.components.dependentTabs.dob',
   });
-  const handleDeleteDependant = () => {
+
+  const handleDeleteDependant = (value) => {
     const { dispatch } = props;
+    const index = viewData
+      .map((x) => {
+        return x._id;
+      })
+      .indexOf(value);
+    viewData.splice(index, 1);
     dispatch({
-      type: 'employeeProfile/removeEmployeeDependentDetails',
+      type: 'employeeProfile/updateEmployeeDependentDetails',
       payload: {
+        dependents: viewData,
         id: dependentsId,
         tenantId: tenantCurrentEmployee,
       },
@@ -81,7 +89,7 @@ const DependentTabs = (props) => {
                 id: 'pages.employeeProfile.BenefitTab.components.dependentTabs.dependent',
               })}
               {index + 1}
-              <img src={RemoveIcon} alt="remove" onClick={handleDeleteDependant} />
+              <img src={RemoveIcon} alt="remove" onClick={() => handleDeleteDependant(data._id)} />
             </div>
             <div className={styles.info}>
               {[firstname, lastname, gender, relationship, dob].map((item) => {

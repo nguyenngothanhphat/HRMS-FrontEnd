@@ -39,19 +39,19 @@ class ModalAddDependant extends Component {
   };
 
   formatData = () => {
-    // const { data = [] } = this.props;
-    // if (data.length > 0) {
-    //   return data.map((value) => {
-    //     const { firstName = '', lastName = '', gender = '', relationship = '', dob = '' } = value;
-    //     return {
-    //       firstName,
-    //       lastName,
-    //       gender,
-    //       relationship,
-    //       dob: moment(dob).locale('en'),
-    //     };
-    //   });
-    // }
+    const { data = [] } = this.props;
+    if (data.length > 0) {
+      return data.map((value) => {
+        const { firstName = '', lastName = '', gender = '', relationship = '', dob = '' } = value;
+        return {
+          firstName,
+          lastName,
+          gender,
+          relationship,
+          dob: moment(dob).locale('en'),
+        };
+      });
+    }
     return [
       {
         firstName: '',
@@ -76,21 +76,22 @@ class ModalAddDependant extends Component {
       tenantCurrentEmployee = '',
     } = this.props;
 
-    const { dependents = [] } = values;
+    // const { dependents = [] } = values;
     let type = 'employeeProfile/addDependentsOfEmployee';
-    if (dependents.length === 0) {
-      type = 'employeeProfile/removeEmployeeDependentDetails';
-      payload.id = dependentsId;
-      payload.tenantId = tenantCurrentEmployee;
-    } else if (data.length > 0) {
-      payload = values;
+    // if (dependents.length === 0) {
+    //   type = 'employeeProfile/removeEmployeeDependentDetails';
+    //   payload.id = dependentsId;
+    //   payload.tenantId = tenantCurrentEmployee;
+    // } else
+    if (data.length > 0) {
+      payload.dependents = [...this.formatData(), values];
       payload.id = dependentsId;
       payload.tenantId = tenantCurrentEmployee;
       type = 'employeeProfile/updateEmployeeDependentDetails';
     } else {
       payload = {
         employee: idCurrentEmployee,
-        dependents,
+        dependents: values,
         tenantId: tenantCurrentEmployee,
       };
     }
@@ -113,7 +114,7 @@ class ModalAddDependant extends Component {
   };
 
   renderEditForm = () => {
-    const formatData = this.formatData();
+    // const formatData = this.formatData();
 
     return (
       <Form
@@ -122,98 +123,87 @@ class ModalAddDependant extends Component {
         ref={this.formRef}
         id="myForm"
         onFinish={this.handleSave}
-        initialValues={{ dependents: formatData }}
+        // initialValues={{ dependents: formatData }}
       >
-        <Form.List name="dependents">
-          {(fields) => (
-            <>
-              {fields.map((field, index) => (
-                <>
-                  {index > 0 && <div className={styles.line} />}
-                  <Form.Item
-                    label="First Name"
-                    name={[field.name, 'firstName']}
-                    fieldKey={[field.fieldKey, 'firstName']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Please type first name!',
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-                  <Form.Item
-                    label="Last Name"
-                    name={[field.name, 'lastName']}
-                    fieldKey={[field.fieldKey, 'lastName']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Please type last name!',
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-                  <Form.Item
-                    label="Gender"
-                    name={[field.name, 'gender']}
-                    fieldKey={[field.fieldKey, 'gender']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Please select gender!',
-                      },
-                    ]}
-                  >
-                    <Select className={styles.selectForm}>
-                      <Option value="Male">Male</Option>
-                      <Option value="Female">Female</Option>
-                      <Option value="Other">Other</Option>
-                    </Select>
-                  </Form.Item>
-                  <Form.Item
-                    label="Relationship"
-                    name={[field.name, 'relationship']}
-                    fieldKey={[field.fieldKey, 'relationship']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Please select the relationship!',
-                      },
-                    ]}
-                  >
-                    <Select className={styles.selectForm}>
-                      <Option value="Father">Father</Option>
-                      <Option value="Mother">Mother</Option>
-                      <Option value="Grandfather">Grandfather</Option>
-                      <Option value="Grandmother">Grandmother</Option>
-                      <Option value="...">...</Option>
-                    </Select>
-                  </Form.Item>
-                  <Form.Item
-                    label="Date of Birth"
-                    name={[field.name, 'dob']}
-                    fieldKey={[field.fieldKey, 'dob']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Please choose date of birth!',
-                      },
-                    ]}
-                  >
-                    <DatePicker
-                      className={styles.dateForm}
-                      format="MM.DD.YY"
-                      disabledDate={this.disabledDate}
-                    />
-                  </Form.Item>
-                </>
-              ))}
-            </>
-          )}
-        </Form.List>
+        <Form.Item
+          label="First Name"
+          name="firstName"
+          // fieldKey={[field.fieldKey, 'firstName']}
+          rules={[
+            {
+              required: true,
+              message: 'Please type first name!',
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Last Name"
+          name="lastName"
+          // fieldKey={[field.fieldKey, 'lastName']}
+          rules={[
+            {
+              required: true,
+              message: 'Please type last name!',
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Gender"
+          name="gender"
+          // fieldKey={[field.fieldKey, 'gender']}
+          rules={[
+            {
+              required: true,
+              message: 'Please select gender!',
+            },
+          ]}
+        >
+          <Select className={styles.selectForm}>
+            <Option value="Male">Male</Option>
+            <Option value="Female">Female</Option>
+            <Option value="Other">Other</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label="Relationship"
+          name="relationship"
+          // fieldKey={[field.fieldKey, 'relationship']}
+          rules={[
+            {
+              required: true,
+              message: 'Please select the relationship!',
+            },
+          ]}
+        >
+          <Select className={styles.selectForm}>
+            <Option value="Father">Father</Option>
+            <Option value="Mother">Mother</Option>
+            <Option value="Grandfather">Grandfather</Option>
+            <Option value="Grandmother">Grandmother</Option>
+            <Option value="...">...</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label="Date of Birth"
+          name="dob"
+          // fieldKey={[field.fieldKey, 'dob']}
+          rules={[
+            {
+              required: true,
+              message: 'Please choose date of birth!',
+            },
+          ]}
+        >
+          <DatePicker
+            className={styles.dateForm}
+            format="DD/MM/YYYY"
+            disabledDate={this.disabledDate}
+          />
+        </Form.Item>
       </Form>
     );
   };
