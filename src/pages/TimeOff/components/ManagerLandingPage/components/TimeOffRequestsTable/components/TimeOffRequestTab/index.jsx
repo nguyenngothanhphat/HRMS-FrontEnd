@@ -220,7 +220,7 @@ class TimeOffRequestTab extends PureComponent {
     let onHoldLength = 0;
 
     newData.forEach((item) => {
-      const { status = '' } = item;
+      const { _id: status = '' } = item;
       if (currentUserRole === REGION_HEAD) {
         switch (status) {
           case TIMEOFF_STATUS.inProgressNext: {
