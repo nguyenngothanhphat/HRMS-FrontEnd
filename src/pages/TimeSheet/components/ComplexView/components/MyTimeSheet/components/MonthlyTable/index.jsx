@@ -5,6 +5,7 @@ import { connect } from 'umi';
 import { projectColor, convertMsToTime } from '@/utils/timeSheet';
 import TaskPopover from './components/TaskPopover';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
+import EmptyComponent from '@/pages/TimeSheet/components/ComplexView/components/Empty';
 
 import styles from './index.less';
 
@@ -105,6 +106,7 @@ const MonthlyTable = (props) => {
 
   // FOOTER
   const renderFooter = () => {
+    if (weeksProp.length === 0) return <EmptyComponent />;
     return (
       <div className={styles.footer}>
         <div className={styles.item}>

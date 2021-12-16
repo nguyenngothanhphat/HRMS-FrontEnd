@@ -79,7 +79,7 @@ const EMP_MT_SECONDARY_COL_SPAN = {
   ACTIONS: 3,
 };
 
-const EMP_ROW_HEIGHT = 60; // px
+const EMP_ROW_HEIGHT = 72; // px
 
 // MANAGER VIEW
 const MNG_MT_MAIN_COL_SPAN = {
@@ -124,8 +124,8 @@ const parseTimeAPI = (time = '') => {
 
 // WORKING HOURS
 const WORKING_HOURS = {
-  START: 7,
-  END: 21,
+  START: 6,
+  END: 23,
 };
 
 const TASKS = [

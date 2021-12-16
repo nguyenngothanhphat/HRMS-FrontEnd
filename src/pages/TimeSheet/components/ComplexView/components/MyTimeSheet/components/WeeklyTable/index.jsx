@@ -8,6 +8,7 @@ import FailIcon from '@/assets/timeSheet/fail.svg';
 import PendingIcon from '@/assets/timeSheet/pending.svg';
 import TaskPopover from './components/TaskPopover';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
+import EmptyComponent from '@/pages/TimeSheet/components/ComplexView/components/Empty';
 
 import styles from './index.less';
 
@@ -277,6 +278,7 @@ const WeeklyTable = (props) => {
   };
 
   const renderFooter = () => {
+    if (data.length === 0) return <EmptyComponent />;
     const durationByDate = getDurationByDate();
     return (
       <div className={styles.footer}>
