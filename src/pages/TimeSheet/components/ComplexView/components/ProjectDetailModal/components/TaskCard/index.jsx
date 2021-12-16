@@ -4,7 +4,8 @@ import { connect } from 'umi';
 import styles from './index.less';
 
 const TaskCard = (props) => {
-  const { card: { task = '', description = '', department = '', taskList = [] } = {} } = props;
+  const { card: { task = '', description = '', department = '', projectMembers = [] } = {} } =
+    props;
 
   // MAIN AREA
   return (
@@ -20,18 +21,16 @@ const TaskCard = (props) => {
           {description}
         </Col>
         <Col span={12} className={styles.groupCell}>
-          {taskList.map((x) => {
+          {projectMembers.map((x) => {
             return (
               <Row className={styles.groupRow}>
                 <Col span={8} className={styles.normalCell}>
-                  {x.resources}
+                  {x.legalName}
                 </Col>
                 <Col span={8} className={`${styles.normalCell} ${styles.alignCenter}`}>
-                  {x.timeTaken}
+                  {x.userSpentTimeInHours}hrs
                 </Col>
-                <Col span={8} className={`${styles.normalCell} ${styles.alignCenter}`}>
-                  {x.totalTime}
-                </Col>
+                <Col span={8} className={`${styles.normalCell} ${styles.alignCenter}`} />
               </Row>
             );
           })}
