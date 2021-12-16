@@ -134,7 +134,7 @@ const employeeProfile = {
     listRelation: [],
     listStates: [],
     revoke: [],
-    visibleSuccess: false
+    visibleSuccess: false,
   },
   effects: {
     *fetchEmployeeIdByUserId({ payload }, { call, put }) {
@@ -521,7 +521,7 @@ const employeeProfile = {
         });
         yield put({
           type: 'save',
-          payload: {visibleSuccess: true}
+          payload: { visibleSuccess: true },
         });
         switch (key) {
           case 'openContactDetails':
@@ -1051,9 +1051,9 @@ const employeeProfile = {
           dataTempKept,
         });
         yield put({
-          type: 'save', 
-          payload: {visibleSuccess: true}
-        })
+          type: 'save',
+          payload: { visibleSuccess: true },
+        });
         if (key === 'openBank') {
           yield put({
             type: 'saveOpenEdit',
@@ -1137,8 +1137,8 @@ const employeeProfile = {
         });
         yield put({
           type: 'save',
-          payload: {visibleSuccess: true}
-        })
+          payload: { visibleSuccess: true },
+        });
         if (key === 'openTax') {
           yield put({
             type: 'saveOpenEdit',
@@ -1150,9 +1150,15 @@ const employeeProfile = {
       }
     },
 
-    *fetchTitleByDepartment({ payload }, { call, put }) {
+    *fetchTitleByDepartment({ payload }, { call, put, select }) {
       try {
-        const res = yield call(getListTitle, payload);
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { companyCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const res = yield call(getListTitle, {
+          ...payload,
+          tenantId: tenantCurrentEmployee,
+          company: companyCurrentEmployee,
+        });
         const { statusCode, data } = res;
         if (statusCode !== 200) throw res;
         yield put({
@@ -1206,8 +1212,8 @@ const employeeProfile = {
         isUpdateEmployment = true;
         yield put({
           type: 'save',
-          payload: {visibleSuccess: true}
-        })
+          payload: { visibleSuccess: true },
+        });
       } catch (errors) {
         dialog(errors);
       }

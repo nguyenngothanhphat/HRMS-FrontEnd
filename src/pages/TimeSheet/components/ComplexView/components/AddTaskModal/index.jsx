@@ -25,7 +25,7 @@ const { Option } = Select;
 const dateFormat = 'MM/DD/YYYY';
 
 const AddTaskModal = (props) => {
-  const formRef = React.createRef();
+  const [form] = Form.useForm();
   const {
     visible = false,
     title = 'Add Task',
@@ -133,12 +133,21 @@ const AddTaskModal = (props) => {
     }
   };
 
+  const onTimePickerSelect = (type, value, index) => {
+    form.setFields([
+      {
+        name: ['tasks', index, type],
+        value,
+      },
+    ]);
+  };
+
   const renderFormList = () => {
     return (
       <Form.List name="tasks">
         {(fields, { add, remove }) => (
           <>
-            {fields.map(({ key, name, fieldKey }) => (
+            {fields.map(({ key, name, fieldKey }, index) => (
               <>
                 {key !== 0 && <div className={styles.divider} />}
                 <Row gutter={[24, 0]} className={styles.belowPart}>
@@ -192,6 +201,9 @@ const AddTaskModal = (props) => {
                         minuteStep={30}
                         format={hourFormat}
                         placeholder="Select start time"
+                        showNow={false}
+                        use12Hours={false}
+                        onSelect={(time) => onTimePickerSelect('startTime', time, index)}
                       />
                     </Form.Item>
                   </Col>
@@ -208,6 +220,9 @@ const AddTaskModal = (props) => {
                         minuteStep={30}
                         format={hourFormat}
                         placeholder="Select end time"
+                        showNow={false}
+                        use12Hours={false}
+                        onSelect={(time) => onTimePickerSelect('endTime', time, index)}
                       />
                     </Form.Item>
                   </Col>
@@ -261,7 +276,7 @@ const AddTaskModal = (props) => {
       <div className={styles.content}>
         <Form
           name="basic"
-          ref={formRef}
+          form={form}
           id="myForm"
           onFinish={handleFinish}
           initialValues={{
