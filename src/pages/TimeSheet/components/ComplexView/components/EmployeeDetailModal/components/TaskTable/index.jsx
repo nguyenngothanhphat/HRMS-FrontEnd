@@ -1,44 +1,12 @@
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import CommonTable from '@/components/CommonTable';
+import EmptyLine2 from '@/assets/timeSheet/emptyLine2.svg';
 import styles from './index.less';
 
-const mockData = [
-  {
-    id: 1,
-    date: '01 Feb, Mon',
-    inTime: '10:00',
-    outTime: '12:00',
-    leaves: 0,
-    notes: 'Talk with PM',
-  },
-  {
-    id: 2,
-    date: '01 Feb, Mon',
-    inTime: '10:00',
-    outTime: '12:00',
-    leaves: 0,
-    notes: '',
-  },
-  {
-    id: 3,
-    date: '01 Feb, Mon',
-    inTime: '10:00',
-    outTime: '12:00',
-    leaves: 0,
-    notes: 'Talk with PM',
-  },
-  {
-    id: 4,
-    date: '01 Feb, Mon',
-    inTime: '10:00',
-    outTime: '12:00',
-    leaves: 0,
-    notes: '',
-  },
-];
+const TaskTable = (props) => {
+  const { list = [] } = props;
 
-const TaskTable = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const generateColumns = () => {
     return [
@@ -46,6 +14,7 @@ const TaskTable = () => {
         title: 'Date',
         key: 'date',
         dataIndex: 'date',
+        render: (date) => <span className={styles.boldText}>{date}</span>,
       },
       {
         title: 'In Time',
@@ -59,14 +28,14 @@ const TaskTable = () => {
       },
       {
         title: 'Leaves',
-        key: 'leaves',
-        dataIndex: 'leaves',
+        key: 'leave',
+        dataIndex: 'leave',
       },
       {
         title: 'Notes',
         key: 'notes',
         dataIndex: 'notes',
-        render: (notes) => notes || '-',
+        render: (notes) => notes || <img src={EmptyLine2} alt="" />,
       },
     ];
   };
@@ -74,10 +43,11 @@ const TaskTable = () => {
   return (
     <div className={styles.TaskTable}>
       <CommonTable
-        list={mockData}
+        list={list}
         columns={generateColumns()}
         showPagination={false}
         selectable
+        scrollable
         rowKey="id"
         selectedRowKeys={selectedRowKeys}
         setSelectedRowKeys={setSelectedRowKeys}

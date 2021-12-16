@@ -42,7 +42,7 @@ const EmployeeDetailModal = (props) => {
     return (
       <div className={styles.content}>
         <Information data={data} />
-        <TaskTable list={[]} />
+        <TaskTable list={data?.userDetail || []} />
       </div>
     );
   };
