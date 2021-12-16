@@ -31,7 +31,8 @@ class FilterBar extends Component {
   };
 
   addZeroToNumber = (number) => {
-    if (number < 10 && number >= 0) return `0${number}`.slice(-2);
+    if (number === 0) return 0;
+    if (number < 10 && number > 0) return `0${number}`.slice(-2);
     return number;
   };
 
@@ -94,20 +95,20 @@ class FilterBar extends Component {
           {category === 'MY' && (
             <TabPane tab={`Drafts (${this.addZeroToNumber(draftLength)})`} key="4" />
           )}
-          {onHoldLength !== 0 && (
-            <TabPane
-              tab={
-                withdrawExist ? (
-                  <Badge dot>
-                    <span>Withdraw ({this.addZeroToNumber(onHoldLength)}) </span>
-                  </Badge>
-                ) : (
-                  <span>Withdraw ({this.addZeroToNumber(onHoldLength)}) </span>
-                )
-              }
-              key="5"
-            />
-          )}
+
+          <TabPane
+            tab={
+              withdrawExist ? (
+                <Badge dot>
+                  <span>Withdrawn ({this.addZeroToNumber(onHoldLength)}) </span>
+                </Badge>
+              ) : (
+                <span>Withdrawn ({this.addZeroToNumber(onHoldLength)}) </span>
+              )
+            }
+            key="5"
+          />
+
           {deletedLength !== 0 && category !== 'MY' && (
             <TabPane tab={`Deleted (${this.addZeroToNumber(deletedLength)})`} key="6" />
           )}

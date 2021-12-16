@@ -113,7 +113,7 @@ class RequestInformation extends PureComponent {
       user: { currentUser: { location: { _id } = {} } = {} } = {},
     } = this.props;
 
-    dispatch({
+    await dispatch({
       type: 'timeOff/fetchLeaveBalanceOfUser',
       payload: {
         location: _id,
@@ -219,6 +219,7 @@ class RequestInformation extends PureComponent {
         this.setSecondNotice(`${name} applied for: ${dateLists.length} days`);
       }
 
+      this.getRemainingDay(name);
       // this.autoValueForToDate(type, shortType, moment(fromDate), '');
       if (
         type === 'A' &&
@@ -580,6 +581,10 @@ class RequestInformation extends PureComponent {
             data.approvalManager = managerId; // id
             type = 'timeOff/addLeaveRequest';
           } else if (action === TIMEOFF_LINK_ACTION.editLeaveRequest) {
+            const { viewingLeaveRequest = {} } = this.props;
+            // console.log('viewingLeaveRequest', viewingLeaveRequest);
+            const { employee: { _id = '' } = {} } = viewingLeaveRequest;
+            data.employee = _id;
             data._id = viewingLeaveRequestId;
             type = 'timeOff/updateLeaveRequestById';
           }

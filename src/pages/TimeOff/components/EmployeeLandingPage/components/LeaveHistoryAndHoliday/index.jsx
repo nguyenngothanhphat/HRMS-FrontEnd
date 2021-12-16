@@ -110,6 +110,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
         toDate: to = '',
         type: { name: typeName = '' } = {},
         _id = '',
+        subject = '',
       } = each;
 
       if (
@@ -138,6 +139,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
           duration,
           typeName,
           status,
+          subject,
         };
       }
       return null;
@@ -156,6 +158,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
         toDate: to = '',
         type: { name: typeName = '' } = {},
         _id = '',
+        subject,
       } = each;
 
       if (status !== TIMEOFF_STATUS.drafts) {
@@ -168,6 +171,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
           duration,
           typeName,
           status,
+          subject,
         };
       }
       return null;

@@ -7,9 +7,10 @@ import TeamCompoffTable from '../TeamCompoffTable';
 import MyLeaveTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/MyLeaveTable';
 import MyCompoffTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/MyCompoffTable';
 import FilterBar from '../FilterBar';
-
 import styles from './index.less';
+import ROLES from '@/utils/roles';
 
+const { REGION_HEAD } = ROLES;
 @connect(
   ({
     timeOff,
@@ -130,12 +131,12 @@ class TimeOffRequestTab extends PureComponent {
     } else if (tabType === 2) {
       // compoff
       if (filterTab === '1') {
-        if (currentUserRole === 'REGION-HEAD') {
+        if (currentUserRole === REGION_HEAD) {
           status = [TIMEOFF_STATUS.inProgressNext, TIMEOFF_STATUS.inProgress];
         } else status = [TIMEOFF_STATUS.inProgress];
       }
       if (filterTab === '2') {
-        if (currentUserRole === 'REGION-HEAD') {
+        if (currentUserRole === REGION_HEAD) {
           status = [TIMEOFF_STATUS.accepted];
         } else status = [TIMEOFF_STATUS.inProgressNext, TIMEOFF_STATUS.accepted];
       }
@@ -220,7 +221,7 @@ class TimeOffRequestTab extends PureComponent {
 
     newData.forEach((item) => {
       const { status = '' } = item;
-      if (currentUserRole === 'REGION-HEAD') {
+      if (currentUserRole === REGION_HEAD) {
         switch (status) {
           case TIMEOFF_STATUS.inProgressNext: {
             inProgressLength += item.count;
@@ -229,7 +230,7 @@ class TimeOffRequestTab extends PureComponent {
           default:
             break;
         }
-      } else if (currentUserRole !== 'REGION-HEAD') {
+      } else if (currentUserRole !== REGION_HEAD) {
         switch (status) {
           case TIMEOFF_STATUS.inProgressNext: {
             approvedLength += item.count;

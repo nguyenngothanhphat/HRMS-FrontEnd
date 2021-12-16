@@ -15,10 +15,14 @@ class DownloadFile extends Component {
     const { url = '' } = this.props;
     const fileName = url.split('/').pop();
     this.setState({ isDownloading: true });
-    axios({
+    axios.get({
       url,
-      method: 'GET',
+      // method: 'GET',
       responseType: 'blob',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/pdf'
+     }
     }).then((resp) => {
       const urlDownload = window.URL.createObjectURL(new Blob([resp.data]));
       const link = document.createElement('a');
