@@ -41,7 +41,7 @@ const ProjectDetailModal = (props) => {
     return (
       <div className={styles.content}>
         <Information data={data} />
-        <TaskTable list={data?.resource} />
+        <TaskTable list={data?.projectDetail} />
       </div>
     );
   };

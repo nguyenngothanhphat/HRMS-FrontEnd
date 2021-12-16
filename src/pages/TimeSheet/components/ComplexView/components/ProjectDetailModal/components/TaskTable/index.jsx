@@ -4,44 +4,9 @@ import { connect } from 'umi';
 import TaskCard from '../TaskCard';
 import styles from './index.less';
 
-const mockTasks = [
-  {
-    department: 'Design',
-    task: 'Walk through',
-    description: 'Flow understanding',
-    taskList: [
-      {
-        resources: 'Kathryn Murphy',
-        timeTaken: '8hrs',
-        totalTime: '60hrs',
-      },
-      {
-        resources: 'Kathryn Murphy',
-        timeTaken: '8hrs',
-        totalTime: '60hrs',
-      },
-      {
-        resources: 'Kathryn Murphy',
-        timeTaken: '8hrs',
-        totalTime: '60hrs',
-      },
-    ],
-  },
-  {
-    department: 'Development',
-    task: 'Walk through',
-    description: 'Flow understanding',
-    taskList: [
-      {
-        resources: 'Kathryn Murphy',
-        timeTaken: '8hrs',
-        totalTime: '60hrs',
-      },
-    ],
-  },
-];
-
 const TaskTable = (props) => {
+  const { list = [] } = props;
+
   const renderHeader = () => {
     return (
       <Row className={styles.tableHeader}>
@@ -73,12 +38,12 @@ const TaskTable = (props) => {
   };
 
   const renderTable = () => {
-    if (mockTasks.length === 0) {
+    if (list.length === 0) {
       return <div className={styles.emptyContent}>No data</div>;
     }
     return (
       <div className={styles.content}>
-        {mockTasks.map((m, i) => (
+        {list.map((m, i) => (
           <TaskCard card={m} index={i} />
         ))}
       </div>
