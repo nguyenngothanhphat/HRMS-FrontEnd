@@ -1,4 +1,4 @@
-import { Button, Input, Skeleton } from 'antd';
+import { Button, Popconfirm } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { SearchOutlined } from '@ant-design/icons';
@@ -57,7 +57,9 @@ class Grade extends PureComponent {
         render: (_, row) => {
           return (
             <div className={styles.actions}>
-              <img src={DeleteIcon} onClick={() => this.onRemoveGrade(row)} alt="" />
+              <Popconfirm title="Sure to remove?" onConfirm={() => this.onRemoveGrade(row)}>
+                <img src={DeleteIcon} alt="" />
+              </Popconfirm>
               <img src={EditIcon} onClick={() => this.onEditGrade(row)} alt="" />
             </div>
           );

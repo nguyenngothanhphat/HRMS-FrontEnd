@@ -1,4 +1,4 @@
-import { Button } from 'antd';
+import { Button, Popconfirm } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import EditIcon from '@/assets/adminSetting/edit.svg';
@@ -92,7 +92,10 @@ class RolePermission extends PureComponent {
         render: (_, row) => {
           return (
             <div className={styles.actions}>
-              <img src={DeleteIcon} onClick={() => this.onRemoveRole(row)} alt="" />
+              <Popconfirm title="Sure to remove?" onConfirm={() => this.onRemoveRole(row)}>
+                <img src={DeleteIcon} alt="" />
+              </Popconfirm>
+
               <img src={EditIcon} onClick={() => this.onEditRole(row)} alt="" />
             </div>
           );
@@ -127,7 +130,7 @@ class RolePermission extends PureComponent {
     let res = permissionList.map((item) => {
       return item.module || '';
     });
-    res = res.filter(val => val)
+    res = res.filter((val) => val);
     return [...new Set(res)];
   };
 

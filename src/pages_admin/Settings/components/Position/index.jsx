@@ -1,4 +1,4 @@
-import { Button, Input, Skeleton } from 'antd';
+import { Button, Input, Popconfirm, Skeleton } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { SearchOutlined } from '@ant-design/icons';
@@ -110,7 +110,9 @@ class Position extends PureComponent {
         render: (_, row) => {
           return (
             <div className={styles.actions}>
-              <img src={DeleteIcon} onClick={() => this.onRemovePosition(row)} alt="" />
+              <Popconfirm title="Sure to remove?" onConfirm={() => this.onRemovePosition(row)}>
+                <img src={DeleteIcon} alt="" />
+              </Popconfirm>
               <img src={EditIcon} onClick={() => this.onEditPosition(row)} alt="" />
             </div>
           );
