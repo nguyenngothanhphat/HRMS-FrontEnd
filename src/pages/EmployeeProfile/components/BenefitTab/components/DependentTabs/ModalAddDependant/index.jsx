@@ -12,11 +12,11 @@ const { Option } = Select;
     employeeProfile: {
       idCurrentEmployee = '',
       tenantCurrentEmployee = '',
-      originData: { dependentDetails: { _id: dependentsId = '' } = {} } = {},
+      originData: { dependentDetails = [] } = {},
     } = {},
     loading,
   }) => ({
-    dependentsId,
+    dependentDetails,
     idCurrentEmployee,
     tenantCurrentEmployee,
     loadingUpdate: loading.effects['employeeProfile/updateEmployeeDependentDetails'],
@@ -41,14 +41,22 @@ class ModalAddDependant extends Component {
   formatData = () => {
     const { data = [] } = this.props;
     if (data.length > 0) {
-      return data.map((value) => {
-        const { firstName = '', lastName = '', gender = '', relationship = '', dob = '' } = value;
+      return data[0].dependents.map((value) => {
+        const {
+          firstName = '',
+          lastName = '',
+          gender = '',
+          relationship = '',
+          dob = '',
+          _id = '',
+        } = value;
         return {
           firstName,
           lastName,
           gender,
           relationship,
           dob: moment(dob).locale('en'),
+          _id,
         };
       });
     }
@@ -63,30 +71,22 @@ class ModalAddDependant extends Component {
     ];
   };
 
-  handleSave = async (values) => {
+  handleSave = (values) => {
     const { onClose = () => {} } = this.props;
     let payload = {};
     const {
       dispatch,
-      dependentsId = '',
-      // setEditing = () => {},
-      setAdding = () => {},
+      dependentDetails = [],
       data = [],
       idCurrentEmployee = '',
       tenantCurrentEmployee = '',
     } = this.props;
-
-    // const { dependents = [] } = values;
     let type = 'employeeProfile/addDependentsOfEmployee';
-    // if (dependents.length === 0) {
-    //   type = 'employeeProfile/removeEmployeeDependentDetails';
-    //   payload.id = dependentsId;
-    //   payload.tenantId = tenantCurrentEmployee;
-    // } else
     if (data.length > 0) {
       payload.dependents = [...this.formatData(), values];
-      payload.id = dependentsId;
+      payload.id = dependentDetails[0]._id;
       payload.tenantId = tenantCurrentEmployee;
+      payload.employee = idCurrentEmployee;
       type = 'employeeProfile/updateEmployeeDependentDetails';
     } else {
       payload = {
@@ -95,17 +95,14 @@ class ModalAddDependant extends Component {
         tenantId: tenantCurrentEmployee,
       };
     }
-
-    const res = await dispatch({
+    dispatch({
       type,
       payload,
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        onClose();
+      }
     });
-    const { statusCode = 0 } = res;
-    if (statusCode === 200) {
-      // setEditing(false);
-      setAdding(false);
-      onClose();
-    }
   };
 
   handleCancel = () => {
@@ -114,21 +111,11 @@ class ModalAddDependant extends Component {
   };
 
   renderEditForm = () => {
-    // const formatData = this.formatData();
-
     return (
-      <Form
-        className={styles.Form}
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        ref={this.formRef}
-        id="myForm"
-        onFinish={this.handleSave}
-        // initialValues={{ dependents: formatData }}
-      >
+      <Form className={styles.Form} ref={this.formRef} id="myForm" onFinish={this.handleSave}>
         <Form.Item
           label="First Name"
           name="firstName"
-          // fieldKey={[field.fieldKey, 'firstName']}
           rules={[
             {
               required: true,
@@ -141,7 +128,6 @@ class ModalAddDependant extends Component {
         <Form.Item
           label="Last Name"
           name="lastName"
-          // fieldKey={[field.fieldKey, 'lastName']}
           rules={[
             {
               required: true,
@@ -154,7 +140,6 @@ class ModalAddDependant extends Component {
         <Form.Item
           label="Gender"
           name="gender"
-          // fieldKey={[field.fieldKey, 'gender']}
           rules={[
             {
               required: true,
@@ -171,7 +156,6 @@ class ModalAddDependant extends Component {
         <Form.Item
           label="Relationship"
           name="relationship"
-          // fieldKey={[field.fieldKey, 'relationship']}
           rules={[
             {
               required: true,
@@ -190,7 +174,6 @@ class ModalAddDependant extends Component {
         <Form.Item
           label="Date of Birth"
           name="dob"
-          // fieldKey={[field.fieldKey, 'dob']}
           rules={[
             {
               required: true,

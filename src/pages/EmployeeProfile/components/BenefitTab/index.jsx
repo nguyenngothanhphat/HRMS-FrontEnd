@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Skeleton, Tabs } from 'antd';
 import { formatMessage, connect } from 'umi';
-// import { isEmpty } from 'lodash';
-// import { EditFilled } from '@ant-design/icons';
 import IconAdd from './components/DependentTabs/Edit/assets/AddIcon.svg';
 import HealthWellbeing from './components/HealthWellbeing';
 import Financial from './components/Financial';
@@ -51,7 +49,6 @@ class BenefitTab extends PureComponent {
       isEditing: false,
       isAdding: false,
       addDependant: false,
-      // editDependant: false,
       activeKey: '1',
     };
   }
@@ -83,16 +80,12 @@ class BenefitTab extends PureComponent {
     } else this.setEditing(true);
   };
 
-  // handleEditDependant = () => {
-  //   this.setState({ editDependant: true });
-  // };
-
   handeAddDependant = () => {
     this.setState({ addDependant: true });
   };
 
   render() {
-    const { loading, dependentDetails: { dependents = [] } = {} } = this.props;
+    const { loading, dependentDetails = [] } = this.props;
     const { isEditing, isAdding, addDependant, activeKey } = this.state;
     if (loading) return <Skeleton />;
     return (
@@ -133,7 +126,7 @@ class BenefitTab extends PureComponent {
               <div>
                 <DependentTabs
                   key={Math.random().toString(36).substring(7)}
-                  data={dependents}
+                  data={dependentDetails}
                   isEditing={isEditing}
                   setEditing={this.setEditing}
                   isAdding={isAdding}
@@ -148,7 +141,7 @@ class BenefitTab extends PureComponent {
               </div>
             </div>
             <ModalAddDependant
-              data={dependents}
+              data={dependentDetails}
               visible={addDependant}
               onClose={() => this.setState({ addDependant: false })}
               mode="multiple"

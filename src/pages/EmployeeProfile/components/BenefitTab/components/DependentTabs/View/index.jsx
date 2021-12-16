@@ -1,18 +1,20 @@
 import React from 'react';
 import { formatMessage, connect } from 'umi';
 import moment from 'moment';
+import { isEmpty } from 'lodash';
 import RemoveIcon from '../Edit/assets/removeIcon.svg';
 import styles from './styles.less';
 
 const DependentTabs = (props) => {
   const {
-    employee: {
-      generalInfo: { legalGender = '', lastName = '', firstName = '', DOB = '' } = {},
-    } = {},
-    dependentsId = '',
+    dependentDetails = [],
     tenantCurrentEmployee = '',
+    idCurrentEmployee = '',
+    generalDataOrigin,
   } = props;
+  const { firstName = '', lastName = '', legalGender = '', DOB = '' } = generalDataOrigin;
   const { data: viewData = [] } = props;
+  const viewDataNew = viewData.length > 0 ? viewData[0] : [];
   const firstname = formatMessage({
     id: 'pages.employeeProfile.BenefitTab.components.dependentTabs.firstName',
   });
@@ -31,18 +33,18 @@ const DependentTabs = (props) => {
 
   const handleDeleteDependant = (value) => {
     const { dispatch } = props;
-    const index = viewData
-      .map((x) => {
-        return x._id;
-      })
-      .indexOf(value);
-    viewData.splice(index, 1);
+    const data = viewData.map((val) => {
+      return val.dependents.filter((item) => item._id !== value);
+    });
+    const id = dependentDetails.length > 0 ? dependentDetails[0]._id : '';
+    const dependents = data.length > 0 ? data[0] : [];
     dispatch({
       type: 'employeeProfile/updateEmployeeDependentDetails',
       payload: {
-        dependents: viewData,
-        id: dependentsId,
+        dependents,
+        id,
         tenantId: tenantCurrentEmployee,
+        employee: idCurrentEmployee,
       },
     });
   };
@@ -72,60 +74,69 @@ const DependentTabs = (props) => {
           <div className={styles.containerSelft__title}> Date of Birth</div>
           {DOB !== '' && DOB !== null ? (
             <div className={styles.containerSelft__content}>
-              <p>{moment(DOB).locale('en').format('MM.DD.YY')}</p>
+              <p>{moment(DOB).locale('en').format('DD/MM/YYYY')}</p>
             </div>
           ) : (
             <div className={styles.containerSelft__content}> _ </div>
           )}
         </div>
       </div>
-
-      {viewData.map((data, index) => {
-        return (
-          <>
-            {index > 0 && <div className={styles.line} />}
-            <div className={styles.dependent}>
-              {formatMessage({
-                id: 'pages.employeeProfile.BenefitTab.components.dependentTabs.dependent',
-              })}
-              {index + 1}
-              <img src={RemoveIcon} alt="remove" onClick={() => handleDeleteDependant(data._id)} />
-            </div>
-            <div className={styles.info}>
-              {[firstname, lastname, gender, relationship, dob].map((item) => {
-                let foo = '';
-                switch (item) {
-                  case firstname:
-                    foo = data.firstName;
-                    break;
-                  case lastname:
-                    foo = data.lastName;
-                    break;
-                  case gender:
-                    foo = data.gender;
-                    break;
-                  case relationship:
-                    foo = data.relationship;
-                    break;
-                  case dob:
-                    foo = moment(data.dob).locale('en').format('DD/MM/YYYY');
-                    break;
-                  default:
-                    return foo;
-                }
-                return (
-                  <div key={Math.random().toString(36).substring(7)} className={styles.items}>
-                    <div style={{ fontWeight: '500', width: '50%' }}>{item}</div>
-                    <div style={{ color: '#707177', width: '50%' }}>
-                      <p>{foo}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </>
-        );
-      })}
+      {!isEmpty(viewDataNew) ? (
+        <>
+          {viewDataNew.dependents.map((data, index) => {
+            return (
+              <>
+                {index > 0 && <div className={styles.line} />}
+                <div className={styles.dependent}>
+                  {formatMessage({
+                    id: 'pages.employeeProfile.BenefitTab.components.dependentTabs.dependent',
+                  })}
+                  {index + 1}
+                  <img
+                    src={RemoveIcon}
+                    alt="remove"
+                    onClick={() => handleDeleteDependant(data._id)}
+                  />
+                </div>
+                <div className={styles.info}>
+                  {[firstname, lastname, gender, relationship, dob].map((item) => {
+                    let foo = '';
+                    switch (item) {
+                      case firstname:
+                        foo = data.firstName;
+                        break;
+                      case lastname:
+                        foo = data.lastName;
+                        break;
+                      case gender:
+                        foo = data.gender;
+                        break;
+                      case relationship:
+                        foo = data.relationship;
+                        break;
+                      case dob:
+                        foo = moment(data.dob).locale('en').format('DD/MM/YYYY');
+                        break;
+                      default:
+                        return foo;
+                    }
+                    return (
+                      <div key={Math.random().toString(36).substring(7)} className={styles.items}>
+                        <div style={{ fontWeight: '500', width: '50%' }}>{item}</div>
+                        <div style={{ color: '#707177', width: '50%' }}>
+                          <p>{foo}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            );
+          })}
+        </>
+      ) : (
+        ''
+      )}
     </div>
   );
 };
@@ -133,11 +144,15 @@ export default connect(
   ({
     user: { currentUser: { employee = {} } = {} } = {},
     employeeProfile: {
+      idCurrentEmployee = '',
       tenantCurrentEmployee = '',
-      originData: { dependentDetails: { _id: dependentsId = '' } = {} } = {},
+      originData: { dependentDetails = [] } = {},
+      originData: { generalData: generalDataOrigin = {} } = {},
     } = {},
   }) => ({
-    dependentsId,
+    generalDataOrigin,
+    idCurrentEmployee,
+    dependentDetails,
     tenantCurrentEmployee,
     employee,
   }),
