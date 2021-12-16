@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal, Select, Skeleton, Spin } from 'antd';
+import { Button, Form, Input, Modal, Select, Skeleton, Checkbox } from 'antd';
 
 import React, { PureComponent } from 'react';
 import { debounce } from 'lodash';
@@ -95,7 +95,13 @@ class EditModal extends PureComponent {
 
   onFinish = async (values) => {
     const { dispatch, selectedDepartmentID = '', onRefresh = () => {} } = this.props;
-    const { name = '', departmentParentId = '', hrPOC = '', financePOC = '' } = values;
+    const {
+      name = '',
+      departmentParentId = '',
+      hrPOC = '',
+      financePOC = '',
+      isDivision = false,
+    } = values;
 
     const addDepartment = async () => {
       const res = await dispatch({
@@ -105,6 +111,7 @@ class EditModal extends PureComponent {
           departmentParentId,
           hrPOC,
           financePOC,
+          isDivision,
         },
       });
       if (res.statusCode === 200) {
@@ -121,6 +128,7 @@ class EditModal extends PureComponent {
           departmentParentId,
           hrPOC,
           financePOC,
+          isDivision,
         },
       });
       if (res.statusCode === 200) {
@@ -170,6 +178,7 @@ class EditModal extends PureComponent {
         departmentParentId: departmentParentIdProp = '',
         hrPOC: hrPOCProp = '',
         financePOC = '',
+        isDivision: isDivisionProp = '',
       } = {},
     } = this.props;
 
@@ -212,6 +221,7 @@ class EditModal extends PureComponent {
                 departmentParentId: departmentParentIdProp,
                 hrPOC: hrPOCProp,
                 financePOC,
+                isDivision: isDivisionProp,
               }}
             >
               <Form.Item
@@ -272,6 +282,9 @@ class EditModal extends PureComponent {
                 >
                   {this.renderPOC()}
                 </Select>
+              </Form.Item>
+              <Form.Item name="isDivision" labelCol={{ span: 24 }} valuePropName="checked">
+                <Checkbox defaultChecked={isDivisionProp}>Add as Division</Checkbox>
               </Form.Item>
             </Form>
           )}
