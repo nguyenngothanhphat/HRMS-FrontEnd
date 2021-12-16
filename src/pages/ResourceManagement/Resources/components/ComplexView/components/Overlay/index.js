@@ -11,19 +11,18 @@ class CommentOverlay extends PureComponent {
         <span className={styles.comment} style={{ WebkitLineClamp: line }}>
           {row.comment}
         </span>
-        {/* <div id={`${row.employeeId}`} className={styles.overlay}>
-          <button className={styles.buttonContainer} type="button">
-            <img src={listEditCommentButton} alt="" className={styles.image} />
-          </button>
-        </div> */}
-        {allowModify && (
-          <span className={styles.showEditComment}>
-            <EditCommentModal dataRow={row} refreshData={refreshData} />
-          </span>
-        )}
-        <span className={styles.showViewComment}>
-          <ViewCommentModal dataRow={row} />
-        </span>
+        <div className={styles.mask}>
+          <div className={styles.buttonContainer}>
+            {allowModify && (
+              // <span className={styles.showEditComment}>
+              <EditCommentModal dataRow={row} refreshData={refreshData} />
+              // </span>
+            )}
+            {/* <span className={styles.showViewComment}> */}
+            <ViewCommentModal dataRow={row} />
+            {/* </span> */}
+          </div>
+        </div>
       </div>
     );
   }
