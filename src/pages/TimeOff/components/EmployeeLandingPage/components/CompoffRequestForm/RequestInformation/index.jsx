@@ -67,9 +67,12 @@ class RequestInformation extends PureComponent {
   };
 
   fetchProjectsListByEmployee = () => {
-    const { dispatch } = this.props;
+    const { dispatch ,user: { currentUser: { employee: {_id = ''} = {} } = {} } = {} } = this.props;
     dispatch({
       type: 'timeOff/fetchProjectsListByEmployee',
+      payload: {
+        employee: _id
+      }
     });
   };
 

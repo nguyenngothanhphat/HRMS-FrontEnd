@@ -85,6 +85,8 @@ class TimeOff extends PureComponent {
       match: { params: { tabName = '' } = {} },
       location: { state: { status = '', tickedId = '', typeName = '', category = '' } = {} } = {},
       currentUserRoles = [],
+      listLocationsByCompany = [],
+      dispatch,
     } = this.props;
 
     if (!tabName) {
@@ -95,7 +97,6 @@ class TimeOff extends PureComponent {
         role,
       });
 
-      const { dispatch, listLocationsByCompany = [] } = this.props;
       const find = listLocationsByCompany.find((x) => x._id === getCurrentLocation());
       if (find) {
         const { headQuarterAddress: { country: { _id } = {} || {} } = {} || {} } = find;
