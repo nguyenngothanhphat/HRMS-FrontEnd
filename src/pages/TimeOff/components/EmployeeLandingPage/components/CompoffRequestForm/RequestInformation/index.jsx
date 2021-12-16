@@ -180,7 +180,7 @@ class RequestInformation extends PureComponent {
     const {
       projectManager: {
         _id,
-        generalInfo: { legalName: projectManagerName = '', userId: projectManagerId = '' } = {},
+        generalInfo: { legalName: projectManagerName = '', employeeId: projectManagerId = '' } = {},
       } = {},
     } = find;
 

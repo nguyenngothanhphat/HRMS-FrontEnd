@@ -1154,10 +1154,12 @@ const employeeProfile = {
       try {
         const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
         const { companyCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
         const res = yield call(getListTitle, {
           ...payload,
           tenantId: tenantCurrentEmployee,
           company: companyCurrentEmployee,
+          employee: idCurrentEmployee     
         });
         const { statusCode, data } = res;
         if (statusCode !== 200) throw res;

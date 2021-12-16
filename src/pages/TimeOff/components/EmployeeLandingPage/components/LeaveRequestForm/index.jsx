@@ -140,7 +140,7 @@ class LeaveRequestForm extends PureComponent {
               (status === TIMEOFF_STATUS.drafts || status === TIMEOFF_STATUS.inProgress))) && (
               <>
                 <Row className={styles.container} gutter={[20, 20]}>
-                  <Col xs={24} lg={16}>
+                  <Col xs={24} xl={16}>
                     <RequestInformation
                       action={action}
                       status={status}
@@ -148,7 +148,7 @@ class LeaveRequestForm extends PureComponent {
                       viewingLeaveRequest={viewingLeaveRequest}
                     />
                   </Col>
-                  <Col xs={24} lg={8}>
+                  <Col xs={24} xl={8}>
                     <RightContent />
                   </Col>
                 </Row>

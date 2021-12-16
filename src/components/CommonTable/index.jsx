@@ -73,8 +73,8 @@ const CommonTable = (props) => {
           dataSource={list}
           loading={loading}
           // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
-          pagination={showPagination ? pagination : {}}
-          scroll={scrollable ? { x: '101%', y: 'fit-content' } : {}}
+          pagination={showPagination ? pagination : { position: ['none', 'none'] }}
+          scroll={scrollable ? { x: '100%', y: '400px' } : {}}
           rowKey={rowKey ? (record) => record[rowKey] : null}
         />
       </div>
