@@ -151,7 +151,7 @@ class EditModal extends PureComponent {
           visible={visible}
         >
           {loadingFetchGradeByID ? (
-            <Skeleton />
+            <Skeleton paragraph={{ rows: 1 }} active />
           ) : (
             <Form
               name="basic"

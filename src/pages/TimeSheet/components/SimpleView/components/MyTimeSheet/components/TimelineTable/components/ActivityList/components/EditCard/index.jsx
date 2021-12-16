@@ -165,6 +165,12 @@ const EditCard = (props) => {
     return minutes;
   };
 
+  const onTimePickerSelect = (type, value) => {
+    form.setFieldsValue({
+      [type]: value,
+    });
+  };
+
   // MAIN AREA
   return (
     <Form
@@ -202,9 +208,10 @@ const EditCard = (props) => {
               disabledMinutes={getDisabledMinutesTimeIn}
               onChange={onChangeTimeIn}
               allowClear={false}
-              use12Hours
               onOpenChange={() => form.validateFields()}
               showNow={false}
+              use12Hours={false}
+              onSelect={(time) => onTimePickerSelect('startTime', time)}
             />
           </Form.Item>
         </Col>
@@ -219,8 +226,9 @@ const EditCard = (props) => {
               disabledMinutes={getDisabledMinutesTimeOut}
               onChange={onChangeTimeOut}
               allowClear={false}
-              use12Hours
               showNow={false}
+              use12Hours={false}
+              onSelect={(time) => onTimePickerSelect('endTime', time)}
             />
           </Form.Item>
         </Col>

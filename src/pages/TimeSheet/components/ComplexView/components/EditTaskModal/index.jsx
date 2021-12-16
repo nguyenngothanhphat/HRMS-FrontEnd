@@ -21,7 +21,7 @@ const { Option } = Select;
 const dateFormat = 'MM/DD/YYYY';
 
 const EditTaskModal = (props) => {
-  const formRef = React.createRef();
+  const [form] = Form.useForm();
   const {
     visible = false,
     title = 'Edit Task',
@@ -123,12 +123,18 @@ const EditTaskModal = (props) => {
     }
   };
 
+  const onTimePickerSelect = (type, value) => {
+    form.setFieldsValue({
+      [type]: value,
+    });
+  };
+
   const renderModalContent = () => {
     return (
       <div className={styles.content}>
         <Form
           name="basic"
-          ref={formRef}
+          form={form}
           id="myForm"
           onFinish={handleFinish}
           initialValues={{
@@ -199,7 +205,13 @@ const EditTaskModal = (props) => {
                 rules={[{ required: true, message: 'Select start time' }]}
                 name="startTime"
               >
-                <TimePicker format={hourFormat} placeholder="Select start time" />
+                <TimePicker
+                  format={hourFormat}
+                  placeholder="Select start time"
+                  showNow={false}
+                  use12Hours={false}
+                  onSelect={(time) => onTimePickerSelect('startTime', time)}
+                />
               </Form.Item>
             </Col>
 
@@ -210,7 +222,13 @@ const EditTaskModal = (props) => {
                 rules={[{ required: true, message: 'Select end time' }]}
                 name="endTime"
               >
-                <TimePicker format={hourFormat} placeholder="Select end time" />
+                <TimePicker
+                  format={hourFormat}
+                  placeholder="Select end time"
+                  showNow={false}
+                  use12Hours={false}
+                  onSelect={(time) => onTimePickerSelect('endTime', time)}
+                />
               </Form.Item>
             </Col>
 
