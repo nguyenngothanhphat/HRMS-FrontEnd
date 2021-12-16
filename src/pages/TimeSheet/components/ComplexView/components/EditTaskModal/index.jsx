@@ -42,6 +42,7 @@ const EditTaskModal = (props) => {
   const {
     dispatch,
     loadingUpdateTask = false,
+    loadingFetchProject = false,
     currentUser: {
       employee: { _id: employeeId = '' } = {} || {},
       employee = {},
@@ -162,7 +163,14 @@ const EditTaskModal = (props) => {
                 rules={[{ required: true, message: 'Select a project' }]}
                 name="projectId"
               >
-                <Select showSearch placeholder="Select a project">
+                <Select
+                  showSearch
+                  placeholder="Select a project"
+                  loading={loadingFetchProject}
+                  disabled={loadingFetchProject}
+                  filterOption={(input, option) =>
+                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
                   {projectList.map((val) => (
                     <Option value={val.id}>{val.projectName}</Option>
                   ))}
@@ -213,7 +221,7 @@ const EditTaskModal = (props) => {
                 rules={[{ required: true, message: 'Please enter Description' }]}
                 name="notes"
               >
-                <Input.TextArea autoSize={{ minRows: 3 }} />
+                <Input.TextArea autoSize={{ minRows: 4 }} placeholder="Enter description" />
               </Form.Item>
             </Col>
             <Col xs={24}>
@@ -265,4 +273,5 @@ export default connect(({ loading, timeSheet, user: { currentUser } }) => ({
   currentUser,
   timeSheet,
   loadingUpdateTask: loading.effects['timeSheet/updateActivityEffect'],
+  loadingFetchProject: loading.effects['timeSheet/fetchProjectListEffect'],
 }))(EditTaskModal);

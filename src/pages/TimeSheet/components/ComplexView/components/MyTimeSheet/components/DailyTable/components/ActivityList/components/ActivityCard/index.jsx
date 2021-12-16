@@ -20,6 +20,7 @@ import EditTaskModal from '@/pages/TimeSheet/components/ComplexView/components/E
 import styles from './index.less';
 
 const { PROJECT, TASK, DESCRIPTION, TIME, TOTAL_HOURS, ACTIONS } = EMP_MT_SECONDARY_COL_SPAN;
+const ORIGINAL_TEXT_LONG = 50;
 
 const ActivityCard = (props) => {
   const {
@@ -40,6 +41,7 @@ const ActivityCard = (props) => {
 
   const [top, setTop] = useState(0);
   const [height, setHeight] = useState(0);
+  const [textLong, setTextLong] = useState(ORIGINAL_TEXT_LONG);
 
   // modals
   const [removeModalVisibe, setRemoveModalVisibe] = useState(false);
@@ -69,6 +71,13 @@ const ActivityCard = (props) => {
       heightTemp = diff.asHours() * EMP_ROW_HEIGHT;
       setTop(topTemp + marginBlock / 2);
       setHeight(heightTemp - marginBlock);
+
+      // calculate "description" with read more button
+      if (heightTemp > EMP_ROW_HEIGHT) {
+        const textLongTemp =
+          ORIGINAL_TEXT_LONG * (heightTemp / EMP_ROW_HEIGHT) + ORIGINAL_TEXT_LONG * 2;
+        setTextLong(parseInt(textLongTemp, 10));
+      }
     }
   };
 
@@ -78,12 +87,12 @@ const ActivityCard = (props) => {
 
   // FUNCTION AREA
   const handleLongString = (str) => {
-    if (str.length <= 72) return str;
-    return `${str.slice(0, 72)}...`;
+    if (str.length <= textLong) return str;
+    return `${str.slice(0, textLong)}...`;
   };
 
   const renderDescription = (text = '') => {
-    if (text.length <= 72) return text;
+    if (text.length <= textLong) return text;
     return (
       <span>
         {handleLongString(text)}{' '}
@@ -138,8 +147,8 @@ const ActivityCard = (props) => {
         height,
       }}
     >
-      <Row gutter={[12, 0]} className={styles.container}>
-        <Col span={PROJECT} className={`${styles.normalCell} ${styles.boldText}`}>
+      <Row gutter={[12, 12]} className={styles.container} align="top">
+        <Col span={PROJECT} className={`${styles.flexCell} ${styles.boldText}`}>
           <div
             className={styles.activityIcon}
             style={
@@ -165,7 +174,7 @@ const ActivityCard = (props) => {
         <Col span={TOTAL_HOURS} className={`${styles.normalCell} ${styles.blueText}`}>
           {convertMsToTime(duration)}
         </Col>
-        <Col span={ACTIONS} className={`${styles.normalCell} ${styles.alignCenter}`}>
+        <Col span={ACTIONS} className={`${styles.flexCell} ${styles.alignCenter}`}>
           <div className={styles.actionsButton}>
             <img src={EditIcon} alt="" onClick={() => setEditTaskModalVisble(true)} />
             <img src={DeleteIcon} onClick={() => setRemoveModalVisibe(true)} alt="" />

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { connect } from 'umi';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import { employeeColor } from '@/utils/timeSheet';
+import EmptyComponent from '@/pages/TimeSheet/components/ComplexView/components/Empty';
 import EmployeeDetailModal from '../../../EmployeeDetailModal';
 import styles from './index.less';
 
@@ -140,10 +141,15 @@ const WeeklyTable = (props) => {
       <Table
         columns={generateColumns()}
         dataSource={data}
+        locale={{
+          emptyText: (
+            <EmptyComponent />
+          ),
+        }}
         rowSelection={rowSelection}
         rowKey={(record) => record.id}
         pagination={false}
-        scroll={selectedEmployees.length > 0 ? { y: 400 } : {}}
+        scroll={selectedEmployees.length > 0 ? { y: 400, x: 1100 } : { x: 1100 }}
         loading={loadingFetch}
         // pagination={pagination}
       />

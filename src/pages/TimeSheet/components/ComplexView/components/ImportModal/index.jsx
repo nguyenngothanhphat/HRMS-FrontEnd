@@ -70,6 +70,13 @@ const ImportModal = (props) => {
     return temp;
   };
 
+  const refreshData = () => {
+    dispatch({
+      type: 'timeSheet/fetchMyTimesheetByTypeEffect',
+      isRefreshing: true,
+    });
+  };
+
   // USE EFFECT
   useEffect(() => {
     const lastSunday = moment().add(-1, 'weeks').weekday(7);
@@ -133,12 +140,19 @@ const ImportModal = (props) => {
     const res = await onImport();
     if (res.code === 200) {
       handleCancel();
+      refreshData();
     }
   };
 
   const renderModalContent = () => {
     const dates = enumerateDaysBetweenDates(startDate, endDate) || [];
-    const tasks = timesheetDataImporting.notAssignedTask || [];
+    const notAssignedTasks = timesheetDataImporting.notAssignedTask || [];
+    const assignedTasks = timesheetDataImporting.dailiesTask || [];
+    let tasks = [];
+    if (assignedTasks.length > 0) {
+      tasks = [...assignedTasks[0].dailyTasks];
+    }
+    tasks = [...tasks, ...notAssignedTasks];
     return (
       <div className={styles.content}>
         <DateSwitcher

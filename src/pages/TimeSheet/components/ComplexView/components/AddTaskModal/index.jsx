@@ -39,6 +39,7 @@ const AddTaskModal = (props) => {
   const {
     dispatch,
     loadingAddTask = false,
+    loadingFetchProject = false,
     user: { currentUser: { employee = {}, location = {} } = {} } = {},
   } = props;
 
@@ -149,7 +150,14 @@ const AddTaskModal = (props) => {
                       name={[name, 'projectId']}
                       fieldKey={[fieldKey, 'projectId']}
                     >
-                      <Select showSearch placeholder="Select a project">
+                      <Select
+                        showSearch
+                        placeholder="Select a project"
+                        loading={loadingFetchProject}
+                        disabled={loadingFetchProject}
+                        filterOption={(input, option) =>
+                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      >
                         {projectList.map((val) => (
                           <Option value={val.id}>{val.projectName}</Option>
                         ))}
@@ -212,7 +220,7 @@ const AddTaskModal = (props) => {
                       name={[name, 'notes']}
                       fieldKey={[fieldKey, 'notes']}
                     >
-                      <Input.TextArea autoSize={{ minRows: 3 }} />
+                      <Input.TextArea autoSize={{ minRows: 4 }} placeholder="Enter description" />
                     </Form.Item>
                   </Col>
                   <Col xs={12}>
@@ -328,4 +336,5 @@ export default connect(({ loading, timeSheet, locationSelection, user }) => ({
   timeSheet,
   locationSelection,
   loadingAddTask: loading.effects['timeSheet/addMultipleActivityEffect'],
+  loadingFetchProject: loading.effects['timeSheet/fetchProjectListEffect'],
 }))(AddTaskModal);
