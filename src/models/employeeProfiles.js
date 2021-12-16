@@ -1150,9 +1150,15 @@ const employeeProfile = {
       }
     },
 
-    *fetchTitleByDepartment({ payload }, { call, put }) {
+    *fetchTitleByDepartment({ payload }, { call, put, select }) {
       try {
-        const res = yield call(getListTitle, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const res = yield call(getListTitle, {
+          ...payload,
+          tenantId: tenantCurrentEmployee,
+          employee: idCurrentEmployee
+        });
         const { statusCode, data } = res;
         if (statusCode !== 200) throw res;
         yield put({

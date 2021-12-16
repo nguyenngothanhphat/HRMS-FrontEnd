@@ -178,21 +178,23 @@ class ResourceList extends Component {
   searchTable = (searchKey) => {
     const { dispatch } = this.props;
     const {pageSelected, availableStatus} = this.state;
+    const value = searchKey.searchKey || '';
     dispatch({
       type: 'resourceManagement/getResources',
       payload: {
         page: pageSelected,
-        availableStatus
+        availableStatus,
+        q: value
       }
     }).then(() => {
       const { resourceList, projectList } = this.props;
       const array = formatData(resourceList, projectList);
-      const value = searchKey.searchKey || '';
-      const listFilterResource = array.filter(
-        (obj) => obj.employeeName.toLowerCase().indexOf(value.toLowerCase()) >= 0
-      ) || [];
+      // const listFilterResource = array.filter(
+      //   (obj) => obj.employeeName.toLowerCase().indexOf(value.toLowerCase()) >= 0
+      // ) || [];
       this.setState({
-        resourceList: listFilterResource,
+        resourceList: array,
+        pageSelected: 1
       });
     });
   };
