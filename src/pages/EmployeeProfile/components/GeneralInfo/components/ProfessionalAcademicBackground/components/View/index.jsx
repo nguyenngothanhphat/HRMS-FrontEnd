@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Row, Col, Tag } from 'antd';
-import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { connect } from 'umi';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
@@ -83,13 +83,13 @@ class View extends Component {
   };
 
   _renderListCertification = (list) => {
-    return list.map((item) => {
+    return list.map((item, index) => {
       const { name = '', urlFile = '', _id = '' } = item;
       const nameFile = urlFile.split('/').pop();
 
       return (
         <div key={_id} className={styles.viewRow} style={{ marginBottom: '6px' }}>
-          <div className={styles.textValue}>{name}</div>
+          <div className={styles.textValue}>{index + 1} - {name}</div>
           {urlFile && (
             <div className={styles.viewRow}>
               <p
@@ -111,7 +111,7 @@ class View extends Component {
   };
 
   render() {
-    const { generalData, listTitle = [] } = this.props;
+    const { generalData } = this.props;
     const { visible, linkImage } = this.state;
     const {
       preJobTitle = '',
@@ -123,9 +123,9 @@ class View extends Component {
       certification = [],
       otherSkills = [],
     } = generalData;
-    const objPreviousJobTilte = listTitle.find((item) => item._id === preJobTitle) || {};
+    // const objPreviousJobTilte = listTitle.find((item) => item._id === preJobTitle) || {};
     const dummyData = [
-      { id: 1, label: 'Previous Job Tilte', value: objPreviousJobTilte.name },
+      { id: 1, label: 'Previous Job Tilte', value: preJobTitle },
       { id: 2, label: 'Previous Company', value: preCompany },
       { id: 3, label: 'Past Experience', value: pastExp },
       { id: 4, label: 'Total Experience', value: totalExp },

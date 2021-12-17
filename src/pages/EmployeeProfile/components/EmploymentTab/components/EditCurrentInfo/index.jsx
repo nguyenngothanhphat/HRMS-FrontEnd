@@ -117,9 +117,11 @@ class EditCurrentInfo extends PureComponent {
       location = '',
       employeeType = '',
       manager = '',
+      compensation = {}
     } = employeeProfile.originData.employmentData;
+    const compensationType = compensation ? compensation.compensationType : '';
     const {
-      compensationType = '',
+      // compensationType = '',
       currentAnnualCTC = '',
       // timeOffPolicy = ''
     } = employeeProfile.originData.compensationData;
