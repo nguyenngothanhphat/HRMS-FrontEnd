@@ -103,14 +103,14 @@ const Dashboard = (props) => {
   // USE EFFECT
   useEffect(() => {
     // only manager / hr manager see My Team Widget
-    const viewMyTeamDashboard = permissions.viewMyTeamDashboard !== -1;
+    // const viewMyTeamDashboard = permissions.viewMyTeamDashboard !== -1;
     const viewTimesheetDashboard = permissions.viewTimesheetDashboard !== -1;
 
     const getShowingWidgets = () => {
       let result = [...employeeWidgets];
-      if (!viewMyTeamDashboard) {
-        result = employeeWidgets.filter((w) => w !== WIDGET_IDS.MYTEAM);
-      }
+      // if (!viewMyTeamDashboard) {
+      //   result = employeeWidgets.filter((w) => w !== WIDGET_IDS.MYTEAM);
+      // }
       if (!viewTimesheetDashboard) {
         result = result.filter((w) => w !== WIDGET_IDS.TIMESHEET);
       }
