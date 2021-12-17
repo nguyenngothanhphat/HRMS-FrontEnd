@@ -15,10 +15,26 @@
       border: none;
     }
 
-    :global{
+    :global {
       .ant-collapse-arrow svg {
-        font-size: 20px;
         color: #2c6df9;
+        font-size: 20px;
+      }
+    }
+    .addIcon {
+      margin: 0 24px 24px 24px;
+      padding-top: 24px;
+      border-top: solid 1px #d6dce0 !important;
+
+      div:first-child {
+        width: 30%;
+        cursor: pointer;
+      }
+      span {
+        color: #2c6df9;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 16px;
       }
     }
   }
@@ -123,6 +139,22 @@
 
     .ant-collapse-arrow {
       margin-top: 4px;
+    }
+    .ant-tabs-tab {
+      padding-bottom: 5px;
+      color: #2c6df9;
+      font-weight: bold;
+      font-size: 14px;
+      font-style: normal;
+      line-height: 20px;
+    }
+    .ant-tabs > .ant-tabs-nav,
+    .ant-tabs > div > .ant-tabs-nav {
+      height: 56px;
+      padding-left: 24px;
+    }
+    .ant-tabs-content-holder {
+      margin: 40px 24px;
     }
   }
 }

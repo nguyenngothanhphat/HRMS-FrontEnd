@@ -170,8 +170,8 @@ class Documents extends Component {
     });
     // remove duplicate objects
     const parentList = [...new Map(list1.map((item) => [item._id, item])).values()];
-
-    // EMPLOYEE GROUP
+    const personalDocumnet = parentList.pop();
+    const parentListCopy = parentList.unshift(personalDocumnet);
     const list2 = parentList.map((parent) => {
       let childList = [];
       documentCategories.forEach((child) => {

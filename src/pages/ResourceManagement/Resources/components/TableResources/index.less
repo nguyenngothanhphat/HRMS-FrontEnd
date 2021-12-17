@@ -55,6 +55,14 @@
     text-align: center;
   }
 
+  .actionParent {
+    text-align: center;
+  }
+
+  .buttonGroup {
+    display: inline-flex;
+  }
+
   .ticketID,
   .employeeName {
     width: 200px;
@@ -71,9 +79,7 @@
       cursor: pointer;
     }
   }
-  .iconEdit {
-    display: none;
-  }
+
   .resourceStatus {
     margin: 4px;
     padding: 5px;
@@ -135,6 +141,7 @@
     border-radius: 12px;
   }
   .basicCellFieldShowEdit {
+    padding: 0px !important;
     color: #000;
     font-weight: 400;
     font-size: 13px;
@@ -144,15 +151,35 @@
     letter-spacing: 0em;
     text-align: left;
     text-align: left;
-    border-radius: 12px;
+    // display: flex;
+    // justify-content: center;
+    // border-radius: 12px;
   }
   .basicCellFieldShowEdit:hover {
     color: white;
     //background-image: linear-gradient(to right, white, #e5e5e5);
     .iconEdit {
-      display: inline-block;
-      // float: right;
+      display: flex;
+      left: -600px;
     }
+  }
+
+  .reservedField {
+    width: 100%;
+    height: 100%;
+  }
+
+  .iconEdit {
+    // width: 100%;
+    height: 100%;
+    display: none;
+    position: absolute;
+    top: 0px;
+    left: -600px;
+    right: 0px;
+    margin-top: 0px;
+    background-image: linear-gradient(to right, rgba(246, 247, 249, 0), #F6F7F9);
+    text-align: right;
   }
 
   .overlay {
