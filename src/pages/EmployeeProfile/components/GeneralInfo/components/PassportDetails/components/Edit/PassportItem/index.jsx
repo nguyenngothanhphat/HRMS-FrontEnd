@@ -170,6 +170,10 @@ class PassportItem extends Component {
           <Select
             showArrow
             className={s.selectForm}
+            showSearch
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+               option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             // defaultValue={passportIssuedCountry ? passportIssuedCountry._id : ''}
             // onChange={(value) => {
             //   this.handleChange(index, 'passportIssuedCountry', value);
