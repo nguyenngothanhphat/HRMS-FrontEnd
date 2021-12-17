@@ -1,12 +1,12 @@
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable no-template-curly-in-string */
 /* eslint-disable react/jsx-props-no-spreading */
-import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { Button, DatePicker, Form, Input, Modal, Select } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import React, { Component } from 'react';
 import { connect, formatMessage } from 'umi';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -59,7 +59,7 @@ class AddEmployeeForm extends Component {
 
   static getDerivedStateFromProps(props) {
     if ('statusAddEmployee' in props && props.statusAddEmployee) {
-      if (props.company === '') {
+      if (!props.company) {
         return {
           isDisabledTitle: true,
           isDisabled: true,
@@ -76,8 +76,7 @@ class AddEmployeeForm extends Component {
       this.setState({
         isDisabled: false,
       });
-      // * : error tenant
-      // this.fetchData(company._id);
+      this.fetchData(company);
     }
   }
 
@@ -308,6 +307,9 @@ class AddEmployeeForm extends Component {
           id="addEmployeeForm"
           onValuesChange={this.handleChangeAddEmployee}
           onFinish={this.handleSubmitEmployee}
+          initialValues={{
+            company,
+          }}
           {...formLayout}
         >
           <Form.Item
@@ -385,42 +387,30 @@ class AddEmployeeForm extends Component {
             </Select>
           </Form.Item>
 
-          {company ? (
-            <Form.Item
-              label={formatMessage({ id: 'addEmployee.company' })}
-              name="company"
-              initialValue={company._id}
-              rules={[{ required: true }]}
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.company' })}
+            name="company"
+            rules={[{ required: true }]}
+          >
+            <Select
+              autoComplete="dontshow"
+              placeholder={formatMessage({ id: 'addEmployee.placeholder.company' })}
+              showArrow
+              showSearch
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
+              onChange={(value) => this.onChangeSelect('company', value)}
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              disabled={company}
             >
-              <Select disabled>
-                <Option key={company._id} value={company._id}>
-                  {company.name}
+              {formatCompanyList.map((item) => (
+                <Option key={item._id} value={item._id}>
+                  {item.name}
                 </Option>
-              </Select>
-            </Form.Item>
-          ) : (
-            <Form.Item
-              label={formatMessage({ id: 'addEmployee.company' })}
-              name="company"
-              rules={[{ required: true }]}
-            >
-              <Select
-                autoComplete="dontshow"
-                placeholder={formatMessage({ id: 'addEmployee.placeholder.company' })}
-                showArrow
-                showSearch
-                getPopupContainer={() => document.getElementById('addEmployee__form')}
-                onChange={(value) => this.onChangeSelect('company', value)}
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-              >
-                {formatCompanyList.map((item) => (
-                  <Option key={item._id}>{item.name}</Option>
-                ))}
-              </Select>
-            </Form.Item>
-          )}
+              ))}
+            </Select>
+          </Form.Item>
 
           <Form.Item
             label={formatMessage({ id: 'addEmployee.roles' })}
@@ -557,6 +547,7 @@ class AddEmployeeForm extends Component {
         onCancel={this.handleCancel}
         style={{ top: 50 }}
         destroyOnClose
+        width={650}
         maskClosable={false}
         footer={[
           <div key="cancel" className={styles.btnCancel} onClick={this.handleCancel}>

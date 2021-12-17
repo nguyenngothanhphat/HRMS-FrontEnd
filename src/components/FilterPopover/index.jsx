@@ -1,7 +1,7 @@
 import { Button, Popover } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import CloseIcon from '@/assets/projectManagement/closeX.svg';
+import CloseIcon from '@/assets/directory/closeX.svg';
 import styles from './index.less';
 
 const FilterPopover = (props) => {

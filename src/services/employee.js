@@ -62,3 +62,9 @@ export async function getListAdministrator(payload) {
     data: payload,
   });
 }
+
+export async function getSkillList() {
+  return request('/api/skilltype/list', {
+    method: 'POST',
+  });
+}

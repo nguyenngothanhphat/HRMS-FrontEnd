@@ -7,6 +7,7 @@ import {
   DepartmentFilter,
   EmployeeTypeFilter,
   getFilterList,
+  getSkillList,
   getListEmployee,
   getDataOrgChart,
   getListAdministrator,
@@ -21,6 +22,7 @@ const employee = {
     location: [],
     department: [],
     employeetype: [],
+    listSkill: [],
     listEmployeeMyTeam: [],
     listEmployeeActive: [],
     listEmployeeInActive: [],
@@ -90,6 +92,16 @@ const employee = {
       } catch (errors) {
         dialog(errors);
         return {};
+      }
+    },
+    *fetchSkillList(_, { call, put }) {
+      try {
+        const response = yield call(getSkillList);
+        const { statusCode, data: listSkill = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listSkill } });
+      } catch (errors) {
+        dialog(errors);
       }
     },
     *fetchListEmployeeMyTeam(
@@ -358,30 +370,30 @@ const employee = {
   },
 
   reducers: {
-    saveFilter(state, action) {
-      const data = [...state.filter];
-      const actionFilter = action.payload;
-      const findIndex = data.findIndex((item) => item.actionFilter.name === actionFilter.name);
-      if (findIndex < 0) {
-        const item = {
-          actionFilter: {
-            name: actionFilter?.name,
-          },
-        };
-        item.checkedList = actionFilter?.checkedList;
-        data.push(item);
-      } else {
-        data[findIndex] = {
-          ...data[findIndex],
-          checkedList: actionFilter.checkedList,
-        };
-      }
-      return {
-        ...state,
-        clearFilter: false,
-        filter: [...data],
-      };
-    },
+    // saveFilter(state, action) {
+    //   const data = [...state.filter];
+    //   const actionFilter = action.payload;
+    //   const findIndex = data.findIndex((item) => item.actionFilter.name === actionFilter.name);
+    //   if (findIndex < 0) {
+    //     const item = {
+    //       actionFilter: {
+    //         name: actionFilter?.name,
+    //       },
+    //     };
+    //     item.checkedList = actionFilter?.checkedList;
+    //     data.push(item);
+    //   } else {
+    //     data[findIndex] = {
+    //       ...data[findIndex],
+    //       checkedList: actionFilter.checkedList,
+    //     };
+    //   }
+    //   return {
+    //     ...state,
+    //     clearFilter: false,
+    //     filter: [...data],
+    //   };
+    // },
     ClearFilter(state) {
       return {
         ...state,
