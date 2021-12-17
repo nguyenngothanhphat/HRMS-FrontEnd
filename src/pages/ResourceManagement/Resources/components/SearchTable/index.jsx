@@ -16,7 +16,7 @@ class SearchTable extends PureComponent {
   }
 
   onSearchDebounce = debounce((value) => {
-    const { searchTable = () => {}} = this.props
+    const { searchTable = () => {} } = this.props;
     searchTable({ searchKey: value });
   }, 1000);
 
@@ -46,14 +46,15 @@ class SearchTable extends PureComponent {
   };
 
   render() {
-    const {visible} = this.state;
-    const {filter, onFilterChange} = this.props
+    const { visible } = this.state;
+    const { filter, onFilterChange } = this.props;
     return (
       <div className={styles.searchFilter}>
         <div>
           <Popover
-            on
-            content={<FilterForm onFilterChange={onFilterChange} filter={filter} />}
+            content={
+              <FilterForm onFilterChange={onFilterChange} filter={filter} visible={visible} />
+            }
             title={this.renderTitle()}
             trigger="click"
             placement="bottomRight"
