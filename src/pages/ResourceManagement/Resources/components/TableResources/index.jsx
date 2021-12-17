@@ -86,7 +86,7 @@ class TableResources extends PureComponent {
       size,
       getPageAndSize,
       refreshData,
-      allowModify = false,
+      allowModify = true,
     } = this.props;
     // const formatData = this.formatResource(data)
     const pagination = {
@@ -318,16 +318,28 @@ class TableResources extends PureComponent {
         key: 'revisedEndDate',
         render: (value, row) => {
           // return <span className={styles.basicCellField}>{value}</span>;
-          return (
-            <span className={styles.basicCellFieldShowEdit}>
+         // const display = <span className={styles.basicCellField}>{value}</span>;
+          // const obj = renderCell(value, row, display);
+          // obj.props.className = styles.basicCellFieldShowEdit;
+          // return obj
+          const display = (
+            <div className={styles.reservedField}>
               {value}
-              {allowModify && (
-                <span className={styles.iconEdit}>
+              <div className={styles.iconEdit}>
+                {allowModify && (
                   <EditActionBTN dataPassRow={row} refreshData={refreshData} />
-                </span>
               )}
-            </span>
-          );
+              </div>
+            </div>
+            );
+          const obj = {
+            children: display,
+            props: {
+              rowSpan: 1,
+              className: styles.basicCellFieldShowEdit,
+            },
+          };
+          return obj;
         },
       },
       {
@@ -369,10 +381,12 @@ class TableResources extends PureComponent {
         render: (value, row, col) => {
           // const buttonGroup = actionAddAndEdit(row);
           const buttonGroup = (
-            <span>
-              {allowModify && <AddActionBTN dataPassRow={row} refreshData={refreshData} />}
-              <HistoryActionBTN dataPassRow={row} />
-            </span>
+            <div className={styles.actionParent}>
+              <div className={styles.buttonGroup}>
+                {allowModify && <AddActionBTN dataPassRow={row} refreshData={refreshData} />}
+                <HistoryActionBTN dataPassRow={row} />
+              </div>
+            </div>
           );
           const obj = renderCell('add', row, buttonGroup);
           if (col === data.length - 1) {

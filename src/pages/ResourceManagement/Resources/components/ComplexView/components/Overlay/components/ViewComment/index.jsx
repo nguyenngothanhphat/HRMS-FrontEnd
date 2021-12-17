@@ -27,10 +27,10 @@ class ViewCommentModal extends PureComponent {
     const { dataRow } = this.props;
     const { visible } = this.state;
     return (
-      <div className={styles.ViewCommentModal}>
+      <div className={styles.ViewModalComment}>
         <img src={listEditCommentButton} style={{width: '39px', height: '39px'}} alt="historyIcon" onClick={this.openCommentView} />
         <Modal
-          className={styles.modalViewComment}
+          // className={styles.modalViewComment}
           title="View Comments"
           width="40%"
           visible={visible}
