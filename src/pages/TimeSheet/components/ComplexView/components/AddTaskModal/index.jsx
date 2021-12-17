@@ -15,7 +15,7 @@ import {
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { dateFormatAPI, hourFormat, hourFormatAPI, TASKS } from '@/utils/timeSheet';
+import { dateFormatAPI, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import AddIcon from '@/assets/timeSheet/add.svg';
 import RemoveIcon from '@/assets/timeSheet/recycleBin.svg';
@@ -23,6 +23,7 @@ import styles from './index.less';
 
 const { Option } = Select;
 const dateFormat = 'MM/DD/YYYY';
+const TASKS = [];
 
 const AddTaskModal = (props) => {
   const [form] = Form.useForm();
@@ -177,15 +178,24 @@ const AddTaskModal = (props) => {
                     <Form.Item
                       label="Task*"
                       labelCol={{ span: 24 }}
-                      rules={[{ required: true, message: 'Select a task' }]}
+                      rules={[
+                        {
+                          required: true,
+                          message: TASKS.length !== 0 ? 'Select a task' : 'Enter task name',
+                        },
+                      ]}
                       name={[name, 'taskName']}
                       fieldKey={[fieldKey, 'taskName']}
                     >
-                      <Select showSearch placeholder="Select a task">
-                        {TASKS.map((val) => (
-                          <Option value={val}>{val}</Option>
-                        ))}
-                      </Select>
+                      {TASKS.length !== 0 ? (
+                        <Select showSearch placeholder="Select a task">
+                          {TASKS.map((val) => (
+                            <Option value={val}>{val}</Option>
+                          ))}
+                        </Select>
+                      ) : (
+                        <Input placeholder="Enter task name" maxLength={150} />
+                      )}
                     </Form.Item>
                   </Col>
 
