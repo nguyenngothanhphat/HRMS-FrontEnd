@@ -65,7 +65,6 @@ class ResourceList extends Component {
     this.fetchProjectList();
     this.fetchStatusList();
     this.fetchResourceList();
-    this.fetchEmployeeList();
     this.fetchDivisions();
     this.fetchTitleList();
   };
@@ -196,13 +195,6 @@ class ResourceList extends Component {
         resourceList: array,
         pageSelected: 1
       });
-    });
-  };
-
-  fetchEmployeeList = async () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'resourceManagement/getListEmployee',
     });
   };
 
