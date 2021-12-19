@@ -7,15 +7,24 @@ import ManagerLandingPage from './components/ManagerLandingPage';
 import HRManagerLandingPage from './components/HRManagerLandingPage';
 // import Balances from './components/Balances';
 import SetupTimeoff from './components/SetupTimeoff';
-
+import { getCurrentCompany, getCurrentTenant, getCurrentLocation } from '@/utils/authority';
 import styles from './index.less';
-import { getCurrentCompany, getCurrentTenant } from '../../utils/authority';
+import ROLES from '@/utils/roles';
+
+const { HR_MANAGER, EMPLOYEE, REGION_HEAD, MANAGER } = ROLES;
 
 const { TabPane } = Tabs;
-@connect(({ dispatch, timeOff }) => ({
-  timeOff,
-  dispatch,
-}))
+@connect(
+  ({
+    user: { currentUserRoles } = {},
+    timeOff,
+    locationSelection: { listLocationsByCompany = [] },
+  }) => ({
+    timeOff,
+    currentUserRoles,
+    listLocationsByCompany,
+  }),
+)
 class TimeOff extends PureComponent {
   constructor(props) {
     super(props);
@@ -33,13 +42,14 @@ class TimeOff extends PureComponent {
   findRole = (roles) => {
     const { dispatch } = this.props;
 
-    const hrManager = roles.find((item) => item === 'hr-manager');
-    const manager = roles.find((item) => item === 'manager');
-    const employee = roles.find((item) => item === 'employee');
-    const admincla = roles.find((item) => item === 'region-head');
+    const hrManager = roles.find((item) => item === HR_MANAGER);
+    const manager = roles.find((item) => item === MANAGER);
+    const employee = roles.find((item) => item === EMPLOYEE);
+    const regionHead = roles.find((item) => item === REGION_HEAD);
 
     let role = '';
     role = hrManager || manager || employee || 'employee';
+
     dispatch({
       type: 'timeOff/save',
       payload: {
@@ -47,11 +57,11 @@ class TimeOff extends PureComponent {
       },
     });
 
-    if (admincla) {
+    if (regionHead) {
       dispatch({
         type: 'timeOff/save',
         payload: {
-          currentUserRole: 'REGION-HEAD',
+          currentUserRole: REGION_HEAD,
         },
       });
     }
@@ -74,26 +84,22 @@ class TimeOff extends PureComponent {
     const {
       match: { params: { tabName = '' } = {} },
       location: { state: { status = '', tickedId = '', typeName = '', category = '' } = {} } = {},
+      currentUserRoles = [],
+      listLocationsByCompany = [],
+      dispatch,
     } = this.props;
 
     if (!tabName) {
       history.replace(`/time-off/overview`);
     } else {
-      const listRole = localStorage.getItem('antd-pro-authority');
-      const role = this.findRole(JSON.parse(listRole));
+      const role = this.findRole(currentUserRoles);
       this.setState({
         role,
       });
 
-      const { dispatch } = this.props;
-      const response = await dispatch({
-        type: 'timeOff/getTimeOffTypeByLocation',
-      });
-      const {
-        statusCode,
-        data: { headQuarterAddress: { country: { _id } = {} || {} } = {} || {} },
-      } = response;
-      if (statusCode === 200)
+      const find = listLocationsByCompany.find((x) => x._id === getCurrentLocation());
+      if (find) {
+        const { headQuarterAddress: { country: { _id } = {} || {} } = {} || {} } = find;
         dispatch({
           type: 'timeOff/fetchTimeOffTypesByCountry',
           payload: {
@@ -102,10 +108,11 @@ class TimeOff extends PureComponent {
             tenantId: getCurrentTenant(),
           },
         });
-      dispatch({
-        type: 'timeOff/savePaging',
-        payload: { page: 1 },
-      });
+        dispatch({
+          type: 'timeOff/savePaging',
+          payload: { page: 1 },
+        });
+      }
     }
     if (status === 'WITHDRAW') {
       if (category === 'TIMEOFF') {

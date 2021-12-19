@@ -112,14 +112,6 @@ class MyLeaveTable extends PureComponent {
     },
   ];
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      // pageSelected: 1,
-      selectedRowKeys: [],
-    };
-  }
-
   // view request
   viewRequest = (_id) => {
     history.push({
@@ -144,10 +136,6 @@ class MyLeaveTable extends PureComponent {
   //     pageSelected: 1,
   //   });
   // };
-
-  onSelectChange = (selectedRowKeys) => {
-    this.setState({ selectedRowKeys });
-  };
 
   // PARSE DATA FOR TABLE
   processData = (data) => {
@@ -199,7 +187,6 @@ class MyLeaveTable extends PureComponent {
       loadingFetchLeaveRequests = false,
       paging: { page, limit, total },
     } = this.props;
-    const { selectedRowKeys } = this.state;
     // const rowSize = 10;
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -234,18 +221,12 @@ class MyLeaveTable extends PureComponent {
       y: 'max-content',
     };
 
-    const rowSelection = {
-      type: 'checkbox',
-      selectedRowKeys,
-      onChange: this.onSelectChange,
-    };
-
     return (
       <div className={styles.MyLeaveTable}>
         <Table
           size="middle"
           loading={tableLoading}
-          rowSelection={rowSelection}
+          // rowSelection={rowSelection}
           pagination={{ ...pagination, total }}
           columns={this.columns}
           dataSource={parsedData}

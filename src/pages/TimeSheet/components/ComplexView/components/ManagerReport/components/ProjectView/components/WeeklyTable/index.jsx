@@ -8,6 +8,7 @@ import FailIcon from '@/assets/timeSheet/fail.svg';
 import PendingIcon from '@/assets/timeSheet/pending.svg';
 import TaskPopover from './components/TaskPopover';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
+import EmptyComponent from '@/pages/TimeSheet/components/ComplexView/components/Empty';
 
 import styles from './index.less';
 
@@ -294,7 +295,8 @@ const WeeklyTable = (props) => {
           columns={columns()}
           dataSource={formattedData}
           bordered
-          pagination={pagination}
+          pagination={data.length > 0 ? pagination : { position: ['none', 'none'] }}
+          footer={data.length > 0 ? null : EmptyComponent}
           // scroll={{ y: 440 }}
           loading={loadingFetch}
         />

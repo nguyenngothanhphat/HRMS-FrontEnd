@@ -1,4 +1,4 @@
-import { Col, Form, Input, Row, Select, TimePicker } from 'antd';
+import { Col, Form, Input, Row, Select, TimePicker, notification } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -42,24 +42,11 @@ const EditCard = (props) => {
 
   const {
     dispatch,
-    employee: {
-      _id: employeeId = '',
-      generalInfo: {
-        legalName: empName = '',
-        workEmail: empWorkEmail = '',
-        userId: empUserId = '',
-      } = {} || {},
-      departmentInfo: { name: empDepartmentName = '', _id: empDepartmentId = '' } = {} || {},
-      managerInfo: {
-        _id: managerId = '',
-        generalInfo: {
-          legalName: managerName = '',
-          workEmail: managerWorkEmail = '',
-          userId: managerUserId = '',
-        } = {} || {},
-        department: { name: managerDepartmentName = '', _id: managerDepartmentId = '' } = {} || {},
-      } = {} || {},
-    } = {} || {},
+    currentUser: {
+      employee: { _id: employeeId = '' } = {} || {},
+      employee = {},
+      location = {},
+    } = {},
   } = props;
 
   const [timeInState, setTimeInState] = useState('');
@@ -77,40 +64,26 @@ const EditCard = (props) => {
 
   // main function
   const updateActivityEffect = (values) => {
+    if (!employee?.managerInfo) {
+      notification.error({ message: 'User does not have manager' });
+      return {};
+    }
+
     const payload = {
       ...values,
       id,
       startTime: moment(values.startTime).format(hourFormatAPI),
       endTime: moment(values.endTime).format(hourFormatAPI),
       employeeId,
-      projectName: 'HRMS',
+      location,
+      type: 'TASK',
       employee: {
-        employeeName: empName,
-        employeeCode: empUserId,
-        workEmail: empWorkEmail,
-        department: {
-          name: empDepartmentName,
-          id: empDepartmentId,
-        },
-      },
-      // managerInfo: {
-      //   employeeName: 'Lewis Manager',
-      //   employeeId: '615a5d6bdb04f89a75e7f2e0',
-      //   employeeCode: 'lewis-manager',
-      //   workEmail: 'lewis-manager@mailinator.com',
-      //   department: {
-      //     name: 'Engineering',
-      //     id: '6153e2ecb51335302899a375',
-      //   },
-      // },
-      managerInfo: {
-        employeeName: managerName,
-        employeeId: managerId,
-        employeeCode: managerUserId,
-        workEmail: managerWorkEmail,
-        department: {
-          name: managerDepartmentName,
-          id: managerDepartmentId,
+        _id: employee._id,
+        department: employee.departmentInfo,
+        generalInfo: employee.generalInfo,
+        manager: {
+          _id: employee.managerInfo._id,
+          generalInfo: employee.managerInfo.generalInfo,
         },
       },
       date: moment(cardDay).format(dateFormatAPI),
@@ -192,6 +165,12 @@ const EditCard = (props) => {
     return minutes;
   };
 
+  const onTimePickerSelect = (type, value) => {
+    form.setFieldsValue({
+      [type]: value,
+    });
+  };
+
   // MAIN AREA
   return (
     <Form
@@ -229,9 +208,10 @@ const EditCard = (props) => {
               disabledMinutes={getDisabledMinutesTimeIn}
               onChange={onChangeTimeIn}
               allowClear={false}
-              use12Hours
               onOpenChange={() => form.validateFields()}
               showNow={false}
+              use12Hours={false}
+              onSelect={(time) => onTimePickerSelect('startTime', time)}
             />
           </Form.Item>
         </Col>
@@ -246,8 +226,9 @@ const EditCard = (props) => {
               disabledMinutes={getDisabledMinutesTimeOut}
               onChange={onChangeTimeOut}
               allowClear={false}
-              use12Hours
               showNow={false}
+              use12Hours={false}
+              onSelect={(time) => onTimePickerSelect('endTime', time)}
             />
           </Form.Item>
         </Col>
@@ -286,9 +267,7 @@ const EditCard = (props) => {
   );
 };
 
-export default connect(
-  ({ user: { currentUser: { employee = {} } = {} }, timeSheet: { myTimesheet = [] } = {} }) => ({
-    myTimesheet,
-    employee,
-  }),
-)(EditCard);
+export default connect(({ user: { currentUser = {} }, timeSheet: { myTimesheet = [] } = {} }) => ({
+  myTimesheet,
+  currentUser,
+}))(EditCard);

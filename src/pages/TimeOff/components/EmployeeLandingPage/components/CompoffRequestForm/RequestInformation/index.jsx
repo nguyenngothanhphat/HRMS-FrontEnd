@@ -67,9 +67,12 @@ class RequestInformation extends PureComponent {
   };
 
   fetchProjectsListByEmployee = () => {
-    const { dispatch } = this.props;
+    const { dispatch ,user: { currentUser: { employee: {_id = ''} = {} } = {} } = {} } = this.props;
     dispatch({
       type: 'timeOff/fetchProjectsListByEmployee',
+      payload: {
+        employee: _id
+      }
     });
   };
 
@@ -144,8 +147,11 @@ class RequestInformation extends PureComponent {
   };
 
   componentDidUpdate = (prevProps) => {
-    const { timeOff: { projectsList } = {} } = this.props;
-    if (JSON.stringify(prevProps.timeOff.projectsList) !== JSON.stringify(projectsList)) {
+    const { timeOff: { projectsList } = {}, action = '' } = this.props;
+    if (
+      JSON.stringify(prevProps.timeOff.projectsList) !== JSON.stringify(projectsList) &&
+      action === TIMEOFF_LINK_ACTION.editCompoffRequest
+    ) {
       const { viewingCompoffRequest = {} } = this.props;
       const { project: { id: projectId = '' } = {} } = viewingCompoffRequest;
       // set project name
@@ -177,7 +183,7 @@ class RequestInformation extends PureComponent {
     const {
       projectManager: {
         _id,
-        generalInfo: { legalName: projectManagerName = '', userId: projectManagerId = '' } = {},
+        generalInfo: { legalName: projectManagerName = '', employeeId: projectManagerId = '' } = {},
       } = {},
     } = find;
 

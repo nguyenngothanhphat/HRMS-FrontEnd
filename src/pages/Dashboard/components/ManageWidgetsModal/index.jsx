@@ -100,14 +100,14 @@ const ManageWidgetsModal = (props) => {
   };
 
   const renderContent = () => {
-    const viewMyTeamDashboard = permissions.viewMyTeamDashboard !== -1;
+    // const viewMyTeamDashboard = permissions.viewMyTeamDashboard !== -1;
     const viewTimesheetDashboard = permissions.viewTimesheetDashboard !== -1;
 
     const getShowingWidgets = () => {
       let result = WIDGETS;
-      if (!viewMyTeamDashboard) {
-        result = result.filter((w) => w.id !== WIDGET_IDS.MYTEAM);
-      }
+      // if (!viewMyTeamDashboard) {
+      //   result = result.filter((w) => w.id !== WIDGET_IDS.MYTEAM);
+      // }
       if (!viewTimesheetDashboard) {
         result = result.filter((w) => w.id !== WIDGET_IDS.TIMESHEET);
       }

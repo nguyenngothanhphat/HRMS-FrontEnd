@@ -2,8 +2,8 @@
 import React, { PureComponent } from 'react';
 import { Row, Input, Form, DatePicker, Radio, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
-import UploadImage from '@/components/UploadImage';
 import moment from 'moment';
+import UploadImage from '@/components/UploadImage';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { checkPermissions } from '@/utils/permissions';
@@ -349,8 +349,8 @@ class Edit extends PureComponent {
     const splitURL = nameFile[nameFile.length - 1];
     const formItemLayout = {
       labelCol: {
-        xs: { span: 6 },
-        sm: { span: 6 },
+        xs: { span: 8 },
+        sm: { span: 8 },
       },
       wrapperCol: {
         xs: { span: 9 },

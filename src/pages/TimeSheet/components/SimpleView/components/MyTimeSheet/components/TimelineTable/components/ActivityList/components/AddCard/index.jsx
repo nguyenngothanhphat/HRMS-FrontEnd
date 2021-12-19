@@ -82,7 +82,7 @@ const AddCard = (props) => {
         type: 'TASK',
         employee: {
           _id: employee._id,
-          department: employee.department,
+          department: employee.departmentInfo,
           generalInfo: employee.generalInfo,
           manager: {
             _id: employee.managerInfo._id,
@@ -162,6 +162,12 @@ const AddCard = (props) => {
     return minutes;
   };
 
+  const onTimePickerSelect = (type, value) => {
+    form.setFieldsValue({
+      [type]: value,
+    });
+  };
+
   // MAIN AREA
   return (
     <Form
@@ -201,8 +207,9 @@ const AddCard = (props) => {
               disabledMinutes={getDisabledMinutesTimeIn}
               onChange={onChangeTimeIn}
               allowClear={false}
-              use12Hours
               showNow={false}
+              use12Hours={false}
+              onSelect={(time) => onTimePickerSelect('startTime', time)}
             />
           </Form.Item>
         </Col>
@@ -218,8 +225,9 @@ const AddCard = (props) => {
               disabledMinutes={getDisabledMinutesTimeOut}
               onChange={onChangeTimeOut}
               allowClear={false}
-              use12Hours
               showNow={false}
+              use12Hours={false}
+              onSelect={(time) => onTimePickerSelect('endTime', time)}
             />
           </Form.Item>
         </Col>

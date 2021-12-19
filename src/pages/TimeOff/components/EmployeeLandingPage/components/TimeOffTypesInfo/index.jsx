@@ -67,11 +67,8 @@ class TimeOffTypesInfo extends PureComponent {
               </Tooltip>
             </div>
             <p className={styles.description}>
-              Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-              invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
-              accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
-              sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
-              sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut.
+              The leave balance shown is across all the type of leaves. Please look at the Leave
+              Breakdown option to look at the types of leaves and balances.
             </p>
             <p className={styles.collapseInfoContainer}>
               <Collapse

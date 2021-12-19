@@ -1,5 +1,5 @@
 import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input, notification } from 'antd';
+import { Button, Input, notification, Popconfirm } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
@@ -106,12 +106,13 @@ class Department extends PureComponent {
 
           return (
             <div className={styles.actions}>
-              <img
-                style={disabled ? { opacity: 0.5, cursor: 'default' } : {}}
-                src={DeleteIcon}
-                onClick={disabled ? () => {} : () => this.onRemoveDepartment(row)}
-                alt=""
-              />
+              {disabled ? (
+                <img style={{ opacity: 0.5, cursor: 'not-allowed' }} src={DeleteIcon} alt="" />
+              ) : (
+                <Popconfirm title="Sure to remove?" onConfirm={() => this.onRemoveDepartment(row)}>
+                  <img src={DeleteIcon} alt="" />
+                </Popconfirm>
+              )}
 
               <img src={EditIcon} onClick={() => this.onEditDepartment(row)} alt="" />
             </div>

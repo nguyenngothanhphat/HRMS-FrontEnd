@@ -134,7 +134,7 @@ const employeeProfile = {
     listRelation: [],
     listStates: [],
     revoke: [],
-    visibleSuccess: false
+    visibleSuccess: false,
   },
   effects: {
     *fetchEmployeeIdByUserId({ payload }, { call, put }) {
@@ -521,7 +521,7 @@ const employeeProfile = {
         });
         yield put({
           type: 'save',
-          payload: {visibleSuccess: true}
+          payload: { visibleSuccess: true },
         });
         switch (key) {
           case 'openContactDetails':
@@ -1051,9 +1051,9 @@ const employeeProfile = {
           dataTempKept,
         });
         yield put({
-          type: 'save', 
-          payload: {visibleSuccess: true}
-        })
+          type: 'save',
+          payload: { visibleSuccess: true },
+        });
         if (key === 'openBank') {
           yield put({
             type: 'saveOpenEdit',
@@ -1137,8 +1137,8 @@ const employeeProfile = {
         });
         yield put({
           type: 'save',
-          payload: {visibleSuccess: true}
-        })
+          payload: { visibleSuccess: true },
+        });
         if (key === 'openTax') {
           yield put({
             type: 'saveOpenEdit',
@@ -1150,9 +1150,17 @@ const employeeProfile = {
       }
     },
 
-    *fetchTitleByDepartment({ payload }, { call, put }) {
+    *fetchTitleByDepartment({ payload }, { call, put, select }) {
       try {
-        const res = yield call(getListTitle, payload);
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { companyCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const res = yield call(getListTitle, {
+          ...payload,
+          tenantId: tenantCurrentEmployee,
+          company: companyCurrentEmployee,
+          employee: idCurrentEmployee     
+        });
         const { statusCode, data } = res;
         if (statusCode !== 200) throw res;
         yield put({
@@ -1206,8 +1214,8 @@ const employeeProfile = {
         isUpdateEmployment = true;
         yield put({
           type: 'save',
-          payload: {visibleSuccess: true}
-        })
+          payload: { visibleSuccess: true },
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -1338,14 +1346,14 @@ const employeeProfile = {
     },
     *addDependentsOfEmployee({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(addDependentsOfEmployee, payload);
+      const  response = yield call(addDependentsOfEmployee, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { dependentDetails: data } });
         return response;
       } catch (error) {
         dialog(error);
-        return {};
+        return{}
       }
     },
     *updateEmployeeDependentDetails({ payload = {} }, { call, put }) {
@@ -1363,9 +1371,9 @@ const employeeProfile = {
     *removeEmployeeDependentDetails({ payload = {} }, { call, put }) {
       try {
         const response = yield call(removeDependentsById, payload);
-        const { statusCode } = response;
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'saveOrigin', payload: { dependentDetails: {} } });
+        yield put({ type: 'saveOrigin', payload: { dependentDetails: data } });
         return response;
       } catch (error) {
         dialog(error);

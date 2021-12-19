@@ -12,7 +12,7 @@
   margin-inline: 16px;
   .container {
     padding-inline: 16px;
-    padding-block: 8px;
+    padding-block: 10px;
   }
   .alignCenter {
     display: flex;
@@ -21,7 +21,14 @@
   .normalCell {
     display: flex;
     flex-direction: row;
+    align-items: top !important;
+    font-size: 13px;
+  }
+  .flexCell {
+    display: flex;
+    flex-direction: row;
     align-items: center !important;
+    margin-top: -6px;
     font-size: 13px;
     .activityIcon {
       position: relative;
@@ -38,7 +45,7 @@
       cursor: default;
       span {
         color: #fff;
-        font-weight: 500;
+        font-weight: 700;
         font-size: 13px;
         text-transform: uppercase;
       }

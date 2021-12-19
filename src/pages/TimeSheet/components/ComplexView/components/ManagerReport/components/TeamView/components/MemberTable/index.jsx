@@ -10,6 +10,7 @@ import {
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import MemberCard from './components/MemberCard';
 import UserProfilePopover from '../../../UserProfilePopover';
+import EmptyComponent from '@/pages/TimeSheet/components/ComplexView/components/Empty';
 import styles from './index.less';
 
 const { EMPLOYEE, REMAINING } = MNG_MT_MAIN_COL_SPAN;
@@ -125,6 +126,7 @@ const MemberTable = (props) => {
           <Spin size="default" />
         </div>
       );
+    if (data.length === 0) return <EmptyComponent />;
     return data.map((m, i) => _renderEmployee(m, i));
   };
 
