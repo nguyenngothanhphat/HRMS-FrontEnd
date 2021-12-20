@@ -7,8 +7,6 @@ import Polices from './components/Policies';
 import styles from './index.less';
 
 const HR_MANAGER = 'HR-MANAGER';
-const HR_EMPLOYEE = 'HR';
-const MANAGER = 'MANAGER';
 @connect(({ user: { currentUser = {} } = {} }) => ({
   currentUser,
 }))
@@ -19,8 +17,7 @@ class PoliciesRegulations extends PureComponent {
     const {
       currentUser: { roles = [] },
     } = this.props;
-    const checkRoleHrAndManager =
-      roles.includes(HR_MANAGER) || roles.includes(HR_EMPLOYEE) || roles.includes(MANAGER);
+    const checkRoleHrAndManager = roles.includes(HR_MANAGER);
     return (
       <PageContainer>
         <Row className={styles.PoliciesRegulations}>
@@ -34,11 +31,7 @@ class PoliciesRegulations extends PureComponent {
                       <span className={styles.buttonSetting__text}>Settings</span>
                     </Link>
                   </Button>
-                ) : (
-                  <div className={styles.buttonSetting}>
-                    <span className={styles.buttonSetting__text}>Settings</span>
-                  </div>
-                )}
+                ) : null}
               </div>
             </div>
           </Col>
