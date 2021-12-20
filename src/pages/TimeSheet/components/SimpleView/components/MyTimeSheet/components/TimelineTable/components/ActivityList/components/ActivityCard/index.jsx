@@ -1,4 +1,4 @@
-import { Col, Row, Tooltip } from 'antd';
+import { Col, Popconfirm, Row, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
@@ -123,7 +123,9 @@ const ActivityCard = (props) => {
         <Col span={ACTIONS} className={`${styles.normalCell} ${styles.alignCenter}`}>
           <div className={styles.actionsButton}>
             <img src={EditIcon} onClick={onEditCard} alt="" />
-            <img src={DeleteIcon} onClick={onRemoveCard} alt="" />
+            <Popconfirm title="Sure to remove?" onConfirm={onRemoveCard}>
+              <img src={DeleteIcon} alt="" />
+            </Popconfirm>
           </div>
         </Col>
       </Row>
