@@ -1,16 +1,16 @@
-import { Col, Form, Input, Row, Select, TimePicker, notification } from 'antd';
+import { Col, Form, Input, Row, Select, notification } from 'antd';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { connect } from 'umi';
 import ApproveIcon from '@/assets/timeSheet/approve.svg';
 import ArrowDown from '@/assets/timeSheet/arrowDown.svg';
 import CancelIcon from '@/assets/timeSheet/cancel.svg';
 import ClockIcon from '@/assets/timeSheet/clock.svg';
+import CustomTimePicker from '@/components/CustomTimePicker';
 import styles from './index.less';
 import {
-  hourFormat,
-  minuteStep,
   activityName,
+  hourFormat,
   hourFormatAPI,
   dateFormatAPI,
   MT_SECONDARY_COL_SPAN,
@@ -49,19 +49,6 @@ const EditCard = (props) => {
     } = {},
   } = props;
 
-  const [timeInState, setTimeInState] = useState('');
-  const [timeOutState, setTimeOutState] = useState('');
-
-  // use effect
-  useEffect(() => {
-    if (startTime) {
-      setTimeInState(moment(startTime, hourFormatAPI));
-    }
-    if (endTime) {
-      setTimeOutState(moment(endTime, hourFormatAPI));
-    }
-  }, [startTime, endTime]);
-
   // main function
   const updateActivityEffect = (values) => {
     if (!employee?.managerInfo) {
@@ -72,8 +59,8 @@ const EditCard = (props) => {
     const payload = {
       ...values,
       id,
-      startTime: moment(values.startTime).format(hourFormatAPI),
-      endTime: moment(values.endTime).format(hourFormatAPI),
+      startTime: moment(values.startTime, hourFormat).format(hourFormatAPI),
+      endTime: moment(values.endTime, hourFormat).format(hourFormatAPI),
       employeeId,
       location,
       type: 'TASK',
@@ -104,73 +91,6 @@ const EditCard = (props) => {
     }
   };
 
-  // DISABLE TIMEPICKER
-  const onChangeTimeIn = (value) => {
-    setTimeInState(value);
-  };
-
-  const onChangeTimeOut = (value) => {
-    setTimeOutState(value);
-  };
-
-  // HOURS
-  const getDisabledHoursTimeIn = () => {
-    if (!timeOutState) return [];
-    const hour = moment(timeOutState).hours();
-    const minute = moment(timeOutState).minutes();
-
-    const hours = [];
-    for (let i = 0; i < 24; i += 1) {
-      if (i > hour || (i === hour && minute === 0)) hours.push(i);
-    }
-    return hours;
-  };
-
-  const getDisabledHoursTimeOut = () => {
-    if (!timeInState) return [];
-    const hour = moment(timeInState).hours();
-    const minute = moment(timeInState).minutes();
-
-    const hours = [];
-    for (let i = 0; i < 24; i += 1) {
-      if (i < hour || (i === hour && minute === 30)) hours.push(i);
-    }
-    return hours;
-  };
-
-  // MINUTES
-  const getDisabledMinutesTimeIn = (selectingHour) => {
-    if (!timeOutState) return [];
-
-    const minute = moment(timeOutState).minutes();
-    const hour = moment(timeOutState).hours();
-
-    const minutes = [];
-    for (let i = 0; i < 60; i += 1) {
-      if (i >= minute && selectingHour === hour) minutes.push(i);
-    }
-    return minutes;
-  };
-
-  const getDisabledMinutesTimeOut = (selectingHour) => {
-    if (!timeInState) return [];
-
-    const minute = moment(timeInState).minute();
-    const hour = moment(timeInState).hours();
-
-    const minutes = [];
-    for (let i = 0; i < 60; i += 1) {
-      if (i <= minute && selectingHour === hour) minutes.push(i);
-    }
-    return minutes;
-  };
-
-  const onTimePickerSelect = (type, value) => {
-    form.setFieldsValue({
-      [type]: value,
-    });
-  };
-
   // MAIN AREA
   return (
     <Form
@@ -181,8 +101,8 @@ const EditCard = (props) => {
       onFinish={onFinish}
       initialValues={{
         taskName,
-        startTime: startTime ? moment(startTime, hourFormatAPI) : '',
-        endTime: endTime ? moment(endTime, hourFormatAPI) : '',
+        startTime: startTime ? moment(startTime, hourFormatAPI).format(hourFormat) : '',
+        endTime: endTime ? moment(endTime, hourFormatAPI).format(hourFormat) : '',
         nightShift,
         notes,
       }}
@@ -199,36 +119,19 @@ const EditCard = (props) => {
         </Col>
         <Col span={START_TIME} className={styles.normalCell}>
           <Form.Item name="startTime" rules={[{ required: true }]}>
-            <TimePicker
-              format={hourFormat}
-              minuteStep={minuteStep}
+            <CustomTimePicker
               suffixIcon={<img src={ClockIcon} alt="" />}
               placeholder="Time In"
-              disabledHours={getDisabledHoursTimeIn}
-              disabledMinutes={getDisabledMinutesTimeIn}
-              onChange={onChangeTimeIn}
               allowClear={false}
-              onOpenChange={() => form.validateFields()}
-              showNow={false}
-              use12Hours={false}
-              onSelect={(time) => onTimePickerSelect('startTime', time)}
             />
           </Form.Item>
         </Col>
         <Col span={END_TIME} className={styles.normalCell}>
           <Form.Item name="endTime" rules={[{ required: true }]}>
-            <TimePicker
-              format={hourFormat}
-              minuteStep={minuteStep}
+            <CustomTimePicker
               suffixIcon={<img src={ClockIcon} alt="" />}
               placeholder="Time Out"
-              disabledHours={getDisabledHoursTimeOut}
-              disabledMinutes={getDisabledMinutesTimeOut}
-              onChange={onChangeTimeOut}
               allowClear={false}
-              showNow={false}
-              use12Hours={false}
-              onSelect={(time) => onTimePickerSelect('endTime', time)}
             />
           </Form.Item>
         </Col>

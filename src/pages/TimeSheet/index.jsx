@@ -7,8 +7,6 @@ const TimeSheet = (props) => {
   const {
     match: { params: { tabName = '' } = {} },
     dispatch,
-    currentUser: { employee = {} || {} } = {},
-    // location: { state: { status = '', tickedId = '', typeName = '', category = '' } = {} } = {},
   } = props;
   const [mode, setMode] = useState(2); // 1: simple view, 2: complex view
 
