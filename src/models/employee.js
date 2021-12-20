@@ -12,13 +12,14 @@ import {
   getDataOrgChart,
   getListAdministrator,
   getListExportEmployees,
+  getListEmployeeSingleCompany,
 } from '../services/employee';
 import { addEmployee, updateEmployee } from '../services/employeesManagement';
 
 const employee = {
   namespace: 'employee',
   state: {
-    filter: [],
+    filter: {},
     location: [],
     department: [],
     employeetype: [],
@@ -36,6 +37,7 @@ const employee = {
     totalActiveEmployee: '',
     totalInactiveEmployee: '',
     totalMyTeam: '',
+    employeeList2: [], // for filter pane
   },
   effects: {
     *fetchEmployeeType(_, { call, put }) {
@@ -367,39 +369,36 @@ const employee = {
         return 0;
       }
     },
+    // for filter pane
+    *fetchEmployeeListSingleCompanyEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getListEmployeeSingleCompany, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            employeeList2: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
   },
 
   reducers: {
-    // saveFilter(state, action) {
-    //   const data = [...state.filter];
-    //   const actionFilter = action.payload;
-    //   const findIndex = data.findIndex((item) => item.actionFilter.name === actionFilter.name);
-    //   if (findIndex < 0) {
-    //     const item = {
-    //       actionFilter: {
-    //         name: actionFilter?.name,
-    //       },
-    //     };
-    //     item.checkedList = actionFilter?.checkedList;
-    //     data.push(item);
-    //   } else {
-    //     data[findIndex] = {
-    //       ...data[findIndex],
-    //       checkedList: actionFilter.checkedList,
-    //     };
-    //   }
-    //   return {
-    //     ...state,
-    //     clearFilter: false,
-    //     filter: [...data],
-    //   };
-    // },
-    ClearFilter(state) {
+    clearFilter(state) {
       return {
         ...state,
-        clearFilter: true,
-        clearName: true,
-        filter: [],
+        filter: {},
       };
     },
     offClearName(state) {
@@ -454,6 +453,15 @@ const employee = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveFilter(state, action) {
+      return {
+        ...state,
+        filter: {
+          ...state.filter,
+          ...action.payload,
+        },
       };
     },
   },

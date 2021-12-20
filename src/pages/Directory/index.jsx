@@ -74,6 +74,9 @@ class Directory extends PureComponent {
       dispatch({
         type: 'employee/fetchEmployeeType',
       });
+      dispatch({
+        type: 'employee/fetchEmployeeListSingleCompanyEffect',
+      });
     }
   };
 

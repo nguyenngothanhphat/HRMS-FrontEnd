@@ -110,16 +110,10 @@ const DirectoryComponent = (props) => {
     const currentCompany = getCurrentCompany();
 
     const {
-      name = '',
-      department = [],
       country = [],
       state = [],
-      employeeType,
       company = [],
-      title = [],
-      skill = [],
       page = 1,
-      limit,
     } = params;
 
     // if there are location & company, call API
@@ -222,15 +216,9 @@ const DirectoryComponent = (props) => {
       }
 
       const payload = {
+        ...params,
         company: companyPayload,
-        name,
-        department,
         location: locationPayload,
-        employeeType,
-        title,
-        skill,
-        page,
-        limit,
       };
       setPageSelected(page || 1);
 
@@ -379,7 +367,11 @@ const DirectoryComponent = (props) => {
     ];
     exportToCsv('Template_Import_Employees.csv', processData(exportData));
   };
-
+  const clearFilter = () => {
+    dispatch({
+      type: 'employee/clearFilter',
+    });
+  };
   const rightButton = () => {
     const findIndexImport = permissions.importEmployees !== -1;
     const findIndexAdd = permissions.addEmployee !== -1;
@@ -426,7 +418,13 @@ const DirectoryComponent = (props) => {
           </div>
         )}
 
-        <FilterPopover placement="bottomRight" content={<FilterContent />} submitText="Apply">
+        <FilterPopover
+          placement="bottomRight"
+          content={<FilterContent activeTab={tabId} />}
+          submitText="Apply"
+          closeText="Clear"
+          onSecondButton={clearFilter}
+        >
           <FilterButton />
         </FilterPopover>
       </div>

@@ -1,16 +1,16 @@
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/destructuring-assignment */
 import React, { useEffect, useState } from 'react';
-import filterIcon from '@/assets/offboarding-filter.svg';
 import { Table, Popover } from 'antd';
 import { formatMessage, connect, history, Link } from 'umi';
+import moment from 'moment';
+import { isEmpty } from 'lodash';
+import filterIcon from '@/assets/offboarding-filter.svg';
 import iconPDF from '@/assets/pdf-2.svg';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
-import moment from 'moment';
 import { isOwner } from '@/utils/authority';
-import { isEmpty } from 'lodash';
 import { getTimezoneViaCity } from '@/utils/times';
-import PopoverInfo from '@/components/DirectoryTable/components/ModalTerminate/PopoverInfo/index';
+import PopoverInfo from '@/pages/Directory/components/DirectoryTable/components/ModalTerminate/PopoverInfo';
 import styles from '../../index.less';
 
 const DocumentResult = React.memo((props) => {

@@ -4,9 +4,11 @@ import { connect } from 'umi';
 import styles from './index.less';
 
 const FilterContent = (props) => {
+  const [form] = Form.useForm();
   const {
     dispatch,
     employee: {
+      employeeList2 = [],
       filterList: {
         listDepartmentName = [],
         listCountry = [],
@@ -14,6 +16,19 @@ const FilterContent = (props) => {
         listTitle = [],
       } = {},
       listSkill = [],
+      // selectedFilter
+      filter: {
+        name = '',
+        department = [],
+        division = [],
+        title = [],
+        reportingManager = [],
+        employeeType = [],
+        skill = [],
+        fromExp,
+        toExp,
+      } = {},
+      filter = {},
     } = {},
   } = props;
 
@@ -35,12 +50,27 @@ const FilterContent = (props) => {
     formatLocationList();
   }, [JSON.stringify(listCountry)]);
 
+  useEffect(() => {
+    form.setFieldsValue({
+      ...filter,
+      name: name || undefined,
+      department,
+      division,
+      title,
+      reportingManager,
+      employeeType,
+      skill,
+      fromExp,
+      toExp,
+    });
+  }, [JSON.stringify(filter)]);
+
   const onFinish = (values) => {
     const newValues = { ...values };
 
     // remove empty fields
     // eslint-disable-next-line no-return-assign
-    const filter = Object.entries(newValues).reduce(
+    const filterTemp = Object.entries(newValues).reduce(
       // eslint-disable-next-line no-return-assign
       (a, [k, v]) =>
         v == null || v.length === 0 || !v
@@ -52,18 +82,30 @@ const FilterContent = (props) => {
 
     dispatch({
       type: 'employee/save',
-      payload: { filter },
+      payload: { filter: filterTemp },
     });
   };
 
   return (
-    <Form layout="vertical" name="filter" onFinish={onFinish} className={styles.FilterContent}>
+    <Form
+      layout="vertical"
+      name="filter"
+      onFinish={onFinish}
+      form={form}
+      className={styles.FilterContent}
+    >
       <Form.Item label="by employee id" name="employeeId">
-        <Select allowClear showSearch style={{ width: '100%' }} placeholder="Search by Employee ID">
-          {[].map((x) => {
+        <Select
+          allowClear
+          showSearch
+          showArrow
+          style={{ width: '100%' }}
+          placeholder="Search by Employee ID"
+        >
+          {employeeList2.map((x) => {
             return (
-              <Select.Option value={x} key={x}>
-                {x}
+              <Select.Option value={x.generalInfo?.employeeId} key={x.generalInfo?.employeeId}>
+                {x.generalInfo?.employeeId}
               </Select.Option>
             );
           })}
@@ -71,21 +113,22 @@ const FilterContent = (props) => {
       </Form.Item>
 
       <Form.Item label="By name/user id" name="name">
-        {/* <Select
+        <Select
           allowClear
           showSearch
           style={{ width: '100%' }}
           placeholder="Search by Name/User ID"
+          showArrow
         >
-          {[].map((x) => {
+          {employeeList2.map((x) => {
             return (
-              <Select.Option value={x} key={x}>
-                {x}
+              <Select.Option value={x.generalInfo?.legalName} key={x._id}>
+                {x.generalInfo.legalName}
               </Select.Option>
             );
           })}
-        </Select> */}
-        <Input placeholder="Search by Name/User ID" />
+        </Select>
+        {/* <Input placeholder="Search by Name/User ID" /> */}
       </Form.Item>
 
       <Form.Item label="By department id/name" name="department">
@@ -95,6 +138,7 @@ const FilterContent = (props) => {
           mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Department"
+          showArrow
         >
           {listDepartmentName.map((x) => {
             return (
@@ -112,6 +156,7 @@ const FilterContent = (props) => {
           mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Division Name"
+          showArrow
         >
           {[].map((x) => {
             return (
@@ -129,6 +174,7 @@ const FilterContent = (props) => {
           mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Job Title"
+          showArrow
         >
           {listTitle.map((x) => {
             return (
@@ -146,11 +192,12 @@ const FilterContent = (props) => {
           mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Reporting Manager"
+          showArrow
         >
-          {[].map((x) => {
+          {employeeList2.map((x) => {
             return (
-              <Select.Option value={x} key={x}>
-                {x}
+              <Select.Option value={x.generalInfo?.legalName} key={x.generalInfo?.legalName}>
+                {x.generalInfo?.legalName}
               </Select.Option>
             );
           })}
@@ -164,6 +211,7 @@ const FilterContent = (props) => {
           mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Location"
+          showArrow
         >
           {[].map((x) => {
             return (
@@ -182,6 +230,7 @@ const FilterContent = (props) => {
           mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Employment Type"
+          showArrow
         >
           {listEmployeeType.map((x) => {
             return (
@@ -200,6 +249,7 @@ const FilterContent = (props) => {
           mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Skills"
+          showArrow
         >
           {listSkill.map((x) => {
             return (
@@ -214,16 +264,16 @@ const FilterContent = (props) => {
       <Form.Item label="By years of experience">
         <Row>
           <Col span={11}>
-            <Form.Item name="from">
-              <Input />
+            <Form.Item name="fromExp">
+              <Input placeholder="From" />
             </Form.Item>
           </Col>
           <Col span={2} className={styles.separator}>
             <span>to</span>
           </Col>
           <Col span={11}>
-            <Form.Item name="to">
-              <Input />
+            <Form.Item name="toExp">
+              <Input placeholder="To" />
             </Form.Item>
           </Col>
         </Row>

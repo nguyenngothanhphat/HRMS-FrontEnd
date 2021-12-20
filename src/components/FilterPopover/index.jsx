@@ -12,6 +12,7 @@ const FilterPopover = (props) => {
     content = '',
     submitText = 'Submit',
     closeText = 'Close',
+    onSecondButton,
   } = props;
   const [showPopover, setShowPopover] = useState(false);
 
@@ -24,7 +25,10 @@ const FilterPopover = (props) => {
       <>
         <div className={styles.popupContainer}>{content}</div>
         <div className={styles.buttons}>
-          <Button className={styles.btnClose} onClick={() => setShowPopover(false)}>
+          <Button
+            className={styles.btnClose}
+            onClick={onSecondButton || (() => setShowPopover(false))}
+          >
             {closeText}
           </Button>
           <Button
