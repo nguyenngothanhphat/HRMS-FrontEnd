@@ -22,7 +22,8 @@ const ModalAddInfo = (props) => {
     generalId,
     loading,
     idCurrentEmployee,
-    location
+    location,
+    generalData = {}
   } = props;
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -90,17 +91,23 @@ const ModalAddInfo = (props) => {
   };
 
   const onFinishCertification = (values) => {
-    const { certificationName, otherSkills, qualification, skills, totalExp } = values;
+    const { certificationName, otherSkills, qualification, skills } = values;
+    let {totalExp} = values;
+    if(!totalExp){
+      totalExp = generalData.totalExp || 0
+    }
     const certifications = [];
     arrCertification.forEach((item) => {
-      certifications.push({
-        name: certificationName[`certification${item}`] || 'certification',
-        urlFile: objUrl[`url${item}`],
-        employee: idCurrentEmployee,
-        company: getCurrentCompany(),
-      });
+      if(objUrl[`url${item}`] !== undefined){
+        certifications.push({
+          name: certificationName[`certification${item}`] || 'certification',
+          urlFile: objUrl[`url${item}`],
+          employee: idCurrentEmployee,
+          company: getCurrentCompany(),
+        });
+      }
     });
-    const tempSkill = skills.filter((item) => item !== 'Other');
+    const tempSkill = skills ? skills.filter((item) => item !== 'Other') : [];
     const obj = {
       ...resultForm,
       certifications,
@@ -153,7 +160,7 @@ const ModalAddInfo = (props) => {
         accountType: accountType[`accountType${item}`],
         bankName: bankName[`bankName${item}`],
         branchName: branchName[`branchName${item}`],
-        micrCode: micrCode[`micrCode${item}`],
+        micrcCode: micrCode[`micrCode${item}`],
         ifscCode: ifscCode[`ifscCode${item}`],
         uanNumber: uanNumber[`uanNumber${item}`],
         // swiftcode: swiftcode[`swiftcode${item}`],
@@ -328,7 +335,7 @@ const ModalAddInfo = (props) => {
                           message: "Please enter emergency contact's number!"
                         },
                         {
-                          pattern: /^[+]*[\d]{0,10}$/,
+                          pattern: /^[+0-9-]{0,15}$/,
                           message: formatMessage({
                             id: 'pages.employeeProfile.validateWorkNumber',
                           }),
@@ -357,7 +364,15 @@ const ModalAddInfo = (props) => {
           addCertification(numOfCertification);
         }
         return (
-          <Form form={form} name="Certification" onFinish={onFinishCertification} layout="vertical">
+          <Form 
+            form={form} 
+            name="Certification" 
+            onFinish={onFinishCertification} 
+            layout="vertical" 
+            initialValues={{
+              totalExp: generalData.totalExp || 0
+            }}
+          >
             <div className={styles.form__title}>Professional & Academic Background</div>
             <div className={styles.form__description}>
               You are required to fill in certain deatils to proceed further
@@ -367,13 +382,17 @@ const ModalAddInfo = (props) => {
               name="totalExp"
               style={{ marginTop: '24px' }}
               rules={[
+                // {
+                //   required: true,
+                //   message: "Please enter relevant years of experience!"
+                // },
                 {
-                  required: true,
-                  message: "Please enter relevant years of experience!"
+                  pattern: /^[\d]{0,100}$/,
+                  message: 'Input only number and value >= 0',
                 },
               ]}
             >
-              <Input placeholder="Relevant Years of Experience" />
+              <Input defaultValue={generalData.totalExp || 0} placeholder="Relevant Years of Experience" />
             </Form.Item>
             <Form.Item
               label="Highest Educational Qualification"
@@ -406,12 +425,12 @@ const ModalAddInfo = (props) => {
                     <Form.Item
                       name={['certificationName', `certification${item}`]}
                       label="Certifications"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please enter certifications!"
-                        },
-                      ]}
+                      // rules={[
+                      //   {
+                      //     required: true,
+                      //     message: "Please enter certifications!"
+                      //   },
+                      // ]}
                     >
                       <Input placeholder="Certifications" />
                     </Form.Item>
@@ -438,12 +457,12 @@ const ModalAddInfo = (props) => {
             <Form.Item
               label="Skills"
               name="skills"
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter skills"
-                },
-              ]}
+              // rules={[
+              //   {
+              //     required: true,
+              //     message: "Please enter skills"
+              //   },
+              // ]}
             >
               <Select
                 placeholder="Select skill"
@@ -465,12 +484,12 @@ const ModalAddInfo = (props) => {
               <Form.Item
                 label="Other Skill"
                 name="otherSkills"
-                rules={[
-                {
-                  required: true,
-                  message: "Please enter other skill!"
-                },
-              ]}
+              //   rules={[
+              //   {
+              //     required: true,
+              //     message: "Please enter other skill!"
+              //   },
+              // ]}
               >
                 <Input />
               </Form.Item>
@@ -558,8 +577,8 @@ const ModalAddInfo = (props) => {
                                 message: "Please enter account number!"
                               },
                               {
-                                pattern: /^[\d]{0,10}$/,
-                                message: 'Input only number',
+                                pattern: /^[\d]{0,16}$/,
+                                message: 'Input only number and maximun 16',
                               },
                             ]}
                           >
@@ -681,8 +700,8 @@ const ModalAddInfo = (props) => {
                                 message: "Please enter account number!"
                               },
                               {
-                                pattern: /^[\d]{0,10}$/,
-                                message: 'Input only number',
+                                pattern: /^[\d]{0,16}$/,
+                                message: 'Input only number and maximun 16',
                               },
                             ]}
                           >
@@ -707,13 +726,13 @@ const ModalAddInfo = (props) => {
                             label="UAN Number"
                             name={['uanNumber', `uanNumber${item}`]}
                             rules={[
+                              // {
+                              //   required: true,
+                              //   message: "Please enter UAN number!"
+                              // },
                               {
-                                required: true,
-                                message: "Please enter UAN number!"
-                              },
-                              {
-                                pattern: /^[\d]{0,10}$/,
-                                message: 'Input only number',
+                                pattern: /^[\d]{0,16}$/,
+                                message: 'Input only number and maximun 16',
                               },
                             ]}
                           >
@@ -1049,10 +1068,10 @@ const ModalAddInfo = (props) => {
             onChange={(current) => setCurrentStep(current)}
             className={styles.step}
           >
-            <Step />
-            <Step />
-            <Step />
-            <Step />
+            <Step disabled />
+            <Step disabled />
+            <Step disabled />
+            <Step disabled />
           </Steps>
         </div>
         <div className={styles.mainContent}>{renderContent()}</div>
