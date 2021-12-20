@@ -10,7 +10,7 @@ import {
   notification,
   Row,
   Select,
-  TimePicker,
+  // TimePicker,
 } from 'antd';
 import moment from 'moment';
 import React, { useEffect } from 'react';
@@ -20,6 +20,7 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import AddIcon from '@/assets/timeSheet/add.svg';
 import RemoveIcon from '@/assets/timeSheet/recycleBin.svg';
 import styles from './index.less';
+import CustomTimePicker from '@/components/CustomTimePicker';
 
 const { Option } = Select;
 const dateFormat = 'MM/DD/YYYY';
@@ -89,10 +90,10 @@ const AddTaskModal = (props) => {
       return {
         tenantId: getCurrentTenant(),
         taskName: item.taskName,
-        startTime: moment(item.startTime).format(hourFormatAPI),
-        endTime: moment(item.endTime).format(hourFormatAPI),
+        startTime: moment(item.startTime, hourFormat).format(hourFormatAPI),
+        endTime: moment(item.endTime, hourFormat).format(hourFormatAPI),
         date: moment(submitDate).locale('en').format(dateFormatAPI),
-        clientLocation: item.clientLocation,
+        clientLocation: item.clientLocation || false,
         project: {
           projectName: findPrj.projectName,
           projectId: item.projectId,
@@ -102,7 +103,7 @@ const AddTaskModal = (props) => {
         employeeId,
         companyId: getCurrentCompany(),
         location,
-        nightShift: item.nightShift,
+        nightShift: item.nightShift || false,
         employee: {
           _id: employee._id,
           department: employee.departmentInfo,
@@ -134,21 +135,12 @@ const AddTaskModal = (props) => {
     }
   };
 
-  const onTimePickerSelect = (type, value, index) => {
-    form.setFields([
-      {
-        name: ['tasks', index, type],
-        value,
-      },
-    ]);
-  };
-
   const renderFormList = () => {
     return (
       <Form.List name="tasks">
         {(fields, { add, remove }) => (
           <>
-            {fields.map(({ key, name, fieldKey }, index) => (
+            {fields.map(({ key, name, fieldKey }) => (
               <>
                 {key !== 0 && <div className={styles.divider} />}
                 <Row gutter={[24, 0]} className={styles.belowPart}>
@@ -207,14 +199,7 @@ const AddTaskModal = (props) => {
                       name={[name, 'startTime']}
                       fieldKey={[fieldKey, 'startTime']}
                     >
-                      <TimePicker
-                        minuteStep={30}
-                        format={hourFormat}
-                        placeholder="Select start time"
-                        showNow={false}
-                        use12Hours={false}
-                        onSelect={(time) => onTimePickerSelect('startTime', time, index)}
-                      />
+                      <CustomTimePicker placeholder="Select start time" showSearch />
                     </Form.Item>
                   </Col>
 
@@ -226,14 +211,7 @@ const AddTaskModal = (props) => {
                       name={[name, 'endTime']}
                       fieldKey={[fieldKey, 'endTime']}
                     >
-                      <TimePicker
-                        minuteStep={30}
-                        format={hourFormat}
-                        placeholder="Select end time"
-                        showNow={false}
-                        use12Hours={false}
-                        onSelect={(time) => onTimePickerSelect('endTime', time, index)}
-                      />
+                      <CustomTimePicker placeholder="Select end time" showSearch />
                     </Form.Item>
                   </Col>
 
