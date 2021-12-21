@@ -131,6 +131,7 @@ const AddTaskModal = (props) => {
     const res = await addMultipleActivityEffect(submitDate, tasks);
     if (res.code === 200) {
       onClose();
+      form.resetFields();
       refreshData();
     }
   };
