@@ -1338,14 +1338,14 @@ const employeeProfile = {
     },
     *addDependentsOfEmployee({ payload = {} }, { call, put }) {
       try {
-      const  response = yield call(addDependentsOfEmployee, payload);
+        const response = yield call(addDependentsOfEmployee, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { dependentDetails: data } });
         return response;
       } catch (error) {
         dialog(error);
-        return{}
+        return {};
       }
     },
     *updateEmployeeDependentDetails({ payload = {} }, { call, put }) {

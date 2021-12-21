@@ -51,7 +51,7 @@ const DependentTabs = (props) => {
   return (
     <div className={styles.tab}>
       <div className={styles.selft}>
-        <div className={styles.selft__title}>Selft</div>
+        <div className={styles.selft__title}>Self</div>
         <div className={styles.containerSelft}>
           <div className={styles.containerSelft__title}>First Name</div>
           <div className={styles.containerSelft__content}>

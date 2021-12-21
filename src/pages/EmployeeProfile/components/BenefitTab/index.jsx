@@ -3,8 +3,8 @@ import { Skeleton, Tabs } from 'antd';
 import { formatMessage, connect } from 'umi';
 import IconAdd from './components/DependentTabs/Edit/assets/AddIcon.svg';
 import HealthWellbeing from './components/HealthWellbeing';
-import Financial from './components/Financial';
-import Legal from './components/Legal';
+// import Financial from './components/Financial';
+// import Legal from './components/Legal';
 import DependentTabs from './components/DependentTabs';
 import ModalAddDependant from './components/DependentTabs/ModalAddDependant';
 // import ModalEditDependant from './components/DependentTabs/Edit';
@@ -23,7 +23,6 @@ const data = [
   },
   { title: 'Vision', coverageEndDate: [{ '2020 Open Access Plus - Choice Plan': '20 Jun 2020' }] },
 ];
-
 @connect(
   ({
     employeeProfile: {
@@ -168,19 +167,18 @@ class BenefitTab extends PureComponent {
             <div>
               <Tabs activeKey={activeKey} onTabClick={(key) => this.setState({ activeKey: key })}>
                 <TabPane tab="Health & Wellbeing" key="1">
-                  {data.map((item) => {
+                  {/* {data.map((item) => {
                     return (
                       <HealthWellbeing key={Math.random().toString(36).substring(7)} data={item} />
                     );
-                  })}
-                  {/* <HealthWellbeing data={data} /> */}
+                  })} */}
                 </TabPane>
-                <TabPane tab="Financial" key="2">
+                {/*  <TabPane tab="Financial" key="2">
                   <Financial />
                 </TabPane>
                 <TabPane tab="Legal" key="3">
                   <Legal />
-                </TabPane>
+                </TabPane> */}
               </Tabs>
             </div>
           </div>
