@@ -36,12 +36,14 @@ const FilterContent = (props) => {
 
   // FUNCTIONALITY
   const formatLocationList = () => {
-    const temp = listCountry.map((x) => {
+    let temp = listCountry.map((x) => {
       return {
         id: x.country?._id,
         country: x.country?.name,
       };
     });
+    // remove duplicate objects
+    temp = temp.filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i);
     setLocationList(temp);
   };
 
