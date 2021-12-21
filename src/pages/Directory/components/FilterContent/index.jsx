@@ -1,4 +1,4 @@
-import { Form, Select, Row, Col, Input } from 'antd';
+import { Form, Select, Row, Col, InputNumber } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
@@ -36,9 +36,9 @@ const FilterContent = (props) => {
 
   // FUNCTIONALITY
   const formatLocationList = () => {
-    const temp = listCountry.map((x, index) => {
+    const temp = listCountry.map((x) => {
       return {
-        id: index,
+        id: x.country?._id,
         country: x.country?.name,
       };
     });
@@ -158,7 +158,7 @@ const FilterContent = (props) => {
           placeholder="Search by Division Name"
           showArrow
         >
-          {[].map((x) => {
+          {listDepartmentName.map((x) => {
             return (
               <Select.Option value={x} key={x}>
                 {x}
@@ -196,7 +196,7 @@ const FilterContent = (props) => {
         >
           {employeeList2.map((x) => {
             return (
-              <Select.Option value={x.generalInfo?.legalName} key={x.generalInfo?.legalName}>
+              <Select.Option value={x._id} key={x._id}>
                 {x.generalInfo?.legalName}
               </Select.Option>
             );
@@ -213,10 +213,10 @@ const FilterContent = (props) => {
           placeholder="Search by Location"
           showArrow
         >
-          {[].map((x) => {
+          {locationList.map((x) => {
             return (
-              <Select.Option value={x} key={x}>
-                {x}
+              <Select.Option value={x.id} key={x.id}>
+                {x.country}
               </Select.Option>
             );
           })}
@@ -261,11 +261,12 @@ const FilterContent = (props) => {
         </Select>
       </Form.Item>
 
-      <Form.Item label="By years of experience">
+      <Form.Item label="By yrs of experience">
         <Row>
           <Col span={11}>
             <Form.Item name="fromExp">
-              <Input placeholder="From" />
+              {/* <Input placeholder="From" /> */}
+              <InputNumber min={0} max={100} placeholder="From" />
             </Form.Item>
           </Col>
           <Col span={2} className={styles.separator}>
@@ -273,7 +274,8 @@ const FilterContent = (props) => {
           </Col>
           <Col span={11}>
             <Form.Item name="toExp">
-              <Input placeholder="To" />
+              {/* <Input placeholder="To" /> */}
+              <InputNumber min={0} max={100} placeholder="To" />
             </Form.Item>
           </Col>
         </Row>

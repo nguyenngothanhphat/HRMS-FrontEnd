@@ -109,12 +109,7 @@ const DirectoryComponent = (props) => {
     const currentLocation = getCurrentLocation();
     const currentCompany = getCurrentCompany();
 
-    const {
-      country = [],
-      state = [],
-      company = [],
-      page = 1,
-    } = params;
+    const { country = [], state = [], company = [], page = 1 } = params;
 
     // if there are location & company, call API
     const checkCallAPI =
@@ -220,6 +215,9 @@ const DirectoryComponent = (props) => {
         company: companyPayload,
         location: locationPayload,
       };
+      // delete "country" field from payload,
+      // because we only use "country" field to generate the "location" field
+      delete payload.country;
       setPageSelected(page || 1);
 
       // permissions to view tab

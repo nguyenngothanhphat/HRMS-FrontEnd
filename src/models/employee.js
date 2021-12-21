@@ -108,30 +108,14 @@ const employee = {
     },
     *fetchListEmployeeMyTeam(
       {
-        payload: {
-          company = '',
-          department = [],
-          location = [],
-          employeeType = [],
-          name = '',
-          title = [],
-          page = '',
-          limit = 10,
-        } = {},
+        payload = {},
       },
       { call, put },
     ) {
       try {
         const currentPayload = {
+          ...payload, 
           status: ['ACTIVE'],
-          company,
-          department,
-          location,
-          employeeType,
-          name,
-          title,
-          page,
-          limit,
         };
         const response = yield call(getListEmployee, currentPayload);
         const { statusCode, data: listEmployeeMyTeam = [] } = response;
@@ -152,32 +136,14 @@ const employee = {
     },
     *fetchListEmployeeActive(
       {
-        payload: {
-          company = [],
-          department = [],
-          location = [],
-          employeeType = [],
-          name = '',
-          title = [],
-          skill = [],
-          page = '',
-          limit = 10,
-        } = {},
+        payload = {},
       },
       { call, put },
     ) {
       try {
         const currentPayload = {
+          ...payload, 
           status: ['ACTIVE'],
-          company,
-          department,
-          location,
-          employeeType,
-          name,
-          title,
-          skill,
-          page,
-          limit,
         };
         const response = yield call(getListEmployee, currentPayload);
         const { statusCode, data: listEmployeeActive = [] } = response;
@@ -199,30 +165,14 @@ const employee = {
     },
     *fetchListEmployeeInActive(
       {
-        payload: {
-          company = [],
-          department = [],
-          location = [],
-          employeeType = [],
-          name = '',
-          title = [],
-          page = '',
-          limit = 10,
-        } = {},
+        payload ={}
       },
       { call, put },
     ) {
       try {
         const currentPayload = {
+          ...payload, 
           status: ['INACTIVE'],
-          company,
-          department,
-          location,
-          employeeType,
-          name,
-          title,
-          page,
-          limit,
         };
         const response = yield call(getListEmployee, currentPayload);
         const { statusCode, data: listEmployeeInActive = [] } = response;

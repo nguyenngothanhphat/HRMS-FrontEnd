@@ -412,7 +412,7 @@ class AddEmployeeForm extends Component {
             </Select>
           </Form.Item>
 
-          <Form.Item
+          {/* <Form.Item
             label={formatMessage({ id: 'addEmployee.roles' })}
             name="roles"
             rules={[{ required: true }]}
@@ -433,7 +433,7 @@ class AddEmployeeForm extends Component {
                 </Option>
               ))}
             </Select>
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item
             label={formatMessage({ id: 'addEmployee.location' })}
