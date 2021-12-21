@@ -1,4 +1,4 @@
-import { Button, Checkbox, Form, Input, Modal, Select, Skeleton, Tag } from 'antd';
+import { Button, Checkbox, Form, Input, Modal, Select, Skeleton, Tag, Switch, Radio } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import CloseTagIcon from '@/assets/closeTagIcon.svg';
@@ -6,7 +6,7 @@ import styles from './index.less';
 
 const { Option } = Select;
 
-const state = { selectedRoleIds: [] };
+const state = { selectedRoleIds: [], timeSheetRequired: true };
 
 @connect(
   ({
@@ -99,7 +99,13 @@ class EditModal extends PureComponent {
 
   onFinish = async (values) => {
     const { dispatch, selectedPositionID = '', onRefresh = () => {} } = this.props;
-    const { name = '', department = '', gradeObj = '', timeSheetRequired = false } = values;
+    const {
+      name = '',
+      department = '',
+      gradeObj = '',
+      timeSheetRequired = false,
+      timeSheetAdvancedMode = false,
+    } = values;
 
     const { selectedRoleIds: roles = [] } = this.state;
 
@@ -112,6 +118,7 @@ class EditModal extends PureComponent {
           department,
           roles,
           timeSheetRequired,
+          timeSheetAdvancedMode,
         },
       });
       if (res.statusCode === 200) {
@@ -129,6 +136,7 @@ class EditModal extends PureComponent {
           gradeObj,
           roles,
           timeSheetRequired,
+          timeSheetAdvancedMode,
         },
       });
       if (res.statusCode === 200) {
@@ -270,6 +278,7 @@ class EditModal extends PureComponent {
         name: nameProp = '',
         gradeObj: gradeObjProp = '',
         timeSheetRequired: timeSheetRequiredProp = false,
+        timeSheetAdvancedMode: timeSheetAdvancedModeProp = false,
       } = {},
     } = this.props;
 
@@ -317,28 +326,33 @@ class EditModal extends PureComponent {
                       name: nameProp,
                       gradeObj: gradeObjProp?._id || '',
                       timeSheetRequired: timeSheetRequiredProp,
+                      timeSheetAdvancedMode: timeSheetAdvancedModeProp,
                     }
               }
             >
               <Form.Item
-                rules={[{ required: true, message: 'Please enter department name!' }]}
+                rules={[{ required: true, message: 'Please select the department name!' }]}
                 label="Department Name"
                 name="department"
                 labelCol={{ span: 24 }}
               >
-                <Select showSearch loading={loadingFetchDepartmentList}>
+                <Select
+                  showSearch
+                  loading={loadingFetchDepartmentList}
+                  placeholder="Select the department name"
+                >
                   {listDepartments.map((d) => {
                     return <Option value={d._id}>{d.name}</Option>;
                   })}
                 </Select>
               </Form.Item>
               <Form.Item
-                rules={[{ required: true, message: 'Please enter position name!' }]}
+                rules={[{ required: true, message: 'Please enter the position name!' }]}
                 label="Position Name"
                 name="name"
                 labelCol={{ span: 24 }}
               >
-                <Input />
+                <Input placeholder="Select enter position name" />
               </Form.Item>
               <Form.Item
                 label="Roles"
@@ -368,21 +382,42 @@ class EditModal extends PureComponent {
                 label="Grade Level"
                 name="gradeObj"
                 labelCol={{ span: 24 }}
-                rules={[{ required: true, message: 'Please select Grade Level' }]}
+                rules={[{ required: true, message: 'Please select the grade level' }]}
               >
                 <Select
                   filterOption={(input, option) =>
                     option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   showSearch
                   allowClear
+                  placeholder="Select the grade level"
                 >
                   {this.renderGradeList()}
                 </Select>
               </Form.Item>
 
-              <Form.Item name="timeSheetRequired" labelCol={{ span: 24 }} valuePropName="checked">
-                <Checkbox defaultChecked={timeSheetRequiredProp}>Timesheet Required</Checkbox>
+              <div className={styles.timeSheetRequired}>
+                <Form.Item
+                  name="timeSheetRequired"
+                  labelCol={{ span: 24 }}
+                  valuePropName="checked"
+                  style={{
+                    display: 'inline',
+                    marginBottom: 0,
+                  }}
+                >
+                  <Switch defaultChecked={action === 'add' ? true : timeSheetRequiredProp} />
+                </Form.Item>
+                <span className={styles.titleText}>Timesheet Required</span>
+              </div>
+
+              {/* {timeSheetRequired && ( */}
+              <Form.Item name="timeSheetAdvancedMode" labelCol={{ span: 24 }}>
+                <Radio.Group defaultValue={timeSheetAdvancedModeProp}>
+                  <Radio value={false}>Simple Timesheet</Radio>
+                  <Radio value>Complex Timesheet</Radio>
+                </Radio.Group>
               </Form.Item>
+              {/* )} */}
             </Form>
           )}
         </Modal>
