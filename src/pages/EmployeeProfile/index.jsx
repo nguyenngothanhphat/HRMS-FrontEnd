@@ -131,6 +131,7 @@ class EmployeeProfile extends Component {
       dispatch({
         type: 'employeeProfile/getBenefitPlans',
         payload: {
+          employee,
           tenantId,
           company: companyCurrentEmployee,
         },
