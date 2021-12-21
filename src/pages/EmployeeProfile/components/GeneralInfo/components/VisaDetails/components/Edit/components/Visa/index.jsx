@@ -344,6 +344,10 @@ class VisaGeneral extends Component {
                   <Form.Item label="Country" name={`visaIssuedCountry${index}`}>
                     <Select
                       showArrow
+                      showSearch
+                      optionFilterProp="children"
+                      filterOption={(input, option) =>
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       className={styles.selectForm}
                       onChange={(value) => {
                         this.handleFieldChange(index, 'visaIssuedCountry', value);

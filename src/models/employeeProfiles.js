@@ -119,8 +119,8 @@ const employeeProfile = {
       passportData: [{}],
       visaData: [],
       document: {},
-      bankData: {},
-      taxData: {},
+      // bankData: {},
+      // taxData: {},
     },
     listPRReport: [],
     documentCategories: [],
@@ -520,6 +520,11 @@ const employeeProfile = {
           dataTempKept,
         });
         yield put({
+          type: 'fetchTax',
+          payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
+          dataTempKept,
+        });
+        yield put({
           type: 'save',
           payload: { visibleSuccess: true },
         });
@@ -590,11 +595,25 @@ const employeeProfile = {
           });
           const { statusCode } = res;
           if (statusCode !== 200) throw res;
+          const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+          const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
+          yield put({
+            type: 'fetchBank',
+            payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
+            dataTempKept,
+          });
         }
         if (taxDetails) {
           const res = yield call(getAddTax, { ...taxDetails, tenantId: getCurrentTenant() });
           const { statusCode } = res;
           if (statusCode !== 200) throw res;
+          const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+          const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
+          yield put({
+            type: 'fetchTax',
+            payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
+            dataTempKept,
+          });
         }
         let arrCertification = [];
         if (certifications.length !== 0) {
