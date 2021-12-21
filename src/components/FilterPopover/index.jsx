@@ -1,7 +1,7 @@
 import { Button, Popover } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import CloseIcon from '@/assets/projectManagement/closeX.svg';
+import CloseIcon from '@/assets/directory/closeX.svg';
 import styles from './index.less';
 
 const FilterPopover = (props) => {
@@ -12,6 +12,7 @@ const FilterPopover = (props) => {
     content = '',
     submitText = 'Submit',
     closeText = 'Close',
+    onSecondButton,
   } = props;
   const [showPopover, setShowPopover] = useState(false);
 
@@ -24,7 +25,10 @@ const FilterPopover = (props) => {
       <>
         <div className={styles.popupContainer}>{content}</div>
         <div className={styles.buttons}>
-          <Button className={styles.btnClose} onClick={() => setShowPopover(false)}>
+          <Button
+            className={styles.btnClose}
+            onClick={onSecondButton || (() => setShowPopover(false))}
+          >
             {closeText}
           </Button>
           <Button

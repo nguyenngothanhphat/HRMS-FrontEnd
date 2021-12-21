@@ -119,6 +119,7 @@ class ModalAddDependant extends Component {
           rules={[
             {
               required: true,
+              whitespace: true,
               message: 'Please type first name!',
             },
           ]}
@@ -131,6 +132,7 @@ class ModalAddDependant extends Component {
           rules={[
             {
               required: true,
+              whitespace: true,
               message: 'Please type last name!',
             },
           ]}
@@ -166,9 +168,8 @@ class ModalAddDependant extends Component {
           <Select className={styles.selectForm}>
             <Option value="Father">Father</Option>
             <Option value="Mother">Mother</Option>
-            <Option value="Grandfather">Grandfather</Option>
-            <Option value="Grandmother">Grandmother</Option>
-            <Option value="...">...</Option>
+            <Option value="Spouse">Spouse</Option>
+            <Option value="Child">Child</Option>
           </Select>
         </Form.Item>
         <Form.Item

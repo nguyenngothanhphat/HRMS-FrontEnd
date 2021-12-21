@@ -4,6 +4,8 @@ import { connect, formatMessage, history } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import {
   getAuthority,
+  getCurrentCompany,
+  getCurrentTenant,
   isOwner,
   // isAdmin,
 } from '@/utils/authority';
@@ -57,8 +59,23 @@ class Directory extends PureComponent {
           },
         });
       }
-      await dispatch({
-        type: 'employeeProfile/fetchListSkill',
+      const tenantId = getCurrentTenant();
+      const company = getCurrentCompany();
+      dispatch({
+        type: 'employee/fetchFilterList',
+        payload: {
+          id: company,
+          tenantId,
+        },
+      });
+      dispatch({
+        type: 'employee/fetchSkillList',
+      });
+      dispatch({
+        type: 'employee/fetchEmployeeType',
+      });
+      dispatch({
+        type: 'employee/fetchEmployeeListSingleCompanyEffect',
       });
     }
   };

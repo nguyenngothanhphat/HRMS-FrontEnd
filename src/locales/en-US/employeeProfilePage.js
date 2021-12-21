@@ -45,7 +45,7 @@ export default {
   'pages.employeeProfile.BenefitTab.availablePlans': 'Available Benefit Plans',
   'pages.employeeProfile.BenefitTab.forGlobalEmployees': 'For Global Employees',
   'pages.employeeProfile.BenefitTab.forIndianEmployees': 'For Indian Employees',
-  'pages.employeeProfile.BenefitTab.components.dependentTabs.dependent': 'Dependent',
+  'pages.employeeProfile.BenefitTab.components.dependentTabs.dependent': 'Dependent ',
   'pages.employeeProfile.BenefitTab.components.dependentTabs.firstName': 'First Name',
   'pages.employeeProfile.BenefitTab.components.dependentTabs.lastName': 'Last Name',
   'pages.employeeProfile.BenefitTab.components.dependentTabs.gender': 'Gender',

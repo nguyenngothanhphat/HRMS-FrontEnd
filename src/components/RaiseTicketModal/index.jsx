@@ -185,12 +185,12 @@ const RaiseTicketModal = (props) => {
           <Row gutter={[24, 0]}>
             <Col xs={24} md={12}>
               <Form.Item
-                rules={[{ required: true, message: 'Please select Support Team' }]}
+                rules={[{ required: true, message: 'Please select the support team' }]}
                 label="Support Team*"
                 name="supportTeam"
                 labelCol={{ span: 24 }}
               >
-                <Select showSearch onChange={onSupportTeamChange}>
+                <Select showSearch onChange={onSupportTeamChange} placeholder="Select the support team">
                   {SUPPORT_TEAM.map((val) => (
                     <Option value={val._id}>{val.name}</Option>
                   ))}
@@ -207,9 +207,9 @@ const RaiseTicketModal = (props) => {
                 label="Query Type*"
                 name="queryType"
                 labelCol={{ span: 24 }}
-                rules={[{ required: true, message: 'Please select Query Type' }]}
+                rules={[{ required: true, message: 'Please select the query type' }]}
               >
-                <Select showSearch placeholder="Select query type">
+                <Select showSearch placeholder="Select the query type">
                   {queryTypeList.map((val) => (
                     <Option value={val}>{val}</Option>
                   ))}
@@ -221,7 +221,7 @@ const RaiseTicketModal = (props) => {
                 label="Status*"
                 name="status"
                 labelCol={{ span: 24 }}
-                rules={[{ required: true, message: 'Please select Status' }]}
+                rules={[{ required: true, message: 'Please select the status' }]}
               >
                 <Select disabled>
                   <Option value="New">New</Option>
@@ -233,9 +233,9 @@ const RaiseTicketModal = (props) => {
                 label="Priority*"
                 name="priority"
                 labelCol={{ span: 24 }}
-                rules={[{ required: true, message: 'Please select Priority' }]}
+                rules={[{ required: true, message: 'Please select the priority' }]}
               >
-                <Select showSearch placeholder="Select priority">
+                <Select showSearch placeholder="Select the priority">
                   {PRIORITY.map((val) => (
                     <Option value={val}>{val}</Option>
                   ))}
@@ -249,9 +249,9 @@ const RaiseTicketModal = (props) => {
                 label="Subject*"
                 name="subject"
                 labelCol={{ span: 24 }}
-                rules={[{ required: true, message: 'Please enter Subject' }]}
+                rules={[{ required: true, message: 'Please enter the subject' }]}
               >
-                <Input />
+                <Input placeholder='Enter the subject' />
               </Form.Item>
             </Col>
 
@@ -260,9 +260,9 @@ const RaiseTicketModal = (props) => {
                 label="Description*"
                 name="description"
                 labelCol={{ span: 24 }}
-                rules={[{ required: true, message: 'Please enter Description' }]}
+                rules={[{ required: true, message: 'Please enter the description' }]}
               >
-                <Input.TextArea autoSize={{ minRows: 3 }} />
+                <Input.TextArea autoSize={{ minRows: 3 }} placeholder='Enter the description' />
               </Form.Item>
             </Col>
 
@@ -285,6 +285,7 @@ const RaiseTicketModal = (props) => {
                 <Select
                   showSearch
                   mode="multiple"
+                  placeholder="Select the interest list"
                   allowClear
                   filterOption={(input, option) =>
                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}

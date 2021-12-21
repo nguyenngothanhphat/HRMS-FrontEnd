@@ -1,15 +1,15 @@
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/destructuring-assignment */
 import React, { useEffect, useState } from 'react';
-import filterIcon from '@/assets/offboarding-filter.svg';
 import { Table, Popover, Avatar } from 'antd';
-import avtDefault from '@/assets/avtDefault.jpg';
 import { formatMessage, connect, history, Link } from 'umi';
-import { isOwner } from '@/utils/authority';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
+import { isOwner } from '@/utils/authority';
+import avtDefault from '@/assets/avtDefault.jpg';
+import filterIcon from '@/assets/offboarding-filter.svg';
 import { getTimezoneViaCity } from '@/utils/times';
-import PopoverInfo from '@/components/DirectoryTable/components/ModalTerminate/PopoverInfo/index';
+import PopoverInfo from '@/pages/Directory/components/DirectoryTable/components/ModalTerminate/PopoverInfo';
 import styles from '../../index.less';
 
 const EmployeeResult = React.memo((props) => {

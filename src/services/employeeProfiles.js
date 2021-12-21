@@ -365,8 +365,9 @@ export async function removeDependentsById(payload) {
   });
 }
 
-export async function getBenefitPlans() {
+export async function getBenefitPlans(payload) {
   return request('/api/benefittenant/list-by-company', {
     method: 'POST',
+    data: payload,
   });
 }
