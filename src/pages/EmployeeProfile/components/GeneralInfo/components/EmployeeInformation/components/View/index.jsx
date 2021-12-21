@@ -62,7 +62,7 @@ class View extends PureComponent {
   render() {
     const { visible, linkImage } = this.state;
     const {
-      dataAPI,
+      dataAPI = {},
       AdhaarCard = {},
       currentUser: {
         employee: { _id: idEmployee = '' },
@@ -70,8 +70,9 @@ class View extends PureComponent {
       permissions = [],
       idCurrentEmployee = '',
       locationEmpl: { headQuarterAddress: { country = '' } = {} } = {},
+      taxData = []
     } = this.props;
-
+    const nationalIdNumber = taxData.length > 0 ? taxData[0].nationalId : '';
     let splitUrl = '';
     let urlAdhaarCard = '';
     if (AdhaarCard !== null) {
@@ -106,7 +107,7 @@ class View extends PureComponent {
       { label: checkVisible && checkIndiaLocation ? 'UAN Number' : null, value: dataAPI.uanNumber },
       {
         label: checkVisible && checkVietNamLocation ? 'National Identification Number' : null,
-        value: dataAPI.uanNumber,
+        value: nationalIdNumber,
       },
       {
         label: checkVisible && checkUSALocation ? 'Social Security Number' : null,

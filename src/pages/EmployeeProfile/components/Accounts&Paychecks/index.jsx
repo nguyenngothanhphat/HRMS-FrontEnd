@@ -16,7 +16,7 @@ import styles from './index.less';
     employeeProfile: {
       editGeneral: { openTax, openBank } = {},
       originData: { bankData: bankDataOrigin = {}, taxData: taxDataOrigin = {} },
-      tempData: { bankData = {}, taxData = {} } = {},
+      // tempData: { bankData = {}, taxData = {} } = {},
       visibleSuccess = false
     } = {},
   }) => ({
@@ -27,8 +27,8 @@ import styles from './index.less';
     bankDataOrigin,
     visibleSuccess,
     taxDataOrigin,
-    bankData,
-    taxData,
+    // bankData,
+    // taxData,
   }),
 )
 class AccountsPaychecks extends PureComponent {
@@ -115,12 +115,12 @@ class AccountsPaychecks extends PureComponent {
   };
 
   render() {
-    const { openTax, loadingTax, openBank, loadingBank, visibleSuccess } = this.props;
+    const { openTax, loadingTax, openBank, loadingBank, visibleSuccess, bankDataOrigin, taxDataOrigin } = this.props;
     const { Panel } = Collapse;
     const getyear = new Date();
     const year = getyear.getFullYear();
-    const renderTax = openTax ? <EditTax handleCancel={this.handleCancel} /> : <ViewTax />;
-    const renderBank = openBank ? <EditBank handleCancel={this.handleCancel} /> : <ViewBank />;
+    const renderTax = openTax ? <EditTax handleCancel={this.handleCancel} /> : <ViewTax taxData={taxDataOrigin} />;
+    const renderBank = openBank ? <EditBank handleCancel={this.handleCancel} /> : <ViewBank bankData={bankDataOrigin} />;
     return (
       <div className={styles.AccountPaychecks}>
         <Row className={styles.TableBankDetails}>

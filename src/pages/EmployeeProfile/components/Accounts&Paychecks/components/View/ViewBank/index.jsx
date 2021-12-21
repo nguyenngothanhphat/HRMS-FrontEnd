@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
 import { Col } from 'antd';
-import { connect } from 'umi';
+// import { connect } from 'umi';
 import styles from '../../../index.less';
 
-@connect(({ employeeProfile: { tempData: { bankData = [] } = {} } = {} }) => ({
-  bankData,
-}))
+// @connect(({ employeeProfile: { tempData: { bankData = [] } = {} } = {} }) => ({
+//   bankData,
+// }))
 class ViewBank extends PureComponent {
   render() {
     const { bankData } = this.props;
