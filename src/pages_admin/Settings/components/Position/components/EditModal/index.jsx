@@ -99,13 +99,6 @@ class EditModal extends PureComponent {
 
   onFinish = async (values) => {
     const { dispatch, selectedPositionID = '', onRefresh = () => {} } = this.props;
-    const {
-      name = '',
-      department = '',
-      gradeObj = '',
-      timeSheetRequired = false,
-      timeSheetAdvancedMode = false,
-    } = values;
 
     const { selectedRoleIds: roles = [] } = this.state;
 
@@ -113,12 +106,8 @@ class EditModal extends PureComponent {
       const res = await dispatch({
         type: 'adminSetting/addPosition',
         payload: {
-          name,
-          gradeObj,
-          department,
+          ...values,
           roles,
-          timeSheetRequired,
-          timeSheetAdvancedMode,
         },
       });
       if (res.statusCode === 200) {
@@ -130,13 +119,9 @@ class EditModal extends PureComponent {
       const res = await dispatch({
         type: 'adminSetting/updatePosition',
         payload: {
+          ...values,
           id: selectedPositionID,
-          name,
-          department,
-          gradeObj,
           roles,
-          timeSheetRequired,
-          timeSheetAdvancedMode,
         },
       });
       if (res.statusCode === 200) {
@@ -279,6 +264,7 @@ class EditModal extends PureComponent {
         gradeObj: gradeObjProp = '',
         timeSheetRequired: timeSheetRequiredProp = false,
         timeSheetAdvancedMode: timeSheetAdvancedModeProp = false,
+        eligibleForCompOff: eligibleForCompOffProp = false,
       } = {},
     } = this.props;
 
@@ -327,6 +313,7 @@ class EditModal extends PureComponent {
                       gradeObj: gradeObjProp?._id || '',
                       timeSheetRequired: timeSheetRequiredProp,
                       timeSheetAdvancedMode: timeSheetAdvancedModeProp,
+                      eligibleForCompOff: eligibleForCompOffProp,
                     }
               }
             >
@@ -393,6 +380,10 @@ class EditModal extends PureComponent {
                 >
                   {this.renderGradeList()}
                 </Select>
+              </Form.Item>
+
+              <Form.Item name="eligibleForCompOff" labelCol={{ span: 24 }} valuePropName="checked">
+                <Checkbox defaultChecked={eligibleForCompOffProp}>Eligible For Comp Off</Checkbox>
               </Form.Item>
 
               <div className={styles.timeSheetRequired}>
