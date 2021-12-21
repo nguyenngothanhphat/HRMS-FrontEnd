@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { Row, Form, Button, Col } from 'antd';
 import { connect } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
-import ViewDocumentModal from '@/components/ViewDocumentModal';
 import moment from 'moment';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import PassportItem from './PassportItem';
 import styles from './index.less';
 

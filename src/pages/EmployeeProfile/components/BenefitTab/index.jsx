@@ -160,28 +160,31 @@ class BenefitTab extends PureComponent {
             </div>
           </div> */}
 
-          <div className={styles.sideTab}>
+          {/** PENDING DATA */}
+
+          {/* <div className={styles.sideTab}>
             <h3 className={styles.headings}>
               {formatMessage({ id: 'pages.employeeProfile.BenefitTab.electedCoverage' })}
             </h3>
             <div>
               <Tabs activeKey={activeKey} onTabClick={(key) => this.setState({ activeKey: key })}>
                 <TabPane tab="Health & Wellbeing" key="1">
-                  {/* {data.map((item) => {
+                  {data.map((item) => {
                     return (
                       <HealthWellbeing key={Math.random().toString(36).substring(7)} data={item} />
                     );
-                  })} */}
+                  })}
                 </TabPane>
-                {/*  <TabPane tab="Financial" key="2">
+                  <TabPane tab="Financial" key="2">
                   <Financial />
                 </TabPane>
                 <TabPane tab="Legal" key="3">
                   <Legal />
-                </TabPane> */}
+                </TabPane> 
               </Tabs>
             </div>
-          </div>
+          </div> */}
+
           {/* <div className={styles.sideTab}>
             <Collapse
               accordion
