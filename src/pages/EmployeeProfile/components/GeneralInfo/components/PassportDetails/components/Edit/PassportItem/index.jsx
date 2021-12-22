@@ -10,10 +10,23 @@ import s from '../index.less';
 
 const { Option } = Select;
 
-@connect(({ loading, upload: { loadingPassportTest = [] } }) => ({
-  loadingPassportTest,
-  loading: loading.effects['upload/uploadFile'],
-}))
+@connect(
+  ({
+    loading,
+    upload: { loadingPassportTest = [] },
+    employeeProfile: {
+      tenantCurrentEmployee = '',
+      idCurrentEmployee,
+      tempData: { passportData = [] } = {},
+    } = {},
+  }) => ({
+    idCurrentEmployee,
+    tenantCurrentEmployee,
+    passportData,
+    loadingPassportTest,
+    loading: loading.effects['upload/uploadFile'],
+  }),
+)
 class PassportItem extends Component {
   handleGetUpLoad = (index, resp) => {
     const { getDataImage } = this.props;
@@ -49,6 +62,28 @@ class PassportItem extends Component {
     getHandleChange(index, name, value);
   };
 
+  handleRemove = (id, index) => {
+    const {
+      passportData = [],
+      dispatch,
+      onRemove,
+      tenantCurrentEmployee,
+      idCurrentEmployee,
+    } = this.props;
+    const newPassportData = [...passportData];
+    newPassportData.splice(index, 1);
+
+    dispatch({
+      type: 'employeeProfile/removeVisa',
+      payload: { tenantId: tenantCurrentEmployee, id, employee: idCurrentEmployee },
+    });
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { passportData: newPassportData },
+    });
+    onRemove();
+  };
+
   render() {
     const {
       index = 0,
@@ -57,10 +92,11 @@ class PassportItem extends Component {
       loading,
       formatCountryList = [],
       field,
-      onRemove,
       passportData,
       validatePassPort,
+      getHandleChange,
     } = this.props;
+    const id = passportData[index] ? passportData[index]._id : '';
 
     const dateFormat = 'MM.DD.YY';
 
@@ -91,10 +127,10 @@ class PassportItem extends Component {
             <Input
               className={isLt5M ? s.inputForm : s.inputFormImageValidate}
               // defaultValue={passportNumber}
-              // onChange={(event) => {
-              //   const { value: fieldValue } = event.target;
-              //   this.handleChange(index, 'passportNumber', fieldValue);
-              // }}
+              onChange={(event) => {
+                const { value: fieldValue } = event.target;
+                getHandleChange(index, 'passportNumber', fieldValue);
+              }}
             />
           </Form.Item>
 
@@ -102,7 +138,7 @@ class PassportItem extends Component {
             <div>
               <img
                 className={s.removeIcon}
-                onClick={() => onRemove()}
+                onClick={() => this.handleRemove(id, index)}
                 src={removeIcon}
                 alt="remove"
               />
@@ -173,11 +209,11 @@ class PassportItem extends Component {
             showSearch
             optionFilterProp="children"
             filterOption={(input, option) =>
-               option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             // defaultValue={passportIssuedCountry ? passportIssuedCountry._id : ''}
-            // onChange={(value) => {
-            //   this.handleChange(index, 'passportIssuedCountry', value);
-            // }}
+            onChange={(value) => {
+              getHandleChange(index, 'passportIssuedCountry', value);
+            }}
           >
             {formatCountryList.map((itemCountry) => {
               return (
@@ -200,7 +236,7 @@ class PassportItem extends Component {
             format={dateFormat}
             // defaultValue={formatDatePassportIssueOn}
             onChange={(dates) => {
-              this.handleChange(index, 'passportIssuedOn', dates);
+              getHandleChange(index, 'passportIssuedOn', dates);
             }}
             className={s.dateForm}
           />
@@ -225,7 +261,7 @@ class PassportItem extends Component {
             format={dateFormat}
             // defaultValue={formatDatePassportValidTill}
             onChange={(dates) => {
-              this.handleChange(index, 'passportValidTill', dates);
+              getHandleChange(index, 'passportValidTill', dates);
             }}
             className={validatePassPort === false ? s.dateFormValidate : s.dateForm}
           />

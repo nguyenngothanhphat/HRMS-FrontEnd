@@ -144,6 +144,20 @@ export async function getVisa(payload) {
   });
 }
 
+export async function removeVisa(payload) {
+  return request('/api/visatenant/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function removePassport(payload) {
+  return request('/api/passporttenant/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getAddVisa(payload) {
   return request('/api/visatenant/add', {
     method: 'POST',

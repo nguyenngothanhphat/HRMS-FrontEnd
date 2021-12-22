@@ -19,6 +19,7 @@ import styles from '../../index.less';
       countryList,
       originData: { visaData: visaDataOrigin = [] } = {},
       tempData: { generalData = {}, visaData = [] } = {},
+      tenantCurrentEmployee = '',
     } = {},
   }) => ({
     loading: loading.effects['upload/uploadFile'],
@@ -31,6 +32,7 @@ import styles from '../../index.less';
     urlImage,
     idCurrentEmployee,
     loadingVisaTest,
+    tenantCurrentEmployee,
   }),
 )
 class VisaGeneral extends Component {
@@ -83,10 +85,14 @@ class VisaGeneral extends Component {
     }
   };
 
-  handleRemove = (index) => {
-    const { visaData = [], dispatch } = this.props;
+  handleRemove = (id, index) => {
+    const { visaData = [], dispatch, tenantCurrentEmployee, idCurrentEmployee } = this.props;
     const newList = [...visaData];
     newList.splice(index, 1);
+    dispatch({
+      type: 'employeeProfile/removeVisa',
+      payload: { tenantId: tenantCurrentEmployee, id, employee: idCurrentEmployee },
+    });
     dispatch({
       type: 'employeeProfile/saveTemp',
       payload: { visaData: newList },
@@ -433,7 +439,7 @@ class VisaGeneral extends Component {
                         <div>
                           <img
                             className={styles.removeIcon}
-                            onClick={() => this.handleRemove(index)}
+                            onClick={() => this.handleRemove(item._id, index)}
                             src={removeIcon}
                             alt="remove"
                           />
