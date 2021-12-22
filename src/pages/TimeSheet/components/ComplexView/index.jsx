@@ -1,5 +1,5 @@
 import { Tabs } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import ModalImage from '@/assets/timeSheet/modalImage1.png';
 import { PageContainer } from '@/layouts/layout/src';
@@ -10,11 +10,12 @@ import FinanceReport from './components/FinanceReport';
 import MyTimeSheet from './components/MyTimeSheet';
 import Settings from './components/Settings';
 import styles from './index.less';
+import { TAB_NAME } from '@/utils/timeSheet';
 
 const { TabPane } = Tabs;
 
 const ComplexView = (props) => {
-  const { permissions = {}, tabName = '' } = props;
+  const { permissions = {}, tabName = '', showMyTimeSheet = true } = props;
 
   const [navToTimeoffModalVisible, setNavToTimeoffModalVisible] = useState(false);
 
@@ -37,30 +38,49 @@ const ComplexView = (props) => {
   const viewFinanceReport = permissions.viewFinanceReportCVTimesheet === 1;
   const viewPeopleManagerReport = permissions.viewPeopleManagerCVTimesheet === 1;
   const viewPMReport = permissions.viewProjectManagerCVTimesheet === 1;
-
   const viewSettingTimesheet = permissions.viewSettingTimesheet === 1;
+
+  const getActiveKey = () => {
+    if (showMyTimeSheet) return tabName || TAB_NAME.MY;
+    if (viewHRReport) return TAB_NAME.HR_REPORTS;
+    if (viewFinanceReport) return TAB_NAME.FINANCE_REPORTS;
+    if (viewPeopleManagerReport || viewPMReport) return TAB_NAME.PM_REPORTS;
+    if (viewSettingTimesheet) return TAB_NAME.SETTINGS;
+    return tabName;
+  };
+
+  useEffect(() => {
+    if (!tabName) {
+      if (showMyTimeSheet) {
+        history.replace(`/time-sheet/${TAB_NAME.MY}`);
+      } else {
+        const temp = getActiveKey();
+        history.replace(`/time-sheet/${temp}`);
+      }
+    }
+  }, [tabName]);
 
   const renderOtherTabs = () => {
     return (
       <>
         {viewHRReport && (
-          <TabPane tab="Reports" key="hr-reports">
+          <TabPane tab="Reports" key={TAB_NAME.HR_REPORTS}>
             <HumanResourceReport />
           </TabPane>
         )}
         {viewFinanceReport && (
-          <TabPane tab="Reports" key="finance-reports">
+          <TabPane tab="Reports" key={TAB_NAME.FINANCE_REPORTS}>
             <FinanceReport />
           </TabPane>
         )}
         {(viewPeopleManagerReport || viewPMReport) && (
-          <TabPane tab="Reports" key="pm-reports">
+          <TabPane tab="My Projects" key={TAB_NAME.PM_REPORTS}>
             <ManagerReport />
           </TabPane>
         )}
 
         {viewSettingTimesheet && (
-          <TabPane tab="Settings" key="settings">
+          <TabPane tab="Settings" key={TAB_NAME.SETTINGS}>
             <Settings />
           </TabPane>
         )}
@@ -73,16 +93,18 @@ const ComplexView = (props) => {
     <div className={styles.ComplexView}>
       <PageContainer>
         <Tabs
-          activeKey={tabName || 'my'}
+          activeKey={tabName || TAB_NAME.MY}
           tabBarExtraContent={options()}
           onChange={(key) => {
             history.push(`/time-sheet/${key}`);
           }}
           destroyInactiveTabPane
         >
-          <TabPane tab="My time sheet" key="my">
-            <MyTimeSheet />
-          </TabPane>
+          {showMyTimeSheet && (
+            <TabPane tab="My Timesheet" key={TAB_NAME.MY}>
+              <MyTimeSheet />
+            </TabPane>
+          )}
           {renderOtherTabs()}
         </Tabs>
         <ActionModal

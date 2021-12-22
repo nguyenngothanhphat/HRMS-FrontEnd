@@ -111,6 +111,7 @@ const Header = (props) => {
                         color: '#fff',
                         fontWeight: '500',
                         fontSize: '13px',
+                        textTransform: 'uppercase',
                       }}
                     >
                       {v.projectName ? v.projectName.toString()?.charAt(0) : 'P'}
