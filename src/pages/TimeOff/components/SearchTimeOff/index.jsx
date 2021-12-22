@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Space, Button, Input, Row, Checkbox, Col, DatePicker } from 'antd';
-import filterIcon from '@/assets/offboarding-filter.svg';
-import { SearchOutlined } from '@ant-design/icons';
+import { Space, Button, Row, Checkbox, Col, DatePicker } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
+import { debounce } from 'lodash';
 import moment from 'moment';
 import { connect } from 'umi';
+import CustomSearchBox from '@/components/CustomSearchBox';
+import filterIcon from '@/assets/offboarding-filter.svg';
 import styles from './index.less';
 
 const SearchTimeOff = (props) => {
@@ -27,11 +28,7 @@ const SearchTimeOff = (props) => {
     setDateEnd(toDate);
   }, [search, type, fromDate, toDate]);
 
-  const onChangeInput = (e) => {
-    setSearchText(e.target.value);
-  };
-
-  const onPressEnter = () => {
+  const saveSearch = () => {
     dispatch({
       type: 'timeOff/saveFilter',
       payload: {
@@ -47,6 +44,15 @@ const SearchTimeOff = (props) => {
     });
   };
 
+  const onSearchDebounce = debounce((value) => {
+    setSearchText(value);
+  }, 1000);
+
+  const onSearch = (e = {}) => {
+    const { value = '' } = e.target;
+    onSearchDebounce(value);
+  };
+
   const onSave = () => {
     dispatch({
       type: 'timeOff/saveFilter',
@@ -58,6 +64,10 @@ const SearchTimeOff = (props) => {
     });
     setOpenModal(false);
   };
+
+  useEffect(() => {
+    saveSearch();
+  }, [searchText]);
 
   const fromDateOnChange = (_, e) => {
     setDateStart(e);
@@ -76,14 +86,7 @@ const SearchTimeOff = (props) => {
         <Button type="link" onClick={() => setOpenModal(true)}>
           <img src={filterIcon} alt="" />
         </Button>
-        <Input
-          className={styles.inputSearch}
-          value={searchText}
-          placeholder="Search by employee Id, name ..."
-          onChange={(e) => onChangeInput(e)}
-          prefix={<SearchOutlined onClick={onPressEnter} />}
-          onPressEnter={onPressEnter}
-        />
+        <CustomSearchBox onSearch={onSearch} placeholder="Search by Employee ID, name..." />
       </Space>
       <Modal
         className={styles.modalCustom}

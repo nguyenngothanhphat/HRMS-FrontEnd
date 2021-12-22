@@ -1,8 +1,8 @@
 import React, { PureComponent, useState } from 'react';
 import { Row, Col, Collapse, Tooltip, Progress } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import ShowBreakdownIcon from '@/assets/iconViewBreakdown.svg';
 import { connect } from 'umi';
+import ShowBreakdownIcon from '@/assets/iconViewBreakdown.svg';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import LeaveProgressBar from './components/LeaveProgressBar';
 import SpecialLeaveBox from './components/SpecialLeaveBox';
@@ -131,23 +131,10 @@ class LeaveInformation extends PureComponent {
         location: location?._id || '',
       },
     });
-    // dispatch({
-    //   type: 'timeOff/fetchLeaveRequestOfEmployee',
-    // });
     const { timeOff: { totalLeaveBalance: { commonLeaves = {} } = {} } = {} } = this.props;
     const { timeOffTypes: typesOfCommonLeaves = [] } = commonLeaves;
 
     const percent = this.calculateValueForCircleProgress(typesOfCommonLeaves);
-
-    // setTimeout(() => {
-    //   for (let i = 0; i < percent; i += 1) {
-    //     setTimeout(() => {
-    //       this.setState({
-    //         percentMainCircle: i,
-    //       });
-    //     }, 0);
-    //   }
-    // }, 1000);
 
     this.setState({
       percentMainCircle: percent,
