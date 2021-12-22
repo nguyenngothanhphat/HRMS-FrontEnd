@@ -7,14 +7,11 @@ const TimeSheet = (props) => {
   const {
     match: { params: { tabName = '' } = {} },
     dispatch,
+    currentUser: {
+      employee: { title: { timeSheetRequired = true, timeSheetAdvancedMode = false } = {} } = {} ||
+        {},
+    } = {},
   } = props;
-  const [mode, setMode] = useState(2); // 1: simple view, 2: complex view
-
-  useEffect(() => {
-    if (!tabName) {
-      history.replace(`/time-sheet/my`);
-    }
-  }, [tabName]);
 
   // clear state when unmounting
   useEffect(() => {
@@ -25,10 +22,10 @@ const TimeSheet = (props) => {
     };
   }, []);
 
-  if (mode === 1) {
-    return <SimpleView tabName={tabName} />;
+  if (!timeSheetAdvancedMode) {
+    return <SimpleView tabName={tabName} showMyTimeSheet={timeSheetRequired} />;
   }
-  return <ComplexView tabName={tabName} />;
+  return <ComplexView tabName={tabName} showMyTimeSheet={timeSheetRequired} />;
 };
 export default connect(({ user: { currentUser = {}, permissions = [] } = {} }) => ({
   currentUser,

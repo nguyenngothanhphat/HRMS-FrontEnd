@@ -1,5 +1,14 @@
 import moment from 'moment';
 
+const TAB_NAME = {
+  MY: 'my',
+  REPORTS: 'reports',
+  PM_REPORTS: 'pm-reports',
+  FINANCE_REPORTS: 'finance-reports',
+  HR_REPORTS: 'hr-reports',
+  SETTINGS: 'settings',
+};
+
 const VIEW_TYPE = {
   D: 'D', // day
   W: 'W', // week
@@ -171,6 +180,7 @@ const generateAllWeeks = (fromDate, toDate) => {
 };
 
 export {
+  TAB_NAME,
   VIEW_TYPE,
   activityName,
   activityColor,

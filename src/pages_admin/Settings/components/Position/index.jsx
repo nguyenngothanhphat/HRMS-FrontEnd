@@ -193,7 +193,7 @@ class Position extends PureComponent {
   };
 
   render() {
-    const { modalVisible, selectedPositionID, limit, page } = this.state;
+    const { modalVisible, selectedPositionID, limit, page, searchValue } = this.state;
     const { listTitles = [], loadingFetchPositionList = false, totalTitle = 0 } = this.props;
     return (
       <div
@@ -219,7 +219,7 @@ class Position extends PureComponent {
               selectedPositionID: '',
             });
           }}
-          onRefresh={this.fetchPositionList}
+          onRefresh={() => this.fetchPositionList(searchValue)}
           selectedPositionID={selectedPositionID}
           action={selectedPositionID ? 'edit' : 'add'}
         />
