@@ -13,6 +13,7 @@ const FilterPopover = (props) => {
     submitText = 'Submit',
     closeText = 'Close',
     onSecondButton,
+    realTime = false,
   } = props;
   const [showPopover, setShowPopover] = useState(false);
 
@@ -24,23 +25,25 @@ const FilterPopover = (props) => {
     return (
       <>
         <div className={styles.popupContainer}>{content}</div>
-        <div className={styles.buttons}>
-          <Button
-            className={styles.btnClose}
-            onClick={onSecondButton || (() => setShowPopover(false))}
-          >
-            {closeText}
-          </Button>
-          <Button
-            className={styles.btnApply}
-            form="filter"
-            htmlType="submit"
-            key="submit"
-            onClick={onFormSubmit}
-          >
-            {submitText}
-          </Button>
-        </div>
+        {!realTime && (
+          <div className={styles.buttons}>
+            <Button
+              className={styles.btnClose}
+              onClick={onSecondButton || (() => setShowPopover(false))}
+            >
+              {closeText}
+            </Button>
+            <Button
+              className={styles.btnApply}
+              form="filter"
+              htmlType="submit"
+              key="submit"
+              onClick={onFormSubmit}
+            >
+              {submitText}
+            </Button>
+          </div>
+        )}
       </>
     );
   };
