@@ -61,12 +61,12 @@ const SimpleView = (props) => {
           destroyInactiveTabPane
         >
           {showMyTimeSheet && (
-            <TabPane tab="My time sheet" key={TAB_NAME.MY}>
+            <TabPane tab="My Timesheet" key={TAB_NAME.MY}>
               <MyTimeSheet />
             </TabPane>
           )}
           {viewReportTimesheet && (
-            <TabPane tab="Reports" key={TAB_NAME.REPORTS}>
+            <TabPane tab="My Team" key={TAB_NAME.REPORTS}>
               <ManagerView />
             </TabPane>
           )}

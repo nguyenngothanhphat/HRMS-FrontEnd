@@ -74,7 +74,7 @@ const ComplexView = (props) => {
           </TabPane>
         )}
         {(viewPeopleManagerReport || viewPMReport) && (
-          <TabPane tab="Reports" key={TAB_NAME.PM_REPORTS}>
+          <TabPane tab="My Projects" key={TAB_NAME.PM_REPORTS}>
             <ManagerReport />
           </TabPane>
         )}
@@ -101,7 +101,7 @@ const ComplexView = (props) => {
           destroyInactiveTabPane
         >
           {showMyTimeSheet && (
-            <TabPane tab="My time sheet" key={TAB_NAME.MY}>
+            <TabPane tab="My Timesheet" key={TAB_NAME.MY}>
               <MyTimeSheet />
             </TabPane>
           )}
