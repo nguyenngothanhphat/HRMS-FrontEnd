@@ -1,6 +1,7 @@
 import { Form, Select, Row, Col, InputNumber } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { debounce } from 'lodash';
 import styles from './index.less';
 
 const FilterContent = (props) => {
@@ -54,6 +55,7 @@ const FilterContent = (props) => {
   }, [JSON.stringify(listCountry)]);
 
   useEffect(() => {
+    // this is needed for directly filtering when clicking on title or department on the table
     form.setFieldsValue({
       ...filter,
       name: name || undefined,
@@ -98,11 +100,21 @@ const FilterContent = (props) => {
     });
   };
 
+  const onFinishDebounce = debounce((values) => {
+    onFinish(values);
+  }, 700);
+
+  const onValuesChange = () => {
+    const values = form.getFieldsValue();
+    onFinishDebounce(values);
+  };
+
   return (
     <Form
       layout="vertical"
       name="filter"
-      onFinish={onFinish}
+      // onFinish={onFinish}
+      onValuesChange={onValuesChange}
       form={form}
       className={styles.FilterContent}
     >

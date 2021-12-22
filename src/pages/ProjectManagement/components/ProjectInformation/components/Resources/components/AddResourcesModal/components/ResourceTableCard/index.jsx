@@ -6,7 +6,7 @@ import TimeIcon from '@/assets/projectManagement/time.svg';
 import CommonTable from '@/pages/ProjectManagement/components/ProjectInformation/components/CommonTable';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
-import SearchBar from '@/pages/ProjectManagement/components/ProjectInformation/components/SearchBar';
+import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterResourcesListContent from './components/FilterResourcesListContent';
 import styles from './index.less';
 
@@ -172,7 +172,7 @@ const ResourceTableCard = (props) => {
         <FilterPopover placement="bottomRight" content={content}>
           <FilterButton />
         </FilterPopover>
-        <SearchBar onSearch={onSearch} placeholder="Search by Name" />
+        <CustomSearchBox onSearch={onSearch} placeholder="Search by Name" />
       </div>
     );
   };

@@ -419,6 +419,7 @@ const DirectoryComponent = (props) => {
         <FilterPopover
           placement="bottomRight"
           content={<FilterContent activeTab={tabId} />}
+          realTime
           submitText="Apply"
           closeText="Clear"
           onSecondButton={clearFilter}

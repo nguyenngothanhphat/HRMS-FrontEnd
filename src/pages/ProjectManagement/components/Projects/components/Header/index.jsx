@@ -7,6 +7,7 @@ import FilterIcon from '@/assets/projectManagement/filter.svg';
 import ArrowDown from '@/assets/projectManagement/arrowDown.svg';
 import AddIcon from '@/assets/projectManagement/add.svg';
 import FilterPopover from '../FilterPopover';
+import CustomSearchBox from '@/components/CustomSearchBox';
 import AddProjectModal from '../AddProjectModal';
 import styles from './index.less';
 
@@ -106,14 +107,7 @@ const Header = (props) => {
             <span>Filter</span>
           </div>
         </FilterPopover>
-        <div className={styles.searchBar}>
-          <Input
-            className={styles.searchInput}
-            placeholder="Search by Project ID, customer name"
-            prefix={searchPrefix()}
-            onChange={onSearch}
-          />
-        </div>
+        <CustomSearchBox onSearch={onSearch} placeholder="Search by Project ID, customer name" />
       </div>
 
       <AddProjectModal

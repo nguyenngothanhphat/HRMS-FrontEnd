@@ -7,7 +7,7 @@ import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
 import AddButton from '../AddButton';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
-import SearchBar from '../SearchBar';
+import CustomSearchBox from '@/components/CustomSearchBox';
 import CommonModal from '../CommonModal';
 import AddContent from './components/AddContent';
 import FilterContent from './components/FilterContent';
@@ -153,7 +153,7 @@ const Documents = (props) => {
         <FilterPopover placement="bottomRight" content={content}>
           <FilterButton />
         </FilterPopover>
-        <SearchBar onSearch={onSearch} placeholder="Search by Document Type" />
+        <CustomSearchBox onSearch={onSearch} placeholder="Search by Document Type" />
       </div>
     );
   };
