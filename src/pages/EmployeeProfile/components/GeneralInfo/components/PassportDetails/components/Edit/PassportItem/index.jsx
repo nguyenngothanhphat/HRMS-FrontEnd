@@ -74,7 +74,7 @@ class PassportItem extends Component {
     newPassportData.splice(index, 1);
 
     dispatch({
-      type: 'employeeProfile/removeVisa',
+      type: 'employeeProfile/removePassPort',
       payload: { tenantId: tenantCurrentEmployee, id, employee: idCurrentEmployee },
     });
     dispatch({

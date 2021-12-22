@@ -533,11 +533,11 @@ const employeeProfile = {
       try {
         const response = yield call(removePassport, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
-        const { statusCode, message } = response;
+        const { statusCode } = response;
 
         if (statusCode !== 200) throw response;
         notification.success({
-          message,
+          message: 'Remove item successfully',
         });
         yield put({
           type: 'fetchPassPort',
