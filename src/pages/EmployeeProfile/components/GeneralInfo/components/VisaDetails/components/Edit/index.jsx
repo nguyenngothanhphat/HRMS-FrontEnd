@@ -148,14 +148,8 @@ class Edit extends Component {
   processDataAddVisa = (id, item) => {
     const { generalData, tenantCurrentEmployee = '' } = this.props;
     const { employee = '' } = generalData;
-    const {
-      visaNumber,
-      visaIssuedCountry,
-      visaIssuedOn,
-      visaType,
-      visaValidTill,
-      visaEntryType,
-    } = item;
+    const { visaNumber, visaIssuedCountry, visaIssuedOn, visaType, visaValidTill, visaEntryType } =
+      item;
     const formVisa = {
       document: id,
       employee,
@@ -190,6 +184,7 @@ class Edit extends Component {
     const payloadUpdateVisa = this.processDataChangesVisa(item) || {};
     const dataTempKeptVisa = this.processDataKeptVisa(item) || {};
     const { dispatch } = this.props;
+    // add or update document visa
     this.handleAddVisaAllField(item, index);
     dispatch({
       type: 'employeeProfile/updateVisa',

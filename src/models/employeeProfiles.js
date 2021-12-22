@@ -14,6 +14,8 @@ import {
   getCountryList,
   updatePassPort,
   updateVisa,
+  removeVisa,
+  removePassport,
   getAddPassPort,
   getVisa,
   getAddVisa,
@@ -476,6 +478,7 @@ const employeeProfile = {
         dialog(errors);
       }
     },
+
     *updateVisa({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
         const response = yield call(updateVisa, payload);
@@ -495,6 +498,56 @@ const employeeProfile = {
           yield put({
             type: 'saveOpenEdit',
             payload: { openVisa: false },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *removeVisa({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+      try {
+        const response = yield call(removeVisa, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode, message } = response;
+
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchVisa',
+          payload: { employee: idCurrentEmployee, tenantId: payload?.tenantId },
+          dataTempKept,
+        });
+        if (key === 'openVisa') {
+          yield put({
+            type: 'saveOpenEdit',
+            payload: { openVisa: false },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *removePassPort({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+      try {
+        const response = yield call(removePassport, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode } = response;
+
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Remove item successfully',
+        });
+        yield put({
+          type: 'fetchPassPort',
+          payload: { employee: idCurrentEmployee, tenantId: payload?.tenantId },
+          dataTempKept,
+        });
+        if (key === 'openPassport') {
+          yield put({
+            type: 'saveOpenEdit',
+            payload: { openPassport: false },
           });
         }
       } catch (errors) {
@@ -1178,7 +1231,7 @@ const employeeProfile = {
           ...payload,
           tenantId: tenantCurrentEmployee,
           company: companyCurrentEmployee,
-          employee: idCurrentEmployee     
+          employee: idCurrentEmployee,
         });
         const { statusCode, data } = res;
         if (statusCode !== 200) throw res;

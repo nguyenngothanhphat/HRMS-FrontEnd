@@ -52,7 +52,6 @@ class View extends PureComponent {
 
   handleRenderDataVisa = () => {
     const { visaData = [] } = this.props;
-
     return visaData.map((item, index) => {
       const {
         visaNumber = '',
