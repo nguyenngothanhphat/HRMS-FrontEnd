@@ -173,7 +173,7 @@ class TableTickets extends PureComponent {
         dataIndex: 'created_at',
         key: 'requestDate',
         render: (createdAt) => {
-          return <span>{moment(createdAt).format('DD/MM/YYYY')}</span>;
+          return <span>{moment(createdAt).format('DD-MM-YYYY')}</span>;
         },
       },
       {

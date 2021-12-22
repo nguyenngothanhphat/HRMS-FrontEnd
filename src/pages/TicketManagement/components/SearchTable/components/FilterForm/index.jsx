@@ -314,7 +314,7 @@ class FilterForm extends Component {
     const legalNameList = getUniqueListBy(listOffAllTicket, 'employee_raise');
     const locationList = getUniqueListBy(listOffAllTicket, 'employee_raise');
     // const { isFilter, checkItem, checkAll, checkedList } = this.state;
-    const dateFormat = 'MMM DD, YYYY';
+    const dateFormat = 'DD-MM-YYYY';
 
     return (
       <div className={styles.filterForm}>
