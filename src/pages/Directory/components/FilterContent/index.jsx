@@ -21,6 +21,7 @@ const FilterContent = (props) => {
         name = '',
         department = [],
         division = [],
+        country = [],
         title = [],
         reportingManager = [],
         employeeType = [],
@@ -59,6 +60,7 @@ const FilterContent = (props) => {
       department,
       division,
       title,
+      country,
       reportingManager,
       employeeType,
       skill,
@@ -66,6 +68,14 @@ const FilterContent = (props) => {
       toExp,
     });
   }, [JSON.stringify(filter)]);
+
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: 'employee/ClearFilter',
+      });
+    };
+  }, []);
 
   const onFinish = (values) => {
     const newValues = { ...values };
@@ -234,13 +244,15 @@ const FilterContent = (props) => {
           placeholder="Search by Employment Type"
           showArrow
         >
-          {listEmployeeType.map((x) => {
-            return (
-              <Select.Option value={x._id} key={x}>
-                {x.name}
-              </Select.Option>
-            );
-          })}
+          {listEmployeeType
+            .filter((x) => x.name !== 'Other')
+            .map((x) => {
+              return (
+                <Select.Option value={x._id} key={x}>
+                  {x.name}
+                </Select.Option>
+              );
+            })}
         </Select>
       </Form.Item>
 
