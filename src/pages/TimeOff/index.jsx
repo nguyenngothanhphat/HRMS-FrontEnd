@@ -16,11 +16,12 @@ const { HR_MANAGER, EMPLOYEE, REGION_HEAD, MANAGER } = ROLES;
 const { TabPane } = Tabs;
 @connect(
   ({
-    user: { currentUserRoles } = {},
+    user: { currentUserRoles, currentUser } = {},
     timeOff,
     locationSelection: { listLocationsByCompany = [] },
   }) => ({
     timeOff,
+    currentUser,
     currentUserRoles,
     listLocationsByCompany,
   }),
@@ -149,6 +150,11 @@ class TimeOff extends PureComponent {
     const { role } = this.state;
     const {
       match: { params: { tabName = '', type = '' } = {} },
+      currentUser: {employee: {
+        title: {
+          eligibleForCompOff = false
+        } = {}
+      } = {}} = {}
     } = this.props;
 
     if (!tabName) return '';
@@ -165,9 +171,9 @@ class TimeOff extends PureComponent {
             }}
           >
             <TabPane tab={<span className={styles.employeeTabPane}>Timeoff</span>} key="overview">
-              {role === 'employee' && <EmployeeLandingPage />}
-              {role === 'manager' && <ManagerLandingPage />}
-              {role === 'hr-manager' && <HRManagerLandingPage />}
+              {role === 'employee' && <EmployeeLandingPage eligibleForCompOff={eligibleForCompOff} />}
+              {role === 'manager' && <ManagerLandingPage eligibleForCompOff={eligibleForCompOff} />}
+              {role === 'hr-manager' && <HRManagerLandingPage eligibleForCompOff={eligibleForCompOff} />}
             </TabPane>
 
             {role === 'hr-manager' && (
