@@ -14,16 +14,14 @@ const { Option } = Select;
 @connect(
   ({
     ticketManagement: {
+      locationsList = [],
       currentStatus = [],
       listOffAllTicket = [],
-      searchTicket: { totalList = [], locationList = [], isFilter: isFiltering = false } = {},
     } = {},
   }) => ({
     currentStatus,
     listOffAllTicket,
-    locationList,
-    isFiltering,
-    totalList,
+    locationsList,
   }),
 )
 class FilterForm extends Component {
@@ -303,7 +301,7 @@ class FilterForm extends Component {
   // };
 
   render() {
-    const { listOffAllTicket = [] } = this.props;
+    const { listOffAllTicket = [], locationsList = [] } = this.props;
     function getUniqueListBy(arr, key) {
       return [...new Map(arr.map((item) => [item[key], item])).values()];
     }
@@ -312,8 +310,7 @@ class FilterForm extends Component {
     const assigned = getUniqueListBy(listOffAllTicket, 'employee_assignee');
     const assginedList = assigned.filter((val) => val.employee_assignee !== '');
     const legalNameList = getUniqueListBy(listOffAllTicket, 'employee_raise');
-    const locationList = getUniqueListBy(listOffAllTicket, 'employee_raise');
-    // const { isFilter, checkItem, checkAll, checkedList } = this.state;
+    const locationList = getUniqueListBy(listOffAllTicket, 'location');
     const dateFormat = 'DD-MM-YYYY';
 
     return (
@@ -442,20 +439,17 @@ class FilterForm extends Component {
                   <span>Select All</span>
                 </Option> */}
                 {locationList.map((option) => {
-                  const { employeeRaise: { location: { name = '' } = {} } = {} } = option;
+                  const locationName =
+                    locationsList.length > 0
+                      ? locationsList.find((val) => val._id === option.location)
+                      : [];
                   return (
-                    <Option
-                      key={option.employeeRaise.location._id}
-                      value={option.employeeRaise.location._id}
-                    >
+                    <Option key={option.location} value={option.location}>
                       <Checkbox
-                        value={option.employeeRaise.location._id}
-                        checked={this.checkBoxStatusChecked(
-                          option.employeeRaise.location._id,
-                          'location',
-                        )}
+                        value={option.location}
+                        checked={this.checkBoxStatusChecked(option.location, 'location')}
                       />
-                      <span>{name}</span>
+                      <span>{locationName.name}</span>
                     </Option>
                   );
                 })}

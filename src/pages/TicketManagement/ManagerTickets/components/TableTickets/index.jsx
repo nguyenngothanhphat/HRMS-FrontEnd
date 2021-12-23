@@ -12,10 +12,11 @@ import styles from './index.less';
 @connect(
   ({
     loading,
-    ticketManagement: { listEmployee = [] } = {},
+    ticketManagement: { listEmployee = [], locationsList = [] } = {},
     user: { currentUser: { employee = {} } = {} } = {},
   }) => ({
     listEmployee,
+    locationsList,
     employee,
     loadingUpdate: loading.effects['ticketManagement/updateTicket'],
   }),
@@ -118,9 +119,8 @@ class TableTickets extends PureComponent {
       },
     };
 
-    const { listEmployee } = this.props;
+    const { listEmployee, locationsList } = this.props;
     const { search } = this.state;
-
     let filterData;
     if (search.length) {
       const searchPattern = new RegExp(search.map((term) => `(?=.*${term})`).join(''), 'i');
@@ -200,11 +200,12 @@ class TableTickets extends PureComponent {
       },
       {
         title: 'Loacation',
-        dataIndex: 'employeeRaise',
+        dataIndex: 'location',
         key: 'loacation',
-        render: (employeeRaise) => {
-          const { location: { name = '' } = {} } = employeeRaise;
-          return <span>{name}</span>;
+        render: (location) => {
+          const locationNew =
+            locationsList.length > 0 ? locationsList.find((val) => val._id === location) : [];
+          return <span>{locationNew.name}</span>;
         },
       },
       {
