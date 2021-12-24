@@ -15,7 +15,6 @@ build-job:       # This job runs in the build stage, which runs first.
     - source /etc/environment
     - whoami
     - uname -a
-    - ls /home/HRMS-microservices/frontend/
     - npm install
     #- npm run build
     - docker login -u khoa.le -p $PWD gitlab.paxanimi.ai:8150
