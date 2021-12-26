@@ -7,9 +7,9 @@ import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
 import OrangeAddButton from '../../../OrangeAddButton';
 import CommonModal from '../../../CommonModal';
 import CommonTable from '../../../CommonTable';
-import FilterButton from '../../../FilterButton';
-import FilterPopover from '../../../FilterPopover';
-import SearchBar from '../../../SearchBar';
+import FilterButton from '@/components/FilterButton';
+import FilterPopover from '@/components/FilterPopover';
+import CustomSearchBox from '@/components/CustomSearchBox';
 import AddResourceTypeContent from '../AddResourceTypeContent';
 import AssignResourcesModal from '../AssignResourcesModal';
 import FilterResourceTypeContent from './components/FilterResourceTypeContent';
@@ -161,7 +161,7 @@ const ResourceTypeCard = (props) => {
             onClick={() => setAddResourceTypeModalVisible(true)}
           />
         )}
-        <SearchBar onSearch={onSearch} placeholder="Search by Resource Type" />
+        <CustomSearchBox onSearch={onSearch} placeholder="Search by Resource Type" />
       </div>
     );
   };

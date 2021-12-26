@@ -11,7 +11,7 @@ import styles from './index.less';
     upload: { employeeInformationURL = '' } = {},
     employeeProfile: {
       editGeneral: { openEmployeeInfor = false },
-      originData: { generalData: generalDataOrigin = {} } = {},
+      originData: { generalData: generalDataOrigin = {},  taxData = {} } = {},
       tempData: { generalData = {} } = {},
     } = {},
   }) => ({
@@ -19,6 +19,7 @@ import styles from './index.less';
     generalDataOrigin,
     generalData,
     employeeInformationURL,
+    taxData
   }),
 )
 class EmployeeInformation extends PureComponent {
@@ -85,11 +86,12 @@ class EmployeeInformation extends PureComponent {
       generalData,
       openEmployeeInfor,
       permissions = {},
+      taxData = {}
     } = this.props;
     const renderComponent = openEmployeeInfor ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
-      <View dataAPI={generalData} />
+      <View dataAPI={generalData} taxData={taxData} />
     );
     return (
       <div className={styles.EmployeeInformation}>

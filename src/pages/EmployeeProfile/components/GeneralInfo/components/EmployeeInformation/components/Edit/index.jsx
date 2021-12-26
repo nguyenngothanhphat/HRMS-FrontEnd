@@ -18,6 +18,7 @@ import styles from './index.less';
       originData: {
         generalData: generalDataOrigin = {},
         employmentData: { location: locationEmpl = {} } = {},
+        taxData = {}
       } = {},
       tempData: { generalData = {} } = {},
       tenantCurrentEmployee = '',
@@ -34,6 +35,7 @@ import styles from './index.less';
     employeeInformationURL,
     idCurrentEmployee,
     AdhaarCard,
+    taxData,
     currentUser,
     tenantCurrentEmployee,
     documentCategories,
@@ -90,6 +92,7 @@ class Edit extends PureComponent {
       workNumber = '',
       adhaarCardNumber = '',
       uanNumber = '',
+      nationalId = '',
       _id: id = '',
     } = generalDataTemp;
     // const payloadChanges = {
@@ -117,6 +120,7 @@ class Edit extends PureComponent {
       workNumber,
       adhaarCardNumber,
       uanNumber,
+      nationalId,
       tenantId: tenantCurrentEmployee,
     };
   };
@@ -135,6 +139,7 @@ class Edit extends PureComponent {
       'workNumber',
       'adhaarCardNumber',
       'uanNumber',
+      'nationalId'
     ];
     listKey.forEach((item) => delete newObj[item]);
     return newObj;
@@ -331,6 +336,7 @@ class Edit extends PureComponent {
       loading,
       handleCancel = () => {},
       loadingAdhaarCard,
+      taxData = {},
       currentUser: { roles = [] },
       locationEmpl: { headQuarterAddress: { country = '' } = {} } = {},
     } = this.props;
@@ -357,6 +363,7 @@ class Edit extends PureComponent {
         sm: { span: 12 },
       },
     };
+    const nationalIdNumber = taxData.length > 0 ? taxData[0].nationalId : '';
     const formatDate = DOB && moment(DOB);
     const dateFormat = 'MM.DD.YY';
     const checkIndiaLocation = country === 'IN';
@@ -378,6 +385,7 @@ class Edit extends PureComponent {
             workNumber,
             adhaarCardNumber,
             uanNumber,
+            nationalId: nationalIdNumber,
             DOB: formatDate,
           }}
           onValuesChange={(changedValues) => this.handleChange(changedValues)}
@@ -505,7 +513,7 @@ class Edit extends PureComponent {
               name="uanNumber"
               rules={[
                 {
-                  pattern: /^[+]*[\d]{12,12}$/,
+                  pattern: /^[+]*[\d]{0,16}$/,
                   message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
                 },
               ]}
@@ -517,10 +525,10 @@ class Edit extends PureComponent {
           {checkVietNamLocation ? (
             <Form.Item
               label="National Identification Number"
-              name="uanNumber"
+              name="nationalId"
               rules={[
                 {
-                  pattern: /^[+]*[\d]{12,12}$/,
+                  pattern: /^[+]*[\d]{0,16}$/,
                   message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
                 },
               ]}
@@ -535,7 +543,7 @@ class Edit extends PureComponent {
               name="uanNumber"
               rules={[
                 {
-                  pattern: /^[+]*[\d]{12,12}$/,
+                  pattern: /^[+]*[\d]{0,16}$/,
                   message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
                 },
               ]}

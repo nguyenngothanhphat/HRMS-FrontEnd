@@ -1,8 +1,8 @@
 export default {
   'pages.employeeProfile.generalInfoTab': 'General Info',
-  'pages.employeeProfile.validateWorkNumber': 'Just only number & maxinum 10 number, please!',
+  'pages.employeeProfile.validateWorkNumber': 'Just only number & maxinum 15 number, please!',
   'pages.employeeProfile.validateNumber':
-    'Just only number & this field must be 12 number, please!',
+    'Just only number & this field maximun be 16 number, please!',
   'pages.employeeProfile.validatePassPortNumber': 'Invalid passport number',
   'pages.employeeProfile.validateDate':
     'Inappropriate date. Valid till date must be after issue date',
@@ -45,7 +45,7 @@ export default {
   'pages.employeeProfile.BenefitTab.availablePlans': 'Available Benefit Plans',
   'pages.employeeProfile.BenefitTab.forGlobalEmployees': 'For Global Employees',
   'pages.employeeProfile.BenefitTab.forIndianEmployees': 'For Indian Employees',
-  'pages.employeeProfile.BenefitTab.components.dependentTabs.dependent': 'Dependent',
+  'pages.employeeProfile.BenefitTab.components.dependentTabs.dependent': 'Dependent ',
   'pages.employeeProfile.BenefitTab.components.dependentTabs.firstName': 'First Name',
   'pages.employeeProfile.BenefitTab.components.dependentTabs.lastName': 'Last Name',
   'pages.employeeProfile.BenefitTab.components.dependentTabs.gender': 'Gender',

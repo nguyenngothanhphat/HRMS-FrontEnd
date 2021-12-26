@@ -1,7 +1,7 @@
 import { Button, Popover } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import CloseIcon from '@/assets/projectManagement/closeX.svg';
+import CloseIcon from '@/assets/directory/closeX.svg';
 import styles from './index.less';
 
 const FilterPopover = (props) => {
@@ -12,6 +12,8 @@ const FilterPopover = (props) => {
     content = '',
     submitText = 'Submit',
     closeText = 'Close',
+    onSecondButton,
+    realTime = false,
   } = props;
   const [showPopover, setShowPopover] = useState(false);
 
@@ -23,20 +25,25 @@ const FilterPopover = (props) => {
     return (
       <>
         <div className={styles.popupContainer}>{content}</div>
-        <div className={styles.buttons}>
-          <Button className={styles.btnClose} onClick={() => setShowPopover(false)}>
-            {closeText}
-          </Button>
-          <Button
-            className={styles.btnApply}
-            form="filter"
-            htmlType="submit"
-            key="submit"
-            onClick={onFormSubmit}
-          >
-            {submitText}
-          </Button>
-        </div>
+        {!realTime && (
+          <div className={styles.buttons}>
+            <Button
+              className={styles.btnClose}
+              onClick={onSecondButton || (() => setShowPopover(false))}
+            >
+              {closeText}
+            </Button>
+            <Button
+              className={styles.btnApply}
+              form="filter"
+              htmlType="submit"
+              key="submit"
+              onClick={onFormSubmit}
+            >
+              {submitText}
+            </Button>
+          </div>
+        )}
       </>
     );
   };

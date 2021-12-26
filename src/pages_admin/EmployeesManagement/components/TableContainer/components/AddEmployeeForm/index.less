@@ -1,23 +1,22 @@
 .addEmployee {
   &__form {
-    padding: 0 24px;
     position: relative;
     .reportingManager {
       position: relative;
       &__tooltip {
         position: absolute;
-        font-size: 13px;
-        width: 18px;
-        text-align: center;
-        height: 18px;
-        color: #e4edff;
-        background-color: #2c6df9;
-        opacity: 0.8;
-        border-radius: 50%;
         top: 7px;
         right: -30px;
-        font-weight: 500;
         z-index: 1000;
+        width: 18px;
+        height: 18px;
+        color: #e4edff;
+        font-weight: 500;
+        font-size: 13px;
+        text-align: center;
+        background-color: #2c6df9;
+        border-radius: 50%;
+        opacity: 0.8;
       }
     }
   }
@@ -31,38 +30,104 @@
       overflow-y: scroll;
     }
     .ant-modal-content {
-      border-bottom-left-radius: 8px;
-      border-bottom-right-radius: 8px;
       border-top-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
     }
     .ant-modal-footer {
-      padding: 24px;
+      padding: 16px 24px;
     }
     .ant-modal-close-x {
       position: absolute;
-      background-color: #2c6df9;
-      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 54px;
       height: 48px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      color: #fff;
+      background-color: #2c6df9;
       border-top-right-radius: 8px;
       border-bottom-right-radius: 8px;
       &:active {
         opacity: 0.5;
       }
     }
+
+    .ant-form-item {
+      margin-bottom: 16px;
+    }
+    .ant-form-item-label {
+      margin-top: 5px;
+      label {
+        color: #707177;
+        font-size: 13px;
+      }
+    }
+
+    .ant-select {
+      width: 100% !important;
+    }
+    .ant-select-selector {
+      min-height: 42px !important;
+      border: 1px solid #d6dce4 !important;
+      border-radius: 5px !important;
+    }
+    .ant-select-single:not(.ant-select-customize-input)
+      .ant-select-selector
+      .ant-select-selection-search-input {
+      height: 42px;
+    }
+    .ant-input,
+    .ant-picker {
+      height: 42px !important;
+      border: 1px solid #d6dce4 !important;
+      border-radius: 5px !important;
+    }
+    .ant-input {
+      font-size: 13px;
+    }
+    .ant-picker {
+      width: 100%;
+      input {
+        font-size: 13px;
+      }
+    }
+    .ant-select-selection-item,
+    .ant-select-selection-placeholder {
+      font-size: 13px !important;
+      line-height: 42px !important;
+    }
+    .ant-select-multiple {
+      .ant-select-selection-item {
+        font-size: 13px;
+        line-height: unset !important;
+        background: #ffffff;
+        border: 1px solid #d6dce0;
+        border-left: 4px solid #2c6df9;
+        border-radius: 5px;
+      }
+      .ant-select-selection-item-remove {
+        margin-top: 2px;
+
+        .anticon-close {
+          border: 0.75px solid #707177;
+          border-radius: 50%;
+        }
+      }
+    }
+    .ant-select-multiple .ant-select-selection-item-remove > * {
+      line-height: 0;
+    }
   }
   .btnSubmit {
-    font-size: 14px;
     width: 95px;
     height: 40px;
-    font-weight: 600;
-    border-radius: 25px;
     color: #fff;
+    font-weight: 600;
+    font-size: 14px;
     background-color: #ffa100;
     border: none;
+    border-radius: 25px;
   }
   .btnSubmit:disabled {
     color: #fff;
@@ -70,10 +135,10 @@
   }
   .btnCancel {
     display: inline-block;
-    color: #ffa100;
-    font-size: 14px;
-    font-weight: 500;
     margin-right: 40px;
+    color: #ffa100;
+    font-weight: 500;
+    font-size: 14px;
     cursor: pointer;
     &:active {
       opacity: 0.5;
@@ -81,8 +146,8 @@
   }
   .viewImg {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     min-height: 200px;
     &__img {
       height: auto;
@@ -93,13 +158,13 @@
 
   .header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     &__text {
+      margin: 0;
+      color: #161c29;
       font-weight: 600;
       font-size: 16px;
-      color: #161c29;
-      margin: 0;
     }
     &__upload {
       cursor: pointer;
@@ -111,9 +176,9 @@
         height: 20px;
       }
       &__text {
+        margin-left: 16px;
         color: #2c6df9;
         font-size: 14px;
-        margin-left: 16px;
       }
     }
   }
@@ -121,9 +186,9 @@
   ::-webkit-scrollbar {
     width: 7px;
     height: 7px;
-    border-radius: 5px;
     background-color: #f4f4f4;
     border: none;
+    border-radius: 5px;
   }
 
   ::-webkit-scrollbar-thumb {

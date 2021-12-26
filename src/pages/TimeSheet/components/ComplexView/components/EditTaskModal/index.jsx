@@ -1,24 +1,15 @@
-import {
-  Button,
-  Checkbox,
-  Col,
-  DatePicker,
-  Form,
-  Input,
-  Modal,
-  Row,
-  Select,
-  TimePicker,
-} from 'antd';
+import { Button, Checkbox, Col, DatePicker, Form, Input, Modal, Row, Select } from 'antd';
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { dateFormatAPI, hourFormat, hourFormatAPI, TASKS } from '@/utils/timeSheet';
+import { dateFormatAPI, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
+import CustomTimePicker from '@/components/CustomTimePicker';
 
 const { Option } = Select;
 const dateFormat = 'MM/DD/YYYY';
+const TASKS = [];
 
 const EditTaskModal = (props) => {
   const [form] = Form.useForm();
@@ -87,8 +78,8 @@ const EditTaskModal = (props) => {
     const payload = {
       ...values,
       id,
-      startTime: moment(values.startTime).format(hourFormatAPI),
-      endTime: moment(values.endTime).format(hourFormatAPI),
+      startTime: moment(values.startTime, hourFormat).format(hourFormatAPI),
+      endTime: moment(values.endTime, hourFormat).format(hourFormatAPI),
       employeeId,
       type: 'TASK',
       project: {
@@ -123,12 +114,6 @@ const EditTaskModal = (props) => {
     }
   };
 
-  const onTimePickerSelect = (type, value) => {
-    form.setFieldsValue({
-      [type]: value,
-    });
-  };
-
   const renderModalContent = () => {
     return (
       <div className={styles.content}>
@@ -141,8 +126,8 @@ const EditTaskModal = (props) => {
             date: date ? moment(date) : '',
             taskName,
             projectId,
-            startTime: startTime ? moment(startTime, hourFormatAPI) : '',
-            endTime: endTime ? moment(endTime, hourFormatAPI) : '',
+            startTime: startTime ? moment(startTime, hourFormatAPI).format(hourFormat) : '',
+            endTime: endTime ? moment(endTime, hourFormatAPI).format(hourFormat) : '',
             notes,
             clientLocation,
           }}
@@ -190,11 +175,15 @@ const EditTaskModal = (props) => {
                 rules={[{ required: true, message: 'Select a task' }]}
                 name="taskName"
               >
-                <Select showSearch placeholder="Select a task">
-                  {TASKS.map((val) => (
-                    <Option value={val}>{val}</Option>
-                  ))}
-                </Select>
+                {TASKS.length !== 0 ? (
+                  <Select showSearch placeholder="Select a task">
+                    {TASKS.map((val) => (
+                      <Option value={val}>{val}</Option>
+                    ))}
+                  </Select>
+                ) : (
+                  <Input placeholder="Enter task name" maxLength={150} />
+                )}
               </Form.Item>
             </Col>
 
@@ -205,13 +194,7 @@ const EditTaskModal = (props) => {
                 rules={[{ required: true, message: 'Select start time' }]}
                 name="startTime"
               >
-                <TimePicker
-                  format={hourFormat}
-                  placeholder="Select start time"
-                  showNow={false}
-                  use12Hours={false}
-                  onSelect={(time) => onTimePickerSelect('startTime', time)}
-                />
+                <CustomTimePicker placeholder="Select start time" showSearch />
               </Form.Item>
             </Col>
 
@@ -222,13 +205,7 @@ const EditTaskModal = (props) => {
                 rules={[{ required: true, message: 'Select end time' }]}
                 name="endTime"
               >
-                <TimePicker
-                  format={hourFormat}
-                  placeholder="Select end time"
-                  showNow={false}
-                  use12Hours={false}
-                  onSelect={(time) => onTimePickerSelect('endTime', time)}
-                />
+                <CustomTimePicker placeholder="Select end time" showSearch />
               </Form.Item>
             </Col>
 

@@ -14,6 +14,8 @@ import {
   getCountryList,
   updatePassPort,
   updateVisa,
+  removeVisa,
+  removePassport,
   getAddPassPort,
   getVisa,
   getAddVisa,
@@ -119,8 +121,8 @@ const employeeProfile = {
       passportData: [{}],
       visaData: [],
       document: {},
-      bankData: {},
-      taxData: {},
+      // bankData: {},
+      // taxData: {},
     },
     listPRReport: [],
     documentCategories: [],
@@ -476,6 +478,7 @@ const employeeProfile = {
         dialog(errors);
       }
     },
+
     *updateVisa({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
         const response = yield call(updateVisa, payload);
@@ -501,6 +504,56 @@ const employeeProfile = {
         dialog(errors);
       }
     },
+    *removeVisa({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+      try {
+        const response = yield call(removeVisa, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode, message } = response;
+
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchVisa',
+          payload: { employee: idCurrentEmployee, tenantId: payload?.tenantId },
+          dataTempKept,
+        });
+        if (key === 'openVisa') {
+          yield put({
+            type: 'saveOpenEdit',
+            payload: { openVisa: false },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *removePassPort({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+      try {
+        const response = yield call(removePassport, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode } = response;
+
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Remove item successfully',
+        });
+        yield put({
+          type: 'fetchPassPort',
+          payload: { employee: idCurrentEmployee, tenantId: payload?.tenantId },
+          dataTempKept,
+        });
+        if (key === 'openPassport') {
+          yield put({
+            type: 'saveOpenEdit',
+            payload: { openPassport: false },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *updateGeneralInfo(
       { payload = {}, dataTempKept = {}, key = '', isUpdateMyAvt = false },
       { put, call, select },
@@ -516,6 +569,11 @@ const employeeProfile = {
         const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
         yield put({
           type: 'fetchGeneralInfo',
+          payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
+          dataTempKept,
+        });
+        yield put({
+          type: 'fetchTax',
           payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
           dataTempKept,
         });
@@ -590,11 +648,25 @@ const employeeProfile = {
           });
           const { statusCode } = res;
           if (statusCode !== 200) throw res;
+          const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+          const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
+          yield put({
+            type: 'fetchBank',
+            payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
+            dataTempKept,
+          });
         }
         if (taxDetails) {
           const res = yield call(getAddTax, { ...taxDetails, tenantId: getCurrentTenant() });
           const { statusCode } = res;
           if (statusCode !== 200) throw res;
+          const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+          const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
+          yield put({
+            type: 'fetchTax',
+            payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
+            dataTempKept,
+          });
         }
         let arrCertification = [];
         if (certifications.length !== 0) {
@@ -1159,7 +1231,7 @@ const employeeProfile = {
           ...payload,
           tenantId: tenantCurrentEmployee,
           company: companyCurrentEmployee,
-          employee: idCurrentEmployee     
+          employee: idCurrentEmployee,
         });
         const { statusCode, data } = res;
         if (statusCode !== 200) throw res;
@@ -1346,14 +1418,14 @@ const employeeProfile = {
     },
     *addDependentsOfEmployee({ payload = {} }, { call, put }) {
       try {
-      const  response = yield call(addDependentsOfEmployee, payload);
+        const response = yield call(addDependentsOfEmployee, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { dependentDetails: data } });
         return response;
       } catch (error) {
         dialog(error);
-        return{}
+        return {};
       }
     },
     *updateEmployeeDependentDetails({ payload = {} }, { call, put }) {

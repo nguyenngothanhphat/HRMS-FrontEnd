@@ -62,3 +62,17 @@ export async function getListAdministrator(payload) {
     data: payload,
   });
 }
+
+export async function getSkillList() {
+  return request('/api/skilltype/list', {
+    method: 'POST',
+  });
+}
+
+// get list employee of a company
+export async function getListEmployeeSingleCompany(payload) {
+  return request('/api/employeetenant/list-by-single-company', {
+    method: 'POST',
+    data: payload,
+  });
+}

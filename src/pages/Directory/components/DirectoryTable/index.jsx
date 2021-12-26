@@ -1,12 +1,12 @@
 /* eslint-disable no-console */
-import avtDefault from '@/assets/avtDefault.jpg';
-import { isOwner } from '@/utils/authority';
-import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import { Avatar, Button, Popover, Table, Tag, Tooltip } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { Component } from 'react';
 import { connect, formatMessage, history, Link } from 'umi';
+import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
+import { isOwner } from '@/utils/authority';
+import avtDefault from '@/assets/avtDefault.jpg';
 import ModalTerminate from './components/ModalTerminate';
 import PopoverInfo from './components/ModalTerminate/PopoverInfo';
 import styles from './index.less';
@@ -295,7 +295,7 @@ class DirectoryTable extends Component {
         key: 'title',
         render: (title) => (
           <Tooltip placement="left" title={`Filter by ${title ? title.name : ''}`}>
-            <span className={styles.title} onClick={() => this.onFilter(title, 'title')}>
+            <span className={styles.title} onClick={() => this.onFilter(title?._id, 'title')}>
               {title ? title.name : ''}
             </span>
           </Tooltip>
@@ -354,8 +354,7 @@ class DirectoryTable extends Component {
             <Link
               className={styles.managerName}
               to={() =>
-                this.handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
-              }
+                this.handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)}
             >
               {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
             </Link>
@@ -380,7 +379,7 @@ class DirectoryTable extends Component {
             <Tooltip placement="left" title={`Filter by ${department ? department.name : ''}`}>
               <Tag
                 className={styles.department}
-                onClick={() => this.onFilter(department, 'department')}
+                onClick={() => this.onFilter(department.name, 'department')}
                 color={tag.color}
               >
                 {department.name}
@@ -500,32 +499,13 @@ class DirectoryTable extends Component {
     return findIndexViewProfile;
   };
 
-  onFilter = async (obj, fieldName) => {
+  onFilter = async (value, fieldName) => {
     const { dispatch } = this.props;
-    const {
-      // list = [],
-      handleFilterPane = () => {},
-    } = this.props;
-    // let newList = [];
 
-    if (fieldName === 'department') {
-      dispatch({
-        type: 'employee/saveFilter',
-        payload: { name: 'Department', checkedList: [obj.name] },
-      });
-    }
-    if (fieldName === 'title') {
-      // newList = list.filter((item) => item.title?._id === obj._id) || [];
-      // dispatch({
-      //   type: 'employee/save',
-      //   payload: { listEmployeeActive: [...newList] },
-      // });
-      dispatch({
-        type: 'employee/saveFilter',
-        payload: { name: 'Title', checkedList: [obj._id] },
-      });
-    }
-    handleFilterPane(true);
+    dispatch({
+      type: 'employee/saveFilter',
+      payload: { [fieldName]: [value] },
+    });
   };
 
   setCurrentTime = () => {

@@ -1,13 +1,13 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { useEffect, useState } from 'react';
-import filterIcon from '@/assets/offboarding-filter.svg';
 import { Table, Popover } from 'antd';
 import { formatMessage, connect, history, Link } from 'umi';
-import { isOwner } from '@/utils/authority';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
+import { isOwner } from '@/utils/authority';
+import filterIcon from '@/assets/offboarding-filter.svg';
 import { getTimezoneViaCity } from '@/utils/times';
-import PopoverInfo from '@/components/DirectoryTable/components/ModalTerminate/PopoverInfo/index';
+import PopoverInfo from '@/pages/Directory/components/DirectoryTable/components/ModalTerminate/PopoverInfo';
 import { LIST_STATUS_TICKET } from '@/utils/globalSearch';
 import styles from '../../index.less';
 
