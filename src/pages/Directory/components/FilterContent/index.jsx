@@ -117,7 +117,7 @@ const FilterContent = (props) => {
         name: value,
       },
     });
-  }, 400);
+  }, 1000);
 
   const handleEmployeeSearch = (value) => {
     onSearchEmployeeDebounce(value);
