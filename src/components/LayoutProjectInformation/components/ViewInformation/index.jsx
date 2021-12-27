@@ -16,15 +16,16 @@ const ViewInformation = (props) => {
     projectStatus = '',
     engagementType = '',
     division = '',
-    accountOwner: {
-      generalInfo: { userId: accountOwnerId = '', legalName: accountOwnerName = '' } = {},
-    } = {},
-    engineeringOwner: {
-      generalInfo: { userId: engineeringOwnerId = '', legalName: engineeringOwnerName = '' } = {},
-    } = {},
+    accountOwner = {},
+    engineeringOwner = {},
     tags = [],
   } = projectDetail;
 
+  const { generalInfo: { userId: accountOwnerId = '', legalName: accountOwnerName = '' } = {} } =
+    accountOwner || {};
+  const {
+    generalInfo: { userId: engineeringOwnerId = '', legalName: engineeringOwnerName = '' } = {},
+  } = engineeringOwner || {};
   // permissions
   const modifyProjectPermission = permissions.modifyProject !== -1;
 
