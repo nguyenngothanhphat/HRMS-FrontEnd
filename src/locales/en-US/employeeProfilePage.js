@@ -1,8 +1,8 @@
 export default {
   'pages.employeeProfile.generalInfoTab': 'General Info',
   'pages.employeeProfile.validateWorkNumber': 'Just only number & maxinum 15 number, please!',
-  'pages.employeeProfile.validateNumber':
-    'Just only number & this field maximun be 16 number, please!',
+  'pages.employeeProfile.validateNumber': 'Invalid visa number!',
+  'pages.employeeProfile.validateVisaType': 'Invalid visa type!',
   'pages.employeeProfile.validatePassPortNumber': 'Invalid passport number',
   'pages.employeeProfile.validateDate':
     'Inappropriate date. Valid till date must be after issue date',
