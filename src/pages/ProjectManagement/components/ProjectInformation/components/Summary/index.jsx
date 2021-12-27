@@ -343,7 +343,7 @@ const Summary = (props) => {
         dataIndex: 'updatedByInfo',
         key: 'updatedByInfo',
         render: (updatedByInfo = {}) => {
-          const { generalInfo: { legalName = '', userId = '' } = {} || {} } = updatedByInfo;
+          const { generalInfo: { legalName = '', userId = '' } = {} || {} } = updatedByInfo || {};
           return (
             <span className={styles.clickableTag} onClick={() => viewProfile(userId)}>
               {legalName}

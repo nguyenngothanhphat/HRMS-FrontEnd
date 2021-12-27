@@ -28,7 +28,7 @@ class ViewInformation extends Component {
       accountOwner: {
         generalInfo: { legalName: nameLegal = '', avatar = '' } = {},
         company: { name = '' } = {},
-      } = {},
+      } = {} || {},
       tags = [],
       legalName = '',
       status = '',
@@ -37,7 +37,7 @@ class ViewInformation extends Component {
       activeProject = '',
       customerId = '',
       openLeads = '',
-    } = info;
+    } = info || {};
     // const { avatar = '', linkedIn = '', workEmail = '' } = generalData;
 
     // const { tittle: { name: title = '' } = {} } = compensationData;
