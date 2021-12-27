@@ -6,28 +6,25 @@ import CloseX from '@/assets/dashboard/closeX.svg';
 import styles from './index.less';
 
 const UserProfilePopover = (props) => {
+  const { children, data = {}, placement = 'top' } = props;
   const {
-    children,
-    data: {
+    generalInfo: {
+      avatar = '',
+      legalName = '',
+      userId = '',
+      workNumber = '',
+      workEmail = '',
+    } = {} || {},
+    title: { name: titleName = '' } = {},
+    department: { name: departmentName = '' } = {},
+    manager: {
       generalInfo: {
-        avatar = '',
-        legalName = '',
-        userId = '',
-        workNumber = '',
-        workEmail = '',
+        legalName: managerName = '',
+        // userId = ''
       } = {} || {},
-      title: { name: titleName = '' } = {},
-      department: { name: departmentName = '' } = {},
-      manager: {
-        generalInfo: {
-          legalName: managerName = '',
-          // userId = ''
-        } = {} || {},
-      } = {},
-      location = {},
-    } = {},
-    placement = 'top',
-  } = props;
+    } = {} || {},
+    location = {},
+  } = data || {};
   const [showPopover, setShowPopover] = useState(false);
 
   const renderHeader = () => {

@@ -76,3 +76,10 @@ export async function getListEmployeeSingleCompany(payload) {
     data: payload,
   });
 }
+
+export async function getListMyTeam(payload) {
+  return request('/api/employeetenant/list-myteam', {
+    method: 'POST',
+    data: payload,
+  });
+}

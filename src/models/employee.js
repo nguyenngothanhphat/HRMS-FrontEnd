@@ -13,6 +13,7 @@ import {
   getListAdministrator,
   getListExportEmployees,
   getListEmployeeSingleCompany,
+  getListMyTeam,
 } from '../services/employee';
 import { addEmployee, updateEmployee } from '../services/employeesManagement';
 
@@ -112,7 +113,7 @@ const employee = {
           ...payload,
           status: ['ACTIVE'],
         };
-        const response = yield call(getListEmployee, currentPayload);
+        const response = yield call(getListMyTeam, currentPayload);
         const { statusCode, data: listEmployeeMyTeam = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
