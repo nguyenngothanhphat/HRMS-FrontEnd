@@ -106,15 +106,10 @@ const employee = {
         dialog(errors);
       }
     },
-    *fetchListEmployeeMyTeam(
-      {
-        payload = {},
-      },
-      { call, put },
-    ) {
+    *fetchListEmployeeMyTeam({ payload = {} }, { call, put }) {
       try {
         const currentPayload = {
-          ...payload, 
+          ...payload,
           status: ['ACTIVE'],
         };
         const response = yield call(getListEmployee, currentPayload);
@@ -134,15 +129,10 @@ const employee = {
         return 0;
       }
     },
-    *fetchListEmployeeActive(
-      {
-        payload = {},
-      },
-      { call, put },
-    ) {
+    *fetchListEmployeeActive({ payload = {} }, { call, put }) {
       try {
         const currentPayload = {
-          ...payload, 
+          ...payload,
           status: ['ACTIVE'],
         };
         const response = yield call(getListEmployee, currentPayload);
@@ -163,15 +153,10 @@ const employee = {
         return 0;
       }
     },
-    *fetchListEmployeeInActive(
-      {
-        payload ={}
-      },
-      { call, put },
-    ) {
+    *fetchListEmployeeInActive({ payload = {} }, { call, put }) {
       try {
         const currentPayload = {
-          ...payload, 
+          ...payload,
           status: ['INACTIVE'],
         };
         const response = yield call(getListEmployee, currentPayload);
@@ -325,6 +310,7 @@ const employee = {
       try {
         response = yield call(getListEmployeeSingleCompany, {
           ...payload,
+          status: ['ACTIVE', 'INACTIVE'],
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
