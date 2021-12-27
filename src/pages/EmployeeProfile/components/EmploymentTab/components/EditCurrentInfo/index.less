@@ -24,24 +24,24 @@
     }
   }
   .spaceFooter {
-    padding: 24px;
     display: flex;
     flex-flow: row nowrap;
-    justify-content: flex-end;
     align-items: center;
+    justify-content: flex-end;
+    padding: 16px 24px;
     border-top: solid 1px #d6dce0;
   }
   .btnSubmit {
-    font-size: 14px;
-    width: 95px;
     height: 40px;
-    font-weight: 600;
-    border-radius: 25px;
     color: #fff;
+    font-weight: 600;
+    font-size: 14px;
     background-color: #ffa100;
     border: none;
-    
-    &:hover{
+    border-radius: 25px;
+    padding-inline: 25px;
+
+    &:hover {
       color: #fff;
       background-color: #ffa100;
     }
@@ -52,10 +52,10 @@
   }
   .btnCancel {
     display: inline-block;
-    color: #ffa100;
-    font-size: 14px;
-    font-weight: 500;
     margin-right: 40px;
+    color: #ffa100;
+    font-weight: 500;
+    font-size: 14px;
     cursor: pointer;
     &:active {
       opacity: 0.5;
@@ -63,8 +63,8 @@
   }
   .viewImg {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     min-height: 200px;
     &__img {
       height: auto;
@@ -75,13 +75,13 @@
 
   .header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     &__text {
+      margin: 0;
+      color: #161c29;
       font-weight: 600;
       font-size: 16px;
-      color: #161c29;
-      margin: 0;
     }
     &__upload {
       cursor: pointer;
@@ -93,9 +93,9 @@
         height: 20px;
       }
       &__text {
+        margin-left: 16px;
         color: #2c6df9;
         font-size: 14px;
-        margin-left: 16px;
       }
     }
   }
@@ -103,9 +103,9 @@
   ::-webkit-scrollbar {
     width: 7px;
     height: 7px;
-    border-radius: 5px;
     background-color: #f4f4f4;
     border: none;
+    border-radius: 5px;
   }
 
   ::-webkit-scrollbar-thumb {

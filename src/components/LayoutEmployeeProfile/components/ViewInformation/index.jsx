@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Divider, Button, Spin, Input, Tooltip, Menu, Dropdown, Checkbox, Tag } from 'antd';
 
-import avtDefault from '@/assets/avtDefault.jpg';
-import bioSvg from '@/assets/bioActions.svg';
 import { connect, history } from 'umi';
 import moment from 'moment';
+import avtDefault from '@/assets/avtDefault.jpg';
+import bioSvg from '@/assets/bioActions.svg';
 import ModalUpload from '@/components/ModalUpload';
 import CustomModal from '@/components/CustomModal';
 import s from '@/components/LayoutEmployeeProfile/index.less';
@@ -200,7 +200,14 @@ class ViewInformation extends Component {
       <div className={s.formEditBio}>
         <div className={s.formEditBio__title}>Edit Bio</div>
         <div className={s.formEditBio__description1}>Only 170 chracter allowed!</div>
-        <TextArea rows={3} defaultValue={bio} onChange={this.onChangeInput} />
+        <TextArea
+          autoSize={{
+            minRows: 4,
+            maxRows: 7,
+          }}
+          defaultValue={bio}
+          onChange={this.onChangeInput}
+        />
         <div className={s.formEditBio__description2}>
           <span style={{ opacity: 0.5 }}> Remaining characters: </span>
           {check >= 0 ? (
@@ -316,11 +323,16 @@ class ViewInformation extends Component {
   };
 
   _renderListCertification = (list) => {
-    return list.map((item) => {
+    if (list.length === 0) {
+      return <div className={s.infoEmployee__textNameAndTitle__title}>No certifications</div>;
+    }
+    return list.map((item, index) => {
       const { name = '', _id = '' } = item;
       return (
         <div key={_id} className={s.infoEmployee__textNameAndTitle__title}>
-          <div className={s.textValue}>{name}</div>
+          <div className={s.textValue}>
+            {index + 1} - {name}
+          </div>
         </div>
       );
     });
@@ -434,6 +446,11 @@ class ViewInformation extends Component {
           <Divider />
           <p className={s.titleTag}>Skills</p>
           <div>
+            {formatListSkill.length === 0 && (
+              <div className={s.infoEmployee__viewBottom__certifications}>
+                <div className={s.infoEmployee__textNameAndTitle__title}>No skills</div>
+              </div>
+            )}
             {formatListSkill.map((item) => (
               <Tag
                 style={{
@@ -523,6 +540,7 @@ class ViewInformation extends Component {
           open={openEditBio}
           closeModal={this.handleEditBio}
           content={this._renderFormEditBio()}
+          type={2}
         />
       </div>
     );

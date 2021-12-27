@@ -1,6 +1,5 @@
 import { Button, Modal } from 'antd';
 import React from 'react';
-import { connect } from 'umi';
 import styles from './index.less';
 
 const CommonModal = (props) => {
@@ -10,6 +9,7 @@ const CommonModal = (props) => {
     title = '',
     onClose = () => {},
     onFinish = () => {},
+    hasHeader = true,
     content,
   } = props;
 
@@ -58,7 +58,7 @@ const CommonModal = (props) => {
             </>
           ) : null
         }
-        title={renderModalHeader()}
+        title={hasHeader ? renderModalHeader() : null}
         centered
         visible={visible}
       >

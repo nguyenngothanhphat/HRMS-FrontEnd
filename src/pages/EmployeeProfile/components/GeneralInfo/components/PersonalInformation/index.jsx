@@ -9,12 +9,12 @@ import View from './components/View';
 @connect(
   ({
     employeeProfile: {
-      editGeneral: { openPersonnalInfor = false },
+      editGeneral: { openPersonalInfo = false },
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
     } = {},
   }) => ({
-    openPersonnalInfor,
+    openPersonalInfo,
     generalDataOrigin,
     generalData,
   }),
@@ -24,7 +24,7 @@ class PersonalInformation extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'employeeProfile/saveOpenEdit',
-      payload: { openPersonnalInfor: true },
+      payload: { openPersonalInfo: true },
     });
   };
 
@@ -60,13 +60,13 @@ class PersonalInformation extends PureComponent {
     });
     dispatch({
       type: 'employeeProfile/saveOpenEdit',
-      payload: { openPersonnalInfor: false },
+      payload: { openPersonalInfo: false },
     });
   };
 
   render() {
-    const { generalData, openPersonnalInfor, permissions = {}, profileOwner } = this.props;
-    const renderComponent = openPersonnalInfor ? (
+    const { generalData, openPersonalInfo, permissions = {}, profileOwner } = this.props;
+    const renderComponent = openPersonalInfo ? (
       <Edit handleCancel={this.handleCancel} profileOwner={profileOwner} />
     ) : (
       <View dataAPI={generalData} permissions={permissions} profileOwner={profileOwner} />
@@ -75,7 +75,7 @@ class PersonalInformation extends PureComponent {
       <div className={styles.PersonalInformation}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Personal Information</p>
-          {openPersonnalInfor
+          {openPersonalInfo
             ? ''
             : (permissions.editPersonalInfo !== -1 || profileOwner) && (
                 <div className={styles.flexEdit} onClick={this.handleEdit}>

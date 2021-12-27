@@ -5,7 +5,7 @@ import styles from './index.less';
 const CustomModal = (props) => {
   const [visible, setVisible] = useState(false); // Modal visibility
 
-  const { open, closeModal, width = 520, content, docmail = 0 } = props;
+  const { open, closeModal, width = 520, content, docmail = 0, type = 1 } = props;
 
   useEffect(() => {
     if (open) {
@@ -20,13 +20,18 @@ const CustomModal = (props) => {
     closeModal();
   };
 
+  const getModalClassName = () => {
+    if (type === 2) {
+      return `${styles.CustomModal2} ${styles.CustomModal}`;
+    }
+    if (docmail === 0) return styles.CustomModal;
+    return `${styles.CustomModal} ${styles.SendMailForm}`;
+  };
+
   return (
     <>
       <Modal
-        // className={`${styles.onboardModal} ${styles.testFixed}`}
-        className={`${
-          docmail === 0 ? styles.CustomModal : `${styles.CustomModal} ${styles.SendMailForm}`
-        }`}
+        className={getModalClassName()}
         title={null}
         visible={visible}
         width={width}

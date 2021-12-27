@@ -10,16 +10,16 @@ import styles from './index.less';
   ({
     upload: { employeeInformationURL = '' } = {},
     employeeProfile: {
-      editGeneral: { openEmployeeInfor = false },
-      originData: { generalData: generalDataOrigin = {},  taxData = {} } = {},
+      editGeneral: { openEmployeeInfo = false },
+      originData: { generalData: generalDataOrigin = {}, taxData = {} } = {},
       tempData: { generalData = {} } = {},
     } = {},
   }) => ({
-    openEmployeeInfor,
+    openEmployeeInfo,
     generalDataOrigin,
     generalData,
     employeeInformationURL,
-    taxData
+    taxData,
   }),
 )
 class EmployeeInformation extends PureComponent {
@@ -34,7 +34,7 @@ class EmployeeInformation extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'employeeProfile/saveOpenEdit',
-      payload: { openEmployeeInfor: true },
+      payload: { openEmployeeInfo: true },
     });
   };
 
@@ -72,7 +72,7 @@ class EmployeeInformation extends PureComponent {
     });
     dispatch({
       type: 'employeeProfile/saveOpenEdit',
-      payload: { openEmployeeInfor: false },
+      payload: { openEmployeeInfo: false },
     });
     dispatch({
       type: 'upload/cancelUpload',
@@ -84,11 +84,11 @@ class EmployeeInformation extends PureComponent {
     const {
       // employmentData,
       generalData,
-      openEmployeeInfor,
+      openEmployeeInfo,
       permissions = {},
-      taxData = {}
+      taxData = {},
     } = this.props;
-    const renderComponent = openEmployeeInfor ? (
+    const renderComponent = openEmployeeInfo ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
       <View dataAPI={generalData} taxData={taxData} />
@@ -97,7 +97,7 @@ class EmployeeInformation extends PureComponent {
       <div className={styles.EmployeeInformation}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Employee Information</p>
-          {openEmployeeInfor
+          {openEmployeeInfo
             ? ''
             : permissions.editEmployeeInfo !== -1 && (
                 <div className={styles.flexEdit} onClick={this.handleEdit}>

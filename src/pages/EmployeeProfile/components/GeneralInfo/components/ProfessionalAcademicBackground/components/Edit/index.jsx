@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { PureComponent } from 'react';
-import { Button, Form, Input, Select, Tag } from 'antd';
-import { CloseCircleOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Select } from 'antd';
 import { connect } from 'umi';
 import FormCertification from './components/FormCertification';
 import s from './index.less';
@@ -41,15 +40,6 @@ class Edit extends PureComponent {
     };
   }
 
-  tagRender = (props) => {
-    const { label, onClose } = props;
-    return (
-      <Tag icon={<CloseCircleOutlined className={s.iconClose} onClick={onClose} />} color="red">
-        {label}
-      </Tag>
-    );
-  };
-
   handleFormChange = (changedValues) => {
     const { generalDataOrigin, generalData, dispatch } = this.props;
     const payload = { ...generalData, ...changedValues };
@@ -82,7 +72,7 @@ class Edit extends PureComponent {
       preJobTitle = '',
       // skills = [],
       preCompany = '',
-      pastExp = 0,
+      linkedIn = '',
       totalExp = 0,
       qualification = '',
       certification = [],
@@ -94,7 +84,7 @@ class Edit extends PureComponent {
       preJobTitle,
       skills: newSkills,
       preCompany,
-      pastExp,
+      linkedIn,
       totalExp,
       qualification,
       certification,
@@ -111,7 +101,7 @@ class Edit extends PureComponent {
       'preJobTitle',
       'skills',
       'preCompany',
-      'pastExp',
+      'linkedIn',
       'totalExp',
       'qualification',
       'certification',
@@ -193,7 +183,7 @@ class Edit extends PureComponent {
       preJobTitle = '',
       skills = [],
       preCompany = '',
-      pastExp = 0,
+      linkedIn = '',
       totalExp = 0,
       qualification = '',
       otherSkills = [],
@@ -211,7 +201,7 @@ class Edit extends PureComponent {
           initialValues={{
             preJobTitle,
             preCompany,
-            pastExp,
+            linkedIn,
             totalExp,
             qualification,
             skills: getIdSkill,
@@ -227,62 +217,54 @@ class Edit extends PureComponent {
           colon={false}
           onValuesChange={this.handleFormChange}
         >
-          <Form.Item label="Previous Job Tilte" name="preJobTitle">
-            {/* <Select
-              placeholder="Select title"
-              showArrow
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {listTitle.map((item) => (
-                <Option key={item._id}>{item.name}</Option>
-              ))}
-            </Select> */}
-            <Input disabled={profileOwner} placeholder="Type previous job title" />
-          </Form.Item>
-          <Form.Item label="Previous Company" name="preCompany">
-            <Input disabled={profileOwner} />
-          </Form.Item>
-          <Form.Item label="Past Experience" name="pastExp">
-            <Input disabled={profileOwner} />
-          </Form.Item>
-          <Form.Item label="Total Experience" name="totalExp">
-            <Input disabled={profileOwner} />
-          </Form.Item>
-          <Form.Item label="Qualification" name="qualification">
-            <Input disabled={profileOwner} />
-          </Form.Item>
-          <Form.Item name="certification" className={s.certificationContainer}>
-            <FormCertification
-              notValid={notValid}
-              handleRemoveCertification={this.handleRemoveCertification}
-            />
-          </Form.Item>
-          <Form.Item label="Skills" name="skills">
-            <Select
-              placeholder="Select skill"
-              mode="multiple"
-              tagRender={this.tagRender}
-              showArrow
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {listSkill.map((item) => (
-                <Option key={item._id}>{item.name}</Option>
-              ))}
-              <Option key="Other">Other</Option>
-            </Select>
-          </Form.Item>
-          {veriOther.length > 0 || otherSkills.length > 0 ? (
-            <Form.Item label="OtherSkill" name="otherSkills">
-              <Input maxLength={50} />
+          <div className={s.formContainer}>
+            <Form.Item label="Previous Job Tilte" name="preJobTitle">
+              <Input disabled={profileOwner} placeholder="Type previous job title" />
             </Form.Item>
-          ) : (
-            ''
-          )}
-
+            <Form.Item label="Previous Company" name="preCompany">
+              <Input disabled={profileOwner} />
+            </Form.Item>
+            {/* <Form.Item label="Past Experience" name="pastExp">
+            <Input disabled={profileOwner} />
+          </Form.Item> */}
+            <Form.Item label="Total Experience" name="totalExp">
+              <Input disabled={profileOwner} />
+            </Form.Item>
+            <Form.Item label="Highest Qualification" name="qualification">
+              <Input disabled={profileOwner} />
+            </Form.Item>
+            <Form.Item label="Linkedin" name="linkedIn">
+              <Input />
+            </Form.Item>
+            <Form.Item name="certification" className={s.certificationContainer}>
+              <FormCertification
+                notValid={notValid}
+                handleRemoveCertification={this.handleRemoveCertification}
+              />
+            </Form.Item>
+            <Form.Item label="Skills" name="skills">
+              <Select
+                placeholder="Select skill"
+                mode="multiple"
+                showArrow
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {listSkill.map((item) => (
+                  <Option key={item._id}>{item.name}</Option>
+                ))}
+                <Option key="Other">Other</Option>
+              </Select>
+            </Form.Item>
+            {veriOther.length > 0 || otherSkills.length > 0 ? (
+              <Form.Item label="OtherSkill" name="otherSkills">
+                <Input maxLength={50} />
+              </Form.Item>
+            ) : (
+              ''
+            )}
+          </div>
           <div className={s.viewFooter}>
             <div className={s.viewFooter__cancel} onClick={handleCancel}>
               Cancel

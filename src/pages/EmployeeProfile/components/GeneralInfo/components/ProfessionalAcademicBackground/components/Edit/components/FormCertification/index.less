@@ -1,8 +1,8 @@
 .root {
   :global {
     .ant-input {
-      border-radius: 5px;
       border: solid 1px #d6dce4;
+      border-radius: 5px;
       &:focus {
         box-shadow: none;
       }
@@ -12,8 +12,9 @@
     position: relative;
     .iconRemove {
       position: absolute;
-      margin-left: 30px;
-      margin-top: 10px;
+      left: 0;
+      margin-top: 14px;
+      margin-left: -26px;
       color: red;
       &:active {
         transform: translateY(-1px);
@@ -21,12 +22,13 @@
     }
   }
   .viewAddMore {
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.12px;
-    color: #2c6df9;
     display: flex;
     align-items: center;
+    margin-top: 24px;
+    color: #2c6df9;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.12px;
     cursor: pointer;
     &__iconAdd {
       margin-right: 16px;
@@ -34,6 +36,63 @@
     }
     &:active {
       transform: translateY(-1px);
+    }
+  }
+
+  .addAttachmentButton {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    cursor: pointer;
+    img {
+      margin-right: 10px;
+      padding: 5px;
+      border-radius: 50%;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.23);
+    }
+    span {
+      display: inline-block;
+      margin-right: 10px;
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 14px;
+    }
+  }
+
+  .attachmentList {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding-left: 10px;
+    .iconCertification {
+      width: 24px;
+      height: 24px;
+      margin-left: 16px;
+      object-fit: contain;
+    }
+    .nameCertification {
+      display: block;
+      margin: 0;
+      color: #2c6df9;
+      font-size: 13px;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .iconDelete {
+      margin-left: 16px;
+      font-size: 11px;
+      cursor: pointer;
+      &:active {
+        transform: translateY(-1px);
+      }
+      &:hover {
+        opacity: 0.7;
+      }
     }
   }
 }

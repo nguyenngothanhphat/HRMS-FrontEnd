@@ -73,7 +73,7 @@ class ProfessionalAcademicBackground extends PureComponent {
       <div className={styles.root}>
         <div className={styles.viewTitle}>
           <p className={styles.viewTitle__text}>Professional &amp; Academic Background</p>
-          {(permissions.editProfessionalAcademic !== -1 || profileOwner) && (
+          {!openAcademic && (permissions.editProfessionalAcademic !== -1 || profileOwner) && (
             <div className={styles.viewTitle__edit} onClick={this.handleEdit}>
               <img
                 src="/assets/images/edit.svg"

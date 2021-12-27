@@ -79,10 +79,10 @@ const employeeProfile = {
     isModified: false,
     editGeneral: {
       openContactDetails: false,
-      openEmployeeInfor: false,
+      openEmployeeInfo: false,
       openPassport: false,
       openVisa: false,
-      openPersonnalInfor: false,
+      openPersonalInfo: false,
       openAcademic: false,
       openTax: false,
       openBank: false,
@@ -588,10 +588,10 @@ const employeeProfile = {
               payload: { openContactDetails: false },
             });
             break;
-          case 'openEmployeeInfor':
+          case 'openEmployeeInfo':
             yield put({
               type: 'saveOpenEdit',
-              payload: { openEmployeeInfor: false },
+              payload: { openEmployeeInfo: false },
             });
             break;
           case 'openPassport':
@@ -606,10 +606,10 @@ const employeeProfile = {
               payload: { openVisa: false },
             });
             break;
-          case 'openPersonnalInfor':
+          case 'openPersonalInfo':
             yield put({
               type: 'saveOpenEdit',
-              payload: { openPersonnalInfor: false },
+              payload: { openPersonalInfo: false },
             });
             break;
           case 'openAcademic':
@@ -701,10 +701,10 @@ const employeeProfile = {
               payload: { openContactDetails: false },
             });
             break;
-          case 'openEmployeeInfor':
+          case 'openEmployeeInfo':
             yield put({
               type: 'saveOpenEdit',
-              payload: { openEmployeeInfor: false },
+              payload: { openEmployeeInfo: false },
             });
             break;
           case 'openPassport':
@@ -719,10 +719,10 @@ const employeeProfile = {
               payload: { openVisa: false },
             });
             break;
-          case 'openPersonnalInfor':
+          case 'openPersonalInfo':
             yield put({
               type: 'saveOpenEdit',
-              payload: { openPersonnalInfor: false },
+              payload: { openPersonalInfo: false },
             });
             break;
           case 'openAcademic':
@@ -1515,10 +1515,10 @@ const employeeProfile = {
         ...state,
         editGeneral: {
           openContactDetails: false,
-          openEmployeeInfor: false,
+          openEmployeeInfo: false,
           openPassport: false,
           openVisa: false,
-          openPersonnalInfor: false,
+          openPersonalInfo: false,
           openAcademic: false,
           openTax: false,
           openBank: false,

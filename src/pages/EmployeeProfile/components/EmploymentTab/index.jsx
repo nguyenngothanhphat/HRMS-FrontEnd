@@ -12,6 +12,7 @@ import ChangeHistoryTable from './components/ChangeHistoryTable';
 import EditCurrentInfo from './components/EditCurrentInfo';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
 import styles from './index.less';
+import CommonModal from '@/components/CommonModal';
 
 const steps = [
   { title: 'Effective Date', content: 'Effective Date' },
@@ -135,15 +136,15 @@ class EmploymentTab extends Component {
   };
 
   handleCancelModelSuccess = () => {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'employeeProfile/save',
-      payload: {visibleSuccess: false}
-    })
+      payload: { visibleSuccess: false },
+    });
   };
 
   render() {
-    const {employeeProfile} = this.props;
+    const { employeeProfile } = this.props;
     const visibleSuccess = employeeProfile ? employeeProfile.visibleSuccess : false;
     const { isChanging, current, currentData, isEdit } = this.state;
     const {
@@ -237,25 +238,33 @@ class EmploymentTab extends Component {
             </div>
           ) : null}
         </div>
-        <Modal
+        <CommonModal
           visible={visibleSuccess}
-          className={styles.modalUpdateSuccess}
-          footer={null}
-          width="30%"
-          onCancel={this.handleCancelModelSuccess}
-        >
-          <div style={{ textAlign: 'center' }}>
-            <img src={imageAddSuccess} alt="update success" />
-          </div>
-          <br />
-          <br />
-          <p style={{ textAlign: 'center', color: '#707177' }}>Update infomation successfully</p>
-          <div className={styles.spaceFooterModalSuccess}>
-            <Button onClick={this.handleCancelModelSuccess} className={styles.btnOkModalSuccess}>
-              Okay
-            </Button>
-          </div>
-        </Modal>
+          hasFooter={false}
+          onClose={this.handleCancelModelSuccess}
+          onFinish={this.handleCancelModelSuccess}
+          hasHeader={false}
+          content={
+            <>
+              <div style={{ textAlign: 'center' }}>
+                <img src={imageAddSuccess} alt="update success" />
+              </div>
+              <br />
+              <br />
+              <p style={{ textAlign: 'center', color: '#707177', fontWeight: 500 }}>
+                Update information successfully
+              </p>
+              <div className={styles.spaceFooterModalSuccess}>
+                <Button
+                  onClick={this.handleCancelModelSuccess}
+                  className={styles.btnOkModalSuccess}
+                >
+                  Okay
+                </Button>
+              </div>
+            </>
+          }
+        />
       </div>
     );
   }
