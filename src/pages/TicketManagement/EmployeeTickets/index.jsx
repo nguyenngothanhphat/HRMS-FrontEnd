@@ -37,6 +37,10 @@ class EmployeeTicket extends Component {
         payload: {},
       });
       dispatch({
+        type: 'ticketManagement/fetchLocationList',
+        payload: {},
+      });
+      dispatch({
         type: 'ticketManagement/fetchListAllTicket',
         payload: {
           status: ['New'],
