@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'umi';
 import { MNG_MT_SECONDARY_COL_SPAN, MNG_MT_THIRD_COL_SPAN } from '@/utils/timeSheet';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
-import UserProfilePopover from '../../../../../UserProfilePopover';
+import UserProfilePopover from '@/components/UserProfilePopover';
 import styles from './index.less';
 
 const { DESIGNATION, DEPARTMENT, PROJECT_GROUP } = MNG_MT_SECONDARY_COL_SPAN;

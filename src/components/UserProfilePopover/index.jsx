@@ -7,19 +7,17 @@ import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import styles from './index.less';
 
 const UserProfilePopover = (props) => {
+  const { children, placement = 'top', data = {} } = props;
   const {
-    children,
-    placement = 'top',
-    data: {
-      legalName = '',
-      userId = '',
-      department = {},
-      title = {},
-      workEmail = '',
-      workNumber = '',
-      location: { state = '', countryName = '' } = {},
-    } = {},
-  } = props;
+    legalName = '',
+    userId = '',
+    department = {},
+    title = {},
+    workEmail = '',
+    workNumber = '',
+    location: { state = '', countryName = '' } = {},
+    location,
+  } = data;
   const [showPopover, setShowPopover] = useState(false);
 
   const onViewProfile = (id) => {
@@ -60,7 +58,7 @@ const UserProfilePopover = (props) => {
       },
       {
         label: 'Location',
-        value: `${state}, ${countryName}`,
+        value: location ? `${state}, ${countryName}` : '',
       },
       {
         label: 'Local Time',

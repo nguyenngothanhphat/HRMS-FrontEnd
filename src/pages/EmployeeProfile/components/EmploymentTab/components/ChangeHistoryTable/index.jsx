@@ -2,8 +2,8 @@ import React, { PureComponent } from 'react';
 import moment from 'moment';
 import { connect } from 'umi';
 import { Table } from 'antd';
-import { getCurrentTenant } from '@/utils/authority';
 import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(({ employeeProfile, loading }) => ({
@@ -239,7 +239,7 @@ class ChangeHistoryTable extends PureComponent {
       <div className={styles.changeHistoryTable}>
         <Table
           loading={loading}
-          size="small"
+          size="middle"
           columns={this.generateColumns()}
           dataSource={this.formatData(expandData, pageSize)}
           footer={expandData.length === 0 ? null : footer}

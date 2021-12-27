@@ -9,7 +9,7 @@ import {
 } from '@/utils/timeSheet';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import MemberCard from './components/MemberCard';
-import UserProfilePopover from '../../../UserProfilePopover';
+import UserProfilePopover from '@/components/UserProfilePopover';
 import EmptyComponent from '@/pages/TimeSheet/components/ComplexView/components/Empty';
 import styles from './index.less';
 
