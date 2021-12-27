@@ -756,7 +756,7 @@ const routes = [
             name: 'ticketManagement.viewTicket',
             component: './TicketManagement/components/TicketDetails',
             hideInMenu: true,
-            authority: [MANAGER, HR, HR_MANAGER, CEO, REGION_HEAD, DEPARTMENT_HEAD], // TEMPORARY VALUES
+            // authority: [MANAGER,EMPLOYEE, HR, HR_MANAGER, CEO, REGION_HEAD, DEPARTMENT_HEAD], // TEMPORARY VALUES
           },
           {
             path: '/view-document/:documentId',
