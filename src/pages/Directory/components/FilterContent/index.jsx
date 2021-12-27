@@ -32,6 +32,7 @@ const FilterContent = (props) => {
       } = {},
       filter = {},
     } = {},
+    loadingFetchEmployee = false,
   } = props;
 
   const [locationList, setLocationList] = useState([]);
@@ -109,6 +110,25 @@ const FilterContent = (props) => {
     onFinishDebounce(values);
   };
 
+  const onSearchEmployeeDebounce = debounce((value) => {
+    dispatch({
+      type: 'employee/fetchEmployeeListSingleCompanyEffect',
+      payload: {
+        name: value,
+      },
+    });
+  }, 1000);
+
+  const handleEmployeeSearch = (value) => {
+    onSearchEmployeeDebounce(value);
+  };
+
+  const handleEmployeeClear = () => {
+    setTimeout(() => {
+      onSearchEmployeeDebounce('');
+    }, 100);
+  };
+
   return (
     <Form
       layout="vertical"
@@ -142,7 +162,11 @@ const FilterContent = (props) => {
           showSearch
           style={{ width: '100%' }}
           placeholder="Search by Name/User ID"
+          filterOption={false}
           showArrow
+          onSearch={handleEmployeeSearch}
+          loading={loadingFetchEmployee}
+          onClear={handleEmployeeClear}
         >
           {employeeList2.map((x) => {
             return (
@@ -312,7 +336,7 @@ const FilterContent = (props) => {
 
 export default connect(
   ({ loading, employee, locationSelection: { listLocationsByCompany = [] } = {} }) => ({
-    loading: loading.effects['login/login'],
+    loadingFetchEmployee: loading.effects['employee/fetchEmployeeListSingleCompanyEffect'],
     employee,
     listLocationsByCompany,
   }),

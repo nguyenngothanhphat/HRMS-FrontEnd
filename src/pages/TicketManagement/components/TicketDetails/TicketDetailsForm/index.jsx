@@ -501,7 +501,7 @@ class TicketDetailsForm extends Component {
                         <div>{e.title}</div>
                         <div>{e.message}</div>
                         <>{e.attachments ? <div>{getAttachmentChatLeft()}</div> : ''}</>
-                        <div>{moment(e.createdAt).format('LT')}</div>
+                        <div>{moment(e.createdAt).format('DD-MM-YYYY, hh:mm a')}</div>
                       </Timeline.Item>
                     );
                   })}
@@ -515,7 +515,7 @@ class TicketDetailsForm extends Component {
                         <div>{e.title}</div>
                         <div>{e.message}</div>
                         <>{e.attachments ? <div>{getAttachmentChatRight()}</div> : ''}</>
-                        <div>{moment(e.createdAt).format('LT')}</div>
+                        <div>{moment(e.createdAt).format('DD-MM-YYYY, hh:mm a')}</div>
                       </Timeline.Item>
                     );
                   })}

@@ -24,11 +24,7 @@ const ticketManagement = {
     totalAll: [],
     listEmployee: [],
     listDepartment: [],
-    searchTicket: {
-      listOffAllTicketSearch: [],
-      locationList: [],
-      isFilter: false,
-    },
+    locationsList: [],
     ticketDetail: {},
   },
   effects: {
@@ -261,20 +257,18 @@ const ticketManagement = {
     },
     *fetchLocationList({ payload = {} }, { call, put }) {
       try {
-        const newPayload = {
+        const response = yield call(getLocationList, {
           ...payload,
-          company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
-        };
-        const response = yield call(getLocationList, newPayload);
-        const { statusCode, data: locationList = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'saveSearch',
-          payload: { locationList },
+          company: getCurrentCompany(),
         });
+        const { statusCode, data: locationsList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { locationsList } });
+        return response;
       } catch (errors) {
         dialog(errors);
+        return {};
       }
     },
   },
@@ -283,15 +277,6 @@ const ticketManagement = {
       return {
         ...state,
         ...action.payload,
-      };
-    },
-    saveSearch(state, action) {
-      return {
-        ...state,
-        searchTicket: {
-          ...state.searchTicket,
-          ...action.payload,
-        },
       };
     },
     saveTicket(state, action) {
