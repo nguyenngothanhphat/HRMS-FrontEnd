@@ -35,7 +35,7 @@ const DirectoryComponent = (props) => {
     loadingFetchFilterList,
     filterList: { listCountry = [] } = {},
     listLocationsByCompany = [],
-    currentUser: { employee: { departmentInfo: { name: departmentName = '' } = {} } = {} } = {},
+    // currentUser: { employee: { departmentInfo: { name: departmentName = '' } = {} } = {} } = {},
     totalActiveEmployee,
     totalInactiveEmployee,
     totalMyTeam,
@@ -233,11 +233,16 @@ const DirectoryComponent = (props) => {
       }
 
       if (viewTabMyTeam && tabId === myTeam) {
+        const {currentUser = {}} = props;
+        const roleEmployee = currentUser ? currentUser.employee.title.roles : [];
+        const employee = currentUser ? currentUser.employee._id : '';
         dispatch({
           type: 'employee/fetchListEmployeeMyTeam',
           payload: {
             ...payload,
-            department: [departmentName],
+            // department: [departmentName],
+            roles: roleEmployee,
+            employee,
           },
         });
       }
