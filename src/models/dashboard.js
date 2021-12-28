@@ -13,6 +13,7 @@ import {
   updateWidgets,
   getMyTeam,
   getMyTimesheet,
+  getListMyTeam,
 } from '../services/dashboard';
 import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
 
@@ -189,10 +190,10 @@ const dashboard = {
     *fetchMyTeam({ payload = {} }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getMyTeam, {
+        response = yield call(getListMyTeam, {
           ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
+          // tenantId: getCurrentTenant(),
+          // company: getCurrentCompany(),
         });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
