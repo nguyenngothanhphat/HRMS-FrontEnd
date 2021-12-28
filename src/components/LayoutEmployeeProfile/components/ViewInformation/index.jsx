@@ -131,7 +131,7 @@ class ViewInformation extends Component {
     });
   };
 
-  formatListSkill = (skills, colors) => {
+  formatListSkill = (skills, otherSkills, colors) => {
     let temp = 0;
     const listFormat = skills?.map((item) => {
       if (temp >= 5) {
@@ -144,7 +144,18 @@ class ViewInformation extends Component {
         id: item._id,
       };
     });
-    return listFormat;
+    const listFormatOther = otherSkills?.map((item) => {
+      if (temp >= 5) {
+        temp -= 5;
+      }
+      temp += 1;
+      return {
+        color: colors[temp - 1],
+        name: item,
+        id: item,
+      };
+    });
+    return [...listFormat, ...listFormatOther];
   };
 
   getResponse = (resp) => {
@@ -380,7 +391,7 @@ class ViewInformation extends Component {
         colorText: '#ff6ca1',
       },
     ];
-    const formatListSkill = this.formatListSkill(generalData.skills, listColors) || [];
+    const formatListSkill = this.formatListSkill(generalData.skills || [], generalData.otherSkills || [], listColors) || [];
 
     const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
 
