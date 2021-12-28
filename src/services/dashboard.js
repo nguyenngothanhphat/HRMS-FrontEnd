@@ -76,3 +76,10 @@ export async function getMyTimesheet(payload, params) {
     API_KEYS.TIMESHEET_API,
   );
 }
+
+export async function getListMyTeam(payload) {
+  return request('/api/employeetenant/list-myteam', {
+    method: 'POST',
+    data: payload,
+  });
+}

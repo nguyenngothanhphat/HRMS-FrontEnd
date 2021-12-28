@@ -8,7 +8,7 @@ import styles from './index.less';
 import TeamLeaveCalendar from './components/TeamLeaveCalendar';
 import SmallRightArrow from '@/assets/dashboard/smallRightArrow.svg';
 import SmallLeftArrow from '@/assets/dashboard/smallLeftArrow.svg';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentTenant } from '@/utils/authority';
 
 const { TabPane } = Tabs;
 const HR_MANAGER = 'HR-MANAGER';
@@ -22,8 +22,9 @@ const MyTeam = (props) => {
     dispatch,
     myTeam = [],
     roles = [],
-    listLocationsByCompany = [],
-    employee: { departmentInfo: { name: departmentName = '' } = {} } = {},
+    // listLocationsByCompany = [],
+    // employee: { departmentInfo: { name: departmentName = '' } = {} } = {},
+    employee = {}
   } = props;
 
   // USE EFFECT
@@ -32,13 +33,21 @@ const MyTeam = (props) => {
   }, [selectedMonth]);
 
   useEffect(() => {
+    const roleEmployee = employee ? employee.title.roles : [];
+    const employeeId = employee ? employee._id : '';
+    const companyInfo = employee ? employee.company : {}
     dispatch({
       type: 'dashboard/fetchMyTeam',
       payload: {
         tenantId: getCurrentTenant(),
-        company: getCurrentCompany(),
-        department: [departmentName],
-        location: listLocationsByCompany.map((l) => l._id),
+        // company: getCurrentCompany(),
+        // department: [departmentName],
+        // location: listLocationsByCompany.map((l) => l._id),
+        roles: roleEmployee,
+        employee: employeeId,
+        status: ["ACTIVE"],
+        company: [companyInfo],
+
       },
     });
   }, []);
