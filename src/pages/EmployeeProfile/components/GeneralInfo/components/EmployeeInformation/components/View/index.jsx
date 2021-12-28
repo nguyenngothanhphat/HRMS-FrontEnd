@@ -70,9 +70,9 @@ class View extends PureComponent {
       permissions = [],
       idCurrentEmployee = '',
       locationEmpl: { headQuarterAddress: { country = '' } = {} } = {},
-      taxData = []
+      // taxData = [],
+      // bankData = [],
     } = this.props;
-    const nationalIdNumber = taxData.length > 0 ? taxData[0].nationalId : '';
     let splitUrl = '';
     let urlAdhaarCard = '';
     if (AdhaarCard !== null) {
@@ -107,7 +107,7 @@ class View extends PureComponent {
       { label: checkVisible && checkIndiaLocation ? 'UAN Number' : null, value: dataAPI.uanNumber },
       {
         label: checkVisible && checkVietNamLocation ? 'National Identification Number' : null,
-        value: nationalIdNumber,
+        value: dataAPI.uanNumber,
       },
       {
         label: checkVisible && checkUSALocation ? 'Social Security Number' : null,

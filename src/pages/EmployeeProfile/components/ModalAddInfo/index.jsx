@@ -98,7 +98,7 @@ const ModalAddInfo = (props) => {
     }
     const certifications = [];
     arrCertification.forEach((item) => {
-      if(objUrl[`url${item}`] !== undefined){
+      if(objUrl[`url${item}`] !== undefined || certificationName[`certification${item}`]!== undefined){
         certifications.push({
           name: certificationName[`certification${item}`] || 'certification',
           urlFile: objUrl[`url${item}`],
@@ -153,6 +153,7 @@ const ModalAddInfo = (props) => {
       // swiftcode,
     } = values;
     const arr = [];
+    const getUanNumber = uanNumber ? uanNumber[`uanNumber${0}`] : '';
     arrBankAccount.forEach((item) =>
       arr.push({
         // accountName: accountName[`accountName${item}`],
@@ -167,7 +168,7 @@ const ModalAddInfo = (props) => {
         employee: idCurrentEmployee,
       }),
     );
-    const obj = { ...resultForm, bankDetails: arr };
+    const obj = { ...resultForm, bankDetails: arr, uanNumber: getUanNumber };
     setResultForm(obj);
     setCurrentStep(currentStep + 1);
   };
@@ -212,8 +213,8 @@ const ModalAddInfo = (props) => {
   };
   // tax detail
   const onFinishTaxIN = (values) => {
-    const { maritalStatus, noOfDependents } = values;
-    const taxDetails = { ...values, panNum: noOfDependents, employee: idCurrentEmployee };
+    const { maritalStatus, panNum } = values;
+    const taxDetails = { ...values, panNum, employee: idCurrentEmployee };
     const obj = { ...resultForm, taxDetails, maritalStatus };
     dispatch({
       type: 'employeeProfile/updateFirstGeneralInfo',
@@ -227,10 +228,10 @@ const ModalAddInfo = (props) => {
     });
   };
   const onFinishTax = (values) => {
-    const { maritalStatus, noOfDependents } = values;
+    const { maritalStatus, noOfDependents, nationalId } = values;
     const incomeTaxRule = ""
     const taxDetails = { ...values, panNum: noOfDependents, employee: idCurrentEmployee, incomeTaxRule };
-    const obj = { ...resultForm, taxDetails, maritalStatus };
+    const obj = { ...resultForm, taxDetails, maritalStatus, uanNumber: nationalId };
     dispatch({
       type: 'employeeProfile/updateFirstGeneralInfo',
       payload: {
@@ -914,7 +915,7 @@ const ModalAddInfo = (props) => {
               </div>
               <Form.Item
                 label="Social Security Card Number"
-                name="cardNumber"
+                name="nationalId"
                 style={{ marginTop: '24px' }}
                 rules={[
                     {

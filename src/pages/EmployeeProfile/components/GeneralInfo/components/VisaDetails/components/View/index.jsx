@@ -58,7 +58,7 @@ class View extends PureComponent {
         document = {},
         document: { attachment: { url = '', name = '' } = {} } = {},
         visaIssuedCountry: { name: name1 = '', flag = '' } = {},
-        visaType = [],
+        visaType = '',
         visaEntryType = '',
         visaIssuedOn = '',
         visaValidTill = '',
@@ -95,9 +95,7 @@ class View extends PureComponent {
             Visa Type
           </Col>
           <Col span={18} className={styles.textValue}>
-            {visaType.map((itemVisa, indexItem) => (
-              <div key={`visaType${indexItem + 1}`}>{itemVisa}</div>
-            ))}
+            {visaType}
           </Col>
           <Col span={6} className={styles.textLabel}>
             Country

@@ -92,7 +92,7 @@ class Edit extends PureComponent {
       workNumber = '',
       adhaarCardNumber = '',
       uanNumber = '',
-      nationalId = '',
+      nationalId = uanNumber,
       _id: id = '',
     } = generalDataTemp;
     // const payloadChanges = {
@@ -336,7 +336,7 @@ class Edit extends PureComponent {
       loading,
       handleCancel = () => {},
       loadingAdhaarCard,
-      taxData = {},
+      // taxData = {},
       currentUser: { roles = [] },
       locationEmpl: { headQuarterAddress: { country = '' } = {} } = {},
     } = this.props;
@@ -363,7 +363,7 @@ class Edit extends PureComponent {
         sm: { span: 12 },
       },
     };
-    const nationalIdNumber = taxData.length > 0 ? taxData[0].nationalId : '';
+    // const nationalIdNumber = taxData.length > 0 ? taxData[0].nationalId : '';
     const formatDate = DOB && moment(DOB);
     const dateFormat = 'MM.DD.YY';
     const checkIndiaLocation = country === 'IN';
@@ -385,7 +385,6 @@ class Edit extends PureComponent {
             workNumber,
             adhaarCardNumber,
             uanNumber,
-            nationalId: nationalIdNumber,
             DOB: formatDate,
           }}
           onValuesChange={(changedValues) => this.handleChange(changedValues)}
@@ -525,7 +524,7 @@ class Edit extends PureComponent {
           {checkVietNamLocation ? (
             <Form.Item
               label="National Identification Number"
-              name="nationalId"
+              name="uanNumber"
               rules={[
                 {
                   pattern: /^[+]*[\d]{0,16}$/,
