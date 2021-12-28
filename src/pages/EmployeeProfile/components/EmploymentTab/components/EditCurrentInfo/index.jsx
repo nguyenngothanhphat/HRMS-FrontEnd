@@ -27,6 +27,8 @@ const { Option } = Select;
   }),
 )
 class EditCurrentInfo extends PureComponent {
+  formRef = React.createRef();
+
   componentDidMount() {
     const { employeeProfile, dispatch, tenantCurrentEmployee = '' } = this.props;
     const { department = '', company = '' } = employeeProfile.originData.employmentData;
@@ -72,10 +74,27 @@ class EditCurrentInfo extends PureComponent {
     });
   }
 
+  onChangeDepartment = (id) => {
+    const { employeeProfile, dispatch, tenantCurrentEmployee = '' } = this.props;
+    const { company = '' } = employeeProfile.originData.employmentData;
+
+    dispatch({
+      type: 'employeeProfile/fetchTitleByDepartment',
+      payload: {
+        company: company._id,
+        department: id,
+        tenantId: tenantCurrentEmployee,
+      },
+    });
+    this.formRef.current.setFieldsValue({
+      title: null,
+    });
+  };
+
   handleSave = (values, id) => {
     const { dispatch, employeeProfile, tenantCurrentEmployee = '' } = this.props;
     const { company = '' } = employeeProfile.originData.employmentData;
-    const { title, joinDate, location, employeeType, compensationType, manager } = values;
+    const { title, joinDate, location, employeeType, manager, department } = values;
     const payload = {
       id,
       title,
@@ -83,8 +102,8 @@ class EditCurrentInfo extends PureComponent {
       location,
       employeeType,
       company: company._id,
-      compensationType,
       tenantId: tenantCurrentEmployee,
+      department,
       manager,
     };
     dispatch({
@@ -101,7 +120,7 @@ class EditCurrentInfo extends PureComponent {
 
     const {
       employeeProfile,
-      employeeProfile: { employees = [] },
+      employeeProfile: { employees = [], departments = [] },
       loadingTitleList,
       loadingLocationsList,
       handleCancel = () => {},
@@ -117,7 +136,7 @@ class EditCurrentInfo extends PureComponent {
       location = '',
       employeeType = '',
       manager = '',
-      compensation = {}
+      compensation = {},
     } = employeeProfile.originData.employmentData;
     const compensationType = compensation ? compensation.compensationType : '';
     const {
@@ -126,9 +145,9 @@ class EditCurrentInfo extends PureComponent {
       // timeOffPolicy = ''
     } = employeeProfile.originData.compensationData;
 
-    const dateFormat = 'MM.DD.YY';
+    const dateFormat = 'Do MMMM YYYY';
 
-    if (loadingLocationsList || loadingTitleList) {
+    if (loadingLocationsList) {
       return (
         <div className={styles.editCurrentInfo}>
           <Skeleton active />
@@ -143,6 +162,7 @@ class EditCurrentInfo extends PureComponent {
           requiredMark={false}
           colon={false}
           labelAlign="left"
+          ref={this.formRef}
           layout="horizontal"
           {...formLayout}
           initialValues={{
@@ -158,12 +178,13 @@ class EditCurrentInfo extends PureComponent {
           // onFinish={(values) => console.log(values)}
           onFinish={(values) => this.handleSave(values, _id)}
         >
-          <Form.Item label="Title" name="title">
+          <Form.Item label="Job Title" name="title">
             <Select
               disabled={profileOwner}
-              placeholder="Title"
+              placeholder="Enter Job Title"
               showArrow
               showSearch
+              loading={loadingTitleList}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -173,10 +194,26 @@ class EditCurrentInfo extends PureComponent {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item
-            label={formatMessage({ id: 'pages_admin.employees.table.joinedDate' })}
-            name="joinDate"
-          >
+          <Form.Item label="Department" name="department">
+            <Select
+              disabled={profileOwner}
+              placeholder="Enter Department"
+              showArrow
+              showSearch
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              onChange={this.onChangeDepartment}
+            >
+              {departments.map((item) => (
+                <Option key={item._id}>{item.name}</Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item label="Initial Joining Date" name="initialJoiningDate">
+            <DatePicker disabled={profileOwner} format={dateFormat} style={{ width: '100%' }} />
+          </Form.Item>
+          <Form.Item label="Joining Date" name="joinDate">
             <DatePicker disabled={profileOwner} format={dateFormat} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item label={formatMessage({ id: 'addEmployee.location' })} name="location">
@@ -192,6 +229,28 @@ class EditCurrentInfo extends PureComponent {
               {listLocationsByCompany.map((item) => (
                 <Option key={item._id}>{item.name}</Option>
               ))}
+            </Select>
+          </Form.Item>
+          <Form.Item label="Employee Type" name="empType">
+            {/* what is this? this is employment type below, isn't it? */}
+            <Select
+              disabled={profileOwner}
+              showSearch
+              placeholder="Select an employment type"
+              optionFilterProp="children"
+              // onChange={(value) => onChange(value, 'employment')}
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {employeeProfile.employeeTypes.map((item, index) => {
+                return (
+                  <Option key={`${index + 1}`} value={item._id}>
+                    {item.name}
+                  </Option>
+                );
+              })}
+              ]
             </Select>
           </Form.Item>
           <Form.Item label="Employment Type" name="employeeType">
@@ -215,7 +274,7 @@ class EditCurrentInfo extends PureComponent {
               ]
             </Select>
           </Form.Item>
-          <Form.Item label="Compensation Type" name="compensationType">
+          {/* <Form.Item label="Compensation Type" name="compensationType">
             <Select
               disabled={profileOwner}
               showSearch
@@ -235,8 +294,8 @@ class EditCurrentInfo extends PureComponent {
               })}
               ]
             </Select>
-          </Form.Item>
-          <Form.Item
+          </Form.Item> */}
+          {/* <Form.Item
             label="Current Annual CTC"
             name="currentAnnualCTC"
             rules={[
@@ -254,7 +313,7 @@ class EditCurrentInfo extends PureComponent {
               parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
               placeholder="Enter an amount"
             />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item label="Manager" name="manager">
             <Select
               disabled={profileOwner}

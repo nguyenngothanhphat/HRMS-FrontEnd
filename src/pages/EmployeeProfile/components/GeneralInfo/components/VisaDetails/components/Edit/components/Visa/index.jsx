@@ -237,7 +237,7 @@ class VisaGeneral extends Component {
         name,
       };
     });
-    const dateFormat = 'MM.DD.YY';
+    const dateFormat = 'Do MMMM YYYY';
     return (
       <>
         {visaData.length === 0
@@ -298,13 +298,13 @@ class VisaGeneral extends Component {
                       </div>
                     ) : (
                       <div className={styles.viewUpLoadData}>
-                        <p
+                        {/* <p
                           onClick={() =>
                             this.handleOpenModalReview(index === 0 ? visa0URL : visa1URL)}
                           className={styles.viewUpLoadDataURL}
                         >
                           fileName
-                        </p>
+                        </p> */}
                         <p className={styles.viewUpLoadDataText}>Uploaded</p>
                         <img
                           src={cancelIcon}
@@ -404,6 +404,11 @@ class VisaGeneral extends Component {
               );
             })
           : visaData.map((item, index) => {
+              const {
+                urlFile,
+                document: { attachment: { url: urlFile2 = '' } = {} || {} } = {} || {},
+              } = item;
+
               return (
                 <>
                   {index > 0 ? <div className={styles.line} /> : null}
@@ -445,7 +450,7 @@ class VisaGeneral extends Component {
                           />
                         </div>
                       ) : null}
-                      {!item.urlFile ? (
+                      {!urlFile ? (
                         <div className={styles.textUpload}>
                           {loadingVisaTest[index] === false ||
                           loadingVisaTest[index] === undefined ? (
@@ -464,13 +469,13 @@ class VisaGeneral extends Component {
                         </div>
                       ) : (
                         <div className={styles.viewUpLoadData}>
-                          <p
+                          {/* <p
                             onClick={() =>
                               this.handleOpenModalReview(item.urlFile ? item.urlFile.url : '')}
                             className={styles.viewUpLoadDataURL}
                           >
                             fileName
-                          </p>
+                          </p> */}
                           <p className={styles.viewUpLoadDataText}>Uploaded</p>
                           <img
                             src={cancelIcon}
@@ -481,18 +486,25 @@ class VisaGeneral extends Component {
                         </div>
                       )}
                     </div>
-                    {item.urlFile ? (
-                      <Form.Item label="Visa:" className={styles.labelUpload}>
+                    {urlFile && (
+                      <Form.Item label="Uploaded file:" className={styles.labelUpload}>
                         <p
-                          onClick={() =>
-                            this.handleOpenModalReview(item.urlFile ? item.urlFile.url : '')}
+                          onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
                           className={styles.urlUpload}
                         >
-                          {this.handleNameDataUpload(item.urlFile.url)}
+                          {this.handleNameDataUpload(urlFile.url)}
                         </p>
                       </Form.Item>
-                    ) : (
-                      ''
+                    )}
+                    {urlFile2 && !urlFile && (
+                      <Form.Item label="Uploaded file:" className={styles.labelUpload}>
+                        <p
+                          onClick={() => this.handleOpenModalReview(urlFile2)}
+                          className={styles.urlUpload}
+                        >
+                          {this.handleNameDataUpload(urlFile2)}
+                        </p>
+                      </Form.Item>
                     )}
                     <Form.Item
                       label="Visa Type"
@@ -601,7 +613,7 @@ class VisaGeneral extends Component {
               );
             })}
 
-        <Col span={9} offset={1} className={styles.addMoreButton}>
+        <Col span={9} className={styles.addMoreButton}>
           <div onClick={this.handleAddBtn}>
             <PlusOutlined className={styles.addMoreButtonIcon} />
             Add more

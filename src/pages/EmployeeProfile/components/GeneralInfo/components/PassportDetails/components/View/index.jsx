@@ -76,7 +76,7 @@ class View extends PureComponent {
           )}
         </Col>
         <Col span={6} className={styles.textLabel}>
-          Issued Country
+          Issued By Country
         </Col>
         <Col span={18} className={styles.textValue}>
           {item.passportIssuedCountry ? item.passportIssuedCountry.name : ''}
@@ -86,7 +86,7 @@ class View extends PureComponent {
         </Col>
         <Col span={18} className={styles.textValue}>
           {item.passportIssuedOn
-            ? Moment(item.passportIssuedOn).locale('en').format('MM.DD.YY')
+            ? Moment(item.passportIssuedOn).locale('en').format('Do MMMM YYYY')
             : ''}
         </Col>
         <Col span={6} className={styles.textLabel}>
@@ -94,7 +94,7 @@ class View extends PureComponent {
         </Col>
         <Col span={18} className={styles.textValue}>
           {item.passportValidTill
-            ? Moment(item.passportValidTill).locale('en').format('MM.DD.YY')
+            ? Moment(item.passportValidTill).locale('en').format('Do MMMM YYYY')
             : ''}
         </Col>
       </Fragment>

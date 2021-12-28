@@ -417,43 +417,44 @@ class Edit extends Component {
           {...formItemLayout}
           onFinish={this.handleSave}
         >
-          <Form.List name="formPassPort">
-            {(fields, { add, remove }) => (
-              <>
-                {fields.map((field, index) => (
-                  <PassportItem
-                    validatePassPort={validatePassPort[index]}
-                    getHandleChange={this.handleChange}
-                    field={field}
-                    key={field.name}
-                    onRemove={() => remove(field.name)}
-                    formRef={this.formRef}
-                    getCancelImage={this.handleCanCelIcon}
-                    getShowModal={this.handleOpenModalReview}
-                    index={index}
-                    passportData={passportData}
-                    getSizeImage={this.handleGetSetSizeImage}
-                    getDataImage={this.handleChange}
-                    isLt5M={isLt5M}
-                    formatCountryList={formatCountryList}
-                  />
-                ))}
+          <div className={styles.formContainer}>
+            <Form.List name="formPassPort">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map((field, index) => (
+                    <PassportItem
+                      validatePassPort={validatePassPort[index]}
+                      getHandleChange={this.handleChange}
+                      field={field}
+                      key={field.name}
+                      onRemove={() => remove(field.name)}
+                      formRef={this.formRef}
+                      getCancelImage={this.handleCanCelIcon}
+                      getShowModal={this.handleOpenModalReview}
+                      index={index}
+                      passportData={passportData}
+                      getSizeImage={this.handleGetSetSizeImage}
+                      getDataImage={this.handleChange}
+                      isLt5M={isLt5M}
+                      formatCountryList={formatCountryList}
+                    />
+                  ))}
 
-                <Col span={9} offset={1} className={styles.addMoreButton}>
-                  <div
-                    // onClick={this.handleAddBtn}
-                    onClick={() => {
-                      this.handleAddBtn(add, validatePassPort);
-                    }}
-                  >
-                    <PlusOutlined className={styles.addMoreButtonIcon} />
-                    Add more
-                  </div>
-                </Col>
-              </>
-            )}
-          </Form.List>
-
+                  <Col span={9} className={styles.addMoreButton}>
+                    <div
+                      // onClick={this.handleAddBtn}
+                      onClick={() => {
+                        this.handleAddBtn(add, validatePassPort);
+                      }}
+                    >
+                      <PlusOutlined className={styles.addMoreButtonIcon} />
+                      Add more
+                    </div>
+                  </Col>
+                </>
+              )}
+            </Form.List>
+          </div>
           {/* {renderForm.map((item, index) => {
             const {
               passportNumber,

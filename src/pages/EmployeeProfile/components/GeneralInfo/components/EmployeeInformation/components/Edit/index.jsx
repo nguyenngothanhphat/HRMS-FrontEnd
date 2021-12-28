@@ -365,7 +365,7 @@ class Edit extends PureComponent {
     };
     const nationalIdNumber = taxData.length > 0 ? taxData[0].nationalId : '';
     const formatDate = DOB && moment(DOB);
-    const dateFormat = 'MM.DD.YY';
+    const dateFormat = 'Do MMMM YYYY';
     const checkIndiaLocation = country === 'IN';
     const checkVietNamLocation = country === 'VN';
     const checkUSALocation = country === 'US';

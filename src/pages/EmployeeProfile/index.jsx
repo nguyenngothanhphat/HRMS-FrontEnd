@@ -128,14 +128,6 @@ class EmployeeProfile extends Component {
         type: 'employeeProfile/fetchEmployeeDependentDetails',
         payload: { employee, tenantId },
       });
-      dispatch({
-        type: 'employeeProfile/getBenefitPlans',
-        payload: {
-          employee,
-          tenantId,
-          company: companyCurrentEmployee,
-        },
-      });
     }
   };
 
@@ -201,9 +193,9 @@ class EmployeeProfile extends Component {
     if (permissions.viewTabBenefitPlans !== -1 || profileOwner) {
       listMenu.push({
         id: 6,
-        name: 'Benefit Plans',
+        name: 'Benefits',
         component: <BenefitTab />,
-        link: 'benefit-plans',
+        link: 'benefits',
       });
     }
 

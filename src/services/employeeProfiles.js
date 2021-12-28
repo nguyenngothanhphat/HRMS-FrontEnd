@@ -385,3 +385,10 @@ export async function getBenefitPlans(payload) {
     data: payload,
   });
 }
+
+export async function getBenefitPlanList(payload) {
+  return request('api/benefittenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}

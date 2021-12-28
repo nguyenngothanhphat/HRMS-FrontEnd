@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-indent */
 import React, { PureComponent } from 'react';
-import { EditFilled } from '@ant-design/icons';
 import { connect } from 'umi';
+import EditBtn from '@/assets/edit.svg';
 import styles from './index.less';
 import Edit from './components/Edit';
 import View from './components/View';
@@ -79,7 +79,7 @@ class PersonalInformation extends PureComponent {
             ? ''
             : (permissions.editPersonalInfo !== -1 || profileOwner) && (
                 <div className={styles.flexEdit} onClick={this.handleEdit}>
-                  <EditFilled className={styles.IconEdit} />
+                  <img src={EditBtn} alt="" className={styles.IconEdit} />
                   <p className={styles.Edit}>Edit</p>
                 </div>
               )}

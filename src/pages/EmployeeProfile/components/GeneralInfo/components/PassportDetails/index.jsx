@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
-import { EditFilled } from '@ant-design/icons';
 import { connect } from 'umi';
+import EditBtn from '@/assets/edit.svg';
 import Edit from './components/Edit';
 import View from './components/View';
 import styles from './index.less';
@@ -76,10 +76,10 @@ class PassportDetails extends PureComponent {
           {openPassport
             ? ''
             : !profileOwner && (
-                <div className={styles.flexEdit} onClick={this.handleEdit}>
-                  <EditFilled className={styles.IconEdit} />
-                  <p className={styles.Edit}>Edit</p>
-                </div>
+            <div className={styles.flexEdit} onClick={this.handleEdit}>
+              <img src={EditBtn} alt="" className={styles.IconEdit} />
+              <p className={styles.Edit}>Edit</p>
+            </div>
               )}
         </div>
         <div className={styles.viewBottom}>{renderComponent}</div>

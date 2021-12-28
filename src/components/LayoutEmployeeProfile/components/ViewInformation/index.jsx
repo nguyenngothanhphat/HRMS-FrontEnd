@@ -329,10 +329,8 @@ class ViewInformation extends Component {
     return list.map((item, index) => {
       const { name = '', _id = '' } = item;
       return (
-        <div key={_id} className={s.infoEmployee__textNameAndTitle__title}>
-          <div className={s.textValue}>
-            {index + 1} - {name}
-          </div>
+        <div key={_id} className={s.infoEmployee__textNameAndTitle__certifications}>
+          {index + 1} - {name}
         </div>
       );
     });

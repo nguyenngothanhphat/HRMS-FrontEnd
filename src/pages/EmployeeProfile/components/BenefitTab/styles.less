@@ -27,10 +27,15 @@
       border-top: solid 1px #d6dce0 !important;
 
       div:first-child {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
         width: 30%;
         cursor: pointer;
       }
       span {
+        display: block;
+        margin-left: 10px;
         color: #2c6df9;
         font-weight: 500;
         font-size: 14px;
@@ -104,57 +109,30 @@
     }
   }
   :global {
-    [data-theme='compact'] .site-collapse-custom-collapse .site-collapse-custom-panel,
-    .site-collapse-custom-collapse .site-collapse-custom-panel {
-      color: #161c29;
-      font-weight: 700;
-      font-size: 16px;
-      background-color: #fff;
-    }
-
-    .ant-collapse-content > .ant-collapse-content-box {
-      padding: 0;
-    }
-
-    .ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header {
-      padding: 24px;
-    }
-
-    div.ant-collapse-header {
-      :global {
-        padding: 24px;
-        color: #161c29 !important;
-        font-weight: 700;
-        font-size: 16px;
-        background-color: #fff;
+    .ant-card {
+      overflow: hidden;
+      border: 1px solid #d6dce0;
+      border-radius: 5px;
+      .ant-card-head {
+        display: flex;
+        align-items: center;
+        height: 64px;
+        // border-bottom: 1px solid #d6dce0;
+        .ant-card-head-wrapper {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          .ant-card-head-title {
+            color: #161c29;
+            font-weight: 500;
+            font-size: 16px;
+          }
+        }
       }
-    }
-    .ant-collapse-content {
-      border-top: solid 1px #d6dce0 !important;
-    }
-
-    div.ant-collapse-content-box {
-      background-color: #fff;
-    }
-
-    .ant-collapse-arrow {
-      margin-top: 4px;
-    }
-    .ant-tabs-tab {
-      padding-bottom: 5px;
-      color: #2c6df9;
-      font-weight: bold;
-      font-size: 14px;
-      font-style: normal;
-      line-height: 20px;
-    }
-    .ant-tabs > .ant-tabs-nav,
-    .ant-tabs > div > .ant-tabs-nav {
-      height: 56px;
-      padding-left: 24px;
-    }
-    .ant-tabs-content-holder {
-      margin: 40px 24px;
+      .ant-card-body {
+        padding: 0px;
+        border-top: 1px solid #d6dce0;
+      }
     }
   }
 }

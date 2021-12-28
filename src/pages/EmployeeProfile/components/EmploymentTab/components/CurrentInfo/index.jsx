@@ -12,11 +12,11 @@ function CurrentInfo(props) {
     location,
     employeeType = {},
     manager,
-    compensation = {},
+    // compensation = {},
     department = {},
   } = employeeProfile?.originData?.employmentData || {};
   // const {
-  //   // compensationType = '',
+  //   // employeeType = '',
   //   currentAnnualCTC = '',
   //   timeOffPolicy = '',
   // } = employeeProfile?.originData?.compensationData || {};
@@ -32,18 +32,20 @@ function CurrentInfo(props) {
   const data = {
     title: title?.name || 'Missing title',
     department: department?.name || 'Missing department',
-    grade: 'Missing grade',
-    initialJoiningDate: 'Missing initial joining date',
+    grade: '',
+    initialJoiningDate: '',
     joiningDate: joinDate
       ? moment(joinDate).locale('en').format('Do MMMM YYYY')
       : 'Missing joined date',
     location: location?.name || 'Missing location',
-    employType: employeeType?.name || 'Missing employment type',
-    compensationType: compensation.compensationType || 'This person is missing payment method',
+    employmentType: employeeType?.name || 'Missing employment type',
+    employeeType: '', // what is this?
     // annualSalary: String(currentAnnualCTC || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
     manager: manager ? (
-      <UserProfilePopover placement="leftBottom" data={managerInfo}>
-        <span className={styles.manager}>{manager?.generalInfo?.legalName}</span>
+      <UserProfilePopover placement="rightBottom" data={managerInfo}>
+        <span className={styles.manager}>
+          {manager?.generalInfo?.legalName} ({manager?.generalInfo?.userId})
+        </span>
       </UserProfilePopover>
     ) : (
       'Missing reporting manager'
@@ -59,14 +61,14 @@ function CurrentInfo(props) {
         'initialJoiningDate',
         'joiningDate',
         'location',
-        'compensationType',
-        'employType',
+        'employeeType',
+        'employmentType',
         'manager',
       ].map((item) => {
         let info;
         switch (item) {
           case 'title':
-            info = 'Title';
+            info = 'Job Title';
             break;
           case 'department':
             info = 'Department';
@@ -75,7 +77,7 @@ function CurrentInfo(props) {
             info = 'Grade';
             break;
           case 'joiningDate':
-            info = 'Joined Date';
+            info = 'Joining Date';
             break;
           case 'initialJoiningDate':
             info = 'Initial Joining Date';
@@ -83,10 +85,10 @@ function CurrentInfo(props) {
           case 'location':
             info = 'Location';
             break;
-          case 'employType':
+          case 'employmentType':
             info = 'Employment Type';
             break;
-          case 'compensationType':
+          case 'employeeType':
             info = 'Compensation Type';
             break;
           case 'manager':

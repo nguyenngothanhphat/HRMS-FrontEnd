@@ -58,6 +58,7 @@ import {
   getBenefitPlans,
   addMultiBank,
   addMultiCertification,
+  getBenefitPlanList,
 } from '@/services/employeeProfiles';
 import { getCurrentTenant } from '@/utils/authority';
 
@@ -1421,6 +1422,9 @@ const employeeProfile = {
         const response = yield call(addDependentsOfEmployee, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Add dependent successfully',
+        });
         yield put({ type: 'saveOrigin', payload: { dependentDetails: data } });
         return response;
       } catch (error) {
@@ -1433,6 +1437,9 @@ const employeeProfile = {
         const response = yield call(updateDependentsById, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Update dependent successfully',
+        });
         yield put({ type: 'saveOrigin', payload: { dependentDetails: data } });
         return response;
       } catch (error) {
@@ -1445,6 +1452,9 @@ const employeeProfile = {
         const response = yield call(removeDependentsById, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Remove dependent successfully',
+        });
         yield put({ type: 'saveOrigin', payload: { dependentDetails: data } });
         return response;
       } catch (error) {
@@ -1454,7 +1464,7 @@ const employeeProfile = {
     },
     *getBenefitPlans({ payload }, { call, put }) {
       try {
-        const response = yield call(getBenefitPlans, payload);
+        const response = yield call(getBenefitPlanList, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { benefitPlans: data } });

@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
-import { Button, Modal } from 'antd';
+import { Button } from 'antd';
 import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 // import { checkPermissions } from '@/utils/permissions';
@@ -8,7 +8,7 @@ import edit from './asset/edit.svg';
 import path from './asset/path.svg';
 import CurrentInfo from './components/CurrentInfo';
 import HandleChanges from './components/HandleChanges';
-import ChangeHistoryTable from './components/ChangeHistoryTable';
+import EmploymentHistoryTable from './components/EmploymentHistoryTable';
 import EditCurrentInfo from './components/EditCurrentInfo';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
 import styles from './index.less';
@@ -166,7 +166,8 @@ class EmploymentTab extends Component {
             {isEdit ? (
               <div style={{ display: 'flex', alignItems: 'center' }} />
             ) : (
-              permissions.editEmployment !== -1 && (
+              permissions.editEmployment !== -1 &&
+              !profileOwner && (
                 <div
                   className={styles.employmentTab__action}
                   onClick={this.handleEditCurrentInfo}
@@ -191,9 +192,7 @@ class EmploymentTab extends Component {
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab__title} align="middle">
             <span className={styles.title}>
-              {isChanging
-                ? `Employment & Compensation - ${steps[current].title}`
-                : 'Change History'}
+              {isChanging ? `Edit Employment` : 'Employment History'}
             </span>
             {isChanging ? (
               <div onClick={this.handleMakeChanges} className={styles.cancelButton}>
@@ -222,7 +221,7 @@ class EmploymentTab extends Component {
               current={current}
             />
           ) : (
-            <ChangeHistoryTable />
+            <EmploymentHistoryTable />
           )}
           {isChanging ? (
             <div className={styles.footer}>

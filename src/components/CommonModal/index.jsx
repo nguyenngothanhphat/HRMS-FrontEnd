@@ -11,6 +11,7 @@ const CommonModal = (props) => {
     onFinish = () => {},
     hasHeader = true,
     content,
+    noFormCss = false,
   } = props;
 
   const renderModalHeader = () => {
@@ -33,10 +34,15 @@ const CommonModal = (props) => {
     return content;
   };
 
+  const getClassName = () => {
+    if (!noFormCss) return `${styles.CommonModal} ${styles.withPadding} ${styles.CommonModalForm}`;
+    return `${styles.CommonModal} ${styles.withPadding}`;
+  };
+
   return (
     <>
       <Modal
-        className={`${styles.CommonModal} ${styles.withPadding}`}
+        className={getClassName()}
         onCancel={handleCancel}
         destroyOnClose
         footer={
