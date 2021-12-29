@@ -18,7 +18,6 @@ class PopoverInfo extends Component {
       listLocationsByCompany = {},
       propsState: { currentTime, timezoneList } = {},
     } = this.props;
-    console.log(timezoneList);
     const {
       generalInfo: {
         legalName = '',
@@ -32,20 +31,21 @@ class PopoverInfo extends Component {
       employeeId: hrId = '',
       title: { name: titleName = '' } = {},
       employeeType: { name: typeName } = {},
-      department: { name: departmentName = '' } = {},
+      departmentInfo: { name: departmentName = '' } = {},
       location: { _id = '' } = {},
     } = data;
 
-    const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+    const findTimezone =
+      _id !== '' ? timezoneList.find((timezone) => timezone.locationId === _id) || {} : [];
     let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
     filterLocation = filterLocation.filter((item) => item !== null);
 
-    if (filterLocation.length === 0) {
-      return null;
-    }
-
+    // if (filterLocation.length === 0) {
+    //   return null;
+    // }
+    const filterLocationNew = filterLocation.length > 0 ? filterLocation[0] : [];
     const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
-      filterLocation[0];
+      filterLocationNew;
     const locationName = `${state}, ${countryName}`;
 
     return (

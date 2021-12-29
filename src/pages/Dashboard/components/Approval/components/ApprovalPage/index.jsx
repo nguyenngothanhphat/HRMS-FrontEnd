@@ -133,13 +133,13 @@ const ApprovalPage = (props) => {
       setLimit(pageSize);
     },
   };
-  const dummyData = [
-    {
-      ticketID: 1,
-      employee: { generalInfo: { userId: '123', legalName: 'test' } },
-      assignee: { generalInfo: { userId: '123', legalName: 'test' } },
-    },
-  ];
+  // const dummyData = [
+  //   {
+  //     ticketID: 1,
+  //     employee: { generalInfo: { userId: '123', legalName: 'test' } },
+  //     assignee: { generalInfo: { userId: '123', legalName: 'test' } },
+  //   },
+  // ];
   const columns = [
     {
       title: <div style={{ paddingLeft: '10px' }}> Ticket ID</div>,
@@ -264,20 +264,14 @@ const ApprovalPage = (props) => {
         <div className={styles.tableApproval}>
           <Table
             columns={columns}
-            dataSource={dummyData}
+            dataSource={listData}
             loading={loadingTable || loadingReject || loadingApproval}
             size="small"
             pagination={pagination}
           />
         </div>
       </div>
-      <DetailTicket
-        openModal={openModal}
-        listLocationsByCompany={listLocationsByCompany}
-        propsState={{ currentTime, timezoneList }}
-        ticket={ticket}
-        onCancel={() => setOpenModal(false)}
-      />
+      <DetailTicket openModal={openModal} ticket={ticket} onCancel={() => setOpenModal(false)} />
     </div>
   );
 };

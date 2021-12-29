@@ -1,8 +1,9 @@
 import { Modal, Button, Row, Col, Input, Popover } from 'antd';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DownOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { connect } from 'umi';
+import { getTimezoneViaCity } from '@/utils/times';
 import PopoverInfo from '../PopoverInfo';
 import styles from './index.less';
 
@@ -10,9 +11,6 @@ const DetailTicket = (props) => {
   const {
     openModal,
     onCancel,
-    listLocationsByCompany,
-    currentTime,
-    timezoneList,
     ticket: {
       _id,
       ticketID = '',
@@ -30,10 +28,13 @@ const DetailTicket = (props) => {
     dispatch,
     loadingApprovel,
     loadingReject,
+    listLocationsByCompany,
   } = props;
   const [showDetail, setShowDetail] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const [comment, setComment] = useState('');
+  const [timezoneList, settimezoneList] = useState([]);
+  const [currentTime, setcurrentTime] = useState(moment());
   const onApproval = async () => {
     const response = await dispatch({
       type: 'dashboard/approvalTicket',
@@ -61,7 +62,29 @@ const DetailTicket = (props) => {
   const viewDetail = () => {
     setShowDetail(!showDetail);
   };
-
+  const fetchTimezone = () => {
+    const timeZoneList = [];
+    listLocationsByCompany.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
+        _id: idLocation = '',
+      } = location;
+      timeZoneList.push({
+        locationId: idLocation,
+        timezone:
+          getTimezoneViaCity(city) ||
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
+    settimezoneList({
+      timeZoneList,
+    });
+  };
+  useEffect(() => {
+    fetchTimezone();
+  }, [listLocationsByCompany]);
   const {
     generalInfo: { legalName, userId } = {},
     departmentInfo: { name: departmentName = '' } = {},
@@ -240,7 +263,8 @@ const DetailTicket = (props) => {
     </Modal>
   );
 };
-export default connect(({ loading }) => ({
+export default connect(({ loading, locationSelection: { listLocationsByCompany = [] } }) => ({
   loadingApprovel: loading.effects['dashboard/approvalTicket'],
   loadingReject: loading.effects['dashboard/rejectTicket'],
+  listLocationsByCompany,
 }))(DetailTicket);

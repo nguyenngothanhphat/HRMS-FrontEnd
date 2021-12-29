@@ -9,41 +9,41 @@ import CommonTab from './components/CommonTab';
 const { TabPane } = Tabs;
 
 const mockNotification = [
-  {
-    date: '09/23/2021',
-    id: 1,
-    name: 'Aditya Venkatasan',
-    type: 'Asset',
-    userId: 'adityav',
-  },
-  {
-    date: '09/23/2021',
-    id: 2,
-    name: 'Aditya Venkatasan',
-    type: 'Asset',
-    userId: 'adityav',
-  },
-  {
-    date: '09/23/2021',
-    id: 3,
-    name: 'Aditya Venkatasan',
-    type: 'Asset',
-    userId: 'adityav',
-  },
-  {
-    date: '09/23/2021',
-    id: 4,
-    name: 'Aditya Venkatasan',
-    type: 'Asset',
-    userId: 'adityav',
-  },
-  {
-    date: '09/23/2021',
-    id: 5,
-    name: 'Aditya Venkatasan',
-    type: 'Asset',
-    userId: 'adityav',
-  },
+  // {
+  //   date: '09/23/2021',
+  //   id: 1,
+  //   name: 'Aditya Venkatasan',
+  //   type: 'Asset',
+  //   userId: 'adityav',
+  // },
+  // {
+  //   date: '09/23/2021',
+  //   id: 2,
+  //   name: 'Aditya Venkatasan',
+  //   type: 'Asset',
+  //   userId: 'adityav',
+  // },
+  // {
+  //   date: '09/23/2021',
+  //   id: 3,
+  //   name: 'Aditya Venkatasan',
+  //   type: 'Asset',
+  //   userId: 'adityav',
+  // },
+  // {
+  //   date: '09/23/2021',
+  //   id: 4,
+  //   name: 'Aditya Venkatasan',
+  //   type: 'Asset',
+  //   userId: 'adityav',
+  // },
+  // {
+  //   date: '09/23/2021',
+  //   id: 5,
+  //   name: 'Aditya Venkatasan',
+  //   type: 'Asset',
+  //   userId: 'adityav',
+  // },
 ];
 
 const mockTicket = [
@@ -86,7 +86,7 @@ const ActivityLog = (props) => {
   // if employee, no render the pending approval tab, set active key to the second tab
   useEffect(() => {
     if (!viewPendingApprovalDashboard) {
-      setActiveKey('2')
+      setActiveKey('2');
     }
   }, [viewPendingApprovalDashboard]);
 
