@@ -1,14 +1,18 @@
-import { Modal, Button, Row, Col, Input } from 'antd';
+import { Modal, Button, Row, Col, Input, Popover } from 'antd';
 import React, { useState } from 'react';
 import { DownOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { connect } from 'umi';
+import PopoverInfo from '../PopoverInfo';
 import styles from './index.less';
 
 const DetailTicket = (props) => {
   const {
     openModal,
     onCancel,
+    listLocationsByCompany,
+    currentTime,
+    timezoneList,
     ticket: {
       _id,
       ticketID = '',
@@ -102,8 +106,23 @@ const DetailTicket = (props) => {
             <Col span={8} className={styles.title}>
               Requester's Name:
             </Col>
-            <Col span={16} className={styles.contain}>
+            {/* <Col span={16} className={styles.contain}>
               {legalName} ({userId})
+            </Col> */}
+            <Col span={16} className={styles.contain}>
+              <Popover
+                content={
+                  <PopoverInfo
+                    listLocationsByCompany={listLocationsByCompany}
+                    propsState={{ currentTime, timezoneList }}
+                    data={employee}
+                  />
+                }
+                placement="bottomRight"
+                trigger="hover"
+              >
+                {legalName} ({userId})
+              </Popover>
             </Col>
           </Row>
           <Row className={styles.ticketInfo__row}>
