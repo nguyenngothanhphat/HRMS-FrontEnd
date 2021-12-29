@@ -89,16 +89,9 @@ class LeaveHistoryAndHoliday extends PureComponent {
   };
 
   formatHolidayLists = (holidaysList) => {
-    let result = holidaysList.map((value) => {
-      const { name = '', date = '' } = value;
-      const fromDate = moment(date).locale('en').format('MM/DD/YYYY');
-      return {
-        name,
-        fromDate,
-      };
-    });
-    result = result.sort(this.compareDates);
-    return result;
+    return holidaysList.sort(
+      (a, b) => moment(a.date.iso).format('YYYYMMDD') - moment(b.date.iso).format('YYYYMMDD'),
+    );
   };
 
   formatLeavingList = (allLeaveRequests) => {
@@ -161,7 +154,12 @@ class LeaveHistoryAndHoliday extends PureComponent {
         subject,
       } = each;
 
-      if (status !== TIMEOFF_STATUS.drafts) {
+      if (
+        status !== TIMEOFF_STATUS.drafts &&
+        status !== TIMEOFF_STATUS.onHold &&
+        status !== TIMEOFF_STATUS.deleted &&
+        status !== TIMEOFF_STATUS.rejected
+      ) {
         const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
         const toDate = moment(to).locale('en').format('MM/DD/YYYY');
         return {
@@ -184,7 +182,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
   render() {
     const { activeShowType } = this.state;
     const { timeOff: { holidaysListByLocation = [], leaveHistory = [] } = {} } = this.props;
-    // const formatHolidayLists = this.formatHolidayLists(holidaysList);
+    const formatHolidayLists = this.formatHolidayLists(holidaysListByLocation);
     const formatLeavingList = this.formatLeavingList(leaveHistory);
     const formatLeavingListCalendar = this.formatLeavingListCalendar(leaveHistory);
 
@@ -199,7 +197,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
             />
           </TabPane>
           <TabPane tab="Holidays" key="2">
-            <Holiday holidaysList={holidaysListByLocation} activeShowType={activeShowType} />
+            <Holiday holidaysList={formatHolidayLists} activeShowType={activeShowType} />
           </TabPane>
         </Tabs>
       </div>

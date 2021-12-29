@@ -77,7 +77,7 @@ class CompoffRequestForm extends PureComponent {
       case TIMEOFF_STATUS.drafts:
         return 'Drafts';
       case TIMEOFF_STATUS.onHold:
-        return 'Withdraw';
+        return 'Withdrawn';
 
       default:
         return 'Unknown';
