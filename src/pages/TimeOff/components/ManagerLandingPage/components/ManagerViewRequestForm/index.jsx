@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
-import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
+import { PageContainer } from '@/layouts/layout/src';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
@@ -72,7 +72,7 @@ class ManagerViewRequestForm extends PureComponent {
       case TIMEOFF_STATUS.drafts:
         return 'Drafts';
       case TIMEOFF_STATUS.onHold:
-        return 'Withdraw';
+        return 'Withdrawn';
       case TIMEOFF_STATUS.deleted:
         return 'Deleted';
       default:
