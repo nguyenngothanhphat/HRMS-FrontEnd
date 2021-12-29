@@ -8,51 +8,51 @@
   }
 
   .weekDay {
-    font-size: 0.8em;
     color: #161c29 !important;
+    font-size: 0.8em;
   }
 
   .day {
     height: 24px;
-    font-size: 12px;
     padding: 7px 0;
+    font-size: 12px;
     span {
+      color: #707177;
+      font-weight: normal;
+      font-size: 12px;
       // padding: 6px;
       font-family: Roboto;
       font-style: normal;
-      font-weight: normal;
-      font-size: 12px;
       line-height: 14px;
-
-      color: #707177;
     }
   }
 
-  .currentDay, .activeDate {
-    background-color: #e1e9fa;
-    color: #161c29;
-    height: 23px;
+  .currentDay,
+  .activeDate {
     width: 23px;
+    height: 23px;
     margin: auto;
     padding-top: 2px;
+    color: #161c29;
+    background-color: #e1e9fa;
     border-radius: 50%;
 
-    span{
-      color: #2C6DF9;
+    span {
+      color: #2c6df9;
     }
   }
 
   .navMonth {
     position: absolute;
     top: 0.6em;
-    font-size: 0.6em;
     right: 3px;
+    font-size: 0.6em;
   }
 
   .labelMonth,
   .labelYear {
-    font-size: 14px;
     font-weight: 700;
+    font-size: 14px;
   }
   .labelYear {
     padding-left: 5px;
@@ -63,7 +63,7 @@
     justify-content: space-between;
     width: 100%;
     // margin: 15px 0;
-    padding: 24px;
+    padding: 24px 24px 12px;
     .changeMonthBtn {
       span {
         padding: 3px;
@@ -72,8 +72,8 @@
         font-size: 10px;
         cursor: pointer;
         &:hover {
-          background-color: #2058d1;
           color: white;
+          background-color: #2058d1;
           border-radius: 1px;
         }
       }
@@ -85,13 +85,17 @@
       width: 97% !important;
       margin-left: 5px;
       tr {
-        -webkit-touch-callout: none;
         -webkit-user-select: none;
         -khtml-user-select: none;
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
+        -webkit-touch-callout: none;
       }
+      .daysInMonth {
+        height: 28px;
+      }
+
       td {
         width: 100/7%;
       }
@@ -103,106 +107,107 @@
     position: relative;
   }
   .markEventBegin::before {
-    content: '•';
     position: absolute;
-    margin-left: 2px;
-    margin-top: 2px;
     z-index: 1;
+    margin-top: 2px;
+    margin-left: 2px;
     font-size: 25px;
+    content: '•';
   }
   .markEventBegin::after {
-    content: '';
     position: absolute;
     right: 0;
-    width: 50%;
     bottom: 0;
+    width: 50%;
     margin-bottom: -1px;
+    content: '';
   }
   .markEventEnd {
     position: relative;
   }
   .markEventEnd::before {
-    content: '•';
     position: absolute;
     right: 40%;
-    margin-top: 4px;
     z-index: 1;
+    margin-top: 4px;
     font-size: 25px;
+    content: '•';
   }
   .markEventEnd::after {
-    content: '';
     position: absolute;
+    bottom: 0;
     left: 0;
     width: 50%;
-    bottom: 0;
     margin-bottom: -1px;
+    content: '';
   }
 
-  .listStatus{
-    border-top: 1px solid #E2E4E8;
+  .listStatus {
     width: 100%;
+    border-top: 1px solid #e2e4e8;
 
-    .dots{
+    .dots {
       width: 8px;
       height: 8px;
       border-radius: 50%;
     }
 
-    .dotAll{
-      background-color: #2C6DF9;
+    .dotAll {
+      background-color: #2c6df9;
     }
-    .dotApplied{
-      background-color: #FFA100;
+    .dotApplied {
+      background-color: #ffa100;
     }
-    .dotApproved{
-      background-color: #00C598;
+    .dotApproved {
+      background-color: #00c598;
     }
-    .dotRejected{
-      background-color: #F04B37;
+    .dotRejected {
+      background-color: #f04b37;
     }
 
-    &__text{
+    &__text {
       padding-left: 8px;
-      font-family: Roboto;
-      font-style: normal;
+
+      color: #6c717a;
       font-weight: 500;
       font-size: 13px;
+      font-family: Roboto;
+      font-style: normal;
       line-height: 15px;
+    }
 
-      color: #6C717A;
-    }
-    
-    &__top, &__status{
+    &__top,
+    &__status {
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
     }
-    
-    &__top{
-      padding: 16px;
+
+    &__top {
       justify-content: flex-start;
+      padding: 16px;
     }
     &__bottom {
-      padding: 16px;
-      border-top: 1px solid #E2E4E8;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 16px;
+      border-top: 1px solid #e2e4e8;
     }
   }
 
   .eventDetailContainer {
-    border-top: 1px solid #E2E4E8;
+    border-top: 1px solid #e2e4e8;
     .eventDetailPart {
       .eventsContainer {
         max-height: 250px;
         overflow: auto;
       }
       .title {
-        font-size: 14px;
-        font-weight: 700;
-        line-height: 4;
         padding: 0 24px;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 4;
       }
     }
   }
@@ -212,24 +217,24 @@
     height: 20px;
   }
   .eventMarkSingleClassName::before {
-    content: '•';
     position: absolute;
-    margin-left: 2px;
-    margin-top: 2px;
     z-index: 1;
+    margin-top: 2px;
+    margin-left: 2px;
     font-size: 25px;
+    content: '•';
   }
 
-  .accepted{
-    color: #00C598;
+  .accepted {
+    color: #00c598;
   }
-  .rejected{
-    color: #F04B37;
+  .rejected {
+    color: #f04b37;
   }
-  .applied{
-    color: #FFA100;
+  .applied {
+    color: #ffa100;
   }
-  .allLeaves{
-    color: #2C6DF9;
+  .allLeaves {
+    color: #2c6df9;
   }
 }
