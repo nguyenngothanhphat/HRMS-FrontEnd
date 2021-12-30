@@ -86,7 +86,7 @@ const ActivityLog = (props) => {
   // if employee, no render the pending approval tab, set active key to the second tab
   useEffect(() => {
     if (!viewPendingApprovalDashboard) {
-      setActiveKey('2')
+      setActiveKey('2');
     }
   }, [viewPendingApprovalDashboard]);
 
