@@ -1,5 +1,6 @@
 import { Button, Col, Modal, Row, Select } from 'antd';
 import React from 'react';
+import moment from 'moment';
 import { connect } from 'umi';
 import MessageBox from '../MessageBox';
 import styles from './index.less';
@@ -12,16 +13,15 @@ const TicketDetailModal = (props) => {
     title = '',
     onClose = () => {},
     item: {
-      ticketID = '16627',
-      requestDate = '12/03/2019',
-      queryType = 'Leave',
-      priority = 'High',
-      subject = 'Leave Query',
-      cc = ['Savannah Nguyen'],
+      ticketID = '',
+      onDate: requestDate = '',
+      type: { typeName: queryType = '' } = {} || {},
+      priority = '',
+      type: { name: subject = '' } = {} || {},
+      cc = [],
       attachments = [],
-      description = `Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia 
-      consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.`,
-      status = 'In Progress',
+      description = '',
+      status = '',
     } = {},
   } = props;
 
@@ -46,7 +46,7 @@ const TicketDetailModal = (props) => {
       },
       {
         name: 'Request Date',
-        value: requestDate,
+        value: moment(requestDate).format('DD/MM/YYYY'),
         span: 12,
       },
       {
@@ -56,7 +56,7 @@ const TicketDetailModal = (props) => {
       },
       {
         name: 'Priority',
-        value: <span className={styles.priority}>{priority}</span>,
+        value: <span>{priority}</span>,
         span: 12,
       },
       {

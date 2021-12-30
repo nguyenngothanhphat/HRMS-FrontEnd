@@ -8,71 +8,17 @@ import CommonTab from './components/CommonTab';
 
 const { TabPane } = Tabs;
 
-const mockNotification = [
-  {
-    date: '09/23/2021',
-    id: 1,
-    name: 'Aditya Venkatasan',
-    type: 'Asset',
-    userId: 'adityav',
-  },
-  {
-    date: '09/23/2021',
-    id: 2,
-    name: 'Aditya Venkatasan',
-    type: 'Asset',
-    userId: 'adityav',
-  },
-  {
-    date: '09/23/2021',
-    id: 3,
-    name: 'Aditya Venkatasan',
-    type: 'Asset',
-    userId: 'adityav',
-  },
-  {
-    date: '09/23/2021',
-    id: 4,
-    name: 'Aditya Venkatasan',
-    type: 'Asset',
-    userId: 'adityav',
-  },
-  {
-    date: '09/23/2021',
-    id: 5,
-    name: 'Aditya Venkatasan',
-    type: 'Asset',
-    userId: 'adityav',
-  },
-];
-
-const mockTicket = [
-  {
-    date: '09/23/2021',
-    id: 1,
-    ticketID: '123123',
-  },
-  {
-    date: '09/23/2021',
-    id: 2,
-    ticketID: '123123',
-  },
-  {
-    date: '09/23/2021',
-    id: 3,
-    ticketID: '123123',
-  },
-  {
-    date: '09/23/2021',
-    id: 4,
-    ticketID: '123123',
-  },
-];
+const mockNotification = [];
 
 const ActivityLog = (props) => {
   const [activeKey, setActiveKey] = useState('1');
   const [modalVisible, setModalVisible] = useState(false);
-  const { dispatch, listTicket: listPendingApprovals = [], permissions = {} } = props;
+  const {
+    dispatch,
+    listTicket: listPendingApprovals = [],
+    permissions = {},
+    listMyTicket: { items = [] } = {} || {},
+  } = props;
 
   const viewPendingApprovalDashboard = permissions.viewPendingApprovalDashboard !== -1;
 
@@ -82,16 +28,30 @@ const ActivityLog = (props) => {
       type: 'dashboard/fetchListTicket',
     });
   }, []);
+  useEffect(() => {
+    dispatch({
+      type: 'dashboard/fetchListMyTicket',
+    });
+  }, []);
 
   // if employee, no render the pending approval tab, set active key to the second tab
   useEffect(() => {
     if (!viewPendingApprovalDashboard) {
-      setActiveKey('2')
+      setActiveKey('2');
     }
   }, [viewPendingApprovalDashboard]);
 
   const renderShowAll = () => {
-    return 'Show all requests';
+    switch (activeKey) {
+      case '1':
+        return 'Show all requests';
+      case '2':
+        return 'Show all Notifications';
+      case '3':
+        return 'Show all My Tickets';
+      default:
+        return 'Show all requests';
+    }
   };
 
   const onViewAllClick = () => {
@@ -104,7 +64,6 @@ const ActivityLog = (props) => {
         break;
     }
   };
-
   const renderTabName = (key, number = 0) => {
     const addZeroToNumber = () => {
       if (number < 10 && number >= 0) return `0${number}`.slice(-2);
@@ -138,7 +97,7 @@ const ActivityLog = (props) => {
       case '2':
         return mockNotification;
       case '3':
-        return mockTicket;
+        return items;
       default:
         return '';
     }
@@ -162,8 +121,8 @@ const ActivityLog = (props) => {
             <TabPane tab={renderTabName('2', mockNotification.length)} key="2">
               <CommonTab type="2" data={mockNotification} />
             </TabPane>
-            <TabPane tab={renderTabName('3', mockTicket.length)} key="3">
-              <CommonTab type="3" data={mockTicket} />
+            <TabPane tab={renderTabName('3', items.length)} key="3">
+              <CommonTab type="3" data={items} />
             </TabPane>
           </Tabs>
         </div>
@@ -184,9 +143,15 @@ const ActivityLog = (props) => {
 };
 
 export default connect(
-  ({ dashboard: { listTicket = [] } = {}, loading, user: { permissions = {} } = {} }) => ({
+  ({
+    dashboard: { listTicket = [], listMyTicket = {} } = {},
+    loading,
+    user: { permissions = {} } = {},
+  }) => ({
     listTicket,
+    listMyTicket,
     permissions,
     loadingFetchListTicket: loading.effects['dashboard/fetchListTicket'],
+    loadingFetchListMyTicket: loading.effects['dashboard/fetchListMyTicket'],
   }),
 )(ActivityLog);
