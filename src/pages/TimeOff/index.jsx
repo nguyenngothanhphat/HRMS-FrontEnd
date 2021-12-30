@@ -87,6 +87,7 @@ class TimeOff extends PureComponent {
       location: { state: { status = '', tickedId = '', typeName = '', category = '' } = {} } = {},
       currentUserRoles = [],
       listLocationsByCompany = [],
+      dispatch,
     } = this.props;
 
     if (!tabName) {
@@ -96,8 +97,22 @@ class TimeOff extends PureComponent {
       this.setState({
         role,
       });
-      if (listLocationsByCompany.length > 0) {
-        this.fetchTimeOffTypes();
+
+      const find = listLocationsByCompany.find((x) => x._id === getCurrentLocation());
+      if (find) {
+        const { headQuarterAddress: { country: { _id } = {} || {} } = {} || {} } = find;
+        dispatch({
+          type: 'timeOff/fetchTimeOffTypesByCountry',
+          payload: {
+            country: _id,
+            company: getCurrentCompany(),
+            tenantId: getCurrentTenant(),
+          },
+        });
+        dispatch({
+          type: 'timeOff/savePaging',
+          payload: { page: 1 },
+        });
       }
     }
     if (status === 'WITHDRAW') {
@@ -123,41 +138,6 @@ class TimeOff extends PureComponent {
     }
   };
 
-  componentDidUpdate = (prevProps) => {
-    const {
-      match: { params: { tabName = '' } = {} },
-      listLocationsByCompany = [],
-    } = this.props;
-
-    if (
-      tabName &&
-      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
-    ) {
-      this.fetchTimeOffTypes();
-    }
-  };
-
-  fetchTimeOffTypes = () => {
-    const { listLocationsByCompany = [], dispatch } = this.props;
-
-    const find = listLocationsByCompany.find((x) => x._id === getCurrentLocation());
-    if (find) {
-      const { headQuarterAddress: { country: { _id } = {} || {} } = {} || {} } = find;
-      dispatch({
-        type: 'timeOff/fetchTimeOffTypesByCountry',
-        payload: {
-          country: _id,
-          company: getCurrentCompany(),
-          tenantId: getCurrentTenant(),
-        },
-      });
-      dispatch({
-        type: 'timeOff/savePaging',
-        payload: { page: 1 },
-      });
-    }
-  };
-
   options = () => {
     return (
       <div className={styles.viewActivityLog} onClick={this.viewActivityLog}>
@@ -170,7 +150,11 @@ class TimeOff extends PureComponent {
     const { role } = this.state;
     const {
       match: { params: { tabName = '', type = '' } = {} },
-      currentUser: { employee: { title: { eligibleForCompOff = false } = {} } = {} } = {},
+      currentUser: {employee: {
+        title: {
+          eligibleForCompOff = false
+        } = {}
+      } = {}} = {}
     } = this.props;
 
     if (!tabName) return '';
@@ -187,13 +171,9 @@ class TimeOff extends PureComponent {
             }}
           >
             <TabPane tab={<span className={styles.employeeTabPane}>Timeoff</span>} key="overview">
-              {role === 'employee' && (
-                <EmployeeLandingPage eligibleForCompOff={eligibleForCompOff} />
-              )}
+              {role === 'employee' && <EmployeeLandingPage eligibleForCompOff={eligibleForCompOff} />}
               {role === 'manager' && <ManagerLandingPage eligibleForCompOff={eligibleForCompOff} />}
-              {role === 'hr-manager' && (
-                <HRManagerLandingPage eligibleForCompOff={eligibleForCompOff} />
-              )}
+              {role === 'hr-manager' && <HRManagerLandingPage eligibleForCompOff={eligibleForCompOff} />}
             </TabPane>
 
             {role === 'hr-manager' && (
