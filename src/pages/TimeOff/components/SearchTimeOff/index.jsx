@@ -21,28 +21,12 @@ const SearchTimeOff = (props) => {
   const [openModal, setOpenModal] = useState(false);
   const dateFormat = 'MM.DD.YYYY';
 
-  // useEffect(() => {
-  //   setSearchText(search);
-  //   setListType(type);
-  //   setDateStart(fromDate);
-  //   setDateEnd(toDate);
-  // }, [search, type, fromDate, toDate]);
-
   useEffect(() => {
     setSearchText(search);
-  }, [search]);
-
-  useEffect(() => {
     setListType(type);
-  }, [type]);
-
-  useEffect(() => {
     setDateStart(fromDate);
-  }, [fromDate]);
-
-  useEffect(() => {
     setDateEnd(toDate);
-  }, [toDate]);
+  }, [search, type, fromDate, toDate]);
 
   const saveSearch = () => {
     dispatch({
