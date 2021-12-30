@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Divider, Button, Spin, Input, Tooltip, Menu, Dropdown, Checkbox, Tag } from 'antd';
 
-import avtDefault from '@/assets/avtDefault.jpg';
-import bioSvg from '@/assets/bioActions.svg';
 import { connect, history } from 'umi';
 import moment from 'moment';
+import avtDefault from '@/assets/avtDefault.jpg';
+import bioSvg from '@/assets/bioActions.svg';
 import ModalUpload from '@/components/ModalUpload';
 import CustomModal from '@/components/CustomModal';
 import s from '@/components/LayoutEmployeeProfile/index.less';
@@ -391,7 +391,9 @@ class ViewInformation extends Component {
         colorText: '#ff6ca1',
       },
     ];
-    const formatListSkill = this.formatListSkill(generalData.skills || [], generalData.otherSkills || [], listColors) || [];
+    const formatListSkill =
+      this.formatListSkill(generalData.skills || [], generalData.otherSkills || [], listColors) ||
+      [];
 
     const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
 
@@ -501,13 +503,17 @@ class ViewInformation extends Component {
           </div>
 
           <Divider />
-          <div className={s.infoEmployee__socialMedia} style={{marginLeft: '-15px'}}>
-            <Tooltip 
-              title={linkedIn ? 'LinkedIn' : "Please update the Linkedin Profile in the Employee profile page"}
+          <div className={s.infoEmployee__socialMedia} style={{ marginLeft: '-15px' }}>
+            <Tooltip
+              title={
+                linkedIn
+                  ? 'LinkedIn'
+                  : 'Please update the Linkedin Profile in the Employee profile page'
+              }
             >
               <Button
                 disabled={linkedIn ? '' : 'true'}
-                style={{ width: '40px', background: 'white', border: '1px solid white'}}
+                style={{ width: '40px', background: 'white', border: '1px solid white' }}
               >
                 <a href={linkedIn} target="_blank" rel="noopener noreferrer">
                   <img
@@ -519,9 +525,7 @@ class ViewInformation extends Component {
               </Button>
             </Tooltip>
             <Tooltip title="Email">
-              <Button
-                style={{ width: '40px', background: 'white', border: '1px solid white'}}
-              >
+              <Button style={{ width: '40px', background: 'white', border: '1px solid white' }}>
                 <a href={`mailto:${workEmail}`}>
                   <img
                     src="/assets/images/iconMail.svg"

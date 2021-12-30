@@ -206,6 +206,8 @@ class EditPolicyModal extends Component {
               <Select
                 defaultValue={categoryID}
                 showSearch
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 onChange={() => onPolicyCategories(categoryID)}
               >
                 {listCategory.map((val) => (
