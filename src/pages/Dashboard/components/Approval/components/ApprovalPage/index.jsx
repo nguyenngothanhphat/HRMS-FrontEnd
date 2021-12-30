@@ -185,7 +185,11 @@ const ApprovalPage = (props) => {
           placement="bottomRight"
           trigger="hover"
         >
-          {!isEmpty(employee?.generalInfo) ? `${employee?.generalInfo?.legalName}` : ''}
+          {!isEmpty(employee?.generalInfo) ? (
+            <span className={styles.employeeName}>{employee?.generalInfo?.legalName}</span>
+          ) : (
+            ''
+          )}
         </Popover>
       ),
     },

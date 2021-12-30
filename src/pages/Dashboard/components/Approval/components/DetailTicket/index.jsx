@@ -132,7 +132,7 @@ const DetailTicket = (props) => {
             {/* <Col span={16} className={styles.contain}>
               {legalName} ({userId})
             </Col> */}
-            <Col span={16} className={styles.contain}>
+            <Col span={16} className={styles.containEmployee}>
               <Popover
                 content={
                   <PopoverInfo
