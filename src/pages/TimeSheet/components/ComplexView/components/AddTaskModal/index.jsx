@@ -59,6 +59,12 @@ const AddTaskModal = (props) => {
     }
   }, [visible]);
 
+  useEffect(() => {
+    form.setFieldsValue({
+      date: date ? moment(date) : '',
+    });
+  }, [date]);
+
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>

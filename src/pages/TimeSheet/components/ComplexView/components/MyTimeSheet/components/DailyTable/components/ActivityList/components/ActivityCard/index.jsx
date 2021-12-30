@@ -44,8 +44,8 @@ const ActivityCard = (props) => {
   const [textLong, setTextLong] = useState(ORIGINAL_TEXT_LONG);
 
   // modals
-  const [removeModalVisibe, setRemoveModalVisibe] = useState(false);
-  const [editTaskModalVisible, setEditTaskModalVisble] = useState(false);
+  const [removeModalVisible, setRemoveModalVisible] = useState(false);
+  const [editTaskModalVisible, setEditTaskModalVisible] = useState(false);
 
   // USE EFFECT AREA
   const calculateCardPosition = () => {
@@ -133,7 +133,7 @@ const ActivityCard = (props) => {
       date: moment(cardDay).format(dateFormatAPI),
     });
     if (res.code === 200) {
-      setRemoveModalVisibe(false);
+      setRemoveModalVisible(false);
       refreshTable();
     }
   };
@@ -168,22 +168,25 @@ const ActivityCard = (props) => {
           {renderDescription(description)}
         </Col>
         <Col span={TIME} className={`${styles.normalCell} ${styles.blueText}`}>
-          {moment(startTime, 'HH:mm').format(hourFormat)} -{' '}
-          {moment(endTime, 'HH:mm').format(hourFormat)}
+          {startTime
+            ? `${moment(startTime, 'HH:mm').format(hourFormat)} - ${moment(endTime, 'HH:mm').format(
+                hourFormat,
+              )}`
+            : '-'}
         </Col>
         <Col span={TOTAL_HOURS} className={`${styles.normalCell} ${styles.blueText}`}>
           {convertMsToTime(duration)}
         </Col>
         <Col span={ACTIONS} className={`${styles.flexCell} ${styles.alignCenter}`}>
           <div className={styles.actionsButton}>
-            <img src={EditIcon} alt="" onClick={() => setEditTaskModalVisble(true)} />
-            <img src={DeleteIcon} onClick={() => setRemoveModalVisibe(true)} alt="" />
+            <img src={EditIcon} alt="" onClick={() => setEditTaskModalVisible(true)} />
+            <img src={DeleteIcon} onClick={() => setRemoveModalVisible(true)} alt="" />
           </div>
         </Col>
       </Row>
       <ActionModal
-        visible={removeModalVisibe}
-        onClose={() => setRemoveModalVisibe(false)}
+        visible={removeModalVisible}
+        onClose={() => setRemoveModalVisible(false)}
         buttonText="Yes"
         width={400}
         onFinish={onRemoveCard}
@@ -203,7 +206,7 @@ const ActivityCard = (props) => {
         task={card}
         date={cardDay}
         visible={editTaskModalVisible}
-        onClose={() => setEditTaskModalVisble(false)}
+        onClose={() => setEditTaskModalVisible(false)}
       />
     </div>
   );
