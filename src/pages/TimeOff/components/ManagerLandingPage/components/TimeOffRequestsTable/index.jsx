@@ -12,7 +12,6 @@ const TimeOffRequestsTable = (props) => {
     dispatch,
     timeOff: { currentLeaveTypeTab = '', timeOffTypesByCountry = [] } = {},
     loadingTimeOffType = false,
-    eligibleForCompOff = false,
   } = props;
 
   const saveCurrentTypeTab = (type) => {
@@ -99,11 +98,9 @@ const TimeOffRequestsTable = (props) => {
           <TabPane tab="WFH/CP Requests" key="4">
             <MineOrTeamTabs tab={4} tabName="WFH/CP Requests" type={1} />
           </TabPane>
-          {eligibleForCompOff && (
-            <TabPane tab="Compoff Requests" key="5">
-              <MineOrTeamTabs tab={5} tabName="Compoff Requests" type={2} />
-            </TabPane>
-          )}
+          <TabPane tab="Compoff Requests" key="5">
+            <MineOrTeamTabs tab={5} tabName="Compoff Requests" type={2} />
+          </TabPane>
         </>
       </Tabs>
     </div>
