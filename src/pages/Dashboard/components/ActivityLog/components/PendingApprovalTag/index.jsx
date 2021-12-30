@@ -14,7 +14,6 @@ const PendingApprovalTag = (props) => {
     } = {},
     item,
   } = props;
-  console.log(item);
   const [openModal, setOpenModal] = useState(false);
 
   // RENDER UI
