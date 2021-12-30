@@ -555,7 +555,6 @@ class VisaGeneral extends Component {
                       ]}
                     >
                       <Input
-                        defaultValue={item.visaType.length > 0 ? item.visaType[0] : ''}
                         className={this.handleSetClass(
                           index,
                           checkValidate,
