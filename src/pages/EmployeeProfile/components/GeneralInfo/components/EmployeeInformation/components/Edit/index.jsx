@@ -18,7 +18,7 @@ import styles from './index.less';
       originData: {
         generalData: generalDataOrigin = {},
         employmentData: { location: locationEmpl = {} } = {},
-        taxData = {}
+        taxData = {},
       } = {},
       tempData: { generalData = {} } = {},
       tenantCurrentEmployee = '',
@@ -95,25 +95,19 @@ class Edit extends PureComponent {
       nationalId = uanNumber,
       _id: id = '',
     } = generalDataTemp;
-    // const payloadChanges = {
-    //   id,
-    //   urlFile,
-    //   legalGender,
-    //   legalName,
-    //   firstName: legalName,
-    //   DOB,
-    //   employeeId,
-    //   workEmail,
-    //   workNumber,
-    //   adhaarCardNumber,
-    //   uanNumber,
-    // };
+
+    const fullNameTemp = legalName.split(' ');
+    const firstName = fullNameTemp.slice(0, -1).join(' ');
+    const lastName = fullNameTemp.slice(-1).join(' ');
+
     return {
       id,
       urlFile,
       legalGender,
       legalName,
-      firstName: legalName,
+      firstName: fullNameTemp.length > 1 ? firstName : legalName,
+      lastName: fullNameTemp.length > 1 ? lastName : '',
+      middleName: '',
       DOB,
       employeeId,
       workEmail,
@@ -133,13 +127,15 @@ class Edit extends PureComponent {
       'legalGender',
       'legalName',
       'firstName',
+      'lastName',
+      'middleName',
       'DOB',
       'employeeId',
       'workEmail',
       'workNumber',
       'adhaarCardNumber',
       'uanNumber',
-      'nationalId'
+      'nationalId',
     ];
     listKey.forEach((item) => delete newObj[item]);
     return newObj;
