@@ -67,7 +67,7 @@ class ViewRequestForm extends PureComponent {
       case TIMEOFF_STATUS.drafts:
         return 'Drafts';
       case TIMEOFF_STATUS.onHold:
-        return 'Withdraw';
+        return 'Withdrawn';
       case TIMEOFF_STATUS.deleted:
         return 'Deleted';
       default:
@@ -78,7 +78,8 @@ class ViewRequestForm extends PureComponent {
   render() {
     const {
       timeOff: {
-        viewingLeaveRequest: { status = '', ticketID = '', approvalManager = {} } = {},
+        viewingLeaveRequest: { status = '', ticketID = '' } = {},
+        viewingLeaveRequest = {},
       } = {},
     } = this.props;
 
@@ -99,7 +100,7 @@ class ViewRequestForm extends PureComponent {
               <RequestInformation />
             </Col>
             <Col xs={24} lg={8}>
-              <RightContent approvalManager={approvalManager} status={status} />
+              <RightContent data={viewingLeaveRequest} status={status} />
             </Col>
           </Row>
         </div>

@@ -141,77 +141,34 @@ export default class HolidayCalendar extends PureComponent {
           ? `${styles.currentDay}`
           : '';
 
-      let eventMarkBeginClassName = '';
-      let eventMarkEndClassName = '';
-      let lineClassName = '';
       let colorClassName = '';
       let eventMarkSingleClassName = '';
       const weekDayCheckClassName = '';
 
       holidaysList.forEach((value) => {
-        // const sameName = holidaysList.filter(item => value.name === item.name)
-        // console.log('sameDay', sameName);
-        const { date: {iso = ''}, fromDate: from = '', toDate: to = '' } = value; // parse
+        const {
+          date: { iso = '' },
+        } = value; // parse
         const newDate = new Date(iso);
-        const eventFromDay = moment(newDate).format('D');
-        const eventFromMonth = moment(newDate).format('M');
-        const eventFromYear = moment(from).format('Y');
-        const eventToDay = moment(to).format('D');
-        const eventToMonth = moment(to).format('M');
-        const eventToYear = moment(to).format('Y');
+        const eventDay = moment(newDate).format('D');
+        const eventMonth = moment(newDate).format('M');
+        const eventYear = moment(newDate).format('Y');
 
         if (
-          d === eventFromDay * 1 &&
-          d === eventToDay * 1 &&
-          eventFromMonth * 1 === eventToMonth * 1 &&
-          eventFromYear * 1 === eventToYear * 1 &&
-          eventFromMonth * 1 === this.selectedMonth() * 1 &&
-          eventFromYear * 1 === this.selectedYear() * 1
+          d * 1 === eventDay * 1 &&
+          eventMonth * 1 === this.selectedMonth() * 1 &&
+          eventYear * 1 === this.selectedYear() * 1
         ) {
           if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
             colorClassName = styles.upcomingColor;
           } else colorClassName = styles.leaveTakenColor;
 
           eventMarkSingleClassName = styles.eventMarkSingleClassName;
-        } else {
-          if (
-            d === eventFromDay * 1 &&
-            this.selectedMonth() * 1 === eventFromMonth * 1 &&
-            this.selectedYear() * 1 === eventFromYear * 1
-          ) {
-            if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
-              colorClassName = styles.upcomingColor;
-            } else colorClassName = styles.leaveTakenColor;
-            eventMarkBeginClassName = styles.markEventBegin;
-          }
-          if (
-            d === eventToDay * 1 &&
-            this.selectedMonth() * 1 === eventToMonth * 1 &&
-            this.selectedYear() * 1 === eventToYear * 1
-          ) {
-            if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
-              colorClassName = styles.upcomingColor;
-            } else colorClassName = styles.leaveTakenColor;
-            eventMarkEndClassName = styles.markEventEnd;
-          }
-
-          if (
-            d > eventFromDay * 1 &&
-            d < eventToDay * 1 &&
-            this.selectedYear() * 1 === eventFromYear * 1 &&
-            this.selectedYear() * 1 === eventToYear * 1 &&
-            this.selectedMonth() * 1 === eventFromMonth * 1 &&
-            this.selectedMonth() * 1 === eventToMonth * 1
-          )
-            lineClassName = styles.lineClassName;
         }
       });
 
       daysInMonth.push(
-        <td
-          key={d}
-          className={`${className} ${eventMarkSingleClassName} ${lineClassName} ${eventMarkBeginClassName} ${eventMarkEndClassName} ${colorClassName}`}
-        >
+        <td key={d} className={`${className} ${eventMarkSingleClassName} ${colorClassName}`}>
           <span className={`${weekDayCheckClassName} ${currentDayClassName}`}>{d}</span>
         </td>,
       );
@@ -239,7 +196,7 @@ export default class HolidayCalendar extends PureComponent {
   };
 
   checkIfUpcomingOrLeaveTaken = (value) => {
-    const { date: {iso} = {} } = value; // parse
+    const { date: { iso } = {} } = value; // parse
     const convertDate = new Date(iso);
     const eventFromDay = moment(convertDate).format('D');
     const eventFromMonth = moment(convertDate).format('M');

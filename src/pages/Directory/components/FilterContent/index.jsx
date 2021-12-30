@@ -1,4 +1,4 @@
-import { Form, Select, Row, Col, InputNumber } from 'antd';
+import { Form, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
@@ -311,11 +311,12 @@ const FilterContent = (props) => {
         </Select>
       </Form.Item>
 
-      <Form.Item label="By yrs of experience">
+      {/* temporarily hide this one - need backend fixes */}
+      {/* 
+       <Form.Item label="By yrs of experience">
         <Row>
           <Col span={11}>
             <Form.Item name="fromExp">
-              {/* <Input placeholder="From" /> */}
               <InputNumber min={0} max={100} placeholder="From" />
             </Form.Item>
           </Col>
@@ -324,12 +325,11 @@ const FilterContent = (props) => {
           </Col>
           <Col span={11}>
             <Form.Item name="toExp">
-              {/* <Input placeholder="To" /> */}
               <InputNumber min={0} max={100} placeholder="To" />
             </Form.Item>
           </Col>
         </Row>
-      </Form.Item>
+      </Form.Item>  */}
     </Form>
   );
 };
