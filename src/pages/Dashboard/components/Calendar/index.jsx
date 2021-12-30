@@ -117,7 +117,7 @@ const Calendar = (props) => {
       </div>
       <div className={styles.viewAllMeetingBtn} onClick={() => setModalVisible(true)}>
         {activeKey === '1' && <span>View all Meetings</span>}
-        {activeKey === '2' && <span>View all Holiday</span>}
+        {activeKey === '2' && <span>View all Holidays</span>}
         <img src={LeftArrow} alt="expand" />
       </div>
 
