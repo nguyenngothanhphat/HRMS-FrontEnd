@@ -106,10 +106,10 @@ const ActivityCard = (props) => {
           {taskName || ''}
         </Col>
         <Col span={START_TIME} className={styles.normalCell}>
-          {startTime ? moment(startTime, hourFormatAPI).format(hourFormat) : '-'}
+          {moment(startTime, hourFormatAPI).format(hourFormat)}
         </Col>
         <Col span={END_TIME} className={styles.normalCell}>
-          {endTime ? moment(endTime, hourFormatAPI).format(hourFormat) : '-'}
+          {moment(endTime, hourFormatAPI).format(hourFormat)}
         </Col>
         <Col span={NIGHT_SHIFT} className={styles.normalCell}>
           {nightShift ? 'Yes' : 'No'}

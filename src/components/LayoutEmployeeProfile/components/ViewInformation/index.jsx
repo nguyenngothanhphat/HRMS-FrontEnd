@@ -501,35 +501,24 @@ class ViewInformation extends Component {
           </div>
 
           <Divider />
-          <div className={s.infoEmployee__socialMedia} style={{marginLeft: '-15px'}}>
-            <Tooltip 
-              title={linkedIn ? 'LinkedIn' : "Please update the Linkedin Profile in the Employee profile page"}
-            >
-              <Button
-                disabled={linkedIn ? '' : 'true'}
-                style={{ width: '40px', background: 'white', border: '1px solid white'}}
-              >
-                <a href={linkedIn} target="_blank" rel="noopener noreferrer">
-                  <img
-                    src="/assets/images/iconLinkedin.svg"
-                    alt="img-arrow"
-                    style={{ cursor: 'pointer' }}
-                  />
-                </a>
-              </Button>
+          <div className={s.infoEmployee__socialMedia}>
+            <Tooltip title="LinkedIn">
+              <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
+                <img
+                  src="/assets/images/iconLinkedin.svg"
+                  alt="img-arrow"
+                  style={{ cursor: 'pointer' }}
+                />
+              </a>
             </Tooltip>
             <Tooltip title="Email">
-              <Button
-                style={{ width: '40px', background: 'white', border: '1px solid white'}}
-              >
-                <a href={`mailto:${workEmail}`}>
-                  <img
-                    src="/assets/images/iconMail.svg"
-                    alt="img-arrow"
-                    style={{ marginLeft: '5px', cursor: 'pointer' }}
-                  />
-                </a>
-              </Button>
+              <a href={`mailto:${workEmail}`}>
+                <img
+                  src="/assets/images/iconMail.svg"
+                  alt="img-arrow"
+                  style={{ marginLeft: '5px', cursor: 'pointer' }}
+                />
+              </a>
             </Tooltip>
           </div>
           <div className={s.viewBtnAction}>{this.btnAction(permissions, profileOwner)}</div>
