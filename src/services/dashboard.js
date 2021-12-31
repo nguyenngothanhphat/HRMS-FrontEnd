@@ -7,6 +7,12 @@ export async function getListTicket(payload) {
     data: payload,
   });
 }
+export async function getListMyTicket(payload) {
+  return request('/api/leaverequesttenant/get-my-request', {
+    method: 'POST',
+    data: payload,
+  });
+}
 export async function aprovalLeaveRequest(payload) {
   return request('/api/leaverequesttenant/reporting-manager-approve', {
     method: 'POST',
