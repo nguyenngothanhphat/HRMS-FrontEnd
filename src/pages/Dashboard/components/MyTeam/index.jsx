@@ -33,7 +33,7 @@ const MyTeam = (props) => {
   }, [selectedMonth]);
 
   useEffect(() => {
-    const roleEmployee = employee ? employee.title.roles : [];
+    const roleEmployee = employee && employee?.title ? employee.title.roles : [];
     const employeeId = employee ? employee._id : '';
     const companyInfo = employee ? employee.company : {}
     dispatch({
