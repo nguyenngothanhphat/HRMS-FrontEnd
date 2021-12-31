@@ -11,9 +11,9 @@ const TicketTag = (props) => {
 
   // RENDER UI
   const renderTag = (item) => {
-    const { date = '', ticketID = '' } = item;
-    const dateTemp = moment(date).date();
-    const monthTemp = moment(date).locale('en').format('MMM');
+    const { onDate = '', ticketID = '', status = '', type: { typeName = '' } = {} || {} } = item;
+    const dateTemp = moment(onDate).date();
+    const monthTemp = moment(onDate).locale('en').format('MMM');
     return (
       <Col span={24}>
         <div className={styles.TicketTag}>
@@ -25,7 +25,7 @@ const TicketTag = (props) => {
               </div>
               <div className={styles.content}>
                 <span className={styles.userId}>[Ticket ID #{ticketID}]</span> Support request
-                regarding leave policy is In Progress
+                regarding {typeName} is {status}
               </div>
             </Col>
             <Col span={4} className={styles.rightPart} onClick={() => setOpenModal(true)}>
