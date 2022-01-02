@@ -1,4 +1,4 @@
-import { Col, Row, Tooltip } from 'antd';
+import { Col, Popconfirm, Row, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
@@ -106,10 +106,10 @@ const ActivityCard = (props) => {
           {taskName || ''}
         </Col>
         <Col span={START_TIME} className={styles.normalCell}>
-          {moment(startTime, hourFormatAPI).format(hourFormat)}
+          {startTime ? moment(startTime, hourFormatAPI).format(hourFormat) : '-'}
         </Col>
         <Col span={END_TIME} className={styles.normalCell}>
-          {moment(endTime, hourFormatAPI).format(hourFormat)}
+          {endTime ? moment(endTime, hourFormatAPI).format(hourFormat) : '-'}
         </Col>
         <Col span={NIGHT_SHIFT} className={styles.normalCell}>
           {nightShift ? 'Yes' : 'No'}
@@ -123,7 +123,9 @@ const ActivityCard = (props) => {
         <Col span={ACTIONS} className={`${styles.normalCell} ${styles.alignCenter}`}>
           <div className={styles.actionsButton}>
             <img src={EditIcon} onClick={onEditCard} alt="" />
-            <img src={DeleteIcon} onClick={onRemoveCard} alt="" />
+            <Popconfirm title="Sure to remove?" onConfirm={onRemoveCard}>
+              <img src={DeleteIcon} alt="" />
+            </Popconfirm>
           </div>
         </Col>
       </Row>

@@ -62,7 +62,7 @@ class View extends PureComponent {
   render() {
     const { visible, linkImage } = this.state;
     const {
-      dataAPI,
+      dataAPI = {},
       AdhaarCard = {},
       currentUser: {
         employee: { _id: idEmployee = '' },
@@ -70,8 +70,9 @@ class View extends PureComponent {
       permissions = [],
       idCurrentEmployee = '',
       locationEmpl: { headQuarterAddress: { country = '' } = {} } = {},
+      // taxData = [],
+      // bankData = [],
     } = this.props;
-
     let splitUrl = '';
     let urlAdhaarCard = '';
     if (AdhaarCard !== null) {

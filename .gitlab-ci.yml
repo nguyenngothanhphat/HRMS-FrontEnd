@@ -1,3 +1,13 @@
+# This file is a template, and might need editing before it works on your project.
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
+
+# This is a sample GitLab CI/CD configuration file that should run without any modifications.
+# It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
+# it uses echo commands to simulate the pipeline execution.
+#
 # A pipeline is composed of independent jobs that run scripts, grouped into stages.
 # Stages run in sequential order, but jobs within stages run in parallel.
 #
@@ -5,31 +15,43 @@
 
 stages:          # List of stages for jobs, and their order of execution
   - build
-  - deploy-prod
+  - deploy
+  - deploy-master
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
   tags:
-    - production-runner
+    - master
   script:
     - source /etc/environment
-    - which npm
-    - which node
     - npm install
     - npm run build
     - docker login -u khoa.le -p $PWD gitlab.paxanimi.ai:8150
-    #- docker rmi gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
+    - docker rmi gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
     - docker build -t gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest -f Dockerfile .
     - docker push gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
-    - kubectl delete -f /home/HRMS-microservices/frontend/frontend-deployment.yaml
+    - kubectl delete -f /home/hrms/hrms-infra/kubernetes-service-files/Frontend/frontend-deployment.yaml --ignore-not-found=true
   only:
-    - production
+    - staging
 
-deploy-job-prod:
-  stage: deploy-prod
+deploy-job-worker-2:
+  stage: deploy
   tags:
-    - production-runner
+    - worker-2
   script:
-    - kubectl apply -f /home/HRMS-microservices/frontend/frontend-deployment.yaml
+    - source /etc/environment
+    - docker login -u khoa.le -p $PWD gitlab.paxanimi.ai:8150
+    - docker rmi gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
+    - docker pull gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
   only:
-    - production
+    - staging
+
+deploy-job-master:
+  stage: deploy-master
+  tags:
+    - master
+  script:
+    - kubectl apply -f /home/hrms/hrms-infra/kubernetes-service-files/Frontend/frontend-deployment.yaml
+    #- kubectl get po -A
+  only:
+    - staging

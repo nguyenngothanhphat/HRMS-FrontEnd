@@ -51,16 +51,14 @@ export default class ManagerLandingPage extends PureComponent {
   };
 
   render() {
-    const describeText = [
-      <p>Apply for leaves with/without pay, work from home or client office.</p>,
-      <p>Request for a compensation leave if you have worked for extra days/hours.</p>,
-    ];
     const { viewInformation } = this.state;
+    const { eligibleForCompOff = false } = this.props;
+
     return (
       <>
         <div className={styles.ManagerLandingPage}>
           <Row gutter={[20, 20]}>
-            <Col xs={24} md={6}>
+            <Col xs={24} lg={6}>
               <Row gutter={[20, 20]}>
                 <Col span={24}>
                   <LeaveInformation
@@ -77,30 +75,30 @@ export default class ManagerLandingPage extends PureComponent {
               </Row>
             </Col>
 
-            <Col xs={24} md={18}>
+            <Col xs={24} lg={18}>
               <Row gutter={[20, 20]} style={{ marginBottom: '20px' }}>
-                <Col xs={24} lg={15}>
+                <Col xs={24} lg={eligibleForCompOff ? 15 : 24}>
                   <ApplyRequest
                     title="Apply for Timeoff from Office"
-                    describe={describeText[0]}
                     buttonText="Request Time Off"
                     onClick={this.buttonOnClickLeave}
                     type={1}
                   />
                 </Col>
-                <Col xs={24} lg={9}>
-                  <ApplyRequest
-                    title="Apply for Compoff"
-                    describe={describeText[1]}
-                    onClick={this.buttonOnClickCompoff}
-                    buttonText="Request Compoff"
-                    type={2}
-                  />
-                </Col>
+                {eligibleForCompOff && (
+                  <Col xs={24} lg={9}>
+                    <ApplyRequest
+                      title="Apply for Compoff"
+                      onClick={this.buttonOnClickCompoff}
+                      buttonText="Request Compoff"
+                      type={2}
+                    />
+                  </Col>
+                )}
               </Row>
               <Row gutter={[20, 20]} style={{ marginBottom: '20px' }}>
                 <Col span={24}>
-                  <TimeOffRequestsTable />
+                  <TimeOffRequestsTable eligibleForCompOff={eligibleForCompOff} />
                 </Col>
               </Row>
               {/* {!closeFeedbackBar && (

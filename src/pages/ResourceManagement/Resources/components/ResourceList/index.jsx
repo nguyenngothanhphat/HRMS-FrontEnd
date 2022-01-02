@@ -65,7 +65,6 @@ class ResourceList extends Component {
     this.fetchProjectList();
     this.fetchStatusList();
     this.fetchResourceList();
-    this.fetchEmployeeList();
     this.fetchDivisions();
     this.fetchTitleList();
   };
@@ -175,10 +174,27 @@ class ResourceList extends Component {
     this.fetchResourceList();
   };
 
-  fetchEmployeeList = async () => {
+  searchTable = (searchKey) => {
     const { dispatch } = this.props;
+    const {pageSelected, availableStatus} = this.state;
+    const value = searchKey.searchKey || '';
     dispatch({
-      type: 'resourceManagement/getListEmployee',
+      type: 'resourceManagement/getResources',
+      payload: {
+        page: pageSelected,
+        availableStatus,
+        q: value
+      }
+    }).then(() => {
+      const { resourceList, projectList } = this.props;
+      const array = formatData(resourceList, projectList);
+      // const listFilterResource = array.filter(
+      //   (obj) => obj.employeeName.toLowerCase().indexOf(value.toLowerCase()) >= 0
+      // ) || [];
+      this.setState({
+        resourceList: array,
+        pageSelected: 1
+      });
     });
   };
 
@@ -231,7 +247,11 @@ class ResourceList extends Component {
             currentStatus={availableStatus}
             changeAvailableStatus={this.changeAvailableStatus}
           />
-          <SearchTable onFilterChange={this.onFilterChange} filter={filter} />
+          <SearchTable
+            onFilterChange={this.onFilterChange}
+            filter={filter}
+            searchTable={this.searchTable}
+          />
         </div>
         <TableResources
           refreshData={this.refreshData}

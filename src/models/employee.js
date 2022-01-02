@@ -7,20 +7,24 @@ import {
   DepartmentFilter,
   EmployeeTypeFilter,
   getFilterList,
+  getSkillList,
   getListEmployee,
   getDataOrgChart,
   getListAdministrator,
   getListExportEmployees,
+  getListEmployeeSingleCompany,
+  getListMyTeam,
 } from '../services/employee';
 import { addEmployee, updateEmployee } from '../services/employeesManagement';
 
 const employee = {
   namespace: 'employee',
   state: {
-    filter: [],
+    filter: {},
     location: [],
     department: [],
     employeetype: [],
+    listSkill: [],
     listEmployeeMyTeam: [],
     listEmployeeActive: [],
     listEmployeeInActive: [],
@@ -34,6 +38,7 @@ const employee = {
     totalActiveEmployee: '',
     totalInactiveEmployee: '',
     totalMyTeam: '',
+    employeeList2: [], // for filter pane
   },
   effects: {
     *fetchEmployeeType(_, { call, put }) {
@@ -92,34 +97,23 @@ const employee = {
         return {};
       }
     },
-    *fetchListEmployeeMyTeam(
-      {
-        payload: {
-          company = '',
-          department = [],
-          location = [],
-          employeeType = [],
-          name = '',
-          title = [],
-          page = '',
-          limit = 10,
-        } = {},
-      },
-      { call, put },
-    ) {
+    *fetchSkillList(_, { call, put }) {
+      try {
+        const response = yield call(getSkillList);
+        const { statusCode, data: listSkill = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listSkill } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchListEmployeeMyTeam({ payload = {} }, { call, put }) {
       try {
         const currentPayload = {
+          ...payload,
           status: ['ACTIVE'],
-          company,
-          department,
-          location,
-          employeeType,
-          name,
-          title,
-          page,
-          limit,
         };
-        const response = yield call(getListEmployee, currentPayload);
+        const response = yield call(getListMyTeam, currentPayload);
         const { statusCode, data: listEmployeeMyTeam = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -136,34 +130,11 @@ const employee = {
         return 0;
       }
     },
-    *fetchListEmployeeActive(
-      {
-        payload: {
-          company = [],
-          department = [],
-          location = [],
-          employeeType = [],
-          name = '',
-          title = [],
-          skill = [],
-          page = '',
-          limit = 10,
-        } = {},
-      },
-      { call, put },
-    ) {
+    *fetchListEmployeeActive({ payload = {} }, { call, put }) {
       try {
         const currentPayload = {
+          ...payload,
           status: ['ACTIVE'],
-          company,
-          department,
-          location,
-          employeeType,
-          name,
-          title,
-          skill,
-          page,
-          limit,
         };
         const response = yield call(getListEmployee, currentPayload);
         const { statusCode, data: listEmployeeActive = [] } = response;
@@ -183,32 +154,11 @@ const employee = {
         return 0;
       }
     },
-    *fetchListEmployeeInActive(
-      {
-        payload: {
-          company = [],
-          department = [],
-          location = [],
-          employeeType = [],
-          name = '',
-          title = [],
-          page = '',
-          limit = 10,
-        } = {},
-      },
-      { call, put },
-    ) {
+    *fetchListEmployeeInActive({ payload = {} }, { call, put }) {
       try {
         const currentPayload = {
+          ...payload,
           status: ['INACTIVE'],
-          company,
-          department,
-          location,
-          employeeType,
-          name,
-          title,
-          page,
-          limit,
         };
         const response = yield call(getListEmployee, currentPayload);
         const { statusCode, data: listEmployeeInActive = [] } = response;
@@ -355,39 +305,37 @@ const employee = {
         return 0;
       }
     },
+    // for filter pane
+    *fetchEmployeeListSingleCompanyEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getListEmployeeSingleCompany, {
+          ...payload,
+          status: ['ACTIVE', 'INACTIVE'],
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            employeeList2: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
   },
 
   reducers: {
-    saveFilter(state, action) {
-      const data = [...state.filter];
-      const actionFilter = action.payload;
-      const findIndex = data.findIndex((item) => item.actionFilter.name === actionFilter.name);
-      if (findIndex < 0) {
-        const item = {
-          actionFilter: {
-            name: actionFilter?.name,
-          },
-        };
-        item.checkedList = actionFilter?.checkedList;
-        data.push(item);
-      } else {
-        data[findIndex] = {
-          ...data[findIndex],
-          checkedList: actionFilter.checkedList,
-        };
-      }
+    clearFilter(state) {
       return {
         ...state,
-        clearFilter: false,
-        filter: [...data],
-      };
-    },
-    ClearFilter(state) {
-      return {
-        ...state,
-        clearFilter: true,
-        clearName: true,
-        filter: [],
+        filter: {},
       };
     },
     offClearName(state) {
@@ -442,6 +390,15 @@ const employee = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveFilter(state, action) {
+      return {
+        ...state,
+        filter: {
+          ...state.filter,
+          ...action.payload,
+        },
       };
     },
   },

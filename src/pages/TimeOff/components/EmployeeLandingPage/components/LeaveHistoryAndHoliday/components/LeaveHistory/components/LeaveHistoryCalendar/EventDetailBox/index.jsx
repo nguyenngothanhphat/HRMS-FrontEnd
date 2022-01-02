@@ -13,13 +13,13 @@ export default class EventDetailBox extends PureComponent {
   };
 
   render() {
-    const { data = [], color = 0 } = this.props;
+    const { data = {}, color = 0 } = this.props;
     const {
       fromDate: from = '',
       toDate: to = '',
       type = '',
       duration = '',
-      name = '',
+      typeName = '',
       _id = '',
     } = data;
     return (
@@ -56,7 +56,7 @@ export default class EventDetailBox extends PureComponent {
           </span>
         </Col>
         <Col xs={9} className={styles.eventOfDay}>
-          {name}
+          {typeName}
         </Col>
         {/* </>
         )} */}

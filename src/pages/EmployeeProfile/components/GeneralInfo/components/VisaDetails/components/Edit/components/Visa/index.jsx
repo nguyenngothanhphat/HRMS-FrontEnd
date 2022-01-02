@@ -64,6 +64,10 @@ class VisaGeneral extends Component {
     }, 500);
   };
 
+  disabledDate = (current) => {
+    return current && current > moment().endOf('day');
+  };
+
   handleAddBtn = () => {
     const { visaData = [], dispatch } = this.props;
 
@@ -245,7 +249,7 @@ class VisaGeneral extends Component {
                       name={`visaNumber${index}`}
                       rules={[
                         {
-                          pattern: /^[+]*[\d]{0,12}$/,
+                          pattern: /^[a-zA-Z0-9\\-]{0,16}$/,
                           message: formatMessage({
                             id: 'pages.employeeProfile.validateNumber',
                           }),
@@ -322,7 +326,7 @@ class VisaGeneral extends Component {
                   ) : (
                     ''
                   )}
-                  <Form.Item label="Visa Type" name={`visaType${index}`}>
+                  {/* <Form.Item label="Visa Type" name={`visaType${index}`}>
                     <Select
                       className={styles.selectForm}
                       tagRender={this.tagRender}
@@ -340,10 +344,41 @@ class VisaGeneral extends Component {
                       <Option value="B3">B3</Option>
                       <Option value="nothing">nothing...</Option>
                     </Select>
+                  </Form.Item> */}
+                  <Form.Item
+                    key={`visaType${index + 1}`}
+                    label="Visa Type"
+                    name={`visaType${index}`}
+                    rules={[
+                      {
+                        pattern: /^[a-zA-Z0-9\\-]{0,16}$/,
+                        message: formatMessage({
+                          id: 'pages.employeeProfile.validateVisaType',
+                        }),
+                      },
+                    ]}
+                  >
+                    <Input
+                      defaultValue={item.name}
+                      className={this.handleSetClass(
+                        index,
+                        checkValidate,
+                        styles.inputForm,
+                        styles.inputFormImageValidate,
+                      )}
+                      onChange={(event) => {
+                        const { value: fieldValue } = event.target;
+                        this.handleFieldChange(index, 'visaType', fieldValue);
+                      }}
+                    />
                   </Form.Item>
                   <Form.Item label="Country" name={`visaIssuedCountry${index}`}>
                     <Select
                       showArrow
+                      showSearch
+                      optionFilterProp="children"
+                      filterOption={(input, option) =>
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       className={styles.selectForm}
                       onChange={(value) => {
                         this.handleFieldChange(index, 'visaIssuedCountry', value);
@@ -369,7 +404,7 @@ class VisaGeneral extends Component {
                       // suffixIcon={<DownOutlined className={styles.arrowDown} />}
                     >
                       <Option value="Single Entry">Single Entry</Option>
-                      <Option value="nothing">nothing....</Option>
+                      <Option value="Multiple Entry">Multiple Entry</Option>
                     </Select>
                   </Form.Item>
                   <Form.Item label="Issued On" name={`visaIssuedOn${index}`}>
@@ -379,6 +414,7 @@ class VisaGeneral extends Component {
                         this.handleFieldChange(index, 'visaIssuedOn', dates);
                       }}
                       className={styles.dateForm}
+                      disabledDate={this.disabledDate}
                     />
                   </Form.Item>
                   <Form.Item label="Valid Till" name={`visaValidTill${index}`}>
@@ -405,7 +441,7 @@ class VisaGeneral extends Component {
                         name={`visaNumber${index + 1}`}
                         rules={[
                           {
-                            pattern: /^[+]*[\d]{0,12}$/,
+                            pattern: /^[a-zA-Z0-9\\-]{0,16}$/,
                             message: formatMessage({
                               id: 'pages.employeeProfile.validateNumber',
                             }),
@@ -484,7 +520,7 @@ class VisaGeneral extends Component {
                     ) : (
                       ''
                     )}
-                    <Form.Item
+                    {/* <Form.Item
                       label="Visa Type"
                       name={`visaType${index + 1}`}
                       initialValue={item.visaType}
@@ -504,6 +540,32 @@ class VisaGeneral extends Component {
                         <Option value="B3">B3</Option>
                         <Option value="nothing">nothing...</Option>
                       </Select>
+                    </Form.Item> */}
+                    <Form.Item
+                      key={`visaType${index + 1}`}
+                      label="Visa Type"
+                      name={`visaType${index}`}
+                      rules={[
+                        {
+                          pattern: /^[a-zA-Z0-9\\-]{0,16}$/,
+                          message: formatMessage({
+                            id: 'pages.employeeProfile.validateVisaType',
+                          }),
+                        },
+                      ]}
+                    >
+                      <Input
+                        className={this.handleSetClass(
+                          index,
+                          checkValidate,
+                          styles.inputForm,
+                          styles.inputFormImageValidate,
+                        )}
+                        onChange={(event) => {
+                          const { value: fieldValue } = event.target;
+                          this.handleFieldChange(index, 'visaType', fieldValue);
+                        }}
+                      />
                     </Form.Item>
                     <Form.Item
                       label="Country"
@@ -542,7 +604,7 @@ class VisaGeneral extends Component {
                         showArrow
                       >
                         <Option value="Single Entry">Single Entry</Option>
-                        <Option value="nothing">nothing....</Option>
+                        <Option value="Multiple Entry">Multiple Entry</Option>
                       </Select>
                     </Form.Item>
                     <Form.Item
@@ -556,6 +618,7 @@ class VisaGeneral extends Component {
                           this.handleFieldChange(index, 'visaIssuedOn', dates);
                         }}
                         className={styles.dateForm}
+                        disabledDate={this.disabledDate}
                       />
                     </Form.Item>
                     <Form.Item

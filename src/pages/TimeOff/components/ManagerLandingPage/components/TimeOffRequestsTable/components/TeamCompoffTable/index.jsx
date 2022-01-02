@@ -6,7 +6,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
-// import DefaultAvatar from '@/assets/defaultAvatar.png';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import RejectCommentModal from '../RejectCommentModal';
 
@@ -103,7 +103,11 @@ class TeamCompoffTable extends PureComponent {
                 const { firstName = '', lastName = '', avatar = '' } = user;
                 return (
                   <Tooltip title={`${firstName} ${lastName}`} placement="top">
-                    <Avatar size="small" style={{ backgroundColor: '#EAF0FF' }} src={avatar} />
+                    <Avatar
+                      size="small"
+                      style={{ backgroundColor: '#EAF0FF' }}
+                      src={avatar || DefaultAvatar}
+                    />
                   </Tooltip>
                 );
               })}

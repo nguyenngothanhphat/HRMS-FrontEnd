@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
 import { Col } from 'antd';
-import { connect } from 'umi';
+// import { connect } from 'umi';
 import styles from '../../../index.less';
 
-@connect(({ employeeProfile: { tempData: { taxData = [] } = {} } = {} }) => ({
-  taxData,
-}))
+// @connect(({ employeeProfile: { tempData: { taxData = [] } = {} } = {} }) => ({
+//   taxData,
+// }))
 class ViewTax extends PureComponent {
   render() {
     const { taxData } = this.props;

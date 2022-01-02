@@ -142,7 +142,7 @@ export async function getEmailsListByCompany(payload) {
 
 export async function getProjectsListByEmployee(payload) {
   return request(
-    `/api-project/projecttenant/list`,
+    `api-project/resourcetenant/get-by-employee`,
     {
       method: 'POST',
       data: payload,

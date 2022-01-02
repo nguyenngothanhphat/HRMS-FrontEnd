@@ -2,6 +2,7 @@ import { notification } from 'antd';
 import { dialog } from '@/utils/utils';
 import {
   getListTicket,
+  getListMyTicket,
   aprovalCompoffRequest,
   aprovalLeaveRequest,
   rejectLeaveRequest,
@@ -13,11 +14,14 @@ import {
   updateWidgets,
   getMyTeam,
   getMyTimesheet,
+  getListMyTeam,
 } from '../services/dashboard';
 import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
 
 const defaultState = {
   listTicket: [],
+  listMyTicket: {},
+  totalMyTicket: 0,
   isLoadData: false,
   totalTicket: 0,
   googleCalendarList: [],
@@ -38,9 +42,7 @@ const dashboard = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const {
-          statusCode,
-        } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         const {
           data: { compoffRequest = [], leaveRequest = [] },
@@ -53,6 +55,20 @@ const dashboard = {
         leaveRequest.forEach((item) => listTicket.push({ typeTicket: 'leaveRequest', ...item }));
 
         yield put({ type: 'save', payload: { listTicket, isLoadData: false, totalTicket: total } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchListMyTicket({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getListMyTicket, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data, total } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listMyTicket: data, totalMyTicket: total } });
       } catch (errors) {
         dialog(errors);
       }
@@ -189,10 +205,10 @@ const dashboard = {
     *fetchMyTeam({ payload = {} }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getMyTeam, {
+        response = yield call(getListMyTeam, {
           ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
+          // tenantId: getCurrentTenant(),
+          // company: getCurrentCompany(),
         });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;

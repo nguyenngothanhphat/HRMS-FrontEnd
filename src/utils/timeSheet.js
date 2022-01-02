@@ -1,5 +1,14 @@
 import moment from 'moment';
 
+const TAB_NAME = {
+  MY: 'my',
+  REPORTS: 'reports',
+  PM_REPORTS: 'pm-reports',
+  FINANCE_REPORTS: 'finance-reports',
+  HR_REPORTS: 'hr-reports',
+  SETTINGS: 'settings',
+};
+
 const VIEW_TYPE = {
   D: 'D', // day
   W: 'W', // week
@@ -79,7 +88,7 @@ const EMP_MT_SECONDARY_COL_SPAN = {
   ACTIONS: 3,
 };
 
-const EMP_ROW_HEIGHT = 60; // px
+const EMP_ROW_HEIGHT = 72; // px
 
 // MANAGER VIEW
 const MNG_MT_MAIN_COL_SPAN = {
@@ -124,8 +133,8 @@ const parseTimeAPI = (time = '') => {
 
 // WORKING HOURS
 const WORKING_HOURS = {
-  START: 7,
-  END: 21,
+  START: 6,
+  END: 23,
 };
 
 const TASKS = [
@@ -171,6 +180,7 @@ const generateAllWeeks = (fromDate, toDate) => {
 };
 
 export {
+  TAB_NAME,
   VIEW_TYPE,
   activityName,
   activityColor,

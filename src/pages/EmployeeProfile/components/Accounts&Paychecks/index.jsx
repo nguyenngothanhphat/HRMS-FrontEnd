@@ -16,7 +16,7 @@ import styles from './index.less';
     employeeProfile: {
       editGeneral: { openTax, openBank } = {},
       originData: { bankData: bankDataOrigin = {}, taxData: taxDataOrigin = {} },
-      tempData: { bankData = {}, taxData = {} } = {},
+      // tempData: { bankData = {}, taxData = {} } = {},
       visibleSuccess = false
     } = {},
   }) => ({
@@ -27,8 +27,8 @@ import styles from './index.less';
     bankDataOrigin,
     visibleSuccess,
     taxDataOrigin,
-    bankData,
-    taxData,
+    // bankData,
+    // taxData,
   }),
 )
 class AccountsPaychecks extends PureComponent {
@@ -55,7 +55,7 @@ class AccountsPaychecks extends PureComponent {
 
   handleCancel = (name) => {
     if (name === 'bank') {
-      const { bankDataOrigin, bankData, dispatch } = this.props;
+      const { bankDataOrigin, dispatch } = this.props;
       const reverseFields = {
         bankName: bankDataOrigin[0] ? bankDataOrigin[0].bankName : '-',
         accountNumber: bankDataOrigin[0] ? bankDataOrigin[0].accountNumber : '-',
@@ -64,7 +64,7 @@ class AccountsPaychecks extends PureComponent {
         micrcCode: bankDataOrigin[0] ? bankDataOrigin[0].micrcCode : '-',
         uanNumber: bankDataOrigin[0] ? bankDataOrigin[0].uanNumber : '-',
       };
-      const bankList = [...bankData];
+      const bankList = [...bankDataOrigin];
       const payload = { ...bankList[0], ...reverseFields };
       bankList.splice(0, 1, payload);
       const isModified = JSON.stringify(bankList) !== JSON.stringify(bankDataOrigin);
@@ -82,13 +82,13 @@ class AccountsPaychecks extends PureComponent {
       });
     }
     if (name === 'tax') {
-      const { taxDataOrigin, taxData, dispatch } = this.props;
+      const { taxDataOrigin, dispatch } = this.props;
       const reverseFields = {
         incomeTaxRule: taxDataOrigin[0] ? taxDataOrigin[0].incomeTaxRule : '-',
         panNum: taxDataOrigin[0] ? taxDataOrigin[0].panNum : '-',
       };
-      const taxList = [...taxData];
-      const payload = { ...taxData[0], ...reverseFields };
+      const taxList = [...taxDataOrigin];
+      const payload = { ...taxDataOrigin[0], ...reverseFields };
       taxList.splice(0, 1, payload);
       const isModified = JSON.stringify(taxList) !== JSON.stringify(taxDataOrigin);
       dispatch({
@@ -115,12 +115,12 @@ class AccountsPaychecks extends PureComponent {
   };
 
   render() {
-    const { openTax, loadingTax, openBank, loadingBank, visibleSuccess } = this.props;
+    const { openTax, loadingTax, openBank, loadingBank, visibleSuccess, bankDataOrigin, taxDataOrigin } = this.props;
     const { Panel } = Collapse;
     const getyear = new Date();
     const year = getyear.getFullYear();
-    const renderTax = openTax ? <EditTax handleCancel={this.handleCancel} /> : <ViewTax />;
-    const renderBank = openBank ? <EditBank handleCancel={this.handleCancel} /> : <ViewBank />;
+    const renderTax = openTax ? <EditTax handleCancel={this.handleCancel} /> : <ViewTax taxData={taxDataOrigin} />;
+    const renderBank = openBank ? <EditBank handleCancel={this.handleCancel} /> : <ViewBank bankData={bankDataOrigin} />;
     return (
       <div className={styles.AccountPaychecks}>
         <Row className={styles.TableBankDetails}>

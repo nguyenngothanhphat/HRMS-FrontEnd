@@ -83,7 +83,9 @@ class EditActionBTN extends Component {
     const { visible } = this.state;
     return (
       <div className={styles.EditActionBTN}>
-        <img src={editIcon} alt="historyIcon" onClick={() => this.showModal()} />
+        <div className={styles.buttonContainer}>
+          <img src={editIcon} alt="historyIcon" onClick={() => this.showModal()} />
+        </div>
         <Modal
           className={styles.modalEditProjectDetail}
           title="Edit Project Details"

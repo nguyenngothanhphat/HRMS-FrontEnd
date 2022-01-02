@@ -1,44 +1,28 @@
 import React, { PureComponent } from 'react';
-import { Collapse, Skeleton } from 'antd';
+import { Skeleton, Tabs } from 'antd';
 import { formatMessage, connect } from 'umi';
-import { EditFilled, MinusOutlined } from '@ant-design/icons';
-import PlusIcon from '@/assets/plusIcon1.svg';
-import AddIcon from '@/assets/add-symbols.svg';
-import MinusIcon from '@/assets/minusIcon1.svg';
-import styles from './styles.less';
-import GroupInfoType2 from '../../../../components/GroupInfoType2';
+import IconAdd from './components/DependentTabs/Edit/assets/AddIcon.svg';
+import HealthWellbeing from './components/HealthWellbeing';
+// import Financial from './components/Financial';
+// import Legal from './components/Legal';
 import DependentTabs from './components/DependentTabs';
-import KYC from './components/KYC';
+import ModalAddDependant from './components/DependentTabs/ModalAddDependant';
+// import ModalEditDependant from './components/DependentTabs/Edit';
+import styles from './styles.less';
 
+const { TabPane } = Tabs;
 const data = [
   {
     title: 'Medical',
-    plans: [{ 'Medical stuff': '07.20.21' }, { 'Medical stuff': '07.20.21' }],
+    coverageEndDate: [{ '2020 Open Access Plus - Choice Plan': '20 Jun 2020' }],
   },
-  { title: 'Life', plans: [{ 'Life stuff': '07.20.21' }, { 'Life stuff': '07.20.21' }] },
+  { title: 'Dental', coverageEndDate: [{ '2020 Voluntary Dental': '20 Jun 2020' }] },
   {
-    title: 'Money',
-    plans: [{ 'Medical money stuff': '07.20.21' }, { 'Money stuff': '07.20.21' }],
+    title: 'Life',
+    coverageEndDate: [{ '2020 Basic Life': '20 Jun 2020' }],
   },
-  { title: 'Lunch', plans: [{ 'Food stuff': '07.20.21' }, { 'Soup stuff': '07.20.21' }] },
-  { title: 'Over Time', plans: [{ 'Over Time stuff': '07.20.21' }] },
+  { title: 'Vision', coverageEndDate: [{ '2020 Open Access Plus - Choice Plan': '20 Jun 2020' }] },
 ];
-
-// const dependentData = [
-//   {
-//     name: 'John Doe',
-//     gender: 'Not sure',
-//     relationship: 'Married to Susan',
-//     dob: '21-5-1995',
-//   },
-//   {
-//     name: 'Mary Doe',
-//     gender: 'Lesbian',
-//     relationship: 'Married to John',
-//     dob: '21-5-1995',
-//   },
-// ];
-
 @connect(
   ({
     employeeProfile: {
@@ -63,6 +47,8 @@ class BenefitTab extends PureComponent {
     this.state = {
       isEditing: false,
       isAdding: false,
+      addDependant: false,
+      activeKey: '1',
     };
   }
 
@@ -93,9 +79,13 @@ class BenefitTab extends PureComponent {
     } else this.setEditing(true);
   };
 
+  handeAddDependant = () => {
+    this.setState({ addDependant: true });
+  };
+
   render() {
-    const { loading, dependentDetails: { dependents = [] } = {} } = this.props;
-    const { isEditing, isAdding } = this.state;
+    const { loading, dependentDetails = [] } = this.props;
+    const { isEditing, isAdding, addDependant, activeKey } = this.state;
     if (loading) return <Skeleton />;
     return (
       <div style={{ backgroundColor: '#f6f7f9' }}>
@@ -104,23 +94,38 @@ class BenefitTab extends PureComponent {
             <div>
               <div className={styles.header}>
                 <span className={styles.headingText}>
-                  {formatMessage({ id: 'pages.employeeProfile.BenefitTab.dependentDetails' })}
+                  {formatMessage({ id: 'pages.employeeProfile.BenefitTab.coveredIndividuals' })}
                 </span>
-                {!isEditing && !isAdding && (
+                {/* {!isEditing && !isAdding && (
                   <div className={styles.editButton} onClick={this.setAddingOrEditing}>
                     <EditFilled />
-                    {dependents.length > 0 ? (
-                      <span className={styles.editText}>Edit</span>
-                    ) : (
-                      <span className={styles.editText}>Add new</span>
-                    )}
+                    <span className={styles.editText}>Edit</span>
                   </div>
+                )} */}
+                {/** Edit after update data */}
+                {/* {!isEmpty(dependents) ? (
+                  <>
+                    {!isEditing && !isAdding && (
+                      <div className={styles.editButton} onClick={this.handleEditDependant}>
+                        <EditFilled />
+                        <span className={styles.editText}>Edit</span>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  ''
                 )}
+                <ModalEditDependant
+                  data={dependents}
+                  visible={editDependant}
+                  onClose={() => this.setState({ editDependant: false })}
+                  mode="multiple"
+                /> */}
               </div>
               <div>
                 <DependentTabs
                   key={Math.random().toString(36).substring(7)}
-                  data={dependents}
+                  data={dependentDetails}
                   isEditing={isEditing}
                   setEditing={this.setEditing}
                   isAdding={isAdding}
@@ -128,8 +133,20 @@ class BenefitTab extends PureComponent {
                 />
               </div>
             </div>
+            <div className={styles.addIcon}>
+              <div onClick={this.handeAddDependant}>
+                <img src={IconAdd} alt="add" />
+                <span>Add Dependant</span>
+              </div>
+            </div>
+            <ModalAddDependant
+              data={dependentDetails}
+              visible={addDependant}
+              onClose={() => this.setState({ addDependant: false })}
+              mode="multiple"
+            />
           </div>
-          <div className={styles.sideTab}>
+          {/* <div className={styles.sideTab}>
             <div>
               <span className={styles.headings}>
                 {formatMessage({ id: 'pages.employeeProfile.BenefitTab.kycDetails' })}
@@ -141,19 +158,34 @@ class BenefitTab extends PureComponent {
                 paytm="+91-7876534261"
               />
             </div>
-          </div>
+          </div> */}
 
-          <div className={styles.sideTab}>
+          {/** PENDING DATA */}
+
+          {/* <div className={styles.sideTab}>
             <h3 className={styles.headings}>
-              {formatMessage({ id: 'pages.employeeProfile.BenefitTab.optedPlans' })}
+              {formatMessage({ id: 'pages.employeeProfile.BenefitTab.electedCoverage' })}
             </h3>
-            <div className={styles.content}>
-              {data.map((item) => {
-                return <GroupInfoType2 key={Math.random().toString(36).substring(7)} data={item} />;
-              })}
+            <div>
+              <Tabs activeKey={activeKey} onTabClick={(key) => this.setState({ activeKey: key })}>
+                <TabPane tab="Health & Wellbeing" key="1">
+                  {data.map((item) => {
+                    return (
+                      <HealthWellbeing key={Math.random().toString(36).substring(7)} data={item} />
+                    );
+                  })}
+                </TabPane>
+                  <TabPane tab="Financial" key="2">
+                  <Financial />
+                </TabPane>
+                <TabPane tab="Legal" key="3">
+                  <Legal />
+                </TabPane> 
+              </Tabs>
             </div>
-          </div>
-          <div className={styles.sideTab}>
+          </div> */}
+
+          {/* <div className={styles.sideTab}>
             <Collapse
               accordion
               bordered={false}
@@ -163,8 +195,7 @@ class BenefitTab extends PureComponent {
                   <MinusOutlined className={styles.minusIcon} />
                 ) : (
                   <img src={AddIcon} alt="expand" />
-                )
-              }
+                )}
               className="site-collapse-custom-collapse"
               expandIconPosition="right"
             >
@@ -199,7 +230,7 @@ class BenefitTab extends PureComponent {
                 </div>
               </Collapse.Panel>
             </Collapse>
-          </div>
+          </div> */}
         </div>
       </div>
     );

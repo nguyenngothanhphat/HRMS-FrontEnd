@@ -1,5 +1,5 @@
 import React from 'react';
-import FilterIcon from '@/assets/projectManagement/filter.svg';
+import FilterIcon from '@/assets/directory/filter.svg';
 import styles from './index.less';
 
 const FilterButton = (props) => {

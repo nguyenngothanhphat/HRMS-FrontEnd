@@ -173,7 +173,7 @@ class EditBank extends Component {
             name="accountNumber"
             rules={[
               {
-                pattern: /^[+]*[\d]{0,12}$/,
+                pattern: /^[+]*[\d]{0,16}$/,
                 message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
               },
             ]}

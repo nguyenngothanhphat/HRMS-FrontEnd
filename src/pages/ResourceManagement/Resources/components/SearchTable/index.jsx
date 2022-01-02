@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Input, Popover } from 'antd';
+import { debounce } from 'lodash';
 import { SearchOutlined } from '@ant-design/icons';
 import filterIcon from '@/assets/ticketManagement-filter.svg';
 import closeIcon from '@/assets/closeIcon.svg';
@@ -13,6 +14,11 @@ class SearchTable extends PureComponent {
       visible: false,
     };
   }
+
+  onSearchDebounce = debounce((value) => {
+    const { searchTable = () => {} } = this.props;
+    searchTable({ searchKey: value });
+  }, 1000);
 
   renderTitle = () => {
     return (
@@ -29,14 +35,9 @@ class SearchTable extends PureComponent {
     );
   };
 
-  onPressEnter = ({ target: { value } }) => {
-    console.log(value);
-  };
-
-  onChangeInput = (e) => {
-    e.preventDefault();
-    const { onSearch = () => {} } = this.props;
-    onSearch(e.target.value);
+  onChangeInput = (e = {}) => {
+    const { value = '' } = e.target;
+    this.onSearchDebounce(value);
   };
 
   openFilter = () => {
@@ -45,14 +46,15 @@ class SearchTable extends PureComponent {
   };
 
   render() {
-    const {visible} = this.state;
-    const {filter, onFilterChange} = this.props
+    const { visible } = this.state;
+    const { filter, onFilterChange } = this.props;
     return (
       <div className={styles.searchFilter}>
         <div>
           <Popover
-            on
-            content={<FilterForm onFilterChange={onFilterChange} filter={filter} />}
+            content={
+              <FilterForm onFilterChange={onFilterChange} filter={filter} visible={visible} />
+            }
             title={this.renderTitle()}
             trigger="click"
             placement="bottomRight"
@@ -69,7 +71,6 @@ class SearchTable extends PureComponent {
             placeholder="Search by Name, user ID"
             onChange={this.onChangeInput}
             prefix={<SearchOutlined />}
-            onPressEnter={this.onPressEnter}
           />
         </div>
       </div>

@@ -10,10 +10,10 @@ const PendingApprovalTag = (props) => {
     item: {
       createdAt: date = '',
       employee: { generalInfo: { legalName, userId } = {} || {} } = {} || {},
+      type: { typeName = '' } = {} || {},
     } = {},
     item,
   } = props;
-
   const [openModal, setOpenModal] = useState(false);
 
   // RENDER UI
@@ -31,8 +31,11 @@ const PendingApprovalTag = (props) => {
                   <span>{monthTemp}</span>
                 </div>
                 <div className={styles.content}>
-                  New Asset request from {legalName}{' '}
-                  <span className={styles.userId}>[User ID-{userId}]</span> has been received.
+                  New {typeName} from{' '}
+                  <span className={styles.userId}>
+                    {legalName} ({userId})
+                  </span>{' '}
+                  has been received.
                 </div>
               </Col>
               <Col span={4} className={styles.rightPart}>

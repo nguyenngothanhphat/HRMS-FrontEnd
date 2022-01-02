@@ -14,6 +14,8 @@ import {
   getCountryList,
   updatePassPort,
   updateVisa,
+  removeVisa,
+  removePassport,
   getAddPassPort,
   getVisa,
   getAddVisa,
@@ -119,8 +121,8 @@ const employeeProfile = {
       passportData: [{}],
       visaData: [],
       document: {},
-      bankData: {},
-      taxData: {},
+      // bankData: {},
+      // taxData: {},
     },
     listPRReport: [],
     documentCategories: [],
@@ -134,7 +136,7 @@ const employeeProfile = {
     listRelation: [],
     listStates: [],
     revoke: [],
-    visibleSuccess: false
+    visibleSuccess: false,
   },
   effects: {
     *fetchEmployeeIdByUserId({ payload }, { call, put }) {
@@ -476,6 +478,7 @@ const employeeProfile = {
         dialog(errors);
       }
     },
+
     *updateVisa({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
         const response = yield call(updateVisa, payload);
@@ -501,6 +504,56 @@ const employeeProfile = {
         dialog(errors);
       }
     },
+    *removeVisa({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+      try {
+        const response = yield call(removeVisa, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode, message } = response;
+
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchVisa',
+          payload: { employee: idCurrentEmployee, tenantId: payload?.tenantId },
+          dataTempKept,
+        });
+        if (key === 'openVisa') {
+          yield put({
+            type: 'saveOpenEdit',
+            payload: { openVisa: false },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *removePassPort({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+      try {
+        const response = yield call(removePassport, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode } = response;
+
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Remove item successfully',
+        });
+        yield put({
+          type: 'fetchPassPort',
+          payload: { employee: idCurrentEmployee, tenantId: payload?.tenantId },
+          dataTempKept,
+        });
+        if (key === 'openPassport') {
+          yield put({
+            type: 'saveOpenEdit',
+            payload: { openPassport: false },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *updateGeneralInfo(
       { payload = {}, dataTempKept = {}, key = '', isUpdateMyAvt = false },
       { put, call, select },
@@ -520,8 +573,13 @@ const employeeProfile = {
           dataTempKept,
         });
         yield put({
+          type: 'fetchTax',
+          payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
+          dataTempKept,
+        });
+        yield put({
           type: 'save',
-          payload: {visibleSuccess: true}
+          payload: { visibleSuccess: true },
         });
         switch (key) {
           case 'openContactDetails':
@@ -590,11 +648,25 @@ const employeeProfile = {
           });
           const { statusCode } = res;
           if (statusCode !== 200) throw res;
+          const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+          const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
+          yield put({
+            type: 'fetchBank',
+            payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
+            dataTempKept,
+          });
         }
         if (taxDetails) {
           const res = yield call(getAddTax, { ...taxDetails, tenantId: getCurrentTenant() });
           const { statusCode } = res;
           if (statusCode !== 200) throw res;
+          const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+          const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
+          yield put({
+            type: 'fetchTax',
+            payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
+            dataTempKept,
+          });
         }
         let arrCertification = [];
         if (certifications.length !== 0) {
@@ -1051,9 +1123,9 @@ const employeeProfile = {
           dataTempKept,
         });
         yield put({
-          type: 'save', 
-          payload: {visibleSuccess: true}
-        })
+          type: 'save',
+          payload: { visibleSuccess: true },
+        });
         if (key === 'openBank') {
           yield put({
             type: 'saveOpenEdit',
@@ -1137,8 +1209,8 @@ const employeeProfile = {
         });
         yield put({
           type: 'save',
-          payload: {visibleSuccess: true}
-        })
+          payload: { visibleSuccess: true },
+        });
         if (key === 'openTax') {
           yield put({
             type: 'saveOpenEdit',
@@ -1150,9 +1222,17 @@ const employeeProfile = {
       }
     },
 
-    *fetchTitleByDepartment({ payload }, { call, put }) {
+    *fetchTitleByDepartment({ payload }, { call, put, select }) {
       try {
-        const res = yield call(getListTitle, payload);
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { companyCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const res = yield call(getListTitle, {
+          ...payload,
+          tenantId: tenantCurrentEmployee,
+          company: companyCurrentEmployee,
+          employee: idCurrentEmployee,
+        });
         const { statusCode, data } = res;
         if (statusCode !== 200) throw res;
         yield put({
@@ -1206,8 +1286,8 @@ const employeeProfile = {
         isUpdateEmployment = true;
         yield put({
           type: 'save',
-          payload: {visibleSuccess: true}
-        })
+          payload: { visibleSuccess: true },
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -1363,9 +1443,9 @@ const employeeProfile = {
     *removeEmployeeDependentDetails({ payload = {} }, { call, put }) {
       try {
         const response = yield call(removeDependentsById, payload);
-        const { statusCode } = response;
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'saveOrigin', payload: { dependentDetails: {} } });
+        yield put({ type: 'saveOrigin', payload: { dependentDetails: data } });
         return response;
       } catch (error) {
         dialog(error);

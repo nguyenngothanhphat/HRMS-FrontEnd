@@ -8,7 +8,7 @@ const EmployeeCard = (props) => {
   const {
     employee: {
       generalInfo: { avatar = '', legalName = '', userId = '' } = {},
-      title: { name: position = '' } = {},
+      title = {} || {},
     } = {},
   } = props;
 
@@ -42,7 +42,7 @@ const EmployeeCard = (props) => {
         </div>
         <span className={styles.employeeName}>{legalName}</span>
         <span className={styles.employeeInformation}>
-          {userId} | {position}
+          {userId} | {title?.name}
         </span>
       </div>
     </Col>

@@ -135,7 +135,7 @@ class RequestInformation extends PureComponent {
         {!loadingFetchCompoffRequestById && (
           <>
             <div className={styles.formContent}>
-              <Row>
+              <Row align="middle" gutter={[0, 12]}>
                 <Col span={6}>Project</Col>
                 <Col span={18} className={styles.detailColumn}>
                   <span className={styles.fieldValue}>{projectName}</span>
@@ -145,8 +145,7 @@ class RequestInformation extends PureComponent {
                     </span>
                   </div>
                 </Col>
-              </Row>
-              <Row>
+
                 <Col span={6}>Duration</Col>
                 {formatDurationTime !== '' && (
                   <>
@@ -155,8 +154,7 @@ class RequestInformation extends PureComponent {
                     </Col>
                   </>
                 )}
-              </Row>
-              <Row>
+
                 <Col span={6}>Extra time spent</Col>
                 <Col span={18} className={styles.detailColumn}>
                   <div className={styles.extraTimeSpent}>
@@ -205,29 +203,29 @@ class RequestInformation extends PureComponent {
                     </div>
                   </div>
                 </Col>
-              </Row>
-              <Row>
+
                 <Col span={6}>Description</Col>
                 <Col span={18} className={styles.detailColumn}>
                   <span>{description}</span>
                 </Col>
+
+                {status === TIMEOFF_STATUS.rejected && currentStep === 2 && (
+                  <>
+                    <Col span={6}>Request Rejection Comments (Project Manager)</Col>
+                    <Col span={18} className={styles.detailColumn}>
+                      <span>{commentPM}</span>
+                    </Col>
+                  </>
+                )}
+                {status === TIMEOFF_STATUS.rejected && currentStep > 2 && (
+                  <>
+                    <Col span={6}>Request Rejection Comments (Region Head)</Col>
+                    <Col span={18} className={styles.detailColumn}>
+                      <span>{commentCLA}</span>
+                    </Col>
+                  </>
+                )}
               </Row>
-              {status === TIMEOFF_STATUS.rejected && currentStep === 2 && (
-                <Row>
-                  <Col span={6}>Request Rejection Comments (Project Manager)</Col>
-                  <Col span={18} className={styles.detailColumn}>
-                    <span>{commentPM}</span>
-                  </Col>
-                </Row>
-              )}
-              {status === TIMEOFF_STATUS.rejected && currentStep > 2 && (
-                <Row>
-                  <Col span={6}>Request Rejection Comments (Region Head)</Col>
-                  <Col span={18} className={styles.detailColumn}>
-                    <span>{commentCLA}</span>
-                  </Col>
-                </Row>
-              )}
             </div>
             {(status === TIMEOFF_STATUS.drafts || status === TIMEOFF_STATUS.inProgress) && (
               <div className={styles.footer}>

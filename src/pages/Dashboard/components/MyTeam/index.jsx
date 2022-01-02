@@ -8,9 +8,11 @@ import styles from './index.less';
 import TeamLeaveCalendar from './components/TeamLeaveCalendar';
 import SmallRightArrow from '@/assets/dashboard/smallRightArrow.svg';
 import SmallLeftArrow from '@/assets/dashboard/smallLeftArrow.svg';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentTenant } from '@/utils/authority';
 
 const { TabPane } = Tabs;
+const HR_MANAGER = 'HR-MANAGER';
+const MANAGER = 'MANAGER';
 
 const dateFormat = 'MMM YYYY';
 const MyTeam = (props) => {
@@ -19,8 +21,10 @@ const MyTeam = (props) => {
   const {
     dispatch,
     myTeam = [],
-    listLocationsByCompany = [],
-    employee: { departmentInfo: { name: departmentName = '' } = {} } = {},
+    roles = [],
+    // listLocationsByCompany = [],
+    // employee: { departmentInfo: { name: departmentName = '' } = {} } = {},
+    employee = {}
   } = props;
 
   // USE EFFECT
@@ -29,16 +33,26 @@ const MyTeam = (props) => {
   }, [selectedMonth]);
 
   useEffect(() => {
+    const roleEmployee = employee && employee?.title ? employee.title.roles : [];
+    const employeeId = employee ? employee._id : '';
+    const companyInfo = employee ? employee.company : {}
     dispatch({
       type: 'dashboard/fetchMyTeam',
       payload: {
         tenantId: getCurrentTenant(),
-        company: getCurrentCompany(),
-        department: [departmentName],
-        location: listLocationsByCompany.map((l) => l._id),
+        // company: getCurrentCompany(),
+        // department: [departmentName],
+        // location: listLocationsByCompany.map((l) => l._id),
+        roles: roleEmployee,
+        employee: employeeId,
+        status: ["ACTIVE"],
+        company: [companyInfo],
+
       },
     });
   }, []);
+  // CHECK ROLE
+  const checkRoleHrAndManager = roles.includes(HR_MANAGER) || roles.includes(MANAGER);
 
   // FUNCTION
   const onViewTimeoff = () => {
@@ -76,9 +90,13 @@ const MyTeam = (props) => {
             <TabPane tab="Resources" key="1">
               <Resources data={myTeam} />
             </TabPane>
-            <TabPane tab="Team Leave Calendar" key="2">
-              <TeamLeaveCalendar selectedMonth={selectedMonth} />
-            </TabPane>
+            {checkRoleHrAndManager ? (
+              <TabPane tab="Team Leave Calendar" key="2">
+                <TeamLeaveCalendar selectedMonth={selectedMonth} />
+              </TabPane>
+            ) : (
+              ''
+            )}
           </Tabs>
         </div>
       </div>
@@ -96,8 +114,9 @@ export default connect(
   ({
     dashboard: { myTeam = [] } = {},
     locationSelection: { listLocationsByCompany = [] } = {},
-    user: { currentUser: { employee = {} } = {} } = {},
+    user: { currentUser: { roles = [], employee = {} } = {} } = {},
   }) => ({
+    roles,
     employee,
     myTeam,
     listLocationsByCompany,

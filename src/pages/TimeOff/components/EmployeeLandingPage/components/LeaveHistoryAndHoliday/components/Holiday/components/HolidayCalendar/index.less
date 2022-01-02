@@ -8,26 +8,26 @@
   }
 
   .weekDay {
-    font-size: 0.8em;
     color: #161c29 !important;
+    font-size: 0.8em;
   }
 
   .day {
     height: 24px;
-    font-size: 12px;
     padding: 7px 0;
+    font-size: 12px;
     span {
-      padding: 6px;
+      padding: 7px;
       color: #707177;
     }
   }
 
   .currentDay {
-    background-color: #e1e9fa;
-    color: #161c29;
     // height: 25px;
     width: 100%;
     padding-top: 2px;
+    color: #161c29;
+    background-color: #e1e9fa;
     border-radius: 50%;
     // display: inline-block;
   }
@@ -35,14 +35,14 @@
   .navMonth {
     position: absolute;
     top: 0.6em;
-    font-size: 0.6em;
     right: 3px;
+    font-size: 0.6em;
   }
 
   .labelMonth,
   .labelYear {
-    font-size: 14px;
     font-weight: 700;
+    font-size: 14px;
   }
   .labelYear {
     padding-left: 5px;
@@ -53,7 +53,7 @@
     justify-content: space-between;
     width: 100%;
     // margin: 15px 0;
-    padding: 24px;
+    padding: 24px 24px 12px;
     .changeMonthBtn {
       span {
         padding: 3px;
@@ -62,8 +62,8 @@
         font-size: 10px;
         cursor: pointer;
         &:hover {
-          background-color: #2058d1;
           color: white;
+          background-color: #2058d1;
           border-radius: 1px;
         }
       }
@@ -75,12 +75,15 @@
       width: 97% !important;
       margin-left: 5px;
       tr {
-        -webkit-touch-callout: none;
         -webkit-user-select: none;
         -khtml-user-select: none;
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
+        -webkit-touch-callout: none;
+      }
+      .daysInMonth {
+        height: 28px;
       }
       td {
         width: 100/7%;
@@ -93,12 +96,12 @@
     position: relative;
   }
   .markEventBegin::before {
-    content: '•';
     position: absolute;
-    margin-left: 6px;
-    margin-top: 7px;
     z-index: 1;
-    font-size: 25px;
+    margin-top: 7px;
+    margin-left: 17px;
+    font-size: 30px;
+    content: '•';
   }
   .markEventBegin::after {
     // content: '';
@@ -113,12 +116,12 @@
     position: relative;
   }
   .markEventEnd::before {
-    content: '•';
     position: absolute;
     right: 40%;
-    margin-top: 7px;
     z-index: 1;
+    margin-top: 7px;
     font-size: 25px;
+    content: '•';
   }
   .markEventEnd::after {
     // content: '';
@@ -131,50 +134,52 @@
   }
 
   .lineClassName {
-    border-bottom: 2px solid #d6dce0;
     bottom: 0;
+    border-bottom: 2px solid #d6dce0;
   }
 
   .eventMarkSingleClassName {
     width: 20px;
     height: 20px;
     span {
-      // font-weight: 700;
-      // color: white;
-      // background-color: orange;
+      color: #2c6df9;
+      background-color: #e1e9fa;
+      border-radius: 50%;
     }
   }
   .eventMarkSingleClassName::before {
-    content: '•';
     position: absolute;
-    margin-left: 5px;
-    margin-top: 3px;
     z-index: 1;
-    font-size: 25px;
+    margin-top: -2px;
+    margin-left: 17px;
+    font-size: 30px;
+    content: '•';
   }
 
   // eventDetailContainer
   .eventDetailContainer {
-    border-top: 1px solid #d6dce0;
     margin-top: 30px;
+    border-top: 1px solid #d6dce0;
     .eventDetailPart {
       .eventsContainer {
         max-height: 300px;
         overflow: auto;
       }
       .title {
-        font-size: 14px;
-        font-weight: 700;
-        line-height: 4;
         padding: 0 24px;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 4;
       }
     }
   }
 
   .upcomingColor {
-    color: #60f93a;
+    // color: #60f93a;
+    color: #6a0dad
   }
   .leaveTakenColor {
-    color: #ff5252;
+    color: #6a0dad
+    // color: #ff5252;
   }
 }

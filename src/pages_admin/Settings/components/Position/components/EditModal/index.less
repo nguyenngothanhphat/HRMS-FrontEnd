@@ -14,9 +14,7 @@
     .ant-select-selector,
     .ant-input {
       height: 42px !important;
-
       padding: 5px 11px !important;
-
       background: transparent !important;
       border-radius: 5px !important;
     }
@@ -71,6 +69,9 @@
       padding: 24px;
       border-top-left-radius: 8px;
     }
+    .ant-modal-body {
+      padding: 24px 24px 8px;
+    }
     .ant-modal-content {
       border-top-left-radius: 8px;
       border-bottom-right-radius: 8px;
@@ -98,6 +99,12 @@
       }
     }
 
+    .ant-checkbox-wrapper {
+      span:nth-child(2) {
+        color: #707177;
+        font-size: 13px;
+      }
+    }
     .ant-checkbox-indeterminate .ant-checkbox-inner::after {
       display: none;
     }
@@ -123,6 +130,10 @@
         background: #f6f7f9;
         border-radius: 4px;
       }
+    }
+
+    .ant-radio-wrapper {
+      margin-right: 40px;
     }
   }
   .btnSubmit {
@@ -243,6 +254,18 @@
           padding-left: 8px;
         }
       }
+    }
+  }
+
+  .timeSheetRequired {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    span {
+      display: inline-block;
+      margin-left: 10px;
+      color: #707177;
+      font-size: 13px;
     }
   }
 }

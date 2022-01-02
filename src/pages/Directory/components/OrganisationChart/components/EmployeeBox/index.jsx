@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Avatar, Row, Col, Select, Spin, Divider, Tooltip, Popover, Form } from 'antd';
+import { Avatar, Row, Col, Select, Spin, Divider, Tooltip, Popover, Form, Button } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { Link, connect } from 'umi';
 import { isEmpty, debounce } from 'lodash';
@@ -266,31 +266,52 @@ class DetailEmployeeChart extends Component {
               </Link>
               <div className={styles.chartDetail__Bottom_actions}>
                 <Tooltip title="Message">
-                  <a href="https://chat.google.com" target="_blank" rel="noreferrer">
-                    <img
-                      src="/assets/images/messageIcon.svg"
-                      alt="img-arrow"
-                      style={{ cursor: 'pointer' }}
-                    />
-                  </a>
+                  <Button
+                    style={{ width: '40px', background: 'white', border: '1px solid white'}}
+                  >
+                    <a href="https://chat.google.com" target="_blank" rel="noreferrer">
+                      <img
+                        src="/assets/images/messageIcon.svg"
+                        alt="img-arrow"
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </a>
+                  </Button>
                 </Tooltip>
                 <Tooltip title="Email">
-                  <a href={`mailto:${workEmail}`}>
-                    <img
-                      src="/assets/images/iconMail.svg"
-                      alt="img-mail"
-                      style={{ cursor: 'pointer' }}
-                    />
-                  </a>
+                  <Button
+                    style={{ width: '40px', background: 'white', border: '1px solid white'}}
+                  >
+                    <a href={`mailto:${workEmail}`}>
+                      <img
+                        src="/assets/images/iconMail.svg"
+                        alt="img-mail"
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </a>
+                  </Button>
                 </Tooltip>
-                <Tooltip title="LinkedIn">
-                  <a href={linkedIn} target="_blank" rel="noopener noreferrer">
-                    <img
-                      src="/assets/images/iconLinkedin.svg"
-                      alt="img-arrow"
-                      style={{ cursor: 'pointer' }}
-                    />
-                  </a>
+                <Tooltip 
+                  title={linkedIn ? 'LinkedIn' : "Please update the Linkedin Profile in the Employee profile page"}
+                  // color={linkedIn ? '' : 'gold'}
+                >
+                  <Button
+                    disabled={linkedIn ? '' : 'true'}
+                    style={{ width: '40px', background: 'white', border: '1px solid white'}}
+                  >
+                    <a 
+                      href={linkedIn} 
+                      target='_blank' 
+                      rel="noopener noreferrer" 
+                      // style={linkedIn ? {} : {pointerEvents: 'none', opacity: '0.6'}}
+                    >
+                      <img
+                        src="/assets/images/iconLinkedin.svg"
+                        alt="img-arrow"
+                        style={linkedIn ? {cursor: 'pointer'} : {cursor: 'default'}}
+                      />
+                    </a>
+                  </Button>
                 </Tooltip>
               </div>
             </div>

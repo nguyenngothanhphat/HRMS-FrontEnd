@@ -1,8 +1,8 @@
 export default {
   'pages.employeeProfile.generalInfoTab': 'General Info',
-  'pages.employeeProfile.validateWorkNumber': 'Just only number & maxinum 10 number, please!',
-  'pages.employeeProfile.validateNumber':
-    'Just only number & this field must be 12 number, please!',
+  'pages.employeeProfile.validateWorkNumber': 'Just only number & maxinum 15 number, please!',
+  'pages.employeeProfile.validateNumber': 'Invalid visa number!',
+  'pages.employeeProfile.validateVisaType': 'Invalid visa type!',
   'pages.employeeProfile.validatePassPortNumber': 'Invalid passport number',
   'pages.employeeProfile.validateDate':
     'Inappropriate date. Valid till date must be after issue date',
@@ -39,14 +39,15 @@ export default {
   'pages.employeeProfile.documents.viewDocument.uploadNewBtn': 'Upload new',
   'pages.employeeProfile.documents.viewDocument.saveBtn': 'Save',
 
-  'pages.employeeProfile.BenefitTab.dependentDetails': 'Employee Dependent Details',
+  'pages.employeeProfile.BenefitTab.coveredIndividuals': 'Covered Individuals',
   'pages.employeeProfile.BenefitTab.kycDetails': 'KYC Details',
-  'pages.employeeProfile.BenefitTab.optedPlans': 'Opted Benefit Plans',
+  'pages.employeeProfile.BenefitTab.electedCoverage': 'Elected Coverage',
   'pages.employeeProfile.BenefitTab.availablePlans': 'Available Benefit Plans',
   'pages.employeeProfile.BenefitTab.forGlobalEmployees': 'For Global Employees',
   'pages.employeeProfile.BenefitTab.forIndianEmployees': 'For Indian Employees',
-  'pages.employeeProfile.BenefitTab.components.dependentTabs.dependent': 'Dependent',
-  'pages.employeeProfile.BenefitTab.components.dependentTabs.legalName': 'Legal Name',
+  'pages.employeeProfile.BenefitTab.components.dependentTabs.dependent': 'Dependent ',
+  'pages.employeeProfile.BenefitTab.components.dependentTabs.firstName': 'First Name',
+  'pages.employeeProfile.BenefitTab.components.dependentTabs.lastName': 'Last Name',
   'pages.employeeProfile.BenefitTab.components.dependentTabs.gender': 'Gender',
   'pages.employeeProfile.BenefitTab.components.dependentTabs.relationship': 'Relationship',
   'pages.employeeProfile.BenefitTab.components.dependentTabs.dob': 'Date of Birth',

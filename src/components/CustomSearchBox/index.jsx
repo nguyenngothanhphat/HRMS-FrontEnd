@@ -3,7 +3,7 @@ import { Input } from 'antd';
 import React from 'react';
 import styles from './index.less';
 
-const SearchBar = (props) => {
+const CustomSearchBox = (props) => {
   const { placeholder = 'Search by Name, Task...', onSearch = () => {} } = props;
 
   const searchPrefix = () => {
@@ -19,7 +19,7 @@ const SearchBar = (props) => {
   };
 
   return (
-    <div className={styles.SearchBar}>
+    <div className={styles.CustomSearchBox}>
       <Input
         className={styles.searchInput}
         placeholder={placeholder}
@@ -29,4 +29,4 @@ const SearchBar = (props) => {
     </div>
   );
 };
-export default SearchBar;
+export default CustomSearchBox;

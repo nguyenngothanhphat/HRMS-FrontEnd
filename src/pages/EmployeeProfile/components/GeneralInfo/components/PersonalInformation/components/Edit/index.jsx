@@ -484,8 +484,7 @@ class Edit extends PureComponent {
                         showArrow
                         showSearch
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       >
                         {formatCountryList.map((itemCountry) => {
                           return (
@@ -507,8 +506,7 @@ class Edit extends PureComponent {
                         onChange={(e) => this.handleChangeAddress('r_state', e)}
                         showSearch
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       >
                         {loadingStates ? (
                           <div className={styles.selectForm_loading}>
@@ -551,7 +549,7 @@ class Edit extends PureComponent {
                 // eslint-disable-next-line camelcase
                 defaultValue={c_Addressline1}
                 onChange={(e) => this.handleChangeAddress('c_Addressline1', e.target.value)}
-                disabled={profileOwner}
+                disabled={!profileOwner}
               />
             </Form.Item>
             <Form.Item label="Address line 2">
@@ -561,7 +559,7 @@ class Edit extends PureComponent {
                 // eslint-disable-next-line camelcase
                 defaultValue={c_Addressline2}
                 onChange={(e) => this.handleChangeAddress('c_Addressline2', e.target.value)}
-                disabled={profileOwner}
+                disabled={!profileOwner}
               />
             </Form.Item>
             <Form.Item label="City name">
@@ -582,11 +580,10 @@ class Edit extends PureComponent {
                         // eslint-disable-next-line camelcase
                         defaultValue={c_countryName}
                         onChange={(value) => this.handleChangeAddress('c_countryName', value)}
-                        disabled={profileOwner}
+                        disabled={!profileOwner}
                         showSearch
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       >
                         {formatCountryList.map((itemCountry) => {
                           return (
@@ -606,11 +603,10 @@ class Edit extends PureComponent {
                         // eslint-disable-next-line camelcase
                         defaultValue={c_state}
                         onChange={(value) => this.handleChangeAddress('c_state', value)}
-                        disabled={profileOwner}
+                        disabled={!profileOwner}
                         showSearch
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       >
                         {loadingStates ? (
                           <div className={styles.selectForm_loading}>
@@ -637,7 +633,7 @@ class Edit extends PureComponent {
                         // eslint-disable-next-line camelcase
                         defaultValue={c_zipCode}
                         onChange={(e) => this.handleChangeAddress('c_zipCode', e.target.value)}
-                        disabled={profileOwner}
+                        disabled={!profileOwner}
                       />
                     </Form.Item>
                   </Col>

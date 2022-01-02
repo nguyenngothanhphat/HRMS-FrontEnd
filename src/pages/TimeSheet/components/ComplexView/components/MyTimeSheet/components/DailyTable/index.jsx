@@ -44,7 +44,7 @@ const DailyTable = (props) => {
   useEffect(() => {
     if (hourList.length === 0) {
       const hourListTemp = [];
-      // from 7 AM to 9 PM
+      // from 6 AM to 11 PM
       for (let i = WORKING_HOURS.START; i <= WORKING_HOURS.END; i += 1) {
         hourListTemp.push(i);
       }
@@ -75,7 +75,7 @@ const DailyTable = (props) => {
         </Col>
         <Col span={REMAINING}>
           <div className={styles.tableHeader__remainColumn}>
-            <Row gutter={[12, 0]}>
+            <Row gutter={[12, 12]}>
               <Col span={PROJECT} className={styles.title}>
                 Project
               </Col>

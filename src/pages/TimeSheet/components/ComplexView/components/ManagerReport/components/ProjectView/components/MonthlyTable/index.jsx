@@ -5,6 +5,7 @@ import { connect } from 'umi';
 import { projectColor, convertMsToTime } from '@/utils/timeSheet';
 import TaskPopover from './components/TaskPopover';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
+import EmptyComponent from '@/pages/TimeSheet/components/ComplexView/components/Empty';
 
 import styles from './index.less';
 
@@ -75,7 +76,7 @@ const MonthlyTable = (props) => {
               endDate={weekItem.endDate}
               tasks={find?.timesheet}
             >
-              {(!find || find?.weekProjectTime === 0) ? (
+              {!find || find?.weekProjectTime === 0 ? (
                 <div className={styles.hourValue}>
                   <img src={EmptyLine} alt="" />
                 </div>
@@ -145,7 +146,8 @@ const MonthlyTable = (props) => {
           columns={columns()}
           dataSource={formattedData}
           bordered
-          pagination={pagination}
+          pagination={data.length > 0 ? pagination : { position: ['none', 'none'] }}
+          footer={data.length > 0 ? null : EmptyComponent}
           // scroll={{ y: 440 }}
           loading={loadingFetch}
         />

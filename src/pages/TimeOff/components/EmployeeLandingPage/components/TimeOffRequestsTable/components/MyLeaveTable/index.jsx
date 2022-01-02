@@ -4,6 +4,8 @@ import { history, connect } from 'umi';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
+
 import styles from './index.less';
 // loading
 @connect(({ loading, dispatch, timeOff: { paging } }) => ({
@@ -90,7 +92,11 @@ class MyLeaveTable extends PureComponent {
                 const { firstName = '', lastName = '', avatar = '' } = user;
                 return (
                   <Tooltip title={`${firstName} ${lastName}`} placement="top">
-                    <Avatar size="small" style={{ backgroundColor: '#EAF0FF' }} src={avatar} />
+                    <Avatar
+                      size="small"
+                      style={{ backgroundColor: '#EAF0FF' }}
+                      src={avatar || DefaultAvatar}
+                    />
                   </Tooltip>
                 );
               })}
@@ -111,14 +117,6 @@ class MyLeaveTable extends PureComponent {
       ),
     },
   ];
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      // pageSelected: 1,
-      selectedRowKeys: [],
-    };
-  }
 
   // view request
   viewRequest = (_id) => {
@@ -144,10 +142,6 @@ class MyLeaveTable extends PureComponent {
   //     pageSelected: 1,
   //   });
   // };
-
-  onSelectChange = (selectedRowKeys) => {
-    this.setState({ selectedRowKeys });
-  };
 
   // PARSE DATA FOR TABLE
   processData = (data) => {
@@ -199,7 +193,6 @@ class MyLeaveTable extends PureComponent {
       loadingFetchLeaveRequests = false,
       paging: { page, limit, total },
     } = this.props;
-    const { selectedRowKeys } = this.state;
     // const rowSize = 10;
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -234,18 +227,12 @@ class MyLeaveTable extends PureComponent {
       y: 'max-content',
     };
 
-    const rowSelection = {
-      type: 'checkbox',
-      selectedRowKeys,
-      onChange: this.onSelectChange,
-    };
-
     return (
       <div className={styles.MyLeaveTable}>
         <Table
           size="middle"
           loading={tableLoading}
-          rowSelection={rowSelection}
+          // rowSelection={rowSelection}
           pagination={{ ...pagination, total }}
           columns={this.columns}
           dataSource={parsedData}

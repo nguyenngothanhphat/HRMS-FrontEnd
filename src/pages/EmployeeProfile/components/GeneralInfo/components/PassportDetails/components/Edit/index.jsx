@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { Row, Form, Button, Col } from 'antd';
 import { connect } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
-import ViewDocumentModal from '@/components/ViewDocumentModal';
 import moment from 'moment';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import PassportItem from './PassportItem';
 import styles from './index.less';
 
@@ -60,6 +60,7 @@ class Edit extends Component {
       linkImage: '',
       checkValidate: [{}],
       validatePassPort: [],
+      isCheckDatePassPort: true,
     };
     this.formRef = React.createRef();
   }
@@ -78,6 +79,12 @@ class Edit extends Component {
     });
   }
 
+  checkArrayVisa = (getCheck) => {
+    const isCheckPassPort = (currentValue) => currentValue === true;
+    const getIsCheckPassPort = getCheck.every(isCheckPassPort);
+    this.setState({ isCheckDatePassPort: getIsCheckPassPort });
+  };
+
   validateDate = (getPassportData, index) => {
     const { validatePassPort } = this.state;
     if (getPassportData === []) return;
@@ -93,14 +100,27 @@ class Edit extends Component {
     const IssuedOn = DatePassportIssueOn || formatDatePassportIssueOn;
     const ValidTill = DatePassportValidTill || formatDatePassportValidTill;
 
-    const issueAfter3Year = moment(IssuedOn).add(3, 'years');
-    if (moment(ValidTill).isSameOrBefore(moment(issueAfter3Year))) {
+    // const issueAfter3Year = moment(IssuedOn).add(3, 'years');
+    // if (moment(ValidTill).isSameOrBefore(moment(issueAfter3Year))) {
+    //   const newCheck = [...validatePassPort];
+    //   newCheck.splice(index, 1, false);
+    //   this.setState({ validatePassPort: newCheck });
+    // } else {
+    //   const newCheck = [...validatePassPort];
+    //   newCheck.splice(index, 1, true);
+    //   this.setState({ validatePassPort: newCheck });
+    // }
+    if (IssuedOn > ValidTill) {
       const newCheck = [...validatePassPort];
-      newCheck.splice(index, 1, false);
+      const setValidate = false;
+      newCheck.splice(index, 1, setValidate);
+      this.checkArrayVisa(newCheck);
       this.setState({ validatePassPort: newCheck });
     } else {
       const newCheck = [...validatePassPort];
-      newCheck.splice(index, 1, true);
+      const setValidate = true;
+      newCheck.splice(index, 1, setValidate);
+      this.checkArrayVisa(newCheck);
       this.setState({ validatePassPort: newCheck });
     }
   };
@@ -369,7 +389,15 @@ class Edit extends Component {
   };
 
   render() {
-    const { isLt5M, getContent, visible, linkImage, dummyPassPorts, validatePassPort } = this.state;
+    const {
+      isLt5M,
+      getContent,
+      visible,
+      linkImage,
+      dummyPassPorts,
+      validatePassPort,
+      isCheckDatePassPort,
+    } = this.state;
 
     const { passportData = [], handleCancel = () => {}, countryList } = this.props;
 
@@ -406,7 +434,7 @@ class Edit extends Component {
       return newItem;
     });
 
-    const checkPassPort = validatePassPort.filter((item) => item === true);
+    // const checkPassPort = validatePassPort.filter((item) => item === true);
     const renderForm = passportData.length > 0 ? newPassportData : dummyPassPorts;
     return (
       <Row gutter={[0, 16]} className={styles.root}>
@@ -493,7 +521,7 @@ class Edit extends Component {
               type="primary"
               htmlType="submit"
               className={styles.buttonFooter}
-              disabled={isLt5M === false || getContent === false || checkPassPort.length === 0}
+              disabled={isLt5M === false || getContent === false || isCheckDatePassPort === false}
             >
               Save
             </Button>

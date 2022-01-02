@@ -2,8 +2,8 @@
 import React, { PureComponent } from 'react';
 import { Row, Input, Form, DatePicker, Radio, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
-import UploadImage from '@/components/UploadImage';
 import moment from 'moment';
+import UploadImage from '@/components/UploadImage';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { checkPermissions } from '@/utils/permissions';
@@ -18,6 +18,7 @@ import styles from './index.less';
       originData: {
         generalData: generalDataOrigin = {},
         employmentData: { location: locationEmpl = {} } = {},
+        taxData = {},
       } = {},
       tempData: { generalData = {} } = {},
       tenantCurrentEmployee = '',
@@ -34,6 +35,7 @@ import styles from './index.less';
     employeeInformationURL,
     idCurrentEmployee,
     AdhaarCard,
+    taxData,
     currentUser,
     tenantCurrentEmployee,
     documentCategories,
@@ -90,33 +92,29 @@ class Edit extends PureComponent {
       workNumber = '',
       adhaarCardNumber = '',
       uanNumber = '',
+      nationalId = uanNumber,
       _id: id = '',
     } = generalDataTemp;
-    // const payloadChanges = {
-    //   id,
-    //   urlFile,
-    //   legalGender,
-    //   legalName,
-    //   firstName: legalName,
-    //   DOB,
-    //   employeeId,
-    //   workEmail,
-    //   workNumber,
-    //   adhaarCardNumber,
-    //   uanNumber,
-    // };
+
+    const fullNameTemp = legalName.split(' ');
+    const firstName = fullNameTemp.slice(0, -1).join(' ');
+    const lastName = fullNameTemp.slice(-1).join(' ');
+
     return {
       id,
       urlFile,
       legalGender,
       legalName,
-      firstName: legalName,
+      firstName: fullNameTemp.length > 1 ? firstName : legalName,
+      lastName: fullNameTemp.length > 1 ? lastName : '',
+      middleName: '',
       DOB,
       employeeId,
       workEmail,
       workNumber,
       adhaarCardNumber,
       uanNumber,
+      nationalId,
       tenantId: tenantCurrentEmployee,
     };
   };
@@ -129,12 +127,15 @@ class Edit extends PureComponent {
       'legalGender',
       'legalName',
       'firstName',
+      'lastName',
+      'middleName',
       'DOB',
       'employeeId',
       'workEmail',
       'workNumber',
       'adhaarCardNumber',
       'uanNumber',
+      'nationalId',
     ];
     listKey.forEach((item) => delete newObj[item]);
     return newObj;
@@ -331,6 +332,7 @@ class Edit extends PureComponent {
       loading,
       handleCancel = () => {},
       loadingAdhaarCard,
+      // taxData = {},
       currentUser: { roles = [] },
       locationEmpl: { headQuarterAddress: { country = '' } = {} } = {},
     } = this.props;
@@ -349,14 +351,15 @@ class Edit extends PureComponent {
     const splitURL = nameFile[nameFile.length - 1];
     const formItemLayout = {
       labelCol: {
-        xs: { span: 6 },
-        sm: { span: 6 },
+        xs: { span: 8 },
+        sm: { span: 8 },
       },
       wrapperCol: {
         xs: { span: 9 },
         sm: { span: 12 },
       },
     };
+    // const nationalIdNumber = taxData.length > 0 ? taxData[0].nationalId : '';
     const formatDate = DOB && moment(DOB);
     const dateFormat = 'MM.DD.YY';
     const checkIndiaLocation = country === 'IN';
@@ -505,7 +508,7 @@ class Edit extends PureComponent {
               name="uanNumber"
               rules={[
                 {
-                  pattern: /^[+]*[\d]{12,12}$/,
+                  pattern: /^[+]*[\d]{0,16}$/,
                   message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
                 },
               ]}
@@ -520,7 +523,7 @@ class Edit extends PureComponent {
               name="uanNumber"
               rules={[
                 {
-                  pattern: /^[+]*[\d]{12,12}$/,
+                  pattern: /^[+]*[\d]{0,16}$/,
                   message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
                 },
               ]}
@@ -535,7 +538,7 @@ class Edit extends PureComponent {
               name="uanNumber"
               rules={[
                 {
-                  pattern: /^[+]*[\d]{12,12}$/,
+                  pattern: /^[+]*[\d]{0,16}$/,
                   message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
                 },
               ]}

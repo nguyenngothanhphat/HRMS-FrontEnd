@@ -10,22 +10,24 @@ import {
   notification,
   Row,
   Select,
-  TimePicker,
+  // TimePicker,
 } from 'antd';
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { dateFormatAPI, hourFormat, hourFormatAPI, TASKS } from '@/utils/timeSheet';
+import { dateFormatAPI, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import AddIcon from '@/assets/timeSheet/add.svg';
 import RemoveIcon from '@/assets/timeSheet/recycleBin.svg';
 import styles from './index.less';
+import CustomTimePicker from '@/components/CustomTimePicker';
 
 const { Option } = Select;
 const dateFormat = 'MM/DD/YYYY';
+const TASKS = [];
 
 const AddTaskModal = (props) => {
-  const formRef = React.createRef();
+  const [form] = Form.useForm();
   const {
     visible = false,
     title = 'Add Task',
@@ -39,6 +41,7 @@ const AddTaskModal = (props) => {
   const {
     dispatch,
     loadingAddTask = false,
+    loadingFetchProject = false,
     user: { currentUser: { employee = {}, location = {} } = {} } = {},
   } = props;
 
@@ -53,6 +56,11 @@ const AddTaskModal = (props) => {
   useEffect(() => {
     if (visible) {
       fetchProjectList();
+      if (date) {
+        form.setFieldsValue({
+          date: moment(date),
+        });
+      }
     }
   }, [visible]);
 
@@ -87,10 +95,10 @@ const AddTaskModal = (props) => {
       return {
         tenantId: getCurrentTenant(),
         taskName: item.taskName,
-        startTime: moment(item.startTime).format(hourFormatAPI),
-        endTime: moment(item.endTime).format(hourFormatAPI),
+        startTime: moment(item.startTime, hourFormat).format(hourFormatAPI),
+        endTime: moment(item.endTime, hourFormat).format(hourFormatAPI),
         date: moment(submitDate).locale('en').format(dateFormatAPI),
-        clientLocation: item.clientLocation,
+        clientLocation: item.clientLocation || false,
         project: {
           projectName: findPrj.projectName,
           projectId: item.projectId,
@@ -100,35 +108,16 @@ const AddTaskModal = (props) => {
         employeeId,
         companyId: getCurrentCompany(),
         location,
-        nightShift: item.nightShift,
+        nightShift: item.nightShift || false,
         employee: {
           _id: employee._id,
-          department: employee.department,
+          department: employee.departmentInfo,
           generalInfo: employee.generalInfo,
           manager: {
             _id: employee.managerInfo._id,
             generalInfo: employee.managerInfo.generalInfo,
           },
         },
-        // employee: {
-        //   employeeName: empName,
-        //   employeeCode: empUserId,
-        //   workEmail: empWorkEmail,
-        //   department: {
-        //     name: empDepartmentName,
-        //     id: empDepartmentId,
-        //   },
-        // },
-        // managerInfo: {
-        //   employeeName: managerName,
-        //   employeeId: managerId,
-        //   employeeCode: managerUserId,
-        //   workEmail: managerWorkEmail,
-        //   department: {
-        //     name: managerDepartmentName,
-        //     id: managerDepartmentId,
-        //   },
-        // },
       };
     });
 
@@ -147,6 +136,7 @@ const AddTaskModal = (props) => {
     const res = await addMultipleActivityEffect(submitDate, tasks);
     if (res.code === 200) {
       onClose();
+      form.resetFields();
       refreshData();
     }
   };
@@ -168,7 +158,14 @@ const AddTaskModal = (props) => {
                       name={[name, 'projectId']}
                       fieldKey={[fieldKey, 'projectId']}
                     >
-                      <Select showSearch placeholder="Select a project">
+                      <Select
+                        showSearch
+                        placeholder="Select a project"
+                        loading={loadingFetchProject}
+                        disabled={loadingFetchProject}
+                        filterOption={(input, option) =>
+                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      >
                         {projectList.map((val) => (
                           <Option value={val.id}>{val.projectName}</Option>
                         ))}
@@ -179,15 +176,24 @@ const AddTaskModal = (props) => {
                     <Form.Item
                       label="Task*"
                       labelCol={{ span: 24 }}
-                      rules={[{ required: true, message: 'Select a task' }]}
+                      rules={[
+                        {
+                          required: true,
+                          message: TASKS.length !== 0 ? 'Select a task' : 'Enter task name',
+                        },
+                      ]}
                       name={[name, 'taskName']}
                       fieldKey={[fieldKey, 'taskName']}
                     >
-                      <Select showSearch placeholder="Select a task">
-                        {TASKS.map((val) => (
-                          <Option value={val}>{val}</Option>
-                        ))}
-                      </Select>
+                      {TASKS.length !== 0 ? (
+                        <Select showSearch placeholder="Select a task">
+                          {TASKS.map((val) => (
+                            <Option value={val}>{val}</Option>
+                          ))}
+                        </Select>
+                      ) : (
+                        <Input placeholder="Enter task name" maxLength={150} />
+                      )}
                     </Form.Item>
                   </Col>
 
@@ -199,11 +205,7 @@ const AddTaskModal = (props) => {
                       name={[name, 'startTime']}
                       fieldKey={[fieldKey, 'startTime']}
                     >
-                      <TimePicker
-                        minuteStep={30}
-                        format={hourFormat}
-                        placeholder="Select start time"
-                      />
+                      <CustomTimePicker placeholder="Select start time" showSearch />
                     </Form.Item>
                   </Col>
 
@@ -215,11 +217,7 @@ const AddTaskModal = (props) => {
                       name={[name, 'endTime']}
                       fieldKey={[fieldKey, 'endTime']}
                     >
-                      <TimePicker
-                        minuteStep={30}
-                        format={hourFormat}
-                        placeholder="Select end time"
-                      />
+                      <CustomTimePicker placeholder="Select end time" showSearch />
                     </Form.Item>
                   </Col>
 
@@ -231,7 +229,7 @@ const AddTaskModal = (props) => {
                       name={[name, 'notes']}
                       fieldKey={[fieldKey, 'notes']}
                     >
-                      <Input.TextArea autoSize={{ minRows: 3 }} />
+                      <Input.TextArea autoSize={{ minRows: 4 }} placeholder="Enter description" />
                     </Form.Item>
                   </Col>
                   <Col xs={12}>
@@ -272,12 +270,11 @@ const AddTaskModal = (props) => {
       <div className={styles.content}>
         <Form
           name="basic"
-          ref={formRef}
+          form={form}
           id="myForm"
           onFinish={handleFinish}
           initialValues={{
             tasks: [{ projectName: projectName || null }],
-            date: date ? moment(date) : '',
           }}
         >
           <Row gutter={[24, 0]} className={styles.abovePart}>
@@ -347,4 +344,5 @@ export default connect(({ loading, timeSheet, locationSelection, user }) => ({
   timeSheet,
   locationSelection,
   loadingAddTask: loading.effects['timeSheet/addMultipleActivityEffect'],
+  loadingFetchProject: loading.effects['timeSheet/fetchProjectListEffect'],
 }))(AddTaskModal);

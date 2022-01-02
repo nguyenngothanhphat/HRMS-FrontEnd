@@ -35,29 +35,24 @@
       }
     }
 
+    // SELECT
     .ant-select {
       width: 100% !important;
     }
     .ant-select-selector {
-      min-height: 37px !important;
+      min-height: 42px !important;
       border: 1px solid #d6dce4 !important;
       border-radius: 5px !important;
     }
-    .ant-picker {
-      height: 37px !important;
-      border: 1px solid #d6dce4 !important;
-      border-radius: 5px !important;
-    }
-    .ant-picker {
-      width: 100%;
-      input {
-        font-size: 13px;
+    .ant-select-single {
+      .ant-select-selection-search-input {
+        height: 42px !important;
       }
     }
     .ant-select-selection-item,
     .ant-select-selection-placeholder {
       font-size: 13px !important;
-      line-height: 35px !important;
+      line-height: 42px !important;
     }
     .ant-select-multiple {
       .ant-select-selection-item {
@@ -79,6 +74,30 @@
     }
     .ant-select-multiple .ant-select-selection-item-remove > * {
       line-height: 0;
+    }
+
+    // INPUT + DATE PICKER
+    .ant-input,
+    .ant-input-number,
+    .ant-picker {
+      width: 100%;
+      height: 42px !important;
+      border: 1px solid #d6dce4 !important;
+      border-radius: 5px !important;
+    }
+    .ant-input-number,
+    .ant-input {
+      font-size: 13px;
+    }
+    .ant-picker {
+      input {
+        font-size: 13px;
+      }
+    }
+    .ant-input-number-input-wrap {
+      input {
+        height: 40px !important;
+      }
     }
   }
   .popoverHeader {
@@ -113,6 +132,7 @@
       padding-inline: 25px;
     }
     .btnClose {
+      color: #464646;
       font-weight: 500;
       background-color: #fff;
       border: none;
@@ -123,7 +143,7 @@
 
   .popupContainer {
     position: relative;
-    max-height: 450px;
+    max-height: 480px;
     padding: 16px 16px 0;
     overflow-y: auto;
     .closeButton {
@@ -137,15 +157,7 @@
     .divider {
       border-bottom: 1px solid #eaecef;
     }
-    .separator {
-      span {
-        display: block;
-        margin-top: 9px;
-        color: #707177;
-        font-size: 12px;
-        text-align: center;
-      }
-    }
+
     .header {
       padding: 20px 16px 16px;
       span {

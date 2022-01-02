@@ -3,6 +3,7 @@ import { Table, Avatar, Tooltip, Spin } from 'antd';
 import { history, connect } from 'umi';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
 
 import styles from './index.less';
 
@@ -71,7 +72,11 @@ class MyCompoffTable extends PureComponent {
                 const { legalName = '', avatar = '' } = user;
                 return (
                   <Tooltip title={legalName} placement="top">
-                    <Avatar size="small" style={{ backgroundColor: '#EAF0FF' }} src={avatar} />
+                    <Avatar
+                      size="small"
+                      style={{ backgroundColor: '#EAF0FF' }}
+                      src={avatar || DefaultAvatar}
+                    />
                   </Tooltip>
                 );
               })}
@@ -147,9 +152,7 @@ class MyCompoffTable extends PureComponent {
       }
 
       const oneAssign = (step) => {
-        const {
-          employee: { generalInfo: { legalName = '', avatar = '' } = {} } = {},
-        } = step;
+        const { employee: { generalInfo: { legalName = '', avatar = '' } = {} } = {} } = step;
         return {
           legalName,
           avatar,
