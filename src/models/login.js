@@ -1,5 +1,5 @@
 import { history } from 'umi';
-import { accountLogin, signInThirdParty, signinGoogle, getURLGoogle } from '@/services/login';
+import { accountLogin, signInThirdParty, signinGoogle, getURLGoogle, getURLLollypop } from '@/services/login';
 import {
   setAuthority,
   setTenantId,
@@ -17,8 +17,7 @@ const Model = {
     candidate: '',
     messageError: '',
     urlGoogle: '',
-    urlLollypop:
-      'https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar.events%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&prompt=consent&response_type=code&client_id=241318584040-13k8uvat56vn6e879aab44lestt98d8v.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fstghrms.paxanimi.ai%2Fapi%2Fauth-google-lollypop&flowName=GeneralOAuthFlow',
+    urlLollypop: '',
   },
   effects: {
     *login({ payload }, { call, put }) {
@@ -253,6 +252,20 @@ const Model = {
         yield put({
           type: 'save',
           payload: { urlGoogle: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return {};
+    },
+    *getURLLollypop({ payload }, { call, put }) {
+      try {
+        const response = yield call(getURLLollypop, payload);
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { urlLollypop: data },
         });
       } catch (errors) {
         dialog(errors);
