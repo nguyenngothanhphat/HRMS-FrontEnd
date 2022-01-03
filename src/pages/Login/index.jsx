@@ -30,6 +30,7 @@ class FormLogin extends Component {
     const { dispatch } = this.props;
     removeLocalStorage();
     dispatch({ type: 'login/getURLGoogle' });
+    dispatch({ type: 'login/getURLLollypop' });
     // this.formRef.current.setFieldsValue({
     //   email: autoFillEmail,
     // });
@@ -201,13 +202,13 @@ class FormLogin extends Component {
           <a href={urlGoogle}>
             <Button type="primary" className={styles.btnSignInGG}>
               <img src={logoGoogle} alt="logo" />
-              <span>Login with Google</span>
+              <span>Terralogic Login</span>
             </Button>
           </a>
           <a href={urlLollypop}>
             <Button type="primary" className={styles.btnSignInLollypop}>
               <img src={logoGoogle} alt="logo" />
-              <span>Login with Lollypop</span>
+              <span>Lollypop Login</span>
             </Button>
           </a>
           <Link to="/forgot-password">
