@@ -29,12 +29,11 @@ class PopoverInfo extends Component {
       } = {},
       employee: { employeeId = '' } = {},
       employeeId: hrId = '',
-      title: { name: titleName = '' } = {},
-      employeeType: { name: typeName } = {},
+      titleInfo: { name: titleName = '' } = {},
+      employeeTypeInfo: { name: typeName } = {},
       departmentInfo: { name: departmentName = '' } = {},
-      location: { _id = '' } = {},
+      locationInfo: { _id = '' } = {},
     } = data;
-
     const findTimezone =
       _id !== '' ? timezoneList.find((timezone) => timezone.locationId === _id) || {} : [];
     let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
