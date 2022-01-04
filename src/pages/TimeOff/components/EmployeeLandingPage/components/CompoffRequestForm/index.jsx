@@ -8,6 +8,8 @@ import RightContent from './RightContent';
 
 import styles from './index.less';
 
+const { EDIT_COMPOFF_REQUEST, NEW_COMPOFF_REQUEST } = TIMEOFF_LINK_ACTION;
+
 const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DRAFTS } = TIMEOFF_STATUS;
 @connect(({ timeOff, loading }) => ({
   timeOff,
@@ -40,7 +42,7 @@ class CompoffRequestForm extends PureComponent {
       action,
     });
 
-    if (action === TIMEOFF_LINK_ACTION.EDIT_COMPOFF_REQUEST) {
+    if (action === EDIT_COMPOFF_REQUEST) {
       dispatch({
         type: 'timeOff/fetchCompoffRequestById',
         id: reId,
@@ -103,12 +105,12 @@ class CompoffRequestForm extends PureComponent {
           <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text} />
-              {action === TIMEOFF_LINK_ACTION.NEW_COMPOFF_REQUEST && (
+              {action === NEW_COMPOFF_REQUEST && (
                 <>
                   <p className={styles.titlePage__text}>Request for Compoff</p>
                 </>
               )}
-              {action === TIMEOFF_LINK_ACTION.EDIT_COMPOFF_REQUEST && (
+              {action === EDIT_COMPOFF_REQUEST && (
                 <>
                   <p className={styles.titlePage__text}>[Ticket ID: {ticketID}]</p>
 
@@ -133,7 +135,7 @@ class CompoffRequestForm extends PureComponent {
           )}
 
           {!loadingFetchCompoffRequestById &&
-            action === TIMEOFF_LINK_ACTION.EDIT_COMPOFF_REQUEST &&
+            action === EDIT_COMPOFF_REQUEST &&
             status !== DRAFTS &&
             status !== IN_PROGRESS && (
               <div
@@ -147,8 +149,8 @@ class CompoffRequestForm extends PureComponent {
               </div>
             )}
 
-          {(action === TIMEOFF_LINK_ACTION.NEW_COMPOFF_REQUEST ||
-            (action === TIMEOFF_LINK_ACTION.EDIT_COMPOFF_REQUEST &&
+          {(action === NEW_COMPOFF_REQUEST ||
+            (action === EDIT_COMPOFF_REQUEST &&
               !loadingFetchCompoffRequestById &&
               (status === DRAFTS || status === IN_PROGRESS))) && (
               <>

@@ -11,13 +11,8 @@ import RightContent from './RightContent';
 import styles from './index.less';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 
-const {
-  IN_PROGRESS,
-  ACCEPTED,
-  ON_HOLD,
-  REJECTED,
-  DRAFTS,
-} = TIMEOFF_STATUS;
+const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DRAFTS } = TIMEOFF_STATUS;
+const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST } = TIMEOFF_LINK_ACTION;
 @connect(({ timeOff, locationSelection: { listLocationsByCompany = [] } = {}, loading }) => ({
   timeOff,
   listLocationsByCompany,
@@ -46,7 +41,7 @@ class LeaveRequestForm extends PureComponent {
       this.fetchTimeOffTypes();
     }
 
-    if (action === TIMEOFF_LINK_ACTION.EDIT_LEAVE_REQUEST) {
+    if (action === EDIT_LEAVE_REQUEST) {
       dispatch({
         type: 'timeOff/fetchLeaveRequestById',
         id: reId,
@@ -122,12 +117,12 @@ class LeaveRequestForm extends PureComponent {
         <div className={styles.leaveRequest}>
           <Affix offsetTop={42}>
             <div className={styles.titlePage}>
-              {action === TIMEOFF_LINK_ACTION.NEW_LEAVE_REQUEST && (
+              {action === NEW_LEAVE_REQUEST && (
                 <>
                   <p className={styles.titlePage__text}>Apply for Timeoff</p>
                 </>
               )}
-              {action === TIMEOFF_LINK_ACTION.EDIT_LEAVE_REQUEST && (
+              {action === EDIT_LEAVE_REQUEST && (
                 <>
                   <p className={styles.titlePage__text}>[Ticket ID: {ticketID}]</p>
 
@@ -151,7 +146,7 @@ class LeaveRequestForm extends PureComponent {
             </div>
           )}
           {!loadingFetchLeaveRequestById &&
-            action === TIMEOFF_LINK_ACTION.EDIT_LEAVE_REQUEST &&
+            action === EDIT_LEAVE_REQUEST &&
             status !== DRAFTS &&
             status !== IN_PROGRESS && (
               <div
@@ -165,8 +160,8 @@ class LeaveRequestForm extends PureComponent {
               </div>
             )}
 
-          {(action === TIMEOFF_LINK_ACTION.NEW_LEAVE_REQUEST ||
-            (action === TIMEOFF_LINK_ACTION.EDIT_LEAVE_REQUEST &&
+          {(action === NEW_LEAVE_REQUEST ||
+            (action === EDIT_LEAVE_REQUEST &&
               !loadingFetchLeaveRequestById &&
               (status === DRAFTS || status === IN_PROGRESS))) && (
               <>

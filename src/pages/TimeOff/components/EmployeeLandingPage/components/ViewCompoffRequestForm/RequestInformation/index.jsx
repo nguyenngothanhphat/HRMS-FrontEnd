@@ -9,6 +9,7 @@ import WithdrawModal from '../WithdrawModal';
 import styles from './index.less';
 
 const { IN_PROGRESS, REJECTED, DRAFTS } = TIMEOFF_STATUS;
+const { EDIT_COMPOFF_REQUEST } = TIMEOFF_LINK_ACTION;
 @connect(({ timeOff, loading }) => ({
   timeOff,
   loadingFetchCompoffRequestById: loading.effects['timeOff/fetchCompoffRequestById'],
@@ -27,7 +28,7 @@ class RequestInformation extends PureComponent {
   // EDIT BUTTON
   handleEdit = (_id) => {
     history.push({
-      pathname: `/time-off/overview/personal-compoff/${TIMEOFF_LINK_ACTION.EDIT_COMPOFF_REQUEST}/${_id}`,
+      pathname: `/time-off/overview/personal-compoff/${EDIT_COMPOFF_REQUEST}/${_id}`,
     });
   };
 

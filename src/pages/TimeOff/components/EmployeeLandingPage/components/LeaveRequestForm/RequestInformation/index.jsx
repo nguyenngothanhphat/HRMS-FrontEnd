@@ -21,9 +21,10 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const { A, B, C, D } = TIMEOFF_TYPE;
-
 const { IN_PROGRESS, DRAFTS } = TIMEOFF_STATUS;
-
+const { EDIT_LEAVE_REQUEST,
+  NEW_LEAVE_REQUEST,
+  } = TIMEOFF_LINK_ACTION
 @connect(({ timeOff, user, loading }) => ({
   timeOff,
   user,
@@ -131,7 +132,7 @@ class RequestInformation extends PureComponent {
 
     this.fetchEmailsListByCompany();
 
-    if (action === TIMEOFF_LINK_ACTION.EDIT_LEAVE_REQUEST) {
+    if (action === EDIT_LEAVE_REQUEST) {
       const { viewingLeaveRequest = {} } = this.props;
       // console.log('viewingLeaveRequest', viewingLeaveRequest);
       const {
@@ -543,11 +544,11 @@ class RequestInformation extends PureComponent {
           };
 
           let type = '';
-          if (action === TIMEOFF_LINK_ACTION.NEW_LEAVE_REQUEST) {
+          if (action === NEW_LEAVE_REQUEST) {
             data.employee = employeeId;
             data.approvalManager = managerId; // id
             type = 'timeOff/addLeaveRequest';
-          } else if (action === TIMEOFF_LINK_ACTION.EDIT_LEAVE_REQUEST) {
+          } else if (action === EDIT_LEAVE_REQUEST) {
             const { viewingLeaveRequest = {} } = this.props;
             const { employee: { _id = '' } = {} } = viewingLeaveRequest;
             data.employee = _id;
@@ -898,7 +899,7 @@ class RequestInformation extends PureComponent {
     const { selectedTypeName, buttonState, isEditingDrafts } = this.state;
     let content = '';
 
-    if (action === TIMEOFF_LINK_ACTION.EDIT_LEAVE_REQUEST) {
+    if (action === EDIT_LEAVE_REQUEST) {
       if (buttonState === 1) {
         content = `${selectedTypeName} request saved as draft.`;
       } else if (buttonState === 2) {
@@ -908,7 +909,7 @@ class RequestInformation extends PureComponent {
       }
     }
 
-    if (action === TIMEOFF_LINK_ACTION.NEW_LEAVE_REQUEST) {
+    if (action === NEW_LEAVE_REQUEST) {
       if (buttonState === 1) {
         content = `${selectedTypeName} request saved as draft.`;
       } else if (buttonState === 2)
@@ -1321,7 +1322,7 @@ class RequestInformation extends PureComponent {
             department head.
           </span>
           <div className={styles.formButtons}>
-            {action === TIMEOFF_LINK_ACTION.EDIT_LEAVE_REQUEST && (
+            {action === EDIT_LEAVE_REQUEST && (
               <Button
                 className={styles.cancelButton}
                 type="link"
@@ -1331,8 +1332,8 @@ class RequestInformation extends PureComponent {
                 <span>Cancel</span>
               </Button>
             )}
-            {(action === TIMEOFF_LINK_ACTION.NEW_LEAVE_REQUEST ||
-              (action === TIMEOFF_LINK_ACTION.EDIT_LEAVE_REQUEST && isEditingDrafts)) && (
+            {(action === NEW_LEAVE_REQUEST ||
+              (action === EDIT_LEAVE_REQUEST && isEditingDrafts)) && (
               <Button
                 loading={loadingSaveDraft || loadingUpdateDraft}
                 type="link"
@@ -1355,7 +1356,7 @@ class RequestInformation extends PureComponent {
               disabled={
                 remainingDayOfSelectedType === 0 &&
                 (selectedType === A || selectedType === B) &&
-                action === TIMEOFF_LINK_ACTION.NEW_LEAVE_REQUEST
+                action === NEW_LEAVE_REQUEST
               }
               htmlType="submit"
               onClick={() => {
