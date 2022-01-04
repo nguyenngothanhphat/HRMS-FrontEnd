@@ -75,8 +75,8 @@ class GeneralInfo extends Component {
         <PersonalInformation permissions={permissions} profileOwner={profileOwner} />
         {(permissions.viewPassportAndVisa !== -1 || profileOwner) && (
           <>
-            <PassportDetails profileOwner={profileOwner} />
-            <VisaDetails profileOwner={profileOwner} />
+            <PassportDetails profileOwner={profileOwner} permissions={permissions} />
+            <VisaDetails profileOwner={profileOwner} permissions={permissions} />
           </>
         )}
         {checkVisible ? (

@@ -1,37 +1,101 @@
 .headings {
-  font-family: 'Roboto', sans-serif;
-  font-size: 16px;
+  margin-bottom: 24px;
+  color: #161c29;
   font-weight: 700;
-  font-stretch: normal;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
   font-style: normal;
+  font-stretch: normal;
   line-height: normal;
   letter-spacing: normal;
-  color: #161c29;
-  margin-bottom: 24px;
 }
 
-.item {
-  margin-bottom: 16px;
+.container {
+  position: relative;
+  display: block;
+  margin-bottom: 12px;
+  margin-bottom: 24px;
+  padding-left: 35px;
+  color: #161c29;
+  font-weight: normal;
+  font-size: 13px;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  cursor: pointer;
+  opacity: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #f0f3f9;
+  border: 1px solid #2c6df9;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background-color: #f6f7f9;
+  border: 1px solid #2c6df9;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  position: absolute;
+  display: none;
+  content: '';
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+  top: 2px;
+  left: 6px;
+  width: 5px;
+  height: 10px;
+  border: solid #2c6df9;
+  border-width: 0 2px 2px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.select {
   display: flex;
-  width: 100%;
-  div:first-child {
-    font-size: 13px;
-    font-weight: normal;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: #000000;
-    width: 50%;
-  }
-  div:last-child {
-    font-size: 13px;
-    font-weight: normal;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: #707177;
-    width: 100%;
+  width: 50%;
+  margin-bottom: 24px;
+  :global {
+    .ant-select-arrow .anticon {
+      color: #161c29;
+      font-weight: 700;
+    }
   }
 }

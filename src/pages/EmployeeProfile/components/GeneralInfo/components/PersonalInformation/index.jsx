@@ -75,14 +75,12 @@ class PersonalInformation extends PureComponent {
       <div className={styles.PersonalInformation}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Personal Information</p>
-          {openPersonalInfo
-            ? ''
-            : (permissions.editPersonalInfo !== -1 || profileOwner) && (
-                <div className={styles.flexEdit} onClick={this.handleEdit}>
-                  <img src={EditBtn} alt="" className={styles.IconEdit} />
-                  <p className={styles.Edit}>Edit</p>
-                </div>
-              )}
+          {!openPersonalInfo && (permissions.editPersonalInfo !== -1 || profileOwner) && (
+            <div className={styles.flexEdit} onClick={this.handleEdit}>
+              <img src={EditBtn} alt="" className={styles.IconEdit} />
+              <p className={styles.Edit}>Edit</p>
+            </div>
+          )}
         </div>
         <div className={styles.viewBottom}>{renderComponent}</div>
       </div>

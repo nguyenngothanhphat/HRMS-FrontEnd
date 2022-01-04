@@ -197,6 +197,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_EDIT',
         // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_EMPLOYEE_EDIT',
         'T_GENERAL_INFO_T_PERSONAL_INFORMATION',
+        HR,
+        HR_MANAGER,
       ]);
   const indexViewPersonalNumber = isAdmin
     ? 1
@@ -211,6 +213,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL_VIEW',
         // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL_EMPLOYEE_VIEW',
         'T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL',
+        HR,
+        HR_MANAGER,
       ]);
 
   // View others personal information
@@ -236,6 +240,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         // 'P_PROFILE_T_GENERAL_INFO_WORK_EMAIL_EMPLOYEE_EDIT',
         'T_GENERAL_INFO_WORK_EMAIL_EDIT',
         'T_GENERAL_INFO_WORK_EMAIL_EMPLOYEE_EDIT',
+        HR,
+        HR_MANAGER,
       ]);
 
   const findIndexEmployeeID = isAdmin
@@ -245,6 +251,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         // 'P_PROFILE_T_GENERAL_INFO_EMPLOYEE_ID_EMPLOYEE_EDIT',
         'T_GENERAL_INFO_EMPLOYEE_ID_EDIT',
         'T_GENERAL_INFO_EMPLOYEE_ID_EMPLOYEE_EDIT',
+        HR,
+        HR_MANAGER,
       ]);
 
   // Edit profile tab employment and compensation
@@ -255,12 +263,16 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         // 'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_B_EDIT_EMPLOYEE_VIEW',
         'T_EMPLOYMENT_AND_COMPENSATION_B_EDIT_VIEW',
         'T_EMPLOYMENT_AND_COMPENSATION_B_EDIT_EMPLOYEE_VIEW',
+        HR,
+        HR_MANAGER,
       ]);
   const findIndexMakeChanges = isAdmin
     ? 1
     : isAuthorized(permissionList, [
         'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_B_MAKE_CHANGES_VIEW',
         'M_DIRECTORY_SELECT_PROFILE_EMPLOYEE_T_EMPLOYMENT_&_COMPENSATION_VIEW_B_MAKE_CHANGES_VIEW',
+        HR,
+        HR_MANAGER,
       ]);
 
   // View tabs employee profile
@@ -271,6 +283,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         // 'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_EMPLOYEE_VIEW',
         'T_EMPLOYMENT_AND_COMPENSATION',
         'T_EMPLOYMENT_AND_COMPENSATION_EMPLOYEE',
+        HR,
+        HR_MANAGER,
       ]);
   const indexPerformance = isAdmin
     ? 1
@@ -279,6 +293,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         // 'P_PROFILE_T_PERFORMENT_HISTORY_EMPLOYEE_VIEW',
         'T_PERFORMENT_HISTORY',
         'T_PERFORMENT_HISTORY_EMPLOYEE',
+        HR,
+        HR_MANAGER,
       ]);
   const indexAccountAndPaychecks = isAdmin
     ? 1
@@ -287,6 +303,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         // 'P_PROFILE_T_PERFORMENT_HISTORY_EMPLOYEE_VIEW',
         'T_PERFORMENT_HISTORY_VIEW',
         'T_PERFORMENT_HISTORY_EMPLOYEE_VIEW',
+        HR,
+        HR_MANAGER,
       ]);
   const indexDocument = isAdmin
     ? 1
@@ -295,6 +313,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         // 'P_PROFILE_T_DOCUMENT_EMPLOYEE_VIEW',
         'T_DOCUMENT_VIEW',
         'T_DOCUMENT_EMPLOYEE_VIEW',
+        HR,
+        HR_MANAGER,
       ]);
   const indexTimeAndSchedule = isAdmin
     ? 1
@@ -303,6 +323,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         // 'P_PROFILE_T_TIME_AND_SCHEDULING_EMPLOYEE_VIEW',
         'T_TIME_AND_SCHEDULING_VIEW',
         'T_TIME_AND_SCHEDULING_EMPLOYEE_VIEW',
+        HR,
+        HR_MANAGER,
       ]);
   const indexBenefitPlans = isAdmin
     ? 1
@@ -311,6 +333,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         'T_BENEFIT_PLANS_EMPLOYEE_VIEW',
         // 'P_PROFILE_T_BENEFIT_PLANS_VIEW',
         // 'P_PROFILE_T_BENEFIT_PLANS_EMPLOYEE_VIEW',
+        HR,
+        HR_MANAGER,
       ]);
 
   // View and edit info of general info tab
@@ -321,6 +345,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         // 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_EMPLOYEE_VIEW',
         'T_GENERAL_INFO_T_PASSPORT_AND_VISA_VIEW',
         'T_GENERAL_INFO_T_PASSPORT_AND_VISA_EMPLOYEE_VIEW',
+        HR,
+        HR_MANAGER,
       ]);
   const indexEditEmployeeInfo = isAdmin
     ? 1
@@ -329,6 +355,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         // 'P_PROFILE_T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EMPLOYEE_EDIT',
         'T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EDIT',
         'T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EMPLOYEE_EDIT',
+        HR,
+        HR_MANAGER,
       ]);
   const indexEditPPAndVisa = isAdmin
     ? 1
@@ -337,12 +365,16 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         // 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_EMPLOYEE_EDIT',
         'T_GENERAL_INFO_T_PASSPORT_AND_VISA_EDIT',
         'T_GENERAL_INFO_T_PASSPORT_AND_VISA_EMPLOYEE_EDIT',
+        HR,
+        HR_MANAGER,
       ]);
   const indexEditContact = isAdmin
     ? 1
     : isAuthorized(permissionList, [
         'P_PROFILE_T_GENERAL_INFO_T_EMERGENCY_CONTACT_EDIT',
         'M_DIRECTORY_SELECT_PROFILE_EMPLOYEE_T_GENERAL_INFO_VIEW_EMERGENCY_CONTACT_DETAILS_EDIT_VIEW',
+        HR,
+        HR_MANAGER,
       ]);
   const indexEditProfessionalAcademic = isAdmin
     ? 1
@@ -351,6 +383,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         // 'P_PROFILE_T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EMPLOYEE_EDIT',
         'T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EDIT',
         'T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EMPLOYEE_EDIT',
+        HR,
+        HR_MANAGER,
       ]);
 
   // Update avatar employee
@@ -361,13 +395,15 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         // 'P_PROFILE_T_GENERAL_INFO_B_UPLOAD_AVATAR_EMPLOYEE_VIEW',
         'T_GENERAL_INFO_B_UPLOAD_AVATAR_VIEW',
         'T_GENERAL_INFO_B_UPLOAD_AVATAR_EMPLOYEE_VIEW',
+        HR,
+        HR_MANAGER,
       ]);
 
   // View avatar employee
   const indexViewAvatar = isAdmin ? 1 : isAuthorized(permissionList, [HR, HR_MANAGER]);
 
   // Edit show avatar employee
-  const indexEditShowAvatar = isAdmin ? 1 : isAuthorized(permissionList, [HR_MANAGER]);
+  const indexEditShowAvatar = isAdmin ? 1 : isAuthorized(permissionList, [HR, HR_MANAGER]);
 
   // ONBOARDING
   const indexOnboardingSettings = isAuthorized(permissionList, [

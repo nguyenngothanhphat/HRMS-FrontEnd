@@ -22,9 +22,10 @@ const steps = [
   { title: 'Review Changes', content: 'Review Changes' },
 ];
 
-@connect(({ employeeProfile, user: { currentUser = {} } }) => ({
+@connect(({ employeeProfile, user: { permissions, currentUser = {} } }) => ({
   employeeProfile,
   currentUser,
+  permissions,
 }))
 class EmploymentTab extends Component {
   constructor(props) {
@@ -42,15 +43,27 @@ class EmploymentTab extends Component {
   componentDidMount = () => {
     const { employeeProfile = {} } = this.props;
 
-    const { title = {}, location = {} } = employeeProfile?.originData?.employmentData || {};
+    const {
+      title = {},
+      location = {},
+      department = {},
+      manager = {},
+      employeeType = {},
+    } = employeeProfile?.originData?.employmentData || {};
     const { firstName = '', legalName = '' } = employeeProfile?.originData?.generalData || {};
-    const { compensationType = null } = employeeProfile?.originData?.compensationData || {};
+    const { compensationType = '', currentAnnualCTC = '' } =
+      employeeProfile?.originData?.compensationData || {};
     this.setState({
       currentData: {
         name: legalName || firstName || null,
-        title: title?.name || null,
+        title: title?._id || null,
         compensationType: compensationType || null,
-        location: location?.name || null,
+        location: location?._id || null,
+        department: department?._id || null,
+        manager: manager?._id || null,
+        reportees: manager?.reportees || [],
+        employeeType: employeeType?._id || null,
+        currentAnnualCTC: currentAnnualCTC || null,
       },
     });
   };
@@ -96,12 +109,12 @@ class EmploymentTab extends Component {
       const payload = {
         title: data.stepThree.title || null,
         manager: data.stepThree.reportTo || null,
+        reportees: data.stepThree.reportees || null,
         location: data.stepTwo.wLocation || null,
         employeeType: data.stepTwo.employment || null,
-        department: data.stepThree.department || null,
-        compensationType: `${data.stepTwo.compensation || null} - ${
-          data.stepTwo.compensationType || null
-        }`,
+        department: data.stepTwo.department || null,
+        compensationType: data.stepFour.compensationType || null,
+        currentAnnualCTC: data.stepFour.currentAnnualCTC || null,
         effectiveDate: data.stepOne === 'Now' ? new Date() : data.stepOne,
         changeDate: new Date(),
         takeEffect,
@@ -121,7 +134,7 @@ class EmploymentTab extends Component {
     const { current } = this.state;
     if (msg === 'STOP') {
       this.setState({ current: 0 });
-    } else if (current === 4) {
+    } else if (current === 5) {
       this.setState({ submitted: true });
       this.setState({ current: 0 });
       this.setState({ isChanging: false });
@@ -147,17 +160,8 @@ class EmploymentTab extends Component {
     const { employeeProfile } = this.props;
     const visibleSuccess = employeeProfile ? employeeProfile.visibleSuccess : false;
     const { isChanging, current, currentData, isEdit } = this.state;
-    const {
-      dispatch,
-      listEmployeeActive,
-      currentUser: {
-        // roles = [],
-        employee: { company = {} } = {},
-        permissions = {},
-      },
-      profileOwner = false,
-    } = this.props;
-    // const permissions = checkPermissions(roles);
+    const { dispatch, listEmployeeActive, permissions = {}, profileOwner = false } = this.props;
+
     return (
       <div>
         <div className={styles.employmentTab}>
@@ -225,13 +229,13 @@ class EmploymentTab extends Component {
           )}
           {isChanging ? (
             <div className={styles.footer}>
-              <div>{current + 1}/5 steps</div>
+              <div>{current + 1}/6 steps</div>
               <div className={styles.buttons}>
                 <Button onClick={this.previousTab} type="text">
                   {current > 0 ? 'Back' : null}
                 </Button>
                 <Button onClick={this.nextTab} type="primary">
-                  {current === 4 ? 'Submit' : 'Continue'}
+                  {current === 5 ? 'Submit' : 'Continue'}
                 </Button>
               </div>
             </div>

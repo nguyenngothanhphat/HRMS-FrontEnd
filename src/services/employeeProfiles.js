@@ -392,3 +392,10 @@ export async function getBenefitPlanList(payload) {
     data: payload,
   });
 }
+// get list employee of a company
+export async function getListEmployeeSingleCompany(payload) {
+  return request('/api/employeetenant/list-by-single-company', {
+    method: 'POST',
+    data: payload,
+  });
+}

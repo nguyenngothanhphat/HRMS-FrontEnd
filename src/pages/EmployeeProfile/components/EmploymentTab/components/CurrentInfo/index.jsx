@@ -4,22 +4,18 @@ import { connect } from 'umi';
 import styles from './styles.less';
 import UserProfilePopover from '@/components/UserProfilePopover';
 
-function CurrentInfo(props) {
+const CurrentInfo = (props) => {
   const { employeeProfile = {} } = props;
   const {
     title,
     joinDate = '',
+    initialJoiningDate = '',
     location,
     employeeType = {},
     manager,
     // compensation = {},
     department = {},
   } = employeeProfile?.originData?.employmentData || {};
-  // const {
-  //   // employeeType = '',
-  //   currentAnnualCTC = '',
-  //   timeOffPolicy = '',
-  // } = employeeProfile?.originData?.compensationData || {};
 
   const managerInfo = {
     ...manager,
@@ -29,28 +25,34 @@ function CurrentInfo(props) {
     workNumber: manager?.generalInfo?.workNumber,
   };
 
+  const getInitialJoiningDate = () => {
+    let value = '';
+    if (initialJoiningDate) value = initialJoiningDate;
+    else {
+      value = joinDate;
+    }
+    return moment(value).locale('en').format('Do MMMM YYYY');
+  };
+
   const data = {
-    title: title?.name || 'Missing title',
-    department: department?.name || 'Missing department',
+    title: title?.name || '',
+    department: department?.name || '',
     grade: '',
-    initialJoiningDate: '',
-    joiningDate: joinDate
-      ? moment(joinDate).locale('en').format('Do MMMM YYYY')
-      : 'Missing joined date',
-    location: location?.name || 'Missing location',
-    employmentType: employeeType?.name || 'Missing employment type',
+    initialJoiningDate: getInitialJoiningDate(),
+    joiningDate: joinDate ? moment(joinDate).locale('en').format('Do MMMM YYYY') : '',
+    location: location?.name || '',
+    employmentType: employeeType?.name || '',
     employeeType: '', // what is this?
-    // annualSalary: String(currentAnnualCTC || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-    manager: manager ? (
-      <UserProfilePopover placement="rightBottom" data={managerInfo}>
-        <span className={styles.manager}>
-          {manager?.generalInfo?.legalName} ({manager?.generalInfo?.userId})
-        </span>
-      </UserProfilePopover>
-    ) : (
-      'Missing reporting manager'
-    ),
-    // timeOff: timeOffPolicy || 'This person is not allowed to take time off',
+    manager:
+      manager && manager?.generalInfo ? (
+        <UserProfilePopover placement="rightBottom" data={managerInfo}>
+          <span className={styles.manager}>
+            {manager?.generalInfo?.legalName} ({manager?.generalInfo?.userId})
+          </span>
+        </UserProfilePopover>
+      ) : (
+        ''
+      ),
   };
   return (
     <div style={{ margin: '24px' }}>
@@ -109,5 +111,5 @@ function CurrentInfo(props) {
       })}
     </div>
   );
-}
+};
 export default connect(({ employeeProfile }) => ({ employeeProfile }))(CurrentInfo);

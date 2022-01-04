@@ -62,25 +62,24 @@ class PassportDetails extends PureComponent {
   };
 
   render() {
-    const { openPassport, profileOwner = false } = this.props;
+    const { openPassport, profileOwner = false, permissions = {} } = this.props;
     const renderComponent = openPassport ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
       <View />
       // <View dataAPI={passportData} />
     );
+    const editPassportPermission = permissions.editPassportAndVisa !== -1;
     return (
       <div className={styles.PassportDetails}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Passport Details</p>
-          {openPassport
-            ? ''
-            : !profileOwner && (
+          {!openPassport && (!profileOwner || editPassportPermission) && (
             <div className={styles.flexEdit} onClick={this.handleEdit}>
               <img src={EditBtn} alt="" className={styles.IconEdit} />
               <p className={styles.Edit}>Edit</p>
             </div>
-              )}
+          )}
         </div>
         <div className={styles.viewBottom}>{renderComponent}</div>
       </div>

@@ -219,22 +219,19 @@ class Edit extends PureComponent {
         >
           <div className={s.formContainer}>
             <Form.Item label="Previous Job Tilte" name="preJobTitle">
-              <Input disabled={profileOwner} placeholder="Type previous job title" />
+              <Input disabled={!profileOwner} placeholder="Type the previous job title" />
             </Form.Item>
             <Form.Item label="Previous Company" name="preCompany">
-              <Input disabled={profileOwner} />
+              <Input disabled={!profileOwner} placeholder="Type the previous company" />
             </Form.Item>
-            {/* <Form.Item label="Past Experience" name="pastExp">
-            <Input disabled={profileOwner} />
-          </Form.Item> */}
             <Form.Item label="Total Experience" name="totalExp">
-              <Input disabled={profileOwner} />
+              <Input disabled={!profileOwner} placeholder="Type the total experience" />
             </Form.Item>
             <Form.Item label="Highest Qualification" name="qualification">
-              <Input disabled={profileOwner} />
+              <Input disabled={!profileOwner} placeholder="Type the highest qualification" />
             </Form.Item>
             <Form.Item label="Linkedin" name="linkedIn">
-              <Input />
+              <Input className={s.linkedIn} placeholder="Type the linkedin url" />
             </Form.Item>
             <Form.Item name="certification" className={s.certificationContainer}>
               <FormCertification
@@ -244,7 +241,7 @@ class Edit extends PureComponent {
             </Form.Item>
             <Form.Item label="Skills" name="skills">
               <Select
-                placeholder="Select skill"
+                placeholder="Select skills"
                 mode="multiple"
                 showArrow
                 filterOption={(input, option) =>

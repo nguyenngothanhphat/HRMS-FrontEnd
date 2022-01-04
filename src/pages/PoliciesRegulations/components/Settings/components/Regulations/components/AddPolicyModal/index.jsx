@@ -173,7 +173,13 @@ class AddPolicyModal extends Component {
               name="categoryPolicy"
               labelCol={{ span: 24 }}
             >
-              <Select showSearch onChange={onPolicyCategories}>
+              <Select
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                onChange={onPolicyCategories}
+              >
                 {listCategory.map((val) => (
                   <Option value={val._id}>{val.name}</Option>
                 ))}

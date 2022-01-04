@@ -4,6 +4,8 @@ import { history, connect } from 'umi';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
+
 import styles from './index.less';
 // loading
 @connect(({ loading, dispatch, timeOff: { paging } }) => ({
@@ -90,7 +92,11 @@ class MyLeaveTable extends PureComponent {
                 const { firstName = '', lastName = '', avatar = '' } = user;
                 return (
                   <Tooltip title={`${firstName} ${lastName}`} placement="top">
-                    <Avatar size="small" style={{ backgroundColor: '#EAF0FF' }} src={avatar} />
+                    <Avatar
+                      size="small"
+                      style={{ backgroundColor: '#EAF0FF' }}
+                      src={avatar || DefaultAvatar}
+                    />
                   </Tooltip>
                 );
               })}

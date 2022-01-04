@@ -59,6 +59,7 @@ import {
   addMultiBank,
   addMultiCertification,
   getBenefitPlanList,
+  getListEmployeeSingleCompany,
 } from '@/services/employeeProfiles';
 import { getCurrentTenant } from '@/utils/authority';
 
@@ -138,6 +139,7 @@ const employeeProfile = {
     listStates: [],
     revoke: [],
     visibleSuccess: false,
+    employeeList: [], // single company
   },
   effects: {
     *fetchEmployeeIdByUserId({ payload }, { call, put }) {
@@ -1471,6 +1473,34 @@ const employeeProfile = {
       } catch (error) {
         dialog(error);
       }
+    },
+    // for filter pane
+    *fetchEmployeeListSingleCompanyEffect({ payload }, { call, put, select }) {
+      let response = {};
+      try {
+        const { tenantCurrentEmployee, companyCurrentEmployee } = yield select(
+          (state) => state.employeeProfile,
+        );
+
+        response = yield call(getListEmployeeSingleCompany, {
+          ...payload,
+          status: ['ACTIVE', 'INACTIVE'],
+          company: companyCurrentEmployee,
+          tenantId: tenantCurrentEmployee,
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            employeeList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
   reducers: {

@@ -92,28 +92,22 @@ class Edit extends PureComponent {
       workNumber = '',
       adhaarCardNumber = '',
       uanNumber = '',
-      nationalId = '',
+      nationalId = uanNumber,
       _id: id = '',
     } = generalDataTemp;
-    // const payloadChanges = {
-    //   id,
-    //   urlFile,
-    //   legalGender,
-    //   legalName,
-    //   firstName: legalName,
-    //   DOB,
-    //   employeeId,
-    //   workEmail,
-    //   workNumber,
-    //   adhaarCardNumber,
-    //   uanNumber,
-    // };
+
+    const fullNameTemp = legalName.split(' ');
+    const firstName = fullNameTemp.slice(0, -1).join(' ');
+    const lastName = fullNameTemp.slice(-1).join(' ');
+
     return {
       id,
       urlFile,
       legalGender,
       legalName,
-      firstName: legalName,
+      firstName: fullNameTemp.length > 1 ? firstName : legalName,
+      lastName: fullNameTemp.length > 1 ? lastName : '',
+      middleName: '',
       DOB,
       employeeId,
       workEmail,
@@ -133,6 +127,8 @@ class Edit extends PureComponent {
       'legalGender',
       'legalName',
       'firstName',
+      'lastName',
+      'middleName',
       'DOB',
       'employeeId',
       'workEmail',
@@ -336,7 +332,7 @@ class Edit extends PureComponent {
       loading,
       handleCancel = () => {},
       loadingAdhaarCard,
-      taxData = {},
+      // taxData = {},
       currentUser: { roles = [] },
       locationEmpl: { headQuarterAddress: { country = '' } = {} } = {},
     } = this.props;
@@ -363,7 +359,7 @@ class Edit extends PureComponent {
         sm: { span: 12 },
       },
     };
-    const nationalIdNumber = taxData.length > 0 ? taxData[0].nationalId : '';
+    // const nationalIdNumber = taxData.length > 0 ? taxData[0].nationalId : '';
     const formatDate = DOB && moment(DOB);
     const dateFormat = 'Do MMMM YYYY';
     const checkIndiaLocation = country === 'IN';
@@ -385,7 +381,6 @@ class Edit extends PureComponent {
             workNumber,
             adhaarCardNumber,
             uanNumber,
-            nationalId: nationalIdNumber,
             DOB: formatDate,
           }}
           onValuesChange={(changedValues) => this.handleChange(changedValues)}

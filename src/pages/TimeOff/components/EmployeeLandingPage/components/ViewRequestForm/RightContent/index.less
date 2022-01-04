@@ -1,103 +1,107 @@
 .RightContent {
-  border: 1px solid #ebeff2;
-  border-radius: 5px;
-  width: 100%;
-  background-color: white;
-  .header {
-    padding: 16px 24px;
-    .title {
-      font-size: 16px;
-      color: #464646;
-      font-weight: 700;
-      display: block;
-    }
-    .description {
-      font-size: 14px;
-      margin-top: 16px;
-      display: block;
-      .text1 {
+  .aboveBox {
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ebeff2;
+    border-radius: 5px;
+    .header {
+      padding: 16px 24px;
+      .title {
+        display: block;
+        color: #464646;
         font-weight: 700;
-        margin-bottom: 10px;
+        font-size: 16px;
       }
-      .text2 {
-        color: #707177;
-      }
-    }
-  }
-  .underReview {
-    border-top: 1px solid #ebeff2;
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    .cautionIcon {
-      width: 15px;
-      margin-right: 10px;
-    }
-    .description {
-      .text1 {
-        color: #707177;
-      }
-      .reportingManager {
-        font-weight: 700;
-        text-decoration: underline;
-        color: #2c6df9;
-        cursor: pointer;
-        &:hover {
-          opacity: 0.9;
-          transition: 0.3s;
+      .description {
+        display: block;
+        margin-top: 16px;
+        font-size: 14px;
+        .text1 {
+          margin-bottom: 10px;
+          font-weight: 700;
+        }
+        .text2 {
+          color: #707177;
         }
       }
     }
   }
-  .content {
-    padding: 0 24px 24px 24px;
-    .title {
-      font-size: 16px;
-      color: #464646;
-      font-weight: 700;
-      display: block;
-      margin-top: 10px;
-      margin-bottom: 16px;
-    }
-    .avatar {
-      width: 36px;
-      height: auto;
-    }
-    :global {
-      // avatar label
-      .ant-steps-item-title {
-        color: #707177;
-        font-size: 13px;
-        line-height: 1.5;
+  .flowBox {
+    width: 100%;
+    margin-top: 24px;
+    background-color: white;
+    border: 1px solid #ebeff2;
+    border-radius: 5px;
+    .content {
+      padding: 6px 24px 24px 24px;
+      .title {
+        display: block;
+        margin-top: 10px;
+        margin-bottom: 36px;
+        color: #464646;
+        font-weight: 700;
+        font-size: 16px;
       }
-
-      .ant-steps-item-tail::after {
-        height: 0;
-        border: none;
-        border-top: 2px dashed #dedede !important;
-      }
-      .ant-steps-item {
-        .ant-steps-icon {
-          img {
-            margin-top: -10px;
-            border: 2px solid rgba(44, 109, 249, 0.33);
-            border-radius: 50%;
-            opacity: 0.9;
-          }
+      .avatar {
+        position: relative;
+        width: 36px !important;
+        height: 36px !important;
+        img {
+          width: 36px !important;
+          height: 36px !important;
+        }
+        // height: auto;
+        // check icon
+        span {
+          position: absolute;
+          right: 0;
+          bottom: 0;
+          // color: rgb(0, 197, 152);
+          font-weight: 700;
+          font-size: 14px;
+          // margin-right: 10px;
         }
       }
-      .ant-steps-item-active {
-        .ant-steps-icon {
-          border-radius: 50%;
-          img {
-            border: 2px solid #2c6df9;
-            border-radius: 50%;
-          }
-        }
-      }
-      .ant-steps-item-finish {
+      :global {
+        // avatar label
         .ant-steps-item-title {
-          color: #000000;
+          color: #707177;
+          font-size: 13px;
+          line-height: 1.5;
+        }
+
+        .ant-steps-item-tail::after {
+          height: 0;
+          border: none;
+          border-top: 1px dashed #dedede !important;
+        }
+        .ant-steps-item {
+          .ant-steps-icon {
+            img {
+              margin-top: -10px;
+              border: 2px solid rgba(44, 109, 249, 0.33);
+              border-radius: 50%;
+              opacity: 0.9;
+            }
+          }
+        }
+        .ant-steps-item-active {
+          .ant-steps-icon {
+            border-radius: 50%;
+            img {
+              border: 2px solid #2c6df9;
+              border-radius: 50%;
+            }
+          }
+          .ant-steps-item-title {
+            font-size: 13px;
+            line-height: 1.5;
+          }
+        }
+        .ant-steps-item-finish {
+          .ant-steps-item-title {
+            color: #000000;
+          }
         }
       }
     }

@@ -131,7 +131,7 @@ class ViewInformation extends Component {
     });
   };
 
-  formatListSkill = (skills, colors) => {
+  formatListSkill = (skills, otherSkills, colors) => {
     let temp = 0;
     const listFormat = skills?.map((item) => {
       if (temp >= 5) {
@@ -144,7 +144,18 @@ class ViewInformation extends Component {
         id: item._id,
       };
     });
-    return listFormat;
+    const listFormatOther = otherSkills?.map((item) => {
+      if (temp >= 5) {
+        temp -= 5;
+      }
+      temp += 1;
+      return {
+        color: colors[temp - 1],
+        name: item,
+        id: item,
+      };
+    });
+    return [...listFormat, ...listFormatOther];
   };
 
   getResponse = (resp) => {
@@ -390,7 +401,9 @@ class ViewInformation extends Component {
         colorText: '#ff6ca1',
       },
     ];
-    const formatListSkill = this.formatListSkill(generalData.skills, listColors) || [];
+    const formatListSkill =
+      this.formatListSkill(generalData.skills || [], generalData.otherSkills || [], listColors) ||
+      [];
 
     const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
 
@@ -505,24 +518,37 @@ class ViewInformation extends Component {
           </div>
 
           <Divider />
-          <div className={s.infoEmployee__socialMedia}>
-            <Tooltip title="LinkedIn">
-              <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
-                <img
-                  src="/assets/images/iconLinkedin.svg"
-                  alt="img-arrow"
-                  style={{ cursor: 'pointer' }}
-                />
-              </a>
+          <div className={s.infoEmployee__socialMedia} style={{ marginLeft: '-15px' }}>
+            <Tooltip
+              title={
+                linkedIn
+                  ? 'LinkedIn'
+                  : 'Please update the Linkedin Profile in the Employee profile page'
+              }
+            >
+              <Button
+                disabled={linkedIn ? '' : 'true'}
+                style={{ width: '40px', background: 'white', border: '1px solid white' }}
+              >
+                <a href={linkedIn} target="_blank" rel="noopener noreferrer">
+                  <img
+                    src="/assets/images/iconLinkedin.svg"
+                    alt="img-arrow"
+                    style={{ cursor: 'pointer' }}
+                  />
+                </a>
+              </Button>
             </Tooltip>
             <Tooltip title="Email">
-              <a href={`mailto:${workEmail}`}>
-                <img
-                  src="/assets/images/iconMail.svg"
-                  alt="img-arrow"
-                  style={{ marginLeft: '5px', cursor: 'pointer' }}
-                />
-              </a>
+              <Button style={{ width: '40px', background: 'white', border: '1px solid white' }}>
+                <a href={`mailto:${workEmail}`}>
+                  <img
+                    src="/assets/images/iconMail.svg"
+                    alt="img-arrow"
+                    style={{ marginLeft: '5px', cursor: 'pointer' }}
+                  />
+                </a>
+              </Button>
             </Tooltip>
           </div>
           <div className={s.viewBtnAction}>{this.btnAction(permissions, profileOwner)}</div>
