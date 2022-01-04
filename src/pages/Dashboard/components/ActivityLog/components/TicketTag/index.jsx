@@ -11,7 +11,12 @@ const TicketTag = (props) => {
 
   // RENDER UI
   const renderTag = (item) => {
-    const { onDate = '', ticketID = '', status = '', type: { typeName = '' } = {} || {} } = item;
+    const {
+      created_at: onDate = '',
+      id: ticketID = '',
+      status = '',
+      request_type: typeName = '',
+    } = item;
     const dateTemp = moment(onDate).date();
     const monthTemp = moment(onDate).locale('en').format('MMM');
     return (

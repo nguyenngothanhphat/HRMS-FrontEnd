@@ -190,7 +190,11 @@ const RaiseTicketModal = (props) => {
                 name="supportTeam"
                 labelCol={{ span: 24 }}
               >
-                <Select showSearch onChange={onSupportTeamChange} placeholder="Select the support team">
+                <Select
+                  showSearch
+                  onChange={onSupportTeamChange}
+                  placeholder="Select the support team"
+                >
                   {SUPPORT_TEAM.map((val) => (
                     <Option value={val._id}>{val.name}</Option>
                   ))}
@@ -251,7 +255,7 @@ const RaiseTicketModal = (props) => {
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please enter the subject' }]}
               >
-                <Input placeholder='Enter the subject' />
+                <Input placeholder="Enter the subject" />
               </Form.Item>
             </Col>
 
@@ -262,7 +266,7 @@ const RaiseTicketModal = (props) => {
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please enter the description' }]}
               >
-                <Input.TextArea autoSize={{ minRows: 3 }} placeholder='Enter the description' />
+                <Input.TextArea autoSize={{ minRows: 3 }} placeholder="Enter the description" />
               </Form.Item>
             </Col>
 
