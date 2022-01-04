@@ -7,6 +7,7 @@ import MyCompoffTable from '../MyCompoffTable';
 import FilterBar from '../FilterBar';
 import styles from './index.less';
 
+const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DRAFTS } = TIMEOFF_STATUS;
 @connect(
   ({
     timeOff,
@@ -104,36 +105,36 @@ class TimeOffRequestTab extends PureComponent {
 
     if (tabType === 1) {
       if (filterTab === '1') {
-        status = TIMEOFF_STATUS.inProgress;
+        status = IN_PROGRESS;
       }
       if (filterTab === '2') {
-        status = TIMEOFF_STATUS.accepted;
+        status = ACCEPTED;
       }
       if (filterTab === '3') {
-        status = TIMEOFF_STATUS.rejected;
+        status = REJECTED;
       }
       if (filterTab === '4') {
-        status = TIMEOFF_STATUS.drafts;
+        status = DRAFTS;
       }
       if (filterTab === '5') {
-        status = TIMEOFF_STATUS.onHold;
+        status = ON_HOLD;
       }
     } else if (tabType === 2) {
       // compoff
       if (filterTab === '1') {
-        status = [TIMEOFF_STATUS.inProgressNext, TIMEOFF_STATUS.inProgress];
+        status = [IN_PROGRESS_NEXT, IN_PROGRESS];
       }
       if (filterTab === '2') {
-        status = [TIMEOFF_STATUS.accepted];
+        status = [ACCEPTED];
       }
       if (filterTab === '3') {
-        status = [TIMEOFF_STATUS.rejected];
+        status = [REJECTED];
       }
       if (filterTab === '4') {
-        status = [TIMEOFF_STATUS.drafts];
+        status = [DRAFTS];
       }
       if (filterTab === '5') {
-        status = [TIMEOFF_STATUS.onHold];
+        status = [ON_HOLD];
       }
     }
     const commonFunction = (res = {}) => {
@@ -191,23 +192,23 @@ class TimeOffRequestTab extends PureComponent {
     newData.forEach((item) => {
       const { _id: status = '' } = item;
       switch (status) {
-        case TIMEOFF_STATUS.inProgress: {
+        case IN_PROGRESS: {
           inProgressLength += item.count;
           break;
         }
-        case TIMEOFF_STATUS.accepted: {
+        case ACCEPTED: {
           approvedLength += item.count;
           break;
         }
-        case TIMEOFF_STATUS.rejected: {
+        case REJECTED: {
           rejectedLength += item.count;
           break;
         }
-        case TIMEOFF_STATUS.drafts: {
+        case DRAFTS: {
           draftLength += item.count;
           break;
         }
-        case TIMEOFF_STATUS.onHold: {
+        case ON_HOLD: {
           onHoldLength += item.count;
           break;
         }

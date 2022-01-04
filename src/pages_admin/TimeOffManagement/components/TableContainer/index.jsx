@@ -1,9 +1,9 @@
 // import moment from 'moment';
+import React, { PureComponent } from 'react';
+import { connect } from 'umi';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import { getFilter, removeCurrentPage, removeFilter } from '@/utils/timeoffManagement';
-import React, { PureComponent } from 'react';
-import { connect } from 'umi';
 import OptionsHeader from '../OptionsHeader';
 import TableTimeOff from '../TableTimeOff';
 import styles from './index.less';
@@ -125,8 +125,8 @@ class TableContainer extends PureComponent {
     const { dispatch } = this.props;
     const { status = [] } = values;
     let newStatus = [...status];
-    if (status.includes(TIMEOFF_STATUS.inProgress)) {
-      newStatus = [...newStatus, TIMEOFF_STATUS.inProgressNext];
+    if (status.includes(TIMEOFF_STATUS.IN_PROGRESS)) {
+      newStatus = [...newStatus, TIMEOFF_STATUS.IN_PROGRESS_NEXT];
     }
     dispatch({
       type: 'timeOffManagement/fetchListTimeOff',

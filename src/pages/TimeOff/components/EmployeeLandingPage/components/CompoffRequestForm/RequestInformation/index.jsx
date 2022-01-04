@@ -12,6 +12,9 @@ import styles from './index.less';
 const { Option } = Select;
 const { TextArea } = Input;
 
+const { IN_PROGRESS, DRAFTS } = TIMEOFF_STATUS;
+const { EDIT_COMPOFF_REQUEST, NEW_COMPOFF_REQUEST } = TIMEOFF_LINK_ACTION;
+
 @connect(({ timeOff, user, loading }) => ({
   timeOff,
   user,
@@ -67,12 +70,13 @@ class RequestInformation extends PureComponent {
   };
 
   fetchProjectsListByEmployee = () => {
-    const { dispatch ,user: { currentUser: { employee: {_id = ''} = {} } = {} } = {} } = this.props;
+    const { dispatch, user: { currentUser: { employee: { _id = '' } = {} } = {} } = {} } =
+      this.props;
     dispatch({
       type: 'timeOff/fetchProjectsListByEmployee',
       payload: {
-        employee: _id
-      }
+        employee: _id,
+      },
     });
   };
 
@@ -89,7 +93,7 @@ class RequestInformation extends PureComponent {
     this.fetchEmailsListByCompany();
     this.fetchProjectsListByEmployee();
 
-    if (action === TIMEOFF_LINK_ACTION.editCompoffRequest) {
+    if (action === EDIT_COMPOFF_REQUEST) {
       const { viewingCompoffRequest = {} } = this.props;
       const {
         project: { id: projectId = '' } = {},
@@ -100,7 +104,7 @@ class RequestInformation extends PureComponent {
         status = '',
       } = viewingCompoffRequest;
 
-      if (status === TIMEOFF_STATUS.drafts) {
+      if (status === DRAFTS) {
         this.setState({
           isEditingDrafts: true,
         });
@@ -150,7 +154,7 @@ class RequestInformation extends PureComponent {
     const { timeOff: { projectsList } = {}, action = '' } = this.props;
     if (
       JSON.stringify(prevProps.timeOff.projectsList) !== JSON.stringify(projectsList) &&
-      action === TIMEOFF_LINK_ACTION.editCompoffRequest
+      action === EDIT_COMPOFF_REQUEST
     ) {
       const { viewingCompoffRequest = {} } = this.props;
       const { project: { id: projectId = '' } = {} } = viewingCompoffRequest;
@@ -248,20 +252,20 @@ class RequestInformation extends PureComponent {
 
     // ON SUBMIT BUTTON
     if (buttonState === 2) {
-      if (pageAction === TIMEOFF_LINK_ACTION.editCompoffRequest) {
+      if (pageAction === EDIT_COMPOFF_REQUEST) {
         type = 'timeOff/updateCompoffRequest';
         sendData._id = viewingCompoffRequestId;
-      } else if (pageAction === TIMEOFF_LINK_ACTION.newCompoffRequest) {
+      } else if (pageAction === NEW_COMPOFF_REQUEST) {
         type = 'timeOff/addCompoffRequest';
       }
-      sendData.status = TIMEOFF_STATUS.inProgress;
+      sendData.status = IN_PROGRESS;
     }
     // ON SAVE TO DRAFT BUTTON
-    else if (pageAction === TIMEOFF_LINK_ACTION.editCompoffRequest) {
+    else if (pageAction === EDIT_COMPOFF_REQUEST) {
       type = 'timeOff/updateCompoffRequest';
       sendData._id = viewingCompoffRequestId;
-      sendData.status = TIMEOFF_STATUS.drafts;
-    } else if (pageAction === TIMEOFF_LINK_ACTION.newCompoffRequest) {
+      sendData.status = DRAFTS;
+    } else if (pageAction === NEW_COMPOFF_REQUEST) {
       type = 'timeOff/addCompoffRequest';
     }
 
@@ -416,7 +420,7 @@ class RequestInformation extends PureComponent {
     const { buttonState, isEditingDrafts } = this.state;
     let content = '';
 
-    if (action === TIMEOFF_LINK_ACTION.editCompoffRequest) {
+    if (action === EDIT_COMPOFF_REQUEST) {
       if (buttonState === 1) content = `Compoff request saved as draft.`;
       else if (buttonState === 2) {
         if (isEditingDrafts) content = `Compoff request submitted to the HR and your manager.`;
@@ -424,7 +428,7 @@ class RequestInformation extends PureComponent {
       }
     }
 
-    if (action === TIMEOFF_LINK_ACTION.newCompoffRequest) {
+    if (action === NEW_COMPOFF_REQUEST) {
       if (buttonState === 1) {
         content = `Compoff request saved as draft.`;
       } else if (buttonState === 2)
@@ -736,7 +740,7 @@ class RequestInformation extends PureComponent {
             department head.
           </span>
           <div className={styles.formButtons}>
-            {action === TIMEOFF_LINK_ACTION.editCompoffRequest && (
+            {action === EDIT_COMPOFF_REQUEST && (
               <Button
                 className={styles.cancelButton}
                 type="link"
@@ -746,8 +750,8 @@ class RequestInformation extends PureComponent {
                 <span>Cancel</span>
               </Button>
             )}
-            {(action === TIMEOFF_LINK_ACTION.newCompoffRequest ||
-              (action === TIMEOFF_LINK_ACTION.editCompoffRequest && isEditingDrafts)) && (
+            {(action === NEW_COMPOFF_REQUEST ||
+              (action === EDIT_COMPOFF_REQUEST && isEditingDrafts)) && (
               <Button
                 loading={loadingAddCompoffRequest && buttonState === 1}
                 type="link"

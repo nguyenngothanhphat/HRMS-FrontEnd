@@ -12,6 +12,7 @@ import RejectCommentModal from '../RejectCommentModal';
 
 import styles from './index.less';
 
+const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, REJECTED } = TIMEOFF_STATUS;
 @connect(({ dispatch, timeOff: { paging }, loading }) => ({
   dispatch,
   paging,
@@ -123,10 +124,7 @@ class TeamCompoffTable extends PureComponent {
       render: (id) => {
         const { ticketID = '', _id = '' } = id;
         const { selectedTab = '' } = this.props;
-        if (
-          selectedTab === TIMEOFF_STATUS.inProgress ||
-          selectedTab === TIMEOFF_STATUS.inProgressNext
-        )
+        if (selectedTab === IN_PROGRESS || selectedTab === IN_PROGRESS_NEXT)
           return (
             <div className={styles.rowAction}>
               <Tooltip title="View">
@@ -248,7 +246,7 @@ class TeamCompoffTable extends PureComponent {
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
     const { selectedTab = '', loading3, loading4, onHandle = () => {} } = this.props;
-    if ([TIMEOFF_STATUS.inProgress, TIMEOFF_STATUS.inProgressNext].includes(selectedTab)) {
+    if ([IN_PROGRESS, IN_PROGRESS_NEXT].includes(selectedTab)) {
       const payload = {
         onApprove: this.onMultipleApprove,
         onReject: this.onMultipleCancelClick,
@@ -440,7 +438,7 @@ class TeamCompoffTable extends PureComponent {
     };
 
     const tableByRole =
-      selectedTab === TIMEOFF_STATUS.rejected || selectedTab === TIMEOFF_STATUS.accepted
+      selectedTab === REJECTED || selectedTab === ACCEPTED
         ? this.columns.filter((col) => col.dataIndex !== 'assigned')
         : this.columns.filter((col) => col.dataIndex !== 'comment');
 
