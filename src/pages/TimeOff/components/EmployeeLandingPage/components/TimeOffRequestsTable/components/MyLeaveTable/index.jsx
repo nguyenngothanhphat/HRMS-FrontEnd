@@ -7,6 +7,8 @@ import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 
 import styles from './index.less';
+
+const { IN_PROGRESS } = TIMEOFF_STATUS;
 // loading
 @connect(({ loading, dispatch, timeOff: { paging } }) => ({
   paging,
@@ -23,7 +25,7 @@ class MyLeaveTable extends PureComponent {
       width: '20%',
       render: (id) => {
         const { ticketID = '', _id = '', updated = false, status = '' } = id;
-        const checkUpdated = status === TIMEOFF_STATUS.inProgress && updated;
+        const checkUpdated = status === IN_PROGRESS && updated;
         return (
           <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
             {ticketID}

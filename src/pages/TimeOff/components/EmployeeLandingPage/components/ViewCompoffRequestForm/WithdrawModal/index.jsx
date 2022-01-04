@@ -3,6 +3,8 @@ import { Button, Modal } from 'antd';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
 
+const { DRAFTS } = TIMEOFF_STATUS;
+
 export default class WithdrawModal extends PureComponent {
   render() {
     const {
@@ -16,7 +18,7 @@ export default class WithdrawModal extends PureComponent {
     let content1 =
       'Withdrawing request will delete this ticket id and no longer will be kept track of.';
     let content2 = 'Both your Manager and HR will be notified of this change.';
-    if (status === TIMEOFF_STATUS.drafts) {
+    if (status === DRAFTS) {
       header = 'Discard draft request?';
       content1 = 'Discarding draft will delete this ticket id and no longer will be kept track of.';
       content2 = '';
