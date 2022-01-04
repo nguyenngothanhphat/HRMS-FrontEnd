@@ -5,7 +5,12 @@ import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
-import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION, MAX_NO_OF_DAYS_TO_SHOW } from '@/utils/timeOff';
+import {
+  TIMEOFF_STATUS,
+  TIMEOFF_LINK_ACTION,
+  MAX_NO_OF_DAYS_TO_SHOW,
+  TIMEOFF_TYPE,
+} from '@/utils/timeOff';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import LeaveTimeRow from './LeaveTimeRow';
 
@@ -14,6 +19,10 @@ import LeaveTimeRow2 from './LeaveTimeRow2';
 
 const { Option } = Select;
 const { TextArea } = Input;
+
+const { A, B, C, D } = TIMEOFF_TYPE;
+
+const { IN_PROGRESS, DRAFTS } = TIMEOFF_STATUS;
 
 @connect(({ timeOff, user, loading }) => ({
   timeOff,
@@ -55,12 +64,12 @@ class RequestInformation extends PureComponent {
         break;
     }
     switch (selectedType) {
-      case 'A':
-      case 'B':
+      case A:
+      case B:
         return '1';
-      case 'C':
+      case C:
         return '2';
-      case 'D':
+      case D:
         return '4';
       default:
         return '1';
@@ -122,7 +131,7 @@ class RequestInformation extends PureComponent {
 
     this.fetchEmailsListByCompany();
 
-    if (action === TIMEOFF_LINK_ACTION.editLeaveRequest) {
+    if (action === TIMEOFF_LINK_ACTION.EDIT_LEAVE_REQUEST) {
       const { viewingLeaveRequest = {} } = this.props;
       // console.log('viewingLeaveRequest', viewingLeaveRequest);
       const {
@@ -137,7 +146,7 @@ class RequestInformation extends PureComponent {
         status = '',
       } = viewingLeaveRequest;
 
-      if (status === TIMEOFF_STATUS.drafts) {
+      if (status === DRAFTS) {
         this.setState({
           isEditingDrafts: true,
         });
@@ -188,18 +197,18 @@ class RequestInformation extends PureComponent {
       });
 
       // set notice
-      if (type === 'C') {
+      if (type === C) {
         this.autoValueForToDate(type, name, moment(fromDate), '');
       }
 
-      if (type === 'D') {
+      if (type === D) {
         this.setSecondNotice(`${name} applied for: ${dateLists.length} days`);
       }
 
       this.getRemainingDay(name);
       // this.autoValueForToDate(type, shortType, moment(fromDate), '');
       if (
-        type === 'A' &&
+        type === A &&
         name === 'Casual Leave' &&
         moment(fromDate) !== null &&
         moment(fromDate) !== ''
@@ -233,7 +242,7 @@ class RequestInformation extends PureComponent {
         } = {},
         currentAllowance = 0,
       } = value;
-      if (typeName === name1 && (type === 'A' || type === 'B')) {
+      if (typeName === name1 && (type === A || type === B)) {
         count = currentAllowance;
         // total = time;
         check = true;
@@ -277,7 +286,7 @@ class RequestInformation extends PureComponent {
 
     timeOffTypesAB.forEach((value) => {
       const { defaultSettings: { _id: _id1 = '', type = '' } = {}, currentAllowance = 0 } = value;
-      if (_id1 === _id && (type === 'A' || type === 'B')) {
+      if (_id1 === _id && (type === A || type === B)) {
         count = currentAllowance;
       }
     });
@@ -303,7 +312,7 @@ class RequestInformation extends PureComponent {
 
       this.autoValueForToDate(type, name, durationFrom, selectedType);
 
-      if (type === 'A' && name === 'Casual Leave' && durationFrom) {
+      if (type === A && name === 'Casual Leave' && durationFrom) {
         this.setSecondNotice(`${name}s gets credited each month.`);
       }
 
@@ -335,9 +344,6 @@ class RequestInformation extends PureComponent {
       this.saveCurrentTypeTab(returnTab);
       setTimeout(() => {
         history.goBack();
-        // history.push({
-        //   pathname: `/time-off`,
-        // });
       }, 200);
     }
   };
@@ -384,7 +390,7 @@ class RequestInformation extends PureComponent {
         };
       });
     }
-    if (selectedType !== 'C' && selectedType !== 'D') {
+    if (selectedType !== C && selectedType !== D) {
       result = result.filter(
         (value) =>
           moment(value.date).weekday() !== 6 &&
@@ -431,7 +437,7 @@ class RequestInformation extends PureComponent {
         );
 
         // let duration = 0;
-        // if (selectedType !== 'C') duration = this.calculateNumberOfLeaveDay(leaveDates);
+        // if (selectedType !== C) duration = this.calculateNumberOfLeaveDay(leaveDates);
         // else duration = totalDayOfSelectedType;
 
         const duration = this.calculateNumberOfLeaveDay(leaveDates);
@@ -505,7 +511,6 @@ class RequestInformation extends PureComponent {
       leaveTimeLists,
       selectedType,
     );
-    // console.log('leaveDates', leaveDates);
 
     const { buttonState } = this.state;
 
@@ -515,23 +520,16 @@ class RequestInformation extends PureComponent {
         message.error('Please select valid leave time dates!');
       } else {
         // generate data for API
-        // let duration = 0;
-        // if (selectedType !== 'C') duration = this.calculateNumberOfLeaveDay(leaveDates);
-        // else duration = totalDayOfSelectedType;
-
         const duration = this.calculateNumberOfLeaveDay(leaveDates);
 
-        if (
-          (selectedType === 'A' || selectedType === 'B') &&
-          duration > remainingDayOfSelectedType
-        ) {
+        if ((selectedType === A || selectedType === B) && duration > remainingDayOfSelectedType) {
           message.error(
             `You only have ${remainingDayOfSelectedType} day(s) of ${selectedTypeName} left.`,
           );
         } else {
           const data = {
             type: timeOffType,
-            status: TIMEOFF_STATUS.inProgress,
+            status: IN_PROGRESS,
             subject,
             fromDate: durationFrom,
             toDate: durationTo,
@@ -545,26 +543,25 @@ class RequestInformation extends PureComponent {
           };
 
           let type = '';
-          if (action === TIMEOFF_LINK_ACTION.newLeaveRequest) {
+          if (action === TIMEOFF_LINK_ACTION.NEW_LEAVE_REQUEST) {
             data.employee = employeeId;
             data.approvalManager = managerId; // id
             type = 'timeOff/addLeaveRequest';
-          } else if (action === TIMEOFF_LINK_ACTION.editLeaveRequest) {
+          } else if (action === TIMEOFF_LINK_ACTION.EDIT_LEAVE_REQUEST) {
             const { viewingLeaveRequest = {} } = this.props;
-            // console.log('viewingLeaveRequest', viewingLeaveRequest);
             const { employee: { _id = '' } = {} } = viewingLeaveRequest;
             data.employee = _id;
             data._id = viewingLeaveRequestId;
             type = 'timeOff/updateLeaveRequestById';
           }
 
-          console.log('🚀 ~ data', data);
-          // dispatch({
-          //   type,
-          //   payload: data,
-          // }).then((statusCode) => {
-          //   if (statusCode === 200) this.setShowSuccessModal(true);
-          // });
+          // console.log('🚀 ~ data', data);
+          dispatch({
+            type,
+            payload: data,
+          }).then((statusCode) => {
+            if (statusCode === 200) this.setShowSuccessModal(true);
+          });
         }
       }
     } else if (buttonState === 1) {
@@ -580,8 +577,8 @@ class RequestInformation extends PureComponent {
   // AUTO VALUE FOR TODATE of DATE PICKER DEPENDING ON SELECTED TYPE
   autoValueForToDate = (selectedType, selectedTypeName, durationFrom, prevType) => {
     let autoToDate = null;
-    const typeAB = ['A', 'B'];
-    const typeCD = ['C', 'D'];
+    const typeAB = [A, B];
+    const typeCD = [C, D];
 
     // console.log('durationFrom', durationFrom);
     // console.log('selectedType', selectedType);
@@ -600,7 +597,7 @@ class RequestInformation extends PureComponent {
 
         const { timeOffTypes = [] } = specialLeaves;
 
-        if (selectedType === 'C') {
+        if (selectedType === C) {
           const foundType = timeOffTypes.find(
             (value) => value.defaultSettings.name === selectedTypeName,
           );
@@ -626,7 +623,7 @@ class RequestInformation extends PureComponent {
             leaveTimeLists: initialValuesForLeaveTimesList,
           });
         }
-        if (selectedType === 'D') {
+        if (selectedType === D) {
           this.setSecondNotice('');
 
           this.setState({
@@ -664,20 +661,11 @@ class RequestInformation extends PureComponent {
     }
 
     const { selectedTypeName, selectedType } = this.state;
-    if (selectedType === 'C' || selectedType === 'D')
+    if (selectedType === C || selectedType === D)
       this.autoValueForToDate(selectedType, selectedTypeName, value);
 
-    if (selectedType === 'A' && selectedTypeName === 'Casual Leave')
+    if (selectedType === A && selectedTypeName === 'Casual Leave')
       this.setSecondNotice(`${selectedTypeName}s gets credited each month.`);
-
-    // // initial value for leave dates list
-    // const { durationTo } = this.state;
-    // const dateLists = this.getDateLists(value, autoToDate || durationTo);
-    // const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
-    // console.log('initialValuesForLeaveTimesList', initialValuesForLeaveTimesList);
-    // this.formRef.current.setFieldsValue({
-    //   leaveTimeLists: initialValuesForLeaveTimesList,
-    // });
   };
 
   toDateOnChange = (value) => {
@@ -691,14 +679,14 @@ class RequestInformation extends PureComponent {
       });
     }
     const { selectedTypeName, selectedType, durationFrom } = this.state;
-    if (selectedType === 'A' && selectedTypeName === 'Casual Leave')
+    if (selectedType === A && selectedTypeName === 'Casual Leave')
       this.setSecondNotice(`${selectedTypeName}s gets credited each month.`);
 
     // initial value for leave dates list
     const dateLists = this.getDateLists(durationFrom, value, selectedType);
     const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
 
-    if (selectedType === 'D') {
+    if (selectedType === D) {
       this.setSecondNotice(
         `${selectedTypeName} applied for: ${initialValuesForLeaveTimesList.length} days`,
       );
@@ -767,7 +755,7 @@ class RequestInformation extends PureComponent {
                   float: 'right',
                 }}
               >
-                {(type === 'A' || type === 'B') && (
+                {(type === A || type === B) && (
                   <span style={remaining === 0 ? invalidCss : defaultCss}>
                     <span
                       style={
@@ -806,7 +794,7 @@ class RequestInformation extends PureComponent {
               {`${name}`}
             </span>
 
-            {foundType.type === 'C' && (
+            {foundType.type === C && (
               <span style={{ float: 'right', fontSize: 12, fontWeight: 'bold' }}>
                 <span
                   style={
@@ -832,7 +820,7 @@ class RequestInformation extends PureComponent {
 
     const now = start;
     const dates = [];
-    const includeWeekend = selectedType !== 'A' && selectedType !== 'B';
+    const includeWeekend = selectedType !== A && selectedType !== B;
     if (includeWeekend) {
       while (now.isBefore(end) || now.isSame(end)) {
         dates.push(now.format('YYYY-MM-DD'));
@@ -910,7 +898,7 @@ class RequestInformation extends PureComponent {
     const { selectedTypeName, buttonState, isEditingDrafts } = this.state;
     let content = '';
 
-    if (action === TIMEOFF_LINK_ACTION.editLeaveRequest) {
+    if (action === TIMEOFF_LINK_ACTION.EDIT_LEAVE_REQUEST) {
       if (buttonState === 1) {
         content = `${selectedTypeName} request saved as draft.`;
       } else if (buttonState === 2) {
@@ -920,7 +908,7 @@ class RequestInformation extends PureComponent {
       }
     }
 
-    if (action === TIMEOFF_LINK_ACTION.newLeaveRequest) {
+    if (action === TIMEOFF_LINK_ACTION.NEW_LEAVE_REQUEST) {
       if (buttonState === 1) {
         content = `${selectedTypeName} request saved as draft.`;
       } else if (buttonState === 2)
@@ -1111,7 +1099,7 @@ class RequestInformation extends PureComponent {
                     <DatePicker
                       disabledDate={this.disabledToDate}
                       format={dateFormat}
-                      disabled={selectedType === 'C'}
+                      disabled={selectedType === C}
                       onChange={(value) => {
                         this.toDateOnChange(value);
                       }}
@@ -1130,7 +1118,7 @@ class RequestInformation extends PureComponent {
             </Col>
           </Row>
 
-          {selectedType !== 'C' && selectedType !== 'D' ? (
+          {selectedType !== C && selectedType !== D ? (
             <>
               <Row className={styles.eachRow}>
                 <Col className={styles.label} span={6}>
@@ -1333,7 +1321,7 @@ class RequestInformation extends PureComponent {
             department head.
           </span>
           <div className={styles.formButtons}>
-            {action === TIMEOFF_LINK_ACTION.editLeaveRequest && (
+            {action === TIMEOFF_LINK_ACTION.EDIT_LEAVE_REQUEST && (
               <Button
                 className={styles.cancelButton}
                 type="link"
@@ -1343,8 +1331,8 @@ class RequestInformation extends PureComponent {
                 <span>Cancel</span>
               </Button>
             )}
-            {(action === TIMEOFF_LINK_ACTION.newLeaveRequest ||
-              (action === TIMEOFF_LINK_ACTION.editLeaveRequest && isEditingDrafts)) && (
+            {(action === TIMEOFF_LINK_ACTION.NEW_LEAVE_REQUEST ||
+              (action === TIMEOFF_LINK_ACTION.EDIT_LEAVE_REQUEST && isEditingDrafts)) && (
               <Button
                 loading={loadingSaveDraft || loadingUpdateDraft}
                 type="link"
@@ -1366,8 +1354,8 @@ class RequestInformation extends PureComponent {
               form="myForm"
               disabled={
                 remainingDayOfSelectedType === 0 &&
-                (selectedType === 'A' || selectedType === 'B') &&
-                action === TIMEOFF_LINK_ACTION.newLeaveRequest
+                (selectedType === A || selectedType === B) &&
+                action === TIMEOFF_LINK_ACTION.NEW_LEAVE_REQUEST
               }
               htmlType="submit"
               onClick={() => {

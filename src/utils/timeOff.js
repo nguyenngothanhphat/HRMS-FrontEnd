@@ -1,16 +1,22 @@
 export const TIMEOFF_STATUS = {
-  inProgress: 'IN-PROGRESS',
-  inProgressNext: 'IN-PROGRESS-NEXT',
-  accepted: 'ACCEPTED',
-  onHold: 'ON-HOLD',
-  rejected: 'REJECTED',
-  deleted: 'DELETED',
-  drafts: 'DRAFTS',
+  IN_PROGRESS: 'IN-PROGRESS',
+  IN_PROGRESS_NEXT: 'IN-PROGRESS-NEXT',
+  ACCEPTED: 'ACCEPTED',
+  ON_HOLD: 'ON-HOLD',
+  REJECTED: 'REJECTED',
+  DELETED: 'DELETED',
+  DRAFTS: 'DRAFTS',
 };
 export const TIMEOFF_LINK_ACTION = {
-  editLeaveRequest: 'edit',
-  newLeaveRequest: 'new',
-  editCompoffRequest: 'edit',
-  newCompoffRequest: 'new',
+  EDIT_LEAVE_REQUEST: 'edit',
+  NEW_LEAVE_REQUEST: 'new',
+  EDIT_COMPOFF_REQUEST: 'edit',
+  NEW_COMPOFF_REQUEST: 'new',
 };
 export const MAX_NO_OF_DAYS_TO_SHOW = 5;
+export const TIMEOFF_TYPE = {
+  A: 'A',
+  B: 'B',
+  C: 'C',
+  D: 'D',
+};

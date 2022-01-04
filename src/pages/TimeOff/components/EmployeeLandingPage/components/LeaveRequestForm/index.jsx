@@ -11,6 +11,13 @@ import RightContent from './RightContent';
 import styles from './index.less';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 
+const {
+  IN_PROGRESS,
+  ACCEPTED,
+  ON_HOLD,
+  REJECTED,
+  DRAFTS,
+} = TIMEOFF_STATUS;
 @connect(({ timeOff, locationSelection: { listLocationsByCompany = [] } = {}, loading }) => ({
   timeOff,
   listLocationsByCompany,
@@ -39,7 +46,7 @@ class LeaveRequestForm extends PureComponent {
       this.fetchTimeOffTypes();
     }
 
-    if (action === TIMEOFF_LINK_ACTION.editLeaveRequest) {
+    if (action === TIMEOFF_LINK_ACTION.EDIT_LEAVE_REQUEST) {
       dispatch({
         type: 'timeOff/fetchLeaveRequestById',
         id: reId,
@@ -68,15 +75,15 @@ class LeaveRequestForm extends PureComponent {
 
   getColorOfStatus = (status) => {
     switch (status) {
-      case TIMEOFF_STATUS.inProgress:
+      case IN_PROGRESS:
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
-      case TIMEOFF_STATUS.accepted:
+      case ACCEPTED:
         return `${styles.leaveStatus} ${styles.approvedColor}`;
-      case TIMEOFF_STATUS.rejected:
+      case REJECTED:
         return `${styles.leaveStatus} ${styles.rejectedColor}`;
-      case TIMEOFF_STATUS.drafts:
+      case DRAFTS:
         return `${styles.leaveStatus} ${styles.draftsColor}`;
-      case TIMEOFF_STATUS.onHold:
+      case ON_HOLD:
         return `${styles.leaveStatus} ${styles.onHoldColor}`;
       default:
         return `${styles.leaveStatus}`;
@@ -85,15 +92,15 @@ class LeaveRequestForm extends PureComponent {
 
   getNameOfStatus = (status) => {
     switch (status) {
-      case TIMEOFF_STATUS.inProgress:
+      case IN_PROGRESS:
         return 'In Progress';
-      case TIMEOFF_STATUS.accepted:
+      case ACCEPTED:
         return 'Approved';
-      case TIMEOFF_STATUS.rejected:
+      case REJECTED:
         return 'Rejected';
-      case TIMEOFF_STATUS.drafts:
+      case DRAFTS:
         return 'Drafts';
-      case TIMEOFF_STATUS.onHold:
+      case ON_HOLD:
         return 'Withdrawn';
       default:
         return 'Unknown';
@@ -115,12 +122,12 @@ class LeaveRequestForm extends PureComponent {
         <div className={styles.leaveRequest}>
           <Affix offsetTop={42}>
             <div className={styles.titlePage}>
-              {action === TIMEOFF_LINK_ACTION.newLeaveRequest && (
+              {action === TIMEOFF_LINK_ACTION.NEW_LEAVE_REQUEST && (
                 <>
                   <p className={styles.titlePage__text}>Apply for Timeoff</p>
                 </>
               )}
-              {action === TIMEOFF_LINK_ACTION.editLeaveRequest && (
+              {action === TIMEOFF_LINK_ACTION.EDIT_LEAVE_REQUEST && (
                 <>
                   <p className={styles.titlePage__text}>[Ticket ID: {ticketID}]</p>
 
@@ -144,9 +151,9 @@ class LeaveRequestForm extends PureComponent {
             </div>
           )}
           {!loadingFetchLeaveRequestById &&
-            action === TIMEOFF_LINK_ACTION.editLeaveRequest &&
-            status !== TIMEOFF_STATUS.drafts &&
-            status !== TIMEOFF_STATUS.inProgress && (
+            action === TIMEOFF_LINK_ACTION.EDIT_LEAVE_REQUEST &&
+            status !== DRAFTS &&
+            status !== IN_PROGRESS && (
               <div
                 style={{
                   display: 'flex',
@@ -158,10 +165,10 @@ class LeaveRequestForm extends PureComponent {
               </div>
             )}
 
-          {(action === TIMEOFF_LINK_ACTION.newLeaveRequest ||
-            (action === TIMEOFF_LINK_ACTION.editLeaveRequest &&
+          {(action === TIMEOFF_LINK_ACTION.NEW_LEAVE_REQUEST ||
+            (action === TIMEOFF_LINK_ACTION.EDIT_LEAVE_REQUEST &&
               !loadingFetchLeaveRequestById &&
-              (status === TIMEOFF_STATUS.drafts || status === TIMEOFF_STATUS.inProgress))) && (
+              (status === DRAFTS || status === IN_PROGRESS))) && (
               <>
                 <Row className={styles.container} gutter={[20, 20]}>
                   <Col xs={24} xl={16}>

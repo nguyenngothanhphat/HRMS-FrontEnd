@@ -9,6 +9,8 @@ import styles from './index.less';
 import ROLES from '@/utils/roles';
 
 const { HR_MANAGER, REGION_HEAD } = ROLES;
+const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DELETED, DRAFTS } =
+  TIMEOFF_STATUS;
 @connect(({ timeOff, timeOff: { currentUserRole = '' } = {}, loading }) => ({
   timeOff,
   currentUserRole,
@@ -44,23 +46,21 @@ class ManagerViewCompoffForm extends PureComponent {
   getColorOfStatus = (status) => {
     const { currentUserRole = '' } = this.props;
     if (currentUserRole === REGION_HEAD) {
-      if (status === TIMEOFF_STATUS.inProgressNext)
-        return `${styles.leaveStatus} ${styles.inProgressColor}`;
-    } else if (status === TIMEOFF_STATUS.inProgressNext)
-      return `${styles.leaveStatus} ${styles.approvedColor}`;
+      if (status === IN_PROGRESS_NEXT) return `${styles.leaveStatus} ${styles.inProgressColor}`;
+    } else if (status === IN_PROGRESS_NEXT) return `${styles.leaveStatus} ${styles.approvedColor}`;
 
     switch (status) {
-      case TIMEOFF_STATUS.inProgress:
+      case IN_PROGRESS:
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
-      case TIMEOFF_STATUS.accepted:
+      case ACCEPTED:
         return `${styles.leaveStatus} ${styles.approvedColor}`;
-      case TIMEOFF_STATUS.rejected:
+      case REJECTED:
         return `${styles.leaveStatus} ${styles.rejectedColor}`;
-      case TIMEOFF_STATUS.drafts:
+      case DRAFTS:
         return `${styles.leaveStatus} ${styles.draftsColor}`;
-      case TIMEOFF_STATUS.onHold:
+      case ON_HOLD:
         return `${styles.leaveStatus} ${styles.onHoldColor}`;
-      case TIMEOFF_STATUS.deleted:
+      case DELETED:
         return `${styles.leaveStatus} ${styles.deletedColor}`;
       default:
         return `${styles.leaveStatus}`;
@@ -70,21 +70,21 @@ class ManagerViewCompoffForm extends PureComponent {
   getNameOfStatus = (status) => {
     const { currentUserRole = '' } = this.props;
     if (currentUserRole === REGION_HEAD || currentUserRole === HR_MANAGER) {
-      if (status === TIMEOFF_STATUS.inProgressNext) return 'In Progress (PM Approved)';
-    } else if (status === TIMEOFF_STATUS.inProgressNext) return 'Approved (PM Approved)';
+      if (status === IN_PROGRESS_NEXT) return 'In Progress (PM Approved)';
+    } else if (status === IN_PROGRESS_NEXT) return 'Approved (PM Approved)';
 
     switch (status) {
-      case TIMEOFF_STATUS.inProgress:
+      case IN_PROGRESS:
         return 'In Progress';
-      case TIMEOFF_STATUS.accepted:
+      case ACCEPTED:
         return 'Approved';
-      case TIMEOFF_STATUS.rejected:
+      case REJECTED:
         return 'Rejected';
-      case TIMEOFF_STATUS.drafts:
+      case DRAFTS:
         return 'Drafts';
-      case TIMEOFF_STATUS.onHold:
+      case ON_HOLD:
         return 'Withdrawn';
-      case TIMEOFF_STATUS.deleted:
+      case DELETED:
         return 'Deleted';
       default:
         return 'Unknown';

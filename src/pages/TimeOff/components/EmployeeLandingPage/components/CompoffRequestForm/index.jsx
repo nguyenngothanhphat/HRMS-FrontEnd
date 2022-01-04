@@ -8,6 +8,7 @@ import RightContent from './RightContent';
 
 import styles from './index.less';
 
+const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DRAFTS } = TIMEOFF_STATUS;
 @connect(({ timeOff, loading }) => ({
   timeOff,
   loadingFetchCompoffRequestById: loading.effects['timeOff/fetchCompoffRequestById'],
@@ -39,7 +40,7 @@ class CompoffRequestForm extends PureComponent {
       action,
     });
 
-    if (action === TIMEOFF_LINK_ACTION.editCompoffRequest) {
+    if (action === TIMEOFF_LINK_ACTION.EDIT_COMPOFF_REQUEST) {
       dispatch({
         type: 'timeOff/fetchCompoffRequestById',
         id: reId,
@@ -51,15 +52,15 @@ class CompoffRequestForm extends PureComponent {
 
   getColorOfStatus = (status) => {
     switch (status) {
-      case TIMEOFF_STATUS.inProgress:
+      case IN_PROGRESS:
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
-      case TIMEOFF_STATUS.accepted:
+      case ACCEPTED:
         return `${styles.leaveStatus} ${styles.approvedColor}`;
-      case TIMEOFF_STATUS.rejected:
+      case REJECTED:
         return `${styles.leaveStatus} ${styles.rejectedColor}`;
-      case TIMEOFF_STATUS.drafts:
+      case DRAFTS:
         return `${styles.leaveStatus} ${styles.draftsColor}`;
-      case TIMEOFF_STATUS.onHold:
+      case ON_HOLD:
         return `${styles.leaveStatus} ${styles.onHoldColor}`;
       default:
         return `${styles.leaveStatus}`;
@@ -68,15 +69,15 @@ class CompoffRequestForm extends PureComponent {
 
   getNameOfStatus = (status) => {
     switch (status) {
-      case TIMEOFF_STATUS.inProgress:
+      case IN_PROGRESS:
         return 'In Progress';
-      case TIMEOFF_STATUS.accepted:
+      case ACCEPTED:
         return 'Approved';
-      case TIMEOFF_STATUS.rejected:
+      case REJECTED:
         return 'Rejected';
-      case TIMEOFF_STATUS.drafts:
+      case DRAFTS:
         return 'Drafts';
-      case TIMEOFF_STATUS.onHold:
+      case ON_HOLD:
         return 'Withdrawn';
 
       default:
@@ -102,12 +103,12 @@ class CompoffRequestForm extends PureComponent {
           <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text} />
-              {action === TIMEOFF_LINK_ACTION.newCompoffRequest && (
+              {action === TIMEOFF_LINK_ACTION.NEW_COMPOFF_REQUEST && (
                 <>
                   <p className={styles.titlePage__text}>Request for Compoff</p>
                 </>
               )}
-              {action === TIMEOFF_LINK_ACTION.editCompoffRequest && (
+              {action === TIMEOFF_LINK_ACTION.EDIT_COMPOFF_REQUEST && (
                 <>
                   <p className={styles.titlePage__text}>[Ticket ID: {ticketID}]</p>
 
@@ -132,9 +133,9 @@ class CompoffRequestForm extends PureComponent {
           )}
 
           {!loadingFetchCompoffRequestById &&
-            action === TIMEOFF_LINK_ACTION.editCompoffRequest &&
-            status !== TIMEOFF_STATUS.drafts &&
-            status !== TIMEOFF_STATUS.inProgress && (
+            action === TIMEOFF_LINK_ACTION.EDIT_COMPOFF_REQUEST &&
+            status !== DRAFTS &&
+            status !== IN_PROGRESS && (
               <div
                 style={{
                   display: 'flex',
@@ -146,10 +147,10 @@ class CompoffRequestForm extends PureComponent {
               </div>
             )}
 
-          {(action === TIMEOFF_LINK_ACTION.newCompoffRequest ||
-            (action === TIMEOFF_LINK_ACTION.editCompoffRequest &&
+          {(action === TIMEOFF_LINK_ACTION.NEW_COMPOFF_REQUEST ||
+            (action === TIMEOFF_LINK_ACTION.EDIT_COMPOFF_REQUEST &&
               !loadingFetchCompoffRequestById &&
-              (status === TIMEOFF_STATUS.drafts || status === TIMEOFF_STATUS.inProgress))) && (
+              (status === DRAFTS || status === IN_PROGRESS))) && (
               <>
                 <Row className={styles.container} gutter={[20, 20]}>
                   <Col xs={24} xl={16}>

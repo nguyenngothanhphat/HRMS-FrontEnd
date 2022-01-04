@@ -13,6 +13,7 @@ import RejectCommentModal from '../RejectCommentModal';
 
 import styles from './index.less';
 
+const { IN_PROGRESS, REJECTED } = TIMEOFF_STATUS;
 @connect(({ dispatch, user: { currentUser = {} }, timeOff: { paging }, loading }) => ({
   dispatch,
   currentUser,
@@ -37,7 +38,7 @@ class TeamLeaveTable extends PureComponent {
         const createdDate = moment(onDate).locale('en').format('YYYY/MM/DD');
         const nowDate = moment().locale('en').format('YYYY/MM/DD');
         const isNewRequest =
-          status === TIMEOFF_STATUS.inProgress &&
+          status === IN_PROGRESS &&
           moment(nowDate).subtract(2, 'days').isSameOrBefore(moment(createdDate));
 
         return (
@@ -148,7 +149,7 @@ class TeamLeaveTable extends PureComponent {
         // only manager accept/reject a ticket
         const isMyTicket = myId === approvalManagerId;
 
-        if (selectedTab === TIMEOFF_STATUS.inProgress)
+        if (selectedTab === IN_PROGRESS)
           return (
             <div className={styles.rowAction}>
               <Tooltip title="View">
@@ -274,7 +275,7 @@ class TeamLeaveTable extends PureComponent {
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
     const { selectedTab = '', onHandle = () => {}, loading3, loading4 } = this.props;
-    if (selectedTab === TIMEOFF_STATUS.inProgress) {
+    if (selectedTab === IN_PROGRESS) {
       const payload = {
         onApprove: this.onMultipleApprove,
         onReject: this.onMultipleCancelClick,
@@ -464,7 +465,7 @@ class TeamLeaveTable extends PureComponent {
     };
 
     const tableByRole =
-      selectedTab === TIMEOFF_STATUS.rejected
+      selectedTab === REJECTED
         ? this.columns.filter((col) => col.dataIndex !== 'assigned')
         : this.columns.filter((col) => col.dataIndex !== 'comment');
 

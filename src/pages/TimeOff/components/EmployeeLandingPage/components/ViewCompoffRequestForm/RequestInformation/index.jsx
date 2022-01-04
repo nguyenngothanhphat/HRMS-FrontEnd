@@ -8,6 +8,7 @@ import WithdrawModal from '../WithdrawModal';
 
 import styles from './index.less';
 
+const { IN_PROGRESS, REJECTED, DRAFTS } = TIMEOFF_STATUS;
 @connect(({ timeOff, loading }) => ({
   timeOff,
   loadingFetchCompoffRequestById: loading.effects['timeOff/fetchCompoffRequestById'],
@@ -26,7 +27,7 @@ class RequestInformation extends PureComponent {
   // EDIT BUTTON
   handleEdit = (_id) => {
     history.push({
-      pathname: `/time-off/overview/personal-compoff/${TIMEOFF_LINK_ACTION.editCompoffRequest}/${_id}`,
+      pathname: `/time-off/overview/personal-compoff/${TIMEOFF_LINK_ACTION.EDIT_COMPOFF_REQUEST}/${_id}`,
     });
   };
 
@@ -113,7 +114,7 @@ class RequestInformation extends PureComponent {
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
           <span className={styles.title}>{`[Ticket ID: ${ticketID}]`}</span>
-          {(status === TIMEOFF_STATUS.drafts || status === TIMEOFF_STATUS.inProgress) && (
+          {(status === DRAFTS || status === IN_PROGRESS) && (
             <div className={styles.editButton} onClick={() => this.handleEdit(_id)}>
               <img src={EditIcon} className={styles.icon} alt="edit-icon" />
               <span className={styles.label}>Edit</span>
@@ -209,7 +210,7 @@ class RequestInformation extends PureComponent {
                   <span>{description}</span>
                 </Col>
 
-                {status === TIMEOFF_STATUS.rejected && currentStep === 2 && (
+                {status === REJECTED && currentStep === 2 && (
                   <>
                     <Col span={6}>Request Rejection Comments (Project Manager)</Col>
                     <Col span={18} className={styles.detailColumn}>
@@ -217,7 +218,7 @@ class RequestInformation extends PureComponent {
                     </Col>
                   </>
                 )}
-                {status === TIMEOFF_STATUS.rejected && currentStep > 2 && (
+                {status === REJECTED && currentStep > 2 && (
                   <>
                     <Col span={6}>Request Rejection Comments (Region Head)</Col>
                     <Col span={18} className={styles.detailColumn}>
@@ -227,7 +228,7 @@ class RequestInformation extends PureComponent {
                 )}
               </Row>
             </div>
-            {(status === TIMEOFF_STATUS.drafts || status === TIMEOFF_STATUS.inProgress) && (
+            {(status === DRAFTS || status === IN_PROGRESS) && (
               <div className={styles.footer}>
                 <span className={styles.note}>
                   By default notifications will be sent to HR, your manager and recursively loop to
