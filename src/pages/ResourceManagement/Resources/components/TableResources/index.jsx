@@ -322,16 +322,30 @@ class TableResources extends PureComponent {
           // const obj = renderCell(value, row, display);
           // obj.props.className = styles.basicCellFieldShowEdit;
           // return obj
-          const display = (
-            <div className={styles.reservedField}>
-              {value}
-              <div className={styles.iconEdit}>
-                {allowModify && (
-                  <EditActionBTN dataPassRow={row} refreshData={refreshData} />
-              )}
+          let display = '-';
+          if (row.projectName === '' && row.startDate === '-') {
+            display = <div className={styles.reservedField}>{value}</div>;
+          } else {
+            display = (
+              <div className={styles.reservedField}>
+                {value}
+                <div className={styles.iconEdit}>
+                  {allowModify && <EditActionBTN dataPassRow={row} refreshData={refreshData} />}
+                </div>
               </div>
-            </div>
             );
+          }
+
+          // const display = (
+          //   <div className={styles.reservedField}>
+          //     {value}
+          //     <div className={styles.iconEdit}>
+          //       {allowModify && (
+          //         <EditActionBTN dataPassRow={row} refreshData={refreshData} />
+          //     )}
+          //     </div>
+          //   </div>
+          //   );
           const obj = {
             children: display,
             props: {
