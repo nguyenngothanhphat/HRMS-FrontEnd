@@ -17,7 +17,8 @@ const ActivityLog = (props) => {
     dispatch,
     listTicket: listPendingApprovals = [],
     permissions = {},
-    listMyTicket: { items = [] } = {} || {},
+    employee: { _id = '' } = {},
+    listMyTicket = [],
   } = props;
 
   const viewPendingApprovalDashboard = permissions.viewPendingApprovalDashboard !== -1;
@@ -41,6 +42,12 @@ const ActivityLog = (props) => {
     }
   }, [viewPendingApprovalDashboard]);
 
+  const listMyTicketNew =
+    listMyTicket.length > 0
+      ? listMyTicket.filter((val) => {
+          return val.employee_assignee === _id;
+        })
+      : [];
   const renderShowAll = () => {
     switch (activeKey) {
       case '1':
@@ -97,7 +104,7 @@ const ActivityLog = (props) => {
       case '2':
         return mockNotification;
       case '3':
-        return items;
+        return listMyTicketNew;
       default:
         return '';
     }
@@ -121,8 +128,8 @@ const ActivityLog = (props) => {
             <TabPane tab={renderTabName('2', mockNotification.length)} key="2">
               <CommonTab type="2" data={mockNotification} />
             </TabPane>
-            <TabPane tab={renderTabName('3', items.length)} key="3">
-              <CommonTab type="3" data={items} />
+            <TabPane tab={renderTabName('3', listMyTicketNew.length)} key="3">
+              <CommonTab type="3" data={listMyTicketNew} />
             </TabPane>
           </Tabs>
         </div>
@@ -146,11 +153,12 @@ export default connect(
   ({
     dashboard: { listTicket = [], listMyTicket = {} } = {},
     loading,
-    user: { permissions = {} } = {},
+    user: { permissions = {}, currentUser: { employee = {} } } = {},
   }) => ({
     listTicket,
     listMyTicket,
     permissions,
+    employee,
     loadingFetchListTicket: loading.effects['dashboard/fetchListTicket'],
     loadingFetchListMyTicket: loading.effects['dashboard/fetchListMyTicket'],
   }),

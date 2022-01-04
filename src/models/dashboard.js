@@ -66,9 +66,9 @@ const dashboard = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data, total } = response;
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listMyTicket: data, totalMyTicket: total } });
+        yield put({ type: 'save', payload: { listMyTicket: data } });
       } catch (errors) {
         dialog(errors);
       }

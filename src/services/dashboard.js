@@ -8,10 +8,15 @@ export async function getListTicket(payload) {
   });
 }
 export async function getListMyTicket(payload) {
-  return request('/api/leaverequesttenant/get-my-request', {
-    method: 'POST',
-    data: payload,
-  });
+  return request(
+    '/api-ticket/tickettenant/list',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.TICKET_API,
+  );
 }
 export async function aprovalLeaveRequest(payload) {
   return request('/api/leaverequesttenant/reporting-manager-approve', {
