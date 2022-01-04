@@ -5,10 +5,10 @@ import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 import { Collapse } from 'react-collapse';
 
+import { Spin } from 'antd';
 import line from '@/assets/lineParent.svg';
 import lines from '@/assets/lines.svg';
 import bigLines from '@/assets/bigLines.svg';
-import { Spin } from 'antd';
 import EmployeeNode from './components/EmployeeNode';
 
 import styles from './index.less';
@@ -115,6 +115,13 @@ class OrganizationChart extends Component {
     }
   };
 
+  truncate = (value) => {
+    if (value.length > 20) {
+      return `${value.substr(0, 6)}...${value.substr(value.length - 5, value.length)}`;
+    }
+    return value;
+  };
+
   clickCardInfo = (userData, name) => {
     const { handleClickNode = () => {} } = this.props;
     handleClickNode(userData);
@@ -142,8 +149,8 @@ class OrganizationChart extends Component {
       <div className={styles.node__card} onClick={() => this.clickCardInfo(userData, name)}>
         <Avatar className={styles.avatar} src={avatar} size={42} icon={<UserOutlined />} />
         <div className={styles.node__card__info}>
-          <div className={styles.legalName}>{legalFullName}</div>
-          <div className={styles.deptName}>{`${jobTitleName}, ${deptName}`}</div>
+          <div className={styles.legalName}>{this.truncate(legalFullName)}</div>
+          <div className={styles.deptName}>{`${this.truncate(jobTitleName)}, ${deptName}`}</div>
           <div className={styles.countryName}>{countryName}</div>
         </div>
       </div>
