@@ -5,11 +5,12 @@ import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
-import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
+import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION, MAX_NO_OF_DAYS_TO_SHOW } from '@/utils/timeOff';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import LeaveTimeRow from './LeaveTimeRow';
 
 import styles from './index.less';
+import LeaveTimeRow2 from './LeaveTimeRow2';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -42,7 +43,6 @@ class RequestInformation extends PureComponent {
       viewingLeaveRequestId: '',
       isEditingDrafts: false,
       remainingDayOfSelectedType: 0,
-      // totalDayOfSelectedType: 0,
       viewDocumentModal: false,
     };
   }
@@ -119,29 +119,6 @@ class RequestInformation extends PureComponent {
         location: _id,
       },
     });
-    // dispatch({
-    //   type: 'timeOff/fetchTimeOffTypes',
-    //   payload: {
-    //     tenantId: getCurrentTenant(),
-    //   },
-    // });
-
-    const response = await dispatch({
-      type: 'timeOff/getTimeOffTypeByLocation',
-    });
-    const {
-      statusCode,
-      data: { headQuarterAddress: { country: { _id: countryId = '' } = {} || {} } = {} || {} } = {},
-    } = response;
-    if (statusCode === 200)
-      await dispatch({
-        type: 'timeOff/fetchTimeOffTypesByCountry',
-        payload: {
-          country: countryId,
-          company: getCurrentCompany(),
-          tenantId: getCurrentTenant(),
-        },
-      });
 
     this.fetchEmailsListByCompany();
 
@@ -181,7 +158,7 @@ class RequestInformation extends PureComponent {
 
       // if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
       // generate date lists and leave time
-      const dateLists = this.getDateLists(fromDate, toDate);
+      const dateLists = this.getDateLists(fromDate, toDate, type);
       const resultDates = [];
 
       let check = false;
@@ -231,14 +208,6 @@ class RequestInformation extends PureComponent {
       }
     }
   };
-
-  // componentDidUpdate = (prevState) => {
-  //   const { selectedTypeName } = this.state;
-  //   // set remaining day of selected leave type
-  //   if (prevState.selectedTypeName !== selectedTypeName) {
-  //     this.getRemainingDay(selectedTypeName);
-  //   }
-  // };
 
   // GET REMAINING DAY
   getRemainingDay = (typeName) => {
@@ -397,7 +366,7 @@ class RequestInformation extends PureComponent {
 
   // GENERATE LEAVE DATES FOR API
   generateLeaveDates = (from, to, leaveTimeLists, selectedType) => {
-    const dateLists = this.getDateLists(from, to);
+    const dateLists = this.getDateLists(from, to, selectedType);
     let result = [];
     if (leaveTimeLists.length === 0) {
       // type C,D
@@ -589,12 +558,13 @@ class RequestInformation extends PureComponent {
             type = 'timeOff/updateLeaveRequestById';
           }
 
-          dispatch({
-            type,
-            payload: data,
-          }).then((statusCode) => {
-            if (statusCode === 200) this.setShowSuccessModal(true);
-          });
+          console.log('🚀 ~ data', data);
+          // dispatch({
+          //   type,
+          //   payload: data,
+          // }).then((statusCode) => {
+          //   if (statusCode === 200) this.setShowSuccessModal(true);
+          // });
         }
       }
     } else if (buttonState === 1) {
@@ -644,7 +614,7 @@ class RequestInformation extends PureComponent {
             `A 'To date' will be set automatically as per a duration of ${currentAllowance} days from the selected 'From date'`,
           );
 
-          const dateLists = this.getDateLists(durationFrom, autoToDate);
+          const dateLists = this.getDateLists(durationFrom, autoToDate, selectedType);
           const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
 
           this.setState({
@@ -725,7 +695,7 @@ class RequestInformation extends PureComponent {
       this.setSecondNotice(`${selectedTypeName}s gets credited each month.`);
 
     // initial value for leave dates list
-    const dateLists = this.getDateLists(durationFrom, value);
+    const dateLists = this.getDateLists(durationFrom, value, selectedType);
     const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
 
     if (selectedType === 'D') {
@@ -856,16 +826,25 @@ class RequestInformation extends PureComponent {
   };
 
   // GET LIST OF DAYS FROM DAY A TO DAY B
-  getDateLists = (startDate, endDate) => {
+  getDateLists = (startDate, endDate, selectedType) => {
     const start = moment(startDate);
     const end = moment(endDate);
 
     const now = start;
     const dates = [];
-
-    while (now.isBefore(end) || now.isSame(end)) {
-      dates.push(now.format('YYYY-MM-DD'));
-      now.add(1, 'days');
+    const includeWeekend = selectedType !== 'A' && selectedType !== 'B';
+    if (includeWeekend) {
+      while (now.isBefore(end) || now.isSame(end)) {
+        dates.push(now.format('YYYY-MM-DD'));
+        now.add(1, 'days');
+      }
+    } else {
+      while (now.isBefore(end) || now.isSame(end)) {
+        if (moment(now).weekday() !== 6 && moment(now).weekday() !== 0) {
+          dates.push(now.format('YYYY-MM-DD'));
+        }
+        now.add(1, 'days');
+      }
     }
     return dates;
   };
@@ -1009,8 +988,8 @@ class RequestInformation extends PureComponent {
     const dataTimeOffTypes2 = this.renderTimeOffTypes(typesOfSpecialLeaves);
 
     // DYNAMIC ROW OF DATE LISTS
-    const dateLists = this.getDateLists(durationFrom, durationTo);
-    // const numberOfDays = 0;
+    const dateLists = this.getDateLists(durationFrom, durationTo, selectedType);
+    const showAllDateList = dateLists.length <= MAX_NO_OF_DAYS_TO_SHOW;
 
     // if save as draft, no need to validate forms
     const needValidate = buttonState === 2;
@@ -1132,7 +1111,7 @@ class RequestInformation extends PureComponent {
                     <DatePicker
                       disabledDate={this.disabledToDate}
                       format={dateFormat}
-                      // disabled={selectedType === 'C' || selectedType === 'D'}
+                      disabled={selectedType === 'C'}
                       onChange={(value) => {
                         this.toDateOnChange(value);
                       }}
@@ -1151,55 +1130,49 @@ class RequestInformation extends PureComponent {
             </Col>
           </Row>
 
-          {selectedType !== 'C' && selectedType !== 'D' && (
+          {selectedType !== 'C' && selectedType !== 'D' ? (
             <>
               <Row className={styles.eachRow}>
                 <Col className={styles.label} span={6}>
                   <span>Leave time</span> <span className={styles.mandatoryField}>*</span>
                 </Col>
                 <Col span={12}>
-                  <div
-                    className={styles.extraTimeSpent}
-                    // style={selectedType === 'C' || selectedType === 'D' ? { marginBottom: '24px' } : {}}
-                  >
-                    <Row className={styles.header}>
-                      <Col span={7}>Date</Col>
-                      <Col span={7}>Day</Col>
-                      <Col span={10}>Count/Q.ty</Col>
-                    </Row>
-                    {(durationFrom === '' || durationTo === '') && (
+                  <div className={styles.extraTimeSpent}>
+                    {showAllDateList ? (
+                      <Row className={styles.header}>
+                        <Col span={7}>Date</Col>
+                        <Col span={7}>Day</Col>
+                        <Col span={10}>Count/Q.ty</Col>
+                      </Row>
+                    ) : (
+                      <Row className={styles.header}>
+                        <Col span={7}>From</Col>
+                        <Col span={7}>To</Col>
+                        <Col span={10}>No. of Days</Col>
+                      </Row>
+                    )}
+                    {(!durationFrom || !durationTo) && (
                       <div className={styles.content}>
                         <div className={styles.emptyContent}>
                           <span>Selected duration will show as days</span>
                         </div>
                       </div>
                     )}
-                    {/* {durationFrom !== '' &&
-                  durationTo !== '' &&
-                  (selectedType === 'C' || selectedType === 'D') && (
-                    <div className={styles.content}>
-                      <div className={styles.emptyContent}>
-                        <span>Selected days are automatically set to whole-day leave</span>
-                      </div>
-                    </div>
-                  )} */}
                   </div>
                 </Col>
                 <Col span={6} />
               </Row>
 
-              {durationFrom !== '' &&
-                durationTo !== '' && ( // Type D: Working out of office
-                  // selectedType !== 'C' && // Type C: Special Leaves
-                  // selectedType !== 'D' &&
-                  <Form.List name="leaveTimeLists">
-                    {() => (
-                      <Row key={1} className={styles.eachRow}>
-                        <Col className={styles.label} span={6}>
-                          <span />
-                        </Col>
-                        <Col span={12} className={styles.leaveDaysContainer}>
-                          {dateLists.map((date, index) => {
+              {durationFrom && durationTo && (
+                <Form.List name="leaveTimeLists">
+                  {() => (
+                    <Row key={1} className={styles.eachRow}>
+                      <Col className={styles.label} span={6}>
+                        <span />
+                      </Col>
+                      <Col span={12} className={styles.leaveDaysContainer}>
+                        {showAllDateList ? (
+                          dateLists.map((date, index) => {
                             return (
                               <LeaveTimeRow
                                 eachDate={date}
@@ -1210,13 +1183,65 @@ class RequestInformation extends PureComponent {
                                 needValidate={needValidate}
                               />
                             );
-                          })}
-                        </Col>
-                        <Col span={6} />
-                      </Row>
+                          })
+                        ) : (
+                          <LeaveTimeRow2
+                            fromDate={durationFrom}
+                            toDate={durationTo}
+                            noOfDays={dateLists.length}
+                          />
+                        )}
+                      </Col>
+                      <Col span={6} />
+                    </Row>
+                  )}
+                </Form.List>
+              )}
+            </>
+          ) : (
+            <>
+              <Row className={styles.eachRow}>
+                <Col className={styles.label} span={6}>
+                  <span>Leave time</span> <span className={styles.mandatoryField}>*</span>
+                </Col>
+                <Col span={12}>
+                  <div className={styles.extraTimeSpent}>
+                    <Row className={styles.header}>
+                      <Col span={7}>From</Col>
+                      <Col span={7}>To</Col>
+                      <Col span={10}>No. of Days</Col>
+                    </Row>
+                    {(!durationFrom || !durationTo) && (
+                      <div className={styles.content}>
+                        <div className={styles.emptyContent}>
+                          <span>Selected duration will show as days</span>
+                        </div>
+                      </div>
                     )}
-                  </Form.List>
-                )}
+                  </div>
+                </Col>
+                <Col span={6} />
+              </Row>
+
+              {durationFrom && durationTo && (
+                <Form.List name="leaveTimeLists">
+                  {() => (
+                    <Row key={1} className={styles.eachRow}>
+                      <Col className={styles.label} span={6}>
+                        <span />
+                      </Col>
+                      <Col span={12} className={styles.leaveDaysContainer}>
+                        <LeaveTimeRow2
+                          fromDate={durationFrom}
+                          toDate={durationTo}
+                          noOfDays={dateLists.length}
+                        />
+                      </Col>
+                      <Col span={6} />
+                    </Row>
+                  )}
+                </Form.List>
+              )}
             </>
           )}
           <Row className={styles.eachRow}>

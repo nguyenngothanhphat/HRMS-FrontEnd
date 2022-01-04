@@ -1,16 +1,16 @@
 .RequestInformation {
-  border: 1px solid #ebeff2;
-  border-radius: 5px;
   width: 100%;
   background-color: white;
+  border: 1px solid #ebeff2;
+  border-radius: 5px;
 
   .formTitle {
     padding: 16px 24px;
     border-bottom: 1px solid #e2e4e8;
     span {
-      font-size: 16px;
       color: #464646;
       font-weight: 700;
+      font-size: 16px;
     }
   }
 
@@ -19,28 +19,28 @@
     .eachRow {
       margin-bottom: 5px;
       .extraTimeSpent {
-        font-size: 13px;
         color: #707177;
+        font-size: 13px;
         .header {
-          background-color: #e1e9fa;
-          border-radius: 5px;
+          padding: 7px 10px;
           color: #00000083;
           font-weight: 700;
-          padding: 7px 10px;
           font-size: 13px;
+          background-color: #e1e9fa;
+          border-radius: 5px;
         }
         .content {
           width: 100%;
           margin-bottom: 24px;
           .emptyContent {
             display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 30px 0;
+            justify-content: center;
             margin: 3px 0;
+            padding: 30px 0;
+            text-align: center;
             background-color: #fbfbfb;
             border-radius: 5px;
-            text-align: center;
             span {
               color: #70717787;
             }
@@ -56,25 +56,25 @@
         }
       }
       .smallNotice {
-        min-height: 42px;
+        display: flex;
+        align-items: center;
         width: fit-content;
+        min-height: 42px;
         margin-left: 10px;
         // margin-right: 20px;
         padding: 6px;
         background: #ffa1001f; // alpha 0.12
         border-radius: 4px;
-        display: flex;
-        align-items: center;
         .normalText {
           color: #707177;
           font-size: 10px;
         }
         .link {
-          cursor: pointer;
-          font-size: 10px;
           color: #ffa100;
           font-weight: 700;
+          font-size: 10px;
           text-decoration: underline;
+          cursor: pointer;
         }
       }
       .timeOffTypeOptions {
@@ -84,40 +84,37 @@
           top: 0;
           right: 0;
           display: flex;
-          background: #ffffff;
-          box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);
-          border-radius: 4px;
           width: 200px;
+          background: #ffffff;
+          border-radius: 4px;
+          box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);
         }
       }
       .leaveDaysContainer {
-        font-size: 13px;
-        color: #707177;
         margin-bottom: 24px;
-        max-height: 290px;
-        overflow-y: auto;
-        padding-right: 8px;
+        color: #707177;
+        font-size: 13px;
 
         .header {
-          background-color: #e1e9fa;
-          border-radius: 5px;
+          padding: 7px 10px;
           color: #00000083;
           font-weight: 700;
-          padding: 7px 10px;
           font-size: 13px;
+          background-color: #e1e9fa;
+          border-radius: 5px;
         }
         .content {
           width: 100%;
           margin-bottom: 24px;
           .emptyContent {
             display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 30px 0;
+            justify-content: center;
             margin: 3px 0;
+            padding: 30px 0;
+            text-align: center;
             background-color: #fbfbfb;
             border-radius: 5px;
-            text-align: center;
             span {
               color: #70717787;
             }
@@ -129,14 +126,14 @@
       .ccSelection {
         :global {
           .ant-select-selector {
+            height: auto !important;
+            min-height: 42px;
             padding-top: 4px !important;
             padding-bottom: 2px !important;
-            min-height: 42px;
-            height: auto !important;
           }
           .ant-select-selection-item {
-            height: 30px !important;
             align-items: center !important;
+            height: 30px !important;
           }
           .ant-select-selection-item-content {
             img {
@@ -200,16 +197,16 @@
     }
     .ant-picker,
     .ant-input {
-      border-radius: 5px !important;
       min-height: 42px !important;
       font-size: 13px;
+      border-radius: 5px !important;
     }
 
     .ant-select-selector {
-      border-radius: 5px !important;
       height: 42px !important;
-      font-size: 13px;
       padding-top: 5px !important;
+      font-size: 13px;
+      border-radius: 5px !important;
     }
 
     // text area
@@ -221,16 +218,16 @@
   }
 
   .footer {
-    padding: 16px 24px;
-    border-top: 1px solid #e2e4e8;
     display: flex;
     justify-content: space-between;
+    padding: 16px 24px;
+    border-top: 1px solid #e2e4e8;
     .note {
-      font-size: 12px;
-      padding-right: 100px;
       display: flex;
       align-items: center;
+      padding-right: 100px;
       color: #161c2980; // hex with alpha 0.5
+      font-size: 12px;
     }
     .formButtons {
       display: flex;
@@ -247,21 +244,21 @@
       }
       :global {
         .ant-btn-link {
+          margin-left: -10px !important;
           background-color: white !important;
           span {
             font-weight: bold !important;
           }
-          margin-left: -10px !important;
           // margin-right: 5px !important;
         }
         .ant-btn {
+          height: 40px;
+          margin-left: 25px;
+          // width: 108px;
+          padding: 0 30px;
           background-color: #ffa100;
           border: none;
           border-radius: 30px;
-          height: 40px;
-          // width: 108px;
-          padding: 0 30px;
-          margin-left: 25px;
           span {
             color: white;
             font-weight: 700;

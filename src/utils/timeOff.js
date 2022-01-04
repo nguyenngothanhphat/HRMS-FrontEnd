@@ -13,3 +13,4 @@ export const TIMEOFF_LINK_ACTION = {
   editCompoffRequest: 'edit',
   newCompoffRequest: 'new',
 };
+export const MAX_NO_OF_DAYS_TO_SHOW = 5;

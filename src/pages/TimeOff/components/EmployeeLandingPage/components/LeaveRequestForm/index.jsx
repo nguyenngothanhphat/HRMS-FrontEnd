@@ -9,9 +9,11 @@ import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
 import styles from './index.less';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 
-@connect(({ timeOff, loading }) => ({
+@connect(({ timeOff, locationSelection: { listLocationsByCompany = [] } = {}, loading }) => ({
   timeOff,
+  listLocationsByCompany,
   loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
 }))
 class LeaveRequestForm extends PureComponent {
@@ -26,11 +28,16 @@ class LeaveRequestForm extends PureComponent {
     const {
       dispatch,
       match: { params: { action = '', reId = '' } = {} },
+      timeOff: { timeOffTypesByCountry = [] } = {},
     } = this.props;
 
     this.setState({
       action,
     });
+
+    if (timeOffTypesByCountry.length === 0) {
+      this.fetchTimeOffTypes();
+    }
 
     if (action === TIMEOFF_LINK_ACTION.editLeaveRequest) {
       dispatch({
@@ -40,6 +47,23 @@ class LeaveRequestForm extends PureComponent {
     }
 
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
+  };
+
+  fetchTimeOffTypes = () => {
+    const { listLocationsByCompany = [], dispatch } = this.props;
+
+    const find = listLocationsByCompany.find((x) => x._id === getCurrentLocation());
+    if (find) {
+      const { headQuarterAddress: { country: { _id } = {} || {} } = {} || {} } = find;
+      dispatch({
+        type: 'timeOff/fetchTimeOffTypesByCountry',
+        payload: {
+          country: _id,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        },
+      });
+    }
   };
 
   getColorOfStatus = (status) => {
