@@ -116,8 +116,15 @@ class OrganizationChart extends Component {
   };
 
   truncate = (value) => {
-    if (value.length > 20) {
+    if (value.length > 30) {
       return `${value.substr(0, 6)}...${value.substr(value.length - 5, value.length)}`;
+    }
+    return value;
+  };
+
+  truncateLegalName = (value) => {
+    if (value.length > 20) {
+      return `${value.substr(0, 10)}...${value.substr(value.length - 5, value.length)}`;
     }
     return value;
   };
@@ -149,7 +156,7 @@ class OrganizationChart extends Component {
       <div className={styles.node__card} onClick={() => this.clickCardInfo(userData, name)}>
         <Avatar className={styles.avatar} src={avatar} size={42} icon={<UserOutlined />} />
         <div className={styles.node__card__info}>
-          <div className={styles.legalName}>{this.truncate(legalFullName)}</div>
+          <div className={styles.legalName}>{this.truncateLegalName(legalFullName)}</div>
           <div className={styles.deptName}>{`${this.truncate(jobTitleName)}, ${deptName}`}</div>
           <div className={styles.countryName}>{countryName}</div>
         </div>
