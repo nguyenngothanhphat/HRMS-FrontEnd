@@ -100,7 +100,7 @@ class PassportItem extends Component {
     const id = passportData[index] ? passportData[index]._id : '';
     const dateFormat = 'Do MMMM YYYY';
     const { urlFile, document: { attachment: { url: urlFile2 = '' } = {} || {} } = {} || {} } =
-      passportData[index];
+      passportData[index] || {};
 
     return (
       <div
