@@ -78,9 +78,7 @@ const DetailTicket = (props) => {
           getTimezoneViaCity(addressLine2),
       });
     });
-    settimezoneList({
-      timeZoneList,
-    });
+    settimezoneList(timeZoneList);
   };
   useEffect(() => {
     fetchTimezone();
@@ -177,7 +175,7 @@ const DetailTicket = (props) => {
               Request Type:
             </Col>
             <Col span={16} className={styles.contain}>
-              {typeName}
+              {typeName && typeTicket === 'leaveRequest' ? 'Timeoff' : 'Comoff'}
             </Col>
           </Row>
           {subject && (

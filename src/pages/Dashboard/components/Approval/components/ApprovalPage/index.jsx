@@ -5,7 +5,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
 import PopoverInfo from '../PopoverInfo';
-import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
+import { getTimezoneViaCity } from '@/utils/times';
 import filterIcon from '@/assets/offboarding-filter.svg';
 import rejectIcon from '@/assets/cancel.svg';
 import approvalIcon from '@/assets/approve.svg';
@@ -60,9 +60,7 @@ const ApprovalPage = (props) => {
           getTimezoneViaCity(addressLine2),
       });
     });
-    settimezoneList({
-      timeZoneList,
-    });
+    settimezoneList(timeZoneList);
   };
 
   useEffect(() => {

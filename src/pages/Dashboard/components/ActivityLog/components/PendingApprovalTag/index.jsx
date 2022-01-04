@@ -11,6 +11,7 @@ const PendingApprovalTag = (props) => {
       createdAt: date = '',
       employee: { generalInfo: { legalName, userId } = {} || {} } = {} || {},
       type: { typeName = '' } = {} || {},
+      typeTicket = '',
     } = {},
     item,
   } = props;
@@ -31,7 +32,8 @@ const PendingApprovalTag = (props) => {
                   <span>{monthTemp}</span>
                 </div>
                 <div className={styles.content}>
-                  New {typeName} from{' '}
+                  New {typeName && typeTicket === 'leaveRequest' ? 'Timeoff' : 'Comoff'} request
+                  from{' '}
                   <span className={styles.userId}>
                     {legalName} ({userId})
                   </span>{' '}
