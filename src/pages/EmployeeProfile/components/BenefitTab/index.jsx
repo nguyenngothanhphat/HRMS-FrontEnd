@@ -65,7 +65,7 @@ class BenefitTab extends PureComponent {
   };
 
   render() {
-    const { loading, dependentDetails = [] } = this.props;
+    const { loading, dependentDetails = [], profileOwner = false } = this.props;
     const { isEditing, isAdding, addDependant } = this.state;
     if (loading) return <Skeleton />;
     return (
@@ -89,12 +89,14 @@ class BenefitTab extends PureComponent {
                 />
               </div>
             </div>
-            <div className={styles.addIcon}>
-              <div onClick={this.handeAddDependant}>
-                <img src={IconAdd} alt="add" />
-                <span>Add Dependant</span>
+            {profileOwner && (
+              <div className={styles.addIcon}>
+                <div onClick={this.handeAddDependant}>
+                  <img src={IconAdd} alt="add" />
+                  <span>Add Dependant</span>
+                </div>
               </div>
-            </div>
+            )}
             <ModalAddDependant
               data={dependentDetails}
               visible={addDependant}

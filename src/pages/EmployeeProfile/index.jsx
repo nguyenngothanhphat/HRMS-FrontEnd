@@ -1,18 +1,19 @@
+import { Affix } from 'antd';
 import React, { Component } from 'react';
-import { Affix, Skeleton } from 'antd';
 import { connect, history } from 'umi';
-import { PageContainer } from '@/layouts/layout/src';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
+import { PageContainer } from '@/layouts/layout/src';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 // import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
 import { getCurrentCompany, getCurrentTenant, isOwner } from '@/utils/authority';
-import GeneralInfo from './components/GeneralInfo';
-import AccountsPaychecks from './components/Accounts&Paychecks';
+// import AccountsPaychecks from './components/Accounts&Paychecks';
+import Compensation from './components/Compensation';
 // import Test from './components/test';
 import Documents from './components/Documents';
-import styles from './index.less';
+import GeneralInfo from './components/GeneralInfo';
 import PerformanceHistory from './components/PerformanceHistory';
+import styles from './index.less';
 
 @connect(
   ({
@@ -161,29 +162,37 @@ class EmployeeProfile extends Component {
     if (permissions.viewTabEmployment !== -1 || profileOwner) {
       listMenu.push({
         id: 2,
-        name: `Employment & Compensation`,
+        name: `Employment Info`,
         component: (
           <EmploymentTab listEmployeeActive={listEmployeeActive} profileOwner={profileOwner} />
         ),
-        link: 'employment-compensation',
+        link: 'employment-info',
       });
     }
+
+    listMenu.push({
+      id: 3,
+      name: `Compensation`,
+      component: <Compensation profileOwner={profileOwner} />,
+      link: 'compensation',
+    });
+
     if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
       listMenu.push({
-        id: 3,
+        id: 4,
         name: 'Performance History',
         component: <PerformanceHistory />,
         link: 'performance-history',
       });
     }
-    if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
-      listMenu.push({
-        id: 4,
-        name: 'Accounts and Paychecks',
-        component: <AccountsPaychecks />,
-        link: 'accounts-paychecks',
-      });
-    }
+    // if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
+    //   listMenu.push({
+    //     id: 5,
+    //     name: 'Accounts and Paychecks',
+    //     component: <AccountsPaychecks />,
+    //     link: 'accounts-paychecks',
+    //   });
+    // }
     if (permissions.viewTabDocument !== -1 || profileOwner) {
       listMenu.push({ id: 5, name: 'Documents', component: <Documents />, link: 'documents' });
     }
@@ -194,7 +203,7 @@ class EmployeeProfile extends Component {
       listMenu.push({
         id: 6,
         name: 'Benefits',
-        component: <BenefitTab />,
+        component: <BenefitTab profileOwner={profileOwner} />,
         link: 'benefits',
       });
     }

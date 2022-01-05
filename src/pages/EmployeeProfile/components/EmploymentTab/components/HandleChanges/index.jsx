@@ -47,7 +47,7 @@ class HandleChanges extends PureComponent {
         stepFive: {
           toEmployee: false,
           toManager: false,
-          toOthers: [],
+          notifyTo: [],
         },
       },
     };
@@ -228,11 +228,11 @@ class HandleChanges extends PureComponent {
         });
         break;
 
-      case 'toOthers': // fifth step
+      case 'notifyTo': // fifth step
         this.setState({
           changeData: {
             ...changeData,
-            stepFive: { ...changeData.stepThree, toOthers: value },
+            stepFive: { ...changeData.stepThree, notifyTo: value },
           },
         });
         break;

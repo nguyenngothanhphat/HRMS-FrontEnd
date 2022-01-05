@@ -41,11 +41,11 @@ export default function FifthStep(props) {
       </label>
       <div className={styles.select}>
         <Select
-          defaultValue={changeData.stepFive.toOthers || null}
+          defaultValue={changeData.stepFive.notifyTo || null}
           showSearch
           placeholder="Others"
           optionFilterProp="children"
-          onChange={(value) => onChange(value, 'toOthers')}
+          onChange={(value) => onChange(value, 'notifyTo')}
           showArrow
           mode="multiple"
           filterOption={(input, option) =>

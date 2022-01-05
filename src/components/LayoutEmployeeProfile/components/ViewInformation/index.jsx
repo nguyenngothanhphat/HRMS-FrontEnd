@@ -359,24 +359,24 @@ class ViewInformation extends Component {
       manager = {},
       location: { name: locationName = '' } = {},
       department: { name: departmentName = '' } = {},
-      joinDate = '',
+      // joinDate = '',
       title,
     } = this.props;
 
-    const checkVisible = profileOwner || permissions.viewOtherInformation !== -1;
+    // const checkVisible = profileOwner || permissions.viewOtherInformation !== -1;
 
     const {
       firstName = '',
       avatar = '',
       linkedIn = '',
       workEmail = '',
-      workNumber = '',
+      // workNumber = '',
       certification = [],
     } = generalData;
 
     // const { tittle: { name: title = '' } = {} } = compensationData;
     const { visible, openEditBio } = this.state;
-    const joiningDate = joinDate ? moment(joinDate).format('MM.DD.YY') : '-';
+    // const joiningDate = joinDate ? moment(joinDate).format('MM.DD.YY') : '-';
     const { generalInfo: { firstName: managerFN = '', lastName: managerLN = '' } = {} } = manager;
     // const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
     const listColors = [
@@ -466,6 +466,7 @@ class ViewInformation extends Component {
               <Tag
                 style={{
                   color: `${item.color.colorText}`,
+                  fontWeight: 'normal',
                 }}
                 key={item.id}
                 color={item.color.bg}
@@ -480,14 +481,14 @@ class ViewInformation extends Component {
             {this._renderListCertification(certification)}
           </div>
           <Divider />
-          {checkVisible ? (
+          {/* {checkVisible ? (
             <div className={s.infoEmployee__viewBottom__row}>
               <p className={s.titleTag}>Joining Date</p>
               <p className={s.infoEmployee__textNameAndTitle__title}>{joiningDate}</p>
             </div>
           ) : (
             ''
-          )}
+          )} */}
 
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag}>Location</p>
@@ -499,7 +500,11 @@ class ViewInformation extends Component {
               {managerFN} {managerLN}
             </p>
           </div>
-          <Divider />
+          <div className={s.infoEmployee__viewBottom__row}>
+            <p className={s.titleTag}>Department</p>
+            <p className={s.infoEmployee__textNameAndTitle__title}>{departmentName}</p>
+          </div>
+          {/* <Divider />
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag1}>Email</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{workEmail}</p>
@@ -507,18 +512,18 @@ class ViewInformation extends Component {
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag1}>Contact number</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{workNumber}</p>
-          </div>
+          </div> */}
           {/* <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag1}>Joining department</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>Not implemented</p>
           </div> */}
-          <div className={s.infoEmployee__viewBottom__row}>
+          {/* <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag1}>Current department</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{departmentName}</p>
-          </div>
+          </div> */}
 
           <Divider />
-          <div className={s.infoEmployee__socialMedia} style={{ marginLeft: '-15px' }}>
+          <div className={s.infoEmployee__socialMedia}>
             <Tooltip
               title={
                 linkedIn
@@ -526,29 +531,14 @@ class ViewInformation extends Component {
                   : 'Please update the Linkedin Profile in the Employee profile page'
               }
             >
-              <Button
-                disabled={linkedIn ? '' : 'true'}
-                style={{ width: '40px', background: 'white', border: '1px solid white' }}
-              >
-                <a href={linkedIn} target="_blank" rel="noopener noreferrer">
-                  <img
-                    src="/assets/images/iconLinkedin.svg"
-                    alt="img-arrow"
-                    style={{ cursor: 'pointer' }}
-                  />
-                </a>
-              </Button>
+              <a href={linkedIn || '#'} target="_blank" rel="noopener noreferrer">
+                <img src="/assets/images/iconLinkedin.svg" alt="img-arrow" />
+              </a>
             </Tooltip>
             <Tooltip title="Email">
-              <Button style={{ width: '40px', background: 'white', border: '1px solid white' }}>
-                <a href={`mailto:${workEmail}`}>
-                  <img
-                    src="/assets/images/iconMail.svg"
-                    alt="img-arrow"
-                    style={{ marginLeft: '5px', cursor: 'pointer' }}
-                  />
-                </a>
-              </Button>
+              <a href={`mailto:${workEmail}`}>
+                <img src="/assets/images/iconMail.svg" alt="img-arrow" />
+              </a>
             </Tooltip>
           </div>
           <div className={s.viewBtnAction}>{this.btnAction(permissions, profileOwner)}</div>
