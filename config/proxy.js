@@ -1,5 +1,5 @@
 // const BASE_API = 'http://localhost:4500';
-const BASE_API = 'https://hrms.paxanimi.ai';
+const BASE_API = 'https://terralogic.paxanimi.ai';
 
 export const API_KEYS = {
   BASE_API: 'BASE_API',
