@@ -22,9 +22,7 @@ const { TextArea } = Input;
 
 const { A, B, C, D } = TIMEOFF_TYPE;
 const { IN_PROGRESS, DRAFTS } = TIMEOFF_STATUS;
-const { EDIT_LEAVE_REQUEST,
-  NEW_LEAVE_REQUEST,
-  } = TIMEOFF_LINK_ACTION
+const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST } = TIMEOFF_LINK_ACTION;
 @connect(({ timeOff, user, loading }) => ({
   timeOff,
   user,
@@ -821,7 +819,7 @@ class RequestInformation extends PureComponent {
 
     const now = start;
     const dates = [];
-    const includeWeekend = selectedType !== A && selectedType !== B;
+    const includeWeekend = selectedType && selectedType !== A && selectedType !== B;
     if (includeWeekend) {
       while (now.isBefore(end) || now.isSame(end)) {
         dates.push(now.format('YYYY-MM-DD'));
