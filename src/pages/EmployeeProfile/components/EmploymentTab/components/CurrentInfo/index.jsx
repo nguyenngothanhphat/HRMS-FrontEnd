@@ -13,6 +13,7 @@ const CurrentInfo = (props) => {
     location,
     employeeType = {},
     manager,
+    titleInfo = {},
     // compensation = {},
     department = {},
   } = employeeProfile?.originData?.employmentData || {};
@@ -23,6 +24,12 @@ const CurrentInfo = (props) => {
     userId: manager?.generalInfo?.userId,
     workEmail: manager?.generalInfo?.workEmail,
     workNumber: manager?.generalInfo?.workNumber,
+    location: {
+      state: manager?.locationInfo?.headQuarterAddress?.state,
+      countryName: manager?.locationInfo?.headQuarterAddress?.country?.name,
+    },
+    department: manager?.departmentInfo,
+    title: manager?.titleInfo,
   };
 
   const getInitialJoiningDate = () => {
@@ -37,7 +44,7 @@ const CurrentInfo = (props) => {
   const data = {
     title: title?.name || '',
     department: department?.name || '',
-    grade: '',
+    grade: titleInfo?.grade || '',
     initialJoiningDate: getInitialJoiningDate(),
     joiningDate: joinDate ? moment(joinDate).locale('en').format('Do MMMM YYYY') : '',
     location: location?.name || '',
@@ -91,7 +98,7 @@ const CurrentInfo = (props) => {
             info = 'Employment Type';
             break;
           case 'employeeType':
-            info = 'Compensation Type';
+            info = 'Employee Type';
             break;
           case 'manager':
             info = 'Manager';

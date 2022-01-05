@@ -170,8 +170,7 @@ class EmploymentTab extends Component {
             {isEdit ? (
               <div style={{ display: 'flex', alignItems: 'center' }} />
             ) : (
-              permissions.editEmployment !== -1 &&
-              !profileOwner && (
+              permissions.editEmployment !== -1 && (
                 <div
                   className={styles.employmentTab__action}
                   onClick={this.handleEditCurrentInfo}

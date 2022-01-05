@@ -10,6 +10,8 @@ import FilterBar from '../FilterBar';
 
 import styles from './index.less';
 
+const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DELETED, DRAFTS } =
+  TIMEOFF_STATUS;
 @connect(
   ({
     timeOff,
@@ -50,7 +52,7 @@ class TimeOffRequestTab extends Component {
       approvedLength: 0,
       rejectedLength: 0,
       draftLength: 0,
-      selectedTab: TIMEOFF_STATUS.inProgress,
+      selectedTab: IN_PROGRESS,
       selectedTabNumber: '0',
       onHoldLength: 0,
       deletedLength: 0,
@@ -128,42 +130,42 @@ class TimeOffRequestTab extends Component {
     let status = '';
     if (tabType === 1) {
       if (filterTab === '1') {
-        status = TIMEOFF_STATUS.inProgress;
+        status = IN_PROGRESS;
       }
       if (filterTab === '2') {
-        status = TIMEOFF_STATUS.accepted;
+        status = ACCEPTED;
       }
       if (filterTab === '3') {
-        status = TIMEOFF_STATUS.rejected;
+        status = REJECTED;
       }
       if (filterTab === '4') {
-        status = TIMEOFF_STATUS.drafts;
+        status = DRAFTS;
       }
       if (filterTab === '5') {
-        status = TIMEOFF_STATUS.onHold;
+        status = ON_HOLD;
       }
       if (filterTab === '6') {
-        status = TIMEOFF_STATUS.deleted;
+        status = DELETED;
       }
     } else if (tabType === 2) {
       // compoff
       if (filterTab === '1') {
-        status = [TIMEOFF_STATUS.inProgressNext, TIMEOFF_STATUS.inProgress];
+        status = [IN_PROGRESS_NEXT, IN_PROGRESS];
       }
       if (filterTab === '2') {
-        status = [TIMEOFF_STATUS.accepted];
+        status = [ACCEPTED];
       }
       if (filterTab === '3') {
-        status = [TIMEOFF_STATUS.rejected];
+        status = [REJECTED];
       }
       if (filterTab === '4') {
-        status = [TIMEOFF_STATUS.drafts];
+        status = [DRAFTS];
       }
       if (filterTab === '5') {
-        status = [TIMEOFF_STATUS.onHold];
+        status = [ON_HOLD];
       }
       if (filterTab === '6') {
-        status = [TIMEOFF_STATUS.deleted];
+        status = [DELETED];
       }
     }
 
@@ -202,17 +204,17 @@ class TimeOffRequestTab extends Component {
   };
 
   setSelectedFilterTab = (id) => {
-    let selectedTab = TIMEOFF_STATUS.inProgress;
+    let selectedTab = IN_PROGRESS;
     if (id === '2') {
-      selectedTab = TIMEOFF_STATUS.accepted;
+      selectedTab = ACCEPTED;
     } else if (id === '3') {
-      selectedTab = TIMEOFF_STATUS.rejected;
+      selectedTab = REJECTED;
     } else if (id === '4') {
-      selectedTab = TIMEOFF_STATUS.drafts;
+      selectedTab = DRAFTS;
     } else if (id === '5') {
-      selectedTab = TIMEOFF_STATUS.onHold;
+      selectedTab = ON_HOLD;
     } else if (id === '6') {
-      selectedTab = TIMEOFF_STATUS.deleted;
+      selectedTab = DELETED;
     }
 
     this.setState({
@@ -231,31 +233,31 @@ class TimeOffRequestTab extends Component {
 
     arrTotal.forEach((item) => {
       switch (item._id) {
-        case TIMEOFF_STATUS.inProgress: {
+        case IN_PROGRESS: {
           inProgressLength += item.count;
           break;
         }
-        case TIMEOFF_STATUS.inProgressNext: {
+        case IN_PROGRESS_NEXT: {
           inProgressLength += item.count;
           break;
         }
-        case TIMEOFF_STATUS.accepted: {
+        case ACCEPTED: {
           approvedLength += item.count;
           break;
         }
-        case TIMEOFF_STATUS.rejected: {
+        case REJECTED: {
           rejectedLength += item.count;
           break;
         }
-        case TIMEOFF_STATUS.drafts: {
+        case DRAFTS: {
           draftLength += item.count;
           break;
         }
-        case TIMEOFF_STATUS.onHold: {
+        case ON_HOLD: {
           onHoldLength += item.count;
           break;
         }
-        case TIMEOFF_STATUS.deleted: {
+        case DELETED: {
           deletedLength += item.count;
           break;
         }

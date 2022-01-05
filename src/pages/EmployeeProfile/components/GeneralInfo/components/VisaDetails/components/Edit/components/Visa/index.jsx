@@ -251,7 +251,7 @@ class VisaGeneral extends Component {
                         {
                           pattern: /^[a-zA-Z0-9\\-]{0,16}$/,
                           message: formatMessage({
-                            id: 'pages.employeeProfile.validateNumber',
+                            id: 'pages.employeeProfile.validateVisaNumber',
                           }),
                         },
                       ]}
@@ -448,7 +448,7 @@ class VisaGeneral extends Component {
                           {
                             pattern: /^[a-zA-Z0-9\\-]{0,16}$/,
                             message: formatMessage({
-                              id: 'pages.employeeProfile.validateNumber',
+                              id: 'pages.employeeProfile.validateVisaNumber',
                             }),
                           },
                         ]}

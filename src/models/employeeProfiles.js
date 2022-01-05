@@ -60,6 +60,7 @@ import {
   addMultiCertification,
   getBenefitPlanList,
   getListEmployeeSingleCompany,
+  getListGrade,
 } from '@/services/employeeProfiles';
 import { getCurrentTenant } from '@/utils/authority';
 
@@ -140,6 +141,7 @@ const employeeProfile = {
     revoke: [],
     visibleSuccess: false,
     employeeList: [], // single company
+    listGrades: []
   },
   effects: {
     *fetchEmployeeIdByUserId({ payload }, { call, put }) {
@@ -1497,6 +1499,26 @@ const employeeProfile = {
             employeeList: data,
           },
         });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchGradeList({ payload }, { call, put, select }) {
+      let response = {};
+      try {
+        const { tenantCurrentEmployee, companyCurrentEmployee } = yield select(
+          (state) => state.employeeProfile,
+        );
+        response = yield call(getListGrade, {
+          ...payload,
+          tenantId: tenantCurrentEmployee,
+          company: companyCurrentEmployee,
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listGrades: data } });
+        yield put({ type: 'saveTemp', payload: { listGrades: data } });
       } catch (errors) {
         dialog(errors);
       }

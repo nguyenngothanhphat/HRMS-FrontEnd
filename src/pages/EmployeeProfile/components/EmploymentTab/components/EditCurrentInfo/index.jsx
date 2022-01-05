@@ -60,6 +60,9 @@ class EditCurrentInfo extends PureComponent {
     dispatch({
       type: 'employeeProfile/fetchCompensationList',
     });
+    dispatch({
+      type: 'employeeProfile/fetchGradeList',
+    });
   }
 
   componentWillUnmount() {
@@ -120,11 +123,10 @@ class EditCurrentInfo extends PureComponent {
 
     const {
       employeeProfile,
-      employeeProfile: { employees = [], departments = [] },
+      employeeProfile: { employees = [], departments = [], listGrades = [] },
       loadingTitleList,
       loadingLocationsList,
       handleCancel = () => {},
-      profileOwner,
       listLocationsByCompany,
     } = this.props;
     // console.log(employees)
@@ -134,9 +136,11 @@ class EditCurrentInfo extends PureComponent {
       title = '',
       joinDate = '',
       location = '',
+      department = {},
       employeeType = '',
       manager = '',
       compensation = {},
+      titleInfo = {},
     } = employeeProfile.originData.employmentData;
     const compensationType = compensation ? compensation.compensationType : '';
     const {
@@ -170,9 +174,11 @@ class EditCurrentInfo extends PureComponent {
             joinDate: joinDate && moment(joinDate).locale('en'),
             location: location._id,
             employeeType: employeeType._id,
+            department: department?._id,
             manager: (manager && manager._id) || null,
             compensationType,
             currentAnnualCTC,
+            grade: titleInfo?.gradeObj,
             // timeOffPolicy,
           }}
           // onFinish={(values) => console.log(values)}
@@ -180,7 +186,6 @@ class EditCurrentInfo extends PureComponent {
         >
           <Form.Item label="Job Title" name="title">
             <Select
-              disabled={profileOwner}
               placeholder="Enter Job Title"
               showArrow
               showSearch
@@ -196,29 +201,42 @@ class EditCurrentInfo extends PureComponent {
           </Form.Item>
           <Form.Item label="Department" name="department">
             <Select
-              disabled={profileOwner}
               placeholder="Enter Department"
               showArrow
               showSearch
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
-              onChange={this.onChangeDepartment}
             >
               {departments.map((item) => (
                 <Option key={item._id}>{item.name}</Option>
               ))}
             </Select>
           </Form.Item>
+          <Form.Item label="Grade" name="grade">
+            <Select
+              placeholder="Enter the grade"
+              showArrow
+              showSearch
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              onChange={this.onChangeGrade}
+              disabled
+            >
+              {listGrades.map((item) => (
+                <Option key={item._id}>{item.name}</Option>
+              ))}
+            </Select>
+          </Form.Item>
           <Form.Item label="Initial Joining Date" name="initialJoiningDate">
-            <DatePicker disabled={profileOwner} format={dateFormat} style={{ width: '100%' }} />
+            <DatePicker format={dateFormat} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item label="Joining Date" name="joinDate">
-            <DatePicker disabled={profileOwner} format={dateFormat} style={{ width: '100%' }} />
+            <DatePicker format={dateFormat} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item label={formatMessage({ id: 'addEmployee.location' })} name="location">
             <Select
-              disabled={profileOwner}
               placeholder={formatMessage({ id: 'addEmployee.placeholder.location' })}
               showArrow
               showSearch
@@ -232,21 +250,19 @@ class EditCurrentInfo extends PureComponent {
             </Select>
           </Form.Item>
           <Form.Item label="Employee Type" name="empType">
-            {/* what is this? this is employment type below, isn't it? */}
             <Select
-              disabled={profileOwner}
               showSearch
-              placeholder="Select an employment type"
+              placeholder="Select an employee type"
               optionFilterProp="children"
               // onChange={(value) => onChange(value, 'employment')}
               filterOption={(input, option) =>
                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
             >
-              {employeeProfile.employeeTypes.map((item, index) => {
+              {['Regular', 'Contingent Worker'].map((x, index) => {
                 return (
-                  <Option key={`${index + 1}`} value={item._id}>
-                    {item.name}
+                  <Option key={`${index + 1}`} value={x}>
+                    {x}
                   </Option>
                 );
               })}
@@ -255,7 +271,6 @@ class EditCurrentInfo extends PureComponent {
           </Form.Item>
           <Form.Item label="Employment Type" name="employeeType">
             <Select
-              disabled={profileOwner}
               showSearch
               placeholder="Select an employment type"
               optionFilterProp="children"
@@ -276,7 +291,7 @@ class EditCurrentInfo extends PureComponent {
           </Form.Item>
           {/* <Form.Item label="Compensation Type" name="compensationType">
             <Select
-              disabled={profileOwner}
+              
               showSearch
               optionFilterProp="children"
               placeholder="Select an compensation type"
@@ -306,7 +321,7 @@ class EditCurrentInfo extends PureComponent {
             ]}
           >
             <InputNumber
-              disabled={profileOwner}
+              
               min={0}
               style={{ width: '100%' }}
               formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
@@ -316,7 +331,6 @@ class EditCurrentInfo extends PureComponent {
           </Form.Item> */}
           <Form.Item label="Manager" name="manager">
             <Select
-              disabled={profileOwner}
               showSearch
               optionFilterProp="children"
               placeholder="Select a manager"
@@ -342,12 +356,7 @@ class EditCurrentInfo extends PureComponent {
             <div className={styles.btnCancel} onClick={handleCancel}>
               Cancel
             </div>
-            <Button
-              disabled={profileOwner}
-              type="primary"
-              htmlType="submit"
-              className={styles.btnSubmit}
-            >
+            <Button type="primary" htmlType="submit" className={styles.btnSubmit}>
               Save
             </Button>
           </div>

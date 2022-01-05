@@ -399,3 +399,9 @@ export async function getListEmployeeSingleCompany(payload) {
     data: payload,
   });
 }
+export async function getListGrade(payload) {
+  return request('/api/gradetenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}

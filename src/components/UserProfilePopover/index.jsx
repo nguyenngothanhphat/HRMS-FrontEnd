@@ -17,7 +17,12 @@ const UserProfilePopover = (props) => {
     workNumber = '',
     location: { state = '', countryName = '' } = {},
     location,
+    generalInfo = {},
+    managerInfo = {},
   } = data;
+
+  const { avatar = '' } = generalInfo || {};
+
   const [showPopover, setShowPopover] = useState(false);
 
   const onViewProfile = (id) => {
@@ -29,7 +34,7 @@ const UserProfilePopover = (props) => {
     return (
       <div className={styles.header}>
         <div className={styles.avatar}>
-          <img src={MockAvatar} alt="" />
+          <img src={avatar || MockAvatar} alt="" />
         </div>
         <div className={styles.information}>
           <span className={styles.name}>
@@ -45,8 +50,8 @@ const UserProfilePopover = (props) => {
     const items = [
       {
         label: 'Reporting Manager',
-        value: <span className={styles.managerName} />,
-        link: '#',
+        value: <span className={styles.managerName}>{managerInfo?.generalInfo?.legalName}</span>,
+        link: managerInfo?.generalInfo?.userId,
       },
       {
         label: 'Mobile',
@@ -73,7 +78,11 @@ const UserProfilePopover = (props) => {
             <Col className={styles.eachRow__label} span={8}>
               {i.label}:
             </Col>
-            <Col className={styles.eachRow__value} span={16}>
+            <Col
+              className={styles.eachRow__value}
+              span={16}
+              onClick={i.link ? () => onViewProfile(i.link) : null}
+            >
               {i.value}
             </Col>
           </Row>

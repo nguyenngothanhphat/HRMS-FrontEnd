@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Form, Select, DatePicker, Button, Checkbox } from 'antd';
+import moment from 'moment';
 import exportToCsv from '@/utils/exportToCsv';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import { setFilter, getFilter } from '@/utils/timeoffManagement';
-import moment from 'moment';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -94,12 +94,12 @@ export default class OptionsHeader extends PureComponent {
     const { listEmployee } = this.props;
     const dateFormat = 'MM.DD.YY';
     const options = [
-      { value: TIMEOFF_STATUS.accepted, label: 'Approved' },
-      { value: TIMEOFF_STATUS.inProgress, label: 'In Progress' },
-      { value: TIMEOFF_STATUS.rejected, label: 'Rejected' },
-      { value: TIMEOFF_STATUS.onHold, label: 'On-hold' },
-      { value: TIMEOFF_STATUS.drafts, label: 'Draft' },
-      { value: TIMEOFF_STATUS.deleted, label: 'Deleted' },
+      { value: TIMEOFF_STATUS.ACCEPTED, label: 'Approved' },
+      { value: TIMEOFF_STATUS.IN_PROGRESS, label: 'In Progress' },
+      { value: TIMEOFF_STATUS.REJECTED, label: 'Rejected' },
+      { value: TIMEOFF_STATUS.ON_HOLD, label: 'On-hold' },
+      { value: TIMEOFF_STATUS.DRAFTS, label: 'Draft' },
+      { value: TIMEOFF_STATUS.DELETED, label: 'Deleted' },
     ];
     const nameOpt = options.map((op) => op.value);
     return (
