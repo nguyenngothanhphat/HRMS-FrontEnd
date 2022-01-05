@@ -1,10 +1,9 @@
 import React, { PureComponent } from 'react';
-import { Skeleton } from 'antd';
-import { formatMessage, connect } from 'umi';
-import IconAdd from './components/DependentTabs/Edit/assets/AddIcon.svg';
-import ElectedCoverage from './components/ElectedCoverage';
+import { connect, formatMessage } from 'umi';
 import DependentTabs from './components/DependentTabs';
+import IconAdd from './components/DependentTabs/Edit/assets/AddIcon.svg';
 import ModalAddDependant from './components/DependentTabs/ModalAddDependant';
+import ElectedCoverage from './components/ElectedCoverage';
 import styles from './styles.less';
 
 @connect(
@@ -27,8 +26,6 @@ class BenefitTab extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      isEditing: false,
-      isAdding: false,
       addDependant: false,
     };
   }
@@ -38,18 +35,6 @@ class BenefitTab extends PureComponent {
     dispatch({
       type: 'employeeProfile/fetchEmployeeDependentDetails',
       payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
-    });
-  };
-
-  setEditing = (value) => {
-    this.setState({
-      isEditing: value,
-    });
-  };
-
-  setAdding = (value) => {
-    this.setState({
-      isAdding: value,
     });
   };
 
@@ -65,9 +50,8 @@ class BenefitTab extends PureComponent {
   };
 
   render() {
-    const { loading, dependentDetails = [], profileOwner = false } = this.props;
-    const { isEditing, isAdding, addDependant } = this.state;
-    if (loading) return <Skeleton />;
+    const { dependentDetails = [], profileOwner = false } = this.props;
+    const { addDependant } = this.state;
     return (
       <div style={{ backgroundColor: '#f6f7f9' }}>
         <div className={styles.benefitTab}>
@@ -79,14 +63,7 @@ class BenefitTab extends PureComponent {
                 </span>
               </div>
               <div>
-                <DependentTabs
-                  key={Math.random().toString(36).substring(7)}
-                  data={dependentDetails}
-                  isEditing={isEditing}
-                  setEditing={this.setEditing}
-                  isAdding={isAdding}
-                  setAdding={this.setAdding}
-                />
+                <DependentTabs data={dependentDetails} />
               </div>
             </div>
             {profileOwner && (

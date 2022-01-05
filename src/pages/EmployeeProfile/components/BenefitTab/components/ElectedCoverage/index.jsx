@@ -1,24 +1,15 @@
-import { Card, Tabs, Spin } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Card, Spin, Tabs } from 'antd';
+import React, { useState } from 'react';
 import { connect } from 'umi';
+import EmptyComponent from '@/components/Empty';
 import HealthWellbeing from './components/HealthWellbeing';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
 
 const ElectedCoverage = (props) => {
-  const { dispatch, employeeProfile: { tenantCurrentEmployee = '' } = {}, loadingFetch } = props;
+  const { loadingFetch } = props;
   const [activeKey, setActiveKey] = useState('1');
-
-  useEffect(() => {
-    dispatch({
-      type: 'employeeProfile/getBenefitPlans',
-      payload: {
-        tenantId: tenantCurrentEmployee,
-        country: 'US',
-      },
-    });
-  }, []);
 
   const loading = () => {
     if (loadingFetch)
@@ -38,10 +29,10 @@ const ElectedCoverage = (props) => {
           <HealthWellbeing />
         </TabPane>
         <TabPane tab="Financial" key="2">
-          Financial
+          <EmptyComponent />
         </TabPane>
         <TabPane tab="Legal" key="3">
-          Legal
+          <EmptyComponent />
         </TabPane>
       </Tabs>
     </Card>
