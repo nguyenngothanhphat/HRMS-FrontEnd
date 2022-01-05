@@ -1,7 +1,9 @@
 import { Button, Col, Modal, Row, Select } from 'antd';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { connect } from 'umi';
+import { isEmpty } from 'lodash';
+import PDFIcon from '@/assets/pdf_icon.png';
 import MessageBox from '../MessageBox';
 import styles from './index.less';
 
@@ -22,8 +24,50 @@ const TicketDetailModal = (props) => {
       attachments = [],
       description = '',
       status = '',
+      department_assign: departmentAssign = '',
+      employee_assignee: employeeAssignee = '',
+      employee_raise: employeeRaise = '',
+      listEmployee = [],
     } = {},
+    dispatch,
   } = props;
+  const [statusState, setStatus] = useState('');
+  useEffect(() => {
+    setStatus(status);
+  }, []);
+
+  useEffect(() => {
+    dispatch({
+      type: 'dashboard/fetchListEmployee',
+      payload: {
+        employees: cc,
+      },
+    });
+  }, []);
+  const handleUpdateStatus = () => {
+    const { employee: { _id: employeeID = '' } = {} } = props;
+    const payload = {
+      id: ticketID,
+      status: statusState,
+      priority,
+      description,
+      subject,
+      ccList: cc,
+      queryType,
+      attachments,
+      departmentAssign,
+      employeeRaise,
+      employeeAssignee,
+      employee: employeeID,
+    };
+
+    if (statusState && statusState !== status && status !== 'New') {
+      dispatch({
+        type: 'dashboard/updateTicket',
+        payload,
+      });
+    }
+  };
 
   const renderModalHeader = () => {
     return (
@@ -36,7 +80,51 @@ const TicketDetailModal = (props) => {
   const handleCancel = () => {
     onClose();
   };
+  const getColor = () => {
+    switch (priority) {
+      case 'High':
+        return '#ffb6b6';
+      case 'Normal':
+        return '#eefffb';
+      case 'Low':
+        return '#ffe9c5';
+      case 'Urgent':
+        return '#FF8484';
+      default:
+        return '#ffffff';
+    }
+  };
+  const attchementsContent = () => {
+    return (
+      <div className={styles.attachments}>
+        {!isEmpty(attachments)
+          ? attachments.map((val) => {
+              const attachmentSlice = () => {
+                if (val.attachmentName) {
+                  if (val.attachmentName.length > 35) {
+                    return `${val.attachmentName.substr(0, 8)}...${val.attachmentName.substr(
+                      val.attachmentName.length - 6,
+                      val.attachmentName.length,
+                    )}`;
+                  }
+                  return val.attachmentName;
+                }
+                return '';
+              };
 
+              return (
+                <div className={styles.attachments__file}>
+                  <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
+                    {attachmentSlice()}
+                  </a>
+                  <img className={styles.attachments__file__img} src={PDFIcon} alt="pdf" />
+                </div>
+              );
+            })
+          : ''}
+      </div>
+    );
+  };
   const renderModalContent = () => {
     const content = [
       {
@@ -56,7 +144,11 @@ const TicketDetailModal = (props) => {
       },
       {
         name: 'Priority',
-        value: <span>{priority}</span>,
+        value: (
+          <span className={styles.priority} style={{ background: getColor() }}>
+            {priority}
+          </span>
+        ),
         span: 12,
       },
       {
@@ -71,7 +163,7 @@ const TicketDetailModal = (props) => {
       },
       {
         name: 'Attachments',
-        value: '',
+        value: attchementsContent(),
         span: 24,
       },
       {
@@ -98,12 +190,18 @@ const TicketDetailModal = (props) => {
           <div className={styles.belowPart}>
             <div className={styles.status}>
               <span>Status:</span>
-              <Select value={status}>
+              <Select value={statusState} onChange={(value) => setStatus(value)}>
+                <Option value="Assigned">Assigned</Option>
                 <Option value="In Progress">In Progress</Option>
+                <Option value="Client Pending">Client Pending</Option>
+                <Option value="Resolved">Resolved</Option>
+                <Option value="Closed">Closed</Option>
               </Select>
             </div>
             <div className={styles.actionButton}>
-              <Button>Update</Button>
+              <Button disabled={status === 'New'} onClick={handleUpdateStatus}>
+                Update
+              </Button>
             </div>
           </div>
         </div>
@@ -128,4 +226,14 @@ const TicketDetailModal = (props) => {
   );
 };
 
-export default connect(() => ({}))(TicketDetailModal);
+export default connect(
+  ({
+    user: { currentUser: { employee = {} } } = {},
+    loading,
+    dashboard: { listEmployee = [] } = {},
+  }) => ({
+    employee,
+    listEmployee,
+    loadingUpdateStatus: loading.effects['dashboard/updateStatus'],
+  }),
+)(TicketDetailModal);

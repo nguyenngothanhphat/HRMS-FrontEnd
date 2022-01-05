@@ -19,6 +19,7 @@ const ActivityLog = (props) => {
     permissions = {},
     employee: { _id = '' } = {},
     listMyTicket = [],
+    status = '',
   } = props;
 
   const viewPendingApprovalDashboard = permissions.viewPendingApprovalDashboard !== -1;
@@ -33,7 +34,7 @@ const ActivityLog = (props) => {
     dispatch({
       type: 'dashboard/fetchListMyTicket',
     });
-  }, []);
+  }, [status]);
 
   // if employee, no render the pending approval tab, set active key to the second tab
   useEffect(() => {
@@ -45,7 +46,7 @@ const ActivityLog = (props) => {
   const listMyTicketNew =
     listMyTicket.length > 0
       ? listMyTicket.filter((val) => {
-          return val.employee_assignee === _id;
+          return val.employee_raise === _id;
         })
       : [];
   const renderShowAll = () => {
@@ -151,10 +152,11 @@ const ActivityLog = (props) => {
 
 export default connect(
   ({
-    dashboard: { listTicket = [], listMyTicket = {} } = {},
+    dashboard: { listTicket = [], listMyTicket = {}, status = '' } = {},
     loading,
     user: { permissions = {}, currentUser: { employee = {} } } = {},
   }) => ({
+    status,
     listTicket,
     listMyTicket,
     permissions,

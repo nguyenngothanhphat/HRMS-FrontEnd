@@ -7,6 +7,8 @@ import {
   aprovalLeaveRequest,
   rejectLeaveRequest,
   rejectCompoffRequest,
+  getListEmployee,
+  updateTicket,
 
   // NEW DASHBOARD
   syncGoogleCalendar,
@@ -30,6 +32,8 @@ const defaultState = {
   employeeId: '',
   myTeam: [],
   myTimesheet: [],
+  listEmployee: [],
+  status:"",
 };
 const dashboard = {
   namespace: 'dashboard',
@@ -200,6 +204,42 @@ const dashboard = {
         dialog(errors);
       }
       return response;
+    },
+    *updateTicket({ payload }, { call, put }) {
+      try {
+        const response = yield call(updateTicket, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message: 'Update Ticket successfully' });
+         yield put({
+           type: 'save',
+           payload: { status: data.length > 0 ? data[0].status : "" },
+         });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *fetchListEmployee({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getListEmployee, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { listEmployee: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
     },
 
     *fetchMyTeam({ payload = {} }, { call, put }) {

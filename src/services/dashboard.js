@@ -73,6 +73,17 @@ export async function getMyTeam(payload) {
     data: payload,
   });
 }
+export async function updateTicket(payload) {
+  return request(
+    `/api-ticket/tickettenant/update`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.TICKET_API,
+  );
+}
 
 // TIMESHEET
 export async function getMyTimesheet(payload, params) {
@@ -90,6 +101,12 @@ export async function getMyTimesheet(payload, params) {
 
 export async function getListMyTeam(payload) {
   return request('/api/employeetenant/list-myteam', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getListEmployee(payload) {
+  return request('/api/employeetenant/list-by-single-company', {
     method: 'POST',
     data: payload,
   });
