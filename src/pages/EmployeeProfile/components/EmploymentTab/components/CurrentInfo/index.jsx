@@ -16,6 +16,7 @@ const CurrentInfo = (props) => {
     titleInfo = {},
     // compensation = {},
     department = {},
+    empTypeOther = '',
   } = employeeProfile?.originData?.employmentData || {};
 
   const managerInfo = {
@@ -49,7 +50,7 @@ const CurrentInfo = (props) => {
     joiningDate: joinDate ? moment(joinDate).locale('en').format('Do MMMM YYYY') : '',
     location: location?.name || '',
     employmentType: employeeType?.name || '',
-    employeeType: '', // what is this?
+    employeeType: empTypeOther, // what is this?
     manager:
       manager && manager?.generalInfo ? (
         <UserProfilePopover placement="rightBottom" data={managerInfo}>

@@ -97,7 +97,16 @@ class EditCurrentInfo extends PureComponent {
   handleSave = (values, id) => {
     const { dispatch, employeeProfile, tenantCurrentEmployee = '' } = this.props;
     const { company = '' } = employeeProfile.originData.employmentData;
-    const { title, joinDate, location, employeeType, manager, department } = values;
+    const {
+      title,
+      joinDate,
+      location,
+      employeeType,
+      manager,
+      department,
+      empTypeOther = '',
+      initialJoiningDate = '',
+    } = values;
     const payload = {
       id,
       title,
@@ -108,6 +117,8 @@ class EditCurrentInfo extends PureComponent {
       tenantId: tenantCurrentEmployee,
       department,
       manager,
+      empTypeOther,
+      initialJoiningDate,
     };
     dispatch({
       type: 'employeeProfile/updateEmployment',
@@ -141,13 +152,10 @@ class EditCurrentInfo extends PureComponent {
       manager = '',
       compensation = {},
       titleInfo = {},
+      empTypeOther = '',
+      initialJoiningDate = '',
     } = employeeProfile.originData.employmentData;
     const compensationType = compensation ? compensation.compensationType : '';
-    const {
-      // compensationType = '',
-      currentAnnualCTC = '',
-      // timeOffPolicy = ''
-    } = employeeProfile.originData.compensationData;
 
     const dateFormat = 'Do MMMM YYYY';
 
@@ -177,8 +185,11 @@ class EditCurrentInfo extends PureComponent {
             department: department?._id,
             manager: (manager && manager._id) || null,
             compensationType,
-            currentAnnualCTC,
             grade: titleInfo?.gradeObj,
+            empTypeOther,
+            initialJoiningDate:
+              (initialJoiningDate && moment(initialJoiningDate).locale('en')) ||
+              (joinDate && moment(joinDate).locale('en')),
             // timeOffPolicy,
           }}
           // onFinish={(values) => console.log(values)}
@@ -249,7 +260,7 @@ class EditCurrentInfo extends PureComponent {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Employee Type" name="empType">
+          <Form.Item label="Employee Type" name="empTypeOther">
             <Select
               showSearch
               placeholder="Select an employee type"

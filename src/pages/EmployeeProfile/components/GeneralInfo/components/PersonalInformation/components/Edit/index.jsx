@@ -235,7 +235,6 @@ class Edit extends PureComponent {
   processDataChanges = () => {
     const { generalData: generalDataTemp, tenantCurrentEmployee = '' } = this.props;
     const { currentAddress, residentAddress } = this.state;
-    console.log('🚀 ~ file: index.jsx ~ line 238 ~ Edit ~ currentAddress', currentAddress);
 
     const {
       personalNumber = '',
@@ -244,6 +243,7 @@ class Edit extends PureComponent {
       maritalStatus = '',
       linkedIn = '',
       _id: id = '',
+      nationality = '',
     } = generalDataTemp;
     const payloadChanges = {
       id,
@@ -254,6 +254,7 @@ class Edit extends PureComponent {
       linkedIn,
       residentAddress,
       currentAddress,
+      nationality,
       tenantId: tenantCurrentEmployee,
     };
     return payloadChanges;
