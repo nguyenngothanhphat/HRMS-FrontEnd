@@ -366,12 +366,13 @@ class ViewInformation extends Component {
     // const checkVisible = profileOwner || permissions.viewOtherInformation !== -1;
 
     const {
-      firstName = '',
+      legalName = '',
       avatar = '',
       linkedIn = '',
       workEmail = '',
       // workNumber = '',
       certification = [],
+      userId = '',
     } = generalData;
 
     // const { tittle: { name: title = '' } = {} } = compensationData;
@@ -430,7 +431,9 @@ class ViewInformation extends Component {
           />
         )}
         <div className={s.infoEmployee__textNameAndTitle}>
-          <p className={s.infoEmployee__textNameAndTitle__name}>{firstName}</p>
+          <p className={s.infoEmployee__textNameAndTitle__name}>
+            {legalName} ({userId}
+          </p>
           <p className={s.infoEmployee__textNameAndTitle__title} style={{ margin: '5px 0' }}>
             {title ? title.name : ''}
           </p>

@@ -89,10 +89,18 @@
           justify-content: center;
           margin-top: 60px;
           &__name {
+            width: 85%;
             margin: 0;
+            overflow: hidden;
             color: #161c29;
             font-weight: 500;
             font-size: 16px;
+            white-space: nowrap;
+            text-align: center;
+            text-overflow: ellipsis;
+            &::after {
+              content: ')';
+            }
           }
           &__title {
             // margin: 5px 0;
