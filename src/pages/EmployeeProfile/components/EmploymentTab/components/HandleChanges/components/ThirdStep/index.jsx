@@ -5,9 +5,10 @@ import styles from './styles.less';
 export default function ThirdStep(props) {
   const { Option } = Select;
   const { onChange, onSearch, changeData, fetchedState } = props;
-  const { stepThree: { department = '' } = {} } = changeData;
-  const getdepartment = department || '';
-  const getFilter = fetchedState.employees.filter((item) => item.department._id === getdepartment);
+  const { stepTwo: { department = '' } = {} } = changeData;
+  const getFilter = fetchedState.employees.filter(
+    (item) => item.department._id === department || item.department._id === '',
+  );
   const makeKey = () => {
     return Math.random().toString(36).substring(7);
   };
@@ -16,30 +17,7 @@ export default function ThirdStep(props) {
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <div className={styles.headings}>What do you wish to change?</div>
       <div className={styles.select}>
-        <div>Department</div>
-        <Select
-          defaultValue={changeData.stepThree.department || null}
-          showSearch
-          placeholder="Select a department"
-          optionFilterProp="children"
-          onChange={(value) => onChange(value, 'department')}
-          onSearch={onSearch}
-          filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-        >
-          {fetchedState.departments.map((item) => {
-            return (
-              <Option key={makeKey()} value={item._id}>
-                {item.name}
-              </Option>
-            );
-          })}
-          ]
-        </Select>
-      </div>
-      <div className={styles.select}>
-        <div>Title</div>
+        <div className={styles.label}>Title</div>
         <Select
           value={changeData.newTitle || null}
           showSearch
@@ -48,10 +26,9 @@ export default function ThirdStep(props) {
           onChange={(value) => onChange(value, 'title')}
           onSearch={onSearch}
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
-          {changeData.stepThree.department
+          {changeData.stepTwo.department
             ? fetchedState.listTitleByDepartment.map((item) => {
                 return (
                   <Option key={makeKey()} value={[item.name, item._id]}>
@@ -64,7 +41,7 @@ export default function ThirdStep(props) {
         </Select>
       </div>
       <div className={styles.select}>
-        <div>Reporting to</div>
+        <div className={styles.label}>Reporting to</div>
         <Select
           defaultValue={changeData.stepThree.reportTo || null}
           showSearch
@@ -73,14 +50,39 @@ export default function ThirdStep(props) {
           onChange={(value) => onChange(value, 'reportTo')}
           onSearch={onSearch}
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          {getFilter
+            ? getFilter.map((item) => {
+                return (
+                  <Option key={makeKey()} value={[item.generalInfo?.legalName, item._id]}>
+                    {item.generalInfo?.legalName || null}
+                  </Option>
+                );
+              })
+            : ''}
+          ]
+        </Select>
+      </div>
+      <div className={styles.select}>
+        <div className={styles.label}>Reportees</div>
+        <Select
+          defaultValue={changeData.stepThree.reportees || null}
+          showSearch
+          placeholder="Select reportees"
+          optionFilterProp="children"
+          onChange={(value) => onChange(value, 'reportees')}
+          onSearch={onSearch}
+          showArrow
+          mode="multiple"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {getFilter
             ? getFilter.map((item) => {
                 return (
                   <Option key={makeKey()} value={item._id}>
-                    {item.generalInfo.firstName || item.generalInfo.legalName || null}
+                    {item.generalInfo?.legalName || null}
                   </Option>
                 );
               })

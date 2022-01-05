@@ -1,0 +1,54 @@
+@darkColour: #161c29;
+@blueColour: #2c6df9;
+@lightGrayColor: #707177;
+@commonPadding: 24px;
+@borderColor: #d6dce0;
+@orangeColor: #ffa100;
+
+.ElectedCoverage {
+  position: relative;
+  :global {
+    .ant-tabs-nav {
+      height: 52px;
+      padding-inline: @commonPadding !important;
+      .ant-tabs-tab-btn {
+        font-weight: 500 !important;
+        font-size: 13px !important;
+      }
+      .ant-tabs-tab-active {
+        .ant-tabs-tab-btn {
+          color: @blueColour !important;
+          font-weight: 500 !important;
+        }
+      }
+    }
+    .ant-tabs-content-holder {
+      padding: 0 @commonPadding !important;
+    }
+    .ant-tabs-top > .ant-tabs-nav::before,
+    .ant-tabs-bottom > .ant-tabs-nav::before,
+    .ant-tabs-top > div > .ant-tabs-nav::before,
+    .ant-tabs-bottom > div > .ant-tabs-nav::before {
+      border-color: @borderColor;
+    }
+    .ant-tabs-tab + .ant-tabs-tab {
+      margin-left: 34px !important;
+    }
+  }
+
+  .loadingContainer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    margin-top: 40px;
+    background-color: rgba(255, 255, 255, 0.509);
+  }
+}

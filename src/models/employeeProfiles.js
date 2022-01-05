@@ -58,6 +58,9 @@ import {
   getBenefitPlans,
   addMultiBank,
   addMultiCertification,
+  getBenefitPlanList,
+  getListEmployeeSingleCompany,
+  getListGrade,
 } from '@/services/employeeProfiles';
 import { getCurrentTenant } from '@/utils/authority';
 
@@ -79,10 +82,10 @@ const employeeProfile = {
     isModified: false,
     editGeneral: {
       openContactDetails: false,
-      openEmployeeInfor: false,
+      openEmployeeInfo: false,
       openPassport: false,
       openVisa: false,
-      openPersonnalInfor: false,
+      openPersonalInfo: false,
       openAcademic: false,
       openTax: false,
       openBank: false,
@@ -137,6 +140,8 @@ const employeeProfile = {
     listStates: [],
     revoke: [],
     visibleSuccess: false,
+    employeeList: [], // single company
+    listGrades: []
   },
   effects: {
     *fetchEmployeeIdByUserId({ payload }, { call, put }) {
@@ -588,10 +593,10 @@ const employeeProfile = {
               payload: { openContactDetails: false },
             });
             break;
-          case 'openEmployeeInfor':
+          case 'openEmployeeInfo':
             yield put({
               type: 'saveOpenEdit',
-              payload: { openEmployeeInfor: false },
+              payload: { openEmployeeInfo: false },
             });
             break;
           case 'openPassport':
@@ -606,10 +611,10 @@ const employeeProfile = {
               payload: { openVisa: false },
             });
             break;
-          case 'openPersonnalInfor':
+          case 'openPersonalInfo':
             yield put({
               type: 'saveOpenEdit',
-              payload: { openPersonnalInfor: false },
+              payload: { openPersonalInfo: false },
             });
             break;
           case 'openAcademic':
@@ -701,10 +706,10 @@ const employeeProfile = {
               payload: { openContactDetails: false },
             });
             break;
-          case 'openEmployeeInfor':
+          case 'openEmployeeInfo':
             yield put({
               type: 'saveOpenEdit',
-              payload: { openEmployeeInfor: false },
+              payload: { openEmployeeInfo: false },
             });
             break;
           case 'openPassport':
@@ -719,10 +724,10 @@ const employeeProfile = {
               payload: { openVisa: false },
             });
             break;
-          case 'openPersonnalInfor':
+          case 'openPersonalInfo':
             yield put({
               type: 'saveOpenEdit',
-              payload: { openPersonnalInfor: false },
+              payload: { openPersonalInfo: false },
             });
             break;
           case 'openAcademic':
@@ -1421,6 +1426,9 @@ const employeeProfile = {
         const response = yield call(addDependentsOfEmployee, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Add dependent successfully',
+        });
         yield put({ type: 'saveOrigin', payload: { dependentDetails: data } });
         return response;
       } catch (error) {
@@ -1433,6 +1441,9 @@ const employeeProfile = {
         const response = yield call(updateDependentsById, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Update dependent successfully',
+        });
         yield put({ type: 'saveOrigin', payload: { dependentDetails: data } });
         return response;
       } catch (error) {
@@ -1445,6 +1456,9 @@ const employeeProfile = {
         const response = yield call(removeDependentsById, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Remove dependent successfully',
+        });
         yield put({ type: 'saveOrigin', payload: { dependentDetails: data } });
         return response;
       } catch (error) {
@@ -1454,13 +1468,61 @@ const employeeProfile = {
     },
     *getBenefitPlans({ payload }, { call, put }) {
       try {
-        const response = yield call(getBenefitPlans, payload);
+        const response = yield call(getBenefitPlanList, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { benefitPlans: data } });
       } catch (error) {
         dialog(error);
       }
+    },
+    // for filter pane
+    *fetchEmployeeListSingleCompanyEffect({ payload }, { call, put, select }) {
+      let response = {};
+      try {
+        const { tenantCurrentEmployee, companyCurrentEmployee } = yield select(
+          (state) => state.employeeProfile,
+        );
+
+        response = yield call(getListEmployeeSingleCompany, {
+          ...payload,
+          status: ['ACTIVE', 'INACTIVE'],
+          company: companyCurrentEmployee,
+          tenantId: tenantCurrentEmployee,
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            employeeList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchGradeList({ payload }, { call, put, select }) {
+      let response = {};
+      try {
+        const { tenantCurrentEmployee, companyCurrentEmployee } = yield select(
+          (state) => state.employeeProfile,
+        );
+        response = yield call(getListGrade, {
+          ...payload,
+          tenantId: tenantCurrentEmployee,
+          company: companyCurrentEmployee,
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listGrades: data } });
+        yield put({ type: 'saveTemp', payload: { listGrades: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
   reducers: {
@@ -1515,10 +1577,10 @@ const employeeProfile = {
         ...state,
         editGeneral: {
           openContactDetails: false,
-          openEmployeeInfor: false,
+          openEmployeeInfo: false,
           openPassport: false,
           openVisa: false,
-          openPersonnalInfor: false,
+          openPersonalInfo: false,
           openAcademic: false,
           openTax: false,
           openBank: false,

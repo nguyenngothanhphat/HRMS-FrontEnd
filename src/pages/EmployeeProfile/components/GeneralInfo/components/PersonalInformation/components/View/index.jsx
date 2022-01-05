@@ -68,14 +68,7 @@ class View extends PureComponent {
       }
       return <LockFilled />;
     }
-    if (label === 'Linkedin') {
-      return (
-        <a href={value} target={blank}>
-          {value}
-        </a>
-      );
-    }
-    if (label !== 'Personal Number' && label !== 'Personal Email' && label !== 'Linkedin') {
+    if (label !== 'Personal Number' && label !== 'Personal Email') {
       return value;
     }
     return null;
@@ -134,7 +127,7 @@ class View extends PureComponent {
       { label: 'Personal Email', value: dataAPI.personalEmail },
       { label: checkVisible ? 'Blood Group' : null, value: dataAPI.Blood },
       { label: checkVisible ? 'Marital Status' : null, value: dataAPI.maritalStatus },
-      { label: 'Linkedin', value: dataAPI.linkedIn },
+      { label: 'Nationality', value: dataAPI.nationality },
       {
         label: checkVisible ? 'Residence Address' : null,
         value: this.formatAddress(
@@ -185,10 +178,7 @@ class View extends PureComponent {
                 ''
               )}
             </Col>
-            <Col
-              span={16}
-              className={item.label === 'Linkedin' ? styles.Linkedin : styles.textValue}
-            >
+            <Col span={16} className={styles.textValue}>
               {this.renderValue(
                 item.label,
                 item.value,

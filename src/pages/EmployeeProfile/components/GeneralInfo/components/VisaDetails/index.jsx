@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
-import { EditFilled } from '@ant-design/icons';
 import { connect } from 'umi';
+import EditBtn from '@/assets/edit.svg';
 import Edit from './components/Edit';
 import View from './components/View';
 import styles from './index.less';
@@ -50,25 +50,24 @@ class VisaDetails extends PureComponent {
   };
 
   render() {
-    const { openVisa, profileOwner = false } = this.props;
+    const { openVisa, profileOwner = false, permissions = {} } = this.props;
     const renderComponent = openVisa ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
       <View />
       // <View dataAPI={passportData} />
     );
+    const editVisaPermission = permissions.editPassportAndVisa !== -1;
     return (
       <div className={styles.VisaDetails}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Visa Details</p>
-          {openVisa
-            ? ''
-            : !profileOwner && (
-                <div className={styles.flexEdit} onClick={this.handleEdit}>
-                  <EditFilled className={styles.IconEdit} />
-                  <p className={styles.Edit}>Edit</p>
-                </div>
-              )}
+          {!openVisa && (!profileOwner || editVisaPermission) && (
+            <div className={styles.flexEdit} onClick={this.handleEdit}>
+              <img src={EditBtn} alt="" className={styles.IconEdit} />
+              <p className={styles.Edit}>Edit</p>
+            </div>
+          )}
         </div>
         <div className={styles.viewBottom}>{renderComponent}</div>
       </div>

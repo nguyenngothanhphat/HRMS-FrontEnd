@@ -1,19 +1,130 @@
 .GeneralInfo {
   width: 100%;
+  :global {
+    .ant-form-item-label {
+      text-align: left;
+    }
+    .ant-form-item-label > label {
+      color: #000000;
+      font-size: 13px;
+    }
+    .ant-form-item-label > label::after {
+      content: '';
+    }
+    .ant-form-item {
+      width: 100%;
+      // padding: 0px 48px;
+    }
+    .ant-input:focus {
+      border-color: #2c6df9;
+      outline: 0;
+      box-shadow: unset;
+    }
+    .ant-picker-focused {
+      border-color: #2c6df9;
+      box-shadow: unset;
+    }
+    .ant-picker-suffix {
+      color: #161c29;
+    }
+
+    .addressSection___2I4pH {
+      margin-top: 0 !important;
+    }
+
+    .ant-form-item {
+      margin-bottom: 16px;
+    }
+    .ant-form-item-label {
+      margin-top: 5px;
+
+      label {
+        font-size: 13px;
+      }
+    }
+
+    // SELECT
+    .ant-select {
+      width: 100% !important;
+    }
+    .ant-select-selector {
+      min-height: 42px !important;
+      border: 1px solid #d6dce4 !important;
+      border-radius: 5px !important;
+    }
+    .ant-select-single {
+      .ant-select-selection-search-input {
+        height: 42px !important;
+      }
+    }
+    .ant-select-selection-item,
+    .ant-select-selection-placeholder {
+      font-size: 13px !important;
+      line-height: 42px !important;
+    }
+    .ant-select-multiple {
+      .ant-select-selection-item {
+        height: 28px !important;
+        padding-top: 3px !important;
+        font-size: 13px;
+        line-height: unset !important;
+        background: #ffffff;
+        border: 1px solid #d6dce0;
+        border-left: 4px solid #2c6df9;
+        border-radius: 5px;
+      }
+      .ant-select-selection-item-remove {
+        margin-top: 3px;
+        margin-inline: 5px;
+
+        .anticon-close {
+          border: 0.75px solid #707177;
+          border-radius: 50%;
+        }
+      }
+    }
+    .ant-select-multiple .ant-select-selection-item-remove > * {
+      line-height: 0;
+    }
+
+    // INPUT + DATE PICKER
+    .ant-input,
+    .ant-input-number,
+    .ant-picker {
+      width: 100%;
+      height: 42px !important;
+      border: 1px solid #d6dce4 !important;
+      border-radius: 5px !important;
+    }
+    .ant-input-number,
+    .ant-input {
+      font-size: 13px;
+    }
+    .ant-picker {
+      input {
+        font-size: 13px;
+      }
+    }
+    .ant-input-number-input-wrap {
+      input {
+        height: 40px !important;
+      }
+    }
+  }
 }
 .viewLoading {
-  width: 100%;
   // height: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  width: 100%;
   :global {
     .ant-spin-dot {
       font-size: 75px;
     }
     .ant-spin-dot-item {
-      height: 40px;
       width: 40px;
+      height: 40px;
     }
   }
 }
@@ -45,16 +156,16 @@
   text-align: center;
 }
 .btnOkModalSuccess {
+  align-items: center;
   width: 120px;
   height: 40px;
+  margin: auto;
   color: #fff;
   font-weight: 600;
   font-size: 14px;
   background-color: #ffa100;
   border: none;
   border-radius: 25px;
-  align-items: center;
-  margin: auto;
 
   &:hover {
     color: #fff;

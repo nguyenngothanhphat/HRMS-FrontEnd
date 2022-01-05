@@ -173,11 +173,11 @@ class Edit extends Component {
         obj.emergencyPersonName === undefined ||
         obj.emergencyRelation === undefined,
     );
-    if(findContactNull.length > 0){
+    if (findContactNull.length > 0) {
       notification.error({
         message: 'All fileds cannot empty!',
       });
-      return
+      return;
     }
     dispatch({
       type: 'employeeProfile/updateGeneralInfo',
@@ -210,7 +210,7 @@ class Edit extends Component {
     const formEmergency =
       emergencyContactDetails.length > 0 ? emergencyContactDetails : formEmergencyDetail;
     return (
-      <Row gutter={[0, 16]} className={styles.root}>
+      <Row gutter={[0, 24]} className={styles.Edit}>
         <Form
           ref={this.formRef}
           className={styles.Form}
@@ -279,7 +279,7 @@ class Edit extends Component {
                   </Select>
                 </Form.Item>
                 <Form.Item
-                  label="Emergency Contact Number"
+                  label="Contact No."
                   name={`emergencyContact ${index}`}
                   rules={[
                     {
@@ -299,10 +299,10 @@ class Edit extends Component {
               </div>
             );
           })}
-          <Col span={9} offset={1} className={styles.addMoreButton}>
+          <Col span={9} className={styles.addMoreButton}>
             <div onClick={this.handleAddBtn}>
               <PlusOutlined className={styles.addMoreButtonIcon} />
-              Add more
+              Add another Emergency Contact
             </div>
           </Col>
 
