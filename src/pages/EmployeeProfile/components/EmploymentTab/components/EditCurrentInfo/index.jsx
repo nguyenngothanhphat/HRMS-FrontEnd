@@ -97,28 +97,19 @@ class EditCurrentInfo extends PureComponent {
   handleSave = (values, id) => {
     const { dispatch, employeeProfile, tenantCurrentEmployee = '' } = this.props;
     const { company = '' } = employeeProfile.originData.employmentData;
-    const {
-      title,
-      joinDate,
-      location,
-      employeeType,
-      manager,
-      department,
-      empTypeOther = '',
-      initialJoiningDate = '',
-    } = values;
+    const { title, joinDate, initialJoinDate, location, empTypeOther, employeeType, manager, department } = values;
     const payload = {
       id,
       title,
       joinDate,
+      initialJoinDate,
       location,
       employeeType,
+      empTypeOther,
       company: company._id,
       tenantId: tenantCurrentEmployee,
       department,
       manager,
-      empTypeOther,
-      initialJoiningDate,
     };
     dispatch({
       type: 'employeeProfile/updateEmployment',
@@ -149,10 +140,11 @@ class EditCurrentInfo extends PureComponent {
       location = '',
       department = {},
       employeeType = '',
+      initialJoinDate = '',
+      empTypeOther = '',
       manager = '',
       compensation = {},
       titleInfo = {},
-      empTypeOther = '',
       initialJoiningDate = '',
     } = employeeProfile.originData.employmentData;
     const compensationType = compensation ? compensation.compensationType : '';
@@ -182,11 +174,12 @@ class EditCurrentInfo extends PureComponent {
             joinDate: joinDate && moment(joinDate).locale('en'),
             location: location._id,
             employeeType: employeeType._id,
+            initialJoinDate: initialJoinDate ? initialJoinDate && moment(initialJoinDate).locale('en') : joinDate && moment(joinDate).locale('en'),
+            empTypeOther,
             department: department?._id,
             manager: (manager && manager._id) || null,
             compensationType,
             grade: titleInfo?.gradeObj,
-            empTypeOther,
             initialJoiningDate:
               (initialJoiningDate && moment(initialJoiningDate).locale('en')) ||
               (joinDate && moment(joinDate).locale('en')),
@@ -240,7 +233,7 @@ class EditCurrentInfo extends PureComponent {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Initial Joining Date" name="initialJoiningDate">
+          <Form.Item label="Initial Joining Date" name="initialJoinDate">
             <DatePicker format={dateFormat} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item label="Joining Date" name="joinDate">

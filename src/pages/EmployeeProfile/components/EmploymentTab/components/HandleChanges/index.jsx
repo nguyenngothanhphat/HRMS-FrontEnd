@@ -18,10 +18,11 @@ class HandleChanges extends PureComponent {
   constructor(props) {
     super(props);
     const { user, employeeProfile } = this.props;
+    const {currentUser} = user || {};
     this.state = {
       radio: 2,
       changeData: {
-        changedBy: user.currentUser._id,
+        changedBy: currentUser ? currentUser.employee._id : '',
         employee: employeeProfile.idCurrentEmployee,
         newTitle: '',
         newLocation: '',

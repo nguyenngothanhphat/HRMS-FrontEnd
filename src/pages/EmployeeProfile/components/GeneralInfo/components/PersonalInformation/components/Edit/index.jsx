@@ -241,6 +241,7 @@ class Edit extends PureComponent {
       personalEmail = '',
       Blood = '',
       maritalStatus = '',
+      nationaltly = '',
       linkedIn = '',
       _id: id = '',
       nationality = '',
@@ -252,6 +253,7 @@ class Edit extends PureComponent {
       Blood,
       maritalStatus,
       linkedIn,
+      nationaltly,
       residentAddress,
       currentAddress,
       nationality,
@@ -269,6 +271,7 @@ class Edit extends PureComponent {
       'Blood',
       'maritalStatus',
       'linkedIn',
+      'nationaltly',
       'residentAddress',
       'currentAddress',
     ];
@@ -381,7 +384,7 @@ class Edit extends PureComponent {
       personalEmail = '',
       Blood = '',
       maritalStatus = '',
-      nationality = '',
+      nationaltly = '',
       residentAddress: {
         addressLine1: r_Addressline1 = '',
         addressLine2: r_Addressline2 = '',
@@ -413,7 +416,7 @@ class Edit extends PureComponent {
             personalEmail,
             Blood,
             maritalStatus,
-            nationality,
+            nationaltly,
           }}
           onValuesChange={(changedValues) => this.handleChange(changedValues)}
           onFinish={this.handleSave}
@@ -462,7 +465,7 @@ class Edit extends PureComponent {
                 <Option value="Rather not mention">Rather not mention</Option>
               </Select>
             </Form.Item>
-            <Form.Item label="Nationality" name="nationality">
+            <Form.Item label="Nationality" name="nationaltly">
               <Input className={styles.inputForm} />
             </Form.Item>
             <div className={styles.addressTitle}>Permanent Address</div>
