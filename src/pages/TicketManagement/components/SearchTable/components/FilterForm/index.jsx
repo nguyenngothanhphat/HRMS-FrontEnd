@@ -13,11 +13,7 @@ import styles from './index.less';
 const { Option } = Select;
 @connect(
   ({
-    ticketManagement: {
-      locationsList = [],
-      currentStatus = [],
-      listOffAllTicket = [],
-    } = {},
+    ticketManagement: { locationsList = [], currentStatus = [], listOffAllTicket = [] } = {},
   }) => ({
     currentStatus,
     listOffAllTicket,
@@ -338,20 +334,24 @@ class FilterForm extends Component {
                 placeholder="Select name"
                 dropdownClassName={styles.dropdown}
               >
-                {legalNameList.map((option) => {
-                  return (
-                    <Option key={option.id} value={option.employeeRaise.generalInfo.legalName}>
-                      <Checkbox
-                        value={option.employeeRaise.generalInfo.legalName}
-                        checked={this.checkBoxStatusChecked(
-                          option.employeeRaise.generalInfo.legalName,
-                          'name',
-                        )}
-                      />
-                      <span>{option.employeeRaise.generalInfo.legalName}</span>
-                    </Option>
-                  );
-                })}
+                {!isEmpty(legalNameList)
+                  ? legalNameList.map((option) => {
+                      const { employeeRaise: { generalInfo: { legalName = '' } = {} } = {} } =
+                        option;
+                      return (
+                        <Option key={option.id} value={legalName}>
+                          <Checkbox
+                            value={legalName}
+                            checked={this.checkBoxStatusChecked(
+                              legalName,
+                              'name',
+                            )}
+                          />
+                          <span>{legalName}</span>
+                        </Option>
+                      );
+                    })
+                  : ''}
               </Select>
             </Form.Item>
             <Form.Item key="queryType" label="BY REQUEST TYPE" name="queryType">
