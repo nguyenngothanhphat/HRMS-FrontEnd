@@ -7,6 +7,7 @@ import cancelIcon from '@/assets/cancel-symbols-copy.svg';
 import removeIcon from '../assets/removeIcon.svg';
 import UploadImage from '../../UploadImage';
 import s from '../index.less';
+import { MT_MAIN_COL_SPAN } from '@/utils/timeSheet';
 
 const { Option } = Select;
 
@@ -97,8 +98,9 @@ class PassportItem extends Component {
       getHandleChange,
     } = this.props;
     const id = passportData[index] ? passportData[index]._id : '';
-
-    const dateFormat = 'MM.DD.YY';
+    const dateFormat = 'Do MMMM YYYY';
+    const { urlFile, document: { attachment: { url: urlFile2 = '' } = {} || {} } = {} || {} } =
+      passportData[index] || {};
 
     return (
       <div
@@ -145,7 +147,7 @@ class PassportItem extends Component {
             </div>
           ) : null}
 
-          {!passportData[index]?.urlFile ? (
+          {!urlFile || !urlFile2 ? (
             <div className={s.textUpload}>
               {loadingPassportTest[index] === false || loadingPassportTest[index] === undefined ? (
                 <UploadImage
@@ -162,15 +164,15 @@ class PassportItem extends Component {
             </div>
           ) : (
             <div className={s.viewUpLoadData}>
-              <p
+              {/* <p
                 onClick={() =>
                   this.handleOpenModalReview(
                     passportData[index]?.urlFile ? passportData[index].urlFile.url : '',
                   )}
                 className={s.viewUpLoadDataURL}
               >
-                fileName
-              </p>
+                {fileName}
+              </p> */}
               <p className={s.viewUpLoadDataText}>Uploaded</p>
               <img
                 src={cancelIcon}
@@ -181,24 +183,30 @@ class PassportItem extends Component {
             </div>
           )}
         </div>
-        {passportData[index]?.urlFile ? (
+        {urlFile ? (
           <Form.Item label="Uploaded file:" className={s.labelUpload}>
-            <p
-              onClick={() =>
-                this.handleOpenModalReview(
-                  passportData[index]?.urlFile ? passportData[index].urlFile.url : '',
-                )}
+            <span
+              onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
               className={s.urlUpload}
             >
-              {this.handleNameDataUpload(passportData[index].urlFile.url)}
-            </p>
+              {this.handleNameDataUpload(urlFile.url)}
+            </span>
+          </Form.Item>
+        ) : (
+          ''
+        )}
+        {urlFile2 && !urlFile ? (
+          <Form.Item label="Uploaded file:" className={s.labelUpload}>
+            <span onClick={() => this.handleOpenModalReview(urlFile2)} className={s.urlUpload}>
+              {this.handleNameDataUpload(urlFile2)}
+            </span>
           </Form.Item>
         ) : (
           ''
         )}
         <Form.Item
           // {...field}
-          label="Issued Country"
+          label="Issued By Country"
           // name={`passportIssuedCountry ${index}`}
           name={[field.name, 'passportIssuedCountry']}
           fieldKey={[field.fieldKey, 'passportIssuedCountry']}

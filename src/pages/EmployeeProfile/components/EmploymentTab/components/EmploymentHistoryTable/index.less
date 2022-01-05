@@ -1,0 +1,70 @@
+.EmploymentHistory {
+  margin: 24px;
+  :global {
+    td.ant-table-cell {
+      color: #707177;
+    }
+    .ant-table-tbody > tr > td {
+      border-bottom: solid 1px #d6dce0;
+    }
+
+    .ant-table-tbody > tr:last-child > td {
+      border-bottom: none;
+    }
+
+    .ant-table-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      background-color: transparent;
+    }
+  }
+
+  .changeType {
+    span {
+      display: block;
+      line-height: 24px;
+      padding-block: 4px;
+    }
+    .type {
+      color: #212020;
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 15px;
+      letter-spacing: 0.075px;
+    }
+    .value {
+      color: #707177;
+      font-size: 13px;
+      line-height: 19px;
+    }
+  }
+  .EmploymentHistory_action {
+    color: #2c6df9;
+    font-weight: 500;
+    letter-spacing: 0.12px;
+    cursor: pointer;
+  }
+
+  &__icons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: fit-content;
+
+    cursor: pointer;
+
+    &_icon {
+      padding-right: 8px;
+      font-size: 20px;
+    }
+  }
+
+  .expand {
+    color: #2c6df9;
+  }
+
+  .collapse {
+    color: #ffa100;
+  }
+}

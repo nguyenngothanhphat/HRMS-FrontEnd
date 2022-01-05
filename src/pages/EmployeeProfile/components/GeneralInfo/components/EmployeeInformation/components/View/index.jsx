@@ -70,8 +70,6 @@ class View extends PureComponent {
       permissions = [],
       idCurrentEmployee = '',
       locationEmpl: { headQuarterAddress: { country = '' } = {} } = {},
-      // taxData = [],
-      // bankData = [],
     } = this.props;
     let splitUrl = '';
     let urlAdhaarCard = '';
@@ -94,7 +92,7 @@ class View extends PureComponent {
       { label: 'Legal Name', value: dataAPI.legalName },
       {
         label: checkVisible ? 'Date of Birth' : null,
-        value: dataAPI.DOB ? Moment(dataAPI.DOB).locale('en').format('MM.DD.YY') : '',
+        value: dataAPI.DOB ? Moment(dataAPI.DOB).locale('en').format('Do MMMM YYYY') : '',
       },
       { label: checkVisible ? 'Legal Gender' : null, value: dataAPI.legalGender },
       { label: 'Employee ID', value: dataAPI.employeeId },

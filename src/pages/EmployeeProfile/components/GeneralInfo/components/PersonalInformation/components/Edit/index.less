@@ -2,67 +2,21 @@
   .Form {
     width: 100%;
     .fieldsContainer {
-      padding: 0 48px;
-
+      padding: 24px 24px 8px;
       .addressTitle {
-        font-weight: 500;
-      }
-    }
-    :global {
-      // .ant-row.ant-row-left {
-      //   padding: 0 155px;
-      // }
-      // .ant-select .ant-select-arrow {
-      //   transition: transform 0.2s ease-in;
-      // }
-      // .ant-select.ant-select-open .ant-select-arrow {
-      //   transform: rotate(180deg);
-      // }
-      .ant-form-item-label {
-        text-align: left;
-      }
-      .ant-form-item-label > label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         color: #000000;
-        font-size: 13px;
-      }
-      .ant-form-item-label > label::after {
-        content: '';
-      }
-      .ant-form-item {
-        width: 100%;
-        // padding: 0px 48px;
-      }
-      .ant-form-item:first-child {
-        margin-top: 35px;
-      }
-      .ant-input:focus {
-        border-color: #2c6df9;
-        outline: 0;
-        box-shadow: unset;
-      }
-      .ant-picker-focused {
-        border-color: #2c6df9;
-        box-shadow: unset;
-      }
-      .ant-picker-suffix {
-        color: #161c29;
-      }
-
-      .addressSection___2I4pH {
-        margin-top: 0 !important;
-      }
-    }
-
-    // .address {
-    //   margin-right: 14px;
-    // }
-    .addressSection {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      :global {
-        .ant-col {
-          max-width: 100%;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 16px;
+        margin-block: 24px;
+        span {
+          color: #161c29;
+          font-weight: normal;
+          font-size: 14px;
+          line-height: 16px;
         }
       }
     }
@@ -130,7 +84,7 @@
     align-items: center;
     justify-content: flex-end;
     width: 100%;
-    padding: 24px;
+    padding: 16px 24px;
     border-top: solid 1px #d6dce0;
   }
   .cancelFooter {
@@ -144,13 +98,14 @@
     color: #b1740c;
   }
   .buttonFooter {
-    width: 95px;
     height: 40px;
     color: #ffffff;
+    font-weight: 500;
     font-size: 14px;
     background-color: #ffa100;
     border: solid 1px #ffa100;
     border-radius: 25px;
+    padding-inline: 25px;
   }
   .buttonFooter:hover {
     background-color: #b1740c;

@@ -258,10 +258,12 @@ class Edit extends Component {
           {...formItemLayout}
           onFinish={this.handleSave}
         >
-          <VisaGeneral
-            setConfirmContent={this.getConfirmContent}
-            checkArrayVisa={this.getcheckArrayVisa}
-          />
+          <div className={styles.formContainer}>
+            <VisaGeneral
+              setConfirmContent={this.getConfirmContent}
+              checkArrayVisa={this.getcheckArrayVisa}
+            />
+          </div>
           <div className={styles.spaceFooter}>
             <div className={styles.cancelFooter} onClick={handleCancel}>
               Cancel

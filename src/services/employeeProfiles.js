@@ -385,3 +385,23 @@ export async function getBenefitPlans(payload) {
     data: payload,
   });
 }
+
+export async function getBenefitPlanList(payload) {
+  return request('api/benefittenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+// get list employee of a company
+export async function getListEmployeeSingleCompany(payload) {
+  return request('/api/employeetenant/list-by-single-company', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getListGrade(payload) {
+  return request('/api/gradetenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
