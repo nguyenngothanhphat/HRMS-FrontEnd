@@ -1,22 +1,121 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, Avatar, Row, Col } from 'antd';
 import { SmileOutlined } from '@ant-design/icons';
 import { formatMessage, useSelector, useHistory, Link } from 'umi';
 import Footer from '@/components/Footer';
 import styles from './AuthLayout.less';
 import LoginImage from '../assets/Intranet_01.png';
+import TerralogicImage from '../assets/login/terralogic.svg';
+import TerralogicLogo from '../assets/login/terralogic_logo.svg';
+import Separator from '../assets/login/separator.svg';
 
 const { Header, Content } = Layout;
-
+const MODE = {
+  HRMS: 1,
+  TERRALOGIC: 2,
+  CANDIDATE: 3,
+};
 const AuthLayout = ({ children }) => {
   const currentUser = useSelector(({ user }) => user.currentUser);
   const history = useHistory();
+  const [mode, setMode] = useState(MODE.TERRALOGIC);
+
   useEffect(() => {
     if (currentUser?._id) history.push('/dashboard');
   }, [currentUser]);
 
+  const footerItems = () => {
+    return [
+      {
+        label: 'Insights',
+        items: [
+          {
+            name: 'Success Stories',
+            link: '#',
+          },
+          {
+            name: 'Blogs',
+            link: '#',
+          },
+          {
+            name: 'Updates',
+            link: '#',
+          },
+        ],
+      },
+      {
+        label: 'Information',
+        items: [
+          {
+            name: 'About Us',
+            link: '#',
+          },
+          {
+            name: 'Contact',
+            link: '#',
+          },
+          {
+            name: 'FAQ',
+            link: '#',
+          },
+        ],
+      },
+    ];
+  };
+
+  if (mode === MODE.TERRALOGIC) {
+    return (
+      <Layout className={styles.AuthLayout2}>
+        <Content className={styles.container}>
+          <Row gutter={[24, 24]} align="top" className={styles.content} justify="center">
+            <Col xs={0} md={12} lg={7} xl={7}>
+              <div>
+                <div className={styles.logo}>
+                  <img src={TerralogicLogo} alt="" />
+                </div>
+                <p className={styles.bigText}>
+                  Driving innovation
+                  <br />
+                  through <br />
+                  new-age technology
+                </p>
+              </div>
+            </Col>
+            <Col xs={0} md={12} lg={8} xl={8}>
+              <div className={styles.image}>
+                <img src={TerralogicImage} alt="" />
+              </div>
+            </Col>
+            <Col xs={24} sm={24} md={24} lg={9} xl={9}>
+              <div className={styles.children}>{children}</div>
+            </Col>
+            <div className={styles.footerContainer}>
+              {footerItems().map((x) => (
+                <div className={styles.box}>
+                  <p className={styles.label}>{x.label}</p>
+                  <div className={styles.links}>
+                    {x.items.map((y, index) => {
+                      return (
+                        <span className={styles.item}>
+                          <a href={y.link}>{y.name}</a>
+                          {index + 1 < x.items.length && (
+                            <img src={Separator} alt="" className={styles.separator} />
+                          )}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Row>
+        </Content>
+      </Layout>
+    );
+  }
+
   return (
-    <Layout className={styles.root}>
+    <Layout className={styles.AuthLayout1}>
       <Header>
         <div className={styles.leftContent}>
           <Avatar size="large" icon={<SmileOutlined />} />

@@ -1,75 +1,75 @@
 .formWrapper {
-  width: 40%;
+  width: 100%;
   min-height: 60%;
-  background-color: #fff;
   padding: 20px 30px 40px;
-  background-color: #fff;
   color: #000;
+  background-color: #fff;
+  background-color: #fff;
   &__title {
-    text-align: left;
     color: #161c29;
     font-weight: 700;
     font-size: 16px;
+    text-align: left;
   }
 
   &__description {
+    margin-bottom: 1.5rem;
     color: #707177;
     font-size: 14px;
     text-align: justify;
-    margin-bottom: 1.5rem;
   }
 
   &__descriptionSuccessfully {
+    width: 120%;
+    margin-bottom: 0;
     color: #707177;
     font-size: 12px;
     text-align: center;
-    width: 120%;
-    margin-bottom: 0;
     span {
       color: #2c6df9;
     }
   }
 
-  .textSignIn{
+  .textSignIn {
+    padding-top: 30px;
     color: #2c6df9;
     font-weight: 600;
     cursor: pointer;
-    padding-top: 30px;
   }
 
   .toLogin {
     :global {
-      text-decoration: underline;
       margin: 0;
-      text-align: center;
       color: #707177;
       font-size: 13px;
+      text-align: center;
+      text-decoration: underline;
     }
   }
 
   :global {
     .ant-input {
-      border-radius: 4.5px;
       height: 31px;
       color: #000;
+      border-radius: 4.5px;
     }
     .ant-btn-primary {
-      box-shadow: none;
-      text-shadow: none;
-      font-size: 12px;
-      margin-top: 4px;
-      margin-bottom: 19.3px;
       width: 100%;
       height: 35px;
-      font-weight: 600;
-      border-radius: 30px;
+      margin-top: 4px;
+      margin-bottom: 19.3px;
       color: #fff;
+      font-weight: 600;
+      font-size: 12px;
+      text-shadow: none;
       background-color: #ffa100;
       border: none;
+      border-radius: 30px;
+      box-shadow: none;
     }
     .ant-form-item {
-      color: #707177;
       margin-bottom: 1rem;
+      color: #707177;
     }
     .ant-form label {
       color: #707177;
@@ -87,6 +87,6 @@
 
 @media screen and (max-width: 768px) {
   .formWrapper {
-    width: 70%;
+    width: 100%;
   }
 }
