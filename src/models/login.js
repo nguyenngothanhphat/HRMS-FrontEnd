@@ -1,5 +1,11 @@
 import { history } from 'umi';
-import { accountLogin, signInThirdParty, signinGoogle, getURLGoogle, getURLLollypop } from '@/services/login';
+import {
+  accountLogin,
+  signInThirdParty,
+  signinGoogle,
+  getURLGoogle,
+  getURLLollypop,
+} from '@/services/login';
 import {
   setAuthority,
   setTenantId,
@@ -108,6 +114,24 @@ const Model = {
         },
       });
       history.replace('/login');
+    },
+    *logoutCandidate(_, { put }) {
+      setToken('');
+      setAuthority('');
+      removeLocalStorage();
+      yield put({
+        type: 'user/saveCurrentUser',
+        payload: {
+          currentUser: {},
+        },
+      });
+      yield put({
+        type: 'user/save',
+        payload: {
+          permissions: {},
+        },
+      });
+      history.replace('/candidate');
     },
     *loginThirdParty({ payload }, { call, put }) {
       try {

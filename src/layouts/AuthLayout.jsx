@@ -1,28 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Layout, Avatar, Row, Col } from 'antd';
 import { SmileOutlined } from '@ant-design/icons';
-import { formatMessage, useSelector, useHistory, Link } from 'umi';
+import { Avatar, Col, Layout, Row } from 'antd';
+import React from 'react';
+import { formatMessage, Link } from 'umi';
 import Footer from '@/components/Footer';
-import styles from './AuthLayout.less';
 import LoginImage from '../assets/Intranet_01.png';
+import Separator from '../assets/login/separator.svg';
 import TerralogicImage from '../assets/login/terralogic.svg';
 import TerralogicLogo from '../assets/login/terralogic_logo.svg';
-import Separator from '../assets/login/separator.svg';
+import styles from './AuthLayout.less';
 
 const { Header, Content } = Layout;
-const MODE = {
-  HRMS: 1,
-  TERRALOGIC: 2,
-  CANDIDATE: 3,
-};
-const AuthLayout = ({ children }) => {
-  const currentUser = useSelector(({ user }) => user.currentUser);
-  const history = useHistory();
-  const [mode, setMode] = useState(MODE.HRMS);
 
-  useEffect(() => {
-    if (currentUser?._id) history.push('/dashboard');
-  }, [currentUser]);
+const AuthLayout = ({ children }) => {
+  // FOR TERRALOGIC USERS
+  const url = window.location.href;
+  const isTerralogicLogin = url.includes('terralogic.paxanimi.com');
 
   const footerItems = () => {
     return [
@@ -63,7 +55,7 @@ const AuthLayout = ({ children }) => {
     ];
   };
 
-  if (mode === MODE.TERRALOGIC) {
+  if (isTerralogicLogin) {
     return (
       <Layout className={styles.AuthLayout2}>
         <Content className={styles.container}>

@@ -107,9 +107,9 @@ class FormLogin extends Component {
 
   getLoginBoxText = (isTerralogicLogin, isTerralogicCandidateLogin) => {
     if (isTerralogicCandidateLogin)
-      return ['Login to Portal', 'Enter your credentials to access your account.'];
-    if (isTerralogicLogin)
       return ['Welcome Back', 'Enter your credentials to access your account.'];
+    if (isTerralogicLogin)
+      return ['Login to Portal', 'Enter your credentials to access your account.'];
     return ['Sign in to your account'];
   };
 
@@ -187,11 +187,19 @@ class FormLogin extends Component {
               className={styles.inputPassword}
             />
           </Form.Item>
-          <Form.Item className={styles.checkbox} name="keepSignIn" valuePropName="checked">
-            <Checkbox>
-              <span>{formatMessage({ id: 'pages.login.keepMeSignedIn' })}</span>
-            </Checkbox>
-          </Form.Item>
+          <div className={styles.keepSignIn}>
+            <Form.Item className={styles.checkbox} name="keepSignIn" valuePropName="checked">
+              <Checkbox>
+                <span>{formatMessage({ id: 'pages.login.keepMeSignedIn' })}</span>
+              </Checkbox>
+            </Form.Item>
+            {isTerralogicLogin && (
+              <Link to="/forgot-password" className={styles.forgotPasswordLink}>
+                {formatMessage({ id: 'pages.login.forgotPassword' })}
+              </Link>
+            )}
+          </div>
+
           <Form.Item
             noStyle
             shouldUpdate={(prevValues, currentValues) =>
@@ -216,11 +224,13 @@ class FormLogin extends Component {
                   <span>Lollypop Login</span>
                 </Button>
               </a>
-              <Link to="/forgot-password">
-                <p className={styles.forgotPassword}>
-                  {formatMessage({ id: 'pages.login.forgotPassword' })}
-                </p>
-              </Link>
+              {!isTerralogicLogin && (
+                <Link to="/forgot-password">
+                  <p className={styles.forgotPassword}>
+                    {formatMessage({ id: 'pages.login.forgotPassword' })}
+                  </p>
+                </Link>
+              )}
             </>
           )}
         </Form>

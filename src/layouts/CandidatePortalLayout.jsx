@@ -151,7 +151,7 @@ const CandidatePortalLayout = React.memo((props) => {
       },
     });
     dispatch({
-      type: 'login/logout',
+      type: 'login/logoutCandidate',
     });
   };
 
