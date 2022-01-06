@@ -33,7 +33,7 @@ const defaultState = {
   myTeam: [],
   myTimesheet: [],
   listEmployee: [],
-  status:"",
+  status: '',
 };
 const dashboard = {
   namespace: 'dashboard',
@@ -215,10 +215,10 @@ const dashboard = {
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message: 'Update Ticket successfully' });
-         yield put({
-           type: 'save',
-           payload: { status: data.length > 0 ? data[0].status : "" },
-         });
+        yield put({
+          type: 'save',
+          payload: { status: data.length > 0 ? data[0].status : '' },
+        });
       } catch (error) {
         dialog(error);
       }

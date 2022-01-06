@@ -1,4 +1,4 @@
-import { Button, Col, Modal, Row, Select } from 'antd';
+import { Button, Col, Modal, Row, Select, Avatar } from 'antd';
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { connect } from 'umi';
@@ -20,29 +20,20 @@ const TicketDetailModal = (props) => {
       query_type: queryType = '',
       priority = '',
       subject = '',
-      cc_list: cc = [],
+      cc_list: ccList = [],
       attachments = [],
       description = '',
       status = '',
       department_assign: departmentAssign = '',
       employee_assignee: employeeAssignee = '',
       employee_raise: employeeRaise = '',
-      listEmployee = [],
     } = {},
+    listEmployee = [],
     dispatch,
   } = props;
   const [statusState, setStatus] = useState('');
   useEffect(() => {
     setStatus(status);
-  }, []);
-
-  useEffect(() => {
-    dispatch({
-      type: 'dashboard/fetchListEmployee',
-      payload: {
-        employees: cc,
-      },
-    });
   }, []);
   const handleUpdateStatus = () => {
     const { employee: { _id: employeeID = '' } = {} } = props;
@@ -52,7 +43,7 @@ const TicketDetailModal = (props) => {
       priority,
       description,
       subject,
-      ccList: cc,
+      ccList,
       queryType,
       attachments,
       departmentAssign,
@@ -80,6 +71,20 @@ const TicketDetailModal = (props) => {
   const handleCancel = () => {
     onClose();
   };
+  const renderccList = () => {
+    const intersection = listEmployee.filter((element) => ccList.includes(element._id));
+    return intersection.map((val) => {
+      const { generalInfo: { avatar = '', legalName = '' } = {} } = val;
+      if (avatar !== '') {
+        return (
+          <Avatar>
+            <img src={avatar} alt="avatar" />
+          </Avatar>
+        );
+      }
+      return <Avatar>{legalName.substring(0, 1) || ''}</Avatar>;
+    });
+  };
   const getColor = () => {
     switch (priority) {
       case 'High':
@@ -96,7 +101,7 @@ const TicketDetailModal = (props) => {
   };
   const attchementsContent = () => {
     return (
-      <div className={styles.attachments}>
+      <span className={styles.attachments}>
         {!isEmpty(attachments)
           ? attachments.map((val) => {
               const attachmentSlice = () => {
@@ -113,16 +118,16 @@ const TicketDetailModal = (props) => {
               };
 
               return (
-                <div className={styles.attachments__file}>
+                <span className={styles.attachments__file}>
                   <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
                     {attachmentSlice()}
                   </a>
                   <img className={styles.attachments__file__img} src={PDFIcon} alt="pdf" />
-                </div>
+                </span>
               );
             })
           : ''}
-      </div>
+      </span>
     );
   };
   const renderModalContent = () => {
@@ -158,7 +163,23 @@ const TicketDetailModal = (props) => {
       },
       {
         name: 'CC',
-        value: cc.map((val) => <span>{val}</span>),
+        value: (
+          <span>
+            {!isEmpty(ccList) ? (
+              <Avatar.Group
+                maxCount={2}
+                maxStyle={{
+                  color: '#f56a00',
+                  backgroundColor: '#fde3cf',
+                }}
+              >
+                {renderccList()}
+              </Avatar.Group>
+            ) : (
+              ''
+            )}
+          </span>
+        ),
         span: 12,
       },
       {
