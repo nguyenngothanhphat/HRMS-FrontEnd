@@ -34,6 +34,7 @@ const RaiseTicketModal = (props) => {
     title = '',
     onClose = () => {},
     currentUser: { employee: { _id: myEmployeeID = '' } = {} || {} } = {} || {},
+    loadingFetchListEmployee = false,
   } = props;
 
   const { maxFileSize = 2, dispatch } = props;
@@ -62,15 +63,15 @@ const RaiseTicketModal = (props) => {
           company: getCurrentCompany(),
         },
       });
-      dispatch({
-        type: 'ticketManagement/fetchDepartments',
-        payload: {
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        },
-      });
+      // dispatch({
+      //   type: 'ticketManagement/fetchDepartments',
+      //   payload: {
+      //     tenantId: getCurrentTenant(),
+      //     company: getCurrentCompany(),
+      //   },
+      // });
     }
-  }, []);
+  }, [visible]);
 
   const handleReset = () => {
     form.resetFields();
@@ -190,7 +191,11 @@ const RaiseTicketModal = (props) => {
                 name="supportTeam"
                 labelCol={{ span: 24 }}
               >
-                <Select showSearch onChange={onSupportTeamChange} placeholder="Select the support team">
+                <Select
+                  showSearch
+                  onChange={onSupportTeamChange}
+                  placeholder="Select the support team"
+                >
                   {SUPPORT_TEAM.map((val) => (
                     <Option value={val._id}>{val.name}</Option>
                   ))}
@@ -251,7 +256,7 @@ const RaiseTicketModal = (props) => {
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please enter the subject' }]}
               >
-                <Input placeholder='Enter the subject' />
+                <Input placeholder="Enter the subject" />
               </Form.Item>
             </Col>
 
@@ -262,7 +267,7 @@ const RaiseTicketModal = (props) => {
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please enter the description' }]}
               >
-                <Input.TextArea autoSize={{ minRows: 3 }} placeholder='Enter the description' />
+                <Input.TextArea autoSize={{ minRows: 3 }} placeholder="Enter the description" />
               </Form.Item>
             </Col>
 
@@ -287,6 +292,8 @@ const RaiseTicketModal = (props) => {
                   mode="multiple"
                   placeholder="Select the interest list"
                   allowClear
+                  loading={loadingFetchListEmployee}
+                  disabled={loadingFetchListEmployee}
                   filterOption={(input, option) =>
                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
@@ -404,5 +411,6 @@ export default connect(
     listEmployee,
     currentUser,
     loadingUploadAttachment: loading.effects['ticketManagement/uploadFileAttachments'],
+    loadingFetchListEmployee: loading.effects['ticketManagement/fetchListEmployee'],
   }),
 )(RaiseTicketModal);
