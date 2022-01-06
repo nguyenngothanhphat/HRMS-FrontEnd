@@ -2,6 +2,8 @@ export default {
   'pages.employeeProfile.generalInfoTab': 'General Info',
   'pages.employeeProfile.validateNumber':
     'Just only number & this field maximun be 16 number, please!',
+  'pages.employeeProfile.validateSocialSecurityNumber':
+    'Just only number and "-" character & this field maximun be 12 number, please!',
   'pages.employeeProfile.validateWorkNumber':
     'Just only number & this field maximun be 10 number, please!',
   'pages.employeeProfile.validateVisaNumber': 'Invalid visa number!',
