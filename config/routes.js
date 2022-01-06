@@ -71,6 +71,16 @@ const routes = [
     ],
   },
   {
+    path: '/candidate',
+    component: '../layouts/TerralogicCandidateLoginLayout',
+    routes: [
+      {
+        path: '/candidate',
+        component: './Login',
+      },
+    ],
+  },
+  {
     path: '/forgot-password',
     component: '../layouts/AuthLayout',
     routes: [

@@ -18,7 +18,7 @@ const MODE = {
 const AuthLayout = ({ children }) => {
   const currentUser = useSelector(({ user }) => user.currentUser);
   const history = useHistory();
-  const [mode, setMode] = useState(MODE.TERRALOGIC);
+  const [mode, setMode] = useState(MODE.HRMS);
 
   useEffect(() => {
     if (currentUser?._id) history.push('/dashboard');

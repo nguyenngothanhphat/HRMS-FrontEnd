@@ -105,6 +105,14 @@ class FormLogin extends Component {
     return checkedBox;
   };
 
+  getLoginBoxText = (isTerralogicLogin, isTerralogicCandidateLogin) => {
+    if (isTerralogicCandidateLogin)
+      return ['Login to Portal', 'Enter your credentials to access your account.'];
+    if (isTerralogicLogin)
+      return ['Welcome Back', 'Enter your credentials to access your account.'];
+    return ['Sign in to your account'];
+  };
+
   render() {
     const { messageError = '', urlGoogle = '', urlLollypop = '' } = this.props;
     const { checkValidationEmail, isMessageValidationEmail } = this.state;
@@ -115,11 +123,22 @@ class FormLogin extends Component {
     const messageValidationPsw =
       messageError === 'Invalid password' ? 'Incorrect password. Try again' : undefined;
 
+    const url = window.location.href;
+    const { pathname } = window.location;
+    const isTerralogicLogin = url.includes('terralogic.paxanimi.com');
+    const isTerralogicCandidateLogin =
+      url.includes('terralogic.paxanimi.com/candidate') || pathname === '/candidate';
+
+    const titleText = this.getLoginBoxText(isTerralogicLogin, isTerralogicCandidateLogin);
     return (
       <div className={styles.formWrapper}>
-        <p className={styles.formWrapper__title}>
-          {formatMessage({ id: 'pages.login.signInToYourAccount' })}
+        <p
+          className={styles.formWrapper__title}
+          style={isTerralogicLogin || isTerralogicCandidateLogin ? { fontSize: '24px' } : {}}
+        >
+          {titleText[0]}
         </p>
+        {titleText.length > 1 && <p className={styles.formWrapper__description}>{titleText[1]}</p>}
         <Form
           layout="vertical"
           name="basic"
@@ -182,40 +201,28 @@ class FormLogin extends Component {
           >
             {({ getFieldValue }) => this._renderButton(getFieldValue)}
           </Form.Item>
-          <div className={styles.textOr}>or sign in with</div>
-          {/* <GoogleLogin
-            clientId="569320903794-k9h03nao8e8sq4mm6tq5rv5enjs0dlo6.apps.googleusercontent.com"
-            render={(renderProps) => (
-              <Button
-                type="primary"
-                className={styles.btnSignInGG}
-                onClick={renderProps.onClick}
-                // disabled={renderProps.disabled}
-                loading={loadingLoginThirdParty}
-              >
-                <img src={logoGoogle} alt="logo" />
-                <span>Login with Google</span>
-              </Button>
-            )}
-            onSuccess={this.responseGoogle}
-          /> */}
-          <a href={urlGoogle}>
-            <Button type="primary" className={styles.btnSignInGG}>
-              <img src={logoGoogle} alt="logo" />
-              <span>Terralogic Login</span>
-            </Button>
-          </a>
-          <a href={urlLollypop}>
-            <Button type="primary" className={styles.btnSignInLollypop}>
-              <img src={logoGoogle} alt="logo" />
-              <span>Lollypop Login</span>
-            </Button>
-          </a>
-          <Link to="/forgot-password">
-            <p className={styles.forgotPassword}>
-              {formatMessage({ id: 'pages.login.forgotPassword' })}
-            </p>
-          </Link>
+          {!isTerralogicCandidateLogin && (
+            <>
+              <div className={styles.textOr}>or sign in with</div>
+              <a href={urlGoogle}>
+                <Button type="primary" className={styles.btnSignInGG}>
+                  <img src={logoGoogle} alt="logo" />
+                  <span>Terralogic Login</span>
+                </Button>
+              </a>
+              <a href={urlLollypop}>
+                <Button type="primary" className={styles.btnSignInLollypop}>
+                  <img src={logoGoogle} alt="logo" />
+                  <span>Lollypop Login</span>
+                </Button>
+              </a>
+              <Link to="/forgot-password">
+                <p className={styles.forgotPassword}>
+                  {formatMessage({ id: 'pages.login.forgotPassword' })}
+                </p>
+              </Link>
+            </>
+          )}
         </Form>
       </div>
     );
