@@ -34,6 +34,7 @@ const RaiseTicketModal = (props) => {
     title = '',
     onClose = () => {},
     currentUser: { employee: { _id: myEmployeeID = '' } = {} || {} } = {} || {},
+    loadingFetchListEmployee = false,
   } = props;
 
   const { maxFileSize = 2, dispatch } = props;
@@ -54,7 +55,7 @@ const RaiseTicketModal = (props) => {
     onClose();
   };
   useEffect(() => {
-    if (!visible) {
+    if (visible) {
       dispatch({
         type: 'ticketManagement/fetchListEmployee',
         payload: {
@@ -62,15 +63,15 @@ const RaiseTicketModal = (props) => {
           company: getCurrentCompany(),
         },
       });
-      dispatch({
-        type: 'ticketManagement/fetchDepartments',
-        payload: {
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        },
-      });
+      // dispatch({
+      //   type: 'ticketManagement/fetchDepartments',
+      //   payload: {
+      //     tenantId: getCurrentTenant(),
+      //     company: getCurrentCompany(),
+      //   },
+      // });
     }
-  }, []);
+  }, [visible]);
 
   const handleReset = () => {
     form.resetFields();
@@ -291,6 +292,8 @@ const RaiseTicketModal = (props) => {
                   mode="multiple"
                   placeholder="Select the interest list"
                   allowClear
+                  loading={loadingFetchListEmployee}
+                  disabled={loadingFetchListEmployee}
                   filterOption={(input, option) =>
                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
@@ -408,5 +411,6 @@ export default connect(
     listEmployee,
     currentUser,
     loadingUploadAttachment: loading.effects['ticketManagement/uploadFileAttachments'],
+    loadingFetchListEmployee: loading.effects['ticketManagement/fetchListEmployee'],
   }),
 )(RaiseTicketModal);
