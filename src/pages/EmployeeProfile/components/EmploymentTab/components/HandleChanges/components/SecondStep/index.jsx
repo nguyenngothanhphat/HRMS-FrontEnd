@@ -28,7 +28,7 @@ export default function SecondStep(props) {
         >
           {listLocationsByCompany.map((item) => {
             return (
-              <Option key={makeKey()} value={[item.name, item._id]}>
+              <Option key={makeKey()} value={item._id}>
                 {item.name}
               </Option>
             );
@@ -50,7 +50,7 @@ export default function SecondStep(props) {
         >
           {fetchedState.employeeTypes.map((item) => {
             return (
-              <Option key={makeKey()} value={[item.name, item._id]}>
+              <Option key={makeKey()} value={item._id}>
                 {item.name}
               </Option>
             );
@@ -72,7 +72,7 @@ export default function SecondStep(props) {
         >
           {fetchedState.departments.map((item) => {
             return (
-              <Option key={makeKey()} value={[item.name, item._id]}>
+              <Option key={makeKey()} value={item._id}>
                 {item.name}
               </Option>
             );

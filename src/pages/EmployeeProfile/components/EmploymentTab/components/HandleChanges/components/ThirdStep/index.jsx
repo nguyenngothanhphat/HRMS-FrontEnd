@@ -31,7 +31,7 @@ export default function ThirdStep(props) {
           {changeData.stepTwo.department
             ? fetchedState.listTitleByDepartment.map((item) => {
                 return (
-                  <Option key={makeKey()} value={[item.name, item._id]}>
+                  <Option key={makeKey()} value={item._id}>
                     {item.name}
                   </Option>
                 );
@@ -55,7 +55,7 @@ export default function ThirdStep(props) {
           {getFilter
             ? getFilter.map((item) => {
                 return (
-                  <Option key={makeKey()} value={[item.generalInfo?.legalName, item._id]}>
+                  <Option key={makeKey()} value={item._id}>
                     {item.generalInfo?.legalName || null}
                   </Option>
                 );

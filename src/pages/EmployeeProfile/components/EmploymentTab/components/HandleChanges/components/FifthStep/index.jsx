@@ -53,7 +53,7 @@ export default function FifthStep(props) {
         >
           {employeeList.map((item) => {
             return (
-              <Option key={makeKey()} value={item._id}>
+              <Option key={makeKey()} value={item.generalInfo?.workEmail}>
                 {item.generalInfo?.legalName || null}
               </Option>
             );

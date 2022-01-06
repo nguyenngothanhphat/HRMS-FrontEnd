@@ -235,13 +235,13 @@ class Edit extends PureComponent {
   processDataChanges = () => {
     const { generalData: generalDataTemp, tenantCurrentEmployee = '' } = this.props;
     const { currentAddress, residentAddress } = this.state;
-    console.log('🚀 ~ file: index.jsx ~ line 238 ~ Edit ~ currentAddress', currentAddress);
 
     const {
       personalNumber = '',
       personalEmail = '',
       Blood = '',
       maritalStatus = '',
+      nationality = '',
       linkedIn = '',
       _id: id = '',
     } = generalDataTemp;
@@ -252,6 +252,7 @@ class Edit extends PureComponent {
       Blood,
       maritalStatus,
       linkedIn,
+      nationality,
       residentAddress,
       currentAddress,
       tenantId: tenantCurrentEmployee,
@@ -268,6 +269,7 @@ class Edit extends PureComponent {
       'Blood',
       'maritalStatus',
       'linkedIn',
+      'nationality',
       'residentAddress',
       'currentAddress',
     ];
