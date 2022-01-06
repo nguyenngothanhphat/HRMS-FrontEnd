@@ -9,6 +9,8 @@ import {
   rejectCompoffRequest,
   getListEmployee,
   updateTicket,
+  uploadFile,
+  addNotes,
 
   // NEW DASHBOARD
   syncGoogleCalendar,
@@ -256,6 +258,41 @@ const dashboard = {
         yield put({ type: 'save', payload: { myTeam: data } });
       } catch (errors) {
         dialog(errors);
+      }
+      return response;
+    },
+    // UPLOAD FILE
+    *uploadFileAttachments({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(uploadFile, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Upload File Successfully',
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    // ADDNOTE
+    *addNotes({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(addNotes, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'fetchListMyTicket',
+          payload: {},
+        });
+      } catch (error) {
+        dialog(error);
       }
       return response;
     },

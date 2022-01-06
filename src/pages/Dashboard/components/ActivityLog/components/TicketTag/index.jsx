@@ -1,13 +1,13 @@
 import { Row, Col } from 'antd';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'umi';
-import { isEmpty } from 'lodash';
+
 import styles from './index.less';
 import TicketDetailModal from '../TicketDetailModal';
 
 const TicketTag = (props) => {
-  const { item: itemProp = {}, dispatch } = props;
+  const { item: itemProp = {} } = props;
   const [openModal, setOpenModal] = useState(false);
 
   // RENDER UI
@@ -17,18 +17,8 @@ const TicketTag = (props) => {
       id: ticketID = '',
       status = '',
       request_type: typeName = '',
-      cc_list: ccList,
     } = item;
-    useEffect(() => {
-      if (!isEmpty(ccList)) {
-        dispatch({
-          type: 'dashboard/fetchListEmployee',
-          payload: {
-            employees: ccList,
-          },
-        });
-      }
-    }, []);
+
     const dateTemp = moment(onDate).date();
     const monthTemp = moment(onDate).locale('en').format('MMM');
     return (

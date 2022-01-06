@@ -111,3 +111,21 @@ export async function getListEmployee(payload) {
     data: payload,
   });
 }
+// UPLOADFILE
+export async function uploadFile(data) {
+  return request('/api/attachments/upload', {
+    method: 'POST',
+    data,
+  });
+}
+export async function addNotes(payload) {
+  return request(
+    `/api-ticket/tickettenant/chat`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.TICKET_API,
+  );
+}

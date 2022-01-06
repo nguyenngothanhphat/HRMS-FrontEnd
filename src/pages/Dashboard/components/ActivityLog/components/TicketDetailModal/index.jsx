@@ -1,4 +1,4 @@
-import { Button, Col, Modal, Row, Select, Avatar } from 'antd';
+import { Button, Col, Modal, Row, Select, Spin } from 'antd';
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { connect } from 'umi';
@@ -27,13 +27,26 @@ const TicketDetailModal = (props) => {
       department_assign: departmentAssign = '',
       employee_assignee: employeeAssignee = '',
       employee_raise: employeeRaise = '',
+      chats = [],
     } = {},
+    item = {},
     listEmployee = [],
+    loadingFetchListEmployee = false,
     dispatch,
   } = props;
   const [statusState, setStatus] = useState('');
   useEffect(() => {
     setStatus(status);
+  }, []);
+  useEffect(() => {
+    if (!isEmpty(ccList)) {
+      dispatch({
+        type: 'dashboard/fetchListEmployee',
+        payload: {
+          // employees: ccList,
+        },
+      });
+    }
   }, []);
   const handleUpdateStatus = () => {
     const { employee: { _id: employeeID = '' } = {} } = props;
@@ -74,15 +87,8 @@ const TicketDetailModal = (props) => {
   const renderccList = () => {
     const intersection = listEmployee.filter((element) => ccList.includes(element._id));
     return intersection.map((val) => {
-      const { generalInfo: { avatar = '', legalName = '' } = {} } = val;
-      if (avatar !== '') {
-        return (
-          <Avatar>
-            <img src={avatar} alt="avatar" />
-          </Avatar>
-        );
-      }
-      return <Avatar>{legalName.substring(0, 1) || ''}</Avatar>;
+      const { generalInfo: { legalName = '' } = {} } = val;
+      return <span style={{ paddingRight: '8px' }}>{legalName || ''}</span>;
     });
   };
   const getColor = () => {
@@ -122,7 +128,7 @@ const TicketDetailModal = (props) => {
                   <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
                     {attachmentSlice()}
                   </a>
-                  <img className={styles.attachments__file__img} src={PDFIcon} alt="pdf" />
+                  <img className={styles.attachmentsImg} src={PDFIcon} alt="pdf" />
                 </span>
               );
             })
@@ -164,21 +170,7 @@ const TicketDetailModal = (props) => {
       {
         name: 'CC',
         value: (
-          <span>
-            {!isEmpty(ccList) ? (
-              <Avatar.Group
-                maxCount={2}
-                maxStyle={{
-                  color: '#f56a00',
-                  backgroundColor: '#fde3cf',
-                }}
-              >
-                {renderccList()}
-              </Avatar.Group>
-            ) : (
-              ''
-            )}
-          </span>
+          <span>{loadingFetchListEmployee && !isEmpty(ccList) ? <Spin /> : renderccList()}</span>
         ),
         span: 12,
       },
@@ -226,7 +218,7 @@ const TicketDetailModal = (props) => {
             </div>
           </div>
         </div>
-        <MessageBox />
+        <MessageBox chats={chats} item={item} />
       </div>
     );
   };
@@ -256,5 +248,6 @@ export default connect(
     employee,
     listEmployee,
     loadingUpdateStatus: loading.effects['dashboard/updateStatus'],
+    loadingFetchListEmployee: loading.effects['dashboard/fetchListEmployee'],
   }),
 )(TicketDetailModal);
