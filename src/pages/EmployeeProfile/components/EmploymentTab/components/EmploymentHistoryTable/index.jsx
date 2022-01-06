@@ -147,7 +147,7 @@ class EmploymentHistory extends PureComponent {
             style={{ color: 'blue', cursor: 'pointer', fontWeight: 500 }}
             onClick={() => this.viewProfile(changedBy?.userId)}
           >
-            {changedBy?.legalName}
+            {changedBy?.legalName} ({changedBy?.userId})
           </span>
         ),
       },
