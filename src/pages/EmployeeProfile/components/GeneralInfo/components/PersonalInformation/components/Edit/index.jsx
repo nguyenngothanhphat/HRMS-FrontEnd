@@ -241,10 +241,9 @@ class Edit extends PureComponent {
       personalEmail = '',
       Blood = '',
       maritalStatus = '',
-      nationaltly = '',
+      nationality = '',
       linkedIn = '',
       _id: id = '',
-      nationality = '',
     } = generalDataTemp;
     const payloadChanges = {
       id,
@@ -253,10 +252,9 @@ class Edit extends PureComponent {
       Blood,
       maritalStatus,
       linkedIn,
-      nationaltly,
+      nationality,
       residentAddress,
       currentAddress,
-      nationality,
       tenantId: tenantCurrentEmployee,
     };
     return payloadChanges;
@@ -271,7 +269,7 @@ class Edit extends PureComponent {
       'Blood',
       'maritalStatus',
       'linkedIn',
-      'nationaltly',
+      'nationality',
       'residentAddress',
       'currentAddress',
     ];
@@ -384,7 +382,7 @@ class Edit extends PureComponent {
       personalEmail = '',
       Blood = '',
       maritalStatus = '',
-      nationaltly = '',
+      nationality = '',
       residentAddress: {
         addressLine1: r_Addressline1 = '',
         addressLine2: r_Addressline2 = '',
@@ -416,7 +414,7 @@ class Edit extends PureComponent {
             personalEmail,
             Blood,
             maritalStatus,
-            nationaltly,
+            nationality,
           }}
           onValuesChange={(changedValues) => this.handleChange(changedValues)}
           onFinish={this.handleSave}
@@ -465,7 +463,7 @@ class Edit extends PureComponent {
                 <Option value="Rather not mention">Rather not mention</Option>
               </Select>
             </Form.Item>
-            <Form.Item label="Nationality" name="nationaltly">
+            <Form.Item label="Nationality" name="nationality">
               <Input className={styles.inputForm} />
             </Form.Item>
             <div className={styles.addressTitle}>Permanent Address</div>

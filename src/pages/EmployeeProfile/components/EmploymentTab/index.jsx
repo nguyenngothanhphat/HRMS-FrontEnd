@@ -109,7 +109,7 @@ class EmploymentTab extends Component {
       const payload = {
         title: data.stepThree.title || null,
         manager: data.stepThree.reportTo || null,
-        reasonChange: '',
+        reasonChange: data.stepSeven.reasonChange || '',
         reportees: data.stepThree.reportees || null,
         location: data.stepTwo.wLocation || null,
         employeeType: data.stepTwo.employment || null,
@@ -136,7 +136,7 @@ class EmploymentTab extends Component {
     const { current } = this.state;
     if (msg === 'STOP') {
       this.setState({ current: 0 });
-    } else if (current === 5) {
+    } else if (current === 6) {
       this.setState({ submitted: true });
       this.setState({ current: 0 });
       this.setState({ isChanging: false });
@@ -230,13 +230,13 @@ class EmploymentTab extends Component {
           )}
           {isChanging ? (
             <div className={styles.footer}>
-              <div>{current + 1}/6 steps</div>
+              <div>{current + 1}/7 steps</div>
               <div className={styles.buttons}>
                 <Button onClick={this.previousTab} type="text">
                   {current > 0 ? 'Back' : null}
                 </Button>
                 <Button onClick={this.nextTab} type="primary">
-                  {current === 5 ? 'Submit' : 'Continue'}
+                  {current === 6 ? 'Submit' : 'Continue'}
                 </Button>
               </div>
             </div>
