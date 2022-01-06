@@ -49,9 +49,10 @@ class EmploymentHistory extends PureComponent {
         manager: item?.manager?.generalInfo?.legalName || item?.manager?.generalInfo?.firstName,
       },
       effectiveDate: moment(item?.effectiveDate).locale('en').format('Do MMM YYYY'),
-      changedBy: item?.changeBy?.generalInfo?.legalName || '',
+      changedBy: item?.changeByEmployee?.generalInfo?.legalName || '',
       changedDate: moment(item?.changeDate).locale('en').format('Do MMM YYYY'),
       action: item?.takeEffect === 'WILL_UPDATE' ? 'Revoke' : '',
+      reason: item?.reasonChange,
       id: item?._id,
     }));
 
@@ -136,6 +137,7 @@ class EmploymentHistory extends PureComponent {
         dataIndex: 'changedBy',
         key: 'changedBy',
         align: 'left',
+        render: (changedBy) => <span style={{color: 'blue'}}>{changedBy}</span>,
       },
       {
         title: 'Changed Reason',

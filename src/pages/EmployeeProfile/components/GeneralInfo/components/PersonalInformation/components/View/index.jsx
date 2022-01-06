@@ -127,7 +127,7 @@ class View extends PureComponent {
       { label: 'Personal Email', value: dataAPI.personalEmail },
       { label: checkVisible ? 'Blood Group' : null, value: dataAPI.Blood },
       { label: checkVisible ? 'Marital Status' : null, value: dataAPI.maritalStatus },
-      { label: 'Nationality', value: dataAPI.nationality },
+      { label: 'Nationality', value: dataAPI.nationaltly },
       {
         label: checkVisible ? 'Residence Address' : null,
         value: this.formatAddress(

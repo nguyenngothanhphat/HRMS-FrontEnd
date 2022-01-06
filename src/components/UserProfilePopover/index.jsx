@@ -1,6 +1,7 @@
 import { Col, Popover, Row } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
+import moment from 'moment';
 import CloseX from '@/assets/dashboard/closeX.svg';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 
@@ -21,7 +22,7 @@ const UserProfilePopover = (props) => {
     managerInfo = {},
   } = data;
 
-  const { avatar = '' } = generalInfo || {};
+  const { avatar = '', personalNumber='' } = generalInfo || {};
 
   const [showPopover, setShowPopover] = useState(false);
 
@@ -55,7 +56,7 @@ const UserProfilePopover = (props) => {
       },
       {
         label: 'Mobile',
-        value: workNumber,
+        value: personalNumber || workNumber,
       },
       {
         label: 'Email id',
@@ -67,7 +68,7 @@ const UserProfilePopover = (props) => {
       },
       {
         label: 'Local Time',
-        value: '',
+        value: `${moment().locale('en').format('DD/MM/YYYY')} | ${moment().format('HH:mm a')}` || '',
       },
     ];
 

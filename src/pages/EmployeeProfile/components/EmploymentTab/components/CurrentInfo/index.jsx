@@ -9,14 +9,14 @@ const CurrentInfo = (props) => {
   const {
     title,
     joinDate = '',
-    initialJoiningDate = '',
+    initialJoinDate = '',
     location,
     employeeType = {},
+    empTypeOther = '',
     manager,
     titleInfo = {},
     // compensation = {},
     department = {},
-    empTypeOther = '',
   } = employeeProfile?.originData?.employmentData || {};
 
   const managerInfo = {
@@ -35,7 +35,7 @@ const CurrentInfo = (props) => {
 
   const getInitialJoiningDate = () => {
     let value = '';
-    if (initialJoiningDate) value = initialJoiningDate;
+    if (initialJoinDate) value = initialJoinDate;
     else {
       value = joinDate;
     }
@@ -50,7 +50,7 @@ const CurrentInfo = (props) => {
     joiningDate: joinDate ? moment(joinDate).locale('en').format('Do MMMM YYYY') : '',
     location: location?.name || '',
     employmentType: employeeType?.name || '',
-    employeeType: empTypeOther, // what is this?
+    employeeType: empTypeOther || '', // what is this?
     manager:
       manager && manager?.generalInfo ? (
         <UserProfilePopover placement="rightBottom" data={managerInfo}>
