@@ -49,7 +49,7 @@ class EmploymentHistory extends PureComponent {
         manager: item?.manager?.generalInfo?.legalName || item?.manager?.generalInfo?.firstName,
       },
       effectiveDate: moment(item?.effectiveDate).locale('en').format('Do MMM YYYY'),
-      changedBy: item?.changeByEmployee?.generalInfo?.legalName || '',
+      changedBy: item?.changeByEmployee?.generalInfo || '',
       changedDate: moment(item?.changeDate).locale('en').format('Do MMM YYYY'),
       action: item?.takeEffect === 'WILL_UPDATE' ? 'Revoke' : '',
       reason: item?.reasonChange,
@@ -59,6 +59,11 @@ class EmploymentHistory extends PureComponent {
     this.setState({
       expandData: newData,
     });
+  };
+
+  viewProfile = (id) => {
+    const url = `/directory/employee-profile/${id}`;
+    window.open(url, '_blank');
   };
 
   generateColumns = () => {
@@ -137,7 +142,14 @@ class EmploymentHistory extends PureComponent {
         dataIndex: 'changedBy',
         key: 'changedBy',
         align: 'left',
-        render: (changedBy) => <span style={{color: 'blue'}}>{changedBy}</span>,
+        render: (changedBy) => (
+          <span
+            style={{ color: 'blue', cursor: 'pointer', fontWeight: 500 }}
+            onClick={() => this.viewProfile(changedBy?.userId)}
+          >
+            {changedBy?.legalName}
+          </span>
+        ),
       },
       {
         title: 'Changed Reason',

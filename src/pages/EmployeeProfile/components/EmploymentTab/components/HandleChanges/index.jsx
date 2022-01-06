@@ -8,6 +8,7 @@ import ThirdStep from './components/ThirdStep';
 import FourthStep from './components/FourthStep';
 import FifthStep from './components/FifthStep';
 import SixthStep from './components/SixthStep';
+import SeventhStep from './components/SeventhStep';
 
 @connect(({ employeeProfile, user, locationSelection: { listLocationsByCompany = [] } = {} }) => ({
   employeeProfile,
@@ -18,7 +19,7 @@ class HandleChanges extends PureComponent {
   constructor(props) {
     super(props);
     const { user, employeeProfile } = this.props;
-    const {currentUser} = user || {};
+    const { currentUser } = user || {};
     this.state = {
       radio: 2,
       changeData: {
@@ -49,6 +50,9 @@ class HandleChanges extends PureComponent {
           toEmployee: false,
           toManager: false,
           notifyTo: [],
+        },
+        stepSeven: {
+          reasonChange: '',
         },
       },
     };
@@ -134,14 +138,14 @@ class HandleChanges extends PureComponent {
 
   onChange = (value, type) => {
     const { changeData } = this.state;
-    const { dispatch, employeeProfile } = this.props;
+    const { dispatch, employeeProfile, listLocationsByCompany = [] } = this.props;
     switch (type) {
       case 'title':
         this.setState({
           changeData: {
             ...changeData,
-            stepThree: { ...changeData.stepThree, title: value[1] },
-            newTitle: value[0],
+            stepThree: { ...changeData.stepThree, title: value },
+            newTitle: employeeProfile.listTitleByDepartment.find((x) => x._id === value)?.name,
           },
         });
         break;
@@ -149,8 +153,8 @@ class HandleChanges extends PureComponent {
         this.setState({
           changeData: {
             ...changeData,
-            stepTwo: { ...changeData.stepTwo, wLocation: value[1] },
-            newLocation: value[0],
+            stepTwo: { ...changeData.stepTwo, wLocation: value },
+            newLocation: listLocationsByCompany.find((x) => x._id === value)?.name,
           },
         });
         break;
@@ -158,8 +162,8 @@ class HandleChanges extends PureComponent {
         this.setState({
           changeData: {
             ...changeData,
-            stepTwo: { ...changeData.stepTwo, employment: value[1] },
-            newEmploymentType: value[0],
+            stepTwo: { ...changeData.stepTwo, employment: value },
+            newEmploymentType: employeeProfile.employeeTypes.find((x) => x._id === value)?.name,
           },
         });
         break;
@@ -192,8 +196,8 @@ class HandleChanges extends PureComponent {
             ...changeData,
             stepTwo: {
               ...changeData.stepTwo,
-              department: value[1],
-              newDepartment: value[0],
+              department: value,
+              newDepartment: employeeProfile.departments.find((x) => x._id === value)?.name,
               title: '',
             },
             newTitle: '',
@@ -203,7 +207,7 @@ class HandleChanges extends PureComponent {
           type: 'employeeProfile/fetchTitleByDepartment',
           payload: {
             company: employeeProfile?.originData?.compensationData?.company,
-            department: value[1],
+            department: value,
           },
         });
         break;
@@ -211,8 +215,9 @@ class HandleChanges extends PureComponent {
         this.setState({
           changeData: {
             ...changeData,
-            stepThree: { ...changeData.stepThree, reportTo: value[1] },
-            newManager: value[0],
+            stepThree: { ...changeData.stepThree, reportTo: value },
+            newManager: employeeProfile.employees.find((x) => x._id === value)?.generalInfo
+              ?.legalName,
           },
         });
         break;
@@ -234,6 +239,15 @@ class HandleChanges extends PureComponent {
           changeData: {
             ...changeData,
             stepFive: { ...changeData.stepThree, notifyTo: value },
+          },
+        });
+        break;
+
+      case 'reasonChange': // seventh step
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepSeven: { ...changeData.stepSeven, reasonChange: value },
           },
         });
         break;
@@ -290,6 +304,13 @@ class HandleChanges extends PureComponent {
         ) : null}
         {current === 5 ? (
           <SixthStep name={data.name} currentData={data} changeData={changeData} />
+        ) : null}
+        {current === 6 ? (
+          <SeventhStep
+            changeData={changeData}
+            onChange={this.onChange}
+            fetchedState={employeeProfile}
+          />
         ) : null}
       </div>
     );
