@@ -653,7 +653,7 @@ const ModalAddInfo = (props) => {
           );
         }
 
-        if (location.headQuarterAddress.country === 'USA') {
+        if (location.headQuarterAddress.country === 'US') {
           return (
             <Form
               form={form}
@@ -1064,7 +1064,7 @@ const ModalAddInfo = (props) => {
             </Form>
           );
         }
-        if (location.headQuarterAddress.country === 'USA') {
+        if (location.headQuarterAddress.country === 'US') {
           return (
             <Form
               form={form}
