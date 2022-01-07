@@ -10,6 +10,7 @@ import {
   setTenantId,
   setCurrentCompany,
   getIsSigninGoogle,
+  setFirstChangePassword,
 } from '@/utils/authority';
 
 import { checkPermissions, getCurrentUserRoles } from '@/utils/permissions';
@@ -41,7 +42,7 @@ const UserModel = {
         const response = yield call(queryCurrent, payload);
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) {
-          history.replace('/login');
+          history.push('/login');
           throw response;
         }
 
@@ -60,22 +61,20 @@ const UserModel = {
         const candidateLinkMode = localStorage.getItem('candidate-link-mode') === 'true';
         const isSigninGoogle = getIsSigninGoogle();
 
-        if (isFirstLogin && !candidateLinkMode && !isSigninGoogle) {
-          history.replace('/first-change-password');
-          return {};
-        }
-
         const isCandidate = formatRole.indexOf('candidate') > -1;
         const isOnlyCandidate = isCandidate && formatRole.length === 1;
+
+        if (isFirstLogin && !candidateLinkMode && !isSigninGoogle && !isCandidate) {
+          history.replace('/first-change-password');
+          return 1;
+        }
 
         if (isOnlyCandidate) {
           setAuthority(...formatRole);
           setTenantId(candidate.tenant);
           setCurrentCompany(candidate.company);
           setCurrentLocation(candidate.location);
-          if (!window.location.href.includes('candidate')) {
-            history.replace('/candidate-portal');
-          }
+
           yield put({
             type: 'saveCurrentUser',
             payload: {
@@ -84,7 +83,14 @@ const UserModel = {
               isSwitchingRole,
             },
           });
-          return {};
+
+          if (isFirstLogin) {
+            setFirstChangePassword(true);
+            history.replace('/candidate-change-password');
+          } else if (!window.location.href.includes('candidate')) {
+            history.replace('/candidate-portal');
+          }
+          return 1;
         }
 
         // if there's no tenantId and companyId, return to control panel

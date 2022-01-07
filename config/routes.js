@@ -71,6 +71,16 @@ const routes = [
     ],
   },
   {
+    path: '/candidate',
+    component: '../layouts/TerralogicCandidateLoginLayout',
+    routes: [
+      {
+        path: '/candidate',
+        component: './Login',
+      },
+    ],
+  },
+  {
     path: '/forgot-password',
     component: '../layouts/AuthLayout',
     routes: [
@@ -121,6 +131,10 @@ const routes = [
   },
   {
     path: '/candidate-portal',
+    redirect: '/candidate-portal/dashboard',
+  },
+  {
+    path: '/candidate-portal',
     component: '../layouts/CandidatePortalLayout',
     authority: [CANDIDATE],
     routes: [
@@ -145,6 +159,21 @@ const routes = [
         hideInMenu: true,
         component: './CandidatePortal/components/Candidate',
         authority: [CANDIDATE],
+      },
+    ],
+  },
+  {
+    path: '/candidate-change-password',
+    component: '../layouts/CandidatePortalLayout',
+    authority: [CANDIDATE],
+    routes: [
+      // for change password
+      {
+        path: '/candidate-change-password',
+        name: 'Candidate Change Password',
+        hideInMenu: true,
+        authority: [CANDIDATE],
+        component: './CandidateChangePassword',
       },
     ],
   },
@@ -717,12 +746,12 @@ const routes = [
             name: 'projectManagement',
             icon: '/assets/images/menuIcons/project.svg',
             component: './ProjectManagement',
-            authority: ['P_PROJECT_MANAGEMENT_VIEW', 'M_PROJECT_MANAGEMENT_VIEW'],
+            authority: ['P_PROJECT_MANAGEMENT_VIEW', 'M_PROJECT_MANAGEMENT_VIEW', OWNER],
           },
           {
             path: '/project-management/:tabName',
             component: './ProjectManagement',
-            authority: ['P_PROJECT_MANAGEMENT_VIEW', 'M_PROJECT_MANAGEMENT_VIEW'],
+            authority: ['P_PROJECT_MANAGEMENT_VIEW', 'M_PROJECT_MANAGEMENT_VIEW', OWNER],
             hideInMenu: true,
           },
           {
@@ -730,13 +759,13 @@ const routes = [
             hideInMenu: true,
             name: 'projectManagement.viewProject',
             component: './ProjectManagement/components/ProjectInformation',
-            authority: ['P_PROJECT_MANAGEMENT_VIEW', 'M_PROJECT_MANAGEMENT_VIEW'],
+            authority: ['P_PROJECT_MANAGEMENT_VIEW', 'M_PROJECT_MANAGEMENT_VIEW', OWNER],
           },
           {
             path: '/project-management/list/:reId/:tabName',
             hideInMenu: true,
             component: './ProjectManagement/components/ProjectInformation',
-            authority: ['P_PROJECT_MANAGEMENT_VIEW', 'M_PROJECT_MANAGEMENT_VIEW'],
+            authority: ['P_PROJECT_MANAGEMENT_VIEW', 'M_PROJECT_MANAGEMENT_VIEW', OWNER],
           },
           {
             path: '/ticket-management/detail/:id',
