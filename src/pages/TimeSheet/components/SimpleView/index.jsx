@@ -14,6 +14,10 @@ const { TabPane } = Tabs;
 
 const SimpleView = (props) => {
   const { permissions = {}, tabName = '', showMyTimeSheet = true } = props;
+
+  // from redirect page
+  const { currentDateProp = '' } = props;
+
   const [navToTimeoffModalVisible, setNavToTimeoffModalVisible] = useState(false);
 
   const requestLeave = () => {
@@ -65,7 +69,7 @@ const SimpleView = (props) => {
         >
           {showMyTimeSheet && (
             <TabPane tab="My Timesheet" key={TAB_NAME.MY}>
-              <MyTimeSheet />
+              <MyTimeSheet currentDateProp={currentDateProp} />
             </TabPane>
           )}
           {viewReportTimesheet && (

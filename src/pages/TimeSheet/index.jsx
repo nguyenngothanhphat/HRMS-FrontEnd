@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { history, connect } from 'umi';
-import SimpleView from './components/SimpleView';
+import moment from 'moment';
+import React, { useEffect } from 'react';
+import { connect } from 'umi';
+import { TIMESHEET_DATE_FORMAT } from '@/utils/dashboard';
 import ComplexView from './components/ComplexView';
+import SimpleView from './components/SimpleView';
 
 const TimeSheet = (props) => {
   const {
     match: { params: { tabName = '' } = {} },
+    location: { state: { currentDateProp = '' } = {} } = {},
     dispatch,
     currentUser: {
       employee: { title: { timeSheetRequired = true, timeSheetAdvancedMode = false } = {} } = {} ||
@@ -23,9 +26,21 @@ const TimeSheet = (props) => {
   }, []);
 
   if (!timeSheetAdvancedMode) {
-    return <SimpleView tabName={tabName} showMyTimeSheet={timeSheetRequired} />;
+    return (
+      <SimpleView
+        tabName={tabName}
+        showMyTimeSheet={timeSheetRequired}
+        currentDateProp={moment(currentDateProp, TIMESHEET_DATE_FORMAT)}
+      />
+    );
   }
-  return <ComplexView tabName={tabName} showMyTimeSheet={timeSheetRequired} />;
+  return (
+    <ComplexView
+      tabName={tabName}
+      showMyTimeSheet={timeSheetRequired}
+      currentDateProp={moment(currentDateProp, TIMESHEET_DATE_FORMAT)}
+    />
+  );
 };
 export default connect(({ user: { currentUser = {}, permissions = [] } = {} }) => ({
   currentUser,
