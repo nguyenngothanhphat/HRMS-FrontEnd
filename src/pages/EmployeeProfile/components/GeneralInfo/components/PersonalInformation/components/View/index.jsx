@@ -127,9 +127,9 @@ class View extends PureComponent {
       { label: 'Personal Email', value: dataAPI.personalEmail },
       { label: checkVisible ? 'Blood Group' : null, value: dataAPI.Blood },
       { label: checkVisible ? 'Marital Status' : null, value: dataAPI.maritalStatus },
-      { label: 'Nationality', value: dataAPI.nationality },
+      { label: checkVisible ? 'Nationality' : null, value: dataAPI.nationality },
       {
-        label: checkVisible ? 'Residence Address' : null,
+        label: checkVisible ? 'Permanent Address' : null,
         value: this.formatAddress(
           r_Addressline1,
           r_Addressline2,
@@ -140,7 +140,7 @@ class View extends PureComponent {
         ),
       },
       {
-        label: 'Current Address',
+        label: checkVisible ? 'Current Address' : null,
         value: this.formatAddress(
           c_Addressline1,
           c_Addressline2,

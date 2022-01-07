@@ -218,7 +218,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
       ]);
 
   // View others personal information
-  const indexViewOthersInformaton = isAdmin ? 1 : isAuthorized(permissionList, [HR, HR_MANAGER]);
+  const indexViewOtherInformation = isAdmin ? 1 : isAuthorized(permissionList, [HR, HR_MANAGER]);
 
   // Directory Page - Filter - Display location
   const findIndexShowLocationActive = isAuthorized(permissionList, [
@@ -509,7 +509,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     updateAvatarEmployee: indexUpdateAvatar,
     viewAvatarEmployee: indexViewAvatar,
     editShowAvatarEmployee: indexEditShowAvatar,
-    viewOtherInformation: indexViewOthersInformaton,
+    viewOtherInformation: indexViewOtherInformation,
 
     // onboarding
     viewOnboardingSettingTab: indexOnboardingSettings,
