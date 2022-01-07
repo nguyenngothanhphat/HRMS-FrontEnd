@@ -21,6 +21,8 @@ const { Option } = Select;
     loadingLocationsList: loading.effects['employeeProfile/fetchLocationsByCompany'],
     loadingTitleList: loading.effects['employeeProfile/fetchTitleByDepartment'],
     loadingCompensationList: loading.effects['employeeProfile/fetchCompensationList'],
+    loadingFetchEmployeeList:
+      loading.effects['employeeProfile/fetchEmployeeListSingleCompanyEffect'],
     listLocationsByCompany,
 
     // loadingEmployeeTypes: loading.effects['employeeProfile/fetchEmployeeTypes'],
@@ -97,7 +99,16 @@ class EditCurrentInfo extends PureComponent {
   handleSave = (values, id) => {
     const { dispatch, employeeProfile, tenantCurrentEmployee = '' } = this.props;
     const { company = '' } = employeeProfile.originData.employmentData;
-    const { title, joinDate, initialJoinDate, location, empTypeOther, employeeType, manager, department } = values;
+    const {
+      title,
+      joinDate,
+      initialJoinDate,
+      location,
+      empTypeOther,
+      employeeType,
+      manager,
+      department,
+    } = values;
     const payload = {
       id,
       title,
@@ -125,11 +136,12 @@ class EditCurrentInfo extends PureComponent {
 
     const {
       employeeProfile,
-      employeeProfile: { employees = [], departments = [], listGrades = [] },
+      employeeProfile: { employeeList = [], departments = [], listGrades = [] },
       loadingTitleList,
       loadingLocationsList,
       handleCancel = () => {},
       listLocationsByCompany,
+      loadingFetchEmployeeList = false,
     } = this.props;
     // console.log(employees)
     // const filteredList = employees.filter((item) => item._id !== employeeProfile.idCurrentEmployee);
@@ -174,7 +186,9 @@ class EditCurrentInfo extends PureComponent {
             joinDate: joinDate && moment(joinDate).locale('en'),
             location: location._id,
             employeeType: employeeType._id,
-            initialJoinDate: initialJoinDate ? initialJoinDate && moment(initialJoinDate).locale('en') : joinDate && moment(joinDate).locale('en'),
+            initialJoinDate: initialJoinDate
+              ? initialJoinDate && moment(initialJoinDate).locale('en')
+              : joinDate && moment(joinDate).locale('en'),
             empTypeOther,
             department: department?._id,
             manager: (manager && manager._id) || null,
@@ -342,8 +356,10 @@ class EditCurrentInfo extends PureComponent {
                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
               defaultValue={manager._id}
+              loading={loadingFetchEmployeeList}
+              disabled={loadingFetchEmployeeList}
             >
-              {employees.map((item, index) => {
+              {employeeList.map((item, index) => {
                 return (
                   <Option key={`${index + 1}`} value={item._id}>
                     {item?.generalInfo?.legalName}

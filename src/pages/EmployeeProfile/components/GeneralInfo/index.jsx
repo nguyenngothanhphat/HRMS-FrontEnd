@@ -1,16 +1,16 @@
+import { Button, Skeleton } from 'antd';
 import React, { Component } from 'react';
-import { Skeleton, Modal, Button } from 'antd';
 import { connect } from 'umi';
-import EmployeeInformation from './components/EmployeeInformation';
-import ProfessionalAcademicBackground from './components/ProfessionalAcademicBackground';
-import PersonalInformation from './components/PersonalInformation';
-import PassportDetails from './components/PassportDetails';
-import VisaDetails from './components/VisaDetails';
-import EmergencyContact from './components/EmergencyContactDetails';
-import imageAddSuccess from '@/assets/resource-management-success.svg';
-import styles from './index.less';
-import ModalAddInfo from '../ModalAddInfo/index';
 import CommonModal from '@/components/CommonModal';
+import imageAddSuccess from '@/assets/resource-management-success.svg';
+import ModalAddInfo from '../ModalAddInfo/index';
+import EmergencyContact from './components/EmergencyContactDetails';
+import EmployeeInformation from './components/EmployeeInformation';
+import PassportDetails from './components/PassportDetails';
+import PersonalInformation from './components/PersonalInformation';
+import ProfessionalAcademicBackground from './components/ProfessionalAcademicBackground';
+import VisaDetails from './components/VisaDetails';
+import styles from './index.less';
 
 @connect(
   ({
@@ -60,7 +60,7 @@ class GeneralInfo extends Component {
       isNewComer,
       visibleSuccess,
     } = this.props;
-    const checkVisible = profileOwner || permissions.viewOtherInformation !== -1;
+    const checkOtherInformationVisible = profileOwner || permissions.viewOtherInformation !== -1;
     const visible = isNewComer && currentUserId === idCurrentEmployee;
     // const visible = currentUserId === idCurrentEmployee;
     if (loadingGeneral)
@@ -79,15 +79,11 @@ class GeneralInfo extends Component {
             <VisaDetails profileOwner={profileOwner} permissions={permissions} />
           </>
         )}
-        {checkVisible ? (
+        {checkOtherInformationVisible && (
           <EmergencyContact permissions={permissions} profileOwner={profileOwner} />
-        ) : (
-          ''
         )}
-        {checkVisible ? (
+        {checkOtherInformationVisible && (
           <ProfessionalAcademicBackground permissions={permissions} profileOwner={profileOwner} />
-        ) : (
-          ''
         )}
         <ModalAddInfo visible={visible} />
         <CommonModal

@@ -126,7 +126,7 @@ class View extends PureComponent {
 
     const dummyData = [
       { label: 'Passport Number', value: '' },
-      { label: 'Issued Country', value: '' },
+      { label: 'Issued By Country', value: '' },
       { label: 'Issued On', value: '' },
       { label: 'Valid Till', value: '' },
     ];

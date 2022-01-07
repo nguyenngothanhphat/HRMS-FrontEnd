@@ -1,17 +1,20 @@
 import { Tabs } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import ManagerView from './components/ManagerView';
 import MyTimeSheet from './components/MyTimeSheet';
 import Settings from './components/Settings';
 import styles from './index.less';
+import ModalImage from '@/assets/timeSheet/modalImage1.png';
+import ActionModal from '@/pages/TimeSheet/components/ActionModal';
 import { TAB_NAME } from '@/utils/timeSheet';
 
 const { TabPane } = Tabs;
 
 const SimpleView = (props) => {
   const { permissions = {}, tabName = '', showMyTimeSheet = true } = props;
+  const [navToTimeoffModalVisible, setNavToTimeoffModalVisible] = useState(false);
 
   const requestLeave = () => {
     history.push('/time-off/overview/personal-timeoff/new');
@@ -19,7 +22,7 @@ const SimpleView = (props) => {
 
   const options = () => {
     return (
-      <div className={styles.requestLeave} onClick={requestLeave}>
+      <div className={styles.requestLeave} onClick={() => setNavToTimeoffModalVisible(true)}>
         <span className={styles.title}>Request Leave</span>
       </div>
     );
@@ -76,6 +79,19 @@ const SimpleView = (props) => {
             </TabPane>
           )}
         </Tabs>
+        <ActionModal
+          visible={navToTimeoffModalVisible}
+          onClose={() => setNavToTimeoffModalVisible(false)}
+          buttonText="Continue"
+          width={400}
+          onFinish={requestLeave}
+        >
+          <img src={ModalImage} alt="" />
+          <span style={{ textAlign: 'center' }}>
+            You are being taken to the timeoff page - your leave details will be automatically
+            updated on the timesheet once it has been applied
+          </span>
+        </ActionModal>
       </PageContainer>
     </div>
   );

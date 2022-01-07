@@ -14,14 +14,6 @@ import imageAddSuccess from '@/assets/resource-management-success.svg';
 import styles from './index.less';
 import CommonModal from '@/components/CommonModal';
 
-const steps = [
-  { title: 'Effective Date', content: 'Effective Date' },
-  { title: 'Compensation Details', content: 'Compensation Details' },
-  { title: 'Work Group', content: 'Work Group' },
-  { title: 'Who to Notify', content: 'Who to Notify' },
-  { title: 'Review Changes', content: 'Review Changes' },
-];
-
 @connect(({ employeeProfile, user: { permissions, currentUser = {} } }) => ({
   employeeProfile,
   currentUser,
@@ -168,7 +160,7 @@ class EmploymentTab extends Component {
       <div>
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab__title}>
-            <span className={styles.title}>Employment & Compensation</span>
+            <span className={styles.title}>Employment Details</span>
             {isEdit ? (
               <div style={{ display: 'flex', alignItems: 'center' }} />
             ) : (

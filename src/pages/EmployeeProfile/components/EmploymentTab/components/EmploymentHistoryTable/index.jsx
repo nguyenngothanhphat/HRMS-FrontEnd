@@ -10,9 +10,10 @@ import styles from './index.less';
   employeeProfile,
   loading:
     loading.effects['employeeProfile/addNewChangeHistory'] ||
-    loading.effects['employeeProfile/fetchCompensation'] ||
-    loading.effects['employeeProfile/fetchCompensationList'] ||
-    loading.effects['employeeProfile/revokeHistory'],
+    // loading.effects['employeeProfile/fetchCompensation'] ||
+    // loading.effects['employeeProfile/fetchCompensationList'] ||
+    loading.effects['employeeProfile/revokeHistory'] ||
+    loading.effects['employeeProfile/fetchChangeHistories'],
 }))
 class EmploymentHistory extends PureComponent {
   constructor(props) {
@@ -147,7 +148,7 @@ class EmploymentHistory extends PureComponent {
             style={{ color: 'blue', cursor: 'pointer', fontWeight: 500 }}
             onClick={() => this.viewProfile(changedBy?.userId)}
           >
-            {changedBy?.legalName} ({changedBy?.userId})
+            {changedBy?.legalName} {changedBy?.userId ? `(${changedBy?.userId})` : ''}
           </span>
         ),
       },

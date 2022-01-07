@@ -11,7 +11,7 @@ const WorkInProgress = () => {
         <img src={Launcher} alt="" />
       </div>
       <span className={styles.description}>
-        We are going to launch this page very sooner.
+        We are going to launch this page very soon.
         <br /> Stay tuned.
       </span>
       <Link to="/" className={styles.backToHome}>

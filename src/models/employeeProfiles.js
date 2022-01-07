@@ -23,7 +23,6 @@ import {
   getLocationList,
   getEmployeeTypeList,
   getDepartmentList,
-  getEmployeeList,
   addChangeHistory,
   getPRReport,
   getDocumentCategories,
@@ -141,7 +140,7 @@ const employeeProfile = {
     revoke: [],
     visibleSuccess: false,
     employeeList: [], // single company
-    listGrades: []
+    listGrades: [],
   },
   effects: {
     *fetchEmployeeIdByUserId({ payload }, { call, put }) {
@@ -394,17 +393,6 @@ const employeeProfile = {
         const departments = temp.filter((item, index) => temp.indexOf(item) === index);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { departments } });
-      } catch (error) {
-        dialog(error);
-      }
-    },
-    *fetchEmployees({ payload = {} }, { call, put }) {
-      try {
-        const response = yield call(getEmployeeList, payload);
-        const { statusCode, data } = response;
-        const employees = data.filter((item) => item.generalInfo);
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { employees } });
       } catch (error) {
         dialog(error);
       }
@@ -788,7 +776,6 @@ const employeeProfile = {
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { employmentData: data } });
-        const { location = {}, department = {} } = data;
 
         const tenantCurrentEmployee = data.tenant;
         const companyCurrentEmployee = data.company?._id;
@@ -809,17 +796,11 @@ const employeeProfile = {
 
         // fetch employees to show in "select manager" of employee
         yield put({
-          type: 'fetchEmployees',
+          type: 'fetchEmployeeListSingleCompanyEffect',
           payload: {
-            company: [{ _id: companyCurrentEmployee, tenant: tenantCurrentEmployee }],
-            location: [
-              {
-                state: [location?.headQuarterAddress?.state],
-                country: location?.headQuarterAddress?.country,
-              },
-            ],
             status: ['ACTIVE'],
-            department: [department?.name],
+            company: companyCurrentEmployee,
+            tenantId: tenantCurrentEmployee,
           },
         });
       } catch (error) {
