@@ -8,10 +8,15 @@ export async function getListTicket(payload) {
   });
 }
 export async function getListMyTicket(payload) {
-  return request('/api/leaverequesttenant/get-my-request', {
-    method: 'POST',
-    data: payload,
-  });
+  return request(
+    '/api-ticket/tickettenant/list',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.TICKET_API,
+  );
 }
 export async function aprovalLeaveRequest(payload) {
   return request('/api/leaverequesttenant/reporting-manager-approve', {
@@ -68,6 +73,17 @@ export async function getMyTeam(payload) {
     data: payload,
   });
 }
+export async function updateTicket(payload) {
+  return request(
+    `/api-ticket/tickettenant/update`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.TICKET_API,
+  );
+}
 
 // TIMESHEET
 export async function getMyTimesheet(payload, params) {
@@ -88,4 +104,28 @@ export async function getListMyTeam(payload) {
     method: 'POST',
     data: payload,
   });
+}
+export async function getListEmployee(payload) {
+  return request('/api/employeetenant/list-by-single-company', {
+    method: 'POST',
+    data: payload,
+  });
+}
+// UPLOADFILE
+export async function uploadFile(data) {
+  return request('/api/attachments/upload', {
+    method: 'POST',
+    data,
+  });
+}
+export async function addNotes(payload) {
+  return request(
+    `/api-ticket/tickettenant/chat`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.TICKET_API,
+  );
 }

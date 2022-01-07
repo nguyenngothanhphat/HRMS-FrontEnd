@@ -2,6 +2,7 @@ import { Row, Col } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
+
 import styles from './index.less';
 import TicketDetailModal from '../TicketDetailModal';
 
@@ -11,7 +12,13 @@ const TicketTag = (props) => {
 
   // RENDER UI
   const renderTag = (item) => {
-    const { onDate = '', ticketID = '', status = '', type: { typeName = '' } = {} || {} } = item;
+    const {
+      created_at: onDate = '',
+      id: ticketID = '',
+      status = '',
+      request_type: typeName = '',
+    } = item;
+
     const dateTemp = moment(onDate).date();
     const monthTemp = moment(onDate).locale('en').format('MMM');
     return (
