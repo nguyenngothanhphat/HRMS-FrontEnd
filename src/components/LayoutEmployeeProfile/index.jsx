@@ -162,31 +162,29 @@ class CommonLayout extends PureComponent {
             </div>
           </div>
         </Affix>
-        {loadingFetchEmployee ? (
-          <Row className={s.viewRight} gutter={[24, 0]}>
-            <Col span={24}>
+
+        <Row xs={24} md={18} xl={20} gutter={[24, 24]} className={s.viewRight}>
+          <Col xl={isCompanyProfile ? 16 : 18} xs={24}>
+            {loadingFetchEmployee ? (
               <Skeleton />
-            </Col>
-          </Row>
-        ) : (
-          <Row xs={24} md={18} xl={20} gutter={[24, 24]} className={s.viewRight}>
-            <Col xl={isCompanyProfile ? 16 : 18} xs={24}>
-              {displayComponentActions || displayComponent}
-            </Col>
-            <Col xl={isCompanyProfile ? 8 : 6} xs={24}>
-              {isCompanyProfile ? (
-                <UploadLogoCompany />
-              ) : (
-                <ViewInformation
-                  permissions={permissions}
-                  profileOwner={profileOwner}
-                  employeeLocation={employeeLocation}
-                  handleClickOnActions={this.handleClickOnActions}
-                />
-              )}
-            </Col>
-          </Row>
-        )}
+            ) : (
+              <>{displayComponentActions || displayComponent}</>
+            )}
+          </Col>
+          <Col xl={isCompanyProfile ? 8 : 6} xs={24}>
+            {isCompanyProfile ? (
+              <UploadLogoCompany />
+            ) : (
+              <ViewInformation
+                permissions={permissions}
+                profileOwner={profileOwner}
+                employeeLocation={employeeLocation}
+                handleClickOnActions={this.handleClickOnActions}
+                loadingFetchEmployee={loadingFetchEmployee}
+              />
+            )}
+          </Col>
+        </Row>
       </div>
     );
   }
