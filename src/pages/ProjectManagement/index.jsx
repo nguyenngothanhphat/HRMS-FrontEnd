@@ -4,6 +4,7 @@ import { connect, history } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import Projects from './components/Projects';
 import styles from './index.less';
+import WorkInProgress from '@/components/WorkInProgress';
 
 const { TabPane } = Tabs;
 
@@ -45,7 +46,7 @@ const ProjectManagement = (props) => {
 
           {viewProjectSettingPermission && (
             <TabPane tab="Settings" key="settings">
-              Setting Pages
+              <WorkInProgress />
             </TabPane>
           )}
         </Tabs>

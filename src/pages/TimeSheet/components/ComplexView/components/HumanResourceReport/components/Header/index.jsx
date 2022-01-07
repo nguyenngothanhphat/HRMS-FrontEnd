@@ -63,7 +63,6 @@ const Header = (props) => {
           onPrevClick={onPrevClick}
           onNextClick={onNextClick}
           onChange={onDatePickerChange}
-          disabled
         />
       </div>
       <div className={styles.Header__middle}>{viewChangeComponent()}</div>

@@ -57,7 +57,10 @@ const WeeklyHeader = (props) => {
         <Button icon={<img src={AddIcon} alt="" />} onClick={() => setAddTaskModalVisible(true)}>
           Add Task
         </Button>
-        <Button onClick={() => setImportModalVisible(true)}>Import</Button>
+        {/* TEMPORARILY DISABLE FOR WEEKLY VIEW & MONTHLY VIEW FOR 15 JAN 2022 RELEASE  */}
+        <Button disabled onClick={() => setImportModalVisible(true)}>
+          Import
+        </Button>
       </div>
       <AddTaskModal
         visible={addTaskModalVisible}

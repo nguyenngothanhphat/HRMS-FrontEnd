@@ -1,8 +1,9 @@
 import React from 'react';
-import styles from './index.less';
+import WorkInProgress from '@/components/WorkInProgress';
+// import styles from './index.less';
 
 const Settings = () => {
-  return <div className={styles.Settings} />;
+  return <WorkInProgress />;
 };
 
 export default Settings;
