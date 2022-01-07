@@ -1,15 +1,14 @@
 import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
-import { PORTAL_TAB_NAME } from '@/utils/candidatePortal';
+import ChangePasswordBox from '@/components/ChangePasswordBox';
 import { getCurrentTenant } from '@/utils/authority';
-import Dashboard from './components/Dashboard';
-import Messages from './components/Messages';
-import WelcomeModal from './components/WelcomeModal';
+import { PORTAL_TAB_NAME } from '@/utils/candidatePortal';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
-const { DASHBOARD, MESSAGES, CHANGE_PASSWORD } = PORTAL_TAB_NAME;
+const { CHANGE_PASSWORD } = PORTAL_TAB_NAME;
+
 @connect(
   ({
     candidatePortal: { localStep, data, tempData } = {},
@@ -26,20 +25,9 @@ const { DASHBOARD, MESSAGES, CHANGE_PASSWORD } = PORTAL_TAB_NAME;
     loadingFetchCandidate: loading.effects['candidatePortal/fetchCandidateById'],
   }),
 )
-class CandidatePortal extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      openWelcomeModal: false,
-    };
-  }
-
+class CandidateChangePassword extends PureComponent {
   componentDidMount = async () => {
-    const {
-      dispatch,
-      candidate = '',
-      match: { params: { tabName = '' } = {} },
-    } = this.props;
+    const { dispatch, candidate = '' } = this.props;
 
     if (!dispatch || !getCurrentTenant() || !candidate?._id) {
       return;
@@ -77,66 +65,48 @@ class CandidatePortal extends PureComponent {
         },
       });
     }
+  };
 
-    // get welcome modal from localstorage
-    const openWelcomeModal = localStorage.getItem('openWelcomeModal');
-    if (openWelcomeModal !== 'false' && tabName !== CHANGE_PASSWORD) {
-      this.setState({
-        openWelcomeModal: true,
-      });
+  onFinish = async (values) => {
+    const { dispatch } = this.props;
+    const payload = {
+      oldPassword: values.currentPassword,
+      newPassword: values.newPassword,
+    };
+    const res = await dispatch({
+      type: 'changePassword/updatePassword',
+      payload,
+    });
+    if (res?.statusCode === 200) {
+      setTimeout(() => {
+        history.push(`/candidate-portal/dashboard`);
+      }, 1000);
     }
   };
 
-  handleWelcomeModal = (value) => {
-    this.setState({
-      openWelcomeModal: value,
-    });
-    localStorage.setItem('openWelcomeModal', value);
-  };
-
-  renderMessageTitle = () => {
-    const { unseenTotal = 0 } = this.props;
-    const addZeroToNumber = (number) => {
-      if (number < 10 && number >= 0) return `0${number}`.slice(-2);
-      return number;
-    };
-
-    return (
-      <span className={styles.messageTitle}>
-        Messages{' '}
-        {unseenTotal > 0 && (
-          <span className={styles.messageIndex}>{addZeroToNumber(unseenTotal)}</span>
-        )}
-      </span>
-    );
-  };
-
   render() {
-    const { openWelcomeModal } = this.state;
     const {
       match: { params: { tabName = '' } = {} },
     } = this.props;
 
     return (
-      <div className={styles.CandidatePortal}>
+      <div className={styles.CandidateChangePassword}>
         <Tabs
-          activeKey={tabName || 'dashboard'}
+          activeKey={tabName || 'change-password'}
           onChange={(key) => {
             history.push(`/candidate-portal/${key}`);
           }}
           destroyInactiveTabPane
         >
-          <TabPane tab="Dashboard" key={DASHBOARD}>
-            <Dashboard />
-          </TabPane>
-          <TabPane tab={this.renderMessageTitle()} key={MESSAGES}>
-            <Messages />
+          <TabPane tab="Change Password" key={CHANGE_PASSWORD}>
+            <div className={styles.content}>
+              <ChangePasswordBox onFinish={this.onFinish} />
+            </div>
           </TabPane>
         </Tabs>
-        <WelcomeModal visible={openWelcomeModal} onClose={() => this.handleWelcomeModal(false)} />
       </div>
     );
   }
 }
 
-export default CandidatePortal;
+export default CandidateChangePassword;

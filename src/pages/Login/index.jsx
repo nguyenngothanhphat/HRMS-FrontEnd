@@ -11,7 +11,6 @@ import { IS_TERRALOGIC_CANDIDATE_LOGIN, IS_TERRALOGIC_LOGIN } from '@/utils/logi
 
 @connect(({ loading, login: { messageError = '', urlGoogle = '', urlLollypop = '' } = {} }) => ({
   loading: loading.effects['login/login'],
-  loadingLoginThirdParty: loading.effects['login/loginThirdParty'],
   messageError,
   urlGoogle,
   urlLollypop,
@@ -74,14 +73,6 @@ class FormLogin extends Component {
         {formatMessage({ id: 'pages.login.signIn' })}
       </Button>
     );
-  };
-
-  responseGoogle = (response) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'login/loginThirdParty',
-      payload: response,
-    });
   };
 
   returnMessageValidationEmail = (messageError) => {

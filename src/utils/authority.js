@@ -35,14 +35,6 @@ export function setAuthority(authority) {
 
 export function removeLocalStorage() {
   localStorage.clear();
-
-  // localStorage.removeItem('Rolesname');
-  // localStorage.removeItem('currentCompanyId');
-  // localStorage.removeItem('tenantId');
-  // localStorage.removeItem('currentLocation');
-  // localStorage.removeItem('tenantCurrentEmployee');
-  // localStorage.removeItem('companyCurrentEmployee');
-  // localStorage.removeItem('idCurrentEmployee');
 }
 
 export function setTenantCurrentCompany(tenantId) {
@@ -136,6 +128,17 @@ export function setIsSigninGoogle(value) {
 }
 export function getIsSigninGoogle() {
   const isSigninGoogle = localStorage.getItem('isSigninGoogle');
+  if (isSigninGoogle === 'true') return true;
+  return false;
+}
+
+// is first change password
+export function setFirstChangePassword(value) {
+  localStorage.setItem('firstChangePassword', value);
+  // reloadAuthorized();
+}
+export function getFirstChangePassword() {
+  const isSigninGoogle = localStorage.getItem('firstChangePassword');
   if (isSigninGoogle === 'true') return true;
   return false;
 }

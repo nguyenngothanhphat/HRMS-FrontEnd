@@ -113,18 +113,20 @@
 
 .AuthLayout2 {
   width: 100%;
+  height: 100%;
+  min-height: 750px;
   margin: 0;
   padding: 0;
+  background: linear-gradient(90deg, #fff 50%, #2c6df9 50%);
   background-color: #f6f7f9;
-
   .container {
     z-index: 1;
     display: flex;
     justify-content: center;
     width: 100%;
-    height: 100vh;
-    min-height: 700px;
-    padding: 7% 40px 20px;
+    height: 100%;
+    // min-height: 700px;
+    padding: 7% 40px 40px;
     overflow-y: auto;
     .content {
       position: relative;
@@ -165,16 +167,6 @@
     }
   }
 
-  &:after {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 50%;
-    height: 100vh;
-    background-color: #2c6df9;
-    content: '';
-  }
   .footerContainer {
     position: absolute;
     bottom: 0;
@@ -222,9 +214,6 @@
 @media screen and (max-width: 992px) {
   .AuthLayout2 {
     background: none;
-    &:after {
-      display: none;
-    }
     .container {
       height: unset !important;
       padding-top: 70px;
