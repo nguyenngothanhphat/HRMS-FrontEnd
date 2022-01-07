@@ -11,12 +11,7 @@ const MyTimeSheet = (props) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [myTotalHours, setMyTotalHours] = useState('');
-  const {
-    dispatch,
-    employee: { _id: employeeId = '' } = {},
-    myTimesheet = [],
-    currentDateProp = '',
-  } = props;
+  const { dispatch, employee: { _id: employeeId = '' } = {}, myTimesheet = [] } = props;
   // FUNCTION AREA
   const fetchMyTimesheetEffect = () => {
     dispatch({
@@ -61,12 +56,6 @@ const MyTimeSheet = (props) => {
     setEndDate(currentSunday);
     return () => {};
   }, []);
-
-  useEffect(() => {
-    if (currentDateProp) {
-      setStartDate(moment(currentDateProp));
-    }
-  }, [currentDateProp]);
 
   // MAIN AREA
   return (
