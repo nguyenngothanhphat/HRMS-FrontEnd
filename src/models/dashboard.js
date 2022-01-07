@@ -11,6 +11,7 @@ import {
   updateTicket,
   uploadFile,
   addNotes,
+  getMyProject,
 
   // NEW DASHBOARD
   syncGoogleCalendar,
@@ -36,6 +37,7 @@ const defaultState = {
   myTimesheet: [],
   listEmployee: [],
   status: '',
+  myProject: [],
 };
 const dashboard = {
   namespace: 'dashboard',
@@ -301,7 +303,11 @@ const dashboard = {
     *fetchMyTimesheetEffect({ payload }, { call, put }) {
       const response = {};
       try {
-        const res = yield call(getMyTimesheet, {}, { ...payload, tenantId: getCurrentTenant() });
+        const res = yield call(
+          getMyTimesheet,
+          {},
+          { ...payload, company: getCurrentCompany(), tenantId: getCurrentTenant() },
+        );
         const { code, data = [] } = res;
         if (code !== 200) {
           notification.error('Error occurred when fetching timesheet in dashboard');
@@ -311,6 +317,30 @@ const dashboard = {
           type: 'save',
           payload: {
             myTimesheet: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+    // RESOUCEMANAGEMENT
+    *fetchMyProject({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getMyProject, {
+          ...payload,
+          company: [getCurrentCompany()],
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            myProject: data,
           },
         });
       } catch (errors) {
