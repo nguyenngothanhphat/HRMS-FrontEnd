@@ -417,7 +417,7 @@ class VisaGeneral extends Component {
                       disabledDate={this.disabledDate}
                     />
                   </Form.Item>
-                  <Form.Item label="Valid Till" name={`visaValidTill${index}`}>
+                  <Form.Item label="Valid Until" name={`visaValidTill${index}`}>
                     <DatePicker
                       format={dateFormat}
                       onChange={(dates) => {
@@ -634,7 +634,7 @@ class VisaGeneral extends Component {
                       />
                     </Form.Item>
                     <Form.Item
-                      label="Valid Till"
+                      label="Valid Until"
                       name={`visaValidTill${index + 1}`}
                       validateStatus={formCheck[index] === false ? 'error' : 'success'}
                       help={

@@ -89,12 +89,12 @@ class View extends PureComponent {
     const checkUSALocation = country === 'US';
 
     const dummyData = [
-      { label: 'Legal Name', value: dataAPI.legalName },
+      { label: 'Full Name', value: dataAPI.legalName },
       {
         label: checkVisible ? 'Date of Birth' : null,
         value: dataAPI.DOB ? Moment(dataAPI.DOB).locale('en').format('Do MMMM YYYY') : '',
       },
-      { label: checkVisible ? 'Legal Gender' : null, value: dataAPI.legalGender },
+      { label: checkVisible ? 'Gender' : null, value: dataAPI.legalGender },
       { label: 'Employee ID', value: dataAPI.employeeId },
       { label: 'Work Email', value: dataAPI.workEmail },
       { label: 'Work Number', value: dataAPI.workNumber },

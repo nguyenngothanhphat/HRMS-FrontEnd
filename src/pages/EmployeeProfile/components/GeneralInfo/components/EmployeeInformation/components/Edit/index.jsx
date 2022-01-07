@@ -388,7 +388,7 @@ class Edit extends PureComponent {
         >
           <div className={styles.formContainer}>
             <Form.Item
-              label="Legal Name"
+              label="Full Name"
               name="legalName"
               rules={[
                 {
@@ -407,7 +407,7 @@ class Edit extends PureComponent {
                 disabledDate={this.disabledDate}
               />
             </Form.Item>
-            <Form.Item label="Legal Gender" name="legalGender">
+            <Form.Item label="Gender" name="legalGender">
               <Radio.Group>
                 <Radio value="Male">Male</Radio>
                 <Radio value="Female">Female</Radio>
@@ -435,7 +435,9 @@ class Edit extends PureComponent {
               rules={[
                 {
                   pattern: /^[0-9\\-]{0,12}$/,
-                  message: formatMessage({ id: 'pages.employeeProfile.validateSocialSecurityNumber' }),
+                  message: formatMessage({
+                    id: 'pages.employeeProfile.validateSocialSecurityNumber',
+                  }),
                 },
               ]}
             >

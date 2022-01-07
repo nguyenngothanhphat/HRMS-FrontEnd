@@ -128,10 +128,10 @@ class View extends Component {
     } = generalData;
     // const objPreviousJobTilte = listTitle.find((item) => item._id === preJobTitle) || {};
     const items = [
-      { id: 1, label: 'Previous Job Tilte', value: preJobTitle },
+      { id: 1, label: 'Previous Job Title', value: preJobTitle },
       { id: 2, label: 'Previous Company', value: preCompany },
       // { id: 3, label: 'Past Experience', value: pastExp },
-      { id: 3, label: 'Total Experience', value: totalExp },
+      { id: 3, label: 'Total Experience (in years)', value: totalExp },
       { id: 4, label: 'Highest Qualification', value: qualification },
       { id: 5, label: 'LinkedIn', value: <span className={styles.linkedIn}>{linkedIn}</span> },
     ];

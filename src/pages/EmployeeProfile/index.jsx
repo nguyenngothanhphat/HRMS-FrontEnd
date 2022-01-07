@@ -170,12 +170,14 @@ class EmployeeProfile extends Component {
       });
     }
 
-    listMenu.push({
-      id: 3,
-      name: `Compensation`,
-      component: <Compensation profileOwner={profileOwner} />,
-      link: 'compensation',
-    });
+    if (permissions.viewTabEmployment !== -1 || profileOwner) {
+      listMenu.push({
+        id: 3,
+        name: `Compensation`,
+        component: <Compensation profileOwner={profileOwner} />,
+        link: 'compensation',
+      });
+    }
 
     if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
       listMenu.push({
