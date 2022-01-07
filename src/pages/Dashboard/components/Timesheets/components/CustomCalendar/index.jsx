@@ -49,8 +49,11 @@ const CustomCalendar = (props) => {
     return moment(currentDate).month() !== moment(selectedMonthProp).month();
   };
 
-  const onFillTimesheet = () => {
-    history.push('/time-sheet');
+  const onFillTimesheet = (selectedDate) => {
+    history.push({
+      pathname: `/time-sheet/my`,
+      state: { currentDateProp: moment(selectedDate).format('MM/DD/YYYY') },
+    });
   };
 
   // RENDER
@@ -58,8 +61,22 @@ const CustomCalendar = (props) => {
     const done = checkIsDone(date);
     if (isDisabled || isHoliday) return null;
     if (!done)
-      return <img className={styles.actionIcon} src={PlusIcon} alt="" onClick={onFillTimesheet} />;
-    return <img className={styles.actionIcon} src={DoneIcon} alt="" onClick={onFillTimesheet} />;
+      return (
+        <img
+          className={styles.actionIcon}
+          src={PlusIcon}
+          alt=""
+          onClick={() => onFillTimesheet(date)}
+        />
+      );
+    return (
+      <img
+        className={styles.actionIcon}
+        src={DoneIcon}
+        alt=""
+        onClick={() => onFillTimesheet(date)}
+      />
+    );
   };
 
   const dateCellRender = (value) => {

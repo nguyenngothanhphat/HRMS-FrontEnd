@@ -17,6 +17,9 @@ const { TabPane } = Tabs;
 const ComplexView = (props) => {
   const { permissions = {}, tabName = '', showMyTimeSheet = true } = props;
 
+  // from redirect page
+  const { currentDateProp = '' } = props;
+
   const [navToTimeoffModalVisible, setNavToTimeoffModalVisible] = useState(false);
 
   const requestLeave = () => {
@@ -102,7 +105,7 @@ const ComplexView = (props) => {
         >
           {showMyTimeSheet && (
             <TabPane tab="My Timesheet" key={TAB_NAME.MY}>
-              <MyTimeSheet />
+              <MyTimeSheet currentDateProp={currentDateProp} />
             </TabPane>
           )}
           {renderOtherTabs()}
