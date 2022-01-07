@@ -442,19 +442,6 @@ const routes = [
             // authority: ['admin-sa'],
             authority: ['M_DOCUMENT_MANAGEMENT_VIEW', OWNER],
           },
-          {
-            path: '/settings',
-            name: 'settings',
-            icon: '/assets/images/menuIcons/settings.svg',
-            component: '../pages_admin/Settings',
-            authority: ['M_SETTING_VIEW', OWNER],
-          },
-          {
-            path: '/settings/:tabName',
-            component: '../pages_admin/Settings',
-            hideInMenu: true,
-            authority: ['M_SETTING_VIEW', OWNER],
-          },
           // TIMEOFF REQUEST
           {
             // path: '/time-off/new-leave-request',
@@ -686,12 +673,12 @@ const routes = [
             name: 'ticketManagement',
             icon: '/assets/images/menuIcons/ticketManagement.svg',
             component: './TicketManagement',
-            authority: [HR_MANAGER, HR, EMPLOYEE, MANAGER], // TEMPORARY VALUES
+            authority: [HR_MANAGER, HR, MANAGER], // TEMPORARY VALUES
           },
           {
             path: '/ticket-management/:tabName',
             component: './TicketManagement',
-            authority: [HR_MANAGER, HR, EMPLOYEE, MANAGER], // TEMPORARY VALUES
+            authority: [HR_MANAGER, HR, MANAGER], // TEMPORARY VALUES
             hideInMenu: true,
           },
 
@@ -819,6 +806,19 @@ const routes = [
             name: 'searchResult.advancedSearch',
             hideInMenu: true,
             component: './SearchResult',
+          },
+          {
+            path: '/settings',
+            name: 'settings',
+            icon: '/assets/images/menuIcons/settings.svg',
+            component: '../pages_admin/Settings',
+            authority: ['M_SETTING_VIEW', OWNER],
+          },
+          {
+            path: '/settings/:tabName',
+            component: '../pages_admin/Settings',
+            hideInMenu: true,
+            authority: ['M_SETTING_VIEW', OWNER],
           },
           {
             component: './404',
