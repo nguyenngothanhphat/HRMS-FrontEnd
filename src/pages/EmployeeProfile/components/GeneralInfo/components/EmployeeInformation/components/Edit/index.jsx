@@ -541,8 +541,10 @@ class Edit extends PureComponent {
                 name="uanNumber"
                 rules={[
                   {
-                    pattern: /^[+]*[\d]{0,16}$/,
-                    message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
+                    pattern: /^[0-9\\-]{0,12}$/,
+                    message: formatMessage({
+                      id: 'pages.employeeProfile.validateSocialSecurityNumber',
+                    }),
                   },
                 ]}
               >
