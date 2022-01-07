@@ -1,6 +1,7 @@
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
+import { TIMESHEET_DATE_FORMAT } from '@/utils/dashboard';
 import ComplexView from './components/ComplexView';
 import SimpleView from './components/SimpleView';
 
@@ -29,7 +30,7 @@ const TimeSheet = (props) => {
       <SimpleView
         tabName={tabName}
         showMyTimeSheet={timeSheetRequired}
-        currentDateProp={moment(currentDateProp, 'MM/DD/YYYY')}
+        currentDateProp={moment(currentDateProp, TIMESHEET_DATE_FORMAT)}
       />
     );
   }
@@ -37,7 +38,7 @@ const TimeSheet = (props) => {
     <ComplexView
       tabName={tabName}
       showMyTimeSheet={timeSheetRequired}
-      currentDateProp={moment(currentDateProp, 'MM/DD/YYYY')}
+      currentDateProp={moment(currentDateProp, TIMESHEET_DATE_FORMAT)}
     />
   );
 };

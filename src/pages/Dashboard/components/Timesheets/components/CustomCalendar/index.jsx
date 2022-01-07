@@ -6,6 +6,7 @@ import PlusIcon from '@/assets/dashboard/timesheetPlus.svg';
 import DoneIcon from '@/assets/dashboard/timesheetCheck.svg';
 import { dateFormatAPI } from '@/utils/timeSheet';
 import styles from './index.less';
+import { TIMESHEET_DATE_FORMAT } from '@/utils/dashboard';
 
 const dateFormat = 'MM/DD/YYYY';
 
@@ -52,7 +53,7 @@ const CustomCalendar = (props) => {
   const onFillTimesheet = (selectedDate) => {
     history.push({
       pathname: `/time-sheet/my`,
-      state: { currentDateProp: moment(selectedDate).format('MM/DD/YYYY') },
+      state: { currentDateProp: moment(selectedDate).format(TIMESHEET_DATE_FORMAT) },
     });
   };
 
