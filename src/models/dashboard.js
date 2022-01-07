@@ -11,7 +11,8 @@ import {
   updateTicket,
   uploadFile,
   addNotes,
-  getMyProject,
+  getProjectList,
+  getMyResoucreList,
 
   // NEW DASHBOARD
   syncGoogleCalendar,
@@ -37,7 +38,8 @@ const defaultState = {
   myTimesheet: [],
   listEmployee: [],
   status: '',
-  myProject: [],
+  resoucreList: [],
+  projectList: [],
 };
 const dashboard = {
   namespace: 'dashboard',
@@ -325,22 +327,56 @@ const dashboard = {
       }
       return response;
     },
-    // RESOUCEMANAGEMENT
-    *fetchMyProject({ payload }, { call, put }) {
+    // PROJECT MANAGEMNET
+    *fetchProjectList({ payload = {}, myId = '' }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getMyProject, {
+        response = yield call(getProjectList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        const result = data.filter((val) => val.projectManager !== null);
+        const newProjectList = result.filter((val) => val.projectManager.generalInfo._id === myId);
+        const projectId = [];
+        for (const item of newProjectList) {
+          projectId.push(item.id);
+        }
+        yield put({
+          type: 'fetchResourceList',
+          payload: {
+            project: projectId,
+          },
+        });
+        yield put({
+          type: 'save',
+          payload: {
+            projectList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+    // RESOUCRE MANAGEMENT
+    *fetchResourceList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getMyResoucreList, {
           ...payload,
           company: [getCurrentCompany()],
           tenantId: getCurrentTenant(),
         });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
-
         yield put({
           type: 'save',
           payload: {
-            myProject: data,
+            resoucreList: data,
           },
         });
       } catch (errors) {

@@ -13,17 +13,16 @@ const MANAGER = 'MANAGER';
 const Tasks = (props) => {
   const [activeKey, setActiveKey] = useState('1');
   const [modalVisible, setModalVisible] = useState(false);
-  const { dispatch, roles = [] } = props;
-  useEffect(async () => {
-    const id = await props.myId;
+  const { dispatch, roles = [], myId = '' } = props;
+
+  useEffect(() => {
     dispatch({
-      type: 'dashboard/fetchMyProject',
-      payload: {
-        employee: [id],
-      },
+      type: 'dashboard/fetchProjectList',
+      payload: {},
+      myId,
     });
   }, []);
-  // Actions
+
   const renderTasksAction = () => {
     return (
       <div className={styles.header__actions}>
@@ -46,6 +45,9 @@ const Tasks = (props) => {
           <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
             <TabPane tab="My Tasks" key="1">
               <MyTasks />
+            </TabPane>
+            <TabPane tab="My Projects" key="2">
+              <MyProjects />
             </TabPane>
             {checkRoleHrAndManager ? (
               <TabPane tab="My Projects" key="2">
@@ -73,8 +75,15 @@ const Tasks = (props) => {
 };
 
 export default connect(
-  ({ user: { currentUser: { employee: { _id: myId = '' } = {}, roles = [] } = {} } = {} }) => ({
+  ({
+    user: {
+      currentUser: { employee: { generalInfo: { _id: myId = '' } = {} } = {}, roles = [] } = {},
+    } = {},
+    dashboard: { projectList = [], resoucreList = [] } = {},
+  }) => ({
     myId,
     roles,
+    projectList,
+    resoucreList,
   }),
 )(Tasks);

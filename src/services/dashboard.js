@@ -130,7 +130,20 @@ export async function addNotes(payload) {
   );
 }
 // MYPROJECT
-export async function getMyProject(payload) {
+
+export async function getProjectList(payload) {
+  return request(
+    '/api-project/projecttenant/list',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
+}
+
+export async function getMyResoucreList(payload) {
   return request(
     '/api-project/resourcetenant/list',
     {
