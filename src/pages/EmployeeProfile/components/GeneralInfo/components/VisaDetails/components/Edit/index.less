@@ -1,5 +1,8 @@
 .root {
   .Form {
+    .formContainer {
+      padding: 24px;
+    }
     width: 100%;
     :global {
       .ant-select .ant-select-arrow {
@@ -21,10 +24,6 @@
       }
       .ant-form-item {
         width: 100%;
-        padding: 0px 48px;
-      }
-      .ant-form-item:first-child {
-        margin-top: 35px;
       }
       .ant-input:focus {
         border-color: #2c6df9;
@@ -108,20 +107,25 @@
     }
   }
   .line {
-    width: 93%;
+    width: 100%;
     margin-top: 20px;
     margin-bottom: 20px;
-    margin-left: 24px;
-    border-top: solid 2px #d6dce0;
+    border-top: solid 1px #d6dce0;
   }
   .styleUpLoad {
     position: relative;
   }
   .labelUpload {
+    :global {
+      .ant-form-item-label {
+        margin-top: 1px !important;
+      }
+    }
     .urlUpload {
       color: #2c6df9;
       font-size: 13px;
       text-decoration: underline;
+      cursor: pointer;
     }
     :global {
       .ant-form-item-label > label {
@@ -174,8 +178,8 @@
 
   .removeIcon {
     position: absolute;
-    top: -20px;
-    right: 25px;
+    top: -15px;
+    right: 0;
     cursor: pointer;
   }
 
@@ -184,7 +188,7 @@
     flex-flow: row;
     align-items: center;
     justify-content: flex-end;
-    padding: 24px;
+    padding: 16px 24px;
     border-top: solid 1px #d6dce0;
   }
   .cancelFooter {
@@ -198,27 +202,28 @@
     color: #b1740c;
   }
   .buttonFooter {
-    width: 95px;
     height: 40px;
     color: #ffffff;
+    font-weight: 500;
     font-size: 14px;
     background-color: #ffa100;
     border: solid 1px #ffa100;
     border-radius: 25px;
+    padding-inline: 25px;
   }
   .buttonFooter:hover {
     background-color: #b1740c;
     border: solid 1px #b1740c;
   }
   .addMoreButton {
+    margin-top: 12px;
     margin-bottom: 12px;
-    padding-left: 15px;
     color: #2c6df9;
     font-weight: 500;
     font-size: 13px;
     cursor: pointer;
     .addMoreButtonIcon {
-      margin-right: 16px;
+      margin-right: 12px;
       font-size: 16px;
     }
   }

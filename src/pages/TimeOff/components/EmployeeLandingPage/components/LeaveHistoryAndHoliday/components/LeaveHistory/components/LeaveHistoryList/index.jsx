@@ -5,6 +5,7 @@ import { history } from 'umi';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
 
+const { ACCEPTED, REJECTED } = TIMEOFF_STATUS;
 export default class LeaveHistoryList extends PureComponent {
   goToLeaveRequest = (_id) => {
     history.push({
@@ -13,9 +14,9 @@ export default class LeaveHistoryList extends PureComponent {
   };
 
   getStatus = (status) => {
-    if (status === TIMEOFF_STATUS.accepted)
+    if (status === ACCEPTED)
       return <span className={`${styles.status} ${styles.approved}`}>Approved</span>;
-    if (status === TIMEOFF_STATUS.rejected)
+    if (status === REJECTED)
       return <span className={`${styles.status} ${styles.rejected}`}>Rejected</span>;
     return <span className={`${styles.status} ${styles.applied}`}>Applied</span>;
   };

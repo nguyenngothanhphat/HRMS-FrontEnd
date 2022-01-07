@@ -11,6 +11,9 @@ import LeaveHistory from './components/LeaveHistory';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
+
+const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DELETED, DRAFTS } =
+  TIMEOFF_STATUS;
 @connect(({ timeOff, user: { currentUser: { location = {} } = {} } = {} }) => ({
   timeOff,
   location,
@@ -107,10 +110,10 @@ class LeaveHistoryAndHoliday extends PureComponent {
       } = each;
 
       if (
-        status === TIMEOFF_STATUS.accepted ||
-        status === TIMEOFF_STATUS.rejected ||
-        status === TIMEOFF_STATUS.inProgress ||
-        status === TIMEOFF_STATUS.inProgressNext
+        status === ACCEPTED ||
+        status === REJECTED ||
+        status === IN_PROGRESS ||
+        status === IN_PROGRESS_NEXT
       ) {
         const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
         const toDate = moment(to).locale('en').format('MM/DD/YYYY');
@@ -154,12 +157,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
         subject,
       } = each;
 
-      if (
-        status !== TIMEOFF_STATUS.drafts &&
-        status !== TIMEOFF_STATUS.onHold &&
-        status !== TIMEOFF_STATUS.deleted &&
-        status !== TIMEOFF_STATUS.rejected
-      ) {
+      if (status !== DRAFTS && status !== ON_HOLD && status !== DELETED && status !== REJECTED) {
         const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
         const toDate = moment(to).locale('en').format('MM/DD/YYYY');
         return {

@@ -75,7 +75,7 @@ const FilterContent = (props) => {
   useEffect(() => {
     return () => {
       dispatch({
-        type: 'employee/ClearFilter',
+        type: 'employee/clearFilter',
       });
     };
   }, []);

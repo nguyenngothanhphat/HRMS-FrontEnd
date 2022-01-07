@@ -91,9 +91,9 @@ class TableCustomers extends PureComponent {
         align: 'center',
         key: 'legalName',
         width: '10%',
-        render: (accountOwner) => {
+        render: (accountOwner = {}) => {
           return (
-            <UserProfilePopover data={accountOwner} placement="leftTop">
+            <UserProfilePopover data={accountOwner || {}} placement="leftTop">
               <span className={styles.blueText}>
                 {accountOwner?.generalInfo?.legalName ? accountOwner?.generalInfo?.legalName : ''}
               </span>

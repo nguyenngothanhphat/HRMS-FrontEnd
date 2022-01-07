@@ -7,6 +7,10 @@ import {
   aprovalLeaveRequest,
   rejectLeaveRequest,
   rejectCompoffRequest,
+  getListEmployee,
+  updateTicket,
+  uploadFile,
+  addNotes,
 
   // NEW DASHBOARD
   syncGoogleCalendar,
@@ -30,6 +34,8 @@ const defaultState = {
   employeeId: '',
   myTeam: [],
   myTimesheet: [],
+  listEmployee: [],
+  status: '',
 };
 const dashboard = {
   namespace: 'dashboard',
@@ -66,9 +72,9 @@ const dashboard = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data, total } = response;
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listMyTicket: data, totalMyTicket: total } });
+        yield put({ type: 'save', payload: { listMyTicket: data } });
       } catch (errors) {
         dialog(errors);
       }
@@ -201,6 +207,42 @@ const dashboard = {
       }
       return response;
     },
+    *updateTicket({ payload }, { call, put }) {
+      try {
+        const response = yield call(updateTicket, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message: 'Update Ticket successfully' });
+        yield put({
+          type: 'save',
+          payload: { status: data.length > 0 ? data[0].status : '' },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *fetchListEmployee({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getListEmployee, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { listEmployee: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
 
     *fetchMyTeam({ payload = {} }, { call, put }) {
       let response = {};
@@ -216,6 +258,41 @@ const dashboard = {
         yield put({ type: 'save', payload: { myTeam: data } });
       } catch (errors) {
         dialog(errors);
+      }
+      return response;
+    },
+    // UPLOAD FILE
+    *uploadFileAttachments({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(uploadFile, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Upload File Successfully',
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    // ADDNOTE
+    *addNotes({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(addNotes, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'fetchListMyTicket',
+          payload: {},
+        });
+      } catch (error) {
+        dialog(error);
       }
       return response;
     },

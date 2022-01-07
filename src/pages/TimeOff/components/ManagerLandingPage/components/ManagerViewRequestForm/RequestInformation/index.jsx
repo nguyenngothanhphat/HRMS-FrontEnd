@@ -9,7 +9,7 @@ import Project from './components/Project';
 import styles from './index.less';
 
 const { TextArea } = Input;
-
+const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DELETED } = TIMEOFF_STATUS;
 @connect(({ timeOff, user: { currentUser = {} } = {}, loading }) => ({
   timeOff,
   currentUser,
@@ -374,7 +374,7 @@ class RequestInformation extends PureComponent {
                     <span>{description}</span>
                   </Col>
                 </Row>
-                {status === TIMEOFF_STATUS.rejected && (
+                {status === REJECTED && (
                   <Row>
                     <Col span={6}>Request Rejection Comments</Col>
                     <Col span={18} className={styles.detailColumn}>
@@ -406,14 +406,14 @@ class RequestInformation extends PureComponent {
                   <span>{reason}</span>
                 </Col>
               </Row>
-              {status !== TIMEOFF_STATUS.onHold && (
+              {status !== ON_HOLD && (
                 <Row>
                   <Col span={6}>Status</Col>
                   <Col span={18} className={styles.detailColumn}>
                     <span>
                       Withdraw
-                      {status === TIMEOFF_STATUS.accepted && ' rejected'}
-                      {status === TIMEOFF_STATUS.deleted && ' accepted'}
+                      {status === ACCEPTED && ' rejected'}
+                      {status === DELETED && ' accepted'}
                     </span>
                   </Col>
                 </Row>
@@ -437,7 +437,7 @@ class RequestInformation extends PureComponent {
         )}
 
         {/* IN PROGRESS */}
-        {!isReject && status === TIMEOFF_STATUS.inProgress && isMyTicket && (
+        {!isReject && status === IN_PROGRESS && isMyTicket && (
           <div className={styles.footer}>
             <span className={styles.note}>
               By default notifications will be sent to HR, your manager and recursively loop to your
@@ -455,7 +455,7 @@ class RequestInformation extends PureComponent {
         )}
 
         {/* ACCEPTED OR REJECTED  */}
-        {!isReject && (status === TIMEOFF_STATUS.accepted || status === TIMEOFF_STATUS.rejected) && (
+        {!isReject && (status === ACCEPTED || status === REJECTED) && (
           <div className={styles.footer}>
             <span className={styles.note}>
               By default notifications will be sent to HR, your manager and recursively loop to your
@@ -463,15 +463,15 @@ class RequestInformation extends PureComponent {
             </span>
             <div className={styles.formButtons}>
               <Button type="link" disabled>
-                {status === TIMEOFF_STATUS.accepted && 'Approved'}
-                {status === TIMEOFF_STATUS.rejected && 'Rejected'}
+                {status === ACCEPTED && 'Approved'}
+                {status === REJECTED && 'Rejected'}
               </Button>
             </div>
           </div>
         )}
 
         {/* WITHDRAW */}
-        {!isReject && status === TIMEOFF_STATUS.onHold && (
+        {!isReject && status === ON_HOLD && (
           <div className={styles.footer}>
             <span className={styles.note}>Withdrawing an approved request</span>
             <div className={styles.formButtons}>

@@ -1,4 +1,4 @@
-.root {
+.Edit {
   .Form {
     width: 100%;
     // padding: 24px;
@@ -26,7 +26,6 @@
       }
       .ant-form-item {
         width: 100%;
-        padding: 0px 48px;
       }
       .ant-form-item:first-child {
         margin-top: 35px;
@@ -40,13 +39,13 @@
   }
   .containerForm {
     position: relative;
+    padding: 0 24px;
   }
   .line {
-    width: 93%;
+    width: 100%;
     margin-top: 20px;
     margin-bottom: 20px;
-    margin-left: 24px;
-    border-top: solid 2px #d6dce0;
+    border-top: solid 1px #d6dce0;
   }
   .removeIcon {
     position: absolute;
@@ -54,16 +53,12 @@
     right: 25px;
     cursor: pointer;
   }
-  .inputForm {
-    border: solid 1px #d6dce0;
-    border-radius: 5px;
-  }
   .spaceFooter {
     display: flex;
     flex-flow: row;
     align-items: center;
     justify-content: flex-end;
-    padding: 24px;
+    padding: 16px 24px;
     border-top: solid 1px #d6dce0;
   }
   .cancelFooter {
@@ -77,13 +72,14 @@
     color: #b1740c;
   }
   .buttonFooter {
-    width: 95px;
     height: 40px;
     color: #ffffff;
+    font-weight: 500;
     font-size: 14px;
     background-color: #ffa100;
     border: solid 1px #ffa100;
     border-radius: 25px;
+    padding-inline: 25px;
   }
   .buttonFooter:hover {
     background-color: #b1740c;
@@ -91,8 +87,7 @@
   }
 
   .addMoreButton {
-    margin-bottom: 12px;
-    padding-left: 15px;
+    padding: 24px;
     color: #2c6df9;
     font-weight: 500;
     font-size: 13px;

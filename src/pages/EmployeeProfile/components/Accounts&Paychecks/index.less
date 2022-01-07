@@ -1,8 +1,8 @@
 .AccountPaychecks {
   display: flex;
   flex-flow: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   .CollapseYearDetails {
     width: 100%;
   }
@@ -10,22 +10,22 @@
     width: 100%;
     height: auto;
     object-fit: contain;
-    border-radius: 5px;
-    border: solid 1px #d6dce0;
     background-color: #ffffff;
+    border: solid 1px #d6dce0;
+    border-radius: 5px;
   }
   .TableTaxDetails {
-    margin: 24px 0;
     width: 100%;
     height: auto;
+    margin: 24px 0;
     object-fit: contain;
-    border-radius: 5px;
-    border: solid 1px #d6dce0;
     background-color: #ffffff;
+    border: solid 1px #d6dce0;
+    border-radius: 5px;
   }
   .spaceTitle {
-    padding: 24px;
     margin-bottom: 0;
+    padding: 24px;
     object-fit: contain;
     border-bottom: solid 1px #d6dce0;
   }
@@ -40,80 +40,80 @@
   .backgroundTitle {
     display: flex;
     flex-flow: row;
-    justify-content: start;
     align-items: center;
+    justify-content: start;
     height: 45px;
     margin: 20px 0;
     background-color: #e9f0ff;
   }
   .TitleDetails {
     height: 19px;
-    font-size: 16px;
     margin-bottom: 0;
+    color: #161c29;
     font-weight: 700;
-    font-stretch: normal;
+    font-size: 16px;
     font-style: normal;
+    font-stretch: normal;
     line-height: normal;
     letter-spacing: normal;
-    color: #161c29;
   }
   .TitleDetailsEdit {
     height: 19px;
-    font-size: 14px;
     margin-bottom: 0;
+    color: #2c6df9;
     font-weight: 500;
-    font-stretch: normal;
+    font-size: 14px;
     font-style: normal;
+    font-stretch: normal;
     line-height: normal;
     letter-spacing: normal;
-    color: #2c6df9;
   }
   .flexEdit {
     display: flex;
     flex-flow: row nowrap;
-    justify-content: flex-end;
     align-self: center;
+    justify-content: flex-end;
     cursor: pointer;
   }
   .IconEdit {
     margin-top: 3px;
     margin-right: 18px;
-    font-size: 14px;
     color: #2c6df9;
+    font-size: 14px;
   }
   .Name {
     height: 15px;
     margin-bottom: 0;
-    font-size: 13px;
+    color: #000000;
     font-weight: normal;
-    font-stretch: normal;
+    font-size: 13px;
     font-style: normal;
+    font-stretch: normal;
     line-height: normal;
     letter-spacing: normal;
-    color: #000000;
   }
   .Text {
     height: 15px;
     margin-bottom: 0;
-    font-size: 13px;
+    color: #707177;
     font-weight: normal;
-    font-stretch: normal;
+    font-size: 13px;
     font-style: normal;
+    font-stretch: normal;
     line-height: normal;
     letter-spacing: normal;
-    color: #707177;
   }
   .CollapseYear {
     width: 100%;
     height: auto;
-    font-size: 16px;
+    color: #161c29;
     font-weight: 600;
-    font-stretch: normal;
+    font-size: 16px;
     font-style: normal;
+    font-stretch: normal;
     line-height: 1.38;
     letter-spacing: normal;
     text-align: left;
-    color: #161c29;
     border-radius: 5px;
     :global {
       .ant-collapse-content.ant-collapse-content-active .ant-collapse-content-box {
@@ -124,83 +124,39 @@
       }
       .ant-collapse-header {
         padding: 24px;
-        font-size: 16px;
+        color: #161c29;
         font-weight: 700;
-        font-stretch: normal;
+        font-size: 16px;
         font-style: normal;
+        font-stretch: normal;
         line-height: normal;
         letter-spacing: normal;
-        color: #161c29;
         background-color: #ffffff;
       }
       .ant-collapse-content-box {
         padding: 0;
       }
       .ant-collapse-arrow svg {
-        font-size: 20px;
         color: #2c6df9;
+        font-size: 20px;
       }
     }
   }
   .viewLoading {
-    padding: 24px;
-    width: 100%;
     // height: 100%;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 24px;
     :global {
       .ant-spin-dot {
         font-size: 75px;
       }
       .ant-spin-dot-item {
-        height: 40px;
         width: 40px;
+        height: 40px;
       }
     }
-  }
-}
-
-.modalUpdateSuccess {
-  :global {
-    .ant-modal-close {
-      right: -57px;
-      height: 48px;
-      color: #fff;
-      background-color: #2c6df9;
-      border-radius: 0 8px 8px 0;
-      .ant-modal-close-x {
-        color: #fff;
-        line-height: 48px;
-      }
-      .ant-popover-inner {
-        background-color: #000;
-      }
-    }
-  }
-}
-.spaceFooterModalSuccess {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 24px;
-  text-align: center;
-}
-.btnOkModalSuccess {
-  width: 120px;
-  height: 40px;
-  color: #fff;
-  font-weight: 600;
-  font-size: 14px;
-  background-color: #ffa100;
-  border: none;
-  border-radius: 25px;
-  align-items: center;
-  margin: auto;
-
-  &:hover {
-    color: #fff;
-    background-color: #ffa100;
   }
 }

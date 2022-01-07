@@ -84,7 +84,7 @@ const DirectoryComponent = (props) => {
       setSize(10);
 
       dispatch({
-        type: 'employee/ClearFilter',
+        type: 'employee/clearFilter',
       });
       dispatch({
         type: 'employee/save',
@@ -233,7 +233,7 @@ const DirectoryComponent = (props) => {
       }
 
       if (viewTabMyTeam && tabId === myTeam) {
-        const {currentUser = {}} = props;
+        const { currentUser = {} } = props;
         const roleEmployee = currentUser ? currentUser.employee.title.roles : [];
         const employee = currentUser ? currentUser.employee._id : '';
         dispatch({
@@ -279,7 +279,7 @@ const DirectoryComponent = (props) => {
     setTabId(tabIdProp);
 
     await dispatch({
-      type: 'employee/ClearFilter',
+      type: 'employee/clearFilter',
     });
   };
 

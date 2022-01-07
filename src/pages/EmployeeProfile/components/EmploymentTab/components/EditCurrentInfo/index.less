@@ -1,7 +1,113 @@
 .editCurrentInfo {
   :global {
-    .ant-skeleton {
-      padding: 24px;
+    .ant-form-item-label {
+      text-align: left;
+    }
+    .ant-form-item-label > label {
+      color: #000000;
+      font-size: 13px;
+    }
+    .ant-form-item-label > label::after {
+      content: '';
+    }
+    .ant-form-item {
+      width: 100%;
+      // padding: 0px 48px;
+    }
+    .ant-input:focus {
+      border-color: #2c6df9;
+      outline: 0;
+      box-shadow: unset;
+    }
+    .ant-picker-focused {
+      border-color: #2c6df9;
+      box-shadow: unset;
+    }
+    .ant-picker-suffix {
+      color: #161c29;
+    }
+
+    .addressSection___2I4pH {
+      margin-top: 0 !important;
+    }
+
+    .ant-form-item {
+      margin-bottom: 16px;
+    }
+    .ant-form-item-label {
+      margin-top: 5px;
+
+      label {
+        font-size: 13px;
+      }
+    }
+
+    // SELECT
+    .ant-select {
+      width: 100% !important;
+    }
+    .ant-select-selector {
+      min-height: 42px !important;
+      border: 1px solid #d6dce4 !important;
+      border-radius: 5px !important;
+    }
+    .ant-select-single {
+      .ant-select-selection-search-input {
+        height: 42px !important;
+      }
+    }
+    .ant-select-selection-item,
+    .ant-select-selection-placeholder {
+      font-size: 13px !important;
+      line-height: 42px !important;
+    }
+    .ant-select-multiple {
+      .ant-select-selection-item {
+        height: 28px !important;
+        padding-top: 3px !important;
+        font-size: 13px;
+        line-height: unset !important;
+        background: #ffffff;
+        border: 1px solid #d6dce0;
+        border-left: 4px solid #2c6df9;
+        border-radius: 5px;
+      }
+      .ant-select-selection-item-remove {
+        margin-top: 3px;
+        margin-inline: 5px;
+
+        .anticon-close {
+          border: 0.75px solid #707177;
+          border-radius: 50%;
+        }
+      }
+    }
+    .ant-select-multiple .ant-select-selection-item-remove > * {
+      line-height: 0;
+    }
+
+    // INPUT + DATE PICKER
+    .ant-input,
+    .ant-input-number,
+    .ant-picker {
+      width: 100%;
+      height: 42px !important;
+      border: 1px solid #d6dce4 !important;
+      border-radius: 5px !important;
+    }
+    .ant-input-number,
+    .ant-input {
+      font-size: 13px;
+    }
+    .ant-picker {
+      input {
+        font-size: 13px;
+      }
+    }
+    .ant-input-number-input-wrap {
+      input {
+        height: 40px !important;
+      }
     }
   }
   &__form {
@@ -24,24 +130,24 @@
     }
   }
   .spaceFooter {
-    padding: 24px;
     display: flex;
     flex-flow: row nowrap;
-    justify-content: flex-end;
     align-items: center;
+    justify-content: flex-end;
+    padding: 16px 24px;
     border-top: solid 1px #d6dce0;
   }
   .btnSubmit {
-    font-size: 14px;
-    width: 95px;
     height: 40px;
-    font-weight: 600;
-    border-radius: 25px;
     color: #fff;
+    font-weight: 600;
+    font-size: 14px;
     background-color: #ffa100;
     border: none;
-    
-    &:hover{
+    border-radius: 25px;
+    padding-inline: 25px;
+
+    &:hover {
       color: #fff;
       background-color: #ffa100;
     }
@@ -52,10 +158,10 @@
   }
   .btnCancel {
     display: inline-block;
-    color: #ffa100;
-    font-size: 14px;
-    font-weight: 500;
     margin-right: 40px;
+    color: #ffa100;
+    font-weight: 500;
+    font-size: 14px;
     cursor: pointer;
     &:active {
       opacity: 0.5;
@@ -63,8 +169,8 @@
   }
   .viewImg {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     min-height: 200px;
     &__img {
       height: auto;
@@ -75,13 +181,13 @@
 
   .header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     &__text {
+      margin: 0;
+      color: #161c29;
       font-weight: 600;
       font-size: 16px;
-      color: #161c29;
-      margin: 0;
     }
     &__upload {
       cursor: pointer;
@@ -93,9 +199,9 @@
         height: 20px;
       }
       &__text {
+        margin-left: 16px;
         color: #2c6df9;
         font-size: 14px;
-        margin-left: 16px;
       }
     }
   }
@@ -103,9 +209,9 @@
   ::-webkit-scrollbar {
     width: 7px;
     height: 7px;
-    border-radius: 5px;
     background-color: #f4f4f4;
     border: none;
+    border-radius: 5px;
   }
 
   ::-webkit-scrollbar-thumb {

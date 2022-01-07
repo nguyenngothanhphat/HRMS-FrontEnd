@@ -1,12 +1,14 @@
 import React, { PureComponent } from 'react';
-import { dialog } from '@/utils/utils';
 import { connect } from 'umi';
+import { dialog } from '@/utils/utils';
 import styles from './styles.less';
 import FirstStep from './components/FirstStep';
 import SecondStep from './components/SecondStep';
 import ThirdStep from './components/ThirdStep';
 import FourthStep from './components/FourthStep';
 import FifthStep from './components/FifthStep';
+import SixthStep from './components/SixthStep';
+import SeventhStep from './components/SeventhStep';
 
 @connect(({ employeeProfile, user, locationSelection: { listLocationsByCompany = [] } = {} }) => ({
   employeeProfile,
@@ -17,33 +19,51 @@ class HandleChanges extends PureComponent {
   constructor(props) {
     super(props);
     const { user, employeeProfile } = this.props;
+    const { currentUser } = user || {};
     this.state = {
       radio: 2,
       changeData: {
-        changedBy: user.currentUser._id,
+        changedBy: currentUser ? currentUser.employee._id : '',
         employee: employeeProfile.idCurrentEmployee,
         newTitle: '',
         newLocation: '',
+        newDepartment: '',
+        newEmploymentType: '',
+        newManager: '',
+        newReportees: [],
         stepOne: 'Now',
         stepTwo: {
           wLocation: '',
           employment: '',
-          compensation: '',
-          compensationType: null,
+          department: '',
         },
         stepThree: {
           title: '',
-          department: '',
           reportTo: '',
+          reportees: [],
         },
         stepFour: {
+          currentAnnualCTC: '',
+          compensationType: null,
+        },
+        stepFive: {
           toEmployee: false,
           toManager: false,
-          toHR: false,
+          notifyTo: [],
+        },
+        stepSeven: {
+          reasonChange: '',
         },
       },
     };
   }
+
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/fetchEmployeeListSingleCompanyEffect',
+    });
+  };
 
   componentDidUpdate() {
     const { current, nextTab } = this.props;
@@ -84,7 +104,7 @@ class HandleChanges extends PureComponent {
         this.setState({
           changeData: {
             ...changeData,
-            stepFour: { ...changeData.stepFour, toEmployee: !changeData.stepFour.toEmployee },
+            stepFive: { ...changeData.stepFive, toEmployee: !changeData.stepFive.toEmployee },
           },
         });
         break;
@@ -92,73 +112,11 @@ class HandleChanges extends PureComponent {
         this.setState({
           changeData: {
             ...changeData,
-            stepFour: { ...changeData.stepFour, toManager: !changeData.stepFour.toManager },
+            stepFive: { ...changeData.stepFive, toManager: !changeData.stepFive.toManager },
           },
         });
         break;
-      case 6:
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepFour: { ...changeData.stepFour, toHR: !changeData.stepFour.toHR },
-          },
-        });
-        break;
-      case 7:
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepTwo: {
-              ...changeData.stepTwo,
-              compensationType: 'Hourly',
-            },
-          },
-        });
-        break;
-      case 8:
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepTwo: {
-              ...changeData.stepTwo,
-              compensationType: 'Annually',
-            },
-          },
-        });
-        break;
-      case 9:
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepTwo: {
-              ...changeData.stepTwo,
-              compensationType: 'Intentive',
-            },
-          },
-        });
-        break;
-      case 10:
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepTwo: {
-              ...changeData.stepTwo,
-              compensationType: 'Bonus',
-            },
-          },
-        });
-        break;
-      case 11:
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepTwo: {
-              ...changeData.stepTwo,
-              compensationType: 'Stock option',
-            },
-          },
-        });
-        break;
+
       default:
         break;
     }
@@ -180,14 +138,14 @@ class HandleChanges extends PureComponent {
 
   onChange = (value, type) => {
     const { changeData } = this.state;
-    const { dispatch, employeeProfile } = this.props;
+    const { dispatch, employeeProfile, listLocationsByCompany = [] } = this.props;
     switch (type) {
       case 'title':
         this.setState({
           changeData: {
             ...changeData,
-            stepThree: { ...changeData.stepThree, title: value[1] },
-            newTitle: value[0],
+            stepThree: { ...changeData.stepThree, title: value },
+            newTitle: employeeProfile.listTitleByDepartment.find((x) => x._id === value)?.name,
           },
         });
         break;
@@ -195,65 +153,39 @@ class HandleChanges extends PureComponent {
         this.setState({
           changeData: {
             ...changeData,
-            stepTwo: { ...changeData.stepTwo, wLocation: value[1] },
-            newLocation: value[0],
+            stepTwo: { ...changeData.stepTwo, wLocation: value },
+            newLocation: listLocationsByCompany.find((x) => x._id === value)?.name,
           },
         });
         break;
       case 'employment':
         this.setState({
-          changeData: { ...changeData, stepTwo: { ...changeData.stepTwo, employment: value } },
+          changeData: {
+            ...changeData,
+            stepTwo: { ...changeData.stepTwo, employment: value },
+            newEmploymentType: employeeProfile.employeeTypes.find((x) => x._id === value)?.name,
+          },
         });
         break;
-      case 'compensation':
-        switch (value) {
-          case 'Salaried':
-            this.setState({
-              changeData: {
-                ...changeData,
-                stepTwo: {
-                  ...changeData.stepTwo,
-                  compensation: value,
-                  compensationType: 'Hourly',
-                },
-              },
-            });
-            break;
-          case 'Stock options':
-            this.setState({
-              changeData: {
-                ...changeData,
-                stepTwo: {
-                  ...changeData.stepTwo,
-                  compensation: value,
-                  compensationType: 'Intentive',
-                },
-              },
-            });
-            break;
-          case 'Other non-cash benefits':
-            this.setState({
-              changeData: {
-                ...changeData,
-                stepTwo: {
-                  ...changeData.stepTwo,
-                  compensation: value,
-                  compensationType: '',
-                },
-              },
-            });
-            break;
-          default:
-            break;
-        }
-        break;
-      case 'other':
+      case 'compensationType':
         this.setState({
           changeData: {
             ...changeData,
-            stepTwo: {
-              ...changeData.stepTwo,
+            stepFour: {
+              ...changeData.stepFour,
               compensationType: value,
+            },
+          },
+        });
+        break;
+
+      case 'currentAnnualCTC':
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepFour: {
+              ...changeData.stepFour,
+              currentAnnualCTC: value,
             },
           },
         });
@@ -262,7 +194,12 @@ class HandleChanges extends PureComponent {
         this.setState({
           changeData: {
             ...changeData,
-            stepThree: { ...changeData.stepThree, department: value, title: '' },
+            stepTwo: {
+              ...changeData.stepTwo,
+              department: value,
+              newDepartment: employeeProfile.departments.find((x) => x._id === value)?.name,
+              title: '',
+            },
             newTitle: '',
           },
         });
@@ -276,7 +213,42 @@ class HandleChanges extends PureComponent {
         break;
       case 'reportTo':
         this.setState({
-          changeData: { ...changeData, stepThree: { ...changeData.stepThree, reportTo: value } },
+          changeData: {
+            ...changeData,
+            stepThree: { ...changeData.stepThree, reportTo: value },
+            newManager: employeeProfile.employees.find((x) => x._id === value)?.generalInfo
+              ?.legalName,
+          },
+        });
+        break;
+
+      case 'reportees':
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepThree: { ...changeData.stepThree, reportees: value },
+            newReportees: employeeProfile.employees
+              .filter((x) => value.includes(x._id))
+              .map((x) => x.generalInfo?.legalName),
+          },
+        });
+        break;
+
+      case 'notifyTo': // fifth step
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepFive: { ...changeData.stepThree, notifyTo: value },
+          },
+        });
+        break;
+
+      case 'reasonChange': // seventh step
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepSeven: { ...changeData.stepSeven, reasonChange: value },
+          },
         });
         break;
 
@@ -304,7 +276,6 @@ class HandleChanges extends PureComponent {
             listLocationsByCompany={listLocationsByCompany}
             changeData={changeData}
             onChange={this.onChange}
-            onRadioChange={this.onRadioChange}
           />
         ) : null}
         {current === 2 ? (
@@ -315,22 +286,30 @@ class HandleChanges extends PureComponent {
           />
         ) : null}
         {current === 3 ? (
-          <FourthStep onRadioChange={this.onRadioChange} radio={changeData.stepFour} />
+          <FourthStep
+            fetchedState={employeeProfile}
+            changeData={changeData}
+            onChange={this.onChange}
+            onRadioChange={this.onRadioChange}
+          />
         ) : null}
         {current === 4 ? (
           <FifthStep
-            name={data.name}
-            currentData={{
-              title: data.title,
-              compensationType: data.compensationType,
-              location: data.location,
-            }}
-            data={{
-              newTitle: changeData.newTitle,
-              currentCompensation: changeData.stepTwo.compensation,
-              newCompensationType: changeData.stepTwo.compensationType,
-              newLocation: changeData.newLocation,
-            }}
+            changeData={changeData}
+            onChange={this.onChange}
+            onRadioChange={this.onRadioChange}
+            radio={changeData.stepFour}
+            fetchedState={employeeProfile}
+          />
+        ) : null}
+        {current === 5 ? (
+          <SixthStep name={data.name} currentData={data} changeData={changeData} />
+        ) : null}
+        {current === 6 ? (
+          <SeventhStep
+            changeData={changeData}
+            onChange={this.onChange}
+            fetchedState={employeeProfile}
           />
         ) : null}
       </div>
