@@ -1,7 +1,8 @@
-import { forgotPasswordAPI, resetPasswordAPI, updatePasswordAPI } from '@/services/changePassword';
-import { dialog } from '@/utils/utils';
 import { history } from 'umi';
 import { notification } from 'antd';
+import { forgotPasswordAPI, resetPasswordAPI, updatePasswordAPI } from '@/services/changePassword';
+import { setFirstChangePassword } from '@/utils/authority';
+import { dialog } from '@/utils/utils';
 
 export default {
   namespace: 'changePassword',
@@ -51,6 +52,7 @@ export default {
             message: 'Updated password successfully. Please login again!',
           });
         }
+        setFirstChangePassword(false);
 
         statusChangePassword = true;
       } catch (errors) {
