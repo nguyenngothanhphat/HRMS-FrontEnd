@@ -4,10 +4,11 @@
 @inlinePadding: 24px;
 @borderColor: #d6dce0;
 @blueColor: #2c6df9;
+@yellowColor: #ffa100;
 @lightBlueColor: #eaf0fe;
 @lightBlueColor2: #e4edff;
 
-.MessageBox {
+.MessageBoxMyTicket {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -15,13 +16,65 @@
   box-sizing: border-box;
   width: 100%;
   // min-height: 300px;
-  max-height: 500px;
   margin-top: 24px;
   background: #fff;
   border: 1px solid @borderColor;
   border-radius: 5px;
   .chatContainer {
     position: relative;
+    &__content {
+      min-height: 350px;
+      max-height: 350px;
+      margin: 0 0 0 24px;
+      overflow-y: auto;
+      .boxMessage {
+        padding: 15px 0;
+        border-bottom: 1px solid @borderColor;
+      }
+      .boxMessage:last-child {
+        border-bottom: unset;
+      }
+      .chatTitle {
+        padding-bottom: 8px;
+        color: #212020;
+        font-weight: 500;
+        font-size: 14px;
+        font-style: normal;
+        line-height: 21px;
+      }
+      .chatText {
+        padding-bottom: 8px;
+        color: #707177;
+        font-weight: normal;
+        font-size: 14px;
+        font-family: Roboto;
+        font-style: normal;
+        line-height: 24px;
+      }
+      .chatDate {
+        color: #707177;
+        font-weight: normal;
+        font-size: 13px;
+        line-height: 15px;
+      }
+      .nameAttach {
+        padding-right: 8px;
+        color: #2c6df9;
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 15px;
+      }
+      .attachments__file {
+        padding-bottom: 8px;
+        a {
+          text-decoration: underline;
+        }
+        img {
+          width: 22px;
+          padding-right: 8px;
+        }
+      }
+    }
     .senderContainer {
       display: flex;
       align-items: center;
@@ -171,6 +224,56 @@
       justify-content: space-between;
       width: 100%;
     }
+    .containerAattachment {
+      position: absolute;
+      right: 16px;
+      bottom: 8px;
+      display: flex;
+      align-items: center;
+    }
+    .maginTop {
+      display: flex;
+      align-items: center;
+      justify-content: end;
+      margin-right: 16px;
+    }
+    .fileUploadedContainer {
+      &__listFiles {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        order: -1;
+        padding-right: 10px;
+        padding-bottom: 0;
+        &__files {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .previewIcon {
+            img {
+              width: 20px;
+              margin-bottom: 2px;
+            }
+          }
+          .fileName {
+            padding-left: 8px;
+            font-size: 14px;
+            a {
+              color: #2c6df9;
+            }
+          }
+        }
+        .trashIcon {
+          display: block;
+          margin-left: 8px;
+          cursor: pointer;
+          &:hover {
+            opacity: 0.9;
+          }
+        }
+      }
+    }
     :global {
       .ant-form-item {
         margin-bottom: 0 !important;
@@ -182,26 +285,44 @@
         width: 100%;
       }
       .ant-input {
-        height: 32px !important;
-        margin-right: @commonPadding;
+        padding-right: 16px !important;
         border: none;
         outline: none;
         box-shadow: none;
       }
       .ant-btn {
         height: unset;
-        background: @blueColor;
+        margin-left: @commonPadding;
+        background: @yellowColor;
         border: none;
         border-radius: 45px;
         outline: none;
-        padding-inline: 24px;
+        padding-inline: 13px;
         padding-block: 8px;
         span {
           color: #fff;
           font-weight: 500;
         }
         &:hover {
-          background: @blueColor;
+          background: @yellowColor;
+        }
+      }
+      .ant-form-item-control-input-content {
+        box-sizing: border-box;
+        padding: 8px;
+        border: 1px solid #d6dce0;
+        border-radius: 24.5px;
+      }
+      .ant-upload.ant-upload-drag {
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        background: #f1f6ff !important;
+        border: none;
+        border-radius: 50%;
+
+        .ant-upload {
+          padding: 0;
         }
       }
     }

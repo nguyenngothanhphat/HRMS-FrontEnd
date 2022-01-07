@@ -9,7 +9,7 @@ import CommonTab from './components/CommonTab';
 const { TabPane } = Tabs;
 
 const mockNotification = [];
-
+const statusTickets = ['New', 'Assigned', 'In Progress', 'Client Pending'];
 const ActivityLog = (props) => {
   const [activeKey, setActiveKey] = useState('1');
   const [modalVisible, setModalVisible] = useState(false);
@@ -17,7 +17,9 @@ const ActivityLog = (props) => {
     dispatch,
     listTicket: listPendingApprovals = [],
     permissions = {},
-    listMyTicket: { items = [] } = {} || {},
+    employee: { _id = '' } = {},
+    listMyTicket = [],
+    status = '',
   } = props;
 
   const viewPendingApprovalDashboard = permissions.viewPendingApprovalDashboard !== -1;
@@ -32,7 +34,7 @@ const ActivityLog = (props) => {
     dispatch({
       type: 'dashboard/fetchListMyTicket',
     });
-  }, []);
+  }, [status]);
 
   // if employee, no render the pending approval tab, set active key to the second tab
   useEffect(() => {
@@ -41,6 +43,13 @@ const ActivityLog = (props) => {
     }
   }, [viewPendingApprovalDashboard]);
 
+  const listMyTicketNew =
+    listMyTicket.length > 0
+      ? listMyTicket.filter((val) => {
+          return val.employee_raise === _id;
+        })
+      : [];
+  const dataMyTickets = listMyTicketNew.filter((element) => statusTickets.includes(element.status));
   const renderShowAll = () => {
     switch (activeKey) {
       case '1':
@@ -97,7 +106,7 @@ const ActivityLog = (props) => {
       case '2':
         return mockNotification;
       case '3':
-        return items;
+        return dataMyTickets;
       default:
         return '';
     }
@@ -121,8 +130,8 @@ const ActivityLog = (props) => {
             <TabPane tab={renderTabName('2', mockNotification.length)} key="2">
               <CommonTab type="2" data={mockNotification} />
             </TabPane>
-            <TabPane tab={renderTabName('3', items.length)} key="3">
-              <CommonTab type="3" data={items} />
+            <TabPane tab={renderTabName('3', dataMyTickets.length)} key="3">
+              <CommonTab type="3" data={dataMyTickets} />
             </TabPane>
           </Tabs>
         </div>
@@ -144,13 +153,15 @@ const ActivityLog = (props) => {
 
 export default connect(
   ({
-    dashboard: { listTicket = [], listMyTicket = {} } = {},
+    dashboard: { listTicket = [], listMyTicket = {}, status = '' } = {},
     loading,
-    user: { permissions = {} } = {},
+    user: { permissions = {}, currentUser: { employee = {} } } = {},
   }) => ({
+    status,
     listTicket,
     listMyTicket,
     permissions,
+    employee,
     loadingFetchListTicket: loading.effects['dashboard/fetchListTicket'],
     loadingFetchListMyTicket: loading.effects['dashboard/fetchListMyTicket'],
   }),
