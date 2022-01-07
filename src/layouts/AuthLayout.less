@@ -211,6 +211,14 @@
     }
   }
 }
+@media screen and (max-width: 1200px) {
+  .AuthLayout2 {
+    background: none;
+    &:after {
+      display: none;
+    }
+  }
+}
 @media screen and (max-width: 992px) {
   .AuthLayout2 {
     background: none;
@@ -218,11 +226,33 @@
       display: none;
     }
     .container {
+      height: unset !important;
       padding-top: 70px;
-      padding-bottom: 20px;
+      padding-bottom: 70px;
+      .header {
+        display: flex;
+        justify-content: center;
+        .bigText {
+          display: none;
+        }
+      }
     }
     .footerContainer {
       display: none;
+    }
+  }
+}
+@media screen and (max-width: 768px) {
+  // md
+  .AuthLayout2 {
+    .container {
+      // align-items:;
+      padding-top: 70px;
+      padding-bottom: 70px;
+      .header {
+        display: flex;
+        justify-content: center;
+      }
     }
   }
 }

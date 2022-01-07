@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input, Button } from 'antd';
 import { Link, connect, formatMessage } from 'umi';
+import { IS_TERRALOGIC_CANDIDATE_LOGIN, IS_TERRALOGIC_LOGIN } from '@/utils/login';
 import mail from './asset/mail-art.png';
 import styles from './index.less';
 
@@ -41,8 +42,10 @@ class ForgotPassword extends Component {
   _renderForm = () => {
     return (
       <div className={styles.formWrapper}>
-        <p className={styles.formWrapper__title}>
-          {' '}
+        <p
+          className={styles.formWrapper__title}
+          style={IS_TERRALOGIC_LOGIN || IS_TERRALOGIC_CANDIDATE_LOGIN ? { fontSize: '24px' } : {}}
+        >
           {formatMessage({ id: 'pages.forgotPassword.title' })}
         </p>
         <p className={styles.formWrapper__description}>

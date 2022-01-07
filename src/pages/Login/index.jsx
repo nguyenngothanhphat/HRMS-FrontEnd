@@ -7,6 +7,7 @@ import { connect, formatMessage, history, Link } from 'umi';
 import { removeLocalStorage } from '@/utils/authority';
 import logoGoogle from '@/assets/logo_google.png';
 import styles from './index.less';
+import { IS_TERRALOGIC_CANDIDATE_LOGIN, IS_TERRALOGIC_LOGIN } from '@/utils/login';
 
 @connect(({ loading, login: { messageError = '', urlGoogle = '', urlLollypop = '' } = {} }) => ({
   loading: loading.effects['login/login'],
@@ -105,10 +106,10 @@ class FormLogin extends Component {
     return checkedBox;
   };
 
-  getLoginBoxText = (isTerralogicLogin, isTerralogicCandidateLogin) => {
-    if (isTerralogicCandidateLogin)
+  getLoginBoxText = () => {
+    if (IS_TERRALOGIC_CANDIDATE_LOGIN)
       return ['Welcome Back', 'Enter your credentials to access your account.'];
-    if (isTerralogicLogin)
+    if (IS_TERRALOGIC_LOGIN)
       return ['Login to Portal', 'Enter your credentials to access your account.'];
     return ['Sign in to your account'];
   };
@@ -123,18 +124,12 @@ class FormLogin extends Component {
     const messageValidationPsw =
       messageError === 'Invalid password' ? 'Incorrect password. Try again' : undefined;
 
-    const url = window.location.href;
-    const { pathname } = window.location;
-    const isTerralogicLogin = url.includes('terralogic.paxanimi.com');
-    const isTerralogicCandidateLogin =
-      url.includes('terralogic.paxanimi.com/candidate') || pathname === '/candidate';
-
-    const titleText = this.getLoginBoxText(isTerralogicLogin, isTerralogicCandidateLogin);
+    const titleText = this.getLoginBoxText(IS_TERRALOGIC_LOGIN, IS_TERRALOGIC_CANDIDATE_LOGIN);
     return (
       <div className={styles.formWrapper}>
         <p
           className={styles.formWrapper__title}
-          style={isTerralogicLogin || isTerralogicCandidateLogin ? { fontSize: '24px' } : {}}
+          style={IS_TERRALOGIC_LOGIN || IS_TERRALOGIC_CANDIDATE_LOGIN ? { fontSize: '24px' } : {}}
         >
           {titleText[0]}
         </p>
@@ -193,7 +188,7 @@ class FormLogin extends Component {
                 <span>{formatMessage({ id: 'pages.login.keepMeSignedIn' })}</span>
               </Checkbox>
             </Form.Item>
-            {isTerralogicLogin && (
+            {IS_TERRALOGIC_LOGIN && (
               <Link to="/forgot-password" className={styles.forgotPasswordLink}>
                 {formatMessage({ id: 'pages.login.forgotPassword' })}
               </Link>
@@ -209,9 +204,13 @@ class FormLogin extends Component {
           >
             {({ getFieldValue }) => this._renderButton(getFieldValue)}
           </Form.Item>
-          {!isTerralogicCandidateLogin && (
+          {!IS_TERRALOGIC_CANDIDATE_LOGIN && (
             <>
-              <div className={styles.textOr}>or sign in with</div>
+              {IS_TERRALOGIC_LOGIN ? (
+                <div className={styles.textOr}>or</div>
+              ) : (
+                <div className={styles.textOr}>or sign in with</div>
+              )}
               <a href={urlGoogle}>
                 <Button type="primary" className={styles.btnSignInGG}>
                   <img src={logoGoogle} alt="logo" />
@@ -224,7 +223,7 @@ class FormLogin extends Component {
                   <span>Lollypop Login</span>
                 </Button>
               </a>
-              {!isTerralogicLogin && (
+              {!IS_TERRALOGIC_LOGIN && (
                 <Link to="/forgot-password">
                   <p className={styles.forgotPassword}>
                     {formatMessage({ id: 'pages.login.forgotPassword' })}

@@ -1,7 +1,7 @@
-import { forgotPasswordAPI, resetPasswordAPI, updatePasswordAPI } from '@/services/changePassword';
-import { dialog } from '@/utils/utils';
 import { history } from 'umi';
 import { notification } from 'antd';
+import { forgotPasswordAPI, resetPasswordAPI, updatePasswordAPI } from '@/services/changePassword';
+import { dialog } from '@/utils/utils';
 
 export default {
   namespace: 'changePassword',

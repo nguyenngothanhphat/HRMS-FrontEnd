@@ -7,15 +7,12 @@ import LoginImage from '../assets/Intranet_01.png';
 import Separator from '../assets/login/separator.svg';
 import TerralogicImage from '../assets/login/terralogic.svg';
 import TerralogicLogo from '../assets/login/terralogic_logo.svg';
+import { IS_TERRALOGIC_LOGIN } from '@/utils/login';
 import styles from './AuthLayout.less';
 
 const { Header, Content } = Layout;
 
 const AuthLayout = ({ children }) => {
-  // FOR TERRALOGIC USERS
-  const url = window.location.href;
-  const isTerralogicLogin = url.includes('terralogic.paxanimi.com');
-
   const footerItems = () => {
     return [
       {
@@ -55,13 +52,13 @@ const AuthLayout = ({ children }) => {
     ];
   };
 
-  if (isTerralogicLogin) {
+  if (IS_TERRALOGIC_LOGIN) {
     return (
       <Layout className={styles.AuthLayout2}>
         <Content className={styles.container}>
           <Row gutter={[24, 24]} align="top" className={styles.content} justify="center">
-            <Col xs={0} md={12} lg={7} xl={7}>
-              <div>
+            <Col xs={24} lg={12} xl={7}>
+              <div className={styles.header}>
                 <div className={styles.logo}>
                   <img src={TerralogicLogo} alt="" />
                 </div>
@@ -73,12 +70,12 @@ const AuthLayout = ({ children }) => {
                 </p>
               </div>
             </Col>
-            <Col xs={0} md={12} lg={8} xl={8}>
+            <Col xs={0} xl={9}>
               <div className={styles.image}>
                 <img src={TerralogicImage} alt="" />
               </div>
             </Col>
-            <Col xs={24} sm={24} md={24} lg={9} xl={9}>
+            <Col xs={24} lg={12} xl={8}>
               <div className={styles.children}>{children}</div>
             </Col>
             <div className={styles.footerContainer}>
