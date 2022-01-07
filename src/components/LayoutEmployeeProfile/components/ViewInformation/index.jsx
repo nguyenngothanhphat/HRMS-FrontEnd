@@ -19,7 +19,6 @@ const MANAGER = 'MANAGER';
 
 @connect(
   ({
-    loading,
     employeeProfile: {
       tempData: { generalData = {}, compensationData = {} } = {},
       originData: {
@@ -38,7 +37,6 @@ const MANAGER = 'MANAGER';
     generalData,
     compensationData,
     originGeneralData,
-    loading: loading.effects['employeeProfile/fetchGeneralInfo'],
     myEmployeeID,
     manager,
     location,
@@ -82,6 +80,11 @@ class ViewInformation extends Component {
 
   componentWillUnmount = () => {
     this.onScroll('removeEventListener');
+  };
+
+  viewProfile = (id) => {
+    const url = `/directory/employee-profile/${id}`;
+    window.open(url, '_blank');
   };
 
   onScroll = (name) => {
@@ -287,6 +290,7 @@ class ViewInformation extends Component {
   };
 
   btnAction = (permissions, profileOwner) => {
+    const { loading, loadingFetchEmployee } = this.props;
     const { placementText } = this.state;
 
     const subDropdown = (
@@ -298,7 +302,12 @@ class ViewInformation extends Component {
     );
 
     const menu = (
-      <Menu className={s.menuDropdown} mode="inline" onClick={this.handleClickMenu}>
+      <Menu
+        className={s.menuDropdown}
+        mode="inline"
+        onClick={this.handleClickMenu}
+        disabled={loading || loadingFetchEmployee}
+      >
         {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
           <Menu.Item key="editBio" className={s.menuItem} onClick={this.handleEditBio}>
             Edit Bio
@@ -351,7 +360,6 @@ class ViewInformation extends Component {
     const {
       generalData,
       // compensationData,
-      loading,
       originGeneralData: { bioInfo = '', isShowAvatar = true } = {},
       // employeeLocation = '',
       permissions = {},
@@ -361,6 +369,7 @@ class ViewInformation extends Component {
       department: { name: departmentName = '' } = {},
       // joinDate = '',
       title,
+      loadingFetchEmployee = false,
     } = this.props;
 
     // const checkVisible = profileOwner || permissions.viewOtherInformation !== -1;
@@ -378,7 +387,8 @@ class ViewInformation extends Component {
     // const { tittle: { name: title = '' } = {} } = compensationData;
     const { visible, openEditBio } = this.state;
     // const joiningDate = joinDate ? moment(joinDate).format('MM.DD.YY') : '-';
-    const { generalInfo: { firstName: managerFN = '', lastName: managerLN = '' } = {} } = manager;
+    const { generalInfo: { legalName: managerName = '', userId: managerUserId = '' } = {} } =
+      manager;
     // const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
     const listColors = [
       {
@@ -408,12 +418,6 @@ class ViewInformation extends Component {
 
     const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
 
-    if (loading)
-      return (
-        <div className={s.viewLoading}>
-          <Spin />
-        </div>
-      );
     return (
       <div className={s.viewRight__infoEmployee}>
         <img
@@ -431,12 +435,16 @@ class ViewInformation extends Component {
           />
         )}
         <div className={s.infoEmployee__textNameAndTitle}>
-          <p className={s.infoEmployee__textNameAndTitle__name}>
-            {legalName} ({userId}
-          </p>
-          <p className={s.infoEmployee__textNameAndTitle__title} style={{ margin: '5px 0' }}>
-            {title ? title.name : ''}
-          </p>
+          {legalName && (
+            <p className={s.infoEmployee__textNameAndTitle__name}>
+              {legalName} ({userId}
+            </p>
+          )}
+          {title?.name && (
+            <p className={s.infoEmployee__textNameAndTitle__title} style={{ margin: '5px 0' }}>
+              {title?.name || ''}
+            </p>
+          )}
         </div>
 
         <div className={s.infoEmployee__viewBottom}>
@@ -450,6 +458,7 @@ class ViewInformation extends Component {
                 <Checkbox
                   className={s.showAvatar}
                   checked={isShowAvatar}
+                  disabled={loadingFetchEmployee}
                   onChange={this.onChangeShowAvatar}
                 >
                   Show profile picture to other users
@@ -500,7 +509,9 @@ class ViewInformation extends Component {
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag}>Reporting to</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>
-              {managerFN} {managerLN}
+              <span className={s.managerName} onClick={() => this.viewProfile(managerUserId)}>
+                {managerName}
+              </span>
             </p>
           </div>
           <div className={s.infoEmployee__viewBottom__row}>
