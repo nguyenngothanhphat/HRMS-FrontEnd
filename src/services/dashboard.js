@@ -129,3 +129,28 @@ export async function addNotes(payload) {
     API_KEYS.TICKET_API,
   );
 }
+// MYPROJECT
+
+export async function getProjectList(payload) {
+  return request(
+    '/api-project/projecttenant/list',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
+}
+
+export async function getMyResoucreList(payload) {
+  return request(
+    '/api-project/resourcetenant/list',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
+}

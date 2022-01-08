@@ -4,50 +4,24 @@ import { connect } from 'umi';
 import ProjectTag from '../ProjectTag';
 import styles from './index.less';
 
-const mockProjects = [
-  {
-    id: 1,
-    name: 'Syscloud',
-    status: 60,
-    members: [
-      {
-        avatar: '',
-        name: 'Aditya Venkatesan',
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: 'Decimal Tech',
-    status: 90,
-    members: [
-      {
-        avatar: '',
-        name: 'Aditya Venkatesan',
-      },
-      {
-        avatar: '',
-        name: 'Aditya Venkatesan',
-      },
-      {
-        avatar: '',
-        name: 'Aditya Venkatesan',
-      },
-    ],
-  },
-];
-
 const MyProjects = (props) => {
-  const { isInModal = false } = props;
+  const { isInModal = false, projectList = [], resoucreList = [], myId = '' } = props;
+  const result = projectList.filter((val) => val.projectManager !== null);
+  const newProjectList = result.filter((val) => val.projectManager.generalInfo._id === myId);
   return (
     <div className={styles.MyProjects} style={isInModal ? { maxHeight: '600px' } : {}}>
       <Row gutter={[16, 16]}>
-        {mockProjects.map((project) => {
-          return <ProjectTag project={project} />;
+        {newProjectList.map((project) => {
+          return <ProjectTag project={project} resourceProject={resoucreList} />;
         })}
       </Row>
     </div>
   );
 };
 
-export default connect(() => ({}))(MyProjects);
+export default connect(
+  ({
+    dashboard: { projectList = [], resoucreList = [] } = {},
+    user: { currentUser: { employee: { generalInfo: { _id: myId = '' } = {} } = {} } = {} } = {},
+  }) => ({ projectList, resoucreList, myId }),
+)(MyProjects);

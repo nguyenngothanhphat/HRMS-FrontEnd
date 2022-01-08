@@ -11,6 +11,8 @@ import {
   updateTicket,
   uploadFile,
   addNotes,
+  getProjectList,
+  getMyResoucreList,
 
   // NEW DASHBOARD
   syncGoogleCalendar,
@@ -36,6 +38,8 @@ const defaultState = {
   myTimesheet: [],
   listEmployee: [],
   status: '',
+  resoucreList: [],
+  projectList: [],
 };
 const dashboard = {
   namespace: 'dashboard',
@@ -301,7 +305,11 @@ const dashboard = {
     *fetchMyTimesheetEffect({ payload }, { call, put }) {
       const response = {};
       try {
-        const res = yield call(getMyTimesheet, {}, { ...payload, tenantId: getCurrentTenant() });
+        const res = yield call(
+          getMyTimesheet,
+          {},
+          { ...payload, company: getCurrentCompany(), tenantId: getCurrentTenant() },
+        );
         const { code, data = [] } = res;
         if (code !== 200) {
           notification.error('Error occurred when fetching timesheet in dashboard');
@@ -311,6 +319,64 @@ const dashboard = {
           type: 'save',
           payload: {
             myTimesheet: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+    // PROJECT MANAGEMNET
+    *fetchProjectList({ payload = {}, myId = '' }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getProjectList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        const result = data.filter((val) => val.projectManager !== null);
+        const newProjectList = result.filter((val) => val.projectManager.generalInfo._id === myId);
+        const projectId = [];
+        for (const item of newProjectList) {
+          projectId.push(item.id);
+        }
+        yield put({
+          type: 'fetchResourceList',
+          payload: {
+            project: projectId,
+          },
+        });
+        yield put({
+          type: 'save',
+          payload: {
+            projectList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+    // RESOUCRE MANAGEMENT
+    *fetchResourceList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getMyResoucreList, {
+          ...payload,
+          company: [getCurrentCompany()],
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            resoucreList: data,
           },
         });
       } catch (errors) {

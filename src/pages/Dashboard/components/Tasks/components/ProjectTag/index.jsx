@@ -5,8 +5,7 @@ import MockAvatar from '@/assets/dashboard/mockAvatar.jpg';
 import styles from './index.less';
 
 const ProjectTag = (props) => {
-  const { project: projectProp } = props;
-
+  const { project: projectProp, resourceProject } = props;
   // FUNCTIONS
   const getProgressBarColor = (percent) => {
     if (percent < 30) return '#FD4546';
@@ -26,17 +25,16 @@ const ProjectTag = (props) => {
             backgroundColor: '#EAF0FF',
           }}
         >
-          {members.map((member) => {
-            const { name = '' } = member;
+          {members.map(() => {
             return <Avatar size="small" style={{ backgroundColor: '#EAF0FF' }} src={MockAvatar} />;
           })}
         </Avatar.Group>
         {members.length > 1 ? (
           <span className={styles.moreMember}>
-            {members[0].name} + {members.length - 1} more
+            {members[0].generalInfo.legalName} + {members.length - 1} more
           </span>
         ) : (
-          <span className={styles.moreMember}>{members[0].name}</span>
+          <span className={styles.moreMember}>{members[0].generalInfo.legalName}</span>
         )}
       </div>
     );
@@ -48,18 +46,18 @@ const ProjectTag = (props) => {
         <div className={styles.ProjectTag}>
           <Row justify="space-between" align="top">
             <Col span={16} className={styles.leftPart}>
-              <span className={styles.projectName}>{project.name}</span>
-              {renderProjectMember(project.members)}
+              <span className={styles.projectName}>{project.projectName}</span>
+              {renderProjectMember(resourceProject)}
             </Col>
             <Col span={8} className={styles.rightPart}>
               <div className={`${styles.progressTag}`}>
                 <div className={styles.statusLabel}>
-                  Status: <span>{project.status}%</span>
+                  Status: <span>{project.projectStatus}%</span>
                 </div>
                 <Progress
                   strokeLinecap="round"
-                  strokeColor={getProgressBarColor(project.status)}
-                  percent={project.status}
+                  strokeColor={getProgressBarColor(project.projectStatus)}
+                  percent={project.projectStatus}
                   size="small"
                   type="line"
                   showInfo={false}
