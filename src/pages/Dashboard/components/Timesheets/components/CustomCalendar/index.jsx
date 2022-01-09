@@ -6,15 +6,16 @@ import PlusIcon from '@/assets/dashboard/timesheetPlus.svg';
 import DoneIcon from '@/assets/dashboard/timesheetCheck.svg';
 import { dateFormatAPI } from '@/utils/timeSheet';
 import styles from './index.less';
+import { TIMESHEET_DATE_FORMAT } from '@/utils/dashboard';
 
-const dateFormat = 'MM/DD/YYYY';
+// const dateFormat = 'MM/DD/YYYY';
 
-const mockHoliday = [
-  {
-    date: moment('10/07/2021', dateFormat),
-    name: 'Ganesh Chaturthi',
-  },
-];
+// const mockHoliday = [
+//   {
+//     date: moment('10/07/2021', dateFormat),
+//     name: 'Ganesh Chaturthi',
+//   },
+// ];
 const CustomCalendar = (props) => {
   const { selectedMonth: selectedMonthProp = '', myTimesheet = [] } = props;
 
@@ -37,20 +38,23 @@ const CustomCalendar = (props) => {
     return false;
   };
 
-  const checkIsHoliday = (date) => {
-    const find = mockHoliday.find(
-      (val) => moment(val.date).format(dateFormat) === moment(date).format(dateFormat),
-    );
-    return find;
-  };
+  // const checkIsHoliday = (date) => {
+  //   const find = mockHoliday.find(
+  //     (val) => moment(val.date).format(dateFormat) === moment(date).format(dateFormat),
+  //   );
+  //   return find;
+  // };
 
   // to prevent clicking on date of prev/next month to change month
   const disabledDate = (currentDate) => {
     return moment(currentDate).month() !== moment(selectedMonthProp).month();
   };
 
-  const onFillTimesheet = () => {
-    history.push('/time-sheet');
+  const onFillTimesheet = (selectedDate) => {
+    history.push({
+      pathname: `/time-sheet/my`,
+      state: { currentDateProp: moment(selectedDate).format(TIMESHEET_DATE_FORMAT)},
+    });
   };
 
   // RENDER
@@ -58,8 +62,8 @@ const CustomCalendar = (props) => {
     const done = checkIsDone(date);
     if (isDisabled || isHoliday) return null;
     if (!done)
-      return <img className={styles.actionIcon} src={PlusIcon} alt="" onClick={onFillTimesheet} />;
-    return <img className={styles.actionIcon} src={DoneIcon} alt="" onClick={onFillTimesheet} />;
+      return <img className={styles.actionIcon} src={PlusIcon} alt="" onClick={()=>onFillTimesheet(date)} />;
+    return <img className={styles.actionIcon} src={DoneIcon} alt="" onClick={()=>onFillTimesheet(date)} />;
   };
 
   const dateCellRender = (value) => {

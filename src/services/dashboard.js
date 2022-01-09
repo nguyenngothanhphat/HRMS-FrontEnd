@@ -105,8 +105,15 @@ export async function getListMyTeam(payload) {
     data: payload,
   });
 }
+
 export async function getListEmployee(payload) {
   return request('/api/employeetenant/list-by-single-company', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getHolidaysByCountry(payload) {
+  return request('/api/holidaycalendartenant/get-by-country', {
     method: 'POST',
     data: payload,
   });
