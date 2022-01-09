@@ -4,36 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
-const mockData = [
-  {
-    month: 'Jan',
-    list: [
-      {
-        date: '09/10/2021',
-        holiday: ['Ganesh Chaturthi/Vinayaka Chaturthi'],
-      },
-    ],
-  },
-  {
-    month: 'Mar',
-    list: [
-      {
-        date: '10/5/2021',
-        holiday: ['Dussehra'],
-      },
-      {
-        date: '10/28/2021',
-        holiday: ['Kannada Rajyothsava', 'Kewis'],
-      },
-    ],
-  },
-];
 const dateFormat = 'DD dddd';
 
 const HolidayCalendar = (props) => {
-  const { isInModal = false } = props;
+  const { isInModal = false, listHolidays = [] } = props;
   const [monthList, setMonthList] = useState([]);
-
+  // const check = listHolidays.filter((obj) => obj.date.dateTime.month === '1') || [];
   // USE EFFECT
   useEffect(() => {
     if (monthList.length === 0) {
@@ -78,11 +54,7 @@ const HolidayCalendar = (props) => {
     }
 
     return list.map((item, index) => {
-      const holidayCount = item.holiday.length;
-      let colSpan = holidayCount > 0 ? 24 / holidayCount : 24;
-      if (holidayCount > 3) {
-        colSpan = 24;
-      }
+      const colSpan = 24;
       return (
         <Row
           className={`${styles.eachRow} ${
@@ -95,15 +67,13 @@ const HolidayCalendar = (props) => {
             <div>
               {index === 0 && <span className={styles.monthLabel}>{month}</span>}
               <span className={styles.dateLabel}>
-                {moment(item.date).locale('en').format(dateFormat)}
+                {moment(item.date.iso).locale('en').format(dateFormat)}
               </span>
             </div>
           </Col>
           <Col xs={20} xl={21} className={styles.eachRow__right}>
             <Row gutter={[16, 16]}>
-              {item.holiday.map((val) => {
-                return renderTag(val, colSpan);
-              })}
+              {renderTag(item.name, colSpan)}
             </Row>
           </Col>
         </Row>
@@ -114,9 +84,12 @@ const HolidayCalendar = (props) => {
   const renderUI = () => {
     return (
       <div className={styles.mainContainer} style={isInModal ? { maxHeight: '600px' } : {}}>
-        {monthList.map((month) => {
-          const find = mockData.find((holiday) => holiday.month === month) || {};
-          return renderRow(month, find.list);
+        {monthList.map((month, index) => {
+          const find =
+            listHolidays.filter(
+              (holiday) => holiday.date.dateTime.month === (index + 1).toString(),
+            );
+          return renderRow(month, find);
         })}
       </div>
     );

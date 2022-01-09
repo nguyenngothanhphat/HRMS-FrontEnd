@@ -35,6 +35,7 @@ const MyTimeSheet = (props) => {
     myTimesheetByWeek = [],
     myTimesheetByMonth = [],
     employee: { _id: employeeId = '' } = {},
+    currentDateProp = '',
   } = props;
 
   // FUNCTION AREA
@@ -69,6 +70,12 @@ const MyTimeSheet = (props) => {
       fetchMyTimesheetEffectByType(startDateMonth, endDateMonth);
     }
   }, [startDateMonth, selectedView]);
+
+  useEffect(() => {
+    if (moment(currentDateProp).isValid() ===  true) {
+      setSelectedDate(moment(currentDateProp));
+    }
+  }, [currentDateProp]);
 
   // generate dates for week
   useEffect(() => {
