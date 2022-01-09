@@ -19,7 +19,7 @@ const isGoogleSignIn = getIsSigninGoogle();
 const Calendar = (props) => {
   const [activeKey, setActiveKey] = useState('1');
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(moment());
+  const [selectedDate, setSelectedDate] = useState(moment().format());
   const [selectedYear, setSelectedYear] = useState(moment().year());
   const [isSyncSuccess, setIsSyncSuccess] = useState(false);
   const { dispatch, googleCalendarList = [], loadingSyncGoogleCalendar = false } = props;
