@@ -5,7 +5,7 @@ import styles from './index.less';
 
 const WidgetCard = (props) => {
   const {
-    item: { id = '', name = '', description = '' } = {},
+    item: { id = '', name = '', description = '', image = '' } = {},
     onSelectWidget = () => {},
     checked = false,
   } = props;
@@ -23,7 +23,7 @@ const WidgetCard = (props) => {
         </Col>
         <Col span={21}>
           <div className={styles.cardContainer}>
-            <div className={styles.preview}>Preview</div>
+            <div className={styles.preview}><img src={image} alt='Preview' style={{"width":"110%"}} /></div>
             <div className={styles.info}>
               <span className={styles.info__title}>{name}</span>
               <span className={styles.info__description}>{description}</span>
