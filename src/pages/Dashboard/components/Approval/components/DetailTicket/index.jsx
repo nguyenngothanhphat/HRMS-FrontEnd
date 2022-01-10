@@ -38,6 +38,7 @@ const DetailTicket = (props) => {
         _id,
         comment,
       },
+      statusTimeoff: 'approval',
     });
     const { statusCode = '' } = response;
     if (statusCode === 200) onCancel();
@@ -50,6 +51,7 @@ const DetailTicket = (props) => {
         _id,
         comment,
       },
+      statusTimeoff: 'reject',
     });
     const { statusCode = '' } = response;
     if (statusCode === 200) onCancel();
