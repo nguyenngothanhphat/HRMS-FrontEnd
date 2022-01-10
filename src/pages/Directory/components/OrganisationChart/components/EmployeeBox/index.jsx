@@ -115,15 +115,12 @@ class DetailEmployeeChart extends Component {
       department: { name: deptName = '' } = {},
       title: { name: titleName = '' } = {},
       employeeType: { name: emplTypeName = '' } = {} || {},
-      location: {
-        headQuarterAddress: { country: { name: countryName = '' } = {} || {}, state = '' } = {} ||
-          {},
-      } = {},
+      location: { name: countryName = '' } = {},
       localTime = '',
     } = chartDetails;
 
     const fullName = `${firstName} ${middleName} ${lastName}`;
-    const locationName = `${state}, ${countryName}`;
+    const locationName = ` ${countryName}`;
 
     const getCurrentCompanyName = this.getCurrentFirm();
 
@@ -266,9 +263,7 @@ class DetailEmployeeChart extends Component {
               </Link>
               <div className={styles.chartDetail__Bottom_actions}>
                 <Tooltip title="Message">
-                  <Button
-                    style={{ width: '40px', background: 'white', border: '1px solid white'}}
-                  >
+                  <Button style={{ width: '40px', background: 'white', border: '1px solid white' }}>
                     <a href="https://chat.google.com" target="_blank" rel="noreferrer">
                       <img
                         src="/assets/images/messageIcon.svg"
@@ -279,9 +274,7 @@ class DetailEmployeeChart extends Component {
                   </Button>
                 </Tooltip>
                 <Tooltip title="Email">
-                  <Button
-                    style={{ width: '40px', background: 'white', border: '1px solid white'}}
-                  >
+                  <Button style={{ width: '40px', background: 'white', border: '1px solid white' }}>
                     <a href={`mailto:${workEmail}`}>
                       <img
                         src="/assets/images/iconMail.svg"
@@ -291,24 +284,28 @@ class DetailEmployeeChart extends Component {
                     </a>
                   </Button>
                 </Tooltip>
-                <Tooltip 
-                  title={linkedIn ? 'LinkedIn' : "Please update the Linkedin Profile in the Employee profile page"}
+                <Tooltip
+                  title={
+                    linkedIn
+                      ? 'LinkedIn'
+                      : 'Please update the Linkedin Profile in the Employee profile page'
+                  }
                   // color={linkedIn ? '' : 'gold'}
                 >
                   <Button
                     disabled={linkedIn ? '' : 'true'}
-                    style={{ width: '40px', background: 'white', border: '1px solid white'}}
+                    style={{ width: '40px', background: 'white', border: '1px solid white' }}
                   >
-                    <a 
-                      href={linkedIn} 
-                      target='_blank' 
-                      rel="noopener noreferrer" 
+                    <a
+                      href={linkedIn}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       // style={linkedIn ? {} : {pointerEvents: 'none', opacity: '0.6'}}
                     >
                       <img
                         src="/assets/images/iconLinkedin.svg"
                         alt="img-arrow"
-                        style={linkedIn ? {cursor: 'pointer'} : {cursor: 'default'}}
+                        style={linkedIn ? { cursor: 'pointer' } : { cursor: 'default' }}
                       />
                     </a>
                   </Button>

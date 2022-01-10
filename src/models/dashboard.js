@@ -21,6 +21,7 @@ import {
   getMyTeam,
   getMyTimesheet,
   getListMyTeam,
+  getHolidaysByCountry,
 } from '../services/dashboard';
 import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
 
@@ -38,8 +39,7 @@ const defaultState = {
   myTimesheet: [],
   listEmployee: [],
   status: '',
-  resoucreList: [],
-  projectList: [],
+  statusApproval: '',
 };
 const dashboard = {
   namespace: 'dashboard',
@@ -83,7 +83,10 @@ const dashboard = {
         dialog(errors);
       }
     },
-    *approvalTicket({ payload: { typeTicket = '', _id, comment } = {} }, { call, put }) {
+    *approvalTicket(
+      { payload: { typeTicket = '', _id, comment } = {}, statusTimeoff = '' },
+      { call, put },
+    ) {
       try {
         let response;
         switch (typeTicket) {
@@ -109,14 +112,17 @@ const dashboard = {
         notification.success({
           message: 'Approval ticket successfully',
         });
-        yield put({ type: 'save', payload: { isLoadData: true } });
+        yield put({ type: 'save', payload: { isLoadData: true, statusApproval: statusTimeoff } });
         return response;
       } catch (errors) {
         dialog(errors);
         return {};
       }
     },
-    *rejectTicket({ payload: { typeTicket = '', _id, comment } = {} }, { call, put }) {
+    *rejectTicket(
+      { payload: { typeTicket = '', _id, comment } = {}, statusTimeoff = '' },
+      { call, put },
+    ) {
       try {
         let response;
         switch (typeTicket) {
@@ -142,7 +148,7 @@ const dashboard = {
         notification.success({
           message: 'Reject ticket successfully',
         });
-        yield put({ type: 'save', payload: { isLoadData: true } });
+        yield put({ type: 'save', payload: { isLoadData: true, statusApproval: statusTimeoff } });
         return response;
       } catch (errors) {
         dialog(errors);
@@ -382,6 +388,21 @@ const dashboard = {
       } catch (errors) {
         dialog(errors);
         return [];
+      }
+      return response;
+    },
+    *fetchHolidaysByCountry({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getHolidaysByCountry, { ...payload, tenantId: getCurrentTenant() });
+        const { statusCode, data: holidaysListByCountry = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { holidaysListByCountry },
+        });
+      } catch (errors) {
+        dialog(errors);
       }
       return response;
     },

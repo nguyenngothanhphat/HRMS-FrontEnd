@@ -10,6 +10,7 @@ const { TabPane } = Tabs;
 
 const mockNotification = [];
 const statusTickets = ['New', 'Assigned', 'In Progress', 'Client Pending'];
+const statusRequestTimeoff = ['IN-PROGRESS'];
 const ActivityLog = (props) => {
   const [activeKey, setActiveKey] = useState('1');
   const [modalVisible, setModalVisible] = useState(false);
@@ -20,6 +21,7 @@ const ActivityLog = (props) => {
     employee: { _id = '' } = {},
     listMyTicket = [],
     status = '',
+    statusApproval = '',
   } = props;
 
   const viewPendingApprovalDashboard = permissions.viewPendingApprovalDashboard !== -1;
@@ -29,7 +31,7 @@ const ActivityLog = (props) => {
     dispatch({
       type: 'dashboard/fetchListTicket',
     });
-  }, []);
+  }, [statusApproval]);
   useEffect(() => {
     dispatch({
       type: 'dashboard/fetchListMyTicket',
@@ -43,13 +45,26 @@ const ActivityLog = (props) => {
     }
   }, [viewPendingApprovalDashboard]);
 
-  const listMyTicketNew =
-    listMyTicket.length > 0
-      ? listMyTicket.filter((val) => {
-          return val.employee_raise === _id;
-        })
-      : [];
-  const dataMyTickets = listMyTicketNew.filter((element) => statusTickets.includes(element.status));
+  const dataMyTicket = () => {
+    const listMyTicketNew =
+      listMyTicket.length > 0
+        ? listMyTicket.filter((val) => {
+            return val.employee_raise === _id;
+          })
+        : [];
+    const dataMyTickets = listMyTicketNew.filter((element) =>
+      statusTickets.includes(element.status),
+    );
+    const newListPendingApprovals = listPendingApprovals.filter((element) =>
+      statusRequestTimeoff.includes(element.status),
+    );
+    const dataToTal = [...dataMyTickets];
+    newListPendingApprovals.forEach((element) => {
+      dataToTal.push(element);
+    });
+    return dataToTal;
+  };
+
   const renderShowAll = () => {
     switch (activeKey) {
       case '1':
@@ -106,7 +121,7 @@ const ActivityLog = (props) => {
       case '2':
         return mockNotification;
       case '3':
-        return dataMyTickets;
+        return dataMyTicket();
       default:
         return '';
     }
@@ -130,8 +145,8 @@ const ActivityLog = (props) => {
             <TabPane tab={renderTabName('2', mockNotification.length)} key="2">
               <CommonTab type="2" data={mockNotification} />
             </TabPane>
-            <TabPane tab={renderTabName('3', dataMyTickets.length)} key="3">
-              <CommonTab type="3" data={dataMyTickets} />
+            <TabPane tab={renderTabName('3', dataMyTicket().length)} key="3">
+              <CommonTab type="3" data={dataMyTicket()} />
             </TabPane>
           </Tabs>
         </div>
@@ -153,11 +168,12 @@ const ActivityLog = (props) => {
 
 export default connect(
   ({
-    dashboard: { listTicket = [], listMyTicket = {}, status = '' } = {},
+    dashboard: { listTicket = [], listMyTicket = {}, status = '', statusApproval = '' } = {},
     loading,
     user: { permissions = {}, currentUser: { employee = {} } } = {},
   }) => ({
     status,
+    statusApproval,
     listTicket,
     listMyTicket,
     permissions,

@@ -87,7 +87,7 @@ const MyTeam = (props) => {
         </div>
         <div className={styles.content}>
           <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
-            <TabPane tab="Resources" key="1">
+            <TabPane tab="Members" key="1">
               <Resources data={myTeam} />
             </TabPane>
             {checkRoleHrAndManager ? (

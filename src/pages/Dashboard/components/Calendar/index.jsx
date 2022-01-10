@@ -19,11 +19,18 @@ const isGoogleSignIn = getIsSigninGoogle();
 const Calendar = (props) => {
   const [activeKey, setActiveKey] = useState('1');
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(moment());
+  const [selectedDate, setSelectedDate] = useState(moment().format());
   const [selectedYear, setSelectedYear] = useState(moment().year());
   const [isSyncSuccess, setIsSyncSuccess] = useState(false);
-  const { dispatch, googleCalendarList = [], loadingSyncGoogleCalendar = false } = props;
-
+  const {
+    dispatch,
+    googleCalendarList = [],
+    holidaysListByCountry = [],
+    loadingSyncGoogleCalendar = false,
+    currentUser: {
+      location = {}
+    } = {},
+  } = props;
   // API
   const syncGoogleCalendarAPI = async (date) => {
     const res = await dispatch({
@@ -61,6 +68,15 @@ const Calendar = (props) => {
   const onNextDay = () => {
     setSelectedDate(moment(selectedDate).add(1, 'days'));
   };
+  useEffect(() => {
+    const country = location ? location.headQuarterAddress.country._id : '';
+    dispatch({
+      type: 'dashboard/fetchHolidaysByCountry',
+      payload: {
+        country,
+      },
+    });
+  }, []);
 
   const renderMyCalendarAction = () => {
     return (
@@ -80,6 +96,8 @@ const Calendar = (props) => {
   const onNextYear = () => {
     setSelectedYear(selectedYear + 1);
   };
+
+  const filterHoliday = holidaysListByCountry.filter((obj) => obj.date.dateTime.year === selectedYear.toString()) || [];
 
   const renderHolidayCalendarAction = () => {
     return (
@@ -110,7 +128,7 @@ const Calendar = (props) => {
               )}
             </TabPane>
             <TabPane tab="Holiday Calendar" key="2">
-              <HolidayCalendar />
+              <HolidayCalendar listHolidays={filterHoliday} />
             </TabPane>
           </Tabs>
         </div>
@@ -126,14 +144,19 @@ const Calendar = (props) => {
         title={activeKey === '2' ? `Holiday Calendar ${selectedYear}` : 'My Calendar'}
         onClose={() => setModalVisible(false)}
         tabKey={activeKey}
-        data={activeKey === '2' ? [] : googleCalendarList}
+        data={activeKey === '2' ? filterHoliday : googleCalendarList}
         loading={loadingSyncGoogleCalendar}
       />
     </div>
   );
 };
 
-export default connect(({ dashboard: { googleCalendarList = [] } = {}, loading }) => ({
-  googleCalendarList,
-  loadingSyncGoogleCalendar: loading.effects['dashboard/syncGoogleCalendarEffect'],
-}))(Calendar);
+export default connect(
+  ({ dashboard: { googleCalendarList = [], holidaysListByCountry = [] } = {}, loading,  user: { currentUser = {} } = {} }) => ({
+    googleCalendarList,
+    loadingSyncGoogleCalendar: loading.effects['dashboard/syncGoogleCalendarEffect'],
+    holidaysListByCountry,
+    currentUser,
+    loadingHolidays: loading.effects['dashboard/fetchHolidaysByCountry'],
+  }),
+)(Calendar);
