@@ -21,12 +21,24 @@ const WidgetCard = (props) => {
     onSelectWidget(id, checkedTemp);
   };
   let imagePreview = '';
-  if(name === 'My Team'){imagePreview = previewTeam}
-  if(name === 'Activity Log'){imagePreview = previewActivity}
-  if(name === 'Tasks'){imagePreview = previewTask}
-  if(name === 'My Apps'){imagePreview = previewMyapps}
-  if(name === 'Timesheets'){imagePreview = previewTimesheet}
-  if(name === 'Calendar'){imagePreview = previewDailyCalendar}
+  if (name === 'My Team') {
+    imagePreview = previewTeam;
+  }
+  if (name === 'Activity Log') {
+    imagePreview = previewActivity;
+  }
+  if (name === 'Tasks') {
+    imagePreview = previewTask;
+  }
+  if (name === 'My Apps') {
+    imagePreview = previewMyapps;
+  }
+  if (name === 'Timesheets') {
+    imagePreview = previewTimesheet;
+  }
+  if (name === 'Calendar') {
+    imagePreview = previewDailyCalendar;
+  }
   return (
     <Col span={12} className={styles.WidgetCard}>
       <Row gutter={[16]}>
@@ -35,7 +47,13 @@ const WidgetCard = (props) => {
         </Col>
         <Col span={21}>
           <div className={styles.cardContainer}>
-            <div className={styles.preview}><img src={imagePreview} style={{width: '270px', height: '210px', marginTop: '-10px'}} alt="" /></div>
+            <div className={styles.preview}>
+              <img
+                src={imagePreview}
+                style={{ width: '270px', height: '210px', marginTop: '-10px' }}
+                alt=""
+              />
+            </div>
             <div className={styles.info}>
               <span className={styles.info__title}>{name}</span>
               <span className={styles.info__description}>{description}</span>
