@@ -233,7 +233,7 @@ const routes = [
             path: '/dashboard',
             name: 'dashboard',
             icon: '/assets/images/menuIcons/dashboard.svg',
-            component: './Dashboard',
+            component: './HomePage',
           },
           {
             path: '/dashboard/approvals',
