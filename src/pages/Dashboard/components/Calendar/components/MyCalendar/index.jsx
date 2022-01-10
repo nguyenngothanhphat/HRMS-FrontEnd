@@ -10,14 +10,14 @@ const MyCalendar = (props) => {
   const [hourList, setHourList] = useState([]);
   const [firstHourHasData, setFirstHourHasData] = useState('');
 
-  const [dateToFormat, setdateToFormat] = useState(moment().format('HH:mm'))
+  const [dateToFormat, setDateToFormat] = useState(moment().format('HH:mm'))
 
   const updateTime = () => {
     return moment().format('HH:mm')
   }
 
   useEffect(() => {
-    setInterval(() => setdateToFormat(updateTime, 1000));
+    setInterval(() => setDateToFormat(updateTime, 1000));
   },[]);
 
   // USE EFFECT
