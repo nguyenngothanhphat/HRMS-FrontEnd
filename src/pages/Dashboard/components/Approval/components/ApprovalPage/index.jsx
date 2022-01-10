@@ -1,9 +1,11 @@
 import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Space, Table } from 'antd';
-import { filter } from 'lodash';
+import { Button, Input, Space, Table, Popover } from 'antd';
+import { filter, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
+import PopoverInfo from '../PopoverInfo';
+import { getTimezoneViaCity } from '@/utils/times';
 import filterIcon from '@/assets/offboarding-filter.svg';
 import rejectIcon from '@/assets/cancel.svg';
 import approvalIcon from '@/assets/approve.svg';
@@ -11,11 +13,21 @@ import DetailTicket from '../DetailTicket';
 import styles from './index.less';
 
 const ApprovalPage = (props) => {
-  const { dispatch, loadingTable, listTicket, isLoadData, loadingReject, loadingApproval } = props;
+  const {
+    dispatch,
+    loadingTable,
+    listTicket,
+    isLoadData,
+    loadingReject,
+    loadingApproval,
+    listLocationsByCompany,
+  } = props;
   const [openModal, setOpenModal] = useState(false);
   const [ticket, setTicket] = useState({});
   const [keySearch, setKeySearch] = useState('');
   const [listData, setListData] = useState([]);
+  const [timezoneList, settimezoneList] = useState([]);
+  const [currentTime, setcurrentTime] = useState(moment());
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -31,6 +43,30 @@ const ApprovalPage = (props) => {
         type: 'dashboard/fetchListTicket',
       });
   }, [isLoadData]);
+
+  const fetchTimezone = () => {
+    const timeZoneList = [];
+    listLocationsByCompany.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
+        _id = '',
+      } = location;
+      timeZoneList.push({
+        locationId: _id,
+        timezone:
+          getTimezoneViaCity(city) ||
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
+    settimezoneList(timeZoneList);
+  };
+
+  useEffect(() => {
+    fetchTimezone();
+  }, [listLocationsByCompany]);
+
   useEffect(() => {
     const arr = filter(
       listTicket,
@@ -95,7 +131,13 @@ const ApprovalPage = (props) => {
       setLimit(pageSize);
     },
   };
-
+  // const dummyData = [
+  //   {
+  //     ticketID: 1,
+  //     employee: { generalInfo: { userId: '123', legalName: 'test' } },
+  //     assignee: { generalInfo: { userId: '123', legalName: 'test' } },
+  //   },
+  // ];
   const columns = [
     {
       title: <div style={{ paddingLeft: '10px' }}> Ticket ID</div>,
@@ -117,12 +159,37 @@ const ApprovalPage = (props) => {
         <span className={styles.blueText}>{userId || ''}</span>
       ),
     },
+    // {
+    //   title: 'Name',
+    //   dataIndex: 'employee',
+    //   key: 'employee',
+    //   width: 250,
+    //   render: ({ generalInfo: { legalName = '' } = {} } = {}) => <span>{legalName || ''}</span>,
+    // },
     {
       title: 'Name',
       dataIndex: 'employee',
       key: 'employee',
       width: 250,
-      render: ({ generalInfo: { legalName = '' } = {} } = {}) => <span>{legalName || ''}</span>,
+      render: (employee) => (
+        <Popover
+          content={
+            <PopoverInfo
+              listLocationsByCompany={listLocationsByCompany}
+              propsState={{ currentTime, timezoneList }}
+              data={employee}
+            />
+          }
+          placement="bottomRight"
+          trigger="hover"
+        >
+          {!isEmpty(employee?.generalInfo) ? (
+            <span className={styles.employeeName}>{employee?.generalInfo?.legalName}</span>
+          ) : (
+            ''
+          )}
+        </Popover>
+      ),
     },
     {
       title: 'Manager',
@@ -143,7 +210,7 @@ const ApprovalPage = (props) => {
       align: 'left',
     },
     {
-      title: 'Date',
+      title: 'Request Date',
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 200,
@@ -210,11 +277,18 @@ const ApprovalPage = (props) => {
     </div>
   );
 };
-export default connect(({ loading, dashboard: { listTicket = [], totalTicket, isLoadData } }) => ({
-  loadingTable: loading.effects['dashboard/fetchListTicket'],
-  loadingReject: loading.effects['dashboard/rejectTicket'],
-  loadingApproval: loading.effects['dashboard/approvalTicket'],
-  listTicket,
-  totalTicket,
-  isLoadData,
-}))(ApprovalPage);
+export default connect(
+  ({
+    loading,
+    locationSelection: { listLocationsByCompany = [] },
+    dashboard: { listTicket = [], totalTicket, isLoadData },
+  }) => ({
+    loadingTable: loading.effects['dashboard/fetchListTicket'],
+    loadingReject: loading.effects['dashboard/rejectTicket'],
+    loadingApproval: loading.effects['dashboard/approvalTicket'],
+    listLocationsByCompany,
+    listTicket,
+    totalTicket,
+    isLoadData,
+  }),
+)(ApprovalPage);

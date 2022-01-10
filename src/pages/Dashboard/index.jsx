@@ -44,7 +44,7 @@ const Dashboard = (props) => {
   } = props;
   const { _id = '', generalInfo: { legalName = '' } = {} || {} } = employee;
   const [visibleWidgets, setVisibleWidgets] = useState([]);
-
+  
   // FUNCTIONS
   const updateWidgets = (widgetDashboardShow) => {
     return dispatch({

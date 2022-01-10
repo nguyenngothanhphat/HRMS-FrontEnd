@@ -408,7 +408,7 @@ class AvatarDropdown extends React.Component {
               />
             </div>
             <div className={styles.viewProfileInfo}>
-              <p>{name}</p>
+              <p>{currentUser?.employee?.generalInfo?.legalName || name}</p>
               {currentUser?.employee?.generalInfo?.employeeId && (
                 <p>
                   {currentUser?.employee?.title?.name} -{' '}

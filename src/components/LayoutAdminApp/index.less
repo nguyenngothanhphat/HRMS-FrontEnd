@@ -14,39 +14,37 @@
     flex-direction: row;
     min-height: 90vh;
     background-color: #f6f7f9;
-    .affix {
-      height: fit-content;
-      .viewLeft {
-        width: 250px;
-        height: auto;
-        // margin-top: 1px;
-        &__menu {
-          padding: 24px 0 24px 20px;
-          background-color: #ffffff;
-          box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
-          div:last-child {
-            border-bottom: none;
-            // margin-bottom: 50px;
-          }
-          &__btn {
-            width: 83%;
-            height: 40px;
-            margin-top: 24px;
-            color: #ffffff;
-            font-weight: 500;
-            font-size: 14px;
-            line-height: 16px;
-            text-align: center;
-            background: #ffa100;
-            border: none;
-            border-radius: 25px;
-            &:disabled {
-              opacity: 0.5;
-            }
+
+    .viewLeft {
+      height: auto;
+      // margin-top: 1px;
+      &__menu {
+        padding: 24px 0 24px 20px;
+        background-color: #ffffff;
+        box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
+        div:last-child {
+          border-bottom: none;
+          // margin-bottom: 50px;
+        }
+        &__btn {
+          width: 83%;
+          height: 40px;
+          margin-top: 24px;
+          color: #ffffff;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 16px;
+          text-align: center;
+          background: #ffa100;
+          border: none;
+          border-radius: 25px;
+          &:disabled {
+            opacity: 0.5;
           }
         }
       }
     }
+
     .viewRight {
       width: 100%;
       padding: 25px;

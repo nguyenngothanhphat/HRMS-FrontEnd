@@ -61,34 +61,34 @@ class CommonLayout extends PureComponent {
           <div className={s.titlePage}>Admin App</div>
         </Affix>
 
-        <div className={s.root}>
-          <Affix offsetTop={102} className={s.affix}>
-            <div className={s.viewLeft}>
-              <div className={s.viewLeft__menu}>
-                {listMenu.map((item) => (
-                  <ItemMenu
-                    key={item.id}
-                    item={item}
-                    handleClick={this.handleCLickItemMenu}
-                    selectedItemId={selectedItemId}
-                  />
-                ))}
-              </div>
+        <Row className={s.root}>
+          <Col xs={24} md={6} xl={4} className={s.viewLeft}>
+            <div className={s.viewLeft__menu}>
+              {listMenu.map((item) => (
+                <ItemMenu
+                  key={item.id}
+                  item={item}
+                  handleClick={this.handleCLickItemMenu}
+                  selectedItemId={selectedItemId}
+                />
+              ))}
             </div>
-          </Affix>
-          <Row className={s.viewRight} gutter={[24, 0]}>
-            {loadingFetchCompanyById ? (
-              <Skeleton />
-            ) : (
-              <>
-                <Col span={16}>{displayComponent}</Col>
-                <Col span={8}>
-                  <UploadLogoCompany />
-                </Col>
-              </>
-            )}
-          </Row>
-        </div>
+          </Col>
+          <Col xs={24} md={18} xl={20} className={s.viewRight}>
+            <Row gutter={[24, 24]}>
+              {loadingFetchCompanyById ? (
+                <Skeleton />
+              ) : (
+                <>
+                  <Col span={16}>{displayComponent}</Col>
+                  <Col span={8}>
+                    <UploadLogoCompany />
+                  </Col>
+                </>
+              )}
+            </Row>
+          </Col>
+        </Row>
       </div>
     );
   }

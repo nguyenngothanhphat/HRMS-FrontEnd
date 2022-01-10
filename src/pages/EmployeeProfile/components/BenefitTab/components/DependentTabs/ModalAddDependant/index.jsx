@@ -124,7 +124,7 @@ class ModalAddDependant extends Component {
             },
           ]}
         >
-          <Input />
+          <Input placeholder="Enter the first name" />
         </Form.Item>
         <Form.Item
           label="Last Name"
@@ -137,7 +137,7 @@ class ModalAddDependant extends Component {
             },
           ]}
         >
-          <Input />
+          <Input placeholder="Enter the last name" />
         </Form.Item>
         <Form.Item
           label="Gender"
@@ -149,7 +149,7 @@ class ModalAddDependant extends Component {
             },
           ]}
         >
-          <Select className={styles.selectForm}>
+          <Select className={styles.selectForm} placeholder="Select the gender">
             <Option value="Male">Male</Option>
             <Option value="Female">Female</Option>
             <Option value="Other">Other</Option>
@@ -165,7 +165,7 @@ class ModalAddDependant extends Component {
             },
           ]}
         >
-          <Select className={styles.selectForm}>
+          <Select className={styles.selectForm} placeholder="Enter the relationship">
             <Option value="Father">Father</Option>
             <Option value="Mother">Mother</Option>
             <Option value="Spouse">Spouse</Option>
@@ -186,6 +186,7 @@ class ModalAddDependant extends Component {
             className={styles.dateForm}
             format="DD/MM/YYYY"
             disabledDate={this.disabledDate}
+            placeholder="Select the date of birth"
           />
         </Form.Item>
       </Form>
@@ -197,7 +198,7 @@ class ModalAddDependant extends Component {
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>
-          <p className={styles.header__text}>Add Dependant</p>
+          <span className={styles.header__text}>Add Dependant</span>
         </div>
       );
     };

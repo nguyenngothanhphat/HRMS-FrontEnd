@@ -1,183 +1,193 @@
-.orgChartRoot{
-    width: 100%;
-    min-height: 80vh;
-    padding-top: 100px;
+.orgChartRoot {
+  width: 100%;
+  min-height: 80vh;
+  padding-top: 100px;
 
-    .viewLoading {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 300px;
-        padding-left: 300px;
+  .viewLoading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 300px;
+    padding-left: 300px;
+  }
+
+  .charts {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-left: 300px;
+
+    &__line {
+      width: fit-content;
+      width: -moz-fit-content;
+      margin: 0 auto;
     }
 
-    .charts {
-        width: 100%;
+    .node {
+      &:hover {
+        border: 1px solid #2c6df9;
+      }
+      width: 240px;
+      min-height: 90px;
+
+      padding: 8px 16px;
+      background: #ffffff;
+      border: 1px solid #e8eef2;
+      border-radius: 6px;
+      box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
+
+      cursor: pointer;
+
+      &__card {
         display: flex;
-        flex-direction: column;
+        align-items: flex-start;
+
+        .avatar {
+          min-width: 42px;
+        }
+
+        &__info {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          padding-left: 10px;
+
+          .deptName {
+            min-height: 36px;
+          }
+
+          .legalName,
+          .deptName,
+          .countryName {
+            padding-bottom: 6px;
+          }
+
+          .legalName {
+            color: #161c29;
+            font-weight: 500;
+            font-size: 14px;
+            font-family: Roboto;
+            font-style: normal;
+            line-height: 16px;
+          }
+          .deptName,
+          .countryName {
+            color: #707177;
+            font-weight: normal;
+            font-size: 13px;
+            font-family: Roboto;
+            font-style: normal;
+            line-height: 15px;
+          }
+        }
+      }
+
+      &__bottom {
+        position: absolute;
+        display: flex;
         align-items: center;
-        justify-content: center;
-        padding-left: 300px;
+        transition: 0.3s all ease-in-out !important;
 
-        &__line{
-            margin: 0 auto;
-            width: fit-content;
-            width: -moz-fit-content;
+        &_reporteesExpand,
+        &_reporteesCollapse,
+        &_you,
+        &_you1,
+        &_you2,
+        &_reportees {
+          padding: 4px 10px;
+          color: #ffffff;
+          font-weight: 500;
+          font-size: 12px;
+          font-family: Roboto;
+          font-style: normal;
+          line-height: 14px;
+          border-radius: 13px;
+          transition: 0.3s all ease-in-out !important;
         }
 
-        .node{
-            &:hover{
-                border: 1px solid #2c6df9;
-            }
-
-            cursor: pointer;
-            width: 240px;
-            min-height: 90px; 
-            background: #FFFFFF;
-            border: 1px solid #E8EEF2;
-            box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
-            border-radius: 6px;
-
-            padding: 8px 16px;
-
-            &__card{
-                display: flex;
-                align-items: flex-start;
-
-                .avatar{
-                    min-width: 42px;
-                }
-
-                &__info{
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    padding-left: 10px;
-
-                    .legalName, .deptName, .countryName{
-                        padding-bottom: 6px;
-                    }
-
-                    .legalName{
-                        font-family: Roboto;
-                        font-style: normal;
-                        font-weight: 500;
-                        font-size: 14px;
-                        line-height: 16px;
-
-                        color: #161C29;
-                    }
-                    .deptName, .countryName{
-                        font-family: Roboto;
-                        font-style: normal;
-                        font-weight: normal;
-                        font-size: 13px;
-                        line-height: 15px;
-
-                        color: #707177;
-                    }
-                }
-
-            }
-            
-            &__bottom{
-                position: absolute;
-                display: flex;
-                align-items: center;
-                transition: 0.3s all ease-in-out !important;
-
-                &_reporteesExpand, &_reporteesCollapse, &_you, &_you1, &_you2, &_reportees{
-                    font-family: Roboto;
-                    font-style: normal;
-                    font-weight: 500;
-                    font-size: 12px;
-                    line-height: 14px;
-                    color: #FFFFFF;
-                    padding: 4px 10px;
-                    border-radius: 13px;
-                    transition: 0.3s all ease-in-out !important;
-                }
-
-                &_reporteesExpand{
-                    background: #2C6DF9;
-                    margin-right: 16px;
-                }
-
-                &_reportees{
-                    position: absolute;
-                    background: #2C6DF9;
-                    margin-right: 16px;
-                }
-
-                &_reporteesCollapse{
-                    background: #FFA100;
-                    color: #000;
-                    margin-right: 16px;
-                }
-
-                &_you{
-                    background: #00C598;
-                }
-
-                &_you1, &_you2{
-                    position: absolute;
-                    background: #00C598;
-                }
-
-                &_you1{
-                    right: 80px;
-                }
-            }
+        &_reporteesExpand {
+          margin-right: 16px;
+          background: #2c6df9;
         }
 
-        .currentUserNode{
-            position: relative;
-            border: 1px solid #00C598;
-            margin: auto;
+        &_reportees {
+          position: absolute;
+          margin-right: 16px;
+          background: #2c6df9;
         }
 
-        .userNode{
-            position: relative;
-            margin: auto;
+        &_reporteesCollapse {
+          margin-right: 16px;
+          color: #000;
+          background: #ffa100;
         }
 
-        .parentNode {
-            position: relative;
+        &_you {
+          background: #00c598;
         }
 
-        .nodesTree{
-            max-width: 768px; // exactly = 750px
-            /*
-                - each node's width = 240px. 
+        &_you1,
+        &_you2 {
+          position: absolute;
+          background: #00c598;
+        }
+
+        &_you1 {
+          right: 80px;
+        }
+      }
+    }
+
+    .currentUserNode {
+      position: relative;
+      margin: auto;
+      border: 1px solid #00c598;
+    }
+
+    .userNode {
+      position: relative;
+      margin: auto;
+    }
+
+    .parentNode {
+      position: relative;
+    }
+
+    .nodesTree {
+      max-width: 768px; // exactly = 750px
+      /*
+                - each node's width = 240px.
                 - 3 columns => 240px * 3 = 720px
                 - spacing between nodes: 24px
                 -> 720 + 24*2 = 768px
-            */      
+            */
 
-            .lineNode{
-                width: 100%;
+      .lineNode {
+        width: 100%;
 
-                &__line{
-                    margin: 0 auto;
-                    width: fit-content;
-                    width: -moz-fit-content;
-                }
-            }
+        &__line {
+          width: fit-content;
+          width: -moz-fit-content;
+          margin: 0 auto;
         }
-
-        .childrenList{
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 24px;
-
-            .employeeNode{
-            }
-        }
-
-        .selectNode{
-            border: 1px solid #2c6df9;
-        }
+      }
     }
+
+    .childrenList {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      align-items: center;
+
+      .employeeNode {
+      }
+    }
+
+    .selectNode {
+      border: 1px solid #2c6df9;
+    }
+  }
 }

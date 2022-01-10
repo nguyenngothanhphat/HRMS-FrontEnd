@@ -168,11 +168,8 @@ const ActivityCard = (props) => {
           {renderDescription(description)}
         </Col>
         <Col span={TIME} className={`${styles.normalCell} ${styles.blueText}`}>
-          {startTime
-            ? `${moment(startTime, 'HH:mm').format(hourFormat)} - ${moment(endTime, 'HH:mm').format(
-                hourFormat,
-              )}`
-            : '-'}
+          {moment(startTime, 'HH:mm').format(hourFormat)} -{' '}
+          {moment(endTime, 'HH:mm').format(hourFormat)}
         </Col>
         <Col span={TOTAL_HOURS} className={`${styles.normalCell} ${styles.blueText}`}>
           {convertMsToTime(duration)}

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Divider, Button, Spin, Input, Tooltip, Menu, Dropdown, Checkbox, Tag } from 'antd';
 
-import avtDefault from '@/assets/avtDefault.jpg';
-import bioSvg from '@/assets/bioActions.svg';
 import { connect, history } from 'umi';
 import moment from 'moment';
+import avtDefault from '@/assets/avtDefault.jpg';
+import bioSvg from '@/assets/bioActions.svg';
 import ModalUpload from '@/components/ModalUpload';
 import CustomModal from '@/components/CustomModal';
 import s from '@/components/LayoutEmployeeProfile/index.less';
@@ -19,7 +19,6 @@ const MANAGER = 'MANAGER';
 
 @connect(
   ({
-    loading,
     employeeProfile: {
       tempData: { generalData = {}, compensationData = {} } = {},
       originData: {
@@ -38,7 +37,6 @@ const MANAGER = 'MANAGER';
     generalData,
     compensationData,
     originGeneralData,
-    loading: loading.effects['employeeProfile/fetchGeneralInfo'],
     myEmployeeID,
     manager,
     location,
@@ -82,6 +80,11 @@ class ViewInformation extends Component {
 
   componentWillUnmount = () => {
     this.onScroll('removeEventListener');
+  };
+
+  viewProfile = (id) => {
+    const url = `/directory/employee-profile/${id}`;
+    window.open(url, '_blank');
   };
 
   onScroll = (name) => {
@@ -211,7 +214,14 @@ class ViewInformation extends Component {
       <div className={s.formEditBio}>
         <div className={s.formEditBio__title}>Edit Bio</div>
         <div className={s.formEditBio__description1}>Only 170 chracter allowed!</div>
-        <TextArea rows={3} defaultValue={bio} onChange={this.onChangeInput} />
+        <TextArea
+          autoSize={{
+            minRows: 4,
+            maxRows: 7,
+          }}
+          defaultValue={bio}
+          onChange={this.onChangeInput}
+        />
         <div className={s.formEditBio__description2}>
           <span style={{ opacity: 0.5 }}> Remaining characters: </span>
           {check >= 0 ? (
@@ -280,6 +290,7 @@ class ViewInformation extends Component {
   };
 
   btnAction = (permissions, profileOwner) => {
+    const { loading, loadingFetchEmployee } = this.props;
     const { placementText } = this.state;
 
     const subDropdown = (
@@ -291,7 +302,12 @@ class ViewInformation extends Component {
     );
 
     const menu = (
-      <Menu className={s.menuDropdown} mode="inline" onClick={this.handleClickMenu}>
+      <Menu
+        className={s.menuDropdown}
+        mode="inline"
+        onClick={this.handleClickMenu}
+        disabled={loading || loadingFetchEmployee}
+      >
         {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
           <Menu.Item key="editBio" className={s.menuItem} onClick={this.handleEditBio}>
             Edit Bio
@@ -327,11 +343,14 @@ class ViewInformation extends Component {
   };
 
   _renderListCertification = (list) => {
-    return list.map((item) => {
+    if (list.length === 0) {
+      return <div className={s.infoEmployee__textNameAndTitle__title}>No certifications</div>;
+    }
+    return list.map((item, index) => {
       const { name = '', _id = '' } = item;
       return (
-        <div key={_id} className={s.infoEmployee__textNameAndTitle__title}>
-          <div className={s.textValue}>{name}</div>
+        <div key={_id} className={s.infoEmployee__textNameAndTitle__certifications}>
+          {index + 1} - {name}
         </div>
       );
     });
@@ -341,7 +360,6 @@ class ViewInformation extends Component {
     const {
       generalData,
       // compensationData,
-      loading,
       originGeneralData: { bioInfo = '', isShowAvatar = true } = {},
       // employeeLocation = '',
       permissions = {},
@@ -349,25 +367,28 @@ class ViewInformation extends Component {
       manager = {},
       location: { name: locationName = '' } = {},
       department: { name: departmentName = '' } = {},
-      joinDate = '',
+      // joinDate = '',
       title,
+      loadingFetchEmployee = false,
     } = this.props;
 
-    const checkVisible = profileOwner || permissions.viewOtherInformation !== -1;
+    // const checkVisible = profileOwner || permissions.viewOtherInformation !== -1;
 
     const {
-      firstName = '',
+      legalName = '',
       avatar = '',
       linkedIn = '',
       workEmail = '',
-      workNumber = '',
+      // workNumber = '',
       certification = [],
+      userId = '',
     } = generalData;
 
     // const { tittle: { name: title = '' } = {} } = compensationData;
     const { visible, openEditBio } = this.state;
-    const joiningDate = joinDate ? moment(joinDate).format('MM.DD.YY') : '-';
-    const { generalInfo: { firstName: managerFN = '', lastName: managerLN = '' } = {} } = manager;
+    // const joiningDate = joinDate ? moment(joinDate).format('MM.DD.YY') : '-';
+    const { generalInfo: { legalName: managerName = '', userId: managerUserId = '' } = {} } =
+      manager;
     // const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
     const listColors = [
       {
@@ -391,16 +412,12 @@ class ViewInformation extends Component {
         colorText: '#ff6ca1',
       },
     ];
-    const formatListSkill = this.formatListSkill(generalData.skills || [], generalData.otherSkills || [], listColors) || [];
+    const formatListSkill =
+      this.formatListSkill(generalData.skills || [], generalData.otherSkills || [], listColors) ||
+      [];
 
     const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
 
-    if (loading)
-      return (
-        <div className={s.viewLoading}>
-          <Spin />
-        </div>
-      );
     return (
       <div className={s.viewRight__infoEmployee}>
         <img
@@ -418,10 +435,16 @@ class ViewInformation extends Component {
           />
         )}
         <div className={s.infoEmployee__textNameAndTitle}>
-          <p className={s.infoEmployee__textNameAndTitle__name}>{firstName}</p>
-          <p className={s.infoEmployee__textNameAndTitle__title} style={{ margin: '5px 0' }}>
-            {title ? title.name : ''}
-          </p>
+          {legalName && (
+            <p className={s.infoEmployee__textNameAndTitle__name}>
+              {legalName} ({userId}
+            </p>
+          )}
+          {title?.name && (
+            <p className={s.infoEmployee__textNameAndTitle__title} style={{ margin: '5px 0' }}>
+              {title?.name || ''}
+            </p>
+          )}
         </div>
 
         <div className={s.infoEmployee__viewBottom}>
@@ -435,6 +458,7 @@ class ViewInformation extends Component {
                 <Checkbox
                   className={s.showAvatar}
                   checked={isShowAvatar}
+                  disabled={loadingFetchEmployee}
                   onChange={this.onChangeShowAvatar}
                 >
                   Show profile picture to other users
@@ -445,10 +469,16 @@ class ViewInformation extends Component {
           <Divider />
           <p className={s.titleTag}>Skills</p>
           <div>
+            {formatListSkill.length === 0 && (
+              <div className={s.infoEmployee__viewBottom__certifications}>
+                <div className={s.infoEmployee__textNameAndTitle__title}>No skills</div>
+              </div>
+            )}
             {formatListSkill.map((item) => (
               <Tag
                 style={{
                   color: `${item.color.colorText}`,
+                  fontWeight: 'normal',
                 }}
                 key={item.id}
                 color={item.color.bg}
@@ -463,14 +493,14 @@ class ViewInformation extends Component {
             {this._renderListCertification(certification)}
           </div>
           <Divider />
-          {checkVisible ? (
+          {/* {checkVisible ? (
             <div className={s.infoEmployee__viewBottom__row}>
               <p className={s.titleTag}>Joining Date</p>
               <p className={s.infoEmployee__textNameAndTitle__title}>{joiningDate}</p>
             </div>
           ) : (
             ''
-          )}
+          )} */}
 
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag}>Location</p>
@@ -479,10 +509,16 @@ class ViewInformation extends Component {
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag}>Reporting to</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>
-              {managerFN} {managerLN}
+              <span className={s.managerName} onClick={() => this.viewProfile(managerUserId)}>
+                {managerName}
+              </span>
             </p>
           </div>
-          <Divider />
+          <div className={s.infoEmployee__viewBottom__row}>
+            <p className={s.titleTag}>Department</p>
+            <p className={s.infoEmployee__textNameAndTitle__title}>{departmentName}</p>
+          </div>
+          {/* <Divider />
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag1}>Email</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{workEmail}</p>
@@ -490,46 +526,33 @@ class ViewInformation extends Component {
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag1}>Contact number</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{workNumber}</p>
-          </div>
+          </div> */}
           {/* <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag1}>Joining department</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>Not implemented</p>
           </div> */}
-          <div className={s.infoEmployee__viewBottom__row}>
+          {/* <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag1}>Current department</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{departmentName}</p>
-          </div>
+          </div> */}
 
           <Divider />
-          <div className={s.infoEmployee__socialMedia} style={{marginLeft: '-15px'}}>
-            <Tooltip 
-              title={linkedIn ? 'LinkedIn' : "Please update the Linkedin Profile in the Employee profile page"}
+          <div className={s.infoEmployee__socialMedia}>
+            <Tooltip
+              title={
+                linkedIn
+                  ? 'LinkedIn'
+                  : 'Please update the Linkedin Profile in the Employee profile page'
+              }
             >
-              <Button
-                disabled={linkedIn ? '' : 'true'}
-                style={{ width: '40px', background: 'white', border: '1px solid white'}}
-              >
-                <a href={linkedIn} target="_blank" rel="noopener noreferrer">
-                  <img
-                    src="/assets/images/iconLinkedin.svg"
-                    alt="img-arrow"
-                    style={{ cursor: 'pointer' }}
-                  />
-                </a>
-              </Button>
+              <a href={linkedIn || '#'} target="_blank" rel="noopener noreferrer">
+                <img src="/assets/images/iconLinkedin.svg" alt="img-arrow" />
+              </a>
             </Tooltip>
             <Tooltip title="Email">
-              <Button
-                style={{ width: '40px', background: 'white', border: '1px solid white'}}
-              >
-                <a href={`mailto:${workEmail}`}>
-                  <img
-                    src="/assets/images/iconMail.svg"
-                    alt="img-arrow"
-                    style={{ marginLeft: '5px', cursor: 'pointer' }}
-                  />
-                </a>
-              </Button>
+              <a href={`mailto:${workEmail}`}>
+                <img src="/assets/images/iconMail.svg" alt="img-arrow" />
+              </a>
             </Tooltip>
           </div>
           <div className={s.viewBtnAction}>{this.btnAction(permissions, profileOwner)}</div>
@@ -545,6 +568,7 @@ class ViewInformation extends Component {
           open={openEditBio}
           closeModal={this.handleEditBio}
           content={this._renderFormEditBio()}
+          type={2}
         />
       </div>
     );

@@ -6,6 +6,7 @@ import DefaultAvatar from '@/assets/defaultAvatar.png';
 import styles from './index.less';
 
 const { Step } = Steps;
+const { REJECTED } = TIMEOFF_STATUS;
 class RightContent extends PureComponent {
   constructor(props) {
     super(props);
@@ -22,7 +23,7 @@ class RightContent extends PureComponent {
           src={url}
           alt="avatar"
         />
-        {status === TIMEOFF_STATUS.rejected && <CloseCircleTwoTone twoToneColor="#fd4546" />}
+        {status === REJECTED && <CloseCircleTwoTone twoToneColor="#fd4546" />}
       </div>
     );
   };

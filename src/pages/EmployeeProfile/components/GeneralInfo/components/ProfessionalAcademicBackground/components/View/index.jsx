@@ -89,7 +89,9 @@ class View extends Component {
 
       return (
         <div key={_id} className={styles.viewRow} style={{ marginBottom: '6px' }}>
-          <div className={styles.textValue}>{index + 1} - {name}</div>
+          <div className={styles.textValue}>
+            {index + 1} - {name}
+          </div>
           {urlFile && (
             <div className={styles.viewRow}>
               <p
@@ -117,21 +119,23 @@ class View extends Component {
       preJobTitle = '',
       skills = [],
       preCompany = '',
-      pastExp = 0,
+      // pastExp = 0,
       totalExp = 0,
       qualification = '',
       certification = [],
       otherSkills = [],
+      linkedIn = '',
     } = generalData;
     // const objPreviousJobTilte = listTitle.find((item) => item._id === preJobTitle) || {};
-    const dummyData = [
-      { id: 1, label: 'Previous Job Tilte', value: preJobTitle },
+    const items = [
+      { id: 1, label: 'Previous Job Title', value: preJobTitle },
       { id: 2, label: 'Previous Company', value: preCompany },
-      { id: 3, label: 'Past Experience', value: pastExp },
-      { id: 4, label: 'Total Experience', value: totalExp },
-      { id: 5, label: 'Qualification', value: qualification },
+      // { id: 3, label: 'Past Experience', value: pastExp },
+      { id: 3, label: 'Total Experience (in years)', value: totalExp },
+      { id: 4, label: 'Highest Qualification', value: qualification },
+      { id: 5, label: 'LinkedIn', value: <span className={styles.linkedIn}>{linkedIn}</span> },
     ];
-    // const listColors = ['#E0F4F0', '#ffefef', '#f1edff', '#f1f8ff', '#E0F4F0'];
+
     const listColors = [
       {
         bg: '#E0F4F0',
@@ -159,7 +163,7 @@ class View extends Component {
     return (
       <>
         <Row gutter={[0, 16]} className={styles.root}>
-          {dummyData.map((item) => (
+          {items.map((item) => (
             <Fragment key={item.id}>
               <Col span={6} className={styles.textLabel}>
                 {item.label}
@@ -181,6 +185,7 @@ class View extends Component {
               <Tag
                 style={{
                   color: `${item.color.colorText}`,
+                  fontWeight: 500,
                 }}
                 key={item.id}
                 color={item.color.bg}

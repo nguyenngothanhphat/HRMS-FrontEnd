@@ -18,7 +18,7 @@ import styles from './index.less';
       originData: {
         generalData: generalDataOrigin = {},
         employmentData: { location: locationEmpl = {} } = {},
-        taxData = {}
+        taxData = {},
       } = {},
       tempData: { generalData = {} } = {},
       tenantCurrentEmployee = '',
@@ -95,25 +95,19 @@ class Edit extends PureComponent {
       nationalId = uanNumber,
       _id: id = '',
     } = generalDataTemp;
-    // const payloadChanges = {
-    //   id,
-    //   urlFile,
-    //   legalGender,
-    //   legalName,
-    //   firstName: legalName,
-    //   DOB,
-    //   employeeId,
-    //   workEmail,
-    //   workNumber,
-    //   adhaarCardNumber,
-    //   uanNumber,
-    // };
+
+    const fullNameTemp = legalName.split(' ');
+    const firstName = fullNameTemp.slice(0, -1).join(' ');
+    const lastName = fullNameTemp.slice(-1).join(' ');
+
     return {
       id,
       urlFile,
       legalGender,
       legalName,
-      firstName: legalName,
+      firstName: fullNameTemp.length > 1 ? firstName : legalName,
+      lastName: fullNameTemp.length > 1 ? lastName : '',
+      middleName: '',
       DOB,
       employeeId,
       workEmail,
@@ -133,13 +127,15 @@ class Edit extends PureComponent {
       'legalGender',
       'legalName',
       'firstName',
+      'lastName',
+      'middleName',
       'DOB',
       'employeeId',
       'workEmail',
       'workNumber',
       'adhaarCardNumber',
       'uanNumber',
-      'nationalId'
+      'nationalId',
     ];
     listKey.forEach((item) => delete newObj[item]);
     return newObj;
@@ -155,7 +151,7 @@ class Edit extends PureComponent {
       type: 'employeeProfile/updateGeneralInfo',
       payload,
       dataTempKept,
-      key: 'openEmployeeInfor',
+      key: 'openEmployeeInfo',
     });
   };
 
@@ -355,8 +351,8 @@ class Edit extends PureComponent {
     const splitURL = nameFile[nameFile.length - 1];
     const formItemLayout = {
       labelCol: {
-        xs: { span: 8 },
-        sm: { span: 8 },
+        xs: { span: 6 },
+        sm: { span: 6 },
       },
       wrapperCol: {
         xs: { span: 9 },
@@ -365,7 +361,7 @@ class Edit extends PureComponent {
     };
     // const nationalIdNumber = taxData.length > 0 ? taxData[0].nationalId : '';
     const formatDate = DOB && moment(DOB);
-    const dateFormat = 'MM.DD.YY';
+    const dateFormat = 'Do MMMM YYYY';
     const checkIndiaLocation = country === 'IN';
     const checkVietNamLocation = country === 'VN';
     const checkUSALocation = country === 'US';
@@ -390,167 +386,172 @@ class Edit extends PureComponent {
           onValuesChange={(changedValues) => this.handleChange(changedValues)}
           onFinish={this.handleSave}
         >
-          <Form.Item
-            label="Legal Name"
-            name="legalName"
-            rules={[
-              {
-                pattern:
-                  /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]+$/,
-                message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
-              },
-            ]}
-          >
-            <Input className={styles.inputForm} />
-          </Form.Item>
-          <Form.Item label="Date of Birth" name="DOB">
-            <DatePicker
-              format={dateFormat}
-              className={styles.dateForm}
-              disabledDate={this.disabledDate}
-            />
-          </Form.Item>
-          <Form.Item label="Legal Gender" name="legalGender">
-            <Radio.Group>
-              <Radio value="Male">Male</Radio>
-              <Radio value="Female">Female</Radio>
-              <Radio value="Other">Other</Radio>
-            </Radio.Group>
-          </Form.Item>
-          <Form.Item label="Employee ID" name="employeeId">
-            <Input className={styles.inputForm} disabled={permissions.editEmployeeID === -1} />
-          </Form.Item>
-          <Form.Item
-            label="Work Email"
-            name="workEmail"
-            rules={[
-              {
-                type: 'email',
-                message: formatMessage({ id: 'pages.employeeProfile.validateEmail' }),
-              },
-            ]}
-          >
-            <Input className={styles.inputForm} disabled={!(permissions.editWorkEmail !== -1)} />
-          </Form.Item>
-          <Form.Item
-            label="Work Number"
-            name="workNumber"
-            rules={[
-              {
-                pattern: /^[+]*[\d]{0,10}$/,
-                message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
-              },
-            ]}
-          >
-            <Input className={styles.inputForm} />
-          </Form.Item>
+          <div className={styles.formContainer}>
+            <Form.Item
+              label="Full Name"
+              name="legalName"
+              rules={[
+                {
+                  pattern:
+                    /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]+$/,
+                  message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+                },
+              ]}
+            >
+              <Input className={styles.inputForm} />
+            </Form.Item>
+            <Form.Item label="Date of Birth" name="DOB">
+              <DatePicker
+                format={dateFormat}
+                className={styles.dateForm}
+                disabledDate={this.disabledDate}
+              />
+            </Form.Item>
+            <Form.Item label="Gender" name="legalGender">
+              <Radio.Group>
+                <Radio value="Male">Male</Radio>
+                <Radio value="Female">Female</Radio>
+                <Radio value="Other">Other</Radio>
+              </Radio.Group>
+            </Form.Item>
+            <Form.Item label="Employee ID" name="employeeId">
+              <Input className={styles.inputForm} disabled={permissions.editEmployeeID === -1} />
+            </Form.Item>
+            <Form.Item
+              label="Work Email"
+              name="workEmail"
+              rules={[
+                {
+                  type: 'email',
+                  message: formatMessage({ id: 'pages.employeeProfile.validateEmail' }),
+                },
+              ]}
+            >
+              <Input className={styles.inputForm} disabled={!(permissions.editWorkEmail !== -1)} />
+            </Form.Item>
+            <Form.Item
+              label="Work Number"
+              name="workNumber"
+              rules={[
+                {
+                  pattern: /^[0-9\\-]{0,12}$/,
+                  message: formatMessage({
+                    id: 'pages.employeeProfile.validateSocialSecurityNumber',
+                  }),
+                },
+              ]}
+            >
+              <Input className={styles.inputForm} />
+            </Form.Item>
 
-          {checkIndiaLocation ? (
-            <>
-              <div className={styles.styleUpLoad}>
-                <Form.Item
-                  label="Adhaar Card Number"
-                  name="adhaarCardNumber"
-                  rules={[
-                    {
-                      pattern: /^[+]*[\d]{12,12}$/,
-                      message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
-                    },
-                  ]}
-                >
-                  <Input className={isLt5M ? styles.inputForm : styles.inputFormImageValidate} />
-                </Form.Item>
-                <>
-                  {urlFile === '' ? (
-                    <div className={styles.textUpload}>
-                      <UploadImage
-                        content={isLt5M ? 'Choose file' : `Retry`}
-                        name="adhaarCard"
-                        setSizeImageMatch={(isImage5M) => this.handleGetSetSizeImage(isImage5M)}
-                        getResponse={(resp) => this.handleGetUpLoad(resp)}
-                        loading={loadingAdhaarCard}
-                      />
-                    </div>
-                  ) : (
-                    <div className={styles.viewUpLoadData}>
-                      <p
-                        onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
-                        className={styles.viewUpLoadDataURL}
-                      >
-                        fileName
-                      </p>
-
-                      <p className={styles.viewUpLoadDataText}>Uploaded</p>
-                      <img
-                        src={cancelIcon}
-                        alt=""
-                        onClick={this.handleCanCelIcon}
-                        className={styles.viewUpLoadDataIconCancel}
-                      />
-                    </div>
-                  )}
-                </>
-              </div>
-              {urlFile !== '' ? (
-                <Form.Item label="Adhaar Card:" className={styles.labelUpload}>
-                  <p
-                    onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
-                    className={styles.urlUpload}
+            {checkIndiaLocation ? (
+              <>
+                <div className={styles.styleUpLoad}>
+                  <Form.Item
+                    label="Adhaar Card Number"
+                    name="adhaarCardNumber"
+                    rules={[
+                      {
+                        pattern: /^[+]*[\d]{12,12}$/,
+                        message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
+                      },
+                    ]}
                   >
-                    {splitURL}
-                  </p>
-                </Form.Item>
-              ) : (
-                ''
-              )}
-            </>
-          ) : null}
+                    <Input className={isLt5M ? styles.inputForm : styles.inputFormImageValidate} />
+                  </Form.Item>
+                  <>
+                    {urlFile === '' ? (
+                      <div className={styles.textUpload}>
+                        <UploadImage
+                          content={isLt5M ? 'Choose file' : `Retry`}
+                          name="adhaarCard"
+                          setSizeImageMatch={(isImage5M) => this.handleGetSetSizeImage(isImage5M)}
+                          getResponse={(resp) => this.handleGetUpLoad(resp)}
+                          loading={loadingAdhaarCard}
+                        />
+                      </div>
+                    ) : (
+                      <div className={styles.viewUpLoadData}>
+                        <p
+                          onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
+                          className={styles.viewUpLoadDataURL}
+                        >
+                          fileName
+                        </p>
 
-          {checkIndiaLocation ? (
-            <Form.Item
-              label="UAN Number"
-              name="uanNumber"
-              rules={[
-                {
-                  pattern: /^[+]*[\d]{0,16}$/,
-                  message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
-                },
-              ]}
-            >
-              <Input className={styles.inputForm} />
-            </Form.Item>
-          ) : null}
+                        <p className={styles.viewUpLoadDataText}>Uploaded</p>
+                        <img
+                          src={cancelIcon}
+                          alt=""
+                          onClick={this.handleCanCelIcon}
+                          className={styles.viewUpLoadDataIconCancel}
+                        />
+                      </div>
+                    )}
+                  </>
+                </div>
+                {urlFile !== '' ? (
+                  <Form.Item label="Adhaar Card:" className={styles.labelUpload}>
+                    <p
+                      onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
+                      className={styles.urlUpload}
+                    >
+                      {splitURL}
+                    </p>
+                  </Form.Item>
+                ) : (
+                  ''
+                )}
+              </>
+            ) : null}
 
-          {checkVietNamLocation ? (
-            <Form.Item
-              label="National Identification Number"
-              name="uanNumber"
-              rules={[
-                {
-                  pattern: /^[+]*[\d]{0,16}$/,
-                  message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
-                },
-              ]}
-            >
-              <Input className={styles.inputForm} />
-            </Form.Item>
-          ) : null}
+            {checkIndiaLocation ? (
+              <Form.Item
+                label="UAN Number"
+                name="uanNumber"
+                rules={[
+                  {
+                    pattern: /^[+]*[\d]{0,16}$/,
+                    message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
+                  },
+                ]}
+              >
+                <Input className={styles.inputForm} />
+              </Form.Item>
+            ) : null}
 
-          {checkUSALocation ? (
-            <Form.Item
-              label="Social Security Number"
-              name="uanNumber"
-              rules={[
-                {
-                  pattern: /^[+]*[\d]{0,16}$/,
-                  message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
-                },
-              ]}
-            >
-              <Input className={styles.inputForm} />
-            </Form.Item>
-          ) : null}
+            {checkVietNamLocation ? (
+              <Form.Item
+                label="National Identification Number"
+                name="nationalId"
+                rules={[
+                  {
+                    pattern: /^[+]*[\d]{0,16}$/,
+                    message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
+                  },
+                ]}
+              >
+                <Input className={styles.inputForm} />
+              </Form.Item>
+            ) : null}
 
+            {checkUSALocation ? (
+              <Form.Item
+                label="Social Security Number"
+                name="uanNumber"
+                rules={[
+                  {
+                    pattern: /^[0-9\\-]{0,12}$/,
+                    message: formatMessage({
+                      id: 'pages.employeeProfile.validateSocialSecurityNumber',
+                    }),
+                  },
+                ]}
+              >
+                <Input className={styles.inputForm} />
+              </Form.Item>
+            ) : null}
+          </div>
           <div className={styles.spaceFooter}>
             <div className={styles.cancelFooter} onClick={handleCancel}>
               Cancel

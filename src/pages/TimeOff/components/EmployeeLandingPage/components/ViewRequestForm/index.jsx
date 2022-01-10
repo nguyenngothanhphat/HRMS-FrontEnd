@@ -7,6 +7,7 @@ import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
 import styles from './index.less';
 
+const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DELETED, DRAFTS } = TIMEOFF_STATUS;
 @connect(({ timeOff }) => ({
   timeOff,
 }))
@@ -39,17 +40,17 @@ class ViewRequestForm extends PureComponent {
 
   getColorOfStatus = (status) => {
     switch (status) {
-      case TIMEOFF_STATUS.inProgress:
+      case IN_PROGRESS:
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
-      case TIMEOFF_STATUS.accepted:
+      case ACCEPTED:
         return `${styles.leaveStatus} ${styles.approvedColor}`;
-      case TIMEOFF_STATUS.rejected:
+      case REJECTED:
         return `${styles.leaveStatus} ${styles.rejectedColor}`;
-      case TIMEOFF_STATUS.drafts:
+      case DRAFTS:
         return `${styles.leaveStatus} ${styles.draftsColor}`;
-      case TIMEOFF_STATUS.onHold:
+      case ON_HOLD:
         return `${styles.leaveStatus} ${styles.onHoldColor}`;
-      case TIMEOFF_STATUS.deleted:
+      case DELETED:
         return `${styles.leaveStatus} ${styles.deletedColor}`;
       default:
         return `${styles.leaveStatus}`;
@@ -58,17 +59,17 @@ class ViewRequestForm extends PureComponent {
 
   getNameOfStatus = (status) => {
     switch (status) {
-      case TIMEOFF_STATUS.inProgress:
+      case IN_PROGRESS:
         return 'In Progress';
-      case TIMEOFF_STATUS.accepted:
+      case ACCEPTED:
         return 'Approved';
-      case TIMEOFF_STATUS.rejected:
+      case REJECTED:
         return 'Rejected';
-      case TIMEOFF_STATUS.drafts:
+      case DRAFTS:
         return 'Drafts';
-      case TIMEOFF_STATUS.onHold:
+      case ON_HOLD:
         return 'Withdrawn';
-      case TIMEOFF_STATUS.deleted:
+      case DELETED:
         return 'Deleted';
       default:
         return 'Unknown';

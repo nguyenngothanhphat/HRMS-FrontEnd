@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
-import { Button, Modal } from 'antd';
+import { Button } from 'antd';
 import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 // import { checkPermissions } from '@/utils/permissions';
@@ -8,22 +8,16 @@ import edit from './asset/edit.svg';
 import path from './asset/path.svg';
 import CurrentInfo from './components/CurrentInfo';
 import HandleChanges from './components/HandleChanges';
-import ChangeHistoryTable from './components/ChangeHistoryTable';
+import EmploymentHistoryTable from './components/EmploymentHistoryTable';
 import EditCurrentInfo from './components/EditCurrentInfo';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
 import styles from './index.less';
+import CommonModal from '@/components/CommonModal';
 
-const steps = [
-  { title: 'Effective Date', content: 'Effective Date' },
-  { title: 'Compensation Details', content: 'Compensation Details' },
-  { title: 'Work Group', content: 'Work Group' },
-  { title: 'Who to Notify', content: 'Who to Notify' },
-  { title: 'Review Changes', content: 'Review Changes' },
-];
-
-@connect(({ employeeProfile, user: { currentUser = {} } }) => ({
+@connect(({ employeeProfile, user: { permissions, currentUser = {} } }) => ({
   employeeProfile,
   currentUser,
+  permissions,
 }))
 class EmploymentTab extends Component {
   constructor(props) {
@@ -41,15 +35,27 @@ class EmploymentTab extends Component {
   componentDidMount = () => {
     const { employeeProfile = {} } = this.props;
 
-    const { title = {}, location = {} } = employeeProfile?.originData?.employmentData || {};
+    const {
+      title = {},
+      location = {},
+      department = {},
+      manager = {},
+      employeeType = {},
+    } = employeeProfile?.originData?.employmentData || {};
     const { firstName = '', legalName = '' } = employeeProfile?.originData?.generalData || {};
-    const { compensationType = null } = employeeProfile?.originData?.compensationData || {};
+    const { compensationType = '', currentAnnualCTC = '' } =
+      employeeProfile?.originData?.compensationData || {};
     this.setState({
       currentData: {
         name: legalName || firstName || null,
-        title: title?.name || null,
+        title: title?._id || null,
         compensationType: compensationType || null,
-        location: location?.name || null,
+        location: location?._id || null,
+        department: department?._id || null,
+        manager: manager?._id || null,
+        reportees: manager?.reportees || [],
+        employeeType: employeeType?._id || null,
+        currentAnnualCTC: currentAnnualCTC || null,
       },
     });
   };
@@ -95,12 +101,14 @@ class EmploymentTab extends Component {
       const payload = {
         title: data.stepThree.title || null,
         manager: data.stepThree.reportTo || null,
+        reasonChange: data.stepSeven.reasonChange || '',
+        reportees: data.stepThree.reportees || null,
         location: data.stepTwo.wLocation || null,
         employeeType: data.stepTwo.employment || null,
-        department: data.stepThree.department || null,
-        compensationType: `${data.stepTwo.compensation || null} - ${
-          data.stepTwo.compensationType || null
-        }`,
+        department: data.stepTwo.department || null,
+        compensationType: data.stepFour.compensationType || null,
+        annualCTC: data.stepFour.currentAnnualCTC || null,
+        notifyTo: data.stepFive.notifyTo || [],
         effectiveDate: data.stepOne === 'Now' ? new Date() : data.stepOne,
         changeDate: new Date(),
         takeEffect,
@@ -120,7 +128,7 @@ class EmploymentTab extends Component {
     const { current } = this.state;
     if (msg === 'STOP') {
       this.setState({ current: 0 });
-    } else if (current === 4) {
+    } else if (current === 6) {
       this.setState({ submitted: true });
       this.setState({ current: 0 });
       this.setState({ isChanging: false });
@@ -135,33 +143,24 @@ class EmploymentTab extends Component {
   };
 
   handleCancelModelSuccess = () => {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'employeeProfile/save',
-      payload: {visibleSuccess: false}
-    })
+      payload: { visibleSuccess: false },
+    });
   };
 
   render() {
-    const {employeeProfile} = this.props;
+    const { employeeProfile } = this.props;
     const visibleSuccess = employeeProfile ? employeeProfile.visibleSuccess : false;
     const { isChanging, current, currentData, isEdit } = this.state;
-    const {
-      dispatch,
-      listEmployeeActive,
-      currentUser: {
-        // roles = [],
-        employee: { company = {} } = {},
-        permissions = {},
-      },
-      profileOwner = false,
-    } = this.props;
-    // const permissions = checkPermissions(roles);
+    const { dispatch, listEmployeeActive, permissions = {}, profileOwner = false } = this.props;
+
     return (
       <div>
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab__title}>
-            <span className={styles.title}>Employment & Compensation</span>
+            <span className={styles.title}>Employment Details</span>
             {isEdit ? (
               <div style={{ display: 'flex', alignItems: 'center' }} />
             ) : (
@@ -190,9 +189,7 @@ class EmploymentTab extends Component {
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab__title} align="middle">
             <span className={styles.title}>
-              {isChanging
-                ? `Employment & Compensation - ${steps[current].title}`
-                : 'Change History'}
+              {isChanging ? `Edit Employment` : 'Employment History'}
             </span>
             {isChanging ? (
               <div onClick={this.handleMakeChanges} className={styles.cancelButton}>
@@ -221,41 +218,49 @@ class EmploymentTab extends Component {
               current={current}
             />
           ) : (
-            <ChangeHistoryTable />
+            <EmploymentHistoryTable />
           )}
           {isChanging ? (
             <div className={styles.footer}>
-              <div>{current + 1}/5 steps</div>
+              <div>{current + 1}/7 steps</div>
               <div className={styles.buttons}>
                 <Button onClick={this.previousTab} type="text">
                   {current > 0 ? 'Back' : null}
                 </Button>
                 <Button onClick={this.nextTab} type="primary">
-                  {current === 4 ? 'Submit' : 'Continue'}
+                  {current === 6 ? 'Submit' : 'Continue'}
                 </Button>
               </div>
             </div>
           ) : null}
         </div>
-        <Modal
+        <CommonModal
           visible={visibleSuccess}
-          className={styles.modalUpdateSuccess}
-          footer={null}
-          width="30%"
-          onCancel={this.handleCancelModelSuccess}
-        >
-          <div style={{ textAlign: 'center' }}>
-            <img src={imageAddSuccess} alt="update success" />
-          </div>
-          <br />
-          <br />
-          <p style={{ textAlign: 'center', color: '#707177' }}>Update infomation successfully</p>
-          <div className={styles.spaceFooterModalSuccess}>
-            <Button onClick={this.handleCancelModelSuccess} className={styles.btnOkModalSuccess}>
-              Okay
-            </Button>
-          </div>
-        </Modal>
+          hasFooter={false}
+          onClose={this.handleCancelModelSuccess}
+          onFinish={this.handleCancelModelSuccess}
+          hasHeader={false}
+          content={
+            <>
+              <div style={{ textAlign: 'center' }}>
+                <img src={imageAddSuccess} alt="update success" />
+              </div>
+              <br />
+              <br />
+              <p style={{ textAlign: 'center', color: '#707177', fontWeight: 500 }}>
+                Update information successfully
+              </p>
+              <div className={styles.spaceFooterModalSuccess}>
+                <Button
+                  onClick={this.handleCancelModelSuccess}
+                  className={styles.btnOkModalSuccess}
+                >
+                  Okay
+                </Button>
+              </div>
+            </>
+          }
+        />
       </div>
     );
   }

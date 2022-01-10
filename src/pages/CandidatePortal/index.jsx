@@ -1,6 +1,7 @@
 import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
+import { PORTAL_TAB_NAME } from '@/utils/candidatePortal';
 import { getCurrentTenant } from '@/utils/authority';
 import Dashboard from './components/Dashboard';
 import Messages from './components/Messages';
@@ -8,6 +9,7 @@ import WelcomeModal from './components/WelcomeModal';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
+const { DASHBOARD, MESSAGES, CHANGE_PASSWORD } = PORTAL_TAB_NAME;
 @connect(
   ({
     candidatePortal: { localStep, data, tempData } = {},
@@ -39,14 +41,9 @@ class CandidatePortal extends PureComponent {
       match: { params: { tabName = '' } = {} },
     } = this.props;
 
-    if (!tabName) {
-      history.replace(`/candidate-portal/dashboard`);
-    }
-
     if (!dispatch || !getCurrentTenant() || !candidate?._id) {
       return;
     }
-
     await dispatch({
       type: 'candidatePortal/fetchCandidateById',
       payload: {
@@ -83,7 +80,7 @@ class CandidatePortal extends PureComponent {
 
     // get welcome modal from localstorage
     const openWelcomeModal = localStorage.getItem('openWelcomeModal');
-    if (openWelcomeModal !== 'false') {
+    if (openWelcomeModal !== 'false' && tabName !== CHANGE_PASSWORD) {
       this.setState({
         openWelcomeModal: true,
       });
@@ -129,10 +126,10 @@ class CandidatePortal extends PureComponent {
           }}
           destroyInactiveTabPane
         >
-          <TabPane tab="Dashboard" key="dashboard">
+          <TabPane tab="Dashboard" key={DASHBOARD}>
             <Dashboard />
           </TabPane>
-          <TabPane tab={this.renderMessageTitle()} key="messages">
+          <TabPane tab={this.renderMessageTitle()} key={MESSAGES}>
             <Messages />
           </TabPane>
         </Tabs>

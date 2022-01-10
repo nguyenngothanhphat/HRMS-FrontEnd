@@ -1,15 +1,16 @@
+import { Button, Skeleton } from 'antd';
 import React, { Component } from 'react';
-import { Skeleton, Modal, Button } from 'antd';
 import { connect } from 'umi';
-import EmployeeInformation from './components/EmployeeInformation';
-import ProfessionalAcademicBackground from './components/ProfessionalAcademicBackground';
-import PersonalInformation from './components/PersonalInformation';
-import PassportDetails from './components/PassportDetails';
-import VisaDetails from './components/VisaDetails';
-import EmergencyContact from './components/EmergencyContactDetails';
+import CommonModal from '@/components/CommonModal';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
-import styles from './index.less';
 import ModalAddInfo from '../ModalAddInfo/index';
+import EmergencyContact from './components/EmergencyContactDetails';
+import EmployeeInformation from './components/EmployeeInformation';
+import PassportDetails from './components/PassportDetails';
+import PersonalInformation from './components/PersonalInformation';
+import ProfessionalAcademicBackground from './components/ProfessionalAcademicBackground';
+import VisaDetails from './components/VisaDetails';
+import styles from './index.less';
 
 @connect(
   ({
@@ -18,7 +19,7 @@ import ModalAddInfo from '../ModalAddInfo/index';
     employeeProfile: {
       idCurrentEmployee,
       originData: { generalData: { isNewComer = false } = {} } = {},
-      visibleSuccess = false
+      visibleSuccess = false,
     },
   }) => ({
     loadingGeneral: loading.effects['employeeProfile/fetchGeneralInfo'],
@@ -42,11 +43,11 @@ class GeneralInfo extends Component {
   // };
 
   handleCancelModelSuccess = () => {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'employeeProfile/save',
-      payload: {visibleSuccess: false}
-    })
+      payload: { visibleSuccess: false },
+    });
   };
 
   render() {
@@ -57,9 +58,9 @@ class GeneralInfo extends Component {
       currentUserId,
       idCurrentEmployee,
       isNewComer,
-      visibleSuccess
+      visibleSuccess,
     } = this.props;
-    const checkVisible = profileOwner || permissions.viewOtherInformation !== -1;
+    const checkOtherInformationVisible = profileOwner || permissions.viewOtherInformation !== -1;
     const visible = isNewComer && currentUserId === idCurrentEmployee;
     // const visible = currentUserId === idCurrentEmployee;
     if (loadingGeneral)
@@ -74,40 +75,44 @@ class GeneralInfo extends Component {
         <PersonalInformation permissions={permissions} profileOwner={profileOwner} />
         {(permissions.viewPassportAndVisa !== -1 || profileOwner) && (
           <>
-            <PassportDetails profileOwner={profileOwner} />
-            <VisaDetails profileOwner={profileOwner} />
+            <PassportDetails profileOwner={profileOwner} permissions={permissions} />
+            <VisaDetails profileOwner={profileOwner} permissions={permissions} />
           </>
         )}
-        {checkVisible ? (
+        {checkOtherInformationVisible && (
           <EmergencyContact permissions={permissions} profileOwner={profileOwner} />
-        ) : (
-          ''
         )}
-        {checkVisible ? (
+        {checkOtherInformationVisible && (
           <ProfessionalAcademicBackground permissions={permissions} profileOwner={profileOwner} />
-        ) : (
-          ''
         )}
         <ModalAddInfo visible={visible} />
-        <Modal
+        <CommonModal
           visible={visibleSuccess}
-          className={styles.modalUpdateSuccess}
-          footer={null}
-          width="30%"
-          onCancel={this.handleCancelModelSuccess}
-        >
-          <div style={{ textAlign: 'center' }}>
-            <img src={imageAddSuccess} alt="update success" />
-          </div>
-          <br />
-          <br />
-          <p style={{ textAlign: 'center', color: '#707177' }}>Update infomation successfully</p>
-          <div className={styles.spaceFooterModalSuccess}>
-            <Button onClick={this.handleCancelModelSuccess} className={styles.btnOkModalSuccess}>
-              Okay
-            </Button>
-          </div>
-        </Modal>
+          hasFooter={false}
+          onClose={this.handleCancelModelSuccess}
+          onFinish={this.handleCancelModelSuccess}
+          hasHeader={false}
+          content={
+            <>
+              <div style={{ textAlign: 'center' }}>
+                <img src={imageAddSuccess} alt="update success" />
+              </div>
+              <br />
+              <br />
+              <p style={{ textAlign: 'center', color: '#707177', fontWeight: 500 }}>
+                Update information successfully
+              </p>
+              <div className={styles.spaceFooterModalSuccess}>
+                <Button
+                  onClick={this.handleCancelModelSuccess}
+                  className={styles.btnOkModalSuccess}
+                >
+                  Okay
+                </Button>
+              </div>
+            </>
+          }
+        />
       </div>
     );
   }

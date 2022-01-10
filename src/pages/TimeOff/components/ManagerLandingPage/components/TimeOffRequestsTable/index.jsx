@@ -42,7 +42,6 @@ const TimeOffRequestsTable = (props) => {
         break;
     }
     arr = arr.map((item) => item._id);
-
     dispatch({
       type: 'timeOff/saveFilter',
       payload: {
@@ -59,9 +58,7 @@ const TimeOffRequestsTable = (props) => {
   };
 
   useEffect(() => {
-    if (timeOffTypesByCountry.length > 0) {
-      saveCurrentTypeTab('1');
-    }
+    saveCurrentTypeTab('1');
   }, [JSON.stringify(timeOffTypesByCountry)]);
 
   const renderTableTitle = {

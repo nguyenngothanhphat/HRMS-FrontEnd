@@ -32,7 +32,7 @@ const CommonModal = (props) => {
       case '1':
         return <MyCalendar isInModal data={data} loading={loading} />;
       case '2':
-        return <HolidayCalendar isInModal />;
+        return <HolidayCalendar isInModal listHolidays={data} loading={loading} />;
       default:
         return '';
     }

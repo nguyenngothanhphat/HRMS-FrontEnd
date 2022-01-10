@@ -1,6 +1,5 @@
 import { Button, Modal } from 'antd';
 import React from 'react';
-import { connect } from 'umi';
 import styles from './index.less';
 
 const CommonModal = (props) => {
@@ -10,7 +9,9 @@ const CommonModal = (props) => {
     title = '',
     onClose = () => {},
     onFinish = () => {},
+    hasHeader = true,
     content,
+    noFormCss = false,
   } = props;
 
   const renderModalHeader = () => {
@@ -33,10 +34,15 @@ const CommonModal = (props) => {
     return content;
   };
 
+  const getClassName = () => {
+    if (!noFormCss) return `${styles.CommonModal} ${styles.withPadding} ${styles.CommonModalForm}`;
+    return `${styles.CommonModal} ${styles.withPadding}`;
+  };
+
   return (
     <>
       <Modal
-        className={`${styles.CommonModal} ${styles.withPadding}`}
+        className={getClassName()}
         onCancel={handleCancel}
         destroyOnClose
         footer={
@@ -58,7 +64,7 @@ const CommonModal = (props) => {
             </>
           ) : null
         }
-        title={renderModalHeader()}
+        title={hasHeader ? renderModalHeader() : null}
         centered
         visible={visible}
       >

@@ -1,8 +1,10 @@
-import { Modal, Button, Row, Col, Input } from 'antd';
-import React, { useState } from 'react';
+import { Modal, Button, Row, Col, Input, Popover } from 'antd';
+import React, { useState, useEffect } from 'react';
 import { DownOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { connect } from 'umi';
+import { getTimezoneViaCity } from '@/utils/times';
+import PopoverInfo from '../PopoverInfo';
 import styles from './index.less';
 
 const DetailTicket = (props) => {
@@ -26,10 +28,13 @@ const DetailTicket = (props) => {
     dispatch,
     loadingApprovel,
     loadingReject,
+    listLocationsByCompany,
   } = props;
   const [showDetail, setShowDetail] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const [comment, setComment] = useState('');
+  const [timezoneList, settimezoneList] = useState([]);
+  const [currentTime, setcurrentTime] = useState(moment());
   const onApproval = async () => {
     const response = await dispatch({
       type: 'dashboard/approvalTicket',
@@ -59,7 +64,27 @@ const DetailTicket = (props) => {
   const viewDetail = () => {
     setShowDetail(!showDetail);
   };
-
+  const fetchTimezone = () => {
+    const timeZoneList = [];
+    listLocationsByCompany.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
+        _id: idLocation = '',
+      } = location;
+      timeZoneList.push({
+        locationId: idLocation,
+        timezone:
+          getTimezoneViaCity(city) ||
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
+    settimezoneList(timeZoneList);
+  };
+  useEffect(() => {
+    fetchTimezone();
+  }, [listLocationsByCompany]);
   const {
     generalInfo: { legalName, userId } = {},
     departmentInfo: { name: departmentName = '' } = {},
@@ -104,8 +129,23 @@ const DetailTicket = (props) => {
             <Col span={8} className={styles.title}>
               Requester's Name:
             </Col>
-            <Col span={16} className={styles.contain}>
+            {/* <Col span={16} className={styles.contain}>
               {legalName} ({userId})
+            </Col> */}
+            <Col span={16} className={styles.containEmployee}>
+              <Popover
+                content={
+                  <PopoverInfo
+                    listLocationsByCompany={listLocationsByCompany}
+                    propsState={{ currentTime, timezoneList }}
+                    data={employee}
+                  />
+                }
+                placement="bottomRight"
+                trigger="hover"
+              >
+                {legalName} ({userId})
+              </Popover>
             </Col>
           </Row>
           <Row className={styles.ticketInfo__row}>
@@ -137,7 +177,7 @@ const DetailTicket = (props) => {
               Request Type:
             </Col>
             <Col span={16} className={styles.contain}>
-              {typeName}
+              {typeName && typeTicket === 'leaveRequest' ? 'Timeoff' : 'Comoff'}
             </Col>
           </Row>
           {subject && (
@@ -223,7 +263,8 @@ const DetailTicket = (props) => {
     </Modal>
   );
 };
-export default connect(({ loading }) => ({
+export default connect(({ loading, locationSelection: { listLocationsByCompany = [] } }) => ({
   loadingApprovel: loading.effects['dashboard/approvalTicket'],
   loadingReject: loading.effects['dashboard/rejectTicket'],
+  listLocationsByCompany,
 }))(DetailTicket);

@@ -11,36 +11,7 @@
       max-height: 500px;
       overflow-y: auto;
     }
-    .ant-form-item-explain {
-      div {
-        font-size: 13px;
-      }
-    }
-    .ant-select-selection-item {
-      color: #161c29 !important;
-    }
-    .ant-select-selector,
-    .ant-input {
-      height: 42px !important;
 
-      padding: 5px 11px !important;
-
-      background: transparent !important;
-      border-radius: 5px !important;
-    }
-    .ant-select-selection-search-input {
-      height: 42px !important;
-      border-radius: 5px;
-    }
-    .ant-form-item-label
-      > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
-      display: none;
-    }
-    .ant-form-item-label label {
-      height: 0;
-      color: #707177;
-      font-size: 12px;
-    }
     .ant-btn-primary {
       height: 40px;
       padding: 0 30px;
@@ -142,6 +113,41 @@
       color: #161c29;
       font-weight: 600;
       font-size: 16px;
+    }
+  }
+}
+
+.CommonModalForm {
+  :global {
+    .ant-form-item-explain {
+      div {
+        font-size: 13px;
+      }
+    }
+    .ant-select-selection-item {
+      color: #161c29 !important;
+    }
+    .ant-select-selector,
+    .ant-input {
+      height: 42px !important;
+
+      padding: 5px 11px !important;
+
+      background: transparent !important;
+      border-radius: 5px !important;
+    }
+    .ant-select-selection-search-input {
+      height: 42px !important;
+      border-radius: 5px;
+    }
+    .ant-form-item-label
+      > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+      display: none;
+    }
+    .ant-form-item-label label {
+      height: 0;
+      color: #707177;
+      font-size: 12px;
     }
   }
 }

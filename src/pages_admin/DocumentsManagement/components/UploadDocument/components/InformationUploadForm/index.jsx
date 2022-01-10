@@ -14,14 +14,14 @@ const groupData = [
   'Qualifications/Certification',
   'Handbooks & Agreements',
   'PR Reports',
-  'Indentification Documents',
+  'Identification Documents',
 ];
 const subData = {
   'Hiring Documents': ['Consent Forms', 'Tax Documents', 'Offer Letter', 'Employment Eligibility'],
   'Qualifications/Certification': ['Certificates'],
   'Handbooks & Agreements': ['Employee Handbook', 'Agreement'],
   'PR Reports': ['Agreement'],
-  'Indentification Documents': ['Identity'],
+  'Identification Documents': ['Identity'],
 };
 
 @connect(({ loading, documentsManagement }) => ({

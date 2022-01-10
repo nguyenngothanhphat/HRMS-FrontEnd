@@ -123,6 +123,7 @@ class AdminApp extends Component {
       match: { params: { tabName = '' } = {} },
     } = this.props;
 
+    if (!tabName) return '';
     return (
       <PageContainer>
         <div className={styles.root}>

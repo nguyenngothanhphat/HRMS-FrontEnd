@@ -1,23 +1,22 @@
 .root {
   .Form {
+    .formContainer {
+      padding: 24px 24px 8px;
+    }
     width: 100%;
     :global {
       .ant-form-item-label {
         text-align: left;
       }
       .ant-form-item-label > label {
-        font-size: 13px;
         color: #000000;
+        font-size: 13px;
       }
       .ant-form-item-label > label::after {
         content: '';
       }
       .ant-form-item {
         width: 100%;
-        padding: 0px 48px;
-      }
-      .ant-form-item:first-child {
-        margin-top: 35px;
       }
       .ant-input:focus {
         border-color: #2c6df9;
@@ -35,26 +34,26 @@
   }
   .dateForm {
     width: 100%;
-    border-radius: 5px;
     border: solid 1px #d6dce4;
+    border-radius: 5px;
     &:focus {
       outline: 0;
       box-shadow: unset;
     }
   }
   .inputForm {
-    border-radius: 5px;
     border: solid 1px #d6dce0;
+    border-radius: 5px;
   }
 
   .inputFormImageValidate {
-    border-radius: 5px;
     border: solid 1px #ff6c6c;
+    border-radius: 5px;
   }
 
   .textValue {
-    font-size: 13px;
     color: #707177;
+    font-size: 13px;
   }
   .iconQuestTion {
     margin-top: 2px;
@@ -65,15 +64,15 @@
   }
   .labelUpload {
     .urlUpload {
-      font-size: 13px;
       color: #2c6df9;
+      font-size: 13px;
       text-decoration: underline;
     }
     :global {
       .ant-form-item-label > label {
+        color: #707177;
         font-size: 13px;
         font-style: italic;
-        color: #707177;
       }
     }
   }
@@ -83,8 +82,8 @@
     right: 24px;
     display: flex;
     flex-flow: row nowrap;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     .viewUpLoadDataURL {
       margin-right: 16px;
       margin-bottom: 0;
@@ -95,9 +94,9 @@
       display: inline;
       margin-right: 20px;
       margin-bottom: 0;
-      font-size: 14px;
-      font-weight: 500;
       color: #47c97f;
+      font-weight: 500;
+      font-size: 14px;
     }
     .viewUpLoadDataIconCancel {
       cursor: pointer;
@@ -108,8 +107,8 @@
     position: absolute;
     top: 5px;
     right: 50px;
-    font-size: 14px;
     font-weight: 500;
+    font-size: 14px;
     cursor: pointer;
     :global {
       .ant-upload {
@@ -120,33 +119,34 @@
   .spaceFooter {
     display: flex;
     flex-flow: row;
-    justify-content: flex-end;
     align-items: center;
-    padding: 24px;
+    justify-content: flex-end;
+    padding: 16px 24px;
     border-top: solid 1px #d6dce0;
   }
   .cancelFooter {
     margin-right: 40px;
-    font-size: 14px;
-    font-weight: 500;
     color: #ffa100;
+    font-weight: 500;
+    font-size: 14px;
     cursor: pointer;
   }
   .cancelFooter:hover {
     color: #b1740c;
   }
   .buttonFooter {
-    width: 95px;
     height: 40px;
-    font-size: 14px;
     color: #ffffff;
-    border-radius: 25px;
-    border: solid 1px #ffa100;
+    font-weight: 500;
+    font-size: 14px;
     background-color: #ffa100;
+    border: solid 1px #ffa100;
+    border-radius: 25px;
+    padding-inline: 25px;
   }
   .buttonFooter:hover {
-    border: solid 1px #b1740c;
     background-color: #b1740c;
+    border: solid 1px #b1740c;
   }
 }
 .GenEITooltip {
@@ -155,14 +155,14 @@
       border-radius: 5px;
     }
     .ant-tooltip-inner {
-      font-size: 12px;
+      color: #ffffff;
       font-weight: 500;
-      font-stretch: normal;
+      font-size: 12px;
       font-style: normal;
+      font-stretch: normal;
       line-height: 1.5;
       letter-spacing: normal;
       text-align: center;
-      color: #ffffff;
     }
   }
 }
