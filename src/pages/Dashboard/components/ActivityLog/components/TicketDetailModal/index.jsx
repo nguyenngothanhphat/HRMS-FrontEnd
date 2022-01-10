@@ -16,8 +16,11 @@ const TicketDetailModal = (props) => {
     onClose = () => {},
     item: {
       id: ticketID = '',
+      ticketID: tickIdTiemoff = '',
       created_at: requestDate = '',
+      createdAt = '',
       query_type: queryType = '',
+      type: { typeName = '' } = {},
       priority = '',
       subject = '',
       cc_list: ccList = [],
@@ -140,17 +143,17 @@ const TicketDetailModal = (props) => {
     const content = [
       {
         name: 'Ticket ID',
-        value: <span className={styles.ticketID}>{ticketID}</span>,
+        value: <span className={styles.ticketID}>{ticketID || tickIdTiemoff}</span>,
         span: 12,
       },
       {
         name: 'Request Date',
-        value: moment(requestDate).format('DD/MM/YYYY'),
+        value: moment(requestDate || createdAt).format('DD/MM/YYYY'),
         span: 12,
       },
       {
         name: 'Query Type',
-        value: queryType,
+        value: queryType || typeName,
         span: 12,
       },
       {
@@ -212,7 +215,10 @@ const TicketDetailModal = (props) => {
               </Select>
             </div>
             <div className={styles.actionButton}>
-              <Button disabled={status === 'New'} onClick={handleUpdateStatus}>
+              <Button
+                disabled={status === 'New' || status === 'IN-PROGRESS'}
+                onClick={handleUpdateStatus}
+              >
                 Update
               </Button>
             </div>

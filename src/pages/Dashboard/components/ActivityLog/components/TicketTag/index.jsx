@@ -17,29 +17,45 @@ const TicketTag = (props) => {
       id: ticketID = '',
       status = '',
       request_type: typeName = '',
+      typeTicket = '',
+      createdAt = '',
+      ticketID: ticketIDTimeoff = '',
     } = item;
 
     const dateTemp = moment(onDate).date();
+    const dateTempTimeoff = moment(createdAt).date();
     const monthTemp = moment(onDate).locale('en').format('MMM');
+    const monthTempTimeoff = moment(createdAt).locale('en').format('MMM');
     return (
       <Col span={24}>
         <div className={styles.TicketTag}>
           <Row align="middle" justify="space-between">
             <Col span={20} className={styles.leftPart}>
               <div className={styles.dateTime}>
-                <span>{dateTemp}</span>
-                <span>{monthTemp}</span>
+                <span>{createdAt ? dateTempTimeoff : dateTemp}</span>
+                <span>{createdAt ? monthTempTimeoff : monthTemp}</span>
               </div>
-              <div className={styles.content}>
-                <span className={styles.userId}>[Ticket ID #{ticketID}]</span> Support request
-                regarding {typeName} is {status}
-              </div>
+              {typeTicket ? (
+                <div className={styles.content}>
+                  <span className={styles.userId}>[Ticket ID #{ticketIDTimeoff}]</span> Timeoff
+                  Ticket for from to is {status}
+                </div>
+              ) : (
+                <div className={styles.content}>
+                  <span className={styles.userId}>[Ticket ID #{ticketID}]</span> Support request
+                  regarding {typeName} is {status}
+                </div>
+              )}
             </Col>
-            <Col span={4} className={styles.rightPart} onClick={() => setOpenModal(true)}>
-              <div className={styles.viewBtn}>
-                <span>View</span>
-              </div>
-            </Col>
+            {typeTicket ? (
+              ''
+            ) : (
+              <Col span={4} className={styles.rightPart} onClick={() => setOpenModal(true)}>
+                <div className={styles.viewBtn}>
+                  <span>View</span>
+                </div>
+              </Col>
+            )}
           </Row>
         </div>
       </Col>
