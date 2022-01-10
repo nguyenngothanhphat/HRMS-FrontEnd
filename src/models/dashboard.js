@@ -21,6 +21,7 @@ import {
   getMyTeam,
   getMyTimesheet,
   getListMyTeam,
+  getHolidaysByCountry,
 } from '../services/dashboard';
 import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
 
@@ -40,6 +41,7 @@ const defaultState = {
   status: '',
   resoucreList: [],
   projectList: [],
+  holidaysListByCountry: [],
 };
 const dashboard = {
   namespace: 'dashboard',
@@ -382,6 +384,21 @@ const dashboard = {
       } catch (errors) {
         dialog(errors);
         return [];
+      }
+      return response;
+    },
+    *fetchHolidaysByCountry({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getHolidaysByCountry, { ...payload, tenantId: getCurrentTenant() });
+        const { statusCode, data: holidaysListByCountry = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { holidaysListByCountry },
+        });
+      } catch (errors) {
+        dialog(errors);
       }
       return response;
     },

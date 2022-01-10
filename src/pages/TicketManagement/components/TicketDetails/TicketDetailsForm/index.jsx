@@ -225,13 +225,9 @@ class TicketDetailsForm extends Component {
       return intersection.map((val) => {
         const { generalInfo: { avatar = '' } = {} } = val;
         if (avatar !== '') {
-          return (
-            <Avatar>
-              <img src={avatar} alt="avatar" />
-            </Avatar>
-          );
+          return <Avatar src={avatar} />;
         }
-        return <Avatar>{val.generalInfo.legalName.substring(0, 1) || '-'}</Avatar>;
+        return <Avatar icon={<UserOutlined />} />;
       });
     };
     const getOpenBy = () => {
@@ -243,10 +239,14 @@ class TicketDetailsForm extends Component {
       }
       return '';
     };
-    const chatsLeft = chats.filter((chat) => !isEmpty(chat.employee.managePermission));
+    const chatsLeft = chats.filter((chat) =>
+      !isEmpty(chat.employee) ? !isEmpty(chat.employee.managePermission) : [],
+    );
     const chatsManager = chatsLeft.reverse();
     const attachsLeft = chatsManager.filter((chat) => chat.attachments !== undefined);
-    const chatsRight = chats.filter((chat) => isEmpty(chat.employee.managePermission));
+    const chatsRight = chats.filter((chat) =>
+      !isEmpty(chat.employee) ? isEmpty(chat.employee.managePermission) : [],
+    );
     const chatsEmployee = chatsRight.reverse();
     const attachsRight = chatsEmployee.filter((chat) => chat.attachments !== undefined);
 
@@ -351,7 +351,7 @@ class TicketDetailsForm extends Component {
                         {avatarTicket()}
                       </Avatar.Group>
                     ) : (
-                      ' _ '
+                      ''
                     )}
                   </span>
                 </Col>
