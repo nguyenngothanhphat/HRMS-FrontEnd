@@ -58,7 +58,7 @@ const MyTimeSheet = (props) => {
   }, []);
 
   useEffect(() => {
-    if (currentDateProp) {
+    if (moment(currentDateProp).isValid() ===  true) {
       setStartDate(moment(currentDateProp));
     }
   }, [currentDateProp]);
