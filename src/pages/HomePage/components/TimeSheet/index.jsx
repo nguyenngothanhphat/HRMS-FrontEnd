@@ -144,9 +144,7 @@ const TimeSheet = (props) => {
           <img src={CalendarImage} alt="" />
           <span className={styles.titleText}>Do not forget to fill in your timesheet!</span>
         </div>
-        <p className={styles.description}>
-          Apply for leaves with/without pay, Apply for leaves with/without pay, work from home.
-        </p>
+        <p className={styles.description}>Apply for leaves with/without pay, work from home.</p>
       </div>
       <div className={styles.weekDays}>{dateList.map((date) => renderDate(date))}</div>
     </div>

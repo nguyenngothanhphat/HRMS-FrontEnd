@@ -1,0 +1,84 @@
+.PostContent {
+  .content {
+    padding: 0 24px 24px;
+    color: #161c29;
+    font-weight: normal;
+    font-size: 16px;
+    font-family: Inter;
+    font-style: normal;
+    line-height: 24px;
+  }
+  .previewImage {
+    width: 100%;
+    img {
+      width: 100%;
+    }
+  }
+  .previewLink {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    margin: 0 24px 24px;
+    padding: 14px 20px;
+    background: #ffffff;
+    border: 1px solid #d8dde9;
+    border-radius: 8px;
+    .left {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      box-sizing: border-box;
+      width: 100%;
+      cursor: pointer;
+      &:hover {
+        opacity: 0.8;
+      }
+      .avatar {
+        img {
+          width: 42px;
+          height: 42px;
+          object-fit: cover;
+          border-radius: 50%;
+        }
+        margin-right: 10px;
+      }
+      .information {
+        .name {
+          color: #212020;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: Inter;
+          font-style: normal;
+          line-height: 17px;
+        }
+        .title {
+          display: block;
+          color: #707177;
+          font-weight: 500;
+          font-size: 12px;
+          font-family: Inter;
+          font-style: normal;
+          line-height: 15px;
+        }
+      }
+    }
+    .right {
+      .viewJobBtn {
+        box-sizing: border-box;
+        background-color: #fff;
+        border: 1px solid #2c6df9;
+        border-radius: 32px;
+        span {
+          color: #2c6df9;
+          font-weight: normal;
+          font-size: 14px;
+          font-family: Roboto;
+          font-style: normal;
+          line-height: 16px;
+        }
+      }
+    }
+  }
+}

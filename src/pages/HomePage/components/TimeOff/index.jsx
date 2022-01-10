@@ -18,9 +18,7 @@ const TimeOff = () => {
           <img src={CalendarImage} alt="" />
           <span className={styles.titleText}>Apply for Timeoff from Office</span>
         </div>
-        <p className={styles.description}>
-          Apply for leaves with/without pay, Apply for leaves with/without pay, work from home.
-        </p>
+        <p className={styles.description}>Apply for leaves with/without pay, work from home.</p>
       </div>
       <div className={styles.button}>
         <Button className={styles.applyTimeOffBtn} onClick={createTimeOff}>

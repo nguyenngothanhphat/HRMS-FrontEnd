@@ -37,10 +37,10 @@ const HomePage = () => {
             <Col span={24}>
               <Carousel />
             </Col>
-            <Col span={12}>
+            <Col xs={24} xl={12}>
               <TimeSheet />
             </Col>
-            <Col span={12}>
+            <Col xs={24} xl={12}>
               <TimeOff />
             </Col>
             <Col span={24}>
