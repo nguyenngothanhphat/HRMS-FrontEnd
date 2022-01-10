@@ -16,7 +16,7 @@
     font-style: normal;
     line-height: 30px;
   }
-  .replies {
+  .options {
     width: 100%;
     background: #ffffff;
     .reply {
@@ -41,11 +41,46 @@
       }
     }
   }
+  .result {
+    width: 100%;
+    background: #ffffff;
+    .reply {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+      padding: 9px;
+      overflow: hidden;
+      background-color: #fff;
+      border-color: transparent;
+      border-radius: 4px;
+      span {
+        z-index: 1;
+        display: inline-block;
+        color: #384254;
+        font-weight: 500;
+        font-size: 13px;
+        font-family: Inter;
+        font-style: normal;
+        line-height: 20px;
+      }
+      .percentBackground {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        background-color: #e4edff;
+        // border-radius: 4px;
+      }
+    }
+  }
   .votingInformation {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    padding-top: 10px;
+    padding-top: 16px;
     span {
       display: inline-block;
     }

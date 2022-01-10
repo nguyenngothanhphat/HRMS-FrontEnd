@@ -1,2 +1,67 @@
+@commonPadding: 24px;
+@blue: #2c6df9;
+@black: #171924;
+
 .TimeOff {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 245px;
+  padding: @commonPadding;
+  background: #ffffff;
+  background-image: url('../../../../assets/homePage/timeOffVector.svg');
+  background-repeat: no-repeat;
+  background-position: 100% 64px;
+  background-size: 220px;
+  border: 1px solid #d8d8d8;
+  border-radius: 16px;
+  box-shadow: 0px 4px 40px rgba(0, 0, 0, 0.1);
+  .above {
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 10px;
+      img {
+        height: 56px;
+        margin-right: 16px;
+      }
+
+      .titleText {
+        display: block;
+        color: @black;
+        font-weight: 600;
+        font-size: 16px;
+        font-family: Inter;
+        font-style: normal;
+        line-height: 30px;
+      }
+    }
+    .description {
+      color: #58667e;
+      font-weight: normal;
+      font-size: 14px;
+      font-family: Inter;
+      font-style: normal;
+      line-height: 24px;
+    }
+  }
+  .button {
+    margin-top: 30px;
+    .applyTimeOffBtn {
+      height: 40px;
+      padding-right: 16px;
+      padding-left: 16px;
+      background: #1f75f0;
+      border: none;
+      border-radius: 25px;
+      outline: none;
+      box-shadow: none;
+      span {
+        color: #fff;
+        font-weight: 500;
+        font-size: 16px;
+      }
+    }
+  }
 }

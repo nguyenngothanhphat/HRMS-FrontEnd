@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import CommonTab from '@/pages/Dashboard/components/ActivityLog/components/CommonTab';
 import styles from './index.less';
+import EmptyComponent from '@/components/Empty';
 
 const statusTickets = ['New', 'Assigned', 'In Progress', 'Client Pending'];
 
@@ -30,8 +31,23 @@ const ActivityLog = (props) => {
 
   // MAIN
   return (
-    <div className={styles.ActivityLog}>
-      <CommonTab type="3" data={dataMyTickets} />
+    <div
+      className={styles.ActivityLog}
+      style={
+        dataMyTickets.length === 0
+          ? {
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }
+          : null
+      }
+    >
+      {dataMyTickets.length === 0 ? (
+        <EmptyComponent />
+      ) : (
+        <CommonTab type="3" data={dataMyTickets} />
+      )}
     </div>
   );
 };
