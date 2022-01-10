@@ -204,6 +204,7 @@ class TicketDetailsForm extends Component {
       chats = [],
       employeeRaise = [],
       cc_list: ccList = [],
+      employee_raise: employeeRaiseTickets = '',
     } = ticketDetail;
     const { fileNameList, loadingAddChat, value } = this.state;
     const getColor = () => {
@@ -240,15 +241,15 @@ class TicketDetailsForm extends Component {
       return '';
     };
     const chatsLeft = chats.filter((chat) =>
-      !isEmpty(chat.employee) ? !isEmpty(chat.employee.managePermission) : [],
+      chat.employee ? chat.employee._id !== employeeRaiseTickets : [],
     );
-    const chatsManager = chatsLeft.reverse();
-    const attachsLeft = chatsManager.filter((chat) => chat.attachments !== undefined);
+    const chatsRaise = chatsLeft.reverse();
+    const attachsLeft = chatsRaise.filter((chat) => chat.attachments !== undefined);
     const chatsRight = chats.filter((chat) =>
-      !isEmpty(chat.employee) ? isEmpty(chat.employee.managePermission) : [],
+      chat.employee ? chat.employee._id === employeeRaiseTickets : [],
     );
-    const chatsEmployee = chatsRight.reverse();
-    const attachsRight = chatsEmployee.filter((chat) => chat.attachments !== undefined);
+    const chatsAssigne = chatsRight.reverse();
+    const attachsRight = chatsAssigne.filter((chat) => chat.attachments !== undefined);
 
     const getAttachmentChatLeft = () => {
       if (!isEmpty(attachsLeft)) {
@@ -495,7 +496,7 @@ class TicketDetailsForm extends Component {
             <Row>
               <Col span={12}>
                 <Timeline mode="right">
-                  {chatsManager.map((e) => {
+                  {chatsRaise.map((e) => {
                     return (
                       <Timeline.Item dot={<UserOutlined />}>
                         <div>{e.title}</div>
@@ -509,7 +510,7 @@ class TicketDetailsForm extends Component {
               </Col>
               <Col span={12}>
                 <Timeline mode="left">
-                  {chatsEmployee.map((e) => {
+                  {chatsAssigne.map((e) => {
                     return (
                       <Timeline.Item dot={<img src={ChatIcon} alt="AvatarIcon" />}>
                         <div>{e.title}</div>
