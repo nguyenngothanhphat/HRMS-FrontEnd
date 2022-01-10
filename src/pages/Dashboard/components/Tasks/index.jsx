@@ -46,9 +46,6 @@ const Tasks = (props) => {
             <TabPane tab="My Tasks" key="1">
               <MyTasks />
             </TabPane>
-            <TabPane tab="My Projects" key="2">
-              <MyProjects />
-            </TabPane>
             {checkRoleHrAndManager ? (
               <TabPane tab="My Projects" key="2">
                 <MyProjects />
