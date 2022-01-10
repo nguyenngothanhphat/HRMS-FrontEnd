@@ -31,7 +31,7 @@ const Tasks = (props) => {
       </div>
     );
   };
-  const checkRoleHrAndManager = roles.includes(MANAGER);
+  const checkRoleManager = roles.includes(MANAGER);
   // MAIN
   return (
     <div className={styles.Tasks}>
@@ -46,7 +46,7 @@ const Tasks = (props) => {
             <TabPane tab="My Tasks" key="1">
               <MyTasks />
             </TabPane>
-            {checkRoleHrAndManager ? (
+            {checkRoleManager ? (
               <TabPane tab="My Projects" key="2">
                 <MyProjects />
               </TabPane>
@@ -76,11 +76,8 @@ export default connect(
     user: {
       currentUser: { employee: { generalInfo: { _id: myId = '' } = {} } = {}, roles = [] } = {},
     } = {},
-    dashboard: { projectList = [], resoucreList = [] } = {},
   }) => ({
     myId,
     roles,
-    projectList,
-    resoucreList,
   }),
 )(Tasks);
