@@ -186,7 +186,6 @@ class EditModal extends PureComponent {
       (value) => value !== undefined && value !== '' && value !== null,
     );
     formatList = [...new Set(formatList)];
-
     const treeData = formatList.map((moduleName, index) => {
       let result = permissionList.map((per) => {
         const { _id = '', name = '', module = '' } = per;
