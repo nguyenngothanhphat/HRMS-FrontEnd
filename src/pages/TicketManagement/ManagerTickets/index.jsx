@@ -4,6 +4,7 @@ import { connect, history } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import AllTicket from './components/AllTickets';
 import styles from './index.less';
+import WorkInProgress from '@/components/WorkInProgress';
 
 @connect(({ ticketManagement: { listOffAllTicket = [], totalList = [] } = {} }) => ({
   listOffAllTicket,
@@ -55,7 +56,7 @@ class ManagerTicket extends Component {
             }}
           >
             <TabPane tab="Overview" key="overview">
-              {/* <OverView /> */}
+              <WorkInProgress />;
             </TabPane>
             <TabPane tab="All Tickets" key="all-tickets">
               <AllTicket data={listOffAllTicket} countData={totalList} />
