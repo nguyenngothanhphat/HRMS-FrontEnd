@@ -18,7 +18,7 @@ const {
 const routes = [
   {
     path: '/',
-    redirect: '/dashboard',
+    redirect: '/home',
   },
   {
     path: '/signin-google',
@@ -230,10 +230,16 @@ const routes = [
         ],
         routes: [
           {
+            path: '/home',
+            name: 'home',
+            icon: '/assets/images/menuIcons/dashboard-old.svg',
+            component: './HomePage',
+          },
+          {
             path: '/dashboard',
             name: 'dashboard',
             icon: '/assets/images/menuIcons/dashboard.svg',
-            component: './HomePage',
+            component: './Dashboard',
           },
           {
             path: '/dashboard/approvals',
