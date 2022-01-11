@@ -13,7 +13,9 @@ const EmployeeTag = (props) => {
   } = props;
 
   const onViewProfileClick = () => {
-    history.push(`/directory/employee-profile/${userId}/general-info`);
+    if (userId) {
+      history.push(`/directory/employee-profile/${userId}/general-info`);
+    }
   };
 
   return (

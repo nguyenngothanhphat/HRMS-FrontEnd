@@ -21,14 +21,6 @@ const Carousel = () => {
       id: 1,
       image: Banner1,
     },
-    {
-      id: 2,
-      image: Banner1,
-    },
-    {
-      id: 3,
-      image: Banner1,
-    },
   ];
 
   return (

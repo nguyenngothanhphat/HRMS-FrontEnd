@@ -62,7 +62,7 @@ const Voting = () => {
       <div className={styles.votingInformation}>
         <span className={styles.number}>250 votes</span>
         <img src={GrayDot} alt="" />
-        <span className={styles.dueTime}>2 days left</span>
+        <span className={styles.dueTime}>2d left</span>
       </div>
     </div>
   );

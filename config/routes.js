@@ -19,6 +19,7 @@ const routes = [
   {
     path: '/',
     redirect: '/home',
+    authority: [EMPLOYEE],
   },
   {
     path: '/signin-google',

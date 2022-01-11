@@ -3,19 +3,27 @@ import { Carousel } from 'antd';
 import styles from './index.less';
 import SampleImage from '@/assets/homePage/samplePhoto.png';
 
+// const data = [
+// {
+//   id: 1,
+//   title: 'Annual Event 2021',
+//   content: `Here's a glimpse of the fun and festivities
+//   at our Annual Event this year!`,
+//   image: SampleImage,
+// },
+// {
+//   id: 2,
+//   title: 'Annual Event 2021',
+//   content: `Here's a glimpse of the fun and festivities
+//   at our Annual Event this year!`,
+//   image: SampleImage,
+// },
+// ];
+
 const data = [
   {
     id: 1,
-    title: 'Annual Event 2021',
-    content: `Here's a glimpse of the fun and festivities
-    at our Annual Event this year!`,
-    image: SampleImage,
-  },
-  {
-    id: 2,
-    title: 'Annual Event 2021',
-    content: `Here's a glimpse of the fun and festivities
-    at our Annual Event this year!`,
+    content: 'No events',
     image: SampleImage,
   },
 ];

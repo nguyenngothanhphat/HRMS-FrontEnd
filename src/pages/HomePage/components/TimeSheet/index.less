@@ -60,11 +60,17 @@
       background: #ffffff;
       border: 1px solid #d8dde9;
       border-radius: 50%;
+      cursor: default;
       .actionIcon {
         position: absolute;
         right: 0;
         bottom: -7px;
         cursor: pointer !important;
+        transition: 0.3s;
+        &:hover {
+          transform: scale(1.2);
+          transition: 0.3s;
+        }
       }
     }
     .blueBorder {
