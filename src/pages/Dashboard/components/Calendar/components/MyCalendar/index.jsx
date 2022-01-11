@@ -103,9 +103,9 @@ const MyCalendar = (props) => {
         if(minute >= 0.3 && minute < 0.35){return (<hr className={styles.currentTime6} />)}
         if(minute >= 0.35 && minute < 0.4){return (<hr className={styles.currentTime7} />)}
         if(minute >= 0.4 && minute < 0.5){return (<hr className={styles.currentTime8} />)}
-        if(minute >= 0.5 && minute < 0.55){return (<hr className={styles.currentTime8} />)}
-        if(minute >= 0.55 && minute < 0.6){return (<hr className={styles.currentTime8} />)}
-        if(minute >= 0.6 && minute < 0.65){return (<hr className={styles.currentTime8} />)}
+        if(minute >= 0.5 && minute < 0.55){return (<hr className={styles.currentTime9} />)}
+        if(minute >= 0.55 && minute < 0.6){return (<hr className={styles.currentTime10} />)}
+        if(minute >= 0.6 && minute < 0.65){return (<hr className={styles.currentTime11} />)}
       }
     }
     if(minute >= 0.65){
