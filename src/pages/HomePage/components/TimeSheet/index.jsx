@@ -60,7 +60,6 @@ const TimeSheet = (props) => {
 
   useEffect(() => {
     const weekDays = getCurrentWeekDays();
-    console.log('🚀 ~ useEffect ~ weekDays', weekDays);
     setDateList(weekDays);
   }, []);
 

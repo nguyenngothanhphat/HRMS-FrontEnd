@@ -11,7 +11,7 @@ export const API_KEYS = {
 
 export default {
   [API_KEYS.BASE_API]: BASE_API,
-  [API_KEYS.TIMESHEET_API]: BASE_API + '/timesheet/a',
+  [API_KEYS.TIMESHEET_API]: BASE_API + '/timesheet',
   [API_KEYS.PROJECT_API]: BASE_API,
   [API_KEYS.TICKET_API]: BASE_API,
   [API_KEYS.CUSTOMER_API]: BASE_API,
