@@ -12,50 +12,6 @@ const MyCalendar = (props) => {
 
   const [dateToFormat, setDateToFormat] = useState(moment().format('HH:mm'))
 
-  // const data = [
-  //   {
-  //     attendees: [{ email: 'thang.nguyen@terralogic.com', responseStatus: 'needsAction' }],
-  //     conferenceData: {
-  //       entryPoints: [
-  //         { 
-  //         entryPointType: 'video', 
-  //         uri: 'https://meet.google.com/okt-zgko-efh',
-  //         label: "meet.google.com/okt-zgko-efh"
-  //       }
-  //     ],
-  //     },
-  //     conferenceId: 'okt-zgko-efh',
-  //     conferenceSolution: { key: { type: 'hangoutsMeet' }, name: 'Google Meet' },
-  //     entryPoints: [{ entryPointType: 'video', uri: 'https://meet.google.com/okt-zgko-efh' }],
-  //     signature: 'AGirE/LmnKfJvWqLrIPS4uRm2V6r',
-  //     created: '2021-04-29T06:17:02.000Z',
-  //     creator: { email: 'khang.le@terralogic.com' },
-  //     email: 'khang.le@terralogic.com',
-  //     end: { dateTime: '2022-01-11T11:00:00+07:00', timeZone: 'Asia/Ho_Chi_Minh' },
-  //     dateTime: '2022-01-11T11:00:00+07:00',
-  //     timeZone: 'Asia/Ho_Chi_Minh',
-  //     etag: '"3277000065256000"',
-  //     eventType: 'default',
-  //     hangoutLink: 'https://meet.google.com/okt-zgko-efh',
-  //     htmlLink:
-  //       'https://www.google.com/calendar/event?eid=bDJhcGVzcHI2aG41MmVmMDNqaWdoMGU1cnRfMjAyMjAxMTFUMDMwMDAwWiBuZ2hpYS52b0B0ZXJyYWxvZ2ljLmNvbQ',
-  //     iCalUID: 'l2apespr6hn52ef03jigh0e5rt_R20211008T030000@google.com',
-  //     id: 'l2apespr6hn52ef03jigh0e5rt_20220111T030000Z',
-  //     kind: 'calendar#event',
-  //     organizer: { email: 'khang.le@terralogic.com' },
-  //     originalStartTime: { dateTime: '2022-01-11T14:00:00+07:00', timeZone: 'Asia/Ho_Chi_Minh' },
-  //     recurringEventId: 'l2apespr6hn52ef03jigh0e5rt_R20211008T030000',
-  //     reminders: { useDefault: true },
-  //     useDefault: true,
-  //     sequence: 7,
-  //     start: { dateTime: '2022-01-11T14:00:00+07:00', timeZone: 'Asia/Ho_Chi_Minh' },
-  //     status: 'confirmed',
-  //     summary: 'HRMS - daily meeting [Online]',
-  //     transparency: 'transparent',
-  //     updated: '2021-12-03T02:53:52.628Z',
-  //   }
-  // ]
-
   const updateTime = () => {
     return moment().format('HH:mm')
   }
@@ -89,34 +45,64 @@ const MyCalendar = (props) => {
   }, [JSON.stringify(data)]);
 
   const renderCurrentDate = (hour, currentDate) => {
-    const currentTime = currentDate ? currentDate.split(':')[0] : moment().format('HH')
-    const minute = currentDate ? currentDate.split(':')[1] / 60 : moment().format('mm') / 60
+    const currentTime = currentDate ? currentDate.split(':')[0] : moment().format('HH');
+    const minute = currentDate ? currentDate.split(':')[1] / 60 : moment().format('mm') / 60;
     // && timeEvent - Number(currentTime) !== 0 && timeEvent - (Number(currentTime)+1) !== 0
-    if(minute < 0.65){
-      if(hour - Number(currentTime) === 0){
-        if(minute < 0.05){return (<hr className={styles.currentTime} />)}
-        if(minute >= 0.05 && minute < 0.1){return (<hr className={styles.currentTime1} />)}
-        if(minute >= 0.1 && minute < 0.15){return (<hr className={styles.currentTime2} />)}
-        if(minute >= 0.15 && minute < 0.2){return (<hr className={styles.currentTime3} />)}
-        if(minute >= 0.2 && minute < 0.25){return (<hr className={styles.currentTime4} />)}
-        if(minute >= 0.25 && minute < 0.3){return (<hr className={styles.currentTime5} />)}
-        if(minute >= 0.3 && minute < 0.35){return (<hr className={styles.currentTime6} />)}
-        if(minute >= 0.35 && minute < 0.4){return (<hr className={styles.currentTime7} />)}
-        if(minute >= 0.4 && minute < 0.5){return (<hr className={styles.currentTime8} />)}
-        if(minute >= 0.5 && minute < 0.55){return (<hr className={styles.currentTime9} />)}
-        if(minute >= 0.55 && minute < 0.6){return (<hr className={styles.currentTime10} />)}
-        if(minute >= 0.6 && minute < 0.65){return (<hr className={styles.currentTime11} />)}
+    if (minute < 0.65) {
+      if (hour - Number(currentTime) === 0) {
+        if (minute < 0.05) {
+          return <hr className={styles.currentTime} />;
+        }
+        if (minute >= 0.05 && minute < 0.1) {
+          return <hr className={styles.currentTime1} />;
+        }
+        if (minute >= 0.1 && minute < 0.15) {
+          return <hr className={styles.currentTime2} />;
+        }
+        if (minute >= 0.15 && minute < 0.2) {
+          return <hr className={styles.currentTime3} />;
+        }
+        if (minute >= 0.2 && minute < 0.25) {
+          return <hr className={styles.currentTime4} />;
+        }
+        if (minute >= 0.25 && minute < 0.3) {
+          return <hr className={styles.currentTime5} />;
+        }
+        if (minute >= 0.3 && minute < 0.35) {
+          return <hr className={styles.currentTime6} />;
+        }
+        if (minute >= 0.35 && minute < 0.4) {
+          return <hr className={styles.currentTime7} />;
+        }
+        if (minute >= 0.4 && minute < 0.5) {
+          return <hr className={styles.currentTime8} />;
+        }
+        if (minute >= 0.5 && minute < 0.55) {
+          return <hr className={styles.currentTime9} />;
+        }
+        if (minute >= 0.55 && minute < 0.6) {
+          return <hr className={styles.currentTime10} />;
+        }
+        if (minute >= 0.6 && minute < 0.65) {
+          return <hr className={styles.currentTime11} />;
+        }
       }
     }
-    if(minute >= 0.65){
-      if(hour - (Number(currentTime)+1) === 0){
-        if(minute < 0.75){ return (<hr className={styles.currentTime12} />)}
-        if(minute >= 0.75 && minute < 0.85){ return (<hr className={styles.currentTime13} />)}
-        if(minute >= 0.85 && minute < 1){ return (<hr className={styles.currentTime14} />)}
+    if (minute >= 0.65) {
+      if (hour - (Number(currentTime) + 1) === 0) {
+        if (minute < 0.75) {
+          return <hr className={styles.currentTime12} />;
+        }
+        if (minute >= 0.75 && minute < 0.85) {
+          return <hr className={styles.currentTime13} />;
+        }
+        if (minute >= 0.85 && minute < 1) {
+          return <hr className={styles.currentTime14} />;
+        }
       }
     }
-    return ''
-  }
+    return '';
+  };
   setInterval(() => {
     renderCurrentDate()
   }, 1000);
@@ -147,7 +133,7 @@ const MyCalendar = (props) => {
               {renderCurrentDate(hour, dateToFormat, timeEvent)}
               {events.map((event) => {
                 return (
-                  <MeetingTag 
+                  <MeetingTag
                     span={colSpan}
                     event={event}
                     isFirstHourHasData={hour === firstHourHasData}
