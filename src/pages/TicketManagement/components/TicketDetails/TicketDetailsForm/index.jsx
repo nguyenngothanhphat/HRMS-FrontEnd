@@ -244,61 +244,54 @@ class TicketDetailsForm extends Component {
       chat.employee ? chat.employee._id !== employeeRaiseTickets : [],
     );
     const chatsRaise = chatsLeft.reverse();
-    const attachsLeft = chatsRaise.filter((chat) => chat.attachments !== undefined);
     const chatsRight = chats.filter((chat) =>
       chat.employee ? chat.employee._id === employeeRaiseTickets : [],
     );
     const chatsAssigne = chatsRight.reverse();
-    const attachsRight = chatsAssigne.filter((chat) => chat.attachments !== undefined);
-
-    const getAttachmentChatLeft = () => {
-      if (!isEmpty(attachsLeft)) {
-        return attachsLeft.map((val) => {
-          return val.attachments.map((e) => {
-            const attachmentSlice = () => {
-              if (e.attachmentName.length > 35) {
-                return `${e.attachmentName.substr(0, 8)}...${e.attachmentName.substr(
-                  e.attachmentName.length - 6,
-                  e.attachmentName.length,
-                )}`;
-              }
-              return e.attachmentName;
-            };
-            return (
-              <div key={e.attachment} className={styles.attachments__file}>
-                <a href={e.attachmentUrl} target="_blank" rel="noreferrer">
-                  {attachmentSlice()}
-                </a>
-                <img className={styles.attachments__file__img} src={PDFIcon} alt="pdf" />
-              </div>
-            );
-          });
+    const getAttachmentChatLeft = (val) => {
+      if (!isEmpty(val)) {
+        return val.map((e) => {
+          const attachmentSlice = () => {
+            if (e.attachmentName.length > 35) {
+              return `${e.attachmentName.substr(0, 8)}...${e.attachmentName.substr(
+                e.attachmentName.length - 6,
+                e.attachmentName.length,
+              )}`;
+            }
+            return e.attachmentName;
+          };
+          return (
+            <div key={e.attachment} className={styles.attachments__file}>
+              <a href={e.attachmentUrl} target="_blank" rel="noreferrer">
+                {attachmentSlice()}
+              </a>
+              <img className={styles.attachments__file__img} src={PDFIcon} alt="pdf" />
+            </div>
+          );
         });
       }
       return '';
     };
-    const getAttachmentChatRight = () => {
-      if (!isEmpty(attachsRight)) {
-        return attachsRight.map((val) => {
-          return val.attachments.map((e) => {
-            const attachmentSlice = () => {
-              if (e.attachmentName.length > 35) {
-                return `${e.attachmentName.substr(0, 8)}...${e.attachmentName.substr(
-                  e.attachmentName.length - 6,
-                  e.attachmentName.length,
-                )}`;
-              }
-              return e.attachmentName;
-            };
-            return (
-              <div className={styles.attachments__file}>
-                <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
-                  {attachmentSlice()}
-                </a>
-                <img className={styles.attachments__file__img} src={PDFIcon} alt="pdf" />
-              </div>
-            );
-          });
+    const getAttachmentChatRight = (val) => {
+      if (!isEmpty(val)) {
+        return val.map((e) => {
+          const attachmentSlice = () => {
+            if (e.attachmentName.length > 35) {
+              return `${e.attachmentName.substr(0, 8)}...${e.attachmentName.substr(
+                e.attachmentName.length - 6,
+                e.attachmentName.length,
+              )}`;
+            }
+            return e.attachmentName;
+          };
+          return (
+            <div className={styles.attachments__file}>
+              <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
+                {attachmentSlice()}
+              </a>
+              <img className={styles.attachments__file__img} src={PDFIcon} alt="pdf" />
+            </div>
+          );
         });
       }
       return '';
@@ -496,12 +489,23 @@ class TicketDetailsForm extends Component {
             <Row>
               <Col span={12}>
                 <Timeline mode="right">
-                  {chatsRaise.map((e) => {
+                  {chatsAssigne.map((e) => {
+                    const { employee: { generalInfo: { avatar = '' } = {} } = {} } = e;
                     return (
-                      <Timeline.Item dot={<UserOutlined />}>
+                      <Timeline.Item
+                        dot={
+                          avatar !== '' ? (
+                            <Avatar size={40} className={styles.avatar} src={avatar} />
+                          ) : (
+                            <UserOutlined />
+                          )
+                        }
+                      >
                         <div>{e.title}</div>
                         <div>{e.message}</div>
-                        <>{e.attachments ? <div>{getAttachmentChatLeft()}</div> : ''}</>
+                        <>
+                          {e.attachments ? <div>{getAttachmentChatRight(e.attachments)}</div> : ''}
+                        </>
                         <div>{moment(e.createdAt).format('DD-MM-YYYY, hh:mm a')}</div>
                       </Timeline.Item>
                     );
@@ -510,12 +514,23 @@ class TicketDetailsForm extends Component {
               </Col>
               <Col span={12}>
                 <Timeline mode="left">
-                  {chatsAssigne.map((e) => {
+                  {chatsRaise.map((e) => {
+                    const { employee: { generalInfo: { avatar = '' } = {} } = {} } = e;
                     return (
-                      <Timeline.Item dot={<img src={ChatIcon} alt="AvatarIcon" />}>
+                      <Timeline.Item
+                        dot={
+                          avatar !== '' ? (
+                            <Avatar size={40} className={styles.avatar} src={avatar} />
+                          ) : (
+                            <img src={ChatIcon} alt="AvatarIcon" />
+                          )
+                        }
+                      >
                         <div>{e.title}</div>
                         <div>{e.message}</div>
-                        <>{e.attachments ? <div>{getAttachmentChatRight()}</div> : ''}</>
+                        <>
+                          {e.attachments ? <div>{getAttachmentChatLeft(e.attachments)}</div> : ''}
+                        </>
                         <div>{moment(e.createdAt).format('DD-MM-YYYY, hh:mm a')}</div>
                       </Timeline.Item>
                     );
