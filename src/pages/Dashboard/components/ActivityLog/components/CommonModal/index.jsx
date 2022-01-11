@@ -1,6 +1,7 @@
 import { Modal } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import EmptyComponent from '@/components/Empty';
 import CommonTab from '../CommonTab';
 import styles from './index.less';
 
@@ -29,6 +30,7 @@ class CommonModal extends PureComponent {
 
   renderModalContent = () => {
     const { tabKey = '', data = [] } = this.props;
+    if (data.length ===0) return <EmptyComponent />
     switch (tabKey) {
       case '1':
         return <CommonTab isInModal type={tabKey} data={data} />;

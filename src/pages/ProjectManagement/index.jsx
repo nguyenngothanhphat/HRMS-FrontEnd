@@ -46,7 +46,9 @@ const ProjectManagement = (props) => {
 
           {viewProjectSettingPermission && (
             <TabPane tab="Settings" key="settings">
-              <WorkInProgress />
+              <div style={{ padding: '24px' }}>
+                <WorkInProgress />
+              </div>
             </TabPane>
           )}
         </Tabs>

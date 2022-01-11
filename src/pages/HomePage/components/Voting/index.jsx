@@ -60,9 +60,9 @@ const Voting = () => {
       {/* {renderOptions()} */}
       {isVoted ? renderResult() : renderOptions()}
       <div className={styles.votingInformation}>
-        <span className={styles.number}>0 votes</span>
+        <span className={styles.number}>250 votes</span>
         <img src={GrayDot} alt="" />
-        <span className={styles.dueTime}>2 weeks left</span>
+        <span className={styles.dueTime}>2 days left</span>
       </div>
     </div>
   );

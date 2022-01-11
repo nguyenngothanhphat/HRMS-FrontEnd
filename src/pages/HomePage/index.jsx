@@ -7,7 +7,7 @@ import QuickLinks from './components/QuickLinks';
 import Carousel from './components/Carousel';
 import TimeSheet from './components/TimeSheet';
 import TimeOff from './components/TimeOff';
-import Annoucements from './components/Annoucements';
+import Announcements from './components/Announcements';
 import Celebrating from './components/Celebrating';
 import Gallery from './components/Gallery';
 import styles from './index.less';
@@ -45,10 +45,18 @@ const HomePage = () => {
             </Col>
             <Col span={24}>
               <Row gutter={[24, 24]}>
-                <Col span={16}>
-                  <Annoucements />
+                <Col
+                  xs={{ order: 2, span: 24 }}
+                  xl={{ order: 1, span: 12 }}
+                  xxl={{ order: 1, span: 16 }}
+                >
+                  <Announcements />
                 </Col>
-                <Col span={8}>
+                <Col
+                  xs={{ order: 1, span: 24 }}
+                  xl={{ order: 2, span: 12 }}
+                  xxl={{ order: 2, span: 8 }}
+                >
                   <Row gutter={[24, 24]}>
                     <Col span={24}>
                       <Celebrating />

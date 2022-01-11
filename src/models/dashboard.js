@@ -324,6 +324,7 @@ const dashboard = {
           },
         });
       } catch (errors) {
+        console.log('🚀 ~ *fetchMyTimesheetEffect ~ errors', errors);
         dialog(errors);
         return [];
       }

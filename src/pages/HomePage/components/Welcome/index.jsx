@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
+import CommonModal from '@/pages/Dashboard/components/ActivityLog/components/CommonModal';
 
 const Welcome = (props) => {
+  const [modalVisible, setModalVisible] = useState(false);
+
   const { currentUser: { employee = {} || {} } = {} } = props;
   const { generalInfo: { legalName = '' } = {} || {} } = employee;
 
@@ -10,8 +13,19 @@ const Welcome = (props) => {
     <div className={styles.Welcome}>
       <p className={styles.Welcome__helloText}>Hello {legalName}!</p>
       <span className={styles.Welcome__notificationText}>
-        You have <span className={styles.number}>0 notifications</span> today
+        You have{' '}
+        <span className={styles.number} onClick={() => setModalVisible(true)}>
+          0 notifications
+        </span>{' '}
+        today
       </span>
+      <CommonModal
+        visible={modalVisible}
+        title="Notifications"
+        onClose={() => setModalVisible(false)}
+        tabKey="2"
+        data={[]}
+      />
     </div>
   );
 };
