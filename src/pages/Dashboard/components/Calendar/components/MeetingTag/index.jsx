@@ -83,11 +83,14 @@ const MeetingTag = (props) => {
 
     // Monday, September 11 - 10:00am - 10:30am
     let eventDate = '';
-    if(moment.tz.guess() === 'America/New_York' && Number(moment(startTime).format('HH')) > 12){
+    if (moment.tz.guess() === 'America/New_York' && Number(moment(startTime).format('HH')) > 12) {
       eventDate = moment(startTime).locale('en').add(1, 'days').format('dddd, MMMM DD');
-    }else if(moment.tz.guess() !== 'Asia/Bangkok' && Number(moment(startTime).format('HH')) > 12){
+    } else if (
+      moment.tz.guess() !== 'Asia/Bangkok' &&
+      Number(moment(startTime).format('HH')) > 12
+    ) {
       eventDate = moment(startTime).locale('en').add(1, 'days').format('dddd, MMMM DD');
-    }else{
+    } else {
       eventDate = moment(startTime).locale('en').format('dddd, MMMM DD');
     }
     const eventStartTime = moment(startTime).format('HH:mm a');
