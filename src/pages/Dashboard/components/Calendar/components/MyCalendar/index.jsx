@@ -44,34 +44,65 @@ const MyCalendar = (props) => {
     setFirstHourHasData(firstIndex);
   }, [JSON.stringify(data)]);
 
-  const renderCurrentDate = (hour, currentDate, timeEvent) => {
-    const currentTime = currentDate ? currentDate.split(':')[0] : moment().format('HH')
-    const minute = currentDate ? currentDate.split(':')[1] / 60 : moment().format('mm') / 60
-    if(minute < 0.65){
-      if(hour - Number(currentTime) === 0 && timeEvent - Number(currentTime) !== 0){
-        if(minute < 0.05){return (<hr className={styles.currentTime} />)}
-        if(minute >= 0.05 && minute < 0.1){return (<hr className={styles.currentTime1} />)}
-        if(minute >= 0.1 && minute < 0.15){return (<hr className={styles.currentTime2} />)}
-        if(minute >= 0.15 && minute < 0.2){return (<hr className={styles.currentTime3} />)}
-        if(minute >= 0.2 && minute < 0.25){return (<hr className={styles.currentTime4} />)}
-        if(minute >= 0.25 && minute < 0.3){return (<hr className={styles.currentTime5} />)}
-        if(minute >= 0.3 && minute < 0.35){return (<hr className={styles.currentTime6} />)}
-        if(minute >= 0.35 && minute < 0.4){return (<hr className={styles.currentTime7} />)}
-        if(minute >= 0.4 && minute < 0.5){return (<hr className={styles.currentTime8} />)}
-        if(minute >= 0.5 && minute < 0.55){return (<hr className={styles.currentTime9} />)}
-        if(minute >= 0.55 && minute < 0.6){return (<hr className={styles.currentTime10} />)}
-        if(minute >= 0.6 && minute < 0.65){return (<hr className={styles.currentTime11} />)}
+  const renderCurrentDate = (hour, currentDate) => {
+    const currentTime = currentDate ? currentDate.split(':')[0] : moment().format('HH');
+    const minute = currentDate ? currentDate.split(':')[1] / 60 : moment().format('mm') / 60;
+    // && timeEvent - Number(currentTime) !== 0 && timeEvent - (Number(currentTime)+1) !== 0
+    if (minute < 0.65) {
+      if (hour - Number(currentTime) === 0) {
+        if (minute < 0.05) {
+          return <hr className={styles.currentTime} />;
+        }
+        if (minute >= 0.05 && minute < 0.1) {
+          return <hr className={styles.currentTime1} />;
+        }
+        if (minute >= 0.1 && minute < 0.15) {
+          return <hr className={styles.currentTime2} />;
+        }
+        if (minute >= 0.15 && minute < 0.2) {
+          return <hr className={styles.currentTime3} />;
+        }
+        if (minute >= 0.2 && minute < 0.25) {
+          return <hr className={styles.currentTime4} />;
+        }
+        if (minute >= 0.25 && minute < 0.3) {
+          return <hr className={styles.currentTime5} />;
+        }
+        if (minute >= 0.3 && minute < 0.35) {
+          return <hr className={styles.currentTime6} />;
+        }
+        if (minute >= 0.35 && minute < 0.4) {
+          return <hr className={styles.currentTime7} />;
+        }
+        if (minute >= 0.4 && minute < 0.5) {
+          return <hr className={styles.currentTime8} />;
+        }
+        if (minute >= 0.5 && minute < 0.55) {
+          return <hr className={styles.currentTime9} />;
+        }
+        if (minute >= 0.55 && minute < 0.6) {
+          return <hr className={styles.currentTime10} />;
+        }
+        if (minute >= 0.6 && minute < 0.65) {
+          return <hr className={styles.currentTime11} />;
+        }
       }
     }
-    if(minute >= 0.65){
-      if(hour - (Number(currentTime)+1) === 0 && timeEvent - (Number(currentTime)+1) !== 0){
-        if(minute < 0.75){ return (<hr className={styles.currentTime12} />)}
-        if(minute >= 0.75 && minute < 0.85){ return (<hr className={styles.currentTime13} />)}
-        if(minute >= 0.85 && minute < 1){ return (<hr className={styles.currentTime14} />)}
+    if (minute >= 0.65) {
+      if (hour - (Number(currentTime) + 1) === 0) {
+        if (minute < 0.75) {
+          return <hr className={styles.currentTime12} />;
+        }
+        if (minute >= 0.75 && minute < 0.85) {
+          return <hr className={styles.currentTime13} />;
+        }
+        if (minute >= 0.85 && minute < 1) {
+          return <hr className={styles.currentTime14} />;
+        }
       }
     }
-    return ''
-  }
+    return '';
+  };
   setInterval(() => {
     renderCurrentDate()
   }, 1000);
@@ -98,16 +129,18 @@ const MyCalendar = (props) => {
         </Col>
         <Col xs={20} xl={21} className={styles.eachRow__right}>
           <Row gutter={[16, 16]}>
-            {renderCurrentDate(hour, dateToFormat, timeEvent)}
-            {events.map((event) => {
-              return (
-                <MeetingTag
-                  span={colSpan}
-                  event={event}
-                  isFirstHourHasData={hour === firstHourHasData}
-                />
-              );
-            })}
+            <span style={{width: '100%'}}>
+              {renderCurrentDate(hour, dateToFormat, timeEvent)}
+              {events.map((event) => {
+                return (
+                  <MeetingTag
+                    span={colSpan}
+                    event={event}
+                    isFirstHourHasData={hour === firstHourHasData}
+                  />
+                );
+              })}
+            </span>
           </Row>
         </Col>
       </Row>
