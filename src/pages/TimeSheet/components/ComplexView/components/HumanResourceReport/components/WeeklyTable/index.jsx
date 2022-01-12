@@ -142,16 +142,14 @@ const WeeklyTable = (props) => {
         columns={generateColumns()}
         dataSource={data}
         locale={{
-          emptyText: (
-            <EmptyComponent />
-          ),
+          emptyText: <EmptyComponent />,
         }}
         rowSelection={rowSelection}
         rowKey={(record) => record.id}
-        pagination={false}
+        // pagination={false}
         scroll={selectedEmployees.length > 0 ? { y: 400, x: 1100 } : { x: 1100 }}
         loading={loadingFetch}
-        // pagination={pagination}
+        pagination={pagination}
       />
       <EmployeeDetailModal
         visible={employeeDetailModalVisible}

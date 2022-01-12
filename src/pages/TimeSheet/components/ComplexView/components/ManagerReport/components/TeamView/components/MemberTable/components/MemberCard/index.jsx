@@ -21,14 +21,14 @@ const MemberCard = (props) => {
     <div className={styles.MemberCard}>
       <Row gutter={[12, 0]}>
         <Col span={DESIGNATION} className={styles.normalCell}>
-          {title?.name || '-'}
+          <div className={styles.title}>{title?.name || '-'}</div>
         </Col>
         <Col span={DEPARTMENT} className={styles.normalCell}>
           {department?.name || '-'}
         </Col>
         <Col span={PROJECT_GROUP} className={styles.groupCell}>
           {projects.map((pj) => {
-            const { projectName = '', projectManager = {}, userProjectSpentTime = 0 } = pj;
+            const { projectName = '', projectManager, userProjectSpentTime = 0 } = pj;
             if (viewType === VIEW_TYPE.PEOPLE_MANAGER) {
               return (
                 <Row className={styles.groupRow}>
@@ -54,23 +54,25 @@ const MemberCard = (props) => {
                   {userProjectSpentTime} hours
                 </Col>
                 <Col span={TOTAL_HOURS} className={`${styles.normalCell} ${styles.alignCenter}`}>
-                  <UserProfilePopover placement="leftTop" data={projectManager}>
-                    {projectManager.avatar ? (
-                      <img
-                        src={projectManager.avatar || MockAvatar}
-                        className={styles.avatar}
-                        alt=""
-                      />
-                    ) : (
-                      <div className={styles.icon}>
-                        <span>
-                          {projectManager.legalName
-                            ? projectManager.legalName.toString()?.charAt(0)
-                            : 'P'}
-                        </span>
-                      </div>
-                    )}
-                  </UserProfilePopover>
+                  {projectManager && (
+                    <UserProfilePopover placement="leftTop" data={projectManager}>
+                      {projectManager.avatar ? (
+                        <img
+                          src={projectManager.avatar || MockAvatar}
+                          className={styles.avatar}
+                          alt=""
+                        />
+                      ) : (
+                        <div className={styles.icon}>
+                          <span>
+                            {projectManager.legalName
+                              ? projectManager.legalName.toString()?.charAt(0)
+                              : 'P'}
+                          </span>
+                        </div>
+                      )}
+                    </UserProfilePopover>
+                  )}
                 </Col>
               </Row>
             );
