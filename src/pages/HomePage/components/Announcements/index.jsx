@@ -27,25 +27,25 @@ const posts = [
     type: 1, // 1: link, 2: image
     link: 'https://google.com',
   },
-  // {
-  //   id: 2,
-  //   employee: {
-  //     generalInfo: {
-  //       legalName: 'Ronald Richards',
-  //     },
-  //     title: {
-  //       name: 'Head of Design',
-  //     },
-  //   },
-  //   content: (
-  //     <p>
-  //       Lollypop Design studio is now a Global Leader! 🌍 <br />
-  //       We are super proud to announce that we&apos;ve been......
-  //     </p>
-  //   ),
-  //   type: 2, // 1: link, 2: image
-  //   image: Post2,
-  // },
+  {
+    id: 2,
+    employee: {
+      generalInfo: {
+        legalName: 'Ronald Richards',
+      },
+      title: {
+        name: 'Head of Design',
+      },
+    },
+    content: (
+      <p>
+        Lollypop Design studio is now a Global Leader! 🌍 <br />
+        We are super proud to announce that we&apos;ve been......
+      </p>
+    ),
+    type: 2, // 1: link, 2: image
+    image: Post2,
+  },
   // {
   //   id: 3,
   //   employee: {
