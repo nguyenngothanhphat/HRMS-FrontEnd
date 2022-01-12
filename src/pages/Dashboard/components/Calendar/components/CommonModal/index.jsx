@@ -13,6 +13,7 @@ const CommonModal = (props) => {
     loading = false,
     title = '',
     onClose = () => {},
+    dateSelected = '',
   } = props;
 
   const renderModalHeader = () => {
@@ -30,7 +31,7 @@ const CommonModal = (props) => {
   const renderModalContent = () => {
     switch (tabKey) {
       case '1':
-        return <MyCalendar isInModal data={data} loading={loading} />;
+        return <MyCalendar isInModal data={data} loading={loading} dateSelected={dateSelected} />;
       case '2':
         return <HolidayCalendar isInModal listHolidays={data} loading={loading} />;
       default:
