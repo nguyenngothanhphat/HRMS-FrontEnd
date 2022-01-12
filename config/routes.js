@@ -237,6 +237,17 @@ const routes = [
             component: './HomePage',
           },
           {
+            path: '/home/settings',
+            name: 'homeSettings',
+            hideInMenu: true,
+            component: './HomePage/components/Settings',
+          },
+          {
+            path: '/home/settings/:reId',
+            hideInMenu: true,
+            component: './HomePage/components/Settings',
+          },
+          {
             path: '/dashboard',
             name: 'dashboard',
             icon: '/assets/images/menuIcons/dashboard.svg',

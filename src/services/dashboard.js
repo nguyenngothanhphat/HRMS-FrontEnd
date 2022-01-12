@@ -161,3 +161,11 @@ export async function getMyResoucreList(payload) {
     API_KEYS.PROJECT_API,
   );
 }
+
+// HOME PAGE
+export async function getBirthdayInWeek(data) {
+  return request('/api/employeetenant/list-celebration', {
+    method: 'POST',
+    data,
+  });
+}

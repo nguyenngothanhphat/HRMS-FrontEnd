@@ -37,6 +37,7 @@ export default defineConfig({
     // table
     'table-header-bg': '#2c6df9',
     'table-header-color': '#ffffff',
+    'table-padding-vertical-md': '8px',
   },
   // @ts-ignore
   title: false,

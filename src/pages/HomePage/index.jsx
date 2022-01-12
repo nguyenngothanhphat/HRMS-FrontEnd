@@ -1,18 +1,32 @@
+import { Col, Row } from 'antd';
 import React from 'react';
-import { Row, Col } from 'antd';
-import Welcome from './components/Welcome';
-import Voting from './components/Voting';
-import MyInformation from './components/MyInformation';
-import QuickLinks from './components/QuickLinks';
-import Carousel from './components/Carousel';
-import TimeSheet from './components/TimeSheet';
-import TimeOff from './components/TimeOff';
+import { history } from 'umi';
+import SettingIcon from '@/assets/dashboard/setting.svg';
 import Announcements from './components/Announcements';
+import Carousel from './components/Carousel';
 import Celebrating from './components/Celebrating';
 import Gallery from './components/Gallery';
+import MyInformation from './components/MyInformation';
+import QuickLinks from './components/QuickLinks';
+import TimeOff from './components/TimeOff';
+import TimeSheet from './components/TimeSheet';
+import Voting from './components/Voting';
+import Welcome from './components/Welcome';
 import styles from './index.less';
 
 const HomePage = () => {
+  const viewSettingPage = () => {
+    history.push('/home/settings');
+  };
+  const renderSettingIcon = () => {
+    return (
+      <div className={styles.settingIcon} onClick={viewSettingPage}>
+        <img src={SettingIcon} alt="" />
+        <span>Settings</span>
+      </div>
+    );
+  };
+
   return (
     <div className={styles.HomePage}>
       <Row gutter={[24, 24]}>
@@ -71,6 +85,7 @@ const HomePage = () => {
           </Row>
         </Col>
       </Row>
+      {renderSettingIcon()}
     </div>
   );
 };
