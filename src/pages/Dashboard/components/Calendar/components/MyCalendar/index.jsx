@@ -6,9 +6,9 @@ import MeetingTag from '../MeetingTag';
 import styles from './index.less';
 
 const MyCalendar = (props) => {
-  const { isInModal = false, data = [], loading = false } = props;
+  const { isInModal = false, data = [], loading = false, dateSelected = '' } = props;
   const [hourList, setHourList] = useState([]);
-  const [firstHourHasData, setFirstHourHasData] = useState('');
+  // const [firstHourHasData, setFirstHourHasData] = useState('');
 
   const [dateToFormat, setDateToFormat] = useState(moment().format('HH:mm'))
 
@@ -32,17 +32,17 @@ const MyCalendar = (props) => {
   }, []);
 
   // FIND THE FIRST HOUR IN DATE THAT HAS EVENT
-  useEffect(() => {
-    let firstIndex = null;
-    for (let i = 0; i < 24; i += 1) {
-      const x = data.find((item) => moment(item.start.dateTime).hour() === i);
-      if (x && !firstIndex) {
-        firstIndex = i;
-        break;
-      }
-    }
-    setFirstHourHasData(firstIndex);
-  }, [JSON.stringify(data)]);
+  // useEffect(() => {
+  //   let firstIndex = null;
+  //   for (let i = 0; i < 24; i += 1) {
+  //     const x = data.find((item) => moment(item.start.dateTime).hour() === i);
+  //     if (x && !firstIndex) {
+  //       firstIndex = i;
+  //       break;
+  //     }
+  //   }
+  //   setFirstHourHasData(firstIndex);
+  // }, [JSON.stringify(data)]);
 
   const renderCurrentDate = (hour, currentDate) => {
     const currentTime = currentDate ? currentDate.split(':')[0] : moment().format('HH');
@@ -120,8 +120,9 @@ const MyCalendar = (props) => {
       if (hour === 12) return `12 PM`;
       return `${h - 12} PM`;
     };
-
-    // if (firstHourHasData > hour + 2 && events.length === 0) return null;
+    // && events.length === 0
+    const checkCurrentTime = dateToFormat ? dateToFormat.split(':')[0] : moment().format('HH');
+    if ((checkCurrentTime > hour + 3 || checkCurrentTime < hour - 3) && events.length === 0) return null;
     return (
       <Row className={styles.eachRow} justify="center" align="middle">
         <Col xs={4} xl={3} className={styles.eachRow__left}>
@@ -136,7 +137,8 @@ const MyCalendar = (props) => {
                   <MeetingTag
                     span={colSpan}
                     event={event}
-                    isFirstHourHasData={hour === firstHourHasData}
+                    dateSelected={dateSelected}
+                    // isFirstHourHasData={hour === firstHourHasData}
                   />
                 );
               })}
