@@ -30,31 +30,41 @@ const HolidayCalendar = (props) => {
     );
   };
 
-  const renderRow = (month, list = []) => {
-    // IF REQUIRE TO SHOW ALL MONTH, ENABLE THESE LINES
-    // if (list.length === 0) {
-    //   return (
-    //     <Row
-    //       className={`${styles.eachRow} ${styles.borderBottomHr}`}
-    //       justify="center"
-    //       align="middle"
-    //     >
-    //       <Col xs={4} xl={3} className={styles.eachRow__left}>
-    //         <div>
-    //           <span className={styles.monthLabel}>{month}</span>
-    //         </div>
-    //       </Col>
-    //       <Col xs={20} xl={21} className={styles.eachRow__right} />
-    //     </Row>
-    //   );
-    // }
+  const formatData = () => {
+    return monthList.map((month, index) => {
+      const monthHolidays = listHolidays.filter(
+        (holiday) => holiday.date.dateTime.month === (index + 1).toString(),
+      );
+      const getDaysHaveHoliday = [...new Set(monthHolidays.map((x) => x.date.iso))];
 
+      return {
+        month,
+        list: getDaysHaveHoliday.map((y) => {
+          return {
+            date: y,
+            holidays: monthHolidays.filter((z) => {
+              return (
+                moment(z.date.dateTime.day, 'DD').format('DD') ===
+                moment(y, 'YYYY-MM-DD').format('DD')
+              );
+            }),
+          };
+        }),
+      };
+    });
+  };
+
+  const renderRow = (month, list = []) => {
     if (list.length === 0) {
       return '';
     }
 
     return list.map((item, index) => {
-      const colSpan = 24;
+      const holidayCount = item.holidays.length;
+      let colSpan = holidayCount > 0 ? 24 / holidayCount : 24;
+      if (holidayCount > 3) {
+        colSpan = 24;
+      }
       return (
         <Row
           className={`${styles.eachRow} ${
@@ -67,13 +77,15 @@ const HolidayCalendar = (props) => {
             <div>
               {index === 0 && <span className={styles.monthLabel}>{month}</span>}
               <span className={styles.dateLabel}>
-                {moment(item.date.iso).locale('en').format(dateFormat)}
+                {moment(item.date, 'YYYY-MM-DD').locale('en').format(dateFormat)}
               </span>
             </div>
           </Col>
           <Col xs={20} xl={21} className={styles.eachRow__right}>
             <Row gutter={[16, 16]}>
-              {renderTag(item.name, colSpan)}
+              {item.holidays.map((val) => {
+                return renderTag(val.name, colSpan);
+              })}
             </Row>
           </Col>
         </Row>
@@ -84,12 +96,9 @@ const HolidayCalendar = (props) => {
   const renderUI = () => {
     return (
       <div className={styles.mainContainer} style={isInModal ? { maxHeight: '600px' } : {}}>
-        {monthList.map((month, index) => {
-          const find =
-            listHolidays.filter(
-              (holiday) => holiday.date.dateTime.month === (index + 1).toString(),
-            );
-          return renderRow(month, find);
+        {monthList.map((month) => {
+          const find = formatData().find((holiday) => holiday.month === month) || {};
+          return renderRow(month, find.list);
         })}
       </div>
     );

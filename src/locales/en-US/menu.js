@@ -3,6 +3,7 @@ export default {
   'menu.welcome': 'Welcome',
   'menu.more-blocks': 'More Blocks',
   'menu.home': 'Home',
+  'menu.homeSettings': 'Settings',
   'menu.login': 'Login',
   'menu.register': 'Register',
   'menu.register.result': 'Register Result',
@@ -99,7 +100,7 @@ export default {
   'menu.ticketManagement': 'Ticket Management',
   'menu.ticketManagement.viewTicket': 'View Ticket',
   // resource management
-  'menu.resourceManagement':'Resource Management',
+  'menu.resourceManagement': 'Resource Management',
   // customer management
   'menu.viewCustomer': 'View Customer',
   'menu.customerManagement': 'Customer Management',

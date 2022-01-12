@@ -1,0 +1,43 @@
+.EmployeeTag {
+  padding: 24px;
+  .container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    width: 100%;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.8;
+    }
+    .avatar {
+      img {
+        width: 42px;
+        height: 42px;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      margin-right: 10px;
+    }
+    .information {
+      .name {
+        color: #212020;
+        font-weight: 500;
+        font-size: 14px;
+        font-family: Inter;
+        font-style: normal;
+        line-height: 17px;
+      }
+      .title {
+        display: block;
+        color: #707177;
+        font-weight: 500;
+        font-size: 12px;
+        font-family: Inter;
+        font-style: normal;
+        line-height: 15px;
+      }
+    }
+  }
+}
