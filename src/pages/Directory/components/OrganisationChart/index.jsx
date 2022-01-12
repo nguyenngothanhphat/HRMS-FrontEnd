@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/times';
 import { connect } from 'umi';
 import moment from 'moment';
 
 import { isEmpty, isEqual } from 'lodash';
+import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/times';
 import { getCurrentTenant } from '@/utils/authority';
 import OrganizationChart from './components/OrganizationChart';
 import DetailEmployeeChart from './components/EmployeeBox';
@@ -281,7 +281,6 @@ class OrganisationChart extends Component {
         type: 'employee/fetchDataOrgChart',
         payload: { employee: _id },
       });
-
       this.setState({ chartDetails: addTimeData });
     }
   };

@@ -4,6 +4,7 @@ export default {
   'menu.more-blocks': 'More Blocks',
   'menu.home': 'Home',
   'menu.homeSettings': 'Settings',
+  'menu.homeSettingAddPost': 'New Post',
   'menu.login': 'Login',
   'menu.register': 'Register',
   'menu.register.result': 'Register Result',

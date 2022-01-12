@@ -1,7 +1,7 @@
 import { Col, Row } from 'antd';
 import React from 'react';
-// import { history } from 'umi';
-// import SettingIcon from '@/assets/dashboard/setting.svg';
+import { history } from 'umi';
+import SettingIcon from '@/assets/dashboard/setting.svg';
 import Announcements from './components/Announcements';
 import Carousel from './components/Carousel';
 import Celebrating from './components/Celebrating';
@@ -15,17 +15,17 @@ import Welcome from './components/Welcome';
 import styles from './index.less';
 
 const HomePage = () => {
-  // const viewSettingPage = () => {
-  //   history.push('/home/settings');
-  // };
-  // const renderSettingIcon = () => {
-  //   return (
-  //     <div className={styles.settingIcon} onClick={viewSettingPage}>
-  //       <img src={SettingIcon} alt="" />
-  //       <span>Settings</span>
-  //     </div>
-  //   );
-  // };
+  const viewSettingPage = () => {
+    history.push('/home/settings');
+  };
+  const renderSettingIcon = () => {
+    return (
+      <div className={styles.settingIcon} onClick={viewSettingPage}>
+        <img src={SettingIcon} alt="" />
+        <span>Settings</span>
+      </div>
+    );
+  };
 
   return (
     <div className={styles.HomePage}>
