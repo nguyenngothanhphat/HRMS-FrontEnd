@@ -3,7 +3,9 @@ import { Avatar, Row, Col, Select, Spin, Divider, Tooltip, Popover, Form, Button
 import { UserOutlined } from '@ant-design/icons';
 import { Link, connect } from 'umi';
 import { isEmpty, debounce } from 'lodash';
+import moment from 'moment';
 
+import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import SearchIcon from '@/assets/searchOrgChart.svg';
 import avtDefault from '@/assets/avtDefault.jpg';
 import { getCurrentCompany } from '@/utils/authority';
@@ -30,6 +32,8 @@ class DetailEmployeeChart extends Component {
     this.state = {
       valueInput: undefined,
       valueSearch: '',
+      timezoneList: [],
+      currentTime: moment(),
     };
 
     this.setDebounce = debounce((valueSearch) => {
@@ -42,7 +46,12 @@ class DetailEmployeeChart extends Component {
     this.formRef = React.createRef();
   }
 
-  componentDidUpdate = (prevProp, prevState) => {
+  componentDidMount = () => {
+    this.fetchTimezone();
+  };
+
+  componentDidUpdate = (prevProps, prevState) => {
+    const { listLocationsByCompany = [] } = this.props;
     const { chartDetails = {}, fetchAllListUser = () => {} } = this.props;
     const { valueSearch } = this.state;
     const { _id = undefined } = chartDetails;
@@ -53,6 +62,33 @@ class DetailEmployeeChart extends Component {
     if (prevState.valueSearch !== valueSearch) {
       fetchAllListUser(valueSearch);
     }
+    if (
+      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+    ) {
+      this.fetchTimezone();
+    }
+  };
+
+  fetchTimezone = () => {
+    const { listLocationsByCompany = [] } = this.props;
+    const timezoneList = [];
+    listLocationsByCompany.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
+        _id = '',
+      } = location;
+      timezoneList.push({
+        locationId: _id,
+        timezone:
+          getTimezoneViaCity(city) ||
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
+    this.setState({
+      timezoneList,
+    });
   };
 
   updateValueSelect = (valueInput) => {
@@ -95,6 +131,53 @@ class DetailEmployeeChart extends Component {
     );
   };
 
+  locationContent = (location) => {
+    const {
+      headQuarterAddress: {
+        addressLine1 = '',
+        addressLine2 = '',
+        state = '',
+        country = {},
+        zipCode = '',
+      } = {},
+      _id = '',
+    } = location;
+
+    const { timezoneList, currentTime } = this.state;
+    const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+
+    return (
+      <div className={styles.locationContent}>
+        <span
+          style={{ display: 'block', fontSize: '13px', color: '#0000006e', marginBottom: '5px' }}
+        >
+          Address:
+        </span>
+        <span style={{ display: 'block', fontSize: '13px', marginBottom: '10px' }}>
+          {addressLine1}
+          {addressLine2 && ', '}
+          {addressLine2}
+          {state && ', '}
+          {state}
+          {country ? ', ' : ''}
+          {country?.name || country || ''}
+          {zipCode && ', '}
+          {zipCode}
+        </span>
+        <span
+          style={{ display: 'block', fontSize: '13px', color: '#0000006e', marginBottom: '5px' }}
+        >
+          Local time{state && ` in  ${state}`}:
+        </span>
+        <span style={{ display: 'block', fontSize: '13px' }}>
+          {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
+            ? getCurrentTimeOfTimezone(currentTime, findTimezone.timezone)
+            : 'Not enough data in address'}
+        </span>
+      </div>
+    );
+  };
+
   render() {
     const { chartDetails = {}, listEmployeeAll, loadingFetchListAll } = this.props;
     const { valueInput } = this.state;
@@ -117,8 +200,8 @@ class DetailEmployeeChart extends Component {
       employeeType: { name: emplTypeName = '' } = {} || {},
       location: { name: countryName = '' } = {},
       localTime = '',
+      location = {},
     } = chartDetails;
-
     const fullName = `${firstName} ${middleName} ${lastName}`;
     const locationName = ` ${countryName}`;
 
@@ -243,7 +326,25 @@ class DetailEmployeeChart extends Component {
                   <div className={styles.chartDetail__Bottom_label}>Location:</div>
                 </Col>
                 <Col span={17}>
-                  <div className={styles.chartDetail__Bottom_value}>{locationName || ''}</div>
+                  <div className={styles.chartDetail__Bottom_value}>
+                    <Popover
+                      content={() => this.locationContent(location)}
+                      title={locationName}
+                      trigger="hover"
+                      placement="right"
+                    >
+                      <span
+                        style={{
+                          wordWrap: 'break-word',
+                          wordBreak: 'break-word',
+                          cursor: 'pointer',
+                        }}
+                        onMouseEnter={this.setCurrentTime}
+                      >
+                        {locationName || ''}
+                      </span>
+                    </Popover>
+                  </div>
                 </Col>
                 <Col span={7}>
                   <div className={styles.chartDetail__Bottom_label}>Local Time:</div>
