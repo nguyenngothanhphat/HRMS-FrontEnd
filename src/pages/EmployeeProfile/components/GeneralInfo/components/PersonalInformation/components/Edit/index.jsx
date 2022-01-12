@@ -576,7 +576,6 @@ class Edit extends PureComponent {
                 // eslint-disable-next-line camelcase
                 defaultValue={c_Addressline1}
                 onChange={(e) => this.handleChangeAddress('c_Addressline1', e.target.value)}
-                disabled={!profileOwner}
               />
             </Form.Item>
             <Form.Item label="Address line 2" name="c_Addressline2">
@@ -585,7 +584,6 @@ class Edit extends PureComponent {
                 // eslint-disable-next-line camelcase
                 defaultValue={c_Addressline2}
                 onChange={(e) => this.handleChangeAddress('c_Addressline2', e.target.value)}
-                disabled={!profileOwner}
               />
             </Form.Item>
             <Form.Item label="City name" name="c_City">
@@ -603,7 +601,6 @@ class Edit extends PureComponent {
                 // eslint-disable-next-line camelcase
                 defaultValue={c_countryName}
                 onChange={(value) => this.handleChangeAddress('c_countryName', value)}
-                disabled={!profileOwner}
                 showSearch
                 filterOption={(input, option) =>
                   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -625,7 +622,6 @@ class Edit extends PureComponent {
                 // eslint-disable-next-line camelcase
                 defaultValue={c_state}
                 onChange={(value) => this.handleChangeAddress('c_state', value)}
-                disabled={!profileOwner}
                 showSearch
                 filterOption={(input, option) =>
                   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -654,7 +650,6 @@ class Edit extends PureComponent {
                 // eslint-disable-next-line camelcase
                 defaultValue={c_zipCode}
                 onChange={(e) => this.handleChangeAddress('c_zipCode', e.target.value)}
-                disabled={!profileOwner}
               />
             </Form.Item>
           </div>
