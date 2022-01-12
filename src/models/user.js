@@ -50,11 +50,11 @@ const UserModel = {
         let switchRoleAbility = false;
         const {
           signInRole = [],
-          // roles = [],
+          roles = [],
           candidate = {},
           isFirstLogin = false,
           employee = {},
-          employee: { title: { roles = [] } = {} || {} } = {} || {},
+          // employee: { title: { roles = [] } = {} || {} } = {} || {},
         } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
 

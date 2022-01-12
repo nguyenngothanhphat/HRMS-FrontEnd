@@ -192,15 +192,19 @@ const BasicLayout = (props) => {
           }}
           breadcrumbLayoutRender={(routers = []) => {
             let listPath = routers;
-            listPath = [
-              {
-                path: '/',
-                breadcrumbName: formatMessage({
-                  id: 'menu.home',
-                }),
-              },
-              ...listPath,
-            ];
+            const home = formatMessage({
+              id: 'menu.home',
+            });
+
+            if (!listPath.some((x) => x.breadcrumbName === home)) {
+              listPath = [
+                {
+                  path: '/',
+                  breadcrumbName: home,
+                },
+                ...listPath,
+              ];
+            }
             if (listPath.length > 0) {
               const [firstPath] = listPath;
               const { breadcrumbName = '' } = firstPath;

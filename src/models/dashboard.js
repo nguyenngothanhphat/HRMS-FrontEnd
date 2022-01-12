@@ -23,6 +23,9 @@ import {
   getMyTimesheet,
   getListMyTeam,
   getHolidaysByCountry,
+
+  // HOME PAGE
+  getBirthdayInWeek,
 } from '../services/dashboard';
 import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
 
@@ -42,6 +45,7 @@ const defaultState = {
   leaveRequests: [],
   status: '',
   statusApproval: '',
+  birthdayInWeekList: [],
 };
 const dashboard = {
   namespace: 'dashboard',
@@ -426,6 +430,28 @@ const dashboard = {
         });
       } catch (errors) {
         dialog(errors);
+      }
+      return response;
+    },
+    *fetchBirthdayInWeekList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getBirthdayInWeek, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            birthdayInWeekList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
       }
       return response;
     },
