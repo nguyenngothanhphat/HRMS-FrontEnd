@@ -8,7 +8,7 @@ import MessageIcon from '@/assets/candidatePortal/message-circle.svg';
 import Footer from '@/components/Footer';
 // import BottomBar from '../components/BottomBar';
 import CommonModal from '@/pages/CandidatePortal/components/Dashboard/components/CommonModal';
-import { getCurrentCompany } from '@/utils/authority';
+import { getCurrentCompany, getFirstChangePassword } from '@/utils/authority';
 import Authorized from '@/utils/Authorized';
 import { CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
 import { ChatEvent, SOCKET_URL } from '@/utils/chatSocket';
@@ -61,6 +61,7 @@ const CandidatePortalLayout = React.memo((props) => {
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
   };
+  const disablePage = getFirstChangePassword();
 
   const fetchUnseenTotal = (candidateId) => {
     dispatch({
@@ -93,6 +94,9 @@ const CandidatePortalLayout = React.memo((props) => {
         type: 'user/fetchCurrent',
       });
     }
+  }, []);
+
+  useEffect(() => {
     if (candidate) {
       dispatch({
         type: 'optionalQuestion/getListPage',
@@ -104,9 +108,7 @@ const CandidatePortalLayout = React.memo((props) => {
       // realtime message
       socket.current = io(SOCKET_URL);
       socket.current.emit(ChatEvent.ADD_USER, candidate._id);
-      // socket.current.on(ChatEvent.GET_USER, (users) => {
-      //   console.log('users', users);
-      // });
+
       socket.current.on(ChatEvent.GET_MESSAGE, (message) => {
         saveNewMessage(message);
         setTimeout(() => {
@@ -114,14 +116,8 @@ const CandidatePortalLayout = React.memo((props) => {
           getListLastMessage();
         }, 500);
       });
-      // socket.current.on(ChatEvent.LAST_MESSAGE, (message) => {;
-      //   saveLastMessage(message);
-      //   setTimeout(() => {
-      //     fetchUnseenTotal(candidate._id);
-      //   }, 500);
-      // });
     }
-  }, [candidate]);
+  }, [JSON.stringify(candidate)]);
 
   useEffect(() => {
     setCandidateMode(window.location.href.includes('ticket'));
@@ -151,7 +147,7 @@ const CandidatePortalLayout = React.memo((props) => {
       },
     });
     dispatch({
-      type: 'login/logout',
+      type: 'login/logoutCandidate',
     });
   };
 
@@ -212,9 +208,13 @@ const CandidatePortalLayout = React.memo((props) => {
       <Header className={`${s.header} `}>
         <div
           className={s.headerLeft}
-          onClick={() => {
-            history.push(`/candidate-portal/dashboard`);
-          }}
+          onClick={
+            disablePage
+              ? null
+              : () => {
+                  history.push(`/candidate-portal/dashboard`);
+                }
+          }
         >
           <div className={s.imgContainer}>
             <img src={companyLogo()} alt="logo" />
@@ -235,14 +235,21 @@ const CandidatePortalLayout = React.memo((props) => {
             </div>
           )} */}
 
-          <div className={s.headerIcon} onClick={() => setOpenUpcomingEventModal(true)}>
+          <div
+            className={s.headerIcon}
+            onClick={disablePage ? null : () => setOpenUpcomingEventModal(true)}
+          >
             <img src={CalendarIcon} alt="calendar" />
           </div>
           <div
             className={s.headerIcon}
-            onClick={() => {
-              history.push(`/candidate-portal/messages/`);
-            }}
+            onClick={
+              disablePage
+                ? null
+                : () => {
+                    history.push(`/candidate-portal/messages/`);
+                  }
+            }
           >
             <img src={MessageIcon} alt="message" />
             {unseenTotal > 0 && <div className={s.badgeNumber}>{unseenTotal}</div>}

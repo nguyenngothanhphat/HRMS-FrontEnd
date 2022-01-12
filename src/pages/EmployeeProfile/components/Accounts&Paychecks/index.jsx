@@ -9,6 +9,7 @@ import EditTax from './components/Edit/EditTax';
 import PaySlipMonth from './components/PayslipMonth';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
 import styles from './index.less';
+import CommonModal from '@/components/CommonModal';
 
 @connect(
   ({
@@ -17,7 +18,7 @@ import styles from './index.less';
       editGeneral: { openTax, openBank } = {},
       originData: { bankData: bankDataOrigin = {}, taxData: taxDataOrigin = {} },
       // tempData: { bankData = {}, taxData = {} } = {},
-      visibleSuccess = false
+      visibleSuccess = false,
     } = {},
   }) => ({
     loadingTax: loading.effects['employeeProfile/fetchTax'],
@@ -107,20 +108,36 @@ class AccountsPaychecks extends PureComponent {
   };
 
   handleCancelModelSuccess = () => {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'employeeProfile/save',
-      payload: {visibleSuccess: false}
-    })
+      payload: { visibleSuccess: false },
+    });
   };
 
   render() {
-    const { openTax, loadingTax, openBank, loadingBank, visibleSuccess, bankDataOrigin, taxDataOrigin } = this.props;
+    const {
+      openTax,
+      loadingTax,
+      openBank,
+      loadingBank,
+      visibleSuccess,
+      bankDataOrigin,
+      taxDataOrigin,
+    } = this.props;
     const { Panel } = Collapse;
     const getyear = new Date();
     const year = getyear.getFullYear();
-    const renderTax = openTax ? <EditTax handleCancel={this.handleCancel} /> : <ViewTax taxData={taxDataOrigin} />;
-    const renderBank = openBank ? <EditBank handleCancel={this.handleCancel} /> : <ViewBank bankData={bankDataOrigin} />;
+    const renderTax = openTax ? (
+      <EditTax handleCancel={this.handleCancel} />
+    ) : (
+      <ViewTax taxData={taxDataOrigin} />
+    );
+    const renderBank = openBank ? (
+      <EditBank handleCancel={this.handleCancel} />
+    ) : (
+      <ViewBank bankData={bankDataOrigin} />
+    );
     return (
       <div className={styles.AccountPaychecks}>
         <Row className={styles.TableBankDetails}>
@@ -190,25 +207,34 @@ class AccountsPaychecks extends PureComponent {
             </Collapse>
           </Col>
         </Row>
-        <Modal
+
+        <CommonModal
           visible={visibleSuccess}
-          className={styles.modalUpdateSuccess}
-          footer={null}
-          width="30%"
-          onCancel={this.handleCancelModelSuccess}
-        >
-          <div style={{ textAlign: 'center' }}>
-            <img src={imageAddSuccess} alt="update success" />
-          </div>
-          <br />
-          <br />
-          <p style={{ textAlign: 'center', color: '#707177' }}>Update infomation successfully</p>
-          <div className={styles.spaceFooterModalSuccess}>
-            <Button onClick={this.handleCancelModelSuccess} className={styles.btnOkModalSuccess}>
-              Okay
-            </Button>
-          </div>
-        </Modal>
+          hasFooter={false}
+          onClose={this.handleCancelModelSuccess}
+          onFinish={this.handleCancelModelSuccess}
+          hasHeader={false}
+          content={
+            <>
+              <div style={{ textAlign: 'center' }}>
+                <img src={imageAddSuccess} alt="update success" />
+              </div>
+              <br />
+              <br />
+              <p style={{ textAlign: 'center', color: '#707177', fontWeight: 500 }}>
+                Update information successfully
+              </p>
+              <div className={styles.spaceFooterModalSuccess}>
+                <Button
+                  onClick={this.handleCancelModelSuccess}
+                  className={styles.btnOkModalSuccess}
+                >
+                  Okay
+                </Button>
+              </div>
+            </>
+          }
+        />
       </div>
     );
   }

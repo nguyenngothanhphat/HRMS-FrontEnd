@@ -33,7 +33,7 @@ const MyTeam = (props) => {
   }, [selectedMonth]);
 
   useEffect(() => {
-    const roleEmployee = employee ? employee.title.roles : [];
+    const roleEmployee = employee && employee?.title ? employee.title.roles : [];
     const employeeId = employee ? employee._id : '';
     const companyInfo = employee ? employee.company : {}
     dispatch({
@@ -87,7 +87,7 @@ const MyTeam = (props) => {
         </div>
         <div className={styles.content}>
           <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
-            <TabPane tab="Resources" key="1">
+            <TabPane tab="Members" key="1">
               <Resources data={myTeam} />
             </TabPane>
             {checkRoleHrAndManager ? (

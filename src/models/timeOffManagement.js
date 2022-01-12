@@ -9,13 +9,13 @@ import {
 } from '../services/timeOffManagement';
 
 const options = [
-  { value: TIMEOFF_STATUS.accepted, label: 'Approved' },
-  { value: TIMEOFF_STATUS.inProgress, label: 'In Progress' },
-  { value: TIMEOFF_STATUS.inProgressNext, label: 'In Progress' },
-  { value: TIMEOFF_STATUS.rejected, label: 'Rejected' },
-  { value: TIMEOFF_STATUS.drafts, label: 'Draft' },
-  { value: TIMEOFF_STATUS.onHold, label: 'On-hold' },
-  { value: TIMEOFF_STATUS.deleted, label: 'Deleted' },
+  { value: TIMEOFF_STATUS.ACCEPTED, label: 'Approved' },
+  { value: TIMEOFF_STATUS.IN_PROGRESS, label: 'In Progress' },
+  { value: TIMEOFF_STATUS.IN_PROGRESS_NEXT, label: 'In Progress' },
+  { value: TIMEOFF_STATUS.REJECTED, label: 'Rejected' },
+  { value: TIMEOFF_STATUS.DRAFTS, label: 'Draft' },
+  { value: TIMEOFF_STATUS.ON_HOLD, label: 'On-hold' },
+  { value: TIMEOFF_STATUS.DELETED, label: 'Deleted' },
 ];
 
 const timeOffManagement = {

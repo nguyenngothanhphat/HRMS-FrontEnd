@@ -1,10 +1,10 @@
-import logoDefault from '@/assets/companyDefault.png';
 import { Button, Tooltip } from 'antd';
 import React, { PureComponent } from 'react';
 import { history, connect } from 'umi';
+import { MoreOutlined } from '@ant-design/icons';
 import { setTenantId, setCurrentCompany } from '@/utils/authority';
 
-import { MoreOutlined } from '@ant-design/icons';
+import logoDefault from '@/assets/companyDefault.png';
 import s from './index.less';
 
 @connect(({ user: { currentUser: { email = '' } = {} } = {} }) => ({ email }))
@@ -38,7 +38,6 @@ class ItemCompany extends PureComponent {
     const { dispatch } = this.props;
     await dispatch({
       type: 'user/fetchCurrent',
-      refreshCompanyList: false,
     });
 
     if (isOwner) {

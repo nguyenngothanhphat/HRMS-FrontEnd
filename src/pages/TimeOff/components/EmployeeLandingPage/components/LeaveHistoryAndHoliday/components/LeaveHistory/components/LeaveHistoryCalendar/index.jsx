@@ -2,11 +2,13 @@
 import React, { PureComponent } from 'react';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import { Tooltip } from 'antd';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import EventDetailBox from './EventDetailBox';
 
 import styles from './index.less';
+
+const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, REJECTED } = TIMEOFF_STATUS;
 
 moment.locale('en');
 
@@ -152,14 +154,11 @@ export default class LeaveHistoryCalendar extends PureComponent {
         const eventToYear = moment(to).format('Y');
 
         const checkStatus = (statusName) => {
-          if (statusName === TIMEOFF_STATUS.accepted) {
+          if (statusName === ACCEPTED) {
             colorClassName = styles.accepted;
-          } else if (statusName === TIMEOFF_STATUS.rejected) {
+          } else if (statusName === REJECTED) {
             colorClassName = styles.rejected;
-          } else if (
-            statusName === TIMEOFF_STATUS.inProgress ||
-            statusName === TIMEOFF_STATUS.inProgressNext
-          ) {
+          } else if (statusName === IN_PROGRESS || statusName === IN_PROGRESS_NEXT) {
             colorClassName = styles.applied;
           } else colorClassName = styles.allLeaves;
         };

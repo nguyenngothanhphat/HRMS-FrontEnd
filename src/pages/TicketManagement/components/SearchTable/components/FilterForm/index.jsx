@@ -13,11 +13,7 @@ import styles from './index.less';
 const { Option } = Select;
 @connect(
   ({
-    ticketManagement: {
-      locationsList = [],
-      currentStatus = [],
-      listOffAllTicket = [],
-    } = {},
+    ticketManagement: { locationsList = [], currentStatus = [], listOffAllTicket = [] } = {},
   }) => ({
     currentStatus,
     listOffAllTicket,
@@ -310,7 +306,7 @@ class FilterForm extends Component {
     const assigned = getUniqueListBy(listOffAllTicket, 'employee_assignee');
     const assginedList = assigned.filter((val) => val.employee_assignee !== '');
     const legalNameList = getUniqueListBy(listOffAllTicket, 'employee_raise');
-    const locationList = getUniqueListBy(listOffAllTicket, 'location');
+    const locationsListNew = getUniqueListBy(listOffAllTicket, 'location');
     const dateFormat = 'DD-MM-YYYY';
 
     return (
@@ -338,20 +334,21 @@ class FilterForm extends Component {
                 placeholder="Select name"
                 dropdownClassName={styles.dropdown}
               >
-                {legalNameList.map((option) => {
-                  return (
-                    <Option key={option.id} value={option.employeeRaise.generalInfo.legalName}>
-                      <Checkbox
-                        value={option.employeeRaise.generalInfo.legalName}
-                        checked={this.checkBoxStatusChecked(
-                          option.employeeRaise.generalInfo.legalName,
-                          'name',
-                        )}
-                      />
-                      <span>{option.employeeRaise.generalInfo.legalName}</span>
-                    </Option>
-                  );
-                })}
+                {!isEmpty(legalNameList)
+                  ? legalNameList.map((option) => {
+                      const { employeeRaise: { generalInfo: { legalName = '' } = {} } = {} } =
+                        option;
+                      return (
+                        <Option key={option.id} value={legalName}>
+                          <Checkbox
+                            value={legalName}
+                            checked={this.checkBoxStatusChecked(legalName, 'name')}
+                          />
+                          <span>{legalName}</span>
+                        </Option>
+                      );
+                    })
+                  : null}
               </Select>
             </Form.Item>
             <Form.Item key="queryType" label="BY REQUEST TYPE" name="queryType">
@@ -438,18 +435,19 @@ class FilterForm extends Component {
                   <Checkbox value="ALL" checked={checkAll} onChange={this.onCheckAllChange} />
                   <span>Select All</span>
                 </Option> */}
-                {locationList.map((option) => {
+                {locationsListNew.map((option) => {
                   const locationName =
                     locationsList.length > 0
-                      ? locationsList.find((val) => val._id === option.location)
+                      ? locationsList.filter((val) => val._id === option.location)
                       : [];
+                  const name = locationName.length > 0 ? locationName[0].name : null;
                   return (
                     <Option key={option.location} value={option.location}>
                       <Checkbox
                         value={option.location}
                         checked={this.checkBoxStatusChecked(option.location, 'location')}
                       />
-                      <span>{locationName.name}</span>
+                      <span>{name}</span>
                     </Option>
                   );
                 })}

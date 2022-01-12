@@ -3,6 +3,7 @@ import { connect } from 'umi';
 import View from './components/View';
 import Edit from './components/Edit';
 import styles from './index.less';
+import EditBtn from '@/assets/edit.svg';
 
 @connect(
   ({
@@ -73,13 +74,9 @@ class ProfessionalAcademicBackground extends PureComponent {
       <div className={styles.root}>
         <div className={styles.viewTitle}>
           <p className={styles.viewTitle__text}>Professional &amp; Academic Background</p>
-          {(permissions.editProfessionalAcademic !== -1 || profileOwner) && (
+          {!openAcademic && (permissions.editProfessionalAcademic !== -1 || profileOwner) && (
             <div className={styles.viewTitle__edit} onClick={this.handleEdit}>
-              <img
-                src="/assets/images/edit.svg"
-                alt="edit"
-                className={styles.viewTitle__edit__icon}
-              />
+              <img src={EditBtn} alt="" className={styles.viewTitle__edit__icon} />
               <p className={styles.viewTitle__edit__text}>Edit</p>
             </div>
           )}

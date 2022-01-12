@@ -9,13 +9,12 @@
 @gray: #707177;
 @red: #ff5252;
 @blue: #2c6df9;
-@white: #FFFFFF;
+@white: #ffffff;
 @yelow: #ffa100;
 
 .modalCustom {
   :global {
     .ant-btn-primary {
-      width: 94px;
       height: 40px;
       object-fit: contain;
       color: @white;
@@ -29,6 +28,7 @@
       border: solid 1px @yelow;
       border-radius: 25px;
       box-shadow: none;
+      padding-inline: 25px;
 
       &:hover {
         color: @white;
@@ -37,9 +37,8 @@
     }
 
     .ant-btn-secondary {
-      width: 94px;
       height: 40px;
-      padding-right: 41px;
+
       object-fit: contain;
       color: @yelow;
       font-weight: 500;
@@ -48,6 +47,7 @@
       letter-spacing: 0.13px;
       border: solid 0;
       border-radius: 25px;
+      padding-inline: 25px;
     }
 
     .ant-modal-header {
@@ -74,13 +74,13 @@
 
     .ant-modal-close-x {
       position: absolute;
-      background-color: @blue;
-      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 54px;
       height: 48px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      color: #fff;
+      background-color: @blue;
       border-top-right-radius: 8px;
       border-bottom-right-radius: 8px;
 
@@ -93,12 +93,12 @@
       width: 18px;
       height: 18px;
       background-color: #fff;
-      border: 1px solid #D8D8D8;
+      border: 1px solid #d8d8d8;
       border-radius: 4px;
     }
 
     .ant-checkbox-checked .ant-checkbox-inner {
-      background-color: #F0F3F9;
+      background-color: #f0f3f9;
     }
 
     .ant-checkbox-checked .ant-checkbox-inner::after {
@@ -108,14 +108,15 @@
     }
 
     .ant-input {
-      height: 42px;
-      width: 100%;
-      border: 1px solid #D6DCE4;
       box-sizing: border-box;
+      width: 100%;
+      height: 42px;
+      border: 1px solid #d6dce4;
       border-radius: 5px;
     }
 
-    .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
+      .ant-select-selector {
       box-shadow: none;
     }
 
@@ -127,7 +128,9 @@
       border-radius: 5px;
     }
 
-    .ant-select-single:not(.ant-select-customize-input) .ant-select-selector .ant-select-selection-search-input {
+    .ant-select-single:not(.ant-select-customize-input)
+      .ant-select-selector
+      .ant-select-selection-search-input {
       height: 36px;
     }
 
@@ -135,16 +138,16 @@
       margin-bottom: 24px;
     }
 
-    .ant-form-item-label>label {
-      font-size: 13px;
+    .ant-form-item-label > label {
       color: #707177;
+      font-size: 13px;
     }
 
     .ant-select-multiple.ant-select-show-arrow .ant-select-selector,
     .ant-select-multiple.ant-select-allow-clear .ant-select-selector {
       min-height: 40px;
-      border-radius: 5px;
       border: solid 1px #d6dce4;
+      border-radius: 5px;
     }
 
     .ant-select-multiple.ant-select-show-arrow .ant-select-selector,
@@ -153,29 +156,29 @@
     }
 
     .ant-tag {
-      border: none;
-      /* height: 25px; */
-      border-radius: 5px;
-      font-weight: 500;
       /* align-items: center; */
       /* text-align: center; */
       color: #707177;
+      font-weight: 500;
+      border: none;
+      /* height: 25px; */
+      border-radius: 5px;
     }
-    .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before{
+    .ant-form-item-label
+      > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
       display: none;
     }
   }
 
-
   .btnSubmit {
-    font-size: 14px;
     width: fit-content;
+    color: #fff;
     // height: 40px;
     font-weight: 600;
-    border-radius: 25px;
-    color: #fff;
+    font-size: 14px;
     background-color: @yelow;
     border: none;
+    border-radius: 25px;
   }
 
   .btnSubmit:disabled {
@@ -184,12 +187,12 @@
   }
 
   .btnCancel {
-    border: none;
     display: inline-block;
-    color: @yelow;
-    font-size: 14px;
-    font-weight: 500;
     margin-right: 20px;
+    color: @yelow;
+    font-weight: 500;
+    font-size: 14px;
+    border: none;
     cursor: pointer;
 
     &:active {
@@ -198,10 +201,10 @@
   }
 
   .btnLater {
-    border: none;
     display: inline-block;
     color: @gray;
     font-size: 14px;
+    border: none;
   }
 
   .mainTop {
@@ -218,7 +221,6 @@
 
         .ant-steps-item-icon {
           margin: 0;
-          ;
         }
 
         .ant-steps-item-title {
@@ -231,14 +233,12 @@
           }
 
           .ant-steps-item-icon {
-            background-color: @blue  !important;
+            background-color: @blue !important;
 
             path {
               fill: white !important;
             }
           }
-
-
         }
 
         .ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item {
@@ -249,7 +249,6 @@
           height: 2px;
         }
       }
-
     }
   }
 
@@ -258,21 +257,21 @@
 
     .form {
       &__title {
+        color: #161c29;
         font-weight: 500;
         font-size: 16px;
-        color: #161C29;
       }
 
       &__description {
-        font-size: 13px;
         color: #464646;
+        font-size: 13px;
       }
 
       &__block {
         .containBlock {
           position: relative;
           margin-top: 24px;
-          border-bottom: 1px solid #D6DCE4;
+          border-bottom: 1px solid #d6dce4;
 
           &:last-child {
             border-bottom: none;
@@ -280,27 +279,26 @@
 
           .deleteBlock {
             position: absolute;
-            right: 0;
             top: -4px;
+            right: 0;
             z-index: 10;
 
             .btnRemove {
               color: @red;
 
               &:hover {
-                color: @red
+                color: @red;
               }
             }
           }
         }
       }
-
     }
   }
 
   .btnAdd {
     padding: 0 !important;
-    color: @blue  !important;
+    color: @blue !important;
     font-weight: 500;
     font-size: 14px;
 

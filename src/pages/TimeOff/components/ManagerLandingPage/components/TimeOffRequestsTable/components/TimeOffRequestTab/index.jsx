@@ -11,6 +11,7 @@ import styles from './index.less';
 import ROLES from '@/utils/roles';
 
 const { REGION_HEAD } = ROLES;
+const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DRAFTS } = TIMEOFF_STATUS;
 @connect(
   ({
     timeOff,
@@ -51,7 +52,7 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength: 0,
       rejectedLength: 0,
       draftLength: 0,
-      selectedTab: TIMEOFF_STATUS.inProgress,
+      selectedTab: IN_PROGRESS,
       onHoldLength: 0,
       handlePackage: {},
     };
@@ -114,40 +115,40 @@ class TimeOffRequestTab extends PureComponent {
     let status = '';
     if (tabType === 1) {
       if (filterTab === '1') {
-        status = TIMEOFF_STATUS.inProgress;
+        status = IN_PROGRESS;
       }
       if (filterTab === '2') {
-        status = TIMEOFF_STATUS.accepted;
+        status = ACCEPTED;
       }
       if (filterTab === '3') {
-        status = TIMEOFF_STATUS.rejected;
+        status = REJECTED;
       }
       if (filterTab === '4') {
-        status = TIMEOFF_STATUS.drafts;
+        status = DRAFTS;
       }
       if (filterTab === '5') {
-        status = TIMEOFF_STATUS.onHold;
+        status = ON_HOLD;
       }
     } else if (tabType === 2) {
       // compoff
       if (filterTab === '1') {
         if (currentUserRole === REGION_HEAD) {
-          status = [TIMEOFF_STATUS.inProgressNext, TIMEOFF_STATUS.inProgress];
-        } else status = [TIMEOFF_STATUS.inProgress];
+          status = [IN_PROGRESS_NEXT, IN_PROGRESS];
+        } else status = [IN_PROGRESS];
       }
       if (filterTab === '2') {
         if (currentUserRole === REGION_HEAD) {
-          status = [TIMEOFF_STATUS.accepted];
-        } else status = [TIMEOFF_STATUS.inProgressNext, TIMEOFF_STATUS.accepted];
+          status = [ACCEPTED];
+        } else status = [IN_PROGRESS_NEXT, ACCEPTED];
       }
       if (filterTab === '3') {
-        status = [TIMEOFF_STATUS.rejected];
+        status = [REJECTED];
       }
       if (filterTab === '4') {
-        status = [TIMEOFF_STATUS.drafts];
+        status = [DRAFTS];
       }
       if (filterTab === '5') {
-        status = [TIMEOFF_STATUS.onHold];
+        status = [ON_HOLD];
       }
     }
 
@@ -194,15 +195,15 @@ class TimeOffRequestTab extends PureComponent {
   };
 
   setSelectedFilterTab = (id) => {
-    let selectedTab = TIMEOFF_STATUS.inProgress;
+    let selectedTab = IN_PROGRESS;
     if (id === '2') {
-      selectedTab = TIMEOFF_STATUS.accepted;
+      selectedTab = ACCEPTED;
     } else if (id === '3') {
-      selectedTab = TIMEOFF_STATUS.rejected;
+      selectedTab = REJECTED;
     } else if (id === '4') {
-      selectedTab = TIMEOFF_STATUS.drafts;
+      selectedTab = DRAFTS;
     } else if (id === '5') {
-      selectedTab = TIMEOFF_STATUS.onHold;
+      selectedTab = ON_HOLD;
     }
 
     this.setState({
@@ -223,7 +224,7 @@ class TimeOffRequestTab extends PureComponent {
       const { _id: status = '' } = item;
       if (currentUserRole === REGION_HEAD) {
         switch (status) {
-          case TIMEOFF_STATUS.inProgressNext: {
+          case IN_PROGRESS_NEXT: {
             inProgressLength += item.count;
             break;
           }
@@ -232,7 +233,7 @@ class TimeOffRequestTab extends PureComponent {
         }
       } else if (currentUserRole !== REGION_HEAD) {
         switch (status) {
-          case TIMEOFF_STATUS.inProgressNext: {
+          case IN_PROGRESS_NEXT: {
             approvedLength += item.count;
             break;
           }
@@ -242,23 +243,23 @@ class TimeOffRequestTab extends PureComponent {
       }
 
       switch (status) {
-        case TIMEOFF_STATUS.inProgress: {
+        case IN_PROGRESS: {
           inProgressLength += item.count;
           break;
         }
-        case TIMEOFF_STATUS.accepted: {
+        case ACCEPTED: {
           approvedLength += item.count;
           break;
         }
-        case TIMEOFF_STATUS.rejected: {
+        case REJECTED: {
           rejectedLength += item.count;
           break;
         }
-        case TIMEOFF_STATUS.drafts: {
+        case DRAFTS: {
           draftLength += item.count;
           break;
         }
-        case TIMEOFF_STATUS.onHold: {
+        case ON_HOLD: {
           onHoldLength += item.count;
           break;
         }

@@ -2,18 +2,20 @@
   margin: 24px;
 
   &__table {
-    background: #FFFFFF;
-    border: 1px solid #D6DCE0;
+    background: #ffffff;
+    border: 1px solid #d6dce0;
     border-radius: 8px;
 
     .tableApproval {
-      margin: 0 12px
+      margin: 0 12px;
     }
-
+    .employeeName {
+      cursor: pointer;
+    }
     .searchFilter {
       display: flex;
-      justify-content: flex-end;
       align-items: center;
+      justify-content: flex-end;
       margin: 24px;
 
       :global {
@@ -22,15 +24,14 @@
         }
 
         .ant-input .nt-input-lg {
-          font-style: normal;
+          color: #707177;
           font-weight: normal;
           font-size: 14px;
+          font-style: normal;
           line-height: 16px;
-
-          color: #707177;
+          opacity: 0.5;
 
           mix-blend-mode: normal;
-          opacity: 0.5;
         }
 
         .ant-input-affix-wrapper-focused {
@@ -44,19 +45,19 @@
       }
 
       &__input {
-        background: #FFFEFE;
-        border: 1px solid #D6DCE0;
-        border-radius: 33px;
         width: 240px;
         height: 37px;
+        background: #fffefe;
+        border: 1px solid #d6dce0;
+        border-radius: 33px;
       }
     }
 
     .btnDetail {
+      color: #ffa100;
       font-weight: 500;
       font-size: 12px;
       text-decoration-line: underline;
-      color: #FFA100;
     }
 
     .btnAction {
@@ -64,10 +65,9 @@
     }
 
     .blueText {
+      color: #2c6df9;
       font-weight: 500;
       font-size: 13px;
-      color: #2C6DF9;
-
     }
   }
 }

@@ -45,3 +45,13 @@ export async function getURLGoogle() {
     true,
   );
 }
+
+export async function getURLLollypop() {
+  return request(
+    '/api/url-sign-in-google-lollypop',
+    {
+      method: 'GET',
+    },
+    true,
+  );
+}

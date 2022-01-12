@@ -56,14 +56,13 @@ const AddTaskModal = (props) => {
   useEffect(() => {
     if (visible) {
       fetchProjectList();
+      if (date) {
+        form.setFieldsValue({
+          date: moment(date),
+        });
+      }
     }
   }, [visible]);
-
-  useEffect(() => {
-    form.setFieldsValue({
-      date: date ? moment(date) : '',
-    });
-  }, [date]);
 
   const renderModalHeader = () => {
     return (
@@ -276,7 +275,6 @@ const AddTaskModal = (props) => {
           onFinish={handleFinish}
           initialValues={{
             tasks: [{ projectName: projectName || null }],
-            date: date ? moment(date) : '',
           }}
         >
           <Row gutter={[24, 0]} className={styles.abovePart}>

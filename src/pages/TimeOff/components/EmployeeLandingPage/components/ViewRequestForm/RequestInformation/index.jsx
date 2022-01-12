@@ -9,6 +9,12 @@ import WithdrawModal from '../WithdrawModal';
 import Withdraw2Modal from '../Withdraw2Modal';
 import styles from './index.less';
 
+const {
+  IN_PROGRESS,
+  ACCEPTED,
+  REJECTED,
+  DRAFTS,
+} = TIMEOFF_STATUS;
 @connect(({ timeOff, loading }) => ({
   timeOff,
   loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
@@ -77,7 +83,7 @@ class RequestInformation extends PureComponent {
 
   // WITHDRAW CLICKED
   withDraw = (status) => {
-    if (status !== TIMEOFF_STATUS.accepted) this.setShowWithdrawModal(true);
+    if (status !== ACCEPTED) this.setShowWithdrawModal(true);
     else this.setShowWithdraw2Modal(true);
   };
 
@@ -184,7 +190,7 @@ class RequestInformation extends PureComponent {
           <span className={styles.title}>
             [Ticket ID: {ticketID}]: {subject}
           </span>
-          {(status === TIMEOFF_STATUS.drafts || status === TIMEOFF_STATUS.inProgress) && (
+          {(status === DRAFTS || status === IN_PROGRESS) && (
             <div className={styles.editButton} onClick={() => this.handleEdit(_id)}>
               <img src={EditIcon} className={styles.icon} alt="edit-icon" />
               <span className={styles.label}>Edit</span>
@@ -258,7 +264,7 @@ class RequestInformation extends PureComponent {
                   <span>{description}</span>
                 </Col>
 
-                {status === TIMEOFF_STATUS.rejected && (
+                {status === REJECTED && (
                   <>
                     <Col span={6}>Request Rejection Comments</Col>
                     <Col span={18} className={styles.detailColumn}>
@@ -268,9 +274,9 @@ class RequestInformation extends PureComponent {
                 )}
               </Row>
             </div>
-            {(status === TIMEOFF_STATUS.drafts ||
-              status === TIMEOFF_STATUS.inProgress ||
-              (status === TIMEOFF_STATUS.accepted && checkWithdrawValid)) && (
+            {(status === DRAFTS ||
+              status === IN_PROGRESS ||
+              (status === ACCEPTED && checkWithdrawValid)) && (
               <div className={styles.footer}>
                 <span className={styles.note}>
                   By default notifications will be sent to HR, your manager and recursively loop to
@@ -278,7 +284,7 @@ class RequestInformation extends PureComponent {
                 </span>
                 <div className={styles.formButtons}>
                   <Button onClick={() => this.withDraw(status)}>
-                    {status === TIMEOFF_STATUS.drafts ? 'Discard' : 'Withdraw'}
+                    {status === DRAFTS ? 'Discard' : 'Withdraw'}
                   </Button>
                 </div>
               </div>
@@ -289,7 +295,7 @@ class RequestInformation extends PureComponent {
           loading={loadingEmployeeWithdrawInProgress}
           visible={showWithdrawModal}
           onProceed={
-            status === TIMEOFF_STATUS.inProgress ? this.onProceedInProgress : this.onProceedDrafts
+            status === IN_PROGRESS ? this.onProceedInProgress : this.onProceedDrafts
           }
           onClose={this.setShowWithdrawModal}
           status={status}

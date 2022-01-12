@@ -61,12 +61,8 @@ class CommonLayout extends PureComponent {
     const { listMenu = [], loading = false } = this.props;
     const { selectedItemId, displayComponent, displayComponentActions } = this.state;
     return (
-      <div className={s.root}>
-        <Affix
-          // offsetTop={isCompanyProfile ? 0 : 100}
-          offsetTop={102}
-          className={s.affix}
-        >
+      <Row className={s.root}>
+        <Col xs={24} md={6} xl={4} className={s.viewLeft}>
           <div className={s.viewLeft}>
             <div className={s.viewLeft__menu}>
               {listMenu.map((item) => (
@@ -79,20 +75,19 @@ class CommonLayout extends PureComponent {
               ))}
             </div>
           </div>
-        </Affix>
-        <Row className={s.viewRight} gutter={[24, 24]}>
-          <Col xs={24} xl={18}>
-            {loading ? <Skeleton /> : displayComponentActions || displayComponent}
-          </Col>
-          <Col xs={24} xl={6}>
-            {/* {isCompanyProfile ? (
-              <UploadLogoCompany />
-            ) : ( */}
-            <ViewInformation />
-            {/* )} */}
-          </Col>
-        </Row>
-      </div>
+        </Col>
+
+        <Col xs={24} md={18} xl={20} className={s.viewRight}>
+          <Row gutter={[24, 24]}>
+            <Col xs={24} xl={18}>
+              {loading ? <Skeleton /> : displayComponentActions || displayComponent}
+            </Col>
+            <Col xs={24} xl={6}>
+              <ViewInformation />
+            </Col>
+          </Row>
+        </Col>
+      </Row>
     );
   }
 }

@@ -7,10 +7,10 @@ import { connect, formatMessage, history, Link } from 'umi';
 import { removeLocalStorage } from '@/utils/authority';
 import logoGoogle from '@/assets/logo_google.png';
 import styles from './index.less';
+import { IS_TERRALOGIC_CANDIDATE_LOGIN, IS_TERRALOGIC_LOGIN } from '@/utils/login';
 
 @connect(({ loading, login: { messageError = '', urlGoogle = '', urlLollypop = '' } = {} }) => ({
   loading: loading.effects['login/login'],
-  loadingLoginThirdParty: loading.effects['login/loginThirdParty'],
   messageError,
   urlGoogle,
   urlLollypop,
@@ -30,6 +30,7 @@ class FormLogin extends Component {
     const { dispatch } = this.props;
     removeLocalStorage();
     dispatch({ type: 'login/getURLGoogle' });
+    dispatch({ type: 'login/getURLLollypop' });
     // this.formRef.current.setFieldsValue({
     //   email: autoFillEmail,
     // });
@@ -74,14 +75,6 @@ class FormLogin extends Component {
     );
   };
 
-  responseGoogle = (response) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'login/loginThirdParty',
-      payload: response,
-    });
-  };
-
   returnMessageValidationEmail = (messageError) => {
     if (messageError === 'User not found') return 'User does not exist';
     if (messageError === 'Invalid user') return 'Invalid user';
@@ -104,6 +97,14 @@ class FormLogin extends Component {
     return checkedBox;
   };
 
+  getLoginBoxText = () => {
+    if (IS_TERRALOGIC_CANDIDATE_LOGIN)
+      return ['Welcome Back', 'Enter your credentials to access your account.'];
+    if (IS_TERRALOGIC_LOGIN)
+      return ['Login to Portal', 'Enter your credentials to access your account.'];
+    return ['Sign in to your account'];
+  };
+
   render() {
     const { messageError = '', urlGoogle = '', urlLollypop = '' } = this.props;
     const { checkValidationEmail, isMessageValidationEmail } = this.state;
@@ -114,11 +115,16 @@ class FormLogin extends Component {
     const messageValidationPsw =
       messageError === 'Invalid password' ? 'Incorrect password. Try again' : undefined;
 
+    const titleText = this.getLoginBoxText(IS_TERRALOGIC_LOGIN, IS_TERRALOGIC_CANDIDATE_LOGIN);
     return (
       <div className={styles.formWrapper}>
-        <p className={styles.formWrapper__title}>
-          {formatMessage({ id: 'pages.login.signInToYourAccount' })}
+        <p
+          className={styles.formWrapper__title}
+          style={IS_TERRALOGIC_LOGIN || IS_TERRALOGIC_CANDIDATE_LOGIN ? { fontSize: '24px' } : {}}
+        >
+          {titleText[0]}
         </p>
+        {titleText.length > 1 && <p className={styles.formWrapper__description}>{titleText[1]}</p>}
         <Form
           layout="vertical"
           name="basic"
@@ -167,11 +173,19 @@ class FormLogin extends Component {
               className={styles.inputPassword}
             />
           </Form.Item>
-          <Form.Item className={styles.checkbox} name="keepSignIn" valuePropName="checked">
-            <Checkbox>
-              <span>{formatMessage({ id: 'pages.login.keepMeSignedIn' })}</span>
-            </Checkbox>
-          </Form.Item>
+          <div className={styles.keepSignIn}>
+            <Form.Item className={styles.checkbox} name="keepSignIn" valuePropName="checked">
+              <Checkbox>
+                <span>{formatMessage({ id: 'pages.login.keepMeSignedIn' })}</span>
+              </Checkbox>
+            </Form.Item>
+            {IS_TERRALOGIC_LOGIN && (
+              <Link to="/forgot-password" className={styles.forgotPasswordLink}>
+                {formatMessage({ id: 'pages.login.forgotPassword' })}
+              </Link>
+            )}
+          </div>
+
           <Form.Item
             noStyle
             shouldUpdate={(prevValues, currentValues) =>
@@ -181,40 +195,34 @@ class FormLogin extends Component {
           >
             {({ getFieldValue }) => this._renderButton(getFieldValue)}
           </Form.Item>
-          <div className={styles.textOr}>or sign in with</div>
-          {/* <GoogleLogin
-            clientId="569320903794-k9h03nao8e8sq4mm6tq5rv5enjs0dlo6.apps.googleusercontent.com"
-            render={(renderProps) => (
-              <Button
-                type="primary"
-                className={styles.btnSignInGG}
-                onClick={renderProps.onClick}
-                // disabled={renderProps.disabled}
-                loading={loadingLoginThirdParty}
-              >
-                <img src={logoGoogle} alt="logo" />
-                <span>Login with Google</span>
-              </Button>
-            )}
-            onSuccess={this.responseGoogle}
-          /> */}
-          <a href={urlGoogle}>
-            <Button type="primary" className={styles.btnSignInGG}>
-              <img src={logoGoogle} alt="logo" />
-              <span>Login with Google</span>
-            </Button>
-          </a>
-          <a href={urlLollypop}>
-            <Button type="primary" className={styles.btnSignInLollypop}>
-              <img src={logoGoogle} alt="logo" />
-              <span>Login with Lollypop</span>
-            </Button>
-          </a>
-          <Link to="/forgot-password">
-            <p className={styles.forgotPassword}>
-              {formatMessage({ id: 'pages.login.forgotPassword' })}
-            </p>
-          </Link>
+          {!IS_TERRALOGIC_CANDIDATE_LOGIN && (
+            <>
+              {IS_TERRALOGIC_LOGIN ? (
+                <div className={styles.textOr}>or</div>
+              ) : (
+                <div className={styles.textOr}>or sign in with</div>
+              )}
+              <a href={urlGoogle}>
+                <Button type="primary" className={styles.btnSignInGG}>
+                  <img src={logoGoogle} alt="logo" />
+                  <span>Terralogic Login</span>
+                </Button>
+              </a>
+              <a href={urlLollypop}>
+                <Button type="primary" className={styles.btnSignInLollypop}>
+                  <img src={logoGoogle} alt="logo" />
+                  <span>Lollypop Login</span>
+                </Button>
+              </a>
+              {!IS_TERRALOGIC_LOGIN && (
+                <Link to="/forgot-password">
+                  <p className={styles.forgotPassword}>
+                    {formatMessage({ id: 'pages.login.forgotPassword' })}
+                  </p>
+                </Link>
+              )}
+            </>
+          )}
         </Form>
       </div>
     );

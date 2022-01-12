@@ -71,13 +71,13 @@ const DependentTabs = (props) => {
           </div>
         </div>
         <div className={styles.containerSelft}>
-          <div className={styles.containerSelft__title}> Date of Birth</div>
+          <div className={styles.containerSelft__title}>Date of Birth</div>
           {DOB !== '' && DOB !== null ? (
             <div className={styles.containerSelft__content}>
               <p>{moment(DOB).locale('en').format('DD/MM/YYYY')}</p>
             </div>
           ) : (
-            <div className={styles.containerSelft__content}> _ </div>
+            <div className={styles.containerSelft__content}> </div>
           )}
         </div>
       </div>

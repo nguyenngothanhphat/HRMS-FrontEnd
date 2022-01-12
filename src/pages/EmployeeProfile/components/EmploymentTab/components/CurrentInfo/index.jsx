@@ -2,74 +2,122 @@ import React from 'react';
 import moment from 'moment';
 import { connect } from 'umi';
 import styles from './styles.less';
+import UserProfilePopover from '@/components/UserProfilePopover';
 
-function CurrentInfo(props) {
+const CurrentInfo = (props) => {
   const { employeeProfile = {} } = props;
   const {
-    title = {},
+    title,
     joinDate = '',
-    location = {},
+    initialJoinDate = '',
+    location,
     employeeType = {},
-    manager = {},
-    compensation = {}
+    empTypeOther = '',
+    manager,
+    titleInfo = {},
+    // compensation = {},
+    department = {},
   } = employeeProfile?.originData?.employmentData || {};
-  const {
-    // compensationType = '',
-    currentAnnualCTC = '',
-    timeOffPolicy = '',
-  } = employeeProfile?.originData?.compensationData || {};
+
+  const managerInfo = {
+    ...manager,
+    legalName: manager?.generalInfo?.legalName,
+    userId: manager?.generalInfo?.userId,
+    workEmail: manager?.generalInfo?.workEmail,
+    workNumber: manager?.generalInfo?.workNumber,
+    location: {
+      state: manager?.locationInfo?.headQuarterAddress?.state,
+      countryName: manager?.locationInfo?.headQuarterAddress?.country?.name,
+    },
+    department: manager?.departmentInfo,
+    title: manager?.titleInfo,
+  };
+
+  const getInitialJoiningDate = () => {
+    let value = '';
+    if (initialJoinDate) value = initialJoinDate;
+    else {
+      value = joinDate;
+    }
+    return moment(value).locale('en').format('Do MMMM YYYY');
+  };
 
   const data = {
-    title: title?.name || 'Missing title',
-    joiningDate: joinDate
-      ? moment(joinDate).locale('en').format('MM.DD.YY')
-      : 'Missing joined date',
-    location: location?.name || 'Missing location',
-    employType: employeeType?.name || 'Missing employment type',
-    compenType: compensation.compensationType || 'This person is missing payment method',
-    annualSalary: String(currentAnnualCTC || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-    manager: manager?.generalInfo?.legalName || 'Missing reporting manager',
-    timeOff: timeOffPolicy || 'This person is not allowed to take time off',
+    title: title?.name || '',
+    department: department?.name || '',
+    grade: titleInfo?.grade || '',
+    initialJoiningDate: getInitialJoiningDate(),
+    joiningDate: joinDate ? moment(joinDate).locale('en').format('Do MMMM YYYY') : '',
+    location: location?.name || '',
+    employmentType: employeeType?.name || '',
+    employeeType: empTypeOther || '', // what is this?
+    manager:
+      manager && manager?.generalInfo ? (
+        <UserProfilePopover placement="rightBottom" data={managerInfo}>
+          <span className={styles.manager}>
+            {manager?.generalInfo?.legalName} ({manager?.generalInfo?.userId})
+          </span>
+        </UserProfilePopover>
+      ) : (
+        ''
+      ),
   };
   return (
     <div style={{ margin: '24px' }}>
-      {['title', 'joiningDate', 'location', 'employType', 'compenType', 'manager', 'timeOff'].map(
-        (item) => {
-          let info;
-          switch (item) {
-            case 'title':
-              info = 'Title';
-              break;
-            case 'joiningDate':
-              info = 'Joined Date';
-              break;
-            case 'location':
-              info = 'Location';
-              break;
-            case 'employType':
-              info = 'Employment Type';
-              break;
-            case 'compenType':
-              info = 'Compensation Type';
-              break;
-            case 'manager':
-              info = 'Manager';
-              break;
-            case 'timeOff':
-              info = 'Time Off Policy';
-              break;
-            default:
-              info = '';
-          }
-          return (
-            <div key={Math.random().toString(36).substring(7)} className={styles.items}>
-              <div>{info}</div>
-              <div>{item === 'annualSalary' ? `$${data[item]}` : data[item]}</div>
-            </div>
-          );
-        },
-      )}
+      {[
+        'title',
+        'department',
+        'grade',
+        'initialJoiningDate',
+        'joiningDate',
+        'location',
+        'employeeType',
+        'employmentType',
+        'manager',
+      ].map((item) => {
+        let info;
+        switch (item) {
+          case 'title':
+            info = 'Job Title';
+            break;
+          case 'department':
+            info = 'Department';
+            break;
+          case 'grade':
+            info = 'Grade';
+            break;
+          case 'joiningDate':
+            info = 'Joining Date';
+            break;
+          case 'initialJoiningDate':
+            info = 'Initial Joining Date';
+            break;
+          case 'location':
+            info = 'Location';
+            break;
+          case 'employmentType':
+            info = 'Employment Type';
+            break;
+          case 'employeeType':
+            info = 'Employee Type';
+            break;
+          case 'manager':
+            info = 'Manager';
+            break;
+          case 'timeOff':
+            info = 'Time Off Policy';
+            break;
+          default:
+            info = '';
+        }
+        return (
+          <div key={Math.random().toString(36).substring(7)} className={styles.items}>
+            <div>{info}</div>
+            <div>{item === 'annualSalary' ? `$${data[item]}` : data[item]}</div>
+          </div>
+        );
+      })}
     </div>
   );
-}
+};
 export default connect(({ employeeProfile }) => ({ employeeProfile }))(CurrentInfo);

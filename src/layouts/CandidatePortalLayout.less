@@ -1,4 +1,5 @@
-@import (css) url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+@import (css)
+  url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
 
 @gray: #f2f2f2;
 @black: #161c29;
@@ -7,43 +8,43 @@
 
 .candidate {
   width: 100%;
-  background-color: @gray;
-  font-family: 'Roboto', sans-serif;
   min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  background-color: @gray;
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  span,
-  p {
-    margin: 0;
-    padding: 0;
-  }
+  // h1,
+  // h2,
+  // h3,
+  // h4,
+  // h5,
+  // span,
+  // p {
+  //   margin: 0;
+  //   padding: 0;
+  // }
 
   .header {
-    height: 76px;
-    background-color: white;
-    padding-left: 0px;
-    padding-right: 40px;
-    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.150131);
+    position: relative;
+    z-index: 1001;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: relative;
-    z-index: 1001;
+    height: 76px;
+    padding-right: 40px;
+    padding-left: 0px;
+    background-color: white;
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.150131);
 
     &::after {
-      content: '';
-      width: 0%;
       position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0%;
       height: 2px;
       background-color: @blue;
       box-shadow: 0 2px 4px 0 rgba(153, 184, 255, 0.56);
-      left: 0;
-      bottom: 0;
       transition: width 0.2s ease-in;
+      content: '';
     }
 
     &.one::after {
@@ -80,25 +81,26 @@
       height: 100%;
       cursor: pointer;
       .imgContainer {
-        padding: 15px;
-        height: 100%;
-        width: 80px;
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 100%;
+        padding: 15px;
+        box-shadow: 1px 0px 1px rgba(0, 0, 0, 0.05);
         // padding: 15px;
 
         img {
           max-width: 100%;
           height: auto;
         }
-        box-shadow: 1px 0px 1px rgba(0, 0, 0, 0.05);
       }
       .companyName {
+        margin-left: 20px;
+        font-weight: 500;
         font-size: 18px;
         letter-spacing: 3px;
-        font-weight: 500;
-        margin-left: 20px;
+        text-transform: uppercase;
       }
 
       .icon {
@@ -110,92 +112,92 @@
       }
 
       .description {
-        opacity: 0.7;
-        font-size: 18px;
-        font-weight: 500;
         color: #161c29;
+        font-weight: 500;
+        font-size: 18px;
         white-space: nowrap;
+        opacity: 0.7;
       }
     }
 
     .headerRight {
       .id {
-        font-size: 14px;
-        font-weight: 500;
-        letter-spacing: 0.13px;
-        color: #000000;
         padding: 0 16px;
+        color: #000000;
+        font-weight: 500;
+        font-size: 14px;
         line-height: 40px;
+        letter-spacing: 0.13px;
+        white-space: nowrap;
         background-color: #f7f7f7;
         border-radius: 25px;
-        white-space: nowrap;
       }
 
       button {
-        font-size: 14px;
-        font-weight: 500;
-        letter-spacing: 0.13px;
-        color: @blue;
         margin-left: 48px;
+        color: @blue;
+        font-weight: 500;
+        font-size: 14px;
+        letter-spacing: 0.13px;
       }
       .headerIcon {
-        outline: none;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 44px;
         height: 44px;
         margin: 8px;
+        background: #f3f6fc;
+        border: 1px solid rgba(255, 255, 255, 0);
         border-radius: 50%;
-        background: #F3F6FC;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
+        outline: none;
         cursor: pointer;
         span {
+          color: #2c6df9;
           font-weight: 500;
-          color: #2C6DF9;
         }
         &:hover {
           background: transparent;
           border: 1px solid #00c598;
           transition: 0.2s;
         }
-        border: 1px solid rgba(255, 255, 255, 0);
         .badgeNumber {
           position: absolute;
           top: -13px;
           right: -13px;
-          background: #13A951;
-          border: 3px solid #FFFFFF;
-          outline: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           width: 20px;
           height: 20px;
           margin: 8px;
-          border-radius: 50%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+          padding: 4px;
           color: white;
           font-weight: 700;
-          padding: 4px;
           font-size: 12px;
+          background: #13a951;
+          border: 3px solid #ffffff;
+          border-radius: 50%;
+          outline: none;
         }
       }
       .avatarIcon {
-        background: #E4EDFF;
+        background: #e4edff;
         transition: 0.3s;
       }
       .headerText {
-        outline: none;
-        height: 44px;
-        padding-inline: 20px;
-        margin: 8px;
-        border-radius: 25px;
-        background: #F3F6FC;
-        display: flex;
-        justify-content: center;
-        align-items: center;
         position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 44px;
+        margin: 8px;
+        background: #f3f6fc;
         border: 1px solid rgba(255, 255, 255, 0);
+        border-radius: 25px;
+        outline: none;
+        padding-inline: 20px;
         span {
           font-weight: 500;
         }
@@ -204,17 +206,17 @@
     :global(.anticon) {
       margin-right: 8px;
     }
-  
+
     :global(.ant-dropdown-menu-item) {
       min-width: 160px;
     }
-  
+
     :global {
       .ant-dropdown-menu-item-divider {
         background-color: #d6dce0;
       }
     }
-  
+
     :global {
       .ant-dropdown-menu-item,
       .ant-dropdown-menu-submenu-title {
@@ -229,7 +231,7 @@
         margin: 0 0 10px 0;
         padding: 0;
       }
-  
+
       .ant-dropdown-menu-item-group-title {
         padding: 0;
       }
@@ -242,38 +244,38 @@
       .ant-breadcrumb-link {
         display: inline-flex;
       }
-  
+
       .ant-breadcrumb a {
         color: #161c29;
         font-size: 13px;
         opacity: 0.6;
       }
-  
+
       .ant-breadcrumb-separator {
         display: none;
         margin: 0px 20px;
         color: rgba(0, 0, 0, 0.45);
         font-size: large;
       }
-  
+
       .ant-breadcrumb {
         .ant-breadcrumb-link {
           a {
             z-index: 1;
           }
         }
-  
+
         > span:nth-child(n):not(:last-child):not(:first-child) {
           a {
             display: inline-block;
             padding: 8px;
-            font-family: Roboto;
-            font-style: normal;
+
+            color: #707177;
             font-weight: 500;
             font-size: 13px;
+            font-family: Roboto;
+            font-style: normal;
             line-height: 15px;
-  
-            color: #707177;
           }
           span.ant-breadcrumb-link {
             position: relative;
@@ -281,7 +283,7 @@
             align-items: center;
             justify-content: center;
             height: 30px;
-  
+
             &::after {
               display: block;
               height: 16px;
@@ -301,13 +303,13 @@
             display: inline-block;
             padding: 8px;
             padding-left: 20px;
-            font-family: Roboto;
-            font-style: normal;
+
+            color: #707177;
             font-weight: 500;
             font-size: 13px;
+            font-family: Roboto;
+            font-style: normal;
             line-height: 15px;
-  
-            color: #707177;
           }
           span.ant-breadcrumb-link {
             position: relative;
@@ -316,7 +318,7 @@
             justify-content: center;
             height: 30px;
             padding: 4px 0px;
-  
+
             &::after {
               display: block;
               height: 16px;
@@ -335,15 +337,15 @@
         align-items: center;
         height: 30px;
         padding: 8px;
-        font-family: Roboto;
-        font-style: normal;
+
+        color: #161c29;
         font-weight: 500;
         font-size: 13px;
+        font-family: Roboto;
+        font-style: normal;
         line-height: 15px;
-  
-        color: #161C29;
         background: none;
-  
+
         opacity: 1;
       }
     }
@@ -357,29 +359,29 @@
     margin-left: auto;
     padding: 28px;
     object-fit: contain;
-    border-radius: 5px;
-    border: solid 1px #d6dce0;
     background-color: #ffffff;
+    border: solid 1px #d6dce0;
+    border-radius: 5px;
 
     .btn {
       display: block !important;
       margin: 0 auto;
-      border: 1px solid @orange;
       padding: 12px 24px;
       color: @orange;
-      letter-spacing: 0.13px;
-      font-size: 14px;
       font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.13px;
       background-color: white;
+      border: 1px solid @orange;
       border-radius: 25px;
-      cursor: pointer;
       outline: none;
+      cursor: pointer;
       transition: 0.2s ease-in;
 
       &:hover,
       &.active {
-        background-color: @orange;
         color: white;
+        background-color: @orange;
       }
 
       &:focus {
@@ -415,8 +417,8 @@
     }
 
     .ant-steps-item-icon {
-      background-color: white !important;
       margin-right: 24px !important;
+      background-color: white !important;
     }
 
     .ant-steps-item-active {
@@ -425,7 +427,7 @@
       }
 
       span.ant-steps-icon {
-        color: @blue  !important;
+        color: @blue !important;
       }
     }
 
@@ -435,7 +437,7 @@
       }
 
       .ant-steps-item-icon {
-        background-color: @blue  !important;
+        background-color: @blue !important;
 
         path {
           fill: white !important;
@@ -444,7 +446,7 @@
 
       .ant-steps-item-tail {
         &::after {
-          background-color: @blue  !important;
+          background-color: @blue !important;
         }
       }
     }

@@ -1,5 +1,5 @@
 import { Tabs } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
 import CommonModal from './components/CommonModal';
@@ -9,12 +9,20 @@ import styles from './index.less';
 import MyProjects from './components/MyProjects';
 
 const { TabPane } = Tabs;
-
+const MANAGER = 'MANAGER';
 const Tasks = (props) => {
   const [activeKey, setActiveKey] = useState('1');
   const [modalVisible, setModalVisible] = useState(false);
+  const { dispatch, roles = [], myId = '' } = props;
 
-  // Actions
+  useEffect(() => {
+    dispatch({
+      type: 'dashboard/fetchProjectList',
+      payload: {},
+      myId,
+    });
+  }, []);
+
   const renderTasksAction = () => {
     return (
       <div className={styles.header__actions}>
@@ -23,7 +31,7 @@ const Tasks = (props) => {
       </div>
     );
   };
-
+  const checkRoleManager = roles.includes(MANAGER);
   // MAIN
   return (
     <div className={styles.Tasks}>
@@ -38,9 +46,13 @@ const Tasks = (props) => {
             <TabPane tab="My Tasks" key="1">
               <MyTasks />
             </TabPane>
-            <TabPane tab="My Projects" key="2">
-              <MyProjects />
-            </TabPane>
+            {checkRoleManager ? (
+              <TabPane tab="My Projects" key="2">
+                <MyProjects />
+              </TabPane>
+            ) : (
+              ''
+            )}
           </Tabs>
         </div>
       </div>
@@ -59,4 +71,13 @@ const Tasks = (props) => {
   );
 };
 
-export default connect(() => ({}))(Tasks);
+export default connect(
+  ({
+    user: {
+      currentUser: { employee: { generalInfo: { _id: myId = '' } = {} } = {}, roles = [] } = {},
+    } = {},
+  }) => ({
+    myId,
+    roles,
+  }),
+)(Tasks);

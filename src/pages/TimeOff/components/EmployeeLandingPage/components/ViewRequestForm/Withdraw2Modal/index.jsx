@@ -4,6 +4,7 @@ import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
 
 const { TextArea } = Input;
+const { DRAFTS } = TIMEOFF_STATUS;
 export default class Withdraw2Modal extends PureComponent {
   constructor(props) {
     super(props);
@@ -40,7 +41,7 @@ export default class Withdraw2Modal extends PureComponent {
     const content1 =
       'Withdrawing request will delete this ticket id and no longer will be kept track of.';
     let content2 = 'Both your Manager and HR will be notified of this change.';
-    if (status === TIMEOFF_STATUS.drafts) {
+    if (status === DRAFTS) {
       header = 'Discard draft request?';
       content2 = '';
     }

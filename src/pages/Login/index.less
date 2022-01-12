@@ -1,20 +1,29 @@
 .formWrapper {
-  width: 40%;
+  width: 100%;
   height: auto;
-  padding: 20px 30px 40px;
-  background-color: #fff;
+  padding: 40px;
   &__title {
-    margin-bottom: 25px;
+    margin-bottom: 16px;
     color: #161c29;
     font-weight: 700;
     font-size: 16px;
+    line-height: 28px;
   }
-  .inputEmail {
-    // :global {
-    //   .ant-form-item {
-    //     margin-bottom: 1rem;
-    //   }
-    // }
+  &__description {
+    color: #707177;
+    font-size: 14px;
+    line-height: 16px;
+  }
+  .keepSignIn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .forgotPasswordLink {
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 16px;
+    }
   }
   .inputPassword {
     :global {
@@ -64,7 +73,7 @@
       }
       label {
         position: relative;
-        top: -8px;
+        top: -3px;
       }
     }
   }
@@ -161,11 +170,5 @@
   input:focus:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 100px #fff inset;
     box-shadow: 0 0 0 100px #fff inset;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .formWrapper {
-    width: 70%;
   }
 }

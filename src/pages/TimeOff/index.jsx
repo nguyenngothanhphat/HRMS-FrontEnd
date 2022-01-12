@@ -96,6 +96,7 @@ class TimeOff extends PureComponent {
       this.setState({
         role,
       });
+
       if (listLocationsByCompany.length > 0) {
         this.fetchTimeOffTypes();
       }

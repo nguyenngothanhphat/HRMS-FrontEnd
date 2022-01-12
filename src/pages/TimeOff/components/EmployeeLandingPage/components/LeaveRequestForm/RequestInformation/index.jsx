@@ -5,15 +5,24 @@ import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
-import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
+import {
+  TIMEOFF_STATUS,
+  TIMEOFF_LINK_ACTION,
+  MAX_NO_OF_DAYS_TO_SHOW,
+  TIMEOFF_TYPE,
+} from '@/utils/timeOff';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import LeaveTimeRow from './LeaveTimeRow';
 
 import styles from './index.less';
+import LeaveTimeRow2 from './LeaveTimeRow2';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
+const { A, B, C, D } = TIMEOFF_TYPE;
+const { IN_PROGRESS, DRAFTS } = TIMEOFF_STATUS;
+const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST } = TIMEOFF_LINK_ACTION;
 @connect(({ timeOff, user, loading }) => ({
   timeOff,
   user,
@@ -42,7 +51,6 @@ class RequestInformation extends PureComponent {
       viewingLeaveRequestId: '',
       isEditingDrafts: false,
       remainingDayOfSelectedType: 0,
-      // totalDayOfSelectedType: 0,
       viewDocumentModal: false,
     };
   }
@@ -55,12 +63,12 @@ class RequestInformation extends PureComponent {
         break;
     }
     switch (selectedType) {
-      case 'A':
-      case 'B':
+      case A:
+      case B:
         return '1';
-      case 'C':
+      case C:
         return '2';
-      case 'D':
+      case D:
         return '4';
       default:
         return '1';
@@ -119,33 +127,10 @@ class RequestInformation extends PureComponent {
         location: _id,
       },
     });
-    // dispatch({
-    //   type: 'timeOff/fetchTimeOffTypes',
-    //   payload: {
-    //     tenantId: getCurrentTenant(),
-    //   },
-    // });
-
-    const response = await dispatch({
-      type: 'timeOff/getTimeOffTypeByLocation',
-    });
-    const {
-      statusCode,
-      data: { headQuarterAddress: { country: { _id: countryId = '' } = {} || {} } = {} || {} } = {},
-    } = response;
-    if (statusCode === 200)
-      await dispatch({
-        type: 'timeOff/fetchTimeOffTypesByCountry',
-        payload: {
-          country: countryId,
-          company: getCurrentCompany(),
-          tenantId: getCurrentTenant(),
-        },
-      });
 
     this.fetchEmailsListByCompany();
 
-    if (action === TIMEOFF_LINK_ACTION.editLeaveRequest) {
+    if (action === EDIT_LEAVE_REQUEST) {
       const { viewingLeaveRequest = {} } = this.props;
       // console.log('viewingLeaveRequest', viewingLeaveRequest);
       const {
@@ -160,7 +145,7 @@ class RequestInformation extends PureComponent {
         status = '',
       } = viewingLeaveRequest;
 
-      if (status === TIMEOFF_STATUS.drafts) {
+      if (status === DRAFTS) {
         this.setState({
           isEditingDrafts: true,
         });
@@ -181,7 +166,7 @@ class RequestInformation extends PureComponent {
 
       // if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
       // generate date lists and leave time
-      const dateLists = this.getDateLists(fromDate, toDate);
+      const dateLists = this.getDateLists(fromDate, toDate, type);
       const resultDates = [];
 
       let check = false;
@@ -211,18 +196,18 @@ class RequestInformation extends PureComponent {
       });
 
       // set notice
-      if (type === 'C') {
+      if (type === C) {
         this.autoValueForToDate(type, name, moment(fromDate), '');
       }
 
-      if (type === 'D') {
+      if (type === D) {
         this.setSecondNotice(`${name} applied for: ${dateLists.length} days`);
       }
 
       this.getRemainingDay(name);
       // this.autoValueForToDate(type, shortType, moment(fromDate), '');
       if (
-        type === 'A' &&
+        type === A &&
         name === 'Casual Leave' &&
         moment(fromDate) !== null &&
         moment(fromDate) !== ''
@@ -231,14 +216,6 @@ class RequestInformation extends PureComponent {
       }
     }
   };
-
-  // componentDidUpdate = (prevState) => {
-  //   const { selectedTypeName } = this.state;
-  //   // set remaining day of selected leave type
-  //   if (prevState.selectedTypeName !== selectedTypeName) {
-  //     this.getRemainingDay(selectedTypeName);
-  //   }
-  // };
 
   // GET REMAINING DAY
   getRemainingDay = (typeName) => {
@@ -264,7 +241,7 @@ class RequestInformation extends PureComponent {
         } = {},
         currentAllowance = 0,
       } = value;
-      if (typeName === name1 && (type === 'A' || type === 'B')) {
+      if (typeName === name1 && (type === A || type === B)) {
         count = currentAllowance;
         // total = time;
         check = true;
@@ -308,7 +285,7 @@ class RequestInformation extends PureComponent {
 
     timeOffTypesAB.forEach((value) => {
       const { defaultSettings: { _id: _id1 = '', type = '' } = {}, currentAllowance = 0 } = value;
-      if (_id1 === _id && (type === 'A' || type === 'B')) {
+      if (_id1 === _id && (type === A || type === B)) {
         count = currentAllowance;
       }
     });
@@ -334,7 +311,7 @@ class RequestInformation extends PureComponent {
 
       this.autoValueForToDate(type, name, durationFrom, selectedType);
 
-      if (type === 'A' && name === 'Casual Leave' && durationFrom) {
+      if (type === A && name === 'Casual Leave' && durationFrom) {
         this.setSecondNotice(`${name}s gets credited each month.`);
       }
 
@@ -366,9 +343,6 @@ class RequestInformation extends PureComponent {
       this.saveCurrentTypeTab(returnTab);
       setTimeout(() => {
         history.goBack();
-        // history.push({
-        //   pathname: `/time-off`,
-        // });
       }, 200);
     }
   };
@@ -397,7 +371,7 @@ class RequestInformation extends PureComponent {
 
   // GENERATE LEAVE DATES FOR API
   generateLeaveDates = (from, to, leaveTimeLists, selectedType) => {
-    const dateLists = this.getDateLists(from, to);
+    const dateLists = this.getDateLists(from, to, selectedType);
     let result = [];
     if (leaveTimeLists.length === 0) {
       // type C,D
@@ -415,7 +389,7 @@ class RequestInformation extends PureComponent {
         };
       });
     }
-    if (selectedType !== 'C' && selectedType !== 'D') {
+    if (selectedType !== C && selectedType !== D) {
       result = result.filter(
         (value) =>
           moment(value.date).weekday() !== 6 &&
@@ -462,7 +436,7 @@ class RequestInformation extends PureComponent {
         );
 
         // let duration = 0;
-        // if (selectedType !== 'C') duration = this.calculateNumberOfLeaveDay(leaveDates);
+        // if (selectedType !== C) duration = this.calculateNumberOfLeaveDay(leaveDates);
         // else duration = totalDayOfSelectedType;
 
         const duration = this.calculateNumberOfLeaveDay(leaveDates);
@@ -536,7 +510,6 @@ class RequestInformation extends PureComponent {
       leaveTimeLists,
       selectedType,
     );
-    // console.log('leaveDates', leaveDates);
 
     const { buttonState } = this.state;
 
@@ -546,23 +519,16 @@ class RequestInformation extends PureComponent {
         message.error('Please select valid leave time dates!');
       } else {
         // generate data for API
-        // let duration = 0;
-        // if (selectedType !== 'C') duration = this.calculateNumberOfLeaveDay(leaveDates);
-        // else duration = totalDayOfSelectedType;
-
         const duration = this.calculateNumberOfLeaveDay(leaveDates);
 
-        if (
-          (selectedType === 'A' || selectedType === 'B') &&
-          duration > remainingDayOfSelectedType
-        ) {
+        if ((selectedType === A || selectedType === B) && duration > remainingDayOfSelectedType) {
           message.error(
             `You only have ${remainingDayOfSelectedType} day(s) of ${selectedTypeName} left.`,
           );
         } else {
           const data = {
             type: timeOffType,
-            status: TIMEOFF_STATUS.inProgress,
+            status: IN_PROGRESS,
             subject,
             fromDate: durationFrom,
             toDate: durationTo,
@@ -576,19 +542,19 @@ class RequestInformation extends PureComponent {
           };
 
           let type = '';
-          if (action === TIMEOFF_LINK_ACTION.newLeaveRequest) {
+          if (action === NEW_LEAVE_REQUEST) {
             data.employee = employeeId;
             data.approvalManager = managerId; // id
             type = 'timeOff/addLeaveRequest';
-          } else if (action === TIMEOFF_LINK_ACTION.editLeaveRequest) {
+          } else if (action === EDIT_LEAVE_REQUEST) {
             const { viewingLeaveRequest = {} } = this.props;
-            // console.log('viewingLeaveRequest', viewingLeaveRequest);
             const { employee: { _id = '' } = {} } = viewingLeaveRequest;
             data.employee = _id;
             data._id = viewingLeaveRequestId;
             type = 'timeOff/updateLeaveRequestById';
           }
 
+          // console.log('🚀 ~ data', data);
           dispatch({
             type,
             payload: data,
@@ -610,8 +576,8 @@ class RequestInformation extends PureComponent {
   // AUTO VALUE FOR TODATE of DATE PICKER DEPENDING ON SELECTED TYPE
   autoValueForToDate = (selectedType, selectedTypeName, durationFrom, prevType) => {
     let autoToDate = null;
-    const typeAB = ['A', 'B'];
-    const typeCD = ['C', 'D'];
+    const typeAB = [A, B];
+    const typeCD = [C, D];
 
     // console.log('durationFrom', durationFrom);
     // console.log('selectedType', selectedType);
@@ -630,7 +596,7 @@ class RequestInformation extends PureComponent {
 
         const { timeOffTypes = [] } = specialLeaves;
 
-        if (selectedType === 'C') {
+        if (selectedType === C) {
           const foundType = timeOffTypes.find(
             (value) => value.defaultSettings.name === selectedTypeName,
           );
@@ -644,7 +610,7 @@ class RequestInformation extends PureComponent {
             `A 'To date' will be set automatically as per a duration of ${currentAllowance} days from the selected 'From date'`,
           );
 
-          const dateLists = this.getDateLists(durationFrom, autoToDate);
+          const dateLists = this.getDateLists(durationFrom, autoToDate, selectedType);
           const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
 
           this.setState({
@@ -656,7 +622,7 @@ class RequestInformation extends PureComponent {
             leaveTimeLists: initialValuesForLeaveTimesList,
           });
         }
-        if (selectedType === 'D') {
+        if (selectedType === D) {
           this.setSecondNotice('');
 
           this.setState({
@@ -694,20 +660,11 @@ class RequestInformation extends PureComponent {
     }
 
     const { selectedTypeName, selectedType } = this.state;
-    if (selectedType === 'C' || selectedType === 'D')
+    if (selectedType === C || selectedType === D)
       this.autoValueForToDate(selectedType, selectedTypeName, value);
 
-    if (selectedType === 'A' && selectedTypeName === 'Casual Leave')
+    if (selectedType === A && selectedTypeName === 'Casual Leave')
       this.setSecondNotice(`${selectedTypeName}s gets credited each month.`);
-
-    // // initial value for leave dates list
-    // const { durationTo } = this.state;
-    // const dateLists = this.getDateLists(value, autoToDate || durationTo);
-    // const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
-    // console.log('initialValuesForLeaveTimesList', initialValuesForLeaveTimesList);
-    // this.formRef.current.setFieldsValue({
-    //   leaveTimeLists: initialValuesForLeaveTimesList,
-    // });
   };
 
   toDateOnChange = (value) => {
@@ -721,14 +678,14 @@ class RequestInformation extends PureComponent {
       });
     }
     const { selectedTypeName, selectedType, durationFrom } = this.state;
-    if (selectedType === 'A' && selectedTypeName === 'Casual Leave')
+    if (selectedType === A && selectedTypeName === 'Casual Leave')
       this.setSecondNotice(`${selectedTypeName}s gets credited each month.`);
 
     // initial value for leave dates list
-    const dateLists = this.getDateLists(durationFrom, value);
+    const dateLists = this.getDateLists(durationFrom, value, selectedType);
     const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
 
-    if (selectedType === 'D') {
+    if (selectedType === D) {
       this.setSecondNotice(
         `${selectedTypeName} applied for: ${initialValuesForLeaveTimesList.length} days`,
       );
@@ -797,7 +754,7 @@ class RequestInformation extends PureComponent {
                   float: 'right',
                 }}
               >
-                {(type === 'A' || type === 'B') && (
+                {(type === A || type === B) && (
                   <span style={remaining === 0 ? invalidCss : defaultCss}>
                     <span
                       style={
@@ -836,7 +793,7 @@ class RequestInformation extends PureComponent {
               {`${name}`}
             </span>
 
-            {foundType.type === 'C' && (
+            {foundType.type === C && (
               <span style={{ float: 'right', fontSize: 12, fontWeight: 'bold' }}>
                 <span
                   style={
@@ -856,16 +813,25 @@ class RequestInformation extends PureComponent {
   };
 
   // GET LIST OF DAYS FROM DAY A TO DAY B
-  getDateLists = (startDate, endDate) => {
+  getDateLists = (startDate, endDate, selectedType) => {
     const start = moment(startDate);
     const end = moment(endDate);
 
     const now = start;
     const dates = [];
-
-    while (now.isBefore(end) || now.isSame(end)) {
-      dates.push(now.format('YYYY-MM-DD'));
-      now.add(1, 'days');
+    const includeWeekend = selectedType && selectedType !== A && selectedType !== B;
+    if (includeWeekend) {
+      while (now.isBefore(end) || now.isSame(end)) {
+        dates.push(now.format('YYYY-MM-DD'));
+        now.add(1, 'days');
+      }
+    } else {
+      while (now.isBefore(end) || now.isSame(end)) {
+        if (moment(now).weekday() !== 6 && moment(now).weekday() !== 0) {
+          dates.push(now.format('YYYY-MM-DD'));
+        }
+        now.add(1, 'days');
+      }
     }
     return dates;
   };
@@ -931,7 +897,7 @@ class RequestInformation extends PureComponent {
     const { selectedTypeName, buttonState, isEditingDrafts } = this.state;
     let content = '';
 
-    if (action === TIMEOFF_LINK_ACTION.editLeaveRequest) {
+    if (action === EDIT_LEAVE_REQUEST) {
       if (buttonState === 1) {
         content = `${selectedTypeName} request saved as draft.`;
       } else if (buttonState === 2) {
@@ -941,7 +907,7 @@ class RequestInformation extends PureComponent {
       }
     }
 
-    if (action === TIMEOFF_LINK_ACTION.newLeaveRequest) {
+    if (action === NEW_LEAVE_REQUEST) {
       if (buttonState === 1) {
         content = `${selectedTypeName} request saved as draft.`;
       } else if (buttonState === 2)
@@ -1009,8 +975,8 @@ class RequestInformation extends PureComponent {
     const dataTimeOffTypes2 = this.renderTimeOffTypes(typesOfSpecialLeaves);
 
     // DYNAMIC ROW OF DATE LISTS
-    const dateLists = this.getDateLists(durationFrom, durationTo);
-    // const numberOfDays = 0;
+    const dateLists = this.getDateLists(durationFrom, durationTo, selectedType);
+    const showAllDateList = dateLists.length <= MAX_NO_OF_DAYS_TO_SHOW;
 
     // if save as draft, no need to validate forms
     const needValidate = buttonState === 2;
@@ -1132,7 +1098,7 @@ class RequestInformation extends PureComponent {
                     <DatePicker
                       disabledDate={this.disabledToDate}
                       format={dateFormat}
-                      // disabled={selectedType === 'C' || selectedType === 'D'}
+                      disabled={selectedType === C}
                       onChange={(value) => {
                         this.toDateOnChange(value);
                       }}
@@ -1151,55 +1117,49 @@ class RequestInformation extends PureComponent {
             </Col>
           </Row>
 
-          {selectedType !== 'C' && selectedType !== 'D' && (
+          {selectedType !== C && selectedType !== D ? (
             <>
               <Row className={styles.eachRow}>
                 <Col className={styles.label} span={6}>
                   <span>Leave time</span> <span className={styles.mandatoryField}>*</span>
                 </Col>
                 <Col span={12}>
-                  <div
-                    className={styles.extraTimeSpent}
-                    // style={selectedType === 'C' || selectedType === 'D' ? { marginBottom: '24px' } : {}}
-                  >
-                    <Row className={styles.header}>
-                      <Col span={7}>Date</Col>
-                      <Col span={7}>Day</Col>
-                      <Col span={10}>Count/Q.ty</Col>
-                    </Row>
-                    {(durationFrom === '' || durationTo === '') && (
+                  <div className={styles.extraTimeSpent}>
+                    {showAllDateList ? (
+                      <Row className={styles.header}>
+                        <Col span={7}>Date</Col>
+                        <Col span={7}>Day</Col>
+                        <Col span={10}>Count/Q.ty</Col>
+                      </Row>
+                    ) : (
+                      <Row className={styles.header}>
+                        <Col span={7}>From</Col>
+                        <Col span={7}>To</Col>
+                        <Col span={10}>No. of Days</Col>
+                      </Row>
+                    )}
+                    {(!durationFrom || !durationTo) && (
                       <div className={styles.content}>
                         <div className={styles.emptyContent}>
                           <span>Selected duration will show as days</span>
                         </div>
                       </div>
                     )}
-                    {/* {durationFrom !== '' &&
-                  durationTo !== '' &&
-                  (selectedType === 'C' || selectedType === 'D') && (
-                    <div className={styles.content}>
-                      <div className={styles.emptyContent}>
-                        <span>Selected days are automatically set to whole-day leave</span>
-                      </div>
-                    </div>
-                  )} */}
                   </div>
                 </Col>
                 <Col span={6} />
               </Row>
 
-              {durationFrom !== '' &&
-                durationTo !== '' && ( // Type D: Working out of office
-                  // selectedType !== 'C' && // Type C: Special Leaves
-                  // selectedType !== 'D' &&
-                  <Form.List name="leaveTimeLists">
-                    {() => (
-                      <Row key={1} className={styles.eachRow}>
-                        <Col className={styles.label} span={6}>
-                          <span />
-                        </Col>
-                        <Col span={12} className={styles.leaveDaysContainer}>
-                          {dateLists.map((date, index) => {
+              {durationFrom && durationTo && (
+                <Form.List name="leaveTimeLists">
+                  {() => (
+                    <Row key={1} className={styles.eachRow}>
+                      <Col className={styles.label} span={6}>
+                        <span />
+                      </Col>
+                      <Col span={12} className={styles.leaveDaysContainer}>
+                        {showAllDateList ? (
+                          dateLists.map((date, index) => {
                             return (
                               <LeaveTimeRow
                                 eachDate={date}
@@ -1210,13 +1170,65 @@ class RequestInformation extends PureComponent {
                                 needValidate={needValidate}
                               />
                             );
-                          })}
-                        </Col>
-                        <Col span={6} />
-                      </Row>
+                          })
+                        ) : (
+                          <LeaveTimeRow2
+                            fromDate={durationFrom}
+                            toDate={durationTo}
+                            noOfDays={dateLists.length}
+                          />
+                        )}
+                      </Col>
+                      <Col span={6} />
+                    </Row>
+                  )}
+                </Form.List>
+              )}
+            </>
+          ) : (
+            <>
+              <Row className={styles.eachRow}>
+                <Col className={styles.label} span={6}>
+                  <span>Leave time</span> <span className={styles.mandatoryField}>*</span>
+                </Col>
+                <Col span={12}>
+                  <div className={styles.extraTimeSpent}>
+                    <Row className={styles.header}>
+                      <Col span={7}>From</Col>
+                      <Col span={7}>To</Col>
+                      <Col span={10}>No. of Days</Col>
+                    </Row>
+                    {(!durationFrom || !durationTo) && (
+                      <div className={styles.content}>
+                        <div className={styles.emptyContent}>
+                          <span>Selected duration will show as days</span>
+                        </div>
+                      </div>
                     )}
-                  </Form.List>
-                )}
+                  </div>
+                </Col>
+                <Col span={6} />
+              </Row>
+
+              {durationFrom && durationTo && (
+                <Form.List name="leaveTimeLists">
+                  {() => (
+                    <Row key={1} className={styles.eachRow}>
+                      <Col className={styles.label} span={6}>
+                        <span />
+                      </Col>
+                      <Col span={12} className={styles.leaveDaysContainer}>
+                        <LeaveTimeRow2
+                          fromDate={durationFrom}
+                          toDate={durationTo}
+                          noOfDays={dateLists.length}
+                        />
+                      </Col>
+                      <Col span={6} />
+                    </Row>
+                  )}
+                </Form.List>
+              )}
             </>
           )}
           <Row className={styles.eachRow}>
@@ -1308,7 +1320,7 @@ class RequestInformation extends PureComponent {
             department head.
           </span>
           <div className={styles.formButtons}>
-            {action === TIMEOFF_LINK_ACTION.editLeaveRequest && (
+            {action === EDIT_LEAVE_REQUEST && (
               <Button
                 className={styles.cancelButton}
                 type="link"
@@ -1318,8 +1330,8 @@ class RequestInformation extends PureComponent {
                 <span>Cancel</span>
               </Button>
             )}
-            {(action === TIMEOFF_LINK_ACTION.newLeaveRequest ||
-              (action === TIMEOFF_LINK_ACTION.editLeaveRequest && isEditingDrafts)) && (
+            {(action === NEW_LEAVE_REQUEST ||
+              (action === EDIT_LEAVE_REQUEST && isEditingDrafts)) && (
               <Button
                 loading={loadingSaveDraft || loadingUpdateDraft}
                 type="link"
@@ -1341,8 +1353,8 @@ class RequestInformation extends PureComponent {
               form="myForm"
               disabled={
                 remainingDayOfSelectedType === 0 &&
-                (selectedType === 'A' || selectedType === 'B') &&
-                action === TIMEOFF_LINK_ACTION.newLeaveRequest
+                (selectedType === A || selectedType === B) &&
+                action === NEW_LEAVE_REQUEST
               }
               htmlType="submit"
               onClick={() => {

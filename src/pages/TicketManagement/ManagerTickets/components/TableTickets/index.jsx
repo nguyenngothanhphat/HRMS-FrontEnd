@@ -204,8 +204,9 @@ class TableTickets extends PureComponent {
         key: 'loacation',
         render: (location) => {
           const locationNew =
-            locationsList.length > 0 ? locationsList.find((val) => val._id === location) : [];
-          return <span>{locationNew.name}</span>;
+            locationsList.length > 0 ? locationsList.filter((val) => val._id === location) : [];
+          const name = locationNew.length > 0 ? locationNew[0].name : '';
+          return <span>{name}</span>;
         },
       },
       {
