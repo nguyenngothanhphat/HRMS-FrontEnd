@@ -22,6 +22,7 @@ const ActivityLog = (props) => {
     listMyTicket = [],
     status = '',
     statusApproval = '',
+    leaveRequests = [],
   } = props;
 
   const viewPendingApprovalDashboard = permissions.viewPendingApprovalDashboard !== -1;
@@ -37,6 +38,14 @@ const ActivityLog = (props) => {
       type: 'dashboard/fetchListMyTicket',
     });
   }, [status]);
+  useEffect(() => {
+    dispatch({
+      type: 'dashboard/fetchLeaveRequestOfEmployee',
+      payload: {
+        status: 'IN-PROGRESS',
+      },
+    });
+  }, []);
 
   // if employee, no render the pending approval tab, set active key to the second tab
   useEffect(() => {
@@ -55,11 +64,11 @@ const ActivityLog = (props) => {
     const dataMyTickets = listMyTicketNew.filter((element) =>
       statusTickets.includes(element.status),
     );
-    const newListPendingApprovals = listPendingApprovals.filter((element) =>
+    const newListLeaveRequest = leaveRequests.filter((element) =>
       statusRequestTimeoff.includes(element.status),
     );
     const dataToTal = [...dataMyTickets];
-    newListPendingApprovals.forEach((element) => {
+    newListLeaveRequest.forEach((element) => {
       dataToTal.push(element);
     });
     return dataToTal;
@@ -168,7 +177,13 @@ const ActivityLog = (props) => {
 
 export default connect(
   ({
-    dashboard: { listTicket = [], listMyTicket = {}, status = '', statusApproval = '' } = {},
+    dashboard: {
+      listTicket = [],
+      listMyTicket = {},
+      status = '',
+      statusApproval = '',
+      leaveRequests = [],
+    } = {},
     loading,
     user: { permissions = {}, currentUser: { employee = {} } } = {},
   }) => ({
@@ -176,6 +191,7 @@ export default connect(
     statusApproval,
     listTicket,
     listMyTicket,
+    leaveRequests,
     permissions,
     employee,
     loadingFetchListTicket: loading.effects['dashboard/fetchListTicket'],

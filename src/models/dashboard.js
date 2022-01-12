@@ -3,6 +3,7 @@ import { dialog } from '@/utils/utils';
 import {
   getListTicket,
   getListMyTicket,
+  getLeaveRequestOfEmployee,
   aprovalCompoffRequest,
   aprovalLeaveRequest,
   rejectLeaveRequest,
@@ -35,6 +36,7 @@ const defaultState = {
   myTeam: [],
   myTimesheet: [],
   listEmployee: [],
+  leaveRequests: [],
   status: '',
   statusApproval: '',
 };
@@ -79,6 +81,27 @@ const dashboard = {
       } catch (errors) {
         dialog(errors);
       }
+    },
+    *fetchLeaveRequestOfEmployee({ payload }, { call, put }) {
+      try {
+        const tenantId = getCurrentTenant();
+        const response = yield call(getLeaveRequestOfEmployee, {
+          ...payload,
+          tenantId,
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data: { items: leaveRequests = [] } = {} } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: { leaveRequests },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return {};
     },
     *approvalTicket(
       { payload: { typeTicket = '', _id, comment } = {}, statusTimeoff = '' },

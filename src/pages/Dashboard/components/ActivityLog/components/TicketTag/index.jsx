@@ -13,41 +13,41 @@ const TicketTag = (props) => {
   // RENDER UI
   const renderTag = (item) => {
     const {
-      created_at: onDate = '',
+      created_at: onDateSupportRequest = '',
       id: ticketID = '',
       status = '',
-      request_type: typeName = '',
-      typeTicket = '',
-      createdAt = '',
+      request_type: typeNameSupportRequest = '',
+      type: { typeName = '' } = {},
+      onDate = '',
       ticketID: ticketIDTimeoff = '',
     } = item;
 
-    const dateTemp = moment(onDate).date();
-    const dateTempTimeoff = moment(createdAt).date();
-    const monthTemp = moment(onDate).locale('en').format('MMM');
-    const monthTempTimeoff = moment(createdAt).locale('en').format('MMM');
+    const dateTemp = moment(onDateSupportRequest).date();
+    const dateTempTimeoff = moment(onDate).date();
+    const monthTemp = moment(onDateSupportRequest).locale('en').format('MMM');
+    const monthTempTimeoff = moment(onDate).locale('en').format('MMM');
     return (
       <Col span={24}>
         <div className={styles.TicketTag}>
           <Row align="middle" justify="space-between">
             <Col span={20} className={styles.leftPart}>
               <div className={styles.dateTime}>
-                <span>{createdAt ? dateTempTimeoff : dateTemp}</span>
-                <span>{createdAt ? monthTempTimeoff : monthTemp}</span>
+                <span>{onDate ? dateTempTimeoff : dateTemp}</span>
+                <span>{onDate ? monthTempTimeoff : monthTemp}</span>
               </div>
-              {typeTicket ? (
+              {typeName ? (
                 <div className={styles.content}>
                   <span className={styles.userId}>[Ticket ID #{ticketIDTimeoff}]</span> Timeoff
-                  Ticket for from to is {status}
+                  Ticket from to is {status}
                 </div>
               ) : (
                 <div className={styles.content}>
                   <span className={styles.userId}>[Ticket ID #{ticketID}]</span> Support request
-                  regarding {typeName} is {status}
+                  regarding {typeNameSupportRequest} is {status}
                 </div>
               )}
             </Col>
-            {typeTicket ? (
+            {typeName ? (
               ''
             ) : (
               <Col span={4} className={styles.rightPart} onClick={() => setOpenModal(true)}>

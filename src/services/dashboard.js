@@ -18,6 +18,12 @@ export async function getListMyTicket(payload) {
     API_KEYS.TICKET_API,
   );
 }
+export async function getLeaveRequestOfEmployee(payload) {
+  return request('/api/leaverequesttenant/get-my-request', {
+    method: 'POST',
+    data: payload,
+  });
+}
 export async function aprovalLeaveRequest(payload) {
   return request('/api/leaverequesttenant/reporting-manager-approve', {
     method: 'POST',
