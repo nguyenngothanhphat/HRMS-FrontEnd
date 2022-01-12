@@ -6,7 +6,7 @@ import MeetingTag from '../MeetingTag';
 import styles from './index.less';
 
 const MyCalendar = (props) => {
-  const { isInModal = false, data =  [], loading = false, dateSelected = '' } = props;
+  const { isInModal = false, data = [], loading = false, dateSelected = '' } = props;
   const [hourList, setHourList] = useState([]);
   // const [firstHourHasData, setFirstHourHasData] = useState('');
 
