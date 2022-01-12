@@ -50,11 +50,11 @@ const UserModel = {
         let switchRoleAbility = false;
         const {
           signInRole = [],
-          // roles = [],
+          roles = [],
           candidate = {},
           isFirstLogin = false,
           employee = {},
-          employee: { title: { roles = [] } = {} || {} } = {} || {},
+          // employee: { title: { roles = [] } = {} || {} } = {} || {},
         } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
@@ -165,16 +165,11 @@ const UserModel = {
             }
           }
 
-          const employeeRoles = roles.map((role) => role.toLowerCase());
-          const otherEmployeeRoles = employeeRoles.filter((role) => role !== 'employee');
-          if (checkIsEmployee && otherEmployeeRoles.length > 0) {
-            formatArrRoles = [...formatArrRoles, ...otherEmployeeRoles];
-          }
-
+          const employeeRoles = roles.map((role) => role.toLowerCase()); // from title
           // DONE
-
           const { title: { name: titleName = '' } = {} || {} } = employee || {};
-          const currentUserRoles = [...getCurrentUserRoles(formatArrRoles, titleName)];
+          const currentUserRoles = [...getCurrentUserRoles(employeeRoles, titleName)];
+
           formatArrRoles = [...formatArrRoles, ...currentUserRoles].filter((x) => x);
 
           setAuthority(formatArrRoles);

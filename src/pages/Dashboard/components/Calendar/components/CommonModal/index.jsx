@@ -1,6 +1,7 @@
 import { Modal } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import EmptyComponent from '@/components/Empty';
 import HolidayCalendar from '../HolidayCalendar';
 import MyCalendar from '../MyCalendar';
 import styles from './index.less';
@@ -28,6 +29,7 @@ const CommonModal = (props) => {
   };
 
   const renderModalContent = () => {
+    if (data.length === 0) return <EmptyComponent />;
     switch (tabKey) {
       case '1':
         return <MyCalendar isInModal data={data} loading={loading} />;

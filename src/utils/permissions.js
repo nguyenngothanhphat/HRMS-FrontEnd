@@ -21,7 +21,7 @@ export const getCurrentUserRoles = (roles, userTitle = '') => {
   const isCEO = roles.find((item) => item === ROLES.CEO);
   const isHRManager = roles.find((item) => item === ROLES.HR_MANAGER);
   const isHR = roles.find((item) => item === ROLES.HR);
-  const isManager = roles.find((item) => item === ROLES.MANAGER);
+  let isManager = roles.find((item) => item === ROLES.MANAGER);
   const isEmployee = roles.find((item) => item === ROLES.EMPLOYEE);
   const isRegionHead = roles.find((item) => item === ROLES.REGION_HEAD);
   const isDepartmentHead = roles.find((item) => item === ROLES.DEPARTMENT_HEAD);
@@ -43,6 +43,20 @@ export const getCurrentUserRoles = (roles, userTitle = '') => {
     isFinance = ROLES.FINANCE;
   }
 
+  if (
+    isHR ||
+    isHRManager ||
+    isFinance ||
+    isOwner ||
+    isRegionHead ||
+    isDepartmentHead ||
+    isProjectManager ||
+    isPeopleManager ||
+    isCEO
+  ) {
+    isManager = '';
+  }
+
   const result = [
     isOwner,
     isCEO,
@@ -56,6 +70,7 @@ export const getCurrentUserRoles = (roles, userTitle = '') => {
     isHR,
     isEmployee,
   ];
+
   return result.filter((x) => x);
 };
 
@@ -419,17 +434,27 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     HR_MANAGER,
     HR,
   ]);
-  const indexNewJoinees = isRole(permissionList, [MANAGER]);
+  const indexNewJoinees = isRole(permissionList, [HR, HR_MANAGER]);
 
   // TIMESHEET
   const indexMyTimesheet = isAuthorized(permissionList, [EMPLOYEE]);
-  const indexReportTimesheet = isAuthorized(permissionList, [MANAGER, HR_MANAGER]); // TEMP
-  const indexSettingTimesheet = isAuthorized(permissionList, [MANAGER, HR_MANAGER]); // TEMP
+  const indexReportTimesheet = isAuthorized(permissionList, [
+    PROJECT_MANAGER,
+    HR,
+    HR_MANAGER,
+    FINANCE,
+    PEOPLE_MANAGER,
+  ]);
+  const indexSettingTimesheet = isAuthorized(permissionList, [
+    PROJECT_MANAGER,
+    HR_MANAGER,
+    PEOPLE_MANAGER,
+  ]);
 
   // CV = COMPLEX VIEW
   const indexHRReportCVTimesheet = isAuthorized(permissionList, [HR, HR_MANAGER]);
   const indexFinanceReportCVTimesheet = isAuthorized(permissionList, [FINANCE]);
-  const indexPeopleManagerCVTimesheet = isAuthorized(permissionList, [MANAGER]);
+  const indexPeopleManagerCVTimesheet = isAuthorized(permissionList, [PEOPLE_MANAGER]);
   const indexProjectManagerCVTimesheet = isAuthorized(permissionList, [PROJECT_MANAGER]);
 
   // DASHBOARD

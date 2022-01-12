@@ -1,0 +1,54 @@
+@commonPadding: 24px;
+@blue: #2c6df9;
+@black: #171924;
+
+.Carousel {
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #d8d8d8;
+  border-radius: 16px;
+  // box-shadow: 0px 4px 40px rgba(0, 0, 0, 0.1);
+  :global {
+    .ant-carousel {
+      width: 100%;
+      .slick-slide {
+        img {
+          width: 100%;
+        }
+      }
+      .slick-dots {
+        li {
+          width: 6px !important;
+          button {
+            height: 5px !important;
+            background: rgba(59, 67, 71, 0.26);
+            border-radius: 10px;
+          }
+        }
+        .slick-active {
+          width: 10px !important;
+          button {
+            background: #ffa100;
+            border-radius: 10px;
+          }
+        }
+      }
+      .slick-dots-bottom {
+        bottom: 10px;
+      }
+      .slick-arrow {
+        top: 47%;
+        z-index: 1 !important;
+        width: 44px;
+        height: 44px;
+      }
+      .slick-prev {
+        left: 10px;
+      }
+      .slick-next {
+        right: 10px;
+      }
+    }
+  }
+}

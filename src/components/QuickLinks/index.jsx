@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { history, Link } from 'umi';
+import { history } from 'umi';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import s from './index.less';
 

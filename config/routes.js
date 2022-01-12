@@ -18,7 +18,8 @@ const {
 const routes = [
   {
     path: '/',
-    redirect: '/dashboard',
+    redirect: '/home',
+    authority: [EMPLOYEE],
   },
   {
     path: '/signin-google',
@@ -229,6 +230,23 @@ const routes = [
           PROJECT_MANAGER,
         ],
         routes: [
+          {
+            path: '/home',
+            name: 'home',
+            icon: '/assets/images/menuIcons/dashboard-old.svg',
+            component: './HomePage',
+          },
+          {
+            path: '/home/settings',
+            name: 'homeSettings',
+            hideInMenu: true,
+            component: './HomePage/components/Settings',
+          },
+          {
+            path: '/home/settings/:reId',
+            hideInMenu: true,
+            component: './HomePage/components/Settings',
+          },
           {
             path: '/dashboard',
             name: 'dashboard',
