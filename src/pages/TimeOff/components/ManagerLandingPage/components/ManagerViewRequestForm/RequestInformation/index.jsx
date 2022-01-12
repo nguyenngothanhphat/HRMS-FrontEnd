@@ -2,13 +2,15 @@ import React, { PureComponent } from 'react';
 import { Button, Row, Col, Spin, Input } from 'antd';
 import { connect, history } from 'umi';
 import moment from 'moment';
+import { isEmpty } from 'lodash';
 import TimeOffModal from '@/components/TimeOffModal';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_STATUS, TIMEOFF_TYPE, MAX_NO_OF_DAYS_TO_SHOW } from '@/utils/timeOff';
 import Project from './components/Project';
 
 import styles from './index.less';
 
 const { TextArea } = Input;
+const { A, B } = TIMEOFF_TYPE;
 const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DELETED } = TIMEOFF_STATUS;
 @connect(({ timeOff, user: { currentUser = {} } = {}, loading }) => ({
   timeOff,
@@ -70,13 +72,27 @@ class RequestInformation extends PureComponent {
     });
   };
 
-  formatDurationTime = (fromDate, toDate) => {
-    let leaveTimes = '';
-    if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-      leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YY')} - ${moment(toDate)
-        .locale('en')
-        .format('MM.DD.YY')}`;
+  formatDurationTime = (fromDate, toDate, type) => {
+    const start = moment(fromDate);
+    const end = moment(toDate);
+    const now = start;
+    const leaveTimes = [];
+    const includeWeekend = type !== A && type !== B;
+
+    if (includeWeekend) {
+      while (now.isBefore(end) || now.isSame(end)) {
+        leaveTimes.push(now.format('YYYY-MM-DD'));
+        now.add(1, 'days');
+      }
+    } else {
+      while (now.isBefore(end) || now.isSame(end)) {
+        if (moment(now).weekday() !== 6 && moment(now).weekday() !== 0) {
+          leaveTimes.push(now.format('YYYY-MM-DD'));
+        }
+        now.add(1, 'days');
+      }
     }
+
     return leaveTimes;
   };
 
@@ -204,9 +220,10 @@ class RequestInformation extends PureComponent {
       fromDate = '',
       toDate = '',
       duration = '',
+      leaveDates = [],
       // onDate = '',
       description = '',
-      type: { name = '' } = {},
+      type: { name = '', type = '' } = {},
       employee: {
         // _id: employeeId = '',
         generalInfo: { firstName = '', lastName = '', userId = '' } = {},
@@ -222,8 +239,8 @@ class RequestInformation extends PureComponent {
       approvalManager: { _id: managerId = '' } = {},
     } = viewingLeaveRequest;
 
-    const formatDurationTime = this.formatDurationTime(fromDate, toDate);
-
+    const formatDurationTime = this.formatDurationTime(fromDate, toDate, type);
+    const showAllDateList = duration <= MAX_NO_OF_DAYS_TO_SHOW;
     // only manager accept/reject a ticket
     const isMyTicket = myId === managerId;
 
@@ -350,23 +367,58 @@ class RequestInformation extends PureComponent {
                     <span>{subject}</span>
                   </Col>
                 </Row>
-                <Row>
+                <Row style={{ paddingBottom: '5px' }}>
                   <Col span={6}>Duration</Col>
-                  {formatDurationTime !== '' && (
+                  {!isEmpty(formatDurationTime) && (
                     <>
                       <Col span={18} className={styles.detailColumn}>
-                        <span>{formatDurationTime}</span>{' '}
-                        <span
-                          style={{
-                            fontWeight: 'bold',
-                          }}
-                          className={styles.fieldValue}
-                        >
-                          [{duration <= 1 ? `${duration} day` : `${duration} days`}]
-                        </span>
+                        <div className={styles.extraTimeSpent}>
+                          {showAllDateList ? (
+                            <Row className={styles.header}>
+                              <Col span={7}>Date</Col>
+                              <Col span={7}>Day</Col>
+                              <Col span={10}>Count/Q.ty</Col>
+                            </Row>
+                          ) : (
+                            <Row className={styles.header}>
+                              <Col span={7}>From</Col>
+                              <Col span={7}>To</Col>
+                              <Col span={10}>No. of Days</Col>
+                            </Row>
+                          )}
+                        </div>
                       </Col>
                     </>
                   )}
+                </Row>
+                <Row>
+                  <Col span={6} />
+                  <Col span={18}>
+                    {showAllDateList ? (
+                      formatDurationTime.map((date, index) => {
+                        return (
+                          <Row
+                            className={styles.duration}
+                            key={`${index + 1}`}
+                            justify="center"
+                            align="center"
+                          >
+                            <Col span={7}>{moment(date).locale('en').format('MM.DD.YY')}</Col>
+                            <Col span={7}>{moment(date).locale('en').format('dddd')}</Col>
+                            <Col span={10} style={{ textTransform: 'capitalize' }}>
+                              {!isEmpty(leaveDates) ? leaveDates[index].timeOfDay : ''}
+                            </Col>
+                          </Row>
+                        );
+                      })
+                    ) : (
+                      <Row className={styles.duration} justify="center" align="center">
+                        <Col span={7}>{moment(fromDate).locale('en').format('MM.DD.YY')}</Col>
+                        <Col span={7}>{moment(toDate).locale('en').format('MM.DD.YY')}</Col>
+                        <Col span={10}>{duration}</Col>
+                      </Row>
+                    )}
+                  </Col>
                 </Row>
                 <Row>
                   <Col span={6}>Description</Col>

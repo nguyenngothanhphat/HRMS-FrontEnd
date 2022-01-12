@@ -1,10 +1,10 @@
 .formWrapper {
-  width: 56%;
-  min-height: 60%;
-  background-color: #fff;
-  padding: 20px 30px 40px;
-  box-shadow: 0 0 11px #ececec;
+  width: 100%;
+  height: auto;
+  padding: 40px;
   color: #000;
+  background-color: #fff;
+  box-shadow: 0 0 11px #ececec;
   &__title {
     // color: #acacac;
     font-weight: 700;
@@ -17,11 +17,11 @@
   }
 
   &__descriptionSuccessfully {
+    width: 90%;
+    margin-bottom: 0;
     color: #000;
     font-size: 12px;
     text-align: center;
-    width: 90%;
-    margin-bottom: 0;
   }
 
   .inputPassword {
@@ -38,23 +38,23 @@
 
   :global {
     .ant-btn-primary {
-      box-shadow: none;
-      text-shadow: none;
-      height: 40px;
       width: 100%;
-      font-weight: 600;
-      background-color: #ffa100;
+      height: 40px;
       color: white;
+      font-weight: 600;
+      text-shadow: none;
+      background-color: #ffa100;
       border: none;
       border-radius: 30px;
+      box-shadow: none;
     }
     .ant-form-item {
       margin-bottom: 1rem;
     }
     .ant-form label {
-      font-size: 12px;
-      font-weight: 500;
       color: #707177;
+      font-weight: 500;
+      font-size: 12px;
     }
   }
 
