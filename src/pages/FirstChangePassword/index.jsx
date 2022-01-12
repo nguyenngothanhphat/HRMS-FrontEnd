@@ -7,6 +7,15 @@ import styles from './index.less';
   loading: loading.effects['changePassword/updatePassword'],
 }))
 class FirstChangePassword extends PureComponent {
+  handleLogout = () => {
+    const { dispatch } = this.props;
+    if (dispatch) {
+      dispatch({
+        type: 'login/logout',
+      });
+    }
+  };
+
   onFinish = async (values) => {
     const { dispatch } = this.props;
     const payload = {
