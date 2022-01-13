@@ -22,7 +22,7 @@ const UserProfilePopover = (props) => {
     managerInfo = {},
   } = data;
 
-  const { avatar = '', personalNumber='' } = generalInfo || {};
+  const { avatar = '', personalNumber = '' } = generalInfo || {};
 
   const [showPopover, setShowPopover] = useState(false);
 
@@ -39,7 +39,7 @@ const UserProfilePopover = (props) => {
         </div>
         <div className={styles.information}>
           <span className={styles.name}>
-            {legalName} ({userId})
+            {legalName} {userId ? `(${userId})` : ''}
           </span>
           <span className={styles.position}>{department?.name}</span>
           <span className={styles.department}>{title?.name}</span>
@@ -68,7 +68,8 @@ const UserProfilePopover = (props) => {
       },
       {
         label: 'Local Time',
-        value: `${moment().locale('en').format('DD/MM/YYYY')} | ${moment().format('HH:mm a')}` || '',
+        value:
+          `${moment().locale('en').format('DD/MM/YYYY')} | ${moment().format('HH:mm a')}` || '',
       },
     ];
 

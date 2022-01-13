@@ -26,7 +26,7 @@ const MyInformation = (props) => {
     } = {},
   } = props;
 
-  const [activeKey, setActiveKey] = useState(TAB_NAME.MY_TEAM);
+  const [activeKey, setActiveKey] = useState(TAB_NAME.MY_CALENDAR);
 
   const addZeroToNumber = (number) => {
     if (number < 10 && number > 0) return `0${number}`.slice(-2);
@@ -60,11 +60,11 @@ const MyInformation = (props) => {
   return (
     <div className={styles.MyInformation}>
       <Tabs activeKey={activeKey} onChange={(key) => setActiveKey(key)} destroyInactiveTabPane>
-        <TabPane tab={getTabName(TAB_NAME.MY_TEAM)} key={TAB_NAME.MY_TEAM}>
-          <MyTeam />
-        </TabPane>
         <TabPane tab={getTabName(TAB_NAME.MY_CALENDAR)} key={TAB_NAME.MY_CALENDAR}>
           <MyCalendar />
+        </TabPane>
+        <TabPane tab={getTabName(TAB_NAME.MY_TEAM)} key={TAB_NAME.MY_TEAM}>
+          <MyTeam />
         </TabPane>
         <TabPane tab={getTabName(TAB_NAME.MY_TICKETS)} key={TAB_NAME.MY_TICKETS}>
           <MyTicket />
