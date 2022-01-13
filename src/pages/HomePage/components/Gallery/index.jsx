@@ -1,24 +1,9 @@
-import React from 'react';
 import { Carousel } from 'antd';
-import styles from './index.less';
+import React from 'react';
+import NextIcon from '@/assets/homePage/next.svg';
+import PrevIcon from '@/assets/homePage/prev.svg';
 import SampleImage from '@/assets/homePage/samplePhoto.png';
-
-// const data = [
-// {
-//   id: 1,
-//   title: 'Annual Event 2021',
-//   content: `Here's a glimpse of the fun and festivities
-//   at our Annual Event this year!`,
-//   image: SampleImage,
-// },
-// {
-//   id: 2,
-//   title: 'Annual Event 2021',
-//   content: `Here's a glimpse of the fun and festivities
-//   at our Annual Event this year!`,
-//   image: SampleImage,
-// },
-// ];
+import styles from './index.less';
 
 const data = [
   {
@@ -27,6 +12,16 @@ const data = [
     image: SampleImage,
   },
 ];
+
+const NextArrow = (props) => {
+  const { className, style, onClick } = props;
+  return <img src={NextIcon} className={className} style={style} alt="" onClick={onClick} />;
+};
+
+const PrevArrow = (props) => {
+  const { className, style, onClick } = props;
+  return <img src={PrevIcon} className={className} style={style} alt="" onClick={onClick} />;
+};
 
 const Gallery = () => {
   const renderCard = (card) => {
@@ -46,7 +41,15 @@ const Gallery = () => {
   return (
     <div className={styles.Gallery}>
       <p className={styles.titleText}>Gallery</p>
-      <Carousel infinite arrows dots>
+      <Carousel
+        infinite
+        arrows
+        dots
+        autoplay
+        autoplaySpeed={10000}
+        nextArrow={<NextArrow />}
+        prevArrow={<PrevArrow />}
+      >
         {data.map((x) => renderCard(x))}
       </Carousel>
     </div>
