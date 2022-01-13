@@ -16,64 +16,6 @@ const {
   CANDIDATE,
 } = ROLES;
 
-export const getCurrentUserRoles = (roles, userTitle = '') => {
-  const isOwner = roles.find((item) => item === ROLES.OWNER);
-  const isCEO = roles.find((item) => item === ROLES.CEO);
-  const isHRManager = roles.find((item) => item === ROLES.HR_MANAGER);
-  const isHR = roles.find((item) => item === ROLES.HR);
-  let isManager = roles.find((item) => item === ROLES.MANAGER);
-  const isEmployee = roles.find((item) => item === ROLES.EMPLOYEE);
-  const isRegionHead = roles.find((item) => item === ROLES.REGION_HEAD);
-  const isDepartmentHead = roles.find((item) => item === ROLES.DEPARTMENT_HEAD);
-
-  let isProjectManager = '';
-  let isPeopleManager = '';
-  let isFinance = '';
-
-  const nameTemp = userTitle.toLowerCase();
-  if (isManager) {
-    if (nameTemp.includes('project') && nameTemp.includes('manager')) {
-      isProjectManager = ROLES.PROJECT_MANAGER;
-    }
-    if (nameTemp.includes('people') && nameTemp.includes('manager')) {
-      isPeopleManager = ROLES.PEOPLE_MANAGER;
-    }
-  }
-  if (nameTemp.includes('finance')) {
-    isFinance = ROLES.FINANCE;
-  }
-
-  if (
-    isHR ||
-    isHRManager ||
-    isFinance ||
-    isOwner ||
-    isRegionHead ||
-    isDepartmentHead ||
-    isProjectManager ||
-    isPeopleManager ||
-    isCEO
-  ) {
-    isManager = '';
-  }
-
-  const result = [
-    isOwner,
-    isCEO,
-    isRegionHead,
-    isDepartmentHead,
-    isHRManager,
-    isProjectManager,
-    isPeopleManager,
-    isFinance,
-    isManager,
-    isHR,
-    isEmployee,
-  ];
-
-  return result.filter((x) => x);
-};
-
 /* eslint-disable no-plusplus */
 export function groupPermissions(roles) {
   let permissionsList = [];
