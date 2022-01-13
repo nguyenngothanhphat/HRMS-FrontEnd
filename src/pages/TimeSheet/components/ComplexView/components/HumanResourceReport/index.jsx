@@ -42,13 +42,13 @@ const HumanResourceReport = (props) => {
     if (startDateWeek && selectedView === VIEW_TYPE.W) {
       fetchHRTimesheet(startDateWeek, endDateWeek);
     }
-  }, [startDateWeek, selectedView]);
+  }, [startDateWeek, endDateWeek, selectedView]);
 
   useEffect(() => {
     if (startDateMonth && selectedView === VIEW_TYPE.M) {
       fetchHRTimesheet(startDateMonth, endDateMonth);
     }
-  }, [startDateMonth, selectedView]);
+  }, [startDateMonth, endDateMonth, selectedView]);
 
   useEffect(() => {
     setSelectedEmployees([]);
@@ -60,7 +60,7 @@ const HumanResourceReport = (props) => {
     const currentSunday = moment().weekday(7);
     setStartDateWeek(lastSunday);
     setEndDateWeek(currentSunday);
-  }, [])
+  }, []);
 
   // get current month
   useEffect(() => {

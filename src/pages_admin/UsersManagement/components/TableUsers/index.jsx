@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Table, Tag } from 'antd';
 import { formatMessage, connect } from 'umi';
+import moment from 'moment';
 import EditUserIcon from '@/assets/admin_iconedit.svg';
 import DeleteUserIcon from '@/assets/admin_icondelete.svg';
-import moment from 'moment';
 import EditUserModal from '../EditUserModal';
 import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import ResetPasswordModal from '../ResetPasswordModal';
@@ -205,12 +205,14 @@ class TableUsers extends PureComponent {
     this.saveSelectedUserState(record._id, record.tenant);
   };
 
-  closeEditModal = () => {
+  closeEditModal = (refreshList) => {
     this.setState({
       editModalVisible: false,
     });
     this.clearSelectedUserState();
-    this.refreshList();
+    if (refreshList) {
+      this.refreshList();
+    }
   };
 
   // delete user
@@ -301,8 +303,11 @@ class TableUsers extends PureComponent {
   };
 
   refreshList = () => {
-    const { getTableData = () => {}, tabId = 1 } = this.props;
-    getTableData({}, tabId);
+    const { dispatch, usersManagement: { currentPayload = {} } = {} } = this.props;
+    dispatch({
+      type: 'usersManagement/fetchEmployeesList',
+      payload: currentPayload,
+    });
   };
 
   render() {

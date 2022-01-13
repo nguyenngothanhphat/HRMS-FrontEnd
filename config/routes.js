@@ -233,14 +233,20 @@ const routes = [
           {
             path: '/home',
             name: 'home',
-            icon: '/assets/images/menuIcons/dashboard-old.svg',
+            icon: '/assets/images/menuIcons/home.svg',
             component: './HomePage',
+            authority: [EMPLOYEE],
           },
           {
             path: '/home/settings',
             name: 'homeSettings',
             hideInMenu: true,
             component: './HomePage/components/Settings',
+          },
+          {
+            path: '/home/post-management/add',
+            name: 'homeSettingAddPost',
+            hideInMenu: true,
           },
           {
             path: '/home/settings/:reId',
@@ -345,18 +351,18 @@ const routes = [
             name: 'offboarding',
             icon: '/assets/images/menuIcons/offboarding.svg',
             component: './OffBoarding',
-            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW', HR, HR_MANAGER, MANAGER],
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/:tabName',
             component: './OffBoarding',
-            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW', HR, HR_MANAGER, MANAGER],
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
             hideInMenu: true,
           },
           {
             path: '/offboarding/:tabName/:type',
             component: './OffBoarding',
-            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW', HR, HR_MANAGER, MANAGER],
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
             hideInMenu: true,
           },
           {
@@ -705,12 +711,12 @@ const routes = [
             name: 'timeSheet',
             icon: '/assets/images/menuIcons/timeSheet.svg',
             component: './TimeSheet',
-            authority: [HR_MANAGER, HR, EMPLOYEE, MANAGER], // TEMPORARY VALUES
+            authority: [EMPLOYEE],
           },
           {
             path: '/time-sheet/:tabName',
             component: './TimeSheet',
-            authority: [HR_MANAGER, HR, EMPLOYEE, MANAGER], // TEMPORARY VALUES
+            authority: [EMPLOYEE],
             hideInMenu: true,
           },
 
@@ -720,12 +726,12 @@ const routes = [
             name: 'ticketManagement',
             icon: '/assets/images/menuIcons/ticketManagement.svg',
             component: './TicketManagement',
-            authority: [HR_MANAGER, HR, MANAGER], // TEMPORARY VALUES
+            authority: [HR_MANAGER, HR, MANAGER, PROJECT_MANAGER], // TEMPORARY VALUES
           },
           {
             path: '/ticket-management/:tabName',
             component: './TicketManagement',
-            authority: [HR_MANAGER, HR, MANAGER], // TEMPORARY VALUES
+            authority: [HR_MANAGER, HR, MANAGER, PROJECT_MANAGER], // TEMPORARY VALUES
             hideInMenu: true,
           },
 

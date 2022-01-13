@@ -16,64 +16,6 @@ const {
   CANDIDATE,
 } = ROLES;
 
-export const getCurrentUserRoles = (roles, userTitle = '') => {
-  const isOwner = roles.find((item) => item === ROLES.OWNER);
-  const isCEO = roles.find((item) => item === ROLES.CEO);
-  const isHRManager = roles.find((item) => item === ROLES.HR_MANAGER);
-  const isHR = roles.find((item) => item === ROLES.HR);
-  let isManager = roles.find((item) => item === ROLES.MANAGER);
-  const isEmployee = roles.find((item) => item === ROLES.EMPLOYEE);
-  const isRegionHead = roles.find((item) => item === ROLES.REGION_HEAD);
-  const isDepartmentHead = roles.find((item) => item === ROLES.DEPARTMENT_HEAD);
-
-  let isProjectManager = '';
-  let isPeopleManager = '';
-  let isFinance = '';
-
-  const nameTemp = userTitle.toLowerCase();
-  if (isManager) {
-    if (nameTemp.includes('project') && nameTemp.includes('manager')) {
-      isProjectManager = ROLES.PROJECT_MANAGER;
-    }
-    if (nameTemp.includes('people') && nameTemp.includes('manager')) {
-      isPeopleManager = ROLES.PEOPLE_MANAGER;
-    }
-  }
-  if (nameTemp.includes('finance')) {
-    isFinance = ROLES.FINANCE;
-  }
-
-  if (
-    isHR ||
-    isHRManager ||
-    isFinance ||
-    isOwner ||
-    isRegionHead ||
-    isDepartmentHead ||
-    isProjectManager ||
-    isPeopleManager ||
-    isCEO
-  ) {
-    isManager = '';
-  }
-
-  const result = [
-    isOwner,
-    isCEO,
-    isRegionHead,
-    isDepartmentHead,
-    isHRManager,
-    isProjectManager,
-    isPeopleManager,
-    isFinance,
-    isManager,
-    isHR,
-    isEmployee,
-  ];
-
-  return result.filter((x) => x);
-};
-
 /* eslint-disable no-plusplus */
 export function groupPermissions(roles) {
   let permissionsList = [];
@@ -436,26 +378,35 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   ]);
   const indexNewJoinees = isRole(permissionList, [HR, HR_MANAGER]);
 
+  // TIME OFF
+  const indexMyTimeoff = 1; // everyone has time off employee page
+  const indexManagerTimeoff = isAuthorized(permissionList, [
+    'P_TIMEOFF_T_TEAM_REQUEST_MANAGER_VIEW',
+  ]);
+  const indexHRTimeoff = isAuthorized(permissionList, ['P_TIMEOFF_T_TEAM_REQUEST_HR_VIEW']);
+  const indexSettingTimeoff = isAuthorized(permissionList, ['P_TIMEOFF_T_SETTING_VIEW']);
+
   // TIMESHEET
-  const indexMyTimesheet = isAuthorized(permissionList, [EMPLOYEE]);
+  const indexMyTimesheet = 1; // everyone has time sheet
   const indexReportTimesheet = isAuthorized(permissionList, [
-    PROJECT_MANAGER,
-    HR,
-    HR_MANAGER,
-    FINANCE,
-    PEOPLE_MANAGER,
+    'P_TIMESHEET_T_REPORT_FINANCE_VIEW',
+    'P_TIMESHEET_T_REPORT_HR_VIEW',
+    'P_TIMESHEET_T_REPORT_PROJECT_MANAGER_VIEW',
+    'P_TIMESHEET_T_REPORT_PEOPLE_MANAGER_VIEW',
   ]);
-  const indexSettingTimesheet = isAuthorized(permissionList, [
-    PROJECT_MANAGER,
-    HR_MANAGER,
-    PEOPLE_MANAGER,
-  ]);
+  const indexSettingTimesheet = isAuthorized(permissionList, ['P_TIMESHEET_T_SETTING_VIEW']);
 
   // CV = COMPLEX VIEW
-  const indexHRReportCVTimesheet = isAuthorized(permissionList, [HR, HR_MANAGER]);
-  const indexFinanceReportCVTimesheet = isAuthorized(permissionList, [FINANCE]);
-  const indexPeopleManagerCVTimesheet = isAuthorized(permissionList, [PEOPLE_MANAGER]);
-  const indexProjectManagerCVTimesheet = isAuthorized(permissionList, [PROJECT_MANAGER]);
+  const indexHRReportCVTimesheet = isAuthorized(permissionList, ['P_TIMESHEET_T_REPORT_HR_VIEW']);
+  const indexFinanceReportCVTimesheet = isAuthorized(permissionList, [
+    'P_TIMESHEET_T_REPORT_FINANCE_VIEW',
+  ]);
+  const indexPeopleManagerCVTimesheet = isAuthorized(permissionList, [
+    'P_TIMESHEET_T_REPORT_PEOPLE_MANAGER_VIEW',
+  ]);
+  const indexProjectManagerCVTimesheet = isAuthorized(permissionList, [
+    'P_TIMESHEET_T_REPORT_PROJECT_MANAGER_VIEW',
+  ]);
 
   // DASHBOARD
   const indexPendingApprovalDashboard = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
@@ -541,6 +492,12 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     addTeamMemberOnboarding: indexAddTeamMemberOnboarding,
     viewOnboardingOverviewTab: indexOverviewViewOnboarding,
     viewOnboardingNewJoinees: indexNewJoinees,
+
+    // timeoff
+    viewMyTimeoff: indexMyTimeoff,
+    viewManagerTimeoff: indexManagerTimeoff,
+    viewHRTimeoff: indexHRTimeoff,
+    viewSettingTimeoff: indexSettingTimeoff,
 
     // timesheet
     viewMyTimesheet: indexMyTimesheet,

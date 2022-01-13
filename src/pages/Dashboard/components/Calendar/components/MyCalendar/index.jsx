@@ -1,14 +1,14 @@
 import { Col, Row, Spin } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
 import MeetingTag from '../MeetingTag';
 import styles from './index.less';
 
 const MyCalendar = (props) => {
-  const { isInModal = false, data = [], loading = false } = props;
+  const { isInModal = false, data = [], loading = false, dateSelected = '' } = props;
   const [hourList, setHourList] = useState([]);
-  const [firstHourHasData, setFirstHourHasData] = useState('');
+  // const [firstHourHasData, setFirstHourHasData] = useState('');
 
   const [dateToFormat, setDateToFormat] = useState(moment().format('HH:mm'))
 
@@ -30,74 +30,89 @@ const MyCalendar = (props) => {
       setHourList(hourListTemp);
     }
   }, []);
-
+  const scrollCurrentTime = () => {
+    return document.getElementById('currentTimeId')?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+      inline: "center"
+    });
+  }
+  useLayoutEffect(() => {
+    scrollCurrentTime();
+  });
   // FIND THE FIRST HOUR IN DATE THAT HAS EVENT
-  useEffect(() => {
-    let firstIndex = null;
-    for (let i = 0; i < 24; i += 1) {
-      const x = data.find((item) => moment(item.start.dateTime).hour() === i);
-      if (x && !firstIndex) {
-        firstIndex = i;
-        break;
-      }
-    }
-    setFirstHourHasData(firstIndex);
-  }, [JSON.stringify(data)]);
+  // useEffect(() => {
+  //   let firstIndex = null;
+  //   for (let i = 0; i < 24; i += 1) {
+  //     const x = data.find((item) => moment(item.start.dateTime).hour() === i);
+  //     if (x && !firstIndex) {
+  //       firstIndex = i;
+  //       break;
+  //     }
+  //   }
+  //   setFirstHourHasData(firstIndex);
+  // }, [JSON.stringify(data)]);
 
   const renderCurrentDate = (hour, currentDate) => {
     const currentTime = currentDate ? currentDate.split(':')[0] : moment().format('HH');
     const minute = currentDate ? currentDate.split(':')[1] / 60 : moment().format('mm') / 60;
     // && timeEvent - Number(currentTime) !== 0 && timeEvent - (Number(currentTime)+1) !== 0
-    if (minute < 0.65) {
+    if (minute < 0.8) {
       if (hour - Number(currentTime) === 0) {
         if (minute < 0.05) {
-          return <hr className={styles.currentTime} />;
+          return <hr className={styles.currentTime} id='currentTimeId' />;
         }
         if (minute >= 0.05 && minute < 0.1) {
-          return <hr className={styles.currentTime1} />;
+          return <hr className={styles.currentTime1} id='currentTimeId' />;
         }
         if (minute >= 0.1 && minute < 0.15) {
-          return <hr className={styles.currentTime2} />;
+          return <hr className={styles.currentTime2} id='currentTimeId' />;
         }
         if (minute >= 0.15 && minute < 0.2) {
-          return <hr className={styles.currentTime3} />;
+          return <hr className={styles.currentTime3} id='currentTimeId' />;
         }
         if (minute >= 0.2 && minute < 0.25) {
-          return <hr className={styles.currentTime4} />;
+          return <hr className={styles.currentTime4} id='currentTimeId' />;
         }
         if (minute >= 0.25 && minute < 0.3) {
-          return <hr className={styles.currentTime5} />;
+          return <hr className={styles.currentTime5} id='currentTimeId' />;
         }
         if (minute >= 0.3 && minute < 0.35) {
-          return <hr className={styles.currentTime6} />;
+          return <hr className={styles.currentTime6} id='currentTimeId' />;
         }
         if (minute >= 0.35 && minute < 0.4) {
-          return <hr className={styles.currentTime7} />;
+          return <hr className={styles.currentTime7} id='currentTimeId' />;
         }
         if (minute >= 0.4 && minute < 0.5) {
-          return <hr className={styles.currentTime8} />;
+          return <hr className={styles.currentTime8} id='currentTimeId' />;
         }
         if (minute >= 0.5 && minute < 0.55) {
-          return <hr className={styles.currentTime9} />;
+          return <hr className={styles.currentTime9} id='currentTimeId' />;
         }
         if (minute >= 0.55 && minute < 0.6) {
-          return <hr className={styles.currentTime10} />;
+          return <hr className={styles.currentTime10} id='currentTimeId' />;
         }
         if (minute >= 0.6 && minute < 0.65) {
-          return <hr className={styles.currentTime11} />;
+          return <hr className={styles.currentTime11} id='currentTimeId' />;
+        }
+        if (minute >= 0.65 && minute < 0.7) {
+          return <hr className={styles.currentTime12} id='currentTimeId' />;
+        }
+        if (minute >= 0.7 && minute < 0.75) {
+          return <hr className={styles.currentTime13} id='currentTimeId' />;
+        }
+        if (minute >= 0.75 && minute < 0.8) {
+          return <hr className={styles.currentTime14} id='currentTimeId' />;
         }
       }
     }
-    if (minute >= 0.65) {
+    if (minute >= 0.8) {
       if (hour - (Number(currentTime) + 1) === 0) {
-        if (minute < 0.75) {
-          return <hr className={styles.currentTime12} />;
+        if (minute < 0.9) {
+          return <hr className={styles.currentTime15} id='currentTimeId' />;
         }
-        if (minute >= 0.75 && minute < 0.85) {
-          return <hr className={styles.currentTime13} />;
-        }
-        if (minute >= 0.85 && minute < 1) {
-          return <hr className={styles.currentTime14} />;
+        if (minute >= 0.9 && minute < 1) {
+          return <hr className={styles.currentTime16} id='currentTimeId' />;
         }
       }
     }
@@ -120,10 +135,11 @@ const MyCalendar = (props) => {
       if (hour === 12) return `12 PM`;
       return `${h - 12} PM`;
     };
-
-    // if (firstHourHasData > hour + 2 && events.length === 0) return null;
+    // && events.length === 0
+    // const checkCurrentTime = dateToFormat ? dateToFormat.split(':')[0] : moment().format('HH');
+    // if ((checkCurrentTime < hour + 3 || checkCurrentTime > hour - 3) && events.length === 0) return '';
     return (
-      <Row className={styles.eachRow} justify="center" align="middle">
+      <Row className={styles.eachRow} justify="center" align="top">
         <Col xs={4} xl={3} className={styles.eachRow__left}>
           <div>{renderHour(hour)}</div>
         </Col>
@@ -136,7 +152,8 @@ const MyCalendar = (props) => {
                   <MeetingTag
                     span={colSpan}
                     event={event}
-                    isFirstHourHasData={hour === firstHourHasData}
+                    dateSelected={dateSelected}
+                    // isFirstHourHasData={hour === firstHourHasData}
                   />
                 );
               })}

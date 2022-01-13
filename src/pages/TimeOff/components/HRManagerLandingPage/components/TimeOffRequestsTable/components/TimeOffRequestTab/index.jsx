@@ -18,7 +18,6 @@ const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DELETED, DRA
     loading,
     user,
     timeOff: {
-      currentUserRole = '',
       filter = {},
       timeOffTypesByCountry,
       paging,
@@ -33,7 +32,7 @@ const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DELETED, DRA
     user,
     filter,
     timeOffTypesByCountry,
-    currentUserRole,
+
     teamCompoffRequests,
     teamLeaveRequests,
     compoffRequests,
