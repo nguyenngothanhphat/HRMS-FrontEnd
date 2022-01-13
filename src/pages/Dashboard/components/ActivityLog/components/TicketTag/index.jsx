@@ -19,6 +19,8 @@ const TicketTag = (props) => {
       request_type: typeNameSupportRequest = '',
       type: { typeName = '' } = {},
       onDate = '',
+      fromDate = '',
+      toDate = '',
       ticketID: ticketIDTimeoff = '',
     } = item;
 
@@ -30,31 +32,36 @@ const TicketTag = (props) => {
       <Col span={24}>
         <div className={styles.TicketTag}>
           <Row align="middle" justify="space-between">
-            <Col span={20} className={styles.leftPart}>
-              <div className={styles.dateTime}>
-                <span>{onDate ? dateTempTimeoff : dateTemp}</span>
-                <span>{onDate ? monthTempTimeoff : monthTemp}</span>
-              </div>
-              {typeName ? (
+            {typeName ? (
+              <Col span={24} className={styles.leftPart}>
+                <div className={styles.dateTime}>
+                  <span>{dateTempTimeoff}</span>
+                  <span>{monthTempTimeoff}</span>
+                </div>
                 <div className={styles.content}>
                   <span className={styles.userId}>[Ticket ID #{ticketIDTimeoff}]</span> Timeoff
-                  Ticket from to is {status}
-                </div>
-              ) : (
-                <div className={styles.content}>
-                  <span className={styles.userId}>[Ticket ID #{ticketID}]</span> Support request
-                  regarding {typeNameSupportRequest} is {status}
-                </div>
-              )}
-            </Col>
-            {typeName ? (
-              ''
-            ) : (
-              <Col span={4} className={styles.rightPart} onClick={() => setOpenModal(true)}>
-                <div className={styles.viewBtn}>
-                  <span>View</span>
+                  Ticket from {moment(fromDate).locale('en').format('MMM DD YYYY')} to{' '}
+                  {moment(toDate).locale('en').format('MMM DD YYYY')} is {status}
                 </div>
               </Col>
+            ) : (
+              <>
+                <Col span={20} className={styles.leftPart}>
+                  <div className={styles.dateTime}>
+                    <span>{dateTemp}</span>
+                    <span>{monthTemp}</span>
+                  </div>
+                  <div className={styles.content}>
+                    <span className={styles.userId}>[Ticket ID #{ticketID}]</span> Support request
+                    regarding {typeNameSupportRequest} is {status}
+                  </div>
+                </Col>
+                <Col span={4} className={styles.rightPart} onClick={() => setOpenModal(true)}>
+                  <div className={styles.viewBtn}>
+                    <span>View</span>
+                  </div>
+                </Col>
+              </>
             )}
           </Row>
         </div>
