@@ -9,30 +9,30 @@ import EmbedPost from './components/EmbedPost';
 
 const Announcements = () => {
   const posts = [
-    {
-      id: 1,
-      embedLink: 'https://www.linkedin.com/embed/feed/update/urn:li:share:6886637186213576704',
-    },
     // {
     //   id: 1,
-    //   employee: {
-    //     generalInfo: {
-    //       legalName: 'Leslie Alexander',
-    //     },
-    //     title: {
-    //       name: 'Head of Design',
-    //     },
-    //   },
-    //   content: (
-    //     <p>
-    //       We&apos;re #hiring at Lollypop Design Studio <br />
-    //       If you&apos;ve got 5+ years of delivering awesome user experiences and have what it takes to
-    //       work with a 24x7 motivated and passionate team - we&apos;re looking for you!
-    //     </p>
-    //   ),
-    //   type: 1, // 1: link, 2: image
-    //   link: 'https://google.com',
+    //   embedLink: 'https://www.linkedin.com/embed/feed/update/urn:li:share:6886637186213576704',
     // },
+    {
+      id: 1,
+      employee: {
+        generalInfo: {
+          legalName: 'Leslie Alexander',
+        },
+        title: {
+          name: 'Head of Design',
+        },
+      },
+      content: (
+        <p>
+          We&apos;re #hiring at Lollypop Design Studio <br />
+          If you&apos;ve got 5+ years of delivering awesome user experiences and have what it takes
+          to work with a 24x7 motivated and passionate team - we&apos;re looking for you!
+        </p>
+      ),
+      type: 1, // 1: link, 2: image
+      link: 'https://google.com',
+    },
     // {
     //   id: 2,
     //   employee: {

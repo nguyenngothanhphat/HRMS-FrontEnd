@@ -103,7 +103,10 @@ const Celebrating = (props) => {
           ...data.generalInfoInfo,
         }}
       >
-        <span className={styles.employeeName} onClick={() => {}}>
+        <span
+          className={styles.employeeName}
+          onClick={() => onViewProfileClick(data?.generalInfoInfo?.userId)}
+        >
           {generalInfoInfo.legalName}
         </span>
       </UserProfilePopover>

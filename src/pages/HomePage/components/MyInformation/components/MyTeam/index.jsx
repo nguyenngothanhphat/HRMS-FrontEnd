@@ -1,28 +1,11 @@
 import { Row } from 'antd';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'umi';
 import EmployeeCard from './components/EmployeeCard';
 import styles from './index.less';
-import { getCurrentTenant } from '@/utils/authority';
 
 const MyTeam = (props) => {
-  const { dispatch, myTeam = [], employee = {} } = props;
-
-  useEffect(() => {
-    const roleEmployee = employee && employee?.title ? employee.title.roles : [];
-    const employeeId = employee ? employee._id : '';
-    const companyInfo = employee ? employee.company : {};
-    dispatch({
-      type: 'dashboard/fetchMyTeam',
-      payload: {
-        tenantId: getCurrentTenant(),
-        roles: roleEmployee,
-        employee: employeeId,
-        status: ['ACTIVE'],
-        company: [companyInfo],
-      },
-    });
-  }, []);
+  const { myTeam = [], employee = {} } = props;
 
   return (
     <div className={styles.MyTeam}>
