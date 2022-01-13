@@ -9,9 +9,8 @@ import styles from './index.less';
 
 const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DELETED, DRAFTS } =
   TIMEOFF_STATUS;
-@connect(({ timeOff, timeOff: { currentUserRole = '' } = {}, loading }) => ({
+@connect(({ timeOff, loading }) => ({
   timeOff,
-  currentUserRole,
   loadingFetchCompoffRequestById: loading.effects['timeOff/fetchCompoffRequestById'],
 }))
 class ViewCompoffRequestForm extends PureComponent {

@@ -1,6 +1,6 @@
+import { notification } from 'antd';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
-import { notification } from 'antd';
 import {
   getEmployeesList,
   getCompanyList,
@@ -57,6 +57,10 @@ const usersManagement = {
             payload: { inActiveEmployeesList: listEmployee, totalInactiveEmployee: response.total },
           });
         }
+        yield put({
+          type: 'save',
+          payload: { currentPayload: payload },
+        });
         return listEmployee;
       } catch (errors) {
         dialog(errors);

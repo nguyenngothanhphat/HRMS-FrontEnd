@@ -378,6 +378,14 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   ]);
   const indexNewJoinees = isRole(permissionList, [HR, HR_MANAGER]);
 
+  // TIME OFF
+  const indexMyTimeoff = 1; // everyone has time off employee page
+  const indexManagerTimeoff = isAuthorized(permissionList, [
+    'P_TIMEOFF_T_TEAM_REQUEST_MANAGER_VIEW',
+  ]);
+  const indexHRTimeoff = isAuthorized(permissionList, ['P_TIMEOFF_T_TEAM_REQUEST_HR_VIEW']);
+  const indexSettingTimeoff = isAuthorized(permissionList, ['P_TIMEOFF_T_SETTING_VIEW']);
+
   // TIMESHEET
   const indexMyTimesheet = 1; // everyone has time sheet
   const indexReportTimesheet = isAuthorized(permissionList, [
@@ -484,6 +492,12 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     addTeamMemberOnboarding: indexAddTeamMemberOnboarding,
     viewOnboardingOverviewTab: indexOverviewViewOnboarding,
     viewOnboardingNewJoinees: indexNewJoinees,
+
+    // timeoff
+    viewMyTimeoff: indexMyTimeoff,
+    viewManagerTimeoff: indexManagerTimeoff,
+    viewHRTimeoff: indexHRTimeoff,
+    viewSettingTimeoff: indexSettingTimeoff,
 
     // timesheet
     viewMyTimesheet: indexMyTimesheet,
