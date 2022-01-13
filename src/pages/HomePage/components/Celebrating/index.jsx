@@ -93,20 +93,27 @@ const Celebrating = (props) => {
     formatData();
   }, [JSON.stringify(birthdayInWeekList)]);
 
-  const renderEmployeeName = (generalInfo) => {
+  const renderEmployeeName = (data) => {
+    const { generalInfoInfo = {} } = data;
     return (
-      <UserProfilePopover placement="left" data={generalInfo}>
+      <UserProfilePopover
+        placement="left"
+        data={{
+          ...data,
+          ...data.generalInfoInfo,
+        }}
+      >
         <span className={styles.employeeName} onClick={() => {}}>
-          {generalInfo.legalName}
+          {generalInfoInfo.legalName}
         </span>
       </UserProfilePopover>
     );
   };
 
-  const renderBirthdayContent = (generalInfo = {}) => {
-    const { DOB = '' } = generalInfo || {};
+  const renderBirthdayContent = (data = {}) => {
+    const { DOB = '' } = data?.generalInfoInfo || {};
     const isToday = isTheSameDay(moment(), moment(DOB));
-    const employeeName = renderEmployeeName(generalInfo);
+    const employeeName = renderEmployeeName(data);
     const birthday = moment(DOB).locale('en').format('MMM Do');
     if (isToday)
       return (
@@ -128,7 +135,7 @@ const Celebrating = (props) => {
           <img src={card.generalInfoInfo?.avatar || BirthdayImage} alt="" />
         </div>
         <div className={styles.content}>
-          <p className={styles.caption}>{renderBirthdayContent(card.generalInfoInfo)}</p>
+          <p className={styles.caption}>{renderBirthdayContent(card)}</p>
 
           {/* HIDE - NOT AVAILABLE YET  */}
           {/* <div className={styles.actions}>
