@@ -38,6 +38,7 @@ class ItemCompany extends PureComponent {
     const { dispatch } = this.props;
     await dispatch({
       type: 'user/fetchCurrent',
+      refreshCompanyList: false,
     });
 
     if (isOwner) {
