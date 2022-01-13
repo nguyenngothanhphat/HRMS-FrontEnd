@@ -18,6 +18,11 @@ const {
 const routes = [
   {
     path: '/',
+    redirect: '/dashboard',
+    authority: [OWNER],
+  },
+  {
+    path: '/',
     redirect: '/home',
     authority: [EMPLOYEE],
   },
