@@ -59,7 +59,7 @@ const MyInformation = (props) => {
 
   return (
     <div className={styles.MyInformation}>
-      <Tabs activeKey={activeKey} onChange={(key) => setActiveKey(key)} destroyInactiveTabPane>
+      <Tabs activeKey={activeKey} onChange={(key) => setActiveKey(key)}>
         <TabPane tab={getTabName(TAB_NAME.MY_CALENDAR)} key={TAB_NAME.MY_CALENDAR}>
           <MyCalendar />
         </TabPane>

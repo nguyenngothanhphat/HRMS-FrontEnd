@@ -13,11 +13,6 @@ const Announcements = () => {
       id: 1,
       embedLink: 'https://www.linkedin.com/embed/feed/update/urn:li:share:6886637186213576704',
     },
-    {
-      id: 2,
-      embedLink: 'https://www.youtube.com/embed/uPD0QOGTmMI',
-    },
-
     // {
     //   id: 1,
     //   employee: {
@@ -68,6 +63,7 @@ const Announcements = () => {
   return (
     <div className={styles.Announcements}>
       <p className={styles.title}>Announcements</p>
+
       <Row gutter={[24, 24]}>
         {posts.map((x) => (
           <Col span={24}>

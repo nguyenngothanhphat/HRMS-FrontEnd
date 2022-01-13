@@ -12,11 +12,6 @@ const ActivityLog = (props) => {
   // USE EFFECT
   useEffect(() => {
     dispatch({
-      type: 'dashboard/fetchListTicket',
-    });
-  }, []);
-  useEffect(() => {
-    dispatch({
       type: 'dashboard/fetchListMyTicket',
     });
   }, [status]);
@@ -27,6 +22,7 @@ const ActivityLog = (props) => {
           return val.employee_raise === _id;
         })
       : [];
+
   const dataMyTickets = listMyTicketNew.filter((element) => statusTickets.includes(element.status));
 
   // MAIN
