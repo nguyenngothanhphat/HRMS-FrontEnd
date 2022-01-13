@@ -379,25 +379,26 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const indexNewJoinees = isRole(permissionList, [HR, HR_MANAGER]);
 
   // TIMESHEET
-  const indexMyTimesheet = isAuthorized(permissionList, [EMPLOYEE]);
+  const indexMyTimesheet = 1; // everyone has time sheet
   const indexReportTimesheet = isAuthorized(permissionList, [
-    PROJECT_MANAGER,
-    HR,
-    HR_MANAGER,
-    FINANCE,
-    PEOPLE_MANAGER,
+    'P_TIMESHEET_T_REPORT_FINANCE_VIEW',
+    'P_TIMESHEET_T_REPORT_HR_VIEW',
+    'P_TIMESHEET_T_REPORT_PROJECT_MANAGER_VIEW',
+    'P_TIMESHEET_T_REPORT_PEOPLE_MANAGER_VIEW',
   ]);
-  const indexSettingTimesheet = isAuthorized(permissionList, [
-    PROJECT_MANAGER,
-    HR_MANAGER,
-    PEOPLE_MANAGER,
-  ]);
+  const indexSettingTimesheet = isAuthorized(permissionList, ['P_TIMESHEET_T_SETTING_VIEW']);
 
   // CV = COMPLEX VIEW
-  const indexHRReportCVTimesheet = isAuthorized(permissionList, [HR, HR_MANAGER]);
-  const indexFinanceReportCVTimesheet = isAuthorized(permissionList, [FINANCE]);
-  const indexPeopleManagerCVTimesheet = isAuthorized(permissionList, [PEOPLE_MANAGER]);
-  const indexProjectManagerCVTimesheet = isAuthorized(permissionList, [PROJECT_MANAGER]);
+  const indexHRReportCVTimesheet = isAuthorized(permissionList, ['P_TIMESHEET_T_REPORT_HR_VIEW']);
+  const indexFinanceReportCVTimesheet = isAuthorized(permissionList, [
+    'P_TIMESHEET_T_REPORT_FINANCE_VIEW',
+  ]);
+  const indexPeopleManagerCVTimesheet = isAuthorized(permissionList, [
+    'P_TIMESHEET_T_REPORT_PEOPLE_MANAGER_VIEW',
+  ]);
+  const indexProjectManagerCVTimesheet = isAuthorized(permissionList, [
+    'P_TIMESHEET_T_REPORT_PROJECT_MANAGER_VIEW',
+  ]);
 
   // DASHBOARD
   const indexPendingApprovalDashboard = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
