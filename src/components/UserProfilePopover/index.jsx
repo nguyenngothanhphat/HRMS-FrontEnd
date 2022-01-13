@@ -18,11 +18,18 @@ const UserProfilePopover = (props) => {
     workNumber = '',
     location: { state = '', countryName = '' } = {},
     location,
+    locationInfo,
     generalInfo = {},
     managerInfo = {},
+    titleInfo = {},
+    departmentInfo = {},
   } = data;
 
-  const { avatar = '', personalNumber='' } = generalInfo || {};
+  const {
+    headQuarterAddress: { state: state1 = '', country: { name: countryName1 = '' } = {} } = {},
+  } = locationInfo || {};
+
+  const { avatar = '', personalNumber = '' } = generalInfo || {};
 
   const [showPopover, setShowPopover] = useState(false);
 
@@ -39,10 +46,10 @@ const UserProfilePopover = (props) => {
         </div>
         <div className={styles.information}>
           <span className={styles.name}>
-            {legalName} ({userId})
+            {legalName} {userId ? `(${userId})` : ''}
           </span>
-          <span className={styles.position}>{department?.name}</span>
-          <span className={styles.department}>{title?.name}</span>
+          <span className={styles.position}>{department?.name || departmentInfo?.name}</span>
+          <span className={styles.department}>{title?.name || titleInfo?.name}</span>
         </div>
       </div>
     );
@@ -64,11 +71,12 @@ const UserProfilePopover = (props) => {
       },
       {
         label: 'Location',
-        value: location ? `${state}, ${countryName}` : '',
+        value: location || locationInfo ? `${state || state1}, ${countryName || countryName1}` : '',
       },
       {
         label: 'Local Time',
-        value: `${moment().locale('en').format('DD/MM/YYYY')} | ${moment().format('HH:mm a')}` || '',
+        value:
+          `${moment().locale('en').format('DD/MM/YYYY')} | ${moment().format('HH:mm a')}` || '',
       },
     ];
 

@@ -233,7 +233,7 @@ const routes = [
           {
             path: '/home',
             name: 'home',
-            icon: '/assets/images/menuIcons/dashboard-old.svg',
+            icon: '/assets/images/menuIcons/home.svg',
             component: './HomePage',
             authority: [EMPLOYEE],
           },
@@ -351,18 +351,18 @@ const routes = [
             name: 'offboarding',
             icon: '/assets/images/menuIcons/offboarding.svg',
             component: './OffBoarding',
-            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW', HR, HR_MANAGER, MANAGER],
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/:tabName',
             component: './OffBoarding',
-            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW', HR, HR_MANAGER, MANAGER],
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
             hideInMenu: true,
           },
           {
             path: '/offboarding/:tabName/:type',
             component: './OffBoarding',
-            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW', HR, HR_MANAGER, MANAGER],
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
             hideInMenu: true,
           },
           {

@@ -106,7 +106,7 @@ const MyCalendar = (props) => {
         }
       }
     }
-    if (minute > 0.8) {
+    if (minute >= 0.8) {
       if (hour - (Number(currentTime) + 1) === 0) {
         if (minute < 0.9) {
           return <hr className={styles.currentTime15} id='currentTimeId' />;
