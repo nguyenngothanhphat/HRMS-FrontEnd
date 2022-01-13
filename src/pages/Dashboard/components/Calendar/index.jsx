@@ -146,6 +146,7 @@ const Calendar = (props) => {
         tabKey={activeKey}
         data={activeKey === '2' ? filterHoliday : googleCalendarList}
         loading={loadingSyncGoogleCalendar}
+        dateSelected={selectedDate}
       />
     </div>
   );
