@@ -235,12 +235,18 @@ const routes = [
             name: 'home',
             icon: '/assets/images/menuIcons/dashboard-old.svg',
             component: './HomePage',
+            authority: [EMPLOYEE],
           },
           {
             path: '/home/settings',
             name: 'homeSettings',
             hideInMenu: true,
             component: './HomePage/components/Settings',
+          },
+          {
+            path: '/home/post-management/add',
+            name: 'homeSettingAddPost',
+            hideInMenu: true,
           },
           {
             path: '/home/settings/:reId',
@@ -705,12 +711,12 @@ const routes = [
             name: 'timeSheet',
             icon: '/assets/images/menuIcons/timeSheet.svg',
             component: './TimeSheet',
-            authority: [HR_MANAGER, HR, EMPLOYEE, MANAGER], // TEMPORARY VALUES
+            authority: [EMPLOYEE],
           },
           {
             path: '/time-sheet/:tabName',
             component: './TimeSheet',
-            authority: [HR_MANAGER, HR, EMPLOYEE, MANAGER], // TEMPORARY VALUES
+            authority: [EMPLOYEE],
             hideInMenu: true,
           },
 
@@ -720,12 +726,12 @@ const routes = [
             name: 'ticketManagement',
             icon: '/assets/images/menuIcons/ticketManagement.svg',
             component: './TicketManagement',
-            authority: [HR_MANAGER, HR, MANAGER], // TEMPORARY VALUES
+            authority: [HR_MANAGER, HR, MANAGER, PROJECT_MANAGER], // TEMPORARY VALUES
           },
           {
             path: '/ticket-management/:tabName',
             component: './TicketManagement',
-            authority: [HR_MANAGER, HR, MANAGER], // TEMPORARY VALUES
+            authority: [HR_MANAGER, HR, MANAGER, PROJECT_MANAGER], // TEMPORARY VALUES
             hideInMenu: true,
           },
 

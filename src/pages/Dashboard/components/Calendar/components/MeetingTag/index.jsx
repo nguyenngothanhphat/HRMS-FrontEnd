@@ -12,7 +12,7 @@ import styles from './index.less';
 const timeFormat = 'HH:mm a';
 const MeetingTag = (props) => {
   const myRef = useRef(null);
-  const { event: eventProp, span: spanProp, hourSpan: hourSpanProp = 1 } = props;
+  const { event: eventProp, span: spanProp, hourSpan: hourSpanProp = 1, dateSelected = '' } = props;
   const [showPopover, setShowPopover] = useState(false);
 
   // FUNCTIONS
@@ -80,19 +80,16 @@ const MeetingTag = (props) => {
       hangoutLink = '',
       // conferenceData = {}
     } = event || {};
-
-    // Monday, September 11 - 10:00am - 10:30am
+    const selectedDate = dateSelected ? moment(dateSelected).format('DD') : moment().format('DD');
     let eventDate = '';
-    if (moment.tz.guess() === 'America/New_York' && Number(moment(startTime).format('HH')) > 12) {
-      eventDate = moment(startTime).locale('en').add(1, 'days').format('dddd, MMMM DD');
-    } else if (
-      moment.tz.guess() !== 'Asia/Bangkok' &&
-      Number(moment(startTime).format('HH')) > 12
-    ) {
+    if (Number(moment(startTime).locale('en').format('DD')) === Number(selectedDate)) {
+      eventDate = moment(startTime).locale('en').format('dddd, MMMM DD');
+    } else if (Number(moment(startTime).locale('en').format('DD')) < Number(selectedDate)) {
       eventDate = moment(startTime).locale('en').add(1, 'days').format('dddd, MMMM DD');
     } else {
-      eventDate = moment(startTime).locale('en').format('dddd, MMMM DD');
+      eventDate = moment(startTime).locale('en').subtract(1, 'days').format('dddd, MMMM DD');
     }
+    // const eventDate = moment(startTime).tz('Asia/Ho_Chi_Minh').locale('en').format('dddd, MMMM DD');
     const eventStartTime = moment(startTime).format('HH:mm a');
     const eventEndTime = moment(endTime).format('HH:mm a');
     const eventFinalDate = `${eventDate} - ${eventStartTime} - ${eventEndTime}`;
