@@ -14,7 +14,6 @@ const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DRAFTS } = T
     loading,
     user,
     timeOff: {
-      currentUserRole = '',
       filter = {},
       timeOffTypesByCountry,
       paging,
@@ -27,7 +26,7 @@ const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DRAFTS } = T
     user,
     filter,
     timeOffTypesByCountry,
-    currentUserRole,
+
     compoffRequests,
     leaveRequests,
     loading1: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],

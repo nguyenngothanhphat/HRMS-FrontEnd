@@ -1,19 +1,18 @@
 import { history } from 'umi';
-import { queryCurrent, query as queryUsers, fetchCompanyOfUser } from '@/services/user';
+import { fetchCompanyOfUser, query as queryUsers, queryCurrent } from '@/services/user';
 import {
   getCurrentCompany,
-  setCurrentLocation,
   getCurrentLocation,
   getCurrentTenant,
+  getIsSigninGoogle,
   setAuthority,
+  setCurrentCompany,
+  setCurrentLocation,
+  setFirstChangePassword,
   setIsSwitchingRole,
   setTenantId,
-  setCurrentCompany,
-  getIsSigninGoogle,
-  setFirstChangePassword,
 } from '@/utils/authority';
-
-import { checkPermissions, getCurrentUserRoles } from '@/utils/permissions';
+import { checkPermissions } from '@/utils/permissions';
 
 const UserModel = {
   namespace: 'user',
@@ -48,14 +47,7 @@ const UserModel = {
 
         let formatArrRoles = [];
         let switchRoleAbility = false;
-        const {
-          signInRole = [],
-          roles = [],
-          candidate = {},
-          isFirstLogin = false,
-          employee = {},
-          // employee: { title: { roles = [] } = {} || {} } = {} || {},
-        } = data;
+        const { signInRole = [], roles = [], candidate = {}, isFirstLogin = false } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
         const candidateLinkMode = localStorage.getItem('candidate-link-mode') === 'true';
@@ -165,13 +157,9 @@ const UserModel = {
             }
           }
 
-          const employeeRoles = roles.map((role) => role.toLowerCase()); // from title
           // DONE
-          const { title: { name: titleName = '' } = {} || {} } = employee || {};
-          const currentUserRoles = [...getCurrentUserRoles(employeeRoles, titleName)];
-
-          formatArrRoles = [...formatArrRoles, ...currentUserRoles].filter((x) => x);
-
+          const currentUserRoles = roles.map((role) => role.toLowerCase());
+          formatArrRoles = [...new Set([...formatArrRoles, ...currentUserRoles])];
           setAuthority(formatArrRoles);
           localStorage.setItem('switchRoleAbility', switchRoleAbility);
 
@@ -179,7 +167,6 @@ const UserModel = {
           // set work locations of admin
           if (checkIsAdmin) {
             // for admin, auto set location
-            // setCurrentLocation(response?.data?.manageLocation[0]?._id);
             const currentLocation = getCurrentLocation();
             if (!currentLocation || currentLocation === 'undefined') {
               setCurrentLocation(response?.data?.manageLocation[0]?._id);
