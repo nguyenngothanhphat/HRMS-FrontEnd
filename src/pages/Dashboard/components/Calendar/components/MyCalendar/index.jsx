@@ -118,9 +118,9 @@ const MyCalendar = (props) => {
     }
     return '';
   };
-  setInterval(() => {
-    renderCurrentDate()
-  }, 1000);
+  // setInterval(() => {
+  //   renderCurrentDate()
+  // }, 1000);
 
   // RENDER UI
   const renderRow = (hour, events = []) => {
