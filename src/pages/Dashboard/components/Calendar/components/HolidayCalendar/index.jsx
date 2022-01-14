@@ -36,7 +36,7 @@ const HolidayCalendar = (props) => {
         (holiday) => holiday.date.dateTime.month === (index + 1).toString(),
       );
       const getDaysHaveHoliday = [...new Set(monthHolidays.map((x) => x.date.iso))];
-
+      getDaysHaveHoliday.sort((a, b) =>moment(a).format('YYYYMMDD') - moment(b).format('YYYYMMDD'));
       return {
         month,
         list: getDaysHaveHoliday.map((y) => {

@@ -104,7 +104,7 @@ class HollidayCalendar extends Component {
     super(props);
     this.state = {
       data: [],
-      yearSelect: 2021,
+      yearSelect: moment().format('YYYY'),
       list: {},
       idCheck: [],
       visible: false,
@@ -139,6 +139,34 @@ class HollidayCalendar extends Component {
         company: getCurrentCompany(),
       },
     });
+  };
+
+  componentDidUpdate = (prevProps, prevState) => {
+    const { yearSelect } = this.state;
+    const year = yearSelect.toString();
+    const { dispatch, countryHoliday } = this.props;
+    if (yearSelect !== prevState.yearSelect) {
+      dispatch({
+        type: 'timeOff/fetchHolidaysByCountry',
+        payload: {
+          country: countryHoliday,
+        },
+      }).then((response) => {
+        const { statusCode, data } = response;
+        this.setState({
+          list: data,
+        });
+        // const { holiday = [] } = data;
+        if (statusCode === 200) {
+          const newList = data.filter((item) => {
+            const { date: { dateTime: { year: yearCurrent = '' } = {} } = {} } = item;
+            // const yearCurrent = moment(date).format('YYYY');
+            return yearCurrent === year;
+          });
+          this.fomatDate(newList);
+        }
+      });
+    }
   };
 
   componentWillUnmount = () => {
@@ -239,8 +267,8 @@ class HollidayCalendar extends Component {
       // const { holiday = [] } = data;
       if (statusCode === 200) {
         const newList = data.filter((item) => {
-          const { date } = item;
-          const yearCurrent = moment(date).format('YYYY');
+          const { date: { dateTime: { year: yearCurrent = '' } = {} } = {} } = item;
+          // const yearCurrent = moment(date).format('YYYY');
           return yearCurrent === year;
         });
         this.fomatDate(newList);
@@ -328,6 +356,7 @@ class HollidayCalendar extends Component {
     // get id of each children
     result.forEach((item) => {
       const { children = [] } = item;
+      children.sort((a, b) => moment(a.date.iso).format('YYYYMMDD') - moment(b.date.iso).format('YYYYMMDD'));
       const arrID = children.map((subChild) => subChild._id);
       listID.push(...arrID);
     });

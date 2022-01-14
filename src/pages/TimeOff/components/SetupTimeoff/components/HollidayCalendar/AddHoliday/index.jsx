@@ -33,12 +33,13 @@ class AddHoliday extends Component {
   onFinish = (value) => {
     const { addHoliday = () => {} } = this.props;
     const { date, name } = value;
-    const datetime = moment(date).format('YYYY-MM-DD');
+    const datetime = new Date(date).toISOString();
+    const newDateTime = moment(datetime).format('YYYY-MM-DD');
     const typeHoliday = [];
     typeHoliday.push(value.type);
     const payload = {
       // newHoliday: {
-      date: datetime,
+      date: newDateTime,
       type: typeHoliday,
       name,
       // company,

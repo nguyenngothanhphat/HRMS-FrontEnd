@@ -149,7 +149,7 @@ export default class HolidayCalendar extends PureComponent {
         const {
           date: { iso = '' },
         } = value; // parse
-        const newDate = new Date(iso);
+        const newDate = new Date(iso).toISOString();
         const eventDay = moment(newDate).format('D');
         const eventMonth = moment(newDate).format('M');
         const eventYear = moment(newDate).format('Y');
@@ -197,7 +197,7 @@ export default class HolidayCalendar extends PureComponent {
 
   checkIfUpcomingOrLeaveTaken = (value) => {
     const { date: { iso } = {} } = value; // parse
-    const convertDate = new Date(iso);
+    const convertDate = new Date(iso).toISOString();
     const eventFromDay = moment(convertDate).format('D');
     const eventFromMonth = moment(convertDate).format('M');
     const eventFromYear = moment(convertDate).format('Y');

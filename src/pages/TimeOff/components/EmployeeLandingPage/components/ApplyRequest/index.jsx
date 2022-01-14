@@ -27,7 +27,9 @@ export default class ApplyRequest extends PureComponent {
             </p>
           </div>
         </div>
-        <Button onClick={onClick}>{buttonText}</Button>
+        <div className={styles.button}>
+          <Button onClick={onClick}>{buttonText}</Button>
+        </div>
       </div>
     );
   }
