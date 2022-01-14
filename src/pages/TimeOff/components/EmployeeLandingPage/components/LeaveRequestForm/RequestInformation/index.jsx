@@ -145,6 +145,8 @@ class RequestInformation extends PureComponent {
         status = '',
       } = viewingLeaveRequest;
 
+      console.log('🚀 ~ componentDidMount= ~ fromDate', fromDate);
+
       if (status === DRAFTS) {
         this.setState({
           isEditingDrafts: true,
@@ -579,20 +581,13 @@ class RequestInformation extends PureComponent {
     const typeAB = [A, B];
     const typeCD = [C, D];
 
-    // console.log('durationFrom', durationFrom);
-    // console.log('selectedType', selectedType);
-    // console.log('prevType', prevType);
     if (
       !typeAB.includes(prevType) ||
       (typeAB.includes(prevType) && !typeAB.includes(selectedType))
     ) {
       if (durationFrom && typeCD.includes(selectedType)) {
-        const {
-          timeOff: {
-            // timeOffTypesByCountry = [],
-            totalLeaveBalance: { specialLeaves = {} || {} } = {} || {},
-          } = {},
-        } = this.props;
+        const { timeOff: { totalLeaveBalance: { specialLeaves = {} || {} } = {} || {} } = {} } =
+          this.props;
 
         const { timeOffTypes = [] } = specialLeaves;
 
@@ -659,12 +654,16 @@ class RequestInformation extends PureComponent {
       });
     }
 
-    const { selectedTypeName, selectedType } = this.state;
+    const { selectedTypeName, selectedType, durationTo } = this.state;
     if (selectedType === C || selectedType === D)
       this.autoValueForToDate(selectedType, selectedTypeName, value);
 
     if (selectedType === A && selectedTypeName === 'Casual Leave')
       this.setSecondNotice(`${selectedTypeName}s gets credited each month.`);
+
+    if (durationTo) {
+      this.toDateOnChange(durationTo);
+    }
   };
 
   toDateOnChange = (value) => {
@@ -683,7 +682,11 @@ class RequestInformation extends PureComponent {
 
     // initial value for leave dates list
     const dateLists = this.getDateLists(durationFrom, value, selectedType);
-    const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
+    const initialValuesForLeaveTimesList = dateLists.map((x) => {
+      if (this.checkIfHalfDayAvailable(x) === 'MORNING') return 'AFTERNOON';
+      if (this.checkIfHalfDayAvailable(x) === 'AFTERNOON') return 'MORNING';
+      return 'WHOLE-DAY';
+    });
 
     if (selectedType === D) {
       this.setSecondNotice(
@@ -814,48 +817,69 @@ class RequestInformation extends PureComponent {
 
   // GET LIST OF DAYS FROM DAY A TO DAY B
   getDateLists = (startDate, endDate, selectedType) => {
-    const start = moment(startDate);
-    const end = moment(endDate);
-
-    const now = start;
     const dates = [];
-    const includeWeekend = selectedType && selectedType !== A && selectedType !== B;
-    if (includeWeekend) {
-      while (now.isBefore(end) || now.isSame(end)) {
-        dates.push(now.format('YYYY-MM-DD'));
-        now.add(1, 'days');
-      }
-    } else {
-      while (now.isBefore(end) || now.isSame(end)) {
-        if (moment(now).weekday() !== 6 && moment(now).weekday() !== 0) {
-          dates.push(now.format('YYYY-MM-DD'));
+    if (startDate && endDate) {
+      const now = moment(startDate).clone();
+
+      const includeWeekend = selectedType && selectedType !== A && selectedType !== B;
+      if (includeWeekend) {
+        while (now.isSameOrBefore(moment(endDate), 'day')) {
+          if (this.checkIfWholeDayAvailable(now)) {
+            dates.push(now.format('YYYY-MM-DD'));
+            now.add(1, 'days');
+          }
         }
-        now.add(1, 'days');
+      } else {
+        while (now.isSameOrBefore(moment(endDate), 'day')) {
+          if (moment(now).weekday() !== 6 && moment(now).weekday() !== 0) {
+            if (this.checkIfWholeDayAvailable(now)) {
+              dates.push(now.format('YYYY-MM-DD'));
+            }
+          }
+          now.add(1, 'days');
+        }
       }
     }
     return dates;
   };
 
   // DISABLE DATE OF DATE PICKER
-  disabledFromDate = (current) => {
-    const { durationTo } = this.state;
-    return (
-      (current && current > moment(durationTo)) ||
-      moment(current).day() === 0 ||
-      moment(current).day() === 6
+  checkIfWholeDayAvailable = (date) => {
+    const { invalidDates = [] } = this.props;
+    const find = invalidDates.some(
+      (x) =>
+        moment(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
+        x.timeOfDay === 'WHOLE-DAY',
     );
+    return !find;
   };
 
-  disabledDate = (current) => {
-    return current && current > moment();
+  checkIfHalfDayAvailable = (date) => {
+    const { invalidDates = [] } = this.props;
+    const find = invalidDates.find(
+      (x) => moment(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD'),
+    );
+    return find?.timeOfDay || '';
+  };
+
+  disabledFromDate = (current) => {
+    const { durationTo } = this.state;
+
+    return (
+      (current && moment(current).isAfter(moment(durationTo), 'day')) ||
+      moment(current).day() === 0 ||
+      moment(current).day() === 6 ||
+      !this.checkIfWholeDayAvailable(current)
+    );
   };
 
   disabledToDate = (current) => {
     const { durationFrom } = this.state;
     return (
-      (current && current < moment(durationFrom)) ||
+      (current && moment(current).isBefore(moment(durationFrom), 'day')) ||
       moment(current).day() === 0 ||
-      moment(current).day() === 6
+      moment(current).day() === 6 ||
+      !this.checkIfWholeDayAvailable(current)
     );
   };
 
@@ -1168,6 +1192,7 @@ class RequestInformation extends PureComponent {
                                 listLength={dateLists.length}
                                 onChange={this.onDataChange}
                                 needValidate={needValidate}
+                                checkIfHalfDayAvailable={this.checkIfHalfDayAvailable}
                               />
                             );
                           })

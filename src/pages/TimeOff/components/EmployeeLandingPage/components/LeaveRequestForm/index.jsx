@@ -4,6 +4,7 @@
 import React, { PureComponent } from 'react';
 import { Affix, Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
+import moment from 'moment';
 import { PageContainer } from '@/layouts/layout/src';
 import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
 import RequestInformation from './RequestInformation';
@@ -23,6 +24,7 @@ class LeaveRequestForm extends PureComponent {
     super(props);
     this.state = {
       action: '',
+      invalidDates: [],
     };
   }
 
@@ -48,7 +50,42 @@ class LeaveRequestForm extends PureComponent {
       });
     }
 
+    dispatch({
+      type: 'timeOff/fetchLeaveRequestOfEmployee',
+    }).then((res) => {
+      if (res.statusCode === 200) {
+        let invalidDates = [];
+        const { items: leaveRequests = [] } = res?.data;
+        leaveRequests.forEach((x) => {
+          const temp = x.leaveDates.map((y) => {
+            return {
+              date: y.date,
+              timeOfDay: y.timeOfDay,
+            };
+          });
+          invalidDates = [...invalidDates, ...temp];
+        });
+        this.setState({
+          invalidDates,
+        });
+      }
+    });
+
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
+  };
+
+  getDateLists = (startDate1, endDate1) => {
+    if (startDate1 && endDate1) {
+      const now = startDate1.clone();
+      const dates = [];
+
+      while (now.isSameOrBefore(endDate1)) {
+        dates.push(now.format('YYYY-MM-DD'));
+        now.add(1, 'days');
+      }
+      return dates;
+    }
+    return [];
   };
 
   fetchTimeOffTypes = () => {
@@ -103,7 +140,7 @@ class LeaveRequestForm extends PureComponent {
   };
 
   render() {
-    const { action } = this.state;
+    const { action, invalidDates } = this.state;
     const {
       timeOff: {
         viewingLeaveRequest = {},
@@ -171,6 +208,7 @@ class LeaveRequestForm extends PureComponent {
                       action={action}
                       status={status}
                       ticketID={ticketID}
+                      invalidDates={invalidDates}
                       viewingLeaveRequest={viewingLeaveRequest}
                     />
                   </Col>
