@@ -145,8 +145,6 @@ class RequestInformation extends PureComponent {
         status = '',
       } = viewingLeaveRequest;
 
-      console.log('🚀 ~ componentDidMount= ~ fromDate', fromDate);
-
       if (status === DRAFTS) {
         this.setState({
           isEditingDrafts: true,
@@ -184,7 +182,6 @@ class RequestInformation extends PureComponent {
         if (!check) resultDates.push(null);
       });
       const leaveTimeLists = resultDates.map((date) => (date ? date.timeOfDay : null));
-      // }
 
       // set values from server to fields
       this.formRef.current.setFieldsValue({
@@ -683,8 +680,8 @@ class RequestInformation extends PureComponent {
     // initial value for leave dates list
     const dateLists = this.getDateLists(durationFrom, value, selectedType);
     const initialValuesForLeaveTimesList = dateLists.map((x) => {
-      if (this.checkIfHalfDayAvailable(x) === 'MORNING') return 'AFTERNOON';
-      if (this.checkIfHalfDayAvailable(x) === 'AFTERNOON') return 'MORNING';
+      if (this.findInvalidHalfOfDay(x) === 'MORNING') return 'AFTERNOON';
+      if (this.findInvalidHalfOfDay(x) === 'AFTERNOON') return 'MORNING';
       return 'WHOLE-DAY';
     });
 
@@ -824,7 +821,7 @@ class RequestInformation extends PureComponent {
       const includeWeekend = selectedType && selectedType !== A && selectedType !== B;
       if (includeWeekend) {
         while (now.isSameOrBefore(moment(endDate), 'day')) {
-          if (this.checkIfWholeDayAvailable(now)) {
+          if (this.checkIfWholeDayAvailable(now) || this.checkIfHalfDayAvailable(now)) {
             dates.push(now.format('YYYY-MM-DD'));
             now.add(1, 'days');
           }
@@ -832,7 +829,7 @@ class RequestInformation extends PureComponent {
       } else {
         while (now.isSameOrBefore(moment(endDate), 'day')) {
           if (moment(now).weekday() !== 6 && moment(now).weekday() !== 0) {
-            if (this.checkIfWholeDayAvailable(now)) {
+            if (this.checkIfWholeDayAvailable(now) || this.checkIfHalfDayAvailable(now)) {
               dates.push(now.format('YYYY-MM-DD'));
             }
           }
@@ -856,6 +853,16 @@ class RequestInformation extends PureComponent {
 
   checkIfHalfDayAvailable = (date) => {
     const { invalidDates = [] } = this.props;
+    const find = invalidDates.some(
+      (x) =>
+        moment(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
+        x.timeOfDay !== 'WHOLE-DAY',
+    );
+    return !find;
+  };
+
+  findInvalidHalfOfDay = (date) => {
+    const { invalidDates = [] } = this.props;
     const find = invalidDates.find(
       (x) => moment(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD'),
     );
@@ -869,7 +876,8 @@ class RequestInformation extends PureComponent {
       (current && moment(current).isAfter(moment(durationTo), 'day')) ||
       moment(current).day() === 0 ||
       moment(current).day() === 6 ||
-      !this.checkIfWholeDayAvailable(current)
+      !this.checkIfWholeDayAvailable(current) ||
+      !this.checkIfHalfDayAvailable(current)
     );
   };
 
@@ -879,7 +887,8 @@ class RequestInformation extends PureComponent {
       (current && moment(current).isBefore(moment(durationFrom), 'day')) ||
       moment(current).day() === 0 ||
       moment(current).day() === 6 ||
-      !this.checkIfWholeDayAvailable(current)
+      !this.checkIfWholeDayAvailable(current) ||
+      !this.checkIfHalfDayAvailable(current)
     );
   };
 
@@ -985,6 +994,7 @@ class RequestInformation extends PureComponent {
       timeOff: {
         // timeOffTypes = [],
         totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {},
+        viewingLeaveRequest: { leaveDates = [] } = {},
       } = {},
       loadingAddLeaveRequest = false,
       loadingUpdatingLeaveRequest = false,
@@ -1000,7 +1010,15 @@ class RequestInformation extends PureComponent {
 
     // DYNAMIC ROW OF DATE LISTS
     const dateLists = this.getDateLists(durationFrom, durationTo, selectedType);
-    const showAllDateList = dateLists.length <= MAX_NO_OF_DAYS_TO_SHOW;
+
+    const calculateNumberOfDayProp =
+      action === EDIT_LEAVE_REQUEST ? this.calculateNumberOfLeaveDay(leaveDates) : 0;
+    const dateListsFromProps = calculateNumberOfDayProp === 0 ? null : calculateNumberOfDayProp;
+
+    let showAllDateList = false;
+    if (dateListsFromProps > 0 && dateListsFromProps <= MAX_NO_OF_DAYS_TO_SHOW) {
+      showAllDateList = true;
+    } else if (dateLists.length <= MAX_NO_OF_DAYS_TO_SHOW) showAllDateList = true;
 
     // if save as draft, no need to validate forms
     const needValidate = buttonState === 2;
@@ -1192,7 +1210,7 @@ class RequestInformation extends PureComponent {
                                 listLength={dateLists.length}
                                 onChange={this.onDataChange}
                                 needValidate={needValidate}
-                                checkIfHalfDayAvailable={this.checkIfHalfDayAvailable}
+                                findInvalidHalfOfDay={this.findInvalidHalfOfDay}
                               />
                             );
                           })
@@ -1200,7 +1218,7 @@ class RequestInformation extends PureComponent {
                           <LeaveTimeRow2
                             fromDate={durationFrom}
                             toDate={durationTo}
-                            noOfDays={dateLists.length}
+                            noOfDays={dateListsFromProps || dateLists.length}
                           />
                         )}
                       </Col>
@@ -1246,7 +1264,7 @@ class RequestInformation extends PureComponent {
                         <LeaveTimeRow2
                           fromDate={durationFrom}
                           toDate={durationTo}
-                          noOfDays={dateLists.length}
+                          noOfDays={dateListsFromProps || dateLists.length}
                         />
                       </Col>
                       <Col span={6} />

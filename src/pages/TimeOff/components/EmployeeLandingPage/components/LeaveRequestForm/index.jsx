@@ -1,16 +1,15 @@
 // this component is used for creating a new timeoff request
 // and for editing (updating) a exist one
 
+import { Affix, Col, Row, Spin } from 'antd';
 import React, { PureComponent } from 'react';
-import { Affix, Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
-import moment from 'moment';
 import { PageContainer } from '@/layouts/layout/src';
-import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
+import { TIMEOFF_LINK_ACTION, TIMEOFF_STATUS } from '@/utils/timeOff';
+import styles from './index.less';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
-import styles from './index.less';
-import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 
 const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DRAFTS } = TIMEOFF_STATUS;
 const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST } = TIMEOFF_LINK_ACTION;

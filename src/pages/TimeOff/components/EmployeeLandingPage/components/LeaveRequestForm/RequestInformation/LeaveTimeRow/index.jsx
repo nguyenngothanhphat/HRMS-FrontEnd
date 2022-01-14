@@ -7,20 +7,15 @@ const { Option } = Select;
 
 class LeaveTimeRow extends PureComponent {
   render() {
-    const {
-      eachDate = '',
-      index = 0,
-      needValidate,
-      checkIfHalfDayAvailable = () => {},
-    } = this.props;
+    const { eachDate = '', index = 0, needValidate, findInvalidHalfOfDay = () => {} } = this.props;
 
     let disableMorning = false;
     let disableAfternoon = false;
 
-    if (checkIfHalfDayAvailable(eachDate) === 'MORNING') {
+    if (findInvalidHalfOfDay(eachDate) === 'MORNING') {
       disableMorning = true;
     }
-    if (checkIfHalfDayAvailable(eachDate) === 'AFTERNOON') {
+    if (findInvalidHalfOfDay(eachDate) === 'AFTERNOON') {
       disableAfternoon = true;
     }
 
