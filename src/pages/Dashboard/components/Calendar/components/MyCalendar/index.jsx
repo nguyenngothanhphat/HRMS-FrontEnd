@@ -17,7 +17,7 @@ const MyCalendar = (props) => {
   }
 
   useEffect(() => {
-    setInterval(() => setDateToFormat(updateTime, 1000));
+    setInterval(() => setDateToFormat(updateTime, 2000));
   },[]);
 
   // USE EFFECT
@@ -31,7 +31,7 @@ const MyCalendar = (props) => {
     }
   }, []);
   const scrollCurrentTime = () => {
-    return document.getElementById('currentTimeId')?.scrollIntoView({
+    return document.getElementById('checkCurrentTime')?.scrollIntoView({
       behavior: "smooth",
       block: "center",
       inline: "center"
@@ -121,6 +121,12 @@ const MyCalendar = (props) => {
   // setInterval(() => {
   //   renderCurrentDate()
   // }, 1000);
+  const checkCurrentTime = (hour) => {
+    if(Number(moment().format('HH')) === hour){
+      return <div id='checkCurrentTime' />
+    }
+    return ''
+  }
 
   // RENDER UI
   const renderRow = (hour, events = []) => {
@@ -146,6 +152,7 @@ const MyCalendar = (props) => {
         <Col xs={20} xl={21} className={styles.eachRow__right}>
           <Row gutter={[16, 16]}>
             <span style={{width: '100%'}}>
+              {checkCurrentTime(hour)}
               {renderCurrentDate(hour, dateToFormat, timeEvent)}
               {events.map((event) => {
                 return (
