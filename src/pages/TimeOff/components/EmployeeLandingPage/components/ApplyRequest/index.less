@@ -2,28 +2,28 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  padding: 24px;
+  background-color: white;
   border: 1px solid #ebeff2;
   border-radius: 5px;
-  width: 100%;
-  background-color: white;
-  padding: 24px;
-  height: 100%;
   .abovePart {
     display: flex;
     flex-direction: column;
     div {
       margin-top: 5px;
-      margin-bottom: 12px;
+      margin-bottom: 40px;
       p {
-        line-height: 20px;
         color: #707177;
+        line-height: 20px;
       }
     }
   }
   .describe {
-    font-size: 13px;
     color: #707177;
     font-weight: 400;
+    font-size: 13px;
     font-style: normal;
   }
   .describe1 {
@@ -31,23 +31,49 @@
     max-width: 65%;
   }
   .title {
-    font-size: 18px;
-    font-weight: 700;
     color: #161c29;
+    font-weight: 700;
+    font-size: 18px;
   }
-  :global {
-    .ant-btn {
-      max-width: 200px;
-      background-color: #ffa100;
-      border-radius: 25px;
-      border: none;
-      height: 40px;
-      span {
-        color: white;
-        font-weight: 700;
-      }
-      &:hover {
-        background-color: #ffa100cc; // hex with alpha 0.8
+  .button {
+    :global {
+      .ant-btn {
+        height: 40px;
+        padding-right: 28px;
+        padding-left: 28px;
+        background-color: #ffa100;
+        border: none;
+        border-radius: 25px;
+        transition: 0.5s;
+        span {
+          position: relative;
+          display: inline-block;
+          color: #fff;
+          font-weight: 700;
+          cursor: pointer;
+          transition: 0.5s;
+        }
+        &:hover {
+          background-color: #ffa100cc; // hex with alpha 0.8
+        }
+        span:after {
+          position: absolute;
+          top: -9px;
+          right: -20px;
+          font-size: 24px;
+          opacity: 0;
+          transition: 0.5s;
+          content: '\00bb';
+        }
+
+        &:hover span {
+          padding-right: 27px;
+        }
+
+        &:hover span:after {
+          right: 0;
+          opacity: 1;
+        }
       }
     }
   }
@@ -55,13 +81,20 @@
 .ApplyRequest {
   &__hasBackground {
     .commonCss();
-    background-repeat: no-repeat;
-    background-size: 230px auto;
-    background-position: 100% 100%;
 
     background-image: url(../../../../../../../public/assets/images/timeOffManNew.svg);
+    background-repeat: no-repeat;
+    background-position: 100% 100%;
+    background-size: 230px auto;
+
+    transition: 0.5s;
     p {
       margin-right: 50px;
+    }
+    &:hover {
+      background-position: 100% 20px;
+      background-size: 260px auto;
+      transition: 0.5s;
     }
   }
   &__noBackground {
