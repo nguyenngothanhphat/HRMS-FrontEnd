@@ -1,21 +1,17 @@
+import { Button, Checkbox, Divider, Dropdown, Input, Menu, Tag, Tooltip } from 'antd';
 import React, { Component } from 'react';
-import { Divider, Button, Spin, Input, Tooltip, Menu, Dropdown, Checkbox, Tag } from 'antd';
-
 import { connect, history } from 'umi';
-import moment from 'moment';
 import avtDefault from '@/assets/avtDefault.jpg';
 import bioSvg from '@/assets/bioActions.svg';
-import ModalUpload from '@/components/ModalUpload';
 import CustomModal from '@/components/CustomModal';
 import s from '@/components/LayoutEmployeeProfile/index.less';
+import ModalUpload from '@/components/ModalUpload';
 import { getCurrentTenant } from '@/utils/authority';
+import ROLES from '@/utils/roles';
 
 const { TextArea } = Input;
 const { SubMenu } = Menu;
-
-const HR_MANAGER = 'HR-MANAGER';
-const HR_EMPLOYEE = 'HR';
-const MANAGER = 'MANAGER';
+const { HR, HR_MANAGER, MANAGER } = ROLES;
 
 @connect(
   ({
@@ -274,7 +270,7 @@ class ViewInformation extends Component {
   redirectOffboarding = () => {
     const { roles = [] } = this.props;
     const checkRoleHrAndManager =
-      roles.includes(HR_MANAGER) || roles.includes(HR_EMPLOYEE) || roles.includes(MANAGER);
+      roles.includes(HR_MANAGER) || roles.includes(HR) || roles.includes(MANAGER);
     if (checkRoleHrAndManager) {
       localStorage.setItem('initViewOffboarding', true);
       history.push({
@@ -313,16 +309,20 @@ class ViewInformation extends Component {
             Edit Bio
           </Menu.Item>
         )}
-        {subDropdown}
-        <Menu.Item key="0" className={s.menuItem}>
-          Put on Leave (LWP)
-        </Menu.Item>
-        <Menu.Item key="1" className={s.menuItem}>
-          Raise Termination
-        </Menu.Item>
-        <Menu.Item key="2" className={s.menuItem}>
-          Request Details
-        </Menu.Item>
+        {profileOwner && subDropdown}
+        {permissions.viewAdvancedActions && (
+          <>
+            <Menu.Item key="0" className={s.menuItem}>
+              Put on Leave (LWP)
+            </Menu.Item>
+            <Menu.Item key="1" className={s.menuItem}>
+              Raise Termination
+            </Menu.Item>
+            <Menu.Item key="2" className={s.menuItem}>
+              Request Details
+            </Menu.Item>
+          </>
+        )}
       </Menu>
     );
 

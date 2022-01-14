@@ -361,6 +361,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
 
   // Edit show avatar employee
   const indexEditShowAvatar = isAdmin ? 1 : isAuthorized(permissionList, [HR, HR_MANAGER]);
+  const indexAdvancedActions = isAdmin ? 1 : isAuthorized(permissionList, [HR, HR_MANAGER]);
 
   // ONBOARDING
   const indexOnboardingSettings = isAuthorized(permissionList, [
@@ -486,6 +487,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewAvatarEmployee: indexViewAvatar,
     editShowAvatarEmployee: indexEditShowAvatar,
     viewOtherInformation: indexViewOtherInformation,
+    viewAdvancedActions: indexAdvancedActions,
 
     // onboarding
     viewOnboardingSettingTab: indexOnboardingSettings,
