@@ -304,13 +304,13 @@ class ViewInformation extends Component {
         onClick={this.handleClickMenu}
         disabled={loading || loadingFetchEmployee}
       >
-        {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
+        {(profileOwner) && (
           <Menu.Item key="editBio" className={s.menuItem} onClick={this.handleEditBio}>
             Edit Bio
           </Menu.Item>
         )}
         {profileOwner && subDropdown}
-        {permissions.viewAdvancedActions && (
+        {permissions.viewAdvancedActions !== -1 && (
           <>
             <Menu.Item key="0" className={s.menuItem}>
               Put on Leave (LWP)
@@ -555,7 +555,9 @@ class ViewInformation extends Component {
               </a>
             </Tooltip>
           </div>
-          <div className={s.viewBtnAction}>{this.btnAction(permissions, profileOwner)}</div>
+          {(profileOwner || permissions.viewAdvancedActions !== -1) && (
+            <div className={s.viewBtnAction}>{this.btnAction(permissions, profileOwner)}</div>
+          )}
         </div>
         <ModalUpload
           titleModal="Profile Picture Update"
