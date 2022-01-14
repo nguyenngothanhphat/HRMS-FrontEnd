@@ -1,5 +1,5 @@
 import { Col, Row, Spin } from 'antd';
-import React, { useEffect, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
 import MeetingTag from '../MeetingTag';
@@ -16,9 +16,16 @@ const MyCalendar = (props) => {
     return moment().format('HH:mm')
   }
 
+  const scrollCurrentTime = () => {
+    return document.getElementById('checkCurrentTime')?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+      inline: "center"
+    });
+  }
   useEffect(() => {
-    setInterval(() => setDateToFormat(updateTime, 2000));
-  },[]);
+    scrollCurrentTime();
+  })
 
   // USE EFFECT
   useEffect(() => {
@@ -29,17 +36,9 @@ const MyCalendar = (props) => {
       }
       setHourList(hourListTemp);
     }
+    setInterval(() => setDateToFormat(updateTime, 1000));
   }, []);
-  const scrollCurrentTime = () => {
-    return document.getElementById('checkCurrentTime')?.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-      inline: "center"
-    });
-  }
-  useLayoutEffect(() => {
-    scrollCurrentTime();
-  });
+
   // FIND THE FIRST HOUR IN DATE THAT HAS EVENT
   // useEffect(() => {
   //   let firstIndex = null;
