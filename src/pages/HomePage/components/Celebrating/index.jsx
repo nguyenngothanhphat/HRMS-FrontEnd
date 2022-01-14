@@ -48,8 +48,14 @@ const Celebrating = (props) => {
     return moment(date1).format('MM/DD') === moment(date2).format('MM/DD');
   };
 
-  const isFutureDay = (date1, date2) => {
-    return moment(date1).isAfter(date2);
+  const compare = (a, b) => {
+    if (moment(a) > moment(b)) return 1;
+    if (moment(a) < moment(b)) return -1;
+    return 0;
+  };
+
+  const isPastDate = (date1, date2) => {
+    return moment(date1).isBefore(date2, 'day');
   };
 
   const addCurrentYearToExistingDate = (date) => {
@@ -61,16 +67,17 @@ const Celebrating = (props) => {
   };
 
   const formatData = () => {
-    const todayList = birthdayInWeekList.filter((x) =>
-      isTheSameDay(moment(), moment(x.generalInfoInfo?.DOB)),
+    let result = [
+      ...birthdayInWeekList.filter((x) => {
+        return !isPastDate(moment(addCurrentYearToExistingDate(x.generalInfoInfo?.DOB)), moment());
+      }),
+    ];
+    result.sort((a, b) =>
+      compare(
+        moment(addCurrentYearToExistingDate(a.generalInfoInfo.DOB)),
+        moment(addCurrentYearToExistingDate(b.generalInfoInfo.DOB)),
+      ),
     );
-    const futureList = birthdayInWeekList.filter(
-      (x) =>
-        !todayList.some((y) => x._id === y._id) &&
-        isFutureDay(moment(addCurrentYearToExistingDate(x.generalInfoInfo.DOB)), moment()),
-    );
-
-    let result = [...todayList, ...futureList];
     let avatarIndex = 0;
     result = result.map((x) => {
       if (!x.generalInfoInfo?.avatar) {
@@ -85,7 +92,6 @@ const Celebrating = (props) => {
       }
       return x;
     });
-
     setBirthdayList(result);
   };
 
@@ -113,15 +119,25 @@ const Celebrating = (props) => {
     );
   };
 
+  const getGender = (gender) => {
+    switch (gender) {
+      case 'Male':
+        return 'his';
+      case 'Female':
+        return 'her';
+      default:
+        return 'his/her';
+    }
+  };
   const renderBirthdayContent = (data = {}) => {
-    const { DOB = '' } = data?.generalInfoInfo || {};
+    const { DOB = '', gender = '' } = data?.generalInfoInfo || {};
     const isToday = isTheSameDay(moment(), moment(DOB));
     const employeeName = renderEmployeeName(data);
     const birthday = moment(DOB).locale('en').format('MMM Do');
     if (isToday)
       return (
         <span>
-          {employeeName} is celebrating his birthday today. ({birthday})
+          {employeeName} is celebrating {getGender(gender)} birthday today. ({birthday})
         </span>
       );
     return (

@@ -274,9 +274,10 @@ const timeOff = {
       return response;
     },
     *fetchLeaveRequestOfEmployee({ payload }, { call, put }) {
+      let response = {};
       try {
         const tenantId = getCurrentTenant();
-        const response = yield call(getLeaveRequestOfEmployee, {
+        response = yield call(getLeaveRequestOfEmployee, {
           ...payload,
           tenantId,
           company: getCurrentCompany(),
@@ -292,11 +293,10 @@ const timeOff = {
           type: 'savePaging',
           payload: { total },
         });
-        return response;
       } catch (errors) {
         dialog(errors);
       }
-      return {};
+      return response;
     },
 
     *fetchLeaveHistory({ employee = '', status = '' }, { call, put }) {

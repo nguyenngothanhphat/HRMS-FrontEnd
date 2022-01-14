@@ -125,10 +125,7 @@ const ComplexView = (props) => {
   );
 };
 
-export default connect(
-  ({ user: { currentUser = {}, permissions = [], currentUserRoles = [] } = {} }) => ({
-    currentUser,
-    permissions,
-    currentUserRoles,
-  }),
-)(ComplexView);
+export default connect(({ user: { currentUser = {}, permissions = [] } = {} }) => ({
+  currentUser,
+  permissions,
+}))(ComplexView);
