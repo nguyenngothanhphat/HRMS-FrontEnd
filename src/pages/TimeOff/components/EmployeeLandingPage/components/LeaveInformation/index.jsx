@@ -6,6 +6,7 @@ import ShowBreakdownIcon from '@/assets/iconViewBreakdown.svg';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import LeaveProgressBar from './components/LeaveProgressBar';
 import SpecialLeaveBox from './components/SpecialLeaveBox';
+import { TIMEOFF_TYPE } from '@/utils/timeOff';
 
 import styles from './index.less';
 
@@ -38,6 +39,9 @@ const CollapseInformation = (props) => {
     return <a onClick={() => setViewDocumentModal(true)}>Standard Policy</a>;
   };
 
+  const typeAList = typesOfCommonLeaves.filter((x) => x.defaultSettings?.type === TIMEOFF_TYPE.A);
+  console.log('🚀 ~ CollapseInformation ~ typeAList', typeAList);
+
   return (
     <div className={styles.CollapseInformation}>
       <div className={styles.hrLine} />
@@ -50,25 +54,23 @@ const CollapseInformation = (props) => {
           </div>
         </div>
         <div className={styles.leaveProgressBars}>
-          {typesOfCommonLeaves.map((type, index) => {
+          {typeAList.map((type, index) => {
             const { currentAllowance = 0, defaultSettings = {} } = type;
             if (defaultSettings) {
-              const { name = '', shortType = '', type: type1 = '', _id = '' } = defaultSettings;
-              if (type1 === 'A') {
-                const foundType = timeOffTypes.find((t) => t._id === _id) || {};
-                return (
-                  <div key={`${index + 1}`}>
-                    <LeaveProgressBar
-                      color={colorsList[index % 3]}
-                      title={name}
-                      shortType={shortType}
-                      stepNumber={currentAllowance}
-                      limitNumber={foundType.noOfDays}
-                    />
-                    {index + 1 !== typesOfCommonLeaves.length && <div className={styles.hr} />}
-                  </div>
-                );
-              }
+              const { name = '', shortType = '', _id = '' } = defaultSettings;
+              const foundType = timeOffTypes.find((t) => t._id === _id) || {};
+              return (
+                <div key={`${index + 1}`}>
+                  <LeaveProgressBar
+                    color={colorsList[index % 3]}
+                    title={name}
+                    shortType={shortType}
+                    stepNumber={currentAllowance}
+                    limitNumber={foundType.noOfDays}
+                  />
+                  {index < typeAList.length && <div className={styles.hr} />}
+                </div>
+              );
             }
             return '';
           })}

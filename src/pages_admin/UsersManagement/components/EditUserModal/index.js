@@ -108,8 +108,8 @@ class EditUserModal extends PureComponent {
   };
 
   componentDidUpdate = (prevProps) => {
-    const { selectedUserId = '' } = this.props;
-    if (prevProps.selectedUserId !== selectedUserId) {
+    const { selectedUserId = '', editModalVisible } = this.props;
+    if (prevProps.selectedUserId !== selectedUserId && editModalVisible) {
       this.getEmployeeDetails();
     }
   };
@@ -119,7 +119,6 @@ class EditUserModal extends PureComponent {
     const { _id = '', tenant = '', generalInfo: { _id: generalInfoId = '' } = {} } = employeeDetail;
     const { companyId, locationId } = this.state;
     const { workEmail = '', firstName = '', lastName = '', roles = [], status = '' } = values;
-    const submitValues = { workEmail, firstName, lastName, roles, locationId, companyId };
 
     dispatch({
       type: 'usersManagement/updateRolesByEmployee',
@@ -156,7 +155,7 @@ class EditUserModal extends PureComponent {
           message: 'Update user successfully',
         });
         const { closeEditModal = () => {} } = this.props;
-        closeEditModal();
+        closeEditModal(true);
       }
     });
   };

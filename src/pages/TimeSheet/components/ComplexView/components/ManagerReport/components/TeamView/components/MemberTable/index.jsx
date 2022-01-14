@@ -23,14 +23,14 @@ const VIEW_TYPE = {
 
 const MemberTable = (props) => {
   const [viewType, setViewType] = useState(VIEW_TYPE.PEOPLE_MANAGER);
-  const { data = [], currentUserRoles = [], loadingFetch = false } = props;
+  const { data = [], permissions, loadingFetch = false } = props;
 
   useEffect(() => {
-    if (currentUserRoles.some((r) => ['people-manager'].includes(r))) {
-      setViewType(VIEW_TYPE.PEOPLE_MANAGER);
-    }
-    if (currentUserRoles.some((r) => ['project-manager'].includes(r))) {
+    if (permissions.viewProjectManagerCVTimesheet === 1) {
       setViewType(VIEW_TYPE.PROJECT_MANAGER);
+    }
+    if (permissions.viewPeopleManagerCVTimesheet === 1) {
+      setViewType(VIEW_TYPE.PEOPLE_MANAGER);
     }
   }, []);
 
@@ -141,6 +141,4 @@ const MemberTable = (props) => {
   );
 };
 
-export default connect(({ user: { currentUserRoles = [] } }) => ({ currentUserRoles }))(
-  MemberTable,
-);
+export default connect(({ user: { permissions } }) => ({ permissions }))(MemberTable);

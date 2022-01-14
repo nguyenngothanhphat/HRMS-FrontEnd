@@ -11,7 +11,11 @@ export default class HolidayList extends PureComponent {
         {holidaysList.map((row, index) => {
           const { name = '', date: { iso = '', dateTime: { day = '', month = '' } = {} } = {} } =
             row;
+<<<<<<< HEAD
           const monthData = new Date(iso);
+=======
+          const monthData = new Date(iso).toISOString();
+>>>>>>> 692c8d3d269711fbf04114329a73d43440d0465d
           return (
             <Row key={`${index + 1}`} className={styles.eachRow}>
               <Col xs={4} className={styles.dateAndMonth}>

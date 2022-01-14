@@ -16,25 +16,18 @@ const { HR_MANAGER, EMPLOYEE, REGION_HEAD, MANAGER } = ROLES;
 const { TabPane } = Tabs;
 @connect(
   ({
-    user: { currentUserRoles, currentUser } = {},
+    user: { currentUserRoles, currentUser, permissions } = {},
     timeOff,
     locationSelection: { listLocationsByCompany = [] },
   }) => ({
     timeOff,
+    permissions,
     currentUser,
     currentUserRoles,
     listLocationsByCompany,
   }),
 )
 class TimeOff extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      role: '',
-      // activeKey: '1',
-    };
-  }
-
   viewActivityLog = () => {
     // eslint-disable-next-line no-alert
     alert('View activity logs');
@@ -58,6 +51,7 @@ class TimeOff extends PureComponent {
       },
     });
 
+    // OLD FLOW, WILL REMOVE "currentUserRole" OUT OF HERE SOON
     if (regionHead) {
       dispatch({
         type: 'timeOff/save',
@@ -92,10 +86,7 @@ class TimeOff extends PureComponent {
     if (!tabName) {
       history.replace(`/time-off/overview`);
     } else {
-      const role = this.findRole(currentUserRoles);
-      this.setState({
-        role,
-      });
+      this.findRole(currentUserRoles);
 
       if (listLocationsByCompany.length > 0) {
         this.fetchTimeOffTypes();
@@ -167,45 +158,62 @@ class TimeOff extends PureComponent {
     );
   };
 
-  render() {
-    const { role } = this.state;
+  getOverviewByRole = () => {
     const {
-      match: { params: { tabName = '', type = '' } = {} },
       currentUser: { employee: { title: { eligibleForCompOff = false } = {} } = {} } = {},
+      permissions = {},
+    } = this.props;
+
+    const viewManagerTimeoff = permissions.viewManagerTimeoff === 1;
+    const viewHRTimeoff = permissions.viewHRTimeoff === 1;
+
+    if (viewHRTimeoff) return <HRManagerLandingPage eligibleForCompOff={eligibleForCompOff} />;
+    if (viewManagerTimeoff) return <ManagerLandingPage eligibleForCompOff={eligibleForCompOff} />;
+    return <EmployeeLandingPage eligibleForCompOff={eligibleForCompOff} />;
+  };
+
+  getTabs = () => {
+    const {
+      match: { params: { type = '' } = {} },
+      permissions = {},
+    } = this.props;
+
+    const viewSettingTimeoff = permissions.viewSettingTimeoff === 1;
+
+    return (
+      <>
+        <TabPane tab={<span className={styles.employeeTabPane}>Timeoff</span>} key="overview">
+          {this.getOverviewByRole()}
+        </TabPane>
+
+        {viewSettingTimeoff && (
+          <TabPane tab="Setup Timeoff policy" key="setup">
+            <SetupTimeoff type={type} />
+          </TabPane>
+        )}
+      </>
+    );
+  };
+
+  render() {
+    const {
+      match: { params: { tabName = '' } = {} },
     } = this.props;
 
     if (!tabName) return '';
     return (
-      // <Breadcrumb routes={routes}>
       <div className={styles.TimeOff}>
         <PageContainer>
-          {/* tabBarExtraContent={this.options()} */}
-          {/* <Tabs activeKey={activeKey} onTabClick={this.onTabClick}> */}
           <Tabs
             activeKey={tabName || 'overview'}
             onChange={(key) => {
               history.push(`/time-off/${key}`);
             }}
           >
-            <TabPane tab={<span className={styles.employeeTabPane}>Timeoff</span>} key="overview">
-              {role === 'employee' && (
-                <EmployeeLandingPage eligibleForCompOff={eligibleForCompOff} />
-              )}
-              {role === 'manager' && <ManagerLandingPage eligibleForCompOff={eligibleForCompOff} />}
-              {role === 'hr-manager' && (
-                <HRManagerLandingPage eligibleForCompOff={eligibleForCompOff} />
-              )}
-            </TabPane>
-
-            {role === 'hr-manager' && (
-              <TabPane tab="Setup Timeoff policy" key="setup">
-                <SetupTimeoff type={type} />
-              </TabPane>
-            )}
+            {this.getTabs()}
           </Tabs>
         </PageContainer>
       </div>
-      // </Breadcrumb>
     );
   }
 }
