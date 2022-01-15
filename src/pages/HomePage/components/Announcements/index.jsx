@@ -6,6 +6,8 @@ import styles from './index.less';
 // import Post1 from '@/assets/homePage/post1.png';
 // import Post2 from '@/assets/homePage/post2.png';
 import EmbedPost from './components/EmbedPost';
+import TerralogicIcon from '@/assets/homePage/terralogicIcon.jpeg';
+import TerralogicImage from '@/assets/homePage/terralogicImage.jpeg';
 
 const Announcements = () => {
   const posts = [
@@ -17,21 +19,27 @@ const Announcements = () => {
       id: 1,
       employee: {
         generalInfo: {
-          legalName: 'Leslie Alexander',
+          legalName: 'Terralogic Inc.',
+          avatar: TerralogicIcon,
+          website: 'https://www.linkedin.com/company/terralogic/',
         },
         title: {
-          name: 'Head of Design',
+          name: '19,404 followers',
         },
       },
       content: (
         <p>
-          We&apos;re #hiring at Lollypop Design Studio <br />
-          If you&apos;ve got 5+ years of delivering awesome user experiences and have what it takes
-          to work with a 24x7 motivated and passionate team - we&apos;re looking for you!
+          We are overwhelmed with the responses we got to attend the launch of TL Nellore. Thank you
+          so much for this.
+          <br />
+          Registrations for the event are now closed. But stay tuned and keep watching this space
+          for more updates.!
+          <br />
+          <a>#nellore</a> <a>#engineering</a> <a>#it</a> <a>#terralogic</a> <a>#thankyou</a>
         </p>
       ),
-      type: 1, // 1: link, 2: image
-      link: 'https://google.com',
+      type: 2, // 1: link, 2: image
+      image: TerralogicImage,
     },
     // {
     //   id: 2,

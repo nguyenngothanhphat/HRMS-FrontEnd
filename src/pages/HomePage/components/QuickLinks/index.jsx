@@ -94,9 +94,11 @@ const QuickLinks = (props) => {
   return (
     <div className={styles.QuickLinks}>
       <p className={styles.titleText}>Quick Links</p>
-      <Row gutter={[0, 16]} className={styles.links}>
+      <Row gutter={[24, 24]} className={styles.links}>
         {links.map((x) => (
-          <Col span={8}>{renderLinkIcon(x)}</Col>
+          <Col xl={8} lg={12} xxl={6}>
+            {renderLinkIcon(x)}
+          </Col>
         ))}
       </Row>
       <ViewDocumentModal

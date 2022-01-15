@@ -45,6 +45,4 @@ const ManagerReport = () => {
   );
 };
 
-export default connect(({ user: { currentUserRoles = [] } }) => ({ currentUserRoles }))(
-  ManagerReport,
-);
+export default connect(({ user }) => ({ user }))(ManagerReport);
