@@ -19,12 +19,13 @@ import {
   syncGoogleCalendar,
   getWidgets,
   updateWidgets,
-  getMyTeam,
+  // getMyTeam,
   getMyTimesheet,
   getListMyTeam,
   getHolidaysByCountry,
-
-  // HOME PAGE
+  getMyTeamLeaveRequestList,
+  getTimeOffTypeByCountry,
+    // HOME PAGE
   getBirthdayInWeek,
 } from '../services/dashboard';
 import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
@@ -46,6 +47,8 @@ const defaultState = {
   status: '',
   statusApproval: '',
   birthdayInWeekList: [],
+  teamLeaveRequestList: [],
+  timeOffTypesByCountry: [],
 };
 const dashboard = {
   namespace: 'dashboard',
@@ -452,6 +455,53 @@ const dashboard = {
       } catch (errors) {
         dialog(errors);
         return [];
+      }
+      return response;
+    },
+    *fetchTeamLeaveRequests({ payload }, { call, put }) {
+      try {
+        const response = yield call(getMyTeamLeaveRequestList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const {
+          statusCode,
+          data: { items: teamLeaveRequestList = [] },
+          total = 0,
+        } = response;
+        // console.log('response', response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { teamLeaveRequestList },
+        });
+        yield put({
+          type: 'savePaging',
+          payload: { total },
+        });
+        return response;
+      } catch (errors) {
+        // dialog(errors);
+      }
+      return {};
+    },
+    *fetchTimeOffTypesByCountry({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getTimeOffTypeByCountry, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        } );
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { timeOffTypesByCountry: data },
+        });
+      } catch (error) {
+        dialog(error);
       }
       return response;
     },
