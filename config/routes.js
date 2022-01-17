@@ -316,26 +316,26 @@ const routes = [
             name: 'onboarding',
             icon: '/assets/images/menuIcons/onboarding.svg',
             component: './Onboarding',
-            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', HR, HR_MANAGER],
+            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'P_ONBOARDING_ALL'],
           },
           {
             path: '/onboarding/:tabName',
             hideInMenu: true,
             component: './Onboarding',
-            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', HR, HR_MANAGER, MANAGER],
+            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'P_ONBOARDING_ALL'],
           },
           {
             path: '/onboarding/:tabName/:type',
             hideInMenu: true,
             component: './Onboarding',
-            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', HR, HR_MANAGER],
+            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'P_ONBOARDING_ALL'],
           },
           {
             path: '/onboarding/newJoinees/view-detail/:userId',
             name: 'candidateProfile',
             hideInMenu: true,
             component: './Onboarding/components/NewJoinees/CandidateProfile',
-            authority: [MANAGER],
+            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'P_ONBOARDING_ALL'],
           },
           {
             path: '/offboarding',
@@ -356,18 +356,18 @@ const routes = [
             name: 'offboarding',
             icon: '/assets/images/menuIcons/offboarding.svg',
             component: './OffBoarding',
-            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW', HR, HR_MANAGER, MANAGER],
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/:tabName',
             component: './OffBoarding',
-            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW', HR, HR_MANAGER, MANAGER],
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
             hideInMenu: true,
           },
           {
             path: '/offboarding/:tabName/:type',
             component: './OffBoarding',
-            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW', HR, HR_MANAGER, MANAGER],
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
             hideInMenu: true,
           },
           {
@@ -731,12 +731,22 @@ const routes = [
             name: 'ticketManagement',
             icon: '/assets/images/menuIcons/ticketManagement.svg',
             component: './TicketManagement',
-            authority: [HR_MANAGER, HR, MANAGER, PROJECT_MANAGER], // TEMPORARY VALUES
+            authority: [
+              'P_TICKET_MANAGEMENT_VIEW',
+              'P_TICKET_MANAGEMENT_T_HR_TICKETS_VIEW',
+              'P_TICKET_MANAGEMENT_T_IT_TICKETS_VIEW',
+              'P_TICKET_MANAGEMENT_T_OPERATIONS_TICKETS_VIEW',
+            ],
           },
           {
             path: '/ticket-management/:tabName',
             component: './TicketManagement',
-            authority: [HR_MANAGER, HR, MANAGER, PROJECT_MANAGER], // TEMPORARY VALUES
+            authority: [
+              'P_TICKET_MANAGEMENT_VIEW',
+              'P_TICKET_MANAGEMENT_T_HR_TICKETS_VIEW',
+              'P_TICKET_MANAGEMENT_T_IT_TICKETS_VIEW',
+              'P_TICKET_MANAGEMENT_T_OPERATIONS_TICKETS_VIEW',
+            ],
             hideInMenu: true,
           },
 
@@ -747,26 +757,26 @@ const routes = [
             icon: '/assets/images/menuIcons/customer.svg',
             // hideInMenu: true,
             component: './Customer',
-            authority: [HR_MANAGER, HR, REGION_HEAD, ADMIN, OWNER], // TEMPORARY VALUES
+            authority: ['P_CUSTOMER_MANAGEMENT_VIEW'],
           },
           {
             path: '/customer-management/:tabName',
             hideInMenu: true,
             component: './Customer',
-            authority: [HR_MANAGER, HR, REGION_HEAD, ADMIN, OWNER], // TEMPORARY VALUES
+            authority: ['P_CUSTOMER_MANAGEMENT_VIEW'],
           },
           {
             path: '/customer-management/customers/customer-profile/:reId',
             hideInMenu: true,
             name: 'viewCustomer',
             component: './CustomerProfile',
-            authority: [HR_MANAGER, HR, REGION_HEAD, ADMIN, OWNER], // TEMPORARY VALUES
+            authority: ['P_CUSTOMER_MANAGEMENT_VIEW'],
           },
           {
             path: '/customer-management/customers/customer-profile/:reId/:tabName',
             hideInMenu: true,
             component: './CustomerProfile',
-            authority: [HR_MANAGER, HR, REGION_HEAD, ADMIN, OWNER], // TEMPORARY VALUES
+            authority: ['P_CUSTOMER_MANAGEMENT_VIEW'],
           },
 
           // PROJECTS MANAGEMENT
