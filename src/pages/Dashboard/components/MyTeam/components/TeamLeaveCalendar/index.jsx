@@ -7,6 +7,7 @@ import moment from 'moment';
 // import SampleAvatar2 from '@/assets/dashboard/sampleAvatar2.png';
 // import SampleAvatar3 from '@/assets/dashboard/sampleAvatar3.png';
 // import SampleAvatar4 from '@/assets/dashboard/sampleAvatar4.png';
+import mockAvatar from '@/assets/timeSheet/mockAvatar.jpg'
 import styles from './index.less';
 
 // const leaveRequest = [
@@ -144,7 +145,7 @@ const TeamLeaveCalendar = (props) => {
         <div className={styles.projectMembers}>
           <Avatar.Group maxCount={4}>
             {find.map((member) => {
-              return <Avatar size="large" src={member.employeeInfo.generalInfo.avatar} />;
+              return <Avatar size="large" src={member.employeeInfo.generalInfo.avatar || mockAvatar} />;
             })}
             {/* <Avatar size='large' src={find.employeeInfo.generalInfo.avatar} /> */}
           </Avatar.Group>
