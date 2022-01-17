@@ -7,13 +7,15 @@ import styles from './index.less';
 const EmployeeTag = (props) => {
   const {
     employee: {
-      generalInfo: { avatar = '', legalName = '', userId = '' } = {},
+      generalInfo: { avatar = '', legalName = '', userId = '', website = '' } = {},
       title = {} || {},
     } = {},
   } = props;
 
   const onViewProfileClick = () => {
-    if (userId) {
+    if (website) {
+      window.open(website, '_blank');
+    } else if (userId) {
       history.push(`/directory/employee-profile/${userId}/general-info`);
     }
   };

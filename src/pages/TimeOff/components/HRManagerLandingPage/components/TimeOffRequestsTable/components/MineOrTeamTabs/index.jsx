@@ -49,9 +49,9 @@ class MineOrTeamTabs extends Component {
           <TabPane tab="My Requests" key="2">
             <TimeOffRequestTab tab={tab} type={type} category="MY" />
           </TabPane>
-          <TabPane tab="All Requests" key="3">
+          {/* <TabPane tab="All Requests" key="3">
             <TimeOffRequestTab tab={tab} type={type} category="ALL" />
-          </TabPane>
+          </TabPane> */}
         </Tabs>
       </div>
     );

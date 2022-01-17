@@ -1,15 +1,15 @@
 // this component is used for creating a new timeoff request
 // and for editing (updating) a exist one
 
+import { Affix, Col, Row, Spin } from 'antd';
 import React, { PureComponent } from 'react';
-import { Affix, Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
-import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
+import { TIMEOFF_LINK_ACTION, TIMEOFF_STATUS } from '@/utils/timeOff';
+import styles from './index.less';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
-import styles from './index.less';
-import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 
 const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DRAFTS } = TIMEOFF_STATUS;
 const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST } = TIMEOFF_LINK_ACTION;
@@ -23,6 +23,7 @@ class LeaveRequestForm extends PureComponent {
     super(props);
     this.state = {
       action: '',
+      invalidDates: [],
     };
   }
 
@@ -48,7 +49,42 @@ class LeaveRequestForm extends PureComponent {
       });
     }
 
+    dispatch({
+      type: 'timeOff/fetchLeaveRequestOfEmployee',
+    }).then((res) => {
+      if (res.statusCode === 200) {
+        let invalidDates = [];
+        const { items: leaveRequests = [] } = res?.data;
+        leaveRequests.forEach((x) => {
+          const temp = x.leaveDates.map((y) => {
+            return {
+              date: y.date,
+              timeOfDay: y.timeOfDay,
+            };
+          });
+          invalidDates = [...invalidDates, ...temp];
+        });
+        this.setState({
+          invalidDates,
+        });
+      }
+    });
+
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
+  };
+
+  getDateLists = (startDate1, endDate1) => {
+    if (startDate1 && endDate1) {
+      const now = startDate1.clone();
+      const dates = [];
+
+      while (now.isSameOrBefore(endDate1)) {
+        dates.push(now.format('YYYY-MM-DD'));
+        now.add(1, 'days');
+      }
+      return dates;
+    }
+    return [];
   };
 
   fetchTimeOffTypes = () => {
@@ -103,7 +139,7 @@ class LeaveRequestForm extends PureComponent {
   };
 
   render() {
-    const { action } = this.state;
+    const { action, invalidDates } = this.state;
     const {
       timeOff: {
         viewingLeaveRequest = {},
@@ -171,6 +207,7 @@ class LeaveRequestForm extends PureComponent {
                       action={action}
                       status={status}
                       ticketID={ticketID}
+                      invalidDates={invalidDates}
                       viewingLeaveRequest={viewingLeaveRequest}
                     />
                   </Col>

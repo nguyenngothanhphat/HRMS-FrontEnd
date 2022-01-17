@@ -96,6 +96,7 @@ class EditModal extends PureComponent {
         payload: {
           _id: selectedRoleID,
           name,
+          idSync: name,
           description,
           permissions: selectedList,
         },
@@ -186,7 +187,6 @@ class EditModal extends PureComponent {
       (value) => value !== undefined && value !== '' && value !== null,
     );
     formatList = [...new Set(formatList)];
-
     const treeData = formatList.map((moduleName, index) => {
       let result = permissionList.map((per) => {
         const { _id = '', name = '', module = '' } = per;

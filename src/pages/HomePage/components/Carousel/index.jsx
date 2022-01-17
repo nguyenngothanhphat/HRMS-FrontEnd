@@ -29,7 +29,15 @@ const Carousel = () => {
 
   return (
     <div className={styles.Carousel}>
-      <CarouselAntd infinite arrows dots nextArrow={<NextArrow />} prevArrow={<PrevArrow />}>
+      <CarouselAntd
+        infinite
+        arrows
+        dots
+        autoplay
+        autoplaySpeed={10000}
+        nextArrow={<NextArrow />}
+        prevArrow={<PrevArrow />}
+      >
         {images.map((x) => (
           <div className={styles.image}>
             <img src={x.image} alt="" />

@@ -58,6 +58,10 @@ const TimeSheet = (props) => {
     });
   };
 
+  const isTheSameDay = (date1, date2) => {
+    return moment(date1).format('MM/DD') === moment(date2).format('MM/DD');
+  };
+
   useEffect(() => {
     const weekDays = getCurrentWeekDays();
     setDateList(weekDays);
@@ -112,6 +116,7 @@ const TimeSheet = (props) => {
     const disabledClassName = isDisabled ? styles.disabledDate : '';
     // const isHoliday = checkIsHoliday(value);
     const isHoliday = false;
+    const isToday = isTheSameDay(moment(), moment(value));
 
     if (isHoliday) {
       return (
@@ -128,7 +133,7 @@ const TimeSheet = (props) => {
       <div
         className={`${styles.dateRender} ${disabledClassName} ${
           !isDone && !isDisabled ? styles.blueBorder : ''
-        }`}
+        } ${isToday ? styles.today : ''}`}
       >
         <span>{date}</span>
         {renderDateAction(value, isDisabled, isHoliday)}

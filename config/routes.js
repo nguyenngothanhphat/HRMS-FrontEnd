@@ -238,7 +238,7 @@ const routes = [
           {
             path: '/home',
             name: 'home',
-            icon: '/assets/images/menuIcons/dashboard-old.svg',
+            icon: '/assets/images/menuIcons/home.svg',
             component: './HomePage',
             authority: [EMPLOYEE],
           },
