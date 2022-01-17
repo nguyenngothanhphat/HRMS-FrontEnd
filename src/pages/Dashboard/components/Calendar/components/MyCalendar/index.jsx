@@ -25,7 +25,7 @@ const MyCalendar = (props) => {
   }
   useEffect(() => {
     scrollCurrentTime();
-  })
+  }, [])
 
   // USE EFFECT
   useEffect(() => {
