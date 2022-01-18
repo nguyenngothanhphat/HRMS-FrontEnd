@@ -146,7 +146,7 @@ const routes = [
     routes: [
       {
         path: '/candidate-portal',
-        name: 'Candidate Portal',
+        name: 'candidatePortal',
         icon: '/assets/images/menuIcons/dashboard.svg',
         hideInMenu: true,
         authority: [CANDIDATE],
@@ -176,7 +176,7 @@ const routes = [
       // for change password
       {
         path: '/candidate-change-password',
-        name: 'Candidate Change Password',
+        name: 'candidateChangePassword',
         hideInMenu: true,
         authority: [CANDIDATE],
         component: './CandidateChangePassword',
@@ -195,19 +195,19 @@ const routes = [
           {
             path: '/control-panel',
             component: './ControlPanel',
-            name: 'Control Panel',
+            name: 'controlPanel.name',
             authority: [ADMIN, OWNER, EMPLOYEE, CANDIDATE],
           },
           {
             path: '/control-panel/company-profile/:id',
             component: './CompanyProfile',
-            name: 'Company Profile',
+            name: 'controlPanel.companyProfile',
             authority: [OWNER],
           },
           {
             path: '/control-panel/add-company',
             component: './CompanyProfile',
-            name: 'Company Profile',
+            name: 'controlPanel.companyProfile',
             authority: [OWNER],
           },
           {
@@ -848,7 +848,7 @@ const routes = [
           },
           {
             path: '/policies-regulations',
-            name: 'Policies & Regulations',
+            name: 'policiesRegulations',
             hideInMenu: true,
             component: './PoliciesRegulations',
           },
