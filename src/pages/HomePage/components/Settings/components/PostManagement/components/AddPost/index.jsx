@@ -9,6 +9,7 @@ import Preview from './components/Preview';
 import BirthdayContent from './components/BirthdayContent';
 import ImagesContent from './components/ImagesContent';
 import BannerContent from './components/BannerContent';
+import PollContent from './components/PollContent';
 
 // A: ANNOUNCEMENT
 // B: BIRTHDAY/ANNIVERSARY
@@ -35,6 +36,12 @@ const AddPost = () => {
   // banner
   const [uploadFilesBN, setUploadFilesBN] = useState([]);
 
+  // poll
+  const [questionP, setQuestionP] = useState('');
+  const [responsesP, setResponsesP] = useState([]);
+  const [startDateP, setStartDateP] = useState('');
+  const [endDateP, setEndDateP] = useState('');
+
   // FUNCTIONS
   const onModeChange = (val) => {
     setMode(val);
@@ -49,6 +56,11 @@ const AddPost = () => {
     setDescriptionI('');
     setTitleI('');
     setUploadFilesBN([]);
+    setQuestionP('');
+    setResponsesP([]);
+    setStartDateP('');
+    setEndDateP('');
+    form.resetFields();
   }, [mode]);
 
   // announcements
@@ -56,7 +68,9 @@ const AddPost = () => {
     fnc(value);
   }, 1000);
 
-  const onValuesChange = (values) => {
+  const onValuesChange = () => {
+    const values = form.getFieldsValue();
+
     if (values.descriptionA) {
       onChange(setDescriptionA, values.descriptionA);
     }
@@ -68,6 +82,18 @@ const AddPost = () => {
     }
     if (values.titleI) {
       onChange(setTitleI, values.titleI);
+    }
+    if (values.questionP) {
+      onChange(setQuestionP, values.questionP);
+    }
+    if (values.responsesP) {
+      onChange(setResponsesP, values.responsesP);
+    }
+    if (values.startDateP) {
+      onChange(setStartDateP, values.startDateP);
+    }
+    if (values.endDateP) {
+      onChange(setEndDateP, values.endDateP);
     }
   };
 
@@ -84,7 +110,8 @@ const AddPost = () => {
         return <ImagesContent uploadFilesI={uploadFilesI} setUploadFilesI={setUploadFilesI} />;
       case POST_TYPE_TEXT.BANNER:
         return <BannerContent uploadFilesBN={uploadFilesBN} setUploadFilesBN={setUploadFilesBN} />;
-
+      case POST_TYPE_TEXT.POLL:
+        return <PollContent />;
       default:
         return '';
     }
@@ -100,6 +127,7 @@ const AddPost = () => {
           onValuesChange={onValuesChange}
           initialValues={{
             postType: mode,
+            responsesP: [{}, {}, {}],
           }}
         >
           <Form.Item label="Post Type" name="postType">
@@ -135,6 +163,12 @@ const AddPost = () => {
             titleI,
           }}
           dataBN={{ uploadFilesBN }}
+          dataP={{
+            questionP,
+            responsesP,
+            startDateP,
+            endDateP,
+          }}
         />
       </div>
     );

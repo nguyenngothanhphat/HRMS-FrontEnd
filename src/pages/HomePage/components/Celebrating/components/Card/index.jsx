@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { Carousel } from 'antd';
 import moment from 'moment';
 import React from 'react';
@@ -148,13 +149,12 @@ const Card = (props) => {
         nextArrow={<NextArrow />}
         prevArrow={<PrevArrow />}
       >
-        {!previewing ? (
-          <>{birthdayList.length > 0 ? birthdayList.map((x) => renderCard(x)) : renderEmpty()}</>
-        ) : (
-          ''
-        )}
+        {!previewing
+          ? birthdayList.length > 0
+            ? birthdayList.map((x) => renderCard(x))
+            : renderEmpty()
+          : renderPreview()}
         {/* FOR PREVIEWING IN SETTINGS PAGE */}
-        {previewing && renderPreview()}
       </Carousel>
     </div>
   );

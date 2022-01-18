@@ -6,8 +6,45 @@ import GrayDot from '@/assets/homePage/grayDot.svg';
 const Options = (props) => {
   const { options = [], setIsVoted = () => {} } = props;
 
+  // FOR PREVIEWING IN SETTINGS PAGE
+  const {
+    previewing = false,
+    contentPreview: {
+      previewQuestion = '',
+      previewOptions = [],
+      // previewStartDate = '',
+      // previewEndDate = '',
+    } = {},
+  } = props;
+
+  if (previewing) {
+    return (
+      <div className={styles.Options}>
+        <p className={styles.questionText}>{previewQuestion}</p>
+        <Row gutter={[0, 10]} className={styles.poll}>
+          {previewOptions.map((reply) => {
+            if (!reply.response) return '';
+            return (
+              <Col span={24}>
+                <div className={styles.reply}>
+                  <span>{reply.response}</span>
+                </div>
+              </Col>
+            );
+          })}
+        </Row>
+        <div className={styles.votingInformation}>
+          <span className={styles.number}>250 votes</span>
+          <img src={GrayDot} alt="" />
+          <span className={styles.dueTime}>2d left</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.Options}>
+      <p className={styles.questionText}>How do you feel about getting back to office?</p>
       <Row gutter={[0, 10]} className={styles.poll}>
         {options.map((reply) => (
           <Col span={24}>

@@ -8,6 +8,7 @@ const BarGraph = (props) => {
 
   return (
     <div className={styles.BarGraph}>
+      <p className={styles.questionText}>How do you feel about getting back to office?</p>
       <Row gutter={[0, 10]} className={styles.poll}>
         {options.map((reply) => (
           <Col span={24}>

@@ -8,6 +8,7 @@ import PreviewImage from '@/assets/homePage/previewImage.png';
 import CelebratingCard from '@/pages/HomePage/components/Celebrating/components/Card';
 import GalleryCard from '@/pages/HomePage/components/Gallery/components/Card';
 import Carousel from '@/pages/HomePage/components/Carousel';
+import Options from '@/pages/HomePage/components/Voting/components/Options';
 
 const Preview = (props) => {
   const {
@@ -16,6 +17,7 @@ const Preview = (props) => {
     dataB: { uploadFilesB = [], descriptionB = '' } = {},
     dataBN: { uploadFilesBN = [] } = {},
     dataI: { titleI = '', uploadFilesI = [], descriptionI = '' } = {},
+    dataP: { questionP = '', responsesP = [], startDateP = '', endDateP = '' } = {},
   } = props;
 
   const [announcementContent, setAnnouncementContent] = useState({
@@ -167,6 +169,22 @@ const Preview = (props) => {
             <Carousel previewing contentPreview={bannerContent.imageUrls} />
           </div>
         );
+
+      case POST_TYPE_TEXT.POLL:
+        return (
+          <div style={{ padding: '24px' }}>
+            <Options
+              previewing
+              contentPreview={{
+                previewQuestion: questionP || 'Question here',
+                previewStartDate: startDateP,
+                previewEndDate: endDateP,
+                previewOptions: responsesP,
+              }}
+            />
+          </div>
+        );
+
       default:
         return '';
     }

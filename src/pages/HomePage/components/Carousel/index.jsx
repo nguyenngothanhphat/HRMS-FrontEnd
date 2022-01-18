@@ -1,6 +1,9 @@
 import React from 'react';
 import { Carousel as CarouselAntd } from 'antd';
-import Banner1 from '@/assets/homePage/banner1.svg';
+import Banner1 from '@/assets/homePage/banner1.png';
+import Nuova1 from '@/assets/homePage/nuova1.png';
+import Nuova2 from '@/assets/homePage/nuova2.png';
+import Nuova3 from '@/assets/homePage/nuova3.png';
 import NextIcon from '@/assets/homePage/next.svg';
 import PrevIcon from '@/assets/homePage/prev.svg';
 import styles from './index.less';
@@ -22,10 +25,18 @@ const Carousel = (props) => {
   const images = [
     {
       id: 1,
-      image: Banner1,
+      image: Nuova1,
     },
     {
       id: 2,
+      image: Nuova2,
+    },
+    {
+      id: 3,
+      image: Nuova3,
+    },
+    {
+      id: 4,
       image: Banner1,
     },
   ];
