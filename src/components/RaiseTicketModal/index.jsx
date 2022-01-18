@@ -33,12 +33,7 @@ const RaiseTicketModal = (props) => {
     visible = false,
     title = '',
     onClose = () => {},
-    currentUser: {
-      employee: {
-        _id: myEmployeeID = '',
-        departmentInfo: { name: departmentName = '' } = {},
-      } = {} || {},
-    } = {} || {},
+    currentUser: { employee: { _id: myEmployeeID = '' } = {} || {} } = {} || {},
     loadingFetchListEmployee = false,
   } = props;
 
@@ -201,7 +196,7 @@ const RaiseTicketModal = (props) => {
                   onChange={onSupportTeamChange}
                   placeholder="Select the support team"
                 >
-                  {SUPPORT_TEAM.filter((val) => val.value === departmentName).map((val) => (
+                  {SUPPORT_TEAM.map((val) => (
                     <Option value={val._id}>{val.name}</Option>
                   ))}
                 </Select>

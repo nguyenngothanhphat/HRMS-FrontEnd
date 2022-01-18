@@ -1,3 +1,10 @@
+import previewActivity from '@/assets/dashboard/previewActivity.svg';
+import previewDailyCalendar from '@/assets/dashboard/previewDailyCalendar.svg';
+import previewMyapps from '@/assets/dashboard/previewMyapps.svg';
+import previewTeam from '@/assets/dashboard/previewTeam.svg';
+import previewTask from '@/assets/dashboard/previewTask.svg';
+import previewTimesheet from '@/assets/dashboard/previewTimesheet.svg';
+
 const WIDGET_IDS = {
   CALENDAR: 'CALENDAR',
   TASK: 'TASK',
@@ -12,31 +19,37 @@ const WIDGETS = [
     id: WIDGET_IDS.CALENDAR,
     name: 'Calendar',
     description: 'Use this widget to keep a track of all your daily meetings and work',
+    image: previewDailyCalendar,
   },
   {
     id: WIDGET_IDS.TASK,
     name: 'Tasks',
     description: 'Use this widget to keep a track of all your daily tasks and projects',
+    image: previewTask,
   },
   {
     id: WIDGET_IDS.ACTIVITY,
     name: 'Activity Log',
     description: 'Use this widget to keep a track of all your daily tasks and projects',
+    image: previewActivity,
   },
   {
     id: WIDGET_IDS.MYTEAM,
     name: 'My Team',
     description: 'Use this widget to keep a track of all your daily tasks and projects',
+    image: previewTeam,
   },
   {
     id: WIDGET_IDS.MYAPP,
     name: 'My Apps',
     description: 'Use this widget to keep a track of all your daily tasks and projects',
+    image: previewMyapps,
   },
   {
     id: WIDGET_IDS.TIMESHEET,
     name: 'Timesheets',
     description: 'Use this widget to keep a track of all your daily tasks and projects',
+    image: previewTimesheet,
   },
 ];
 
