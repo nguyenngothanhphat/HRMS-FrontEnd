@@ -78,6 +78,8 @@ const Calendar = (props) => {
     });
   }, []);
 
+  // const handleTimeZoneData = googleCalendarList.
+
   const renderMyCalendarAction = () => {
     return (
       <div className={styles.header__actions}>
