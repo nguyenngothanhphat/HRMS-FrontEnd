@@ -4,15 +4,10 @@ import ManagerTicket from './ManagerTickets';
 
 class TicketsManagement extends PureComponent {
   findRole = (roles) => {
-    const hrEmployee = roles.find((item) => item === 'hr-employee');
+    const manager = roles.find((item) => item === 'manager');
     const hrManager = roles.find((item) => item === 'hr-manager');
-    const itEmployee = roles.find((item) => item === 'it-employee');
-    const itManager = roles.find((item) => item === 'it-manager');
-    const operationEmployee = roles.find((item) => item === 'it-employee');
-    const operationtManager = roles.find((item) => item === 'it-manager');
-
-    const role =
-      hrManager || hrEmployee || itEmployee || itManager || operationEmployee || operationtManager;
+    // const employee = roles.find((item) => item === 'employee');
+    const role = hrManager || manager || 'employee';
     return role;
   };
 

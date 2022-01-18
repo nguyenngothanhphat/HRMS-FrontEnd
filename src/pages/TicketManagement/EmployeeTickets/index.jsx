@@ -108,10 +108,10 @@ class EmployeeTicket extends Component {
               this.handleChangeTable(key);
             }}
           >
-            <TabPane tab="TicketQueue" key="ticket-queue">
+            <TabPane tab="Ticket Queue" key="ticket-queue">
               <TicketQueue data={listOffAllTicket} countData={totalList} />
             </TabPane>
-            <TabPane tab="MyTickets" key="my-tickets">
+            <TabPane tab="My Tickets" key="my-tickets">
               <MyTickets data={listOffAllTicket} countData={totalList} />
             </TabPane>
           </Tabs>
