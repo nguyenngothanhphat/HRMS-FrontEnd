@@ -16,7 +16,9 @@ const TAB_IDS = {
   BANNER: 'banner',
   POLLS: 'polls',
 };
-const PostCard = () => {
+const PostCard = (props) => {
+  const { onAddPost = () => {} } = props;
+
   const addZeroToNumber = (number) => {
     if (number < 10 && number > 0) return `0${number}`.slice(-2);
     return number;
@@ -79,7 +81,7 @@ const PostCard = () => {
   ];
 
   const options = () => {
-    return <AddButton text="Add Post" />;
+    return <AddButton text="Add Post" onClick={onAddPost} />;
   };
 
   return (
