@@ -5,8 +5,8 @@ import styles from './index.less';
 
 const { Dragger } = Upload;
 
-const BirthdayContent = (props) => {
-  const { uploadFilesB = [], setUploadFilesB = () => {} } = props;
+const ImagesContent = (props) => {
+  const { uploadFilesI = [], setUploadFilesI = () => {} } = props;
 
   const identifyImageOrPdf = (fileName) => {
     const parts = fileName.split('.');
@@ -52,17 +52,21 @@ const BirthdayContent = (props) => {
   // getBase64(file, (imageUrl) => setUploadFiles([...uploadFiles, imageUrl]));
 
   const handleUpload = async (file) => {
-    setUploadFilesB([file]);
+    setUploadFilesI([...uploadFilesI, file]);
   };
 
   const handleRemove = (file) => {
-    const temp = uploadFilesB.filter((x) => x.uid !== file.uid);
-    setUploadFilesB(temp);
+    const temp = uploadFilesI.filter((x) => x.uid !== file.uid);
+    setUploadFilesI(temp);
   };
 
   return (
-    <div className={styles.BirthdayContent}>
-      <Form.Item label="Description" name="descriptionB">
+    <div className={styles.ImagesContent}>
+      <Form.Item label="Title" name="titleI">
+        <Input placeholder="Enter the title" />
+      </Form.Item>
+
+      <Form.Item label="Description" name="descriptionI">
         <Input.TextArea
           placeholder="Enter the description"
           autoSize={{
@@ -79,7 +83,6 @@ const BirthdayContent = (props) => {
           action={(file) => handleUpload(file)}
           listType="picture"
           onRemove={(file) => handleRemove(file)}
-          maxCount={1}
           className={styles.fileUploadForm}
         >
           <div className={styles.drapperBlock}>
@@ -93,4 +96,4 @@ const BirthdayContent = (props) => {
   );
 };
 
-export default BirthdayContent;
+export default ImagesContent;

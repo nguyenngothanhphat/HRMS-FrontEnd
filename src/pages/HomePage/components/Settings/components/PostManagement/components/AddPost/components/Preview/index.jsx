@@ -5,13 +5,17 @@ import { POST_TYPE_TEXT } from '@/utils/homePage';
 import EmployeeTag from '@/pages/HomePage/components/Announcements/components/EmployeeTag';
 import PostContent from '@/pages/HomePage/components/Announcements/components/PostContent';
 import PreviewImage from '@/assets/homePage/previewImage.png';
-import Card from '@/pages/HomePage/components/Celebrating/components/Card';
+import CelebratingCard from '@/pages/HomePage/components/Celebrating/components/Card';
+import GalleryCard from '@/pages/HomePage/components/Gallery/components/Card';
+import Carousel from '@/pages/HomePage/components/Carousel';
 
 const Preview = (props) => {
   const {
     mode = '',
     dataA: { uploadFilesA = [], descriptionA = '' } = {},
     dataB: { uploadFilesB = [], descriptionB = '' } = {},
+    dataBN: { uploadFilesBN = [] } = {},
+    dataI: { titleI = '', uploadFilesI = [], descriptionI = '' } = {},
   } = props;
 
   const [announcementContent, setAnnouncementContent] = useState({
@@ -20,21 +24,36 @@ const Preview = (props) => {
   const [birthdayContent, setBirthdayContent] = useState({
     imageUrls: [],
   });
+  const [imagesContent, setImagesContent] = useState({
+    imageUrls: [],
+  });
+  const [bannerContent, setBannerContent] = useState({
+    imageUrls: [],
+  });
 
-  const getBase64 = (img, callback) => {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
+  const toBase64 = (file) =>
+    // eslint-disable-next-line compat/compat
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+
+  const getBase64Arr = (arr, func) => {
+    // eslint-disable-next-line compat/compat
+    Promise.all(
+      arr.map((x) => {
+        return toBase64(x);
+      }),
+    ).then((data) => {
+      func({ imageUrls: data });
+    });
   };
 
   useEffect(() => {
     if (uploadFilesA.length > 0) {
-      uploadFilesA.forEach((x, i) => {
-        getBase64(x, (imageUrl) => {
-          const tempArr = i === 0 ? [] : [...announcementContent.imageUrls];
-          setAnnouncementContent({ imageUrls: [...tempArr, imageUrl] });
-        });
-      });
+      getBase64Arr(uploadFilesA, setAnnouncementContent);
     } else {
       setAnnouncementContent({
         imageUrls: [],
@@ -44,18 +63,33 @@ const Preview = (props) => {
 
   useEffect(() => {
     if (uploadFilesB.length > 0) {
-      uploadFilesB.forEach((x, i) => {
-        getBase64(x, (imageUrl) => {
-          const tempArr = i === 0 ? [] : [...birthdayContent.imageUrls];
-          setBirthdayContent({ imageUrls: [...tempArr, imageUrl] });
-        });
-      });
+      getBase64Arr(uploadFilesB, setBirthdayContent);
     } else {
       setBirthdayContent({
         imageUrls: [],
       });
     }
   }, [JSON.stringify(uploadFilesB)]);
+
+  useEffect(() => {
+    if (uploadFilesI.length > 0) {
+      getBase64Arr(uploadFilesI, setImagesContent);
+    } else {
+      setImagesContent({
+        imageUrls: [],
+      });
+    }
+  }, [JSON.stringify(uploadFilesI)]);
+
+  useEffect(() => {
+    if (uploadFilesBN.length > 0) {
+      getBase64Arr(uploadFilesBN, setBannerContent);
+    } else {
+      setBannerContent({
+        imageUrls: [],
+      });
+    }
+  }, [JSON.stringify(uploadFilesBN)]);
 
   const renderPreview = () => {
     const post = {
@@ -92,17 +126,47 @@ const Preview = (props) => {
       case POST_TYPE_TEXT.BIRTHDAY_ANNIVERSARY:
         return (
           <div style={{ padding: '24px' }}>
-            <Card
+            <CelebratingCard
               previewing
               contentPreview={{
                 previewImage:
                   birthdayContent.imageUrls.length > 0 ? birthdayContent.imageUrls[0] : '',
-                previewDescription: Parser(descriptionB),
+                previewDescription: descriptionB ? Parser(descriptionB) : 'Description',
               }}
             />
           </div>
         );
-
+      case POST_TYPE_TEXT.IMAGES:
+        return (
+          <div style={{ padding: '24px' }}>
+            <GalleryCard
+              previewing
+              contentPreview={
+                imagesContent.imageUrls.length > 0
+                  ? imagesContent.imageUrls.map((x) => {
+                      return {
+                        image: x,
+                        content: descriptionI ? Parser(descriptionI) : '',
+                        title: titleI || '',
+                      };
+                    })
+                  : [
+                      {
+                        image: '',
+                        content: descriptionI ? Parser(descriptionI) : 'Description',
+                        title: titleI || 'Title',
+                      },
+                    ]
+              }
+            />
+          </div>
+        );
+      case POST_TYPE_TEXT.BANNER:
+        return (
+          <div style={{ padding: '24px' }}>
+            <Carousel previewing contentPreview={bannerContent.imageUrls} />
+          </div>
+        );
       default:
         return '';
     }

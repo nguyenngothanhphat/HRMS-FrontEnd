@@ -1,12 +1,12 @@
-import { Form, Input, message, Upload } from 'antd';
+import { Form, message, Upload } from 'antd';
 import React from 'react';
 import AttachmentIcon from '@/assets/attachment.svg';
 import styles from './index.less';
 
 const { Dragger } = Upload;
 
-const BirthdayContent = (props) => {
-  const { uploadFilesB = [], setUploadFilesB = () => {} } = props;
+const BannerContent = (props) => {
+  const { uploadFilesBN = [], setUploadFilesBN = () => {} } = props;
 
   const identifyImageOrPdf = (fileName) => {
     const parts = fileName.split('.');
@@ -52,26 +52,16 @@ const BirthdayContent = (props) => {
   // getBase64(file, (imageUrl) => setUploadFiles([...uploadFiles, imageUrl]));
 
   const handleUpload = async (file) => {
-    setUploadFilesB([file]);
+    setUploadFilesBN([...uploadFilesBN, file]);
   };
 
   const handleRemove = (file) => {
-    const temp = uploadFilesB.filter((x) => x.uid !== file.uid);
-    setUploadFilesB(temp);
+    const temp = uploadFilesBN.filter((x) => x.uid !== file.uid);
+    setUploadFilesBN(temp);
   };
 
   return (
-    <div className={styles.BirthdayContent}>
-      <Form.Item label="Description" name="descriptionB">
-        <Input.TextArea
-          placeholder="Enter the description"
-          autoSize={{
-            minRows: 5,
-            maxRows: 7,
-          }}
-        />
-      </Form.Item>
-
+    <div className={styles.BannerContent}>
       <Form.Item label="Media" name="media">
         <Dragger
           beforeUpload={beforeUpload}
@@ -79,7 +69,6 @@ const BirthdayContent = (props) => {
           action={(file) => handleUpload(file)}
           listType="picture"
           onRemove={(file) => handleRemove(file)}
-          maxCount={1}
           className={styles.fileUploadForm}
         >
           <div className={styles.drapperBlock}>
@@ -93,4 +82,4 @@ const BirthdayContent = (props) => {
   );
 };
 
-export default BirthdayContent;
+export default BannerContent;

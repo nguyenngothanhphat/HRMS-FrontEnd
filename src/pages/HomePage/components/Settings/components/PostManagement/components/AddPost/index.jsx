@@ -7,10 +7,13 @@ import styles from './index.less';
 import AnnouncementContent from './components/AnnouncementContent';
 import Preview from './components/Preview';
 import BirthdayContent from './components/BirthdayContent';
+import ImagesContent from './components/ImagesContent';
+import BannerContent from './components/BannerContent';
 
 // A: ANNOUNCEMENT
 // B: BIRTHDAY/ANNIVERSARY
 // P: POLL
+// I: IMAGES
 
 const AddPost = () => {
   const [form] = Form.useForm();
@@ -24,6 +27,14 @@ const AddPost = () => {
   const [uploadFilesB, setUploadFilesB] = useState([]);
   const [descriptionB, setDescriptionB] = useState('');
 
+  // images content
+  const [uploadFilesI, setUploadFilesI] = useState([]);
+  const [descriptionI, setDescriptionI] = useState('');
+  const [titleI, setTitleI] = useState('');
+
+  // banner
+  const [uploadFilesBN, setUploadFilesBN] = useState([]);
+
   // FUNCTIONS
   const onModeChange = (val) => {
     setMode(val);
@@ -34,6 +45,10 @@ const AddPost = () => {
     setDescriptionA('');
     setUploadFilesB([]);
     setDescriptionB('');
+    setUploadFilesI([]);
+    setDescriptionI('');
+    setTitleI('');
+    setUploadFilesBN([]);
   }, [mode]);
 
   // announcements
@@ -42,12 +57,17 @@ const AddPost = () => {
   }, 1000);
 
   const onValuesChange = (values) => {
-    console.log('🚀 ~ onValuesChange ~ values', values);
     if (values.descriptionA) {
       onChange(setDescriptionA, values.descriptionA);
     }
     if (values.descriptionB) {
       onChange(setDescriptionB, values.descriptionB);
+    }
+    if (values.descriptionI) {
+      onChange(setDescriptionI, values.descriptionI);
+    }
+    if (values.titleI) {
+      onChange(setTitleI, values.titleI);
     }
   };
 
@@ -60,6 +80,11 @@ const AddPost = () => {
         );
       case POST_TYPE_TEXT.BIRTHDAY_ANNIVERSARY:
         return <BirthdayContent uploadFilesB={uploadFilesB} setUploadFilesB={setUploadFilesB} />;
+      case POST_TYPE_TEXT.IMAGES:
+        return <ImagesContent uploadFilesI={uploadFilesI} setUploadFilesI={setUploadFilesI} />;
+      case POST_TYPE_TEXT.BANNER:
+        return <BannerContent uploadFilesBN={uploadFilesBN} setUploadFilesBN={setUploadFilesBN} />;
+
       default:
         return '';
     }
@@ -104,6 +129,12 @@ const AddPost = () => {
             descriptionB,
             uploadFilesB,
           }}
+          dataI={{
+            descriptionI,
+            uploadFilesI,
+            titleI,
+          }}
+          dataBN={{ uploadFilesBN }}
         />
       </div>
     );

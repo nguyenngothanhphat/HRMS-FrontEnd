@@ -24,6 +24,7 @@ const Card = (props) => {
   const {
     birthdayList = [],
     previewing = false,
+    // FOR PREVIEWING IN SETTINGS PAGE
     contentPreview: { previewImage = '', previewDescription = '' } = {},
   } = props;
 
@@ -147,12 +148,13 @@ const Card = (props) => {
         nextArrow={<NextArrow />}
         prevArrow={<PrevArrow />}
       >
-        {previewing && renderPreview()}
         {!previewing ? (
           <>{birthdayList.length > 0 ? birthdayList.map((x) => renderCard(x)) : renderEmpty()}</>
         ) : (
           ''
         )}
+        {/* FOR PREVIEWING IN SETTINGS PAGE */}
+        {previewing && renderPreview()}
       </Carousel>
     </div>
   );
