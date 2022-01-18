@@ -12,7 +12,7 @@ import styles from './index.less';
 const timeFormat = 'HH:mm a';
 const MeetingTag = (props) => {
   const myRef = useRef(null);
-  const { event: eventProp, span: spanProp, hourSpan: hourSpanProp = 1, dateSelected = '' } = props;
+  const { event: eventProp, span: spanProp, hourSpan: hourSpanProp = 1 } = props;
   const [showPopover, setShowPopover] = useState(false);
 
   // FUNCTIONS
@@ -80,17 +80,17 @@ const MeetingTag = (props) => {
       hangoutLink = '',
       // conferenceData = {}
     } = event || {};
-    const selectedDate = dateSelected ? moment(dateSelected).format('DD') : moment().format('DD');
-    let eventDate = '';
-    if (Number(moment(startTime).locale('en').format('DD')) === Number(selectedDate)) {
-      eventDate = moment(startTime).locale('en').format('dddd, MMMM DD');
-    } else if (Number(moment(startTime).locale('en').format('DD')) < Number(selectedDate)) {
-      eventDate = moment(startTime).locale('en').add(1, 'days').format('dddd, MMMM DD');
-    } else {
-      eventDate = moment(startTime).locale('en').subtract(1, 'days').format('dddd, MMMM DD');
-    }
-    // const eventDate = moment(startTime).tz('Asia/Ho_Chi_Minh').locale('en').format('dddd, MMMM DD');
-    const eventStartTime = moment(startTime).format('HH:mm a');
+    // const selectedDate = dateSelected ? moment(dateSelected).format('DD') : moment().format('DD');
+    // console.log('cgecc', moment(startTime).locale('en').tz(moment.tz.guess()).format('dddd, MMMM DD'))
+    // if (Number(moment(startTime).locale('en').format('DD')) === Number(selectedDate)) {
+    //   eventDate = moment(startTime).locale('en').format('dddd, MMMM DD');
+    // } else if (Number(moment(startTime).locale('en').format('DD')) < Number(selectedDate)) {
+    //   eventDate = moment(startTime).locale('en').add(1, 'days').format('dddd, MMMM DD');
+    // } else {
+    //   eventDate = moment(startTime).locale('en').subtract(1, 'days').format('dddd, MMMM DD');
+    // }
+    const eventDate = moment(startTime.split('+')[0]).locale('en').format('dddd, MMMM DD');
+    const eventStartTime = moment(startTime.split('+')[0]).format('HH:mm a');
     const eventEndTime = moment(endTime).format('HH:mm a');
     const eventFinalDate = `${eventDate} - ${eventStartTime} - ${eventEndTime}`;
     return (
@@ -162,8 +162,8 @@ const MeetingTag = (props) => {
             {event.summary}
             {hourSpanProp > 1 && (
               <span className={styles.extraTime}>
-                {moment(event.start.dateTime).format(timeFormat)} -{' '}
-                {moment(event.end.dateTime).format(timeFormat)}
+                {moment((event.start.dateTime).split('+')[0]).format(timeFormat)} -{' '}
+                {moment((event.end.dateTime).split('+')[0]).format(timeFormat)}
               </span>
             )}
           </div>

@@ -16,16 +16,16 @@ const MyCalendar = (props) => {
     return moment().format('HH:mm')
   }
 
-  const scrollCurrentTime = () => {
-    return document.getElementById('checkCurrentTime')?.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-      inline: "center"
-    });
-  }
-  useEffect(() => {
-    scrollCurrentTime();
-  }, [])
+  // const scrollCurrentTime = () => {
+  //   return document.getElementById('checkCurrentTime')?.scrollIntoView({
+  //     behavior: "smooth",
+  //     block: "center",
+  //     inline: "center"
+  //   });
+  // }
+  // useEffect(() => {
+  //   scrollCurrentTime();
+  // }, [])
 
   // USE EFFECT
   useEffect(() => {
@@ -120,12 +120,12 @@ const MyCalendar = (props) => {
   // setInterval(() => {
   //   renderCurrentDate()
   // }, 1000);
-  const checkCurrentTime = (hour) => {
-    if(Number(moment().format('HH')) === hour){
-      return <div id='checkCurrentTime' />
-    }
-    return ''
-  }
+  // const checkCurrentTime = (hour) => {
+  //   if(Number(moment().format('HH')) === hour){
+  //     return <div id='checkCurrentTime' />
+  //   }
+  //   return ''
+  // }
 
   // RENDER UI
   const renderRow = (hour, events = []) => {
@@ -134,15 +134,15 @@ const MyCalendar = (props) => {
     if (eventCount > 3) {
       colSpan = 24;
     }
-    const timeEvent = events.length > 0 ? moment(events[0].start.dateTime).hour() : -1;
+    // const timeEvent = events.length > 0 ? moment(events[0].start.dateTime).hour() : -1;
     const renderHour = (h) => {
       if (hour < 12) return `${h} AM`;
       if (hour === 12) return `12 PM`;
       return `${h - 12} PM`;
     };
     // && events.length === 0
-    // const checkCurrentTime = dateToFormat ? dateToFormat.split(':')[0] : moment().format('HH');
-    // if ((checkCurrentTime < hour + 3 || checkCurrentTime > hour - 3) && events.length === 0) return '';
+    const checkCurrent = dateToFormat ? dateToFormat.split(':')[0] : moment().format('HH');
+    if ((checkCurrent > hour + 3 || checkCurrent < hour - 3) && events.length === 0) return null;
     return (
       <Row className={styles.eachRow} justify="center" align="top">
         <Col xs={4} xl={3} className={styles.eachRow__left}>
@@ -151,8 +151,8 @@ const MyCalendar = (props) => {
         <Col xs={20} xl={21} className={styles.eachRow__right}>
           <Row gutter={[16, 16]}>
             <span style={{width: '100%'}}>
-              {checkCurrentTime(hour)}
-              {renderCurrentDate(hour, dateToFormat, timeEvent)}
+              {/* {checkCurrentTime(hour)} */}
+              {renderCurrentDate(hour, dateToFormat)}
               {events.map((event) => {
                 return (
                   <MeetingTag
@@ -188,7 +188,7 @@ const MyCalendar = (props) => {
     return (
       <div className={styles.mainContainer} style={isInModal ? { maxHeight: '600px' } : {}}>
         {hourList.map((hour) => {
-          const filter = data.filter((item) => moment(item.start.dateTime).hour() === hour);
+          const filter = data.filter((item) => moment((item.start.dateTime).split('+')[0]).hour() === hour);
           return renderRow(hour, filter);
         })}
       </div>
