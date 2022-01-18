@@ -175,3 +175,17 @@ export async function getBirthdayInWeek(data) {
     data,
   });
 }
+
+export async function getMyTeamLeaveRequestList(payload) {
+  return request('/api/leaverequesttenant/get-team-request', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getTimeOffTypeByCountry(payload) {
+  return request('/api/timeofftypetenant/get-by-country', {
+    method: 'POST',
+    data: payload,
+  });
+}

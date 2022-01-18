@@ -24,13 +24,25 @@ const MyTeam = (props) => {
     roles = [],
     // listLocationsByCompany = [],
     // employee: { departmentInfo: { name: departmentName = '' } = {} } = {},
-    employee = {}
+    employee = {},
+    timeOffTypesByCountry = [],
   } = props;
+  const checkLocation = employee ? employee.location : {};
+  const country = checkLocation ? employee.location.headQuarterAddress.country : '';
+
+  useEffect(() => {
+    dispatch({
+      type: 'dashboard/fetchTimeOffTypesByCountry',
+      payload: {
+        country,
+      },
+    })
+  }, [])
 
   // USE EFFECT
-  useEffect(() => {
-    // refresh data by month here
-  }, [selectedMonth]);
+  // useEffect(() => {
+  //   // refresh data by month here
+  // }, [selectedMonth]);
 
   useEffect(() => {
     const roleEmployee = employee && employee?.title ? employee.title.roles : [];
@@ -77,7 +89,8 @@ const MyTeam = (props) => {
       </div>
     );
   };
-
+  // const filterListTimeOffType = timeOffTypesByCountry.filter((timeOffType) => timeOffType.type === 'A');
+  const listTimeOffType = timeOffTypesByCountry.map((item) => item._id);
   return (
     <div className={styles.MyTeam}>
       <div>
@@ -92,7 +105,7 @@ const MyTeam = (props) => {
             </TabPane>
             {checkRoleHrAndManager ? (
               <TabPane tab="Team Leave Calendar" key="2">
-                <TeamLeaveCalendar selectedMonth={selectedMonth} />
+                <TeamLeaveCalendar selectedMonth={selectedMonth} listTimeOffType={listTimeOffType} />
               </TabPane>
             ) : (
               ''
@@ -112,7 +125,7 @@ const MyTeam = (props) => {
 
 export default connect(
   ({
-    dashboard: { myTeam = [] } = {},
+    dashboard: { myTeam = [], timeOffTypesByCountry = [] } = {},
     locationSelection: { listLocationsByCompany = [] } = {},
     user: { currentUser: { roles = [], employee = {} } = {} } = {},
   }) => ({
@@ -120,5 +133,6 @@ export default connect(
     employee,
     myTeam,
     listLocationsByCompany,
+    timeOffTypesByCountry
   }),
 )(MyTeam);
