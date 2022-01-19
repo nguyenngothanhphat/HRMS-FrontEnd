@@ -86,11 +86,7 @@ const PostCard = (props) => {
 
   return (
     <div className={styles.PostCard}>
-      <Tabs
-        defaultActiveKey={TAB_IDS.ANNOUNCEMENTS}
-        destroyInactiveTabPane
-        tabBarExtraContent={options()}
-      >
+      <Tabs defaultActiveKey={TAB_IDS.POLLS} destroyInactiveTabPane tabBarExtraContent={options()}>
         {tabs.map((x) => (
           <Tabs.TabPane tab={getTabName(x)} key={x.id}>
             {x.component}

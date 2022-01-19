@@ -7,7 +7,7 @@
       .ant-card-head {
         display: flex;
         align-items: center;
-        height: 75px;
+        height: 70px;
         border-bottom: 1px solid #d6dce0;
         .ant-card-head-wrapper {
           display: flex;
@@ -33,6 +33,11 @@
         font-size: 13px;
         line-height: 15px;
       }
+    }
+    .ant-input-textarea-show-count::after {
+      margin-top: 5px !important;
+      color: #707177;
+      font-size: 13px !important;
     }
 
     // SELECT
@@ -103,8 +108,19 @@
       }
     }
   }
+  .backBtn {
+    color: #2c6df9;
+    font-weight: 500;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    padding-inline: 5px !important;
+  }
   .formContainer {
-    padding: 24px;
+    .form {
+      padding: 16px 24px;
+    }
   }
   .previewContainer {
     .title {
@@ -112,6 +128,37 @@
       font-weight: bold;
       font-size: 16px;
       line-height: 19px;
+    }
+  }
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 16px 24px;
+    text-align: right;
+    border-top: 1px solid #d6dce0;
+    // border-top: 1px solid #e1dfdf;
+    .btnPost {
+      height: 40px;
+      margin-left: 20px;
+      color: #fff;
+      font-weight: 500;
+      background-color: #ffa100;
+      border: none;
+      border-radius: 25px;
+      outline: none;
+      box-shadow: none;
+      padding-inline: 25px;
+    }
+    .btnReset {
+      color: #ffa100;
+      font-weight: 500;
+      font-size: 14px;
+      background-color: #fff;
+      border: none;
+      outline: none;
+      box-shadow: none;
     }
   }
 }

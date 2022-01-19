@@ -1,4 +1,4 @@
-import { Card, Col, Form, Row, Select } from 'antd';
+import { Card, Button, Col, Form, Row, Select } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
@@ -15,101 +15,55 @@ import PollContent from './components/PollContent';
 // B: BIRTHDAY/ANNIVERSARY
 // P: POLL
 // I: IMAGES
+// BN: BANNER
 
-const AddPost = () => {
+const AddPost = (props) => {
   const [form] = Form.useForm();
   const [mode, setMode] = useState(POST_TYPE_TEXT.ANNOUNCEMENT);
+  const [formValues, setFormValues] = useState({});
 
-  // announcement content
-  const [uploadFilesA, setUploadFilesA] = useState([]);
-  const [descriptionA, setDescriptionA] = useState('');
-
-  // birthday content
-  const [uploadFilesB, setUploadFilesB] = useState([]);
-  const [descriptionB, setDescriptionB] = useState('');
-
-  // images content
-  const [uploadFilesI, setUploadFilesI] = useState([]);
-  const [descriptionI, setDescriptionI] = useState('');
-  const [titleI, setTitleI] = useState('');
-
-  // banner
-  const [uploadFilesBN, setUploadFilesBN] = useState([]);
-
-  // poll
-  const [questionP, setQuestionP] = useState('');
-  const [responsesP, setResponsesP] = useState([]);
-  const [startDateP, setStartDateP] = useState('');
-  const [endDateP, setEndDateP] = useState('');
+  const { onBack = () => {} } = props;
 
   // FUNCTIONS
   const onModeChange = (val) => {
     setMode(val);
   };
 
-  useEffect(() => {
-    setUploadFilesA([]);
-    setDescriptionA('');
-    setUploadFilesB([]);
-    setDescriptionB('');
-    setUploadFilesI([]);
-    setDescriptionI('');
-    setTitleI('');
-    setUploadFilesBN([]);
-    setQuestionP('');
-    setResponsesP([]);
-    setStartDateP('');
-    setEndDateP('');
+  const onReset = () => {
     form.resetFields();
+    setFormValues({});
+  };
+
+  useEffect(() => {
+    onReset();
   }, [mode]);
 
   // announcements
-  const onChange = debounce((fnc, value) => {
-    fnc(value);
+  const setFormValuesDebounce = debounce((values) => {
+    setFormValues(values);
   }, 1000);
 
   const onValuesChange = () => {
     const values = form.getFieldsValue();
+    setFormValuesDebounce(values);
+  };
 
-    if (values.descriptionA) {
-      onChange(setDescriptionA, values.descriptionA);
-    }
-    if (values.descriptionB) {
-      onChange(setDescriptionB, values.descriptionB);
-    }
-    if (values.descriptionI) {
-      onChange(setDescriptionI, values.descriptionI);
-    }
-    if (values.titleI) {
-      onChange(setTitleI, values.titleI);
-    }
-    if (values.questionP) {
-      onChange(setQuestionP, values.questionP);
-    }
-    if (values.responsesP) {
-      onChange(setResponsesP, values.responsesP);
-    }
-    if (values.startDateP) {
-      onChange(setStartDateP, values.startDateP);
-    }
-    if (values.endDateP) {
-      onChange(setEndDateP, values.endDateP);
-    }
+  const onPost = (values) => {
+    // eslint-disable-next-line no-console
+    console.log('🚀 ~ onPost ~ values', values);
   };
 
   // RENDER UI
   const renderTypeContent = () => {
     switch (mode) {
       case POST_TYPE_TEXT.ANNOUNCEMENT:
-        return (
-          <AnnouncementContent uploadFilesA={uploadFilesA} setUploadFilesA={setUploadFilesA} />
-        );
+        return <AnnouncementContent formValues={formValues} setFormValues={setFormValues} />;
       case POST_TYPE_TEXT.BIRTHDAY_ANNIVERSARY:
-        return <BirthdayContent uploadFilesB={uploadFilesB} setUploadFilesB={setUploadFilesB} />;
+        return <BirthdayContent formValues={formValues} setFormValues={setFormValues} />;
       case POST_TYPE_TEXT.IMAGES:
-        return <ImagesContent uploadFilesI={uploadFilesI} setUploadFilesI={setUploadFilesI} />;
+        return <ImagesContent formValues={formValues} setFormValues={setFormValues} />;
       case POST_TYPE_TEXT.BANNER:
-        return <BannerContent uploadFilesBN={uploadFilesBN} setUploadFilesBN={setUploadFilesBN} />;
+        return <BannerContent formValues={formValues} setFormValues={setFormValues} />;
       case POST_TYPE_TEXT.POLL:
         return <PollContent />;
       default:
@@ -122,13 +76,15 @@ const AddPost = () => {
       <div className={styles.formContainer}>
         <Form
           layout="vertical"
-          name="filter"
+          name="myForm"
           form={form}
+          className={styles.form}
           onValuesChange={onValuesChange}
           initialValues={{
             postType: mode,
             responsesP: [{}, {}, {}],
           }}
+          onFinish={onPost}
         >
           <Form.Item label="Post Type" name="postType">
             <Select showArrow style={{ width: '100%' }} onChange={onModeChange}>
@@ -143,6 +99,20 @@ const AddPost = () => {
           </Form.Item>
           {renderTypeContent()}
         </Form>
+        <div className={styles.footer}>
+          <Button className={styles.btnReset} onClick={onReset}>
+            Reset
+          </Button>
+          <Button
+            className={styles.btnPost}
+            type="primary"
+            form="myForm"
+            key="submit"
+            htmlType="submit"
+          >
+            Post
+          </Button>
+        </div>
       </div>
     );
   };
@@ -150,33 +120,25 @@ const AddPost = () => {
     return (
       <div className={styles.previewContainer}>
         <p className={styles.title}>Preview post</p>
-        <Preview
-          mode={mode}
-          dataA={{ uploadFilesA, descriptionA }}
-          dataB={{
-            descriptionB,
-            uploadFilesB,
-          }}
-          dataI={{
-            descriptionI,
-            uploadFilesI,
-            titleI,
-          }}
-          dataBN={{ uploadFilesBN }}
-          dataP={{
-            questionP,
-            responsesP,
-            startDateP,
-            endDateP,
-          }}
-        />
+        <Preview mode={mode} formValues={formValues} />
       </div>
     );
   };
+
+  const renderOptions = () => {
+    return (
+      <Button className={styles.backBtn} onClick={onBack}>
+        Cancel
+      </Button>
+    );
+  };
+
   return (
     <Row className={styles.AddPost} gutter={[24, 24]}>
       <Col xs={24} xl={14}>
-        <Card title="Add Post">{renderForm()}</Card>
+        <Card title="Add Post" extra={renderOptions()}>
+          {renderForm()}
+        </Card>
       </Col>
       <Col xs={24} xl={10}>
         {renderPreview()}

@@ -22,19 +22,28 @@ const Options = (props) => {
       <div className={styles.Options}>
         <p className={styles.questionText}>{previewQuestion}</p>
         <Row gutter={[0, 10]} className={styles.poll}>
-          {previewOptions.map((reply) => {
-            if (!reply.response) return '';
-            return (
-              <Col span={24}>
-                <div className={styles.reply}>
-                  <span>{reply.response}</span>
-                </div>
-              </Col>
-            );
-          })}
+          {previewOptions.length > 0
+            ? previewOptions.map((reply, index) => {
+                return (
+                  <Col span={24}>
+                    <div className={styles.reply}>
+                      <span>{reply.response || `Response ${index + 1}`}</span>
+                    </div>
+                  </Col>
+                );
+              })
+            : [1, 2, 3].map((reply, index) => {
+                return (
+                  <Col span={24}>
+                    <div className={styles.reply}>
+                      <span>Response {index + 1}</span>
+                    </div>
+                  </Col>
+                );
+              })}
         </Row>
         <div className={styles.votingInformation}>
-          <span className={styles.number}>250 votes</span>
+          <span className={styles.number}>0 votes</span>
           <img src={GrayDot} alt="" />
           <span className={styles.dueTime}>2d left</span>
         </div>

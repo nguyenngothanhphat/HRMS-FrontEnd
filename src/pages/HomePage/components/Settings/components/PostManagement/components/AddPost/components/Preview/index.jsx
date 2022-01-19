@@ -13,11 +13,20 @@ import Options from '@/pages/HomePage/components/Voting/components/Options';
 const Preview = (props) => {
   const {
     mode = '',
-    dataA: { uploadFilesA = [], descriptionA = '' } = {},
-    dataB: { uploadFilesB = [], descriptionB = '' } = {},
-    dataBN: { uploadFilesBN = [] } = {},
-    dataI: { titleI = '', uploadFilesI = [], descriptionI = '' } = {},
-    dataP: { questionP = '', responsesP = [], startDateP = '', endDateP = '' } = {},
+    formValues: {
+      uploadFilesA = [],
+      descriptionA = '',
+      uploadFilesB = [],
+      descriptionB = '',
+      uploadFilesBN = [],
+      titleI = '',
+      uploadFilesI = [],
+      descriptionI = '',
+      questionP = '',
+      responsesP = [],
+      startDateP = '',
+      endDateP = '',
+    },
   } = props;
 
   const [announcementContent, setAnnouncementContent] = useState({
@@ -46,7 +55,7 @@ const Preview = (props) => {
     // eslint-disable-next-line compat/compat
     Promise.all(
       arr.map((x) => {
-        return toBase64(x);
+        return toBase64(x.originFileObj);
       }),
     ).then((data) => {
       func({ imageUrls: data });
@@ -54,8 +63,8 @@ const Preview = (props) => {
   };
 
   useEffect(() => {
-    if (uploadFilesA.length > 0) {
-      getBase64Arr(uploadFilesA, setAnnouncementContent);
+    if (uploadFilesA?.fileList && uploadFilesA.fileList.length > 0) {
+      getBase64Arr(uploadFilesA.fileList, setAnnouncementContent);
     } else {
       setAnnouncementContent({
         imageUrls: [],
@@ -64,8 +73,8 @@ const Preview = (props) => {
   }, [JSON.stringify(uploadFilesA)]);
 
   useEffect(() => {
-    if (uploadFilesB.length > 0) {
-      getBase64Arr(uploadFilesB, setBirthdayContent);
+    if (uploadFilesB?.fileList && uploadFilesB.fileList.length > 0) {
+      getBase64Arr(uploadFilesB.fileList, setBirthdayContent);
     } else {
       setBirthdayContent({
         imageUrls: [],
@@ -74,8 +83,8 @@ const Preview = (props) => {
   }, [JSON.stringify(uploadFilesB)]);
 
   useEffect(() => {
-    if (uploadFilesI.length > 0) {
-      getBase64Arr(uploadFilesI, setImagesContent);
+    if (uploadFilesI?.fileList && uploadFilesI.fileList.length > 0) {
+      getBase64Arr(uploadFilesI.fileList, setImagesContent);
     } else {
       setImagesContent({
         imageUrls: [],
@@ -84,8 +93,8 @@ const Preview = (props) => {
   }, [JSON.stringify(uploadFilesI)]);
 
   useEffect(() => {
-    if (uploadFilesBN.length > 0) {
-      getBase64Arr(uploadFilesBN, setBannerContent);
+    if (uploadFilesBN?.fileList && uploadFilesBN.fileList.length > 0) {
+      getBase64Arr(uploadFilesBN.fileList, setBannerContent);
     } else {
       setBannerContent({
         imageUrls: [],

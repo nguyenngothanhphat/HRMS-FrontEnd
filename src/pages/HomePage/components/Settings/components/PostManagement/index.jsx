@@ -5,10 +5,14 @@ import AddPost from './components/AddPost';
 import styles from './index.less';
 
 const PostManagement = () => {
-  const [addingPost, setAddingPost] = useState(true);
+  const [addingPost, setAddingPost] = useState(false);
   return (
     <div className={styles.PostManagement}>
-      {addingPost ? <AddPost /> : <PostCard onAddPost={() => setAddingPost(true)} />}
+      {addingPost ? (
+        <AddPost onBack={() => setAddingPost(false)} />
+      ) : (
+        <PostCard onAddPost={() => setAddingPost(true)} />
+      )}
     </div>
   );
 };

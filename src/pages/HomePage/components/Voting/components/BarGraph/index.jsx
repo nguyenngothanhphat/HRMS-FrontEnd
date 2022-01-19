@@ -4,11 +4,13 @@ import styles from './index.less';
 import GrayDot from '@/assets/homePage/grayDot.svg';
 
 const BarGraph = (props) => {
-  const { options = [] } = props;
+  const { options = [], showTitle = true } = props;
 
   return (
     <div className={styles.BarGraph}>
-      <p className={styles.questionText}>How do you feel about getting back to office?</p>
+      {showTitle && (
+        <p className={styles.questionText}>How do you feel about getting back to office?</p>
+      )}
       <Row gutter={[0, 10]} className={styles.poll}>
         {options.map((reply) => (
           <Col span={24}>
