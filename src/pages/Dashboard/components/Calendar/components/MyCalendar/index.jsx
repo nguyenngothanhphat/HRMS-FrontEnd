@@ -16,16 +16,18 @@ const MyCalendar = (props) => {
     return moment().format('HH:mm')
   }
 
-  // const scrollCurrentTime = () => {
-  //   return document.getElementById('checkCurrentTime')?.scrollIntoView({
-  //     behavior: "smooth",
-  //     block: "center",
-  //     inline: "center"
-  //   });
-  // }
-  // useEffect(() => {
-  //   scrollCurrentTime();
-  // }, [])
+  const scrollCurrentTime = () => {
+    return document.getElementById('checkCurrentTime')?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+      inline: "center"
+    });
+  }
+  useEffect(() => {
+    if(isInModal === true){
+      scrollCurrentTime();
+    }
+  })
 
   // USE EFFECT
   useEffect(() => {
@@ -120,12 +122,12 @@ const MyCalendar = (props) => {
   // setInterval(() => {
   //   renderCurrentDate()
   // }, 1000);
-  // const checkCurrentTime = (hour) => {
-  //   if(Number(moment().format('HH')) === hour){
-  //     return <div id='checkCurrentTime' />
-  //   }
-  //   return ''
-  // }
+  const checkCurrentTime = (hour) => {
+    if(Number(moment().format('HH')) === hour){
+      return <div id='checkCurrentTime' />
+    }
+    return ''
+  }
 
   // RENDER UI
   const renderRow = (hour, events = []) => {
@@ -142,7 +144,9 @@ const MyCalendar = (props) => {
     };
     // && events.length === 0
     const checkCurrent = dateToFormat ? dateToFormat.split(':')[0] : moment().format('HH');
-    if ((checkCurrent > hour + 3 || checkCurrent < hour - 3) && events.length === 0) return null;
+    if(isInModal === false){
+      if ((checkCurrent > hour + 3 || checkCurrent < hour - 3) && events.length === 0) return null;
+    }
     return (
       <Row className={styles.eachRow} justify="center" align="top">
         <Col xs={4} xl={3} className={styles.eachRow__left}>
@@ -151,7 +155,7 @@ const MyCalendar = (props) => {
         <Col xs={20} xl={21} className={styles.eachRow__right}>
           <Row gutter={[16, 16]}>
             <span style={{width: '100%'}}>
-              {/* {checkCurrentTime(hour)} */}
+              {checkCurrentTime(hour)}
               {renderCurrentDate(hour, dateToFormat)}
               {events.map((event) => {
                 return (
