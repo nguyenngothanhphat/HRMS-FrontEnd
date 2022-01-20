@@ -86,7 +86,7 @@ const HomePage = () => {
         </Col>
       </Row>
       {/* Developing  */}
-      {renderSettingIcon()}
+      {/* {renderSettingIcon()} */}
     </div>
   );
 };
