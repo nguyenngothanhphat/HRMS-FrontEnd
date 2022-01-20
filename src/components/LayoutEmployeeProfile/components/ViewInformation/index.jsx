@@ -143,7 +143,8 @@ class ViewInformation extends Component {
         id: item._id,
       };
     });
-    const listFormatOther = otherSkills?.map((item) => {
+    const checkTypeOf = otherSkills instanceof Array ? otherSkills : [otherSkills];
+    const listFormatOther = checkTypeOf?.map((item) => {
       if (temp >= 5) {
         temp -= 5;
       }
@@ -382,6 +383,8 @@ class ViewInformation extends Component {
       // workNumber = '',
       certification = [],
       userId = '',
+      skills = [],
+      otherSkills = []
     } = generalData;
 
     // const { tittle: { name: title = '' } = {} } = compensationData;
@@ -413,7 +416,7 @@ class ViewInformation extends Component {
       },
     ];
     const formatListSkill =
-      this.formatListSkill(generalData.skills || [], generalData.otherSkills || [], listColors) ||
+      this.formatListSkill(skills,otherSkills, listColors) ||
       [];
 
     const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);

@@ -91,7 +91,7 @@ const MeetingTag = (props) => {
     // }
     const eventDate = moment(startTime.split('+')[0]).locale('en').format('dddd, MMMM DD');
     const eventStartTime = moment(startTime.split('+')[0]).format('HH:mm a');
-    const eventEndTime = moment(endTime).format('HH:mm a');
+    const eventEndTime = moment(endTime).split('+')[0].format('HH:mm a');
     const eventFinalDate = `${eventDate} - ${eventStartTime} - ${eventEndTime}`;
     return (
       <div className={styles.popupEvent}>
