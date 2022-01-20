@@ -40,7 +40,7 @@ const ticketManagement = {
         if (statusCode !== 200) throw response;
         notification.success({ message: 'Raise Ticket Successfully' });
         yield put({
-          type: 'refeshfetchListAllTicket',
+          type: 'refreshListAllTicket',
           payload: {
             status: ['New'],
             tenantId: getCurrentTenant(),
@@ -82,9 +82,23 @@ const ticketManagement = {
         dialog(error);
       }
     },
-    *refeshfetchListAllTicket({ payload }, { call, put }) {
+    *refreshListAllTicket({ payload }, { call, put, select }) {
       try {
-        const response = yield call(getOffAllTicketList, payload);
+        const { departmentPayload } = yield select((state) => state.ticketManagement);
+
+        let tempPayload = {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        };
+        if (departmentPayload && departmentPayload.length > 0) {
+          tempPayload = {
+            ...tempPayload,
+            department: departmentPayload,
+          };
+        }
+
+        const response = yield call(getOffAllTicketList, tempPayload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         const ticketList = data.filter((val) => val.status === 'New');
@@ -94,11 +108,6 @@ const ticketManagement = {
         });
         yield put({
           type: 'fetchToTalList',
-          payload: {
-            payload: {},
-            tenantId: getCurrentTenant(),
-            company: getCurrentCompany(),
-          },
         });
       } catch (error) {
         dialog(error);
@@ -119,7 +128,7 @@ const ticketManagement = {
           payload: { ticketDetail: data.length > 0 ? data[0] : [] },
         });
         yield put({
-          type: 'refeshfetchListAllTicket',
+          type: 'refreshListAllTicket',
           payload: {
             status: ['New'],
             tenantId: getCurrentTenant(),
@@ -165,14 +174,22 @@ const ticketManagement = {
       }
       return response;
     },
-    *fetchListAllTicket({ payload }, { call, put }) {
+    *fetchListAllTicket({ payload }, { call, put, select }) {
       let response;
       try {
-        response = yield call(getOffAllTicketList, {
-          ...payload,
+        const { departmentPayload } = yield select((state) => state.ticketManagement);
+        let tempPayload = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-        });
+          ...payload,
+        };
+        if (departmentPayload && departmentPayload.length > 0) {
+          tempPayload = {
+            ...tempPayload,
+            department: departmentPayload,
+          };
+        }
+        response = yield call(getOffAllTicketList, tempPayload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -184,13 +201,22 @@ const ticketManagement = {
       }
       return response;
     },
-    *fetchToTalList({ payload }, { call, put }) {
+    *fetchToTalList({ payload }, { call, put, select }) {
       try {
-        const response = yield call(getOffToTalList, {
-          ...payload,
+        const { departmentPayload } = yield select((state) => state.ticketManagement);
+        let tempPayload = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-        });
+          ...payload,
+        };
+        if (departmentPayload && departmentPayload.length > 0) {
+          tempPayload = {
+            ...tempPayload,
+            department: departmentPayload,
+          };
+        }
+
+        const response = yield call(getOffToTalList, tempPayload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -219,12 +245,13 @@ const ticketManagement = {
       }
     },
     *fetchDepartments({ payload }, { call, put }) {
+      let res = {};
       try {
-        const response = yield call(getDepartmentList, {
+        res = yield call(getDepartmentList, {
           ...payload,
         });
-        const { statusCode, data } = response;
-        if (statusCode !== 200) throw response;
+        const { statusCode, data } = res;
+        if (statusCode !== 200) throw res;
         yield put({
           type: 'save',
           payload: { listDepartment: data },
@@ -232,6 +259,7 @@ const ticketManagement = {
       } catch (error) {
         dialog(error);
       }
+      return res;
     },
 
     *fetchTicketByID({ payload }, { call, put }) {
