@@ -16,15 +16,15 @@ const {
 } = ROLES;
 
 const routes = [
-  {
-    path: '/',
-    redirect: '/dashboard',
-    authority: [OWNER],
-  },
+  // {
+  //   path: '/',
+  //   redirect: '/dashboard',
+  //   authority: [OWNER],
+  // },
   {
     path: '/',
     redirect: '/home',
-    authority: [EMPLOYEE],
+    // authority: [EMPLOYEE],
   },
   {
     path: '/signin-google',
@@ -244,16 +244,12 @@ const routes = [
           },
           {
             path: '/home/settings',
+            // hideInMenu: true,
+            // component: './HomePage/components/Settings',
+            redirect: '/home/settings/post-management',
+          },
+          {
             name: 'homeSettings',
-            hideInMenu: true,
-            component: './HomePage/components/Settings',
-          },
-          {
-            path: '/home/post-management/add',
-            name: 'homeSettingAddPost',
-            hideInMenu: true,
-          },
-          {
             path: '/home/settings/:reId',
             hideInMenu: true,
             component: './HomePage/components/Settings',
