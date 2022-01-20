@@ -1,15 +1,17 @@
 /* eslint-disable no-nested-ternary */
 import { Carousel } from 'antd';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect, history } from 'umi';
 import BirthdayImage from '@/assets/homePage/birthday.png';
 import NextIcon from '@/assets/homePage/next.svg';
 import PrevIcon from '@/assets/homePage/prev.svg';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import styles from './index.less';
-// import LikeIcon from '@/assets/homePage/like.svg';
-// import CommentIcon from '@/assets/homePage/comment.svg';
+import LikeIcon from '@/assets/homePage/like.svg';
+import CommentIcon from '@/assets/homePage/comment.svg';
+import CommonModal from '../../../CommonModal';
+import CelebratingDetailModalContent from '../CelebratingDetailModalContent';
 
 const NextArrow = (props) => {
   const { className, style, onClick } = props;
@@ -28,6 +30,9 @@ const Card = (props) => {
     // FOR PREVIEWING IN SETTINGS PAGE
     contentPreview: { previewImage = '', previewDescription = '' } = {},
   } = props;
+
+  const [celebratingDetailModalVisible, setCelebratingDetailModalVisible] = useState(false);
+  const [viewingItem, setViewingItem] = useState('');
 
   const onViewProfileClick = (userId) => {
     if (userId) {
@@ -102,12 +107,18 @@ const Card = (props) => {
               <img src={LikeIcon} alt="" />
               <span>{card.likes || 0} Likes</span>
             </div>
-            <div className={styles.comments}>
+            <div
+              className={styles.comments}
+              onClick={() => {
+                setViewingItem(card);
+                setCelebratingDetailModalVisible(true);
+              }}
+            >
               <img src={CommentIcon} alt="" />
               <span>{card.comments || 0} Comments</span>
             </div>
-          </div> */}
-        </div>
+          </div>
+        </div> */}
       </div>
     );
   };
@@ -156,6 +167,14 @@ const Card = (props) => {
           : renderPreview()}
         {/* FOR PREVIEWING IN SETTINGS PAGE */}
       </Carousel>
+      <CommonModal
+        visible={celebratingDetailModalVisible}
+        onClose={() => setCelebratingDetailModalVisible(false)}
+        title="Say Happy Birthday!"
+        content={<CelebratingDetailModalContent item={viewingItem} />}
+        width={500}
+        hasFooter={false}
+      />
     </div>
   );
 };

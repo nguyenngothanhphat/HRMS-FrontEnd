@@ -4,7 +4,7 @@ import CommonTable from '../CommonTable';
 import styles from './index.less';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
 import ChartIcon from '@/assets/homePage/chartIcon.svg';
-import CommonModal from '../CommonModal';
+import CommonModal from '@/pages/HomePage/components/CommonModal';
 import ChartPreviewModalContent from './components/ChartPreviewModalContent';
 
 const mockData = [

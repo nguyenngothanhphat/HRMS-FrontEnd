@@ -42,7 +42,10 @@ const Carousel = (props) => {
   ];
 
   return (
-    <div className={styles.Carousel}>
+    <div
+      className={styles.Carousel}
+      style={previewing ? { border: 'none', borderRadius: 0 } : null}
+    >
       <CarouselAntd
         infinite
         arrows

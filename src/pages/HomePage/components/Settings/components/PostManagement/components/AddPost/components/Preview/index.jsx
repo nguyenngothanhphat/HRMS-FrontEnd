@@ -114,13 +114,7 @@ const Preview = (props) => {
           name: 'Head of Design',
         },
       },
-      content: (
-        <p>
-          {Parser(descriptionA) ||
-            `We are extremely joyful to announce that we have won DNA Paris Design Awards 2021 & that
-          marks a hat trick of us winning this award from 2019 to 2021! 🎊`}
-        </p>
-      ),
+      content: <p>{descriptionA ? Parser(descriptionA) : 'Description here'}</p>,
       type: 2, // 1: link, 2: image
       image:
         announcementContent.imageUrls.length > 0 ? announcementContent.imageUrls[0] : PreviewImage,
@@ -174,9 +168,9 @@ const Preview = (props) => {
         );
       case POST_TYPE_TEXT.BANNER:
         return (
-          <div style={{ padding: '24px' }}>
-            <Carousel previewing contentPreview={bannerContent.imageUrls} />
-          </div>
+          // <div style={{ padding: '24px' }}>
+          <Carousel previewing contentPreview={bannerContent.imageUrls} />
+          // </div>
         );
 
       case POST_TYPE_TEXT.POLL:
