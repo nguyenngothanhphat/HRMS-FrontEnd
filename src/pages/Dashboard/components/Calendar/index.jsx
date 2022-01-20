@@ -27,10 +27,9 @@ const Calendar = (props) => {
     googleCalendarList = [],
     holidaysListByCountry = [],
     loadingSyncGoogleCalendar = false,
-    currentUser: {
-      location = {}
-    } = {},
+    currentUser: { location = {} } = {},
   } = props;
+
   // API
   const syncGoogleCalendarAPI = async (date) => {
     const res = await dispatch({
@@ -99,7 +98,8 @@ const Calendar = (props) => {
     setSelectedYear(selectedYear + 1);
   };
 
-  const filterHoliday = holidaysListByCountry.filter((obj) => obj.date.dateTime.year === selectedYear.toString()) || [];
+  const filterHoliday =
+    holidaysListByCountry.filter((obj) => obj.date.dateTime.year === selectedYear.toString()) || [];
 
   const renderHolidayCalendarAction = () => {
     return (
@@ -124,7 +124,11 @@ const Calendar = (props) => {
           <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
             <TabPane tab="My Calendar" key="1">
               {isSyncSuccess && isGoogleSignIn ? (
-                <MyCalendar data={googleCalendarList} loading={loadingSyncGoogleCalendar} />
+                <MyCalendar
+                  data={googleCalendarList}
+                  loading={loadingSyncGoogleCalendar}
+                  selectedDate={selectedDate}
+                />
               ) : (
                 <GoogleSync />
               )}
@@ -155,7 +159,11 @@ const Calendar = (props) => {
 };
 
 export default connect(
-  ({ dashboard: { googleCalendarList = [], holidaysListByCountry = [] } = {}, loading,  user: { currentUser = {} } = {} }) => ({
+  ({
+    dashboard: { googleCalendarList = [], holidaysListByCountry = [] } = {},
+    loading,
+    user: { currentUser = {} } = {},
+  }) => ({
     googleCalendarList,
     loadingSyncGoogleCalendar: loading.effects['dashboard/syncGoogleCalendarEffect'],
     holidaysListByCountry,

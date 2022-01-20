@@ -25,7 +25,7 @@ import {
   getHolidaysByCountry,
   getMyTeamLeaveRequestList,
   getTimeOffTypeByCountry,
-    // HOME PAGE
+  // HOME PAGE
   getBirthdayInWeek,
 } from '../services/dashboard';
 import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
@@ -493,7 +493,7 @@ const dashboard = {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-        } );
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({

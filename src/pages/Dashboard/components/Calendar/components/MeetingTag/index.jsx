@@ -12,7 +12,7 @@ import styles from './index.less';
 const timeFormat = 'HH:mm a';
 const MeetingTag = (props) => {
   const myRef = useRef(null);
-  const { event: eventProp, span: spanProp, hourSpan: hourSpanProp = 1 } = props;
+  const { event: eventProp, span: spanProp, hourSpan: hourSpanProp = 1, selectedDate = '' } = props;
   const [showPopover, setShowPopover] = useState(false);
 
   // FUNCTIONS
@@ -80,19 +80,12 @@ const MeetingTag = (props) => {
       hangoutLink = '',
       // conferenceData = {}
     } = event || {};
-    // const selectedDate = dateSelected ? moment(dateSelected).format('DD') : moment().format('DD');
-    // console.log('cgecc', moment(startTime).locale('en').tz(moment.tz.guess()).format('dddd, MMMM DD'))
-    // if (Number(moment(startTime).locale('en').format('DD')) === Number(selectedDate)) {
-    //   eventDate = moment(startTime).locale('en').format('dddd, MMMM DD');
-    // } else if (Number(moment(startTime).locale('en').format('DD')) < Number(selectedDate)) {
-    //   eventDate = moment(startTime).locale('en').add(1, 'days').format('dddd, MMMM DD');
-    // } else {
-    //   eventDate = moment(startTime).locale('en').subtract(1, 'days').format('dddd, MMMM DD');
-    // }
-    const eventDate = moment(startTime.split('+')[0]).locale('en').format('dddd, MMMM DD');
-    const eventStartTime = moment(startTime.split('+')[0]).format('HH:mm a');
-    const eventEndTime = moment(endTime).split('+')[0].format('HH:mm a');
+
+    const eventDate = moment(startTime).locale('en').format('dddd, MMMM DD');
+    const eventStartTime = moment(startTime).format('HH:mm a');
+    const eventEndTime = moment(endTime).format('HH:mm a');
     const eventFinalDate = `${eventDate} - ${eventStartTime} - ${eventEndTime}`;
+
     return (
       <div className={styles.popupEvent}>
         <img
@@ -147,6 +140,11 @@ const MeetingTag = (props) => {
     const colorType = Math.floor(Math.random() * (max - min) + min);
     const colorClassName = getColorClassName(colorType);
     const tagClassName = getTagClassName(hourSpanProp);
+
+    const localDate = moment(selectedDate).format('MM/DD/YYYY');
+    const googleDate = moment(event.start.dateTime).format('MM/DD/YYYY');
+
+    if (localDate !== googleDate) return '';
     return (
       <Popover
         placement="rightTop"
@@ -162,8 +160,8 @@ const MeetingTag = (props) => {
             {event.summary}
             {hourSpanProp > 1 && (
               <span className={styles.extraTime}>
-                {moment((event.start.dateTime).split('+')[0]).format(timeFormat)} -{' '}
-                {moment((event.end.dateTime).split('+')[0]).format(timeFormat)}
+                {moment(event.start.dateTime).format(timeFormat)} -{' '}
+                {moment(event.end.dateTime).format(timeFormat)}
               </span>
             )}
           </div>
