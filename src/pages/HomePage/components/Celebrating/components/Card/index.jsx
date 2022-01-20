@@ -117,8 +117,8 @@ const Card = (props) => {
               <img src={CommentIcon} alt="" />
               <span>{card.comments || 0} Comments</span>
             </div>
-          </div>
-        </div> */}
+          </div> */}
+        </div>
       </div>
     );
   };
