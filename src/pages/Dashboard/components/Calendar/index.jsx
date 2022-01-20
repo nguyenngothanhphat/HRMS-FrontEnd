@@ -49,9 +49,9 @@ const Calendar = (props) => {
   }, []);
 
   useEffect(() => {
-    // if (isGoogleSignIn) {
-    syncGoogleCalendarAPI(selectedDate);
-    // }
+    if (isGoogleSignIn) {
+      syncGoogleCalendarAPI(selectedDate);
+    }
   }, [selectedDate]);
 
   useEffect(() => {
@@ -123,15 +123,15 @@ const Calendar = (props) => {
         <div className={styles.content}>
           <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
             <TabPane tab="My Calendar" key="1">
-              {/* {isSyncSuccess && isGoogleSignIn ? ( */}
-              <MyCalendar
-                data={googleCalendarList}
-                loading={loadingSyncGoogleCalendar}
-                selectedDate={selectedDate}
-              />
-              {/* ) : (
+              {isSyncSuccess && isGoogleSignIn ? (
+                <MyCalendar
+                  data={googleCalendarList}
+                  loading={loadingSyncGoogleCalendar}
+                  selectedDate={selectedDate}
+                />
+              ) : (
                 <GoogleSync />
-              )} */}
+              )}
             </TabPane>
             <TabPane tab="Holiday Calendar" key="2">
               <HolidayCalendar listHolidays={filterHoliday} />
