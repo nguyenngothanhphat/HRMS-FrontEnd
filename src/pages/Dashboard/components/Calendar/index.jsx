@@ -61,11 +61,11 @@ const Calendar = (props) => {
   // FUNCTION
   // MY CALENDAR
   const onPreviousDay = () => {
-    setSelectedDate(moment(selectedDate).subtract(1, 'days'));
+    setSelectedDate(moment(selectedDate).subtract(1, 'days').format());
   };
 
   const onNextDay = () => {
-    setSelectedDate(moment(selectedDate).add(1, 'days'));
+    setSelectedDate(moment(selectedDate).add(1, 'days').format());
   };
   useEffect(() => {
     const country = location ? location.headQuarterAddress.country._id : '';
