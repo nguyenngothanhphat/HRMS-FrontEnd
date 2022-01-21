@@ -32,14 +32,6 @@
     .ant-table-column-sorters::after {
       background-color: #2c6df9;
     }
-    .ant-table-column-sorters {
-      padding: 8px !important;
-    }
-
-    .ant-table-thead > tr > th,
-    tfoot > tr > th {
-      padding: 0 8px !important;
-    }
 
     .ant-table-tbody > tr > td {
       color: #464646;
@@ -75,10 +67,10 @@
       opacity: 1;
     }
 
-    .ant-table-middle .ant-table-thead > tr > th {
+    .ant-table-thead > tr > th {
+      padding: 8px 16px !important;
       background-color: #2c6df9;
     }
-
     //Box-shadow first column
     td.ant-table-cell.ant-table-cell-fix-left.ant-table-cell-fix-left-last {
       box-shadow: 4px 0 5px 0 rgba(0, 0, 0, 0.05);
@@ -101,9 +93,9 @@
       margin-bottom: 0 !important;
     }
 
-    // fixed column
-    .ant-table-cell-fix-left {
-      // left: 20px !important;
+    tr th.ant-table-selection-column,
+    tr td.ant-table-selection-column {
+      padding: 8px 16px !important;
     }
 
     // avatar group
