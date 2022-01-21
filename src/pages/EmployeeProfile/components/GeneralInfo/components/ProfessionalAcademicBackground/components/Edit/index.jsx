@@ -161,7 +161,7 @@ class Edit extends PureComponent {
     const dataTempKept = this.processDataKept() || {};
     const { certification } = payload;
     await this.handleUpdateCertification(certification);
-    const checkDuplication = listSkill.filter((e) => e.name === payload.otherSkills[0]) || [];
+    const checkDuplication = listSkill.filter((e) => e.name.toUpperCase() === payload.otherSkills[0].toUpperCase()) || [];
     if(checkDuplication.length > 0) {
       notification.error({
         message: 'This skill is available on the skill list above, please select it on skills.',

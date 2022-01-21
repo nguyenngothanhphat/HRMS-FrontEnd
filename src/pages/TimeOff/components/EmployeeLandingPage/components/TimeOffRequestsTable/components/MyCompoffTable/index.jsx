@@ -47,10 +47,10 @@ class MyCompoffTable extends PureComponent {
       title: `Requested on `,
       dataIndex: 'onDate',
       align: 'left',
-      render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YY')}</span>,
+      render: (onDate) => <span>{moment.utc(onDate).locale('en').format('MM/DD/YYYY')}</span>,
       defaultSortOrder: ['ascend'],
       sorter: {
-        compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
+        compare: (a, b) => moment.utc(a.onDate).isAfter(moment.utc(b.onDate)),
       },
       sortDirections: ['ascend', 'descend', 'ascend'],
     },
@@ -88,7 +88,9 @@ class MyCompoffTable extends PureComponent {
     {
       title: 'Action',
       align: 'left',
+      // fixed: 'right',
       dataIndex: '_id',
+      // width: '15%',
       render: (_id) => (
         <div className={styles.rowAction}>
           <span onClick={() => this.viewRequest(_id)}>View Request</span>
@@ -148,7 +150,9 @@ class MyCompoffTable extends PureComponent {
       if (extraTime.length !== 0) {
         const fromDate = extraTime[0].date;
         const toDate = extraTime[extraTime.length - 1].date;
-        duration = `${moment(fromDate).format('MM.DD.YY')} - ${moment(toDate).format('MM.DD.YY')}`;
+        duration = `${moment.utc(fromDate).format('MM/DD/YYYY')} - ${moment
+          .utc(toDate)
+          .format('MM/DD/YYYY')}`;
       }
 
       const oneAssign = (step) => {

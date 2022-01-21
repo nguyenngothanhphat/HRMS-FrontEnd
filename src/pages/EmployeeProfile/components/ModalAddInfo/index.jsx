@@ -111,7 +111,7 @@ const ModalAddInfo = (props) => {
       }
     });
     const tempSkill = skills ? skills.filter((item) => item !== 'Other') : [];
-    const checkDuplication = listSkill.filter((e) => e.name === otherSkills) || [];
+    const checkDuplication = listSkill.filter((e) => e.name.toUpperCase() === otherSkills.toUpperCase()) || [];
     if(checkDuplication.length > 0) {
       notification.error({
         message: 'This skill is available on the skill list above, please select it on skills.',

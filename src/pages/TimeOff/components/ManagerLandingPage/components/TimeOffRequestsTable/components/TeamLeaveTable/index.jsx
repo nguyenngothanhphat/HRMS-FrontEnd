@@ -35,11 +35,11 @@ class TeamLeaveTable extends PureComponent {
       width: '17%',
       render: (id) => {
         const { ticketID = '', _id = '', onDate = '', status = '' } = id;
-        const createdDate = moment(onDate).locale('en').format('YYYY/MM/DD');
-        const nowDate = moment().locale('en').format('YYYY/MM/DD');
+        const createdDate = moment.utc(onDate).locale('en').format('YYYY/MM/DD');
+        const nowDate = moment.utc().locale('en').format('YYYY/MM/DD');
         const isNewRequest =
           status === IN_PROGRESS &&
-          moment(nowDate).subtract(2, 'days').isSameOrBefore(moment(createdDate));
+          moment.utc(nowDate).subtract(2, 'days').isSameOrBefore(moment.utc(createdDate));
 
         return (
           <span className={styles.ID} onClick={() => this.onIdClick(_id)}>
@@ -50,7 +50,7 @@ class TeamLeaveTable extends PureComponent {
       },
       defaultSortOrder: ['ascend'],
       sorter: {
-        compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
+        compare: (a, b) => moment.utc(a.onDate).isAfter(moment.utc(b.onDate)),
       },
       sortDirections: ['ascend', 'descend', 'ascend'],
     },
@@ -89,10 +89,10 @@ class TeamLeaveTable extends PureComponent {
     //   dataIndex: 'onDate',
     //   align: 'center',
     //   // width: '30%',
-    //   render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
+    //   render: (onDate) => <span>{moment.utc(onDate).locale('en').format('MM/DD/YYYY')}</span>,
     //   defaultSortOrder: ['ascend'],
     //   sorter: {
-    //     compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
+    //     compare: (a, b) => moment.utc(a.onDate).isAfter(moment.utc(b.onDate)),
     //   },
     //   sortDirections: ['ascend', 'descend', 'ascend'],
     // },
@@ -139,7 +139,8 @@ class TeamLeaveTable extends PureComponent {
       title: 'Action',
       align: 'left',
       dataIndex: 'id',
-      // fixed: 'right',
+      fixed: 'right',
+      width: '10%',
       // width: '20%',
       render: (id) => {
         const { ticketID = '', _id = '', approvalManagerId = '' } = id;
@@ -304,9 +305,10 @@ class TeamLeaveTable extends PureComponent {
 
       let leaveTimes = '';
       if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-        leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YY')} - ${moment(toDate)
+        leaveTimes = `${moment.utc(fromDate).locale('en').format('MM/DD/YYYY')} - ${moment
+          .utc(toDate)
           .locale('en')
-          .format('MM.DD.YY')}`;
+          .format('MM/DD/YYYY')}`;
       }
 
       // let employeeFromCC = [];
@@ -472,7 +474,7 @@ class TeamLeaveTable extends PureComponent {
     return (
       <div className={styles.TeamLeaveTable}>
         <Table
-          size="middle"
+          // size="middle"
           loading={tableLoading}
           rowSelection={rowSelection}
           pagination={{ ...pagination, total }}

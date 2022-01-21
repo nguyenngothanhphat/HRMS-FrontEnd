@@ -9,7 +9,7 @@ import styles from './index.less';
 const isGoogleSignIn = getIsSigninGoogle();
 
 const MyCalendar = (props) => {
-  const [selectedDate] = useState(moment());
+  const [selectedDate] = useState(moment().format());
   const [isSyncSuccess, setIsSyncSuccess] = useState(false);
   const { dispatch, googleCalendarList = [], loadingSyncGoogleCalendar = false } = props;
   // API
@@ -40,7 +40,11 @@ const MyCalendar = (props) => {
   return (
     <div className={styles.MyCalendar}>
       {isSyncSuccess && isGoogleSignIn ? (
-        <MyCalendarComponent data={googleCalendarList} loading={loadingSyncGoogleCalendar} />
+        <MyCalendarComponent
+          data={googleCalendarList}
+          loading={loadingSyncGoogleCalendar}
+          selectedDate={selectedDate}
+        />
       ) : (
         <GoogleSync />
       )}
