@@ -115,10 +115,10 @@ class LeaveHistoryAndHoliday extends PureComponent {
         status === IN_PROGRESS ||
         status === IN_PROGRESS_NEXT
       ) {
-        const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
-        const toDate = moment(to).locale('en').format('MM/DD/YYYY');
-        // const now = moment().locale('en').format('MM/DD/YYYY');
-        // if (moment(now).isAfter(moment(toDate))) {
+        const fromDate = moment.utc(from).locale('en').format('MM/DD/YYYY');
+        const toDate = moment.utc(to).locale('en').format('MM/DD/YYYY');
+        // const now = moment.utc().locale('en').format('MM/DD/YYYY');
+        // if (moment.utc(now).isAfter(moment.utc(toDate))) {
         //   return {
         //     _id,
         //     name: subject,
@@ -158,8 +158,8 @@ class LeaveHistoryAndHoliday extends PureComponent {
       } = each;
 
       if (status !== DRAFTS && status !== ON_HOLD && status !== DELETED && status !== REJECTED) {
-        const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
-        const toDate = moment(to).locale('en').format('MM/DD/YYYY');
+        const fromDate = moment.utc(from).locale('en').format('MM/DD/YYYY');
+        const toDate = moment.utc(to).locale('en').format('MM/DD/YYYY');
         return {
           _id,
           fromDate,

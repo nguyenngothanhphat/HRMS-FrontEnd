@@ -73,8 +73,8 @@ class RequestInformation extends PureComponent {
   };
 
   formatDurationTime = (fromDate, toDate, type) => {
-    const start = moment(fromDate);
-    const end = moment(toDate);
+    const start = moment.utc(fromDate);
+    const end = moment.utc(toDate);
     const now = start;
     const leaveTimes = [];
     const includeWeekend = type !== A && type !== B;
@@ -86,7 +86,7 @@ class RequestInformation extends PureComponent {
       }
     } else {
       while (now.isBefore(end) || now.isSame(end)) {
-        if (moment(now).weekday() !== 6 && moment(now).weekday() !== 0) {
+        if (moment.utc(now).weekday() !== 6 && moment.utc(now).weekday() !== 0) {
           leaveTimes.push(now.format('YYYY-MM-DD'));
         }
         now.add(1, 'days');
@@ -403,8 +403,8 @@ class RequestInformation extends PureComponent {
                             justify="center"
                             align="center"
                           >
-                            <Col span={7}>{moment(date).locale('en').format('MM.DD.YY')}</Col>
-                            <Col span={7}>{moment(date).locale('en').format('dddd')}</Col>
+                            <Col span={7}>{moment.utc(date).locale('en').format('MM/DD/YYYY')}</Col>
+                            <Col span={7}>{moment.utc(date).locale('en').format('dddd')}</Col>
                             <Col span={10} style={{ textTransform: 'capitalize' }}>
                               {!isEmpty(leaveDates) ? leaveDates[index].timeOfDay : ''}
                             </Col>
@@ -413,8 +413,8 @@ class RequestInformation extends PureComponent {
                       })
                     ) : (
                       <Row className={styles.duration} justify="center" align="center">
-                        <Col span={7}>{moment(fromDate).locale('en').format('MM.DD.YY')}</Col>
-                        <Col span={7}>{moment(toDate).locale('en').format('MM.DD.YY')}</Col>
+                        <Col span={7}>{moment.utc(fromDate).locale('en').format('MM/DD/YYYY')}</Col>
+                        <Col span={7}>{moment.utc(toDate).locale('en').format('MM/DD/YYYY')}</Col>
                         <Col span={10}>{duration}</Col>
                       </Row>
                     )}

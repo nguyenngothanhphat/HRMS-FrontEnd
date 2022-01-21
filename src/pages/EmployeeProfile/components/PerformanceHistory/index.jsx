@@ -7,11 +7,19 @@ import CareerGraph from './components/CareerGraph';
 import PRReports from './components/PRReports';
 import ProjectHistory from './components/ProjectHistory';
 import styles from './index.less';
+import WorkInProgress from '@/components/WorkInProgress';
 
 class PerformanceHistory extends PureComponent {
   render() {
     return (
       <div className={styles.performanceHistory}>
+        <div
+          style={{
+            marginBottom: '24px',
+          }}
+        >
+          <WorkInProgress />
+        </div>
         <div className={styles.performanceHistory_syncEPASS}>
           <a href="http://epas.terralogic.com/E-PAS/#/login" target="_blank">
             <Button

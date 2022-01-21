@@ -64,6 +64,7 @@ class LeaveRequestForm extends PureComponent {
           });
           invalidDates = [...invalidDates, ...temp];
         });
+
         this.setState({
           invalidDates,
         });

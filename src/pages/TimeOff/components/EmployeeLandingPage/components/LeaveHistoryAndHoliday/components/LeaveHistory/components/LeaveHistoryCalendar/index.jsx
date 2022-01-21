@@ -25,7 +25,7 @@ export default class LeaveHistoryCalendar extends PureComponent {
     this.style = props.style || {};
     this.style.width = this.width; // add this
     this.state = {
-      dateContext: moment(),
+      dateContext: moment.utc(),
       currentDay: 0,
       currentMonth: 0,
       currentYear: 0,
@@ -146,12 +146,12 @@ export default class LeaveHistoryCalendar extends PureComponent {
 
       leavingList.forEach((value) => {
         const { fromDate: from = '', toDate: to = '', status = '', typeName = '' } = value;
-        const eventFromDay = moment(from).format('D');
-        const eventFromMonth = moment(from).format('M');
-        const eventFromYear = moment(from).format('Y');
-        const eventToDay = moment(to).format('D');
-        const eventToMonth = moment(to).format('M');
-        const eventToYear = moment(to).format('Y');
+        const eventFromDay = moment.utc(from).format('D');
+        const eventFromMonth = moment.utc(from).format('M');
+        const eventFromYear = moment.utc(from).format('Y');
+        const eventToDay = moment.utc(to).format('D');
+        const eventToMonth = moment.utc(to).format('M');
+        const eventToYear = moment.utc(to).format('Y');
 
         const checkStatus = (statusName) => {
           if (statusName === ACCEPTED) {
@@ -226,12 +226,12 @@ export default class LeaveHistoryCalendar extends PureComponent {
 
   //     leavingList.forEach((value) => {
   //       const { fromDate: from = '', toDate: to = '' } = value;
-  //       const eventFromDay = moment(from).format('D');
-  //       const eventFromMonth = moment(from).format('M');
-  //       const eventFromYear = moment(from).format('Y');
-  //       const eventToDay = moment(to).format('D');
-  //       const eventToMonth = moment(to).format('M');
-  //       const eventToYear = moment(to).format('Y');
+  //       const eventFromDay = moment.utc(from).format('D');
+  //       const eventFromMonth = moment.utc(from).format('M');
+  //       const eventFromYear = moment.utc(from).format('Y');
+  //       const eventToDay = moment.utc(to).format('D');
+  //       const eventToMonth = moment.utc(to).format('M');
+  //       const eventToYear = moment.utc(to).format('Y');
 
   //       if (
   //         d === eventFromDay * 1 &&
@@ -310,17 +310,17 @@ export default class LeaveHistoryCalendar extends PureComponent {
   };
 
   checkWeekDay = (day, month, year) => {
-    const weekDayName = moment(`${month * 1}/${day * 1}/${year * 1}`).format('ddd');
+    const weekDayName = moment.utc(`${month * 1}/${day * 1}/${year * 1}`).format('ddd');
     return weekDayName;
   };
 
   checkIfUpcomingOrLeaveTaken = (value) => {
     const { fromDate: from = '' } = value;
 
-    const eventFromDay = moment(from).format('D');
-    const eventFromMonth = moment(from).format('M');
-    const eventFromYear = moment(from).format('Y');
-    // const eventToMonth = moment(to).format('M');
+    const eventFromDay = moment.utc(from).format('D');
+    const eventFromMonth = moment.utc(from).format('M');
+    const eventFromYear = moment.utc(from).format('Y');
+    // const eventToMonth = moment.utc(to).format('M');
     if (this.checkASingleDay(eventFromDay, eventFromMonth, eventFromYear) === 1) return 1; // upcoming
 
     return 2; // leave taken
