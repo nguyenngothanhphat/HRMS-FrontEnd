@@ -56,13 +56,15 @@ class LeaveRequestForm extends PureComponent {
         let invalidDates = [];
         const { items: leaveRequests = [] } = res?.data;
         leaveRequests.forEach((x) => {
-          const temp = x.leaveDates.map((y) => {
-            return {
-              date: y.date,
-              timeOfDay: y.timeOfDay,
-            };
-          });
-          invalidDates = [...invalidDates, ...temp];
+          if ([DRAFTS, IN_PROGRESS, ACCEPTED, ON_HOLD].includes(x.status)) {
+            const temp = x.leaveDates.map((y) => {
+              return {
+                date: y.date,
+                timeOfDay: y.timeOfDay,
+              };
+            });
+            invalidDates = [...invalidDates, ...temp];
+          }
         });
 
         this.setState({
