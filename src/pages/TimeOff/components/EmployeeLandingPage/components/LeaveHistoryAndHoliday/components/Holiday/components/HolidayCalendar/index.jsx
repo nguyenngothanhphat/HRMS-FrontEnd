@@ -21,7 +21,7 @@ export default class HolidayCalendar extends PureComponent {
     this.style = props.style || {};
     this.style.width = this.width; // add this
     this.state = {
-      dateContext: moment(),
+      dateContext: moment.utc(),
       currentDay: 0,
       currentMonth: 0,
       currentYear: 0,
@@ -69,14 +69,14 @@ export default class HolidayCalendar extends PureComponent {
 
   firstDayOfMonth = () => {
     const { dateContext } = this.state;
-    const firstDay = moment(dateContext).startOf('month').format('d'); // Day of week 0...1..5...6
+    const firstDay = moment.utc(dateContext).startOf('month').format('d'); // Day of week 0...1..5...6
     return firstDay;
   };
 
   nextMonth = () => {
     const { dateContext } = this.state;
     let dateContext1 = { ...dateContext };
-    dateContext1 = moment(dateContext1).add(1, 'month');
+    dateContext1 = moment.utc(dateContext1).add(1, 'month');
     this.setState({
       dateContext: dateContext1,
     });
@@ -87,7 +87,7 @@ export default class HolidayCalendar extends PureComponent {
   prevMonth = () => {
     const { dateContext } = this.state;
     let dateContext1 = { ...dateContext };
-    dateContext1 = moment(dateContext1).subtract(1, 'month');
+    dateContext1 = moment.utc(dateContext1).subtract(1, 'month');
     this.setState({
       dateContext: dateContext1,
     });
@@ -105,7 +105,7 @@ export default class HolidayCalendar extends PureComponent {
   setYear = (year) => {
     const { dateContext } = this.state;
     let dateContext1 = { ...dateContext };
-    dateContext1 = moment(dateContext1).set('year', year);
+    dateContext1 = moment.utc(dateContext1).set('year', year);
     this.setState({
       dateContext: dateContext1,
     });
@@ -150,9 +150,9 @@ export default class HolidayCalendar extends PureComponent {
           date: { iso = '' },
         } = value; // parse
         const newDate = new Date(iso).toISOString();
-        const eventDay = moment(newDate).format('D');
-        const eventMonth = moment(newDate).format('M');
-        const eventYear = moment(newDate).format('Y');
+        const eventDay = moment.utc(newDate).format('D');
+        const eventMonth = moment.utc(newDate).format('M');
+        const eventYear = moment.utc(newDate).format('Y');
 
         if (
           d * 1 === eventDay * 1 &&
@@ -191,16 +191,16 @@ export default class HolidayCalendar extends PureComponent {
   };
 
   checkWeekDay = (day, month, year) => {
-    const weekDayName = moment(`${month * 1}/${day * 1}/${year * 1}`).format('ddd');
+    const weekDayName = moment.utc(`${month * 1}/${day * 1}/${year * 1}`).format('ddd');
     return weekDayName;
   };
 
   checkIfUpcomingOrLeaveTaken = (value) => {
     const { date: { iso } = {} } = value; // parse
     const convertDate = new Date(iso).toISOString();
-    const eventFromDay = moment(convertDate).format('D');
-    const eventFromMonth = moment(convertDate).format('M');
-    const eventFromYear = moment(convertDate).format('Y');
+    const eventFromDay = moment.utc(convertDate).format('D');
+    const eventFromMonth = moment.utc(convertDate).format('M');
+    const eventFromYear = moment.utc(convertDate).format('Y');
     if (this.checkASingleDay(eventFromDay, eventFromMonth, eventFromYear) === 1) return 1; // upcoming
     return 2; // leave taken
   };

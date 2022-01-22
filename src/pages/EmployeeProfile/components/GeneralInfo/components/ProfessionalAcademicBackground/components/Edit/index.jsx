@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { PureComponent } from 'react';
-import { Button, Form, Input, Select } from 'antd';
+import { Button, Form, Input, Select, notification } from 'antd';
 import { connect } from 'umi';
 import FormCertification from './components/FormCertification';
 import s from './index.less';
@@ -88,7 +88,7 @@ class Edit extends PureComponent {
       totalExp,
       qualification,
       certification,
-      otherSkills,
+      otherSkills: otherSkills instanceof Array ? otherSkills : [otherSkills],
       tenantId: tenantCurrentEmployee,
     };
     return payloadChanges;
@@ -154,13 +154,20 @@ class Edit extends PureComponent {
   };
 
   handleSave = async () => {
-    const { dispatch, generalData } = this.props;
+    const { dispatch, generalData, listSkill = [] } = this.props;
     const { skills } = generalData;
     const newSkills = skills.filter((e) => e !== 'Other');
     const payload = this.processDataChanges(newSkills) || {};
     const dataTempKept = this.processDataKept() || {};
     const { certification } = payload;
     await this.handleUpdateCertification(certification);
+    const checkDuplication = listSkill.filter((e) => e.name.toUpperCase() === payload.otherSkills[0].toUpperCase()) || [];
+    if(checkDuplication.length > 0) {
+      notification.error({
+        message: 'This skill is available on the skill list above, please select it on skills.',
+      });
+      return
+    }
     dispatch({
       type: 'employeeProfile/updateGeneralInfo',
       payload,

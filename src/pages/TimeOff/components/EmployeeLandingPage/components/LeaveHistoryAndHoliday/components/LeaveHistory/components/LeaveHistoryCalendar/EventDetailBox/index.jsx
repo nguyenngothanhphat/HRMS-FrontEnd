@@ -28,8 +28,8 @@ export default class EventDetailBox extends PureComponent {
           <>
             <Col xs={4} className={styles.dateAndMonth} style={{ justifyContent: 'center' }}>
               <span className={styles.container}>
-                <span className={styles.month}>{moment(from).locale('en').format('MMM')}</span>
-                <span className={styles.day}>{moment(from).locale('en').format('DD')}</span>
+                <span className={styles.month}>{moment.utc(from).locale('en').format('MMM')}</span>
+                <span className={styles.day}>{moment.utc(from).locale('en').format('DD')}</span>
               </span>
             </Col>
             <Col xs={13} className={styles.eventOfDay}>
@@ -46,13 +46,13 @@ export default class EventDetailBox extends PureComponent {
           }}
         >
           <span className={styles.container}>
-            <span className={styles.day}>{moment(from).locale('en').format('DD')}</span>
-            <span className={styles.month}>{moment(from).locale('en').format('MMM')}</span>
+            <span className={styles.day}>{moment.utc(from).locale('en').format('DD')}</span>
+            <span className={styles.month}>{moment.utc(from).locale('en').format('MMM')}</span>
           </span>
           <span className={styles.subtractSymbol}>-</span>
           <span className={styles.container}>
-            <span className={styles.day}>{moment(to).locale('en').format('DD')}</span>
-            <span className={styles.month}>{moment(to).locale('en').format('MMM')}</span>
+            <span className={styles.day}>{moment.utc(to).locale('en').format('DD')}</span>
+            <span className={styles.month}>{moment.utc(to).locale('en').format('MMM')}</span>
           </span>
         </Col>
         <Col xs={9} className={styles.eventOfDay}>

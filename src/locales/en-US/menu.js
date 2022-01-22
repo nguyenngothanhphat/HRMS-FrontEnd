@@ -50,6 +50,10 @@ export default {
   'menu.editor.mind': 'Mind Editor',
   'menu.editor.koni': 'Koni Editor',
   'menu.change-password': 'Change Password',
+  // control panel
+  'menu.controlPanel.name': 'Control Panel',
+  'menu.controlPanel.companyProfile': 'Company Profile',
+
   // admin app
   'menu.admin': 'Admin',
   'menu.adminApp': 'Admin App',
@@ -111,6 +115,9 @@ export default {
   // candidate onboarding
   'menu.candidateProfile': 'Candidate Profile',
   'menu.candidateDetail': 'Candidate Detail',
+  'menu.candidatePortal': 'Candidate Portal',
+  'menu.candidateChangePassword': 'Candidate Change Password',
+
   // dashboard
   'menu.dashboard': 'Dashboard',
   'menu.dashboardApprovals': 'Approvals',
@@ -126,4 +133,5 @@ export default {
   'menu.uploadDocument': 'Add Document',
   'menu.createTemplate': 'Create New Template',
   'menu.faqs': 'FAQs',
+  'menu.policiesRegulations': 'Policies & Regulations',
 };

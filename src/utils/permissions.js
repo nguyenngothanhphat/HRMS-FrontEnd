@@ -365,19 +365,26 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
 
   // ONBOARDING
   const indexOnboardingSettings = isAuthorized(permissionList, [
-    HR_MANAGER,
-    'ONBOARDING_T_SETTINGS_VIEW',
+    'P_ONBOARDING_T_SETTINGS_VIEW',
+    'P_ONBOARDING_ALL',
   ]);
 
   const indexAddTeamMemberOnboarding = isAdmin
     ? -1
-    : isAuthorized(permissionList, [HR_MANAGER, HR]);
+    : isAuthorized(permissionList, [
+        'P_ONBOARDING_ALL',
+        'P_ONBOARDING_T_SETTINGS_VIEW',
+        'P_ONBOARDING_T_ONBOARDING_OVERVIEW_VIEW',
+      ]);
+
   const indexOverviewViewOnboarding = isAuthorized(permissionList, [
-    'ONBOARDING_OVERVIEW_VIEW',
-    HR_MANAGER,
-    HR,
+    'P_ONBOARDING_T_ONBOARDING_OVERVIEW_VIEW',
+    'P_ONBOARDING_ALL',
   ]);
-  const indexNewJoinees = isRole(permissionList, [HR, HR_MANAGER]);
+  const indexNewJoinees = isRole(permissionList, [
+    'P_ONBOARDING_T_SETTINGS_VIEW',
+    'P_ONBOARDING_ALL',
+  ]);
 
   // TIME OFF
   const indexMyTimeoff = 1; // everyone has time off employee page
@@ -449,6 +456,19 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const indexModifyResource = isAuthorized(permissionList, [
     'RESOURCE_MANAGEMENT_UPDATE',
     PROJECT_MANAGER,
+  ]);
+
+  // TICKET MANAGEMENT
+  const indexTicketManagementHRTicketsTab = isAuthorized(permissionList, [
+    'P_TICKET_MANAGEMENT_T_HR_TICKETS_VIEW',
+  ]);
+
+  const indexTicketManagementITTicketsTab = isAuthorized(permissionList, [
+    'P_TICKET_MANAGEMENT_T_IT_TICKETS_VIEW',
+  ]);
+
+  const indexTicketManagementOperationsTicketsTab = isAuthorized(permissionList, [
+    'P_TICKET_MANAGEMENT_T_OPERATIONS_TICKETS_VIEW',
   ]);
 
   return {
@@ -528,5 +548,10 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewUtilizationTab: indexViewUtilizationTab,
     addResource: indexAddResource,
     modifyResource: indexModifyResource,
+
+    // ticket management
+    viewTicketHR: indexTicketManagementHRTicketsTab,
+    viewTicketIT: indexTicketManagementITTicketsTab,
+    viewTicketOperations: indexTicketManagementOperationsTicketsTab,
   };
 }

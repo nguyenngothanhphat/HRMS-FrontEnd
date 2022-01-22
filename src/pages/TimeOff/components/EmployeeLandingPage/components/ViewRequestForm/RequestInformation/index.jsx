@@ -9,12 +9,7 @@ import WithdrawModal from '../WithdrawModal';
 import Withdraw2Modal from '../Withdraw2Modal';
 import styles from './index.less';
 
-const {
-  IN_PROGRESS,
-  ACCEPTED,
-  REJECTED,
-  DRAFTS,
-} = TIMEOFF_STATUS;
+const { IN_PROGRESS, ACCEPTED, REJECTED, DRAFTS } = TIMEOFF_STATUS;
 @connect(({ timeOff, loading }) => ({
   timeOff,
   loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
@@ -74,9 +69,10 @@ class RequestInformation extends PureComponent {
   formatDurationTime = (fromDate, toDate) => {
     let leaveTimes = '';
     if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-      leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YY')} - ${moment(toDate)
+      leaveTimes = `${moment.utc(fromDate).locale('en').format('MM/DD/YYYY')} - ${moment
+        .utc(toDate)
         .locale('en')
-        .format('MM.DD.YY')}`;
+        .format('MM/DD/YYYY')}`;
     }
     return leaveTimes;
   };
@@ -153,8 +149,8 @@ class RequestInformation extends PureComponent {
   };
 
   checkWithdrawValid = (fromDate) => {
-    const now = moment().format('YYYY-MM-DD');
-    const from = moment(fromDate).format('YYYY-MM-DD');
+    const now = moment.utc().format('YYYY-MM-DD');
+    const from = moment.utc(fromDate).format('YYYY-MM-DD');
     return from > now;
   };
 
@@ -294,9 +290,7 @@ class RequestInformation extends PureComponent {
         <WithdrawModal
           loading={loadingEmployeeWithdrawInProgress}
           visible={showWithdrawModal}
-          onProceed={
-            status === IN_PROGRESS ? this.onProceedInProgress : this.onProceedDrafts
-          }
+          onProceed={status === IN_PROGRESS ? this.onProceedInProgress : this.onProceedDrafts}
           onClose={this.setShowWithdrawModal}
           status={status}
         />

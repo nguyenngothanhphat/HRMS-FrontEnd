@@ -156,8 +156,8 @@ class RequestInformation extends PureComponent {
       });
 
       this.setState({
-        durationFrom: fromDate === null ? null : moment(fromDate),
-        durationTo: toDate === null ? null : moment(toDate),
+        durationFrom: fromDate === null ? null : moment.utc(fromDate),
+        durationTo: toDate === null ? null : moment.utc(toDate),
         selectedTypeName: name,
         selectedType: type,
       });
@@ -187,8 +187,8 @@ class RequestInformation extends PureComponent {
       this.formRef.current.setFieldsValue({
         timeOffType: typeId,
         subject,
-        durationFrom: fromDate === null ? null : moment(fromDate),
-        durationTo: toDate === null ? null : moment(toDate),
+        durationFrom: fromDate === null ? null : moment.utc(fromDate),
+        durationTo: toDate === null ? null : moment.utc(toDate),
         description,
         personCC: cc,
         leaveTimeLists,
@@ -196,7 +196,7 @@ class RequestInformation extends PureComponent {
 
       // set notice
       if (type === C) {
-        this.autoValueForToDate(type, name, moment(fromDate), '');
+        this.autoValueForToDate(type, name, moment.utc(fromDate), '');
       }
 
       if (type === D) {
@@ -204,13 +204,8 @@ class RequestInformation extends PureComponent {
       }
 
       this.getRemainingDay(name);
-      // this.autoValueForToDate(type, shortType, moment(fromDate), '');
-      if (
-        type === A &&
-        name === 'Casual Leave' &&
-        moment(fromDate) !== null &&
-        moment(fromDate) !== ''
-      ) {
+      // this.autoValueForToDate(type, shortType, moment.utc(fromDate), '');
+      if (type === A && name === 'Casual Leave' && fromDate && moment(fromDate)) {
         this.setSecondNotice(`${name}s gets credited each month.`);
       }
     }
@@ -391,8 +386,8 @@ class RequestInformation extends PureComponent {
     if (selectedType !== C && selectedType !== D) {
       result = result.filter(
         (value) =>
-          moment(value.date).weekday() !== 6 &&
-          moment(value.date).weekday() !== 0 &&
+          moment.utc(value.date).weekday() !== 6 &&
+          moment.utc(value.date).weekday() !== 0 &&
           Object.keys(value).length !== 0,
       );
     } else {
@@ -448,7 +443,7 @@ class RequestInformation extends PureComponent {
           toDate: durationTo,
           duration,
           leaveDates,
-          onDate: moment(),
+          onDate: moment.utc(),
           description,
           approvalManager: manager, // id
           cc: personCC,
@@ -533,7 +528,7 @@ class RequestInformation extends PureComponent {
             toDate: durationTo,
             duration,
             leaveDates,
-            onDate: moment(),
+            onDate: moment.utc(),
             description,
             cc: personCC,
             tenantId: getCurrentTenant(),
@@ -595,8 +590,8 @@ class RequestInformation extends PureComponent {
           const { currentAllowance = 0 } = foundType || {};
 
           if (currentAllowance !== 0)
-            autoToDate = moment(durationFrom).add(currentAllowance - 1, 'day');
-          else autoToDate = moment(durationFrom).add(currentAllowance, 'day');
+            autoToDate = moment.utc(durationFrom).add(currentAllowance - 1, 'day');
+          else autoToDate = moment.utc(durationFrom).add(currentAllowance, 'day');
 
           this.setSecondNotice(
             `A 'To date' will be set automatically as per a duration of ${currentAllowance} days from the selected 'From date'`,
@@ -845,7 +840,7 @@ class RequestInformation extends PureComponent {
     const { invalidDates = [] } = this.props;
     const find = invalidDates.some(
       (x) =>
-        moment(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
+        moment.utc(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
         x.timeOfDay === 'WHOLE-DAY',
     );
     return !find;
@@ -853,19 +848,20 @@ class RequestInformation extends PureComponent {
 
   checkIfHalfDayAvailable = (date) => {
     const { invalidDates = [] } = this.props;
-    const find = invalidDates.some(
-      (x) =>
-        moment(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
-        x.timeOfDay !== 'WHOLE-DAY',
-    );
+    const find = invalidDates.some((x) => {
+      return (
+        moment.utc(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
+        x.timeOfDay !== 'WHOLE-DAY'
+      );
+    });
     return !find;
   };
 
   findInvalidHalfOfDay = (date) => {
     const { invalidDates = [] } = this.props;
-    const find = invalidDates.find(
-      (x) => moment(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD'),
-    );
+    const find = invalidDates.find((x) => {
+      return moment.utc(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD');
+    });
     return find?.timeOfDay || '';
   };
 
@@ -876,8 +872,7 @@ class RequestInformation extends PureComponent {
       (current && moment(current).isAfter(moment(durationTo), 'day')) ||
       moment(current).day() === 0 ||
       moment(current).day() === 6 ||
-      !this.checkIfWholeDayAvailable(current) ||
-      !this.checkIfHalfDayAvailable(current)
+      !this.checkIfWholeDayAvailable(current)
     );
   };
 
@@ -887,8 +882,7 @@ class RequestInformation extends PureComponent {
       (current && moment(current).isBefore(moment(durationFrom), 'day')) ||
       moment(current).day() === 0 ||
       moment(current).day() === 6 ||
-      !this.checkIfWholeDayAvailable(current) ||
-      !this.checkIfHalfDayAvailable(current)
+      !this.checkIfWholeDayAvailable(current)
     );
   };
 
@@ -974,7 +968,7 @@ class RequestInformation extends PureComponent {
     };
     const formatListEmail = this.renderEmailsList() || [];
 
-    const dateFormat = 'MM.DD.YY';
+    const dateFormat = 'Do MMM YYYY';
 
     const {
       selectedTypeName,
