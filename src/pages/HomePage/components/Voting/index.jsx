@@ -26,7 +26,6 @@ const Voting = () => {
 
   return (
     <div className={styles.Voting}>
-      <p className={styles.questionText}>How do you feel about getting back to office?</p>
       {isVoted ? (
         <BarGraph options={mockOptions} />
       ) : (

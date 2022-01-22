@@ -5,14 +5,22 @@ import { PageContainer } from '@/layouts/layout/src';
 import AllTicket from './components/AllTickets';
 import styles from './index.less';
 import WorkInProgress from '@/components/WorkInProgress';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
-@connect(({ ticketManagement: { listOffAllTicket = [], totalList = [] } = {} }) => ({
-  listOffAllTicket,
-  totalList,
-}))
+@connect(
+  ({
+    user: { permissions = {} },
+    ticketManagement: { listOffAllTicket = [], totalList = [] } = {},
+  }) => ({
+    listOffAllTicket,
+    totalList,
+    permissions,
+  }),
+)
 class ManagerTicket extends Component {
   componentDidMount() {
-    const { tabName = '' } = this.props;
+    const { tabName = '', permissions = {} } = this.props;
+
     if (!tabName) {
       history.replace(`/ticket-management/all-tickets`);
     } else {
@@ -20,26 +28,106 @@ class ManagerTicket extends Component {
       if (!dispatch) {
         return;
       }
+
+      const viewTicketHR = permissions.viewTicketHR !== -1;
+      const viewTicketIT = permissions.viewTicketIT !== -1;
+      const viewTicketOperations = permissions.viewTicketOperations !== -1;
+
       dispatch({
-        type: 'ticketManagement/fetchListEmployee',
-        payload: {},
-      });
-      dispatch({
-        type: 'ticketManagement/fetchToTalList',
-        payload: {},
-      });
-      dispatch({
-        type: 'ticketManagement/fetchLocationList',
-        payload: {},
-      });
-      dispatch({
-        type: 'ticketManagement/fetchListAllTicket',
+        type: 'ticketManagement/fetchDepartments',
         payload: {
-          status: ['New'],
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         },
+      }).then((res) => {
+        if (res.statusCode === 200) {
+          const { data = [] } = res;
+
+          let departmentList = [];
+          if (viewTicketHR) {
+            const find = data.filter((x) => x.name.includes('HR'));
+            departmentList = [...departmentList, ...find.map((x) => x._id)];
+          }
+          if (viewTicketIT) {
+            const find = data.filter((x) => x.name.includes('IT'));
+            departmentList = [...departmentList, ...find.map((x) => x._id)];
+          }
+          if (viewTicketOperations) {
+            const find = data.filter((x) => x.name.toLowerCase().includes('operations'));
+            departmentList = [...departmentList, ...find.map((x) => x._id)];
+          }
+
+          if (departmentList.length > 0) {
+            dispatch({
+              type: 'ticketManagement/save',
+              payload: {
+                departmentPayload: departmentList,
+              },
+            });
+          }
+          this.fetchListAllTicket(departmentList);
+          this.fetchToTalList(departmentList);
+        } else {
+          this.fetchListAllTicket();
+          this.fetchToTalList();
+        }
       });
+      this.fetchLocationList();
+      this.fetchListEmployee();
     }
   }
+
+  fetchToTalList = (departmentList) => {
+    const { dispatch } = this.props;
+
+    let payload = {
+      status: ['New'],
+    };
+    if (departmentList && departmentList.length > 0) {
+      payload = {
+        ...payload,
+        department: departmentList,
+      };
+    }
+    dispatch({
+      type: 'ticketManagement/fetchToTalList',
+      payload,
+    });
+  };
+
+  fetchLocationList = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'ticketManagement/fetchLocationList',
+      payload: {},
+    });
+  };
+
+  fetchListEmployee = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'ticketManagement/fetchListEmployee',
+      payload: {},
+    });
+  };
+
+  fetchListAllTicket = (departmentList) => {
+    const { dispatch } = this.props;
+
+    let payload = {
+      status: ['New'],
+    };
+    if (departmentList && departmentList.length > 0) {
+      payload = {
+        ...payload,
+        department: departmentList,
+      };
+    }
+    dispatch({
+      type: 'ticketManagement/fetchListAllTicket',
+      payload,
+    });
+  };
 
   render() {
     const { TabPane } = Tabs;

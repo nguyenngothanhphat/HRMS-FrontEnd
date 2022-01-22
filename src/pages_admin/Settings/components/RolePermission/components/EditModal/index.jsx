@@ -247,7 +247,11 @@ class EditModal extends PureComponent {
       loadingFetchRoleByID = false,
       loadingUpdateRole = false,
       loadingAddRole = false,
-      viewingRole: { name: nameProp = '', description: descriptionProp = '' } = {},
+      viewingRole: {
+        name: nameProp = '',
+        description: descriptionProp = '',
+        idSync: idSyncProp = '',
+      } = {},
     } = this.props;
 
     const { roleNameState } = this.state;
@@ -288,8 +292,14 @@ class EditModal extends PureComponent {
               initialValues={{
                 name: nameProp,
                 description: descriptionProp,
+                idSync: idSyncProp,
               }}
             >
+              {action === 'edit' && (
+                <Form.Item label="ID" name="idSync" labelCol={{ span: 24 }}>
+                  <Input disabled />
+                </Form.Item>
+              )}
               <Form.Item
                 rules={[{ required: true, message: 'Please enter role name!' }]}
                 label="Role"

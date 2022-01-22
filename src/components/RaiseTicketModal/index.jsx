@@ -33,22 +33,27 @@ const RaiseTicketModal = (props) => {
     visible = false,
     title = '',
     onClose = () => {},
-    currentUser: {
-      employee: {
-        _id: myEmployeeID = '',
-        departmentInfo: { name: departmentName = '' } = {},
-      } = {} || {},
-    } = {} || {},
+    currentUser: { employee: { _id: myEmployeeID = '' } = {} || {} } = {} || {},
     loadingFetchListEmployee = false,
+    loadingFetchDepartments = false,
+    listDepartment = [],
   } = props;
-
+  const { listEmployee, loadingUploadAttachment = false } = props;
   const { maxFileSize = 2, dispatch } = props;
+
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
   const [queryTypeList, setQueryTypeList] = useState([]);
   const [attachment, setAttachment] = useState('');
-  const [supportTeam, setSupportTeam] = useState('');
+  const [filteredDepartmentList, setFilteredDepartmentList] = useState([]);
 
-  const { listEmployee, loadingUploadAttachment = false } = props;
+  useEffect(() => {
+    const departmentFilterValues = ['hr', 'it', 'operations'];
+    const temp = listDepartment.filter((x) =>
+      departmentFilterValues.some((y) => x.name.toLowerCase().includes(y)),
+    );
+    setFilteredDepartmentList(temp);
+  }, [JSON.stringify(listDepartment)]);
+
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>
@@ -68,13 +73,13 @@ const RaiseTicketModal = (props) => {
           company: getCurrentCompany(),
         },
       });
-      // dispatch({
-      //   type: 'ticketManagement/fetchDepartments',
-      //   payload: {
-      //     tenantId: getCurrentTenant(),
-      //     company: getCurrentCompany(),
-      //   },
-      // });
+      dispatch({
+        type: 'ticketManagement/fetchDepartments',
+        payload: {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        },
+      });
     }
   }, [visible]);
 
@@ -133,9 +138,11 @@ const RaiseTicketModal = (props) => {
   };
 
   const onSupportTeamChange = (value) => {
-    setSupportTeam(value);
-    const queryTypeListTemp = SUPPORT_TEAM.find((val) => val._id === value);
-    setQueryTypeList(queryTypeListTemp.queryType || []);
+    const find = listDepartment.find((x) => x._id === value);
+    if (find) {
+      const queryTypeListTemp = SUPPORT_TEAM.find((val) => val.name === find.name);
+      setQueryTypeList(queryTypeListTemp.queryType || []);
+    }
   };
 
   const handleFinish = (value) => {
@@ -160,7 +167,7 @@ const RaiseTicketModal = (props) => {
         priority: value.priority,
         ccList: value.interestList,
         attachments: documents,
-        departmentAssign: supportTeam,
+        departmentAssign: value.supportTeam,
         location: getCurrentLocation(),
       },
     }).then((response) => {
@@ -197,11 +204,13 @@ const RaiseTicketModal = (props) => {
                 labelCol={{ span: 24 }}
               >
                 <Select
+                  loading={loadingFetchDepartments}
+                  disabled={loadingFetchDepartments}
                   showSearch
                   onChange={onSupportTeamChange}
                   placeholder="Select the support team"
                 >
-                  {SUPPORT_TEAM.filter((val) => val.value === departmentName).map((val) => (
+                  {filteredDepartmentList.map((val) => (
                     <Option value={val._id}>{val.name}</Option>
                   ))}
                 </Select>
@@ -412,10 +421,16 @@ const RaiseTicketModal = (props) => {
 };
 
 export default connect(
-  ({ loading, ticketManagement: { listEmployee = [] } = {}, user: { currentUser = {} } = {} }) => ({
+  ({
+    loading,
+    ticketManagement: { listEmployee = [], listDepartment = [] } = {},
+    user: { currentUser = {} } = {},
+  }) => ({
     listEmployee,
+    listDepartment,
     currentUser,
     loadingUploadAttachment: loading.effects['ticketManagement/uploadFileAttachments'],
     loadingFetchListEmployee: loading.effects['ticketManagement/fetchListEmployee'],
+    loadingFetchDepartments: loading.effects['ticketManagement/fetchDepartments'],
   }),
 )(RaiseTicketModal);

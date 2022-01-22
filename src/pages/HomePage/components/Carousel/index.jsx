@@ -1,6 +1,9 @@
 import React from 'react';
 import { Carousel as CarouselAntd } from 'antd';
-import Banner1 from '@/assets/homePage/banner1.svg';
+import Banner1 from '@/assets/homePage/banner1.png';
+import Nuova1 from '@/assets/homePage/nuova1.png';
+import Nuova2 from '@/assets/homePage/nuova2.png';
+import Nuova3 from '@/assets/homePage/nuova3.png';
 import NextIcon from '@/assets/homePage/next.svg';
 import PrevIcon from '@/assets/homePage/prev.svg';
 import styles from './index.less';
@@ -15,14 +18,25 @@ const PrevArrow = (props) => {
   return <img src={PrevIcon} className={className} style={style} alt="" onClick={onClick} />;
 };
 
-const Carousel = () => {
+const Carousel = (props) => {
+  /* FOR PREVIEWING IN SETTINGS PAGE  */
+  const { previewing = false, contentPreview = [] } = props;
+
   const images = [
     {
       id: 1,
-      image: Banner1,
+      image: Nuova1,
     },
     {
       id: 2,
+      image: Nuova2,
+    },
+    {
+      id: 3,
+      image: Nuova3,
+    },
+    {
+      id: 4,
       image: Banner1,
     },
   ];
@@ -38,11 +52,27 @@ const Carousel = () => {
         nextArrow={<NextArrow />}
         prevArrow={<PrevArrow />}
       >
-        {images.map((x) => (
+        {!previewing &&
+          images.map((x) => (
+            <div className={styles.image}>
+              <img src={x.image} alt="" />
+            </div>
+          ))}
+
+        {/* FOR PREVIEWING IN SETTINGS PAGE  */}
+        {previewing &&
+          contentPreview.length > 0 &&
+          contentPreview.map((x) => (
+            <div className={styles.image}>
+              <img src={x} alt="" />
+            </div>
+          ))}
+
+        {previewing && contentPreview.length === 0 && (
           <div className={styles.image}>
-            <img src={x.image} alt="" />
+            <img src={Banner1} alt="" />
           </div>
-        ))}
+        )}
       </CarouselAntd>
     </div>
   );

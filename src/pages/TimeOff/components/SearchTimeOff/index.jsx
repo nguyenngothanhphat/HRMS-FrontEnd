@@ -21,13 +21,6 @@ const SearchTimeOff = (props) => {
   const [openModal, setOpenModal] = useState(false);
   const dateFormat = 'MM.DD.YYYY';
 
-  useEffect(() => {
-    setSearchText(search);
-    setListType(type);
-    setDateStart(fromDate);
-    setDateEnd(toDate);
-  }, [search, type, fromDate, toDate]);
-
   const saveSearch = () => {
     dispatch({
       type: 'timeOff/saveFilter',
@@ -43,6 +36,13 @@ const SearchTimeOff = (props) => {
       },
     });
   };
+
+  useEffect(() => {
+    setSearchText(search);
+    setListType(type);
+    setDateStart(fromDate);
+    setDateEnd(toDate);
+  }, [search, type, fromDate, toDate]);
 
   const onSearchDebounce = debounce((value) => {
     setSearchText(value);
@@ -60,6 +60,7 @@ const SearchTimeOff = (props) => {
         type: listType,
         fromDate: dateStart,
         toDate: dateEnd,
+        isSearch: true,
       },
     });
     setOpenModal(false);

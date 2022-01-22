@@ -143,7 +143,8 @@ class ViewInformation extends Component {
         id: item._id,
       };
     });
-    const listFormatOther = otherSkills?.map((item) => {
+    const checkTypeOf = otherSkills instanceof Array ? otherSkills : [otherSkills];
+    const listFormatOther = checkTypeOf?.map((item) => {
       if (temp >= 5) {
         temp -= 5;
       }
@@ -292,7 +293,7 @@ class ViewInformation extends Component {
     const subDropdown = (
       <SubMenu className={s.subMenu} key="sub1" title="Job Change">
         <Menu.Item key="offboarding" className={s.menuItem} onClick={this.redirectOffboarding}>
-          Offboarding
+          Resignation
         </Menu.Item>
       </SubMenu>
     );
@@ -304,7 +305,7 @@ class ViewInformation extends Component {
         onClick={this.handleClickMenu}
         disabled={loading || loadingFetchEmployee}
       >
-        {(profileOwner) && (
+        {profileOwner && (
           <Menu.Item key="editBio" className={s.menuItem} onClick={this.handleEditBio}>
             Edit Bio
           </Menu.Item>
@@ -382,6 +383,8 @@ class ViewInformation extends Component {
       // workNumber = '',
       certification = [],
       userId = '',
+      skills = [],
+      otherSkills = [],
     } = generalData;
 
     // const { tittle: { name: title = '' } = {} } = compensationData;
@@ -412,9 +415,7 @@ class ViewInformation extends Component {
         colorText: '#ff6ca1',
       },
     ];
-    const formatListSkill =
-      this.formatListSkill(generalData.skills || [], generalData.otherSkills || [], listColors) ||
-      [];
+    const formatListSkill = this.formatListSkill(skills, otherSkills, listColors) || [];
 
     const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
 

@@ -1,24 +1,33 @@
 import { Col, Row, Spin } from 'antd';
-import React, { useEffect, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
 import MeetingTag from '../MeetingTag';
 import styles from './index.less';
 
 const MyCalendar = (props) => {
-  const { isInModal = false, data = [], loading = false, dateSelected = '' } = props;
+  const { isInModal = false, data = [], loading = false, selectedDate = '' } = props;
   const [hourList, setHourList] = useState([]);
   // const [firstHourHasData, setFirstHourHasData] = useState('');
 
-  const [dateToFormat, setDateToFormat] = useState(moment().format('HH:mm'))
+  const [dateToFormat, setDateToFormat] = useState(moment().format('HH:mm'));
 
   const updateTime = () => {
-    return moment().format('HH:mm')
-  }
+    return moment().format('HH:mm');
+  };
 
+  const scrollCurrentTime = () => {
+    return document.getElementById('checkCurrentTime')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'center',
+    });
+  };
   useEffect(() => {
-    setInterval(() => setDateToFormat(updateTime, 2000));
-  },[]);
+    if (isInModal === true) {
+      scrollCurrentTime();
+    }
+  });
 
   // USE EFFECT
   useEffect(() => {
@@ -29,17 +38,9 @@ const MyCalendar = (props) => {
       }
       setHourList(hourListTemp);
     }
+    setInterval(() => setDateToFormat(updateTime, 1000));
   }, []);
-  const scrollCurrentTime = () => {
-    return document.getElementById('checkCurrentTime')?.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-      inline: "center"
-    });
-  }
-  useLayoutEffect(() => {
-    scrollCurrentTime();
-  });
+
   // FIND THE FIRST HOUR IN DATE THAT HAS EVENT
   // useEffect(() => {
   //   let firstIndex = null;
@@ -60,59 +61,59 @@ const MyCalendar = (props) => {
     if (minute < 0.8) {
       if (hour - Number(currentTime) === 0) {
         if (minute < 0.05) {
-          return <hr className={styles.currentTime} id='currentTimeId' />;
+          return <hr className={styles.currentTime} id="currentTimeId" />;
         }
         if (minute >= 0.05 && minute < 0.1) {
-          return <hr className={styles.currentTime1} id='currentTimeId' />;
+          return <hr className={styles.currentTime1} id="currentTimeId" />;
         }
         if (minute >= 0.1 && minute < 0.15) {
-          return <hr className={styles.currentTime2} id='currentTimeId' />;
+          return <hr className={styles.currentTime2} id="currentTimeId" />;
         }
         if (minute >= 0.15 && minute < 0.2) {
-          return <hr className={styles.currentTime3} id='currentTimeId' />;
+          return <hr className={styles.currentTime3} id="currentTimeId" />;
         }
         if (minute >= 0.2 && minute < 0.25) {
-          return <hr className={styles.currentTime4} id='currentTimeId' />;
+          return <hr className={styles.currentTime4} id="currentTimeId" />;
         }
         if (minute >= 0.25 && minute < 0.3) {
-          return <hr className={styles.currentTime5} id='currentTimeId' />;
+          return <hr className={styles.currentTime5} id="currentTimeId" />;
         }
         if (minute >= 0.3 && minute < 0.35) {
-          return <hr className={styles.currentTime6} id='currentTimeId' />;
+          return <hr className={styles.currentTime6} id="currentTimeId" />;
         }
         if (minute >= 0.35 && minute < 0.4) {
-          return <hr className={styles.currentTime7} id='currentTimeId' />;
+          return <hr className={styles.currentTime7} id="currentTimeId" />;
         }
         if (minute >= 0.4 && minute < 0.5) {
-          return <hr className={styles.currentTime8} id='currentTimeId' />;
+          return <hr className={styles.currentTime8} id="currentTimeId" />;
         }
         if (minute >= 0.5 && minute < 0.55) {
-          return <hr className={styles.currentTime9} id='currentTimeId' />;
+          return <hr className={styles.currentTime9} id="currentTimeId" />;
         }
         if (minute >= 0.55 && minute < 0.6) {
-          return <hr className={styles.currentTime10} id='currentTimeId' />;
+          return <hr className={styles.currentTime10} id="currentTimeId" />;
         }
         if (minute >= 0.6 && minute < 0.65) {
-          return <hr className={styles.currentTime11} id='currentTimeId' />;
+          return <hr className={styles.currentTime11} id="currentTimeId" />;
         }
         if (minute >= 0.65 && minute < 0.7) {
-          return <hr className={styles.currentTime12} id='currentTimeId' />;
+          return <hr className={styles.currentTime12} id="currentTimeId" />;
         }
         if (minute >= 0.7 && minute < 0.75) {
-          return <hr className={styles.currentTime13} id='currentTimeId' />;
+          return <hr className={styles.currentTime13} id="currentTimeId" />;
         }
         if (minute >= 0.75 && minute < 0.8) {
-          return <hr className={styles.currentTime14} id='currentTimeId' />;
+          return <hr className={styles.currentTime14} id="currentTimeId" />;
         }
       }
     }
     if (minute >= 0.8) {
       if (hour - (Number(currentTime) + 1) === 0) {
         if (minute < 0.9) {
-          return <hr className={styles.currentTime15} id='currentTimeId' />;
+          return <hr className={styles.currentTime15} id="currentTimeId" />;
         }
         if (minute >= 0.9 && minute < 1) {
-          return <hr className={styles.currentTime16} id='currentTimeId' />;
+          return <hr className={styles.currentTime16} id="currentTimeId" />;
         }
       }
     }
@@ -122,11 +123,11 @@ const MyCalendar = (props) => {
   //   renderCurrentDate()
   // }, 1000);
   const checkCurrentTime = (hour) => {
-    if(Number(moment().format('HH')) === hour){
-      return <div id='checkCurrentTime' />
+    if (Number(moment().format('HH')) === hour) {
+      return <div id="checkCurrentTime" />;
     }
-    return ''
-  }
+    return '';
+  };
 
   // RENDER UI
   const renderRow = (hour, events = []) => {
@@ -135,34 +136,29 @@ const MyCalendar = (props) => {
     if (eventCount > 3) {
       colSpan = 24;
     }
-    const timeEvent = events.length > 0 ? moment(events[0].start.dateTime).hour() : -1;
+    // const timeEvent = events.length > 0 ? moment(events[0].start.dateTime).hour() : -1;
     const renderHour = (h) => {
       if (hour < 12) return `${h} AM`;
       if (hour === 12) return `12 PM`;
       return `${h - 12} PM`;
     };
     // && events.length === 0
-    // const checkCurrentTime = dateToFormat ? dateToFormat.split(':')[0] : moment().format('HH');
-    // if ((checkCurrentTime < hour + 3 || checkCurrentTime > hour - 3) && events.length === 0) return '';
+    // const checkCurrent = dateToFormat ? dateToFormat.split(':')[0] : moment().format('HH');
+    // if(isInModal === false){
+    //   if ((checkCurrent > hour + 3 || checkCurrent < hour - 3) && events.length === 0) return null;
+    // }
     return (
       <Row className={styles.eachRow} justify="center" align="top">
-        <Col xs={4} xl={3} className={styles.eachRow__left}>
+        <Col xs={4} className={styles.eachRow__left}>
           <div>{renderHour(hour)}</div>
         </Col>
-        <Col xs={20} xl={21} className={styles.eachRow__right}>
+        <Col xs={20} className={styles.eachRow__right}>
           <Row gutter={[16, 16]}>
-            <span style={{width: '100%'}}>
+            <span style={{ width: '100%' }}>
               {checkCurrentTime(hour)}
-              {renderCurrentDate(hour, dateToFormat, timeEvent)}
+              {renderCurrentDate(hour, dateToFormat)}
               {events.map((event) => {
-                return (
-                  <MeetingTag
-                    span={colSpan}
-                    event={event}
-                    dateSelected={dateSelected}
-                    // isFirstHourHasData={hour === firstHourHasData}
-                  />
-                );
+                return <MeetingTag span={colSpan} event={event} selectedDate={selectedDate} />;
               })}
             </span>
           </Row>
