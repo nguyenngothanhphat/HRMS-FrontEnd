@@ -15,43 +15,31 @@
 
 stages:          # List of stages for jobs, and their order of execution
   - build
-  - deploy
-  - deploy-master
+  - deploy-prod
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
   tags:
-    - master
+    - production-runner
   script:
     - source /etc/environment
+    - which npm
+    - which node
     - npm install
     - npm run build
     - docker login -u khoa.le -p $PWD gitlab.paxanimi.ai:8150
-    - docker rmi gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest || true
+    #- docker rmi gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
     - docker build -t gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest -f Dockerfile .
     - docker push gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
-    - kubectl delete -f /home/hrms/hrms-infra/kubernetes-service-files/Frontend/frontend-deployment.yaml --ignore-not-found=true
+    - kubectl delete -f /home/HRMS-microservices/frontend/frontend-deployment.yaml
   only:
-    - staging
+    - production
 
-deploy-job-worker-2:
-  stage: deploy
+deploy-job-prod:
+  stage: deploy-prod
   tags:
-    - worker-2
+    - production-runner
   script:
-    - source /etc/environment
-    - docker login -u khoa.le -p $PWD gitlab.paxanimi.ai:8150
-    - docker rmi gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest || true
-    - docker pull gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
+    - kubectl apply -f /home/HRMS-microservices/frontend/frontend-deployment.yaml
   only:
-    - staging
-
-deploy-job-master:
-  stage: deploy-master
-  tags:
-    - master
-  script:
-    - kubectl apply -f /home/hrms/hrms-infra/kubernetes-service-files/Frontend/frontend-deployment.yaml
-    #- kubectl get po -A
-  only:
-    - staging
+    - production
