@@ -14,32 +14,83 @@
 # For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
 
 stages:          # List of stages for jobs, and their order of execution
-  - build
-  - deploy-prod
+  - build-dev
+  - build-staging
+  - build-production
+  - deploy-dev
+  - deploy-staging
+  - deploy-production
 
-build-job:       # This job runs in the build stage, which runs first.
-  stage: build
+build-job-dev:       # This job runs in the build stage, which runs first.
+  stage: build-dev
+  tags:
+    - dev-worker
+  script:
+    - source /etc/environment
+    - npm install
+    - npm run build
+    - docker login -u khoa.le -p $PWD gitlab.paxanimi.ai:8150
+    - docker build -t gitlab.paxanimi.ai:8150/hrms/hrms-frontend:dev-$CI_PIPELINE_ID -f Dockerfile .
+    - docker push gitlab.paxanimi.ai:8150/hrms/hrms-frontend:dev-$CI_PIPELINE_ID
+    - docker rmi gitlab.paxanimi.ai:8150/hrms/hrms-frontend:dev-$CI_PIPELINE_ID
+  only:
+    - dev
+
+build-job-staging:       # This job runs in the build stage, which runs first.
+  stage: build-staging
+  tags:
+    # - staging-worker
+    - master
+  script:
+    - source /etc/environment
+    - npm install
+    - npm run build
+    - docker login -u khoa.le -p $PWD gitlab.paxanimi.ai:8150
+    - docker build -t gitlab.paxanimi.ai:8150/hrms/hrms-frontend:staging-$CI_PIPELINE_ID -f Dockerfile .
+    - docker push gitlab.paxanimi.ai:8150/hrms/hrms-frontend:staging-$CI_PIPELINE_ID
+    - docker rmi gitlab.paxanimi.ai:8150/hrms/hrms-frontend:staging-$CI_PIPELINE_ID
+  only:
+    - staging
+
+build-job-production:       # This job runs in the build stage, which runs first.
+  stage: build-production
   tags:
     - production-runner
   script:
     - source /etc/environment
-    - which npm
-    - which node
     - npm install
     - npm run build
     - docker login -u khoa.le -p $PWD gitlab.paxanimi.ai:8150
-    #- docker rmi gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
-    - docker build -t gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest -f Dockerfile .
-    - docker push gitlab.paxanimi.ai:8150/hrms/hrms-frontend:latest
-    - kubectl delete -f /home/HRMS-microservices/frontend/frontend-deployment.yaml
+    - docker build -t gitlab.paxanimi.ai:8150/hrms/hrms-frontend:production-$CI_PIPELINE_ID -f Dockerfile .
+    - docker push gitlab.paxanimi.ai:8150/hrms/hrms-frontend:production-$CI_PIPELINE_ID
+    - docker rmi gitlab.paxanimi.ai:8150/hrms/hrms-frontend:production-$CI_PIPELINE_ID
   only:
     - production
 
-deploy-job-prod:
-  stage: deploy-prod
+deploy-job-dev:
+  stage: deploy-dev
+  tags:
+    - dev-master
+  script:
+    - kubectl patch deployment frontend-deployment -p "{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"frontend\", \"image\":\"gitlab.paxanimi.ai:8150/hrms/hrms-frontend:dev-$CI_PIPELINE_ID\"}]}}}}"
+  only:
+    - dev
+
+deploy-job-staging:
+  stage: deploy-staging
+  tags:
+    # - staging-master
+    - master
+  script:
+    - kubectl patch deployment frontend-deployment -p "{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"frontend\", \"image\":\"gitlab.paxanimi.ai:8150/hrms/hrms-frontend:staging-$CI_PIPELINE_ID\"}]}}}}"
+  only:
+    - staging
+
+deploy-job-production:
+  stage: deploy-production
   tags:
     - production-runner
   script:
-    - kubectl apply -f /home/HRMS-microservices/frontend/frontend-deployment.yaml
+    - kubectl patch deployment frontend-deployment -p "{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"frontend\", \"image\":\"gitlab.paxanimi.ai:8150/hrms/hrms-frontend:production-$CI_PIPELINE_ID\"}]}}}}"
   only:
     - production
