@@ -1,4 +1,4 @@
-const BASE_API_DEV = 'https://stghrms.paxanimi.ai';
+const BASE_API_DEV = 'https://terralogic.paxanimi.ai';
 const BASE_API_PRODUCTION = 'https://terralogic.paxanimi.ai';
 
 export const API_KEYS = {
