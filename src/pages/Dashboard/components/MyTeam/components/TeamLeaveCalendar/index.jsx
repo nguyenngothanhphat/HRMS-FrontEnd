@@ -92,7 +92,7 @@ const TeamLeaveCalendar = (props) => {
   const checkDate = (date, listDate) => {
     return (
       listDate.filter(
-        (val) => moment(val.date).format('MM/DD/YYYY') === moment(date).format('MM/DD/YYYY'),
+        (val) => moment(val.date.split('T')[0]).format('MM/DD/YYYY') === moment(date).format('MM/DD/YYYY'),
       ) || []
     );
   };
