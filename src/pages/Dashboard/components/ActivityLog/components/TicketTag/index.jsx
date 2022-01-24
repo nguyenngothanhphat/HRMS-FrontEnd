@@ -16,7 +16,7 @@ const TicketTag = (props) => {
       created_at: onDateSupportRequest = '',
       id: ticketID = '',
       status = '',
-      request_type: typeNameSupportRequest = '',
+      query_type: typeNameSupportRequest = '',
       onDate = '',
       fromDate = '',
       toDate = '',
