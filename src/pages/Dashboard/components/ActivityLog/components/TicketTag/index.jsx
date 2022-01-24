@@ -17,7 +17,6 @@ const TicketTag = (props) => {
       id: ticketID = '',
       status = '',
       request_type: typeNameSupportRequest = '',
-      type: { typeName = '' } = {},
       onDate = '',
       fromDate = '',
       toDate = '',
@@ -32,7 +31,7 @@ const TicketTag = (props) => {
       <Col span={24}>
         <div className={styles.TicketTag}>
           <Row align="middle" justify="space-between">
-            {typeName ? (
+            {onDate ? (
               <Col span={24} className={styles.leftPart}>
                 <div className={styles.dateTime}>
                   <span>{dateTempTimeoff}</span>

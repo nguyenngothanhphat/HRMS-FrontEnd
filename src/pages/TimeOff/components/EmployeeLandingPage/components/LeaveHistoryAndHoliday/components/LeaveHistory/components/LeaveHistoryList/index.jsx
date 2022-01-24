@@ -39,10 +39,10 @@ export default class LeaveHistoryList extends PureComponent {
                   <Col xs={4} className={styles.dateAndMonth} style={{ justifyContent: 'center' }}>
                     <span className={styles.container}>
                       <span className={styles.day}>
-                        {moment(fromDate).locale('en').format('DD')}
+                        {moment.utc(fromDate).locale('en').format('DD')}
                       </span>
                       <span className={styles.month}>
-                        {moment(fromDate).locale('en').format('MMM')}
+                        {moment.utc(fromDate).locale('en').format('MMM')}
                       </span>
                     </span>
                   </Col>
@@ -59,15 +59,19 @@ export default class LeaveHistoryList extends PureComponent {
                 style={{ justifyContent: 'space-evenly' }}
               >
                 <span className={styles.container}>
-                  <span className={styles.day}>{moment(fromDate).locale('en').format('DD')}</span>
+                  <span className={styles.day}>
+                    {moment.utc(fromDate).locale('en').format('DD')}
+                  </span>
                   <span className={styles.month}>
-                    {moment(fromDate).locale('en').format('MMM')}
+                    {moment.utc(fromDate).locale('en').format('MMM')}
                   </span>
                 </span>
                 <span className={styles.subtractSymbol}>-</span>
                 <span className={styles.container}>
-                  <span className={styles.day}>{moment(toDate).locale('en').format('DD')}</span>
-                  <span className={styles.month}>{moment(toDate).locale('en').format('MMM')}</span>
+                  <span className={styles.day}>{moment.utc(toDate).locale('en').format('DD')}</span>
+                  <span className={styles.month}>
+                    {moment.utc(toDate).locale('en').format('MMM')}
+                  </span>
                 </span>
               </Col>
               <Col xs={10} className={styles.eventOfDay}>

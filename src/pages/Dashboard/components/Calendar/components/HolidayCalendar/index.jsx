@@ -8,6 +8,8 @@ const dateFormat = 'DD dddd';
 
 const HolidayCalendar = (props) => {
   const { isInModal = false, listHolidays = [] } = props;
+  const currentDate = new Date().toISOString();
+  const newListHolidays = listHolidays.filter((date) => date.date.iso >= currentDate);
   const [monthList, setMonthList] = useState([]);
   // const check = listHolidays.filter((obj) => obj.date.dateTime.month === '1') || [];
   // USE EFFECT
@@ -32,11 +34,13 @@ const HolidayCalendar = (props) => {
 
   const formatData = () => {
     return monthList.map((month, index) => {
-      const monthHolidays = listHolidays.filter(
+      const monthHolidays = newListHolidays.filter(
         (holiday) => holiday.date.dateTime.month === (index + 1).toString(),
       );
       const getDaysHaveHoliday = [...new Set(monthHolidays.map((x) => x.date.iso))];
-      getDaysHaveHoliday.sort((a, b) =>moment(a).format('YYYYMMDD') - moment(b).format('YYYYMMDD'));
+      getDaysHaveHoliday.sort(
+        (a, b) => moment(a).format('YYYYMMDD') - moment(b).format('YYYYMMDD'),
+      );
       return {
         month,
         list: getDaysHaveHoliday.map((y) => {
@@ -73,7 +77,7 @@ const HolidayCalendar = (props) => {
           justify="center"
           align="middle"
         >
-          <Col xs={4} xl={3} className={styles.eachRow__left}>
+          <Col xs={4} className={styles.eachRow__left}>
             <div>
               {index === 0 && <span className={styles.monthLabel}>{month}</span>}
               <span className={styles.dateLabel}>
@@ -81,7 +85,7 @@ const HolidayCalendar = (props) => {
               </span>
             </div>
           </Col>
-          <Col xs={20} xl={21} className={styles.eachRow__right}>
+          <Col xs={20} className={styles.eachRow__right}>
             <Row gutter={[16, 16]}>
               {item.holidays.map((val) => {
                 return renderTag(val.name, colSpan);

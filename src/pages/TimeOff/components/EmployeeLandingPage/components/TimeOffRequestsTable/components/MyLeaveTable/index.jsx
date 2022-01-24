@@ -62,10 +62,10 @@ class MyLeaveTable extends PureComponent {
       dataIndex: 'onDate',
       align: 'center',
       // width: '30%',
-      render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YY')}</span>,
+      render: (onDate) => <span>{moment.utc(onDate).locale('en').format('MM/DD/YYYY')}</span>,
       defaultSortOrder: ['ascend'],
       sorter: {
-        compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
+        compare: (a, b) => moment.utc(a.onDate).isAfter(moment.utc(b.onDate)),
       },
       sortDirections: ['ascend', 'descend', 'ascend'],
     },
@@ -109,7 +109,9 @@ class MyLeaveTable extends PureComponent {
     },
     {
       title: 'Action',
+      fixed: 'right',
       align: 'left',
+      width: '15%',
       dataIndex: '_id',
       // width: '20%',
       render: (_id) => (
@@ -161,9 +163,10 @@ class MyLeaveTable extends PureComponent {
 
       let leaveTimes = '';
       if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-        leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YY')} - ${moment(toDate)
+        leaveTimes = `${moment.utc(fromDate).locale('en').format('MM/DD/YYYY')} - ${moment
+          .utc(toDate)
           .locale('en')
-          .format('MM.DD.YY')}`;
+          .format('MM/DD/YYYY')}`;
       }
 
       // let employeeFromCC = [];
@@ -232,7 +235,7 @@ class MyLeaveTable extends PureComponent {
     return (
       <div className={styles.MyLeaveTable}>
         <Table
-          size="middle"
+          // size="middle"
           loading={tableLoading}
           // rowSelection={rowSelection}
           pagination={{ ...pagination, total }}
