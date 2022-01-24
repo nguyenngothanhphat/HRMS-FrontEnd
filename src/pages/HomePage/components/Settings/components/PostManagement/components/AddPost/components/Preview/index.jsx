@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Parser from 'html-react-parser';
 import styles from './index.less';
-import { POST_TYPE_TEXT } from '@/utils/homePage';
+import { TAB_IDS } from '@/utils/homePage';
 import EmployeeTag from '@/pages/HomePage/components/Announcements/components/EmployeeTag';
 import PostContent from '@/pages/HomePage/components/Announcements/components/PostContent';
 import PreviewImage from '@/assets/homePage/previewImage.png';
@@ -121,14 +121,14 @@ const Preview = (props) => {
     };
 
     switch (mode) {
-      case POST_TYPE_TEXT.ANNOUNCEMENT:
+      case TAB_IDS.ANNOUNCEMENTS:
         return (
           <>
             <EmployeeTag employee={post.employee} />
             <PostContent post={post} />
           </>
         );
-      case POST_TYPE_TEXT.BIRTHDAY_ANNIVERSARY:
+      case TAB_IDS.BIRTHDAY:
         return (
           <div style={{ padding: '24px' }}>
             <CelebratingCard
@@ -141,7 +141,7 @@ const Preview = (props) => {
             />
           </div>
         );
-      case POST_TYPE_TEXT.IMAGES:
+      case TAB_IDS.IMAGES:
         return (
           <div style={{ padding: '24px' }}>
             <GalleryCard
@@ -166,14 +166,14 @@ const Preview = (props) => {
             />
           </div>
         );
-      case POST_TYPE_TEXT.BANNER:
+      case TAB_IDS.BANNER:
         return (
           // <div style={{ padding: '24px' }}>
           <Carousel previewing contentPreview={bannerContent.imageUrls} />
           // </div>
         );
 
-      case POST_TYPE_TEXT.POLL:
+      case TAB_IDS.POLLS:
         return (
           <div style={{ padding: '24px' }}>
             <Options
