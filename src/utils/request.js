@@ -1,12 +1,8 @@
 import { notification } from 'antd';
 import axios from 'axios';
 import { getDvaApp } from 'umi';
-import { proxy as Proxy, API_KEYS } from '../../config/proxy';
+import { proxy, API_KEYS } from '../../config/proxy';
 import { getToken } from './token';
-
-const env = process.env.REACT_APP_ENV || 'dev';
-const isProd = env.includes('prod');
-const proxy = isProd ? Proxy.prod : Proxy.dev;
 
 const codeMessage = {
   200: 'The server successfully returned the requested data.',
