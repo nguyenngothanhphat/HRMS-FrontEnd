@@ -164,6 +164,13 @@ const ActivityLog = (props) => {
         {renderShowAll()}
         <img src={LeftArrow} alt="expand" />
       </div>
+      {/* 
+      {activeKey === '1' && googleCalendarList.length > 0 && (
+        <div className={styles.viewAllMeetingBtn} onClick={() => setModalVisible(true)}>
+          <span>View all Meetings</span>
+          <img src={LeftArrow} alt="expand" />
+        </div>
+      )} */}
       <CommonModal
         visible={modalVisible}
         title={renderTabName(activeKey)}
