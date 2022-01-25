@@ -70,18 +70,18 @@ class AddEmployeeForm extends Component {
     return null;
   }
 
-  componentDidMount() {
-    const { company } = this.props;
-    if (company) {
-      this.setState({
-        isDisabled: false,
-      });
-      this.fetchData(company);
-    }
-  }
+  // componentDidMount() {
+  //   const { company, visible = false } = this.props;
+  //   if (company) {
+  //     this.setState({
+  //       isDisabled: false,
+  //     });
+  //     this.fetchData(company);
+  //   }
+  // }
 
-  componentDidUpdate() {
-    const { dispatch, statusAddEmployee = false } = this.props;
+  componentDidUpdate(prevProps) {
+    const { dispatch, statusAddEmployee = false, company, visible = false } = this.props;
     if (statusAddEmployee) {
       this.formRef.current.resetFields();
       dispatch({
@@ -90,6 +90,13 @@ class AddEmployeeForm extends Component {
           statusAddEmployee: false,
         },
       });
+    }
+    if (prevProps.visible !== visible && visible && company) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        isDisabled: false,
+      });
+      this.fetchData(company);
     }
   }
 

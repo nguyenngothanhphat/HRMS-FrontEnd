@@ -68,15 +68,15 @@ class Directory extends PureComponent {
           tenantId,
         },
       });
-      dispatch({
-        type: 'employee/fetchSkillList',
-      });
-      dispatch({
-        type: 'employee/fetchEmployeeType',
-      });
-      dispatch({
-        type: 'employee/fetchEmployeeListSingleCompanyEffect',
-      });
+      // dispatch({
+      //   type: 'employee/fetchSkillList',
+      // });
+      // dispatch({
+      //   type: 'employee/fetchEmployeeType',
+      // });
+      // dispatch({
+      //   type: 'employee/fetchEmployeeListSingleCompanyEffect',
+      // });
     }
   };
 
@@ -134,6 +134,7 @@ class Directory extends PureComponent {
             onChange={(key) => {
               history.push(isOwner() ? `/employees/${key}` : `/directory/${key}`);
             }}
+            destroyInactiveTabPane
           >
             <TabPane
               tab={

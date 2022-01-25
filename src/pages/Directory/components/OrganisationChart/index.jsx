@@ -38,7 +38,7 @@ class OrganisationChart extends Component {
       timezoneList: [],
       currentTime: moment(),
       currentDate: new Date(),
-      status: 0,
+      status: '',
     };
     this.myRef = React.createRef();
     this.userRef = React.createRef([]);
@@ -76,7 +76,7 @@ class OrganisationChart extends Component {
       this.fetchTimezone();
     }
 
-    if (prevState.status !== status) {
+    if (prevState.status && prevState.status !== status) {
       this.fetchDataOrgChart();
     }
 

@@ -1,7 +1,7 @@
 import { Button } from 'antd';
 import React from 'react';
 import { history } from 'umi';
-import CalendarImage from '@/assets/homePage/calendarImage.svg';
+import CalendarImage from '@/assets/homePage/calendarImage.png';
 import styles from './index.less';
 
 const TimeOff = () => {
