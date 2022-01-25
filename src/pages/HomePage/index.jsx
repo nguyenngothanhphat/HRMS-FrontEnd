@@ -1,18 +1,20 @@
-import { Col, Row } from 'antd';
-import React from 'react';
+import { Col, Row, Skeleton } from 'antd';
+import React, { Suspense } from 'react';
 import { history } from 'umi';
 import SettingIcon from '@/assets/dashboard/setting.svg';
-import Announcements from './components/Announcements';
+import styles from './index.less';
+
 import Carousel from './components/Carousel';
-import Celebrating from './components/Celebrating';
-import Gallery from './components/Gallery';
 import MyInformation from './components/MyInformation';
 import QuickLinks from './components/QuickLinks';
 import TimeOff from './components/TimeOff';
 import TimeSheet from './components/TimeSheet';
 import Voting from './components/Voting';
 import Welcome from './components/Welcome';
-import styles from './index.less';
+
+const Announcements = React.lazy(() => import('./components/Announcements'));
+const Gallery = React.lazy(() => import('./components/Gallery'));
+const Celebrating = React.lazy(() => import('./components/Celebrating'));
 
 const HomePage = () => {
   const viewSettingPage = () => {
@@ -64,7 +66,9 @@ const HomePage = () => {
                   xl={{ order: 1, span: 12 }}
                   xxl={{ order: 1, span: 16 }}
                 >
-                  <Announcements />
+                  <Suspense fallback={<Skeleton active />}>
+                    <Announcements />
+                  </Suspense>
                 </Col>
                 <Col
                   xs={{ order: 1, span: 24 }}
@@ -73,10 +77,14 @@ const HomePage = () => {
                 >
                   <Row gutter={[24, 24]}>
                     <Col span={24}>
-                      <Celebrating />
+                      <Suspense fallback={<Skeleton active />}>
+                        <Celebrating />
+                      </Suspense>
                     </Col>
                     <Col span={24}>
-                      <Gallery />
+                      <Suspense fallback={<Skeleton active />}>
+                        <Gallery />
+                      </Suspense>
                     </Col>
                   </Row>
                 </Col>
