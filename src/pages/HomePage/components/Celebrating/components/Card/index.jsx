@@ -146,6 +146,7 @@ const Card = (props) => {
         dots
         autoplay
         autoplaySpeed={10000}
+        lazyLoad="ondemand"
         nextArrow={<NextArrow />}
         prevArrow={<PrevArrow />}
       >

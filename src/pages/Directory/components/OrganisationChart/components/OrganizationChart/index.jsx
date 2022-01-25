@@ -44,7 +44,7 @@ class OrganizationChart extends Component {
 
   componentDidUpdate = (prevProps) => {
     const { idSelect = '', dispatch } = this.props;
-    if (prevProps.idSelect !== idSelect) {
+    if (prevProps.idSelect !== idSelect && prevProps.idSelect) {
       dispatch({
         type: 'employee/fetchDataOrgChart',
         payload: { employee: idSelect },

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { history, connect } from 'umi';
 import DoneIcon from '@/assets/dashboard/timesheetCheck.svg';
 import PlusIcon from '@/assets/dashboard/timesheetPlus.svg';
-import CalendarImage from '@/assets/homePage/calendarImage.svg';
+import CalendarImage from '@/assets/homePage/calendarImage.png';
 import { TIMESHEET_DATE_FORMAT } from '@/utils/dashboard';
 import { dateFormatAPI } from '@/utils/timeSheet';
 import styles from './index.less';
