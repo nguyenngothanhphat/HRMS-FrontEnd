@@ -50,6 +50,7 @@ const Carousel = (props) => {
         autoplay
         autoplaySpeed={10000}
         nextArrow={<NextArrow />}
+        lazyLoad="ondemand"
         prevArrow={<PrevArrow />}
       >
         {!previewing &&
