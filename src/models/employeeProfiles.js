@@ -566,6 +566,9 @@ const employeeProfile = {
           dataTempKept,
         });
         yield put({
+          type: 'user/fetchCurrent',
+        });
+        yield put({
           type: 'fetchTax',
           payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
           dataTempKept,
