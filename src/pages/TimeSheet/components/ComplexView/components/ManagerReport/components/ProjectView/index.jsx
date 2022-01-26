@@ -33,6 +33,7 @@ const ProjectView = (props) => {
       managerProjectViewPagination = {},
     } = {},
     employee: { _id: userId = '' } = {},
+    loadingFetchProjectList = false,
   } = props;
 
   // FUNCTION AREA
@@ -132,6 +133,7 @@ const ProjectView = (props) => {
             currentProject={currentProject}
             setCurrentProject={setCurrentProject}
             projectList={projectList}
+            loadingFetchProjectList={loadingFetchProjectList}
           />
         );
 
@@ -147,6 +149,7 @@ const ProjectView = (props) => {
             currentProject={currentProject}
             setCurrentProject={setCurrentProject}
             projectList={projectList}
+            loadingFetchProjectList={loadingFetchProjectList}
           />
         );
 
@@ -204,7 +207,8 @@ const ProjectView = (props) => {
   );
 };
 
-export default connect(({ timeSheet, user: { currentUser: { employee = {} } = {} } }) => ({
+export default connect(({ timeSheet, loading, user: { currentUser: { employee = {} } = {} } }) => ({
   employee,
   timeSheet,
+  loadingFetchProjectList: loading.effects['timeSheet/fetchProjectListEffect'],
 }))(ProjectView);
