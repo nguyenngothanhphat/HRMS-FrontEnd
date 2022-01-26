@@ -142,11 +142,13 @@ class Edit extends PureComponent {
   };
 
   handleSave = () => {
-    const { dispatch } = this.props;
+    const { dispatch, locationEmpl: { headQuarterAddress: { country = '' } = {} } = {} } = this.props;
     const payload = this.processDataChanges() || {};
     // const tenantId = localStorage.getItem('tenantId');
     const dataTempKept = this.processDataKept() || {};
-    this.handleUpLoadAdhaarCard();
+    if(country === 'IN') {
+      this.handleUpLoadAdhaarCard();
+    }
     dispatch({
       type: 'employeeProfile/updateGeneralInfo',
       payload,
@@ -523,7 +525,7 @@ class Edit extends PureComponent {
             {checkVietNamLocation ? (
               <Form.Item
                 label="National Identification Number"
-                name="nationalId"
+                name="uanNumber"
                 rules={[
                   {
                     pattern: /^[+]*[\d]{0,16}$/,
