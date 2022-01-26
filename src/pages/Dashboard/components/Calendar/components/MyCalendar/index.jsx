@@ -8,7 +8,6 @@ import styles from './index.less';
 const MyCalendar = (props) => {
   const { isInModal = false, data = [], loading = false, selectedDate = '' } = props;
   const [hourList, setHourList] = useState([]);
-  // const [firstHourHasData, setFirstHourHasData] = useState('');
 
   const [dateToFormat, setDateToFormat] = useState(moment().format('HH:mm'));
 
@@ -40,19 +39,6 @@ const MyCalendar = (props) => {
     }
     setInterval(() => setDateToFormat(updateTime, 1000));
   }, []);
-
-  // FIND THE FIRST HOUR IN DATE THAT HAS EVENT
-  // useEffect(() => {
-  //   let firstIndex = null;
-  //   for (let i = 0; i < 24; i += 1) {
-  //     const x = data.find((item) => moment(item.start.dateTime).hour() === i);
-  //     if (x && !firstIndex) {
-  //       firstIndex = i;
-  //       break;
-  //     }
-  //   }
-  //   setFirstHourHasData(firstIndex);
-  // }, [JSON.stringify(data)]);
 
   const renderCurrentDate = (hour, currentDate) => {
     const currentTime = currentDate ? currentDate.split(':')[0] : moment().format('HH');
@@ -119,9 +105,7 @@ const MyCalendar = (props) => {
     }
     return '';
   };
-  // setInterval(() => {
-  //   renderCurrentDate()
-  // }, 1000);
+
   const checkCurrentTime = (hour) => {
     if (Number(moment().format('HH')) === hour) {
       return <div id="checkCurrentTime" />;
@@ -142,11 +126,7 @@ const MyCalendar = (props) => {
       if (hour === 12) return `12 PM`;
       return `${h - 12} PM`;
     };
-    // && events.length === 0
-    // const checkCurrent = dateToFormat ? dateToFormat.split(':')[0] : moment().format('HH');
-    // if(isInModal === false){
-    //   if ((checkCurrent > hour + 3 || checkCurrent < hour - 3) && events.length === 0) return null;
-    // }
+
     return (
       <Row className={styles.eachRow} justify="center" align="top">
         <Col xs={4} className={styles.eachRow__left}>

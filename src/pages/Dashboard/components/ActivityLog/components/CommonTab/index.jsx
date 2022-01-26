@@ -7,7 +7,7 @@ import TicketTag from '../TicketTag';
 import styles from './index.less';
 
 const CommonTab = (props) => {
-  const { isInModal = false, type: typeProp = '1', data = [] } = props;
+  const { isInModal = false, type: typeProp = '1', data = [], noBackground = false } = props;
 
   const renderTagByType = (type) => {
     switch (type) {
@@ -31,8 +31,15 @@ const CommonTab = (props) => {
     }
   };
 
+  const getCss = () => {
+    if (isInModal && noBackground) return { background: '#fff', maxHeight: '600px' };
+    if (isInModal) return { maxHeight: '600px' };
+    if (noBackground) return { background: '#fff' };
+    return {};
+  };
+
   return (
-    <div className={styles.CommonTab} style={isInModal ? { maxHeight: '600px' } : {}}>
+    <div className={styles.CommonTab} style={getCss()}>
       <Row gutter={[16, 16]}>{renderTagByType(typeProp)}</Row>
     </div>
   );

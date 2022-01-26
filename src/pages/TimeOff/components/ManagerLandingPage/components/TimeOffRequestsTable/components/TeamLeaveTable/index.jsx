@@ -90,7 +90,7 @@ class TeamLeaveTable extends PureComponent {
       title: 'Duration',
       width: '11%',
       dataIndex: 'duration',
-      align: 'left',
+      align: 'center',
     },
     // {
     //   title: `Req’ted on `,
