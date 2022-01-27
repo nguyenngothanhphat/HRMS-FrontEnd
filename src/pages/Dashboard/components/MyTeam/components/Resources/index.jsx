@@ -8,7 +8,12 @@ import styles from './index.less';
 
 const Resources = (props) => {
   const { data = [] } = props;
-  if (data.length === 0) return <Empty image={Icon} />;
+  if (data.length === 0)
+    return (
+      <div className={styles.Resources}>
+        <Empty image={Icon} />
+      </div>
+    );
   return (
     <div className={styles.Resources}>
       <Row gutter={[24, 24]}>
