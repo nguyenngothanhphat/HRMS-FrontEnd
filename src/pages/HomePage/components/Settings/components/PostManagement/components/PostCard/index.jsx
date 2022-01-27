@@ -14,7 +14,10 @@ const PostCard = (props) => {
   const { onAddPost = () => {}, selectedTab = '', setSelectedTab = () => {} } = props;
 
   // redux
-  const { homePage: { postsByType = [] } = {}, loadingFetchPostList = false } = props;
+  const {
+    homePage: { postsByType = [], totalPostsOfType = [] } = {},
+    loadingFetchPostList = false,
+  } = props;
 
   // redux
   const { dispatch } = props;
@@ -25,6 +28,12 @@ const PostCard = (props) => {
     return number;
   };
 
+  const fetchTotalPostsOfType = () => {
+    dispatch({
+      type: 'homePage/fetchTotalPostsOfType',
+    });
+  };
+
   const fetchData = () => {
     dispatch({
       type: 'homePage/fetchPostListByTypeEffect',
@@ -32,28 +41,29 @@ const PostCard = (props) => {
         postType: selectedTab,
       },
     });
+    fetchTotalPostsOfType();
   };
 
   const getTabName = (tab) => {
     let count = 0;
     switch (tab.id) {
       case TAB_IDS.ANNOUNCEMENTS:
-        count = 0;
+        count = totalPostsOfType.find((x) => x._id === TAB_IDS.ANNOUNCEMENTS)?.count || 0;
         break;
       case TAB_IDS.ANNIVERSARY:
-        count = 0;
+        count = totalPostsOfType.find((x) => x._id === TAB_IDS.ANNIVERSARY)?.count || 0;
         break;
 
       case TAB_IDS.IMAGES:
-        count = 0;
+        count = totalPostsOfType.find((x) => x._id === TAB_IDS.IMAGES)?.count || 0;
         break;
 
       case TAB_IDS.BANNER:
-        count = 0;
+        count = totalPostsOfType.find((x) => x._id === TAB_IDS.BANNER)?.count || 0;
         break;
 
       case TAB_IDS.POLL:
-        count = 0;
+        count = totalPostsOfType.find((x) => x._id === TAB_IDS.POLL)?.count || 0;
         break;
 
       default:

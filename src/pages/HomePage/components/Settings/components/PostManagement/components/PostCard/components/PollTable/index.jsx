@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { connect } from 'umi';
+import { connect, Link } from 'umi';
 import { Popconfirm } from 'antd';
 import moment from 'moment';
 import CommonTable from '../CommonTable';
@@ -73,7 +73,14 @@ const PollTable = (props) => {
         dataIndex: 'createdBy',
         key: 'createdBy',
         render: (createdBy = {}) => {
-          return <span>{createdBy?.generalInfoInfo?.legalName || ''}</span>;
+          return (
+            <Link
+              style={{ fontWeight: 500 }}
+              to={`/directory/employee-profile/${createdBy?.generalInfoInfo?.userId}`}
+            >
+              {createdBy?.generalInfoInfo?.legalName || ''}
+            </Link>
+          );
         },
       },
       {

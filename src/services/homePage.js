@@ -34,6 +34,13 @@ export async function getPostsByType(payload) {
   });
 }
 
+export async function getTotalPostsOfType(payload) {
+  return request('/api/posttenant/get-status-summary', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function votePoll(payload) {
   return request('/api/polltenant/vote', {
     method: 'POST',

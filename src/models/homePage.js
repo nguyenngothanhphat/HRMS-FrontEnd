@@ -4,6 +4,7 @@ import {
   addPost,
   deletePost,
   getPostsByType,
+  getTotalPostsOfType,
   getPostTypeList,
   updatePost,
   votePoll,
@@ -16,6 +17,7 @@ const defaultState = {
   postTypeList: [],
   pollResult: {},
   postsByType: [],
+  totalPostsOfType: [],
   selectedPollOption: {},
 };
 
@@ -115,7 +117,25 @@ const homePage = {
       }
       return response;
     },
-
+    *fetchTotalPostsOfType({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getTotalPostsOfType, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { totalPostsOfType: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
     // POLL
     *votePollEffect({ payload }, { call }) {
       let response = {};

@@ -74,24 +74,76 @@ const AddPost = (props) => {
     setFormValuesDebounce(values);
   };
 
+  const onUploadFiles = async (files) => {
+    const list = [];
+
+    if (files.length > 0) {
+      // eslint-disable-next-line compat/compat
+      await Promise.all(
+        files.map(async (x) => {
+          const formData = new FormData();
+          formData.append('uri', x.originFileObj);
+          const upload = await dispatch({
+            type: 'upload/uploadFile',
+            payload: formData,
+          });
+          if (upload.statusCode === 200) {
+            list.push(upload.data[0]);
+          }
+          return upload;
+        }),
+      );
+    }
+    return list.map((x) => x.id);
+  };
+
   const onPost = async (values) => {
     let payload = {};
+
     switch (mode) {
-      case TAB_IDS.ANNOUNCEMENTS:
-        payload = {};
+      case TAB_IDS.ANNOUNCEMENTS: {
+        const attachments = await onUploadFiles(values.uploadFilesA.fileList);
+        payload = {
+          attachments,
+          postType: TAB_IDS.ANNOUNCEMENTS,
+          description: values.descriptionA,
+          createdBy: employee?._id,
+        };
         break;
-      case TAB_IDS.ANNIVERSARY:
-        payload = {};
+      }
+      case TAB_IDS.ANNIVERSARY: {
+        const attachments = await onUploadFiles(values.uploadFilesB.fileList);
+        payload = {
+          attachments,
+          postType: TAB_IDS.ANNIVERSARY,
+          description: values.descriptionB,
+          createdBy: employee?._id,
+        };
         break;
-      case TAB_IDS.IMAGES:
-        payload = {};
+      }
+      case TAB_IDS.IMAGES: {
+        const attachments = await onUploadFiles(values.uploadFilesI.fileList);
+        payload = {
+          attachments,
+          postType: TAB_IDS.IMAGES,
+          title: values.titleI,
+          description: values.descriptionI,
+          createdBy: employee?._id,
+        };
         break;
-      case TAB_IDS.BANNER:
-        payload = {};
+      }
+      case TAB_IDS.BANNER: {
+        const attachments = await onUploadFiles(values.uploadFilesBN.fileList);
+        payload = {
+          attachments,
+          postType: TAB_IDS.BANNER,
+          createdBy: employee?._id,
+        };
         break;
+      }
       case TAB_IDS.POLL:
         payload = {
-          postType: 'POLL',
+          postType: TAB_IDS.POLL,
           createdBy: employee?._id,
           pollDetail: {
             question: values.questionP,
@@ -214,5 +266,5 @@ const AddPost = (props) => {
 export default connect(({ user: { currentUser = {}, permissions = {} } = {}, loading }) => ({
   currentUser,
   permissions,
-  loadingAddPost: loading.effects['homePage/addPostEffect'],
+  loadingAddPost: loading.effects['homePage/addPostEffect'] || loading.effects['upload/uploadFile'],
 }))(AddPost);
