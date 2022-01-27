@@ -1,5 +1,5 @@
 import { Tabs } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import AddButton from './components/AddButton';
 import AnnouncementTable from './components/AnnouncementTable';
@@ -19,6 +19,10 @@ const TAB_IDS = {
 const PostCard = (props) => {
   const { onAddPost = () => {} } = props;
 
+  // redux
+  const { dispatch } = props;
+
+  // functions
   const addZeroToNumber = (number) => {
     if (number < 10 && number > 0) return `0${number}`.slice(-2);
     return number;
@@ -79,6 +83,12 @@ const PostCard = (props) => {
       component: <PollTable />,
     },
   ];
+
+  useEffect(() => {
+    dispatch({
+      type: 'homePage/fetchPostTypeListEffect',
+    });
+  }, []);
 
   const options = () => {
     return <AddButton text="Add Post" onClick={onAddPost} />;
