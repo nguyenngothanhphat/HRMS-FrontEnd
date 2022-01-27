@@ -86,6 +86,8 @@ const FilterPopover = (props) => {
               <Select
                 allowClear
                 mode="multiple"
+                showSearch='true'
+                optionFilterProp="children"
                 style={{ width: '100%' }}
                 placeholder="Select Division"
               >
@@ -99,6 +101,8 @@ const FilterPopover = (props) => {
               <Select
                 allowClear
                 mode="multiple"
+                showSearch='true'
+                optionFilterProp="children"
                 style={{ width: '100%' }}
                 placeholder="Select Project Name"
               >
@@ -116,6 +120,8 @@ const FilterPopover = (props) => {
               <Select
                 allowClear
                 mode="multiple"
+                showSearch='true'
+                optionFilterProp="children"
                 style={{ width: '100%' }}
                 placeholder="Select Customer"
               >
@@ -129,6 +135,8 @@ const FilterPopover = (props) => {
               <Select
                 allowClear
                 mode="multiple"
+                showSearch='true'
+                optionFilterProp="children"
                 style={{ width: '100%' }}
                 placeholder="Select Engagement Type"
               >
@@ -141,6 +149,8 @@ const FilterPopover = (props) => {
             <Form.Item label="By PROJECT manager" name="projectManager">
               <Select
                 mode="multiple"
+                showSearch='true'
+                optionFilterProp="children"
                 style={{ width: '100%' }}
                 loading={loadingFetchEmployeeList}
                 placeholder="Select Project Manager"
@@ -155,6 +165,8 @@ const FilterPopover = (props) => {
               <Select
                 allowClear
                 mode="multiple"
+                showSearch='true'
+                optionFilterProp="children"
                 style={{ width: '100%' }}
                 placeholder="Select Status"
               >

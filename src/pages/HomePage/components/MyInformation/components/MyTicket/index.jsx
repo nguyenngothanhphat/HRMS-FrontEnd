@@ -21,7 +21,7 @@ const ActivityLog = (props) => {
           : null
       }
     >
-      {data.length === 0 ? <EmptyComponent /> : <CommonTab type="3" data={data} />}
+      {data.length === 0 ? <EmptyComponent /> : <CommonTab type="3" data={data} noBackground />}
     </div>
   );
 };
