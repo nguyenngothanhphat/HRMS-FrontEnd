@@ -6,11 +6,30 @@ import styles from './index.less';
 
 const Footer = (props) => {
   const { selectedEmployees = [] } = props;
+  // update type when there are api
+  const handleFinish = async () => {
+    const { dispatch } = props;
+
+    const getListExport = await dispatch({
+      type: 'timeSheet/exportTimeSheet',
+    });
+    const downloadLink = document.createElement('a');
+    const universalBOM = '\uFEFF';
+    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
+      universalBOM + getListExport,
+    )}`;
+    downloadLink.download = 'timesheet.csv';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
   return (
     <div className={styles.Footer}>
       <div className={styles.left}>{selectedEmployees.length} Employees selected</div>
       <div className={styles.right}>
-        <Button icon={<img src={DownloadIcon} alt="" />}>Download</Button>
+        <Button icon={<img src={DownloadIcon} alt="" />} onclick={handleFinish}>
+          Download
+        </Button>
       </div>
     </div>
   );

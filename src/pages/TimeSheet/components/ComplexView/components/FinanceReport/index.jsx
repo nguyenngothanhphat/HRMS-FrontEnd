@@ -1,6 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { debounce } from 'lodash';
 import { dateFormatAPI, VIEW_TYPE, generateAllWeeks } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import Header from './components/Header';
@@ -19,6 +20,7 @@ const FinanceReport = (props) => {
   const [startDateMonth, setStartDateMonth] = useState('');
   const [endDateMonth, setEndDateMonth] = useState('');
   const [weeksOfMonth, setWeeksOfMonth] = useState([]);
+  const [nameSearch, setNameSearch] = useState('');
 
   // others
   const [selectedView, setSelectedView] = useState(VIEW_TYPE.W); // D: daily, W: weekly, M: monthly
@@ -33,15 +35,29 @@ const FinanceReport = (props) => {
 
   // FUNCTION AREA
   const fetchFinanceTimesheet = (startDate, endDate) => {
-    dispatch({
-      type: 'timeSheet/fetchFinanceTimesheetEffect',
-      payload: {
+    let payload = {};
+    if (nameSearch) {
+      payload = {
         companyId: getCurrentCompany(),
         employeeId,
         fromDate: moment(startDate).format(dateFormatAPI),
         toDate: moment(endDate).format(dateFormatAPI),
         viewType: selectedView,
-      },
+        search: nameSearch,
+      };
+    } else {
+      payload = {
+        companyId: getCurrentCompany(),
+        employeeId,
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
+        viewType: selectedView,
+      };
+    }
+
+    dispatch({
+      type: 'timeSheet/fetchFinanceTimesheetEffect',
+      payload,
     });
   };
 
@@ -50,13 +66,13 @@ const FinanceReport = (props) => {
     if (startDateWeek && selectedView === VIEW_TYPE.W) {
       fetchFinanceTimesheet(startDateWeek, endDateWeek);
     }
-  }, [startDateWeek, selectedView]);
+  }, [startDateWeek, selectedView, nameSearch]);
 
   useEffect(() => {
     if (startDateMonth && selectedView === VIEW_TYPE.M) {
       fetchFinanceTimesheet(startDateMonth, endDateMonth);
     }
-  }, [startDateMonth, selectedView]);
+  }, [startDateMonth, selectedView, nameSearch]);
 
   useEffect(() => {
     setSelectedProjects([]);
@@ -93,6 +109,14 @@ const FinanceReport = (props) => {
     />
   );
 
+  const onSearchDebounce = debounce((value) => {
+    setNameSearch(value);
+  }, 1000);
+
+  const onChangeSearch = (value) => {
+    const formatValue = value.toLowerCase();
+    onSearchDebounce(formatValue);
+  };
   const renderHeader = () => {
     switch (selectedView) {
       case VIEW_TYPE.W:
@@ -100,6 +124,7 @@ const FinanceReport = (props) => {
           <Header
             startDate={startDateWeek}
             endDate={endDateWeek}
+            onChangeSearch={onChangeSearch}
             setStartDate={setStartDateWeek}
             setEndDate={setEndDateWeek}
             viewChangeComponent={viewChangeComponent}
@@ -112,6 +137,7 @@ const FinanceReport = (props) => {
           <Header
             startDate={startDateMonth}
             endDate={endDateMonth}
+            onChangeSearch={onChangeSearch}
             setStartDate={setStartDateMonth}
             setEndDate={setEndDateMonth}
             viewChangeComponent={viewChangeComponent}

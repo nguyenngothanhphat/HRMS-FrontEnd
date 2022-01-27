@@ -123,6 +123,18 @@ export async function importTimesheet(payload, params) {
   );
 }
 
+export async function exportTimeSheet(payload) {
+  return request(
+    '/api-project/export',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
+
 // MANAGER
 export async function getProjectList(payload) {
   return request(
