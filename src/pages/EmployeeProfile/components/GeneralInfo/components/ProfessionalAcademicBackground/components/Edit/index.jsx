@@ -22,10 +22,13 @@ const { Option } = Select;
       // listTitle = [],
       tenantCurrentEmployee = '',
     } = {},
+    user: { currentUser: { employee: { _id: myEmployeeID = '' } = {}} = {} } = {},
+
   }) => ({
     loading: loading.effects['employeeProfile/updateGeneralInfo'],
     generalDataOrigin,
     generalData,
+    myEmployeeID,
     listSkill,
     // listTitle,
     compensationData,
@@ -154,7 +157,9 @@ class Edit extends PureComponent {
   };
 
   handleSave = async () => {
-    const { dispatch, generalData, listSkill = [] } = this.props;
+    const { dispatch, generalData, listSkill = [], generalData: {  employee = '' } = {},
+    myEmployeeID = '', } = this.props;
+    const check = employee === myEmployeeID;
     const { skills } = generalData;
     const newSkills = skills.filter((e) => e !== 'Other');
     const payload = this.processDataChanges(newSkills) || {};
@@ -177,6 +182,7 @@ class Edit extends PureComponent {
       payload,
       dataTempKept,
       key: 'openAcademic',
+      isLinkedIn:check
     });
   };
 
