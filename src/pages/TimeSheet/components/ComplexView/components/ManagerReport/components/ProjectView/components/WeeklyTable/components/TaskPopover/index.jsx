@@ -3,26 +3,10 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import CloseX from '@/assets/dashboard/closeX.svg';
-import SampleAvatar1 from '@/assets/dashboard/sampleAvatar1.png';
-import SampleAvatar2 from '@/assets/dashboard/sampleAvatar2.png';
-import SampleAvatar3 from '@/assets/dashboard/sampleAvatar3.png';
 import { convertMsToTime } from '@/utils/timeSheet';
 import styles from './index.less';
 
-const members = [
-  {
-    name: 'Lewis',
-    avatar: SampleAvatar1,
-  },
-  {
-    name: 'Trung',
-    avatar: SampleAvatar2,
-  },
-  {
-    name: 'Anh',
-    avatar: SampleAvatar3,
-  },
-];
+const members = [];
 
 const TaskPopover = (props) => {
   const { children, tasks = [], date = '', placement = 'top' } = props;
