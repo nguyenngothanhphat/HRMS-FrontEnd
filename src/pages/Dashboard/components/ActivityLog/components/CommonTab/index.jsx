@@ -1,6 +1,8 @@
 import { Row } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import Empty from '@/components/Empty';
+import Icon from '@/assets/timeOffTableEmptyIcon.svg';
 import NotificationTag from '../NotificationTag';
 import PendingApprovalTag from '../PendingApprovalTag';
 import TicketTag from '../TicketTag';
@@ -38,6 +40,7 @@ const CommonTab = (props) => {
     return {};
   };
 
+  if (data.length === 0) return <Empty image={Icon} />;
   return (
     <div className={styles.CommonTab} style={getCss()}>
       <Row gutter={[16, 16]}>{renderTagByType(typeProp)}</Row>
