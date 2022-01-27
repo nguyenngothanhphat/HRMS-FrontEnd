@@ -8,16 +8,10 @@ import BirthdayTable from './components/BirthdayTable';
 import ImageTable from './components/ImageTable';
 import PollTable from './components/PollTable';
 import styles from './index.less';
+import { TAB_IDS } from '@/utils/homePage';
 
-const TAB_IDS = {
-  ANNOUNCEMENTS: 'announcements',
-  BIRTHDAY: 'birthday',
-  IMAGES: 'images',
-  BANNER: 'banner',
-  POLLS: 'polls',
-};
 const PostCard = (props) => {
-  const { onAddPost = () => {} } = props;
+  const { onAddPost = () => {}, selectedTab = '', setSelectedTab = () => {} } = props;
 
   // redux
   const { dispatch } = props;
@@ -56,7 +50,7 @@ const PostCard = (props) => {
     return `${tab.name} (${addZeroToNumber(count)})`;
   };
 
-  const tabs = [
+  const tableTabs = [
     {
       id: TAB_IDS.ANNOUNCEMENTS,
       name: 'Announcements',
@@ -96,8 +90,13 @@ const PostCard = (props) => {
 
   return (
     <div className={styles.PostCard}>
-      <Tabs defaultActiveKey={TAB_IDS.POLLS} destroyInactiveTabPane tabBarExtraContent={options()}>
-        {tabs.map((x) => (
+      <Tabs
+        defaultActiveKey={selectedTab}
+        destroyInactiveTabPane
+        tabBarExtraContent={options()}
+        onTabClick={(key) => setSelectedTab(key)}
+      >
+        {tableTabs.map((x) => (
           <Tabs.TabPane tab={getTabName(x)} key={x.id}>
             {x.component}
           </Tabs.TabPane>

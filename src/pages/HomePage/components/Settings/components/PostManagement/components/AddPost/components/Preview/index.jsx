@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Parser from 'html-react-parser';
 import styles from './index.less';
-import { POST_TYPE_TEXT } from '@/utils/homePage';
+import { TAB_IDS } from '@/utils/homePage';
 import EmployeeTag from '@/pages/HomePage/components/Announcements/components/EmployeeTag';
 import PostContent from '@/pages/HomePage/components/Announcements/components/PostContent';
 import PreviewImage from '@/assets/homePage/previewImage.png';
@@ -114,27 +114,21 @@ const Preview = (props) => {
           name: 'Head of Design',
         },
       },
-      content: (
-        <p>
-          {Parser(descriptionA) ||
-            `We are extremely joyful to announce that we have won DNA Paris Design Awards 2021 & that
-          marks a hat trick of us winning this award from 2019 to 2021! 🎊`}
-        </p>
-      ),
+      content: <p>{descriptionA ? Parser(descriptionA) : 'Description here'}</p>,
       type: 2, // 1: link, 2: image
       image:
         announcementContent.imageUrls.length > 0 ? announcementContent.imageUrls[0] : PreviewImage,
     };
 
     switch (mode) {
-      case POST_TYPE_TEXT.ANNOUNCEMENT:
+      case TAB_IDS.ANNOUNCEMENTS:
         return (
           <>
             <EmployeeTag employee={post.employee} />
             <PostContent post={post} />
           </>
         );
-      case POST_TYPE_TEXT.BIRTHDAY_ANNIVERSARY:
+      case TAB_IDS.BIRTHDAY:
         return (
           <div style={{ padding: '24px' }}>
             <CelebratingCard
@@ -147,7 +141,7 @@ const Preview = (props) => {
             />
           </div>
         );
-      case POST_TYPE_TEXT.IMAGES:
+      case TAB_IDS.IMAGES:
         return (
           <div style={{ padding: '24px' }}>
             <GalleryCard
@@ -172,14 +166,14 @@ const Preview = (props) => {
             />
           </div>
         );
-      case POST_TYPE_TEXT.BANNER:
+      case TAB_IDS.BANNER:
         return (
-          <div style={{ padding: '24px' }}>
-            <Carousel previewing contentPreview={bannerContent.imageUrls} />
-          </div>
+          // <div style={{ padding: '24px' }}>
+          <Carousel previewing contentPreview={bannerContent.imageUrls} />
+          // </div>
         );
 
-      case POST_TYPE_TEXT.POLL:
+      case TAB_IDS.POLLS:
         return (
           <div style={{ padding: '24px' }}>
             <Options
