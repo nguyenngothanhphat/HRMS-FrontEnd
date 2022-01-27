@@ -31,7 +31,7 @@ const mockOptions = [
 ];
 
 const ChartPreviewModalContent = () => {
-  const [mode, setMode] = useState(TYPE.PIE_CHART);
+  const [mode, setMode] = useState(TYPE.BAR_GRAPH);
 
   const menu = (
     <Menu onClick={({ key }) => setMode(key)}>

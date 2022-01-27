@@ -69,8 +69,11 @@ const ActivityCard = (props) => {
       const diff = moment.duration(moment(endTime, 'HH:mm').diff(moment(startTime, 'HH:mm')));
 
       heightTemp = diff.asHours() * EMP_ROW_HEIGHT;
+
       setTop(topTemp + marginBlock / 2);
-      setHeight(heightTemp - marginBlock);
+      setHeight(
+        heightTemp >= EMP_ROW_HEIGHT ? heightTemp - marginBlock : EMP_ROW_HEIGHT / 2 + marginBlock,
+      );
 
       // calculate "description" with read more button
       if (heightTemp > EMP_ROW_HEIGHT) {
