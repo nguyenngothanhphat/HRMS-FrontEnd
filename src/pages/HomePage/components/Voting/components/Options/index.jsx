@@ -1,10 +1,21 @@
 import { Col, Row } from 'antd';
 import React from 'react';
+import { connect } from 'umi';
 import styles from './index.less';
 import GrayDot from '@/assets/homePage/grayDot.svg';
 
 const Options = (props) => {
-  const { options = [], setIsVoted = () => {} } = props;
+  const {
+    options = [],
+    setIsVoted = () => {},
+    activePoll = {},
+    refreshPoll = () => {},
+    countVotes = () => {},
+    setVotedOption = () => {},
+  } = props;
+  const { dispatch, user: { currentUser: { employee = {} } = {} } = {} } = props;
+
+  const { _id: pollId = '', pollDetail: { question = '' } = {} } = activePoll;
 
   // FOR PREVIEWING IN SETTINGS PAGE
   const {
@@ -51,20 +62,38 @@ const Options = (props) => {
     );
   }
 
+  const onVote = async (choice) => {
+    if (employee?._id) {
+      const res = await dispatch({
+        type: 'homePage/votePollEffect',
+        payload: {
+          pollId,
+          choice,
+          employee: employee._id,
+        },
+      });
+      if (res.statusCode === 200) {
+        refreshPoll(pollId);
+        setVotedOption(choice);
+        setIsVoted(true);
+      }
+    }
+  };
+
   return (
     <div className={styles.Options}>
-      <p className={styles.questionText}>How do you feel about getting back to office?</p>
+      <p className={styles.questionText}>{question}</p>
       <Row gutter={[0, 10]} className={styles.poll}>
         {options.map((reply) => (
           <Col span={24}>
-            <div className={styles.reply} onClick={() => setIsVoted(true)}>
+            <div className={styles.reply} onClick={() => onVote(reply.id)}>
               <span>{reply.text}</span>
             </div>
           </Col>
         ))}
       </Row>
       <div className={styles.votingInformation}>
-        <span className={styles.number}>250 votes</span>
+        <span className={styles.number}>{countVotes()} votes</span>
         <img src={GrayDot} alt="" />
         <span className={styles.dueTime}>2d left</span>
       </div>
@@ -72,4 +101,7 @@ const Options = (props) => {
   );
 };
 
-export default Options;
+export default connect(({ homePage, user }) => ({
+  homePage,
+  user,
+}))(Options);

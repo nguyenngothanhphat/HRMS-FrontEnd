@@ -49,6 +49,7 @@ const Planning = (props) => {
             icon={<img src={WhiteAddIcon} alt="" />}
             className={styles.addMilestone}
             onClick={() => setAddMilestoneModalVisible(true)}
+            disabled={!allowModify}
           >
             Add Milestones
           </Button>

@@ -1,6 +1,9 @@
 import { notification } from 'antd';
 import { dialog } from '@/utils/utils';
 import {
+  // portal
+  getBirthdayInWeek,
+  // setting page
   addPost,
   deletePost,
   getPostsByType,
@@ -14,8 +17,11 @@ import {
 import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
 
 const defaultState = {
+  // portal
+  birthdayInWeekList: [],
+  // setting page
   postTypeList: [],
-  pollResult: {},
+  pollResult: [],
   postsByType: [],
   totalPostsOfType: [],
   selectedPollOption: {},
@@ -25,6 +31,30 @@ const homePage = {
   namespace: 'homePage',
   state: defaultState,
   effects: {
+    // PORTAL
+    *fetchBirthdayInWeekList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getBirthdayInWeek, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            birthdayInWeekList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+
     // POST TYPE
     *fetchPostTypeListEffect({ payload }, { call, put }) {
       let response = {};

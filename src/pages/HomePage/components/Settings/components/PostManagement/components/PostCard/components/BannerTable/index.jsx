@@ -33,11 +33,6 @@ const BannerTable = (props) => {
         render: (postID) => <span className={styles.blueText}>#{postID}</span>,
       },
       {
-        title: 'Description',
-        dataIndex: 'description',
-        key: 'description',
-      },
-      {
         title: 'Media',
         dataIndex: 'media',
         key: 'media',

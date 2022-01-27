@@ -180,8 +180,7 @@ const Card = (props) => {
   );
 };
 
-export default connect(({ dashboard, user: { currentUser = {}, permissions = {} } = {} }) => ({
+export default connect(({ user: { currentUser = {}, permissions = {} } = {} }) => ({
   currentUser,
   permissions,
-  dashboard,
 }))(Card);

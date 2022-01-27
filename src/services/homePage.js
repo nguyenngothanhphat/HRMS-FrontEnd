@@ -61,3 +61,11 @@ export async function getPollResult(payload) {
     data: payload,
   });
 }
+
+// HOME PAGE
+export async function getBirthdayInWeek(data) {
+  return request('/api/employeetenant/list-celebration', {
+    method: 'POST',
+    data,
+  });
+}
