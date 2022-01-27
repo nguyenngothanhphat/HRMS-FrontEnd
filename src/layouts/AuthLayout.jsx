@@ -16,39 +16,43 @@ const AuthLayout = ({ children }) => {
   const footerItems = () => {
     return [
       {
-        label: 'Insights',
-        items: [
-          {
-            name: 'Success Stories',
-            link: '#',
-          },
-          {
-            name: 'Blogs',
-            link: '#',
-          },
-          {
-            name: 'Updates',
-            link: '#',
-          },
-        ],
-      },
-      {
-        label: 'Information',
+        // label: 'Insights',
         items: [
           {
             name: 'About Us',
-            link: '#',
+            link: 'https://www.terralogic.com/about-us/',
           },
           {
-            name: 'Contact',
-            link: '#',
+            name: 'Success Stories',
+            link: 'https://www.terralogic.com/success-stories/',
           },
           {
-            name: 'FAQ',
-            link: '#',
+            name: 'Blogs',
+            link: 'https://www.terralogic.com/blogs/',
+          },
+          {
+            name: 'Updates',
+            link: 'https://www.terralogic.com/updates/',
           },
         ],
       },
+      // {
+      //   label: 'Information',
+      //   items: [
+      //     {
+      //       name: 'About Us',
+      //       link: 'https://www.terralogic.com/about-us/',
+      //     },
+      //     {
+      //       name: 'Contact',
+      //       link: 'https://www.terralogic.com/contact-us/',
+      //     },
+      //     {
+      //       name: 'FAQ',
+      //       link: '#',
+      //     },
+      //   ],
+      // },
     ];
   };
 

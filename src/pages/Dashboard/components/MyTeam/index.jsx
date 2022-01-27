@@ -68,7 +68,7 @@ const MyTeam = (props) => {
 
   // FUNCTION
   const onViewTimeoff = () => {
-    history.push('/timeoff');
+    history.push('/time-off/overview');
   };
 
   // TEAM LEAVE REQUEST

@@ -1,10 +1,8 @@
 import { notification } from 'antd';
 import axios from 'axios';
 import { getDvaApp } from 'umi';
-// import { extend } from 'umi-request';
-import proxy, { API_KEYS } from '../../config/proxy';
+import { proxy, API_KEYS } from '../../config/proxy';
 import { getToken } from './token';
-// import { dialog } from './utils';
 
 const codeMessage = {
   200: 'The server successfully returned the requested data.',
@@ -49,23 +47,6 @@ const errorHandler = (error) => {
 
   return { statusCode: response?.status, message: response?.statusText };
 };
-
-// UMI ANTD REQUEST
-// const request = (url, options = {}, noAuth) => {
-//   let headers = options.headers || {};
-//   if (!noAuth) {
-//     const token = getToken();
-//     headers = {
-//       Authorization: `Bearer ${token}`,
-//       ...headers,
-//     };
-//   }
-//   return extend({
-//     errorHandler,
-//     credentials: 'include',
-//     headers,
-//   })(url, options);
-// };
 
 const request = async (url, options = {}, noAuth, apiKey = API_KEYS.BASE_API) => {
   const { method = 'POST', data = {}, params = {} } = options;
