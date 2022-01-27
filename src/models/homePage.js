@@ -15,6 +15,7 @@ import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
 const defaultState = {
   postTypeList: [],
   pollResult: {},
+  postsByType: [],
   selectedPollOption: {},
 };
 
@@ -24,8 +25,9 @@ const homePage = {
   effects: {
     // POST TYPE
     *fetchPostTypeListEffect({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getPostTypeList, {
+        response = yield call(getPostTypeList, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -37,17 +39,17 @@ const homePage = {
           type: 'save',
           payload: { postTypeList: data },
         });
-        return response;
       } catch (errors) {
         dialog(errors);
       }
-      return {};
+      return response;
     },
 
     // POST MANAGEMENT
     *addPostEffect({ payload }, { call }) {
+      let response = {};
       try {
-        const response = yield call(addPost, {
+        response = yield call(addPost, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -55,17 +57,16 @@ const homePage = {
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message });
-
-        return response;
       } catch (errors) {
         dialog(errors);
       }
-      return {};
+      return response;
     },
 
     *updatePostEffect({ payload }, { call }) {
+      let response = {};
       try {
-        const response = yield call(updatePost, {
+        response = yield call(updatePost, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -73,16 +74,15 @@ const homePage = {
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message });
-
-        return response;
       } catch (errors) {
         dialog(errors);
       }
-      return {};
+      return response;
     },
     *deletePostEffect({ payload }, { call }) {
+      let response = {};
       try {
-        const response = yield call(deletePost, {
+        response = yield call(deletePost, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -90,74 +90,71 @@ const homePage = {
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message });
-
-        return response;
       } catch (errors) {
         dialog(errors);
       }
-      return {};
+      return response;
     },
     // GET LIST POST BY TYPE
     *fetchPostListByTypeEffect({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getPostsByType, {
+        response = yield call(getPostsByType, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
-
         yield put({
           type: 'save',
           payload: { postsByType: data },
         });
-        return response;
       } catch (errors) {
         dialog(errors);
       }
-      return {};
+      return response;
     },
 
     // POLL
     *votePollEffect({ payload }, { call }) {
+      let response = {};
       try {
-        const response = yield call(votePoll, {
+        response = yield call(votePoll, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-
-        return response;
       } catch (errors) {
         dialog(errors);
       }
-      return {};
+      return response;
     },
     *fetchPollResultEffect({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getPollResult, {
+        response = yield call(getPollResult, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data } = response;
+        const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
           payload: { pollResult: data },
         });
-        return response;
       } catch (errors) {
         dialog(errors);
       }
-      return {};
+      return response;
     },
     *fetchSelectedPollOptionByEmployeeEffect({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getSelectedPollOptionByEmployee, {
+        response = yield call(getSelectedPollOptionByEmployee, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -168,11 +165,10 @@ const homePage = {
           type: 'save',
           payload: { selectedPollOption: data },
         });
-        return response;
       } catch (errors) {
         dialog(errors);
       }
-      return {};
+      return response;
     },
   },
   reducers: {

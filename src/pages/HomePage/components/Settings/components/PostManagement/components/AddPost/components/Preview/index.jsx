@@ -128,7 +128,7 @@ const Preview = (props) => {
             <PostContent post={post} />
           </>
         );
-      case TAB_IDS.BIRTHDAY:
+      case TAB_IDS.ANNIVERSARY:
         return (
           <div style={{ padding: '24px' }}>
             <CelebratingCard
@@ -173,7 +173,7 @@ const Preview = (props) => {
           // </div>
         );
 
-      case TAB_IDS.POLLS:
+      case TAB_IDS.POLL:
         return (
           <div style={{ padding: '24px' }}>
             <Options

@@ -23,7 +23,7 @@ const TABS = [
     name: 'Announcement',
   },
   {
-    id: TAB_IDS.BIRTHDAY,
+    id: TAB_IDS.ANNIVERSARY,
     name: 'Birthday/Anniversary',
   },
   {
@@ -35,7 +35,7 @@ const TABS = [
     name: 'Banner',
   },
   {
-    id: TAB_IDS.POLLS,
+    id: TAB_IDS.POLL,
     name: 'Poll',
   },
 ];
@@ -43,6 +43,9 @@ const TABS = [
 const AddPost = (props) => {
   const [form] = Form.useForm();
   const { selectedTab = '', onBack = () => {} } = props;
+
+  // redux
+  const { dispatch, currentUser: { employee = {} } = {}, loadingAddPost = false } = props;
 
   const [mode, setMode] = useState(selectedTab || TAB_IDS.ANNOUNCEMENTS);
   const [formValues, setFormValues] = useState({});
@@ -71,9 +74,46 @@ const AddPost = (props) => {
     setFormValuesDebounce(values);
   };
 
-  const onPost = (values) => {
-    // eslint-disable-next-line no-console
-    console.log('🚀 ~ onPost ~ values', values);
+  const onPost = async (values) => {
+    let payload = {};
+    switch (mode) {
+      case TAB_IDS.ANNOUNCEMENTS:
+        payload = {};
+        break;
+      case TAB_IDS.ANNIVERSARY:
+        payload = {};
+        break;
+      case TAB_IDS.IMAGES:
+        payload = {};
+        break;
+      case TAB_IDS.BANNER:
+        payload = {};
+        break;
+      case TAB_IDS.POLL:
+        payload = {
+          postType: 'POLL',
+          createdBy: employee?._id,
+          pollDetail: {
+            question: values.questionP,
+            response1: values.responsesP[0]?.response,
+            response2: values.responsesP[1]?.response,
+            response3: values.responsesP[2]?.response,
+            startDate: values.startDateP,
+            endDate: values.endDateP,
+          },
+        };
+        break;
+      default:
+        break;
+    }
+
+    const res = await dispatch({
+      type: 'homePage/addPostEffect',
+      payload,
+    });
+    if (res?.statusCode === 200) {
+      onBack();
+    }
   };
 
   // RENDER UI
@@ -81,13 +121,13 @@ const AddPost = (props) => {
     switch (mode) {
       case TAB_IDS.ANNOUNCEMENTS:
         return <AnnouncementContent formValues={formValues} setFormValues={setFormValues} />;
-      case TAB_IDS.BIRTHDAY:
+      case TAB_IDS.ANNIVERSARY:
         return <BirthdayContent formValues={formValues} setFormValues={setFormValues} />;
       case TAB_IDS.IMAGES:
         return <ImagesContent formValues={formValues} setFormValues={setFormValues} />;
       case TAB_IDS.BANNER:
         return <BannerContent formValues={formValues} setFormValues={setFormValues} />;
-      case TAB_IDS.POLLS:
+      case TAB_IDS.POLL:
         return <PollContent />;
       default:
         return '';
@@ -132,6 +172,7 @@ const AddPost = (props) => {
             form="myForm"
             key="submit"
             htmlType="submit"
+            loading={loadingAddPost}
           >
             Post
           </Button>
@@ -170,7 +211,8 @@ const AddPost = (props) => {
   );
 };
 
-export default connect(({ user: { currentUser = {}, permissions = {} } = {} }) => ({
+export default connect(({ user: { currentUser = {}, permissions = {} } = {}, loading }) => ({
   currentUser,
   permissions,
+  loadingAddPost: loading.effects['homePage/addPostEffect'],
 }))(AddPost);

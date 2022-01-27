@@ -14,6 +14,9 @@ const PostCard = (props) => {
   const { onAddPost = () => {}, selectedTab = '', setSelectedTab = () => {} } = props;
 
   // redux
+  const { homePage: { postsByType = [] } = {}, loadingFetchPostList = false } = props;
+
+  // redux
   const { dispatch } = props;
 
   // functions
@@ -22,13 +25,22 @@ const PostCard = (props) => {
     return number;
   };
 
+  const fetchData = () => {
+    dispatch({
+      type: 'homePage/fetchPostListByTypeEffect',
+      payload: {
+        postType: selectedTab,
+      },
+    });
+  };
+
   const getTabName = (tab) => {
     let count = 0;
     switch (tab.id) {
       case TAB_IDS.ANNOUNCEMENTS:
         count = 0;
         break;
-      case TAB_IDS.BIRTHDAY:
+      case TAB_IDS.ANNIVERSARY:
         count = 0;
         break;
 
@@ -40,7 +52,7 @@ const PostCard = (props) => {
         count = 0;
         break;
 
-      case TAB_IDS.POLLS:
+      case TAB_IDS.POLL:
         count = 0;
         break;
 
@@ -54,27 +66,41 @@ const PostCard = (props) => {
     {
       id: TAB_IDS.ANNOUNCEMENTS,
       name: 'Announcements',
-      component: <AnnouncementTable />,
+      component: (
+        <AnnouncementTable
+          data={postsByType}
+          loading={loadingFetchPostList}
+          refreshData={fetchData}
+        />
+      ),
     },
     {
-      id: TAB_IDS.BIRTHDAY,
+      id: TAB_IDS.ANNIVERSARY,
       name: 'Birthday',
-      component: <BirthdayTable />,
+      component: (
+        <BirthdayTable data={postsByType} loading={loadingFetchPostList} refreshData={fetchData} />
+      ),
     },
     {
       id: TAB_IDS.IMAGES,
       name: 'Images',
-      component: <ImageTable />,
+      component: (
+        <ImageTable data={postsByType} loading={loadingFetchPostList} refreshData={fetchData} />
+      ),
     },
     {
       id: TAB_IDS.BANNER,
       name: 'Banner',
-      component: <BannerTable />,
+      component: (
+        <BannerTable data={postsByType} loading={loadingFetchPostList} refreshData={fetchData} />
+      ),
     },
     {
-      id: TAB_IDS.POLLS,
+      id: TAB_IDS.POLL,
       name: 'Polls',
-      component: <PollTable />,
+      component: (
+        <PollTable data={postsByType} loading={loadingFetchPostList} refreshData={fetchData} />
+      ),
     },
   ];
 
@@ -83,6 +109,10 @@ const PostCard = (props) => {
       type: 'homePage/fetchPostTypeListEffect',
     });
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [selectedTab]);
 
   const options = () => {
     return <AddButton text="Add Post" onClick={onAddPost} />;
@@ -106,7 +136,11 @@ const PostCard = (props) => {
   );
 };
 
-export default connect(({ user: { currentUser = {}, permissions = {} } = {} }) => ({
-  currentUser,
-  permissions,
-}))(PostCard);
+export default connect(
+  ({ homePage = {}, loading, user: { currentUser = {}, permissions = {} } = {} }) => ({
+    currentUser,
+    permissions,
+    homePage,
+    loadingFetchPostList: loading.effects['homePage/fetchPostListByTypeEffect'],
+  }),
+)(PostCard);

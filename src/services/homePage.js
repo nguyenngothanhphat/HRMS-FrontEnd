@@ -29,7 +29,7 @@ export async function deletePost(payload) {
 
 export async function getPostsByType(payload) {
   return request('/api/posttenant/get-by-type', {
-    method: 'GET',
+    method: 'POST',
     data: payload,
   });
 }
@@ -43,14 +43,14 @@ export async function votePoll(payload) {
 
 export async function getSelectedPollOptionByEmployee(payload) {
   return request('/api/polltenant/get-by-employee', {
-    method: 'GET',
+    method: 'POST',
     data: payload,
   });
 }
 
 export async function getPollResult(payload) {
   return request('/api/polltenant/get-status-summary', {
-    method: 'GET',
+    method: 'POST',
     data: payload,
   });
 }

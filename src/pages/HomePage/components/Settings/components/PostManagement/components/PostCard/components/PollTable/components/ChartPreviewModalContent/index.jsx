@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { Dropdown, Menu } from 'antd';
 import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
@@ -12,26 +12,31 @@ const TYPE = {
   PIE_CHART: 'Pie Chart',
 };
 
-const mockOptions = [
-  {
-    id: 1,
-    text: '🤩 Wayyy too excited, cannot wait!!',
-    percent: 54,
-  },
-  {
-    id: 2,
-    text: '😇 Ready for the change, I guess!',
-    percent: 42,
-  },
-  {
-    id: 3,
-    text: '🥱 Meh, want some more time',
-    percent: 4,
-  },
-];
-
-const ChartPreviewModalContent = () => {
+const ChartPreviewModalContent = (props) => {
+  const { pollDetail = {}, pollResult = [] } = props;
   const [mode, setMode] = useState(TYPE.BAR_GRAPH);
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    const temp = [
+      {
+        id: 'response1',
+        text: pollDetail.response1,
+        percent: pollResult.find((x) => x._id === 'response1')?.percent || 0,
+      },
+      {
+        id: 'response2',
+        text: pollDetail.response2,
+        percent: pollResult.find((x) => x._id === 'response2')?.percent || 0,
+      },
+      {
+        id: 'response3',
+        text: pollDetail.response3,
+        percent: pollResult.find((x) => x._id === 'response3')?.percent || 0,
+      },
+    ];
+    setOptions(temp);
+  }, [JSON.stringify(pollDetail)]);
 
   const menu = (
     <Menu onClick={({ key }) => setMode(key)}>
@@ -41,8 +46,8 @@ const ChartPreviewModalContent = () => {
   );
 
   const renderResult = () => {
-    if (mode === TYPE.BAR_GRAPH) return <BarGraph options={mockOptions} showTitle={false} />;
-    return <PieChart options={mockOptions} showTitle={false} />;
+    if (mode === TYPE.BAR_GRAPH) return <BarGraph options={options} showTitle={false} />;
+    return <PieChart options={options} showTitle={false} />;
   };
 
   return (
