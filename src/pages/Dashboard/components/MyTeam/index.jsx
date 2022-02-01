@@ -36,8 +36,8 @@ const MyTeam = (props) => {
       payload: {
         country,
       },
-    })
-  }, [])
+    });
+  }, []);
 
   // USE EFFECT
   // useEffect(() => {
@@ -47,7 +47,7 @@ const MyTeam = (props) => {
   useEffect(() => {
     const roleEmployee = employee && employee?.title ? employee.title.roles : [];
     const employeeId = employee ? employee._id : '';
-    const companyInfo = employee ? employee.company : {}
+    const companyInfo = employee ? employee.company : {};
     dispatch({
       type: 'dashboard/fetchMyTeam',
       payload: {
@@ -57,9 +57,8 @@ const MyTeam = (props) => {
         // location: listLocationsByCompany.map((l) => l._id),
         roles: roleEmployee,
         employee: employeeId,
-        status: ["ACTIVE"],
+        status: ['ACTIVE'],
         company: [companyInfo],
-
       },
     });
   }, []);
@@ -105,7 +104,10 @@ const MyTeam = (props) => {
             </TabPane>
             {checkRoleHrAndManager ? (
               <TabPane tab="Team Leave Calendar" key="2">
-                <TeamLeaveCalendar selectedMonth={selectedMonth} listTimeOffType={listTimeOffType} />
+                <TeamLeaveCalendar
+                  selectedMonth={selectedMonth}
+                  listTimeOffType={listTimeOffType}
+                />
               </TabPane>
             ) : (
               ''
@@ -113,7 +115,7 @@ const MyTeam = (props) => {
           </Tabs>
         </div>
       </div>
-      {activeKey === '2' && (
+      {activeKey === '2' && listTimeOffType.length > 0 && (
         <div className={styles.viewAllBtn} onClick={onViewTimeoff}>
           <span>View all Time off</span>
           <img src={LeftArrow} alt="expand" />
@@ -133,6 +135,6 @@ export default connect(
     employee,
     myTeam,
     listLocationsByCompany,
-    timeOffTypesByCountry
+    timeOffTypesByCountry,
   }),
 )(MyTeam);

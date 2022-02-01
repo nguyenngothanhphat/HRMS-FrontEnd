@@ -2,6 +2,8 @@ import { Col, Row } from 'antd';
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
+import Empty from '@/components/Empty';
+import Icon from '@/assets/timeOffTableEmptyIcon.svg';
 import styles from './index.less';
 
 const dateFormat = 'DD dddd';
@@ -107,6 +109,10 @@ const HolidayCalendar = (props) => {
       </div>
     );
   };
+
+  if (listHolidays.length === 0) {
+    return <Empty image={Icon} />;
+  }
 
   return <div className={styles.HolidayCalendar}>{renderUI()}</div>;
 };

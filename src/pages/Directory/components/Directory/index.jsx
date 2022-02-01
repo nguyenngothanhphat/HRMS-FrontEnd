@@ -438,7 +438,7 @@ const DirectoryComponent = (props) => {
           closeText="Clear"
           onSecondButton={clearFilter}
         >
-          <FilterButton />
+          <FilterButton fontSize={14} />
         </FilterPopover>
       </div>
     );

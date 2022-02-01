@@ -3,12 +3,12 @@ import FilterIcon from '@/assets/directory/filter.svg';
 import styles from './index.less';
 
 const FilterButton = (props) => {
-  const { onClick = () => {} } = props;
+  const { onClick = () => {}, fontSize = 13 } = props;
 
   return (
     <div className={styles.FilterButton} onClick={onClick}>
       <img src={FilterIcon} alt="" />
-      <span>Filter</span>
+      <span style={{ fontSize: `${fontSize}px` }}>Filter</span>
     </div>
   );
 };
