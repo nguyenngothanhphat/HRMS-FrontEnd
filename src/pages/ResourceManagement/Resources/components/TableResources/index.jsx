@@ -330,7 +330,7 @@ class TableResources extends PureComponent {
               <div className={styles.reservedField}>
                 {value}
                 <div className={styles.resourceManagementEdit}>
-                  <EditActionBTN dataPassRow={row} refreshData={refreshData} />
+                  {allowModify && <EditActionBTN dataPassRow={row} refreshData={refreshData} />}
                 </div>
               </div>
             );
