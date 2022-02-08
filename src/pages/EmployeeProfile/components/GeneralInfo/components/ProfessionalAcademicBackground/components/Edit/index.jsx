@@ -162,7 +162,7 @@ class Edit extends PureComponent {
     const { certification } = payload;
     await this.handleUpdateCertification(certification);
     const listOtherSkill = payload.otherSkills.length > 0 ? payload.otherSkills[0] : '';
-    const checkDuplication = listSkill.filter((e) => e.name.toUpperCase() === listOtherSkill.toUpperCase()) || [];
+    const checkDuplication = listSkill.filter((e) => e.name.toUpperCase().replace(' ','') === listOtherSkill.toUpperCase().replace(' ', '')) || [];
     if(checkDuplication.length > 0) {
       notification.error({
         message: 'This skill is available on the skill list above, please select it on skills.',
@@ -252,11 +252,11 @@ class Edit extends PureComponent {
                 placeholder="Select skills"
                 mode="tags"
                 showArrow
-                filterOption={(input, option) => 
+                filterOption={(input, option) =>
                   option.props.children ? option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 : null
                 }
               >
-                {listSkill.map((item) => (
+                {listSkill.sort((a, b) => a.name.localeCompare(b.name)).map((item) => (
                   <Option key={item._id}>{item.name}</Option>
                 ))}
                 <Option key="Other">Other</Option>
