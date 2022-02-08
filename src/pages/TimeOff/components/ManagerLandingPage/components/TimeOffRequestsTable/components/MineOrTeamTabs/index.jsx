@@ -26,6 +26,10 @@ class MineOrTeamTabs extends PureComponent {
       type: 'timeOff/savePaging',
       payload: { page: 1 },
     });
+    dispatch({
+      type: 'timeOff/clearFilter',
+      payload: {},
+    });
   };
 
   render() {
