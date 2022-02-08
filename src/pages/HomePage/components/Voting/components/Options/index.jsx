@@ -12,6 +12,7 @@ const Options = (props) => {
     refreshPoll = () => {},
     countVotes = () => {},
     setVotedOption = () => {},
+    timeLeft = '',
   } = props;
   const { dispatch, user: { currentUser: { employee = {} } = {} } = {} } = props;
 
@@ -94,8 +95,12 @@ const Options = (props) => {
       </Row>
       <div className={styles.votingInformation}>
         <span className={styles.number}>{countVotes()} votes</span>
-        <img src={GrayDot} alt="" />
-        <span className={styles.dueTime}>2d left</span>
+        {timeLeft && (
+          <>
+            <img src={GrayDot} alt="" />
+            <span className={styles.dueTime}>{timeLeft}</span>
+          </>
+        )}
       </div>
     </div>
   );

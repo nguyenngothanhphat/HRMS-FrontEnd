@@ -1,6 +1,6 @@
 import { Col, Row, Skeleton } from 'antd';
-import React, { Suspense } from 'react';
-import { history } from 'umi';
+import React, { Suspense, useEffect } from 'react';
+import { history, connect } from 'umi';
 import SettingIcon from '@/assets/dashboard/setting.svg';
 import styles from './index.less';
 
@@ -16,7 +16,16 @@ const Announcements = React.lazy(() => import('./components/Announcements'));
 const Gallery = React.lazy(() => import('./components/Gallery'));
 const Celebrating = React.lazy(() => import('./components/Celebrating'));
 
-const HomePage = () => {
+const HomePage = (props) => {
+  const { dispatch } = props;
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: 'homePage/clearState',
+      });
+    };
+  }, []);
+
   const viewSettingPage = () => {
     history.push('/home/settings');
   };
@@ -99,4 +108,6 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default connect(({ homePage }) => ({
+  homePage,
+}))(HomePage);

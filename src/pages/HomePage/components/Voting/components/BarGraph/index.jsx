@@ -10,6 +10,7 @@ const BarGraph = (props) => {
     activePoll = {},
     votedOption = '',
     countVotes = () => {},
+    timeLeft = '',
   } = props;
 
   const { pollDetail: { question = '' } = {} } = activePoll;
@@ -32,8 +33,13 @@ const BarGraph = (props) => {
       </Row>
       <div className={styles.votingInformation}>
         <span className={styles.number}>{countVotes()} votes</span>
-        <img src={GrayDot} alt="" />
-        <span className={styles.dueTime}>2d left</span>
+
+        {timeLeft && (
+          <>
+            <img src={GrayDot} alt="" />
+            <span className={styles.dueTime}>{timeLeft}</span>
+          </>
+        )}
       </div>
     </div>
   );

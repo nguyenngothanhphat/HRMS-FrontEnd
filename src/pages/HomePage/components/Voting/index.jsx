@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import { Spin } from 'antd';
+import moment from 'moment';
 import BarGraph from './components/BarGraph';
 import styles from './index.less';
 import Options from './components/Options';
+import EmptyComponent from '@/components/Empty';
 import { TAB_IDS } from '@/utils/homePage';
 
 const Voting = (props) => {
@@ -11,7 +13,10 @@ const Voting = (props) => {
 
   // redux
   const {
-    homePage: { postsByType = [], pollResult = [], selectedPollOption = {} } = {},
+    homePage: {
+      postsByType = [],
+      selectedPollOption: { choiceSummary = [], choice = {} } = {},
+    } = {},
     loadingFetchPollResult = '',
     loadingFetchPostList = false,
     user: { currentUser: { employee = {} } = {} } = {},
@@ -19,8 +24,9 @@ const Voting = (props) => {
 
   const [isVoted, setIsVoted] = useState(false);
   const [options, setOptions] = useState([]);
-  const [activePoll, setActivePoll] = useState({});
+  const [activePoll, setActivePoll] = useState('');
   const [votedOption, setVotedOption] = useState('');
+  const [timeLeft, setTimeLeft] = useState('');
 
   const fetchData = () => {
     return dispatch({
@@ -31,31 +37,48 @@ const Voting = (props) => {
     });
   };
 
-  const fetchSelectedPollOptionByEmployee = (pollId) => {
-    dispatch({
-      type: 'homePage/fetchSelectedPollOptionByEmployeeEffect',
-      payload: {
-        pollId,
-        employee: employee._id,
-      },
-    });
-  };
-
-  const fetchPollResult = (pollId) => {
-    return dispatch({
-      type: 'homePage/fetchPollResultEffect',
-      payload: {
-        pollId,
-      },
-    });
+  const fetchSelectedPollOptionByEmployee = () => {
+    if (activePoll?._id) {
+      dispatch({
+        type: 'homePage/fetchSelectedPollOptionByEmployeeEffect',
+        payload: {
+          pollId: activePoll?._id,
+          employee: employee._id,
+        },
+      });
+    }
   };
 
   useEffect(() => {
-    if (activePoll?._id) {
-      const pollId = activePoll._id;
-      fetchPollResult(pollId);
-      fetchSelectedPollOptionByEmployee(pollId);
+    if (activePoll) {
+      const { endDate } = activePoll.pollDetail || {};
+      if (endDate) {
+        moment.locale('en', {
+          relativeTime: {
+            future: '%s left',
+            past: 'Expired',
+            s: 'seconds',
+            ss: '%ss',
+            m: 'a minute',
+            mm: '%dm',
+            h: 'an hour',
+            hh: '%dh',
+            d: 'a day',
+            dd: '%dd',
+            M: 'a month',
+            MM: '%dM',
+            y: 'a year',
+            yy: '%dY',
+          },
+        });
+        const timeLeftTemp = moment(endDate).fromNow();
+        setTimeLeft(timeLeftTemp);
+      }
     }
+  }, [JSON.stringify(activePoll)]);
+
+  useEffect(() => {
+    fetchSelectedPollOptionByEmployee();
   }, [JSON.stringify(activePoll)]);
 
   useEffect(() => {
@@ -70,37 +93,42 @@ const Voting = (props) => {
   }, [JSON.stringify(postsByType)]);
 
   useEffect(() => {
-    const temp = [
-      {
-        id: 'response1',
-        text: activePoll?.pollDetail?.response1,
-        percent: pollResult.find((x) => x._id === 'response1')?.percent || 0,
-      },
-      {
-        id: 'response2',
-        text: activePoll?.pollDetail?.response2,
-        percent: pollResult.find((x) => x._id === 'response2')?.percent || 0,
-      },
-      {
-        id: 'response3',
-        text: activePoll?.pollDetail?.response3,
-        percent: pollResult.find((x) => x._id === 'response3')?.percent || 0,
-      },
-    ];
-    setOptions(temp);
-  }, [JSON.stringify(pollResult), JSON.stringify(activePoll)]);
+    if (choiceSummary) {
+      const temp = [
+        {
+          id: 'response1',
+          text: activePoll?.pollDetail?.response1,
+          percent: choiceSummary.find((x) => x._id === 'response1')?.percent || 0,
+        },
+        {
+          id: 'response2',
+          text: activePoll?.pollDetail?.response2,
+          percent: choiceSummary.find((x) => x._id === 'response2')?.percent || 0,
+        },
+        {
+          id: 'response3',
+          text: activePoll?.pollDetail?.response3,
+          percent: choiceSummary.find((x) => x._id === 'response3')?.percent || 0,
+        },
+      ];
+      setOptions(temp);
+    }
+  }, [JSON.stringify(choiceSummary), JSON.stringify(activePoll)]);
 
   useEffect(() => {
-    if (selectedPollOption?.choice) {
+    if (choice?.choice) {
       setIsVoted(true);
-      setVotedOption(selectedPollOption?.choice);
+      setVotedOption(choice.choice);
     }
-  }, [JSON.stringify(selectedPollOption)]);
+  }, [JSON.stringify(choice)]);
 
   const countVotes = () => {
-    return pollResult.reduce((acc, obj) => {
-      return acc + obj.count;
-    }, 0);
+    if (choiceSummary) {
+      return choiceSummary.reduce((acc, obj) => {
+        return acc + obj.count;
+      }, 0);
+    }
+    return 0;
   };
 
   if (loadingFetchPollResult || loadingFetchPostList) {
@@ -112,6 +140,13 @@ const Voting = (props) => {
       </div>
     );
   }
+  if (!activePoll) {
+    return (
+      <div className={styles.Voting}>
+        <EmptyComponent description="No poll available" />
+      </div>
+    );
+  }
   return (
     <div className={styles.Voting}>
       {isVoted ? (
@@ -120,15 +155,17 @@ const Voting = (props) => {
           activePoll={activePoll}
           votedOption={votedOption}
           countVotes={countVotes}
+          timeLeft={timeLeft}
         />
       ) : (
         <Options
           setIsVoted={setIsVoted}
           options={options}
           activePoll={activePoll}
-          refreshPoll={fetchPollResult}
+          refreshPoll={fetchSelectedPollOptionByEmployee}
           countVotes={countVotes}
           setVotedOption={setVotedOption}
+          timeLeft={timeLeft}
         />
       )}
     </div>

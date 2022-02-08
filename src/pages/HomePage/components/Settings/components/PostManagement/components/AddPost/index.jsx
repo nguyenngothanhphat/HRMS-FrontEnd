@@ -1,15 +1,16 @@
-import { Card, Button, Col, Form, Row, Select } from 'antd';
-import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
+import { Button, Card, Col, Form, Row, Select } from 'antd';
 import { debounce } from 'lodash';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
 import { TAB_IDS } from '@/utils/homePage';
-import styles from './index.less';
 import AnnouncementContent from './components/AnnouncementContent';
-import Preview from './components/Preview';
+import BannerContent from './components/BannerContent';
 import BirthdayContent from './components/BirthdayContent';
 import ImagesContent from './components/ImagesContent';
-import BannerContent from './components/BannerContent';
 import PollContent from './components/PollContent';
+import Preview from './components/Preview';
+import styles from './index.less';
 
 // A: ANNOUNCEMENT
 // B: BIRTHDAY/ANNIVERSARY
@@ -150,8 +151,8 @@ const AddPost = (props) => {
             response1: values.responsesP[0]?.response,
             response2: values.responsesP[1]?.response,
             response3: values.responsesP[2]?.response,
-            startDate: values.startDateP,
-            endDate: values.endDateP,
+            startDate: moment.utc(values.startDateP).startOf('day'),
+            endDate: moment.utc(values.endDateP).startOf('day'),
           },
         };
         break;
