@@ -14,6 +14,25 @@ import RejectCommentModal from '../RejectCommentModal';
 import styles from './index.less';
 
 const { IN_PROGRESS, REJECTED } = TIMEOFF_STATUS;
+const COLUMN_WIDTH = {
+  TYPE_A: {
+    TICKET_ID: '15%',
+    REQUESTEE: '15%',
+    TYPE: '17%',
+    // LEAVE_DATES: '25%',
+    DURATION: '15%',
+    ACTION: '15%',
+  },
+  TYPE_B: {
+    TICKET_ID: '15%',
+    REQUESTEE: '14%',
+    TYPE: '19%',
+    LEAVE_DATES: '25%',
+    DURATION: '11%',
+    COMMENT: '17%',
+    ACTION: '15%',
+  },
+};
 @connect(({ dispatch, user: { currentUser = {} }, timeOff: { paging }, loading }) => ({
   dispatch,
   currentUser,
@@ -26,171 +45,6 @@ const { IN_PROGRESS, REJECTED } = TIMEOFF_STATUS;
   loading6: loading.effects['timeOff/reportingManagerReject'],
 }))
 class TeamLeaveTable extends PureComponent {
-  columns = [
-    {
-      title: 'Ticket ID',
-      dataIndex: 'id',
-      align: 'left',
-      fixed: 'left',
-      width: '15%',
-      render: (id) => {
-        const { ticketID = '', _id = '', onDate = '', status = '' } = id;
-        const createdDate = moment.utc(onDate).locale('en').format('YYYY/MM/DD');
-        const nowDate = moment.utc().locale('en').format('YYYY/MM/DD');
-        const isNewRequest =
-          status === IN_PROGRESS &&
-          moment.utc(nowDate).subtract(2, 'days').isSameOrBefore(moment.utc(createdDate));
-
-        return (
-          <span className={styles.ID} onClick={() => this.onIdClick(_id)}>
-            {ticketID}
-            {isNewRequest && <Tag color="#2C6DF9">New</Tag>}
-          </span>
-        );
-      },
-      defaultSortOrder: ['ascend'],
-      sorter: {
-        compare: (a, b) => moment.utc(a.onDate).isAfter(moment.utc(b.onDate)),
-      },
-      sortDirections: ['ascend', 'descend', 'ascend'],
-    },
-    {
-      title: 'Requestee',
-      dataIndex: 'requestee',
-      width: '12%',
-      align: 'left',
-      render: (requestee) => <span>{requestee}</span>,
-      // sortDirections: ['ascend', 'descend', 'ascend'],
-    },
-    {
-      title: 'Type',
-      dataIndex: 'type',
-      width: '18%',
-      align: 'center',
-      render: (type) => <span>{type ? type.name : '-'}</span>,
-      // defaultSortOrder: ['ascend'],
-      // sorter: {
-      //   compare: (a, b) => {
-      //     const { type: { shortType: s1 = '' } = {} } = a;
-      //     const { type: { shortType: s2 = '' } = {} } = b;
-      //     return s1.localeCompare(s2);
-      //   },
-      // },
-      // sortDirections: ['ascend', 'descend', 'ascend'],
-    },
-
-    {
-      title: 'Leave Dates',
-      // width: '25%',
-      dataIndex: 'leaveTimes',
-      align: 'left',
-      render: (leaveTimes) => (leaveTimes !== '' ? <span>{leaveTimes}</span> : <span>-</span>),
-    },
-    {
-      title: 'Duration',
-      width: '11%',
-      dataIndex: 'duration',
-      align: 'center',
-    },
-    // {
-    //   title: `Req’ted on `,
-    //   dataIndex: 'onDate',
-    //   align: 'center',
-    //   // width: '30%',
-    //   render: (onDate) => <span>{moment.utc(onDate).locale('en').format('MM/DD/YYYY')}</span>,
-    //   defaultSortOrder: ['ascend'],
-    //   sorter: {
-    //     compare: (a, b) => moment.utc(a.onDate).isAfter(moment.utc(b.onDate)),
-    //   },
-    //   sortDirections: ['ascend', 'descend', 'ascend'],
-    // },
-    {
-      title: 'Comment',
-      dataIndex: 'comment',
-      align: 'left',
-      // width: '15%',
-      render: (comment) =>
-        comment ? (
-          <span>{comment.length >= 12 ? `${comment.slice(0, 12)}...` : comment}</span>
-        ) : (
-          <span>-</span>
-        ),
-    },
-    // {
-    //   title: 'Assigned',
-    //   align: 'left',
-    //   dataIndex: 'assigned',
-    //   // width: '25%',
-    //   render: (assigned) => {
-    //     return (
-    //       <div className={styles.rowAction}>
-    //         <Avatar.Group
-    //           maxCount={3}
-    //           maxStyle={{
-    //             color: '#FFA100',
-    //             backgroundColor: '#EAF0FF',
-    //           }}
-    //         >
-    //           {assigned.map((user) => {
-    //             const { firstName = '', lastName = '', avatar = '' } = user;
-    //             return (
-    //               <Tooltip title={`${firstName} ${lastName}`} placement="top">
-    //                 <Avatar size="small" style={{ backgroundColor: '#EAF0FF' }} src={avatar} />
-    //               </Tooltip>
-    //             );
-    //           })}
-    //         </Avatar.Group>
-    //       </div>
-    //     );
-    //   },
-    // },
-    {
-      title: 'Action',
-      align: 'left',
-      dataIndex: 'id',
-      fixed: 'right',
-      width: '15%',
-      // width: '20%',
-      render: (id) => {
-        const { ticketID = '', _id = '', approvalManagerId = '' } = id;
-        const { selectedTab = '', currentUser: { employee: { _id: myId = '' } = {} } = {} } =
-          this.props;
-
-        // only manager accept/reject a ticket
-        const isMyTicket = myId === approvalManagerId;
-
-        if (selectedTab === IN_PROGRESS)
-          return (
-            <div className={styles.rowAction}>
-              <Tooltip title="View">
-                <img src={OpenIcon} onClick={() => this.onOpenClick(_id)} alt="open" />
-              </Tooltip>
-              {isMyTicket && (
-                <>
-                  <Tooltip title="Approve">
-                    <img src={ApproveIcon} onClick={() => this.onApproveClick(_id)} alt="approve" />
-                  </Tooltip>
-                  <Tooltip title="Reject">
-                    <img
-                      src={CancelIcon}
-                      onClick={() => this.onCancelClick(_id, ticketID)}
-                      alt="cancel"
-                    />
-                  </Tooltip>
-                </>
-              )}
-            </div>
-          );
-
-        return (
-          <div className={styles.rowAction}>
-            <span onClick={() => this.onOpenClick(_id)}>View Request</span>
-          </div>
-        );
-      },
-    },
-  ];
-
   constructor(props) {
     super(props);
     this.state = {
@@ -202,6 +56,149 @@ class TeamLeaveTable extends PureComponent {
       rejectMultiple: false,
     };
   }
+
+  getColumns = (TYPE) => {
+    return [
+      {
+        title: 'Ticket ID',
+        dataIndex: 'id',
+        align: 'left',
+        fixed: 'left',
+        width: COLUMN_WIDTH[TYPE].TICKET_ID,
+        render: (id) => {
+          const { ticketID = '', _id = '', onDate = '', status = '' } = id;
+          const createdDate = moment.utc(onDate).locale('en').format('YYYY/MM/DD');
+          const nowDate = moment.utc().locale('en').format('YYYY/MM/DD');
+          const isNewRequest =
+            status === IN_PROGRESS &&
+            moment.utc(nowDate).subtract(2, 'days').isSameOrBefore(moment.utc(createdDate));
+
+          return (
+            <span className={styles.ID} onClick={() => this.onIdClick(_id)}>
+              {ticketID}
+              {isNewRequest && <Tag color="#2C6DF9">New</Tag>}
+            </span>
+          );
+        },
+        defaultSortOrder: ['ascend'],
+        sorter: {
+          compare: (a, b) => moment.utc(a.onDate).isAfter(moment.utc(b.onDate)),
+        },
+        sortDirections: ['ascend', 'descend', 'ascend'],
+      },
+      {
+        title: 'Requestee',
+        dataIndex: 'requestee',
+        width: COLUMN_WIDTH[TYPE].REQUESTEE,
+        align: 'left',
+        render: (requestee) => <span>{requestee}</span>,
+        // sortDirections: ['ascend', 'descend', 'ascend'],
+      },
+      {
+        title: 'Type',
+        dataIndex: 'type',
+        width: COLUMN_WIDTH[TYPE].TYPE,
+        align: 'center',
+        render: (type) => <span>{type ? type.name : '-'}</span>,
+        // defaultSortOrder: ['ascend'],
+        // sorter: {
+        //   compare: (a, b) => {
+        //     const { type: { shortType: s1 = '' } = {} } = a;
+        //     const { type: { shortType: s2 = '' } = {} } = b;
+        //     return s1.localeCompare(s2);
+        //   },
+        // },
+        // sortDirections: ['ascend', 'descend', 'ascend'],
+      },
+
+      {
+        title: 'Leave Dates',
+        width: COLUMN_WIDTH[TYPE].LEAVE_DATES,
+        dataIndex: 'leaveTimes',
+        align: 'left',
+        render: (leaveTimes) => (leaveTimes !== '' ? <span>{leaveTimes}</span> : <span>-</span>),
+      },
+      {
+        title: 'Duration',
+        width: COLUMN_WIDTH[TYPE].DURATION,
+        dataIndex: 'duration',
+        align: 'center',
+      },
+      // {
+      //   title: `Req’ted on `,
+      //   dataIndex: 'onDate',
+      //   align: 'center',
+      //   // width: '30%',
+      //   render: (onDate) => <span>{moment.utc(onDate).locale('en').format('MM/DD/YYYY')}</span>,
+      //   defaultSortOrder: ['ascend'],
+      //   sorter: {
+      //     compare: (a, b) => moment.utc(a.onDate).isAfter(moment.utc(b.onDate)),
+      //   },
+      //   sortDirections: ['ascend', 'descend', 'ascend'],
+      // },
+      {
+        title: 'Comment',
+        dataIndex: 'comment',
+        align: 'left',
+        width: COLUMN_WIDTH[TYPE].COMMENT,
+        render: (comment) =>
+          comment ? (
+            <span>{comment.length >= 12 ? `${comment.slice(0, 12)}...` : comment}</span>
+          ) : (
+            <span>-</span>
+          ),
+      },
+      {
+        title: 'Action',
+        align: 'left',
+        dataIndex: 'id',
+        fixed: 'right',
+        width: COLUMN_WIDTH[TYPE].ACTION,
+        // width: '20%',
+        render: (id) => {
+          const { ticketID = '', _id = '', approvalManagerId = '' } = id;
+          const { selectedTab = '', currentUser: { employee: { _id: myId = '' } = {} } = {} } =
+            this.props;
+
+          // only manager accept/reject a ticket
+          const isMyTicket = myId === approvalManagerId;
+
+          if (selectedTab === IN_PROGRESS)
+            return (
+              <div className={styles.rowAction}>
+                <Tooltip title="View">
+                  <img src={OpenIcon} onClick={() => this.onOpenClick(_id)} alt="open" />
+                </Tooltip>
+                {isMyTicket && (
+                  <>
+                    <Tooltip title="Approve">
+                      <img
+                        src={ApproveIcon}
+                        onClick={() => this.onApproveClick(_id)}
+                        alt="approve"
+                      />
+                    </Tooltip>
+                    <Tooltip title="Reject">
+                      <img
+                        src={CancelIcon}
+                        onClick={() => this.onCancelClick(_id, ticketID)}
+                        alt="cancel"
+                      />
+                    </Tooltip>
+                  </>
+                )}
+              </div>
+            );
+
+          return (
+            <div className={styles.rowAction}>
+              <span onClick={() => this.onOpenClick(_id)}>View Request</span>
+            </div>
+          );
+        },
+      },
+    ];
+  };
 
   // HANDLE TEAM REQUESTS
   onOpenClick = (_id) => {
@@ -466,7 +463,7 @@ class TeamLeaveTable extends PureComponent {
     };
 
     const scroll = {
-      x: '58vw',
+      x: selectedTab !== REJECTED ? '50vw' : '58vw',
       y: 'max-content',
     };
 
@@ -487,9 +484,9 @@ class TeamLeaveTable extends PureComponent {
     };
 
     const tableByRole =
-      selectedTab === REJECTED
-        ? this.columns.filter((col) => col.dataIndex !== 'assigned')
-        : this.columns.filter((col) => col.dataIndex !== 'comment');
+      selectedTab !== REJECTED
+        ? this.getColumns('TYPE_A').filter((col) => col.dataIndex !== 'comment')
+        : this.getColumns('TYPE_B');
 
     return (
       <div className={styles.TeamLeaveTable}>

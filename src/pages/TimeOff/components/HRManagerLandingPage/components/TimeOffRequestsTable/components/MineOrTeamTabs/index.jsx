@@ -26,6 +26,9 @@ class MineOrTeamTabs extends Component {
       type: 'timeOff/savePaging',
       payload: { page: 1 },
     });
+    dispatch({
+      type: 'timeOff/clearFilter',
+    });
   };
 
   render() {

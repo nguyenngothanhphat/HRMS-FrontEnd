@@ -548,7 +548,7 @@ const employeeProfile = {
       }
     },
     *updateGeneralInfo(
-      { payload = {}, dataTempKept = {}, key = '', isUpdateMyAvt = false },
+      { payload = {}, dataTempKept = {}, key = '', isUpdateMyAvt = false, isLinkedIn = false },
       { put, call, select },
     ) {
       try {
@@ -617,7 +617,8 @@ const employeeProfile = {
               payload: { openContactDetails: false },
             });
         }
-        if (isUpdateMyAvt) {
+
+        if (isUpdateMyAvt || isLinkedIn) {
           yield put({
             type: 'user/fetchCurrent',
           });

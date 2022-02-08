@@ -111,7 +111,8 @@ const ModalAddInfo = (props) => {
       }
     });
     const tempSkill = skills ? skills.filter((item) => item !== 'Other') : [];
-    const checkDuplication = listSkill.filter((e) => e.name.toUpperCase() === otherSkills.toUpperCase()) || [];
+    const checkOtherSkill = otherSkills ? otherSkills.toUpperCase().replace(' ','') : null;
+    const checkDuplication = listSkill.filter((e) => e.name.toUpperCase().replace(' ','') === checkOtherSkill) || [];
     if(checkDuplication.length > 0) {
       notification.error({
         message: 'This skill is available on the skill list above, please select it on skills.',
@@ -493,13 +494,12 @@ const ModalAddInfo = (props) => {
               // ]}
             >
               <Select
-                placeholder="Select skill"
-                mode="multiple"
+                placeholder="Select skills"
+                mode="tags"
                 tagRender={tagRender}
                 showArrow
-                allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children ? option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 : null}
                 onChange={changeSkill}
               >
                 {listSkill.map((item) => (
