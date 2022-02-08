@@ -91,7 +91,7 @@ const timeOff = {
     filter: {
       type: [],
       search: '',
-      formDate: '',
+      fromDate: '',
       toDate: '',
       isSearch: false,
     },
@@ -1114,6 +1114,19 @@ const timeOff = {
         filter: {
           ...filter,
           ...action.payload,
+        },
+      };
+    },
+    clearFilter(state) {
+      const { filter } = state;
+      return {
+        ...state,
+        filter: {
+          ...filter,
+          search: '',
+          fromDate: '',
+          toDate: '',
+          isSearch: false,
         },
       };
     },
