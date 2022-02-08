@@ -156,7 +156,6 @@ const FilterContent = (props) => {
           showArrow
           style={{ width: '100%' }}
           loading={loadingFetchEmployee}
-          disabled={loadingFetchEmployee}
           placeholder="Search by Employee ID"
         >
           {employeeList2.map((x) => {
@@ -177,7 +176,6 @@ const FilterContent = (props) => {
           placeholder="Search by Name/User ID"
           filterOption={false}
           showArrow
-          disabled={loadingFetchEmployee}
           onSearch={handleEmployeeSearch}
           loading={loadingFetchEmployee}
           onClear={handleEmployeeClear}
