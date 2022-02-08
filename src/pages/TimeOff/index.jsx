@@ -209,6 +209,7 @@ class TimeOff extends PureComponent {
             onChange={(key) => {
               history.push(`/time-off/${key}`);
             }}
+            destroyInactiveTabPane
           >
             {this.getTabs()}
           </Tabs>

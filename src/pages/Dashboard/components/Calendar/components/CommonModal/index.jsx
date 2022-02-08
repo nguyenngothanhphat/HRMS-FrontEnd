@@ -33,7 +33,7 @@ const CommonModal = (props) => {
     if (data.length === 0) return <EmptyComponent />;
     switch (tabKey) {
       case '1':
-        return <MyCalendar isInModal data={data} loading={loading} dateSelected={dateSelected} />;
+        return <MyCalendar isInModal data={data} loading={loading} selectedDate={dateSelected} />;
       case '2':
         return <HolidayCalendar isInModal listHolidays={data} loading={loading} />;
       default:

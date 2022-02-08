@@ -1,11 +1,9 @@
-export const POST_TYPE_TEXT = {
-  ANNOUNCEMENT: 'Announcement',
-  BIRTHDAY_ANNIVERSARY: 'Birthday/Anniversary',
-  IMAGES: 'Images',
-  BANNER: 'Banner',
-  POLL: 'Poll',
+export const TAB_IDS = {
+  ANNOUNCEMENTS: 'announcements',
+  BIRTHDAY: 'birthday',
+  IMAGES: 'images',
+  BANNER: 'banner',
+  POLLS: 'polls',
 };
-
-export const POST_TYPES = Object.keys(POST_TYPE_TEXT).map((k) => POST_TYPE_TEXT[k]);
 
 export const test = '';

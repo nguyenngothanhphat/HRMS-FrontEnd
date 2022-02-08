@@ -1,5 +1,5 @@
 import { Layout, Skeleton, Tabs } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { connect, formatMessage } from 'umi';
 import iconDownload from '@/assets/download-icon-yellow.svg';
 import DirectoryTable from '../DirectoryTable';
@@ -7,10 +7,13 @@ import AddEmployeeForm from '@/pages_admin/EmployeesManagement/components/TableC
 import ModalImportEmployee from '@/pages_admin/EmployeesManagement/components/TableContainer/components/ModalImportEmployee';
 import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
 import exportToCsv from '@/utils/exportToCsv';
-import styles from './index.less';
 import FilterPopover from '@/components/FilterPopover';
 import FilterButton from '@/components/FilterButton';
-import FilterContent from '../FilterContent';
+// import FilterContent from '../FilterContent';
+
+import styles from './index.less';
+
+const FilterContent = React.lazy(() => import('../FilterContent'));
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -421,15 +424,21 @@ const DirectoryComponent = (props) => {
           </div>
         )}
 
+              
         <FilterPopover
           placement="bottomRight"
-          content={<FilterContent activeTab={tabId} />}
+          content={
+            <Suspense fallback={<Skeleton active />}>
+          
+              <FilterContent activeTab={tabId} />
+            </Suspense>
+          }
           realTime
           submitText="Apply"
           closeText="Clear"
           onSecondButton={clearFilter}
         >
-          <FilterButton />
+          <FilterButton fontSize={14} />
         </FilterPopover>
       </div>
     );

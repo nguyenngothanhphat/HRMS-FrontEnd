@@ -2,7 +2,7 @@ import { Card, Button, Col, Form, Row, Select } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
-import { POST_TYPES, POST_TYPE_TEXT } from '@/utils/homePage';
+import { TAB_IDS } from '@/utils/homePage';
 import styles from './index.less';
 import AnnouncementContent from './components/AnnouncementContent';
 import Preview from './components/Preview';
@@ -17,12 +17,35 @@ import PollContent from './components/PollContent';
 // I: IMAGES
 // BN: BANNER
 
+const TABS = [
+  {
+    id: TAB_IDS.ANNOUNCEMENTS,
+    name: 'Announcement',
+  },
+  {
+    id: TAB_IDS.BIRTHDAY,
+    name: 'Birthday/Anniversary',
+  },
+  {
+    id: TAB_IDS.IMAGES,
+    name: 'Images',
+  },
+  {
+    id: TAB_IDS.BANNER,
+    name: 'Banner',
+  },
+  {
+    id: TAB_IDS.POLLS,
+    name: 'Poll',
+  },
+];
+
 const AddPost = (props) => {
   const [form] = Form.useForm();
-  const [mode, setMode] = useState(POST_TYPE_TEXT.ANNOUNCEMENT);
-  const [formValues, setFormValues] = useState({});
+  const { selectedTab = '', onBack = () => {} } = props;
 
-  const { onBack = () => {} } = props;
+  const [mode, setMode] = useState(selectedTab || TAB_IDS.ANNOUNCEMENTS);
+  const [formValues, setFormValues] = useState({});
 
   // FUNCTIONS
   const onModeChange = (val) => {
@@ -56,15 +79,15 @@ const AddPost = (props) => {
   // RENDER UI
   const renderTypeContent = () => {
     switch (mode) {
-      case POST_TYPE_TEXT.ANNOUNCEMENT:
+      case TAB_IDS.ANNOUNCEMENTS:
         return <AnnouncementContent formValues={formValues} setFormValues={setFormValues} />;
-      case POST_TYPE_TEXT.BIRTHDAY_ANNIVERSARY:
+      case TAB_IDS.BIRTHDAY:
         return <BirthdayContent formValues={formValues} setFormValues={setFormValues} />;
-      case POST_TYPE_TEXT.IMAGES:
+      case TAB_IDS.IMAGES:
         return <ImagesContent formValues={formValues} setFormValues={setFormValues} />;
-      case POST_TYPE_TEXT.BANNER:
+      case TAB_IDS.BANNER:
         return <BannerContent formValues={formValues} setFormValues={setFormValues} />;
-      case POST_TYPE_TEXT.POLL:
+      case TAB_IDS.POLLS:
         return <PollContent />;
       default:
         return '';
@@ -88,10 +111,10 @@ const AddPost = (props) => {
         >
           <Form.Item label="Post Type" name="postType">
             <Select showArrow style={{ width: '100%' }} onChange={onModeChange}>
-              {POST_TYPES.map((x) => {
+              {TABS.map((x) => {
                 return (
-                  <Select.Option value={x} key={x}>
-                    {x}
+                  <Select.Option value={x.id} key={x.id}>
+                    {x.name}
                   </Select.Option>
                 );
               })}

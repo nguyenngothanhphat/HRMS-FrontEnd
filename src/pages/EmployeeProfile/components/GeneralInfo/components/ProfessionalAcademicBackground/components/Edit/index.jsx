@@ -22,8 +22,7 @@ const { Option } = Select;
       // listTitle = [],
       tenantCurrentEmployee = '',
     } = {},
-    user: { currentUser: { employee: { _id: myEmployeeID = '' } = {}} = {} } = {},
-
+    user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} } = {} } = {},
   }) => ({
     loading: loading.effects['employeeProfile/updateGeneralInfo'],
     generalDataOrigin,
@@ -157,8 +156,13 @@ class Edit extends PureComponent {
   };
 
   handleSave = async () => {
-    const { dispatch, generalData, listSkill = [], generalData: {  employee = '' } = {},
-    myEmployeeID = '', } = this.props;
+    const {
+      dispatch,
+      generalData,
+      listSkill = [],
+      generalData: { employee = '' } = {},
+      myEmployeeID = '',
+    } = this.props;
     const check = employee === myEmployeeID;
     const { skills } = generalData;
     const newSkills = skills.filter((e) => e !== 'Other');
@@ -166,11 +170,9 @@ class Edit extends PureComponent {
     const dataTempKept = this.processDataKept() || {};
     const { certification } = payload;
     await this.handleUpdateCertification(certification);
+    const listOtherSkill = payload.otherSkills.length > 0 ? payload.otherSkills[0] : '';
     const checkDuplication =
-      payload.otherSkills.length > 0
-        ? listSkill.filter((e) => e.name.toUpperCase() === payload.otherSkills[0].toUpperCase()) ||
-          []
-        : [];
+      listSkill.filter((e) => e.name.toUpperCase() === listOtherSkill.toUpperCase()) || [];
     if (checkDuplication.length > 0) {
       notification.error({
         message: 'This skill is available on the skill list above, please select it on skills.',
@@ -182,7 +184,7 @@ class Edit extends PureComponent {
       payload,
       dataTempKept,
       key: 'openAcademic',
-      isLinkedIn:check
+      isLinkedIn: check,
     });
   };
 
@@ -259,10 +261,12 @@ class Edit extends PureComponent {
             <Form.Item label="Skills" name="skills">
               <Select
                 placeholder="Select skills"
-                mode="multiple"
+                mode="tags"
                 showArrow
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  option.props.children
+                    ? option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    : null
                 }
               >
                 {listSkill.map((item) => (

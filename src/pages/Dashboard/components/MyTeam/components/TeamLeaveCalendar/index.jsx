@@ -1,72 +1,9 @@
 import { Avatar, Calendar, Tooltip } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-// import MockAvatar from '@/assets/dashboard/mockAvatar.jpg';
 import moment from 'moment';
-// import SampleAvatar1 from '@/assets/dashboard/sampleAvatar1.png';
-// import SampleAvatar2 from '@/assets/dashboard/sampleAvatar2.png';
-// import SampleAvatar3 from '@/assets/dashboard/sampleAvatar3.png';
-// import SampleAvatar4 from '@/assets/dashboard/sampleAvatar4.png';
 import mockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import styles from './index.less';
-
-// const leaveRequest = [
-//   {
-//     date: '01/10/2022',
-//     list: [
-//       {
-//         name: 'Tuan',
-//         avatar: SampleAvatar1,
-//         duration: 8,
-//       },
-//       {
-//         name: 'Lewis',
-//         avatar: SampleAvatar2,
-//         duration: 4,
-//       },
-//       {
-//         name: 'Nathan',
-//         avatar: SampleAvatar4,
-//         duration: 8,
-//       },
-//       {
-//         name: 'Nathan',
-//         avatar: SampleAvatar4,
-//         duration: 8,
-//       },
-//       {
-//         name: 'Nathan',
-//         avatar: SampleAvatar4,
-//         duration: 8,
-//       },
-//     ],
-//   },
-//   {
-//     date: '01/11/2022',
-//     list: [
-//       {
-//         name: 'Tuan',
-//         avatar: SampleAvatar3,
-//         duration: 8,
-//       },
-//       {
-//         name: 'Lewis',
-//         avatar: SampleAvatar2,
-//         duration: 4,
-//       },
-//     ],
-//   },
-//   {
-//     date: '01/15/2021',
-//     list: [
-//       {
-//         name: 'Tuan',
-//         avatar: SampleAvatar3,
-//         duration: 8,
-//       },
-//     ],
-//   },
-// ];
 
 const TeamLeaveCalendar = (props) => {
   const { selectedMonth = '', teamLeaveRequestList = [], dispatch, listTimeOffType = [] } = props;
@@ -92,7 +29,8 @@ const TeamLeaveCalendar = (props) => {
   const checkDate = (date, listDate) => {
     return (
       listDate.filter(
-        (val) => moment(val.date).utcOffset(0).format('MM/DD/YYYY') === moment(date).format('MM/DD/YYYY'),
+        (val) =>
+          moment(val.date).utcOffset(0).format('MM/DD/YYYY') === moment(date).format('MM/DD/YYYY'),
       ) || []
     );
   };

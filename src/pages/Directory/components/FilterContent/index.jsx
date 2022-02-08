@@ -1,7 +1,7 @@
 import { Form, Select } from 'antd';
+import { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { debounce } from 'lodash';
 import styles from './index.less';
 
 const FilterContent = (props) => {
@@ -73,6 +73,17 @@ const FilterContent = (props) => {
   }, [JSON.stringify(filter)]);
 
   useEffect(() => {
+    dispatch({
+      type: 'employee/fetchSkillList',
+    });
+    dispatch({
+      type: 'employee/fetchEmployeeType',
+    });
+
+    dispatch({
+      type: 'employee/fetchEmployeeListSingleCompanyEffect',
+    });
+
     return () => {
       dispatch({
         type: 'employee/clearFilter',
@@ -144,6 +155,7 @@ const FilterContent = (props) => {
           showSearch
           showArrow
           style={{ width: '100%' }}
+          loading={loadingFetchEmployee}
           placeholder="Search by Employee ID"
         >
           {employeeList2.map((x) => {

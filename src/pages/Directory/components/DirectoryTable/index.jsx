@@ -235,6 +235,7 @@ class DirectoryTable extends Component {
         ),
         width: '10%',
         align: 'left',
+        sortOrder: sortedName.columnKey === 'userName' && sortedName.order,
         sorter: (a, b) => {
           return a.generalInfo && a.generalInfo?.userId
             ? a.generalInfo?.userId.localeCompare(`${b.generalInfo?.userId}`)
@@ -250,6 +251,7 @@ class DirectoryTable extends Component {
         render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
         width: '10%',
         align: 'left',
+        sortOrder: sortedName.columnKey === 'employeeId' && sortedName.order,
         sorter: (a, b) => {
           return a.generalInfo && a.generalInfo?.employeeId
             ? a.generalInfo?.employeeId.localeCompare(`${b.generalInfo?.employeeId}`)
@@ -268,6 +270,7 @@ class DirectoryTable extends Component {
         ),
         width: '10%',
         align: 'left',
+        sortOrder: sortedName.columnKey === 'workNumber' && sortedName.order,
         sorter: (a, b) => {
           return a.generalInfo && a.generalInfo?.workNumber
             ? a.generalInfo?.workNumber.localeCompare(`${b.generalInfo?.workNumber}`)
@@ -282,6 +285,7 @@ class DirectoryTable extends Component {
         render: (generalInfo) => <span>{generalInfo?.workEmail}</span>,
         width: '16%',
         align: 'left',
+        sortOrder: sortedName.columnKey === 'workEmail' && sortedName.order,
         sorter: (a, b) => {
           return a.generalInfo && a.generalInfo?.workEmail
             ? a.generalInfo?.workEmail.localeCompare(`${b.generalInfo?.workEmail}`)
@@ -302,6 +306,7 @@ class DirectoryTable extends Component {
         ),
         width: '12%',
         align: 'left',
+        sortOrder: sortedName.columnKey === 'title' && sortedName.order,
         sorter: (a, b) => {
           return a.title && a.title?.name ? a.title?.name.localeCompare(`${b.title?.name}`) : null;
         },
@@ -328,6 +333,7 @@ class DirectoryTable extends Component {
         width: '10%',
         ellipsis: true,
         align: 'left',
+        sortOrder: sortedName.columnKey === 'location' && sortedName.order,
         sorter: (a, b) => {
           return a.location && a.location?.name
             ? a.location?.name.localeCompare(`${b.location?.name}`)
@@ -362,6 +368,7 @@ class DirectoryTable extends Component {
         ),
         align: 'left',
         width: '14%',
+        sortOrder: sortedName.columnKey === 'manager' && sortedName.order,
         sorter: (a, b) => {
           return a.manager.generalInfo && a.manager.generalInfo?.legalName
             ? a.manager.generalInfo?.legalName.localeCompare(`${b.manager.generalInfo?.legalName}`)
@@ -392,6 +399,7 @@ class DirectoryTable extends Component {
         },
         width: '10%',
         align: 'left',
+        sortOrder: sortedName.columnKey === 'department' && sortedName.order,
         sorter: (a, b) => {
           return a.department && a.department?.name
             ? a.department?.name.localeCompare(`${b.department?.name}`)
@@ -402,13 +410,14 @@ class DirectoryTable extends Component {
       {
         title: formatMessage({ id: 'component.directory.table.employmentType' }),
         dataIndex: 'employeeType',
-        key: 'employmentType',
+        key: 'employeeType',
         render: (employeeType) => <span>{employeeType ? employeeType.name : ''}</span>,
         align: 'left',
         width: '10%',
+        sortOrder: sortedName.columnKey === 'employeeType' && sortedName.order,
         sorter: (a, b) => {
-          return a.employmentType && a.employmentType?.name
-            ? a.employmentType?.name.localeCompare(`${b.employmentType?.name}`)
+          return a.employeeType && a.employeeType?.name
+            ? a.employeeType?.name.localeCompare(`${b.employeeType?.name}`)
             : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
