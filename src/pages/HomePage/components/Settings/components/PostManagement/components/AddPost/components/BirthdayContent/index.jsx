@@ -6,6 +6,8 @@ import styles from './index.less';
 const { Dragger } = Upload;
 
 const BirthdayContent = (props) => {
+  const { defaultFileList = [] } = props;
+
   const identifyImage = (fileName) => {
     const parts = fileName.split('.');
     const ext = parts[parts.length - 1];
@@ -72,9 +74,9 @@ const BirthdayContent = (props) => {
           placeholder="Enter the description"
           autoSize={{
             minRows: 5,
-            maxRows: 7,
+            maxRows: 10,
           }}
-          maxLength={400}
+          maxLength={500}
           showCount={{
             formatter: ({ count, maxLength }) => {
               return `Character Limit: ${count}/${maxLength}`;
@@ -92,6 +94,7 @@ const BirthdayContent = (props) => {
           // onRemove={(file) => handleRemove(file)}
           maxCount={1}
           className={styles.fileUploadForm}
+          defaultFileList={[...defaultFileList]}
         >
           <div className={styles.drapperBlock}>
             <img className={styles.uploadIcon} src={AttachmentIcon} alt="upload" />

@@ -22,7 +22,7 @@ const PollContent = () => {
             minRows: 3,
             maxRows: 5,
           }}
-          maxLength={400}
+          maxLength={500}
           showCount={{
             formatter: ({ count, maxLength }) => {
               return `Character Limit: ${count}/${maxLength}`;
@@ -50,7 +50,7 @@ const PollContent = () => {
                     minRows: 3,
                     maxRows: 5,
                   }}
-                  maxLength={400}
+                  maxLength={500}
                   showCount={{
                     formatter: ({ count, maxLength }) => {
                       return `Character Limit: ${count}/${maxLength}`;

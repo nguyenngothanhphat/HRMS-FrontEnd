@@ -27,7 +27,7 @@ const Voting = (props) => {
 
   const fetchData = () => {
     return dispatch({
-      type: 'homePage/fetchPostListByTypeEffect',
+      type: 'homePage/fetchPollsEffect',
       payload: {
         postType: TAB_IDS.POLL,
       },
@@ -172,6 +172,6 @@ const Voting = (props) => {
 export default connect(({ loading, homePage, user }) => ({
   homePage,
   user,
-  loadingFetchPostList: loading.effects['homePage/fetchPostListByTypeEffect'],
+  loadingFetchPostList: loading.effects['homePage/fetchPollsEffect'],
   loadingFetchPollResult: loading.effects['homePage/fetchPollResultEffect'],
 }))(Voting);

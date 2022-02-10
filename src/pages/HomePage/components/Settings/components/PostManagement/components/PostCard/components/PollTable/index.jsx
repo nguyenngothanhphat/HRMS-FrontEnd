@@ -4,6 +4,7 @@ import moment from 'moment';
 import React, { useState } from 'react';
 import { connect, Link } from 'umi';
 import CommonModal from '@/pages/HomePage/components/CommonModal';
+import EditIcon from '@/assets/homePage/editIcon.svg';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
 import ChartIcon from '@/assets/homePage/chartIcon.svg';
 import CommonTable from '../CommonTable';
@@ -11,7 +12,13 @@ import ChartPreviewModalContent from './components/ChartPreviewModalContent';
 import styles from './index.less';
 
 const PollTable = (props) => {
-  const { dispatch, data = [], loading = false, refreshData = () => {} } = props;
+  const {
+    dispatch,
+    data = [],
+    loading = false,
+    refreshData = () => {},
+    onEditPost = () => {},
+  } = props;
   const [previewModalVisible, setPreviewModalVisible] = useState(false);
   const [viewingPoll, setViewingPoll] = useState('');
 
@@ -101,6 +108,7 @@ const PollTable = (props) => {
           return (
             <div className={styles.actions}>
               <img src={ChartIcon} alt="" onClick={() => onViewPoll(record)} />
+              <img src={EditIcon} alt="" onClick={() => onEditPost(record)} />
               <Popconfirm title="Are you sure?" onConfirm={() => onDeletePoll(record)}>
                 <img src={RemoveIcon} alt="" />
               </Popconfirm>

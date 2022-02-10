@@ -11,7 +11,12 @@ import styles from './index.less';
 import { TAB_IDS } from '@/utils/homePage';
 
 const PostCard = (props) => {
-  const { onAddPost = () => {}, selectedTab = '', setSelectedTab = () => {} } = props;
+  const {
+    onAddPost = () => {},
+    selectedTab = '',
+    setSelectedTab = () => {},
+    onEditPost = () => {},
+  } = props;
 
   // redux
   const {
@@ -42,8 +47,28 @@ const PostCard = (props) => {
   };
 
   const fetchData = () => {
+    let type = '';
+    switch (selectedTab) {
+      case TAB_IDS.ANNOUNCEMENTS:
+        type = 'homePage/fetchAnnouncementsEffect';
+        break;
+      case TAB_IDS.ANNIVERSARY:
+        type = 'homePage/fetchAnniversariesEffect';
+        break;
+      case TAB_IDS.IMAGES:
+        type = 'homePage/fetchImagesEffect';
+        break;
+      case TAB_IDS.BANNER:
+        type = 'homePage/fetchBannersEffect';
+        break;
+      case TAB_IDS.POLL:
+        type = 'homePage/fetchPollsEffect';
+        break;
+      default:
+        break;
+    }
     dispatch({
-      type: 'homePage/fetchPostListByTypeEffect',
+      type,
       payload: {
         postType: selectedTab,
       },
@@ -88,6 +113,7 @@ const PostCard = (props) => {
           data={announcements}
           loading={loadingFetchPostList}
           refreshData={fetchData}
+          onEditPost={onEditPost}
         />
       ),
     },
@@ -99,6 +125,7 @@ const PostCard = (props) => {
           data={anniversaries}
           loading={loadingFetchPostList}
           refreshData={fetchData}
+          onEditPost={onEditPost}
         />
       ),
     },
@@ -106,20 +133,37 @@ const PostCard = (props) => {
       id: TAB_IDS.IMAGES,
       name: 'Images',
       component: (
-        <ImageTable data={images} loading={loadingFetchPostList} refreshData={fetchData} />
+        <ImageTable
+          data={images}
+          loading={loadingFetchPostList}
+          refreshData={fetchData}
+          onEditPost={onEditPost}
+        />
       ),
     },
     {
       id: TAB_IDS.BANNER,
       name: 'Banner',
       component: (
-        <BannerTable data={banners} loading={loadingFetchPostList} refreshData={fetchData} />
+        <BannerTable
+          data={banners}
+          loading={loadingFetchPostList}
+          refreshData={fetchData}
+          onEditPost={onEditPost}
+        />
       ),
     },
     {
       id: TAB_IDS.POLL,
       name: 'Polls',
-      component: <PollTable data={polls} loading={loadingFetchPostList} refreshData={fetchData} />,
+      component: (
+        <PollTable
+          data={polls}
+          loading={loadingFetchPostList}
+          refreshData={fetchData}
+          onEditPost={onEditPost}
+        />
+      ),
     },
   ];
 
@@ -160,6 +204,11 @@ export default connect(
     currentUser,
     permissions,
     homePage,
-    loadingFetchPostList: loading.effects['homePage/fetchPostListByTypeEffect'],
+    loadingFetchPostList:
+      loading.effects['homePage/fetchAnnouncementsEffect'] ||
+      loading.effects['homePage/fetchAnniversariesEffect'] ||
+      loading.effects['homePage/fetchBannersEffect'] ||
+      loading.effects['homePage/fetchImagesEffect'] ||
+      loading.effects['homePage/fetchPollsEffect'],
   }),
 )(PostCard);

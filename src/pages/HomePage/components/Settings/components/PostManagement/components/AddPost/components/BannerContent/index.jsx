@@ -8,6 +8,7 @@ const { Dragger } = Upload;
 const BannerContent = (props) => {
   // const { formValues = {}, setFormValues = () => {} } = props;
   // const { uploadFilesBN = [] } = formValues;
+  const { defaultFileList = [] } = props;
 
   const identifyImage = (fileName) => {
     const parts = fileName.split('.');
@@ -70,6 +71,7 @@ const BannerContent = (props) => {
           // onRemove={(file) => handleRemove(file)}
           className={styles.fileUploadForm}
           multiple
+          defaultFileList={[...defaultFileList]}
         >
           <div className={styles.drapperBlock}>
             <img className={styles.uploadIcon} src={AttachmentIcon} alt="upload" />

@@ -8,7 +8,13 @@ import RemoveIcon from '@/assets/homePage/removeIcon.svg';
 import EditIcon from '@/assets/homePage/editIcon.svg';
 
 const BannerTable = (props) => {
-  const { dispatch, data = [], loading = false, refreshData = () => {} } = props;
+  const {
+    dispatch,
+    data = [],
+    loading = false,
+    refreshData = () => {},
+    onEditPost = () => {},
+  } = props;
 
   const onDeleteAttachment = async (record) => {
     if (record?._id) {
@@ -71,7 +77,7 @@ const BannerTable = (props) => {
         render: (_, record) => {
           return (
             <div className={styles.actions}>
-              <img src={EditIcon} alt="" />
+              <img src={EditIcon} alt="" onClick={() => onEditPost(record)} />
               <Popconfirm title="Are you sure?" onConfirm={() => onDeleteAttachment(record)}>
                 <img src={RemoveIcon} alt="" />
               </Popconfirm>

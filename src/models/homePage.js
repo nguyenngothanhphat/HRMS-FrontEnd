@@ -133,7 +133,7 @@ const homePage = {
       return response;
     },
     // GET LIST POST BY TYPE
-    *fetchPostListByTypeEffect({ payload }, { call, put }) {
+    *fetchAnnouncementsEffect({ payload }, { call, put }) {
       let response = {};
       try {
         response = yield call(getPostsByType, {
@@ -143,30 +143,85 @@ const homePage = {
         });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
-
-        let variable = '';
-        switch (payload.postType) {
-          case TAB_IDS.ANNOUNCEMENTS:
-            variable = 'announcements';
-            break;
-          case TAB_IDS.ANNIVERSARY:
-            variable = 'anniversaries';
-            break;
-          case TAB_IDS.IMAGES:
-            variable = 'images';
-            break;
-          case TAB_IDS.BANNER:
-            variable = 'banners';
-            break;
-          case TAB_IDS.POLL:
-            variable = 'polls';
-            break;
-          default:
-            break;
-        }
         yield put({
           type: 'save',
-          payload: { [variable]: data },
+          payload: { announcements: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchAnniversariesEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getPostsByType, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { anniversaries: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchBannersEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getPostsByType, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { banners: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchImagesEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getPostsByType, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { images: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchPollsEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getPostsByType, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { polls: data },
         });
       } catch (errors) {
         dialog(errors);

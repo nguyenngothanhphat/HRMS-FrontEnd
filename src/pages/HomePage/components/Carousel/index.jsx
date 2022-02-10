@@ -36,7 +36,7 @@ const Carousel = (props) => {
 
   const fetchData = () => {
     return dispatch({
-      type: 'homePage/fetchPostListByTypeEffect',
+      type: 'homePage/fetchBannersEffect',
       payload: {
         postType: TAB_IDS.BANNER,
       },

@@ -15,7 +15,7 @@ const Gallery = (props) => {
 
   const fetchData = () => {
     return dispatch({
-      type: 'homePage/fetchPostListByTypeEffect',
+      type: 'homePage/fetchImagesEffect',
       payload: {
         postType: TAB_IDS.IMAGES,
       },

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Col, Row } from 'antd';
+import { Col, Row, Skeleton } from 'antd';
 import { connect } from 'umi';
 import EmployeeTag from './components/EmployeeTag';
 import PostContent from './components/PostContent';
@@ -12,7 +12,7 @@ import TerralogicImage from '@/assets/homePage/terralogicImage.jpeg';
 import { TAB_IDS } from '@/utils/homePage';
 
 const Announcements = (props) => {
-  const { dispatch } = props;
+  const { dispatch, loadingFetchAnnouncementList = false } = props;
 
   // redux
   const {
@@ -22,7 +22,7 @@ const Announcements = (props) => {
 
   const fetchData = () => {
     return dispatch({
-      type: 'homePage/fetchPostListByTypeEffect',
+      type: 'homePage/fetchAnnouncementsEffect',
       payload: {
         postType: TAB_IDS.ANNOUNCEMENTS,
       },
@@ -91,6 +91,14 @@ const Announcements = (props) => {
     // },
   ];
 
+  if (loadingFetchAnnouncementList) {
+    return (
+      <div className={styles.Announcements}>
+        <p className={styles.title}>Announcements</p>
+        <Skeleton active />
+      </div>
+    );
+  }
   if (announcements.length === 0) {
     return (
       <div className={styles.Announcements}>
@@ -121,6 +129,7 @@ const Announcements = (props) => {
   );
 };
 
-export default connect(({ homePage }) => ({
+export default connect(({ homePage, loading }) => ({
   homePage,
+  loadingFetchAnnouncementList: loading.effects['homePage/fetchAnnouncementsEffect'],
 }))(Announcements);

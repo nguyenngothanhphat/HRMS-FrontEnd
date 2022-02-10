@@ -13,6 +13,7 @@ import Options from '@/pages/HomePage/components/Voting/components/Options';
 const Preview = (props) => {
   const {
     mode = '',
+    editing = false,
     formValues: {
       uploadFilesA = [],
       descriptionA = '',
@@ -55,6 +56,7 @@ const Preview = (props) => {
     // eslint-disable-next-line compat/compat
     Promise.all(
       arr.map((x) => {
+        if (x.url) return x.url;
         return toBase64(x.originFileObj);
       }),
     ).then((data) => {
@@ -63,7 +65,9 @@ const Preview = (props) => {
   };
 
   useEffect(() => {
-    if (uploadFilesA?.fileList && uploadFilesA.fileList.length > 0) {
+    if (editing && Array.isArray(uploadFilesA)) {
+      getBase64Arr(uploadFilesA, setAnnouncementContent);
+    } else if (uploadFilesA?.fileList && uploadFilesA.fileList.length > 0) {
       getBase64Arr(uploadFilesA.fileList, setAnnouncementContent);
     } else {
       setAnnouncementContent({
@@ -73,7 +77,9 @@ const Preview = (props) => {
   }, [JSON.stringify(uploadFilesA)]);
 
   useEffect(() => {
-    if (uploadFilesB?.fileList && uploadFilesB.fileList.length > 0) {
+    if (editing && Array.isArray(uploadFilesB)) {
+      getBase64Arr(uploadFilesB, setBirthdayContent);
+    } else if (uploadFilesB?.fileList && uploadFilesB.fileList.length > 0) {
       getBase64Arr(uploadFilesB.fileList, setBirthdayContent);
     } else {
       setBirthdayContent({
@@ -83,7 +89,9 @@ const Preview = (props) => {
   }, [JSON.stringify(uploadFilesB)]);
 
   useEffect(() => {
-    if (uploadFilesI?.fileList && uploadFilesI.fileList.length > 0) {
+    if (editing && Array.isArray(uploadFilesI)) {
+      getBase64Arr(uploadFilesI, setImagesContent);
+    } else if (uploadFilesI?.fileList && uploadFilesI.fileList.length > 0) {
       getBase64Arr(uploadFilesI.fileList, setImagesContent);
     } else {
       setImagesContent({
@@ -93,7 +101,9 @@ const Preview = (props) => {
   }, [JSON.stringify(uploadFilesI)]);
 
   useEffect(() => {
-    if (uploadFilesBN?.fileList && uploadFilesBN.fileList.length > 0) {
+    if (editing && Array.isArray(uploadFilesBN)) {
+      getBase64Arr(uploadFilesBN, setBannerContent);
+    } else if (uploadFilesBN?.fileList && uploadFilesBN.fileList.length > 0) {
       getBase64Arr(uploadFilesBN.fileList, setBannerContent);
     } else {
       setBannerContent({
@@ -122,7 +132,7 @@ const Preview = (props) => {
               : PreviewImage,
         },
       ],
-      description: descriptionA ? Parser(descriptionA) : 'Description here',
+      description: descriptionA || 'Description here',
     };
 
     switch (mode) {

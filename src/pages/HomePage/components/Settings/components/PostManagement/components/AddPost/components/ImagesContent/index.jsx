@@ -8,6 +8,7 @@ const { Dragger } = Upload;
 const ImagesContent = (props) => {
   // const { formValues = {}, setFormValues = () => {} } = props;
   // const { uploadFilesI = [] } = formValues;
+  const { defaultFileList = [] } = props;
 
   const identifyImage = (fileName) => {
     const parts = fileName.split('.');
@@ -86,7 +87,7 @@ const ImagesContent = (props) => {
       >
         <Input.TextArea
           placeholder="Enter the description"
-          maxLength={400}
+          maxLength={500}
           showCount={{
             formatter: ({ count, maxLength }) => {
               return `Character Limit: ${count}/${maxLength}`;
@@ -94,7 +95,7 @@ const ImagesContent = (props) => {
           }}
           autoSize={{
             minRows: 5,
-            maxRows: 7,
+            maxRows: 10,
           }}
         />
       </Form.Item>
@@ -108,6 +109,7 @@ const ImagesContent = (props) => {
           // onRemove={(file) => handleRemove(file)}
           className={styles.fileUploadForm}
           multiple
+          defaultFileList={[...defaultFileList]}
         >
           <div className={styles.drapperBlock}>
             <img className={styles.uploadIcon} src={AttachmentIcon} alt="upload" />
