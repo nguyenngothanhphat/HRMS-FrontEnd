@@ -28,6 +28,7 @@ const Carousel = (props) => {
   const {
     homePage: { banners = [] } = {},
     // user: { currentUser: { employee = {} } = {} } = {},
+    loadingFetchBanners = false,
   } = props;
 
   const [bannerState, setBannerState] = useState({
@@ -54,6 +55,8 @@ const Carousel = (props) => {
     }
   }, [JSON.stringify(banners)]);
 
+  // RENDER UI
+  if (loadingFetchBanners) return '';
   if (!previewing && bannerState?.attachments) {
     if (bannerState.attachments.length === 0) {
       return (
@@ -104,6 +107,7 @@ const Carousel = (props) => {
   );
 };
 
-export default connect(({ homePage }) => ({
+export default connect(({ homePage, loading }) => ({
   homePage,
+  loadingFetchBanners: loading.effects['homePage/fetchBannersEffect'],
 }))(Carousel);

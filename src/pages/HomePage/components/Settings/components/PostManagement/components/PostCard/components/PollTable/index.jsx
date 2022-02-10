@@ -72,11 +72,6 @@ const PollTable = (props) => {
         },
       },
       {
-        title: 'Media',
-        dataIndex: 'media',
-        key: 'media',
-      },
-      {
         title: 'Created By',
         dataIndex: 'createdBy',
         key: 'createdBy',

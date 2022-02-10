@@ -1,4 +1,4 @@
-import { Popconfirm } from 'antd';
+import { Popconfirm, Image } from 'antd';
 import React from 'react';
 import { connect, Link } from 'umi';
 import moment from 'moment';
@@ -41,9 +41,18 @@ const BannerTable = (props) => {
       },
       {
         title: 'Media',
-        dataIndex: 'media',
-        key: 'media',
+        dataIndex: 'attachments',
+        key: 'attachments',
         width: '10%',
+        render: (attachments = []) => {
+          return (
+            <Image.PreviewGroup>
+              {attachments.map((x) => {
+                return <Image width={32} height={32} src={x.url} />;
+              })}
+            </Image.PreviewGroup>
+          );
+        },
       },
       {
         title: 'Created By',

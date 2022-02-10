@@ -76,9 +76,6 @@ const FilterContent = (props) => {
     dispatch({
       type: 'employee/fetchSkillList',
     });
-    dispatch({
-      type: 'employee/fetchEmployeeType',
-    });
 
     dispatch({
       type: 'employee/fetchEmployeeListSingleCompanyEffect',

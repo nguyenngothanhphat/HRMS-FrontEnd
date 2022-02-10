@@ -1,7 +1,8 @@
-import { Empty, Table } from 'antd';
+import { Table } from 'antd';
 import React, { useState } from 'react';
 import { connect, formatMessage } from 'umi';
 import styles from './index.less';
+import EmptyComponent from '@/components/Empty';
 
 const CommonTable = (props) => {
   const {
@@ -66,7 +67,7 @@ const CommonTable = (props) => {
           components={components}
           size="middle"
           locale={{
-            emptyText: <Empty description="No data" />,
+            emptyText: <EmptyComponent description="No data" />,
           }}
           rowSelection={selectable ? rowSelection : null}
           columns={columns}
