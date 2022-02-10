@@ -297,7 +297,7 @@ class FilterForm extends Component {
   // };
 
   render() {
-    const { listOffAllTicket = [], locationsList = [] } = this.props;
+    const { listOffAllTicket = [], locationsList = [], currentStatus = '' } = this.props;
     function getUniqueListBy(arr, key) {
       return [...new Map(arr.map((item) => [item[key], item])).values()];
     }
@@ -453,42 +453,43 @@ class FilterForm extends Component {
                 })}
               </Select>
             </Form.Item>
-
-            <Form.Item key="employeeAssignee" label="BY ASSIGNED TO" name="employeeAssignee">
-              <Select
-                allowClear
-                showArrow
-                showSearch
-                filterOption={(input, option) => {
-                  const arrChild = option.props.children[1];
-                  return arrChild.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                }}
-                mode="multiple"
-                tagRender={this.tagRender}
-                placeholder="Select assign"
-                dropdownClassName={styles.dropdown}
-              >
-                {/** condition status have different New */}
-                {!isEmpty(assginedList)
-                  ? assginedList.map((option) => {
-                      const { employeeAssignee: { generalInfo: { legalName = '' } = {} } = {} } =
-                        option;
-                      return (
-                        <Option key={option.employee_assignee} value={option.employee_assignee}>
-                          <Checkbox
-                            value={option.employee_assignee}
-                            checked={this.checkBoxStatusChecked(
-                              option.employee_assignee,
-                              'employeeAssignee',
-                            )}
-                          />
-                          <span>{legalName}</span>
-                        </Option>
-                      );
-                    })
-                  : ''}
-              </Select>
-            </Form.Item>
+            {currentStatus && currentStatus[0] !== 'New' ? (
+              <Form.Item key="employeeAssignee" label="BY ASSIGNED TO" name="employeeAssignee">
+                <Select
+                  allowClear
+                  showArrow
+                  showSearch
+                  filterOption={(input, option) => {
+                    const arrChild = option.props.children[1];
+                    return arrChild.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                  }}
+                  mode="multiple"
+                  tagRender={this.tagRender}
+                  placeholder="Select assign"
+                  dropdownClassName={styles.dropdown}
+                >
+                  {/** condition status have different New */}
+                  {!isEmpty(assginedList)
+                    ? assginedList.map((option) => {
+                        const { employeeAssignee: { generalInfo: { legalName = '' } = {} } = {} } =
+                          option;
+                        return (
+                          <Option key={option.employee_assignee} value={option.employee_assignee}>
+                            <Checkbox
+                              value={option.employee_assignee}
+                              checked={this.checkBoxStatusChecked(
+                                option.employee_assignee,
+                                'employeeAssignee',
+                              )}
+                            />
+                            <span>{legalName}</span>
+                          </Option>
+                        );
+                      })
+                    : ''}
+                </Select>
+              </Form.Item>
+            ) : null}
 
             <div className={styles.doj}>
               <div className={styles.doj__label}>
