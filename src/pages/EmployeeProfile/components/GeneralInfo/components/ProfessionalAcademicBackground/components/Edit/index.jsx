@@ -262,6 +262,8 @@ class Edit extends PureComponent {
                 placeholder="Select skills"
                 mode="tags"
                 showArrow
+                // onSelect={this.handleNewSkill}
+                optionFilterProp="children"
                 filterOption={(input, option) =>
                   option.props.children ? option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 : null
                 }
