@@ -86,7 +86,7 @@ const ImagesContent = (props) => {
       >
         <Input.TextArea
           placeholder="Enter the description"
-          maxLength={255}
+          maxLength={400}
           showCount={{
             formatter: ({ count, maxLength }) => {
               return `Character Limit: ${count}/${maxLength}`;

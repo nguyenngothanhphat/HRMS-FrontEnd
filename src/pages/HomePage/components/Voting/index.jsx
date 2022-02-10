@@ -13,10 +13,7 @@ const Voting = (props) => {
 
   // redux
   const {
-    homePage: {
-      postsByType = [],
-      selectedPollOption: { choiceSummary = [], choice = {} } = {},
-    } = {},
+    homePage: { polls = [], selectedPollOption: { choiceSummary = [], choice = {} } = {} } = {},
     loadingFetchPollResult = '',
     loadingFetchPostList = false,
     user: { currentUser: { employee = {} } = {} } = {},
@@ -86,11 +83,11 @@ const Voting = (props) => {
   }, []);
 
   useEffect(() => {
-    if (postsByType.length > 0) {
-      const [firstPoll] = postsByType;
+    if (polls.length > 0) {
+      const [firstPoll] = polls;
       setActivePoll(firstPoll);
     }
-  }, [JSON.stringify(postsByType)]);
+  }, [JSON.stringify(polls)]);
 
   useEffect(() => {
     if (choiceSummary) {
@@ -149,7 +146,7 @@ const Voting = (props) => {
   }
   return (
     <div className={styles.Voting}>
-      {isVoted ? (
+      {isVoted && moment(activePoll?.pollDetail?.endDate).diff(moment()) >= 0 ? (
         <BarGraph
           options={options}
           activePoll={activePoll}

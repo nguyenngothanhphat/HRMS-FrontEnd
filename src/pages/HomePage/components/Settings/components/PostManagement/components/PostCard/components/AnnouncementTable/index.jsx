@@ -2,6 +2,7 @@ import { Popconfirm } from 'antd';
 import React from 'react';
 import { connect, Link } from 'umi';
 import moment from 'moment';
+import Parser from 'html-react-parser';
 import CommonTable from '../CommonTable';
 import styles from './index.less';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
@@ -30,22 +31,26 @@ const AnnouncementTable = (props) => {
         title: 'ID',
         dataIndex: 'postID',
         key: 'postID',
+        width: '15%',
         render: (postID) => <span className={styles.blueText}>#{postID}</span>,
       },
       {
         title: 'Description',
         dataIndex: 'description',
         key: 'description',
+        render: (description = '') => Parser(description),
       },
       {
         title: 'Media',
         dataIndex: 'media',
         key: 'media',
+        width: '10%',
       },
       {
         title: 'Created By',
         dataIndex: 'createdBy',
         key: 'createdBy',
+        width: '15%',
         render: (createdBy = {}) => {
           return (
             <Link
@@ -61,6 +66,7 @@ const AnnouncementTable = (props) => {
         title: 'Created On',
         dataIndex: 'createdAt',
         key: 'createdAt',
+        width: '10%',
         render: (createdAt = {}) => {
           return <span>{createdAt ? moment(createdAt).format('MM/DD/YYYY') : ''}</span>;
         },
@@ -69,6 +75,7 @@ const AnnouncementTable = (props) => {
         title: 'Action',
         dataIndex: 'action',
         key: 'action',
+        width: '10%',
         align: 'center',
         render: (_, record) => {
           return (

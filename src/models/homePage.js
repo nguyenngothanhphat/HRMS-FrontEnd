@@ -15,6 +15,7 @@ import {
   getPollResult,
 } from '../services/homePage';
 import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
+import { TAB_IDS } from '@/utils/homePage';
 
 const defaultState = {
   // portal
@@ -22,7 +23,11 @@ const defaultState = {
   // setting page
   postTypeList: [],
   pollResult: [],
-  postsByType: [],
+  announcements: [],
+  banners: [],
+  polls: [],
+  anniversaries: [],
+  images: [],
   totalPostsOfType: [],
   selectedPollOption: {},
 };
@@ -138,9 +143,30 @@ const homePage = {
         });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
+
+        let variable = '';
+        switch (payload.postType) {
+          case TAB_IDS.ANNOUNCEMENTS:
+            variable = 'announcements';
+            break;
+          case TAB_IDS.ANNIVERSARY:
+            variable = 'anniversaries';
+            break;
+          case TAB_IDS.IMAGES:
+            variable = 'images';
+            break;
+          case TAB_IDS.BANNER:
+            variable = 'banners';
+            break;
+          case TAB_IDS.POLL:
+            variable = 'polls';
+            break;
+          default:
+            break;
+        }
         yield put({
           type: 'save',
-          payload: { postsByType: data },
+          payload: { [variable]: data },
         });
       } catch (errors) {
         dialog(errors);

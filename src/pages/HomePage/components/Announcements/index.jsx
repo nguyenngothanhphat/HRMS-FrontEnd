@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Col, Row } from 'antd';
+import { connect } from 'umi';
 import EmployeeTag from './components/EmployeeTag';
 import PostContent from './components/PostContent';
 import styles from './index.less';
@@ -8,8 +9,30 @@ import styles from './index.less';
 import EmbedPost from './components/EmbedPost';
 import TerralogicIcon from '@/assets/homePage/terralogicIcon.jpeg';
 import TerralogicImage from '@/assets/homePage/terralogicImage.jpeg';
+import { TAB_IDS } from '@/utils/homePage';
 
-const Announcements = () => {
+const Announcements = (props) => {
+  const { dispatch } = props;
+
+  // redux
+  const {
+    homePage: { announcements = [] } = {},
+    // user: { currentUser: { employee = {} } = {} } = {},
+  } = props;
+
+  const fetchData = () => {
+    return dispatch({
+      type: 'homePage/fetchPostListByTypeEffect',
+      payload: {
+        postType: TAB_IDS.ANNOUNCEMENTS,
+      },
+    });
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const posts = [
     // {
     //   id: 1,
@@ -68,18 +91,26 @@ const Announcements = () => {
     // },
   ];
 
+  if (announcements.length === 0) {
+    return (
+      <div className={styles.Announcements}>
+        <p className={styles.title}>Announcements</p>
+        <p>No announcements</p>
+      </div>
+    );
+  }
   return (
     <div className={styles.Announcements}>
       <p className={styles.title}>Announcements</p>
 
       <Row gutter={[24, 24]}>
-        {posts.map((x) => (
+        {announcements.map((x) => (
           <Col span={24}>
             {x.embedLink ? (
               <EmbedPost embedLink={x.embedLink} />
             ) : (
               <div className={styles.card}>
-                <EmployeeTag employee={x.employee} />
+                <EmployeeTag employee={x.createdBy} />
                 <PostContent post={x} />
               </div>
             )}
@@ -90,4 +121,6 @@ const Announcements = () => {
   );
 };
 
-export default Announcements;
+export default connect(({ homePage }) => ({
+  homePage,
+}))(Announcements);

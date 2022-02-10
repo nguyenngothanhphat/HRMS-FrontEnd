@@ -1,23 +1,39 @@
-import React from 'react';
-import SampleImage from '@/assets/homePage/samplePhoto.png';
+import React, { useEffect } from 'react';
+import { connect } from 'umi';
 import Card from './components/Card';
 import styles from './index.less';
+import { TAB_IDS } from '@/utils/homePage';
 
-const data = [
-  {
-    id: 1,
-    content: 'No events',
-    image: SampleImage,
-  },
-];
+const Gallery = (props) => {
+  const { dispatch } = props;
 
-const Gallery = () => {
+  // redux
+  const {
+    homePage: { images = [] } = {},
+    // user: { currentUser: { employee = {} } = {} } = {},
+  } = props;
+
+  const fetchData = () => {
+    return dispatch({
+      type: 'homePage/fetchPostListByTypeEffect',
+      payload: {
+        postType: TAB_IDS.IMAGES,
+      },
+    });
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <div className={styles.Gallery}>
       <p className={styles.titleText}>Gallery</p>
-      <Card data={data} />
+      <Card data={images} />
     </div>
   );
 };
 
-export default Gallery;
+export default connect(({ homePage }) => ({
+  homePage,
+}))(Gallery);

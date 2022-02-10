@@ -1,13 +1,14 @@
+import { Popconfirm } from 'antd';
+import Parser from 'html-react-parser';
+import moment from 'moment';
 import React, { useState } from 'react';
 import { connect, Link } from 'umi';
-import { Popconfirm } from 'antd';
-import moment from 'moment';
-import CommonTable from '../CommonTable';
-import styles from './index.less';
+import CommonModal from '@/pages/HomePage/components/CommonModal';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
 import ChartIcon from '@/assets/homePage/chartIcon.svg';
-import CommonModal from '@/pages/HomePage/components/CommonModal';
+import CommonTable from '../CommonTable';
 import ChartPreviewModalContent from './components/ChartPreviewModalContent';
+import styles from './index.less';
 
 const PollTable = (props) => {
   const { dispatch, data = [], loading = false, refreshData = () => {} } = props;
@@ -60,7 +61,7 @@ const PollTable = (props) => {
         dataIndex: 'pollDetail',
         key: 'pollDetail',
         render: (pollDetail = {}) => {
-          return <span>{pollDetail?.question || ''}</span>;
+          return Parser(pollDetail?.question || '');
         },
       },
       {

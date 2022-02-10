@@ -30,12 +30,14 @@ const BannerTable = (props) => {
         title: 'ID',
         dataIndex: 'postID',
         key: 'postID',
+        width: '15%',
         render: (postID) => <span className={styles.blueText}>#{postID}</span>,
       },
       {
         title: 'Media',
         dataIndex: 'media',
         key: 'media',
+        width: '10%',
       },
       {
         title: 'Created By',
@@ -64,6 +66,7 @@ const BannerTable = (props) => {
         title: 'Action',
         dataIndex: 'action',
         key: 'action',
+        width: '10%',
         align: 'center',
         render: (_, record) => {
           return (

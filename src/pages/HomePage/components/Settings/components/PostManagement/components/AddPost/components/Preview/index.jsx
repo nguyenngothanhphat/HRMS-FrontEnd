@@ -106,18 +106,23 @@ const Preview = (props) => {
     const post = {
       id: 1,
       employee: {
-        generalInfo: {
+        generalInfoInfo: {
           legalName: 'Ronald Richards.',
           // avatar: TerralogicIcon,
         },
-        title: {
+        titleInfo: {
           name: 'Head of Design',
         },
       },
-      content: <p>{descriptionA ? Parser(descriptionA) : 'Description here'}</p>,
-      type: 2, // 1: link, 2: image
-      image:
-        announcementContent.imageUrls.length > 0 ? announcementContent.imageUrls[0] : PreviewImage,
+      attachments: [
+        {
+          url:
+            announcementContent.imageUrls.length > 0
+              ? announcementContent.imageUrls[0]
+              : PreviewImage,
+        },
+      ],
+      description: descriptionA ? Parser(descriptionA) : 'Description here',
     };
 
     switch (mode) {
@@ -146,19 +151,36 @@ const Preview = (props) => {
           <div style={{ padding: '24px' }}>
             <GalleryCard
               previewing
+              // contentPreview={
+              //   imagesContent.imageUrls.length > 0
+              //     ? imagesContent.imageUrls.map((x) => {
+              //         return {
+              //           image: x,
+              //           description: descriptionI ? Parser(descriptionI) : '',
+              //           title: titleI || '',
+              //         };
+              //       })
+              //     : [
+              //         {
+              //           image: '',
+              //           description: descriptionI ? Parser(descriptionI) : 'Description',
+              //           title: titleI || 'Title',
+              //         },
+              //       ]
+              // }
               contentPreview={
                 imagesContent.imageUrls.length > 0
-                  ? imagesContent.imageUrls.map((x) => {
-                      return {
-                        image: x,
-                        content: descriptionI ? Parser(descriptionI) : '',
+                  ? [
+                      {
+                        image: imagesContent.imageUrls[0],
+                        description: descriptionI ? Parser(descriptionI) : '',
                         title: titleI || '',
-                      };
-                    })
+                      },
+                    ]
                   : [
                       {
                         image: '',
-                        content: descriptionI ? Parser(descriptionI) : 'Description',
+                        description: descriptionI ? Parser(descriptionI) : 'Description',
                         title: titleI || 'Title',
                       },
                     ]

@@ -74,7 +74,7 @@ const BirthdayContent = (props) => {
             minRows: 5,
             maxRows: 7,
           }}
-          maxLength={255}
+          maxLength={400}
           showCount={{
             formatter: ({ count, maxLength }) => {
               return `Character Limit: ${count}/${maxLength}`;

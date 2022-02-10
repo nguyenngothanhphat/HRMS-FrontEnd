@@ -15,7 +15,14 @@ const PostCard = (props) => {
 
   // redux
   const {
-    homePage: { postsByType = [], totalPostsOfType = [] } = {},
+    homePage: {
+      announcements = [],
+      banners = [],
+      polls = [],
+      anniversaries = [],
+      images = [],
+      totalPostsOfType = [],
+    } = {},
     loadingFetchPostList = false,
   } = props;
 
@@ -78,7 +85,7 @@ const PostCard = (props) => {
       name: 'Announcements',
       component: (
         <AnnouncementTable
-          data={postsByType}
+          data={announcements}
           loading={loadingFetchPostList}
           refreshData={fetchData}
         />
@@ -88,29 +95,31 @@ const PostCard = (props) => {
       id: TAB_IDS.ANNIVERSARY,
       name: 'Birthday',
       component: (
-        <BirthdayTable data={postsByType} loading={loadingFetchPostList} refreshData={fetchData} />
+        <BirthdayTable
+          data={anniversaries}
+          loading={loadingFetchPostList}
+          refreshData={fetchData}
+        />
       ),
     },
     {
       id: TAB_IDS.IMAGES,
       name: 'Images',
       component: (
-        <ImageTable data={postsByType} loading={loadingFetchPostList} refreshData={fetchData} />
+        <ImageTable data={images} loading={loadingFetchPostList} refreshData={fetchData} />
       ),
     },
     {
       id: TAB_IDS.BANNER,
       name: 'Banner',
       component: (
-        <BannerTable data={postsByType} loading={loadingFetchPostList} refreshData={fetchData} />
+        <BannerTable data={banners} loading={loadingFetchPostList} refreshData={fetchData} />
       ),
     },
     {
       id: TAB_IDS.POLL,
       name: 'Polls',
-      component: (
-        <PollTable data={postsByType} loading={loadingFetchPostList} refreshData={fetchData} />
-      ),
+      component: <PollTable data={polls} loading={loadingFetchPostList} refreshData={fetchData} />,
     },
   ];
 
