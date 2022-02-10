@@ -498,6 +498,7 @@ const ModalAddInfo = (props) => {
                 mode="tags"
                 tagRender={tagRender}
                 showArrow
+                optionFilterProp="children"
                 filterOption={(input, option) =>
                   option.props.children ? option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 : null}
                 onChange={changeSkill}
