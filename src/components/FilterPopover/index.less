@@ -78,7 +78,11 @@
     .ant-select-multiple .ant-select-selection-item-remove > * {
       line-height: 0;
     }
-
+    .ant-select-auto-complete {
+      .ant-input {
+        border: none !important;
+      }
+    }
     // INPUT + DATE PICKER
     .ant-input,
     .ant-input-number,
@@ -147,7 +151,7 @@
   .popupContainer {
     position: relative;
     max-height: 480px;
-    padding: 16px 16px 0;
+    padding: 16px;
     overflow-y: auto;
     .closeButton {
       position: absolute;

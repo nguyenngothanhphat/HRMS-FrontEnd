@@ -424,12 +424,10 @@ const DirectoryComponent = (props) => {
           </div>
         )}
 
-              
         <FilterPopover
           placement="bottomRight"
           content={
             <Suspense fallback={<Skeleton active />}>
-          
               <FilterContent activeTab={tabId} />
             </Suspense>
           }
@@ -438,7 +436,7 @@ const DirectoryComponent = (props) => {
           closeText="Clear"
           onSecondButton={clearFilter}
         >
-          <FilterButton fontSize={14} />
+          <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} />  
         </FilterPopover>
       </div>
     );
