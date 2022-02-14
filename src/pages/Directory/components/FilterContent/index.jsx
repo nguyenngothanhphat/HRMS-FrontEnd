@@ -2,6 +2,7 @@ import { Form, Select, AutoComplete, Input, Spin } from 'antd';
 import { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import SearchIcon from '@/assets/directory/search.svg';
 import styles from './index.less';
 
 const FilterContent = (props) => {
@@ -40,6 +41,14 @@ const FilterContent = (props) => {
   } = props;
 
   const [locationList, setLocationList] = useState([]);
+  const [employeeIDListState, setEmployeeIDListState] = useState([]);
+  const [employeeNameListState, setEmployeeNameListState] = useState([]);
+  const [managerListState, setManagerListState] = useState([]);
+  const [searchIcons, setSearchIcons] = useState({
+    id: false,
+    name: false,
+    manager: false,
+  });
 
   // FUNCTIONALITY
   const formatLocationList = () => {
@@ -86,6 +95,39 @@ const FilterContent = (props) => {
       });
     };
   }, []);
+
+  useEffect(() => {
+    setEmployeeIDListState(
+      employeeIDList.map((x) => {
+        return {
+          value: x.generalInfo?.employeeId,
+          label: x.generalInfo.employeeId,
+        };
+      }),
+    );
+  }, [JSON.stringify(employeeIDList)]);
+
+  useEffect(() => {
+    setManagerListState(
+      managerList.map((x) => {
+        return {
+          value: x.generalInfo?.legalName,
+          label: x.generalInfo.legalName,
+        };
+      }),
+    );
+  }, [JSON.stringify(managerList)]);
+
+  useEffect(() => {
+    setEmployeeNameListState(
+      employeeNameList.map((x) => {
+        return {
+          value: x.generalInfo?.legalName,
+          label: x.generalInfo.legalName,
+        };
+      }),
+    );
+  }, [JSON.stringify(employeeNameList)]);
 
   const onFinish = (values) => {
     const newValues = { ...values };
@@ -140,6 +182,21 @@ const FilterContent = (props) => {
         },
       });
     }
+    if (!value) {
+      switch (type) {
+        case 'id':
+          setEmployeeIDListState([]);
+          break;
+        case 'name':
+          setEmployeeNameListState([]);
+          break;
+        case 'manager':
+          setManagerListState([]);
+          break;
+        default:
+          break;
+      }
+    }
   }, 1000);
 
   const handleEmployeeSearch = (type, value) => {
@@ -156,34 +213,19 @@ const FilterContent = (props) => {
       className={styles.FilterContent}
     >
       <Form.Item label="by employee id" name="employeeId">
-        {/* <Select
-          allowClear
-          showSearch
-          showArrow
-          style={{ width: '100%' }}
-          loading={loadingFetchEmployee}
-          placeholder="Search by Employee ID"
-        >
-          {employeeList2.map((x) => {
-            return (
-              <Select.Option value={x.generalInfo?.employeeId} key={x.generalInfo?.employeeId}>
-                {x.generalInfo?.employeeId}
-              </Select.Option>
-            );
-          })}
-        </Select> */}
         <AutoComplete
           dropdownMatchSelectWidth={252}
           notFoundContent={loadingFetchEmployeeIDList ? <Spin /> : 'No matches'}
-          options={employeeIDList.map((x) => {
-            return {
-              value: x.generalInfo?.employeeId,
-              label: x.generalInfo.employeeId,
-            };
-          })}
+          options={employeeIDListState}
           onSearch={(val) => handleEmployeeSearch('id', val)}
+          onFocus={() => setSearchIcons({ ...searchIcons, id: true })}
+          onBlur={() => setSearchIcons({ ...searchIcons, id: false })}
         >
-          <Input placeholder="Search by Employee ID" />
+          <Input
+            placeholder="Search by Employee ID"
+            prefix={searchIcons.id ? <img src={SearchIcon} alt="search" /> : null}
+            allowClear
+          />
         </AutoComplete>
       </Form.Item>
 
@@ -191,15 +233,16 @@ const FilterContent = (props) => {
         <AutoComplete
           dropdownMatchSelectWidth={252}
           notFoundContent={loadingFetchEmployeeNameList ? <Spin /> : 'No matches'}
-          options={employeeNameList.map((x) => {
-            return {
-              value: x.generalInfo?.legalName,
-              label: x.generalInfo.legalName,
-            };
-          })}
+          options={employeeNameListState}
           onSearch={(val) => handleEmployeeSearch('name', val)}
+          onFocus={() => setSearchIcons({ ...searchIcons, name: true })}
+          onBlur={() => setSearchIcons({ ...searchIcons, name: false })}
         >
-          <Input placeholder="Search by Name/User ID" />
+          <Input
+            placeholder="Search by Name/User ID"
+            prefix={searchIcons.name ? <img src={SearchIcon} alt="search" /> : null}
+            allowClear
+          />
         </AutoComplete>
         {/* <Input placeholder="Search by Name/User ID" /> */}
       </Form.Item>
@@ -208,7 +251,7 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="multiple"
+          mode="tags"
           style={{ width: '100%' }}
           placeholder="Search by Department"
           filterOption={(input, option) =>
@@ -228,7 +271,7 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="multiple"
+          mode="tags"
           style={{ width: '100%' }}
           placeholder="Search by Division Name"
           filterOption={(input, option) =>
@@ -248,7 +291,7 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="multiple"
+          mode="tags"
           style={{ width: '100%' }}
           placeholder="Search by Job Title"
           filterOption={(input, option) =>
@@ -265,36 +308,19 @@ const FilterContent = (props) => {
         </Select>
       </Form.Item>
       <Form.Item label="By reporting manager" name="reportingManager">
-        {/* <Select
-          allowClear
-          showSearch
-          mode="multiple"
-          style={{ width: '100%' }}
-          placeholder="Search by Reporting Manager"
-          filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-          showArrow
-        >
-          {managerList.map((x) => {
-            return (
-              <Select.Option value={x._id} key={x._id}>
-                {x.generalInfo?.legalName}
-              </Select.Option>
-            );
-          })}
-        </Select> */}
         <AutoComplete
           dropdownMatchSelectWidth={252}
           notFoundContent={loadingFetchManagerList ? <Spin /> : 'No matches'}
-          options={managerList.map((x) => {
-            return {
-              value: x.generalInfo?.legalName,
-              label: x.generalInfo.legalName,
-            };
-          })}
+          options={managerListState}
           onSearch={(val) => handleEmployeeSearch('manager', val)}
+          onFocus={() => setSearchIcons({ ...searchIcons, manager: true })}
+          onBlur={() => setSearchIcons({ ...searchIcons, manager: false })}
         >
-          <Input placeholder="Search by Reporting Manager" />
+          <Input
+            placeholder="Search by Reporting Manager"
+            prefix={searchIcons.manager ? <img src={SearchIcon} alt="search" /> : null}
+            allowClear
+          />
         </AutoComplete>
       </Form.Item>
 
@@ -302,7 +328,7 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="multiple"
+          mode="tags"
           style={{ width: '100%' }}
           placeholder="Search by Country"
           filterOption={(input, option) =>
@@ -323,7 +349,7 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="multiple"
+          mode="tags"
           style={{ width: '100%' }}
           placeholder="Search by Employment Type"
           filterOption={(input, option) =>
@@ -346,7 +372,7 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="multiple"
+          mode="tags"
           style={{ width: '100%' }}
           placeholder="Search by Skills"
           filterOption={(input, option) =>
