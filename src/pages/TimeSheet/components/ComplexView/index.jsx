@@ -73,7 +73,7 @@ const ComplexView = (props) => {
             <FinanceReport />
           </TabPane>
         )}
-        {!viewFinanceReport && (viewPeopleManagerReport || viewPMReport) && (
+        {(viewPeopleManagerReport || viewPMReport) && (
           <TabPane tab="My Projects" key={TAB_NAME.PM_REPORTS}>
             <ManagerReport />
           </TabPane>

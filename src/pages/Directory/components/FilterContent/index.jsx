@@ -1,7 +1,8 @@
-import { Form, Select } from 'antd';
+import { Form, Select, AutoComplete, Input, Spin } from 'antd';
 import { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import SearchIcon from '@/assets/directory/search.svg';
 import styles from './index.less';
 
 const FilterContent = (props) => {
@@ -9,7 +10,9 @@ const FilterContent = (props) => {
   const {
     dispatch,
     employee: {
-      employeeList2 = [],
+      employeeIDList = [],
+      employeeNameList = [],
+      managerList = [],
       filterList: {
         listDepartmentName = [],
         listCountry = [],
@@ -32,10 +35,20 @@ const FilterContent = (props) => {
       } = {},
       filter = {},
     } = {},
-    loadingFetchEmployee = false,
+    loadingFetchEmployeeIDList = false,
+    loadingFetchEmployeeNameList = false,
+    loadingFetchManagerList = false,
   } = props;
 
   const [locationList, setLocationList] = useState([]);
+  const [employeeIDListState, setEmployeeIDListState] = useState([]);
+  const [employeeNameListState, setEmployeeNameListState] = useState([]);
+  const [managerListState, setManagerListState] = useState([]);
+  const [searchIcons, setSearchIcons] = useState({
+    id: false,
+    name: false,
+    manager: false,
+  });
 
   // FUNCTIONALITY
   const formatLocationList = () => {
@@ -76,20 +89,45 @@ const FilterContent = (props) => {
     dispatch({
       type: 'employee/fetchSkillList',
     });
-    dispatch({
-      type: 'employee/fetchEmployeeType',
-    });
-
-    dispatch({
-      type: 'employee/fetchEmployeeListSingleCompanyEffect',
-    });
-
     return () => {
       dispatch({
         type: 'employee/clearFilter',
       });
     };
   }, []);
+
+  useEffect(() => {
+    setEmployeeIDListState(
+      employeeIDList.map((x) => {
+        return {
+          value: x.generalInfo?.employeeId,
+          label: x.generalInfo.employeeId,
+        };
+      }),
+    );
+  }, [JSON.stringify(employeeIDList)]);
+
+  useEffect(() => {
+    setManagerListState(
+      managerList.map((x) => {
+        return {
+          value: x.generalInfo?.legalName,
+          label: x.generalInfo.legalName,
+        };
+      }),
+    );
+  }, [JSON.stringify(managerList)]);
+
+  useEffect(() => {
+    setEmployeeNameListState(
+      employeeNameList.map((x) => {
+        return {
+          value: x.generalInfo?.legalName,
+          label: x.generalInfo.legalName,
+        };
+      }),
+    );
+  }, [JSON.stringify(employeeNameList)]);
 
   const onFinish = (values) => {
     const newValues = { ...values };
@@ -121,23 +159,48 @@ const FilterContent = (props) => {
     onFinishDebounce(values);
   };
 
-  const onSearchEmployeeDebounce = debounce((value) => {
-    dispatch({
-      type: 'employee/fetchEmployeeListSingleCompanyEffect',
-      payload: {
-        name: value,
-      },
-    });
+  const onSearchEmployeeDebounce = debounce((type, value) => {
+    let typeTemp = '';
+    switch (type) {
+      case 'id':
+        typeTemp = 'employee/fetchEmployeeIDListEffect';
+        break;
+      case 'name':
+        typeTemp = 'employee/fetchEmployeeNameListEffect';
+        break;
+      case 'manager':
+        typeTemp = 'employee/fetchManagerListEffect';
+        break;
+      default:
+        break;
+    }
+    if (typeTemp && value) {
+      dispatch({
+        type: typeTemp,
+        payload: {
+          name: value,
+        },
+      });
+    }
+    if (!value) {
+      switch (type) {
+        case 'id':
+          setEmployeeIDListState([]);
+          break;
+        case 'name':
+          setEmployeeNameListState([]);
+          break;
+        case 'manager':
+          setManagerListState([]);
+          break;
+        default:
+          break;
+      }
+    }
   }, 1000);
 
-  const handleEmployeeSearch = (value) => {
-    onSearchEmployeeDebounce(value);
-  };
-
-  const handleEmployeeClear = () => {
-    setTimeout(() => {
-      onSearchEmployeeDebounce('');
-    }, 100);
+  const handleEmployeeSearch = (type, value) => {
+    onSearchEmployeeDebounce(type, value);
   };
 
   return (
@@ -150,44 +213,37 @@ const FilterContent = (props) => {
       className={styles.FilterContent}
     >
       <Form.Item label="by employee id" name="employeeId">
-        <Select
-          allowClear
-          showSearch
-          showArrow
-          style={{ width: '100%' }}
-          loading={loadingFetchEmployee}
-          placeholder="Search by Employee ID"
+        <AutoComplete
+          dropdownMatchSelectWidth={252}
+          notFoundContent={loadingFetchEmployeeIDList ? <Spin /> : 'No matches'}
+          options={employeeIDListState}
+          onSearch={(val) => handleEmployeeSearch('id', val)}
+          onFocus={() => setSearchIcons({ ...searchIcons, id: true })}
+          onBlur={() => setSearchIcons({ ...searchIcons, id: false })}
         >
-          {employeeList2.map((x) => {
-            return (
-              <Select.Option value={x.generalInfo?.employeeId} key={x.generalInfo?.employeeId}>
-                {x.generalInfo?.employeeId}
-              </Select.Option>
-            );
-          })}
-        </Select>
+          <Input
+            placeholder="Search by Employee ID"
+            prefix={searchIcons.id ? <img src={SearchIcon} alt="search" /> : null}
+            allowClear
+          />
+        </AutoComplete>
       </Form.Item>
 
       <Form.Item label="By name/user id" name="name">
-        <Select
-          allowClear
-          showSearch
-          style={{ width: '100%' }}
-          placeholder="Search by Name/User ID"
-          filterOption={false}
-          showArrow
-          onSearch={handleEmployeeSearch}
-          loading={loadingFetchEmployee}
-          onClear={handleEmployeeClear}
+        <AutoComplete
+          dropdownMatchSelectWidth={252}
+          notFoundContent={loadingFetchEmployeeNameList ? <Spin /> : 'No matches'}
+          options={employeeNameListState}
+          onSearch={(val) => handleEmployeeSearch('name', val)}
+          onFocus={() => setSearchIcons({ ...searchIcons, name: true })}
+          onBlur={() => setSearchIcons({ ...searchIcons, name: false })}
         >
-          {employeeList2.map((x) => {
-            return (
-              <Select.Option value={x.generalInfo?.legalName} key={x._id}>
-                {x.generalInfo.legalName}
-              </Select.Option>
-            );
-          })}
-        </Select>
+          <Input
+            placeholder="Search by Name/User ID"
+            prefix={searchIcons.name ? <img src={SearchIcon} alt="search" /> : null}
+            allowClear
+          />
+        </AutoComplete>
         {/* <Input placeholder="Search by Name/User ID" /> */}
       </Form.Item>
 
@@ -195,9 +251,11 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="multiple"
+          mode="tags"
           style={{ width: '100%' }}
           placeholder="Search by Department"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           showArrow
         >
           {listDepartmentName.map((x) => {
@@ -213,9 +271,11 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="multiple"
+          mode="tags"
           style={{ width: '100%' }}
           placeholder="Search by Division Name"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           showArrow
         >
           {listDepartmentName.map((x) => {
@@ -231,9 +291,11 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="multiple"
+          mode="tags"
           style={{ width: '100%' }}
           placeholder="Search by Job Title"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           showArrow
         >
           {listTitle.map((x) => {
@@ -246,31 +308,31 @@ const FilterContent = (props) => {
         </Select>
       </Form.Item>
       <Form.Item label="By reporting manager" name="reportingManager">
-        <Select
-          allowClear
-          showSearch
-          mode="multiple"
-          style={{ width: '100%' }}
-          placeholder="Search by Reporting Manager"
-          showArrow
+        <AutoComplete
+          dropdownMatchSelectWidth={252}
+          notFoundContent={loadingFetchManagerList ? <Spin /> : 'No matches'}
+          options={managerListState}
+          onSearch={(val) => handleEmployeeSearch('manager', val)}
+          onFocus={() => setSearchIcons({ ...searchIcons, manager: true })}
+          onBlur={() => setSearchIcons({ ...searchIcons, manager: false })}
         >
-          {employeeList2.map((x) => {
-            return (
-              <Select.Option value={x._id} key={x._id}>
-                {x.generalInfo?.legalName}
-              </Select.Option>
-            );
-          })}
-        </Select>
+          <Input
+            placeholder="Search by Reporting Manager"
+            prefix={searchIcons.manager ? <img src={SearchIcon} alt="search" /> : null}
+            allowClear
+          />
+        </AutoComplete>
       </Form.Item>
 
-      <Form.Item label="By location" name="country">
+      <Form.Item label="By country" name="country">
         <Select
           allowClear
           showSearch
-          mode="multiple"
+          mode="tags"
           style={{ width: '100%' }}
-          placeholder="Search by Location"
+          placeholder="Search by Country"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           showArrow
         >
           {locationList.map((x) => {
@@ -287,9 +349,11 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="multiple"
+          mode="tags"
           style={{ width: '100%' }}
           placeholder="Search by Employment Type"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           showArrow
         >
           {listEmployeeType
@@ -308,9 +372,11 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="multiple"
+          mode="tags"
           style={{ width: '100%' }}
           placeholder="Search by Skills"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           showArrow
         >
           {listSkill.map((x) => {
@@ -348,7 +414,9 @@ const FilterContent = (props) => {
 
 export default connect(
   ({ loading, employee, locationSelection: { listLocationsByCompany = [] } = {} }) => ({
-    loadingFetchEmployee: loading.effects['employee/fetchEmployeeListSingleCompanyEffect'],
+    loadingFetchEmployeeIDList: loading.effects['employee/fetchEmployeeIDListEffect'],
+    loadingFetchEmployeeNameList: loading.effects['employee/fetchEmployeeNameListEffect'],
+    loadingFetchManagerList: loading.effects['employee/fetchManagerListEffect'],
     employee,
     listLocationsByCompany,
   }),
