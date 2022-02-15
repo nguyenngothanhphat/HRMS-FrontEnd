@@ -19,11 +19,12 @@ const TABS = {
 };
 @connect(
   ({
-    resourceManagement: { resourceList = [], divisions: divisionList = [] } = {},
+    resourceManagement: { resourceList = [], divisions: divisionList = [],  total = 0 } = {},
     user: {
       currentUser: {
         location: { _id: locationID = '' } = {},
         company: { _id: companyID } = {},
+        employee: { _id: currentUserId = '' } = {}
       } = {},
       permissions = {},
     } = {},
@@ -35,6 +36,8 @@ const TABS = {
     locationID,
     companyID,
     listLocationsByCompany,
+    currentUserId, 
+    total
   }),
 )
 class Resources extends Component {
@@ -144,6 +147,26 @@ class Resources extends Component {
     }
     return 'All';
   };
+
+  downloadTemplate = async () => {
+    const { dispatch, currentUserId = '', total } = this.props;
+    const getListExport = await dispatch({
+      type: 'resourceManagement/exportResourceManagement',
+      payload: {
+        employeeId: currentUserId,
+        limit: total
+      }
+    });
+    const downloadLink = document.createElement('a');
+    const universalBOM = '\uFEFF';
+    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
+      universalBOM + getListExport,
+    )}`;
+    downloadLink.download = 'resource.csv';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  }
 
   renderActionButton = () => {
     const { tabName = '', divisionList = [], listLocationsByCompany = [] } = this.props;
