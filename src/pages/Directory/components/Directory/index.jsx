@@ -112,7 +112,11 @@ const DirectoryComponent = (props) => {
     const currentLocation = getCurrentLocation();
     const currentCompany = getCurrentCompany();
 
-    const { country = [], state = [], company = [], page = 1 } = params;
+    const {
+      // country = [], state = [],
+      company = [],
+      page = 1,
+    } = params;
 
     // if there are location & company, call API
     const checkCallAPI =
@@ -135,92 +139,89 @@ const DirectoryComponent = (props) => {
         }
       } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
 
-      let locationPayload = [];
+      // let locationPayload = [];
 
-      // for all employees & super admin that is in ALL location mode
-      if (!currentLocation || !isOwnerCheck) {
-        if (country.length === 0) {
-          locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
-            let stateList = [];
-            listCountry.forEach(
-              ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
-                if (countryItem1 === countryItem2) {
-                  if (state.length !== 0) {
-                    if (state.includes(stateItem2)) {
-                      stateList = [...stateList, stateItem2];
-                    }
-                  } else {
-                    stateList = [...stateList, stateItem2];
-                  }
-                }
-              },
-            );
-            return {
-              country: countryItem1,
-              state: stateList,
-            };
-          });
-        } else {
-          locationPayload = country.map((item) => {
-            let stateList = [];
+      // // for all employees & super admin that is in ALL location mode
+      // if (!currentLocation || !isOwnerCheck) {
+      //   if (country.length === 0) {
+      //     locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
+      //       let stateList = [];
+      //       listCountry.forEach(
+      //         ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
+      //           if (countryItem1 === countryItem2) {
+      //             if (state.length !== 0) {
+      //               if (state.includes(stateItem2)) {
+      //                 stateList = [...stateList, stateItem2];
+      //               }
+      //             } else {
+      //               stateList = [...stateList, stateItem2];
+      //             }
+      //           }
+      //         },
+      //       );
+      //       return {
+      //         country: countryItem1,
+      //         state: stateList,
+      //       };
+      //     });
+      //   } else {
+      //     locationPayload = country.map((item) => {
+      //       let stateList = [];
 
-            listCountry.forEach(
-              ({ country: { _id: countryItem = '' } = {}, state: stateItem = '' }) => {
-                if (item === countryItem) {
-                  if (state.length !== 0) {
-                    if (state.includes(stateItem)) {
-                      stateList = [...stateList, stateItem];
-                    }
-                  } else {
-                    stateList = [...stateList, stateItem];
-                  }
-                }
-              },
-            );
+      //       listCountry.forEach(
+      //         ({ country: { _id: countryItem = '' } = {}, state: stateItem = '' }) => {
+      //           if (item === countryItem) {
+      //             if (state.length !== 0) {
+      //               if (state.includes(stateItem)) {
+      //                 stateList = [...stateList, stateItem];
+      //               }
+      //             } else {
+      //               stateList = [...stateList, stateItem];
+      //             }
+      //           }
+      //         },
+      //       );
 
-            return {
-              country: item,
-              state: stateList,
-            };
-          });
-        }
-      }
+      //       return {
+      //         country: item,
+      //         state: stateList,
+      //       };
+      //     });
+      //   }
+      // }
 
-      // only super admin can see directory list by selected location in the dropdown menu
-      if (currentLocation && isOwnerCheck) {
-        const currentLocationObj = listLocationsByCompany.find(
-          (loc) => loc?._id === currentLocation,
-        );
-        const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
-        const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
-        locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
-          let stateList = [];
-          listCountry.forEach(
-            ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
-              if (
-                countryItem1 === countryItem2 &&
-                currentLocationCountry === countryItem2 &&
-                currentLocationState === stateItem2
-              ) {
-                stateList = [...stateList, stateItem2];
-              }
-            },
-          );
-          return {
-            country: countryItem1,
-            state: stateList,
-          };
-        });
-      }
+      // // only super admin can see directory list by selected location in the dropdown menu
+      // if (currentLocation && isOwnerCheck) {
+      //   const currentLocationObj = listLocationsByCompany.find(
+      //     (loc) => loc?._id === currentLocation,
+      //   );
+      //   const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
+      //   const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
+      //   locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
+      //     let stateList = [];
+      //     listCountry.forEach(
+      //       ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
+      //         if (
+      //           countryItem1 === countryItem2 &&
+      //           currentLocationCountry === countryItem2 &&
+      //           currentLocationState === stateItem2
+      //         ) {
+      //           stateList = [...stateList, stateItem2];
+      //         }
+      //       },
+      //     );
+      //     return {
+      //       country: countryItem1,
+      //       state: stateList,
+      //     };
+      //   });
+      // }
 
       const payload = {
         ...params,
         company: companyPayload,
-        location: locationPayload,
       };
-      // delete "country" field from payload,
-      // because we only use "country" field to generate the "location" field
-      delete payload.country;
+
       setPageSelected(page || 1);
 
       // permissions to view tab
@@ -436,7 +437,7 @@ const DirectoryComponent = (props) => {
           closeText="Clear"
           onSecondButton={clearFilter}
         >
-          <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} />  
+          <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} />
         </FilterPopover>
       </div>
     );
