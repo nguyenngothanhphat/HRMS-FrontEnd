@@ -33,15 +33,6 @@ const FilterContent = (props) => {
         skill = [],
         fromExp,
         toExp,
-
-        // search values
-        searchDivision = [],
-        searchDepartment = [],
-        searchCountry = [],
-        searchLocation = [],
-        searchTitle = [],
-        searchSkill = [],
-        searchEmployeeType = [],
       } = {},
       filter = {},
     } = {},
@@ -80,19 +71,18 @@ const FilterContent = (props) => {
   }, [JSON.stringify(listCountry)]);
 
   useEffect(() => {
-    console.log('department', department);
     // this is needed for directly filtering when clicking on title or department on the table
     form.setFieldsValue({
       ...filter,
       name: name || undefined,
-      department: [...department, ...searchDepartment],
-      division: [...division, ...searchDivision],
-      title: [...title, ...searchTitle],
-      location: [...location, ...searchLocation],
-      country: [...country, ...searchCountry],
+      department,
+      division,
+      title,
+      location,
+      country,
       reportingManager,
-      employeeType: [...employeeType, ...searchEmployeeType],
-      skill: [...skill, ...searchSkill],
+      employeeType,
+      skill,
       fromExp,
       toExp,
     });
@@ -142,24 +132,6 @@ const FilterContent = (props) => {
     );
   }, [JSON.stringify(employeeNameList)]);
 
-  const splitArray = (array, originalList) => {
-    const searchValues = [];
-    const filterValues = [];
-    array.forEach((item) => {
-      if (
-        originalList.some((x) => x.name === item || x === item || x._id === item || x.id === item)
-      ) {
-        filterValues.push(item);
-      } else {
-        searchValues.push(item);
-      }
-    });
-    return {
-      searchValues,
-      filterValues,
-    };
-  };
-
   // FUNCTIONALITY
   const onFinish = (values) => {
     const newValues = { ...values };
@@ -176,86 +148,10 @@ const FilterContent = (props) => {
       {},
     );
 
-    // convert fields to filter array & search array
-    const splitArrayValues = {};
-    Object.entries(newValues).forEach((x) => {
-      if (x[1] instanceof Array) {
-        switch (x[0]) {
-          case 'division': {
-            const { searchValues, filterValues } = splitArray(x[1], listDepartmentName);
-            if (searchValues.length > 0) {
-              splitArrayValues.searchDivision = [...searchValues];
-            }
-            splitArrayValues.division = [...filterValues];
-            break;
-          }
-
-          case 'country': {
-            const { searchValues, filterValues } = splitArray(x[1], countryListState);
-            if (searchValues.length > 0) {
-              splitArrayValues.searchCountry = [...searchValues];
-            }
-            splitArrayValues.country = [...filterValues];
-            break;
-          }
-
-          case 'location': {
-            const { searchValues, filterValues } = splitArray(x[1], listLocationsByCompany);
-            if (searchValues.length > 0) {
-              splitArrayValues.searchLocation = [...searchValues];
-            }
-            splitArrayValues.location = [...filterValues];
-            break;
-          }
-          case 'title': {
-            const { searchValues, filterValues } = splitArray(x[1], listTitle);
-            if (searchValues.length > 0) {
-              splitArrayValues.searchTitle = [...searchValues];
-            }
-            splitArrayValues.title = [...filterValues];
-            break;
-          }
-
-          case 'department': {
-            const { searchValues, filterValues } = splitArray(x[1], listDepartmentName);
-            if (searchValues.length > 0) {
-              splitArrayValues.searchDepartment = [...searchValues];
-            }
-            splitArrayValues.department = [...filterValues];
-            break;
-          }
-
-          case 'employeeType': {
-            const { searchValues, filterValues } = splitArray(x[1], listEmployeeType);
-            if (searchValues.length > 0) {
-              splitArrayValues.searchEmployeeType = [...searchValues];
-            }
-            splitArrayValues.employeeType = [...filterValues];
-            break;
-          }
-
-          case 'skill': {
-            const { searchValues, filterValues } = splitArray(x[1], listSkill);
-            if (searchValues.length > 0) {
-              splitArrayValues.searchSkill = [...searchValues];
-            }
-            splitArrayValues.skill = [...filterValues];
-            break;
-          }
-          default:
-            break;
-        }
-      }
-    });
-
     // dispatch action
-    const payload = {
-      filter: { ...filterTemp, ...splitArrayValues },
-    };
-
     dispatch({
       type: 'employee/save',
-      payload,
+      payload: { filter: filterTemp },
     });
   };
 
@@ -360,7 +256,7 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="tags"
+          mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Department"
           filterOption={(input, option) =>
@@ -380,7 +276,7 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="tags"
+          mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Division Name"
           filterOption={(input, option) =>
@@ -400,7 +296,7 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="tags"
+          mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Job Title"
           filterOption={(input, option) =>
@@ -433,11 +329,11 @@ const FilterContent = (props) => {
         </AutoComplete>
       </Form.Item>
 
-      <Form.Item label="By location" name="location">
+      <Form.Item label="By location" name="locations">
         <Select
           allowClear
           showSearch
-          mode="tags"
+          mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Location"
           filterOption={(input, option) =>
@@ -454,11 +350,11 @@ const FilterContent = (props) => {
         </Select>
       </Form.Item>
 
-      <Form.Item label="By country" name="country">
+      <Form.Item label="By country" name="countries">
         <Select
           allowClear
           showSearch
-          mode="tags"
+          mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Country"
           filterOption={(input, option) =>
@@ -479,7 +375,7 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="tags"
+          mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Employment Type"
           filterOption={(input, option) =>
@@ -502,7 +398,7 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="tags"
+          mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Skills"
           filterOption={(input, option) =>
