@@ -26,6 +26,7 @@ const FilterContent = (props) => {
         department = [],
         division = [],
         country = [],
+        location = [],
         title = [],
         reportingManager = [],
         employeeType = [],
@@ -35,12 +36,13 @@ const FilterContent = (props) => {
       } = {},
       filter = {},
     } = {},
+    listLocationsByCompany = [],
     loadingFetchEmployeeIDList = false,
     loadingFetchEmployeeNameList = false,
     loadingFetchManagerList = false,
   } = props;
 
-  const [locationList, setLocationList] = useState([]);
+  const [countryListState, setCountryListState] = useState([]);
   const [employeeIDListState, setEmployeeIDListState] = useState([]);
   const [employeeNameListState, setEmployeeNameListState] = useState([]);
   const [managerListState, setManagerListState] = useState([]);
@@ -51,7 +53,7 @@ const FilterContent = (props) => {
   });
 
   // FUNCTIONALITY
-  const formatLocationList = () => {
+  const formatCountryList = () => {
     let temp = listCountry.map((x) => {
       return {
         id: x.country?._id,
@@ -60,12 +62,12 @@ const FilterContent = (props) => {
     });
     // remove duplicate objects
     temp = temp.filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i);
-    setLocationList(temp);
+    setCountryListState(temp);
   };
 
   // USE EFFECT
   useEffect(() => {
-    formatLocationList();
+    formatCountryList();
   }, [JSON.stringify(listCountry)]);
 
   useEffect(() => {
@@ -76,6 +78,7 @@ const FilterContent = (props) => {
       department,
       division,
       title,
+      location,
       country,
       reportingManager,
       employeeType,
@@ -129,6 +132,7 @@ const FilterContent = (props) => {
     );
   }, [JSON.stringify(employeeNameList)]);
 
+  // FUNCTIONALITY
   const onFinish = (values) => {
     const newValues = { ...values };
 
@@ -144,6 +148,7 @@ const FilterContent = (props) => {
       {},
     );
 
+    // dispatch action
     dispatch({
       type: 'employee/save',
       payload: { filter: filterTemp },
@@ -251,7 +256,7 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="tags"
+          mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Department"
           filterOption={(input, option) =>
@@ -271,7 +276,7 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="tags"
+          mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Division Name"
           filterOption={(input, option) =>
@@ -291,7 +296,7 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="tags"
+          mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Job Title"
           filterOption={(input, option) =>
@@ -324,18 +329,39 @@ const FilterContent = (props) => {
         </AutoComplete>
       </Form.Item>
 
-      <Form.Item label="By country" name="country">
+      <Form.Item label="By location" name="locations">
         <Select
           allowClear
           showSearch
-          mode="tags"
+          mode="multiple"
+          style={{ width: '100%' }}
+          placeholder="Search by Location"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          showArrow
+        >
+          {listLocationsByCompany.map((x) => {
+            return (
+              <Select.Option value={x._id} key={x._id}>
+                {x.name}
+              </Select.Option>
+            );
+          })}
+        </Select>
+      </Form.Item>
+
+      <Form.Item label="By country" name="countries">
+        <Select
+          allowClear
+          showSearch
+          mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Country"
           filterOption={(input, option) =>
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           showArrow
         >
-          {locationList.map((x) => {
+          {countryListState.map((x) => {
             return (
               <Select.Option value={x.id} key={x.id}>
                 {x.country}
@@ -349,7 +375,7 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="tags"
+          mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Employment Type"
           filterOption={(input, option) =>
@@ -372,7 +398,7 @@ const FilterContent = (props) => {
         <Select
           allowClear
           showSearch
-          mode="tags"
+          mode="multiple"
           style={{ width: '100%' }}
           placeholder="Search by Skills"
           filterOption={(input, option) =>
