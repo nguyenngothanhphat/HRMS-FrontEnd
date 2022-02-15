@@ -220,11 +220,8 @@ const DirectoryComponent = (props) => {
       const payload = {
         ...params,
         company: companyPayload,
-        // location: locationPayload,
       };
-      // delete "country" field from payload,
-      // because we only use "country" field to generate the "location" field
-      delete payload.country;
+
       setPageSelected(page || 1);
 
       // permissions to view tab
