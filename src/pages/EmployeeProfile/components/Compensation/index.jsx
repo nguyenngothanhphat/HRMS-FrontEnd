@@ -5,6 +5,7 @@ import EmptyComponent from '@/components/Empty';
 import CompensationSummary from './CompensationSummary';
 import PaySlips from './PaySlips';
 import BankAccount from './BankAccount';
+import Form16 from './Form16';
 import TaxWithholdingInfo from './TaxWithholdingInfo';
 
 import styles from './index.less';
@@ -35,7 +36,7 @@ const Compensation = (props) => {
           <PaySlips />
         </TabPane>
         <TabPane tab="Form 16" key="3">
-          <EmptyComponent />
+          <Form16 />
         </TabPane>
         <TabPane tab="Bank Account" key="4">
           <BankAccount />

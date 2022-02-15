@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Skeleton, Button } from 'antd';
 
 import { connect } from 'umi';
 import EditBtn from '@/assets/edit.svg';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
-import IconAdd from '@/assets/add-symbols.svg';
+import ModalAddBank from './component/ModalAddBank';
+import plusIcon from '@/assets/add-adminstrator.svg';
 import CommonModal from '@/components/CommonModal';
 import EditBank from './component/EditBank';
 import ViewBank from './component/ViewBank';
@@ -12,6 +13,8 @@ import ViewBank from './component/ViewBank';
 import styles from './index.less';
 
 const BankAccount = (props) => {
+  const [visible, setVisible] = useState(false);
+
   const {
     openBank,
     loadingBank,
@@ -64,8 +67,9 @@ const BankAccount = (props) => {
       payload: { openBank: false },
     });
   };
-  const handeAddBank = () => {};
-  console.log(profileOwner);
+  const handeAddBank = () => {
+    setVisible(true);
+  };
   const renderBank = openBank ? (
     <EditBank handleCancel={handleCancel} />
   ) : (
@@ -98,14 +102,19 @@ const BankAccount = (props) => {
             renderBank
           )}
         </Col>
-        {profileOwner && (
-          <div className={styles.addIcon}>
-            <div onClick={handeAddBank}>
-              <img src={IconAdd} alt="add" />
-              <span>Add Bank</span>
-            </div>
+
+        <div className={styles.addBank}>
+          <div onClick={handeAddBank} className={styles.containerAddbank}>
+            <img src={plusIcon} alt="add" />
+            <span className={styles.textAdd}>Add Bank Account</span>
+            <span className={styles.lableSpan}> (You can up to 4 account) </span>
           </div>
-        )}
+        </div>
+        <ModalAddBank
+          visible={visible}
+          onClose={() => setVisible(false)}
+          bankData={bankDataOrigin}
+        />
       </Row>
       <CommonModal
         visible={visibleSuccess}

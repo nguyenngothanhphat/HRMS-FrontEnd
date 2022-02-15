@@ -1,3 +1,31 @@
-.CompensationSummary {
-  margin-top: 24px;
+.PaySlips {
+  :global {
+    .ant-card-body {
+      padding-bottom: 56px;
+    }
+  }
+  .contentPayslips {
+    padding: 24px 0;
+    border-bottom: 1px solid #d6dce0;
+    &__month {
+      color: #212020;
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 15px;
+      letter-spacing: 0.075px;
+    }
+    &__detail {
+      color: #707177;
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 19px;
+    }
+  }
+  .options {
+    cursor: pointer;
+    img {
+      padding-left: 8px;
+      color: #707177 !important;
+    }
+  }
 }
