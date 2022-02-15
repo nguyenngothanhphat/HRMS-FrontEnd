@@ -21,6 +21,7 @@ const Header = (props) => {
     viewChangeComponent = '',
     type = '',
     projectList = [],
+    onChangeSearch = () => {},
   } = props;
 
   // HEADER AREA FOR MONTH
@@ -140,7 +141,7 @@ const Header = (props) => {
           <img src={FilterIcon} alt="" />
           <span>Filter</span>
         </div>
-        <SearchBar />
+        <SearchBar onChangeSearch={onChangeSearch} />
       </div>
     </div>
   );

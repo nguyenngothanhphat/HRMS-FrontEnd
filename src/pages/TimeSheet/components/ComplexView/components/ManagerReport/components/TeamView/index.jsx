@@ -1,6 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { debounce } from 'lodash';
 import { dateFormatAPI } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import Header from './components/Header';
@@ -14,6 +15,7 @@ const TeamView = (props) => {
   const [endDate, setEndDate] = useState('');
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
+  const [nameSearch, setNameSearch] = useState('');
 
   const { dispatch, employee: { _id: employeeId = '' } = {} } = props;
   const {
@@ -23,16 +25,30 @@ const TeamView = (props) => {
 
   // FUNCTION AREA
   const fetchManagerTimesheetOfTeamView = () => {
-    dispatch({
-      type: 'timeSheet/fetchManagerTimesheetOfTeamViewEffect',
-      payload: {
+    let payload = {};
+    if (nameSearch) {
+      payload = {
         companyId: getCurrentCompany(),
         userId: employeeId,
         fromDate: moment(startDate).format(dateFormatAPI),
         toDate: moment(endDate).format(dateFormatAPI),
         page,
         limit,
-      },
+        search: nameSearch,
+      };
+    } else {
+      payload = {
+        companyId: getCurrentCompany(),
+        userId: employeeId,
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
+        page,
+        limit,
+      };
+    }
+    dispatch({
+      type: 'timeSheet/fetchManagerTimesheetOfTeamViewEffect',
+      payload,
     });
   };
 
@@ -45,7 +61,7 @@ const TeamView = (props) => {
     if (startDate) {
       fetchManagerTimesheetOfTeamView();
     }
-  }, [startDate, endDate, page]);
+  }, [startDate, endDate, page, nameSearch]);
 
   // generate dates for week
   useEffect(() => {
@@ -55,6 +71,14 @@ const TeamView = (props) => {
     setEndDate(currentSunday);
   }, []);
 
+  const onSearchDebounce = debounce((value) => {
+    setNameSearch(value);
+  }, 1000);
+
+  const onChangeSearch = (value) => {
+    const formatValue = value.toLowerCase();
+    onSearchDebounce(formatValue);
+  };
   // MAIN AREA
   return (
     <div className={styles.TeamView}>
@@ -63,6 +87,7 @@ const TeamView = (props) => {
         endDate={endDate}
         setStartDate={setStartDate}
         setEndDate={setEndDate}
+        onChangeSearch={onChangeSearch}
       />
       <MemberTable data={managerTeamViewList} loadingFetch={loadingFetch} />
       <Pagination tablePagination={managerTeamViewPagination} onChangePage={onChangePage} />
