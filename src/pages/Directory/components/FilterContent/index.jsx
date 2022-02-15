@@ -26,21 +26,32 @@ const FilterContent = (props) => {
         department = [],
         division = [],
         country = [],
+        location = [],
         title = [],
         reportingManager = [],
         employeeType = [],
         skill = [],
         fromExp,
         toExp,
+
+        // search values
+        searchDivision = [],
+        searchDepartment = [],
+        searchCountry = [],
+        searchLocation = [],
+        searchTitle = [],
+        searchSkill = [],
+        searchEmployeeType = [],
       } = {},
       filter = {},
     } = {},
+    listLocationsByCompany = [],
     loadingFetchEmployeeIDList = false,
     loadingFetchEmployeeNameList = false,
     loadingFetchManagerList = false,
   } = props;
 
-  const [locationList, setLocationList] = useState([]);
+  const [countryListState, setCountryListState] = useState([]);
   const [employeeIDListState, setEmployeeIDListState] = useState([]);
   const [employeeNameListState, setEmployeeNameListState] = useState([]);
   const [managerListState, setManagerListState] = useState([]);
@@ -51,7 +62,7 @@ const FilterContent = (props) => {
   });
 
   // FUNCTIONALITY
-  const formatLocationList = () => {
+  const formatCountryList = () => {
     let temp = listCountry.map((x) => {
       return {
         id: x.country?._id,
@@ -60,12 +71,12 @@ const FilterContent = (props) => {
     });
     // remove duplicate objects
     temp = temp.filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i);
-    setLocationList(temp);
+    setCountryListState(temp);
   };
 
   // USE EFFECT
   useEffect(() => {
-    formatLocationList();
+    formatCountryList();
   }, [JSON.stringify(listCountry)]);
 
   useEffect(() => {
@@ -73,13 +84,14 @@ const FilterContent = (props) => {
     form.setFieldsValue({
       ...filter,
       name: name || undefined,
-      department,
-      division,
-      title,
-      country,
+      department: [...department, ...searchDepartment],
+      division: [...division, ...searchDivision],
+      title: [...title, ...searchTitle],
+      location: [...location, ...searchLocation],
+      country: [...country, ...searchCountry],
       reportingManager,
-      employeeType,
-      skill,
+      employeeType: [...employeeType, ...searchEmployeeType],
+      skill: [...skill, ...searchSkill],
       fromExp,
       toExp,
     });
@@ -129,6 +141,25 @@ const FilterContent = (props) => {
     );
   }, [JSON.stringify(employeeNameList)]);
 
+  const splitArray = (array, originalList) => {
+    const searchValues = [];
+    const filterValues = [];
+    array.forEach((item) => {
+      if (
+        originalList.some((x) => x.name === item || x === item || x._id === item || x.id === item)
+      ) {
+        filterValues.push(item);
+      } else {
+        searchValues.push(item);
+      }
+    });
+    return {
+      searchValues,
+      filterValues,
+    };
+  };
+
+  // FUNCTIONALITY
   const onFinish = (values) => {
     const newValues = { ...values };
 
@@ -144,9 +175,96 @@ const FilterContent = (props) => {
       {},
     );
 
+    // convert fields to filter array & search array
+    const splitArrayValues = {};
+    Object.entries(newValues).forEach((x) => {
+      if (x[1] instanceof Array) {
+        switch (x[0]) {
+          case 'division': {
+            const { searchValues, filterValues } = splitArray(x[1], listDepartmentName);
+            if (searchValues.length > 0) {
+              splitArrayValues.searchDivision = [...searchValues];
+            }
+            if (filterValues.length > 0) {
+              splitArrayValues.division = [...filterValues];
+            }
+            break;
+          }
+
+          case 'country': {
+            const { searchValues, filterValues } = splitArray(x[1], countryListState);
+            if (searchValues.length > 0) {
+              splitArrayValues.searchCountry = [...searchValues];
+            }
+            if (filterValues.length > 0) {
+              splitArrayValues.country = [...filterValues];
+            }
+            break;
+          }
+
+          case 'location': {
+            const { searchValues, filterValues } = splitArray(x[1], listLocationsByCompany);
+            if (searchValues.length > 0) {
+              splitArrayValues.searchLocation = [...searchValues];
+            }
+            if (filterValues.length > 0) {
+              splitArrayValues.location = [...filterValues];
+            }
+            break;
+          }
+          case 'title': {
+            const { searchValues, filterValues } = splitArray(x[1], listTitle);
+            if (searchValues.length > 0) {
+              splitArrayValues.searchTitle = [...searchValues];
+            }
+            if (filterValues.length > 0) {
+              splitArrayValues.title = [...filterValues];
+            }
+            break;
+          }
+
+          case 'department': {
+            const { searchValues, filterValues } = splitArray(x[1], listDepartmentName);
+            if (searchValues.length > 0) {
+              splitArrayValues.searchDepartment = [...searchValues];
+            }
+            if (filterValues.length > 0) {
+              splitArrayValues.department = [...filterValues];
+            }
+            break;
+          }
+
+          case 'employeeType': {
+            const { searchValues, filterValues } = splitArray(x[1], listEmployeeType);
+            if (searchValues.length > 0) {
+              splitArrayValues.searchEmployeeType = [...searchValues];
+            }
+            if (filterValues.length > 0) {
+              splitArrayValues.employeeType = [...filterValues];
+            }
+            break;
+          }
+
+          case 'skill': {
+            const { searchValues, filterValues } = splitArray(x[1], listSkill);
+            if (searchValues.length > 0) {
+              splitArrayValues.searchSkill = [...searchValues];
+            }
+            if (filterValues.length > 0) {
+              splitArrayValues.skill = [...filterValues];
+            }
+            break;
+          }
+          default:
+            break;
+        }
+      }
+    });
+
+    // dispatch action
     dispatch({
       type: 'employee/save',
-      payload: { filter: filterTemp },
+      payload: { filter: { ...filterTemp, ...splitArrayValues } },
     });
   };
 
@@ -324,6 +442,27 @@ const FilterContent = (props) => {
         </AutoComplete>
       </Form.Item>
 
+      <Form.Item label="By location" name="location">
+        <Select
+          allowClear
+          showSearch
+          mode="tags"
+          style={{ width: '100%' }}
+          placeholder="Search by Location"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          showArrow
+        >
+          {listLocationsByCompany.map((x) => {
+            return (
+              <Select.Option value={x._id} key={x._id}>
+                {x.name}
+              </Select.Option>
+            );
+          })}
+        </Select>
+      </Form.Item>
+
       <Form.Item label="By country" name="country">
         <Select
           allowClear
@@ -335,7 +474,7 @@ const FilterContent = (props) => {
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           showArrow
         >
-          {locationList.map((x) => {
+          {countryListState.map((x) => {
             return (
               <Select.Option value={x.id} key={x.id}>
                 {x.country}
