@@ -80,6 +80,7 @@ const FilterContent = (props) => {
   }, [JSON.stringify(listCountry)]);
 
   useEffect(() => {
+    console.log('department', department);
     // this is needed for directly filtering when clicking on title or department on the table
     form.setFieldsValue({
       ...filter,
@@ -185,9 +186,7 @@ const FilterContent = (props) => {
             if (searchValues.length > 0) {
               splitArrayValues.searchDivision = [...searchValues];
             }
-            if (filterValues.length > 0) {
-              splitArrayValues.division = [...filterValues];
-            }
+            splitArrayValues.division = [...filterValues];
             break;
           }
 
@@ -196,9 +195,7 @@ const FilterContent = (props) => {
             if (searchValues.length > 0) {
               splitArrayValues.searchCountry = [...searchValues];
             }
-            if (filterValues.length > 0) {
-              splitArrayValues.country = [...filterValues];
-            }
+            splitArrayValues.country = [...filterValues];
             break;
           }
 
@@ -207,9 +204,7 @@ const FilterContent = (props) => {
             if (searchValues.length > 0) {
               splitArrayValues.searchLocation = [...searchValues];
             }
-            if (filterValues.length > 0) {
-              splitArrayValues.location = [...filterValues];
-            }
+            splitArrayValues.location = [...filterValues];
             break;
           }
           case 'title': {
@@ -217,9 +212,7 @@ const FilterContent = (props) => {
             if (searchValues.length > 0) {
               splitArrayValues.searchTitle = [...searchValues];
             }
-            if (filterValues.length > 0) {
-              splitArrayValues.title = [...filterValues];
-            }
+            splitArrayValues.title = [...filterValues];
             break;
           }
 
@@ -228,9 +221,7 @@ const FilterContent = (props) => {
             if (searchValues.length > 0) {
               splitArrayValues.searchDepartment = [...searchValues];
             }
-            if (filterValues.length > 0) {
-              splitArrayValues.department = [...filterValues];
-            }
+            splitArrayValues.department = [...filterValues];
             break;
           }
 
@@ -239,9 +230,7 @@ const FilterContent = (props) => {
             if (searchValues.length > 0) {
               splitArrayValues.searchEmployeeType = [...searchValues];
             }
-            if (filterValues.length > 0) {
-              splitArrayValues.employeeType = [...filterValues];
-            }
+            splitArrayValues.employeeType = [...filterValues];
             break;
           }
 
@@ -250,9 +239,7 @@ const FilterContent = (props) => {
             if (searchValues.length > 0) {
               splitArrayValues.searchSkill = [...searchValues];
             }
-            if (filterValues.length > 0) {
-              splitArrayValues.skill = [...filterValues];
-            }
+            splitArrayValues.skill = [...filterValues];
             break;
           }
           default:
@@ -262,9 +249,13 @@ const FilterContent = (props) => {
     });
 
     // dispatch action
+    const payload = {
+      filter: { ...filterTemp, ...splitArrayValues },
+    };
+
     dispatch({
       type: 'employee/save',
-      payload: { filter: { ...filterTemp, ...splitArrayValues } },
+      payload,
     });
   };
 
