@@ -22,6 +22,7 @@ const Header = (props) => {
     type = '',
     projectList = [],
     onChangeSearch = () => {},
+    loadingFetchProjectList = false,
   } = props;
 
   // HEADER AREA FOR MONTH
@@ -95,7 +96,12 @@ const Header = (props) => {
     <div className={styles.Header}>
       <div className={styles.Header__left}>
         <div className={styles.projectSelector}>
-          <Select value={currentProject} onChange={(val) => setCurrentProject(val)}>
+          <Select
+            value={currentProject || null}
+            onChange={(val) => setCurrentProject(val)}
+            loading={loadingFetchProjectList}
+            disabled={loadingFetchProjectList}
+          >
             {projectList.map((v, index) => (
               <Option value={v.id}>
                 <div

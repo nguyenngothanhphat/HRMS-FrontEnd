@@ -38,7 +38,9 @@ const employee = {
     totalActiveEmployee: '',
     totalInactiveEmployee: '',
     totalMyTeam: '',
-    employeeList2: [], // for filter pane
+    employeeIDList: [], // for filter pane
+    employeeNameList: [], // for filter pane
+    managerList: [], // for filter pane
   },
   effects: {
     *fetchEmployeeType(_, { call, put }) {
@@ -306,14 +308,14 @@ const employee = {
       }
     },
     // for filter pane
-    *fetchEmployeeListSingleCompanyEffect({ payload }, { call, put }) {
+    *fetchEmployeeIDListEffect({ payload }, { call, put }) {
       let response = {};
       try {
         response = yield call(getListEmployeeSingleCompany, {
-          ...payload,
-          status: ['ACTIVE', 'INACTIVE'],
           company: getCurrentCompany(),
+          ...payload,
           tenantId: getCurrentTenant(),
+          status: ['ACTIVE', 'INACTIVE'],
         });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
@@ -321,7 +323,53 @@ const employee = {
         yield put({
           type: 'save',
           payload: {
-            employeeList2: data,
+            employeeIDList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchEmployeeNameListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getListEmployeeSingleCompany, {
+          company: getCurrentCompany(),
+          ...payload,
+          tenantId: getCurrentTenant(),
+          status: ['ACTIVE', 'INACTIVE'],
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            employeeNameList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchManagerListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getListEmployeeSingleCompany, {
+          company: getCurrentCompany(),
+          ...payload,
+          tenantId: getCurrentTenant(),
+          status: ['ACTIVE', 'INACTIVE'],
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            managerList: data,
           },
         });
       } catch (errors) {

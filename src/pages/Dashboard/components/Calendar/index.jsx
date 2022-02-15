@@ -139,12 +139,20 @@ const Calendar = (props) => {
           </Tabs>
         </div>
       </div>
-      <div className={styles.viewAllMeetingBtn} onClick={() => setModalVisible(true)}>
-        {activeKey === '1' && <span>View all Meetings</span>}
-        {activeKey === '2' && <span>View all Holidays</span>}
-        <img src={LeftArrow} alt="expand" />
-      </div>
 
+      {activeKey === '1' && googleCalendarList.length > 0 && (
+        <div className={styles.viewAllMeetingBtn} onClick={() => setModalVisible(true)}>
+          <span>View all Meetings</span>
+          <img src={LeftArrow} alt="expand" />
+        </div>
+      )}
+
+      {activeKey === '2' && holidaysListByCountry.length > 0 && (
+        <div className={styles.viewAllMeetingBtn} onClick={() => setModalVisible(true)}>
+          <span>View all Holidays</span>
+          <img src={LeftArrow} alt="expand" />
+        </div>
+      )}
       <CommonModal
         visible={modalVisible}
         title={activeKey === '2' ? `Holiday Calendar ${selectedYear}` : 'My Calendar'}
