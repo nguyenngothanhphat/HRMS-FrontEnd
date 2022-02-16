@@ -60,7 +60,10 @@ const MemberCard = (props) => {
         <Col span={DEPARTMENT} className={styles.normalCell}>
           {department?.name || '-'}
         </Col>
-        <Col span={PROJECT_GROUP} className={styles.groupCell}>
+        <Col
+          span={PROJECT_GROUP}
+          className={`${styles.groupCell} ${projects.length > 1 ? styles.borderLeftStyle : null}`}
+        >
           {projects.map((pj, index) => {
             const { projectManager, userProjectSpentTime = 0 } = pj;
             if (viewType === VIEW_TYPE.PEOPLE_MANAGER) {
