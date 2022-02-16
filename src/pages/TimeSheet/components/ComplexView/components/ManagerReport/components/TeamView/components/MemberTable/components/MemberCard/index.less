@@ -12,6 +12,10 @@
     display: flex;
     justify-content: center !important;
   }
+  .alignRight {
+    display: flex;
+    justify-content: flex-end !important;
+  }
   .groupCell {
     padding: 0 !important;
     border-left: 1px solid #d6dce0;
@@ -78,6 +82,16 @@
       opacity: 0.9;
       transition: 0.3s;
     }
+  }
+  .totalHours {
+    .blueText();
+    .boldText();
+  }
+  .viewDetail {
+    padding-right: 10px;
+    cursor: pointer;
+    .blueText();
+    .boldText();
   }
   :global {
     .ant-tooltip-inner {

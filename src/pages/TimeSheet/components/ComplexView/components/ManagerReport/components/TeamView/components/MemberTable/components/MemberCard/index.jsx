@@ -1,20 +1,31 @@
 import { Col, Row } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
-import { MNG_MT_SECONDARY_COL_SPAN, MNG_MT_THIRD_COL_SPAN } from '@/utils/timeSheet';
+import {
+  convertMsToHours,
+  MNG_MT_SECONDARY_COL_SPAN,
+  MNG_MT_THIRD_COL_SPAN,
+} from '@/utils/timeSheet';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import styles from './index.less';
 
 const { DESIGNATION, DEPARTMENT, PROJECT_GROUP } = MNG_MT_SECONDARY_COL_SPAN;
-const { PROJECTS, PROJECT_MANAGER, TOTAL_HOURS } = MNG_MT_THIRD_COL_SPAN;
+const { PROJECTS, PROJECT_MANAGER, TOTAL_HOURS, VIEW_DETAIL } = MNG_MT_THIRD_COL_SPAN;
 
 const MemberCard = (props) => {
   const {
     viewType,
     VIEW_TYPE,
-    card: { projects = [], employee: { department = {}, title = {} } = {} } = {},
+    card: { projects = [], employee = {}, employee: { department = {}, title = {} } = {} } = {},
+    setEmployeeProjectDetailModalVisible = () => {},
+    setSelectedEmployee = () => {},
   } = props;
+
+  const onViewDetail = () => {
+    setEmployeeProjectDetailModalVisible(true);
+    setSelectedEmployee(employee);
+  };
 
   // MAIN AREA
   return (
@@ -38,8 +49,15 @@ const MemberCard = (props) => {
                   <Col span={PROJECT_MANAGER} className={styles.normalCell}>
                     {projectManager?.legalName}
                   </Col>
-                  <Col span={TOTAL_HOURS} className={styles.normalCell}>
-                    {userProjectSpentTime} hours
+                  <Col span={TOTAL_HOURS} className={`${styles.normalCell} ${styles.totalHours}`}>
+                    {userProjectSpentTime ? convertMsToHours(userProjectSpentTime) : 0}hrs
+                  </Col>
+                  <Col
+                    span={VIEW_DETAIL}
+                    className={`${styles.normalCell} ${styles.alignRight} ${styles.viewDetail}`}
+                    onClick={() => onViewDetail()}
+                  >
+                    View details
                   </Col>
                 </Row>
               );
@@ -50,8 +68,11 @@ const MemberCard = (props) => {
                 <Col span={PROJECTS} className={styles.normalCell}>
                   {projectName}
                 </Col>
-                <Col span={PROJECT_MANAGER} className={styles.normalCell}>
-                  {userProjectSpentTime} hours
+                <Col
+                  span={PROJECT_MANAGER}
+                  className={`${styles.normalCell} ${styles.alignCenter} ${styles.totalHours}`}
+                >
+                  {userProjectSpentTime ? convertMsToHours(userProjectSpentTime) : 0}hrs
                 </Col>
                 <Col span={TOTAL_HOURS} className={`${styles.normalCell} ${styles.alignCenter}`}>
                   {projectManager && (
@@ -73,6 +94,13 @@ const MemberCard = (props) => {
                       )}
                     </UserProfilePopover>
                   )}
+                </Col>
+                <Col
+                  span={VIEW_DETAIL}
+                  className={`${styles.normalCell} ${styles.alignRight} ${styles.viewDetail}`}
+                  onClick={() => onViewDetail()}
+                >
+                  View details
                 </Col>
               </Row>
             );
