@@ -26,25 +26,16 @@ const TeamView = (props) => {
   // FUNCTION AREA
   const fetchManagerTimesheetOfTeamView = () => {
     let payload = {};
+    payload = {
+      companyId: getCurrentCompany(),
+      userId: employeeId,
+      fromDate: moment(startDate).format(dateFormatAPI),
+      toDate: moment(endDate).format(dateFormatAPI),
+      page,
+      limit,
+    };
     if (nameSearch) {
-      payload = {
-        companyId: getCurrentCompany(),
-        userId: employeeId,
-        fromDate: moment(startDate).format(dateFormatAPI),
-        toDate: moment(endDate).format(dateFormatAPI),
-        page,
-        limit,
-        search: nameSearch,
-      };
-    } else {
-      payload = {
-        companyId: getCurrentCompany(),
-        userId: employeeId,
-        fromDate: moment(startDate).format(dateFormatAPI),
-        toDate: moment(endDate).format(dateFormatAPI),
-        page,
-        limit,
-      };
+      payload.search = nameSearch;
     }
     dispatch({
       type: 'timeSheet/fetchManagerTimesheetOfTeamViewEffect',

@@ -43,30 +43,20 @@ const ProjectView = (props) => {
   // FUNCTION AREA
   const fetchManagerTimesheetOfProjectView = (startDate, endDate) => {
     let payload = {};
+    payload = {
+      companyId: getCurrentCompany(),
+      userId,
+      fromDate: moment(startDate).format(dateFormatAPI),
+      toDate: moment(endDate).format(dateFormatAPI),
+      viewType: selectedView,
+      projectId: currentProject,
+      page,
+      limit,
+    };
     if (nameSearch) {
-      payload = {
-        companyId: getCurrentCompany(),
-        userId,
-        fromDate: moment(startDate).format(dateFormatAPI),
-        toDate: moment(endDate).format(dateFormatAPI),
-        viewType: selectedView,
-        projectId: currentProject,
-        page,
-        limit,
-        search: nameSearch,
-      };
-    } else {
-      payload = {
-        companyId: getCurrentCompany(),
-        userId,
-        fromDate: moment(startDate).format(dateFormatAPI),
-        toDate: moment(endDate).format(dateFormatAPI),
-        viewType: selectedView,
-        projectId: currentProject,
-        page,
-        limit,
-      };
+      payload.search = nameSearch;
     }
+
     if (currentProject) {
       dispatch({
         type: 'timeSheet/fetchManagerTimesheetOfProjectViewEffect',

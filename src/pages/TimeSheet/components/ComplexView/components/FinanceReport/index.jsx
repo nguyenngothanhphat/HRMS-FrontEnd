@@ -36,23 +36,15 @@ const FinanceReport = (props) => {
   // FUNCTION AREA
   const fetchFinanceTimesheet = (startDate, endDate) => {
     let payload = {};
+    payload = {
+      companyId: getCurrentCompany(),
+      employeeId,
+      fromDate: moment(startDate).format(dateFormatAPI),
+      toDate: moment(endDate).format(dateFormatAPI),
+      viewType: selectedView,
+    };
     if (nameSearch) {
-      payload = {
-        companyId: getCurrentCompany(),
-        employeeId,
-        fromDate: moment(startDate).format(dateFormatAPI),
-        toDate: moment(endDate).format(dateFormatAPI),
-        viewType: selectedView,
-        search: nameSearch,
-      };
-    } else {
-      payload = {
-        companyId: getCurrentCompany(),
-        employeeId,
-        fromDate: moment(startDate).format(dateFormatAPI),
-        toDate: moment(endDate).format(dateFormatAPI),
-        viewType: selectedView,
-      };
+      payload.search = nameSearch;
     }
 
     dispatch({

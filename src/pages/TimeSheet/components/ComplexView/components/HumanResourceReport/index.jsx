@@ -30,21 +30,14 @@ const HumanResourceReport = (props) => {
   // FUNCTION AREA
   const fetchHRTimesheet = (startDate, endDate) => {
     let payload = {};
+    payload = {
+      companyId: getCurrentCompany(),
+      // employeeId,
+      fromDate: moment(startDate).format(dateFormatAPI),
+      toDate: moment(endDate).format(dateFormatAPI),
+    };
     if (nameSearch) {
-      payload = {
-        companyId: getCurrentCompany(),
-        // employeeId,
-        fromDate: moment(startDate).format(dateFormatAPI),
-        toDate: moment(endDate).format(dateFormatAPI),
-        search: nameSearch,
-      };
-    } else {
-      payload = {
-        companyId: getCurrentCompany(),
-        // employeeId,
-        fromDate: moment(startDate).format(dateFormatAPI),
-        toDate: moment(endDate).format(dateFormatAPI),
-      };
+      payload.search = nameSearch;
     }
     dispatch({
       type: 'timeSheet/fetchHRTimesheetEffect',
