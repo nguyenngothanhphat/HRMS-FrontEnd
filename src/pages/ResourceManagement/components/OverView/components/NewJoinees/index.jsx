@@ -29,23 +29,19 @@ const NewJoinees = (props) => {
     const columns = [
       {
         title: 'Candidate ID',
-        dataIndex: 'candidate',
-        key: 'candidate',
-        render: (candidate) => {
-          return <span>{candidate || '-'}</span>;
+        dataIndex: 'ticketId',
+        key: 'ticketId',
+        render: (ticketId = '') => {
+          return <span>{ticketId || '-'}</span>;
         },
       },
       {
         title: 'Name',
-        dataIndex: 'employee',
-        key: 'employee',
+        dataIndex: 'candidateFullName',
+        key: 'candidateFullName',
         width: '20%',
-        render: ({ firstName = '', middleName = '', lastName = '' } = {}) => {
-          let fullName = firstName;
-          if (middleName) fullName += ` ${middleName}`;
-          if (lastName) fullName += ` ${lastName}`;
-
-          return <div>{fullName}</div>;
+        render: (candidateFullName = '') => {
+          return <div>{candidateFullName}</div>;
         },
       },
       {
