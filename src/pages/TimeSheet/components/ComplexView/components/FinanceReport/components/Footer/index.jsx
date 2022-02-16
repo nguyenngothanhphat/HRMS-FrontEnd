@@ -8,7 +8,7 @@ import styles from './index.less';
 const Footer = (props) => {
   const { selectedProjects = [], data = [] } = props;
   // update type when there are api
-  const checkDataSelected = () => {
+  const getSelectedData = () => {
     const newData = data.filter((el) => selectedProjects.includes(el.projectId));
     return newData;
   };
@@ -40,7 +40,7 @@ const Footer = (props) => {
   };
 
   const downloadTemplate = () => {
-    const result = checkDataSelected();
+    const result = getSelectedData();
     exportToCSV(processData(result), 'FinanceReportData.xlsx');
   };
   return (

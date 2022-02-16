@@ -9,7 +9,7 @@ const Footer = (props) => {
   const { selectedEmployees = [], data = [] } = props;
 
   // update type when there are api
-  const checkDataSelected = () => {
+  const getSelectedData = () => {
     const newData = data.filter((el) => selectedEmployees.includes(el.id));
     return newData;
   };
@@ -40,8 +40,8 @@ const Footer = (props) => {
     });
   };
 
-  const downloadTemplate = async () => {
-    const result = await checkDataSelected();
+  const downloadTemplate = () => {
+    const result = getSelectedData();
     exportToCSV(processData(result), 'HumanResourceReportData.xlsx');
   };
 
