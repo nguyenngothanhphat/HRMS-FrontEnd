@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { PureComponent } from 'react';
-import { Button, Form, Input, Select, notification } from 'antd';
+import { Button, Form, Input, notification } from 'antd';
+import CreatableSelect from 'react-select/creatable';
 import { connect } from 'umi';
 import FormCertification from './components/FormCertification';
 import s from './index.less';
@@ -10,7 +11,7 @@ const formItemLayout = {
   wrapperCol: { span: 12 },
 };
 
-const { Option } = Select;
+// const { Option } = Select;
 
 @connect(
   ({
@@ -209,7 +210,13 @@ class Edit extends PureComponent {
 
     let { certification = [{}] } = generalData;
     certification = certification?.length > 0 ? certification : [{}];
-    const getIdSkill = skills.map((item) => item._id);
+    // const getIdSkill = skills.map((item) => item._id);
+    const getIdSkill = skills.map((item) => {
+      return {
+        label: item.name,
+        value: item._id
+      }
+    })
     const newOtherSkills = otherSkills.length > 0 ? otherSkills : [];
     const veriOther = skills.filter((item) => item === 'Other');
     return (
@@ -258,7 +265,19 @@ class Edit extends PureComponent {
               />
             </Form.Item>
             <Form.Item label="Skills" name="skills">
-              <Select
+              <CreatableSelect
+                isMulti
+                onChange={this.handleChange}
+                options={
+                  listSkill.sort((a, b) => a.name.localeCompare(b.name)).map((item) => {
+                    return {
+                      label: item.name,
+                      value: item._id
+                    }
+                  })
+                }
+              />
+              {/* <Select
                 placeholder="Select skills"
                 mode="tags"
                 showArrow
@@ -272,7 +291,7 @@ class Edit extends PureComponent {
                   <Option key={item._id}>{item.name}</Option>
                 ))}
                 <Option key="Other">Other</Option>
-              </Select>
+              </Select> */}
             </Form.Item>
             {veriOther.length > 0 || otherSkills.length > 0 ? (
               <Form.Item label="OtherSkill" name="otherSkills">
