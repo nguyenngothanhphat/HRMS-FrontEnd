@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Steps, Form, Input, Select, Tag, notification } from 'antd';
-import { DeleteOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { Modal, Button, Steps, Form, Input, Select, notification } from 'antd';
+import CreatableSelect from 'react-select/creatable';
+import { DeleteOutlined } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
 import plusIcon from '@/assets/add-adminstrator.svg';
 import { getCurrentCompany } from '@/utils/authority';
@@ -71,18 +72,18 @@ const ModalAddInfo = (props) => {
   // Certifications
   const [arrCertification, setArrCertification] = useState([]);
   const [numOfCertification, setNumOfCertification] = useState(0);
-  const [newSkill, setNewSkill] = useState(false);
-  const tagRender = (prop) => {
-    const { label, onClose } = prop;
-    return (
-      <Tag
-        icon={<CloseCircleOutlined className={styles.iconClose} onClick={onClose} />}
-        color="#EAECEF"
-      >
-        {label}
-      </Tag>
-    );
-  };
+  const [newSkill] = useState(false);
+  // const tagRender = (prop) => {
+  //   const { label, onClose } = prop;
+  //   return (
+  //     <Tag
+  //       icon={<CloseCircleOutlined className={styles.iconClose} onClick={onClose} />}
+  //       color="#EAECEF"
+  //     >
+  //       {label}
+  //     </Tag>
+  //   );
+  // };
   const [objUrl, setObjURL] = useState({});
   const uploadFile = (item, url) => {
     const obj = { ...objUrl };
@@ -142,11 +143,11 @@ const ModalAddInfo = (props) => {
     tempArr.splice(key, 1);
     setArrCertification(tempArr);
   };
-  const changeSkill = (arr) => {
-    if (arr.includes('Other')) {
-      setNewSkill(true);
-    } else setNewSkill(false);
-  };
+  // const changeSkill = (arr) => {
+  //   if (arr.includes('Other')) {
+  //     setNewSkill(true);
+  //   } else setNewSkill(false);
+  // };
   // bank account
   const [arrBankAccount, setArrBankAccount] = useState([]);
   const [numOfBank, setNumOfBank] = useState(0);
@@ -493,7 +494,18 @@ const ModalAddInfo = (props) => {
               //   },
               // ]}
             >
-              <Select
+              <CreatableSelect
+                isMulti
+                options={
+                  listSkill.sort((a, b) => a.name.localeCompare(b.name)).map((item) => {
+                    return {
+                      label: item.name,
+                      value: item._id
+                    }
+                  })
+                }
+              />
+              {/* <Select
                 placeholder="Select skills"
                 mode="tags"
                 tagRender={tagRender}
@@ -507,7 +519,7 @@ const ModalAddInfo = (props) => {
                   <Select.Option key={item._id}>{item.name}</Select.Option>
                 ))}
                 <Select.Option key="Other">Other</Select.Option>
-              </Select>
+              </Select> */}
             </Form.Item>
             {newSkill && (
               <Form.Item
