@@ -7,7 +7,13 @@ import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/Searc
 import styles from './index.less';
 
 const Header = (props) => {
-  const { startDate, endDate, setStartDate = () => {}, setEndDate = () => {} } = props;
+  const {
+    startDate,
+    endDate,
+    setStartDate = () => {},
+    setEndDate = () => {},
+    onChangeSearch = () => {},
+  } = props;
 
   // HEADER AREA
   const onPrevClick = () => {
@@ -46,7 +52,7 @@ const Header = (props) => {
           <img src={FilterIcon} alt="" />
           <span>Filter</span>
         </div>
-        <SearchBar />
+        <SearchBar onChangeSearch={onChangeSearch} />
       </div>
     </div>
   );
