@@ -148,7 +148,7 @@ class Resources extends Component {
     return 'All';
   };
 
-  downloadTemplate = async () => {
+  exportResource = async () => {
     const { dispatch, currentUserId = '', total } = this.props;
     const getListExport = await dispatch({
       type: 'resourceManagement/exportResourceManagement',
@@ -168,7 +168,23 @@ class Resources extends Component {
     document.body.removeChild(downloadLink);
   }
 
-  renderActionButton = () => {
+  exportProject = async () => {
+    const { dispatch } = this.props;
+    const getListExport = await dispatch({
+      type: 'resourceManagement/exportReportProject',
+    });
+    const downloadLink = document.createElement('a');
+    const universalBOM = '\uFEFF';
+    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
+      universalBOM + getListExport,
+    )}`;
+    downloadLink.download = 'rm-projects.csv';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
+
+  renderActionButton = (nameTag) => {
     const { tabName = '', divisionList = [], listLocationsByCompany = [] } = this.props;
     const { selectedDivisions, selectedLocations } = this.state;
     // if only one selected
@@ -222,6 +238,12 @@ class Resources extends Component {
         </div>
       );
     }
+    const exportTag = () => { 
+      if (nameTag === 'projects') {
+        return this.exportProject()
+      }
+      return this.exportResource()
+    }
     return (
       <div className={styles.options}>
         <Row gutter={[24, 0]}>
@@ -230,7 +252,7 @@ class Resources extends Component {
               icon={<DownloadOutlined />}
               className={styles.generate}
               type="text"
-              onClick={this.downloadTemplate}
+              onClick={exportTag}
             >
               {formatMessage({ id: 'Export' })}
             </Button>
@@ -260,7 +282,7 @@ class Resources extends Component {
             onChange={(key) => {
               history.push(`${baseModuleUrl}/${key}`);
             }}
-            tabBarExtraContent={this.renderActionButton()}
+            tabBarExtraContent={this.renderActionButton(tabName)}
             destroyInactiveTabPane
           >
             {viewUtilizationPermission && (
