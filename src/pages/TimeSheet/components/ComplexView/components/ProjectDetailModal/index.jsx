@@ -32,9 +32,22 @@ const ProjectDetailModal = (props) => {
       </div>
     );
   };
-
+  // update type when there are api
   const handleFinish = async () => {
-    //
+    const { dispatch } = props;
+
+    const getListExport = await dispatch({
+      type: 'timeSheet/',
+    });
+    const downloadLink = document.createElement('a');
+    const universalBOM = '\uFEFF';
+    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
+      universalBOM + getListExport,
+    )}`;
+    downloadLink.download = 'timesheet.csv';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
   };
 
   const renderModalContent = () => {

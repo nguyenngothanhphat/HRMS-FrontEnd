@@ -11,6 +11,7 @@ import {
   // complex view
   getMyTimesheetByType,
   importTimesheet,
+  exportTimeSheet,
   removeActivity,
   updateActivity,
   // complex view manager
@@ -295,6 +296,23 @@ const TimeSheet = {
         dialog(errors);
         return [];
       }
+      return response;
+    },
+    // EXPORT TIMESHEET
+    *exportTimeSheet(_, { call }) {
+      let response = '';
+      const hide = message.loading('Exporting data...', 0);
+      try {
+        response = yield call(exportTimeSheet, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      hide();
       return response;
     },
 

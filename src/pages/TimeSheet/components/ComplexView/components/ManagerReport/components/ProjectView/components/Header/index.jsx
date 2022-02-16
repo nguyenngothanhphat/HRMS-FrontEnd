@@ -21,6 +21,7 @@ const Header = (props) => {
     viewChangeComponent = '',
     type = '',
     projectList = [],
+    onChangeSearch = () => {},
     loadingFetchProjectList = false,
   } = props;
 
@@ -146,7 +147,7 @@ const Header = (props) => {
           <img src={FilterIcon} alt="" />
           <span>Filter</span>
         </div>
-        <SearchBar />
+        <SearchBar onChangeSearch={onChangeSearch} />
       </div>
     </div>
   );
