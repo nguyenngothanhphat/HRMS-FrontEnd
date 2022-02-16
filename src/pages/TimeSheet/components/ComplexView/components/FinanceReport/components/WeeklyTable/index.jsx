@@ -140,7 +140,7 @@ const WeeklyTable = (props) => {
         columns={generateColumns()}
         dataSource={data}
         rowSelection={rowSelection}
-        rowKey={(record) => record.id}
+        rowKey={(record) => record.projectId}
         pagination={false}
         scroll={selectedProjects.length > 0 ? { y: 400 } : {}}
         // pagination={pagination}
