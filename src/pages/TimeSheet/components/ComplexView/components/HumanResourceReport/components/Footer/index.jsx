@@ -1,33 +1,55 @@
 import { Button } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import exportToCSV from '@/utils/exportAsExcel';
 import DownloadIcon from '@/assets/timeSheet/solidDownload.svg';
 import styles from './index.less';
 
 const Footer = (props) => {
-  const { selectedEmployees = [] } = props;
-  // update type when there are api
-  const handleFinish = async () => {
-    const { dispatch } = props;
+  const { selectedEmployees = [], data = [] } = props;
 
-    const getListExport = await dispatch({
-      type: 'timeSheet/exportTimeSheet',
-    });
-    const downloadLink = document.createElement('a');
-    const universalBOM = '\uFEFF';
-    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
-      universalBOM + getListExport,
-    )}`;
-    downloadLink.download = 'timesheet.csv';
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+  // update type when there are api
+  const getSelectedData = () => {
+    const newData = data.filter((el) => selectedEmployees.includes(el.id));
+    return newData;
   };
+
+  const processData = (array) => {
+    return array.map((item) => {
+      const {
+        legalName = '',
+        leaveTaken = '',
+        project = [],
+        userSpentInDay = 0,
+        userSpentInHours = 0,
+        department: { name = '' } = {},
+      } = item;
+      let projectName = '';
+      project.forEach((el, index) => {
+        projectName += el;
+        if (index + 1 < project.length) projectName += ', ';
+      });
+      return {
+        Employee: legalName,
+        Department: name,
+        Project: projectName,
+        'Working Days': userSpentInDay,
+        'Leave Taken ': leaveTaken,
+        'Total Hours': userSpentInHours,
+      };
+    });
+  };
+
+  const downloadTemplate = () => {
+    const result = getSelectedData();
+    exportToCSV(processData(result), 'HumanResourceReportData.xlsx');
+  };
+
   return (
     <div className={styles.Footer}>
       <div className={styles.left}>{selectedEmployees.length} Employees selected</div>
       <div className={styles.right}>
-        <Button icon={<img src={DownloadIcon} alt="" />} onclick={handleFinish}>
+        <Button icon={<img src={DownloadIcon} alt="" />} onClick={downloadTemplate}>
           Download
         </Button>
       </div>

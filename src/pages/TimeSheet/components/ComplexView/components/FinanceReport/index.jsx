@@ -174,7 +174,7 @@ const FinanceReport = (props) => {
 
   const renderFooter = () => {
     if (selectedProjects.length === 0) return null;
-    return <Footer selectedProjects={selectedProjects} />;
+    return <Footer selectedProjects={selectedProjects} data={financeViewList} />;
   };
 
   // MAIN AREA

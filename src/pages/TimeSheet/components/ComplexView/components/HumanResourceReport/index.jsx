@@ -165,9 +165,8 @@ const HumanResourceReport = (props) => {
 
   const renderFooter = () => {
     if (selectedEmployees.length === 0) return null;
-    return <Footer selectedEmployees={selectedEmployees} />;
+    return <Footer selectedEmployees={selectedEmployees} data={hrViewList} />;
   };
-
   // MAIN AREA
   return (
     <div className={styles.HumanResourceReport}>
