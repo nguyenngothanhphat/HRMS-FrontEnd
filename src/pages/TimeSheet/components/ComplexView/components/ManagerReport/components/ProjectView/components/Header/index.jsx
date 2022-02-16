@@ -2,7 +2,7 @@ import { Select } from 'antd';
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
-import FilterIcon from '@/assets/timeSheet/filter.svg';
+import FilterButton from '@/components/FilterButton';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
 import { projectColor, VIEW_TYPE } from '@/utils/timeSheet';
@@ -143,10 +143,7 @@ const Header = (props) => {
       </div>
       <div className={styles.Header__middle}>{viewChangeComponent()}</div>
       <div className={styles.Header__right}>
-        <div className={styles.filterIcon}>
-          <img src={FilterIcon} alt="" />
-          <span>Filter</span>
-        </div>
+        <FilterButton />
         <SearchBar onChangeSearch={onChangeSearch} />
       </div>
     </div>
