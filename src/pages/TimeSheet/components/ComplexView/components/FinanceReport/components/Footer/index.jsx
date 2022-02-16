@@ -1,33 +1,53 @@
 import { Button } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import exportToCSV from '@/utils/exportAsExcel';
 import DownloadIcon from '@/assets/timeSheet/solidDownload.svg';
 import styles from './index.less';
 
 const Footer = (props) => {
-  const { selectedProjects = [] } = props;
+  const { selectedProjects = [], data = [] } = props;
   // update type when there are api
-  const handleFinish = async () => {
-    const { dispatch } = props;
+  const checkDataSelected = () => {
+    const newData = data.filter((el) => selectedProjects.includes(el.projectId));
+    return newData;
+  };
 
-    const getListExport = await dispatch({
-      type: 'timeSheet/',
+  const processData = (array) => {
+    return array.map((item) => {
+      const {
+        projectName = '',
+        engagementType = '',
+        resource = [],
+        projectSpentInDay = 0,
+        projectSpentInHours = 0,
+      } = item;
+
+      let resourceNames = '';
+      resource.forEach((val, index) => {
+        resourceNames += val.employee.legalName;
+        if (index + 1 < resource.length) resourceNames += ', ';
+      });
+
+      return {
+        'Project Name': projectName,
+        Type: engagementType,
+        Resources: resourceNames,
+        'Total Days': projectSpentInDay,
+        'Total Hours ': projectSpentInHours,
+      };
     });
-    const downloadLink = document.createElement('a');
-    const universalBOM = '\uFEFF';
-    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
-      universalBOM + getListExport,
-    )}`;
-    downloadLink.download = 'timesheet.csv';
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+  };
+
+  const downloadTemplate = () => {
+    const result = checkDataSelected();
+    exportToCSV(processData(result), 'FinanceReportData.xlsx');
   };
   return (
     <div className={styles.Footer}>
       <div className={styles.left}>{selectedProjects.length} Projects selected</div>
       <div className={styles.right}>
-        <Button icon={<img src={DownloadIcon} alt="" />} onClick={handleFinish}>
+        <Button icon={<img src={DownloadIcon} alt="" />} onClick={downloadTemplate}>
           Download
         </Button>
       </div>
