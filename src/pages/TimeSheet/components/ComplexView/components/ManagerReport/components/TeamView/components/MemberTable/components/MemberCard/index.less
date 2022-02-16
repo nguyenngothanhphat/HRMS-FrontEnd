@@ -93,6 +93,51 @@
     .blueText();
     .boldText();
   }
+  .renderProject {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .icon {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      background: #a42ba8;
+      border: 1px solid rgba(255, 255, 255, 0);
+      border-radius: 50%;
+      outline: none;
+      span {
+        color: #fff;
+        font-weight: 500;
+        font-size: 13px;
+        text-transform: uppercase;
+      }
+    }
+    .right {
+      padding-left: 10px;
+      .name {
+        display: block;
+        color: #212020;
+        font-weight: 500;
+        font-size: 12px;
+        text-align: left;
+      }
+      .type {
+        color: #464646;
+        font-size: 11px;
+      }
+    }
+  }
   :global {
     .ant-tooltip-inner {
       padding: 16px;

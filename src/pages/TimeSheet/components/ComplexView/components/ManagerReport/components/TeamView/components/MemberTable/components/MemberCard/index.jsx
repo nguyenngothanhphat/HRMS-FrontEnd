@@ -5,6 +5,7 @@ import {
   convertMsToHours,
   MNG_MT_SECONDARY_COL_SPAN,
   MNG_MT_THIRD_COL_SPAN,
+  employeeColor,
 } from '@/utils/timeSheet';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import UserProfilePopover from '@/components/UserProfilePopover';
@@ -27,6 +28,28 @@ const MemberCard = (props) => {
     setSelectedEmployee(employee);
   };
 
+  const getColorByIndex = (index) => {
+    return employeeColor[index % employeeColor.length];
+  };
+
+  const renderProjectName = (record, index) => {
+    const { projectName = '', engagementType = '' } = record;
+
+    return (
+      <div className={styles.renderProject}>
+        <div className={styles.avatar}>
+          <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
+            <span>{projectName ? projectName.toString()?.charAt(0) : 'P'}</span>
+          </div>
+        </div>
+        <div className={styles.right}>
+          <span className={styles.name}>{projectName || '-'}</span>
+          <span className={styles.type}>{engagementType || '-'}</span>
+        </div>
+      </div>
+    );
+  };
+
   // MAIN AREA
   return (
     <div className={styles.MemberCard}>
@@ -38,13 +61,13 @@ const MemberCard = (props) => {
           {department?.name || '-'}
         </Col>
         <Col span={PROJECT_GROUP} className={styles.groupCell}>
-          {projects.map((pj) => {
-            const { projectName = '', projectManager, userProjectSpentTime = 0 } = pj;
+          {projects.map((pj, index) => {
+            const { projectManager, userProjectSpentTime = 0 } = pj;
             if (viewType === VIEW_TYPE.PEOPLE_MANAGER) {
               return (
                 <Row className={styles.groupRow}>
                   <Col span={PROJECTS} className={styles.normalCell}>
-                    {projectName}
+                    {renderProjectName(pj, index)}
                   </Col>
                   <Col span={PROJECT_MANAGER} className={styles.normalCell}>
                     {projectManager?.legalName}
@@ -66,7 +89,7 @@ const MemberCard = (props) => {
             return (
               <Row className={styles.groupRow}>
                 <Col span={PROJECTS} className={styles.normalCell}>
-                  {projectName}
+                  {renderProjectName(pj, index)}
                 </Col>
                 <Col
                   span={PROJECT_MANAGER}
