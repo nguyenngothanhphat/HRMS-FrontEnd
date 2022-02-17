@@ -1,20 +1,19 @@
-import React, { PureComponent } from 'react';
-import { Select, DatePicker, Input, Button, Row, Col, Form, message, Skeleton } from 'antd';
-import { connect, history } from 'umi';
+import { Button, Col, DatePicker, Form, Input, message, Row, Select, Skeleton } from 'antd';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { connect, history } from 'umi';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
 import TimeOffModal from '@/components/TimeOffModal';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import {
-  TIMEOFF_STATUS,
-  TIMEOFF_LINK_ACTION,
   MAX_NO_OF_DAYS_TO_SHOW,
+  TIMEOFF_LINK_ACTION,
+  TIMEOFF_STATUS,
   TIMEOFF_TYPE,
 } from '@/utils/timeOff';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import LeaveTimeRow from './LeaveTimeRow';
-
 import styles from './index.less';
+import LeaveTimeRow from './LeaveTimeRow';
 import LeaveTimeRow2 from './LeaveTimeRow2';
 
 const { Option } = Select;
@@ -23,46 +22,64 @@ const { TextArea } = Input;
 const { A, B, C, D } = TIMEOFF_TYPE;
 const { IN_PROGRESS, DRAFTS } = TIMEOFF_STATUS;
 const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST } = TIMEOFF_LINK_ACTION;
-@connect(({ timeOff, user, loading }) => ({
-  timeOff,
-  user,
-  loadingAddLeaveRequest: loading.effects['timeOff/addLeaveRequest'],
-  loadingUpdatingLeaveRequest: loading.effects['timeOff/updateLeaveRequestById'],
-  loadingSaveDraft: loading.effects['timeOff/saveDraftLeaveRequest'],
-  loadingUpdateDraft: loading.effects['timeOff/updateDraftLeaveRequest'],
-  loadingMain:
-    loading.effects['timeOff/getTimeOffTypeByLocation'] ||
-    loading.effects['timeOff/fetchLeaveBalanceOfUser'] ||
-    loading.effects['timeOff/fetchTimeOffTypesByCountry'],
-}))
-class RequestInformation extends PureComponent {
-  formRef = React.createRef();
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedTypeName: '',
-      selectedType: '', // A, B, C or D
-      showSuccessModal: false,
-      secondNotice: '',
-      durationFrom: '',
-      durationTo: '',
-      buttonState: 0, // save draft or submit
-      viewingLeaveRequestId: '',
-      isEditingDrafts: false,
-      remainingDayOfSelectedType: 0,
-      viewDocumentModal: false,
-    };
-  }
+const dateFormat = 'Do MMM YYYY';
 
-  getTableTabIndexOfSubmittedType = (selectedType, selectedTypeName) => {
-    switch (selectedTypeName) {
+const RequestInformation = (props) => {
+  const {
+    dispatch,
+    action = '',
+    ticketID = '',
+    timeOff: {
+      viewingLeaveRequest = {},
+      viewingLeaveRequest: {
+        _id: viewingId = '',
+        leaveDates: viewingLeaveDates = [],
+        type: viewingType = {} || {},
+        subject: viewingSubject = '',
+        fromDate: viewingFromDate = '',
+        toDate: viewingToDate = '',
+        description: viewingDescription = '',
+        cc: viewingCC = [],
+        status: viewingStatus = '',
+      } = {},
+      timeOffTypesByCountry = [],
+      emailsList = [],
+      totalLeaveBalance: {
+        commonLeaves: { timeOffTypes: timeOffTypesAB = [] } = {},
+        specialLeaves: { timeOffTypes: timeOffTypesCD = [] } = {},
+      } = {},
+    } = {},
+    user: { currentUser: { location = {}, employee = {} } = {} } = {},
+    loadingAddLeaveRequest = false,
+    loadingUpdatingLeaveRequest = false,
+    loadingSaveDraft = false,
+    loadingUpdateDraft = false,
+    loadingMain = false,
+  } = props;
+
+  const [form] = Form.useForm();
+  const [selectedTypeName, setSelectedTypeName] = useState('');
+  const [selectedType, setSelectedType] = useState('');
+  const [showSuccessModalVisible, setShowSuccessModalVisible] = useState(false);
+  const [secondNotice, setSecondNotice] = useState('');
+  const [durationFrom, setDurationFrom] = useState('');
+  const [durationTo, setDurationTo] = useState('');
+  const [buttonState, setButtonState] = useState(0); // save draft or submit
+  const [isEditingDrafts, setIsEditingDrafts] = useState(false);
+  const [remainingDayOfSelectedType, setRemainingDayOfSelectedType] = useState(0);
+  const [viewDocumentModal, setViewDocumentModal] = useState(false);
+  const [currentAllowanceState, setCurrentAllowanceState] = useState(0);
+
+  // functions
+  const getTableTabIndexOfSubmittedType = (selectedTypeTemp, selectedTypeNameTemp) => {
+    switch (selectedTypeNameTemp) {
       case 'LWP': // wrong here
         return '3';
       default:
         break;
     }
-    switch (selectedType) {
+    switch (selectedTypeTemp) {
       case A:
       case B:
         return '1';
@@ -75,9 +92,7 @@ class RequestInformation extends PureComponent {
     }
   };
 
-  saveCurrentTypeTab = (type) => {
-    const { dispatch } = this.props;
-    const { buttonState } = this.state;
+  const saveCurrentTypeTab = (type) => {
     dispatch({
       type: 'timeOff/save',
       payload: {
@@ -88,140 +103,27 @@ class RequestInformation extends PureComponent {
     });
   };
 
-  // view policy modal
-  setViewDocumentModal = (value) => {
-    this.setState({
-      viewDocumentModal: value,
-    });
-  };
-
   // fetch email list of company
-  fetchEmailsListByCompany = () => {
-    const { dispatch, user: { currentUser: { company: { _id: company = '' } = {} } = {} } = {} } =
-      this.props;
+  const fetchEmailsListByCompany = () => {
     dispatch({
       type: 'timeOff/fetchEmailsListByCompany',
-      payload: [company],
+      payload: [getCurrentCompany()],
     });
   };
 
-  // clear viewingLeaveRequest
-  componentWillUnmount = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'timeOff/clearViewingLeaveRequest',
+  const checkIfHalfDayAvailable = (date) => {
+    const { invalidDates = [] } = props;
+    const find = invalidDates.some((x) => {
+      return (
+        moment.utc(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
+        x.timeOfDay !== 'WHOLE-DAY'
+      );
     });
-  };
-
-  // FETCH LEAVE BALANCE INFO (REMAINING, TOTAL,...)
-  componentDidMount = async () => {
-    const {
-      dispatch,
-      action = '',
-      user: { currentUser: { location: { _id } = {} } = {} } = {},
-    } = this.props;
-
-    await dispatch({
-      type: 'timeOff/fetchLeaveBalanceOfUser',
-      payload: {
-        location: _id,
-      },
-    });
-
-    this.fetchEmailsListByCompany();
-
-    if (action === EDIT_LEAVE_REQUEST) {
-      const { viewingLeaveRequest = {} } = this.props;
-      // console.log('viewingLeaveRequest', viewingLeaveRequest);
-      const {
-        type: { _id: typeId = '', type = '', name = '' } = {} || {},
-        subject = '',
-        fromDate = '',
-        toDate = '',
-        leaveDates = [],
-        description = '',
-        cc = [],
-        _id: requestId,
-        status = '',
-      } = viewingLeaveRequest;
-
-      if (status === DRAFTS) {
-        this.setState({
-          isEditingDrafts: true,
-        });
-      }
-
-      this.setState({
-        viewingLeaveRequestId: requestId,
-      });
-
-      this.setState({
-        durationFrom: fromDate === null ? null : moment.utc(fromDate),
-        durationTo: toDate === null ? null : moment.utc(toDate),
-        selectedTypeName: name,
-        selectedType: type,
-      });
-
-      // const personCC = cc.map((person) => (person ? person._id : null));
-
-      // if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-      // generate date lists and leave time
-      const dateLists = this.getDateLists(fromDate, toDate, type);
-      const resultDates = [];
-
-      let check = false;
-      dateLists.forEach((val1) => {
-        check = false;
-        leaveDates.forEach((val2) => {
-          const { date = '' } = val2;
-          if (moment(date).locale('en').format('YYYY-MM-DD') === val1) {
-            resultDates.push(val2);
-            check = true;
-          }
-        });
-        if (!check) resultDates.push(null);
-      });
-      const leaveTimeLists = resultDates.map((date) => (date ? date.timeOfDay : null));
-
-      // set values from server to fields
-      this.formRef.current.setFieldsValue({
-        timeOffType: typeId,
-        subject,
-        durationFrom: fromDate === null ? null : moment.utc(fromDate),
-        durationTo: toDate === null ? null : moment.utc(toDate),
-        description,
-        personCC: cc,
-        leaveTimeLists,
-      });
-
-      // set notice
-      if (type === C) {
-        this.autoValueForToDate(type, name, moment.utc(fromDate), '');
-      }
-
-      if (type === D) {
-        this.setSecondNotice(`${name} applied for: ${dateLists.length} days`);
-      }
-
-      this.getRemainingDay(name);
-      // this.autoValueForToDate(type, shortType, moment.utc(fromDate), '');
-      if (type === A && name === 'Casual Leave' && fromDate && moment(fromDate)) {
-        this.setSecondNotice(`${name}s gets credited each month.`);
-      }
-    }
+    return !find;
   };
 
   // GET REMAINING DAY
-  getRemainingDay = (typeName) => {
-    const {
-      timeOff: {
-        totalLeaveBalance: {
-          commonLeaves: { timeOffTypes: timeOffTypesAB = [] } = {},
-          specialLeaves: { timeOffTypes: timeOffTypesCD = [] } = {},
-        } = {},
-      } = {},
-    } = this.props;
-
+  const getRemainingDay = (typeName) => {
     let count = 0;
     // let total = 0;
     let check = false;
@@ -258,23 +160,10 @@ class RequestInformation extends PureComponent {
         }
       });
 
-    this.setState({
-      remainingDayOfSelectedType: count,
-      // totalDayOfSelectedType: total,
-    });
-    return count;
+    setRemainingDayOfSelectedType(count);
   };
 
-  getRemainingDayById = (_id) => {
-    const {
-      timeOff: {
-        totalLeaveBalance: {
-          commonLeaves: { timeOffTypes: timeOffTypesAB = [] } = {},
-          specialLeaves: { timeOffTypes: timeOffTypesCD = [] } = {},
-        } = {},
-      } = {},
-    } = this.props;
-
+  const getRemainingDayById = (_id) => {
     let count = 0;
 
     timeOffTypesAB.forEach((value) => {
@@ -294,47 +183,114 @@ class RequestInformation extends PureComponent {
     return count;
   };
 
-  // GET TIME OFF TYPE BY ID
-  onSelectTimeOffTypeChange = (id) => {
-    const { durationFrom, selectedType } = this.state;
-    const { timeOff: { timeOffTypesByCountry = [] } = {} } = this.props;
-    const foundType = timeOffTypesByCountry.find((t) => t._id === id);
+  const findInvalidHalfOfDay = (date) => {
+    const { invalidDates = [] } = props;
+    const find = invalidDates.find((x) => {
+      return moment.utc(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD');
+    });
+    return find?.timeOfDay || '';
+  };
 
-    if (foundType) {
-      const { type = '', name = '' } = foundType;
+  // DISABLE DATE OF DATE PICKER
+  const checkIfWholeDayAvailable = (date) => {
+    const { invalidDates = [] } = props;
+    const find = invalidDates.some(
+      (x) =>
+        moment.utc(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
+        x.timeOfDay === 'WHOLE-DAY',
+    );
+    return !find;
+  };
 
-      this.autoValueForToDate(type, name, durationFrom, selectedType);
+  // GET LIST OF DAYS FROM DAY A TO DAY B
+  const getDateLists = (startDate, endDate, selectedTypeProp) => {
+    const dates = [];
+    if (startDate && endDate) {
+      const now = moment(startDate).clone();
 
-      if (type === A && name === 'Casual Leave' && durationFrom) {
-        this.setSecondNotice(`${name}s gets credited each month.`);
+      const includeWeekend = selectedTypeProp && selectedTypeProp !== A && selectedTypeProp !== B;
+      if (includeWeekend) {
+        while (now.isSameOrBefore(moment(endDate), 'day')) {
+          if (checkIfWholeDayAvailable(now) || checkIfHalfDayAvailable(now)) {
+            dates.push(now.format('YYYY-MM-DD'));
+            now.add(1, 'days');
+          }
+        }
+      } else {
+        while (now.isSameOrBefore(moment(endDate), 'day')) {
+          if (moment(now).weekday() !== 6 && moment(now).weekday() !== 0) {
+            if (checkIfWholeDayAvailable(now) || checkIfHalfDayAvailable(now)) {
+              dates.push(now.format('YYYY-MM-DD'));
+            }
+          }
+          now.add(1, 'days');
+        }
       }
+    }
+    return dates;
+  };
 
-      this.getRemainingDay(name);
+  const getCurrentAllowance = (type) => {
+    let list = [];
+    if (type === C || type === D) {
+      list = [...timeOffTypesCD];
+    }
+    if (type === A || type === B) {
+      list = [...timeOffTypesAB];
+    }
+    const foundType = list.find((value) => value.defaultSettings.name === selectedTypeName);
+    return foundType?.currentAllowance || 0;
+  };
 
-      this.setState({
-        selectedType: type,
-        selectedTypeName: name,
+  // AUTO VALUE FOR TODATE of DATE PICKER DEPENDS ON SELECTED TYPE
+  const autoValueForToDate = () => {
+    let autoToDate = null;
+
+    if (selectedType === C) {
+      const currentAllowance = getCurrentAllowance(selectedType);
+
+      if (currentAllowance !== 0)
+        autoToDate = moment.utc(durationFrom).add(currentAllowance - 1, 'day');
+      else autoToDate = moment.utc(durationFrom).add(currentAllowance, 'day');
+
+      setCurrentAllowanceState(currentAllowance);
+
+      const dateLists = getDateLists(durationFrom, autoToDate, selectedType);
+      const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
+
+      setDurationTo(autoToDate);
+
+      form.setFieldsValue({
+        durationTo: autoToDate,
+        leaveTimeLists: initialValuesForLeaveTimesList,
+      });
+    }
+    if (selectedType === D) {
+      setDurationTo(null);
+      form.setFieldsValue({
+        durationTo: null,
+        leaveTimeLists: [],
       });
     }
   };
 
-  // SHOW BELOW NOTICE (BESIDE DURATION FIELD)
-  setSecondNotice = (value) => {
-    this.setState({
-      secondNotice: value,
-    });
+  // GET TIME OFF TYPE BY ID
+  const onSelectTimeOffTypeChange = (id) => {
+    const foundType = timeOffTypesByCountry.find((t) => t._id === id);
+    if (foundType) {
+      const { type = '', name = '' } = foundType;
+      setSelectedType(type);
+      setSelectedTypeName(name);
+    }
   };
 
   // ON FINISH & SHOW SUCCESS MODAL WHEN CLICKING ON SUBMIT
-  setShowSuccessModal = (value) => {
-    this.setState({
-      showSuccessModal: value,
-    });
+  const setShowSuccessModal = (value) => {
+    setShowSuccessModalVisible(value);
 
     if (!value) {
-      const { selectedType, selectedTypeName } = this.state;
-      const returnTab = this.getTableTabIndexOfSubmittedType(selectedType, selectedTypeName);
-      this.saveCurrentTypeTab(returnTab);
+      const returnTab = getTableTabIndexOfSubmittedType(selectedType, selectedTypeName);
+      saveCurrentTypeTab(returnTab);
       setTimeout(() => {
         history.goBack();
       }, 200);
@@ -342,7 +298,7 @@ class RequestInformation extends PureComponent {
   };
 
   // CALCULATE DURATION FOR API
-  calculateNumberOfLeaveDay = (list) => {
+  const calculateNumberOfLeaveDay = (list) => {
     let count = 0;
     list.forEach((value) => {
       const { timeOfDay = '' } = value;
@@ -364,8 +320,8 @@ class RequestInformation extends PureComponent {
   };
 
   // GENERATE LEAVE DATES FOR API
-  generateLeaveDates = (from, to, leaveTimeLists, selectedType) => {
-    const dateLists = this.getDateLists(from, to, selectedType);
+  const generateLeaveDates = (from, to, leaveTimeLists, selectedTypeTemp) => {
+    const dateLists = getDateLists(from, to, selectedTypeTemp);
     let result = [];
     if (leaveTimeLists.length === 0) {
       // type C,D
@@ -398,23 +354,15 @@ class RequestInformation extends PureComponent {
   };
 
   // ON SAVE DRAFT
-  onSaveDraft = (values) => {
-    const {
-      buttonState,
-      isEditingDrafts,
-      viewingLeaveRequestId,
-      // totalDayOfSelectedType,
-      selectedType,
-    } = this.state;
+  const onSaveDraft = (values) => {
     if (buttonState === 1) {
-      const { dispatch, user: { currentUser: { employee = {} } = {} } = {} } = this.props;
       const { _id: employeeId = '', manager = '' } = employee;
       const {
         timeOffType = '',
         subject = '',
         description = '',
-        durationFrom = '',
-        durationTo = '',
+        durationFrom: durationFromValue = '',
+        durationTo: durationToValue = '',
         personCC = [],
         leaveTimeLists = [],
       } = values;
@@ -422,18 +370,18 @@ class RequestInformation extends PureComponent {
       if (timeOffType === '') {
         message.error('Please fill required fields!');
       } else {
-        const leaveDates = this.generateLeaveDates(
-          durationFrom,
-          durationTo,
+        const leaveDatesPayload = generateLeaveDates(
+          durationFromValue,
+          durationToValue,
           leaveTimeLists,
           selectedType,
         );
 
         // let duration = 0;
-        // if (selectedType !== C) duration = this.calculateNumberOfLeaveDay(leaveDates);
+        // if (selectedType !== C) duration = calculateNumberOfLeaveDay(leaveDates);
         // else duration = totalDayOfSelectedType;
 
-        const duration = this.calculateNumberOfLeaveDay(leaveDates);
+        const duration = calculateNumberOfLeaveDay(leaveDatesPayload);
 
         const data = {
           type: timeOffType,
@@ -442,7 +390,7 @@ class RequestInformation extends PureComponent {
           fromDate: durationFrom,
           toDate: durationTo,
           duration,
-          leaveDates,
+          leaveDates: leaveDatesPayload,
           onDate: moment.utc(),
           description,
           approvalManager: manager, // id
@@ -450,21 +398,20 @@ class RequestInformation extends PureComponent {
           company: getCurrentCompany(),
         };
 
-        // console.log('draft data', data);
         if (!isEditingDrafts) {
           dispatch({
             type: 'timeOff/saveDraftLeaveRequest',
             payload: data,
           }).then((statusCode) => {
-            if (statusCode === 200) this.setShowSuccessModal(true);
+            if (statusCode === 200) setShowSuccessModal(true);
           });
         } else {
-          data._id = viewingLeaveRequestId;
+          data._id = viewingId;
           dispatch({
             type: 'timeOff/updateDraftLeaveRequest',
             payload: data,
           }).then((statusCode) => {
-            if (statusCode === 200) this.setShowSuccessModal(true);
+            if (statusCode === 200) setShowSuccessModal(true);
           });
         }
       }
@@ -472,48 +419,32 @@ class RequestInformation extends PureComponent {
   };
 
   // ON FINISH
-  onFinish = (values) => {
-    // eslint-disable-next-line no-console
-    // console.log('Success:', values);
-    const {
-      dispatch,
-      action = '',
-      user: { currentUser: { employee = {} } = {} } = {},
-    } = this.props;
+  const onFinish = (values) => {
     const { _id: employeeId = '', managerInfo: { _id: managerId = '' } = {} } = employee;
-    const {
-      viewingLeaveRequestId,
-      // totalDayOfSelectedType,
-      remainingDayOfSelectedType,
-      selectedTypeName,
-      selectedType,
-    } = this.state;
     const {
       timeOffType = '',
       subject = '',
       description = '',
-      durationFrom = '',
-      durationTo = '',
+      durationFrom: durationFromTemp = '',
+      durationTo: durationToTemp = '',
       personCC = [],
       leaveTimeLists = [],
     } = values;
 
-    const leaveDates = this.generateLeaveDates(
-      durationFrom,
-      durationTo,
+    const leaveDatesPayload = generateLeaveDates(
+      durationFromTemp,
+      durationToTemp,
       leaveTimeLists,
       selectedType,
     );
 
-    const { buttonState } = this.state;
-
     // ON SUBMIT
     if (buttonState === 2) {
-      if (leaveDates.length === 0) {
+      if (leaveDatesPayload.length === 0) {
         message.error('Please select valid leave time dates!');
       } else {
         // generate data for API
-        const duration = this.calculateNumberOfLeaveDay(leaveDates);
+        const duration = calculateNumberOfLeaveDay(leaveDatesPayload);
 
         if ((selectedType === A || selectedType === B) && duration > remainingDayOfSelectedType) {
           message.error(
@@ -527,7 +458,7 @@ class RequestInformation extends PureComponent {
             fromDate: durationFrom,
             toDate: durationTo,
             duration,
-            leaveDates,
+            leaveDates: leaveDatesPayload,
             onDate: moment.utc(),
             description,
             cc: personCC,
@@ -541,10 +472,9 @@ class RequestInformation extends PureComponent {
             data.approvalManager = managerId; // id
             type = 'timeOff/addLeaveRequest';
           } else if (action === EDIT_LEAVE_REQUEST) {
-            const { viewingLeaveRequest = {} } = this.props;
             const { employee: { _id = '' } = {} } = viewingLeaveRequest;
             data.employee = _id;
-            data._id = viewingLeaveRequestId;
+            data._id = viewingId;
             type = 'timeOff/updateLeaveRequestById';
           }
 
@@ -553,147 +483,32 @@ class RequestInformation extends PureComponent {
             type,
             payload: data,
           }).then((statusCode) => {
-            if (statusCode === 200) this.setShowSuccessModal(true);
+            if (statusCode === 200) setShowSuccessModal(true);
           });
         }
       }
     } else if (buttonState === 1) {
-      this.onSaveDraft(values);
+      onSaveDraft(values);
     }
   };
 
-  onFinishFailed = (errorInfo) => {
+  const onFinishFailed = (errorInfo) => {
     const { values = {} } = errorInfo;
-    this.onSaveDraft(values);
+    onSaveDraft(values);
   };
 
-  // AUTO VALUE FOR TODATE of DATE PICKER DEPENDING ON SELECTED TYPE
-  autoValueForToDate = (selectedType, selectedTypeName, durationFrom, prevType) => {
-    let autoToDate = null;
-    const typeAB = [A, B];
-    const typeCD = [C, D];
-
-    if (
-      !typeAB.includes(prevType) ||
-      (typeAB.includes(prevType) && !typeAB.includes(selectedType))
-    ) {
-      if (durationFrom && typeCD.includes(selectedType)) {
-        const { timeOff: { totalLeaveBalance: { specialLeaves = {} || {} } = {} || {} } = {} } =
-          this.props;
-
-        const { timeOffTypes = [] } = specialLeaves;
-
-        if (selectedType === C) {
-          const foundType = timeOffTypes.find(
-            (value) => value.defaultSettings.name === selectedTypeName,
-          );
-          const { currentAllowance = 0 } = foundType || {};
-
-          if (currentAllowance !== 0)
-            autoToDate = moment.utc(durationFrom).add(currentAllowance - 1, 'day');
-          else autoToDate = moment.utc(durationFrom).add(currentAllowance, 'day');
-
-          this.setSecondNotice(
-            `A 'To date' will be set automatically as per a duration of ${currentAllowance} days from the selected 'From date'`,
-          );
-
-          const dateLists = this.getDateLists(durationFrom, autoToDate, selectedType);
-          const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
-
-          this.setState({
-            durationTo: autoToDate,
-          });
-
-          this.formRef.current.setFieldsValue({
-            durationTo: autoToDate,
-            leaveTimeLists: initialValuesForLeaveTimesList,
-          });
-        }
-        if (selectedType === D) {
-          this.setSecondNotice('');
-
-          this.setState({
-            durationTo: null,
-          });
-
-          this.formRef.current.setFieldsValue({
-            durationTo: null,
-            leaveTimeLists: [],
-          });
-        }
-      } else if (prevType) {
-        this.formRef.current.setFieldsValue({
-          leaveTimeLists: [],
-          durationTo: null,
-        });
-        this.setState({
-          durationTo: '',
-        });
-        this.setSecondNotice(``);
-      }
-    }
+  const toDateOnChange = (value) => {
+    setDurationTo(value || '');
   };
 
   // DATE PICKER ON CHANGE
-  fromDateOnChange = (value) => {
-    if (value === null) {
-      this.setState({
-        durationFrom: '',
-      });
-    } else {
-      this.setState({
-        durationFrom: value,
-      });
-    }
-
-    const { selectedTypeName, selectedType, durationTo } = this.state;
-    if (selectedType === C || selectedType === D)
-      this.autoValueForToDate(selectedType, selectedTypeName, value);
-
-    if (selectedType === A && selectedTypeName === 'Casual Leave')
-      this.setSecondNotice(`${selectedTypeName}s gets credited each month.`);
-
-    if (durationTo) {
-      this.toDateOnChange(durationTo);
-    }
-  };
-
-  toDateOnChange = (value) => {
-    if (value === null) {
-      this.setState({
-        durationTo: '',
-      });
-    } else {
-      this.setState({
-        durationTo: value,
-      });
-    }
-    const { selectedTypeName, selectedType, durationFrom } = this.state;
-    if (selectedType === A && selectedTypeName === 'Casual Leave')
-      this.setSecondNotice(`${selectedTypeName}s gets credited each month.`);
-
-    // initial value for leave dates list
-    const dateLists = this.getDateLists(durationFrom, value, selectedType);
-    const initialValuesForLeaveTimesList = dateLists.map((x) => {
-      if (this.findInvalidHalfOfDay(x) === 'MORNING') return 'AFTERNOON';
-      if (this.findInvalidHalfOfDay(x) === 'AFTERNOON') return 'MORNING';
-      return 'WHOLE-DAY';
-    });
-
-    if (selectedType === D) {
-      this.setSecondNotice(
-        `${selectedTypeName} applied for: ${initialValuesForLeaveTimesList.length} days`,
-      );
-    }
-
-    this.formRef.current.setFieldsValue({
-      leaveTimeLists: initialValuesForLeaveTimesList,
-    });
+  const fromDateOnChange = (value) => {
+    setDurationFrom(value || '');
   };
 
   // RENDER SELECT BOX
   // GET DATA FOR SELECT BOX TYPE 1,2
-  renderTimeOffTypes = (data) => {
+  const renderTimeOffTypes = (data) => {
     const result = data.map((type) => {
       const { currentAllowance = 0, defaultSettings = {} } = type;
       if (defaultSettings) {
@@ -707,16 +522,12 @@ class RequestInformation extends PureComponent {
       }
       return '';
     });
-    return result.filter((val) => val !== '');
+    return result.filter((val) => val);
   };
 
   // RENDER OPTIONS
   // TYPE A & B: PAID LEAVES & UNPAID LEAVES
-  renderType1 = (data) => {
-    const {
-      timeOff: { timeOffTypesByCountry = [] },
-    } = this.props;
-
+  const renderType1 = (data) => {
     return data.map((value) => {
       const { name = '', type = '', remaining = 0, _id = '' } = value;
 
@@ -770,17 +581,11 @@ class RequestInformation extends PureComponent {
       );
     });
   };
-
   // TYPE C: SPECIAL LEAVES & TYPE D: WORKING OUT OF OFFICE
-  renderType2 = (data) => {
-    const {
-      timeOff: { timeOffTypesByCountry = [] },
-    } = this.props;
+  const renderType2 = (data) => {
     return data.map((value) => {
       const { name = '', remaining = 0, _id } = value;
-
       const foundType = timeOffTypesByCountry.find((t) => t._id === _id) || {};
-
       return (
         <Option value={_id}>
           <div className={styles.timeOffTypeOptions}>
@@ -807,90 +612,26 @@ class RequestInformation extends PureComponent {
     });
   };
 
-  // GET LIST OF DAYS FROM DAY A TO DAY B
-  getDateLists = (startDate, endDate, selectedType) => {
-    const dates = [];
-    if (startDate && endDate) {
-      const now = moment(startDate).clone();
-
-      const includeWeekend = selectedType && selectedType !== A && selectedType !== B;
-      if (includeWeekend) {
-        while (now.isSameOrBefore(moment(endDate), 'day')) {
-          if (this.checkIfWholeDayAvailable(now) || this.checkIfHalfDayAvailable(now)) {
-            dates.push(now.format('YYYY-MM-DD'));
-            now.add(1, 'days');
-          }
-        }
-      } else {
-        while (now.isSameOrBefore(moment(endDate), 'day')) {
-          if (moment(now).weekday() !== 6 && moment(now).weekday() !== 0) {
-            if (this.checkIfWholeDayAvailable(now) || this.checkIfHalfDayAvailable(now)) {
-              dates.push(now.format('YYYY-MM-DD'));
-            }
-          }
-          now.add(1, 'days');
-        }
-      }
-    }
-    return dates;
-  };
-
-  // DISABLE DATE OF DATE PICKER
-  checkIfWholeDayAvailable = (date) => {
-    const { invalidDates = [] } = this.props;
-    const find = invalidDates.some(
-      (x) =>
-        moment.utc(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
-        x.timeOfDay === 'WHOLE-DAY',
-    );
-    return !find;
-  };
-
-  checkIfHalfDayAvailable = (date) => {
-    const { invalidDates = [] } = this.props;
-    const find = invalidDates.some((x) => {
-      return (
-        moment.utc(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
-        x.timeOfDay !== 'WHOLE-DAY'
-      );
-    });
-    return !find;
-  };
-
-  findInvalidHalfOfDay = (date) => {
-    const { invalidDates = [] } = this.props;
-    const find = invalidDates.find((x) => {
-      return moment.utc(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD');
-    });
-    return find?.timeOfDay || '';
-  };
-
-  disabledFromDate = (current) => {
-    const { durationTo } = this.state;
-
+  const disabledFromDate = (current) => {
     return (
       (current && moment(current).isAfter(moment(durationTo), 'day')) ||
       moment(current).day() === 0 ||
       moment(current).day() === 6 ||
-      !this.checkIfWholeDayAvailable(current)
+      !checkIfWholeDayAvailable(current)
     );
   };
 
-  disabledToDate = (current) => {
-    const { durationFrom } = this.state;
+  const disabledToDate = (current) => {
     return (
       (current && moment(current).isBefore(moment(durationFrom), 'day')) ||
       moment(current).day() === 0 ||
       moment(current).day() === 6 ||
-      !this.checkIfWholeDayAvailable(current)
+      !checkIfWholeDayAvailable(current)
     );
   };
 
   // RENDER EMAILS LIST
-  renderEmailsList = () => {
-    const {
-      timeOff: { emailsList = [] },
-    } = this.props;
+  const renderEmailsList = () => {
     const list = emailsList.map((user) => {
       const {
         _id = '',
@@ -904,26 +645,14 @@ class RequestInformation extends PureComponent {
     return list;
   };
 
-  // COMPARE TWO DAYS
-  compareTwoDates = (from, to) => {
-    // moment object
-    if (from < to) return -1;
-    if (from > to) return 1;
-    return 0;
-  };
-
   // ON CANCEL EDIT
-  onCancelEdit = () => {
-    const { viewingLeaveRequestId: id } = this.state;
-    history.push(`/time-off/overview/personal-timeoff/view/${id}`);
+  const onCancelEdit = () => {
+    history.push(`/time-off/overview/personal-timeoff/view/${viewingId}`);
   };
 
   // RENDER MODAL content
-  renderModalContent = () => {
-    const { action = '', ticketID = '' } = this.props;
-    const { selectedTypeName, buttonState, isEditingDrafts } = this.state;
+  const renderModalContent = () => {
     let content = '';
-
     if (action === EDIT_LEAVE_REQUEST) {
       if (buttonState === 1) {
         content = `${selectedTypeName} request saved as draft.`;
@@ -944,476 +673,582 @@ class RequestInformation extends PureComponent {
   };
 
   // on policy link clicked
-  onLinkClick = () => {
-    this.setViewDocumentModal(true);
+  const onLinkClick = () => {
+    setViewDocumentModal(true);
   };
 
   // validator
-  typeValidator = (rule, value, callback) => {
-    const { selectedTypeName } = this.state;
-    const remaining = this.getRemainingDayById(value);
+  const typeValidator = (rule, value, callback) => {
+    const remaining = getRemainingDayById(value);
     if (remaining === 'VALID' || remaining > 0) callback();
     else if (selectedTypeName) callback('Leave dates reach limit.');
     else callback();
   };
 
-  render() {
-    const layout = {
-      labelCol: {
-        span: 6,
+  // FETCH LEAVE BALANCE INFO (REMAINING, TOTAL,...)
+  const fetchData = async () => {
+    await dispatch({
+      type: 'timeOff/fetchLeaveBalanceOfUser',
+      payload: {
+        location: location._id,
       },
-      wrapperCol: {
-        span: 10,
-      },
+    });
+
+    fetchEmailsListByCompany();
+
+    if (action === EDIT_LEAVE_REQUEST) {
+      if (viewingStatus === DRAFTS) {
+        setIsEditingDrafts(true);
+      }
+
+      setDurationFrom(viewingFromDate ? moment.utc(viewingFromDate) : null);
+      setDurationTo(viewingToDate ? moment.utc(viewingToDate) : null);
+      setSelectedTypeName(viewingType.name);
+      setSelectedType(viewingType.type);
+
+      // generate date lists and leave time
+      const dateLists = getDateLists(viewingFromDate, viewingToDate, viewingType?.type);
+      const resultDates = [];
+
+      let check = false;
+      dateLists.forEach((val1) => {
+        check = false;
+        viewingLeaveDates.forEach((val2) => {
+          const { date = '' } = val2;
+          if (moment(date).locale('en').format('YYYY-MM-DD') === val1) {
+            resultDates.push(val2);
+            check = true;
+          }
+        });
+        if (!check) resultDates.push(null);
+      });
+      const leaveTimeLists = resultDates.map((date) => (date ? date.timeOfDay : null));
+
+      // set values from server to fields
+      form.setFieldsValue({
+        timeOffType: viewingType?._id,
+        subject: viewingSubject,
+        durationFrom: viewingFromDate ? moment.utc(viewingFromDate) : null,
+        durationTo: viewingToDate ? moment.utc(viewingToDate) : null,
+        description: viewingDescription,
+        personCC: viewingCC,
+        leaveTimeLists,
+      });
+
+      // set notice
+      if (viewingType.type === C) {
+        autoValueForToDate();
+      }
+
+      if (viewingType.type === D) {
+        setSecondNotice(`${viewingType.name} applied for: ${dateLists.length} days`);
+      }
+
+      getRemainingDay(viewingType.name);
+    }
+  };
+
+  // USE EFFECT
+
+  useEffect(() => {
+    fetchData();
+    return () => {
+      dispatch({
+        type: 'timeOff/clearViewingLeaveRequest',
+      });
     };
-    const formatListEmail = this.renderEmailsList() || [];
+  }, [JSON.stringify(viewingLeaveRequest)]);
 
-    const dateFormat = 'Do MMM YYYY';
+  const generateSecondNotice = () => {
+    switch (selectedType) {
+      case A:
+      case B:
+        return `${selectedTypeName}s gets credited each month.`;
+      case C: {
+        if (currentAllowanceState) {
+          return `A 'To date' will be set automatically as per a duration of ${currentAllowanceState} days from the selected 'From date'`;
+        }
+        return '';
+      }
 
-    const {
-      selectedTypeName,
-      showSuccessModal,
-      secondNotice,
-      durationFrom,
-      durationTo,
-      selectedType,
-      isEditingDrafts,
-      buttonState,
-      remainingDayOfSelectedType,
-      // negativeLeave,
-      viewDocumentModal,
-    } = this.state;
+      default:
+        return '';
+    }
+  };
 
-    const {
-      timeOff: {
-        // timeOffTypes = [],
-        totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {},
-        viewingLeaveRequest: { leaveDates = [] } = {},
-      } = {},
-      loadingAddLeaveRequest = false,
-      loadingUpdatingLeaveRequest = false,
-      loadingSaveDraft = false,
-      loadingUpdateDraft = false,
-      loadingMain = false,
-      action = '',
-    } = this.props;
-    const { timeOffTypes: typesOfCommonLeaves = [] } = commonLeaves;
-    const { timeOffTypes: typesOfSpecialLeaves = [] } = specialLeaves;
-    const dataTimeOffTypes1 = this.renderTimeOffTypes(typesOfCommonLeaves);
-    const dataTimeOffTypes2 = this.renderTimeOffTypes(typesOfSpecialLeaves);
+  useEffect(() => {
+    // auto value for type C, D
+    if (selectedType === C || selectedType === D) {
+      if (selectedTypeName && durationFrom) {
+        autoValueForToDate();
+      } else {
+        toDateOnChange('');
+        form.setFieldsValue({
+          durationTo: '',
+        });
+      }
+    }
+  }, [selectedTypeName, durationFrom]);
 
-    // DYNAMIC ROW OF DATE LISTS
-    const dateLists = this.getDateLists(durationFrom, durationTo, selectedType);
+  useEffect(() => {
+    console.log('currentAllowanceState', currentAllowanceState);
+    // generate second notice
+    const secondNoticeTemp = generateSecondNotice();
+    setSecondNotice(secondNoticeTemp);
+  }, [selectedTypeName, durationFrom, currentAllowanceState]);
 
-    const calculateNumberOfDayProp =
-      action === EDIT_LEAVE_REQUEST ? this.calculateNumberOfLeaveDay(leaveDates) : 0;
-    const dateListsFromProps = calculateNumberOfDayProp === 0 ? null : calculateNumberOfDayProp;
+  useEffect(() => {
+    if (durationFrom && durationTo) {
+      // initial value for leave dates list
+      const dateLists = getDateLists(durationFrom, durationTo, selectedType);
+      const initialValuesForLeaveTimesList = dateLists.map((x) => {
+        if (findInvalidHalfOfDay(x) === 'MORNING') return 'AFTERNOON';
+        if (findInvalidHalfOfDay(x) === 'AFTERNOON') return 'MORNING';
+        return 'WHOLE-DAY';
+      });
 
-    let showAllDateList = false;
-    if (dateListsFromProps > 0 && dateListsFromProps <= MAX_NO_OF_DAYS_TO_SHOW) {
-      showAllDateList = true;
-    } else if (dateLists.length <= MAX_NO_OF_DAYS_TO_SHOW) showAllDateList = true;
+      if (selectedType === D) {
+        setSecondNotice(
+          `${selectedTypeName} applied for: ${initialValuesForLeaveTimesList.length} days`,
+        );
+      }
 
-    // if save as draft, no need to validate forms
-    const needValidate = buttonState === 2;
+      form.setFieldsValue({
+        leaveTimeLists: initialValuesForLeaveTimesList,
+      });
+    }
+    if (!durationTo && (selectedType === C || selectedType === D)) {
+      setSecondNotice('');
+    }
+  }, [durationFrom, durationTo]);
 
-    if (loadingMain) return <Skeleton />;
-    return (
-      <div className={styles.RequestInformation}>
-        <div className={styles.formTitle}>
-          <span>Timeoff</span>
-        </div>
-        <Form
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...layout}
-          name="basic"
-          ref={this.formRef}
-          id="myForm"
-          initialValues={{
-            remember: true,
-          }}
-          onFinish={this.onFinish}
-          onFinishFailed={this.onFinishFailed}
-          className={styles.form}
-        >
-          <Row className={styles.eachRow}>
-            <Col className={styles.label} span={6}>
-              <span>Select Timeoff Type</span> <span className={styles.mandatoryField}>*</span>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="timeOffType"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please select Timeoff Type!',
-                  },
-                  { validator: this.typeValidator },
-                ]}
+  // MAIN
+  const layout = {
+    labelCol: {
+      span: 6,
+    },
+    wrapperCol: {
+      span: 10,
+    },
+  };
+
+  const formatListEmail = renderEmailsList() || [];
+  // DYNAMIC ROW OF DATE LISTS
+  const dateLists = getDateLists(durationFrom, durationTo, selectedType);
+
+  const calculateNumberOfDayProp =
+    action === EDIT_LEAVE_REQUEST ? calculateNumberOfLeaveDay(viewingLeaveDates) : 0;
+  const dateListsFromProps = calculateNumberOfDayProp === 0 ? null : calculateNumberOfDayProp;
+
+  let showAllDateList = false;
+  if (dateListsFromProps > 0 && dateListsFromProps <= MAX_NO_OF_DAYS_TO_SHOW) {
+    showAllDateList = true;
+  } else if (dateLists.length <= MAX_NO_OF_DAYS_TO_SHOW) showAllDateList = true;
+
+  // if save as draft, no need to validate forms
+  const needValidate = buttonState === 2;
+
+  // RETURN MAIN
+  if (loadingMain) return <Skeleton />;
+  return (
+    <div className={styles.RequestInformation}>
+      <div className={styles.formTitle}>
+        <span>Timeoff</span>
+      </div>
+      <Form
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        {...layout}
+        name="basic"
+        id="myForm"
+        form={form}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        className={styles.form}
+      >
+        <Row className={styles.eachRow}>
+          <Col className={styles.label} span={6}>
+            <span>Select Timeoff Type</span> <span className={styles.mandatoryField}>*</span>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              name="timeOffType"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please select Timeoff Type!',
+                },
+                { validator: typeValidator },
+              ]}
+            >
+              <Select
+                onChange={(value) => {
+                  onSelectTimeOffTypeChange(value);
+                }}
+                placeholder="Timeoff Type"
               >
-                <Select
-                  onChange={(value) => {
-                    this.onSelectTimeOffTypeChange(value);
-                  }}
-                  placeholder="Timeoff Type"
-                >
-                  {this.renderType1(dataTimeOffTypes1)}
-                  {this.renderType2(dataTimeOffTypes2)}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              {selectedTypeName !== '' && (
-                <div className={styles.smallNotice}>
-                  <span className={styles.normalText}>
-                    {selectedTypeName}s are covered under{' '}
-                    <span className={styles.link} onClick={this.onLinkClick}>
-                      Standard Policy
-                    </span>
+                {renderType1(renderTimeOffTypes(timeOffTypesAB))}
+                {renderType2(renderTimeOffTypes(timeOffTypesCD))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            {selectedTypeName !== '' && (
+              <div className={styles.smallNotice}>
+                <span className={styles.normalText}>
+                  {selectedTypeName}s are covered under{' '}
+                  <span className={styles.link} onClick={onLinkClick}>
+                    Standard Policy
                   </span>
-                </div>
-              )}
-            </Col>
-          </Row>
+                </span>
+              </div>
+            )}
+          </Col>
+        </Row>
 
-          <Row className={styles.eachRow}>
-            <Col className={styles.label} span={6}>
-              <span>Subject</span> <span className={styles.mandatoryField}>*</span>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="subject"
-                rules={[
-                  {
-                    required: needValidate,
-                    message: 'Please input subject!',
-                  },
-                ]}
-              >
-                <Input placeholder="Enter Subject" />
-              </Form.Item>
-            </Col>
-            <Col span={6} />
-          </Row>
-          <Row className={styles.eachRow}>
-            <Col className={styles.label} span={6}>
-              <span>Duration</span> <span className={styles.mandatoryField}>*</span>
-            </Col>
-            <Col span={12}>
-              <Row gutter={['20', '0']}>
-                <Col span={12}>
-                  <Form.Item
-                    name="durationFrom"
-                    rules={[
-                      {
-                        required: needValidate,
-                        message: 'Please select a date!',
-                      },
-                    ]}
-                  >
-                    <DatePicker
-                      disabledDate={this.disabledFromDate}
-                      format={dateFormat}
-                      onChange={(value) => {
-                        this.fromDateOnChange(value);
-                      }}
-                      placeholder="From Date"
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name="durationTo"
-                    rules={[
-                      {
-                        required: needValidate,
-                        message: 'Please select a date!',
-                      },
-                    ]}
-                  >
-                    <DatePicker
-                      disabledDate={this.disabledToDate}
-                      format={dateFormat}
-                      disabled={selectedType === C}
-                      onChange={(value) => {
-                        this.toDateOnChange(value);
-                      }}
-                      placeholder="To Date"
-                    />
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Col>
-            <Col span={6}>
-              {secondNotice !== '' && (
-                <div className={styles.smallNotice}>
-                  <span className={styles.normalText}>{secondNotice}</span>
-                </div>
-              )}
-            </Col>
-          </Row>
+        <Row className={styles.eachRow}>
+          <Col className={styles.label} span={6}>
+            <span>Subject</span> <span className={styles.mandatoryField}>*</span>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              name="subject"
+              rules={[
+                {
+                  required: needValidate,
+                  message: 'Please input subject!',
+                },
+              ]}
+            >
+              <Input placeholder="Enter Subject" />
+            </Form.Item>
+          </Col>
+          <Col span={6} />
+        </Row>
+        <Row className={styles.eachRow}>
+          <Col className={styles.label} span={6}>
+            <span>Duration</span> <span className={styles.mandatoryField}>*</span>
+          </Col>
+          <Col span={12}>
+            <Row gutter={['20', '0']}>
+              <Col span={12}>
+                <Form.Item
+                  name="durationFrom"
+                  rules={[
+                    {
+                      required: needValidate,
+                      message: 'Please select a date!',
+                    },
+                  ]}
+                >
+                  <DatePicker
+                    disabledDate={disabledFromDate}
+                    format={dateFormat}
+                    onChange={(value) => {
+                      fromDateOnChange(value);
+                    }}
+                    placeholder="From Date"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="durationTo"
+                  rules={[
+                    {
+                      required: needValidate,
+                      message: 'Please select a date!',
+                    },
+                  ]}
+                >
+                  <DatePicker
+                    disabledDate={disabledToDate}
+                    format={dateFormat}
+                    disabled={selectedType === C}
+                    onChange={(value) => {
+                      toDateOnChange(value);
+                    }}
+                    placeholder="To Date"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Col>
+          <Col span={6}>
+            {secondNotice !== '' && (
+              <div className={styles.smallNotice}>
+                <span className={styles.normalText}>{secondNotice}</span>
+              </div>
+            )}
+          </Col>
+        </Row>
 
-          {selectedType !== C && selectedType !== D ? (
-            <>
-              <Row className={styles.eachRow}>
-                <Col className={styles.label} span={6}>
-                  <span>Leave time</span> <span className={styles.mandatoryField}>*</span>
-                </Col>
-                <Col span={12}>
-                  <div className={styles.extraTimeSpent}>
-                    {showAllDateList ? (
-                      <Row className={styles.header}>
-                        <Col span={7}>Date</Col>
-                        <Col span={7}>Day</Col>
-                        <Col span={10}>Count/Q.ty</Col>
-                      </Row>
-                    ) : (
-                      <Row className={styles.header}>
-                        <Col span={7}>From</Col>
-                        <Col span={7}>To</Col>
-                        <Col span={10}>No. of Days</Col>
-                      </Row>
-                    )}
-                    {(!durationFrom || !durationTo) && (
-                      <div className={styles.content}>
-                        <div className={styles.emptyContent}>
-                          <span>Selected duration will show as days</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </Col>
-                <Col span={6} />
-              </Row>
-
-              {durationFrom && durationTo && (
-                <Form.List name="leaveTimeLists">
-                  {() => (
-                    <Row key={1} className={styles.eachRow}>
-                      <Col className={styles.label} span={6}>
-                        <span />
-                      </Col>
-                      <Col span={12} className={styles.leaveDaysContainer}>
-                        {showAllDateList ? (
-                          dateLists.map((date, index) => {
-                            return (
-                              <LeaveTimeRow
-                                eachDate={date}
-                                index={index}
-                                onRemove={this.onDateRemove}
-                                listLength={dateLists.length}
-                                onChange={this.onDataChange}
-                                needValidate={needValidate}
-                                findInvalidHalfOfDay={this.findInvalidHalfOfDay}
-                              />
-                            );
-                          })
-                        ) : (
-                          <LeaveTimeRow2
-                            fromDate={durationFrom}
-                            toDate={durationTo}
-                            noOfDays={dateListsFromProps || dateLists.length}
-                          />
-                        )}
-                      </Col>
-                      <Col span={6} />
+        {selectedType !== C && selectedType !== D ? (
+          <>
+            <Row className={styles.eachRow}>
+              <Col className={styles.label} span={6}>
+                <span>Leave time</span> <span className={styles.mandatoryField}>*</span>
+              </Col>
+              <Col span={12}>
+                <div className={styles.extraTimeSpent}>
+                  {showAllDateList ? (
+                    <Row className={styles.header}>
+                      <Col span={7}>Date</Col>
+                      <Col span={7}>Day</Col>
+                      <Col span={10}>Count/Q.ty</Col>
                     </Row>
-                  )}
-                </Form.List>
-              )}
-            </>
-          ) : (
-            <>
-              <Row className={styles.eachRow}>
-                <Col className={styles.label} span={6}>
-                  <span>Leave time</span> <span className={styles.mandatoryField}>*</span>
-                </Col>
-                <Col span={12}>
-                  <div className={styles.extraTimeSpent}>
+                  ) : (
                     <Row className={styles.header}>
                       <Col span={7}>From</Col>
                       <Col span={7}>To</Col>
                       <Col span={10}>No. of Days</Col>
                     </Row>
-                    {(!durationFrom || !durationTo) && (
-                      <div className={styles.content}>
-                        <div className={styles.emptyContent}>
-                          <span>Selected duration will show as days</span>
-                        </div>
+                  )}
+                  {(!durationFrom || !durationTo) && (
+                    <div className={styles.content}>
+                      <div className={styles.emptyContent}>
+                        <span>Selected duration will show as days</span>
                       </div>
-                    )}
-                  </div>
-                </Col>
-                <Col span={6} />
-              </Row>
+                    </div>
+                  )}
+                </div>
+              </Col>
+              <Col span={6} />
+            </Row>
 
-              {durationFrom && durationTo && (
-                <Form.List name="leaveTimeLists">
-                  {() => (
-                    <Row key={1} className={styles.eachRow}>
-                      <Col className={styles.label} span={6}>
-                        <span />
-                      </Col>
-                      <Col span={12} className={styles.leaveDaysContainer}>
+            {durationFrom && durationTo && (
+              <Form.List name="leaveTimeLists">
+                {() => (
+                  <Row key={1} className={styles.eachRow}>
+                    <Col className={styles.label} span={6}>
+                      <span />
+                    </Col>
+                    <Col span={12} className={styles.leaveDaysContainer}>
+                      {showAllDateList ? (
+                        dateLists.map((date, index) => {
+                          return (
+                            <LeaveTimeRow
+                              eachDate={date}
+                              index={index}
+                              listLength={dateLists.length}
+                              needValidate={needValidate}
+                              findInvalidHalfOfDay={findInvalidHalfOfDay}
+                            />
+                          );
+                        })
+                      ) : (
                         <LeaveTimeRow2
                           fromDate={durationFrom}
                           toDate={durationTo}
                           noOfDays={dateListsFromProps || dateLists.length}
                         />
-                      </Col>
-                      <Col span={6} />
-                    </Row>
-                  )}
-                </Form.List>
-              )}
-            </>
-          )}
-          <Row className={styles.eachRow}>
-            <Col className={styles.label} span={6}>
-              <span>Description</span> <span className={styles.mandatoryField}>*</span>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="description"
-                rules={[
-                  {
-                    required: needValidate,
-                    message: 'Please input description!',
-                  },
-                ]}
-              >
-                <TextArea
-                  autoSize={{ minRows: 3, maxRows: 6 }}
-                  maxLength={250}
-                  placeholder="The reason I am taking timeoff is …"
-                />
-              </Form.Item>
-            </Col>
-            <Col span={6} />
-          </Row>
-
-          <Row className={styles.eachRow}>
-            <Col className={styles.label} span={6}>
-              <span>CC (only if you want to notify other than HR & your manager)</span>
-            </Col>
-            <Col span={12} className={styles.ccSelection}>
-              <Form.Item
-                name="personCC"
-                rules={[
-                  {
-                    required: false,
-                  },
-                ]}
-              >
-                <Select
-                  mode="multiple"
-                  allowClear
-                  placeholder="Search a person you want to loop"
-                  filterOption={(input, option) => {
-                    return (
-                      option.children[1].props.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                >
-                  {formatListEmail.map((value) => {
-                    const { _id = '', workEmail = '', avatar = '' } = value;
-
-                    return (
-                      <Option key={_id} value={_id}>
-                        <div style={{ display: 'inline', marginRight: '10px' }}>
-                          <img
-                            style={{
-                              borderRadius: '50%',
-                              width: '30px',
-                              height: '30px',
-                            }}
-                            src={avatar}
-                            alt="user"
-                            onError={(e) => {
-                              e.target.src = DefaultAvatar;
-                            }}
-                          />
-                        </div>
-                        <span
-                          style={{ fontSize: '13px', color: '#161C29' }}
-                          className={styles.ccEmail}
-                        >
-                          {workEmail}
-                        </span>
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={6} />
-          </Row>
-        </Form>
-        <div className={styles.footer}>
-          <span className={styles.note}>
-            By default notifications will be sent to HR, your manager and recursively loop to your
-            department head.
-          </span>
-          <div className={styles.formButtons}>
-            {action === EDIT_LEAVE_REQUEST && (
-              <Button
-                className={styles.cancelButton}
-                type="link"
-                htmlType="button"
-                onClick={this.onCancelEdit}
-              >
-                <span>Cancel</span>
-              </Button>
+                      )}
+                    </Col>
+                    <Col span={6} />
+                  </Row>
+                )}
+              </Form.List>
             )}
-            {(action === NEW_LEAVE_REQUEST ||
-              (action === EDIT_LEAVE_REQUEST && isEditingDrafts)) && (
-              <Button
-                loading={loadingSaveDraft || loadingUpdateDraft}
-                type="link"
-                form="myForm"
-                className={styles.saveDraftButton}
-                htmlType="submit"
-                onClick={() => {
-                  this.setState({ buttonState: 1 });
+          </>
+        ) : (
+          <>
+            <Row className={styles.eachRow}>
+              <Col className={styles.label} span={6}>
+                <span>Leave time</span> <span className={styles.mandatoryField}>*</span>
+              </Col>
+              <Col span={12}>
+                <div className={styles.extraTimeSpent}>
+                  <Row className={styles.header}>
+                    <Col span={7}>From</Col>
+                    <Col span={7}>To</Col>
+                    <Col span={10}>No. of Days</Col>
+                  </Row>
+                  {(!durationFrom || !durationTo) && (
+                    <div className={styles.content}>
+                      <div className={styles.emptyContent}>
+                        <span>Selected duration will show as days</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Col>
+              <Col span={6} />
+            </Row>
+
+            {durationFrom && durationTo && (
+              <Form.List name="leaveTimeLists">
+                {() => (
+                  <Row key={1} className={styles.eachRow}>
+                    <Col className={styles.label} span={6}>
+                      <span />
+                    </Col>
+                    <Col span={12} className={styles.leaveDaysContainer}>
+                      <LeaveTimeRow2
+                        fromDate={durationFrom}
+                        toDate={durationTo}
+                        noOfDays={dateListsFromProps || dateLists.length}
+                      />
+                    </Col>
+                    <Col span={6} />
+                  </Row>
+                )}
+              </Form.List>
+            )}
+          </>
+        )}
+        <Row className={styles.eachRow}>
+          <Col className={styles.label} span={6}>
+            <span>Description</span> <span className={styles.mandatoryField}>*</span>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              name="description"
+              rules={[
+                {
+                  required: needValidate,
+                  message: 'Please input description!',
+                },
+              ]}
+            >
+              <TextArea
+                autoSize={{ minRows: 3, maxRows: 6 }}
+                maxLength={250}
+                placeholder="The reason I am taking timeoff is …"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={6} />
+        </Row>
+
+        <Row className={styles.eachRow}>
+          <Col className={styles.label} span={6}>
+            <span>CC (only if you want to notify other than HR & your manager)</span>
+          </Col>
+          <Col span={12} className={styles.ccSelection}>
+            <Form.Item
+              name="personCC"
+              rules={[
+                {
+                  required: false,
+                },
+              ]}
+            >
+              <Select
+                mode="multiple"
+                allowClear
+                placeholder="Search a person you want to loop"
+                filterOption={(input, option) => {
+                  return (
+                    option.children[1].props.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                    0
+                  );
                 }}
               >
-                Save to Draft
-              </Button>
-            )}
+                {formatListEmail.map((value) => {
+                  const { _id = '', workEmail = '', avatar = '' } = value;
 
+                  return (
+                    <Option key={_id} value={_id}>
+                      <div style={{ display: 'inline', marginRight: '10px' }}>
+                        <img
+                          style={{
+                            borderRadius: '50%',
+                            width: '30px',
+                            height: '30px',
+                          }}
+                          src={avatar}
+                          alt="user"
+                          onError={(e) => {
+                            e.target.src = DefaultAvatar;
+                          }}
+                        />
+                      </div>
+                      <span
+                        style={{ fontSize: '13px', color: '#161C29' }}
+                        className={styles.ccEmail}
+                      >
+                        {workEmail}
+                      </span>
+                    </Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={6} />
+        </Row>
+      </Form>
+      <div className={styles.footer}>
+        <span className={styles.note}>
+          By default notifications will be sent to HR, your manager and recursively loop to your
+          department head.
+        </span>
+        <div className={styles.formButtons}>
+          {action === EDIT_LEAVE_REQUEST && (
             <Button
-              loading={loadingAddLeaveRequest || loadingUpdatingLeaveRequest}
-              key="submit"
-              type="primary"
+              className={styles.cancelButton}
+              type="link"
+              htmlType="button"
+              onClick={onCancelEdit}
+            >
+              <span>Cancel</span>
+            </Button>
+          )}
+          {(action === NEW_LEAVE_REQUEST || (action === EDIT_LEAVE_REQUEST && isEditingDrafts)) && (
+            <Button
+              loading={loadingSaveDraft || loadingUpdateDraft}
+              type="link"
               form="myForm"
-              disabled={
-                remainingDayOfSelectedType === 0 &&
-                (selectedType === A || selectedType === B) &&
-                action === NEW_LEAVE_REQUEST
-              }
+              className={styles.saveDraftButton}
               htmlType="submit"
               onClick={() => {
-                this.setState({ buttonState: 2 });
+                setButtonState(1);
               }}
             >
-              Submit
+              Save to Draft
             </Button>
-          </div>
+          )}
+
+          <Button
+            loading={loadingAddLeaveRequest || loadingUpdatingLeaveRequest}
+            key="submit"
+            type="primary"
+            form="myForm"
+            disabled={
+              remainingDayOfSelectedType === 0 &&
+              (selectedType === A || selectedType === B) &&
+              action === NEW_LEAVE_REQUEST
+            }
+            htmlType="submit"
+            onClick={() => {
+              setButtonState(2);
+            }}
+          >
+            Submit
+          </Button>
         </div>
-
-        <TimeOffModal
-          visible={showSuccessModal}
-          onOk={() => this.setShowSuccessModal(false)}
-          content={this.renderModalContent()}
-          submitText="OK"
-        />
-
-        <ViewDocumentModal visible={viewDocumentModal} onClose={this.setViewDocumentModal} />
       </div>
-    );
-  }
-}
 
-export default RequestInformation;
+      <TimeOffModal
+        visible={showSuccessModalVisible}
+        onOk={() => setShowSuccessModalVisible(false)}
+        content={renderModalContent()}
+        submitText="OK"
+      />
+
+      <ViewDocumentModal visible={viewDocumentModal} onClose={setViewDocumentModal} />
+    </div>
+  );
+};
+
+export default connect(({ timeOff, user, loading }) => ({
+  timeOff,
+  user,
+  loadingAddLeaveRequest: loading.effects['timeOff/addLeaveRequest'],
+  loadingUpdatingLeaveRequest: loading.effects['timeOff/updateLeaveRequestById'],
+  loadingSaveDraft: loading.effects['timeOff/saveDraftLeaveRequest'],
+  loadingUpdateDraft: loading.effects['timeOff/updateDraftLeaveRequest'],
+  loadingMain:
+    loading.effects['timeOff/getTimeOffTypeByLocation'] ||
+    loading.effects['timeOff/fetchLeaveBalanceOfUser'] ||
+    loading.effects['timeOff/fetchTimeOffTypesByCountry'],
+}))(RequestInformation);
