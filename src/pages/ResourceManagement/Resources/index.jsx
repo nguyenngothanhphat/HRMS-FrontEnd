@@ -191,7 +191,7 @@ class Resources extends Component {
     const selectedLocationName = this.getSelectedLocationName();
     const selectedDivisionName = this.getSelectedDivisionName();
 
-    if (tabName === 'overview') {
+    if (tabName === TABS.OVERVIEW) {
       const divisionOptions = divisionList.map((x) => {
         return {
           _id: x,
@@ -239,7 +239,7 @@ class Resources extends Component {
       );
     }
     const exportTag = () => { 
-      if (nameTag === 'projects') {
+      if (nameTag === TABS.PROJECTS) {
         return this.exportProject()
       }
       return this.exportResource()

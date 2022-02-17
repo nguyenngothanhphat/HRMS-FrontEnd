@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Steps, Form, Input, Select, notification } from 'antd';
+import { Modal, Button, Steps, Form, Input, Select } from 'antd';
 import CreatableSelect from 'react-select/creatable';
 import { DeleteOutlined } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
@@ -27,6 +27,7 @@ const ModalAddInfo = (props) => {
     generalData = {},
   } = props;
   const [currentStep, setCurrentStep] = useState(0);
+  const [listNewSkill, setListNewSkill] = useState([]);
 
   useEffect(() => {
     dispatch({
@@ -72,7 +73,7 @@ const ModalAddInfo = (props) => {
   // Certifications
   const [arrCertification, setArrCertification] = useState([]);
   const [numOfCertification, setNumOfCertification] = useState(0);
-  const [newSkill] = useState(false);
+  // const [newSkill] = useState(false);
   // const tagRender = (prop) => {
   //   const { label, onClose } = prop;
   //   return (
@@ -91,8 +92,27 @@ const ModalAddInfo = (props) => {
     setObjURL(obj);
   };
 
+  const handleChangeSkill = (value) => {
+    if(value.length > 0) {
+      value.forEach(async(item) => {
+        if(item.__isNew__ === true){
+          await dispatch({
+            type: 'employeeProfile/addNewSkill',
+            payload: {
+              name: item.label
+            }
+          }).then((response) => {
+            if(response.data._id){
+              setListNewSkill([...listNewSkill, response.data._id])
+            }
+          })
+        }
+      })
+    }
+  }
+
   const onFinishCertification = (values) => {
-    const { certificationName, otherSkills, qualification, skills } = values;
+    const { certificationName, qualification, skills } = values;
     let { totalExp } = values;
     if (!totalExp) {
       totalExp = generalData.totalExp || 0;
@@ -111,21 +131,27 @@ const ModalAddInfo = (props) => {
         });
       }
     });
-    const tempSkill = skills ? skills.filter((item) => item !== 'Other') : [];
-    const checkOtherSkill = otherSkills ? otherSkills.toUpperCase().replace(' ','') : null;
-    const checkDuplication = listSkill.filter((e) => e.name.toUpperCase().replace(' ','') === checkOtherSkill) || [];
-    if(checkDuplication.length > 0) {
-      notification.error({
-        message: 'This skill is available on the skill list above, please select it on skills.',
-      });
-      return
-    }
+    const listSkills = []
+    skills?.forEach((item) => {
+      if(!item.__isNew__) {
+        listSkills.push(item.value)
+      }
+    })
+    // const tempSkill = skills ? skills.filter((item) => item !== 'Other') : [];
+    // const checkOtherSkill = otherSkills ? otherSkills.toUpperCase().replace(' ','') : null;
+    // const checkDuplication = listSkill.filter((e) => e.name.toUpperCase().replace(' ','') === checkOtherSkill) || [];
+    // if(checkDuplication.length > 0) {
+    //   notification.error({
+    //     message: 'This skill is available on the skill list above, please select it on skills.',
+    //   });
+    //   return
+    // }
     const obj = {
       ...resultForm,
       certifications,
-      otherSkills: otherSkills instanceof Array ? otherSkills : [otherSkills],
+      // otherSkills: otherSkills instanceof Array ? otherSkills : [otherSkills],
       qualification,
-      skills: tempSkill,
+      skills: listNewSkill.length > 0 ? listSkills.concat(listNewSkill) : listSkills,
       totalExp,
     };
     setResultForm(obj);
@@ -496,6 +522,7 @@ const ModalAddInfo = (props) => {
             >
               <CreatableSelect
                 isMulti
+                onChange={(value) => handleChangeSkill(value)}
                 options={
                   listSkill.sort((a, b) => a.name.localeCompare(b.name)).map((item) => {
                     return {
@@ -521,7 +548,7 @@ const ModalAddInfo = (props) => {
                 <Select.Option key="Other">Other</Select.Option>
               </Select> */}
             </Form.Item>
-            {newSkill && (
+            {/* {newSkill && (
               <Form.Item
                 label="Other Skill"
                 name="otherSkills"
@@ -534,7 +561,7 @@ const ModalAddInfo = (props) => {
               >
                 <Input />
               </Form.Item>
-            )}
+            )} */}
           </Form>
         );
       case 2:
