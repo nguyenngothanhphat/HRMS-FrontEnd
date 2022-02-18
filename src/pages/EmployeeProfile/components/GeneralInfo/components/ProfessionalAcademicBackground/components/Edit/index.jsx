@@ -41,7 +41,7 @@ class Edit extends PureComponent {
     super(props);
     this.state = {
       notValid: false,
-      listNewSkill: [],
+      newSkillList: [],
     };
   }
 
@@ -73,13 +73,13 @@ class Edit extends PureComponent {
 
   processDataChanges = (newSkills) => {
     const { generalData: generalDataTemp, tenantCurrentEmployee = '' } = this.props;
-    const { listNewSkill } = this.state;
-    const listSkill = []
-    newSkills?.forEach((item) => {
-      if(!item.__isNew__) {
-        listSkill.push(item.value)
+    const { newSkillList } = this.state;
+    const listSkill = [];
+    newSkills.forEach((item) => {
+      if (!item.__isNew__) {
+        listSkill.push(item.value);
       }
-    })
+    });
     const {
       preJobTitle = '',
       // skills = [],
@@ -94,7 +94,7 @@ class Edit extends PureComponent {
     const payloadChanges = {
       id,
       preJobTitle,
-      skills: listNewSkill.length > 0 ? listSkill.concat(listNewSkill) : listSkill,
+      skills: newSkillList.length > 0 ? listSkill.concat(newSkillList) : listSkill,
       preCompany,
       linkedIn,
       totalExp,
@@ -167,25 +167,25 @@ class Edit extends PureComponent {
 
   handleChangeSkill = (value) => {
     const { dispatch } = this.props;
-    const { listNewSkill } = this.state;
-    if(value.length > 0) {
-      value.forEach(async(item) => {
-        if(item.__isNew__ === true){
+    const { newSkillList } = this.state;
+    if (value.length > 0) {
+      value.forEach(async (item) => {
+        if (item.__isNew__ === true) {
           await dispatch({
             type: 'employeeProfile/addNewSkill',
             payload: {
-              name: item.label
-            }
+              name: item.label,
+            },
           }).then((response) => {
-            if(response.data._id){
-              this.setState({ listNewSkill: [...listNewSkill, response.data._id] })
+            if (response.data._id) {
+              this.setState({ newSkillList: [...newSkillList, response.data._id] });
             }
-          })
+          });
         }
-      })
+      });
     }
-  }
-  
+  };
+
   handleSave = async () => {
     const {
       dispatch,
@@ -216,7 +216,6 @@ class Edit extends PureComponent {
     //   });
     //   return;
     // }
-    
   };
 
   render() {
@@ -244,11 +243,11 @@ class Edit extends PureComponent {
     const getIdSkill = skills.map((item) => {
       return {
         label: item.name,
-        value: item._id
-      }
-    })
+        value: item._id,
+      };
+    });
     // const newOtherSkills = otherSkills.length > 0 ? otherSkills : [];
-    // const veriOther = skills.filter((item) => item === 'Other');
+    // const verifySkillOther = skills.filter((item) => item === 'Other');
     return (
       <div className={s.root}>
         <Form
@@ -298,14 +297,14 @@ class Edit extends PureComponent {
               <CreatableSelect
                 isMulti
                 onChange={(value) => this.handleChangeSkill(value)}
-                options={
-                  listSkill.sort((a, b) => a.name.localeCompare(b.name)).map((item) => {
+                options={listSkill
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((item) => {
                     return {
                       label: item.name,
-                      value: item._id
-                    }
-                  })
-                }
+                      value: item._id,
+                    };
+                  })}
               />
               {/* <Select
                 placeholder="Select skills"
@@ -323,7 +322,7 @@ class Edit extends PureComponent {
                 <Option key="Other">Other</Option>
               </Select> */}
             </Form.Item>
-            {/* {veriOther.length > 0 || otherSkills.length > 0 ? (
+            {/* {verifySkillOther.length > 0 || otherSkills.length > 0 ? (
               <Form.Item label="OtherSkill" name="otherSkills">
                 <Input maxLength={50} />
               </Form.Item>

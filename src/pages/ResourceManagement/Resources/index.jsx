@@ -19,12 +19,12 @@ const TABS = {
 };
 @connect(
   ({
-    resourceManagement: { resourceList = [], divisions: divisionList = [],  total = 0 } = {},
+    resourceManagement: { resourceList = [], divisions: divisionList = [], total = 0 } = {},
     user: {
       currentUser: {
         location: { _id: locationID = '' } = {},
         company: { _id: companyID } = {},
-        employee: { _id: currentUserId = '' } = {}
+        employee: { _id: currentUserId = '' } = {},
       } = {},
       permissions = {},
     } = {},
@@ -36,8 +36,8 @@ const TABS = {
     locationID,
     companyID,
     listLocationsByCompany,
-    currentUserId, 
-    total
+    currentUserId,
+    total,
   }),
 )
 class Resources extends Component {
@@ -148,37 +148,22 @@ class Resources extends Component {
     return 'All';
   };
 
-  exportResource = async () => {
+  exportToExcel = async (type, fileName) => {
     const { dispatch, currentUserId = '', total } = this.props;
     const getListExport = await dispatch({
-      type: 'resourceManagement/exportResourceManagement',
+      type,
       payload: {
         employeeId: currentUserId,
-        limit: total
-      }
+        limit: total,
+      },
     });
+    const getDataExport = getListExport ? getListExport.data : '';
     const downloadLink = document.createElement('a');
     const universalBOM = '\uFEFF';
     downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
-      universalBOM + getListExport,
+      universalBOM + getDataExport,
     )}`;
-    downloadLink.download = 'resource.csv';
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-  }
-
-  exportProject = async () => {
-    const { dispatch } = this.props;
-    const getListExport = await dispatch({
-      type: 'resourceManagement/exportReportProject',
-    });
-    const downloadLink = document.createElement('a');
-    const universalBOM = '\uFEFF';
-    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
-      universalBOM + getListExport,
-    )}`;
-    downloadLink.download = 'rm-projects.csv';
+    downloadLink.download = fileName;
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
@@ -238,12 +223,12 @@ class Resources extends Component {
         </div>
       );
     }
-    const exportTag = () => { 
+    const exportTag = () => {
       if (nameTag === TABS.PROJECTS) {
-        return this.exportProject()
+        return this.exportToExcel('resourceManagement/exportReportProject', 'rm-projects.csv');
       }
-      return this.exportResource()
-    }
+      return this.exportToExcel('resourceManagement/exportResourceManagement', 'resource.csv');
+    };
     return (
       <div className={styles.options}>
         <Row gutter={[24, 0]}>

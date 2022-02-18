@@ -27,7 +27,7 @@ const ModalAddInfo = (props) => {
     generalData = {},
   } = props;
   const [currentStep, setCurrentStep] = useState(0);
-  const [listNewSkill, setListNewSkill] = useState([]);
+  const [newSkillList, setListNewSkill] = useState([]); 
 
   useEffect(() => {
     dispatch({
@@ -93,23 +93,23 @@ const ModalAddInfo = (props) => {
   };
 
   const handleChangeSkill = (value) => {
-    if(value.length > 0) {
-      value.forEach(async(item) => {
-        if(item.__isNew__ === true){
+    if (value.length > 0) {
+      value.forEach(async (item) => {
+        if (item.__isNew__ === true) {
           await dispatch({
             type: 'employeeProfile/addNewSkill',
             payload: {
-              name: item.label
-            }
+              name: item.label,
+            },
           }).then((response) => {
-            if(response.data._id){
-              setListNewSkill([...listNewSkill, response.data._id])
+            if (response.data._id) {
+              setListNewSkill([...newSkillList, response.data._id]);
             }
-          })
+          });
         }
-      })
+      });
     }
-  }
+  };
 
   const onFinishCertification = (values) => {
     const { certificationName, qualification, skills } = values;
@@ -131,12 +131,12 @@ const ModalAddInfo = (props) => {
         });
       }
     });
-    const listSkills = []
-    skills?.forEach((item) => {
-      if(!item.__isNew__) {
-        listSkills.push(item.value)
+    const listSkills = [];
+    skills.forEach((item) => {
+      if (!item.__isNew__) {
+        listSkills.push(item.value);
       }
-    })
+    });
     // const tempSkill = skills ? skills.filter((item) => item !== 'Other') : [];
     // const checkOtherSkill = otherSkills ? otherSkills.toUpperCase().replace(' ','') : null;
     // const checkDuplication = listSkill.filter((e) => e.name.toUpperCase().replace(' ','') === checkOtherSkill) || [];
@@ -151,7 +151,7 @@ const ModalAddInfo = (props) => {
       certifications,
       // otherSkills: otherSkills instanceof Array ? otherSkills : [otherSkills],
       qualification,
-      skills: listNewSkill.length > 0 ? listSkills.concat(listNewSkill) : listSkills,
+      skills: newSkillList.length > 0 ? listSkills.concat(newSkillList) : listSkills,
       totalExp,
     };
     setResultForm(obj);
@@ -523,14 +523,14 @@ const ModalAddInfo = (props) => {
               <CreatableSelect
                 isMulti
                 onChange={(value) => handleChangeSkill(value)}
-                options={
-                  listSkill.sort((a, b) => a.name.localeCompare(b.name)).map((item) => {
+                options={listSkill
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((item) => {
                     return {
                       label: item.name,
-                      value: item._id
-                    }
-                  })
-                }
+                      value: item._id,
+                    };
+                  })}
               />
               {/* <Select
                 placeholder="Select skills"
