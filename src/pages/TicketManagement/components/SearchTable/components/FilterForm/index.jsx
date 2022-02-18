@@ -1,103 +1,33 @@
-import React, { Component } from 'react';
-import { Button, Checkbox, DatePicker, Divider, Form, Select, Tag } from 'antd';
+import React, { useState } from 'react';
+import { DatePicker, Form, Select } from 'antd';
+import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
 import { connect } from 'umi';
-import { isEmpty } from 'lodash';
-// import LOCATION from '@/utils/ticketManagement';
 
-import CloseTagIcon from '@/assets/closeTagIcon.svg';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 
 import styles from './index.less';
 
 const { Option } = Select;
-@connect(
-  ({
-    ticketManagement: { locationsList = [], currentStatus = [], listOffAllTicket = [] } = {},
-  }) => ({
-    currentStatus,
-    listOffAllTicket,
-    locationsList,
-  }),
-)
-class FilterForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      durationFrom: '', // validate date
-      durationTo: '', // validate date
-      filter: {
-        // store data
-        name: undefined,
-        queryType: undefined,
-        priority: undefined,
-        location: undefined,
-        employeeAssignee: undefined,
-        fromDate: undefined,
-        toDate: undefined,
-      },
-      // isFilter: false, // check enable|disable button Apply
-      // checkAll: false,
-    };
 
-    this.formRef = React.createRef();
+const FilterForm = (props) => {
+  const { listOffAllTicket = [], locationsList = [], currentStatus = '', dispatch } = props;
+  const [form] = Form.useForm();
+  const [durationFrom, setDurationFrom] = useState('');
+  const [durationTo, setDurationTo] = useState('');
+
+  function getUniqueListBy(arr, key) {
+    return [...new Map(arr.map((item) => [item[key], item])).values()];
   }
+  const queryTypeList = getUniqueListBy(listOffAllTicket, 'query_type');
+  const priorityList = getUniqueListBy(listOffAllTicket, 'priority');
+  const assigned = getUniqueListBy(listOffAllTicket, 'employee_assignee');
+  const assginedList = assigned.filter((val) => val.employee_assignee !== '');
+  const legalNameList = getUniqueListBy(listOffAllTicket, 'employee_raise');
+  const locationsListNew = getUniqueListBy(listOffAllTicket, 'location');
+  const dateFormat = 'DD-MM-YYYY';
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   const { filter } = this.state;
-  //   if (JSON.stringify(prevState.filter) !== JSON.stringify(filter)) {
-  //     this.validateFilterFields(filter);
-  //   }
-  // }
-
-  //  validateFilterFields = (filter) => {
-  //    if (!filter.fromDate && !filter.toDate) {
-  //      // in case without filter date
-  //      const isEmptyValue = values(filter).every(isEmpty);
-  //      this.setState({
-  //       //  isFilter: !isEmptyValue,  // if all fields value is empty => means not filtering
-  //      });
-  //    } else if (filter.fromDate && filter.toDate) {
-  //      // in case filter date, must select 2 date fields
-  //      this.setState({
-  //        isFilter: true,
-  //      });
-  //    } else {
-  //      this.setState({
-  //        isFilter: false,
-  //      });
-  //    }
-  //  };
-
-  clearFilter = () => {
-    const { dispatch, currentStatus = [] } = this.props;
-    this.setState({
-      filter: {
-        name: undefined,
-        queryType: undefined,
-        priority: undefined,
-        assign: undefined,
-        location: undefined,
-        fromDate: null,
-        toDate: null,
-      },
-      // isFilter: false,
-      // checkAll: false,
-      durationFrom: '',
-      durationTo: '',
-    });
-    this.formRef.current.resetFields();
-    dispatch({
-      type: 'ticketManagement/fetchListAllTicket',
-      payload: {
-        status: currentStatus,
-      },
-    });
-  };
-
-  disabledDate = (currentDate, type) => {
-    const { durationTo, durationFrom } = this.state;
-
+  const disabledDate = (currentDate, type) => {
     if (type === 'fromDate') {
       return (
         (currentDate && currentDate > moment(durationTo)) ||
@@ -113,29 +43,21 @@ class FilterForm extends Component {
     );
   };
 
-  onChangeDate = (currentDate, type) => {
+  const onChangeDate = (currentDate, type) => {
     switch (type) {
       case 'fromDate':
         if (currentDate === null) {
-          this.setState({
-            durationFrom: '',
-          });
+          setDurationFrom('');
         } else {
-          this.setState({
-            durationFrom: currentDate,
-          });
+          setDurationFrom(currentDate);
         }
         break;
 
       case 'toDate':
         if (currentDate === null) {
-          this.setState({
-            durationTo: '',
-          });
+          setDurationTo('');
         } else {
-          this.setState({
-            durationTo: currentDate,
-          });
+          setDurationTo(currentDate);
         }
         break;
 
@@ -143,57 +65,26 @@ class FilterForm extends Component {
         break;
     }
   };
+  const onFinish = (values) => {
+    const newValues = { ...values };
 
-  tagRender = (props) => {
-    const { label, closable, onClose } = props;
-
-    return (
-      <Tag
-        className={styles.tags}
-        closable={closable}
-        onClose={onClose}
-        closeIcon={<img alt="close-tag" src={CloseTagIcon} />}
-      >
-        {label}
-      </Tag>
+    // remove empty fields
+    // eslint-disable-next-line no-return-assign
+    const filterTemp = Object.entries(newValues).reduce(
+      // eslint-disable-next-line no-return-assign
+      (a, [k, v]) =>
+        v == null || v.length === 0 || !v
+          ? a
+          : // eslint-disable-next-line no-param-reassign
+            ((a[k] = v), a),
+      {},
     );
-  };
-
-  checkBoxStatusChecked = (id, field) => {
-    const { filter } = this.state;
-    let check = false;
-    if (isEmpty(filter[field])) return check;
-
-    filter[field].forEach((itemId) => {
-      if (itemId === id) {
-        check = true;
-      }
-    });
-
-    return check;
-  };
-
-  onValuesChange = (value) => {
-    const { filter } = this.state;
-
-    this.setState({
-      // isFilter: true,
-      filter: {
-        ...filter,
-        ...value,
-      },
-    });
-  };
-
-  onFinish = (value) => {
-    const { dispatch, currentStatus = [] } = this.props;
-    const { filter } = this.state;
-    let payload = { ...value, ...filter };
-    if (payload.fromDate && payload.toDate) {
-      const _fromDate = moment(payload.fromDate).format('YYYY-MM-DD');
-      const _toDate = moment(payload.toDate).format('YYYY-MM-DD');
+    let payload = filterTemp;
+    if (newValues.fromDate && newValues.toDate) {
+      const _fromDate = moment(newValues.fromDate).format('YYYY-MM-DD');
+      const _toDate = moment(newValues.toDate).format('YYYY-MM-DD');
       payload = {
-        ...payload,
+        ...filterTemp,
         fromDate: _fromDate,
         toDate: _toDate,
       };
@@ -207,144 +98,43 @@ class FilterForm extends Component {
     });
   };
 
-  // handleCheckAll = (e) => {
-  //   const { filter } = this.state;
-  //   let data = { ...filter };
+  const onFinishDebounce = debounce((values) => {
+    onFinish(values);
+  }, 700);
 
-  //   if (e === 'ALL') {
-  //     data = {
-  //       location: Object.values(LOCATION),
-  //     };
-  //     this.setState({
-  //       checkAll: true,
-  //       filter: {
-  //         ...filter,
-  //         ...data,
-  //       },
-  //     });
-  //   } else {
-  //     const { checked } = e.target;
-  //     console.log(checked);
-  //     if (checked) {
-  //       data = {
-  //         location: Object.values(LOCATION),
-  //       };
-  //     } else {
-  //       data = {
-  //         location: undefined,
-  //       };
-  //     }
+  const onValuesChange = () => {
+    const values = form.getFieldsValue();
+    onFinishDebounce(values);
+  };
 
-  //     this.setState({
-  //       checkAll: checked,
-  //       filter: {
-  //         ...filter,
-  //         ...data,
-  //       },
-  //     });
-  //   }
-  // };
-
-  // handleSelect = (value) => {
-  //   console.log(value);
-  //   const { filter, checkAll } = this.state;
-  //   const isAll = value.includes('ALL');
-  //   if (isAll) {
-  //     this.handleCheckAll('ALL');
-  //   } else {
-  //     let arrayLocation = checkAll ? [...filter.location] : [];
-  //     arrayLocation = arrayLocation.filter((location) => location !== value);
-
-  //     if (checkAll) {
-  //       this.setState({
-  //         isFilter: true,
-  //         filter: {
-  //           ...filter,
-  //           location: arrayLocation,
-  //         },
-  //         checkAll: arrayLocation?.length === Object.keys(LOCATION).length,
-  //       });
-  //     } else {
-  //       this.setState({
-  //         isFilter: true,
-  //         filter: {
-  //           ...filter,
-  //           location: [...value],
-  //         },
-  //         checkAll: value?.length === Object.keys(LOCATION).length,
-  //       });
-  //     }
-  //   }
-  // };
-
-  // onSelectAll = (valueAll) => {
-  //   const { filter } = this.state;
-  //   let data = { ...filter };
-
-  //   if (valueAll === 'ALL' && data.location.length === Object.keys(LOCATION).length) {
-  //     data = {
-  //       location: undefined,
-  //     };
-  //     this.setState({
-  //       isFilter: true,
-  //       filter: {
-  //         ...filter,
-  //         ...data,
-  //       },
-  //       checkAll: false,
-  //     });
-  //   }
-  // };
-
-  render() {
-    const { listOffAllTicket = [], locationsList = [], currentStatus = '' } = this.props;
-    function getUniqueListBy(arr, key) {
-      return [...new Map(arr.map((item) => [item[key], item])).values()];
-    }
-    const queryTypeList = getUniqueListBy(listOffAllTicket, 'query_type');
-    const priorityList = getUniqueListBy(listOffAllTicket, 'priority');
-    const assigned = getUniqueListBy(listOffAllTicket, 'employee_assignee');
-    const assginedList = assigned.filter((val) => val.employee_assignee !== '');
-    const legalNameList = getUniqueListBy(listOffAllTicket, 'employee_raise');
-    const locationsListNew = getUniqueListBy(listOffAllTicket, 'location');
-    const dateFormat = 'DD-MM-YYYY';
-
-    return (
+  return (
+    <div>
       <div className={styles.filterForm}>
         <Form
           layout="horizontal"
           className={styles.form}
-          onValuesChange={this.onValuesChange}
-          onFinish={this.onFinish}
-          ref={this.formRef}
+          form={form}
           name="formFilter"
+          onValuesChange={onValuesChange}
         >
           <div className={styles.form__top}>
             <Form.Item key="name" label="BY NAME" name="name">
               <Select
                 allowClear
-                showArrow
                 showSearch
-                filterOption={(input, option) => {
-                  const arrChild = option.props.children[1];
-                  return arrChild.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                }}
                 mode="multiple"
-                tagRender={this.tagRender}
                 placeholder="Select name"
-                dropdownClassName={styles.dropdown}
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                showArrow
               >
                 {!isEmpty(legalNameList)
                   ? legalNameList.map((option) => {
-                      const { employeeRaise: { generalInfo: { legalName = '' } = {} } = {} } =
+                      const { employeeRaise: {_id:userId="", generalInfo: { legalName = '' } = {} } = {} } =
                         option;
                       return (
-                        <Option key={option.id} value={legalName}>
-                          <Checkbox
-                            value={legalName}
-                            checked={this.checkBoxStatusChecked(legalName, 'name')}
-                          />
-                          <span>{legalName}</span>
+                        <Option key={option.id} value={userId}>
+                          {legalName}
                         </Option>
                       );
                     })
@@ -354,25 +144,17 @@ class FilterForm extends Component {
             <Form.Item key="queryType" label="BY REQUEST TYPE" name="queryType">
               <Select
                 allowClear
-                showArrow
                 showSearch
-                filterOption={(input, option) => {
-                  const arrChild = option.props.children[1];
-                  return arrChild.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                }}
                 mode="multiple"
-                tagRender={this.tagRender}
                 placeholder="Select request type"
-                dropdownClassName={styles.dropdown}
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                showArrow
               >
                 {queryTypeList.map((option) => {
                   return (
                     <Option key={option.id} value={option.query_type}>
-                      <Checkbox
-                        value={option.query_type}
-                        checked={this.checkBoxStatusChecked(option.query_type, 'queryType')}
-                      />
-                      <span>{option.query_type}</span>
+                      {option.query_type}
                     </Option>
                   );
                 })}
@@ -381,25 +163,17 @@ class FilterForm extends Component {
             <Form.Item key="priority" label="BY PRIORITY" name="priority">
               <Select
                 allowClear
-                showArrow
                 showSearch
-                filterOption={(input, option) => {
-                  const arrChild = option.props.children[1];
-                  return arrChild.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                }}
                 mode="multiple"
-                tagRender={this.tagRender}
                 placeholder="Select priority"
-                dropdownClassName={styles.dropdown}
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                showArrow
               >
                 {priorityList.map((option) => {
                   return (
                     <Option key={option.id} value={option.priority}>
-                      <Checkbox
-                        value={option.priority}
-                        checked={this.checkBoxStatusChecked(option.priority, 'priority')}
-                      />
-                      <span>{option.priority}</span>
+                      {option.priority}
                     </Option>
                   );
                 })}
@@ -408,33 +182,13 @@ class FilterForm extends Component {
             <Form.Item key="location" label="BY LOCATION" name="location">
               <Select
                 allowClear
-                showArrow
                 showSearch
-                // filterOption={(input, option) => {
-                //   return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                // }}
-                filterOption={(input, option) => {
-                  const arrChild = option.props.children[1];
-                  return arrChild.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                }}
                 mode="multiple"
-                tagRender={this.tagRender}
                 placeholder="Select location"
-                // onChange={() => this.handleSelect(locationList)}
-                // onClear={() =>
-                //   this.setState({
-                //     checkAll: false,
-                //   })}
-                // mode="multiple"
-                // value={checkAll ? 'ALL' : filter.location}
-                // onSelect={checkAll ? this.onSelectAll : null}
-                // disabled={currentStatus !== 'ALL'}
-                dropdownClassName={styles.dropdown}
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                showArrow
               >
-                {/* <Option value="ALL" >
-                  <Checkbox value="ALL" checked={checkAll} onChange={this.onCheckAllChange} />
-                  <span>Select All</span>
-                </Option> */}
                 {locationsListNew.map((option) => {
                   const locationName =
                     locationsList.length > 0
@@ -443,11 +197,7 @@ class FilterForm extends Component {
                   const name = locationName.length > 0 ? locationName[0].name : null;
                   return (
                     <Option key={option.location} value={option.location}>
-                      <Checkbox
-                        value={option.location}
-                        checked={this.checkBoxStatusChecked(option.location, 'location')}
-                      />
-                      <span>{name}</span>
+                      {name}
                     </Option>
                   );
                 })}
@@ -457,16 +207,12 @@ class FilterForm extends Component {
               <Form.Item key="employeeAssignee" label="BY ASSIGNED TO" name="employeeAssignee">
                 <Select
                   allowClear
-                  showArrow
                   showSearch
-                  filterOption={(input, option) => {
-                    const arrChild = option.props.children[1];
-                    return arrChild.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                  }}
                   mode="multiple"
-                  tagRender={this.tagRender}
                   placeholder="Select assign"
-                  dropdownClassName={styles.dropdown}
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  showArrow
                 >
                   {/** condition status have different New */}
                   {!isEmpty(assginedList)
@@ -475,14 +221,7 @@ class FilterForm extends Component {
                           option;
                         return (
                           <Option key={option.employee_assignee} value={option.employee_assignee}>
-                            <Checkbox
-                              value={option.employee_assignee}
-                              checked={this.checkBoxStatusChecked(
-                                option.employee_assignee,
-                                'employeeAssignee',
-                              )}
-                            />
-                            <span>{legalName}</span>
+                            {legalName}
                           </Option>
                         );
                       })
@@ -498,11 +237,11 @@ class FilterForm extends Component {
               <div className={styles.doj__date}>
                 <Form.Item name="fromDate">
                   <DatePicker
-                    disabledDate={(currentDate) => this.disabledDate(currentDate, 'fromDate')}
+                    disabledDate={(currentDate) => disabledDate(currentDate, 'fromDate')}
                     format={dateFormat}
                     placeholder="From Date"
                     onChange={(value) => {
-                      this.onChangeDate(value, 'fromDate');
+                      onChangeDate(value, 'fromDate');
                     }}
                     suffixIcon={
                       <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
@@ -512,11 +251,11 @@ class FilterForm extends Component {
                 <div className={`${styles.labelText} ${styles.labelTo}`}>to</div>
                 <Form.Item name="toDate">
                   <DatePicker
-                    disabledDate={(currentDate) => this.disabledDate(currentDate, 'toDate')}
+                    disabledDate={(currentDate) => disabledDate(currentDate, 'toDate')}
                     format={dateFormat}
                     placeholder="To Date"
                     onChange={(value) => {
-                      this.onChangeDate(value, 'toDate');
+                      onChangeDate(value, 'toDate');
                     }}
                     suffixIcon={
                       <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
@@ -526,25 +265,18 @@ class FilterForm extends Component {
               </div>
             </div>
           </div>
-
-          <Divider className={styles.divider} />
-          <div className={styles.footer}>
-            <Button onClick={this.clearFilter} className={styles.footer__clear}>
-              Clear
-            </Button>
-            <Button
-              onClick={this.onApply}
-              // disabled={!isFilter}
-              className={styles.footer__apply}
-              htmlType="submit"
-            >
-              Apply
-            </Button>
-          </div>
         </Form>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
-export default FilterForm;
+export default connect(
+  ({
+    ticketManagement: { locationsList = [], currentStatus = [], listOffAllTicket = [] } = {},
+  }) => ({
+    currentStatus,
+    listOffAllTicket,
+    locationsList,
+  }),
+)(FilterForm);
