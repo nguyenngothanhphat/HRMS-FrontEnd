@@ -1,6 +1,7 @@
 import { Button, Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import exportToCSV from '@/utils/exportAsExcel';
 import Information from './components/Information';
 import TaskTable from './components/TaskTable';
 import WhiteDownloadIcon from '@/assets/timeSheet/whiteDownload.svg';
@@ -33,22 +34,22 @@ const EmployeeDetailModal = (props) => {
       </div>
     );
   };
-  // update type when there are api
-  const handleFinish = async () => {
-    const { dispatch } = props;
 
-    const getListExport = await dispatch({
-      type: 'timeSheet/exportTimeSheet',
+  const processData = (array) => {
+    return array.map((item) => {
+      const { date = '', inTime = '', leave = '', notes = '', outTime = '' } = item;
+      return {
+        Date: date,
+        'In Time': inTime,
+        'Out Time': leave,
+        Leaves: notes,
+        Notes: outTime,
+      };
     });
-    const downloadLink = document.createElement('a');
-    const universalBOM = '\uFEFF';
-    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
-      universalBOM + getListExport,
-    )}`;
-    downloadLink.download = 'timesheet.csv';
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+  };
+
+  const downloadTemplate = () => {
+    exportToCSV(processData(data?.userDetail || []), 'ProjectDetailData.xlsx');
   };
 
   const renderModalContent = () => {
@@ -69,11 +70,10 @@ const EmployeeDetailModal = (props) => {
         width={800}
         footer={
           <>
-            <Button type="secondary">Approve timing</Button>
             <Button
               className={styles.btnSubmit}
               type="primary"
-              onClick={handleFinish}
+              onClick={downloadTemplate}
               icon={<img src={WhiteDownloadIcon} alt="" />}
             >
               Download

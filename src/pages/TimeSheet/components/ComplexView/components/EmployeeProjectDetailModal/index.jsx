@@ -14,12 +14,12 @@ const EmployeeProjectDetailModal = (props) => {
     visible = false,
     onClose = () => {},
     selectedEmployee: { employeeId = '', legalName = '' } = {},
+    startDate = '',
+    endDate = ''
   } = props;
 
   const { timeSheet: { myTimesheet = [] } = {}, loadingFetchMyTimesheet = false } = props;
 
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
   const [data, setData] = useState([]);
 
   // FUNCTION AREA
@@ -47,14 +47,6 @@ const EmployeeProjectDetailModal = (props) => {
     return result;
   };
 
-  // generate dates for week
-  useEffect(() => {
-    const lastSunday = moment().weekday(1);
-    const currentSunday = moment().weekday(7);
-    setStartDate(lastSunday);
-    setEndDate(currentSunday);
-  }, []);
-
   useEffect(() => {
     if (visible && startDate && endDate && employeeId) {
       fetchMyTimesheetEffect();
@@ -81,8 +73,6 @@ const EmployeeProjectDetailModal = (props) => {
         <Header
           startDate={startDate}
           endDate={endDate}
-          setStartDate={setStartDate}
-          setEndDate={setEndDate}
         />
         <ProjectTable list={data} loading={loadingFetchMyTimesheet} />
       </div>
