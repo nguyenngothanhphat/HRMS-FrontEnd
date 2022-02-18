@@ -2,57 +2,42 @@
 /* eslint-disable no-restricted-properties */
 import React from 'react';
 import { Row, Col } from 'antd';
-import { Pie, measureTextWidth } from '@ant-design/charts';
+import { Pie } from '@ant-design/charts';
 
 import styles from './index.less';
 
 const PayDetail = () => {
-  const renderStatistic = (containerWidth, text, style) => {
-    const { width: textWidth, height: textHeight } = measureTextWidth(text, style);
-    const R = containerWidth / 2; // r^2 = (w / 2)^2 + (h - offsetY)^2
-
-    let scale = 1;
-
-    if (containerWidth < textWidth) {
-      scale = Math.min(
-        Math.sqrt(
-          Math.abs(Math.pow(R, 2) / (Math.pow(textWidth / 2, 2) + Math.pow(textHeight, 2))),
-        ),
-        1,
-      );
-    }
-
-    const textStyleStr = `width:${containerWidth}px;`;
-    return `<div style="${textStyleStr};font-size:${scale}em;line-height:${
-      scale < 1 ? 1 : 'inherit'
-    };">${text}</div>`;
-  };
-
   // data dummy
   const data = [
     {
       type: 'Basic',
       value: 27,
+      color: '#6236FF',
     },
     {
       type: 'Lunch Allowance',
       value: 25,
+      color: '#B84CB4',
     },
     {
       type: 'Petrol Allowance',
       value: 18,
+      color: '#FD4546',
     },
     {
       type: 'Mob & Internet Allowance',
       value: 15,
+      color: '#FF6CA1',
     },
     {
       type: 'Variable Pay',
       value: 10,
+      color: '#4CB8B8 ',
     },
     {
       type: 'Deductions',
       value: 5,
+      color: '#FFA100',
     },
   ];
 
@@ -63,6 +48,7 @@ const PayDetail = () => {
     width: 160,
     angleField: 'value',
     colorField: 'type',
+    color: ['#6236FF', '#B84CB4', '#FD4546', '#FF6CA1', '#4CB8B8', '#FFA100'],
     radius: 1,
     innerRadius: 0.64,
     meta: {
@@ -84,15 +70,10 @@ const PayDetail = () => {
           lineHeight: '15px',
           color: '#707177',
         },
-        customHtml: (container, view, datum, newdata) => {
-          const { width } = container.getBoundingClientRect();
-          const text = datum ? `₹ ${datum.value}` : `₹ ${newdata.reduce((r, d) => r + d.value, 0)}`;
-          return renderStatistic(width, text, {
-            fontSize: 32,
-          });
-        },
       },
     },
+    legend: false,
+
     interactions: [
       {
         type: 'element-selected',
@@ -105,14 +86,54 @@ const PayDetail = () => {
       },
     ],
   };
+  const renderViewDeductions = () => {
+    return data.map((item) => {
+      return (
+        <Row className={styles.container}>
+          <Col span={1}>
+            <div className={styles.circleColor} style={{ background: `${item.color}` }} />
+          </Col>
+          <Col span={8}> {item.type}</Col>
+          <Col span={6} className={styles.money}>
+            {item.value}
+          </Col>
+          {item.type === 'Deductions' ? (
+            <Col span={9} className={styles.viewGross}>
+              + View Deductions
+            </Col>
+          ) : null}
+        </Row>
+      );
+    });
+  };
   return (
-    <div>
-      <Row>
-        <Col span={12}>
-          <Pie {...config} />
-        </Col>
-      </Row>
-    </div>
+    <Row className={styles.PayDetail}>
+      <Col span={7}>
+        <Pie {...config} />
+      </Col>
+      <Col span={13}>
+        <Row className={styles.grossPay}>
+          <Col span={1} />
+          <Col span={8}> Gross Pay</Col>
+          <Col span={6} className={styles.money}>
+            (+) ₹ 6,40,000
+          </Col>
+          <Col span={9} className={styles.viewGross}>
+            - View Gross Pay
+          </Col>
+        </Row>
+        {renderViewDeductions()}
+
+        <Row className={styles.netPay}>
+          <Col span={1} />
+          <Col span={8}> Net Pay</Col>
+          <Col span={6} style={{ textAlign: 'right' }}>
+            ₹ 5,90,000
+          </Col>
+        </Row>
+      </Col>
+      <Col span={4} />
+    </Row>
   );
 };
 
