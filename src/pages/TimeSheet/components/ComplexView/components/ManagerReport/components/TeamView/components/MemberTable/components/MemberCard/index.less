@@ -12,15 +12,21 @@
     display: flex;
     justify-content: center !important;
   }
+  .alignRight {
+    display: flex;
+    justify-content: flex-end !important;
+  }
   .groupCell {
     padding: 0 !important;
-    border-left: 1px solid #d6dce0;
     .groupRow {
       padding: 16px 10px;
     }
     .groupRow:not(:last-child) {
       border-bottom: 1px solid #d6dce0;
     }
+  }
+  .borderLeftStyle {
+    border-left: 1px solid #d6dce0 !important;
   }
   .normalCell {
     display: flex;
@@ -77,6 +83,61 @@
     &:hover {
       opacity: 0.9;
       transition: 0.3s;
+    }
+  }
+  .totalHours {
+    .blueText();
+    .boldText();
+  }
+  .viewDetail {
+    padding-right: 10px;
+    cursor: pointer;
+    .blueText();
+    .boldText();
+  }
+  .renderProject {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .icon {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      background: #a42ba8;
+      border: 1px solid rgba(255, 255, 255, 0);
+      border-radius: 50%;
+      outline: none;
+      span {
+        color: #fff;
+        font-weight: 500;
+        font-size: 13px;
+        text-transform: uppercase;
+      }
+    }
+    .right {
+      padding-left: 10px;
+      .name {
+        display: block;
+        color: #212020;
+        font-weight: 500;
+        font-size: 12px;
+        text-align: left;
+      }
+      .type {
+        color: #464646;
+        font-size: 11px;
+      }
     }
   }
   :global {

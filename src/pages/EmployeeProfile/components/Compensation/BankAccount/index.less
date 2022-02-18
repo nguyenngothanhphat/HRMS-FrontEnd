@@ -1,0 +1,93 @@
+.BankAccount {
+  margin-top: 24px;
+  .TableBankDetails {
+    width: 100%;
+    height: auto;
+    margin: 24px 0;
+    object-fit: contain;
+    background-color: #ffffff;
+    border: solid 1px #d6dce0;
+    border-radius: 5px;
+  }
+  .spaceTitle {
+    margin-bottom: 0;
+    padding: 24px;
+    object-fit: contain;
+    border-bottom: solid 1px #d6dce0;
+  }
+  .TitleDetails {
+    height: 19px;
+    margin-bottom: 0;
+    color: #161c29;
+    font-weight: 700;
+    font-size: 16px;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+  }
+  .TitleDetailsEdit {
+    height: 19px;
+    margin-bottom: 0;
+    color: #2c6df9;
+    font-weight: 500;
+    font-size: 14px;
+    font-style: normal;
+    font-stretch: normal;
+    letter-spacing: normal;
+  }
+  .flexEdit {
+    display: flex;
+    flex-flow: row nowrap;
+    align-self: center;
+    justify-content: flex-end;
+    cursor: pointer;
+  }
+  .IconEdit {
+    margin-right: 18px;
+    color: #2c6df9;
+    font-size: 14px;
+  }
+  .viewLoading {
+    // height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 24px;
+    :global {
+      .ant-spin-dot {
+        font-size: 75px;
+      }
+      .ant-spin-dot-item {
+        width: 40px;
+        height: 40px;
+      }
+    }
+  }
+}
+.spaceFooterModalSuccess {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 24px;
+  text-align: center;
+}
+.btnOkModalSuccess {
+  align-items: center;
+  width: 120px;
+  height: 40px;
+  margin: auto;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  background-color: #ffa100;
+  border: none;
+  border-radius: 25px;
+
+  &:hover {
+    color: #fff;
+    background-color: #ffa100;
+  }
+}

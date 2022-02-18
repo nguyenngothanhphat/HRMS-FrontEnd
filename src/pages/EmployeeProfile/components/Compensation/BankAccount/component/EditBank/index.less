@@ -1,0 +1,115 @@
+.root {
+  .Form {
+    width: 100%;
+    // padding: 24px;
+    :global {
+      .ant-form-item-label {
+        text-align: left;
+      }
+      .ant-form-item-label > label {
+        color: #000000;
+        font-size: 13px;
+      }
+      .ant-form-item-label > label::after {
+        content: '';
+      }
+      .ant-form-item {
+        width: 100%;
+        padding: 0px 48px;
+      }
+      .ant-form-item:first-child {
+        margin-top: 35px;
+      }
+      .ant-input:focus {
+        border-color: #2c6df9;
+        outline: 0;
+        box-shadow: unset;
+      }
+    }
+  }
+
+  .inputForm {
+    border: solid 1px #d6dce0;
+    border-radius: 5px;
+  }
+  .spaceFooter {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 16px 24px;
+    border-top: solid 1px #d6dce0;
+  }
+  .cancelFooter {
+    margin-right: 40px;
+    color: #ffa100;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .cancelFooter:hover {
+    color: #b1740c;
+  }
+  .buttonFooter {
+    height: 40px;
+    color: #ffffff;
+    font-size: 14px;
+    background-color: #ffa100;
+    border: solid 1px #ffa100;
+    border-radius: 25px;
+    padding-inline: 25px;
+  }
+  .buttonFooter:hover {
+    background-color: #b1740c;
+    border: solid 1px#b1740c;
+  }
+  .selectForm {
+    border-color: #d6dce0;
+    border-radius: 5px;
+    box-shadow: none;
+
+    &_loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      p {
+        font-weight: 500;
+      }
+    }
+
+    :global {
+      .ant-select-selector {
+        border-radius: 5px;
+        box-shadow: none;
+      }
+      .ant-select-focused {
+        border-color: #2c6df9;
+        box-shadow: none;
+      }
+
+      .ant-select-selection-item {
+        opacity: 1;
+      }
+    }
+  }
+  .selectForm:focus {
+    border-radius: 5px;
+    box-shadow: none;
+  }
+  .arrowDown {
+    color: #161c29;
+  }
+  .arrowUP {
+    color: #161c29;
+  }
+  :global {
+    .ant-select-focused .ant-select-selector,
+    .ant-select-selector:focus,
+    .ant-select-selector:active,
+    .ant-select-open .ant-select-selector {
+      border-color: #2c6df9 !important;
+      box-shadow: none !important;
+    }
+  }
+}

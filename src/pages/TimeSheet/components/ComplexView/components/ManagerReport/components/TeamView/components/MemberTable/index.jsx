@@ -11,19 +11,24 @@ import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import MemberCard from './components/MemberCard';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import EmptyComponent from '@/pages/TimeSheet/components/ComplexView/components/Empty';
+import EmployeeProjectDetailModal from '@/pages/TimeSheet/components/ComplexView/components/EmployeeProjectDetailModal';
+
 import styles from './index.less';
 
 const { EMPLOYEE, REMAINING } = MNG_MT_MAIN_COL_SPAN;
 const { DESIGNATION, DEPARTMENT, PROJECT_GROUP } = MNG_MT_SECONDARY_COL_SPAN;
-const { PROJECTS, PROJECT_MANAGER, TOTAL_HOURS } = MNG_MT_THIRD_COL_SPAN;
+const { PROJECTS, PROJECT_MANAGER, TOTAL_HOURS, VIEW_DETAIL } = MNG_MT_THIRD_COL_SPAN;
 const VIEW_TYPE = {
   PEOPLE_MANAGER: 1,
   PROJECT_MANAGER: 2,
 };
 
 const MemberTable = (props) => {
-  const [viewType, setViewType] = useState(VIEW_TYPE.PEOPLE_MANAGER);
-  const { data = [], permissions, loadingFetch = false } = props;
+  const [viewType, setViewType] = useState(VIEW_TYPE.PROJECT_MANAGER);
+  const { data = [], permissions, loadingFetch = false, startDate = '', endDate = '' } = props;
+
+  const [employeeProjectDetailModalVisible, setEmployeeProjectDetailModalVisible] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState('');
 
   useEffect(() => {
     if (permissions.viewProjectManagerCVTimesheet === 1) {
@@ -43,7 +48,7 @@ const MemberTable = (props) => {
         </Col>
         <Col span={REMAINING}>
           <div className={styles.tableHeader__remainColumn}>
-            <Row gutter={[12, 0]}>
+            <Row gutter={[12, 0]} align="middle">
               <Col span={DESIGNATION} className={styles.title}>
                 Designation
               </Col>
@@ -76,6 +81,9 @@ const MemberTable = (props) => {
                       </Col>
                     </>
                   )}
+                  <Col span={VIEW_DETAIL} className={`${styles.title} ${styles.alignRight}`}>
+                    Action
+                  </Col>
                 </Row>
               </Col>
             </Row>
@@ -113,7 +121,13 @@ const MemberTable = (props) => {
           </UserProfilePopover>
         </Col>
         <Col span={REMAINING} className={styles.member__remainColumn}>
-          <MemberCard card={item} viewType={viewType} VIEW_TYPE={VIEW_TYPE} />
+          <MemberCard
+            card={item}
+            viewType={viewType}
+            VIEW_TYPE={VIEW_TYPE}
+            setEmployeeProjectDetailModalVisible={setEmployeeProjectDetailModalVisible}
+            setSelectedEmployee={setSelectedEmployee}
+          />
         </Col>
       </Row>
     );
@@ -137,6 +151,13 @@ const MemberTable = (props) => {
         {_renderTableHeader()}
         {_renderTableContent()}
       </div>
+      <EmployeeProjectDetailModal
+        visible={employeeProjectDetailModalVisible}
+        onClose={() => setEmployeeProjectDetailModalVisible(false)}
+        selectedEmployee={selectedEmployee}
+        startDate={startDate}
+        endDate={endDate}
+      />
     </div>
   );
 };

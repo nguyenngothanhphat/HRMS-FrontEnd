@@ -199,3 +199,15 @@ export async function getNewJoineesList(payload) {
     data: payload,
   });
 }
+
+export async function exportResource(payload) {
+  return request(
+    '/api-project/resourcetenant/export-resource',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
+}

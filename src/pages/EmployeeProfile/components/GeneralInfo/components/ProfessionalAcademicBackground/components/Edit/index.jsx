@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { PureComponent } from 'react';
-import { Button, Form, Input, Select, notification } from 'antd';
+import { Button, Form, Input, notification } from 'antd';
+import CreatableSelect from 'react-select/creatable';
 import { connect } from 'umi';
 import FormCertification from './components/FormCertification';
 import s from './index.less';
@@ -10,7 +11,7 @@ const formItemLayout = {
   wrapperCol: { span: 12 },
 };
 
-const { Option } = Select;
+// const { Option } = Select;
 
 @connect(
   ({
@@ -22,10 +23,12 @@ const { Option } = Select;
       // listTitle = [],
       tenantCurrentEmployee = '',
     } = {},
+    user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} } = {} } = {},
   }) => ({
     loading: loading.effects['employeeProfile/updateGeneralInfo'],
     generalDataOrigin,
     generalData,
+    myEmployeeID,
     listSkill,
     // listTitle,
     compensationData,
@@ -154,25 +157,34 @@ class Edit extends PureComponent {
   };
 
   handleSave = async () => {
-    const { dispatch, generalData, listSkill = [] } = this.props;
+    const {
+      dispatch,
+      generalData,
+      listSkill = [],
+      generalData: { employee = '' } = {},
+      myEmployeeID = '',
+    } = this.props;
+    const check = employee === myEmployeeID;
     const { skills } = generalData;
     const newSkills = skills.filter((e) => e !== 'Other');
     const payload = this.processDataChanges(newSkills) || {};
     const dataTempKept = this.processDataKept() || {};
     const { certification } = payload;
     await this.handleUpdateCertification(certification);
-    const checkDuplication = listSkill.filter((e) => e.name.toUpperCase() === payload.otherSkills[0].toUpperCase()) || [];
+    const listOtherSkill = payload.otherSkills.length > 0 ? payload.otherSkills[0] : '';
+    const checkDuplication = listSkill.filter((e) => e.name.toUpperCase().replace(' ','') === listOtherSkill.toUpperCase().replace(' ', '')) || [];
     if(checkDuplication.length > 0) {
       notification.error({
         message: 'This skill is available on the skill list above, please select it on skills.',
       });
-      return
+      return;
     }
     dispatch({
       type: 'employeeProfile/updateGeneralInfo',
       payload,
       dataTempKept,
       key: 'openAcademic',
+      isLinkedIn: check,
     });
   };
 
@@ -198,7 +210,13 @@ class Edit extends PureComponent {
 
     let { certification = [{}] } = generalData;
     certification = certification?.length > 0 ? certification : [{}];
-    const getIdSkill = skills.map((item) => item._id);
+    // const getIdSkill = skills.map((item) => item._id);
+    const getIdSkill = skills.map((item) => {
+      return {
+        label: item.name,
+        value: item._id
+      }
+    })
     const newOtherSkills = otherSkills.length > 0 ? otherSkills : [];
     const veriOther = skills.filter((item) => item === 'Other');
     return (
@@ -247,19 +265,33 @@ class Edit extends PureComponent {
               />
             </Form.Item>
             <Form.Item label="Skills" name="skills">
-              <Select
+              <CreatableSelect
+                isMulti
+                onChange={this.handleChange}
+                options={
+                  listSkill.sort((a, b) => a.name.localeCompare(b.name)).map((item) => {
+                    return {
+                      label: item.name,
+                      value: item._id
+                    }
+                  })
+                }
+              />
+              {/* <Select
                 placeholder="Select skills"
-                mode="multiple"
+                mode="tags"
                 showArrow
+                // onSelect={this.handleNewSkill}
+                optionFilterProp="children"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  option.props.children ? option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 : null
                 }
               >
-                {listSkill.map((item) => (
+                {listSkill.sort((a, b) => a.name.localeCompare(b.name)).map((item) => (
                   <Option key={item._id}>{item.name}</Option>
                 ))}
                 <Option key="Other">Other</Option>
-              </Select>
+              </Select> */}
             </Form.Item>
             {veriOther.length > 0 || otherSkills.length > 0 ? (
               <Form.Item label="OtherSkill" name="otherSkills">
