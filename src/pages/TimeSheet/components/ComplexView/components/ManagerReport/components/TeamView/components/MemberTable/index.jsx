@@ -25,7 +25,7 @@ const VIEW_TYPE = {
 
 const MemberTable = (props) => {
   const [viewType, setViewType] = useState(VIEW_TYPE.PROJECT_MANAGER);
-  const { data = [], permissions, loadingFetch = false } = props;
+  const { data = [], permissions, loadingFetch = false, startDate = '', endDate = '' } = props;
 
   const [employeeProjectDetailModalVisible, setEmployeeProjectDetailModalVisible] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState('');
@@ -155,6 +155,8 @@ const MemberTable = (props) => {
         visible={employeeProjectDetailModalVisible}
         onClose={() => setEmployeeProjectDetailModalVisible(false)}
         selectedEmployee={selectedEmployee}
+        startDate={startDate}
+        endDate={endDate}
       />
     </div>
   );

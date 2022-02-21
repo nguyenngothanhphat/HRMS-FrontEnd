@@ -80,7 +80,12 @@ const TeamView = (props) => {
         setEndDate={setEndDate}
         onChangeSearch={onChangeSearch}
       />
-      <MemberTable data={managerTeamViewList} loadingFetch={loadingFetch} />
+      <MemberTable
+        data={managerTeamViewList}
+        loadingFetch={loadingFetch}
+        startDate={startDate}
+        endDate={endDate}
+      />
       <Pagination tablePagination={managerTeamViewPagination} onChangePage={onChangePage} />
     </div>
   );

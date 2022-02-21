@@ -48,7 +48,7 @@ const TaskTable = (props) => {
         showPagination={false}
         selectable
         scrollable
-        rowKey="id"
+        rowKey="date"
         selectedRowKeys={selectedRowKeys}
         setSelectedRowKeys={setSelectedRowKeys}
       />
