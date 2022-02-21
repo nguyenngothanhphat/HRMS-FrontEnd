@@ -30,6 +30,7 @@ const RequestInformation = (props) => {
     dispatch,
     action = '',
     ticketID = '',
+    invalidDates: invalidDatesProps = [],
     timeOff: {
       viewingLeaveRequest = {},
       viewingLeaveRequest: {
@@ -70,6 +71,7 @@ const RequestInformation = (props) => {
   const [remainingDayOfSelectedType, setRemainingDayOfSelectedType] = useState(0);
   const [viewDocumentModal, setViewDocumentModal] = useState(false);
   const [currentAllowanceState, setCurrentAllowanceState] = useState(0);
+  const [invalidDates, setInvalidDates] = useState([]);
 
   // functions
   const getTableTabIndexOfSubmittedType = (selectedTypeTemp, selectedTypeNameTemp) => {
@@ -112,7 +114,6 @@ const RequestInformation = (props) => {
   };
 
   const checkIfHalfDayAvailable = (date) => {
-    const { invalidDates = [] } = props;
     const find = invalidDates.some((x) => {
       return (
         moment.utc(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
@@ -166,14 +167,7 @@ const RequestInformation = (props) => {
   const getRemainingDayById = (_id) => {
     let count = 0;
 
-    timeOffTypesAB.forEach((value) => {
-      const { defaultSettings: { _id: _id1 = '', type = '' } = {}, currentAllowance = 0 } = value;
-      if (_id1 === _id && (type === A || type === B)) {
-        count = currentAllowance;
-      }
-    });
-
-    timeOffTypesCD.forEach((value) => {
+    [...timeOffTypesAB, ...timeOffTypesCD].forEach((value) => {
       const { defaultSettings: { _id: _id1 = '' } = {}, currentAllowance = 0 } = value;
       if (_id1 === _id) {
         count = currentAllowance;
@@ -184,7 +178,6 @@ const RequestInformation = (props) => {
   };
 
   const findInvalidHalfOfDay = (date) => {
-    const { invalidDates = [] } = props;
     const find = invalidDates.find((x) => {
       return moment.utc(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD');
     });
@@ -193,7 +186,6 @@ const RequestInformation = (props) => {
 
   // DISABLE DATE OF DATE PICKER
   const checkIfWholeDayAvailable = (date) => {
-    const { invalidDates = [] } = props;
     const find = invalidDates.some(
       (x) =>
         moment.utc(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
@@ -279,6 +271,7 @@ const RequestInformation = (props) => {
     const foundType = timeOffTypesByCountry.find((t) => t._id === id);
     if (foundType) {
       const { type = '', name = '' } = foundType;
+      getRemainingDay(name);
       setSelectedType(type);
       setSelectedTypeName(name);
     }
@@ -748,7 +741,30 @@ const RequestInformation = (props) => {
     }
   };
 
+  // get dates between two dates
+  const enumerateDaysBetweenDates = (startDate1, endDate1) => {
+    const now = startDate1.clone();
+    const dates = [];
+
+    while (now.isSameOrBefore(endDate1)) {
+      dates.push(now.format('MM/DD/YYYY'));
+      now.add(1, 'days');
+    }
+    return dates;
+  };
+
   // USE EFFECT
+  useEffect(() => {
+    if (invalidDatesProps.length > 0) {
+      const dateList = enumerateDaysBetweenDates(moment(viewingFromDate), moment(viewingToDate));
+      const temp = invalidDatesProps.filter((x) => {
+        return !dateList.some(
+          (y) => moment.utc(y).format('MM/DD/YYYY') === moment.utc(x.date).format('MM/DD/YYYY'),
+        );
+      });
+      setInvalidDates(temp);
+    }
+  }, [JSON.stringify(invalidDatesProps)]);
 
   useEffect(() => {
     fetchData();
@@ -791,7 +807,6 @@ const RequestInformation = (props) => {
   }, [selectedTypeName, durationFrom]);
 
   useEffect(() => {
-    console.log('currentAllowanceState', currentAllowanceState);
     // generate second notice
     const secondNoticeTemp = generateSecondNotice();
     setSecondNotice(secondNoticeTemp);
@@ -817,9 +832,6 @@ const RequestInformation = (props) => {
         leaveTimeLists: initialValuesForLeaveTimesList,
       });
     }
-    if (!durationTo && (selectedType === C || selectedType === D)) {
-      setSecondNotice('');
-    }
   }, [durationFrom, durationTo]);
 
   // MAIN
@@ -836,14 +848,10 @@ const RequestInformation = (props) => {
   // DYNAMIC ROW OF DATE LISTS
   const dateLists = getDateLists(durationFrom, durationTo, selectedType);
 
-  const calculateNumberOfDayProp =
-    action === EDIT_LEAVE_REQUEST ? calculateNumberOfLeaveDay(viewingLeaveDates) : 0;
-  const dateListsFromProps = calculateNumberOfDayProp === 0 ? null : calculateNumberOfDayProp;
-
   let showAllDateList = false;
-  if (dateListsFromProps > 0 && dateListsFromProps <= MAX_NO_OF_DAYS_TO_SHOW) {
+  if (dateLists.length < MAX_NO_OF_DAYS_TO_SHOW) {
     showAllDateList = true;
-  } else if (dateLists.length <= MAX_NO_OF_DAYS_TO_SHOW) showAllDateList = true;
+  }
 
   // if save as draft, no need to validate forms
   const needValidate = buttonState === 2;
@@ -1039,7 +1047,7 @@ const RequestInformation = (props) => {
                         <LeaveTimeRow2
                           fromDate={durationFrom}
                           toDate={durationTo}
-                          noOfDays={dateListsFromProps || dateLists.length}
+                          noOfDays={dateLists.length}
                         />
                       )}
                     </Col>
@@ -1085,7 +1093,7 @@ const RequestInformation = (props) => {
                       <LeaveTimeRow2
                         fromDate={durationFrom}
                         toDate={durationTo}
-                        noOfDays={dateListsFromProps || dateLists.length}
+                        noOfDays={dateLists.length}
                       />
                     </Col>
                     <Col span={6} />
@@ -1230,7 +1238,7 @@ const RequestInformation = (props) => {
 
       <TimeOffModal
         visible={showSuccessModalVisible}
-        onOk={() => setShowSuccessModalVisible(false)}
+        onOk={() => setShowSuccessModal(false)}
         content={renderModalContent()}
         submitText="OK"
       />
