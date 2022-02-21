@@ -49,7 +49,7 @@ const EmployeeDetailModal = (props) => {
   };
 
   const downloadTemplate = () => {
-    exportToCSV(processData(data?.userDetail || []), 'ProjectDetailData.xlsx');
+    exportToCSV(processData(data?.userDetail || []), 'EmployeeDetailslData.xlsx');
   };
 
   const renderModalContent = () => {

@@ -66,6 +66,9 @@ const Header = (props) => {
         project = [],
         userSpentInDay = 0,
         userSpentInHours = 0,
+        totalLeave = '',
+        totalWorkingDay = '',
+        totalWorkingDayInHours = '',
         department: { name = '' } = {},
       } = item;
       let projectName = '';
@@ -77,11 +80,8 @@ const Header = (props) => {
         Employee: legalName,
         Department: name,
         Project: projectName,
-        'Working Days':
-          type === VIEW_TYPE.W
-            ? `${userSpentInDay}/5 ( 40 hours)`
-            : `${userSpentInDay}/5 ( 160 hours)`,
-        'Leave Taken ': `${leaveTaken}/3`,
+        'Working Days': `${userSpentInDay}/${totalWorkingDay} ( ${totalWorkingDayInHours} hours)`,
+        'Leave Taken ': `${leaveTaken}/${totalLeave}`,
         'Total Hours': `${userSpentInHours} hours`,
       };
     });

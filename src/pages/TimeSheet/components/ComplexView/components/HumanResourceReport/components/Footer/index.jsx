@@ -2,12 +2,11 @@ import { Button } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
 import exportToCSV from '@/utils/exportAsExcel';
-import { VIEW_TYPE } from '@/utils/timeSheet';
 import DownloadIcon from '@/assets/timeSheet/solidDownload.svg';
 import styles from './index.less';
 
 const Footer = (props) => {
-  const { selectedEmployees = [], selectedView = '', data = [] } = props;
+  const { selectedEmployees = [], data = [] } = props;
 
   const getSelectedData = () => {
     const newData = data.filter((el) => selectedEmployees.includes(el.id));
@@ -22,6 +21,9 @@ const Footer = (props) => {
         project = [],
         userSpentInDay = 0,
         userSpentInHours = 0,
+        totalLeave = '',
+        totalWorkingDay = '',
+        totalWorkingDayInHours = '',
         department: { name = '' } = {},
       } = item;
       let projectName = '';
@@ -33,11 +35,8 @@ const Footer = (props) => {
         Employee: legalName,
         Department: name,
         Project: projectName,
-        'Working Days':
-          selectedView === VIEW_TYPE.W
-            ? `${userSpentInDay}/5 ( 40 hours)`
-            : `${userSpentInDay}/5 ( 160 hours)`,
-        'Leave Taken ': `${leaveTaken}/3`,
+        'Working Days': `${userSpentInDay}/${totalWorkingDay} ( ${totalWorkingDayInHours} hours) `,
+        'Leave Taken ': `${leaveTaken}/${totalLeave}`,
         'Total Hours': `${userSpentInHours} hours`,
       };
     });
