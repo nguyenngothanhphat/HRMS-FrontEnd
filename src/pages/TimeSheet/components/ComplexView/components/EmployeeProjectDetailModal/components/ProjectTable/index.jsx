@@ -52,7 +52,7 @@ const ProjectTable = (props) => {
         key: 'notes',
       },
       {
-        title: 'Time',
+        title: 'Date & Time',
         dataIndex: 'time',
         key: 'time',
         render: (_, record) => {
