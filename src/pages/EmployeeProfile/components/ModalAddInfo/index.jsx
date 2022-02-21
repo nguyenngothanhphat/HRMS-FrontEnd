@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Steps, Form, Input, Select, Tag, notification } from 'antd';
-import { DeleteOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { Modal, Button, Steps, Form, Input, Select } from 'antd';
+import CreatableSelect from 'react-select/creatable';
+import { DeleteOutlined } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
 import plusIcon from '@/assets/add-adminstrator.svg';
 import { getCurrentCompany } from '@/utils/authority';
@@ -26,6 +27,7 @@ const ModalAddInfo = (props) => {
     generalData = {},
   } = props;
   const [currentStep, setCurrentStep] = useState(0);
+  const [newSkillList, setListNewSkill] = useState([]); 
 
   useEffect(() => {
     dispatch({
@@ -71,18 +73,18 @@ const ModalAddInfo = (props) => {
   // Certifications
   const [arrCertification, setArrCertification] = useState([]);
   const [numOfCertification, setNumOfCertification] = useState(0);
-  const [newSkill, setNewSkill] = useState(false);
-  const tagRender = (prop) => {
-    const { label, onClose } = prop;
-    return (
-      <Tag
-        icon={<CloseCircleOutlined className={styles.iconClose} onClick={onClose} />}
-        color="#EAECEF"
-      >
-        {label}
-      </Tag>
-    );
-  };
+  // const [newSkill] = useState(false);
+  // const tagRender = (prop) => {
+  //   const { label, onClose } = prop;
+  //   return (
+  //     <Tag
+  //       icon={<CloseCircleOutlined className={styles.iconClose} onClick={onClose} />}
+  //       color="#EAECEF"
+  //     >
+  //       {label}
+  //     </Tag>
+  //   );
+  // };
   const [objUrl, setObjURL] = useState({});
   const uploadFile = (item, url) => {
     const obj = { ...objUrl };
@@ -90,8 +92,27 @@ const ModalAddInfo = (props) => {
     setObjURL(obj);
   };
 
+  const handleChangeSkill = (value) => {
+    if (value.length > 0) {
+      value.forEach(async (item) => {
+        if (item.__isNew__ === true) {
+          await dispatch({
+            type: 'employeeProfile/addNewSkill',
+            payload: {
+              name: item.label,
+            },
+          }).then((response) => {
+            if (response.data._id) {
+              setListNewSkill([...newSkillList, response.data._id]);
+            }
+          });
+        }
+      });
+    }
+  };
+
   const onFinishCertification = (values) => {
-    const { certificationName, otherSkills, qualification, skills } = values;
+    const { certificationName, qualification, skills } = values;
     let { totalExp } = values;
     if (!totalExp) {
       totalExp = generalData.totalExp || 0;
@@ -110,21 +131,27 @@ const ModalAddInfo = (props) => {
         });
       }
     });
-    const tempSkill = skills ? skills.filter((item) => item !== 'Other') : [];
-    const checkOtherSkill = otherSkills ? otherSkills.toUpperCase().replace(' ','') : null;
-    const checkDuplication = listSkill.filter((e) => e.name.toUpperCase().replace(' ','') === checkOtherSkill) || [];
-    if(checkDuplication.length > 0) {
-      notification.error({
-        message: 'This skill is available on the skill list above, please select it on skills.',
-      });
-      return
-    }
+    const listSkills = [];
+    skills.forEach((item) => {
+      if (!item.__isNew__) {
+        listSkills.push(item.value);
+      }
+    });
+    // const tempSkill = skills ? skills.filter((item) => item !== 'Other') : [];
+    // const checkOtherSkill = otherSkills ? otherSkills.toUpperCase().replace(' ','') : null;
+    // const checkDuplication = listSkill.filter((e) => e.name.toUpperCase().replace(' ','') === checkOtherSkill) || [];
+    // if(checkDuplication.length > 0) {
+    //   notification.error({
+    //     message: 'This skill is available on the skill list above, please select it on skills.',
+    //   });
+    //   return
+    // }
     const obj = {
       ...resultForm,
       certifications,
-      otherSkills: otherSkills instanceof Array ? otherSkills : [otherSkills],
+      // otherSkills: otherSkills instanceof Array ? otherSkills : [otherSkills],
       qualification,
-      skills: tempSkill,
+      skills: newSkillList.length > 0 ? listSkills.concat(newSkillList) : listSkills,
       totalExp,
     };
     setResultForm(obj);
@@ -142,11 +169,11 @@ const ModalAddInfo = (props) => {
     tempArr.splice(key, 1);
     setArrCertification(tempArr);
   };
-  const changeSkill = (arr) => {
-    if (arr.includes('Other')) {
-      setNewSkill(true);
-    } else setNewSkill(false);
-  };
+  // const changeSkill = (arr) => {
+  //   if (arr.includes('Other')) {
+  //     setNewSkill(true);
+  //   } else setNewSkill(false);
+  // };
   // bank account
   const [arrBankAccount, setArrBankAccount] = useState([]);
   const [numOfBank, setNumOfBank] = useState(0);
@@ -493,7 +520,19 @@ const ModalAddInfo = (props) => {
               //   },
               // ]}
             >
-              <Select
+              <CreatableSelect
+                isMulti
+                onChange={(value) => handleChangeSkill(value)}
+                options={listSkill
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((item) => {
+                    return {
+                      label: item.name,
+                      value: item._id,
+                    };
+                  })}
+              />
+              {/* <Select
                 placeholder="Select skills"
                 mode="tags"
                 tagRender={tagRender}
@@ -507,9 +546,9 @@ const ModalAddInfo = (props) => {
                   <Select.Option key={item._id}>{item.name}</Select.Option>
                 ))}
                 <Select.Option key="Other">Other</Select.Option>
-              </Select>
+              </Select> */}
             </Form.Item>
-            {newSkill && (
+            {/* {newSkill && (
               <Form.Item
                 label="Other Skill"
                 name="otherSkills"
@@ -522,7 +561,7 @@ const ModalAddInfo = (props) => {
               >
                 <Input />
               </Form.Item>
-            )}
+            )} */}
           </Form>
         );
       case 2:

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Select, Input } from 'antd';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
-import { SearchOutlined, DownloadOutlined } from '@ant-design/icons';
+import { SearchOutlined } from '@ant-design/icons';
 import FilterIcon from '@/assets/projectManagement/filter.svg';
 import ArrowDown from '@/assets/projectManagement/arrowDown.svg';
 import FilterPopover from '../FilterPopover';
@@ -49,22 +49,22 @@ const HeaderProjectRM = (props) => {
     );
   };
 
-  const exportCustomers = async () => {
-    const { dispatch } = props;
+  // const exportCustomers = async () => {
+  //   const { dispatch } = props;
 
-    const getListExport = await dispatch({
-      type: 'resourceManagement/exportReportProject',
-    });
-    const downloadLink = document.createElement('a');
-    const universalBOM = '\uFEFF';
-    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
-      universalBOM + getListExport,
-    )}`;
-    downloadLink.download = 'rm-projects.csv';
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-  };
+  //   const getListExport = await dispatch({
+  //     type: 'resourceManagement/exportReportProject',
+  //   });
+  //   const downloadLink = document.createElement('a');
+  //   const universalBOM = '\uFEFF';
+  //   downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
+  //     universalBOM + getListExport,
+  //   )}`;
+  //   downloadLink.download = 'rm-projects.csv';
+  //   document.body.appendChild(downloadLink);
+  //   downloadLink.click();
+  //   document.body.removeChild(downloadLink);
+  // };
 
   const allProject = data.filter((obj) => obj.statusId === undefined);
   const listStatus = data.filter((obj) => obj.statusName !== 'All Projects');
@@ -94,7 +94,7 @@ const HeaderProjectRM = (props) => {
       </div>
 
       <div className={styles.Header__right}>
-        <p
+        {/* <p
           style={{
             marginBottom: '0',
             marginRight: '25px',
@@ -105,7 +105,7 @@ const HeaderProjectRM = (props) => {
           onClick={exportCustomers}
         >
           <DownloadOutlined /> Export
-        </p>
+        </p> */}
         <FilterPopover
           placement="bottomRight"
           onSubmit={onFilter}

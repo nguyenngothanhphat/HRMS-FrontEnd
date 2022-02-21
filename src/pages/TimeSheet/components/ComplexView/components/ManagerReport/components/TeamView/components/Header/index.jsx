@@ -1,10 +1,10 @@
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
-import FilterIcon from '@/assets/timeSheet/filter.svg';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
 import styles from './index.less';
+import FilterButton from '@/components/FilterButton';
 
 const Header = (props) => {
   const {
@@ -48,10 +48,7 @@ const Header = (props) => {
         />
       </div>
       <div className={styles.Header__right}>
-        <div className={styles.filterIcon}>
-          <img src={FilterIcon} alt="" />
-          <span>Filter</span>
-        </div>
+        <FilterButton />
         <SearchBar onChangeSearch={onChangeSearch} />
       </div>
     </div>

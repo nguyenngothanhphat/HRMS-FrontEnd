@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { PureComponent } from 'react';
-import { Button, Form, Input, Select, notification } from 'antd';
+import { Button, Form, Input } from 'antd';
+import CreatableSelect from 'react-select/creatable';
 import { connect } from 'umi';
 import FormCertification from './components/FormCertification';
 import s from './index.less';
@@ -10,7 +11,7 @@ const formItemLayout = {
   wrapperCol: { span: 12 },
 };
 
-const { Option } = Select;
+// const { Option } = Select;
 
 @connect(
   ({
@@ -25,6 +26,7 @@ const { Option } = Select;
     user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} } = {} } = {},
   }) => ({
     loading: loading.effects['employeeProfile/updateGeneralInfo'],
+    loadingAddNewSkill: loading.effects['employeeProfile/addNewSkill'],
     generalDataOrigin,
     generalData,
     myEmployeeID,
@@ -39,6 +41,7 @@ class Edit extends PureComponent {
     super(props);
     this.state = {
       notValid: false,
+      newSkillList: [],
     };
   }
 
@@ -70,6 +73,13 @@ class Edit extends PureComponent {
 
   processDataChanges = (newSkills) => {
     const { generalData: generalDataTemp, tenantCurrentEmployee = '' } = this.props;
+    const { newSkillList } = this.state;
+    const listSkill = [];
+    newSkills.forEach((item) => {
+      if (!item.__isNew__) {
+        listSkill.push(item.value);
+      }
+    });
     const {
       preJobTitle = '',
       // skills = [],
@@ -78,19 +88,19 @@ class Edit extends PureComponent {
       totalExp = 0,
       qualification = '',
       certification = [],
-      otherSkills = '',
+      // otherSkills = '',
       _id: id = '',
     } = generalDataTemp;
     const payloadChanges = {
       id,
       preJobTitle,
-      skills: newSkills,
+      skills: newSkillList.length > 0 ? listSkill.concat(newSkillList) : listSkill,
       preCompany,
       linkedIn,
       totalExp,
       qualification,
       certification,
-      otherSkills: otherSkills instanceof Array ? otherSkills : [otherSkills],
+      // otherSkills: otherSkills instanceof Array ? otherSkills : [otherSkills],
       tenantId: tenantCurrentEmployee,
     };
     return payloadChanges;
@@ -107,7 +117,7 @@ class Edit extends PureComponent {
       'totalExp',
       'qualification',
       'certification',
-      'otherSkills',
+      // 'otherSkills',
     ];
     listKey.forEach((item) => delete newObj[item]);
     return newObj;
@@ -155,11 +165,32 @@ class Edit extends PureComponent {
     });
   };
 
+  handleChangeSkill = (value) => {
+    const { dispatch } = this.props;
+    const { newSkillList } = this.state;
+    if (value.length > 0) {
+      value.forEach(async (item) => {
+        if (item.__isNew__ === true) {
+          await dispatch({
+            type: 'employeeProfile/addNewSkill',
+            payload: {
+              name: item.label,
+            },
+          }).then((response) => {
+            if (response.data._id) {
+              this.setState({ newSkillList: [...newSkillList, response.data._id] });
+            }
+          });
+        }
+      });
+    }
+  };
+
   handleSave = async () => {
     const {
       dispatch,
       generalData,
-      listSkill = [],
+      // listSkill = [],
       generalData: { employee = '' } = {},
       myEmployeeID = '',
     } = this.props;
@@ -170,21 +201,21 @@ class Edit extends PureComponent {
     const dataTempKept = this.processDataKept() || {};
     const { certification } = payload;
     await this.handleUpdateCertification(certification);
-    const listOtherSkill = payload.otherSkills.length > 0 ? payload.otherSkills[0] : '';
-    const checkDuplication = listSkill.filter((e) => e.name.toUpperCase().replace(' ','') === listOtherSkill.toUpperCase().replace(' ', '')) || [];
-    if(checkDuplication.length > 0) {
-      notification.error({
-        message: 'This skill is available on the skill list above, please select it on skills.',
-      });
-      return;
-    }
-    dispatch({
+    await dispatch({
       type: 'employeeProfile/updateGeneralInfo',
       payload,
       dataTempKept,
       key: 'openAcademic',
       isLinkedIn: check,
     });
+    // const listOtherSkill = payload.otherSkills.length > 0 ? payload.otherSkills[0] : '';
+    // const checkDuplication = listSkill.filter((e) => e.name.toUpperCase().replace(' ','') === listOtherSkill.toUpperCase().replace(' ', '')) || [];
+    // if(checkDuplication.length > 0) {
+    //   notification.error({
+    //     message: 'This skill is available on the skill list above, please select it on skills.',
+    //   });
+    //   return;
+    // }
   };
 
   render() {
@@ -204,14 +235,19 @@ class Edit extends PureComponent {
       linkedIn = '',
       totalExp = 0,
       qualification = '',
-      otherSkills = [],
+      // otherSkills = [],
     } = generalData;
-
     let { certification = [{}] } = generalData;
     certification = certification?.length > 0 ? certification : [{}];
-    const getIdSkill = skills.map((item) => item._id);
-    const newOtherSkills = otherSkills.length > 0 ? otherSkills : [];
-    const veriOther = skills.filter((item) => item === 'Other');
+    // const getIdSkill = skills.map((item) => item._id);
+    const getIdSkill = skills.map((item) => {
+      return {
+        label: item.name,
+        value: item._id,
+      };
+    });
+    // const newOtherSkills = otherSkills.length > 0 ? otherSkills : [];
+    // const verifySkillOther = skills.filter((item) => item === 'Other');
     return (
       <div className={s.root}>
         <Form
@@ -223,7 +259,7 @@ class Edit extends PureComponent {
             totalExp,
             qualification,
             skills: getIdSkill,
-            otherSkills: newOtherSkills,
+            // otherSkills: newOtherSkills,
             certification,
           }}
           // eslint-disable-next-line react/jsx-props-no-spreading
@@ -258,7 +294,19 @@ class Edit extends PureComponent {
               />
             </Form.Item>
             <Form.Item label="Skills" name="skills">
-              <Select
+              <CreatableSelect
+                isMulti
+                onChange={(value) => this.handleChangeSkill(value)}
+                options={listSkill
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((item) => {
+                    return {
+                      label: item.name,
+                      value: item._id,
+                    };
+                  })}
+              />
+              {/* <Select
                 placeholder="Select skills"
                 mode="tags"
                 showArrow
@@ -272,15 +320,15 @@ class Edit extends PureComponent {
                   <Option key={item._id}>{item.name}</Option>
                 ))}
                 <Option key="Other">Other</Option>
-              </Select>
+              </Select> */}
             </Form.Item>
-            {veriOther.length > 0 || otherSkills.length > 0 ? (
+            {/* {verifySkillOther.length > 0 || otherSkills.length > 0 ? (
               <Form.Item label="OtherSkill" name="otherSkills">
                 <Input maxLength={50} />
               </Form.Item>
             ) : (
               ''
-            )}
+            )} */}
           </div>
           <div className={s.viewFooter}>
             <div className={s.viewFooter__cancel} onClick={handleCancel}>

@@ -3,12 +3,12 @@ import React from 'react';
 import { Button } from 'antd';
 import { connect } from 'umi';
 import exportToCSV from '@/utils/exportAsExcel';
-import FilterIcon from '@/assets/timeSheet/filter.svg';
 import DownloadIcon from '@/assets/timeSheet/download.svg';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
 import { VIEW_TYPE } from '@/utils/timeSheet';
 import styles from './index.less';
+import FilterButton from '@/components/FilterButton';
 
 const Header = (props) => {
   const {
@@ -109,10 +109,7 @@ const Header = (props) => {
           <img src={DownloadIcon} alt="Icon Download" />
           <Button>Download</Button>
         </div>
-        <div className={styles.filterIcon}>
-          <img src={FilterIcon} alt="" />
-          <span>Filter</span>
-        </div>
+        <FilterButton />
         <SearchBar onChangeSearch={onChangeSearch} />
       </div>
     </div>
