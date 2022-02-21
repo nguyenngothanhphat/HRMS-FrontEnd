@@ -107,6 +107,7 @@ const HumanResourceReport = (props) => {
           <Header
             startDate={startDateWeek}
             endDate={endDateWeek}
+            data={hrViewList}
             setStartDate={setStartDateWeek}
             setEndDate={setEndDateWeek}
             viewChangeComponent={viewChangeComponent}
@@ -120,6 +121,7 @@ const HumanResourceReport = (props) => {
           <Header
             startDate={startDateMonth}
             endDate={endDateMonth}
+            data={hrViewList}
             setStartDate={setStartDateMonth}
             setEndDate={setEndDateMonth}
             viewChangeComponent={viewChangeComponent}
@@ -165,7 +167,9 @@ const HumanResourceReport = (props) => {
 
   const renderFooter = () => {
     if (selectedEmployees.length === 0) return null;
-    return <Footer selectedEmployees={selectedEmployees} data={hrViewList} />;
+    return (
+      <Footer selectedEmployees={selectedEmployees} data={hrViewList} selectedView={selectedView} />
+    );
   };
   // MAIN AREA
   return (

@@ -87,6 +87,19 @@
     align-items: center;
     justify-content: flex-end;
     font-size: 13px;
+    .downloadIcon {
+      display: flex;
+      margin-right: 24px;
+      cursor: pointer;
+      :global {
+        .ant-btn {
+          height: unset;
+          margin-left: 0;
+          padding: 0 0 0 10px;
+          color: #ffa100;
+        }
+      }
+    }
     .filterIcon {
       margin-right: 16px;
       color: #707177;
