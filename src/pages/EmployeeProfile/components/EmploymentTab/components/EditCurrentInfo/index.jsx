@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-curly-newline */
 import React, { PureComponent } from 'react';
-import { Form, Select, Button, DatePicker, InputNumber, Skeleton } from 'antd';
+import { Form, Select, Button, DatePicker, InputNumber, Skeleton, Input } from 'antd';
 import { formatMessage, connect } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
@@ -211,6 +211,7 @@ class EditCurrentInfo extends PureComponent {
             empTypeOther,
             department: department?._id,
             manager: (manager && manager._id) || null,
+            managerLoading: manager?.generalInfo?.legalName || null,
             compensationType,
             grade: titleInfo?.gradeObj,
             initialJoiningDate:
@@ -366,28 +367,34 @@ class EditCurrentInfo extends PureComponent {
               placeholder="Enter an amount"
             />
           </Form.Item> */}
-          <Form.Item label="Manager" name="manager">
-            <Select
-              showSearch
-              optionFilterProp="children"
-              placeholder="Select a manager"
-              filterOption={(input, option) =>
-                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-              defaultValue={manager._id}
-              loading={loadingFetchEmployeeList}
-              disabled={loadingFetchEmployeeList}
-            >
-              {employeeList.map((item, index) => {
-                return (
-                  <Option key={`${index + 1}`} value={item._id}>
-                    {item?.generalInfo?.legalName}
-                  </Option>
-                );
-              })}
-              ]
-            </Select>
-          </Form.Item>
+          {loadingFetchEmployeeList ? (
+            <Form.Item label="Manager" name="managerLoading">
+              <Input disabled />
+            </Form.Item>
+          ) : (
+            <Form.Item label="Manager" name="manager">
+              <Select
+                showSearch
+                optionFilterProp="children"
+                placeholder={manager?.generalInfo?.legalName || 'Select a manager'}
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                defaultValue={manager._id}
+                loading={loadingFetchEmployeeList}
+                disabled={loadingFetchEmployeeList}
+              >
+                {employeeList.map((item, index) => {
+                  return (
+                    <Option key={`${index + 1}`} value={item._id}>
+                      {item?.generalInfo?.legalName}
+                    </Option>
+                  );
+                })}
+                ]
+              </Select>
+            </Form.Item>
+          )}
           {/* <Form.Item label="Time Off Policy" name="timeOffPolicy" rules={[{ required: true }]}>
             Time Off Policy
           </Form.Item> */}
