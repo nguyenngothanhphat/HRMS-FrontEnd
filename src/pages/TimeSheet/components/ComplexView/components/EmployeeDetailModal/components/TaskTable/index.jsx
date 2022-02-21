@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'umi';
 import CommonTable from '@/components/CommonTable';
 import EmptyLine2 from '@/assets/timeSheet/emptyLine2.svg';
 import styles from './index.less';
 
 const TaskTable = (props) => {
-  const { list = [] } = props;
+  const { list = [], selectedRowKeys = [], setSelectedRowKeys = () => {} } = props;
 
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const generateColumns = () => {
     return [
       {
