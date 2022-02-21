@@ -33,8 +33,8 @@ const Footer = (props) => {
         'Project Name': projectName,
         Type: engagementType,
         Resources: resourceNames,
-        'Total Days': projectSpentInDay,
-        'Total Hours ': projectSpentInHours,
+        'Total Days': `${projectSpentInDay} Days`,
+        'Total Hours ': `${projectSpentInHours} Hours`,
       };
     });
   };

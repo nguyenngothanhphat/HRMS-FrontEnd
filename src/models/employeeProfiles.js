@@ -60,7 +60,7 @@ import {
   getBenefitPlanList,
   getListEmployeeSingleCompany,
   getListGrade,
-  addSkill
+  addSkill,
 } from '@/services/employeeProfiles';
 import { getCurrentTenant } from '@/utils/authority';
 
@@ -793,16 +793,6 @@ const employeeProfile = {
             tenantCurrentEmployee,
             companyCurrentEmployee,
             idCurrentEmployee,
-          },
-        });
-
-        // fetch employees to show in "select manager" of employee
-        yield put({
-          type: 'fetchEmployeeListSingleCompanyEffect',
-          payload: {
-            status: ['ACTIVE'],
-            company: companyCurrentEmployee,
-            tenantId: tenantCurrentEmployee,
           },
         });
       } catch (error) {

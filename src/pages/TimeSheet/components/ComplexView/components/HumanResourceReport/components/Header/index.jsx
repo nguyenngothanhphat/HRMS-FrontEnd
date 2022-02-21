@@ -1,6 +1,9 @@
 import moment from 'moment';
 import React from 'react';
+import { Button } from 'antd';
 import { connect } from 'umi';
+import exportToCSV from '@/utils/exportAsExcel';
+import DownloadIcon from '@/assets/timeSheet/download.svg';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
 import { VIEW_TYPE } from '@/utils/timeSheet';
@@ -16,6 +19,7 @@ const Header = (props) => {
     viewChangeComponent = '',
     type = '',
     onChangeSearch = () => {},
+    data = [],
   } = props;
 
   // HEADER AREA FOR MONTH
@@ -54,6 +58,39 @@ const Header = (props) => {
     setEndDate(dates[1]);
   };
 
+  const processData = (array) => {
+    return array.map((item) => {
+      const {
+        legalName = '',
+        leaveTaken = '',
+        project = [],
+        userSpentInDay = 0,
+        userSpentInHours = 0,
+        totalLeave = '',
+        totalWorkingDay = '',
+        totalWorkingDayInHours = '',
+        department: { name = '' } = {},
+      } = item;
+      let projectName = '';
+      project.forEach((el, index) => {
+        projectName += el;
+        if (index + 1 < project.length) projectName += ', ';
+      });
+      return {
+        Employee: legalName,
+        Department: name,
+        Project: projectName,
+        'Working Days': `${userSpentInDay}/${totalWorkingDay} ( ${totalWorkingDayInHours} hours)`,
+        'Leave Taken ': `${leaveTaken}/${totalLeave}`,
+        'Total Hours': `${userSpentInHours} hours`,
+      };
+    });
+  };
+
+  const downloadTemplate = () => {
+    exportToCSV(processData(data), 'HumanResourceReportData.xlsx');
+  };
+
   // MAIN AREA
   return (
     <div className={styles.Header}>
@@ -68,6 +105,10 @@ const Header = (props) => {
       </div>
       <div className={styles.Header__middle}>{viewChangeComponent()}</div>
       <div className={styles.Header__right}>
+        <div className={styles.downloadIcon} onClick={downloadTemplate}>
+          <img src={DownloadIcon} alt="Icon Download" />
+          <Button>Download</Button>
+        </div>
         <FilterButton />
         <SearchBar onChangeSearch={onChangeSearch} />
       </div>
