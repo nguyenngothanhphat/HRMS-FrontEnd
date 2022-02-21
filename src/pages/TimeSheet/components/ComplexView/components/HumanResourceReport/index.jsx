@@ -107,6 +107,7 @@ const HumanResourceReport = (props) => {
           <Header
             startDate={startDateWeek}
             endDate={endDateWeek}
+            data={hrViewList}
             setStartDate={setStartDateWeek}
             setEndDate={setEndDateWeek}
             viewChangeComponent={viewChangeComponent}
@@ -120,6 +121,7 @@ const HumanResourceReport = (props) => {
           <Header
             startDate={startDateMonth}
             endDate={endDateMonth}
+            data={hrViewList}
             setStartDate={setStartDateMonth}
             setEndDate={setEndDateMonth}
             viewChangeComponent={viewChangeComponent}
