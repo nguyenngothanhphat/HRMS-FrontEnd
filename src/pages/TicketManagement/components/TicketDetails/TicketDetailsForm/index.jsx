@@ -42,14 +42,6 @@ class TicketDetailsForm extends Component {
     };
   }
 
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'ticketManagement/fetchListEmployee',
-      payload: {},
-    });
-  }
-
   onChange = ({ target: { value } }) => {
     this.setState({ value });
   };

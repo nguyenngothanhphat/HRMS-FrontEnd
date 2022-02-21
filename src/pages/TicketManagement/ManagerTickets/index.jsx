@@ -107,7 +107,9 @@ class ManagerTicket extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'ticketManagement/fetchListEmployee',
-      payload: {},
+      payload: {
+        department: ['HR', 'IT', 'Operations & Facility management'],
+      },
     });
   };
 

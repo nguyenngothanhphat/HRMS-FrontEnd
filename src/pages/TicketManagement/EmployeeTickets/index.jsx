@@ -34,7 +34,9 @@ class EmployeeTicket extends Component {
       }
       dispatch({
         type: 'ticketManagement/fetchListEmployee',
-        payload: {},
+        payload: {
+          department: ['HR', 'IT', 'Operations & Facility management'],
+        },
       });
       dispatch({
         type: 'ticketManagement/fetchLocationList',
