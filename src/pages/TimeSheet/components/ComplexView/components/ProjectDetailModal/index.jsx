@@ -77,6 +77,16 @@ const ProjectDetailModal = (props) => {
     );
   };
 
+  const disabledBtn = () => {
+    if (!data?.projectDetail) return true;
+    if (Array.isArray(data?.projectDetail)) {
+      if (data?.projectDetail.length === 0) {
+        return true;
+      }
+    }
+
+    return false;
+  };
   return (
     <>
       <Modal
@@ -86,7 +96,12 @@ const ProjectDetailModal = (props) => {
         width={750}
         footer={
           <>
-            <Button className={styles.btnSubmit} type="primary" onClick={downloadTemplate}>
+            <Button
+              disabled={disabledBtn()}
+              className={styles.btnSubmit}
+              type="primary"
+              onClick={downloadTemplate}
+            >
               Download
             </Button>
           </>
