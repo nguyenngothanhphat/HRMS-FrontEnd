@@ -73,11 +73,6 @@ class CommonLayout extends PureComponent {
   };
 
   handleCLickItemMenu = (item) => {
-    // this.setState({
-    //   selectedItemId: item.id,
-    //   displayComponent: item.component,
-    // });
-
     const { reId, isAddingCompany = false } = this.props;
 
     if (!isAddingCompany) {
