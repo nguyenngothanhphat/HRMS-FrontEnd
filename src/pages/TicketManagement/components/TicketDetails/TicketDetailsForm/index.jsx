@@ -9,7 +9,6 @@ import { UserOutlined } from '@ant-design/icons';
 import AttachmentIcon from '@/assets/ticketsManagement-attach.svg';
 import AttachmenUploadtIcon from '@/assets/attach-upload.svg';
 import TrashIcon from '@/assets/ticketManagement-trashIcon.svg';
-import ChatIcon from '@/assets/ticketManagement-avatarChat.svg';
 import ImageIcon from '@/assets/image_icon.png';
 import PDFIcon from '@/assets/pdf_icon.png';
 
@@ -216,11 +215,19 @@ class TicketDetailsForm extends Component {
     const avatarTicket = () => {
       const intersection = listEmployee.filter((element) => ccList.includes(element._id));
       return intersection.map((val) => {
-        const { generalInfo: { avatar = '' } = {} } = val;
+        const { generalInfo: { avatar = '', legalName = '' } = {} } = val;
         if (avatar !== '') {
-          return <Avatar src={avatar} />;
+          return (
+            <Tooltip placement="top" title={legalName}>
+              <Avatar src={avatar} />
+            </Tooltip>
+          );
         }
-        return <Avatar icon={<UserOutlined />} />;
+        return (
+          <Tooltip placement="top" title={legalName}>
+            <Avatar size={40} icon={<UserOutlined />} />
+          </Tooltip>
+        );
       });
     };
     const getOpenBy = () => {
@@ -489,7 +496,11 @@ class TicketDetailsForm extends Component {
                           avatar !== '' ? (
                             <Avatar size={40} className={styles.avatar} src={avatar} />
                           ) : (
-                            <UserOutlined />
+                            <Avatar
+                              style={{ background: '#7A2CF9' }}
+                              size={40}
+                              icon={<UserOutlined />}
+                            />
                           )
                         }
                       >
@@ -514,7 +525,7 @@ class TicketDetailsForm extends Component {
                           avatar !== '' ? (
                             <Avatar size={40} className={styles.avatar} src={avatar} />
                           ) : (
-                            <img src={ChatIcon} alt="AvatarIcon" />
+                            <Avatar size={40} icon={<UserOutlined />} />
                           )
                         }
                       >
