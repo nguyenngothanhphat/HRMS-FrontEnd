@@ -12,12 +12,17 @@ const { Option } = Select;
   ({
     employeeProfile,
     loading,
-    employeeProfile: { tenantCurrentEmployee = '', compensationTypes = [] } = {},
+    employeeProfile: {
+      companyCurrentEmployee = '',
+      tenantCurrentEmployee = '',
+      compensationTypes = [],
+    } = {},
     locationSelection: { listLocationsByCompany = {} } = {},
   }) => ({
     employeeProfile,
     compensationTypes,
     tenantCurrentEmployee,
+    companyCurrentEmployee,
     loadingLocationsList: loading.effects['employeeProfile/fetchLocationsByCompany'],
     loadingTitleList: loading.effects['employeeProfile/fetchTitleByDepartment'],
     loadingCompensationList: loading.effects['employeeProfile/fetchCompensationList'],
@@ -32,7 +37,12 @@ class EditCurrentInfo extends PureComponent {
   formRef = React.createRef();
 
   componentDidMount() {
-    const { employeeProfile, dispatch, tenantCurrentEmployee = '' } = this.props;
+    const {
+      employeeProfile,
+      dispatch,
+      tenantCurrentEmployee = '',
+      companyCurrentEmployee = '',
+    } = this.props;
     const { department = '', company = '' } = employeeProfile.originData.employmentData;
     const payload = {
       company: company._id,
@@ -64,6 +74,15 @@ class EditCurrentInfo extends PureComponent {
     });
     dispatch({
       type: 'employeeProfile/fetchGradeList',
+    });
+    // fetch employees to show in "select manager" of employee
+    dispatch({
+      type: 'employeeProfile/fetchEmployeeListSingleCompanyEffect',
+      payload: {
+        status: ['ACTIVE'],
+        company: companyCurrentEmployee,
+        tenantId: tenantCurrentEmployee,
+      },
     });
   }
 
