@@ -118,20 +118,25 @@ const FilterForm = (props) => {
           onValuesChange={onValuesChange}
         >
           <div className={styles.form__top}>
-            <Form.Item key="name" label="BY NAME" name="name">
+            <Form.Item key="name" label="BY NAME" name="employeeRaise">
               <Select
                 allowClear
                 showSearch
                 mode="multiple"
                 placeholder="Select name"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 showArrow
               >
                 {!isEmpty(legalNameList)
                   ? legalNameList.map((option) => {
-                      const { employeeRaise: {_id:userId="", generalInfo: { legalName = '' } = {} } = {} } =
-                        option;
+                      const {
+                        employeeRaise: {
+                          _id: userId = '',
+                          generalInfo: { legalName = '' } = {},
+                        } = {},
+                      } = option;
                       return (
                         <Option key={option.id} value={userId}>
                           {legalName}
@@ -148,7 +153,8 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select request type"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 showArrow
               >
                 {queryTypeList.map((option) => {
@@ -167,7 +173,8 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select priority"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 showArrow
               >
                 {priorityList.map((option) => {
@@ -186,7 +193,8 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select location"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 showArrow
               >
                 {locationsListNew.map((option) => {
@@ -211,7 +219,8 @@ const FilterForm = (props) => {
                   mode="multiple"
                   placeholder="Select assign"
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                   showArrow
                 >
                   {/** condition status have different New */}
