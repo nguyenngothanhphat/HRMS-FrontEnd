@@ -5,7 +5,7 @@ import { convertMsToTime, employeeColor } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const ProjectTable = (props) => {
-  const { list = [], loading = false } = props;
+  const { list = [], loading = false, date } = props;
   const [pageSelected, setPageSelected] = useState(1);
 
   const getColorByIndex = (index) => {
@@ -23,7 +23,7 @@ const ProjectTable = (props) => {
           </div>
         </div>
         <div className={styles.right}>
-          <span className={styles.name}>{projectName || '-'}</span>
+          <span className={styles.name}>{projectName || ''}</span>
         </div>
       </div>
     );
@@ -57,9 +57,12 @@ const ProjectTable = (props) => {
         key: 'time',
         render: (_, record) => {
           return (
-            <span>
-              {record.startTime} - {record.endTime}
-            </span>
+            <>
+              <p className={styles.date}>{record.date}</p>
+              <span>
+                {record.startTime} - {record.endTime}
+              </span>
+            </>
           );
         },
       },
