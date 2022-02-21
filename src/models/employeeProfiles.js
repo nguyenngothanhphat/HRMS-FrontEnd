@@ -54,12 +54,13 @@ import {
   addDependentsOfEmployee,
   updateDependentsById,
   removeDependentsById,
-  getBenefitPlans,
+  // getBenefitPlans,
   addMultiBank,
   addMultiCertification,
   getBenefitPlanList,
   getListEmployeeSingleCompany,
   getListGrade,
+  addSkill,
 } from '@/services/employeeProfiles';
 import { getCurrentTenant } from '@/utils/authority';
 
@@ -794,16 +795,6 @@ const employeeProfile = {
             idCurrentEmployee,
           },
         });
-
-        // fetch employees to show in "select manager" of employee
-        yield put({
-          type: 'fetchEmployeeListSingleCompanyEffect',
-          payload: {
-            status: ['ACTIVE'],
-            company: companyCurrentEmployee,
-            tenantId: tenantCurrentEmployee,
-          },
-        });
       } catch (error) {
         dialog(error.message);
       }
@@ -1501,6 +1492,25 @@ const employeeProfile = {
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listGrades: data } });
         yield put({ type: 'saveTemp', payload: { listGrades: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *addNewSkill({ payload }, { call, select }) {
+      let response = {};
+      try {
+        const { tenantCurrentEmployee, companyCurrentEmployee } = yield select(
+          (state) => state.employeeProfile,
+        );
+        response = yield call(addSkill, {
+          ...payload,
+          tenantId: tenantCurrentEmployee,
+          company: companyCurrentEmployee,
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return response;
       } catch (errors) {
         dialog(errors);
       }

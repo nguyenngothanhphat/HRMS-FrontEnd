@@ -117,18 +117,18 @@ const PostCard = (props) => {
         />
       ),
     },
-    {
-      id: TAB_IDS.ANNIVERSARY,
-      name: 'Birthday',
-      component: (
-        <BirthdayTable
-          data={anniversaries}
-          loading={loadingFetchPostList}
-          refreshData={fetchData}
-          onEditPost={onEditPost}
-        />
-      ),
-    },
+    // {
+    //   id: TAB_IDS.ANNIVERSARY,
+    //   name: 'Birthday',
+    //   component: (
+    //     <BirthdayTable
+    //       data={anniversaries}
+    //       loading={loadingFetchPostList}
+    //       refreshData={fetchData}
+    //       onEditPost={onEditPost}
+    //     />
+    //   ),
+    // },
     {
       id: TAB_IDS.IMAGES,
       name: 'Images',

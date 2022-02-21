@@ -66,6 +66,7 @@ const WeeklyHeader = (props) => {
         visible={addTaskModalVisible}
         onClose={() => setAddTaskModalVisible(false)}
         mode="multiple"
+        aaaa={false}
       />
       <ImportModal visible={importModalVisible} onClose={() => setImportModalVisible(false)} />
     </div>

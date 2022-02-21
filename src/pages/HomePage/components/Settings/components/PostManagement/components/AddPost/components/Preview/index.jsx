@@ -182,14 +182,13 @@ const Preview = (props) => {
                 imagesContent.imageUrls.length > 0
                   ? [
                       {
-                        image: imagesContent.imageUrls[0],
+                        attachments: [{ url: imagesContent.imageUrls[0] }],
                         description: descriptionI ? Parser(descriptionI) : '',
                         title: titleI || '',
                       },
                     ]
                   : [
                       {
-                        image: '',
                         description: descriptionI ? Parser(descriptionI) : 'Description',
                         title: titleI || 'Title',
                       },

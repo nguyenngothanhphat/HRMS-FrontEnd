@@ -6,8 +6,6 @@ import styles from './index.less';
 const { Dragger } = Upload;
 
 const ImagesContent = (props) => {
-  // const { formValues = {}, setFormValues = () => {} } = props;
-  // const { uploadFilesI = [] } = formValues;
   const { defaultFileList = [] } = props;
 
   const identifyImage = (fileName) => {
@@ -34,31 +32,12 @@ const ImagesContent = (props) => {
     if (!isLt3M) {
       message.error('Image must smaller than 3MB!');
       setSizeImageMatch(isLt3M);
-      // this.setState({ check: isLt3M });
     }
     setTimeout(() => {
       setSizeImageMatch(isLt3M);
-      // this.setState({ check: isLt3M });
     }, 2000);
     return checkType && isLt3M;
   };
-
-  // getBase64(file, (imageUrl) => setUploadFiles([...uploadFiles, imageUrl]));
-
-  // const handleUpload = async (file) => {
-  //   setFormValues({
-  //     ...formValues,
-  //     uploadFilesI: [...uploadFilesI, file],
-  //   });
-  // };
-
-  // const handleRemove = (file) => {
-  //   const temp = uploadFilesI.filter((x) => x.uid !== file.uid);
-  //   setFormValues({
-  //     ...formValues,
-  //     uploadFilesI: [...temp],
-  //   });
-  // };
 
   return (
     <div className={styles.ImagesContent}>
@@ -103,18 +82,16 @@ const ImagesContent = (props) => {
       <Form.Item label="Media file" name="uploadFilesI">
         <Dragger
           beforeUpload={beforeUpload}
-          // disabled={selectExistDocument || fileName}
-          // action={(file) => handleUpload(file)}
           listType="picture"
-          // onRemove={(file) => handleRemove(file)}
           className={styles.fileUploadForm}
-          multiple
+          // multiple
+          maxCount={1}
           defaultFileList={[...defaultFileList]}
         >
           <div className={styles.drapperBlock}>
             <img className={styles.uploadIcon} src={AttachmentIcon} alt="upload" />
-            <span className={styles.chooseFileText}>Choose files</span>
-            <span className={styles.uploadText}>or drop files here</span>
+            <span className={styles.chooseFileText}>Choose file</span>
+            <span className={styles.uploadText}>or drop file here</span>
             <p className={styles.description}>
               Maximum file size 3 mb, Supported file format png, jpeg (Image size 350*300)
             </p>

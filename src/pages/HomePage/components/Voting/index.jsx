@@ -146,7 +146,7 @@ const Voting = (props) => {
   }
   return (
     <div className={styles.Voting}>
-      {isVoted && moment(activePoll?.pollDetail?.endDate).diff(moment()) >= 0 ? (
+      {isVoted || moment(activePoll?.pollDetail?.endDate).diff(moment()) >= 0 ? (
         <BarGraph
           options={options}
           activePoll={activePoll}

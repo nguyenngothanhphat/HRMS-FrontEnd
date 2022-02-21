@@ -49,10 +49,12 @@ const Carousel = (props) => {
   }, []);
 
   useEffect(() => {
-    const [firstBanner] = banners;
-    if (firstBanner) {
-      setBannerState(firstBanner);
-    }
+    let bannerStateTemp = [];
+    banners.forEach((x) => {
+      bannerStateTemp = [...bannerStateTemp, ...x.attachments];
+    });
+
+    setBannerState(bannerStateTemp);
   }, [JSON.stringify(banners)]);
 
   // RENDER UI
@@ -82,7 +84,7 @@ const Carousel = (props) => {
         prevArrow={<PrevArrow />}
       >
         {!previewing &&
-          bannerState.attachments.map((x) => (
+          bannerState.map((x) => (
             <div className={styles.image}>
               <img src={x.url} alt="" />
             </div>

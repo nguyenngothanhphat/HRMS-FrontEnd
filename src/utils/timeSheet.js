@@ -103,9 +103,10 @@ const MNG_MT_SECONDARY_COL_SPAN = {
 };
 
 const MNG_MT_THIRD_COL_SPAN = {
-  PROJECTS: 10,
-  PROJECT_MANAGER: 10,
-  TOTAL_HOURS: 4,
+  PROJECTS: 7,
+  PROJECT_MANAGER: 7,
+  TOTAL_HOURS: 5,
+  VIEW_DETAIL: 5,
 };
 
 // convert milisecond to time HH:mm:ss
@@ -124,6 +125,10 @@ const convertMsToTime = (milliseconds) => {
 
   return `${h}:${m}:${s}`;
   // return moment.utc(duration).format('HH:mm:ss');
+};
+
+const convertMsToHours = (milliseconds) => {
+  return milliseconds / 1000 / 60 / 60;
 };
 
 // API return time format: '07:00:00.0000'
@@ -196,6 +201,7 @@ export {
   MT_MAIN_COL_SPAN,
   MT_SECONDARY_COL_SPAN,
   convertMsToTime,
+  convertMsToHours,
   parseTimeAPI,
   WORKING_HOURS,
   // COMPLEX VIEW

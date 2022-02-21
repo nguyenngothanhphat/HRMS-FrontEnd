@@ -1,6 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { debounce } from 'lodash';
 import ViewTypeSelector from '@/pages/TimeSheet/components/ComplexView/components/ViewTypeSelector';
 import { getCurrentCompany } from '@/utils/authority';
 import { dateFormatAPI, VIEW_TYPE, generateAllWeeks } from '@/utils/timeSheet';
@@ -18,6 +19,9 @@ const ProjectView = (props) => {
   const [startDateMonth, setStartDateMonth] = useState('');
   const [endDateMonth, setEndDateMonth] = useState('');
   const [weeksOfMonth, setWeeksOfMonth] = useState([]);
+
+  // nameSearch
+  const [nameSearch, setNameSearch] = useState('');
 
   // others
   const [selectedView, setSelectedView] = useState(VIEW_TYPE.W); // W: weekly, M: monthly
@@ -38,19 +42,25 @@ const ProjectView = (props) => {
 
   // FUNCTION AREA
   const fetchManagerTimesheetOfProjectView = (startDate, endDate) => {
+    let payload = {};
+    payload = {
+      companyId: getCurrentCompany(),
+      userId,
+      fromDate: moment(startDate).format(dateFormatAPI),
+      toDate: moment(endDate).format(dateFormatAPI),
+      viewType: selectedView,
+      projectId: currentProject,
+      page,
+      limit,
+    };
+    if (nameSearch) {
+      payload.search = nameSearch;
+    }
+
     if (currentProject) {
       dispatch({
         type: 'timeSheet/fetchManagerTimesheetOfProjectViewEffect',
-        payload: {
-          companyId: getCurrentCompany(),
-          userId,
-          fromDate: moment(startDate).format(dateFormatAPI),
-          toDate: moment(endDate).format(dateFormatAPI),
-          viewType: selectedView,
-          projectId: currentProject,
-          page,
-          limit,
-        },
+        payload,
       });
     }
   };
@@ -80,13 +90,13 @@ const ProjectView = (props) => {
     if (startDateWeek && selectedView === VIEW_TYPE.W) {
       fetchManagerTimesheetOfProjectView(startDateWeek, endDateWeek);
     }
-  }, [startDateWeek, selectedView, currentProject, page]);
+  }, [startDateWeek, selectedView, currentProject, page, nameSearch]);
 
   useEffect(() => {
     if (startDateMonth && selectedView === VIEW_TYPE.M) {
       fetchManagerTimesheetOfProjectView(startDateMonth, endDateMonth);
     }
-  }, [startDateMonth, selectedView, currentProject, page]);
+  }, [startDateMonth, selectedView, currentProject, page, nameSearch]);
 
   // generate dates for week
   useEffect(() => {
@@ -109,7 +119,18 @@ const ProjectView = (props) => {
     const weeks = generateAllWeeks(startDateMonth, endDateMonth);
     setWeeksOfMonth(weeks);
   }, [startDateMonth]);
+  useEffect(() => {
+    const weeks = generateAllWeeks(startDateMonth, endDateMonth);
+    setWeeksOfMonth(weeks);
+  }, [startDateMonth]);
+  const onSearchDebounce = debounce((value) => {
+    setNameSearch(value);
+  }, 1000);
 
+  const onChangeSearch = (value) => {
+    const formatValue = value.toLowerCase();
+    onSearchDebounce(formatValue);
+  };
   // RENDER UI
   const viewChangeComponent = () => (
     <ViewTypeSelector
@@ -133,6 +154,7 @@ const ProjectView = (props) => {
             currentProject={currentProject}
             setCurrentProject={setCurrentProject}
             projectList={projectList}
+            onChangeSearch={onChangeSearch}
             loadingFetchProjectList={loadingFetchProjectList}
           />
         );
@@ -149,6 +171,7 @@ const ProjectView = (props) => {
             currentProject={currentProject}
             setCurrentProject={setCurrentProject}
             projectList={projectList}
+            onChangeSearch={onChangeSearch}
             loadingFetchProjectList={loadingFetchProjectList}
           />
         );

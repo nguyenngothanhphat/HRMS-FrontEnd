@@ -23,6 +23,7 @@ import {
   getUtilizationOverviewTitle,
   getResourceUtilization,
   getNewJoineesList,
+  exportResource,
 } from '@/services/resourceManagement';
 
 import { handlingResourceAvailableStatus } from '@/utils/resourceManagement';
@@ -378,7 +379,7 @@ const resourceManagement = {
     },
     *exportReportProject(_, { call }) {
       let response = '';
-      const hide = message.loading('Exporting data...', 0);
+      const hide = message.loading('Exporting data project...', 0);
       try {
         response = yield call(exportProject, {
           tenantId: getCurrentTenant(),
@@ -409,6 +410,23 @@ const resourceManagement = {
       } catch (error) {
         dialog(error);
       }
+      return response;
+    },
+    *exportResourceManagement({ payload }, { call }) {
+      let response = '';
+      const hide = message.loading('Exporting data resource...', 0);
+      try {
+        response = yield call(exportResource, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: [getCurrentCompany()],
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      hide();
       return response;
     },
   },

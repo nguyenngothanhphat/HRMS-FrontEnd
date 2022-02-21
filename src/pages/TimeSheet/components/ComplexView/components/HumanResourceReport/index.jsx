@@ -1,6 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { debounce } from 'lodash';
 import { dateFormatAPI, VIEW_TYPE, generateAllWeeks } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import Header from './components/Header';
@@ -19,6 +20,8 @@ const HumanResourceReport = (props) => {
   const [endDateMonth, setEndDateMonth] = useState('');
   const [weeksOfMonth, setWeeksOfMonth] = useState([]);
 
+  // nameSearch
+  const [nameSearch, setNameSearch] = useState('');
   // others
   const [selectedView, setSelectedView] = useState(VIEW_TYPE.W); // D: daily, W: weekly, M: monthly
   const [selectedEmployees, setSelectedEmployees] = useState([]); // D: daily, W: weekly, M: monthly
@@ -26,14 +29,19 @@ const HumanResourceReport = (props) => {
 
   // FUNCTION AREA
   const fetchHRTimesheet = (startDate, endDate) => {
+    let payload = {};
+    payload = {
+      companyId: getCurrentCompany(),
+      // employeeId,
+      fromDate: moment(startDate).format(dateFormatAPI),
+      toDate: moment(endDate).format(dateFormatAPI),
+    };
+    if (nameSearch) {
+      payload.search = nameSearch;
+    }
     dispatch({
       type: 'timeSheet/fetchHRTimesheetEffect',
-      payload: {
-        companyId: getCurrentCompany(),
-        // employeeId,
-        fromDate: moment(startDate).format(dateFormatAPI),
-        toDate: moment(endDate).format(dateFormatAPI),
-      },
+      payload,
     });
   };
 
@@ -42,13 +50,13 @@ const HumanResourceReport = (props) => {
     if (startDateWeek && selectedView === VIEW_TYPE.W) {
       fetchHRTimesheet(startDateWeek, endDateWeek);
     }
-  }, [startDateWeek, endDateWeek, selectedView]);
+  }, [startDateWeek, endDateWeek, selectedView, nameSearch]);
 
   useEffect(() => {
     if (startDateMonth && selectedView === VIEW_TYPE.M) {
       fetchHRTimesheet(startDateMonth, endDateMonth);
     }
-  }, [startDateMonth, endDateMonth, selectedView]);
+  }, [startDateMonth, endDateMonth, selectedView, nameSearch]);
 
   useEffect(() => {
     setSelectedEmployees([]);
@@ -75,7 +83,14 @@ const HumanResourceReport = (props) => {
     const weeks = generateAllWeeks(startDateMonth, endDateMonth);
     setWeeksOfMonth(weeks);
   }, [startDateMonth]);
+  const onSearchDebounce = debounce((value) => {
+    setNameSearch(value);
+  }, 1000);
 
+  const onChangeSearch = (value) => {
+    const formatValue = value.toLowerCase();
+    onSearchDebounce(formatValue);
+  };
   // RENDER UI
   const viewChangeComponent = () => (
     <ViewTypeSelector
@@ -96,6 +111,7 @@ const HumanResourceReport = (props) => {
             setEndDate={setEndDateWeek}
             viewChangeComponent={viewChangeComponent}
             type={VIEW_TYPE.W}
+            onChangeSearch={onChangeSearch}
           />
         );
 
@@ -107,6 +123,7 @@ const HumanResourceReport = (props) => {
             setStartDate={setStartDateMonth}
             setEndDate={setEndDateMonth}
             viewChangeComponent={viewChangeComponent}
+            onChangeSearch={onChangeSearch}
             type={VIEW_TYPE.M}
           />
         );
@@ -148,9 +165,8 @@ const HumanResourceReport = (props) => {
 
   const renderFooter = () => {
     if (selectedEmployees.length === 0) return null;
-    return <Footer selectedEmployees={selectedEmployees} />;
+    return <Footer selectedEmployees={selectedEmployees} data={hrViewList} />;
   };
-
   // MAIN AREA
   return (
     <div className={styles.HumanResourceReport}>

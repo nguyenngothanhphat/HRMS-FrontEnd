@@ -1,6 +1,7 @@
 import { Button, Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import exportToCSV from '@/utils/exportAsExcel';
 import Information from './components/Information';
 import TaskTable from './components/TaskTable';
 import styles from './index.less';
@@ -33,8 +34,38 @@ const ProjectDetailModal = (props) => {
     );
   };
 
-  const handleFinish = async () => {
-    //
+  const processData = (array) => {
+    return array.map((item) => {
+      const { task = '', description = '', department = '', projectMembers = [] } = item;
+      let resources = '';
+      let timeTaken = 0;
+      let totaltime = 0;
+
+      projectMembers.forEach((el, index) => {
+        const { totalTime = 0 } = el;
+        resources += el.legalName;
+        timeTaken += el.userSpentTimeInHours;
+        totaltime += totalTime;
+        if (index + 1 < projectMembers.length) {
+          resources += ', ';
+          timeTaken += ', ';
+          totaltime += ', ';
+        }
+      });
+
+      return {
+        Department: department,
+        Task: task,
+        Description: description,
+        'Resources ': resources,
+        'Time taken': timeTaken,
+        'Total time (task)': totaltime,
+      };
+    });
+  };
+
+  const downloadTemplate = () => {
+    exportToCSV(processData(data?.projectDetail), 'ProjectDetailData.xlsx');
   };
 
   const renderModalContent = () => {
@@ -55,7 +86,7 @@ const ProjectDetailModal = (props) => {
         width={750}
         footer={
           <>
-            <Button className={styles.btnSubmit} type="primary" onClick={handleFinish}>
+            <Button className={styles.btnSubmit} type="primary" onClick={downloadTemplate}>
               Download
             </Button>
           </>

@@ -405,3 +405,10 @@ export async function getListGrade(payload) {
     data: payload,
   });
 }
+
+export async function addSkill(payload) {
+  return request('/api/skilltype/add', {
+    method: 'POST',
+    data: payload,
+  });
+}

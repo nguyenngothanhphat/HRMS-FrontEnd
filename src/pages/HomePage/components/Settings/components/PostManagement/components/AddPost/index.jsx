@@ -23,10 +23,10 @@ const TABS = [
     id: TAB_IDS.ANNOUNCEMENTS,
     name: 'Announcement',
   },
-  {
-    id: TAB_IDS.ANNIVERSARY,
-    name: 'Birthday/Anniversary',
-  },
+  // {
+  //   id: TAB_IDS.ANNIVERSARY,
+  //   name: 'Birthday/Anniversary',
+  // },
   {
     id: TAB_IDS.IMAGES,
     name: 'Images',

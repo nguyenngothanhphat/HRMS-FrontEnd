@@ -72,6 +72,41 @@ const PollTable = (props) => {
         },
       },
       {
+        title: 'Start Date',
+        dataIndex: 'pollDetail',
+        key: 'startDate',
+        render: (pollDetail = {}) => {
+          return (
+            <span>
+              {pollDetail.startDate ? moment(pollDetail.startDate).format('MM/DD/YYYY') : ''}
+            </span>
+          );
+        },
+      },
+      {
+        title: 'End Date',
+        dataIndex: 'pollDetail',
+        key: 'endDate',
+        render: (pollDetail = {}) => {
+          return (
+            <span>{pollDetail.endDate ? moment(pollDetail.endDate).format('MM/DD/YYYY') : ''}</span>
+          );
+        },
+      },
+      {
+        title: 'Responses',
+        dataIndex: 'responses',
+        key: 'responses',
+      },
+      {
+        title: 'Created On',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        render: (createdAt = {}) => {
+          return <span>{createdAt ? moment(createdAt).format('MM/DD/YYYY') : ''}</span>;
+        },
+      },
+      {
         title: 'Created By',
         dataIndex: 'createdBy',
         key: 'createdBy',
@@ -84,14 +119,6 @@ const PollTable = (props) => {
               {createdBy?.generalInfoInfo?.legalName || ''}
             </Link>
           );
-        },
-      },
-      {
-        title: 'Created On',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
-        render: (createdAt = {}) => {
-          return <span>{createdAt ? moment(createdAt).format('MM/DD/YYYY') : ''}</span>;
         },
       },
       {

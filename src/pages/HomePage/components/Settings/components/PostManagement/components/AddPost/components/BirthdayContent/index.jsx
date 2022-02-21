@@ -41,23 +41,6 @@ const BirthdayContent = (props) => {
     return checkType && isLt3M;
   };
 
-  // getBase64(file, (imageUrl) => setUploadFiles([...uploadFiles, imageUrl]));
-
-  // const handleUpload = async (file) => {
-  //   setFormValues({
-  //     ...formValues,
-  //     uploadFilesB: [file],
-  //   });
-  // };
-
-  // const handleRemove = (file) => {
-  //   const temp = uploadFilesB.filter((x) => x.uid !== file.uid);
-  //   setFormValues({
-  //     ...formValues,
-  //     uploadFilesB: [...temp],
-  //   });
-  // };
-
   return (
     <div className={styles.BirthdayContent}>
       <Form.Item
@@ -88,10 +71,7 @@ const BirthdayContent = (props) => {
       <Form.Item label="Media file" name="uploadFilesB">
         <Dragger
           beforeUpload={beforeUpload}
-          // disabled={selectExistDocument || fileName}
-          // action={(file) => handleUpload(file)}
           listType="picture"
-          // onRemove={(file) => handleRemove(file)}
           maxCount={1}
           className={styles.fileUploadForm}
           defaultFileList={[...defaultFileList]}
