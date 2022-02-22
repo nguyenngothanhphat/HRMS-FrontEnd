@@ -97,6 +97,7 @@ const PollTable = (props) => {
         title: 'Responses',
         dataIndex: 'responses',
         key: 'responses',
+        render: (responses = 0) => responses || 0,
       },
       {
         title: 'Created On',
@@ -131,7 +132,11 @@ const PollTable = (props) => {
             <div className={styles.actions}>
               <img src={ChartIcon} alt="" onClick={() => onViewPoll(record)} />
               <img src={EditIcon} alt="" onClick={() => onEditPost(record)} />
-              <Popconfirm placement="left" title="Are you sure?" onConfirm={() => onDeletePoll(record)}>
+              <Popconfirm
+                placement="left"
+                title="Are you sure?"
+                onConfirm={() => onDeletePoll(record)}
+              >
                 <img src={RemoveIcon} alt="" />
               </Popconfirm>
             </div>

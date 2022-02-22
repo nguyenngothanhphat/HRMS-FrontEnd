@@ -142,8 +142,8 @@ const BannerTable = (props) => {
           type: 'homePage/updateBannerPositionEffect',
           payload: {
             postID: find.postID,
-            currPosition: oldIndex,
-            newPosition: newIndex,
+            currPosition: oldIndex + 1,
+            newPosition: newIndex + 1,
           },
         });
         if (res.statusCode === 200) {

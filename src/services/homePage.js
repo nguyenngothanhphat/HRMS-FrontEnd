@@ -71,7 +71,7 @@ export async function getBirthdayInWeek(data) {
 }
 
 export async function updateBannerPosition(data) {
-  return request('/api/polltenant/update-banner-position', {
+  return request('/api/posttenant/update-banner-position', {
     method: 'POST',
     data,
   });
