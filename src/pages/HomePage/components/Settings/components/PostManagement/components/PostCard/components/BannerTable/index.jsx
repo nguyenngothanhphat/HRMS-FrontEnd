@@ -87,7 +87,11 @@ const BannerTable = (props) => {
           return (
             <div className={styles.actions}>
               <img src={EditIcon} alt="" onClick={() => onEditPost(record)} />
-              <Popconfirm title="Are you sure?" onConfirm={() => onDeleteAttachment(record)}>
+              <Popconfirm
+                placement="left"
+                title="Are you sure?"
+                onConfirm={() => onDeleteAttachment(record)}
+              >
                 <img src={RemoveIcon} alt="" />
               </Popconfirm>
             </div>

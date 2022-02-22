@@ -131,7 +131,7 @@ const PollTable = (props) => {
             <div className={styles.actions}>
               <img src={ChartIcon} alt="" onClick={() => onViewPoll(record)} />
               <img src={EditIcon} alt="" onClick={() => onEditPost(record)} />
-              <Popconfirm title="Are you sure?" onConfirm={() => onDeletePoll(record)}>
+              <Popconfirm placement="left" title="Are you sure?" onConfirm={() => onDeletePoll(record)}>
                 <img src={RemoveIcon} alt="" />
               </Popconfirm>
             </div>

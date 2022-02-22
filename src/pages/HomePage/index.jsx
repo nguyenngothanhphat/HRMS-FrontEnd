@@ -18,6 +18,8 @@ const Celebrating = React.lazy(() => import('./components/Celebrating'));
 
 const HomePage = (props) => {
   const { dispatch } = props;
+  const { user: { permissions: { viewSettingHomePage = -1 } = {} } = {} } = props;
+
   useEffect(() => {
     return () => {
       dispatch({
@@ -100,12 +102,12 @@ const HomePage = (props) => {
           </Row>
         </Col>
       </Row>
-      {/* Developing  */}
-      {renderSettingIcon()}
+      {viewSettingHomePage !== -1 && renderSettingIcon()}
     </div>
   );
 };
 
-export default connect(({ homePage }) => ({
+export default connect(({ homePage, user }) => ({
   homePage,
+  user,
 }))(HomePage);

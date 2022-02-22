@@ -20,9 +20,9 @@ const comments = [
     comment: 'Happy Birthday!',
   },
   {
-    id: 2,
+    id: 3,
     avatar: MockAvatar,
-    comment: 'Happy Birthday!',
+    comment: 'Happy Birthday to you',
   },
 ];
 

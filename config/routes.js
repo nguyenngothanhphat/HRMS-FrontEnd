@@ -253,6 +253,7 @@ const routes = [
             path: '/home/settings/:reId',
             hideInMenu: true,
             component: './HomePage/components/Settings',
+            authority: [HR_MANAGER, MANAGER], // TEMPORARY VALUES, NEED TO BE CHANGED
           },
           {
             path: '/dashboard',

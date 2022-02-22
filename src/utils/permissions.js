@@ -420,6 +420,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const indexPendingApprovalDashboard = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
   const indexMyTeamDashboard = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
 
+  // HOME PAGE
+  const indexSettingHomePage = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
+
   // PROJECT MANAGEMENT
   // https://docs.google.com/document/d/1RQ66VdevjGUHB3-4_VDU-DIPF0HCbcfKzKJevEwooLc/edit
   const indexViewProjectListTab = isAuthorized(permissionList, [
@@ -534,6 +537,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewPendingApprovalDashboard: indexPendingApprovalDashboard,
     viewMyTeamDashboard: indexMyTeamDashboard,
     viewTimesheetDashboard: 1,
+
+    // home page
+    viewSettingHomePage: indexSettingHomePage,
 
     // project manamgement
     viewProjectListTab: indexViewProjectListTab,
