@@ -4,6 +4,8 @@ import { history, connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import TicketQueue from './components/TicketQueue';
 import MyTickets from './components/MyTickets';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+
 import styles from './index.less';
 
 @connect(
@@ -18,13 +20,8 @@ import styles from './index.less';
 )
 class EmployeeTicket extends Component {
   componentDidMount() {
-    const {
-      tabName = '',
-      employee: {
-        departmentInfo: { _id: idDepart = '' },
-      },
-      employee: { _id = '' } = {},
-    } = this.props;
+    const { tabName = '' } = this.props;
+
     if (!tabName) {
       history.replace(`/ticket-management/ticket-queue`);
     } else {
@@ -33,30 +30,78 @@ class EmployeeTicket extends Component {
         return;
       }
       dispatch({
-        type: 'ticketManagement/fetchListEmployee',
+        type: 'ticketManagement/fetchDepartments',
         payload: {
-          department: ['HR', 'IT', 'Operations & Facility management'],
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         },
-      });
-      dispatch({
-        type: 'ticketManagement/fetchLocationList',
-        payload: {},
-      });
-      dispatch({
-        type: 'ticketManagement/fetchListAllTicket',
-        payload: {
-          status: ['New'],
-        },
-      });
-      dispatch({
-        type: 'ticketManagement/fetchToTalList',
-        payload: {
-          employeeAssignee: _id,
-          departmentAssign: idDepart,
-        },
+      }).then((res) => {
+        if (res.statusCode === 200) {
+          const { data = [] } = res;
+          let departmentNameList = [];
+
+          const newData = data.filter(
+            (x) =>
+              x.name.includes('HR') ||
+              x.name.includes('IT') ||
+              x.name.toLowerCase().includes('operations'),
+          );
+          departmentNameList = [...departmentNameList, ...newData.map((x) => x.name)];
+          this.fecthListEmployee(departmentNameList);
+        } else {
+          this.fecthListEmployee();
+        }
       });
     }
+    this.fetchListAllTicket();
+    this.fetchLocation();
+    this.fetchTotalList();
   }
+
+  fetchLocation = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'ticketManagement/fetchLocationList',
+      payload: {},
+    });
+  };
+
+  fetchListAllTicket = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'ticketManagement/fetchListAllTicket',
+      payload: {
+        status: ['New'],
+      },
+    });
+  };
+
+  fecthListEmployee = (departmentNameList) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'ticketManagement/fetchListEmployee',
+      payload: {
+        department: departmentNameList,
+      },
+    });
+  };
+
+  fetchTotalList = () => {
+    const {
+      dispatch,
+      employee: {
+        departmentInfo: { _id: idDepart = '' },
+      },
+      employee: { _id = '' } = {},
+    } = this.props;
+    dispatch({
+      type: 'ticketManagement/fetchToTalList',
+      payload: {
+        employeeAssignee: _id,
+        departmentAssign: idDepart,
+      },
+    });
+  };
 
   handleChangeTable = (key) => {
     history.push(`/ticket-management/${key}`);
