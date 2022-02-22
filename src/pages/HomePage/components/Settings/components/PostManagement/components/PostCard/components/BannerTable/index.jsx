@@ -137,7 +137,7 @@ const BannerTable = (props) => {
   const onSortEnd = async ({ oldIndex, newIndex }) => {
     if (oldIndex !== newIndex) {
       const find = dataSource.find((x) => x.position === oldIndex);
-      if (find) {
+      if (find?.postID) {
         const res = await dispatch({
           type: 'homePage/updateBannerPositionEffect',
           payload: {
