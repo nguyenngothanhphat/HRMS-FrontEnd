@@ -47,9 +47,9 @@ class EmployeeTicket extends Component {
               x.name.toLowerCase().includes('operations'),
           );
           departmentNameList = [...departmentNameList, ...newData.map((x) => x.name)];
-          this.fecthListEmployee(departmentNameList);
+          this.fetchListEmployee(departmentNameList);
         } else {
-          this.fecthListEmployee();
+          this.fetchListEmployee();
         }
       });
     }
@@ -76,7 +76,7 @@ class EmployeeTicket extends Component {
     });
   };
 
-  fecthListEmployee = (departmentNameList) => {
+  fetchListEmployee = (departmentNameList) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'ticketManagement/fetchListEmployee',
