@@ -11,6 +11,7 @@ import {
   updatePolicy,
   deletePolicy,
   searchNamePolicy,
+  getLocationByCompany,
   uploadFile,
 } from '../services/policiesRegulations';
 
@@ -20,6 +21,10 @@ const policiesRegulations = {
     listCategory: [],
     listPolicy: [],
     listEmployee: [],
+    countryList: [],
+    tempData: {
+      countrySelected: '',
+    },
   },
   effects: {
     *addCategory({ payload }, { call, put }) {
@@ -241,12 +246,36 @@ const policiesRegulations = {
         dialog(error);
       }
     },
+
+    *getCountryListByCompany({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getLocationByCompany, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { countryList: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
   reducers: {
     save(state, action) {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveTemp(state, action) {
+      const { tempData } = state;
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          ...action.payload,
+        },
       };
     },
   },

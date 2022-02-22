@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Form, Input, Modal, message, Spin, Upload, Tooltip, Select } from 'antd';
-
 import { connect } from 'umi';
+import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
 
 import TrashIcon from '@/assets/policiesRegulations/delete.svg';
 import UploadIcon from '@/assets/policiesRegulations/upload.svg';
@@ -15,10 +15,15 @@ const { Option } = Select;
 @connect(
   ({
     loading,
-    policiesRegulations: { listCategory = [], listPolicy = [] } = {},
+    policiesRegulations: {
+      listCategory = [],
+      listPolicy = [],
+      tempData: { countrySelected = '' },
+    } = {},
     user: { currentUser: { employee = {} } = {} },
   }) => ({
     listCategory,
+    countrySelected,
     listPolicy,
     employee,
     loadingUploadAttachment: loading.effects['policiesRegulations/uploadFileAttachments'],
@@ -120,7 +125,12 @@ class AddPolicyModal extends Component {
   };
 
   onFinish = async ({ categoryPolicy, namePolicies }) => {
-    const { dispatch, employee: { _id = '' } = {}, onClose = () => {} } = this.props;
+    const {
+      dispatch,
+      employee: { _id = '' } = {},
+      onClose = () => {},
+      countrySelected = '',
+    } = this.props;
     const { uploadedFile = {} } = this.state;
     const attachment = {
       id: uploadedFile.id,
@@ -133,22 +143,24 @@ class AddPolicyModal extends Component {
       categoryPolicy,
       namePolicy: namePolicies,
       attachment,
+      country: countrySelected,
+      location: getCurrentLocation(),
+      company: getCurrentCompany(),
     };
-
-    if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
-      message.error('Invalid file');
-    } else {
-      dispatch({
-        type: 'policiesRegulations/addPolicy',
-        payload,
-      }).then((response) => {
-        const { statusCode } = response;
-        if (statusCode === 200) {
-          onClose();
-        }
-      });
-      this.setState({ uploadedFile: {}, fileName: '' });
-    }
+     if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
+       message.error('Invalid file');
+     } else {
+       dispatch({
+         type: 'policiesRegulations/addPolicy',
+         payload,
+       }).then((response) => {
+         const { statusCode } = response;
+         if (statusCode === 200) {
+           onClose();
+         }
+       });
+       this.setState({ uploadedFile: {}, fileName: '' });
+     }
   };
 
   render() {

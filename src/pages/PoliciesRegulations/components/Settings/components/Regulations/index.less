@@ -13,11 +13,47 @@
     margin-bottom: 16px;
     padding-bottom: 23px;
     border-bottom: 1px solid #d6dce0;
-    &__text {
-      color: #161c29;
-      font-weight: bold;
-      font-size: 16px;
-      line-height: 19px;
+    &__left {
+      display: flex;
+      align-items: center;
+      .headerPolicy__text {
+        color: #161c29;
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 19px;
+      }
+      .headerPolicy__location {
+        width: auto;
+
+        :global {
+          .ant-select .ant-select-arrow {
+            transition: transform 0.2s ease-in;
+          }
+          .ant-select-open .ant-select-arrow {
+            transform: rotate(180deg);
+          }
+
+          .ant-select-item-option-content {
+            background-color: red;
+          }
+
+          .ant-select-selector {
+            background-color: rgb(255, 255, 255) !important;
+            border: 1px solid #d6dce0;
+            border-radius: 4px;
+          }
+        }
+
+        .selectCountry {
+          width: fit-content;
+          height: 36px;
+          margin-left: 24px;
+          .labelText {
+            display: flex;
+            align-items: center;
+          }
+        }
+      }
     }
     &__btnAdd {
       display: flex;
