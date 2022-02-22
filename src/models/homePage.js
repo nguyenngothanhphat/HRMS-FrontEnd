@@ -13,9 +13,10 @@ import {
   votePoll,
   getSelectedPollOptionByEmployee,
   getPollResult,
+  updateBannerPosition
 } from '../services/homePage';
 import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
-import { TAB_IDS } from '@/utils/homePage';
+// import { TAB_IDS } from '@/utils/homePage';
 
 const defaultState = {
   // portal
@@ -132,6 +133,23 @@ const homePage = {
       }
       return response;
     },
+
+    *updateBannerPositionEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(updateBannerPosition, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
     // GET LIST POST BY TYPE
     *fetchAnnouncementsEffect({ payload }, { call, put }) {
       let response = {};

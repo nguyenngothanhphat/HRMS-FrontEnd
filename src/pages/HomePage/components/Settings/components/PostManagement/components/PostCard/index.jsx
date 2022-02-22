@@ -4,7 +4,7 @@ import { connect } from 'umi';
 import AddButton from './components/AddButton';
 import AnnouncementTable from './components/AnnouncementTable';
 import BannerTable from './components/BannerTable';
-import BirthdayTable from './components/BirthdayTable';
+// import BirthdayTable from './components/BirthdayTable';
 import ImageTable from './components/ImageTable';
 import PollTable from './components/PollTable';
 import styles from './index.less';
@@ -24,7 +24,7 @@ const PostCard = (props) => {
       announcements = [],
       banners = [],
       polls = [],
-      anniversaries = [],
+      // anniversaries = [],
       images = [],
       totalPostsOfType = [],
     } = {},
@@ -150,6 +150,7 @@ const PostCard = (props) => {
           loading={loadingFetchPostList}
           refreshData={fetchData}
           onEditPost={onEditPost}
+          onAddPost={onAddPost}
         />
       ),
     },
@@ -178,7 +179,10 @@ const PostCard = (props) => {
   }, [selectedTab]);
 
   const options = () => {
-    return <AddButton text="Add Post" onClick={onAddPost} />;
+    if (selectedTab !== TAB_IDS.BANNER) {
+      return <AddButton text="Add Post" onClick={onAddPost} />;
+    }
+    return ''
   };
 
   return (

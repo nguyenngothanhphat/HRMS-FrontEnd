@@ -20,10 +20,12 @@ const Voting = (props) => {
   } = props;
 
   const [isVoted, setIsVoted] = useState(false);
+  const [isExpired, setIsExpired] = useState(false);
   const [options, setOptions] = useState([]);
   const [activePoll, setActivePoll] = useState('');
   const [votedOption, setVotedOption] = useState('');
   const [timeLeft, setTimeLeft] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const fetchData = () => {
     return dispatch({
@@ -84,8 +86,15 @@ const Voting = (props) => {
 
   useEffect(() => {
     if (polls.length > 0) {
+      setLoading(true);
       const [firstPoll] = polls;
       setActivePoll(firstPoll);
+
+      // if expired
+      const isExpiredTemp = moment(firstPoll?.pollDetail?.endDate).isBefore(moment());
+      if (isExpiredTemp) {
+        setIsExpired(true);
+      }
     }
   }, [JSON.stringify(polls)]);
 
@@ -117,6 +126,9 @@ const Voting = (props) => {
       setIsVoted(true);
       setVotedOption(choice.choice);
     }
+    setTimeout(() => {
+      setLoading(false);
+    }, 100);
   }, [JSON.stringify(choice)]);
 
   const countVotes = () => {
@@ -128,7 +140,7 @@ const Voting = (props) => {
     return 0;
   };
 
-  if (loadingFetchPollResult || loadingFetchPostList) {
+  if (loadingFetchPollResult || loadingFetchPostList || loading) {
     return (
       <div className={styles.Voting}>
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -146,7 +158,7 @@ const Voting = (props) => {
   }
   return (
     <div className={styles.Voting}>
-      {isVoted || moment(activePoll?.pollDetail?.endDate).diff(moment()) >= 0 ? (
+      {isVoted || isExpired ? (
         <BarGraph
           options={options}
           activePoll={activePoll}

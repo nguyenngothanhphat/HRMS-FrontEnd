@@ -236,6 +236,7 @@ const AddPost = (props) => {
           attachments,
           postType: TAB_IDS.BANNER,
           createdBy: employee?._id,
+          position: record?.position,
         };
         break;
       }

@@ -8,11 +8,16 @@ import { TAB_IDS } from '@/utils/homePage';
 const PostManagement = () => {
   const [addingPost, setAddingPost] = useState(false);
   const [editingPost, setEditingPost] = useState(false);
-  const [editingPostRecord, setEditingPostRecord] = useState({});
+  const [record, setRecord] = useState({});
   const [selectedTab, setSelectedTab] = useState(TAB_IDS.ANNOUNCEMENTS);
 
-  const onEditPost = (record) => {
-    setEditingPostRecord(record);
+  const onAddPost = (recordTemp) => {
+    setRecord(recordTemp);
+    setAddingPost(true);
+  };
+
+  const onEditPost = (recordTemp) => {
+    setRecord(recordTemp);
     setEditingPost(true);
   };
 
@@ -24,21 +29,21 @@ const PostManagement = () => {
   if (addingPost) {
     return (
       <div className={styles.PostManagement}>
-        <AddPost onBack={onBack} selectedTab={selectedTab} />
+        <AddPost onBack={onBack} selectedTab={selectedTab} record={record} />
       </div>
     );
   }
   if (editingPost) {
     return (
       <div className={styles.PostManagement}>
-        <AddPost onBack={onBack} selectedTab={selectedTab} editing record={editingPostRecord} />
+        <AddPost onBack={onBack} selectedTab={selectedTab} editing record={record} />
       </div>
     );
   }
   return (
     <div className={styles.PostManagement}>
       <PostCard
-        onAddPost={() => setAddingPost(true)}
+        onAddPost={onAddPost}
         selectedTab={selectedTab}
         setSelectedTab={setSelectedTab}
         onEditPost={onEditPost}
