@@ -50,7 +50,7 @@ class SearchTable extends Component {
             placement="bottomRight"
             visible={visible}
             onVisibleChange={this.openFilter}
-            overlayClassName={styles.filterPopover}
+            overlayClassName={styles.filterPopoverTicket}
           >
             <img alt="filter" src={filterIcon} className={styles.filterIcon} />
           </Popover>
