@@ -147,20 +147,20 @@ class AddPolicyModal extends Component {
       location: getCurrentLocation(),
       company: getCurrentCompany(),
     };
-     if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
-       message.error('Invalid file');
-     } else {
-       dispatch({
-         type: 'policiesRegulations/addPolicy',
-         payload,
-       }).then((response) => {
-         const { statusCode } = response;
-         if (statusCode === 200) {
-           onClose();
-         }
-       });
-       this.setState({ uploadedFile: {}, fileName: '' });
-     }
+    if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
+      message.error('Invalid file');
+    } else {
+      dispatch({
+        type: 'policiesRegulations/addPolicy',
+        payload,
+      }).then((response) => {
+        const { statusCode } = response;
+        if (statusCode === 200) {
+          onClose();
+        }
+      });
+      this.setState({ uploadedFile: {}, fileName: '' });
+    }
   };
 
   render() {
@@ -189,7 +189,8 @@ class AddPolicyModal extends Component {
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 onChange={onPolicyCategories}
               >
                 {listCategory.map((val) => (

@@ -45,6 +45,16 @@ class Regulations extends Component {
     });
   }
 
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'policiesRegulations/saveTemp',
+      payload: {
+        countrySelected: '',
+      },
+    });
+  };
+
   onSearch = (e = {}) => {
     const { value = '' } = e.target;
     this.onSearchDebounce(value);
@@ -110,10 +120,15 @@ class Regulations extends Component {
     return (
       <>
         {newArr.map((item) => (
-          <Option key={item._id} value={item._id} style={{ height: '20px', display: 'flex' }}>
+          <Option
+            key={item._id}
+            value={item._id}
+            className={styles.optionCountry}
+            // style={{ height: '20px', display: 'flex', fontSize: '12px' }}
+          >
             <div className={styles.labelText}>
               {flagItem(item._id)}
-              <span>{item.name}</span>
+              <span style={{ fontSize: '12px', fontWeight: '500' }}>{item.name}</span>
             </div>
           </Option>
         ))}

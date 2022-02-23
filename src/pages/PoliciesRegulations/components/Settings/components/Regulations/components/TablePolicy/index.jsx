@@ -12,11 +12,17 @@ import MoreIcon from '@/assets/policiesRegulations/more.svg';
 import PdfIcon from '@/assets/policiesRegulations/pdf-2.svg';
 import styles from './index.less';
 
-@connect(({ loading, policiesRegulations: { listPolicy = [] } = {} }) => ({
-  loadingGetList: loading.effects['policiesRegulations/fetchListPolicy'],
-  loadingSearch: loading.effects['policiesRegulations/searchNamePolicy'],
-  listPolicy,
-}))
+@connect(
+  ({
+    loading,
+    policiesRegulations: { listPolicy = [], tempData: { countrySelected = '' } } = {},
+  }) => ({
+    loadingGetList: loading.effects['policiesRegulations/fetchListPolicy'],
+    loadingSearch: loading.effects['policiesRegulations/searchNamePolicy'],
+    listPolicy,
+    countrySelected,
+  }),
+)
 class TablePolicy extends Component {
   constructor(props) {
     super(props);
@@ -78,6 +84,7 @@ class TablePolicy extends Component {
       pageSelected,
       size,
       getPageAndSize = () => {},
+      countrySelected = '',
     } = this.props;
 
     const columns = [
@@ -194,7 +201,7 @@ class TablePolicy extends Component {
       <div className={styles.TablePolicy}>
         <Table
           columns={columns}
-          dataSource={listPolicy}
+          dataSource={!countrySelected ? [] : listPolicy}
           pagination={pagination}
           loading={loadingGetList || loadingSearch}
         />

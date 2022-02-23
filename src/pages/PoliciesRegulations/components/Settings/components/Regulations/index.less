@@ -27,9 +27,11 @@
 
         :global {
           .ant-select .ant-select-arrow {
+            color: #2c6df9;
             transition: transform 0.2s ease-in;
           }
           .ant-select-open .ant-select-arrow {
+            color: #2c6df9;
             transform: rotate(180deg);
           }
 
@@ -42,15 +44,31 @@
             border: 1px solid #d6dce0;
             border-radius: 4px;
           }
+          .ant-select-item {
+            font-size: 12px;
+          }
         }
 
         .selectCountry {
-          width: fit-content;
+          width: 200px;
           height: 36px;
           margin-left: 24px;
+          .optionCountry {
+            display: flex;
+            height: 20px;
+          }
           .labelText {
             display: flex;
             align-items: center;
+            span {
+              color: #2c6df9;
+              font-weight: 500;
+              font-size: 12px;
+            }
+            .nameCountry {
+              font-weight: 500;
+              font-size: 12px;
+            }
           }
         }
       }
