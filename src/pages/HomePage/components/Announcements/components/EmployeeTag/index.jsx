@@ -7,9 +7,9 @@ import styles from './index.less';
 const EmployeeTag = (props) => {
   const {
     employee: {
-      generalInfoInfo: { avatar = '', legalName = '', userId = '', website = '' } = {},
+      generalInfoInfo: { avatar = '', legalName = '', userId = '', website = '' } = {} || {},
       titleInfo = {} || {},
-    } = {},
+    } = {} || {},
   } = props;
 
   const onViewProfileClick = () => {
