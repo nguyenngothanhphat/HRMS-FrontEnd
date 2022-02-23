@@ -44,6 +44,12 @@ const Carousel = (props) => {
     });
   };
 
+  const compare = (a, b) => {
+    if (a.position < b.position) return -1;
+    if (a.position > b.position) return 1;
+    return 0;
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -53,7 +59,7 @@ const Carousel = (props) => {
     banners.forEach((x) => {
       bannerStateTemp = [...bannerStateTemp, ...x.attachments];
     });
-
+    bannerStateTemp = bannerStateTemp.sort(compare);
     setBannerState(bannerStateTemp);
   }, [JSON.stringify(banners)]);
 

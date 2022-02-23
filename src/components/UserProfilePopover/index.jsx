@@ -23,6 +23,7 @@ const UserProfilePopover = (props) => {
     managerInfo = {},
     titleInfo = {},
     departmentInfo = {},
+    avatar: avatar1 = '',
   } = data;
 
   const {
@@ -42,7 +43,7 @@ const UserProfilePopover = (props) => {
     return (
       <div className={styles.header}>
         <div className={styles.avatar}>
-          <img src={avatar || MockAvatar} alt="" />
+          <img src={avatar || avatar1 || MockAvatar} alt="" />
         </div>
         <div className={styles.information}>
           <span className={styles.name}>

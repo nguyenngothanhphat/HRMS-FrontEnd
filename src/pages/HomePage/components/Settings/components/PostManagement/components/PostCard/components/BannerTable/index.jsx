@@ -55,12 +55,12 @@ const BannerTable = (props) => {
 
   const getColumns = () => {
     const columns = [
-      {
-        dataIndex: 'sort',
-        width: '7%',
-        align: 'center',
-        render: () => <DragHandle />,
-      },
+      // {
+      //   dataIndex: 'sort',
+      //   width: '7%',
+      //   align: 'center',
+      //   render: () => <DragHandle />,
+      // },
       {
         title: 'ID',
         dataIndex: 'position',
@@ -136,15 +136,27 @@ const BannerTable = (props) => {
 
   const onSortEnd = async ({ oldIndex, newIndex }) => {
     if (oldIndex !== newIndex) {
-      const find = dataSource.find((x) => x.position === oldIndex);
-      if (find?.postID) {
+      const find1 = dataSource.find((x) => x.position === oldIndex + 1);
+      const find2 = dataSource.find((x) => x.position === newIndex + 1);
+      let payload = {};
+      if (find1?.postID) {
+        payload = {
+          postID: find1.postID,
+          currPosition: oldIndex + 1,
+          newPosition: newIndex + 1,
+        };
+      } else if (find2?.postID) {
+        payload = {
+          postID: find2.postID,
+          currPosition: newIndex + 1,
+          newPosition: oldIndex + 1,
+        };
+      }
+
+      if (Object.keys(payload).length > 0) {
         const res = await dispatch({
           type: 'homePage/updateBannerPositionEffect',
-          payload: {
-            postID: find.postID,
-            currPosition: oldIndex + 1,
-            newPosition: newIndex + 1,
-          },
+          payload,
         });
         if (res.statusCode === 200) {
           refreshData();
