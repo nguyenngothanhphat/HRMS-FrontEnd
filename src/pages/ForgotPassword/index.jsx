@@ -125,7 +125,6 @@ class ForgotPassword extends Component {
           justifyContent: 'center',
           alignItems: 'center',
           flexDirection: 'column',
-          padding: '0 30px',
         }}
       >
         <img alt="" src={mail} style={{ color: '#eee', fontSize: '80px', marginBottom: '2rem' }} />
