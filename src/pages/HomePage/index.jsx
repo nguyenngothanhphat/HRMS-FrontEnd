@@ -1,9 +1,10 @@
 import { Col, Row, Skeleton } from 'antd';
-import React, { Suspense } from 'react';
-import { history } from 'umi';
+import React, { Suspense, useEffect } from 'react';
+import { history, connect } from 'umi';
 import SettingIcon from '@/assets/dashboard/setting.svg';
 import styles from './index.less';
 
+import Announcements from './components/Announcements';
 import Carousel from './components/Carousel';
 import MyInformation from './components/MyInformation';
 import QuickLinks from './components/QuickLinks';
@@ -12,11 +13,21 @@ import TimeSheet from './components/TimeSheet';
 import Voting from './components/Voting';
 import Welcome from './components/Welcome';
 
-const Announcements = React.lazy(() => import('./components/Announcements'));
 const Gallery = React.lazy(() => import('./components/Gallery'));
 const Celebrating = React.lazy(() => import('./components/Celebrating'));
 
-const HomePage = () => {
+const HomePage = (props) => {
+  const { dispatch } = props;
+  const { user: { permissions: { viewSettingHomePage = -1 } = {} } = {} } = props;
+
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: 'homePage/clearState',
+      });
+    };
+  }, []);
+
   const viewSettingPage = () => {
     history.push('/home/settings');
   };
@@ -66,9 +77,7 @@ const HomePage = () => {
                   xl={{ order: 1, span: 12 }}
                   xxl={{ order: 1, span: 16 }}
                 >
-                  <Suspense fallback={<Skeleton active />}>
-                    <Announcements />
-                  </Suspense>
+                  <Announcements />
                 </Col>
                 <Col
                   xs={{ order: 1, span: 24 }}
@@ -93,10 +102,12 @@ const HomePage = () => {
           </Row>
         </Col>
       </Row>
-      {/* Developing  */}
-      {/* {renderSettingIcon()} */}
+      {viewSettingHomePage !== -1 && renderSettingIcon()}
     </div>
   );
 };
 
-export default HomePage;
+export default connect(({ homePage, user }) => ({
+  homePage,
+  user,
+}))(HomePage);

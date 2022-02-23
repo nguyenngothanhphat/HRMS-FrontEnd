@@ -6,8 +6,7 @@ import styles from './index.less';
 const { Dragger } = Upload;
 
 const BannerContent = (props) => {
-  // const { formValues = {}, setFormValues = () => {} } = props;
-  // const { uploadFilesBN = [] } = formValues;
+  const { defaultFileList = [] } = props;
 
   const identifyImage = (fileName) => {
     const parts = fileName.split('.');
@@ -42,39 +41,20 @@ const BannerContent = (props) => {
     return checkType && isLt3M;
   };
 
-  // getBase64(file, (imageUrl) => setUploadFiles([...uploadFiles, imageUrl]));
-
-  // const handleUpload = async (file) => {
-  //   setFormValues({
-  //     ...formValues,
-  //     uploadFilesBN: [...uploadFilesBN, file],
-  //   });
-  // };
-
-  // const handleRemove = (file) => {
-  //   const temp = uploadFilesBN.filter((x) => x.uid !== file.uid);
-  //   setFormValues({
-  //     ...formValues,
-  //     uploadFilesBN: [...temp],
-  //   });
-  // };
-
   return (
     <div className={styles.BannerContent}>
       <Form.Item label="Media file" name="uploadFilesBN">
         <Dragger
           beforeUpload={beforeUpload}
-          // disabled={selectExistDocument || fileName}
-          // action={(file) => handleUpload(file)}
           listType="picture"
-          // onRemove={(file) => handleRemove(file)}
           className={styles.fileUploadForm}
-          multiple
+          maxCount={1}
+          defaultFileList={[...defaultFileList]}
         >
           <div className={styles.drapperBlock}>
             <img className={styles.uploadIcon} src={AttachmentIcon} alt="upload" />
-            <span className={styles.chooseFileText}>Choose files</span>
-            <span className={styles.uploadText}>or drop files here</span>
+            <span className={styles.chooseFileText}>Choose file</span>
+            <span className={styles.uploadText}>or drop file here</span>
             <p className={styles.description}>
               Maximum file size 3 mb, Supported file format png, jpeg (Image size 350*300)
             </p>
