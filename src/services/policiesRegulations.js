@@ -68,3 +68,10 @@ export async function uploadFile(data) {
     data,
   });
 }
+
+export async function getLocationByCompany(payload) {
+  return request('/api/locationtenant/list-by-company-parent', {
+    method: 'POST',
+    data: payload,
+  });
+}
