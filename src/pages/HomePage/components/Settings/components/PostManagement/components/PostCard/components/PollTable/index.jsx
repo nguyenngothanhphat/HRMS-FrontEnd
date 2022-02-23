@@ -67,6 +67,7 @@ const PollTable = (props) => {
         title: 'Description',
         dataIndex: 'pollDetail',
         key: 'pollDetail',
+        width: '20%',
         render: (pollDetail = {}) => {
           return Parser(pollDetail?.question || '');
         },
