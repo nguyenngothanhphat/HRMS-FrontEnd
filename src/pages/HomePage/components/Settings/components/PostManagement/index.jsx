@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import PostCard from './components/PostCard';
 import AddPost from './components/AddPost';
@@ -11,20 +11,35 @@ const PostManagement = () => {
   const [record, setRecord] = useState({});
   const [selectedTab, setSelectedTab] = useState(TAB_IDS.ANNOUNCEMENTS);
 
+  const goToTop = () => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+  };
+
   const onAddPost = (recordTemp) => {
     setRecord(recordTemp);
     setAddingPost(true);
+    goToTop();
   };
 
   const onEditPost = (recordTemp) => {
     setRecord(recordTemp);
     setEditingPost(true);
+    goToTop();
   };
 
   const onBack = () => {
     setAddingPost(false);
     setEditingPost(false);
+    goToTop();
   };
+
+  useEffect(() => {
+    goToTop();
+  }, []);
 
   if (addingPost) {
     return (

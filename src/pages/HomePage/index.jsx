@@ -74,14 +74,14 @@ const HomePage = (props) => {
               <Row gutter={[24, 24]}>
                 <Col
                   xs={{ order: 2, span: 24 }}
-                  xl={{ order: 1, span: 12 }}
+                  xl={{ order: 1, span: 14 }}
                   xxl={{ order: 1, span: 16 }}
                 >
                   <Announcements />
                 </Col>
                 <Col
                   xs={{ order: 1, span: 24 }}
-                  xl={{ order: 2, span: 12 }}
+                  xl={{ order: 2, span: 10 }}
                   xxl={{ order: 2, span: 8 }}
                 >
                   <Row gutter={[24, 24]}>
