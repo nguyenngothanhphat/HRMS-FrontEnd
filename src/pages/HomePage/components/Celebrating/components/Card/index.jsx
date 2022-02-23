@@ -45,7 +45,6 @@ const Card = (props) => {
   };
 
   const renderEmployeeName = (data) => {
-    const { generalInfoInfo = {} } = data;
     return (
       <UserProfilePopover
         placement="left"
@@ -58,7 +57,7 @@ const Card = (props) => {
           className={styles.employeeName}
           onClick={() => onViewProfileClick(data?.generalInfoInfo?.userId)}
         >
-          {generalInfoInfo.legalName}
+          {data?.generalInfoInfo.legalName}
         </span>
       </UserProfilePopover>
     );
