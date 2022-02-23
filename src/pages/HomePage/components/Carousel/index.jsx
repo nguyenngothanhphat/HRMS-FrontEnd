@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Carousel as CarouselAntd } from 'antd';
+import { connect } from 'umi';
 import Banner1 from '@/assets/homePage/banner1.png';
-import Nuova1 from '@/assets/homePage/nuova1.png';
-import Nuova2 from '@/assets/homePage/nuova2.png';
-import Nuova3 from '@/assets/homePage/nuova3.png';
 import NextIcon from '@/assets/homePage/next.svg';
 import PrevIcon from '@/assets/homePage/prev.svg';
 import styles from './index.less';
+import EmptyComponent from '@/components/Empty';
+import { TAB_IDS } from '@/utils/homePage';
 
 const NextArrow = (props) => {
   const { className, style, onClick } = props;
@@ -19,28 +19,61 @@ const PrevArrow = (props) => {
 };
 
 const Carousel = (props) => {
+  const { dispatch } = props;
+
   /* FOR PREVIEWING IN SETTINGS PAGE  */
   const { previewing = false, contentPreview = [] } = props;
 
-  const images = [
-    {
-      id: 1,
-      image: Nuova1,
-    },
-    {
-      id: 2,
-      image: Nuova2,
-    },
-    {
-      id: 3,
-      image: Nuova3,
-    },
-    {
-      id: 4,
-      image: Banner1,
-    },
-  ];
+  // redux
+  const {
+    homePage: { banners = [] } = {},
+    // user: { currentUser: { employee = {} } = {} } = {},
+    loadingFetchBanners = false,
+  } = props;
 
+  const [bannerState, setBannerState] = useState({
+    attachments: [],
+  });
+
+  const fetchData = () => {
+    return dispatch({
+      type: 'homePage/fetchBannersEffect',
+      payload: {
+        postType: TAB_IDS.BANNER,
+      },
+    });
+  };
+
+  const compare = (a, b) => {
+    if (a.position < b.position) return -1;
+    if (a.position > b.position) return 1;
+    return 0;
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    let bannerStateTemp = [];
+    banners.forEach((x) => {
+      bannerStateTemp = [...bannerStateTemp, ...x.attachments];
+    });
+    bannerStateTemp = bannerStateTemp.sort(compare);
+    setBannerState(bannerStateTemp);
+  }, [JSON.stringify(banners)]);
+
+  // RENDER UI
+  if (loadingFetchBanners) return '';
+  if (!previewing && bannerState?.attachments) {
+    if (bannerState.attachments.length === 0) {
+      return (
+        <div className={styles.Carousel}>
+          <EmptyComponent description="No banner available" />
+        </div>
+      );
+    }
+  }
   return (
     <div
       className={styles.Carousel}
@@ -57,9 +90,9 @@ const Carousel = (props) => {
         prevArrow={<PrevArrow />}
       >
         {!previewing &&
-          images.map((x) => (
+          bannerState.map((x) => (
             <div className={styles.image}>
-              <img src={x.image} alt="" />
+              <img src={x.url} alt="" />
             </div>
           ))}
 
@@ -82,4 +115,7 @@ const Carousel = (props) => {
   );
 };
 
-export default Carousel;
+export default connect(({ homePage, loading }) => ({
+  homePage,
+  loadingFetchBanners: loading.effects['homePage/fetchBannersEffect'],
+}))(Carousel);

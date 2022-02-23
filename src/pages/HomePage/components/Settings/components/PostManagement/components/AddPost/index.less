@@ -85,7 +85,7 @@
     }
 
     // INPUT + DATE PICKER
-    .ant-input,
+    input.ant-input,
     .ant-input-number,
     .ant-picker {
       width: 100%;
@@ -106,6 +106,15 @@
       input {
         height: 40px !important;
       }
+    }
+    textarea.ant-input {
+      width: 100%;
+      border: 1px solid #d6dce4 !important;
+      border-radius: 5px !important;
+    }
+    .ant-upload-list-picture .ant-upload-list-item-thumbnail img,
+    .ant-upload-list-picture-card .ant-upload-list-item-thumbnail img {
+      object-fit: contain;
     }
   }
   .backBtn {

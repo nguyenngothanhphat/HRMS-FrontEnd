@@ -22,15 +22,18 @@ const Card = (props) => {
     previewing = false,
     contentPreview = [],
   } = props;
+
   const renderCard = (card) => {
+    const { attachments = [], description = '', title = '' } = card;
+    const [firstImage] = attachments;
     return (
       <div className={styles.cardContainer}>
         <div className={styles.image}>
-          <img src={card.image || SampleImage} alt="" />
+          <img src={firstImage?.url || SampleImage} alt="" />
         </div>
         <div className={styles.content}>
-          <p className={styles.title}>{card.title}</p>
-          <p className={styles.caption}>{card.content}</p>
+          <p className={styles.title}>{title}</p>
+          <p className={styles.caption}>{description}</p>
         </div>
       </div>
     );

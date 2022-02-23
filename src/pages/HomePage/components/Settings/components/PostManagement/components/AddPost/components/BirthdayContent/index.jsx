@@ -6,6 +6,8 @@ import styles from './index.less';
 const { Dragger } = Upload;
 
 const BirthdayContent = (props) => {
+  const { defaultFileList = [] } = props;
+
   const identifyImage = (fileName) => {
     const parts = fileName.split('.');
     const ext = parts[parts.length - 1];
@@ -39,23 +41,6 @@ const BirthdayContent = (props) => {
     return checkType && isLt3M;
   };
 
-  // getBase64(file, (imageUrl) => setUploadFiles([...uploadFiles, imageUrl]));
-
-  // const handleUpload = async (file) => {
-  //   setFormValues({
-  //     ...formValues,
-  //     uploadFilesB: [file],
-  //   });
-  // };
-
-  // const handleRemove = (file) => {
-  //   const temp = uploadFilesB.filter((x) => x.uid !== file.uid);
-  //   setFormValues({
-  //     ...formValues,
-  //     uploadFilesB: [...temp],
-  //   });
-  // };
-
   return (
     <div className={styles.BirthdayContent}>
       <Form.Item
@@ -72,9 +57,9 @@ const BirthdayContent = (props) => {
           placeholder="Enter the description"
           autoSize={{
             minRows: 5,
-            maxRows: 7,
+            maxRows: 10,
           }}
-          maxLength={255}
+          maxLength={500}
           showCount={{
             formatter: ({ count, maxLength }) => {
               return `Character Limit: ${count}/${maxLength}`;
@@ -86,12 +71,10 @@ const BirthdayContent = (props) => {
       <Form.Item label="Media file" name="uploadFilesB">
         <Dragger
           beforeUpload={beforeUpload}
-          // disabled={selectExistDocument || fileName}
-          // action={(file) => handleUpload(file)}
           listType="picture"
-          // onRemove={(file) => handleRemove(file)}
           maxCount={1}
           className={styles.fileUploadForm}
+          defaultFileList={[...defaultFileList]}
         >
           <div className={styles.drapperBlock}>
             <img className={styles.uploadIcon} src={AttachmentIcon} alt="upload" />

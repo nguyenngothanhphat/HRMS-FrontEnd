@@ -12,8 +12,7 @@ const comments = [
   {
     id: 1,
     avatar: MockAvatar,
-    comment:
-      'Wishing you many more happy returns of the day you many more happy returns of the dayyou many more happy returns of the dayyou many more happy returns of the day',
+    comment: 'Wishing you many more happy returns of the day',
   },
   {
     id: 2,
@@ -21,9 +20,9 @@ const comments = [
     comment: 'Happy Birthday!',
   },
   {
-    id: 2,
+    id: 3,
     avatar: MockAvatar,
-    comment: 'Happy Birthday!',
+    comment: 'Happy Birthday to you',
   },
 ];
 

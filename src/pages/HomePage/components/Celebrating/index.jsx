@@ -13,12 +13,12 @@ import Card from './components/Card';
 const avatars = [BirthdayImage, BirthdayImage2, BirthdayImage3, BirthdayImage4];
 
 const Celebrating = (props) => {
-  const { dispatch, dashboard: { birthdayInWeekList = [] } = {} } = props;
+  const { dispatch, homePage: { birthdayInWeekList = [] } = {} } = props;
   const [birthdayList, setBirthdayList] = useState([]);
 
   const fetchBirthdayInWeekList = () => {
     return dispatch({
-      type: 'dashboard/fetchBirthdayInWeekList',
+      type: 'homePage/fetchBirthdayInWeekList',
     });
   };
 
@@ -85,8 +85,8 @@ const Celebrating = (props) => {
   );
 };
 
-export default connect(({ dashboard, user: { currentUser = {}, permissions = {} } = {} }) => ({
+export default connect(({ homePage, user: { currentUser = {}, permissions = {} } = {} }) => ({
   currentUser,
   permissions,
-  dashboard,
+  homePage,
 }))(Celebrating);

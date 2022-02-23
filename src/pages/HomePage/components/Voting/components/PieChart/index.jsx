@@ -4,7 +4,7 @@ import GrayDot from '@/assets/homePage/grayDot.svg';
 import styles from './index.less';
 
 const PieChart = (props) => {
-  const { options = [], showTitle = true } = props;
+  const { options = [], showTitle = true, countVotes = () => {}, timeLeft = '' } = props;
 
   const config = {
     appendPadding: 20,
@@ -58,9 +58,13 @@ const PieChart = (props) => {
         <Pie {...config} />
       </div>
       <div className={styles.votingInformation}>
-        <span className={styles.number}>250 votes</span>
-        <img src={GrayDot} alt="" />
-        <span className={styles.dueTime}>2d left</span>
+        <span className={styles.number}>{countVotes() || 0} votes</span>
+        {timeLeft && (
+          <>
+            <img src={GrayDot} alt="" />
+            <span className={styles.dueTime}>{timeLeft}</span>
+          </>
+        )}
       </div>
     </div>
   );
