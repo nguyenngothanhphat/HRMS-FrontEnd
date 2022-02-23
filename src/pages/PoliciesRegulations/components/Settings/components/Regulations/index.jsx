@@ -12,9 +12,9 @@ import TablePolicy from './components/TablePolicy';
 
 const { Option } = Select;
 @connect(
-  ({ policiesRegulations: { countryList = [], tempData: { countrySelected = '' } } = {} }) => ({
+  ({ policiesRegulations: { countryList = [], tempData: { selectedCountry = '' } } = {} }) => ({
     countryList,
-    countrySelected,
+    selectedCountry,
   }),
 )
 class Regulations extends Component {
@@ -50,7 +50,7 @@ class Regulations extends Component {
     dispatch({
       type: 'policiesRegulations/saveTemp',
       payload: {
-        countrySelected: '',
+        selectedCountry: '',
       },
     });
   };
@@ -146,7 +146,7 @@ class Regulations extends Component {
     dispatch({
       type: 'policiesRegulations/saveTemp',
       payload: {
-        countrySelected: value,
+        selectedCountry: value,
       },
     });
     await dispatch({

@@ -15,12 +15,12 @@ import styles from './index.less';
 @connect(
   ({
     loading,
-    policiesRegulations: { listPolicy = [], tempData: { countrySelected = '' } } = {},
+    policiesRegulations: { listPolicy = [], tempData: { selectedCountry = '' } } = {},
   }) => ({
     loadingGetList: loading.effects['policiesRegulations/fetchListPolicy'],
     loadingSearch: loading.effects['policiesRegulations/searchNamePolicy'],
     listPolicy,
-    countrySelected,
+    selectedCountry,
   }),
 )
 class TablePolicy extends Component {
@@ -84,7 +84,7 @@ class TablePolicy extends Component {
       pageSelected,
       size,
       getPageAndSize = () => {},
-      countrySelected = '',
+      selectedCountry = '',
     } = this.props;
 
     const columns = [
@@ -201,7 +201,7 @@ class TablePolicy extends Component {
       <div className={styles.TablePolicy}>
         <Table
           columns={columns}
-          dataSource={!countrySelected ? [] : listPolicy}
+          dataSource={!selectedCountry ? [] : listPolicy}
           pagination={pagination}
           loading={loadingGetList || loadingSearch}
         />

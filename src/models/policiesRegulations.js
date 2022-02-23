@@ -23,7 +23,7 @@ const policiesRegulations = {
     listEmployee: [],
     countryList: [],
     tempData: {
-      countrySelected: '',
+      selectedCountry: '',
     },
   },
   effects: {

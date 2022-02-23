@@ -18,12 +18,12 @@ const { Option } = Select;
     policiesRegulations: {
       listCategory = [],
       listPolicy = [],
-      tempData: { countrySelected = '' },
+      tempData: { selectedCountry = '' },
     } = {},
     user: { currentUser: { employee = {} } = {} },
   }) => ({
     listCategory,
-    countrySelected,
+    selectedCountry,
     listPolicy,
     employee,
     loadingUploadAttachment: loading.effects['policiesRegulations/uploadFileAttachments'],
@@ -129,7 +129,7 @@ class AddPolicyModal extends Component {
       dispatch,
       employee: { _id = '' } = {},
       onClose = () => {},
-      countrySelected = '',
+      selectedCountry = '',
     } = this.props;
     const { uploadedFile = {} } = this.state;
     const attachment = {
@@ -143,7 +143,7 @@ class AddPolicyModal extends Component {
       categoryPolicy,
       namePolicy: namePolicies,
       attachment,
-      country: countrySelected,
+      country: selectedCountry,
       location: getCurrentLocation(),
       company: getCurrentCompany(),
     };
