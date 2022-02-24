@@ -1,9 +1,32 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { Col, DatePicker, Form, Input, Row } from 'antd';
+import moment from 'moment';
 import React from 'react';
 import styles from './index.less';
 
-const PollContent = () => {
+const PollContent = (props) => {
+  const { form } = props;
+
+  const disabledStartDate = (current) => {
+    const endDate = form.getFieldValue('endDateP');
+    if (endDate) {
+      return (
+        current &&
+        (moment(current).isBefore(moment(), 'day') ||
+          moment(current).isAfter(moment(endDate), 'day'))
+      );
+    }
+    return current && moment(current).isBefore(moment(), 'day');
+  };
+
+  const disabledEndDate = (current) => {
+    const startDate = form.getFieldValue('startDateP');
+    if (startDate) {
+      return current && moment(current).isBefore(moment(startDate), 'day');
+    }
+    return current && moment(current).isBefore(moment(), 'day');
+  };
+
   return (
     <div className={styles.PollContent}>
       <Form.Item
@@ -74,7 +97,11 @@ const PollContent = () => {
               },
             ]}
           >
-            <DatePicker placeholder="Enter Start Date" format="Do MMM YYYY" />
+            <DatePicker
+              placeholder="Enter Start Date"
+              format="Do MMM YYYY"
+              disabledDate={disabledStartDate}
+            />
           </Form.Item>
         </Col>
         <Col xs={24} xl={12}>
@@ -88,7 +115,11 @@ const PollContent = () => {
               },
             ]}
           >
-            <DatePicker placeholder="Enter End Date" format="Do MMM YYYY" />
+            <DatePicker
+              placeholder="Enter End Date"
+              format="Do MMM YYYY"
+              disabledDate={disabledEndDate}
+            />
           </Form.Item>
         </Col>
       </Row>

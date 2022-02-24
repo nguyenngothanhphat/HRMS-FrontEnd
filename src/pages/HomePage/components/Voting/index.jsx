@@ -152,7 +152,7 @@ const Voting = (props) => {
   if (!activePoll) {
     return (
       <div className={styles.Voting}>
-        <EmptyComponent description="No poll available" />
+        <EmptyComponent description="No polls" />
       </div>
     );
   }
