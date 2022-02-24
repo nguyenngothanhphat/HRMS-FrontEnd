@@ -348,7 +348,7 @@ const AddPost = (props) => {
       case TAB_IDS.BANNER:
         return <BannerContent defaultFileList={fileList} />;
       case TAB_IDS.POLL:
-        return <PollContent />;
+        return <PollContent form={form} />;
       default:
         return '';
     }

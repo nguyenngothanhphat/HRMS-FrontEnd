@@ -39,6 +39,21 @@ const Card = (props) => {
     );
   };
 
+  const renderData = () => {
+    if (!previewing) {
+      if (data.length === 0) {
+        const emptyCard = {
+          attachments: [],
+          description: 'No events',
+          title: '',
+        };
+        return renderCard(emptyCard);
+      }
+      return data.map((x) => renderCard(x));
+    }
+    return contentPreview.map((x) => renderCard(x));
+  };
+
   return (
     <div className={styles.Card}>
       <Carousel
@@ -51,7 +66,7 @@ const Card = (props) => {
         nextArrow={<NextArrow />}
         prevArrow={<PrevArrow />}
       >
-        {!previewing ? data.map((x) => renderCard(x)) : contentPreview.map((x) => renderCard(x))}
+        {renderData()}
       </Carousel>
     </div>
   );
