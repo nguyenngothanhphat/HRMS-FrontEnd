@@ -143,26 +143,26 @@ class AddPolicyModal extends Component {
       categoryPolicy,
       namePolicy: namePolicies,
       attachment,
-      country: selectedCountry,
+      country: [selectedCountry],
       location: getCurrentLocation(),
       company: getCurrentCompany(),
     };
+
     if (!selectedCountry) {
       message.error('Please select country');
-      if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
-        message.error('Invalid file');
-      } else {
-        dispatch({
-          type: 'policiesRegulations/addPolicy',
-          payload,
-        }).then((response) => {
-          const { statusCode } = response;
-          if (statusCode === 200) {
-            onClose();
-          }
-        });
-        this.setState({ uploadedFile: {}, fileName: '' });
-      }
+    } else if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
+      message.error('Invalid file');
+    } else {
+      dispatch({
+        type: 'policiesRegulations/addPolicy',
+        payload,
+      }).then((response) => {
+        const { statusCode } = response;
+        if (statusCode === 200) {
+          onClose();
+        }
+      });
+      this.setState({ uploadedFile: {}, fileName: '' });
     }
   };
 
