@@ -7,6 +7,7 @@ import PostContent from './components/PostContent';
 import styles from './index.less';
 import EmbedPost from './components/EmbedPost';
 import { TAB_IDS } from '@/utils/homePage';
+import EmptyComponent from '@/components/Empty';
 
 const Announcements = (props) => {
   const { dispatch, loadingFetchAnnouncementList = false } = props;
@@ -43,7 +44,9 @@ const Announcements = (props) => {
     return (
       <div className={styles.Announcements}>
         <p className={styles.title}>Announcements</p>
-        <p>No announcements</p>
+        <div className={styles.card}>
+          <EmptyComponent description="No announcements" />,
+        </div>
       </div>
     );
   }

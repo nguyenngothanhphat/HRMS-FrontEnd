@@ -31,9 +31,7 @@ const Carousel = (props) => {
     loadingFetchBanners = false,
   } = props;
 
-  const [bannerState, setBannerState] = useState({
-    attachments: [],
-  });
+  const [bannerState, setBannerState] = useState([]);
 
   const fetchData = () => {
     return dispatch({
@@ -56,23 +54,23 @@ const Carousel = (props) => {
 
   useEffect(() => {
     let bannerStateTemp = [];
-    banners.forEach((x) => {
-      bannerStateTemp = [...bannerStateTemp, ...x.attachments];
-    });
-    bannerStateTemp = bannerStateTemp.sort(compare);
+    if (banners.length > 0) {
+      banners.forEach((x) => {
+        bannerStateTemp = [...bannerStateTemp, ...x.attachments];
+      });
+      bannerStateTemp = bannerStateTemp.sort(compare);
+    }
     setBannerState(bannerStateTemp);
   }, [JSON.stringify(banners)]);
 
   // RENDER UI
   if (loadingFetchBanners) return '';
-  if (!previewing && bannerState?.attachments) {
-    if (bannerState.attachments.length === 0) {
-      return (
-        <div className={styles.Carousel}>
-          <EmptyComponent description="No banner available" />
-        </div>
-      );
-    }
+  if (!previewing && bannerState.length === 0) {
+    return (
+      <div className={styles.Carousel}>
+        <EmptyComponent description="No banners" />
+      </div>
+    );
   }
   return (
     <div
