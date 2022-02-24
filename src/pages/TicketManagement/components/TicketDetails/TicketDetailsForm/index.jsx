@@ -196,8 +196,10 @@ class TicketDetailsForm extends Component {
       employeeRaise = [],
       cc_list: ccList = [],
       employee_raise: employeeRaiseTickets = '',
+      employee_assignee: employeeAssignedTickets = '',
     } = ticketDetail;
     const { fileNameList, loadingAddChat, value } = this.state;
+
     const getColor = () => {
       switch (priority) {
         case 'High':
@@ -212,6 +214,7 @@ class TicketDetailsForm extends Component {
           return '#ffffff';
       }
     };
+
     const avatarTicket = () => {
       const intersection = listEmployee.filter((element) => ccList.includes(element._id));
       return intersection.map((val) => {
@@ -230,6 +233,7 @@ class TicketDetailsForm extends Component {
         );
       });
     };
+
     const getOpenBy = () => {
       if (employeeRaise) {
         if (employeeRaise.length > 0) {
@@ -239,39 +243,45 @@ class TicketDetailsForm extends Component {
       }
       return '';
     };
-    const chatsLeft = chats.filter((chat) =>
-      chat.employee ? chat.employee._id !== employeeRaiseTickets : [],
-    );
-    const chatsRaise = chatsLeft.reverse();
-    const chatsRight = chats.filter((chat) =>
-      chat.employee ? chat.employee._id === employeeRaiseTickets : [],
-    );
-    const chatsAssigne = chatsRight.reverse();
-    const getAttachmentChatLeft = (val) => {
-      if (!isEmpty(val)) {
-        return val.map((e) => {
-          const attachmentSlice = () => {
-            if (e.attachmentName.length > 35) {
-              return `${e.attachmentName.substr(0, 8)}...${e.attachmentName.substr(
-                e.attachmentName.length - 6,
-                e.attachmentName.length,
-              )}`;
-            }
-            return e.attachmentName;
-          };
-          return (
-            <div key={e.attachment} className={styles.attachments__file}>
-              <a href={e.attachmentUrl} target="_blank" rel="noreferrer">
-                {attachmentSlice()}
-              </a>
-              <img className={styles.attachments__file__img} src={PDFIcon} alt="pdf" />
-            </div>
-          );
-        });
-      }
-      return '';
-    };
-    const getAttachmentChatRight = (val) => {
+
+    const newChat = chats.reverse();
+
+    // const chatsLeft = chats.filter((chat) =>
+    //   chat.employee ? chat.employee._id !== employeeRaiseTickets : [],
+    // );
+
+    // const chatsRaise = chatsLeft.reverse();
+    // const chatsRight = chats.filter((chat) =>
+    //   chat.employee ? chat.employee._id === employeeRaiseTickets : [],
+    // );
+    // const chatsAssigne = chatsRight.reverse();
+
+    // const getAttachmentChatLeft = (val) => {
+    //   if (!isEmpty(val)) {
+    //     return val.map((e) => {
+    //       const attachmentSlice = () => {
+    //         if (e.attachmentName.length > 35) {
+    //           return `${e.attachmentName.substr(0, 8)}...${e.attachmentName.substr(
+    //             e.attachmentName.length - 6,
+    //             e.attachmentName.length,
+    //           )}`;
+    //         }
+    //         return e.attachmentName;
+    //       };
+    //       return (
+    //         <div key={e.attachment} className={styles.attachments__file}>
+    //           <a href={e.attachmentUrl} target="_blank" rel="noreferrer">
+    //             {attachmentSlice()}
+    //           </a>
+    //           <img className={styles.attachments__file__img} src={PDFIcon} alt="pdf" />
+    //         </div>
+    //       );
+    //     });
+    //   }
+    //   return '';
+    // };
+
+    const getAttachmentChat = (val) => {
       if (!isEmpty(val)) {
         return val.map((e) => {
           const attachmentSlice = () => {
@@ -285,16 +295,17 @@ class TicketDetailsForm extends Component {
           };
           return (
             <div className={styles.attachments__file}>
+              <img className={styles.attachments__file__img} src={PDFIcon} alt="pdf" />
               <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
                 {attachmentSlice()}
               </a>
-              <img className={styles.attachments__file__img} src={PDFIcon} alt="pdf" />
             </div>
           );
         });
       }
       return '';
     };
+
     return (
       <div className={styles.TicketDetails}>
         <div className={styles.formDetails}>
@@ -486,8 +497,37 @@ class TicketDetailsForm extends Component {
           </div>
           <div className={styles.timeline}>
             <Row>
-              <Col span={12}>
-                <Timeline mode="right">
+              <Col span={24}>
+                <Timeline mode="alternate">
+                  {newChat.map((item) => {
+                    const {
+                      employee: { generalInfo: { avatar = '' } = {}, id: employeeChatID = '' } = {},
+                    } = item;
+
+                    return (
+                      <Timeline.Item
+                        position={employeeChatID === employeeAssignedTickets ? 'right' : 'left'}
+                        dot={
+                          avatar !== '' ? (
+                            <Avatar size={40} className={styles.avatar} src={avatar} />
+                          ) : (
+                            <Avatar size={40} icon={<UserOutlined />} />
+                          )
+                        }
+                      >
+                        <div className={styles.titleChat}>{item.title}</div>
+                        <div className={styles.chatMessage}>{item.message}</div>
+                        <>
+                          {item.attachments ? <div>{getAttachmentChat(item.attachments)}</div> : ''}
+                        </>
+                        <div className={styles.timeChat}>
+                          {moment(item.createdAt).format('DD-MM-YYYY, hh:mm a')}
+                        </div>
+                      </Timeline.Item>
+                    );
+                  })}
+                </Timeline>
+                {/* <Timeline mode="right">
                   {chatsAssigne.map((e) => {
                     const { employee: { generalInfo: { avatar = '' } = {} } = {} } = e;
                     return (
@@ -538,7 +578,7 @@ class TicketDetailsForm extends Component {
                       </Timeline.Item>
                     );
                   })}
-                </Timeline>
+                </Timeline> */}
               </Col>
             </Row>
           </div>

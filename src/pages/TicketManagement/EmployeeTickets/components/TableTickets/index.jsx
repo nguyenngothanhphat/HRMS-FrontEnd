@@ -145,7 +145,7 @@ class TableTickets extends PureComponent {
         dataIndex: 'employeeRaise',
         key: 'userID',
         render: (employeeRaise, id) => {
-          const { generalInfo: { userId = '' } = {} } = employeeRaise;
+          const { generalInfo: { userId = '' } = {} } = employeeRaise || {};
           return (
             <span className={styles.userID} onClick={() => this.openViewTicket(id.id)}>
               {userId}
@@ -157,8 +157,8 @@ class TableTickets extends PureComponent {
         title: 'Name',
         dataIndex: 'employeeRaise',
         key: 'name',
-        render: (employeeRaise) => {
-          const { generalInfo: { legalName = '' } = {} } = employeeRaise;
+        render: (employeeRaise = {}) => {
+          const { generalInfo: { legalName = '' } = {} } = employeeRaise || {};
           return <span>{legalName}</span>;
         },
       },

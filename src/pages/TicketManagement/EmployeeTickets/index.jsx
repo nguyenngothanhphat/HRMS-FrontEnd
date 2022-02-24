@@ -52,10 +52,10 @@ class EmployeeTicket extends Component {
           this.fetchListEmployee();
         }
       });
+      this.fetchListAllTicket();
+      this.fetchLocation();
+      this.fetchTotalList();
     }
-    this.fetchListAllTicket();
-    this.fetchLocation();
-    this.fetchTotalList();
   }
 
   fetchLocation = () => {
