@@ -8,11 +8,23 @@ const PollContent = (props) => {
   const { form } = props;
 
   const disabledStartDate = (current) => {
-    return current && moment(current).isAfter(moment(form.getFieldValue('endDateP')), 'day');
+    const endDate = form.getFieldValue('endDateP');
+    if (endDate) {
+      return (
+        current &&
+        (moment(current).isBefore(moment(), 'day') ||
+          moment(current).isAfter(moment(endDate), 'day'))
+      );
+    }
+    return current && moment(current).isBefore(moment(), 'day');
   };
 
   const disabledEndDate = (current) => {
-    return current && moment(current).isBefore(moment(form.getFieldValue('startDateP')), 'day');
+    const startDate = form.getFieldValue('startDateP');
+    if (startDate) {
+      return current && moment(current).isBefore(moment(startDate), 'day');
+    }
+    return current && moment(current).isBefore(moment(), 'day');
   };
 
   return (
