@@ -5,7 +5,7 @@ import { formatMessage, Link } from 'umi';
 import Footer from '@/components/Footer';
 import LoginImage from '../assets/Intranet_01.png';
 import Separator from '../assets/login/separator.svg';
-import TerralogicImage from '../assets/login/terralogic.jpg';
+import TerralogicImage from '../assets/login/terralogic.png';
 import TerralogicLogo from '../assets/login/terralogic_logo.svg';
 import { IS_TERRALOGIC_LOGIN } from '@/utils/login';
 import styles from './AuthLayout.less';
