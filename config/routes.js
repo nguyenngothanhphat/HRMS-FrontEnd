@@ -844,6 +844,12 @@ const routes = [
             component: './FAQs',
           },
           {
+            path: '/faqpage/settings',
+            name: 'settings',
+            hideInMenu: true,
+            component: './FAQs/components/SettingFAQ',
+          },
+          {
             path: '/policies-regulations',
             name: 'policiesRegulations',
             hideInMenu: true,
