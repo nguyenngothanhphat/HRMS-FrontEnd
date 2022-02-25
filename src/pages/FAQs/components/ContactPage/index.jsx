@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Button } from 'antd';
 import { formatMessage } from 'umi';
-import icon from '@/assets/question_icon.svg';
+// import icon from '@/assets/question_icon.svg';
+import helpContact from '@/assets/faqPage/helpContact.svg';
 import styles from './index.less';
 
 class ContactPage extends PureComponent {
@@ -9,7 +10,7 @@ class ContactPage extends PureComponent {
     return (
       <div className={styles.container}>
         <div>
-          <img src={icon} alt="" />
+          <img src={helpContact} alt="" />
           <span className={styles.title}>
             {formatMessage({ id: 'pages.frequentlyAskedQuestions.contactUs.title' })}
           </span>

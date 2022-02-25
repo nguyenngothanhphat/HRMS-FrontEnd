@@ -1,11 +1,15 @@
 import React, { PureComponent } from 'react';
-import { Affix, Row, Col } from 'antd';
-import { formatMessage, connect } from 'umi';
+// import { Affix, Row, Col, Button, Link } from 'antd';
+// import { formatMessage, connect } from 'umi';
+import { Row, Col, Button } from 'antd';
+import { connect, Link } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
-import ContactPage from './components/ContactPage';
-import ListQuestions from './components/ListQuestions';
+// import ContactPage from './components/ContactPage';
+// import ListQuestions from './components/ListQuestions';
+import FAQList from './components/FAQList';
 import styles from './index.less';
 
+const HR_MANAGER = 'HR-MANAGER';
 @connect(
   ({
     user: { currentUser = {} } = {},
@@ -29,11 +33,15 @@ class FAQs extends PureComponent {
   }
 
   render() {
-    const { location: { query = {} } = {}, getListByCompany = {} } = this.props;
-    const { faq = [] } = getListByCompany;
+    // const { location: { query = {} } = {}, getListByCompany = {}, currentUser: { roles = [] } } = this.props;
+    const {
+      currentUser: { roles = [] },
+    } = this.props;
+    // const { faq = [] } = getListByCompany;
+    const checkRoleHrAndManager = roles.includes(HR_MANAGER);
     return (
       <PageContainer>
-        <div className={styles.root}>
+        {/* <div className={styles.root}>
           <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <div className={styles.titlePage__text}>
@@ -49,7 +57,29 @@ class FAQs extends PureComponent {
               <ContactPage />
             </Col>
           </Row>
-        </div>
+        </div> */}
+        <Row className={styles.FAQs}>
+          <Col span={24}>
+            <div className={styles.header}>
+              <div className={styles.header__left}>FAQs</div>
+              <div className={styles.header__right}>
+                {checkRoleHrAndManager ? (
+                  <Button>
+                    <Link to="/faqpage/settings">
+                      <span className={styles.buttonSetting__text}>Settings</span>
+                    </Link>
+                  </Button>
+                ) : null}
+              </div>
+            </div>
+          </Col>
+          <Col span={24} />
+          <Col span={24}>
+            <div className={styles.containerPolicies}>
+              <FAQList />
+            </div>
+          </Col>
+        </Row>
       </PageContainer>
     );
   }
