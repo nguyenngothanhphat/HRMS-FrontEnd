@@ -7,12 +7,14 @@ import PaySlips from './PaySlips';
 import BankAccount from './BankAccount';
 import Form16 from './Form16';
 import TaxWithholdingInfo from './TaxWithholdingInfo';
+import WorkInProgress from '@/components/WorkInProgress';
 
 import styles from './index.less';
 
 const { TabPane } = Tabs;
 
 const Compensation = (props) => {
+  const data = [];
   const { loadingFetch } = props;
   const [activeKey, setActiveKey] = useState('1');
 
@@ -25,6 +27,10 @@ const Compensation = (props) => {
       );
     return '';
   };
+
+  if (data.length === 0) {
+    return <WorkInProgress />;
+  }
 
   return (
     <div className={styles.Compensation}>
