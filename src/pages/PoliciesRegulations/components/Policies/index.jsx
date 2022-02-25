@@ -9,10 +9,21 @@ import ViewIcon from '@/assets/policiesRegulations/view.svg';
 import DocumentModal from './components/DocumentModal';
 import styles from './index.less';
 
-@connect(({ loading, policiesRegulations: { listCategory = [] } = {} }) => ({
-  loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
-  listCategory,
-}))
+@connect(
+  ({
+    loading,
+    policiesRegulations: { listCategory = [] } = {},
+    user: {
+      currentUser: {
+        location: { headQuarterAddress: { country: { _id: countryID = '' } = {} } = {} } = {},
+      } = {},
+    },
+  }) => ({
+    loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
+    listCategory,
+    countryID,
+  }),
+)
 class Policies extends PureComponent {
   constructor(props) {
     super(props);
@@ -24,9 +35,12 @@ class Policies extends PureComponent {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, countryID = '' } = this.props;
     dispatch({
       type: 'policiesRegulations/fetchListCategory',
+      payload: {
+        country: [countryID],
+      },
     });
   }
 

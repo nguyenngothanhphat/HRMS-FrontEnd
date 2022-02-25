@@ -20,12 +20,14 @@ const { Option } = Select;
       listPolicy = [],
       tempData: { selectedCountry = '' },
     } = {},
-    user: { currentUser: { employee = {} } = {} },
+    user: {
+      currentUser: { employee: { generalInfo: { _id: generalInfoId = '' } = {} } = {} } = {},
+    },
   }) => ({
     listCategory,
     selectedCountry,
     listPolicy,
-    employee,
+    generalInfoId,
     loadingUploadAttachment: loading.effects['policiesRegulations/uploadFileAttachments'],
     loadingAdd: loading.effects['policiesRegulations/addPolicy'],
   }),
@@ -125,12 +127,7 @@ class AddPolicyModal extends Component {
   };
 
   onFinish = async ({ categoryPolicy, namePolicies }) => {
-    const {
-      dispatch,
-      employee: { _id = '' } = {},
-      onClose = () => {},
-      selectedCountry = '',
-    } = this.props;
+    const { dispatch, generalInfoId = '', onClose = () => {}, selectedCountry = '' } = this.props;
     const { uploadedFile = {} } = this.state;
     const attachment = {
       id: uploadedFile.id,
@@ -139,7 +136,7 @@ class AddPolicyModal extends Component {
     };
 
     const payload = {
-      employee: _id,
+      employee: generalInfoId,
       categoryPolicy,
       namePolicy: namePolicies,
       attachment,

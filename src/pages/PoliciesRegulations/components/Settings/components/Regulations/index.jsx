@@ -31,9 +31,12 @@ class Regulations extends Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, selectedCountry = '' } = this.props;
     dispatch({
       type: 'policiesRegulations/fetchListPolicy',
+      payload: {
+        country: [selectedCountry],
+      },
     });
 
     dispatch({
