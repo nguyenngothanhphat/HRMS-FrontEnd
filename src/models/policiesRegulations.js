@@ -137,14 +137,16 @@ const policiesRegulations = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
+        const { listPolicy } = yield select((state) => state.employeeProfile);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: {
-            listPolicy: data,
-          },
-        });
+
+        //  yield put({
+        //    type: 'save',
+        //    payload: {
+        //      listPolicy: [...listPolicy,...data],
+        //    },
+        //  });
       } catch (error) {
         dialog(error);
       }
@@ -248,8 +250,9 @@ const policiesRegulations = {
     },
 
     *getCountryListByCompany({ payload = {} }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getLocationByCompany, payload);
+        response = yield call(getLocationByCompany, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -259,6 +262,7 @@ const policiesRegulations = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
   },
   reducers: {

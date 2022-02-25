@@ -154,7 +154,7 @@ class Regulations extends Component {
     });
     await dispatch({
       type: 'policiesRegulations/fetchListPolicy',
-      payload: { country: value, tenantId: getCurrentTenant() },
+      payload: { country: [value], tenantId: getCurrentTenant() },
     });
   };
 

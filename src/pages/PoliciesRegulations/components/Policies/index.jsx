@@ -7,6 +7,8 @@ import IconContact from '@/assets/policiesRegulations/policies-icon-contact.svg'
 import PdfIcon from '@/assets/policiesRegulations/pdf-2.svg';
 import ViewIcon from '@/assets/policiesRegulations/view.svg';
 import DocumentModal from './components/DocumentModal';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+
 import styles from './index.less';
 
 @connect(
@@ -14,6 +16,7 @@ import styles from './index.less';
     loading,
     policiesRegulations: { listCategory = [] } = {},
     user: {
+      permissions = {},
       currentUser: {
         location: { headQuarterAddress: { country: { _id: countryID = '' } = {} } = {} } = {},
       } = {},
@@ -22,6 +25,7 @@ import styles from './index.less';
     loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
     listCategory,
     countryID,
+    permissions,
   }),
 )
 class Policies extends PureComponent {
@@ -35,14 +39,53 @@ class Policies extends PureComponent {
   }
 
   componentDidMount() {
-    const { dispatch, countryID = '' } = this.props;
+    const { dispatch, countryID = '', permissions = {} } = this.props;
+    const viewAllCountry = permissions.viewPolicyAllCountry !== -1;
     dispatch({
-      type: 'policiesRegulations/fetchListCategory',
+      type: 'policiesRegulations/getCountryListByCompany',
       payload: {
-        country: [countryID],
+        tenantIds: [getCurrentTenant()],
+        company: getCurrentCompany(),
       },
+    }).then((res) => {
+      if (res.statusCode === 200) {
+        const { data = [] } = res;
+        let countryArr = [];
+        if (viewAllCountry) {
+          countryArr = data.map((item) => {
+            return item.headQuarterAddress.country;
+          });
+          const newArr = this.removeDuplicate(countryArr, (item) => item._id);
+          countryArr = newArr.map((val) => val._id);
+          if (countryArr.length > 0) {
+            dispatch({
+              type: 'ticketManagement/save',
+              payload: {
+                countryList: countryArr,
+              },
+            });
+          }
+          dispatch({
+            type: 'policiesRegulations/fetchListCategory',
+            payload: {
+              country: countryArr,
+            },
+          });
+        } else {
+          dispatch({
+            type: 'policiesRegulations/fetchListCategory',
+            payload: {
+              country: [countryID],
+            },
+          });
+        }
+      }
     });
   }
+
+  removeDuplicate = (array, key) => {
+    return [...new Map(array.map((x) => [key(x), x])).values()];
+  };
 
   handleCancel = () => {
     this.setState({

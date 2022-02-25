@@ -4,9 +4,27 @@ import { connect } from 'umi';
 import AddIcon from '@/assets/policiesRegulations/add.svg';
 import TableCatergories from './components/TableCategories';
 import AddCategoriesModal from './components/AddCategoriesModal';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+
 import styles from './index.less';
 
-@connect()
+@connect(
+  ({
+    loading,
+    policiesRegulations: { listCategory = [] } = {},
+    user: {
+      permissions = {},
+      currentUser: {
+        location: { headQuarterAddress: { country: { _id: countryID = '' } = {} } = {} } = {},
+      } = {},
+    },
+  }) => ({
+    loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
+    listCategory,
+    countryID,
+    permissions,
+  }),
+)
 class Categories extends Component {
   constructor(props) {
     super(props);
@@ -16,9 +34,39 @@ class Categories extends Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, countryID = '', permissions = {} } = this.props;
+    const viewAllCountry = permissions.viewPolicyAllCountry !== -1;
     dispatch({
-      type: 'policiesRegulations/fetchListCategory',
+      type: 'policiesRegulations/getCountryListByCompany',
+      payload: {
+        tenantIds: [getCurrentTenant()],
+        company: getCurrentCompany(),
+      },
+    }).then((res) => {
+      if (res.statusCode === 200) {
+        const { data = [] } = res;
+        let countryArr = [];
+        if (viewAllCountry) {
+          countryArr = data.map((item) => {
+            return item.headQuarterAddress.country;
+          });
+          const newArr = this.removeDuplicate(countryArr, (item) => item._id);
+          countryArr = newArr.map((val) => val._id);
+          dispatch({
+            type: 'policiesRegulations/fetchListCategory',
+            payload: {
+              country: countryArr,
+            },
+          });
+        } else {
+          dispatch({
+            type: 'policiesRegulations/fetchListCategory',
+            payload: {
+              country: [countryID],
+            },
+          });
+        }
+      }
     });
   }
 
