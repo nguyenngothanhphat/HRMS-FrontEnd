@@ -57,7 +57,11 @@ class AddQuestionAnswer extends Component {
             >
               <Input />
             </Form.Item>
-            <Form.Item label="Answer" name="answer" labelCol={{ span: 24 }}>
+            <Form.Item
+              label="Answer"
+              name="answer"
+              labelCol={{ span: 24 }}
+            >
               <TextArea rows={4} />
             </Form.Item>
           </Form>
