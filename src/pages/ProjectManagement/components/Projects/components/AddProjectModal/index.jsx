@@ -26,7 +26,7 @@ const AddProjectModal = (props) => {
       newProjectId = '',
     } = {},
     employee: { generalInfo: { legalName: ownerName = '' } = {} } = {} || {},
-    // loadingGenId = false,
+    loadingGenId = false,
     loadingAddProject = false,
     loadingFetchEmployeeList = false,
     loadingFetchCustomerList = false,
@@ -143,9 +143,14 @@ const AddProjectModal = (props) => {
                 labelCol={{ span: 24 }}
               >
                 <Select
-                  loading={loadingFetchCustomerList}
+                  loading={loadingFetchCustomerList || loadingGenId}
                   placeholder="Select Customer"
+                  disabled={loadingGenId}
                   onChange={(val) => setCustomerId(val)}
+                  showSearch
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   {customerList.map((x) => (
                     <Option value={x.customerId}>{x.legalName}</Option>
@@ -161,7 +166,13 @@ const AddProjectModal = (props) => {
                 fieldKey="engagementType"
                 labelCol={{ span: 24 }}
               >
-                <Select placeholder="Select Engagement Type">
+                <Select
+                  placeholder="Select Engagement Type"
+                  showSearch
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
                   {projectTypeList.map((x) => (
                     <Option value={x.id}>{x.type_name}</Option>
                   ))}
@@ -205,7 +216,7 @@ const AddProjectModal = (props) => {
                 fieldKey="projectId"
                 labelCol={{ span: 24 }}
               >
-                <Input disabled placeholder="Project ID" />
+                <Input disabled placeholder="Project ID (auto generate)" />
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
@@ -223,7 +234,13 @@ const AddProjectModal = (props) => {
                 fieldKey="projectStatus"
                 labelCol={{ span: 24 }}
               >
-                <Select placeholder="Select Project Status">
+                <Select
+                  placeholder="Select Project Status"
+                  showSearch
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
                   {projectStatusList.map((x) => (
                     <Option value={x.id}>{x.status}</Option>
                   ))}
@@ -289,7 +306,14 @@ const AddProjectModal = (props) => {
                 fieldKey="projectManager"
                 labelCol={{ span: 24 }}
               >
-                <Select loading={loadingFetchEmployeeList} placeholder="Select Project Manager">
+                <Select
+                  loading={loadingFetchEmployeeList}
+                  placeholder="Select Project Manager"
+                  showSearch
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
                   {employeeList.map((x) => (
                     <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
                   ))}
@@ -349,7 +373,14 @@ const AddProjectModal = (props) => {
                 fieldKey="engineeringOwner"
                 labelCol={{ span: 24 }}
               >
-                <Select loading={loadingFetchEmployeeList} placeholder="Select Engineering Owner">
+                <Select
+                  loading={loadingFetchEmployeeList}
+                  placeholder="Select Engineering Owner"
+                  showSearch
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
                   {employeeList.map((x) => (
                     <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
                   ))}
@@ -364,7 +395,13 @@ const AddProjectModal = (props) => {
                 fieldKey="division"
                 labelCol={{ span: 24 }}
               >
-                <Select placeholder="Select Division">
+                <Select
+                  placeholder="Select Division"
+                  showSearch
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
                   {divisionList.map((x) => (
                     <Option value={x}>{x}</Option>
                   ))}
@@ -379,7 +416,14 @@ const AddProjectModal = (props) => {
                 fieldKey="tags"
                 labelCol={{ span: 24 }}
               >
-                <Select mode="multiple" placeholder="Select Groups">
+                <Select
+                  mode="multiple"
+                  placeholder="Select Groups"
+                  showSearch
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
                   {tagList.map((x) => (
                     <Option value={x.tag_name}>{x.tag_name}</Option>
                   ))}
