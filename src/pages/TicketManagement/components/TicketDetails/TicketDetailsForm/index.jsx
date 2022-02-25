@@ -35,7 +35,6 @@ class TicketDetailsForm extends Component {
     super(props);
     this.state = {
       value: '',
-      // uploadedAttachments: [],
       uploadedFileList: [],
       fileNameList: [],
     };
@@ -195,9 +194,9 @@ class TicketDetailsForm extends Component {
       chats = [],
       employeeRaise = [],
       cc_list: ccList = [],
-      employee_raise: employeeRaiseTickets = '',
       employee_assignee: employeeAssignedTickets = '',
     } = ticketDetail;
+
     const { fileNameList, loadingAddChat, value } = this.state;
 
     const getColor = () => {
