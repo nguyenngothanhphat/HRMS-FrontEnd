@@ -31,6 +31,7 @@ const HomePage = (props) => {
   const viewSettingPage = () => {
     history.push('/home/settings');
   };
+
   const renderSettingIcon = () => {
     return (
       <div className={styles.settingIcon} onClick={viewSettingPage}>
