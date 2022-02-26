@@ -17,8 +17,8 @@ const { Option } = Select;
     loading,
     policiesRegulations: {
       listCategory = [],
-      listPolicy = [],
-      tempData: { selectedCountry = '' },
+      tempData: { listPolicy = [] },
+      originData: { selectedCountry = '' },
     } = {},
     user: {
       currentUser: { employee: { generalInfo: { _id: generalInfoId = '' } = {} } = {} } = {},
@@ -127,7 +127,13 @@ class AddPolicyModal extends Component {
   };
 
   onFinish = async ({ categoryPolicy, namePolicies }) => {
-    const { dispatch, generalInfoId = '', onClose = () => {}, selectedCountry = '' } = this.props;
+    const {
+      dispatch,
+      generalInfoId = '',
+      onClose = () => {},
+      onRefresh = () => {},
+      selectedCountry = '',
+    } = this.props;
     const { uploadedFile = {} } = this.state;
     const attachment = {
       id: uploadedFile.id,
@@ -156,6 +162,7 @@ class AddPolicyModal extends Component {
       }).then((response) => {
         const { statusCode } = response;
         if (statusCode === 200) {
+          onRefresh(selectedCountry);
           onClose();
         }
       });
@@ -189,8 +196,7 @@ class AddPolicyModal extends Component {
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 onChange={onPolicyCategories}
               >
                 {listCategory.map((val) => (

@@ -5,14 +5,14 @@ import { debounce } from 'lodash';
 import { SearchOutlined } from '@ant-design/icons';
 import AddIcon from '@/assets/policiesRegulations/add.svg';
 import FilterIcon from '@/assets/policiesRegulations/filter.svg';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 import AddPolicyModal from './components/AddPolicyModal';
 import TablePolicy from './components/TablePolicy';
 
 const { Option } = Select;
 @connect(
-  ({ policiesRegulations: { countryList = [], tempData: { selectedCountry = '' } } = {} }) => ({
+  ({ policiesRegulations: { countryList = [], originData: { selectedCountry = '' } } = {} }) => ({
     countryList,
     selectedCountry,
   }),
@@ -31,29 +31,26 @@ class Regulations extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, selectedCountry = '' } = this.props;
-    dispatch({
-      type: 'policiesRegulations/fetchListPolicy',
-      payload: {
-        country: [selectedCountry],
-      },
-    });
-
-    dispatch({
-      type: 'policiesRegulations/getCountryListByCompany',
-      payload: {
-        tenantIds: [getCurrentTenant()],
-        company: getCurrentCompany(),
-      },
-    });
+    const { selectedCountry = '' } = this.props;
+    this.fetchPolicyRegulationList(selectedCountry);
   }
 
   componentWillUnmount = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'policiesRegulations/saveTemp',
+      type: 'policiesRegulations/saveOrigin',
       payload: {
         selectedCountry: '',
+      },
+    });
+  };
+
+  fetchPolicyRegulationList = (selectedCountry = '') => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'policiesRegulations/fetchListPolicy',
+      payload: {
+        country: [selectedCountry],
       },
     });
   };
@@ -147,7 +144,7 @@ class Regulations extends Component {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'policiesRegulations/saveTemp',
+      type: 'policiesRegulations/saveOrigin',
       payload: {
         selectedCountry: value,
       },
@@ -201,6 +198,7 @@ class Regulations extends Component {
             </div>
           </div>
           <AddPolicyModal
+            onRefresh={this.fetchPolicyRegulationList}
             visible={addPolicy}
             onClose={() => this.setState({ addPolicy: false })}
             mode="multiple"

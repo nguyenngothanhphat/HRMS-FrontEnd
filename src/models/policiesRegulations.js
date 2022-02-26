@@ -19,15 +19,17 @@ const policiesRegulations = {
   namespace: 'policiesRegulations',
   state: {
     listCategory: [],
-    listPolicy: [],
     listEmployee: [],
     countryList: [],
-    tempData: {
+    originData: {
       selectedCountry: '',
+    },
+    tempData: {
+      listPolicy: [],
     },
   },
   effects: {
-    *addCategory({ payload }, { call, put }) {
+    *addCategory({ payload }, { call }) {
       let response;
       try {
         response = yield call(addCategory, {
@@ -38,18 +40,12 @@ const policiesRegulations = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message: 'Add Category Successfully' });
-        yield put({
-          type: 'fetchListCategory',
-          payload: {
-            tenantId: getCurrentTenant(),
-            company: getCurrentCompany(),
-          },
-        });
       } catch (error) {
         dialog(error);
       }
       return response;
     },
+
     *fetchListCategory({ payload }, { call, put }) {
       let response;
       try {
@@ -71,7 +67,8 @@ const policiesRegulations = {
       }
       return response;
     },
-    *updateCategory({ payload }, { call, put }) {
+
+    *updateCategory({ payload }, { call }) {
       let response;
       try {
         response = yield call(updateCategory, {
@@ -79,28 +76,16 @@ const policiesRegulations = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message: 'Update Category Successfully' });
-        yield put({
-          type: 'save',
-          payload: {
-            listCategory: data,
-          },
-        });
-        yield put({
-          type: 'fetchListCategory',
-          payload: {
-            tenantId: getCurrentTenant(),
-            company: getCurrentCompany(),
-          },
-        });
       } catch (error) {
         dialog(error);
       }
       return response;
     },
-    *deleteCategory({ payload }, { call, put }) {
+
+    *deleteCategory({ payload }, { call }) {
       let response;
       try {
         response = yield call(deleteCategory, {
@@ -108,28 +93,16 @@ const policiesRegulations = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message: 'Delete Category Successfully' });
-        yield put({
-          type: 'save',
-          payload: {
-            listCategory: data,
-          },
-        });
-        yield put({
-          type: 'fetchListCategory',
-          payload: {
-            tenantId: getCurrentTenant(),
-            company: getCurrentCompany(),
-          },
-        });
       } catch (error) {
         dialog(error);
       }
       return response;
     },
-    *addPolicy({ payload }, { call, put }) {
+
+    *addPolicy({ payload }, { call }) {
       let response;
       try {
         response = yield call(addPolicy, {
@@ -137,21 +110,17 @@ const policiesRegulations = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { listPolicy } = yield select((state) => state.employeeProfile);
-        const { statusCode, data } = response;
+        const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
-
-        //  yield put({
-        //    type: 'save',
-        //    payload: {
-        //      listPolicy: [...listPolicy,...data],
-        //    },
-        //  });
+        notification.success({
+          message,
+        });
       } catch (error) {
         dialog(error);
       }
       return response;
     },
+
     *fetchListPolicy({ payload }, { call, put }) {
       let response;
       try {
@@ -160,12 +129,12 @@ const policiesRegulations = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data } = response;
+        const { statusCode, data: listPolicy = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
-          type: 'save',
+          type: 'saveTemp',
           payload: {
-            listPolicy: data,
+            listPolicy,
           },
         });
       } catch (error) {
@@ -173,7 +142,8 @@ const policiesRegulations = {
       }
       return response;
     },
-    *updatePolicy({ payload }, { call, put }) {
+
+    *updatePolicy({ payload }, { call }) {
       let response;
       try {
         response = yield call(updatePolicy, {
@@ -181,21 +151,16 @@ const policiesRegulations = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message: 'Update Policy Successfully' });
-        yield put({
-          type: 'save',
-          payload: {
-            listPolicy: data,
-          },
-        });
       } catch (error) {
         dialog(error);
       }
       return response;
     },
-    *deletePolicy({ payload }, { call, put }) {
+
+    *deletePolicy({ payload }, { call }) {
       let response;
       try {
         response = yield call(deletePolicy, {
@@ -203,20 +168,15 @@ const policiesRegulations = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message: 'Delete Policy Successfully' });
-        yield put({
-          type: 'save',
-          payload: {
-            listPolicy: data,
-          },
-        });
       } catch (error) {
         dialog(error);
       }
       return response;
     },
+
     *uploadFileAttachments({ payload }, { call }) {
       let response = {};
       try {
@@ -231,6 +191,7 @@ const policiesRegulations = {
       }
       return response;
     },
+
     *searchNamePolicy({ payload }, { call, put }) {
       try {
         const response = yield call(searchNamePolicy, {
@@ -270,6 +231,16 @@ const policiesRegulations = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveOrigin(state, action) {
+      const { originData } = state;
+      return {
+        ...state,
+        originData: {
+          ...originData,
+          ...action.payload,
+        },
       };
     },
     saveTemp(state, action) {

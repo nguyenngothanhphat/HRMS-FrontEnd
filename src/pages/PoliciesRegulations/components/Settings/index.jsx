@@ -1,17 +1,64 @@
 import React, { Component } from 'react';
 import { Row, Col, Menu } from 'antd';
+import { connect } from 'umi';
 import Regulations from './components/Regulations';
 import Categories from './components/Categories';
 import { PageContainer } from '@/layouts/layout/src';
 
 import styles from './index.less';
 
+@connect(
+  ({
+    loading,
+    policiesRegulations: { listCategory = [], countryList = [] } = {},
+    user: {
+      permissions = {},
+      currentUser: {
+        location: { headQuarterAddress: { country: { _id: countryID = '' } = {} } = {} } = {},
+      } = {},
+    },
+  }) => ({
+    loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
+    listCategory,
+    countryList,
+    countryID,
+    permissions,
+  }),
+)
 class Settings extends Component {
   constructor(props) {
     super(props);
     this.state = {
       content: '',
     };
+  }
+
+  componentDidMount() {
+    const { dispatch, countryID = '', permissions = {}, countryList = [] } = this.props;
+    const viewAllCountry = permissions.viewPolicyAllCountry !== -1;
+    if (countryList.length > 0) {
+      let countryArr = [];
+      if (viewAllCountry) {
+        countryArr = countryList.map((item) => {
+          return item.headQuarterAddress.country;
+        });
+        const newArr = this.removeDuplicate(countryArr, (item) => item._id);
+        countryArr = newArr.map((val) => val._id);
+        dispatch({
+          type: 'policiesRegulations/fetchListCategory',
+          payload: {
+            country: countryArr,
+          },
+        });
+      } else {
+        dispatch({
+          type: 'policiesRegulations/fetchListCategory',
+          payload: {
+            country: [countryID],
+          },
+        });
+      }
+    }
   }
 
   handleChange = (key) => {

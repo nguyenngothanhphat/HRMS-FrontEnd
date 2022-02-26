@@ -15,7 +15,10 @@ import styles from './index.less';
 @connect(
   ({
     loading,
-    policiesRegulations: { listPolicy = [], tempData: { selectedCountry = '' } } = {},
+    policiesRegulations: {
+      tempData: { listPolicy = [] },
+      originData: { selectedCountry = '' },
+    } = {},
   }) => ({
     loadingGetList: loading.effects['policiesRegulations/fetchListPolicy'],
     loadingSearch: loading.effects['policiesRegulations/searchNamePolicy'],
@@ -35,6 +38,16 @@ class TablePolicy extends Component {
       item: {},
     };
   }
+
+  fetchPolicyRegulationList = (selectedCountry = '') => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'policiesRegulations/fetchListPolicy',
+      payload: {
+        country: [selectedCountry],
+      },
+    });
+  };
 
   handleCancel = () => {
     this.setState({
@@ -114,13 +127,13 @@ class TablePolicy extends Component {
         },
         render: (attachment) => {
           const attachmentSlice = () => {
-            if (attachment.name.length > 20) {
+            if (!isEmpty(attachment) && attachment.name.length > 20) {
               return `${attachment.name.substr(0, 8)}...${attachment.name.substr(
                 attachment.name.length - 10,
                 attachment.name.length,
               )}`;
             }
-            return attachment.name;
+            return attachment?.name;
           };
           return (
             <div className={styles.policy}>
@@ -140,8 +153,8 @@ class TablePolicy extends Component {
             ),
         },
         render: (infoEmployee) => {
-          if (!isEmpty(infoEmployee)) {
-            const { generalInfoInfo: { legalName = '' } = {} } = infoEmployee[0];
+          if (infoEmployee && infoEmployee.length > 0) {
+            const { legalName = '' } = infoEmployee[0] || [];
             return <span>{legalName}</span>;
           }
           return '';
@@ -208,6 +221,7 @@ class TablePolicy extends Component {
 
         <EditPolicyModal
           visible={editPolicy}
+          onRefresh={this.fetchPolicyRegulationList}
           onDelete={() => this.setState({ filePDF: '' })}
           onClose={() => this.setState({ editPolicy: false })}
           mode="multiple"
@@ -215,6 +229,7 @@ class TablePolicy extends Component {
           filePDF={filePDF}
         />
         <DeletePolicyModal
+          onRefresh={this.fetchPolicyRegulationList}
           visible={deletePolicy}
           onClose={() => this.setState({ deletePolicy: false })}
           mode="multiple"

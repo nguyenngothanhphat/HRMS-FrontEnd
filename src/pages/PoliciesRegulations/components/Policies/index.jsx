@@ -59,7 +59,7 @@ class Policies extends PureComponent {
           countryArr = newArr.map((val) => val._id);
           if (countryArr.length > 0) {
             dispatch({
-              type: 'ticketManagement/save',
+              type: 'policiesRegulations/save',
               payload: {
                 countryList: countryArr,
               },
