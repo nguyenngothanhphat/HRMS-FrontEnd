@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Col, Row, Button } from 'antd';
 import { connect } from 'umi';
 import AddIcon from '@/assets/policiesRegulations/add.svg';
@@ -6,25 +6,12 @@ import TableCatergories from './components/TableCategories';
 import AddCategoriesModal from './components/AddCategoriesModal';
 import styles from './index.less';
 
-@connect(
-  ({
-    loading,
-    policiesRegulations: { listCategory = [], countryList = [] } = {},
-    user: {
-      permissions = {},
-      currentUser: {
-        location: { headQuarterAddress: { country: { _id: countryID = '' } = {} } = {} } = {},
-      } = {},
-    },
-  }) => ({
-    loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
-    listCategory,
-    countryList,
-    countryID,
-    permissions,
-  }),
-)
-class Categories extends Component {
+@connect(({ loading, policiesRegulations: { listCategory = [], countryList = [] } = {} }) => ({
+  loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
+  listCategory,
+  countryList,
+}))
+class Categories extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,33 +19,31 @@ class Categories extends Component {
     };
   }
 
-  // componentDidMount() {
-  //   const { dispatch, countryID = '', permissions = {}, countryList = [] } = this.props;
-  //   const viewAllCountry = permissions.viewPolicyAllCountry !== -1;
-  //   if (countryList.length > 0) {
-  //     let countryArr = [];
-  //     if (viewAllCountry) {
-  //       countryArr = countryList.map((item) => {
-  //         return item.headQuarterAddress.country;
-  //       });
-  //       const newArr = this.removeDuplicate(countryArr, (item) => item._id);
-  //       countryArr = newArr.map((val) => val._id);
-  //       dispatch({
-  //         type: 'policiesRegulations/fetchListCategory',
-  //         payload: {
-  //           country: countryArr,
-  //         },
-  //       });
-  //     } else {
-  //       dispatch({
-  //         type: 'policiesRegulations/fetchListCategory',
-  //         payload: {
-  //           country: [countryID],
-  //         },
-  //       });
-  //     }
-  //   }
-  // }
+  componentDidMount() {
+    this.fetchCateogryList();
+  }
+
+  fetchCateogryList = () => {
+    const { dispatch, countryList = [] } = this.props;
+    if (countryList.length > 0) {
+      let countryArr = [];
+      countryArr = countryList.map((item) => {
+        return item.headQuarterAddress.country;
+      });
+      const newArr = this.removeDuplicate(countryArr, (item) => item._id);
+      countryArr = newArr.map((val) => val._id);
+      dispatch({
+        type: 'policiesRegulations/fetchListCategory',
+        payload: {
+          country: countryArr,
+        },
+      });
+    }
+  };
+
+  removeDuplicate = (array, key) => {
+    return [...new Map(array.map((x) => [key(x), x])).values()];
+  };
 
   render() {
     const { addCategoriesModal } = this.state;
@@ -75,7 +60,7 @@ class Categories extends Component {
             </Button>
           </div>
           <AddCategoriesModal
-            onRefresh={this.fetchPolicyRegulationList}
+            onRefresh={this.fetchCateogryList}
             visible={addCategoriesModal}
             onClose={() => this.setState({ addCategoriesModal: false })}
             mode="multiple"

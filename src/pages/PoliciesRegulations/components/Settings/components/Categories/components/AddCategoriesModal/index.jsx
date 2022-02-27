@@ -23,7 +23,7 @@ class AddCategoriesModal extends Component {
   };
 
   handleFinish = ({ category }) => {
-    const { onClose = () => {} } = this.props;
+    const { onClose = () => {}, onRefresh = () => {} } = this.props;
     const { dispatch } = this.props;
     dispatch({
       type: 'policiesRegulations/addCategory',
@@ -33,6 +33,7 @@ class AddCategoriesModal extends Component {
     }).then((response) => {
       const { statusCode } = response;
       if (statusCode === 200) {
+        onRefresh();
         onClose();
       }
     });

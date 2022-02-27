@@ -194,7 +194,7 @@ class TablePolicy extends Component {
 
     const pagination = {
       position: ['bottomLeft'],
-      total: listPolicy.length,
+      total: selectedCountry ? listPolicy.length : [],
       showTotal: (total, range) => (
         <span>
           Showing{' '}

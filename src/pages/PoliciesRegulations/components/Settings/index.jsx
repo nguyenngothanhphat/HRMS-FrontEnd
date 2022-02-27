@@ -4,7 +4,7 @@ import { connect } from 'umi';
 import Regulations from './components/Regulations';
 import Categories from './components/Categories';
 import { PageContainer } from '@/layouts/layout/src';
-
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(
@@ -34,46 +34,29 @@ class Settings extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, countryID = '', permissions = {}, countryList = [] } = this.props;
-    const viewAllCountry = permissions.viewPolicyAllCountry !== -1;
-    if (countryList.length > 0) {
-      let countryArr = [];
-      if (viewAllCountry) {
-        countryArr = countryList.map((item) => {
-          return item.headQuarterAddress.country;
-        });
-        const newArr = this.removeDuplicate(countryArr, (item) => item._id);
-        countryArr = newArr.map((val) => val._id);
-        dispatch({
-          type: 'policiesRegulations/fetchListCategory',
-          payload: {
-            country: countryArr,
-          },
-        });
-      } else {
-        dispatch({
-          type: 'policiesRegulations/fetchListCategory',
-          payload: {
-            country: [countryID],
-          },
-        });
-      }
-    }
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'policiesRegulations/getCountryListByCompany',
+      payload: {
+        tenantIds: [getCurrentTenant()],
+        company: getCurrentCompany(),
+      },
+    });
   }
 
   handleChange = (key) => {
     this.setState({ content: key });
   };
 
-  render() {
-    const getContent = () => {
-      const { content } = this.state;
-      if (content === 'regulations') {
-        return <Regulations />;
-      }
-      return <Categories />;
-    };
+  getContent = () => {
+    const { content } = this.state;
+    if (content === 'regulations') {
+      return <Regulations />;
+    }
+    return <Categories />;
+  };
 
+  render() {
     return (
       <PageContainer>
         <Row className={styles.Settings}>
@@ -98,7 +81,7 @@ class Settings extends Component {
                   </div>
                 </Col>
 
-                <Col span={19}>{getContent()}</Col>
+                <Col span={19}>{this.getContent()}</Col>
               </Row>
             </div>
           </Col>

@@ -80,9 +80,11 @@ class Regulations extends Component {
   renderCountry = () => {
     const { countryList = [] } = this.props;
     let countryArr = [];
-    countryArr = countryList.map((item) => {
-      return item.headQuarterAddress.country;
-    });
+    if (countryList.length > 0) {
+      countryArr = countryList.map((item) => {
+        return item.headQuarterAddress.country;
+      });
+    }
     const newArr = this.removeDuplicate(countryArr, (item) => item._id);
 
     let flagUrl = '';
