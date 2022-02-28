@@ -37,7 +37,15 @@ class TicketDetailsForm extends Component {
       value: '',
       uploadedFileList: [],
       fileNameList: [],
+      arrayChats: [],
     };
+  }
+
+  componentDidMount() {
+    const { ticketDetail: { chats = [] } = {} } = this.props;
+    this.setState({
+      arrayChats: chats.reverse(),
+    });
   }
 
   onChange = ({ target: { value } }) => {
@@ -197,7 +205,7 @@ class TicketDetailsForm extends Component {
       employee_assignee: employeeAssignedTickets = '',
     } = ticketDetail;
 
-    const { fileNameList, loadingAddChat, value } = this.state;
+    const { fileNameList, loadingAddChat, value, arrayChats } = this.state;
 
     const getColor = () => {
       switch (priority) {
@@ -242,43 +250,6 @@ class TicketDetailsForm extends Component {
       }
       return '';
     };
-
-    const newChat = chats.reverse();
-
-    // const chatsLeft = chats.filter((chat) =>
-    //   chat.employee ? chat.employee._id !== employeeRaiseTickets : [],
-    // );
-
-    // const chatsRaise = chatsLeft.reverse();
-    // const chatsRight = chats.filter((chat) =>
-    //   chat.employee ? chat.employee._id === employeeRaiseTickets : [],
-    // );
-    // const chatsAssigne = chatsRight.reverse();
-
-    // const getAttachmentChatLeft = (val) => {
-    //   if (!isEmpty(val)) {
-    //     return val.map((e) => {
-    //       const attachmentSlice = () => {
-    //         if (e.attachmentName.length > 35) {
-    //           return `${e.attachmentName.substr(0, 8)}...${e.attachmentName.substr(
-    //             e.attachmentName.length - 6,
-    //             e.attachmentName.length,
-    //           )}`;
-    //         }
-    //         return e.attachmentName;
-    //       };
-    //       return (
-    //         <div key={e.attachment} className={styles.attachments__file}>
-    //           <a href={e.attachmentUrl} target="_blank" rel="noreferrer">
-    //             {attachmentSlice()}
-    //           </a>
-    //           <img className={styles.attachments__file__img} src={PDFIcon} alt="pdf" />
-    //         </div>
-    //       );
-    //     });
-    //   }
-    //   return '';
-    // };
 
     const getAttachmentChat = (val) => {
       if (!isEmpty(val)) {
@@ -498,7 +469,7 @@ class TicketDetailsForm extends Component {
             <Row>
               <Col span={24}>
                 <Timeline mode="alternate">
-                  {newChat.map((item) => {
+                  {arrayChats.map((item) => {
                     const {
                       employee: { generalInfo: { avatar = '' } = {}, id: employeeChatID = '' } = {},
                     } = item;
@@ -526,58 +497,6 @@ class TicketDetailsForm extends Component {
                     );
                   })}
                 </Timeline>
-                {/* <Timeline mode="right">
-                  {chatsAssigne.map((e) => {
-                    const { employee: { generalInfo: { avatar = '' } = {} } = {} } = e;
-                    return (
-                      <Timeline.Item
-                        dot={
-                          avatar !== '' ? (
-                            <Avatar size={40} className={styles.avatar} src={avatar} />
-                          ) : (
-                            <Avatar
-                              style={{ background: '#7A2CF9' }}
-                              size={40}
-                              icon={<UserOutlined />}
-                            />
-                          )
-                        }
-                      >
-                        <div>{e.title}</div>
-                        <div>{e.message}</div>
-                        <>
-                          {e.attachments ? <div>{getAttachmentChatRight(e.attachments)}</div> : ''}
-                        </>
-                        <div>{moment(e.createdAt).format('DD-MM-YYYY, hh:mm a')}</div>
-                      </Timeline.Item>
-                    );
-                  })}
-                </Timeline>
-              </Col>
-              <Col span={12}>
-                <Timeline mode="left">
-                  {chatsRaise.map((e) => {
-                    const { employee: { generalInfo: { avatar = '' } = {} } = {} } = e;
-                    return (
-                      <Timeline.Item
-                        dot={
-                          avatar !== '' ? (
-                            <Avatar size={40} className={styles.avatar} src={avatar} />
-                          ) : (
-                            <Avatar size={40} icon={<UserOutlined />} />
-                          )
-                        }
-                      >
-                        <div>{e.title}</div>
-                        <div>{e.message}</div>
-                        <>
-                          {e.attachments ? <div>{getAttachmentChatLeft(e.attachments)}</div> : ''}
-                        </>
-                        <div>{moment(e.createdAt).format('DD-MM-YYYY, hh:mm a')}</div>
-                      </Timeline.Item>
-                    );
-                  })}
-                </Timeline> */}
               </Col>
             </Row>
           </div>
