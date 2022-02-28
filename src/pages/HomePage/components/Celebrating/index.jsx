@@ -80,7 +80,7 @@ const Celebrating = (props) => {
   return (
     <div className={styles.Celebrating}>
       <p className={styles.titleText}>Lets celebrate</p>
-      <Card birthdayList={birthdayList} />
+      <Card birthdayList={birthdayList} refreshData={fetchBirthdayInWeekList} />
     </div>
   );
 };

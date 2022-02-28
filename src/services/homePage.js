@@ -77,3 +77,10 @@ export async function updateBannerPosition(data) {
   });
 }
 
+// BIRTHDAY LIKE & COMMENT
+export async function upsertBirthdayConversation(data) {
+  return request('/api/birthdayconversationtenant/upsert', {
+    method: 'POST',
+    data,
+});
+}
