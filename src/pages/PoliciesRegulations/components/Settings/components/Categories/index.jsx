@@ -22,11 +22,11 @@ class Categories extends PureComponent {
   componentDidUpdate(prevProps) {
     const { countryList = [] } = this.props;
     if (JSON.stringify(prevProps.countryList) !== JSON.stringify(countryList)) {
-      this.fetchCateogryList();
+      this.fetchCategoryList();
     }
   }
 
-  fetchCateogryList = () => {
+  fetchCategoryList = () => {
     const { dispatch, countryList = [] } = this.props;
     if (countryList.length > 0) {
       let countryArr = [];
