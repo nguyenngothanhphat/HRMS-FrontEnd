@@ -40,7 +40,6 @@ const CollapseInformation = (props) => {
   };
 
   const typeAList = typesOfCommonLeaves.filter((x) => x.defaultSettings?.type === TIMEOFF_TYPE.A);
-  console.log('🚀 ~ CollapseInformation ~ typeAList', typeAList);
 
   return (
     <div className={styles.CollapseInformation}>
