@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Modal, Row } from 'antd';
 import { connect } from 'umi';
-
 import styles from './index.less';
 
 @connect(({ loading, policiesRegulations: { listCategory = [] } = {} }) => ({
@@ -23,7 +22,7 @@ class AddCategoriesModal extends Component {
   };
 
   handleFinish = ({ category }) => {
-    const { onClose = () => {} } = this.props;
+    const { onClose = () => {}, onRefresh = () => {} } = this.props;
     const { dispatch } = this.props;
     dispatch({
       type: 'policiesRegulations/addCategory',
@@ -33,6 +32,7 @@ class AddCategoriesModal extends Component {
     }).then((response) => {
       const { statusCode } = response;
       if (statusCode === 200) {
+        onRefresh();
         onClose();
       }
     });
@@ -61,7 +61,9 @@ class AddCategoriesModal extends Component {
                     { required: true, message: 'Please enter the categories name' },
                     () => ({
                       validator(_, value) {
-                        const duplicate = listCategory.find((val) => val.name === value);
+                        const duplicate = listCategory.find(
+                          (val) => val.name.replace(/\s/g, '') === value.replace(/\s/g, ''),
+                        );
                         if (duplicate) {
                           return Promise.reject('Categories Name is exist ');
                         }

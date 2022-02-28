@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import styles from './index.less';
 
 const ViewTax = (props) => {
-  const { taxData, locationEmpl: { headQuarterAddress: { country = '' } = {} } = {} } = props;
+  const { taxData, locationProp: { headQuarterAddress: { country = '' } = {} } = {} } = props;
   const checkIndiaLocation = country === 'IN';
   const checkVietNamLocation = country === 'VN';
   const checkUSALocation = country === 'US';
@@ -53,9 +53,9 @@ const ViewTax = (props) => {
 export default connect(
   ({
     employeeProfile: {
-      originData: { employmentData: { location: locationEmpl = {} } = {} } = {},
+      originData: { employmentData: { location: locationProp = {} } = {} } = {},
     } = {},
   }) => ({
-    locationEmpl,
+    locationProp,
   }),
 )(ViewTax);

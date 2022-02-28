@@ -1,11 +1,30 @@
 import React, { Component } from 'react';
 import { Row, Col, Menu } from 'antd';
+import { connect } from 'umi';
 import Regulations from './components/Regulations';
 import Categories from './components/Categories';
 import { PageContainer } from '@/layouts/layout/src';
-
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
+@connect(
+  ({
+    loading,
+    policiesRegulations: { listCategory = [], countryList = [] } = {},
+    user: {
+      permissions = {},
+      currentUser: {
+        location: { headQuarterAddress: { country: { _id: countryID = '' } = {} } = {} } = {},
+      } = {},
+    },
+  }) => ({
+    loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
+    listCategory,
+    countryList,
+    countryID,
+    permissions,
+  }),
+)
 class Settings extends Component {
   constructor(props) {
     super(props);
@@ -14,19 +33,30 @@ class Settings extends Component {
     };
   }
 
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'policiesRegulations/getCountryListByCompany',
+      payload: {
+        tenantIds: [getCurrentTenant()],
+        company: getCurrentCompany(),
+      },
+    });
+  }
+
   handleChange = (key) => {
     this.setState({ content: key });
   };
 
-  render() {
-    const getContent = () => {
-      const { content } = this.state;
-      if (content === 'regulations') {
-        return <Regulations />;
-      }
-      return <Categories />;
-    };
+  getContent = () => {
+    const { content } = this.state;
+    if (content === 'regulations') {
+      return <Regulations />;
+    }
+    return <Categories />;
+  };
 
+  render() {
     return (
       <PageContainer>
         <Row className={styles.Settings}>
@@ -51,7 +81,7 @@ class Settings extends Component {
                   </div>
                 </Col>
 
-                <Col span={19}>{getContent()}</Col>
+                <Col span={19}>{this.getContent()}</Col>
               </Row>
             </div>
           </Col>

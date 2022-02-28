@@ -17,7 +17,7 @@ import styles from './index.less';
       idCurrentEmployee = '',
       originData: {
         generalData: generalDataOrigin = {},
-        employmentData: { location: locationEmpl = {} } = {},
+        employmentData: { location: locationProp = {} } = {},
         taxData = {},
       } = {},
       tempData: { generalData = {} } = {},
@@ -40,7 +40,7 @@ import styles from './index.less';
     tenantCurrentEmployee,
     documentCategories,
     companyCurrentEmployee,
-    locationEmpl,
+    locationProp,
   }),
 )
 class Edit extends PureComponent {
@@ -142,11 +142,12 @@ class Edit extends PureComponent {
   };
 
   handleSave = () => {
-    const { dispatch, locationEmpl: { headQuarterAddress: { country = '' } = {} } = {} } = this.props;
+    const { dispatch, locationProp: { headQuarterAddress: { country = '' } = {} } = {} } =
+      this.props;
     const payload = this.processDataChanges() || {};
     // const tenantId = localStorage.getItem('tenantId');
     const dataTempKept = this.processDataKept() || {};
-    if(country === 'IN') {
+    if (country === 'IN') {
       this.handleUpLoadAdhaarCard();
     }
     dispatch({
@@ -336,7 +337,7 @@ class Edit extends PureComponent {
       loadingAdhaarCard,
       // taxData = {},
       currentUser: { roles = [] },
-      locationEmpl: { headQuarterAddress: { country = '' } = {} } = {},
+      locationProp: { headQuarterAddress: { country = '' } = {} } = {},
     } = this.props;
     const {
       urlFile = '',

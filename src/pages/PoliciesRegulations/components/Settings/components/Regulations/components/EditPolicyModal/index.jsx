@@ -16,12 +16,19 @@ const { Option } = Select;
 @connect(
   ({
     loading,
-    policiesRegulations: { listCategory = [], listPolicy = [] } = {},
-    user: { currentUser: { employee = {} } = {} },
+    policiesRegulations: {
+      listCategory = [],
+      tempData: { listPolicy = [] },
+      originData: { selectedCountry = '' },
+    } = {},
+    user: {
+      currentUser: { employee: { generalInfo: { _id: generalInfoId = '' } = {} } = {} } = {},
+    },
   }) => ({
     listCategory,
     listPolicy,
-    employee,
+    selectedCountry,
+    generalInfoId,
     loadingUploadAttachment: loading.effects['policiesRegulations/uploadFileAttachments'],
     loadingUpdate: loading.effects['policiesRegulations/updatePolicy'],
   }),
@@ -34,7 +41,7 @@ class EditPolicyModal extends Component {
     this.state = {
       uploadedFile: {},
       fileName: '',
-      idCategory: '',
+      flag: false,
     };
   }
 
@@ -110,6 +117,7 @@ class EditPolicyModal extends Component {
   handleDeleteFileName = () => {
     const { onDelete = () => {} } = this.props;
     onDelete();
+    this.setState({ flag: true });
   };
 
   handleCancel = () => {
@@ -119,15 +127,16 @@ class EditPolicyModal extends Component {
     onClose();
   };
 
-  onFinish = async ({ namePolicies }) => {
+  onFinish = ({ namePolicy = '', categoryPolicy = '' }) => {
     const {
       dispatch,
-      item: { _id: id = '', category = [], attachment: attachmentProps = [] } = {},
-      employee: { _id = '' } = {},
+      item: { _id: id = '', attachment: attachmentProps = [] } = {},
+      generalInfoId = '',
       onClose = () => {},
+      onRefresh = () => {},
+      selectedCountry = '',
     } = this.props;
-    const categoryID = !isEmpty(category) ? category[0]._id : '  ';
-    const { uploadedFile = {}, idCategory, fileName } = this.state;
+    const { uploadedFile = {}, flag } = this.state;
     const attachment = {
       id: uploadedFile.id,
       name: uploadedFile.name,
@@ -136,34 +145,33 @@ class EditPolicyModal extends Component {
 
     const payload = {
       id,
-      employee: _id,
-      categoryPolicy: idCategory === '' ? categoryID : idCategory,
-      namePolicy: namePolicies,
-      attachment: fileName === '' ? attachmentProps : attachment,
+      employee: generalInfoId,
+      categoryPolicy,
+      namePolicy,
+      attachment: !flag ? attachmentProps : attachment,
+      country: [selectedCountry],
     };
-    if (Object.keys(uploadedFile).length === 0 && Object.keys(attachmentProps).length !== 0) {
+
+    const updatePolicyRegulation = () => {
       dispatch({
         type: 'policiesRegulations/updatePolicy',
         payload,
       }).then((response) => {
         const { statusCode } = response;
         if (statusCode === 200) {
+          onRefresh(selectedCountry);
           onClose();
         }
       });
+      this.setState({ uploadedFile: {}, fileName: '', flag: false });
+    };
+
+    if (!flag) {
+      updatePolicyRegulation();
     } else if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
       message.error('Invalid file');
     } else {
-      dispatch({
-        type: 'policiesRegulations/updatePolicy',
-        payload,
-      }).then((response) => {
-        const { statusCode } = response;
-        if (statusCode === 200) {
-          onClose();
-        }
-      });
-      this.setState({ uploadedFile: {}, fileName: '' });
+      updatePolicyRegulation();
     }
   };
 
@@ -172,11 +180,8 @@ class EditPolicyModal extends Component {
     const { loadingUploadAttachment, loadingUpdate, listPolicy = [] } = this.props;
     const { fileName = '' } = this.state;
     const { namePolicy = '', category = [] } = item;
-    const categoryName = !isEmpty(category) ? category[0].name : '  ';
     const categoryID = !isEmpty(category) ? category[0]._id : '  ';
-    const onPolicyCategories = (value) => {
-      this.setState({ idCategory: value });
-    };
+
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>
@@ -190,8 +195,8 @@ class EditPolicyModal extends Component {
           <Form
             name="basic"
             initialValues={{
-              namePolicies: namePolicy,
-              categoryPolicy: categoryName,
+              namePolicy,
+              categoryPolicy: categoryID,
             }}
             id="addForm"
             ref={this.formRef}
@@ -204,11 +209,9 @@ class EditPolicyModal extends Component {
               labelCol={{ span: 24 }}
             >
               <Select
-                defaultValue={categoryID}
                 showSearch
                 filterOption={(input, option) =>
                   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                onChange={() => onPolicyCategories(categoryID)}
               >
                 {listCategory.map((val) => (
                   <Option value={val._id}>{val.name}</Option>
@@ -218,7 +221,7 @@ class EditPolicyModal extends Component {
 
             <Form.Item
               label="Policy Name"
-              name="namePolicies"
+              name="namePolicy"
               labelCol={{ span: 24 }}
               rules={[
                 { required: true, message: 'Please enter policy name' },
@@ -339,6 +342,7 @@ class EditPolicyModal extends Component {
                 key="submit"
                 htmlType="submit"
                 loading={loadingUpdate}
+                disabled={!!loadingUploadAttachment}
               >
                 Save Changes
               </Button>

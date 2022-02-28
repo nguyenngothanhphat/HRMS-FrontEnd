@@ -17,15 +17,17 @@ const { Option } = Select;
     loading,
     policiesRegulations: {
       listCategory = [],
-      listPolicy = [],
-      tempData: { selectedCountry = '' },
+      tempData: { listPolicy = [] },
+      originData: { selectedCountry = '' },
     } = {},
-    user: { currentUser: { employee = {} } = {} },
+    user: {
+      currentUser: { employee: { generalInfo: { _id: generalInfoId = '' } = {} } = {} } = {},
+    },
   }) => ({
     listCategory,
     selectedCountry,
     listPolicy,
-    employee,
+    generalInfoId,
     loadingUploadAttachment: loading.effects['policiesRegulations/uploadFileAttachments'],
     loadingAdd: loading.effects['policiesRegulations/addPolicy'],
   }),
@@ -127,8 +129,9 @@ class AddPolicyModal extends Component {
   onFinish = async ({ categoryPolicy, namePolicies }) => {
     const {
       dispatch,
-      employee: { _id = '' } = {},
+      generalInfoId = '',
       onClose = () => {},
+      onRefresh = () => {},
       selectedCountry = '',
     } = this.props;
     const { uploadedFile = {} } = this.state;
@@ -139,30 +142,31 @@ class AddPolicyModal extends Component {
     };
 
     const payload = {
-      employee: _id,
+      employee: generalInfoId,
       categoryPolicy,
       namePolicy: namePolicies,
       attachment,
-      country: selectedCountry,
+      country: [selectedCountry],
       location: getCurrentLocation(),
       company: getCurrentCompany(),
     };
+
     if (!selectedCountry) {
       message.error('Please select country');
-      if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
-        message.error('Invalid file');
-      } else {
-        dispatch({
-          type: 'policiesRegulations/addPolicy',
-          payload,
-        }).then((response) => {
-          const { statusCode } = response;
-          if (statusCode === 200) {
-            onClose();
-          }
-        });
-        this.setState({ uploadedFile: {}, fileName: '' });
-      }
+    } else if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
+      message.error('Invalid file');
+    } else {
+      dispatch({
+        type: 'policiesRegulations/addPolicy',
+        payload,
+      }).then((response) => {
+        const { statusCode } = response;
+        if (statusCode === 200) {
+          onRefresh(selectedCountry);
+          onClose();
+        }
+      });
+      this.setState({ uploadedFile: {}, fileName: '' });
     }
   };
 
@@ -171,6 +175,7 @@ class AddPolicyModal extends Component {
     const { loadingUploadAttachment, loadingAdd, listCategory = [], listPolicy = [] } = this.props;
     const { fileName = '' } = this.state;
     const onPolicyCategories = () => {};
+
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>
@@ -178,6 +183,7 @@ class AddPolicyModal extends Component {
         </div>
       );
     };
+
     const renderModalContent = () => {
       return (
         <div className={styles.content}>
@@ -210,7 +216,9 @@ class AddPolicyModal extends Component {
                 { required: true, message: 'Please enter Policy Name' },
                 () => ({
                   validator(_, value) {
-                    const duplicate = listPolicy.find((val) => val.namePolicy === value);
+                    const duplicate = listPolicy.find(
+                      (val) => val.namePolicy.replace(/\s/g, '') === value.replace(/\s/g, ''),
+                    );
                     if (duplicate) {
                       return Promise.reject('Policy Name is exist ');
                     }
