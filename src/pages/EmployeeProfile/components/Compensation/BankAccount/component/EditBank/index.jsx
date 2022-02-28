@@ -11,7 +11,7 @@ const EditBank = (props) => {
     bankDataOrigin,
     loading,
     handleCancel = () => {},
-    locationEmpl: { headQuarterAddress: { country = '' } = {} } = {},
+    locationProp: { headQuarterAddress: { country = '' } = {} } = {},
   } = props;
   const checkIndiaLocation = country === 'IN';
   const checkVietNamLocation = country === 'VN';
@@ -322,7 +322,7 @@ export default connect(
       idCurrentEmployee = '',
       originData: {
         bankData: bankDataOrigin = [],
-        employmentData: { location: locationEmpl = {} } = {},
+        employmentData: { location: locationProp = {} } = {},
       } = {},
       tempData: { bankData = [] } = {},
       tenantCurrentEmployee = '',
@@ -333,6 +333,6 @@ export default connect(
     bankDataOrigin,
     bankData,
     tenantCurrentEmployee,
-    locationEmpl,
+    locationProp,
   }),
 )(EditBank);

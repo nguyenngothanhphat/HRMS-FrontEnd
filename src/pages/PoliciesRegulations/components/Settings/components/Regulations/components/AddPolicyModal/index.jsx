@@ -175,6 +175,7 @@ class AddPolicyModal extends Component {
     const { loadingUploadAttachment, loadingAdd, listCategory = [], listPolicy = [] } = this.props;
     const { fileName = '' } = this.state;
     const onPolicyCategories = () => {};
+
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>
@@ -182,6 +183,7 @@ class AddPolicyModal extends Component {
         </div>
       );
     };
+
     const renderModalContent = () => {
       return (
         <div className={styles.content}>
@@ -196,7 +198,8 @@ class AddPolicyModal extends Component {
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 onChange={onPolicyCategories}
               >
                 {listCategory.map((val) => (
@@ -213,7 +216,9 @@ class AddPolicyModal extends Component {
                 { required: true, message: 'Please enter Policy Name' },
                 () => ({
                   validator(_, value) {
-                    const duplicate = listPolicy.find((val) => val.namePolicy === value);
+                    const duplicate = listPolicy.find(
+                      (val) => val.namePolicy.replace(/\s/g, '') === value.replace(/\s/g, ''),
+                    );
                     if (duplicate) {
                       return Promise.reject('Policy Name is exist ');
                     }

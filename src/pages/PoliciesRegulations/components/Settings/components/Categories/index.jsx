@@ -19,8 +19,11 @@ class Categories extends PureComponent {
     };
   }
 
-  componentDidMount() {
-    this.fetchCateogryList();
+  componentDidUpdate(prevProps) {
+    const { countryList = [] } = this.props;
+    if (JSON.stringify(prevProps.countryList) !== JSON.stringify(countryList)) {
+      this.fetchCateogryList();
+    }
   }
 
   fetchCateogryList = () => {
@@ -47,6 +50,7 @@ class Categories extends PureComponent {
 
   render() {
     const { addCategoriesModal } = this.state;
+
     return (
       <div className={styles.containerCategory}>
         <div className={styles.headerCatergories}>

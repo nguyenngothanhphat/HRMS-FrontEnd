@@ -11,7 +11,7 @@ const EditTax = (props) => {
     taxDataOrigin,
     loading,
     handleCancel = () => {},
-    locationEmpl: { headQuarterAddress: { country = '' } = {} } = {},
+    locationProp: { headQuarterAddress: { country = '' } = {} } = {},
   } = props;
   const checkIndiaLocation = country === 'IN';
   const checkVietNamLocation = country === 'VN';
@@ -281,7 +281,7 @@ export default connect(
       idCurrentEmployee = '',
       originData: {
         taxData: taxDataOrigin = {},
-        employmentData: { location: locationEmpl = {} } = {},
+        employmentData: { location: locationProp = {} } = {},
       } = {},
       tempData: { taxData = {} } = {},
       tenantCurrentEmployee = '',
@@ -292,6 +292,6 @@ export default connect(
     taxDataOrigin,
     taxData,
     tenantCurrentEmployee,
-    locationEmpl,
+    locationProp,
   }),
 )(EditTax);
