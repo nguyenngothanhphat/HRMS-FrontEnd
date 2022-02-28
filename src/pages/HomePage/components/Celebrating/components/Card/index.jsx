@@ -57,13 +57,14 @@ const Card = (props) => {
 
   const onLikeClick = async (item) => {
     const { likesComments: { likes = [], comments = [] } = {} } = item;
+    const likedIds = likes.map((x) => x.employeeInfo?._id);
 
     const employeeId = employee?._id;
     if (!likes.includes(employeeId)) {
       const payload = {
         employee: item._id,
         year: moment().year(),
-        likes: [...likes, employeeId],
+        likes: [...likedIds, employeeId],
         comments,
       };
       const res = await upsertBirthdayConversationEffect(payload);
@@ -130,7 +131,7 @@ const Card = (props) => {
 
   const renderCard = (card) => {
     const { likesComments: { likes = [], comments = [] } = {} } = card;
-
+    const likedIds = likes.map((x) => x.employeeInfo?._id);
     return (
       <div className={styles.cardContainer}>
         <div className={styles.image}>
@@ -144,7 +145,9 @@ const Card = (props) => {
             <div className={styles.likes} onClick={() => onLikeClick(card)}>
               <img src={LikeIcon} alt="" />
               <span
-                style={likes.includes(employee?._id) ? { fontWeight: 500, color: '#2C6DF9' } : {}}
+                style={
+                  likedIds.includes(employee?._id) ? { fontWeight: 500, color: '#2C6DF9' } : {}
+                }
               >
                 {likes.length || 0} Likes
               </span>

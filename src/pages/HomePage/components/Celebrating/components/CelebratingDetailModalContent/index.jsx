@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import { Input, Button } from 'antd';
+import { Input, Button, Tooltip } from 'antd';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import styles from './index.less';
 import LikeIcon from '@/assets/homePage/like.svg';
@@ -23,6 +23,8 @@ const CelebratingDetailModalContent = (props) => {
 
   const [activeComments, setActiveComments] = useState([]);
   const [commentContent, setCommentContent] = useState('');
+
+  const likedIds = likes.map((x) => x.employeeInfo?._id);
 
   // functions
   const onViewProfileClick = (userId) => {
@@ -49,11 +51,11 @@ const CelebratingDetailModalContent = (props) => {
 
   const onLikeClick = async () => {
     const employeeId = employee?._id;
-    if (!likes.includes(employeeId)) {
+    if (!likedIds.includes(employeeId)) {
       const payload = {
         employee: item._id,
         year: moment().year(),
-        likes: [...likes, employeeId],
+        likes: [...likedIds, employeeId],
         comments,
       };
       const res = await upsertBirthdayConversationEffect(payload);
@@ -75,7 +77,7 @@ const CelebratingDetailModalContent = (props) => {
     const payload = {
       employee: item._id,
       year: moment().year(),
-      likes,
+      likes: likedIds,
       comments: [
         ...originalComments,
         {
@@ -162,12 +164,15 @@ const CelebratingDetailModalContent = (props) => {
   };
 
   const renderComment = (comment) => {
+    const { legalName = '' } = comment.employeeInfo?.generalInfoInfo;
     return (
       <div className={styles.comment}>
         <div className={styles.author} onClick={() => onViewProfile(comment.employeeInfo?._id)}>
           <img src={comment.employeeInfo?.generalInfoInfo?.avatar || MockAvatar} alt="" />
         </div>
+
         <div className={styles.content}>
+          <p className={styles.authorName}>{legalName}</p>
           <p>{comment.content}</p>
         </div>
       </div>
@@ -189,7 +194,7 @@ const CelebratingDetailModalContent = (props) => {
           <div className={styles.likes} onClick={onLikeClick}>
             <img src={LikeIcon} alt="" />
             <span
-              style={likes.includes(employee?._id) ? { fontWeight: 500, color: '#2C6DF9' } : {}}
+              style={likedIds.includes(employee?._id) ? { fontWeight: 500, color: '#2C6DF9' } : {}}
             >
               {likes.length || 0} Likes
             </span>
