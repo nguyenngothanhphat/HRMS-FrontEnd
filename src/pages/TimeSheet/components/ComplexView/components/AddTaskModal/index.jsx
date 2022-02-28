@@ -140,6 +140,13 @@ const AddTaskModal = (props) => {
       refreshData();
     }
   };
+  const requiredLabel = (text) => {
+    return (
+      <span>
+        {text} <span style={{ color: '#f04b37' }}>*</span>
+      </span>
+    );
+  };
 
   const renderFormList = () => {
     return (
@@ -152,7 +159,7 @@ const AddTaskModal = (props) => {
                 <Row gutter={[24, 0]} className={styles.belowPart}>
                   <Col xs={24} md={12}>
                     <Form.Item
-                      label="Project*"
+                      label={requiredLabel('Project')}
                       labelCol={{ span: 24 }}
                       rules={[{ required: true, message: 'Select a project' }]}
                       name={[name, 'projectId']}
@@ -164,7 +171,8 @@ const AddTaskModal = (props) => {
                         loading={loadingFetchProject}
                         disabled={loadingFetchProject}
                         filterOption={(input, option) =>
-                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                       >
                         {projectList.map((val) => (
                           <Option value={val.id}>{val.projectName}</Option>
@@ -174,7 +182,7 @@ const AddTaskModal = (props) => {
                   </Col>
                   <Col xs={24} md={12}>
                     <Form.Item
-                      label="Task*"
+                      label={requiredLabel('Task')}
                       labelCol={{ span: 24 }}
                       rules={[
                         {
@@ -199,7 +207,7 @@ const AddTaskModal = (props) => {
 
                   <Col xs={24} md={12}>
                     <Form.Item
-                      label="Start time*"
+                      label={requiredLabel('Start time')}
                       labelCol={{ span: 24 }}
                       rules={[{ required: true, message: 'Select start time' }]}
                       name={[name, 'startTime']}
@@ -211,7 +219,7 @@ const AddTaskModal = (props) => {
 
                   <Col xs={24} md={12}>
                     <Form.Item
-                      label="End time*"
+                      label={requiredLabel('End time')}
                       labelCol={{ span: 24 }}
                       rules={[{ required: true, message: 'Select end time' }]}
                       name={[name, 'endTime']}
@@ -223,7 +231,7 @@ const AddTaskModal = (props) => {
 
                   <Col xs={24}>
                     <Form.Item
-                      label="Description*"
+                      label={requiredLabel('Description')}
                       labelCol={{ span: 24 }}
                       rules={[{ required: true, message: 'Please enter Description' }]}
                       name={[name, 'notes']}
@@ -281,7 +289,7 @@ const AddTaskModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Please select Timesheet Period' }]}
-                label="Select Timesheet Period"
+                label={requiredLabel('Select Timesheet Period')}
                 name="date"
                 fieldKey="date"
                 labelCol={{ span: 24 }}
