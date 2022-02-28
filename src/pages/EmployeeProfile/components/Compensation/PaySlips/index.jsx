@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Dropdown, Menu, Button, Modal } from 'antd';
 import SmallDownArrow from '@/assets/smallDropdownGray.svg';
-import DownLoadIcon from '@/assets/employeeProfile/DownloadIcon.svg';
+import DownLoadIcon from '@/assets/employeeProfile/DownLoadIcon.svg';
 import PayDetail from '../CompensationSummary/component/PayDetail';
 import styles from './index.less';
 
