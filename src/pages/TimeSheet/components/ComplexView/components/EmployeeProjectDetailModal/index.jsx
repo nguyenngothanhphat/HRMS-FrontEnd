@@ -15,7 +15,7 @@ const EmployeeProjectDetailModal = (props) => {
     onClose = () => {},
     selectedEmployee: { employeeId = '', legalName = '' } = {},
     startDate = '',
-    endDate = ''
+    endDate = '',
   } = props;
 
   const { timeSheet: { myTimesheet = [] } = {}, loadingFetchMyTimesheet = false } = props;
@@ -42,7 +42,15 @@ const EmployeeProjectDetailModal = (props) => {
   const formatData = (data1) => {
     let result = [];
     data1.forEach((item) => {
-      result = [...result, ...item.timesheet];
+      result = [
+        ...result,
+        ...item.timesheet.map((x) => {
+          return {
+            ...x,
+            date: item.date,
+          };
+        }),
+      ];
     });
     return result;
   };
@@ -70,10 +78,7 @@ const EmployeeProjectDetailModal = (props) => {
   const renderModalContent = () => {
     return (
       <div className={styles.content}>
-        <Header
-          startDate={startDate}
-          endDate={endDate}
-        />
+        <Header startDate={startDate} endDate={endDate} />
         <ProjectTable list={data} loading={loadingFetchMyTimesheet} />
       </div>
     );

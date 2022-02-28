@@ -13,6 +13,7 @@ import Options from '@/pages/HomePage/components/Voting/components/Options';
 const Preview = (props) => {
   const {
     mode = '',
+    editing = false,
     formValues: {
       uploadFilesA = [],
       descriptionA = '',
@@ -55,6 +56,7 @@ const Preview = (props) => {
     // eslint-disable-next-line compat/compat
     Promise.all(
       arr.map((x) => {
+        if (x.url) return x.url;
         return toBase64(x.originFileObj);
       }),
     ).then((data) => {
@@ -63,7 +65,9 @@ const Preview = (props) => {
   };
 
   useEffect(() => {
-    if (uploadFilesA?.fileList && uploadFilesA.fileList.length > 0) {
+    if (editing && Array.isArray(uploadFilesA)) {
+      getBase64Arr(uploadFilesA, setAnnouncementContent);
+    } else if (uploadFilesA?.fileList && uploadFilesA.fileList.length > 0) {
       getBase64Arr(uploadFilesA.fileList, setAnnouncementContent);
     } else {
       setAnnouncementContent({
@@ -73,7 +77,9 @@ const Preview = (props) => {
   }, [JSON.stringify(uploadFilesA)]);
 
   useEffect(() => {
-    if (uploadFilesB?.fileList && uploadFilesB.fileList.length > 0) {
+    if (editing && Array.isArray(uploadFilesB)) {
+      getBase64Arr(uploadFilesB, setBirthdayContent);
+    } else if (uploadFilesB?.fileList && uploadFilesB.fileList.length > 0) {
       getBase64Arr(uploadFilesB.fileList, setBirthdayContent);
     } else {
       setBirthdayContent({
@@ -83,7 +89,9 @@ const Preview = (props) => {
   }, [JSON.stringify(uploadFilesB)]);
 
   useEffect(() => {
-    if (uploadFilesI?.fileList && uploadFilesI.fileList.length > 0) {
+    if (editing && Array.isArray(uploadFilesI)) {
+      getBase64Arr(uploadFilesI, setImagesContent);
+    } else if (uploadFilesI?.fileList && uploadFilesI.fileList.length > 0) {
       getBase64Arr(uploadFilesI.fileList, setImagesContent);
     } else {
       setImagesContent({
@@ -93,7 +101,9 @@ const Preview = (props) => {
   }, [JSON.stringify(uploadFilesI)]);
 
   useEffect(() => {
-    if (uploadFilesBN?.fileList && uploadFilesBN.fileList.length > 0) {
+    if (editing && Array.isArray(uploadFilesBN)) {
+      getBase64Arr(uploadFilesBN, setBannerContent);
+    } else if (uploadFilesBN?.fileList && uploadFilesBN.fileList.length > 0) {
       getBase64Arr(uploadFilesBN.fileList, setBannerContent);
     } else {
       setBannerContent({
@@ -106,18 +116,23 @@ const Preview = (props) => {
     const post = {
       id: 1,
       employee: {
-        generalInfo: {
+        generalInfoInfo: {
           legalName: 'Ronald Richards.',
           // avatar: TerralogicIcon,
         },
-        title: {
+        titleInfo: {
           name: 'Head of Design',
         },
       },
-      content: <p>{descriptionA ? Parser(descriptionA) : 'Description here'}</p>,
-      type: 2, // 1: link, 2: image
-      image:
-        announcementContent.imageUrls.length > 0 ? announcementContent.imageUrls[0] : PreviewImage,
+      attachments: [
+        {
+          url:
+            announcementContent.imageUrls.length > 0
+              ? announcementContent.imageUrls[0]
+              : PreviewImage,
+        },
+      ],
+      description: descriptionA || 'Description here',
     };
 
     switch (mode) {
@@ -128,7 +143,7 @@ const Preview = (props) => {
             <PostContent post={post} />
           </>
         );
-      case TAB_IDS.BIRTHDAY:
+      case TAB_IDS.ANNIVERSARY:
         return (
           <div style={{ padding: '24px' }}>
             <CelebratingCard
@@ -146,19 +161,35 @@ const Preview = (props) => {
           <div style={{ padding: '24px' }}>
             <GalleryCard
               previewing
+              // contentPreview={
+              //   imagesContent.imageUrls.length > 0
+              //     ? imagesContent.imageUrls.map((x) => {
+              //         return {
+              //           image: x,
+              //           description: descriptionI ? Parser(descriptionI) : '',
+              //           title: titleI || '',
+              //         };
+              //       })
+              //     : [
+              //         {
+              //           image: '',
+              //           description: descriptionI ? Parser(descriptionI) : 'Description',
+              //           title: titleI || 'Title',
+              //         },
+              //       ]
+              // }
               contentPreview={
                 imagesContent.imageUrls.length > 0
-                  ? imagesContent.imageUrls.map((x) => {
-                      return {
-                        image: x,
-                        content: descriptionI ? Parser(descriptionI) : '',
+                  ? [
+                      {
+                        attachments: [{ url: imagesContent.imageUrls[0] }],
+                        description: descriptionI ? Parser(descriptionI) : '',
                         title: titleI || '',
-                      };
-                    })
+                      },
+                    ]
                   : [
                       {
-                        image: '',
-                        content: descriptionI ? Parser(descriptionI) : 'Description',
+                        description: descriptionI ? Parser(descriptionI) : 'Description',
                         title: titleI || 'Title',
                       },
                     ]
@@ -173,7 +204,7 @@ const Preview = (props) => {
           // </div>
         );
 
-      case TAB_IDS.POLLS:
+      case TAB_IDS.POLL:
         return (
           <div style={{ padding: '24px' }}>
             <Options

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import moment from 'moment';
 import { Dropdown, Menu } from 'antd';
 import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
 import BarGraph from '@/pages/HomePage/components/Voting/components/BarGraph';
@@ -12,26 +13,73 @@ const TYPE = {
   PIE_CHART: 'Pie Chart',
 };
 
-const mockOptions = [
-  {
-    id: 1,
-    text: '🤩 Wayyy too excited, cannot wait!!',
-    percent: 54,
-  },
-  {
-    id: 2,
-    text: '😇 Ready for the change, I guess!',
-    percent: 42,
-  },
-  {
-    id: 3,
-    text: '🥱 Meh, want some more time',
-    percent: 4,
-  },
-];
+const ChartPreviewModalContent = (props) => {
+  const { pollDetail = {} } = props;
+  const [timeLeft, setTimeLeft] = useState('');
 
-const ChartPreviewModalContent = () => {
+  // redux
+  const { homePage: { pollResult = [] } = {} } = props;
+
   const [mode, setMode] = useState(TYPE.BAR_GRAPH);
+  const [options, setOptions] = useState([]);
+
+  const countVotes = () => {
+    if (pollResult) {
+      return pollResult.reduce((acc, obj) => {
+        return acc + obj.count;
+      }, 0);
+    }
+    return 0;
+  };
+
+  useEffect(() => {
+    const { endDate } = pollDetail;
+    if (endDate) {
+      moment.locale('en', {
+        relativeTime: {
+          future: '%s left',
+          past: 'Expired',
+          s: 'seconds',
+          ss: '%ss',
+          m: 'a minute',
+          mm: '%dm',
+          h: 'an hour',
+          hh: '%dh',
+          d: 'a day',
+          dd: '%dd',
+          M: 'a month',
+          MM: '%dM',
+          y: 'a year',
+          yy: '%dY',
+        },
+      });
+      const timeLeftTemp = moment(endDate).fromNow();
+      setTimeLeft(timeLeftTemp);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (Object.keys(pollDetail).length > 0) {
+      const temp = [
+        {
+          id: 'response1',
+          text: pollDetail.response1,
+          percent: pollResult.find((x) => x._id === 'response1')?.percent || 0,
+        },
+        {
+          id: 'response2',
+          text: pollDetail.response2,
+          percent: pollResult.find((x) => x._id === 'response2')?.percent || 0,
+        },
+        {
+          id: 'response3',
+          text: pollDetail.response3,
+          percent: pollResult.find((x) => x._id === 'response3')?.percent || 0,
+        },
+      ];
+      setOptions(temp);
+    }
+  }, [JSON.stringify(pollDetail), JSON.stringify(pollResult)]);
 
   const menu = (
     <Menu onClick={({ key }) => setMode(key)}>
@@ -41,8 +89,13 @@ const ChartPreviewModalContent = () => {
   );
 
   const renderResult = () => {
-    if (mode === TYPE.BAR_GRAPH) return <BarGraph options={mockOptions} showTitle={false} />;
-    return <PieChart options={mockOptions} showTitle={false} />;
+    if (mode === TYPE.BAR_GRAPH)
+      return (
+        <BarGraph options={options} showTitle={false} countVotes={countVotes} timeLeft={timeLeft} />
+      );
+    return (
+      <PieChart options={options} showTitle={false} countVotes={countVotes} timeLeft={timeLeft} />
+    );
   };
 
   return (
@@ -62,4 +115,4 @@ const ChartPreviewModalContent = () => {
     </div>
   );
 };
-export default connect(() => ({}))(ChartPreviewModalContent);
+export default connect(({ homePage }) => ({ homePage }))(ChartPreviewModalContent);

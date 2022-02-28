@@ -1,9 +1,9 @@
 export const TAB_IDS = {
-  ANNOUNCEMENTS: 'announcements',
-  BIRTHDAY: 'birthday',
-  IMAGES: 'images',
-  BANNER: 'banner',
-  POLLS: 'polls',
+  ANNOUNCEMENTS: 'ANNOUNCEMENTS',
+  ANNIVERSARY: 'ANNIVERSARY',
+  IMAGES: 'IMAGES',
+  BANNER: 'BANNER',
+  POLL: 'POLL',
 };
 
 export const test = '';

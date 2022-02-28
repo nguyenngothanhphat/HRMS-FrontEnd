@@ -1,14 +1,16 @@
-import React from 'react';
-import { Layout, Row, Col, Carousel } from 'antd';
-import styles from './TerralogicCandidateLoginLayout.less';
-import TerralogicLogo from '../assets/login/terralogic_logo.svg';
-import LollypopLogo from '../assets/login/lollypop_logo.svg';
-import LinkedInIcon from '../assets/login/linkedin.svg';
-import TwitterIcon from '../assets/login/twitter.svg';
+import { Carousel, Col, Layout, Row } from 'antd';
+import React, { useEffect } from 'react';
+import { history } from 'umi';
+import { IS_TERRALOGIC_CANDIDATE_LOGIN } from '@/utils/login';
 import InstagramIcon from '../assets/login/instagram.svg';
-import YoutubeIcon from '../assets/login/youtube.svg';
+import LinkedInIcon from '../assets/login/linkedin.svg';
+import LollypopLogo from '../assets/login/lollypop_logo.svg';
 import Image1 from '../assets/login/mock_up.svg';
+import TerralogicLogo from '../assets/login/terralogic_logo.svg';
+import TwitterIcon from '../assets/login/twitter.svg';
 import Image2 from '../assets/login/vr_man.svg';
+import YoutubeIcon from '../assets/login/youtube.svg';
+import styles from './TerralogicCandidateLoginLayout.less';
 
 const { Content } = Layout;
 
@@ -50,6 +52,12 @@ const slides = [
   },
 ];
 const TerralogicCandidateLoginLayout = ({ children }) => {
+  useEffect(() => {
+    if (!IS_TERRALOGIC_CANDIDATE_LOGIN) {
+      history.push('/');
+    }
+  }, []);
+
   const redirectToUrl = (url) => {
     window.open(url, '_blank');
   };

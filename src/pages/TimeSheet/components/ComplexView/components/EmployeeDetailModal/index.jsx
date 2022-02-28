@@ -17,6 +17,7 @@ const EmployeeDetailModal = (props) => {
   } = props;
 
   const [data, setData] = useState();
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   useEffect(() => {
     const find = dataSource.find((x) => x.id === employeeId);
@@ -35,6 +36,11 @@ const EmployeeDetailModal = (props) => {
     );
   };
 
+  const getSelectedData = () => {
+    const newData = data?.userDetail.filter((el) => selectedRowKeys.includes(el.date));
+    return newData;
+  };
+
   const processData = (array) => {
     return array.map((item) => {
       const { date = '', inTime = '', leave = '', notes = '', outTime = '' } = item;
@@ -49,16 +55,28 @@ const EmployeeDetailModal = (props) => {
   };
 
   const downloadTemplate = () => {
-    exportToCSV(processData(data?.userDetail || []), 'ProjectDetailData.xlsx');
+    const result = getSelectedData();
+    exportToCSV(processData(result), 'EmployeeDetailslData.xlsx');
   };
 
   const renderModalContent = () => {
     return (
       <div className={styles.content}>
         <Information data={data} />
-        <TaskTable list={data?.userDetail || []} />
+        <TaskTable
+          list={data?.userDetail || []}
+          selectedRowKeys={selectedRowKeys}
+          setSelectedRowKeys={setSelectedRowKeys}
+        />
       </div>
     );
+  };
+
+  const disabledBtn = () => {
+    if (selectedRowKeys.length < 1 || selectedRowKeys === undefined) {
+      return true;
+    }
+    return false;
   };
 
   return (
@@ -75,6 +93,7 @@ const EmployeeDetailModal = (props) => {
               type="primary"
               onClick={downloadTemplate}
               icon={<img src={WhiteDownloadIcon} alt="" />}
+              disabled={disabledBtn()}
             >
               Download
             </Button>

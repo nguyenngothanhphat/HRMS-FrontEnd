@@ -8,7 +8,6 @@ import styles from './index.less';
 const Footer = (props) => {
   const { selectedEmployees = [], data = [] } = props;
 
-  // update type when there are api
   const getSelectedData = () => {
     const newData = data.filter((el) => selectedEmployees.includes(el.id));
     return newData;
@@ -22,6 +21,9 @@ const Footer = (props) => {
         project = [],
         userSpentInDay = 0,
         userSpentInHours = 0,
+        totalLeave = '',
+        totalWorkingDay = '',
+        totalWorkingDayInHours = '',
         department: { name = '' } = {},
       } = item;
       let projectName = '';
@@ -33,9 +35,9 @@ const Footer = (props) => {
         Employee: legalName,
         Department: name,
         Project: projectName,
-        'Working Days': userSpentInDay,
-        'Leave Taken ': leaveTaken,
-        'Total Hours': userSpentInHours,
+        'Working Days': `${userSpentInDay}/${totalWorkingDay} ( ${totalWorkingDayInHours} hours) `,
+        'Leave Taken ': `${leaveTaken}/${totalLeave}`,
+        'Total Hours': `${userSpentInHours} hours`,
       };
     });
   };

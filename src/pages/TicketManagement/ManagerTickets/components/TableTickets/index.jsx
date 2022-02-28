@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
 
-import { Table, Dropdown, Menu, Input } from 'antd';
+import { Table, Dropdown, Menu, Input, Empty } from 'antd';
 import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 
 import moment from 'moment';
 import { history, connect } from 'umi';
+import { isEmpty } from 'lodash';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 
 import styles from './index.less';
@@ -130,8 +131,6 @@ class TableTickets extends PureComponent {
     } else {
       filterData = listEmployee;
     }
-    // const { visible } = this.state;
-
     const columns = [
       {
         title: 'Ticket ID',
@@ -244,9 +243,10 @@ class TableTickets extends PureComponent {
                   </div>
                   <Menu.Divider />
                   <div style={{ overflowY: 'scroll', maxHeight: '200px' }}>
-                    {filterData.map((val) => {
-                      const departmentID = val.department._id;
-                      if (departmentID === employeeAssignee.department_assign) {
+                    {!isEmpty(filterData) ? (
+                      filterData.map((val) => {
+                        // const departmentID = val.department._id;
+                        // if (departmentID === employeeAssignee.department_assign) {
                         return (
                           <Menu.Item
                             onClick={() => this.handleSelectChange(val._id)}
@@ -256,8 +256,12 @@ class TableTickets extends PureComponent {
                             {val.generalInfo.legalName}
                           </Menu.Item>
                         );
-                      }
-                    })}
+                      })
+                    ) : (
+                      <Menu.Item>
+                        <Empty />
+                      </Menu.Item>
+                    )}
                   </div>
                 </Menu>
               }

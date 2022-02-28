@@ -7,17 +7,7 @@ const { Option } = Select;
 
 class LeaveTimeRow extends PureComponent {
   render() {
-    const { eachDate = '', index = 0, needValidate, findInvalidHalfOfDay = () => {} } = this.props;
-
-    let disableMorning = false;
-    let disableAfternoon = false;
-
-    if (findInvalidHalfOfDay(eachDate) === 'MORNING') {
-      disableMorning = true;
-    }
-    if (findInvalidHalfOfDay(eachDate) === 'AFTERNOON') {
-      disableAfternoon = true;
-    }
+    const { eachDate = '', index = 0, needValidate } = this.props;
 
     return (
       <>
@@ -36,14 +26,14 @@ class LeaveTimeRow extends PureComponent {
                   },
                 ]}
               >
-                <Select placeholder="">
-                  <Option value="WHOLE-DAY" disabled={disableMorning || disableAfternoon}>
+                <Select>
+                  <Option value="WHOLE-DAY">
                     <span style={{ fontSize: 13 }}>Whole day</span>
                   </Option>
-                  <Option value="MORNING" disabled={disableMorning}>
+                  <Option value="MORNING">
                     <span style={{ fontSize: 13 }}>Morning</span>
                   </Option>
-                  <Option value="AFTERNOON" disabled={disableAfternoon}>
+                  <Option value="AFTERNOON">
                     <span style={{ fontSize: 13 }}>Afternoon</span>
                   </Option>
                 </Select>

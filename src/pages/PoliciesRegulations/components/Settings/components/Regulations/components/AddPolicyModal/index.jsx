@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Form, Input, Modal, message, Spin, Upload, Tooltip, Select } from 'antd';
-
 import { connect } from 'umi';
+import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
 
 import TrashIcon from '@/assets/policiesRegulations/delete.svg';
 import UploadIcon from '@/assets/policiesRegulations/upload.svg';
@@ -15,10 +15,15 @@ const { Option } = Select;
 @connect(
   ({
     loading,
-    policiesRegulations: { listCategory = [], listPolicy = [] } = {},
+    policiesRegulations: {
+      listCategory = [],
+      listPolicy = [],
+      tempData: { selectedCountry = '' },
+    } = {},
     user: { currentUser: { employee = {} } = {} },
   }) => ({
     listCategory,
+    selectedCountry,
     listPolicy,
     employee,
     loadingUploadAttachment: loading.effects['policiesRegulations/uploadFileAttachments'],
@@ -120,7 +125,12 @@ class AddPolicyModal extends Component {
   };
 
   onFinish = async ({ categoryPolicy, namePolicies }) => {
-    const { dispatch, employee: { _id = '' } = {}, onClose = () => {} } = this.props;
+    const {
+      dispatch,
+      employee: { _id = '' } = {},
+      onClose = () => {},
+      selectedCountry = '',
+    } = this.props;
     const { uploadedFile = {} } = this.state;
     const attachment = {
       id: uploadedFile.id,
@@ -133,21 +143,26 @@ class AddPolicyModal extends Component {
       categoryPolicy,
       namePolicy: namePolicies,
       attachment,
+      country: selectedCountry,
+      location: getCurrentLocation(),
+      company: getCurrentCompany(),
     };
-
-    if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
-      message.error('Invalid file');
-    } else {
-      dispatch({
-        type: 'policiesRegulations/addPolicy',
-        payload,
-      }).then((response) => {
-        const { statusCode } = response;
-        if (statusCode === 200) {
-          onClose();
-        }
-      });
-      this.setState({ uploadedFile: {}, fileName: '' });
+    if (!selectedCountry) {
+      message.error('Please select country');
+      if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
+        message.error('Invalid file');
+      } else {
+        dispatch({
+          type: 'policiesRegulations/addPolicy',
+          payload,
+        }).then((response) => {
+          const { statusCode } = response;
+          if (statusCode === 200) {
+            onClose();
+          }
+        });
+        this.setState({ uploadedFile: {}, fileName: '' });
+      }
     }
   };
 
@@ -177,7 +192,8 @@ class AddPolicyModal extends Component {
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 onChange={onPolicyCategories}
               >
                 {listCategory.map((val) => (

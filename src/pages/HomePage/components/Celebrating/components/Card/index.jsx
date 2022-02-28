@@ -45,7 +45,6 @@ const Card = (props) => {
   };
 
   const renderEmployeeName = (data) => {
-    const { generalInfoInfo = {} } = data;
     return (
       <UserProfilePopover
         placement="left"
@@ -58,7 +57,7 @@ const Card = (props) => {
           className={styles.employeeName}
           onClick={() => onViewProfileClick(data?.generalInfoInfo?.userId)}
         >
-          {generalInfoInfo.legalName}
+          {data?.generalInfoInfo.legalName}
         </span>
       </UserProfilePopover>
     );
@@ -102,7 +101,7 @@ const Card = (props) => {
           <p className={styles.caption}>{renderBirthdayContent(card)}</p>
 
           {/* HIDE - NOT AVAILABLE YET  */}
-          {/* <div className={styles.actions}>
+          <div className={styles.actions}>
             <div className={styles.likes}>
               <img src={LikeIcon} alt="" />
               <span>{card.likes || 0} Likes</span>
@@ -117,7 +116,7 @@ const Card = (props) => {
               <img src={CommentIcon} alt="" />
               <span>{card.comments || 0} Comments</span>
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
     );
@@ -180,8 +179,7 @@ const Card = (props) => {
   );
 };
 
-export default connect(({ dashboard, user: { currentUser = {}, permissions = {} } = {} }) => ({
+export default connect(({ user: { currentUser = {}, permissions = {} } = {} }) => ({
   currentUser,
   permissions,
-  dashboard,
 }))(Card);

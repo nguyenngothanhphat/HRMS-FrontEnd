@@ -22,18 +22,36 @@ const Card = (props) => {
     previewing = false,
     contentPreview = [],
   } = props;
+
   const renderCard = (card) => {
+    const { attachments = [], description = '', title = '' } = card;
+    const [firstImage] = attachments;
     return (
       <div className={styles.cardContainer}>
         <div className={styles.image}>
-          <img src={card.image || SampleImage} alt="" />
+          <img src={firstImage?.url || SampleImage} alt="" />
         </div>
         <div className={styles.content}>
-          <p className={styles.title}>{card.title}</p>
-          <p className={styles.caption}>{card.content}</p>
+          <p className={styles.title}>{title}</p>
+          <p className={styles.caption}>{description}</p>
         </div>
       </div>
     );
+  };
+
+  const renderData = () => {
+    if (!previewing) {
+      if (data.length === 0) {
+        const emptyCard = {
+          attachments: [],
+          description: 'No events',
+          title: '',
+        };
+        return renderCard(emptyCard);
+      }
+      return data.map((x) => renderCard(x));
+    }
+    return contentPreview.map((x) => renderCard(x));
   };
 
   return (
@@ -48,7 +66,7 @@ const Card = (props) => {
         nextArrow={<NextArrow />}
         prevArrow={<PrevArrow />}
       >
-        {!previewing ? data.map((x) => renderCard(x)) : contentPreview.map((x) => renderCard(x))}
+        {renderData()}
       </Carousel>
     </div>
   );

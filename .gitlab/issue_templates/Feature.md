@@ -17,4 +17,4 @@ Dependencies (if any) -
 
 
 /label ~feature
-/cc @aashwij @khang.le
+/cc @aashwij @khang.le @thang.nguyen
