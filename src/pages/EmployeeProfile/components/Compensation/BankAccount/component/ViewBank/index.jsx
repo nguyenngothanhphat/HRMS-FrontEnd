@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import styles from './index.less';
 
 const ViewBank = (props) => {
-  const { bankData, locationEmpl: { headQuarterAddress: { country = '' } = {} } = {} } = props;
+  const { bankData, locationProp: { headQuarterAddress: { country = '' } = {} } = {} } = props;
   const checkIndiaLocation = country === 'IN';
   const checkVietNamLocation = country === 'VN';
   const checkUSALocation = country === 'US';
@@ -70,9 +70,9 @@ const ViewBank = (props) => {
 export default connect(
   ({
     employeeProfile: {
-      originData: { employmentData: { location: locationEmpl = {} } = {} } = {},
+      originData: { employmentData: { location: locationProp = {} } = {} } = {},
     } = {},
   }) => ({
-    locationEmpl,
+    locationProp,
   }),
 )(ViewBank);

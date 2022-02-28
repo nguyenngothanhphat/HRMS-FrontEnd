@@ -1,18 +1,16 @@
 import React, { Component } from 'react';
 import { Table, Button } from 'antd';
 import { connect } from 'umi';
-
 import EditIcon from '@/assets/policiesRegulations/edit.svg';
 import DeleteIcon from '@/assets/policiesRegulations/delete.svg';
-
 import EditCategoriesModal from './components/EditCategoriesModal';
 import DeleteCategoriesModal from './components/DeleteCategoriesModal';
-
 import styles from './index.less';
 
-@connect(({ loading, policiesRegulations: { listCategory = [] } = {} }) => ({
+@connect(({ loading, policiesRegulations: { listCategory = [], countryList = [] } = {} }) => ({
   loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
   listCategory,
+  countryList,
 }))
 class TableCatergory extends Component {
   constructor(props) {
@@ -32,6 +30,28 @@ class TableCatergory extends Component {
   handleDeleteCategories = (value) => {
     this.setState({ deleteCategoriesModal: true });
     this.setState({ item: value });
+  };
+
+  fetchCategoryList = () => {
+    const { dispatch, countryList = [] } = this.props;
+    if (countryList.length > 0) {
+      let countryArr = [];
+      countryArr = countryList.map((item) => {
+        return item.headQuarterAddress.country;
+      });
+      const newArr = this.removeDuplicate(countryArr, (item) => item._id);
+      countryArr = newArr.map((val) => val._id);
+      dispatch({
+        type: 'policiesRegulations/fetchListCategory',
+        payload: {
+          country: countryArr,
+        },
+      });
+    }
+  };
+
+  removeDuplicate = (array, key) => {
+    return [...new Map(array.map((x) => [key(x), x])).values()];
   };
 
   render() {
@@ -82,12 +102,14 @@ class TableCatergory extends Component {
         <Table columns={columns} dataSource={listCategory} loading={loadingGetList} />
         <EditCategoriesModal
           visible={editCategoriesModal}
+          onRefresh={this.fetchCategoryList}
           onClose={() => this.setState({ editCategoriesModal: false })}
           mode="multiple"
           item={item}
         />
         <DeleteCategoriesModal
           visible={deleteCategoriesModal}
+          onRefresh={this.fetchCategoryList}
           onClose={() => this.setState({ deleteCategoriesModal: false })}
           mode="multiple"
           item={item}

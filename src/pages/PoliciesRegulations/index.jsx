@@ -6,18 +6,15 @@ import { PageContainer } from '@/layouts/layout/src';
 import Polices from './components/Policies';
 import styles from './index.less';
 
-const HR_MANAGER = 'HR-MANAGER';
-@connect(({ user: { currentUser = {} } = {} }) => ({
-  currentUser,
+@connect(({ user: { permissions = {} } = {} }) => ({
+  permissions,
 }))
 class PoliciesRegulations extends PureComponent {
   componentDidMount() {}
 
   render() {
-    const {
-      currentUser: { roles = [] },
-    } = this.props;
-    const checkRoleHrAndManager = roles.includes(HR_MANAGER);
+    const { permissions = {} } = this.props;
+    const viewSetting = permissions.viewSettingPolicy !== -1;
     return (
       <PageContainer>
         <Row className={styles.PoliciesRegulations}>
@@ -25,7 +22,7 @@ class PoliciesRegulations extends PureComponent {
             <div className={styles.header}>
               <div className={styles.header__left}>Policies</div>
               <div className={styles.header__right}>
-                {checkRoleHrAndManager ? (
+                {viewSetting ? (
                   <Button>
                     <Link to="/policies-regulations/settings">
                       <span className={styles.buttonSetting__text}>Settings</span>
