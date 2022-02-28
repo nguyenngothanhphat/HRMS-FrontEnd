@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { Button, Modal } from 'antd';
-// import { connect } from 'umi';
 import styles from './index.less';
 
-class DeleteQuestionAnswer extends Component {
+class AddQuestionAnswer extends Component {
   formRef = React.createRef();
 
   constructor(props) {
     super(props);
-
     this.state = {};
   }
 
@@ -17,27 +15,18 @@ class DeleteQuestionAnswer extends Component {
     onClose();
   };
 
-  //   handleFinish = () => {
-  //     const { dispatch, onClose = () => {}, item: { _id: id = '' } = {} } = this.props;
-  //     dispatch({
-  //       type: 'policiesRegulations/deleteCategory',
-  //       payload: {
-  //         id,
-  //       },
-  //     }).then((response) => {
-  //       const { statusCode } = response;
-  //       if (statusCode === 200) {
-  //         onClose();
-  //       }
-  //     });
-  //   };
-
   render() {
-    const { visible, loadingDelete, item: { question = '' } = {} } = this.props;
+    const {
+      loading,
+      visible,
+      headerName = '',
+      acctionName = '',
+      modalContent = () => {},
+    } = this.props;
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>
-          <p className={styles.header__text}>Delete Question</p>
+          <p className={styles.header__text}>{headerName}</p>
         </div>
       );
     };
@@ -45,7 +34,7 @@ class DeleteQuestionAnswer extends Component {
     return (
       <>
         <Modal
-          className={`${styles.DeleteQuestionAnswer} ${styles.noPadding}`}
+          className={`${styles.CommonModalFAQ} ${styles.noPadding}`}
           onCancel={this.handleCancel}
           destroyOnClose
           width={696}
@@ -59,11 +48,10 @@ class DeleteQuestionAnswer extends Component {
                 type="primary"
                 form="addForm"
                 key="submit"
-                onClick={this.handleFinish}
                 htmlType="submit"
-                loading={loadingDelete}
+                loading={loading}
               >
-                Yes, Delete
+                {acctionName}
               </Button>
             </>
           }
@@ -71,11 +59,11 @@ class DeleteQuestionAnswer extends Component {
           centered
           visible={visible}
         >
-          Are you sure you want to delete the item <strong>{question}</strong>?
+          {modalContent}
         </Modal>
       </>
     );
   }
 }
 
-export default DeleteQuestionAnswer;
+export default AddQuestionAnswer;

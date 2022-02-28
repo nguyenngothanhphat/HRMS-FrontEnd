@@ -46,7 +46,7 @@ class Settings extends PureComponent {
                       onClick={(e) => this.handleChange(e.key)}
                     >
                       <Menu.Item key="category">FAQ Categories</Menu.Item>
-                      <Menu.Item key="anwser">FAQ List</Menu.Item>
+                      <Menu.Item key="faqList">FAQ List</Menu.Item>
                     </Menu>
                   </div>
                 </Col>

@@ -16,9 +16,9 @@ class FAQList extends PureComponent {
     };
   }
 
-  handleChange = (value) => {
-    console.log('value', value);
-  };
+  // handleChange = (value) => {
+  //   console.log('value', value);
+  // };
 
   genExtra = () => (
     <img
@@ -30,8 +30,7 @@ class FAQList extends PureComponent {
     />
   );
 
-  onChange = (obj) => {
-    console.log('odjdj', obj);
+  onChange = () => {
     this.setState((prevState) => ({
       open: !prevState.open,
     }));
@@ -126,12 +125,6 @@ class FAQList extends PureComponent {
           </Col>
           <Col sm={24} md={8} xl={13} className={styles.viewCenter}>
             {getContent()}
-            {/* 
-            <DocumentModal
-              visible={viewDocument}
-              handleCancel={this.handleCancel}
-              link={linkFile}
-            /> */}
           </Col>
           <Col sm={24} md={10} xl={6} className={styles.viewRight}>
             <ContactPage />

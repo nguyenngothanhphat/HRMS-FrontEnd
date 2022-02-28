@@ -19,38 +19,7 @@ class ListQuestionAnswer extends Component {
       pageSelected: 1,
       size: 10,
     };
-    // this.refForm = React.createRef();
-    // this.onSearchDebounce = debounce(this.onSearchDebounce, 500);
   }
-
-//   componentDidMount() {
-//     const { dispatch } = this.props;
-//     dispatch({
-//       type: 'policiesRegulations/fetchListPolicy',
-//     });
-//   }
-
-//   onSearch = (e = {}) => {
-//     const { value = '' } = e.target;
-//     this.onSearchDebounce(value);
-//   };
-
-//   getPageAndSize = (page, pageSize) => {
-//     this.setState({
-//       pageSelected: page,
-//       size: pageSize,
-//     });
-//   };
-
-//   onSearchDebounce = (value) => {
-//     const { dispatch } = this.props;
-//     dispatch({
-//       type: 'policiesRegulations/searchNamePolicy',
-//       payload: {
-//         namePolicy: value,
-//       },
-//     });
-//   };
 
   render() {
     const { visibleModal, pageSelected, size } = this.state;
@@ -72,7 +41,6 @@ class ListQuestionAnswer extends Component {
               <Input
                 placeholder="Search by name"
                 prefix={<SearchOutlined />}
-                // onChange={(e) => this.onSearch(e)}
               />
             </div>
           </div>
