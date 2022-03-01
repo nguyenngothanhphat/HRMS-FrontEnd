@@ -21,7 +21,6 @@ const CompensationSummary = () => {
 
   const menu = (
     <Menu onClick={onClick}>
-      <Menu.Item key="2021">2020</Menu.Item>
       <Menu.Item key="2021">2021</Menu.Item>
       <Menu.Item key="2022">2022</Menu.Item>
     </Menu>
