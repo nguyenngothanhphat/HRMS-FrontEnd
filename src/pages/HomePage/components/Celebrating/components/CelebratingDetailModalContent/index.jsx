@@ -69,31 +69,33 @@ const CelebratingDetailModalContent = (props) => {
   };
 
   const onCommentClick = async () => {
-    const employeeId = employee?._id;
-    const originalComments = comments.map((x) => {
-      return {
-        content: x.content,
-        employee: x.employee,
-      };
-    });
+    if (commentContent) {
+      const employeeId = employee?._id;
+      const originalComments = comments.map((x) => {
+        return {
+          content: x.content,
+          employee: x.employee,
+        };
+      });
 
-    const payload = {
-      employee: item._id,
-      year: moment().year(),
-      likes: likedIds,
-      comments: [
-        ...originalComments,
-        {
-          content: commentContent,
-          employee: employeeId,
-        },
-      ],
-    };
-    const res = await upsertBirthdayConversationEffect(payload);
-    if (res.statusCode === 200) {
-      setCommentContent('');
-      handleActiveComments(comments, comments.length + 1);
-      refreshData();
+      const payload = {
+        employee: item._id,
+        year: moment().year(),
+        likes: likedIds,
+        comments: [
+          ...originalComments,
+          {
+            content: commentContent,
+            employee: employeeId,
+          },
+        ],
+      };
+      const res = await upsertBirthdayConversationEffect(payload);
+      if (res.statusCode === 200) {
+        setCommentContent('');
+        handleActiveComments(comments, comments.length + 1);
+        refreshData();
+      }
     }
   };
 
@@ -230,7 +232,7 @@ const CelebratingDetailModalContent = (props) => {
               <Button
                 className={styles.commentBtn}
                 onClick={onCommentClick}
-                disabled={loadingComment}
+                disabled={loadingComment || !commentContent}
               >
                 Submit
               </Button>
