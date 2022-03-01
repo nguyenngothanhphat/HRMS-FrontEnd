@@ -191,7 +191,10 @@ const CelebratingDetailModalContent = (props) => {
           </div>
         </div>
         <div className={styles.actions}>
-          <div className={styles.likes} onClick={onLikeClick}>
+          <div
+            className={styles.likes}
+            onClick={likedIds.includes(employee?._id) ? () => {} : () => onLikeClick(card)}
+          >
             <img src={LikeIcon} alt="" />
             <span
               style={likedIds.includes(employee?._id) ? { fontWeight: 500, color: '#2C6DF9' } : {}}

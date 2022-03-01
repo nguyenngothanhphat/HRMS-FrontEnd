@@ -142,7 +142,10 @@ const Card = (props) => {
 
           {/* HIDE - NOT AVAILABLE YET  */}
           <div className={styles.actions}>
-            <div className={styles.likes} onClick={() => onLikeClick(card)}>
+            <div
+              className={styles.likes}
+              onClick={likedIds.includes(employee?._id) ? () => {} : () => onLikeClick(card)}
+            >
               <img src={LikeIcon} alt="" />
               <span
                 style={
