@@ -119,10 +119,7 @@ const ProjectView = (props) => {
     const weeks = generateAllWeeks(startDateMonth, endDateMonth);
     setWeeksOfMonth(weeks);
   }, [startDateMonth]);
-  useEffect(() => {
-    const weeks = generateAllWeeks(startDateMonth, endDateMonth);
-    setWeeksOfMonth(weeks);
-  }, [startDateMonth]);
+
   const onSearchDebounce = debounce((value) => {
     setNameSearch(value);
   }, 1000);

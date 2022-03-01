@@ -109,6 +109,7 @@ const FinanceReport = (props) => {
     const formatValue = value.toLowerCase();
     onSearchDebounce(formatValue);
   };
+
   const renderHeader = () => {
     switch (selectedView) {
       case VIEW_TYPE.W:

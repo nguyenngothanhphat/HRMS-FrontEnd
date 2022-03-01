@@ -83,6 +83,7 @@ const HumanResourceReport = (props) => {
     const weeks = generateAllWeeks(startDateMonth, endDateMonth);
     setWeeksOfMonth(weeks);
   }, [startDateMonth]);
+
   const onSearchDebounce = debounce((value) => {
     setNameSearch(value);
   }, 1000);
@@ -91,6 +92,7 @@ const HumanResourceReport = (props) => {
     const formatValue = value.toLowerCase();
     onSearchDebounce(formatValue);
   };
+
   // RENDER UI
   const viewChangeComponent = () => (
     <ViewTypeSelector
