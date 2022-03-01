@@ -286,13 +286,13 @@ const routes = [
             name: 'directory',
             icon: '/assets/images/menuIcons/directory.svg',
             component: './Directory',
-            authority: ['P_DIRECTORY_VIEW', 'M_DIRECTORY_VIEW', 'M_EMPLOYEE_MANAGEMENT_VIEW'],
+            authority: ['P_DIRECTORY_ALL','P_DIRECTORY_VIEW', 'M_DIRECTORY_VIEW', 'M_EMPLOYEE_MANAGEMENT_VIEW'],
           },
           {
             path: '/directory/:tabName',
             component: './Directory',
             hideInMenu: true,
-            authority: ['P_DIRECTORY_VIEW', 'M_DIRECTORY_VIEW', 'M_EMPLOYEE_MANAGEMENT_VIEW'],
+            authority: ['P_DIRECTORY_ALL','P_DIRECTORY_VIEW', 'M_DIRECTORY_VIEW', 'M_EMPLOYEE_MANAGEMENT_VIEW'],
           },
           {
             path: '/employees',
