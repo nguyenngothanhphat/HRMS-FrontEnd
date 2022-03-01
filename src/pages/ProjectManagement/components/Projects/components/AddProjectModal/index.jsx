@@ -120,6 +120,13 @@ const AddProjectModal = (props) => {
       refreshData();
     }
   };
+  const requiredLabel = (text) => {
+    return (
+      <span>
+        {text} <span style={{ color: '#f04b37' }}>*</span>
+      </span>
+    );
+  };
 
   const renderModalContent = () => {
     return (
@@ -137,7 +144,7 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Select Customer' }]}
-                label="Customer"
+                label={requiredLabel('Customer')}
                 name="customerId"
                 fieldKey="customerId"
                 labelCol={{ span: 24 }}
@@ -150,7 +157,8 @@ const AddProjectModal = (props) => {
                   showSearch
                   allowClear
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 >
                   {customerList.map((x) => (
                     <Option value={x.customerId}>{x.legalName}</Option>
@@ -161,7 +169,7 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Select Engagement Type' }]}
-                label="Engagement Type"
+                label={requiredLabel('Engagement Type')}
                 name="engagementType"
                 fieldKey="engagementType"
                 labelCol={{ span: 24 }}
@@ -171,7 +179,8 @@ const AddProjectModal = (props) => {
                   showSearch
                   allowClear
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 >
                   {projectTypeList.map((x) => (
                     <Option value={x.id}>{x.type_name}</Option>
@@ -224,7 +233,7 @@ const AddProjectModal = (props) => {
                 rules={[{ required: true, message: 'Select Project Status' }]}
                 label={
                   <span>
-                    Project Status{' '}
+                    {requiredLabel('Project Status')}{' '}
                     <Tooltip placement="rightBottom" title="Some texts here">
                       <img src={HelpIcon} alt="" />
                     </Tooltip>
@@ -239,7 +248,8 @@ const AddProjectModal = (props) => {
                   showSearch
                   allowClear
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 >
                   {projectStatusList.map((x) => (
                     <Option value={x.id}>{x.status}</Option>
@@ -250,7 +260,7 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Enter Project Name' }]}
-                label="Project Name"
+                label={requiredLabel('Project Name')}
                 name="projectName"
                 fieldKey="projectName"
                 labelCol={{ span: 24 }}
@@ -271,7 +281,7 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Select Start Date' }]}
-                label="Start Date"
+                label={requiredLabel('Start Date')}
                 name="startDate"
                 fieldKey="startDate"
                 labelCol={{ span: 24 }}
@@ -286,7 +296,7 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Select Tentative End Date' }]}
-                label="Tentative End Date"
+                label={requiredLabel('Tentative End Date')}
                 name="tentativeEndDate"
                 fieldKey="tentativeEndDate"
                 labelCol={{ span: 24 }}
@@ -301,7 +311,7 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Select Project Manager' }]}
-                label="Project Manager"
+                label={requiredLabel('Project Manager')}
                 name="projectManager"
                 fieldKey="projectManager"
                 labelCol={{ span: 24 }}
@@ -312,7 +322,8 @@ const AddProjectModal = (props) => {
                   showSearch
                   allowClear
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 >
                   {employeeList.map((x) => (
                     <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
@@ -354,7 +365,7 @@ const AddProjectModal = (props) => {
             <Col xs={24}>
               <Form.Item
                 rules={[{ required: true, message: 'Enter Project Description' }]}
-                label="Project Description"
+                label={requiredLabel('Project Description')}
                 name="projectDescription"
                 fieldKey="projectDescription"
                 labelCol={{ span: 24 }}
@@ -368,7 +379,7 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Select Engineering Owner' }]}
-                label="Engineering Owner"
+                label={requiredLabel('Engineering Owner')}
                 name="engineeringOwner"
                 fieldKey="engineeringOwner"
                 labelCol={{ span: 24 }}
@@ -379,7 +390,8 @@ const AddProjectModal = (props) => {
                   showSearch
                   allowClear
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 >
                   {employeeList.map((x) => (
                     <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
@@ -390,7 +402,7 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Select Division' }]}
-                label="Division"
+                label={requiredLabel('Division')}
                 name="division"
                 fieldKey="division"
                 labelCol={{ span: 24 }}
@@ -400,7 +412,8 @@ const AddProjectModal = (props) => {
                   showSearch
                   allowClear
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 >
                   {divisionList.map((x) => (
                     <Option value={x}>{x}</Option>
@@ -411,7 +424,7 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Select Tags' }]}
-                label="Tags"
+                label={requiredLabel('Tags')}
                 name="tags"
                 fieldKey="tags"
                 labelCol={{ span: 24 }}
@@ -422,7 +435,8 @@ const AddProjectModal = (props) => {
                   showSearch
                   allowClear
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 >
                   {tagList.map((x) => (
                     <Option value={x.tag_name}>{x.tag_name}</Option>
