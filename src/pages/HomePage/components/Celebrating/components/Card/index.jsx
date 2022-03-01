@@ -12,6 +12,7 @@ import LikeIcon from '@/assets/homePage/like.svg';
 import CommentIcon from '@/assets/homePage/comment.svg';
 import CommonModal from '../../../CommonModal';
 import CelebratingDetailModalContent from '../CelebratingDetailModalContent';
+import LikedModalContent from '../LikedModalContent';
 
 const NextArrow = (props) => {
   const { className, style, onClick } = props;
@@ -36,6 +37,7 @@ const Card = (props) => {
 
   const [celebratingDetailModalVisible, setCelebratingDetailModalVisible] = useState(false);
   const [viewingItem, setViewingItem] = useState('');
+  const [likedModalVisible, setLikedModalVisible] = useState(false);
 
   // functions
   const onViewProfileClick = (userId) => {
@@ -142,15 +144,20 @@ const Card = (props) => {
 
           {/* HIDE - NOT AVAILABLE YET  */}
           <div className={styles.actions}>
-            <div
-              className={styles.likes}
-              onClick={likedIds.includes(employee?._id) ? () => {} : () => onLikeClick(card)}
-            >
-              <img src={LikeIcon} alt="" />
+            <div className={styles.likes}>
+              <img
+                src={LikeIcon}
+                alt=""
+                onClick={likedIds.includes(employee?._id) ? () => {} : () => onLikeClick(card)}
+              />
               <span
                 style={
                   likedIds.includes(employee?._id) ? { fontWeight: 500, color: '#2C6DF9' } : {}
                 }
+                onClick={() => {
+                  setViewingItem(card);
+                  setLikedModalVisible(true);
+                }}
               >
                 {likes.length || 0} Likes
               </span>
@@ -222,6 +229,14 @@ const Card = (props) => {
         onClose={() => setCelebratingDetailModalVisible(false)}
         title="Say Happy Birthday!"
         content={<CelebratingDetailModalContent item={viewingItem} refreshData={refreshData} />}
+        width={500}
+        hasFooter={false}
+      />
+      <CommonModal
+        visible={likedModalVisible}
+        onClose={() => setLikedModalVisible(false)}
+        title="Likes"
+        content={<LikedModalContent list={viewingItem?.likesComments?.likes || []} />}
         width={500}
         hasFooter={false}
       />

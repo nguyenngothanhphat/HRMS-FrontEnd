@@ -1,12 +1,14 @@
+import { Button, Input } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import { Input, Button, Tooltip } from 'antd';
-import UserProfilePopover from '@/components/UserProfilePopover';
-import styles from './index.less';
-import LikeIcon from '@/assets/homePage/like.svg';
 import CommentIcon from '@/assets/homePage/comment.svg';
+import LikeIcon from '@/assets/homePage/like.svg';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
+import UserProfilePopover from '@/components/UserProfilePopover';
+import CommonModal from '../../../CommonModal';
+import LikedModalContent from '../LikedModalContent';
+import styles from './index.less';
 
 const COMMENT_DEFAULT_COUNT = 3;
 
@@ -23,6 +25,7 @@ const CelebratingDetailModalContent = (props) => {
 
   const [activeComments, setActiveComments] = useState([]);
   const [commentContent, setCommentContent] = useState('');
+  const [likedModalVisible, setLikedModalVisible] = useState(false);
 
   const likedIds = likes.map((x) => x.employeeInfo?._id);
 
@@ -165,14 +168,22 @@ const CelebratingDetailModalContent = (props) => {
 
   const renderComment = (comment) => {
     const { legalName = '' } = comment.employeeInfo?.generalInfoInfo;
+    const { _id = '' } = comment.employeeInfo || {};
+    const isMe = _id === employee?._id;
+
     return (
       <div className={styles.comment}>
-        <div className={styles.author} onClick={() => onViewProfile(comment.employeeInfo?._id)}>
+        <div className={styles.author}>
           <img src={comment.employeeInfo?.generalInfoInfo?.avatar || MockAvatar} alt="" />
         </div>
 
         <div className={styles.content}>
-          <p className={styles.authorName}>{legalName}</p>
+          <p
+            className={`${styles.authorName} ${isMe ? styles.isMe : null}`}
+            onClick={() => onViewProfile(comment.employeeInfo?._id)}
+          >
+            {legalName}
+          </p>
           <p>{comment.content}</p>
         </div>
       </div>
@@ -191,13 +202,15 @@ const CelebratingDetailModalContent = (props) => {
           </div>
         </div>
         <div className={styles.actions}>
-          <div
-            className={styles.likes}
-            onClick={likedIds.includes(employee?._id) ? () => {} : () => onLikeClick(card)}
-          >
-            <img src={LikeIcon} alt="" />
+          <div className={styles.likes}>
+            <img
+              src={LikeIcon}
+              alt=""
+              onClick={likedIds.includes(employee?._id) ? () => {} : () => onLikeClick(card)}
+            />
             <span
               style={likedIds.includes(employee?._id) ? { fontWeight: 500, color: '#2C6DF9' } : {}}
+              onClick={() => setLikedModalVisible(true)}
             >
               {likes.length || 0} Likes
             </span>
@@ -239,7 +252,19 @@ const CelebratingDetailModalContent = (props) => {
     );
   };
 
-  return <div className={styles.CelebratingDetailModalContent}>{renderCard(item)}</div>;
+  return (
+    <div className={styles.CelebratingDetailModalContent}>
+      {renderCard(item)}
+      <CommonModal
+        visible={likedModalVisible}
+        onClose={() => setLikedModalVisible(false)}
+        title="Likes"
+        content={<LikedModalContent list={likes} />}
+        width={500}
+        hasFooter={false}
+      />
+    </div>
+  );
 };
 export default connect(({ user: { currentUser } = {}, loading }) => ({
   currentUser,
