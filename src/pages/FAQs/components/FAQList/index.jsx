@@ -48,16 +48,16 @@ class FAQList extends PureComponent {
     const listFAQ = [
       {
         question: 'How can I request time off in #tool-name?',
-        anwser: 'anwser',
+        answer: 'answer',
       },
       {
         question: 'I need to change who sees/approves PTO requests',
-        anwser:
+        answer:
           'Any employee or contingent worker level requests will notify their direct managers specifically. If you need to change who receives and approves the PTO request, the direct manager will have to be updated.',
       },
       {
         question: 'How are workers notified that their time off request is approved or declined?',
-        anwser: 'anwser question',
+        answer: 'answer question',
       },
     ];
 
@@ -96,7 +96,7 @@ class FAQList extends PureComponent {
                     className={styles.viewCenter__title__text__view}
                   >
                     <Panel header={obj.question} key={obj._id}>
-                      <div>{obj.anwser}</div>
+                      <div>{obj.answer}</div>
                     </Panel>
                   </Collapse>
                   <br />
