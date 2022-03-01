@@ -3,6 +3,7 @@ import { dialog } from '@/utils/utils';
 import {
   // portal
   getBirthdayInWeek,
+  upsertBirthdayConversation,
   // setting page
   addPost,
   deletePost,
@@ -13,7 +14,7 @@ import {
   votePoll,
   getSelectedPollOptionByEmployee,
   getPollResult,
-  updateBannerPosition
+  updateBannerPosition,
 } from '../services/homePage';
 import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
 // import { TAB_IDS } from '@/utils/homePage';
@@ -57,6 +58,21 @@ const homePage = {
       } catch (errors) {
         dialog(errors);
         return [];
+      }
+      return response;
+    },
+    *upsertBirthdayConversationEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(upsertBirthdayConversation, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
       }
       return response;
     },

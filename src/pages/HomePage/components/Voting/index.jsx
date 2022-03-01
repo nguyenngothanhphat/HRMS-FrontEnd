@@ -84,16 +84,29 @@ const Voting = (props) => {
     fetchData();
   }, []);
 
+  // get active poll at the moment
+  const findActivePoll = () => {
+    return polls.find(
+      (x) =>
+        moment.utc(x.pollDetail.endDate).isSameOrAfter(moment.utc()) &&
+        moment.utc(x.pollDetail.startDate).isSameOrBefore(moment.utc()),
+    );
+  };
+
   useEffect(() => {
     if (polls.length > 0) {
       setLoading(true);
-      const [firstPoll] = polls;
-      setActivePoll(firstPoll);
+      const find = findActivePoll();
+      if (find) {
+        setActivePoll(find);
 
-      // if expired
-      const isExpiredTemp = moment(firstPoll?.pollDetail?.endDate).isBefore(moment());
-      if (isExpiredTemp) {
-        setIsExpired(true);
+        // if expired
+        const isExpiredTemp = moment(find?.pollDetail?.endDate).isBefore(moment());
+        if (isExpiredTemp) {
+          setIsExpired(true);
+        }
+      } else {
+        setLoading(false);
       }
     }
   }, [JSON.stringify(polls)]);
