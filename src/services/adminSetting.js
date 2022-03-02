@@ -68,10 +68,10 @@ export async function getRoleByID(payload) {
 }
 
 export async function getListDepartments(payload) {
-  return request('/api/departmenttenant/list', {
-    method: 'POST',
-    data: payload,
-  });
+  return request('/api/departmenttenant/get-all-division', {
+    method: 'GET',
+    params: payload,
+  })
 }
 
 export async function addPosition(payload) {

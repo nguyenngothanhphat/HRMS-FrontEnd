@@ -121,7 +121,7 @@ const AddResourceTypeContent = (props) => {
             >
               <Select placeholder="Select Division">
                 {divisionList.map((x) => (
-                  <Option value={x}>{x}</Option>
+                  <Option value={x.name}>{x.name}</Option>
                 ))}
               </Select>
             </Form.Item>

@@ -110,9 +110,9 @@ export async function getTagList(payload) {
 }
 
 export async function getDivisionList(payload) {
-  return request('/api/departmenttenant/list', {
-    method: 'POST',
-    data: payload,
+  return request('/api/departmenttenant/get-all-division', {
+    method: 'GET',
+    params: payload,
   });
 }
 
