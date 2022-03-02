@@ -45,7 +45,6 @@ const FilterResourceTypeContent = (props) => {
     onFilter(result);
   };
 
-
   useEffect(() => {
     fetchDataList();
   }, []);
@@ -60,7 +59,7 @@ const FilterResourceTypeContent = (props) => {
       <Form.Item label="By division" name="division">
         <Select mode="multiple" allowClear style={{ width: '100%' }} placeholder="Please select">
           {divisionList.map((x) => (
-            <Option value={x}>{x}</Option>
+            <Option value={x.name}>{x.name}</Option>
           ))}
         </Select>
       </Form.Item>

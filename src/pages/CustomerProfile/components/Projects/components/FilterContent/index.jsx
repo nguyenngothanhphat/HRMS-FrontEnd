@@ -84,7 +84,7 @@ const FilterContent = (props) => {
       <Form.Item label="By division" name="division">
         <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Select Division">
           {divisionList.map((x) => {
-            return <Select.Option value={x}>{x}</Select.Option>;
+            return <Select.Option value={x.name}>{x.name}</Select.Option>;
           })}
         </Select>
       </Form.Item>

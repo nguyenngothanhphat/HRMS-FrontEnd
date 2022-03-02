@@ -300,11 +300,12 @@ const ProjectDetails = {
         });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
+
         if (data.length > 0) {
           yield put({
             type: 'save',
             payload: {
-              divisionList: data[0].tagDivision,
+              divisionList: data,
             },
           });
         }
@@ -313,6 +314,7 @@ const ProjectDetails = {
       }
       return response;
     },
+
     *fetchAuditTrailListEffect({ payload }, { call, put }) {
       let response = {};
       try {
@@ -582,8 +584,8 @@ const ProjectDetails = {
         yield put({
           type: 'fetchMilestoneListEffect',
           payload: {
-            projectId: payload.projectId
-          }
+            projectId: payload.projectId,
+          },
         });
       } catch (errors) {
         dialog(errors);
