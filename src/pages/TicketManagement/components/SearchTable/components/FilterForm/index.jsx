@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DatePicker, Form, Select, AutoComplete, Spin, Input } from 'antd';
-import { debounce, isEmpty } from 'lodash';
+import { debounce } from 'lodash';
 import moment from 'moment';
 import { connect } from 'umi';
 
@@ -42,43 +42,39 @@ const FilterForm = (props) => {
     setNameListState(
       legalNameList.map((x) => {
         return {
-          value: x.employeeRaise?.generalInfo?._id,
+          value: x.employeeRaise?.generalInfo?.legalName,
           label: x.employeeRaise?.generalInfo.legalName,
         };
       }),
     );
-  }, [JSON.stringify(legalNameList)]);
+  }, [selectedname]);
 
   useEffect(() => {
     setAsignedListState(
       assginedList.map((x) => {
         return {
-          value: x.employeeAssignee?.generalInfo?._id,
+          value: x.employeeAssignee?.generalInfo?.legalName,
           label: x.employeeAssignee?.generalInfo.legalName,
         };
       }),
     );
-  }, [JSON.stringify(assginedList)]);
+  }, [selectedAsigned]);
 
   useEffect(() => {
+    const payload = {
+      status: currentStatus,
+    };
+    if (selectedname !== '') {
+      payload.employeeRaise = [selectedname];
+    }
+    if (selectedAsigned !== '') {
+      payload.employeeAssignee = [selectedAsigned];
+    }
     dispatch({
       type: 'ticketManagement/fetchListAllTicket',
-      payload: {
-        status: currentStatus,
-        employeeRaise: [selectedname],
-      },
+      payload,
     });
-  }, [JSON.stringify(selectedname), JSON.stringify(selectedAsigned)]);
-
-  useEffect(() => {
-    dispatch({
-      type: 'ticketManagement/fetchListAllTicket',
-      payload: {
-        status: currentStatus,
-        employeeRaise: [selectedAsigned],
-      },
-    });
-  }, [JSON.stringify(selectedAsigned)]);
+  }, [selectedname, selectedAsigned]);
 
   const disabledDate = (currentDate, type) => {
     if (type === 'fromDate') {
@@ -209,38 +205,8 @@ const FilterForm = (props) => {
                 options={nameListState}
                 onSearch={(val) => handleEmployeeSearch('employeeRaise', val)}
               >
-                <Input
-                  placeholder="Search by Name"
-                  // prefix={searchIcons.name ? <img src={SearchIcon} alt="search" /> : null}
-                  allowClear
-                />
+                <Input placeholder="Search by Name" allowClear />
               </AutoComplete>
-              {/* <Select
-                allowClear
-                showSearch
-                mode="multiple"
-                placeholder="Select name"
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-                showArrow
-              >
-                {!isEmpty(legalNameList)
-                  ? legalNameList.map((option) => {
-                      const {
-                        employeeRaise: {
-                          _id: userId = '',
-                          generalInfo: { legalName = '' } = {},
-                        } = {},
-                      } = option;
-                      return (
-                        <Option key={option.id} value={userId}>
-                          {legalName}
-                        </Option>
-                      );
-                    })
-                  : null}
-              </Select> */}
             </Form.Item>
             <Form.Item key="queryType" label="BY REQUEST TYPE" name="queryType">
               <Select
@@ -315,11 +281,7 @@ const FilterForm = (props) => {
                   options={asignedListState}
                   onSearch={(val) => handleEmployeeSearch('employeeAssignee', val)}
                 >
-                  <Input
-                    placeholder="Search by assigned"
-                    // prefix={searchIcons.name ? <img src={SearchIcon} alt="search" /> : null}
-                    allowClear
-                  />
+                  <Input placeholder="Search by assigned" allowClear />
                 </AutoComplete>
               </Form.Item>
             ) : null}
