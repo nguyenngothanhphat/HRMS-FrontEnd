@@ -246,7 +246,7 @@ const ProjectManagement = {
           yield put({
             type: 'save',
             payload: {
-              divisionList: data[0].tagDivision,
+              divisionList: data,
             },
           });
         }
