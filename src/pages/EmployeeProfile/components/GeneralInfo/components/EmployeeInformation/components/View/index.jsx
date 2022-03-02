@@ -15,7 +15,7 @@ import styles from './index.less';
       AdhaarCard = {},
       originData: {
         generalData: generalDataOrigin = {},
-        employmentData: { location: locationEmpl = {} } = {},
+        employmentData: { location: locationProp = {} } = {},
       } = {},
       tempData: { generalData = {} } = {},
       idCurrentEmployee = '',
@@ -29,7 +29,7 @@ import styles from './index.less';
     currentUser,
     permissions,
     idCurrentEmployee,
-    locationEmpl,
+    locationProp,
   }),
 )
 class View extends PureComponent {
@@ -69,7 +69,7 @@ class View extends PureComponent {
       },
       permissions = [],
       idCurrentEmployee = '',
-      locationEmpl: { headQuarterAddress: { country = '' } = {} } = {},
+      locationProp: { headQuarterAddress: { country = '' } = {} } = {},
     } = this.props;
     let splitUrl = '';
     let urlAdhaarCard = '';

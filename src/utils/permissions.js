@@ -474,6 +474,15 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'P_TICKET_MANAGEMENT_T_OPERATIONS_TICKETS_VIEW',
   ]);
 
+  // POLICY & REGULATION
+  const indexViewAllCountryPolicyAndRegulation = isAuthorized(permissionList, [
+    'P_POLICIESREGULATIONS_VIEW_ALL',
+  ]);
+
+  const indexSettingViewPolicy = isAuthorized(permissionList, [
+    'P_POLICIESREGULATIONS_T_SETTINGS_VIEW',
+  ]);
+
   return {
     // Directory Page
     viewTabActive: findIndexActive,
@@ -559,5 +568,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewTicketHR: indexTicketManagementHRTicketsTab,
     viewTicketIT: indexTicketManagementITTicketsTab,
     viewTicketOperations: indexTicketManagementOperationsTicketsTab,
+
+    // policy and regulation
+    viewSettingPolicy: indexSettingViewPolicy,
+    viewPolicyAllCountry: indexViewAllCountryPolicyAndRegulation,
   };
 }

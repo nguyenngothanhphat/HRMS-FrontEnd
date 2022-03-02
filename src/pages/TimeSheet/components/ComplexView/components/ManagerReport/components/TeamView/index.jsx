@@ -70,6 +70,7 @@ const TeamView = (props) => {
     const formatValue = value.toLowerCase();
     onSearchDebounce(formatValue);
   };
+
   // MAIN AREA
   return (
     <div className={styles.TeamView}>

@@ -42,9 +42,9 @@
         justify-content: space-between;
         padding-top: 7px;
         border-top: 1px solid rgba(88, 102, 126, 0.2);
-        .likes,
         .comments {
           display: flex;
+          justify-content: flex-end;
           padding: 5px;
           border-radius: 8px;
           cursor: pointer;
@@ -67,10 +67,29 @@
           }
         }
         .likes {
+          display: flex;
           justify-content: flex-start;
-        }
-        .comments {
-          justify-content: flex-end;
+          padding: 5px;
+          border-radius: 8px;
+          span {
+            display: inline-block;
+            color: #58667e;
+            font-weight: normal;
+            font-size: 13px;
+            font-family: Inter;
+            font-style: normal;
+            line-height: 19px;
+            cursor: pointer;
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+          img {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            cursor: pointer;
+          }
         }
       }
     }

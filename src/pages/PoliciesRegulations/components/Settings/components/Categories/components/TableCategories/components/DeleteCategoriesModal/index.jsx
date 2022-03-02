@@ -21,7 +21,12 @@ class DeleteCategoriesModal extends Component {
   };
 
   handleFinish = () => {
-    const { dispatch, onClose = () => {}, item: { _id: id = '' } = {} } = this.props;
+    const {
+      dispatch,
+      onClose = () => {},
+      item: { _id: id = '' } = {},
+      onRefresh = () => {},
+    } = this.props;
     dispatch({
       type: 'policiesRegulations/deleteCategory',
       payload: {
@@ -30,6 +35,7 @@ class DeleteCategoriesModal extends Component {
     }).then((response) => {
       const { statusCode } = response;
       if (statusCode === 200) {
+        onRefresh();
         onClose();
       }
     });

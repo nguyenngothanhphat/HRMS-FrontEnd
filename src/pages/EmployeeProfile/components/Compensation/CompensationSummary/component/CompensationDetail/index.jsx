@@ -3,10 +3,17 @@ import { Row, Col } from 'antd';
 import styles from './index.less';
 
 function CompensationDetail() {
-  const compensationSummary = [{ annualCTC: 1500, basic: 500 }];
+  const compensationSummary = [
+    {
+      annualCTC: '5,500,000',
+      basic: '90,999',
+      otherAllowances: '44,999',
+      variablePayTraget: '10%',
+    },
+  ];
 
   return (
-    <Row gutter={[0, 16]} className={styles.root}>
+    <Row gutter={[0, 16]} className={styles.CompensationDetail}>
       {compensationSummary.map((item) => {
         const { annualCTC = '', basic = '', otherAllowances = '', variablePayTraget = '' } = item;
         return (

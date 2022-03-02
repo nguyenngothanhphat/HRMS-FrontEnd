@@ -3,16 +3,15 @@ import { Button, Modal } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ loading }) => ({
+@connect(({ loading, policiesRegulations: { originData: { selectedCountry = '' } } = {} }) => ({
+  selectedCountry,
   loadingDelete: loading.effects['policesRegulations/deletepolicy'],
 }))
-
 class DeletePolicyModal extends Component {
   formRef = React.createRef();
 
   constructor(props) {
     super(props);
-
     this.state = {};
   }
 
@@ -22,22 +21,29 @@ class DeletePolicyModal extends Component {
   };
 
   handleFinish = () => {
-    const { dispatch, item:{_id:id=""}={}, onClose = () => {}  } = this.props;
-     dispatch({
-       type: 'policiesRegulations/deletePolicy',
-       payload:{
-         id
-       }
-     }).then((response) => {
+    const {
+      dispatch,
+      item: { _id: id = '' } = {},
+      onClose = () => {},
+      onRefresh = () => {},
+      selectedCountry,
+    } = this.props;
+    dispatch({
+      type: 'policiesRegulations/deletePolicy',
+      payload: {
+        id,
+      },
+    }).then((response) => {
       const { statusCode } = response;
       if (statusCode === 200) {
+        onRefresh(selectedCountry);
         onClose();
       }
     });
   };
 
   render() {
-    const { visible, loadingDelte, item:{namePolicy=""} ={} } = this.props;
+    const { visible, loadingDelte, item: { namePolicy = '' } = {} } = this.props;
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>

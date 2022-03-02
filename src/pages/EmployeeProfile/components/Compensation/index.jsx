@@ -5,13 +5,16 @@ import EmptyComponent from '@/components/Empty';
 import CompensationSummary from './CompensationSummary';
 import PaySlips from './PaySlips';
 import BankAccount from './BankAccount';
+import Form16 from './Form16';
 import TaxWithholdingInfo from './TaxWithholdingInfo';
+import WorkInProgress from '@/components/WorkInProgress';
 
 import styles from './index.less';
 
 const { TabPane } = Tabs;
 
 const Compensation = (props) => {
+  const data = [];
   const { loadingFetch } = props;
   const [activeKey, setActiveKey] = useState('1');
 
@@ -25,6 +28,10 @@ const Compensation = (props) => {
     return '';
   };
 
+  if (data.length === 0) {
+    return <WorkInProgress />;
+  }
+
   return (
     <div className={styles.Compensation}>
       <Tabs activeKey={activeKey} onChange={(key) => setActiveKey(key)} destroyInactiveTabPane>
@@ -35,7 +42,7 @@ const Compensation = (props) => {
           <PaySlips />
         </TabPane>
         <TabPane tab="Form 16" key="3">
-          <EmptyComponent />
+          <Form16 />
         </TabPane>
         <TabPane tab="Bank Account" key="4">
           <BankAccount />
