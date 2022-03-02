@@ -45,23 +45,29 @@ const FilterForm = (props) => {
 
   useEffect(() => {
     setFilter({ ...filterProp });
-  }, [JSON.stringify(filterProp)]);
+  }, [JSON.stringify(filter)]);
 
   const clearFilter = () => {
     setFilter({
       filter: {
-        nam: undefined,
+        name: undefined,
         title: [],
-        priority: undefined,
-        assign: undefined,
-        location: [],
+        tagDivision: [],
+        statuses: undefined,
+        projects: [],
+        skill: undefined,
         fromDate: null,
         toDate: null,
+        expYearBegin: undefined,
+        expYearEnd: undefined,
+        tentativeEndDateEnd: undefined,
+        tentativeEndDateStart: undefined,
       },
     });
     setDurationFrom('');
     setDurationTo('');
     form.resetFields();
+    onFilterChange({ ...filter, filter });
   };
 
   const disabledDate = (currentDate, type) => {
@@ -124,13 +130,14 @@ const FilterForm = (props) => {
     );
   };
 
-  const onValuesChange = (value) => {
-    setFilter({ ...value });
-  };
+  // const onValuesChange = (value) => {
+  //   setFilter({ ...filter, ...value });
+  // };
 
   const onFinish = (value) => {
     console.log('onFinish with value: ', JSON.stringify(value));
     onFilterChange({ ...filter, ...value });
+
     // const payload = { ...value, ...filter };
   };
 
@@ -215,7 +222,7 @@ const FilterForm = (props) => {
       <Form
         layout="horizontal"
         className={styles.form}
-        initialValues={filterProp}
+        // initialValues={filterProp}
         // onValuesChange={onValuesChange}
         onFinish={onFinish}
         form={form}

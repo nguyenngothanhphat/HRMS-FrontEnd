@@ -86,13 +86,13 @@ const FilterPopover = (props) => {
               <Select
                 allowClear
                 mode="multiple"
-                showSearch='true'
+                showSearch="true"
                 optionFilterProp="children"
                 style={{ width: '100%' }}
                 placeholder="Select Division"
               >
                 {divisionList.map((x) => {
-                  return <Select.Option value={x}>{x}</Select.Option>;
+                  return <Select.Option value={x.name}>{x.name}</Select.Option>;
                 })}
               </Select>
             </Form.Item>
@@ -101,7 +101,7 @@ const FilterPopover = (props) => {
               <Select
                 allowClear
                 mode="multiple"
-                showSearch='true'
+                showSearch="true"
                 optionFilterProp="children"
                 style={{ width: '100%' }}
                 placeholder="Select Project Name"
@@ -120,7 +120,7 @@ const FilterPopover = (props) => {
               <Select
                 allowClear
                 mode="multiple"
-                showSearch='true'
+                showSearch="true"
                 optionFilterProp="children"
                 style={{ width: '100%' }}
                 placeholder="Select Customer"
@@ -135,7 +135,7 @@ const FilterPopover = (props) => {
               <Select
                 allowClear
                 mode="multiple"
-                showSearch='true'
+                showSearch="true"
                 optionFilterProp="children"
                 style={{ width: '100%' }}
                 placeholder="Select Engagement Type"
@@ -149,7 +149,7 @@ const FilterPopover = (props) => {
             <Form.Item label="By PROJECT manager" name="projectManager">
               <Select
                 mode="multiple"
-                showSearch='true'
+                showSearch="true"
                 optionFilterProp="children"
                 style={{ width: '100%' }}
                 loading={loadingFetchEmployeeList}
@@ -165,7 +165,7 @@ const FilterPopover = (props) => {
               <Select
                 allowClear
                 mode="multiple"
-                showSearch='true'
+                showSearch="true"
                 optionFilterProp="children"
                 style={{ width: '100%' }}
                 placeholder="Select Status"
