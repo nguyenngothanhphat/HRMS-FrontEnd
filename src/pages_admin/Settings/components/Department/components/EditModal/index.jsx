@@ -229,6 +229,15 @@ class EditModal extends PureComponent {
                 label="Department Name"
                 name="name"
                 labelCol={{ span: 24 }}
+                rules={[
+                  () => ({
+                    validator(_, value) {     
+                      if( (listDepartments.filter((obj) => obj.name === value)).length > 0 ) {
+                        return Promise.reject(`Department name is exist.`);
+                      }
+                    }
+                  }),
+                ]}
               >
                 <Input />
               </Form.Item>
