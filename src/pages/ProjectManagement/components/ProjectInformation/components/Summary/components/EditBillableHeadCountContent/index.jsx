@@ -64,7 +64,13 @@ const EditBillableHeadCountContent = (props) => {
               label="New Billable Head Count"
               name="newBillableHeadCount"
               labelCol={{ span: 24 }}
-              rules={[{ required: true, message: 'Required field!' }]}
+              rules={[
+                { required: true, message: 'Required field!' },
+                {
+                  pattern: /^[0-9]*([.][0-9]{1})?$/,
+                  message: 'Value must be a number or float number',
+                },
+              ]}
             >
               <Input placeholder="Enter New Billable Head Count" />
             </Form.Item>

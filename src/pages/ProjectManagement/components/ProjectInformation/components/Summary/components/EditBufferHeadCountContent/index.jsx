@@ -75,7 +75,13 @@ const EditBufferHeadCountContent = (props) => {
               label="Reason for change"
               name="reason"
               labelCol={{ span: 24 }}
-              rules={[{ required: true, message: 'Required field!' }]}
+              rules={[
+                { required: true, message: 'Required field!' },
+                {
+                  pattern: /^[0-9]*([.][0-9]{1})?$/,
+                  message: 'Value must be a number or float number',
+                },
+              ]}
             >
               <Input.TextArea placeholder="Enter Comments" autoSize={{ minRows: 4 }} />
             </Form.Item>
