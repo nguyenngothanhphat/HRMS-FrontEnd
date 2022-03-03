@@ -2,6 +2,7 @@ import { Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
+import { debounce } from 'lodash';
 import styles from './index.less';
 import Header from './components/Header';
 import ProjectTable from './components/ProjectTable';
@@ -21,17 +22,23 @@ const EmployeeProjectDetailModal = (props) => {
   const { timeSheet: { myTimesheet = [] } = {}, loadingFetchMyTimesheet = false } = props;
 
   const [data, setData] = useState([]);
+  const [nameSearch, setNameSearch] = useState('');
 
   // FUNCTION AREA
   const fetchMyTimesheetEffect = () => {
+    let payload = {};
+    payload = {
+      companyId: getCurrentCompany(),
+      employeeId,
+      fromDate: moment(startDate).format(dateFormatAPI),
+      toDate: moment(endDate).format(dateFormatAPI),
+    };
+    if (nameSearch) {
+      payload.search = nameSearch;
+    }
     dispatch({
       type: 'timeSheet/fetchMyTimesheetEffect',
-      payload: {
-        companyId: getCurrentCompany(),
-        employeeId,
-        fromDate: moment(startDate).format(dateFormatAPI),
-        toDate: moment(endDate).format(dateFormatAPI),
-      },
+      payload,
     });
   };
 
@@ -59,7 +66,7 @@ const EmployeeProjectDetailModal = (props) => {
     if (visible && startDate && endDate && employeeId) {
       fetchMyTimesheetEffect();
     }
-  }, [employeeId, startDate, endDate]);
+  }, [employeeId, startDate, endDate, nameSearch]);
 
   useEffect(() => {
     const tempData = formatData(myTimesheet);
@@ -75,10 +82,19 @@ const EmployeeProjectDetailModal = (props) => {
     );
   };
 
+  const onSearchDebounce = debounce((value) => {
+    setNameSearch(value);
+  }, 1000);
+
+  const onChangeSearch = (value) => {
+    const formatValue = value.toLowerCase();
+    onSearchDebounce(formatValue);
+  };
+
   const renderModalContent = () => {
     return (
       <div className={styles.content}>
-        <Header startDate={startDate} endDate={endDate} />
+        <Header onChangeSearch={onChangeSearch} startDate={startDate} endDate={endDate} />
         <ProjectTable list={data} loading={loadingFetchMyTimesheet} />
       </div>
     );
