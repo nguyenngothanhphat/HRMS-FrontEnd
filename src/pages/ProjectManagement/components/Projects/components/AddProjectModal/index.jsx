@@ -337,6 +337,12 @@ const AddProjectModal = (props) => {
                 name="estimation"
                 fieldKey="estimation"
                 labelCol={{ span: 24 }}
+                rules={[
+                  {
+                    pattern: /^[0-9]*([.][0-9]{1})?$/,
+                    message: 'Value must be a number or float number',
+                  },
+                ]}
               >
                 <Input placeholder="Enter Estimation" />
               </Form.Item>
@@ -347,6 +353,12 @@ const AddProjectModal = (props) => {
                 name="billableHeadCount"
                 fieldKey="billableHeadCount"
                 labelCol={{ span: 24 }}
+                rules={[
+                  {
+                    pattern: /^[0-9]*([.][0-9]{1})?$/,
+                    message: 'Value must be a number or float number',
+                  },
+                ]}
               >
                 <Input placeholder="Enter Billable Head Count" />
               </Form.Item>
@@ -357,6 +369,12 @@ const AddProjectModal = (props) => {
                 name="bufferHeadCount"
                 fieldKey="bufferHeadCount"
                 labelCol={{ span: 24 }}
+                rules={[
+                  {
+                    pattern: /^[0-9]*([.][0-9]{1})?$/,
+                    message: 'Value must be a number or float number',
+                  },
+                ]}
               >
                 <Input placeholder="Enter Buffer Head Count" />
               </Form.Item>
