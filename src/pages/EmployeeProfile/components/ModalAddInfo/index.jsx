@@ -426,9 +426,9 @@ const ModalAddInfo = (props) => {
             name="Certification"
             onFinish={onFinishCertification}
             layout="vertical"
-            initialValues={{
-              totalExp: generalData.totalExp || 0,
-            }}
+            // initialValues={{
+            //   totalExp: generalData.totalExp || 0,
+            // }}
           >
             <div className={styles.form__title}>Professional & Academic Background</div>
             <div className={styles.form__description}>
@@ -439,20 +439,17 @@ const ModalAddInfo = (props) => {
               name="totalExp"
               style={{ marginTop: '24px' }}
               rules={[
-                // {
-                //   required: true,
-                //   message: "Please enter relevant years of experience!"
-                // },
                 {
-                  pattern: /^[\d]{0,100}$/,
-                  message: 'Input only number and value >= 0',
+                  required: true,
+                  message: 'Please enter relevant years of experience!',
+                },
+                {
+                  pattern: /^[0-9]{0,2}$/,
+                  message: 'Input only number, greater than or equal to zero and less than 99!',
                 },
               ]}
             >
-              <Input
-                defaultValue={generalData.totalExp || 0}
-                placeholder="Total Years of Experience"
-              />
+              <Input placeholder="Total Years of Experience" />
             </Form.Item>
             <Form.Item
               label="Highest Educational Qualification"
@@ -511,12 +508,12 @@ const ModalAddInfo = (props) => {
             <Form.Item
               label="Skills"
               name="skills"
-              // rules={[
-              //   {
-              //     required: true,
-              //     message: "Please enter skills"
-              //   },
-              // ]}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter skills',
+                },
+              ]}
             >
               <CreatableSelect
                 isMulti
