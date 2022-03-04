@@ -27,7 +27,7 @@ const ModalAddInfo = (props) => {
     generalData = {},
   } = props;
   const [currentStep, setCurrentStep] = useState(0);
-  const [newSkillList, setListNewSkill] = useState([]); 
+  const [newSkillList, setListNewSkill] = useState([]);
 
   useEffect(() => {
     dispatch({
@@ -131,12 +131,16 @@ const ModalAddInfo = (props) => {
         });
       }
     });
+
     const listSkills = [];
-    skills.forEach((item) => {
-      if (!item.__isNew__) {
-        listSkills.push(item.value);
-      }
-    });
+    if (Array.isArray(skills)) {
+      skills.forEach((item) => {
+        if (!item.__isNew__) {
+          listSkills.push(item.value);
+        }
+      });
+    }
+
     // const tempSkill = skills ? skills.filter((item) => item !== 'Other') : [];
     // const checkOtherSkill = otherSkills ? otherSkills.toUpperCase().replace(' ','') : null;
     // const checkDuplication = listSkill.filter((e) => e.name.toUpperCase().replace(' ','') === checkOtherSkill) || [];
@@ -340,8 +344,9 @@ const ModalAddInfo = (props) => {
                           message: 'Please enter emergency contact name!',
                         },
                         {
-                          pattern: /^[a-zA-Z ]*$/,
-                          message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+                          pattern:
+                            /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+                          message: 'Invalid format, please try again',
                         },
                       ]}
                     >
@@ -367,7 +372,8 @@ const ModalAddInfo = (props) => {
                         showArrow
                         showSearch
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                         className={styles.inputForm}
                       >
                         {listRelation.map((value, i) => {
@@ -388,10 +394,8 @@ const ModalAddInfo = (props) => {
                           message: "Please enter the emergency contact's phone number!",
                         },
                         {
-                          pattern: /^[+0-9-]{0,15}$/,
-                          message: formatMessage({
-                            id: 'pages.employeeProfile.validateWorkNumber',
-                          }),
+                          pattern: /^[+0-9-]{10,15}$/,
+                          message: ' Please input from 10 to 15 numeric characters!',
                         },
                       ]}
                     >
@@ -481,12 +485,6 @@ const ModalAddInfo = (props) => {
                     <Form.Item
                       name={['certificationName', `certification${item}`]}
                       label="Certifications"
-                      // rules={[
-                      //   {
-                      //     required: true,
-                      //     message: "Please enter certifications!"
-                      //   },
-                      // ]}
                     >
                       <Input placeholder="Certifications" />
                     </Form.Item>
