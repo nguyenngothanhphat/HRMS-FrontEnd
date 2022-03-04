@@ -134,13 +134,11 @@ const MyCalendar = (props) => {
         </Col>
         <Col xs={20} className={styles.eachRow__right}>
           <Row gutter={[16, 16]}>
-            <span style={{ width: '100%' }}>
-              {checkCurrentTime(hour)}
-              {renderCurrentDate(hour, dateToFormat)}
-              {events.map((event) => {
-                return <MeetingTag span={colSpan} event={event} selectedDate={selectedDate} />;
-              })}
-            </span>
+            {checkCurrentTime(hour)}
+            {renderCurrentDate(hour, dateToFormat)}
+            {events.map((event) => {
+              return <MeetingTag span={colSpan} event={event} selectedDate={selectedDate} />;
+            })}
           </Row>
         </Col>
       </Row>
