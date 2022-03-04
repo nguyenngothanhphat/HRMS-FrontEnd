@@ -261,7 +261,17 @@ class EditUserModal extends PureComponent {
                   label="Email"
                   labelAlign="left"
                   name="workEmail"
-                  rules={[{ required: false, message: 'Please input work email!' }]}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input work email!',
+                    },
+                    {
+                      required: false,
+                      type: "email",
+                      message: 'Enter a valid email address!',
+                    },
+                  ]}
                 >
                   <Input />
                 </Form.Item>
