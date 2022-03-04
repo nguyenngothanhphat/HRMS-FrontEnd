@@ -157,7 +157,7 @@ const MeetingTag = (props) => {
       >
         <Col span={span} className={styles.MeetingTag} ref={myRef}>
           <div className={`${colorClassName} ${tagClassName}`}>
-            {event.summary}
+            {event.summary && (event.summary).length > 20 ? `${event.summary.slice(0,20)} ...` : event.summary}
             {hourSpanProp > 1 && (
               <span className={styles.extraTime}>
                 {moment(event.start.dateTime).format(timeFormat)} -{' '}
