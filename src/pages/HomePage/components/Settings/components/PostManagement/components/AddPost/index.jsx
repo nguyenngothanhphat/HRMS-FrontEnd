@@ -404,10 +404,22 @@ const AddPost = (props) => {
   };
 
   const renderPreview = () => {
+    let owner = {};
+    if (editing) {
+      owner = {
+        generalInfo: record?.createdBy?.generalInfoInfo,
+        titleInfo: record?.createdBy?.titleInfo,
+      };
+    } else {
+      owner = {
+        generalInfo: employee?.generalInfo,
+        titleInfo: employee?.title,
+      };
+    }
     return (
       <div className={styles.previewContainer}>
         <p className={styles.title}>Preview post</p>
-        <Preview mode={mode} editing={editing} formValues={formValues} />
+        <Preview mode={mode} editing={editing} formValues={formValues} owner={owner} />
       </div>
     );
   };
