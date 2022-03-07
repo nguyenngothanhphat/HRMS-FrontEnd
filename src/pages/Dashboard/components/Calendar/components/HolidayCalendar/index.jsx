@@ -9,9 +9,13 @@ import styles from './index.less';
 const dateFormat = 'DD dddd';
 
 const HolidayCalendar = (props) => {
-  const { isInModal = false, listHolidays = [] } = props;
+  const { isInModal = false, listHolidays = [], selectedYear = '' } = props;
   const currentDate = new Date().toISOString();
-  const newListHolidays = listHolidays.filter((date) => date.date.iso >= currentDate);
+  const currentYear = new Date().getFullYear();
+  let newListHolidays = listHolidays.filter((date) => date.date.iso >= currentDate);
+  if (currentYear !== selectedYear) {
+    newListHolidays = listHolidays;
+  }
   const [monthList, setMonthList] = useState([]);
   // const check = listHolidays.filter((obj) => obj.date.dateTime.month === '1') || [];
   // USE EFFECT
