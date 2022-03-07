@@ -4,13 +4,19 @@ import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
 import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
+import EditIcon from '@/assets/projectManagement/edit2.svg';
 import CommonTable from './components/CommonTable';
 import Header from './components/Header';
+import CommonModal from '../CommonModal';
+import EditProjectStatusModalContent from '../EditProjectStatusModalContent';
 import styles from './index.less';
 
 const Projects = (props) => {
   const { projectList = [], statusSummary = [], dispatch, loadingFetchProjectList = false } = props;
   const [projectStatus, setProjectStatus] = useState('All');
+
+  const [isEditProjectStatus, setIsEditProjectStatus] = useState(false);
+  const [selectedProject, setSelectedProject] = useState('');
 
   const fetchProjectList = async (payload) => {
     let tempPayload = payload;
@@ -51,6 +57,13 @@ const Projects = (props) => {
       type: 'projectManagement/fetchProjectStatusListEffect',
     });
   }, []);
+
+  // refresh list without losing filter, search
+  const onRefresh = () => {
+    dispatch({
+      type: 'projectManagement/refreshProjectList',
+    });
+  };
 
   const renderTimeTitle = (title) => {
     return (
@@ -119,7 +132,7 @@ const Projects = (props) => {
         },
       },
       {
-        title: renderTimeTitle('End Date*'),
+        title: renderTimeTitle('End Date'),
         dataIndex: 'tentativeEndDate',
         key: 'tentativeEndDate',
         align: 'center',
@@ -145,8 +158,20 @@ const Projects = (props) => {
         title: 'Status',
         dataIndex: 'projectStatus',
         key: 'projectStatus',
-        render: (pmStatus = '') => {
-          return <span>{pmStatus || '-'}</span>;
+        render: (pmStatus = '', record = {}) => {
+          return (
+            <div className={styles.projectStatus}>
+              <span>{pmStatus || '-'}</span>
+              <img
+                src={EditIcon}
+                alt=""
+                onClick={() => {
+                  setSelectedProject(record);
+                  setIsEditProjectStatus(true);
+                }}
+              />
+            </div>
+          );
         },
       },
       {
@@ -200,6 +225,22 @@ const Projects = (props) => {
           loading={loadingFetchProjectList}
         />
       </div>
+
+      <CommonModal
+        visible={isEditProjectStatus}
+        onClose={() => setIsEditProjectStatus(false)}
+        firstText="Save Changes"
+        secondText="Cancel"
+        title="Edit Status"
+        content={
+          <EditProjectStatusModalContent
+            onClose={() => setIsEditProjectStatus(false)}
+            selectedProject={selectedProject}
+            onRefresh={onRefresh}
+          />
+        }
+        width={600}
+      />
     </div>
   );
 };

@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import ViewIcon from '@/assets/projectManagement/view.svg';
 import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
 import OrangeAddButton from '../../../OrangeAddButton';
-import CommonModal from '../../../CommonModal';
+import CommonModal from '../../../../../CommonModal';
 import CommonTable from '../../../CommonTable';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';

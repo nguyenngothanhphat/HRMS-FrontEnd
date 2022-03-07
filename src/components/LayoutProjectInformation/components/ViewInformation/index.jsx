@@ -1,12 +1,15 @@
 import { Button, Col, Divider, Row } from 'antd';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import MockCustomerLogo from '@/assets/mockCustomerLogo.png';
+import EditIcon from '@/assets/projectManagement/edit2.svg';
 import s from '../../index.less';
 import CustomTag from '../CustomTag';
+import EditProjectStatusModalContent from '@/pages/ProjectManagement/components/EditProjectStatusModalContent';
+import CommonModal from '@/pages/ProjectManagement/components/CommonModal';
 
 const ViewInformation = (props) => {
-  const { projectDetail, permissions = {} } = props;
+  const { projectDetail, permissions = {}, dispatch } = props;
   const {
     avatar = '',
     customerName = '',
@@ -21,11 +24,14 @@ const ViewInformation = (props) => {
     tags = [],
   } = projectDetail;
 
+  const [isEditProjectStatus, setIsEditProjectStatus] = useState(false);
+
   const { generalInfo: { userId: accountOwnerId = '', legalName: accountOwnerName = '' } = {} } =
     accountOwner || {};
   const {
     generalInfo: { userId: engineeringOwnerId = '', legalName: engineeringOwnerName = '' } = {},
   } = engineeringOwner || {};
+
   // permissions
   const modifyProjectPermission = permissions.modifyProject !== -1;
 
@@ -33,6 +39,20 @@ const ViewInformation = (props) => {
     const url = `/directory/employee-profile/${id}`;
     window.open(url, '_blank');
   };
+
+  const onRefresh = async () => {
+    dispatch({
+      type: 'projectDetails/fetchProjectByIdEffect',
+      payload: {
+        projectId,
+      },
+    });
+  };
+  useEffect(() => {
+    dispatch({
+      type: 'projectManagement/fetchProjectStatusListEffect',
+    });
+  }, []);
 
   const items = [
     {
@@ -49,7 +69,12 @@ const ViewInformation = (props) => {
     },
     {
       name: 'Status',
-      value: projectStatus,
+      value: (
+        <div className={s.projectStatus}>
+          <span>{projectStatus}</span>
+          <img src={EditIcon} alt="" onClick={() => setIsEditProjectStatus(true)} />
+        </div>
+      ),
     },
     {
       name: 'Engagement Type',
@@ -101,7 +126,7 @@ const ViewInformation = (props) => {
         <div className={s.projectInfo__viewBottom__row}>
           {items.map((x) => {
             return (
-              <Row>
+              <Row align="middle" className={s.item}>
                 <Col span={12}>
                   <p className={s.label}>{x.name}</p>
                 </Col>
@@ -119,6 +144,21 @@ const ViewInformation = (props) => {
           <CustomTag color={getColor(i)}>{t}</CustomTag>
         ))}
       </div>
+      <CommonModal
+        visible={isEditProjectStatus}
+        onClose={() => setIsEditProjectStatus(false)}
+        firstText="Save Changes"
+        secondText="Cancel"
+        title="Edit Status"
+        content={
+          <EditProjectStatusModalContent
+            onClose={() => setIsEditProjectStatus(false)}
+            selectedProject={projectDetail}
+            onRefresh={onRefresh}
+          />
+        }
+        width={600}
+      />
     </div>
   );
 };
