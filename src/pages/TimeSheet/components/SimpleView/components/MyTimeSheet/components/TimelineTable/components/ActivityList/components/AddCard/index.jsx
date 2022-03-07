@@ -24,7 +24,10 @@ const { ACTIVITY, START_TIME, END_TIME, NIGHT_SHIFT, TOTAL_HOURS, NOTES, ACTIONS
 
 const AddCard = (props) => {
   const [form] = Form.useForm();
+
   const [refreshing, setRefreshing] = useState(false);
+  const [disabledHourAfter, setDisabledHourAfter] = useState([]); // for start time validation
+  const [disabledHourBefore, setDisabledHourBefore] = useState([]); // for end time validation
 
   const {
     card: {
@@ -100,6 +103,9 @@ const AddCard = (props) => {
 
   const onValuesChange = (changedValues, allValues) => {
     onEditValue(allValues, cardIndex);
+    const { startTime: startTimeForm = '', endTime: endTimeForm = '' } = allValues;
+    setDisabledHourAfter(endTimeForm);
+    setDisabledHourBefore(startTimeForm);
   };
 
   // MAIN AREA
@@ -135,6 +141,7 @@ const AddCard = (props) => {
               suffixIcon={<img src={ClockIcon} alt="" />}
               placeholder="Time In"
               allowClear={false}
+              disabledHourAfter={disabledHourAfter}
             />
           </Form.Item>
         </Col>
@@ -144,6 +151,7 @@ const AddCard = (props) => {
               suffixIcon={<img src={ClockIcon} alt="" />}
               placeholder="Time Out"
               allowClear={false}
+              disabledHourBefore={disabledHourBefore}
             />
           </Form.Item>
         </Col>
