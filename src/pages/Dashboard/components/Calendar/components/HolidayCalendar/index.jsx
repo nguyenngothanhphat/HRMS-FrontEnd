@@ -110,7 +110,7 @@ const HolidayCalendar = (props) => {
     );
   };
 
-  if (listHolidays.length === 0) {
+  if (newListHolidays.length === 0) {
     return <Empty image={Icon} />;
   }
 
