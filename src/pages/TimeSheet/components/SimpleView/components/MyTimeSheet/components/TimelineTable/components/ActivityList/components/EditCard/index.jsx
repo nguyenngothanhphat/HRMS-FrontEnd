@@ -1,6 +1,6 @@
 import { Col, Form, Input, Row, Select, notification } from 'antd';
 import moment from 'moment';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import ApproveIcon from '@/assets/timeSheet/approve.svg';
 import ArrowDown from '@/assets/timeSheet/arrowDown.svg';
@@ -25,6 +25,9 @@ const { ACTIVITY, START_TIME, END_TIME, NIGHT_SHIFT, TOTAL_HOURS, NOTES, ACTIONS
 const EditCard = (props) => {
   const [form] = Form.useForm();
 
+  const [disabledHourAfter, setDisabledHourAfter] = useState([]); // for start time validation
+  const [disabledHourBefore, setDisabledHourBefore] = useState([]); // for end time validation
+
   const {
     card: {
       id = '',
@@ -48,6 +51,11 @@ const EditCard = (props) => {
       location = {},
     } = {},
   } = props;
+
+  useEffect(() => {
+    setDisabledHourAfter(endTime);
+    setDisabledHourBefore(startTime);
+  }, [startTime, endTime]);
 
   // main function
   const updateActivityEffect = (values) => {
@@ -91,6 +99,12 @@ const EditCard = (props) => {
     }
   };
 
+  const onValuesChange = (changedValues, allValues) => {
+    const { startTime: startTimeForm = '', endTime: endTimeForm = '' } = allValues;
+    setDisabledHourAfter(endTimeForm);
+    setDisabledHourBefore(startTimeForm);
+  };
+
   // MAIN AREA
   return (
     <Form
@@ -106,6 +120,7 @@ const EditCard = (props) => {
         nightShift,
         notes,
       }}
+      onValuesChange={onValuesChange}
     >
       <Row gutter={[12, 0]}>
         <Col span={ACTIVITY} className={`${styles.normalCell} ${styles.boldText}`}>
@@ -123,6 +138,7 @@ const EditCard = (props) => {
               suffixIcon={<img src={ClockIcon} alt="" />}
               placeholder="Time In"
               allowClear={false}
+              disabledHourAfter={disabledHourAfter}
             />
           </Form.Item>
         </Col>
@@ -132,6 +148,7 @@ const EditCard = (props) => {
               suffixIcon={<img src={ClockIcon} alt="" />}
               placeholder="Time Out"
               allowClear={false}
+              disabledHourBefore={disabledHourBefore}
             />
           </Form.Item>
         </Col>
