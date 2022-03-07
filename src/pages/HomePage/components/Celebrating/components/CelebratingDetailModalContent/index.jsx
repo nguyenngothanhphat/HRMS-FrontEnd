@@ -182,7 +182,7 @@ const CelebratingDetailModalContent = (props) => {
         <div className={styles.content}>
           <p
             className={`${styles.authorName} ${isMe ? styles.isMe : null}`}
-            onClick={() => onViewProfile(comment.employeeInfo?._id)}
+            onClick={() => onViewProfile(comment.employeeInfo?.generalInfoInfo?.userId)}
           >
             {legalName}
           </p>

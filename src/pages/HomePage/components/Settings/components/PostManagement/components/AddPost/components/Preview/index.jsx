@@ -28,6 +28,7 @@ const Preview = (props) => {
       startDateP = '',
       endDateP = '',
     },
+    owner = {},
   } = props;
 
   const [announcementContent, setAnnouncementContent] = useState({
@@ -117,11 +118,11 @@ const Preview = (props) => {
       id: 1,
       employee: {
         generalInfoInfo: {
-          legalName: 'Ronald Richards.',
-          // avatar: TerralogicIcon,
+          legalName: owner?.generalInfo?.legalName,
+          avatar: owner?.generalInfo?.avatar,
         },
         titleInfo: {
-          name: 'Head of Design',
+          name: owner?.titleInfo?.name,
         },
       },
       attachments: [
@@ -132,7 +133,7 @@ const Preview = (props) => {
               : PreviewImage,
         },
       ],
-      description: descriptionA || 'Description here',
+      description: descriptionA || 'Description',
     };
 
     switch (mode) {
@@ -161,23 +162,6 @@ const Preview = (props) => {
           <div style={{ padding: '24px' }}>
             <GalleryCard
               previewing
-              // contentPreview={
-              //   imagesContent.imageUrls.length > 0
-              //     ? imagesContent.imageUrls.map((x) => {
-              //         return {
-              //           image: x,
-              //           description: descriptionI ? Parser(descriptionI) : '',
-              //           title: titleI || '',
-              //         };
-              //       })
-              //     : [
-              //         {
-              //           image: '',
-              //           description: descriptionI ? Parser(descriptionI) : 'Description',
-              //           title: titleI || 'Title',
-              //         },
-              //       ]
-              // }
               contentPreview={
                 imagesContent.imageUrls.length > 0
                   ? [
@@ -198,11 +182,7 @@ const Preview = (props) => {
           </div>
         );
       case TAB_IDS.BANNER:
-        return (
-          // <div style={{ padding: '24px' }}>
-          <Carousel previewing contentPreview={bannerContent.imageUrls} />
-          // </div>
-        );
+        return <Carousel previewing contentPreview={bannerContent.imageUrls} />;
 
       case TAB_IDS.POLL:
         return (
@@ -210,7 +190,7 @@ const Preview = (props) => {
             <Options
               previewing
               contentPreview={{
-                previewQuestion: questionP || 'Question here',
+                previewQuestion: questionP || 'Question',
                 previewStartDate: startDateP,
                 previewEndDate: endDateP,
                 previewOptions: responsesP,

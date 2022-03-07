@@ -8,7 +8,7 @@
 - [ ] Figma Mockup Ready
 
 ## Details - 
-Backend Issue Link -
+Backend Merge Request Link -
 
 Dependencies (if any) -
 
@@ -17,4 +17,4 @@ Dependencies (if any) -
 
 
 /label ~feature
-/cc @aashwij @khang.le @thang.nguyen
+/cc @aashwij @christine.nguyen @thang.nguyen
