@@ -4,10 +4,28 @@ import React from 'react';
 import styles from './index.less';
 
 const SearchBar = (props) => {
-  const { activeKey = '', onChangeSearch = () => {} } = props;
+  const { activeView = '', onChangeSearch = () => {} } = props;
+
   const VIEW_TYPE = {
+    PROJECT_VIEW: 'project-view',
     TEAM_VIEW: 'team-view',
+    FINANCE_REPORTS: 'finance-reports',
+    HR_REPORTS: 'hr-reports',
   };
+
+  const renderPlaceHolder = (val) => {
+    if (val === VIEW_TYPE.PROJECT_VIEW) {
+      return 'Search by Funtional Area';
+    }
+    if (val === VIEW_TYPE.TEAM_VIEW || val === VIEW_TYPE.HR_REPORTS) {
+      return 'Search by Employee';
+    }
+    if (val === VIEW_TYPE.FINANCE_REPORTS) {
+      return 'Search by Project';
+    }
+    return 'Search by Name, task...';
+  };
+
   const searchPrefix = () => {
     return (
       <SearchOutlined
@@ -24,9 +42,7 @@ const SearchBar = (props) => {
     <div className={styles.SearchBar}>
       <Input
         className={styles.searchInput}
-        placeholder={
-          activeKey === VIEW_TYPE.TEAM_VIEW ? 'Search by Name, task...' : 'Search by Funtional Area'
-        }
+        placeholder={renderPlaceHolder(activeView)}
         prefix={searchPrefix()}
         onChange={(e) => onChangeSearch(e.target.value)}
       />

@@ -23,7 +23,7 @@ const Header = (props) => {
     projectList = [],
     onChangeSearch = () => {},
     loadingFetchProjectList = false,
-    activeKey = '',
+    activeView = '',
   } = props;
 
   // HEADER AREA FOR MONTH
@@ -145,7 +145,7 @@ const Header = (props) => {
       <div className={styles.Header__middle}>{viewChangeComponent()}</div>
       <div className={styles.Header__right}>
         <FilterButton />
-        <SearchBar onChangeSearch={onChangeSearch} activeKey={activeKey} />
+        <SearchBar onChangeSearch={onChangeSearch} activeView={activeView} />
       </div>
     </div>
   );
