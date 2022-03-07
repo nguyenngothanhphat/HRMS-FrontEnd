@@ -35,10 +35,10 @@ const ManagerReport = () => {
         tabBarExtraContent={options()}
       >
         <TabPane tab="Project View" key={VIEW_TYPE.PROJECT_VIEW}>
-          <ProjectView />
+          <ProjectView activeKey={activeKey} />
         </TabPane>
         <TabPane tab="Team View" key={VIEW_TYPE.TEAM_VIEW}>
-          <TeamView />
+          <TeamView activeKey={activeKey} />
         </TabPane>
       </Tabs>
     </div>

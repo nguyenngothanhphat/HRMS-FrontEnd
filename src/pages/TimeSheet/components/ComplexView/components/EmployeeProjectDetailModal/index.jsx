@@ -22,23 +22,20 @@ const EmployeeProjectDetailModal = (props) => {
   const { timeSheet: { myTimesheet = [] } = {}, loadingFetchMyTimesheet = false } = props;
 
   const [data, setData] = useState([]);
+  const [filterData, setFilterData] = useState([]);
   const [nameSearch, setNameSearch] = useState('');
+  const [loadingSearch, setLoadingSearch] = useState(false);
 
   // FUNCTION AREA
   const fetchMyTimesheetEffect = () => {
-    let payload = {};
-    payload = {
-      companyId: getCurrentCompany(),
-      employeeId,
-      fromDate: moment(startDate).format(dateFormatAPI),
-      toDate: moment(endDate).format(dateFormatAPI),
-    };
-    if (nameSearch) {
-      payload.search = nameSearch;
-    }
     dispatch({
       type: 'timeSheet/fetchMyTimesheetEffect',
-      payload,
+      payload: {
+        companyId: getCurrentCompany(),
+        employeeId,
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
+      },
     });
   };
 
@@ -66,13 +63,38 @@ const EmployeeProjectDetailModal = (props) => {
     if (visible && startDate && endDate && employeeId) {
       fetchMyTimesheetEffect();
     }
-  }, [employeeId, startDate, endDate, nameSearch]);
+  }, [employeeId, startDate, endDate]);
 
   useEffect(() => {
     const tempData = formatData(myTimesheet);
     setData(tempData);
+    setFilterData(tempData);
   }, [JSON.stringify(myTimesheet)]);
 
+  useEffect(() => {
+    if (nameSearch !== '') {
+      const newData = data.filter((val) => {
+        return (
+          val.projectName
+            .toLowerCase()
+            .replace(/ /g, '')
+            .includes(nameSearch.toLowerCase().replace(/ /g, '')) ||
+          val.taskName
+            .toLowerCase()
+            .replace(/ /g, '')
+            .includes(nameSearch.toLowerCase().replace(/ /g, ''))
+        );
+      });
+      setFilterData(newData);
+      setLoadingSearch(true);
+      setTimeout(() => {
+        setLoadingSearch(false);
+      }, 500);
+    } else {
+      setFilterData(data);
+      setLoadingSearch(false);
+    }
+  }, [nameSearch]);
   // RENDER UI
   const renderModalHeader = () => {
     return (
@@ -95,7 +117,7 @@ const EmployeeProjectDetailModal = (props) => {
     return (
       <div className={styles.content}>
         <Header onChangeSearch={onChangeSearch} startDate={startDate} endDate={endDate} />
-        <ProjectTable list={data} loading={loadingFetchMyTimesheet} />
+        <ProjectTable list={filterData} loading={loadingFetchMyTimesheet || loadingSearch} />
       </div>
     );
   };

@@ -4,7 +4,10 @@ import React from 'react';
 import styles from './index.less';
 
 const SearchBar = (props) => {
-  const { placeholder = 'Search by Name, Task...', onChangeSearch = () => {} } = props;
+  const { activeKey = '', onChangeSearch = () => {} } = props;
+  const VIEW_TYPE = {
+    TEAM_VIEW: 'team-view',
+  };
   const searchPrefix = () => {
     return (
       <SearchOutlined
@@ -21,7 +24,9 @@ const SearchBar = (props) => {
     <div className={styles.SearchBar}>
       <Input
         className={styles.searchInput}
-        placeholder={placeholder}
+        placeholder={
+          activeKey === VIEW_TYPE.TEAM_VIEW ? 'Search by Name, task...' : 'Search by Funtional Area'
+        }
         prefix={searchPrefix()}
         onChange={(e) => onChangeSearch(e.target.value)}
       />

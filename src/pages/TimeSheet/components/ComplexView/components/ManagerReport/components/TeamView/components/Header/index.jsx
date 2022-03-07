@@ -13,6 +13,7 @@ const Header = (props) => {
     setStartDate = () => {},
     setEndDate = () => {},
     onChangeSearch = () => {},
+    activeKey = '',
   } = props;
 
   // HEADER AREA
@@ -49,7 +50,7 @@ const Header = (props) => {
       </div>
       <div className={styles.Header__right}>
         <FilterButton />
-        <SearchBar onChangeSearch={onChangeSearch} />
+        <SearchBar onChangeSearch={onChangeSearch} activeKey={activeKey} />
       </div>
     </div>
   );
