@@ -1,6 +1,6 @@
 import { Button, Checkbox, Col, DatePicker, Form, Input, Modal, Row, Select } from 'antd';
 import moment from 'moment';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { dateFormatAPI, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
@@ -13,6 +13,10 @@ const TASKS = [];
 
 const EditTaskModal = (props) => {
   const [form] = Form.useForm();
+
+  const [disabledHourAfter, setDisabledHourAfter] = useState([]); // for start time validation
+  const [disabledHourBefore, setDisabledHourBefore] = useState([]); // for end time validation
+
   const {
     visible = false,
     title = 'Edit Task',
@@ -58,6 +62,8 @@ const EditTaskModal = (props) => {
   useEffect(() => {
     if (visible) {
       fetchProjectList();
+      setDisabledHourAfter(endTime);
+      setDisabledHourBefore(startTime);
     }
   }, [visible]);
 
@@ -70,6 +76,12 @@ const EditTaskModal = (props) => {
       type: 'timeSheet/fetchMyTimesheetByTypeEffect',
       isRefreshing: true,
     });
+  };
+
+  const onValuesChange = (changedValues, allValues) => {
+    const { startTime: startTimeForm = '', endTime: endTimeForm = '' } = allValues;
+    setDisabledHourAfter(endTimeForm);
+    setDisabledHourBefore(startTimeForm);
   };
 
   // main function
@@ -139,6 +151,7 @@ const EditTaskModal = (props) => {
             notes,
             clientLocation,
           }}
+          onValuesChange={onValuesChange}
         >
           <Row gutter={[24, 0]} className={styles.abovePart}>
             <Col xs={24} md={12}>
@@ -168,8 +181,7 @@ const EditTaskModal = (props) => {
                   loading={loadingFetchProject}
                   disabled={loadingFetchProject}
                   filterOption={(input, option) =>
-                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
+                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   {projectList.map((val) => (
                     <Option value={val.id}>{val.projectName}</Option>
@@ -203,7 +215,11 @@ const EditTaskModal = (props) => {
                 rules={[{ required: true, message: 'Select start time' }]}
                 name="startTime"
               >
-                <CustomTimePicker placeholder="Select start time" showSearch />
+                <CustomTimePicker
+                  placeholder="Select start time"
+                  showSearch
+                  disabledHourAfter={disabledHourAfter}
+                />
               </Form.Item>
             </Col>
 
@@ -214,7 +230,11 @@ const EditTaskModal = (props) => {
                 rules={[{ required: true, message: 'Select end time' }]}
                 name="endTime"
               >
-                <CustomTimePicker placeholder="Select end time" showSearch />
+                <CustomTimePicker
+                  placeholder="Select end time"
+                  showSearch
+                  disabledHourBefore={disabledHourBefore}
+                />
               </Form.Item>
             </Col>
 

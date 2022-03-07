@@ -13,7 +13,7 @@ import {
   // TimePicker,
 } from 'antd';
 import moment from 'moment';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { dateFormatAPI, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -28,6 +28,10 @@ const TASKS = [];
 
 const AddTaskModal = (props) => {
   const [form] = Form.useForm();
+
+  const [disabledHourAfter, setDisabledHourAfter] = useState([]); // for start time validation
+  const [disabledHourBefore, setDisabledHourBefore] = useState([]); // for end time validation
+
   const {
     visible = false,
     title = 'Add Task',
@@ -81,6 +85,14 @@ const AddTaskModal = (props) => {
       type: 'timeSheet/fetchMyTimesheetByTypeEffect',
       isRefreshing: true,
     });
+  };
+
+  const onValuesChange = (changedValues, allValues) => {
+    const { tasks = [] } = allValues;
+    const disabledHourAfterTemp = tasks.map((x = {}) => x.endTime);
+    const disabledHourBeforeTemp = tasks.map((x = {}) => x.startTime);
+    setDisabledHourAfter(disabledHourAfterTemp);
+    setDisabledHourBefore(disabledHourBeforeTemp);
   };
 
   // main function
@@ -153,7 +165,7 @@ const AddTaskModal = (props) => {
       <Form.List name="tasks">
         {(fields, { add, remove }) => (
           <>
-            {fields.map(({ key, name, fieldKey }) => (
+            {fields.map(({ key, name, fieldKey }, index) => (
               <>
                 {key !== 0 && <div className={styles.divider} />}
                 <Row gutter={[24, 0]} className={styles.belowPart}>
@@ -171,8 +183,7 @@ const AddTaskModal = (props) => {
                         loading={loadingFetchProject}
                         disabled={loadingFetchProject}
                         filterOption={(input, option) =>
-                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       >
                         {projectList.map((val) => (
                           <Option value={val.id}>{val.projectName}</Option>
@@ -213,7 +224,11 @@ const AddTaskModal = (props) => {
                       name={[name, 'startTime']}
                       fieldKey={[fieldKey, 'startTime']}
                     >
-                      <CustomTimePicker placeholder="Select start time" showSearch />
+                      <CustomTimePicker
+                        placeholder="Select start time"
+                        showSearch
+                        disabledHourAfter={disabledHourAfter[index]}
+                      />
                     </Form.Item>
                   </Col>
 
@@ -225,7 +240,11 @@ const AddTaskModal = (props) => {
                       name={[name, 'endTime']}
                       fieldKey={[fieldKey, 'endTime']}
                     >
-                      <CustomTimePicker placeholder="Select end time" showSearch />
+                      <CustomTimePicker
+                        placeholder="Select end time"
+                        showSearch
+                        disabledHourBefore={disabledHourBefore[index]}
+                      />
                     </Form.Item>
                   </Col>
 
@@ -284,6 +303,7 @@ const AddTaskModal = (props) => {
           initialValues={{
             tasks: [{ projectName: projectName || null }],
           }}
+          onValuesChange={onValuesChange}
         >
           <Row gutter={[24, 0]} className={styles.abovePart}>
             <Col xs={24} md={12}>
