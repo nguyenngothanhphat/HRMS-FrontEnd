@@ -443,7 +443,7 @@ const ModalAddInfo = (props) => {
               You are required to fill in the below details to proceed further
             </div>
             <Form.Item
-              label="Total Years of Experience"
+              label={requiredLabel('Total Years of Experience')}
               name="totalExp"
               style={{ marginTop: '24px' }}
               rules={[
@@ -514,7 +514,7 @@ const ModalAddInfo = (props) => {
               </Button>
             </Form.Item>
             <Form.Item
-              label="Skills"
+              label={requiredLabel('Skills')}
               name="skills"
               rules={[
                 {
