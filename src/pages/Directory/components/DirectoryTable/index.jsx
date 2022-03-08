@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
-import { Avatar, Button, Popover, Table, Tag, Tooltip } from 'antd';
+import { Avatar, Button, Popover, Table, Tag } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { Component } from 'react';
-import { connect, formatMessage, history, Link } from 'umi';
+import { connect, formatMessage, Link } from 'umi';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import { isOwner } from '@/utils/authority';
 import avtDefault from '@/assets/avtDefault.jpg';
@@ -298,11 +298,9 @@ class DirectoryTable extends Component {
         dataIndex: 'title',
         key: 'title',
         render: (title) => (
-          <Tooltip placement="left" title={`Filter by ${title ? title.name : ''}`}>
-            <span className={styles.title} onClick={() => this.onFilter(title?._id, 'title')}>
-              {title ? title.name : ''}
-            </span>
-          </Tooltip>
+          <span className={styles.title} onClick={() => this.onFilter(title?._id, 'title')}>
+            {title ? title.name : ''}
+          </span>
         ),
         width: '12%',
         align: 'left',
@@ -383,15 +381,13 @@ class DirectoryTable extends Component {
         render: (department) => {
           const tag = departmentTag.find((d) => d.name === department.name) || { color: '#108ee9' };
           return (
-            <Tooltip placement="left" title={`Filter by ${department ? department.name : ''}`}>
-              <Tag
-                className={styles.department}
-                onClick={() => this.onFilter(department.name, 'department')}
-                color={tag.color}
-              >
-                {department.name}
-              </Tag>
-            </Tooltip>
+            <Tag
+              className={styles.department}
+              onClick={() => this.onFilter(department.name, 'department')}
+              color={tag.color}
+            >
+              {department.name}
+            </Tag>
           );
           //   <span className={styles.directoryTable_deparmentText}>
           //   {department ? department.name : ''}
