@@ -38,6 +38,7 @@ const ProjectView = (props) => {
     } = {},
     employee: { _id: userId = '' } = {},
     loadingFetchProjectList = false,
+    activeView = '',
   } = props;
 
   // FUNCTION AREA
@@ -153,6 +154,7 @@ const ProjectView = (props) => {
             projectList={projectList}
             onChangeSearch={onChangeSearch}
             loadingFetchProjectList={loadingFetchProjectList}
+            activeView={activeView}
           />
         );
 
@@ -170,6 +172,7 @@ const ProjectView = (props) => {
             projectList={projectList}
             onChangeSearch={onChangeSearch}
             loadingFetchProjectList={loadingFetchProjectList}
+            activeView={activeView}
           />
         );
 

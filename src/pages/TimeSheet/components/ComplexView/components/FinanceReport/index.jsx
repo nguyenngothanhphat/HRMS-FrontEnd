@@ -2,7 +2,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
-import { dateFormatAPI, VIEW_TYPE, generateAllWeeks } from '@/utils/timeSheet';
+import { dateFormatAPI, VIEW_TYPE, TAB_NAME, generateAllWeeks } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -122,6 +122,7 @@ const FinanceReport = (props) => {
             setEndDate={setEndDateWeek}
             viewChangeComponent={viewChangeComponent}
             type={VIEW_TYPE.W}
+            activeView={TAB_NAME.FINANCE_REPORTS}
           />
         );
 
@@ -135,6 +136,7 @@ const FinanceReport = (props) => {
             setEndDate={setEndDateMonth}
             viewChangeComponent={viewChangeComponent}
             type={VIEW_TYPE.M}
+            activeView={TAB_NAME.FINANCE_REPORTS}
           />
         );
 

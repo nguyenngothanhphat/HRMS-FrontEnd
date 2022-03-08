@@ -20,6 +20,7 @@ const Header = (props) => {
     type = '',
     onChangeSearch = () => {},
     data = [],
+    activeView = '',
   } = props;
 
   // HEADER AREA FOR MONTH
@@ -110,7 +111,7 @@ const Header = (props) => {
           <Button>Download</Button>
         </div>
         <FilterButton />
-        <SearchBar onChangeSearch={onChangeSearch} />
+        <SearchBar onChangeSearch={onChangeSearch} activeView={activeView} />
       </div>
     </div>
   );
