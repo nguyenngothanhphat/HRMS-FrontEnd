@@ -12,7 +12,14 @@ import EditProjectStatusModalContent from '../EditProjectStatusModalContent';
 import styles from './index.less';
 
 const Projects = (props) => {
-  const { projectList = [], statusSummary = [], dispatch, loadingFetchProjectList = false } = props;
+  const {
+    projectList = [],
+    statusSummary = [],
+    dispatch,
+    loadingFetchProjectList = false,
+    loadingUpdateProject = false,
+    permissions = {},
+  } = props;
   const [projectStatus, setProjectStatus] = useState('All');
 
   const [isEditProjectStatus, setIsEditProjectStatus] = useState(false);
@@ -73,6 +80,9 @@ const Projects = (props) => {
       </span>
     );
   };
+
+  // permissions
+  const modifyProjectPermission = permissions.modifyProject !== -1;
 
   const generateColumns = () => {
     const columns = [
@@ -162,14 +172,16 @@ const Projects = (props) => {
           return (
             <div className={styles.projectStatus}>
               <span>{pmStatus || '-'}</span>
-              <img
-                src={EditIcon}
-                alt=""
-                onClick={() => {
-                  setSelectedProject(record);
-                  setIsEditProjectStatus(true);
-                }}
-              />
+              {modifyProjectPermission && (
+                <img
+                  src={EditIcon}
+                  alt=""
+                  onClick={() => {
+                    setSelectedProject(record);
+                    setIsEditProjectStatus(true);
+                  }}
+                />
+              )}
             </div>
           );
         },
@@ -181,7 +193,7 @@ const Projects = (props) => {
         width: '7%',
         align: 'center',
         render: (numberOfResource, row) => {
-          if (!numberOfResource || numberOfResource === 0) {
+          if ((!numberOfResource || numberOfResource === 0) && modifyProjectPermission) {
             return (
               <Button
                 className={styles.addResourceBtn}
@@ -232,6 +244,7 @@ const Projects = (props) => {
         firstText="Save Changes"
         secondText="Cancel"
         title="Edit Status"
+        loading={loadingUpdateProject}
         content={
           <EditProjectStatusModalContent
             onClose={() => setIsEditProjectStatus(false)}
@@ -256,5 +269,6 @@ export default connect(
     statusSummary,
     projectListPayload,
     loadingFetchProjectList: loading.effects['projectManagement/fetchProjectListEffect'],
+    loadingUpdateProject: loading.effects['projectManagement/updateProjectEffect'],
   }),
 )(Projects);

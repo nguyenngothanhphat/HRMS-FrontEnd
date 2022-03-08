@@ -9,7 +9,7 @@ import EditProjectStatusModalContent from '@/pages/ProjectManagement/components/
 import CommonModal from '@/pages/ProjectManagement/components/CommonModal';
 
 const ViewInformation = (props) => {
-  const { projectDetail, permissions = {}, dispatch } = props;
+  const { projectDetail, permissions = {}, dispatch, loadingUpdateProject = false } = props;
   const {
     avatar = '',
     customerName = '',
@@ -150,6 +150,7 @@ const ViewInformation = (props) => {
         firstText="Save Changes"
         secondText="Cancel"
         title="Edit Status"
+        loading={loadingUpdateProject}
         content={
           <EditProjectStatusModalContent
             onClose={() => setIsEditProjectStatus(false)}
@@ -167,9 +168,11 @@ export default connect(
   ({
     user: { permissions },
     projectDetails: { projectDetail = {}, projectTagList = [] } = {},
+    loading,
   }) => ({
     projectDetail,
     projectTagList,
     permissions,
+    loadingUpdateProject: loading.effects['projectManagement/updateProjectEffect'],
   }),
 )(ViewInformation);

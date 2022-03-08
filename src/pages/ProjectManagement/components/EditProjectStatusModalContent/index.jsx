@@ -6,7 +6,13 @@ import styles from './index.less';
 const { Option } = Select;
 
 const EditProjectStatusModalContent = (props) => {
-  const { dispatch, onClose = () => {}, onRefresh = () => {}, selectedProject = {} } = props;
+  const {
+    dispatch,
+    onClose = () => {},
+    onRefresh = () => {},
+    selectedProject = {},
+    employee = {},
+  } = props;
 
   const { projectManagement: { projectStatusList = [] } = {} } = props;
 
@@ -19,12 +25,13 @@ const EditProjectStatusModalContent = (props) => {
         id: selectedProject.id,
         project_status: values.newStatus,
         reason_change_status: values.reason,
+        userName: employee?.generalInfo?.legalName,
       },
     });
     if (res.statusCode === 200) {
       onRefresh();
+      onClose();
     }
-    onClose();
   };
 
   return (

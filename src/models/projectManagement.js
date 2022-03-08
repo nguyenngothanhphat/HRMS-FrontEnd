@@ -304,7 +304,7 @@ const ProjectManagement = {
       try {
         response = yield call(updateProject, {
           ...payload,
-          company: getCurrentCompany(),
+          // company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
         const { statusCode, message } = response;
