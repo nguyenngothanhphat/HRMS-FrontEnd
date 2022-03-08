@@ -13,7 +13,7 @@ const SearchBar = (props) => {
     HR_REPORTS: 'hr-reports',
   };
 
-  const renderPlaceHolder = (val) => {
+  const renderPlaceholder = (val) => {
     if (val === VIEW_TYPE.PROJECT_VIEW) {
       return 'Search by Funtional Area';
     }
@@ -23,7 +23,7 @@ const SearchBar = (props) => {
     if (val === VIEW_TYPE.FINANCE_REPORTS) {
       return 'Search by Project';
     }
-    return 'Search by Name, task...';
+    return 'Search by Name, Task...';
   };
 
   const searchPrefix = () => {
@@ -42,7 +42,7 @@ const SearchBar = (props) => {
     <div className={styles.SearchBar}>
       <Input
         className={styles.searchInput}
-        placeholder={renderPlaceHolder(activeView)}
+        placeholder={renderPlaceholder(activeView)}
         prefix={searchPrefix()}
         onChange={(e) => onChangeSearch(e.target.value)}
       />

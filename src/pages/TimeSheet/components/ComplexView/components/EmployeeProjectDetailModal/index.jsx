@@ -72,7 +72,7 @@ const EmployeeProjectDetailModal = (props) => {
   }, [JSON.stringify(myTimesheet)]);
 
   useEffect(() => {
-    if (nameSearch !== '') {
+    if (nameSearch) {
       const newData = data.filter((val) => {
         return (
           val.projectName
