@@ -26,7 +26,13 @@ const BarGraph = (props) => {
             >
               <span className={styles.label}>{reply.text}</span>
               <span className={styles.percent}>{reply.percent}%</span>
-              <div className={styles.percentBackground} style={{ width: `${reply.percent}%` }} />
+              <div
+                className={styles.percentBackground}
+                style={{
+                  width: `${reply.percent}%`,
+                  backgroundColor: votedOption === reply.id ? '#d1dffa' : '',
+                }}
+              />
             </div>
           </Col>
         ))}

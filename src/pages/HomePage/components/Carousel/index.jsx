@@ -54,12 +54,14 @@ const Carousel = (props) => {
 
   useEffect(() => {
     let bannerStateTemp = [];
-    if (banners.length > 0) {
-      banners.forEach((x) => {
+    const bannersTemp = banners.sort(compare);
+
+    if (bannersTemp.length > 0) {
+      bannersTemp.forEach((x) => {
         bannerStateTemp = [...bannerStateTemp, ...x.attachments];
       });
-      bannerStateTemp = bannerStateTemp.sort(compare);
     }
+
     setBannerState(bannerStateTemp);
   }, [JSON.stringify(banners)]);
 
@@ -82,9 +84,10 @@ const Carousel = (props) => {
         arrows
         dots
         autoplay
+        effect="fade"
         autoplaySpeed={10000}
         nextArrow={<NextArrow />}
-        lazyLoad="ondemand"
+        // lazyLoad="ondemand"
         prevArrow={<PrevArrow />}
       >
         {!previewing &&
