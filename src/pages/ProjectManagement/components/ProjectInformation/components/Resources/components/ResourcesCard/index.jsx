@@ -16,7 +16,7 @@ import AddResourcesModal from '../AddResourcesModal';
 import FilterResourcesContent from './components/FilterResourcesContent';
 import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
 import styles from './index.less';
-import CommonModal from '../../../CommonModal';
+import CommonModal from '../../../../../CommonModal';
 
 const EditableCell = ({
   editing,

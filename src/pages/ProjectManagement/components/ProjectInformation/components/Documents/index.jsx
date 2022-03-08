@@ -8,7 +8,7 @@ import AddButton from '../AddButton';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import CustomSearchBox from '@/components/CustomSearchBox';
-import CommonModal from '../CommonModal';
+import CommonModal from '../../../CommonModal';
 import AddContent from './components/AddContent';
 import FilterContent from './components/FilterContent';
 import CommonTable from '../CommonTable';
