@@ -21,6 +21,7 @@ const TeamView = (props) => {
   const {
     timeSheet: { managerTeamViewList = [], managerTeamViewPagination = {} } = {},
     loadingFetch = false,
+    activeView = '',
   } = props;
 
   // FUNCTION AREA
@@ -31,7 +32,7 @@ const TeamView = (props) => {
       userId: employeeId,
       fromDate: moment(startDate).format(dateFormatAPI),
       toDate: moment(endDate).format(dateFormatAPI),
-      page,
+      page: nameSearch ? 1 : page,
       limit,
     };
     if (nameSearch) {
@@ -80,6 +81,7 @@ const TeamView = (props) => {
         setStartDate={setStartDate}
         setEndDate={setEndDate}
         onChangeSearch={onChangeSearch}
+        activeView={activeView}
       />
       <MemberTable
         data={managerTeamViewList}
