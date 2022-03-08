@@ -55,12 +55,12 @@ const BannerTable = (props) => {
 
   const getColumns = () => {
     const columns = [
-      // {
-      //   dataIndex: 'sort',
-      //   width: '7%',
-      //   align: 'center',
-      //   render: () => <DragHandle />,
-      // },
+      {
+        dataIndex: 'sort',
+        width: '7%',
+        align: 'center',
+        render: () => <DragHandle />,
+      },
       {
         title: 'ID',
         dataIndex: 'position',
