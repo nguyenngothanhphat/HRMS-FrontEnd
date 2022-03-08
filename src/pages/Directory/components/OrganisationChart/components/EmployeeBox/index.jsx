@@ -218,7 +218,7 @@ class DetailEmployeeChart extends Component {
               <Select
                 ref={this.inputRef}
                 showSearch
-                placeholder="Search for employee, department"
+                placeholder="Search by Employee Name or ID"
                 filterOption={false}
                 notFoundContent={null}
                 defaultActiveFirstOption={false}

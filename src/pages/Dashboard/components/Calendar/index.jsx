@@ -134,7 +134,7 @@ const Calendar = (props) => {
               )}
             </TabPane>
             <TabPane tab="Holiday Calendar" key="2">
-              <HolidayCalendar listHolidays={filterHoliday} />
+              <HolidayCalendar listHolidays={filterHoliday} selectedYear={selectedYear} />
             </TabPane>
           </Tabs>
         </div>
