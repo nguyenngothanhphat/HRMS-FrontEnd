@@ -66,6 +66,12 @@ const EmployeeProjectDetailModal = (props) => {
   }, [employeeId, startDate, endDate]);
 
   useEffect(() => {
+    if (visible) {
+      setFilterData(data);
+    }
+  }, [visible]);
+
+  useEffect(() => {
     const tempData = formatData(myTimesheet);
     setData(tempData);
     setFilterData(tempData);
