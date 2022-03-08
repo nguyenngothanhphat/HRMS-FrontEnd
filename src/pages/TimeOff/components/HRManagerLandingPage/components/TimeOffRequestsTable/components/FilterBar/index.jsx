@@ -109,7 +109,7 @@ class FilterBar extends Component {
             key="5"
           />
 
-          {deletedLength !== 0 && category !== 'MY' && (
+          {category !== 'MY' && (
             <TabPane tab={`Deleted (${this.addZeroToNumber(deletedLength)})`} key="6" />
           )}
         </Tabs>
