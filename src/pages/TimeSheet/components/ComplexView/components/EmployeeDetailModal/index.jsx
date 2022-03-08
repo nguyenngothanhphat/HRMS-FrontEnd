@@ -43,11 +43,21 @@ const EmployeeDetailModal = (props) => {
 
   const processData = (array) => {
     return array.map((item) => {
-      const { date = '', inTime = '', leave = '', notes = '', outTime = '' } = item;
+      const {
+        date = '',
+        inTime = '',
+        leave = '',
+        notes = '',
+        outTime = '',
+        breakTime = '',
+        overTime = '',
+      } = item;
       return {
         Date: date,
         'In Time': inTime,
         'Out Time': leave,
+        'Break Time': breakTime,
+        'Over Time': overTime,
         Leaves: notes,
         Notes: outTime,
       };

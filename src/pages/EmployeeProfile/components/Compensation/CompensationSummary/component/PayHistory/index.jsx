@@ -19,9 +19,9 @@ const PayHistory = () => {
       render: (chanegType) => {
         return (
           <>
-            <div>{chanegType.name}</div>
-            <span>Salary: đ</span>
-            <span>{chanegType.salary}</span>
+            <div className={styles.nameType}>{chanegType.name}</div>
+            <span className={styles.salaryType}>Salary: đ</span>
+            <span className={styles.salaryType}>{chanegType.salary}</span>
           </>
         );
       },

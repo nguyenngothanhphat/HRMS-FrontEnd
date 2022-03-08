@@ -10,6 +10,10 @@ const PayDetail = () => {
   // data dummy
   const data = [
     {
+      type: 'Gross Pay',
+      value: '6,400,000',
+    },
+    {
       type: 'Basic',
       value: 27,
       color: '#6236FF',
@@ -39,6 +43,10 @@ const PayDetail = () => {
       value: 5,
       color: '#FFA100',
     },
+    {
+      type: 'Net Pay',
+      value: '5,900,000',
+    },
   ];
 
   const config = {
@@ -53,7 +61,7 @@ const PayDetail = () => {
     innerRadius: 0.64,
     meta: {
       value: {
-        formatter: (v) => `${v} ₹`,
+        formatter: (v) => `${v} đ`,
       },
     },
     label: {
@@ -94,9 +102,22 @@ const PayDetail = () => {
             <div className={styles.circleColor} style={{ background: `${item.color}` }} />
           </Col>
           <Col span={8}> {item.type}</Col>
-          <Col span={6} className={styles.money}>
-            {item.value}
-          </Col>
+
+          {item.type === 'Gross Pay' ? (
+            <Col span={6} className={styles.money}>
+              {`(+)đ ${item.value}`}
+            </Col>
+          ) : (
+            <Col span={6} className={styles.money}>
+              {`đ ${item.value}`}
+            </Col>
+          )}
+
+          {item.type === 'Gross Pay' ? (
+            <Col span={9} className={styles.viewGross}>
+              - View Gross Pay
+            </Col>
+          ) : null}
           {item.type === 'Deductions' ? (
             <Col span={9} className={styles.viewGross}>
               + View Deductions
@@ -111,27 +132,7 @@ const PayDetail = () => {
       <Col span={7}>
         <Pie {...config} />
       </Col>
-      <Col span={13}>
-        <Row className={styles.grossPay}>
-          <Col span={1} />
-          <Col span={8}> Gross Pay</Col>
-          <Col span={6} className={styles.money}>
-            (+) ₹ 6,40,000
-          </Col>
-          <Col span={9} className={styles.viewGross}>
-            - View Gross Pay
-          </Col>
-        </Row>
-        {renderViewDeductions()}
-
-        <Row className={styles.netPay}>
-          <Col span={1} />
-          <Col span={8}> Net Pay</Col>
-          <Col span={6} style={{ textAlign: 'right' }}>
-            ₹ 5,90,000
-          </Col>
-        </Row>
-      </Col>
+      <Col span={13}>{renderViewDeductions()}</Col>
       <Col span={4} />
     </Row>
   );

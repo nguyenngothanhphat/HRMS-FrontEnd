@@ -122,6 +122,12 @@
           padding: 0 16px;
           font-size: 13px;
           &__row {
+            .item {
+              margin-block: 16px;
+            }
+            p {
+              margin: 0;
+            }
             .label {
               color: #161c29;
               font-weight: 500;
@@ -131,6 +137,18 @@
               color: #161c2980; // hex with alpha 50%
               font-size: 12px;
               text-align: right;
+              .projectStatus {
+                height: 19px;
+                margin-top: -8px;
+                span {
+                  display: inline-block;
+                }
+                img {
+                  width: 36px;
+                  padding-left: 7px;
+                  cursor: pointer;
+                }
+              }
             }
             :global {
               .ant-col-6 {

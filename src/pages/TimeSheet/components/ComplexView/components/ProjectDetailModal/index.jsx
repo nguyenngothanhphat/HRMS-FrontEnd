@@ -35,33 +35,23 @@ const ProjectDetailModal = (props) => {
   };
 
   const processData = (array) => {
-    return array.map((item) => {
+    const result = [];
+    array.forEach((item) => {
       const { task = '', description = '', department = '', projectMembers = [] } = item;
-      let resources = '';
-      let timeTaken = 0;
-      let totaltime = 0;
-
-      projectMembers.forEach((el, index) => {
-        const { totalTime = 0 } = el;
-        resources += el.legalName;
-        timeTaken += el.userSpentTimeInHours;
-        totaltime += totalTime;
-        if (index + 1 < projectMembers.length) {
-          resources += ', ';
-          timeTaken += ', ';
-          totaltime += ', ';
-        }
+      projectMembers.forEach((pro) => {
+        result.push({
+          Department: department,
+          Task: task,
+          Description: description,
+          'Resources ': pro.legalName,
+          'Time taken': pro.userSpentTimeInHours,
+          'Break Time': pro.breakTime,
+          'Over Time': pro.overTime,
+          'Total time (task)': pro.totaltime,
+        });
       });
-
-      return {
-        Department: department,
-        Task: task,
-        Description: description,
-        'Resources ': resources,
-        'Time taken': timeTaken,
-        'Total time (task)': totaltime,
-      };
     });
+    return result;
   };
 
   const downloadTemplate = () => {

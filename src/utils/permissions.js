@@ -425,15 +425,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
 
   // PROJECT MANAGEMENT
   // https://docs.google.com/document/d/1RQ66VdevjGUHB3-4_VDU-DIPF0HCbcfKzKJevEwooLc/edit
-  const indexViewProjectListTab = isAuthorized(permissionList, [
-    'PROJECT_MANAGEMENT_VIEW',
-    PROJECT_MANAGER,
-  ]);
-  const indexAddProject = isAuthorized(permissionList, ['PROJECT_MANAGEMENT_ADD', PROJECT_MANAGER]);
-  const indexModifyProject = isAuthorized(permissionList, [
-    'PROJECT_MANAGEMENT_UPDATE',
-    PROJECT_MANAGER,
-  ]);
+  const indexViewProjectListTab = isAuthorized(permissionList, ['PROJECT_MANAGEMENT_VIEW']);
+  const indexAddProject = isAuthorized(permissionList, ['PROJECT_MANAGEMENT_ADD']);
+  const indexModifyProject = isAuthorized(permissionList, ['PROJECT_MANAGEMENT_UPDATE']);
   const indexViewProjectSettingTab = isAuthorized(permissionList, [
     'PROJECT_MANAGEMENT_SETTINGS_VIEW',
   ]);

@@ -4,13 +4,26 @@ import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
 import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
+import EditIcon from '@/assets/projectManagement/edit2.svg';
 import CommonTable from './components/CommonTable';
 import Header from './components/Header';
+import CommonModal from '../CommonModal';
+import EditProjectStatusModalContent from '../EditProjectStatusModalContent';
 import styles from './index.less';
 
 const Projects = (props) => {
-  const { projectList = [], statusSummary = [], dispatch, loadingFetchProjectList = false } = props;
+  const {
+    projectList = [],
+    statusSummary = [],
+    dispatch,
+    loadingFetchProjectList = false,
+    loadingUpdateProject = false,
+    permissions = {},
+  } = props;
   const [projectStatus, setProjectStatus] = useState('All');
+
+  const [isEditProjectStatus, setIsEditProjectStatus] = useState(false);
+  const [selectedProject, setSelectedProject] = useState('');
 
   const fetchProjectList = async (payload) => {
     let tempPayload = payload;
@@ -52,6 +65,13 @@ const Projects = (props) => {
     });
   }, []);
 
+  // refresh list without losing filter, search
+  const onRefresh = () => {
+    dispatch({
+      type: 'projectManagement/refreshProjectList',
+    });
+  };
+
   const renderTimeTitle = (title) => {
     return (
       <span className={styles.timeTitle}>
@@ -60,6 +80,9 @@ const Projects = (props) => {
       </span>
     );
   };
+
+  // permissions
+  const modifyProjectPermission = permissions.modifyProject !== -1;
 
   const generateColumns = () => {
     const columns = [
@@ -119,7 +142,7 @@ const Projects = (props) => {
         },
       },
       {
-        title: renderTimeTitle('End Date*'),
+        title: renderTimeTitle('End Date'),
         dataIndex: 'tentativeEndDate',
         key: 'tentativeEndDate',
         align: 'center',
@@ -145,8 +168,22 @@ const Projects = (props) => {
         title: 'Status',
         dataIndex: 'projectStatus',
         key: 'projectStatus',
-        render: (pmStatus = '') => {
-          return <span>{pmStatus || '-'}</span>;
+        render: (pmStatus = '', record = {}) => {
+          return (
+            <div className={styles.projectStatus}>
+              <span>{pmStatus || '-'}</span>
+              {modifyProjectPermission && (
+                <img
+                  src={EditIcon}
+                  alt=""
+                  onClick={() => {
+                    setSelectedProject(record);
+                    setIsEditProjectStatus(true);
+                  }}
+                />
+              )}
+            </div>
+          );
         },
       },
       {
@@ -156,7 +193,7 @@ const Projects = (props) => {
         width: '7%',
         align: 'center',
         render: (numberOfResource, row) => {
-          if (!numberOfResource || numberOfResource === 0) {
+          if ((!numberOfResource || numberOfResource === 0) && modifyProjectPermission) {
             return (
               <Button
                 className={styles.addResourceBtn}
@@ -200,6 +237,23 @@ const Projects = (props) => {
           loading={loadingFetchProjectList}
         />
       </div>
+
+      <CommonModal
+        visible={isEditProjectStatus}
+        onClose={() => setIsEditProjectStatus(false)}
+        firstText="Save Changes"
+        secondText="Cancel"
+        title="Edit Status"
+        loading={loadingUpdateProject}
+        content={
+          <EditProjectStatusModalContent
+            onClose={() => setIsEditProjectStatus(false)}
+            selectedProject={selectedProject}
+            onRefresh={onRefresh}
+          />
+        }
+        width={600}
+      />
     </div>
   );
 };
@@ -215,5 +269,6 @@ export default connect(
     statusSummary,
     projectListPayload,
     loadingFetchProjectList: loading.effects['projectManagement/fetchProjectListEffect'],
+    loadingUpdateProject: loading.effects['projectManagement/updateProjectEffect'],
   }),
 )(Projects);

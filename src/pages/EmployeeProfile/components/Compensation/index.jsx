@@ -28,12 +28,9 @@ const Compensation = (props) => {
     return '';
   };
 
-  if (data.length === 0) {
-    return <WorkInProgress />;
-  }
-
   return (
     <div className={styles.Compensation}>
+      {data.length === 0 && <WorkInProgress />}
       <Tabs activeKey={activeKey} onChange={(key) => setActiveKey(key)} destroyInactiveTabPane>
         <TabPane tab="Compensation Summary" key="1">
           <CompensationSummary />

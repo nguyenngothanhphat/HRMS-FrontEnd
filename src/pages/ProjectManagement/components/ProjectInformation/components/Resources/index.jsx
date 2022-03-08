@@ -2,7 +2,7 @@ import { Button, Card, Tabs, Skeleton } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import WhiteAddIcon from '@/assets/projectManagement/whitePlus.svg';
-import CommonModal from '../CommonModal';
+import CommonModal from '../../../CommonModal';
 import AddResourceTypeContent from './components/AddResourceTypeContent';
 import ResourcesCard from './components/ResourcesCard';
 import ResourceTypeCard from './components/ResourceTypeCard';
