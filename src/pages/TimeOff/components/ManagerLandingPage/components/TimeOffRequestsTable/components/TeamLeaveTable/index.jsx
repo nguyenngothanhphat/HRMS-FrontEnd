@@ -157,11 +157,14 @@ class TeamLeaveTable extends PureComponent {
         // width: '20%',
         render: (id) => {
           const { ticketID = '', _id = '', approvalManagerId = '' } = id;
-          const { selectedTab = '', currentUser: { employee: { _id: myId = '' } = {} } = {} } =
-            this.props;
+          const {
+            isHR = false,
+            selectedTab = '',
+            currentUser: { employee: { _id: myId = '' } = {} } = {},
+          } = this.props;
 
           // only manager accept/reject a ticket
-          const isMyTicket = myId === approvalManagerId;
+          const isMyTicket = myId === approvalManagerId || isHR;
 
           if (selectedTab === IN_PROGRESS)
             return (
@@ -424,6 +427,7 @@ class TeamLeaveTable extends PureComponent {
       paging: { page, limit, total },
       // currentUser: { employee: { _id: myId = '' } = {} } = {},
       currentUser: { employee: { _id: myId = '' } = {} } = {},
+      isHR = false,
     } = this.props;
 
     const {
@@ -477,7 +481,7 @@ class TeamLeaveTable extends PureComponent {
         } = record;
 
         return {
-          disabled: selectedTab === IN_PROGRESS && myId !== approvalManagerId, // Column configuration not to be checked
+          disabled: selectedTab === IN_PROGRESS && myId !== approvalManagerId && !isHR, // Column configuration not to be checked
           name: record.name,
         };
       },

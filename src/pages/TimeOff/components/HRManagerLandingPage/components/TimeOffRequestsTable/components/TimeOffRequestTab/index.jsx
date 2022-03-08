@@ -356,6 +356,7 @@ class TimeOffRequestTab extends Component {
       leaveRequests = [],
       teamCompoffRequests = [],
       teamLeaveRequests = [],
+      user: { permissions = {} } = {},
     } = this.props;
 
     const {
@@ -382,6 +383,8 @@ class TimeOffRequestTab extends Component {
     const checkEmptyTable = false;
 
     const emptyTableContent = this.renderEmptyTableContent(tab, category);
+
+    const viewHRTimeoff = permissions.viewHRTimeoff !== -1;
 
     return (
       <div className={styles.TimeOffRequestTab}>
@@ -414,6 +417,7 @@ class TimeOffRequestTab extends Component {
                     selectedTab={selectedTab}
                     onRefreshTable={this.setSelectedFilterTab}
                     onHandle={this.onApproveRejectHandle}
+                    isHR={viewHRTimeoff}
                   />
                 )}
                 {type === 2 && category === 'TEAM' && (
@@ -431,6 +435,7 @@ class TimeOffRequestTab extends Component {
                     selectedTab={selectedTab}
                     onRefreshTable={this.setSelectedFilterTab}
                     onHandle={this.onApproveRejectHandle}
+                    isHR={viewHRTimeoff}
                   />
                 )}
 
