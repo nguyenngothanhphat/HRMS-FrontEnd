@@ -109,6 +109,8 @@ const AddTaskModal = (props) => {
         taskName: item.taskName,
         startTime: moment(item.startTime, hourFormat).format(hourFormatAPI),
         endTime: moment(item.endTime, hourFormat).format(hourFormatAPI),
+        breakTime: item.breakTime,
+        overTime: item.overTime,
         date: moment(submitDate).locale('en').format(dateFormatAPI),
         clientLocation: item.clientLocation || false,
         project: {
@@ -248,6 +250,40 @@ const AddTaskModal = (props) => {
                     </Form.Item>
                   </Col>
 
+                  <Col xs={24} md={12}>
+                    <Form.Item
+                      label="Break time (In Mins)"
+                      labelCol={{ span: 24 }}
+                      rules={[
+                        {
+                          pattern: /^[\d]+$/,
+                          message: 'Just only numbers',
+                        },
+                      ]}
+                      name={[name, 'breakTime']}
+                      fieldKey={[fieldKey, 'breakTime']}
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+
+                  <Col xs={24} md={12}>
+                    <Form.Item
+                      label="Over time (In Mins)"
+                      labelCol={{ span: 24 }}
+                      rules={[
+                        {
+                          pattern: /^[\d]+$/,
+                          message: 'Just only numbers',
+                        },
+                      ]}
+                      name={[name, 'overTime']}
+                      fieldKey={[fieldKey, 'overTime']}
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+
                   <Col xs={24}>
                     <Form.Item
                       label={requiredLabel('Description')}
@@ -301,7 +337,7 @@ const AddTaskModal = (props) => {
           id="myForm"
           onFinish={handleFinish}
           initialValues={{
-            tasks: [{ projectName: projectName || null }],
+            tasks: [{ projectName: projectName || null, breakTime: 0, overTime: 0 }],
           }}
           onValuesChange={onValuesChange}
         >

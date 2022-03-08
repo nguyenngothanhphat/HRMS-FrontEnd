@@ -30,6 +30,8 @@ const EditTaskModal = (props) => {
       endTime = '',
       taskName = '',
       clientLocation = false,
+      breakTime = 0,
+      overTime = 0,
     } = {},
     timeSheet: { projectList = [] } = {},
   } = props;
@@ -150,6 +152,8 @@ const EditTaskModal = (props) => {
             endTime: endTime ? moment(endTime, hourFormatAPI).format(hourFormat) : '',
             notes,
             clientLocation,
+            breakTime,
+            overTime,
           }}
           onValuesChange={onValuesChange}
         >
@@ -181,7 +185,8 @@ const EditTaskModal = (props) => {
                   loading={loadingFetchProject}
                   disabled={loadingFetchProject}
                   filterOption={(input, option) =>
-                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 >
                   {projectList.map((val) => (
                     <Option value={val.id}>{val.projectName}</Option>
@@ -235,6 +240,38 @@ const EditTaskModal = (props) => {
                   showSearch
                   disabledHourBefore={disabledHourBefore}
                 />
+              </Form.Item>
+            </Col>
+
+            <Col xs={24} md={12}>
+              <Form.Item
+                label="Break time (In Mins)"
+                labelCol={{ span: 24 }}
+                rules={[
+                  {
+                    pattern: /^[\d]+$/,
+                    message: 'Just only numbers',
+                  },
+                ]}
+                name="breakTime"
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+
+            <Col xs={24} md={12}>
+              <Form.Item
+                label="Over time (In Mins)"
+                labelCol={{ span: 24 }}
+                rules={[
+                  {
+                    pattern: /^[\d]+$/,
+                    message: 'Just only numbers',
+                  },
+                ]}
+                name="overTime"
+              >
+                <Input />
               </Form.Item>
             </Col>
 
