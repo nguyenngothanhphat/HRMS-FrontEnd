@@ -6,24 +6,25 @@ import styles from './index.less';
 const { Option } = Select;
 
 const EditProjectStatusModalContent = (props) => {
-  const {
-    onClose = () => {},
-    onRefresh = () => {},
-    employee: { _id: employeeId = '' } = {},
-    selectedProject = {},
-  } = props;
+  const { dispatch, onClose = () => {}, onRefresh = () => {}, selectedProject = {} } = props;
 
   const { projectManagement: { projectStatusList = [] } = {} } = props;
 
   const formRef = React.createRef();
 
   const handleFinish = async (values) => {
-    // const res = await addProjectHistory({
-    // });
-    // if (res.statusCode === 200) {
-    //   onRefresh()
-    // }
-    // onClose();
+    const res = await dispatch({
+      type: 'projectManagement/updateProjectEffect',
+      payload: {
+        id: selectedProject.id,
+        project_status: values.newStatus,
+        reason_change_status: values.reason,
+      },
+    });
+    if (res.statusCode === 200) {
+      onRefresh();
+    }
+    onClose();
   };
 
   return (
@@ -55,7 +56,7 @@ const EditProjectStatusModalContent = (props) => {
                   .map((x) => {
                     if (x.id === selectedProject.projectStatusId) return null;
                     return (
-                      <Option key={x.id} value={x.status}>
+                      <Option key={x.id} value={x.id} style={{ fontSize: '13px' }}>
                         {x.status}
                       </Option>
                     );

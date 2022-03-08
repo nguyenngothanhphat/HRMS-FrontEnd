@@ -11,6 +11,7 @@ import {
   getDivisionList,
   getEmployeeList,
   addProject,
+  updateProject,
 } from '@/services/projectManagement';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
@@ -284,6 +285,24 @@ const ProjectManagement = {
       let response = {};
       try {
         response = yield call(addProject, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *updateProjectEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(updateProject, {
           ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
