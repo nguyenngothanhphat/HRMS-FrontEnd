@@ -179,11 +179,11 @@ class FormLogin extends Component {
                 <span>{formatMessage({ id: 'pages.login.keepMeSignedIn' })}</span>
               </Checkbox>
             </Form.Item>
-            {IS_TERRALOGIC_LOGIN && (
+            {/* {IS_TERRALOGIC_LOGIN && (
               <Link to="/forgot-password" className={styles.forgotPasswordLink}>
                 {formatMessage({ id: 'pages.login.forgotPassword' })}
               </Link>
-            )}
+            )} */}
           </div>
 
           <Form.Item
