@@ -5,10 +5,12 @@ import { connect, history } from 'umi';
 import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
 import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
 import EditIcon from '@/assets/projectManagement/edit2.svg';
+import DeleteIcon from '@/assets/projectManagement/delete.svg';
 import CommonTable from './components/CommonTable';
 import Header from './components/Header';
 import CommonModal from '../CommonModal';
 import EditProjectStatusModalContent from '../EditProjectStatusModalContent';
+import DeleteProjectModalContent from '../DeleteProjectModalContent';
 import styles from './index.less';
 
 const Projects = (props) => {
@@ -18,11 +20,13 @@ const Projects = (props) => {
     dispatch,
     loadingFetchProjectList = false,
     loadingUpdateProject = false,
+    loadingDeleteProject = false,
     permissions = {},
   } = props;
   const [projectStatus, setProjectStatus] = useState('All');
 
   const [isEditProjectStatus, setIsEditProjectStatus] = useState(false);
+  const [isDeleteProject, setIsDeleteProject] = useState(false);
   const [selectedProject, setSelectedProject] = useState('');
 
   const fetchProjectList = async (payload) => {
@@ -215,6 +219,26 @@ const Projects = (props) => {
           );
         },
       },
+      {
+        title: 'Action',
+        key: 'action',
+        render: (record) => {
+          return (
+            <div className={styles.btnAction}>
+              <Button
+                type="link"
+                shape="circle"
+                onClick={() => {
+                  setSelectedProject(record);
+                  setIsDeleteProject(true);
+                }}
+              >
+                <img src={DeleteIcon} alt="delete" />
+              </Button>
+            </div>
+          );
+        },
+      },
     ];
 
     return columns;
@@ -248,6 +272,23 @@ const Projects = (props) => {
         content={
           <EditProjectStatusModalContent
             onClose={() => setIsEditProjectStatus(false)}
+            selectedProject={selectedProject}
+            onRefresh={onRefresh}
+          />
+        }
+        width={600}
+      />
+
+      <CommonModal
+        visible={isDeleteProject}
+        onClose={() => setIsDeleteProject(false)}
+        firstText="Delete"
+        secondText="Cancel"
+        title="Delete Project"
+        loading={loadingDeleteProject}
+        content={
+          <DeleteProjectModalContent
+            onClose={() => setIsDeleteProject(false)}
             selectedProject={selectedProject}
             onRefresh={onRefresh}
           />
