@@ -140,8 +140,33 @@ class ForgotPassword extends Component {
     );
   };
 
+  _renderBlockForm = () => {
+    return (
+      <div
+        className={styles.formWrapper}
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
+        }}
+      >
+        <p className={styles.formWrapper__descriptionSuccessfully}>
+          You are not allowed to use this feature.
+        </p>
+        <Link to="/login" className={styles.textSignIn}>
+          Sign in
+        </Link>
+      </div>
+    );
+  };
+
   render() {
     const { statusSendEmail } = this.props;
+    // terralogic user cannot change/reset password, only use Google Signin (ticket #852 - gitlab)
+    if (IS_TERRALOGIC_LOGIN) {
+      return this._renderBlockForm();
+    }
     return <>{!statusSendEmail ? this._renderForm() : this._renderSendSuccessfully()}</>;
   }
 }
