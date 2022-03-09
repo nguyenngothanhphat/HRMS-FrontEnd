@@ -164,8 +164,8 @@ class TimeOff extends PureComponent {
       permissions = {},
     } = this.props;
 
-    const viewManagerTimeoff = permissions.viewManagerTimeoff === 1;
-    const viewHRTimeoff = permissions.viewHRTimeoff === 1;
+    const viewManagerTimeoff = permissions.viewManagerTimeoff !== -1;
+    const viewHRTimeoff = permissions.viewHRTimeoff !== -1;
 
     if (viewHRTimeoff) return <HRManagerLandingPage eligibleForCompOff={eligibleForCompOff} />;
     if (viewManagerTimeoff) return <ManagerLandingPage eligibleForCompOff={eligibleForCompOff} />;
@@ -178,7 +178,7 @@ class TimeOff extends PureComponent {
       permissions = {},
     } = this.props;
 
-    const viewSettingTimeoff = permissions.viewSettingTimeoff === 1;
+    const viewSettingTimeoff = permissions.viewSettingTimeoff !== -1;
 
     return (
       <>
