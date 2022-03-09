@@ -2,6 +2,7 @@ import { UserOutlined } from '@ant-design/icons';
 import { Avatar, Button, Menu, Spin, notification } from 'antd';
 import React from 'react';
 import { connect, formatMessage, history } from 'umi';
+import { IS_TERRALOGIC_LOGIN } from '@/utils/login';
 import avtDefault from '@/assets/avtDefault.jpg';
 import {
   setCurrentLocation,
@@ -432,10 +433,15 @@ class AvatarDropdown extends React.Component {
         )}
 
         {/* CHANGE PASSWORD */}
-        <Menu.Divider className={styles.firstDivider} />
-        <Menu.Item key={CHANGEPASSWORD} className={styles.menuItemLink}>
-          {formatMessage({ id: 'component.globalHeader.avatarDropdown.change-password' })}
-        </Menu.Item>
+        {/* terralogic user cannot change/reset password, only use Google Signin (ticket #852 - gitlab) */}
+        {!IS_TERRALOGIC_LOGIN && (
+          <>
+            <Menu.Divider className={styles.firstDivider} />
+            <Menu.Item key={CHANGEPASSWORD} className={styles.menuItemLink}>
+              {formatMessage({ id: 'component.globalHeader.avatarDropdown.change-password' })}
+            </Menu.Item>
+          </>
+        )}
         {/* SWITCH ROLE  */}
         {this.switchRole()}
 
