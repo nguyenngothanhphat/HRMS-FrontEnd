@@ -11,7 +11,7 @@ import styles from './index.less';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
 
-const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DRAFTS } = TIMEOFF_STATUS;
+const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DRAFTS, WITHDRAWN } = TIMEOFF_STATUS;
 const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST } = TIMEOFF_LINK_ACTION;
 @connect(({ timeOff, locationSelection: { listLocationsByCompany = [] } = {}, loading }) => ({
   timeOff,
@@ -119,6 +119,8 @@ class LeaveRequestForm extends PureComponent {
         return `${styles.leaveStatus} ${styles.draftsColor}`;
       case ON_HOLD:
         return `${styles.leaveStatus} ${styles.onHoldColor}`;
+      case WITHDRAWN:
+        return `${styles.leaveStatus} ${styles.withdrawnColor}`;
       default:
         return `${styles.leaveStatus}`;
     }
@@ -135,6 +137,8 @@ class LeaveRequestForm extends PureComponent {
       case DRAFTS:
         return 'Drafts';
       case ON_HOLD:
+        return 'On Hold';
+      case WITHDRAWN:
         return 'Withdrawn';
       default:
         return 'Unknown';

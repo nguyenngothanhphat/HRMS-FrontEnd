@@ -2,12 +2,12 @@ import React, { PureComponent } from 'react';
 import { Affix, Row, Col } from 'antd';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_COLOR, TIMEOFF_STATUS } from '@/utils/timeOff';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
 import styles from './index.less';
 
-const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DELETED, DRAFTS } = TIMEOFF_STATUS;
+const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DELETED, DRAFTS, WITHDRAWN } = TIMEOFF_STATUS;
 @connect(({ timeOff }) => ({
   timeOff,
 }))
@@ -38,25 +38,6 @@ class ViewRequestForm extends PureComponent {
     });
   };
 
-  getColorOfStatus = (status) => {
-    switch (status) {
-      case IN_PROGRESS:
-        return `${styles.leaveStatus} ${styles.inProgressColor}`;
-      case ACCEPTED:
-        return `${styles.leaveStatus} ${styles.approvedColor}`;
-      case REJECTED:
-        return `${styles.leaveStatus} ${styles.rejectedColor}`;
-      case DRAFTS:
-        return `${styles.leaveStatus} ${styles.draftsColor}`;
-      case ON_HOLD:
-        return `${styles.leaveStatus} ${styles.onHoldColor}`;
-      case DELETED:
-        return `${styles.leaveStatus} ${styles.deletedColor}`;
-      default:
-        return `${styles.leaveStatus}`;
-    }
-  };
-
   getNameOfStatus = (status) => {
     switch (status) {
       case IN_PROGRESS:
@@ -68,9 +49,11 @@ class ViewRequestForm extends PureComponent {
       case DRAFTS:
         return 'Drafts';
       case ON_HOLD:
-        return 'Withdrawn';
+        return 'Withdraw Request';
       case DELETED:
         return 'Deleted';
+      case WITHDRAWN:
+        return 'Withdrawn';
       default:
         return 'Unknown';
     }
@@ -90,9 +73,21 @@ class ViewRequestForm extends PureComponent {
           <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>[Ticket ID: {ticketID}]</p>
-              <div className={this.getColorOfStatus(status)}>
-                <span className={styles.dot} />
-                <span className={styles.statusText}>{this.getNameOfStatus(status)}</span>
+              <div className={styles.leaveStatus}>
+                <span
+                  className={styles.dot}
+                  style={{
+                    backgroundColor: TIMEOFF_COLOR[status],
+                  }}
+                />
+                <span
+                  className={styles.statusText}
+                  style={{
+                    color: TIMEOFF_COLOR[status],
+                  }}
+                >
+                  {this.getNameOfStatus(status)}
+                </span>
               </div>
             </div>
           </Affix>
