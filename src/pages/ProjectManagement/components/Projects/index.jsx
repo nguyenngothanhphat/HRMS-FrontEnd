@@ -311,5 +311,6 @@ export default connect(
     projectListPayload,
     loadingFetchProjectList: loading.effects['projectManagement/fetchProjectListEffect'],
     loadingUpdateProject: loading.effects['projectManagement/updateProjectEffect'],
+    loadingDeleteProject: loading.effects['projectManagement/deleteProjectEffect'],
   }),
 )(Projects);
