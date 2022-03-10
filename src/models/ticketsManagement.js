@@ -26,6 +26,8 @@ const ticketManagement = {
     listDepartment: [],
     locationsList: [],
     ticketDetail: {},
+    employeeRaiseList: [],
+    employeeAssigneList: [],
   },
   effects: {
     *addTicket({ payload }, { call, put }) {
@@ -298,6 +300,61 @@ const ticketManagement = {
         dialog(errors);
         return {};
       }
+    },
+
+    *fetchEmployeeRaiseListEffect({ payload }, { call, put, select }) {
+      let response;
+      try {
+        const { departmentPayload } = yield select((state) => state.ticketManagement);
+        let tempPayload = {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        };
+        if (departmentPayload && departmentPayload.length > 0) {
+          tempPayload = {
+            ...tempPayload,
+            department: departmentPayload,
+          };
+        }
+        response = yield call(getOffAllTicketList, tempPayload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { employeeRaiseList: data, currentStatus: payload.status },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchEmployeeAssigneListEffect({ payload }, { call, put, select }) {
+      let response;
+      try {
+        const { departmentPayload } = yield select((state) => state.ticketManagement);
+        let tempPayload = {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        };
+        if (departmentPayload && departmentPayload.length > 0) {
+          tempPayload = {
+            ...tempPayload,
+            department: departmentPayload,
+          };
+        }
+        response = yield call(getOffAllTicketList, tempPayload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { employeeAssigneList: data, currentStatus: payload.status },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
     },
   },
   reducers: {

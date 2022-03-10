@@ -14,9 +14,14 @@ const FilterForm = (props) => {
   const {
     listOffAllTicket = [],
     locationsList = [],
+    employeeAssigneList = [],
+    employeeRaiseList = [],
     currentStatus = '',
     loadingFetchListAllTicket,
+    loadingFetchEmployeeRaiseListEffect,
+    loadingFetchEmployeeAssigneListEffect,
     dispatch,
+    visible = false,
   } = props;
   const [form] = Form.useForm();
   const [durationFrom, setDurationFrom] = useState('');
@@ -30,35 +35,50 @@ const FilterForm = (props) => {
   function getUniqueListBy(arr, key) {
     return [...new Map(arr.map((item) => [item[key], item])).values()];
   }
+  const removeDuplicate = (array, key) => {
+    return [...new Map(array.map((x) => [key(x), x])).values()];
+  };
   const queryTypeList = getUniqueListBy(listOffAllTicket, 'query_type');
   const priorityList = getUniqueListBy(listOffAllTicket, 'priority');
-  const assigned = getUniqueListBy(listOffAllTicket, 'employee_assignee');
-  const assginedList = assigned.filter((val) => val.employee_assignee !== '');
-  const legalNameList = getUniqueListBy(listOffAllTicket, 'employee_raise');
   const locationsListNew = getUniqueListBy(listOffAllTicket, 'location');
   const dateFormat = 'DD-MM-YYYY';
 
   useEffect(() => {
+    setNameListState([]);
+    setAsignedListState([]);
+  }, [visible]);
+
+  // fetch option name employee raise
+  useEffect(() => {
+    const newEmployeeRaiseList = removeDuplicate(
+      employeeRaiseList,
+      (item) => item.employeeRaise?.generalInfo?.legalName,
+    );
     setNameListState(
-      legalNameList.map((x) => {
+      newEmployeeRaiseList.map((x) => {
         return {
           value: x.employeeRaise?.generalInfo?.legalName,
           label: x.employeeRaise?.generalInfo.legalName,
         };
       }),
     );
-  }, [selectedname]);
+  }, [JSON.stringify(employeeRaiseList)]);
 
+  // fetch option name employee assignee
   useEffect(() => {
+    const newEmployeeAssigneList = removeDuplicate(
+      employeeAssigneList,
+      (item) => item.employeeRaise?.generalInfo?.legalName,
+    );
     setAsignedListState(
-      assginedList.map((x) => {
+      newEmployeeAssigneList.map((x) => {
         return {
           value: x.employeeAssignee?.generalInfo?.legalName,
           label: x.employeeAssignee?.generalInfo.legalName,
         };
       }),
     );
-  }, [selectedAsigned]);
+  }, [JSON.stringify(employeeAssigneList)]);
 
   useEffect(() => {
     const payload = {
@@ -158,16 +178,25 @@ const FilterForm = (props) => {
   };
 
   const onSearchEmployeeDebounce = debounce((type, value) => {
+    let typeTemp = '';
     switch (type) {
       case 'employeeRaise':
-        setSelectedname(value);
+        typeTemp = 'ticketManagement/fetchEmployeeRaiseListEffect';
         break;
       case 'employeeAssignee':
-        setSelectedAsigned(value);
+        typeTemp = 'ticketManagement/fetchEmployeeAssigneListEffect';
         break;
-
       default:
         break;
+    }
+    if (typeTemp && value) {
+      dispatch({
+        type: typeTemp,
+        payload: {
+          name: value,
+          status: currentStatus,
+        },
+      });
     }
     if (!value) {
       switch (type) {
@@ -201,7 +230,7 @@ const FilterForm = (props) => {
             <Form.Item key="name" label="BY NAME">
               <AutoComplete
                 dropdownMatchSelectWidth={252}
-                notFoundContent={loadingFetchListAllTicket ? <Spin /> : 'No matches'}
+                notFoundContent={loadingFetchEmployeeRaiseListEffect ? <Spin /> : 'No matches'}
                 options={nameListState}
                 onSearch={(val) => handleEmployeeSearch('employeeRaise', val)}
               >
@@ -277,7 +306,7 @@ const FilterForm = (props) => {
               <Form.Item key="employeeAssignee" label="BY ASSIGNED TO">
                 <AutoComplete
                   dropdownMatchSelectWidth={252}
-                  notFoundContent={loadingFetchListAllTicket ? <Spin /> : 'No matches'}
+                  notFoundContent={loadingFetchEmployeeAssigneListEffect ? <Spin /> : 'No matches'}
                   options={asignedListState}
                   onSearch={(val) => handleEmployeeSearch('employeeAssignee', val)}
                 >
@@ -330,11 +359,23 @@ const FilterForm = (props) => {
 export default connect(
   ({
     loading,
-    ticketManagement: { locationsList = [], currentStatus = [], listOffAllTicket = [] } = {},
+    ticketManagement: {
+      locationsList = [],
+      currentStatus = [],
+      listOffAllTicket = [],
+      employeeAssigneList = [],
+      employeeRaiseList = [],
+    } = {},
   }) => ({
     currentStatus,
     listOffAllTicket,
     locationsList,
+    employeeRaiseList,
+    employeeAssigneList,
     loadingFetchListAllTicket: loading.effects['ticketManagement/fetchListAllTicket'],
+    loadingFetchEmployeeRaiseListEffect:
+      loading.effects['ticketManagement/fetchEmployeeRaiseListEffect'],
+    loadingFetchEmployeeAssigneListEffect:
+      loading.effects['ticketManagement/fetchEmployeeAssigneListEffect'],
   }),
 )(FilterForm);

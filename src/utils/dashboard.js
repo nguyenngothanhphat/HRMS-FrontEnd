@@ -65,7 +65,7 @@ const SUPPORT_TEAM = [
     value: 'IT',
   },
   {
-    name: 'OPERATION',
+    name: 'Operations & Facility management',
     value: 'Operations & Facility management',
     queryType: [
       'Floor Issue',
