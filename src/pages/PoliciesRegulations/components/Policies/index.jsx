@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 import { Row, Col, Button, Menu, Skeleton } from 'antd';
+import Empty from '@/components/Empty';
+import Icon from '@/assets/timeOffTableEmptyIcon.svg';
 import { PageContainer } from '@/layouts/layout/src';
 import IconContact from '@/assets/policiesRegulations/policies-icon-contact.svg';
 import PdfIcon from '@/assets/policiesRegulations/pdf-2.svg';
@@ -136,27 +138,29 @@ class Policies extends PureComponent {
           });
         }
       }
-      return !isEmpty(category)
-        ? category[0].policyregulations.map((val) => {
-            return (
-              <div key={val.attachment._id} className={styles.viewCenter__title}>
-                <div className={styles.viewCenter__title__text}>
-                  <img src={PdfIcon} alt="pdf" />
-                  <span className={styles.viewCenter__title__text__category}>
-                    {val.attachment.name}
-                  </span>
-                </div>
-                <Button
-                  className={styles.viewCenter__title__view}
-                  icon={<img src={ViewIcon} alt="view" />}
-                  onClick={() => this.handleViewDocument(val.attachment.url)}
-                >
-                  <span className={styles.viewCenter__title__view__text}>View</span>
-                </Button>
+      return !isEmpty(category) ? (
+        category[0].policyregulations.map((val) => {
+          return (
+            <div key={val.attachment._id} className={styles.viewCenter__title}>
+              <div className={styles.viewCenter__title__text}>
+                <img src={PdfIcon} alt="pdf" />
+                <span className={styles.viewCenter__title__text__category}>
+                  {val.attachment.name}
+                </span>
               </div>
-            );
-          })
-        : '';
+              <Button
+                className={styles.viewCenter__title__view}
+                icon={<img src={ViewIcon} alt="view" />}
+                onClick={() => this.handleViewDocument(val.attachment.url)}
+              >
+                <span className={styles.viewCenter__title__view__text}>View</span>
+              </Button>
+            </div>
+          );
+        })
+      ) : (
+        <Empty image={Icon} />
+      );
     };
 
     if (loadingGetList)
@@ -171,7 +175,7 @@ class Policies extends PureComponent {
       <div className={styles.PoliciesLayout}>
         <Row>
           <Col sm={24} md={6} xl={5} className={styles.viewLeft}>
-            <div className={styles.viewLeft__menu}>
+            <div className={`${listCategory.length > 0 ? styles.viewLeft__menu : ''}`}>
               <Menu defaultSelectedKeys={defaultSelect} onClick={(e) => this.handleChange(e.key)}>
                 {!isEmpty(listCategory)
                   ? listCategory.map((val) => {

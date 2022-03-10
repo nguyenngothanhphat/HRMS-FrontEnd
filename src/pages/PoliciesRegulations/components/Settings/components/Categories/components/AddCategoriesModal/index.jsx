@@ -57,7 +57,13 @@ class AddCategoriesModal extends Component {
     const renderModalContent = () => {
       return (
         <div className={styles.content}>
-          <Form name="basic" id="addForm" ref={this.formRef} onFinish={this.handleFinish}>
+          <Form
+            name="basic"
+            id="addForm"
+            ref={this.formRef}
+            onFinish={this.handleFinish}
+            onFinishFailed={this.onFinishFailed}
+          >
             <Row>
               <Col>
                 <Form.Item

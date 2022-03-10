@@ -3,10 +3,16 @@ import { Button, Col, Form, Input, Modal, Row } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ loading, policiesRegulations: { listCategory = [] } = {} }) => ({
-  loadingUpdate: loading.effects['policiesRegulations/updateCategory'],
-  listCategory,
-}))
+@connect(
+  ({
+    loading,
+    policiesRegulations: { listCategory = [], originData: { selectedCountry = '' } } = {},
+  }) => ({
+    loadingUpdate: loading.effects['policiesRegulations/updateCategory'],
+    listCategory,
+    selectedCountry,
+  }),
+)
 class EditCategoriesModal extends Component {
   formRef = React.createRef();
 
@@ -27,12 +33,14 @@ class EditCategoriesModal extends Component {
       onClose = () => {},
       item: { _id: id = '' } = {},
       onRefresh = () => {},
+      selectedCountry = '',
     } = this.props;
     dispatch({
       type: 'policiesRegulations/updateCategory',
       payload: {
         id,
         name: category,
+        country: [selectedCountry],
       },
     }).then((response) => {
       const { statusCode } = response;

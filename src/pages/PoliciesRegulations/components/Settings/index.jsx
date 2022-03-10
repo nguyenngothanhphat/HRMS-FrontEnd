@@ -147,6 +147,10 @@ class Settings extends Component {
       type: 'policiesRegulations/fetchListPolicy',
       payload: { country: [value], tenantId: getCurrentTenant() },
     });
+    await dispatch({
+      type: 'policiesRegulations/fetchListCategory',
+      payload: { country: [value], tenantId: getCurrentTenant() },
+    });
   };
 
   render() {
