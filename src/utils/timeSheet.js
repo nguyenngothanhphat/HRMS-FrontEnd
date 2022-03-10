@@ -138,8 +138,8 @@ const parseTimeAPI = (time = '') => {
 
 // WORKING HOURS
 const WORKING_HOURS = {
-  START: 6,
-  END: 23,
+  START: 5,
+  END: 24,
 };
 
 const TASKS = [

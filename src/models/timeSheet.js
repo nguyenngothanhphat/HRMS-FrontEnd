@@ -28,6 +28,14 @@ import { dialog } from '@/utils/utils';
 
 const tenantId = getCurrentTenant();
 
+const pushError = (errors) => {
+  for (let i = 0; i < errors.length; i += 1) {
+    notification.error({
+      message: errors[i].msg,
+    });
+  }
+};
+
 const initialState = {
   myTimesheet: [],
   managerTimesheet: [],
@@ -155,7 +163,7 @@ const TimeSheet = {
         updating();
         const { code, msg = '', data = {}, errors = [] } = response;
         if (code !== 200) {
-          notification.error({ message: errors[0].msg });
+          pushError(errors);
           return [];
         }
         notification.success({ message: msg });
@@ -185,7 +193,7 @@ const TimeSheet = {
         const { code, data = {}, msg = '', errors = [] } = response;
         adding();
         if (code !== 200) {
-          notification.error({ message: errors[0].msg });
+          pushError(errors);
           return [];
         }
         notification.success({ message: msg });
@@ -218,7 +226,7 @@ const TimeSheet = {
         response = yield call(addMultipleActivity, payload.data, params);
         const { code, msg = '', errors = [] } = response;
         if (code !== 200) {
-          notification.error({ message: errors[0].msg });
+          pushError(errors);
           return [];
         }
         notification.success({ message: msg });
@@ -283,7 +291,7 @@ const TimeSheet = {
         response = yield call(importTimesheet, { ids: payload.ids }, { ...payload, tenantId });
         const { code, msg = '', errors = [] } = response;
         if (code !== 200) {
-          notification.error({ message: errors[0].msg });
+          pushError(errors);
           return [];
         }
         notification.success({ message: msg });
