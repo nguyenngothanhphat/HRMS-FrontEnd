@@ -12,6 +12,7 @@ import {
   getEmployeeList,
   addProject,
   updateProject,
+  deleteProject,
 } from '@/services/projectManagement';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
@@ -305,6 +306,23 @@ const ProjectManagement = {
         response = yield call(updateProject, {
           ...payload,
           // company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *deleteProjectEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(deleteProject, {
+          ...payload,
           tenantId: getCurrentTenant(),
         });
         const { statusCode, message } = response;

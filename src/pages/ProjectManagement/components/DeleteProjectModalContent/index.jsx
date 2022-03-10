@@ -1,5 +1,6 @@
 import React from 'react';
 import { Col, Form, Row } from 'antd';
+import { connect } from 'umi';
 
 import styles from './index.less';
 
@@ -13,7 +14,7 @@ const DeleteProjectModalContent = (props) => {
 
   const handleFinish = async () => {
     const res = await dispatch({
-      type: 'projectManagement/',
+      type: 'projectManagement/deleteProjectEffect',
       payload: {
         id,
       },
@@ -37,4 +38,4 @@ const DeleteProjectModalContent = (props) => {
   );
 };
 
-export default DeleteProjectModalContent;
+export default connect()(DeleteProjectModalContent);

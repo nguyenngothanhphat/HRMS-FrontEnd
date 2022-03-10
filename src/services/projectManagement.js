@@ -73,6 +73,17 @@ export async function updateProject(payload) {
   );
 }
 
+export async function deleteProject(payload) {
+  return request(
+    `/api-project/projecttenant/delete-project`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
+}
 
 export async function getCustomerList(payload) {
   return request(
