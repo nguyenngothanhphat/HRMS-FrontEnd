@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { Table, Button } from 'antd';
-// import { connect } from 'umi';
+import { connect } from 'umi';
 import EditIcon from '@/assets/policiesRegulations/edit.svg';
 import DeleteIcon from '@/assets/policiesRegulations/delete.svg';
 import EditCategoriesModal from './components/EditCategoriesModal';
 import DeleteCategoriesModal from './components/DeleteCategoriesModal';
 import styles from './index.less';
 
-// @connect(({ loading, policiesRegulations: { listCategory = [] } = {} }) => ({
-//   loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
-//   listCategory,
-// }))
+@connect(({ loading, faqs: { listCategory = [] } = {} }) => ({
+  loadingGetList: loading.effects['faqs/fetchListCategory'],
+  listCategory,
+}))
 class TableCatergory extends Component {
   constructor(props) {
     super(props);
@@ -32,22 +32,17 @@ class TableCatergory extends Component {
   };
 
   render() {
-    // const { listCategory = [], loadingGetList } = this.props;
+    const { listCategory = [], loadingGetList } = this.props;
+    // const { listCategory = [] } = this.props;
+
+    const listCategories = listCategory ? listCategory.map((obj) => {
+      return {
+        id: obj._id,
+        name: obj.category,
+        numberQuestions: obj.listFAQs.length
+      }
+    }) : []
     const { editCategoriesModal, deleteCategoriesModal, item } = this.state;
-    const dataMockup = [
-      {
-        name: 'General FAQs',
-        numberQuestions: 10,
-      },
-      {
-        name: 'Employee Timeoff',
-        numberQuestions: 7,
-      },
-      {
-        name: 'Employee Directory',
-        numberQuestions: 5,
-      },
-    ];
     const columns = [
       {
         title: 'Categories Name',
@@ -90,8 +85,8 @@ class TableCatergory extends Component {
 
     return (
       <div className={styles.TableCatergory}>
-        {/* <Table columns={columns} dataSource={dataMockup} loading={loadingGetList} /> */}
-        <Table columns={columns} dataSource={dataMockup} />
+        <Table columns={columns} dataSource={listCategories} loading={loadingGetList} />
+        {/* <Table columns={columns} dataSource={dataMockup} /> */}
         <EditCategoriesModal
           visible={editCategoriesModal}
           onClose={() => this.setState({ editCategoriesModal: false })}

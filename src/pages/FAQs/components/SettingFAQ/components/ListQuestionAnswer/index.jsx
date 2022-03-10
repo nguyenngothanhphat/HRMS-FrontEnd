@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Row, Col, Input } from 'antd';
-// import { connect } from 'umi';
+import { connect } from 'umi';
 // import { debounce } from 'lodash';
 import { SearchOutlined } from '@ant-design/icons';
 import AddIcon from '@/assets/policiesRegulations/add.svg';
@@ -9,7 +9,7 @@ import styles from './index.less';
 import AddQuestionAnswer from './components/AddQuestionAnswer';
 import TableFAQList from './components/TableFAQList';
 
-// @connect()
+@connect()
 class ListQuestionAnswer extends Component {
   constructor(props) {
     super(props);

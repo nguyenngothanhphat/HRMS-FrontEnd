@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Button, Modal } from 'antd';
-// import { connect } from 'umi';
+import { connect } from 'umi';
 import styles from './index.less';
 
-// @connect(({ loading }) => ({
-//   loadingDelete: loading.effects['policiesRegulations/deleteCategory'],
-// }))
+@connect(({ loading }) => ({
+  loadingDelete: loading.effects['faqs/deleteFAQCategory'],
+}))
 class DeleteCategoriesModal extends Component {
   formRef = React.createRef();
 
@@ -20,20 +20,20 @@ class DeleteCategoriesModal extends Component {
     onClose();
   };
 
-  //   handleFinish = () => {
-  //     const { dispatch, onClose = () => {}, item: { _id: id = '' } = {} } = this.props;
-  //     dispatch({
-  //       type: 'policiesRegulations/deleteCategory',
-  //       payload: {
-  //         id,
-  //       },
-  //     }).then((response) => {
-  //       const { statusCode } = response;
-  //       if (statusCode === 200) {
-  //         onClose();
-  //       }
-  //     });
-  //   };
+  handleFinish = () => {
+    const { dispatch, onClose = () => {}, item: { id = '' } = {} } = this.props;
+    dispatch({
+      type: 'faqs/deleteFAQCategory',
+      payload: {
+        id,
+      },
+    }).then((response) => {
+      const { statusCode } = response;
+      if (statusCode === 200) {
+        onClose();
+      }
+    });
+  };
 
   render() {
     const { visible, loadingDelete, item: { name = '' } = {} } = this.props;

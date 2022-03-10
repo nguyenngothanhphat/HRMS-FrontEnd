@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react';
 import { Col, Row, Button } from 'antd';
+import { connect } from 'umi';
 import AddIcon from '@/assets/policiesRegulations/add.svg';
 import TableCatergory from './components/TableCategory';
 import AddNewCategory from './components/AddNewCategory';
 import styles from './index.less';
 
+@connect()
 class FaqCategory extends PureComponent {
   constructor(props) {
     super(props);
@@ -13,12 +15,12 @@ class FaqCategory extends PureComponent {
     };
   }
 
-//   componentDidMount() {
-//     const { dispatch } = this.props;
-//     dispatch({
-//       type: 'policiesRegulations/fetchListCategory',
-//     });
-//   }
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'faqs/fetchListFAQCategory',
+    });
+  }
 
   render() {
     const { visibleModal } = this.state;
