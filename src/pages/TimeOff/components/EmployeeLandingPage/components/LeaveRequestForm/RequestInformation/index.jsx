@@ -626,13 +626,10 @@ const RequestInformation = (props) => {
   // RENDER EMAILS LIST
   const renderEmailsList = () => {
     const list = emailsList.map((user) => {
-      const {
-        _id = '',
-        generalInfo: {legalName = '', workEmail = '', avatar = '' } = {},
-      } = user;
+      const { _id = '', generalInfo: { legalName = '', workEmail = '', avatar = '' } = {} } = user;
       let newAvatar = avatar;
       if (avatar === '') newAvatar = DefaultAvatar;
-      return { workEmail, legalName,  _id, avatar: newAvatar };
+      return { workEmail, legalName, _id, avatar: newAvatar };
     });
     return list;
   };
@@ -642,6 +639,9 @@ const RequestInformation = (props) => {
     history.push(`/time-off/overview/personal-timeoff/view/${viewingId}`);
   };
 
+  const onCancelLeaveRequest = () => {
+    history.push(`/time-off/overview`);
+  };
   // RENDER MODAL content
   const renderModalContent = () => {
     let content = '';
@@ -1192,6 +1192,16 @@ const RequestInformation = (props) => {
           department head.
         </span>
         <div className={styles.formButtons}>
+          {action === NEW_LEAVE_REQUEST && (
+            <Button
+              className={styles.cancelButton}
+              type="link"
+              htmlType="button"
+              onClick={onCancelLeaveRequest}
+            >
+              <span>Cancel</span>
+            </Button>
+          )}
           {action === EDIT_LEAVE_REQUEST && (
             <Button
               className={styles.cancelButton}
