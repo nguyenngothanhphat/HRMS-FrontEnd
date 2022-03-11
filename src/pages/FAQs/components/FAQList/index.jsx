@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 import ContactPage from '../ContactPage';
 import viewQuestionContent from '@/assets/faqPage/viewQuestionContent.svg';
-// import closeViewAnswer from '@/assets/faqPage/closeViewAnswer.svg';
+import closeViewAnswer from '@/assets/faqPage/closeViewAnswer.svg';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -18,6 +18,7 @@ class FAQList extends PureComponent {
     this.state = {
       // open: false,
       key: '',
+      changeImg: '',
     };
   }
 
@@ -48,12 +49,16 @@ class FAQList extends PureComponent {
     this.setState({ key: value });
   };
 
+  handleChangePanel = (key) => {
+    this.setState({ changeImg: key });
+  };
+
   render() {
     const { listCategory = [] } = this.props;
     const defaultSelect = !isEmpty(listCategory) ? listCategory[0]._id : '';
 
     const getContent = () => {
-      const { key } = this.state;
+      const { key, changeImg } = this.state;
       const expandIconPosition = 'right';
       const getListFAQ = listCategory.filter((val) => val._id.toString() === key.toString());
       let listFAQ = [];
@@ -72,21 +77,34 @@ class FAQList extends PureComponent {
           </div>
           <div className={styles.viewCenter__title__text}>
             {listFAQ.map((obj) => {
+              let isClick = '';
+              if (obj._id === changeImg) {
+                isClick = (
+                  <img
+                    src={closeViewAnswer}
+                    alt="close"
+                    className={styles.viewCenter__title__text__img}
+                  />
+                );
+              } else {
+                isClick = (
+                  <img
+                    src={viewQuestionContent}
+                    alt="open"
+                    className={styles.viewCenter__title__text__img}
+                  />
+                );
+              }
               return (
                 <span>
                   <Collapse
                     //   defaultActiveKey={['1']}
                     // onChange={(contentQuestion = obj) => this.onChange(contentQuestion)}
+                    onChange={this.handleChangePanel}
                     expandIconPosition={expandIconPosition}
                     bordered={false}
                     accordion
-                    expandIcon={() => (
-                      <img
-                        src={viewQuestionContent}
-                        alt="open"
-                        className={styles.viewCenter__title__text__img}
-                      />
-                    )}
+                    expandIcon={() => isClick}
                     className={styles.viewCenter__title__text__view}
                   >
                     <Panel header={obj.question} key={obj._id}>

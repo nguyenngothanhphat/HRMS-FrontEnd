@@ -26,7 +26,7 @@ class ViewQuestionAnswer extends Component {
       return (
         <div className={styles.content}>
           <p>Question: {item ? item.question : ''}</p>
-          <p>Answer: answer of question</p>
+          <p>Answer: {item ? item.answer : ''} </p>
         </div>
       );
     };
