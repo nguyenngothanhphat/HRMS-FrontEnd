@@ -347,7 +347,7 @@ const RequestInformation = (props) => {
   // ON SAVE DRAFT
   const onSaveDraft = (values) => {
     if (buttonState === 1) {
-      const { _id: employeeId = '', manager = '' } = employee;
+      const { _id: employeeId = '', managerInfo: { _id: managerId = '' } = {} } = employee;
       const {
         timeOffType = '',
         subject = '',
@@ -383,7 +383,7 @@ const RequestInformation = (props) => {
           leaveDates: leaveDatesPayload,
           onDate: moment.utc(),
           description,
-          approvalManager: manager, // id
+          approvalManager: managerId, // id
           cc: personCC,
           company: getCurrentCompany(),
         };
