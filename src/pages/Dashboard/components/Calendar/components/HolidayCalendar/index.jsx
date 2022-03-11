@@ -9,13 +9,8 @@ import styles from './index.less';
 const dateFormat = 'DD dddd';
 
 const HolidayCalendar = (props) => {
-  const { isInModal = false, listHolidays = [], selectedYear = '' } = props;
-  const currentDate = new Date().toISOString();
-  const currentYear = new Date().getFullYear();
-  let newListHolidays = listHolidays.filter((date) => date.date.iso >= currentDate);
-  if (currentYear !== selectedYear) {
-    newListHolidays = listHolidays;
-  }
+  const { isInModal = false, listHolidays = [] } = props;
+
   const [monthList, setMonthList] = useState([]);
   // const check = listHolidays.filter((obj) => obj.date.dateTime.month === '1') || [];
   // USE EFFECT
@@ -40,7 +35,7 @@ const HolidayCalendar = (props) => {
 
   const formatData = () => {
     return monthList.map((month, index) => {
-      const monthHolidays = newListHolidays.filter(
+      const monthHolidays = listHolidays.filter(
         (holiday) => holiday.date.dateTime.month === (index + 1).toString(),
       );
       const getDaysHaveHoliday = [...new Set(monthHolidays.map((x) => x.date.iso))];
@@ -114,7 +109,7 @@ const HolidayCalendar = (props) => {
     );
   };
 
-  if (newListHolidays.length === 0) {
+  if (listHolidays.length === 0) {
     return <Empty image={Icon} />;
   }
 
