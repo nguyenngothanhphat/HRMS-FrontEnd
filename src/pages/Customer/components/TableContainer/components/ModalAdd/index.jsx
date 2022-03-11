@@ -52,13 +52,10 @@ class ModalAdd extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'customerManagement/genCustomerID',
-    });
-    dispatch({
       type: 'customerManagement/fetchTagList',
       payload: {
-        name: 'Engineering'
-      }
+        name: 'Engineering',
+      },
     });
     dispatch({
       type: 'customerManagement/fetchCountryList',
@@ -69,9 +66,19 @@ class ModalAdd extends PureComponent {
   }
 
   componentDidUpdate(props) {
-    const { state } = this.props;
+    const { state, isShown, customerID = '' } = this.props;
     if (props.state !== state) {
       this.handleChangeCountry();
+    }
+    if (props.isShown !== isShown && isShown) {
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'customerManagement/genCustomerID',
+      });
+    }
+    if (props.customerID !== customerID) {
+      console.log('customerID', customerID);
+      this.refForm?.current?.setFieldsValue({ customerID });
     }
   }
 
@@ -92,6 +99,7 @@ class ModalAdd extends PureComponent {
     const nameCountry = country?.find((item) => item._id === values.country);
 
     handleAddNew(values, nameCountry);
+    this.refForm.current.resetFields();
   };
 
   render() {
@@ -123,6 +131,7 @@ class ModalAdd extends PureComponent {
           className={styles.modalAdd}
           title="Add new customer"
           width={700}
+          destroyOnClose
           footer={[
             <div className={styles.btnForm}>
               <Button
@@ -160,7 +169,6 @@ class ModalAdd extends PureComponent {
             layout="vertical"
             initialValues={{ customerID, status: 'Engaging', accountOwner: accountOwnerId }}
             onFinish={(values) => {
-              this.refForm.current.resetFields();
               this.handleSubmit(values);
             }}
           >
@@ -213,10 +221,18 @@ class ModalAdd extends PureComponent {
                   </Form.Item>
                 </Col>
               </Row>
-              <Form.Item label="Legal name" name="legalName">
+              <Form.Item
+                label="Legal name"
+                name="legalName"
+                rules={[{ required: true, message: 'Required field!' }]}
+              >
                 <Input placeholder="Enter Company legal name" />
               </Form.Item>
-              <Form.Item label="Doing Bussiness As(DBA)" name="dba">
+              <Form.Item
+                label="Doing Bussiness As(DBA)"
+                name="dba"
+                rules={[{ required: true, message: 'Required field!' }]}
+              >
                 <Input placeholder="Enter Company short name" />
               </Form.Item>
             </div>
@@ -228,17 +244,29 @@ class ModalAdd extends PureComponent {
               </div>
               <Row gutter={48}>
                 <Col span={12}>
-                  <Form.Item label="Contact Phone" name="phone">
+                  <Form.Item
+                    label="Contact Phone"
+                    name="phone"
+                    rules={[{ required: true, message: 'Required field!' }]}
+                  >
                     <Input placeholder="Enter Phone Number" />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Contact Email" name="email">
+                  <Form.Item
+                    label="Contact Email"
+                    name="email"
+                    rules={[{ required: true, message: 'Required field!' }]}
+                  >
                     <Input placeholder="Enter Email Address" />
                   </Form.Item>
                 </Col>
               </Row>
-              <Form.Item label="Address Line 1" name="addressLine1">
+              <Form.Item
+                label="Address Line 1"
+                name="addressLine1"
+                rules={[{ required: true, message: 'Required field!' }]}
+              >
                 <Input placeholder="Enter Address Line 1" />
               </Form.Item>
               <Form.Item label="Address Line 2" name="addressLine2">
@@ -246,7 +274,11 @@ class ModalAdd extends PureComponent {
               </Form.Item>
               <Row gutter={48}>
                 <Col span={12}>
-                  <Form.Item label="Country" name="country">
+                  <Form.Item
+                    label="Country"
+                    name="country"
+                    rules={[{ required: true, message: 'Required field!' }]}
+                  >
                     <Select
                       placeholder="Select Country"
                       onChange={(value) => this.handleChangeCountry(value)}
@@ -262,7 +294,11 @@ class ModalAdd extends PureComponent {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="State" name="state">
+                  <Form.Item
+                    label="State"
+                    name="state"
+                    rules={[{ required: true, message: 'Required field!' }]}
+                  >
                     <Select
                       disabled={isCountryChosen}
                       loading={loadingStateList}
@@ -277,12 +313,20 @@ class ModalAdd extends PureComponent {
               </Row>
               <Row gutter={48}>
                 <Col span={12}>
-                  <Form.Item label="City" name="city">
+                  <Form.Item
+                    label="City"
+                    name="city"
+                    rules={[{ required: true, message: 'Required field!' }]}
+                  >
                     <Input placeholder="Enter City name" />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Zip/Postal Code" name="zipCode">
+                  <Form.Item
+                    label="Zip/Postal Code"
+                    name="zipCode"
+                    rules={[{ required: true, message: 'Required field!' }]}
+                  >
                     <Input placeholder="Enter Postal Code" />
                   </Form.Item>
                 </Col>
@@ -296,7 +340,11 @@ class ModalAdd extends PureComponent {
               </div>
               <Row gutter={48}>
                 <Col span={12}>
-                  <Form.Item label="Account Owner" name="accountOwner">
+                  <Form.Item
+                    label="Account Owner"
+                    name="accountOwner"
+                    rules={[{ required: true, message: 'Required field!' }]}
+                  >
                     <Select placeholder="Enter Account Owner">
                       {employeeList.map((employee) => {
                         return (
@@ -317,9 +365,7 @@ class ModalAdd extends PureComponent {
               <Form.Item label="Tags" name="tags">
                 <Select mode="multiple" placeholder="Select tags">
                   {listTags.map((tagItem) => {
-                    return (
-                      <Select.Option key={tagItem}>{tagItem}</Select.Option>
-                    );
+                    return <Select.Option key={tagItem}>{tagItem}</Select.Option>;
                   })}
                 </Select>
               </Form.Item>
