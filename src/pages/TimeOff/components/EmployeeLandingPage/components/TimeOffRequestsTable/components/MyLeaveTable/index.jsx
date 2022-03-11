@@ -8,7 +8,7 @@ import DefaultAvatar from '@/assets/defaultAvatar.png';
 
 import styles from './index.less';
 
-const { IN_PROGRESS } = TIMEOFF_STATUS;
+const { IN_PROGRESS, ON_HOLD } = TIMEOFF_STATUS;
 // loading
 @connect(({ loading, dispatch, timeOff: { paging } }) => ({
   paging,
@@ -19,17 +19,19 @@ class MyLeaveTable extends PureComponent {
   columns = [
     {
       title: 'Ticket ID',
-      dataIndex: 'id',
+      dataIndex: 'ticketId',
       align: 'left',
       fixed: 'left',
       width: '20%',
-      render: (id) => {
-        const { ticketID = '', _id = '', updated = false, status = '' } = id;
+      render: (_, record) => {
+        const { ticketID = '', _id = '', updated = false, status = '' } = record;
         const checkUpdated = status === IN_PROGRESS && updated;
+        // const checkWithdraw = status === ON_HOLD;
         return (
           <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
-            {ticketID}
+            <span className={styles.text}>{ticketID}</span>
             {checkUpdated && <Tag color="#2C6DF9">Updated</Tag>}
+            {/* {checkWithdraw && <Tag color="#2C6DF9">Withdrawing</Tag>} */}
           </span>
         );
       },
@@ -38,7 +40,10 @@ class MyLeaveTable extends PureComponent {
       title: 'Type',
       dataIndex: 'type',
       align: 'center',
-      render: (type) => <span>{type ? type.name : '-'}</span>,
+      render: (type, record) => {
+        if (record.status === ON_HOLD) return <span>Withdraw Request</span>;
+        return <span>{type ? type.name : '-'}</span>;
+      },
       // defaultSortOrder: ['ascend'],
       sorter: {
         compare: (a, b) => {
@@ -53,9 +58,14 @@ class MyLeaveTable extends PureComponent {
     {
       title: 'Leave date',
       width: '20%',
-      dataIndex: 'leaveTimes',
+      dataIndex: 'startDate',
       align: 'left',
-      render: (leaveTimes) => <span>{leaveTimes !== '' ? leaveTimes : '-'}</span>,
+      render: (_, record) => {
+        return `${moment.utc(record.fromDate).locale('en').format('MM/DD/YYYY')} - ${moment
+          .utc(record.toDate)
+          .locale('en')
+          .format('MM/DD/YYYY')}`;
+      },
     },
     {
       title: `Requested on `,
@@ -78,9 +88,10 @@ class MyLeaveTable extends PureComponent {
     {
       title: 'Assigned',
       align: 'left',
-      dataIndex: 'assigned',
+      dataIndex: 'approvalManager',
       // width: '25%',
-      render: (assigned) => {
+      render: (approvalManager = {}) => {
+        const assigned = approvalManager ? [approvalManager?.generalInfo] : [];
         return (
           <div className={styles.rowAction}>
             <Avatar.Group
@@ -91,9 +102,9 @@ class MyLeaveTable extends PureComponent {
               }}
             >
               {assigned.map((user) => {
-                const { firstName = '', lastName = '', avatar = '' } = user;
+                const { legalName = '', avatar = '' } = user;
                 return (
-                  <Tooltip title={`${firstName} ${lastName}`} placement="top">
+                  <Tooltip title={legalName} placement="top">
                     <Avatar
                       size="small"
                       style={{ backgroundColor: '#EAF0FF' }}
@@ -141,57 +152,6 @@ class MyLeaveTable extends PureComponent {
     });
   };
 
-  // setFirstPage = () => {
-  //   this.setState({
-  //     pageSelected: 1,
-  //   });
-  // };
-
-  // PARSE DATA FOR TABLE
-  processData = (data) => {
-    return data.map((value) => {
-      const {
-        status = '',
-        fromDate = '',
-        toDate = '',
-        approvalManager: { generalInfo: generalInfoA = {} } = {},
-        // cc = [],
-        ticketID = '',
-        _id = '',
-        updated = false,
-      } = value;
-
-      let leaveTimes = '';
-      if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-        leaveTimes = `${moment.utc(fromDate).locale('en').format('MM/DD/YYYY')} - ${moment
-          .utc(toDate)
-          .locale('en')
-          .format('MM/DD/YYYY')}`;
-      }
-
-      // let employeeFromCC = [];
-      // if (cc.length > 0) {
-      //   employeeFromCC = cc[0].map((each) => {
-      //     return each;
-      //   });
-      // }
-      // const assigned = [generalInfoA, ...employeeFromCC];
-
-      return {
-        ...value,
-        leaveTimes,
-        // assigned,
-        assigned: [generalInfoA],
-        id: {
-          ticketID,
-          _id,
-          updated,
-          status,
-        },
-      };
-    });
-  };
-
   render() {
     const {
       data = [],
@@ -206,8 +166,6 @@ class MyLeaveTable extends PureComponent {
       spinning: loadingFetchLeaveRequests,
       indicator: <Spin indicator={antIcon} />,
     };
-
-    const parsedData = this.processData(data);
 
     const pagination = {
       position: ['bottomLeft'],
@@ -240,11 +198,11 @@ class MyLeaveTable extends PureComponent {
           // rowSelection={rowSelection}
           pagination={{ ...pagination, total }}
           columns={this.columns}
-          dataSource={parsedData}
+          dataSource={data}
           scroll={scroll}
           rowKey={(id) => id.ticketID}
         />
-        {parsedData.length === 0 && <div className={styles.paddingContainer} />}
+        {data.length === 0 && <div className={styles.paddingContainer} />}
       </div>
     );
   }

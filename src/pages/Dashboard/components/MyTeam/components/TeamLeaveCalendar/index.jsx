@@ -14,7 +14,7 @@ const TeamLeaveCalendar = (props) => {
     dispatch({
       type: 'dashboard/fetchTeamLeaveRequests',
       payload: {
-        status: 'ACCEPTED',
+        status: ['ACCEPTED'],
         fromDate: startOfMonth,
         toDate: endOfMonth,
         type: listTimeOffType,
