@@ -104,6 +104,7 @@ const timeOffManagement = {
 
           return {
             _id: item._id,
+            ticketID: item.ticketID,
             employeeId: item.employee.employeeId,
             name: fullName,
             // country: item.employee.location.country.nativeName,

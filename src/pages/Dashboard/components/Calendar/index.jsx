@@ -101,6 +101,15 @@ const Calendar = (props) => {
   const filterHoliday =
     holidaysListByCountry.filter((obj) => obj.date.dateTime.year === selectedYear.toString()) || [];
 
+  const addZeroToNumber = (number) => {
+    if (number < 10 && number > 0) return `0${number}`.slice(-2);
+    return number;
+  };
+
+  const getTabName = (key) => {
+    return `${key} (${addZeroToNumber(googleCalendarList.length)})`;
+  };
+
   const renderHolidayCalendarAction = () => {
     return (
       <div className={styles.header__actions}>
@@ -122,7 +131,7 @@ const Calendar = (props) => {
         </div>
         <div className={styles.content}>
           <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
-            <TabPane tab="My Calendar" key="1">
+            <TabPane tab={getTabName('My Calendar')} key="1">
               {isSyncSuccess && isGoogleSignIn ? (
                 <MyCalendar
                   data={googleCalendarList}
@@ -134,7 +143,7 @@ const Calendar = (props) => {
               )}
             </TabPane>
             <TabPane tab="Holiday Calendar" key="2">
-              <HolidayCalendar listHolidays={filterHoliday} selectedYear={selectedYear} />
+              <HolidayCalendar listHolidays={filterHoliday} />
             </TabPane>
           </Tabs>
         </div>
