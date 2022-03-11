@@ -302,21 +302,14 @@ const ticketManagement = {
       }
     },
 
-    *fetchEmployeeRaiseListEffect({ payload }, { call, put, select }) {
+    *fetchEmployeeRaiseListEffect({ payload }, { call, put }) {
       let response;
       try {
-        const { departmentPayload } = yield select((state) => state.ticketManagement);
-        let tempPayload = {
+        const tempPayload = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
           ...payload,
         };
-        if (departmentPayload && departmentPayload.length > 0) {
-          tempPayload = {
-            ...tempPayload,
-            department: departmentPayload,
-          };
-        }
         response = yield call(getOffAllTicketList, tempPayload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
@@ -329,21 +322,14 @@ const ticketManagement = {
       }
       return response;
     },
-    *fetchEmployeeAssigneListEffect({ payload }, { call, put, select }) {
+    *fetchEmployeeAssigneListEffect({ payload }, { call, put }) {
       let response;
       try {
-        const { departmentPayload } = yield select((state) => state.ticketManagement);
-        let tempPayload = {
+        const tempPayload = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
           ...payload,
         };
-        if (departmentPayload && departmentPayload.length > 0) {
-          tempPayload = {
-            ...tempPayload,
-            department: departmentPayload,
-          };
-        }
         response = yield call(getOffAllTicketList, tempPayload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;

@@ -17,7 +17,6 @@ const FilterForm = (props) => {
     employeeAssigneList = [],
     employeeRaiseList = [],
     currentStatus = '',
-    loadingFetchListAllTicket,
     loadingFetchEmployeeRaiseListEffect,
     loadingFetchEmployeeAssigneListEffect,
     dispatch,
@@ -29,15 +28,14 @@ const FilterForm = (props) => {
   const [nameListState, setNameListState] = useState([]);
   const [asignedListState, setAsignedListState] = useState([]);
 
-  const [selectedname, setSelectedname] = useState('');
-  const [selectedAsigned, setSelectedAsigned] = useState('');
-
   function getUniqueListBy(arr, key) {
     return [...new Map(arr.map((item) => [item[key], item])).values()];
   }
+
   const removeDuplicate = (array, key) => {
     return [...new Map(array.map((x) => [key(x), x])).values()];
   };
+
   const queryTypeList = getUniqueListBy(listOffAllTicket, 'query_type');
   const priorityList = getUniqueListBy(listOffAllTicket, 'priority');
   const locationsListNew = getUniqueListBy(listOffAllTicket, 'location');
@@ -79,22 +77,6 @@ const FilterForm = (props) => {
       }),
     );
   }, [JSON.stringify(employeeAssigneList)]);
-
-  useEffect(() => {
-    const payload = {
-      status: currentStatus,
-    };
-    if (selectedname !== '') {
-      payload.employeeRaise = [selectedname];
-    }
-    if (selectedAsigned !== '') {
-      payload.employeeAssignee = [selectedAsigned];
-    }
-    dispatch({
-      type: 'ticketManagement/fetchListAllTicket',
-      payload,
-    });
-  }, [selectedname, selectedAsigned]);
 
   const disabledDate = (currentDate, type) => {
     if (type === 'fromDate') {
@@ -170,7 +152,7 @@ const FilterForm = (props) => {
 
   const onFinishDebounce = debounce((values) => {
     onFinish(values);
-  }, 700);
+  }, 1000);
 
   const onValuesChange = () => {
     const values = form.getFieldsValue();
@@ -179,12 +161,15 @@ const FilterForm = (props) => {
 
   const onSearchEmployeeDebounce = debounce((type, value) => {
     let typeTemp = '';
+    const payload = { status: currentStatus };
     switch (type) {
       case 'employeeRaise':
         typeTemp = 'ticketManagement/fetchEmployeeRaiseListEffect';
+        payload.employeeRaise = value;
         break;
       case 'employeeAssignee':
         typeTemp = 'ticketManagement/fetchEmployeeAssigneListEffect';
+        payload.employeeAssignee = value;
         break;
       default:
         break;
@@ -192,10 +177,7 @@ const FilterForm = (props) => {
     if (typeTemp && value) {
       dispatch({
         type: typeTemp,
-        payload: {
-          name: value,
-          status: currentStatus,
-        },
+        payload,
       });
     }
     if (!value) {
@@ -227,7 +209,7 @@ const FilterForm = (props) => {
           onValuesChange={onValuesChange}
         >
           <div className={styles.form__top}>
-            <Form.Item key="name" label="BY NAME">
+            <Form.Item key="name" label="BY NAME" name="employeeRaise">
               <AutoComplete
                 dropdownMatchSelectWidth={252}
                 notFoundContent={loadingFetchEmployeeRaiseListEffect ? <Spin /> : 'No matches'}
@@ -303,7 +285,7 @@ const FilterForm = (props) => {
               </Select>
             </Form.Item>
             {currentStatus && currentStatus[0] !== 'New' ? (
-              <Form.Item key="employeeAssignee" label="BY ASSIGNED TO">
+              <Form.Item key="employeeAssignee" label="BY ASSIGNED TO" name="employeeAssignee">
                 <AutoComplete
                   dropdownMatchSelectWidth={252}
                   notFoundContent={loadingFetchEmployeeAssigneListEffect ? <Spin /> : 'No matches'}
