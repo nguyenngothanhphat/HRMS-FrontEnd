@@ -72,14 +72,14 @@ class EditModal extends PureComponent {
 
   onFinish = async (values) => {
     const { dispatch, selectedRoleID = '', onRefresh = () => {} } = this.props;
-    const { name = '', description = '' } = values;
+    const { idSync = '', name = '', description = '' } = values;
     const { selectedList } = this.state;
 
     const addRole = async () => {
       const res = await dispatch({
         type: 'adminSetting/addRole',
         payload: {
-          idSync: name,
+          idSync,
           name,
           description,
           permissions: selectedList,
@@ -96,7 +96,7 @@ class EditModal extends PureComponent {
         payload: {
           _id: selectedRoleID,
           name,
-          idSync: name,
+          // idSync: name,
           description,
           permissions: selectedList,
         },
@@ -295,14 +295,24 @@ class EditModal extends PureComponent {
                 idSync: idSyncProp,
               }}
             >
-              {action === 'edit' && (
-                <Form.Item label="ID" name="idSync" labelCol={{ span: 24 }}>
-                  <Input disabled />
-                </Form.Item>
-              )}
               <Form.Item
-                rules={[{ required: true, message: 'Please enter role name!' }]}
-                label="Role"
+                label="Role ID"
+                name="idSync"
+                labelCol={{ span: 24 }}
+                rules={[{ required: true, message: 'Please enter the role ID!' }]}
+              >
+                <Input
+                  disabled={action === 'edit'}
+                  placeholder="Role ID"
+                  // eslint-disable-next-line no-return-assign
+                  onInput={(e) =>
+                    (e.target.value = `${e.target.value}`.toUpperCase().replace(/ /g, ''))}
+                />
+              </Form.Item>
+
+              <Form.Item
+                rules={[{ required: true, message: 'Please enter the role name!' }]}
+                label="Role Name"
                 name="name"
                 labelCol={{ span: 24 }}
               >
@@ -316,7 +326,7 @@ class EditModal extends PureComponent {
                 label="Description"
                 name="description"
                 labelCol={{ span: 24 }}
-                rules={[{ required: true, message: 'Please enter role description!' }]}
+                rules={[{ required: true, message: 'Please enter the role description!' }]}
               >
                 <Input placeholder="Role Description" />
               </Form.Item>

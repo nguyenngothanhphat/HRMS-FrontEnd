@@ -1,20 +1,22 @@
 import React, { PureComponent } from 'react';
-import { Affix, Row, Col } from 'antd';
-import { formatMessage, connect } from 'umi';
+import { Row, Col, Button } from 'antd';
+import { connect, Link } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
-import ContactPage from './components/ContactPage';
-import ListQuestions from './components/ListQuestions';
+// import ContactPage from './components/ContactPage';
+// import ListQuestions from './components/ListQuestions';
+import FAQList from './components/FAQList';
 import styles from './index.less';
 
 @connect(
   ({
-    user: { currentUser = {} } = {},
+    user: { currentUser = {}, permissions = {}, } = {},
     frequentlyAskedQuestions: { list = [], listDefault = {}, getListByCompany = {} } = {},
   }) => ({
     list,
     listDefault,
     currentUser,
     getListByCompany,
+    permissions,
   }),
 )
 class FAQs extends PureComponent {
@@ -29,27 +31,34 @@ class FAQs extends PureComponent {
   }
 
   render() {
-    const { location: { query = {} } = {}, getListByCompany = {} } = this.props;
-    const { faq = [] } = getListByCompany;
+    const {
+      permissions
+    } = this.props;
+    const checkRoleHrAndManager = permissions.viewFAQSetting !== -1;
     return (
       <PageContainer>
-        <div className={styles.root}>
-          <Affix offsetTop={42}>
-            <div className={styles.titlePage}>
-              <div className={styles.titlePage__text}>
-                {formatMessage({ id: 'pages.frequentlyAskedQuestions.title' })}
+        <Row className={styles.FAQs}>
+          <Col span={24}>
+            <div className={styles.header}>
+              <div className={styles.header__left}>FAQs</div>
+              <div className={styles.header__right}>
+                {checkRoleHrAndManager ? (
+                  <Button>
+                    <Link to="/faqpage/settings">
+                      <span className={styles.buttonSetting__text}>Settings</span>
+                    </Link>
+                  </Button>
+                ) : null}
               </div>
             </div>
-          </Affix>
-          <Row>
-            <Col span={17}>
-              <ListQuestions list={faq} idQuestion={query} />
-            </Col>
-            <Col span={7} className={styles.contactPage}>
-              <ContactPage />
-            </Col>
-          </Row>
-        </div>
+          </Col>
+          <Col span={24} />
+          <Col span={24}>
+            <div className={styles.containerPolicies}>
+              <FAQList />
+            </div>
+          </Col>
+        </Row>
       </PageContainer>
     );
   }

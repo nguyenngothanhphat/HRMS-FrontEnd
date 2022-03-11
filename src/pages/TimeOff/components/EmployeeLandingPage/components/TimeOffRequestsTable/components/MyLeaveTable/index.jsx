@@ -22,7 +22,7 @@ class MyLeaveTable extends PureComponent {
       dataIndex: 'ticketId',
       align: 'left',
       fixed: 'left',
-      width: '20%',
+      // width: '12%',
       render: (_, record) => {
         const { ticketID = '', _id = '', updated = false, status = '' } = record;
         const checkUpdated = status === IN_PROGRESS && updated;
@@ -39,6 +39,7 @@ class MyLeaveTable extends PureComponent {
     {
       title: 'Type',
       dataIndex: 'type',
+      width: '20%',
       align: 'center',
       render: (type, record) => {
         if (record.status === ON_HOLD) return <span>Withdraw Request</span>;
