@@ -61,6 +61,7 @@ const timeOffManagement = {
       try {
         const response = yield call(getListTimeOff, { ...payload, company: getCurrentCompany() });
         let { data: listTimeOff = [] } = response;
+        console.log('timeoffModal');
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
 
@@ -104,6 +105,7 @@ const timeOffManagement = {
 
           return {
             _id: item._id,
+            ticketID: item.ticketID,
             employeeId: item.employee.employeeId,
             name: fullName,
             // country: item.employee.location.country.nativeName,

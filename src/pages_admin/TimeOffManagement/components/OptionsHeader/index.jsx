@@ -56,12 +56,17 @@ export default class OptionsHeader extends PureComponent {
     capsPopulations = array.map((item, key) => {
       return {
         N0: key + 1,
-        'Employee Id': item.employeeId,
-        'Full Name': item.name,
-        'From Date': item.fromDate,
-        'To Date': item.toDate,
-        'Count/Q.ty': item.country,
-        'Leave type': item.type,
+        'Ticked ID': item.ticketID || '-',
+        'Employee ID': item.employee?.generalInfo?.employeeId || '-',
+        'First Name': item.employee?.generalInfo?.firstName || '-',
+        'Middle Name': item.employee?.generalInfo?.middleName || '-',
+        'Last Name': item.employee?.generalInfo?.lastName || '-',
+        'From Date': item.fromDate ? moment(item.fromDate).format('YY-MM-DD') : '-',
+        'To Date': item.toDate ? moment(item.toDate).format('YY-MM-DD') : '-',
+        'Count/Q.ty': item.duration || '-',
+        'Leave Type': item.type?.typeName || '-',
+        Subject: item.subject || '-',
+        Description: item.description || '-',
         Status: item.status,
       };
     });
@@ -114,7 +119,8 @@ export default class OptionsHeader extends PureComponent {
                     allowClear
                     placeholder="Select an user"
                     filterOption={(input, option) =>
-                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                     showSearch
                   >
                     {listEmployee.map((item = {}) => {
