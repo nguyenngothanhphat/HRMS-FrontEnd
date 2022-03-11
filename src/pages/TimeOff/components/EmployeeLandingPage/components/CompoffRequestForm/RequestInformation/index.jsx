@@ -370,11 +370,11 @@ class RequestInformation extends PureComponent {
     const list = emailsList.map((user) => {
       const {
         _id = '',
-        generalInfo: { firstName = '', lastName = '', workEmail = '', avatar = '' } = {},
+        generalInfo: { legalName = '', workEmail = '', avatar = '' } = {},
       } = user;
       let newAvatar = avatar;
       if (avatar === '') newAvatar = DefaultAvatar;
-      return { workEmail, firstName, lastName, _id, avatar: newAvatar };
+      return { workEmail, legalName, _id, avatar: newAvatar };
     });
     // return list.filter((value) => Object.keys(value).length !== 0);
     return list;

@@ -101,9 +101,9 @@ class TeamCompoffTable extends PureComponent {
               }}
             >
               {assigned.map((user) => {
-                const { firstName = '', lastName = '', avatar = '' } = user;
+                const { legalName = '', avatar = '' } = user;
                 return (
-                  <Tooltip title={`${firstName} ${lastName}`} placement="top">
+                  <Tooltip title={legalName} placement="top">
                     <Avatar
                       size="small"
                       style={{ backgroundColor: '#EAF0FF' }}
@@ -192,7 +192,7 @@ class TeamCompoffTable extends PureComponent {
     });
     const { statusCode = 0 } = res;
     if (statusCode === 200) {
-      this.onRefreshTable('2');
+      this.onRefreshTable('1');
     }
   };
 
@@ -217,7 +217,7 @@ class TeamCompoffTable extends PureComponent {
     const { statusCode = 0 } = res;
     if (statusCode === 200) {
       this.toggleCommentModal(false);
-      this.onRefreshTable('3');
+      this.onRefreshTable('1');
     }
   };
 
@@ -267,7 +267,7 @@ class TeamCompoffTable extends PureComponent {
         _id = '',
         extraTime = [],
         onDate,
-        employee: { generalInfo: { firstName = '', lastName = '' } = {} },
+        employee: { generalInfo: { legalName: requesteeName = '' } = {} },
         approvalFlow: { step1 = {}, step2 = {}, step3 = {} } = {},
         commentPM = '',
         commentCLA = '',
@@ -283,14 +283,9 @@ class TeamCompoffTable extends PureComponent {
       }
 
       const oneAssign = (step) => {
-        const {
-          employee: {
-            generalInfo: { firstName: fn = '', lastName: ln = '', avatar = '' } = {},
-          } = {},
-        } = step;
+        const { employee: { generalInfo: { legalName = '', avatar = '' } = {} } = {} } = step;
         return {
-          firstName: fn,
-          lastName: ln,
+          legalName,
           avatar,
         };
       };
@@ -306,7 +301,7 @@ class TeamCompoffTable extends PureComponent {
           onDate,
         },
         comment: commentCLA || commentPM,
-        requestee: `${firstName} ${lastName}`,
+        requestee: requesteeName,
       };
     });
   };
@@ -346,7 +341,7 @@ class TeamCompoffTable extends PureComponent {
         length: 0,
       };
       onHandle(payload);
-      this.onRefreshTable('2');
+      this.onRefreshTable('1');
     }
   };
 
@@ -377,7 +372,7 @@ class TeamCompoffTable extends PureComponent {
       };
       onHandle(payload);
       this.toggleCommentModal(false);
-      this.onRefreshTable('3');
+      this.onRefreshTable('1');
     }
   };
 

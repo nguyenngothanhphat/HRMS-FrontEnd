@@ -120,31 +120,26 @@ class RequestInformation extends PureComponent {
         pathname: `/time-off`,
         state: { status: 'WITHDRAW', tickedId: ticketID, typeName: name, category: 'DRAFTS' },
       });
-      // dispatch({
-      //   type: 'timeOff/save',
-      //   payload: {
-      //     currentMineOrTeamTab: '2',
-      //     currentFilterTab: '1',
-      //     currentLeaveTypeTab,
-      //   },
-      // });
     }
   };
 
   // ON WITHDRAW WHEN A TICKET WAS APPROVED
   onProceedApproved = async (title, reason) => {
-    const { timeOff: { viewingLeaveRequest: { _id = '' } = {} } = {} } = this.props;
+    const {
+      timeOff: {
+        viewingLeaveRequest: { _id = '', ticketID = '', type: { name = '' } = {} } = {},
+      } = {},
+    } = this.props;
     const { dispatch } = this.props;
     const statusCode = await dispatch({
       type: 'timeOff/employeeWithdrawApproved',
       payload: { _id, title, reason },
     });
     if (statusCode === 200) {
-      notification.success({
-        message: 'Withdraw request sent!',
+      history.push({
+        pathname: `/time-off`,
+        state: { status: 'WITHDRAW', tickedId: ticketID, typeName: name, category: 'APPROVED' },
       });
-      this.setShowWithdraw2Modal(false);
-      this.refreshPage();
     }
   };
 
