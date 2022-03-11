@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Table, Dropdown, Menu, Divider } from 'antd';
-// import { connect } from 'umi';
+import { connect } from 'umi';
 import moment from 'moment';
 // import { isEmpty } from 'lodash';
 import DeleteQuestionAnswer from '../DeleteQuestionAnswer';
@@ -10,11 +10,11 @@ import MoreIcon from '@/assets/policiesRegulations/more.svg';
 import styles from './index.less';
 // import { stubFalse } from 'lodash';
 
-// @connect(({ loading, policiesRegulations: { listPolicy = [] } = {} }) => ({
-//   loadingGetList: loading.effects['policiesRegulations/fetchListPolicy'],
-//   loadingSearch: loading.effects['policiesRegulations/searchNamePolicy'],
-//   listPolicy,
-// }))
+@connect(({ loading, faqs: { listFAQ = [] } = {} }) => ({
+  loadingGetList: loading.effects['faqs/fetchListFAQ'],
+//   loadingSearch: loading.effects['faqs/searchNameQuestion'],
+  listFAQ,
+}))
 class TableFAQList extends Component {
   constructor(props) {
     super(props);
@@ -64,33 +64,18 @@ class TableFAQList extends Component {
       pageSelected,
       size,
       getPageAndSize = () => {},
+      listFAQ = [],
     } = this.props;
-    const listQuestion = [
-      {
-        nameCategory: 'General FAQs',
-        question: 'How can I request time off in #tool-name?',
-        addBy: 'Jakob Korsgaard',
-        addOn: '8/15/17',
-      },
-      {
-        nameCategory: 'Employee Directory',
-        question: 'I need to change who sees/approves PTO requests',
-        addBy: 'Terry Saris',
-        addOn: '4/21/12',
-      },
-      {
-        nameCategory: 'General FAQs',
-        question: 'How can I request time off in #tool-name?',
-        addBy: 'Jakob Korsgaard',
-        addOn: '8/15/17',
-      },
-      {
-        nameCategory: 'Employee Directory',
-        question: 'I need to change who sees/approves PTO requests',
-        addBy: 'Terry Saris',
-        addOn: '4/21/12',
-      },
-    ];
+    const listQuestion = listFAQ ? listFAQ.map((obj) => {
+      return {
+        id: obj._id,
+        question: obj.question || '-',
+        answer: obj.answer || '-',
+        addBy: obj.infoEmployee.length > 0 ? obj.infoEmployee[0].generalInfoInfo.legalName : '-',
+        addOn: obj.createdAt ? moment(obj.createdAt).format('DD/MM/YYYY') : '-',
+        nameCategory: obj.category.length > 0 ? obj.category[0].category : '-'
+      }
+    }) : []
     const columns = [
       {
         title: 'Category Name',
@@ -105,10 +90,6 @@ class TableFAQList extends Component {
         sorter: {
           compare: (a, b) => a.question.localeCompare(b.question),
         },
-        // render: (category) => {
-        //   const categoryyName = !isEmpty(category) ? category[0].name : ' _ ';
-        //   return <span>{categoryyName}</span>;
-        // },
       },
       {
         title: 'Added By',
@@ -116,13 +97,6 @@ class TableFAQList extends Component {
         sorter: {
           compare: (a, b) => a.addBy.localeCompare(b.addBy),
         },
-        // render: (infoEmployee) => {
-        //   if (!isEmpty(infoEmployee)) {
-        //     const { generalInfoInfo: { legalName = '' } = {} } = infoEmployee[0];
-        //     return <span>{legalName}</span>;
-        //   }
-        //   return '';
-        // },
       },
       {
         title: 'Added On',
@@ -130,10 +104,6 @@ class TableFAQList extends Component {
         sorter: {
           compare: (a, b) => moment(a.addOn).unix() - moment(b.addOn).unix(),
         },
-        // render: (updatedAt) => {
-        //   const date = updatedAt ? moment(updatedAt).format('DD/MM/YYYY') : ' _ ';
-        //   return <span>{date}</span>;
-        // },
       },
       {
         title: 'Action',

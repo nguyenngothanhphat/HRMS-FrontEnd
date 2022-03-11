@@ -1,10 +1,25 @@
 import React, { Component } from 'react';
-import { Form, Input, Select } from 'antd';
-import CommonModal from '../CommonModal';
+import { Form, Input, Select, Modal, Button } from 'antd';
+import { connect } from 'umi';
 import styles from './index.less';
 
 const { Option } = Select;
 const { TextArea } = Input;
+@connect(
+  ({
+    loading,
+    faqs: { listCategory = [], listFAQ = [] } = {},
+    user: {
+      currentUser: { employee: { _id: employeeId = '' } = {} } = {},
+    },
+  }) => ({
+    loadingGetList: loading.effects['faqs/fetchListCategory'],
+    loadingAddQuestion: loading.effects['faqs/addQuestion'],
+    listCategory,
+    employeeId,
+    listFAQ
+  }),
+)
 class AddQuestionAnswer extends Component {
   formRef = React.createRef();
 
@@ -13,9 +28,38 @@ class AddQuestionAnswer extends Component {
     this.state = {};
   }
 
+  handleCancel = () => {
+    const { onClose = () => {} } = this.props;
+    onClose();
+  };
+
+  onFinish = async ({ FaqCategory, question, answer }) => {
+    const { dispatch, employeeId = '', onClose = () => {} } = this.props;
+    dispatch({
+      type: 'faqs/addQuestion',
+      payload: {
+        categoryId: FaqCategory,
+        employeeId,
+        question,
+        answer,
+      },
+    }).then((response) => {
+      const { statusCode } = response;
+      if (statusCode === 200) {
+        onClose();
+      }
+    });
+  };
+
   render() {
-    const { visible, loadingAdd, listCategory = [], onClose = () => {} } = this.props;
-    const headerName = 'Add Question';
+    const { visible, loadingAdd, listCategory = [], listFAQ = [] } = this.props;
+    const renderModalHeader = () => {
+      return (
+        <div className={styles.header}>
+          <p className={styles.header__text}>Add Question</p>
+        </div>
+      );
+    };
     const renderModalContent = () => {
       return (
         <div className={styles.content}>
@@ -33,7 +77,7 @@ class AddQuestionAnswer extends Component {
                   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {listCategory.map((val) => (
-                  <Option value={val._id}>{val.name}</Option>
+                  <Option value={val._id}>{val.category}</Option>
                 ))}
               </Select>
             </Form.Item>
@@ -42,26 +86,22 @@ class AddQuestionAnswer extends Component {
               label="Question"
               name="question"
               labelCol={{ span: 24 }}
-              //   rules={[
-              //     { required: true, message: 'Please enter Policy Name' },
-              //     () => ({
-              //       validator(_, value) {
-              //         const duplicate = listPolicy.find((val) => val.namePolicy === value);
-              //         if (duplicate) {
-              //           return Promise.reject('Policy Name is exist ');
-              //         }
-              //         return Promise.resolve();
-              //       },
-              //     }),
-              //   ]}
+              rules={[
+                { required: true, message: 'Please enter question Name' },
+                () => ({
+                  validator(_, value) {
+                    const duplicate = listFAQ.find((val) => val.question === value);
+                    if (duplicate) {
+                      return Promise.reject('Question name is exist ');
+                    }
+                    return Promise.resolve();
+                  },
+                }),
+              ]}
             >
               <Input />
             </Form.Item>
-            <Form.Item
-              label="Answer"
-              name="answer"
-              labelCol={{ span: 24 }}
-            >
+            <Form.Item label="Answer" name="answer" labelCol={{ span: 24 }}>
               <TextArea rows={4} />
             </Form.Item>
           </Form>
@@ -71,14 +111,34 @@ class AddQuestionAnswer extends Component {
 
     return (
       <>
-        <CommonModal
-          loading={loadingAdd}
+        <Modal
+          className={`${styles.AddQuestionAnswer} ${styles.noPadding}`}
+          onCancel={this.handleCancel}
+          destroyOnClose
+          width={696}
+          footer={
+            <>
+              <Button className={styles.btnCancel} onClick={this.handleCancel}>
+                Cancel
+              </Button>
+              <Button
+                className={styles.btnSubmit}
+                type="primary"
+                form="addForm"
+                key="submit"
+                htmlType="submit"
+                loading={loadingAdd}
+              >
+                Add Question
+              </Button>
+            </>
+          }
+          title={renderModalHeader()}
+          centered
           visible={visible}
-          headerName={headerName}
-          acctionName={headerName}
-          modalContent={renderModalContent()}
-          onClose={onClose}
-        />
+        >
+          {renderModalContent()}
+        </Modal>
       </>
     );
   }

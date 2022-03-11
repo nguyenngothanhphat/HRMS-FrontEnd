@@ -30,7 +30,7 @@
     padding-left: 15px;
     &__title {
       &__category {
-        width: 137px;
+        width: 300px;
         height: 19px;
         padding-top: 40px;
         padding-bottom: 35px;
@@ -56,12 +56,17 @@
           font-size: 13px;
           font-style: normal;
           background: #ffffff;
-          border: 1px solid #e5e9ec;
-          border-radius: 10px;
+          border: 1px solid #E5E9EC;
+          // border-radius: 10px;
           &__img {
             width: 30px;
             height: 30px;
             background: #f4f5f6;
+          }
+          :global{
+            .ant-collapse-item {
+              color: #000000;
+            }
           }
         }
       }

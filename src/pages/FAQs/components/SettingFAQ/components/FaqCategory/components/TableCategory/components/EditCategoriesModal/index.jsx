@@ -52,7 +52,7 @@ class EditCategoriesModal extends Component {
           <Form
             initialValues={{ category: name }}
             name="basic"
-            id="addForm"
+            id="editForm"
             ref={this.formRef}
             onFinish={this.handleFinish}
           >
@@ -99,7 +99,7 @@ class EditCategoriesModal extends Component {
               <Button
                 className={styles.btnSubmit}
                 type="primary"
-                form="addForm"
+                form="editForm"
                 key="submit"
                 htmlType="submit"
                 loading={loadingUpdate}

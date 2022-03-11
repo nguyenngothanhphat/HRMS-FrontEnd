@@ -21,6 +21,13 @@ class ListQuestionAnswer extends Component {
     };
   }
 
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'faqs/fetchListFAQ',
+    });
+  }
+
   render() {
     const { visibleModal, pageSelected, size } = this.state;
     return (

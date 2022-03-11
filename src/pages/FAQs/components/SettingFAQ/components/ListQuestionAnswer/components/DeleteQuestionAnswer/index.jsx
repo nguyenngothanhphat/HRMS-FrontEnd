@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { Button, Modal } from 'antd';
-// import { connect } from 'umi';
+import { connect } from 'umi';
 import styles from './index.less';
 
+@connect(({ loading }) => ({
+  loadingDelete: loading.effects['faqs/deleteQuestion'],
+}))
 class DeleteQuestionAnswer extends Component {
   formRef = React.createRef();
 
@@ -17,20 +20,20 @@ class DeleteQuestionAnswer extends Component {
     onClose();
   };
 
-  //   handleFinish = () => {
-  //     const { dispatch, onClose = () => {}, item: { _id: id = '' } = {} } = this.props;
-  //     dispatch({
-  //       type: 'policiesRegulations/deleteCategory',
-  //       payload: {
-  //         id,
-  //       },
-  //     }).then((response) => {
-  //       const { statusCode } = response;
-  //       if (statusCode === 200) {
-  //         onClose();
-  //       }
-  //     });
-  //   };
+  handleFinish = () => {
+    const { dispatch, onClose = () => {}, item: { id = '' } = {} } = this.props;
+    dispatch({
+      type: 'faqs/deleteQuestion',
+      payload: {
+        id,
+      },
+    }).then((response) => {
+      const { statusCode } = response;
+      if (statusCode === 200) {
+        onClose();
+      }
+    });
+  };
 
   render() {
     const { visible, loadingDelete, item: { question = '' } = {} } = this.props;
@@ -57,7 +60,7 @@ class DeleteQuestionAnswer extends Component {
               <Button
                 className={styles.btnSubmit}
                 type="primary"
-                form="addForm"
+                form="deleteForm"
                 key="submit"
                 onClick={this.handleFinish}
                 htmlType="submit"

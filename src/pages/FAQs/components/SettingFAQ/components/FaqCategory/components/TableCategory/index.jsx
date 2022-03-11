@@ -38,7 +38,7 @@ class TableCatergory extends Component {
     const listCategories = listCategory ? listCategory.map((obj) => {
       return {
         id: obj._id,
-        name: obj.category,
+        name: obj.category || '-',
         numberQuestions: obj.listFAQs.length
       }
     }) : []

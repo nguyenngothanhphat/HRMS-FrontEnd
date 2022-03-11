@@ -38,7 +38,6 @@ class AddNewCategory extends PureComponent {
 
   render() {
     const { visible, listCategory } = this.props;
-    console.log('listCategory', listCategory)
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>
@@ -60,7 +59,7 @@ class AddNewCategory extends PureComponent {
                     { required: true, message: 'Please enter the categories name' },
                     () => ({
                       validator(_, value) {
-                        const duplicate = listCategory.find((val) => val.name === value);
+                        const duplicate = listCategory.find((val) => val.category === value);
                         if (duplicate) {
                           return Promise.reject('Categories Name is exist ');
                         }

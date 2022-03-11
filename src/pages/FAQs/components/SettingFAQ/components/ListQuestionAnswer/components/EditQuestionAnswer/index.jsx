@@ -1,12 +1,22 @@
 import React, { Component } from 'react';
-import { Form, Input, Select } from 'antd';
-import CommonModal from '../CommonModal';
+import { Form, Input, Select, Modal, Button } from 'antd';
+import { connect } from 'umi';
 import styles from './index.less';
 
 const { Option } = Select;
 const { TextArea } = Input;
-
-
+@connect(
+  ({
+    loading,
+    faqs: { listCategory = [] } = {},
+    user: { currentUser: { employee: { _id: employeeId = '' } = {} } = {} },
+  }) => ({
+    loadingGetList: loading.effects['faqs/fetchListCategory'],
+    loadingUpdate: loading.effects['faqs/updateQuestion'],
+    listCategory,
+    employeeId,
+  }),
+)
 class EditQuestionAnswer extends Component {
   formRef = React.createRef();
 
@@ -20,10 +30,39 @@ class EditQuestionAnswer extends Component {
     onClose();
   };
 
+  handleFinish = ({ question = '', faqCategory = '', answer = '' }) => {
+    const {
+      dispatch,
+      item: { id = '' } = {},
+      employeeId = '',
+      onClose = () => {},
+    } = this.props;
+    dispatch({
+      type: 'faqs/updateQuestion',
+      payload: {
+        id,
+        employeeId,
+        category: faqCategory,
+        question,
+        answer,
+      },
+    }).then((response) => {
+      const { statusCode } = response;
+      if (statusCode === 200) {
+        onClose();
+      }
+    });
+  };
+
   render() {
-    const { loadingAdd, visible, item, listCategory = [], onClose = () => {} } = this.props;
-    const headerName = 'Edit Question';
-    const acctionName = 'Save Change';
+    const { loadingUpdate, visible, item, listCategory = [] } = this.props;
+    const renderModalHeader = () => {
+      return (
+        <div className={styles.header}>
+          <p className={styles.header__text}>Edit Question</p>
+        </div>
+      );
+    };
     const renderModalContent = () => {
       return (
         <div className={styles.content}>
@@ -31,11 +70,11 @@ class EditQuestionAnswer extends Component {
             name="basic"
             id="editForm"
             ref={this.formRef}
-            onFinish={this.onFinish}
+            onFinish={this.handleFinish}
             initialValues={{
               faqCategory: item ? item.nameCategory : '',
               question: item ? item.question : '',
-              answer: 'answer of question',
+              answer: item ? item.answer : '',
             }}
           >
             <Form.Item
@@ -49,10 +88,9 @@ class EditQuestionAnswer extends Component {
                 optionFilterProp="children"
                 filterOption={(input, option) =>
                   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                // onChange={onPolicyCategories}
               >
                 {listCategory.map((val) => (
-                  <Option value={val._id}>{val.name}</Option>
+                  <Option value={val._id}>{val.category}</Option>
                 ))}
               </Select>
             </Form.Item>
@@ -70,14 +108,34 @@ class EditQuestionAnswer extends Component {
 
     return (
       <>
-        <CommonModal
-          loading={loadingAdd}
+        <Modal
+          className={`${styles.EditQuestionAnswer} ${styles.noPadding}`}
+          onCancel={this.handleCancel}
+          destroyOnClose
+          width={696}
+          footer={
+            <>
+              <Button className={styles.btnCancel} onClick={this.handleCancel}>
+                Cancel
+              </Button>
+              <Button
+                className={styles.btnSubmit}
+                type="primary"
+                form="editForm"
+                key="submit"
+                htmlType="submit"
+                loading={loadingUpdate}
+              >
+                Save Change
+              </Button>
+            </>
+          }
+          title={renderModalHeader()}
+          centered
           visible={visible}
-          headerName={headerName}
-          acctionName={acctionName}
-          modalContent={renderModalContent()}
-          onClose={onClose}
-        />
+        >
+          {renderModalContent()}
+        </Modal>
       </>
     );
   }

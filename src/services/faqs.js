@@ -27,3 +27,31 @@ export async function deleteCategory(payload) {
         data: payload
     })
 }
+
+export async function addQuestion(payload) {
+    return request('/api/faqstenant/add', {
+        method: 'POST', 
+        data: payload
+    })
+}
+
+export async function getListFAQ(payload) {
+    return request('/api/faqstenant/list', {
+        method: 'POST',
+        data: payload
+    })
+}
+
+export async function updateQuestion(payload) {
+    return request('/api/faqstenant/update', {
+        method: 'POST', 
+        data: payload
+    })
+}
+
+export async function deleteQuestion(payload) {
+    return request('/api/faqstenant/delete', {
+        method: 'POST',
+        data: payload
+    })
+}
