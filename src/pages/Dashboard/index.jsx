@@ -45,6 +45,13 @@ const Dashboard = (props) => {
   const { _id = '', generalInfo: { legalName = '' } = {} || {} } = employee;
   const [visibleWidgets, setVisibleWidgets] = useState([]);
 
+  const viewMyTeamDashboard = permissions.viewMyTeamDashboard !== -1;
+  const viewTimeSheetDashboard = permissions.viewTimeSheetDashboard !== -1;
+  const viewCalendarDashboard = permissions.viewCalendarDashboard !== -1;
+  const viewActivityLogDashboard = permissions.viewActivityLogDashboard !== -1;
+  const viewTaskDashboard = permissions.viewTaskDashboard !== -1;
+  const viewMyAppDashboard = permissions.viewMyAppDashboard !== -1;
+
   // FUNCTIONS
   const updateWidgets = (widgetDashboardShow) => {
     return dispatch({
@@ -77,47 +84,40 @@ const Dashboard = (props) => {
     {
       id: WIDGET_IDS.CALENDAR,
       component: <Calendar boxId={WIDGET_IDS.CALENDAR} />,
+      permission: viewCalendarDashboard,
     },
     {
       id: WIDGET_IDS.TASK,
       component: <Tasks boxId={WIDGET_IDS.TASK} />,
+      permission: viewTaskDashboard,
     },
     {
       id: WIDGET_IDS.ACTIVITY,
       component: <ActivityLog boxId={WIDGET_IDS.ACTIVITY} />,
+      permission: viewActivityLogDashboard,
     },
     {
       id: WIDGET_IDS.MYTEAM,
       component: <MyTeam boxId={WIDGET_IDS.MYTEAM} />,
+      permission: viewMyTeamDashboard,
     },
     {
       id: WIDGET_IDS.MYAPP,
       component: <MyApps boxId={WIDGET_IDS.MYAPP} />,
+      permission: viewMyAppDashboard,
     },
     {
       id: WIDGET_IDS.TIMESHEET,
       component: <Timesheets boxId={WIDGET_IDS.TIMESHEET} />,
+      permission: viewTimeSheetDashboard,
     },
   ];
 
   // USE EFFECT
   useEffect(() => {
-    // only manager / hr manager see My Team Widget
-    // const viewMyTeamDashboard = permissions.viewMyTeamDashboard !== -1;
-    const viewTimesheetDashboard = permissions.viewTimesheetDashboard !== -1;
-
-    const getShowingWidgets = () => {
-      let result = [...employeeWidgets];
-      // if (!viewMyTeamDashboard) {
-      //   result = employeeWidgets.filter((w) => w !== WIDGET_IDS.MYTEAM);
-      // }
-      if (!viewTimesheetDashboard) {
-        result = result.filter((w) => w !== WIDGET_IDS.TIMESHEET);
-      }
-      return result;
-    };
-
-    const showingWidgets = getShowingWidgets();
+    const showingWidgets = employeeWidgets.filter(
+      (w) => widgets.find((x) => x.id === w)?.permission,
+    );
 
     setVisibleWidgets([...showingWidgets]);
   }, [JSON.stringify(employeeWidgets)]);
@@ -163,7 +163,7 @@ const Dashboard = (props) => {
     <div className={styles.Dashboard}>
       {renderHello(legalName || userMapFirstName)}
       {renderWidgets()}
-      <ManageWidgetsModal />
+      <ManageWidgetsModal widgetPermission={widgets} />
     </div>
   );
 };

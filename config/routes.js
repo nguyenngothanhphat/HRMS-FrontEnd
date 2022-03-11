@@ -260,13 +260,14 @@ const routes = [
             name: 'dashboard',
             icon: '/assets/images/menuIcons/dashboard.svg',
             component: './Dashboard',
+            authority:['P_DASHBOARD_W_DASHBOARD_VIEW']
           },
           {
             path: '/dashboard/approvals',
             name: 'dashboardApprovals',
             hideInMenu: true,
             component: './Dashboard/components/Approval',
-            authority: [HR, HR_MANAGER, MANAGER, REGION_HEAD, DEPARTMENT_HEAD, ADMIN, OWNER],
+            authority: ['P_DASHBOARD_W_DASHBOARD_VIEW'],
           },
           {
             path: '/admin-app',
