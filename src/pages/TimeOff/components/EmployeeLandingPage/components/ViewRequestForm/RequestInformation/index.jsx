@@ -1,12 +1,12 @@
-import React, { PureComponent } from 'react';
-import { Button, Row, Col, Spin, notification } from 'antd';
-import { connect, history } from 'umi';
+import { Button, Col, Row, Spin } from 'antd';
 import moment from 'moment';
-import EditIcon from '@/assets/editBtnBlue.svg';
+import React, { PureComponent } from 'react';
+import { connect, history } from 'umi';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
-import WithdrawModal from '../WithdrawModal';
+import EditIcon from '@/assets/editBtnBlue.svg';
 import Withdraw2Modal from '../Withdraw2Modal';
+import WithdrawModal from '../WithdrawModal';
 import styles from './index.less';
 
 const { IN_PROGRESS, ACCEPTED, REJECTED, DRAFTS } = TIMEOFF_STATUS;

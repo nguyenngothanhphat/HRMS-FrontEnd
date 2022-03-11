@@ -145,7 +145,7 @@ class TeamLeaveTable extends PureComponent {
         width: COLUMN_WIDTH[TYPE].ACTION,
         // width: '20%',
         render: (_, record) => {
-          const { ticketID = '', _id = '', approvalManagerId = '' } = record;
+          const { ticketID = '', _id = '', approvalManager = '' } = record;
           const {
             isHR = false,
             selectedTab = '',
@@ -153,7 +153,7 @@ class TeamLeaveTable extends PureComponent {
           } = this.props;
 
           // only manager accept/reject a ticket
-          const isMyTicket = myId === approvalManagerId || isHR;
+          const isMyTicket = myId === approvalManager?._id || isHR;
 
           if (selectedTab === IN_PROGRESS)
             return (
