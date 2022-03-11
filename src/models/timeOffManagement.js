@@ -61,7 +61,6 @@ const timeOffManagement = {
       try {
         const response = yield call(getListTimeOff, { ...payload, company: getCurrentCompany() });
         let { data: listTimeOff = [] } = response;
-        console.log('timeoffModal');
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
 
