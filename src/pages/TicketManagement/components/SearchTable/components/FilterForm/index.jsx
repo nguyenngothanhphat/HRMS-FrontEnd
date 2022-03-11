@@ -160,6 +160,8 @@ const FilterForm = (props) => {
   };
 
   const onSearchEmployeeDebounce = debounce((type, value) => {
+    console.log('type', type);
+    console.log('value', value);
     let typeTemp = '';
     const payload = { status: currentStatus };
     switch (type) {
@@ -175,12 +177,14 @@ const FilterForm = (props) => {
         break;
     }
     if (typeTemp && value) {
+      console.log('dispatch call api');
       dispatch({
         type: typeTemp,
         payload,
       });
     }
     if (!value) {
+      console.log('set mảng về rỗng');
       switch (type) {
         case 'employeeRaise':
           setNameListState([]);

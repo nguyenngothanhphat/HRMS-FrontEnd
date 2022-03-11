@@ -24,7 +24,7 @@ class AllTicket extends Component {
       this.setState({
         nameSearch,
       });
-    }, 500);
+    }, 1000);
   }
 
   componentDidUpdate(prevProps, prevState) {
