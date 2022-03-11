@@ -30,6 +30,8 @@ const EditTaskModal = (props) => {
       endTime = '',
       taskName = '',
       clientLocation = false,
+      breakTime = 0,
+      overTime = 0,
     } = {},
     timeSheet: { projectList = [] } = {},
   } = props;
@@ -90,6 +92,8 @@ const EditTaskModal = (props) => {
     const payload = {
       ...values,
       id,
+      breakTime: values.breakTime || 0,
+      overTime: values.overTime || 0,
       startTime: moment(values.startTime, hourFormat).format(hourFormatAPI),
       endTime: moment(values.endTime, hourFormat).format(hourFormatAPI),
       employeeId,
@@ -150,6 +154,8 @@ const EditTaskModal = (props) => {
             endTime: endTime ? moment(endTime, hourFormatAPI).format(hourFormat) : '',
             notes,
             clientLocation,
+            breakTime,
+            overTime,
           }}
           onValuesChange={onValuesChange}
         >
@@ -172,12 +178,12 @@ const EditTaskModal = (props) => {
               <Form.Item
                 label={requiredLabel('Project')}
                 labelCol={{ span: 24 }}
-                rules={[{ required: true, message: 'Select a project' }]}
+                rules={[{ required: true, message: 'Select the project' }]}
                 name="projectId"
               >
                 <Select
                   showSearch
-                  placeholder="Select a project"
+                  placeholder="Select the project"
                   loading={loadingFetchProject}
                   disabled={loadingFetchProject}
                   filterOption={(input, option) =>
@@ -193,17 +199,17 @@ const EditTaskModal = (props) => {
               <Form.Item
                 label={requiredLabel('Task')}
                 labelCol={{ span: 24 }}
-                rules={[{ required: true, message: 'Select a task' }]}
+                rules={[{ required: true, message: 'Select the task' }]}
                 name="taskName"
               >
                 {TASKS.length !== 0 ? (
-                  <Select showSearch placeholder="Select a task">
+                  <Select showSearch placeholder="Select the task">
                     {TASKS.map((val) => (
                       <Option value={val}>{val}</Option>
                     ))}
                   </Select>
                 ) : (
-                  <Input placeholder="Enter task name" maxLength={150} />
+                  <Input placeholder="Enter the task name" maxLength={150} />
                 )}
               </Form.Item>
             </Col>
@@ -212,11 +218,11 @@ const EditTaskModal = (props) => {
               <Form.Item
                 label={requiredLabel('Start time')}
                 labelCol={{ span: 24 }}
-                rules={[{ required: true, message: 'Select start time' }]}
+                rules={[{ required: true, message: 'Select the start time' }]}
                 name="startTime"
               >
                 <CustomTimePicker
-                  placeholder="Select start time"
+                  placeholder="Select the start time"
                   showSearch
                   disabledHourAfter={disabledHourAfter}
                 />
@@ -227,14 +233,46 @@ const EditTaskModal = (props) => {
               <Form.Item
                 label={requiredLabel('End time')}
                 labelCol={{ span: 24 }}
-                rules={[{ required: true, message: 'Select end time' }]}
+                rules={[{ required: true, message: 'Select the end time' }]}
                 name="endTime"
               >
                 <CustomTimePicker
-                  placeholder="Select end time"
+                  placeholder="Select the end time"
                   showSearch
                   disabledHourBefore={disabledHourBefore}
                 />
+              </Form.Item>
+            </Col>
+
+            <Col xs={24} md={12}>
+              <Form.Item
+                label="Break time (In Mins)"
+                labelCol={{ span: 24 }}
+                rules={[
+                  {
+                    pattern: /^[\d]+$/,
+                    message: 'Just only numbers',
+                  },
+                ]}
+                name="breakTime"
+              >
+                <Input placeholder="0" />
+              </Form.Item>
+            </Col>
+
+            <Col xs={24} md={12}>
+              <Form.Item
+                label="Over time (In Mins)"
+                labelCol={{ span: 24 }}
+                rules={[
+                  {
+                    pattern: /^[\d]+$/,
+                    message: 'Just only numbers',
+                  },
+                ]}
+                name="overTime"
+              >
+                <Input placeholder="0" />
               </Form.Item>
             </Col>
 
@@ -242,10 +280,10 @@ const EditTaskModal = (props) => {
               <Form.Item
                 label={requiredLabel('Description')}
                 labelCol={{ span: 24 }}
-                rules={[{ required: true, message: 'Please enter Description' }]}
+                rules={[{ required: true, message: 'Please enter the description' }]}
                 name="notes"
               >
-                <Input.TextArea autoSize={{ minRows: 4 }} placeholder="Enter description" />
+                <Input.TextArea autoSize={{ minRows: 4 }} placeholder="Enter the description" />
               </Form.Item>
             </Col>
             <Col xs={24}>

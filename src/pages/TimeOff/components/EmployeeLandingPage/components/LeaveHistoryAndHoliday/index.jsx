@@ -157,7 +157,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
         subject,
       } = each;
 
-      if (status !== DRAFTS && status !== ON_HOLD && status !== DELETED && status !== REJECTED) {
+      if (status !== DRAFTS && status !== ON_HOLD && status !== DELETED) {
         const fromDate = moment.utc(from).locale('en').format('MM/DD/YYYY');
         const toDate = moment.utc(to).locale('en').format('MM/DD/YYYY');
         return {

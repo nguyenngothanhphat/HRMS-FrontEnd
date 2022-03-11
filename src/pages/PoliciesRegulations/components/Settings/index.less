@@ -1,5 +1,8 @@
 .Settings {
   .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 15px 32px 15px 20px;
     background: #ffffff;
     box-shadow: 0px 1px 2px #eeeeee;
@@ -10,6 +13,37 @@
       font-family: Roboto;
       font-style: normal;
       line-height: 21px;
+    }
+    &__location {
+      :global {
+        .ant-select .ant-select-arrow {
+          color: #2c6df9;
+          transition: transform 0.2s ease-in;
+        }
+        .ant-select-open .ant-select-arrow {
+          color: #2c6df9;
+          transform: rotate(180deg);
+        }
+      }
+      .selectCountry {
+        width: 200px;
+      }
+      .optionCountry {
+        display: flex;
+        height: 20px;
+      }
+      .labelText {
+        display: flex;
+        align-items: center;
+        span {
+          font-weight: 500;
+          font-size: 12px;
+        }
+        .nameCountry {
+          font-weight: 500;
+          font-size: 12px;
+        }
+      }
     }
   }
   .containerPolicies {

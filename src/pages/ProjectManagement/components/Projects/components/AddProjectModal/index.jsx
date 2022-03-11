@@ -57,7 +57,7 @@ const AddProjectModal = (props) => {
 
   useEffect(() => {
     form.setFieldsValue({
-      projectId: newProjectId,
+      projectId: newProjectId.toUpperCase(),
     });
   }, [newProjectId]);
 
@@ -73,6 +73,12 @@ const AddProjectModal = (props) => {
       });
     }
   }, [customerId]);
+
+  useEffect(() => {
+    return () => {
+      setCustomerId('');
+    };
+  }, []);
 
   const { employee: { _id: employeeId = '' } = {} || {} } = props;
 
@@ -93,6 +99,7 @@ const AddProjectModal = (props) => {
         newProjectId: '',
       },
     });
+    setCustomerId('');
     onClose();
   };
 

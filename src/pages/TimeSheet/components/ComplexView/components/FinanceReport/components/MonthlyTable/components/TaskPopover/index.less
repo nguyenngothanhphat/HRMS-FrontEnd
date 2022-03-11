@@ -94,6 +94,8 @@
         border-bottom: 1px solid #eaecef;
       }
       &__body {
+        max-height: 400px;
+        overflow-y: auto;
         .eachRow {
           height: 49px;
           color: #3e3e3e;
@@ -114,6 +116,9 @@
         }
       }
       &__viewMoreTask {
+        &:hover {
+          opacity: 0.8;
+        }
         color: #2c6df9;
         font-weight: 500;
         font-size: 14px;

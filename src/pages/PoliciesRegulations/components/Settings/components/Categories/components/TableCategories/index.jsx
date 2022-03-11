@@ -7,11 +7,21 @@ import EditCategoriesModal from './components/EditCategoriesModal';
 import DeleteCategoriesModal from './components/DeleteCategoriesModal';
 import styles from './index.less';
 
-@connect(({ loading, policiesRegulations: { listCategory = [], countryList = [] } = {} }) => ({
-  loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
-  listCategory,
-  countryList,
-}))
+@connect(
+  ({
+    loading,
+    policiesRegulations: {
+      listCategory = [],
+      countryList = [],
+      originData: { selectedCountry = '' },
+    } = {},
+  }) => ({
+    loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
+    listCategory,
+    countryList,
+    selectedCountry,
+  }),
+)
 class TableCatergory extends Component {
   constructor(props) {
     super(props);
@@ -33,25 +43,13 @@ class TableCatergory extends Component {
   };
 
   fetchCategoryList = () => {
-    const { dispatch, countryList = [] } = this.props;
-    if (countryList.length > 0) {
-      let countryArr = [];
-      countryArr = countryList.map((item) => {
-        return item.headQuarterAddress.country;
-      });
-      const newArr = this.removeDuplicate(countryArr, (item) => item._id);
-      countryArr = newArr.map((val) => val._id);
-      dispatch({
-        type: 'policiesRegulations/fetchListCategory',
-        payload: {
-          country: countryArr,
-        },
-      });
-    }
-  };
-
-  removeDuplicate = (array, key) => {
-    return [...new Map(array.map((x) => [key(x), x])).values()];
+    const { dispatch, selectedCountry = '' } = this.props;
+    dispatch({
+      type: 'policiesRegulations/fetchListCategory',
+      payload: {
+        country: [selectedCountry],
+      },
+    });
   };
 
   render() {

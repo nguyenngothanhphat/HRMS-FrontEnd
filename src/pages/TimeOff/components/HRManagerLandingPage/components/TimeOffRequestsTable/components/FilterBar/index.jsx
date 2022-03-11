@@ -56,7 +56,7 @@ class FilterBar extends Component {
         approvedLength = '',
         rejectedLength = '',
         draftLength = '',
-        onHoldLength = '',
+        withdrawnLength = '',
         deletedLength = '',
       } = {},
       category = '',
@@ -65,7 +65,6 @@ class FilterBar extends Component {
     } = this.props;
     const { length = 0 } = handlePackage;
 
-    const withdrawExist = onHoldLength > 0;
     const inProgressExist = inProgressLength > 0;
 
     return (
@@ -97,19 +96,11 @@ class FilterBar extends Component {
           )}
 
           <TabPane
-            tab={
-              withdrawExist ? (
-                <Badge dot>
-                  <span>Withdrawn ({this.addZeroToNumber(onHoldLength)}) </span>
-                </Badge>
-              ) : (
-                <span>Withdrawn ({this.addZeroToNumber(onHoldLength)}) </span>
-              )
-            }
+            tab={<span>Withdrawn ({this.addZeroToNumber(withdrawnLength)}) </span>}
             key="5"
           />
 
-          {deletedLength !== 0 && category !== 'MY' && (
+          {category !== 'MY' && (
             <TabPane tab={`Deleted (${this.addZeroToNumber(deletedLength)})`} key="6" />
           )}
         </Tabs>

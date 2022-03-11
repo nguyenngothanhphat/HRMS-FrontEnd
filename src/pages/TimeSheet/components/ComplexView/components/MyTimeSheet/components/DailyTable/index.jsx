@@ -26,13 +26,13 @@ const DailyTable = (props) => {
 
   // generate data by selected date
   const generateData = (data) => {
-    const result =
+    return (
       data.find(
         (item) =>
           moment(item.date, dateFormatAPI).format('MM/DD/YYYY') ===
           moment(selectedDate).format('MM/DD/YYYY'),
-      ) || {};
-    return result;
+      ) || {}
+    );
   };
 
   const refreshData = () => {

@@ -6,11 +6,21 @@ import TableCatergories from './components/TableCategories';
 import AddCategoriesModal from './components/AddCategoriesModal';
 import styles from './index.less';
 
-@connect(({ loading, policiesRegulations: { listCategory = [], countryList = [] } = {} }) => ({
-  loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
-  listCategory,
-  countryList,
-}))
+@connect(
+  ({
+    loading,
+    policiesRegulations: {
+      listCategory = [],
+      countryList = [],
+      originData: { selectedCountry = '' },
+    } = {},
+  }) => ({
+    loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
+    listCategory,
+    countryList,
+    selectedCountry,
+  }),
+)
 class Categories extends PureComponent {
   constructor(props) {
     super(props);
@@ -20,32 +30,21 @@ class Categories extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { countryList = [] } = this.props;
-    if (JSON.stringify(prevProps.countryList) !== JSON.stringify(countryList)) {
+    const { selectedCountry = '' } = this.props;
+    if (prevProps.selectedCountry !== selectedCountry) {
       this.fetchCategoryList();
     }
   }
 
   fetchCategoryList = () => {
-    const { dispatch, countryList = [] } = this.props;
-    if (countryList.length > 0) {
-      let countryArr = [];
-      countryArr = countryList.map((item) => {
-        return item.headQuarterAddress.country;
-      });
-      const newArr = this.removeDuplicate(countryArr, (item) => item._id);
-      countryArr = newArr.map((val) => val._id);
-      dispatch({
-        type: 'policiesRegulations/fetchListCategory',
-        payload: {
-          country: countryArr,
-        },
-      });
-    }
-  };
+    const { dispatch, selectedCountry = '' } = this.props;
 
-  removeDuplicate = (array, key) => {
-    return [...new Map(array.map((x) => [key(x), x])).values()];
+    dispatch({
+      type: 'policiesRegulations/fetchListCategory',
+      payload: {
+        country: [selectedCountry],
+      },
+    });
   };
 
   render() {
@@ -64,7 +63,7 @@ class Categories extends PureComponent {
             </Button>
           </div>
           <AddCategoriesModal
-            onRefresh={this.fetchCateogryList}
+            onRefresh={this.fetchCategoryList}
             visible={addCategoriesModal}
             onClose={() => this.setState({ addCategoriesModal: false })}
             mode="multiple"

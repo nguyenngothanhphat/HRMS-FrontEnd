@@ -15,6 +15,7 @@ const { Option } = Select;
 
 const Header = (props) => {
   const {
+    dispatch,
     statusSummary = [],
     projectStatus = 'All',
     setProjectStatus = () => {},
@@ -50,17 +51,11 @@ const Header = (props) => {
     setNeedResetFilterForm(true);
   }, [projectStatus]);
 
-  const searchPrefix = () => {
-    return (
-      <SearchOutlined
-        style={{
-          fontSize: 16,
-          color: 'black',
-          marginRight: '10px',
-        }}
-      />
-    );
-  };
+  useEffect(() => {
+    dispatch({
+      type: 'projectManagement/fetchProjectStatusListEffect',
+    });
+  }, []);
 
   const allCount = statusSummary.find((x) => x.statusName === 'All Projects');
 

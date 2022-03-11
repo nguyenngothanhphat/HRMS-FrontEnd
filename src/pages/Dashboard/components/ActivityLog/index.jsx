@@ -42,7 +42,7 @@ const ActivityLog = (props) => {
     dispatch({
       type: 'dashboard/fetchLeaveRequestOfEmployee',
       payload: {
-        status: 'IN-PROGRESS',
+        status: ['IN-PROGRESS'],
       },
     });
   }, []);

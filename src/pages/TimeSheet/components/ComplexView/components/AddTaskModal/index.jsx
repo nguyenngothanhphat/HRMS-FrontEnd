@@ -109,6 +109,8 @@ const AddTaskModal = (props) => {
         taskName: item.taskName,
         startTime: moment(item.startTime, hourFormat).format(hourFormatAPI),
         endTime: moment(item.endTime, hourFormat).format(hourFormatAPI),
+        breakTime: item.breakTime || 0,
+        overTime: item.overTime || 0,
         date: moment(submitDate).locale('en').format(dateFormatAPI),
         clientLocation: item.clientLocation || false,
         project: {
@@ -173,13 +175,13 @@ const AddTaskModal = (props) => {
                     <Form.Item
                       label={requiredLabel('Project')}
                       labelCol={{ span: 24 }}
-                      rules={[{ required: true, message: 'Select a project' }]}
+                      rules={[{ required: true, message: 'Select the project' }]}
                       name={[name, 'projectId']}
                       fieldKey={[fieldKey, 'projectId']}
                     >
                       <Select
                         showSearch
-                        placeholder="Select a project"
+                        placeholder="Select the project"
                         loading={loadingFetchProject}
                         disabled={loadingFetchProject}
                         filterOption={(input, option) =>
@@ -198,20 +200,20 @@ const AddTaskModal = (props) => {
                       rules={[
                         {
                           required: true,
-                          message: TASKS.length !== 0 ? 'Select a task' : 'Enter task name',
+                          message: TASKS.length !== 0 ? 'Select a task' : 'Enter the task name',
                         },
                       ]}
                       name={[name, 'taskName']}
                       fieldKey={[fieldKey, 'taskName']}
                     >
                       {TASKS.length !== 0 ? (
-                        <Select showSearch placeholder="Select a task">
+                        <Select showSearch placeholder="Select the task">
                           {TASKS.map((val) => (
                             <Option value={val}>{val}</Option>
                           ))}
                         </Select>
                       ) : (
-                        <Input placeholder="Enter task name" maxLength={150} />
+                        <Input placeholder="Enter the task name" maxLength={150} />
                       )}
                     </Form.Item>
                   </Col>
@@ -220,12 +222,12 @@ const AddTaskModal = (props) => {
                     <Form.Item
                       label={requiredLabel('Start time')}
                       labelCol={{ span: 24 }}
-                      rules={[{ required: true, message: 'Select start time' }]}
+                      rules={[{ required: true, message: 'Select the start time' }]}
                       name={[name, 'startTime']}
                       fieldKey={[fieldKey, 'startTime']}
                     >
                       <CustomTimePicker
-                        placeholder="Select start time"
+                        placeholder="Select the start time"
                         showSearch
                         disabledHourAfter={disabledHourAfter[index]}
                       />
@@ -236,15 +238,49 @@ const AddTaskModal = (props) => {
                     <Form.Item
                       label={requiredLabel('End time')}
                       labelCol={{ span: 24 }}
-                      rules={[{ required: true, message: 'Select end time' }]}
+                      rules={[{ required: true, message: 'Select the end time' }]}
                       name={[name, 'endTime']}
                       fieldKey={[fieldKey, 'endTime']}
                     >
                       <CustomTimePicker
-                        placeholder="Select end time"
+                        placeholder="Select the end time"
                         showSearch
                         disabledHourBefore={disabledHourBefore[index]}
                       />
+                    </Form.Item>
+                  </Col>
+
+                  <Col xs={24} md={12}>
+                    <Form.Item
+                      label="Break time (In Mins)"
+                      labelCol={{ span: 24 }}
+                      rules={[
+                        {
+                          pattern: /^[\d]+$/,
+                          message: 'Just only numbers',
+                        },
+                      ]}
+                      name={[name, 'breakTime']}
+                      fieldKey={[fieldKey, 'breakTime']}
+                    >
+                      <Input placeholder="0" />
+                    </Form.Item>
+                  </Col>
+
+                  <Col xs={24} md={12}>
+                    <Form.Item
+                      label="Over time (In Mins)"
+                      labelCol={{ span: 24 }}
+                      rules={[
+                        {
+                          pattern: /^[\d]+$/,
+                          message: 'Just only numbers',
+                        },
+                      ]}
+                      name={[name, 'overTime']}
+                      fieldKey={[fieldKey, 'overTime']}
+                    >
+                      <Input placeholder="0" />
                     </Form.Item>
                   </Col>
 
@@ -252,11 +288,14 @@ const AddTaskModal = (props) => {
                     <Form.Item
                       label={requiredLabel('Description')}
                       labelCol={{ span: 24 }}
-                      rules={[{ required: true, message: 'Please enter Description' }]}
+                      rules={[{ required: true, message: 'Enter the description' }]}
                       name={[name, 'notes']}
                       fieldKey={[fieldKey, 'notes']}
                     >
-                      <Input.TextArea autoSize={{ minRows: 4 }} placeholder="Enter description" />
+                      <Input.TextArea
+                        autoSize={{ minRows: 4 }}
+                        placeholder="Enter the description"
+                      />
                     </Form.Item>
                   </Col>
                   <Col xs={12}>

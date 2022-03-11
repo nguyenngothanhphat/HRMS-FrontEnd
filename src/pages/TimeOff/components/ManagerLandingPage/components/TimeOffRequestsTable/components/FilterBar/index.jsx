@@ -56,7 +56,7 @@ class FilterBar extends PureComponent {
         approvedLength = '',
         rejectedLength = '',
         draftLength = '',
-        onHoldLength = '',
+        withdrawnLength = '',
       } = {},
       category = '',
       timeOff: { currentFilterTab = '' } = {},
@@ -93,7 +93,7 @@ class FilterBar extends PureComponent {
           {category === 'MY' && (
             <TabPane tab={`Drafts (${this.addZeroToNumber(draftLength)})`} key="4" />
           )}
-          <TabPane tab={`Withdrawn (${this.addZeroToNumber(onHoldLength)})`} key="5" />
+          <TabPane tab={`Withdrawn (${this.addZeroToNumber(withdrawnLength)})`} key="5" />
         </Tabs>
       </div>
     );

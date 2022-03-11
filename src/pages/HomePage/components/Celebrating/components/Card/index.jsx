@@ -208,6 +208,7 @@ const Card = (props) => {
     <div className={styles.Card}>
       <Carousel
         infinite
+        effect="fade"
         arrows
         dots
         autoplay={!celebratingDetailModalVisible}
