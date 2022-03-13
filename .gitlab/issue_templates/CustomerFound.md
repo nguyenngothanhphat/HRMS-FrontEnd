@@ -16,5 +16,5 @@ Dependencies (if any) -
 ## Comments -
 
 
-/label ~Customer Found
+/label ~"Customer Found"
 /cc @aashwij @christine.nguyen @thang.nguyen
