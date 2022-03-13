@@ -3,9 +3,7 @@ import { DatePicker, Form, Select, AutoComplete, Spin, Input } from 'antd';
 import { debounce } from 'lodash';
 import moment from 'moment';
 import { connect } from 'umi';
-
 import CalendarIcon from '@/assets/calendar_icon.svg';
-
 import styles from './index.less';
 
 const { Option } = Select;
@@ -25,6 +23,9 @@ const FilterForm = (props) => {
   const [form] = Form.useForm();
   const [durationFrom, setDurationFrom] = useState('');
   const [durationTo, setDurationTo] = useState('');
+  const [nameEmployeeRaise, setNameEmployeeRaise] = useState('');
+  const [nameEmployeeAssigne, setNameEmployeeAssigne] = useState('');
+
   const [nameListState, setNameListState] = useState([]);
   const [asignedListState, setAsignedListState] = useState([]);
 
@@ -60,7 +61,13 @@ const FilterForm = (props) => {
         };
       }),
     );
-  }, [JSON.stringify(employeeRaiseList)]);
+  }, [JSON.stringify(employeeRaiseList), nameEmployeeRaise]);
+
+  useEffect(() => {
+    if (nameEmployeeRaise === '') {
+      setNameListState([]);
+    }
+  }, [nameEmployeeRaise]);
 
   // fetch option name employee assignee
   useEffect(() => {
@@ -76,7 +83,13 @@ const FilterForm = (props) => {
         };
       }),
     );
-  }, [JSON.stringify(employeeAssigneList)]);
+  }, [JSON.stringify(employeeAssigneList), nameEmployeeAssigne]);
+
+  useEffect(() => {
+    if (nameEmployeeAssigne === '') {
+      setAsignedListState([]);
+    }
+  }, [nameEmployeeAssigne]);
 
   const disabledDate = (currentDate, type) => {
     if (type === 'fromDate') {
@@ -160,31 +173,30 @@ const FilterForm = (props) => {
   };
 
   const onSearchEmployeeDebounce = debounce((type, value) => {
-    console.log('type', type);
-    console.log('value', value);
     let typeTemp = '';
     const payload = { status: currentStatus };
     switch (type) {
       case 'employeeRaise':
         typeTemp = 'ticketManagement/fetchEmployeeRaiseListEffect';
         payload.employeeRaise = value;
+        setNameEmployeeRaise(value);
         break;
       case 'employeeAssignee':
         typeTemp = 'ticketManagement/fetchEmployeeAssigneListEffect';
         payload.employeeAssignee = value;
+        setNameEmployeeAssigne(value);
+
         break;
       default:
         break;
     }
     if (typeTemp && value) {
-      console.log('dispatch call api');
       dispatch({
         type: typeTemp,
         payload,
       });
     }
     if (!value) {
-      console.log('set mảng về rỗng');
       switch (type) {
         case 'employeeRaise':
           setNameListState([]);
@@ -230,8 +242,7 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select request type"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 showArrow
               >
                 {queryTypeList.map((option) => {
@@ -250,8 +261,7 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select priority"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 showArrow
               >
                 {priorityList.map((option) => {
@@ -270,8 +280,7 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select location"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 showArrow
               >
                 {locationsListNew.map((option) => {
