@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
+import WorkInProgress from "@/components/WorkInProgress";
 
 class Appointments extends PureComponent {
   render() {
-    return <div>Appointments</div>;
+    return <WorkInProgress />;
   }
 }
 

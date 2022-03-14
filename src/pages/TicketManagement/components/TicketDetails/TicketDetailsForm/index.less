@@ -320,169 +320,246 @@
     .timeline {
       margin: 0 24px;
       :global {
-        .ant-timeline-right {
-          .ant-timeline-item {
-            padding-top: 150px !important;
-          }
-          .ant-timeline-item:nth-child(1) {
-            padding-top: 150px !important;
-          }
-          .ant-timeline-item {
-            display: flex;
-            align-items: center;
-            justify-content: end;
-            .ant-timeline-item-content {
-              top: 0;
-              width: 420px;
-              //edit
-              margin: 0 26px 0 0;
-              padding: 16px 19px 16px 16px;
-              border: 2px solid #f0f0f0;
-              border-radius: 8px;
-
-              img {
-                width: 20px;
-                margin-left: 8px;
-              }
-              a {
-                font-weight: normal;
-                font-size: 13px;
-                font-family: Roboto;
-                font-style: normal;
-                line-height: 15px;
-                text-decoration: underline !important;
-              }
-
-              div:nth-child(1) {
-                padding-bottom: 8px;
-                color: #212020;
-                font-weight: 500;
-                font-size: 14px;
-                font-style: normal;
-                line-height: 21px;
-              }
-              div:nth-child(3) {
-                padding-top: 8px;
-                color: #848c90;
-                font-weight: normal;
-                font-size: 11px;
-                font-family: Roboto;
-                font-style: normal;
-                line-height: 13px;
-              }
-            }
-            .ant-timeline-item-tail {
-              top: 0;
-              left: 100%;
-              height: calc(100%);
-              border-left: 3px solid #f0f0f0;
-            }
-          }
-          .ant-timeline-item-last > .ant-timeline-item-tail {
-            display: block;
-          }
-          .ant-timeline-item-last {
-            padding-bottom: 60px !important;
-          }
-          .ant-timeline.ant-timeline-alternate .ant-timeline-item-left .ant-timeline-item-content {
-            margin: 0 0 0 32px !important;
-          }
-          .ant-timeline.ant-timeline-alternate .ant-timeline-item-right .ant-timeline-item-content {
-            text-align: left;
-          }
-          .ant-timeline-item-head-custom {
-            top: auto;
-            //edit
-            left: 100%;
-            z-index: 1;
-            color: #ffffff;
-            font-size: 20px;
-            border-radius: 50%;
-            transform: translate(-50%, 0);
-          }
+        .ant-timeline-item-content {
+          top: 30px;
+        }
+        .ant-timeline-item {
+          padding-bottom: 32px;
+        }
+        .ant-timeline-item-left:last-child {
+          padding-bottom: 62px;
+        }
+        .ant-timeline.ant-timeline-alternate .ant-timeline-item-left .ant-timeline-item-content,
+        .ant-timeline.ant-timeline-alternate .ant-timeline-item-right .ant-timeline-item-content {
+          padding: 16px 19px 16px 16px;
+          border: 2px solid #f0f0f0;
+          border-radius: 8px;
+        }
+        .ant-timeline.ant-timeline-alternate .ant-timeline-item-left .ant-timeline-item-content {
+          left: calc(50% - 0px);
+          width: calc(50% - 26px);
+        }
+        .ant-timeline.ant-timeline-alternate .ant-timeline-item-right .ant-timeline-item-content {
+          width: calc(50% - 26px);
+          text-align: left;
+        }
+        .ant-timeline-item-tail {
+          top: unset;
+          height: calc(100%);
+        }
+        .ant-timeline-item-last > .ant-timeline-item-tail {
+          display: block;
+        }
+        .ant-timeline.ant-timeline-alternate .ant-timeline-item-head-custom {
+          margin-top: 60px;
+        }
+        .ant-timeline-item-head-custom {
+          padding: unset;
         }
       }
-      :global {
-        .ant-timeline-left {
-          .ant-timeline-item {
-            padding-top: 100px;
-          }
-          .ant-timeline-item:nth-child(1) {
-            padding-top: 60 !important;
-          }
-          .ant-timeline-item {
-            display: flex;
-            align-items: center;
-            padding-bottom: 0 !important;
-            .ant-timeline-item-content {
-              top: 0;
-              width: 420px;
-              margin: 0 0 0 26px;
-              padding: 16px 19px 16px 16px;
-              border: 2px solid #f0f0f0;
-              border-radius: 8px;
-              img {
-                width: 20px;
-                margin-left: 8px;
-              }
-              a {
-                font-weight: normal;
-                font-size: 13px;
-                font-family: Roboto;
-                font-style: normal;
-                line-height: 15px;
-                text-decoration: underline !important;
-              }
-              div:nth-child(1) {
-                padding-bottom: 8px;
-                color: #212020;
-                font-weight: 500;
-                font-size: 14px;
-                font-style: normal;
-                line-height: 21px;
-              }
-              div:nth-child(3) {
-                padding-top: 8px;
-                color: #848c90;
-                font-weight: normal;
-                font-size: 11px;
-                font-family: Roboto;
-                font-style: normal;
-                line-height: 13px;
-              }
-            }
-            .ant-timeline-item-tail {
-              top: 0;
-              left: -1 !important;
-              left: unset;
-              height: calc(100%);
-              border-right: 3px solid #f0f0f0;
-              border-left: none;
-            }
-          }
-          .ant-timeline-item-last {
-            padding-bottom: 60px !important;
-          }
-          .ant-timeline-item-last > .ant-timeline-item-tail {
-            display: block;
-          }
-          .ant-timeline.ant-timeline-alternate .ant-timeline-item-left .ant-timeline-item-content {
-            margin: 0 0 0 32px !important;
-          }
-          .ant-timeline.ant-timeline-alternate .ant-timeline-item-right .ant-timeline-item-content {
-            text-align: left;
-          }
-          .ant-timeline-item-head-custom {
-            top: auto;
-            //edit
-            left: unset;
-            left: 2 !important;
-            color: #ffffff;
-            border-radius: 50%;
-            transform: translate(-50%, 0);
-          }
+      .titleChat {
+        margin-bottom: 8px;
+        color: #212020;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 21px;
+      }
+      .chatMessage {
+        margin-bottom: 8px;
+        color: #212020;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 21px;
+      }
+      .timeChat {
+        color: #848c90;
+        font-weight: normal;
+        font-size: 11px;
+        line-height: 13px;
+        letter-spacing: 0.1625px;
+      }
+      .attachments__file {
+        margin-bottom: 8px;
+        img {
+          width: 20px;
+          margin-right: 8px;
+        }
+        a {
+          font-weight: normal;
+          font-size: 13px;
+          font-family: Roboto;
+          font-style: normal;
+          line-height: 15px;
+          text-decoration: underline !important;
         }
       }
     }
+    // .timeline {
+    //   margin: 0 24px;
+    //   :global {
+    //     .ant-timeline-right {
+    //       .ant-timeline-item {
+    //         padding-top: 150px !important;
+    //       }
+    //       .ant-timeline-item:nth-child(1) {
+    //         padding-top: 150px !important;
+    //       }
+    //       .ant-timeline-item {
+    //         display: flex;
+    //         align-items: center;
+    //         justify-content: end;
+    //         .ant-timeline-item-content {
+    //           top: 0;
+    //           width: 420px;
+    //           //edit
+    //           margin: 0 26px 0 0;
+    //           padding: 16px 19px 16px 16px;
+    //           border: 2px solid #f0f0f0;
+    //           border-radius: 8px;
+
+    //           img {
+    //             width: 20px;
+    //             margin-left: 8px;
+    //           }
+    //           a {
+    //             font-weight: normal;
+    //             font-size: 13px;
+    //             font-family: Roboto;
+    //             font-style: normal;
+    //             line-height: 15px;
+    //             text-decoration: underline !important;
+    //           }
+
+    //           div:nth-child(1) {
+    //             padding-bottom: 8px;
+    //             color: #212020;
+    //             font-weight: 500;
+    //             font-size: 14px;
+    //             font-style: normal;
+    //             line-height: 21px;
+    //           }
+    //           div:nth-child(3) {
+    //             padding-top: 8px;
+    //             color: #848c90;
+    //             font-weight: normal;
+    //             font-size: 11px;
+    //             font-family: Roboto;
+    //             font-style: normal;
+    //             line-height: 13px;
+    //           }
+    //         }
+    //         .ant-timeline-item-tail {
+    //           top: 0;
+    //           left: 100%;
+    //           height: calc(100%);
+    //           border-left: 3px solid #f0f0f0;
+    //         }
+    //       }
+    //       .ant-timeline-item-last > .ant-timeline-item-tail {
+    //         display: block;
+    //       }
+    //       .ant-timeline-item-last {
+    //         padding-bottom: 60px !important;
+    //       }
+    //       .ant-timeline.ant-timeline-alternate .ant-timeline-item-left .ant-timeline-item-content {
+    //         margin: 0 0 0 32px !important;
+    //       }
+    //       .ant-timeline.ant-timeline-alternate .ant-timeline-item-right .ant-timeline-item-content {
+    //         text-align: left;
+    //       }
+    //       .ant-timeline-item-head-custom {
+    //         top: auto;
+    //         //edit
+    //         left: 100%;
+    //         z-index: 1;
+    //         color: #ffffff;
+    //         font-size: 20px;
+    //         border-radius: 50%;
+    //         transform: translate(-50%, 0);
+    //       }
+    //     }
+    //   }
+    //   :global {
+    //     .ant-timeline-left {
+    //       .ant-timeline-item {
+    //         padding-top: 100px;
+    //       }
+    //       .ant-timeline-item:nth-child(1) {
+    //         padding-top: 60 !important;
+    //       }
+    //       .ant-timeline-item {
+    //         display: flex;
+    //         align-items: center;
+    //         padding-bottom: 0 !important;
+    //         .ant-timeline-item-content {
+    //           top: 0;
+    //           width: 420px;
+    //           margin: 0 0 0 26px;
+    //           padding: 16px 19px 16px 16px;
+    //           border: 2px solid #f0f0f0;
+    //           border-radius: 8px;
+    //           img {
+    //             width: 20px;
+    //             margin-left: 8px;
+    //           }
+    //           a {
+    //             font-weight: normal;
+    //             font-size: 13px;
+    //             font-family: Roboto;
+    //             font-style: normal;
+    //             line-height: 15px;
+    //             text-decoration: underline !important;
+    //           }
+    //           div:nth-child(1) {
+    //             padding-bottom: 8px;
+    //             color: #212020;
+    //             font-weight: 500;
+    //             font-size: 14px;
+    //             font-style: normal;
+    //             line-height: 21px;
+    //           }
+    //           div:nth-child(3) {
+    //             padding-top: 8px;
+    //             color: #848c90;
+    //             font-weight: normal;
+    //             font-size: 11px;
+    //             font-family: Roboto;
+    //             font-style: normal;
+    //             line-height: 13px;
+    //           }
+    //         }
+    //         .ant-timeline-item-tail {
+    //           top: 0;
+    //           left: -1 !important;
+    //           left: unset;
+    //           height: calc(100%);
+    //           border-right: 3px solid #f0f0f0;
+    //           border-left: none;
+    //         }
+    //       }
+    //       .ant-timeline-item-last {
+    //         padding-bottom: 60px !important;
+    //       }
+    //       .ant-timeline-item-last > .ant-timeline-item-tail {
+    //         display: block;
+    //       }
+    //       .ant-timeline.ant-timeline-alternate .ant-timeline-item-left .ant-timeline-item-content {
+    //         margin: 0 0 0 32px !important;
+    //       }
+    //       .ant-timeline.ant-timeline-alternate .ant-timeline-item-right .ant-timeline-item-content {
+    //         text-align: left;
+    //       }
+    //       .ant-timeline-item-head-custom {
+    //         top: auto;
+    //         //edit
+    //         left: unset;
+    //         left: 2 !important;
+    //         color: #ffffff;
+    //         border-radius: 50%;
+    //         transform: translate(-50%, 0);
+    //       }
+    //     }
+    //   }
+    // }
   }
 }

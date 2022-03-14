@@ -24,7 +24,7 @@ class AllTicket extends Component {
       this.setState({
         nameSearch,
       });
-    }, 500);
+    }, 1000);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -72,7 +72,7 @@ class AllTicket extends Component {
     if (nameSearch) {
       payload = {
         ...payload,
-        name: nameSearch,
+        search: nameSearch,
       };
     }
     dispatch({

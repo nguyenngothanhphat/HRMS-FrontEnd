@@ -1,31 +1,95 @@
-import React, { useState } from 'react';
-import { DatePicker, Form, Select } from 'antd';
-import { debounce, isEmpty } from 'lodash';
+import React, { useState, useEffect } from 'react';
+import { DatePicker, Form, Select, AutoComplete, Spin, Input } from 'antd';
+import { debounce } from 'lodash';
 import moment from 'moment';
 import { connect } from 'umi';
-
 import CalendarIcon from '@/assets/calendar_icon.svg';
-
 import styles from './index.less';
 
 const { Option } = Select;
 
 const FilterForm = (props) => {
-  const { listOffAllTicket = [], locationsList = [], currentStatus = '', dispatch } = props;
+  const {
+    listOffAllTicket = [],
+    locationsList = [],
+    employeeAssigneeList = [],
+    employeeRaiseList = [],
+    currentStatus = '',
+    loadingFetchEmployeeRaiseListEffect,
+    loadingFetchEmployeeAssigneeListEffect,
+    dispatch,
+    visible = false,
+  } = props;
   const [form] = Form.useForm();
   const [durationFrom, setDurationFrom] = useState('');
   const [durationTo, setDurationTo] = useState('');
+  const [nameEmployeeRaise, setNameEmployeeRaise] = useState('');
+  const [nameEmployeeAssignee, setNameEmployeeAssignee] = useState('');
+
+  const [nameListState, setNameListState] = useState([]);
+  const [asignedListState, setAsignedListState] = useState([]);
 
   function getUniqueListBy(arr, key) {
     return [...new Map(arr.map((item) => [item[key], item])).values()];
   }
+
+  const removeDuplicate = (array, key) => {
+    return [...new Map(array.map((x) => [key(x), x])).values()];
+  };
+
   const queryTypeList = getUniqueListBy(listOffAllTicket, 'query_type');
   const priorityList = getUniqueListBy(listOffAllTicket, 'priority');
-  const assigned = getUniqueListBy(listOffAllTicket, 'employee_assignee');
-  const assginedList = assigned.filter((val) => val.employee_assignee !== '');
-  const legalNameList = getUniqueListBy(listOffAllTicket, 'employee_raise');
   const locationsListNew = getUniqueListBy(listOffAllTicket, 'location');
   const dateFormat = 'DD-MM-YYYY';
+
+  useEffect(() => {
+    setNameListState([]);
+    setAsignedListState([]);
+  }, [visible]);
+
+  // fetch option name employee raise
+  useEffect(() => {
+    const newEmployeeRaiseList = removeDuplicate(
+      employeeRaiseList,
+      (item) => item.employeeRaise?.generalInfo?.legalName,
+    );
+    setNameListState(
+      newEmployeeRaiseList.map((x) => {
+        return {
+          value: x.employeeRaise?.generalInfo?.legalName,
+          label: x.employeeRaise?.generalInfo.legalName,
+        };
+      }),
+    );
+  }, [JSON.stringify(employeeRaiseList), nameEmployeeRaise]);
+
+  useEffect(() => {
+    if (nameEmployeeRaise === '') {
+      setNameListState([]);
+    }
+  }, [nameEmployeeRaise]);
+
+  // fetch option name employee assignee
+  useEffect(() => {
+    const newEmployeeAssigneeList = removeDuplicate(
+      employeeAssigneeList,
+      (item) => item.employeeAssignee?.generalInfo?.legalName,
+    );
+    setAsignedListState(
+      newEmployeeAssigneeList.map((x) => {
+        return {
+          value: x.employeeAssignee?.generalInfo?.legalName,
+          label: x.employeeAssignee?.generalInfo.legalName,
+        };
+      }),
+    );
+  }, [JSON.stringify(employeeAssigneeList), nameEmployeeAssignee]);
+
+  useEffect(() => {
+    if (nameEmployeeAssignee === '') {
+      setAsignedListState([]);
+    }
+  }, [nameEmployeeAssignee]);
 
   const disabledDate = (currentDate, type) => {
     if (type === 'fromDate') {
@@ -65,6 +129,7 @@ const FilterForm = (props) => {
         break;
     }
   };
+
   const onFinish = (values) => {
     const newValues = { ...values };
 
@@ -100,11 +165,53 @@ const FilterForm = (props) => {
 
   const onFinishDebounce = debounce((values) => {
     onFinish(values);
-  }, 700);
+  }, 1000);
 
   const onValuesChange = () => {
     const values = form.getFieldsValue();
     onFinishDebounce(values);
+  };
+
+  const onSearchEmployeeDebounce = debounce((type, value) => {
+    let typeTemp = '';
+    const payload = { status: currentStatus };
+    switch (type) {
+      case 'employeeRaise':
+        typeTemp = 'ticketManagement/fetchEmployeeRaiseListEffect';
+        payload.employeeRaise = value;
+        setNameEmployeeRaise(value);
+        break;
+      case 'employeeAssignee':
+        typeTemp = 'ticketManagement/fetchEmployeeAssigneeListEffect';
+        payload.employeeAssignee = value;
+        setNameEmployeeAssignee(value);
+
+        break;
+      default:
+        break;
+    }
+    if (typeTemp && value) {
+      dispatch({
+        type: typeTemp,
+        payload,
+      });
+    }
+    if (!value) {
+      switch (type) {
+        case 'employeeRaise':
+          setNameListState([]);
+          break;
+        case 'employeeAssignee':
+          setAsignedListState([]);
+          break;
+        default:
+          break;
+      }
+    }
+  }, 1000);
+
+  const handleEmployeeSearch = (type, value) => {
+    onSearchEmployeeDebounce(type, value);
   };
 
   return (
@@ -119,32 +226,14 @@ const FilterForm = (props) => {
         >
           <div className={styles.form__top}>
             <Form.Item key="name" label="BY NAME" name="employeeRaise">
-              <Select
-                allowClear
-                showSearch
-                mode="multiple"
-                placeholder="Select name"
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-                showArrow
+              <AutoComplete
+                dropdownMatchSelectWidth={252}
+                notFoundContent={loadingFetchEmployeeRaiseListEffect ? <Spin /> : 'No matches'}
+                options={nameListState}
+                onSearch={(val) => handleEmployeeSearch('employeeRaise', val)}
               >
-                {!isEmpty(legalNameList)
-                  ? legalNameList.map((option) => {
-                      const {
-                        employeeRaise: {
-                          _id: userId = '',
-                          generalInfo: { legalName = '' } = {},
-                        } = {},
-                      } = option;
-                      return (
-                        <Option key={option.id} value={userId}>
-                          {legalName}
-                        </Option>
-                      );
-                    })
-                  : null}
-              </Select>
+                <Input placeholder="Search by Name" allowClear />
+              </AutoComplete>
             </Form.Item>
             <Form.Item key="queryType" label="BY REQUEST TYPE" name="queryType">
               <Select
@@ -213,29 +302,14 @@ const FilterForm = (props) => {
             </Form.Item>
             {currentStatus && currentStatus[0] !== 'New' ? (
               <Form.Item key="employeeAssignee" label="BY ASSIGNED TO" name="employeeAssignee">
-                <Select
-                  allowClear
-                  showSearch
-                  mode="multiple"
-                  placeholder="Select assign"
-                  filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
-                  showArrow
+                <AutoComplete
+                  dropdownMatchSelectWidth={252}
+                  notFoundContent={loadingFetchEmployeeAssigneeListEffect ? <Spin /> : 'No matches'}
+                  options={asignedListState}
+                  onSearch={(val) => handleEmployeeSearch('employeeAssignee', val)}
                 >
-                  {/** condition status have different New */}
-                  {!isEmpty(assginedList)
-                    ? assginedList.map((option) => {
-                        const { employeeAssignee: { generalInfo: { legalName = '' } = {} } = {} } =
-                          option;
-                        return (
-                          <Option key={option.employee_assignee} value={option.employee_assignee}>
-                            {legalName}
-                          </Option>
-                        );
-                      })
-                    : ''}
-                </Select>
+                  <Input placeholder="Search by assigned" allowClear />
+                </AutoComplete>
               </Form.Item>
             ) : null}
 
@@ -282,10 +356,24 @@ const FilterForm = (props) => {
 
 export default connect(
   ({
-    ticketManagement: { locationsList = [], currentStatus = [], listOffAllTicket = [] } = {},
+    loading,
+    ticketManagement: {
+      locationsList = [],
+      currentStatus = [],
+      listOffAllTicket = [],
+      employeeAssigneeList = [],
+      employeeRaiseList = [],
+    } = {},
   }) => ({
     currentStatus,
     listOffAllTicket,
     locationsList,
+    employeeRaiseList,
+    employeeAssigneeList,
+    loadingFetchListAllTicket: loading.effects['ticketManagement/fetchListAllTicket'],
+    loadingFetchEmployeeRaiseListEffect:
+      loading.effects['ticketManagement/fetchEmployeeRaiseListEffect'],
+    loadingFetchEmployeeAssigneeListEffect:
+      loading.effects['ticketManagement/fetchEmployeeAssigneeListEffect'],
   }),
 )(FilterForm);

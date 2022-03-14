@@ -45,25 +45,20 @@ class ManagerTicket extends Component {
           let departmentNameList = [];
           let departmentList = [];
 
-          const newData = data.filter(
-            (x) =>
-              x.name.includes('HR') ||
-              x.name.includes('IT') ||
-              x.name.toLowerCase().includes('operations'),
-          );
-          departmentNameList = [...departmentNameList, ...newData.map((x) => x.name)];
-
           if (viewTicketHR) {
             const find = data.filter((x) => x.name.includes('HR'));
             departmentList = [...departmentList, ...find.map((x) => x._id)];
+            departmentNameList = [...departmentNameList, ...find.map((x) => x.name)];
           }
           if (viewTicketIT) {
             const find = data.filter((x) => x.name.includes('IT'));
             departmentList = [...departmentList, ...find.map((x) => x._id)];
+            departmentNameList = [...departmentNameList, ...find.map((x) => x.name)];
           }
           if (viewTicketOperations) {
             const find = data.filter((x) => x.name.toLowerCase().includes('operations'));
             departmentList = [...departmentList, ...find.map((x) => x._id)];
+            departmentNameList = [...departmentNameList, ...find.map((x) => x.name)];
           }
 
           if (departmentList.length > 0) {

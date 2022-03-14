@@ -26,6 +26,8 @@ const ticketManagement = {
     listDepartment: [],
     locationsList: [],
     ticketDetail: {},
+    employeeRaiseList: [],
+    employeeAssigneeList: [],
   },
   effects: {
     *addTicket({ payload }, { call, put }) {
@@ -298,6 +300,47 @@ const ticketManagement = {
         dialog(errors);
         return {};
       }
+    },
+
+    *fetchEmployeeRaiseListEffect({ payload }, { call, put }) {
+      let response;
+      try {
+        const tempPayload = {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        };
+        response = yield call(getOffAllTicketList, tempPayload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { employeeRaiseList: data, currentStatus: payload.status },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchEmployeeAssigneeListEffect({ payload }, { call, put }) {
+      let response;
+      try {
+        const tempPayload = {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        };
+        response = yield call(getOffAllTicketList, tempPayload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { employeeAssigneeList: data, currentStatus: payload.status },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
     },
   },
   reducers: {
