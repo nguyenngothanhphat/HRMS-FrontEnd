@@ -1,107 +1,28 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import RuleFrom from './RuleFrom';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import Configure from './Configure';
 import styles from './index.less';
+import RuleFrom from './RuleFrom';
 
-@connect(
-  ({
-    loading,
-    timeOff: {
-      timeOffTypesByCountry = [],
-      itemTimeOffType = {},
-      timeOffTypes,
-      countryList = [],
-      tempData: { type = {}, countrySelected = '' },
-    } = {},
-  }) => ({
-    itemTimeOffType,
-    type,
-    countrySelected,
+const TimeoffType = (props) => {
+  const {
+    dispatch,
     timeOffTypesByCountry,
-    timeOffTypes,
-    countryList,
-    loadingTimeOffType: loading.effects['timeOff/getDataTimeOffTypeById'],
-    loadingUpdateType: loading.effects['timeOff/updateTimeOffType'],
-    loadingAddType: loading.effects['timeOff/addTimeOffType'],
-    loadingFetchList: loading.effects['timeOff/fetchTimeOffTypesByCountry'],
-  }),
-)
-class TimeoffType extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isEdit: false,
-    };
-  }
+    // timeOffTypes,
+    itemTimeOffType = {},
+    countryList = [],
+    loadingAddType,
+    loadingFetchList,
+    countrySelected,
+    type = '',
+    loadingFetchCountryList = false,
+  } = props;
 
-  componentDidMount = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'timeOff/getCountryListByCompany',
-      payload: {
-        tenantIds: [getCurrentTenant()],
-        company: getCurrentCompany(),
-      },
-    });
-  };
+  const [isEdit, setIsEdit] = useState(false);
+  const [countryListState, setCountryListState] = useState([]);
 
-  componentWillUnmount = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'timeOff/saveTemp',
-      payload: {
-        countrySelected: '',
-        type: {},
-      },
-    });
-    dispatch({
-      type: 'timeOff/save',
-      payload: {
-        timeOffTypesByCountry: [],
-      },
-    });
-  };
-
-  onChangeType = async (id, value) => {
-    // const { dispatch } = this.props;
-    // await dispatch({
-    //   type: 'timeOff/getDataTimeOffTypeById',
-    //   payload: {
-    //     _id: id,
-    //     tenantId: getCurrentTenant(),
-    //   },
-    // });
-    // this.setState({
-    //   isEdit: value,
-    // });
-    console.log(id, value);
-  };
-
-  onExitEditing = (value) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'timeoff/save',
-      payload: {
-        itemTimeOffType: {},
-      },
-    });
-    this.setState({
-      isEdit: value,
-    });
-  };
-
-  onSaveChange = (value) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'timeOff/updateTimeOffType',
-      payload: value,
-    });
-  };
-
-  onChangeCountry = (country) => {
-    const { dispatch } = this.props;
+  const onChangeCountry = (country) => {
     dispatch({
       type: 'timeOff/fetchTimeOffTypesByCountry',
       payload: {
@@ -118,9 +39,76 @@ class TimeoffType extends Component {
     });
   };
 
-  onRemoveItem = (id) => {
-    const { countrySelected } = this.props;
-    const { dispatch } = this.props;
+  useEffect(() => {
+    dispatch({
+      type: 'timeOff/getCountryListByCompany',
+      payload: {
+        tenantIds: [getCurrentTenant()],
+        company: getCurrentCompany(),
+      },
+    });
+    return () => {
+      dispatch({
+        type: 'timeOff/saveTemp',
+        payload: {
+          countrySelected: '',
+          type: {},
+        },
+      });
+      dispatch({
+        type: 'timeOff/save',
+        payload: {
+          timeOffTypesByCountry: [],
+        },
+      });
+    };
+  }, []);
+
+  const removeDuplicate = (array, key) => {
+    return [...new Map(array.map((x) => [key(x), x])).values()];
+  };
+
+  useEffect(() => {
+    let countryArr = [];
+    countryArr = countryList.map((item) => {
+      return item.headQuarterAddress.country;
+    });
+    const newArr = removeDuplicate(countryArr, (item) => item._id);
+    setCountryListState(newArr);
+
+    const find = countryList.find((x) => x._id === getCurrentLocation());
+    if (find) {
+      dispatch({
+        type: 'timeOff/saveTemp',
+        payload: {
+          countrySelected: find?.headQuarterAddress?.country?._id,
+        },
+      });
+    }
+  }, [JSON.stringify(countryList)]);
+
+  const onChangeType = async (id, value) => {
+    console.log(id, value);
+  };
+
+  const onExitEditing = (value) => {
+    dispatch({
+      type: 'timeoff/save',
+      payload: {
+        itemTimeOffType: {},
+      },
+    });
+    setIsEdit(value);
+  };
+
+  const onSaveChange = (value) => {
+    dispatch({
+      type: 'timeOff/updateTimeOffType',
+      payload: value,
+    });
+  };
+
+  const onRemoveItem = (id) => {
     dispatch({
       type: 'timeOff/removeTimeOffType',
       payload: {
@@ -140,18 +128,16 @@ class TimeoffType extends Component {
     });
   };
 
-  onTypeSelected = (type) => {
-    const { dispatch } = this.props;
+  const onTypeSelected = (typeTemp) => {
     dispatch({
       type: 'timeOff/saveTemp',
       payload: {
-        type,
+        type: typeTemp,
       },
     });
   };
 
-  onAddNewType = async (newType) => {
-    const { countrySelected, type } = this.props;
+  const onAddNewType = async (newType) => {
     const payload = {
       tenantId: getCurrentTenant(),
       name: newType.name,
@@ -165,7 +151,6 @@ class TimeoffType extends Component {
       company: getCurrentCompany(),
       country: countrySelected,
     };
-    const { dispatch } = this.props;
 
     await dispatch({
       type: 'timeOff/addTimeOffType',
@@ -188,67 +173,79 @@ class TimeoffType extends Component {
     });
   };
 
-  render() {
-    const { isEdit } = this.state;
-    const {
-      timeOffTypesByCountry,
-      // timeOffTypes,
-      itemTimeOffType = {},
-      countryList = [],
-      loadingAddType,
-      loadingFetchList,
-      countrySelected,
-    } = this.props;
-    // console.log(timeOffTypesByCountry);
-    return (
-      <div className={styles.TimeoffType}>
-        <div className={styles.TimeoffContain}>
-          <div className={styles.TimeoffFrom}>
-            {!isEdit ? (
-              <div className={styles.Content}>Select & Configure timeoff types</div>
-            ) : (
-              <div className={styles.Content}>Configure {itemTimeOffType.name} policy </div>
-            )}
-            {!isEdit ? (
-              <div className={styles.SubContent}>
-                You will find below a list of generic timeoffs which every company provides.
-                Configue the rules for each timeoff as per your company norms. Also you can add
-                timeoffs under each category as per your company requirements. This step will take
-                about 80 minutes to complete.
-              </div>
-            ) : (
-              <div className={styles.SubContent}>
-                Casual Leave or CL is granted to an eligible employee if they cannot report to work
-                due to an unforeseen situation. Casual leave can also be utilised if an eligible
-                employee wants to take leave for a couple of days for personal reasons.
-              </div>
-            )}
-          </div>
+  // console.log(timeOffTypesByCountry);
+  return (
+    <div className={styles.TimeoffType}>
+      <div className={styles.TimeoffContain}>
+        <div className={styles.TimeoffFrom}>
           {!isEdit ? (
-            <RuleFrom
-              onChangeType={this.onChangeType}
-              timeOffTypes={timeOffTypesByCountry}
-              countryList={countryList}
-              addNewType={this.onAddNewType}
-              handleChangeCountry={this.onChangeCountry}
-              onTypeSelected={this.onTypeSelected}
-              loadingAddType={loadingAddType}
-              removeItem={this.onRemoveItem}
-              countrySelected={countrySelected}
-              loadingFetchList={loadingFetchList}
-            />
+            <div className={styles.Content}>Select & Configure timeoff types</div>
           ) : (
-            <Configure
-              tabKey={isEdit}
-              onExitEditing={this.onExitEditing}
-              itemTimeOffType={itemTimeOffType}
-              onSaveChange={this.onSaveChange}
-            />
+            <div className={styles.Content}>Configure {itemTimeOffType.name} policy </div>
+          )}
+          {!isEdit ? (
+            <div className={styles.SubContent}>
+              You will find below a list of generic timeoffs which every company provides. Configue
+              the rules for each timeoff as per your company norms. Also you can add timeoffs under
+              each category as per your company requirements. This step will take about 80 minutes
+              to complete.
+            </div>
+          ) : (
+            <div className={styles.SubContent}>
+              Casual Leave or CL is granted to an eligible employee if they cannot report to work
+              due to an unforeseen situation. Casual leave can also be utilised if an eligible
+              employee wants to take leave for a couple of days for personal reasons.
+            </div>
           )}
         </div>
+        {!isEdit ? (
+          <RuleFrom
+            onChangeType={onChangeType}
+            timeOffTypes={timeOffTypesByCountry}
+            countryList={countryListState}
+            addNewType={onAddNewType}
+            handleChangeCountry={onChangeCountry}
+            onTypeSelected={onTypeSelected}
+            loadingAddType={loadingAddType}
+            removeItem={onRemoveItem}
+            countrySelected={countrySelected}
+            loadingFetchList={loadingFetchList}
+            loadingFetchCountryList={loadingFetchCountryList}
+          />
+        ) : (
+          <Configure
+            tabKey={isEdit}
+            onExitEditing={onExitEditing}
+            itemTimeOffType={itemTimeOffType}
+            onSaveChange={onSaveChange}
+          />
+        )}
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
-export default TimeoffType;
+export default connect(
+  ({
+    loading,
+    timeOff: {
+      timeOffTypesByCountry = [],
+      itemTimeOffType = {},
+      timeOffTypes,
+      countryList = [],
+      tempData: { type = {}, countrySelected = '' },
+    } = {},
+  }) => ({
+    itemTimeOffType,
+    type,
+    countrySelected,
+    timeOffTypesByCountry,
+    timeOffTypes,
+    countryList,
+    loadingTimeOffType: loading.effects['timeOff/getDataTimeOffTypeById'],
+    loadingUpdateType: loading.effects['timeOff/updateTimeOffType'],
+    loadingAddType: loading.effects['timeOff/addTimeOffType'],
+    loadingFetchList: loading.effects['timeOff/fetchTimeOffTypesByCountry'],
+    loadingFetchCountryList: loading.effects['timeOff/getCountryListByCompany'],
+  }),
+)(TimeoffType);
