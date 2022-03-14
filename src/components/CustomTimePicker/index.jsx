@@ -27,7 +27,7 @@ const CustomTimePicker = (props) => {
     const hours = [];
     const stepList = generateMinuteStepList();
 
-    for (let hour = startHour; hour <= endHour; hour += 1) {
+    for (let hour = startHour; hour < endHour; hour += 1) {
       stepList.map((x) => {
         return hours.push(
           moment({
