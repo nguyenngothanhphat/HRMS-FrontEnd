@@ -14,6 +14,7 @@ const ManageWidgetsModal = (props) => {
     employeeWidgets = [],
     widgetPermission = [],
   } = props;
+
   const [selectedWidgets, setSelectedWidgets] = useState([]);
   const [visible, setVisible] = useState(false);
 
@@ -105,14 +106,10 @@ const ManageWidgetsModal = (props) => {
   };
 
   const renderContent = () => {
-    const getShowingWidgets = () => {
-      const result = employeeWidgets.filter(
-        (w) => widgetPermission.find((x) => x.id === w)?.permission,
-      );
-      return WIDGETS.filter((w) => result.includes(w.id));
-    };
+    const showingWidgets = WIDGETS.filter(
+      (w) => widgetPermission.find((x) => x.id === w.id)?.permission,
+    );
 
-    const showingWidgets = getShowingWidgets();
     return (
       <div className={styles.content}>
         <div className={styles.widgets}>
