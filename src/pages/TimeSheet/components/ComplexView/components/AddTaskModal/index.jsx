@@ -24,6 +24,7 @@ import CustomTimePicker from '@/components/CustomTimePicker';
 
 const { Option } = Select;
 const dateFormat = 'MM/DD/YYYY';
+const countryIdUS = 'US';
 const TASKS = [];
 
 const AddTaskModal = (props) => {
@@ -50,6 +51,8 @@ const AddTaskModal = (props) => {
   } = props;
 
   const { _id: employeeId = '' } = employee;
+  const { headQuarterAddress: { country: { _id: countryID = '' } = {} } = {} } = location;
+  const viewUS = countryID === countryIdUS;
 
   const fetchProjectList = () => {
     dispatch({
@@ -185,7 +188,8 @@ const AddTaskModal = (props) => {
                         loading={loadingFetchProject}
                         disabled={loadingFetchProject}
                         filterOption={(input, option) =>
-                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                       >
                         {projectList.map((val) => (
                           <Option value={val.id}>{val.projectName}</Option>
@@ -250,39 +254,43 @@ const AddTaskModal = (props) => {
                     </Form.Item>
                   </Col>
 
-                  <Col xs={24} md={12}>
-                    <Form.Item
-                      label="Break time (In Mins)"
-                      labelCol={{ span: 24 }}
-                      rules={[
-                        {
-                          pattern: /^[\d]+$/,
-                          message: 'Just only numbers',
-                        },
-                      ]}
-                      name={[name, 'breakTime']}
-                      fieldKey={[fieldKey, 'breakTime']}
-                    >
-                      <Input placeholder="0" />
-                    </Form.Item>
-                  </Col>
+                  {viewUS && (
+                    <Col xs={24} md={12}>
+                      <Form.Item
+                        label="Break time (In Mins)"
+                        labelCol={{ span: 24 }}
+                        rules={[
+                          {
+                            pattern: /^[\d]+$/,
+                            message: 'Just only numbers',
+                          },
+                        ]}
+                        name={[name, 'breakTime']}
+                        fieldKey={[fieldKey, 'breakTime']}
+                      >
+                        <Input placeholder="0" />
+                      </Form.Item>
+                    </Col>
+                  )}
 
-                  <Col xs={24} md={12}>
-                    <Form.Item
-                      label="Over time (In Mins)"
-                      labelCol={{ span: 24 }}
-                      rules={[
-                        {
-                          pattern: /^[\d]+$/,
-                          message: 'Just only numbers',
-                        },
-                      ]}
-                      name={[name, 'overTime']}
-                      fieldKey={[fieldKey, 'overTime']}
-                    >
-                      <Input placeholder="0" />
-                    </Form.Item>
-                  </Col>
+                  {viewUS && (
+                    <Col xs={24} md={12}>
+                      <Form.Item
+                        label="Over time (In Mins)"
+                        labelCol={{ span: 24 }}
+                        rules={[
+                          {
+                            pattern: /^[\d]+$/,
+                            message: 'Just only numbers',
+                          },
+                        ]}
+                        name={[name, 'overTime']}
+                        fieldKey={[fieldKey, 'overTime']}
+                      >
+                        <Input placeholder="0" />
+                      </Form.Item>
+                    </Col>
+                  )}
 
                   <Col xs={24}>
                     <Form.Item
