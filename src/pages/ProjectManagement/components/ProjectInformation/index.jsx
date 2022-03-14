@@ -9,6 +9,7 @@ import Planning from './components/Planning';
 import Resources from './components/Resources';
 import AuditTrail from './components/AuditTrail';
 import styles from './index.less';
+import WorkInProgress from '@/components/WorkInProgress';
 
 const ProjectInformation = (props) => {
   const {
@@ -68,13 +69,13 @@ const ProjectInformation = (props) => {
     {
       id: 5,
       name: 'Tracking',
-      component: '',
+      component: <WorkInProgress />,
       link: 'tracking',
     },
     {
       id: 6,
       name: 'Reporting',
-      component: '',
+      component: <WorkInProgress />,
       link: 'reporting',
     },
     {
