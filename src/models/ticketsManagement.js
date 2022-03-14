@@ -27,7 +27,7 @@ const ticketManagement = {
     locationsList: [],
     ticketDetail: {},
     employeeRaiseList: [],
-    employeeAssigneList: [],
+    employeeAssigneeList: [],
   },
   effects: {
     *addTicket({ payload }, { call, put }) {
@@ -322,7 +322,7 @@ const ticketManagement = {
       }
       return response;
     },
-    *fetchEmployeeAssigneListEffect({ payload }, { call, put }) {
+    *fetchEmployeeAssigneeListEffect({ payload }, { call, put }) {
       let response;
       try {
         const tempPayload = {
@@ -335,7 +335,7 @@ const ticketManagement = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { employeeAssigneList: data, currentStatus: payload.status },
+          payload: { employeeAssigneeList: data, currentStatus: payload.status },
         });
       } catch (error) {
         dialog(error);

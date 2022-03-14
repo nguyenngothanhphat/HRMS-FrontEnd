@@ -181,7 +181,7 @@ const RaiseTicketModal = (props) => {
     });
   };
 
-  const renderLablel = (text) => {
+  const renderLabel = (text) => {
     return (
       <span>
         {text} <span style={{ color: 'rgb(240, 75, 55)' }}>*</span>
@@ -207,7 +207,7 @@ const RaiseTicketModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Please select the support team' }]}
-                label={renderLablel('Support Team')}
+                label={renderLabel('Support Team')}
                 name="supportTeam"
                 labelCol={{ span: 24 }}
               >
@@ -231,7 +231,7 @@ const RaiseTicketModal = (props) => {
             </Col>
             <Col xs={24} md={12}>
               <Form.Item
-                label={renderLablel('Query Type')}
+                label={renderLabel('Query Type')}
                 name="queryType"
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please select the query type' }]}
@@ -257,7 +257,7 @@ const RaiseTicketModal = (props) => {
             </Col>
             <Col xs={24} md={12}>
               <Form.Item
-                label={renderLablel('Priority')}
+                label={renderLabel('Priority')}
                 name="priority"
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please select the priority' }]}
@@ -273,7 +273,7 @@ const RaiseTicketModal = (props) => {
 
             <Col xs={24}>
               <Form.Item
-                label={renderLablel('Subject')}
+                label={renderLabel('Subject')}
                 name="subject"
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please enter the subject' }]}
@@ -284,7 +284,7 @@ const RaiseTicketModal = (props) => {
 
             <Col xs={24}>
               <Form.Item
-                label={renderLablel('Description')}
+                label={renderLabel('Description')}
                 name="description"
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please enter the description' }]}
