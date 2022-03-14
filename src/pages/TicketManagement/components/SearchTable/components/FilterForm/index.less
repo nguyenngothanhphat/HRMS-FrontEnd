@@ -1,6 +1,7 @@
 .filterForm {
   max-height: 400px;
   overflow-y: auto;
+
   :global {
     .ant-form-item {
       display: flex;
@@ -52,6 +53,11 @@
     }
     .ant-select-selection-overflow-item-suffix {
       margin: 0px !important;
+    }
+    .ant-select-single .ant-select-selector .ant-select-selection-search-input {
+      min-height: 42px;
+      border: none;
+      border-radius: 5px;
     }
 
     .ant-tag::before {

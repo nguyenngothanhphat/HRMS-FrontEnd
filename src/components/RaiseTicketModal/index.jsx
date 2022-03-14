@@ -67,14 +67,14 @@ const RaiseTicketModal = (props) => {
   useEffect(() => {
     if (visible) {
       dispatch({
-        type: 'ticketManagement/fetchListEmployee',
+        type: 'ticketManagement/fetchDepartments',
         payload: {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         },
       });
       dispatch({
-        type: 'ticketManagement/fetchDepartments',
+        type: 'ticketManagement/fetchListEmployee',
         payload: {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -141,7 +141,7 @@ const RaiseTicketModal = (props) => {
     const find = listDepartment.find((x) => x._id === value);
     if (find) {
       const queryTypeListTemp = SUPPORT_TEAM.find((val) => val.name === find.name);
-      setQueryTypeList(queryTypeListTemp.queryType || []);
+      setQueryTypeList(queryTypeListTemp?.queryType || []);
     }
   };
 
@@ -181,6 +181,14 @@ const RaiseTicketModal = (props) => {
     });
   };
 
+  const renderLabel = (text) => {
+    return (
+      <span>
+        {text} <span style={{ color: 'rgb(240, 75, 55)' }}>*</span>
+      </span>
+    );
+  };
+
   const renderModalContent = () => {
     return (
       <div className={styles.content}>
@@ -199,7 +207,7 @@ const RaiseTicketModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Please select the support team' }]}
-                label="Support Team*"
+                label={renderLabel('Support Team')}
                 name="supportTeam"
                 labelCol={{ span: 24 }}
               >
@@ -223,7 +231,7 @@ const RaiseTicketModal = (props) => {
             </Col>
             <Col xs={24} md={12}>
               <Form.Item
-                label="Query Type*"
+                label={renderLabel('Query Type')}
                 name="queryType"
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please select the query type' }]}
@@ -237,7 +245,7 @@ const RaiseTicketModal = (props) => {
             </Col>
             <Col xs={24} md={12}>
               <Form.Item
-                label="Status*"
+                label="Status"
                 name="status"
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please select the status' }]}
@@ -249,7 +257,7 @@ const RaiseTicketModal = (props) => {
             </Col>
             <Col xs={24} md={12}>
               <Form.Item
-                label="Priority*"
+                label={renderLabel('Priority')}
                 name="priority"
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please select the priority' }]}
@@ -265,7 +273,7 @@ const RaiseTicketModal = (props) => {
 
             <Col xs={24}>
               <Form.Item
-                label="Subject*"
+                label={renderLabel('Subject')}
                 name="subject"
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please enter the subject' }]}
@@ -276,7 +284,7 @@ const RaiseTicketModal = (props) => {
 
             <Col xs={24}>
               <Form.Item
-                label="Description*"
+                label={renderLabel('Description')}
                 name="description"
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please enter the description' }]}
@@ -309,7 +317,8 @@ const RaiseTicketModal = (props) => {
                   loading={loadingFetchListEmployee}
                   disabled={loadingFetchListEmployee}
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 >
                   {listEmployee
                     ? listEmployee.map((val) => {
