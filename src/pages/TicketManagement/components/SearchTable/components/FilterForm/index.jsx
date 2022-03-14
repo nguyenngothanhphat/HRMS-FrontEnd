@@ -75,7 +75,6 @@ const FilterForm = (props) => {
       employeeAssigneeList,
       (item) => item.employeeAssignee?.generalInfo?.legalName,
     );
-    console.log('employeeAssigneeList', employeeAssigneeList);
     setAsignedListState(
       newEmployeeAssigneeList.map((x) => {
         return {
@@ -243,7 +242,8 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select request type"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 showArrow
               >
                 {queryTypeList.map((option) => {
@@ -262,7 +262,8 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select priority"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 showArrow
               >
                 {priorityList.map((option) => {
@@ -281,7 +282,8 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select location"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 showArrow
               >
                 {locationsListNew.map((option) => {
