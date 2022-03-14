@@ -238,14 +238,13 @@ const DirectoryComponent = (props) => {
 
       if (viewTabMyTeam && tabId === myTeam) {
         const { currentUser = {} } = props;
-        const roleEmployee = currentUser ? currentUser.employee.title.roles : [];
         const employee = currentUser ? currentUser.employee._id : '';
         dispatch({
           type: 'employee/fetchListEmployeeMyTeam',
           payload: {
             ...payload,
             // department: [departmentName],
-            roles: roleEmployee,
+            roles: currentUser?.roles || [],
             employee,
           },
         });
