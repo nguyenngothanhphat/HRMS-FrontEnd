@@ -98,10 +98,19 @@ const Header = (props) => {
       <div className={styles.Header__left}>
         <div className={styles.projectSelector}>
           <Select
+            showSearch
             value={currentProject || null}
             onChange={(val) => setCurrentProject(val)}
             loading={loadingFetchProjectList}
             disabled={loadingFetchProjectList}
+            optionFilterProp="children"
+            filterOption={(input, option) => {
+              return option.props.children
+                ? option.props.children.props.children[1].props.children
+                    .toLowerCase()
+                    .indexOf(input.toLowerCase()) >= 0
+                : null;
+            }}
           >
             {projectList.map((v, index) => (
               <Option value={v.id}>
