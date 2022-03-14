@@ -19,6 +19,7 @@ export default class ModalAddType extends PureComponent {
   };
 
   onSubmit = (values) => {
+    console.log('🚀 ~ values', values);
     const { onFinish, closeModal, loadingAddType } = this.props;
     onFinish(values);
     if (!loadingAddType) {
@@ -60,6 +61,10 @@ export default class ModalAddType extends PureComponent {
             onFieldsChange={this.onFieldsChange}
             ref={this.formRef}
             layout="vertical"
+            initialValues={{
+              accrualMethod: 'Unlimited',
+              accrualRate: 0,
+            }}
           >
             <Form.Item className={styles.nameField} label="Name of the leave" name="name">
               <Input placeholder="Input name of the leave" />
@@ -71,12 +76,10 @@ export default class ModalAddType extends PureComponent {
               <p>Accrual Settings</p>
             </div>
             <Form.Item className={styles.nameField} label="Accrual Method" name="accrualMethod">
-              <Radio.Group defaultValue="Unlimited">
-                <Space direction="vertical">
-                  <Radio value="Unlimited">Unlimited</Radio>
-                  <Radio value="Days Per Year">Days Per Year </Radio>
-                  <Radio value="Hours per hours worked">Hours per week</Radio>
-                </Space>
+              <Radio.Group>
+                <Radio value="Unlimited">Unlimited</Radio>
+                <Radio value="Days Per Year">Days Per Year </Radio>
+                <Radio value="Hours per hours worked">Hours per week</Radio>
               </Radio.Group>
             </Form.Item>
             <Form.Item className={styles.noOfDay} label="Vacation Accrual Rate" name="accrualRate">
