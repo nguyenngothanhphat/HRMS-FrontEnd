@@ -1,6 +1,6 @@
 import { UserOutlined } from '@ant-design/icons';
 import { Avatar, Button, Menu, Spin, notification } from 'antd';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import { IS_TERRALOGIC_LOGIN } from '@/utils/login';
 import avtDefault from '@/assets/avtDefault.jpg';
@@ -14,59 +14,44 @@ import {
   isOwner,
   isAdmin,
   setCurrentCompany,
-  // getIsSwitchingRole,
+  getIsSwitchingRole,
   getSwitchRoleAbility,
 } from '@/utils/authority';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 
-@connect(
-  ({
-    locationSelection: { listLocationsByCompany = [] } = {},
-    user: {
-      companiesOfUser = [],
-      currentUser: { roles = [], manageTenant = [], manageLocation = [], signInRole = [] } = {},
+const AvatarDropdown = (props) => {
+  const {
+    currentUser = {},
+    dispatch,
+    manageTenant = [],
+    // , roles = []
+    signInRole = [],
+    currentUser: {
+      employee: { _id: employeeID = '', generalInfo: { userId = '' } = {} } = {},
     } = {},
-    loading,
-  }) => ({
-    listLocationsByCompany, // for owner
-    manageLocation, // for admin
-    roles,
-    signInRole,
-    loadingFetchLocation: loading.effects['locationSelection/fetchLocationsByCompany'],
-    companiesOfUser,
-    manageTenant,
-  }),
-)
-class AvatarDropdown extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      LOGOUT: 'logout',
-      // VIEWPROFILE: 'viewProfile',
-      CHANGEPASSWORD: 'changePassword',
-      SETTINGS: 'settings',
-      SWITCHROLE: 'switchRole',
-      selectLocationAbility: false,
-      isCheck: false,
-      loading: false,
-    };
-  }
+    currentUser: { _id: adminOwnerID = '' } = {},
+    listLocationsByCompany = [],
+    manageLocation = [],
+  } = props;
+  const { firstName: name = '', avatar = {} } = currentUser;
 
-  componentDidMount = async () => {
-    const {
-      dispatch,
-      manageTenant = [],
-      // , roles = []
-      signInRole = [],
-    } = this.props;
+  const [LOGOUT] = useState('logout');
+  const [CHANGE_PASSWORD] = useState('changePassword');
+  const [SWITCH_ROLE] = useState('switchRole');
+  const [SETTINGS] = useState('settings');
+  const [selectLocationAbility, setSelectLocationAbility] = useState(false);
+  const [isCheck, setIsCheck] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
     const companyId = getCurrentCompany();
     const tenantId = getCurrentTenant();
     const checkIsOwner = isOwner();
 
     const formatSignInRole = signInRole.map((role) => role.toLowerCase());
     if (checkIsOwner || formatSignInRole.includes('owner')) {
-      await dispatch({
+      dispatch({
         type: 'locationSelection/fetchLocationListByParentCompany',
         payload: {
           company: companyId,
@@ -74,7 +59,7 @@ class AvatarDropdown extends React.Component {
         },
       });
     } else {
-      await dispatch({
+      dispatch({
         type: 'locationSelection/fetchLocationsByCompany',
         payload: {
           company: companyId,
@@ -83,74 +68,21 @@ class AvatarDropdown extends React.Component {
       });
     }
 
-    this.setState({
-      selectLocationAbility: true,
-    });
+    setSelectLocationAbility(true);
 
-    // roles.forEach((role) => {
-    //   const { _id = '' } = role;
-    //   if (['ADMIN-CSA', 'HR-GLOBAL'].includes(_id)) {
-    //     this.setState({
-    //       selectLocationAbility: true,
-    //     });
-    //   }
-    // });
-    let authority = JSON.parse(localStorage.getItem('antd-pro-authority')) || [];
-    authority = authority.filter(
-      (item) => item === 'owner' || item === 'admin' || item === 'employee',
-    );
+    const authority = JSON.parse(localStorage.getItem('antd-pro-authority')) || [];
+    const check = authority.includes('admin') || authority.includes('owner');
+    setIsCheck(!check);
 
-    authority.forEach((item) => {
-      if (item.includes('owner')) {
-        this.setIsCheck(false);
-      } else if (item === 'admin') {
-        this.setIsCheck(false);
-      } else {
-        this.setIsCheck(true);
-      }
-    });
-    this.setLoading(false);
-  };
+    setLoading(false);
+  }, []);
 
-  setIsCheck = (value) => {
-    this.setState({
-      isCheck: value,
-    });
-  };
-
-  setLoading = (value) => {
-    this.setState({
-      loading: value,
-    });
-  };
-
-  onFinish = () => {
-    history.push('/');
-  };
-
-  viewProfile = async () => {
-    const {
-      currentUser: {
-        employee: { _id: employeeID = '', generalInfo: { userId = '' } = {} } = {},
-      } = {},
-      currentUser: { _id: adminOwnerID = '' } = {},
-    } = this.props;
-    const { dispatch } = this.props;
+  const viewProfile = async () => {
     const tenantId = getCurrentTenant();
     const companyId = getCurrentCompany();
-    // const getAuth = getAuthority();
-    // let isOwnerOrAdmin = false;
-    // getAuth.map((item) => {
-    //   if (item.toLowerCase().includes('owner') || item.toLowerCase().includes('admin')) {
-    //     isOwnerOrAdmin = true;
-    //   }
-    //   return isOwnerOrAdmin;
-    // });
-
     localStorage.setItem('tenantCurrentEmployee', tenantId);
     localStorage.setItem('companyCurrentEmployee', companyId);
     localStorage.setItem('idCurrentEmployee', employeeID);
-
     await dispatch({
       type: 'employeeProfile/save',
       payload: {
@@ -168,32 +100,61 @@ class AvatarDropdown extends React.Component {
     }
   };
 
-  wait = (delay, ...args) => {
+  const wait = (delay, ...args) => {
     // eslint-disable-next-line compat/compat
     return new Promise((resolve) => {
       setTimeout(resolve, delay, ...args);
     });
   };
 
-  onMenuClick = async (event) => {
+  const handleSwitch = async () => {
+    let checkAdmin = false;
+
+    let isSwitch = false;
+    const formatRole = signInRole.map((role) => role.toLowerCase());
+
+    formatRole.forEach((item) => {
+      if (item.includes('admin')) {
+        checkAdmin = true;
+      }
+    });
+
+    // if press Switch button is ON
+    if (isCheck) {
+      if (checkAdmin) {
+        isSwitch = false;
+      }
+    } else {
+      isSwitch = true;
+    }
+    setIsCheck(!isCheck);
+    setLoading(true);
+
+    await dispatch({
+      type: 'user/fetchCurrent',
+      isSwitchingRole: isSwitch,
+    });
+
+    const { pathname } = window.location;
+    if (pathname === '/dashboard') {
+      window.location.reload();
+    } else history.replace('/');
+  };
+
+  const onMenuClick = async (event) => {
     const { key } = event;
-    const { LOGOUT, CHANGEPASSWORD, SETTINGS, SWITCHROLE } = this.state;
-    const { listLocationsByCompany = [] } = this.props;
 
     if (key === LOGOUT) {
-      const { dispatch } = this.props;
       if (dispatch) {
         dispatch({
           type: 'login/logout',
         });
       }
-
       return;
     }
 
-    if (key === CHANGEPASSWORD) {
+    if (key === CHANGE_PASSWORD) {
       history.push('/change-password');
-
       return;
     }
 
@@ -203,8 +164,8 @@ class AvatarDropdown extends React.Component {
       return;
     }
 
-    if (key === SWITCHROLE) {
-      this.handleSwitch();
+    if (key === SWITCH_ROLE) {
+      handleSwitch();
       return;
     }
 
@@ -249,7 +210,7 @@ class AvatarDropdown extends React.Component {
       notification.success({
         message: `Switching to ${newCompName} company...`,
       });
-      await this.wait(1500).then(() => window.location.reload());
+      await wait(1500).then(() => window.location.reload());
     }
 
     if (selectLocation) {
@@ -259,22 +220,10 @@ class AvatarDropdown extends React.Component {
       return;
     }
 
-    this.viewProfile();
+    viewProfile();
   };
 
-  getChildCompanies = async () => {
-    const { companiesOfUser = [] } = this.props;
-    const currentCompanyId = getCurrentCompany();
-    const resultList = companiesOfUser.map(
-      (company) => company?.childOfCompany === currentCompanyId,
-    );
-    // eslint-disable-next-line compat/compat
-    const list = await Promise.all(this.getLocationsOfChildCompany(resultList));
-    return list;
-  };
-
-  renderLocationList = () => {
-    const { listLocationsByCompany = [], manageLocation = [], signInRole = [] } = this.props;
+  const renderLocationList = () => {
     const currentLocation = getCurrentLocation();
     const currentCompany = getCurrentCompany();
     const checkIsOwner = isOwner();
@@ -332,44 +281,7 @@ class AvatarDropdown extends React.Component {
     );
   };
 
-  handleSwitch = async () => {
-    let checkAdmin = false;
-    const { dispatch, signInRole = [] } = this.props;
-    const { isCheck } = this.state;
-
-    let isSwitch = false;
-    const formatRole = signInRole.map((role) => role.toLowerCase());
-
-    formatRole.forEach((item) => {
-      if (item.includes('admin')) {
-        checkAdmin = true;
-      }
-    });
-
-    // if press Switch button is ON
-    if (isCheck) {
-      if (checkAdmin) {
-        isSwitch = false;
-      }
-    } else {
-      isSwitch = true;
-    }
-    this.setIsCheck(!isCheck);
-    this.setLoading(true);
-
-    await dispatch({
-      type: 'user/fetchCurrent',
-      isSwitchingRole: isSwitch,
-    });
-
-    const { pathname } = window.location;
-    if (pathname === '/dashboard') {
-      window.location.reload();
-    } else history.replace('');
-  };
-
-  switchRole = () => {
-    const { SWITCHROLE, isCheck, loading } = this.state;
+  const switchRole = () => {
     const switchRoleAbility = getSwitchRoleAbility();
 
     return (
@@ -377,11 +289,11 @@ class AvatarDropdown extends React.Component {
         {switchRoleAbility && (
           <>
             <Menu.Divider className={styles.secondDivider} />
-            <Menu.Item key={SWITCHROLE} className={styles.menuItemLink}>
+            <Menu.Item key={SWITCH_ROLE} className={styles.menuItemLink}>
               {loading
                 ? 'Switching...'
                 : `
-            Switch to ${!isCheck ? 'Employee' : 'Admin'}`}
+                Switch to ${!isCheck ? 'Employee' : 'Admin'}`}
             </Menu.Item>
           </>
         )}
@@ -389,98 +301,108 @@ class AvatarDropdown extends React.Component {
     );
   };
 
-  render() {
-    const { currentUser = {} } = this.props;
-    const { firstName: name = '', avatar = {} } = currentUser;
-    const { selectLocationAbility } = this.state;
+  const menuHeaderDropdown = (
+    <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
+      {/* AVATAR AND INFORMATION */}
+      <Menu.Item className={styles.menu__customItem}>
+        <div className={styles.viewProfile}>
+          <div className={styles.viewProfileAvatar}>
+            <Avatar
+              size={50}
+              className={styles.avatar}
+              icon={<UserOutlined />}
+              src={currentUser?.employee?.generalInfo?.avatar || avatar?.url || avtDefault}
+            />
+          </div>
+          <div className={styles.viewProfileInfo}>
+            <p>{currentUser?.employee?.generalInfo?.legalName || name}</p>
+            {currentUser?.employee?.generalInfo?.employeeId && (
+              <p>
+                {currentUser?.employee?.title?.name} -{' '}
+                {currentUser?.employee?.generalInfo?.employeeId}
+              </p>
+            )}
+            {isOwner() && <p>Owner</p>}
+          </div>
+        </div>
+      </Menu.Item>
 
-    const { LOGOUT, CHANGEPASSWORD } = this.state;
-    const menuHeaderDropdown = (
-      <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
-        {/* AVATAR AND INFORMATION */}
+      {/* VIEW PROFILE BUTTON */}
+      {currentUser && (
         <Menu.Item className={styles.menu__customItem}>
-          <div className={styles.viewProfile}>
-            <div className={styles.viewProfileAvatar}>
-              <Avatar
-                size={50}
-                className={styles.avatar}
-                icon={<UserOutlined />}
-                src={currentUser?.employee?.generalInfo?.avatar || avatar?.url || avtDefault}
-              />
-            </div>
-            <div className={styles.viewProfileInfo}>
-              <p>{currentUser?.employee?.generalInfo?.legalName || name}</p>
-              {currentUser?.employee?.generalInfo?.employeeId && (
-                <p>
-                  {currentUser?.employee?.title?.name} -{' '}
-                  {currentUser?.employee?.generalInfo?.employeeId}
-                </p>
-              )}
-              {isOwner() && <p>Owner</p>}
-            </div>
+          <div className={styles.viewProfileBtn}>
+            <Button onClick={viewProfile} className={styles.buttonLink}>
+              {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })}
+            </Button>
           </div>
         </Menu.Item>
+      )}
 
-        {/* VIEW PROFILE BUTTON */}
-        {currentUser && (
-          <Menu.Item className={styles.menu__customItem}>
-            <div className={styles.viewProfileBtn}>
-              <Button onClick={this.viewProfile} className={styles.buttonLink}>
-                {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })}
-              </Button>
-            </div>
+      {/* CHANGE PASSWORD */}
+      {/* terralogic user cannot change/reset password, only use Google Signin (ticket #852 - gitlab) */}
+      {!IS_TERRALOGIC_LOGIN && (
+        <>
+          <Menu.Divider className={styles.firstDivider} />
+          <Menu.Item key={CHANGE_PASSWORD} className={styles.menuItemLink}>
+            {formatMessage({ id: 'component.globalHeader.avatarDropdown.change-password' })}
           </Menu.Item>
-        )}
+        </>
+      )}
+      {/* SWITCH ROLE  */}
+      {switchRole()}
 
-        {/* CHANGE PASSWORD */}
-        {/* terralogic user cannot change/reset password, only use Google Signin (ticket #852 - gitlab) */}
-        {!IS_TERRALOGIC_LOGIN && (
-          <>
-            <Menu.Divider className={styles.firstDivider} />
-            <Menu.Item key={CHANGEPASSWORD} className={styles.menuItemLink}>
-              {formatMessage({ id: 'component.globalHeader.avatarDropdown.change-password' })}
-            </Menu.Item>
-          </>
-        )}
-        {/* SWITCH ROLE  */}
-        {this.switchRole()}
+      {/* LOCATION LIST */}
+      {selectLocationAbility && renderLocationList()}
 
-        {/* LOCATION LIST */}
-        {selectLocationAbility && this.renderLocationList()}
-
-        <Menu.Divider className={styles.secondDivider} />
-        <Menu.ItemGroup className={styles.groupMenuItem}>
-          <Menu.Item key={LOGOUT} className={styles.menuItemLogout}>
-            {formatMessage({ id: 'component.globalHeader.avatarDropdown.logout' })}
-          </Menu.Item>
-        </Menu.ItemGroup>
-      </Menu>
-    );
-    return currentUser && name ? (
-      <HeaderDropdown overlay={menuHeaderDropdown}>
-        <span className={`${styles.action} ${styles.account}`}>
-          <Avatar
-            size={44}
-            icon={<UserOutlined />}
-            className={styles.avatar}
-            src={currentUser?.employee?.generalInfo?.avatar || avatar?.url || avtDefault}
-          />
-        </span>
-      </HeaderDropdown>
-    ) : (
+      <Menu.Divider className={styles.secondDivider} />
+      <Menu.ItemGroup className={styles.groupMenuItem}>
+        <Menu.Item key={LOGOUT} className={styles.menuItemLogout}>
+          {formatMessage({ id: 'component.globalHeader.avatarDropdown.logout' })}
+        </Menu.Item>
+      </Menu.ItemGroup>
+    </Menu>
+  );
+  return currentUser && name ? (
+    <HeaderDropdown overlay={menuHeaderDropdown}>
       <span className={`${styles.action} ${styles.account}`}>
-        <Spin
-          size="small"
-          style={{
-            marginLeft: 8,
-            marginRight: 8,
-          }}
+        <Avatar
+          size={44}
+          icon={<UserOutlined />}
+          className={styles.avatar}
+          src={currentUser?.employee?.generalInfo?.avatar || avatar?.url || avtDefault}
         />
       </span>
-    );
-  }
-}
+    </HeaderDropdown>
+  ) : (
+    <span className={`${styles.action} ${styles.account}`}>
+      <Spin
+        size="small"
+        style={{
+          marginLeft: 8,
+          marginRight: 8,
+        }}
+      />
+    </span>
+  );
+};
 
-export default connect(({ user }) => ({
-  currentUser: user.currentUser,
-}))(AvatarDropdown);
+export default connect(
+  ({
+    locationSelection: { listLocationsByCompany = [] } = {},
+    user: {
+      companiesOfUser = [],
+      currentUser: { roles = [], manageTenant = [], manageLocation = [], signInRole = [] } = {},
+      currentUser,
+    } = {},
+    loading,
+  }) => ({
+    listLocationsByCompany, // for owner
+    manageLocation, // for admin
+    roles,
+    currentUser,
+    signInRole,
+    loadingFetchLocation: loading.effects['locationSelection/fetchLocationsByCompany'],
+    companiesOfUser,
+    manageTenant,
+  }),
+)(AvatarDropdown);
