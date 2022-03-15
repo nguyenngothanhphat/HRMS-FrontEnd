@@ -103,6 +103,9 @@ class ModalImportEmployee extends Component {
         'Employee Id': item.employeeId,
         'First Name': item.firstName,
         'Last Name': item.lastName,
+        'Middle Name': item.middleName,
+        'Gender': item.Gender,
+        'Date of Birth': item.birthDay,
         'Joined Date': item.joinDate,
         Location: item.location,
         Department: item.department,
@@ -165,6 +168,9 @@ class ModalImportEmployee extends Component {
         employeeId: item['Employee Id'],
         firstName: item['First Name'],
         lastName: item['Last Name'],
+        middleName: item['Middle Name'],
+        gender: item.Gender,
+        dateOfBirth: item['Date of Birth'],
         joinDate: item['Joined Date'] && moment(new Date(item['Joined Date'])).format('YYYY-MM-DD'),
         workEmail: item['Work Email'],
         location: item.Location,
@@ -202,23 +208,25 @@ class ModalImportEmployee extends Component {
     const { handleCancel = () => {}, handleRefresh = () => {} } = this.props;
     const tenantId = getCurrentTenant();
 
-    const payload = {
-      company,
-      tenantId,
-      employees,
-    };
-
+    const batchSize = _.chunk(employees, 5)
     const { dispatch } = this.props;
 
     if (!isValidateFile) {
-      dispatch({
-        type: 'employeesManagement/importEmployeesTenant',
-        payload,
-      }).then(() => {
-        this.setState({ company: '', employees: [] });
-        handleCancel();
-        handleRefresh();
-      });
+      batchSize.forEach((obj) => {
+        const payload = {
+          company,
+          tenantId,
+          employees: obj,
+        };
+        dispatch({
+          type: 'employeesManagement/importEmployeesTenant',
+          payload,
+        }).then(() => {
+          this.setState({ company: '', employees: [] });
+          handleCancel();
+          handleRefresh();
+        });
+      })
     } else {
       notification.error({ message: 'Submit failed. Please make sure your file is validated !' });
     }
