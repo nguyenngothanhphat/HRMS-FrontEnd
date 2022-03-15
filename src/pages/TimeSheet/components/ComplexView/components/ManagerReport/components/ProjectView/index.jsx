@@ -66,7 +66,7 @@ const ProjectView = (props) => {
       dispatch({
         type: 'timeSheet/savePayload',
         payload: {
-          payloadFetch: payload,
+          payloadExport: payload,
         },
       });
     }

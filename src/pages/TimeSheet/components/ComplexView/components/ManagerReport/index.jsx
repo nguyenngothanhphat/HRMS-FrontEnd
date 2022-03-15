@@ -14,13 +14,13 @@ const VIEW_TYPE = {
 };
 const ManagerReport = (props) => {
   // others
-  const { dispatch, timeSheet: { payloadFetch = {} } = {} } = props;
+  const { dispatch, timeSheet: { payloadExport = {} } = {} } = props;
   const [activeKey, setActiveKey] = useState(VIEW_TYPE.PROJECT_VIEW);
 
   const exportToExcel = async (type, fileName) => {
     const getListExport = await dispatch({
       type,
-      payload: payloadFetch,
+      payload: payloadExport,
     });
     const getDataExport = getListExport ? getListExport.data : '';
     const downloadLink = document.createElement('a');
