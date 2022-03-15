@@ -21,6 +21,8 @@ const Footer = (props) => {
         resource = [],
         projectSpentInDay = 0,
         projectSpentInHours = 0,
+        breakTime = 0,
+        overTime = 0,
       } = item;
 
       let resourceNames = '';
@@ -30,11 +32,13 @@ const Footer = (props) => {
       });
 
       return {
-        'Project Name': projectName,
-        Type: engagementType,
-        Resources: resourceNames,
-        'Total Days': `${projectSpentInDay} Days`,
-        'Total Hours ': `${projectSpentInHours} Hours`,
+        'Project Name': projectName || '-',
+        Type: engagementType || '-',
+        Resources: resourceNames || '-',
+        'Total Days': `${projectSpentInDay} Days` || '-',
+        'Break Time': breakTime || '-',
+        'Over Time': overTime || '-',
+        'Total Hours ': `${projectSpentInHours} Hours` || '-',
       };
     });
   };

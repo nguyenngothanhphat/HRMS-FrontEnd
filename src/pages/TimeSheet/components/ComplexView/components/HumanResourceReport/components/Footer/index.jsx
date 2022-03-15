@@ -24,6 +24,8 @@ const Footer = (props) => {
         totalLeave = '',
         totalWorkingDay = '',
         totalWorkingDayInHours = '',
+        breakTime = 0,
+        overTime = 0,
         department: { name = '' } = {},
       } = item;
       let projectName = '';
@@ -37,6 +39,8 @@ const Footer = (props) => {
         Project: projectName,
         'Working Days': `${userSpentInDay}/${totalWorkingDay} ( ${totalWorkingDayInHours} hours) `,
         'Leave Taken ': `${leaveTaken}/${totalLeave}`,
+        'Break Time': breakTime,
+        'Over Time': overTime,
         'Total Hours': `${userSpentInHours} hours`,
       };
     });

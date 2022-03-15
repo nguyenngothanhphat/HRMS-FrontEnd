@@ -22,7 +22,7 @@ const EmployeeDetailModal = (props) => {
   useEffect(() => {
     const find = dataSource.find((x) => x.id === employeeId);
     setData(find);
-  }, [employeeId]);
+  }, [employeeId, JSON.stringify(dataSource)]);
 
   const handleCancel = () => {
     onClose();
@@ -46,20 +46,20 @@ const EmployeeDetailModal = (props) => {
       const {
         date = '',
         inTime = '',
-        leave = '',
+        leaveTaken = '',
         notes = '',
         outTime = '',
         breakTime = '',
         overTime = '',
       } = item;
       return {
-        Date: date,
-        'In Time': inTime,
-        'Out Time': leave,
-        'Break Time': breakTime,
-        'Over Time': overTime,
-        Leaves: notes,
-        Notes: outTime,
+        Date: date || '-',
+        'In Time': inTime || '-',
+        'Out Time': outTime || '-',
+        'Break Time': breakTime || '-',
+        'Over Time': overTime || '-',
+        Leaves: leaveTaken || '-',
+        Notes: notes || '-',
       };
     });
   };

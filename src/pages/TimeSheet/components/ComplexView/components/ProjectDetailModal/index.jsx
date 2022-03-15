@@ -40,14 +40,14 @@ const ProjectDetailModal = (props) => {
       const { task = '', description = '', department = '', projectMembers = [] } = item;
       projectMembers.forEach((pro) => {
         result.push({
-          Department: department,
-          Task: task,
-          Description: description,
-          'Resources ': pro.legalName,
-          'Time taken': pro.userSpentTimeInHours,
-          'Break Time': pro.breakTime,
-          'Over Time': pro.overTime,
-          'Total time (task)': pro.totaltime,
+          Department: department || '-',
+          Task: task || '-',
+          Description: description || '-',
+          'Resources ': pro.legalName || '-',
+          'Time taken': pro.userSpentTimeInHours || '-',
+          'Break Time': pro.breakTime || '-',
+          'Over Time': pro.overTime || '-',
+          'Total time (task)': pro.totaltime || '-',
         });
       });
     });
