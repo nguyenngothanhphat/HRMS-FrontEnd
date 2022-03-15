@@ -213,3 +213,29 @@ export async function getEmployeeList(payload) {
     data: payload,
   });
 }
+
+// export project view of my project
+export async function exportProject(payload) {
+  return request(
+    '/api/export-project-csv',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
+
+// export team view of my project
+export async function exportTeam(payload) {
+  return request(
+    '/api/export-team-csv',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
