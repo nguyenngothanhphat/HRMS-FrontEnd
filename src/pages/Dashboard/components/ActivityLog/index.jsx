@@ -167,18 +167,23 @@ const ActivityLog = (props) => {
           <img src={LeftArrow} alt="expand" />
         </div>
       )}
+      {activeKey === '1' && listPendingApprovals.length === 0 && (
+        <div className={styles.addLength} />
+      )}
       {activeKey === '2' && mockNotification.length > 0 && (
         <div className={styles.viewAllBtn} onClick={() => onViewAllClick(activeKey)}>
           Show all Notifications
           <img src={LeftArrow} alt="expand" />
         </div>
       )}
+      {activeKey === '2' && mockNotification.length === 0 && <div className={styles.addLength} />}
       {activeKey === '3' && dataMyTicket().length > 0 && (
         <div className={styles.viewAllBtn} onClick={() => onViewAllClick(activeKey)}>
           Show all My Tickets
           <img src={LeftArrow} alt="expand" />
         </div>
       )}
+      {activeKey === '3' && dataMyTicket().length === 0 && <div className={styles.addLength} />}
       <CommonModal
         visible={modalVisible}
         title={renderTabName(activeKey)}
