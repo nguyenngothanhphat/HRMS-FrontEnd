@@ -1,15 +1,16 @@
 import { Form, Select, Row, Col, DatePicker } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
+import { debounce } from 'lodash';
 import styles from './index.less';
 
 const FilterContent = (props) => {
+  const [form] = Form.useForm();
   const {
-    // dispatch,
+    dispatch,
     onFilter = () => {},
+    resourceManagement: { newJoineeList = [], titleList = [] } = {},
   } = props;
-
-  const fetchDocumentTypeList = () => {};
 
   const onFinish = (values) => {
     const newValues = { ...values };
@@ -30,17 +31,42 @@ const FilterContent = (props) => {
   };
 
   useEffect(() => {
-    fetchDocumentTypeList();
+    dispatch({
+      type: 'resourceManagement/fetchTitleList',
+    });
   }, []);
 
+  const onFinishDebounce = debounce((values) => {
+    onFinish(values);
+  }, 700);
+
+  const onValuesChange = () => {
+    const values = form.getFieldsValue();
+    onFinishDebounce(values);
+  };
+
   return (
-    <Form layout="vertical" name="filter" onFinish={onFinish} className={styles.FilterContent}>
+    <Form
+      form={form}
+      onValuesChange={onValuesChange}
+      layout="vertical"
+      name="filter"
+      className={styles.FilterContent}
+    >
       <Form.Item label="by candidate id" name="candidateId">
-        <Select allowClear style={{ width: '100%' }} placeholder="Please select">
-          {[].map((item) => {
+        <Select
+          allowClear
+          style={{ width: '100%' }}
+          placeholder="Select the Candidate ID"
+          showSearch
+          showArrow
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          {newJoineeList.map((item) => {
             return (
-              <Select.Option value={item._id} key={item}>
-                {item.name}
+              <Select.Option value={item.ticketId} key={item._id}>
+                {item.ticketId}
               </Select.Option>
             );
           })}
@@ -48,11 +74,19 @@ const FilterContent = (props) => {
       </Form.Item>
 
       <Form.Item label="by name" name="name">
-        <Select allowClear style={{ width: '100%' }} placeholder="Please select">
-          {[].map((item) => {
+        <Select
+          allowClear
+          style={{ width: '100%' }}
+          showSearch
+          showArrow
+          placeholder="Select the name"
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          {newJoineeList.map((item) => {
             return (
-              <Select.Option value={item._id} key={item}>
-                {item.generalInfo?.legalName}
+              <Select.Option value={item.candidateFullName} key={item._id}>
+                {item.candidateFullName}
               </Select.Option>
             );
           })}
@@ -60,11 +94,20 @@ const FilterContent = (props) => {
       </Form.Item>
 
       <Form.Item label="By job title" name="jobTitle">
-        <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Please select">
-          {[].map((item) => {
+        <Select
+          allowClear
+          mode="multiple"
+          style={{ width: '100%' }}
+          placeholder="Select the Job Title"
+          showSearch
+          showArrow
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          {titleList.map((item) => {
             return (
-              <Select.Option value={item.id} key={item}>
-                {item.type_name}
+              <Select.Option value={item._id} key={item}>
+                {item.name}
               </Select.Option>
             );
           })}
@@ -92,7 +135,7 @@ const FilterContent = (props) => {
   );
 };
 
-export default connect(({ projectDetails, user: { currentUser: { employee = {} } = {} } }) => ({
+export default connect(({ resourceManagement, user: { currentUser: { employee = {} } = {} } }) => ({
   employee,
-  projectDetails,
+  resourceManagement,
 }))(FilterContent);
