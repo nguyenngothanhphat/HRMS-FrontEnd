@@ -1,29 +1,40 @@
 import { Card } from 'antd';
 import moment from 'moment';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { debounce } from 'lodash';
 import CommonTable from '../CommonTable';
-import FilterButton from '../FilterButton';
-import FilterPopover from '../FilterPopover';
+import FilterButton from '@/components/FilterButton';
+import FilterPopover from '@/components/FilterPopover';
 import FilterContent from './components/FilterContent';
 import styles from './index.less';
+import CustomSearchBox from '@/components/CustomSearchBox';
 
 const NewJoinees = (props) => {
-  const { dispatch, loadingFetch = false, resourceManagement: { newJoineeList = [] } = {} } = props;
+  const {
+    dispatch,
+    loadingFetch = false,
+    resourceManagement: { newJoineeList = [], selectedLocations = [], selectedDivisions = [] } = {},
+  } = props;
 
-  const fetchData = () => {
+  const [searchValue, setSearchValue] = useState('');
+  const fetchData = (payloadParams) => {
+    const payload = { ...payloadParams, selectedDivisions, selectedLocations };
+    if (searchValue) {
+      payload.searchValue = searchValue;
+    }
+
     dispatch({
       type: 'resourceManagement/fetchNewJoineeList',
-      // payload: {
-      //   searchName: keySearch,
-      //   ...filter,
-      // },
+      payload: {
+        ...payload,
+      },
     });
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [searchValue, JSON.stringify(selectedLocations), JSON.stringify(selectedDivisions)]);
 
   const generateColumns = () => {
     const columns = [
@@ -31,6 +42,7 @@ const NewJoinees = (props) => {
         title: 'Candidate ID',
         dataIndex: 'ticketId',
         key: 'ticketId',
+        width: '21%',
         render: (ticketId = '') => {
           return <span>{ticketId || '-'}</span>;
         },
@@ -48,14 +60,12 @@ const NewJoinees = (props) => {
         title: 'Job Title',
         dataIndex: 'title',
         key: 'title',
-        width: 200,
         render: ({ name } = {}) => <div>{name}</div>,
       },
       {
         title: 'Joining Date',
         dataIndex: 'joiningDate',
         key: 'joiningDate',
-        width: 200,
         render: (joiningDate) => (
           <span>{moment(joiningDate).locale('en').format('MM/DD/YYYY')}</span>
         ),
@@ -65,12 +75,24 @@ const NewJoinees = (props) => {
     return columns;
   };
 
+  const onSearchDebounce = debounce((value) => {
+    setSearchValue(value);
+  }, 1000);
+
+  const onChangeSearch = (e) => {
+    const formatValue = e.target.value.toLowerCase();
+    onSearchDebounce(formatValue);
+  };
+
   const renderOption = () => {
     return (
-      <div className={styles.options}>
-        <FilterPopover content={<FilterContent />}>
-          <FilterButton />
-        </FilterPopover>
+      <div className={styles.optionContainer}>
+        <div className={styles.options}>
+          <FilterPopover realTime content={<FilterContent onFilter={fetchData} />}>
+            <FilterButton />
+          </FilterPopover>
+        </div>
+        <CustomSearchBox placeholder="Search by Candidate ID, Name..." onSearch={onChangeSearch} />
       </div>
     );
   };
@@ -78,7 +100,12 @@ const NewJoinees = (props) => {
   return (
     <Card title="New Joinees" extra={renderOption()} className={styles.NewJoinees}>
       <div className={styles.tableContainer}>
-        <CommonTable columns={generateColumns()} list={newJoineeList} loading={loadingFetch} />
+        <CommonTable
+          columns={generateColumns()}
+          list={newJoineeList}
+          loading={loadingFetch}
+          scrollable
+        />
       </div>
     </Card>
   );

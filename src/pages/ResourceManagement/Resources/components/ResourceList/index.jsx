@@ -202,6 +202,9 @@ class ResourceList extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'resourceManagement/fetchDivisions',
+      payload: {
+        name: 'Engineering'
+      }
     });
   };
 

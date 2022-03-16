@@ -18,8 +18,8 @@ const Utilization = (props) => {
   const [invalidDates, setInvalidDates] = useState(false);
 
   useEffect(() => {
-    const theFirst = moment().startOf('year');
-    const theLast = moment().endOf('year');
+    const theFirst = moment.utc().add(-1, 'years').add(1, 'months').startOf('month');
+    const theLast = moment.utc().endOf('month');
     setStartDate(theFirst);
     setEndDate(theLast);
   }, []);
