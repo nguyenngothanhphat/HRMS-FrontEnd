@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react';
 import { Col, Progress } from 'antd';
 import styles from './index.less';
+import { addZeroToNumber } from '@/utils/timeOff';
 
 export default class SpecialLeaveBox extends PureComponent {
   renderCircle = (days, color) => {
     return (
       <span className={styles.smallCircle} style={{ color }}>
-        <span className={styles.dayNumber}>{`0${days}`.slice(-2)}</span>
+        <span className={styles.dayNumber}>{addZeroToNumber(days)}</span>
         <span className={styles.dayText}>days</span>
       </span>
     );
