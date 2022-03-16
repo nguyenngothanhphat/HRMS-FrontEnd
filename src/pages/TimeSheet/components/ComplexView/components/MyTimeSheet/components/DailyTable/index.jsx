@@ -59,14 +59,7 @@ const DailyTable = (props) => {
   // RENDER UI
   const _renderTableHeader = () => {
     return (
-      <Row
-        className={styles.tableHeader}
-        style={
-          loadingFetchMyTimesheetByType
-            ? { opacity: 0.7, transition: 'ease-in-out 1.5s' }
-            : { opacity: 1, transition: 'ease-in-out 1.5s' }
-        }
-      >
+      <Row className={styles.tableHeader}>
         <Col
           span={DATE_OF_HOURS}
           className={`${styles.tableHeader__firstColumn} ${styles.alignCenter}`}
@@ -102,13 +95,6 @@ const DailyTable = (props) => {
   };
 
   const _renderTableContent = () => {
-    if (loadingFetchMyTimesheetByType)
-      return (
-        <div className={styles.loadingContainer}>
-          <Spin size="default" />
-        </div>
-      );
-
     return <ActivityList data={formattedData} hourList={hourList} />;
   };
 
@@ -116,8 +102,10 @@ const DailyTable = (props) => {
   return (
     <div className={styles.DailyTable}>
       <div className={styles.tableContainer}>
-        {_renderTableHeader()}
-        {_renderTableContent()}
+        <Spin spinning={loadingFetchMyTimesheetByType}>
+          {_renderTableHeader()}
+          {_renderTableContent()}
+        </Spin>
       </div>
     </div>
   );

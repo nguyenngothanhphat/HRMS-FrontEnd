@@ -25,7 +25,7 @@ const VIEW_TYPE = {
 
 const MemberTable = (props) => {
   const [viewType, setViewType] = useState(VIEW_TYPE.PROJECT_MANAGER);
-  const { data = [], permissions, loadingFetch = false, startDate = '', endDate = '' } = props;
+  const { data = [], permissions, startDate = '', endDate = '' } = props;
 
   const [employeeProjectDetailModalVisible, setEmployeeProjectDetailModalVisible] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState('');
@@ -134,12 +134,6 @@ const MemberTable = (props) => {
   };
 
   const _renderTableContent = () => {
-    if (loadingFetch)
-      return (
-        <div className={styles.loadingContainer}>
-          <Spin size="default" />
-        </div>
-      );
     if (data.length === 0) return <EmptyComponent />;
     return data.map((m, i) => _renderEmployee(m, i));
   };
