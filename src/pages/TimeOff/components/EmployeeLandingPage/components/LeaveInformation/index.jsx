@@ -67,7 +67,7 @@ const CollapseInformation = (props) => {
                     stepNumber={currentAllowance}
                     limitNumber={foundType.noOfDays}
                   />
-                  {index < typeAList.length && <div className={styles.hr} />}
+                  {index + 1 < typeAList.length && <div className={styles.hr} />}
                 </div>
               );
             }
@@ -179,15 +179,15 @@ class LeaveInformation extends PureComponent {
       const { currentAllowance = 0, defaultSettings = {} } = type;
       if (defaultSettings !== null) {
         const { type: type1 = '', baseAccrual: { time = 0 } = {} } = defaultSettings;
-        if (type1 === 'A') {
+        if (type1 === TIMEOFF_TYPE.A) {
           remaining += currentAllowance;
           total += time;
         }
-        this.setState({
-          remaining,
-        });
         result = Math.round((remaining / total) * 100);
       }
+    });
+    this.setState({
+      remaining,
     });
     return result;
   };

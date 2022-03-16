@@ -1,13 +1,14 @@
 import React, { PureComponent } from 'react';
 import { Progress } from 'antd';
 import styles from './index.less';
+import { addZeroToNumber } from '@/utils/timeOff';
 
 export default class LeaveProgressBar extends PureComponent {
   renderCircle = (stepNumber, limitNumber, color) => {
     return (
       <span className={styles.smallCircle}>
         <span style={{ color, fontWeight: 'bold' }}>{stepNumber}</span>/
-        {`0${limitNumber}`.slice(-2)}
+        {addZeroToNumber(limitNumber)}
       </span>
     );
   };
