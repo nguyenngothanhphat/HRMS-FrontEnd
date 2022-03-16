@@ -20,7 +20,7 @@ import EditTaskModal from '@/pages/TimeSheet/components/ComplexView/components/E
 import styles from './index.less';
 
 const { PROJECT, TASK, DESCRIPTION, TIME, TOTAL_HOURS, ACTIONS } = EMP_MT_SECONDARY_COL_SPAN;
-const ORIGINAL_TEXT_LONG = 50;
+const ORIGINAL_TEXT_LONG = 48;
 
 const ActivityCard = (props) => {
   const {
@@ -74,7 +74,7 @@ const ActivityCard = (props) => {
 
       setTop(topTemp + marginBlock / 2);
       setHeight(
-        heightTemp >= EMP_ROW_HEIGHT ? heightTemp - marginBlock : EMP_ROW_HEIGHT / 2 + marginBlock,
+        heightTemp >= EMP_ROW_HEIGHT ? heightTemp - marginBlock : EMP_ROW_HEIGHT - marginBlock,
       );
 
       // calculate "description" with read more button
@@ -184,7 +184,7 @@ const ActivityCard = (props) => {
         </Col>
         <Col span={TIME} className={`${styles.normalCell} ${styles.blueText}`}>
           {startTime ? moment(startTime, 'HH:mm').format(hourFormat) : ''}
-          {endTime ? `- ${moment(endTime, 'HH:mm').format(hourFormat)}` : ''}
+          {endTime ? ` - ${moment(endTime, 'HH:mm').format(hourFormat)}` : ''}
         </Col>
         <Col span={TOTAL_HOURS} className={`${styles.normalCell} ${styles.blueText}`}>
           {convertMsToTime(duration)}

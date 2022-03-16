@@ -266,7 +266,7 @@ class RequestInformation extends PureComponent {
               </Row>
             </div>
             {(status === DRAFTS ||
-              status === IN_PROGRESS ||
+              (status === IN_PROGRESS && checkWithdrawValid) ||
               (status === ACCEPTED && checkWithdrawValid)) && (
               <div className={styles.footer}>
                 <span className={styles.note}>
