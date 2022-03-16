@@ -81,12 +81,11 @@ export async function fetchResourceAvailableStatus(payload) {
 }
 
 export async function fetchDivisions(payload) {
-  return request('/api/departmenttenant/list', {
-    method: 'POST',
-    data: payload,
+  return request('/api/departmenttenant/get-all-division', {
+    method: 'GET',
+    params: payload,
   });
 }
-
 export async function fetchResourceStatus(payload) {
   return request(
     'api-project/resourcetenant/list-status',

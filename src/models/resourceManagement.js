@@ -192,14 +192,10 @@ const resourceManagement = {
         // notification.success({
         //   message: 'Add assign to project Successfully',
         // });
-        const divisions = [];
-        data.forEach((x) => {
-          const { tagDivision } = x;
-          divisions.push(...tagDivision);
-        });
+
         yield put({
           type: 'save',
-          payload: { divisions },
+          payload: { divisions: data },
         });
       } catch (error) {
         dialog(error);

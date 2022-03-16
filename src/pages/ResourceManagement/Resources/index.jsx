@@ -179,8 +179,8 @@ class Resources extends Component {
     if (tabName === TABS.OVERVIEW) {
       const divisionOptions = divisionList.map((x) => {
         return {
-          _id: x,
-          name: x,
+          _id: x.name,
+          name: x.name,
         };
       });
       const locationOptions = listLocationsByCompany.map((x) => {
