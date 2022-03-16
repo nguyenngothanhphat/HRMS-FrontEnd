@@ -16,6 +16,16 @@ const EmployeeDetailModal = (props) => {
     dataSource = [],
   } = props;
 
+  const {
+    user: {
+      currentUser: {
+        location: { headQuarterAddress: { country: { _id: countryID } = {} } = {} } = {},
+      } = {},
+    } = {},
+  } = props;
+
+  const locationUser = countryID === 'US';
+
   const [data, setData] = useState();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
@@ -52,15 +62,19 @@ const EmployeeDetailModal = (props) => {
         breakTime = '',
         overTime = '',
       } = item;
-      return {
+
+      const dataExport = {
         Date: date || '-',
         'In Time': inTime || '-',
         'Out Time': outTime || '-',
-        'Break Time': breakTime || '-',
-        'Over Time': overTime || '-',
         Leaves: leaveTaken || '-',
         Notes: notes || '-',
       };
+      if (locationUser) {
+        dataExport['Break Time'] = breakTime;
+        dataExport['Over Time'] = overTime;
+      }
+      return dataExport;
     });
   };
 
@@ -119,4 +133,4 @@ const EmployeeDetailModal = (props) => {
   );
 };
 
-export default connect(() => ({}))(EmployeeDetailModal);
+export default connect(({ user }) => ({ user }))(EmployeeDetailModal);

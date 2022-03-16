@@ -14,6 +14,15 @@ const ProjectDetailModal = (props) => {
     projectId = '',
     dataSource = [],
   } = props;
+  const {
+    user: {
+      currentUser: {
+        location: { headQuarterAddress: { country: { _id: countryID } = {} } = {} } = {},
+      } = {},
+    } = {},
+  } = props;
+
+  const locationUser = countryID === 'US';
 
   const [data, setData] = useState({});
 
@@ -39,16 +48,19 @@ const ProjectDetailModal = (props) => {
     array.forEach((item) => {
       const { task = '', description = '', department = '', projectMembers = [] } = item;
       projectMembers.forEach((pro) => {
-        result.push({
+        const dataExport = {
           Department: department || '-',
           Task: task || '-',
           Description: description || '-',
           'Resources ': pro.legalName || '-',
           'Time taken': pro.userSpentTimeInHours || '-',
-          'Break Time': pro.breakTime || '-',
-          'Over Time': pro.overTime || '-',
           'Total time (task)': pro.totaltime || '-',
-        });
+        };
+        if (locationUser) {
+          dataExport['Break Time'] = pro.breakTime;
+          dataExport['Over Time'] = pro.overTime;
+        }
+        result.push(dataExport);
       });
     });
     return result;
@@ -106,4 +118,4 @@ const ProjectDetailModal = (props) => {
   );
 };
 
-export default connect(() => ({}))(ProjectDetailModal);
+export default connect(({ user }) => ({ user }))(ProjectDetailModal);

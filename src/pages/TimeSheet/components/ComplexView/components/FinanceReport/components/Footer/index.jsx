@@ -7,6 +7,15 @@ import styles from './index.less';
 
 const Footer = (props) => {
   const { selectedProjects = [], data = [] } = props;
+  const {
+    user: {
+      currentUser: {
+        location: { headQuarterAddress: { country: { _id: countryID } = {} } = {} } = {},
+      } = {},
+    } = {},
+  } = props;
+
+  const locationUser = countryID === 'US';
   // update type when there are api
   const getSelectedData = () => {
     const newData = data.filter((el) => selectedProjects.includes(el.projectId));
@@ -30,16 +39,18 @@ const Footer = (props) => {
         resourceNames += val.employee.legalName;
         if (index + 1 < resource.length) resourceNames += ', ';
       });
-
-      return {
+      const dataExport = {
         'Project Name': projectName || '-',
         Type: engagementType || '-',
         Resources: resourceNames || '-',
         'Total Days': `${projectSpentInDay} Days` || '-',
-        'Break Time': breakTime || '-',
-        'Over Time': overTime || '-',
         'Total Hours ': `${projectSpentInHours} Hours` || '-',
       };
+      if (locationUser) {
+        dataExport['Break Time'] = breakTime;
+        dataExport['Over Time'] = overTime;
+      }
+      return dataExport;
     });
   };
 
@@ -59,4 +70,4 @@ const Footer = (props) => {
   );
 };
 
-export default connect(() => ({}))(Footer);
+export default connect(({ user }) => ({ user }))(Footer);

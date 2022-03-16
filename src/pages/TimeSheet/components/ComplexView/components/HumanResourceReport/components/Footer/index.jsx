@@ -8,6 +8,16 @@ import styles from './index.less';
 const Footer = (props) => {
   const { selectedEmployees = [], data = [] } = props;
 
+  const {
+    user: {
+      currentUser: {
+        location: { headQuarterAddress: { country: { _id: countryID } = {} } = {} } = {},
+      } = {},
+    } = {},
+  } = props;
+
+  const locationUser = countryID === 'US';
+
   const getSelectedData = () => {
     const newData = data.filter((el) => selectedEmployees.includes(el.id));
     return newData;
@@ -33,16 +43,19 @@ const Footer = (props) => {
         projectName += el;
         if (index + 1 < project.length) projectName += ', ';
       });
-      return {
+      const dataExport = {
         Employee: legalName,
         Department: name,
-        Project: projectName,
+        Project: projectName || '-',
         'Working Days': `${userSpentInDay}/${totalWorkingDay} ( ${totalWorkingDayInHours} hours) `,
         'Leave Taken ': `${leaveTaken}/${totalLeave}`,
-        'Break Time': breakTime,
-        'Over Time': overTime,
         'Total Hours': `${userSpentInHours} hours`,
       };
+      if (locationUser) {
+        dataExport['Break Time'] = breakTime;
+        dataExport['Over Time'] = overTime;
+      }
+      return dataExport;
     });
   };
 
@@ -63,4 +76,4 @@ const Footer = (props) => {
   );
 };
 
-export default connect(() => ({}))(Footer);
+export default connect(({ user }) => ({ user }))(Footer);
