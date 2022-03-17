@@ -266,7 +266,7 @@ class TicketDetailsForm extends Component {
           return (
             <div className={styles.attachments__file}>
               <img className={styles.attachments__file__img} src={PDFIcon} alt="pdf" />
-              <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
+              <a href={e.attachmentUrl} target="_blank" rel="noreferrer">
                 {attachmentSlice()}
               </a>
             </div>
