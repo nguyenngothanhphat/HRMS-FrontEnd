@@ -20,6 +20,7 @@ const FilterForm = (props) => {
     dispatch,
     visible = false,
   } = props;
+
   const [form] = Form.useForm();
   const [durationFrom, setDurationFrom] = useState('');
   const [durationTo, setDurationTo] = useState('');
