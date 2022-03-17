@@ -1,5 +1,6 @@
-import { Button, Form, Popover, Select, Input } from 'antd';
+import { Form, Popover, Select, Input } from 'antd';
 import React, { useState, useEffect } from 'react';
+import { debounce } from 'lodash';
 import { connect } from 'umi';
 import CloseIcon from '@/assets/projectManagement/closeX.svg';
 import styles from './index.less';
@@ -52,7 +53,7 @@ const FilterPopover = (props) => {
     }
   }, [showPopover]);
 
-  const onFormSubmit = (values) => {
+  const onFinish = (values) => {
     const newValues = { ...values };
     // eslint-disable-next-line no-return-assign
     const result = Object.entries(newValues).reduce(
@@ -74,11 +75,20 @@ const FilterPopover = (props) => {
     }
   }, [needResetFilterForm]);
 
+  const onFinishDebounce = debounce((values) => {
+    onFinish(values);
+  }, 700);
+
+  const onValuesChange = () => {
+    const values = form.getFieldsValue();
+    onFinishDebounce(values);
+  };
+
   const renderPopup = () => {
     return (
       <>
         <div className={styles.popupContainer}>
-          <Form form={form} layout="vertical" name="filterForm" onFinish={onFormSubmit}>
+          <Form form={form} layout="vertical" name="filterForm" onValuesChange={onValuesChange}>
             <Form.Item label="By Project ID" name="projectId">
               <Input placeholder="Project ID" />
             </Form.Item>
@@ -86,10 +96,13 @@ const FilterPopover = (props) => {
               <Select
                 allowClear
                 mode="multiple"
-                showSearch="true"
-                optionFilterProp="children"
                 style={{ width: '100%' }}
                 placeholder="Select Division"
+                showSearch
+                showArrow
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {divisionList.map((x) => {
                   return <Select.Option value={x.name}>{x.name}</Select.Option>;
@@ -101,10 +114,13 @@ const FilterPopover = (props) => {
               <Select
                 allowClear
                 mode="multiple"
-                showSearch="true"
-                optionFilterProp="children"
                 style={{ width: '100%' }}
                 placeholder="Select Project Name"
+                showSearch
+                showArrow
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {projectNameList.map((item) => {
                   return (
@@ -120,8 +136,11 @@ const FilterPopover = (props) => {
               <Select
                 allowClear
                 mode="multiple"
-                showSearch="true"
-                optionFilterProp="children"
+                showSearch
+                showArrow
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 style={{ width: '100%' }}
                 placeholder="Select Customer"
               >
@@ -135,8 +154,11 @@ const FilterPopover = (props) => {
               <Select
                 allowClear
                 mode="multiple"
-                showSearch="true"
-                optionFilterProp="children"
+                showSearch
+                showArrow
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 style={{ width: '100%' }}
                 placeholder="Select Engagement Type"
               >
@@ -149,8 +171,11 @@ const FilterPopover = (props) => {
             <Form.Item label="By PROJECT manager" name="projectManager">
               <Select
                 mode="multiple"
-                showSearch="true"
-                optionFilterProp="children"
+                showSearch
+                showArrow
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 style={{ width: '100%' }}
                 loading={loadingFetchEmployeeList}
                 placeholder="Select Project Manager"
@@ -165,8 +190,11 @@ const FilterPopover = (props) => {
               <Select
                 allowClear
                 mode="multiple"
-                showSearch="true"
-                optionFilterProp="children"
+                showSearch
+                showArrow
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 style={{ width: '100%' }}
                 placeholder="Select Status"
               >
@@ -176,14 +204,6 @@ const FilterPopover = (props) => {
               </Select>
             </Form.Item>
           </Form>
-        </div>
-        <div className={styles.buttons}>
-          <Button className={styles.btnClose} onClick={() => setShowPopover(false)}>
-            Close
-          </Button>
-          <Button className={styles.btnApply} form="filterForm" htmlType="submit" key="submit">
-            Apply
-          </Button>
         </div>
       </>
     );

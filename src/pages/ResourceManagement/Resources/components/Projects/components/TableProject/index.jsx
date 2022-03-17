@@ -253,7 +253,7 @@ class TableProject extends Component {
         sorter: (a, b) => a.status.localeCompare(b.status),
       },
       {
-        title: 'Resource Planed',
+        title: 'Resource Planned',
         dataIndex: 'resourcePlan',
         key: 'resourcePlan',
         sorter: (a, b) => a.resourcePlan - b.resourcePlan,
@@ -277,19 +277,19 @@ class TableProject extends Component {
         sorter: (a, b) => a.bufferResource - b.resourceAssigned,
       },
       {
-        title: 'Billing Efficiency',
+        title: 'Billing Efficiency (%)',
         dataIndex: 'billEfficiency',
         key: 'billEfficiency',
         sorter: (a, b) => a.billEfficiency.localeCompare(b.billEfficiency),
       },
       {
-        title: 'Billable Effor (days)',
+        title: 'Billable Effort (days)',
         dataIndex: 'billableEffor',
         key: 'billableEffor',
         sorter: (a, b) => a.billableEffor - b.billableEffor,
       },
       {
-        title: 'Spent Effor (days)',
+        title: 'Spent Effort (days)',
         dataIndex: 'spentEffor',
         key: 'spentEffor',
         sorter: (a, b) => a.spentEffor - b.spentEffor,
