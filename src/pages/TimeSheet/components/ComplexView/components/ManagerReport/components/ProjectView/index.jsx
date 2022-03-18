@@ -63,6 +63,12 @@ const ProjectView = (props) => {
         type: 'timeSheet/fetchManagerTimesheetOfProjectViewEffect',
         payload,
       });
+      dispatch({
+        type: 'timeSheet/savePayload',
+        payload: {
+          payloadExport: payload,
+        },
+      });
     }
   };
 
