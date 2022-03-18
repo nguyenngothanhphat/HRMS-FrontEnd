@@ -10,6 +10,7 @@ import {
   removeLocation,
   updateLocation,
   getListUsersOfOwner,
+  removeAdmin,
 } from '../services/adminApp';
 
 const country = {
@@ -125,6 +126,21 @@ const country = {
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { userListOfOwner: data?.listUser || [] } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *removeAdmin({ payload = {} }, { call }) {
+      try {
+        const response = yield call(removeAdmin, payload);
+        const { statusCode, message = '' } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        // yield put({ type: 'save', payload: { listAdmin: data?.users || [] } });
         return response;
       } catch (errors) {
         dialog(errors);
