@@ -4,8 +4,8 @@ import { UserOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 import { Collapse } from 'react-collapse';
-
 import { Popover, Spin } from 'antd';
+import avtDefault from '@/assets/avtDefault.jpg';
 import line from '@/assets/lineParent.svg';
 import lines from '@/assets/lines.svg';
 import bigLines from '@/assets/bigLines.svg';
@@ -171,13 +171,14 @@ class OrganizationChart extends Component {
 
     return (
       <div className={styles.node__card} onClick={() => this.clickCardInfo(userData, name)}>
-        {avatar ? (
-          <Popover placement="rightTop" content={popupImg(avatar)} trigger="hover">
-            <Avatar className={styles.avatar} src={avatar} size={42} icon={<UserOutlined />} />
-          </Popover>
-        ) : (
-          <Avatar className={styles.avatar} src={avatar} size={42} icon={<UserOutlined />} />
-        )}
+        <Popover placement="rightTop" content={popupImg(avatar || avtDefault)} trigger="hover">
+          <Avatar
+            className={styles.avatar}
+            src={avatar || avtDefault}
+            size={42}
+            icon={<UserOutlined />}
+          />
+        </Popover>
         <div className={styles.node__card__info}>
           <div className={styles.legalName}>{this.truncateLegalName(legalFullName)}</div>
           <div className={styles.deptName}>{`${this.truncate(jobTitleName)}, ${deptName}`}</div>
