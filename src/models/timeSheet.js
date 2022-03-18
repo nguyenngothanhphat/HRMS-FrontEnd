@@ -454,10 +454,14 @@ const TimeSheet = {
       let response = '';
       const hide = message.loading('Exporting data...', 0);
       try {
-        response = yield call(exportProject, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-        });
+        response = yield call(
+          exportProject,
+          {},
+          {
+            ...payload,
+            tenantId: getCurrentTenant(),
+          },
+        );
         const { code } = response;
         if (code !== 200) throw response;
       } catch (error) {
@@ -471,10 +475,14 @@ const TimeSheet = {
       let response = '';
       const hide = message.loading('Exporting data...', 0);
       try {
-        response = yield call(exportTeam, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-        });
+        response = yield call(
+          exportTeam,
+          {},
+          {
+            ...payload,
+            tenantId: getCurrentTenant(),
+          },
+        );
         const { code } = response;
         if (code !== 200) throw response;
       } catch (error) {

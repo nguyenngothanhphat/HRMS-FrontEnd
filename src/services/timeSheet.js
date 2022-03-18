@@ -215,12 +215,13 @@ export async function getEmployeeList(payload) {
 }
 
 // export project view of my project
-export async function exportProject(payload) {
+export async function exportProject(payload, params) {
   return request(
     '/api/export-project-csv',
     {
-      method: 'POST',
+      method: 'GET',
       data: payload,
+      params,
     },
     false,
     API_KEYS.TIMESHEET_API,
@@ -228,12 +229,13 @@ export async function exportProject(payload) {
 }
 
 // export team view of my project
-export async function exportTeam(payload) {
+export async function exportTeam(payload, params) {
   return request(
     '/api/export-team-csv',
     {
-      method: 'POST',
+      method: 'GET',
       data: payload,
+      params,
     },
     false,
     API_KEYS.TIMESHEET_API,
