@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { Input, Popover } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
-import filterIcon from '@/assets/ticketManagement-filter.svg';
+import FilterButton from '@/components/FilterButton';
 import closeIcon from '@/assets/closeIcon.svg';
 import FilterForm from './components/FilterForm';
 import styles from './index.less';
 
-@connect()
+@connect(({ ticketManagement: { filter = {} } = {} }) => ({ filter }))
 class SearchTable extends Component {
   constructor(props) {
     super(props);
@@ -38,7 +38,7 @@ class SearchTable extends Component {
   };
 
   render() {
-    const { onChangeSearch = () => {} } = this.props;
+    const { onChangeSearch = () => {}, filter } = this.props;
     const { visible } = this.state;
     return (
       <div className={styles.searchFilter}>
@@ -52,7 +52,7 @@ class SearchTable extends Component {
             onVisibleChange={this.openFilter}
             overlayClassName={styles.filterPopoverTicket}
           >
-            <img alt="filter" src={filterIcon} className={styles.filterIcon} />
+            <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} />
           </Popover>
         </div>
         <Input
