@@ -79,6 +79,7 @@ const CelebratingDetailModalContent = (props) => {
   const onCommentClick = async () => {
     if (commentContent) {
       setAction(ACTION.COMMENT);
+      setCommentContent('');
 
       const employeeId = employee?._id;
       const originalComments = comments.map((x) => {
@@ -102,7 +103,6 @@ const CelebratingDetailModalContent = (props) => {
       };
       const res = await upsertBirthdayConversationEffect(payload);
       if (res.statusCode === 200) {
-        setCommentContent('');
         handleActiveComments(comments, comments.length + 1);
         refreshData();
       }
@@ -243,21 +243,21 @@ const CelebratingDetailModalContent = (props) => {
                 className={styles.commentBtn}
                 onClick={onCommentClick}
                 disabled={action === ACTION.COMMENT && (loadingComment || !commentContent)}
-                loading={action === ACTION.COMMENT && loadingComment}
               >
                 Submit
               </Button>
             }
           />
         </div>
-        <Spin spinning={action === ACTION.COMMENT && loadingRefresh}>
+        <Spin spinning={action === ACTION.COMMENT && (loadingRefresh || loadingComment)}>
           <div
             className={styles.commentsContainer}
             style={
               activeComments.length === 0
                 ? {
                     border: 'none',
-                    marginTop: action === ACTION.COMMENT && loadingRefresh ? '16px' : 0,
+                    marginTop:
+                      action === ACTION.COMMENT && (loadingRefresh || loadingComment) ? '16px' : 0,
                   }
                 : {}
             }
