@@ -79,7 +79,7 @@ class TableResources extends PureComponent {
   render() {
     const {
       data = [],
-      textEmpty = 'No resignation request is submitted',
+      textEmpty = 'No Data',
       loading,
       total,
       pageSelected,
@@ -211,7 +211,7 @@ class TableResources extends PureComponent {
         sortDirections: ['ascend', 'descend'],
       },
       {
-        title: 'Experience',
+        title: 'Experience (in yrs)',
         dataIndex: 'experience',
         // width: '7%',
         render: (value, row) => {
@@ -225,7 +225,7 @@ class TableResources extends PureComponent {
         sortDirections: ['ascend', 'descend'],
       },
       {
-        title: 'Current Project',
+        title: 'Current Project(s)',
         dataIndex: 'projectName',
         // width: '10%',
         render: (value, row) => {
@@ -318,7 +318,7 @@ class TableResources extends PureComponent {
         key: 'revisedEndDate',
         render: (value, row) => {
           // return <span className={styles.basicCellField}>{value}</span>;
-         // const display = <span className={styles.basicCellField}>{value}</span>;
+          // const display = <span className={styles.basicCellField}>{value}</span>;
           // const obj = renderCell(value, row, display);
           // obj.props.className = styles.basicCellFieldShowEdit;
           // return obj
@@ -357,7 +357,7 @@ class TableResources extends PureComponent {
         },
       },
       {
-        title: 'Comment',
+        title: 'Comments',
         // width: '10%',
         dataIndex: 'comment',
         key: 'comment',

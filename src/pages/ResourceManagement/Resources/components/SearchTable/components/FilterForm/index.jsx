@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, DatePicker, Divider, Form, Input, Select, Tag } from 'antd';
 import moment from 'moment';
+import { debounce } from 'lodash';
 import { connect } from 'umi';
 import CloseTagIcon from '@/assets/closeTagIcon.svg';
 import CalendarIcon from '@/assets/calendar_icon.svg';
@@ -86,37 +87,6 @@ const FilterForm = (props) => {
     );
   };
 
-  // onChangeDate = (currentDate, type) => {
-  //   switch (type) {
-  //     case 'fromDate':
-  //       if (currentDate === null) {
-  //         setState({
-  //           durationFrom: '',
-  //         });
-  //       } else {
-  //         setState({
-  //           durationFrom: currentDate,
-  //         });
-  //       }
-  //       break;
-
-  //     case 'toDate':
-  //       if (currentDate === null) {
-  //         setState({
-  //           durationTo: '',
-  //         });
-  //       } else {
-  //         setState({
-  //           durationTo: currentDate,
-  //         });
-  //       }
-  //       break;
-
-  //     default:
-  //       break;
-  //   }
-  // };
-
   const tagRender = ({ label, closable, onClose }) => {
     return (
       <Tag
@@ -130,30 +100,38 @@ const FilterForm = (props) => {
     );
   };
 
-  // const onValuesChange = (value) => {
-  //   setFilter({ ...filter, ...value });
-  // };
+  const onFinish = (values) => {
+    const newValues = { ...values };
 
-  const onFinish = (value) => {
-    console.log('onFinish with value: ', JSON.stringify(value));
-    onFilterChange({ ...filter, ...value });
+    // remove empty fields
+    // eslint-disable-next-line no-return-assign
+    const result = Object.entries(newValues).reduce(
+      // eslint-disable-next-line no-return-assign
+      (a, [k, v]) =>
+        v == null || v.length === 0
+          ? a
+          : // eslint-disable-next-line no-param-reassign
+            ((a[k] = v), a),
+      {},
+    );
 
-    // const payload = { ...value, ...filter };
+    onFilterChange({ ...filter, ...result });
   };
 
-  // onChange = e => {
-  //   const { value } = e.target;
-  //   const reg = /^-?\d*(\.\d*)?$/;
-  //   if ((!Number.isNaN(value) && reg.test(value)) || value === '' || value === '-') {
-  //     props.onChange(value);
-  //   }
-  // };
+  const onFinishDebounce = debounce((values) => {
+    onFinish(values);
+  }, 700);
+
+  const onValuesChange = () => {
+    const values = form.getFieldsValue();
+    onFinishDebounce(values);
+  };
 
   const employees = employeeList.map((x) => {
     return { _id: x._id, name: x.generalInfo.legalName };
   });
   const division = divisions.map((x) => {
-    return { _id: x, name: x };
+    return { _id: x.name, name: x.name };
   });
   const projects = projectList.map((x) => {
     return { _id: x.id, name: x.projectName };
@@ -179,7 +157,7 @@ const FilterForm = (props) => {
       label: 'BY DIVISION',
       name: 'tagDivision',
       mode: 'multiple',
-      placeholder: 'Select priority',
+      placeholder: 'Select division',
       optionArray: division,
     },
     {
@@ -193,6 +171,7 @@ const FilterForm = (props) => {
       label: 'BY SKILL',
       name: 'skill',
       placeholder: 'Select location',
+      mode: 'multiple',
       optionArray: statuses,
     },
     {
@@ -205,16 +184,9 @@ const FilterForm = (props) => {
     {
       label: 'BY BILLING STATUS',
       name: 'statuses',
-      // mode : "multiple",
       placeholder: 'Select billing status',
       optionArray: statuses,
     },
-    // {
-    //   label: 'BY ASSIGN',
-    //   name: 'assign',
-    //   placeholder: 'Select assign',
-    //   optionArray: TicketsList,
-    // },
   ];
 
   return (
@@ -223,7 +195,7 @@ const FilterForm = (props) => {
         layout="horizontal"
         className={styles.form}
         // initialValues={filterProp}
-        // onValuesChange={onValuesChange}
+        onValuesChange={onValuesChange}
         onFinish={onFinish}
         form={form}
       >
@@ -276,7 +248,7 @@ const FilterForm = (props) => {
                   },
                 ]}
               >
-                <Input className={styles.experience} placeholder="Input number" />
+                <Input className={styles.experience} placeholder="Years of Exp" />
               </Form.Item>
               <div className={`${styles.labelText} ${styles.labelTo}`}>to</div>
               <Form.Item
@@ -288,20 +260,14 @@ const FilterForm = (props) => {
                   },
                 ]}
               >
-                <Input
-                  // onChange={onChange}
-                  // disabledDate={(currentDate) => disabledDate(currentDate, 'fromDate')}
-                  // format={dateFormat}
-                  className={styles.experience}
-                  placeholder="Input number"
-                />
+                <Input className={styles.experience} placeholder="Years of Exp" />
               </Form.Item>
             </div>
           </div>
 
           <div className={styles.doj}>
             <div className={styles.doj__label}>
-              <div className={styles.labelText}>BY REQUEST DATE</div>
+              <div className={styles.labelText}>By Start Date</div>
             </div>
             <div className={styles.doj__date}>
               <Form.Item name="fromDate">
@@ -309,9 +275,6 @@ const FilterForm = (props) => {
                   disabledDate={(currentDate) => disabledDate(currentDate, 'fromDate')}
                   format={dateFormat}
                   placeholder="From Date"
-                  // onChange={(value) => {
-                  //   onChangeDate(value, 'fromDate');
-                  // }}
                   suffixIcon={
                     <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
                   }
@@ -323,9 +286,6 @@ const FilterForm = (props) => {
                   disabledDate={(currentDate) => disabledDate(currentDate, 'toDate')}
                   format={dateFormat}
                   placeholder="To Date"
-                  // onChange={(value) => {
-                  //   onChangeDate(value, 'toDate');
-                  // }}
                   suffixIcon={
                     <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
                   }
@@ -343,9 +303,6 @@ const FilterForm = (props) => {
                   disabledDate={(currentDate) => disabledDate(currentDate, 'tentativeEndDateStart')}
                   format={dateFormat}
                   placeholder="From Date"
-                  // onChange={(value) => {
-                  //   onChangeDate(value, 'tentativeEndDateStart');
-                  // }}
                   suffixIcon={
                     <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
                   }
@@ -357,9 +314,6 @@ const FilterForm = (props) => {
                   disabledDate={(currentDate) => disabledDate(currentDate, 'tentativeEndDateEnd')}
                   format={dateFormat}
                   placeholder="To Date"
-                  // onChange={(value) => {
-                  //   onChangeDate(value, 'tentativeEndDateEnd');
-                  // }}
                   suffixIcon={
                     <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
                   }
@@ -367,21 +321,6 @@ const FilterForm = (props) => {
               </Form.Item>
             </div>
           </div>
-        </div>
-
-        <Divider className={styles.divider} />
-        <div className={styles.footer}>
-          <Button onClick={clearFilter} className={styles.footer__clear}>
-            Clear
-          </Button>
-          <Button
-            // onClick={onApply}
-            // disabled={!isFilter}
-            className={styles.footer__apply}
-            htmlType="submit"
-          >
-            Apply
-          </Button>
         </div>
       </Form>
     </div>

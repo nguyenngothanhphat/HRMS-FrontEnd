@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
+import { DownloadOutlined } from '@ant-design/icons';
+import { Button, Col, Row } from 'antd';
 import styles from './index.less';
 import ResourceStatus from './components/ResourceStatus';
 import SearchTable from '../SearchTable';
@@ -8,7 +10,13 @@ import { formatData } from '@/utils/resourceManagement';
 
 @connect(
   ({
-    resourceManagement: { resourceList = [], projectList = [], total = 0 } = {},
+    resourceManagement: {
+      resourceList = [],
+      projectList = [],
+      total = 0,
+      selectedLocations = [],
+      selectedDivisions = [],
+    } = {},
     user: {
       currentUser: {
         location: { _id: locationID = '' } = {},
@@ -27,6 +35,8 @@ import { formatData } from '@/utils/resourceManagement';
     projectList,
     listLocationsByCompany,
     permissions,
+    selectedDivisions,
+    selectedLocations,
   }),
 )
 class ResourceList extends Component {
@@ -69,8 +79,16 @@ class ResourceList extends Component {
     this.fetchTitleList();
   };
 
-  componentDidUpdate() {
-    this.fetchResourceList();
+  componentDidUpdate(prevProps, prevState) {
+    const { selectedDivisions, selectedLocations } = this.props;
+    const { filter } = this.state;
+    if (
+      JSON.stringify(prevProps.selectedDivisions) !== JSON.stringify(selectedDivisions) ||
+      JSON.stringify(prevProps.selectedLocations) !== JSON.stringify(selectedLocations) ||
+      JSON.stringify(prevState.filter) !== JSON.stringify(filter)
+    ) {
+      this.fetchResourceList();
+    }
   }
 
   changePagination = (page, limit) => {
@@ -90,7 +108,6 @@ class ResourceList extends Component {
   };
 
   onFilterChange = (filters) => {
-    console.log('trigger onFilterChange', JSON.stringify(filters));
     this.fetchData = this.fetchStatus.START;
     this.setState({
       filter: { ...filters },
@@ -98,14 +115,13 @@ class ResourceList extends Component {
   };
 
   fetchResourceList = async () => {
-    // console.log(`this.fetchData${  this.fetchData}`)
+    const { selectedLocations, selectedDivisions } = this.props;
     if (this.fetchData !== this.fetchStatus.START) {
       return;
     }
     const { pageSelected, size, sort, availableStatus } = this.state;
     const { dispatch } = this.props;
     const filter = this.convertFilter();
-    console.log('payload filter', JSON.stringify(filter));
     this.fetchData = this.fetchStatus.FETCHING;
     dispatch({
       type: 'resourceManagement/getResources',
@@ -116,25 +132,22 @@ class ResourceList extends Component {
         availableStatus,
         ...sort,
         ...filter,
-        // location,
+        location: selectedLocations,
+        division: selectedDivisions,
       },
     }).then(() => {
       this.fetchData = this.fetchStatus.COMPLETED;
       const { resourceList } = this.props;
       this.updateData(resourceList);
-      // console.log('Completed dispatch')
     });
   };
 
   convertFilter = () => {
     const { filter } = this.state;
-    // console.log('filter after update: ', JSON.stringify(filter))
     const newFilterObj = {};
     // eslint-disable-next-line no-restricted-syntax
     for (const [key, value] of Object.entries(filter)) {
       if (value) {
-        // check if backend accept empty obj
-        // newFilterObj[key] = value;
         if (Array.isArray(value) && value.length > 0) {
           newFilterObj[key] = value;
         } else if (!Array.isArray(value)) {
@@ -153,7 +166,6 @@ class ResourceList extends Component {
   };
 
   getPageAndSize = (page, pageSize) => {
-    // console.log('trigger change page')
     this.fetchData = this.fetchStatus.START;
     this.setState({
       pageSelected: page,
@@ -162,7 +174,6 @@ class ResourceList extends Component {
   };
 
   changeAvailableStatus = (status) => {
-    // console.log('trigger change page')
     this.fetchData = this.fetchStatus.START;
     this.setState({
       availableStatus: status,
@@ -176,24 +187,21 @@ class ResourceList extends Component {
 
   searchTable = (searchKey) => {
     const { dispatch } = this.props;
-    const {pageSelected, availableStatus} = this.state;
+    const { pageSelected, availableStatus } = this.state;
     const value = searchKey.searchKey || '';
     dispatch({
       type: 'resourceManagement/getResources',
       payload: {
         page: pageSelected,
         availableStatus,
-        q: value
-      }
+        q: value,
+      },
     }).then(() => {
       const { resourceList, projectList } = this.props;
       const array = formatData(resourceList, projectList);
-      // const listFilterResource = array.filter(
-      //   (obj) => obj.employeeName.toLowerCase().indexOf(value.toLowerCase()) >= 0
-      // ) || [];
       this.setState({
         resourceList: array,
-        pageSelected: 1
+        pageSelected: 1,
       });
     });
   };
@@ -203,8 +211,8 @@ class ResourceList extends Component {
     dispatch({
       type: 'resourceManagement/fetchDivisions',
       payload: {
-        name: 'Engineering'
-      }
+        name: 'Engineering',
+      },
     });
   };
 
@@ -235,6 +243,28 @@ class ResourceList extends Component {
     });
   };
 
+  exportToExcel = async () => {
+    const { dispatch, currentUserId = '', total } = this.props;
+    const fileName = 'resource.csv';
+    const getListExport = await dispatch({
+      type: 'resourceManagement/exportResourceManagement',
+      payload: {
+        employeeId: currentUserId,
+        limit: total,
+      },
+    });
+    const getDataExport = getListExport ? getListExport.data : '';
+    const downloadLink = document.createElement('a');
+    const universalBOM = '\uFEFF';
+    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
+      universalBOM + getDataExport,
+    )}`;
+    downloadLink.download = fileName;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
+
   render() {
     const { resourceList = [], projectList, availableStatus } = this.state;
     const { loading, loadingSearch, total = 0, permissions } = this.props;
@@ -250,11 +280,27 @@ class ResourceList extends Component {
             currentStatus={availableStatus}
             changeAvailableStatus={this.changeAvailableStatus}
           />
-          <SearchTable
-            onFilterChange={this.onFilterChange}
-            filter={filter}
-            searchTable={this.searchTable}
-          />
+          <div className={styles.rightHeaderTable}>
+            <div className={styles.download}>
+              <Row gutter={[24, 0]}>
+                <Col>
+                  <Button
+                    icon={<DownloadOutlined />}
+                    className={styles.generate}
+                    type="text"
+                    onClick={this.exportToExcel}
+                  >
+                    {formatMessage({ id: 'Export' })}
+                  </Button>
+                </Col>
+              </Row>
+            </div>
+            <SearchTable
+              onFilterChange={this.onFilterChange}
+              filter={filter}
+              searchTable={this.searchTable}
+            />
+          </div>
         </div>
         <TableResources
           refreshData={this.refreshData}

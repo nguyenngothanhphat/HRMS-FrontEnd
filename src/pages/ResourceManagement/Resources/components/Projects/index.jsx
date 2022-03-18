@@ -11,6 +11,8 @@ const ProjectList = (props) => {
     dispatch,
     loadingFetchProjectList = false,
     permissions = {},
+    selectedLocations = [],
+    selectedDivisions = [],
   } = props;
 
   // permissions
@@ -24,6 +26,8 @@ const ProjectList = (props) => {
       tempPayload = {
         ...payload,
         projectStatus: [projectStatus],
+        location: selectedLocations,
+        division: selectedDivisions,
       };
     }
     dispatch({
@@ -39,7 +43,7 @@ const ProjectList = (props) => {
     if (projectStatus !== 'All') {
       fetchProjectList({ projectStatus: [projectStatus] });
     } else fetchProjectList();
-  }, [projectStatus]);
+  }, [projectStatus, selectedLocations, selectedDivisions]);
   return (
     <div className={styles.ProjectList}>
       <div className={styles.tabMenu}>
@@ -62,12 +66,19 @@ const ProjectList = (props) => {
 export default connect(
   ({
     user: { permissions },
-    resourceManagement: { projectTable = [], statusProject = [] } = {},
+    resourceManagement: {
+      projectTable = [],
+      statusProject = [],
+      selectedDivisions = [],
+      selectedLocations = [],
+    } = {},
     loading,
   }) => ({
     loadingFetchProjectList: loading.effects['resourceManagement/fetchProjectList'],
     projectTable,
     statusProject,
     permissions,
+    selectedDivisions,
+    selectedLocations,
   }),
 )(ProjectList);
