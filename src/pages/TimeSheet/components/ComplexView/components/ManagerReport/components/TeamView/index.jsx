@@ -43,6 +43,12 @@ const TeamView = (props) => {
       type: 'timeSheet/fetchManagerTimesheetOfTeamViewEffect',
       payload,
     });
+    dispatch({
+      type: 'timeSheet/savePayload',
+      payload: {
+        payloadExport: payload,
+      },
+    });
   };
 
   const onChangePage = (pageNumber) => {
