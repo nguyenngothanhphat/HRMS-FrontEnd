@@ -21,6 +21,9 @@ import {
   // complex view hr & finance
   getHRTimesheet,
   getFinanceTimesheet,
+  // export manager report (my project)
+  exportProject,
+  exportTeam,
 } from '@/services/timeSheet';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { convertMsToTime, isTheSameDay } from '@/utils/timeSheet';
@@ -60,6 +63,7 @@ const initialState = {
   // hr & finance complex view
   hrViewList: [],
   financeViewList: [],
+  payloadExport: {},
 };
 
 const TimeSheet = {
@@ -445,6 +449,48 @@ const TimeSheet = {
       }
       return response;
     },
+
+    *exportReportProject({ payload }, { call }) {
+      let response = '';
+      const hide = message.loading('Exporting data...', 0);
+      try {
+        response = yield call(
+          exportProject,
+          {},
+          {
+            ...payload,
+            tenantId: getCurrentTenant(),
+          },
+        );
+        const { code } = response;
+        if (code !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      hide();
+      return response;
+    },
+
+    *exportReportTeam({ payload }, { call }) {
+      let response = '';
+      const hide = message.loading('Exporting data...', 0);
+      try {
+        response = yield call(
+          exportTeam,
+          {},
+          {
+            ...payload,
+            tenantId: getCurrentTenant(),
+          },
+        );
+        const { code } = response;
+        if (code !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      hide();
+      return response;
+    },
   },
   reducers: {
     save(state, action) {
@@ -457,6 +503,12 @@ const TimeSheet = {
       return {
         ...state,
         importingIds: [],
+      };
+    },
+    savePayload(state, action) {
+      return {
+        ...state,
+        ...action.payload,
       };
     },
     saveImportingIds(state, action) {

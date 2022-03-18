@@ -12,14 +12,43 @@ const VIEW_TYPE = {
   TEAM_VIEW: 'team-view',
   PROJECT_VIEW: 'project-view',
 };
-const ManagerReport = () => {
+const ManagerReport = (props) => {
   // others
+  const { dispatch, timeSheet: { payloadExport = {} } = {} } = props;
   const [activeKey, setActiveKey] = useState(VIEW_TYPE.PROJECT_VIEW);
+
+  const exportToExcel = async (type, fileName) => {
+    const getListExport = await dispatch({
+      type,
+      payload: payloadExport,
+    });
+    const getDataExport = getListExport ? getListExport.data : '';
+    const downloadLink = document.createElement('a');
+    const universalBOM = '\uFEFF';
+    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
+      universalBOM + getDataExport,
+    )}`;
+    downloadLink.download = fileName;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
+
+  const exportTag = () => {
+    if (activeKey === VIEW_TYPE.PROJECT_VIEW) {
+      return exportToExcel('timeSheet/exportReportProject', 'project-view.xlsx');
+    }
+    return exportToExcel('timeSheet/exportReportTeam', 'team-view.xlsx');
+  };
 
   const options = () => {
     return (
       <div className={styles.options}>
-        <Button className={styles.exportBtn} icon={<img src={DownloadIcon} alt="" />}>
+        <Button
+          className={styles.exportBtn}
+          icon={<img src={DownloadIcon} alt="Icon Download" />}
+          onClick={exportTag}
+        >
           Export
         </Button>
       </div>
@@ -45,4 +74,4 @@ const ManagerReport = () => {
   );
 };
 
-export default connect(({ user }) => ({ user }))(ManagerReport);
+export default connect(({ user, timeSheet }) => ({ user, timeSheet }))(ManagerReport);
