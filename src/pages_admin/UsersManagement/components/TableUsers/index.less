@@ -21,17 +21,17 @@
 
     .ant-table.ant-table-small:after {
       position: absolute;
-      content: '';
+      bottom: -1px;
+      left: -24px;
       width: 150%;
       height: 1px;
       background-color: #d6dce0;
-      left: -24px;
-      bottom: -1px;
+      content: '';
     }
 
     .ant-table-body {
-      color: #000000;
       height: 400px;
+      color: #000000;
     }
 
     .ant-table-tbody > tr:last-child > td {
@@ -62,9 +62,9 @@
 
     .ant-table-column-sorter-up,
     .ant-table-column-sorter-down {
+      margin-top: 0.5em;
       font-size: 14px;
       opacity: 0;
-      margin-top: 0.5em;
     }
 
     .ant-table-thead th.ant-table-column-has-sorters:hover {
@@ -89,9 +89,9 @@
     }
 
     .ant-checkbox-inner {
-      border-radius: 30px;
-      height: 13px;
       width: 13px;
+      height: 13px;
+      border-radius: 30px;
     }
     .ant-checkbox-checked::after {
       border-radius: 30px;
@@ -101,19 +101,6 @@
       width: 100vw;
       height: 20px !important;
     }
-  }
-  
-  ::-webkit-scrollbar {
-    width: 7px;
-    height: 7px;
-    background-color: #f4f4f4;
-    border: none;
-    border-radius: 5px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: #e0e4e9;
-    border-radius: 5px;
   }
 
   .userPasswordReset {
