@@ -8,9 +8,12 @@ import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import {
   MAX_NO_OF_DAYS_TO_SHOW,
+  TIMEOFF_INPUT_TYPE,
+  TIMEOFF_INPUT_TYPE_BY_LOCATION,
   TIMEOFF_LINK_ACTION,
   TIMEOFF_STATUS,
   TIMEOFF_TYPE,
+  TIMEOFF_PERIOD,
 } from '@/utils/timeOff';
 import styles from './index.less';
 import LeaveTimeRow from './LeaveTimeRow';
@@ -20,6 +23,7 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const { A, B, C, D } = TIMEOFF_TYPE;
+const { AFTERNOON, MORNING, WHOLE_DAY } = TIMEOFF_PERIOD;
 const { IN_PROGRESS, DRAFTS } = TIMEOFF_STATUS;
 const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST } = TIMEOFF_LINK_ACTION;
 
@@ -58,6 +62,8 @@ const RequestInformation = (props) => {
     loadingUpdateDraft = false,
     loadingMain = false,
   } = props;
+
+  const currentLocationID = location?.headQuarterAddress?.country?._id;
 
   const [form] = Form.useForm();
   const [selectedTypeName, setSelectedTypeName] = useState('');
@@ -181,7 +187,7 @@ const RequestInformation = (props) => {
     const find = invalidDates.some(
       (x) =>
         moment(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
-        x.timeOfDay === 'WHOLE-DAY',
+        x.timeOfDay === WHOLE_DAY,
     );
     return !find;
   };
@@ -190,7 +196,7 @@ const RequestInformation = (props) => {
     const filtered = invalidDates.filter((x) => {
       return (
         moment(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
-        (x.timeOfDay === 'MORNING' || x.timeOfDay === 'AFTERNOON')
+        (x.timeOfDay === MORNING || x.timeOfDay === AFTERNOON)
       );
     });
 
@@ -201,7 +207,7 @@ const RequestInformation = (props) => {
     const find = invalidDates.some((x) => {
       return (
         moment(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
-        (x.timeOfDay !== 'MORNING' || x.timeOfDay !== 'AFTERNOON')
+        (x.timeOfDay !== MORNING || x.timeOfDay !== AFTERNOON)
       );
     });
     return !find;
@@ -295,13 +301,13 @@ const RequestInformation = (props) => {
     list.forEach((value) => {
       const { timeOfDay = '' } = value;
       switch (timeOfDay) {
-        case 'MORNING':
+        case MORNING:
           count += 0.5;
           break;
-        case 'AFTERNOON':
+        case AFTERNOON:
           count += 0.5;
           break;
-        case 'WHOLE-DAY':
+        case WHOLE_DAY:
           count += 1;
           break;
         default:
@@ -312,14 +318,14 @@ const RequestInformation = (props) => {
   };
 
   // GENERATE LEAVE DATES FOR API
-  const generateLeaveDates = (from, to, leaveTimeLists) => {
+  const generateLeaveDates = (leaveTimeLists) => {
     let result = [];
     if (leaveTimeLists.length === 0) {
       // type C,D
       result = dateLists.map((value) => {
         return {
           date: value,
-          timeOfDay: 'WHOLE-DAY',
+          timeOfDay: WHOLE_DAY,
         };
       });
     } else {
@@ -352,8 +358,6 @@ const RequestInformation = (props) => {
         timeOffType = '',
         subject = '',
         description = '',
-        durationFrom: durationFromValue = '',
-        durationTo: durationToValue = '',
         personCC = [],
         leaveTimeLists = [],
       } = values;
@@ -361,11 +365,7 @@ const RequestInformation = (props) => {
       if (timeOffType === '') {
         message.error('Please fill required fields!');
       } else {
-        const leaveDatesPayload = generateLeaveDates(
-          durationFromValue,
-          durationToValue,
-          leaveTimeLists,
-        );
+        const leaveDatesPayload = generateLeaveDates(leaveTimeLists);
 
         // let duration = 0;
         // if (selectedType !== C) duration = calculateNumberOfLeaveDay(leaveDates);
@@ -415,13 +415,11 @@ const RequestInformation = (props) => {
       timeOffType = '',
       subject = '',
       description = '',
-      durationFrom: durationFromTemp = '',
-      durationTo: durationToTemp = '',
       personCC = [],
       leaveTimeLists = [],
     } = values;
 
-    const leaveDatesPayload = generateLeaveDates(durationFromTemp, durationToTemp, leaveTimeLists);
+    const leaveDatesPayload = generateLeaveDates(leaveTimeLists);
 
     // ON SUBMIT
     if (buttonState === 2) {
@@ -818,13 +816,18 @@ const RequestInformation = (props) => {
   useEffect(() => {
     if (dateLists.length > 0) {
       const initialValuesForLeaveTimesList = dateLists.map((x) => {
-        if (findInvalidHalfOfDay(x).includes('MORNING')) {
-          return 'AFTERNOON';
+        // for US user
+        if (TIMEOFF_INPUT_TYPE_BY_LOCATION[currentLocationID] === TIMEOFF_INPUT_TYPE.HOUR) {
+          return 8;
         }
-        if (findInvalidHalfOfDay(x).includes('AFTERNOON')) {
-          return 'MORNING';
+        // for other countries
+        if (findInvalidHalfOfDay(x).includes(MORNING)) {
+          return AFTERNOON;
         }
-        return 'WHOLE-DAY';
+        if (findInvalidHalfOfDay(x).includes(AFTERNOON)) {
+          return MORNING;
+        }
+        return WHOLE_DAY;
       });
 
       form.setFieldsValue({
@@ -838,6 +841,16 @@ const RequestInformation = (props) => {
     const secondNoticeTemp = generateSecondNotice();
     setSecondNotice(secondNoticeTemp);
   }, [selectedTypeName, currentAllowanceState, JSON.stringify(dateLists)]);
+
+  // dynamic values
+  const getCountColumnName = () => {
+    switch (TIMEOFF_INPUT_TYPE_BY_LOCATION[currentLocationID]) {
+      case TIMEOFF_INPUT_TYPE.HOUR:
+        return 'Hours';
+      default:
+        return 'Count/Q.ty';
+    }
+  };
 
   // MAIN
   const layout = {
@@ -1003,7 +1016,7 @@ const RequestInformation = (props) => {
                     <Row className={styles.header}>
                       <Col span={7}>Date</Col>
                       <Col span={7}>Day</Col>
-                      <Col span={10}>Count/Q.ty</Col>
+                      <Col span={10}>{getCountColumnName()}</Col>
                     </Row>
                   ) : (
                     <Row className={styles.header}>
@@ -1041,6 +1054,7 @@ const RequestInformation = (props) => {
                               listLength={dateLists.length}
                               needValidate={needValidate}
                               findInvalidHalfOfDay={findInvalidHalfOfDay}
+                              currentLocationID={currentLocationID}
                             />
                           );
                         })
