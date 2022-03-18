@@ -28,6 +28,7 @@ const ticketManagement = {
     ticketDetail: {},
     employeeRaiseList: [],
     employeeAssigneeList: [],
+    filter: {},
   },
   effects: {
     *addTicket({ payload }, { call, put }) {
@@ -344,6 +345,12 @@ const ticketManagement = {
     },
   },
   reducers: {
+    clearFilter(state) {
+      return {
+        ...state,
+        filter: {},
+      };
+    },
     save(state, action) {
       return {
         ...state,
