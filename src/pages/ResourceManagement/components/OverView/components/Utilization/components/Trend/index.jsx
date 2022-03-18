@@ -27,6 +27,7 @@ const Trend = (props) => {
   } = props;
 
   const [data, setData] = useState([]);
+  const [isEmpty, setIsEmpty] = useState([]);
 
   const fetchResourceUtilizationChart = (start, end) => {
     dispatch({
@@ -64,25 +65,30 @@ const Trend = (props) => {
     return parseFloat(x).toFixed(2);
   };
 
-  const formatData = () => {
-    return result.map((x) => {
+  const analyzingData = () => {
+    let isEmptyTemp = true;
+    const tempData = result.map((x) => {
       const { summary = [] } = x;
       const billable = summary.find((y) => y.status === 'Billable');
       const total = summary.find((y) => y.status === 'Total');
 
+      const utilization = billable.count / total.count;
+      if (utilization !== 0) {
+        isEmptyTemp = false;
+      }
       return {
         ...x,
         // eslint-disable-next-line no-nested-ternary
         name: getNameByMode(x),
-        utilization:
-          billable && total && total?.count !== 0 ? (billable.count / total.count) * 100 : 0,
+        utilization: billable && total && total?.count !== 0 ? utilization * 100 : 0,
       };
     });
+    setData(tempData);
+    setIsEmpty(isEmptyTemp);
   };
 
   useEffect(() => {
-    const tempData = formatData(result);
-    setData(tempData);
+    analyzingData();
   }, [JSON.stringify(result)]);
 
   const CustomTooltip = ({ active, payload }) => {
@@ -153,6 +159,16 @@ const Trend = (props) => {
     );
   };
 
+  if (isEmpty) {
+    return (
+      <div className={styles.Trend}>
+        <div className={styles.emptyContainer}>
+          <img src={EmptyImage} alt="" />
+          <p>No Data present for the selected time range</p>
+        </div>
+      </div>
+    );
+  }
   if (invalidDates) {
     return (
       <div className={styles.Trend}>

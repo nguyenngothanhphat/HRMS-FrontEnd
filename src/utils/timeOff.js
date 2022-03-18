@@ -32,3 +32,8 @@ export const TIMEOFF_COLOR = {
   [TIMEOFF_STATUS.DRAFTS]: '#13c2c2',
   [TIMEOFF_STATUS.WITHDRAWN]: '#00aebc',
 };
+
+export const addZeroToNumber = (number) => {
+  if (number < 10 && number >= 0) return `0${number}`.slice(-2);
+  return number;
+};

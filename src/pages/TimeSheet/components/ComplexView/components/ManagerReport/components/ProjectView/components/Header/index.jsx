@@ -1,6 +1,6 @@
 import { Select } from 'antd';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'umi';
 import FilterButton from '@/components/FilterButton';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
@@ -25,7 +25,7 @@ const Header = (props) => {
     loadingFetchProjectList = false,
     activeView = '',
   } = props;
-
+  const [focus, setFocus] = useState(false);
   // HEADER AREA FOR MONTH
   const onPrevClick = () => {
     if (type === VIEW_TYPE.M) {
@@ -66,6 +66,19 @@ const Header = (props) => {
     return projectColor[index % projectColor.length];
   };
 
+  const onFocus = () => {
+    setFocus(true);
+  };
+
+  const onBlur = () => {
+    setFocus(false);
+  };
+
+  const onChange = (val) => {
+    setCurrentProject(val);
+    setFocus(false);
+  };
+
   const iconStyle = (index) => {
     return {
       position: 'relative',
@@ -98,10 +111,21 @@ const Header = (props) => {
       <div className={styles.Header__left}>
         <div className={styles.projectSelector}>
           <Select
-            value={currentProject || null}
-            onChange={(val) => setCurrentProject(val)}
+            showSearch
+            value={!focus ? currentProject : null || null}
+            onChange={(val) => onChange(val)}
             loading={loadingFetchProjectList}
             disabled={loadingFetchProjectList}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            optionFilterProp="children"
+            filterOption={(input, option) => {
+              return option.props.children
+                ? option.props.children.props.children[1].props.children
+                    .toLowerCase()
+                    .indexOf(input.toLowerCase()) >= 0
+                : null;
+            }}
           >
             {projectList.map((v, index) => (
               <Option value={v.id}>

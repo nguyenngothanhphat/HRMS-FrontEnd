@@ -2,6 +2,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
+import { Spin } from 'antd';
 import { dateFormatAPI } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import Header from './components/Header';
@@ -89,13 +90,10 @@ const TeamView = (props) => {
         onChangeSearch={onChangeSearch}
         activeView={activeView}
       />
-      <MemberTable
-        data={managerTeamViewList}
-        loadingFetch={loadingFetch}
-        startDate={startDate}
-        endDate={endDate}
-      />
-      <Pagination tablePagination={managerTeamViewPagination} onChangePage={onChangePage} />
+      <Spin spinning={loadingFetch}>
+        <MemberTable data={managerTeamViewList} startDate={startDate} endDate={endDate} />
+        <Pagination tablePagination={managerTeamViewPagination} onChangePage={onChangePage} />
+      </Spin>
     </div>
   );
 };

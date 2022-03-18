@@ -13,7 +13,9 @@ const MANAGER = 'MANAGER';
 const Tasks = (props) => {
   const [activeKey, setActiveKey] = useState('1');
   const [modalVisible, setModalVisible] = useState(false);
-  const { dispatch, roles = [], myId = '' } = props;
+  const { dispatch, roles = [], myId = '', projectList = [] } = props;
+  const result = projectList.filter((val) => val.projectManager !== null);
+  const newProjectList = result.filter((val) => val.projectManager.generalInfo._id === myId);
 
   useEffect(() => {
     dispatch({
@@ -56,11 +58,19 @@ const Tasks = (props) => {
           </Tabs>
         </div>
       </div>
-      <div className={styles.viewAllBtn} onClick={() => setModalVisible(true)}>
-        {activeKey === '1' && <span>View all Tasks</span>}
-        {activeKey === '2' && <span>View all Projects</span>}
-        <img src={LeftArrow} alt="expand" />
-      </div>
+      {activeKey === '1' && (
+        <div className={styles.viewAllBtn} onClick={() => setModalVisible(true)}>
+          {activeKey === '1' && <span>View all Tasks</span>}
+          <img src={LeftArrow} alt="expand" />
+        </div>
+      )}
+      {activeKey === '2' && newProjectList.length > 0 && (
+        <div className={styles.viewAllBtn} onClick={() => setModalVisible(true)}>
+          {activeKey === '2' && <span>View all Project</span>}
+          <img src={LeftArrow} alt="expand" />
+        </div>
+      )}
+      {activeKey === '2' && newProjectList.length === 0 && <div className={styles.addLength} />}
       <CommonModal
         visible={modalVisible}
         title={activeKey === '1' ? `My Tasks` : 'My Projects'}
@@ -76,8 +86,10 @@ export default connect(
     user: {
       currentUser: { employee: { generalInfo: { _id: myId = '' } = {} } = {}, roles = [] } = {},
     } = {},
+    dashboard: { projectList = [] } = {},
   }) => ({
     myId,
     roles,
+    projectList,
   }),
 )(Tasks);
