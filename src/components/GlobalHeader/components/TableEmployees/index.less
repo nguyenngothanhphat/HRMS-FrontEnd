@@ -14,12 +14,12 @@
 
     .ant-table.ant-table-small:after {
       position: absolute;
-      content: '';
+      bottom: -1px;
+      left: -24px;
       width: 150%;
       height: 1px;
       background-color: #d6dce0;
-      left: -24px;
-      bottom: -1px;
+      content: '';
     }
 
     .ant-table-body {
@@ -58,9 +58,9 @@
 
     .ant-table-column-sorter-up,
     .ant-table-column-sorter-down {
+      margin-top: 0.5em;
       font-size: 14px;
       opacity: 0;
-      margin-top: 0.5em;
     }
 
     .ant-table-thead th.ant-table-column-has-sorters:hover {
@@ -116,33 +116,20 @@
     }
 
     p {
+      margin: 0;
+      padding-left: 12px;
+      color: #2c6df9;
+      font-weight: 500;
+      letter-spacing: 0.12px;
+      white-space: normal;
       text-align: left;
       word-break: break-word;
-      white-space: normal;
-      margin: 0;
-      letter-spacing: 0.12px;
-      color: #2c6df9;
-      padding-left: 12px;
-      font-weight: 500;
     }
   }
 
   .directoryTable_deparmentText {
     padding: 4px 8px;
-    border-radius: 5px;
     background-color: #f6f7f9;
-  }
-
-  ::-webkit-scrollbar {
-    width: 7px;
-    height: 7px;
-    border-radius: 5px;
-    background-color: #f4f4f4;
-    border: none;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: #e0e4e9;
     border-radius: 5px;
   }
 }
