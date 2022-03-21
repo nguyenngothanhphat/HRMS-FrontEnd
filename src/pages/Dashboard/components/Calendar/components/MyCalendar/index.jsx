@@ -134,8 +134,8 @@ const MyCalendar = (props) => {
         </Col>
         <Col xs={20} className={styles.eachRow__right}>
           <Row gutter={[16, 16]}>
-            {checkCurrentTime(hour)}
-            {renderCurrentDate(hour, dateToFormat)}
+            {/* {checkCurrentTime(hour)} */}
+            {/* {renderCurrentDate(hour, dateToFormat)} */}
             {events.map((event) => {
               return <MeetingTag span={colSpan} event={event} selectedDate={selectedDate} />;
             })}
@@ -145,28 +145,44 @@ const MyCalendar = (props) => {
     );
   };
 
+  const renderHour = (hour) => {
+    if (hour < 12) return `${hour} AM`;
+    if (hour === 12) return `12 PM`;
+    return `${hour - 12} PM`;
+  };
+
   const renderUI = () => {
-    if (loading)
-      return (
-        <div
-          className={styles.mainContainer}
-          style={{
-            minHeight: '400px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <Spin size="default" />
-        </div>
-      );
     return (
-      <div className={styles.mainContainer} style={isInModal ? { maxHeight: '600px' } : {}}>
-        {hourList.map((hour) => {
-          const filter = data.filter((item) => moment(item.start.dateTime).hour() === hour);
-          return renderRow(hour, filter);
-        })}
-      </div>
+      <Spin spinning={loading}>
+        <Row className={styles.mainContainer} style={isInModal ? { maxHeight: '600px' } : {}}>
+          {/* {hourList.map((hour) => {
+            const filter = data.filter((item) => moment(item.start.dateTime).hour() === hour);
+            return renderRow(hour, filter);
+          })} */}
+
+          <Col span={4} className={`${styles.mainContainer__firstColumn} ${styles.alignCenter}`}>
+            {hourList.map((hour) => {
+              return (
+                <div className={styles.hourBlock}>
+                  <span>{renderHour(hour)}</span>
+                </div>
+              );
+            })}
+          </Col>
+          <Col span={20} className={styles.mainContainer__remainColumn}>
+            {hourList.map(() => {
+              return (
+                <div className={styles.row}>
+                  <div className={styles.divider} />
+                </div>
+              );
+            })}
+            {data.map((item, index) => (
+              <MeetingTag cardIndex={index} event={item} selectedDate={selectedDate} />
+            ))}
+          </Col>
+        </Row>
+      </Spin>
     );
   };
 

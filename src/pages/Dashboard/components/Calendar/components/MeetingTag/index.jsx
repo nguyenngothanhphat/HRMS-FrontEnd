@@ -1,5 +1,5 @@
 import { Button, Col, Popover, Row } from 'antd';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
 import Bell from '@/assets/dashboard/bell.svg';
@@ -9,11 +9,56 @@ import GoogleMeet from '@/assets/dashboard/googleMeet.svg';
 import MockAvatar from '@/assets/dashboard/mockAvatar.jpg';
 import styles from './index.less';
 
+const EMP_ROW_HEIGHT = 72;
 const timeFormat = 'HH:mm a';
+
 const MeetingTag = (props) => {
   const myRef = useRef(null);
-  const { event: eventProp, span: spanProp, hourSpan: hourSpanProp = 1, selectedDate = '' } = props;
+  const { event: eventProp, cardIndex = 0, selectedDate = '' } = props;
   const [showPopover, setShowPopover] = useState(false);
+
+  const { start: { dateTime: startTime = '' } = {}, end: { dateTime: endTime = '' } = {} } =
+    eventProp;
+
+  const [top, setTop] = useState(0);
+  const [height, setHeight] = useState(0);
+  const [left, setLeft] = useState(0);
+  const [right, setRight] = useState(0);
+
+  // USE EFFECT AREA
+  const calculateCardPosition = () => {
+    const marginBlock = 10;
+
+    let topTemp = EMP_ROW_HEIGHT / 2;
+    let heightTemp = 0;
+
+    if (startTime && endTime) {
+      const startTimeHourTemp = moment(startTime).hour();
+      const startTimeMinuteTemp = moment.utc(startTime).minute();
+
+      for (let i = 0; i <= 24; i += 1) {
+        if (i < startTimeHourTemp) {
+          topTemp += EMP_ROW_HEIGHT;
+        } else if (i === startTimeHourTemp) {
+          topTemp += (startTimeMinuteTemp / 60) * EMP_ROW_HEIGHT;
+        }
+      }
+
+      const diff = moment.duration(moment(endTime).diff(moment(startTime)));
+      heightTemp = diff.asHours() * EMP_ROW_HEIGHT;
+
+      setTop(topTemp + marginBlock / 2);
+      setHeight(heightTemp - marginBlock);
+
+      const leftTemp = 1 - 1 / (cardIndex + 1);
+      setLeft(leftTemp);
+      setRight(0);
+    }
+  };
+
+  useEffect(() => {
+    calculateCardPosition();
+  }, [JSON.stringify(eventProp)]);
 
   // FUNCTIONS
   const getColorClassName = (type) => {
@@ -29,13 +74,6 @@ const MeetingTag = (props) => {
       default:
         return styles.greenTag;
     }
-  };
-
-  const getTagClassName = () => {
-    if (hourSpanProp === 2) return styles.div2;
-    if (hourSpanProp === 3) return styles.div3;
-    if (hourSpanProp === 4) return styles.div4;
-    return null;
   };
 
   const joinGGMeet = (link) => {
@@ -74,8 +112,6 @@ const MeetingTag = (props) => {
   const renderPopupEvent = (event) => {
     const {
       summary = '',
-      start: { dateTime: startTime = '' } = {},
-      end: { dateTime: endTime = '' } = {},
       attendees = [],
       hangoutLink = '',
       // conferenceData = {}
@@ -134,12 +170,11 @@ const MeetingTag = (props) => {
   };
 
   // RENDER UI
-  const renderTag = (event, span) => {
+  const renderTag = (event) => {
     const min = Math.ceil(1);
     const max = Math.floor(4);
     const colorType = Math.floor(Math.random() * (max - min) + min);
     const colorClassName = getColorClassName(colorType);
-    const tagClassName = getTagClassName(hourSpanProp);
 
     const localDate = moment(selectedDate).format('MM/DD/YYYY');
     const googleDate = moment(event.start.dateTime).format('MM/DD/YYYY');
@@ -155,22 +190,33 @@ const MeetingTag = (props) => {
         overlayClassName={styles.popupEventContainer}
         onVisibleChange={() => setShowPopover(!showPopover)}
       >
-        <Col span={span} className={styles.MeetingTag} ref={myRef}>
-          <div className={`${colorClassName} ${tagClassName}`}>
-            {event.summary && (event.summary).length > 20 ? `${event.summary.slice(0,20)} ...` : event.summary}
-            {hourSpanProp > 1 && (
-              <span className={styles.extraTime}>
-                {moment(event.start.dateTime).format(timeFormat)} -{' '}
-                {moment(event.end.dateTime).format(timeFormat)}
-              </span>
-            )}
+        <div
+          // span={span}
+          className={styles.MeetingTag}
+          ref={myRef}
+          style={{
+            top,
+            height,
+            left,
+            right,
+          }}
+        >
+          <div className={`${colorClassName}`}>
+            {event.summary && event.summary.length > 20
+              ? `${event.summary.slice(0, 20)} ...`
+              : event.summary}
+
+            <span className={styles.extraTime}>
+              {moment(event.start.dateTime).format(timeFormat)} -{' '}
+              {moment(event.end.dateTime).format(timeFormat)}
+            </span>
           </div>
-        </Col>
+        </div>
       </Popover>
     );
   };
 
-  return renderTag(eventProp, spanProp);
+  return renderTag(eventProp);
 };
 
 export default connect(() => ({}))(MeetingTag);
