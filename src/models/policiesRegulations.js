@@ -13,6 +13,8 @@ import {
   searchNamePolicy,
   getLocationByCompany,
   uploadFile,
+  // CERTIFICATION
+  certifyDocument
 } from '../services/policiesRegulations';
 
 const policiesRegulations = {
@@ -225,6 +227,24 @@ const policiesRegulations = {
       }
       return response;
     },
+
+    // CERTIFICATION
+    *certifyDocumentEffect({ payload }, { call }) {
+      let response;
+      try {
+        response = yield call(certifyDocument, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
   },
   reducers: {
     save(state, action) {

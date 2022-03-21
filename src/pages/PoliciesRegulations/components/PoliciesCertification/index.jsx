@@ -5,7 +5,7 @@ import PdfIcon from '@/assets/policiesRegulations/pdf-2.svg';
 import IconContact from '@/assets/policiesRegulations/policies-icon-contact.svg';
 import UnreadIcon from '@/assets/policiesRegulations/view.svg';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import CertifyModal from './components/CertifyModal';
+import SignatureModal from '@/components/SignatureModal';
 import ModalImage from '@/assets/projectManagement/modalImage1.png';
 import styles from './index.less';
 import ActionModal from './components/ActionModal';
@@ -180,7 +180,14 @@ const PoliciesCertification = (props) => {
           </div>
         </Col>
       </Row>
-      <CertifyModal visible={isCertify} onClose={() => setIsCertify(false)} onFinish={onFinish} />
+      <SignatureModal
+        visible={isCertify}
+        onClose={() => setIsCertify(false)}
+        onFinish={onFinish}
+        titleModal="Signature of the employee"
+        loading={false}
+      />
+
       <ActionModal
         visible={isDone}
         onClose={() => {

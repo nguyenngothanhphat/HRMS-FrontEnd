@@ -9,14 +9,57 @@
 @dark-orange: #e08e00;
 @border-color: #d6dce0;
 
+.MainLayout {
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    background: #ffffff;
+    box-shadow: 0px 1px 2px #eeeeee;
+    padding-inline: 24px;
+    &__left {
+      color: #161c29;
+      font-weight: 500;
+      font-size: 18px;
+      font-family: Roboto;
+      font-style: normal;
+      line-height: 21px;
+    }
+    &__right {
+      .buttonSetting {
+        padding: 8px 15px;
+        color: #2c6df9;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 16px;
+        background: #eaf0fe;
+        border-radius: 5px;
+      }
+      :global {
+        .ant-btn {
+          background: #eaf0fe;
+          border: none;
+          border-radius: 5px;
+        }
+        a {
+          color: #2c6df9;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 16px;
+        }
+      }
+    }
+  }
+}
 .ViewDocument {
-  margin: 24px 89px;
+  margin: 24px;
   .stepContainer {
     display: flex;
     justify-content: center;
     width: 100%;
     margin-top: 2px;
-    padding: 24px 24px 0 24px;
+    padding: 24px 24px 12px 24px;
     background-color: white;
     border-radius: 8px;
     :global {
@@ -38,7 +81,7 @@
   .mainContainer {
     height: fit-content;
 
-    .header {
+    .titleHeader {
       display: flex;
       align-items: center;
       justify-content: space-between;

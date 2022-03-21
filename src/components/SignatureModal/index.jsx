@@ -1,4 +1,4 @@
-import { Button, Form, Input, message, Modal, Radio, Row, Select, Space, Spin, Upload } from 'antd';
+import { Button, Form, Input, message, Modal, Radio, Row, Select, Space, Upload } from 'antd';
 import React, { PureComponent } from 'react';
 import SignaturePad from 'react-signature-canvas';
 import { connect } from 'umi';
@@ -22,11 +22,8 @@ const initialState = {
 
 @connect(({ loading }) => ({
   loadingUploadAttachment: loading.effects['upload/uploadFile'],
-  loading:
-    loading.effects['candidatePortal/updateByCandidateEffect'] ||
-    loading.effects['candidatePortal/submitCandidateFinalOffer'],
 }))
-class CertifyModal extends PureComponent {
+class SignatureModal extends PureComponent {
   constructor(props) {
     super(props);
     this.state = initialState;
@@ -92,7 +89,7 @@ class CertifyModal extends PureComponent {
   };
 
   renderHeaderModal = () => {
-    const { titleModal = 'Signature of the employee' } = this.props;
+    const { titleModal = 'Signature' } = this.props;
     return (
       <div className={styles.header}>
         <p className={styles.header__text}>{titleModal}</p>
@@ -156,7 +153,7 @@ class CertifyModal extends PureComponent {
     const { dispatch, onFinish = () => {} } = this.props;
     const formData = new FormData();
     const file = this.dataURItoBlob(imageBase64);
-    formData.append('blob', file, 'signatureCandidate.png');
+    formData.append('blob', file, 'signature.png');
     const response = await dispatch({
       type: 'upload/uploadFile',
       payload: formData,
@@ -174,7 +171,7 @@ class CertifyModal extends PureComponent {
       return;
     }
     const file = this.dataURItoBlob(arrImgBase64[finalDigitalSignature]);
-    formData.append('blob', file, 'signatureCandidate.jpeg');
+    formData.append('blob', file, 'signature.jpeg');
     const response = await dispatch({
       type: 'upload/uploadFile',
       payload: formData,
@@ -207,7 +204,7 @@ class CertifyModal extends PureComponent {
     return (
       <>
         <Modal
-          className={styles.CertifyModal}
+          className={styles.SignatureModal}
           onCancel={this.handleCancel}
           destroyOnClose
           footer={[
@@ -359,4 +356,4 @@ class CertifyModal extends PureComponent {
   }
 }
 
-export default CertifyModal;
+export default SignatureModal;
