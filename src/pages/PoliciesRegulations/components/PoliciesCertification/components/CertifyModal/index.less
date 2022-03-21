@@ -1,0 +1,233 @@
+.CertifyModal {
+  .signaturePad {
+    canvas {
+      width: 100% !important;
+      border: 1px dashed #d6dce4;
+      border-radius: 5px;
+    }
+  }
+  .digitalSignatureZone {
+    width: 100%;
+    .signatures {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    canvas {
+      width: 100% !important;
+    }
+  }
+  :global {
+    .ant-form-item-explain {
+      div {
+        font-size: 13px;
+      }
+    }
+    .ant-select-selection-item {
+      color: #161c29 !important;
+    }
+    .ant-select-selector,
+    .ant-input {
+      height: 42px !important;
+
+      padding: 5px 11px !important;
+
+      background: transparent !important;
+      border-radius: 5px !important;
+    }
+    .ant-select-selection-search-input {
+      height: 42px !important;
+      border-radius: 5px;
+    }
+    .ant-form-item-label
+      > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+      display: none;
+    }
+    .ant-form-item-label label {
+      height: 0;
+      color: #707177;
+      font-size: 12px;
+    }
+    .ant-btn-primary {
+      width: 94px;
+      height: 40px;
+      object-fit: contain;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: Roboto;
+      letter-spacing: 0.13px;
+
+      text-shadow: none;
+      background-color: #ffa100;
+      border: solid 1px #ffa100;
+      border-radius: 25px;
+      box-shadow: none;
+      &:hover {
+        color: #ffffff;
+        background-color: #ffa100;
+      }
+    }
+    .ant-btn-secondary {
+      width: 94px;
+      height: 40px;
+      padding-right: 41px;
+      object-fit: contain;
+      color: #ffa100;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: Roboto;
+      letter-spacing: 0.13px;
+      border: solid 0;
+      border-radius: 25px;
+      box-shadow: none;
+    }
+    .ant-modal-header {
+      padding: 24px;
+      border-top-left-radius: 8px;
+    }
+    .ant-modal-content {
+      border-top-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+    .ant-form-item {
+      margin-bottom: 12px;
+    }
+    .ant-modal-footer {
+      padding: 13px 24px;
+    }
+    .ant-modal-close-x {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 54px;
+      height: 48px;
+      color: #fff;
+      background-color: #2c6df9;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+      &:active {
+        opacity: 0.5;
+      }
+    }
+  }
+  .btnSubmit {
+    width: 95px;
+    color: #fff;
+
+    font-weight: 600;
+    font-size: 14px;
+    background-color: #ffa100;
+    border: none;
+    border-radius: 25px;
+  }
+  .btnSubmit:disabled {
+    color: #fff;
+    opacity: 0.5;
+  }
+  .btnCancel {
+    display: inline-block;
+    margin-right: 20px;
+    color: #ffa100;
+    font-weight: 500;
+    font-size: 14px;
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+    &:active {
+      opacity: 0.5;
+    }
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &__text {
+      margin: 0;
+      color: #161c29;
+      font-weight: 600;
+      font-size: 16px;
+    }
+  }
+
+  .fileUploadForm {
+    height: 100%;
+    background-color: white;
+    .fileUploadedContainer {
+      position: relative;
+      width: 100%;
+      max-height: 350px;
+      overflow-y: auto;
+      img {
+        width: 100%;
+        
+      }
+      .trashIcon {
+        position: absolute;
+        top: -71px;
+        right: -52px;
+        display: block;
+        cursor: pointer;
+        &:hover {
+          opacity: 0.9;
+        }
+      }
+
+      .previewIcon {
+        margin-bottom: 20px;
+      }
+      .fileName {
+        font-size: 14px;
+        a {
+          color: #2c6df9;
+        }
+      }
+    }
+    .drapperBlock {
+      position: relative;
+      margin: 40px 20px;
+
+      .uploadIcon {
+        margin-right: 10px;
+      }
+      .chooseFileText {
+        display: inline-block;
+        color: #2c6df9;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+      .uploadText {
+        display: inline-block;
+        margin-left: 5px;
+        color: #464646;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+    }
+    :global {
+      .ant-upload {
+        padding: 10px;
+      }
+      .ant-upload.ant-upload-drag {
+        // padding: 68px;
+        background: #fff;
+        border-radius: 8px;
+      }
+      .ant-btn {
+        height: 35px;
+        padding: 0 35px;
+        background-color: #ffa100;
+        border: none;
+        border-radius: 40px;
+        span {
+          color: white;
+          font-weight: 700;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}

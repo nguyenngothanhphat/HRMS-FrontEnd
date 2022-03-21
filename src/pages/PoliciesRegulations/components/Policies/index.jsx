@@ -165,11 +165,9 @@ class Policies extends PureComponent {
 
     if (loadingGetList)
       return (
-        <PageContainer>
-          <div className={styles.PoliciesLayout}>
-            <Skeleton />
-          </div>
-        </PageContainer>
+        <div className={styles.PoliciesLayout} style={{ padding: 24 }}>
+          <Skeleton />
+        </div>
       );
     return (
       <div className={styles.PoliciesLayout}>
