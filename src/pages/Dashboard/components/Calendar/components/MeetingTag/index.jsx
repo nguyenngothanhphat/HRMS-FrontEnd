@@ -14,11 +14,14 @@ const timeFormat = 'HH:mm a';
 
 const MeetingTag = (props) => {
   const myRef = useRef(null);
-  const { event: eventProp, cardIndex = 0, selectedDate = '' } = props;
+  const { event: eventProp, cardIndex = 0, selectedDate = '', slotArr = [] } = props;
   const [showPopover, setShowPopover] = useState(false);
 
-  const { start: { dateTime: startTime = '' } = {}, end: { dateTime: endTime = '' } = {} } =
-    eventProp;
+  const {
+    id: eventID = '',
+    start: { dateTime: startTime = '' } = {},
+    end: { dateTime: endTime = '' } = {},
+  } = eventProp;
 
   const [top, setTop] = useState(0);
   const [height, setHeight] = useState(0);
@@ -50,15 +53,27 @@ const MeetingTag = (props) => {
       setTop(topTemp + marginBlock / 2);
       setHeight(heightTemp - marginBlock);
 
-      const leftTemp = 1 - 1 / (cardIndex + 1);
-      setLeft(leftTemp);
-      setRight(0);
+      const listBySlotArr = slotArr.filter((x) => x.includes(eventID));
+      let columnCount = 0;
+      let position = 0;
+      listBySlotArr.forEach((x) => {
+        if (x.length > columnCount) {
+          columnCount = x.length;
+          position = x.indexOf(eventID);
+        }
+      });
+      const leftTemp = position / (position + 1);
+      setLeft(`${leftTemp * 100}%`);
+      const rightTemp = leftTemp + 1 / columnCount;
+      setRight(`${100 - rightTemp * 100}%`);
     }
   };
 
   useEffect(() => {
-    calculateCardPosition();
-  }, [JSON.stringify(eventProp)]);
+    if (slotArr.length > 0) {
+      calculateCardPosition();
+    }
+  }, [JSON.stringify(eventProp), JSON.stringify(slotArr)]);
 
   // FUNCTIONS
   const getColorClassName = (type) => {
@@ -206,10 +221,12 @@ const MeetingTag = (props) => {
               ? `${event.summary.slice(0, 20)} ...`
               : event.summary}
 
-            <span className={styles.extraTime}>
-              {moment(event.start.dateTime).format(timeFormat)} -{' '}
-              {moment(event.end.dateTime).format(timeFormat)}
-            </span>
+            {height > EMP_ROW_HEIGHT && (
+              <span className={styles.extraTime}>
+                {moment(event.start.dateTime).format(timeFormat)} -{' '}
+                {moment(event.end.dateTime).format(timeFormat)}
+              </span>
+            )}
           </div>
         </div>
       </Popover>

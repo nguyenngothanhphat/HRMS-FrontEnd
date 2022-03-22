@@ -74,16 +74,114 @@ export async function syncGoogleCalendar(payload) {
         creator: { email: 'thang.nguyen@terralogic.com' },
         organizer: { email: 'thang.nguyen@terralogic.com' },
         start: {
-          dateTime: '2022-03-18T07:00:00+07:00',
+          dateTime: '2022-03-22T07:00:00+07:00',
           timeZone: 'Asia/Ho_Chi_Minh',
         },
         end: {
-          dateTime: '2022-03-18T08:00:00+07:00',
+          dateTime: '2022-03-22T08:00:00+07:00',
           timeZone: 'Asia/Ho_Chi_Minh',
         },
         recurringEventId: '6av9b18av2l5c5193kdr8he7br',
         originalStartTime: {
-          dateTime: '2022-03-18T10:00:00+07:00',
+          dateTime: '2022-03-22T10:00:00+07:00',
+          timeZone: 'Asia/Ho_Chi_Minh',
+        },
+        iCalUID: '6av9b18av2l5c5193kdr8he7br@google.com',
+        sequence: 0,
+        attendees: [
+          {
+            email: 'terralogic.com_2d38333838353032352d3533@resource.calendar.google.com',
+            displayName: '2nd Floor - Mercury',
+            resource: true,
+            responseStatus: 'accepted',
+          },
+          {
+            email: 'thang.nguyen@terralogic.com',
+            organizer: true,
+            responseStatus: 'accepted',
+          },
+          {
+            email: 'christine.nguyen@terralogic.com',
+            responseStatus: 'accepted',
+          },
+          {
+            email: 'ky.ngo@terralogic.com',
+            displayName: 'Ky Ngo',
+            responseStatus: 'accepted',
+          },
+          {
+            email: 'vien.pham@terralogic.com',
+            responseStatus: 'needsAction',
+          },
+          { email: 'nghia.vo@terralogic.com', responseStatus: 'accepted' },
+          {
+            email: 'sinh.tran@terralogic.com',
+            responseStatus: 'needsAction',
+          },
+          {
+            email: 'lewis.nguyen@terralogic.com',
+            self: true,
+            responseStatus: 'needsAction',
+          },
+          { email: 'yen.nguyen@terralogic.com', responseStatus: 'accepted' },
+        ],
+        hangoutLink: 'https://meet.google.com/bam-unfm-ntj',
+        conferenceData: {
+          entryPoints: [
+            {
+              entryPointType: 'video',
+              uri: 'https://meet.google.com/bam-unfm-ntj',
+              label: 'meet.google.com/bam-unfm-ntj',
+            },
+            {
+              entryPointType: 'more',
+              uri: 'https://tel.meet/bam-unfm-ntj?pin=5909967440473',
+              pin: '5909967440473',
+            },
+            {
+              regionCode: 'US',
+              entryPointType: 'phone',
+              uri: 'tel:+1-760-512-3744',
+              label: '+1 760-512-3744',
+              pin: '107862892',
+            },
+          ],
+          conferenceSolution: {
+            key: { type: 'hangoutsMeet' },
+            name: 'Google Meet',
+            iconUri:
+              'https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png',
+          },
+          conferenceId: 'bam-unfm-ntj',
+          signature: 'AKpSKUv90/BVqASBBpKMzI3UY/6I',
+        },
+        reminders: { useDefault: true },
+        eventType: 'default',
+      },
+      {
+        kind: 'calendar#event',
+        etag: '"3292378916188000"',
+        id: '7Av9b18av2l5c5193kdr8he7br_20220318T030000Z',
+        status: 'confirmed',
+        htmlLink:
+          'https://www.google.com/calendar/event?eid=NmF2OWIxOGF2Mmw1YzUxOTNrZHI4aGU3YnJfMjAyMjAzMThUMDMwMDAwWiBsZXdpcy5uZ3V5ZW5AdGVycmFsb2dpYy5jb20',
+        created: '2022-03-01T12:10:51.000Z',
+        updated: '2022-03-02T02:50:58.094Z',
+        summary: 'HRMS - Daily meeting',
+        location: '2nd Floor - Mercury',
+        creator: { email: 'thang.nguyen@terralogic.com' },
+        organizer: { email: 'thang.nguyen@terralogic.com' },
+        start: {
+          dateTime: '2022-03-22T08:00:00+07:00',
+          timeZone: 'Asia/Ho_Chi_Minh',
+        },
+        end: {
+          dateTime: '2022-03-22T09:00:00+07:00',
+          timeZone: 'Asia/Ho_Chi_Minh',
+        },
+        recurringEventId: '6av9b18av2l5c5193kdr8he7br',
+        originalStartTime: {
+          dateTime: '2022-03-22T10:00:00+07:00',
           timeZone: 'Asia/Ho_Chi_Minh',
         },
         iCalUID: '6av9b18av2l5c5193kdr8he7br@google.com',
@@ -171,16 +269,16 @@ export async function syncGoogleCalendar(payload) {
         creator: { email: 'khang.le@terralogic.com' },
         organizer: { email: 'khang.le@terralogic.com' },
         start: {
-          dateTime: '2022-03-18T07:00:00+07:00',
+          dateTime: '2022-03-22T07:00:00+07:00',
           timeZone: 'Asia/Ho_Chi_Minh',
         },
         end: {
-          dateTime: '2022-03-18T10:00:00+07:00',
+          dateTime: '2022-03-22T10:00:00+07:00',
           timeZone: 'Asia/Ho_Chi_Minh',
         },
         recurringEventId: 'l2apespr6hn52ef03jigh0e5rt_R20220214T030000',
         originalStartTime: {
-          dateTime: '2022-03-18T10:00:00+07:00',
+          dateTime: '2022-03-22T10:00:00+07:00',
           timeZone: 'Asia/Ho_Chi_Minh',
         },
         transparency: 'transparent',

@@ -8,6 +8,8 @@ import styles from './index.less';
 const MyCalendar = (props) => {
   const { isInModal = false, data = [], loading = false, selectedDate = '' } = props;
   const [hourList, setHourList] = useState([]);
+  const [slotArr, setSlotArr] = useState([]);
+  console.log('🚀 ~ MyCalendar ~ slotArr', slotArr);
 
   const [dateToFormat, setDateToFormat] = useState(moment().format('HH:mm'));
 
@@ -28,17 +30,56 @@ const MyCalendar = (props) => {
     }
   });
 
+  const getHoursBetweenTwoHour = (start, end) => {
+    const hourListTemp = [];
+    for (let i = start; i < end; i += 1) {
+      hourListTemp.push(i);
+    }
+    return hourListTemp;
+  };
+
+  const generateSlotArr = () => {
+    const slotArrTemp = [...slotArr];
+    for (let i = 0; i < 24; i += 1) {
+      const events = data.filter((x) => moment(x.start.dateTime).hour() === i);
+
+      if (events.length > 0) {
+        events.forEach((ev) => {
+          const endTime = moment(ev.end.dateTime).hour();
+          const hourListTemp = getHoursBetweenTwoHour(i, endTime);
+
+          if (hourListTemp.length > 0) {
+            for (let j = 0; j < hourListTemp.length; j += 1) {
+              slotArrTemp[hourListTemp[j]] = [...slotArrTemp[hourListTemp[j]], ev.id];
+            }
+          }
+        });
+      }
+    }
+    setSlotArr(slotArrTemp);
+  };
+
   // USE EFFECT
   useEffect(() => {
     if (hourList.length === 0) {
       const hourListTemp = [];
+      const slotArrTemp = [];
       for (let i = 0; i < 24; i += 1) {
         hourListTemp.push(i);
+        slotArrTemp.push([]);
       }
       setHourList(hourListTemp);
+      setSlotArr(slotArrTemp);
     }
     setInterval(() => setDateToFormat(updateTime, 1000));
   }, []);
+
+  // generate position for each meeting
+  useEffect(() => {
+    if (data.length > 0 && slotArr.length > 0) {
+      generateSlotArr();
+    }
+  }, [JSON.stringify(data), JSON.stringify(hourList)]);
 
   const renderCurrentDate = (hour, currentDate) => {
     const currentTime = currentDate ? currentDate.split(':')[0] : moment().format('HH');
@@ -178,7 +219,12 @@ const MyCalendar = (props) => {
               );
             })}
             {data.map((item, index) => (
-              <MeetingTag cardIndex={index} event={item} selectedDate={selectedDate} />
+              <MeetingTag
+                cardIndex={index}
+                event={item}
+                selectedDate={selectedDate}
+                slotArr={slotArr}
+              />
             ))}
           </Col>
         </Row>
