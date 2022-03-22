@@ -13,6 +13,9 @@ import {
   searchNamePolicy,
   getLocationByCompany,
   uploadFile,
+  // CERTIFICATION
+  certifyDocument,
+  signaturePolicies,
 } from '../services/policiesRegulations';
 
 const policiesRegulations = {
@@ -222,6 +225,38 @@ const policiesRegulations = {
         });
       } catch (errors) {
         dialog(errors);
+      }
+      return response;
+    },
+
+    // CERTIFICATION
+    *certifyDocumentEffect({ payload }, { call }) {
+      let response;
+      try {
+        response = yield call(certifyDocument, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *signaturePoliciesEffect({ payload }, { call }) {
+      let response;
+      try {
+        response = yield call(signaturePolicies, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
       }
       return response;
     },

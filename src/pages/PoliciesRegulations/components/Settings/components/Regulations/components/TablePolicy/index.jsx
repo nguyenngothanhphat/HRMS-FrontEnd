@@ -6,7 +6,7 @@ import { isEmpty } from 'lodash';
 
 import DeletePolicyModal from '../DeletePolicyModal';
 import EditPolicyModal from '../EditPolicyModal';
-import DocumentModal from '../../../../../Policies/components/DocumentModal';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 
 import MoreIcon from '@/assets/policiesRegulations/more.svg';
 import PdfIcon from '@/assets/policiesRegulations/pdf-2.svg';
@@ -235,7 +235,7 @@ class TablePolicy extends Component {
           mode="multiple"
           item={item}
         />
-        <DocumentModal visible={modalVisiblePDF} handleCancel={this.handleCancel} link={linkFile} />
+        <ViewDocumentModal visible={modalVisiblePDF} onClose={this.handleCancel} url={linkFile} />
       </div>
     );
   }
