@@ -75,3 +75,17 @@ export async function getLocationByCompany(payload) {
     data: payload,
   });
 }
+
+// CERTIFICATION
+export async function certifyDocument(payload) {
+  return request('/api/policyregulatenent/certify', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function signaturePolicies(payload) {
+  return request('/api/policyregulatenent/finish-signature', {
+    method: 'POST',
+    data: payload,
+  });
+}

@@ -79,7 +79,7 @@ class Settings extends Component {
     let countryArr = [];
     if (countryList.length > 0) {
       countryArr = countryList.map((item) => {
-        return item.headQuarterAddress.country;
+        return item?.headQuarterAddress?.country;
       });
     }
     const newArr = this.removeDuplicate(countryArr, (item) => item._id);
