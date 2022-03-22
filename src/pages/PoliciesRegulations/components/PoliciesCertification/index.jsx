@@ -1,25 +1,115 @@
-import { Button, Col, Menu, Row, Skeleton } from 'antd';
+import { Button, Col, Menu, Row, Skeleton, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { connect, history } from 'umi';
+import { connect } from 'umi';
 import PdfIcon from '@/assets/policiesRegulations/pdf-2.svg';
-import IconContact from '@/assets/policiesRegulations/policies-icon-contact.svg';
 import UnreadIcon from '@/assets/policiesRegulations/view.svg';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import SignatureModal from '@/components/SignatureModal';
+import ReadIcon from '@/assets/policiesRegulations/greenFile.svg';
+import QuestionIcon from '@/assets/policiesRegulations/questionIcon.svg';
 import ModalImage from '@/assets/projectManagement/modalImage1.png';
-import styles from './index.less';
+import SignatureModal from '@/components/SignatureModal';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import ActionModal from './components/ActionModal';
+import styles from './index.less';
+import FileContent from './components/FileContent';
+import NoteComponent from './components/NoteComponent';
+import TickMarkIcon from '@/assets/tickMarkIcon.svg';
 
 const PoliciesCertification = (props) => {
-  const { dispatch, countryID = '', permissions = {}, listCategory = [], loadingGetList } = props;
+  const {
+    dispatch,
+    permissions = {},
+    listCategory = [],
+    loadingGetList,
+    currentUser: {
+      employee = {},
+      location: { headQuarterAddress: { country: { _id: countryID = '' } = {} } = {} } = {},
+    } = {},
+  } = props;
 
+  const [data, setData] = useState([]);
   const [activeCategoryID, setActiveCategoryID] = useState('');
   const [showingFiles, setShowingFiles] = useState([]);
   const [isCertify, setIsCertify] = useState(false);
   const [isDone, setIsDone] = useState(false);
+  const [isViewDocument, setIsViewDocument] = useState(false);
+  const [viewingFile, setViewingFile] = useState(null);
+  const [isSignature, setIsSignature] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0); // complete index
+
+  const currentIndex = data.findIndex((x) => x._id === activeCategoryID);
 
   const removeDuplicate = (array, key) => {
     return [...new Map(array.map((x) => [key(x), x])).values()];
+  };
+
+  const getReadArr = (list, isFirstTurn) => {
+    const result = list.map((category) => {
+      return {
+        ...category,
+        isDone: category.policyregulations?.length
+          ? category.policyregulations.every((file) => {
+              if (file.certify) {
+                return file.certify?.find((x) => x.employeeId === employee._id)?.isRead;
+              }
+              return false;
+            })
+          : true,
+      };
+    });
+
+    if (isFirstTurn) {
+      const activeIndexTemp = result.findIndex((x) => !x.isDone);
+      setActiveIndex(activeIndexTemp === -1 ? 0 : activeIndexTemp);
+
+      if (result.length > 0) {
+        setActiveCategoryID(activeIndexTemp !== -1 ? result[activeIndexTemp]._id : result[0]._id);
+      }
+    }
+    setData(result);
+  };
+
+  const refreshDataAfterReadFile = (fileId) => {
+    const tempData = data.map((category) => {
+      if (category._id === activeCategoryID) {
+        return {
+          ...category,
+          policyregulations: category.policyregulations.map((file) => {
+            if (file._id === fileId) {
+              const { certify = [] } = file;
+              return {
+                ...file,
+                certify: [
+                  ...certify,
+                  {
+                    employeeId: employee._id,
+                    isRead: true,
+                  },
+                ],
+              };
+            }
+            return file;
+          }),
+        };
+      }
+      return category;
+    });
+
+    getReadArr(tempData);
+  };
+
+  const onRead = async (fileId) => {
+    const res = await dispatch({
+      type: 'policiesRegulations/certifyDocumentEffect',
+      payload: {
+        employeeId: employee?._id,
+        isRead: true,
+        id: fileId,
+      },
+    });
+    if (res.statusCode === 200) {
+      refreshDataAfterReadFile(fileId);
+    }
   };
 
   useEffect(() => {
@@ -32,10 +122,10 @@ const PoliciesCertification = (props) => {
       },
     }).then((res) => {
       if (res.statusCode === 200) {
-        const { data = [] } = res;
+        const { data: dataTemp = [] } = res;
         let countryArr = [];
         if (viewAllCountry) {
-          countryArr = data.map((item) => {
+          countryArr = dataTemp.map((item) => {
             return item.headQuarterAddress.country;
           });
           const newArr = removeDuplicate(countryArr, (item) => item._id);
@@ -66,54 +156,87 @@ const PoliciesCertification = (props) => {
     });
   }, []);
 
+  // first init
   useEffect(() => {
     if (listCategory.length > 0) {
-      setActiveCategoryID(listCategory[0]._id);
+      getReadArr(listCategory, true);
     }
   }, [JSON.stringify(listCategory)]);
 
+  // on change category
   useEffect(() => {
-    if (activeCategoryID) {
-      const { policyregulations = [] } = listCategory.find((x) => x._id === activeCategoryID) || {};
-      setShowingFiles(policyregulations);
+    // if the last tab => signature
+    const currentIndexTemp = data.findIndex((x) => x._id === activeCategoryID);
+    if (currentIndexTemp !== -1 && currentIndexTemp + 1 === data.length) {
+      setIsSignature(true);
+    } else {
+      setIsSignature(false);
+    }
+
+    // complete index
+    if (currentIndexTemp >= activeIndex) {
+      setActiveIndex(currentIndexTemp);
     }
   }, [activeCategoryID]);
 
-  const handleViewDocument = (file) => {
-    history.push(`/policies-regulations/certify/${activeCategoryID}/${file._id}`);
+  // refresh showing files after refreshing data
+  useEffect(() => {
+    if (activeCategoryID) {
+      const { policyregulations = [] } = data.find((x) => x._id === activeCategoryID) || {};
+      setShowingFiles(policyregulations);
+    }
+  }, [JSON.stringify(data), activeCategoryID]);
+
+  const handleViewDocument = (file = {}) => {
+    setIsViewDocument(true);
+    setViewingFile(file);
+
+    let isRead = false;
+    if (file?.certify) {
+      isRead = file.certify.find((x) => x.employeeId === employee._id)?.isRead;
+    }
+    if (!isRead) {
+      onRead(file?._id);
+    }
   };
 
   const handleChange = (key) => {
     setActiveCategoryID(key);
   };
 
-  const getContent = () => {
-    return showingFiles.map((val) => (
-      <div key={val.attachment._id} className={styles.viewCenter__title}>
-        <div className={styles.viewCenter__title__text}>
-          <img src={PdfIcon} alt="pdf" />
-          <span className={styles.viewCenter__title__text__category}>{val.attachment.name}</span>
-        </div>
-        <Button
-          className={styles.viewCenter__title__view}
-          icon={<img src={UnreadIcon} alt="view" />}
-          onClick={() => handleViewDocument(val)}
-        >
-          <span className={styles.viewCenter__title__view__text}>View</span>
-        </Button>
-      </div>
-    ));
-  };
+  const renderFiles = () => {
+    return showingFiles.map((val = {}) => {
+      const { certify = [] } = val;
+      const { isRead = false } = certify.find((x) => x.employeeId === employee._id) || {};
 
-  const onFinish = (attachmentID) => {
-    console.log('🚀 ~ onFinish ~ attachmentID', attachmentID);
-    setIsCertify(false);
-    setIsDone(true);
+      return (
+        <div key={val.attachment._id} className={styles.file}>
+          <div className={styles.file__name}>
+            <img src={PdfIcon} alt="pdf" />
+            <span className={styles.file__name__text}>{val.attachment.name}</span>
+          </div>
+          <Button
+            className={styles.file__viewBtn}
+            icon={<img src={isRead ? ReadIcon : UnreadIcon} alt="view" />}
+            onClick={() => handleViewDocument(val)}
+          >
+            <span
+              className={styles.file__viewBtn__text}
+              style={{
+                color: isRead ? '#00C598' : '#ffa100',
+              }}
+            >
+              View
+            </span>
+          </Button>
+        </div>
+      );
+    });
   };
 
   const renderFinalStep = () => {
     return (
-      <div className={styles.bottomBar}>
+      <div className={styles.signatureBar}>
         <Row align="middle">
           <Col span={12}>
             <span className={styles.describeText}>
@@ -121,19 +244,144 @@ const PoliciesCertification = (props) => {
             </span>
           </Col>
           <Col span={12}>
-            <div className={styles.bottomBar__button}>
+            <div className={styles.signatureBar__button}>
               <Button
                 type="primary"
-                className={styles.bottomBar__button__primary}
+                className={styles.signatureBar__button__primary}
                 onClick={() => setIsCertify(true)}
               >
-                Certify
+                Certify digitally
               </Button>
             </div>
           </Col>
         </Row>
       </div>
     );
+  };
+
+  const onNext = () => {
+    if (currentIndex !== -1 && currentIndex + 1 < data.length) {
+      setActiveCategoryID(data[currentIndex + 1]._id);
+    }
+  };
+
+  const renderBottomBar = () => {
+    const find = data.find((x) => x._id === activeCategoryID);
+    return (
+      <div className={styles.signatureBar}>
+        <Row align="middle">
+          {/* <Col span={12}>
+            <span className={styles.describeText}>
+              Sign this document to certify that you have read all the policy documents.
+            </span>
+          </Col> */}
+          <Col span={24}>
+            <div className={styles.signatureBar__button}>
+              <Button
+                type="primary"
+                className={styles.signatureBar__button__primary}
+                onClick={onNext}
+                disabled={!find?.isDone}
+                style={{
+                  opacity: !find?.isDone ? 0.5 : 1,
+                }}
+              >
+                Next
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    );
+  };
+
+  const renderContent = () => {
+    const SignatureNote = {
+      title: 'Note',
+      data: (
+        <Typography.Text>
+          The Salary structure will be sent as a <span>provisional offer</span>. The candidate must
+          accept the and acknowledge the salary structure as a part of final negotiation.
+          <br />
+          <br />
+          <span style={{ fontWeight: 'bold', color: '#707177' }}>
+            Post acceptance of salary structure, the final offer letter will be sent.
+          </span>
+        </Typography.Text>
+      ),
+    };
+
+    const Note = {
+      title: 'Instructions',
+      icon: QuestionIcon,
+      data: (
+        <Typography.Text>
+          Our support team is waiting to help you 24/7. Get an emailed response from our team.
+          <br />
+          <div className={styles.btnContact}>
+            <Button>Contact Us</Button>
+          </div>
+        </Typography.Text>
+      ),
+    };
+
+    if (isSignature) {
+      return (
+        <>
+          <Col sm={24} md={17} lg={19}>
+            <div className={styles.signatureContainer}>
+              <div className={styles.titleHeader}>
+                <span className={styles.title}>Digitally Signature</span>
+              </div>
+              <Row gutter={24}>
+                <Col sm={24} lg={14} xl={16}>
+                  <div>
+                    <div className={styles.viewFileContainer}>
+                      <FileContent url="https://stghrms.paxanimi.ai/api/attachments/622af8b1c0a5f90015e5bc21/Login%2520Flow.pdf" />
+                    </div>
+                    {renderFinalStep()}
+                  </div>
+                </Col>
+                <Col sm={24} lg={10} xl={8}>
+                  <NoteComponent note={SignatureNote} />
+                </Col>
+              </Row>
+            </div>
+          </Col>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <Col sm={24} md={17} lg={19}>
+          <div className={styles.signatureContainer}>
+            <Row gutter={24}>
+              <Col sm={24} lg={14} xl={16}>
+                <div>
+                  {renderFiles()}
+                  {renderBottomBar()}
+                  <ViewDocumentModal
+                    visible={isViewDocument}
+                    onClose={() => setIsViewDocument(false)}
+                    url={viewingFile?.attachment?.url}
+                  />
+                </div>
+              </Col>
+              <Col sm={24} lg={10} xl={8}>
+                <NoteComponent note={Note} />
+              </Col>
+            </Row>
+          </div>
+        </Col>
+      </>
+    );
+  };
+
+  const onFinish = (attachmentID) => {
+    console.log('🚀 ~ onFinish ~ attachmentID', attachmentID);
+    setIsCertify(false);
+    setIsDone(true);
   };
 
   if (loadingGetList || !activeCategoryID)
@@ -145,40 +393,31 @@ const PoliciesCertification = (props) => {
   return (
     <div className={styles.PoliciesCertification}>
       <Row>
-        <Col sm={24} md={5} className={styles.viewLeft}>
-          <div className={`${listCategory.length > 0 ? styles.viewLeft__menu : ''}`}>
+        <Col sm={24} md={7} lg={5} className={styles.viewLeft}>
+          <div className={`${data.length > 0 ? styles.viewLeft__menu : ''}`}>
             <Menu selectedKeys={[activeCategoryID]} onClick={(e) => handleChange(e.key)}>
-              {listCategory.map((val) => {
+              {data.map((val, i) => {
                 const { name, _id } = val;
-                return <Menu.Item key={_id}>{name}</Menu.Item>;
+                return (
+                  <Menu.Item
+                    key={_id}
+                    disabled={(!val.isDone && activeIndex < i) || i > activeIndex}
+                  >
+                    <div className={styles.labelContainer}>
+                      <span>{name}</span>
+                      {val.isDone && i < activeIndex && (
+                        <img src={TickMarkIcon} alt="iconCheck" className={styles.iconCheck} />
+                      )}
+                    </div>
+                  </Menu.Item>
+                );
               })}
             </Menu>
             <div className={styles.viewLeft__menu__btnPreviewOffer} />
           </div>
         </Col>
-        <Col sm={24} md={10} xl={13} className={styles.viewCenter}>
-          {getContent()}
-          {renderFinalStep()}
-        </Col>
-        <Col sm={24} md={9} xl={6} style={{ padding: '24px 24px 24px 0' }}>
-          <div className={styles.viewRight}>
-            <div className={styles.viewRight__title}>
-              <div className={styles.viewRight__title__container}>
-                <div className={styles.viewRight__title__container__boder}>
-                  <img src={IconContact} alt="Icon Contact" />
-                </div>
-              </div>
-              <div className={styles.viewRight__title__text}>Instructions</div>
-            </div>
-            <div className={styles.viewRight__content}>
-              Our support team is waiting to help you 24/7. Get an emailed response from our team.
-            </div>
-            <div className={styles.viewRight__btnContact}>
-              <Button>Contact Us</Button>
-            </div>
-            <div />
-          </div>
-        </Col>
+
+        {renderContent()}
       </Row>
       <SignatureModal
         visible={isCertify}
@@ -186,6 +425,7 @@ const PoliciesCertification = (props) => {
         onFinish={onFinish}
         titleModal="Signature of the employee"
         loading={false}
+        activeMode="digital-signature"
       />
 
       <ActionModal
@@ -207,16 +447,11 @@ export default connect(
   ({
     loading,
     policiesRegulations: { listCategory = [] } = {},
-    user: {
-      permissions = {},
-      currentUser: {
-        location: { headQuarterAddress: { country: { _id: countryID = '' } = {} } = {} } = {},
-      } = {},
-    },
+    user: { permissions = {}, currentUser = {} },
   }) => ({
     loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
     listCategory,
-    countryID,
+    currentUser,
     permissions,
   }),
 )(PoliciesCertification);

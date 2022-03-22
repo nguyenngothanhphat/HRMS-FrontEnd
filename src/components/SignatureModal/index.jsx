@@ -24,11 +24,27 @@ const initialState = {
   loadingUploadAttachment: loading.effects['upload/uploadFile'],
 }))
 class SignatureModal extends PureComponent {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = initialState;
     this.sigPad = React.createRef();
   }
+
+  componentDidUpdate = (prevProps) => {
+    const { activeMode = '', visible = false } = this.props;
+    const { mode } = this.state;
+    if (prevProps.visible !== visible && activeMode !== mode && activeMode) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        mode: activeMode,
+      });
+      this.formRef.current?.setFieldsValue({
+        mode: activeMode,
+      });
+    }
+  };
 
   identifyImageOrPdf = (fileName) => {
     const parts = fileName.split('.');
@@ -229,7 +245,7 @@ class SignatureModal extends PureComponent {
         >
           <Form
             name="basic"
-            // ref={this.formRef}
+            ref={this.formRef}
             id="myForm"
             onFinish={this.onFinish}
             initialValues={

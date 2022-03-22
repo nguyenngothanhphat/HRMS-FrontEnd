@@ -1,10 +1,10 @@
 import { Button, Col, Row, Skeleton, Steps, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import FileContent from './components/FileContent';
+import FileContent from '../FileContent';
 import styles from './index.less';
 import { PageContainer } from '@/layouts/layout/src';
-import NoteComponent from './components/NoteComponent';
+// import NoteComponent from './components/NoteComponent';
 
 const MainLayout = ({ children, title }) => {
   return (
@@ -38,9 +38,7 @@ const ViewDocument = (props) => {
 
   const [current, setCurrent] = useState(0);
   const [currentFile, setCurrentFile] = useState({});
-  console.log('🚀 ~ ViewDocument ~ currentFile', currentFile);
   const [selectedCategory, setSelectedCategory] = useState({});
-  console.log('🚀 ~ ViewDocument ~ selectedCategory', selectedCategory);
 
   useEffect(() => {
     dispatch({
