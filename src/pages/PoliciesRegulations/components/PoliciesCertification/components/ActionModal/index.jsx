@@ -10,6 +10,7 @@ const ActionModal = (props) => {
     buttonText = 'Submit',
     onClose = () => {},
     width = 500,
+    noFooter = false,
   } = props;
 
   // RENDER UI
@@ -29,9 +30,11 @@ const ActionModal = (props) => {
         destroyOnClose
         width={width}
         footer={
-          <Button className={styles.btnSubmit} type="primary" onClick={onClose}>
-            {buttonText}
-          </Button>
+          noFooter ? null : (
+            <Button className={styles.btnSubmit} type="primary" onClick={onClose}>
+              {buttonText}
+            </Button>
+          )
         }
         title={null}
         centered

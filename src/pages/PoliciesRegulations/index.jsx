@@ -11,13 +11,10 @@ import PoliciesCertification from '@/pages/PoliciesRegulations/components/Polici
 }))
 class PoliciesRegulations extends PureComponent {
   render() {
-    const {
-      permissions = {},
-      match: { params: { action = '' } = {} },
-    } = this.props;
+    const { permissions = {} } = this.props;
 
     const viewSetting = permissions.viewSettingPolicy !== -1;
-    const isCertify = action === 'certify';
+    const isCertify = window.location.pathname.includes('certify');
 
     return (
       <PageContainer>

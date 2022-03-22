@@ -857,13 +857,13 @@ const routes = [
             component: './PoliciesRegulations',
           },
           {
-            path: '/policies-regulations/:action',
+            path: '/policies-regulations/certify',
             name: 'Policies Certification',
             hideInMenu: true,
             component: './PoliciesRegulations',
           },
           {
-            path: '/policies-regulations/:action/:categoryID/:reId',
+            path: '/policies-regulations/certify/:categoryID/:reId',
             name: 'View Document',
             hideInMenu: true,
             component: './PoliciesRegulations/components/PoliciesCertification/components/ViewDocument',

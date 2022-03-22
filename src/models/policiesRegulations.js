@@ -14,7 +14,8 @@ import {
   getLocationByCompany,
   uploadFile,
   // CERTIFICATION
-  certifyDocument
+  certifyDocument,
+  signaturePolicies,
 } from '../services/policiesRegulations';
 
 const policiesRegulations = {
@@ -244,7 +245,21 @@ const policiesRegulations = {
       }
       return response;
     },
-
+    *signaturePoliciesEffect({ payload }, { call }) {
+      let response;
+      try {
+        response = yield call(signaturePolicies, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
   },
   reducers: {
     save(state, action) {

@@ -1,6 +1,6 @@
 import { Button, Col, Menu, Row, Skeleton, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import PdfIcon from '@/assets/policiesRegulations/pdf-2.svg';
 import UnreadIcon from '@/assets/policiesRegulations/view.svg';
 import ReadIcon from '@/assets/policiesRegulations/greenFile.svg';
@@ -20,7 +20,8 @@ const PoliciesCertification = (props) => {
     dispatch,
     permissions = {},
     listCategory = [],
-    loadingGetList,
+    loadingGetList = false,
+    loadingSignaturePolicies = false,
     currentUser: {
       employee = {},
       location: { headQuarterAddress: { country: { _id: countryID = '' } = {} } = {} } = {},
@@ -57,6 +58,13 @@ const PoliciesCertification = (props) => {
           : true,
       };
     });
+    // move signature to bottom
+    result.push(
+      result.splice(
+        result.findIndex((x) => x.name === 'Digital Signature'),
+        1,
+      )[0],
+    );
 
     if (isFirstTurn) {
       const activeIndexTemp = result.findIndex((x) => !x.isDone);
@@ -337,7 +345,7 @@ const PoliciesCertification = (props) => {
                 <Col sm={24} lg={14} xl={16}>
                   <div>
                     <div className={styles.viewFileContainer}>
-                      <FileContent url="https://stghrms.paxanimi.ai/api/attachments/622af8b1c0a5f90015e5bc21/Login%2520Flow.pdf" />
+                      <FileContent url={showingFiles[showingFiles.length - 1]?.attachment?.url} />
                     </div>
                     {renderFinalStep()}
                   </div>
@@ -378,10 +386,18 @@ const PoliciesCertification = (props) => {
     );
   };
 
-  const onFinish = (attachmentID) => {
-    console.log('🚀 ~ onFinish ~ attachmentID', attachmentID);
-    setIsCertify(false);
-    setIsDone(true);
+  const onFinish = async (attachmentID) => {
+    const res = await dispatch({
+      type: 'policiesRegulations/signaturePoliciesEffect',
+      payload: {
+        attachment: attachmentID,
+        employee: employee._id,
+      },
+    });
+    if (res.statusCode === 200) {
+      setIsCertify(false);
+      setIsDone(true);
+    }
   };
 
   if (loadingGetList || !activeCategoryID)
@@ -424,20 +440,34 @@ const PoliciesCertification = (props) => {
         onClose={() => setIsCertify(false)}
         onFinish={onFinish}
         titleModal="Signature of the employee"
-        loading={false}
+        loading={loadingSignaturePolicies}
         activeMode="digital-signature"
       />
 
       <ActionModal
         visible={isDone}
         onClose={() => {
-          setIsDone(false);
+          // setIsDone(false);
+          history.push('/home');
         }}
-        buttonText="Okay"
+        noFooter
         width={400}
       >
         <img src={ModalImage} alt="" />
         <span style={{ fontWeight: 'bold' }}>Thank you!</span>
+        <span
+          style={{
+            fontWeight: 400,
+            fontSize: '13px',
+            lineHeight: '18px',
+            textAlign: 'center',
+            color: '#707177',
+            display: 'block',
+            marginBlock: 24,
+          }}
+        >
+          Acknowledgement has been sent to your mail and HR as well.
+        </span>
       </ActionModal>
     </div>
   );
@@ -450,6 +480,7 @@ export default connect(
     user: { permissions = {}, currentUser = {} },
   }) => ({
     loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
+    loadingSignaturePolicies: loading.effects['policiesRegulations/signaturePoliciesEffect'],
     listCategory,
     currentUser,
     permissions,

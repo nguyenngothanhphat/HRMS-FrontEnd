@@ -83,3 +83,9 @@ export async function certifyDocument(payload) {
     data: payload,
   });
 }
+export async function signaturePolicies(payload) {
+  return request('/api/policyregulatenent/finish-signature', {
+    method: 'POST',
+    data: payload,
+  });
+}

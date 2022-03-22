@@ -161,7 +161,9 @@ class SignatureModal extends PureComponent {
       const { data: imageData = [] } = response;
       const { id = '' } = imageData[0];
       onFinish(id);
-      this.clearState();
+      setTimeout(() => {
+        this.clearState();
+      }, 200);
     });
   };
 

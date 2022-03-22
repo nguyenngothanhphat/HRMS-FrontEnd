@@ -16,12 +16,14 @@ const Policies = (props) => {
   const [linkFile, setLinkFile] = useState('');
   const [isViewDocument, setIsViewDocument] = useState(false);
 
+  const viewAllCountry = permissions.viewPolicyAllCountry !== -1;
+  const viewSetting = permissions.viewSettingPolicy !== -1;
+
   const removeDuplicate = (array, key) => {
     return [...new Map(array.map((x) => [key(x), x])).values()];
   };
 
   useEffect(() => {
-    const viewAllCountry = permissions.viewPolicyAllCountry !== -1;
     dispatch({
       type: 'policiesRegulations/getCountryListByCompany',
       payload: {
@@ -123,7 +125,10 @@ const Policies = (props) => {
             <Menu selectedKeys={[activeCategoryID]} onClick={(e) => handleChange(e.key)}>
               {listCategory.map((val) => {
                 const { name, _id } = val;
-                return <Menu.Item key={_id}>{name}</Menu.Item>;
+                if (name !== 'Digital Signature' || viewSetting) {
+                  return <Menu.Item key={_id}>{name}</Menu.Item>;
+                }
+                return null;
               })}
             </Menu>
             <div className={styles.viewLeft__menu__btnPreviewOffer} />
