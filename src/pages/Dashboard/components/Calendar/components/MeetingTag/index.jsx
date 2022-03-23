@@ -251,18 +251,14 @@ const MeetingTag = (props) => {
             color: activeColor,
           }}
         >
-          <div>
-            {event.summary && event.summary.length > 30
-              ? `${event.summary.slice(0, 30)} ...`
-              : event.summary}
+          <span className={styles.title}>{event.summary}</span>
 
-            {height > EMP_ROW_HEIGHT && (
-              <span className={styles.extraTime}>
-                {moment(event.start.dateTime).format(timeFormat)} -{' '}
-                {moment(event.end.dateTime).format(timeFormat)}
-              </span>
-            )}
-          </div>
+          {height > EMP_ROW_HEIGHT && (
+            <span className={styles.extraTime}>
+              {moment(event.start.dateTime).format(timeFormat)} -{' '}
+              {moment(event.end.dateTime).format(timeFormat)}
+            </span>
+          )}
         </div>
       </Popover>
     );
