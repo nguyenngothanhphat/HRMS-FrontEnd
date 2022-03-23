@@ -1,10 +1,10 @@
 /* eslint-disable no-param-reassign */
-import React, { Component } from 'react';
-// import { connect } from 'umi';
-import { Row, Col, Button, Select, Spin } from 'antd';
 // import addIcon from '@/assets/addTicket.svg';
 // import icon from '@/assets/delete.svg';
 import { DeleteOutlined } from '@ant-design/icons';
+// import { connect } from 'umi';
+import { Button, Col, Popconfirm, Row, Select, Spin } from 'antd';
+import React, { Component } from 'react';
 // import { getCurrentTenant } from '@/utils/authority';
 // import _ from 'lodash';
 import styles from './index.less';
@@ -65,9 +65,15 @@ class RuleFrom extends Component {
                         {isDefault ? (
                           ''
                         ) : (
-                          <div className={styles.deleteIcon} onClick={() => removeItem(item._id)}>
-                            <DeleteOutlined className={styles.iconImg} />
-                          </div>
+                          <Popconfirm
+                            onConfirm={() => removeItem(item._id)}
+                            title="Are you sure to remove?"
+                            placement="right"
+                          >
+                            <div className={styles.deleteIcon}>
+                              <DeleteOutlined className={styles.iconImg} />
+                            </div>
+                          </Popconfirm>
                         )}
                       </div>
                       {/* ) : (
@@ -121,16 +127,11 @@ class RuleFrom extends Component {
 
   renderCountry = () => {
     const { countryList = [] } = this.props;
-    let countryArr = [];
-    countryArr = countryList.map((item) => {
-      return item.headQuarterAddress.country;
-    });
-    const newArr = this.removeDuplicate(countryArr, (item) => item._id);
 
     let flagUrl = '';
 
     const flagItem = (id) => {
-      newArr.forEach((item) => {
+      countryList.forEach((item) => {
         if (item._id === id) {
           flagUrl = item.flag;
         }
@@ -161,7 +162,7 @@ class RuleFrom extends Component {
     };
     return (
       <>
-        {newArr.map((item) => (
+        {countryList.map((item) => (
           <Option key={item._id} value={item._id} style={{ height: '20px', display: 'flex' }}>
             <div className={styles.labelText}>
               {flagItem(item._id)}
@@ -185,13 +186,15 @@ class RuleFrom extends Component {
   render() {
     const {
       timeOffTypes = [],
-      countryList = [],
       addNewType = () => {},
       loadingAddType,
       loadingFetchList,
-      // countrySelected,
+      countrySelected,
+      loadingFetchCountryList = false,
     } = this.props;
+
     const { isVisible } = this.state;
+
     const array = [
       {
         typeName: 'A',
@@ -240,29 +243,24 @@ class RuleFrom extends Component {
       <>
         <div className={styles.root}>
           <div className={styles.topHeader}>
-            {countryList.length === 0 ? (
-              <div className={styles.loadingListCountry}>
-                <Spin size="large" />
-              </div>
-            ) : (
-              <Select
-                size="large"
-                placeholder="Please select country"
-                showArrow
-                filterOption={(input, option) => {
-                  return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                }}
-                // defaultValue={countrySelected}
-                className={styles.selectCountry}
-                onChange={(value) => this.handleChangeSelect(value)}
-              >
-                {this.renderCountry()}
-              </Select>
-            )}
+            <Select
+              size="large"
+              showArrow
+              filterOption={(input, option) => {
+                return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+              }}
+              value={countrySelected}
+              className={styles.selectCountry}
+              onChange={(value) => this.handleChangeSelect(value)}
+              loading={loadingFetchCountryList}
+              placeholder={loadingFetchCountryList ? 'Loading country list...' : 'Select country'}
+            >
+              {this.renderCountry()}
+            </Select>
           </div>
           {loadingFetchList ? (
             <div className={styles.loadingListCountry}>
-              <Spin size="large" />
+              <Spin />
             </div>
           ) : (
             <Row gutter={[24, 12]}>
@@ -274,9 +272,9 @@ class RuleFrom extends Component {
             </Row>
           )}
 
-          <div className={styles.footer}>
+          {/* <div className={styles.footer}>
             <Button className={styles.btnNext}>Next</Button>
-          </div>
+          </div> */}
           <ModalAddType
             closeModal={this.closeModal}
             isVisible={isVisible}

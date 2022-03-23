@@ -63,6 +63,8 @@
         text-align: right;
       }
       &__body {
+        max-height: 400px;
+        overflow-y: auto;
         .eachRow {
           padding: 8px 7px;
           color: #3e3e3e;
@@ -138,6 +140,9 @@
         }
       }
       &__viewMoreTask {
+        &:hover {
+          opacity: 0.8;
+        }
         color: #2c6df9;
         font-weight: 500;
         font-size: 14px;

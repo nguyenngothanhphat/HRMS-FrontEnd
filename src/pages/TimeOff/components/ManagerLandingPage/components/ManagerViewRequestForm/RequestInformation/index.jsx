@@ -12,9 +12,10 @@ import styles from './index.less';
 const { TextArea } = Input;
 const { A, B } = TIMEOFF_TYPE;
 const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DELETED } = TIMEOFF_STATUS;
-@connect(({ timeOff, user: { currentUser = {} } = {}, loading }) => ({
+@connect(({ timeOff, user: { currentUser = {}, permissions = {} } = {}, loading }) => ({
   timeOff,
   currentUser,
+  permissions,
   loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
   loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
   loadingApproveRequest: loading.effects['timeOff/reportingManagerApprove'],
@@ -201,11 +202,25 @@ class RequestInformation extends PureComponent {
     }
   };
 
+  getTimeLabel = (type) => {
+    switch (type) {
+      case 'MORNING':
+        return 'Morning';
+      case 'AFTERNOON':
+        return 'Afternoon';
+      case 'WHOLE-DAY':
+        return 'Whole day';
+      default:
+        return type;
+    }
+  };
+
   render() {
     const { showModal, showWithdrawModal, isReject, acceptWithdraw } = this.state;
     const {
       timeOff: { viewingLeaveRequest = {}, projectsList = [] } = {},
       currentUser: { employee: { _id: myId = '' } = {} } = {},
+      permissions = {},
       loadingFetchLeaveRequestById,
       loadingApproveRequest,
       loadingRejectRequest,
@@ -226,7 +241,7 @@ class RequestInformation extends PureComponent {
       type: { name = '', type = '' } = {},
       employee: {
         // _id: employeeId = '',
-        generalInfo: { firstName = '', lastName = '', userId = '' } = {},
+        generalInfo: { legalName = '', userId = '' } = {},
         employeeId: employeeIdText = '',
         position: { name: position = '' } = {},
       } = {},
@@ -241,8 +256,11 @@ class RequestInformation extends PureComponent {
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate, type);
     const showAllDateList = duration <= MAX_NO_OF_DAYS_TO_SHOW;
+
+    const viewHRTimeoff = permissions.viewHRTimeoff !== -1;
+
     // only manager accept/reject a ticket
-    const isMyTicket = myId === managerId;
+    const isMyTicket = (myId === managerId && status !== ON_HOLD) || viewHRTimeoff;
 
     return (
       <div className={styles.RequestInformation}>
@@ -264,7 +282,7 @@ class RequestInformation extends PureComponent {
                   onClick={() => this.onViewEmployeeProfile(userId)}
                   className={styles.employeeLink}
                 >
-                  {`${firstName} ${lastName}`}
+                  {legalName}
                 </span>
               </Col>
             </Row>
@@ -309,11 +327,7 @@ class RequestInformation extends PureComponent {
                           projectName: prName = '',
                           projectManager: {
                             // _id: pjManagerId = '',
-                            generalInfo: {
-                              firstName: fn = '',
-                              lastName: ln = '',
-                              userId: managerUserId = '',
-                            } = {},
+                            generalInfo: { legalName: pmLn = '', userId: managerUserId = '' } = {},
                           } = {},
                           projectHealth = 0,
                         } = project;
@@ -321,7 +335,7 @@ class RequestInformation extends PureComponent {
                           <>
                             <Project
                               name={prName}
-                              projectManager={`${fn} ${ln}`}
+                              projectManager={pmLn}
                               projectHealth={projectHealth}
                               employeeId={managerUserId}
                             />
@@ -405,8 +419,10 @@ class RequestInformation extends PureComponent {
                           >
                             <Col span={7}>{moment.utc(date).locale('en').format('MM/DD/YYYY')}</Col>
                             <Col span={7}>{moment.utc(date).locale('en').format('dddd')}</Col>
-                            <Col span={10} style={{ textTransform: 'capitalize' }}>
-                              {!isEmpty(leaveDates) ? leaveDates[index].timeOfDay : ''}
+                            <Col span={10}>
+                              {!isEmpty(leaveDates)
+                                ? this.getTimeLabel(leaveDates[index].timeOfDay)
+                                : ''}
                             </Col>
                           </Row>
                         );
@@ -523,7 +539,7 @@ class RequestInformation extends PureComponent {
         )}
 
         {/* WITHDRAW */}
-        {!isReject && status === ON_HOLD && (
+        {!isReject && status === ON_HOLD && isMyTicket && (
           <div className={styles.footer}>
             <span className={styles.note}>Withdrawing an approved request</span>
             <div className={styles.formButtons}>
@@ -532,13 +548,13 @@ class RequestInformation extends PureComponent {
                 type="link"
                 onClick={() => this.onRejectWithdrawClicked(_id)}
               >
-                Reject withdraw
+                Reject withdrawal
               </Button>
               <Button
                 loading={loadingManagerApproveWithdrawRequest}
                 onClick={() => this.onApproveWithdrawClicked(_id)}
               >
-                Accept withdraw
+                Accept withdrawal
               </Button>
             </div>
           </div>

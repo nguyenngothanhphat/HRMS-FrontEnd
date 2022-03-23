@@ -7,7 +7,8 @@ import MyCompoffTable from '../MyCompoffTable';
 import FilterBar from '../FilterBar';
 import styles from './index.less';
 
-const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DRAFTS } = TIMEOFF_STATUS;
+const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DRAFTS, WITHDRAWN } =
+  TIMEOFF_STATUS;
 @connect(
   ({
     timeOff,
@@ -43,7 +44,7 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength: 0,
       rejectedLength: 0,
       draftLength: 0,
-      onHoldLength: 0,
+      withdrawnLength: 0,
       selectedTabNumber: '0',
     };
   }
@@ -104,19 +105,19 @@ class TimeOffRequestTab extends PureComponent {
 
     if (tabType === 1) {
       if (filterTab === '1') {
-        status = IN_PROGRESS;
+        status = [IN_PROGRESS, ON_HOLD];
       }
       if (filterTab === '2') {
-        status = ACCEPTED;
+        status = [ACCEPTED];
       }
       if (filterTab === '3') {
-        status = REJECTED;
+        status = [REJECTED];
       }
       if (filterTab === '4') {
-        status = DRAFTS;
+        status = [DRAFTS];
       }
       if (filterTab === '5') {
-        status = ON_HOLD;
+        status = [WITHDRAWN];
       }
     } else if (tabType === 2) {
       // compoff
@@ -186,12 +187,13 @@ class TimeOffRequestTab extends PureComponent {
     let approvedLength = 0;
     let rejectedLength = 0;
     let draftLength = 0;
-    let onHoldLength = 0;
+    let withdrawnLength = 0;
 
     newData.forEach((item) => {
       const { _id: status = '' } = item;
       switch (status) {
-        case IN_PROGRESS: {
+        case IN_PROGRESS:
+        case ON_HOLD: {
           inProgressLength += item.count;
           break;
         }
@@ -207,8 +209,8 @@ class TimeOffRequestTab extends PureComponent {
           draftLength += item.count;
           break;
         }
-        case ON_HOLD: {
-          onHoldLength += item.count;
+        case WITHDRAWN: {
+          withdrawnLength += item.count;
           break;
         }
         default:
@@ -220,7 +222,7 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength,
       rejectedLength,
       draftLength,
-      onHoldLength,
+      withdrawnLength,
     });
   };
 
@@ -254,7 +256,7 @@ class TimeOffRequestTab extends PureComponent {
   };
 
   render() {
-    const { inProgressLength, approvedLength, rejectedLength, draftLength, onHoldLength } =
+    const { inProgressLength, approvedLength, rejectedLength, draftLength, withdrawnLength } =
       this.state;
 
     const {
@@ -271,7 +273,7 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength,
       rejectedLength,
       draftLength,
-      onHoldLength,
+      withdrawnLength,
     };
 
     const checkEmptyTable = false;

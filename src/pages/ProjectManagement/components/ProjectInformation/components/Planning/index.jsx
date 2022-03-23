@@ -4,7 +4,7 @@ import { connect } from 'umi';
 import WhiteAddIcon from '@/assets/projectManagement/whitePlus.svg';
 import AddContent from './components/AddContent';
 import MilestoneCard from './components/MilestoneCard';
-import CommonModal from '../CommonModal';
+import CommonModal from '../../../CommonModal';
 import AddButton from '../AddButton';
 import styles from './index.less';
 
@@ -49,6 +49,7 @@ const Planning = (props) => {
             icon={<img src={WhiteAddIcon} alt="" />}
             className={styles.addMilestone}
             onClick={() => setAddMilestoneModalVisible(true)}
+            disabled={!allowModify}
           >
             Add Milestones
           </Button>

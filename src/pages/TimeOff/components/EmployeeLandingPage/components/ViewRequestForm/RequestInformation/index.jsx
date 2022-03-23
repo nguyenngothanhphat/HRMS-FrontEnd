@@ -1,12 +1,12 @@
-import React, { PureComponent } from 'react';
-import { Button, Row, Col, Spin, notification } from 'antd';
-import { connect, history } from 'umi';
+import { Button, Col, Row, Spin } from 'antd';
 import moment from 'moment';
-import EditIcon from '@/assets/editBtnBlue.svg';
+import React, { PureComponent } from 'react';
+import { connect, history } from 'umi';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
-import WithdrawModal from '../WithdrawModal';
+import EditIcon from '@/assets/editBtnBlue.svg';
 import Withdraw2Modal from '../Withdraw2Modal';
+import WithdrawModal from '../WithdrawModal';
 import styles from './index.less';
 
 const { IN_PROGRESS, ACCEPTED, REJECTED, DRAFTS } = TIMEOFF_STATUS;
@@ -120,31 +120,26 @@ class RequestInformation extends PureComponent {
         pathname: `/time-off`,
         state: { status: 'WITHDRAW', tickedId: ticketID, typeName: name, category: 'DRAFTS' },
       });
-      // dispatch({
-      //   type: 'timeOff/save',
-      //   payload: {
-      //     currentMineOrTeamTab: '2',
-      //     currentFilterTab: '1',
-      //     currentLeaveTypeTab,
-      //   },
-      // });
     }
   };
 
   // ON WITHDRAW WHEN A TICKET WAS APPROVED
   onProceedApproved = async (title, reason) => {
-    const { timeOff: { viewingLeaveRequest: { _id = '' } = {} } = {} } = this.props;
+    const {
+      timeOff: {
+        viewingLeaveRequest: { _id = '', ticketID = '', type: { name = '' } = {} } = {},
+      } = {},
+    } = this.props;
     const { dispatch } = this.props;
     const statusCode = await dispatch({
       type: 'timeOff/employeeWithdrawApproved',
       payload: { _id, title, reason },
     });
     if (statusCode === 200) {
-      notification.success({
-        message: 'Withdraw request sent!',
+      history.push({
+        pathname: `/time-off`,
+        state: { status: 'WITHDRAW', tickedId: ticketID, typeName: name, category: 'APPROVED' },
       });
-      this.setShowWithdraw2Modal(false);
-      this.refreshPage();
     }
   };
 
@@ -271,7 +266,7 @@ class RequestInformation extends PureComponent {
               </Row>
             </div>
             {(status === DRAFTS ||
-              status === IN_PROGRESS ||
+              (status === IN_PROGRESS && checkWithdrawValid) ||
               (status === ACCEPTED && checkWithdrawValid)) && (
               <div className={styles.footer}>
                 <span className={styles.note}>

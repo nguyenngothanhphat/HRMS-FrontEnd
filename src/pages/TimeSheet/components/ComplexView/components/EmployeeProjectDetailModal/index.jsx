@@ -2,6 +2,7 @@ import { Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
+import { debounce } from 'lodash';
 import styles from './index.less';
 import Header from './components/Header';
 import ProjectTable from './components/ProjectTable';
@@ -21,6 +22,9 @@ const EmployeeProjectDetailModal = (props) => {
   const { timeSheet: { myTimesheet = [] } = {}, loadingFetchMyTimesheet = false } = props;
 
   const [data, setData] = useState([]);
+  const [filterData, setFilterData] = useState([]);
+  const [nameSearch, setNameSearch] = useState('');
+  const [loadingSearch, setLoadingSearch] = useState(false);
 
   // FUNCTION AREA
   const fetchMyTimesheetEffect = () => {
@@ -62,10 +66,41 @@ const EmployeeProjectDetailModal = (props) => {
   }, [employeeId, startDate, endDate]);
 
   useEffect(() => {
+    if (visible) {
+      setFilterData(data);
+    }
+  }, [visible]);
+
+  useEffect(() => {
     const tempData = formatData(myTimesheet);
     setData(tempData);
+    setFilterData(tempData);
   }, [JSON.stringify(myTimesheet)]);
 
+  useEffect(() => {
+    if (nameSearch) {
+      const newData = data.filter((val) => {
+        return (
+          val.projectName
+            .toLowerCase()
+            .replace(/ /g, '')
+            .includes(nameSearch.toLowerCase().replace(/ /g, '')) ||
+          val.taskName
+            .toLowerCase()
+            .replace(/ /g, '')
+            .includes(nameSearch.toLowerCase().replace(/ /g, ''))
+        );
+      });
+      setFilterData(newData);
+      setLoadingSearch(true);
+      setTimeout(() => {
+        setLoadingSearch(false);
+      }, 500);
+    } else {
+      setFilterData(data);
+      setLoadingSearch(false);
+    }
+  }, [nameSearch]);
   // RENDER UI
   const renderModalHeader = () => {
     return (
@@ -75,11 +110,20 @@ const EmployeeProjectDetailModal = (props) => {
     );
   };
 
+  const onSearchDebounce = debounce((value) => {
+    setNameSearch(value);
+  }, 1000);
+
+  const onChangeSearch = (value) => {
+    const formatValue = value.toLowerCase();
+    onSearchDebounce(formatValue);
+  };
+
   const renderModalContent = () => {
     return (
       <div className={styles.content}>
-        <Header startDate={startDate} endDate={endDate} />
-        <ProjectTable list={data} loading={loadingFetchMyTimesheet} />
+        <Header onChangeSearch={onChangeSearch} startDate={startDate} endDate={endDate} />
+        <ProjectTable list={filterData} loading={loadingFetchMyTimesheet || loadingSearch} />
       </div>
     );
   };

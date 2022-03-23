@@ -1,4 +1,4 @@
-import { Form, Select, AutoComplete, Input, Spin } from 'antd';
+import { Form, Select, AutoComplete, Input, Spin, InputNumber, Row, Col } from 'antd';
 import { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -416,8 +416,8 @@ const FilterContent = (props) => {
       </Form.Item>
 
       {/* temporarily hide this one - need backend fixes */}
-      {/* 
-       <Form.Item label="By yrs of experience">
+
+      <Form.Item label="By yrs of experience">
         <Row>
           <Col span={11}>
             <Form.Item name="fromExp">
@@ -433,7 +433,7 @@ const FilterContent = (props) => {
             </Form.Item>
           </Col>
         </Row>
-      </Form.Item>  */}
+      </Form.Item>
     </Form>
   );
 };

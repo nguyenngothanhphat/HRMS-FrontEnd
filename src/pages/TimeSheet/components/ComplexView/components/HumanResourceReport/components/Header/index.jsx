@@ -20,7 +20,18 @@ const Header = (props) => {
     type = '',
     onChangeSearch = () => {},
     data = [],
+    activeView = '',
   } = props;
+
+  const {
+    user: {
+      currentUser: {
+        location: { headQuarterAddress: { country: { _id: countryID } = {} } = {} } = {},
+      } = {},
+    } = {},
+  } = props;
+
+  const locationUser = countryID === 'US';
 
   // HEADER AREA FOR MONTH
   const onPrevClick = () => {
@@ -69,6 +80,8 @@ const Header = (props) => {
         totalLeave = '',
         totalWorkingDay = '',
         totalWorkingDayInHours = '',
+        overTime = '',
+        breakTime = '',
         department: { name = '' } = {},
       } = item;
       let projectName = '';
@@ -76,7 +89,7 @@ const Header = (props) => {
         projectName += el;
         if (index + 1 < project.length) projectName += ', ';
       });
-      return {
+      const dataExport = {
         Employee: legalName,
         Department: name,
         Project: projectName,
@@ -84,6 +97,11 @@ const Header = (props) => {
         'Leave Taken ': `${leaveTaken}/${totalLeave}`,
         'Total Hours': `${userSpentInHours} hours`,
       };
+      if (locationUser) {
+        dataExport['Break Time'] = breakTime;
+        dataExport['Over Time'] = overTime;
+      }
+      return dataExport;
     });
   };
 
@@ -110,10 +128,10 @@ const Header = (props) => {
           <Button>Download</Button>
         </div>
         <FilterButton />
-        <SearchBar onChangeSearch={onChangeSearch} />
+        <SearchBar onChangeSearch={onChangeSearch} activeView={activeView} />
       </div>
     </div>
   );
 };
 
-export default connect(() => ({}))(Header);
+export default connect(({ user }) => ({ user }))(Header);

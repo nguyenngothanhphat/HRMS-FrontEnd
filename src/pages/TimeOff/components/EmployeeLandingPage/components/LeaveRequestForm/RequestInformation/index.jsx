@@ -72,6 +72,7 @@ const RequestInformation = (props) => {
   const [viewDocumentModal, setViewDocumentModal] = useState(false);
   const [currentAllowanceState, setCurrentAllowanceState] = useState(0);
   const [invalidDates, setInvalidDates] = useState([]);
+  const [dateLists, setDateLists] = useState([]);
 
   // functions
   const getTableTabIndexOfSubmittedType = (selectedTypeTemp, selectedTypeNameTemp) => {
@@ -111,16 +112,6 @@ const RequestInformation = (props) => {
       type: 'timeOff/fetchEmailsListByCompany',
       payload: [getCurrentCompany()],
     });
-  };
-
-  const checkIfHalfDayAvailable = (date) => {
-    const find = invalidDates.some((x) => {
-      return (
-        moment.utc(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
-        x.timeOfDay !== 'WHOLE-DAY'
-      );
-    });
-    return !find;
   };
 
   // GET REMAINING DAY
@@ -178,48 +169,83 @@ const RequestInformation = (props) => {
   };
 
   const findInvalidHalfOfDay = (date) => {
-    const find = invalidDates.find((x) => {
-      return moment.utc(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD');
+    const filtered = invalidDates.filter((x) => {
+      return moment(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD');
     });
-    return find?.timeOfDay || '';
+
+    return filtered.map((x) => x.timeOfDay);
   };
 
   // DISABLE DATE OF DATE PICKER
   const checkIfWholeDayAvailable = (date) => {
     const find = invalidDates.some(
       (x) =>
-        moment.utc(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
+        moment(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
         x.timeOfDay === 'WHOLE-DAY',
     );
     return !find;
   };
 
+  const checkIfHalfDayAvailable = (date) => {
+    const filtered = invalidDates.filter((x) => {
+      return (
+        moment(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
+        (x.timeOfDay === 'MORNING' || x.timeOfDay === 'AFTERNOON')
+      );
+    });
+
+    if (filtered.length > 1) {
+      return false;
+    }
+
+    const find = invalidDates.some((x) => {
+      return (
+        moment(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
+        (x.timeOfDay !== 'MORNING' || x.timeOfDay !== 'AFTERNOON')
+      );
+    });
+    return !find;
+  };
+
+  const checkIfWeekEnd = (date) => {
+    return moment(date).weekday() === 6 || moment(date).weekday() === 0;
+  };
+
   // GET LIST OF DAYS FROM DAY A TO DAY B
   const getDateLists = (startDate, endDate, selectedTypeProp) => {
     const dates = [];
-    if (startDate && endDate) {
-      const now = moment(startDate).clone();
+    const endDateTemp = moment(endDate).clone();
 
-      const includeWeekend = selectedTypeProp && selectedTypeProp !== A && selectedTypeProp !== B;
-      if (includeWeekend) {
-        while (now.isSameOrBefore(moment(endDate), 'day')) {
-          if (checkIfWholeDayAvailable(now) || checkIfHalfDayAvailable(now)) {
-            dates.push(now.format('YYYY-MM-DD'));
-            now.add(1, 'days');
-          }
+    if ([C].includes(selectedTypeProp)) {
+      const now = moment(startDate).clone();
+      while (now.isSameOrBefore(moment(endDate), 'day')) {
+        if (checkIfWeekEnd(now)) {
+          const nextNow = moment(now).add(1, 'days');
+          // if "now" = saturday, nextNow = sunday AND endDate = sunday => add 2 days
+          if (checkIfWeekEnd(nextNow) && moment(endDate).weekday() === 6) {
+            endDateTemp.add(2, 'days');
+          } else endDateTemp.add(1, 'days');
         }
-      } else {
-        while (now.isSameOrBefore(moment(endDate), 'day')) {
-          if (moment(now).weekday() !== 6 && moment(now).weekday() !== 0) {
-            if (checkIfWholeDayAvailable(now) || checkIfHalfDayAvailable(now)) {
-              dates.push(now.format('YYYY-MM-DD'));
-            }
-          }
-          now.add(1, 'days');
-        }
+        now.add(1, 'days');
       }
     }
-    return dates;
+
+    if (startDate && endDate) {
+      const now = moment(startDate).clone();
+      while (now.isSameOrBefore(moment(endDateTemp), 'day')) {
+        if (!checkIfWeekEnd(now)) {
+          if (checkIfWholeDayAvailable(now) || checkIfHalfDayAvailable(now)) {
+            dates.push(now.format('YYYY-MM-DD'));
+          }
+        }
+        now.add(1, 'days');
+      }
+    }
+
+    return {
+      dates,
+      endDate: endDateTemp,
+    };
   };
 
   const getCurrentAllowance = (type) => {
@@ -234,36 +260,9 @@ const RequestInformation = (props) => {
     return foundType?.currentAllowance || 0;
   };
 
-  // AUTO VALUE FOR TODATE of DATE PICKER DEPENDS ON SELECTED TYPE
-  const autoValueForToDate = () => {
-    let autoToDate = null;
-
-    if (selectedType === C) {
-      const currentAllowance = getCurrentAllowance(selectedType);
-
-      if (currentAllowance !== 0)
-        autoToDate = moment.utc(durationFrom).add(currentAllowance - 1, 'day');
-      else autoToDate = moment.utc(durationFrom).add(currentAllowance, 'day');
-
-      setCurrentAllowanceState(currentAllowance);
-
-      const dateLists = getDateLists(durationFrom, autoToDate, selectedType);
-      const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
-
-      setDurationTo(autoToDate);
-
-      form.setFieldsValue({
-        durationTo: autoToDate,
-        leaveTimeLists: initialValuesForLeaveTimesList,
-      });
-    }
-    if (selectedType === D) {
-      setDurationTo(null);
-      form.setFieldsValue({
-        durationTo: null,
-        leaveTimeLists: [],
-      });
-    }
+  const getAutoToDate = (allowance) => {
+    if (allowance !== 0) return moment.utc(durationFrom).add(allowance - 1, 'day');
+    return moment.utc(durationFrom).add(allowance, 'day');
   };
 
   // GET TIME OFF TYPE BY ID
@@ -313,8 +312,7 @@ const RequestInformation = (props) => {
   };
 
   // GENERATE LEAVE DATES FOR API
-  const generateLeaveDates = (from, to, leaveTimeLists, selectedTypeTemp) => {
-    const dateLists = getDateLists(from, to, selectedTypeTemp);
+  const generateLeaveDates = (from, to, leaveTimeLists) => {
     let result = [];
     if (leaveTimeLists.length === 0) {
       // type C,D
@@ -349,7 +347,7 @@ const RequestInformation = (props) => {
   // ON SAVE DRAFT
   const onSaveDraft = (values) => {
     if (buttonState === 1) {
-      const { _id: employeeId = '', manager = '' } = employee;
+      const { _id: employeeId = '', managerInfo: { _id: managerId = '' } = {} } = employee;
       const {
         timeOffType = '',
         subject = '',
@@ -367,7 +365,6 @@ const RequestInformation = (props) => {
           durationFromValue,
           durationToValue,
           leaveTimeLists,
-          selectedType,
         );
 
         // let duration = 0;
@@ -386,7 +383,7 @@ const RequestInformation = (props) => {
           leaveDates: leaveDatesPayload,
           onDate: moment.utc(),
           description,
-          approvalManager: manager, // id
+          approvalManager: managerId, // id
           cc: personCC,
           company: getCurrentCompany(),
         };
@@ -424,12 +421,7 @@ const RequestInformation = (props) => {
       leaveTimeLists = [],
     } = values;
 
-    const leaveDatesPayload = generateLeaveDates(
-      durationFromTemp,
-      durationToTemp,
-      leaveTimeLists,
-      selectedType,
-    );
+    const leaveDatesPayload = generateLeaveDates(durationFromTemp, durationToTemp, leaveTimeLists);
 
     // ON SUBMIT
     if (buttonState === 2) {
@@ -497,6 +489,12 @@ const RequestInformation = (props) => {
   // DATE PICKER ON CHANGE
   const fromDateOnChange = (value) => {
     setDurationFrom(value || '');
+    if (moment(value).isAfter(moment(durationTo))) {
+      setDurationTo('');
+      form.setFieldsValue({
+        durationTo: '',
+      });
+    }
   };
 
   // RENDER SELECT BOX
@@ -607,10 +605,11 @@ const RequestInformation = (props) => {
 
   const disabledFromDate = (current) => {
     return (
-      (current && moment(current).isAfter(moment(durationTo), 'day')) ||
+      // (current && moment(current).isAfter(moment(durationTo), 'day')) ||
       moment(current).day() === 0 ||
       moment(current).day() === 6 ||
-      !checkIfWholeDayAvailable(current)
+      !checkIfWholeDayAvailable(current) ||
+      !checkIfHalfDayAvailable(current)
     );
   };
 
@@ -619,22 +618,19 @@ const RequestInformation = (props) => {
       (current && moment(current).isBefore(moment(durationFrom), 'day')) ||
       moment(current).day() === 0 ||
       moment(current).day() === 6 ||
-      !checkIfWholeDayAvailable(current)
+      !checkIfWholeDayAvailable(current) ||
+      !checkIfHalfDayAvailable(current)
     );
   };
 
   // RENDER EMAILS LIST
   const renderEmailsList = () => {
     const list = emailsList.map((user) => {
-      const {
-        _id = '',
-        generalInfo: { firstName = '', lastName = '', workEmail = '', avatar = '' } = {},
-      } = user;
+      const { _id = '', generalInfo: { legalName = '', workEmail = '', avatar = '' } = {} } = user;
       let newAvatar = avatar;
       if (avatar === '') newAvatar = DefaultAvatar;
-      return { workEmail, firstName, lastName, _id, avatar: newAvatar };
+      return { workEmail, legalName, _id, avatar: newAvatar };
     });
-    // return list.filter((value) => Object.keys(value).length !== 0);
     return list;
   };
 
@@ -643,6 +639,9 @@ const RequestInformation = (props) => {
     history.push(`/time-off/overview/personal-timeoff/view/${viewingId}`);
   };
 
+  const onCancelLeaveRequest = () => {
+    history.push(`/time-off/overview`);
+  };
   // RENDER MODAL content
   const renderModalContent = () => {
     let content = '';
@@ -700,11 +699,13 @@ const RequestInformation = (props) => {
       setSelectedType(viewingType.type);
 
       // generate date lists and leave time
-      const dateLists = getDateLists(viewingFromDate, viewingToDate, viewingType?.type);
+      const dateListsObj = getDateLists(viewingFromDate, viewingToDate, viewingType?.type);
+      const dateListsTemp = dateListsObj.dates;
+      setDateLists(dateListsTemp);
       const resultDates = [];
 
       let check = false;
-      dateLists.forEach((val1) => {
+      dateListsTemp.forEach((val1) => {
         check = false;
         viewingLeaveDates.forEach((val2) => {
           const { date = '' } = val2;
@@ -728,15 +729,6 @@ const RequestInformation = (props) => {
         leaveTimeLists,
       });
 
-      // set notice
-      if (viewingType.type === C) {
-        autoValueForToDate();
-      }
-
-      if (viewingType.type === D) {
-        setSecondNotice(`${viewingType.name} applied for: ${dateLists.length} days`);
-      }
-
       getRemainingDay(viewingType.name);
     }
   };
@@ -759,9 +751,10 @@ const RequestInformation = (props) => {
       const dateList = enumerateDaysBetweenDates(moment(viewingFromDate), moment(viewingToDate));
       const temp = invalidDatesProps.filter((x) => {
         return !dateList.some(
-          (y) => moment.utc(y).format('MM/DD/YYYY') === moment.utc(x.date).format('MM/DD/YYYY'),
+          (y) => moment(y).format('MM/DD/YYYY') === moment(x.date).format('MM/DD/YYYY'),
         );
       });
+
       setInvalidDates(temp);
     }
   }, [JSON.stringify(invalidDatesProps)]);
@@ -786,6 +779,12 @@ const RequestInformation = (props) => {
         }
         return '';
       }
+      case D: {
+        if (dateLists.length > 0) {
+          return `${selectedTypeName} applied for: ${dateLists.length} days`;
+        }
+        return ``;
+      }
 
       default:
         return '';
@@ -793,46 +792,52 @@ const RequestInformation = (props) => {
   };
 
   useEffect(() => {
-    // auto value for type C, D
-    if (selectedType === C || selectedType === D) {
-      if (selectedTypeName && durationFrom) {
-        autoValueForToDate();
-      } else {
-        toDateOnChange('');
-        form.setFieldsValue({
-          durationTo: '',
-        });
-      }
+    const currentAllowance = getCurrentAllowance(selectedType);
+    setCurrentAllowanceState(currentAllowance);
+  }, [selectedTypeName]);
+
+  useEffect(() => {
+    if ([A, B, D].includes(selectedType) && durationTo) {
+      const dateListsObj = getDateLists(durationFrom, durationTo, selectedType);
+      setDateLists(dateListsObj.dates);
     }
-  }, [selectedTypeName, durationFrom]);
+  }, [durationFrom, durationTo, currentAllowanceState]);
 
   useEffect(() => {
-    // generate second notice
-    const secondNoticeTemp = generateSecondNotice();
-    setSecondNotice(secondNoticeTemp);
-  }, [selectedTypeName, durationFrom, currentAllowanceState]);
+    if ([C].includes(selectedType) && durationFrom) {
+      const autoToDate = getAutoToDate(currentAllowanceState);
+      const dateListsObj = getDateLists(durationFrom, autoToDate, selectedType);
+      setDateLists(dateListsObj.dates);
+      setDurationTo(moment(dateListsObj.endDate));
+      form.setFieldsValue({
+        durationTo: moment(dateListsObj.endDate),
+      });
+    }
+  }, [durationFrom, currentAllowanceState]);
 
   useEffect(() => {
-    if (durationFrom && durationTo) {
-      // initial value for leave dates list
-      const dateLists = getDateLists(durationFrom, durationTo, selectedType);
+    if (dateLists.length > 0) {
       const initialValuesForLeaveTimesList = dateLists.map((x) => {
-        if (findInvalidHalfOfDay(x) === 'MORNING') return 'AFTERNOON';
-        if (findInvalidHalfOfDay(x) === 'AFTERNOON') return 'MORNING';
+        if (findInvalidHalfOfDay(x).includes('MORNING')) {
+          return 'AFTERNOON';
+        }
+        if (findInvalidHalfOfDay(x).includes('AFTERNOON')) {
+          return 'MORNING';
+        }
         return 'WHOLE-DAY';
       });
-
-      if (selectedType === D) {
-        setSecondNotice(
-          `${selectedTypeName} applied for: ${initialValuesForLeaveTimesList.length} days`,
-        );
-      }
 
       form.setFieldsValue({
         leaveTimeLists: initialValuesForLeaveTimesList,
       });
     }
-  }, [durationFrom, durationTo]);
+  }, [selectedTypeName, durationFrom, JSON.stringify(dateLists)]);
+
+  useEffect(() => {
+    // generate second notice
+    const secondNoticeTemp = generateSecondNotice();
+    setSecondNotice(secondNoticeTemp);
+  }, [selectedTypeName, currentAllowanceState, JSON.stringify(dateLists)]);
 
   // MAIN
   const layout = {
@@ -845,13 +850,9 @@ const RequestInformation = (props) => {
   };
 
   const formatListEmail = renderEmailsList() || [];
-  // DYNAMIC ROW OF DATE LISTS
-  const dateLists = getDateLists(durationFrom, durationTo, selectedType);
 
-  let showAllDateList = false;
-  if (dateLists.length < MAX_NO_OF_DAYS_TO_SHOW) {
-    showAllDateList = true;
-  }
+  // DYNAMIC ROW OF DATE LISTS
+  const showAllDateList = dateLists.length < MAX_NO_OF_DAYS_TO_SHOW;
 
   // if save as draft, no need to validate forms
   const needValidate = buttonState === 2;
@@ -1191,6 +1192,16 @@ const RequestInformation = (props) => {
           department head.
         </span>
         <div className={styles.formButtons}>
+          {action === NEW_LEAVE_REQUEST && (
+            <Button
+              className={styles.cancelButton}
+              type="link"
+              htmlType="button"
+              onClick={onCancelLeaveRequest}
+            >
+              <span>Cancel</span>
+            </Button>
+          )}
           {action === EDIT_LEAVE_REQUEST && (
             <Button
               className={styles.cancelButton}

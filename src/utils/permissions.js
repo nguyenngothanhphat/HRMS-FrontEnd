@@ -418,19 +418,23 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
 
   // DASHBOARD
   const indexPendingApprovalDashboard = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
-  const indexMyTeamDashboard = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
+  const indexMyTeamDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_MY_TEAM_VIEW']);
+  const indexMyAppDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_MY_APPS_VIEW']);
+  const indexTimeSheetDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_MY_TIMESHEET_VIEW']);
+  const indexActivityLogDashboard = isAuthorized(permissionList, [
+    'P_DASHBOARD_W_ACTIVITY_LOG_VIEW',
+  ]);
+  const indexCalendarDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_CALENDAR_VIEW']);
+  const indexTaskDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_TASK_VIEW']);
+
+  // HOME PAGE
+  const indexSettingHomePage = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
 
   // PROJECT MANAGEMENT
   // https://docs.google.com/document/d/1RQ66VdevjGUHB3-4_VDU-DIPF0HCbcfKzKJevEwooLc/edit
-  const indexViewProjectListTab = isAuthorized(permissionList, [
-    'PROJECT_MANAGEMENT_VIEW',
-    PROJECT_MANAGER,
-  ]);
-  const indexAddProject = isAuthorized(permissionList, ['PROJECT_MANAGEMENT_ADD', PROJECT_MANAGER]);
-  const indexModifyProject = isAuthorized(permissionList, [
-    'PROJECT_MANAGEMENT_UPDATE',
-    PROJECT_MANAGER,
-  ]);
+  const indexViewProjectListTab = isAuthorized(permissionList, ['PROJECT_MANAGEMENT_VIEW']);
+  const indexAddProject = isAuthorized(permissionList, ['PROJECT_MANAGEMENT_ADD']);
+  const indexModifyProject = isAuthorized(permissionList, ['PROJECT_MANAGEMENT_UPDATE']);
   const indexViewProjectSettingTab = isAuthorized(permissionList, [
     'PROJECT_MANAGEMENT_SETTINGS_VIEW',
   ]);
@@ -478,6 +482,10 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
 
   const indexSettingViewPolicy = isAuthorized(permissionList, [
     'P_POLICIESREGULATIONS_T_SETTINGS_VIEW',
+  ]);
+  const indexFAQSettings = isAdmin ? 1 : isAuthorized(permissionList, [
+    'P_FAQ_VIEW_SETTINGS',
+    HR_MANAGER
   ]);
 
   return {
@@ -542,7 +550,14 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     // dashboard
     viewPendingApprovalDashboard: indexPendingApprovalDashboard,
     viewMyTeamDashboard: indexMyTeamDashboard,
-    viewTimesheetDashboard: 1,
+    viewTimeSheetDashboard: indexTimeSheetDashboard,
+    viewActivityLogDashboard: indexActivityLogDashboard,
+    viewCalendarDashboard: indexCalendarDashboard,
+    viewTaskDashboard: indexTaskDashboard,
+    viewMyAppDashboard: indexMyAppDashboard,
+
+    // home page
+    viewSettingHomePage: indexSettingHomePage,
 
     // project manamgement
     viewProjectListTab: indexViewProjectListTab,
@@ -566,5 +581,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     // policy and regulation
     viewSettingPolicy: indexSettingViewPolicy,
     viewPolicyAllCountry: indexViewAllCountryPolicyAndRegulation,
+    // faq page
+    viewFAQSetting: indexFAQSettings
   };
 }

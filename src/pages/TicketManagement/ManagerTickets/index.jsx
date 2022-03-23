@@ -42,19 +42,23 @@ class ManagerTicket extends Component {
       }).then((res) => {
         if (res.statusCode === 200) {
           const { data = [] } = res;
-
+          let departmentNameList = [];
           let departmentList = [];
+
           if (viewTicketHR) {
             const find = data.filter((x) => x.name.includes('HR'));
             departmentList = [...departmentList, ...find.map((x) => x._id)];
+            departmentNameList = [...departmentNameList, ...find.map((x) => x.name)];
           }
           if (viewTicketIT) {
             const find = data.filter((x) => x.name.includes('IT'));
             departmentList = [...departmentList, ...find.map((x) => x._id)];
+            departmentNameList = [...departmentNameList, ...find.map((x) => x.name)];
           }
           if (viewTicketOperations) {
             const find = data.filter((x) => x.name.toLowerCase().includes('operations'));
             departmentList = [...departmentList, ...find.map((x) => x._id)];
+            departmentNameList = [...departmentNameList, ...find.map((x) => x.name)];
           }
 
           if (departmentList.length > 0) {
@@ -67,13 +71,14 @@ class ManagerTicket extends Component {
           }
           this.fetchListAllTicket(departmentList);
           this.fetchToTalList(departmentList);
+          this.fetchListEmployee(departmentNameList);
         } else {
           this.fetchListAllTicket();
           this.fetchToTalList();
+          this.fetchListEmployee();
         }
       });
       this.fetchLocationList();
-      this.fetchListEmployee();
     }
   }
 
@@ -103,11 +108,18 @@ class ManagerTicket extends Component {
     });
   };
 
-  fetchListEmployee = () => {
+  fetchListEmployee = (departmentNameList) => {
     const { dispatch } = this.props;
+    let payload = {};
+    if (departmentNameList && departmentNameList.length > 0) {
+      payload = {
+        ...payload,
+        department: departmentNameList,
+      };
+    }
     dispatch({
       type: 'ticketManagement/fetchListEmployee',
-      payload: {},
+      payload,
     });
   };
 

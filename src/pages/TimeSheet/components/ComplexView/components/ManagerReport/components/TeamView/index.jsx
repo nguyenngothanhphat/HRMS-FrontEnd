@@ -2,6 +2,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
+import { Spin } from 'antd';
 import { dateFormatAPI } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import Header from './components/Header';
@@ -21,6 +22,7 @@ const TeamView = (props) => {
   const {
     timeSheet: { managerTeamViewList = [], managerTeamViewPagination = {} } = {},
     loadingFetch = false,
+    activeView = '',
   } = props;
 
   // FUNCTION AREA
@@ -31,7 +33,7 @@ const TeamView = (props) => {
       userId: employeeId,
       fromDate: moment(startDate).format(dateFormatAPI),
       toDate: moment(endDate).format(dateFormatAPI),
-      page,
+      page: nameSearch ? 1 : page,
       limit,
     };
     if (nameSearch) {
@@ -40,6 +42,12 @@ const TeamView = (props) => {
     dispatch({
       type: 'timeSheet/fetchManagerTimesheetOfTeamViewEffect',
       payload,
+    });
+    dispatch({
+      type: 'timeSheet/savePayload',
+      payload: {
+        payloadExport: payload,
+      },
     });
   };
 
@@ -70,6 +78,7 @@ const TeamView = (props) => {
     const formatValue = value.toLowerCase();
     onSearchDebounce(formatValue);
   };
+
   // MAIN AREA
   return (
     <div className={styles.TeamView}>
@@ -79,14 +88,12 @@ const TeamView = (props) => {
         setStartDate={setStartDate}
         setEndDate={setEndDate}
         onChangeSearch={onChangeSearch}
+        activeView={activeView}
       />
-      <MemberTable
-        data={managerTeamViewList}
-        loadingFetch={loadingFetch}
-        startDate={startDate}
-        endDate={endDate}
-      />
-      <Pagination tablePagination={managerTeamViewPagination} onChangePage={onChangePage} />
+      <Spin spinning={loadingFetch}>
+        <MemberTable data={managerTeamViewList} startDate={startDate} endDate={endDate} />
+        <Pagination tablePagination={managerTeamViewPagination} onChangePage={onChangePage} />
+      </Spin>
     </div>
   );
 };

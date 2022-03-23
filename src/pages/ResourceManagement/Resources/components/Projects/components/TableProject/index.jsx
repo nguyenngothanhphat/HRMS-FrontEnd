@@ -240,7 +240,12 @@ class TableProject extends Component {
           }
           return displayValue;
         },
-        sorter: (a, b) => a.comment.localeCompare(b.comment),
+        sorter: (a, b) => {
+          if (a.comment && b.comment) {
+            return a.comment.localeCompare(b.comment);
+          }
+          return null;
+        },
       },
     ];
 

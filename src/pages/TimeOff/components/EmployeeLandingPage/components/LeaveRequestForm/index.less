@@ -5,46 +5,47 @@
     padding: 20px 30px;
   }
   .titlePage {
-    height: 60px;
-    width: 100%;
-    background-color: #fff;
     display: flex;
     align-items: center;
+    width: 100%;
+    height: 60px;
     padding: 0 40px 0 20px;
+    background-color: #fff;
     box-shadow: 0 1px 2px 0 #eeeeee;
     &__text {
-      font-size: 18px;
-      font-weight: bold;
-      line-height: 18.75px;
-      font-style: normal;
-      color: #2c6df9;
       margin: 0;
+      color: #2c6df9;
+      font-weight: bold;
+      font-size: 18px;
+      font-style: normal;
+      line-height: 18.75px;
     }
     .leaveStatus {
       display: flex;
       align-items: center;
       margin-left: 10px;
       .dot {
-        height: 8px;
+        display: inline-block;
         width: 8px;
+        height: 8px;
         background-color: #bbb;
         border-radius: 50%;
-        display: inline-block;
       }
       .statusText {
-        font-size: 13px;
-        font-weight: 700;
         margin-left: 10px;
+        font-weight: 700;
+        font-size: 13px;
         // margin-bottom: -1px;
       }
     }
-    .inProgressColor {
+    .approvedColor {
       color: #00c598;
       .dot {
         background-color: #00c598;
       }
     }
-    .approvedColor {
+
+    .inProgressColor {
       color: #ffa100;
       .dot {
         background-color: #ffa100;
@@ -66,6 +67,12 @@
       color: #8f34f7;
       .dot {
         background-color: #8f34f7;
+      }
+    }
+    .withdrawnColor {
+      color: #00aebc;
+      .dot {
+        background-color: #00aebc;
       }
     }
   }

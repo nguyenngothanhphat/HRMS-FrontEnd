@@ -27,7 +27,7 @@ const ModalAddInfo = (props) => {
     generalData = {},
   } = props;
   const [currentStep, setCurrentStep] = useState(0);
-  const [newSkillList, setListNewSkill] = useState([]); 
+  const [newSkillList, setListNewSkill] = useState([]);
 
   useEffect(() => {
     dispatch({
@@ -131,12 +131,16 @@ const ModalAddInfo = (props) => {
         });
       }
     });
+
     const listSkills = [];
-    skills.forEach((item) => {
-      if (!item.__isNew__) {
-        listSkills.push(item.value);
-      }
-    });
+    if (Array.isArray(skills)) {
+      skills.forEach((item) => {
+        if (!item.__isNew__) {
+          listSkills.push(item.value);
+        }
+      });
+    }
+
     // const tempSkill = skills ? skills.filter((item) => item !== 'Other') : [];
     // const checkOtherSkill = otherSkills ? otherSkills.toUpperCase().replace(' ','') : null;
     // const checkDuplication = listSkill.filter((e) => e.name.toUpperCase().replace(' ','') === checkOtherSkill) || [];
@@ -297,6 +301,14 @@ const ModalAddInfo = (props) => {
     });
   };
 
+  const requiredLabel = (text) => {
+    return (
+      <span>
+        {text} <span style={{ color: '#f04b37' }}>*</span>
+      </span>
+    );
+  };
+
   const renderContent = () => {
     switch (currentStep) {
       case 0:
@@ -332,7 +344,7 @@ const ModalAddInfo = (props) => {
                       </div>
                     )}
                     <Form.Item
-                      label="Emergency Contact Name"
+                      label={requiredLabel('Emergency Contact Name')}
                       name={['emergencyPersonName', `personName${item}`]}
                       rules={[
                         {
@@ -340,15 +352,16 @@ const ModalAddInfo = (props) => {
                           message: 'Please enter emergency contact name!',
                         },
                         {
-                          pattern: /^[a-zA-Z ]*$/,
-                          message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+                          pattern:
+                            /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+                          message: 'Invalid format, please try again',
                         },
                       ]}
                     >
                       <Input placeholder="Emergency Contact Name" />
                     </Form.Item>
                     <Form.Item
-                      label="Relation"
+                      label={requiredLabel('Relation')}
                       name={['emergencyRelation', `relation${item}`]}
                       rules={[
                         {
@@ -367,7 +380,8 @@ const ModalAddInfo = (props) => {
                         showArrow
                         showSearch
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                         className={styles.inputForm}
                       >
                         {listRelation.map((value, i) => {
@@ -381,17 +395,15 @@ const ModalAddInfo = (props) => {
                     </Form.Item>
                     <Form.Item
                       name={['emergencyContact', `contact${item}`]}
-                      label="Emergency Contact's Phone Number"
+                      label={requiredLabel("Emergency Contact's Phone Number")}
                       rules={[
                         {
                           required: true,
                           message: "Please enter the emergency contact's phone number!",
                         },
                         {
-                          pattern: /^[+0-9-]{0,15}$/,
-                          message: formatMessage({
-                            id: 'pages.employeeProfile.validateWorkNumber',
-                          }),
+                          pattern: /^[+0-9-]{10,15}$/,
+                          message: ' Please input from 10 to 15 numeric characters!',
                         },
                       ]}
                     >
@@ -422,36 +434,33 @@ const ModalAddInfo = (props) => {
             name="Certification"
             onFinish={onFinishCertification}
             layout="vertical"
-            initialValues={{
-              totalExp: generalData.totalExp || 0,
-            }}
+            // initialValues={{
+            //   totalExp: generalData.totalExp || 0,
+            // }}
           >
             <div className={styles.form__title}>Professional & Academic Background</div>
             <div className={styles.form__description}>
               You are required to fill in the below details to proceed further
             </div>
             <Form.Item
-              label="Total Years of Experience"
+              label={requiredLabel('Total Years of Experience')}
               name="totalExp"
               style={{ marginTop: '24px' }}
               rules={[
-                // {
-                //   required: true,
-                //   message: "Please enter relevant years of experience!"
-                // },
                 {
-                  pattern: /^[\d]{0,100}$/,
-                  message: 'Input only number and value >= 0',
+                  required: true,
+                  message: 'Please enter relevant years of experience!',
+                },
+                {
+                  pattern: /^[0-9]{0,2}$/,
+                  message: 'Input only number, greater than or equal to zero and less than 99!',
                 },
               ]}
             >
-              <Input
-                defaultValue={generalData.totalExp || 0}
-                placeholder="Total Years of Experience"
-              />
+              <Input placeholder="Total Years of Experience" />
             </Form.Item>
             <Form.Item
-              label="Highest Educational Qualification"
+              label={requiredLabel('Highest Educational Qualification')}
               name="qualification"
               rules={[
                 {
@@ -481,12 +490,6 @@ const ModalAddInfo = (props) => {
                     <Form.Item
                       name={['certificationName', `certification${item}`]}
                       label="Certifications"
-                      // rules={[
-                      //   {
-                      //     required: true,
-                      //     message: "Please enter certifications!"
-                      //   },
-                      // ]}
                     >
                       <Input placeholder="Certifications" />
                     </Form.Item>
@@ -511,14 +514,14 @@ const ModalAddInfo = (props) => {
               </Button>
             </Form.Item>
             <Form.Item
-              label="Skills"
+              label={requiredLabel('Skills')}
               name="skills"
-              // rules={[
-              //   {
-              //     required: true,
-              //     message: "Please enter skills"
-              //   },
-              // ]}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter skills',
+                },
+              ]}
             >
               <CreatableSelect
                 isMulti
@@ -601,7 +604,7 @@ const ModalAddInfo = (props) => {
                           )}
                           <Form.Item
                             name={['bankName', `bankName${item}`]}
-                            label="Bank Name"
+                            label={requiredLabel('Bank Name')}
                             rules={[
                               {
                                 required: true,
@@ -612,7 +615,7 @@ const ModalAddInfo = (props) => {
                             <Input placeholder="Bank Name" />
                           </Form.Item>
                           <Form.Item
-                            label="Branch Name"
+                            label={requiredLabel('Branch Name')}
                             name={['branchName', `branchName${item}`]}
                             rules={[
                               {
@@ -624,7 +627,7 @@ const ModalAddInfo = (props) => {
                             <Input placeholder="Branch Name" />
                           </Form.Item>
                           <Form.Item
-                            label="Account Type"
+                            label={requiredLabel('Account Type')}
                             name={['accountType', `accountType${item}`]}
                             rules={[
                               {
@@ -645,7 +648,7 @@ const ModalAddInfo = (props) => {
                             </Select>
                           </Form.Item>
                           <Form.Item
-                            label="Account Number"
+                            label={requiredLabel('Account Number')}
                             name={['accountNumber', `accountNumber${item}`]}
                             rules={[
                               {
@@ -661,7 +664,7 @@ const ModalAddInfo = (props) => {
                             <Input placeholder="Account Number" />
                           </Form.Item>
                           <Form.Item
-                            label="Swift Code"
+                            label={requiredLabel('Swift Code')}
                             name={['swiftcode', `swiftcode${item}`]}
                             rules={[
                               {
@@ -673,7 +676,7 @@ const ModalAddInfo = (props) => {
                             <Input placeholder="Swift Code" />
                           </Form.Item>
                           <Form.Item
-                            label="Account Name"
+                            label={requiredLabel('Account Name')}
                             name={['accountName', `accountName${item}`]}
                             rules={[
                               {
@@ -733,7 +736,7 @@ const ModalAddInfo = (props) => {
                           )}
                           <Form.Item
                             name={['bankName', `bankName${item}`]}
-                            label="Bank Name"
+                            label={requiredLabel('Bank Name')}
                             rules={[
                               {
                                 required: true,
@@ -745,7 +748,7 @@ const ModalAddInfo = (props) => {
                           </Form.Item>
 
                           <Form.Item
-                            label="Account Type"
+                            label={requiredLabel('Account Type')}
                             name={['accountType', `accountType${item}`]}
                             rules={[
                               {
@@ -766,7 +769,7 @@ const ModalAddInfo = (props) => {
                             </Select>
                           </Form.Item>
                           <Form.Item
-                            label="Account Number"
+                            label={requiredLabel('Account Number')}
                             name={['accountNumber', `accountNumber${item}`]}
                             rules={[
                               {
@@ -782,7 +785,7 @@ const ModalAddInfo = (props) => {
                             <Input placeholder="Account Number" />
                           </Form.Item>
                           <Form.Item
-                            label="Routing Number"
+                            label={requiredLabel('Routing Number')}
                             name={['routingNumber', `routingNumber${item}`]}
                             rules={[
                               {
@@ -845,7 +848,7 @@ const ModalAddInfo = (props) => {
                         )}
                         <Form.Item
                           name={['bankName', `bankName${item}`]}
-                          label="Bank Name"
+                          label={requiredLabel('Bank Name')}
                           rules={[
                             {
                               required: true,
@@ -856,7 +859,7 @@ const ModalAddInfo = (props) => {
                           <Input placeholder="Bank Name" />
                         </Form.Item>
                         <Form.Item
-                          label="Branch Name"
+                          label={requiredLabel('Branch Name')}
                           name={['branchName', `branchName${item}`]}
                           rules={[
                             {
@@ -868,7 +871,7 @@ const ModalAddInfo = (props) => {
                           <Input placeholder="Branch Name" />
                         </Form.Item>
                         <Form.Item
-                          label="Account Type"
+                          label={requiredLabel('Account Type')}
                           name={['accountType', `accountType${item}`]}
                           rules={[
                             {
@@ -887,7 +890,7 @@ const ModalAddInfo = (props) => {
                           </Select>
                         </Form.Item>
                         <Form.Item
-                          label="Account Number"
+                          label={requiredLabel('Account Number')}
                           name={['accountNumber', `accountNumber${item}`]}
                           rules={[
                             {
@@ -903,7 +906,7 @@ const ModalAddInfo = (props) => {
                           <Input placeholder="Account Number" />
                         </Form.Item>
                         <Form.Item
-                          label="MICR Code"
+                          label={requiredLabel('MICR Code')}
                           name={['micrCode', `micrCode${item}`]}
                           rules={[
                             {
@@ -962,7 +965,7 @@ const ModalAddInfo = (props) => {
                 You are required to fill in the below details to proceed further
               </div>
               <Form.Item
-                label="National ID Card Number"
+                label={requiredLabel('National ID Card Number')}
                 name="nationalId"
                 style={{ marginTop: '24px' }}
                 rules={[
@@ -975,7 +978,7 @@ const ModalAddInfo = (props) => {
                 <Input maxLength={50} placeholder="National ID Card Number" />
               </Form.Item>
               <Form.Item
-                label="Marital Status"
+                label={requiredLabel('Marital Status')}
                 name="maritalStatus"
                 rules={[
                   {
@@ -993,7 +996,7 @@ const ModalAddInfo = (props) => {
                 </Select>
               </Form.Item>
               <Form.Item
-                label="No. of Dependents"
+                label={requiredLabel('No. of Dependents')}
                 name="noOfDependents"
                 rules={[
                   {
@@ -1005,7 +1008,7 @@ const ModalAddInfo = (props) => {
                 <Input maxLength={50} placeholder="No. of Dependents" />
               </Form.Item>
               <Form.Item
-                label="Residency Status"
+                label={requiredLabel('Residency Status')}
                 name="residencyStatus"
                 rules={[
                   {
@@ -1036,7 +1039,7 @@ const ModalAddInfo = (props) => {
                 You are required to fill in the below details to proceed further
               </div>
               <Form.Item
-                label="Income Tax Rule"
+                label={requiredLabel('Income Tax Rule')}
                 name="incomeTaxRule"
                 style={{ marginTop: '24px' }}
                 rules={[
@@ -1052,7 +1055,7 @@ const ModalAddInfo = (props) => {
                 </Select>
               </Form.Item>
               <Form.Item
-                label="PAN Number"
+                label={requiredLabel('PAN Number')}
                 name="panNum"
                 rules={[
                   {
@@ -1064,7 +1067,7 @@ const ModalAddInfo = (props) => {
                 <Input maxLength={50} placeholder="PAN Number" />
               </Form.Item>
               <Form.Item
-                label="Marital Status"
+                label={requiredLabel('Marital Status')}
                 name="maritalStatus"
                 rules={[
                   {
@@ -1082,7 +1085,7 @@ const ModalAddInfo = (props) => {
                 </Select>
               </Form.Item>
               <Form.Item
-                label="No. of Dependents"
+                label={requiredLabel('No. of Dependents')}
                 name="noOfDependents"
                 rules={[
                   {
@@ -1094,7 +1097,7 @@ const ModalAddInfo = (props) => {
                 <Input maxLength={50} placeholder="No. of Dependents" />
               </Form.Item>
               <Form.Item
-                label="Residency Status"
+                label={requiredLabel('Residency Status')}
                 name="residencyStatus"
                 rules={[
                   {
@@ -1138,7 +1141,7 @@ const ModalAddInfo = (props) => {
                 <Input disabled maxLength={50} placeholder="Social Security Card Number" />
               </Form.Item>
               <Form.Item
-                label="Marital Status"
+                label={requiredLabel('Marital Status')}
                 name="maritalStatus"
                 rules={[
                   {
@@ -1157,7 +1160,7 @@ const ModalAddInfo = (props) => {
                 </Select>
               </Form.Item>
               <Form.Item
-                label="No. of Dependents"
+                label={requiredLabel('No. of Dependents')}
                 name="noOfDependents"
                 rules={[
                   {
@@ -1169,7 +1172,7 @@ const ModalAddInfo = (props) => {
                 <Input maxLength={50} placeholder="No. of Dependents" />
               </Form.Item>
               <Form.Item
-                label="Residency Status"
+                label={requiredLabel('Residency Status')}
                 name="residencyStatus"
                 rules={[
                   {
@@ -1199,7 +1202,7 @@ const ModalAddInfo = (props) => {
               You are required to fill in the below details to proceed further
             </div>
             <Form.Item
-              label="Social Security Card Number"
+              label={requiredLabel('Social Security Card Number')}
               name="nationalId"
               style={{ marginTop: '24px' }}
               rules={[
@@ -1212,7 +1215,7 @@ const ModalAddInfo = (props) => {
               <Input maxLength={50} placeholder="Social Security Card Number" />
             </Form.Item>
             <Form.Item
-              label="Marital Status"
+              label={requiredLabel('Marital Status')}
               name="maritalStatus"
               rules={[
                 {
@@ -1231,7 +1234,7 @@ const ModalAddInfo = (props) => {
               </Select>
             </Form.Item>
             <Form.Item
-              label="No. of Dependents"
+              label={requiredLabel('No. of Dependents')}
               name="noOfDependents"
               rules={[
                 {
@@ -1243,7 +1246,7 @@ const ModalAddInfo = (props) => {
               <Input maxLength={50} placeholder="No. of Dependents" />
             </Form.Item>
             <Form.Item
-              label="Residency Status"
+              label={requiredLabel('Residency Status')}
               name="residencyStatus"
               rules={[
                 {

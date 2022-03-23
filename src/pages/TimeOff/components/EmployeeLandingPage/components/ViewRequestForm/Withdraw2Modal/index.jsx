@@ -38,8 +38,7 @@ export default class Withdraw2Modal extends PureComponent {
       loading = false,
     } = this.props;
     let header = 'Withdraw timeoff request?';
-    const content1 =
-      'Withdrawing request will delete this ticket id and no longer will be kept track of.';
+    const content1 = 'Are you sure you want to withdraw your leave request?';
     let content2 = 'Both your Manager and HR will be notified of this change.';
     if (status === DRAFTS) {
       header = 'Discard draft request?';

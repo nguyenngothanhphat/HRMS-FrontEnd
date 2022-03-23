@@ -128,7 +128,7 @@ const UserModel = {
             }
             if (perAdminExist && perEmployeeExist) {
               switchRoleAbility = true;
-              if (!isSwitchingRole) {
+              if (isSwitchingRole) {
                 formatArrRoles = ['admin'];
                 formatArrRoles = [
                   ...formatArrRoles,
@@ -168,7 +168,7 @@ const UserModel = {
           if (checkIsAdmin) {
             // for admin, auto set location
             const currentLocation = getCurrentLocation();
-            if (!currentLocation || currentLocation === 'undefined') {
+            if (!currentLocation || currentLocation === 'undefined' || isSwitchingRole) {
               setCurrentLocation(response?.data?.manageLocation[0]?._id);
             }
           }

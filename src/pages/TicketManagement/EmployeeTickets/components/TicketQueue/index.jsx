@@ -63,7 +63,7 @@ class TicketQueue extends Component {
     if (nameSearch) {
       payload = {
         ...payload,
-        name: nameSearch,
+        search: nameSearch,
       };
     }
     dispatch({

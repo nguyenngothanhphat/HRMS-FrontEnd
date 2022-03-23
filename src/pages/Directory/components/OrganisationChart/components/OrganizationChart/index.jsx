@@ -4,8 +4,8 @@ import { UserOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 import { Collapse } from 'react-collapse';
-
-import { Spin } from 'antd';
+import { Popover, Spin } from 'antd';
+import avtDefault from '@/assets/avtDefault.jpg';
 import line from '@/assets/lineParent.svg';
 import lines from '@/assets/lines.svg';
 import bigLines from '@/assets/bigLines.svg';
@@ -124,7 +124,15 @@ class OrganizationChart extends Component {
 
   truncateLegalName = (value) => {
     if (value.length > 20) {
-      return `${value.substr(0, 10)}...${value.substr(value.length - 5, value.length)}`;
+      return (
+        <Popover
+          placement="top"
+          content={<span style={{ fontWeight: 500 }}>{value}</span>}
+          trigger="hover"
+        >
+          {value.substr(0, 10)}...{value.substr(value.length - 5, value.length)}
+        </Popover>
+      );
     }
     return value;
   };
@@ -152,9 +160,25 @@ class OrganizationChart extends Component {
       } = {} || {},
     } = userData;
     const legalFullName = legalName || `${userFirstName} ${userMiddleName} ${userLastName}`;
+
+    const popupImg = (url) => {
+      return (
+        <div className={styles.popupImg}>
+          <img src={url} alt="avatar" />
+        </div>
+      );
+    };
+
     return (
       <div className={styles.node__card} onClick={() => this.clickCardInfo(userData, name)}>
-        <Avatar className={styles.avatar} src={avatar} size={42} icon={<UserOutlined />} />
+        <Popover placement="rightTop" content={popupImg(avatar || avtDefault)} trigger="hover">
+          <Avatar
+            className={styles.avatar}
+            src={avatar || avtDefault}
+            size={42}
+            icon={<UserOutlined />}
+          />
+        </Popover>
         <div className={styles.node__card__info}>
           <div className={styles.legalName}>{this.truncateLegalName(legalFullName)}</div>
           <div className={styles.deptName}>{`${this.truncate(jobTitleName)}, ${deptName}`}</div>

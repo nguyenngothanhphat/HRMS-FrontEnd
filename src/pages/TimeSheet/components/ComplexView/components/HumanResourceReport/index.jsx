@@ -2,7 +2,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
-import { dateFormatAPI, VIEW_TYPE, generateAllWeeks } from '@/utils/timeSheet';
+import { dateFormatAPI, VIEW_TYPE, TAB_NAME, generateAllWeeks } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -83,6 +83,7 @@ const HumanResourceReport = (props) => {
     const weeks = generateAllWeeks(startDateMonth, endDateMonth);
     setWeeksOfMonth(weeks);
   }, [startDateMonth]);
+
   const onSearchDebounce = debounce((value) => {
     setNameSearch(value);
   }, 1000);
@@ -91,6 +92,7 @@ const HumanResourceReport = (props) => {
     const formatValue = value.toLowerCase();
     onSearchDebounce(formatValue);
   };
+
   // RENDER UI
   const viewChangeComponent = () => (
     <ViewTypeSelector
@@ -113,6 +115,7 @@ const HumanResourceReport = (props) => {
             viewChangeComponent={viewChangeComponent}
             type={VIEW_TYPE.W}
             onChangeSearch={onChangeSearch}
+            activeView={TAB_NAME.HR_REPORTS}
           />
         );
 
@@ -127,6 +130,7 @@ const HumanResourceReport = (props) => {
             viewChangeComponent={viewChangeComponent}
             onChangeSearch={onChangeSearch}
             type={VIEW_TYPE.M}
+            activeView={TAB_NAME.HR_REPORTS}
           />
         );
 

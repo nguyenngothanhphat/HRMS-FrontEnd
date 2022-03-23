@@ -54,7 +54,7 @@ class RolePermission extends PureComponent {
   generateColumns = () => {
     const columns = [
       {
-        title: 'Role',
+        title: 'Role ID',
         dataIndex: 'idSync',
         key: 'idSync',
         width: '20%',

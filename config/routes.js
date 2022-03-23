@@ -253,19 +253,21 @@ const routes = [
             path: '/home/settings/:reId',
             hideInMenu: true,
             component: './HomePage/components/Settings',
+            authority: [HR_MANAGER, MANAGER], // TEMPORARY VALUES, NEED TO BE CHANGED
           },
           {
             path: '/dashboard',
             name: 'dashboard',
             icon: '/assets/images/menuIcons/dashboard.svg',
             component: './Dashboard',
+            authority:['P_DASHBOARD_W_DASHBOARD_VIEW']
           },
           {
             path: '/dashboard/approvals',
             name: 'dashboardApprovals',
             hideInMenu: true,
             component: './Dashboard/components/Approval',
-            authority: [HR, HR_MANAGER, MANAGER, REGION_HEAD, DEPARTMENT_HEAD, ADMIN, OWNER],
+            authority: ['P_DASHBOARD_W_DASHBOARD_VIEW'],
           },
           {
             path: '/admin-app',
@@ -285,13 +287,13 @@ const routes = [
             name: 'directory',
             icon: '/assets/images/menuIcons/directory.svg',
             component: './Directory',
-            authority: ['P_DIRECTORY_VIEW', 'M_DIRECTORY_VIEW', 'M_EMPLOYEE_MANAGEMENT_VIEW'],
+            authority: ['P_DIRECTORY_ALL','P_DIRECTORY_VIEW', 'M_DIRECTORY_VIEW', 'M_EMPLOYEE_MANAGEMENT_VIEW'],
           },
           {
             path: '/directory/:tabName',
             component: './Directory',
             hideInMenu: true,
-            authority: ['P_DIRECTORY_VIEW', 'M_DIRECTORY_VIEW', 'M_EMPLOYEE_MANAGEMENT_VIEW'],
+            authority: ['P_DIRECTORY_ALL','P_DIRECTORY_VIEW', 'M_DIRECTORY_VIEW', 'M_EMPLOYEE_MANAGEMENT_VIEW'],
           },
           {
             path: '/employees',
@@ -843,10 +845,28 @@ const routes = [
             component: './FAQs',
           },
           {
+            path: '/faqpage/settings',
+            name: 'settings',
+            hideInMenu: true,
+            component: './FAQs/components/SettingFAQ',
+          },
+          {
             path: '/policies-regulations',
             name: 'policiesRegulations',
             hideInMenu: true,
             component: './PoliciesRegulations',
+          },
+          {
+            path: '/policies-regulations/certify',
+            name: 'Policies Certification',
+            hideInMenu: true,
+            component: './PoliciesRegulations',
+          },
+          {
+            path: '/policies-regulations/certify/:categoryID/:reId',
+            name: 'View Document',
+            hideInMenu: true,
+            component: './PoliciesRegulations/components/PoliciesCertification/components/ViewDocument',
           },
           {
             path: '/policies-regulations/settings',

@@ -34,8 +34,10 @@ const GlobalSearchNew = (props) => {
   const onClose = () => {
     setVisible(false);
   };
-  const handleChangeVisiable = (flag) => {
-    if (!flag || text.length >= 3) setVisible(flag);
+  const handleChangeVisible = (flag) => {
+    if (!flag || text.length >= 3) {
+      setVisible(flag);
+    }
   };
   const onShowMore = (key) => {
     dispatch({
@@ -148,7 +150,7 @@ const GlobalSearchNew = (props) => {
         overlay={menu}
         trigger={['click']}
         visible={visible}
-        onVisibleChange={handleChangeVisiable}
+        onVisibleChange={handleChangeVisible}
         // destroyPopupOnHide
         overlayClassName={styles.searchDropdown}
       >

@@ -101,6 +101,15 @@ const Calendar = (props) => {
   const filterHoliday =
     holidaysListByCountry.filter((obj) => obj.date.dateTime.year === selectedYear.toString()) || [];
 
+  const addZeroToNumber = (number) => {
+    if (number < 10 && number > 0) return `0${number}`.slice(-2);
+    return number;
+  };
+
+  const getTabName = (key) => {
+    return `${key} (${addZeroToNumber(googleCalendarList.length)})`;
+  };
+
   const renderHolidayCalendarAction = () => {
     return (
       <div className={styles.header__actions}>
@@ -122,7 +131,7 @@ const Calendar = (props) => {
         </div>
         <div className={styles.content}>
           <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
-            <TabPane tab="My Calendar" key="1">
+            <TabPane tab={getTabName('My Calendar')} key="1">
               {isSyncSuccess && isGoogleSignIn ? (
                 <MyCalendar
                   data={googleCalendarList}
@@ -146,12 +155,18 @@ const Calendar = (props) => {
           <img src={LeftArrow} alt="expand" />
         </div>
       )}
+      {activeKey === '1' && googleCalendarList.length === 0 && (
+        <div className={styles.addLengthCalendar} />
+      )}
 
       {activeKey === '2' && holidaysListByCountry.length > 0 && (
         <div className={styles.viewAllMeetingBtn} onClick={() => setModalVisible(true)}>
           <span>View all Holidays</span>
           <img src={LeftArrow} alt="expand" />
         </div>
+      )}
+      {activeKey === '2' && holidaysListByCountry.length === 0 && (
+        <div className={styles.addLength} />
       )}
       <CommonModal
         visible={modalVisible}

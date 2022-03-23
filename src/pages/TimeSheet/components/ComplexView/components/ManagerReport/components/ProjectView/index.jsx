@@ -38,6 +38,7 @@ const ProjectView = (props) => {
     } = {},
     employee: { _id: userId = '' } = {},
     loadingFetchProjectList = false,
+    activeView = '',
   } = props;
 
   // FUNCTION AREA
@@ -61,6 +62,12 @@ const ProjectView = (props) => {
       dispatch({
         type: 'timeSheet/fetchManagerTimesheetOfProjectViewEffect',
         payload,
+      });
+      dispatch({
+        type: 'timeSheet/savePayload',
+        payload: {
+          payloadExport: payload,
+        },
       });
     }
   };
@@ -119,10 +126,7 @@ const ProjectView = (props) => {
     const weeks = generateAllWeeks(startDateMonth, endDateMonth);
     setWeeksOfMonth(weeks);
   }, [startDateMonth]);
-  useEffect(() => {
-    const weeks = generateAllWeeks(startDateMonth, endDateMonth);
-    setWeeksOfMonth(weeks);
-  }, [startDateMonth]);
+
   const onSearchDebounce = debounce((value) => {
     setNameSearch(value);
   }, 1000);
@@ -156,6 +160,7 @@ const ProjectView = (props) => {
             projectList={projectList}
             onChangeSearch={onChangeSearch}
             loadingFetchProjectList={loadingFetchProjectList}
+            activeView={activeView}
           />
         );
 
@@ -173,6 +178,7 @@ const ProjectView = (props) => {
             projectList={projectList}
             onChangeSearch={onChangeSearch}
             loadingFetchProjectList={loadingFetchProjectList}
+            activeView={activeView}
           />
         );
 

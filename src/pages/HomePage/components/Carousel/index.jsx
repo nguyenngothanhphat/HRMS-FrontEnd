@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Carousel as CarouselAntd } from 'antd';
+import { connect } from 'umi';
 import Banner1 from '@/assets/homePage/banner1.png';
-import Nuova1 from '@/assets/homePage/nuova1.png';
-import Nuova2 from '@/assets/homePage/nuova2.png';
-import Nuova3 from '@/assets/homePage/nuova3.png';
 import NextIcon from '@/assets/homePage/next.svg';
 import PrevIcon from '@/assets/homePage/prev.svg';
 import styles from './index.less';
+import EmptyComponent from '@/components/Empty';
+import { TAB_IDS } from '@/utils/homePage';
 
 const NextArrow = (props) => {
   const { className, style, onClick } = props;
@@ -19,28 +19,61 @@ const PrevArrow = (props) => {
 };
 
 const Carousel = (props) => {
+  const { dispatch } = props;
+
   /* FOR PREVIEWING IN SETTINGS PAGE  */
   const { previewing = false, contentPreview = [] } = props;
 
-  const images = [
-    {
-      id: 1,
-      image: Nuova1,
-    },
-    {
-      id: 2,
-      image: Nuova2,
-    },
-    {
-      id: 3,
-      image: Nuova3,
-    },
-    {
-      id: 4,
-      image: Banner1,
-    },
-  ];
+  // redux
+  const {
+    homePage: { banners = [] } = {},
+    // user: { currentUser: { employee = {} } = {} } = {},
+    loadingFetchBanners = false,
+  } = props;
 
+  const [bannerState, setBannerState] = useState([]);
+
+  const fetchData = () => {
+    return dispatch({
+      type: 'homePage/fetchBannersEffect',
+      payload: {
+        postType: TAB_IDS.BANNER,
+      },
+    });
+  };
+
+  const compare = (a, b) => {
+    if (a.position < b.position) return -1;
+    if (a.position > b.position) return 1;
+    return 0;
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    let bannerStateTemp = [];
+    const bannersTemp = banners.sort(compare);
+
+    if (bannersTemp.length > 0) {
+      bannersTemp.forEach((x) => {
+        bannerStateTemp = [...bannerStateTemp, ...x.attachments];
+      });
+    }
+
+    setBannerState(bannerStateTemp);
+  }, [JSON.stringify(banners)]);
+
+  // RENDER UI
+  if (loadingFetchBanners) return '';
+  if (!previewing && bannerState.length === 0) {
+    return (
+      <div className={styles.Carousel}>
+        <EmptyComponent description="No banners" />
+      </div>
+    );
+  }
   return (
     <div
       className={styles.Carousel}
@@ -51,15 +84,16 @@ const Carousel = (props) => {
         arrows
         dots
         autoplay
+        effect="fade"
         autoplaySpeed={10000}
         nextArrow={<NextArrow />}
-        lazyLoad="ondemand"
+        // lazyLoad="ondemand"
         prevArrow={<PrevArrow />}
       >
         {!previewing &&
-          images.map((x) => (
+          bannerState.map((x) => (
             <div className={styles.image}>
-              <img src={x.image} alt="" />
+              <img src={x.url} alt="" />
             </div>
           ))}
 
@@ -82,4 +116,7 @@ const Carousel = (props) => {
   );
 };
 
-export default Carousel;
+export default connect(({ homePage, loading }) => ({
+  homePage,
+  loadingFetchBanners: loading.effects['homePage/fetchBannersEffect'],
+}))(Carousel);

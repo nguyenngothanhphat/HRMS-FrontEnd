@@ -292,7 +292,12 @@ class ViewInformation extends Component {
 
     const subDropdown = (
       <SubMenu className={s.subMenu} key="sub1" title="Job Change">
-        <Menu.Item key="offboarding" className={s.menuItem} onClick={this.redirectOffboarding}>
+        <Menu.Item
+          key="offboarding"
+          className={s.menuItem}
+          onClick={this.redirectOffboarding}
+          disabled
+        >
           Resignation
         </Menu.Item>
       </SubMenu>

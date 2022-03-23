@@ -16,13 +16,23 @@ const EmployeeDetailModal = (props) => {
     dataSource = [],
   } = props;
 
+  const {
+    user: {
+      currentUser: {
+        location: { headQuarterAddress: { country: { _id: countryID } = {} } = {} } = {},
+      } = {},
+    } = {},
+  } = props;
+
+  const locationUser = countryID === 'US';
+
   const [data, setData] = useState();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   useEffect(() => {
     const find = dataSource.find((x) => x.id === employeeId);
     setData(find);
-  }, [employeeId]);
+  }, [employeeId, JSON.stringify(dataSource)]);
 
   const handleCancel = () => {
     onClose();
@@ -43,14 +53,28 @@ const EmployeeDetailModal = (props) => {
 
   const processData = (array) => {
     return array.map((item) => {
-      const { date = '', inTime = '', leave = '', notes = '', outTime = '' } = item;
-      return {
-        Date: date,
-        'In Time': inTime,
-        'Out Time': leave,
-        Leaves: notes,
-        Notes: outTime,
+      const {
+        date = '',
+        inTime = '',
+        leaveTaken = '',
+        notes = '',
+        outTime = '',
+        breakTime = '',
+        overTime = '',
+      } = item;
+
+      const dataExport = {
+        Date: date || '-',
+        'In Time': inTime || '-',
+        'Out Time': outTime || '-',
+        Leaves: leaveTaken || '-',
+        Notes: notes || '-',
       };
+      if (locationUser) {
+        dataExport['Break Time'] = breakTime;
+        dataExport['Over Time'] = overTime;
+      }
+      return dataExport;
     });
   };
 
@@ -109,4 +133,4 @@ const EmployeeDetailModal = (props) => {
   );
 };
 
-export default connect(() => ({}))(EmployeeDetailModal);
+export default connect(({ user }) => ({ user }))(EmployeeDetailModal);

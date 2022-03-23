@@ -144,7 +144,6 @@ class ModalFeedback extends Component {
   render() {
     const { visible = false, handleCandelModal = () => {}, loadingSubmit, loading } = this.props;
     const { screenCapture, on, submit, valueRadio, feedback } = this.state;
-
     return (
       <div>
         <Modal
@@ -278,12 +277,12 @@ class ModalFeedback extends Component {
 
                     <Form.Item className={styles.flexButton2}>
                       <Button
-                        className={`${submit ? styles.disableBtn : styles.btnGroup} ${
+                        className={`${!feedback ? styles.disableBtn : styles.btnGroup} ${
                           styles.btnSubmit
                         }`}
                         htmlType="submit"
                         loading={loadingSubmit || loading}
-                        disabled={submit}
+                        disabled={!feedback}
                       >
                         Submit
                       </Button>

@@ -26,7 +26,7 @@ const AddProjectModal = (props) => {
       newProjectId = '',
     } = {},
     employee: { generalInfo: { legalName: ownerName = '' } = {} } = {} || {},
-    // loadingGenId = false,
+    loadingGenId = false,
     loadingAddProject = false,
     loadingFetchEmployeeList = false,
     loadingFetchCustomerList = false,
@@ -57,7 +57,7 @@ const AddProjectModal = (props) => {
 
   useEffect(() => {
     form.setFieldsValue({
-      projectId: newProjectId,
+      projectId: newProjectId.toUpperCase(),
     });
   }, [newProjectId]);
 
@@ -73,6 +73,12 @@ const AddProjectModal = (props) => {
       });
     }
   }, [customerId]);
+
+  useEffect(() => {
+    return () => {
+      setCustomerId('');
+    };
+  }, []);
 
   const { employee: { _id: employeeId = '' } = {} || {} } = props;
 
@@ -93,6 +99,7 @@ const AddProjectModal = (props) => {
         newProjectId: '',
       },
     });
+    setCustomerId('');
     onClose();
   };
 
@@ -120,6 +127,13 @@ const AddProjectModal = (props) => {
       refreshData();
     }
   };
+  const requiredLabel = (text) => {
+    return (
+      <span>
+        {text} <span style={{ color: '#f04b37' }}>*</span>
+      </span>
+    );
+  };
 
   const renderModalContent = () => {
     return (
@@ -137,15 +151,21 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Select Customer' }]}
-                label="Customer"
+                label={requiredLabel('Customer')}
                 name="customerId"
                 fieldKey="customerId"
                 labelCol={{ span: 24 }}
               >
                 <Select
-                  loading={loadingFetchCustomerList}
+                  loading={loadingFetchCustomerList || loadingGenId}
                   placeholder="Select Customer"
+                  disabled={loadingGenId}
                   onChange={(val) => setCustomerId(val)}
+                  showSearch
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 >
                   {customerList.map((x) => (
                     <Option value={x.customerId}>{x.legalName}</Option>
@@ -156,12 +176,19 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Select Engagement Type' }]}
-                label="Engagement Type"
+                label={requiredLabel('Engagement Type')}
                 name="engagementType"
                 fieldKey="engagementType"
                 labelCol={{ span: 24 }}
               >
-                <Select placeholder="Select Engagement Type">
+                <Select
+                  placeholder="Select Engagement Type"
+                  showSearch
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
                   {projectTypeList.map((x) => (
                     <Option value={x.id}>{x.type_name}</Option>
                   ))}
@@ -205,7 +232,7 @@ const AddProjectModal = (props) => {
                 fieldKey="projectId"
                 labelCol={{ span: 24 }}
               >
-                <Input disabled placeholder="Project ID" />
+                <Input disabled placeholder="Project ID (auto generate)" />
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
@@ -213,7 +240,7 @@ const AddProjectModal = (props) => {
                 rules={[{ required: true, message: 'Select Project Status' }]}
                 label={
                   <span>
-                    Project Status{' '}
+                    {requiredLabel('Project Status')}{' '}
                     <Tooltip placement="rightBottom" title="Some texts here">
                       <img src={HelpIcon} alt="" />
                     </Tooltip>
@@ -223,7 +250,14 @@ const AddProjectModal = (props) => {
                 fieldKey="projectStatus"
                 labelCol={{ span: 24 }}
               >
-                <Select placeholder="Select Project Status">
+                <Select
+                  placeholder="Select Project Status"
+                  showSearch
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
                   {projectStatusList.map((x) => (
                     <Option value={x.id}>{x.status}</Option>
                   ))}
@@ -233,7 +267,7 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Enter Project Name' }]}
-                label="Project Name"
+                label={requiredLabel('Project Name')}
                 name="projectName"
                 fieldKey="projectName"
                 labelCol={{ span: 24 }}
@@ -254,7 +288,7 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Select Start Date' }]}
-                label="Start Date"
+                label={requiredLabel('Start Date')}
                 name="startDate"
                 fieldKey="startDate"
                 labelCol={{ span: 24 }}
@@ -269,7 +303,7 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Select Tentative End Date' }]}
-                label="Tentative End Date"
+                label={requiredLabel('Tentative End Date')}
                 name="tentativeEndDate"
                 fieldKey="tentativeEndDate"
                 labelCol={{ span: 24 }}
@@ -284,12 +318,20 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Select Project Manager' }]}
-                label="Project Manager"
+                label={requiredLabel('Project Manager')}
                 name="projectManager"
                 fieldKey="projectManager"
                 labelCol={{ span: 24 }}
               >
-                <Select loading={loadingFetchEmployeeList} placeholder="Select Project Manager">
+                <Select
+                  loading={loadingFetchEmployeeList}
+                  placeholder="Select Project Manager"
+                  showSearch
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
                   {employeeList.map((x) => (
                     <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
                   ))}
@@ -302,6 +344,12 @@ const AddProjectModal = (props) => {
                 name="estimation"
                 fieldKey="estimation"
                 labelCol={{ span: 24 }}
+                rules={[
+                  {
+                    pattern: /^[0-9]*([.][0-9]{1})?$/,
+                    message: 'Value must be a number or float number',
+                  },
+                ]}
               >
                 <Input placeholder="Enter Estimation" />
               </Form.Item>
@@ -312,6 +360,12 @@ const AddProjectModal = (props) => {
                 name="billableHeadCount"
                 fieldKey="billableHeadCount"
                 labelCol={{ span: 24 }}
+                rules={[
+                  {
+                    pattern: /^[0-9]*([.][0-9]{1})?$/,
+                    message: 'Value must be a number or float number',
+                  },
+                ]}
               >
                 <Input placeholder="Enter Billable Head Count" />
               </Form.Item>
@@ -322,6 +376,12 @@ const AddProjectModal = (props) => {
                 name="bufferHeadCount"
                 fieldKey="bufferHeadCount"
                 labelCol={{ span: 24 }}
+                rules={[
+                  {
+                    pattern: /^[0-9]*([.][0-9]{1})?$/,
+                    message: 'Value must be a number or float number',
+                  },
+                ]}
               >
                 <Input placeholder="Enter Buffer Head Count" />
               </Form.Item>
@@ -330,7 +390,7 @@ const AddProjectModal = (props) => {
             <Col xs={24}>
               <Form.Item
                 rules={[{ required: true, message: 'Enter Project Description' }]}
-                label="Project Description"
+                label={requiredLabel('Project Description')}
                 name="projectDescription"
                 fieldKey="projectDescription"
                 labelCol={{ span: 24 }}
@@ -344,12 +404,20 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Select Engineering Owner' }]}
-                label="Engineering Owner"
+                label={requiredLabel('Engineering Owner')}
                 name="engineeringOwner"
                 fieldKey="engineeringOwner"
                 labelCol={{ span: 24 }}
               >
-                <Select loading={loadingFetchEmployeeList} placeholder="Select Engineering Owner">
+                <Select
+                  loading={loadingFetchEmployeeList}
+                  placeholder="Select Engineering Owner"
+                  showSearch
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
                   {employeeList.map((x) => (
                     <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
                   ))}
@@ -359,14 +427,21 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Select Division' }]}
-                label="Division"
+                label={requiredLabel('Division')}
                 name="division"
                 fieldKey="division"
                 labelCol={{ span: 24 }}
               >
-                <Select placeholder="Select Division">
+                <Select
+                  placeholder="Select Division"
+                  showSearch
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
                   {divisionList.map((x) => (
-                    <Option value={x}>{x}</Option>
+                    <Option value={x.name}>{x.name}</Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -374,12 +449,20 @@ const AddProjectModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Select Tags' }]}
-                label="Tags"
+                label={requiredLabel('Tags')}
                 name="tags"
                 fieldKey="tags"
                 labelCol={{ span: 24 }}
               >
-                <Select mode="multiple" placeholder="Select Groups">
+                <Select
+                  mode="multiple"
+                  placeholder="Select Groups"
+                  showSearch
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
                   {tagList.map((x) => (
                     <Option value={x.tag_name}>{x.tag_name}</Option>
                   ))}

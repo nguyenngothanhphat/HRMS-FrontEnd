@@ -1,11 +1,11 @@
 import { Col, Popover, Row } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
 import CloseX from '@/assets/dashboard/closeX.svg';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 
 import styles from './index.less';
+import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/times';
 
 const UserProfilePopover = (props) => {
   const { children, placement = 'top', data = {} } = props;
@@ -23,6 +23,7 @@ const UserProfilePopover = (props) => {
     managerInfo = {},
     titleInfo = {},
     departmentInfo = {},
+    avatar: avatar1 = '',
   } = data;
 
   const {
@@ -42,7 +43,7 @@ const UserProfilePopover = (props) => {
     return (
       <div className={styles.header}>
         <div className={styles.avatar}>
-          <img src={avatar || MockAvatar} alt="" />
+          <img src={avatar || avatar1 || MockAvatar} alt="" />
         </div>
         <div className={styles.information}>
           <span className={styles.name}>
@@ -55,6 +56,12 @@ const UserProfilePopover = (props) => {
     );
   };
   const userInfo = () => {
+    const getTimezone =
+      getTimezoneViaCity(state || state1) || getTimezoneViaCity(countryName || countryName1) || '';
+    const timezone =
+      getTimezone !== '' ? getTimezone : Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const time = getCurrentTimeOfTimezoneOption(new Date(), timezone);
+
     const items = [
       {
         label: 'Reporting Manager',
@@ -75,8 +82,7 @@ const UserProfilePopover = (props) => {
       },
       {
         label: 'Local Time',
-        value:
-          `${moment().locale('en').format('DD/MM/YYYY')} | ${moment().format('HH:mm a')}` || '',
+        value: time,
       },
     ];
 

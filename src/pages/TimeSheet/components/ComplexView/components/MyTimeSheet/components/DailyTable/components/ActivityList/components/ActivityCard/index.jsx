@@ -20,7 +20,7 @@ import EditTaskModal from '@/pages/TimeSheet/components/ComplexView/components/E
 import styles from './index.less';
 
 const { PROJECT, TASK, DESCRIPTION, TIME, TOTAL_HOURS, ACTIONS } = EMP_MT_SECONDARY_COL_SPAN;
-const ORIGINAL_TEXT_LONG = 50;
+const ORIGINAL_TEXT_LONG = 48;
 
 const ActivityCard = (props) => {
   const {
@@ -36,7 +36,9 @@ const ActivityCard = (props) => {
     card = {},
     cardDay = '',
     dispatch,
+    isOldTimeSheet = false,
   } = props;
+
   const { employee: { _id: employeeId = '' } = {} } = props;
 
   const [top, setTop] = useState(0);
@@ -72,7 +74,7 @@ const ActivityCard = (props) => {
 
       setTop(topTemp + marginBlock / 2);
       setHeight(
-        heightTemp >= EMP_ROW_HEIGHT ? heightTemp - marginBlock : EMP_ROW_HEIGHT / 2 + marginBlock,
+        heightTemp >= EMP_ROW_HEIGHT ? heightTemp - marginBlock : EMP_ROW_HEIGHT - marginBlock,
       );
 
       // calculate "description" with read more button
@@ -85,7 +87,9 @@ const ActivityCard = (props) => {
   };
 
   useEffect(() => {
-    calculateCardPosition();
+    if (!isOldTimeSheet) {
+      calculateCardPosition();
+    }
   }, [JSON.stringify(card)]);
 
   // FUNCTION AREA
@@ -145,10 +149,18 @@ const ActivityCard = (props) => {
   return (
     <div
       className={styles.ActivityCard}
-      style={{
-        top,
-        height,
-      }}
+      style={
+        isOldTimeSheet
+          ? {
+              height: '60px',
+              position: 'relative',
+              marginBlock: '12px',
+            }
+          : {
+              top,
+              height,
+            }
+      }
     >
       <Row gutter={[12, 12]} className={styles.container} align="top">
         <Col span={PROJECT} className={`${styles.flexCell} ${styles.boldText}`}>
@@ -160,7 +172,7 @@ const ActivityCard = (props) => {
                 : null
             }
           >
-            <span>{projectName ? projectName.toString()?.charAt(0) : 'A'}</span>
+            <span>{projectName ? projectName.toString()?.charAt(0) : 'P'}</span>
           </div>
           {projectName || ''}
         </Col>
@@ -171,8 +183,8 @@ const ActivityCard = (props) => {
           {renderDescription(description)}
         </Col>
         <Col span={TIME} className={`${styles.normalCell} ${styles.blueText}`}>
-          {moment(startTime, 'HH:mm').format(hourFormat)} -{' '}
-          {moment(endTime, 'HH:mm').format(hourFormat)}
+          {startTime ? moment(startTime, 'HH:mm').format(hourFormat) : ''}
+          {endTime ? ` - ${moment(endTime, 'HH:mm').format(hourFormat)}` : ''}
         </Col>
         <Col span={TOTAL_HOURS} className={`${styles.normalCell} ${styles.blueText}`}>
           {convertMsToTime(duration)}

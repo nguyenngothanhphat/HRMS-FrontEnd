@@ -95,9 +95,9 @@ const FilterPopover = (props) => {
                 style={{ width: '100%' }}
                 placeholder="Select Division"
               >
-                {divisionList.map((x) => {
-                  return <Select.Option value={x}>{x}</Select.Option>;
-                })}
+                {divisionList.map((x) => (
+                  <Select.Option value={x.name}>{x.name}</Select.Option>
+                ))}
               </Select>
             </Form.Item>
 

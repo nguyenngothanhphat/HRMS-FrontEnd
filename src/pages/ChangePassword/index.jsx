@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import ChangePasswordBox from '@/components/ChangePasswordBox';
+import { IS_TERRALOGIC_LOGIN } from '@/utils/login';
 import styles from './index.less';
 
 @connect(() => ({}))
@@ -29,7 +30,11 @@ class ChangePassword extends Component {
           </div>
         </Affix>
         <div className={styles.ChangePassword}>
-          <ChangePasswordBox onFinish={this.onFinish} />
+          {IS_TERRALOGIC_LOGIN ? (
+            <span>You are not allowed to change password.</span>
+          ) : (
+            <ChangePasswordBox onFinish={this.onFinish} />
+          )}
         </div>
       </PageContainer>
     );

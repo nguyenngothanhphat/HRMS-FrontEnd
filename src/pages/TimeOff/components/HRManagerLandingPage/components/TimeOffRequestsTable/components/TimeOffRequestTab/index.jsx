@@ -10,7 +10,7 @@ import FilterBar from '../FilterBar';
 
 import styles from './index.less';
 
-const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DELETED, DRAFTS } =
+const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DELETED, DRAFTS, WITHDRAWN } =
   TIMEOFF_STATUS;
 @connect(
   ({
@@ -32,7 +32,6 @@ const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DELETED, DRA
     user,
     filter,
     timeOffTypesByCountry,
-
     teamCompoffRequests,
     teamLeaveRequests,
     compoffRequests,
@@ -53,7 +52,7 @@ class TimeOffRequestTab extends Component {
       draftLength: 0,
       selectedTab: IN_PROGRESS,
       selectedTabNumber: '0',
-      onHoldLength: 0,
+      withdrawnLength: 0,
       deletedLength: 0,
       handlePackage: {},
     };
@@ -129,22 +128,22 @@ class TimeOffRequestTab extends Component {
     let status = '';
     if (tabType === 1) {
       if (filterTab === '1') {
-        status = IN_PROGRESS;
+        status = [IN_PROGRESS, ON_HOLD];
       }
       if (filterTab === '2') {
-        status = ACCEPTED;
+        status = [ACCEPTED];
       }
       if (filterTab === '3') {
-        status = REJECTED;
+        status = [REJECTED];
       }
       if (filterTab === '4') {
-        status = DRAFTS;
+        status = [DRAFTS];
       }
       if (filterTab === '5') {
-        status = ON_HOLD;
+        status = [WITHDRAWN];
       }
       if (filterTab === '6') {
-        status = DELETED;
+        status = [DELETED];
       }
     } else if (tabType === 2) {
       // compoff
@@ -211,7 +210,7 @@ class TimeOffRequestTab extends Component {
     } else if (id === '4') {
       selectedTab = DRAFTS;
     } else if (id === '5') {
-      selectedTab = ON_HOLD;
+      selectedTab = WITHDRAWN;
     } else if (id === '6') {
       selectedTab = DELETED;
     }
@@ -222,17 +221,22 @@ class TimeOffRequestTab extends Component {
     });
   };
 
+  onRefreshTable = (selectedTabNumber) => {
+    this.fetchFilteredDataFromServer(selectedTabNumber);
+  };
+
   countTotal = (arrTotal) => {
     let inProgressLength = 0;
     let approvedLength = 0;
     let rejectedLength = 0;
     let draftLength = 0;
-    let onHoldLength = 0;
     let deletedLength = 0;
+    let withdrawnLength = 0;
 
     arrTotal.forEach((item) => {
       switch (item._id) {
-        case IN_PROGRESS: {
+        case IN_PROGRESS:
+        case ON_HOLD: {
           inProgressLength += item.count;
           break;
         }
@@ -252,12 +256,12 @@ class TimeOffRequestTab extends Component {
           draftLength += item.count;
           break;
         }
-        case ON_HOLD: {
-          onHoldLength += item.count;
-          break;
-        }
         case DELETED: {
           deletedLength += item.count;
+          break;
+        }
+        case WITHDRAWN: {
+          withdrawnLength += item.count;
           break;
         }
         default:
@@ -269,8 +273,8 @@ class TimeOffRequestTab extends Component {
       approvedLength,
       rejectedLength,
       draftLength,
-      onHoldLength,
       deletedLength,
+      withdrawnLength,
     });
   };
 
@@ -356,6 +360,7 @@ class TimeOffRequestTab extends Component {
       leaveRequests = [],
       teamCompoffRequests = [],
       teamLeaveRequests = [],
+      user: { permissions = {} } = {},
     } = this.props;
 
     const {
@@ -365,8 +370,8 @@ class TimeOffRequestTab extends Component {
       draftLength,
       selectedTab,
       selectedTabNumber,
-      onHoldLength,
       deletedLength,
+      withdrawnLength,
       handlePackage,
     } = this.state;
 
@@ -375,13 +380,15 @@ class TimeOffRequestTab extends Component {
       approvedLength,
       rejectedLength,
       draftLength,
-      onHoldLength,
       deletedLength,
+      withdrawnLength,
     };
 
     const checkEmptyTable = false;
 
     const emptyTableContent = this.renderEmptyTableContent(tab, category);
+
+    const viewHRTimeoff = permissions.viewHRTimeoff !== -1;
 
     return (
       <div className={styles.TimeOffRequestTab}>
@@ -412,8 +419,9 @@ class TimeOffRequestTab extends Component {
                     data={teamLeaveRequests}
                     category={category}
                     selectedTab={selectedTab}
-                    onRefreshTable={this.setSelectedFilterTab}
+                    onRefreshTable={this.onRefreshTable}
                     onHandle={this.onApproveRejectHandle}
+                    isHR={viewHRTimeoff}
                   />
                 )}
                 {type === 2 && category === 'TEAM' && (
@@ -421,7 +429,7 @@ class TimeOffRequestTab extends Component {
                     data={teamCompoffRequests}
                     category={category}
                     selectedTab={selectedTab}
-                    onRefreshTable={this.setSelectedFilterTab}
+                    onRefreshTable={this.onRefreshTable}
                     onHandle={this.onApproveRejectHandle}
                   />
                 )}
@@ -429,8 +437,9 @@ class TimeOffRequestTab extends Component {
                   <TeamLeaveTable
                     data={teamLeaveRequests}
                     selectedTab={selectedTab}
-                    onRefreshTable={this.setSelectedFilterTab}
+                    onRefreshTable={this.onRefreshTable}
                     onHandle={this.onApproveRejectHandle}
+                    isHR={viewHRTimeoff}
                   />
                 )}
 
@@ -438,7 +447,7 @@ class TimeOffRequestTab extends Component {
                   <TeamCompoffTable
                     data={teamCompoffRequests}
                     selectedTab={selectedTab}
-                    onRefreshTable={this.setSelectedFilterTab}
+                    onRefreshTable={this.onRefreshTable}
                     onHandle={this.onApproveRejectHandle}
                   />
                 )}

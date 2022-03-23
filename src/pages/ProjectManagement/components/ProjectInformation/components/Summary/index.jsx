@@ -5,7 +5,7 @@ import moment from 'moment';
 import EditIcon from '@/assets/projectManagement/edit.svg';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';
 import CommonTable from '../CommonTable';
-import CommonModal from '../CommonModal';
+import CommonModal from '../../../CommonModal';
 import EditEndDateContent from './components/EditEndDateContent';
 import EditBillableHeadCountContent from './components/EditBillableHeadCountContent';
 import EditBufferHeadCountContent from './components/EditBufferHeadCountContent';
@@ -243,7 +243,16 @@ const Summary = (props) => {
           >
             <Input disabled placeholder="Enter Buffer Head Count" />
           </Form.Item>
-          <Form.Item label="Estimation (Man Months):" name="estimation">
+          <Form.Item
+            label="Estimation (Man Months):"
+            name="estimation"
+            rules={[
+              {
+                pattern: /^[0-9]*([.][0-9]{1})?$/,
+                message: 'Value must be a number or float number',
+              },
+            ]}
+          >
             <Input placeholder="Enter Estimation" />
           </Form.Item>
         </Form>

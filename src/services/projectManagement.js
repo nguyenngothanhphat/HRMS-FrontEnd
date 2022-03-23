@@ -61,6 +61,30 @@ export async function addProject(payload) {
   );
 }
 
+export async function updateProject(payload) {
+  return request(
+    `/api-project/projecttenant/update-project`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
+}
+
+export async function deleteProject(payload) {
+  return request(
+    `/api-project/projecttenant/delete-project`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
+}
+
 export async function getCustomerList(payload) {
   return request(
     `/api-customer/customertenant/list`,
@@ -110,9 +134,9 @@ export async function getTagList(payload) {
 }
 
 export async function getDivisionList(payload) {
-  return request('/api/departmenttenant/list', {
-    method: 'POST',
-    data: payload,
+  return request('/api/departmenttenant/get-all-division', {
+    method: 'GET',
+    params: payload,
   });
 }
 

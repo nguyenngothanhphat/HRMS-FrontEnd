@@ -14,6 +14,15 @@ const ProjectDetailModal = (props) => {
     projectId = '',
     dataSource = [],
   } = props;
+  const {
+    user: {
+      currentUser: {
+        location: { headQuarterAddress: { country: { _id: countryID } = {} } = {} } = {},
+      } = {},
+    } = {},
+  } = props;
+
+  const locationUser = countryID === 'US';
 
   const [data, setData] = useState({});
 
@@ -35,33 +44,26 @@ const ProjectDetailModal = (props) => {
   };
 
   const processData = (array) => {
-    return array.map((item) => {
+    const result = [];
+    array.forEach((item) => {
       const { task = '', description = '', department = '', projectMembers = [] } = item;
-      let resources = '';
-      let timeTaken = 0;
-      let totaltime = 0;
-
-      projectMembers.forEach((el, index) => {
-        const { totalTime = 0 } = el;
-        resources += el.legalName;
-        timeTaken += el.userSpentTimeInHours;
-        totaltime += totalTime;
-        if (index + 1 < projectMembers.length) {
-          resources += ', ';
-          timeTaken += ', ';
-          totaltime += ', ';
+      projectMembers.forEach((pro) => {
+        const dataExport = {
+          Department: department || '-',
+          Task: task || '-',
+          Description: description || '-',
+          'Resources ': pro.legalName || '-',
+          'Time taken': pro.userSpentTimeInHours || '-',
+          'Total time (task)': pro.totaltime || '-',
+        };
+        if (locationUser) {
+          dataExport['Break Time'] = pro.breakTime;
+          dataExport['Over Time'] = pro.overTime;
         }
+        result.push(dataExport);
       });
-
-      return {
-        Department: department,
-        Task: task,
-        Description: description,
-        'Resources ': resources,
-        'Time taken': timeTaken,
-        'Total time (task)': totaltime,
-      };
     });
+    return result;
   };
 
   const downloadTemplate = () => {
@@ -116,4 +118,4 @@ const ProjectDetailModal = (props) => {
   );
 };
 
-export default connect(() => ({}))(ProjectDetailModal);
+export default connect(({ user }) => ({ user }))(ProjectDetailModal);

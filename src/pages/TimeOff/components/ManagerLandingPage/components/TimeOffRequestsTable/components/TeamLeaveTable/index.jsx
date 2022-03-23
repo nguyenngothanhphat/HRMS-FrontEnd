@@ -13,7 +13,8 @@ import RejectCommentModal from '../RejectCommentModal';
 
 import styles from './index.less';
 
-const { IN_PROGRESS, REJECTED } = TIMEOFF_STATUS;
+const { IN_PROGRESS, REJECTED, ON_HOLD } = TIMEOFF_STATUS;
+
 const COLUMN_WIDTH = {
   TYPE_A: {
     TICKET_ID: '15%',
@@ -61,54 +62,44 @@ class TeamLeaveTable extends PureComponent {
     return [
       {
         title: 'Ticket ID',
-        dataIndex: 'id',
+        dataIndex: 'ticketID',
         align: 'left',
         fixed: 'left',
         width: COLUMN_WIDTH[TYPE].TICKET_ID,
-        render: (id) => {
-          const { ticketID = '', _id = '', onDate = '', status = '' } = id;
+        render: (_, record) => {
+          const { ticketID = '', _id = '', onDate = '', status = '' } = record;
           const createdDate = moment.utc(onDate).locale('en').format('YYYY/MM/DD');
           const nowDate = moment.utc().locale('en').format('YYYY/MM/DD');
           const isNewRequest =
             status === IN_PROGRESS &&
             moment.utc(nowDate).subtract(2, 'days').isSameOrBefore(moment.utc(createdDate));
+          // const checkWithdraw = status === ON_HOLD;
 
           return (
             <span className={styles.ID} onClick={() => this.onIdClick(_id)}>
-              {ticketID}
+              <span className={styles.text}>{ticketID}</span>
               {isNewRequest && <Tag color="#2C6DF9">New</Tag>}
+              {/* {checkWithdraw && <Tag color="#2C6DF9">Withdrawing</Tag>} */}
             </span>
           );
         },
-        defaultSortOrder: ['ascend'],
-        sorter: {
-          compare: (a, b) => moment.utc(a.onDate).isAfter(moment.utc(b.onDate)),
-        },
-        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: 'Requestee',
-        dataIndex: 'requestee',
+        dataIndex: 'employee',
         width: COLUMN_WIDTH[TYPE].REQUESTEE,
         align: 'left',
-        render: (requestee) => <span>{requestee}</span>,
-        // sortDirections: ['ascend', 'descend', 'ascend'],
+        render: (employee) => <span>{employee?.generalInfo?.legalName || '-'}</span>,
       },
       {
         title: 'Type',
         dataIndex: 'type',
         width: COLUMN_WIDTH[TYPE].TYPE,
         align: 'center',
-        render: (type) => <span>{type ? type.name : '-'}</span>,
-        // defaultSortOrder: ['ascend'],
-        // sorter: {
-        //   compare: (a, b) => {
-        //     const { type: { shortType: s1 = '' } = {} } = a;
-        //     const { type: { shortType: s2 = '' } = {} } = b;
-        //     return s1.localeCompare(s2);
-        //   },
-        // },
-        // sortDirections: ['ascend', 'descend', 'ascend'],
+        render: (type, record) => {
+          if (record.status === ON_HOLD) return <span>Withdraw Request</span>;
+          return <span>{type ? type.name : '-'}</span>;
+        },
       },
 
       {
@@ -116,7 +107,17 @@ class TeamLeaveTable extends PureComponent {
         width: COLUMN_WIDTH[TYPE].LEAVE_DATES,
         dataIndex: 'leaveTimes',
         align: 'left',
-        render: (leaveTimes) => (leaveTimes !== '' ? <span>{leaveTimes}</span> : <span>-</span>),
+        render: (_, record) => {
+          return `${moment.utc(record.fromDate).locale('en').format('MM/DD/YYYY')} - ${moment
+            .utc(record.toDate)
+            .locale('en')
+            .format('MM/DD/YYYY')}`;
+        },
+        defaultSortOrder: ['ascend'],
+        sorter: {
+          compare: (a, b) => moment.utc(a.fromDate).isAfter(moment.utc(b.fromDate)),
+        },
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: 'Duration',
@@ -124,18 +125,6 @@ class TeamLeaveTable extends PureComponent {
         dataIndex: 'duration',
         align: 'center',
       },
-      // {
-      //   title: `Req’ted on `,
-      //   dataIndex: 'onDate',
-      //   align: 'center',
-      //   // width: '30%',
-      //   render: (onDate) => <span>{moment.utc(onDate).locale('en').format('MM/DD/YYYY')}</span>,
-      //   defaultSortOrder: ['ascend'],
-      //   sorter: {
-      //     compare: (a, b) => moment.utc(a.onDate).isAfter(moment.utc(b.onDate)),
-      //   },
-      //   sortDirections: ['ascend', 'descend', 'ascend'],
-      // },
       {
         title: 'Comment',
         dataIndex: 'comment',
@@ -151,17 +140,20 @@ class TeamLeaveTable extends PureComponent {
       {
         title: 'Action',
         align: 'left',
-        dataIndex: 'id',
+        dataIndex: 'action',
         fixed: 'right',
         width: COLUMN_WIDTH[TYPE].ACTION,
         // width: '20%',
-        render: (id) => {
-          const { ticketID = '', _id = '', approvalManagerId = '' } = id;
-          const { selectedTab = '', currentUser: { employee: { _id: myId = '' } = {} } = {} } =
-            this.props;
+        render: (_, record) => {
+          const { ticketID = '', _id = '', approvalManager = '' } = record;
+          const {
+            isHR = false,
+            selectedTab = '',
+            currentUser: { employee: { _id: myId = '' } = {} } = {},
+          } = this.props;
 
           // only manager accept/reject a ticket
-          const isMyTicket = myId === approvalManagerId;
+          const isMyTicket = myId === approvalManager?._id || isHR;
 
           if (selectedTab === IN_PROGRESS)
             return (
@@ -169,7 +161,7 @@ class TeamLeaveTable extends PureComponent {
                 <Tooltip title="View">
                   <img src={OpenIcon} onClick={() => this.onOpenClick(_id)} alt="open" />
                 </Tooltip>
-                {isMyTicket && (
+                {isMyTicket && record.status !== ON_HOLD && (
                   <>
                     <Tooltip title="Approve">
                       <img
@@ -227,7 +219,7 @@ class TeamLeaveTable extends PureComponent {
     });
     const { statusCode = 0 } = res;
     if (statusCode === 200) {
-      this.onRefreshTable('2');
+      this.onRefreshTable('1');
     }
   };
 
@@ -252,7 +244,7 @@ class TeamLeaveTable extends PureComponent {
     const { statusCode = 0 } = res;
     if (statusCode === 200) {
       this.toggleCommentModal(false);
-      this.onRefreshTable('3');
+      this.onRefreshTable('1');
     }
   };
 
@@ -294,54 +286,6 @@ class TeamLeaveTable extends PureComponent {
     } else onHandle({});
   };
 
-  // PARSE DATA FOR TABLE
-  processData = (data) => {
-    return data.map((value) => {
-      const {
-        status = '',
-        fromDate = '',
-        toDate = '',
-        approvalManager: { _id: approvalManagerId = '', generalInfo: generalInfoA = {} } = {},
-        // cc = [],
-        ticketID = '',
-        _id = '',
-        onDate = '',
-        employee: { generalInfo: { firstName = '', lastName = '' } = {} },
-      } = value;
-
-      let leaveTimes = '';
-      if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-        leaveTimes = `${moment.utc(fromDate).locale('en').format('MM/DD/YYYY')} - ${moment
-          .utc(toDate)
-          .locale('en')
-          .format('MM/DD/YYYY')}`;
-      }
-
-      // let employeeFromCC = [];
-      // if (cc.length > 0) {
-      //   employeeFromCC = cc[0].map((each) => {
-      //     return each;
-      //   });
-      // }
-      // const assigned = [generalInfoA, ...employeeFromCC];
-
-      return {
-        ...value,
-        leaveTimes,
-        // assigned,
-        assigned: [generalInfoA],
-        id: {
-          ticketID,
-          _id,
-          onDate,
-          status,
-          approvalManagerId,
-        },
-        requestee: `${firstName} ${lastName}`,
-      };
-    });
-  };
-
   toggleCommentModal = (value) => {
     this.setState({
       commentModalVisible: value,
@@ -377,7 +321,7 @@ class TeamLeaveTable extends PureComponent {
         length: 0,
       };
       onHandle(payload);
-      this.onRefreshTable('2');
+      this.onRefreshTable('1');
     }
   };
 
@@ -408,7 +352,7 @@ class TeamLeaveTable extends PureComponent {
       };
       onHandle(payload);
       this.toggleCommentModal(false);
-      this.onRefreshTable('3');
+      this.onRefreshTable('1');
     }
   };
 
@@ -424,6 +368,7 @@ class TeamLeaveTable extends PureComponent {
       paging: { page, limit, total },
       // currentUser: { employee: { _id: myId = '' } = {} } = {},
       currentUser: { employee: { _id: myId = '' } = {} } = {},
+      isHR = false,
     } = this.props;
 
     const {
@@ -441,8 +386,6 @@ class TeamLeaveTable extends PureComponent {
       spinning: loading1 || loading3 || loading5,
       indicator: <Spin indicator={antIcon} />,
     };
-
-    const parsedData = this.processData(data);
 
     const pagination = {
       position: ['bottomLeft'],
@@ -477,7 +420,9 @@ class TeamLeaveTable extends PureComponent {
         } = record;
 
         return {
-          disabled: selectedTab === IN_PROGRESS && myId !== approvalManagerId, // Column configuration not to be checked
+          disabled:
+            (selectedTab === IN_PROGRESS && myId !== approvalManagerId && !isHR) ||
+            record.status === ON_HOLD, // Column configuration not to be checked
           name: record.name,
         };
       },
@@ -496,11 +441,11 @@ class TeamLeaveTable extends PureComponent {
           rowSelection={rowSelection}
           pagination={{ ...pagination, total }}
           columns={tableByRole}
-          dataSource={parsedData}
+          dataSource={data}
           scroll={scroll}
           rowKey={(id) => id._id}
         />
-        {parsedData.length === 0 && <div className={styles.paddingContainer} />}
+        {data.length === 0 && <div className={styles.paddingContainer} />}
         <RejectCommentModal
           visible={commentModalVisible}
           onClose={() => this.toggleCommentModal(false)}

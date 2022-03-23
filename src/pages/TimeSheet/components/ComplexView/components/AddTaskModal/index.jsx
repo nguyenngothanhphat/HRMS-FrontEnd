@@ -13,7 +13,7 @@ import {
   // TimePicker,
 } from 'antd';
 import moment from 'moment';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { dateFormatAPI, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -24,10 +24,15 @@ import CustomTimePicker from '@/components/CustomTimePicker';
 
 const { Option } = Select;
 const dateFormat = 'MM/DD/YYYY';
+const countryIdUS = 'US';
 const TASKS = [];
 
 const AddTaskModal = (props) => {
   const [form] = Form.useForm();
+
+  const [disabledHourAfter, setDisabledHourAfter] = useState([]); // for start time validation
+  const [disabledHourBefore, setDisabledHourBefore] = useState([]); // for end time validation
+
   const {
     visible = false,
     title = 'Add Task',
@@ -46,6 +51,8 @@ const AddTaskModal = (props) => {
   } = props;
 
   const { _id: employeeId = '' } = employee;
+  const { headQuarterAddress: { country: { _id: countryID = '' } = {} } = {} } = location;
+  const viewUS = countryID === countryIdUS;
 
   const fetchProjectList = () => {
     dispatch({
@@ -83,6 +90,14 @@ const AddTaskModal = (props) => {
     });
   };
 
+  const onValuesChange = (changedValues, allValues) => {
+    const { tasks = [] } = allValues;
+    const disabledHourAfterTemp = tasks.map((x = {}) => x.endTime);
+    const disabledHourBeforeTemp = tasks.map((x = {}) => x.startTime);
+    setDisabledHourAfter(disabledHourAfterTemp);
+    setDisabledHourBefore(disabledHourBeforeTemp);
+  };
+
   // main function
   const addMultipleActivityEffect = (submitDate, tasks) => {
     if (!employee?.managerInfo) {
@@ -97,6 +112,8 @@ const AddTaskModal = (props) => {
         taskName: item.taskName,
         startTime: moment(item.startTime, hourFormat).format(hourFormatAPI),
         endTime: moment(item.endTime, hourFormat).format(hourFormatAPI),
+        breakTime: item.breakTime || 0,
+        overTime: item.overTime || 0,
         date: moment(submitDate).locale('en').format(dateFormatAPI),
         clientLocation: item.clientLocation || false,
         project: {
@@ -140,31 +157,39 @@ const AddTaskModal = (props) => {
       refreshData();
     }
   };
+  const requiredLabel = (text) => {
+    return (
+      <span>
+        {text} <span style={{ color: '#f04b37' }}>*</span>
+      </span>
+    );
+  };
 
   const renderFormList = () => {
     return (
       <Form.List name="tasks">
         {(fields, { add, remove }) => (
           <>
-            {fields.map(({ key, name, fieldKey }) => (
+            {fields.map(({ key, name, fieldKey }, index) => (
               <>
                 {key !== 0 && <div className={styles.divider} />}
                 <Row gutter={[24, 0]} className={styles.belowPart}>
                   <Col xs={24} md={12}>
                     <Form.Item
-                      label="Project*"
+                      label={requiredLabel('Project')}
                       labelCol={{ span: 24 }}
-                      rules={[{ required: true, message: 'Select a project' }]}
+                      rules={[{ required: true, message: 'Select the project' }]}
                       name={[name, 'projectId']}
                       fieldKey={[fieldKey, 'projectId']}
                     >
                       <Select
                         showSearch
-                        placeholder="Select a project"
+                        placeholder="Select the project"
                         loading={loadingFetchProject}
                         disabled={loadingFetchProject}
                         filterOption={(input, option) =>
-                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                       >
                         {projectList.map((val) => (
                           <Option value={val.id}>{val.projectName}</Option>
@@ -174,62 +199,111 @@ const AddTaskModal = (props) => {
                   </Col>
                   <Col xs={24} md={12}>
                     <Form.Item
-                      label="Task*"
+                      label={requiredLabel('Task')}
                       labelCol={{ span: 24 }}
                       rules={[
                         {
                           required: true,
-                          message: TASKS.length !== 0 ? 'Select a task' : 'Enter task name',
+                          message: TASKS.length !== 0 ? 'Select a task' : 'Enter the task name',
                         },
                       ]}
                       name={[name, 'taskName']}
                       fieldKey={[fieldKey, 'taskName']}
                     >
                       {TASKS.length !== 0 ? (
-                        <Select showSearch placeholder="Select a task">
+                        <Select showSearch placeholder="Select the task">
                           {TASKS.map((val) => (
                             <Option value={val}>{val}</Option>
                           ))}
                         </Select>
                       ) : (
-                        <Input placeholder="Enter task name" maxLength={150} />
+                        <Input placeholder="Enter the task name" maxLength={150} />
                       )}
                     </Form.Item>
                   </Col>
 
                   <Col xs={24} md={12}>
                     <Form.Item
-                      label="Start time*"
+                      label={requiredLabel('Start time')}
                       labelCol={{ span: 24 }}
-                      rules={[{ required: true, message: 'Select start time' }]}
+                      rules={[{ required: true, message: 'Select the start time' }]}
                       name={[name, 'startTime']}
                       fieldKey={[fieldKey, 'startTime']}
                     >
-                      <CustomTimePicker placeholder="Select start time" showSearch />
+                      <CustomTimePicker
+                        placeholder="Select the start time"
+                        showSearch
+                        disabledHourAfter={disabledHourAfter[index]}
+                      />
                     </Form.Item>
                   </Col>
 
                   <Col xs={24} md={12}>
                     <Form.Item
-                      label="End time*"
+                      label={requiredLabel('End time')}
                       labelCol={{ span: 24 }}
-                      rules={[{ required: true, message: 'Select end time' }]}
+                      rules={[{ required: true, message: 'Select the end time' }]}
                       name={[name, 'endTime']}
                       fieldKey={[fieldKey, 'endTime']}
                     >
-                      <CustomTimePicker placeholder="Select end time" showSearch />
+                      <CustomTimePicker
+                        placeholder="Select the end time"
+                        showSearch
+                        disabledHourBefore={disabledHourBefore[index]}
+                      />
                     </Form.Item>
                   </Col>
 
+                  {viewUS && (
+                    <Col xs={24} md={12}>
+                      <Form.Item
+                        label="Break time (In Mins)"
+                        labelCol={{ span: 24 }}
+                        rules={[
+                          {
+                            pattern: /^[\d]+$/,
+                            message: 'Just only numbers',
+                          },
+                        ]}
+                        name={[name, 'breakTime']}
+                        fieldKey={[fieldKey, 'breakTime']}
+                      >
+                        <Input placeholder="0" />
+                      </Form.Item>
+                    </Col>
+                  )}
+
+                  {viewUS && (
+                    <Col xs={24} md={12}>
+                      <Form.Item
+                        label="Over time (In Mins)"
+                        labelCol={{ span: 24 }}
+                        rules={[
+                          {
+                            pattern: /^[\d]+$/,
+                            message: 'Just only numbers',
+                          },
+                        ]}
+                        name={[name, 'overTime']}
+                        fieldKey={[fieldKey, 'overTime']}
+                      >
+                        <Input placeholder="0" />
+                      </Form.Item>
+                    </Col>
+                  )}
+
                   <Col xs={24}>
                     <Form.Item
-                      label="Description*"
+                      label={requiredLabel('Description')}
                       labelCol={{ span: 24 }}
-                      rules={[{ required: true, message: 'Please enter Description' }]}
+                      rules={[{ required: true, message: 'Enter the description' }]}
                       name={[name, 'notes']}
                       fieldKey={[fieldKey, 'notes']}
                     >
-                      <Input.TextArea autoSize={{ minRows: 4 }} placeholder="Enter description" />
+                      <Input.TextArea
+                        autoSize={{ minRows: 4 }}
+                        placeholder="Enter the description"
+                      />
                     </Form.Item>
                   </Col>
                   <Col xs={12}>
@@ -276,12 +350,13 @@ const AddTaskModal = (props) => {
           initialValues={{
             tasks: [{ projectName: projectName || null }],
           }}
+          onValuesChange={onValuesChange}
         >
           <Row gutter={[24, 0]} className={styles.abovePart}>
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Please select Timesheet Period' }]}
-                label="Select Timesheet Period"
+                label={requiredLabel('Select Timesheet Period')}
                 name="date"
                 fieldKey="date"
                 labelCol={{ span: 24 }}

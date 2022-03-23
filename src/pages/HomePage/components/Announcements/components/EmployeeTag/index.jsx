@@ -7,9 +7,9 @@ import styles from './index.less';
 const EmployeeTag = (props) => {
   const {
     employee: {
-      generalInfo: { avatar = '', legalName = '', userId = '', website = '' } = {},
-      title = {} || {},
-    } = {},
+      generalInfoInfo: { avatar = '', legalName = '', userId = '', website = '' } = {} || {},
+      titleInfo = {} || {},
+    } = {} || {},
   } = props;
 
   const onViewProfileClick = () => {
@@ -28,7 +28,7 @@ const EmployeeTag = (props) => {
         </div>
         <div className={styles.information}>
           <span className={styles.name}>{legalName}</span>
-          <span className={styles.title}>{title?.name}</span>
+          <span className={styles.title}>{titleInfo?.name}</span>
         </div>
       </div>
     </Col>

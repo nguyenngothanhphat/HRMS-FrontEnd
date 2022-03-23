@@ -96,19 +96,29 @@ class TimeOff extends PureComponent {
       if (category === 'TIMEOFF') {
         notification.success({
           message: 'Timeoff request',
-          description: `Timeoff request [Ticket ID: ${tickedId}] [Type: ${typeName}] was withdrawn & deleted.`,
+          description: `Timeoff request [Ticket ID: ${tickedId}] [Type: ${typeName}] was withdrawn.`,
+          duration: 6,
         });
       }
       if (category === 'DRAFTS') {
         notification.success({
           message: 'Timeoff request',
           description: `Draft request [Ticket ID: ${tickedId}] [Type: ${typeName}] was deleted.`,
+          duration: 6,
+        });
+      }
+      if (category === 'APPROVED') {
+        notification.success({
+          message: 'Timeoff request',
+          description: `Withdrawal request [Ticket ID: ${tickedId}] [Type: ${typeName}] was sent.`,
+          duration: 6,
         });
       }
       if (category === 'COMPOFF') {
         notification.success({
           message: 'Compoff request',
           description: `Compoff request [Ticket ID: ${tickedId}] was withdrawn & deleted.`,
+          duration: 6,
         });
       }
       history.replace();
@@ -164,8 +174,8 @@ class TimeOff extends PureComponent {
       permissions = {},
     } = this.props;
 
-    const viewManagerTimeoff = permissions.viewManagerTimeoff === 1;
-    const viewHRTimeoff = permissions.viewHRTimeoff === 1;
+    const viewManagerTimeoff = permissions.viewManagerTimeoff !== -1;
+    const viewHRTimeoff = permissions.viewHRTimeoff !== -1;
 
     if (viewHRTimeoff) return <HRManagerLandingPage eligibleForCompOff={eligibleForCompOff} />;
     if (viewManagerTimeoff) return <ManagerLandingPage eligibleForCompOff={eligibleForCompOff} />;
@@ -178,7 +188,7 @@ class TimeOff extends PureComponent {
       permissions = {},
     } = this.props;
 
-    const viewSettingTimeoff = permissions.viewSettingTimeoff === 1;
+    const viewSettingTimeoff = permissions.viewSettingTimeoff !== -1;
 
     return (
       <>

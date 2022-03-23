@@ -1,14 +1,20 @@
 import { Button, Modal, Row, notification } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
-import { WIDGETS, WIDGET_IDS } from '@/utils/dashboard';
+import { WIDGETS } from '@/utils/dashboard';
 import styles from './index.less';
 import WidgetCard from './components/WidgetCard';
 import SettingIcon from '@/assets/dashboard/setting.svg';
 
 const ManageWidgetsModal = (props) => {
   const { currentUser: { _id: userMapId = '', firstName: userMapFirstName = '' } = {} } = props;
-  const { dispatch, loadingUpdateWidgets = false, employeeWidgets = [], permissions = {} } = props;
+  const {
+    dispatch,
+    loadingUpdateWidgets = false,
+    employeeWidgets = [],
+    widgetPermission = [],
+  } = props;
+
   const [selectedWidgets, setSelectedWidgets] = useState([]);
   const [visible, setVisible] = useState(false);
 
@@ -100,21 +106,10 @@ const ManageWidgetsModal = (props) => {
   };
 
   const renderContent = () => {
-    // const viewMyTeamDashboard = permissions.viewMyTeamDashboard !== -1;
-    const viewTimesheetDashboard = permissions.viewTimesheetDashboard !== -1;
+    const showingWidgets = WIDGETS.filter(
+      (w) => widgetPermission.find((x) => x.id === w.id)?.permission,
+    );
 
-    const getShowingWidgets = () => {
-      let result = WIDGETS;
-      // if (!viewMyTeamDashboard) {
-      //   result = result.filter((w) => w.id !== WIDGET_IDS.MYTEAM);
-      // }
-      if (!viewTimesheetDashboard) {
-        result = result.filter((w) => w.id !== WIDGET_IDS.TIMESHEET);
-      }
-      return result;
-    };
-
-    const showingWidgets = getShowingWidgets();
     return (
       <div className={styles.content}>
         <div className={styles.widgets}>

@@ -238,14 +238,13 @@ const DirectoryComponent = (props) => {
 
       if (viewTabMyTeam && tabId === myTeam) {
         const { currentUser = {} } = props;
-        const roleEmployee = currentUser ? currentUser.employee.title.roles : [];
         const employee = currentUser ? currentUser.employee._id : '';
         dispatch({
           type: 'employee/fetchListEmployeeMyTeam',
           payload: {
             ...payload,
             // department: [departmentName],
-            roles: roleEmployee,
+            roles: currentUser?.roles || [],
             employee,
           },
         });
@@ -328,6 +327,9 @@ const DirectoryComponent = (props) => {
         'Employee Id': item.employeeId,
         'First Name': item.firstName,
         'Last Name': item.lastName,
+        'Middle Name': item.middleName,
+        'Gender': item.Gender,
+        'Date of Birth': item.dateOfBirth,
         'Joined Date': item.joinDate,
         Location: item.location,
         Department: item.department,
@@ -361,6 +363,9 @@ const DirectoryComponent = (props) => {
         employeeId: 'PSI 0000',
         firstName: 'First Name',
         lastName: 'Last Name',
+        middleName: 'Middle Name',
+        gender: 'Gender',
+        dateOfBirth: 'Date of Birth',
         joinDate: '11/30/2020',
         location: 'Vietnam',
         department: 'Develop',

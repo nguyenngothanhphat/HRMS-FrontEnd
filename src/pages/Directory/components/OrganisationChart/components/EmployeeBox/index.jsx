@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
-import { Avatar, Row, Col, Select, Spin, Divider, Tooltip, Popover, Form, Button } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
-import { Link, connect } from 'umi';
-import { isEmpty, debounce } from 'lodash';
+import { Avatar, Button, Col, Divider, Form, Popover, Row, Select, Spin, Tooltip } from 'antd';
+import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
-
+import React, { Component } from 'react';
+import { connect, Link } from 'umi';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
+import { getCurrentCompany } from '@/utils/authority';
 import SearchIcon from '@/assets/searchOrgChart.svg';
 import avtDefault from '@/assets/avtDefault.jpg';
-import { getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -218,7 +216,7 @@ class DetailEmployeeChart extends Component {
               <Select
                 ref={this.inputRef}
                 showSearch
-                placeholder="Search for employee, department"
+                placeholder="Search by Employee Name or ID"
                 filterOption={false}
                 notFoundContent={null}
                 defaultActiveFirstOption={false}
@@ -260,9 +258,8 @@ class DetailEmployeeChart extends Component {
                         <Option key={idSearch} value={idSearch}>
                           <div style={{ display: 'inline', marginRight: '10px' }}>
                             <Avatar
-                              src={avatarSearch || ''}
+                              src={avatarSearch || avtDefault}
                               size={30}
-                              icon={<UserOutlined />}
                               style={{
                                 fontSize: 'initial',
                                 width: '25px',
@@ -288,12 +285,16 @@ class DetailEmployeeChart extends Component {
         {checkObj ? (
           <div className={styles.chartDetail}>
             <div className={styles.chartDetail__Top}>
-              <Popover placement="rightTop" content={() => this.popupImage(avatar)} trigger="hover">
+              <Popover
+                placement="rightTop"
+                content={() => this.popupImage(avatar || avtDefault)}
+                trigger="hover"
+              >
                 <Avatar
                   style={{ cursor: 'pointer' }}
-                  src={avatar || ''}
+                  src={avatar || avtDefault}
                   size={55}
-                  icon={<UserOutlined />}
+                  // icon={<UserOutlined />}
                 />
               </Popover>
               <div className={styles.chartDetail__Top_name}>

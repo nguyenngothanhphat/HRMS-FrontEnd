@@ -21,12 +21,23 @@ import {
   // complex view hr & finance
   getHRTimesheet,
   getFinanceTimesheet,
+  // export manager report (my project)
+  exportProject,
+  exportTeam,
 } from '@/services/timeSheet';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { convertMsToTime, isTheSameDay } from '@/utils/timeSheet';
 import { dialog } from '@/utils/utils';
 
 const tenantId = getCurrentTenant();
+
+const pushError = (errors) => {
+  for (let i = 0; i < errors.length; i += 1) {
+    notification.error({
+      message: errors[i].msg,
+    });
+  }
+};
 
 const initialState = {
   myTimesheet: [],
@@ -52,6 +63,7 @@ const initialState = {
   // hr & finance complex view
   hrViewList: [],
   financeViewList: [],
+  payloadExport: {},
 };
 
 const TimeSheet = {
@@ -155,7 +167,7 @@ const TimeSheet = {
         updating();
         const { code, msg = '', data = {}, errors = [] } = response;
         if (code !== 200) {
-          notification.error({ message: errors[0].msg });
+          pushError(errors);
           return [];
         }
         notification.success({ message: msg });
@@ -185,7 +197,7 @@ const TimeSheet = {
         const { code, data = {}, msg = '', errors = [] } = response;
         adding();
         if (code !== 200) {
-          notification.error({ message: errors[0].msg });
+          pushError(errors);
           return [];
         }
         notification.success({ message: msg });
@@ -218,7 +230,7 @@ const TimeSheet = {
         response = yield call(addMultipleActivity, payload.data, params);
         const { code, msg = '', errors = [] } = response;
         if (code !== 200) {
-          notification.error({ message: errors[0].msg });
+          pushError(errors);
           return [];
         }
         notification.success({ message: msg });
@@ -283,7 +295,7 @@ const TimeSheet = {
         response = yield call(importTimesheet, { ids: payload.ids }, { ...payload, tenantId });
         const { code, msg = '', errors = [] } = response;
         if (code !== 200) {
-          notification.error({ message: errors[0].msg });
+          pushError(errors);
           return [];
         }
         notification.success({ message: msg });
@@ -437,6 +449,48 @@ const TimeSheet = {
       }
       return response;
     },
+
+    *exportReportProject({ payload }, { call }) {
+      let response = '';
+      const hide = message.loading('Exporting data...', 0);
+      try {
+        response = yield call(
+          exportProject,
+          {},
+          {
+            ...payload,
+            tenantId: getCurrentTenant(),
+          },
+        );
+        const { code } = response;
+        if (code !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      hide();
+      return response;
+    },
+
+    *exportReportTeam({ payload }, { call }) {
+      let response = '';
+      const hide = message.loading('Exporting data...', 0);
+      try {
+        response = yield call(
+          exportTeam,
+          {},
+          {
+            ...payload,
+            tenantId: getCurrentTenant(),
+          },
+        );
+        const { code } = response;
+        if (code !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      hide();
+      return response;
+    },
   },
   reducers: {
     save(state, action) {
@@ -449,6 +503,12 @@ const TimeSheet = {
       return {
         ...state,
         importingIds: [],
+      };
+    },
+    savePayload(state, action) {
+      return {
+        ...state,
+        ...action.payload,
       };
     },
     saveImportingIds(state, action) {

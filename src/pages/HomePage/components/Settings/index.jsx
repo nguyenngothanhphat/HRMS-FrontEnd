@@ -3,8 +3,8 @@ import React from 'react';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import LayoutHomePageSettings from '@/components/LayoutHomePageSettings';
-import styles from './index.less';
 import PostManagement from './components/PostManagement';
+import styles from './index.less';
 
 const Settings = (props) => {
   const { match: { params: { reId = '', tabName = '' } = {} } = {} } = props;
