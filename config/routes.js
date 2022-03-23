@@ -863,12 +863,6 @@ const routes = [
             component: './PoliciesRegulations',
           },
           {
-            path: '/policies-regulations/certify/:categoryID/:reId',
-            name: 'View Document',
-            hideInMenu: true,
-            component: './PoliciesRegulations/components/PoliciesCertification/components/ViewDocument',
-          },
-          {
             path: '/policies-regulations/settings',
             name: 'settings',
             hideInMenu: true,

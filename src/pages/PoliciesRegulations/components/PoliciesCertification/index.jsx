@@ -234,7 +234,7 @@ const PoliciesCertification = (props) => {
                 color: isRead ? '#00C598' : '#ffa100',
               }}
             >
-              View
+              {isRead ? 'Read' : 'View'}
             </span>
           </Button>
         </div>
