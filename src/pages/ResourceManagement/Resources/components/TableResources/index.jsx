@@ -192,13 +192,13 @@ class TableResources extends PureComponent {
       return rowSpans;
     };
 
-    // const rowSpans = getRowSpans(data, 'employeeName');
-    // const rowDivison = getRowSpans(data, 'division');
-    // const rowDesignation = getRowSpans(data, 'designation');
-    // const rowExperience = getRowSpans(data, 'experience');
-    // const rowComments = (data, 'comment');
+    const rowSpans = getRowSpans(data, 'employeeName');
+    const rowDivison = getRowSpans(data, 'division');
+    const rowDesignation = getRowSpans(data, 'designation');
+    const rowExperience = getRowSpans(data, 'experience');
+    const rowComments = (data, 'comment');
 
-    const getRowSpansDa = (type, index) => {
+    const getMergeSpan = (type, index) => {
       return getRowSpans(data, type)[index];
     };
 
@@ -276,7 +276,7 @@ class TableResources extends PureComponent {
             props: {},
           };
 
-          obj.props.rowSpan = getRowSpansDa('employeeName', index);
+          obj.props.rowSpan = getMergeSpan('employeeName', index);
           return obj;
           // const div= (
           //   <div>
@@ -310,14 +310,14 @@ class TableResources extends PureComponent {
         dataIndex: 'division',
         key: 'division',
         render: (value, _, index) => {
-          const display = <span className={styles.division}>{value}</span>;
-          const obj = {
-            children: display,
-            props: {},
-          };
+          return <span className={styles.division}>{value}</span>;
+          // const obj = {
+          //   children: display,
+          //   props: {},
+          // };
 
-          obj.props.rowDivision = getRowSpansDa('division', index);
-          return obj;
+          // obj.props.rowDivision = rowSpans[index];
+          // return obj;
         },
         sorter: (a, b) => {
           return localCompare(a.division, b.division);
@@ -329,14 +329,14 @@ class TableResources extends PureComponent {
         dataIndex: 'designation',
         key: 'designation',
         render: (value, _, index) => {
-          const display = <span className={styles.basicCellField}>{value}</span>;
-          const obj = {
-            children: display,
-            props: {},
-          };
+          return <span className={styles.basicCellField}>{value}</span>;
+          // const obj = {
+          //   children: display,
+          //   props: {},
+          // };
 
-          obj.props.rowDesignation = getRowSpansDa('designation', index);
-          return obj;
+          // obj.props.rowDesignation = rowSpans[index];
+          // return obj;
         },
         sorter: (a, b) => {
           return localCompare(a.designation, b.designation);
@@ -347,14 +347,14 @@ class TableResources extends PureComponent {
         title: 'Experience (in yrs)',
         dataIndex: 'experience',
         render: (value, _, index) => {
-          const display = <span className={styles.basicCellField}>{value}</span>;
-          const obj = {
-            children: display,
-            props: {},
-          };
+          return <span className={styles.basicCellField}>{value}</span>;
+          // const obj = {
+          //   children: display,
+          //   props: {},
+          // };
 
-          obj.props.rowExperience = getRowSpansDa('experience', index);
-          return obj;
+          // obj.props.rowExperience = rowSpans[index];
+          // return obj;
         },
         sorter: (a, b) => {
           return a.experience - b.experience;
@@ -493,13 +493,14 @@ class TableResources extends PureComponent {
           // const obj = renderCell('comment', row, text);
           // obj.props.className = employeeRowCount > 1 ? 'commentCellLeftBorder' : 'commentCell';
           // return obj;
-          const obj = {
-            children: text,
-            props: {},
-          };
+          return text;
+          // const obj = {
+          //   children: text,
+          //   props: {},
+          // };
 
-          obj.props.rowComments = getRowSpansDa('comment', index);
-          return obj;
+          // obj.props.rowComments = rowSpans[index];
+          // return obj;
         },
       },
       {
