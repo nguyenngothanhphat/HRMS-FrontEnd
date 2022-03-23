@@ -5,9 +5,9 @@
       border-top-left-radius: 8px;
     }
     .ant-modal-content {
-      border-bottom-left-radius: 8px;
-      border-bottom-right-radius: 8px;
       border-top-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
     }
     .ant-form-item {
       margin-bottom: 12px;
@@ -17,13 +17,13 @@
     }
     .ant-modal-close-x {
       position: absolute;
-      background-color: #2c6df9;
-      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 54px;
       height: 48px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      color: #fff;
+      background-color: #2c6df9;
       border-top-right-radius: 8px;
       border-bottom-right-radius: 8px;
       &:active {
@@ -31,7 +31,7 @@
       }
     }
 
-    .ant-checkbox + span{
+    .ant-checkbox + span {
       padding: 0 24px;
     }
   }
@@ -41,53 +41,34 @@
 
     .title {
       padding: 10px 20px 0 20px;
-      font-size: 16px;
-      font-weight: 700;
       color: #2c6df9;
+      font-weight: 700;
+      font-size: 16px;
     }
 
     .formContainer {
       max-height: 400px;
-      overflow-y: auto;
-      overflow-x: hidden;
       padding: 20px 30px 0 20px;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
 
     .footer {
-      padding: 0 20px;
       display: flex;
-      justify-content: flex-end;
       align-items: center;
+      justify-content: flex-end;
+      padding: 0 20px;
       border-top: 1px solid rgb(219, 219, 219);
     }
-    // SCROLL BAR
-    /* width */
-    ::-webkit-scrollbar {
-      width: 10px;
-    }
 
-    /* Track */
-    ::-webkit-scrollbar-track {
-      background: #f1f1f1;
-    }
-
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-      background: #888;
-    }
-
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-      background: #555;
-    }
     :global {
       .ant-btn {
+        width: 108px;
+        height: 40px;
         margin-top: 15px;
         background-color: #ffa100;
         border: none;
         border-radius: 30px;
-        height: 40px;
-        width: 108px;
         span {
           color: white;
           font-weight: 700;

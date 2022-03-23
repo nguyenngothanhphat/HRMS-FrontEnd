@@ -23,6 +23,16 @@ const Header = (props) => {
     activeView = '',
   } = props;
 
+  const {
+    user: {
+      currentUser: {
+        location: { headQuarterAddress: { country: { _id: countryID } = {} } = {} } = {},
+      } = {},
+    } = {},
+  } = props;
+
+  const locationUser = countryID === 'US';
+
   // HEADER AREA FOR MONTH
   const onPrevClick = () => {
     if (type === VIEW_TYPE.M) {
@@ -79,16 +89,19 @@ const Header = (props) => {
         projectName += el;
         if (index + 1 < project.length) projectName += ', ';
       });
-      return {
+      const dataExport = {
         Employee: legalName,
         Department: name,
         Project: projectName,
         'Working Days': `${userSpentInDay}/${totalWorkingDay} ( ${totalWorkingDayInHours} hours)`,
         'Leave Taken ': `${leaveTaken}/${totalLeave}`,
-        'Break Time': breakTime,
-        'Over Time': overTime,
         'Total Hours': `${userSpentInHours} hours`,
       };
+      if (locationUser) {
+        dataExport['Break Time'] = breakTime;
+        dataExport['Over Time'] = overTime;
+      }
+      return dataExport;
     });
   };
 
@@ -121,4 +134,4 @@ const Header = (props) => {
   );
 };
 
-export default connect(() => ({}))(Header);
+export default connect(({ user }) => ({ user }))(Header);

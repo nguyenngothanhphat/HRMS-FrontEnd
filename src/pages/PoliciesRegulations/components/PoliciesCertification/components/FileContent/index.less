@@ -1,0 +1,47 @@
+.viewFile {
+  padding: 2px 0;
+
+  .control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 8px;
+    color: #161c29;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1.56;
+    letter-spacing: 0.17px;
+
+    .current {
+      color: #2c6df9;
+    }
+
+    .arrows {
+      display: flex;
+      align-items: center;
+
+      img {
+        cursor: pointer;
+      }
+
+      .back {
+        margin-right: 24px;
+      }
+    }
+  }
+}
+
+:global {
+  .react-pdf__Document {
+    height: 70vh;
+    overflow-y: auto;
+
+    .react-pdf__Page__canvas {
+      width: 100% !important;
+      max-width: 100%;
+      height: unset !important;
+      margin: 0 auto;
+    }
+  }
+}

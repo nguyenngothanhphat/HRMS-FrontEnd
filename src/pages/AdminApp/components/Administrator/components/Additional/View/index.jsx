@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import { Row, Col, Collapse, Tree, Popconfirm } from 'antd';
+import { connect } from 'umi';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import icon from '@/assets/primary-administrator.svg';
 import editIcon from '@/assets/edit-administrator.svg';
 import deleteIcon from '@/assets/deleteIcon-Administator.svg';
 import arrowIcon from '@/assets/arrowDownCollapseIcon.svg';
 
-import { QuestionCircleOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
+@connect(({ loading }) => ({
+  loading: loading.effects['adminApp/removeAdmin'],
+}))
 class ViewAdministrator extends Component {
   constructor(props) {
     super(props);
@@ -24,9 +28,18 @@ class ViewAdministrator extends Component {
   }
 
   handleDelete = (index) => {
+    const { dispatch } = this.props;
     const { list = [] } = this.state;
+    const getUserInfo = list ? list[index] : [];
+    const getIdUser = getUserInfo.usermap ? getUserInfo.usermap._id : '';
     if (index > -1) {
       list.splice(index, 1);
+      dispatch({
+        type: 'adminApp/removeAdmin',
+        payload: {
+          id: getIdUser
+        }
+      })
     }
     this.setState({ list });
   };
