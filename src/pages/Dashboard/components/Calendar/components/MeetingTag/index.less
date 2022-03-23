@@ -3,59 +3,26 @@
 @greenColor: #1ab88f;
 @commonHeight: 49px;
 .MeetingTag {
+  position: absolute;
+  box-sizing: border-box;
   height: 100%;
+  padding: @rowPaddingBlock;
+  color: @greenColor;
+  font-size: 13px;
+  line-height: 20px;
+  background: #f9fffe;
+  border: 1px solid @greenColor;
+  border-radius: 8px;
   cursor: pointer;
-
-  .div1 {
-    height: @commonHeight;
-  }
-  .div2 {
-    height: @commonHeight*2+ @tagPadding*2;
-  }
-  .div3 {
-    height: @commonHeight*3+ @tagPadding*2;
-  }
-  .div4 {
-    height: @commonHeight*4+ @tagPadding*2;
-  }
-  div {
-    height: 49px;
-    // padding: @tagPadding;
-    padding-top: 10px;
+  .extraTime {
+    display: block;
+    margin-top: 16px;
+    color: #212020;
     font-size: 13px;
     line-height: 20px;
-    border-radius: 8px;
-    padding-bottom: 10px;
-    padding-inline: @tagPadding;
-    .extraTime {
-      display: block;
-      margin-top: 16px;
-      color: #212020;
-      font-size: 13px;
-      line-height: 20px;
-    }
-  }
-  .greenTag {
-    color: @greenColor;
-    background: #f9fffe;
-    border: 1px solid @greenColor;
-  }
-  .orangeTag {
-    color: #ffa100;
-    background: #fffdf9;
-    border: 1px solid #ffa100;
-  }
-  .redTag {
-    color: #fd4546;
-    background: #fff9f9;
-    border: 1px solid #fd4546;
-  }
-  .whiteTag {
-    color: #707177;
-    background: #fff;
-    border: 1px solid #eaecef;
   }
 }
+
 .popupEventContainer {
   :global {
     .ant-popover-inner {
@@ -95,6 +62,12 @@
     }
     &__header {
       padding-top: 24px;
+      .colorBox {
+        width: 16px;
+        height: 16px;
+        background-color: #1ab88f;
+        border-radius: 5px;
+      }
       .rightPart {
         .title {
           display: block;
