@@ -82,4 +82,39 @@ const SUPPORT_TEAM = [
 const PRIORITY = ['Low', 'Normal', 'High', 'Urgent'];
 const TIMESHEET_DATE_FORMAT = 'MM/DD/YYYY';
 
-export { WIDGET_IDS, WIDGETS, SUPPORT_TEAM, PRIORITY, TIMESHEET_DATE_FORMAT };
+const EMP_ROW_HEIGHT = 72;
+const DEFAULT_MARGIN_CALENDAR = 8;
+
+const CALENDAR_COLORS = {
+  GREEN: {
+    color: '#1ab88f',
+    backgroundColor: '#f9fffe',
+    borderColor: '#1ab88f',
+  },
+  RED: {
+    color: '#fd4546',
+    backgroundColor: '#fff9f9',
+    borderColor: '#fd4546',
+  },
+  ORANGE: {
+    color: '#ffa100',
+    backgroundColor: '#fffdf9',
+    borderColor: '#ffa100',
+  },
+  GRAY: {
+    color: '#707177',
+    backgroundColor: '#fff',
+    borderColor: '#eaecef',
+  },
+};
+
+export {
+  WIDGET_IDS,
+  WIDGETS,
+  SUPPORT_TEAM,
+  PRIORITY,
+  TIMESHEET_DATE_FORMAT,
+  EMP_ROW_HEIGHT,
+  DEFAULT_MARGIN_CALENDAR,
+  CALENDAR_COLORS,
+};
