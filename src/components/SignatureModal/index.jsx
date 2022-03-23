@@ -216,7 +216,14 @@ class SignatureModal extends PureComponent {
   };
 
   render() {
-    const { loadingUploadAttachment, loading, visible = false } = this.props;
+    const {
+      loadingUploadAttachment,
+      loading,
+      visible = false,
+      disableUpload = false,
+      disableDraw = false,
+      disableDigital = false,
+    } = this.props;
     const { uploadedPreview, mode, digitalSignatureName, finalDigitalSignature } = this.state;
 
     return (
@@ -273,9 +280,9 @@ class SignatureModal extends PureComponent {
                 onChange={(val) => this.setState({ mode: val })}
                 placeholder="Choose your options for Signature"
               >
-                <Option value="upload">Upload</Option>
-                <Option value="draw">Draw</Option>
-                <Option value="digital-signature">Digital Signature</Option>
+                {!disableUpload && <Option value="upload">Upload</Option>}
+                {!disableDraw && <Option value="draw">Draw</Option>}
+                {!disableDigital && <Option value="digital-signature">Digital Signature</Option>}
               </Select>
             </Form.Item>
 
