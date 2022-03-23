@@ -1,16 +1,74 @@
 import React, { Component } from 'react';
-import { Table } from 'antd';
+import { Table, Popover } from 'antd';
 import moment from 'moment';
-import { connect, formatMessage } from 'umi';
+import { connect, formatMessage, history } from 'umi';
+import { getTimezoneViaCity } from '@/utils/times';
 import AddComment from './components/AddComment';
 import OverviewComment from './components/OverviewComment';
+import PopupProjectManager from './components/PopupProjectManager';
 import styles from './index.less';
 
 class TableProject extends Component {
   constructor(props) {
     super(props);
-    this.state = { pageSelected: 1 };
+    this.state = {
+      pageSelected: 1, // popup hover name
+      timezoneList: [],
+      currentTime: moment(),
+    };
   }
+
+  componentDidMount() {
+    this.fetchTimezone();
+    this.setCurrentTime();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { listLocationsByCompany = [] } = this.props;
+    if (
+      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+    ) {
+      this.fetchTimezone();
+    }
+  }
+
+  setCurrentTime = () => {
+    // compare two time by hour & minute. If minute changes, get new time
+    const timeFormat = 'HH:mm';
+    const { currentTime } = this.state;
+    const parseTime = (timeString) => moment(timeString, timeFormat);
+    const check = parseTime(moment().format(timeFormat)).isAfter(
+      parseTime(moment(currentTime).format(timeFormat)),
+    );
+
+    if (check) {
+      this.setState({
+        currentTime: moment(),
+      });
+    }
+  };
+
+  fetchTimezone = () => {
+    const { listLocationsByCompany = [] } = this.props;
+    const timezoneList = [];
+    listLocationsByCompany.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
+        _id = '',
+      } = location;
+      timezoneList.push({
+        locationId: _id,
+        timezone:
+          getTimezoneViaCity(city) ||
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
+    this.setState({
+      timezoneList,
+    });
+  };
 
   formatDate = (date, typeFormat) => {
     if (!date) {
@@ -24,8 +82,7 @@ class TableProject extends Component {
       return '-';
     }
     const getInfo = obj ? obj.generalInfo : {};
-    const getProjectManager = getInfo ? getInfo.legalName : '-';
-    return getProjectManager;
+    return getInfo;
   };
 
   onChangePagination = (pageNumber) => {
@@ -40,6 +97,10 @@ class TableProject extends Component {
     }
   };
 
+  viewProfile = (_id) => {
+    history.push(`/directory/employee-profile/${_id}`);
+  };
+
   render() {
     const { pageSelected } = this.state;
     const {
@@ -51,6 +112,8 @@ class TableProject extends Component {
       isBackendPaging = false,
       allowModify = false,
     } = this.props;
+    const { timezoneList, currentTime } = this.state;
+    const { listLocationsByCompany = [] } = this.props;
 
     const pagination = {
       position: ['bottomLeft'],
@@ -78,7 +141,7 @@ class TableProject extends Component {
         projectName: obj.projectName || '-',
         customer: obj.customerName || '-',
         projectType: obj.engagementType || '-',
-        projectManager: this.getProjectManage(obj.projectManager),
+        projectManager: obj.projectManager || '-',
         startDate: this.formatDate(obj.startDate, 'MM/DD/YYYY'),
         endDate: this.formatDate(obj.endDate, 'MM/DD/YYYY'),
         resivedEndDate: this.formatDate(obj.newEndDate, 'MM/DD/YYYY'),
@@ -124,10 +187,31 @@ class TableProject extends Component {
         title: 'Project Manager',
         dataIndex: 'projectManager',
         key: 'projectManager',
-        render: (value) => {
-          return <span className={styles.projectName}>{value}</span>;
-        },
-        sorter: (a, b) => a.projectManager.localeCompare(b.projectManager),
+        render: (value) => (
+          <Popover
+            content={
+              <PopupProjectManager
+                listLocationsByCompany={listLocationsByCompany}
+                propsState={{ currentTime, timezoneList }}
+                dataProjectManager={value}
+              />
+            }
+            trigger="hover"
+            placement="bottomRight"
+            overlayClassName={styles.popupContentProjectManager}
+          >
+            <span
+              className={styles.projectName}
+              onClick={() => this.viewProfile(value?.generalInfo?.userId)}
+            >
+              {value?.generalInfo?.legalName || '-'}
+            </span>
+          </Popover>
+        ),
+        sorter: (a, b) =>
+          a.projectManager?.generalInfo?.legalName.localeCompare(
+            b.projectManager?.generalInfo?.legalName,
+          ),
       },
       {
         title: (
@@ -265,4 +349,6 @@ class TableProject extends Component {
   }
 }
 
-export default connect(() => ({}))(TableProject);
+export default connect(({ locationSelection: { listLocationsByCompany = [] } }) => ({
+  listLocationsByCompany,
+}))(TableProject);

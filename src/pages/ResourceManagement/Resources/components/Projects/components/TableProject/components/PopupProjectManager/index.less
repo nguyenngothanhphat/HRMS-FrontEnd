@@ -1,0 +1,112 @@
+:global {
+  .anticon {
+    cursor: pointer;
+  }
+  .ant-popover-inner {
+    border-radius: 8px;
+  }
+}
+
+.popupContent {
+  width: 380px;
+
+  .generalInfo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+
+    .employeeInfo {
+      padding-left: 16px;
+      text-align: left;
+
+      &__name {
+        margin-bottom: 0;
+
+        padding-bottom: 6px;
+        color: #161c29;
+        font-weight: 500;
+        font-size: 18px;
+        font-family: Roboto;
+        font-style: normal;
+        line-height: 21px;
+      }
+
+      &__department,
+      &__emplId {
+        padding-bottom: 6px;
+        color: #707177;
+        font-weight: normal;
+        font-size: 13px;
+        font-family: Roboto;
+        font-style: normal;
+        line-height: 15px;
+      }
+    }
+
+    .avatar {
+    }
+  }
+
+  .contact {
+    &__title {
+      color: #212020;
+      font-weight: 500;
+      font-size: 13px;
+      font-family: Roboto;
+      font-style: normal;
+      line-height: 15px;
+      letter-spacing: 0.075px;
+    }
+
+    &__value {
+      color: #212020;
+      font-weight: normal;
+      font-size: 13px;
+      font-family: Roboto;
+      font-style: normal;
+      line-height: 15px;
+      letter-spacing: 0.075px;
+    }
+
+    &__valueManager {
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 13px;
+      font-family: Roboto;
+      font-style: normal;
+      line-height: 15px;
+      letter-spacing: 0.121875px;
+      cursor: pointer;
+    }
+  }
+
+  .divider {
+    padding: 1px 0;
+  }
+
+  .popupActions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-bottom: 8px;
+
+    &__link {
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 13px;
+      font-style: normal;
+      line-height: 15px;
+      cursor: pointer;
+      text-decoration-line: underline;
+    }
+
+    &__actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 106px;
+    }
+  }
+}
