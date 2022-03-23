@@ -36,7 +36,7 @@ const Policies = (props) => {
         let countryArr = [];
         if (viewAllCountry) {
           countryArr = data.map((item) => {
-            return item.headQuarterAddress.country;
+            return item.headQuarterAddress?.country;
           });
           const newArr = removeDuplicate(countryArr, (item) => item._id);
           countryArr = newArr.map((val) => val._id);

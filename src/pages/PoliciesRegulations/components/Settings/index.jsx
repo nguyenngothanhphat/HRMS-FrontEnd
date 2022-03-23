@@ -79,17 +79,17 @@ class Settings extends Component {
     let countryArr = [];
     if (countryList.length > 0) {
       countryArr = countryList.map((item) => {
-        return item?.headQuarterAddress?.country;
+        return item.headQuarterAddress?.country;
       });
     }
-    const newArr = this.removeDuplicate(countryArr, (item) => item._id);
+    const newArr = this.removeDuplicate(countryArr, (item) => item?._id);
 
     let flagUrl = '';
 
     const flagItem = (id) => {
       newArr.forEach((item) => {
-        if (item._id === id) {
-          flagUrl = item.flag;
+        if (item?._id === id) {
+          flagUrl = item?.flag;
         }
         return flagUrl;
       });
@@ -119,10 +119,10 @@ class Settings extends Component {
     return (
       <>
         {newArr.map((item) => (
-          <Option key={item._id} value={item._id} className={styles.optionCountry}>
+          <Option key={item?._id} value={item?._id} className={styles.optionCountry}>
             <div className={styles.labelText}>
-              {flagItem(item._id)}
-              <span style={{ fontSize: '12px', fontWeight: '500' }}>{item.name}</span>
+              {flagItem(item?._id)}
+              <span style={{ fontSize: '12px', fontWeight: '500' }}>{item?.name}</span>
             </div>
           </Option>
         ))}
