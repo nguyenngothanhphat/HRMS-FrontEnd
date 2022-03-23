@@ -173,24 +173,53 @@ class TableResources extends PureComponent {
 
     const mapping = new Set();
 
-    const renderCell = (value, row, display) => {
-      const obj = {
-        children: display,
-        props: {
-          rowSpan: 0,
-          className: styles.disableHover,
-        },
-      };
-      const template = `${row.employeeId}_${value}`;
-      if (!mapping.has(template)) {
-        const count = data.filter((x) => {
-          return x.employeeId === row.employeeId;
-        }).length;
-        obj.props.rowSpan = count;
-        mapping.add(template);
+    const getRowSpans = (arr, key) => {
+      let sameValueLength = 0;
+      const rowSpans = [];
+      for (let i = arr.length - 1; i >= 0; i--) {
+        if (i === 0) {
+          rowSpans[i] = sameValueLength + 1;
+          continue;
+        }
+        if (arr[i][key] === arr[i - 1][key]) {
+          rowSpans[i] = 0;
+          sameValueLength++;
+        } else {
+          rowSpans[i] = sameValueLength + 1;
+          sameValueLength = 0;
+        }
       }
-      return obj;
+      return rowSpans;
     };
+
+    // const rowSpans = getRowSpans(data, 'employeeName');
+    // const rowDivison = getRowSpans(data, 'division');
+    // const rowDesignation = getRowSpans(data, 'designation');
+    // const rowExperience = getRowSpans(data, 'experience');
+    // const rowComments = (data, 'comment');
+
+    const getRowSpansDa = (type, index) => {
+      return getRowSpans(data, type)[index];
+    };
+
+    // const renderCell = (value, row, display) => {
+    //   const obj = {
+    //     children: display,
+    //     props: {
+    //       rowSpan: 0,
+    //       className: styles.disableHover,
+    //     },
+    //   };
+    //   const template = `${row.employeeId}_${value}`;
+    //   if (!mapping.has(template)) {
+    //     const count = data.filter((x) => {
+    //       return x.employeeId === row.employeeId;
+    //     }).length;
+    //     obj.props.rowSpan = count;
+    //     mapping.add(template);
+    //   }
+    //   return obj;
+    // };
 
     const localCompare = (a, b) => {
       if (!a && !b) {
@@ -222,9 +251,9 @@ class TableResources extends PureComponent {
         title: 'Name',
         dataIndex: 'employeeName',
         key: 'employeeName',
-        render: (value, row) => {
+        render: (value, row, index) => {
           const statusClass = resourceStatusClass(row.availableStatus);
-          return (
+          const div = (
             <div>
               <div>
                 <div className={styles.resourceStatus}>
@@ -242,6 +271,31 @@ class TableResources extends PureComponent {
               </Popover>
             </div>
           );
+          const obj = {
+            children: div,
+            props: {},
+          };
+
+          obj.props.rowSpan = getRowSpansDa('employeeName', index);
+          return obj;
+          // const div= (
+          //   <div>
+          //     <div>
+          //       <div className={styles.resourceStatus}>
+          //         <span className={styles[statusClass]}>{row.availableStatus}</span>
+          //       </div>
+          //     </div>
+
+          //     <Popover
+          //       placement="leftTop"
+          //       overlayClassName={styles.UserProfilePopover}
+          //       content={<PopoverInfo employeeId={row.employeeId} />}
+          //       trigger="hover"
+          //     >
+          //       <div className={styles.employeeName}>{value}</div>
+          //     </Popover>
+          //   </div>
+          // );
           // return renderCell(value, row, div);
         },
         sorter: (a, b) => {
@@ -255,8 +309,15 @@ class TableResources extends PureComponent {
         title: 'Division',
         dataIndex: 'division',
         key: 'division',
-        render: (value) => {
-          return <span className={styles.division}>{value}</span>;
+        render: (value, _, index) => {
+          const display = <span className={styles.division}>{value}</span>;
+          const obj = {
+            children: display,
+            props: {},
+          };
+
+          obj.props.rowDivision = getRowSpansDa('division', index);
+          return obj;
         },
         sorter: (a, b) => {
           return localCompare(a.division, b.division);
@@ -267,8 +328,15 @@ class TableResources extends PureComponent {
         title: 'Designation',
         dataIndex: 'designation',
         key: 'designation',
-        render: (value) => {
-          return <span className={styles.basicCellField}>{value}</span>;
+        render: (value, _, index) => {
+          const display = <span className={styles.basicCellField}>{value}</span>;
+          const obj = {
+            children: display,
+            props: {},
+          };
+
+          obj.props.rowDesignation = getRowSpansDa('designation', index);
+          return obj;
         },
         sorter: (a, b) => {
           return localCompare(a.designation, b.designation);
@@ -278,8 +346,15 @@ class TableResources extends PureComponent {
       {
         title: 'Experience (in yrs)',
         dataIndex: 'experience',
-        render: (value) => {
-          return <span className={styles.basicCellField}>{value}</span>;
+        render: (value, _, index) => {
+          const display = <span className={styles.basicCellField}>{value}</span>;
+          const obj = {
+            children: display,
+            props: {},
+          };
+
+          obj.props.rowExperience = getRowSpansDa('experience', index);
+          return obj;
         },
         sorter: (a, b) => {
           return a.experience - b.experience;
@@ -395,7 +470,7 @@ class TableResources extends PureComponent {
         title: 'Comments',
         dataIndex: 'comment',
         key: 'comment',
-        render: (value, row) => {
+        render: (value, row, index) => {
           const employeeRowCount = data.filter((x) => x.employeeId === row.employeeId).length;
           let text;
           if (value) {
@@ -414,10 +489,17 @@ class TableResources extends PureComponent {
               <span>{allowModify && <CommentModal data={row} refreshData={refreshData} />}</span>
             );
           }
-          return text;
+          // return text;
           // const obj = renderCell('comment', row, text);
           // obj.props.className = employeeRowCount > 1 ? 'commentCellLeftBorder' : 'commentCell';
           // return obj;
+          const obj = {
+            children: text,
+            props: {},
+          };
+
+          obj.props.rowComments = getRowSpansDa('comment', index);
+          return obj;
         },
       },
       {
