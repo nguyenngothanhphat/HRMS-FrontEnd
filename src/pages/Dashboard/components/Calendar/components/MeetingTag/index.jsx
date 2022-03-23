@@ -252,8 +252,8 @@ const MeetingTag = (props) => {
           }}
         >
           <div>
-            {event.summary && event.summary.length > 20
-              ? `${event.summary.slice(0, 20)} ...`
+            {event.summary && event.summary.length > 30
+              ? `${event.summary.slice(0, 30)} ...`
               : event.summary}
 
             {height > EMP_ROW_HEIGHT && (
