@@ -152,7 +152,7 @@ const Dashboard = (props) => {
         items={visibleWidgets}
         axis="xy"
         onSortEnd={onSortEnd}
-        distance={10}
+        distance={40}
         widgets={widgets}
         // pressDelay={200}
       />
