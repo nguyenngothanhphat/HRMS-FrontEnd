@@ -1,34 +1,33 @@
 import { Col, Row, Spin } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
 import MeetingTag from '../MeetingTag';
 import styles from './index.less';
+import { EMP_ROW_HEIGHT } from '@/utils/dashboard';
 
 const MyCalendar = (props) => {
+  const currentTimeLineRef = useRef();
+
   const { isInModal = false, data = [], loading = false, selectedDate = '' } = props;
   const [hourList, setHourList] = useState([]);
   const [slotArr, setSlotArr] = useState([]);
-  console.log('🚀 ~ MyCalendar ~ slotArr', slotArr);
+  const [dataState, setDataState] = useState([]);
+  const [currentTimePosition, setCurrentTimePosition] = useState(0);
 
-  const [dateToFormat, setDateToFormat] = useState(moment().format('HH:mm'));
-
-  const updateTime = () => {
-    return moment().format('HH:mm');
-  };
-
-  const scrollCurrentTime = () => {
-    return document.getElementById('checkCurrentTime')?.scrollIntoView({
+  const getCurrentTimePosition = () => {
+    const currentTime = moment();
+    const currentHour = currentTime.hour();
+    const currentMinute = currentTime.minute();
+    const currentTimePositionTemp =
+      currentHour * EMP_ROW_HEIGHT + (currentMinute / 60) * EMP_ROW_HEIGHT + 7;
+    setCurrentTimePosition(currentTimePositionTemp);
+    currentTimeLineRef.current?.scrollIntoView({
       behavior: 'smooth',
       block: 'center',
       inline: 'center',
     });
   };
-  useEffect(() => {
-    if (isInModal === true) {
-      scrollCurrentTime();
-    }
-  });
 
   const getHoursBetweenTwoHour = (start, end) => {
     const hourListTemp = [];
@@ -38,10 +37,30 @@ const MyCalendar = (props) => {
     return hourListTemp;
   };
 
+  const compare = (a, b) => {
+    const endTimeA = moment(a.end.dateTime).hour();
+    const startTimeA = moment(a.start.dateTime).hour();
+    const endTimeB = moment(b.end.dateTime).hour();
+    const startTimeB = moment(b.start.dateTime).hour();
+    if (endTimeA - startTimeA < endTimeB - startTimeB) {
+      return 1;
+    }
+    if (endTimeA - startTimeA > endTimeB - startTimeB) {
+      return -1;
+    }
+    return 0;
+  };
+
+  const sortData = (dataProp) => {
+    const dataTemp = dataProp.sort(compare);
+    return dataTemp;
+  };
+
   const generateSlotArr = () => {
     const slotArrTemp = [...slotArr];
+
     for (let i = 0; i < 24; i += 1) {
-      const events = data.filter((x) => moment(x.start.dateTime).hour() === i);
+      const events = dataState.filter((x) => moment(x.start.dateTime).hour() === i);
 
       if (events.length > 0) {
         events.forEach((ev) => {
@@ -49,8 +68,24 @@ const MyCalendar = (props) => {
           const hourListTemp = getHoursBetweenTwoHour(i, endTime);
 
           if (hourListTemp.length > 0) {
+            let maxLength = 0;
             for (let j = 0; j < hourListTemp.length; j += 1) {
-              slotArrTemp[hourListTemp[j]] = [...slotArrTemp[hourListTemp[j]], ev.id];
+              const lengthTemp = slotArrTemp[hourListTemp[j]].length;
+              if (lengthTemp > maxLength) {
+                maxLength = lengthTemp;
+              }
+            }
+
+            for (let j = 0; j < hourListTemp.length; j += 1) {
+              if (hourListTemp.length === 1) {
+                if (!slotArrTemp[hourListTemp[j]][0]) {
+                  slotArrTemp[hourListTemp[j]][0] = ev.id;
+                } else {
+                  slotArrTemp[hourListTemp[j]][1] = ev.id;
+                }
+              } else {
+                slotArrTemp[hourListTemp[j]][maxLength] = ev.id;
+              }
             }
           }
         });
@@ -71,121 +106,30 @@ const MyCalendar = (props) => {
       setHourList(hourListTemp);
       setSlotArr(slotArrTemp);
     }
-    setInterval(() => setDateToFormat(updateTime, 1000));
+
+    // calculate current time position every 10 seconds
+    getCurrentTimePosition();
+    const interval = setInterval(() => {
+      getCurrentTimePosition();
+    }, 10000);
+
+    return () => clearInterval(interval);
   }, []);
 
   // generate position for each meeting
   useEffect(() => {
-    if (data.length > 0 && slotArr.length > 0) {
+    if (dataState.length > 0 && slotArr.length > 0) {
       generateSlotArr();
     }
-  }, [JSON.stringify(data), JSON.stringify(hourList)]);
+  }, [JSON.stringify(dataState), JSON.stringify(hourList)]);
 
-  const renderCurrentDate = (hour, currentDate) => {
-    const currentTime = currentDate ? currentDate.split(':')[0] : moment().format('HH');
-    const minute = currentDate ? currentDate.split(':')[1] / 60 : moment().format('mm') / 60;
-    // && timeEvent - Number(currentTime) !== 0 && timeEvent - (Number(currentTime)+1) !== 0
-    if (minute < 0.8) {
-      if (hour - Number(currentTime) === 0) {
-        if (minute < 0.05) {
-          return <hr className={styles.currentTime} id="currentTimeId" />;
-        }
-        if (minute >= 0.05 && minute < 0.1) {
-          return <hr className={styles.currentTime1} id="currentTimeId" />;
-        }
-        if (minute >= 0.1 && minute < 0.15) {
-          return <hr className={styles.currentTime2} id="currentTimeId" />;
-        }
-        if (minute >= 0.15 && minute < 0.2) {
-          return <hr className={styles.currentTime3} id="currentTimeId" />;
-        }
-        if (minute >= 0.2 && minute < 0.25) {
-          return <hr className={styles.currentTime4} id="currentTimeId" />;
-        }
-        if (minute >= 0.25 && minute < 0.3) {
-          return <hr className={styles.currentTime5} id="currentTimeId" />;
-        }
-        if (minute >= 0.3 && minute < 0.35) {
-          return <hr className={styles.currentTime6} id="currentTimeId" />;
-        }
-        if (minute >= 0.35 && minute < 0.4) {
-          return <hr className={styles.currentTime7} id="currentTimeId" />;
-        }
-        if (minute >= 0.4 && minute < 0.5) {
-          return <hr className={styles.currentTime8} id="currentTimeId" />;
-        }
-        if (minute >= 0.5 && minute < 0.55) {
-          return <hr className={styles.currentTime9} id="currentTimeId" />;
-        }
-        if (minute >= 0.55 && minute < 0.6) {
-          return <hr className={styles.currentTime10} id="currentTimeId" />;
-        }
-        if (minute >= 0.6 && minute < 0.65) {
-          return <hr className={styles.currentTime11} id="currentTimeId" />;
-        }
-        if (minute >= 0.65 && minute < 0.7) {
-          return <hr className={styles.currentTime12} id="currentTimeId" />;
-        }
-        if (minute >= 0.7 && minute < 0.75) {
-          return <hr className={styles.currentTime13} id="currentTimeId" />;
-        }
-        if (minute >= 0.75 && minute < 0.8) {
-          return <hr className={styles.currentTime14} id="currentTimeId" />;
-        }
-      }
+  useEffect(() => {
+    if (data.length > 0) {
+      setDataState(sortData(data));
     }
-    if (minute >= 0.8) {
-      if (hour - (Number(currentTime) + 1) === 0) {
-        if (minute < 0.9) {
-          return <hr className={styles.currentTime15} id="currentTimeId" />;
-        }
-        if (minute >= 0.9 && minute < 1) {
-          return <hr className={styles.currentTime16} id="currentTimeId" />;
-        }
-      }
-    }
-    return '';
-  };
-
-  const checkCurrentTime = (hour) => {
-    if (Number(moment().format('HH')) === hour) {
-      return <div id="checkCurrentTime" />;
-    }
-    return '';
-  };
+  }, [JSON.stringify(data)]);
 
   // RENDER UI
-  const renderRow = (hour, events = []) => {
-    const eventCount = events.length;
-    let colSpan = eventCount > 0 ? 24 / eventCount : 24;
-    if (eventCount > 3) {
-      colSpan = 24;
-    }
-    // const timeEvent = events.length > 0 ? moment(events[0].start.dateTime).hour() : -1;
-    const renderHour = (h) => {
-      if (hour < 12) return `${h} AM`;
-      if (hour === 12) return `12 PM`;
-      return `${h - 12} PM`;
-    };
-
-    return (
-      <Row className={styles.eachRow} justify="center" align="top">
-        <Col xs={4} className={styles.eachRow__left}>
-          <div>{renderHour(hour)}</div>
-        </Col>
-        <Col xs={20} className={styles.eachRow__right}>
-          <Row gutter={[16, 16]}>
-            {/* {checkCurrentTime(hour)} */}
-            {/* {renderCurrentDate(hour, dateToFormat)} */}
-            {events.map((event) => {
-              return <MeetingTag span={colSpan} event={event} selectedDate={selectedDate} />;
-            })}
-          </Row>
-        </Col>
-      </Row>
-    );
-  };
-
   const renderHour = (hour) => {
     if (hour < 12) return `${hour} AM`;
     if (hour === 12) return `12 PM`;
@@ -196,11 +140,6 @@ const MyCalendar = (props) => {
     return (
       <Spin spinning={loading}>
         <Row className={styles.mainContainer} style={isInModal ? { maxHeight: '600px' } : {}}>
-          {/* {hourList.map((hour) => {
-            const filter = data.filter((item) => moment(item.start.dateTime).hour() === hour);
-            return renderRow(hour, filter);
-          })} */}
-
           <Col span={4} className={`${styles.mainContainer__firstColumn} ${styles.alignCenter}`}>
             {hourList.map((hour) => {
               return (
@@ -218,13 +157,16 @@ const MyCalendar = (props) => {
                 </div>
               );
             })}
-            {data.map((item, index) => (
-              <MeetingTag
-                cardIndex={index}
-                event={item}
-                selectedDate={selectedDate}
-                slotArr={slotArr}
-              />
+            <div
+              className={styles.currentTimeLine}
+              ref={currentTimeLineRef}
+              style={{
+                top: currentTimePosition,
+                display: moment(selectedDate).isSame(moment(), 'day') ? 'block' : 'none',
+              }}
+            />
+            {dataState.map((item) => (
+              <MeetingTag event={item} selectedDate={selectedDate} slotArr={slotArr} />
             ))}
           </Col>
         </Row>

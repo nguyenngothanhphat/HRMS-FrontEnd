@@ -1,7 +1,7 @@
 @rowPaddingBlock: 16px;
 @tagPadding: 16px;
 @greenColor: #1ab88f;
-@rowHeight: 72px; // same with EMP_ROW_HEIGHT in @/utils/tiemSheet -> EMP_ROW_HEIGHT
+@rowHeight: 72px; // same with EMP_ROW_HEIGHT in @/utils/homepage -> EMP_ROW_HEIGHT
 .MyCalendar {
   .greenTag {
     color: @greenColor;
@@ -41,7 +41,7 @@
       padding-inline: 16px;
       .hourBlock {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: flex-end;
         height: @rowHeight;
         span {
@@ -63,109 +63,30 @@
         .divider {
           // margin-top: @rowHeight;
           width: 100%;
-          border-top: 1px solid #cccccc;
+          // border-top: 1px solid #cccccc;
         }
       }
     }
   }
 
-  // .eachRow {
-  //   &__left {
-  //     height: 100%;
-  //     background-color: #fff;
-  //     div {
-  //       display: flex;
-  //       align-items: center;
-  //       justify-content: flex-start;
-  //       height: 100%;
-  //       margin-left: 24px;
-  //       color: #464646;
-  //       font-size: 13px;
-  //       line-height: 19px;
-  //     }
-  //   }
-  //   &__right {
-  //     height: 100%;
-  //     min-height: 60px;
-  //     padding: @rowPaddingBlock / 2 @rowPaddingBlock @rowPaddingBlock / 2;
-  //     background-color: #f7f9fe;
-  //     .common {
-  //       position: absolute;
-  //       z-index: 999;
-  //       width: 98%;
-  //       height: 1px;
-  //       background: red;
-  //       border: 0;
-  //     }
-  //     .currentTime {
-  //       .common();
-  //       margin-top: -3px;
-  //     }
-  //     .currentTime1 {
-  //       .common();
-  //       margin-top: 3px;
-  //     }
-  //     .currentTime2 {
-  //       .common();
-  //       margin-top: 5px;
-  //     }
-  //     .currentTime3 {
-  //       .common();
-  //       margin-top: 7px;
-  //     }
-  //     .currentTime4 {
-  //       .common();
-  //       margin-top: 10px;
-  //     }
-  //     .currentTime5 {
-  //       .common();
-  //       margin-top: 13px;
-  //     }
-  //     .currentTime6 {
-  //       .common();
-  //       margin-top: 17px;
-  //     }
-  //     .currentTime7 {
-  //       .common();
-  //       margin-top: 22px;
-  //     }
-  //     .currentTime8 {
-  //       .common();
-  //       margin-top: 27px;
-  //     }
-  //     .currentTime9 {
-  //       .common();
-  //       // margin-top: 49px;
-  //       margin-top: 30px;
-  //     }
-  //     .currentTime10 {
-  //       .common();
-  //       margin-top: 32px;
-  //     }
-  //     .currentTime11 {
-  //       .common();
-  //       margin-top: 35px;
-  //     }
-  //     .currentTime12 {
-  //       .common();
-  //       margin-top: 38px;
-  //     }
-  //     .currentTime13 {
-  //       .common();
-  //       margin-top: 42px;
-  //     }
-  //     .currentTime14 {
-  //       .common();
-  //       margin-top: 45px;
-  //     }
-  //     .currentTime15 {
-  //       .common();
-  //       margin-top: -8px;
-  //     }
-  //     .currentTime16 {
-  //       .common();
-  //       margin-top: -4px;
-  //     }
-  //   }
-  // }
+  .currentTimeLine {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 2;
+    display: block;
+    width: 100%;
+    border: 1px solid red;
+    &::before {
+      position: absolute;
+      top: -5px;
+      left: -6px;
+      width: 10px;
+      height: 10px;
+      background-color: red;
+      border-radius: 50%;
+      content: '';
+    }
+  }
 }

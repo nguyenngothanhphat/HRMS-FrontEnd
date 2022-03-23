@@ -8,13 +8,13 @@ import ColorBox from '@/assets/dashboard/colorBox.svg';
 import GoogleMeet from '@/assets/dashboard/googleMeet.svg';
 import MockAvatar from '@/assets/dashboard/mockAvatar.jpg';
 import styles from './index.less';
+import { EMP_ROW_HEIGHT } from '@/utils/dashboard';
 
-const EMP_ROW_HEIGHT = 72;
 const timeFormat = 'HH:mm a';
 
 const MeetingTag = (props) => {
   const myRef = useRef(null);
-  const { event: eventProp, cardIndex = 0, selectedDate = '', slotArr = [] } = props;
+  const { event: eventProp, selectedDate = '', slotArr = [] } = props;
   const [showPopover, setShowPopover] = useState(false);
 
   const {
@@ -32,7 +32,7 @@ const MeetingTag = (props) => {
   const calculateCardPosition = () => {
     const marginBlock = 10;
 
-    let topTemp = EMP_ROW_HEIGHT / 2;
+    let topTemp = marginBlock;
     let heightTemp = 0;
 
     if (startTime && endTime) {
@@ -62,6 +62,7 @@ const MeetingTag = (props) => {
           position = x.indexOf(eventID);
         }
       });
+
       const leftTemp = position / (position + 1);
       setLeft(`${leftTemp * 100}%`);
       const rightTemp = leftTemp + 1 / columnCount;
