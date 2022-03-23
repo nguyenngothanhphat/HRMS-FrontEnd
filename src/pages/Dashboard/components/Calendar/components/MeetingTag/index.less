@@ -14,8 +14,6 @@
   border: 1px solid @greenColor;
   border-radius: 8px;
   cursor: pointer;
-  margin-inline: @tagPadding / 2;
-  // padding-inline: @tagPadding;
   .extraTime {
     display: block;
     margin-top: 16px;
@@ -24,27 +22,6 @@
     line-height: 20px;
   }
 }
-
-// .greenTag {
-//   color: @greenColor;
-//   background: #f9fffe;
-//   border: 1px solid @greenColor;
-// }
-// .orangeTag {
-//   color: #ffa100;
-//   background: #fffdf9;
-//   border: 1px solid #ffa100;
-// }
-// .redTag {
-//   color: #fd4546;
-//   background: #fff9f9;
-//   border: 1px solid #fd4546;
-// }
-// .whiteTag {
-//   color: #707177;
-//   background: #fff;
-//   border: 1px solid #eaecef;
-// }
 
 .popupEventContainer {
   :global {
@@ -85,6 +62,12 @@
     }
     &__header {
       padding-top: 24px;
+      .colorBox {
+        width: 16px;
+        height: 16px;
+        background-color: #1ab88f;
+        border-radius: 5px;
+      }
       .rightPart {
         .title {
           display: block;

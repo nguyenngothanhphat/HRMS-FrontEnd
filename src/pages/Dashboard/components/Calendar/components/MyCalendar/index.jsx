@@ -1,19 +1,21 @@
-import { Col, Row, Spin } from 'antd';
+import { Spin } from 'antd';
+import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
+import { EMP_ROW_HEIGHT } from '@/utils/dashboard';
 import MeetingTag from '../MeetingTag';
 import styles from './index.less';
-import { EMP_ROW_HEIGHT } from '@/utils/dashboard';
 
 const MyCalendar = (props) => {
   const currentTimeLineRef = useRef();
+  const containerRef = useRef();
 
   const { isInModal = false, data = [], loading = false, selectedDate = '' } = props;
   const [hourList, setHourList] = useState([]);
   const [slotArr, setSlotArr] = useState([]);
   const [dataState, setDataState] = useState([]);
   const [currentTimePosition, setCurrentTimePosition] = useState(0);
+  const [autoScrollable, setAutoScrollable] = useState(true);
 
   const getCurrentTimePosition = () => {
     const currentTime = moment();
@@ -22,7 +24,12 @@ const MyCalendar = (props) => {
     const currentTimePositionTemp =
       currentHour * EMP_ROW_HEIGHT + (currentMinute / 60) * EMP_ROW_HEIGHT + 7;
     setCurrentTimePosition(currentTimePositionTemp);
-    currentTimeLineRef.current?.scrollIntoView({
+  };
+
+  const autoScroll = () => {
+    // auto scroll to current time
+    containerRef.current?.scrollTo({
+      top: currentTimeLineRef.current?.offsetTop - containerRef.current?.clientHeight / 2,
       behavior: 'smooth',
       block: 'center',
       inline: 'center',
@@ -49,11 +56,6 @@ const MyCalendar = (props) => {
       return -1;
     }
     return 0;
-  };
-
-  const sortData = (dataProp) => {
-    const dataTemp = dataProp.sort(compare);
-    return dataTemp;
   };
 
   const generateSlotArr = () => {
@@ -125,9 +127,20 @@ const MyCalendar = (props) => {
 
   useEffect(() => {
     if (data.length > 0) {
-      setDataState(sortData(data));
+      setDataState(data.sort(compare));
     }
   }, [JSON.stringify(data)]);
+
+  useEffect(() => {
+    if (currentTimePosition && autoScrollable) {
+      autoScroll();
+      setAutoScrollable(false);
+    }
+  }, [currentTimePosition]);
+
+  useEffect(() => {
+    autoScroll();
+  }, [selectedDate]);
 
   // RENDER UI
   const renderHour = (hour) => {
@@ -139,8 +152,12 @@ const MyCalendar = (props) => {
   const renderUI = () => {
     return (
       <Spin spinning={loading}>
-        <Row className={styles.mainContainer} style={isInModal ? { maxHeight: '600px' } : {}}>
-          <Col span={4} className={`${styles.mainContainer__firstColumn} ${styles.alignCenter}`}>
+        <div
+          className={styles.mainContainer}
+          ref={containerRef}
+          style={isInModal ? { maxHeight: '600px' } : {}}
+        >
+          <div span={4} className={`${styles.mainContainer__firstColumn} ${styles.alignCenter}`}>
             {hourList.map((hour) => {
               return (
                 <div className={styles.hourBlock}>
@@ -148,8 +165,8 @@ const MyCalendar = (props) => {
                 </div>
               );
             })}
-          </Col>
-          <Col span={20} className={styles.mainContainer__remainColumn}>
+          </div>
+          <div span={20} className={styles.mainContainer__remainColumn}>
             {hourList.map(() => {
               return (
                 <div className={styles.row}>
@@ -162,14 +179,22 @@ const MyCalendar = (props) => {
               ref={currentTimeLineRef}
               style={{
                 top: currentTimePosition,
-                display: moment(selectedDate).isSame(moment(), 'day') ? 'block' : 'none',
+                display:
+                  moment(selectedDate).isSame(moment(), 'day') && currentTimePosition
+                    ? 'block'
+                    : 'none',
               }}
             />
-            {dataState.map((item) => (
-              <MeetingTag event={item} selectedDate={selectedDate} slotArr={slotArr} />
+            {dataState.map((item, index) => (
+              <MeetingTag
+                event={item}
+                selectedDate={selectedDate}
+                slotArr={slotArr}
+                cardIndex={index}
+              />
             ))}
-          </Col>
-        </Row>
+          </div>
+        </div>
       </Spin>
     );
   };

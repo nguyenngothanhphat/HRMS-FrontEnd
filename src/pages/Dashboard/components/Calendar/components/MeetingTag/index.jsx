@@ -1,20 +1,19 @@
 import { Button, Col, Popover, Row } from 'antd';
-import React, { useState, useRef, useEffect } from 'react';
-import { connect } from 'umi';
 import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import { connect } from 'umi';
 import Bell from '@/assets/dashboard/bell.svg';
 import CloseX from '@/assets/dashboard/closeX.svg';
-import ColorBox from '@/assets/dashboard/colorBox.svg';
 import GoogleMeet from '@/assets/dashboard/googleMeet.svg';
 import MockAvatar from '@/assets/dashboard/mockAvatar.jpg';
+import { CALENDAR_COLORS, DEFAULT_MARGIN_CALENDAR, EMP_ROW_HEIGHT } from '@/utils/dashboard';
 import styles from './index.less';
-import { EMP_ROW_HEIGHT } from '@/utils/dashboard';
 
 const timeFormat = 'HH:mm a';
 
 const MeetingTag = (props) => {
   const myRef = useRef(null);
-  const { event: eventProp, selectedDate = '', slotArr = [] } = props;
+  const { event: eventProp, selectedDate = '', slotArr = [], cardIndex = 0 } = props;
   const [showPopover, setShowPopover] = useState(false);
 
   const {
@@ -27,12 +26,17 @@ const MeetingTag = (props) => {
   const [height, setHeight] = useState(0);
   const [left, setLeft] = useState(0);
   const [right, setRight] = useState(0);
+  const [marginLeft, setMarginLeft] = useState(DEFAULT_MARGIN_CALENDAR);
+  const [marginRight, setMarginRight] = useState(DEFAULT_MARGIN_CALENDAR);
+  const [activeColor, setActiveColor] = useState(CALENDAR_COLORS.GREEN.color);
+  const [borderColor, setBorderColor] = useState(CALENDAR_COLORS.GREEN.borderColor);
+  const [backgroundColor, setBackgroundColor] = useState(CALENDAR_COLORS.GREEN.backgroundColor);
 
   // USE EFFECT AREA
   const calculateCardPosition = () => {
-    const marginBlock = 10;
+    const marginBlock = DEFAULT_MARGIN_CALENDAR * 2;
 
-    let topTemp = marginBlock;
+    let topTemp = 10;
     let heightTemp = 0;
 
     if (startTime && endTime) {
@@ -67,30 +71,56 @@ const MeetingTag = (props) => {
       setLeft(`${leftTemp * 100}%`);
       const rightTemp = leftTemp + 1 / columnCount;
       setRight(`${100 - rightTemp * 100}%`);
+
+      if (position === columnCount - 1) {
+        setMarginRight(DEFAULT_MARGIN_CALENDAR * 2);
+        setMarginLeft(DEFAULT_MARGIN_CALENDAR);
+      }
+      if (position === 0) {
+        setMarginLeft(DEFAULT_MARGIN_CALENDAR * 2);
+      }
     }
+  };
+
+  // FUNCTIONS
+  const getColor = (index) => {
+    const indexTemp = index % 5;
+    let { colorTemp } = CALENDAR_COLORS.GREEN;
+    let { backgroundColorTemp } = CALENDAR_COLORS.GREEN;
+    let { borderColorTemp } = CALENDAR_COLORS.GREEN;
+    switch (indexTemp) {
+      case 1:
+        colorTemp = CALENDAR_COLORS.ORANGE.color;
+        backgroundColorTemp = CALENDAR_COLORS.ORANGE.backgroundColor;
+        borderColorTemp = CALENDAR_COLORS.ORANGE.borderColor;
+        break;
+      case 2:
+        colorTemp = CALENDAR_COLORS.RED.color;
+        backgroundColorTemp = CALENDAR_COLORS.RED.backgroundColor;
+        borderColorTemp = CALENDAR_COLORS.RED.borderColor;
+        break;
+      case 3:
+        colorTemp = CALENDAR_COLORS.GRAY.color;
+        backgroundColorTemp = CALENDAR_COLORS.GRAY.backgroundColor;
+        borderColorTemp = CALENDAR_COLORS.GRAY.borderColor;
+        break;
+      default:
+        colorTemp = CALENDAR_COLORS.GREEN.color;
+        backgroundColorTemp = CALENDAR_COLORS.GREEN.backgroundColor;
+        borderColorTemp = CALENDAR_COLORS.GREEN.borderColor;
+        break;
+    }
+    setActiveColor(colorTemp);
+    setBorderColor(borderColorTemp);
+    setBackgroundColor(backgroundColorTemp);
   };
 
   useEffect(() => {
     if (slotArr.length > 0) {
       calculateCardPosition();
     }
+    getColor(cardIndex);
   }, [JSON.stringify(eventProp), JSON.stringify(slotArr)]);
-
-  // FUNCTIONS
-  const getColorClassName = (type) => {
-    switch (type) {
-      // case 1:
-      //   return styles.greenTag;
-      // case 2:
-      //   return styles.orangeTag;
-      // case 3:
-      //   return styles.redTag;
-      // case 4:
-      //   return styles.whiteTag;
-      default:
-        return styles.greenTag;
-    }
-  };
 
   const joinGGMeet = (link) => {
     window.open(link, '_blank').focus();
@@ -148,7 +178,12 @@ const MeetingTag = (props) => {
         />
         <Row className={styles.popupEvent__header}>
           <Col span={3}>
-            <img src={ColorBox} alt="" />
+            <div
+              className={styles.colorBox}
+              style={{
+                backgroundColor: activeColor,
+              }}
+            />
           </Col>
           <Col span={21}>
             <div className={styles.rightPart}>
@@ -187,11 +222,6 @@ const MeetingTag = (props) => {
 
   // RENDER UI
   const renderTag = (event) => {
-    const min = Math.ceil(1);
-    const max = Math.floor(4);
-    const colorType = Math.floor(Math.random() * (max - min) + min);
-    const colorClassName = getColorClassName(colorType);
-
     const localDate = moment(selectedDate).format('MM/DD/YYYY');
     const googleDate = moment(event.start.dateTime).format('MM/DD/YYYY');
 
@@ -207,7 +237,6 @@ const MeetingTag = (props) => {
         onVisibleChange={() => setShowPopover(!showPopover)}
       >
         <div
-          // span={span}
           className={styles.MeetingTag}
           ref={myRef}
           style={{
@@ -215,9 +244,14 @@ const MeetingTag = (props) => {
             height,
             left,
             right,
+            marginRight,
+            marginLeft,
+            backgroundColor,
+            border: `1px solid ${borderColor}`,
+            color: activeColor,
           }}
         >
-          <div className={`${colorClassName}`}>
+          <div>
             {event.summary && event.summary.length > 20
               ? `${event.summary.slice(0, 20)} ...`
               : event.summary}
