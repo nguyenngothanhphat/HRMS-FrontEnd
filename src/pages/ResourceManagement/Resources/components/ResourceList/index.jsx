@@ -81,11 +81,13 @@ class ResourceList extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { selectedDivisions, selectedLocations } = this.props;
-    const { filter } = this.state;
+    const { filter, size, pageSelected } = this.state;
     if (
       JSON.stringify(prevProps.selectedDivisions) !== JSON.stringify(selectedDivisions) ||
       JSON.stringify(prevProps.selectedLocations) !== JSON.stringify(selectedLocations) ||
-      JSON.stringify(prevState.filter) !== JSON.stringify(filter)
+      JSON.stringify(prevState.filter) !== JSON.stringify(filter) ||
+      prevState.size !== size ||
+      prevState.pageSelected !== pageSelected
     ) {
       this.fetchResourceList();
     }
@@ -116,9 +118,6 @@ class ResourceList extends Component {
 
   fetchResourceList = async () => {
     const { selectedLocations, selectedDivisions } = this.props;
-    if (this.fetchData !== this.fetchStatus.START) {
-      return;
-    }
     const { pageSelected, size, sort, availableStatus } = this.state;
     const { dispatch } = this.props;
     const filter = this.convertFilter();

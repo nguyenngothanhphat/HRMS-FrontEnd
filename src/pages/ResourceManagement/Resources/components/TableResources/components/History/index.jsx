@@ -2,38 +2,17 @@ import React, { Component } from 'react';
 import { Table, Modal } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
-import historyIcon from '@/assets/resource-management-edit1.svg';
 import styles from './index.less';
 
 @connect(({ resourceManagement: { resourceList } }) => ({ resourceList }))
 class HistoryActionBTN extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      visible: false,
-    };
+    this.state = {};
   }
 
-  showModal = () => {
-    this.setState({
-      visible: true,
-    });
-  };
-
-  handleOk = () => {
-    this.setState({
-      visible: false,
-    });
-  };
-
-  handleCancel = () => {
-    this.setState({
-      visible: false,
-    });
-  };
-
   render() {
-    const { resourceList = [], dataPassRow = {} } = this.props;
+    const { resourceList = [], dataPassRow = {}, visible, onClose = () => {} } = this.props;
     const getEmpInListResource = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
     const { projects = [] } = getEmpInListResource || {};
     const { managerInfo = {} } = getEmpInListResource || {};
@@ -66,9 +45,7 @@ class HistoryActionBTN extends Component {
           return (
             <span>
               {value}
-              <span className={styles.labelProject}>
-                {active ? 'Current' : ''}
-              </span>
+              <span className={styles.labelProject}>{active ? ' (Current)' : ''}</span>
             </span>
           );
         },
@@ -124,22 +101,16 @@ class HistoryActionBTN extends Component {
         },
       },
     ];
-    const { visible } = this.state;
     return (
       <div className={styles.HistoryActionBTN}>
-        <img
-          src={historyIcon}
-          alt="historyIcon"
-          onClick={() => this.showModal()}
-          className={styles.buttonEdit}
-        />
         <Modal
           className={styles.modalViewHistoryProject}
           title="Resource History"
           width="60%"
           visible={visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
+          footer={null}
+          onOk={onClose}
+          onCancel={onClose}
           closable={{ style: { color: 'blue', with: '100px' } }}
           okText="Done"
           cancelButtonProps={{ style: { color: 'red', border: '1px solid white' } }}

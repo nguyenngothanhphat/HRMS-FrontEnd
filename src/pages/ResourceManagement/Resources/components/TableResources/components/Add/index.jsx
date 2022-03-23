@@ -25,23 +25,10 @@ class AddActionBTN extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      visible: false,
       visibleSuccess: false,
-      projectId: -1
+      projectId: -1,
     };
   }
-
-  showModal = () => {
-    this.setState({
-      visible: true,
-    });
-  };
-
-  handleCancel = () => {
-    this.setState({
-      visible: false,
-    });
-  };
 
   handleCancelModelSuccess = () => {
     this.setState({
@@ -51,29 +38,32 @@ class AddActionBTN extends Component {
   };
 
   handleOnchange = (event) => {
-    this.setState({projectId: event})
-  }
+    this.setState({ projectId: event });
+  };
 
   handleSubmitAssign = async (values) => {
-    const { dispatch, dataPassRow, refreshData } = this.props;
+    const { dispatch, dataPassRow, refreshData, onClose = () => {} } = this.props;
     const { project, status, utilization, startDate, endDate, comment, revisedEndDate } = values;
-    if (new Date(endDate).getTime() < new Date(startDate).getTime() || new Date(revisedEndDate).getTime() < new Date(startDate).getTime()) {
+    if (
+      new Date(endDate).getTime() < new Date(startDate).getTime() ||
+      new Date(revisedEndDate).getTime() < new Date(startDate).getTime()
+    ) {
       notification.error({
         message: 'End date or resived end date cannot less than start date',
       });
-      return
-    } 
-    if(project === undefined || status === undefined){
+      return;
+    }
+    if (project === undefined || status === undefined) {
       notification.error({
         message: 'project or status cannot empty',
       });
-      return
+      return;
     }
-    if(startDate === undefined || endDate === undefined){
+    if (startDate === undefined || endDate === undefined) {
       notification.error({
         message: 'start date or end date cannot empty',
       });
-      return
+      return;
     }
     await dispatch({
       type: 'resourceManagement/fetchAssignToProject',
@@ -90,22 +80,30 @@ class AddActionBTN extends Component {
       },
     }).then(() => {
       refreshData();
-    })
-    
+    });
+
     this.setState({
       visibleSuccess: true,
     });
-    this.setState({
-      visible: false,
-    });
+    onClose();
   };
 
   render() {
-    const { dataPassRow = {}, projectList = [], resourceList = [], statusList = [] } = this.props;
+    const {
+      dataPassRow = {},
+      projectList = [],
+      resourceList = [],
+      statusList = [],
+      onClose = () => {},
+      visible,
+    } = this.props;
     const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
     const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
-    const sumUtilization = listProjectsOfEmp.reduce( (prevValue, currentValue) => prevValue + currentValue.utilization,0);
-    const { visible, visibleSuccess, projectId } = this.state;
+    const sumUtilization = listProjectsOfEmp.reduce(
+      (prevValue, currentValue) => prevValue + currentValue.utilization,
+      0,
+    );
+    const { visibleSuccess, projectId } = this.state;
     const projectFist = projectList.length > 0 ? projectList[0] : {};
     const statusBill = statusList.length > 0 ? statusList[0] : 'Billable';
     const maxEnterUtilization = 100 - sumUtilization;
@@ -113,29 +111,24 @@ class AddActionBTN extends Component {
     const projectDetail = projectList.find((obj) => obj.id === projectId1) || {};
     return (
       <div className={styles.Add}>
-        <img
-          src={addAction}
-          alt="attachIcon"
-          onClick={() => this.showModal()}
-          className={styles.buttonAdd}
-        />
         <Modal
           className={styles.modalAdd}
           title="Assign to project"
           width="60%"
           visible={visible}
           footer={null}
-          onCancel={this.handleCancel}
+          onCancel={onClose}
+          destroyOnClose
         >
           <Form
             layout="vertical"
             className={styles.formAdd}
             method="POST"
             onFinish={(values) => this.handleSubmitAssign(values)}
-            initialValues={{ 
+            initialValues={{
               utilization: 100 - maxEnterUtilization,
               project: projectDetail.id,
-              status: statusBill
+              status: statusBill,
             }}
           >
             <Row>
@@ -152,10 +145,7 @@ class AddActionBTN extends Component {
                   </Select>
                 </Form.Item>
                 <Form.Item label="Status" name="status">
-                  <Select
-                    defaultValue={statusBill}
-                    style={{ width: '95%', borderRadius: '2px' }}
-                  >
+                  <Select defaultValue={statusBill} style={{ width: '95%', borderRadius: '2px' }}>
                     {statusList.map((status) => (
                       <Option value={status}>{status}</Option>
                     ))}
@@ -166,7 +156,7 @@ class AddActionBTN extends Component {
                   name="utilization"
                   rules={[
                     () => ({
-                      validator(_, value) {     
+                      validator(_, value) {
                         if (!value) {
                           return Promise.reject('Utilization value could not be empty');
                         }
@@ -175,14 +165,14 @@ class AddActionBTN extends Component {
                         }
                         if (value > maxEnterUtilization) {
                           return Promise.reject(
-                            `Your cannot enter a value that is more than ${maxEnterUtilization}.`
+                            `Your cannot enter a value that is more than ${maxEnterUtilization}.`,
                           );
                         }
                         if (value < 0) {
                           return Promise.reject(`Your cannot enter a value that is less than 0`);
                         }
                         return Promise.resolve();
-                      }
+                      },
                     }),
                   ]}
                   validateTrigger="onBlur"
@@ -235,17 +225,29 @@ class AddActionBTN extends Component {
                       <span style={{ color: '#2C6DF9' }}> {projectDetail.customerName || ''}</span>
                     </p>
                     <p>
-                      Project: <span style={{ color: '#2C6DF9' }}> {projectDetail.projectName || ''}</span>
+                      Project:{' '}
+                      <span style={{ color: '#2C6DF9' }}> {projectDetail.projectName || ''}</span>
                     </p>
                     <p>
                       Engagement Type:
-                      <span style={{ color: '#2C6DF9' }}> {projectDetail.engagementType || ''}</span>
+                      <span style={{ color: '#2C6DF9' }}>
+                        {' '}
+                        {projectDetail.engagementType || ''}
+                      </span>
                     </p>
                     <p>
-                      Start Date: <span style={{ color: '#2C6DF9' }}> { moment(projectDetail.startDate).format("DD MM YYYY")}</span>
+                      Start Date:{' '}
+                      <span style={{ color: '#2C6DF9' }}>
+                        {' '}
+                        {moment(projectDetail.startDate).format('DD MM YYYY')}
+                      </span>
                     </p>
                     <p>
-                      End Date: <span style={{ color: '#2C6DF9' }}> {moment(projectDetail.endDate).format("DD MM YYYY")}</span>
+                      End Date:{' '}
+                      <span style={{ color: '#2C6DF9' }}>
+                        {' '}
+                        {moment(projectDetail.endDate).format('DD MM YYYY')}
+                      </span>
                     </p>
                   </Col>
                   <Col span={12}>

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Button, DatePicker, Divider, Form, Input, Select, Tag } from 'antd';
+import { DatePicker, Form, Input, Select, Tag, AutoComplete, Spin } from 'antd';
 import moment from 'moment';
 import { debounce } from 'lodash';
 import { connect } from 'umi';
 import CloseTagIcon from '@/assets/closeTagIcon.svg';
 import CalendarIcon from '@/assets/calendar_icon.svg';
+import SearchIcon from '@/assets/directory/search.svg';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -21,55 +22,63 @@ const FilterForm = (props) => {
     employeeList = [],
     divisions = [],
     titleList = [],
-    loading = false,
+    certificationsList = [],
+    loadingFetchEmployeeNameList = false,
     visible = false,
   } = props;
 
   const [durationFrom, setDurationFrom] = useState('');
   const [durationTo, setDurationTo] = useState('');
   const [filter, setFilter] = useState({});
-
-  const fetchEmployeeList = async () => {
-    dispatch({
-      type: 'resourceManagement/getListEmployee',
-      payload: {
-        department: ['Engineering'],
-      },
-    });
-  };
-
-  useEffect(() => {
-    if (visible && !loading) {
-      fetchEmployeeList();
-    }
-  }, [visible]);
+  const [employeeNameListState, setEmployeeNameListState] = useState([]);
+  const [employeeNameState, setEmployeeNameState] = useState('');
+  const [searchIcons, setSearchIcons] = useState({
+    name: false,
+  });
 
   useEffect(() => {
     setFilter({ ...filterProp });
   }, [JSON.stringify(filter)]);
 
-  const clearFilter = () => {
-    setFilter({
-      filter: {
-        name: undefined,
-        title: [],
-        tagDivision: [],
-        statuses: undefined,
-        projects: [],
-        skill: undefined,
-        fromDate: null,
-        toDate: null,
-        expYearBegin: undefined,
-        expYearEnd: undefined,
-        tentativeEndDateEnd: undefined,
-        tentativeEndDateStart: undefined,
-      },
-    });
-    setDurationFrom('');
-    setDurationTo('');
-    form.resetFields();
-    onFilterChange({ ...filter, filter });
-  };
+  useEffect(() => {
+    setEmployeeNameListState(
+      employeeList.map((x) => {
+        return {
+          value: x.generalInfo?.legalName,
+          label: x.generalInfo.legalName,
+        };
+      }),
+    );
+  }, [JSON.stringify(employeeList)]);
+
+  useEffect(() => {
+    if (!employeeNameState) {
+      setEmployeeNameListState([]);
+    }
+  }, [employeeNameState]);
+
+  // const clearFilter = () => {
+  //   setFilter({
+  //     filter: {
+  //       name: undefined,
+  //       title: [],
+  //       tagDivision: [],
+  //       statuses: undefined,
+  //       projects: [],
+  //       skill: undefined,
+  //       fromDate: null,
+  //       toDate: null,
+  //       expYearBegin: undefined,
+  //       expYearEnd: undefined,
+  //       tentativeEndDateEnd: undefined,
+  //       tentativeEndDateStart: undefined,
+  //     },
+  //   });
+  //   setDurationFrom('');
+  //   setDurationTo('');
+  //   form.resetFields();
+  //   onFilterChange({ ...filter, filter });
+  // };
 
   const disabledDate = (currentDate, type) => {
     if (type === 'fromDate') {
@@ -120,16 +129,62 @@ const FilterForm = (props) => {
 
   const onFinishDebounce = debounce((values) => {
     onFinish(values);
-  }, 700);
+  }, 1000);
 
   const onValuesChange = () => {
     const values = form.getFieldsValue();
     onFinishDebounce(values);
   };
 
-  const employees = employeeList.map((x) => {
-    return { _id: x._id, name: x.generalInfo.legalName };
-  });
+  const onSearchEmployeeDebounce = debounce((type, value) => {
+    let typeTemp = '';
+    switch (type) {
+      // case 'id':
+      //   typeTemp = 'employee/fetchEmployeeIDListEffect';
+      //   break;
+      case 'name':
+        typeTemp = 'resourceManagement/getListEmployee';
+        setEmployeeNameState(value);
+        break;
+      // case 'manager':
+      //   typeTemp = 'employee/fetchManagerListEffect';
+      //   break;
+      default:
+        break;
+    }
+    if (typeTemp && value) {
+      dispatch({
+        type: typeTemp,
+        payload: {
+          name: value,
+          department: ['Engineering'],
+        },
+      });
+    }
+    if (!value) {
+      switch (type) {
+        // case 'id':
+        //   setEmployeeIDListState([]);
+        //   break;
+        case 'name':
+          setEmployeeNameListState([]);
+          break;
+        // case 'manager':
+        //   setManagerListState([]);
+        //   break;
+        default:
+          break;
+      }
+    }
+  }, 1000);
+
+  const handleEmployeeSearch = (type, value) => {
+    onSearchEmployeeDebounce(type, value);
+  };
+
+  // const employees = employeeList.map((x) => {
+  //   return { _id: x._id, name: x.generalInfo.legalName };
+  // });
   const division = divisions.map((x) => {
     return { _id: x.name, name: x.name };
   });
@@ -144,47 +199,51 @@ const FilterForm = (props) => {
   const titles = titleList.map((x) => {
     return { _id: x._id, name: x.name };
   });
+
+  const certifications = certificationsList.map((x) => {
+    return { _id: x._id, name: x.name };
+  });
   const dateFormat = 'MMM DD, YYYY';
   const fieldsArray = [
-    {
-      label: 'BY NAME/USER ID',
-      name: 'name',
-      placeholder: 'Select name',
-      optionArray: employees,
-      loading,
-    },
     {
       label: 'BY DIVISION',
       name: 'tagDivision',
       mode: 'multiple',
-      placeholder: 'Select division',
+      placeholder: 'Select the division',
       optionArray: division,
     },
     {
       label: 'BY DESIGNATION',
       name: 'title',
       mode: 'multiple',
-      placeholder: 'Select designation',
+      placeholder: 'Select the designation',
       optionArray: titles,
     },
     {
       label: 'BY SKILL',
       name: 'skill',
-      placeholder: 'Select location',
+      placeholder: 'Select the location',
       mode: 'multiple',
       optionArray: statuses,
     },
     {
+      label: 'BY CERTIFICATIONS ',
+      name: 'Certifications ',
+      placeholder: 'Select the certifications ',
+      mode: 'multiple',
+      optionArray: certifications,
+    },
+    {
       label: 'BY CURRENT PROJECT',
       name: 'projects',
-      placeholder: 'Select location',
+      placeholder: 'Select the project',
       mode: 'multiple',
       optionArray: projects,
     },
     {
       label: 'BY BILLING STATUS',
       name: 'statuses',
-      placeholder: 'Select billing status',
+      placeholder: 'Select the billing status',
       optionArray: statuses,
     },
   ];
@@ -200,6 +259,23 @@ const FilterForm = (props) => {
         form={form}
       >
         <div className={styles.form__top}>
+          <Form.Item label="BY NAME/USER ID" name="name">
+            <AutoComplete
+              dropdownMatchSelectWidth={252}
+              notFoundContent={loadingFetchEmployeeNameList ? <Spin /> : 'No matches'}
+              options={employeeNameListState}
+              onSearch={(val) => handleEmployeeSearch('name', val)}
+              onFocus={() => setSearchIcons({ ...searchIcons, name: true })}
+              onBlur={() => setSearchIcons({ ...searchIcons, name: false })}
+            >
+              <Input
+                placeholder="Search by Name/User ID"
+                prefix={searchIcons.name ? <img src={SearchIcon} alt="search" /> : null}
+                allowClear
+              />
+            </AutoComplete>
+            {/* <Input placeholder="Search by Name/User ID" /> */}
+          </Form.Item>
           {fieldsArray.map((field) => (
             <Form.Item key={field.name} label={field.label} name={field.name}>
               <Select
@@ -336,13 +412,15 @@ export default connect(
       divisions = [],
       statusList = [],
       titleList = [],
+      certificationsList = [],
     } = {},
   }) => ({
-    loading: loading.effects['resourceManagement/getListEmployee'],
+    loadingFetchEmployeeNameList: loading.effects['resourceManagement/getListEmployee'],
     projectList,
     employeeList,
     divisions,
     statusList,
     titleList,
+    certificationsList,
   }),
 )(FilterForm);

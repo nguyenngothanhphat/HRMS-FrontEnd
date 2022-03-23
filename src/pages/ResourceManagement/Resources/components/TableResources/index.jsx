@@ -1,27 +1,87 @@
 import React, { PureComponent } from 'react';
-import { Table } from 'antd';
+import { Table, Popover } from 'antd';
 import moment from 'moment';
+import { connect } from 'umi';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
-import AddActionBTN from './components/Add';
-import EditActionBTN from './components/Edit';
-import HistoryActionBTN from './components/History';
+import AddModal from './components/Add';
+import EditMoal from './components/Edit';
+import HistoryModal from './components/History';
+import editIcon from '@/assets/resource-management-edit-history.svg';
+import historyIcon from '@/assets/resource-management-edit1.svg';
+import addAction from '@/assets/resource-action-add1.svg';
 import styles from './index.less';
 import ProjectProfile from '../ComplexView/components/PopoverProfiles/components/ProjectProfile';
-import UserProfile from '../ComplexView/components/PopoverProfiles/components/UserProfile';
+import PopoverInfo from '../ComplexView/components/PopoverProfiles/components/UserProfile';
 import CommentModal from './components/Comment';
 import CommentOverlay from '../ComplexView/components/Overlay';
 
+@connect(
+  ({
+    loading,
+    offboarding: { approvalflow = [] } = {},
+    user: { permissions = {} },
+    locationSelection: { listLocationsByCompany = [] },
+  }) => ({
+    loadingTerminateReason: loading.effects['offboarding/terminateReason'],
+    approvalflow,
+    permissions,
+    listLocationsByCompany,
+  }),
+)
 class TableResources extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       // pageNavigation: '1',
       currentTime: moment(),
+      visible: false,
+      dataPassRow: {},
+      visibleAdd: false,
+      visibleHistory: false,
     };
   }
 
   componentDidMount = () => {
     this.setCurrentTime();
+  };
+
+  showModal = (row) => {
+    this.setState({
+      visible: true,
+      dataPassRow: row,
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  showModalAdd = (row) => {
+    this.setState({
+      visibleAdd: true,
+      dataPassRow: row,
+    });
+  };
+
+  handleCancelAdd = () => {
+    this.setState({
+      visibleAdd: false,
+    });
+  };
+
+  showModalHistory = (row) => {
+    this.setState({
+      visibleHistory: true,
+      dataPassRow: row,
+    });
+  };
+
+  handleCancelHistory = () => {
+    this.setState({
+      visibleHistory: false,
+    });
   };
 
   setCurrentTime = () => {
@@ -88,7 +148,7 @@ class TableResources extends PureComponent {
       refreshData,
       allowModify = true,
     } = this.props;
-    // const formatData = this.formatResource(data)
+    const { visible, dataPassRow, visibleHistory, visibleAdd } = this.state;
     const pagination = {
       position: ['bottomLeft'],
       total, // totalAll,
@@ -101,9 +161,14 @@ class TableResources extends PureComponent {
           of {total}
         </span>
       ),
-      pageSize: data.length,
+      defaultPageSize: size,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
+      pageSize: size,
       current: pageSelected,
-      onChange: (page) => getPageAndSize(page, size),
+      onChange: (page, pageSize) => {
+        return getPageAndSize(page, pageSize);
+      },
     };
 
     const mapping = new Set();
@@ -157,22 +222,27 @@ class TableResources extends PureComponent {
         title: 'Name',
         dataIndex: 'employeeName',
         key: 'employeeName',
-        // width: '12%',
         render: (value, row) => {
           const statusClass = resourceStatusClass(row.availableStatus);
-          const div = (
+          return (
             <div>
               <div>
                 <div className={styles.resourceStatus}>
                   <span className={styles[statusClass]}>{row.availableStatus}</span>
                 </div>
               </div>
-              <UserProfile placement="leftTop" employeeId={row.employeeId}>
+
+              <Popover
+                placement="leftTop"
+                overlayClassName={styles.UserProfilePopover}
+                content={<PopoverInfo employeeId={row.employeeId} />}
+                trigger="hover"
+              >
                 <div className={styles.employeeName}>{value}</div>
-              </UserProfile>
+              </Popover>
             </div>
           );
-          return renderCell(value, row, div);
+          // return renderCell(value, row, div);
         },
         sorter: (a, b) => {
           return a.employeeName.localeCompare(b.employeeName);
@@ -185,10 +255,8 @@ class TableResources extends PureComponent {
         title: 'Division',
         dataIndex: 'division',
         key: 'division',
-        // width: '10%',
-        render: (value, row) => {
-          const display = <span className={styles.division}>{value}</span>;
-          return renderCell(value, row, display);
+        render: (value) => {
+          return <span className={styles.division}>{value}</span>;
         },
         sorter: (a, b) => {
           return localCompare(a.division, b.division);
@@ -198,41 +266,34 @@ class TableResources extends PureComponent {
       {
         title: 'Designation',
         dataIndex: 'designation',
-        // width: '12%',
         key: 'designation',
-        render: (value, row) => {
-          const display = <span className={styles.basicCellField}>{value}</span>;
-          return renderCell(value, row, display);
+        render: (value) => {
+          return <span className={styles.basicCellField}>{value}</span>;
         },
         sorter: (a, b) => {
           return localCompare(a.designation, b.designation);
         },
-        // defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend'],
       },
       {
         title: 'Experience (in yrs)',
         dataIndex: 'experience',
-        // width: '7%',
-        render: (value, row) => {
-          const display = <span className={styles.basicCellField}>{value}</span>;
-          return renderCell(value, row, display);
+        render: (value) => {
+          return <span className={styles.basicCellField}>{value}</span>;
         },
         sorter: (a, b) => {
           return a.experience - b.experience;
         },
-        // defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend'],
       },
       {
         title: 'Current Project(s)',
         dataIndex: 'projectName',
-        // width: '10%',
         render: (value, row) => {
           const employeeRowCount = data.filter((x) => x.employeeId === row.employeeId).length;
           const display = (
             <ProjectProfile placement="leftTop" projectId={row.project}>
-              <span className={styles.employeeName}>{value}</span>
+              <span className={styles.employeeName}>{value || '-'}</span>
             </ProjectProfile>
           );
           const obj = {
@@ -244,39 +305,23 @@ class TableResources extends PureComponent {
           };
           return obj;
         },
-        // sorter: (a, b) => {
-        //   return localCompare(a.projectName, b.projectName);
-        // },
-        // sortDirections: ['ascend', 'descend'],
       },
       {
         title: 'Status',
         dataIndex: 'billStatus',
-        // width: '6%',
         key: 'billStatus',
         align: 'center',
         render: (billStatus) => {
           return <span className={styles.basicCellField}> {billStatus}</span>;
         },
-        // sorter: (a, b) => {
-        //   return localCompare(a.billStatus, b.billStatus);
-        // },
-        // // defaultSortOrder: 'ascend',
-        // sortDirections: ['ascend', 'descend'],
       },
       {
         title: 'Utilization',
         dataIndex: 'utilization',
-        // width: '6%',
         key: 'utilization',
-        // sorter: (a, b) => {
-        //   return a.utilization - b.utilization;
-        // },
         render: (value) => {
           return <span>{value} %</span>;
         },
-        // defaultSortOrder: 'ascend',
-        // sortDirections: ['ascend', 'descend'],
       },
       {
         title: (
@@ -286,7 +331,6 @@ class TableResources extends PureComponent {
           </div>
         ),
         dataIndex: 'startDate',
-        // width: '7%',
         key: 'startDate',
         render: (value) => {
           return <span className={styles.basicCellField}>{value}</span>;
@@ -300,7 +344,6 @@ class TableResources extends PureComponent {
           </div>
         ),
         dataIndex: 'endDate',
-        // width: '7%',
         key: 'endDate',
         render: (value) => {
           return <span className={styles.basicCellField}>{value}</span>;
@@ -314,7 +357,6 @@ class TableResources extends PureComponent {
           </div>
         ),
         dataIndex: 'revisedEndDate',
-        // width: '7%',
         key: 'revisedEndDate',
         render: (value, row) => {
           // return <span className={styles.basicCellField}>{value}</span>;
@@ -330,22 +372,15 @@ class TableResources extends PureComponent {
               <div className={styles.reservedField}>
                 {value}
                 <div className={styles.resourceManagementEdit}>
-                  {allowModify && <EditActionBTN dataPassRow={row} refreshData={refreshData} />}
+                  {allowModify && (
+                    <div className={styles.buttonContainer}>
+                      <img src={editIcon} alt="historyIcon" onClick={() => this.showModal(row)} />
+                    </div>
+                  )}
                 </div>
               </div>
             );
           }
-
-          // const display = (
-          //   <div className={styles.reservedField}>
-          //     {value}
-          //     <div className={styles.iconEdit}>
-          //       {allowModify && (
-          //         <EditActionBTN dataPassRow={row} refreshData={refreshData} />
-          //     )}
-          //     </div>
-          //   </div>
-          //   );
           const obj = {
             children: display,
             props: {
@@ -358,14 +393,12 @@ class TableResources extends PureComponent {
       },
       {
         title: 'Comments',
-        // width: '10%',
         dataIndex: 'comment',
         key: 'comment',
         render: (value, row) => {
           const employeeRowCount = data.filter((x) => x.employeeId === row.employeeId).length;
           let text;
           if (value) {
-            // webkit-line-clamp
             const line =
               employeeRowCount === 0 || employeeRowCount === 1 ? 3 : employeeRowCount * 3;
             text = (
@@ -381,32 +414,44 @@ class TableResources extends PureComponent {
               <span>{allowModify && <CommentModal data={row} refreshData={refreshData} />}</span>
             );
           }
-          const obj = renderCell('comment', row, text);
-          obj.props.className = employeeRowCount > 1 ? 'commentCellLeftBorder' : 'commentCell';
-          return obj;
+          return text;
+          // const obj = renderCell('comment', row, text);
+          // obj.props.className = employeeRowCount > 1 ? 'commentCellLeftBorder' : 'commentCell';
+          // return obj;
         },
-        // className: 'right-left-border',
       },
       {
         title: 'Actions',
         width: '6%',
         // dataIndex: 'subject',
         key: 'action',
-        render: (value, row, col) => {
-          // const buttonGroup = actionAddAndEdit(row);
-          const buttonGroup = (
+        render: (value, row) => {
+          return (
             <div className={styles.actionParent}>
               <div className={styles.buttonGroup}>
-                {allowModify && <AddActionBTN dataPassRow={row} refreshData={refreshData} />}
-                <HistoryActionBTN dataPassRow={row} />
+                {allowModify && (
+                  <img
+                    src={addAction}
+                    alt="attachIcon"
+                    onClick={() => this.showModalAdd(row)}
+                    className={styles.buttonAdd}
+                  />
+                )}
+
+                <img
+                  src={historyIcon}
+                  alt="historyIcon"
+                  onClick={() => this.showModalHistory(row)}
+                  className={styles.buttonEdit}
+                />
               </div>
             </div>
           );
-          const obj = renderCell('add', row, buttonGroup);
-          if (col === data.length - 1) {
-            mapping.clear();
-          }
-          return obj;
+          // const obj = renderCell('add', row, buttonGroup);
+          // if (col === data.length - 1) {
+          //   mapping.clear();
+          // }
+          // return obj;
         },
         className: 'right-left-border',
         fixed: 'right',
@@ -433,6 +478,26 @@ class TableResources extends PureComponent {
           onChange={this.onTableChange}
           rowKey="id"
           scroll={{ x: 'max-content' }}
+        />
+        <EditMoal
+          visible={visible}
+          refreshData={refreshData}
+          dataPassRow={dataPassRow}
+          onClose={() => this.handleCancel(false)}
+          mode="multiple"
+        />
+        <AddModal
+          visible={visibleAdd}
+          refreshData={refreshData}
+          dataPassRow={dataPassRow}
+          onClose={() => this.handleCancelAdd(false)}
+          mode="multiple"
+        />
+        <HistoryModal
+          visible={visibleHistory}
+          dataPassRow={dataPassRow}
+          onClose={() => this.handleCancelHistory(false)}
+          mode="multiple"
         />
       </div>
     );
