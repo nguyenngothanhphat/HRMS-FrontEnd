@@ -1,10 +1,10 @@
-import AttachmentIcon from '@/assets/attachment.svg';
-import InfoIcon from '@/assets/candidatePortal/infoIcon.svg';
-import TextSignature from '@/components/TextSignature';
-import { Button, Form, Input, message, Modal, Radio, Row, Select, Space, Spin, Upload } from 'antd';
+import { Button, Form, Input, message, Modal, Radio, Row, Select, Space, Upload } from 'antd';
 import React, { PureComponent } from 'react';
 import SignaturePad from 'react-signature-canvas';
 import { connect } from 'umi';
+import TextSignature from '@/components/TextSignature';
+import InfoIcon from '@/assets/candidatePortal/infoIcon.svg';
+import AttachmentIcon from '@/assets/attachment.svg';
 import styles from './index.less';
 
 const { Dragger } = Upload;
@@ -22,16 +22,29 @@ const initialState = {
 
 @connect(({ loading }) => ({
   loadingUploadAttachment: loading.effects['upload/uploadFile'],
-  loading:
-    loading.effects['candidatePortal/updateByCandidateEffect'] ||
-    loading.effects['candidatePortal/submitCandidateFinalOffer'],
 }))
-class AcceptOfferModal extends PureComponent {
+class SignatureModal extends PureComponent {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = initialState;
     this.sigPad = React.createRef();
   }
+
+  componentDidUpdate = (prevProps) => {
+    const { activeMode = '', visible = false } = this.props;
+    const { mode } = this.state;
+    if (prevProps.visible !== visible && activeMode !== mode && activeMode) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        mode: activeMode,
+      });
+      this.formRef.current?.setFieldsValue({
+        mode: activeMode,
+      });
+    }
+  };
 
   identifyImageOrPdf = (fileName) => {
     const parts = fileName.split('.');
@@ -92,7 +105,7 @@ class AcceptOfferModal extends PureComponent {
   };
 
   renderHeaderModal = () => {
-    const { titleModal = 'Signature of the candidate' } = this.props;
+    const { titleModal = 'Signature' } = this.props;
     return (
       <div className={styles.header}>
         <p className={styles.header__text}>{titleModal}</p>
@@ -148,7 +161,9 @@ class AcceptOfferModal extends PureComponent {
       const { data: imageData = [] } = response;
       const { id = '' } = imageData[0];
       onFinish(id);
-      this.clearState();
+      setTimeout(() => {
+        this.clearState();
+      }, 200);
     });
   };
 
@@ -156,7 +171,7 @@ class AcceptOfferModal extends PureComponent {
     const { dispatch, onFinish = () => {} } = this.props;
     const formData = new FormData();
     const file = this.dataURItoBlob(imageBase64);
-    formData.append('blob', file, 'signatureCandidate.png');
+    formData.append('blob', file, 'signature.png');
     const response = await dispatch({
       type: 'upload/uploadFile',
       payload: formData,
@@ -174,7 +189,7 @@ class AcceptOfferModal extends PureComponent {
       return;
     }
     const file = this.dataURItoBlob(arrImgBase64[finalDigitalSignature]);
-    formData.append('blob', file, 'signatureCandidate.jpeg');
+    formData.append('blob', file, 'signature.jpeg');
     const response = await dispatch({
       type: 'upload/uploadFile',
       payload: formData,
@@ -207,7 +222,7 @@ class AcceptOfferModal extends PureComponent {
     return (
       <>
         <Modal
-          className={styles.AcceptOfferModal}
+          className={styles.SignatureModal}
           onCancel={this.handleCancel}
           destroyOnClose
           footer={[
@@ -232,7 +247,7 @@ class AcceptOfferModal extends PureComponent {
         >
           <Form
             name="basic"
-            // ref={this.formRef}
+            ref={this.formRef}
             id="myForm"
             onFinish={this.onFinish}
             initialValues={
@@ -359,4 +374,4 @@ class AcceptOfferModal extends PureComponent {
   }
 }
 
-export default AcceptOfferModal;
+export default SignatureModal;
