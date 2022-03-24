@@ -258,7 +258,7 @@ const PoliciesCertification = (props) => {
                 className={styles.signatureBar__button__primary}
                 onClick={() => setIsCertify(true)}
               >
-                Certify digitally
+                Sign
               </Button>
             </div>
           </Col>
@@ -304,31 +304,13 @@ const PoliciesCertification = (props) => {
   };
 
   const renderContent = () => {
-    const SignatureNote = {
-      title: 'Note',
-      data: (
-        <Typography.Text>
-          The Salary structure will be sent as a <span>provisional offer</span>. The candidate must
-          accept the and acknowledge the salary structure as a part of final negotiation.
-          <br />
-          <br />
-          <span style={{ fontWeight: 'bold', color: '#707177' }}>
-            Post acceptance of salary structure, the final offer letter will be sent.
-          </span>
-        </Typography.Text>
-      ),
-    };
-
     const Note = {
       title: 'Instructions',
       icon: QuestionIcon,
       data: (
         <Typography.Text>
-          Our support team is waiting to help you 24/7. Get an emailed response from our team.
-          <br />
-          <div className={styles.btnContact}>
-            <Button>Contact Us</Button>
-          </div>
+          Please read all the policy documents and sign to mark your acceptance. Please reach out to
+          the HR in case of any questions.
         </Typography.Text>
       ),
     };
@@ -339,7 +321,7 @@ const PoliciesCertification = (props) => {
           <Col sm={24} md={17} lg={19}>
             <div className={styles.signatureContainer}>
               <div className={styles.titleHeader}>
-                <span className={styles.title}>Digitally Signature</span>
+                <span className={styles.title}>Acknowledgement</span>
               </div>
               <Row gutter={24}>
                 <Col sm={24} lg={14} xl={16}>
@@ -351,7 +333,7 @@ const PoliciesCertification = (props) => {
                   </div>
                 </Col>
                 <Col sm={24} lg={10} xl={8}>
-                  <NoteComponent note={SignatureNote} />
+                  <NoteComponent note={Note} />
                 </Col>
               </Row>
             </div>
@@ -442,6 +424,8 @@ const PoliciesCertification = (props) => {
         titleModal="Signature of the employee"
         loading={loadingSignaturePolicies}
         activeMode="digital-signature"
+        disableDraw
+        disableUpload
       />
 
       <ActionModal
@@ -466,7 +450,8 @@ const PoliciesCertification = (props) => {
             marginBlock: 24,
           }}
         >
-          Acknowledgement has been sent to your mail and HR as well.
+          A copy of the signed document has been sent to you and the HR. You can also find this
+          document under the Documents tab of Employee Profile.
         </span>
       </ActionModal>
     </div>
