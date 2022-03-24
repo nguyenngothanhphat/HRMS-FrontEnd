@@ -51,8 +51,21 @@
     background: #34c765;
     border-radius: 12px;
   }
-  .employeeName {
-    text-align: center;
+  .userProfile {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    .employeeName {
+      text-align: center;
+    }
+    .avatar {
+      img {
+        width: 30px;
+        height: 30px;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+    }
   }
 
   .actionParent {

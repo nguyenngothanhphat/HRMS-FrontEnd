@@ -14,6 +14,7 @@ import ProjectProfile from '../ComplexView/components/PopoverProfiles/components
 import PopoverInfo from '../ComplexView/components/PopoverProfiles/components/UserProfile';
 import CommentModal from './components/Comment';
 import CommentOverlay from '../ComplexView/components/Overlay';
+import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 
 @connect(
   ({
@@ -239,7 +240,16 @@ class TableResources extends PureComponent {
                   content={<PopoverInfo employeeId={row.employeeId} />}
                   trigger="hover"
                 >
-                  <div className={styles.employeeName}>{value}</div>
+                  <div className={styles.userProfile}>
+                    <div className={styles.avatar}>
+                      <img
+                        src={row.avatar || MockAvatar}
+                        alt="avatar"
+                        onError={`this.src=${MockAvatar}`}
+                      />
+                    </div>
+                    <div className={styles.employeeName}>{value}</div>
+                  </div>
                 </Popover>
               </div>
             );

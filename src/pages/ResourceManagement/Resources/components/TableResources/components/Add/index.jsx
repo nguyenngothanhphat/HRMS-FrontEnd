@@ -1,11 +1,16 @@
+/* eslint-disable compat/compat */
+/* eslint-disable no-restricted-globals */
+/* eslint-disable prefer-promise-reject-errors */
 import React, { Component } from 'react';
 import { Row, Col, Button, Modal, Form, Input, Select, DatePicker, Card, notification } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
+import { set } from 'lodash';
 import addAction from '@/assets/resource-action-add1.svg';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
 import styles from './index.less';
+import CommonModal from '../CommonModal';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -26,15 +31,29 @@ class AddActionBTN extends Component {
     super(props);
     this.state = {
       visibleSuccess: false,
-      projectId: -1,
+      projectId: '',
     };
   }
 
-  handleCancelModelSuccess = () => {
+  componentDidUpdate(prevProps) {
+    const { visible } = this.props;
+    if (prevProps.visible !== visible) {
+      this.clearState();
+    }
+  }
+
+  clearState = () => {
     this.setState({
-      visibleSuccess: false,
+      projectId: '',
     });
-    // window.location.reload(false);
+  };
+
+  handleCancelModelSuccess = () => {
+    const { onClose = () => {} } = this.props;
+    onClose();
+    this.setState({
+      projectId: '',
+    });
   };
 
   handleOnchange = (event) => {
@@ -88,194 +107,183 @@ class AddActionBTN extends Component {
     onClose();
   };
 
-  render() {
-    const {
-      dataPassRow = {},
-      projectList = [],
-      resourceList = [],
-      statusList = [],
-      onClose = () => {},
-      visible,
-    } = this.props;
+  modalContent = () => {
+    const { dataPassRow = {}, projectList = [], resourceList = [], statusList = [] } = this.props;
     const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
     const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
     const sumUtilization = listProjectsOfEmp.reduce(
       (prevValue, currentValue) => prevValue + currentValue.utilization,
       0,
     );
-    const { visibleSuccess, projectId } = this.state;
-    const projectFist = projectList.length > 0 ? projectList[0] : {};
-    const statusBill = statusList.length > 0 ? statusList[0] : 'Billable';
+    const { projectId } = this.state;
+    // const projectFist = projectList.length > 0 ? projectList[0] : {};
+    // const statusBill = statusList.length > 0 ? statusList[0] : 'Billable';
     const maxEnterUtilization = 100 - sumUtilization;
-    const projectId1 = (projectId !== -1 ? projectId : projectFist.id) || -1;
+    const projectId1 = projectId !== -1 ? projectId : 0;
+
     const projectDetail = projectList.find((obj) => obj.id === projectId1) || {};
+
+    return (
+      <Form
+        layout="vertical"
+        className={styles.formAdd}
+        method="POST"
+        id="myForm"
+        onFinish={(values) => this.handleSubmitAssign(values)}
+      >
+        <Row gutter={[24, 24]}>
+          <Col span={12}>
+            <Form.Item label="Project" name="project">
+              <Select
+                placeholder="Select the project"
+                onChange={(event) => this.handleOnchange(event)}
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {projectList.map((project) => (
+                  <Option value={project.id}>{project.projectName}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item label="Status" name="status">
+              <Select
+                placeholder="Select the status"
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {statusList.map((status) => (
+                  <Option value={status}>{status}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              label="Bandwith Allocation (%)"
+              name="utilization"
+              rules={[
+                () => ({
+                  validator(_, value) {
+                    if (!value) {
+                      return Promise.reject('Utilization value could not be empty');
+                    }
+                    if (isNaN(value)) {
+                      return Promise.reject(`Value enter has to be a number.`);
+                    }
+                    if (value > maxEnterUtilization) {
+                      return Promise.reject(
+                        `Your cannot enter a value that is more than ${maxEnterUtilization}.`,
+                      );
+                    }
+                    if (value < 0) {
+                      return Promise.reject(`Your cannot enter a value that is less than 0`);
+                    }
+                    return Promise.resolve();
+                  },
+                }),
+              ]}
+              validateTrigger="onBlur"
+            >
+              <Input addonAfter="%" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Start Date" name="startDate">
+              <DatePicker
+                placeholder="Enter Start Date"
+                suffixIcon={<img src={datePickerIcon} alt="" />}
+              />
+            </Form.Item>
+            <Form.Item label="End Date" name="endDate">
+              <DatePicker
+                placeholder="Enter End Date"
+                suffixIcon={<img src={datePickerIcon} alt="" />}
+              />
+            </Form.Item>
+            <Form.Item label="Revised End Date" name="revisedEndDate">
+              <DatePicker
+                placeholder="Enter Date"
+                suffixIcon={<img src={datePickerIcon} alt="" />}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Form.Item label="Comments (optional)" name="comment">
+          <TextArea placeholder="Enter Comments" autoSize={{ minRows: 4, maxRows: 8 }} />
+        </Form.Item>
+        {projectId && (
+          <Form.Item label={<span style={{ fontWeight: '700' }}>Project Details</span>}>
+            <Card style={{ background: '#F6F7F9' }}>
+              <Row>
+                <Col span={12}>
+                  <p>
+                    Customer:
+                    <span style={{ color: '#2C6DF9' }}> {projectDetail.customerName || ''}</span>
+                  </p>
+                  <p>
+                    Project:{' '}
+                    <span style={{ color: '#2C6DF9' }}> {projectDetail.projectName || ''}</span>
+                  </p>
+                  <p>
+                    Engagement Type:
+                    <span style={{ color: '#2C6DF9' }}>{projectDetail.engagementType || ''}</span>
+                  </p>
+                  <p>
+                    Start Date:{' '}
+                    <span style={{ color: '#2C6DF9' }}>
+                      {moment(projectDetail.startDate).format('DD MM YYYY')}
+                    </span>
+                  </p>
+                  <p>
+                    End Date:{' '}
+                    <span style={{ color: '#2C6DF9' }}>
+                      {moment(projectDetail.endDate).format('DD MM YYYY')}
+                    </span>
+                  </p>
+                </Col>
+                <Col span={12}>
+                  <Row>
+                    <Col span={12}>Current resource allocation :</Col>
+                    <Col span={12}>
+                      <p>
+                        <span style={{ color: '#2C6DF9' }}>2</span>/3 UX Designers (Billable)
+                      </p>
+                      <p>
+                        <span style={{ color: '#2C6DF9' }}>1</span>/2 UI Designer (Billable)
+                      </p>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            </Card>
+          </Form.Item>
+        )}
+      </Form>
+    );
+  };
+
+  render() {
+    const { onClose = () => {}, visible } = this.props;
+
+    const { visibleSuccess } = this.state;
+    // const projectFist = projectList.length > 0 ? projectList[0] : {};
+    // const statusBill = statusList.length > 0 ? statusList[0] : 'Billable';
+
     return (
       <div className={styles.Add}>
-        <Modal
-          className={styles.modalAdd}
+        <CommonModal
           title="Assign to project"
-          width="60%"
           visible={visible}
           footer={null}
-          onCancel={onClose}
-          destroyOnClose
-        >
-          <Form
-            layout="vertical"
-            className={styles.formAdd}
-            method="POST"
-            onFinish={(values) => this.handleSubmitAssign(values)}
-            initialValues={{
-              utilization: 100 - maxEnterUtilization,
-              project: projectDetail.id,
-              status: statusBill,
-            }}
-          >
-            <Row>
-              <Col span={12}>
-                <Form.Item label="Project" name="project">
-                  <Select
-                    defaultValue={projectId}
-                    style={{ width: '95%', borderRadius: '2px' }}
-                    onChange={(event) => this.handleOnchange(event)}
-                  >
-                    {projectList.map((project) => (
-                      <Option value={project.id}>{project.projectName}</Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-                <Form.Item label="Status" name="status">
-                  <Select defaultValue={statusBill} style={{ width: '95%', borderRadius: '2px' }}>
-                    {statusList.map((status) => (
-                      <Option value={status}>{status}</Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-                <Form.Item
-                  label="Bandwith Allocation (%)"
-                  name="utilization"
-                  rules={[
-                    () => ({
-                      validator(_, value) {
-                        if (!value) {
-                          return Promise.reject('Utilization value could not be empty');
-                        }
-                        if (isNaN(value)) {
-                          return Promise.reject(`Value enter has to be a number.`);
-                        }
-                        if (value > maxEnterUtilization) {
-                          return Promise.reject(
-                            `Your cannot enter a value that is more than ${maxEnterUtilization}.`,
-                          );
-                        }
-                        if (value < 0) {
-                          return Promise.reject(`Your cannot enter a value that is less than 0`);
-                        }
-                        return Promise.resolve();
-                      },
-                    }),
-                  ]}
-                  validateTrigger="onBlur"
-                >
-                  <Input
-                    defaultValue={sumUtilization}
-                    style={{ width: '95%', color: 'black' }}
-                    addonAfter="%"
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item label="Start Date" name="startDate">
-                  <DatePicker
-                    placeholder="Enter Start Date"
-                    style={{ width: '100%', borderRadius: '2px', color: 'blue' }}
-                    suffixIcon={<img src={datePickerIcon} alt="" />}
-                  />
-                </Form.Item>
-                <Form.Item label="End Date" name="endDate">
-                  <DatePicker
-                    placeholder="Enter End Date"
-                    style={{ width: '100%', borderRadius: '2px', color: 'blue' }}
-                    suffixIcon={<img src={datePickerIcon} alt="" />}
-                  />
-                </Form.Item>
-                <Form.Item label="Revised End Date" name="revisedEndDate">
-                  <DatePicker
-                    placeholder="Enter Date"
-                    style={{
-                      width: '100%',
-                      borderRadius: '2px',
-                      color: 'blue',
-                      background: '#F4F6F7',
-                    }}
-                    suffixIcon={<img src={datePickerIcon} alt="" />}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Form.Item label="Comments (optional)" name="comment">
-              <TextArea placeholder="Enter Comments" autoSize={{ minRows: 4, maxRows: 8 }} />
-            </Form.Item>
-            <Form.Item label="Project Detail">
-              <Card style={{ background: '#F6F7F9' }}>
-                <Row>
-                  <Col span={12}>
-                    <p>
-                      Customer:
-                      <span style={{ color: '#2C6DF9' }}> {projectDetail.customerName || ''}</span>
-                    </p>
-                    <p>
-                      Project:{' '}
-                      <span style={{ color: '#2C6DF9' }}> {projectDetail.projectName || ''}</span>
-                    </p>
-                    <p>
-                      Engagement Type:
-                      <span style={{ color: '#2C6DF9' }}>
-                        {' '}
-                        {projectDetail.engagementType || ''}
-                      </span>
-                    </p>
-                    <p>
-                      Start Date:{' '}
-                      <span style={{ color: '#2C6DF9' }}>
-                        {' '}
-                        {moment(projectDetail.startDate).format('DD MM YYYY')}
-                      </span>
-                    </p>
-                    <p>
-                      End Date:{' '}
-                      <span style={{ color: '#2C6DF9' }}>
-                        {' '}
-                        {moment(projectDetail.endDate).format('DD MM YYYY')}
-                      </span>
-                    </p>
-                  </Col>
-                  <Col span={12}>
-                    <Row>
-                      <Col span={12}>Current resource allocation :</Col>
-                      <Col span={12}>
-                        <p>
-                          <span style={{ color: '#2C6DF9' }}>2</span>/3 UX Designers (Billable)
-                        </p>
-                        <p>
-                          <span style={{ color: '#2C6DF9' }}>1</span>/2 UI Designer (Billable)
-                        </p>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              </Card>
-            </Form.Item>
-            <div className={styles.spaceFooter}>
-              <div className={styles.btnCancel} onClick={this.handleCancel}>
-                Cancel
-              </div>
-              <Button type="primary" htmlType="submit" className={styles.btnSubmit}>
-                Assign To Project
-              </Button>
-            </div>
-          </Form>
-        </Modal>
+          onClose={onClose}
+          width={600}
+          content={this.modalContent()}
+          firstText="Assign to project"
+        />
 
         <Modal
           visible={visibleSuccess}
