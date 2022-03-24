@@ -2,7 +2,7 @@ import { Spin } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
-import { EMP_ROW_HEIGHT } from '@/utils/dashboard';
+import { EMP_ROW_HEIGHT, CALENDAR_COLORS } from '@/utils/dashboard';
 import MeetingTag from '../MeetingTag';
 import styles from './index.less';
 
@@ -96,18 +96,31 @@ const MyCalendar = (props) => {
     setSlotArr(slotArrTemp);
   };
 
-  // USE EFFECT
-  useEffect(() => {
-    if (hourList.length === 0) {
-      const hourListTemp = [];
-      const slotArrTemp = [];
-      for (let i = 0; i < 24; i += 1) {
+  const checkOverflowHour = () => {
+    let maxHour = -1;
+    dataState.forEach((x) => {
+      const startTime = moment(x.start.dateTime).hour();
+      const endTime = moment(x.end.dateTime).hour();
+      if (startTime > endTime && endTime > maxHour) {
+        maxHour = endTime;
+      }
+    });
+    if (maxHour >= 0) {
+      const hourListTemp = [...hourList];
+      for (let i = 0; i <= maxHour; i += 1) {
         hourListTemp.push(i);
-        slotArrTemp.push([]);
       }
       setHourList(hourListTemp);
-      setSlotArr(slotArrTemp);
     }
+  };
+
+  // USE EFFECT
+  useEffect(() => {
+    const slotArrTemp = [];
+    for (let i = 0; i < 24; i += 1) {
+      slotArrTemp.push([]);
+    }
+    setSlotArr(slotArrTemp);
 
     // calculate current time position every 10 seconds
     getCurrentTimePosition();
@@ -125,12 +138,14 @@ const MyCalendar = (props) => {
     }
   }, [JSON.stringify(dataState), JSON.stringify(hourList)]);
 
+  // sort data and store into state
   useEffect(() => {
     if (data.length > 0) {
       setDataState(data.sort(compare));
     }
   }, [JSON.stringify(data)]);
 
+  // if current time position is counted, auto scroll to current time (center)
   useEffect(() => {
     if (currentTimePosition && autoScrollable) {
       autoScroll();
@@ -138,9 +153,23 @@ const MyCalendar = (props) => {
     }
   }, [currentTimePosition]);
 
+  // on change date, re-render hour list and auto scroll
   useEffect(() => {
     autoScroll();
+
+    const hourListTemp = [];
+    for (let i = 0; i < 24; i += 1) {
+      hourListTemp.push(i);
+    }
+    setHourList(hourListTemp);
   }, [selectedDate]);
+
+  // check if there's any event that has end time is in the next day
+  useEffect(() => {
+    if (hourList.length > 0 && dataState.length > 0) {
+      checkOverflowHour();
+    }
+  }, [JSON.stringify(dataState)]);
 
   // RENDER UI
   const renderHour = (hour) => {
@@ -158,19 +187,25 @@ const MyCalendar = (props) => {
           style={isInModal ? { maxHeight: '600px' } : {}}
         >
           <div span={4} className={`${styles.mainContainer__firstColumn} ${styles.alignCenter}`}>
-            {hourList.map((hour) => {
+            {hourList.map((hour, index) => {
               return (
                 <div className={styles.hourBlock}>
-                  <span>{renderHour(hour)}</span>
+                  <span
+                    style={{
+                      color: index > 23 && hour >= 0 ? CALENDAR_COLORS.RED.color : '#000',
+                    }}
+                  >
+                    {renderHour(hour)}
+                  </span>
                 </div>
               );
             })}
           </div>
           <div span={20} className={styles.mainContainer__remainColumn}>
-            {hourList.map(() => {
+            {hourList.map((x, index) => {
               return (
                 <div className={styles.row}>
-                  <div className={styles.divider} />
+                  {index > 23 && x === 0 && <div className={styles.divider} />}
                 </div>
               );
             })}

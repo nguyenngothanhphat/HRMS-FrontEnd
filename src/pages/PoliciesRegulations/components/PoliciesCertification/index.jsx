@@ -1,24 +1,23 @@
 import { Button, Col, Menu, Row, Skeleton, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import PdfIcon from '@/assets/policiesRegulations/pdf-2.svg';
-import UnreadIcon from '@/assets/policiesRegulations/view.svg';
 import ReadIcon from '@/assets/policiesRegulations/greenFile.svg';
+import PdfIcon from '@/assets/policiesRegulations/pdf-2.svg';
 import QuestionIcon from '@/assets/policiesRegulations/questionIcon.svg';
+import UnreadIcon from '@/assets/policiesRegulations/view.svg';
 import ModalImage from '@/assets/projectManagement/modalImage1.png';
+import TickMarkIcon from '@/assets/tickMarkIcon.svg';
 import SignatureModal from '@/components/SignatureModal';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import ActionModal from './components/ActionModal';
-import styles from './index.less';
 import FileContent from './components/FileContent';
 import NoteComponent from './components/NoteComponent';
-import TickMarkIcon from '@/assets/tickMarkIcon.svg';
+import styles from './index.less';
 
 const PoliciesCertification = (props) => {
   const {
     dispatch,
-    permissions = {},
     listCategory = [],
     loadingGetList = false,
     loadingSignaturePolicies = false,
@@ -39,10 +38,6 @@ const PoliciesCertification = (props) => {
   const [activeIndex, setActiveIndex] = useState(0); // complete index
 
   const currentIndex = data.findIndex((x) => x._id === activeCategoryID);
-
-  const removeDuplicate = (array, key) => {
-    return [...new Map(array.map((x) => [key(x), x])).values()];
-  };
 
   const getReadArr = (list, isFirstTurn) => {
     const result = list.map((category) => {
@@ -121,7 +116,6 @@ const PoliciesCertification = (props) => {
   };
 
   useEffect(() => {
-    const viewAllCountry = permissions.viewPolicyAllCountry !== -1;
     dispatch({
       type: 'policiesRegulations/getCountryListByCompany',
       payload: {
@@ -130,36 +124,12 @@ const PoliciesCertification = (props) => {
       },
     }).then((res) => {
       if (res.statusCode === 200) {
-        const { data: dataTemp = [] } = res;
-        let countryArr = [];
-        if (viewAllCountry) {
-          countryArr = dataTemp.map((item) => {
-            return item.headQuarterAddress.country;
-          });
-          const newArr = removeDuplicate(countryArr, (item) => item._id);
-          countryArr = newArr.map((val) => val._id);
-          if (countryArr.length > 0) {
-            dispatch({
-              type: 'policiesRegulations/save',
-              payload: {
-                countryList: countryArr,
-              },
-            });
-          }
-          dispatch({
-            type: 'policiesRegulations/fetchListCategory',
-            payload: {
-              country: countryArr,
-            },
-          });
-        } else {
-          dispatch({
-            type: 'policiesRegulations/fetchListCategory',
-            payload: {
-              country: [countryID],
-            },
-          });
-        }
+        dispatch({
+          type: 'policiesRegulations/fetchListCategory',
+          payload: {
+            country: [countryID],
+          },
+        });
       }
     });
   }, []);
@@ -258,7 +228,7 @@ const PoliciesCertification = (props) => {
                 className={styles.signatureBar__button__primary}
                 onClick={() => setIsCertify(true)}
               >
-                Certify digitally
+                Sign
               </Button>
             </div>
           </Col>
@@ -304,31 +274,13 @@ const PoliciesCertification = (props) => {
   };
 
   const renderContent = () => {
-    const SignatureNote = {
-      title: 'Note',
-      data: (
-        <Typography.Text>
-          The Salary structure will be sent as a <span>provisional offer</span>. The candidate must
-          accept the and acknowledge the salary structure as a part of final negotiation.
-          <br />
-          <br />
-          <span style={{ fontWeight: 'bold', color: '#707177' }}>
-            Post acceptance of salary structure, the final offer letter will be sent.
-          </span>
-        </Typography.Text>
-      ),
-    };
-
     const Note = {
       title: 'Instructions',
       icon: QuestionIcon,
       data: (
         <Typography.Text>
-          Our support team is waiting to help you 24/7. Get an emailed response from our team.
-          <br />
-          <div className={styles.btnContact}>
-            <Button>Contact Us</Button>
-          </div>
+          Please read all the policy documents and sign to mark your acceptance. Please reach out to
+          the HR in case of any questions.
         </Typography.Text>
       ),
     };
@@ -339,7 +291,7 @@ const PoliciesCertification = (props) => {
           <Col sm={24} md={17} lg={19}>
             <div className={styles.signatureContainer}>
               <div className={styles.titleHeader}>
-                <span className={styles.title}>Digitally Signature</span>
+                <span className={styles.title}>Acknowledgement</span>
               </div>
               <Row gutter={24}>
                 <Col sm={24} lg={14} xl={16}>
@@ -351,7 +303,7 @@ const PoliciesCertification = (props) => {
                   </div>
                 </Col>
                 <Col sm={24} lg={10} xl={8}>
-                  <NoteComponent note={SignatureNote} />
+                  <NoteComponent note={Note} />
                 </Col>
               </Row>
             </div>
@@ -442,6 +394,8 @@ const PoliciesCertification = (props) => {
         titleModal="Signature of the employee"
         loading={loadingSignaturePolicies}
         activeMode="digital-signature"
+        disableDraw
+        disableUpload
       />
 
       <ActionModal
@@ -466,7 +420,8 @@ const PoliciesCertification = (props) => {
             marginBlock: 24,
           }}
         >
-          Acknowledgement has been sent to your mail and HR as well.
+          A copy of the signed document has been sent to you and the HR. You can also find this
+          document under the Documents tab of Employee Profile.
         </span>
       </ActionModal>
     </div>
