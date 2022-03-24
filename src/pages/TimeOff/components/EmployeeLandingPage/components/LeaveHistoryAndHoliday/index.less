@@ -1,46 +1,46 @@
 .LeaveHistoryAndHoliday {
-  border: 1px solid #ebeff2;
-  border-radius: 5px;
   width: 100%;
   background-color: white;
+  border: 1px solid #ebeff2;
+  border-radius: 5px;
   :global {
     .ant-tabs-tab {
       margin: 0px 15px 0 0;
     }
     .ant-tabs-tab-btn {
+      color: #46464680; // hex with alpha 0.5
       font-weight: bold !important;
       font-size: 14px;
       opacity: 1;
-      color: #46464680; // hex with alpha 0.5
     }
     .ant-tabs-ink-bar {
       display: block !important;
     }
     .ant-tabs-nav {
       height: 50px;
-      border-radius: 5px;
       padding-left: 24px !important;
+      border-radius: 5px;
     }
   }
   .menu {
     display: flex;
     margin-right: 15px;
     .iconContainer {
-      transition: 0.3s;
-      width: 25px;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
+      width: 25px;
+      transition: 0.3s;
       img {
-        transition: 0.3s;
         height: 25px;
         padding: 5px;
         // margin-left: 10px;
         cursor: pointer;
+        transition: 0.3s;
       }
       &:hover {
-        transition: 0.3s;
         border-radius: 2px;
+        transition: 0.3s;
         // img {
         //   transition: 0.3s;
         //   filter: invert(27%) sepia(81%) saturate(3092%) hue-rotate(202deg) brightness(99%)
@@ -52,27 +52,7 @@
       background: rgba(44, 109, 249, 0.17);
       border-radius: 2px;
       filter: invert(27%) sepia(81%) saturate(3092%) hue-rotate(202deg) brightness(99%)
-            contrast(101%);
+        contrast(101%);
     }
-  }
-
-  /* width */
-  ::-webkit-scrollbar {
-    width: 7px;
-  }
-
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: rgba(#888888, 0.44);
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgba(#888888, 0.7);
   }
 }

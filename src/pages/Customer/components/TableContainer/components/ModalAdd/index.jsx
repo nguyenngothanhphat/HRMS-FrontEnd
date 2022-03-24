@@ -282,6 +282,11 @@ class ModalAdd extends PureComponent {
                     <Select
                       placeholder="Select Country"
                       onChange={(value) => this.handleChangeCountry(value)}
+                      showSearch
+                      optionFilterProp="children"
+                      filterOption={(input, option) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
                     >
                       {country.map((countryItem) => {
                         return (
@@ -303,6 +308,11 @@ class ModalAdd extends PureComponent {
                       disabled={isCountryChosen}
                       loading={loadingStateList}
                       placeholder="Select State"
+                      showSearch
+                      optionFilterProp="children"
+                      filterOption={(input, option) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
                     >
                       {state.map((stateItem) => {
                         return <Select.Option key={stateItem}>{stateItem}</Select.Option>;
@@ -345,7 +355,14 @@ class ModalAdd extends PureComponent {
                     name="accountOwner"
                     rules={[{ required: true, message: 'Required field!' }]}
                   >
-                    <Select placeholder="Enter Account Owner">
+                    <Select
+                      placeholder="Enter Account Owner"
+                      showSearch
+                      optionFilterProp="children"
+                      filterOption={(input, option) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
+                    >
                       {employeeList.map((employee) => {
                         return (
                           <Select.Option key={employee._id} value={employee._id}>
