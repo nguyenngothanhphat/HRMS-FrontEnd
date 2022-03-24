@@ -79,6 +79,21 @@ const Dashboard = (props) => {
     }
   };
 
+  const onSortStart = (_, event) => {
+    event.preventDefault();
+  };
+
+  const shouldCancelStart = (e) => {
+    let targetEle = e;
+    if (!targetEle.id) {
+      targetEle = e.target;
+    }
+    if (targetEle.className.includes('header')) {
+      return false;
+    }
+    return true;
+  };
+
   // CONST
   const widgets = [
     {
@@ -152,9 +167,13 @@ const Dashboard = (props) => {
         items={visibleWidgets}
         axis="xy"
         onSortEnd={onSortEnd}
-        distance={40}
+        onSortStart={onSortStart}
+        distance={35}
         widgets={widgets}
-        // pressDelay={200}
+        disableAutoscroll
+        lockToContainerEdges
+        lockOffset="0%"
+        shouldCancelStart={shouldCancelStart}
       />
     );
   };
