@@ -104,13 +104,15 @@ const FilterContent = (props) => {
           filterOption={(input, option) =>
             option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
-          {titleList.map((item) => {
-            return (
-              <Select.Option value={item._id} key={item}>
-                {item.name}
-              </Select.Option>
-            );
-          })}
+          {titleList
+            .filter((v, i, a) => a.findIndex((v2) => v2.name === v.name) === i)
+            .map((item) => {
+              return (
+                <Select.Option value={item.name} key={item}>
+                  {item.name}
+                </Select.Option>
+              );
+            })}
         </Select>
       </Form.Item>
 
