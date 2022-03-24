@@ -1,24 +1,23 @@
 import { Button, Col, Menu, Row, Skeleton, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import PdfIcon from '@/assets/policiesRegulations/pdf-2.svg';
-import UnreadIcon from '@/assets/policiesRegulations/view.svg';
 import ReadIcon from '@/assets/policiesRegulations/greenFile.svg';
+import PdfIcon from '@/assets/policiesRegulations/pdf-2.svg';
 import QuestionIcon from '@/assets/policiesRegulations/questionIcon.svg';
+import UnreadIcon from '@/assets/policiesRegulations/view.svg';
 import ModalImage from '@/assets/projectManagement/modalImage1.png';
+import TickMarkIcon from '@/assets/tickMarkIcon.svg';
 import SignatureModal from '@/components/SignatureModal';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import ActionModal from './components/ActionModal';
-import styles from './index.less';
 import FileContent from './components/FileContent';
 import NoteComponent from './components/NoteComponent';
-import TickMarkIcon from '@/assets/tickMarkIcon.svg';
+import styles from './index.less';
 
 const PoliciesCertification = (props) => {
   const {
     dispatch,
-    permissions = {},
     listCategory = [],
     loadingGetList = false,
     loadingSignaturePolicies = false,
@@ -39,10 +38,6 @@ const PoliciesCertification = (props) => {
   const [activeIndex, setActiveIndex] = useState(0); // complete index
 
   const currentIndex = data.findIndex((x) => x._id === activeCategoryID);
-
-  const removeDuplicate = (array, key) => {
-    return [...new Map(array.map((x) => [key(x), x])).values()];
-  };
 
   const getReadArr = (list, isFirstTurn) => {
     const result = list.map((category) => {
@@ -121,7 +116,6 @@ const PoliciesCertification = (props) => {
   };
 
   useEffect(() => {
-    const viewAllCountry = permissions.viewPolicyAllCountry !== -1;
     dispatch({
       type: 'policiesRegulations/getCountryListByCompany',
       payload: {
@@ -130,36 +124,12 @@ const PoliciesCertification = (props) => {
       },
     }).then((res) => {
       if (res.statusCode === 200) {
-        const { data: dataTemp = [] } = res;
-        let countryArr = [];
-        if (viewAllCountry) {
-          countryArr = dataTemp.map((item) => {
-            return item.headQuarterAddress.country;
-          });
-          const newArr = removeDuplicate(countryArr, (item) => item._id);
-          countryArr = newArr.map((val) => val._id);
-          if (countryArr.length > 0) {
-            dispatch({
-              type: 'policiesRegulations/save',
-              payload: {
-                countryList: countryArr,
-              },
-            });
-          }
-          dispatch({
-            type: 'policiesRegulations/fetchListCategory',
-            payload: {
-              country: countryArr,
-            },
-          });
-        } else {
-          dispatch({
-            type: 'policiesRegulations/fetchListCategory',
-            payload: {
-              country: [countryID],
-            },
-          });
-        }
+        dispatch({
+          type: 'policiesRegulations/fetchListCategory',
+          payload: {
+            country: [countryID],
+          },
+        });
       }
     });
   }, []);
