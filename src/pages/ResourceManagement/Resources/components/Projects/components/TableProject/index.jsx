@@ -184,15 +184,9 @@ class TableProject extends Component {
         title: 'Customer',
         dataIndex: 'customer',
         key: 'customer',
-        render: (value) => (
+        render: (value, row) => (
           <Popover
-            content={
-              <PopupCustomer
-                listLocationsByCompany={listLocationsByCompany}
-                propsState={{ currentTime, timezoneList }}
-                dataProjectManager={value}
-              />
-            }
+            content={<PopupCustomer dataCustomer={row} />}
             trigger="hover"
             placement="bottomRight"
             overlayClassName={styles.popupContentProjectManager}
@@ -329,6 +323,7 @@ class TableProject extends Component {
         title: 'Comments',
         dataIndex: 'comment',
         key: 'comment',
+        width: '10%',
         render: (value, row) => {
           const { fetchProjectList } = this.props;
           let displayValue;

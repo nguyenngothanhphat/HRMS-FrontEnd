@@ -1,6 +1,5 @@
 import React from 'react';
-import { Avatar, Col, Divider, Row } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { Avatar, Col, Divider, Row, Progress } from 'antd';
 import moment from 'moment';
 import { history } from 'umi';
 import styles from './index.less';
@@ -10,22 +9,29 @@ const PopupProjectName = (props) => {
     dataProjectName: {
       projectName = '',
       status = '',
-      division = '',
       projectType = '',
-      clientName = '',
+      customer = '',
       billingStatus = '',
       ultilization = '',
       startDate = '',
       endDate = '',
       projectId = '',
-    } = {},
+    },
   } = props;
+
+  const getProgressBarColor = (percent) => {
+    if (percent < 30) return '#FD4546';
+    if (percent < 70) return '#FFA100';
+    return '#25BA70';
+  };
 
   return (
     <div className={styles.popupContent}>
       <div className={styles.generalInfo}>
         <div className={styles.avatar}>
-          <Avatar size={55} icon={<UserOutlined />} />
+          <Avatar style={{ backgroundColor: '#1956DA', fontSize: '32px' }} size={55}>
+            {projectName.slice(0, 1).toUpperCase()}
+          </Avatar>
         </div>
         <div className={styles.employeeInfo}>
           <div className={styles.employeeInfo__name}>{projectName}</div>
@@ -45,13 +51,13 @@ const PopupProjectName = (props) => {
             <div className={styles.contact__title}>Client Name: </div>
           </Col>
           <Col span={15}>
-            <div className={styles.contact__clientName}>{clientName}</div>
+            <div className={styles.contact__clientName}>{customer}</div>
           </Col>
           <Col span={9}>
             <div className={styles.contact__title}>Billing Status: </div>
           </Col>
           <Col span={15}>
-            <div className={styles.contact__value}>{billingStatus}</div>
+            <div className={styles.contact__value}>{billingStatus || '-'}</div>
           </Col>
           <Col span={9}>
             <div className={styles.contact__title}>Ultilization: </div>
@@ -61,7 +67,7 @@ const PopupProjectName = (props) => {
               style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
               className={styles.contact__value}
             >
-              {ultilization}
+              {ultilization || '-'}
             </div>
           </Col>
           <Col span={9}>
@@ -70,18 +76,25 @@ const PopupProjectName = (props) => {
           <Col span={15}>
             <div
               style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
-              className={styles.contact__value}
+              className={styles.duration}
             >
-              <span>{moment(startDate).format('MMM DD')}</span>
+              <span>{moment(startDate).locale('en').format('MMM DD')}</span>
               <span> - </span>
-              <span>{moment(endDate).format('MMM DD YYYY')}</span>
+              <span>{moment(endDate).locale('en').format('MMM DD YYYY')}</span>
             </div>
           </Col>
           <Col span={9}>
             <div className={styles.contact__title}>Project Status: </div>
           </Col>
           <Col span={15}>
-            <div className={styles.contact__value} />
+            <Progress
+              strokeLinecap="round"
+              strokeColor={getProgressBarColor(status)}
+              percent={status}
+              size="small"
+              type="line"
+              showInfo={false}
+            />
           </Col>
         </Row>
       </div>

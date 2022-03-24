@@ -6,6 +6,16 @@ import { history } from 'umi';
 import styles from './index.less';
 
 const PopupCustomer = (props) => {
+  const {
+    dataCustomer: {
+      customerName = '',
+      customerId = '',
+      accountOwner = '',
+      phone = '',
+      email = '',
+      address = '',
+    },
+  } = props;
   const urlProjectDetail = 'aaaaa';
   return (
     <div className={styles.popupContent}>
@@ -15,10 +25,8 @@ const PopupCustomer = (props) => {
         </div>
         <div className={styles.employeeInfo}>
           <div className={styles.employeeInfo__name}>ABC</div>
-          <div className={styles.employeeInfo__department}>
-            <span>Division</span>
-            <span>Status</span>
-            <span>Project Type</span>
+          <div className={styles.employeeInfo__customerID}>
+            Customer ID: <span style={{ color: '#2C6DF9' }}>210000</span>
           </div>
         </div>
       </div>
@@ -26,10 +34,10 @@ const PopupCustomer = (props) => {
       <div className={styles.contact}>
         <Row gutter={[24, 24]}>
           <Col span={9}>
-            <div className={styles.contact__title}>Customer ID: </div>
+            <div className={styles.contact__title}>Account Owner: </div>
           </Col>
           <Col span={15}>
-            <div className={styles.contact__valueManager}>21100</div>
+            <div className={styles.contact__valueManager}>Unar coper</div>
           </Col>
           <Col span={9}>
             <div className={styles.contact__title}>Contact Phone: </div>

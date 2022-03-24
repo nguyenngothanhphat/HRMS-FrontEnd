@@ -5,12 +5,12 @@ import ViewComment from './components/ViewComment';
 
 class OverviewComment extends PureComponent {
   render() {
-    const { row, line, fetchProjectList } = this.props;
+    const { row, fetchProjectList } = this.props;
     return (
       <div className={styles.OverviewComment}>
-        <span className={styles.comment} style={{ WebkitLineClamp: line }}>
-          {row.comment}
-        </span>
+        <div className={styles.comment}>
+          {row.comment && row.comment.length > 50 ? `${row.comment.slice(0, 60)} ...` : row.comment}
+        </div>
         <div className={styles.showEditComment}>
           <EditComment dataRow={row} fetchProjectList={fetchProjectList} />
           <ViewComment dataRow={row} />
