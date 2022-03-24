@@ -41,6 +41,9 @@ const MyCalendar = (props) => {
     for (let i = start; i < end; i += 1) {
       hourListTemp.push(i);
     }
+    if (start === end) {
+      hourListTemp.push(start);
+    }
     return hourListTemp;
   };
 
