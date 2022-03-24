@@ -249,7 +249,7 @@ const MeetingTag = (props) => {
             backgroundColor,
             border: `1px solid ${borderColor}`,
             color: activeColor,
-            paddingBlock: height < EMP_ROW_HEIGHT ? 8 : 16,
+            paddingBlock: height < EMP_ROW_HEIGHT - DEFAULT_MARGIN_CALENDAR * 2 ? 8 : 16,
           }}
         >
           <span className={styles.title}>{event.summary}</span>

@@ -338,12 +338,14 @@ const PoliciesCertification = (props) => {
     );
   };
 
-  const onFinish = async (attachmentID) => {
+  const onFinish = async (attachmentSignature) => {
+    const attachmentDoc = showingFiles[showingFiles.length - 1]?.attachment?.id;
     const res = await dispatch({
       type: 'policiesRegulations/signaturePoliciesEffect',
       payload: {
-        attachment: attachmentID,
+        attachment: attachmentDoc,
         employee: employee._id,
+        attachmentSignature,
       },
     });
     if (res.statusCode === 200) {
