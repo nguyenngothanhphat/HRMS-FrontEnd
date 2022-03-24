@@ -340,7 +340,6 @@ const PoliciesCertification = (props) => {
 
   const onFinish = async (attachmentSignature) => {
     const attachmentDoc = showingFiles[showingFiles.length - 1]?.attachment?.id;
-    console.log('🚀 ~ onFinish ~ attachment', attachmentDoc);
     const res = await dispatch({
       type: 'policiesRegulations/signaturePoliciesEffect',
       payload: {
