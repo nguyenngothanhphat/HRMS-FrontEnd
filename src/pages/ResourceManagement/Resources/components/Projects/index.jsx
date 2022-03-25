@@ -21,7 +21,8 @@ const ProjectList = (props) => {
   const [projectStatus, setProjectStatus] = useState('All');
 
   const fetchProjectList = async (payload) => {
-    let tempPayload = payload;
+    let tempPayload = { ...payload, location: selectedLocations, division: selectedDivisions };
+
     if (projectStatus !== 'All') {
       tempPayload = {
         ...payload,
@@ -43,7 +44,7 @@ const ProjectList = (props) => {
     if (projectStatus !== 'All') {
       fetchProjectList({ projectStatus: [projectStatus] });
     } else fetchProjectList();
-  }, [projectStatus, selectedLocations, selectedDivisions]);
+  }, [projectStatus, JSON.stringify(selectedLocations), JSON.stringify(selectedDivisions)]);
   return (
     <div className={styles.ProjectList}>
       <div className={styles.tabMenu}>
