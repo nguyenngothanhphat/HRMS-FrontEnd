@@ -144,7 +144,11 @@ const MyCalendar = (props) => {
   // sort data and store into state
   useEffect(() => {
     if (data.length > 0) {
-      setDataState(data.sort(compare));
+      setDataState(
+        data
+          .filter((x) => moment(x.start.dateTime).isSame(moment(selectedDate), 'day'))
+          .sort(compare),
+      );
     }
   }, [JSON.stringify(data)]);
 
