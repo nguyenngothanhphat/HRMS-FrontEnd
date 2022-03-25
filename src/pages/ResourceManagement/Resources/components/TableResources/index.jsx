@@ -255,9 +255,9 @@ class TableResources extends PureComponent {
             );
             return getRowSpan(div, row, index);
           },
-          sorter: (a, b) => {
-            return a.employeeName.localeCompare(b.employeeName);
-          },
+          // sorter: (a, b) => {
+          //   return a.employeeName.localeCompare(b.employeeName);
+          // },
           fixed: 'left',
           className: 'firstColumn',
           sortDirections: ['ascend', 'descend'],
@@ -269,10 +269,10 @@ class TableResources extends PureComponent {
           render: (value, row, index) => {
             return getRowSpan(<span className={styles.division}>{value}</span>, row, index);
           },
-          sorter: (a, b) => {
-            return localCompare(a.division, b.division);
-          },
-          sortDirections: ['ascend', 'descend'],
+          // sorter: (a, b) => {
+          //   return localCompare(a.division, b.division);
+          // },
+          // sortDirections: ['ascend', 'descend'],
         },
         {
           title: 'Designation',
@@ -282,10 +282,10 @@ class TableResources extends PureComponent {
             const children = <span className={styles.basicCellField}>{value}</span>;
             return getRowSpan(children, row, index);
           },
-          sorter: (a, b) => {
-            return localCompare(a.designation, b.designation);
-          },
-          sortDirections: ['ascend', 'descend'],
+          // sorter: (a, b) => {
+          //   return localCompare(a.designation, b.designation);
+          // },
+          // sortDirections: ['ascend', 'descend'],
         },
         {
           title: 'Experience (in yrs)',
@@ -298,10 +298,10 @@ class TableResources extends PureComponent {
               index,
             );
           },
-          sorter: (a, b) => {
-            return a.experience - b.experience;
-          },
-          sortDirections: ['ascend', 'descend'],
+          // sorter: (a, b) => {
+          //   return a.experience - b.experience;
+          // },
+          // sortDirections: ['ascend', 'descend'],
         },
         {
           title: 'Current Project(s)',

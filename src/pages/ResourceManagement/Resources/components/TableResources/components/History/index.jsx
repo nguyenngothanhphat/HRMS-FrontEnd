@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Table, Modal } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
+import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
+
 import styles from './index.less';
 
 @connect(({ resourceManagement: { resourceList } }) => ({ resourceList }))
@@ -10,6 +12,12 @@ class HistoryActionBTN extends Component {
     super(props);
     this.state = {};
   }
+
+  // renderEmployeeName =(workEmail)=>{
+  //   const employeeName
+  //   const userName = workEmail.substring(0, workEmail.indexOf('@'));
+  //   return employeeName = `${workMail.legalName} ${userName ? `(${userName})` : ''}`;
+  // }
 
   render() {
     const { resourceList = [], dataPassRow = {}, visible, onClose = () => {} } = this.props;
@@ -24,7 +32,7 @@ class HistoryActionBTN extends Component {
           StartDate: moment(x.startDate).format('MM-DD-YYYY') || '-',
           EndDate: moment(x.endDate).format('MM-DD-YYYY') || '-',
           Billing: x.status || '-',
-          Description: x.projectDescription || '-',
+          Description: x.project.projectDescription || '-',
         };
       })
       .sort((a, b) => {
@@ -43,10 +51,10 @@ class HistoryActionBTN extends Component {
         render: (value) => {
           const active = true;
           return (
-            <span>
-              {value}
-              <span className={styles.labelProject}>{active ? ' (Current)' : ''}</span>
-            </span>
+            <div>
+              <span className={styles.projectname}> {value}</span>
+              <span className={styles.labelProject}>{active ? ' Current' : ''}</span>
+            </div>
           );
         },
       },
@@ -54,7 +62,7 @@ class HistoryActionBTN extends Component {
         title: (
           <div>
             <div>Start Date</div>
-            <div>(mm/dd/yyyy)</div>
+            <div className={styles.date}>(mm/dd/yyyy)</div>
           </div>
         ),
         dataIndex: 'StartDate',
@@ -65,7 +73,7 @@ class HistoryActionBTN extends Component {
         title: (
           <div>
             <div>End Date</div>
-            <div>(mm/dd/yyyy)</div>
+            <div className={styles.date}>(mm/dd/yyyy)</div>
           </div>
         ),
         dataIndex: 'EndDate',
@@ -89,7 +97,7 @@ class HistoryActionBTN extends Component {
           }
           return (
             <p className={styles.rowHover}>
-              {value.slice(0, 35)}
+              {value && value.slice(0, 35)}
               <span>
                 ...{' '}
                 <a href="#" className={styles.readMore}>
@@ -106,7 +114,7 @@ class HistoryActionBTN extends Component {
         <Modal
           className={styles.modalViewHistoryProject}
           title="Resource History"
-          width="60%"
+          width="900px"
           visible={visible}
           footer={null}
           onOk={onClose}
@@ -123,24 +131,31 @@ class HistoryActionBTN extends Component {
             },
           }}
         >
-          <p className={styles.showInfo}>
-            Emp Id:<span className={styles.showInfoEmp}> {managerInfo.employeeId || '-'}</span>
-          </p>
-          <p className={styles.showInfo}>
-            Name: <span className={styles.showInfoEmp}> {dataPassRow.employeeName}</span>
-          </p>
-          <p className={styles.showInfo}>
-            Designation: <span className={styles.showInfoEmp}> {dataPassRow.designation}</span>
-          </p>
-          <p className={styles.showInfo}>
-            Experience: <span className={styles.showInfoEmp}> {dataPassRow.experience} yrs</span>
-          </p>
-          <p className={styles.showInfo}>
-            Total Projects: <span className={styles.showInfoEmp}>{projects.length}</span>
-          </p>
-          <br />
-          <br />
-          {/* <p>{JSON.stringify(listProjectsOfEmp)}</p> */}
+          <div className={styles.resourceInfo}>
+            <p className={styles.showInfo}>
+              Emp Id:<span className={styles.showInfoEmp}> {managerInfo.employeeId || '-'}</span>
+            </p>
+            <div className={styles.showInfoName}>
+              Name: <span className={styles.showInfoEmp}> {dataPassRow.employeeName}</span>
+              <div className={styles.avatar}>
+                <img
+                  src={dataPassRow.avatar || MockAvatar}
+                  alt=""
+                  onError={`this.src=${MockAvatar}`}
+                />
+              </div>
+            </div>
+            <p className={styles.showInfo}>
+              Designation: <span className={styles.showInfoEmp}> {dataPassRow.designation}</span>
+            </p>
+            <p className={styles.showInfo}>
+              Experience: <span className={styles.showInfoEmp}> {dataPassRow.experience} yrs</span>
+            </p>
+            <p className={styles.showInfo}>
+              Total Projects: <span className={styles.showInfoEmp}>{projects.length}</span>
+            </p>
+          </div>
+
           <Table dataSource={dataSource} columns={columns} pagination={false} />
         </Modal>
       </div>

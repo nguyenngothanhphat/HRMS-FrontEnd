@@ -1,14 +1,238 @@
-import React, { Component } from 'react';
-import { connect, formatMessage } from 'umi';
 import { DownloadOutlined } from '@ant-design/icons';
 import { Button, Col, Row } from 'antd';
-import styles from './index.less';
-import ResourceStatus from './components/ResourceStatus';
+import React, { useEffect, useState } from 'react';
+import { connect, formatMessage } from 'umi';
+import { formatData } from '@/utils/resourceManagement';
 import SearchTable from '../SearchTable';
 import TableResources from '../TableResources';
-import { formatData } from '@/utils/resourceManagement';
+import ResourceStatus from './components/ResourceStatus';
+import styles from './index.less';
 
-@connect(
+const ResourceList = (props) => {
+  const {
+    dispatch,
+    availableStatus,
+    resourceList,
+    projectList = [],
+    selectedLocations = [],
+    selectedDivisions = [],
+    loading,
+    loadingSearch,
+    total = 0,
+    permissions,
+    currentUserId = '',
+  } = props;
+
+  const modifyResourcePermission = permissions.modifyResource !== -1;
+
+  const [pageSelected, setPageSelected] = useState(1);
+  const [availableStatusState, setAvailableStatusState] = useState('ALL');
+  const [size, setSize] = useState(10);
+  const [sort, setSort] = useState({});
+  const [resourceListState, setResourceListState] = useState([]);
+
+  const [filter, setFilter] = useState({
+    name: undefined,
+    tagDivision: [],
+    title: [],
+    skill: [],
+    project: [],
+    expYearBegin: undefined,
+    expYearEnd: undefined,
+  });
+
+  const updateData = (listOffAllTicket) => {
+    const array = formatData(listOffAllTicket, projectList);
+    setResourceListState(array);
+  };
+
+  const onFilterChange = (filters) => {
+    setFilter({ ...filters });
+  };
+
+  const convertFilter = () => {
+    const newFilterObj = {};
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [key, value] of Object.entries(filter)) {
+      if (value) {
+        if (Array.isArray(value) && value.length > 0) {
+          newFilterObj[key] = value;
+        } else if (!Array.isArray(value)) {
+          newFilterObj[key] = value;
+        }
+      }
+    }
+    return newFilterObj;
+  };
+  const fetchResourceList = async () => {
+    const filterTemp = convertFilter();
+
+    dispatch({
+      type: 'resourceManagement/getResources',
+      payload: {
+        // status: 'New',
+        page: pageSelected,
+        limit: size,
+        availableStatus: availableStatusState || availableStatus,
+        ...sort,
+        ...filterTemp,
+        location: selectedLocations,
+        division: selectedDivisions,
+      },
+    });
+  };
+
+  const fetchProjectList = async () => {
+    dispatch({
+      type: 'resourceManagement/getProjectList',
+    });
+  };
+
+  const getPageAndSize = (page, pageSize) => {
+    setPageSelected(page);
+    setSize(pageSize);
+  };
+
+  const changeAvailableStatus = (status) => {
+    setAvailableStatusState(status);
+  };
+
+  const refreshData = () => {
+    fetchResourceList();
+  };
+
+  const searchTable = (searchKey) => {
+    const value = searchKey.searchKey || '';
+    dispatch({
+      type: 'resourceManagement/getResources',
+      payload: {
+        page: pageSelected,
+        availableStatus: availableStatusState || availableStatus,
+        q: value,
+      },
+    }).then(() => {
+      const array = formatData(resourceList, projectList);
+
+      setResourceListState(array);
+      setPageSelected(1);
+    });
+  };
+
+  const fetchDivisions = async () => {
+    dispatch({
+      type: 'resourceManagement/fetchDivisions',
+      payload: {
+        name: 'Engineering',
+      },
+    });
+  };
+
+  const fetchStatusList = async () => {
+    dispatch({
+      type: 'resourceManagement/fetchResourceStatus',
+      payload: {
+        name: 'Engineering',
+      },
+    });
+  };
+
+  const fetchTitleList = async () => {
+    dispatch({
+      type: 'resourceManagement/fetchTitleList',
+      // payload: {
+      //     name: 'Engineering'
+      // }
+    });
+  };
+
+  const onSort = (sortProp) => {
+    setSort(sortProp);
+  };
+
+  const exportToExcel = async () => {
+    const fileName = 'resource.csv';
+    const getListExport = await dispatch({
+      type: 'resourceManagement/exportResourceManagement',
+      payload: {
+        employeeId: currentUserId,
+        limit: total,
+      },
+    });
+    const getDataExport = getListExport ? getListExport.data : '';
+    const downloadLink = document.createElement('a');
+    const universalBOM = '\uFEFF';
+    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
+      universalBOM + getDataExport,
+    )}`;
+    downloadLink.download = fileName;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
+
+  useEffect(() => {
+    fetchProjectList();
+    fetchStatusList();
+    fetchDivisions();
+    fetchTitleList();
+  }, []);
+
+  useEffect(() => {
+    fetchResourceList();
+  }, [
+    JSON.stringify(selectedDivisions),
+    JSON.stringify(selectedLocations),
+    JSON.stringify(filter),
+    size,
+    pageSelected,
+  ]);
+
+  useEffect(() => {
+    updateData(resourceList);
+  }, [JSON.stringify(resourceList)]);
+
+  return (
+    <div className={styles.containerTickets}>
+      <div className={styles.tabTickets}>
+        <ResourceStatus
+          currentStatus={availableStatusState}
+          changeAvailableStatus={changeAvailableStatus}
+        />
+        <div className={styles.rightHeaderTable}>
+          <div className={styles.download}>
+            <Row gutter={[24, 0]}>
+              <Col>
+                <Button
+                  icon={<DownloadOutlined />}
+                  className={styles.generate}
+                  type="text"
+                  onClick={exportToExcel}
+                >
+                  {formatMessage({ id: 'Export' })}
+                </Button>
+              </Col>
+            </Row>
+          </div>
+          <SearchTable onFilterChange={onFilterChange} filter={filter} searchTable={searchTable} />
+        </div>
+      </div>
+      <TableResources
+        refreshData={refreshData}
+        data={resourceListState}
+        projectList={projectList}
+        loading={loading || loadingSearch}
+        pageSelected={pageSelected}
+        total={total}
+        size={size}
+        onSort={onSort}
+        getPageAndSize={getPageAndSize}
+        allowModify={modifyResourcePermission}
+      />
+    </div>
+  );
+};
+
+export default connect(
   ({
     resourceManagement: {
       resourceList = [],
@@ -38,284 +262,4 @@ import { formatData } from '@/utils/resourceManagement';
     selectedDivisions,
     selectedLocations,
   }),
-)
-class ResourceList extends Component {
-  fetchStatus = {
-    START: 'Start',
-    FETCHING: 'loading',
-    COMPLETED: 'completed',
-  };
-
-  fetchData = this.fetchStatus.START;
-
-  filter = {
-    name: undefined,
-    tagDivision: [],
-    title: [],
-    skill: [],
-    project: [],
-    expYearBegin: undefined,
-    expYearEnd: undefined,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      // selectedFilterTab: '1',
-      pageSelected: 1,
-      availableStatus: 'ALL',
-      size: 10,
-      sort: {},
-      filter: this.filter,
-      // fetchData: this.fetchStatus.START
-    };
-  }
-
-  componentDidMount = async () => {
-    this.fetchProjectList();
-    this.fetchStatusList();
-    this.fetchResourceList();
-    this.fetchDivisions();
-    this.fetchTitleList();
-  };
-
-  componentDidUpdate(prevProps, prevState) {
-    const { selectedDivisions, selectedLocations } = this.props;
-    const { filter, size, pageSelected } = this.state;
-    if (
-      JSON.stringify(prevProps.selectedDivisions) !== JSON.stringify(selectedDivisions) ||
-      JSON.stringify(prevProps.selectedLocations) !== JSON.stringify(selectedLocations) ||
-      JSON.stringify(prevState.filter) !== JSON.stringify(filter) ||
-      prevState.size !== size ||
-      prevState.pageSelected !== pageSelected
-    ) {
-      this.fetchResourceList();
-    }
-  }
-
-  changePagination = (page, limit) => {
-    this.fetchData = this.fetchStatus.START;
-    this.setState({
-      pageSelected: page,
-      size: limit,
-    });
-  };
-
-  updateData = (listOffAllTicket) => {
-    const { projectList } = this.props;
-    const array = formatData(listOffAllTicket, projectList);
-    this.setState({
-      resourceList: array,
-    });
-  };
-
-  onFilterChange = (filters) => {
-    this.fetchData = this.fetchStatus.START;
-    this.setState({
-      filter: { ...filters },
-    });
-  };
-
-  fetchResourceList = async () => {
-    const { selectedLocations, selectedDivisions } = this.props;
-    const { pageSelected, size, sort, availableStatus } = this.state;
-    const { dispatch } = this.props;
-    const filter = this.convertFilter();
-    this.fetchData = this.fetchStatus.FETCHING;
-    dispatch({
-      type: 'resourceManagement/getResources',
-      payload: {
-        // status: 'New',
-        page: pageSelected,
-        limit: size,
-        availableStatus,
-        ...sort,
-        ...filter,
-        location: selectedLocations,
-        division: selectedDivisions,
-      },
-    }).then(() => {
-      this.fetchData = this.fetchStatus.COMPLETED;
-      const { resourceList } = this.props;
-      this.updateData(resourceList);
-    });
-  };
-
-  convertFilter = () => {
-    const { filter } = this.state;
-    const newFilterObj = {};
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [key, value] of Object.entries(filter)) {
-      if (value) {
-        if (Array.isArray(value) && value.length > 0) {
-          newFilterObj[key] = value;
-        } else if (!Array.isArray(value)) {
-          newFilterObj[key] = value;
-        }
-      }
-    }
-    return newFilterObj;
-  };
-
-  fetchProjectList = async () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'resourceManagement/getProjectList',
-    });
-  };
-
-  getPageAndSize = (page, pageSize) => {
-    this.fetchData = this.fetchStatus.START;
-    this.setState({
-      pageSelected: page,
-      size: pageSize,
-    });
-  };
-
-  changeAvailableStatus = (status) => {
-    this.fetchData = this.fetchStatus.START;
-    this.setState({
-      availableStatus: status,
-    });
-  };
-
-  refreshData = () => {
-    this.fetchData = this.fetchStatus.START;
-    this.fetchResourceList();
-  };
-
-  searchTable = (searchKey) => {
-    const { dispatch } = this.props;
-    const { pageSelected, availableStatus } = this.state;
-    const value = searchKey.searchKey || '';
-    dispatch({
-      type: 'resourceManagement/getResources',
-      payload: {
-        page: pageSelected,
-        availableStatus,
-        q: value,
-      },
-    }).then(() => {
-      const { resourceList, projectList } = this.props;
-      const array = formatData(resourceList, projectList);
-      this.setState({
-        resourceList: array,
-        pageSelected: 1,
-      });
-    });
-  };
-
-  fetchDivisions = async () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'resourceManagement/fetchDivisions',
-      payload: {
-        name: 'Engineering',
-      },
-    });
-  };
-
-  fetchStatusList = async () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'resourceManagement/fetchResourceStatus',
-      payload: {
-        name: 'Engineering',
-      },
-    });
-  };
-
-  fetchTitleList = async () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'resourceManagement/fetchTitleList',
-      // payload: {
-      //     name: 'Engineering'
-      // }
-    });
-  };
-
-  onSort = (sort) => {
-    this.fetchData = this.fetchStatus.START;
-    this.setState({
-      sort,
-    });
-  };
-
-  exportToExcel = async () => {
-    const { dispatch, currentUserId = '', total } = this.props;
-    const fileName = 'resource.csv';
-    const getListExport = await dispatch({
-      type: 'resourceManagement/exportResourceManagement',
-      payload: {
-        employeeId: currentUserId,
-        limit: total,
-      },
-    });
-    const getDataExport = getListExport ? getListExport.data : '';
-    const downloadLink = document.createElement('a');
-    const universalBOM = '\uFEFF';
-    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
-      universalBOM + getDataExport,
-    )}`;
-    downloadLink.download = fileName;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-  };
-
-  render() {
-    const { resourceList = [], projectList, availableStatus } = this.state;
-    const { loading, loadingSearch, total = 0, permissions } = this.props;
-    const { pageSelected, size, filter } = this.state;
-    // console.log(`render - total: ${  total}`)
-    // permissions
-    const modifyResourcePermission = permissions.modifyResource !== -1;
-
-    return (
-      <div className={styles.containerTickets}>
-        <div className={styles.tabTickets}>
-          <ResourceStatus
-            currentStatus={availableStatus}
-            changeAvailableStatus={this.changeAvailableStatus}
-          />
-          <div className={styles.rightHeaderTable}>
-            <div className={styles.download}>
-              <Row gutter={[24, 0]}>
-                <Col>
-                  <Button
-                    icon={<DownloadOutlined />}
-                    className={styles.generate}
-                    type="text"
-                    onClick={this.exportToExcel}
-                  >
-                    {formatMessage({ id: 'Export' })}
-                  </Button>
-                </Col>
-              </Row>
-            </div>
-            <SearchTable
-              onFilterChange={this.onFilterChange}
-              filter={filter}
-              searchTable={this.searchTable}
-            />
-          </div>
-        </div>
-        <TableResources
-          refreshData={this.refreshData}
-          data={resourceList}
-          projectList={projectList}
-          loading={loading || loadingSearch}
-          pageSelected={pageSelected}
-          total={total}
-          size={size}
-          onSort={this.onSort}
-          getPageAndSize={this.getPageAndSize}
-          allowModify={modifyResourcePermission}
-        />
-      </div>
-    );
-  }
-}
-
-export default ResourceList;
+)(ResourceList);
