@@ -6,6 +6,9 @@ import { getTimezoneViaCity } from '@/utils/times';
 import AddComment from './components/AddComment';
 import OverviewComment from './components/OverviewComment';
 import PopupProjectManager from './components/PopupProjectManager';
+import PopupProjectName from './components/PopupProjectName';
+import PopupCustomer from './components/PopupCustomer';
+
 import styles from './index.less';
 
 class TableProject extends Component {
@@ -163,8 +166,17 @@ class TableProject extends Component {
         title: 'Project Name',
         dataIndex: 'projectName',
         key: 'projectName',
-        render: (value) => {
-          return <span className={styles.projectName}>{value}</span>;
+        render: (value, row) => {
+          return (
+            <Popover
+              content={<PopupProjectName dataProjectName={row} />}
+              trigger="hover"
+              placement="bottomRight"
+              overlayClassName={styles.popupContentProjectManager}
+            >
+              <span className={styles.projectName}>{value}</span>
+            </Popover>
+          );
         },
         sorter: (a, b) => a.projectName.localeCompare(b.projectName),
       },
@@ -172,9 +184,16 @@ class TableProject extends Component {
         title: 'Customer',
         dataIndex: 'customer',
         key: 'customer',
-        render: (value) => {
-          return <span className={styles.projectName}>{value}</span>;
-        },
+        render: (value, row) => (
+          <Popover
+            content={<PopupCustomer dataCustomer={row} />}
+            trigger="hover"
+            placement="bottomRight"
+            overlayClassName={styles.popupContentProjectManager}
+          >
+            <span className={styles.projectName}>{value}</span>
+          </Popover>
+        ),
         sorter: (a, b) => a.customer.localeCompare(b.customer),
       },
       {
@@ -304,6 +323,7 @@ class TableProject extends Component {
         title: 'Comments',
         dataIndex: 'comment',
         key: 'comment',
+        width: '10%',
         render: (value, row) => {
           const { fetchProjectList } = this.props;
           let displayValue;

@@ -5,11 +5,14 @@
   .ant-popover-inner {
     border-radius: 8px;
   }
+  .ant-popover-inner-content {
+    padding: 0 !important;
+  }
 }
 
 .popupContent {
   width: 380px;
-  padding: 24px 12px;
+  padding: 24px;
 
   .generalInfo {
     display: flex;
@@ -23,17 +26,23 @@
 
       &__name {
         margin-bottom: 0;
-
         padding-bottom: 6px;
         color: #161c29;
         font-weight: 500;
         font-size: 14px;
-        font-family: Roboto;
-        font-style: normal;
-        line-height: 21px;
+        line-height: 16px;
       }
 
-      &__department,
+      &__department {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px !important;
+        color: rgba(0, 0, 0, 0.48);
+        font-weight: 400;
+        font-size: 13px;
+        line-height: 15px;
+        letter-spacing: 0.075px;
+      }
       &__emplId {
         padding-bottom: 6px;
         color: #707177;
@@ -48,13 +57,12 @@
 
   .contact {
     &__title {
-      color: #212020;
-      font-weight: 500;
-      font-size: 13px;
-      font-family: Roboto;
-      font-style: normal;
-      line-height: 15px;
+      color: #707177;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 18px;
       letter-spacing: 0.075px;
+      text-transform: capitalize;
     }
 
     &__value {
@@ -67,7 +75,7 @@
       letter-spacing: 0.075px;
     }
 
-    &__valueManager {
+    &__clientName {
       color: #2c6df9;
       font-weight: 500;
       font-size: 13px;
@@ -80,6 +88,9 @@
   }
 
   .divider {
+    :global {
+      margin: 15px 0;
+    }
     padding: 1px 0;
   }
 
@@ -88,8 +99,6 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding-bottom: 8px;
-
     &__link {
       color: #2c6df9;
       font-weight: 500;
@@ -106,5 +115,15 @@
       justify-content: space-between;
       width: 106px;
     }
+  }
+  .duration {
+    color: #212020;
+    font-weight: normal;
+    font-size: 13px;
+    font-family: Roboto;
+    font-style: normal;
+    line-height: 15px;
+    letter-spacing: 0.075px;
+    text-transform: uppercase;
   }
 }
