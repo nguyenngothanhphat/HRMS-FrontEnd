@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Col, Divider, Row, Tooltip, message } from 'antd';
+import { Avatar, Col, Divider, Row } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { history } from 'umi';
 
@@ -15,20 +15,11 @@ const PopupProjectManager = (props) => {
   } = props;
 
   const {
-    generalInfo: {
-      legalName = '',
-      userId = '',
-      workEmail = '',
-      workNumber = '',
-      avatar = '',
-      linkedIn = '',
-    } = {},
-    employeeId = '',
+    generalInfo: { legalName = '', userId = '', workEmail = '', workNumber = '', avatar = '' } = {},
     title: { name: titleName = '' } = {},
-    employeeType: { name: typeName } = {},
     department: { name: departmentName = '' } = {},
     location: { _id = '' } = {},
-    managerInfo: {
+    manager: {
       generalInfo: {
         userId: userIdManager = '',
         legalName: legalNameManager = '',
@@ -60,12 +51,8 @@ const PopupProjectManager = (props) => {
         </div>
         <div className={styles.employeeInfo}>
           <div className={styles.employeeInfo__name}>{legalName}</div>
-          <div className={styles.employeeInfo__department}>
-            {titleName}, {departmentName} Dept.
-          </div>
-          <div className={styles.employeeInfo__emplId}>
-            {employeeId} | {typeName}
-          </div>
+          <div className={styles.employeeInfo__department}>{titleName}</div>
+          <div className={styles.employeeInfo__emplId}>{departmentName} Dept.</div>
         </div>
       </div>
       <Divider className={styles.divider} />
@@ -86,7 +73,7 @@ const PopupProjectManager = (props) => {
             <div className={styles.contact__title}>Mobile: </div>
           </Col>
           <Col span={15}>
-            <div className={styles.contact__value}>{workNumber}</div>
+            <div className={styles.contact__value}>{workNumber || '-'}</div>
           </Col>
           <Col span={9}>
             <div className={styles.contact__title}>Email id: </div>
@@ -129,46 +116,6 @@ const PopupProjectManager = (props) => {
           onClick={() => history.push(`/directory/employee-profile/${userId}`)}
         >
           View full profile
-        </div>
-        <div className={styles.popupActions__actions}>
-          <Tooltip title="Message">
-            <img
-              src="/assets/images/messageIcon.svg"
-              alt="img-arrow"
-              style={{ cursor: 'pointer' }}
-            />
-            {/* </a> */}
-          </Tooltip>
-          <Tooltip title="Email">
-            <a
-              disabled={!workEmail}
-              href={`mailto:${workEmail}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src="/assets/images/iconMail.svg"
-                alt="img-arrow"
-                style={{ cursor: 'pointer' }}
-              />
-            </a>
-          </Tooltip>
-          <Tooltip title="LinkedIn">
-            <a
-              onClick={() => {
-                if (linkedIn === '') message.warning('LinkedIn is empty');
-              }}
-              href={linkedIn === '' ? null : linkedIn}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src="/assets/images/iconLinkedin.svg"
-                alt="img-arrow"
-                style={{ cursor: 'pointer' }}
-              />
-            </a>
-          </Tooltip>
         </div>
       </div>
     </div>

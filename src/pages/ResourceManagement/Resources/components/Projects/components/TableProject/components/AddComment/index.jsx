@@ -29,17 +29,17 @@ class AddComment extends PureComponent {
   };
 
   onFinish = async (values, obj) => {
-    if(values.comment === undefined){
+    if (values.comment === undefined) {
       notification.error({
         message: 'Value comment cannot empty',
       });
-      return
+      return;
     }
-    if(obj.projectId === undefined){
+    if (obj.projectId === undefined) {
       notification.error({
         message: 'Project Id undefined',
       });
-      return
+      return;
     }
     const payload = {
       projectId: obj.projectId,
@@ -52,9 +52,9 @@ class AddComment extends PureComponent {
         ...payload,
       },
     }).then(() => {
-      fetchProjectList()
+      fetchProjectList();
       this.handleCancel();
-    })
+    });
   };
 
   render() {
@@ -65,14 +65,12 @@ class AddComment extends PureComponent {
         <div>
           <Row gutter={[24, 0]}>
             <Col>
-              <Button
-                icon={<PlusCircleFilled />}
-                type="text"
-                onClick={this.openCommentView}
-                className={styles.btnAddComment}
-              >
-                Add Comment
-              </Button>
+              <div onClick={this.openCommentView} className={styles.btnAddComment}>
+                <span>
+                  <PlusCircleFilled style={{ paddingRight: '8px' }} />
+                </span>
+                <span>Add Comment</span>
+              </div>
             </Col>
           </Row>
         </div>
