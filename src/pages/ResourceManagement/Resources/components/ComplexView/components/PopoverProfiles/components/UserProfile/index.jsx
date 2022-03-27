@@ -1,29 +1,28 @@
-import { Col, Popover, Row } from 'antd';
-import React, { useState } from 'react';
+import { Col, Row } from 'antd';
+import React from 'react';
 import { connect } from 'umi';
-import CloseX from '@/assets/dashboard/closeX.svg';
-
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
-
 import { getTimezoneViaCity, getCurrentTimeOfTimezoneOption } from '@/utils/times';
-
 import styles from './index.less';
 
 const UserProfile = (props) => {
-  const { children, placement = 'top' } = props;
-  const [showPopover, setShowPopover] = useState(false);
-
   const renderHeader = (employee) => {
     if (!employee) {
       return null;
     }
-    const { titleInfo = {}, generalInfo = { workEmail: '' }, departmentInfo = {} } = employee;
-    const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'));
+    const {
+      titleInfo = {},
+      generalInfo: { workEmail = '', avatar = '' } = {},
+      generalInfo = {},
+      departmentInfo = {},
+    } = employee;
+
+    const userName = workEmail.substring(0, workEmail.indexOf('@'));
     const employeeName = `${generalInfo.legalName} ${userName ? `(${userName})` : ''}`;
     return (
       <div className={styles.header}>
         <div className={styles.avatar}>
-          <img src={generalInfo.avatar || MockAvatar} alt="" onError={`this.src=${MockAvatar}`} />
+          <img src={avatar || MockAvatar} alt="" onError={`this.src=${MockAvatar}`} />
         </div>
         <div className={styles.information}>
           <span className={styles.name}>{employeeName}</span>
@@ -35,6 +34,7 @@ const UserProfile = (props) => {
       </div>
     );
   };
+
   const userInfo = (employee) => {
     const { generalInfo = { workEmail: '' }, managerInfo = {}, locationInfo = {} } = employee || {};
     const { headQuarterAddress = {} } = locationInfo || {};
@@ -95,12 +95,12 @@ const UserProfile = (props) => {
     const profileUrl = `/directory/employee-profile/${userName}/general-info`;
     return (
       <div className={styles.popupContainer}>
-        <img
+        {/* <img
           className={styles.closeButton}
           src={CloseX}
           alt=""
           onClick={() => setShowPopover(!showPopover)}
-        />
+        /> */}
         {renderHeader(employee)}
         <div className={styles.divider} />
         {userInfo(employee)}
@@ -112,23 +112,7 @@ const UserProfile = (props) => {
     );
   };
 
-  return (
-    <>
-      <Popover
-        placement={placement}
-        content={() => renderPopup()}
-        title={null}
-        trigger="hover"
-        visible={showPopover}
-        overlayClassName={styles.UserProfilePopover}
-        onVisibleChange={() => {
-          setShowPopover(!showPopover);
-        }}
-      >
-        {children}
-      </Popover>
-    </>
-  );
+  return <>{renderPopup()}</>;
 };
 
 export default connect(({ resourceManagement: { resourceList = [] } }) => ({ resourceList }))(

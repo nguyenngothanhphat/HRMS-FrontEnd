@@ -40,9 +40,9 @@ class EditCommentModal extends PureComponent {
         ...payload,
       },
     }).then(() => {
-      refreshData()
-    })
-    
+      refreshData();
+    });
+
     this.handleCancel();
   };
 
@@ -51,7 +51,12 @@ class EditCommentModal extends PureComponent {
     const { visible } = this.state;
     return (
       <div className={styles.EditCommentModal}>
-        <img src={editIcon} alt="historyIcon" style={{width: '39px', height: '39px'}} onClick={this.openCommentView} />
+        <img
+          src={editIcon}
+          alt="historyIcon"
+          style={{ width: '39px', height: '39px' }}
+          onClick={this.openCommentView}
+        />
         <Modal
           className={styles.modalEditComment}
           title="Edit Comments"
@@ -78,11 +83,15 @@ class EditCommentModal extends PureComponent {
             className={styles.formComment}
             onFinish={(values) => this.onFinish(values, dataRow)}
             initialValues={{
-                comment: dataRow.comment
+              comment: dataRow.comment,
             }}
           >
             <Form.Item label="Comments" name="comment">
-              <TextArea placeholder="Enter Comments" defaultValue={dataRow.comment} autoSize={{ minRows: 4, maxRows: 8 }} />
+              <TextArea
+                placeholder="Enter Comments"
+                defaultValue={dataRow.comment}
+                autoSize={{ minRows: 4, maxRows: 8 }}
+              />
             </Form.Item>
           </Form>
         </Modal>
