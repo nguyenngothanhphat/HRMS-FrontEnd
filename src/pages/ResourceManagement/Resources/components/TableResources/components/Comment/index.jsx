@@ -40,8 +40,8 @@ class CommentModal extends PureComponent {
         ...payload,
       },
     }).then(() => {
-      refreshData()
-    })
+      refreshData();
+    });
     this.handleCancel();
   };
 
@@ -51,7 +51,7 @@ class CommentModal extends PureComponent {
     return (
       <div className={styles.CommentModal}>
         <div className={styles.options}>
-          <Row gutter={[24, 0]}>
+          <Row>
             <Col>
               <Button
                 icon={<PlusCircleFilled />}

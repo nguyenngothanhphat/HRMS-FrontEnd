@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Select, Input } from 'antd';
-import { connect } from 'umi';
+import { Select, Input, Button, Col, Row } from 'antd';
+import { connect, formatMessage } from 'umi';
+import { DownloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { debounce } from 'lodash';
-import { SearchOutlined } from '@ant-design/icons';
 import FilterIcon from '@/assets/projectManagement/filter.svg';
 import ArrowDown from '@/assets/projectManagement/arrowDown.svg';
 import FilterPopover from '../FilterPopover';
@@ -16,6 +16,9 @@ const HeaderProjectRM = (props) => {
     projectStatus = 'All',
     setProjectStatus = () => {},
     fetchProjectList = () => {},
+    currentUserId = '',
+    total,
+    dispatch,
   } = props;
   const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
 
@@ -47,6 +50,27 @@ const HeaderProjectRM = (props) => {
         }}
       />
     );
+  };
+
+  const exportToExcel = async () => {
+    const fileName = 'rm-projects.csv';
+    const getListExport = await dispatch({
+      type: 'resourceManagement/exportReportProject',
+      payload: {
+        employeeId: currentUserId,
+        limit: total,
+      },
+    });
+    const getDataExport = getListExport ? getListExport.data : '';
+    const downloadLink = document.createElement('a');
+    const universalBOM = '\uFEFF';
+    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
+      universalBOM + getDataExport,
+    )}`;
+    downloadLink.download = fileName;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
   };
 
   // const exportCustomers = async () => {
@@ -94,18 +118,20 @@ const HeaderProjectRM = (props) => {
       </div>
 
       <div className={styles.Header__right}>
-        {/* <p
-          style={{
-            marginBottom: '0',
-            marginRight: '25px',
-            color: '#ffa100',
-            fontWeight: '700',
-            cursor: 'pointer',
-          }}
-          onClick={exportCustomers}
-        >
-          <DownloadOutlined /> Export
-        </p> */}
+        <div className={styles.download}>
+          <Row gutter={[24, 0]}>
+            <Col>
+              <Button
+                icon={<DownloadOutlined />}
+                className={styles.generate}
+                type="text"
+                onClick={exportToExcel}
+              >
+                {formatMessage({ id: 'Export' })}
+              </Button>
+            </Col>
+          </Row>
+        </div>
         <FilterPopover
           placement="bottomRight"
           onSubmit={onFilter}
@@ -130,4 +156,9 @@ const HeaderProjectRM = (props) => {
   );
 };
 
-export default connect(({ resourceManagement }) => ({ resourceManagement }))(HeaderProjectRM);
+export default connect(
+  ({
+    resourceManagement: { total = 0 } = {},
+    user: { currentUser: { employee: { _id: currentUserId = '' } = {} } = {} } = {},
+  }) => ({ total, currentUserId }),
+)(HeaderProjectRM);

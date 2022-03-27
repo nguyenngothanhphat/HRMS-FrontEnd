@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Modal} from 'antd';
+import { Modal } from 'antd';
 import styles from './index.less';
 import listEditCommentButton from '@/assets/resourceManagement/list-edit-comment.svg';
 
@@ -28,7 +28,12 @@ class ViewCommentModal extends PureComponent {
     const { visible } = this.state;
     return (
       <div className={styles.ViewModalComment}>
-        <img src={listEditCommentButton} style={{width: '39px', height: '39px'}} alt="historyIcon" onClick={this.openCommentView} />
+        <img
+          src={listEditCommentButton}
+          style={{ width: '39px', height: '39px' }}
+          alt="historyIcon"
+          onClick={this.openCommentView}
+        />
         <Modal
           // className={styles.modalViewComment}
           title="View Comments"
