@@ -1,12 +1,4 @@
 .EditActionBTN {
-  .buttonContainer {
-    position: absolute;
-    top: 50% - 25%;
-    right: 10px;
-    width: 40px;
-    height: fit-content;
-    margin: auto;
-  }
   .spaceFooterModalSuccess {
     display: flex;
     flex-flow: row nowrap;
@@ -14,7 +6,6 @@
     justify-content: flex-end;
     padding: 24px;
   }
-
 }
 
 .modalEditProjectDetail {
@@ -23,7 +14,7 @@
     flex-flow: row nowrap;
     align-items: center;
     justify-content: flex-end;
-    padding: 24px;
+    padding-top: 24px;
     border-top: solid 1px #d6dce0;
   }
   .btnSubmit {
@@ -56,6 +47,8 @@
       opacity: 0.5;
     }
   }
+}
+.modalEditProjectDetail {
   :global {
     .ant-modal-close {
       right: -57px;
