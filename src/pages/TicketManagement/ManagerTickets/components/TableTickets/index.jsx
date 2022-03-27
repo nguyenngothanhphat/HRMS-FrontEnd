@@ -95,7 +95,7 @@ class TableTickets extends PureComponent {
   render() {
     const {
       data = [],
-      textEmpty = 'No rasie ticket is submitted',
+      textEmpty = 'No tickets found',
       loading,
       pageSelected,
       size,
