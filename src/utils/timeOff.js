@@ -37,3 +37,5 @@ export const addZeroToNumber = (number) => {
   if (number < 10 && number >= 0) return `0${number}`.slice(-2);
   return number;
 };
+
+export const TIMEOFF_DATE_FORMAT = 'MM/DD/YYYY';
