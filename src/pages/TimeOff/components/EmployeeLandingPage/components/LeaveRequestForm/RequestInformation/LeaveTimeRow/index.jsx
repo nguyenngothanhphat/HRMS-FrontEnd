@@ -1,7 +1,11 @@
 import { Col, Form, InputNumber, Row, Select } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { TIMEOFF_INPUT_TYPE, TIMEOFF_INPUT_TYPE_BY_LOCATION } from '@/utils/timeOff';
+import {
+  TIMEOFF_INPUT_TYPE,
+  TIMEOFF_INPUT_TYPE_BY_LOCATION,
+  TIMEOFF_DATE_FORMAT,
+} from '@/utils/timeOff';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -60,10 +64,10 @@ const LeaveTimeRow = (props) => {
 
   return (
     <>
-      {moment.utc(eachDate).weekday() !== 6 && moment.utc(eachDate).weekday() !== 0 && (
+      {moment(eachDate).weekday() !== 6 && moment(eachDate).weekday() !== 0 && (
         <Row className={styles.LeaveTimeRow} key={`${index + 1}`} justify="center" align="center">
-          <Col span={7}>{moment.utc(eachDate).locale('en').format('MM/DD/YYYY')}</Col>
-          <Col span={7}>{moment.utc(eachDate).locale('en').format('dddd')}</Col>
+          <Col span={7}>{moment(eachDate).locale('en').format(TIMEOFF_DATE_FORMAT)}</Col>
+          <Col span={7}>{moment(eachDate).locale('en').format('dddd')}</Col>
           <Col span={10}>
             <Form.Item
               name={[index]}

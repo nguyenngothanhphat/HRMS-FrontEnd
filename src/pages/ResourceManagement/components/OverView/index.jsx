@@ -1,25 +1,12 @@
 import { Col, Row } from 'antd';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'umi';
 import NewJoinees from './components/NewJoinees';
 import People from './components/People';
 import Utilization from './components/Utilization';
 import styles from './index.less';
 
-const Overview = (props) => {
-  const { dispatch } = props;
-  useEffect(() => {
-    return () => {
-      dispatch({
-        type: 'resourceManagement/save',
-        payload: {
-          selectedDivisions: [],
-          selectedLocations: [],
-        },
-      });
-    };
-  }, []);
-
+const Overview = () => {
   return (
     <div className={styles.Overview}>
       <Row gutter={[24, 24]}>

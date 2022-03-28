@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Button, DatePicker, Divider, Form, Input, Select, Tag } from 'antd';
+import { DatePicker, Form, Input, Select, Tag, AutoComplete, Spin } from 'antd';
 import moment from 'moment';
+import { debounce } from 'lodash';
 import { connect } from 'umi';
 import CloseTagIcon from '@/assets/closeTagIcon.svg';
 import CalendarIcon from '@/assets/calendar_icon.svg';
+import SearchIcon from '@/assets/directory/search.svg';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -20,55 +22,63 @@ const FilterForm = (props) => {
     employeeList = [],
     divisions = [],
     titleList = [],
-    loading = false,
+    certificationsList = [],
+    loadingFetchEmployeeNameList = false,
     visible = false,
   } = props;
 
   const [durationFrom, setDurationFrom] = useState('');
   const [durationTo, setDurationTo] = useState('');
   const [filter, setFilter] = useState({});
-
-  const fetchEmployeeList = async () => {
-    dispatch({
-      type: 'resourceManagement/getListEmployee',
-      payload: {
-        department: ['Engineering'],
-      },
-    });
-  };
-
-  useEffect(() => {
-    if (visible && !loading) {
-      fetchEmployeeList();
-    }
-  }, [visible]);
+  const [employeeNameListState, setEmployeeNameListState] = useState([]);
+  const [employeeNameState, setEmployeeNameState] = useState('');
+  const [searchIcons, setSearchIcons] = useState({
+    name: false,
+  });
 
   useEffect(() => {
     setFilter({ ...filterProp });
   }, [JSON.stringify(filter)]);
 
-  const clearFilter = () => {
-    setFilter({
-      filter: {
-        name: undefined,
-        title: [],
-        tagDivision: [],
-        statuses: undefined,
-        projects: [],
-        skill: undefined,
-        fromDate: null,
-        toDate: null,
-        expYearBegin: undefined,
-        expYearEnd: undefined,
-        tentativeEndDateEnd: undefined,
-        tentativeEndDateStart: undefined,
-      },
-    });
-    setDurationFrom('');
-    setDurationTo('');
-    form.resetFields();
-    onFilterChange({ ...filter, filter });
-  };
+  useEffect(() => {
+    setEmployeeNameListState(
+      employeeList.map((x) => {
+        return {
+          value: x.generalInfo?.legalName,
+          label: x.generalInfo.legalName,
+        };
+      }),
+    );
+  }, [JSON.stringify(employeeList)]);
+
+  useEffect(() => {
+    if (!employeeNameState) {
+      setEmployeeNameListState([]);
+    }
+  }, [employeeNameState]);
+
+  // const clearFilter = () => {
+  //   setFilter({
+  //     filter: {
+  //       name: undefined,
+  //       title: [],
+  //       tagDivision: [],
+  //       statuses: undefined,
+  //       projects: [],
+  //       skill: undefined,
+  //       fromDate: null,
+  //       toDate: null,
+  //       expYearBegin: undefined,
+  //       expYearEnd: undefined,
+  //       tentativeEndDateEnd: undefined,
+  //       tentativeEndDateStart: undefined,
+  //     },
+  //   });
+  //   setDurationFrom('');
+  //   setDurationTo('');
+  //   form.resetFields();
+  //   onFilterChange({ ...filter, filter });
+  // };
 
   const disabledDate = (currentDate, type) => {
     if (type === 'fromDate') {
@@ -86,37 +96,6 @@ const FilterForm = (props) => {
     );
   };
 
-  // onChangeDate = (currentDate, type) => {
-  //   switch (type) {
-  //     case 'fromDate':
-  //       if (currentDate === null) {
-  //         setState({
-  //           durationFrom: '',
-  //         });
-  //       } else {
-  //         setState({
-  //           durationFrom: currentDate,
-  //         });
-  //       }
-  //       break;
-
-  //     case 'toDate':
-  //       if (currentDate === null) {
-  //         setState({
-  //           durationTo: '',
-  //         });
-  //       } else {
-  //         setState({
-  //           durationTo: currentDate,
-  //         });
-  //       }
-  //       break;
-
-  //     default:
-  //       break;
-  //   }
-  // };
-
   const tagRender = ({ label, closable, onClose }) => {
     return (
       <Tag
@@ -130,30 +109,84 @@ const FilterForm = (props) => {
     );
   };
 
-  // const onValuesChange = (value) => {
-  //   setFilter({ ...filter, ...value });
-  // };
+  const onFinish = (values) => {
+    const newValues = { ...values };
 
-  const onFinish = (value) => {
-    console.log('onFinish with value: ', JSON.stringify(value));
-    onFilterChange({ ...filter, ...value });
+    // remove empty fields
+    // eslint-disable-next-line no-return-assign
+    const result = Object.entries(newValues).reduce(
+      // eslint-disable-next-line no-return-assign
+      (a, [k, v]) =>
+        v == null || v.length === 0
+          ? a
+          : // eslint-disable-next-line no-param-reassign
+            ((a[k] = v), a),
+      {},
+    );
 
-    // const payload = { ...value, ...filter };
+    onFilterChange({ ...filter, ...result });
   };
 
-  // onChange = e => {
-  //   const { value } = e.target;
-  //   const reg = /^-?\d*(\.\d*)?$/;
-  //   if ((!Number.isNaN(value) && reg.test(value)) || value === '' || value === '-') {
-  //     props.onChange(value);
-  //   }
-  // };
+  const onFinishDebounce = debounce((values) => {
+    onFinish(values);
+  }, 1000);
 
-  const employees = employeeList.map((x) => {
-    return { _id: x._id, name: x.generalInfo.legalName };
-  });
+  const onValuesChange = () => {
+    const values = form.getFieldsValue();
+    onFinishDebounce(values);
+  };
+
+  const onSearchEmployeeDebounce = debounce((type, value) => {
+    let typeTemp = '';
+    switch (type) {
+      // case 'id':
+      //   typeTemp = 'employee/fetchEmployeeIDListEffect';
+      //   break;
+      case 'name':
+        typeTemp = 'resourceManagement/getListEmployee';
+        setEmployeeNameState(value);
+        break;
+      // case 'manager':
+      //   typeTemp = 'employee/fetchManagerListEffect';
+      //   break;
+      default:
+        break;
+    }
+    if (typeTemp && value) {
+      dispatch({
+        type: typeTemp,
+        payload: {
+          name: value,
+          department: ['Engineering'],
+        },
+      });
+    }
+    if (!value) {
+      switch (type) {
+        // case 'id':
+        //   setEmployeeIDListState([]);
+        //   break;
+        case 'name':
+          setEmployeeNameListState([]);
+          break;
+        // case 'manager':
+        //   setManagerListState([]);
+        //   break;
+        default:
+          break;
+      }
+    }
+  }, 1000);
+
+  const handleEmployeeSearch = (type, value) => {
+    onSearchEmployeeDebounce(type, value);
+  };
+
+  // const employees = employeeList.map((x) => {
+  //   return { _id: x._id, name: x.generalInfo.legalName };
+  // });
   const division = divisions.map((x) => {
-    return { _id: x, name: x };
+    return { _id: x.name, name: x.name };
   });
   const projects = projectList.map((x) => {
     return { _id: x.id, name: x.projectName };
@@ -166,55 +199,53 @@ const FilterForm = (props) => {
   const titles = titleList.map((x) => {
     return { _id: x._id, name: x.name };
   });
+
+  const certifications = certificationsList.map((x) => {
+    return { _id: x._id, name: x.name };
+  });
   const dateFormat = 'MMM DD, YYYY';
   const fieldsArray = [
-    {
-      label: 'BY NAME/USER ID',
-      name: 'name',
-      placeholder: 'Select name',
-      optionArray: employees,
-      loading,
-    },
     {
       label: 'BY DIVISION',
       name: 'tagDivision',
       mode: 'multiple',
-      placeholder: 'Select priority',
+      placeholder: 'Select the division',
       optionArray: division,
     },
     {
       label: 'BY DESIGNATION',
       name: 'title',
       mode: 'multiple',
-      placeholder: 'Select designation',
+      placeholder: 'Select the designation',
       optionArray: titles,
     },
     {
       label: 'BY SKILL',
       name: 'skill',
-      placeholder: 'Select location',
+      placeholder: 'Select the location',
+      mode: 'multiple',
       optionArray: statuses,
+    },
+    {
+      label: 'BY CERTIFICATIONS ',
+      name: 'Certifications ',
+      placeholder: 'Select the certifications ',
+      mode: 'multiple',
+      optionArray: certifications,
     },
     {
       label: 'BY CURRENT PROJECT',
       name: 'projects',
-      placeholder: 'Select location',
+      placeholder: 'Select the project',
       mode: 'multiple',
       optionArray: projects,
     },
     {
       label: 'BY BILLING STATUS',
       name: 'statuses',
-      // mode : "multiple",
-      placeholder: 'Select billing status',
+      placeholder: 'Select the billing status',
       optionArray: statuses,
     },
-    // {
-    //   label: 'BY ASSIGN',
-    //   name: 'assign',
-    //   placeholder: 'Select assign',
-    //   optionArray: TicketsList,
-    // },
   ];
 
   return (
@@ -223,11 +254,28 @@ const FilterForm = (props) => {
         layout="horizontal"
         className={styles.form}
         // initialValues={filterProp}
-        // onValuesChange={onValuesChange}
+        onValuesChange={onValuesChange}
         onFinish={onFinish}
         form={form}
       >
         <div className={styles.form__top}>
+          <Form.Item label="BY NAME/USER ID" name="name">
+            <AutoComplete
+              dropdownMatchSelectWidth={252}
+              notFoundContent={loadingFetchEmployeeNameList ? <Spin /> : 'No matches'}
+              options={employeeNameListState}
+              onSearch={(val) => handleEmployeeSearch('name', val)}
+              onFocus={() => setSearchIcons({ ...searchIcons, name: true })}
+              onBlur={() => setSearchIcons({ ...searchIcons, name: false })}
+            >
+              <Input
+                placeholder="Search by Name/User ID"
+                prefix={searchIcons.name ? <img src={SearchIcon} alt="search" /> : null}
+                allowClear
+              />
+            </AutoComplete>
+            {/* <Input placeholder="Search by Name/User ID" /> */}
+          </Form.Item>
           {fieldsArray.map((field) => (
             <Form.Item key={field.name} label={field.label} name={field.name}>
               <Select
@@ -276,7 +324,7 @@ const FilterForm = (props) => {
                   },
                 ]}
               >
-                <Input className={styles.experience} placeholder="Input number" />
+                <Input className={styles.experience} placeholder="Years of Exp" />
               </Form.Item>
               <div className={`${styles.labelText} ${styles.labelTo}`}>to</div>
               <Form.Item
@@ -288,20 +336,14 @@ const FilterForm = (props) => {
                   },
                 ]}
               >
-                <Input
-                  // onChange={onChange}
-                  // disabledDate={(currentDate) => disabledDate(currentDate, 'fromDate')}
-                  // format={dateFormat}
-                  className={styles.experience}
-                  placeholder="Input number"
-                />
+                <Input className={styles.experience} placeholder="Years of Exp" />
               </Form.Item>
             </div>
           </div>
 
           <div className={styles.doj}>
             <div className={styles.doj__label}>
-              <div className={styles.labelText}>BY REQUEST DATE</div>
+              <div className={styles.labelText}>By Start Date</div>
             </div>
             <div className={styles.doj__date}>
               <Form.Item name="fromDate">
@@ -309,9 +351,6 @@ const FilterForm = (props) => {
                   disabledDate={(currentDate) => disabledDate(currentDate, 'fromDate')}
                   format={dateFormat}
                   placeholder="From Date"
-                  // onChange={(value) => {
-                  //   onChangeDate(value, 'fromDate');
-                  // }}
                   suffixIcon={
                     <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
                   }
@@ -323,9 +362,6 @@ const FilterForm = (props) => {
                   disabledDate={(currentDate) => disabledDate(currentDate, 'toDate')}
                   format={dateFormat}
                   placeholder="To Date"
-                  // onChange={(value) => {
-                  //   onChangeDate(value, 'toDate');
-                  // }}
                   suffixIcon={
                     <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
                   }
@@ -343,9 +379,6 @@ const FilterForm = (props) => {
                   disabledDate={(currentDate) => disabledDate(currentDate, 'tentativeEndDateStart')}
                   format={dateFormat}
                   placeholder="From Date"
-                  // onChange={(value) => {
-                  //   onChangeDate(value, 'tentativeEndDateStart');
-                  // }}
                   suffixIcon={
                     <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
                   }
@@ -357,9 +390,6 @@ const FilterForm = (props) => {
                   disabledDate={(currentDate) => disabledDate(currentDate, 'tentativeEndDateEnd')}
                   format={dateFormat}
                   placeholder="To Date"
-                  // onChange={(value) => {
-                  //   onChangeDate(value, 'tentativeEndDateEnd');
-                  // }}
                   suffixIcon={
                     <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
                   }
@@ -367,21 +397,6 @@ const FilterForm = (props) => {
               </Form.Item>
             </div>
           </div>
-        </div>
-
-        <Divider className={styles.divider} />
-        <div className={styles.footer}>
-          <Button onClick={clearFilter} className={styles.footer__clear}>
-            Clear
-          </Button>
-          <Button
-            // onClick={onApply}
-            // disabled={!isFilter}
-            className={styles.footer__apply}
-            htmlType="submit"
-          >
-            Apply
-          </Button>
         </div>
       </Form>
     </div>
@@ -397,13 +412,15 @@ export default connect(
       divisions = [],
       statusList = [],
       titleList = [],
+      certificationsList = [],
     } = {},
   }) => ({
-    loading: loading.effects['resourceManagement/getListEmployee'],
+    loadingFetchEmployeeNameList: loading.effects['resourceManagement/getListEmployee'],
     projectList,
     employeeList,
     divisions,
     statusList,
     titleList,
+    certificationsList,
   }),
 )(FilterForm);

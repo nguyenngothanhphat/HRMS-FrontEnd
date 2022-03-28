@@ -857,6 +857,12 @@ const routes = [
             component: './PoliciesRegulations',
           },
           {
+            path: '/policies-regulations/certify',
+            name: 'Policies Certification',
+            hideInMenu: true,
+            component: './PoliciesRegulations',
+          },
+          {
             path: '/policies-regulations/settings',
             name: 'settings',
             hideInMenu: true,
@@ -884,13 +890,13 @@ const routes = [
             name: 'settings',
             icon: '/assets/images/menuIcons/settings.svg',
             component: '../pages_admin/Settings',
-            authority: ['M_SETTING_VIEW', OWNER],
+            authority: ['M_SETTING_VIEW', OWNER, 'M_SETTINGS_ALL'],
           },
           {
             path: '/settings/:tabName',
             component: '../pages_admin/Settings',
             hideInMenu: true,
-            authority: ['M_SETTING_VIEW', OWNER],
+            authority: ['M_SETTING_VIEW', OWNER, 'M_SETTINGS_ALL'],
           },
           {
             component: './404',

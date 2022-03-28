@@ -1,0 +1,129 @@
+:global {
+  .anticon {
+    cursor: pointer;
+  }
+  .ant-popover-inner {
+    border-radius: 8px;
+  }
+  .ant-popover-inner-content {
+    padding: 0 !important;
+  }
+}
+
+.popupContent {
+  width: 380px;
+  padding: 24px;
+
+  .generalInfo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+
+    .employeeInfo {
+      padding-left: 16px;
+      text-align: left;
+
+      &__name {
+        margin-bottom: 0;
+        padding-bottom: 6px;
+        color: #161c29;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 16px;
+      }
+
+      &__department {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px !important;
+        color: rgba(0, 0, 0, 0.48);
+        font-weight: 400;
+        font-size: 13px;
+        line-height: 15px;
+        letter-spacing: 0.075px;
+      }
+      &__emplId {
+        padding-bottom: 6px;
+        color: #707177;
+        font-weight: normal;
+        font-size: 13px;
+        font-family: Roboto;
+        font-style: normal;
+        line-height: 15px;
+      }
+    }
+  }
+
+  .contact {
+    &__title {
+      color: #707177;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 18px;
+      letter-spacing: 0.075px;
+      text-transform: capitalize;
+    }
+
+    &__value {
+      color: #212020;
+      font-weight: normal;
+      font-size: 13px;
+      font-family: Roboto;
+      font-style: normal;
+      line-height: 15px;
+      letter-spacing: 0.075px;
+    }
+
+    &__clientName {
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 13px;
+      font-family: Roboto;
+      font-style: normal;
+      line-height: 15px;
+      letter-spacing: 0.121875px;
+      cursor: pointer;
+    }
+  }
+
+  .divider {
+    :global {
+      margin: 15px 0;
+    }
+    padding: 1px 0;
+  }
+
+  .popupActions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    &__link {
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 13px;
+      font-style: normal;
+      line-height: 15px;
+      cursor: pointer;
+      text-decoration-line: underline;
+    }
+
+    &__actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 106px;
+    }
+  }
+  .duration {
+    color: #212020;
+    font-weight: normal;
+    font-size: 13px;
+    font-family: Roboto;
+    font-style: normal;
+    line-height: 15px;
+    letter-spacing: 0.075px;
+    text-transform: uppercase;
+  }
+}
