@@ -24,7 +24,7 @@ const ResourceList = (props) => {
   } = props;
 
   const modifyResourcePermission = permissions.modifyResource !== -1;
-
+  const modeViewAdmin = permissions.viewModeAdmin !== -1;
   const [pageSelected, setPageSelected] = useState(1);
   const [availableStatusState, setAvailableStatusState] = useState('ALL');
   const [size, setSize] = useState(10);
@@ -194,10 +194,12 @@ const ResourceList = (props) => {
   return (
     <div className={styles.containerTickets}>
       <div className={styles.tabTickets}>
-        <ResourceStatus
-          currentStatus={availableStatusState}
-          changeAvailableStatus={changeAvailableStatus}
-        />
+        {modeViewAdmin && (
+          <ResourceStatus
+            currentStatus={availableStatusState}
+            changeAvailableStatus={changeAvailableStatus}
+          />
+        )}
         <div className={styles.rightHeaderTable}>
           <div className={styles.download}>
             <Row gutter={[24, 0]}>
