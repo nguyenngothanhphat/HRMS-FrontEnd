@@ -5,11 +5,32 @@ import { PageContainer } from '@/layouts/layout/src';
 import Polices from './components/Policies';
 import styles from './index.less';
 import PoliciesCertification from '@/pages/PoliciesRegulations/components/PoliciesCertification';
+import ExportButton from '@/components/ExportButton';
+import { getCurrentLocation } from '@/utils/authority';
 
 @connect(({ user: { permissions = {} } = {} }) => ({
   permissions,
 }))
 class PoliciesRegulations extends PureComponent {
+  downloadFile = (fileName, urlData) => {
+    const element = document.createElement('a');
+    element.setAttribute('href', `data:text/text;charset=utf-8,%EF%BB%BF${encodeURI(urlData)}`);
+    element.setAttribute('download', fileName);
+    element.click();
+  };
+
+  exportPoliciesCertification = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'policiesRegulations/exportPoliciesCertificationEffect',
+      payload: {
+        location: getCurrentLocation(),
+      },
+    }).then((res) => {
+      this.downloadFile('policiesCertificationStatus.csv', res.data);
+    });
+  };
+
   render() {
     const { permissions = {} } = this.props;
 
@@ -25,6 +46,7 @@ class PoliciesRegulations extends PureComponent {
                 {isCertify ? 'Policies Certification' : 'Policies'}
               </div>
               <div className={styles.header__right}>
+                {viewSetting && <ExportButton onClick={this.exportPoliciesCertification} />}
                 {viewSetting && !isCertify ? (
                   <Button>
                     <Link to="/policies-regulations/settings">

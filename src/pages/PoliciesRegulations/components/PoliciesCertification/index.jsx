@@ -227,8 +227,9 @@ const PoliciesCertification = (props) => {
                 type="primary"
                 className={styles.signatureBar__button__primary}
                 onClick={() => setIsCertify(true)}
+                disabled={employee.isSignaturePolicy}
               >
-                Sign
+                {employee.isSignaturePolicy ? 'Signed' :   'Sign'}
               </Button>
             </div>
           </Col>
