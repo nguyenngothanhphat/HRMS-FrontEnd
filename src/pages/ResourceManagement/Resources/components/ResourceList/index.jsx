@@ -185,6 +185,7 @@ const ResourceList = (props) => {
     JSON.stringify(filter),
     size,
     pageSelected,
+    availableStatusState,
   ]);
 
   useEffect(() => {
