@@ -1,5 +1,5 @@
 import { Affix } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { connect, history } from 'umi';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import { PageContainer } from '@/layouts/layout/src';
@@ -27,14 +27,15 @@ const EmployeeProfile = (props) => {
     // employeeProfile,
   } = props;
 
-  const [isProfileOwner, setIsProfileOwner] = useState(false);
-
   const checkProfileOwner = (currentUserID, employeeID) => {
     if (currentUserID === employeeID) {
       return true;
     }
     return false;
   };
+
+  // const [isProfileOwner, setIsProfileOwner] = useState(false);
+  const isProfileOwner = checkProfileOwner(userId, reId);
 
   const fetchData = async (employee) => {
     let tenantId1 = localStorage.getItem('tenantCurrentEmployee');
@@ -127,6 +128,7 @@ const EmployeeProfile = (props) => {
       }
     });
   };
+
   useEffect(() => {
     if (!tabName) {
       const link = isOwner() ? 'employees' : 'directory';
@@ -147,9 +149,6 @@ const EmployeeProfile = (props) => {
   const firstRun = useRef(true);
 
   useEffect(() => {
-    const isProfileOwnerTemp = checkProfileOwner(userId, reId);
-    setIsProfileOwner(isProfileOwnerTemp);
-
     if (firstRun.current) {
       firstRun.current = false;
       return;
