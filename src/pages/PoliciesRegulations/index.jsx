@@ -8,8 +8,9 @@ import PoliciesCertification from '@/pages/PoliciesRegulations/components/Polici
 import ExportButton from '@/components/ExportButton';
 import { getCurrentLocation } from '@/utils/authority';
 
-@connect(({ user: { permissions = {} } = {} }) => ({
+@connect(({ user: { permissions = {} } = {}, policiesRegulations }) => ({
   permissions,
+  policiesRegulations,
 }))
 class PoliciesRegulations extends PureComponent {
   downloadFile = (fileName, urlData) => {
@@ -19,15 +20,35 @@ class PoliciesRegulations extends PureComponent {
     element.click();
   };
 
+  removeDuplicate = (array, key) => {
+    return [...new Map(array.map((x) => [key(x), x])).values()];
+  };
+
   exportPoliciesCertification = () => {
-    const { dispatch } = this.props;
+    const {
+      dispatch,
+      permissions = {},
+      policiesRegulations: { countryList = [] } = {},
+    } = this.props;
+    const viewAllCountry = permissions.viewPolicyAllCountry !== -1;
+    let countryArr = [getCurrentLocation()];
+    if (viewAllCountry) {
+      countryList.map((item) => {
+        return item.headQuarterAddress?.country;
+      });
+      const newArr = this.removeDuplicate(countryArr, (item) => item?._id);
+      countryArr = [...new Set(newArr.map((val) => val?._id))];
+    }
+
     dispatch({
       type: 'policiesRegulations/exportPoliciesCertificationEffect',
       payload: {
-        location: getCurrentLocation(),
+        location: countryArr,
       },
     }).then((res) => {
-      this.downloadFile('policiesCertificationStatus.csv', res.data);
+      if (res.statusCode === 200) {
+        this.downloadFile('policiesCertificationStatus.csv', res.data);
+      }
     });
   };
 
@@ -35,6 +56,7 @@ class PoliciesRegulations extends PureComponent {
     const { permissions = {} } = this.props;
 
     const viewSetting = permissions.viewSettingPolicy !== -1;
+
     const isCertify = window.location.pathname.includes('certify');
 
     return (
@@ -46,7 +68,12 @@ class PoliciesRegulations extends PureComponent {
                 {isCertify ? 'Policies Certification' : 'Policies'}
               </div>
               <div className={styles.header__right}>
-                {viewSetting && <ExportButton onClick={this.exportPoliciesCertification} />}
+                {viewSetting && (
+                  <ExportButton
+                    onClick={this.exportPoliciesCertification}
+                    title="Export Policies Certification"
+                  />
+                )}
                 {viewSetting && !isCertify ? (
                   <Button>
                     <Link to="/policies-regulations/settings">
