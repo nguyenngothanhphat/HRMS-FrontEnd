@@ -60,7 +60,7 @@ class UploadImage extends Component {
 
   render() {
     const { check } = this.state;
-    const { content = 'Your content', loading = false } = this.props;
+    const { content = 'Your content', loading = false, disabledFields = false } = this.props;
     if (loading) {
       return <Spin loading={loading} active="true" />;
     }
@@ -75,6 +75,7 @@ class UploadImage extends Component {
         beforeUpload={this.beforeUpload}
         action={(file) => this.handleUpload(file)}
         className={styles.UploadImageFile}
+        disabled={disabledFields}
       >
         {!check && <span className={styles.ShowTestValidation}>File must me under 5 Mb </span>}
         {content} {!check && <img src={undo} alt="undo" />}
