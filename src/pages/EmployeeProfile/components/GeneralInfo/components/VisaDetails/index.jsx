@@ -58,12 +58,14 @@ class VisaDetails extends PureComponent {
       // <View dataAPI={passportData} />
     );
     const editVisaPermission = permissions.editPassportAndVisa !== -1;
+    const disabledFields = true; // temporarily disable fields
+
     return (
       <div className={styles.VisaDetails}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Visa Details</p>
           {!openVisa && (!profileOwner || editVisaPermission) && (
-            <div className={styles.flexEdit} onClick={this.handleEdit}>
+            <div className={styles.flexEdit} onClick={disabledFields ? null : this.handleEdit}>
               <img src={EditBtn} alt="" className={styles.IconEdit} />
               <p className={styles.Edit}>Edit</p>
             </div>
