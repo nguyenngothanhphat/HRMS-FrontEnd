@@ -7,6 +7,7 @@ import UnreadIcon from '@/assets/policiesRegulations/view.svg';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
+import ModalFeedback from '@/components/ModalFeedback';
 
 const Policies = (props) => {
   const { dispatch, countryID = '', permissions = {}, listCategory = [], loadingGetList } = props;
@@ -15,12 +16,19 @@ const Policies = (props) => {
   const [showingFiles, setShowingFiles] = useState([]);
   const [linkFile, setLinkFile] = useState('');
   const [isViewDocument, setIsViewDocument] = useState(false);
-
+  const [visible, setVisible] = useState(false);
   const viewAllCountry = permissions.viewPolicyAllCountry !== -1;
   const viewSetting = permissions.viewSettingPolicy !== -1;
 
   const removeDuplicate = (array, key) => {
     return [...new Map(array.map((x) => [key(x), x])).values()];
+  };
+  const openFeedback = () => {
+    setVisible(true);
+  };
+
+  const handleCandelModal = () => {
+    setVisible(false);
   };
 
   useEffect(() => {
@@ -117,6 +125,7 @@ const Policies = (props) => {
         <Skeleton />
       </div>
     );
+
   return (
     <div className={styles.Policies}>
       <Row>
@@ -152,10 +161,15 @@ const Policies = (props) => {
               Our support team is waiting to help you 24/7. Get an emailed response from our team.
             </div>
             <div className={styles.viewRight__btnContact}>
-              <Button>Contact Us</Button>
+              <Button onClick={openFeedback}>Contact Us</Button>
             </div>
             <div />
           </div>
+          <ModalFeedback
+            visible={visible}
+            handleCandelModal={handleCandelModal}
+            openFeedback={openFeedback}
+          />
         </Col>
       </Row>
     </div>
