@@ -21,10 +21,12 @@ const ResourceList = (props) => {
     total = 0,
     permissions,
     currentUserId = '',
+    employeeId = '',
   } = props;
 
   const modifyResourcePermission = permissions.modifyResource !== -1;
   const modeViewAdmin = permissions.viewModeAdmin !== -1;
+  const modeViewManager = permissions.viewModeManager !== -1;
   const [pageSelected, setPageSelected] = useState(1);
   const [availableStatusState, setAvailableStatusState] = useState('ALL');
   const [size, setSize] = useState(10);
@@ -66,6 +68,10 @@ const ResourceList = (props) => {
   };
   const fetchResourceList = async () => {
     const filterTemp = convertFilter();
+    const modeView = {
+      modeViewManager,
+      modeViewAdmin,
+    };
 
     dispatch({
       type: 'resourceManagement/getResources',
@@ -78,6 +84,8 @@ const ResourceList = (props) => {
         ...filterTemp,
         location: selectedLocations,
         division: selectedDivisions,
+        employeeId,
+        modeView,
       },
     });
   };
@@ -247,6 +255,7 @@ export default connect(
       currentUser: {
         location: { _id: locationID = '' } = {},
         company: { _id: companyID } = {},
+        employee: { _id: employeeId = '' },
       } = {},
       permissions = {},
     } = {},
@@ -263,5 +272,6 @@ export default connect(
     permissions,
     selectedDivisions,
     selectedLocations,
+    employeeId,
   }),
 )(ResourceList);
