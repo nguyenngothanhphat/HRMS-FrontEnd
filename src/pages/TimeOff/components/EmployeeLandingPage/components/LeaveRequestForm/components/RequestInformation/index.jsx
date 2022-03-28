@@ -17,8 +17,8 @@ import {
   TIMEOFF_DATE_FORMAT,
 } from '@/utils/timeOff';
 import styles from './index.less';
-import LeaveTimeRow from './LeaveTimeRow';
-import LeaveTimeRow2 from './LeaveTimeRow2';
+import LeaveTimeRow from './components/LeaveTimeRow';
+import LeaveTimeRow2 from './components/LeaveTimeRow2';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -409,6 +409,7 @@ const RequestInformation = (props) => {
 
   // ON FINISH
   const onFinish = (values) => {
+    console.log('🚀 ~ onFinish ~ values', values);
     const { _id: employeeId = '', managerInfo: { _id: managerId = '' } = {} } = employee;
     const {
       timeOffType = '',
@@ -461,12 +462,12 @@ const RequestInformation = (props) => {
           }
 
           // console.log('🚀 ~ data', data);
-          dispatch({
-            type,
-            payload: data,
-          }).then((statusCode) => {
-            if (statusCode === 200) setShowSuccessModal(true);
-          });
+          // dispatch({
+          //   type,
+          //   payload: data,
+          // }).then((statusCode) => {
+          //   if (statusCode === 200) setShowSuccessModal(true);
+          // });
         }
       }
     } else if (buttonState === 1) {
@@ -967,7 +968,7 @@ const RequestInformation = (props) => {
                     onChange={(value) => {
                       fromDateOnChange(value);
                     }}
-                    placeholder={`From Date (${TIMEOFF_DATE_FORMAT})`}
+                    placeholder="From Date"
                   />
                 </Form.Item>
               </Col>
@@ -988,7 +989,7 @@ const RequestInformation = (props) => {
                     onChange={(value) => {
                       toDateOnChange(value);
                     }}
-                    placeholder={`To Date (${TIMEOFF_DATE_FORMAT})`}
+                    placeholder="To Date"
                   />
                 </Form.Item>
               </Col>

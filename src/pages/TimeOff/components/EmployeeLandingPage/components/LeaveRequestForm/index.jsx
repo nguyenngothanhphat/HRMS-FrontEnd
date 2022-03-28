@@ -8,8 +8,8 @@ import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { TIMEOFF_LINK_ACTION, TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
-import RequestInformation from './RequestInformation';
-import RightContent from './RightContent';
+import RequestInformation from './components/RequestInformation';
+import RightContent from './components/RightContent';
 
 const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DRAFTS, WITHDRAWN } = TIMEOFF_STATUS;
 const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST } = TIMEOFF_LINK_ACTION;
