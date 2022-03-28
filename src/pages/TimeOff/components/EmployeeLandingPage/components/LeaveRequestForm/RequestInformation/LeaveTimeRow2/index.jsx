@@ -9,8 +9,8 @@ class LeaveTimeRow2 extends PureComponent {
 
     return (
       <Row className={styles.LeaveTimeRow2} justify="center" align="center">
-        <Col span={7}>{moment.utc(fromDate).locale('en').format('MM/DD/YYYY')}</Col>
-        <Col span={7}>{moment.utc(toDate).locale('en').format('MM/DD/YYYY')}</Col>
+        <Col span={7}>{moment(fromDate).locale('en').format('MM/DD/YYYY')}</Col>
+        <Col span={7}>{moment(toDate).locale('en').format('MM/DD/YYYY')}</Col>
         <Col span={10}>{noOfDays}</Col>
       </Row>
     );

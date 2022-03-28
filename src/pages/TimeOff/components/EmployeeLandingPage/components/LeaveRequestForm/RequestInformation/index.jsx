@@ -482,13 +482,13 @@ const RequestInformation = (props) => {
   };
 
   const toDateOnChange = (value) => {
-    setDurationTo(moment.utc(value) || '');
+    setDurationTo(value || '');
   };
 
   // DATE PICKER ON CHANGE
   const fromDateOnChange = (value) => {
-    setDurationFrom(moment.utc(value) || '');
-    if (moment.utc(value).isAfter(moment.utc(durationTo))) {
+    setDurationFrom(value || '');
+    if (moment(value).isAfter(moment(durationTo))) {
       setDurationTo('');
       form.setFieldsValue({
         durationTo: '',
@@ -692,8 +692,8 @@ const RequestInformation = (props) => {
         setIsEditingDrafts(true);
       }
 
-      setDurationFrom(viewingFromDate ? moment.utc(viewingFromDate) : null);
-      setDurationTo(viewingToDate ? moment.utc(viewingToDate) : null);
+      setDurationFrom(viewingFromDate ? moment(viewingFromDate) : null);
+      setDurationTo(viewingToDate ? moment(viewingToDate) : null);
       setSelectedTypeName(viewingType.name);
       setSelectedType(viewingType.type);
 
@@ -721,8 +721,8 @@ const RequestInformation = (props) => {
       form.setFieldsValue({
         timeOffType: viewingType?._id,
         subject: viewingSubject,
-        durationFrom: viewingFromDate ? moment.utc(viewingFromDate) : null,
-        durationTo: viewingToDate ? moment.utc(viewingToDate) : null,
+        durationFrom: viewingFromDate ? moment(viewingFromDate) : null,
+        durationTo: viewingToDate ? moment(viewingToDate) : null,
         description: viewingDescription,
         personCC: viewingCC,
         leaveTimeLists,

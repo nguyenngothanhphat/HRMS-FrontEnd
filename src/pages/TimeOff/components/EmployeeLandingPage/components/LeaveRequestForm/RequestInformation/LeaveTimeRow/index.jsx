@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Row, Col, Form, Select } from 'antd';
 import moment from 'moment';
 import styles from './index.less';
+import { TIMEOFF_DATE_FORMAT } from '@/utils/timeOff';
 
 const { Option } = Select;
 
@@ -23,8 +24,8 @@ class LeaveTimeRow extends PureComponent {
       <>
         {moment.utc(eachDate).weekday() !== 6 && moment.utc(eachDate).weekday() !== 0 && (
           <Row className={styles.LeaveTimeRow} key={`${index + 1}`} justify="center" align="center">
-            <Col span={7}>{moment.utc(eachDate).locale('en').format('MM/DD/YYYY')}</Col>
-            <Col span={7}>{moment.utc(eachDate).locale('en').format('dddd')}</Col>
+            <Col span={7}>{moment(eachDate).locale('en').format(TIMEOFF_DATE_FORMAT)}</Col>
+            <Col span={7}>{moment(eachDate).locale('en').format('dddd')}</Col>
             <Col span={10}>
               <Form.Item
                 name={[index]}
