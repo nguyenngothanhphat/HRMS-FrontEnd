@@ -1,6 +1,7 @@
 import { Col, Form, Input, Row, Select } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
+import ClockIcon from '@/assets/timeSheet/clock.svg';
 import {
   MINUTE_STEP,
   TIMEOFF_COL_SPAN_1,
@@ -82,6 +83,7 @@ const LeaveTimeRow = (props) => {
                   minimum={TIMEOFF_MIN_LEAVE_HOUR}
                   maximum={TIMEOFF_MAX_LEAVE_HOUR}
                   minuteStep={MINUTE_STEP}
+                  suffixIcon={<img src={ClockIcon} alt="" />}
                 />
               </Form.Item>
             </Col>
@@ -101,6 +103,7 @@ const LeaveTimeRow = (props) => {
                   minimum={TIMEOFF_MIN_LEAVE_HOUR}
                   maximum={TIMEOFF_MAX_LEAVE_HOUR}
                   minuteStep={MINUTE_STEP}
+                  suffixIcon={<img src={ClockIcon} alt="" />}
                 />
               </Form.Item>
             </Col>
