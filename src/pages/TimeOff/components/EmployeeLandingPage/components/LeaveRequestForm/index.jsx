@@ -8,8 +8,8 @@ import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { TIMEOFF_LINK_ACTION, TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
-import RequestInformation from './RequestInformation';
-import RightContent from './RightContent';
+import RequestInformation from './components/RequestInformation';
+import RightContent from './components/RightContent';
 
 const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DRAFTS, WITHDRAWN } = TIMEOFF_STATUS;
 const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST } = TIMEOFF_LINK_ACTION;
@@ -31,16 +31,13 @@ class LeaveRequestForm extends PureComponent {
     const {
       dispatch,
       match: { params: { action = '', reId = '' } = {} },
-      timeOff: { timeOffTypesByCountry = [] } = {},
     } = this.props;
 
     this.setState({
       action,
     });
 
-    if (timeOffTypesByCountry.length === 0) {
-      this.fetchTimeOffTypes();
-    }
+    this.fetchTimeOffTypes();
 
     if (action === EDIT_LEAVE_REQUEST) {
       dispatch({
@@ -51,20 +48,21 @@ class LeaveRequestForm extends PureComponent {
 
     dispatch({
       type: 'timeOff/fetchLeaveRequestOfEmployee',
+      payload: {
+        status: [IN_PROGRESS, ACCEPTED, ON_HOLD, DRAFTS],
+      },
     }).then((res) => {
       if (res.statusCode === 200) {
         let invalidDates = [];
         const { items: leaveRequests = [] } = res?.data;
         leaveRequests.forEach((x) => {
-          if ([DRAFTS, IN_PROGRESS, ACCEPTED, ON_HOLD].includes(x.status)) {
-            const temp = x.leaveDates.map((y) => {
-              return {
-                date: y.date,
-                timeOfDay: y.timeOfDay,
-              };
-            });
-            invalidDates = [...invalidDates, ...temp];
-          }
+          const temp = x.leaveDates.map((y) => {
+            return {
+              date: y.date,
+              timeOfDay: y.timeOfDay,
+            };
+          });
+          invalidDates = [...invalidDates, ...temp];
         });
 
         this.setState({
@@ -209,7 +207,7 @@ class LeaveRequestForm extends PureComponent {
               (status === DRAFTS || status === IN_PROGRESS))) && (
               <>
                 <Row className={styles.container} gutter={[20, 20]}>
-                  <Col xs={24} xl={16}>
+                  <Col xs={24} xl={18}>
                     <RequestInformation
                       action={action}
                       status={status}
@@ -218,7 +216,7 @@ class LeaveRequestForm extends PureComponent {
                       viewingLeaveRequest={viewingLeaveRequest}
                     />
                   </Col>
-                  <Col xs={24} xl={8}>
+                  <Col xs={24} xl={6}>
                     <RightContent />
                   </Col>
                 </Row>

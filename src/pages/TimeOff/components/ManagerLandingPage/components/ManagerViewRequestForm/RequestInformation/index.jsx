@@ -1,12 +1,21 @@
-import React, { PureComponent } from 'react';
-import { Button, Row, Col, Spin, Input } from 'antd';
-import { connect, history } from 'umi';
-import moment from 'moment';
+import { Button, Col, Input, Row, Spin } from 'antd';
 import { isEmpty } from 'lodash';
+import moment from 'moment';
+import React, { PureComponent } from 'react';
+import { connect, history } from 'umi';
+import {
+  getHours,
+  MAX_NO_OF_DAYS_TO_SHOW,
+  TIMEOFF_12H_FORMAT,
+  TIMEOFF_24H_FORMAT,
+  TIMEOFF_COL_SPAN_1,
+  TIMEOFF_COL_SPAN_2,
+  TIMEOFF_DATE_FORMAT,
+  TIMEOFF_STATUS,
+  TIMEOFF_TYPE,
+} from '@/utils/timeOff';
 import TimeOffModal from '@/components/TimeOffModal';
-import { TIMEOFF_STATUS, TIMEOFF_TYPE, MAX_NO_OF_DAYS_TO_SHOW } from '@/utils/timeOff';
 import Project from './components/Project';
-
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -74,21 +83,21 @@ class RequestInformation extends PureComponent {
   };
 
   formatDurationTime = (fromDate, toDate, type) => {
-    const start = moment.utc(fromDate);
-    const end = moment.utc(toDate);
+    const start = moment(fromDate);
+    const end = moment(toDate);
     const now = start;
     const leaveTimes = [];
     const includeWeekend = type !== A && type !== B;
 
     if (includeWeekend) {
       while (now.isBefore(end) || now.isSame(end)) {
-        leaveTimes.push(now.format('YYYY-MM-DD'));
+        leaveTimes.push(now.format(TIMEOFF_DATE_FORMAT));
         now.add(1, 'days');
       }
     } else {
       while (now.isBefore(end) || now.isSame(end)) {
-        if (moment.utc(now).weekday() !== 6 && moment.utc(now).weekday() !== 0) {
-          leaveTimes.push(now.format('YYYY-MM-DD'));
+        if (moment(now).weekday() !== 6 && moment(now).weekday() !== 0) {
+          leaveTimes.push(now.format(TIMEOFF_DATE_FORMAT));
         }
         now.add(1, 'days');
       }
@@ -215,6 +224,162 @@ class RequestInformation extends PureComponent {
     }
   };
 
+  renderDuration = () => {
+    const { timeOff: { viewingLeaveRequest = {} } = {} } = this.props;
+
+    const {
+      fromDate = '',
+      toDate = '',
+      duration = '',
+      leaveDates = [],
+      // onDate = '',
+      type: { type = '' } = {},
+    } = viewingLeaveRequest;
+
+    const formatDurationTime = this.formatDurationTime(fromDate, toDate, type);
+    const showAllDateList = duration <= MAX_NO_OF_DAYS_TO_SHOW;
+
+    const BY_HOUR = leaveDates.some((x) => x.startTime);
+
+    const renderTableHeader = () => {
+      if (BY_HOUR) {
+        return (
+          <Row className={styles.header} gutter={[8, 8]}>
+            <Col span={TIMEOFF_COL_SPAN_2.DATE}>Date</Col>
+            <Col span={TIMEOFF_COL_SPAN_2.DAY}>Day</Col>
+            <Col span={TIMEOFF_COL_SPAN_2.START_TIME}>Start time</Col>
+            <Col span={TIMEOFF_COL_SPAN_2.END_TIME}>End time</Col>
+            <Col span={TIMEOFF_COL_SPAN_2.HOUR} style={{ textAlign: 'center' }}>
+              No. of hours
+            </Col>
+          </Row>
+        );
+      }
+      if (showAllDateList)
+        return (
+          <Row className={styles.header} gutter={[8, 8]}>
+            <Col span={TIMEOFF_COL_SPAN_1.DATE}>Date</Col>
+            <Col span={TIMEOFF_COL_SPAN_1.DAY}>Day</Col>
+            <Col span={TIMEOFF_COL_SPAN_1.COUNT}>Count/Q.ty</Col>
+          </Row>
+        );
+      return (
+        <Row className={styles.header} gutter={[8, 8]}>
+          <Col span={TIMEOFF_COL_SPAN_1.DATE}>From</Col>
+          <Col span={TIMEOFF_COL_SPAN_1.DAY}>To</Col>
+          <Col span={TIMEOFF_COL_SPAN_1.COUNT}>No. of Days</Col>
+        </Row>
+      );
+    };
+
+    const renderTableContent = () => {
+      if (BY_HOUR) {
+        return (
+          <>
+            {formatDurationTime.map((date, index) => {
+              return (
+                <Row
+                  className={styles.duration}
+                  key={`${index + 1}`}
+                  justify="center"
+                  align="center"
+                  gutter={[8, 8]}
+                >
+                  <Col span={TIMEOFF_COL_SPAN_2.DATE}>
+                    {moment(date).locale('en').format(TIMEOFF_DATE_FORMAT)}
+                  </Col>
+                  <Col span={TIMEOFF_COL_SPAN_2.DAY}>
+                    {moment(date).locale('en').format('dddd')}
+                  </Col>
+                  <Col span={TIMEOFF_COL_SPAN_2.START_TIME}>
+                    {!isEmpty(leaveDates)
+                      ? moment(leaveDates[index].startTime, TIMEOFF_24H_FORMAT).format(
+                          TIMEOFF_12H_FORMAT,
+                        )
+                      : ''}
+                  </Col>
+                  <Col span={TIMEOFF_COL_SPAN_2.END_TIME}>
+                    {!isEmpty(leaveDates)
+                      ? moment(leaveDates[index].endTime, TIMEOFF_24H_FORMAT).format(
+                          TIMEOFF_12H_FORMAT,
+                        )
+                      : ''}
+                  </Col>
+                  <Col span={TIMEOFF_COL_SPAN_2.HOUR} style={{ textAlign: 'center' }}>
+                    {!isEmpty(leaveDates)
+                      ? getHours(
+                          leaveDates[index].startTime,
+                          leaveDates[index].endTime,
+                          TIMEOFF_24H_FORMAT,
+                        )
+                      : ''}
+                  </Col>
+                </Row>
+              );
+            })}
+          </>
+        );
+      }
+      if (showAllDateList)
+        return (
+          <>
+            {formatDurationTime.map((date, index) => {
+              return (
+                <Row
+                  className={styles.duration}
+                  key={`${index + 1}`}
+                  justify="center"
+                  align="center"
+                  gutter={[8, 8]}
+                >
+                  <Col span={TIMEOFF_COL_SPAN_1.DATE}>
+                    {moment(date).locale('en').format(TIMEOFF_DATE_FORMAT)}
+                  </Col>
+                  <Col span={TIMEOFF_COL_SPAN_1.DAY}>
+                    {moment(date).locale('en').format('dddd')}
+                  </Col>
+                  <Col span={TIMEOFF_COL_SPAN_1.COUNT}>
+                    {!isEmpty(leaveDates) ? this.getTimeLabel(leaveDates[index].timeOfDay) : ''}
+                  </Col>
+                </Row>
+              );
+            })}
+          </>
+        );
+
+      return (
+        <Row className={styles.duration} justify="center" align="center" gutter={[8, 8]}>
+          <Col span={TIMEOFF_COL_SPAN_1.DATE}>
+            {moment(fromDate).locale('en').format(TIMEOFF_DATE_FORMAT)}
+          </Col>
+          <Col span={TIMEOFF_COL_SPAN_1.DAY}>
+            {moment(toDate).locale('en').format(TIMEOFF_DATE_FORMAT)}
+          </Col>
+          <Col span={TIMEOFF_COL_SPAN_1.COUNT}>{duration}</Col>
+        </Row>
+      );
+    };
+
+    return (
+      <>
+        <Row style={{ paddingBottom: '5px' }}>
+          <Col span={6}>Duration</Col>
+          {!isEmpty(formatDurationTime) && (
+            <>
+              <Col span={18} className={styles.detailColumn}>
+                <div className={styles.extraTimeSpent}>{renderTableHeader()}</div>
+              </Col>
+            </>
+          )}
+        </Row>
+        <Row>
+          <Col span={6} />
+          <Col span={18}>{renderTableContent()}</Col>
+        </Row>
+      </>
+    );
+  };
+
   render() {
     const { showModal, showWithdrawModal, isReject, acceptWithdraw } = this.state;
     const {
@@ -232,13 +397,9 @@ class RequestInformation extends PureComponent {
       status = '',
       _id = '',
       subject = '',
-      fromDate = '',
-      toDate = '',
-      duration = '',
-      leaveDates = [],
       // onDate = '',
       description = '',
-      type: { name = '', type = '' } = {},
+      type: { name = '' } = {},
       employee: {
         // _id: employeeId = '',
         generalInfo: { legalName = '', userId = '' } = {},
@@ -253,9 +414,6 @@ class RequestInformation extends PureComponent {
       withdraw = {},
       approvalManager: { _id: managerId = '' } = {},
     } = viewingLeaveRequest;
-
-    const formatDurationTime = this.formatDurationTime(fromDate, toDate, type);
-    const showAllDateList = duration <= MAX_NO_OF_DAYS_TO_SHOW;
 
     const viewHRTimeoff = permissions.viewHRTimeoff !== -1;
 
@@ -381,61 +539,7 @@ class RequestInformation extends PureComponent {
                     <span>{subject}</span>
                   </Col>
                 </Row>
-                <Row style={{ paddingBottom: '5px' }}>
-                  <Col span={6}>Duration</Col>
-                  {!isEmpty(formatDurationTime) && (
-                    <>
-                      <Col span={18} className={styles.detailColumn}>
-                        <div className={styles.extraTimeSpent}>
-                          {showAllDateList ? (
-                            <Row className={styles.header}>
-                              <Col span={7}>Date</Col>
-                              <Col span={7}>Day</Col>
-                              <Col span={10}>Count/Q.ty</Col>
-                            </Row>
-                          ) : (
-                            <Row className={styles.header}>
-                              <Col span={7}>From</Col>
-                              <Col span={7}>To</Col>
-                              <Col span={10}>No. of Days</Col>
-                            </Row>
-                          )}
-                        </div>
-                      </Col>
-                    </>
-                  )}
-                </Row>
-                <Row>
-                  <Col span={6} />
-                  <Col span={18}>
-                    {showAllDateList ? (
-                      formatDurationTime.map((date, index) => {
-                        return (
-                          <Row
-                            className={styles.duration}
-                            key={`${index + 1}`}
-                            justify="center"
-                            align="center"
-                          >
-                            <Col span={7}>{moment.utc(date).locale('en').format('MM/DD/YYYY')}</Col>
-                            <Col span={7}>{moment.utc(date).locale('en').format('dddd')}</Col>
-                            <Col span={10}>
-                              {!isEmpty(leaveDates)
-                                ? this.getTimeLabel(leaveDates[index].timeOfDay)
-                                : ''}
-                            </Col>
-                          </Row>
-                        );
-                      })
-                    ) : (
-                      <Row className={styles.duration} justify="center" align="center">
-                        <Col span={7}>{moment.utc(fromDate).locale('en').format('MM/DD/YYYY')}</Col>
-                        <Col span={7}>{moment.utc(toDate).locale('en').format('MM/DD/YYYY')}</Col>
-                        <Col span={10}>{duration}</Col>
-                      </Row>
-                    )}
-                  </Col>
-                </Row>
+                {this.renderDuration()}
                 <Row>
                   <Col span={6}>Description</Col>
                   <Col span={18} className={styles.detailColumn}>

@@ -163,9 +163,9 @@ class LeaveInformation extends PureComponent {
     );
   };
 
-  renderCircleProgress = (percentVal, value) => (
+  renderCircleProgress = (value) => (
     <div className={styles.circleProgress}>
-      <span className={styles.percentValue}>{value}</span>
+      <span className={styles.percentValue}>{Math.round(value * 100) / 100}</span>
       <p className={styles.remainingText}>Remaining</p>
     </div>
   );
@@ -223,7 +223,7 @@ class LeaveInformation extends PureComponent {
                 strokeColor="#FFA100"
                 trailColor="#EAE7E3"
                 percent={percentMainCircle}
-                format={(percentVal) => this.renderCircleProgress(percentVal, remaining)}
+                format={() => this.renderCircleProgress(remaining)}
               />
             </div>
           </div>

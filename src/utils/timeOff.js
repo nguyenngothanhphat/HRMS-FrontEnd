@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const TIMEOFF_STATUS = {
   IN_PROGRESS: 'IN-PROGRESS',
   IN_PROGRESS_NEXT: 'IN-PROGRESS-NEXT',
@@ -22,6 +24,24 @@ export const TIMEOFF_TYPE = {
   D: 'D',
 };
 
+export const TIMEOFF_PERIOD = {
+  MORNING: 'MORNING',
+  AFTERNOON: 'AFTERNOON',
+  WHOLE_DAY: 'WHOLE-DAY',
+};
+
+export const TIMEOFF_INPUT_TYPE = {
+  PERIOD: 'PERIOD', // MORNING, AFTERNOON, WHOLE_DAY
+  HOUR: 'HOUR', // NUMBER
+  WHOLE_DAY: 'WHOLE_DAY',
+};
+
+export const TIMEOFF_INPUT_TYPE_BY_LOCATION = {
+  US: TIMEOFF_INPUT_TYPE.HOUR,
+  IN: TIMEOFF_INPUT_TYPE.WHOLE_DAY,
+  VN: TIMEOFF_INPUT_TYPE.PERIOD,
+};
+
 export const TIMEOFF_COLOR = {
   [TIMEOFF_STATUS.IN_PROGRESS]: '#ffa100',
   [TIMEOFF_STATUS.IN_PROGRESS_NEXT]: '#ffa100',
@@ -39,3 +59,27 @@ export const addZeroToNumber = (number) => {
 };
 
 export const TIMEOFF_DATE_FORMAT = 'MM/DD/YYYY';
+
+export const TIMEOFF_COL_SPAN_1 = {
+  DATE: 7,
+  DAY: 7,
+  COUNT: 10,
+};
+export const TIMEOFF_COL_SPAN_2 = {
+  DATE: 4,
+  DAY: 4,
+  START_TIME: 6,
+  END_TIME: 6,
+  HOUR: 4,
+};
+
+export const MINUTE_STEP = 15;
+export const TIMEOFF_MIN_LEAVE_HOUR = 2;
+export const TIMEOFF_MAX_LEAVE_HOUR = 8;
+export const TIMEOFF_12H_FORMAT = 'H:mm a';
+export const TIMEOFF_24H_FORMAT = 'HH:mm';
+
+export const getHours = (startTime, endTime, format) => {
+  const duration = moment.duration(moment(endTime, format).diff(moment(startTime, format)));
+  return duration.asHours();
+};

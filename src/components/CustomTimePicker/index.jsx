@@ -12,6 +12,8 @@ const CustomTimePicker = (props) => {
     minuteStep = 15,
     disabledHourAfter = '', // for start time validation
     disabledHourBefore = '', // for end time validation
+    minimum = 0,
+    maximum = 0,
   } = props;
   const [list, setList] = useState([]);
 
@@ -47,17 +49,33 @@ const CustomTimePicker = (props) => {
   const getDisabled = (hour) => {
     const hourTemp = moment(hour, hourFormat);
     if (disabledHourAfter) {
-      const hourAfter = moment(disabledHourAfter, hourFormat);
-      if (hourTemp.isSameOrAfter(hourAfter)) {
+      let hourAfter = moment(disabledHourAfter, hourFormat);
+      let hourBefore = '';
+
+      if (minimum !== 0) {
+        hourAfter = moment(disabledHourAfter, hourFormat).add(-minimum + minuteStep / 60, 'hours');
+      }
+      if (maximum !== 0) {
+        hourBefore = moment(disabledHourAfter, hourFormat).add(-maximum - minuteStep / 60, 'hours');
+      }
+      if (hourTemp.isSameOrAfter(hourAfter) || hourTemp.isSameOrBefore(hourBefore)) {
         return true;
       }
     }
     if (disabledHourBefore) {
-      const hourBefore = moment(disabledHourBefore, hourFormat);
-      if (hourTemp.isSameOrBefore(hourBefore)) {
+      let hourBefore = moment(disabledHourBefore, hourFormat);
+      let hourAfter = '';
+      if (minimum !== 0) {
+        hourBefore = moment(disabledHourBefore, hourFormat).add(minimum - minuteStep / 60, 'hours');
+      }
+      if (maximum !== 0) {
+        hourAfter = moment(disabledHourBefore, hourFormat).add(maximum + minuteStep / 60, 'hours');
+      }
+      if (hourTemp.isSameOrBefore(hourBefore) || hourTemp.isSameOrAfter(hourAfter)) {
         return true;
       }
     }
+
     return false;
   };
 
