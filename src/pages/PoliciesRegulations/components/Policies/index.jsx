@@ -27,7 +27,7 @@ const Policies = (props) => {
     setVisible(true);
   };
 
-  const handleCandelModal = () => {
+  const handleCancelModal = () => {
     setVisible(false);
   };
 
@@ -126,6 +126,7 @@ const Policies = (props) => {
       </div>
     );
 
+  // const { visible } = this.state;
   return (
     <div className={styles.Policies}>
       <Row>
@@ -167,7 +168,7 @@ const Policies = (props) => {
           </div>
           <ModalFeedback
             visible={visible}
-            handleCandelModal={handleCandelModal}
+            handleCancelModal={handleCancelModal}
             openFeedback={openFeedback}
           />
         </Col>
