@@ -5,8 +5,6 @@ import React, { Component } from 'react';
 import { Row, Col, Button, Modal, Form, Input, Select, DatePicker, Card, notification } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
-import { set } from 'lodash';
-import addAction from '@/assets/resource-action-add1.svg';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
 import styles from './index.less';
@@ -30,7 +28,7 @@ class AddActionBTN extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      visibleSuccess: false,
+      visibleModalSuccess: false,
       projectId: '',
     };
   }
@@ -49,8 +47,9 @@ class AddActionBTN extends Component {
   };
 
   handleCancelModelSuccess = () => {
-    const { onClose = () => {} } = this.props;
-    onClose();
+    this.setState({
+      visibleModalSuccess: false,
+    });
     this.setState({
       projectId: '',
     });
@@ -102,7 +101,7 @@ class AddActionBTN extends Component {
     });
 
     this.setState({
-      visibleSuccess: true,
+      visibleModalSuccess: true,
     });
     onClose();
   };
@@ -269,7 +268,7 @@ class AddActionBTN extends Component {
   render() {
     const { onClose = () => {}, visible } = this.props;
 
-    const { visibleSuccess } = this.state;
+    const { visibleModalSuccess } = this.state;
     // const projectFist = projectList.length > 0 ? projectList[0] : {};
     // const statusBill = statusList.length > 0 ? statusList[0] : 'Billable';
 
@@ -286,10 +285,10 @@ class AddActionBTN extends Component {
         />
 
         <Modal
-          visible={visibleSuccess}
+          visible={visibleModalSuccess}
           className={styles.modalAdd}
           footer={null}
-          width="30%"
+          width="396px"
           onCancel={this.handleCancelModelSuccess}
         >
           <div style={{ textAlign: 'center' }}>
