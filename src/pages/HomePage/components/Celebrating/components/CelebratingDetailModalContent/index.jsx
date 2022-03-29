@@ -1,4 +1,4 @@
-import { Button, Input } from 'antd';
+import { Button, Input, Spin } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
@@ -11,6 +11,10 @@ import LikedModalContent from '../LikedModalContent';
 import styles from './index.less';
 
 const COMMENT_DEFAULT_COUNT = 3;
+const ACTION = {
+  LIKE: 1,
+  COMMENT: 2,
+};
 
 const CelebratingDetailModalContent = (props) => {
   const {
@@ -19,6 +23,7 @@ const CelebratingDetailModalContent = (props) => {
     currentUser: { employee = {} } = {},
     refreshData = () => {},
     loadingComment = false,
+    loadingRefresh = false,
   } = props;
 
   const { likesComments: { likes = [], comments = [] } = {} } = item;
@@ -26,6 +31,7 @@ const CelebratingDetailModalContent = (props) => {
   const [activeComments, setActiveComments] = useState([]);
   const [commentContent, setCommentContent] = useState('');
   const [likedModalVisible, setLikedModalVisible] = useState(false);
+  const [action, setAction] = useState('');
 
   const likedIds = likes.map((x) => x.employeeInfo?._id);
 
@@ -53,6 +59,8 @@ const CelebratingDetailModalContent = (props) => {
   };
 
   const onLikeClick = async () => {
+    setAction(ACTION.LIKE);
+
     const employeeId = employee?._id;
     if (!likedIds.includes(employeeId)) {
       const payload = {
@@ -70,6 +78,9 @@ const CelebratingDetailModalContent = (props) => {
 
   const onCommentClick = async () => {
     if (commentContent) {
+      setAction(ACTION.COMMENT);
+      setCommentContent('');
+
       const employeeId = employee?._id;
       const originalComments = comments.map((x) => {
         return {
@@ -92,7 +103,6 @@ const CelebratingDetailModalContent = (props) => {
       };
       const res = await upsertBirthdayConversationEffect(payload);
       if (res.statusCode === 200) {
-        setCommentContent('');
         handleActiveComments(comments, comments.length + 1);
         refreshData();
       }
@@ -232,31 +242,41 @@ const CelebratingDetailModalContent = (props) => {
               <Button
                 className={styles.commentBtn}
                 onClick={onCommentClick}
-                disabled={loadingComment || !commentContent}
+                disabled={action === ACTION.COMMENT && (loadingComment || !commentContent)}
               >
                 Submit
               </Button>
             }
           />
         </div>
-        <div
-          className={styles.commentsContainer}
-          style={activeComments.length === 0 ? { border: 'none', marginTop: 0 } : {}}
-        >
-          {activeComments.map((x) => renderComment(x))}
-          {activeComments.length !== comments.length && (
-            <span className={styles.loadMore} onClick={onViewMoreClick}>
-              Load more comments
-            </span>
-          )}
-        </div>
+        <Spin spinning={action === ACTION.COMMENT && (loadingRefresh || loadingComment)}>
+          <div
+            className={styles.commentsContainer}
+            style={
+              activeComments.length === 0
+                ? {
+                    border: 'none',
+                    marginTop:
+                      action === ACTION.COMMENT && (loadingRefresh || loadingComment) ? '16px' : 0,
+                  }
+                : {}
+            }
+          >
+            {activeComments.map((x) => renderComment(x))}
+            {activeComments.length !== comments.length && (
+              <span className={styles.loadMore} onClick={onViewMoreClick}>
+                Load more comments
+              </span>
+            )}
+          </div>
+        </Spin>
       </div>
     );
   };
 
   return (
     <div className={styles.CelebratingDetailModalContent}>
-      {renderCard(item)}
+      <Spin spinning={loadingRefresh && action === ACTION.LIKE}>{renderCard(item)}</Spin>
       <CommonModal
         visible={likedModalVisible}
         onClose={() => setLikedModalVisible(false)}
@@ -271,4 +291,5 @@ const CelebratingDetailModalContent = (props) => {
 export default connect(({ user: { currentUser } = {}, loading }) => ({
   currentUser,
   loadingComment: loading.effects['homePage/upsertBirthdayConversationEffect'],
+  loadingRefresh: loading.effects['homePage/fetchBirthdayInWeekList'],
 }))(CelebratingDetailModalContent);

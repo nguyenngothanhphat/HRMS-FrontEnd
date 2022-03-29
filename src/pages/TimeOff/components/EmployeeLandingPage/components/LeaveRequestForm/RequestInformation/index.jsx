@@ -11,6 +11,7 @@ import {
   TIMEOFF_LINK_ACTION,
   TIMEOFF_STATUS,
   TIMEOFF_TYPE,
+  TIMEOFF_DATE_FORMAT,
 } from '@/utils/timeOff';
 import styles from './index.less';
 import LeaveTimeRow from './LeaveTimeRow';
@@ -22,8 +23,6 @@ const { TextArea } = Input;
 const { A, B, C, D } = TIMEOFF_TYPE;
 const { IN_PROGRESS, DRAFTS } = TIMEOFF_STATUS;
 const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST } = TIMEOFF_LINK_ACTION;
-
-const dateFormat = 'Do MMM YYYY';
 
 const RequestInformation = (props) => {
   const {
@@ -693,8 +692,8 @@ const RequestInformation = (props) => {
         setIsEditingDrafts(true);
       }
 
-      setDurationFrom(viewingFromDate ? moment.utc(viewingFromDate) : null);
-      setDurationTo(viewingToDate ? moment.utc(viewingToDate) : null);
+      setDurationFrom(viewingFromDate ? moment(viewingFromDate) : null);
+      setDurationTo(viewingToDate ? moment(viewingToDate) : null);
       setSelectedTypeName(viewingType.name);
       setSelectedType(viewingType.type);
 
@@ -722,8 +721,8 @@ const RequestInformation = (props) => {
       form.setFieldsValue({
         timeOffType: viewingType?._id,
         subject: viewingSubject,
-        durationFrom: viewingFromDate ? moment.utc(viewingFromDate) : null,
-        durationTo: viewingToDate ? moment.utc(viewingToDate) : null,
+        durationFrom: viewingFromDate ? moment(viewingFromDate) : null,
+        durationTo: viewingToDate ? moment(viewingToDate) : null,
         description: viewingDescription,
         personCC: viewingCC,
         leaveTimeLists,
@@ -951,11 +950,11 @@ const RequestInformation = (props) => {
                 >
                   <DatePicker
                     disabledDate={disabledFromDate}
-                    format={dateFormat}
+                    format={TIMEOFF_DATE_FORMAT}
                     onChange={(value) => {
                       fromDateOnChange(value);
                     }}
-                    placeholder="From Date"
+                    placeholder={`From Date (${TIMEOFF_DATE_FORMAT})`}
                   />
                 </Form.Item>
               </Col>
@@ -971,12 +970,12 @@ const RequestInformation = (props) => {
                 >
                   <DatePicker
                     disabledDate={disabledToDate}
-                    format={dateFormat}
+                    format={TIMEOFF_DATE_FORMAT}
                     disabled={selectedType === C}
                     onChange={(value) => {
                       toDateOnChange(value);
                     }}
-                    placeholder="To Date"
+                    placeholder={`To Date (${TIMEOFF_DATE_FORMAT})`}
                   />
                 </Form.Item>
               </Col>

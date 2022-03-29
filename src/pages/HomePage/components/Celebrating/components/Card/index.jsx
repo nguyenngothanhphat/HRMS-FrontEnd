@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import { Carousel } from 'antd';
+import { Carousel, Spin } from 'antd';
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
 import { connect, history } from 'umi';
@@ -33,6 +33,7 @@ const Card = (props) => {
     contentPreview: { previewImage = '', previewDescription = '' } = {},
     currentUser: { employee = {} } = {},
     refreshData = () => {},
+    loadingRefresh = false,
   } = props;
 
   const [celebratingDetailModalVisible, setCelebratingDetailModalVisible] = useState(false);
@@ -206,25 +207,26 @@ const Card = (props) => {
 
   return (
     <div className={styles.Card}>
-      <Carousel
-        infinite
-        effect="fade"
-        arrows
-        dots
-        autoplay={!celebratingDetailModalVisible}
-        autoplaySpeed={10000}
-        lazyLoad="ondemand"
-        nextArrow={<NextArrow />}
-        prevArrow={<PrevArrow />}
-        // afterChange={fetchSocialInfo}
-      >
-        {!previewing
-          ? birthdayList.length > 0
-            ? birthdayList.map((x) => renderCard(x))
-            : renderEmpty()
-          : renderPreview()}
-        {/* FOR PREVIEWING IN SETTINGS PAGE */}
-      </Carousel>
+      <Spin spinning={loadingRefresh && !celebratingDetailModalVisible}>
+        <Carousel
+          infinite
+          effect="fade"
+          arrows
+          dots
+          autoplay={!celebratingDetailModalVisible}
+          autoplaySpeed={10000}
+          lazyLoad="ondemand"
+          nextArrow={<NextArrow />}
+          prevArrow={<PrevArrow />}
+        >
+          {!previewing
+            ? birthdayList.length > 0
+              ? birthdayList.map((x) => renderCard(x))
+              : renderEmpty()
+            : renderPreview()}
+          {/* FOR PREVIEWING IN SETTINGS PAGE */}
+        </Carousel>
+      </Spin>
       <CommonModal
         visible={celebratingDetailModalVisible}
         onClose={() => setCelebratingDetailModalVisible(false)}
@@ -245,7 +247,8 @@ const Card = (props) => {
   );
 };
 
-export default connect(({ user: { currentUser = {}, permissions = {} } = {} }) => ({
+export default connect(({ loading, user: { currentUser = {}, permissions = {} } = {} }) => ({
   currentUser,
   permissions,
+  loadingRefresh: loading.effects['homePage/fetchBirthdayInWeekList'],
 }))(Card);

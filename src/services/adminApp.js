@@ -54,3 +54,10 @@ export async function getListUsersOfOwner(payload) {
     data: payload,
   });
 }
+
+export async function removeAdmin(payload) {
+  return request('/api/usermap/remove-admin', {
+    method: 'POST',
+    data: payload
+  })
+}

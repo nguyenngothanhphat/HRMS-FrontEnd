@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Row, Col, Button, Modal, Form, Input, Select, DatePicker, notification } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
-import editIcon from '@/assets/resource-management-edit-history.svg';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import styles from './index.less';
 
@@ -22,38 +21,27 @@ const { Option } = Select;
 class EditActionBTN extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      visible: false,
-    };
+    this.state = {};
   }
-
-  showModal = () => {
-    this.setState({
-      visible: true,
-    });
-  };
-
-  handleCancel = () => {
-    this.setState({
-      visible: false,
-    });
-  };
 
   parseDate = (date, formatDate) => {
-    if(!date || date === ''){
-      return ''
+    if (!date || date === '') {
+      return '';
     }
     return moment(date, formatDate);
-  }
+  };
 
   handleSubmitAssign = async (values) => {
-    const { dispatch, dataPassRow = {}, refreshData } = this.props;
+    const { dispatch, dataPassRow = {}, refreshData, onClose = () => {} } = this.props;
     const { project, status, utilization, startDate, endDate, revisedEndDate } = values;
-    if (new Date(endDate).getTime() < new Date(startDate).getTime() || new Date(revisedEndDate).getTime() < new Date(startDate).getTime()) {
+    if (
+      new Date(endDate).getTime() < new Date(startDate).getTime() ||
+      new Date(revisedEndDate).getTime() < new Date(startDate).getTime()
+    ) {
       notification.error({
         message: 'End date or resived end date cannot less than start date',
       });
-      return
+      return;
     }
     dispatch({
       type: 'resourceManagement/updateProject',
@@ -68,63 +56,62 @@ class EditActionBTN extends Component {
       },
     }).then(() => {
       refreshData();
-    })
-    this.setState({
-      visible: false,
     });
+    onClose();
   };
 
   render() {
-    const { dataPassRow = {}, projectList = [], resourceList = [], statusList = [] } = this.props;
+    const {
+      dataPassRow = {},
+      projectList = [],
+      resourceList = [],
+      statusList = [],
+      visible,
+      onClose = () => {},
+    } = this.props;
     const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
     const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
-    const sumUtilization = listProjectsOfEmp.reduce( (prevValue, currentValue) => prevValue + currentValue.utilization,0);
+    const sumUtilization = listProjectsOfEmp.reduce(
+      (prevValue, currentValue) => prevValue + currentValue.utilization,
+      0,
+    );
     const maxEnterUtilization = 100 - sumUtilization + dataPassRow.utilization;
-    const { visible } = this.state;
     return (
       <div className={styles.EditActionBTN}>
-        <div className={styles.buttonContainer}>
-          <img src={editIcon} alt="historyIcon" onClick={() => this.showModal()} />
-        </div>
         <Modal
           className={styles.modalEditProjectDetail}
           title="Edit Project Details"
           width="60%"
           visible={visible}
           footer={null}
-          onCancel={this.handleCancel}
+          onCancel={onClose}
+          destroyOnClose
         >
           <Form
             layout="vertical"
             className={styles.formAdd}
             method="POST"
             onFinish={(values) => this.handleSubmitAssign(values)}
-            initialValues={{ 
+            initialValues={{
               startDate: this.parseDate(dataPassRow.startDate, 'MM/DD/YYYY'),
               endDate: this.parseDate(dataPassRow.endDate, 'MM/DD/YYYY'),
               revisedEndDate: this.parseDate(dataPassRow.endDate, 'MM/DD/YYYY'),
-              projectName: dataPassRow.projectName,
+              project: dataPassRow.projectName,
               utilization: dataPassRow.utilization,
-              billStatus: dataPassRow.billStatus
+              status: dataPassRow.billStatus,
             }}
           >
             <Row>
               <Col span={12}>
                 <Form.Item label="Project" name="project">
-                  <Select
-                    defaultValue={dataPassRow.projectName}
-                    style={{ width: '95%', borderRadius: '2px' }}
-                  >
+                  <Select style={{ width: '95%', borderRadius: '2px' }}>
                     {projectList.map((project) => (
                       <Option value={project.id}>{project.projectName}</Option>
                     ))}
                   </Select>
                 </Form.Item>
                 <Form.Item label="Status" name="status">
-                  <Select
-                    defaultValue={dataPassRow.billStatus}
-                    style={{ width: '95%', borderRadius: '2px' }}
-                  >
+                  <Select style={{ width: '95%', borderRadius: '2px' }}>
                     {statusList.map((status) => (
                       <Option value={status}>{status}</Option>
                     ))}
@@ -157,37 +144,30 @@ class EditActionBTN extends Component {
                   ]}
                   validateTrigger="onBlur"
                 >
-                  <Input
-                    defaultValue={dataPassRow.utilization}
-                    style={{ width: '95%', color: 'black' }}
-                    addonAfter="%"
-                  />
+                  <Input style={{ width: '95%', color: 'black' }} addonAfter="%" />
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item label="Start Date" name="startDate">
                   <DatePicker
-                    placeholder='Start Date'
-                    defaultValue={this.parseDate(dataPassRow.startDate, 'MM/DD/YYYY')}
-                    format='MM/DD/YYYY'
+                    placeholder="Start Date"
+                    format="MM/DD/YYYY"
                     style={{ width: '100%', borderRadius: '2px', color: 'blue' }}
                     suffixIcon={<img src={datePickerIcon} alt="" />}
                   />
                 </Form.Item>
                 <Form.Item label="End Date" name="endDate">
                   <DatePicker
-                    placeholder='Enter End Date'
-                    defaultValue={this.parseDate(dataPassRow.endDate, 'MM/DD/YYYY')}
-                    format='MM/DD/YYYY'
+                    placeholder="Enter End Date"
+                    format="MM/DD/YYYY"
                     style={{ width: '100%', borderRadius: '2px', color: 'blue' }}
                     suffixIcon={<img src={datePickerIcon} alt="" />}
                   />
                 </Form.Item>
                 <Form.Item label="Revised End Date" name="revisedEndDate">
                   <DatePicker
-                    placeholder='Enter Date'
-                    defaultValue={this.parseDate(dataPassRow.revisedEndDate, 'MM/DD/YYYY')}
-                    format='MM/DD/YYYY'
+                    placeholder="Enter Date"
+                    format="MM/DD/YYYY"
                     style={{
                       width: '100%',
                       borderRadius: '2px',

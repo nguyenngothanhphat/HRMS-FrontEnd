@@ -6,9 +6,9 @@
   padding: 24px 24px 0 24px;
   .fullName {
     overflow: hidden;
-    text-overflow: ellipsis;
     color: #2c6df9;
     font-weight: 500;
+    text-overflow: ellipsis;
   }
   .employeeId {
     padding-left: 16px !important;
@@ -20,17 +20,17 @@
 
     .ant-table.ant-table-small:after {
       position: absolute;
-      content: '';
+      bottom: -1px;
+      left: -24px;
       width: 150%;
       height: 1px;
       background-color: #d6dce0;
-      left: -24px;
-      bottom: -1px;
+      content: '';
     }
 
     .ant-table-body {
-      color: #000000;
       height: 400px;
+      color: #000000;
     }
 
     .ant-table-tbody {
@@ -69,9 +69,9 @@
 
     .ant-table-column-sorter-up,
     .ant-table-column-sorter-down {
+      margin-top: 0.5em;
       font-size: 14px;
       opacity: 0;
-      margin-top: 0.5em;
     }
 
     .ant-table-thead th.ant-table-column-has-sorters:hover {
@@ -98,18 +98,18 @@
 
     // checkbox
     .ant-checkbox-inner {
-      border-radius: 50%;
-      height: 14px;
       width: 14px;
+      height: 14px;
+      border-radius: 50%;
     }
     .ant-checkbox-checked::after {
       border-radius: 50%;
     }
 
     .ant-checkbox-indeterminate .ant-checkbox-inner::after {
-      border-radius: 50%;
-      height: 8px;
       width: 8px;
+      height: 8px;
+      border-radius: 50%;
     }
 
     .ant-checkbox-inner::after {
@@ -123,17 +123,5 @@
       width: 100vw;
       height: 20px !important;
     }
-  }
-  ::-webkit-scrollbar {
-    width: 7px;
-    height: 7px;
-    border-radius: 5px;
-    background-color: #f4f4f4;
-    border: none;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: #e0e4e9;
-    border-radius: 5px;
   }
 }

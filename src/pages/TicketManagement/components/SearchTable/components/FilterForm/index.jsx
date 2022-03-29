@@ -65,7 +65,7 @@ const FilterForm = (props) => {
   }, [JSON.stringify(employeeRaiseList), nameEmployeeRaise]);
 
   useEffect(() => {
-    if (nameEmployeeRaise === '') {
+    if (!nameEmployeeRaise) {
       setNameListState([]);
     }
   }, [nameEmployeeRaise]);
@@ -87,9 +87,14 @@ const FilterForm = (props) => {
   }, [JSON.stringify(employeeAssigneeList), nameEmployeeAssignee]);
 
   useEffect(() => {
-    if (nameEmployeeAssignee === '') {
+    if (!nameEmployeeAssignee) {
       setAsignedListState([]);
     }
+    return () => {
+      dispatch({
+        type: 'ticketManagement/clearFilter',
+      });
+    };
   }, [nameEmployeeAssignee]);
 
   const disabledDate = (currentDate, type) => {
@@ -161,6 +166,10 @@ const FilterForm = (props) => {
         ...payload,
         status: currentStatus,
       },
+    });
+    dispatch({
+      type: 'ticketManagement/save',
+      payload: { filter: payload },
     });
   };
 

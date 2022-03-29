@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
-import { Row, Input, Form, DatePicker, Radio, Button } from 'antd';
+import { Row, Input, Form, DatePicker, Radio, Button, Tooltip } from 'antd';
 import { connect, formatMessage } from 'umi';
 import moment from 'moment';
 import UploadImage from '@/components/UploadImage';
@@ -174,22 +174,33 @@ class Edit extends PureComponent {
     if (urlFile) {
       file = urlFile;
     }
-    const indentityCategory = documentCategories.find((child) => child.name === 'Indentity');
 
-    if (!AdhaarCard || Object.keys(AdhaarCard).length === 0) {
-      dispatch({
-        type: 'employeeProfile/fetchDocumentAdd',
-        payload: {
-          tenantId: tenantCurrentEmployee,
-          key: 'Adhaar Card',
-          attachment: file.id,
-          category: indentityCategory?._id,
-          employee: idCurrentEmployee,
-          company: companyCurrentEmployee,
-        },
-      }).then((id) => this.handleAdd(id));
-    } else {
-      if (!AdhaarCard.document || Object.keys(AdhaarCard.document).length === 0) {
+    if (file || generalData.adhaarCardNumber) {
+      const indentityCategory = documentCategories.find((child) => child.name === 'Indentity');
+
+      if (!AdhaarCard || Object.keys(AdhaarCard).length === 0) {
+        dispatch({
+          type: 'employeeProfile/fetchDocumentAdd',
+          payload: {
+            tenantId: tenantCurrentEmployee,
+            key: 'Adhaar Card',
+            attachment: file.id,
+            category: indentityCategory?._id,
+            employee: idCurrentEmployee,
+            company: companyCurrentEmployee,
+          },
+        }).then((id) => {
+          dispatch({
+            type: 'employeeProfile/fetchAdhaarcardAdd',
+            payload: {
+              document: id,
+              employee: idCurrentEmployee,
+              adhaarNumber: generalData.adhaarCardNumber,
+              tenantId: tenantCurrentEmployee,
+            },
+          });
+        });
+      } else if (!AdhaarCard.document || Object.keys(AdhaarCard.document).length === 0) {
         dispatch({
           type: 'employeeProfile/fetchDocumentAdd',
           payload: {
@@ -200,43 +211,19 @@ class Edit extends PureComponent {
             tenantId: tenantCurrentEmployee,
             company: companyCurrentEmployee,
           },
-        }).then((id) => this.handleAddDocument(id));
+        }).then((id) => this.handleUpdateAdhaarCard(id));
+      } else {
+        dispatch({
+          type: 'employeeProfile/fetchDocumentUpdate',
+          payload: {
+            attachment: file?.id,
+            id: AdhaarCard?.document?._id,
+            tenantId: tenantCurrentEmployee,
+            category: indentityCategory?._id,
+          },
+        }).then((doc) => this.handleUpdateAdhaarCard(doc));
       }
-      dispatch({
-        type: 'employeeProfile/fetchDocumentUpdate',
-        payload: {
-          attachment: file?.id,
-          id: AdhaarCard?.document?._id,
-          tenantId: tenantCurrentEmployee,
-          category: indentityCategory?._id,
-        },
-      }).then((doc) => this.handleUpdate(doc));
     }
-  };
-
-  handleAddDocument = (id) => {
-    const {
-      dispatch,
-      AdhaarCard,
-      generalDataOrigin,
-      generalData,
-      tenantCurrentEmployee = '',
-    } = this.props;
-    const { adhaarCardNumber: adhaarCardNumberOrigin } = generalDataOrigin;
-    const { adhaarCardNumber: adhaarCardNumberTemp } = generalData;
-    const getNewAdhaarCard =
-      adhaarCardNumberTemp !== adhaarCardNumberOrigin
-        ? adhaarCardNumberTemp
-        : adhaarCardNumberOrigin;
-    dispatch({
-      type: 'employeeProfile/fetchAdhaarcardUpdate',
-      payload: {
-        document: id,
-        id: AdhaarCard._id,
-        adhaarNumber: getNewAdhaarCard,
-        tenantId: tenantCurrentEmployee,
-      },
-    });
   };
 
   handleGetUpLoad = (resp) => {
@@ -247,7 +234,7 @@ class Edit extends PureComponent {
     this.handleChange(url);
   };
 
-  handleUpdate = (doc) => {
+  handleUpdateAdhaarCard = (doc) => {
     const {
       dispatch,
       AdhaarCard,
@@ -261,27 +248,13 @@ class Edit extends PureComponent {
       adhaarCardNumberTemp !== adhaarCardNumberOrigin
         ? adhaarCardNumberTemp
         : adhaarCardNumberOrigin;
+
     dispatch({
       type: 'employeeProfile/fetchAdhaarcardUpdate',
       payload: {
         document: doc._id,
         id: AdhaarCard._id,
         adhaarNumber: getNewAdhaarCard,
-        tenantId: tenantCurrentEmployee,
-      },
-    });
-  };
-
-  handleAdd = (id) => {
-    const { dispatch, generalData, idCurrentEmployee, tenantCurrentEmployee } = this.props;
-    if (!generalData.adhaarCardNumber) return;
-    const { adhaarCardNumber } = generalData;
-    dispatch({
-      type: 'employeeProfile/fetchAdhaarcardAdd',
-      payload: {
-        document: id,
-        employee: idCurrentEmployee,
-        adhaarNumber: adhaarCardNumber,
         tenantId: tenantCurrentEmployee,
       },
     });
@@ -338,6 +311,7 @@ class Edit extends PureComponent {
       // taxData = {},
       currentUser: { roles = [] },
       locationProp: { headQuarterAddress: { country = '' } = {} } = {},
+      AdhaarCard = {},
     } = this.props;
     const {
       urlFile = '',
@@ -350,6 +324,7 @@ class Edit extends PureComponent {
       adhaarCardNumber = '',
       uanNumber = '',
     } = generalData;
+
     const nameFile = urlFile ? urlFile.url.split('/') : '';
     const splitURL = nameFile[nameFile.length - 1];
     const formItemLayout = {
@@ -370,6 +345,8 @@ class Edit extends PureComponent {
     const checkUSALocation = country === 'US';
 
     const permissions = checkPermissions(roles);
+    const disabledFields = true;
+    const disabledTitle = 'Temporarily Disabled - will be enabled shortly.';
 
     return (
       <Row gutter={[0, 16]} className={styles.root}>
@@ -450,20 +427,29 @@ class Edit extends PureComponent {
             {checkIndiaLocation ? (
               <>
                 <div className={styles.styleUpLoad}>
-                  <Form.Item
-                    label="Adhaar Card Number"
-                    name="adhaarCardNumber"
-                    rules={[
-                      {
-                        pattern: /^[+]*[\d]{12,12}$/,
-                        message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
-                      },
-                    ]}
-                  >
-                    <Input className={isLt5M ? styles.inputForm : styles.inputFormImageValidate} />
-                  </Form.Item>
+                  <Tooltip title={disabledTitle}>
+                    <Form.Item
+                      label="Adhaar Card Number"
+                      name="adhaarCardNumber"
+                      rules={[
+                        {
+                          pattern: /^[+]*[\d]{12,12}$/,
+                          message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
+                        },
+                        {
+                          required: !!AdhaarCard.document,
+                          message: 'Please input your adhaar card number!',
+                        },
+                      ]}
+                    >
+                      <Input
+                        className={isLt5M ? styles.inputForm : styles.inputFormImageValidate}
+                        disabled={disabledFields}
+                      />
+                    </Form.Item>
+                  </Tooltip>
                   <>
-                    {urlFile === '' ? (
+                    {!urlFile || !AdhaarCard.document ? (
                       <div className={styles.textUpload}>
                         <UploadImage
                           content={isLt5M ? 'Choose file' : `Retry`}
@@ -471,16 +457,17 @@ class Edit extends PureComponent {
                           setSizeImageMatch={(isImage5M) => this.handleGetSetSizeImage(isImage5M)}
                           getResponse={(resp) => this.handleGetUpLoad(resp)}
                           loading={loadingAdhaarCard}
+                          disabledFields={disabledFields}
                         />
                       </div>
                     ) : (
                       <div className={styles.viewUpLoadData}>
-                        <p
+                        {/* <p
                           onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
                           className={styles.viewUpLoadDataURL}
                         >
-                          fileName
-                        </p>
+                          {splitURL || AdhaarCard?.document?.attachment?.name}
+                        </p> */}
 
                         <p className={styles.viewUpLoadDataText}>Uploaded</p>
                         <img
@@ -493,13 +480,13 @@ class Edit extends PureComponent {
                     )}
                   </>
                 </div>
-                {urlFile !== '' ? (
-                  <Form.Item label="Adhaar Card:" className={styles.labelUpload}>
+                {urlFile || AdhaarCard.document?.attachment ? (
+                  <Form.Item label="Uploaded file:" className={styles.labelUpload}>
                     <p
                       onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
                       className={styles.urlUpload}
                     >
-                      {splitURL}
+                      {splitURL || AdhaarCard.document?.attachment?.name}
                     </p>
                   </Form.Item>
                 ) : (
@@ -509,50 +496,56 @@ class Edit extends PureComponent {
             ) : null}
 
             {checkIndiaLocation ? (
-              <Form.Item
-                label="UAN Number"
-                name="uanNumber"
-                rules={[
-                  {
-                    pattern: /^[+]*[\d]{0,16}$/,
-                    message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
-                  },
-                ]}
-              >
-                <Input className={styles.inputForm} />
-              </Form.Item>
+              <Tooltip title={disabledTitle}>
+                <Form.Item
+                  label="UAN Number"
+                  name="uanNumber"
+                  rules={[
+                    {
+                      pattern: /^[+]*[\d]{0,16}$/,
+                      message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
+                    },
+                  ]}
+                >
+                  <Input className={styles.inputForm} disabled={disabledFields} />
+                </Form.Item>
+              </Tooltip>
             ) : null}
 
             {checkVietNamLocation ? (
-              <Form.Item
-                label="National Identification Number"
-                name="uanNumber"
-                rules={[
-                  {
-                    pattern: /^[+]*[\d]{0,16}$/,
-                    message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
-                  },
-                ]}
-              >
-                <Input className={styles.inputForm} />
-              </Form.Item>
+              <Tooltip title={disabledTitle}>
+                <Form.Item
+                  label="National Identification Number"
+                  name="uanNumber"
+                  rules={[
+                    {
+                      pattern: /^[+]*[\d]{0,16}$/,
+                      message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
+                    },
+                  ]}
+                >
+                  <Input className={styles.inputForm} disabled={disabledFields} />
+                </Form.Item>
+              </Tooltip>
             ) : null}
 
             {checkUSALocation ? (
-              <Form.Item
-                label="Social Security Number"
-                name="uanNumber"
-                rules={[
-                  {
-                    pattern: /^[0-9\\-]{0,12}$/,
-                    message: formatMessage({
-                      id: 'pages.employeeProfile.validateSocialSecurityNumber',
-                    }),
-                  },
-                ]}
-              >
-                <Input className={styles.inputForm} />
-              </Form.Item>
+              <Tooltip title={disabledTitle}>
+                <Form.Item
+                  label="Social Security Number"
+                  name="uanNumber"
+                  rules={[
+                    {
+                      pattern: /^[0-9\\-]{0,12}$/,
+                      message: formatMessage({
+                        id: 'pages.employeeProfile.validateSocialSecurityNumber',
+                      }),
+                    },
+                  ]}
+                >
+                  <Input className={styles.inputForm} disabled={disabledFields} />
+                </Form.Item>
+              </Tooltip>
             ) : null}
           </div>
           <div className={styles.spaceFooter}>

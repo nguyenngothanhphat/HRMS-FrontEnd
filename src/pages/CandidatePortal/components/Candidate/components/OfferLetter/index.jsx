@@ -9,13 +9,21 @@ import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import { getCurrentTenant } from '@/utils/authority';
 import NoteComponent from '@/pages/NewCandidateForm/components/NoteComponent';
 import FileContent from '../FileContent';
-import AcceptOfferModal from './components/AcceptOfferModal';
+import SignatureModal from '@/components/SignatureModal';
 import RejectOfferModal from './components/RejectOfferModal';
 import styles from './index.less';
 import NotificationModal from './components/NotificationModal';
 
 const OfferLetter = (props) => {
-  const { dispatch, tempData = {}, data = {}, candidate, loading1, processStatus = '' } = props;
+  const {
+    dispatch,
+    tempData = {},
+    data = {},
+    candidate,
+    loading1,
+    processStatus = '',
+    loadingApprove = false,
+  } = props;
 
   const {
     hrSignature: hrSignatureProp,
@@ -284,10 +292,12 @@ const OfferLetter = (props) => {
         /> */}
       </Col>
 
-      <AcceptOfferModal
+      <SignatureModal
         visible={acceptOfferModalVisible}
         onClose={() => setAcceptOfferModalVisible(false)}
         onFinish={handleFinalSubmit}
+        titleModal="Signature of the candidate"
+        loading={loadingApprove}
       />
       <RejectOfferModal
         visible={rejectOfferModalVisible}
@@ -326,5 +336,8 @@ export default connect(
     candidate,
     // rookieId,
     loading1: loading.effects['candidatePortal/submitCandidateFinalOffer'],
+    loadingApprove:
+      loading.effects['candidatePortal/updateByCandidateEffect'] ||
+      loading.effects['candidatePortal/submitCandidateFinalOffer'],
   }),
 )(OfferLetter);
