@@ -1,10 +1,13 @@
-import { Col, Form, Input, InputNumber, Row, Select } from 'antd';
+import { Col, Form, Input, Row, Select } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import {
-  TIMEOFF_INPUT_TYPE,
-  TIMEOFF_INPUT_TYPE_BY_LOCATION,
+  MINUTE_STEP,
+  TIMEOFF_COL_SPAN_1,
+  TIMEOFF_COL_SPAN_2,
   TIMEOFF_DATE_FORMAT,
+  TIMEOFF_MAX_LEAVE_HOUR,
+  TIMEOFF_MIN_LEAVE_HOUR,
   TIMEOFF_PERIOD,
 } from '@/utils/timeOff';
 import CustomTimePicker from '@/components/CustomTimePicker';
@@ -17,14 +20,18 @@ const LeaveTimeRow = (props) => {
   const {
     eachDate = '',
     index = 0,
-    name = 'leaveTime',
     needValidate,
     findInvalidHalfOfDay = () => {},
-    currentLocationID = '',
+    BY_HOUR = false,
+    form,
   } = props;
+
+  const formValues = form.getFieldsValue();
 
   const [disableMorning, setDisableMorning] = useState(false);
   const [disableAfternoon, setDisableAfternoon] = useState(false);
+  const [disabledHourAfter, setDisabledHourAfter] = useState([]); // for start time validation
+  const [disabledHourBefore, setDisabledHourBefore] = useState([]); // for end time validation
 
   useEffect(() => {
     if (findInvalidHalfOfDay(eachDate).includes(MORNING)) {
@@ -35,38 +42,16 @@ const LeaveTimeRow = (props) => {
     }
   }, [eachDate]);
 
-  const renderInput = () => {
-    switch (TIMEOFF_INPUT_TYPE_BY_LOCATION[currentLocationID]) {
-      case TIMEOFF_INPUT_TYPE.HOUR:
-        return <InputNumber min={2} max={8} defaultValue={8} />;
-
-      case TIMEOFF_INPUT_TYPE.WHOLE_DAY:
-        return (
-          <Select>
-            <Option value={WHOLE_DAY} disabled={disableAfternoon || disableMorning}>
-              <span style={{ fontSize: 13 }}>Whole day</span>
-            </Option>
-          </Select>
-        );
-
-      default:
-        return (
-          <Select>
-            <Option value={WHOLE_DAY} disabled={disableAfternoon || disableMorning}>
-              <span style={{ fontSize: 13 }}>Whole day</span>
-            </Option>
-            <Option value={MORNING} disabled={disableMorning}>
-              <span style={{ fontSize: 13 }}>Morning</span>
-            </Option>
-            <Option value={AFTERNOON} disabled={disableAfternoon}>
-              <span style={{ fontSize: 13 }}>Afternoon</span>
-            </Option>
-          </Select>
-        );
+  useEffect(() => {
+    if (formValues.leaveTimeLists) {
+      const currentValues = formValues.leaveTimeLists[index] || {};
+      const { startTime: startTimeForm = '', endTime: endTimeForm = '' } = currentValues;
+      setDisabledHourAfter(endTimeForm);
+      setDisabledHourBefore(startTimeForm);
     }
-  };
+  }, [JSON.stringify(form.getFieldsValue())]);
 
-  if (TIMEOFF_INPUT_TYPE_BY_LOCATION[currentLocationID] === TIMEOFF_INPUT_TYPE.HOUR) {
+  if (BY_HOUR) {
     return (
       <>
         {moment(eachDate).weekday() !== 6 && moment(eachDate).weekday() !== 0 && (
@@ -77,11 +62,12 @@ const LeaveTimeRow = (props) => {
             align="center"
             gutter={[8, 8]}
           >
-            <Col span={4}>{moment(eachDate).locale('en').format(TIMEOFF_DATE_FORMAT)}</Col>
-            <Col span={5}>{moment(eachDate).locale('en').format('dddd')}</Col>
-            <Col span={5}>
+            <Col span={TIMEOFF_COL_SPAN_2.DATE}>
+              {moment(eachDate).locale('en').format(TIMEOFF_DATE_FORMAT)}
+            </Col>
+            <Col span={TIMEOFF_COL_SPAN_2.DAY}>{moment(eachDate).locale('en').format('dddd')}</Col>
+            <Col span={TIMEOFF_COL_SPAN_2.START_TIME}>
               <Form.Item
-                // name={[index]}
                 name={[index, 'startTime']}
                 rules={[
                   {
@@ -90,12 +76,17 @@ const LeaveTimeRow = (props) => {
                   },
                 ]}
               >
-                <CustomTimePicker placeholder="Start" />
+                <CustomTimePicker
+                  placeholder="Start"
+                  disabledHourAfter={disabledHourAfter}
+                  minimum={TIMEOFF_MIN_LEAVE_HOUR}
+                  maximum={TIMEOFF_MAX_LEAVE_HOUR}
+                  minuteStep={MINUTE_STEP}
+                />
               </Form.Item>
             </Col>
-            <Col span={5}>
+            <Col span={TIMEOFF_COL_SPAN_2.END_TIME}>
               <Form.Item
-                // name={[index]}
                 name={[index, 'endTime']}
                 rules={[
                   {
@@ -104,22 +95,18 @@ const LeaveTimeRow = (props) => {
                   },
                 ]}
               >
-                <CustomTimePicker placeholder="End" />
+                <CustomTimePicker
+                  placeholder="End"
+                  disabledHourBefore={disabledHourBefore}
+                  minimum={TIMEOFF_MIN_LEAVE_HOUR}
+                  maximum={TIMEOFF_MAX_LEAVE_HOUR}
+                  minuteStep={MINUTE_STEP}
+                />
               </Form.Item>
             </Col>
-            <Col span={5}>
-              <Form.Item
-                // name={[index]}
-                name={[index, 'hour']}
-                rules={[
-                  {
-                    required: needValidate,
-                    message: 'Please select!',
-                  },
-                ]}
-              >
-                {/* <InputNumber min={2} max={8} defaultValue={8} /> */}
-                <Input disabled placeholder="Hour" />
+            <Col span={TIMEOFF_COL_SPAN_2.HOUR}>
+              <Form.Item name={[index, 'hours']}>
+                <Input disabled defaultValue={0} />
               </Form.Item>
             </Col>
           </Row>
@@ -137,9 +124,11 @@ const LeaveTimeRow = (props) => {
           align="center"
           gutter={[8, 8]}
         >
-          <Col span={7}>{moment(eachDate).locale('en').format(TIMEOFF_DATE_FORMAT)}</Col>
-          <Col span={7}>{moment(eachDate).locale('en').format('dddd')}</Col>
-          <Col span={10}>
+          <Col span={TIMEOFF_COL_SPAN_1.DATE}>
+            {moment(eachDate).locale('en').format(TIMEOFF_DATE_FORMAT)}
+          </Col>
+          <Col span={TIMEOFF_COL_SPAN_1.DAY}>{moment(eachDate).locale('en').format('dddd')}</Col>
+          <Col span={TIMEOFF_COL_SPAN_1.COUNT}>
             <Form.Item
               name={[index, 'period']}
               rules={[
@@ -149,7 +138,17 @@ const LeaveTimeRow = (props) => {
                 },
               ]}
             >
-              {renderInput()}
+              <Select>
+                <Option value={WHOLE_DAY} disabled={disableAfternoon || disableMorning}>
+                  <span style={{ fontSize: 13 }}>Whole day</span>
+                </Option>
+                <Option value={MORNING} disabled={disableMorning}>
+                  <span style={{ fontSize: 13 }}>Morning</span>
+                </Option>
+                <Option value={AFTERNOON} disabled={disableAfternoon}>
+                  <span style={{ fontSize: 13 }}>Afternoon</span>
+                </Option>
+              </Select>
             </Form.Item>
           </Col>
         </Row>
