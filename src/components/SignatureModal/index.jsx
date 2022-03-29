@@ -149,7 +149,13 @@ class SignatureModal extends PureComponent {
 
   // finish
   clearState = () => {
-    this.setState(initialState);
+    this.setState({
+      uploadedFile: {},
+      uploadedPreview: '',
+      digitalSignatureName: '',
+      arrImgBase64: [],
+      finalDigitalSignature: 0,
+    });
   };
 
   dataURItoBlob = (dataURI) => {
@@ -314,6 +320,7 @@ class SignatureModal extends PureComponent {
             {mode === 'upload' && (
               <div className={styles.fileUploadForm}>
                 <Dragger
+                  disabled={loading || loadingUploadAttachment}
                   beforeUpload={this.beforeUpload}
                   showUploadList={false}
                   // disabled={selectExistDocument || fileName}
