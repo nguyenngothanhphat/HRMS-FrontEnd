@@ -8,7 +8,7 @@ import PoliciesCertification from '@/pages/PoliciesRegulations/components/Polici
 import ExportButton from '@/components/ExportButton';
 import { getCurrentLocation } from '@/utils/authority';
 
-@connect(({ user: { permissions = {} } = {}, policiesRegulations }) => ({
+@connect(({ user: { permissions = {} }, policiesRegulations }) => ({
   permissions,
   policiesRegulations,
 }))
@@ -28,16 +28,12 @@ class PoliciesRegulations extends PureComponent {
     const {
       dispatch,
       permissions = {},
-      policiesRegulations: { countryList = [] } = {},
+      policiesRegulations: { locationList = [] } = {},
     } = this.props;
     const viewAllCountry = permissions.viewPolicyAllCountry !== -1;
     let countryArr = [getCurrentLocation()];
     if (viewAllCountry) {
-      countryList.map((item) => {
-        return item.headQuarterAddress?.country;
-      });
-      const newArr = this.removeDuplicate(countryArr, (item) => item?._id);
-      countryArr = [...new Set(newArr.map((val) => val?._id))];
+      countryArr = [...new Set(locationList.map((val) => val?._id))];
     }
 
     dispatch({

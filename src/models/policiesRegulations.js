@@ -25,6 +25,7 @@ const policiesRegulations = {
     listCategory: [],
     listEmployee: [],
     countryList: [],
+    locationList: [],
     originData: {
       selectedCountry: '',
     },
@@ -223,6 +224,10 @@ const policiesRegulations = {
         yield put({
           type: 'save',
           payload: { countryList: data },
+        });
+        yield put({
+          type: 'save',
+          payload: { locationList: data },
         });
       } catch (errors) {
         dialog(errors);
