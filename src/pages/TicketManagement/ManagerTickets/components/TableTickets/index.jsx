@@ -5,6 +5,7 @@ import moment from 'moment';
 import { history, connect } from 'umi';
 import { isEmpty } from 'lodash';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
+import UserProfilePopover from '@/pages/TicketManagement/components/UserProfilePopover';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 
 import styles from './index.less';
@@ -150,7 +151,6 @@ class TableTickets extends PureComponent {
     const { locationsList = [] } = this.props;
     const result =
       locationsList.length > 0 ? locationsList.filter((val) => val._id === location)[0] : [] || [];
-    console.log('🚀 ~ file: index.jsx ~ line 154 ~ TableTickets ~ result', result);
     const {
       headQuarterAddress: {
         addressLine1 = '',
@@ -198,6 +198,10 @@ class TableTickets extends PureComponent {
     );
   };
 
+  viewProfile = (userId) => {
+    history.push(`/directory/employee-profile/${userId}`);
+  };
+
   render() {
     const {
       data = [],
@@ -242,6 +246,7 @@ class TableTickets extends PureComponent {
         title: 'Ticket ID',
         dataIndex: 'id',
         key: 'id',
+        width: '8%',
         render: (id) => {
           return (
             <span className={styles.ticketID} onClick={() => this.openViewTicket(id)}>
@@ -250,16 +255,28 @@ class TableTickets extends PureComponent {
           );
         },
         fixed: 'left',
+        sorter: (a, b) => {
+          return a.id && a.id - b.id;
+        },
+        sortDirections: ['ascend', 'descend'],
       },
       {
         title: 'Request Type',
         dataIndex: 'query_type',
         key: 'query_type',
+        sorter: (a, b) => {
+          return a.query_type && a.query_type.localeCompare(`${b.query_type}`);
+        },
+        sortDirections: ['ascend', 'descend'],
       },
       {
         title: 'Subject',
         dataIndex: 'subject',
         key: 'subject',
+        sorter: (a, b) => {
+          return a.subject && a.subject.localeCompare(`${b.subject}`);
+        },
+        sortDirections: ['ascend', 'descend'],
       },
       {
         title: 'Priority',
@@ -277,7 +294,12 @@ class TableTickets extends PureComponent {
           }
           return <div className={styles.priorityLow}>{priority}</div>;
         },
+        sorter: (a, b) => {
+          return a.priority && a.priority.localeCompare(`${b.priority}`);
+        },
+        sortDirections: ['ascend', 'descend'],
       },
+
       {
         title: 'Request Date',
         dataIndex: 'created_at',
@@ -285,43 +307,42 @@ class TableTickets extends PureComponent {
         render: (createdAt) => {
           return <span>{moment(createdAt).format('DD-MM-YYYY')}</span>;
         },
+        sorter: (a, b) => {
+          return a.priority && a.priority.localeCompare(`${b.priority}`);
+        },
+        sortDirections: ['ascend', 'descend'],
       },
       {
         title: 'Requester Name ',
         dataIndex: 'employeeRaise',
         key: 'requesterName',
-        render: (employeeRaise = {}, id) => {
-          const { generalInfo: { legalName = '', userId = '' } = {} } = employeeRaise || {};
+        render: (employeeRaise = {}) => {
           return (
-            <span className={styles.userID} onClick={() => this.openViewTicket(id.id)}>
-              {`${legalName} (${userId})`}
-            </span>
+            <UserProfilePopover
+              placement="top"
+              trigger="hover"
+              data={{ ...employeeRaise, ...employeeRaise.generalInfo }}
+            >
+              <span
+                className={styles.userID}
+                onClick={() => this.viewProfile(employeeRaise?.generalInfo?.userId || '')}
+              >
+                {!isEmpty(employeeRaise?.generalInfo)
+                  ? `${employeeRaise?.generalInfo?.legalName} (${employeeRaise?.generalInfo?.userId})`
+                  : ''}
+              </span>
+            </UserProfilePopover>
           );
         },
+        sorter: (a, b) => {
+          return a.employeeRaise.generalInfo && a.employeeRaise.generalInfo?.legalName
+            ? a.employeeRaise.generalInfo?.legalName.localeCompare(
+                `${b.employeeRaise.generalInfo?.legalName}`,
+              )
+            : null;
+        },
+        sortDirections: ['ascend', 'descend'],
       },
-      // {
-      //   title: 'User ID',
-      //   dataIndex: 'employeeRaise',
-      //   key: 'userID',
-      //   render: (employeeRaise = {}, id) => {
-      //     const { generalInfo: { userId = '' } = {} } = employeeRaise || {};
-      //     return (
-      //       <span className={styles.userID} onClick={() => this.openViewTicket(id.id)}>
-      //         {userId}
-      //       </span>
-      //     );
-      //   },
-      // },
-      // {
-      //   title: 'Name',
-      //   dataIndex: 'employeeRaise',
-      //   key: 'name',
-      //   render: (employeeRaise = {}) => {
-      //     const { generalInfo: { legalName = '' } = {} } = employeeRaise || {};
-      //     return <span>{legalName}</span>;
-      //   },
-      // },
-
       {
         title: 'Location',
         dataIndex: 'location',
@@ -330,8 +351,9 @@ class TableTickets extends PureComponent {
           const locationNew =
             locationsList.length > 0 ? locationsList.filter((val) => val._id === location) : [];
           const name = locationNew.length > 0 ? locationNew[0].name : '';
+          // return <span>{name}</span>;
           return (
-            <Popover content={() => this.locationContent(location)} title={name} trigger="hover">
+            <Popover content={this.locationContent(location)} title={name} trigger="hover">
               <span
                 style={{ wordWrap: 'break-word', wordBreak: 'break-word', cursor: 'pointer' }}
                 onMouseEnter={this.setCurrentTime}
@@ -341,6 +363,15 @@ class TableTickets extends PureComponent {
             </Popover>
           );
         },
+        sorter: (a, b) => {
+          const locationA = locationsList.find((val) => val._id === a.location);
+          const locationB = locationsList.find((val) => val._id === b.location);
+          if (locationA && locationB) {
+            return locationA.name.localeCompare(locationB.name);
+          }
+          return null;
+        },
+        sortDirections: ['ascend', 'descend'],
       },
 
       {
@@ -354,9 +385,20 @@ class TableTickets extends PureComponent {
               (val) => val._id === employeeAssignee.employee_assignee,
             );
             return (
-              <span style={{ color: '#2c6df9' }}>
-                {employeeAssigned ? employeeAssigned.generalInfo.legalName : ''}
-              </span>
+              <UserProfilePopover
+                placement="top"
+                trigger="hover"
+                data={{ ...employeeAssigned, ...employeeAssigned.generalInfo }}
+              >
+                <span
+                  style={{ color: '#2c6df9' }}
+                  onClick={() => this.viewProfile(employeeAssigned?.generalInfo?.userId || '')}
+                >
+                  {!isEmpty(employeeAssigned?.generalInfo)
+                    ? `${employeeAssigned?.generalInfo?.legalName}`
+                    : ''}
+                </span>
+              </UserProfilePopover>
             );
           }
           return (
@@ -404,6 +446,14 @@ class TableTickets extends PureComponent {
             </Dropdown>
           );
         },
+        sorter: (a, b) => {
+          return a.employeeAssignee.generalInfo && a.employeeAssignee.generalInfo?.legalName
+            ? a.employeeAssignee.generalInfo?.legalName.localeCompare(
+                `${b.employeeAssignee.generalInfo?.legalName}`,
+              )
+            : null;
+        },
+        sortDirections: ['ascend', 'descend'],
       },
     ];
 
