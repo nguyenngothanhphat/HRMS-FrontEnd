@@ -48,6 +48,9 @@ const FilterPopover = (props) => {
         },
       });
       dispatch({
+        type: 'projectManagement/fetchProjectStatusListEffect',
+      });
+      dispatch({
         type: 'projectManagement/fetchEmployeeListEffect',
       });
     }
@@ -66,6 +69,12 @@ const FilterPopover = (props) => {
       {},
     );
     onSubmit(result);
+    dispatch({
+      type: 'resourceManagement/save',
+      payload: {
+        filter: result,
+      },
+    });
   };
 
   useEffect(() => {
@@ -171,6 +180,7 @@ const FilterPopover = (props) => {
             <Form.Item label="By PROJECT manager" name="projectManager">
               <Select
                 mode="multiple"
+                allowClear
                 showSearch
                 showArrow
                 filterOption={(input, option) =>

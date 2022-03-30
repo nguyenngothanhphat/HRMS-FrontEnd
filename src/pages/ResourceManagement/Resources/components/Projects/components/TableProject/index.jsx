@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import { Table, Popover } from 'antd';
 import moment from 'moment';
 import { connect, formatMessage, history } from 'umi';
-import { getTimezoneViaCity } from '@/utils/times';
 import AddComment from './components/AddComment';
 import OverviewComment from './components/OverviewComment';
-import PopupProjectManager from './components/PopupProjectManager';
+import UserProfilePopover from './components/UserProfilePopover';
 import PopupProjectName from './components/PopupProjectName';
 import PopupCustomer from './components/PopupCustomer';
 
@@ -16,62 +15,8 @@ class TableProject extends Component {
     super(props);
     this.state = {
       pageSelected: 1, // popup hover name
-      timezoneList: [],
-      currentTime: moment(),
     };
   }
-
-  componentDidMount() {
-    this.fetchTimezone();
-    this.setCurrentTime();
-  }
-
-  componentDidUpdate(prevProps) {
-    const { listLocationsByCompany = [] } = this.props;
-    if (
-      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
-    ) {
-      this.fetchTimezone();
-    }
-  }
-
-  setCurrentTime = () => {
-    // compare two time by hour & minute. If minute changes, get new time
-    const timeFormat = 'HH:mm';
-    const { currentTime } = this.state;
-    const parseTime = (timeString) => moment(timeString, timeFormat);
-    const check = parseTime(moment().format(timeFormat)).isAfter(
-      parseTime(moment(currentTime).format(timeFormat)),
-    );
-
-    if (check) {
-      this.setState({
-        currentTime: moment(),
-      });
-    }
-  };
-
-  fetchTimezone = () => {
-    const { listLocationsByCompany = [] } = this.props;
-    const timezoneList = [];
-    listLocationsByCompany.forEach((location) => {
-      const {
-        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
-        _id = '',
-      } = location;
-      timezoneList.push({
-        locationId: _id,
-        timezone:
-          getTimezoneViaCity(city) ||
-          getTimezoneViaCity(state) ||
-          getTimezoneViaCity(addressLine1) ||
-          getTimezoneViaCity(addressLine2),
-      });
-    });
-    this.setState({
-      timezoneList,
-    });
-  };
 
   formatDate = (date, typeFormat) => {
     if (!date) {
@@ -115,8 +60,6 @@ class TableProject extends Component {
       isBackendPaging = false,
       allowModify = false,
     } = this.props;
-    const { timezoneList, currentTime } = this.state;
-    const { listLocationsByCompany = [] } = this.props;
 
     const pagination = {
       position: ['bottomLeft'],
@@ -207,25 +150,14 @@ class TableProject extends Component {
         dataIndex: 'projectManager',
         key: 'projectManager',
         render: (value) => (
-          <Popover
-            content={
-              <PopupProjectManager
-                listLocationsByCompany={listLocationsByCompany}
-                propsState={{ currentTime, timezoneList }}
-                dataProjectManager={value}
-              />
-            }
-            trigger="hover"
-            placement="bottomRight"
-            overlayClassName={styles.popupContentProjectManager}
-          >
+          <UserProfilePopover data={{ ...value, ...value.generalInfo }}>
             <span
               className={styles.projectName}
               onClick={() => this.viewProfile(value?.generalInfo?.userId)}
             >
               {value?.generalInfo?.legalName || '-'}
             </span>
-          </Popover>
+          </UserProfilePopover>
         ),
         sorter: (a, b) =>
           a.projectManager?.generalInfo?.legalName.localeCompare(
