@@ -24,6 +24,7 @@ const LeaveTimeRow = (props) => {
     needValidate,
     findInvalidHalfOfDay = () => {},
     BY_HOUR = false,
+    BY_WHOLE_DAY = false,
     form,
   } = props;
 
@@ -153,12 +154,17 @@ const LeaveTimeRow = (props) => {
                 <Option value={WHOLE_DAY} disabled={disableAfternoon || disableMorning}>
                   <span style={{ fontSize: 13 }}>Whole day</span>
                 </Option>
-                <Option value={MORNING} disabled={disableMorning}>
-                  <span style={{ fontSize: 13 }}>Morning</span>
-                </Option>
-                <Option value={AFTERNOON} disabled={disableAfternoon}>
-                  <span style={{ fontSize: 13 }}>Afternoon</span>
-                </Option>
+
+                {!BY_WHOLE_DAY && (
+                  <>
+                    <Option value={MORNING} disabled={disableMorning}>
+                      <span style={{ fontSize: 13 }}>Morning</span>
+                    </Option>
+                    <Option value={AFTERNOON} disabled={disableAfternoon}>
+                      <span style={{ fontSize: 13 }}>Afternoon</span>
+                    </Option>
+                  </>
+                )}
               </Select>
             </Form.Item>
           </Col>

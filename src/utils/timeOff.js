@@ -81,5 +81,15 @@ export const TIMEOFF_24H_FORMAT = 'HH:mm';
 
 export const getHours = (startTime, endTime, format) => {
   const duration = moment.duration(moment(endTime, format).diff(moment(startTime, format)));
-  return duration.asHours();
+  return Math.round(duration.asHours() * 100) / 100;
+};
+
+export const convert24To12 = (time) => {
+  if (!time) return null;
+  return moment(time, TIMEOFF_24H_FORMAT).format(TIMEOFF_12H_FORMAT);
+};
+
+export const convert12To24 = (time) => {
+  if (!time) return null;
+  return moment(time, TIMEOFF_12H_FORMAT).format(TIMEOFF_24H_FORMAT);
 };
