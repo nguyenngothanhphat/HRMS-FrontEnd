@@ -21,6 +21,7 @@ import {
   TIMEOFF_24H_FORMAT,
   getHours,
   convert24To12,
+  WORKING_HOURS,
 } from '@/utils/timeOff';
 import styles from './index.less';
 import LeaveTimeRow from './components/LeaveTimeRow';
@@ -55,6 +56,7 @@ const RequestInformation = (props) => {
       } = {},
       timeOffTypesByCountry = [],
       emailsList = [],
+      employeeSchedule: { startWorkDay = {}, endWorkDay = {} } = {},
       totalLeaveBalance: {
         commonLeaves: { timeOffTypes: timeOffTypesAB = [] } = {},
         specialLeaves: { timeOffTypes: timeOffTypesCD = [] } = {},
@@ -89,6 +91,8 @@ const RequestInformation = (props) => {
   const BY_HOUR = TIMEOFF_INPUT_TYPE_BY_LOCATION[currentLocationID] === TIMEOFF_INPUT_TYPE.HOUR;
   const BY_WHOLE_DAY =
     TIMEOFF_INPUT_TYPE_BY_LOCATION[currentLocationID] === TIMEOFF_INPUT_TYPE.WHOLE_DAY;
+  // DYNAMIC ROW OF DATE LISTS
+  const showAllDateList = dateLists.length < MAX_NO_OF_DAYS_TO_SHOW;
 
   // functions
   const getTableTabIndexOfSubmittedType = (selectedTypeTemp, selectedTypeNameTemp) => {
@@ -361,13 +365,20 @@ const RequestInformation = (props) => {
       return moment(time, TIMEOFF_12H_FORMAT).format(TIMEOFF_24H_FORMAT);
     };
     if (BY_HOUR) {
+      let startTimeDefault = '';
+      let endTimeDefault = '';
+      if (!showAllDateList) {
+        startTimeDefault = startWorkDay?.start || WORKING_HOURS.START;
+        endTimeDefault = endWorkDay?.end || WORKING_HOURS.END;
+      }
+
       result = dateLists.map((value, index) => {
         return {
           date: value,
           timeOfDay: WHOLE_DAY,
-          startTime: getTime(leaveTimeLists[index].startTime),
-          endTime: getTime(leaveTimeLists[index].endTime),
-          hours: leaveTimeLists[index].hours,
+          startTime: getTime(showAllDateList ? leaveTimeLists[index].startTime : startTimeDefault),
+          endTime: getTime(showAllDateList ? leaveTimeLists[index].endTime : endTimeDefault),
+          hours: showAllDateList ? leaveTimeLists[index].hours : 8,
         };
       });
     } else {
@@ -466,6 +477,7 @@ const RequestInformation = (props) => {
     } = values;
 
     const leaveDatesPayload = generateLeaveDates(leaveTimeLists);
+    console.log('🚀 ~ onFinish ~ leaveDatesPayload', leaveDatesPayload);
 
     // ON SUBMIT
     if (buttonState === 2) {
@@ -489,7 +501,7 @@ const RequestInformation = (props) => {
             leaveDates: leaveDatesPayload,
             onDate: moment.utc(),
             description,
-            duration,
+            duration: Math.round(duration * 100) / 100,
             cc: personCC,
             tenantId: getCurrentTenant(),
             company: employee.company,
@@ -507,12 +519,12 @@ const RequestInformation = (props) => {
             type = 'timeOff/updateLeaveRequestById';
           }
 
-          dispatch({
-            type,
-            payload,
-          }).then((statusCode) => {
-            if (statusCode === 200) setShowSuccessModal(true);
-          });
+          // dispatch({
+          //   type,
+          //   payload,
+          // }).then((statusCode) => {
+          //   if (statusCode === 200) setShowSuccessModal(true);
+          // });
         }
       }
     } else if (buttonState === 1) {
@@ -896,7 +908,10 @@ const RequestInformation = (props) => {
           }
           return { period: WHOLE_DAY };
         }
-        return { period: WHOLE_DAY };
+        // for US user
+        return {
+          period: WHOLE_DAY,
+        };
       });
       form.setFieldsValue({
         leaveTimeLists: initialValuesForLeaveTimesList,
@@ -910,6 +925,17 @@ const RequestInformation = (props) => {
     setSecondNotice(secondNoticeTemp);
   }, [selectedTypeName, currentAllowanceState, JSON.stringify(dateLists)]);
 
+  useEffect(() => {
+    if (BY_HOUR) {
+      dispatch({
+        type: 'timeOff/getEmployeeScheduleByLocation',
+        payload: {
+          location: location?._id,
+        },
+      });
+    }
+  }, []);
+
   // MAIN
   const layout = {
     labelCol: {
@@ -921,9 +947,6 @@ const RequestInformation = (props) => {
   };
 
   const formatListEmail = renderEmailsList() || [];
-
-  // DYNAMIC ROW OF DATE LISTS
-  const showAllDateList = dateLists.length < MAX_NO_OF_DAYS_TO_SHOW;
 
   // if save as draft, no need to validate forms
   const needValidate = buttonState === 2;
@@ -979,7 +1002,15 @@ const RequestInformation = (props) => {
     }
 
     const renderTableHeader = () => {
-      if (BY_HOUR) {
+      if (showAllDateList && !BY_HOUR)
+        return (
+          <Row className={styles.header} gutter={[8, 8]}>
+            <Col span={TIMEOFF_COL_SPAN_1.DATE}>Date</Col>
+            <Col span={TIMEOFF_COL_SPAN_1.DAY}>Day</Col>
+            <Col span={TIMEOFF_COL_SPAN_1.COUNT}>Count/Q.ty</Col>
+          </Row>
+        );
+      if (showAllDateList && BY_HOUR)
         return (
           <Row className={styles.header} gutter={[8, 8]}>
             <Col span={TIMEOFF_COL_SPAN_2.DATE}>Date</Col>
@@ -989,15 +1020,6 @@ const RequestInformation = (props) => {
             <Col span={TIMEOFF_COL_SPAN_2.HOUR} style={{ textAlign: 'center' }}>
               No. of hours
             </Col>
-          </Row>
-        );
-      }
-      if (showAllDateList)
-        return (
-          <Row className={styles.header} gutter={[8, 8]}>
-            <Col span={TIMEOFF_COL_SPAN_1.DATE}>Date</Col>
-            <Col span={TIMEOFF_COL_SPAN_1.DAY}>Day</Col>
-            <Col span={TIMEOFF_COL_SPAN_1.COUNT}>Count/Q.ty</Col>
           </Row>
         );
       return (
@@ -1037,7 +1059,7 @@ const RequestInformation = (props) => {
                   <span />
                 </Col>
                 <Col span={12} className={styles.leaveDaysContainer}>
-                  {showAllDateList || BY_HOUR ? (
+                  {showAllDateList ? (
                     dateLists.map((date, index) => {
                       return (
                         <LeaveTimeRow
