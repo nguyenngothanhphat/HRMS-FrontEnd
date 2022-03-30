@@ -18,7 +18,7 @@ export default class Feedback extends Component {
     });
   };
 
-  handleCandelModal = () => {
+  handleCancelModal = () => {
     this.setState({
       visible: false,
     });
@@ -40,7 +40,7 @@ export default class Feedback extends Component {
         </Affix>
         <ModalFeedback
           visible={visible}
-          handleCandelModal={this.handleCandelModal}
+          handleCancelModal={this.handleCancelModal}
           openFeedback={this.openFeedback}
         />
       </>

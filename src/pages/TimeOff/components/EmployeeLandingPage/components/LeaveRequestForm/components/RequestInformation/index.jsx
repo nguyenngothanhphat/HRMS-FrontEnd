@@ -8,19 +8,29 @@ import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import {
   MAX_NO_OF_DAYS_TO_SHOW,
+  TIMEOFF_INPUT_TYPE,
+  TIMEOFF_INPUT_TYPE_BY_LOCATION,
   TIMEOFF_LINK_ACTION,
   TIMEOFF_STATUS,
   TIMEOFF_TYPE,
+  TIMEOFF_PERIOD,
   TIMEOFF_DATE_FORMAT,
+  TIMEOFF_COL_SPAN_1,
+  TIMEOFF_COL_SPAN_2,
+  TIMEOFF_12H_FORMAT,
+  TIMEOFF_24H_FORMAT,
+  getHours,
+  convert24To12,
 } from '@/utils/timeOff';
 import styles from './index.less';
-import LeaveTimeRow from './LeaveTimeRow';
-import LeaveTimeRow2 from './LeaveTimeRow2';
+import LeaveTimeRow from './components/LeaveTimeRow';
+import LeaveTimeRow2 from './components/LeaveTimeRow2';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
 const { A, B, C, D } = TIMEOFF_TYPE;
+const { AFTERNOON, MORNING, WHOLE_DAY } = TIMEOFF_PERIOD;
 const { IN_PROGRESS, DRAFTS } = TIMEOFF_STATUS;
 const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST } = TIMEOFF_LINK_ACTION;
 
@@ -58,6 +68,8 @@ const RequestInformation = (props) => {
     loadingMain = false,
   } = props;
 
+  const currentLocationID = location?.headQuarterAddress?.country?._id;
+
   const [form] = Form.useForm();
   const [selectedTypeName, setSelectedTypeName] = useState('');
   const [selectedType, setSelectedType] = useState('');
@@ -72,6 +84,11 @@ const RequestInformation = (props) => {
   const [currentAllowanceState, setCurrentAllowanceState] = useState(0);
   const [invalidDates, setInvalidDates] = useState([]);
   const [dateLists, setDateLists] = useState([]);
+  const [isModified, setIsModified] = useState(false); // when start editing a request, if there are any changes, isModified = true
+
+  const BY_HOUR = TIMEOFF_INPUT_TYPE_BY_LOCATION[currentLocationID] === TIMEOFF_INPUT_TYPE.HOUR;
+  const BY_WHOLE_DAY =
+    TIMEOFF_INPUT_TYPE_BY_LOCATION[currentLocationID] === TIMEOFF_INPUT_TYPE.WHOLE_DAY;
 
   // functions
   const getTableTabIndexOfSubmittedType = (selectedTypeTemp, selectedTypeNameTemp) => {
@@ -111,6 +128,23 @@ const RequestInformation = (props) => {
       type: 'timeOff/fetchEmailsListByCompany',
       payload: [getCurrentCompany()],
     });
+  };
+
+  const generateHours = (list) => {
+    if (BY_HOUR) {
+      if (list && list.length > 0) {
+        const leaveTimeListsTemp = list.map((x) => {
+          const hours = getHours(x.startTime, x.endTime, TIMEOFF_12H_FORMAT);
+          return {
+            ...x,
+            hours: hours || 0,
+          };
+        });
+        form.setFieldsValue({
+          leaveTimeLists: leaveTimeListsTemp,
+        });
+      }
+    }
   };
 
   // GET REMAINING DAY
@@ -169,7 +203,9 @@ const RequestInformation = (props) => {
 
   const findInvalidHalfOfDay = (date) => {
     const filtered = invalidDates.filter((x) => {
-      return moment(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD');
+      return (
+        moment(x.date).format(TIMEOFF_DATE_FORMAT) === moment(date).format(TIMEOFF_DATE_FORMAT)
+      );
     });
 
     return filtered.map((x) => x.timeOfDay);
@@ -179,8 +215,8 @@ const RequestInformation = (props) => {
   const checkIfWholeDayAvailable = (date) => {
     const find = invalidDates.some(
       (x) =>
-        moment(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
-        x.timeOfDay === 'WHOLE-DAY',
+        moment(x.date).format(TIMEOFF_DATE_FORMAT) === moment(date).format(TIMEOFF_DATE_FORMAT) &&
+        x.timeOfDay === WHOLE_DAY,
     );
     return !find;
   };
@@ -188,8 +224,8 @@ const RequestInformation = (props) => {
   const checkIfHalfDayAvailable = (date) => {
     const filtered = invalidDates.filter((x) => {
       return (
-        moment(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
-        (x.timeOfDay === 'MORNING' || x.timeOfDay === 'AFTERNOON')
+        moment(x.date).format(TIMEOFF_DATE_FORMAT) === moment(date).format(TIMEOFF_DATE_FORMAT) &&
+        (x.timeOfDay === MORNING || x.timeOfDay === AFTERNOON)
       );
     });
 
@@ -199,8 +235,8 @@ const RequestInformation = (props) => {
 
     const find = invalidDates.some((x) => {
       return (
-        moment(x.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD') &&
-        (x.timeOfDay !== 'MORNING' || x.timeOfDay !== 'AFTERNOON')
+        moment(x.date).format(TIMEOFF_DATE_FORMAT) === moment(date).format(TIMEOFF_DATE_FORMAT) &&
+        (x.timeOfDay !== MORNING || x.timeOfDay !== AFTERNOON)
       );
     });
     return !find;
@@ -234,7 +270,7 @@ const RequestInformation = (props) => {
       while (now.isSameOrBefore(moment(endDateTemp), 'day')) {
         if (!checkIfWeekEnd(now)) {
           if (checkIfWholeDayAvailable(now) || checkIfHalfDayAvailable(now)) {
-            dates.push(now.format('YYYY-MM-DD'));
+            dates.push(now.format(TIMEOFF_DATE_FORMAT));
           }
         }
         now.add(1, 'days');
@@ -291,55 +327,77 @@ const RequestInformation = (props) => {
   // CALCULATE DURATION FOR API
   const calculateNumberOfLeaveDay = (list) => {
     let count = 0;
-    list.forEach((value) => {
-      const { timeOfDay = '' } = value;
-      switch (timeOfDay) {
-        case 'MORNING':
-          count += 0.5;
-          break;
-        case 'AFTERNOON':
-          count += 0.5;
-          break;
-        case 'WHOLE-DAY':
-          count += 1;
-          break;
-        default:
-          break;
-      }
-    });
+    if (BY_HOUR) {
+      list.forEach((value) => {
+        count += value.hours;
+      });
+      count /= 24;
+    } else {
+      list.forEach((value) => {
+        const { timeOfDay = '' } = value;
+        switch (timeOfDay) {
+          case MORNING:
+            count += 0.5;
+            break;
+          case AFTERNOON:
+            count += 0.5;
+            break;
+          case WHOLE_DAY:
+            count += 1;
+            break;
+          default:
+            break;
+        }
+      });
+    }
     return count;
   };
 
   // GENERATE LEAVE DATES FOR API
-  const generateLeaveDates = (from, to, leaveTimeLists) => {
+  const generateLeaveDates = (leaveTimeLists) => {
     let result = [];
-    if (leaveTimeLists.length === 0) {
-      // type C,D
-      result = dateLists.map((value) => {
-        return {
-          date: value,
-          timeOfDay: 'WHOLE-DAY',
-        };
-      });
-    } else {
+    const getTime = (time) => {
+      if (!time) return '00:00';
+      return moment(time, TIMEOFF_12H_FORMAT).format(TIMEOFF_24H_FORMAT);
+    };
+    if (BY_HOUR) {
       result = dateLists.map((value, index) => {
         return {
           date: value,
-          timeOfDay: leaveTimeLists[index],
+          timeOfDay: WHOLE_DAY,
+          startTime: getTime(leaveTimeLists[index].startTime),
+          endTime: getTime(leaveTimeLists[index].endTime),
+          hours: leaveTimeLists[index].hours,
         };
       });
-    }
-    if (selectedType !== C && selectedType !== D) {
-      result = result.filter(
-        (value) =>
-          moment.utc(value.date).weekday() !== 6 &&
-          moment.utc(value.date).weekday() !== 0 &&
-          Object.keys(value).length !== 0,
-      );
     } else {
-      result = result.filter((value) => Object.keys(value).length !== 0);
+      if (leaveTimeLists.length === 0) {
+        // type C,D
+        result = dateLists.map((value) => {
+          return {
+            date: value,
+            timeOfDay: WHOLE_DAY,
+          };
+        });
+      } else {
+        result = dateLists.map((value, index) => {
+          return {
+            date: value,
+            timeOfDay: leaveTimeLists[index].period,
+          };
+        });
+      }
+      if (selectedType !== C && selectedType !== D) {
+        result = result.filter(
+          (value) =>
+            moment.utc(value.date).weekday() !== 6 &&
+            moment.utc(value.date).weekday() !== 0 &&
+            Object.keys(value).length !== 0,
+        );
+      } else {
+        result = result.filter((value) => Object.keys(value).length !== 0);
+      }
     }
-
     return result;
   };
 
@@ -351,8 +409,6 @@ const RequestInformation = (props) => {
         timeOffType = '',
         subject = '',
         description = '',
-        durationFrom: durationFromValue = '',
-        durationTo: durationToValue = '',
         personCC = [],
         leaveTimeLists = [],
       } = values;
@@ -360,16 +416,7 @@ const RequestInformation = (props) => {
       if (timeOffType === '') {
         message.error('Please fill required fields!');
       } else {
-        const leaveDatesPayload = generateLeaveDates(
-          durationFromValue,
-          durationToValue,
-          leaveTimeLists,
-        );
-
-        // let duration = 0;
-        // if (selectedType !== C) duration = calculateNumberOfLeaveDay(leaveDates);
-        // else duration = totalDayOfSelectedType;
-
+        const leaveDatesPayload = generateLeaveDates(leaveTimeLists);
         const duration = calculateNumberOfLeaveDay(leaveDatesPayload);
 
         const data = {
@@ -414,13 +461,11 @@ const RequestInformation = (props) => {
       timeOffType = '',
       subject = '',
       description = '',
-      durationFrom: durationFromTemp = '',
-      durationTo: durationToTemp = '',
       personCC = [],
       leaveTimeLists = [],
     } = values;
 
-    const leaveDatesPayload = generateLeaveDates(durationFromTemp, durationToTemp, leaveTimeLists);
+    const leaveDatesPayload = generateLeaveDates(leaveTimeLists);
 
     // ON SUBMIT
     if (buttonState === 2) {
@@ -430,21 +475,21 @@ const RequestInformation = (props) => {
         // generate data for API
         const duration = calculateNumberOfLeaveDay(leaveDatesPayload);
 
-        if ((selectedType === A || selectedType === B) && duration > remainingDayOfSelectedType) {
+        if ((selectedType === A || selectedType === B) && remainingDayOfSelectedType < duration) {
           message.error(
             `You only have ${remainingDayOfSelectedType} day(s) of ${selectedTypeName} left.`,
           );
         } else {
-          const data = {
+          const payload = {
             type: timeOffType,
             status: IN_PROGRESS,
             subject,
             fromDate: durationFrom,
             toDate: durationTo,
-            duration,
             leaveDates: leaveDatesPayload,
             onDate: moment.utc(),
             description,
+            duration,
             cc: personCC,
             tenantId: getCurrentTenant(),
             company: employee.company,
@@ -452,20 +497,19 @@ const RequestInformation = (props) => {
 
           let type = '';
           if (action === NEW_LEAVE_REQUEST) {
-            data.employee = employeeId;
-            data.approvalManager = managerId; // id
+            payload.employee = employeeId;
+            payload.approvalManager = managerId; // id
             type = 'timeOff/addLeaveRequest';
           } else if (action === EDIT_LEAVE_REQUEST) {
             const { employee: { _id = '' } = {} } = viewingLeaveRequest;
-            data.employee = _id;
-            data._id = viewingId;
+            payload.employee = _id;
+            payload._id = viewingId;
             type = 'timeOff/updateLeaveRequestById';
           }
 
-          // console.log('🚀 ~ data', data);
           dispatch({
             type,
-            payload: data,
+            payload,
           }).then((statusCode) => {
             if (statusCode === 200) setShowSuccessModal(true);
           });
@@ -559,7 +603,7 @@ const RequestInformation = (props) => {
                           : { fontSize: 12, color: 'black' }
                       }
                     >
-                      {remaining}
+                      {Math.round(remaining * 100) / 100}
                     </span>
                     /{foundType?.noOfDays || '0'} days
                   </span>
@@ -678,7 +722,7 @@ const RequestInformation = (props) => {
 
   // FETCH LEAVE BALANCE INFO (REMAINING, TOTAL,...)
   const fetchData = async () => {
-    await dispatch({
+    dispatch({
       type: 'timeOff/fetchLeaveBalanceOfUser',
       payload: {
         location: location._id,
@@ -708,14 +752,26 @@ const RequestInformation = (props) => {
         check = false;
         viewingLeaveDates.forEach((val2) => {
           const { date = '' } = val2;
-          if (moment(date).locale('en').format('YYYY-MM-DD') === val1) {
+          if (moment(date).locale('en').format(TIMEOFF_DATE_FORMAT) === val1) {
             resultDates.push(val2);
             check = true;
           }
         });
         if (!check) resultDates.push(null);
       });
-      const leaveTimeLists = resultDates.map((date) => (date ? date.timeOfDay : null));
+
+      let leaveTimeLists = [];
+      if (BY_HOUR) {
+        leaveTimeLists = resultDates.map((date, index) => {
+          return {
+            startTime: convert24To12(viewingLeaveDates[index].startTime),
+            endTime: convert24To12(viewingLeaveDates[index].endTime),
+            hours: viewingLeaveDates[index].hours || null,
+          };
+        });
+      } else {
+        leaveTimeLists = resultDates.map((date) => (date ? { period: date.timeOfDay } : null));
+      }
 
       // set values from server to fields
       form.setFieldsValue({
@@ -728,6 +784,9 @@ const RequestInformation = (props) => {
         leaveTimeLists,
       });
 
+      if (BY_HOUR) {
+        generateHours(leaveTimeLists);
+      }
       getRemainingDay(viewingType.name);
     }
   };
@@ -738,10 +797,18 @@ const RequestInformation = (props) => {
     const dates = [];
 
     while (now.isSameOrBefore(endDate1)) {
-      dates.push(now.format('MM/DD/YYYY'));
+      dates.push(now.format(TIMEOFF_DATE_FORMAT));
       now.add(1, 'days');
     }
     return dates;
+  };
+
+  // auto generate hours when select start time & end time for US
+  const onValuesChange = () => {
+    const values = form.getFieldsValue();
+    const { leaveTimeLists = [] } = values;
+    generateHours(leaveTimeLists);
+    setIsModified(true);
   };
 
   // USE EFFECT
@@ -750,7 +817,8 @@ const RequestInformation = (props) => {
       const dateList = enumerateDaysBetweenDates(moment(viewingFromDate), moment(viewingToDate));
       const temp = invalidDatesProps.filter((x) => {
         return !dateList.some(
-          (y) => moment(y).format('MM/DD/YYYY') === moment(x.date).format('MM/DD/YYYY'),
+          (y) =>
+            moment(y).format(TIMEOFF_DATE_FORMAT) === moment(x.date).format(TIMEOFF_DATE_FORMAT),
         );
       });
 
@@ -815,17 +883,21 @@ const RequestInformation = (props) => {
   }, [durationFrom, currentAllowanceState]);
 
   useEffect(() => {
-    if (dateLists.length > 0) {
+    // only generate leave time lists when modified. If editing a ticket, no need to generate
+    if (dateLists.length > 0 && isModified) {
       const initialValuesForLeaveTimesList = dateLists.map((x) => {
-        if (findInvalidHalfOfDay(x).includes('MORNING')) {
-          return 'AFTERNOON';
+        // for non US user
+        if (!BY_HOUR) {
+          if (findInvalidHalfOfDay(x).includes(MORNING)) {
+            return { period: AFTERNOON };
+          }
+          if (findInvalidHalfOfDay(x).includes(AFTERNOON)) {
+            return { period: MORNING };
+          }
+          return { period: WHOLE_DAY };
         }
-        if (findInvalidHalfOfDay(x).includes('AFTERNOON')) {
-          return 'MORNING';
-        }
-        return 'WHOLE-DAY';
+        return { period: WHOLE_DAY };
       });
-
       form.setFieldsValue({
         leaveTimeLists: initialValuesForLeaveTimesList,
       });
@@ -856,6 +928,147 @@ const RequestInformation = (props) => {
   // if save as draft, no need to validate forms
   const needValidate = buttonState === 2;
 
+  const renderLeaveTimeList = () => {
+    if ([C, D].includes(selectedType)) {
+      return (
+        <>
+          <Row className={styles.eachRow}>
+            <Col className={styles.label} span={6}>
+              <span>Leave time</span> <span className={styles.mandatoryField}>*</span>
+            </Col>
+            <Col span={12}>
+              <div className={styles.extraTimeSpent}>
+                <Row className={styles.header} gutter={[8, 8]}>
+                  <Col span={TIMEOFF_COL_SPAN_1.DATE}>From</Col>
+                  <Col span={TIMEOFF_COL_SPAN_1.DAY}>To</Col>
+                  <Col span={TIMEOFF_COL_SPAN_1.COUNT}>No. of Days</Col>
+                </Row>
+                {(!durationFrom || !durationTo) && (
+                  <div className={styles.content}>
+                    <div className={styles.emptyContent}>
+                      <span>Selected duration will show as days</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </Col>
+            <Col span={6} />
+          </Row>
+
+          {durationFrom && durationTo && (
+            <Form.List name="leaveTimeLists">
+              {() => (
+                <Row key={1} className={styles.eachRow}>
+                  <Col className={styles.label} span={6}>
+                    <span />
+                  </Col>
+                  <Col span={12} className={styles.leaveDaysContainer}>
+                    <LeaveTimeRow2
+                      fromDate={durationFrom}
+                      toDate={durationTo}
+                      noOfDays={dateLists.length}
+                    />
+                  </Col>
+                  <Col span={6} />
+                </Row>
+              )}
+            </Form.List>
+          )}
+        </>
+      );
+    }
+
+    const renderTableHeader = () => {
+      if (BY_HOUR) {
+        return (
+          <Row className={styles.header} gutter={[8, 8]}>
+            <Col span={TIMEOFF_COL_SPAN_2.DATE}>Date</Col>
+            <Col span={TIMEOFF_COL_SPAN_2.DAY}>Day</Col>
+            <Col span={TIMEOFF_COL_SPAN_2.START_TIME}>Start time</Col>
+            <Col span={TIMEOFF_COL_SPAN_2.END_TIME}>End time</Col>
+            <Col span={TIMEOFF_COL_SPAN_2.HOUR} style={{ textAlign: 'center' }}>
+              No. of hours
+            </Col>
+          </Row>
+        );
+      }
+      if (showAllDateList)
+        return (
+          <Row className={styles.header} gutter={[8, 8]}>
+            <Col span={TIMEOFF_COL_SPAN_1.DATE}>Date</Col>
+            <Col span={TIMEOFF_COL_SPAN_1.DAY}>Day</Col>
+            <Col span={TIMEOFF_COL_SPAN_1.COUNT}>Count/Q.ty</Col>
+          </Row>
+        );
+      return (
+        <Row className={styles.header} gutter={[8, 8]}>
+          <Col span={TIMEOFF_COL_SPAN_1.DATE}>From</Col>
+          <Col span={TIMEOFF_COL_SPAN_1.DAY}>To</Col>
+          <Col span={TIMEOFF_COL_SPAN_1.COUNT}>No. of Days</Col>
+        </Row>
+      );
+    };
+    return (
+      <>
+        <Row className={styles.eachRow}>
+          <Col className={styles.label} span={6}>
+            <span>Leave time</span> <span className={styles.mandatoryField}>*</span>
+          </Col>
+          <Col span={12}>
+            <div className={styles.extraTimeSpent}>
+              {renderTableHeader()}
+              {(!durationFrom || !durationTo) && (
+                <div className={styles.content}>
+                  <div className={styles.emptyContent}>
+                    <span>Selected duration will show as days</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </Col>
+          <Col span={6} />
+        </Row>
+
+        {durationFrom && durationTo && (
+          <Form.List name="leaveTimeLists">
+            {() => (
+              <Row key={1} className={styles.eachRow}>
+                <Col className={styles.label} span={6}>
+                  <span />
+                </Col>
+                <Col span={12} className={styles.leaveDaysContainer}>
+                  {showAllDateList || BY_HOUR ? (
+                    dateLists.map((date, index) => {
+                      return (
+                        <LeaveTimeRow
+                          eachDate={date}
+                          index={index}
+                          listLength={dateLists.length}
+                          needValidate={needValidate}
+                          findInvalidHalfOfDay={findInvalidHalfOfDay}
+                          BY_HOUR={BY_HOUR}
+                          BY_WHOLE_DAY={BY_WHOLE_DAY}
+                          form={form}
+                        />
+                      );
+                    })
+                  ) : (
+                    <LeaveTimeRow2
+                      fromDate={durationFrom}
+                      toDate={durationTo}
+                      noOfDays={dateLists.length}
+                    />
+                  )}
+                </Col>
+                <Col span={6} />
+              </Row>
+            )}
+          </Form.List>
+        )}
+      </>
+    );
+  };
+
   // RETURN MAIN
   if (loadingMain) return <Skeleton />;
   return (
@@ -872,6 +1085,7 @@ const RequestInformation = (props) => {
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         className={styles.form}
+        onValuesChange={onValuesChange}
       >
         <Row className={styles.eachRow}>
           <Col className={styles.label} span={6}>
@@ -900,7 +1114,7 @@ const RequestInformation = (props) => {
             </Form.Item>
           </Col>
           <Col span={6}>
-            {selectedTypeName !== '' && (
+            {selectedTypeName && (
               <div className={styles.smallNotice}>
                 <span className={styles.normalText}>
                   {selectedTypeName}s are covered under{' '}
@@ -954,7 +1168,7 @@ const RequestInformation = (props) => {
                     onChange={(value) => {
                       fromDateOnChange(value);
                     }}
-                    placeholder={`From Date (${TIMEOFF_DATE_FORMAT})`}
+                    placeholder="From Date"
                   />
                 </Form.Item>
               </Col>
@@ -975,7 +1189,7 @@ const RequestInformation = (props) => {
                     onChange={(value) => {
                       toDateOnChange(value);
                     }}
-                    placeholder={`To Date (${TIMEOFF_DATE_FORMAT})`}
+                    placeholder="To Date"
                   />
                 </Form.Item>
               </Col>
@@ -990,119 +1204,8 @@ const RequestInformation = (props) => {
           </Col>
         </Row>
 
-        {selectedType !== C && selectedType !== D ? (
-          <>
-            <Row className={styles.eachRow}>
-              <Col className={styles.label} span={6}>
-                <span>Leave time</span> <span className={styles.mandatoryField}>*</span>
-              </Col>
-              <Col span={12}>
-                <div className={styles.extraTimeSpent}>
-                  {showAllDateList ? (
-                    <Row className={styles.header}>
-                      <Col span={7}>Date</Col>
-                      <Col span={7}>Day</Col>
-                      <Col span={10}>Count/Q.ty</Col>
-                    </Row>
-                  ) : (
-                    <Row className={styles.header}>
-                      <Col span={7}>From</Col>
-                      <Col span={7}>To</Col>
-                      <Col span={10}>No. of Days</Col>
-                    </Row>
-                  )}
-                  {(!durationFrom || !durationTo) && (
-                    <div className={styles.content}>
-                      <div className={styles.emptyContent}>
-                        <span>Selected duration will show as days</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </Col>
-              <Col span={6} />
-            </Row>
+        {renderLeaveTimeList()}
 
-            {durationFrom && durationTo && (
-              <Form.List name="leaveTimeLists">
-                {() => (
-                  <Row key={1} className={styles.eachRow}>
-                    <Col className={styles.label} span={6}>
-                      <span />
-                    </Col>
-                    <Col span={12} className={styles.leaveDaysContainer}>
-                      {showAllDateList ? (
-                        dateLists.map((date, index) => {
-                          return (
-                            <LeaveTimeRow
-                              eachDate={date}
-                              index={index}
-                              listLength={dateLists.length}
-                              needValidate={needValidate}
-                              findInvalidHalfOfDay={findInvalidHalfOfDay}
-                            />
-                          );
-                        })
-                      ) : (
-                        <LeaveTimeRow2
-                          fromDate={durationFrom}
-                          toDate={durationTo}
-                          noOfDays={dateLists.length}
-                        />
-                      )}
-                    </Col>
-                    <Col span={6} />
-                  </Row>
-                )}
-              </Form.List>
-            )}
-          </>
-        ) : (
-          <>
-            <Row className={styles.eachRow}>
-              <Col className={styles.label} span={6}>
-                <span>Leave time</span> <span className={styles.mandatoryField}>*</span>
-              </Col>
-              <Col span={12}>
-                <div className={styles.extraTimeSpent}>
-                  <Row className={styles.header}>
-                    <Col span={7}>From</Col>
-                    <Col span={7}>To</Col>
-                    <Col span={10}>No. of Days</Col>
-                  </Row>
-                  {(!durationFrom || !durationTo) && (
-                    <div className={styles.content}>
-                      <div className={styles.emptyContent}>
-                        <span>Selected duration will show as days</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </Col>
-              <Col span={6} />
-            </Row>
-
-            {durationFrom && durationTo && (
-              <Form.List name="leaveTimeLists">
-                {() => (
-                  <Row key={1} className={styles.eachRow}>
-                    <Col className={styles.label} span={6}>
-                      <span />
-                    </Col>
-                    <Col span={12} className={styles.leaveDaysContainer}>
-                      <LeaveTimeRow2
-                        fromDate={durationFrom}
-                        toDate={durationTo}
-                        noOfDays={dateLists.length}
-                      />
-                    </Col>
-                    <Col span={6} />
-                  </Row>
-                )}
-              </Form.List>
-            )}
-          </>
-        )}
         <Row className={styles.eachRow}>
           <Col className={styles.label} span={6}>
             <span>Description</span> <span className={styles.mandatoryField}>*</span>
