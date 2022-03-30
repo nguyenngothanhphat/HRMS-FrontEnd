@@ -7,7 +7,7 @@ export default class SpecialLeaveBox extends PureComponent {
   renderCircle = (days, color) => {
     return (
       <span className={styles.smallCircle} style={{ color }}>
-        <span className={styles.dayNumber}>{addZeroToNumber(days)}</span>
+        <span className={styles.dayNumber}>{addZeroToNumber(Math.round(days * 100) / 100)}</span>
         <span className={styles.dayText}>days</span>
       </span>
     );

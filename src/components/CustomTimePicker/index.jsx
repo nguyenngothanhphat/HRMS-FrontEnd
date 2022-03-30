@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Select } from 'antd';
+import { Select, Tooltip } from 'antd';
 import moment from 'moment';
 import { hourFormat, WORKING_HOURS } from '@/utils/timeSheet';
 
@@ -12,6 +12,10 @@ const CustomTimePicker = (props) => {
     minuteStep = 15,
     disabledHourAfter = '', // for start time validation
     disabledHourBefore = '', // for end time validation
+    minimum = 0,
+    maximum = 0,
+    minDisabledTooltip = '',
+    maxDisabledTooltip = '',
   } = props;
   const [list, setList] = useState([]);
 
@@ -47,29 +51,86 @@ const CustomTimePicker = (props) => {
   const getDisabled = (hour) => {
     const hourTemp = moment(hour, hourFormat);
     if (disabledHourAfter) {
-      const hourAfter = moment(disabledHourAfter, hourFormat);
+      let hourAfter = moment(disabledHourAfter, hourFormat);
+      let hourBefore = '';
+
+      if (minimum !== 0) {
+        hourAfter = moment(disabledHourAfter, hourFormat).add(-minimum + minuteStep / 60, 'hours');
+      }
+      if (maximum !== 0) {
+        hourBefore = moment(disabledHourAfter, hourFormat).add(-maximum - minuteStep / 60, 'hours');
+      }
       if (hourTemp.isSameOrAfter(hourAfter)) {
-        return true;
+        return {
+          disabled: true,
+          type: 'after',
+        };
+      }
+      if (hourTemp.isSameOrBefore(hourBefore)) {
+        return {
+          disabled: true,
+          type: 'before',
+        };
       }
     }
     if (disabledHourBefore) {
-      const hourBefore = moment(disabledHourBefore, hourFormat);
+      let hourBefore = moment(disabledHourBefore, hourFormat);
+      let hourAfter = '';
+      if (minimum !== 0) {
+        hourBefore = moment(disabledHourBefore, hourFormat).add(minimum - minuteStep / 60, 'hours');
+      }
+      if (maximum !== 0) {
+        hourAfter = moment(disabledHourBefore, hourFormat).add(maximum + minuteStep / 60, 'hours');
+      }
       if (hourTemp.isSameOrBefore(hourBefore)) {
-        return true;
+        return {
+          disabled: true,
+          type: 'before',
+        };
+      }
+      if (hourTemp.isSameOrAfter(hourAfter)) {
+        return {
+          disabled: true,
+          type: 'after',
+        };
       }
     }
-    return false;
+
+    return {
+      disabled: false,
+    };
+  };
+
+  const renderOption = (x) => {
+    const isDisabledObj = getDisabled(x);
+    if (!isDisabledObj.disabled) return <Option value={x}>{x}</Option>;
+
+    if (isDisabledObj.disabled && isDisabledObj.type === 'before') {
+      return (
+        <Option value={x} disabled={isDisabledObj.disabled}>
+          <Tooltip title={minDisabledTooltip}>{x}</Tooltip>
+        </Option>
+      );
+    }
+    if (isDisabledObj.disabled && isDisabledObj.type === 'after') {
+      return (
+        <Option value={x} disabled={isDisabledObj.disabled}>
+          <Tooltip title={maxDisabledTooltip}>{x}</Tooltip>
+        </Option>
+      );
+    }
+    return (
+      <Option value={x} disabled={isDisabledObj.disabled}>
+        {x}
+      </Option>
+    );
   };
 
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
     <Select {...props}>
       {list.map((x) => {
-        return (
-          <Option value={x} disabled={getDisabled(x)}>
-            {x}
-          </Option>
-        );
+        return renderOption(x);
       })}
     </Select>
   );

@@ -1,30 +1,30 @@
-import moment from "moment";
+import moment from 'moment';
 
 const parseDate = (dateText) => {
-    if (!dateText) {
-        return '-'
-    }
-    return moment(dateText).format('MM/DD/YYYY')
-}
+  if (!dateText) {
+    return '-';
+  }
+  return moment(dateText).format('MM/DD/YYYY');
+};
 const handleLongText = (text, length) => {
-    if (!text) {
-        return ''
-    }
-    if (text.length < length) {
-        return text;
-    }
+  if (!text) {
+    return '';
+  }
+  if (text.length < length) {
+    return text;
+  }
 
-    const formatText = text.substring(0, length)
-    return `${formatText}...${formatText.includes('(') ? ')' : ''}`
+  const formatText = text.substring(0, length);
+  return `${formatText}...${formatText.includes('(') ? ')' : ''}`;
 };
 
 const cloneObj = (obj) => {
-    const newObj = {}
-        // eslint-disable-next-line no-restricted-syntax
-    for (const [key, value] of Object.entries(obj)) {
-        newObj[key] = value
-    }
-    return newObj
+  const newObj = {};
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [key, value] of Object.entries(obj)) {
+    newObj[key] = value;
+  }
+  return newObj;
 };
 
 // obj = {
@@ -42,12 +42,12 @@ const cloneObj = (obj) => {
 // };
 // eslint-disable-next-line import/prefer-default-export
 export function formatData(rawData, projectList) {
-    const dataList = [];
-    rawData.forEach((obj) => {
-                const { titleInfo, generalInfo, projects } = obj;
-                const availableStatus = 'Available Now';
-                const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'));
-                const employeeName = `${generalInfo.legalName} ${userName ? `(${userName})` : ''}`;
+  const dataList = [];
+  rawData.forEach((obj) => {
+    const { titleInfo, generalInfo, projects } = obj;
+    const availableStatus = 'Available Now';
+    const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'));
+    const employeeName = `${generalInfo.legalName} ${userName ? `(${userName})` : ''}`;
     const newObj = {
       avatar: generalInfo.avatar,
       employeeId: obj._id,
@@ -62,7 +62,7 @@ export function formatData(rawData, projectList) {
       billStatus: '-',
       startDate: '-',
       endDate: '-',
-      resourceId: 0
+      resourceId: 0,
     };
     let ability = 0;
     // eslint-disable-next-line no-restricted-syntax
@@ -78,40 +78,50 @@ export function formatData(rawData, projectList) {
         const project = projectList.find((x) => x.id === p.project.id);
         const pObj = cloneObj(newObj);
         pObj.projectName = project.projectName;
-        pObj.projectId = p.projectId
+        pObj.projectId = p.projectId;
         pObj.startDate = parseDate(p.startDate);
         pObj.endDate = parseDate(p.endDate);
         pObj.billStatus = p.status || '-';
-        pObj.project = project.id
+        pObj.project = project.id;
         pObj.utilization = p.utilization || 0;
-        pObj.revisedEndDate = parseDate(p.revisedEndDate)
-        pObj.resourceId = p.id
+        pObj.revisedEndDate = parseDate(p.revisedEndDate);
+        pObj.resourceId = p.id;
         dataList.push(pObj);
       }
     }
   });
   // console.log(`formatDataSource: ${JSON.stringify(dataList)}`);
-  return dataList
-};
-
-export function getProjectById(projectList, id){
-  if(!projectList || projectList.length === 0) {
-    return {}
-  }
-
-  return projectList.find(x => x.id === id)
+  return dataList;
 }
 
-export function handlingResourceAvailableStatus (data) {
+export function getProjectById(projectList, id) {
+  if (!projectList || projectList.length === 0) {
+    return {};
+  }
+
+  return projectList.find((x) => x.id === id);
+}
+
+export function handlingResourceAvailableStatus(data) {
   const statusData = [
     { availableStatus: 'ALL', compareKey: 'totalResource', display: 'All Resources', number: 10 },
-    { availableStatus: 'AVAILABLE_NOW', compareKey: 'totalAvailableNow', display: 'Available now', number: 10 },
-    { availableStatus: 'AVAILABLE_SOON', compareKey: 'totalAvailableSoon', display: 'Available soon', number: 10 },
+    {
+      availableStatus: 'AVAILABLE_NOW',
+      compareKey: 'totalAvailableNow',
+      display: 'Available now',
+      number: 10,
+    },
+    {
+      availableStatus: 'AVAILABLE_SOON',
+      compareKey: 'totalAvailableSoon',
+      display: 'Available soon',
+      number: 10,
+    },
   ];
   // eslint-disable-next-line no-restricted-syntax
-  for(const[key, value] of Object.entries(data)) {
-    const obj = statusData.find((x) => x.compareKey === key)
-    obj.number = value
+  for (const [key, value] of Object.entries(data)) {
+    const obj = statusData.find((x) => x.compareKey === key);
+    obj.number = value;
   }
-  return statusData
+  return statusData;
 }

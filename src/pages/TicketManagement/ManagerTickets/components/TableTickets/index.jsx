@@ -1,11 +1,10 @@
 import React, { PureComponent } from 'react';
-
-import { Table, Dropdown, Menu, Input, Empty } from 'antd';
+import { Table, Dropdown, Menu, Input, Empty, Popover } from 'antd';
 import { DownOutlined, SearchOutlined } from '@ant-design/icons';
-
 import moment from 'moment';
 import { history, connect } from 'umi';
 import { isEmpty } from 'lodash';
+import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 
 import styles from './index.less';
@@ -15,10 +14,12 @@ import styles from './index.less';
     loading,
     ticketManagement: { listEmployee = [], locationsList = [] } = {},
     user: { currentUser: { employee = {} } = {} } = {},
+    locationSelection: { listLocationsByCompany = [] },
   }) => ({
     listEmployee,
     locationsList,
     employee,
+    listLocationsByCompany,
     loadingUpdate: loading.effects['ticketManagement/updateTicket'],
   }),
 )
@@ -29,8 +30,45 @@ class TableTickets extends PureComponent {
       ticket: {},
       // visible: false,
       search: [],
+      currentTime: moment(),
+      timezoneList: [],
     };
   }
+
+  componentDidMount = () => {
+    this.fetchTimezone();
+  };
+
+  componentDidUpdate(prevProps) {
+    const { listLocationsByCompany = [] } = this.props;
+    if (
+      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+    ) {
+      this.fetchTimezone();
+    }
+  }
+
+  fetchTimezone = () => {
+    const { listLocationsByCompany = [] } = this.props;
+    const timezoneList = [];
+    listLocationsByCompany.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
+        _id = '',
+      } = location;
+      timezoneList.push({
+        locationId: _id,
+        timezone:
+          getTimezoneViaCity(city) ||
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
+    this.setState({
+      timezoneList,
+    });
+  };
 
   openViewTicket = (ticketID) => {
     const { data = [] } = this.props;
@@ -92,6 +130,74 @@ class TableTickets extends PureComponent {
     }
   };
 
+  setCurrentTime = () => {
+    // compare two time by hour & minute. If minute changes, get new time
+    const timeFormat = 'HH:mm';
+    const { currentTime } = this.state;
+    const parseTime = (timeString) => moment(timeString, timeFormat);
+    const check = parseTime(moment().format(timeFormat)).isAfter(
+      parseTime(moment(currentTime).format(timeFormat)),
+    );
+
+    if (check) {
+      this.setState({
+        currentTime: moment(),
+      });
+    }
+  };
+
+  locationContent = (location) => {
+    const { locationsList = [] } = this.props;
+    const result =
+      locationsList.length > 0 ? locationsList.filter((val) => val._id === location)[0] : [] || [];
+    console.log('🚀 ~ file: index.jsx ~ line 154 ~ TableTickets ~ result', result);
+    const {
+      headQuarterAddress: {
+        addressLine1 = '',
+        addressLine2 = '',
+        state = '',
+        country = {},
+        zipCode = '',
+      } = {},
+      _id = '',
+    } = result;
+
+    const { timezoneList, currentTime } = this.state;
+
+    const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+
+    return (
+      <div className={styles.locationContent}>
+        <span
+          style={{ display: 'block', fontSize: '13px', color: '#0000006e', marginBottom: '5px' }}
+        >
+          Address:
+        </span>
+        <span style={{ display: 'block', fontSize: '13px', marginBottom: '10px' }}>
+          {addressLine1}
+          {addressLine2 && ', '}
+          {addressLine2}
+          {state && ', '}
+          {state}
+          {country ? ', ' : ''}
+          {country?.name || country || ''}
+          {zipCode && ', '}
+          {zipCode}
+        </span>
+        <span
+          style={{ display: 'block', fontSize: '13px', color: '#0000006e', marginBottom: '5px' }}
+        >
+          Local time{state && ` in  ${state}`}:
+        </span>
+        <span style={{ display: 'block', fontSize: '13px' }}>
+          {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
+            ? getCurrentTimeOfTimezone(currentTime, findTimezone.timezone)
+            : 'Not enough data in address'}
+        </span>
+      </div>
+    );
+  };
+
   render() {
     const {
       data = [],
@@ -146,39 +252,14 @@ class TableTickets extends PureComponent {
         fixed: 'left',
       },
       {
-        title: 'User ID',
-        dataIndex: 'employeeRaise',
-        key: 'userID',
-        render: (employeeRaise = {}, id) => {
-          const { generalInfo: { userId = '' } = {} } = employeeRaise || {};
-          return (
-            <span className={styles.userID} onClick={() => this.openViewTicket(id.id)}>
-              {userId}
-            </span>
-          );
-        },
-      },
-      {
-        title: 'Name',
-        dataIndex: 'employeeRaise',
-        key: 'name',
-        render: (employeeRaise = {}) => {
-          const { generalInfo: { legalName = '' } = {} } = employeeRaise || {};
-          return <span>{legalName}</span>;
-        },
-      },
-      {
-        title: 'Request Date',
-        dataIndex: 'created_at',
-        key: 'requestDate',
-        render: (createdAt) => {
-          return <span>{moment(createdAt).format('DD-MM-YYYY')}</span>;
-        },
-      },
-      {
         title: 'Request Type',
         dataIndex: 'query_type',
         key: 'query_type',
+      },
+      {
+        title: 'Subject',
+        dataIndex: 'subject',
+        key: 'subject',
       },
       {
         title: 'Priority',
@@ -198,21 +279,70 @@ class TableTickets extends PureComponent {
         },
       },
       {
-        title: 'Loacation',
+        title: 'Request Date',
+        dataIndex: 'created_at',
+        key: 'requestDate',
+        render: (createdAt) => {
+          return <span>{moment(createdAt).format('DD-MM-YYYY')}</span>;
+        },
+      },
+      {
+        title: 'Requester Name ',
+        dataIndex: 'employeeRaise',
+        key: 'requesterName',
+        render: (employeeRaise = {}, id) => {
+          const { generalInfo: { legalName = '', userId = '' } = {} } = employeeRaise || {};
+          return (
+            <span className={styles.userID} onClick={() => this.openViewTicket(id.id)}>
+              {`${legalName} (${userId})`}
+            </span>
+          );
+        },
+      },
+      // {
+      //   title: 'User ID',
+      //   dataIndex: 'employeeRaise',
+      //   key: 'userID',
+      //   render: (employeeRaise = {}, id) => {
+      //     const { generalInfo: { userId = '' } = {} } = employeeRaise || {};
+      //     return (
+      //       <span className={styles.userID} onClick={() => this.openViewTicket(id.id)}>
+      //         {userId}
+      //       </span>
+      //     );
+      //   },
+      // },
+      // {
+      //   title: 'Name',
+      //   dataIndex: 'employeeRaise',
+      //   key: 'name',
+      //   render: (employeeRaise = {}) => {
+      //     const { generalInfo: { legalName = '' } = {} } = employeeRaise || {};
+      //     return <span>{legalName}</span>;
+      //   },
+      // },
+
+      {
+        title: 'Location',
         dataIndex: 'location',
-        key: 'loacation',
+        key: 'location',
         render: (location) => {
           const locationNew =
             locationsList.length > 0 ? locationsList.filter((val) => val._id === location) : [];
           const name = locationNew.length > 0 ? locationNew[0].name : '';
-          return <span>{name}</span>;
+          return (
+            <Popover content={() => this.locationContent(location)} title={name} trigger="hover">
+              <span
+                style={{ wordWrap: 'break-word', wordBreak: 'break-word', cursor: 'pointer' }}
+                onMouseEnter={this.setCurrentTime}
+              >
+                {location ? name : '_'}
+              </span>
+            </Popover>
+          );
         },
       },
-      {
-        title: 'Subject',
-        dataIndex: 'subject',
-        key: 'subject',
-      },
+
       {
         title: 'Assigned To',
         dataIndex: ['department_assign', 'employee_assignee', 'id'],

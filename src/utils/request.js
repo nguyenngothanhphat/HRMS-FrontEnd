@@ -58,10 +58,14 @@ const request = async (url, options = {}, noAuth, apiKey = API_KEYS.BASE_API) =>
     Authorization: !noAuth ? `Bearer ${token}` : '',
   };
 
+  const { CancelToken } = axios;
+  const source = CancelToken.source();
+
   const instance = axios.create({
     baseURL: proxy[apiKey],
     headers,
     params,
+    cancelToken: source.token,
   });
 
   instance.interceptors.response.use(

@@ -63,6 +63,7 @@ class TeamCompoffTable extends PureComponent {
       title: 'Duration',
       dataIndex: 'duration',
       align: 'left',
+      render: (duration) => <span>{duration !== 0 ? Math.round(duration * 100) / 100 : '-'}</span>,
     },
     // {
     //   title: `Req’ted on `,
