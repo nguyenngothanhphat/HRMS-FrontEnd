@@ -331,6 +331,7 @@ const RequestInformation = (props) => {
       list.forEach((value) => {
         count += value.hours;
       });
+      count /= 24;
     } else {
       list.forEach((value) => {
         const { timeOfDay = '' } = value;
@@ -474,10 +475,7 @@ const RequestInformation = (props) => {
         // generate data for API
         const duration = calculateNumberOfLeaveDay(leaveDatesPayload);
 
-        if (
-          (selectedType === A || selectedType === B) &&
-          remainingDayOfSelectedType * 24 < duration
-        ) {
+        if ((selectedType === A || selectedType === B) && remainingDayOfSelectedType < duration) {
           message.error(
             `You only have ${remainingDayOfSelectedType} day(s) of ${selectedTypeName} left.`,
           );
