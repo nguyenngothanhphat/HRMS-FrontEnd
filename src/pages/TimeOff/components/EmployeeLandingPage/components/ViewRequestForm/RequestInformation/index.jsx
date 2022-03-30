@@ -164,7 +164,7 @@ class RequestInformation extends PureComponent {
       subject = '',
       fromDate = '',
       toDate = '',
-      duration = '',
+      duration: durationProp = '',
       // onDate = '',
       description = '',
       type: { name = '', type = '' } = {},
@@ -174,6 +174,8 @@ class RequestInformation extends PureComponent {
     const formatDurationTime = this.formatDurationTime(fromDate, toDate);
 
     const checkWithdrawValid = this.checkWithdrawValid(fromDate);
+
+    const duration = Math.round(durationProp * 100) / 100;
 
     return (
       <div className={styles.RequestInformation}>
