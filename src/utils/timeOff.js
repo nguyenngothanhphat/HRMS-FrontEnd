@@ -93,3 +93,7 @@ export const convert12To24 = (time) => {
   if (!time) return null;
   return moment(time, TIMEOFF_12H_FORMAT).format(TIMEOFF_24H_FORMAT);
 };
+export const WORKING_HOURS = {
+  START: '08:00',
+  END: '17:00',
+};
