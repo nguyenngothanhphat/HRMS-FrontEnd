@@ -9,7 +9,8 @@ import {
   addQuestion,
   getListFAQ,
   updateQuestion,
-  deleteQuestion
+  deleteQuestion,
+  getLocationListByParentCompany,
 } from '../services/faqs';
 
 const faqs = {
@@ -17,6 +18,8 @@ const faqs = {
   state: {
     listCategory: [],
     listFAQ: [],
+    countryList: [],
+    selectedCountry: '',
   },
   effects: {
     *addFAQCategory({ payload }, { call, put }) {
@@ -154,51 +157,70 @@ const faqs = {
       return response;
     },
     *updateQuestion({ payload }, { call, put }) {
-        let response;
-        try {
-          response = yield call(updateQuestion, {
-            ...payload,
+      let response;
+      try {
+        response = yield call(updateQuestion, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message: 'Update FAQ Successfully' });
+        yield put({
+          type: 'fetchListFAQ',
+          payload: {
             tenantId: getCurrentTenant(),
             company: getCurrentCompany(),
-          });
-          const { statusCode } = response;
-          if (statusCode !== 200) throw response;
-          notification.success({ message: 'Update FAQ Successfully' });
-          yield put({
-            type: 'fetchListFAQ',
-            payload: {
-              tenantId: getCurrentTenant(),
-              company: getCurrentCompany(),
-            },
-          });
-        } catch (error) {
-          dialog(error);
-        }
-        return response;
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
     },
     *deleteQuestion({ payload }, { call, put }) {
-        let response;
-        try {
-          response = yield call(deleteQuestion, {
-            ...payload,
+      let response;
+      try {
+        response = yield call(deleteQuestion, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message: 'Delete question Successfully' });
+        yield put({
+          type: 'fetchListFAQ',
+          payload: {
             tenantId: getCurrentTenant(),
             company: getCurrentCompany(),
-          });
-          const { statusCode } = response;
-          if (statusCode !== 200) throw response;
-          notification.success({ message: 'Delete question Successfully' });
-          yield put({
-            type: 'fetchListFAQ',
-            payload: {
-              tenantId: getCurrentTenant(),
-              company: getCurrentCompany(),
-            },
-          });
-        } catch (error) {
-          dialog(error);
-        }
-        return response;
-      },
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchListLocationEffect({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getLocationListByParentCompany, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { countryList: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
   },
   reducers: {
     save(state, action) {

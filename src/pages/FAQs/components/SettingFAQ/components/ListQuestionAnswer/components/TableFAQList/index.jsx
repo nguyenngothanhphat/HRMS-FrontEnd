@@ -12,7 +12,7 @@ import styles from './index.less';
 
 @connect(({ loading, faqs: { listFAQ = [] } = {} }) => ({
   loadingGetList: loading.effects['faqs/fetchListFAQ'],
-//   loadingSearch: loading.effects['faqs/searchNameQuestion'],
+  //   loadingSearch: loading.effects['faqs/searchNameQuestion'],
   listFAQ,
 }))
 class TableFAQList extends Component {
@@ -66,16 +66,19 @@ class TableFAQList extends Component {
       getPageAndSize = () => {},
       listFAQ = [],
     } = this.props;
-    const listQuestion = listFAQ ? listFAQ.map((obj) => {
-      return {
-        id: obj._id,
-        question: obj.question || '-',
-        answer: obj.answer || '-',
-        addBy: obj.infoEmployee.length > 0 ? obj.infoEmployee[0].generalInfoInfo.legalName : '-',
-        addOn: obj.createdAt ? moment(obj.createdAt).format('DD/MM/YYYY') : '-',
-        nameCategory: obj.category.length > 0 ? obj.category[0].category : '-'
-      }
-    }) : []
+    const listQuestion = listFAQ
+      ? listFAQ.map((obj) => {
+          return {
+            id: obj._id,
+            question: obj.question || '-',
+            answer: obj.answer || '-',
+            addBy:
+              obj.infoEmployee.length > 0 ? obj.infoEmployee[0].generalInfoInfo.legalName : '-',
+            addOn: obj.createdAt ? moment(obj.createdAt).format('DD/MM/YYYY') : '-',
+            nameCategory: obj.category.length > 0 ? obj.category[0].category : '-',
+          };
+        })
+      : [];
     const columns = [
       {
         title: 'Category Name',
@@ -164,7 +167,7 @@ class TableFAQList extends Component {
           mode="multiple"
           item={item}
         />
-        <ViewQuestionAnswer 
+        <ViewQuestionAnswer
           visible={viewQuestion}
           onClose={() => this.setState({ viewQuestion: false })}
           mode="multiple"

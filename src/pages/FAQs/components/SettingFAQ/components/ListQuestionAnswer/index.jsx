@@ -1,15 +1,17 @@
-import React, { Component } from 'react';
-import { Button, Row, Col, Input } from 'antd';
-import { connect } from 'umi';
 // import { debounce } from 'lodash';
 import { SearchOutlined } from '@ant-design/icons';
-import AddIcon from '@/assets/policiesRegulations/add.svg';
+import { Button, Input } from 'antd';
+import React, { Component } from 'react';
+import { connect } from 'umi';
 import FilterIcon from '@/assets/policiesRegulations/filter.svg';
-import styles from './index.less';
+import AddIcon from '@/assets/policiesRegulations/add.svg';
 import AddQuestionAnswer from './components/AddQuestionAnswer';
 import TableFAQList from './components/TableFAQList';
+import styles from './index.less';
 
-@connect()
+@connect(({ faqs: { selectedCountry } = {} }) => ({
+  selectedCountry,
+}))
 class ListQuestionAnswer extends Component {
   constructor(props) {
     super(props);
@@ -22,11 +24,25 @@ class ListQuestionAnswer extends Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    this.fetchData();
+  }
+
+  componentDidUpdate = (prevProps) => {
+    const { selectedCountry = '' } = this.props;
+    if (prevProps.selectedCountry !== selectedCountry) {
+      this.fetchData();
+    }
+  };
+
+  fetchData = () => {
+    const { dispatch, selectedCountry = '' } = this.props;
     dispatch({
       type: 'faqs/fetchListFAQ',
+      payload: {
+        country: [selectedCountry],
+      },
     });
-  }
+  };
 
   render() {
     const { visibleModal, pageSelected, size } = this.state;
@@ -45,10 +61,7 @@ class ListQuestionAnswer extends Component {
               <img src={FilterIcon} alt="FilterIcon" />
             </div>
             <div className={styles.searchInp}>
-              <Input
-                placeholder="Search by name"
-                prefix={<SearchOutlined />}
-              />
+              <Input placeholder="Search by name" prefix={<SearchOutlined />} />
             </div>
           </div>
           <AddQuestionAnswer
@@ -57,15 +70,13 @@ class ListQuestionAnswer extends Component {
             mode="multiple"
           />
         </div>
-        <Row>
-          <Col span={24}>
-            <TableFAQList
-              pageSelected={pageSelected}
-              size={size}
-              getPageAndSize={this.getPageAndSize}
-            />
-          </Col>
-        </Row>
+        <div className={styles.container}>
+          <TableFAQList
+            pageSelected={pageSelected}
+            size={size}
+            getPageAndSize={this.getPageAndSize}
+          />
+        </div>
       </div>
     );
   }
