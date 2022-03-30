@@ -132,14 +132,11 @@ const RequestInformation = (props) => {
       const { leaveTimeLists = [] } = values;
       if (leaveTimeLists && leaveTimeLists.length > 0) {
         const leaveTimeListsTemp = leaveTimeLists.map((x) => {
-          const hours = getHours(x.startTime, x.endTime, TIMEOFF_12H_FORMAT)
-          if (hours) {
-            return {
-              ...x,
-              hours,
-            };
-          }
-          return x;
+          const hours = getHours(x.startTime, x.endTime, TIMEOFF_12H_FORMAT);
+          return {
+            ...x,
+            hours: hours || 0,
+          };
         });
         form.setFieldsValue({
           leaveTimeLists: leaveTimeListsTemp,
