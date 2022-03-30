@@ -20,6 +20,7 @@ import {
   TIMEOFF_12H_FORMAT,
   TIMEOFF_24H_FORMAT,
   getHours,
+  convert24To12,
 } from '@/utils/timeOff';
 import styles from './index.less';
 import LeaveTimeRow from './components/LeaveTimeRow';
@@ -83,8 +84,11 @@ const RequestInformation = (props) => {
   const [currentAllowanceState, setCurrentAllowanceState] = useState(0);
   const [invalidDates, setInvalidDates] = useState([]);
   const [dateLists, setDateLists] = useState([]);
+  const [isModified, setIsModified] = useState(false); // when start editing a request, if there are any changes, isModified = true
 
   const BY_HOUR = TIMEOFF_INPUT_TYPE_BY_LOCATION[currentLocationID] === TIMEOFF_INPUT_TYPE.HOUR;
+  const BY_WHOLE_DAY =
+    TIMEOFF_INPUT_TYPE_BY_LOCATION[currentLocationID] === TIMEOFF_INPUT_TYPE.WHOLE_DAY;
 
   // functions
   const getTableTabIndexOfSubmittedType = (selectedTypeTemp, selectedTypeNameTemp) => {
@@ -126,12 +130,10 @@ const RequestInformation = (props) => {
     });
   };
 
-  const generateHours = () => {
+  const generateHours = (list) => {
     if (BY_HOUR) {
-      const values = form.getFieldsValue();
-      const { leaveTimeLists = [] } = values;
-      if (leaveTimeLists && leaveTimeLists.length > 0) {
-        const leaveTimeListsTemp = leaveTimeLists.map((x) => {
+      if (list && list.length > 0) {
+        const leaveTimeListsTemp = list.map((x) => {
           const hours = getHours(x.startTime, x.endTime, TIMEOFF_12H_FORMAT);
           return {
             ...x,
@@ -603,7 +605,7 @@ const RequestInformation = (props) => {
                           : { fontSize: 12, color: 'black' }
                       }
                     >
-                      {remaining}
+                      {Math.round(remaining * 100) / 100}
                     </span>
                     /{foundType?.noOfDays || '0'} days
                   </span>
@@ -764,8 +766,8 @@ const RequestInformation = (props) => {
       if (BY_HOUR) {
         leaveTimeLists = resultDates.map((date, index) => {
           return {
-            startTime: viewingLeaveDates[index].startTime || null,
-            endTime: viewingLeaveDates[index].endTime || null,
+            startTime: convert24To12(viewingLeaveDates[index].startTime),
+            endTime: convert24To12(viewingLeaveDates[index].endTime),
             hours: viewingLeaveDates[index].hours || null,
           };
         });
@@ -784,7 +786,9 @@ const RequestInformation = (props) => {
         leaveTimeLists,
       });
 
-      generateHours();
+      if (BY_HOUR) {
+        generateHours(leaveTimeLists);
+      }
       getRemainingDay(viewingType.name);
     }
   };
@@ -803,7 +807,10 @@ const RequestInformation = (props) => {
 
   // auto generate hours when select start time & end time for US
   const onValuesChange = () => {
-    generateHours();
+    const values = form.getFieldsValue();
+    const { leaveTimeLists = [] } = values;
+    generateHours(leaveTimeLists);
+    setIsModified(true);
   };
 
   // USE EFFECT
@@ -878,7 +885,8 @@ const RequestInformation = (props) => {
   }, [durationFrom, currentAllowanceState]);
 
   useEffect(() => {
-    if (dateLists.length > 0) {
+    // only generate leave time lists when modified. If editing a ticket, no need to generate
+    if (dateLists.length > 0 && isModified) {
       const initialValuesForLeaveTimesList = dateLists.map((x) => {
         // for non US user
         if (!BY_HOUR) {
@@ -892,7 +900,6 @@ const RequestInformation = (props) => {
         }
         return { period: WHOLE_DAY };
       });
-
       form.setFieldsValue({
         leaveTimeLists: initialValuesForLeaveTimesList,
       });
@@ -1042,6 +1049,7 @@ const RequestInformation = (props) => {
                           needValidate={needValidate}
                           findInvalidHalfOfDay={findInvalidHalfOfDay}
                           BY_HOUR={BY_HOUR}
+                          BY_WHOLE_DAY={BY_WHOLE_DAY}
                           form={form}
                         />
                       );
