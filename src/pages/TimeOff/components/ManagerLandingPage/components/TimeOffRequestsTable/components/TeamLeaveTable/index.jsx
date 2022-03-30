@@ -124,6 +124,9 @@ class TeamLeaveTable extends PureComponent {
         width: COLUMN_WIDTH[TYPE].DURATION,
         dataIndex: 'duration',
         align: 'center',
+        render: (duration) => (
+          <span>{duration !== 0 ? Math.round(duration * 100) / 100 : '-'}</span>
+        ),
       },
       {
         title: 'Comment',
