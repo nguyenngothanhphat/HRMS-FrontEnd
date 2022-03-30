@@ -477,7 +477,6 @@ const RequestInformation = (props) => {
     } = values;
 
     const leaveDatesPayload = generateLeaveDates(leaveTimeLists);
-    console.log('🚀 ~ onFinish ~ leaveDatesPayload', leaveDatesPayload);
 
     // ON SUBMIT
     if (buttonState === 2) {
@@ -487,45 +486,39 @@ const RequestInformation = (props) => {
         // generate data for API
         const duration = calculateNumberOfLeaveDay(leaveDatesPayload);
 
-        if ((selectedType === A || selectedType === B) && remainingDayOfSelectedType < duration) {
-          message.error(
-            `You only have ${remainingDayOfSelectedType} day(s) of ${selectedTypeName} left.`,
-          );
-        } else {
-          const payload = {
-            type: timeOffType,
-            status: IN_PROGRESS,
-            subject,
-            fromDate: durationFrom,
-            toDate: durationTo,
-            leaveDates: leaveDatesPayload,
-            onDate: moment.utc(),
-            description,
-            duration: Math.round(duration * 100) / 100,
-            cc: personCC,
-            tenantId: getCurrentTenant(),
-            company: employee.company,
-          };
+        const payload = {
+          type: timeOffType,
+          status: IN_PROGRESS,
+          subject,
+          fromDate: durationFrom,
+          toDate: durationTo,
+          leaveDates: leaveDatesPayload,
+          onDate: moment.utc(),
+          description,
+          duration: Math.round(duration * 100) / 100,
+          cc: personCC,
+          tenantId: getCurrentTenant(),
+          company: employee.company,
+        };
 
-          let type = '';
-          if (action === NEW_LEAVE_REQUEST) {
-            payload.employee = employeeId;
-            payload.approvalManager = managerId; // id
-            type = 'timeOff/addLeaveRequest';
-          } else if (action === EDIT_LEAVE_REQUEST) {
-            const { employee: { _id = '' } = {} } = viewingLeaveRequest;
-            payload.employee = _id;
-            payload._id = viewingId;
-            type = 'timeOff/updateLeaveRequestById';
-          }
-
-          // dispatch({
-          //   type,
-          //   payload,
-          // }).then((statusCode) => {
-          //   if (statusCode === 200) setShowSuccessModal(true);
-          // });
+        let type = '';
+        if (action === NEW_LEAVE_REQUEST) {
+          payload.employee = employeeId;
+          payload.approvalManager = managerId; // id
+          type = 'timeOff/addLeaveRequest';
+        } else if (action === EDIT_LEAVE_REQUEST) {
+          const { employee: { _id = '' } = {} } = viewingLeaveRequest;
+          payload.employee = _id;
+          payload._id = viewingId;
+          type = 'timeOff/updateLeaveRequestById';
         }
+
+        dispatch({
+          type,
+          payload,
+        }).then((statusCode) => {
+          if (statusCode === 200) setShowSuccessModal(true);
+        });
       }
     } else if (buttonState === 1) {
       onSaveDraft(values);
