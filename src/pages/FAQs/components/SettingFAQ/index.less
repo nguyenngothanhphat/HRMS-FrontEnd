@@ -1,8 +1,13 @@
 .SettingFAQ {
   .header {
-    padding: 15px 32px 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
     background: #ffffff;
-    box-shadow: 0px 1px 2px #eeeeee;
+    border-bottom: 1px solid #eeeeee;
+    // box-shadow: 0px 1px 2px #eeeeee;
+    padding-inline: 24px;
     &__left {
       color: #161c29;
       font-weight: 500;
@@ -11,13 +16,45 @@
       font-style: normal;
       line-height: 21px;
     }
+    &__location {
+      :global {
+        .ant-select .ant-select-arrow {
+          color: #2c6df9;
+          transition: transform 0.2s ease-in;
+        }
+        .ant-select-open .ant-select-arrow {
+          color: #2c6df9;
+          transform: rotate(180deg);
+        }
+      }
+      .selectCountry {
+        width: 200px;
+      }
+      .optionCountry {
+        display: flex;
+        height: 20px;
+      }
+      .labelText {
+        display: flex;
+        align-items: center;
+        span {
+          font-weight: 500;
+          font-size: 12px;
+        }
+        .nameCountry {
+          font-weight: 500;
+          font-size: 12px;
+        }
+      }
+    }
   }
   .containerPolicies {
-    .setttingsTabs {
-      height: 100vh;
-      padding-top: 40px;
+    .settingTabs {
       padding-left: 20px;
       background: #ffffff;
+      border-radius: 0 0 8px 0;
+      // height: 100vh;
+      padding-block: 24px;
       :global {
         .ant-menu-item-only-child {
           height: 51px;
@@ -34,6 +71,14 @@
           font-weight: bold;
           background: rgba(44, 109, 249, 0.12);
           border-right: none !important;
+        }
+        .ant-menu-inline,
+        .ant-menu-vertical,
+        .ant-menu-vertical-left {
+          border-right: none;
+        }
+        .ant-menu-title-content {
+          width: 100%;
         }
       }
     }
