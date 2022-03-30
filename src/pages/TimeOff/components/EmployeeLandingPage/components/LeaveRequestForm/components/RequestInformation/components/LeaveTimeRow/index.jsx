@@ -84,6 +84,10 @@ const LeaveTimeRow = (props) => {
                   maximum={TIMEOFF_MAX_LEAVE_HOUR}
                   minuteStep={MINUTE_STEP}
                   suffixIcon={<img src={ClockIcon} alt="" />}
+                  showSearch
+                  allowClear
+                  minDisabledTooltip="Minimum timeoff needs to be 2 hours"
+                  maxDisabledTooltip="Maximum timeoff can only be 8 hours"
                 />
               </Form.Item>
             </Col>
@@ -104,12 +108,16 @@ const LeaveTimeRow = (props) => {
                   maximum={TIMEOFF_MAX_LEAVE_HOUR}
                   minuteStep={MINUTE_STEP}
                   suffixIcon={<img src={ClockIcon} alt="" />}
+                  showSearch
+                  allowClear
+                  minDisabledTooltip="Minimum timeoff needs to be 2 hours"
+                  maxDisabledTooltip="Maximum timeoff can only be 8 hours"
                 />
               </Form.Item>
             </Col>
             <Col span={TIMEOFF_COL_SPAN_2.HOUR}>
               <Form.Item name={[index, 'hours']}>
-                <Input disabled defaultValue={0} />
+                <Input disabled defaultValue={0} placeholder="0" />
               </Form.Item>
             </Col>
           </Row>
