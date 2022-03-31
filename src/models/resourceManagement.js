@@ -49,7 +49,7 @@ const resourceManagement = {
     selectedDivisions: [],
     selectedLocations: [], // empty for all
 
-    filter: [],
+    filter: {},
   },
   effects: {
     *getProjectList({ payload }, { call, put }) {
