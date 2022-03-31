@@ -50,6 +50,7 @@ const resourceManagement = {
     selectedLocations: [], // empty for all
 
     filter: {},
+    customerList: [],
   },
   effects: {
     *getProjectList({ payload }, { call, put }) {
@@ -256,6 +257,19 @@ const resourceManagement = {
         yield put({
           type: 'save',
           payload: { projectTable: data },
+        });
+        const customerList =
+          data.length > 0
+            ? data.map((item) => {
+                return {
+                  customerId: item.customerId || '',
+                  customerName: item.customerName || '',
+                };
+              })
+            : [];
+        yield put({
+          type: 'save',
+          payload: { customerList },
         });
       } catch (error) {
         dialog(error);
