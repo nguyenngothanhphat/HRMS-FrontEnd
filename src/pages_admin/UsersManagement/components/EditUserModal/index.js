@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
-import { Modal, Form, Input, DatePicker, Button, Select, notification, Skeleton } from 'antd';
+import { Modal, Form, Input, DatePicker, Button, Select, Skeleton } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
+import TerminateModal from '../TerminateModal';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -46,6 +47,8 @@ class EditUserModal extends PureComponent {
     this.state = {
       companyId: '',
       locationId: '',
+      openModal: false,
+      userProfile: {},
     };
   }
 
@@ -115,52 +118,58 @@ class EditUserModal extends PureComponent {
   };
 
   onFinish = (values) => {
-    const { dispatch, employeeDetail = {} } = this.props;
-    const { _id = '', tenant = '', generalInfo: { _id: generalInfoId = '' } = {} } = employeeDetail;
-    const { companyId, locationId } = this.state;
-    const { workEmail = '', firstName = '', lastName = '', roles = [], status = '' } = values;
+    const { closeEditModal = () => {} } = this.props;
+    // const { _id = '', tenant = '', generalInfo: { _id: generalInfoId = '' } = {} } = employeeDetail;
+    // const { companyId, locationId } = this.state;
+    // const { workEmail = '', firstName = '', lastName = '', roles = [], status = '' } = values;
+    this.setState({ openModal: true, userProfile: values });
+    closeEditModal(true);
+    // dispatch({
+    //   type: 'usersManagement/updateRolesByEmployee',
+    //   payload: {
+    //     employee: _id,
+    //     roles,
+    //     tenantId: tenant,
+    //   },
+    // });
 
-    dispatch({
-      type: 'usersManagement/updateRolesByEmployee',
-      payload: {
-        employee: _id,
-        roles,
-        tenantId: tenant,
-      },
-    });
+    // dispatch({
+    //   type: 'usersManagement/updateGeneralInfo',
+    //   payload: {
+    //     id: generalInfoId,
+    //     workEmail,
+    //     firstName,
+    //     lastName,
+    //     tenantId: tenant,
+    //   },
+    // });
 
-    dispatch({
-      type: 'usersManagement/updateGeneralInfo',
-      payload: {
-        id: generalInfoId,
-        workEmail,
-        firstName,
-        lastName,
-        tenantId: tenant,
-      },
-    });
-
-    dispatch({
-      type: 'usersManagement/updateEmployee',
-      payload: {
-        id: _id,
-        location: locationId,
-        company: companyId,
-        status,
-        tenantId: tenant,
-      },
-    }).then((statusCode) => {
-      if (statusCode === 200) {
-        notification.success({
-          message: 'Update user successfully',
-        });
-        const { closeEditModal = () => {} } = this.props;
-        closeEditModal(true);
-      }
-    });
+    // dispatch({
+    //   type: 'usersManagement/updateEmployee',
+    //   payload: {
+    //     id: _id,
+    //     location: locationId,
+    //     company: companyId,
+    //     status,
+    //     tenantId: tenant,
+    //   },
+    //
+    // }).then((statusCode) => {
+    //   if (statusCode === 200) {
+    //     notification.success({
+    //       message: 'Update user successfully',
+    //     });
+    //     const { closeEditModal = () => {} } = this.props;
+    //     closeEditModal(true);
+    //   }
+    // });
   };
 
-  onFinishFailed = (errorInfo) => {};
+  // onFinishFailed = (errorInfo) => {};
+
+  handleCandelModal = () => {
+    this.setState({ openModal: false });
+  };
 
   renderHeaderModal = () => {
     const { titleModal = 'Edit User Profile' } = this.props;
@@ -186,7 +195,7 @@ class EditUserModal extends PureComponent {
       loadingUserProfile = false,
     } = this.props;
 
-    const { companyId } = this.state;
+    const { companyId, locationId, openModal, userProfile } = this.state;
     const listLocationByCurrentCompany = listLocationsByCompany.filter((location) => {
       return location.company?._id === companyId || location.company === companyId;
     });
@@ -268,7 +277,7 @@ class EditUserModal extends PureComponent {
                     },
                     {
                       required: false,
-                      type: "email",
+                      type: 'email',
                       message: 'Enter a valid email address!',
                     },
                   ]}
@@ -370,6 +379,17 @@ class EditUserModal extends PureComponent {
             </>
           )}
         </Modal>
+        <TerminateModal
+          // loading={loadingTerminateReason}
+          visible={openModal}
+          handleSubmit={this.handleSubmit}
+          handleCandelModal={this.handleCandelModal}
+          // valueReason={valueReason}
+          userProfile={userProfile}
+          companyId={companyId}
+          locationId={locationId}
+          onChange={this.onChangeReason}
+        />
       </>
     );
   }

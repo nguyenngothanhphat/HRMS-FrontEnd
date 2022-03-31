@@ -1,0 +1,113 @@
+.terminateModal {
+  :global {
+    .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+      height: 42px;
+    }
+    .ant-select-single.ant-select-show-arrow .ant-select-selection-item {
+      margin-top: 5px;
+    }
+    .ant-modal-content {
+      box-sizing: border-box;
+      width: 554px;
+      height: auto;
+      background-color: #fff;
+      border-right: 1px solid #d6dce0;
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
+    .ant-modal-body {
+      padding: 0px 0px 1px 0px;
+    }
+
+    .ant-modal-close-x {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 54px;
+      height: 48px;
+      color: #fff;
+      background-color: #2c6df9;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+      &:active {
+        opacity: 0.5;
+      }
+    }
+
+    .ant-modal-footer {
+      padding: 10px 67px;
+    }
+
+    .ant-form-item-control-input-content {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+
+  .contentModal {
+    padding: 50px 67px 0px;
+
+    .titleModal {
+      padding-bottom: 25px;
+      color: #2560e0;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 18px;
+    }
+
+    .formModal {
+      display: flex;
+      flex-direction: column;
+      :global {
+        .ant-form-item-label {
+          text-align: left;
+        }
+      }
+
+      .fieldModal {
+        border-radius: 5px;
+      }
+    }
+
+    .datePickerForm {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+
+      .datePicker {
+        border-radius: 5px;
+      }
+    }
+  }
+
+  .flexContent {
+    height: 46px;
+
+    .btnGroup {
+      display: inline-block;
+      width: 110px;
+      height: 35px;
+      margin-top: 4px;
+      color: white;
+      font-weight: 500;
+      font-size: 14px;
+      background-color: #ffa100;
+      border: 1px solid #ffa100;
+      border-radius: 25px;
+      cursor: pointer;
+      &:active {
+        opacity: 0.5;
+      }
+    }
+
+    .btnSubmit {
+      background-color: #ffa100;
+    }
+    .btnCancel {
+      margin-right: 20px;
+      color: #ffa100;
+      background-color: #fff;
+    }
+  }
+}
