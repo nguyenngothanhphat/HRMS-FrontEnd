@@ -3,9 +3,10 @@ import { Button, Col, Form, Input, Modal, Row } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ loading, faqs: { listCategory = [] } = {} }) => ({
+@connect(({ loading, faqs: { listCategory = [], selectedCountry } = {} }) => ({
   loadingAdd: loading.effects['faqs/addFAQCategory'],
   listCategory,
+  selectedCountry
 }))
 class AddNewCategory extends PureComponent {
   formRef = React.createRef();
@@ -22,16 +23,23 @@ class AddNewCategory extends PureComponent {
   };
 
   handleFinish = ({ category }) => {
-    const { onClose = () => {}, dispatch } = this.props;
+    const { onClose = () => {}, dispatch, selectedCountry = '' } = this.props;
     dispatch({
       type: 'faqs/addFAQCategory',
       payload: {
         category,
+        country: [selectedCountry]
       },
     }).then((response) => {
       const { statusCode } = response;
       if (statusCode === 200) {
         onClose();
+        dispatch({
+          type: 'faqs/fetchListFAQCategory',
+          payload: {
+            country: [selectedCountry]
+          },
+        })
       }
     });
   };

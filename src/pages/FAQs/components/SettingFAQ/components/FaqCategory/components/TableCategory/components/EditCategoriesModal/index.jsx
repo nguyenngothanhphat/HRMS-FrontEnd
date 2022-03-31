@@ -3,9 +3,10 @@ import { Button, Col, Form, Input, Modal, Row } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ loading, faqs: { listCategory = [] } = {} }) => ({
+@connect(({ loading, faqs: { listCategory = [], selectedCountry } = {} }) => ({
   loadingUpdate: loading.effects['faqs/updateFAQCategory'],
   listCategory,
+  selectedCountry
 }))
 class EditCategoriesModal extends Component {
   formRef = React.createRef();
@@ -22,7 +23,7 @@ class EditCategoriesModal extends Component {
   };
 
   handleFinish = ({ category }) => {
-    const { dispatch, onClose = () => {}, item: { id = '' } = {} } = this.props;
+    const { dispatch, onClose = () => {}, item: { id = '' } = {}, selectedCountry = '' } = this.props;
     dispatch({
       type: 'faqs/updateFAQCategory',
       payload: {
@@ -33,6 +34,12 @@ class EditCategoriesModal extends Component {
       const { statusCode } = response;
       if (statusCode === 200) {
         onClose();
+        dispatch({
+          type: 'faqs/fetchListFAQCategory',
+          payload: {
+            country: [selectedCountry]
+          },
+        })
       }
     });
   };
