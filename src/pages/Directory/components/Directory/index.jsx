@@ -258,12 +258,16 @@ const DirectoryComponent = (props) => {
     }
   };
 
-  useEffect(() => {
+  const refreshData = () => {
     renderData({
       ...filter,
       page: pageSelected || 1,
       limit: size,
     });
+  };
+
+  useEffect(() => {
+    refreshData();
   }, [JSON.stringify(filter), JSON.stringify(listCountry), pageSelected, size, tabId]);
 
   const renderListEmployee = () => {
@@ -328,7 +332,7 @@ const DirectoryComponent = (props) => {
         'First Name': item.firstName,
         'Last Name': item.lastName,
         'Middle Name': item.middleName,
-        'Gender': item.Gender,
+        Gender: item.Gender,
         'Date of Birth': item.dateOfBirth,
         'Joined Date': item.joinDate,
         Location: item.location,
@@ -465,6 +469,7 @@ const DirectoryComponent = (props) => {
               totalActiveEmployee={totalActiveEmployee}
               totalInactiveEmployee={totalInactiveEmployee}
               totalMyTeam={totalMyTeam}
+              refreshData={refreshData}
             />
           </Content>
         </Layout>
@@ -537,7 +542,7 @@ const DirectoryComponent = (props) => {
         titleModal="Add Employee"
         visible={visible}
         handleCancel={handleCancel}
-        handleRefresh={renderData}
+        handleRefresh={refreshData}
       />
       {visibleImportEmployee && (
         <ModalImportEmployee
@@ -545,7 +550,7 @@ const DirectoryComponent = (props) => {
           titleModal="Import Employees"
           visible={visibleImportEmployee}
           handleCancel={handleCancel}
-          handleRefresh={renderData}
+          handleRefresh={refreshData}
         />
       )}
     </div>

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { Modal, Input, Form, Button, DatePicker } from 'antd';
+import { Modal, Input, Form, Button, DatePicker, notification } from 'antd';
+import { connect } from 'umi';
 import moment from 'moment';
-
 import styles from './index.less';
 
 const dateFormat = 'MM.DD.YY';
 
 const { TextArea } = Input;
 
-const ModalTerminate = (props) => {
+const TerminateModal = (props) => {
   const [form] = Form.useForm();
   const [date, setDate] = useState('');
 
@@ -16,13 +16,72 @@ const ModalTerminate = (props) => {
     visible = false,
     valueReason = '',
     // onChange = () => {},
-    handleSubmit = () => {},
     handleCandelModal = () => {},
     loading,
+    approvalflow = [],
+    userProfile: { workEmail = '', firstName = '', lastName = '', roles = [], status = '' } = {},
+    employeeDetail: { _id = '', tenant = '', generalInfo: { _id: generalInfoId = '' } = {} } = {},
+    locationId,
+    companyId,
+    dispatch,
   } = props;
 
   const handleFinish = (values) => {
-    handleSubmit(values);
+    const { reason, lastWorkingDate } = values;
+    let approvalFlowID = '';
+    approvalflow.forEach((item) => {
+      approvalFlowID = item._id;
+    });
+    const payload = {
+      action: 'submit',
+      employee: generalInfoId,
+      reasonForLeaving: reason,
+      approvalFlow: approvalFlowID,
+      lastWorkingDate,
+    };
+
+    dispatch({
+      type: 'usersManagement/updateRolesByEmployee',
+      payload: {
+        employee: _id,
+        roles,
+        tenantId: tenant,
+      },
+    });
+
+    dispatch({
+      type: 'usersManagement/updateGeneralInfo',
+      payload: {
+        id: generalInfoId,
+        workEmail,
+        firstName,
+        lastName,
+        tenantId: tenant,
+      },
+    });
+
+    dispatch({
+      type: 'usersManagement/updateEmployee',
+      payload: {
+        id: _id,
+        location: locationId,
+        company: companyId,
+        status,
+        tenantId: tenant,
+      },
+    }).then((statusCode) => {
+      if (statusCode === 200) {
+        notification.success({
+          message: 'Update user successfully',
+        });
+        handleCandelModal();
+      }
+    });
+
+    dispatch({
+      type: 'offboarding/terminateReason',
+      payload,
+    });
   };
 
   const changeDate = (_, dateValue) => {
@@ -109,4 +168,7 @@ const ModalTerminate = (props) => {
   );
 };
 
-export default ModalTerminate;
+export default connect(({ loading, offboarding: { approvalflow = [] } = {} }) => ({
+  approvalflow,
+  loading: loading.effects['offboarding/terminateReason'],
+}))(TerminateModal);
