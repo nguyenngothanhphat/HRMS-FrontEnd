@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Input, Popover } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
-import FilterButton from '@/components/FilterButton';
 import closeIcon from '@/assets/closeIcon.svg';
+import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterButton from '@/components/FilterButton';
+import FilterPopover from '@/components/FilterPopover';
 import FilterForm from './components/FilterForm';
 import styles from './index.less';
 
@@ -43,24 +43,21 @@ class SearchTable extends Component {
     return (
       <div className={styles.searchFilter}>
         <div>
-          <Popover
+          <FilterPopover
             content={<FilterForm visible={visible} />}
             title={this.renderTitle()}
             trigger="click"
             placement="bottomRight"
             visible={visible}
             onVisibleChange={this.openFilter}
-            overlayClassName={styles.filterPopoverTicket}
+            realTime
           >
             <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} />
-          </Popover>
+          </FilterPopover>
         </div>
-        <Input
-          size="large"
+        <CustomSearchBox
           placeholder="Search by Name, user ID"
           onChange={(e) => onChangeSearch(e.target.value)}
-          prefix={<SearchOutlined />}
-          className={styles.searchFilter__input}
         />
       </div>
     );

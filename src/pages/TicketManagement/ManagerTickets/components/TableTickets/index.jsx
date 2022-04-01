@@ -202,37 +202,23 @@ class TableTickets extends PureComponent {
     history.push(`/directory/employee-profile/${userId}`);
   };
 
-  render() {
-    const {
-      data = [],
-      textEmpty = 'No tickets found',
-      loading,
-      pageSelected,
-      size,
-      getPageAndSize = () => {},
-    } = this.props;
-    const pagination = {
-      position: ['bottomLeft'],
-      total: data.length,
-      showTotal: (total, range) => (
-        <span>
-          Showing{' '}
-          <b>
-            {range[0]} - {range[1]}
-          </b>{' '}
-          of {data.length}
-        </span>
-      ),
-      pageSize: size,
-      current: pageSelected,
-      onChange: (page, pageSize) => {
-        getPageAndSize(page, pageSize);
-      },
-    };
+  renderTag = (priority) => {
+    if (priority === 'High') {
+      return <div className={styles.priorityHigh}>{priority}</div>;
+    }
+    if (priority === 'Normal') {
+      return <div className={styles.priorityMedium}>{priority}</div>;
+    }
+    if (priority === 'Urgent') {
+      return <div className={styles.priorityUrgent}>{priority}</div>;
+    }
+    return <div className={styles.priorityLow}>{priority}</div>;
+  };
 
+  getColumns = () => {
+    let filterData;
     const { listEmployee, locationsList } = this.props;
     const { search } = this.state;
-    let filterData;
     if (search.length) {
       const searchPattern = new RegExp(search.map((term) => `(?=.*${term})`).join(''), 'i');
       filterData = listEmployee.filter((option) =>
@@ -241,7 +227,7 @@ class TableTickets extends PureComponent {
     } else {
       filterData = listEmployee;
     }
-    const columns = [
+    return [
       {
         title: 'Ticket ID',
         dataIndex: 'id',
@@ -283,16 +269,7 @@ class TableTickets extends PureComponent {
         dataIndex: 'priority',
         key: 'priority',
         render: (priority) => {
-          if (priority === 'High') {
-            return <div className={styles.priorityHigh}>{priority}</div>;
-          }
-          if (priority === 'Normal') {
-            return <div className={styles.priorityMedium}>{priority}</div>;
-          }
-          if (priority === 'Urgent') {
-            return <div className={styles.priorityUrgent}>{priority}</div>;
-          }
-          return <div className={styles.priorityLow}>{priority}</div>;
+          return <div className={styles.priority}>{this.renderTag(priority)}</div>;
         },
         sorter: (a, b) => {
           return a.priority && a.priority.localeCompare(`${b.priority}`);
@@ -313,7 +290,7 @@ class TableTickets extends PureComponent {
         sortDirections: ['ascend', 'descend'],
       },
       {
-        title: 'Requester Name ',
+        title: 'Requester Name',
         dataIndex: 'employeeRaise',
         key: 'requesterName',
         render: (employeeRaise = {}) => {
@@ -321,7 +298,7 @@ class TableTickets extends PureComponent {
             <UserProfilePopover
               placement="top"
               trigger="hover"
-              data={{ ...employeeRaise, ...employeeRaise.generalInfo }}
+              data={{ ...employeeRaise, ...employeeRaise?.generalInfo }}
             >
               <span
                 className={styles.userID}
@@ -348,20 +325,25 @@ class TableTickets extends PureComponent {
         dataIndex: 'location',
         key: 'location',
         render: (location) => {
-          const locationNew =
-            locationsList.length > 0 ? locationsList.filter((val) => val._id === location) : [];
-          const name = locationNew.length > 0 ? locationNew[0].name : '';
-          // return <span>{name}</span>;
-          return (
-            <Popover content={this.locationContent(location)} title={name} trigger="hover">
-              <span
-                style={{ wordWrap: 'break-word', wordBreak: 'break-word', cursor: 'pointer' }}
-                onMouseEnter={this.setCurrentTime}
+          if (location) {
+            const locationNew = locationsList.find((val) => val._id === location);
+
+            return (
+              <Popover
+                content={this.locationContent(location)}
+                title={locationNew?.name}
+                trigger="hover"
               >
-                {location ? name : '_'}
-              </span>
-            </Popover>
-          );
+                <span
+                  style={{ wordWrap: 'break-word', wordBreak: 'break-word', cursor: 'pointer' }}
+                  onMouseEnter={this.setCurrentTime}
+                >
+                  {locationNew?.name}
+                </span>
+              </Popover>
+            );
+          }
+          return '';
         },
         sorter: (a, b) => {
           const locationA = locationsList.find((val) => val._id === a.location);
@@ -376,27 +358,23 @@ class TableTickets extends PureComponent {
 
       {
         title: 'Assigned To',
-        dataIndex: ['department_assign', 'employee_assignee', 'id'],
-        key: 'assign',
+        dataIndex: 'employeeAssignee',
+        key: 'employeeAssignee',
         fixed: 'right',
-        render: (departmentAssign, employeeAssignee) => {
-          if (employeeAssignee.employee_assignee !== '') {
-            const employeeAssigned = listEmployee.find(
-              (val) => val._id === employeeAssignee.employee_assignee,
-            );
+        render: (employeeAssignee) => {
+          if (employeeAssignee) {
             return (
               <UserProfilePopover
                 placement="top"
                 trigger="hover"
-                data={{ ...employeeAssigned, ...employeeAssigned.generalInfo }}
+                data={{ ...employeeAssignee, ...employeeAssignee?.generalInfo }}
               >
                 <span
+                  className={styles.userID}
                   style={{ color: '#2c6df9' }}
-                  onClick={() => this.viewProfile(employeeAssigned?.generalInfo?.userId || '')}
+                  onClick={() => this.viewProfile(employeeAssignee?.generalInfo?.userId || '')}
                 >
-                  {!isEmpty(employeeAssigned?.generalInfo)
-                    ? `${employeeAssigned?.generalInfo?.legalName}`
-                    : ''}
+                  {employeeAssignee?.generalInfo?.legalName}
                 </span>
               </UserProfilePopover>
             );
@@ -417,15 +395,13 @@ class TableTickets extends PureComponent {
                   <div style={{ overflowY: 'scroll', maxHeight: '200px' }}>
                     {!isEmpty(filterData) ? (
                       filterData.map((val) => {
-                        // const departmentID = val.department._id;
-                        // if (departmentID === employeeAssignee.department_assign) {
                         return (
                           <Menu.Item
                             onClick={() => this.handleSelectChange(val._id)}
                             key={val._id}
                             value={val._id}
                           >
-                            {val.generalInfo.legalName}
+                            {val.generalInfo?.legalName}
                           </Menu.Item>
                         );
                       })
@@ -456,6 +432,35 @@ class TableTickets extends PureComponent {
         sortDirections: ['ascend', 'descend'],
       },
     ];
+  };
+
+  render() {
+    const {
+      data = [],
+      textEmpty = 'No tickets found',
+      loading,
+      pageSelected,
+      size,
+      getPageAndSize = () => {},
+    } = this.props;
+    const pagination = {
+      position: ['bottomLeft'],
+      total: data.length,
+      showTotal: (total, range) => (
+        <span>
+          Showing{' '}
+          <b>
+            {range[0]} - {range[1]}
+          </b>{' '}
+          of {data.length}
+        </span>
+      ),
+      pageSize: size,
+      current: pageSelected,
+      onChange: (page, pageSize) => {
+        getPageAndSize(page, pageSize);
+      },
+    };
 
     return (
       <div className={styles.TableTickets}>
@@ -463,13 +468,13 @@ class TableTickets extends PureComponent {
           locale={{
             emptyText: (
               <div className={styles.viewEmpty}>
-                <img src={empty} alt="emty" />
+                <img src={empty} alt="empty" />
                 <p className={styles.textEmpty}>{textEmpty}</p>
               </div>
             ),
           }}
           loading={loading}
-          columns={columns}
+          columns={this.getColumns()}
           dataSource={data}
           hideOnSinglePage
           pagination={pagination}
