@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Table, Dropdown, Menu, Divider } from 'antd';
-import { connect } from 'umi';
+// import { connect } from 'umi';
 import moment from 'moment';
 // import { isEmpty } from 'lodash';
 import DeleteQuestionAnswer from '../DeleteQuestionAnswer';
@@ -10,11 +10,11 @@ import MoreIcon from '@/assets/policiesRegulations/more.svg';
 import styles from './index.less';
 // import { stubFalse } from 'lodash';
 
-@connect(({ loading, faqs: { listFAQ = [] } = {} }) => ({
-  loadingGetList: loading.effects['faqs/fetchListFAQ'],
-  //   loadingSearch: loading.effects['faqs/searchNameQuestion'],
-  listFAQ,
-}))
+// @connect(({ loading, faqs: { listFAQ = [] } = {} }) => ({
+//   loadingGetList: loading.effects['faqs/fetchListFAQ'],
+//   //   loadingSearch: loading.effects['faqs/searchNameQuestion'],
+//   listFAQ,
+// }))
 class TableFAQList extends Component {
   constructor(props) {
     super(props);
