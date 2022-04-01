@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Select, Form, Divider, Row, Col, Button } from 'antd';
 // import ModalNotice from '../Modalupload';
 import styles from './index.less';
+import WorkInProgress from "@/components/WorkInProgress";
 
 class AssignPolicies extends Component {
   constructor(props) {
@@ -29,6 +30,7 @@ class AssignPolicies extends Component {
     const { visible } = this.state;
     return (
       <div>
+        <WorkInProgress />
         <div className={styles.titleHeader}>Assign Policies</div>
         <div className={styles.balance}>
           <div className={styles.balanceFrom}>

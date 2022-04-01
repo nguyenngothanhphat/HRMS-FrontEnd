@@ -1,5 +1,6 @@
-import { Button, Form, Popover, Select, Input } from 'antd';
+import { Form, Popover, Select } from 'antd';
 import React, { useState, useEffect } from 'react';
+import { debounce } from 'lodash';
 import { connect } from 'umi';
 import CloseIcon from '@/assets/projectManagement/closeX.svg';
 import styles from './index.less';
@@ -19,21 +20,23 @@ const FilterPopover = (props) => {
   // redux
   const {
     projectManagement: {
-      customerList = [],
       projectTypeList = [],
       projectStatusList = [],
       divisionList = [],
       employeeList = [],
       projectNameList = [],
     } = {},
+    resourceManagement: { customerList = [] } = {},
     loadingFetchEmployeeList = false,
   } = props;
 
+  const removeDuplicate = (array, key) => {
+    return [...new Map(array.map((x) => [key(x), x])).values()];
+  };
+  const customerNewList = removeDuplicate(customerList, (item) => item?.customerName);
+
   useEffect(() => {
     if (showPopover) {
-      dispatch({
-        type: 'projectManagement/fetchCustomerListEffect',
-      });
       dispatch({
         type: 'projectManagement/fetchProjectNameListEffect',
       });
@@ -47,12 +50,15 @@ const FilterPopover = (props) => {
         },
       });
       dispatch({
+        type: 'projectManagement/fetchProjectStatusListEffect',
+      });
+      dispatch({
         type: 'projectManagement/fetchEmployeeListEffect',
       });
     }
   }, [showPopover]);
 
-  const onFormSubmit = (values) => {
+  const onFinish = (values) => {
     const newValues = { ...values };
     // eslint-disable-next-line no-return-assign
     const result = Object.entries(newValues).reduce(
@@ -65,6 +71,12 @@ const FilterPopover = (props) => {
       {},
     );
     onSubmit(result);
+    dispatch({
+      type: 'resourceManagement/save',
+      payload: {
+        filter: result,
+      },
+    });
   };
 
   useEffect(() => {
@@ -74,22 +86,48 @@ const FilterPopover = (props) => {
     }
   }, [needResetFilterForm]);
 
+  const onFinishDebounce = debounce((values) => {
+    onFinish(values);
+  }, 700);
+
+  const onValuesChange = () => {
+    const values = form.getFieldsValue();
+    onFinishDebounce(values);
+  };
+
   const renderPopup = () => {
     return (
       <>
         <div className={styles.popupContainer}>
-          <Form form={form} layout="vertical" name="filterForm" onFinish={onFormSubmit}>
+          <Form form={form} layout="vertical" name="filterForm" onValuesChange={onValuesChange}>
             <Form.Item label="By Project ID" name="projectId">
-              <Input placeholder="Project ID" />
+              <Select
+                allowClear
+                mode="multiple"
+                style={{ width: '100%' }}
+                placeholder="Select Project ID"
+                showSearch
+                showArrow
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {projectNameList.map((x) => {
+                  return <Select.Option value={x.projectId}>{x.projectId}</Select.Option>;
+                })}
+              </Select>
             </Form.Item>
             <Form.Item label="By division" name="division">
               <Select
                 allowClear
                 mode="multiple"
-                showSearch="true"
-                optionFilterProp="children"
                 style={{ width: '100%' }}
                 placeholder="Select Division"
+                showSearch
+                showArrow
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {divisionList.map((x) => {
                   return <Select.Option value={x.name}>{x.name}</Select.Option>;
@@ -101,10 +139,13 @@ const FilterPopover = (props) => {
               <Select
                 allowClear
                 mode="multiple"
-                showSearch="true"
-                optionFilterProp="children"
                 style={{ width: '100%' }}
                 placeholder="Select Project Name"
+                showSearch
+                showArrow
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {projectNameList.map((item) => {
                   return (
@@ -116,17 +157,20 @@ const FilterPopover = (props) => {
               </Select>
             </Form.Item>
 
-            <Form.Item label="By customer" name="customerId">
+            <Form.Item label="By customer" name="customerName">
               <Select
                 allowClear
                 mode="multiple"
-                showSearch="true"
-                optionFilterProp="children"
+                showSearch
+                showArrow
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 style={{ width: '100%' }}
                 placeholder="Select Customer"
               >
-                {customerList.map((x) => {
-                  return <Select.Option value={x.customerId}>{x.legalName}</Select.Option>;
+                {customerNewList.map((x) => {
+                  return <Select.Option value={x.customerName}>{x.customerName}</Select.Option>;
                 })}
               </Select>
             </Form.Item>
@@ -135,13 +179,16 @@ const FilterPopover = (props) => {
               <Select
                 allowClear
                 mode="multiple"
-                showSearch="true"
-                optionFilterProp="children"
+                showSearch
+                showArrow
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 style={{ width: '100%' }}
                 placeholder="Select Engagement Type"
               >
                 {projectTypeList.map((x) => (
-                  <Select.Option value={x.id}>{x.type_name}</Select.Option>
+                  <Select.Option value={x.type_name}>{x.type_name}</Select.Option>
                 ))}
               </Select>
             </Form.Item>
@@ -149,8 +196,12 @@ const FilterPopover = (props) => {
             <Form.Item label="By PROJECT manager" name="projectManager">
               <Select
                 mode="multiple"
-                showSearch="true"
-                optionFilterProp="children"
+                allowClear
+                showSearch
+                showArrow
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 style={{ width: '100%' }}
                 loading={loadingFetchEmployeeList}
                 placeholder="Select Project Manager"
@@ -165,25 +216,20 @@ const FilterPopover = (props) => {
               <Select
                 allowClear
                 mode="multiple"
-                showSearch="true"
-                optionFilterProp="children"
+                showSearch
+                showArrow
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 style={{ width: '100%' }}
                 placeholder="Select Status"
               >
                 {projectStatusList.map((x) => (
-                  <Select.Option value={x.id}>{x.status}</Select.Option>
+                  <Select.Option value={x.status}>{x.status}</Select.Option>
                 ))}
               </Select>
             </Form.Item>
           </Form>
-        </div>
-        <div className={styles.buttons}>
-          <Button className={styles.btnClose} onClick={() => setShowPopover(false)}>
-            Close
-          </Button>
-          <Button className={styles.btnApply} form="filterForm" htmlType="submit" key="submit">
-            Apply
-          </Button>
         </div>
       </>
     );
@@ -217,7 +263,10 @@ const FilterPopover = (props) => {
   );
 };
 
-export default connect(({ projectManagement, user: { currentUser: { employee = {} } = {} } }) => ({
-  projectManagement,
-  employee,
-}))(FilterPopover);
+export default connect(
+  ({ projectManagement, resourceManagement, user: { currentUser: { employee = {} } = {} } }) => ({
+    projectManagement,
+    resourceManagement,
+    employee,
+  }),
+)(FilterPopover);

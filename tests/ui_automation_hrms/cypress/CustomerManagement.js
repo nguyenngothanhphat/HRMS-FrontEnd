@@ -1,16 +1,16 @@
-describe('Timeoff Automation', () => {
+describe('CustomerManagement', () => {
     before(() => {
       cy.visit('https://stghrms.paxanimi.ai/login');
     });
-  
-    let employee_email = "comp1-hr-manager@mailinator.com";
+
+    let employee_email = "narmada.biradar@mailinator.com";
     let password = "12345678@Tc";
-  
+
     it('SIGN IN', () => {
         cy.get('#basic_userEmail.ant-input').type(employee_email);
         cy.get('#basic_password.ant-input').type(password);
         cy.get('button[type="submit"]').click();
-       
+
     });
     it('Directory',() =>{
         cy.contains('Customer Management').click({force:true});
@@ -25,8 +25,8 @@ describe('Timeoff Automation', () => {
          cy.get('#formAdd_addressLine2').type("chittoor,AP");
          cy.get('#formAdd_country').click()
          cy.get('.ant-select-item-option-content').contains("Afghanistan").click()
-        //  cy.get('#formAdd_state').click({force:true})
-        //  cy.get('.ant-select-item-option-content').contains("Badakhshan").click()
+         cy.get('#formAdd_state').click({force:true})
+         cy.get('.ant-select-item-option-content').contains("Badakhshan").click()
          cy.get('#formAdd_city').type("chiii");
          cy.get('#formAdd_zipCode').type("51712");
          cy.contains('Add Customer').click();

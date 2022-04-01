@@ -225,17 +225,20 @@ class EditModal extends PureComponent {
               }}
             >
               <Form.Item
-                rules={[{ required: true, message: 'Please enter department name!' }]}
                 label="Department Name"
                 name="name"
                 labelCol={{ span: 24 }}
                 rules={[
+                  { required: true, message: 'Please enter department name!' },
                   () => ({
-                    validator(_, value) {     
-                      if( (listDepartments.filter((obj) => obj.name === value)).length > 0 ) {
+                    validator(_, value) {
+                      if (listDepartments.filter((obj) => obj.name === value).length > 0) {
+                        // eslint-disable-next-line prefer-promise-reject-errors
                         return Promise.reject(`Department name is exist.`);
                       }
-                    }
+                      // eslint-disable-next-line compat/compat
+                      return Promise.resolve();
+                    },
                   }),
                 ]}
               >

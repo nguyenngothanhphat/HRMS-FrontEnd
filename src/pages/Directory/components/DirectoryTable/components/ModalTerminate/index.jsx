@@ -83,7 +83,7 @@ const ModalTerminate = (props) => {
               format={dateFormat}
               onChange={changeDate}
               disabledDate={(current) => {
-                return current && current < moment().subtract(1, 'day').endOf('day');
+                return current && current > moment().endOf('day');
               }}
             />
           </Form.Item>

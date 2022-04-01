@@ -174,7 +174,7 @@ class DirectoryTable extends Component {
 
   handleSubmit = (values) => {
     const { rowData = {} } = this.state;
-    const { dispatch } = this.props;
+    const { dispatch, refreshData = () => {} } = this.props;
     const { _id = '' } = rowData;
     const { reason, lastWorkingDate } = values;
 
@@ -183,10 +183,13 @@ class DirectoryTable extends Component {
     dispatch({
       type: 'offboarding/terminateReason',
       payload,
-    }).then(() => {
-      this.setState({
-        openModal: false,
-      });
+    }).then((res) => {
+      if (res.statusCode === 200) {
+        refreshData();
+        this.setState({
+          openModal: false,
+        });
+      }
     });
   };
 
@@ -358,7 +361,8 @@ class DirectoryTable extends Component {
             <Link
               className={styles.managerName}
               to={() =>
-                this.handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)}
+                this.handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
+              }
             >
               {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
             </Link>

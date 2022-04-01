@@ -3,7 +3,7 @@ import { Select, Input, Button, Col, Row } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { DownloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { debounce } from 'lodash';
-import FilterIcon from '@/assets/projectManagement/filter.svg';
+import FilterButton from '@/components/FilterButton';
 import ArrowDown from '@/assets/projectManagement/arrowDown.svg';
 import FilterPopover from '../FilterPopover';
 import styles from './index.less';
@@ -19,6 +19,8 @@ const HeaderProjectRM = (props) => {
     currentUserId = '',
     total,
     dispatch,
+    filter = [],
+    payloadProject = {},
   } = props;
   const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
 
@@ -58,7 +60,7 @@ const HeaderProjectRM = (props) => {
       type: 'resourceManagement/exportReportProject',
       payload: {
         employeeId: currentUserId,
-        limit: total,
+        ...payloadProject,
       },
     });
     const getDataExport = getListExport ? getListExport.data : '';
@@ -72,23 +74,6 @@ const HeaderProjectRM = (props) => {
     downloadLink.click();
     document.body.removeChild(downloadLink);
   };
-
-  // const exportCustomers = async () => {
-  //   const { dispatch } = props;
-
-  //   const getListExport = await dispatch({
-  //     type: 'resourceManagement/exportReportProject',
-  //   });
-  //   const downloadLink = document.createElement('a');
-  //   const universalBOM = '\uFEFF';
-  //   downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
-  //     universalBOM + getListExport,
-  //   )}`;
-  //   downloadLink.download = 'rm-projects.csv';
-  //   document.body.appendChild(downloadLink);
-  //   downloadLink.click();
-  //   document.body.removeChild(downloadLink);
-  // };
 
   const allProject = data.filter((obj) => obj.statusId === undefined);
   const listStatus = data.filter((obj) => obj.statusName !== 'All Projects');
@@ -108,7 +93,7 @@ const HeaderProjectRM = (props) => {
                 {obj.statusName} ({obj.count})
               </Option>
               {listStatus.map((list) => (
-                <Option value={list.statusId}>
+                <Option value={list.statusName}>
                   {list.statusName} ({list.count})
                 </Option>
               ))}
@@ -138,10 +123,7 @@ const HeaderProjectRM = (props) => {
           needResetFilterForm={needResetFilterForm}
           setNeedResetFilterForm={setNeedResetFilterForm}
         >
-          <div className={styles.filterIcon}>
-            <img src={FilterIcon} alt="" />
-            <span>Filter</span>
-          </div>
+          <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} />
         </FilterPopover>
         <div className={styles.searchBar}>
           <Input
@@ -158,7 +140,7 @@ const HeaderProjectRM = (props) => {
 
 export default connect(
   ({
-    resourceManagement: { total = 0 } = {},
+    resourceManagement: { total = 0, filter = [], payloadProject = {} } = {},
     user: { currentUser: { employee: { _id: currentUserId = '' } = {} } = {} } = {},
-  }) => ({ total, currentUserId }),
+  }) => ({ total, currentUserId, filter, payloadProject }),
 )(HeaderProjectRM);

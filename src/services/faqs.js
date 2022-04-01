@@ -62,3 +62,10 @@ export async function getLocationListByParentCompany(payload) {
     data: payload,
   });
 }
+
+export async function searchFAQs(payload) {
+  return request('/api/faqstenant/search-faqs', {
+    method: 'POST',
+    data: payload,
+  });
+}
