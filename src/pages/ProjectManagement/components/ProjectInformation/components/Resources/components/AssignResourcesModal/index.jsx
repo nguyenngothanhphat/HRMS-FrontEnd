@@ -30,6 +30,7 @@ const AssignResourcesModal = (props) => {
     projectDetails: { projectDetail = {}, resourceList = [], resourceListTotal = 0 } = {},
     loadingFetchResourceList = false,
     loadingAssign = false,
+    employee = ''
   } = props;
 
   const {
@@ -40,6 +41,8 @@ const AssignResourcesModal = (props) => {
     tentativeEndDate = '',
     newEndDate = '',
   } = projectDetail;
+
+  const employeeId = employee ? employee._id : ''
 
   const endDate = newEndDate || tentativeEndDate;
 
@@ -59,8 +62,6 @@ const AssignResourcesModal = (props) => {
   };
 
   const fetchResourceList = (name = '', page = 1, limit = 5, filter) => {
-    const { employee } = props;
-    const employeeId = employee ? employee._id : ''
     dispatch({
       type: 'projectDetails/fetchResourceListEffect',
       payload: {

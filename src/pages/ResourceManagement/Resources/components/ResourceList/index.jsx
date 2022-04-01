@@ -27,8 +27,7 @@ const ResourceList = (props) => {
   
   const checkRoleManager = currentUserRoles.length > 0 ? currentUserRoles.includes('manager') : false
   const modifyResourcePermission = permissions.modifyResource !== -1;
-  // const modeViewAdmin = permissions.viewModeAdmin !== -1;
-  // const modeViewManager = permissions.viewModeManager !== -1;
+
   const [pageSelected, setPageSelected] = useState(1);
   const [availableStatusState, setAvailableStatusState] = useState('ALL');
   const [size, setSize] = useState(10);
