@@ -227,8 +227,9 @@ const PoliciesCertification = (props) => {
                 type="primary"
                 className={styles.signatureBar__button__primary}
                 onClick={() => setIsCertify(true)}
+                disabled={employee.isSignaturePolicy}
               >
-                Sign
+                {employee.isSignaturePolicy ? 'Signed' : 'Sign'}
               </Button>
             </div>
           </Col>
@@ -351,6 +352,9 @@ const PoliciesCertification = (props) => {
     if (res.statusCode === 200) {
       setIsCertify(false);
       setIsDone(true);
+      dispatch({
+        type: 'user/fetchCurrent',
+      });
     }
   };
 

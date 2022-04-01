@@ -1,12 +1,14 @@
+import { Button } from 'antd';
 import React, { PureComponent } from 'react';
-import { Col, Row, Button } from 'antd';
 import { connect } from 'umi';
 import AddIcon from '@/assets/policiesRegulations/add.svg';
-import TableCatergory from './components/TableCategory';
 import AddNewCategory from './components/AddNewCategory';
+import TableCategory from './components/TableCategory';
 import styles from './index.less';
 
-@connect()
+@connect(({ faqs: { selectedCountry } = {} }) => ({
+  selectedCountry,
+}))
 class FaqCategory extends PureComponent {
   constructor(props) {
     super(props);
@@ -16,11 +18,25 @@ class FaqCategory extends PureComponent {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    this.fetchData();
+  }
+
+  componentDidUpdate = (prevProps) => {
+    const { selectedCountry = '' } = this.props;
+    if (prevProps.selectedCountry !== selectedCountry) {
+      this.fetchData();
+    }
+  };
+
+  fetchData = () => {
+    const { dispatch, selectedCountry = '' } = this.props;
     dispatch({
       type: 'faqs/fetchListFAQCategory',
+      payload: {
+        country: [selectedCountry],
+      },
     });
-  }
+  };
 
   render() {
     const { visibleModal } = this.state;
@@ -42,11 +58,9 @@ class FaqCategory extends PureComponent {
             mode="multiple"
           />
         </div>
-        <Row>
-          <Col span={24}>
-            <TableCatergory />
-          </Col>
-        </Row>
+        <div className={styles.container}>
+          <TableCategory />
+        </div>
       </div>
     );
   }

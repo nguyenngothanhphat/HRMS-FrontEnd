@@ -56,7 +56,7 @@ export default class OptionsHeader extends PureComponent {
     capsPopulations = array.map((item, key) => {
       return {
         'S.No': key + 1,
-        'Ticked ID': item.ticketID || '-',
+        'Ticket ID': item.ticketID || '-',
         'Employee ID': item.employee?.generalInfo?.employeeId || '-',
         'User ID': item.employee?.generalInfo?.userId || '-',
         'First Name': item.employee?.generalInfo?.firstName || '-',

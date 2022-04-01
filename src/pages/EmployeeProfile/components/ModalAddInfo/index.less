@@ -124,7 +124,7 @@
       box-sizing: border-box;
       height: 42px;
       padding: 5px 11px 0;
-      background: #ffffff;
+      // background: #ffffff;
       border-radius: 5px;
     }
 
@@ -169,6 +169,16 @@
     .ant-form-item-label
       > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
       display: none;
+    }
+    .ant-form-item-label
+      > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::after {
+      display: inline-block;
+      margin-right: 4px;
+      color: #ff4d4f;
+      font-size: 14px;
+      font-family: SimSun, sans-serif;
+      line-height: 1;
+      content: '*';
     }
   }
 

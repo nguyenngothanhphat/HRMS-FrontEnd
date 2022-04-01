@@ -3,8 +3,9 @@ import { Button, Modal } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ loading }) => ({
+@connect(({ loading,  faqs: { selectedCountry } = {}, }) => ({
   loadingDelete: loading.effects['faqs/deleteQuestion'],
+  selectedCountry
 }))
 class DeleteQuestionAnswer extends Component {
   formRef = React.createRef();
@@ -21,7 +22,7 @@ class DeleteQuestionAnswer extends Component {
   };
 
   handleFinish = () => {
-    const { dispatch, onClose = () => {}, item: { id = '' } = {} } = this.props;
+    const { dispatch, onClose = () => {}, item: { id = '' } = {}, selectedCountry = '' } = this.props;
     dispatch({
       type: 'faqs/deleteQuestion',
       payload: {
@@ -31,6 +32,12 @@ class DeleteQuestionAnswer extends Component {
       const { statusCode } = response;
       if (statusCode === 200) {
         onClose();
+        dispatch({
+          type: 'faqs/fetchListFAQ',
+          payload: {
+            country: [selectedCountry],
+          },
+        });
       }
     });
   };

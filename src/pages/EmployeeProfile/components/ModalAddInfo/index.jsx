@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Steps, Form, Input, Select } from 'antd';
+import { Modal, Button, Steps, Form, Input, Select, Tooltip } from 'antd';
 import CreatableSelect from 'react-select/creatable';
 import { DeleteOutlined } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
@@ -182,9 +182,9 @@ const ModalAddInfo = (props) => {
   const [arrBankAccount, setArrBankAccount] = useState([]);
   const [numOfBank, setNumOfBank] = useState(0);
 
-  const onFinishBank = (values) => {
+  const onFinishBank = (values, country) => {
     const {
-      // accountName,
+      accountName,
       accountNumber,
       accountType,
       bankName,
@@ -192,61 +192,67 @@ const ModalAddInfo = (props) => {
       micrCode,
       ifscCode,
       uanNumber,
-      // swiftcode,
+      swiftcode,
+      routingNumber,
     } = values;
     const arr = [];
     const getUanNumber = uanNumber ? uanNumber[`uanNumber${0}`] : '';
-    arrBankAccount.forEach((item) =>
-      arr.push({
-        // accountName: accountName[`accountName${item}`],
-        accountNumber: accountNumber[`accountNumber${item}`],
-        accountType: accountType[`accountType${item}`],
-        bankName: bankName[`bankName${item}`],
-        branchName: branchName[`branchName${item}`],
-        micrcCode: micrCode[`micrCode${item}`],
-        ifscCode: ifscCode[`ifscCode${item}`],
-        uanNumber: uanNumber[`uanNumber${item}`],
-        // swiftcode: swiftcode[`swiftcode${item}`],
-        employee: idCurrentEmployee,
-      }),
-    );
-    const obj = { ...resultForm, bankDetails: arr, uanNumber: getUanNumber };
-    setResultForm(obj);
-    setCurrentStep(currentStep + 1);
-  };
-  const onFinishBankVN = (values) => {
-    const { accountName, accountNumber, accountType, bankName, branchName, swiftcode } = values;
-    const arr = [];
-    arrBankAccount.forEach((item) =>
-      arr.push({
-        accountName: accountName[`accountName${item}`],
-        accountNumber: accountNumber[`accountNumber${item}`],
-        accountType: accountType[`accountType${item}`],
-        bankName: bankName[`bankName${item}`],
-        branchName: branchName[`branchName${item}`],
-        swiftcode: swiftcode[`swiftcode${item}`],
-        employee: idCurrentEmployee,
-      }),
-    );
-    const obj = { ...resultForm, bankDetails: arr };
-    setResultForm(obj);
-    setCurrentStep(currentStep + 1);
-  };
-  const onFinishBankUSA = (values) => {
-    const { accountNumber, accountType, bankName, routingNumber } = values;
-    const arr = [];
-    arrBankAccount.forEach((item) =>
-      arr.push({
-        bankName: bankName[`bankName${item}`],
-        accountNumber: accountNumber[`accountNumber${item}`],
-        routingNumber: routingNumber[`routingNumber${item}`],
-        accountType: accountType[`accountType${item}`],
 
-        employee: idCurrentEmployee,
-      }),
-    );
+    switch (country) {
+      case 'VN': {
+        arrBankAccount.forEach((item) =>
+          arr.push({
+            accountName: accountName[`accountName${item}`],
+            accountNumber: accountNumber[`accountNumber${item}`],
+            accountType: accountType[`accountType${item}`],
+            bankName: bankName[`bankName${item}`],
+            branchName: branchName[`branchName${item}`],
+            swiftcode: swiftcode[`swiftcode${item}`],
+            employee: idCurrentEmployee,
+          }),
+        );
+        break;
+      }
+      case 'US': {
+        arrBankAccount.forEach((item) =>
+          arr.push({
+            bankName: bankName[`bankName${item}`],
+            accountNumber: accountNumber[`accountNumber${item}`],
+            routingNumber: routingNumber[`routingNumber${item}`],
+            accountType: accountType[`accountType${item}`],
+
+            employee: idCurrentEmployee,
+          }),
+        );
+        break;
+      }
+      default: {
+        arrBankAccount.forEach((item) =>
+          arr.push({
+            // accountName: accountName[`accountName${item}`],
+            accountNumber: accountNumber[`accountNumber${item}`],
+            accountType: accountType[`accountType${item}`],
+            bankName: bankName[`bankName${item}`],
+            branchName: branchName[`branchName${item}`],
+            micrcCode: micrCode[`micrCode${item}`],
+            ifscCode: ifscCode[`ifscCode${item}`],
+            uanNumber: uanNumber[`uanNumber${item}`],
+            // swiftcode: swiftcode[`swiftcode${item}`],
+            employee: idCurrentEmployee,
+          }),
+        );
+        break;
+      }
+    }
+
     const obj = { ...resultForm, bankDetails: arr };
-    setResultForm(obj);
+    if (uanNumber) {
+      obj.uanNumber = getUanNumber;
+    }
+
+    // temporarily disabled bank fields
+    // setResultForm(obj);
+
     setCurrentStep(currentStep + 1);
   };
 
@@ -264,52 +270,52 @@ const ModalAddInfo = (props) => {
     setArrBankAccount(tempArr);
   };
   // tax detail
-  const onFinishTaxIN = (values) => {
-    const { maritalStatus, panNum } = values;
-    const taxDetails = { ...values, panNum, employee: idCurrentEmployee };
-    const obj = { ...resultForm, taxDetails, maritalStatus };
-    dispatch({
-      type: 'employeeProfile/updateFirstGeneralInfo',
-      payload: {
-        tenantId: getCurrentTenant(),
-        id: generalId,
-        isUpdatedProfile: true,
-        isNewComer: false,
-        ...obj,
-      },
-    });
-  };
-  const onFinishTax = (values) => {
-    const { maritalStatus, noOfDependents, nationalId } = values;
-    const incomeTaxRule = '';
-    const taxDetails = {
-      ...values,
-      panNum: noOfDependents,
-      employee: idCurrentEmployee,
-      incomeTaxRule,
-    };
-    const obj = { ...resultForm, taxDetails, maritalStatus, uanNumber: nationalId };
-    dispatch({
-      type: 'employeeProfile/updateFirstGeneralInfo',
-      payload: {
-        tenantId: getCurrentTenant(),
-        id: generalId,
-        isUpdatedProfile: true,
-        isNewComer: false,
-        ...obj,
-      },
-    });
-  };
 
-  const requiredLabel = (text) => {
-    return (
-      <span>
-        {text} <span style={{ color: '#f04b37' }}>*</span>
-      </span>
+  const onFinishTax = (values, country) => {
+    const { maritalStatus, noOfDependents, nationalId, panNum } = values;
+    let taxDetails = {};
+    let obj = {};
+
+    if (country === 'IN') {
+      taxDetails = { ...values, panNum, employee: idCurrentEmployee };
+      obj = { ...resultForm, taxDetails, maritalStatus };
+    } else {
+      taxDetails = {
+        ...values,
+        panNum: noOfDependents,
+        employee: idCurrentEmployee,
+      };
+      obj = { ...resultForm, taxDetails, maritalStatus, uanNumber: nationalId };
+    }
+
+    // remove empty fields
+    // eslint-disable-next-line no-return-assign
+    obj = Object.entries(obj).reduce(
+      // eslint-disable-next-line no-return-assign
+      (a, [k, v]) =>
+        v == null || v === '' || v.length === 0
+          ? a
+          : // eslint-disable-next-line no-param-reassign
+            ((a[k] = v), a),
+      {},
     );
+
+    dispatch({
+      type: 'employeeProfile/updateFirstGeneralInfo',
+      payload: {
+        tenantId: getCurrentTenant(),
+        id: generalId,
+        isUpdatedProfile: true,
+        isNewComer: false,
+        incomeTaxRule: values.incomeTaxRule || '',
+        ...obj,
+      },
+    });
   };
 
   const renderContent = () => {
+    const disabledFields = true;
+    const disabledTitle = 'Temporarily Disabled - Please move to the next field.';
     switch (currentStep) {
       case 0:
         if (arrContactDetail.length === 0) {
@@ -344,7 +350,7 @@ const ModalAddInfo = (props) => {
                       </div>
                     )}
                     <Form.Item
-                      label={requiredLabel('Emergency Contact Name')}
+                      label="Emergency Contact Name"
                       name={['emergencyPersonName', `personName${item}`]}
                       rules={[
                         {
@@ -361,7 +367,7 @@ const ModalAddInfo = (props) => {
                       <Input placeholder="Emergency Contact Name" />
                     </Form.Item>
                     <Form.Item
-                      label={requiredLabel('Relation')}
+                      label="Relation"
                       name={['emergencyRelation', `relation${item}`]}
                       rules={[
                         {
@@ -380,8 +386,7 @@ const ModalAddInfo = (props) => {
                         showArrow
                         showSearch
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                         className={styles.inputForm}
                       >
                         {listRelation.map((value, i) => {
@@ -395,7 +400,7 @@ const ModalAddInfo = (props) => {
                     </Form.Item>
                     <Form.Item
                       name={['emergencyContact', `contact${item}`]}
-                      label={requiredLabel("Emergency Contact's Phone Number")}
+                      label="Emergency Contact's Phone Number"
                       rules={[
                         {
                           required: true,
@@ -443,7 +448,7 @@ const ModalAddInfo = (props) => {
               You are required to fill in the below details to proceed further
             </div>
             <Form.Item
-              label={requiredLabel('Total Years of Experience')}
+              label="Total Years of Experience"
               name="totalExp"
               style={{ marginTop: '24px' }}
               rules={[
@@ -460,7 +465,7 @@ const ModalAddInfo = (props) => {
               <Input placeholder="Total Years of Experience" />
             </Form.Item>
             <Form.Item
-              label={requiredLabel('Highest Educational Qualification')}
+              label="Highest Educational Qualification"
               name="qualification"
               rules={[
                 {
@@ -514,7 +519,7 @@ const ModalAddInfo = (props) => {
               </Button>
             </Form.Item>
             <Form.Item
-              label={requiredLabel('Skills')}
+              label="Skills"
               name="skills"
               rules={[
                 {
@@ -567,7 +572,7 @@ const ModalAddInfo = (props) => {
             )} */}
           </Form>
         );
-      case 2:
+      case 2: {
         if (arrBankAccount.length === 0) {
           addBank(numOfBank);
         }
@@ -576,7 +581,7 @@ const ModalAddInfo = (props) => {
             <Form
               form={form}
               name="BankAccount"
-              onFinish={onFinishBankVN}
+              onFinish={(values) => onFinishBank(values, 'VN')}
               autoComplete="off"
               layout="vertical"
             >
@@ -602,97 +607,115 @@ const ModalAddInfo = (props) => {
                               </Button>
                             </div>
                           )}
-                          <Form.Item
-                            name={['bankName', `bankName${item}`]}
-                            label={requiredLabel('Bank Name')}
-                            rules={[
-                              {
-                                required: true,
-                                message: 'Please enter the bank name!',
-                              },
-                            ]}
-                          >
-                            <Input placeholder="Bank Name" />
-                          </Form.Item>
-                          <Form.Item
-                            label={requiredLabel('Branch Name')}
-                            name={['branchName', `branchName${item}`]}
-                            rules={[
-                              {
-                                required: true,
-                                message: 'Please enter the branch name!',
-                              },
-                            ]}
-                          >
-                            <Input placeholder="Branch Name" />
-                          </Form.Item>
-                          <Form.Item
-                            label={requiredLabel('Account Type')}
-                            name={['accountType', `accountType${item}`]}
-                            rules={[
-                              {
-                                required: true,
-                                message: 'Please enter the account type!',
-                              },
-                            ]}
-                          >
-                            <Select
-                              placeholder="Please select a choice"
-                              showArrow
-                              className={styles.inputForm}
+                          <Tooltip title={disabledTitle}>
+                            <Form.Item
+                              name={['bankName', `bankName${item}`]}
+                              label="Bank Name"
+                              rules={[
+                                {
+                                  required: !disabledFields,
+                                  message: 'Please enter the bank name!',
+                                },
+                              ]}
                             >
-                              <Select.Option value="Salary Account">Salary Account</Select.Option>
-                              <Select.Option value="Personal Account">
-                                Personal Account
-                              </Select.Option>
-                            </Select>
-                          </Form.Item>
-                          <Form.Item
-                            label={requiredLabel('Account Number')}
-                            name={['accountNumber', `accountNumber${item}`]}
-                            rules={[
-                              {
-                                required: true,
-                                message: 'Please enter the account number!',
-                              },
-                              {
-                                pattern: /^[\d]{0,16}$/,
-                                message: 'Input numbers only and a max of 16 digits',
-                              },
-                            ]}
-                          >
-                            <Input placeholder="Account Number" />
-                          </Form.Item>
-                          <Form.Item
-                            label={requiredLabel('Swift Code')}
-                            name={['swiftcode', `swiftcode${item}`]}
-                            rules={[
-                              {
-                                required: true,
-                                message: 'Please enter the swift code!',
-                              },
-                            ]}
-                          >
-                            <Input placeholder="Swift Code" />
-                          </Form.Item>
-                          <Form.Item
-                            label={requiredLabel('Account Name')}
-                            name={['accountName', `accountName${item}`]}
-                            rules={[
-                              {
-                                required: true,
-                                message: 'Please enter the account name!',
-                              },
-                            ]}
-                          >
-                            <Input placeholder="Account Name" />
-                          </Form.Item>
+                              <Input placeholder="Bank Name" disabled={disabledFields} />
+                            </Form.Item>
+                          </Tooltip>
+                          <Tooltip title={disabledTitle}>
+                            <Form.Item
+                              label="Branch Name"
+                              name={['branchName', `branchName${item}`]}
+                              rules={[
+                                {
+                                  required: !disabledFields,
+                                  message: 'Please enter the branch name!',
+                                },
+                              ]}
+                            >
+                              <Input placeholder="Branch Name" disabled={disabledFields} />
+                            </Form.Item>
+                          </Tooltip>
+                          <Tooltip title={disabledTitle}>
+                            <Form.Item
+                              label="Account Type"
+                              name={['accountType', `accountType${item}`]}
+                              rules={[
+                                {
+                                  required: !disabledFields,
+                                  message: 'Please enter the account type!',
+                                },
+                              ]}
+                            >
+                              <Select
+                                placeholder="Please select a choice"
+                                showArrow
+                                className={styles.inputForm}
+                                disabled={disabledFields}
+                              >
+                                <Select.Option value="Salary Account">Salary Account</Select.Option>
+                                <Select.Option value="Personal Account">
+                                  Personal Account
+                                </Select.Option>
+                              </Select>
+                            </Form.Item>
+                          </Tooltip>
+                          <Tooltip title={disabledTitle}>
+                            <Form.Item
+                              label="Account Number"
+                              name={['accountNumber', `accountNumber${item}`]}
+                              rules={[
+                                {
+                                  required: !disabledFields,
+                                  message: 'Please enter the account number!',
+                                },
+                                {
+                                  pattern: /^[\d]{0,16}$/,
+                                  message: 'Input numbers only and a max of 16 digits',
+                                },
+                              ]}
+                            >
+                              <Input placeholder="Account Number" disabled={disabledFields} />
+                            </Form.Item>
+                          </Tooltip>
+                          <Tooltip title={disabledTitle}>
+                            <Form.Item
+                              label="Swift Code"
+                              name={['swiftcode', `swiftcode${item}`]}
+                              rules={[
+                                {
+                                  required: !disabledFields,
+                                  message: 'Please enter the swift code!',
+                                },
+                              ]}
+                            >
+                              <Input placeholder="Swift Code" disabled={disabledFields} />
+                            </Form.Item>
+                          </Tooltip>
+                          <Tooltip title={disabledTitle}>
+                            <Form.Item
+                              label="Account Name"
+                              name={['accountName', `accountName${item}`]}
+                              rules={[
+                                {
+                                  required: !disabledFields,
+                                  message: 'Please enter the account name!',
+                                },
+                              ]}
+                            >
+                              <Input placeholder="Account Name" disabled={disabledFields} />
+                            </Form.Item>
+                          </Tooltip>
                         </div>
                       ),
                   )}
               </div>
               <Form.Item>
-                <Button type="link" className={styles.btnAdd} onClick={() => addBank(numOfBank)}>
+                <Button
+                  type="link"
+                  className={styles.btnAdd}
+                  onClick={() => addBank(numOfBank)}
+                  disabled={disabledFields}
+                >
                   <img src={plusIcon} alt="plusIcon" />
                   <span className={styles.text}>
                     Add another Account <span>(You can add upto 4 accounts)</span>
@@ -708,7 +731,7 @@ const ModalAddInfo = (props) => {
             <Form
               form={form}
               name="BankAccount"
-              onFinish={onFinishBankUSA}
+              onFinish={(values) => onFinishBank(values, 'US')}
               autoComplete="off"
               layout="vertical"
             >
@@ -734,78 +757,94 @@ const ModalAddInfo = (props) => {
                               </Button>
                             </div>
                           )}
-                          <Form.Item
-                            name={['bankName', `bankName${item}`]}
-                            label={requiredLabel('Bank Name')}
-                            rules={[
-                              {
-                                required: true,
-                                message: 'Please enter the bank name!',
-                              },
-                            ]}
-                          >
-                            <Input placeholder="Bank Name" />
-                          </Form.Item>
-
-                          <Form.Item
-                            label={requiredLabel('Account Type')}
-                            name={['accountType', `accountType${item}`]}
-                            rules={[
-                              {
-                                required: true,
-                                message: 'Please enter the account type!',
-                              },
-                            ]}
-                          >
-                            <Select
-                              placeholder="Please select a choice"
-                              showArrow
-                              className={styles.inputForm}
+                          <Tooltip title={disabledTitle}>
+                            <Form.Item
+                              name={['bankName', `bankName${item}`]}
+                              label="Bank Name"
+                              rules={[
+                                {
+                                  // required: true,
+                                  required: !disabledFields,
+                                  message: 'Please enter the bank name!',
+                                },
+                              ]}
                             >
-                              <Select.Option value="Checking Account">
-                                Checking Account
-                              </Select.Option>
-                              <Select.Option value="Savings Account">Savings Account</Select.Option>
-                            </Select>
-                          </Form.Item>
-                          <Form.Item
-                            label={requiredLabel('Account Number')}
-                            name={['accountNumber', `accountNumber${item}`]}
-                            rules={[
-                              {
-                                required: true,
-                                message: 'Please enter the account number!',
-                              },
-                              {
-                                pattern: /^[\d]{0,16}$/,
-                                message: 'Input numbers only and a max of 16 digits',
-                              },
-                            ]}
-                          >
-                            <Input placeholder="Account Number" />
-                          </Form.Item>
-                          <Form.Item
-                            label={requiredLabel('Routing Number')}
-                            name={['routingNumber', `routingNumber${item}`]}
-                            rules={[
-                              {
-                                required: true,
-                                message: 'Please enter the routing number!',
-                              },
-                              {
-                                pattern: /^[\d]{0,9}$/,
-                                message: 'Input numbers only and a max of 9 digits',
-                              },
-                            ]}
-                          >
-                            <Input placeholder="Routing Number" />
-                          </Form.Item>
+                              <Input placeholder="Bank Name" disabled={disabledFields} />
+                            </Form.Item>
+                          </Tooltip>
+                          <Tooltip title={disabledTitle}>
+                            <Form.Item
+                              label="Account Type"
+                              name={['accountType', `accountType${item}`]}
+                              rules={[
+                                {
+                                  required: !disabledFields,
+                                  message: 'Please enter the account type!',
+                                },
+                              ]}
+                            >
+                              <Select
+                                placeholder="Please select a choice"
+                                showArrow
+                                className={styles.inputForm}
+                                disabled={disabledFields}
+                              >
+                                <Select.Option value="Checking Account">
+                                  Checking Account
+                                </Select.Option>
+                                <Select.Option value="Savings Account">
+                                  Savings Account
+                                </Select.Option>
+                              </Select>
+                            </Form.Item>
+                          </Tooltip>
+                          <Tooltip title={disabledTitle}>
+                            <Form.Item
+                              label="Account Number"
+                              name={['accountNumber', `accountNumber${item}`]}
+                              rules={[
+                                {
+                                  required: !disabledFields,
+                                  message: 'Please enter the account number!',
+                                },
+                                {
+                                  pattern: /^[\d]{0,16}$/,
+                                  message: 'Input numbers only and a max of 16 digits',
+                                },
+                              ]}
+                            >
+                              <Input placeholder="Account Number" disabled={disabledFields} />
+                            </Form.Item>
+                          </Tooltip>
+                          <Tooltip title={disabledTitle}>
+                            <Form.Item
+                              label="Routing Number"
+                              name={['routingNumber', `routingNumber${item}`]}
+                              rules={[
+                                {
+                                  required: !disabledFields,
+                                  message: 'Please enter the routing number!',
+                                },
+                                {
+                                  pattern: /^[\d]{0,9}$/,
+                                  message: 'Input numbers only and a max of 9 digits',
+                                },
+                              ]}
+                            >
+                              <Input placeholder="Routing Number" disabled={disabledFields} />
+                            </Form.Item>
+                          </Tooltip>
                         </div>
                       ),
                   )}
               </div>
               <Form.Item>
-                <Button type="link" className={styles.btnAdd} onClick={() => addBank(numOfBank)}>
+                <Button
+                  type="link"
+                  className={styles.btnAdd}
+                  onClick={() => addBank(numOfBank)}
+                  disabled={disabledFields}
+                >
                   <img src={plusIcon} alt="plusIcon" />
                   <span className={styles.text}>
                     Add another Account <span>(You can add upto 4 accounts)</span>
@@ -846,102 +885,124 @@ const ModalAddInfo = (props) => {
                             </Button>
                           </div>
                         )}
-                        <Form.Item
-                          name={['bankName', `bankName${item}`]}
-                          label={requiredLabel('Bank Name')}
-                          rules={[
-                            {
-                              required: true,
-                              message: 'Please enter the bank name!',
-                            },
-                          ]}
-                        >
-                          <Input placeholder="Bank Name" />
-                        </Form.Item>
-                        <Form.Item
-                          label={requiredLabel('Branch Name')}
-                          name={['branchName', `branchName${item}`]}
-                          rules={[
-                            {
-                              required: true,
-                              message: 'Please enter the branch name!',
-                            },
-                          ]}
-                        >
-                          <Input placeholder="Branch Name" />
-                        </Form.Item>
-                        <Form.Item
-                          label={requiredLabel('Account Type')}
-                          name={['accountType', `accountType${item}`]}
-                          rules={[
-                            {
-                              required: true,
-                              message: 'Please enter the account type!',
-                            },
-                          ]}
-                        >
-                          <Select
-                            placeholder="Please select a choice"
-                            showArrow
-                            className={styles.inputForm}
+                        <Tooltip title={disabledTitle}>
+                          <Form.Item
+                            name={['bankName', `bankName${item}`]}
+                            label="Bank Name"
+                            rules={[
+                              {
+                                required: !disabledFields,
+                                message: 'Please enter the bank name!',
+                              },
+                            ]}
                           >
-                            <Select.Option value="Salary Account">Salary Account</Select.Option>
-                            <Select.Option value="Personal Account">Personal Account</Select.Option>
-                          </Select>
-                        </Form.Item>
-                        <Form.Item
-                          label={requiredLabel('Account Number')}
-                          name={['accountNumber', `accountNumber${item}`]}
-                          rules={[
-                            {
-                              required: true,
-                              message: 'Please enter the account number!',
-                            },
-                            {
-                              pattern: /^[\d]{0,16}$/,
-                              message: 'Input numbers only and a max of 16 digits',
-                            },
-                          ]}
-                        >
-                          <Input placeholder="Account Number" />
-                        </Form.Item>
-                        <Form.Item
-                          label={requiredLabel('MICR Code')}
-                          name={['micrCode', `micrCode${item}`]}
-                          rules={[
-                            {
-                              required: true,
-                              message: 'Please enter the MICR code!',
-                            },
-                          ]}
-                        >
-                          <Input placeholder="MICR Code" />
-                        </Form.Item>
-                        <Form.Item label="IFSC Code" name={['ifscCode', `ifscCode${item}`]}>
-                          <Input placeholder="IFSC Code" />
-                        </Form.Item>
-                        <Form.Item
-                          label="UAN Number"
-                          name={['uanNumber', `uanNumber${item}`]}
-                          rules={[
-                            // {
-                            //   required: true,
-                            //   message: "Please enter UAN number!"
-                            // },
-                            {
-                              pattern: /^[\d]{0,16}$/,
-                              message: 'Input numbers only and a max of 16 digits',
-                            },
-                          ]}
-                        >
-                          <Input placeholder="UAN Number" />
-                        </Form.Item>
+                            <Input placeholder="Bank Name" disabled={disabledFields} />
+                          </Form.Item>
+                        </Tooltip>
+                        <Tooltip title={disabledTitle}>
+                          <Form.Item
+                            label="Branch Name"
+                            name={['branchName', `branchName${item}`]}
+                            rules={[
+                              {
+                                required: !disabledFields,
+                                message: 'Please enter the branch name!',
+                              },
+                            ]}
+                          >
+                            <Input placeholder="Branch Name" disabled={disabledFields} />
+                          </Form.Item>
+                        </Tooltip>
+                        <Tooltip title={disabledTitle}>
+                          <Form.Item
+                            label="Account Type"
+                            name={['accountType', `accountType${item}`]}
+                            rules={[
+                              {
+                                required: !disabledFields,
+                                message: 'Please enter the account type!',
+                              },
+                            ]}
+                          >
+                            <Select
+                              placeholder="Please select a choice"
+                              showArrow
+                              className={styles.inputForm}
+                              disabled={disabledFields}
+                            >
+                              <Select.Option value="Salary Account">Salary Account</Select.Option>
+                              <Select.Option value="Personal Account">
+                                Personal Account
+                              </Select.Option>
+                            </Select>
+                          </Form.Item>
+                        </Tooltip>
+                        <Tooltip title={disabledTitle}>
+                          <Form.Item
+                            label="Account Number"
+                            name={['accountNumber', `accountNumber${item}`]}
+                            rules={[
+                              {
+                                required: !disabledFields,
+                                message: 'Please enter the account number!',
+                              },
+                              {
+                                pattern: /^[\d]{0,16}$/,
+                                message: 'Input numbers only and a max of 16 digits',
+                              },
+                            ]}
+                          >
+                            <Input placeholder="Account Number" disabled={disabledFields} />
+                          </Form.Item>
+                        </Tooltip>
+                        <Tooltip title={disabledTitle}>
+                          <Form.Item
+                            label="MICR Code"
+                            name={['micrCode', `micrCode${item}`]}
+                            rules={[
+                              {
+                                required: !disabledFields,
+                                message: 'Please enter the MICR code!',
+                              },
+                            ]}
+                          >
+                            <Input placeholder="MICR Code" disabled={disabledFields} />
+                          </Form.Item>
+                        </Tooltip>
+                        <Tooltip title={disabledTitle}>
+                          <Form.Item label="IFSC Code" name={['ifscCode', `ifscCode${item}`]}>
+                            <Input placeholder="IFSC Code" disabled={disabledFields} />
+                          </Form.Item>
+                        </Tooltip>
+                        <Tooltip title={disabledTitle}>
+                          <Form.Item
+                            label="UAN Number"
+                            name={['uanNumber', `uanNumber${item}`]}
+                            rules={[
+                              // {
+                              //   required: true,
+                              //   message: "Please enter UAN number!"
+                              // },
+                              {
+                                pattern: /^[\d]{0,16}$/,
+                                message: 'Input numbers only and a max of 16 digits',
+                              },
+                            ]}
+                          >
+                            <Input placeholder="UAN Number" disabled={disabledFields} />
+                          </Form.Item>
+                        </Tooltip>
                       </div>
                     ),
                 )}
             </div>
             <Form.Item>
-              <Button type="link" className={styles.btnAdd} onClick={() => addBank(numOfBank)}>
+              <Button
+                type="link"
+                className={styles.btnAdd}
+                onClick={() => addBank(numOfBank)}
+                disabled={disabledFields}
+              >
                 <img src={plusIcon} alt="plusIcon" />
                 <span className={styles.text}>
                   Add another Account <span>(You can add upto 4 accounts)</span>
@@ -950,7 +1011,8 @@ const ModalAddInfo = (props) => {
             </Form.Item>
           </Form>
         );
-      case 3:
+      }
+      case 3: {
         if (location.headQuarterAddress.country === 'VN') {
           return (
             <Form
@@ -964,21 +1026,27 @@ const ModalAddInfo = (props) => {
               <div className={styles.form__description}>
                 You are required to fill in the below details to proceed further
               </div>
+              <Tooltip title={disabledTitle}>
+                <Form.Item
+                  label="National ID Card Number"
+                  name="nationalId"
+                  style={{ marginTop: '24px' }}
+                  rules={[
+                    {
+                      required: !disabledFields,
+                      message: 'Please enter the National id card number',
+                    },
+                  ]}
+                >
+                  <Input
+                    maxLength={50}
+                    placeholder="National ID Card Number"
+                    disabled={disabledFields}
+                  />
+                </Form.Item>
+              </Tooltip>
               <Form.Item
-                label={requiredLabel('National ID Card Number')}
-                name="nationalId"
-                style={{ marginTop: '24px' }}
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please enter the National id card number',
-                  },
-                ]}
-              >
-                <Input maxLength={50} placeholder="National ID Card Number" />
-              </Form.Item>
-              <Form.Item
-                label={requiredLabel('Marital Status')}
+                label="Marital Status"
                 name="maritalStatus"
                 rules={[
                   {
@@ -996,7 +1064,7 @@ const ModalAddInfo = (props) => {
                 </Select>
               </Form.Item>
               <Form.Item
-                label={requiredLabel('No. of Dependents')}
+                label="No. of Dependents"
                 name="noOfDependents"
                 rules={[
                   {
@@ -1008,7 +1076,7 @@ const ModalAddInfo = (props) => {
                 <Input maxLength={50} placeholder="No. of Dependents" />
               </Form.Item>
               <Form.Item
-                label={requiredLabel('Residency Status')}
+                label="Residency Status"
                 name="residencyStatus"
                 rules={[
                   {
@@ -1030,7 +1098,7 @@ const ModalAddInfo = (props) => {
             <Form
               form={form}
               name="TaxDetail"
-              onFinish={onFinishTaxIN}
+              onFinish={(values) => onFinishTax(values, 'IN')}
               autoComplete="off"
               layout="vertical"
             >
@@ -1039,7 +1107,7 @@ const ModalAddInfo = (props) => {
                 You are required to fill in the below details to proceed further
               </div>
               <Form.Item
-                label={requiredLabel('Income Tax Rule')}
+                label="Income Tax Rule"
                 name="incomeTaxRule"
                 style={{ marginTop: '24px' }}
                 rules={[
@@ -1055,7 +1123,7 @@ const ModalAddInfo = (props) => {
                 </Select>
               </Form.Item>
               <Form.Item
-                label={requiredLabel('PAN Number')}
+                label="PAN Number"
                 name="panNum"
                 rules={[
                   {
@@ -1067,7 +1135,7 @@ const ModalAddInfo = (props) => {
                 <Input maxLength={50} placeholder="PAN Number" />
               </Form.Item>
               <Form.Item
-                label={requiredLabel('Marital Status')}
+                label="Marital Status"
                 name="maritalStatus"
                 rules={[
                   {
@@ -1085,7 +1153,7 @@ const ModalAddInfo = (props) => {
                 </Select>
               </Form.Item>
               <Form.Item
-                label={requiredLabel('No. of Dependents')}
+                label="No. of Dependents"
                 name="noOfDependents"
                 rules={[
                   {
@@ -1097,7 +1165,7 @@ const ModalAddInfo = (props) => {
                 <Input maxLength={50} placeholder="No. of Dependents" />
               </Form.Item>
               <Form.Item
-                label={requiredLabel('Residency Status')}
+                label="Residency Status"
                 name="residencyStatus"
                 rules={[
                   {
@@ -1127,21 +1195,21 @@ const ModalAddInfo = (props) => {
               <div className={styles.form__description}>
                 You are required to fill in the below details to proceed further
               </div>
+              <Tooltip title={disabledTitle}>
+                <Form.Item
+                  label="Social Security Card Number"
+                  name="nationalId"
+                  style={{ marginTop: '24px' }}
+                >
+                  <Input
+                    maxLength={50}
+                    placeholder="Social Security Card Number"
+                    disabled={disabledFields}
+                  />
+                </Form.Item>
+              </Tooltip>
               <Form.Item
-                label="Social Security Card Number"
-                name="nationalId"
-                style={{ marginTop: '24px' }}
-                // rules={[
-                //   {
-                //     required: true,
-                //     message: 'Please enter your Social security card number!',
-                //   },
-                // ]}
-              >
-                <Input disabled maxLength={50} placeholder="Social Security Card Number" />
-              </Form.Item>
-              <Form.Item
-                label={requiredLabel('Marital Status')}
+                label="Marital Status"
                 name="maritalStatus"
                 rules={[
                   {
@@ -1160,7 +1228,7 @@ const ModalAddInfo = (props) => {
                 </Select>
               </Form.Item>
               <Form.Item
-                label={requiredLabel('No. of Dependents')}
+                label="No. of Dependents"
                 name="noOfDependents"
                 rules={[
                   {
@@ -1172,7 +1240,7 @@ const ModalAddInfo = (props) => {
                 <Input maxLength={50} placeholder="No. of Dependents" />
               </Form.Item>
               <Form.Item
-                label={requiredLabel('Residency Status')}
+                label="Residency Status"
                 name="residencyStatus"
                 rules={[
                   {
@@ -1201,21 +1269,27 @@ const ModalAddInfo = (props) => {
             <div className={styles.form__description}>
               You are required to fill in the below details to proceed further
             </div>
+            <Tooltip title={disabledTitle}>
+              <Form.Item
+                label="Social Security Card Number"
+                name="nationalId"
+                style={{ marginTop: '24px' }}
+                rules={[
+                  {
+                    required: !disabledFields,
+                    message: 'Please enter your Social security card number!',
+                  },
+                ]}
+              >
+                <Input
+                  maxLength={50}
+                  placeholder="Social Security Card Number"
+                  disabled={disabledFields}
+                />
+              </Form.Item>
+            </Tooltip>
             <Form.Item
-              label={requiredLabel('Social Security Card Number')}
-              name="nationalId"
-              style={{ marginTop: '24px' }}
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter your Social security card number!',
-                },
-              ]}
-            >
-              <Input maxLength={50} placeholder="Social Security Card Number" />
-            </Form.Item>
-            <Form.Item
-              label={requiredLabel('Marital Status')}
+              label="Marital Status"
               name="maritalStatus"
               rules={[
                 {
@@ -1234,7 +1308,7 @@ const ModalAddInfo = (props) => {
               </Select>
             </Form.Item>
             <Form.Item
-              label={requiredLabel('No. of Dependents')}
+              label="No. of Dependents"
               name="noOfDependents"
               rules={[
                 {
@@ -1246,7 +1320,7 @@ const ModalAddInfo = (props) => {
               <Input maxLength={50} placeholder="No. of Dependents" />
             </Form.Item>
             <Form.Item
-              label={requiredLabel('Residency Status')}
+              label="Residency Status"
               name="residencyStatus"
               rules={[
                 {
@@ -1262,6 +1336,7 @@ const ModalAddInfo = (props) => {
             </Form.Item>
           </Form>
         );
+      }
 
       default:
         return '';

@@ -89,3 +89,10 @@ export async function signaturePolicies(payload) {
     data: payload,
   });
 }
+
+export async function exportPoliciesCertification(payload) {
+  return request('/api/policiesregulationtenant/export-certify', {
+    method: 'POST',
+    data: payload,
+  });
+}

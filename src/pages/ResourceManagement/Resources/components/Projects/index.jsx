@@ -45,6 +45,15 @@ const ProjectList = (props) => {
       fetchProjectList({ projectStatus: [projectStatus] });
     } else fetchProjectList();
   }, [projectStatus, JSON.stringify(selectedLocations), JSON.stringify(selectedDivisions)]);
+
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: 'resourceManagement/clearState',
+      });
+    };
+  }, []);
+
   return (
     <div className={styles.ProjectList}>
       <div className={styles.tabMenu}>
