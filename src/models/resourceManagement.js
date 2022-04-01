@@ -51,6 +51,7 @@ const resourceManagement = {
 
     filter: {},
     customerList: [],
+    payloadProject: {},
   },
   effects: {
     *getProjectList({ payload }, { call, put }) {
@@ -246,17 +247,18 @@ const resourceManagement = {
     },
     *fetchProjectList({ payload }, { call, put }) {
       let response = {};
+      const payloadTemp = {
+        ...payload,
+        tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
+      };
       try {
-        response = yield call(fetchProjectListTable, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
+        response = yield call(fetchProjectListTable, payloadTemp);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { projectTable: data },
+          payload: { projectTable: data, payloadProject: payloadTemp },
         });
         const customerList =
           data.length > 0
@@ -389,11 +391,12 @@ const resourceManagement = {
         dialog(error);
       }
     },
-    *exportReportProject(_, { call }) {
+    *exportReportProject({ payload }, { call }) {
       let response = '';
       const hide = message.loading('Exporting data project...', 0);
       try {
         response = yield call(exportProject, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });

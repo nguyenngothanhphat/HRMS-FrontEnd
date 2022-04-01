@@ -20,6 +20,7 @@ const HeaderProjectRM = (props) => {
     total,
     dispatch,
     filter = [],
+    payloadProject = {},
   } = props;
   const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
 
@@ -59,7 +60,7 @@ const HeaderProjectRM = (props) => {
       type: 'resourceManagement/exportReportProject',
       payload: {
         employeeId: currentUserId,
-        limit: total,
+        ...payloadProject,
       },
     });
     const getDataExport = getListExport ? getListExport.data : '';
@@ -92,7 +93,7 @@ const HeaderProjectRM = (props) => {
                 {obj.statusName} ({obj.count})
               </Option>
               {listStatus.map((list) => (
-                <Option value={list.statusId}>
+                <Option value={list.statusName}>
                   {list.statusName} ({list.count})
                 </Option>
               ))}
@@ -139,7 +140,7 @@ const HeaderProjectRM = (props) => {
 
 export default connect(
   ({
-    resourceManagement: { total = 0, filter = [] } = {},
+    resourceManagement: { total = 0, filter = [], payloadProject = {} } = {},
     user: { currentUser: { employee: { _id: currentUserId = '' } = {} } = {} } = {},
-  }) => ({ total, currentUserId, filter }),
+  }) => ({ total, currentUserId, filter, payloadProject }),
 )(HeaderProjectRM);
