@@ -10,9 +10,9 @@ const PopupProjectName = (props) => {
       projectName = '',
       status = '',
       projectType = '',
-      customer = '',
-      billingStatus = '',
-      ultilization = '',
+      projectAlias = '',
+      accountOwner = '',
+      engineeringOwner = '',
       startDate = '',
       endDate = '',
       projectId = '',
@@ -48,27 +48,33 @@ const PopupProjectName = (props) => {
       <div className={styles.contact}>
         <Row gutter={[20, 20]}>
           <Col span={9}>
-            <div className={styles.contact__title}>Client Name: </div>
+            <div className={styles.contact__title}> Account Owner: </div>
           </Col>
           <Col span={15}>
-            <div className={styles.contact__clientName}>{customer}</div>
+            <div className={styles.contact__clientName}>{accountOwner || '-'}</div>
           </Col>
           <Col span={9}>
-            <div className={styles.contact__title}>Billing Status: </div>
+            <div className={styles.contact__title}>Project ID: </div>
           </Col>
           <Col span={15}>
-            <div className={styles.contact__value}>{billingStatus || '-'}</div>
+            <div className={styles.contact__value}>{projectId || '-'}</div>
           </Col>
           <Col span={9}>
-            <div className={styles.contact__title}>Ultilization: </div>
+            <div className={styles.contact__title}>Project Alias: </div>
           </Col>
           <Col span={15}>
             <div
               style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
               className={styles.contact__value}
             >
-              {ultilization || '-'}
+              {projectAlias || '-'}
             </div>
+          </Col>
+          <Col span={9}>
+            <div className={styles.contact__title}>Engineering Owner: </div>
+          </Col>
+          <Col span={15}>
+            <div className={styles.contact__value}>{engineeringOwner || '-'}</div>
           </Col>
           <Col span={9}>
             <div className={styles.contact__title}>Duration: </div>
