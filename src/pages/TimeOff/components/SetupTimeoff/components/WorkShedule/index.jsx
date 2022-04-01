@@ -6,6 +6,7 @@ import { UpOutlined, DownOutlined } from '@ant-design/icons';
 
 import { getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import s from './index.less';
+import WorkInProgress from "@/components/WorkInProgress";
 
 @connect(
   ({
@@ -209,6 +210,7 @@ class WorkShedule extends Component {
 
     return (
       <div className={s.root}>
+        <WorkInProgress />
         <div className={s.title}>Setup the standard company Holiday Calendar</div>
         <div className={s.description}>
           Below is a list of holidays celebrated in your region/country. Select the ones for which

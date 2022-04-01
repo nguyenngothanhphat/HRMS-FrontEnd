@@ -2,7 +2,7 @@ describe('OrganizationChat Automation', () => {
     before(() => {
       cy.visit('https://stghrms.paxanimi.ai/login');
     });
-    let employee_email = "narmada.biradar@mailinator.com";
+    let employee_email = "sandeep@mailinator.com";
     let password = '12345678@Tc';
   
     it('Sign-In', () => {
