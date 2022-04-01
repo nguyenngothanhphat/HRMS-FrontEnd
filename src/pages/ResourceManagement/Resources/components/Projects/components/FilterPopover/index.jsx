@@ -1,4 +1,4 @@
-import { Form, Popover, Select, Input } from 'antd';
+import { Form, Popover, Select } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { debounce } from 'lodash';
 import { connect } from 'umi';
@@ -20,21 +20,23 @@ const FilterPopover = (props) => {
   // redux
   const {
     projectManagement: {
-      customerList = [],
       projectTypeList = [],
       projectStatusList = [],
       divisionList = [],
       employeeList = [],
       projectNameList = [],
     } = {},
+    resourceManagement: { customerList = [] } = {},
     loadingFetchEmployeeList = false,
   } = props;
 
+  const removeDuplicate = (array, key) => {
+    return [...new Map(array.map((x) => [key(x), x])).values()];
+  };
+  const customerNewList = removeDuplicate(customerList, (item) => item?.customerName);
+
   useEffect(() => {
     if (showPopover) {
-      dispatch({
-        type: 'projectManagement/fetchCustomerListEffect',
-      });
       dispatch({
         type: 'projectManagement/fetchProjectNameListEffect',
       });
@@ -99,7 +101,21 @@ const FilterPopover = (props) => {
         <div className={styles.popupContainer}>
           <Form form={form} layout="vertical" name="filterForm" onValuesChange={onValuesChange}>
             <Form.Item label="By Project ID" name="projectId">
-              <Input placeholder="Project ID" />
+              <Select
+                allowClear
+                mode="multiple"
+                style={{ width: '100%' }}
+                placeholder="Select Project ID"
+                showSearch
+                showArrow
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {projectNameList.map((x) => {
+                  return <Select.Option value={x.projectId}>{x.projectId}</Select.Option>;
+                })}
+              </Select>
             </Form.Item>
             <Form.Item label="By division" name="division">
               <Select
@@ -141,7 +157,7 @@ const FilterPopover = (props) => {
               </Select>
             </Form.Item>
 
-            <Form.Item label="By customer" name="customerId">
+            <Form.Item label="By customer" name="customerName">
               <Select
                 allowClear
                 mode="multiple"
@@ -153,8 +169,8 @@ const FilterPopover = (props) => {
                 style={{ width: '100%' }}
                 placeholder="Select Customer"
               >
-                {customerList.map((x) => {
-                  return <Select.Option value={x.customerId}>{x.legalName}</Select.Option>;
+                {customerNewList.map((x) => {
+                  return <Select.Option value={x.customerName}>{x.customerName}</Select.Option>;
                 })}
               </Select>
             </Form.Item>
@@ -172,7 +188,7 @@ const FilterPopover = (props) => {
                 placeholder="Select Engagement Type"
               >
                 {projectTypeList.map((x) => (
-                  <Select.Option value={x.id}>{x.type_name}</Select.Option>
+                  <Select.Option value={x.type_name}>{x.type_name}</Select.Option>
                 ))}
               </Select>
             </Form.Item>
@@ -209,7 +225,7 @@ const FilterPopover = (props) => {
                 placeholder="Select Status"
               >
                 {projectStatusList.map((x) => (
-                  <Select.Option value={x.id}>{x.status}</Select.Option>
+                  <Select.Option value={x.status}>{x.status}</Select.Option>
                 ))}
               </Select>
             </Form.Item>
@@ -247,7 +263,10 @@ const FilterPopover = (props) => {
   );
 };
 
-export default connect(({ projectManagement, user: { currentUser: { employee = {} } = {} } }) => ({
-  projectManagement,
-  employee,
-}))(FilterPopover);
+export default connect(
+  ({ projectManagement, resourceManagement, user: { currentUser: { employee = {} } = {} } }) => ({
+    projectManagement,
+    resourceManagement,
+    employee,
+  }),
+)(FilterPopover);
