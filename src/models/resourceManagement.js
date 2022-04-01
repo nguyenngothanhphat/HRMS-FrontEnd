@@ -48,6 +48,8 @@ const resourceManagement = {
     newJoineeList: [],
     selectedDivisions: [],
     selectedLocations: [], // empty for all
+
+    filter: {},
   },
   effects: {
     *getProjectList({ payload }, { call, put }) {
@@ -431,6 +433,12 @@ const resourceManagement = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    clearState(state) {
+      return {
+        ...state,
+        filter: {},
       };
     },
   },
