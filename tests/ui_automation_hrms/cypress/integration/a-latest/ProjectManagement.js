@@ -54,6 +54,8 @@ cy.visit('https://stghrms.paxanimi.ai/login');
       // cy.get('.ant-select-selection-overflow').click();
      // cy.get('.ant-select-open').click({force:true});
       cy.get('.ant-select-selection-overflow-item.ant-select-selection-overflow-item-suffix').type("Design"+'{enter}'+"Frontend"+'{enter}',{forcr:true});
-      cy.contains('Cancel').click()
+      cy.contains('Submit').click()
+         cy.get('.ant-btn.ant-btn-link.ant-btn-circle').eq(0).click();
+         cy.get('button[type="submit"]').click();
   });
 });

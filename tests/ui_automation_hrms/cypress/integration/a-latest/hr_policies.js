@@ -3,7 +3,7 @@ describe('HR_Polices_and_Regulations', () => {
     cy.visit('https://stghrms.paxanimi.ai/login');
   });
 
-  let employee_email = "sandeep@mailinator.com";
+  let employee_email = "narmada.biradar@mailinator.com";
   let password = "12345678@Tc";
 
   it('sign in', () => {
@@ -16,13 +16,14 @@ describe('HR_Polices_and_Regulations', () => {
       cy.contains('Policies & Regulations').click();
       cy.contains('Settings').click();
       cy.wait(3000);
+      cy.contains('India').click();
       cy.contains('Add Categories').click()
       cy.get('#basic_category').type("Company Asset");
       cy.get('button[type="submit"]').click();
-      cy.get('.ant-menu-title-content').eq(12).click();
+      cy.get('.ant-menu-title-content').eq(11).click();
       cy.get('.ant-select-selector').click();
   
-      cy.contains('India').click();
+      
       cy.contains('Add Policy').click()
       .then(()=>{
         cy.get("#basic_categoryPolicy").type('Company Asset'+'{enter}')

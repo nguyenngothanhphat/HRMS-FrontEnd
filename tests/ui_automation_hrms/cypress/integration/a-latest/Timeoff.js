@@ -18,13 +18,14 @@ describe('Timeoff Automation', () => {
         cy.contains('Request Time Off').click();
         cy.get('#basic_timeOffType').trigger('mousedown')
           .then(() => {
-            cy.contains('Sick Leave').click();
+            cy.contains('Casual Leave').click();
           });
         cy.get('#basic_subject').type('function');
-        let fromDate ="14th Apr 2022";         
-        let toDate ="14th Apr 2022";
+        let fromDate ="04/15/2022";         
+        let toDate ="04/15/2022";
         cy.get('#basic_durationFrom ',{timeout:3000}).type(fromDate + '{enter}', {force: true});
          cy.get("#basic_durationTo", {timeout:3000}).type(toDate + '{enter}', {force: true});
+         //cy.pause();
         cy.get('#basic_description ').type('Attending function');
          cy.get('.ant-btn').then((resp)=>{
            cy.get(resp[2]).click();
@@ -69,6 +70,7 @@ describe('Timeoff Automation', () => {
         cy.contains('In Progress ').click();
         cy.wait(3000);
         cy.readFile("latest_id_timeoff.txt").then(function(value){
+          cy.get('.ant-pagination-item-link').eq(1).click();
           cy.log(value);
         
           cy.contains(value).click();
@@ -102,9 +104,12 @@ describe('Timeoff Automation', () => {
     cy.contains("Leave Requests").click();
     cy.contains("Approved").click();
     cy.readFile("latest_id_timeoff.txt").then(function(value){
+      // cy.get('.ant-pagination-item-link').eq(1).click();
+      // cy.get('.ant-pagination-item-link').eq(1).click();
       cy.log(value);
       cy.wait(3000);
       // cy.contains('button[type=">"]').click();
+     
       cy.contains(value).click();
       cy.wait(3000);
     });
