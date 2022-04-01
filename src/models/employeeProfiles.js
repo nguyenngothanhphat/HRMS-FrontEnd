@@ -145,10 +145,10 @@ const employeeProfile = {
   },
   effects: {
     *fetchEmployeeIdByUserId({ payload }, { call, put }) {
+      let response = {}
       try {
-        const response = yield call(getGeneralInfoByUserId, payload);
+        response = yield call(getGeneralInfoByUserId, payload);
         const { statusCode, data } = response;
-        // console.log(response);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -159,6 +159,7 @@ const employeeProfile = {
       } catch (error) {
         dialog(error);
       }
+      return response
     },
 
     *fetchGeneralInfo(

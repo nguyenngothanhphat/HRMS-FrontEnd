@@ -8,13 +8,14 @@ const { TextArea } = Input;
 @connect(
   ({
     loading,
-    faqs: { listCategory = [] } = {},
+    faqs: { listCategory = [], selectedCountry } = {},
     user: { currentUser: { employee: { _id: employeeId = '' } = {} } = {} },
   }) => ({
     loadingGetList: loading.effects['faqs/fetchListCategory'],
     loadingUpdate: loading.effects['faqs/updateQuestion'],
     listCategory,
     employeeId,
+    selectedCountry
   }),
 )
 class EditQuestionAnswer extends Component {
@@ -36,6 +37,7 @@ class EditQuestionAnswer extends Component {
       item: { id = '' } = {},
       employeeId = '',
       onClose = () => {},
+      selectedCountry = ''
     } = this.props;
     dispatch({
       type: 'faqs/updateQuestion',
@@ -50,6 +52,12 @@ class EditQuestionAnswer extends Component {
       const { statusCode } = response;
       if (statusCode === 200) {
         onClose();
+        dispatch({
+          type: 'faqs/fetchListFAQ',
+          payload: {
+            country: [selectedCountry],
+          },
+        });
       }
     });
   };

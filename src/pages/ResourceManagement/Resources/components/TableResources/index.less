@@ -51,8 +51,21 @@
     background: #34c765;
     border-radius: 12px;
   }
-  .employeeName {
-    text-align: center;
+  .userProfile {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    .employeeName {
+      text-align: center;
+    }
+    .avatar {
+      img {
+        width: 30px;
+        height: 30px;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+    }
   }
 
   .actionParent {
@@ -116,6 +129,15 @@
     word-wrap: break-word;
     //-webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
+  }
+  .buttonContainer {
+    position: absolute;
+    top: 50% - 25%;
+    right: 10px;
+    width: 40px;
+    height: fit-content;
+    margin: auto;
+    cursor: pointer;
   }
 
   .division {
@@ -229,7 +251,9 @@
       border-right: unset !important;
       border-left: 1px solid #e2e4e8;
     }
-
+    .right-border {
+      border-right: 1px solid #e2e4e8;
+    }
     .firstColumn {
       border-right: 1px solid #e2e4e8;
       border-left: 1px solid #e2e4e8;
@@ -276,6 +300,79 @@
           line-height: 16px;
           letter-spacing: 0.13125px;
         }
+      }
+    }
+    .ant-pagination {
+      align-items: center;
+    }
+    .ant-pagination-options {
+      display: flex;
+      justify-content: flex-end;
+      margin-left: 24px !important;
+    }
+  }
+  .buttonAdd {
+    width: 29px;
+    height: 29px;
+    margin-right: 10px;
+    border: 1px solid lightgray;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.5s;
+  }
+  .buttonAdd:hover {
+    border: 1px solid #2c6df9;
+  }
+  .buttonEdit {
+    width: 29px;
+    height: 29px;
+    border: 1px solid lightgray;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.5s;
+  }
+  .buttonEdit:hover {
+    border: 1px solid #2c6df9;
+  }
+}
+.UserProfilePopover {
+  :global {
+    .ant-popover-inner {
+      min-width: 430px;
+      max-width: 430px;
+      padding: 0;
+      border: 1px solid #eaecef;
+      border-radius: 8px;
+    }
+    .ant-popover-inner-content {
+      padding: 0 !important;
+    }
+    .ant-popover-arrow {
+      //   left: -2.5px !important;
+      width: 18px;
+      height: 18px;
+      .ant-popover-arrow-content {
+        width: 12px;
+        height: 12px;
+        box-shadow: none;
+      }
+    }
+    .ant-btn {
+      width: 100%;
+      height: 41px;
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 14px;
+      background: #eaf0fe;
+      border: none;
+      border-radius: 4px;
+      outline: none;
+      box-shadow: none;
+      img {
+        width: 24px;
+        height: 24px;
+        margin-top: -2px;
+        margin-right: 10px;
       }
     }
   }

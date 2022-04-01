@@ -1,17 +1,17 @@
+import { Table } from 'antd';
 import React, { Component } from 'react';
-import { Table, Button } from 'antd';
 import { connect } from 'umi';
 import EditIcon from '@/assets/policiesRegulations/edit.svg';
 import DeleteIcon from '@/assets/policiesRegulations/delete.svg';
-import EditCategoriesModal from './components/EditCategoriesModal';
 import DeleteCategoriesModal from './components/DeleteCategoriesModal';
+import EditCategoriesModal from './components/EditCategoriesModal';
 import styles from './index.less';
 
 @connect(({ loading, faqs: { listCategory = [] } = {} }) => ({
-  loadingGetList: loading.effects['faqs/fetchListCategory'],
+  loadingGetList: loading.effects['faqs/fetchListFAQCategory'],
   listCategory,
 }))
-class TableCatergory extends Component {
+class TableCategory extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -35,13 +35,15 @@ class TableCatergory extends Component {
     const { listCategory = [], loadingGetList } = this.props;
     // const { listCategory = [] } = this.props;
 
-    const listCategories = listCategory ? listCategory.map((obj) => {
-      return {
-        id: obj._id,
-        name: obj.category || '-',
-        numberQuestions: obj.listFAQs.length
-      }
-    }) : []
+    const listCategories = listCategory
+      ? listCategory.map((obj) => {
+          return {
+            id: obj._id,
+            name: obj.category || '-',
+            numberQuestions: obj.listFAQs.length,
+          };
+        })
+      : [];
     const { editCategoriesModal, deleteCategoriesModal, item } = this.state;
     const columns = [
       {
@@ -63,20 +65,13 @@ class TableCatergory extends Component {
         render: (record) => {
           return (
             <div className={styles.btnAction}>
-              <Button
-                type="link"
-                shape="circle"
-                onClick={() => this.handleUpdateCategories(record)}
-              >
-                <img src={EditIcon} alt="Edit" />
-              </Button>
-              <Button
-                type="link"
-                shape="circle"
+              <img src={EditIcon} alt="Edit" onClick={() => this.handleUpdateCategories(record)} />
+
+              <img
+                src={DeleteIcon}
+                alt="delete"
                 onClick={() => this.handleDeleteCategories(record)}
-              >
-                <img src={DeleteIcon} alt="delete" />
-              </Button>
+              />
             </div>
           );
         },
@@ -84,8 +79,13 @@ class TableCatergory extends Component {
     ];
 
     return (
-      <div className={styles.TableCatergory}>
-        <Table columns={columns} dataSource={listCategories} loading={loadingGetList} />
+      <div className={styles.TableCategory}>
+        <Table
+          columns={columns}
+          dataSource={listCategories}
+          loading={loadingGetList}
+          size="small"
+        />
         {/* <Table columns={columns} dataSource={dataMockup} /> */}
         <EditCategoriesModal
           visible={editCategoriesModal}
@@ -104,4 +104,4 @@ class TableCatergory extends Component {
   }
 }
 
-export default TableCatergory;
+export default TableCategory;

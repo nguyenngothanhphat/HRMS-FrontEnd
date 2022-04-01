@@ -1,15 +1,20 @@
-import React, { Component } from 'react';
-import { Button, Row, Col, Input } from 'antd';
-import { connect } from 'umi';
 // import { debounce } from 'lodash';
 import { SearchOutlined } from '@ant-design/icons';
-import AddIcon from '@/assets/policiesRegulations/add.svg';
+import { Button, Input } from 'antd';
+import React, { Component } from 'react';
+import { connect } from 'umi';
+import { debounce } from 'lodash';
 import FilterIcon from '@/assets/policiesRegulations/filter.svg';
-import styles from './index.less';
+import AddIcon from '@/assets/policiesRegulations/add.svg';
 import AddQuestionAnswer from './components/AddQuestionAnswer';
 import TableFAQList from './components/TableFAQList';
+import styles from './index.less';
 
-@connect()
+@connect(({ loading, faqs: { selectedCountry, listFAQ = [] } = {} }) => ({
+  selectedCountry,
+  loadingGetList: loading.effects['faqs/fetchListFAQ'],
+  listFAQ
+}))
 class ListQuestionAnswer extends Component {
   constructor(props) {
     super(props);
@@ -19,16 +24,49 @@ class ListQuestionAnswer extends Component {
       pageSelected: 1,
       size: 10,
     };
+    this.refForm = React.createRef();
+    this.onSearchDebounce = debounce(this.onSearchDebounce, 500);
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'faqs/fetchListFAQ',
-    });
+    this.fetchData();
   }
 
+  onSearch = (e = {}) => {
+    const { value = '' } = e.target;
+    this.onSearchDebounce(value);
+  };
+
+  componentDidUpdate = (prevProps) => {
+    const { selectedCountry = '' } = this.props;
+    if (prevProps.selectedCountry !== selectedCountry) {
+      this.fetchData();
+    }
+  };
+
+  fetchData = () => {
+    const { dispatch, selectedCountry = '' } = this.props;
+    dispatch({
+      type: 'faqs/fetchListFAQ',
+      payload: {
+        country: [selectedCountry],
+      },
+    });
+  };
+
+  onSearchDebounce = (value) => {
+    const { dispatch, selectedCountry = '' } = this.props;
+    dispatch({
+      type: 'faqs/searchFAQs',
+      payload: {
+        nameSearch: value,
+        country: [selectedCountry]
+      },
+    });
+  };
+
   render() {
+    const { listFAQ = [] } = this.props;
     const { visibleModal, pageSelected, size } = this.state;
     return (
       <div className={styles.ListQuestionAnswer}>
@@ -45,9 +83,10 @@ class ListQuestionAnswer extends Component {
               <img src={FilterIcon} alt="FilterIcon" />
             </div>
             <div className={styles.searchInp}>
-              <Input
-                placeholder="Search by name"
-                prefix={<SearchOutlined />}
+              <Input 
+                placeholder="Search by question or answer" 
+                prefix={<SearchOutlined />} 
+                onChange={(e) => this.onSearch(e)} 
               />
             </div>
           </div>
@@ -57,15 +96,14 @@ class ListQuestionAnswer extends Component {
             mode="multiple"
           />
         </div>
-        <Row>
-          <Col span={24}>
-            <TableFAQList
-              pageSelected={pageSelected}
-              size={size}
-              getPageAndSize={this.getPageAndSize}
-            />
-          </Col>
-        </Row>
+        <div className={styles.container}>
+          <TableFAQList
+            pageSelected={pageSelected}
+            size={size}
+            getPageAndSize={this.getPageAndSize}
+            listFAQ={listFAQ}
+          />
+        </div>
       </div>
     );
   }

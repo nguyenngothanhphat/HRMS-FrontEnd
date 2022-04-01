@@ -48,6 +48,8 @@ const resourceManagement = {
     newJoineeList: [],
     selectedDivisions: [],
     selectedLocations: [], // empty for all
+
+    filter: {},
   },
   effects: {
     *getProjectList({ payload }, { call, put }) {
@@ -70,8 +72,9 @@ const resourceManagement = {
       }
     },
     *getResources({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getResources, {
+        response = yield call(getResources, {
           ...payload,
           tenantId: getCurrentTenant(),
           // company: getCurrentCompany(),
@@ -83,11 +86,10 @@ const resourceManagement = {
           type: 'save',
           payload: { resourceList: data, total },
         });
-        return response;
       } catch (error) {
         dialog(error);
-        return null;
       }
+      return response;
     },
     *fetchAssignToProject({ payload }, { call }) {
       try {
@@ -431,6 +433,12 @@ const resourceManagement = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    clearState(state) {
+      return {
+        ...state,
+        filter: {},
       };
     },
   },

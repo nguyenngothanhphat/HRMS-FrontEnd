@@ -84,7 +84,7 @@ class MyLeaveTable extends PureComponent {
       title: 'Duration',
       dataIndex: 'duration',
       align: 'center',
-      render: (duration) => <span>{duration !== 0 ? duration : '-'}</span>,
+      render: (duration) => <span>{duration !== 0 ? Math.round(duration * 100) / 100 : '-'}</span>,
     },
     {
       title: 'Assigned',

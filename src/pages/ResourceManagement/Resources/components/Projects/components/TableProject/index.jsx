@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
-import { Table } from 'antd';
+import { Table, Popover } from 'antd';
 import moment from 'moment';
-import { connect, formatMessage } from 'umi';
+import { connect, formatMessage, history } from 'umi';
 import AddComment from './components/AddComment';
 import OverviewComment from './components/OverviewComment';
+import UserProfilePopover from './components/UserProfilePopover';
+import PopupProjectName from './components/PopupProjectName';
+import PopupCustomer from './components/PopupCustomer';
+
 import styles from './index.less';
 
 class TableProject extends Component {
   constructor(props) {
     super(props);
-    this.state = { pageSelected: 1 };
+    this.state = {
+      pageSelected: 1, // popup hover name
+    };
   }
 
   formatDate = (date, typeFormat) => {
@@ -24,8 +30,7 @@ class TableProject extends Component {
       return '-';
     }
     const getInfo = obj ? obj.generalInfo : {};
-    const getProjectManager = getInfo ? getInfo.legalName : '-';
-    return getProjectManager;
+    return getInfo;
   };
 
   onChangePagination = (pageNumber) => {
@@ -38,6 +43,10 @@ class TableProject extends Component {
         pageSelected: pageNumber,
       });
     }
+  };
+
+  viewProfile = (_id) => {
+    history.push(`/directory/employee-profile/${_id}`);
   };
 
   render() {
@@ -78,7 +87,7 @@ class TableProject extends Component {
         projectName: obj.projectName || '-',
         customer: obj.customerName || '-',
         projectType: obj.engagementType || '-',
-        projectManager: this.getProjectManage(obj.projectManager),
+        projectManager: obj.projectManager || '-',
         startDate: this.formatDate(obj.startDate, 'MM/DD/YYYY'),
         endDate: this.formatDate(obj.endDate, 'MM/DD/YYYY'),
         resivedEndDate: this.formatDate(obj.newEndDate, 'MM/DD/YYYY'),
@@ -100,8 +109,17 @@ class TableProject extends Component {
         title: 'Project Name',
         dataIndex: 'projectName',
         key: 'projectName',
-        render: (value) => {
-          return <span className={styles.projectName}>{value}</span>;
+        render: (value, row) => {
+          return (
+            <Popover
+              content={<PopupProjectName dataProjectName={row} />}
+              trigger="hover"
+              placement="bottomRight"
+              overlayClassName={styles.popupContentProjectManager}
+            >
+              <span className={styles.projectName}>{value}</span>
+            </Popover>
+          );
         },
         sorter: (a, b) => a.projectName.localeCompare(b.projectName),
       },
@@ -109,9 +127,16 @@ class TableProject extends Component {
         title: 'Customer',
         dataIndex: 'customer',
         key: 'customer',
-        render: (value) => {
-          return <span className={styles.projectName}>{value}</span>;
-        },
+        render: (value, row) => (
+          <Popover
+            content={<PopupCustomer dataCustomer={row} />}
+            trigger="hover"
+            placement="bottomRight"
+            overlayClassName={styles.popupContentProjectManager}
+          >
+            <span className={styles.projectName}>{value}</span>
+          </Popover>
+        ),
         sorter: (a, b) => a.customer.localeCompare(b.customer),
       },
       {
@@ -124,10 +149,20 @@ class TableProject extends Component {
         title: 'Project Manager',
         dataIndex: 'projectManager',
         key: 'projectManager',
-        render: (value) => {
-          return <span className={styles.projectName}>{value}</span>;
-        },
-        sorter: (a, b) => a.projectManager.localeCompare(b.projectManager),
+        render: (value) => (
+          <UserProfilePopover data={{ ...value, ...value.generalInfo }}>
+            <span
+              className={styles.projectName}
+              onClick={() => this.viewProfile(value?.generalInfo?.userId)}
+            >
+              {value?.generalInfo?.legalName || '-'}
+            </span>
+          </UserProfilePopover>
+        ),
+        sorter: (a, b) =>
+          a.projectManager?.generalInfo?.legalName.localeCompare(
+            b.projectManager?.generalInfo?.legalName,
+          ),
       },
       {
         title: (
@@ -169,7 +204,7 @@ class TableProject extends Component {
         sorter: (a, b) => a.status.localeCompare(b.status),
       },
       {
-        title: 'Resource Planed',
+        title: 'Resource Planned',
         dataIndex: 'resourcePlan',
         key: 'resourcePlan',
         sorter: (a, b) => a.resourcePlan - b.resourcePlan,
@@ -193,19 +228,19 @@ class TableProject extends Component {
         sorter: (a, b) => a.bufferResource - b.resourceAssigned,
       },
       {
-        title: 'Billing Efficiency',
+        title: 'Billing Efficiency (%)',
         dataIndex: 'billEfficiency',
         key: 'billEfficiency',
         sorter: (a, b) => a.billEfficiency.localeCompare(b.billEfficiency),
       },
       {
-        title: 'Billable Effor (days)',
+        title: 'Billable Effort (days)',
         dataIndex: 'billableEffor',
         key: 'billableEffor',
         sorter: (a, b) => a.billableEffor - b.billableEffor,
       },
       {
-        title: 'Spent Effor (days)',
+        title: 'Spent Effort (days)',
         dataIndex: 'spentEffor',
         key: 'spentEffor',
         sorter: (a, b) => a.spentEffor - b.spentEffor,
@@ -220,6 +255,7 @@ class TableProject extends Component {
         title: 'Comments',
         dataIndex: 'comment',
         key: 'comment',
+        width: '10%',
         render: (value, row) => {
           const { fetchProjectList } = this.props;
           let displayValue;
@@ -265,4 +301,6 @@ class TableProject extends Component {
   }
 }
 
-export default connect(() => ({}))(TableProject);
+export default connect(({ locationSelection: { listLocationsByCompany = [] } }) => ({
+  listLocationsByCompany,
+}))(TableProject);

@@ -14,7 +14,7 @@ import {
   isOwner,
   isAdmin,
   setCurrentCompany,
-  getIsSwitchingRole,
+  // getIsSwitchingRole,
   getSwitchRoleAbility,
 } from '@/utils/authority';
 import HeaderDropdown from '../HeaderDropdown';
@@ -120,7 +120,12 @@ const AvatarDropdown = (props) => {
     });
 
     // if press Switch button is ON
-    if (isCheck) {
+
+    // NOTE: ADMIN MODE
+    // currently, EMPLOYEE mode is default when a user has two roles ADMIN & EMPLOYEE login.
+    // if you have to change the code that ADMIN by default,
+    // just "if (isCheck)" and "if (!isSwitchingRole)" in the user/fetchCurrent
+    if (!isCheck) {
       if (checkAdmin) {
         isSwitch = false;
       }
@@ -293,7 +298,7 @@ const AvatarDropdown = (props) => {
               {loading
                 ? 'Switching...'
                 : `
-                Switch to ${!isCheck ? 'Employee' : 'Admin'}`}
+                Switch to ${isCheck ? 'Admin' : 'Employee'}`}
             </Menu.Item>
           </>
         )}

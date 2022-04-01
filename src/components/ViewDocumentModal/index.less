@@ -19,23 +19,23 @@
       margin-left: 10px;
       cursor: pointer;
       &:hover {
-        // opacity: 0.8;
-        transition: 0.3s;
         // transform: rotate(360deg);
         transform: scale(1.2);
+        // opacity: 0.8;
+        transition: 0.3s;
       }
       &:active {
-        transition: 0.3s;
         transform: scale(1);
+        transition: 0.3s;
       }
     }
   }
   .container {
+    position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: left;
-    position: relative;
+    justify-content: center;
     .contentViewPDF {
       .content();
       // height: 75vh;
@@ -43,23 +43,25 @@
     }
     .contentViewImage {
       .content();
-      max-height: 75vh;
       height: 100%;
+      max-height: 75vh;
       padding: 20px;
     }
     .content {
       overflow: hidden;
       .fileName {
+        margin-bottom: 24px;
         font-weight: bold;
         font-size: 16px;
-        margin-bottom: 24px;
       }
       .pdfFrame {
+        width: 100%;
+        max-height: 50vh;
+        overflow-y: auto;
         // background-color: #7071772a;
         // margin: 0 auto;
         border: 1px solid #7071772a;
         border-radius: 5px;
-        overflow-y: auto;
         .pdfPage {
           margin-bottom: 20px;
           box-shadow: 0px 1px 40px rgba(0, 0, 0, 0.1);
@@ -68,41 +70,46 @@
             height: auto !important;
           }
         }
+        :global {
+          .react-pdf__Page__textContent {
+            width: 100% !important;
+          }
+        }
       }
       .imageFrame {
-        max-width: 500px;
-        min-width: 300px;
         width: 100%;
+        min-width: 300px;
+        max-width: 500px;
         img {
           width: 100%;
         }
       }
       .loading {
         display: flex;
-        justify-content: center;
         align-items: center;
-        height: 300px;
+        justify-content: center;
         width: 100%;
+        height: 300px;
       }
     }
     .stickyFooter {
-      box-shadow: 0px -3px 5px rgba(0, 0, 0, 0.15);
       position: absolute;
       bottom: 0;
-      background: white;
-      padding: 17px 48px;
       width: 100%;
+      padding: 17px 48px;
       overflow: hidden;
+      background: white;
       border-radius: 0 0 5px 5px;
+      box-shadow: 0px -3px 5px rgba(0, 0, 0, 0.15);
     }
     :global {
       .ant-btn {
+        width: 108px;
+        height: 40px;
         margin-top: 15px;
         background-color: #ffa100;
         border: none;
         border-radius: 30px;
-        height: 40px;
-        width: 108px;
         span {
           color: white;
           font-weight: 700;
@@ -113,5 +120,4 @@
       }
     }
   }
-
 }

@@ -8,7 +8,7 @@ const { TextArea } = Input;
 @connect(
   ({
     loading,
-    faqs: { listCategory = [], listFAQ = [] } = {},
+    faqs: { listCategory = [], listFAQ = [], selectedCountry } = {},
     user: {
       currentUser: { employee: { _id: employeeId = '' } = {} } = {},
     },
@@ -17,7 +17,8 @@ const { TextArea } = Input;
     loadingAddQuestion: loading.effects['faqs/addQuestion'],
     listCategory,
     employeeId,
-    listFAQ
+    listFAQ,
+    selectedCountry
   }),
 )
 class AddQuestionAnswer extends Component {
@@ -34,7 +35,7 @@ class AddQuestionAnswer extends Component {
   };
 
   onFinish = async ({ FaqCategory, question, answer }) => {
-    const { dispatch, employeeId = '', onClose = () => {} } = this.props;
+    const { dispatch, employeeId = '', onClose = () => {}, selectedCountry = '' } = this.props;
     dispatch({
       type: 'faqs/addQuestion',
       payload: {
@@ -42,11 +43,18 @@ class AddQuestionAnswer extends Component {
         employeeId,
         question,
         answer,
+        country: [selectedCountry]
       },
     }).then((response) => {
       const { statusCode } = response;
       if (statusCode === 200) {
         onClose();
+        dispatch({
+          type: 'faqs/fetchListFAQ',
+          payload: {
+            country: [selectedCountry],
+          },
+        });
       }
     });
   };
