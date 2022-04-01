@@ -157,7 +157,7 @@ const FilterPopover = (props) => {
               </Select>
             </Form.Item>
 
-            <Form.Item label="By customer" name="customerId">
+            <Form.Item label="By customer" name="customerName">
               <Select
                 allowClear
                 mode="multiple"
@@ -170,7 +170,7 @@ const FilterPopover = (props) => {
                 placeholder="Select Customer"
               >
                 {customerNewList.map((x) => {
-                  return <Select.Option value={x.customerId}>{x.customerName}</Select.Option>;
+                  return <Select.Option value={x.customerName}>{x.customerName}</Select.Option>;
                 })}
               </Select>
             </Form.Item>
@@ -188,7 +188,7 @@ const FilterPopover = (props) => {
                 placeholder="Select Engagement Type"
               >
                 {projectTypeList.map((x) => (
-                  <Select.Option value={x.id}>{x.type_name}</Select.Option>
+                  <Select.Option value={x.type_name}>{x.type_name}</Select.Option>
                 ))}
               </Select>
             </Form.Item>
@@ -225,7 +225,7 @@ const FilterPopover = (props) => {
                 placeholder="Select Status"
               >
                 {projectStatusList.map((x) => (
-                  <Select.Option value={x.id}>{x.status}</Select.Option>
+                  <Select.Option value={x.status}>{x.status}</Select.Option>
                 ))}
               </Select>
             </Form.Item>
