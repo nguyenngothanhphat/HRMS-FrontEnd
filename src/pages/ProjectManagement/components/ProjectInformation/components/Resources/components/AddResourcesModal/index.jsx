@@ -50,6 +50,8 @@ const AddResourcesModal = (props) => {
   };
 
   const fetchResourceList = (name = '', page = 1, limit = 5, filter) => {
+    const { employee } = props;
+    const employeeId = employee ? employee._id : ''
     dispatch({
       type: 'projectDetails/fetchResourceListEffect',
       payload: {
@@ -57,6 +59,7 @@ const AddResourcesModal = (props) => {
         limit,
         name,
         ...filter,
+        employeeId
       },
     });
   };
