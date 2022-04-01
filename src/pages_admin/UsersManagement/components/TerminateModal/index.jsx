@@ -18,16 +18,28 @@ const TerminateModal = (props) => {
     // onChange = () => {},
     handleCandelModal = () => {},
     loading,
-    userProfile = {},
-    companyId = '',
-    locationId = '',
+    approvalflow = [],
+    userProfile: { workEmail = '', firstName = '', lastName = '', roles = [], status = '' } = {},
+    employeeDetail: { _id = '', tenant = '', generalInfo: { _id: generalInfoId = '' } = {} } = {},
+    locationId,
+    companyId,
     dispatch,
-    employeeDetail = {},
   } = props;
 
   const handleFinish = (values) => {
-    const { _id = '', tenant = '', generalInfo: { _id: generalInfoId = '' } = {} } = employeeDetail;
-    const { workEmail = '', firstName = '', lastName = '', roles = [], status = '' } = userProfile;
+    const { reason, lastWorkingDate } = values;
+    let approvalFlowID = '';
+    approvalflow.forEach((item) => {
+      approvalFlowID = item._id;
+    });
+    const payload = {
+      action: 'submit',
+      employee: generalInfoId,
+      reasonForLeaving: reason,
+      approvalFlow: approvalFlowID,
+      lastWorkingDate,
+    };
+
     dispatch({
       type: 'usersManagement/updateRolesByEmployee',
       payload: {
@@ -62,9 +74,13 @@ const TerminateModal = (props) => {
         notification.success({
           message: 'Update user successfully',
         });
-        // const { closeEditModal = () => {} } = this.props;
-        // closeEditModal(true);
+        handleCandelModal();
       }
+    });
+
+    dispatch({
+      type: 'offboarding/terminateReason',
+      payload,
     });
   };
 
@@ -152,6 +168,7 @@ const TerminateModal = (props) => {
   );
 };
 
-export default connect(({ usersManagement: { employeeDetail = {} } = {}, loading }) => ({
-  employeeDetail,
+export default connect(({ loading, offboarding: { approvalflow = [] } = {} }) => ({
+  approvalflow,
+  loading: loading.effects['offboarding/terminateReason'],
 }))(TerminateModal);
