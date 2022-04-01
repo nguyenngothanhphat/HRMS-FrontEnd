@@ -11,6 +11,8 @@ import {
   TIMEOFF_COL_SPAN_1,
   TIMEOFF_COL_SPAN_2,
   TIMEOFF_DATE_FORMAT,
+  TIMEOFF_INPUT_TYPE,
+  TIMEOFF_INPUT_TYPE_BY_LOCATION,
   TIMEOFF_STATUS,
   TIMEOFF_TYPE,
 } from '@/utils/timeOff';
@@ -234,12 +236,15 @@ class RequestInformation extends PureComponent {
       leaveDates = [],
       // onDate = '',
       type: { type = '' } = {},
+      employee: { locationInfo = {} } = {},
     } = viewingLeaveRequest;
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate, type);
     const showAllDateList = duration <= MAX_NO_OF_DAYS_TO_SHOW;
 
-    const BY_HOUR = leaveDates.some((x) => x.startTime);
+    const BY_HOUR =
+      TIMEOFF_INPUT_TYPE_BY_LOCATION[locationInfo?.headQuarterAddress?.country?._id] ===
+      TIMEOFF_INPUT_TYPE.HOUR;
 
     const renderTableHeader = () => {
       if (BY_HOUR) {

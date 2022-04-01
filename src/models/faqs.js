@@ -11,6 +11,7 @@ import {
   updateQuestion,
   deleteQuestion,
   getLocationListByParentCompany,
+  searchFAQs
 } from '../services/faqs';
 
 const faqs = {
@@ -22,7 +23,7 @@ const faqs = {
     selectedCountry: '',
   },
   effects: {
-    *addFAQCategory({ payload }, { call, put }) {
+    *addFAQCategory({ payload }, { call }) {
       let response;
       try {
         response = yield call(addCategory, {
@@ -33,13 +34,6 @@ const faqs = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message: 'Add Category Successfully' });
-        yield put({
-          type: 'fetchListFAQCategory',
-          payload: {
-            tenantId: getCurrentTenant(),
-            company: getCurrentCompany(),
-          },
-        });
       } catch (error) {
         dialog(error);
       }
@@ -66,7 +60,7 @@ const faqs = {
       }
       return response;
     },
-    *updateFAQCategory({ payload }, { call, put }) {
+    *updateFAQCategory({ payload }, { call }) {
       let response;
       try {
         response = yield call(updateCategory, {
@@ -77,19 +71,12 @@ const faqs = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message: 'Update Category Successfully' });
-        yield put({
-          type: 'fetchListFAQCategory',
-          payload: {
-            tenantId: getCurrentTenant(),
-            company: getCurrentCompany(),
-          },
-        });
       } catch (error) {
         dialog(error);
       }
       return response;
     },
-    *deleteFAQCategory({ payload }, { call, put }) {
+    *deleteFAQCategory({ payload }, { call }) {
       let response;
       try {
         response = yield call(deleteCategory, {
@@ -100,19 +87,12 @@ const faqs = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message: 'Delete Category Successfully' });
-        yield put({
-          type: 'fetchListFAQCategory',
-          payload: {
-            tenantId: getCurrentTenant(),
-            company: getCurrentCompany(),
-          },
-        });
       } catch (error) {
         dialog(error);
       }
       return response;
     },
-    *addQuestion({ payload }, { call, put }) {
+    *addQuestion({ payload }, { call }) {
       let response;
       try {
         response = yield call(addQuestion, {
@@ -123,13 +103,6 @@ const faqs = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message: 'Add question Successfully' });
-        yield put({
-          type: 'fetchListFAQ',
-          payload: {
-            tenantId: getCurrentTenant(),
-            company: getCurrentCompany(),
-          },
-        });
       } catch (error) {
         dialog(error);
       }
@@ -156,7 +129,7 @@ const faqs = {
       }
       return response;
     },
-    *updateQuestion({ payload }, { call, put }) {
+    *updateQuestion({ payload }, { call }) {
       let response;
       try {
         response = yield call(updateQuestion, {
@@ -167,19 +140,12 @@ const faqs = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message: 'Update FAQ Successfully' });
-        yield put({
-          type: 'fetchListFAQ',
-          payload: {
-            tenantId: getCurrentTenant(),
-            company: getCurrentCompany(),
-          },
-        });
       } catch (error) {
         dialog(error);
       }
       return response;
     },
-    *deleteQuestion({ payload }, { call, put }) {
+    *deleteQuestion({ payload }, { call }) {
       let response;
       try {
         response = yield call(deleteQuestion, {
@@ -190,13 +156,6 @@ const faqs = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message: 'Delete question Successfully' });
-        yield put({
-          type: 'fetchListFAQ',
-          payload: {
-            tenantId: getCurrentTenant(),
-            company: getCurrentCompany(),
-          },
-        });
       } catch (error) {
         dialog(error);
       }
@@ -215,6 +174,25 @@ const faqs = {
         yield put({
           type: 'save',
           payload: { countryList: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *searchFAQs({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(searchFAQs, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { listFAQ: data },
         });
       } catch (error) {
         dialog(error);
