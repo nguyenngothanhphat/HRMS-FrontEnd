@@ -8,8 +8,8 @@ import styles from './index.less';
 import CustomSearchBox from '@/components/CustomSearchBox';
 
 const TYPE = {
-  JOB_TITLE: '1',
-  DIVISION: '2',
+  JOB_TITLE: 'Job Title',
+  DIVISION: 'Division',
 };
 const People = (props) => {
   const {
@@ -59,7 +59,7 @@ const People = (props) => {
   const generateColumns = () => {
     const columns = [
       {
-        title: 'Job Title',
+        title: filterMode,
         dataIndex: '_id',
         key: '_id',
         render: (_id) => {
