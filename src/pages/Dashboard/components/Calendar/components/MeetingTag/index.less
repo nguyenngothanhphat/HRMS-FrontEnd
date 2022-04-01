@@ -61,7 +61,7 @@
     }
     .divider {
       border-bottom: 1px solid #eaecef;
-      margin-block: 24px;
+      margin-block: 20px;
     }
     &__header {
       padding-top: 24px;
@@ -90,6 +90,10 @@
       }
     }
     &__link {
+      img {
+        height: 20px;
+        margin-top: 6px;
+      }
       .rightPart {
         .button {
           overflow: none;
@@ -109,6 +113,7 @@
     }
     &__employeeContainer {
       max-height: 200px;
+      padding-bottom: 20px;
       overflow-y: auto;
       .employee {
         cursor: default;
@@ -163,7 +168,10 @@
     &__alarmBell {
       display: flex;
       align-items: center;
-      padding-bottom: 24px;
+      padding-bottom: 20px;
+      span {
+        font-size: 13px;
+      }
       img {
         margin-right: 10px;
         color: #212020;
@@ -173,6 +181,7 @@
       }
     }
     .guestNumber {
+      margin-bottom: 0 !important;
       color: #212020;
       font-weight: 500;
       font-size: 13px;

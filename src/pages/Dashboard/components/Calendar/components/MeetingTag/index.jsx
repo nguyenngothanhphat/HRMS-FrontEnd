@@ -31,6 +31,19 @@ const MeetingTag = (props) => {
   const [activeColor, setActiveColor] = useState(CALENDAR_COLORS.GREEN.color);
   const [borderColor, setBorderColor] = useState(CALENDAR_COLORS.GREEN.borderColor);
   const [backgroundColor, setBackgroundColor] = useState(CALENDAR_COLORS.GREEN.backgroundColor);
+  const [lineHeight, setLineHeight] = useState(20);
+
+  const generateLineHeight = (heightTemp) => {
+    if (heightTemp <= 24) {
+      setLineHeight(1);
+    }
+    if (heightTemp > 24 && heightTemp <= 26) {
+      setLineHeight(9);
+    }
+    if (heightTemp > 26 && heightTemp <= 35) {
+      setLineHeight(16);
+    }
+  };
 
   // USE EFFECT AREA
   const calculateCardPosition = () => {
@@ -41,7 +54,7 @@ const MeetingTag = (props) => {
 
     if (startTime && endTime) {
       const startTimeHourTemp = moment(startTime).hour();
-      const startTimeMinuteTemp = moment.utc(startTime).minute();
+      const startTimeMinuteTemp = moment(startTime).minute();
 
       for (let i = 0; i <= 24; i += 1) {
         if (i < startTimeHourTemp) {
@@ -52,10 +65,11 @@ const MeetingTag = (props) => {
       }
 
       const diff = moment.duration(moment(endTime).diff(moment(startTime)));
-      heightTemp = diff.asHours() * EMP_ROW_HEIGHT;
+      heightTemp = diff.asHours() * EMP_ROW_HEIGHT - marginBlock;
 
+      generateLineHeight(heightTemp);
       setTop(topTemp + marginBlock / 2);
-      setHeight(heightTemp - marginBlock);
+      setHeight(heightTemp);
 
       const listBySlotArr = slotArr.filter((x) => x.includes(eventID));
       let columnCount = 0;
@@ -208,9 +222,11 @@ const MeetingTag = (props) => {
         </Row>
         <div className={styles.divider} />
         <p className={styles.guestNumber}>{attendees.length} Guests</p>
-        <div className={styles.popupEvent__employeeContainer}>
-          {attendees.map((attendee) => renderGuest(attendee))}
-        </div>
+        {attendees.length > 0 && (
+          <div className={styles.popupEvent__employeeContainer}>
+            {attendees.map((attendee) => renderGuest(attendee))}
+          </div>
+        )}
         <div className={styles.divider} />
         <Row className={styles.popupEvent__alarmBell}>
           <img src={Bell} alt="" />
@@ -250,6 +266,7 @@ const MeetingTag = (props) => {
             border: `1px solid ${borderColor}`,
             color: activeColor,
             paddingBlock: height < EMP_ROW_HEIGHT - DEFAULT_MARGIN_CALENDAR * 2 ? 8 : 16,
+            lineHeight: `${lineHeight}px`,
           }}
         >
           <span className={styles.title}>{event.summary}</span>
