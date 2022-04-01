@@ -713,12 +713,12 @@ const RequestInformation = (props) => {
   };
 
   // validator
-  const typeValidator = (rule, value, callback) => {
-    const remaining = getRemainingDayById(value);
-    if (remaining === 'VALID' || remaining > 0) callback();
-    else if (selectedTypeName) callback('Leave dates reach limit.');
-    else callback();
-  };
+  // const typeValidator = (rule, value, callback) => {
+  //   const remaining = getRemainingDayById(value);
+  //   if (remaining === 'VALID' || remaining > 0) callback();
+  //   else if (selectedTypeName) callback('Leave dates reach limit.');
+  //   else callback();
+  // };
 
   // FETCH LEAVE BALANCE INFO (REMAINING, TOTAL,...)
   const fetchData = async () => {
@@ -1099,7 +1099,7 @@ const RequestInformation = (props) => {
                   required: true,
                   message: 'Please select Timeoff Type!',
                 },
-                { validator: typeValidator },
+                // { validator: typeValidator },
               ]}
             >
               <Select
