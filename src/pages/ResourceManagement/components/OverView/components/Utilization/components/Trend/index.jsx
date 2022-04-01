@@ -1,3 +1,4 @@
+// import CustomDot from '@/assets/resourceManagement/customDot.svg';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import {
@@ -10,12 +11,11 @@ import {
   YAxis,
 } from 'recharts';
 import { connect } from 'umi';
-// import CustomDot from '@/assets/resourceManagement/customDot.svg';
 import EmptyImage from '@/assets/resourceManagement/emptyImage.png';
 import styles from './index.less';
 
 const Trend = (props) => {
-  const { dispatch, startDate = '', endDate = '', invalidDates = false } = props;
+  const { dispatch, startDate = '', endDate = '', invalidDates = false, chartRef } = props;
 
   // redux
   const {
@@ -143,22 +143,6 @@ const Trend = (props) => {
     return null;
   };
 
-  const CustomizeDot = ({ cx, cy }) => {
-    return (
-      <svg
-        cx={cx - 6}
-        cy={cy - 6}
-        width="12"
-        height="12"
-        viewBox="0 0 12 12"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle cx="6" cy="6" r="5" fill="white" stroke="#2C6DF9" strokeWidth="2" />
-      </svg>
-    );
-  };
-
   if (isEmpty) {
     return (
       <div className={styles.Trend}>
@@ -196,6 +180,7 @@ const Trend = (props) => {
             left: 0,
             bottom: 0,
           }}
+          ref={chartRef}
         >
           <defs>
             <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
