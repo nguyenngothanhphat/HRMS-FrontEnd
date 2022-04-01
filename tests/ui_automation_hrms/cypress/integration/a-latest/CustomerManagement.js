@@ -2,15 +2,15 @@ describe('CustomerManagement', () => {
     before(() => {
       cy.visit('https://stghrms.paxanimi.ai/login');
     });
-
+  
     let employee_email = "narmada.biradar@mailinator.com";
     let password = "12345678@Tc";
-
+  
     it('SIGN IN', () => {
         cy.get('#basic_userEmail.ant-input').type(employee_email);
         cy.get('#basic_password.ant-input').type(password);
         cy.get('button[type="submit"]').click();
-
+       
     });
     it('Directory',() =>{
         cy.contains('Customer Management').click({force:true});

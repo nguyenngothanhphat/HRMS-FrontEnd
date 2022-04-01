@@ -1,15 +1,15 @@
-describe('OrganizationChart Automation', () => {
+describe('OrganizationChat Automation', () => {
     before(() => {
       cy.visit('https://stghrms.paxanimi.ai/login');
     });
     let employee_email = "narmada.biradar@mailinator.com";
     let password = '12345678@Tc';
-
+  
     it('Sign-In', () => {
         cy.get('#basic_userEmail.ant-input').type(employee_email);
         cy.get('#basic_password.ant-input').type(password);
         cy.get('button[type="submit"]').click();
-
+  
     });
     it('Click the Directory',() =>{
         cy.contains("Directory").click({force:true});
@@ -18,3 +18,4 @@ describe('OrganizationChart Automation', () => {
         cy.get('.ant-select-item-option-content').click()
     });
     });
+  
