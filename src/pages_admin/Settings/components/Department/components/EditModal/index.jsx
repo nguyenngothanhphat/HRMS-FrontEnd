@@ -233,8 +233,10 @@ class EditModal extends PureComponent {
                   () => ({
                     validator(_, value) {
                       if (listDepartments.filter((obj) => obj.name === value).length > 0) {
+                        // eslint-disable-next-line prefer-promise-reject-errors
                         return Promise.reject(`Department name is exist.`);
                       }
+                      // eslint-disable-next-line compat/compat
                       return Promise.resolve();
                     },
                   }),
@@ -252,8 +254,7 @@ class EditModal extends PureComponent {
                   showSearch
                   allowClear
                   filterOption={(input, option) =>
-                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
+                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   {listDepartments.map((d) => (
                     <Select.Option key={d.departmentId} value={d.departmentId}>

@@ -1,6 +1,6 @@
+import { notification } from 'antd';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
-import { notification } from 'antd';
 import {
   getOffboardingList,
   sendRequest,
@@ -702,8 +702,9 @@ const offboarding = {
       }
     },
     *terminateReason({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(terminateReason, {
+        response = yield call(terminateReason, {
           ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
@@ -718,6 +719,7 @@ const offboarding = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
     *closeEmployeeRecord({ payload }, { call }) {
       try {

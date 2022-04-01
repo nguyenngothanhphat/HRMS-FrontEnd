@@ -52,7 +52,8 @@ class TableUsers extends PureComponent {
   };
 
   generateColumns = () => {
-    const columns = [
+    const { tabId = 1 } = this.props;
+    let columns = [
       {
         title: 'Full name',
         dataIndex: 'generalInfo',
@@ -74,7 +75,6 @@ class TableUsers extends PureComponent {
         title: 'Employee ID',
         dataIndex: 'generalInfo',
         align: 'left',
-        width: '10%',
         className: `${styles.employeeId}`,
         render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
         sortDirections: ['ascend', 'descend', 'ascend'],
@@ -87,7 +87,6 @@ class TableUsers extends PureComponent {
       {
         title: 'Created date',
         dataIndex: 'joinDate',
-        width: '9%',
         align: 'left',
         render: (joinDate) =>
           joinDate ? <span>{moment(joinDate).locale('en').format('MM.DD.YY')}</span> : '',
@@ -99,8 +98,8 @@ class TableUsers extends PureComponent {
       {
         title: 'Email',
         dataIndex: 'generalInfo',
-        width: '17%',
         align: 'left',
+        width: '18%',
         render: (generalInfo) => <span>{generalInfo ? generalInfo.workEmail : ''}</span>,
         // sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
@@ -144,14 +143,26 @@ class TableUsers extends PureComponent {
       {
         title: 'Company',
         dataIndex: 'company',
-        width: '10%',
         align: 'left',
         render: (company) => <span>{company ? company.name : ''}</span>,
+      },
+
+      {
+        title: 'Last Working Date',
+        dataIndex: 'leftDate',
+        align: 'left',
+        render: (leftDate) =>
+          leftDate ? <span>{moment(leftDate).locale('en').format('MM.DD.YY')}</span> : '-',
+      },
+      {
+        title: 'Reason for Termination',
+        dataIndex: 'reasonForLeaving',
+        align: 'left',
+        render: (reasonForLeaving) => (reasonForLeaving ? <span>{reasonForLeaving}</span> : '-'),
       },
       {
         title: 'Password',
         dataIndex: 'userIndentity',
-        width: '10%',
         align: 'left',
         render: (userIndentity) => (
           <div className={styles.userPasswordReset}>
@@ -171,7 +182,6 @@ class TableUsers extends PureComponent {
       {
         title: 'Action',
         dataIndex: 'userIndentity',
-        width: '6%',
         align: 'center',
         fixed: 'right',
         render: (userIndentity) => (
@@ -192,6 +202,11 @@ class TableUsers extends PureComponent {
         ),
       },
     ];
+    if (tabId === 1) {
+      columns = columns.filter(
+        (column) => !['reasonForLeaving', 'leftDate'].includes(column.dataIndex),
+      );
+    }
     return columns.map((col) => ({
       ...col,
       title: col.title,
@@ -313,6 +328,7 @@ class TableUsers extends PureComponent {
   render() {
     const { data = [], loading, total: totalPage = '', size, pageSelected } = this.props;
     const newData = this.formatData(data);
+
     const {
       // pageSelected,
       selectedRowKeys,
@@ -322,7 +338,7 @@ class TableUsers extends PureComponent {
     } = this.state;
     // const rowSize = 10;
     const scroll = {
-      x: '100vw',
+      x: '120vw',
       y: '',
     };
     const pagination = {
