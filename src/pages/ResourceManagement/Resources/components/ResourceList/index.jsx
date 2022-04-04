@@ -22,10 +22,12 @@ const ResourceList = (props) => {
     permissions,
     currentUserId = '',
     employeeId = '',
-    currentUserRoles = []
+    currentUserRoles = [],
+    currentPayload = {},
   } = props;
-  
-  const checkRoleManager = currentUserRoles.length > 0 ? currentUserRoles.includes('manager') : false
+
+  const checkRoleManager =
+    currentUserRoles.length > 0 ? currentUserRoles.includes('manager') : false;
   const modifyResourcePermission = permissions.modifyResource !== -1;
 
   const [pageSelected, setPageSelected] = useState(1);
@@ -69,10 +71,6 @@ const ResourceList = (props) => {
   };
   const fetchResourceList = async () => {
     const filterTemp = convertFilter();
-    // const modeView = {
-    //   modeViewManager,
-    //   modeViewAdmin,
-    // };
 
     dispatch({
       type: 'resourceManagement/getResources',
@@ -165,6 +163,7 @@ const ResourceList = (props) => {
       payload: {
         employeeId: currentUserId,
         limit: total,
+        ...currentPayload,
       },
     });
     const getDataExport = getListExport ? getListExport.data : '';
@@ -254,6 +253,7 @@ export default connect(
       total = 0,
       selectedLocations = [],
       selectedDivisions = [],
+      currentPayload = {},
     } = {},
     user: {
       currentUser: {
@@ -262,7 +262,7 @@ export default connect(
         employee: { _id: employeeId = '' },
       } = {},
       permissions = {},
-      currentUserRoles = []
+      currentUserRoles = [],
     } = {},
     loading,
     locationSelection: { listLocationsByCompany = [] },
@@ -278,6 +278,7 @@ export default connect(
     selectedDivisions,
     selectedLocations,
     employeeId,
-    currentUserRoles
+    currentUserRoles,
+    currentPayload,
   }),
 )(ResourceList);
