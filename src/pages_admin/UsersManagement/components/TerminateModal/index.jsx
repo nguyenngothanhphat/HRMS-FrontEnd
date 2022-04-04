@@ -23,8 +23,16 @@ const TerminateModal = (props) => {
     employeeDetail: { _id = '', tenant = '', generalInfo: { _id: generalInfoId = '' } = {} } = {},
     locationId,
     companyId,
+    usersManagement: { currentPayload = {} } = {},
     dispatch,
   } = props;
+
+  const refreshList = () => {
+    dispatch({
+      type: 'usersManagement/fetchEmployeesList',
+      payload: currentPayload,
+    });
+  };
 
   const handleFinish = (values) => {
     const { reason, lastWorkingDate } = values;
@@ -34,7 +42,7 @@ const TerminateModal = (props) => {
     });
     const payload = {
       action: 'submit',
-      employee: generalInfoId,
+      employee: _id,
       reasonForLeaving: reason,
       approvalFlow: approvalFlowID,
       lastWorkingDate,
@@ -69,18 +77,22 @@ const TerminateModal = (props) => {
         status,
         tenantId: tenant,
       },
-    }).then((statusCode) => {
+    }).then(({ statusCode }) => {
       if (statusCode === 200) {
         notification.success({
           message: 'Update user successfully',
         });
-        handleCandelModal();
       }
     });
 
     dispatch({
       type: 'offboarding/terminateReason',
       payload,
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        refreshList();
+        handleCandelModal();
+      }
     });
   };
 
@@ -168,7 +180,8 @@ const TerminateModal = (props) => {
   );
 };
 
-export default connect(({ loading, offboarding: { approvalflow = [] } = {} }) => ({
+export default connect(({ loading, usersManagement, offboarding: { approvalflow = [] } = {} }) => ({
   approvalflow,
+  usersManagement,
   loading: loading.effects['offboarding/terminateReason'],
 }))(TerminateModal);

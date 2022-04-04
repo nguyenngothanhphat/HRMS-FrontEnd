@@ -461,10 +461,10 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'RESOURCE_MANAGEMENT_UPDATE',
     PROJECT_MANAGER,
   ]);
-  const viewsResourceModeManager = isAuthorized(permissionList, [
-    'P_RESOURCE_MANAGEMENT_MANAGER_VIEW',
-  ]);
-  const viewsResourceModeAdmin = isAuthorized(permissionList, ['P_RESOURCE_MANAGEMENT_ADMIN_VIEW']);
+  // const viewsResourceModeManager = isAuthorized(permissionList, [
+  //   'P_RESOURCE_MANAGEMENT_MANAGER_VIEW',
+  // ]);
+  // const viewsResourceModeAdmin = isAuthorized(permissionList, ['P_RESOURCE_MANAGEMENT_ADMIN_VIEW']);
 
   // TICKET MANAGEMENT
   const indexTicketManagementHRTicketsTab = isAuthorized(permissionList, [
@@ -575,8 +575,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewUtilizationTab: indexViewUtilizationTab,
     addResource: indexAddResource,
     modifyResource: indexModifyResource,
-    viewModeManager: viewsResourceModeManager,
-    viewModeAdmin: viewsResourceModeAdmin,
+    // viewModeManager: viewsResourceModeManager,
+    // viewModeAdmin: viewsResourceModeAdmin,
 
     // ticket management
     viewTicketHR: indexTicketManagementHRTicketsTab,
