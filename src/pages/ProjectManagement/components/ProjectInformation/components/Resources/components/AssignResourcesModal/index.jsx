@@ -30,6 +30,7 @@ const AssignResourcesModal = (props) => {
     projectDetails: { projectDetail = {}, resourceList = [], resourceListTotal = 0 } = {},
     loadingFetchResourceList = false,
     loadingAssign = false,
+    employee = ''
   } = props;
 
   const {
@@ -40,6 +41,8 @@ const AssignResourcesModal = (props) => {
     tentativeEndDate = '',
     newEndDate = '',
   } = projectDetail;
+
+  const employeeId = employee ? employee._id : ''
 
   const endDate = newEndDate || tentativeEndDate;
 
@@ -68,6 +71,7 @@ const AssignResourcesModal = (props) => {
         // department: [department],
         title: [titleId],
         ...filter,
+        employeeId
       },
     });
   };
