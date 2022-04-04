@@ -8,15 +8,14 @@ import styles from './index.less';
 const PopupCustomer = (props) => {
   const {
     dataCustomer: {
-      customerName = '',
+      accountOwner: {
+        generalInfo: { legalName: accountOwner = '', workNumber = '', workEmail = '' } = {},
+        location: { headQuarterAddress: { state = '', country: { name = '' } = {} } = {} } = {},
+      } = {},
+      customer = '',
       customerId = '',
-      accountOwner = '',
-      phone = '',
-      email = '',
-      address = '',
     },
   } = props;
-  const urlProjectDetail = 'aaaaa';
   return (
     <div className={styles.popupContent}>
       <div className={styles.generalInfo}>
@@ -24,9 +23,9 @@ const PopupCustomer = (props) => {
           <Avatar size={55} icon={<UserOutlined />} />
         </div>
         <div className={styles.employeeInfo}>
-          <div className={styles.employeeInfo__name}>ABC</div>
+          <div className={styles.employeeInfo__name}>{customer || '-'}</div>
           <div className={styles.employeeInfo__customerID}>
-            Customer ID: <span style={{ color: '#2C6DF9' }}>210000</span>
+            Customer ID: <span style={{ color: '#2C6DF9' }}>{customerId || '-'}</span>
           </div>
         </div>
       </div>
@@ -37,13 +36,13 @@ const PopupCustomer = (props) => {
             <div className={styles.contact__title}>Account Owner: </div>
           </Col>
           <Col span={15}>
-            <div className={styles.contact__valueManager}>Unar coper</div>
+            <div className={styles.contact__valueManager}>{accountOwner || '-'}</div>
           </Col>
           <Col span={9}>
             <div className={styles.contact__title}>Contact Phone: </div>
           </Col>
           <Col span={15}>
-            <div className={styles.contact__value}>+9654654211</div>
+            <div className={styles.contact__value}>{workNumber || '-'}</div>
           </Col>
           <Col span={9}>
             <div className={styles.contact__title}>Contact Email: </div>
@@ -53,7 +52,7 @@ const PopupCustomer = (props) => {
               style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
               className={styles.contact__value}
             >
-              jkhkjhjkh@gmail.com
+              {workEmail || '-'}
             </div>
           </Col>
           <Col span={9}>
@@ -64,7 +63,7 @@ const PopupCustomer = (props) => {
               style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
               className={styles.contact__value}
             >
-              Thanh Pho Ho Chi Minh, Viet Nam
+              {state || '-'}, {name || '-'}
             </div>
           </Col>
         </Row>
@@ -73,9 +72,12 @@ const PopupCustomer = (props) => {
       <div className={styles.popupActions}>
         <div
           className={styles.popupActions__link}
-          onClick={() => history.push(`/directory/employee-profile/${urlProjectDetail}`)}
+          onClick={
+            () => history.push(`/customer-management/customers/customer-profile/${customerId}`)
+            // eslint-disable-next-line react/jsx-curly-newline
+          }
         >
-          View full profile
+          View customer details
         </div>
       </div>
     </div>

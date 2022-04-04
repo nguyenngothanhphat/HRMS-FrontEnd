@@ -11,8 +11,8 @@ const PopupProjectName = (props) => {
       status = '',
       projectType = '',
       projectAlias = '',
-      accountOwner = '',
-      engineeringOwner = '',
+      accountOwner: { generalInfo: { legalName: nameAccountOwner = '' } = {} } = {},
+      engineeringOwner: { generalInfo: { legalName: nameEngineeringOwner = '' } = {} } = {},
       startDate = '',
       endDate = '',
       projectId = '',
@@ -51,7 +51,7 @@ const PopupProjectName = (props) => {
             <div className={styles.contact__title}> Account Owner: </div>
           </Col>
           <Col span={15}>
-            <div className={styles.contact__clientName}>{accountOwner || '-'}</div>
+            <div className={styles.contact__clientName}>{nameAccountOwner || '-'}</div>
           </Col>
           <Col span={9}>
             <div className={styles.contact__title}>Project ID: </div>
@@ -74,7 +74,7 @@ const PopupProjectName = (props) => {
             <div className={styles.contact__title}>Engineering Owner: </div>
           </Col>
           <Col span={15}>
-            <div className={styles.contact__value}>{engineeringOwner || '-'}</div>
+            <div className={styles.contact__value}>{nameEngineeringOwner || '-'}</div>
           </Col>
           <Col span={9}>
             <div className={styles.contact__title}>Duration: </div>

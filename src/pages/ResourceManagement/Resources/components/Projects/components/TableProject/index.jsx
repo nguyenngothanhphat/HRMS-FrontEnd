@@ -104,6 +104,14 @@ class TableProject extends Component {
     history.push(`/directory/employee-profile/${_id}`);
   };
 
+  viewCustomer = (customerId) => {
+    history.push(`/customer-management/customers/customer-profile/${customerId}`);
+  };
+
+  viewProject = (projectId) => {
+    history.push(`/project-management/list/${projectId}/summary`);
+  };
+
   render() {
     const { pageSelected } = this.state;
     const {
@@ -143,6 +151,7 @@ class TableProject extends Component {
         projectId: obj.projectId,
         projectName: obj.projectName || '-',
         customer: obj.customerName || '-',
+        customerId: obj.customerId || '-',
         projectType: obj.engagementType || '-',
         projectManager: obj.projectManager || '-',
         startDate: this.formatDate(obj.startDate, 'MM/DD/YYYY'),
@@ -158,6 +167,9 @@ class TableProject extends Component {
         spentEffor: obj.spentEffort || '-',
         variance: obj.variance || '-',
         comment: obj.comments,
+        accountOwner: obj.accountOwner || '-',
+        engineeringOwner: obj.engineeringOwner || '-',
+        customerOwner: obj.customer || '-',
       };
     });
 
@@ -174,7 +186,9 @@ class TableProject extends Component {
               placement="bottomRight"
               overlayClassName={styles.popupContentProjectManager}
             >
-              <span className={styles.projectName}>{value}</span>
+              <span className={styles.projectName} onClick={() => this.viewProject(row?.projectId)}>
+                {value || '-'}
+              </span>
             </Popover>
           );
         },
@@ -191,7 +205,9 @@ class TableProject extends Component {
             placement="bottomRight"
             overlayClassName={styles.popupContentProjectManager}
           >
-            <span className={styles.projectName}>{value}</span>
+            <span className={styles.projectName} onClick={() => this.viewCustomer(row?.customerId)}>
+              {value || '-'}
+            </span>
           </Popover>
         ),
         sorter: (a, b) => a.customer.localeCompare(b.customer),
