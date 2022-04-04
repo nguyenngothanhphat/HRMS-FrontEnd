@@ -46,7 +46,7 @@ class RequestInformation extends PureComponent {
       type: 'timeOff/save',
       payload: {
         currentLeaveTypeTab: String(type),
-        currentMineOrTeamTab: '2', // my compoff request tab has index "2"
+        currentScopeTab: '2', // my compoff request tab has index "2"
         currentFilterTab: buttonState === 1 ? '4' : '1', // draft 4, in-progress 1
       },
     });
@@ -368,10 +368,7 @@ class RequestInformation extends PureComponent {
       timeOff: { emailsList = [] },
     } = this.props;
     const list = emailsList.map((user) => {
-      const {
-        _id = '',
-        generalInfo: { legalName = '', workEmail = '', avatar = '' } = {},
-      } = user;
+      const { _id = '', generalInfo: { legalName = '', workEmail = '', avatar = '' } = {} } = user;
       let newAvatar = avatar;
       if (avatar === '') newAvatar = DefaultAvatar;
       return { workEmail, legalName, _id, avatar: newAvatar };
