@@ -241,3 +241,10 @@ export async function exportTeam(payload, params) {
     API_KEYS.TIMESHEET_API,
   );
 }
+
+export async function getDivisionList(payload) {
+  return request('/api/departmenttenant/get-all-division', {
+    method: 'GET',
+    params: payload,
+  });
+}

@@ -24,6 +24,7 @@ import {
   // export manager report (my project)
   exportProject,
   exportTeam,
+  getDivisionList,
 } from '@/services/timeSheet';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { convertMsToTime, isTheSameDay } from '@/utils/timeSheet';
@@ -64,6 +65,12 @@ const initialState = {
   hrViewList: [],
   financeViewList: [],
   payloadExport: {},
+  divisionList: [],
+
+  // common
+  selectedDivisions: [],
+  selectedLocations: [],
+  isIncompleteTimesheet: false
 };
 
 const TimeSheet = {
@@ -430,6 +437,25 @@ const TimeSheet = {
       }
       return response;
     },
+
+    *fetchDivisionListEffect({ payload }, { call, put }) {
+      try {
+        const response = yield call(getDivisionList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { divisionList: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
     *fetchFinanceTimesheetEffect({ payload }, { call, put }) {
       const response = {};
       try {
