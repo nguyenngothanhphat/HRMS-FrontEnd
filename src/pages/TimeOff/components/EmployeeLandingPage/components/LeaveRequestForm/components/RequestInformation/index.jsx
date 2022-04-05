@@ -1154,7 +1154,7 @@ const RequestInformation = (props) => {
                 },
               ]}
             >
-              <Input placeholder="Enter Subject" />
+              <Input placeholder="Enter Subject" disabled={!selectedTypeName} />
             </Form.Item>
           </Col>
           <Col span={6} />
@@ -1182,6 +1182,7 @@ const RequestInformation = (props) => {
                       fromDateOnChange(value);
                     }}
                     placeholder="From Date"
+                    disabled={!selectedTypeName}
                   />
                 </Form.Item>
               </Col>
@@ -1198,7 +1199,7 @@ const RequestInformation = (props) => {
                   <DatePicker
                     disabledDate={disabledToDate}
                     format={TIMEOFF_DATE_FORMAT}
-                    disabled={selectedType === C}
+                    disabled={!selectedTypeName || selectedType === C}
                     onChange={(value) => {
                       toDateOnChange(value);
                     }}
@@ -1237,6 +1238,7 @@ const RequestInformation = (props) => {
                 autoSize={{ minRows: 3, maxRows: 6 }}
                 maxLength={250}
                 placeholder="The reason I am taking timeoff is …"
+                disabled={!selectedTypeName}
               />
             </Form.Item>
           </Col>
@@ -1260,6 +1262,7 @@ const RequestInformation = (props) => {
                 mode="multiple"
                 allowClear
                 placeholder="Search a person you want to loop"
+                disabled={!selectedTypeName}
                 filterOption={(input, option) => {
                   return (
                     option.children[1].props.children.toLowerCase().indexOf(input.toLowerCase()) >=
@@ -1329,6 +1332,7 @@ const RequestInformation = (props) => {
           )}
           {(action === NEW_LEAVE_REQUEST || (action === EDIT_LEAVE_REQUEST && isEditingDrafts)) && (
             <Button
+              disabled={!selectedTypeName}
               loading={loadingSaveDraft || loadingUpdateDraft}
               type="link"
               form="myForm"
@@ -1348,9 +1352,10 @@ const RequestInformation = (props) => {
             type="primary"
             form="myForm"
             disabled={
-              remainingDayOfSelectedType === 0 &&
-              (selectedType === A || selectedType === B) &&
-              action === NEW_LEAVE_REQUEST
+              !selectedTypeName ||
+              (remainingDayOfSelectedType === 0 &&
+                (selectedType === A || selectedType === B) &&
+                action === NEW_LEAVE_REQUEST)
             }
             htmlType="submit"
             onClick={() => {
