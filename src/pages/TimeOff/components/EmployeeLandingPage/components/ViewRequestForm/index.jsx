@@ -1,13 +1,12 @@
+import { Affix, Col, Row } from 'antd';
 import React, { PureComponent } from 'react';
-import { Affix, Row, Col } from 'antd';
 import { connect } from 'umi';
+import { TIMEOFF_COLOR, TIMEOFF_STATUS_NAME } from '@/utils/timeOff';
 import { PageContainer } from '@/layouts/layout/src';
-import { TIMEOFF_COLOR, TIMEOFF_STATUS } from '@/utils/timeOff';
-import RequestInformation from './RequestInformation';
-import RightContent from './RightContent';
+import RequestInformation from './components/RequestInformation';
+import RightContent from './components/RightContent';
 import styles from './index.less';
 
-const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DELETED, DRAFTS, WITHDRAWN } = TIMEOFF_STATUS;
 @connect(({ timeOff }) => ({
   timeOff,
 }))
@@ -38,27 +37,6 @@ class ViewRequestForm extends PureComponent {
     });
   };
 
-  getNameOfStatus = (status) => {
-    switch (status) {
-      case IN_PROGRESS:
-        return 'In Progress';
-      case ACCEPTED:
-        return 'Approved';
-      case REJECTED:
-        return 'Rejected';
-      case DRAFTS:
-        return 'Drafts';
-      case ON_HOLD:
-        return 'Withdraw Request';
-      case DELETED:
-        return 'Deleted';
-      case WITHDRAWN:
-        return 'Withdrawn';
-      default:
-        return 'Unknown';
-    }
-  };
-
   render() {
     const {
       timeOff: {
@@ -86,7 +64,7 @@ class ViewRequestForm extends PureComponent {
                     color: TIMEOFF_COLOR[status],
                   }}
                 >
-                  {this.getNameOfStatus(status)}
+                  {TIMEOFF_STATUS_NAME[status]}
                 </span>
               </div>
             </div>

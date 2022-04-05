@@ -37,7 +37,7 @@ class RightContent extends PureComponent {
           onError={(e) => {
             e.target.src = DefaultAvatar;
           }}
-          src={url}
+          src={url || DefaultAvatar}
           alt="avatar"
         />
         {!hideCheckIcon && <CheckCircleTwoTone twoToneColor="#52c41a" />}
@@ -62,11 +62,11 @@ class RightContent extends PureComponent {
     const arr = [];
     arr.push({
       name: ln1,
-      avatar: av1 === '' ? DefaultAvatar : av1,
+      avatar: av1 || DefaultAvatar,
     });
     arr.push({
       name: ln2,
-      avatar: av2 === '' ? DefaultAvatar : av2,
+      avatar: av2 || DefaultAvatar,
     });
     return arr;
   };

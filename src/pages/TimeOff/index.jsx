@@ -1,15 +1,12 @@
 import { notification, Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
-import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
-import ROLES from '@/utils/roles';
+import { PageContainer } from '@/layouts/layout/src';
 import EmployeeLandingPage from './components/EmployeeLandingPage';
 import ManagerLandingPage from './components/ManagerLandingPage';
 import SetupTimeoff from './components/SetupTimeoff';
 import styles from './index.less';
-
-const { HR_MANAGER, EMPLOYEE, REGION_HEAD, MANAGER } = ROLES;
 
 const { TabPane } = Tabs;
 @connect(
@@ -129,10 +126,6 @@ class TimeOff extends PureComponent {
         <span className={styles.title}>View Activity logs (15)</span>
       </div>
     );
-  };
-
-  getOverviewByRole = () => {
-    const { permissions = {} } = this.props;
   };
 
   getTabs = () => {
