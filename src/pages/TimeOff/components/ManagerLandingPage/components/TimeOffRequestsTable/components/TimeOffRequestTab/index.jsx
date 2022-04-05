@@ -1,17 +1,16 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
-import TeamLeaveTable from '../TeamLeaveTable';
-import TeamCompoffTable from '../TeamCompoffTable';
-import MyLeaveTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/MyLeaveTable';
-import MyCompoffTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/MyCompoffTable';
-import FilterBar from '../FilterBar';
-import styles from './index.less';
 import ROLES from '@/utils/roles';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import MyCompoffTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/MyCompoffTable';
+import MyLeaveTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/MyLeaveTable';
+import FilterBar from '../FilterBar';
+import TeamCompoffTable from '../TeamCompoffTable';
+import TeamLeaveTable from '../TeamLeaveTable';
+import styles from './index.less';
 
 const { REGION_HEAD } = ROLES;
-const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DRAFTS, WITHDRAWN } =
+const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DRAFTS, WITHDRAWN, DELETED } =
   TIMEOFF_STATUS;
 @connect(
   ({
@@ -27,6 +26,7 @@ const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DRAFTS, WITH
       leaveRequests = [],
       teamCompoffRequests = [],
       teamLeaveRequests = [],
+      allLeaveRequests = [],
     } = {},
   }) => ({
     timeOff,
@@ -39,6 +39,7 @@ const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DRAFTS, WITH
     leaveRequests,
     teamCompoffRequests,
     teamLeaveRequests,
+    allLeaveRequests,
     loading1: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
     loading2: loading.effects['timeOff/fetchTeamLeaveRequests'],
     loading3: loading.effects['timeOff/fetchMyCompoffRequests'],
@@ -55,6 +56,7 @@ class TimeOffRequestTab extends PureComponent {
       draftLength: 0,
       selectedTab: IN_PROGRESS,
       withdrawnLength: 0,
+      deletedLength: 0,
       handlePackage: {},
     };
   }
@@ -130,6 +132,9 @@ class TimeOffRequestTab extends PureComponent {
       if (filterTab === '5') {
         status = [WITHDRAWN];
       }
+      if (filterTab === '6') {
+        status = [DELETED];
+      }
     } else if (tabType === 2) {
       // compoff
       if (filterTab === '1') {
@@ -151,6 +156,9 @@ class TimeOffRequestTab extends PureComponent {
       if (filterTab === '5') {
         status = [ON_HOLD];
       }
+      if (filterTab === '6') {
+        status = [DELETED];
+      }
     }
 
     const commonFunction = (res = {}) => {
@@ -160,17 +168,19 @@ class TimeOffRequestTab extends PureComponent {
       }
     };
 
-    let types = '';
+    let type = '';
     if (tabType === 1) {
-      if (category === 'MY') types = 'timeOff/fetchLeaveRequestOfEmployee';
-      else types = 'timeOff/fetchTeamLeaveRequests';
+      if (category === 'MY') type = 'timeOff/fetchLeaveRequestOfEmployee';
+      else if (category === 'ALL') type = 'timeOff/fetchAllLeaveRequests';
+      else type = 'timeOff/fetchTeamLeaveRequests';
     }
     if (tabType === 2) {
-      if (category === 'MY') types = 'timeOff/fetchMyCompoffRequests';
-      else types = 'timeOff/fetchTeamCompoffRequests';
+      if (category === 'MY') type = 'timeOff/fetchMyCompoffRequests';
+      else type = 'timeOff/fetchTeamCompoffRequests';
     }
+
     dispatch({
-      type: types,
+      type,
       payload: {
         status,
         type: timeOffTypes,
@@ -205,6 +215,8 @@ class TimeOffRequestTab extends PureComponent {
       selectedTab = DRAFTS;
     } else if (id === '5') {
       selectedTab = WITHDRAWN;
+    } else if (id === '6') {
+      selectedTab = DELETED;
     }
 
     this.setState({
@@ -224,6 +236,7 @@ class TimeOffRequestTab extends PureComponent {
     let rejectedLength = 0;
     let draftLength = 0;
     let withdrawnLength = 0;
+    let deletedLength = 0;
 
     newData.forEach((item) => {
       const { _id: status = '' } = item;
@@ -269,6 +282,10 @@ class TimeOffRequestTab extends PureComponent {
           withdrawnLength += item.count;
           break;
         }
+        case DELETED:
+          deletedLength += item.count;
+          break;
+
         default:
           break;
       }
@@ -279,6 +296,7 @@ class TimeOffRequestTab extends PureComponent {
       rejectedLength,
       draftLength,
       withdrawnLength,
+      deletedLength,
     });
   };
 
@@ -317,38 +335,58 @@ class TimeOffRequestTab extends PureComponent {
           return '';
       }
     }
-    if (category === 'TEAM') {
-      switch (tab) {
-        case 1:
-          return (
-            <>
-              No Leave requests received. <br />
-              Submitted Casual, Sick & Compoff requests will be displayed here.
-            </>
-          );
-        case 2:
-          return (
-            <>
-              No Special Leave requests received. <br />
-              Submitted Restricted Holiday, Bereavement, Marriage & Maternity/ Paternity leave
-              requests will be displayed here.
-            </>
-          );
-        case 3:
-          return (
-            <>
-              No LWP requests received. <br />
-            </>
-          );
-        case 4:
-          return <>No Work from home or Client’s place requests received.</>;
-        case 5:
-          return <>No Compoff requests received.</>;
-        default:
-          return '';
-      }
+
+    switch (tab) {
+      case 1:
+        return (
+          <>
+            No Leave requests received. <br />
+            Submitted Casual, Sick & Compoff requests will be displayed here.
+          </>
+        );
+      case 2:
+        return (
+          <>
+            No Special Leave requests received. <br />
+            Submitted Restricted Holiday, Bereavement, Marriage & Maternity/ Paternity leave
+            requests will be displayed here.
+          </>
+        );
+      case 3:
+        return (
+          <>
+            No LWP requests received. <br />
+          </>
+        );
+      case 4:
+        return <>No Work from home or Client’s place requests received.</>;
+      case 5:
+        return <>No Compoff requests received.</>;
+      default:
+        return '';
     }
-    return '';
+  };
+
+  getCheckEmptyTable = (
+    { allLeaveRequests, teamLeaveRequests, leaveRequests },
+    { teamCompoffRequests, compoffRequests },
+    category,
+    type,
+  ) => {
+    if (type === 1) {
+      return (
+        (category === 'MY' && leaveRequests.length === 0) ||
+        (category === 'TEAM' && teamLeaveRequests.length === 0) ||
+        (category === 'ALL' && allLeaveRequests.length === 0)
+      );
+    }
+    if (type === 2) {
+      return (
+        (category === 'MY' && compoffRequests.length === 0) ||
+        (category === 'TEAM' && teamCompoffRequests.length === 0)
+      );
+    }
+    return false;
   };
 
   render() {
@@ -356,14 +394,12 @@ class TimeOffRequestTab extends PureComponent {
       type = 0,
       category = '',
       tab = 0,
-      loading1,
-      loading2,
-      loading3,
-      loading4,
       compoffRequests = [],
       leaveRequests = [],
       teamCompoffRequests = [],
       teamLeaveRequests = [],
+      allLeaveRequests = [],
+      user: { permissions = {} },
     } = this.props;
 
     const {
@@ -373,6 +409,7 @@ class TimeOffRequestTab extends PureComponent {
       draftLength,
       selectedTab,
       withdrawnLength,
+      deletedLength,
       handlePackage,
     } = this.state;
 
@@ -382,11 +419,10 @@ class TimeOffRequestTab extends PureComponent {
       rejectedLength,
       draftLength,
       withdrawnLength,
+      deletedLength,
     };
 
-    const checkEmptyTable = false;
-
-    const emptyTableContent = this.renderEmptyTableContent(tab, category);
+    const viewHRTimeoff = permissions.viewHRTimeoff !== -1;
 
     return (
       <div className={styles.TimeOffRequestTab}>
@@ -398,38 +434,44 @@ class TimeOffRequestTab extends PureComponent {
         />
         <div className={styles.tableContainer}>
           <div>
-            {checkEmptyTable && !loading1 && !loading2 && !loading3 && !loading4 ? (
-              <div className={styles.emptyTable}>
-                <img src={EmptyIcon} alt="empty-table" />
-                <p className={styles.describeTexts}>{emptyTableContent}</p>
-              </div>
-            ) : (
-              <>
-                {type === 1 && category === 'TEAM' && (
-                  <TeamLeaveTable
-                    data={teamLeaveRequests}
-                    category={category}
-                    selectedTab={selectedTab}
-                    onRefreshTable={this.onRefreshTable}
-                    onHandle={this.onApproveRejectHandle}
-                  />
-                )}
-                {type === 1 && category === 'MY' && (
-                  <MyLeaveTable data={leaveRequests} selectedTab={selectedTab} />
-                )}
-                {type === 2 && category === 'TEAM' && (
-                  <TeamCompoffTable
-                    data={teamCompoffRequests}
-                    category={category}
-                    selectedTab={selectedTab}
-                    onRefreshTable={this.onRefreshTable}
-                    onHandle={this.onApproveRejectHandle}
-                  />
-                )}
-                {type === 2 && category === 'MY' && (
-                  <MyCompoffTable data={compoffRequests} selectedTab={selectedTab} />
-                )}
-              </>
+            {type === 1 && category === 'ALL' && (
+              <TeamLeaveTable
+                data={allLeaveRequests}
+                category={category}
+                selectedTab={selectedTab}
+                onRefreshTable={this.onRefreshTable}
+                onHandle={this.onApproveRejectHandle}
+                tab={tab}
+                isHR={viewHRTimeoff}
+              />
+            )}
+            {type === 1 && category === 'TEAM' && (
+              <TeamLeaveTable
+                data={teamLeaveRequests}
+                category={category}
+                selectedTab={selectedTab}
+                onRefreshTable={this.onRefreshTable}
+                onHandle={this.onApproveRejectHandle}
+                tab={tab}
+                isHR={viewHRTimeoff}
+              />
+            )}
+            {type === 1 && category === 'MY' && (
+              <MyLeaveTable data={leaveRequests} selectedTab={selectedTab} tab={tab} />
+            )}
+            {type === 2 && category === 'TEAM' && (
+              <TeamCompoffTable
+                data={teamCompoffRequests}
+                category={category}
+                selectedTab={selectedTab}
+                onRefreshTable={this.onRefreshTable}
+                onHandle={this.onApproveRejectHandle}
+                isHR={viewHRTimeoff}
+                tab={tab}
+              />
+            )}
+            {type === 2 && category === 'MY' && (
+              <MyCompoffTable data={compoffRequests} selectedTab={selectedTab} tab={tab} />
             )}
           </div>
         </div>

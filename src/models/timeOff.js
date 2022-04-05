@@ -59,13 +59,14 @@ import {
   updateEmployeeSchedule,
   getLocationByCompany,
   getLocationById,
+  getAllLeaveRequests,
 } from '../services/timeOff';
 
 const timeOff = {
   namespace: 'timeOff',
   state: {
     currentLeaveTypeTab: '1',
-    currentMineOrTeamTab: '1',
+    currentScopeTab: '1',
     currentFilterTab: '1',
     holidaysList: [],
     holidaysListByLocation: [],
@@ -85,6 +86,7 @@ const timeOff = {
     savedDraftLR: {},
     teamCompoffRequests: [],
     teamLeaveRequests: [],
+    allLeaveRequests: [],
     urlExcel: undefined,
     updateSchedule: {},
     balances: {},
@@ -95,9 +97,6 @@ const timeOff = {
       toDate: '',
       isSearch: false,
     },
-
-    allTeamLeaveRequests: {},
-    allTeamCompoffRequests: {},
     compoffApprovalFlow: {},
     employeeSchedule: {},
     currentUserRole: '', // employee, manager, hr-manager
@@ -661,6 +660,35 @@ const timeOff = {
         // dialog(errors);
       }
       return {};
+    },
+
+    *fetchAllLeaveRequests({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getAllLeaveRequests, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const {
+          statusCode,
+          data: { items: allLeaveRequests = [] },
+          total = 0,
+        } = response;
+
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { allLeaveRequests },
+        });
+        yield put({
+          type: 'savePaging',
+          payload: { total },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
 
     *clearViewingLeaveRequest(_, { put }) {
