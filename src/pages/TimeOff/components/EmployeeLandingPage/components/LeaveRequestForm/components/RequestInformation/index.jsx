@@ -1312,7 +1312,7 @@ const RequestInformation = (props) => {
         </span>
         <div className={styles.formButtons}>
           {action === NEW_LEAVE_REQUEST && (
-            <Button disabled={!selectedTypeName}
+            <Button 
               className={styles.cancelButton}
               type="link"
               htmlType="button"
