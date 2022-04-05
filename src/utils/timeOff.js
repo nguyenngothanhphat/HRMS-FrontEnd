@@ -10,6 +10,17 @@ export const TIMEOFF_STATUS = {
   DRAFTS: 'DRAFTS',
   WITHDRAWN: 'WITHDRAWN',
 };
+
+export const TIMEOFF_STATUS_NAME = {
+  [TIMEOFF_STATUS.IN_PROGRESS]: 'In Progress',
+  [TIMEOFF_STATUS.ACCEPTED]: 'Accepted',
+  [TIMEOFF_STATUS.ON_HOLD]: 'Withdraw Request',
+  [TIMEOFF_STATUS.REJECTED]: 'Rejected',
+  [TIMEOFF_STATUS.DELETED]: 'Deleted',
+  [TIMEOFF_STATUS.DRAFTS]: 'Drafts',
+  [TIMEOFF_STATUS.WITHDRAWN]: 'Withdrawn',
+};
+
 export const TIMEOFF_LINK_ACTION = {
   EDIT_LEAVE_REQUEST: 'edit',
   NEW_LEAVE_REQUEST: 'new',
