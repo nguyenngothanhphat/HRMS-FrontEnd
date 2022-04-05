@@ -8,10 +8,14 @@ import styles from './index.less';
 const PopupCustomer = (props) => {
   const {
     dataCustomer: {
-      accountOwner: {
-        generalInfo: { legalName: accountOwner = '', workNumber = '', workEmail = '' } = {},
-        location: { headQuarterAddress: { state = '', country: { name = '' } = {} } = {} } = {},
+      customerOwner: {
+        contactEmail = '',
+        contactPhone = '',
+        state = '',
+        country = '',
+        avatar = '',
       } = {},
+      accountOwner: { generalInfo: { legalName: accountOwner = '' } = {} } = {},
       customer = '',
       customerId = '',
     },
@@ -20,7 +24,11 @@ const PopupCustomer = (props) => {
     <div className={styles.popupContent}>
       <div className={styles.generalInfo}>
         <div className={styles.avatar}>
-          <Avatar size={55} icon={<UserOutlined />} />
+          {!avatar ? (
+            <Avatar size={55} icon={<UserOutlined />} />
+          ) : (
+            <Avatar size={55} src={avatar} />
+          )}
         </div>
         <div className={styles.employeeInfo}>
           <div className={styles.employeeInfo__name}>{customer || '-'}</div>
@@ -31,7 +39,7 @@ const PopupCustomer = (props) => {
       </div>
       <Divider className={styles.divider} />
       <div className={styles.contact}>
-        <Row gutter={[24, 24]}>
+        <Row gutter={[20, 20]}>
           <Col span={9}>
             <div className={styles.contact__title}>Account Owner: </div>
           </Col>
@@ -42,7 +50,7 @@ const PopupCustomer = (props) => {
             <div className={styles.contact__title}>Contact Phone: </div>
           </Col>
           <Col span={15}>
-            <div className={styles.contact__value}>{workNumber || '-'}</div>
+            <div className={styles.contact__value}>{contactPhone || '-'}</div>
           </Col>
           <Col span={9}>
             <div className={styles.contact__title}>Contact Email: </div>
@@ -52,7 +60,7 @@ const PopupCustomer = (props) => {
               style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
               className={styles.contact__value}
             >
-              {workEmail || '-'}
+              {contactEmail || '-'}
             </div>
           </Col>
           <Col span={9}>
@@ -63,7 +71,7 @@ const PopupCustomer = (props) => {
               style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
               className={styles.contact__value}
             >
-              {state || '-'}, {name || '-'}
+              {state || '-'}, {country || '-'}
             </div>
           </Col>
         </Row>

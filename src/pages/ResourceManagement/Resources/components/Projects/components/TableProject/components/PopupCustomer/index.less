@@ -9,13 +9,12 @@
 
 .popupContent {
   width: 380px;
-  padding: 24px;
-
   .generalInfo {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: flex-start;
     width: 100%;
+    margin-top: 8px;
 
     .employeeInfo {
       padding-left: 16px;
@@ -23,8 +22,7 @@
 
       &__name {
         margin-bottom: 0;
-
-        padding-bottom: 6px;
+        padding-bottom: 8px;
         color: #161c29;
         font-weight: 500;
         font-size: 14px;
@@ -81,11 +79,13 @@
       font-style: normal;
       line-height: 15px;
       letter-spacing: 0.121875px;
-      cursor: pointer;
     }
   }
 
   .divider {
+    :global {
+      margin: 20px 0;
+    }
     padding: 1px 0;
   }
 
@@ -94,7 +94,7 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding-bottom: 8px;
+    margin-bottom: 12px;
 
     &__link {
       color: #2c6df9;

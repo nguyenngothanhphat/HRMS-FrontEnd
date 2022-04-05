@@ -46,7 +46,7 @@ const PopupProjectName = (props) => {
       </div>
       <Divider className={styles.divider} />
       <div className={styles.contact}>
-        <Row gutter={[20, 20]}>
+        <Row gutter={[12, 12]}>
           <Col span={9}>
             <div className={styles.contact__title}> Account Owner: </div>
           </Col>
