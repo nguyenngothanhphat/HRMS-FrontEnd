@@ -120,7 +120,7 @@ const RequestInformation = (props) => {
       type: 'timeOff/save',
       payload: {
         currentLeaveTypeTab: String(type),
-        currentMineOrTeamTab: '2', // my leave request tab has index "2"
+        currentScopeTab: '2', // my leave request tab has index "2"
         currentFilterTab: buttonState === 1 ? '4' : '1', // draft 4, in-progress 1
       },
     });
