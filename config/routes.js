@@ -383,18 +383,18 @@ const routes = [
             name: 'timeOff',
             icon: '/assets/images/menuIcons/timeoff.svg',
             component: './TimeOff',
-            authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW', HR_MANAGER, HR, EMPLOYEE],
+            authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW', HR_MANAGER, HR],
           },
           {
             path: '/time-off/:tabName',
             component: './TimeOff',
-            authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW', HR_MANAGER, HR, EMPLOYEE],
+            authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW', HR_MANAGER, HR],
             hideInMenu: true,
           },
           {
             path: '/time-off/:tabName/:type',
             component: './TimeOff',
-            authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW', HR_MANAGER, HR, EMPLOYEE],
+            authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW', HR_MANAGER, HR],
             hideInMenu: true,
           },
           {
