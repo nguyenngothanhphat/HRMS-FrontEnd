@@ -23,7 +23,7 @@ class RightContent extends PureComponent {
           e.target.src = DefaultAvatar;
         }}
         className={styles.avatar}
-        src={url}
+        src={url || DefaultAvatar}
         alt="avatar"
       />
     );
