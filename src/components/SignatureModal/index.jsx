@@ -1,4 +1,16 @@
-import { Button, Form, Input, message, Modal, Radio, Row, Select, Space, Upload } from 'antd';
+import {
+  Button,
+  Form,
+  Input,
+  message,
+  Modal,
+  Radio,
+  Row,
+  Select,
+  Space,
+  Tooltip,
+  Upload,
+} from 'antd';
 import React, { PureComponent } from 'react';
 import SignaturePad from 'react-signature-canvas';
 import { connect } from 'umi';
@@ -137,7 +149,13 @@ class SignatureModal extends PureComponent {
 
   // finish
   clearState = () => {
-    this.setState(initialState);
+    this.setState({
+      uploadedFile: {},
+      uploadedPreview: '',
+      digitalSignatureName: '',
+      arrImgBase64: [],
+      finalDigitalSignature: 0,
+    });
   };
 
   dataURItoBlob = (dataURI) => {
@@ -215,9 +233,26 @@ class SignatureModal extends PureComponent {
     }
   };
 
+  getIsOnlyOneOption = (disableUpload, disableDraw, disableDigital) => {
+    return (
+      (disableUpload && disableDraw && !disableDigital) ||
+      (disableUpload && !disableDraw && disableDigital) ||
+      (!disableUpload && disableDraw && disableDigital)
+    );
+  };
+
   render() {
-    const { loadingUploadAttachment, loading, visible = false } = this.props;
+    const {
+      loadingUploadAttachment,
+      loading,
+      visible = false,
+      disableUpload = false,
+      disableDraw = false,
+      disableDigital = false,
+    } = this.props;
     const { uploadedPreview, mode, digitalSignatureName, finalDigitalSignature } = this.state;
+
+    const isOnlyOneOption = this.getIsOnlyOneOption(disableUpload, disableDraw, disableDigital);
 
     return (
       <>
@@ -260,7 +295,9 @@ class SignatureModal extends PureComponent {
               label={
                 <span>
                   Choose your options for Signature
-                  <img style={{ marginLeft: '10px' }} src={InfoIcon} alt="info" />
+                  {!isOnlyOneOption && (
+                    <img style={{ marginLeft: '10px' }} src={InfoIcon} alt="info" />
+                  )}
                 </span>
               }
               name="mode"
@@ -272,16 +309,18 @@ class SignatureModal extends PureComponent {
                 defaultValue={mode}
                 onChange={(val) => this.setState({ mode: val })}
                 placeholder="Choose your options for Signature"
+                disabled={isOnlyOneOption}
               >
-                <Option value="upload">Upload</Option>
-                <Option value="draw">Draw</Option>
-                <Option value="digital-signature">Digital Signature</Option>
+                {!disableUpload && <Option value="upload">Upload</Option>}
+                {!disableDraw && <Option value="draw">Draw</Option>}
+                {!disableDigital && <Option value="digital-signature">Digital Signature</Option>}
               </Select>
             </Form.Item>
 
             {mode === 'upload' && (
               <div className={styles.fileUploadForm}>
                 <Dragger
+                  disabled={loading || loadingUploadAttachment}
                   beforeUpload={this.beforeUpload}
                   showUploadList={false}
                   // disabled={selectExistDocument || fileName}
@@ -319,7 +358,21 @@ class SignatureModal extends PureComponent {
                   label={
                     <span>
                       Digital Signature
-                      <img style={{ marginLeft: '10px' }} src={InfoIcon} alt="info" />
+                      <Tooltip
+                        placement="right"
+                        title={
+                          <span
+                            style={{
+                              fontSize: '12px',
+                            }}
+                          >
+                            To sign the document, please type your name and select the signature
+                            format of your choice.
+                          </span>
+                        }
+                      >
+                        <img style={{ marginLeft: '10px' }} src={InfoIcon} alt="info" />
+                      </Tooltip>
                     </span>
                   }
                   name="name"

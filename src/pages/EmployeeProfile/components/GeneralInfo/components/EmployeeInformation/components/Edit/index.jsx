@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
-import { Row, Input, Form, DatePicker, Radio, Button } from 'antd';
+import { Row, Input, Form, DatePicker, Radio, Button, Tooltip } from 'antd';
 import { connect, formatMessage } from 'umi';
 import moment from 'moment';
 import UploadImage from '@/components/UploadImage';
@@ -324,7 +324,7 @@ class Edit extends PureComponent {
       adhaarCardNumber = '',
       uanNumber = '',
     } = generalData;
-    console.log('🚀 ~ render ~ AdhaarCard', AdhaarCard);
+
     const nameFile = urlFile ? urlFile.url.split('/') : '';
     const splitURL = nameFile[nameFile.length - 1];
     const formItemLayout = {
@@ -345,6 +345,8 @@ class Edit extends PureComponent {
     const checkUSALocation = country === 'US';
 
     const permissions = checkPermissions(roles);
+    const disabledFields = true;
+    const disabledTitle = 'Temporarily Disabled - will be enabled shortly.';
 
     return (
       <Row gutter={[0, 16]} className={styles.root}>
@@ -425,22 +427,27 @@ class Edit extends PureComponent {
             {checkIndiaLocation ? (
               <>
                 <div className={styles.styleUpLoad}>
-                  <Form.Item
-                    label="Adhaar Card Number"
-                    name="adhaarCardNumber"
-                    rules={[
-                      {
-                        pattern: /^[+]*[\d]{12,12}$/,
-                        message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
-                      },
-                      {
-                        required: !!AdhaarCard.document,
-                        message: 'Please input your adhaar card number!',
-                      },
-                    ]}
-                  >
-                    <Input className={isLt5M ? styles.inputForm : styles.inputFormImageValidate} />
-                  </Form.Item>
+                  <Tooltip title={disabledTitle}>
+                    <Form.Item
+                      label="Adhaar Card Number"
+                      name="adhaarCardNumber"
+                      rules={[
+                        {
+                          pattern: /^[+]*[\d]{12,12}$/,
+                          message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
+                        },
+                        {
+                          required: !!AdhaarCard.document,
+                          message: 'Please input your adhaar card number!',
+                        },
+                      ]}
+                    >
+                      <Input
+                        className={isLt5M ? styles.inputForm : styles.inputFormImageValidate}
+                        disabled={disabledFields}
+                      />
+                    </Form.Item>
+                  </Tooltip>
                   <>
                     {!urlFile || !AdhaarCard.document ? (
                       <div className={styles.textUpload}>
@@ -450,6 +457,7 @@ class Edit extends PureComponent {
                           setSizeImageMatch={(isImage5M) => this.handleGetSetSizeImage(isImage5M)}
                           getResponse={(resp) => this.handleGetUpLoad(resp)}
                           loading={loadingAdhaarCard}
+                          disabledFields={disabledFields}
                         />
                       </div>
                     ) : (
@@ -488,50 +496,56 @@ class Edit extends PureComponent {
             ) : null}
 
             {checkIndiaLocation ? (
-              <Form.Item
-                label="UAN Number"
-                name="uanNumber"
-                rules={[
-                  {
-                    pattern: /^[+]*[\d]{0,16}$/,
-                    message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
-                  },
-                ]}
-              >
-                <Input className={styles.inputForm} />
-              </Form.Item>
+              <Tooltip title={disabledTitle}>
+                <Form.Item
+                  label="UAN Number"
+                  name="uanNumber"
+                  rules={[
+                    {
+                      pattern: /^[+]*[\d]{0,16}$/,
+                      message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
+                    },
+                  ]}
+                >
+                  <Input className={styles.inputForm} disabled={disabledFields} />
+                </Form.Item>
+              </Tooltip>
             ) : null}
 
             {checkVietNamLocation ? (
-              <Form.Item
-                label="National Identification Number"
-                name="uanNumber"
-                rules={[
-                  {
-                    pattern: /^[+]*[\d]{0,16}$/,
-                    message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
-                  },
-                ]}
-              >
-                <Input className={styles.inputForm} />
-              </Form.Item>
+              <Tooltip title={disabledTitle}>
+                <Form.Item
+                  label="National Identification Number"
+                  name="uanNumber"
+                  rules={[
+                    {
+                      pattern: /^[+]*[\d]{0,16}$/,
+                      message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
+                    },
+                  ]}
+                >
+                  <Input className={styles.inputForm} disabled={disabledFields} />
+                </Form.Item>
+              </Tooltip>
             ) : null}
 
             {checkUSALocation ? (
-              <Form.Item
-                label="Social Security Number"
-                name="uanNumber"
-                rules={[
-                  {
-                    pattern: /^[0-9\\-]{0,12}$/,
-                    message: formatMessage({
-                      id: 'pages.employeeProfile.validateSocialSecurityNumber',
-                    }),
-                  },
-                ]}
-              >
-                <Input className={styles.inputForm} />
-              </Form.Item>
+              <Tooltip title={disabledTitle}>
+                <Form.Item
+                  label="Social Security Number"
+                  name="uanNumber"
+                  rules={[
+                    {
+                      pattern: /^[0-9\\-]{0,12}$/,
+                      message: formatMessage({
+                        id: 'pages.employeeProfile.validateSocialSecurityNumber',
+                      }),
+                    },
+                  ]}
+                >
+                  <Input className={styles.inputForm} disabled={disabledFields} />
+                </Form.Item>
+              </Tooltip>
             ) : null}
           </div>
           <div className={styles.spaceFooter}>

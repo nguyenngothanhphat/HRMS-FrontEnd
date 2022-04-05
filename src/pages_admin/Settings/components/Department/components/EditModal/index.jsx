@@ -179,6 +179,7 @@ class EditModal extends PureComponent {
         hrPOC: hrPOCProp = '',
         financePOC = '',
         isDivision: isDivisionProp = '',
+        _id: _idProp = '',
       } = {},
     } = this.props;
 
@@ -225,17 +226,22 @@ class EditModal extends PureComponent {
               }}
             >
               <Form.Item
-                rules={[{ required: true, message: 'Please enter department name!' }]}
                 label="Department Name"
                 name="name"
                 labelCol={{ span: 24 }}
                 rules={[
+                  { required: true, message: 'Please enter department name!' },
                   () => ({
-                    validator(_, value) {     
-                      if( (listDepartments.filter((obj) => obj.name === value)).length > 0 ) {
+                    validator(_, value) {
+                      if (
+                        listDepartments.filter((obj) => obj.name === value && obj._id !== _idProp)
+                          .length > 0
+                      ) {
                         return Promise.reject(`Department name is exist.`);
                       }
-                    }
+                      // eslint-disable-next-line compat/compat
+                      return Promise.resolve();
+                    },
                   }),
                 ]}
               >
@@ -251,7 +257,8 @@ class EditModal extends PureComponent {
                   showSearch
                   allowClear
                   filterOption={(input, option) =>
-                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 >
                   {listDepartments.map((d) => (
                     <Select.Option key={d.departmentId} value={d.departmentId}>

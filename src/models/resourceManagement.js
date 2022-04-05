@@ -48,6 +48,7 @@ const resourceManagement = {
     newJoineeList: [],
     selectedDivisions: [],
     selectedLocations: [], // empty for all
+    currentPayload: {},
   },
   effects: {
     *getProjectList({ payload }, { call, put }) {
@@ -70,8 +71,9 @@ const resourceManagement = {
       }
     },
     *getResources({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getResources, {
+        response = yield call(getResources, {
           ...payload,
           tenantId: getCurrentTenant(),
           // company: getCurrentCompany(),
@@ -81,13 +83,12 @@ const resourceManagement = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { resourceList: data, total },
+          payload: { resourceList: data, total, currentPayload: payload },
         });
-        return response;
       } catch (error) {
         dialog(error);
-        return null;
       }
+      return response;
     },
     *fetchAssignToProject({ payload }, { call }) {
       try {
@@ -243,17 +244,29 @@ const resourceManagement = {
     },
     *fetchProjectList({ payload }, { call, put }) {
       let response = {};
+      const payloadTemp = {
+        ...payload,
+        tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
+      };
       try {
-        response = yield call(fetchProjectListTable, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data } = response;
+        response = yield call(fetchProjectListTable, payloadTemp);
+        const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { projectTable: data },
+          payload: { projectTable: data, payloadProject: payloadTemp },
+        });
+        const customerList = data.map((item) => {
+          return {
+            customerId: item.customerId || '',
+            customerName: item.customerName || '',
+          };
+        });
+
+        yield put({
+          type: 'save',
+          payload: { customerList },
         });
       } catch (error) {
         dialog(error);
@@ -373,11 +386,12 @@ const resourceManagement = {
         dialog(error);
       }
     },
-    *exportReportProject(_, { call }) {
+    *exportReportProject({ payload }, { call }) {
       let response = '';
       const hide = message.loading('Exporting data project...', 0);
       try {
         response = yield call(exportProject, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
@@ -431,6 +445,12 @@ const resourceManagement = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    clearState(state) {
+      return {
+        ...state,
+        filter: {},
       };
     },
   },

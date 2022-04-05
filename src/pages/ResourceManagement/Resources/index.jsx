@@ -169,66 +169,11 @@ class Resources extends Component {
     document.body.removeChild(downloadLink);
   };
 
-  renderActionButton = (nameTag) => {
-    const { tabName = '', divisionList = [], listLocationsByCompany = [] } = this.props;
-    const { selectedDivisions, selectedLocations } = this.state;
-    // if only one selected
-    const selectedLocationName = this.getSelectedLocationName();
-    const selectedDivisionName = this.getSelectedDivisionName();
-
-    if (tabName === TABS.OVERVIEW) {
-      const divisionOptions = divisionList.map((x) => {
-        return {
-          _id: x.name,
-          name: x.name,
-        };
-      });
-      const locationOptions = listLocationsByCompany.map((x) => {
-        return {
-          _id: x._id,
-          name: x.name,
-        };
-      });
-      return (
-        <div className={styles.options}>
-          <div className={styles.dropdownItem}>
-            <span className={styles.label}>Location</span>
-
-            <CheckboxMenu
-              options={locationOptions}
-              onChange={this.onLocationChange}
-              list={listLocationsByCompany}
-              default={selectedLocations}
-            >
-              <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
-                <span>{selectedLocationName}</span>
-                <img src={SmallDownArrow} alt="" />
-              </div>
-            </CheckboxMenu>
-          </div>
-          <div className={styles.dropdownItem}>
-            <span className={styles.label}>Division</span>
-
-            <CheckboxMenu
-              options={divisionOptions}
-              onChange={this.onDivisionChange}
-              default={selectedDivisions}
-            >
-              <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
-                <span>{selectedDivisionName}</span>
-                <img src={SmallDownArrow} alt="" />
-              </div>
-            </CheckboxMenu>
-          </div>
-        </div>
-      );
+  exportTag = (nameTag, exportTag) => {
+    if (nameTag === TABS.PROJECTS) {
+      return this.exportToExcel('resourceManagement/exportReportProject', 'rm-projects.csv');
+      // return this.exportToExcel('resourceManagement/exportResourceManagement', 'resource.csv');
     }
-    const exportTag = () => {
-      if (nameTag === TABS.PROJECTS) {
-        return this.exportToExcel('resourceManagement/exportReportProject', 'rm-projects.csv');
-      }
-      return this.exportToExcel('resourceManagement/exportResourceManagement', 'resource.csv');
-    };
     return (
       <div className={styles.options}>
         <Row gutter={[24, 0]}>
@@ -243,6 +188,60 @@ class Resources extends Component {
             </Button>
           </Col>
         </Row>
+      </div>
+    );
+  };
+
+  renderActionButton = () => {
+    const { divisionList = [], listLocationsByCompany = [] } = this.props;
+    const { selectedDivisions, selectedLocations } = this.state;
+    // if only one selected
+    const selectedLocationName = this.getSelectedLocationName();
+    const selectedDivisionName = this.getSelectedDivisionName();
+
+    const divisionOptions = divisionList.map((x) => {
+      return {
+        _id: x.name,
+        name: x.name,
+      };
+    });
+    const locationOptions = listLocationsByCompany.map((x) => {
+      return {
+        _id: x._id,
+        name: x.name,
+      };
+    });
+    return (
+      <div className={styles.options}>
+        <div className={styles.dropdownItem}>
+          <span className={styles.label}>Location</span>
+
+          <CheckboxMenu
+            options={locationOptions}
+            onChange={this.onLocationChange}
+            list={listLocationsByCompany}
+            default={selectedLocations}
+          >
+            <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
+              <span>{selectedLocationName}</span>
+              <img src={SmallDownArrow} alt="" />
+            </div>
+          </CheckboxMenu>
+        </div>
+        <div className={styles.dropdownItem}>
+          <span className={styles.label}>Division</span>
+
+          <CheckboxMenu
+            options={divisionOptions}
+            onChange={this.onDivisionChange}
+            default={selectedDivisions}
+          >
+            <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
+              <span>{selectedDivisionName}</span>
+              <img src={SmallDownArrow} alt="" />
+            </div>
+          </CheckboxMenu>
+        </div>
       </div>
     );
   };
@@ -267,7 +266,7 @@ class Resources extends Component {
             onChange={(key) => {
               history.push(`${baseModuleUrl}/${key}`);
             }}
-            tabBarExtraContent={this.renderActionButton(tabName)}
+            tabBarExtraContent={this.renderActionButton()}
             destroyInactiveTabPane
           >
             {viewUtilizationPermission && (

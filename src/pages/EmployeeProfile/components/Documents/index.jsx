@@ -5,6 +5,7 @@ import { Skeleton } from 'antd';
 import ViewDocument from './ViewDocument';
 import InfoCollapseType2 from '../../../../components/InfoCollapseType2';
 import styles from './index.less';
+import WorkInProgress from '@/components/WorkInProgress';
 
 @connect(
   ({
@@ -238,6 +239,9 @@ class Documents extends Component {
 
     return (
       <div className={styles.Documents}>
+        <div style={{ marginBottom: 24 }}>
+          <WorkInProgress />
+        </div>
         {loading ? (
           <div className={styles.loadingDocuments}>
             <Skeleton />

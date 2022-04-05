@@ -1,41 +1,53 @@
 .TableTickets {
-  .priorityHigh {
-    width: 45px;
-    text-align: center;
-    background: #ffb6b6;
-    border-radius: 12px;
-  }
-  .priorityMedium {
-    width: 50px;
-    text-align: center;
-    background: #eefffb;
-    border-radius: 12px;
-  }
-  .priorityUrgent {
-    width: 50px;
-    text-align: center;
-    background: #ff8484;
-    border-radius: 12px;
-  }
-  .priorityLow {
-    width: 45px;
-    text-align: center;
-    background: #ffe9c5;
-    border-radius: 12px;
+  .priority {
+    display: flex;
+    justify-content: flex-start;
+    .priorityTag {
+      width: fit-content;
+      padding: 4px 8px;
+      font-size: 11px;
+      text-align: center;
+      border-radius: 12px;
+    }
+    .priorityHigh {
+      .priorityTag();
+      background: #ffb6b6;
+    }
+    .priorityMedium {
+      .priorityTag();
+      background: #eefffb;
+    }
+    .priorityUrgent {
+      .priorityTag();
+      background: #ff8484;
+    }
+    .priorityLow {
+      .priorityTag();
+      background: #ffe9c5;
+    }
   }
   .ticketID,
   .userID {
     color: #2c6df9;
+    font-weight: 500;
+    word-wrap: break-word;
+    word-break: break-word;
     &:hover {
       cursor: pointer;
     }
   }
   :global {
+    .ant-table-container {
+      padding: 24px 24px 0;
+    }
     .ant-table-thead > tr > th {
       background: #2c6df9 !important;
     }
     .ant-table-pagination-right {
       justify-content: flex-start !important;
+    }
+    .ant-pagination {
+      margin: 20px 24px !important;
     }
     .ant-table-body {
       max-height: 533px !important;

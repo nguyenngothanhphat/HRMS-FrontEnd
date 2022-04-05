@@ -10,7 +10,7 @@ import GlobalSearchNew from './components/GlobalSearchNew/index';
 import SelectCompanyModal from './components/SelectCompanyModal';
 import styles from './index.less';
 import QuestionDropdown from './QuestionDropdown';
-
+import CommonModal from '@/pages/Dashboard/components/ActivityLog/components/CommonModal';
 
 const GlobalHeaderRight = (props) => {
   const { theme, layout, currentUser, companiesOfUser } = props;
@@ -18,6 +18,7 @@ const GlobalHeaderRight = (props) => {
   const [isSwitchCompanyVisible, setIsSwitchCompanyVisible] = useState(false);
   const checkIsOwner =
     isOwner() && currentUser.signInRole.map((role) => role.toLowerCase()).includes('owner');
+  const [modalVisible, setModalVisible] = useState(false);
 
   let className = styles.right;
 
@@ -40,7 +41,14 @@ const GlobalHeaderRight = (props) => {
       <GlobalSearchNew />
       <QuestionDropdown />
       <div className={`${styles.action} ${styles.notify}`}>
-        <img src={MessageIcon} alt="" />
+        <img src={MessageIcon} alt="" onClick={() => setModalVisible(true)} />
+        <CommonModal
+          visible={modalVisible}
+          title="Notifications"
+          onClose={() => setModalVisible(false)}
+          tabKey="2"
+          data={[]}
+        />
       </div>
       {!(!checkIsOwner && companiesOfUser.length === 1) && (
         <>

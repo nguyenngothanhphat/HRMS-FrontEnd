@@ -32,14 +32,14 @@ class ModalFeedback extends Component {
   };
 
   destroyOnClose = () => {
-    const { handleCandelModal = () => {} } = this.props;
+    const { handleCancelModal = () => {} } = this.props;
     this.setState({
       on: false,
       feedback: null,
       screenCapture: null,
       valueRadio: null,
     });
-    handleCandelModal();
+    handleCancelModal();
   };
 
   handleFinish = (data) => {
@@ -142,7 +142,7 @@ class ModalFeedback extends Component {
   };
 
   render() {
-    const { visible = false, handleCandelModal = () => {}, loadingSubmit, loading } = this.props;
+    const { visible = false, handleCancelModal = () => {}, loadingSubmit, loading } = this.props;
     const { screenCapture, on, submit, valueRadio, feedback } = this.state;
     return (
       <div>
@@ -158,7 +158,7 @@ class ModalFeedback extends Component {
         >
           <div className={styles.contentFeedback}>
             <div className={styles.titleModal}>
-              Feedback
+              Application Feedback
               {submit && (
                 <span className={styles.message}>
                   Thank you for your feedback ! Your feedback has been recorded and will be shared
@@ -169,8 +169,8 @@ class ModalFeedback extends Component {
             <div className={styles.formModal}>
               <div className={`${styles.subTitle} ${styles.title1}`}>
                 {screenCapture
-                  ? `Please describe what you would like to change or what you liked?`
-                  : `Thank you for helping us improve ! Please select an option below.`}
+                  ? `Please describe what you would like to change or what you liked ?`
+                  : `Thank you for helping us improve the application ! Please select an option below.`}
               </div>
               <div className={styles.form}>
                 <Form
@@ -265,7 +265,7 @@ class ModalFeedback extends Component {
                               this.setState({
                                 on: true,
                               });
-                              handleCandelModal();
+                              handleCancelModal();
                             }}
                             className={`${styles.btnGroup} ${styles.highlightBtn}`}
                           >

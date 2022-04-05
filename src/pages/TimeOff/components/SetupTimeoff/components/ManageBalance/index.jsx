@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
 import SwitchTab from './components/Switch';
 import styles from './index.less';
-
+import WorkInProgress from "@/components/WorkInProgress";
 const { TabPane } = Tabs;
 
 class ManageBalance extends PureComponent {
@@ -31,6 +31,7 @@ class ManageBalance extends PureComponent {
     const { tabId, name, content } = this.state;
     return (
       <div className={styles.balance}>
+        <WorkInProgress />
         <span className={styles.titleText}>Manage existing & future Timeoff employee balances</span>
         <Tabs defaultActiveKey="1" onTabClick={this.callback}>
           <TabPane tab="Switch" key="1" className={styles.balanceTab}>

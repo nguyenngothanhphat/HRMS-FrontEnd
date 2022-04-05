@@ -16,6 +16,7 @@ import {
   // CERTIFICATION
   certifyDocument,
   signaturePolicies,
+  exportPoliciesCertification,
 } from '../services/policiesRegulations';
 
 const policiesRegulations = {
@@ -24,6 +25,7 @@ const policiesRegulations = {
     listCategory: [],
     listEmployee: [],
     countryList: [],
+    locationList: [],
     originData: {
       selectedCountry: '',
     },
@@ -223,6 +225,10 @@ const policiesRegulations = {
           type: 'save',
           payload: { countryList: data },
         });
+        yield put({
+          type: 'save',
+          payload: { locationList: data },
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -249,6 +255,21 @@ const policiesRegulations = {
       let response;
       try {
         response = yield call(signaturePolicies, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *exportPoliciesCertificationEffect({ payload }, { call }) {
+      let response;
+      try {
+        response = yield call(exportPoliciesCertification, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),

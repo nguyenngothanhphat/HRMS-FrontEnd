@@ -260,7 +260,7 @@ const routes = [
             name: 'dashboard',
             icon: '/assets/images/menuIcons/dashboard.svg',
             component: './Dashboard',
-            authority:['P_DASHBOARD_W_DASHBOARD_VIEW']
+            authority: ['P_DASHBOARD_W_DASHBOARD_VIEW'],
           },
           {
             path: '/dashboard/approvals',
@@ -287,13 +287,23 @@ const routes = [
             name: 'directory',
             icon: '/assets/images/menuIcons/directory.svg',
             component: './Directory',
-            authority: ['P_DIRECTORY_ALL','P_DIRECTORY_VIEW', 'M_DIRECTORY_VIEW', 'M_EMPLOYEE_MANAGEMENT_VIEW'],
+            authority: [
+              'P_DIRECTORY_ALL',
+              'P_DIRECTORY_VIEW',
+              'M_DIRECTORY_VIEW',
+              'M_EMPLOYEE_MANAGEMENT_VIEW',
+            ],
           },
           {
             path: '/directory/:tabName',
             component: './Directory',
             hideInMenu: true,
-            authority: ['P_DIRECTORY_ALL','P_DIRECTORY_VIEW', 'M_DIRECTORY_VIEW', 'M_EMPLOYEE_MANAGEMENT_VIEW'],
+            authority: [
+              'P_DIRECTORY_ALL',
+              'P_DIRECTORY_VIEW',
+              'M_DIRECTORY_VIEW',
+              'M_EMPLOYEE_MANAGEMENT_VIEW',
+            ],
           },
           {
             path: '/employees',
@@ -394,13 +404,13 @@ const routes = [
             component: '../pages_admin/UsersManagement',
             authority: ['M_USER_MANAGEMENT_VIEW', OWNER],
           },
-          {
-            path: '/employees-management',
-            name: 'employees',
-            icon: '/assets/images/menuIcons/members.svg',
-            component: '../pages_admin/EmployeesManagement',
-            authority: ['M_EMPLOYEE_MANAGEMENT_VIEW', OWNER],
-          },
+          // {
+          //   path: '/employees-management',
+          //   name: 'employees',
+          //   icon: '/assets/images/menuIcons/members.svg',
+          //   component: '../pages_admin/EmployeesManagement',
+          //   authority: ['M_EMPLOYEE_MANAGEMENT_VIEW', OWNER],
+          // },
           {
             path: '/employees/employee-profile/:reId',
             name: 'employeeProfile',
@@ -890,13 +900,13 @@ const routes = [
             name: 'settings',
             icon: '/assets/images/menuIcons/settings.svg',
             component: '../pages_admin/Settings',
-            authority: ['M_SETTING_VIEW', OWNER],
+            authority: ['M_SETTING_VIEW', OWNER, 'M_SETTINGS_ALL'],
           },
           {
             path: '/settings/:tabName',
             component: '../pages_admin/Settings',
             hideInMenu: true,
-            authority: ['M_SETTING_VIEW', OWNER],
+            authority: ['M_SETTING_VIEW', OWNER, 'M_SETTINGS_ALL'],
           },
           {
             component: './404',

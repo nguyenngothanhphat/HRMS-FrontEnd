@@ -1,4 +1,33 @@
-.HistoryActionBTN {
+.modalViewHistoryProject {
+  :global {
+    .ant-modal-close {
+      right: -57px;
+      height: 48px;
+      color: #fff;
+      background-color: #2c6df9;
+      border-radius: 0 8px 8px 0;
+      .ant-modal-close-x {
+        color: #fff;
+        line-height: 48px;
+      }
+      .ant-popover-inner {
+        background-color: #000;
+      }
+    }
+    .ant-table-thead > tr > th {
+      background: #2c6df9 !important;
+    }
+    // .ant-table-tbody > .ant-table-row.ant-table-row-level-0:hover {
+    //   color: gray;
+    //   background-image: linear-gradient(to right, white, #e5e5e5);
+    // }
+  }
+  .date {
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 9px;
+    line-height: 11px;
+  }
   .buttonEdit {
     width: 29px;
     height: 29px;
@@ -9,22 +38,44 @@
   .buttonEdit:hover {
     border: 1px solid #2c6df9;
   }
-  .showInfo {
-    display: inline;
-    padding-right: 30px;
-    color: gray;
+  .resourceInfo {
+    display: flex;
+    flex-direction: column;
+    .showInfo {
+      display: inline;
+      color: gray;
+    }
+    .showInfoEmp {
+      padding-left: 8px;
+      color: black;
+      font-weight: 500;
+    }
+    .showInfoName {
+      display: flex;
+      align-items: self-end;
+      margin-bottom: 1em;
+      .avatar {
+        img {
+          width: 30px;
+          height: 30px;
+          object-fit: cover;
+          border-radius: 50%;
+        }
+      }
+    }
   }
-  .showInfoEmp {
-    color: black;
+  .projectname {
+    color: #212020;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 15px;
   }
   .labelProject {
-    height: 18px;
     margin-left: 10px;
-    padding: 0px 8px;
+    padding: 3px;
     font-weight: 400;
-    text-align: left;
     background: #ffe9c5;
-    border-radius: 12px;
+    border-radius: 17px;
   }
   .iconEdit {
     display: none;
@@ -42,31 +93,6 @@
     }
     .readMore {
       color: #e5e5e5;
-    }
-  }
-  .modalViewHistoryProject {
-    :global {
-      .ant-modal-close {
-        right: -57px;
-        height: 48px;
-        color: #fff;
-        background-color: #2c6df9;
-        border-radius: 0 8px 8px 0;
-        .ant-modal-close-x {
-          color: #fff;
-          line-height: 48px;
-        }
-        .ant-popover-inner {
-          background-color: #000;
-        }
-      }
-      .ant-table-thead > tr > th {
-        background: #2c6df9 !important;
-      }
-      // .ant-table-tbody > .ant-table-row.ant-table-row-level-0:hover {
-      //   color: gray;
-      //   background-image: linear-gradient(to right, white, #e5e5e5);
-      // }
     }
   }
 }

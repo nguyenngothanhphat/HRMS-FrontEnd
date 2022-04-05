@@ -29,34 +29,34 @@ export async function deleteCategory(payload) {
 }
 
 export async function addPolicy(payload) {
-  return request('/api/policyregulatenent/add', {
+  return request('/api/policiesregulationtenant/add', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getListPolicy(payload) {
-  return request('api/policyregulatenent/list ', {
+  return request('api/policiesregulationtenant/list ', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function updatePolicy(payload) {
-  return request('/api/policyregulatenent/update ', {
+  return request('/api/policiesregulationtenant/update ', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function deletePolicy(payload) {
-  return request('api/policyregulatenent/delete', {
+  return request('api/policiesregulationtenant/delete', {
     method: 'POST',
     data: payload,
   });
 }
 export async function searchNamePolicy(payload) {
-  return request('/api/policyregulatenent/search-policy', {
+  return request('/api/policiesregulationtenant/search-policy', {
     method: 'POST',
     data: payload,
   });
@@ -78,13 +78,20 @@ export async function getLocationByCompany(payload) {
 
 // CERTIFICATION
 export async function certifyDocument(payload) {
-  return request('/api/policyregulatenent/certify', {
+  return request('/api/policiesregulationtenant/certify', {
     method: 'POST',
     data: payload,
   });
 }
 export async function signaturePolicies(payload) {
-  return request('/api/policyregulatenent/finish-signature', {
+  return request('/api/policiesregulationtenant/finish-signature', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function exportPoliciesCertification(payload) {
+  return request('/api/policiesregulationtenant/export-certify', {
     method: 'POST',
     data: payload,
   });

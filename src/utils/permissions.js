@@ -461,6 +461,10 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'RESOURCE_MANAGEMENT_UPDATE',
     PROJECT_MANAGER,
   ]);
+  // const viewsResourceModeManager = isAuthorized(permissionList, [
+  //   'P_RESOURCE_MANAGEMENT_MANAGER_VIEW',
+  // ]);
+  // const viewsResourceModeAdmin = isAuthorized(permissionList, ['P_RESOURCE_MANAGEMENT_ADMIN_VIEW']);
 
   // TICKET MANAGEMENT
   const indexTicketManagementHRTicketsTab = isAuthorized(permissionList, [
@@ -483,10 +487,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const indexSettingViewPolicy = isAuthorized(permissionList, [
     'P_POLICIESREGULATIONS_T_SETTINGS_VIEW',
   ]);
-  const indexFAQSettings = isAdmin ? 1 : isAuthorized(permissionList, [
-    'P_FAQ_VIEW_SETTINGS',
-    HR_MANAGER
-  ]);
+  const indexFAQSettings = isAdmin
+    ? 1
+    : isAuthorized(permissionList, ['P_FAQ_VIEW_SETTINGS', HR_MANAGER]);
 
   return {
     // Directory Page
@@ -572,6 +575,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewUtilizationTab: indexViewUtilizationTab,
     addResource: indexAddResource,
     modifyResource: indexModifyResource,
+    // viewModeManager: viewsResourceModeManager,
+    // viewModeAdmin: viewsResourceModeAdmin,
 
     // ticket management
     viewTicketHR: indexTicketManagementHRTicketsTab,
@@ -582,6 +587,6 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewSettingPolicy: indexSettingViewPolicy,
     viewPolicyAllCountry: indexViewAllCountryPolicyAndRegulation,
     // faq page
-    viewFAQSetting: indexFAQSettings
+    viewFAQSetting: indexFAQSettings,
   };
 }

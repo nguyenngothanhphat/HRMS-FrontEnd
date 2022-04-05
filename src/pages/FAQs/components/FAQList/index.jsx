@@ -9,8 +9,14 @@ import closeViewAnswer from '@/assets/faqPage/closeViewAnswer.svg';
 import styles from './index.less';
 
 const { Panel } = Collapse;
-@connect(({ faqs: { listCategory = [] } = {} }) => ({
+@connect(({ faqs: { listCategory = [], selectedCountry } = {},
+  user: {
+    currentUser: { employee: { location: { headQuarterAddress: { country: getCoutry } } } = {} } = {},
+  },
+}) => ({
   listCategory,
+  selectedCountry,
+  getCoutry
 }))
 class FAQList extends PureComponent {
   constructor(props) {
@@ -23,9 +29,12 @@ class FAQList extends PureComponent {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, getCoutry = '', selectedCountry = '' } = this.props;
     dispatch({
       type: 'faqs/fetchListFAQCategory',
+      payload: {
+        country: selectedCountry ? [selectedCountry] : [getCoutry]
+      }
     });
   }
 

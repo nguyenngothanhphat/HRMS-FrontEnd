@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Select, Input } from 'antd';
-import { connect } from 'umi';
+import { Select, Input, Button, Col, Row } from 'antd';
+import { connect, formatMessage } from 'umi';
+import { DownloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { debounce } from 'lodash';
-import { SearchOutlined } from '@ant-design/icons';
-import FilterIcon from '@/assets/projectManagement/filter.svg';
+import FilterButton from '@/components/FilterButton';
 import ArrowDown from '@/assets/projectManagement/arrowDown.svg';
 import FilterPopover from '../FilterPopover';
 import styles from './index.less';
@@ -16,6 +16,11 @@ const HeaderProjectRM = (props) => {
     projectStatus = 'All',
     setProjectStatus = () => {},
     fetchProjectList = () => {},
+    currentUserId = '',
+    total,
+    dispatch,
+    filter = [],
+    payloadProject = {},
   } = props;
   const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
 
@@ -49,22 +54,26 @@ const HeaderProjectRM = (props) => {
     );
   };
 
-  // const exportCustomers = async () => {
-  //   const { dispatch } = props;
-
-  //   const getListExport = await dispatch({
-  //     type: 'resourceManagement/exportReportProject',
-  //   });
-  //   const downloadLink = document.createElement('a');
-  //   const universalBOM = '\uFEFF';
-  //   downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
-  //     universalBOM + getListExport,
-  //   )}`;
-  //   downloadLink.download = 'rm-projects.csv';
-  //   document.body.appendChild(downloadLink);
-  //   downloadLink.click();
-  //   document.body.removeChild(downloadLink);
-  // };
+  const exportToExcel = async () => {
+    const fileName = 'rm-projects.csv';
+    const getListExport = await dispatch({
+      type: 'resourceManagement/exportReportProject',
+      payload: {
+        employeeId: currentUserId,
+        ...payloadProject,
+      },
+    });
+    const getDataExport = getListExport ? getListExport.data : '';
+    const downloadLink = document.createElement('a');
+    const universalBOM = '\uFEFF';
+    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
+      universalBOM + getDataExport,
+    )}`;
+    downloadLink.download = fileName;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
 
   const allProject = data.filter((obj) => obj.statusId === undefined);
   const listStatus = data.filter((obj) => obj.statusName !== 'All Projects');
@@ -84,7 +93,7 @@ const HeaderProjectRM = (props) => {
                 {obj.statusName} ({obj.count})
               </Option>
               {listStatus.map((list) => (
-                <Option value={list.statusId}>
+                <Option value={list.statusName}>
                   {list.statusName} ({list.count})
                 </Option>
               ))}
@@ -94,28 +103,27 @@ const HeaderProjectRM = (props) => {
       </div>
 
       <div className={styles.Header__right}>
-        {/* <p
-          style={{
-            marginBottom: '0',
-            marginRight: '25px',
-            color: '#ffa100',
-            fontWeight: '700',
-            cursor: 'pointer',
-          }}
-          onClick={exportCustomers}
-        >
-          <DownloadOutlined /> Export
-        </p> */}
+        <div className={styles.download}>
+          <Row gutter={[24, 0]}>
+            <Col>
+              <Button
+                icon={<DownloadOutlined />}
+                className={styles.generate}
+                type="text"
+                onClick={exportToExcel}
+              >
+                {formatMessage({ id: 'Export' })}
+              </Button>
+            </Col>
+          </Row>
+        </div>
         <FilterPopover
           placement="bottomRight"
           onSubmit={onFilter}
           needResetFilterForm={needResetFilterForm}
           setNeedResetFilterForm={setNeedResetFilterForm}
         >
-          <div className={styles.filterIcon}>
-            <img src={FilterIcon} alt="" />
-            <span>Filter</span>
-          </div>
+          <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} />
         </FilterPopover>
         <div className={styles.searchBar}>
           <Input
@@ -130,4 +138,9 @@ const HeaderProjectRM = (props) => {
   );
 };
 
-export default connect(({ resourceManagement }) => ({ resourceManagement }))(HeaderProjectRM);
+export default connect(
+  ({
+    resourceManagement: { total = 0, filter = [], payloadProject = {} } = {},
+    user: { currentUser: { employee: { _id: currentUserId = '' } = {} } = {} } = {},
+  }) => ({ total, currentUserId, filter, payloadProject }),
+)(HeaderProjectRM);
