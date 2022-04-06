@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 import React, { PureComponent } from 'react';
 import { Input, Select, Button, Empty, notification, Form } from 'antd';
 import { connect } from 'umi';
@@ -16,7 +17,7 @@ class RightContent extends PureComponent {
     super(props);
     this.state = {
       status: '',
-      timeTaken: '',
+      timeTaken: 0,
     };
   }
 
@@ -55,17 +56,12 @@ class RightContent extends PureComponent {
 
   getTimeTaken = () => {
     const { timeTaken } = this.state;
-    const { data: { status: statusProps = '', time_taken: timeTakenProps = '' } = {} } = this.props;
-    const time = Number(timeTaken);
-    if (statusProps === 'Resolved') {
-      return timeTakenProps;
-    }
-    return time;
+    const { data: { time_taken: timeTakenProps = '' } = {} } = this.props;
+    return timeTaken !== 0 ? timeTaken : timeTakenProps;
   };
 
   onSubmitUpdate = () => {
     const { status, timeTaken } = this.state;
-    // const time = Number(timeTaken);
     const { dispatch, data = {}, employee: { _id = '' } = {} } = this.props;
     const {
       id = '',
@@ -95,8 +91,9 @@ class RightContent extends PureComponent {
       employee: _id,
       timeTaken: this.getTimeTaken(),
     };
-    if (status && status !== statusProps && statusProps !== 'New') {
-      if (status === 'Resolved' && !timeTaken) {
+
+    if (statusProps !== 'New') {
+      if ((status === 'Resolved' || statusProps === 'Resolved') && timeTaken === '') {
         notification.error({
           message: 'Please input time taken',
         });
@@ -104,30 +101,6 @@ class RightContent extends PureComponent {
         dispatch({
           type: 'ticketManagement/updateTicket',
           payload,
-        });
-      }
-    }else if(status && status === statusProps && statusProps !== 'New'){
-      if (status === 'Resolved' && !timeTaken) {
-        notification.error({
-          message: 'Please input time taken',
-        });
-      } else {
-        dispatch({
-          type: 'ticketManagement/updateTicket',
-          payload:{
-            id,
-            employeeRaise,
-            employeeAssignee,
-            priority,
-            description,
-            subject,
-            ccList,
-            queryType,
-            attachments,
-            departmentAssign,
-            employee: _id,
-            timeTaken: this.getTimeTaken(),
-          },
         });
       }
     }
@@ -143,8 +116,15 @@ class RightContent extends PureComponent {
     return (
       <div className={styles.RightContent}>
         <div className={styles.RightContent__title}>Action</div>
-        <Form name="formUpdate" ref={this.formRef} id="formUpdate" onFinish={this.onSubmitUpdate}>
+        <Form
+          name="formUpdate"
+          ref={this.formRef}
+          id="formUpdate"
+          onFinish={this.onSubmitUpdate}
+          initialValues={{ timeTaken: 0 }}
+        >
           <Form.Item
+            name="timeTaken"
             rules={[
               {
                 pattern: new RegExp(/^[0-9]+$/),
@@ -155,12 +135,13 @@ class RightContent extends PureComponent {
             <div className={styles.RightContent__time}>
               <p>Time taken:</p>
               <Input
+                defaultValue={timeTakenProps}
                 addonAfter="Hours"
-                placeholder={timeTakenProps}
                 onChange={(e) =>
                   this.setState({
                     timeTaken: e.target.value,
-                  })}
+                  })
+                }
               />
             </div>
           </Form.Item>
@@ -174,7 +155,7 @@ class RightContent extends PureComponent {
             <div className={styles.RightContent__btn}>
               <Button
                 className={`${
-                  (status === 'Resolved' && timeTaken === '') || statusProps === 'Closed'
+                  (status === 'Resolved' && timeTaken === '') || statusProps === 'New'
                     ? styles.btnUpdate__disable
                     : styles.btnUpdate
                 }`}
