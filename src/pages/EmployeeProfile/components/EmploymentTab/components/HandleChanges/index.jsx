@@ -10,9 +10,9 @@ import FifthStep from './components/FifthStep';
 import SixthStep from './components/SixthStep';
 import SeventhStep from './components/SeventhStep';
 
-@connect(({ employeeProfile, user, locationSelection: { listLocationsByCompany = [] } = {} }) => ({
+@connect(({ employeeProfile, user, location: { companyLocationList = [] } = {} }) => ({
   employeeProfile,
-  listLocationsByCompany,
+  companyLocationList,
   user,
 }))
 class HandleChanges extends PureComponent {
@@ -138,7 +138,7 @@ class HandleChanges extends PureComponent {
 
   onChange = (value, type) => {
     const { changeData } = this.state;
-    const { dispatch, employeeProfile, listLocationsByCompany = [] } = this.props;
+    const { dispatch, employeeProfile, companyLocationList = [] } = this.props;
     switch (type) {
       case 'title':
         this.setState({
@@ -154,7 +154,7 @@ class HandleChanges extends PureComponent {
           changeData: {
             ...changeData,
             stepTwo: { ...changeData.stepTwo, wLocation: value },
-            newLocation: listLocationsByCompany.find((x) => x._id === value)?.name,
+            newLocation: companyLocationList.find((x) => x._id === value)?.name,
           },
         });
         break;
@@ -258,7 +258,7 @@ class HandleChanges extends PureComponent {
   };
 
   render() {
-    const { current, data, employeeProfile, listLocationsByCompany } = this.props;
+    const { current, data, employeeProfile, companyLocationList } = this.props;
     const { radio, changeData } = this.state;
     return (
       <div className={styles.handleChanges}>
@@ -273,7 +273,7 @@ class HandleChanges extends PureComponent {
         {current === 1 ? (
           <SecondStep
             fetchedState={employeeProfile}
-            listLocationsByCompany={listLocationsByCompany}
+            companyLocationList={companyLocationList}
             changeData={changeData}
             onChange={this.onChange}
           />

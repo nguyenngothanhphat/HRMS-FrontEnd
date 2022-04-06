@@ -1,20 +1,20 @@
-import { getCurrentTenant } from '@/utils/authority';
 import { Button, DatePicker, Form, Modal } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(
   ({
     loading,
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
     user: { currentUser = {}, companiesOfUser = [] },
     onboard: { hrList = [], filterList = {} } = {},
   }) => ({
     loadingHandleExpiryTicket: loading.effects['onboard/handleExpiryTicket'],
     currentUser,
-    listLocationsByCompany,
+    companyLocationList,
     companiesOfUser,
     filterList,
     hrList,
@@ -118,8 +118,7 @@ class RenewModal extends PureComponent {
                 onChange={(val) =>
                   this.setState({
                     selectedDate: val,
-                  })
-                }
+                  })}
               />
             </Form.Item>
           </Form>

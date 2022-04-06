@@ -188,8 +188,7 @@ const AddTaskModal = (props) => {
                         loading={loadingFetchProject}
                         disabled={loadingFetchProject}
                         filterOption={(input, option) =>
-                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       >
                         {projectList.map((val) => (
                           <Option value={val.id}>{val.projectName}</Option>
@@ -414,10 +413,10 @@ const AddTaskModal = (props) => {
   );
 };
 
-export default connect(({ loading, timeSheet, locationSelection, user }) => ({
+export default connect(({ loading, timeSheet, location, user }) => ({
   user,
   timeSheet,
-  locationSelection,
+  location,
   loadingAddTask: loading.effects['timeSheet/addMultipleActivityEffect'],
   loadingFetchProject: loading.effects['timeSheet/fetchProjectListEffect'],
 }))(AddTaskModal);

@@ -10,13 +10,13 @@ const { Option } = Select;
 @connect(
   ({
     loading,
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
     user: { currentUser = {}, companiesOfUser = [] },
     onboard: { hrList = [], filterList = {} } = {},
   }) => ({
     loadingReassign: loading.effects['onboard/reassignTicket'],
     currentUser,
-    listLocationsByCompany,
+    companyLocationList,
     companiesOfUser,
     filterList,
     hrList,
@@ -54,7 +54,7 @@ class ReassignModal extends PureComponent {
     const {
       companiesOfUser = [],
       filterList: { listCountry = [] } = {},
-      listLocationsByCompany = [],
+      companyLocationList = [],
     } = this.props;
     const currentCompany = getCurrentCompany();
     const currentLocation = getCurrentLocation();
@@ -78,7 +78,7 @@ class ReassignModal extends PureComponent {
         };
       });
     } else {
-      const currentLocationObj = listLocationsByCompany.find((loc) => loc?._id === currentLocation);
+      const currentLocationObj = companyLocationList.find((loc) => loc?._id === currentLocation);
       const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
       const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
 

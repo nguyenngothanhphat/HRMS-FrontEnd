@@ -1,19 +1,14 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col, Radio, Select, Input, Form, Spin } from 'antd';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { connect } from 'umi';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 const { Option } = Select;
-@connect(
-  ({
-    locationSelection: { listLocationsByCompany = [] } = {},
-    adminApp: { listAdmin = [] } = {},
-  }) => ({
-    listLocationsByCompany,
-    listAdmin,
-  }),
-)
+@connect(({ location: { companyLocationList = [] } = {}, adminApp: { listAdmin = [] } = {} }) => ({
+  companyLocationList,
+  listAdmin,
+}))
 class SelectUser extends PureComponent {
   formRef = React.createRef();
 
@@ -136,10 +131,10 @@ class SelectUser extends PureComponent {
     const {
       companyName = '',
       onBackValues: { firstName = '', email = '', usermapId = '', location = [] } = {},
-      listLocationsByCompany = [],
+      companyLocationList = [],
     } = this.props;
 
-    const formatListLocation = listLocationsByCompany.filter((loc) => {
+    const formatListLocation = companyLocationList.filter((loc) => {
       const { company: { _id = '' } = {} } = loc;
       return _id === getCurrentCompany();
     });

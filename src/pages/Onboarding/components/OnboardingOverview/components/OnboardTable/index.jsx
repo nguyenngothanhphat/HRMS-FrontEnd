@@ -68,10 +68,8 @@ class OnboardTable extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { listLocationsByCompany = [] } = this.props;
-    if (
-      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
-    ) {
+    const { companyLocationList = [] } = this.props;
+    if (JSON.stringify(prevProps.companyLocationList) !== JSON.stringify(companyLocationList)) {
       this.fetchTimezone();
     }
   }
@@ -93,9 +91,9 @@ class OnboardTable extends Component {
   };
 
   fetchTimezone = () => {
-    const { listLocationsByCompany = [] } = this.props;
+    const { companyLocationList = [] } = this.props;
     const timezoneList = [];
-    listLocationsByCompany.forEach((location) => {
+    companyLocationList.forEach((location) => {
       const {
         headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
         _id = '',
@@ -281,7 +279,7 @@ class OnboardTable extends Component {
       PROCESS_STATUS: PROCESS_STATUS_1,
     } = COLUMN_NAME;
 
-    const { list = [], listLocationsByCompany = [] } = this.props;
+    const { list = [], companyLocationList = [] } = this.props;
     const { timezoneList, currentTime } = this.state;
 
     const columns = [
@@ -343,7 +341,7 @@ class OnboardTable extends Component {
           <Popover
             content={
               <PopupContentHr
-                listLocationsByCompany={listLocationsByCompany}
+                companyLocationList={companyLocationList}
                 propsState={{ currentTime, timezoneList }}
                 dataHR={assignTo}
               />
@@ -372,7 +370,7 @@ class OnboardTable extends Component {
           <Popover
             content={
               <PopupContentHr
-                listLocationsByCompany={listLocationsByCompany}
+                companyLocationList={companyLocationList}
                 propsState={{ currentTime, timezoneList }}
                 dataHR={assigneeManager}
               />
@@ -938,11 +936,11 @@ export default connect(
     newCandidateForm,
     loading,
     user: { currentUser = {} } = {},
-    locationSelection: { listLocationsByCompany = [] },
+    location: { companyLocationList = [] },
   }) => ({
     isAddNewMember: newCandidateForm.isAddNewMember,
     loading: loading.effects['onboard/fetchOnboardList'],
     currentUser,
-    listLocationsByCompany,
+    companyLocationList,
   }),
 )(OnboardTable);

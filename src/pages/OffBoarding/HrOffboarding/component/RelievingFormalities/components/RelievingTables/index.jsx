@@ -10,8 +10,8 @@ import TableSearch from '../TableSearch';
 
 import styles from './index.less';
 
-@connect(({ locationSelection: { listLocationsByCompany = [] } }) => ({
-  listLocationsByCompany,
+@connect(({ location: { companyLocationList = [] } }) => ({
+  companyLocationList,
 }))
 class RelievingTables extends PureComponent {
   constructor(props) {
@@ -27,10 +27,8 @@ class RelievingTables extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { listLocationsByCompany = [] } = this.props;
-    if (
-      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
-    ) {
+    const { companyLocationList = [] } = this.props;
+    if (JSON.stringify(prevProps.companyLocationList) !== JSON.stringify(companyLocationList)) {
       this.fetchTimezone();
     }
   }
@@ -40,9 +38,9 @@ class RelievingTables extends PureComponent {
   };
 
   fetchTimezone = () => {
-    const { listLocationsByCompany = [] } = this.props;
+    const { companyLocationList = [] } = this.props;
     const timezoneList = [];
-    listLocationsByCompany.forEach((location) => {
+    companyLocationList.forEach((location) => {
       const {
         headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
         _id = '',

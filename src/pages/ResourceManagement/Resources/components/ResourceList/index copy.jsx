@@ -25,7 +25,7 @@ import { formatData } from '@/utils/resourceManagement';
       permissions = {},
     } = {},
     loading,
-    locationSelection: { listLocationsByCompany = [] },
+    location: { companyLocationList = [] },
   }) => ({
     loading: loading.effects['resourceManagement/getResources'],
     resourceList,
@@ -33,7 +33,7 @@ import { formatData } from '@/utils/resourceManagement';
     locationID,
     companyID,
     projectList,
-    listLocationsByCompany,
+    companyLocationList,
     permissions,
     selectedDivisions,
     selectedLocations,

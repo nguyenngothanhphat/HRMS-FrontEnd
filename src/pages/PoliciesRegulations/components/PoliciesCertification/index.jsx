@@ -9,7 +9,6 @@ import ModalImage from '@/assets/projectManagement/modalImage1.png';
 import TickMarkIcon from '@/assets/tickMarkIcon.svg';
 import SignatureModal from '@/components/SignatureModal';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import ActionModal from './components/ActionModal';
 import FileContent from './components/FileContent';
 import NoteComponent from './components/NoteComponent';
@@ -117,20 +116,10 @@ const PoliciesCertification = (props) => {
 
   useEffect(() => {
     dispatch({
-      type: 'policiesRegulations/getCountryListByCompany',
+      type: 'policiesRegulations/fetchListCategory',
       payload: {
-        tenantIds: [getCurrentTenant()],
-        company: getCurrentCompany(),
+        country: [countryID],
       },
-    }).then((res) => {
-      if (res.statusCode === 200) {
-        dispatch({
-          type: 'policiesRegulations/fetchListCategory',
-          payload: {
-            country: [countryID],
-          },
-        });
-      }
     });
   }, []);
 

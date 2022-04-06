@@ -26,7 +26,7 @@ import styles from './index.less';
         company: { _id: companyID } = {},
       } = {},
     } = {},
-    locationSelection: { listLocationsByCompany = [] },
+    location: { companyLocationList = [] },
   }) => ({
     listOffboarding,
     totalList,
@@ -35,7 +35,7 @@ import styles from './index.less';
     companyID,
     listTeamRequest,
     hrManager,
-    listLocationsByCompany,
+    companyLocationList,
   }),
 )
 class ManagerOffBoading extends Component {
@@ -76,21 +76,19 @@ class ManagerOffBoading extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { listTeamRequest = [], listLocationsByCompany = [] } = this.props;
+    const { listTeamRequest = [], companyLocationList = [] } = this.props;
     if (JSON.stringify(listTeamRequest) !== JSON.stringify(prevProps.listTeamRequest)) {
       this.updateData(listTeamRequest);
     }
-    if (
-      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
-    ) {
+    if (JSON.stringify(prevProps.companyLocationList) !== JSON.stringify(companyLocationList)) {
       this.fetchTimezone();
     }
   }
 
   fetchTimezone = () => {
-    const { listLocationsByCompany = [] } = this.props;
+    const { companyLocationList = [] } = this.props;
     const timezoneList = [];
-    listLocationsByCompany.forEach((location) => {
+    companyLocationList.forEach((location) => {
       const {
         headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
         _id = '',
