@@ -18,14 +18,15 @@ const { TabPane } = Tabs;
 
 const ComplexView = (props) => {
   const {
-    dispatch,
     permissions = {},
     tabName = '',
     showMyTimeSheet = true,
     listLocationsByCompany = [],
     timeSheet: { divisionList = [] } = {},
+    currentDateProp = '',
+    dispatch,
   } = props;
-  const { currentDateProp = '' } = props;
+
   const [navToTimeoffModalVisible, setNavToTimeoffModalVisible] = useState(false);
   const [selectedDivisions, setSelectedDivisions] = useState([]);
   const [selectedLocations, setSelectedLocation] = useState([]);
@@ -85,15 +86,14 @@ const ComplexView = (props) => {
   };
 
   const onChangeIncompleteTimeSheet = (e) => {
-    const value = e.target.checked
+    const value = e.target.checked;
     setIsIncompleteTimeSheet(value);
     dispatch({
       type: 'timeSheet/save',
       payload: {
-        isIncompleteTimesheet: value
+        isIncompleteTimesheet: value,
       },
     });
-   
   };
 
   const renderActionButton = () => {
@@ -188,6 +188,9 @@ const ComplexView = (props) => {
   };
 
   useEffect(() => {
+    dispatch({
+      type: 'timeSheet/clearState',
+    });
     if (!tabName) {
       if (showMyTimeSheet) {
         history.replace(`/time-sheet/${TAB_NAME.MY}`);

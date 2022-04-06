@@ -25,11 +25,11 @@ const HumanResourceReport = (props) => {
   // others
   const [selectedView, setSelectedView] = useState(VIEW_TYPE.W); // D: daily, W: weekly, M: monthly
   const [selectedEmployees, setSelectedEmployees] = useState([]); // D: daily, W: weekly, M: monthly
-
   const {
     dispatch,
     timeSheet: {
       hrViewList = [],
+      filterHrView = {},
       selectedDivisions = [],
       selectedLocations = [],
       isIncompleteTimesheet = false,
@@ -48,7 +48,9 @@ const HumanResourceReport = (props) => {
       selectedDivisions,
       selectedLocations,
       isIncompleteTimesheet,
+      ...filterHrView,
     };
+
     if (nameSearch) {
       payload.search = nameSearch;
     }
@@ -72,6 +74,7 @@ const HumanResourceReport = (props) => {
     JSON.stringify(selectedDivisions),
     JSON.stringify(selectedLocations),
     isIncompleteTimesheet,
+    JSON.stringify(filterHrView),
   ]);
 
   useEffect(() => {
@@ -86,6 +89,7 @@ const HumanResourceReport = (props) => {
     JSON.stringify(selectedDivisions),
     JSON.stringify(selectedLocations),
     isIncompleteTimesheet,
+    JSON.stringify(filterHrView),
   ]);
 
   useEffect(() => {
