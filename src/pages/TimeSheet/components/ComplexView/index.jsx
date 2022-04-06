@@ -11,7 +11,7 @@ import MyTimeSheet from './components/MyTimeSheet';
 import Settings from './components/Settings';
 import styles from './index.less';
 import { TAB_NAME } from '@/utils/timeSheet';
-import CheckboxMenu from './components/CheckboxMenu';
+import CheckboxMenu from '@/components/CheckboxMenu';
 import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
 
 const { TabPane } = Tabs;
@@ -85,18 +85,17 @@ const ComplexView = (props) => {
   };
 
   const onChangeIncompleteTimeSheet = (e) => {
-    const value = e.target.checked
+    const value = e.target.checked;
     setIsIncompleteTimeSheet(value);
     dispatch({
       type: 'timeSheet/save',
       payload: {
-        isIncompleteTimesheet: value
+        isIncompleteTimesheet: value,
       },
     });
-   
   };
 
-  const renderActionButton = () => {
+  const renderFilterBar = (isHRTab) => {
     // if only one selected
     const selectedLocationName = getSelectedLocationName();
     const selectedDivisionName = getSelectedDivisionName();
@@ -115,11 +114,13 @@ const ComplexView = (props) => {
     });
     return (
       <div className={styles.options}>
-        <div className={styles.item}>
-          <Checkbox checked={isIncompleteTimeSheet} onChange={onChangeIncompleteTimeSheet}>
-            Incomplete Timesheets
-          </Checkbox>
-        </div>
+        {isHRTab && (
+          <div className={styles.item}>
+            <Checkbox checked={isIncompleteTimeSheet} onChange={onChangeIncompleteTimeSheet}>
+              Incomplete Timesheets
+            </Checkbox>
+          </div>
+        )}
         <div className={styles.item}>
           <span className={styles.label}>Location</span>
 
@@ -156,7 +157,11 @@ const ComplexView = (props) => {
   const options = () => {
     switch (tabName) {
       case TAB_NAME.HR_REPORTS:
-        return renderActionButton();
+        return renderFilterBar(true);
+
+      case TAB_NAME.FINANCE_REPORTS:
+        return renderFilterBar();
+
       case TAB_NAME.MY:
         return (
           <div className={styles.requestLeave} onClick={() => setNavToTimeoffModalVisible(true)}>
