@@ -1,6 +1,6 @@
 import moment from 'moment';
-import React from 'react';
-import { Button } from 'antd';
+import React, { Suspense } from 'react';
+import { Button, Skeleton } from 'antd';
 import { connect } from 'umi';
 import exportToCSV from '@/utils/exportAsExcel';
 import DownloadIcon from '@/assets/timeSheet/download.svg';
@@ -9,6 +9,8 @@ import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/Searc
 import { VIEW_TYPE } from '@/utils/timeSheet';
 import styles from './index.less';
 import FilterButton from '@/components/FilterButton';
+import FilterPopover from '@/components/FilterPopover';
+import FilterContent from './components/FilterContent';
 
 const Header = (props) => {
   const {
@@ -127,7 +129,17 @@ const Header = (props) => {
           <img src={DownloadIcon} alt="Icon Download" />
           <Button>Download</Button>
         </div>
-        <FilterButton />
+        <FilterPopover
+          placement="bottomRight"
+          content={
+            <Suspense fallback={<Skeleton active />}>
+              <FilterContent />
+            </Suspense>
+          }
+          realTime
+        >
+          <FilterButton fontSize={14} />
+        </FilterPopover>
         <SearchBar onChangeSearch={onChangeSearch} activeView={activeView} />
       </div>
     </div>

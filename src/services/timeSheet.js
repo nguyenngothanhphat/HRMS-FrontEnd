@@ -241,3 +241,36 @@ export async function exportTeam(payload, params) {
     API_KEYS.TIMESHEET_API,
   );
 }
+
+export async function getDesignationList(payload) {
+  return request('/api/titletenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getDepartmentList(payload) {
+  return request('/api/departmenttenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getProjectTypeList(payload) {
+  return request(
+    `/api-project/projecttenant/list-project-types`,
+    {
+      method: 'GET',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
+}
+
+export async function getListEmployeeSingleCompany(payload) {
+  return request('/api/employeetenant/list-by-single-company', {
+    method: 'POST',
+    data: payload,
+  });
+}

@@ -15,7 +15,7 @@ import { TAB_NAME } from '@/utils/timeSheet';
 const { TabPane } = Tabs;
 
 const ComplexView = (props) => {
-  const { permissions = {}, tabName = '', showMyTimeSheet = true } = props;
+  const { permissions = {}, tabName = '', showMyTimeSheet = true, dispatch } = props;
   const { currentDateProp = '' } = props;
   const [navToTimeoffModalVisible, setNavToTimeoffModalVisible] = useState(false);
 
@@ -58,6 +58,11 @@ const ComplexView = (props) => {
         history.replace(`/time-sheet/${temp}`);
       }
     }
+    return () => {
+      dispatch({
+        type: 'timeSheet/clearState',
+      });
+    };
   }, [tabName]);
 
   const renderOtherTabs = () => {
