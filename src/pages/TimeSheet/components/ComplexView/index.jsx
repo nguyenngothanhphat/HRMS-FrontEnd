@@ -194,9 +194,14 @@ const ComplexView = (props) => {
   };
 
   useEffect(() => {
+    // clear filter state in HR & Project view
     dispatch({
-      type: 'timeSheet/clearState',
+      type: 'timeSheet/save',
+      payload: {
+        employeeNameList: [],
+      },
     });
+
     if (!tabName) {
       if (showMyTimeSheet) {
         history.replace(`/time-sheet/${TAB_NAME.MY}`);
@@ -206,7 +211,10 @@ const ComplexView = (props) => {
       }
       return;
     }
-    if (tabName === TAB_NAME.HR_REPORTS) {
+    if (
+      divisionList.length === 0 &&
+      [TAB_NAME.HR_REPORTS, TAB_NAME.FINANCE_REPORTS].includes(tabName)
+    ) {
       dispatch({
         type: 'timeSheet/fetchDivisionListEffect',
         payload: {
