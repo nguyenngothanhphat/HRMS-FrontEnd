@@ -1,10 +1,13 @@
 import moment from 'moment';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { connect } from 'umi';
+import { Skeleton } from 'antd';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
 import styles from './index.less';
 import FilterButton from '@/components/FilterButton';
+import FilterPopover from '@/components/FilterPopover';
+import FilterContent from './components/FilterContent';
 
 const Header = (props) => {
   const {
@@ -49,7 +52,17 @@ const Header = (props) => {
         />
       </div>
       <div className={styles.Header__right}>
-        <FilterButton />
+        <FilterPopover
+          placement="bottomRight"
+          content={
+            <Suspense fallback={<Skeleton active />}>
+              <FilterContent />
+            </Suspense>
+          }
+          realTime
+        >
+          <FilterButton fontSize={14} />
+        </FilterPopover>
         <SearchBar onChangeSearch={onChangeSearch} activeView={activeView} />
       </div>
     </div>
