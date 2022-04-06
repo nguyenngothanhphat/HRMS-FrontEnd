@@ -562,6 +562,7 @@ const RequestInformation = (props) => {
       return '';
     });
     return result.filter((val) => val);
+    
   };
 
   // RENDER OPTIONS
@@ -1085,6 +1086,15 @@ const RequestInformation = (props) => {
   };
 
   // RETURN MAIN
+  const [hover, setHover] = useState();  
+
+  const handleMouseIn = () => {
+    setHover(true);
+  };
+
+  const handleMouseOut = () => {
+    setHover(false);
+  };
   if (loadingMain) return <Skeleton />;
   return (
     <div className={styles.RequestInformation}>
@@ -1156,7 +1166,11 @@ const RequestInformation = (props) => {
                 },
               ]}
             >
-              <Input placeholder="Enter Subject" disabled={!selectedTypeName}/>
+              <Input placeholder="Enter Subject" disabled={!selectedTypeName}
+              
+              onMouseOver={!selectedTypeName? handleMouseIn:handleMouseOut} onMouseOut={!selectedTypeName? handleMouseOut:handleMouseIn}
+                  />
+                    {hover ? "Please select a Timeoff type to proceed" :"" }
             </Form.Item>
           </Col>
           <Col span={6} />
@@ -1184,7 +1198,10 @@ const RequestInformation = (props) => {
                       fromDateOnChange(value);
                     }}
                      placeholder="From Date"  disabled={!selectedTypeName}
+                     //onMouseOver={!selectedTypeName? handleMouseIn:handleMouseOut} onMouseOut={!selectedTypeName? handleMouseOut:handleMouseIn}
                   />
+                    {/* {hover ? "Please select a Timeoff type to proceed" :"" } */}
+                  
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -1264,6 +1281,7 @@ const RequestInformation = (props) => {
                 mode="multiple"
                 allowClear
                 placeholder="Search a person you want to loop"   disabled={!selectedTypeName}
+               
                 filterOption={(input, option) => {
                   return (
                     option.children[1].props.children.toLowerCase().indexOf(input.toLowerCase()) >=
