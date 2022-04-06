@@ -29,7 +29,7 @@ const FinanceReport = (props) => {
   const {
     dispatch,
     employee: { _id: employeeId = '' } = {},
-    timeSheet: { financeViewList = [], selectedDivisions = [], selectedLocations = [] } = {},
+    timeSheet: { financeViewList = [], selectedDivisions = [], selectedLocations = [], filterFinance = {} } = {},
     loadingFetch = false,
   } = props;
 
@@ -44,6 +44,7 @@ const FinanceReport = (props) => {
       viewType: selectedView,
       selectedDivisions,
       selectedLocations,
+      ...filterFinance,
     };
     if (nameSearch) {
       payload.search = nameSearch;
@@ -66,6 +67,7 @@ const FinanceReport = (props) => {
     nameSearch,
     JSON.stringify(selectedDivisions),
     JSON.stringify(selectedLocations),
+    JSON.stringify(filterFinance)
   ]);
 
   useEffect(() => {
@@ -78,6 +80,7 @@ const FinanceReport = (props) => {
     nameSearch,
     JSON.stringify(selectedDivisions),
     JSON.stringify(selectedLocations),
+    JSON.stringify(filterFinance)
   ]);
 
   useEffect(() => {

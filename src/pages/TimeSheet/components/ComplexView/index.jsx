@@ -18,14 +18,15 @@ const { TabPane } = Tabs;
 
 const ComplexView = (props) => {
   const {
-    dispatch,
     permissions = {},
     tabName = '',
     showMyTimeSheet = true,
     listLocationsByCompany = [],
     timeSheet: { divisionList = [] } = {},
+    currentDateProp = '',
+    dispatch,
   } = props;
-  const { currentDateProp = '' } = props;
+
   const [navToTimeoffModalVisible, setNavToTimeoffModalVisible] = useState(false);
   const [selectedDivisions, setSelectedDivisions] = useState([]);
   const [selectedLocations, setSelectedLocation] = useState([]);
@@ -193,6 +194,9 @@ const ComplexView = (props) => {
   };
 
   useEffect(() => {
+    dispatch({
+      type: 'timeSheet/clearState',
+    });
     if (!tabName) {
       if (showMyTimeSheet) {
         history.replace(`/time-sheet/${TAB_NAME.MY}`);
