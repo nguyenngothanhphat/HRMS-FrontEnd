@@ -274,3 +274,10 @@ export async function getListEmployeeSingleCompany(payload) {
     data: payload,
   });
 }
+
+export async function getDivisionList(payload) {
+  return request('/api/departmenttenant/get-all-division', {
+    method: 'GET',
+    params: payload,
+  });
+}

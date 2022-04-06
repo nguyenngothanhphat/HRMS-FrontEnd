@@ -78,7 +78,7 @@ const FilterContent = (props) => {
     let typeTemp = '';
     switch (type) {
       case 'name':
-        typeTemp = 'employee/fetchEmployeeNameListEffect';
+        typeTemp = 'timeSheet/fetchEmployeeNameListEffect';
         break;
       default:
         break;

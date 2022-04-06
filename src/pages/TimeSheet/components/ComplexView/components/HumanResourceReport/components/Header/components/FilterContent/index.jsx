@@ -10,7 +10,7 @@ const FilterContent = (props) => {
   const [form] = Form.useForm();
   const {
     dispatch,
-    timeSheet: { departmentList = [], employeeNameList = [], projectListState } = {},
+    timeSheet: { departmentList = [], employeeNameList = [], projectListState = [] } = {},
     loadingFetchEmployeeNameList = false,
   } = props;
 

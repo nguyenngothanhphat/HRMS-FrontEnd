@@ -1,4 +1,4 @@
-import { Tabs } from 'antd';
+import { Tabs, Checkbox } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import ModalImage from '@/assets/timeSheet/modalImage1.png';
@@ -11,24 +11,162 @@ import MyTimeSheet from './components/MyTimeSheet';
 import Settings from './components/Settings';
 import styles from './index.less';
 import { TAB_NAME } from '@/utils/timeSheet';
+import CheckboxMenu from './components/CheckboxMenu';
+import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
 
 const { TabPane } = Tabs;
 
 const ComplexView = (props) => {
-  const { permissions = {}, tabName = '', showMyTimeSheet = true, dispatch } = props;
-  const { currentDateProp = '' } = props;
+  const {
+    permissions = {},
+    tabName = '',
+    showMyTimeSheet = true,
+    listLocationsByCompany = [],
+    timeSheet: { divisionList = [] } = {},
+    currentDateProp = '',
+    dispatch,
+  } = props;
+
   const [navToTimeoffModalVisible, setNavToTimeoffModalVisible] = useState(false);
+  const [selectedDivisions, setSelectedDivisions] = useState([]);
+  const [selectedLocations, setSelectedLocation] = useState([]);
+  const [isIncompleteTimeSheet, setIsIncompleteTimeSheet] = useState(false);
 
   const requestLeave = () => {
     history.push('/time-off/overview/personal-timeoff/new');
   };
 
-  const options = () => {
+  const onLocationChange = (selection) => {
+    dispatch({
+      type: 'timeSheet/save',
+      payload: {
+        selectedLocations: [...selection],
+      },
+    });
+    setSelectedLocation([...selection]);
+  };
+
+  const onDivisionChange = (selection) => {
+    dispatch({
+      type: 'timeSheet/save',
+      payload: {
+        selectedDivisions: [...selection],
+      },
+    });
+    setSelectedDivisions([...selection]);
+  };
+
+  const getSelectedLocationName = () => {
+    if (selectedLocations.length === 1) {
+      return listLocationsByCompany.find((x) => x._id === selectedLocations[0])?.name || '';
+    }
+    if (selectedLocations.length > 0 && selectedLocations.length < listLocationsByCompany.length) {
+      return `${selectedLocations.length} locations selected`;
+    }
+    if (
+      selectedLocations.length === listLocationsByCompany.length ||
+      selectedLocations.length === 0
+    ) {
+      return 'All';
+    }
+    return 'All';
+  };
+
+  const getSelectedDivisionName = () => {
+    if (selectedDivisions.length === 1) {
+      return selectedDivisions[0] || '';
+    }
+    if (selectedDivisions.length > 0 && selectedDivisions.length < divisionList.length) {
+      return `${selectedDivisions.length} divisions selected`;
+    }
+    if (selectedDivisions.length === divisionList.length || selectedDivisions.length === 0) {
+      return 'All';
+    }
+    return 'All';
+  };
+
+  const onChangeIncompleteTimeSheet = (e) => {
+    const value = e.target.checked;
+    setIsIncompleteTimeSheet(value);
+    dispatch({
+      type: 'timeSheet/save',
+      payload: {
+        isIncompleteTimesheet: value,
+      },
+    });
+  };
+
+  const renderActionButton = () => {
+    // if only one selected
+    const selectedLocationName = getSelectedLocationName();
+    const selectedDivisionName = getSelectedDivisionName();
+
+    const divisionOptions = divisionList.map((x) => {
+      return {
+        _id: x.name,
+        name: x.name,
+      };
+    });
+    const locationOptions = listLocationsByCompany.map((x) => {
+      return {
+        _id: x._id,
+        name: x.name,
+      };
+    });
     return (
-      <div className={styles.requestLeave} onClick={() => setNavToTimeoffModalVisible(true)}>
-        <span className={styles.title}>Request Leave</span>
+      <div className={styles.options}>
+        <div className={styles.item}>
+          <Checkbox checked={isIncompleteTimeSheet} onChange={onChangeIncompleteTimeSheet}>
+            Incomplete Timesheets
+          </Checkbox>
+        </div>
+        <div className={styles.item}>
+          <span className={styles.label}>Location</span>
+
+          <CheckboxMenu
+            options={locationOptions}
+            onChange={onLocationChange}
+            list={listLocationsByCompany}
+            default={selectedLocations}
+          >
+            <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
+              <span>{selectedLocationName}</span>
+              <img src={SmallDownArrow} alt="" />
+            </div>
+          </CheckboxMenu>
+        </div>
+        <div className={styles.item}>
+          <span className={styles.label}>Division</span>
+
+          <CheckboxMenu
+            options={divisionOptions}
+            onChange={onDivisionChange}
+            default={selectedDivisions}
+          >
+            <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
+              <span>{selectedDivisionName}</span>
+              <img src={SmallDownArrow} alt="" />
+            </div>
+          </CheckboxMenu>
+        </div>
       </div>
     );
+  };
+
+  const options = () => {
+    switch (tabName) {
+      case TAB_NAME.HR_REPORTS:
+        return renderActionButton();
+      case TAB_NAME.MY:
+        return (
+          <div className={styles.requestLeave} onClick={() => setNavToTimeoffModalVisible(true)}>
+            <span className={styles.title}>Request Leave</span>
+          </div>
+        );
+
+      default:
+        return '';
+    }
   };
 
   // PERMISSION TO VIEW TABS
@@ -50,6 +188,9 @@ const ComplexView = (props) => {
   };
 
   useEffect(() => {
+    dispatch({
+      type: 'timeSheet/clearState',
+    });
     if (!tabName) {
       if (showMyTimeSheet) {
         history.replace(`/time-sheet/${TAB_NAME.MY}`);
@@ -57,12 +198,16 @@ const ComplexView = (props) => {
         const temp = getActiveKey();
         history.replace(`/time-sheet/${temp}`);
       }
+      return;
     }
-    return () => {
+    if (tabName === TAB_NAME.HR_REPORTS) {
       dispatch({
-        type: 'timeSheet/clearState',
+        type: 'timeSheet/fetchDivisionListEffect',
+        payload: {
+          name: 'Engineering',
+        },
       });
-    };
+    }
   }, [tabName]);
 
   const renderOtherTabs = () => {
@@ -130,7 +275,15 @@ const ComplexView = (props) => {
   );
 };
 
-export default connect(({ user: { currentUser = {}, permissions = [] } = {} }) => ({
-  currentUser,
-  permissions,
-}))(ComplexView);
+export default connect(
+  ({
+    user: { currentUser = {}, permissions = [] } = {},
+    locationSelection: { listLocationsByCompany = [] },
+    timeSheet,
+  }) => ({
+    currentUser,
+    permissions,
+    listLocationsByCompany,
+    timeSheet,
+  }),
+)(ComplexView);

@@ -7,7 +7,7 @@ import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
-// import MultipleCheckTablePopup from '@/components/MultipleCheckTablePopup';
+import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 
 import RejectCommentModal from '../RejectCommentModal';
 
@@ -44,6 +44,7 @@ const COLUMN_WIDTH = {
   loading4: loading.effects['timeOff/rejectMultipleTimeoffRequest'],
   loading5: loading.effects['timeOff/reportingManagerApprove'],
   loading6: loading.effects['timeOff/reportingManagerReject'],
+  loading7: loading.effects['timeOff/fetchAllLeaveRequests'],
 }))
 class TeamLeaveTable extends PureComponent {
   constructor(props) {
@@ -359,6 +360,69 @@ class TeamLeaveTable extends PureComponent {
     }
   };
 
+  renderEmptyTableContent = () => {
+    const { tab = 0, category } = this.props;
+
+    if (category === 'MY') {
+      switch (tab) {
+        case 1:
+          return (
+            <>
+              You have not applied for any Leave requests. <br />
+              Submitted Casual, Sick & Compoff requests will be displayed here.
+            </>
+          );
+        case 2:
+          return (
+            <>
+              You have not applied for any Special Leave requests.
+              <br />
+              Submitted Restricted Holiday, Bereavement, Marriage & Maternity/ Paternity leave
+              requests will be displayed here.
+            </>
+          );
+        case 3:
+          return <>You have not applied for any LWP requests.</>;
+        case 4:
+          return <>You have not applied any request to Work from home or Client’s place.</>;
+        case 5:
+          return <>You have not submitted any requests to earn compensation leaves.</>;
+        default:
+          return '';
+      }
+    }
+
+    switch (tab) {
+      case 1:
+        return (
+          <>
+            No Leave requests received. <br />
+            Submitted Casual, Sick & Compoff requests will be displayed here.
+          </>
+        );
+      case 2:
+        return (
+          <>
+            No Special Leave requests received. <br />
+            Submitted Restricted Holiday, Bereavement, Marriage & Maternity/ Paternity leave
+            requests will be displayed here.
+          </>
+        );
+      case 3:
+        return (
+          <>
+            No LWP requests received. <br />
+          </>
+        );
+      case 4:
+        return <>No Work from home or Client’s place requests received.</>;
+      case 5:
+        return <>No Compoff requests received.</>;
+      default:
+        return 'No data';
+    }
+  };
+
   render() {
     const {
       data = [],
@@ -367,6 +431,7 @@ class TeamLeaveTable extends PureComponent {
       loading4 = false,
       loading5 = false,
       loading6 = false,
+      loading7 = false,
       selectedTab = '',
       paging: { page, limit, total },
       // currentUser: { employee: { _id: myId = '' } = {} } = {},
@@ -386,7 +451,7 @@ class TeamLeaveTable extends PureComponent {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
     const tableLoading = {
-      spinning: loading1 || loading3 || loading5,
+      spinning: loading1 || loading3 || loading5 || loading7,
       indicator: <Spin indicator={antIcon} />,
     };
 
@@ -442,11 +507,19 @@ class TeamLeaveTable extends PureComponent {
           // size="middle"
           loading={tableLoading}
           rowSelection={rowSelection}
-          pagination={{ ...pagination, total }}
+          pagination={data.length === 0 ? null : { ...pagination, total }}
           columns={tableByRole}
           dataSource={data}
           scroll={scroll}
           rowKey={(id) => id._id}
+          locale={{
+            emptyText: (
+              <div className={styles.emptyTable}>
+                <img src={EmptyIcon} alt="empty-table" />
+                <p className={styles.describeTexts}>{this.renderEmptyTableContent()}</p>
+              </div>
+            ),
+          }}
         />
         {data.length === 0 && <div className={styles.paddingContainer} />}
         <RejectCommentModal

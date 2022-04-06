@@ -27,7 +27,13 @@ const HumanResourceReport = (props) => {
   const [selectedEmployees, setSelectedEmployees] = useState([]); // D: daily, W: weekly, M: monthly
   const {
     dispatch,
-    timeSheet: { hrViewList = [], filterHrView = {} } = {},
+    timeSheet: {
+      hrViewList = [],
+      filterHrView = {},
+      selectedDivisions = [],
+      selectedLocations = [],
+      isIncompleteTimesheet = false,
+    } = {},
     loadingFetch = false,
   } = props;
 
@@ -39,6 +45,9 @@ const HumanResourceReport = (props) => {
       // employeeId,
       fromDate: moment(startDate).format(dateFormatAPI),
       toDate: moment(endDate).format(dateFormatAPI),
+      selectedDivisions,
+      selectedLocations,
+      isIncompleteTimesheet,
       ...filterHrView,
     };
 
@@ -49,6 +58,7 @@ const HumanResourceReport = (props) => {
       type: 'timeSheet/fetchHRTimesheetEffect',
       payload,
     });
+    setSelectedEmployees([]);
   };
 
   // USE EFFECT AREA
@@ -56,13 +66,31 @@ const HumanResourceReport = (props) => {
     if (startDateWeek && selectedView === VIEW_TYPE.W) {
       fetchHRTimesheet(startDateWeek, endDateWeek);
     }
-  }, [startDateWeek, endDateWeek, selectedView, nameSearch, JSON.stringify(filterHrView)]);
+  }, [
+    startDateWeek,
+    endDateWeek,
+    selectedView,
+    nameSearch,
+    JSON.stringify(selectedDivisions),
+    JSON.stringify(selectedLocations),
+    isIncompleteTimesheet,
+    JSON.stringify(filterHrView),
+  ]);
 
   useEffect(() => {
     if (startDateMonth && selectedView === VIEW_TYPE.M) {
       fetchHRTimesheet(startDateMonth, endDateMonth);
     }
-  }, [startDateMonth, endDateMonth, selectedView, nameSearch, JSON.stringify(filterHrView)]);
+  }, [
+    startDateMonth,
+    endDateMonth,
+    selectedView,
+    nameSearch,
+    JSON.stringify(selectedDivisions),
+    JSON.stringify(selectedLocations),
+    isIncompleteTimesheet,
+    JSON.stringify(filterHrView),
+  ]);
 
   useEffect(() => {
     setSelectedEmployees([]);
