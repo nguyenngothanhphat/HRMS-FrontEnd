@@ -67,7 +67,7 @@ const RequestInformation = (props) => {
     loadingUpdatingLeaveRequest = false,
     loadingSaveDraft = false,
     loadingUpdateDraft = false,
-    loadingMain = false,    
+    loadingMain = false,
   } = props;
 
   const currentLocationID = location?.headQuarterAddress?.country?._id;
@@ -120,7 +120,7 @@ const RequestInformation = (props) => {
       type: 'timeOff/save',
       payload: {
         currentLeaveTypeTab: String(type),
-        currentMineOrTeamTab: '2', // my leave request tab has index "2"
+        currentScopeTab: '3', // my leave request tab has index "3"
         currentFilterTab: buttonState === 1 ? '4' : '1', // draft 4, in-progress 1
       },
     });
@@ -192,18 +192,18 @@ const RequestInformation = (props) => {
     setRemainingDayOfSelectedType(count);
   };
 
-  const getRemainingDayById = (_id) => {
-    let count = 0;
+  // const getRemainingDayById = (_id) => {
+  //   let count = 0;
 
-    [...timeOffTypesAB, ...timeOffTypesCD].forEach((value) => {
-      const { defaultSettings: { _id: _id1 = '' } = {}, currentAllowance = 0 } = value;
-      if (_id1 === _id) {
-        count = currentAllowance;
-      }
-    });
+  //   [...timeOffTypesAB, ...timeOffTypesCD].forEach((value) => {
+  //     const { defaultSettings: { _id: _id1 = '' } = {}, currentAllowance = 0 } = value;
+  //     if (_id1 === _id) {
+  //       count = currentAllowance;
+  //     }
+  //   });
 
-    return count;
-  };
+  //   return count;
+  // };
 
   const findInvalidHalfOfDay = (date) => {
     const filtered = invalidDates.filter((x) => {
@@ -424,9 +424,7 @@ const RequestInformation = (props) => {
         leaveTimeLists = [],
       } = values;
 
-      if (timeOffType === '') {
-        message.error('Please fill required fields!');
-      } else {
+      if (timeOffType && durationFrom && durationTo) {
         const leaveDatesPayload = generateLeaveDates(leaveTimeLists);
         const duration = calculateNumberOfLeaveDay(leaveDatesPayload);
 
@@ -520,7 +518,7 @@ const RequestInformation = (props) => {
           if (statusCode === 200) setShowSuccessModal(true);
         });
       }
-    } else if (buttonState === 1) {
+    } else {
       onSaveDraft(values);
     }
   };
@@ -1157,7 +1155,7 @@ const RequestInformation = (props) => {
             <span>Subject</span> <span className={styles.mandatoryField}>*</span>
           </Col>
           <Col span={12}>
-            <Form.Item 
+            <Form.Item
               name="subject"
               rules={[
                 {
@@ -1166,11 +1164,7 @@ const RequestInformation = (props) => {
                 },
               ]}
             >
-              <Input placeholder="Enter Subject" disabled={!selectedTypeName}
-              
-              onMouseOver={!selectedTypeName? handleMouseIn:handleMouseOut} onMouseOut={!selectedTypeName? handleMouseOut:handleMouseIn}
-                  />
-                    {hover ? "Please select a Timeoff type to proceed" :"" }
+              <Input placeholder="Enter Subject" disabled={!selectedTypeName} />
             </Form.Item>
           </Col>
           <Col span={6} />
@@ -1186,7 +1180,7 @@ const RequestInformation = (props) => {
                   name="durationFrom"
                   rules={[
                     {
-                      required: needValidate,
+                      required: true,
                       message: 'Please select a date!',
                     },
                   ]}
@@ -1197,8 +1191,8 @@ const RequestInformation = (props) => {
                     onChange={(value) => {
                       fromDateOnChange(value);
                     }}
-                     placeholder="From Date"  disabled={!selectedTypeName}
-                     //onMouseOver={!selectedTypeName? handleMouseIn:handleMouseOut} onMouseOut={!selectedTypeName? handleMouseOut:handleMouseIn}
+                    placeholder="From Date"
+                    disabled={!selectedTypeName}
                   />
                     {/* {hover ? "Please select a Timeoff type to proceed" :"" } */}
                   
@@ -1209,7 +1203,7 @@ const RequestInformation = (props) => {
                   name="durationTo"
                   rules={[
                     {
-                      required: needValidate,
+                      required: true,
                       message: 'Please select a date!',
                     },
                   ]}
@@ -1217,13 +1211,11 @@ const RequestInformation = (props) => {
                   <DatePicker
                     disabledDate={disabledToDate}
                     format={TIMEOFF_DATE_FORMAT}
-                    disabled={
-                      selectedTypeName=== '' ? true : false&&
-                      selectedType === C}
+                    disabled={!selectedTypeName || selectedType === C}
                     onChange={(value) => {
                       toDateOnChange(value);
                     }}
-                    placeholder="To Date" 
+                    placeholder="To Date"
                   />
                 </Form.Item>
               </Col>
@@ -1257,7 +1249,8 @@ const RequestInformation = (props) => {
               <TextArea
                 autoSize={{ minRows: 3, maxRows: 6 }}
                 maxLength={250}
-                placeholder="The reason I am taking timeoff is …"   disabled={!selectedTypeName}
+                placeholder="The reason I am taking timeoff is …"
+                disabled={!selectedTypeName}
               />
             </Form.Item>
           </Col>
@@ -1280,8 +1273,8 @@ const RequestInformation = (props) => {
               <Select
                 mode="multiple"
                 allowClear
-                placeholder="Search a person you want to loop"   disabled={!selectedTypeName}
-               
+                placeholder="Search a person you want to loop"
+                disabled={!selectedTypeName}
                 filterOption={(input, option) => {
                   return (
                     option.children[1].props.children.toLowerCase().indexOf(input.toLowerCase()) >=
@@ -1330,7 +1323,7 @@ const RequestInformation = (props) => {
         </span>
         <div className={styles.formButtons}>
           {action === NEW_LEAVE_REQUEST && (
-            <Button 
+            <Button
               className={styles.cancelButton}
               type="link"
               htmlType="button"
@@ -1350,7 +1343,8 @@ const RequestInformation = (props) => {
             </Button>
           )}
           {(action === NEW_LEAVE_REQUEST || (action === EDIT_LEAVE_REQUEST && isEditingDrafts)) && (
-            <Button disabled={!selectedTypeName}
+            <Button
+              disabled={!selectedTypeName}
               loading={loadingSaveDraft || loadingUpdateDraft}
               type="link"
               form="myForm"
@@ -1370,10 +1364,10 @@ const RequestInformation = (props) => {
             type="primary"
             form="myForm"
             disabled={
-              selectedTypeName==="" ?true:false &&
-              remainingDayOfSelectedType === 0 &&
-              (selectedType === A || selectedType === B) &&
-              action === NEW_LEAVE_REQUEST 
+              !selectedTypeName ||
+              (remainingDayOfSelectedType === 0 &&
+                (selectedType === A || selectedType === B) &&
+                action === NEW_LEAVE_REQUEST)
             }
             htmlType="submit"
             onClick={() => {

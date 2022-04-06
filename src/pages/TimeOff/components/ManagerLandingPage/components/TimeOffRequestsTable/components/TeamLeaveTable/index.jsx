@@ -44,6 +44,7 @@ const COLUMN_WIDTH = {
   loading4: loading.effects['timeOff/rejectMultipleTimeoffRequest'],
   loading5: loading.effects['timeOff/reportingManagerApprove'],
   loading6: loading.effects['timeOff/reportingManagerReject'],
+  loading7: loading.effects['timeOff/fetchAllLeaveRequests'],
 }))
 class TeamLeaveTable extends PureComponent {
   constructor(props) {
@@ -430,6 +431,7 @@ class TeamLeaveTable extends PureComponent {
       loading4 = false,
       loading5 = false,
       loading6 = false,
+      loading7 = false,
       selectedTab = '',
       paging: { page, limit, total },
       // currentUser: { employee: { _id: myId = '' } = {} } = {},
@@ -449,7 +451,7 @@ class TeamLeaveTable extends PureComponent {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
     const tableLoading = {
-      spinning: loading1 || loading3 || loading5,
+      spinning: loading1 || loading3 || loading5 || loading7,
       indicator: <Spin indicator={antIcon} />,
     };
 
