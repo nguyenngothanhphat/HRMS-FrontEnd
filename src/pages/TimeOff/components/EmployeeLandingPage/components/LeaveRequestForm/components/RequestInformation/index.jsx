@@ -1084,13 +1084,19 @@ const RequestInformation = (props) => {
   };
 
   // RETURN MAIN
-  const [hover, setHover] = useState();  
+  const [hover, setHover] = useState({
+    // subject:false,
+    // fromDate:false,
+    // toDate:false,
+    // description:false
+  }
+  );  
 
-  const handleMouseIn = () => {
+  const handleMouseIn = (value) => {
     setHover(true);
   };
 
-  const handleMouseOut = () => {
+  const handleMouseOut = (value) => {
     setHover(false);
   };
   if (loadingMain) return <Skeleton />;
@@ -1164,7 +1170,10 @@ const RequestInformation = (props) => {
                 },
               ]}
             >
-              <Input placeholder="Enter Subject" disabled={!selectedTypeName} />
+              <Input placeholder="Enter Subject" disabled={!selectedTypeName} 
+              onMouseOver={!selectedTypeName ?handleMouseIn:handleMouseOut} onMouseOut={!selectedTypeName ? handleMouseOut:handleMouseIn}
+              />
+              {hover?"Please select a Timeoff type to proceed":""}
             </Form.Item>
           </Col>
           <Col span={6} />
@@ -1193,9 +1202,9 @@ const RequestInformation = (props) => {
                     }}
                     placeholder="From Date"
                     disabled={!selectedTypeName}
-                  />
-                    {/* {hover ? "Please select a Timeoff type to proceed" :"" } */}
-                  
+                    //onMouseOver={!selectedTypeName ?handleMouseIn:handleMouseOut} onMouseOut={!selectedTypeName ?handleMouseOut:handleMouseIn}
+              />
+              {/* {hover?"Please select a Timeoff type to proceed":""} */}
                 </Form.Item>
               </Col>
               <Col span={12}>
