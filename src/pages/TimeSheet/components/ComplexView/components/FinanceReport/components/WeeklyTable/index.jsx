@@ -4,7 +4,7 @@ import { connect } from 'umi';
 import { employeeColor } from '@/utils/timeSheet';
 import ProjectDetailModal from '../../../ProjectDetailModal';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
-import EmptyComponent from '@/pages/TimeSheet/components/ComplexView/components/Empty';
+import EmptyComponent from '@/components/Empty';
 import styles from './index.less';
 
 const WeeklyTable = (props) => {

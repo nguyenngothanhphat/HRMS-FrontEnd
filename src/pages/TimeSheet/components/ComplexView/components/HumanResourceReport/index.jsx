@@ -25,7 +25,17 @@ const HumanResourceReport = (props) => {
   // others
   const [selectedView, setSelectedView] = useState(VIEW_TYPE.W); // D: daily, W: weekly, M: monthly
   const [selectedEmployees, setSelectedEmployees] = useState([]); // D: daily, W: weekly, M: monthly
-  const { dispatch, timeSheet: { hrViewList = [] } = {}, loadingFetch = false } = props;
+  const {
+    dispatch,
+    timeSheet: {
+      hrViewList = [],
+      filterHrView = {},
+      selectedDivisions = [],
+      selectedLocations = [],
+      isIncompleteTimesheet = false,
+    } = {},
+    loadingFetch = false,
+  } = props;
 
   // FUNCTION AREA
   const fetchHRTimesheet = (startDate, endDate) => {
@@ -35,7 +45,12 @@ const HumanResourceReport = (props) => {
       // employeeId,
       fromDate: moment(startDate).format(dateFormatAPI),
       toDate: moment(endDate).format(dateFormatAPI),
+      selectedDivisions,
+      selectedLocations,
+      isIncompleteTimesheet,
+      ...filterHrView,
     };
+
     if (nameSearch) {
       payload.search = nameSearch;
     }
@@ -43,6 +58,7 @@ const HumanResourceReport = (props) => {
       type: 'timeSheet/fetchHRTimesheetEffect',
       payload,
     });
+    setSelectedEmployees([]);
   };
 
   // USE EFFECT AREA
@@ -50,13 +66,31 @@ const HumanResourceReport = (props) => {
     if (startDateWeek && selectedView === VIEW_TYPE.W) {
       fetchHRTimesheet(startDateWeek, endDateWeek);
     }
-  }, [startDateWeek, endDateWeek, selectedView, nameSearch]);
+  }, [
+    startDateWeek,
+    endDateWeek,
+    selectedView,
+    nameSearch,
+    JSON.stringify(selectedDivisions),
+    JSON.stringify(selectedLocations),
+    isIncompleteTimesheet,
+    JSON.stringify(filterHrView),
+  ]);
 
   useEffect(() => {
     if (startDateMonth && selectedView === VIEW_TYPE.M) {
       fetchHRTimesheet(startDateMonth, endDateMonth);
     }
-  }, [startDateMonth, endDateMonth, selectedView, nameSearch]);
+  }, [
+    startDateMonth,
+    endDateMonth,
+    selectedView,
+    nameSearch,
+    JSON.stringify(selectedDivisions),
+    JSON.stringify(selectedLocations),
+    isIncompleteTimesheet,
+    JSON.stringify(filterHrView),
+  ]);
 
   useEffect(() => {
     setSelectedEmployees([]);

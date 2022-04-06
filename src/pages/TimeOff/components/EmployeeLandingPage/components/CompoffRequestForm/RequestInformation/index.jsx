@@ -46,7 +46,7 @@ class RequestInformation extends PureComponent {
       type: 'timeOff/save',
       payload: {
         currentLeaveTypeTab: String(type),
-        currentScopeTab: '2', // my compoff request tab has index "2"
+        currentScopeTab: '3', // my compoff request tab has index "3"
         currentFilterTab: buttonState === 1 ? '4' : '1', // draft 4, in-progress 1
       },
     });

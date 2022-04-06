@@ -8,7 +8,7 @@ import FailIcon from '@/assets/timeSheet/fail.svg';
 import PendingIcon from '@/assets/timeSheet/pending.svg';
 import TaskPopover from './components/TaskPopover';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
-import EmptyComponent from '@/pages/TimeSheet/components/ComplexView/components/Empty';
+import EmptyComponent from '@/components/Empty';
 
 import styles from './index.less';
 
