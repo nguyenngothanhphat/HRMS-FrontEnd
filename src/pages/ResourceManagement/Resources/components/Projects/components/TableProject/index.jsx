@@ -46,15 +46,15 @@ class TableProject extends Component {
   };
 
   viewProfile = (_id) => {
-    history.push(`/directory/employee-profile/${_id}`);
+    return `/directory/employee-profile/${_id}`;
   };
 
   viewCustomer = (customerId) => {
-    history.push(`/customer-management/customers/customer-profile/${customerId}`);
+    return `/customer-management/customers/customer-profile/${customerId}`;
   };
 
   viewProject = (projectId) => {
-    history.push(`/project-management/list/${projectId}/summary`);
+    return `/project-management/list/${projectId}/summary`;
   };
 
   render() {
@@ -129,7 +129,7 @@ class TableProject extends Component {
               placement="bottomRight"
               overlayClassName={styles.popupContentProjectManager}
             >
-              <Link className={styles.projectName} onClick={() => this.viewProject(row?.projectId)}>
+              <Link className={styles.projectName} to={this.viewProject(row?.projectId)}>
                 {value || '-'}
               </Link>
             </Popover>
@@ -148,7 +148,7 @@ class TableProject extends Component {
             placement="bottomRight"
             overlayClassName={styles.popupContentProjectManager}
           >
-            <Link className={styles.projectName} onClick={() => this.viewCustomer(row?.customerId)}>
+            <Link className={styles.projectName} to={this.viewCustomer(row?.customerId)}>
               {value || '-'}
             </Link>
           </Popover>
@@ -167,10 +167,7 @@ class TableProject extends Component {
         key: 'projectManager',
         render: (value) => (
           <UserProfilePopover data={{ ...value, ...value.generalInfo }}>
-            <Link
-              className={styles.projectName}
-              onClick={() => this.viewProfile(value?.generalInfo?.userId)}
-            >
+            <Link className={styles.projectName} to={this.viewProfile(value?.generalInfo?.userId)}>
               {value?.generalInfo?.legalName || '-'}
             </Link>
           </UserProfilePopover>
