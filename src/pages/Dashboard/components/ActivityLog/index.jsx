@@ -33,11 +33,13 @@ const ActivityLog = (props) => {
       type: 'dashboard/fetchListTicket',
     });
   }, [statusApproval]);
+
   useEffect(() => {
     dispatch({
       type: 'dashboard/fetchListMyTicket',
     });
   }, [status]);
+
   useEffect(() => {
     dispatch({
       type: 'dashboard/fetchLeaveRequestOfEmployee',
@@ -46,6 +48,12 @@ const ActivityLog = (props) => {
       },
     });
   }, []);
+
+  const fetchListTicket = () => {
+    dispatch({
+      type: 'dashboard/fetchListTicket',
+    });
+  };
 
   // if employee, no render the pending approval tab, set active key to the second tab
   useEffect(() => {
@@ -148,7 +156,7 @@ const ActivityLog = (props) => {
             {/* only manager / hr manager see this tab */}
             {viewPendingApprovalDashboard && (
               <TabPane tab={renderTabName('1', listPendingApprovals.length)} key="1">
-                <CommonTab type="1" data={listPendingApprovals} />
+                <CommonTab type="1" data={listPendingApprovals} refreshData={fetchListTicket} />
               </TabPane>
             )}
             <TabPane tab={renderTabName('2', mockNotification.length)} key="2">
