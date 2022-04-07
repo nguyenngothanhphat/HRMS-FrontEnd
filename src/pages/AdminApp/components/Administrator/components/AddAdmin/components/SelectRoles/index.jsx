@@ -38,10 +38,11 @@ class SelectRoles extends PureComponent {
   };
 
   filterID = (value, permissionList = []) => {
-    const handlePermission = permissionList.map((obj) => {
+    const removeIdNull = permissionList.map((Obj) => Obj._id)
+    const handlePermission = removeIdNull ? removeIdNull.map((obj) => {
       const splitId = obj._id.split('_')
-      return splitId.length > 2 ? `${splitId[0]}_${splitId[1]}_${splitId[2]}` : `${splitId[0]}_${splitId[1]}`
-    })
+      return splitId.length > 2 ? `${splitId[0]}_${splitId[1]}_${splitId[2]}` : obj._id
+    }) : []
     // const idArray = [
     //   'M_USER_MANAGEMENT',
     //   'M_DIRECTORY',
@@ -54,7 +55,7 @@ class SelectRoles extends PureComponent {
 
     let data = handlePermission.map((item, index) => {
       if (value.includes(item)) {
-        return permissionList[index]._id;
+        return removeIdNull[index]._id
       }
       return 0;
     });
