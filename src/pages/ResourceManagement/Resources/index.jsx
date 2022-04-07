@@ -6,7 +6,7 @@ import { connect, formatMessage, history } from 'umi';
 import OverView from '@/pages/ResourceManagement/components/OverView';
 import { PageContainer } from '@/layouts/layout/src';
 import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
-import CheckboxMenu from './components/CheckboxMenu';
+import CheckboxMenu from '@/components/CheckboxMenu';
 import ProjectList from './components/Projects';
 import ResourceList from './components/ResourceList';
 import styles from './index.less';

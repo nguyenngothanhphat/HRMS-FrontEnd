@@ -37,20 +37,24 @@ class SelectRoles extends PureComponent {
     });
   };
 
-  filterID = (value) => {
-    const idArray = [
-      'M_USER_MANAGEMENT',
-      'M_DIRECTORY',
-      'M_ONBOARDING',
-      'M_TIMEOFF',
-      'M_OFFBOARDING',
-      'M_PROJECT_MANAGEMENT',
-      'M_DOCUMENT_MANAGEMENT',
-    ];
+  filterID = (value, permissionList = []) => {
+    const handlePermission = permissionList.map((obj) => {
+      const splitId = obj._id.split('_')
+      return splitId.length > 2 ? `${splitId[0]}_${splitId[1]}_${splitId[2]}` : `${splitId[0]}_${splitId[1]}`
+    })
+    // const idArray = [
+    //   'M_USER_MANAGEMENT',
+    //   'M_DIRECTORY',
+    //   'M_ONBOARDING',
+    //   'M_TIMEOFF',
+    //   'M_OFFBOARDING',
+    //   'M_PROJECT_MANAGEMENT',
+    //   'M_DOCUMENT_MANAGEMENT',
+    // ];
 
-    let data = idArray.map((item) => {
+    let data = handlePermission.map((item, index) => {
       if (value.includes(item)) {
-        return item;
+        return permissionList[index]._id;
       }
       return 0;
     });
@@ -106,8 +110,8 @@ class SelectRoles extends PureComponent {
       // Filter value IDs that include a part of rootID string in function filterID()
       let arrayValueID = [];
       formatPermission.forEach((item) => {
-        if (this.filterID(item)) {
-          arrayValueID.push(...this.filterID(item));
+        if (this.filterID(item, permissionList)) {
+          arrayValueID.push(...this.filterID(item, permissionList));
         }
       });
       arrayValueID = [...new Set(arrayValueID)];
