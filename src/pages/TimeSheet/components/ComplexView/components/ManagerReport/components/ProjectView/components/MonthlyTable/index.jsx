@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import { projectColor, convertMsToTime } from '@/utils/timeSheet';
 import TaskPopover from './components/TaskPopover';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
-import EmptyComponent from '@/pages/TimeSheet/components/ComplexView/components/Empty';
+import EmptyComponent from '@/components/Empty';
 
 import styles from './index.less';
 

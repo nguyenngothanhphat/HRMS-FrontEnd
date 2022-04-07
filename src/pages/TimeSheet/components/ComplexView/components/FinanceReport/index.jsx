@@ -29,7 +29,7 @@ const FinanceReport = (props) => {
   const {
     dispatch,
     employee: { _id: employeeId = '' } = {},
-    timeSheet: { financeViewList = [] } = {},
+    timeSheet: { financeViewList = [], selectedDivisions = [], selectedLocations = [], filterFinance = {} } = {},
     loadingFetch = false,
   } = props;
 
@@ -42,6 +42,9 @@ const FinanceReport = (props) => {
       fromDate: moment(startDate).format(dateFormatAPI),
       toDate: moment(endDate).format(dateFormatAPI),
       viewType: selectedView,
+      selectedDivisions,
+      selectedLocations,
+      ...filterFinance,
     };
     if (nameSearch) {
       payload.search = nameSearch;
@@ -58,13 +61,27 @@ const FinanceReport = (props) => {
     if (startDateWeek && selectedView === VIEW_TYPE.W) {
       fetchFinanceTimesheet(startDateWeek, endDateWeek);
     }
-  }, [startDateWeek, selectedView, nameSearch]);
+  }, [
+    startDateWeek,
+    selectedView,
+    nameSearch,
+    JSON.stringify(selectedDivisions),
+    JSON.stringify(selectedLocations),
+    JSON.stringify(filterFinance)
+  ]);
 
   useEffect(() => {
     if (startDateMonth && selectedView === VIEW_TYPE.M) {
       fetchFinanceTimesheet(startDateMonth, endDateMonth);
     }
-  }, [startDateMonth, selectedView, nameSearch]);
+  }, [
+    startDateMonth,
+    selectedView,
+    nameSearch,
+    JSON.stringify(selectedDivisions),
+    JSON.stringify(selectedLocations),
+    JSON.stringify(filterFinance)
+  ]);
 
   useEffect(() => {
     setSelectedProjects([]);

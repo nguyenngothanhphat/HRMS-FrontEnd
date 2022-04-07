@@ -294,12 +294,12 @@ class TimeOffRequestTab extends PureComponent {
             <div>
               {type === 1 && (
                 <>
-                  <MyLeaveTable data={leaveRequests} />
+                  <MyLeaveTable data={leaveRequests} tab={tab} />
                 </>
               )}
               {type === 2 && (
                 <>
-                  <MyCompoffTable data={compoffRequests} />
+                  <MyCompoffTable data={compoffRequests} tab={tab} />
                 </>
               )}
             </div>

@@ -186,6 +186,15 @@ export async function getTeamLeaveRequests(payload) {
     data: payload,
   });
 }
+
+// HR
+export async function getAllLeaveRequests(payload) {
+  return request('/api/leaverequesttenant/get-all-request', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function uploadFile(data) {
   return request('/api/attachments/upload', {
     method: 'POST',

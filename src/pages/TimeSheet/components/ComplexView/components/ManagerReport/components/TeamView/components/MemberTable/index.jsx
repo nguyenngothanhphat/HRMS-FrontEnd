@@ -10,7 +10,7 @@ import {
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import MemberCard from './components/MemberCard';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import EmptyComponent from '@/pages/TimeSheet/components/ComplexView/components/Empty';
+import EmptyComponent from '@/components/Empty';
 import EmployeeProjectDetailModal from '@/pages/TimeSheet/components/ComplexView/components/EmployeeProjectDetailModal';
 
 import styles from './index.less';

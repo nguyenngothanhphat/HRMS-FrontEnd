@@ -2,12 +2,12 @@
 import React, { PureComponent } from 'react';
 import { Modal, Spin, message } from 'antd';
 import axios from 'axios';
-import DownloadIcon from '@/assets/downloadIconTimeOff.svg';
-import PrintIcon from '@/assets/printIconTimeOff.svg';
-import CloseIcon from '@/assets/closeIconTimeOff.svg';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Document, Page, pdfjs } from 'react-pdf';
 import ReactToPrint from 'react-to-print';
+import DownloadIcon from '@/assets/downloadIconTimeOff.svg';
+import PrintIcon from '@/assets/printIconTimeOff.svg';
+import CloseIcon from '@/assets/closeIconTimeOff.svg';
 import styles from './index.less';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -19,6 +19,15 @@ class ViewDocumentModal extends PureComponent {
       numPages: null,
     };
   }
+
+  componentDidMount = () => {
+    const { disableDownload = false } = this.props;
+    if (disableDownload) {
+      document.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+      });
+    }
+  };
 
   onDownload = (url) => {
     const fileName = url.split('/').pop();
@@ -76,14 +85,18 @@ class ViewDocumentModal extends PureComponent {
   };
 
   _renderHandleButtons = () => {
-    const { onClose = () => {}, url = '' } = this.props;
+    const { onClose = () => {}, url = '', disableDownload = false } = this.props;
     return (
       <div className={styles.handleButtons}>
-        <img src={DownloadIcon} alt="download" onClick={() => this.onDownload(url)} />
-        <ReactToPrint
-          trigger={() => <img src={PrintIcon} alt="print" />}
-          content={() => this.componentRef}
-        />
+        {!disableDownload && (
+          <>
+            <img src={DownloadIcon} alt="download" onClick={() => this.onDownload(url)} />
+            <ReactToPrint
+              trigger={() => <img src={PrintIcon} alt="print" />}
+              content={() => this.componentRef}
+            />
+          </>
+        )}
         <img src={CloseIcon} alt="close" onClick={() => onClose(false)} />
       </div>
     );

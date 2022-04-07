@@ -24,6 +24,12 @@ import {
   // export manager report (my project)
   exportProject,
   exportTeam,
+  // fetch filter
+  getDesignationList,
+  getDepartmentList,
+  getProjectTypeList,
+  getListEmployeeSingleCompany,
+  getDivisionList,
 } from '@/services/timeSheet';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { convertMsToTime, isTheSameDay } from '@/utils/timeSheet';
@@ -64,6 +70,19 @@ const initialState = {
   hrViewList: [],
   financeViewList: [],
   payloadExport: {},
+  // filter
+  employeeNameList: [],
+  filterFinance: {},
+  filterHrView: {},
+  designationList: [],
+  departmentList: [],
+  projectTypeList: [],
+  divisionList: [],
+
+  // common
+  selectedDivisions: [],
+  selectedLocations: [],
+  isIncompleteTimesheet: false,
 };
 
 const TimeSheet = {
@@ -430,6 +449,25 @@ const TimeSheet = {
       }
       return response;
     },
+
+    *fetchDivisionListEffect({ payload }, { call, put }) {
+      try {
+        const response = yield call(getDivisionList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { divisionList: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
     *fetchFinanceTimesheetEffect({ payload }, { call, put }) {
       const response = {};
       try {
@@ -489,6 +527,79 @@ const TimeSheet = {
         dialog(error);
       }
       hide();
+      return response;
+    },
+    *fetchEmployeeNameListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getListEmployeeSingleCompany, {
+          company: getCurrentCompany(),
+          ...payload,
+          tenantId: getCurrentTenant(),
+          status: ['ACTIVE', 'INACTIVE'],
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            employeeNameList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchDesignationListEffect({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getDesignationList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data: designationList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { designationList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchDepartmentListEffect({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getDepartmentList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data: departmentList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { departmentList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchProjectTypeListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getProjectTypeList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            projectTypeList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
       return response;
     },
   },

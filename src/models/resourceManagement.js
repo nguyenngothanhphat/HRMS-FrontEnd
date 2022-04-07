@@ -48,10 +48,7 @@ const resourceManagement = {
     newJoineeList: [],
     selectedDivisions: [],
     selectedLocations: [], // empty for all
-
-    filter: {},
-    customerList: [],
-    payloadProject: {},
+    currentPayload: {},
   },
   effects: {
     *getProjectList({ payload }, { call, put }) {
@@ -86,7 +83,7 @@ const resourceManagement = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { resourceList: data, total },
+          payload: { resourceList: data, total, currentPayload: payload },
         });
       } catch (error) {
         dialog(error);
@@ -265,7 +262,7 @@ const resourceManagement = {
             customerId: item.customerId || '',
             customerName: item.customerName || '',
           };
-        })
+        });
 
         yield put({
           type: 'save',

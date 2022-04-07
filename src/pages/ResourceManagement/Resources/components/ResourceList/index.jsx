@@ -22,11 +22,14 @@ const ResourceList = (props) => {
     permissions,
     currentUserId = '',
     employeeId = '',
+    currentUserRoles = [],
+    currentPayload = {},
   } = props;
 
+  const checkRoleManager =
+    currentUserRoles.length > 0 ? currentUserRoles.includes('manager') : false;
   const modifyResourcePermission = permissions.modifyResource !== -1;
-  const modeViewAdmin = permissions.viewModeAdmin !== -1;
-  const modeViewManager = permissions.viewModeManager !== -1;
+
   const [pageSelected, setPageSelected] = useState(1);
   const [availableStatusState, setAvailableStatusState] = useState('ALL');
   const [size, setSize] = useState(10);
@@ -68,10 +71,6 @@ const ResourceList = (props) => {
   };
   const fetchResourceList = async () => {
     const filterTemp = convertFilter();
-    const modeView = {
-      modeViewManager,
-      modeViewAdmin,
-    };
 
     dispatch({
       type: 'resourceManagement/getResources',
@@ -85,7 +84,6 @@ const ResourceList = (props) => {
         location: selectedLocations,
         division: selectedDivisions,
         employeeId,
-        modeView,
       },
     });
   };
@@ -117,6 +115,7 @@ const ResourceList = (props) => {
         page: pageSelected,
         availableStatus: availableStatusState || availableStatus,
         q: value,
+        employeeId,
       },
     }).then(() => {
       const array = formatData(resourceList, projectList);
@@ -164,6 +163,7 @@ const ResourceList = (props) => {
       payload: {
         employeeId: currentUserId,
         limit: total,
+        ...currentPayload,
       },
     });
     const getDataExport = getListExport ? getListExport.data : '';
@@ -203,12 +203,14 @@ const ResourceList = (props) => {
   return (
     <div className={styles.containerTickets}>
       <div className={styles.tabTickets}>
-        {modeViewAdmin && (
-          <ResourceStatus
-            currentStatus={availableStatusState}
-            changeAvailableStatus={changeAvailableStatus}
-          />
-        )}
+        <span>
+          {!checkRoleManager && (
+            <ResourceStatus
+              currentStatus={availableStatusState}
+              changeAvailableStatus={changeAvailableStatus}
+            />
+          )}
+        </span>
         <div className={styles.rightHeaderTable}>
           <div className={styles.download}>
             <Row gutter={[24, 0]}>
@@ -251,6 +253,7 @@ export default connect(
       total = 0,
       selectedLocations = [],
       selectedDivisions = [],
+      currentPayload = {},
     } = {},
     user: {
       currentUser: {
@@ -259,6 +262,7 @@ export default connect(
         employee: { _id: employeeId = '' },
       } = {},
       permissions = {},
+      currentUserRoles = [],
     } = {},
     loading,
     locationSelection: { listLocationsByCompany = [] },
@@ -274,5 +278,7 @@ export default connect(
     selectedDivisions,
     selectedLocations,
     employeeId,
+    currentUserRoles,
+    currentPayload,
   }),
 )(ResourceList);

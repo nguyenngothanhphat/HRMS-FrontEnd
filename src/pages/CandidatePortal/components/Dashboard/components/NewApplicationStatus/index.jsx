@@ -2,11 +2,19 @@ import React, { PureComponent } from 'react';
 import { Row, Col, message } from 'antd';
 import moment from 'moment';
 import axios from 'axios';
-import DownloadIcon from '@/assets/candidatePortal/downloadIcon.svg';
+import ViewIcon from '@/assets/candidatePortal/viewIcon.svg';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import styles from './index.less';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 
 class ApplicationStatus extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isViewOfferLetter: false,
+    };
+  }
+
   itemBox = (item, index) => {
     return (
       <Col key={index} xs={12} md={8} lg={6} className={styles.itemBox}>
@@ -54,7 +62,15 @@ class ApplicationStatus extends PureComponent {
     }
   };
 
+  onViewOfferLetter = () => {
+    this.setState({
+      isViewOfferLetter: true,
+    });
+  };
+
   render() {
+    const { isViewOfferLetter } = this.state;
+
     const {
       data: {
         title: { name: titleName = '' } = {} || {},
@@ -70,6 +86,7 @@ class ApplicationStatus extends PureComponent {
         lastName: candidateLastName = '',
         ticketID = '',
         processStatus = '',
+        offerLetter: { attachment: { url: offerLetterUrl = '' } = {} || {} } = {} || {},
       } = {} || {},
     } = this.props;
 
@@ -120,16 +137,24 @@ class ApplicationStatus extends PureComponent {
             <span>Application Status</span>
             {this.getTicketStatus()}
           </div>
-          {processStatus === NEW_PROCESS_STATUS.OFFER_ACCEPTED && (
-            <div className={styles.right} onClick={this.downloadOfferLetter}>
-              <img src={DownloadIcon} alt="download" />
-              <span className={styles.downloadOfferText}>Download offer letter</span>
+          {[NEW_PROCESS_STATUS.OFFER_ACCEPTED, NEW_PROCESS_STATUS.JOINED].includes(
+            processStatus,
+          ) && (
+            <div className={styles.right} onClick={this.onViewOfferLetter}>
+              <img src={ViewIcon} alt="view" />
+              <span className={styles.downloadOfferText}>View offer letter</span>
             </div>
           )}
         </div>
         <Row gutter={[24, 10]} className={styles.content}>
           {items.map((val, index) => this.itemBox(val, index))}
         </Row>
+        <ViewDocumentModal
+          visible={isViewOfferLetter}
+          onClose={() => this.setState({ isViewOfferLetter: false })}
+          url={offerLetterUrl}
+          disableDownload
+        />
       </div>
     );
   }
