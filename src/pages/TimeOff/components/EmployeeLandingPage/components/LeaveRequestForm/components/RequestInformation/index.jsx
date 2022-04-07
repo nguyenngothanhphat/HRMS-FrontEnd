@@ -1,4 +1,4 @@
-import { Button, Col, DatePicker, Form, Input, message, Row, Select, Skeleton } from 'antd';
+import { Button, Col, DatePicker, Form, Input, message, Row, Select, Skeleton, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
@@ -1091,14 +1091,6 @@ const RequestInformation = (props) => {
     // description:false
   }
   );  
-
-  const handleMouseIn = (value) => {
-    setHover(true);
-  };
-
-  const handleMouseOut = (value) => {
-    setHover(false);
-  };
   if (loadingMain) return <Skeleton />;
   return (
     <div className={styles.RequestInformation}>
@@ -1161,6 +1153,7 @@ const RequestInformation = (props) => {
             <span>Subject</span> <span className={styles.mandatoryField}>*</span>
           </Col>
           <Col span={12}>
+          < Tooltip title="Please select a Timeoff type to proceed" >  
             <Form.Item
               name="subject"
               rules={[
@@ -1171,10 +1164,9 @@ const RequestInformation = (props) => {
               ]}
             >
               <Input placeholder="Enter Subject" disabled={!selectedTypeName} 
-              onMouseOver={!selectedTypeName ?handleMouseIn:handleMouseOut} onMouseOut={!selectedTypeName ? handleMouseOut:handleMouseIn}
               />
-              {hover?"Please select a Timeoff type to proceed":""}
             </Form.Item>
+            </Tooltip>
           </Col>
           <Col span={6} />
         </Row>
@@ -1185,6 +1177,7 @@ const RequestInformation = (props) => {
           <Col span={12}>
             <Row gutter={['20', '0']}>
               <Col span={12}>
+                <Tooltip title="Please select a Timeoff type to proceed" >
                 <Form.Item
                   name="durationFrom"
                   rules={[
@@ -1202,12 +1195,12 @@ const RequestInformation = (props) => {
                     }}
                     placeholder="From Date"
                     disabled={!selectedTypeName}
-                    //onMouseOver={!selectedTypeName ?handleMouseIn:handleMouseOut} onMouseOut={!selectedTypeName ?handleMouseOut:handleMouseIn}
               />
-              {/* {hover?"Please select a Timeoff type to proceed":""} */}
                 </Form.Item>
+                </Tooltip>
               </Col>
               <Col span={12}>
+              <Tooltip title="Please select a Timeoff type to proceed" >
                 <Form.Item
                   name="durationTo"
                   rules={[
@@ -1227,6 +1220,7 @@ const RequestInformation = (props) => {
                     placeholder="To Date"
                   />
                 </Form.Item>
+                </Tooltip>
               </Col>
             </Row>
           </Col>
@@ -1246,6 +1240,7 @@ const RequestInformation = (props) => {
             <span>Description</span> <span className={styles.mandatoryField}>*</span>
           </Col>
           <Col span={12}>
+          <Tooltip title="Please select a Timeoff type to proceed" >
             <Form.Item
               name="description"
               rules={[
@@ -1262,6 +1257,7 @@ const RequestInformation = (props) => {
                 disabled={!selectedTypeName}
               />
             </Form.Item>
+            </Tooltip>
           </Col>
           <Col span={6} />
         </Row>
@@ -1271,6 +1267,7 @@ const RequestInformation = (props) => {
             <span>CC (only if you want to notify other than HR & your manager)</span>
           </Col>
           <Col span={12} className={styles.ccSelection}>
+          <Tooltip title="Please select a Timeoff type to proceed" >
             <Form.Item
               name="personCC"
               rules={[
@@ -1321,6 +1318,7 @@ const RequestInformation = (props) => {
                 })}
               </Select>
             </Form.Item>
+            </Tooltip>
           </Col>
           <Col span={6} />
         </Row>
