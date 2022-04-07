@@ -35,6 +35,8 @@ const ResourceList = (props) => {
   const [size, setSize] = useState(10);
   const [sort, setSort] = useState({});
   const [resourceListState, setResourceListState] = useState([]);
+  const [searchKey, setSearchKey] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
 
   const [filter, setFilter] = useState({
     name: undefined,
@@ -71,21 +73,26 @@ const ResourceList = (props) => {
   };
   const fetchResourceList = async () => {
     const filterTemp = convertFilter();
-
+    const payload = {
+      // status: 'New',
+      page: pageSelected,
+      limit: size,
+      availableStatus: availableStatusState || availableStatus,
+      ...sort,
+      ...filterTemp,
+      location: selectedLocations,
+      division: selectedDivisions,
+      employeeId,
+    };
+    if (searchKey) {
+      payload.q = searchKey;
+      payload.page = 1;
+    }
     dispatch({
       type: 'resourceManagement/getResources',
-      payload: {
-        // status: 'New',
-        page: pageSelected,
-        limit: size,
-        availableStatus: availableStatusState || availableStatus,
-        ...sort,
-        ...filterTemp,
-        location: selectedLocations,
-        division: selectedDivisions,
-        employeeId,
-      },
+      payload,
     });
+    setIsSearching(false);
   };
 
   const fetchProjectList = async () => {
@@ -107,22 +114,12 @@ const ResourceList = (props) => {
     fetchResourceList();
   };
 
-  const searchTable = (searchKey) => {
-    const value = searchKey.searchKey || '';
-    dispatch({
-      type: 'resourceManagement/getResources',
-      payload: {
-        page: pageSelected,
-        availableStatus: availableStatusState || availableStatus,
-        q: value,
-        employeeId,
-      },
-    }).then(() => {
-      const array = formatData(resourceList, projectList);
-
-      setResourceListState(array);
-      setPageSelected(1);
-    });
+  const searchTable = (searchKeyProp) => {
+    const value = searchKeyProp.searchKey || '';
+    setIsSearching(true);
+    setTimeout(() => {
+      setSearchKey(value);
+    }, 100);
   };
 
   const fetchDivisions = async () => {
@@ -162,7 +159,6 @@ const ResourceList = (props) => {
       type: 'resourceManagement/exportResourceManagement',
       payload: {
         employeeId: currentUserId,
-        limit: total,
         ...currentPayload,
       },
     });
@@ -195,6 +191,14 @@ const ResourceList = (props) => {
     pageSelected,
     availableStatusState,
   ]);
+
+  useEffect(() => {
+    if (isSearching && pageSelected !== 1) {
+      setPageSelected(1);
+    } else {
+      fetchResourceList();
+    }
+  }, [searchKey]);
 
   useEffect(() => {
     updateData(resourceList);
