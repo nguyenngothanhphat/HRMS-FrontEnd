@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Popover } from 'antd';
 import moment from 'moment';
-import { connect, formatMessage, history } from 'umi';
+import { connect, formatMessage, history, Link } from 'umi';
 import AddComment from './components/AddComment';
 import OverviewComment from './components/OverviewComment';
 import UserProfilePopover from './components/UserProfilePopover';
@@ -129,9 +129,9 @@ class TableProject extends Component {
               placement="bottomRight"
               overlayClassName={styles.popupContentProjectManager}
             >
-              <span className={styles.projectName} onClick={() => this.viewProject(row?.projectId)}>
+              <Link className={styles.projectName} onClick={() => this.viewProject(row?.projectId)}>
                 {value || '-'}
-              </span>
+              </Link>
             </Popover>
           );
         },
@@ -148,9 +148,9 @@ class TableProject extends Component {
             placement="bottomRight"
             overlayClassName={styles.popupContentProjectManager}
           >
-            <span className={styles.projectName} onClick={() => this.viewCustomer(row?.customerId)}>
+            <Link className={styles.projectName} onClick={() => this.viewCustomer(row?.customerId)}>
               {value || '-'}
-            </span>
+            </Link>
           </Popover>
         ),
         sorter: (a, b) => a.customer.localeCompare(b.customer),
@@ -167,12 +167,12 @@ class TableProject extends Component {
         key: 'projectManager',
         render: (value) => (
           <UserProfilePopover data={{ ...value, ...value.generalInfo }}>
-            <span
+            <Link
               className={styles.projectName}
               onClick={() => this.viewProfile(value?.generalInfo?.userId)}
             >
               {value?.generalInfo?.legalName || '-'}
-            </span>
+            </Link>
           </UserProfilePopover>
         ),
         sorter: (a, b) =>
