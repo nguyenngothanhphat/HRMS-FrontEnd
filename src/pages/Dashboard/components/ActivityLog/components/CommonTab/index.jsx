@@ -1,4 +1,4 @@
-import { Row } from 'antd';
+import { Row, Spin } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
 import Empty from '@/components/Empty';
@@ -9,13 +9,22 @@ import TicketTag from '../TicketTag';
 import styles from './index.less';
 
 const CommonTab = (props) => {
-  const { isInModal = false, type: typeProp = '1', data = [], noBackground = false } = props;
+  const {
+    isInModal = false,
+    type: typeProp = '1',
+    data = [],
+    noBackground = false,
+    refreshData = () => {},
+    loadingReject = false,
+    loadingApprove = false,
+    loadingFetchTimeoff = false,
+  } = props;
 
   const renderTagByType = (type) => {
     switch (type) {
       case '1': {
         return data.map((item) => {
-          return <PendingApprovalTag item={item} />;
+          return <PendingApprovalTag item={item} refreshData={refreshData} />;
         });
       }
       case '2': {
@@ -43,9 +52,15 @@ const CommonTab = (props) => {
   if (data.length === 0) return <Empty image={Icon} />;
   return (
     <div className={styles.CommonTab} style={getCss()}>
-      <Row gutter={[16, 16]}>{renderTagByType(typeProp)}</Row>
+      <Spin spinning={loadingReject || loadingFetchTimeoff || loadingApprove}>
+        <Row gutter={[16, 16]}>{renderTagByType(typeProp)}</Row>
+      </Spin>
     </div>
   );
 };
 
-export default connect(() => ({}))(CommonTab);
+export default connect(({ loading }) => ({
+  loadingReject: loading.effects['timeOff/reportingManagerReject'],
+  loadingApprove: loading.effects['timeOff/reportingManagerApprove'],
+  loadingFetchTimeoff: loading.effects['dashboard/fetchLeaveRequestOfEmployee'],
+}))(CommonTab);
