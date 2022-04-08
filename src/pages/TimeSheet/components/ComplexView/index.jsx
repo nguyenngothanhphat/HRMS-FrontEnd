@@ -74,7 +74,7 @@ const ComplexView = (props) => {
 
   const getSelectedDivisionName = () => {
     if (selectedDivisions.length === 1) {
-      return selectedDivisions[0] || '';
+      return divisionList.find((x) => x._id === selectedDivisions[0])?.name || '';
     }
     if (selectedDivisions.length > 0 && selectedDivisions.length < divisionList.length) {
       return `${selectedDivisions.length} divisions selected`;
@@ -103,7 +103,7 @@ const ComplexView = (props) => {
 
     const divisionOptions = divisionList.map((x) => {
       return {
-        _id: x.name,
+        _id: x._id,
         name: x.name,
       };
     });

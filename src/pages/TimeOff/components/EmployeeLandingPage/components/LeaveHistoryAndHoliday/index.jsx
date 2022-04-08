@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Tabs, Tooltip } from 'antd';
+import { Spin, Tabs, Tooltip } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import CalendarIcon from '@/assets/calendar_icon.svg';
@@ -12,11 +12,14 @@ import styles from './index.less';
 
 const { TabPane } = Tabs;
 
-const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DELETED, DRAFTS } =
+const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DELETED, DRAFTS, WITHDRAWN } =
   TIMEOFF_STATUS;
-@connect(({ timeOff, user: { currentUser: { location = {} } = {} } = {} }) => ({
+@connect(({ loading, timeOff, user: { currentUser: { location = {} } = {} } = {} }) => ({
   timeOff,
   location,
+  loadingFetch:
+    loading.effects['timeOff/fetchLeaveHistory'] ||
+    loading.effects['timeOff/fetchHolidaysListBylocation'],
 }))
 class LeaveHistoryAndHoliday extends PureComponent {
   constructor(props) {
@@ -157,7 +160,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
         subject,
       } = each;
 
-      if (status !== DRAFTS && status !== ON_HOLD && status !== DELETED) {
+      if (status !== DRAFTS && status !== ON_HOLD && status !== DELETED && status !== WITHDRAWN) {
         const fromDate = moment.utc(from).locale('en').format('MM/DD/YYYY');
         const toDate = moment.utc(to).locale('en').format('MM/DD/YYYY');
         return {
@@ -179,7 +182,10 @@ class LeaveHistoryAndHoliday extends PureComponent {
 
   render() {
     const { activeShowType } = this.state;
-    const { timeOff: { holidaysListByLocation = [], leaveHistory = [] } = {} } = this.props;
+    const {
+      timeOff: { holidaysListByLocation = [], leaveHistory = [] } = {},
+      loadingFetch = false,
+    } = this.props;
     const currentDate = new Date().toISOString();
     const newHolidaysListByLocation = holidaysListByLocation.filter(
       (date) => date.date.iso >= currentDate,
@@ -192,14 +198,18 @@ class LeaveHistoryAndHoliday extends PureComponent {
       <div className={styles.LeaveHistoryAndHoliday}>
         <Tabs destroyInactiveTabPane defaultActiveKey="1" tabBarExtraContent={this.operations()}>
           <TabPane tab="Time off Calendar" key="1">
-            <LeaveHistory
-              leavingListCalendar={formatLeavingListCalendar}
-              leavingList={formatLeavingList}
-              activeShowType={activeShowType}
-            />
+            <Spin spinning={loadingFetch}>
+              <LeaveHistory
+                leavingListCalendar={formatLeavingListCalendar}
+                leavingList={formatLeavingList}
+                activeShowType={activeShowType}
+              />
+            </Spin>
           </TabPane>
           <TabPane tab="Holidays" key="2">
-            <Holiday holidaysList={formatHolidayLists} activeShowType={activeShowType} />
+            <Spin spinning={loadingFetch}>
+              <Holiday holidaysList={formatHolidayLists} activeShowType={activeShowType} />
+            </Spin>
           </TabPane>
         </Tabs>
       </div>

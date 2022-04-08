@@ -54,6 +54,7 @@ const ProjectTable = (props) => {
       {
         title: 'Date & Time',
         dataIndex: 'time',
+        width: '12%',
         key: 'time',
         render: (_, record) => {
           return (
@@ -71,6 +72,7 @@ const ProjectTable = (props) => {
         dataIndex: 'duration',
         key: 'duration',
         align: 'center',
+        width: '12%',
         render: (duration) => (
           <span className={styles.totalHours}>{duration ? convertMsToTime(duration) : ''}</span>
         ),

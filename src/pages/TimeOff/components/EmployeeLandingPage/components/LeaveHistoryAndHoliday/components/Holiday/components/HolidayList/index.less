@@ -1,26 +1,27 @@
 .HolidayList {
   // padding: 0 20px;
-  max-height: 300px;
+  height: 320px;
+
   overflow: auto;
   .eachRow_noData {
-    background-color: #fff;
     align-items: center;
-    padding: 10px 24px;
     margin-top: 0;
+    padding: 10px 24px;
+    background-color: #fff;
     span {
-      font-size: 13px;
       color: #707177;
+      font-size: 13px;
     }
   }
   .eachRow {
-    background-color: #fafafa;
     align-items: center;
-    padding: 10px 24px;
     margin-top: 7px;
+    padding: 10px 24px;
+    background-color: #fafafa;
     :global {
       .ant-col {
-        font-size: 13px;
         color: #464646;
+        font-size: 13px;
       }
     }
     .eventOfDay {
@@ -34,14 +35,14 @@
     .dateAndMonth {
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      background-color: #f4f4f6;
       align-items: center;
-      border-radius: 5px;
+      justify-content: center;
       padding: 5px 0;
+      background-color: #f4f4f6;
+      border-radius: 5px;
       span {
-        font-weight: 700;
         color: #161c29;
+        font-weight: 700;
       }
       .day {
         font-size: 14px;
