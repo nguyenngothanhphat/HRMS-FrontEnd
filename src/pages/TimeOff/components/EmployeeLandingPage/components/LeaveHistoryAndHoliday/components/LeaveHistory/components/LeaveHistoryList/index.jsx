@@ -4,6 +4,7 @@ import moment from 'moment';
 import { history } from 'umi';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
+import EmptyComponent from '@/components/Empty';
 
 const { ACCEPTED, REJECTED } = TIMEOFF_STATUS;
 export default class LeaveHistoryList extends PureComponent {
@@ -34,25 +35,6 @@ export default class LeaveHistoryList extends PureComponent {
               className={styles.eachRow}
               onClick={() => this.goToLeaveRequest(_id)}
             >
-              {/* {fromDate === toDate && (
-                <>
-                  <Col xs={4} className={styles.dateAndMonth} style={{ justifyContent: 'center' }}>
-                    <span className={styles.container}>
-                      <span className={styles.day}>
-                        {moment.utc(fromDate).locale('en').format('DD')}
-                      </span>
-                      <span className={styles.month}>
-                        {moment.utc(fromDate).locale('en').format('MMM')}
-                      </span>
-                    </span>
-                  </Col>
-                  <Col xs={14} className={styles.eventOfDay}>
-                    {typeName}
-                  </Col>
-                </>
-              )} */}
-              {/* {fromDate !== toDate && (
-                <> */}
               <Col
                 xs={8}
                 className={styles.dateAndMonth}
@@ -86,11 +68,7 @@ export default class LeaveHistoryList extends PureComponent {
             </Row>
           );
         })}
-        {leavingList.length === 0 && (
-          <Row className={styles.eachRow_noData}>
-            <span>No leave history</span>
-          </Row>
-        )}
+        {leavingList.length === 0 && <EmptyComponent />}
       </div>
     );
   }
