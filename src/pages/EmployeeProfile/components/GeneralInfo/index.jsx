@@ -60,7 +60,9 @@ class GeneralInfo extends Component {
       isNewComer,
       visibleSuccess,
     } = this.props;
-    const checkOtherInformationVisible = profileOwner || permissions.viewOtherInformation !== -1;
+    const checkProfessionalAcademicVisible = profileOwner || permissions.editProfessionalAcademic !== -1;
+    const checkEmergencyContactVisible = profileOwner || permissions.editEmergencyContact !== -1;
+    
     const visible = isNewComer && currentUserId === idCurrentEmployee;
     // const visible = currentUserId === idCurrentEmployee;
     if (loadingGeneral)
@@ -79,10 +81,10 @@ class GeneralInfo extends Component {
             <VisaDetails profileOwner={profileOwner} permissions={permissions} />
           </>
         )}
-        {checkOtherInformationVisible && (
+        {checkEmergencyContactVisible && (
           <EmergencyContact permissions={permissions} profileOwner={profileOwner} />
         )}
-        {checkOtherInformationVisible && (
+        {checkProfessionalAcademicVisible && (
           <ProfessionalAcademicBackground permissions={permissions} profileOwner={profileOwner} />
         )}
         <ModalAddInfo visible={visible} />
