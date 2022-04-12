@@ -361,7 +361,7 @@ class TableTickets extends PureComponent {
         dataIndex: 'employeeAssignee',
         key: 'employeeAssignee',
         fixed: 'right',
-        render: (employeeAssignee) => {
+        render: (employeeAssignee, row) => {
           if (employeeAssignee) {
             return (
               <UserProfilePopover
@@ -415,7 +415,7 @@ class TableTickets extends PureComponent {
               }
               trigger={['click']}
             >
-              <div onClick={() => this.handleClickSelect(employeeAssignee.id)}>
+              <div onClick={() => this.handleClickSelect(row.id)}>
                 Select User &emsp;
                 <DownOutlined />
               </div>

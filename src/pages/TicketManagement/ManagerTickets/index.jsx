@@ -30,7 +30,9 @@ class ManagerTicket extends Component {
       }
 
       const viewTicketHR = permissions.viewTicketHR !== -1;
+
       const viewTicketIT = permissions.viewTicketIT !== -1;
+
       const viewTicketOperations = permissions.viewTicketOperations !== -1;
 
       dispatch({
@@ -115,6 +117,7 @@ class ManagerTicket extends Component {
       payload = {
         ...payload,
         department: departmentNameList,
+        status: 'ACTIVE',
       };
     }
     dispatch({
