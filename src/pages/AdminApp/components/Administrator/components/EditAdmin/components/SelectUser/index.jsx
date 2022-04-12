@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col, Input, Form, Select } from 'antd';
-import { getCurrentCompany } from '@/utils/authority';
 import { connect } from 'umi';
+import { getCurrentCompany } from '@/utils/authority';
 
 import styles from './index.less';
 
@@ -40,7 +40,7 @@ class SelectUser extends PureComponent {
   renderContent = () => {
     const {
       dataAdmin: { manageLocation = [], usermap: { firstName = '', email: email1 = '' } = {} } = {},
-      onBackValues: { name: newName = '', email: email2 = '', location = [] } = {},
+      onBackValues: { name: newName = '', email: email2 = '', location = [] } = {} || {},
       listLocationsByCompany = [],
     } = this.props;
 

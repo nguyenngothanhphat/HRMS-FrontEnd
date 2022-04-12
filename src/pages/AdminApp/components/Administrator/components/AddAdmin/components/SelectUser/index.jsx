@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col, Radio, Select, Input, Form, Spin } from 'antd';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { connect } from 'umi';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -135,7 +135,7 @@ class SelectUser extends PureComponent {
     const { isCompanyWorker, listUsers, isLoaded } = this.state;
     const {
       companyName = '',
-      onBackValues: { firstName = '', email = '', usermapId = '', location = [] } = {},
+      onBackValues: { firstName = '', email = '', usermapId = '', location = [] } = {} || {},
       listLocationsByCompany = [],
     } = this.props;
 
@@ -202,9 +202,9 @@ class SelectUser extends PureComponent {
                       return JSON.stringify(values).indexOf(input.toLowerCase()) >= 0;
                     }}
                   >
-                    {listUsers.map((user) => {
+                    {listUsers.map((user = {}) => {
                       const {
-                        usermap: { email: email1 = '', firstName: fn1 = '' },
+                        usermap: { email: email1 = '', firstName: fn1 = '' } = {} || {},
                         _id = '',
                       } = user;
                       return (
