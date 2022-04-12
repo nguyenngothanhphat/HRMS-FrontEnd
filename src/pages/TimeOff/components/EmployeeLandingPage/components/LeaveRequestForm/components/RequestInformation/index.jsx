@@ -1,4 +1,15 @@
-import { Button, Col, DatePicker, Form, Input, message, Row, Select, Skeleton } from 'antd';
+import {
+  Button,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  message,
+  Row,
+  Select,
+  Skeleton,
+  Tooltip,
+} from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
@@ -1082,6 +1093,13 @@ const RequestInformation = (props) => {
     );
   };
 
+  const renderFormItem = (content) => {
+    if (!selectedTypeName) {
+      return <Tooltip title="Please select a Timeoff type to proceed">{content}</Tooltip>;
+    }
+    return content;
+  };
+
   // RETURN MAIN
   if (loadingMain) return <Skeleton />;
   return (
@@ -1145,17 +1163,19 @@ const RequestInformation = (props) => {
             <span>Subject</span> <span className={styles.mandatoryField}>*</span>
           </Col>
           <Col span={12}>
-            <Form.Item
-              name="subject"
-              rules={[
-                {
-                  required: needValidate,
-                  message: 'Please input subject!',
-                },
-              ]}
-            >
-              <Input placeholder="Enter Subject" disabled={!selectedTypeName} />
-            </Form.Item>
+            {renderFormItem(
+              <Form.Item
+                name="subject"
+                rules={[
+                  {
+                    required: needValidate,
+                    message: 'Please input subject!',
+                  },
+                ]}
+              >
+                <Input placeholder="Enter Subject" disabled={!selectedTypeName} />
+              </Form.Item>,
+            )}
           </Col>
           <Col span={6} />
         </Row>
@@ -1166,46 +1186,50 @@ const RequestInformation = (props) => {
           <Col span={12}>
             <Row gutter={['20', '0']}>
               <Col span={12}>
-                <Form.Item
-                  name="durationFrom"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please select a date!',
-                    },
-                  ]}
-                >
-                  <DatePicker
-                    disabledDate={disabledFromDate}
-                    format={TIMEOFF_DATE_FORMAT}
-                    onChange={(value) => {
-                      fromDateOnChange(value);
-                    }}
-                    placeholder="From Date"
-                    disabled={!selectedTypeName}
-                  />
-                </Form.Item>
+                {renderFormItem(
+                  <Form.Item
+                    name="durationFrom"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please select a date!',
+                      },
+                    ]}
+                  >
+                    <DatePicker
+                      disabledDate={disabledFromDate}
+                      format={TIMEOFF_DATE_FORMAT}
+                      onChange={(value) => {
+                        fromDateOnChange(value);
+                      }}
+                      placeholder="From Date"
+                      disabled={!selectedTypeName}
+                    />
+                  </Form.Item>,
+                )}
               </Col>
               <Col span={12}>
-                <Form.Item
-                  name="durationTo"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please select a date!',
-                    },
-                  ]}
-                >
-                  <DatePicker
-                    disabledDate={disabledToDate}
-                    format={TIMEOFF_DATE_FORMAT}
-                    disabled={!selectedTypeName || selectedType === C}
-                    onChange={(value) => {
-                      toDateOnChange(value);
-                    }}
-                    placeholder="To Date"
-                  />
-                </Form.Item>
+                {renderFormItem(
+                  <Form.Item
+                    name="durationTo"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please select a date!',
+                      },
+                    ]}
+                  >
+                    <DatePicker
+                      disabledDate={disabledToDate}
+                      format={TIMEOFF_DATE_FORMAT}
+                      disabled={!selectedTypeName || selectedType === C}
+                      onChange={(value) => {
+                        toDateOnChange(value);
+                      }}
+                      placeholder="To Date"
+                    />
+                  </Form.Item>,
+                )}
               </Col>
             </Row>
           </Col>
@@ -1225,22 +1249,24 @@ const RequestInformation = (props) => {
             <span>Description</span> <span className={styles.mandatoryField}>*</span>
           </Col>
           <Col span={12}>
-            <Form.Item
-              name="description"
-              rules={[
-                {
-                  required: needValidate,
-                  message: 'Please input description!',
-                },
-              ]}
-            >
-              <TextArea
-                autoSize={{ minRows: 3, maxRows: 6 }}
-                maxLength={250}
-                placeholder="The reason I am taking timeoff is …"
-                disabled={!selectedTypeName}
-              />
-            </Form.Item>
+            {renderFormItem(
+              <Form.Item
+                name="description"
+                rules={[
+                  {
+                    required: needValidate,
+                    message: 'Please input description!',
+                  },
+                ]}
+              >
+                <TextArea
+                  autoSize={{ minRows: 3, maxRows: 6 }}
+                  maxLength={250}
+                  placeholder="The reason I am taking timeoff is …"
+                  disabled={!selectedTypeName}
+                />
+              </Form.Item>,
+            )}
           </Col>
           <Col span={6} />
         </Row>
@@ -1250,56 +1276,59 @@ const RequestInformation = (props) => {
             <span>CC (only if you want to notify other than HR & your manager)</span>
           </Col>
           <Col span={12} className={styles.ccSelection}>
-            <Form.Item
-              name="personCC"
-              rules={[
-                {
-                  required: false,
-                },
-              ]}
-            >
-              <Select
-                mode="multiple"
-                allowClear
-                placeholder="Search a person you want to loop"
-                disabled={!selectedTypeName}
-                filterOption={(input, option) => {
-                  return (
-                    option.children[1].props.children.toLowerCase().indexOf(input.toLowerCase()) >=
-                    0
-                  );
-                }}
+            {renderFormItem(
+              <Form.Item
+                name="personCC"
+                rules={[
+                  {
+                    required: false,
+                  },
+                ]}
               >
-                {formatListEmail.map((value) => {
-                  const { _id = '', workEmail = '', avatar = '' } = value;
+                <Select
+                  mode="multiple"
+                  allowClear
+                  placeholder="Search a person you want to loop"
+                  disabled={!selectedTypeName}
+                  filterOption={(input, option) => {
+                    return (
+                      option.children[1].props.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                >
+                  {formatListEmail.map((value) => {
+                    const { _id = '', workEmail = '', avatar = '' } = value;
 
-                  return (
-                    <Option key={_id} value={_id}>
-                      <div style={{ display: 'inline', marginRight: '10px' }}>
-                        <img
-                          style={{
-                            borderRadius: '50%',
-                            width: '30px',
-                            height: '30px',
-                          }}
-                          src={avatar}
-                          alt="user"
-                          onError={(e) => {
-                            e.target.src = DefaultAvatar;
-                          }}
-                        />
-                      </div>
-                      <span
-                        style={{ fontSize: '13px', color: '#161C29' }}
-                        className={styles.ccEmail}
-                      >
-                        {workEmail}
-                      </span>
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
+                    return (
+                      <Option key={_id} value={_id}>
+                        <div style={{ display: 'inline', marginRight: '10px' }}>
+                          <img
+                            style={{
+                              borderRadius: '50%',
+                              width: '30px',
+                              height: '30px',
+                            }}
+                            src={avatar}
+                            alt="user"
+                            onError={(e) => {
+                              e.target.src = DefaultAvatar;
+                            }}
+                          />
+                        </div>
+                        <span
+                          style={{ fontSize: '13px', color: '#161C29' }}
+                          className={styles.ccEmail}
+                        >
+                          {workEmail}
+                        </span>
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>,
+            )}
           </Col>
           <Col span={6} />
         </Row>

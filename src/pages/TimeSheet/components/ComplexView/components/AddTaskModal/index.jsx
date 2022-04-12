@@ -117,7 +117,7 @@ const AddTaskModal = (props) => {
         date: moment(submitDate).locale('en').format(dateFormatAPI),
         clientLocation: item.clientLocation || false,
         project: {
-          projectName: findPrj.projectName,
+          projectName: findPrj?.projectName,
           projectId: item.projectId,
         },
         type: 'TASK',
@@ -138,6 +138,12 @@ const AddTaskModal = (props) => {
       };
     });
 
+    if (data.some((x) => !x.project?.projectName)) {
+      notification.error({
+        message: 'Invalid project name',
+      });
+      return {};
+    }
     return dispatch({
       type: 'timeSheet/addMultipleActivityEffect',
       payload: {

@@ -130,8 +130,8 @@ class SelectUser extends PureComponent {
     const { isCompanyWorker, listUsers, isLoaded } = this.state;
     const {
       companyName = '',
-      onBackValues: { firstName = '', email = '', usermapId = '', location = [] } = {},
       companyLocationList = [],
+      onBackValues: { firstName = '', email = '', usermapId = '', location = [] } = {} || {},
     } = this.props;
 
     const formatListLocation = companyLocationList.filter((loc) => {
@@ -197,9 +197,9 @@ class SelectUser extends PureComponent {
                       return JSON.stringify(values).indexOf(input.toLowerCase()) >= 0;
                     }}
                   >
-                    {listUsers.map((user) => {
+                    {listUsers.map((user = {}) => {
                       const {
-                        usermap: { email: email1 = '', firstName: fn1 = '' },
+                        usermap: { email: email1 = '', firstName: fn1 = '' } = {} || {},
                         _id = '',
                       } = user;
                       return (
