@@ -6,7 +6,7 @@ import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
 
 const { Step } = Steps;
-const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DELETED } = TIMEOFF_STATUS;
+const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DELETED, WITHDRAWN } = TIMEOFF_STATUS;
 class RightContent extends PureComponent {
   constructor(props) {
     super(props);
@@ -20,7 +20,7 @@ class RightContent extends PureComponent {
           onError={(e) => {
             e.target.src = DefaultAvatar;
           }}
-          src={url}
+          src={url || DefaultAvatar}
           alt="avatar"
         />
         {status === REJECTED && <CloseCircleTwoTone twoToneColor="#fd4546" />}
@@ -35,7 +35,7 @@ class RightContent extends PureComponent {
           onError={(e) => {
             e.target.src = DefaultAvatar;
           }}
-          src={url}
+          src={url || DefaultAvatar}
           alt="avatar"
         />
         <CheckCircleTwoTone twoToneColor="#52c41a" />
@@ -54,11 +54,11 @@ class RightContent extends PureComponent {
     const arr = [];
     arr.push({
       name: ln1,
-      avatar: av1 === '' ? DefaultAvatar : av1,
+      avatar: av1 || DefaultAvatar,
     });
     arr.push({
       name: ln2,
-      avatar: av2 === '' ? DefaultAvatar : av2,
+      avatar: av2 || DefaultAvatar,
     });
     return arr;
   };
@@ -86,7 +86,8 @@ class RightContent extends PureComponent {
                         {index === 1 && (
                           <>
                             {status === REJECTED && this.renderIcon(avatar, REJECTED)}
-                            {status === IN_PROGRESS && this.renderIcon(avatar)}
+                            {(status === IN_PROGRESS || status === WITHDRAWN) &&
+                              this.renderIcon(avatar)}
                             {(status === ACCEPTED || status === ON_HOLD) &&
                               this.renderIcon2(avatar)}
                           </>
