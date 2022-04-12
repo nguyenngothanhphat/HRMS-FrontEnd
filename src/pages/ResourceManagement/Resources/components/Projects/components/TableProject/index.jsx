@@ -314,6 +314,6 @@ class TableProject extends Component {
   }
 }
 
-export default connect(({ locationSelection: { listLocationsByCompany = [] } }) => ({
-  listLocationsByCompany,
+export default connect(({ location: { companyLocationList = [] } }) => ({
+  companyLocationList,
 }))(TableProject);

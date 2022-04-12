@@ -28,7 +28,7 @@ const DetailTicket = (props) => {
     dispatch,
     loadingApprovel,
     loadingReject,
-    listLocationsByCompany,
+    companyLocationList,
   } = props;
   const [showDetail, setShowDetail] = useState(false);
   const [showComment, setShowComment] = useState(false);
@@ -66,7 +66,7 @@ const DetailTicket = (props) => {
   };
   const fetchTimezone = () => {
     const timeZoneList = [];
-    listLocationsByCompany.forEach((location) => {
+    companyLocationList.forEach((location) => {
       const {
         headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
         _id: idLocation = '',
@@ -84,7 +84,7 @@ const DetailTicket = (props) => {
   };
   useEffect(() => {
     fetchTimezone();
-  }, [listLocationsByCompany]);
+  }, [companyLocationList]);
   const {
     generalInfo: { legalName, userId } = {},
     departmentInfo: { name: departmentName = '' } = {},
@@ -136,7 +136,7 @@ const DetailTicket = (props) => {
               <Popover
                 content={
                   <PopoverInfo
-                    listLocationsByCompany={listLocationsByCompany}
+                    companyLocationList={companyLocationList}
                     propsState={{ currentTime, timezoneList }}
                     data={employee}
                   />
@@ -263,8 +263,8 @@ const DetailTicket = (props) => {
     </Modal>
   );
 };
-export default connect(({ loading, locationSelection: { listLocationsByCompany = [] } }) => ({
+export default connect(({ loading, location: { companyLocationList = [] } }) => ({
   loadingApprovel: loading.effects['dashboard/approvalTicket'],
   loadingReject: loading.effects['dashboard/rejectTicket'],
-  listLocationsByCompany,
+  companyLocationList,
 }))(DetailTicket);

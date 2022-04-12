@@ -4,7 +4,7 @@ import styles from './styles.less';
 
 export default function SecondStep(props) {
   const { Option } = Select;
-  const { onChange, onSearch, changeData, fetchedState, listLocationsByCompany } = props;
+  const { onChange, onSearch, changeData, fetchedState, companyLocationList } = props;
 
   const makeKey = () => {
     return Math.random().toString(36).substring(7);
@@ -26,7 +26,7 @@ export default function SecondStep(props) {
           filterOption={(input, option) =>
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
-          {listLocationsByCompany.map((item) => {
+          {companyLocationList.map((item) => {
             return (
               <Option key={makeKey()} value={item._id}>
                 {item.name}

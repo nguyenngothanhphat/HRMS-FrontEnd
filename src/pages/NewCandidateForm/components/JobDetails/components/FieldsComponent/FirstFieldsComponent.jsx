@@ -13,13 +13,13 @@ const { Option } = Select;
 
 @connect(
   ({
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
     user: { currentUser = {}, companiesOfUser = [] },
     newCandidateForm: { currentStep, tempData } = {},
     loading,
   }) => ({
     currentUser,
-    listLocationsByCompany,
+    companyLocationList,
     companiesOfUser,
     currentStep,
     tempData,

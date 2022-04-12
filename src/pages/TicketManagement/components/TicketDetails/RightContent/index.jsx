@@ -127,8 +127,8 @@ class RightContent extends PureComponent {
             name="timeTaken"
             rules={[
               {
-                pattern: new RegExp(/^[0-9]+$/),
-                message: 'Time taken must be a number!',
+                pattern: /^[0-9]*([.][0-9]{1})?$/,
+                message: 'Time taken must be a number or float number',
               },
             ]}
           >

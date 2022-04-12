@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
-import filterIcon from '@/assets/offboarding-filter.svg';
 import { Input, Table, Popover } from 'antd';
 import { formatMessage, history, connect } from 'umi';
 import moment from 'moment';
+import filterIcon from '@/assets/offboarding-filter.svg';
 import closeIcon from '@/assets/closeIcon.svg';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import Filter from './Filter';
@@ -16,7 +16,7 @@ const NewJoinees = (props) => {
     listNewComer,
     totalComer,
     dispatch,
-    listLocationsByCompany,
+    companyLocationList,
     companiesOfUser,
     filterList,
     // filterJoining,
@@ -60,7 +60,7 @@ const NewJoinees = (props) => {
         };
       });
     } else {
-      const currentLocationObj = listLocationsByCompany.find((loc) => loc?._id === currentLocation);
+      const currentLocationObj = companyLocationList.find((loc) => loc?._id === currentLocation);
       const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
       const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
 
@@ -305,7 +305,7 @@ const NewJoinees = (props) => {
 export default connect(
   ({
     loading,
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
     user: { currentUser = {}, companiesOfUser = [] },
     onboard: {
       hrList = [],
@@ -317,7 +317,7 @@ export default connect(
     listNewComer,
     totalComer,
     currentUser,
-    listLocationsByCompany,
+    companyLocationList,
     companiesOfUser,
     filterList,
     hrList,

@@ -13,13 +13,13 @@ const { TabPane } = Tabs;
   ({
     user: { currentUserRoles, currentUser, permissions } = {},
     timeOff,
-    locationSelection: { listLocationsByCompany = [] },
+    location: { companyLocationList = [] },
   }) => ({
     timeOff,
     permissions,
     currentUser,
     currentUserRoles,
-    listLocationsByCompany,
+    companyLocationList,
   }),
 )
 class TimeOff extends PureComponent {
@@ -44,12 +44,12 @@ class TimeOff extends PureComponent {
     const {
       match: { params: { tabName = '' } = {} },
       location: { state: { status = '', tickedId = '', typeName = '', category = '' } = {} } = {},
-      listLocationsByCompany = [],
+      companyLocationList = [],
     } = this.props;
 
     if (!tabName) {
       history.replace(`/time-off/overview`);
-    } else if (listLocationsByCompany.length > 0) {
+    } else if (companyLocationList.length > 0) {
       this.fetchTimeOffTypes();
     }
     if (status === 'WITHDRAW') {
@@ -88,21 +88,21 @@ class TimeOff extends PureComponent {
   componentDidUpdate = (prevProps) => {
     const {
       match: { params: { tabName = '' } = {} },
-      listLocationsByCompany = [],
+      companyLocationList = [],
     } = this.props;
 
     if (
       tabName &&
-      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+      JSON.stringify(prevProps.companyLocationList) !== JSON.stringify(companyLocationList)
     ) {
       this.fetchTimeOffTypes();
     }
   };
 
   fetchTimeOffTypes = () => {
-    const { listLocationsByCompany = [], dispatch } = this.props;
+    const { companyLocationList = [], dispatch } = this.props;
 
-    const find = listLocationsByCompany.find((x) => x._id === getCurrentLocation());
+    const find = companyLocationList.find((x) => x._id === getCurrentLocation());
     if (find) {
       const { headQuarterAddress: { country: { _id } = {} || {} } = {} || {} } = find;
       dispatch({

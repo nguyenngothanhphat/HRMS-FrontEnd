@@ -12,7 +12,7 @@ import styles from './index.less';
 @connect(
   ({
     loading,
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
     user: { companiesOfUser = [], currentUser: { _id = '', firstName = '' } = {} } = {},
     customerProfile: { info: { customerId = '' } = {}, notes = [] } = {},
     customerManagement: { employeeList = [] } = {},
@@ -23,7 +23,7 @@ import styles from './index.less';
     customerId,
     _id,
     firstName,
-    listLocationsByCompany,
+    companyLocationList,
     companiesOfUser,
     employeeList,
   }),

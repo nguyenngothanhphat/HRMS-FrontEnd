@@ -36,7 +36,7 @@ const FilterContent = (props) => {
       } = {},
       filter = {},
     } = {},
-    listLocationsByCompany = [],
+    companyLocationList = [],
     loadingFetchEmployeeIDList = false,
     loadingFetchEmployeeNameList = false,
     loadingFetchManagerList = false,
@@ -340,7 +340,7 @@ const FilterContent = (props) => {
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           showArrow
         >
-          {listLocationsByCompany.map((x) => {
+          {companyLocationList.map((x) => {
             return (
               <Select.Option value={x._id} key={x._id}>
                 {x.name}
@@ -438,12 +438,10 @@ const FilterContent = (props) => {
   );
 };
 
-export default connect(
-  ({ loading, employee, locationSelection: { listLocationsByCompany = [] } = {} }) => ({
-    loadingFetchEmployeeIDList: loading.effects['employee/fetchEmployeeIDListEffect'],
-    loadingFetchEmployeeNameList: loading.effects['employee/fetchEmployeeNameListEffect'],
-    loadingFetchManagerList: loading.effects['employee/fetchManagerListEffect'],
-    employee,
-    listLocationsByCompany,
-  }),
-)(FilterContent);
+export default connect(({ loading, employee, location: { companyLocationList = [] } = {} }) => ({
+  loadingFetchEmployeeIDList: loading.effects['employee/fetchEmployeeIDListEffect'],
+  loadingFetchEmployeeNameList: loading.effects['employee/fetchEmployeeNameListEffect'],
+  loadingFetchManagerList: loading.effects['employee/fetchManagerListEffect'],
+  employee,
+  companyLocationList,
+}))(FilterContent);

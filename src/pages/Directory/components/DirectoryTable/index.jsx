@@ -31,12 +31,12 @@ const departmentTag = [
     loading,
     offboarding: { approvalflow = [] } = {},
     user: { permissions = {} },
-    locationSelection: { listLocationsByCompany = [] },
+    location: { companyLocationList = [] },
   }) => ({
     loadingTerminateReason: loading.effects['offboarding/terminateReason'],
     approvalflow,
     permissions,
-    listLocationsByCompany,
+    companyLocationList,
   }),
 )
 class DirectoryTable extends Component {
@@ -61,21 +61,19 @@ class DirectoryTable extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    const { list = [], listLocationsByCompany = [] } = this.props;
+    const { list = [], companyLocationList = [] } = this.props;
     if (JSON.stringify(prevProps.list) !== JSON.stringify(list)) {
       this.setFirstPage();
     }
-    if (
-      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
-    ) {
+    if (JSON.stringify(prevProps.companyLocationList) !== JSON.stringify(companyLocationList)) {
       this.fetchTimezone();
     }
   }
 
   fetchTimezone = () => {
-    const { listLocationsByCompany = [] } = this.props;
+    const { companyLocationList = [] } = this.props;
     const timezoneList = [];
-    listLocationsByCompany.forEach((location) => {
+    companyLocationList.forEach((location) => {
       const {
         headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
         _id = '',
@@ -198,7 +196,7 @@ class DirectoryTable extends Component {
   // };
 
   generateColumns = (sortedName, keyTab) => {
-    const { permissions = {}, listLocationsByCompany } = this.props;
+    const { permissions = {}, companyLocationList } = this.props;
     const { currentTime, timezoneList } = this.state;
 
     const columns = [
@@ -350,7 +348,7 @@ class DirectoryTable extends Component {
           <Popover
             content={
               <PopoverInfo
-                listLocationsByCompany={listLocationsByCompany}
+                companyLocationList={companyLocationList}
                 propsState={{ currentTime, timezoneList }}
                 data={manager}
               />
@@ -361,8 +359,7 @@ class DirectoryTable extends Component {
             <Link
               className={styles.managerName}
               to={() =>
-                this.handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
-              }
+                this.handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)}
             >
               {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
             </Link>

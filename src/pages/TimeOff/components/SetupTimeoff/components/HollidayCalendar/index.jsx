@@ -80,11 +80,11 @@ const MOCK_DATA = [
 @connect(
   ({
     timeOff: {
-      countryList = [],
       holidaysListByLocation = [],
       holidaysListByCountry = [],
       tempData: { countryHoliday = '' },
     } = {},
+    location: { companyLocationList: countryList = [] } = {},
     loading,
     user: { currentUser: { company: { _id: idCompany = '' } = {}, location = {} } = {} } = {},
   }) => ({
@@ -115,31 +115,6 @@ class HollidayCalendar extends Component {
       indeterminate: false,
     };
   }
-
-  // componentDidMount = () => {
-  // const d = new Date();
-  // const year = d.getFullYear();
-  // const formatYear = year.toString();
-  // this.initListHoliday(formatYear);
-  // dispatch({
-  //   type: 'timeOff/fetchHolidaysListBylocation',
-  //   payload: {
-  //     location: getCurrentLocation(),
-  //     country: location.headQuarterAddress.country._id,
-  //   },
-  // });
-  // };
-
-  componentDidMount = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'timeOff/getCountryListByCompany',
-      payload: {
-        tenantIds: [getCurrentTenant()],
-        company: getCurrentCompany(),
-      },
-    });
-  };
 
   componentDidUpdate = (prevProps, prevState) => {
     const { yearSelect } = this.state;
@@ -356,7 +331,9 @@ class HollidayCalendar extends Component {
     // get id of each children
     result.forEach((item) => {
       const { children = [] } = item;
-      children.sort((a, b) => moment(a.date.iso).format('YYYYMMDD') - moment(b.date.iso).format('YYYYMMDD'));
+      children.sort(
+        (a, b) => moment(a.date.iso).format('YYYYMMDD') - moment(b.date.iso).format('YYYYMMDD'),
+      );
       const arrID = children.map((subChild) => subChild._id);
       listID.push(...arrID);
     });

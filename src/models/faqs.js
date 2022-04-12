@@ -10,8 +10,7 @@ import {
   getListFAQ,
   updateQuestion,
   deleteQuestion,
-  getLocationListByParentCompany,
-  searchFAQs
+  searchFAQs,
 } from '../services/faqs';
 
 const faqs = {
@@ -161,25 +160,7 @@ const faqs = {
       }
       return response;
     },
-    *fetchListLocationEffect({ payload }, { call, put }) {
-      let response;
-      try {
-        response = yield call(getLocationListByParentCompany, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { countryList: data },
-        });
-      } catch (error) {
-        dialog(error);
-      }
-      return response;
-    },
+
     *searchFAQs({ payload }, { call, put }) {
       let response;
       try {

@@ -3,7 +3,6 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
   LocationFilter,
-  LocationOwnerFilter,
   DepartmentFilter,
   EmployeeTypeFilter,
   getFilterList,
@@ -56,18 +55,6 @@ const employee = {
     *fetchLocation({ payload }, { call, put }) {
       try {
         const response = yield call(LocationFilter, payload);
-        const { statusCode, data: location = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'saveLocation', payload: { location } });
-        return response;
-      } catch (errors) {
-        dialog(errors);
-        return {};
-      }
-    },
-    *fetchOwnerLocation({ payload }, { call, put }) {
-      try {
-        const response = yield call(LocationOwnerFilter, payload);
         const { statusCode, data: location = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveLocation', payload: { location } });

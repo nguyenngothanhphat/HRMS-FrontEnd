@@ -102,7 +102,6 @@ const timeOff = {
     currentUserRole: '', // employee, manager, hr-manager
     // account settings
     defaultTimeoffTypesList: [],
-    countryList: [],
     selectedConfigCountry: null,
     setupPack: [
       // {
@@ -1006,19 +1005,6 @@ const timeOff = {
         yield put({
           type: 'save',
           payload: { defaultTimeoffTypesList },
-        });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
-    *getCountryListByCompany({ payload = {} }, { call, put }) {
-      try {
-        const response = yield call(getLocationByCompany, payload);
-        const { statusCode, data } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { countryList: data },
         });
       } catch (errors) {
         dialog(errors);

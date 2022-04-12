@@ -22,7 +22,7 @@ const MyTeam = (props) => {
     dispatch,
     myTeam = [],
     roles = [],
-    // listLocationsByCompany = [],
+    // companyLocationList = [],
     // employee: { departmentInfo: { name: departmentName = '' } = {} } = {},
     employee = {},
     timeOffTypesByCountry = [],
@@ -54,7 +54,7 @@ const MyTeam = (props) => {
         tenantId: getCurrentTenant(),
         // company: getCurrentCompany(),
         // department: [departmentName],
-        // location: listLocationsByCompany.map((l) => l._id),
+        // location: companyLocationList.map((l) => l._id),
         roles: roleEmployee,
         employee: employeeId,
         status: ['ACTIVE'],
@@ -128,13 +128,13 @@ const MyTeam = (props) => {
 export default connect(
   ({
     dashboard: { myTeam = [], timeOffTypesByCountry = [] } = {},
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
     user: { currentUser: { roles = [], employee = {} } = {} } = {},
   }) => ({
     roles,
     employee,
     myTeam,
-    listLocationsByCompany,
+    companyLocationList,
     timeOffTypesByCountry,
   }),
 )(MyTeam);
