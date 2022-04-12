@@ -8,7 +8,7 @@ import styles from './index.less';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 
 const { Step } = Steps;
-const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DELETED } = TIMEOFF_STATUS;
+const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DELETED, WITHDRAWN } = TIMEOFF_STATUS;
 class RightContent extends PureComponent {
   constructor(props) {
     super(props);
