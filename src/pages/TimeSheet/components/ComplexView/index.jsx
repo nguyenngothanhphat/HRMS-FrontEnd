@@ -21,7 +21,7 @@ const ComplexView = (props) => {
     permissions = {},
     tabName = '',
     showMyTimeSheet = true,
-    listLocationsByCompany = [],
+    companyLocationList = [],
     timeSheet: { divisionList = [] } = {},
     currentDateProp = '',
     dispatch,
@@ -58,15 +58,12 @@ const ComplexView = (props) => {
 
   const getSelectedLocationName = () => {
     if (selectedLocations.length === 1) {
-      return listLocationsByCompany.find((x) => x._id === selectedLocations[0])?.name || '';
+      return companyLocationList.find((x) => x._id === selectedLocations[0])?.name || '';
     }
-    if (selectedLocations.length > 0 && selectedLocations.length < listLocationsByCompany.length) {
+    if (selectedLocations.length > 0 && selectedLocations.length < companyLocationList.length) {
       return `${selectedLocations.length} locations selected`;
     }
-    if (
-      selectedLocations.length === listLocationsByCompany.length ||
-      selectedLocations.length === 0
-    ) {
+    if (selectedLocations.length === companyLocationList.length || selectedLocations.length === 0) {
       return 'All';
     }
     return 'All';
@@ -107,7 +104,7 @@ const ComplexView = (props) => {
         name: x.name,
       };
     });
-    const locationOptions = listLocationsByCompany.map((x) => {
+    const locationOptions = companyLocationList.map((x) => {
       return {
         _id: x._id,
         name: x.name,
@@ -128,7 +125,7 @@ const ComplexView = (props) => {
           <CheckboxMenu
             options={locationOptions}
             onChange={onLocationChange}
-            list={listLocationsByCompany}
+            list={companyLocationList}
             default={selectedLocations}
           >
             <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
@@ -293,12 +290,12 @@ const ComplexView = (props) => {
 export default connect(
   ({
     user: { currentUser = {}, permissions = [] } = {},
-    locationSelection: { listLocationsByCompany = [] },
+    location: { companyLocationList = [] },
     timeSheet,
   }) => ({
     currentUser,
     permissions,
-    listLocationsByCompany,
+    companyLocationList,
     timeSheet,
   }),
 )(ComplexView);

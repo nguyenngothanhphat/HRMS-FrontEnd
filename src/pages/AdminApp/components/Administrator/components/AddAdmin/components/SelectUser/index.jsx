@@ -5,15 +5,10 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 const { Option } = Select;
-@connect(
-  ({
-    locationSelection: { listLocationsByCompany = [] } = {},
-    adminApp: { listAdmin = [] } = {},
-  }) => ({
-    listLocationsByCompany,
-    listAdmin,
-  }),
-)
+@connect(({ location: { companyLocationList = [] } = {}, adminApp: { listAdmin = [] } = {} }) => ({
+  companyLocationList,
+  listAdmin,
+}))
 class SelectUser extends PureComponent {
   formRef = React.createRef();
 
@@ -135,11 +130,11 @@ class SelectUser extends PureComponent {
     const { isCompanyWorker, listUsers, isLoaded } = this.state;
     const {
       companyName = '',
+      companyLocationList = [],
       onBackValues: { firstName = '', email = '', usermapId = '', location = [] } = {} || {},
-      listLocationsByCompany = [],
     } = this.props;
 
-    const formatListLocation = listLocationsByCompany.filter((loc) => {
+    const formatListLocation = companyLocationList.filter((loc) => {
       const { company: { _id = '' } = {} } = loc;
       return _id === getCurrentCompany();
     });

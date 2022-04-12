@@ -15,12 +15,12 @@ const { Option } = Select;
   ({
     employee: { listEmployeeAll = [] } = {},
     user: { companiesOfUser = [] } = {},
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
     loading,
   }) => ({
     listEmployeeAll,
     companiesOfUser,
-    listLocationsByCompany,
+    companyLocationList,
     loadingFetchListAll: loading.effects['employee/fetchAllListUser'],
   }),
 )
@@ -49,7 +49,7 @@ class DetailEmployeeChart extends Component {
   };
 
   componentDidUpdate = (prevProps, prevState) => {
-    const { listLocationsByCompany = [] } = this.props;
+    const { companyLocationList = [] } = this.props;
     const { chartDetails = {}, fetchAllListUser = () => {} } = this.props;
     const { valueSearch } = this.state;
     const { _id = undefined } = chartDetails;
@@ -60,17 +60,15 @@ class DetailEmployeeChart extends Component {
     if (prevState.valueSearch !== valueSearch) {
       fetchAllListUser(valueSearch);
     }
-    if (
-      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
-    ) {
+    if (JSON.stringify(prevProps.companyLocationList) !== JSON.stringify(companyLocationList)) {
       this.fetchTimezone();
     }
   };
 
   fetchTimezone = () => {
-    const { listLocationsByCompany = [] } = this.props;
+    const { companyLocationList = [] } = this.props;
     const timezoneList = [];
-    listLocationsByCompany.forEach((location) => {
+    companyLocationList.forEach((location) => {
       const {
         headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
         _id = '',
