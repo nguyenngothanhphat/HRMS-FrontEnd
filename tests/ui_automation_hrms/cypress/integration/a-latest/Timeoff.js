@@ -25,7 +25,7 @@ describe('Timeoff Automation', () => {
         let toDate ="04/15/2022";
         cy.get('#basic_durationFrom ',{timeout:3000}).type(fromDate + '{enter}', {force: true});
          cy.get("#basic_durationTo", {timeout:3000}).type(toDate + '{enter}', {force: true});
-         //cy.pause();
+         cy.wait(4000);
         cy.get('#basic_description ').type('Attending function');
          cy.get('.ant-btn').then((resp)=>{
            cy.get(resp[2]).click();
@@ -37,7 +37,7 @@ describe('Timeoff Automation', () => {
             });        
           });   
           cy.contains('View Request').click().then(()=>{
-            cy.wait(3000);
+            cy.wait(5000);
             cy.get('p').then((resp)=>{
               cy.get(resp[0]).invoke('text').then((text)=>{
                 let parts=text.split(' ');
@@ -74,7 +74,7 @@ describe('Timeoff Automation', () => {
         
           cy.contains(value).click();
         });
-        cy.wait(3000);
+        cy.wait(5000);
         cy.get('.ant-btn').then((resp)=>{
           cy.get(resp[1]).click();
         }).then(()=>{     
