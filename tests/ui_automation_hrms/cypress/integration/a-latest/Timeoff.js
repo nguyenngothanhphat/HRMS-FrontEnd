@@ -5,7 +5,7 @@ describe('Timeoff Automation', () => {
     });
     let Manager_email= "khang.le@mailinator.com";
     let Employee_email = "lewis.nguyen@mailinator.com";
-    let HR_manager_email="sandeep@mailinator.com"
+   // let HR_manager_email="sandeep@mailinator.com"
     let password = "12345678@Tc";
     
   
@@ -59,7 +59,6 @@ describe('Timeoff Automation', () => {
     });
 
     it('Approve Timeoff request', () => {
-        cy.wait(3000);
         cy.get('#basic_userEmail.ant-input').type(Manager_email);
         cy.get('#basic_password.ant-input').type(password);
         cy.get('button[type="submit"]').click();
@@ -70,7 +69,7 @@ describe('Timeoff Automation', () => {
         cy.contains('In Progress ').click();
         cy.wait(3000);
         cy.readFile("latest_id_timeoff.txt").then(function(value){
-          cy.get('.ant-pagination-item-link').eq(1).click();
+          //cy.get('.ant-pagination-item-link').eq(1).click();
           cy.log(value);
         
           cy.contains(value).click();
@@ -119,7 +118,7 @@ describe('Timeoff Automation', () => {
          cy.wait(5000);   
          cy.get('.ant-btn').then((resp)=>{
             cy.get(resp[2]).click();
-               cy.wait(3000);
+               cy.wait(5000);
          });                            
       });
     });
@@ -133,7 +132,7 @@ describe('Timeoff Automation', () => {
    });  
     
      it('Accepting the withdrawn leave request', () => {
-     cy.get('#basic_userEmail.ant-input').type(HR_manager_email);
+     cy.get('#basic_userEmail.ant-input').type(Manager_email);
      cy.get('#basic_password.ant-input').type(password);
      cy.get('button[type="submit"]').click();
      cy.wait(3000);
@@ -143,8 +142,8 @@ describe('Timeoff Automation', () => {
     cy.contains('Progress').click();
     cy.wait(3000);
     cy.readFile("latest_id_timeoff.txt").then(function(value){
-      cy.get('.ant-pagination-item-link').eq(1).click();
-      cy.get('.ant-pagination-item-link').eq(1).click();
+      // cy.get('.ant-pagination-item-link').eq(1).click();
+      // cy.get('.ant-pagination-item-link').eq(1).click();
       cy.log(value);
       cy.contains(value).click();
     });
