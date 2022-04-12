@@ -144,6 +144,7 @@ const ComplexView = (props) => {
             options={divisionOptions}
             onChange={onDivisionChange}
             default={selectedDivisions}
+            disabled
           >
             <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
               <span>{selectedDivisionName}</span>
