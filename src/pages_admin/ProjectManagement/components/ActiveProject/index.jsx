@@ -11,7 +11,7 @@ const ActiveProject = (props) => {
     dispatch,
     user,
     loading,
-    listLocationsByCompany = [],
+    companyLocationList = [],
     companiesOfUser = [],
     loadingFetchProject = false,
     getPageAndSize = () => {},
@@ -30,7 +30,7 @@ const ActiveProject = (props) => {
         pageSelected={pageSelected}
         size={size}
         totalActive={totalActive}
-        listLocationsByCompany={listLocationsByCompany}
+        companyLocationList={companyLocationList}
         getPageAndSize={getPageAndSize}
         companiesOfUser={companiesOfUser}
         loading={loading}

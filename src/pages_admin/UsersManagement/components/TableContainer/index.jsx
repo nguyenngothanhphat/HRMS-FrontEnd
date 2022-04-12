@@ -11,7 +11,7 @@ import TableFilter from '../TableFilter';
   ({
     loading,
     usersManagement,
-    locationSelection: { listLocationsByCompany = [] } = {},
+    locationSelection: { companyLocationList = [] } = {},
     employee,
     user: { currentUser = {}, permissions = {}, companiesOfUser = [] },
     usersManagement: { filterList = {}, totalActiveEmployee = '', totalInactiveEmployee = '' } = {},
@@ -19,7 +19,7 @@ import TableFilter from '../TableFilter';
     employee,
     currentUser,
     permissions,
-    listLocationsByCompany,
+    companyLocationList,
     companiesOfUser,
     filterList,
     loadingList: loading.effects['usersManagement/fetchEmployeesList'],
@@ -97,7 +97,7 @@ class TableContainer extends PureComponent {
   componentDidUpdate(prevProps, prevState) {
     const { roles, department, country, state, company, filterName, tabId, pageSelected, size } =
       this.state;
-    const { filterList = {}, listLocationsByCompany = [] } = this.props;
+    const { filterList = {}, companyLocationList = [] } = this.props;
     const params = {
       name: filterName,
       roles,
@@ -123,7 +123,7 @@ class TableContainer extends PureComponent {
 
     if (
       JSON.stringify(prevProps?.filterList || []) !== JSON.stringify(filterList) ||
-      JSON.stringify(prevProps?.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+      JSON.stringify(prevProps?.companyLocationList) !== JSON.stringify(companyLocationList)
     ) {
       this.getTableData(params, 1);
     }
@@ -152,7 +152,7 @@ class TableContainer extends PureComponent {
     const {
       companiesOfUser = [],
       filterList: { listCountry = [] } = {},
-      listLocationsByCompany = [],
+      companyLocationList = [],
     } = this.props;
     const {
       name = '',
@@ -230,7 +230,7 @@ class TableContainer extends PureComponent {
         });
       }
     } else {
-      const currentLocationObj = listLocationsByCompany.find((loc) => loc?._id === currentLocation);
+      const currentLocationObj = companyLocationList.find((loc) => loc?._id === currentLocation);
       const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
       const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
 
@@ -285,7 +285,7 @@ class TableContainer extends PureComponent {
     const {
       companiesOfUser = [],
       filterList: { listCountry = [] } = {},
-      listLocationsByCompany = [],
+      companyLocationList = [],
     } = this.props;
     const {
       name = '',
@@ -363,7 +363,7 @@ class TableContainer extends PureComponent {
         });
       }
     } else {
-      const currentLocationObj = listLocationsByCompany.find((loc) => loc?._id === currentLocation);
+      const currentLocationObj = companyLocationList.find((loc) => loc?._id === currentLocation);
       const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
       const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
 
