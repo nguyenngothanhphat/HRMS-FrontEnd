@@ -313,14 +313,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'RESOURCE_MANAGEMENT_UTILIZATION_VIEW',
   ]);
 
-  const indexAddResource = isAuthorized(permissionList, [
-    'RESOURCE_MANAGEMENT_ADD',
-    PROJECT_MANAGER,
-  ]);
-  const indexModifyResource = isAuthorized(permissionList, [
-    'RESOURCE_MANAGEMENT_UPDATE',
-    PROJECT_MANAGER,
-  ]);
+  const indexAddResource = isAuthorized(permissionList, ['RESOURCE_MANAGEMENT_ADD']);
+  const indexModifyResource = isAuthorized(permissionList, ['RESOURCE_MANAGEMENT_UPDATE']);
   const viewsResourceModeAdmin = isAuthorized(permissionList, ['P_RESOURCE_MANAGEMENT_ADMIN_VIEW']);
   const viewsResourceModeDivision = isAuthorized(permissionList, ['P_RESOURCE_MANAGEMENT_DIVISION_VIEW'])
   const viewsResourceModeCountry = isAuthorized(permissionList, ['P_RESOURCE_MANAGEMENT_COUNTRY_VIEW'])
