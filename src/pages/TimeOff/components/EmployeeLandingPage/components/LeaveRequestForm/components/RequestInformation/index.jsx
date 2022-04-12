@@ -89,6 +89,7 @@ const RequestInformation = (props) => {
   const [showSuccessModalVisible, setShowSuccessModalVisible] = useState(false);
   const [secondNotice, setSecondNotice] = useState('');
   const [durationFrom, setDurationFrom] = useState('');
+  console.log('🚀  ~ durationFrom', durationFrom);
   const [durationTo, setDurationTo] = useState('');
   const [buttonState, setButtonState] = useState(0); // save draft or submit
   const [isEditingDrafts, setIsEditingDrafts] = useState(false);
@@ -263,7 +264,7 @@ const RequestInformation = (props) => {
 
   // GET LIST OF DAYS FROM DAY A TO DAY B
   const getDateLists = (startDate, endDate, selectedTypeProp) => {
-    const dates = [];
+    let dates = [];
     const endDateTemp = moment(endDate).clone();
 
     if ([C].includes(selectedTypeProp)) {
@@ -281,13 +282,14 @@ const RequestInformation = (props) => {
     }
 
     if (startDate && endDate) {
-      const now = moment(startDate).clone();
+      const now = moment(startDate);
       while (now.isSameOrBefore(moment(endDateTemp), 'day')) {
         if (!checkIfWeekEnd(now)) {
           if (checkIfWholeDayAvailable(now) || checkIfHalfDayAvailable(now)) {
-            dates.push(now.format(TIMEOFF_DATE_FORMAT));
+            dates = [...dates, moment(now)];
           }
         }
+        console.log('🚀  ~ dates', dates);
         now.add(1, 'days');
       }
     }
@@ -311,8 +313,8 @@ const RequestInformation = (props) => {
   };
 
   const getAutoToDate = (allowance) => {
-    if (allowance !== 0) return moment.utc(durationFrom).add(allowance - 1, 'day');
-    return moment.utc(durationFrom).add(allowance, 'day');
+    if (allowance !== 0) return moment(durationFrom).add(allowance - 1, 'day');
+    return moment(durationFrom).add(allowance, 'day');
   };
 
   // GET TIME OFF TYPE BY ID
@@ -412,8 +414,8 @@ const RequestInformation = (props) => {
       if (selectedType !== C && selectedType !== D) {
         result = result.filter(
           (value) =>
-            moment.utc(value.date).weekday() !== 6 &&
-            moment.utc(value.date).weekday() !== 0 &&
+            moment(value.date).weekday() !== 6 &&
+            moment(value.date).weekday() !== 0 &&
             Object.keys(value).length !== 0,
         );
       } else {
@@ -447,7 +449,7 @@ const RequestInformation = (props) => {
           toDate: durationTo,
           duration,
           leaveDates: leaveDatesPayload,
-          onDate: moment.utc(),
+          onDate: moment(),
           description,
           approvalManager: managerId, // id
           cc: personCC,
@@ -502,7 +504,7 @@ const RequestInformation = (props) => {
           fromDate: durationFrom,
           toDate: durationTo,
           leaveDates: leaveDatesPayload,
-          onDate: moment.utc(),
+          onDate: moment(),
           description,
           duration: Math.round(duration * 100) / 100,
           cc: personCC,
@@ -521,6 +523,7 @@ const RequestInformation = (props) => {
           payload._id = viewingId;
           type = 'timeOff/updateLeaveRequestById';
         }
+        console.log('🚀  ~ payload', payload);
 
         dispatch({
           type,
@@ -766,7 +769,10 @@ const RequestInformation = (props) => {
         check = false;
         viewingLeaveDates.forEach((val2) => {
           const { date = '' } = val2;
-          if (moment(date).locale('en').format(TIMEOFF_DATE_FORMAT) === val1) {
+          if (
+            moment(date).locale('en').format(TIMEOFF_DATE_FORMAT) ===
+            moment(val1).locale('en').format(TIMEOFF_DATE_FORMAT)
+          ) {
             resultDates.push(val2);
             check = true;
           }
