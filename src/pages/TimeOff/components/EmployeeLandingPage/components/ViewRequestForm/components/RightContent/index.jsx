@@ -106,7 +106,8 @@ class RightContent extends PureComponent {
                           {index === 1 && (
                             <>
                               {status === REJECTED && this.renderIcon(avatar, REJECTED)}
-                              {status === IN_PROGRESS && this.renderIcon(avatar)}
+                              {(status === IN_PROGRESS || status === WITHDRAWN) &&
+                                this.renderIcon(avatar)}
                               {(status === ACCEPTED || status === ON_HOLD) &&
                                 this.renderIcon2(avatar)}
                             </>

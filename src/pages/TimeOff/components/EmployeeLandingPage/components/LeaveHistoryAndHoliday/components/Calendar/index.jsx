@@ -15,15 +15,15 @@ moment.locale('en-gb'); // important!
 
 const CustomCalendar = (props) => {
   const { data = [], mode = 1 } = props; // 1: leave request, 2: holiday
-  const [currentTime, setCurrentTime] = useState(moment());
+  const [currentTime, setCurrentTime] = useState(moment.utc());
 
   // FUNCTION
   const checkIfSameDay = (a, b) => {
-    return moment(a).format('MM/DD/YYYY') === moment(b).format('MM/DD/YYYY');
+    return moment.utc(a).format('MM/DD/YYYY') === moment.utc(b).format('MM/DD/YYYY');
   };
 
   const checkCurrentDay = (val) => {
-    return checkIfSameDay(val, moment());
+    return checkIfSameDay(val, moment.utc());
   };
 
   const checkLeaveRequest = (val, status) => {
@@ -65,7 +65,7 @@ const CustomCalendar = (props) => {
   };
   // RENDER
   const dateCellRender = (value) => {
-    const date = moment(value).date();
+    const date = moment.utc(value).date();
     const className = getClassName(value);
 
     // leave request
@@ -106,18 +106,18 @@ const CustomCalendar = (props) => {
   const headerRender = ({ value, type, onChange = () => {} }) => {
     return (
       <div className={styles.customHeader}>
-        <div className={styles.time}>{moment(value).format('MMMM YYYY')}</div>
+        <div className={styles.time}>{moment.utc(value).format('MMMM YYYY')}</div>
         <div className={styles.actions}>
           <img
             src={PrevIcon}
             className={styles.prev}
-            onClick={() => onChange(moment(value).subtract(1, type))}
+            onClick={() => onChange(moment.utc(value).subtract(1, type))}
             alt=""
           />
           <img
             src={NextIcon}
             className={styles.next}
-            onClick={() => onChange(moment(value).add(1, type))}
+            onClick={() => onChange(moment.utc(value).add(1, type))}
             alt=""
           />
         </div>
