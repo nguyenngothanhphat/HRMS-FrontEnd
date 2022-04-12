@@ -383,6 +383,14 @@ const routes = [
             path: '/time-off/:tabName/:type',
             component: './TimeOff',
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
+            name: 'timeOffSetup',
+            hideInMenu: true,
+          },
+          {
+            path: '/time-off/:tabName/:type/:subType/:typeId',
+            name: 'timeOffTypeConfiguration',
+            component: './TimeOff/components/SetupTimeoff/components/TimeOffType/components/TypeConfiguration',
+            authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
             hideInMenu: true,
           },
           {

@@ -218,8 +218,13 @@ const timeOff = {
       }
     },
     *getDataTimeOffTypeById({ payload }, { call, put }) {
+      let response = {}
       try {
-        const response = yield call(getTimeOffTypeById, payload);
+        response = yield call(getTimeOffTypeById, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -229,6 +234,7 @@ const timeOff = {
       } catch (errors) {
         dialog(errors);
       }
+      return response
     },
     *updateTimeOffType({ payload }, { call, put }) {
       try {
