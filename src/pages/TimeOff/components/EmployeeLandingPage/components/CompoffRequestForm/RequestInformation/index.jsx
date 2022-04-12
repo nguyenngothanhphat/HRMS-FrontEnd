@@ -121,7 +121,7 @@ class RequestInformation extends PureComponent {
       const dateLists = extraTime.map((value) => {
         const { date = '', timeSpend = 0 } = value;
         return {
-          date: moment(date).format('YYYY-MM-DD'),
+          date: moment.utc(date).format('YYYY-MM-DD'),
           timeSpend,
         };
       });
@@ -136,15 +136,15 @@ class RequestInformation extends PureComponent {
         description,
         personCC: cc,
         extraTimeLists: listValue,
-        durationFrom: durationFrom === null ? null : moment(durationFrom),
-        durationTo: durationTo === null ? null : moment(durationTo),
+        durationFrom: durationFrom === null ? null : moment.utc(durationFrom),
+        durationTo: durationTo === null ? null : moment.utc(durationTo),
       });
 
       // update state
       this.setState({
         viewingCompoffRequestId: _id,
-        durationFrom: durationFrom === null ? null : moment(durationFrom),
-        durationTo: durationTo === null ? null : moment(durationTo),
+        durationFrom: durationFrom === null ? null : moment.utc(durationFrom),
+        durationTo: durationTo === null ? null : moment.utc(durationTo),
         dateLists,
       });
     }
@@ -244,7 +244,7 @@ class RequestInformation extends PureComponent {
       action,
       // approvalFlow: compoffApprovalFlow, // no need more
       cc: personCC,
-      onDate: moment(),
+      onDate: moment.utc(),
       totalHours,
     };
 
@@ -327,8 +327,8 @@ class RequestInformation extends PureComponent {
 
   // GET LIST OF DAYS FROM DAY A TO DAY B
   getDateLists = (startDate, endDate) => {
-    const start = moment(startDate);
-    const end = moment(endDate);
+    const start = moment.utc(startDate);
+    const end = moment.utc(endDate);
 
     const now = start;
     const dates = [];
@@ -347,18 +347,18 @@ class RequestInformation extends PureComponent {
   disabledFromDate = (current) => {
     const { durationTo } = this.state;
     return (
-      current && current > moment(durationTo)
-      // || moment(current).day() === 0 ||
-      // moment(current).day() === 6
+      current && current > moment.utc(durationTo)
+      // || moment.utc(current).day() === 0 ||
+      // moment.utc(current).day() === 6
     );
   };
 
   disabledToDate = (current) => {
     const { durationFrom } = this.state;
     return (
-      current && current < moment(durationFrom)
-      // || moment(current).day() === 0 ||
-      // moment(current).day() === 6
+      current && current < moment.utc(durationFrom)
+      // || moment.utc(current).day() === 0 ||
+      // moment.utc(current).day() === 6
     );
   };
 

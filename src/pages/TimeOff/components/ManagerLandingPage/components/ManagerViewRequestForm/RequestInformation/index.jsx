@@ -85,8 +85,8 @@ class RequestInformation extends PureComponent {
   };
 
   formatDurationTime = (fromDate, toDate, type) => {
-    const start = moment(fromDate);
-    const end = moment(toDate);
+    const start = moment.utc(fromDate);
+    const end = moment.utc(toDate);
     const now = start;
     const leaveTimes = [];
     const includeWeekend = type !== A && type !== B;
@@ -98,7 +98,7 @@ class RequestInformation extends PureComponent {
       }
     } else {
       while (now.isBefore(end) || now.isSame(end)) {
-        if (moment(now).weekday() !== 6 && moment(now).weekday() !== 0) {
+        if (moment.utc(now).weekday() !== 6 && moment.utc(now).weekday() !== 0) {
           leaveTimes.push(now.format(TIMEOFF_DATE_FORMAT));
         }
         now.add(1, 'days');
@@ -291,23 +291,23 @@ class RequestInformation extends PureComponent {
                   gutter={[8, 8]}
                 >
                   <Col span={TIMEOFF_COL_SPAN_2.DATE}>
-                    {moment(date).locale('en').format(TIMEOFF_DATE_FORMAT)}
+                    {moment.utc(date).locale('en').format(TIMEOFF_DATE_FORMAT)}
                   </Col>
                   <Col span={TIMEOFF_COL_SPAN_2.DAY}>
-                    {moment(date).locale('en').format('dddd')}
+                    {moment.utc(date).locale('en').format('dddd')}
                   </Col>
                   <Col span={TIMEOFF_COL_SPAN_2.START_TIME}>
                     {!isEmpty(leaveDates)
-                      ? moment(leaveDates[index].startTime, TIMEOFF_24H_FORMAT).format(
-                          TIMEOFF_12H_FORMAT,
-                        )
+                      ? moment
+                          .utc(leaveDates[index].startTime, TIMEOFF_24H_FORMAT)
+                          .format(TIMEOFF_12H_FORMAT)
                       : ''}
                   </Col>
                   <Col span={TIMEOFF_COL_SPAN_2.END_TIME}>
                     {!isEmpty(leaveDates)
-                      ? moment(leaveDates[index].endTime, TIMEOFF_24H_FORMAT).format(
-                          TIMEOFF_12H_FORMAT,
-                        )
+                      ? moment
+                          .utc(leaveDates[index].endTime, TIMEOFF_24H_FORMAT)
+                          .format(TIMEOFF_12H_FORMAT)
                       : ''}
                   </Col>
                   <Col span={TIMEOFF_COL_SPAN_2.HOUR} style={{ textAlign: 'center' }}>
@@ -338,10 +338,10 @@ class RequestInformation extends PureComponent {
                   gutter={[8, 8]}
                 >
                   <Col span={TIMEOFF_COL_SPAN_1.DATE}>
-                    {moment(date).locale('en').format(TIMEOFF_DATE_FORMAT)}
+                    {moment.utc(date).locale('en').format(TIMEOFF_DATE_FORMAT)}
                   </Col>
                   <Col span={TIMEOFF_COL_SPAN_1.DAY}>
-                    {moment(date).locale('en').format('dddd')}
+                    {moment.utc(date).locale('en').format('dddd')}
                   </Col>
                   <Col span={TIMEOFF_COL_SPAN_1.COUNT}>
                     {!isEmpty(leaveDates) ? this.getTimeLabel(leaveDates[index].timeOfDay) : ''}
@@ -355,10 +355,10 @@ class RequestInformation extends PureComponent {
       return (
         <Row className={styles.duration} justify="center" align="center" gutter={[8, 8]}>
           <Col span={TIMEOFF_COL_SPAN_1.DATE}>
-            {moment(fromDate).locale('en').format(TIMEOFF_DATE_FORMAT)}
+            {moment.utc(fromDate).locale('en').format(TIMEOFF_DATE_FORMAT)}
           </Col>
           <Col span={TIMEOFF_COL_SPAN_1.DAY}>
-            {moment(toDate).locale('en').format(TIMEOFF_DATE_FORMAT)}
+            {moment.utc(toDate).locale('en').format(TIMEOFF_DATE_FORMAT)}
           </Col>
           <Col span={TIMEOFF_COL_SPAN_1.COUNT}>{duration}</Col>
         </Row>

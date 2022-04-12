@@ -63,9 +63,8 @@ class MyLeaveTable extends PureComponent {
       dataIndex: 'startDate',
       align: 'left',
       render: (_, record) => {
-        return `${moment(record.fromDate).locale('en').format('MM/DD/YYYY')} - ${moment(
-          record.toDate,
-        )
+        return `${moment.utc(record.fromDate).locale('en').format('MM/DD/YYYY')} - ${moment
+          .utc(record.toDate)
           .locale('en')
           .format('MM/DD/YYYY')}`;
       },
@@ -75,10 +74,10 @@ class MyLeaveTable extends PureComponent {
       dataIndex: 'onDate',
       align: 'center',
       // width: '30%',
-      render: (onDate) => <span>{moment(onDate).locale('en').format('MM/DD/YYYY')}</span>,
+      render: (onDate) => <span>{moment.utc(onDate).locale('en').format('MM/DD/YYYY')}</span>,
       defaultSortOrder: ['ascend'],
       sorter: {
-        compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
+        compare: (a, b) => moment.utc(a.onDate).isAfter(moment.utc(b.onDate)),
       },
       sortDirections: ['ascend', 'descend', 'ascend'],
     },

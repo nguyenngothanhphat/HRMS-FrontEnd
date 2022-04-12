@@ -85,10 +85,10 @@ class LeaveHistoryAndHoliday extends PureComponent {
 
   // SORT BY DATE
   compareDates = (a, b) => {
-    if (moment(a.fromDate).isBefore(moment(b.fromDate))) {
+    if (moment.utc(a.fromDate).isBefore(moment.utc(b.fromDate))) {
       return 1;
     }
-    if (moment(a.fromDate).isAfter(moment(b.fromDate))) {
+    if (moment.utc(a.fromDate).isAfter(moment.utc(b.fromDate))) {
       return -1;
     }
     return 0;
@@ -96,7 +96,8 @@ class LeaveHistoryAndHoliday extends PureComponent {
 
   formatHolidayLists = (holidaysList) => {
     return holidaysList.sort(
-      (a, b) => moment(a.date.iso).format('YYYYMMDD') - moment(b.date.iso).format('YYYYMMDD'),
+      (a, b) =>
+        moment.utc(a.date.iso).format('YYYYMMDD') - moment.utc(b.date.iso).format('YYYYMMDD'),
     );
   };
 
@@ -196,7 +197,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
 
     return (
       <div className={styles.LeaveHistoryAndHoliday}>
-        <Tabs destroyInactiveTabPane defaultActiveKey="1" tabBarExtraContent={this.operations()}>
+        <Tabs defaultActiveKey="1" tabBarExtraContent={this.operations()}>
           <TabPane tab="Time off Calendar" key="1">
             <Spin spinning={loadingFetch}>
               <LeaveHistory
