@@ -235,6 +235,7 @@ class Resources extends Component {
             options={divisionOptions}
             onChange={this.onDivisionChange}
             default={selectedDivisions}
+            disabled
           >
             <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
               <span>{selectedDivisionName}</span>
