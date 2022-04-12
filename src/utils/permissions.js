@@ -312,13 +312,19 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const indexViewUtilizationTab = isAuthorized(permissionList, [
     'RESOURCE_MANAGEMENT_UTILIZATION_VIEW',
   ]);
-  const indexAddResource = isAuthorized(permissionList, ['RESOURCE_MANAGEMENT_ADD']);
-  const indexModifyResource = isAuthorized(permissionList, ['RESOURCE_MANAGEMENT_UPDATE']);
-  // const viewsResourceModeManager = isAuthorized(permissionList, [
-  //   'P_RESOURCE_MANAGEMENT_MANAGER_VIEW',
-  // ]);
-  // const viewsResourceModeAdmin = isAuthorized(permissionList, ['P_RESOURCE_MANAGEMENT_ADMIN_VIEW']);
 
+  const indexAddResource = isAuthorized(permissionList, [
+    'RESOURCE_MANAGEMENT_ADD',
+    PROJECT_MANAGER,
+  ]);
+  const indexModifyResource = isAuthorized(permissionList, [
+    'RESOURCE_MANAGEMENT_UPDATE',
+    PROJECT_MANAGER,
+  ]);
+  const viewsResourceModeAdmin = isAuthorized(permissionList, ['P_RESOURCE_MANAGEMENT_ADMIN_VIEW']);
+  const viewsResourceModeDivision = isAuthorized(permissionList, ['P_RESOURCE_MANAGEMENT_DIVISION_VIEW'])
+  const viewsResourceModeCountry = isAuthorized(permissionList, ['P_RESOURCE_MANAGEMENT_COUNTRY_VIEW'])
+  
   // TICKET MANAGEMENT
   const indexTicketManagementHRTicketsTab = isAuthorized(permissionList, [
     'P_TICKET_MANAGEMENT_T_HR_TICKETS_VIEW',
@@ -425,8 +431,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewUtilizationTab: indexViewUtilizationTab,
     addResource: indexAddResource,
     modifyResource: indexModifyResource,
-    // viewModeManager: viewsResourceModeManager,
-    // viewModeAdmin: viewsResourceModeAdmin,
+    viewModeAdmin: viewsResourceModeAdmin,
+    viewModeDivision: viewsResourceModeDivision,
+    viewModeCountry: viewsResourceModeCountry,
 
     // ticket management
     viewTicketHR: indexTicketManagementHRTicketsTab,

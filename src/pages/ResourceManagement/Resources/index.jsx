@@ -22,9 +22,9 @@ const TABS = {
     resourceManagement: { resourceList = [], divisions: divisionList = [], total = 0 } = {},
     user: {
       currentUser: {
-        location: { _id: locationID = '' } = {},
+        location: { _id: locationID = '', headQuarterAddress = {} } = {},
         company: { _id: companyID } = {},
-        employee: { _id: currentUserId = '' } = {},
+        employee: { _id: currentUserId = '', divisionInfo = {} } = {},
       } = {},
       permissions = {},
     } = {},
@@ -38,6 +38,8 @@ const TABS = {
     listLocationsByCompany,
     currentUserId,
     total,
+    headQuarterAddress,
+    divisionInfo,
   }),
 )
 class Resources extends Component {
@@ -192,25 +194,57 @@ class Resources extends Component {
     );
   };
 
-  renderActionButton = () => {
-    const { divisionList = [], listLocationsByCompany = [] } = this.props;
+  renderActionButton = (viewModeCountry, viewModeDivision) => {
+    const { divisionList = [], listLocationsByCompany = [], headQuarterAddress = {}, divisionInfo = {} } = this.props;
     const { selectedDivisions, selectedLocations } = this.state;
     // if only one selected
     const selectedLocationName = this.getSelectedLocationName();
     const selectedDivisionName = this.getSelectedDivisionName();
+    const countryOfUser = headQuarterAddress ? headQuarterAddress.country._id : '';
+    const divisionOfUser = divisionInfo ? divisionInfo.name : ''
+    let locationOptions = [];
+    let divisionOptions = [];
+    if (viewModeCountry) {
+      locationOptions = listLocationsByCompany
+        ? listLocationsByCompany.filter((x) => {
+          const countryOfList = x.headQuarterAddress ? x.headQuarterAddress.country : ''
+          if(countryOfList._id === countryOfUser) {
+            return {
+              _id: x._id,
+              name: x.name,
+            }
+          }
+          return false
+        })
+        : [];
+    } else {
+        locationOptions = listLocationsByCompany ? listLocationsByCompany.map((x) => {
+          return {
+            _id: x._id,
+            name: x.name,
+          };
+        }) : [];
+    } 
+    
+    if (viewModeDivision) {
+      divisionOptions = divisionList ? divisionList.filter((x) => {
+        if (x.name === divisionOfUser) {
+          return {
+            _id: x.name,
+            name: x.name,
+          };
+        }
+        return false
+      }): [];
+    } else {
+      divisionOptions = divisionList ? divisionList.map((x) => {
+        return {
+          _id: x.name,
+          name: x.name,
+        };
+      }) : [];
+    }
 
-    const divisionOptions = divisionList.map((x) => {
-      return {
-        _id: x.name,
-        name: x.name,
-      };
-    });
-    const locationOptions = listLocationsByCompany.map((x) => {
-      return {
-        _id: x._id,
-        name: x.name,
-      };
-    });
     return (
       <div className={styles.options}>
         <div className={styles.dropdownItem}>
@@ -219,7 +253,7 @@ class Resources extends Component {
           <CheckboxMenu
             options={locationOptions}
             onChange={this.onLocationChange}
-            list={listLocationsByCompany}
+            list={locationOptions}
             default={selectedLocations}
           >
             <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
@@ -257,6 +291,9 @@ class Resources extends Component {
     const viewResourceListPermission = permissions.viewResourceListTab !== -1;
     const viewUtilizationPermission = permissions.viewUtilizationTab !== -1;
     const viewResourceProjectListPermission = permissions.viewResourceProjectListTab !== -1;
+    // const viewModeAdmin = permissions.viewModeAdmin !== -1;
+    const viewModeCountry = permissions.viewModeCountry !== -1;
+    const viewModeDivision = permissions.viewModeDivision !== -1;
 
     return (
       <div className={styles.ResourcesManagement}>
@@ -266,7 +303,7 @@ class Resources extends Component {
             onChange={(key) => {
               history.push(`${baseModuleUrl}/${key}`);
             }}
-            tabBarExtraContent={this.renderActionButton()}
+            tabBarExtraContent={this.renderActionButton(viewModeCountry, viewModeDivision)}
             destroyInactiveTabPane
           >
             {viewUtilizationPermission && (

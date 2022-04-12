@@ -23,6 +23,7 @@ const AssignResourcesModal = (props) => {
       billingStatus = '',
     } = {},
     refreshResourceType = () => {},
+    permissions = {},
   } = props;
 
   const {
@@ -49,6 +50,7 @@ const AssignResourcesModal = (props) => {
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [step, setStep] = useState(1);
   const [selectedResources, setSelectedResources] = useState([]);
+  const viewModeAdmin = permissions.viewModeAdmin !== -1;
 
   // functions
   const onBack = () => {
@@ -71,7 +73,8 @@ const AssignResourcesModal = (props) => {
         // department: [department],
         title: [titleId],
         ...filter,
-        employeeId
+        employeeId,
+        modeAdminView: viewModeAdmin
       },
     });
   };
@@ -298,8 +301,9 @@ const AssignResourcesModal = (props) => {
 };
 
 export default connect(
-  ({ projectDetails, loading, user: { currentUser: { employee = {} } = {} } }) => ({
+  ({ projectDetails, loading, user: { currentUser: { employee = {} } = {} }, permissions = {} }) => ({
     employee,
+    permissions,
     projectDetails,
     loadingFetchResourceList: loading.effects['projectDetails/fetchResourceListEffect'],
     loadingAssign: loading.effects['projectDetails/assignResourcesEffect'],
