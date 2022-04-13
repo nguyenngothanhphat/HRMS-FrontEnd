@@ -13,7 +13,7 @@ import styles from './index.less';
     loading,
     timeOffManagement,
     user: { companiesOfUser = [] } = {},
-    locationSelection: { companyLocationList = [] } = {},
+    location: { companyLocationList = [] } = {},
   }) => ({
     loadingList: loading.effects['timeOffManagement/fetchListTimeOff'],
     loading: loading.effects['timeOffManagement/fetchListTimeOff'],

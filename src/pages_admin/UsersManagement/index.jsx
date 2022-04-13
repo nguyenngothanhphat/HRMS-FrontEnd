@@ -9,7 +9,7 @@ import TableContainer from './components/TableContainer';
 @connect(
   ({
     loading,
-    locationSelection: { companyLocationList = [] } = {},
+    location: { companyLocationList = [] } = {},
     user: {
       companiesOfUser = [],
       currentUser: { roles = [], signInRole = [], manageTenant = [] } = {},
@@ -21,8 +21,8 @@ import TableContainer from './components/TableContainer';
     companiesOfUser,
     companyLocationList,
     loadingFetchLocations:
-      loading.effects['locationSelection/fetchLocationsByCompany'] ||
-      loading.effects['locationSelection/fetchLocationListByParentCompany'],
+      loading.effects['location/fetchLocationsByCompany'] ||
+      loading.effects['location/fetchLocationListByParentCompany'],
   }),
 )
 class UsersManagement extends PureComponent {
@@ -49,7 +49,7 @@ class UsersManagement extends PureComponent {
 
     if (checkIsOwner) {
       await dispatch({
-        type: 'locationSelection/fetchLocationListByParentCompany',
+        type: 'location/fetchLocationListByParentCompany',
         payload: {
           company: companyId,
           tenantIds: manageTenant,
@@ -57,7 +57,7 @@ class UsersManagement extends PureComponent {
       });
     } else {
       await dispatch({
-        type: 'locationSelection/fetchLocationsByCompany',
+        type: 'location/fetchLocationsByCompany',
         payload: {
           company: companyId,
           tenantId,
