@@ -360,27 +360,23 @@ class TableTickets extends PureComponent {
       },
       {
         title: 'Assigned To',
-        dataIndex: ['department_assign', 'employee_assignee', 'id'],
-        key: 'assign',
+        dataIndex: 'employeeAssignee',
+        key: 'employeeAssignee',
         fixed: 'right',
-        render: (departmentAssign, employeeAssignee) => {
-          if (employeeAssignee.employee_assignee !== '') {
-            const employeeAssigned = listEmployee.find(
-              (val) => val._id === employeeAssignee.employee_assignee,
-            );
+        render: (employeeAssignee, row) => {
+          if (employeeAssignee) {
             return (
               <UserProfilePopover
                 placement="top"
                 trigger="hover"
-                data={{ ...employeeAssigned, ...employeeAssigned.generalInfo }}
+                data={{ ...employeeAssignee, ...employeeAssignee?.generalInfo }}
               >
                 <span
+                  className={styles.userID}
                   style={{ color: '#2c6df9' }}
-                  onClick={() => this.viewProfile(employeeAssigned?.generalInfo?.userId || '')}
+                  onClick={() => this.viewProfile(employeeAssignee?.generalInfo?.userId || '')}
                 >
-                  {!isEmpty(employeeAssigned?.generalInfo)
-                    ? `${employeeAssigned?.generalInfo?.legalName}`
-                    : ''}
+                  {employeeAssignee?.generalInfo?.legalName}
                 </span>
               </UserProfilePopover>
             );
@@ -395,7 +391,7 @@ class TableTickets extends PureComponent {
               }
               trigger={['click']}
             >
-              <div onClick={() => this.handleClickSelect(employeeAssignee.id)}>
+              <div onClick={() => this.handleClickSelect(row.id)}>
                 Select User &emsp;
                 <DownOutlined />
               </div>
@@ -411,109 +407,6 @@ class TableTickets extends PureComponent {
         },
         sortDirections: ['ascend', 'descend'],
       },
-
-      // {
-      //   title: 'User ID',
-      //   dataIndex: 'employeeRaise',
-      //   key: 'userID',
-      //   render: (employeeRaise, id) => {
-      //     const { generalInfo: { userId = '' } = {} } = employeeRaise || {};
-      //     return (
-      //       <span className={styles.userID} onClick={() => this.openViewTicket(id.id)}>
-      //         {userId}
-      //       </span>
-      //     );
-      //   },
-      // },
-      // {
-      //   title: 'Name',
-      //   dataIndex: 'employeeRaise',
-      //   key: 'name',
-      //   render: (employeeRaise = {}) => {
-      //     const { generalInfo: { legalName = '' } = {} } = employeeRaise || {};
-      //     return <span>{legalName}</span>;
-      //   },
-      // },
-      // {
-      //   title: 'Request Date',
-      //   dataIndex: 'created_at',
-      //   key: 'requestDate',
-      //   render: (createdAt) => {
-      //     return <span>{moment(createdAt).format('DD-MM-YYYY')}</span>;
-      //   },
-      // },
-      // {
-      //   title: 'Request Type',
-      //   dataIndex: 'query_type',
-      //   key: 'query_type',
-      // },
-      // {
-      //   title: 'Priority',
-      //   dataIndex: 'priority',
-      //   key: 'priority',
-      //   render: (priority) => {
-      //     if (priority === 'High') {
-      //       return <div className={styles.priorityHigh}>{priority}</div>;
-      //     }
-      //     if (priority === 'Normal') {
-      //       return <div className={styles.priorityMedium}>{priority}</div>;
-      //     }
-      //     if (priority === 'Urgent') {
-      //       return <div className={styles.priorityUrgent}>{priority}</div>;
-      //     }
-      //     return <div className={styles.priorityLow}>{priority}</div>;
-      //   },
-      // },
-      // {
-      //   title: 'Loacation',
-      //   dataIndex: 'location',
-      //   key: 'loacation',
-      //   render: (location) => {
-      //     const locationNew =
-      //       locationsList.length > 0 ? locationsList.filter((val) => val._id === location) : [];
-      //     const name = locationNew.length > 0 ? locationNew[0].name : '';
-      //     return <span>{name}</span>;
-      //   },
-      // },
-      // {
-      //   title: 'Subject',
-      //   dataIndex: 'subject',
-      //   key: 'subject',
-      // },
-      // {
-      //   title: 'Assigned To',
-      //   dataIndex: ['department_assign', 'employee_assignee', 'id'],
-      //   key: 'assign',
-      //   fixed: 'right',
-      //   render: (departmentAssign, employeeAssignee) => {
-      //     if (employeeAssignee.employee_assignee !== '') {
-      //       const employeeAssigned = listEmployee.find(
-      //         (val) => val._id === employeeAssignee.employee_assignee,
-      //       );
-      //       return (
-      //         <span style={{ color: '#2c6df9' }}>
-      //           {employeeAssigned ? employeeAssigned.generalInfo.legalName : ''}
-      //         </span>
-      //       );
-      //     }
-      //     return (
-      //       <Dropdown
-      //         overlayClassName="dropDown__employee"
-      //         overlay={
-      //           <Menu>
-      //             <Menu.Item onClick={this.handleSelectChange}>Assign to self</Menu.Item>
-      //           </Menu>
-      //         }
-      //         trigger={['click']}
-      //       >
-      //         <div onClick={() => this.handleClickSelect(employeeAssignee.id)}>
-      //           Select User &emsp;
-      //           <DownOutlined />
-      //         </div>
-      //       </Dropdown>
-      //     );
-      //   },
-      // },
     ];
 
     return (
@@ -536,9 +429,6 @@ class TableTickets extends PureComponent {
           rowKey="id"
           scroll={{ x: 1500, y: 487 }}
         />
-        {/* <Button htmlType="submit" onClick={this.handleDelete}>
-          DeleteTickket
-        </Button> */}
       </div>
     );
   }

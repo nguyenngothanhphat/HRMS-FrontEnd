@@ -66,7 +66,7 @@ const People = (props) => {
           return <span>{_id || '-'}</span>;
         },
         sorter: {
-          compare: (a, b) => a._id.localeCompare(b._id),
+          compare: (a, b) => (a?._id && b?._id ? a?._id.localeCompare(b?._id) : false),
         },
         defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend', 'ascend'],

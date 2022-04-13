@@ -98,16 +98,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const permissionList = [...roles];
 
   // Directory Page
-  const findIndexActive = isAuthorized(permissionList, [
-    'T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW',
-  ]);
-  const findIndexMyTeam = isAuthorized(permissionList, [
-
-    'T_DIRECTORY_T_MY_TEAM',
-  ]);
-  const findIndexInActive = isAuthorized(permissionList, [
-    'T_DIRECTORY_T_INACTIVE',
-  ]);
+  const findIndexActive = isAuthorized(permissionList, ['T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW']);
+  const findIndexMyTeam = isAuthorized(permissionList, ['T_DIRECTORY_T_MY_TEAM']);
+  const findIndexInActive = isAuthorized(permissionList, ['T_DIRECTORY_T_INACTIVE']);
   const findIndexImport = isAuthorized(permissionList, [
     'T_DIRECTORY_B_IMPORTS',
     'T_DIRECTORY_B_IMPORT_EMPLOYEES',
@@ -312,12 +305,18 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const indexViewUtilizationTab = isAuthorized(permissionList, [
     'RESOURCE_MANAGEMENT_UTILIZATION_VIEW',
   ]);
+
   const indexAddResource = isAuthorized(permissionList, ['RESOURCE_MANAGEMENT_ADD']);
   const indexModifyResource = isAuthorized(permissionList, ['RESOURCE_MANAGEMENT_UPDATE']);
-  // const viewsResourceModeManager = isAuthorized(permissionList, [
-  //   'P_RESOURCE_MANAGEMENT_MANAGER_VIEW',
-  // ]);
-  // const viewsResourceModeAdmin = isAuthorized(permissionList, ['P_RESOURCE_MANAGEMENT_ADMIN_VIEW']);
+  const indexViewsResourceAdminMode = isAuthorized(permissionList, [
+    'P_RESOURCE_MANAGEMENT_ADMIN_VIEW',
+  ]);
+  const indexViewsResourceDivisionMode = isAuthorized(permissionList, [
+    'P_RESOURCE_MANAGEMENT_DIVISION_VIEW',
+  ]);
+  const indexViewsResourceCountryMode = isAuthorized(permissionList, [
+    'P_RESOURCE_MANAGEMENT_COUNTRY_VIEW',
+  ]);
 
   // TICKET MANAGEMENT
   const indexTicketManagementHRTicketsTab = isAuthorized(permissionList, [
@@ -425,8 +424,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewUtilizationTab: indexViewUtilizationTab,
     addResource: indexAddResource,
     modifyResource: indexModifyResource,
-    // viewModeManager: viewsResourceModeManager,
-    // viewModeAdmin: viewsResourceModeAdmin,
+    viewResourceAdminMode: indexViewsResourceAdminMode,
+    viewResourceDivisionMode: indexViewsResourceDivisionMode,
+    viewResourceCountryMode: indexViewsResourceCountryMode,
 
     // ticket management
     viewTicketHR: indexTicketManagementHRTicketsTab,

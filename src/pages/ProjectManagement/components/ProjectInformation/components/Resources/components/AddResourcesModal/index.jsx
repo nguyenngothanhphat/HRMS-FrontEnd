@@ -22,7 +22,7 @@ const AddResourcesModal = (props) => {
     dispatch,
     projectDetails: { projectDetail = {}, resourceList = [], resourceListTotal = 0 } = {},
     loadingFetchResourceList = false,
-    employee = ''
+    employee = '', permissions = {}
   } = props;
   const {
     id: projectNumberId = '',
@@ -32,7 +32,7 @@ const AddResourcesModal = (props) => {
     tentativeEndDate = '',
     newEndDate = '',
   } = projectDetail;
-
+  const adminMode = permissions.viewResourceAdminMode !== -1;
   const employeeId = employee ? employee._id : ''
 
   const endDate = newEndDate || tentativeEndDate;
@@ -60,7 +60,8 @@ const AddResourcesModal = (props) => {
         limit,
         name,
         ...filter,
-        employeeId
+        employeeId,
+        adminMode,
       },
     });
   };
@@ -265,8 +266,9 @@ const AddResourcesModal = (props) => {
 };
 
 export default connect(
-  ({ projectDetails, loading, user: { currentUser: { employee = {} } = {} } }) => ({
+  ({ projectDetails, loading, user: { currentUser: { employee = {} } = {}, permissions = {} } }) => ({
     employee,
+    permissions,
     projectDetails,
     loadingFetchResourceList: loading.effects['projectDetails/fetchResourceListEffect'],
   }),
