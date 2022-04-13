@@ -32,7 +32,7 @@ const AddResourcesModal = (props) => {
     tentativeEndDate = '',
     newEndDate = '',
   } = projectDetail;
-  const adminMode = permissions.viewModeAdmin !== -1;
+  const adminMode = permissions.viewResourceAdminMode !== -1;
   const employeeId = employee ? employee._id : ''
 
   const endDate = newEndDate || tentativeEndDate;
