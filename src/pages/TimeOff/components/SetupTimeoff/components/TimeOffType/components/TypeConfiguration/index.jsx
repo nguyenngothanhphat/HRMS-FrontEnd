@@ -8,6 +8,10 @@ import NoteComponent from './components/NoteComponent';
 import Icon1 from '@/assets/timeOff/icon1.svg';
 import EmploymentType from './components/EmploymentType';
 import AccrualPolicy from './components/AccrualPolicy';
+import AccrualStart from './components/AccrualStart';
+import LeaveApplicationStart from './components/LeaveApplicationStart';
+import MinimumLeaveAmount from './components/MinimumLeaveAmount';
+import NegativeLeaveBalance from './components/NegativeLeaveBalance';
 
 const TypeConfiguration = (props) => {
   const { dispatch, match: { params: { reId = '', tabName = '' } = {} } = {} } = props;
@@ -53,6 +57,22 @@ const TypeConfiguration = (props) => {
       {
         id: 3,
         component: <AccrualPolicy />,
+      },
+      {
+        id: 4,
+        component: <AccrualStart />,
+      },
+      {
+        id: 5,
+        component: <LeaveApplicationStart />,
+      },
+      {
+        id: 6,
+        component: <MinimumLeaveAmount />,
+      },
+      {
+        id: 7,
+        component: <NegativeLeaveBalance />,
       },
     ];
     return (
