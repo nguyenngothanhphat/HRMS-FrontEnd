@@ -13,7 +13,7 @@ import styles from './index.less';
 @connect(({ loading, faqs: { selectedCountry, listFAQ = [] } = {} }) => ({
   selectedCountry,
   loadingGetList: loading.effects['faqs/fetchListFAQ'],
-  listFAQ
+  listFAQ,
 }))
 class ListQuestionAnswer extends Component {
   constructor(props) {
@@ -60,13 +60,13 @@ class ListQuestionAnswer extends Component {
       type: 'faqs/searchFAQs',
       payload: {
         nameSearch: value,
-        country: [selectedCountry]
+        country: [selectedCountry],
       },
     });
   };
 
   render() {
-    const { listFAQ = [] } = this.props;
+    const { listFAQ = [], loadingGetList = false } = this.props;
     const { visibleModal, pageSelected, size } = this.state;
     return (
       <div className={styles.ListQuestionAnswer}>
@@ -83,10 +83,10 @@ class ListQuestionAnswer extends Component {
               <img src={FilterIcon} alt="FilterIcon" />
             </div>
             <div className={styles.searchInp}>
-              <Input 
-                placeholder="Search by question or answer" 
-                prefix={<SearchOutlined />} 
-                onChange={(e) => this.onSearch(e)} 
+              <Input
+                placeholder="Search by question or answer"
+                prefix={<SearchOutlined />}
+                onChange={(e) => this.onSearch(e)}
               />
             </div>
           </div>
@@ -102,6 +102,7 @@ class ListQuestionAnswer extends Component {
             size={size}
             getPageAndSize={this.getPageAndSize}
             listFAQ={listFAQ}
+            loadingGetList={loadingGetList}
           />
         </div>
       </div>

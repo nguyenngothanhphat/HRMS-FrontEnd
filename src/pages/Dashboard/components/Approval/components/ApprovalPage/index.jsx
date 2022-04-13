@@ -20,7 +20,7 @@ const ApprovalPage = (props) => {
     isLoadData,
     loadingReject,
     loadingApproval,
-    listLocationsByCompany,
+    companyLocationList,
   } = props;
   const [openModal, setOpenModal] = useState(false);
   const [ticket, setTicket] = useState({});
@@ -46,7 +46,7 @@ const ApprovalPage = (props) => {
 
   const fetchTimezone = () => {
     const timeZoneList = [];
-    listLocationsByCompany.forEach((location) => {
+    companyLocationList.forEach((location) => {
       const {
         headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
         _id = '',
@@ -65,7 +65,7 @@ const ApprovalPage = (props) => {
 
   useEffect(() => {
     fetchTimezone();
-  }, [listLocationsByCompany]);
+  }, [companyLocationList]);
 
   useEffect(() => {
     const arr = filter(
@@ -175,7 +175,7 @@ const ApprovalPage = (props) => {
         <Popover
           content={
             <PopoverInfo
-              listLocationsByCompany={listLocationsByCompany}
+              companyLocationList={companyLocationList}
               propsState={{ currentTime, timezoneList }}
               data={employee}
             />
@@ -280,13 +280,13 @@ const ApprovalPage = (props) => {
 export default connect(
   ({
     loading,
-    locationSelection: { listLocationsByCompany = [] },
+    location: { companyLocationList = [] },
     dashboard: { listTicket = [], totalTicket, isLoadData },
   }) => ({
     loadingTable: loading.effects['dashboard/fetchListTicket'],
     loadingReject: loading.effects['dashboard/rejectTicket'],
     loadingApproval: loading.effects['dashboard/approvalTicket'],
-    listLocationsByCompany,
+    companyLocationList,
     listTicket,
     totalTicket,
     isLoadData,

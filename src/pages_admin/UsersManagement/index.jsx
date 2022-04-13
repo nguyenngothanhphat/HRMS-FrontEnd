@@ -1,15 +1,15 @@
 import React, { PureComponent } from 'react';
-import { PageContainer } from '@/layouts/layout/src';
 import { formatMessage, connect } from 'umi';
-import { getCurrentCompany, getCurrentTenant, isOwner } from '@/utils/authority';
 import { Skeleton } from 'antd';
+import { PageContainer } from '@/layouts/layout/src';
+import { getCurrentCompany, getCurrentTenant, isOwner } from '@/utils/authority';
 import styles from './index.less';
 import TableContainer from './components/TableContainer';
 
 @connect(
   ({
     loading,
-    locationSelection: { listLocationsByCompany = [] } = {},
+    locationSelection: { companyLocationList = [] } = {},
     user: {
       companiesOfUser = [],
       currentUser: { roles = [], signInRole = [], manageTenant = [] } = {},
@@ -19,7 +19,7 @@ import TableContainer from './components/TableContainer';
     signInRole,
     manageTenant,
     companiesOfUser,
-    listLocationsByCompany,
+    companyLocationList,
     loadingFetchLocations:
       loading.effects['locationSelection/fetchLocationsByCompany'] ||
       loading.effects['locationSelection/fetchLocationListByParentCompany'],
@@ -88,14 +88,14 @@ class UsersManagement extends PureComponent {
   };
 
   render() {
-    const { loadingFetchLocations = false, listLocationsByCompany = [] } = this.props;
+    const { loadingFetchLocations = false, companyLocationList = [] } = this.props;
     return (
       <PageContainer>
         <div className={styles.containerUsers}>
           <div className={styles.headerText}>
             <span>{formatMessage({ id: 'pages_admin.users.title' })}</span>
           </div>
-          {loadingFetchLocations && listLocationsByCompany.length === 0 ? (
+          {loadingFetchLocations && companyLocationList.length === 0 ? (
             <div style={{ padding: '24px' }}>
               <Skeleton />
             </div>

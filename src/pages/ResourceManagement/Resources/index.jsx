@@ -28,14 +28,14 @@ const TABS = {
       } = {},
       permissions = {},
     } = {},
-    locationSelection: { listLocationsByCompany = [] },
+    location: { companyLocationList = [] },
   }) => ({
     resourceList,
     divisionList,
     permissions,
     locationID,
     companyID,
-    listLocationsByCompany,
+    companyLocationList,
     currentUserId,
     total,
     headQuarterAddress,
@@ -118,18 +118,15 @@ class Resources extends Component {
   };
 
   getSelectedLocationName = () => {
-    const { listLocationsByCompany = [] } = this.props;
+    const { companyLocationList = [] } = this.props;
     const { selectedLocations } = this.state;
     if (selectedLocations.length === 1) {
-      return listLocationsByCompany.find((x) => x._id === selectedLocations[0])?.name || '';
+      return companyLocationList.find((x) => x._id === selectedLocations[0])?.name || '';
     }
-    if (selectedLocations.length > 0 && selectedLocations.length < listLocationsByCompany.length) {
+    if (selectedLocations.length > 0 && selectedLocations.length < companyLocationList.length) {
       return `${selectedLocations.length} locations selected`;
     }
-    if (
-      selectedLocations.length === listLocationsByCompany.length ||
-      selectedLocations.length === 0
-    ) {
+    if (selectedLocations.length === companyLocationList.length || selectedLocations.length === 0) {
       return 'All';
     }
     return 'All';
@@ -267,6 +264,7 @@ class Resources extends Component {
             options={divisionOptions}
             onChange={this.onDivisionChange}
             default={selectedDivisions}
+            disabled
           >
             <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
               <span>{selectedDivisionName}</span>

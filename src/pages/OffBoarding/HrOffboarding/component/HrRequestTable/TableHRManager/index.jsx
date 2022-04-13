@@ -16,14 +16,14 @@ import {
 import { UserOutlined, MoreOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { isEmpty } from 'lodash';
-import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import { history, connect } from 'umi';
+import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import { getCurrentTimeOfTimezoneOption } from '@/utils/times';
 import AssignModal from './AssignModal';
 import styles from './index.less';
 
-@connect(({ locationSelection: { listLocationsByCompany = [] } = {} }) => ({
-  listLocationsByCompany,
+@connect(({ location: { companyLocationList = [] } = {} }) => ({
+  companyLocationList,
 }))
 class HrTable extends PureComponent {
   constructor(props) {
@@ -109,7 +109,7 @@ class HrTable extends PureComponent {
   };
 
   popupContent = (dataRow) => {
-    const { timezoneList, listLocationsByCompany } = this.props;
+    const { timezoneList, companyLocationList } = this.props;
     const { currentTime } = this.state;
     const {
       employee: {
@@ -132,7 +132,7 @@ class HrTable extends PureComponent {
     } = dataRow;
     const fullName = `${firstName} ${middleName} ${lastName}`;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
-    let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
+    let filterLocation = companyLocationList.map((item) => (item._id === _id ? item : null));
     filterLocation = filterLocation.filter((item) => item !== null);
 
     if (filterLocation.length === 0) {
@@ -246,7 +246,7 @@ class HrTable extends PureComponent {
   };
 
   popupContentHr = (data) => {
-    const { timezoneList, listLocationsByCompany } = this.props;
+    const { timezoneList, companyLocationList } = this.props;
     const { currentTime } = this.state;
     const {
       generalInfo: {
@@ -265,7 +265,7 @@ class HrTable extends PureComponent {
       location: { _id = '' } = {},
     } = data;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
-    let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
+    let filterLocation = companyLocationList.map((item) => (item._id === _id ? item : null));
     filterLocation = filterLocation.filter((item) => item !== null);
 
     if (filterLocation.length === 0) {

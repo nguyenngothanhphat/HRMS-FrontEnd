@@ -29,7 +29,7 @@ export async function getLocationList() {
 }
 
 export async function getLocationListByParentCompany(payload) {
-  return request('/api/locationtenant/list-by-company-parent', {
+  return request('/api/locationtenant/list', {
     method: 'POST',
     data: payload,
   });

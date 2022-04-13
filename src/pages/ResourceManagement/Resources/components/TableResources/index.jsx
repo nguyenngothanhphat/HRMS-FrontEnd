@@ -21,12 +21,12 @@ import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
     loading,
     offboarding: { approvalflow = [] } = {},
     user: { permissions = {} },
-    locationSelection: { listLocationsByCompany = [] },
+    location: { companyLocationList = [] },
   }) => ({
     loadingTerminateReason: loading.effects['offboarding/terminateReason'],
     approvalflow,
     permissions,
-    listLocationsByCompany,
+    companyLocationList,
   }),
 )
 class TableResources extends PureComponent {

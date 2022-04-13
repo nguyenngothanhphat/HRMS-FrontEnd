@@ -419,10 +419,10 @@ const AddTaskModal = (props) => {
   );
 };
 
-export default connect(({ loading, timeSheet, locationSelection, user }) => ({
+export default connect(({ loading, timeSheet, location, user }) => ({
   user,
   timeSheet,
-  locationSelection,
+  location,
   loadingAddTask: loading.effects['timeSheet/addMultipleActivityEffect'],
   loadingFetchProject: loading.effects['timeSheet/fetchProjectListEffect'],
 }))(AddTaskModal);
