@@ -252,7 +252,7 @@ const AddProjectModal = (props) => {
 
 export default connect(
   ({
-    locationSelection: { companyLocationList = [] } = {},
+    location: { companyLocationList = [] } = {},
     user: { companiesOfUser = [] } = {},
     projectManagement: { employeeList = [] } = {},
     employeesManagement: { locationList = [] } = {},

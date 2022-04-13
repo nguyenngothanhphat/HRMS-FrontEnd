@@ -24,7 +24,6 @@ const AvatarDropdown = (props) => {
   const {
     currentUser = {},
     dispatch,
-    // , roles = []
     signInRole = [],
     currentUser: {
       employee: { _id: employeeID = '', generalInfo: { userId = '' } = {} } = {},

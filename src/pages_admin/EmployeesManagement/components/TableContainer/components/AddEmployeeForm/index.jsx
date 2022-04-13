@@ -25,7 +25,7 @@ const { Option } = Select;
     },
     employee: { employeetype = [] },
     user: { companiesOfUser = [], currentUser: { manageLocation = [] } = {} } = {},
-    locationSelection: { companyLocationList = [] } = {},
+    location: { companyLocationList = [] } = {},
   }) => ({
     rolesList,
     companyList,
