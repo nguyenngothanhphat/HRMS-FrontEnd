@@ -85,10 +85,10 @@ class LeaveHistoryAndHoliday extends PureComponent {
 
   // SORT BY DATE
   compareDates = (a, b) => {
-    if (moment.utc(a.fromDate).isBefore(moment.utc(b.fromDate))) {
+    if (moment(a.fromDate).isBefore(moment(b.fromDate))) {
       return 1;
     }
-    if (moment.utc(a.fromDate).isAfter(moment.utc(b.fromDate))) {
+    if (moment(a.fromDate).isAfter(moment(b.fromDate))) {
       return -1;
     }
     return 0;
@@ -96,8 +96,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
 
   formatHolidayLists = (holidaysList) => {
     return holidaysList.sort(
-      (a, b) =>
-        moment.utc(a.date.iso).format('YYYYMMDD') - moment.utc(b.date.iso).format('YYYYMMDD'),
+      (a, b) => moment(a.date.iso).format('YYYYMMDD') - moment(b.date.iso).format('YYYYMMDD'),
     );
   };
 
@@ -119,10 +118,10 @@ class LeaveHistoryAndHoliday extends PureComponent {
         status === IN_PROGRESS ||
         status === IN_PROGRESS_NEXT
       ) {
-        const fromDate = moment.utc(from).locale('en').format('MM/DD/YYYY');
-        const toDate = moment.utc(to).locale('en').format('MM/DD/YYYY');
-        // const now = moment.utc().locale('en').format('MM/DD/YYYY');
-        // if (moment.utc(now).isAfter(moment.utc(toDate))) {
+        const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
+        const toDate = moment(to).locale('en').format('MM/DD/YYYY');
+        // const now = moment().locale('en').format('MM/DD/YYYY');
+        // if (moment(now).isAfter(moment(toDate))) {
         //   return {
         //     _id,
         //     name: subject,
@@ -162,8 +161,8 @@ class LeaveHistoryAndHoliday extends PureComponent {
       } = each;
 
       if (status !== DRAFTS && status !== ON_HOLD && status !== DELETED && status !== WITHDRAWN) {
-        const fromDate = moment.utc(from).locale('en').format('MM/DD/YYYY');
-        const toDate = moment.utc(to).locale('en').format('MM/DD/YYYY');
+        const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
+        const toDate = moment(to).locale('en').format('MM/DD/YYYY');
         return {
           _id,
           fromDate,
