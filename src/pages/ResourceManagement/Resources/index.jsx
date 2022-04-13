@@ -192,35 +192,40 @@ class Resources extends Component {
   };
 
   renderActionButton = (viewModeCountry, viewModeDivision) => {
-    const { divisionList = [], listLocationsByCompany = [], headQuarterAddress = {}, divisionInfo = {} } = this.props;
+    const {
+      divisionList = [],
+      companyLocationList = [],
+      headQuarterAddress = {},
+      divisionInfo = {},
+    } = this.props;
     const { selectedDivisions, selectedLocations } = this.state;
     // if only one selected
     const selectedLocationName = this.getSelectedLocationName();
     const selectedDivisionName = this.getSelectedDivisionName();
     const countryOfUser = headQuarterAddress ? headQuarterAddress.country._id : '';
-    const divisionOfUser = divisionInfo ? divisionInfo.name : ''
+    const divisionOfUser = divisionInfo ? divisionInfo.name : '';
     let locationOptions = [];
     let divisionOptions = [];
     if (viewModeCountry) {
-      locationOptions = listLocationsByCompany.filter((x) => {
-        const countryOfList = x.headQuarterAddress ? x.headQuarterAddress.country : ''
-        if(countryOfList._id === countryOfUser) {
+      locationOptions = companyLocationList.filter((x) => {
+        const countryOfList = x.headQuarterAddress ? x.headQuarterAddress.country : '';
+        if (countryOfList._id === countryOfUser) {
           return {
             _id: x._id,
             name: x.name,
-          }
+          };
         }
-        return false
-      })
+        return false;
+      });
     } else {
-      locationOptions = listLocationsByCompany.map((x) => {
+      locationOptions = companyLocationList.map((x) => {
         return {
           _id: x._id,
           name: x.name,
         };
-      })
-    } 
-    
+      });
+    }
+
     if (viewModeDivision) {
       divisionOptions = divisionList.filter((x) => {
         if (x.name === divisionOfUser) {
@@ -229,15 +234,15 @@ class Resources extends Component {
             name: x.name,
           };
         }
-        return false
-      })
+        return false;
+      });
     } else {
       divisionOptions = divisionList.map((x) => {
         return {
           _id: x.name,
           name: x.name,
         };
-      })
+      });
     }
 
     return (
