@@ -9,7 +9,7 @@ import CheckList from '../CheckList';
 @connect(
   ({
     usersManagement,
-    locationSelection: { companyLocationList = [] } = {},
+    location: { companyLocationList = [] } = {},
     usersManagement: { filterList = {}, filter: checkedFilterList = {} } = {},
   }) => ({
     usersManagement,

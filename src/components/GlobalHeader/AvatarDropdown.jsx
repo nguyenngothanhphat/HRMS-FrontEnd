@@ -25,6 +25,7 @@ const AvatarDropdown = (props) => {
     currentUser = {},
     dispatch,
     // , roles = []
+    manageTenant = [],
     signInRole = [],
     currentUser: {
       employee: { _id: employeeID = '', generalInfo: { userId = '' } = {} } = {},
@@ -46,14 +47,26 @@ const AvatarDropdown = (props) => {
   useEffect(() => {
     const companyId = getCurrentCompany();
     const tenantId = getCurrentTenant();
+    const checkIsOwner = isOwner();
 
-    dispatch({
-      type: 'location/fetchLocationsByCompany',
-      payload: {
-        company: companyId,
-        tenantId,
-      },
-    });
+    const formatSignInRole = signInRole.map((role) => role.toLowerCase());
+    if (checkIsOwner || formatSignInRole.includes('owner')) {
+      dispatch({
+        type: 'location/fetchLocationListByParentCompany',
+        payload: {
+          company: companyId,
+          tenantIds: manageTenant,
+        },
+      });
+    } else {
+      dispatch({
+        type: 'location/fetchLocationsByCompany',
+        payload: {
+          company: companyId,
+          tenantId,
+        },
+      });
+    }
 
     setSelectLocationAbility(true);
 

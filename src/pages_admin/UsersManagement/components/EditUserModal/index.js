@@ -24,7 +24,7 @@ const layout = {
       selectedUserTenant = '',
     } = {},
     loading,
-    locationSelection: { companyLocationList = [] } = {},
+    location: { companyLocationList = [] } = {},
   }) => ({
     usersManagement,
     filterList,
