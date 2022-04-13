@@ -14,7 +14,7 @@ const NegativeLeaveBalance = (props) => {
         </Col>
         <Col sm={8}>
           <div className={styles.viewTypeSelector}>
-            <Radio.Group buttonStyle="solid">
+            <Radio.Group buttonStyle="solid" defaultValue="No">
               <Radio.Button value="Yes">Yes</Radio.Button>
               <Radio.Button value="No">No</Radio.Button>
             </Radio.Group>
@@ -28,18 +28,20 @@ const NegativeLeaveBalance = (props) => {
         </Col>
         <Col sm={10}>
           <div className={styles.rightPart}>
-            <Form.Item>
-              <InputNumber
-                prefix="days"
-                min={0}
-                max={100000}
-                defaultValue="0"
-                onChange={onChange}
-              />
-              <span className={styles.prefix}>days</span>
-            </Form.Item>
+            <div style={{ marginRight: 16 }}>
+              <Form.Item>
+                <InputNumber
+                  prefix="days"
+                  min={0}
+                  max={100000}
+                  defaultValue="0"
+                  onChange={onChange}
+                />
+                <span className={styles.prefix}>days</span>
+              </Form.Item>
+            </div>
             <div className={styles.viewTypeSelector}>
-              <Radio.Group buttonStyle="solid">
+              <Radio.Group buttonStyle="solid" defaultValue="Day">
                 <Radio.Button value="Day">Day</Radio.Button>
                 <Radio.Button value="Hours">Hours</Radio.Button>
               </Radio.Group>

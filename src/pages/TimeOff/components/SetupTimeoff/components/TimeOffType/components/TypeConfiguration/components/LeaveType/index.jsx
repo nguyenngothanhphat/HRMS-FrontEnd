@@ -3,17 +3,15 @@ import React from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
-const LeaveType = (props) => {
-  const { dispatch } = props;
-
+const LeaveType = () => {
   return (
-    <Card title="Leave Type" className={styles.LeaveType}>
-      <Row gutter={[24, 24]}>
-        <Col sm={8}>
-          <span className={styles.label}>Enter the name of the leave Type</span>
-        </Col>
+    <Card title="Leave Type Name" className={styles.LeaveType}>
+      <Row gutter={[24, 24]} align="middle">
         <Col sm={10}>
-          <Form.Item>
+          <span className={styles.label}>Enter the name of the leave type</span>
+        </Col>
+        <Col sm={8}>
+          <Form.Item name="name">
             <Input placeholder="Type Name" />
           </Form.Item>
         </Col>

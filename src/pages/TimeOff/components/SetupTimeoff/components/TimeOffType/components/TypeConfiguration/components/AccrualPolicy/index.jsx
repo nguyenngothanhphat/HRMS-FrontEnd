@@ -1,4 +1,4 @@
-import { Card, Col, Radio, Row, Space } from 'antd';
+import { Button, Card, Col, Form, Radio, Row, Space } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
 import AccrualRate from './components/AccrualRate';
@@ -22,7 +22,7 @@ const AccrualPolicy = () => {
     <Card title="Accrual Policy" className={styles.AccrualPolicy}>
       <div className={styles.accrualMethod}>
         <span className={styles.label}>Accrual Method</span>
-        <Radio.Group name="radiogroup" defaultValue={1}>
+        <Radio.Group name="accrualMethod" defaultValue={1}>
           <Space direction="vertical">
             <Space direction="vertical">
               <Radio value={1}>Unlimited</Radio>
@@ -40,11 +40,22 @@ const AccrualPolicy = () => {
         <span className={styles.label}>Accrual Rate</span>
         <div className={styles.items}>
           <Row gutter={[24, 24]}>
-            {data.map((x, i) => (
-              <Col span={24}>
-                <AccrualRate key={`${i + 1}`} item={x} />
-              </Col>
-            ))}
+            <Form.List name="accrualRate">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map(({ key, name }) => (
+                    <Col span={24} key={key}>
+                      <AccrualRate name={name} remove={remove} />
+                    </Col>
+                  ))}
+                  <Col span={24}>
+                    <Form.Item>
+                      <Button onClick={add}>Add a new accrual rate</Button>
+                    </Form.Item>
+                  </Col>
+                </>
+              )}
+            </Form.List>
           </Row>
         </div>
       </div>

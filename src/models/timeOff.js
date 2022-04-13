@@ -217,7 +217,7 @@ const timeOff = {
         dialog(errors);
       }
     },
-    *getDataTimeOffTypeById({ payload }, { call, put }) {
+    *fetchTimeOffTypeById({ payload }, { call, put }) {
       let response = {}
       try {
         response = yield call(getTimeOffTypeById, {

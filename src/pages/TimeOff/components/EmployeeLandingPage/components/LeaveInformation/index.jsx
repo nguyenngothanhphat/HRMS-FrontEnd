@@ -87,7 +87,7 @@ const CollapseInformation = (props) => {
         <Row className={styles.leaveProgressBars}>
           {typesOfSpecialLeaves.map((type, index) => {
             const { currentAllowance = 0, defaultSettings = {} } = type;
-            if (defaultSettings !== null) {
+            if (defaultSettings) {
               const { name = '', shortType = '' } = defaultSettings;
               return (
                 <Col key={`${index + 1}`} span={24}>
