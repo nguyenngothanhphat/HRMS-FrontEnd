@@ -9,11 +9,11 @@ moment.locale('en');
 
 export default class HolidayCalendar extends PureComponent {
   checkFutureDay = (date) => {
-    return moment.utc(date).isAfter(moment.utc());
+    return moment(date).isAfter(moment());
   };
 
   checkWeekDay = (day, month, year) => {
-    const weekDayName = moment.utc(`${month * 1}/${day * 1}/${year * 1}`).format('ddd');
+    const weekDayName = moment(`${month * 1}/${day * 1}/${year * 1}`).format('ddd');
     return weekDayName;
   };
 
