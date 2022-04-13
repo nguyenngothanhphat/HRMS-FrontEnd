@@ -56,7 +56,7 @@ const LeaveTimeRow = (props) => {
   if (BY_HOUR) {
     return (
       <>
-        {moment.utc(eachDate).weekday() !== 6 && moment.utc(eachDate).weekday() !== 0 && (
+        {moment(eachDate).weekday() !== 6 && moment(eachDate).weekday() !== 0 && (
           <Row
             className={styles.LeaveTimeRow}
             key={`${index + 1}`}
@@ -65,11 +65,9 @@ const LeaveTimeRow = (props) => {
             gutter={[0, 8]}
           >
             <Col span={TIMEOFF_COL_SPAN_2.DATE}>
-              {moment.utc(eachDate).locale('en').format(TIMEOFF_DATE_FORMAT)}
+              {moment(eachDate).locale('en').format(TIMEOFF_DATE_FORMAT)}
             </Col>
-            <Col span={TIMEOFF_COL_SPAN_2.DAY}>
-              {moment.utc(eachDate).locale('en').format('dddd')}
-            </Col>
+            <Col span={TIMEOFF_COL_SPAN_2.DAY}>{moment(eachDate).locale('en').format('dddd')}</Col>
             <Col span={TIMEOFF_COL_SPAN_2.START_TIME}>
               <Form.Item
                 name={[index, 'startTime']}
@@ -130,7 +128,7 @@ const LeaveTimeRow = (props) => {
   }
   return (
     <>
-      {moment.utc(eachDate).weekday() !== 6 && moment.utc(eachDate).weekday() !== 0 && (
+      {moment(eachDate).weekday() !== 6 && moment(eachDate).weekday() !== 0 && (
         <Row
           className={styles.LeaveTimeRow}
           key={`${index + 1}`}
@@ -139,11 +137,9 @@ const LeaveTimeRow = (props) => {
           gutter={[0, 8]}
         >
           <Col span={TIMEOFF_COL_SPAN_1.DATE}>
-            {moment.utc(eachDate).locale('en').format(TIMEOFF_DATE_FORMAT)}
+            {moment(eachDate).locale('en').format(TIMEOFF_DATE_FORMAT)}
           </Col>
-          <Col span={TIMEOFF_COL_SPAN_1.DAY}>
-            {moment.utc(eachDate).locale('en').format('dddd')}
-          </Col>
+          <Col span={TIMEOFF_COL_SPAN_1.DAY}>{moment(eachDate).locale('en').format('dddd')}</Col>
           <Col span={TIMEOFF_COL_SPAN_1.COUNT}>
             <Form.Item
               name={[index, 'period']}

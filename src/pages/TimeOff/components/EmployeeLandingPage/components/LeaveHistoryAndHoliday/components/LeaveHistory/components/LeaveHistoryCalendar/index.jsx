@@ -9,7 +9,7 @@ const LeaveHistoryCalendar = (props) => {
   const { leavingList = [] } = props;
 
   const checkFutureDay = (date) => {
-    return moment.utc(date).isAfter(moment.utc());
+    return moment(date).isAfter(moment());
   };
 
   const renderData = (id) => {
