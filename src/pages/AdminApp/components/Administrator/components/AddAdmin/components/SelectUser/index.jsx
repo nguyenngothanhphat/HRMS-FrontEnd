@@ -135,8 +135,8 @@ class SelectUser extends PureComponent {
     } = this.props;
 
     const formatListLocation = companyLocationList.filter((loc) => {
-      const { company: { _id = '' } = {} } = loc;
-      return _id === getCurrentCompany();
+      const { company = '' } = loc;
+      return company === getCurrentCompany();
     });
     return (
       <div className={styles.assignUser}>

@@ -46,7 +46,7 @@ class SelectUser extends PureComponent {
 
     const currentCompany = getCurrentCompany();
     const filterListLocation = companyLocationList.filter(
-      (item) => item.company._id === currentCompany,
+      (item) => item.company === currentCompany,
     );
 
     return (
