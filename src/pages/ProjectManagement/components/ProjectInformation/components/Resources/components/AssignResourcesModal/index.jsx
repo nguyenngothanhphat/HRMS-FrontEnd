@@ -50,7 +50,7 @@ const AssignResourcesModal = (props) => {
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [step, setStep] = useState(1);
   const [selectedResources, setSelectedResources] = useState([]);
-  const viewModeAdmin = permissions.viewModeAdmin !== -1;
+  const adminMode = permissions.viewModeAdmin !== -1;
 
   // functions
   const onBack = () => {
@@ -74,7 +74,7 @@ const AssignResourcesModal = (props) => {
         title: [titleId],
         ...filter,
         employeeId,
-        modeAdminView: viewModeAdmin
+        adminMode
       },
     });
   };

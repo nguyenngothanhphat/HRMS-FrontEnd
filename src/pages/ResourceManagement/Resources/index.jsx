@@ -205,29 +205,27 @@ class Resources extends Component {
     let locationOptions = [];
     let divisionOptions = [];
     if (viewModeCountry) {
-      locationOptions = listLocationsByCompany
-        ? listLocationsByCompany.filter((x) => {
-          const countryOfList = x.headQuarterAddress ? x.headQuarterAddress.country : ''
-          if(countryOfList._id === countryOfUser) {
-            return {
-              _id: x._id,
-              name: x.name,
-            }
-          }
-          return false
-        })
-        : [];
-    } else {
-        locationOptions = listLocationsByCompany ? listLocationsByCompany.map((x) => {
+      locationOptions = listLocationsByCompany.filter((x) => {
+        const countryOfList = x.headQuarterAddress ? x.headQuarterAddress.country : ''
+        if(countryOfList._id === countryOfUser) {
           return {
             _id: x._id,
             name: x.name,
-          };
-        }) : [];
+          }
+        }
+        return false
+      })
+    } else {
+      locationOptions = listLocationsByCompany.map((x) => {
+        return {
+          _id: x._id,
+          name: x.name,
+        };
+      })
     } 
     
     if (viewModeDivision) {
-      divisionOptions = divisionList ? divisionList.filter((x) => {
+      divisionOptions = divisionList.filter((x) => {
         if (x.name === divisionOfUser) {
           return {
             _id: x.name,
@@ -235,14 +233,14 @@ class Resources extends Component {
           };
         }
         return false
-      }): [];
+      })
     } else {
-      divisionOptions = divisionList ? divisionList.map((x) => {
+      divisionOptions = divisionList.map((x) => {
         return {
           _id: x.name,
           name: x.name,
         };
-      }) : [];
+      })
     }
 
     return (
@@ -291,9 +289,9 @@ class Resources extends Component {
     const viewResourceListPermission = permissions.viewResourceListTab !== -1;
     const viewUtilizationPermission = permissions.viewUtilizationTab !== -1;
     const viewResourceProjectListPermission = permissions.viewResourceProjectListTab !== -1;
-    // const viewModeAdmin = permissions.viewModeAdmin !== -1;
-    const viewModeCountry = permissions.viewModeCountry !== -1;
-    const viewModeDivision = permissions.viewModeDivision !== -1;
+    // const viewModeAdmin = permissions.viewResourceAdminMode !== -1;
+    const viewModeCountry = permissions.viewResourceCountryMode !== -1;
+    const viewModeDivision = permissions.viewResourceDivisionMode !== -1;
 
     return (
       <div className={styles.ResourcesManagement}>

@@ -29,7 +29,7 @@ const ResourceList = (props) => {
   const checkRoleManager =
     currentUserRoles.length > 0 ? currentUserRoles.includes('manager') : false;
   const modifyResourcePermission = permissions.modifyResource !== -1;
-  const viewModeAdmin = permissions.viewModeAdmin !== -1;
+  const adminMode = permissions.viewModeAdmin !== -1;
 
   const [pageSelected, setPageSelected] = useState(1);
   const [availableStatusState, setAvailableStatusState] = useState('ALL');
@@ -85,7 +85,7 @@ const ResourceList = (props) => {
         location: selectedLocations,
         division: selectedDivisions,
         employeeId,
-        modeAdminView: viewModeAdmin
+        adminMode 
       },
     });
   };
