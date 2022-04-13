@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col, Input, Form, Select } from 'antd';
-import { getCurrentCompany } from '@/utils/authority';
 import { connect } from 'umi';
+import { getCurrentCompany } from '@/utils/authority';
 
 import styles from './index.less';
 
 const Option = { Select };
 
-@connect(({ locationSelection: { listLocationsByCompany = [] } = {} }) => ({
-  listLocationsByCompany,
+@connect(({ location: { companyLocationList = [] } = {} }) => ({
+  companyLocationList,
 }))
 class SelectUser extends PureComponent {
   formRef = React.createRef();
@@ -40,12 +40,12 @@ class SelectUser extends PureComponent {
   renderContent = () => {
     const {
       dataAdmin: { manageLocation = [], usermap: { firstName = '', email: email1 = '' } = {} } = {},
-      onBackValues: { name: newName = '', email: email2 = '', location = [] } = {},
-      listLocationsByCompany = [],
+      onBackValues: { name: newName = '', email: email2 = '', location = [] } = {} || {},
+      companyLocationList = [],
     } = this.props;
 
     const currentCompany = getCurrentCompany();
-    const filterListLocation = listLocationsByCompany.filter(
+    const filterListLocation = companyLocationList.filter(
       (item) => item.company._id === currentCompany,
     );
 

@@ -29,6 +29,7 @@ const ResourceList = (props) => {
   const checkRoleManager =
     currentUserRoles.length > 0 ? currentUserRoles.includes('manager') : false;
   const modifyResourcePermission = permissions.modifyResource !== -1;
+  const adminMode = permissions.viewResourceAdminMode !== -1;
 
   const [pageSelected, setPageSelected] = useState(1);
   const [availableStatusState, setAvailableStatusState] = useState('ALL');
@@ -195,7 +196,7 @@ const ResourceList = (props) => {
   useEffect(() => {
     if (isSearching && pageSelected !== 1) {
       setPageSelected(1);
-    } else {
+    } else if (isSearching) {
       fetchResourceList();
     }
   }, [searchKey]);
@@ -260,24 +261,18 @@ export default connect(
       currentPayload = {},
     } = {},
     user: {
-      currentUser: {
-        location: { _id: locationID = '' } = {},
-        company: { _id: companyID } = {},
-        employee: { _id: employeeId = '' },
-      } = {},
+      currentUser: { employee: { _id: employeeId = '' } = {} } = {},
       permissions = {},
       currentUserRoles = [],
     } = {},
     loading,
-    locationSelection: { listLocationsByCompany = [] },
+    location: { companyLocationList = [] },
   }) => ({
     loading: loading.effects['resourceManagement/getResources'],
     resourceList,
     total,
-    locationID,
-    companyID,
     projectList,
-    listLocationsByCompany,
+    companyLocationList,
     permissions,
     selectedDivisions,
     selectedLocations,

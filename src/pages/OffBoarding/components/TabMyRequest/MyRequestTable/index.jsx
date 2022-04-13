@@ -3,13 +3,13 @@ import React, { PureComponent } from 'react';
 import { Table, Popover, Divider, Row, Col, Avatar, Tooltip, message } from 'antd';
 import moment from 'moment';
 import { history, connect } from 'umi';
+import { UserOutlined } from '@ant-design/icons';
 import { getCurrentTimeOfTimezoneOption } from '@/utils/times';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
-import { UserOutlined } from '@ant-design/icons';
 import t from './index.less';
 
-@connect(({ locationSelection: { listLocationsByCompany = [] } = {} }) => ({
-  listLocationsByCompany,
+@connect(({ location: { companyLocationList = [] } = {} }) => ({
+  companyLocationList,
 }))
 class TableManager extends PureComponent {
   constructor(props) {
@@ -70,7 +70,7 @@ class TableManager extends PureComponent {
   };
 
   popupContentHr = (data) => {
-    const { timezoneList, listLocationsByCompany } = this.props;
+    const { timezoneList, companyLocationList } = this.props;
     const { currentTime } = this.state;
     const {
       generalInfo: {
@@ -91,7 +91,7 @@ class TableManager extends PureComponent {
       location: { _id = '' } = {},
     } = data;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
-    let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
+    let filterLocation = companyLocationList.map((item) => (item._id === _id ? item : null));
     filterLocation = filterLocation.filter((item) => item !== null);
 
     const legalName = `${firstName} ${middleName} ${lastName}`;

@@ -18,7 +18,7 @@ import styles from './index.less';
   ({
     newCandidateForm: { rookieId = '', data, checkMandatory, currentStep, tempData } = {},
     loading,
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
     user: { companiesOfUser = [] } = {},
   }) => ({
     rookieId,
@@ -26,7 +26,7 @@ import styles from './index.less';
     checkMandatory,
     currentStep,
     tempData,
-    listLocationsByCompany,
+    companyLocationList,
     companiesOfUser,
     loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
     loadingUpdateByHR: loading.effects['newCandidateForm/updateByHR'],

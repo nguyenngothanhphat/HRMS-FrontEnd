@@ -4,6 +4,7 @@ import { RightOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { history } from 'umi';
 import styles from './index.less';
+import { TIMEOFF_COLOR } from '@/utils/timeOff';
 
 export default class EventDetailBox extends PureComponent {
   goToLeaveRequest = (_id) => {
@@ -21,23 +22,10 @@ export default class EventDetailBox extends PureComponent {
       duration = '',
       typeName = '',
       _id = '',
+      status = '',
     } = data;
     return (
       <Row onClick={() => this.goToLeaveRequest(_id)} className={styles.EventDetailBox}>
-        {/* {from === to ? (
-          <>
-            <Col xs={4} className={styles.dateAndMonth} style={{ justifyContent: 'center' }}>
-              <span className={styles.container}>
-                <span className={styles.month}>{moment.utc(from).locale('en').format('MMM')}</span>
-                <span className={styles.day}>{moment.utc(from).locale('en').format('DD')}</span>
-              </span>
-            </Col>
-            <Col xs={13} className={styles.eventOfDay}>
-              {name}
-            </Col>
-          </>
-        ) : (
-          <> */}
         <Col
           xs={8}
           className={styles.dateAndMonth}
@@ -58,15 +46,15 @@ export default class EventDetailBox extends PureComponent {
         <Col xs={9} className={styles.eventOfDay}>
           {typeName}
         </Col>
-        {/* </>
-        )} */}
-
         <Col
           className={
             color === 1
               ? `${styles.dayInWeek} ${styles.upcomingColor}`
               : `${styles.dayInWeek} ${styles.leaveTakenColor}`
           }
+          style={{
+            color: TIMEOFF_COLOR[status],
+          }}
           xs={7}
         >
           {`-`}

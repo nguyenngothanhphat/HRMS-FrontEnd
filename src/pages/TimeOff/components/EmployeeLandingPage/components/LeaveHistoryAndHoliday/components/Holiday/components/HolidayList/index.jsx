@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import moment from 'moment';
 import { Row, Col } from 'antd';
 import styles from './index.less';
+import EmptyComponent from '@/components/Empty';
 
 export default class HolidayList extends PureComponent {
   render() {
@@ -29,11 +30,7 @@ export default class HolidayList extends PureComponent {
             </Row>
           );
         })}
-        {holidaysList.length === 0 && (
-          <Row className={styles.eachRow_noData}>
-            <span>No holiday data</span>
-          </Row>
-        )}
+        {holidaysList.length === 0 && <EmptyComponent />}
       </div>
     );
   }

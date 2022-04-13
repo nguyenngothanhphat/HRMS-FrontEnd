@@ -50,13 +50,13 @@ export function formatData(rawData, projectList) {
     const employeeName = `${generalInfo.legalName} ${userName ? `(${userName})` : ''}`;
     const newObj = {
       avatar: generalInfo.avatar,
-      employeeId: obj._id,
+      employeeId: obj?._id,
       employeeName: handleLongText(employeeName.trim(), 25),
       availableStatus,
-      division: obj.tagDivision,
-      designation: titleInfo.name,
-      experience: generalInfo.totalExp,
-      comment: obj.commentResource,
+      division: obj?.tagDivision,
+      designation: titleInfo?.name,
+      experience: generalInfo?.totalExp,
+      comment: obj?.commentResource,
       projectName: '',
       utilization: 0,
       billStatus: '-',
@@ -75,17 +75,17 @@ export function formatData(rawData, projectList) {
     } else {
       // eslint-disable-next-line no-restricted-syntax
       for (const p of projects) {
-        const project = projectList.find((x) => x.id === p.project.id);
+        const project = projectList.find((x) => x.id === p?.project?.id);
         const pObj = cloneObj(newObj);
-        pObj.projectName = project.projectName;
-        pObj.projectId = p.projectId;
-        pObj.startDate = parseDate(p.startDate);
-        pObj.endDate = parseDate(p.endDate);
-        pObj.billStatus = p.status || '-';
-        pObj.project = project.id;
-        pObj.utilization = p.utilization || 0;
-        pObj.revisedEndDate = parseDate(p.revisedEndDate);
-        pObj.resourceId = p.id;
+        pObj.projectName = project?.projectName;
+        pObj.projectId = p?.projectId;
+        pObj.startDate = parseDate(p?.startDate);
+        pObj.endDate = parseDate(p?.endDate);
+        pObj.billStatus = p?.status || '-';
+        pObj.project = project?.id;
+        pObj.utilization = p?.utilization || 0;
+        pObj.revisedEndDate = parseDate(p?.revisedEndDate);
+        pObj.resourceId = p?.id;
         dataList.push(pObj);
       }
     }

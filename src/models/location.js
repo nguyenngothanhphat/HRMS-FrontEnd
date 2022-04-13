@@ -1,30 +1,38 @@
 // import { history } from 'umi';
-import { setCurrentLocation, getCurrentLocation } from '@/utils/authority';
+import {
+  setCurrentLocation,
+  getCurrentLocation,
+  getCurrentTenant,
+  getCurrentCompany,
+} from '@/utils/authority';
 import { dialog } from '@/utils/utils';
-import {getLocationListByCompany,getLocationListByParentCompany} from '../services/locationSelection';
+import { getLocationListByCompany, getLocationListByParentCompany } from '../services/location';
 
-const LocationSelection = {
-  namespace: 'locationSelection',
+const Location = {
+  namespace: 'location',
   state: {
-    listLocationsByCompany: [],
+    companyLocationList: [],
   },
   effects: {
     *fetchLocationsByCompany({ payload }, { call, put }) {
       try {
-        const res = yield call(getLocationListByCompany, payload);
+        const res = yield call(getLocationListByCompany, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data = [] } = res;
 
         if (statusCode !== 200) throw res;
         yield put({
           type: 'save',
-          payload: { listLocationsByCompany: data },
+          payload: { companyLocationList: data },
         });
 
         const currentLocation = getCurrentLocation();
         if (!currentLocation || currentLocation === 'undefined') {
           setCurrentLocation(data.length > 0 ? data[0]?._id : '');
         }
-
 
         return data;
       } catch (errors) {
@@ -40,19 +48,8 @@ const LocationSelection = {
         if (statusCode !== 200) throw res;
         yield put({
           type: 'save',
-          payload: { listLocationsByCompany: data },
+          payload: { companyLocationList: data },
         });
-        // if (!isOwner()) {
-        //   const currentLocation = getCurrentLocation();
-        //   if (!currentLocation || currentLocation === 'undefined') {
-        //     const hasHeadQuarter = data.find((value) => value?.isHeadQuarter);
-        //     if (hasHeadQuarter) {
-        //       setCurrentLocation(hasHeadQuarter._id);
-        //     } else {
-        //       setCurrentLocation(data.length > 0 ? data[0]?._id : '');
-        //     }
-        //   }
-        // }
 
         return data;
       } catch (errors) {
@@ -71,4 +68,4 @@ const LocationSelection = {
   },
 };
 
-export default LocationSelection;
+export default Location;

@@ -15,7 +15,7 @@ class PopoverInfo extends Component {
   render() {
     const {
       data = {},
-      listLocationsByCompany = {},
+      companyLocationList = {},
       propsState: { currentTime, timezoneList } = {},
     } = this.props;
 
@@ -37,7 +37,7 @@ class PopoverInfo extends Component {
     } = data;
 
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
-    let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
+    let filterLocation = companyLocationList.map((item) => (item._id === _id ? item : null));
     filterLocation = filterLocation.filter((item) => item !== null);
 
     if (filterLocation.length === 0) {

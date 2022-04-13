@@ -98,7 +98,7 @@ const employeeProfile = {
     listSkill: [],
     listTitle: [],
     listTitleByDepartment: [],
-    listLocationsByCompany: [],
+    companyLocationList: [],
     locations: [],
     employeeTypes: [],
     departments: [],
@@ -145,7 +145,7 @@ const employeeProfile = {
   },
   effects: {
     *fetchEmployeeIdByUserId({ payload }, { call, put }) {
-      let response = {}
+      let response = {};
       try {
         response = yield call(getGeneralInfoByUserId, payload);
         const { statusCode, data } = response;
@@ -159,7 +159,7 @@ const employeeProfile = {
       } catch (error) {
         dialog(error);
       }
-      return response
+      return response;
     },
 
     *fetchGeneralInfo(
@@ -1229,7 +1229,7 @@ const employeeProfile = {
         if (statusCode !== 200) throw res;
         yield put({
           type: 'save',
-          payload: { listLocationsByCompany: data },
+          payload: { companyLocationList: data },
         });
       } catch (errors) {
         dialog(errors);
@@ -1591,7 +1591,7 @@ const employeeProfile = {
         listSkill: [],
         listTitle: [],
         listTitleByDepartment: [],
-        listLocationsByCompany: [],
+        companyLocationList: [],
         locations: [],
         employeeTypes: [],
         departments: [],

@@ -159,7 +159,9 @@ const UserModel = {
 
           // DONE
           const currentUserRoles = roles.map((role) => role.toLowerCase());
-          formatArrRoles = [...new Set([...formatArrRoles, ...currentUserRoles])];
+          if (!checkIsAdmin) {
+            formatArrRoles = [...new Set([...formatArrRoles, ...currentUserRoles])];
+          }
           setAuthority(formatArrRoles);
           localStorage.setItem('switchRoleAbility', switchRoleAbility);
 

@@ -64,9 +64,7 @@ class View extends PureComponent {
     const {
       dataAPI = {},
       AdhaarCard = {},
-      currentUser: {
-        employee: { _id: idEmployee = '' },
-      },
+      currentUser: { employee: { _id: idEmployee = '' } = {} || {} } = {},
       permissions = [],
       idCurrentEmployee = '',
       locationProp: { headQuarterAddress: { country = '' } = {} } = {},

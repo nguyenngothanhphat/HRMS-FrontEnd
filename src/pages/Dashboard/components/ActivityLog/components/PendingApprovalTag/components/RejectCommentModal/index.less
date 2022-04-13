@@ -1,0 +1,103 @@
+.RejectCommentModal {
+  :global {
+    .ant-modal-content {
+      border-radius: 10px;
+    }
+
+    .ant-input:focus {
+      border-color: #2c6df9;
+      outline: 0;
+      box-shadow: unset;
+    }
+    .ant-modal-content {
+      border-radius: 10px;
+    }
+    .ant-modal-body {
+      padding: 0;
+    }
+    .ant-modal-close {
+      display: none;
+    }
+    .ant-picker,
+    .ant-input {
+      border-radius: 5px !important;
+      min-height: 42px !important;
+      font-size: 13px;
+    }
+
+    .ant-select-selector {
+      border-radius: 5px !important;
+      height: 42px !important;
+      font-size: 13px;
+      padding-top: 5px !important;
+    }
+
+    // text area
+    .ant-form-item-control-input-content {
+      textarea {
+        padding-top: 9px;
+      }
+    }
+
+    .ant-input {
+      padding: 10px;
+    }
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 32px;
+    .title {
+      font-weight: 700;
+      font-size: 18px;
+      color: #161c29;
+    }
+    .subtitle1 {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #707177;
+    }
+
+    .formContainer {
+      .formInput {
+        margin: 15px 0;
+      }
+    }
+    .operationButtons {
+      display: flex;
+      justify-content: flex-start;
+      .proceedBtn {
+      }
+      .cancelBtn {
+        margin-left: 20px;
+        span {
+          color: #161c29 !important;
+        }
+        background-color: #ffa1001a !important;
+      }
+    }
+
+    :global {
+      .ant-modal-body {
+        border-radius: 10px;
+      }
+      .ant-btn {
+        margin-top: 15px;
+        background-color: #ffa100;
+        border: none;
+        border-radius: 30px;
+        height: 40px;
+        // width: 128px;
+        padding: 0 30px;
+        span {
+          color: white;
+          font-weight: 700;
+        }
+        &:hover {
+          background-color: #ffa100cc; // hex with alpha 0.8
+        }
+      }
+    }
+  }
+}
