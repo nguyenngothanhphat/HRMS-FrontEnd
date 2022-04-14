@@ -45,9 +45,6 @@ const AddProjectModal = (props) => {
       });
       dispatch({
         type: 'projectManagement/fetchDivisionListEffect',
-        payload: {
-          name: 'Engineering',
-        },
       });
       dispatch({
         type: 'projectManagement/fetchEmployeeListEffect',
@@ -164,8 +161,7 @@ const AddProjectModal = (props) => {
                   showSearch
                   allowClear
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   {customerList.map((x) => (
                     <Option value={x.customerId}>{x.legalName}</Option>
@@ -186,8 +182,7 @@ const AddProjectModal = (props) => {
                   showSearch
                   allowClear
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   {projectTypeList.map((x) => (
                     <Option value={x.id}>{x.type_name}</Option>
@@ -255,8 +250,7 @@ const AddProjectModal = (props) => {
                   showSearch
                   allowClear
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   {projectStatusList.map((x) => (
                     <Option value={x.id}>{x.status}</Option>
@@ -329,8 +323,7 @@ const AddProjectModal = (props) => {
                   showSearch
                   allowClear
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   {employeeList.map((x) => (
                     <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
@@ -415,8 +408,7 @@ const AddProjectModal = (props) => {
                   showSearch
                   allowClear
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   {employeeList.map((x) => (
                     <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
@@ -437,8 +429,7 @@ const AddProjectModal = (props) => {
                   showSearch
                   allowClear
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   {divisionList.map((x) => (
                     <Option value={x.name}>{x.name}</Option>
@@ -460,8 +451,7 @@ const AddProjectModal = (props) => {
                   showSearch
                   allowClear
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   {tagList.map((x) => (
                     <Option value={x.tag_name}>{x.tag_name}</Option>

@@ -131,9 +131,6 @@ const ResourceList = (props) => {
   const fetchDivisions = async () => {
     dispatch({
       type: 'resourceManagement/fetchDivisions',
-      payload: {
-        name: 'Engineering',
-      },
     });
   };
 
