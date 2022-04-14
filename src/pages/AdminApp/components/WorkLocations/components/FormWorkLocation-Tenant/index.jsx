@@ -163,14 +163,8 @@ class FormWorkLocationTenant extends Component {
   };
 
   saveLocationAPI = async (values, locationId) => {
-    const {
-      dispatch,
-      manageTenant = [],
-      locationInfo = {},
-      trackingEditButton = () => {},
-    } = this.props;
+    const { dispatch, locationInfo = {}, trackingEditButton = () => {} } = this.props;
     const tenantId = getCurrentTenant();
-    const companyId = getCurrentCompany();
 
     const {
       name,
@@ -230,11 +224,7 @@ class FormWorkLocationTenant extends Component {
         });
         // refresh locations in dropdown menu (owner)
         dispatch({
-          type: 'locationSelection/fetchLocationListByParentCompany',
-          payload: {
-            company: companyId,
-            tenantIds: manageTenant,
-          },
+          type: 'location/fetchLocationsByCompany',
         });
         setTimeout(() => {
           this.setState({
@@ -413,8 +403,7 @@ class FormWorkLocationTenant extends Component {
                     disabled={disableInput}
                     onChange={this.onChangeCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     {listCountry.map((item) => (
                       <Option key={item._id}>{item.name}</Option>
@@ -434,8 +423,7 @@ class FormWorkLocationTenant extends Component {
                     showSearch
                     disabled={disableInput || !newCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     {listState.map((item) => (
                       <Option key={item}>{item}</Option>

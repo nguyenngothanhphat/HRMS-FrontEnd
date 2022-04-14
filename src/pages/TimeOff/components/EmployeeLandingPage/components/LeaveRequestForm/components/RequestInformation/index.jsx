@@ -1,4 +1,15 @@
-import { Button, Col, DatePicker, Form, Input, message, Row, Select, Skeleton } from 'antd';
+import {
+  Button,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  message,
+  Row,
+  Select,
+  Skeleton,
+  Tooltip,
+} from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
@@ -252,7 +263,7 @@ const RequestInformation = (props) => {
 
   // GET LIST OF DAYS FROM DAY A TO DAY B
   const getDateLists = (startDate, endDate, selectedTypeProp) => {
-    const dates = [];
+    let dates = [];
     const endDateTemp = moment(endDate).clone();
 
     if ([C].includes(selectedTypeProp)) {
@@ -270,11 +281,11 @@ const RequestInformation = (props) => {
     }
 
     if (startDate && endDate) {
-      const now = moment(startDate).clone();
+      const now = moment(startDate);
       while (now.isSameOrBefore(moment(endDateTemp), 'day')) {
         if (!checkIfWeekEnd(now)) {
           if (checkIfWholeDayAvailable(now) || checkIfHalfDayAvailable(now)) {
-            dates.push(now.format(TIMEOFF_DATE_FORMAT));
+            dates = [...dates, moment(now).format(TIMEOFF_DATE_FORMAT)];
           }
         }
         now.add(1, 'days');
@@ -300,8 +311,8 @@ const RequestInformation = (props) => {
   };
 
   const getAutoToDate = (allowance) => {
-    if (allowance !== 0) return moment.utc(durationFrom).add(allowance - 1, 'day');
-    return moment.utc(durationFrom).add(allowance, 'day');
+    if (allowance !== 0) return moment(durationFrom).add(allowance - 1, 'day');
+    return moment(durationFrom).add(allowance, 'day');
   };
 
   // GET TIME OFF TYPE BY ID
@@ -401,8 +412,8 @@ const RequestInformation = (props) => {
       if (selectedType !== C && selectedType !== D) {
         result = result.filter(
           (value) =>
-            moment.utc(value.date).weekday() !== 6 &&
-            moment.utc(value.date).weekday() !== 0 &&
+            moment(value.date).weekday() !== 6 &&
+            moment(value.date).weekday() !== 0 &&
             Object.keys(value).length !== 0,
         );
       } else {
@@ -436,7 +447,7 @@ const RequestInformation = (props) => {
           toDate: durationTo,
           duration,
           leaveDates: leaveDatesPayload,
-          onDate: moment.utc(),
+          onDate: moment(),
           description,
           approvalManager: managerId, // id
           cc: personCC,
@@ -488,10 +499,10 @@ const RequestInformation = (props) => {
           type: timeOffType,
           status: IN_PROGRESS,
           subject,
-          fromDate: durationFrom,
-          toDate: durationTo,
+          fromDate: moment(durationFrom),
+          toDate: moment(durationTo),
           leaveDates: leaveDatesPayload,
-          onDate: moment.utc(),
+          onDate: moment(),
           description,
           duration: Math.round(duration * 100) / 100,
           cc: personCC,
@@ -755,7 +766,10 @@ const RequestInformation = (props) => {
         check = false;
         viewingLeaveDates.forEach((val2) => {
           const { date = '' } = val2;
-          if (moment(date).locale('en').format(TIMEOFF_DATE_FORMAT) === val1) {
+          if (
+            moment(date).locale('en').format(TIMEOFF_DATE_FORMAT) ===
+            moment(val1).locale('en').format(TIMEOFF_DATE_FORMAT)
+          ) {
             resultDates.push(val2);
             check = true;
           }
@@ -952,7 +966,7 @@ const RequestInformation = (props) => {
             </Col>
             <Col span={12}>
               <div className={styles.extraTimeSpent}>
-                <Row className={styles.header} gutter={[8, 8]}>
+                <Row className={styles.header} gutter={[0, 8]}>
                   <Col span={TIMEOFF_COL_SPAN_1.DATE}>From</Col>
                   <Col span={TIMEOFF_COL_SPAN_1.DAY}>To</Col>
                   <Col span={TIMEOFF_COL_SPAN_1.COUNT}>No. of Days</Col>
@@ -995,7 +1009,7 @@ const RequestInformation = (props) => {
     const renderTableHeader = () => {
       if (showAllDateList && !BY_HOUR)
         return (
-          <Row className={styles.header} gutter={[8, 8]}>
+          <Row className={styles.header} gutter={[0, 8]}>
             <Col span={TIMEOFF_COL_SPAN_1.DATE}>Date</Col>
             <Col span={TIMEOFF_COL_SPAN_1.DAY}>Day</Col>
             <Col span={TIMEOFF_COL_SPAN_1.COUNT}>Count/Q.ty</Col>
@@ -1003,7 +1017,7 @@ const RequestInformation = (props) => {
         );
       if (showAllDateList && BY_HOUR)
         return (
-          <Row className={styles.header} gutter={[8, 8]}>
+          <Row className={styles.header} gutter={[0, 8]}>
             <Col span={TIMEOFF_COL_SPAN_2.DATE}>Date</Col>
             <Col span={TIMEOFF_COL_SPAN_2.DAY}>Day</Col>
             <Col span={TIMEOFF_COL_SPAN_2.START_TIME}>Start time</Col>
@@ -1014,7 +1028,7 @@ const RequestInformation = (props) => {
           </Row>
         );
       return (
-        <Row className={styles.header} gutter={[8, 8]}>
+        <Row className={styles.header} gutter={[0, 8]}>
           <Col span={TIMEOFF_COL_SPAN_1.DATE}>From</Col>
           <Col span={TIMEOFF_COL_SPAN_1.DAY}>To</Col>
           <Col span={TIMEOFF_COL_SPAN_1.COUNT}>No. of Days</Col>
@@ -1082,6 +1096,13 @@ const RequestInformation = (props) => {
     );
   };
 
+  const renderFormItem = (content) => {
+    if (!selectedTypeName) {
+      return <Tooltip title="Please select a Timeoff type to proceed">{content}</Tooltip>;
+    }
+    return content;
+  };
+
   // RETURN MAIN
   if (loadingMain) return <Skeleton />;
   return (
@@ -1145,17 +1166,19 @@ const RequestInformation = (props) => {
             <span>Subject</span> <span className={styles.mandatoryField}>*</span>
           </Col>
           <Col span={12}>
-            <Form.Item
-              name="subject"
-              rules={[
-                {
-                  required: needValidate,
-                  message: 'Please input subject!',
-                },
-              ]}
-            >
-              <Input placeholder="Enter Subject" disabled={!selectedTypeName} />
-            </Form.Item>
+            {renderFormItem(
+              <Form.Item
+                name="subject"
+                rules={[
+                  {
+                    required: needValidate,
+                    message: 'Please input subject!',
+                  },
+                ]}
+              >
+                <Input placeholder="Enter Subject" disabled={!selectedTypeName} />
+              </Form.Item>,
+            )}
           </Col>
           <Col span={6} />
         </Row>
@@ -1166,46 +1189,50 @@ const RequestInformation = (props) => {
           <Col span={12}>
             <Row gutter={['20', '0']}>
               <Col span={12}>
-                <Form.Item
-                  name="durationFrom"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please select a date!',
-                    },
-                  ]}
-                >
-                  <DatePicker
-                    disabledDate={disabledFromDate}
-                    format={TIMEOFF_DATE_FORMAT}
-                    onChange={(value) => {
-                      fromDateOnChange(value);
-                    }}
-                    placeholder="From Date"
-                    disabled={!selectedTypeName}
-                  />
-                </Form.Item>
+                {renderFormItem(
+                  <Form.Item
+                    name="durationFrom"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please select a date!',
+                      },
+                    ]}
+                  >
+                    <DatePicker
+                      disabledDate={disabledFromDate}
+                      format={TIMEOFF_DATE_FORMAT}
+                      onChange={(value) => {
+                        fromDateOnChange(value);
+                      }}
+                      placeholder="From Date"
+                      disabled={!selectedTypeName}
+                    />
+                  </Form.Item>,
+                )}
               </Col>
               <Col span={12}>
-                <Form.Item
-                  name="durationTo"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please select a date!',
-                    },
-                  ]}
-                >
-                  <DatePicker
-                    disabledDate={disabledToDate}
-                    format={TIMEOFF_DATE_FORMAT}
-                    disabled={!selectedTypeName || selectedType === C}
-                    onChange={(value) => {
-                      toDateOnChange(value);
-                    }}
-                    placeholder="To Date"
-                  />
-                </Form.Item>
+                {renderFormItem(
+                  <Form.Item
+                    name="durationTo"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please select a date!',
+                      },
+                    ]}
+                  >
+                    <DatePicker
+                      disabledDate={disabledToDate}
+                      format={TIMEOFF_DATE_FORMAT}
+                      disabled={!selectedTypeName || selectedType === C}
+                      onChange={(value) => {
+                        toDateOnChange(value);
+                      }}
+                      placeholder="To Date"
+                    />
+                  </Form.Item>,
+                )}
               </Col>
             </Row>
           </Col>
@@ -1225,22 +1252,24 @@ const RequestInformation = (props) => {
             <span>Description</span> <span className={styles.mandatoryField}>*</span>
           </Col>
           <Col span={12}>
-            <Form.Item
-              name="description"
-              rules={[
-                {
-                  required: needValidate,
-                  message: 'Please input description!',
-                },
-              ]}
-            >
-              <TextArea
-                autoSize={{ minRows: 3, maxRows: 6 }}
-                maxLength={250}
-                placeholder="The reason I am taking timeoff is …"
-                disabled={!selectedTypeName}
-              />
-            </Form.Item>
+            {renderFormItem(
+              <Form.Item
+                name="description"
+                rules={[
+                  {
+                    required: needValidate,
+                    message: 'Please input description!',
+                  },
+                ]}
+              >
+                <TextArea
+                  autoSize={{ minRows: 3, maxRows: 6 }}
+                  maxLength={250}
+                  placeholder="The reason I am taking timeoff is …"
+                  disabled={!selectedTypeName}
+                />
+              </Form.Item>,
+            )}
           </Col>
           <Col span={6} />
         </Row>
@@ -1250,56 +1279,59 @@ const RequestInformation = (props) => {
             <span>CC (only if you want to notify other than HR & your manager)</span>
           </Col>
           <Col span={12} className={styles.ccSelection}>
-            <Form.Item
-              name="personCC"
-              rules={[
-                {
-                  required: false,
-                },
-              ]}
-            >
-              <Select
-                mode="multiple"
-                allowClear
-                placeholder="Search a person you want to loop"
-                disabled={!selectedTypeName}
-                filterOption={(input, option) => {
-                  return (
-                    option.children[1].props.children.toLowerCase().indexOf(input.toLowerCase()) >=
-                    0
-                  );
-                }}
+            {renderFormItem(
+              <Form.Item
+                name="personCC"
+                rules={[
+                  {
+                    required: false,
+                  },
+                ]}
               >
-                {formatListEmail.map((value) => {
-                  const { _id = '', workEmail = '', avatar = '' } = value;
+                <Select
+                  mode="multiple"
+                  allowClear
+                  placeholder="Search a person you want to loop"
+                  disabled={!selectedTypeName}
+                  filterOption={(input, option) => {
+                    return (
+                      option.children[1].props.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                >
+                  {formatListEmail.map((value) => {
+                    const { _id = '', workEmail = '', avatar = '' } = value;
 
-                  return (
-                    <Option key={_id} value={_id}>
-                      <div style={{ display: 'inline', marginRight: '10px' }}>
-                        <img
-                          style={{
-                            borderRadius: '50%',
-                            width: '30px',
-                            height: '30px',
-                          }}
-                          src={avatar}
-                          alt="user"
-                          onError={(e) => {
-                            e.target.src = DefaultAvatar;
-                          }}
-                        />
-                      </div>
-                      <span
-                        style={{ fontSize: '13px', color: '#161C29' }}
-                        className={styles.ccEmail}
-                      >
-                        {workEmail}
-                      </span>
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
+                    return (
+                      <Option key={_id} value={_id}>
+                        <div style={{ display: 'inline', marginRight: '10px' }}>
+                          <img
+                            style={{
+                              borderRadius: '50%',
+                              width: '30px',
+                              height: '30px',
+                            }}
+                            src={avatar}
+                            alt="user"
+                            onError={(e) => {
+                              e.target.src = DefaultAvatar;
+                            }}
+                          />
+                        </div>
+                        <span
+                          style={{ fontSize: '13px', color: '#161C29' }}
+                          className={styles.ccEmail}
+                        >
+                          {workEmail}
+                        </span>
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>,
+            )}
           </Col>
           <Col span={6} />
         </Row>

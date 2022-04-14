@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import { Form, Button, Skeleton, notification } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import moment from 'moment';
 
 import { connect } from 'umi';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 // import ThirdStep from '@/pages/EmployeeProfile/components/EmploymentTab/components/HandleChanges/components/ThirdStep';
 import FormWorkLocation from './components/FormWorkLocation';
 import FormWorkLocationTenant from './components/FormWorkLocation-Tenant';
@@ -59,7 +59,7 @@ class WorkLocations extends PureComponent {
     const tenantId = getCurrentTenant();
     const companyId = getCurrentCompany();
 
-    const { dispatch, manageTenant = [] } = this.props;
+    const { dispatch } = this.props;
     // const { company, isNewTenant, locations: originLocations = [] } = companyDetails;
     // const listLocation = [...originLocations, ...locations];
     const { workLocations = [] } = values;
@@ -117,11 +117,7 @@ class WorkLocations extends PureComponent {
       });
       // refresh locations in dropdown menu (owner)
       dispatch({
-        type: 'locationSelection/fetchLocationListByParentCompany',
-        payload: {
-          company: companyId,
-          tenantIds: manageTenant,
-        },
+        type: 'location/fetchLocationsByCompany',
       });
     }
   };
@@ -142,7 +138,7 @@ class WorkLocations extends PureComponent {
     const tenantId = getCurrentTenant();
     const companyId = getCurrentCompany();
 
-    const { dispatch, manageTenant = [] } = this.props;
+    const { dispatch } = this.props;
     const payload = { id, tenantId };
     const res = await dispatch({
       type: 'adminApp/removeLocation',
@@ -155,11 +151,7 @@ class WorkLocations extends PureComponent {
         payload: { company: companyId, tenantId },
       });
       dispatch({
-        type: 'locationSelection/fetchLocationListByParentCompany',
-        payload: {
-          company: companyId,
-          tenantIds: manageTenant,
-        },
+        type: 'location/fetchLocationsByCompany',
       });
     }
   };

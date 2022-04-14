@@ -135,7 +135,7 @@ const SearchTimeOff = (props) => {
                   format={dateFormat}
                   onChange={fromDateOnChange}
                   placeholder="From Date"
-                  value={dateStart && moment(dateStart, dateFormat)}
+                  value={dateStart && moment.utc(dateStart, dateFormat)}
                 />
               </Col>
               <Col span={12}>
@@ -145,7 +145,7 @@ const SearchTimeOff = (props) => {
                   format={dateFormat}
                   onChange={toDateOnChange}
                   placeholder="To Date"
-                  value={dateEnd && moment(dateEnd, dateFormat)}
+                  value={dateEnd && moment.utc(dateEnd, dateFormat)}
                 />
               </Col>
             </Row>

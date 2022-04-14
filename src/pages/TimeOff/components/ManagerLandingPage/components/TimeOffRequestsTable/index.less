@@ -1,24 +1,25 @@
 .TimeOffRequestsTable {
+  width: 100%;
+  padding-bottom: 24px;
+  overflow: hidden;
+  background-color: white;
   border: 1px solid #ebeff2;
   border-radius: 5px;
-  width: 100%;
-  background-color: white;
-  padding-bottom: 24px;
   :global {
     .ant-tabs-nav-wrap {
       width: 220px;
-      background-color: #fafafa;
-      padding-left: 18px;
       padding-top: 18px;
       padding-bottom: 18px;
+      padding-left: 18px;
+      background-color: #fafafa;
     }
     .ant-tabs-tab {
-      background-color: #fafafa;
       margin-bottom: 0 !important;
 
       // height of tab name
       padding-top: 14px !important;
       padding-bottom: 14px !important;
+      background-color: #fafafa;
       // border-bottom: 1px solid #e2e4e8;
       // border-radius: 0;
 
@@ -31,9 +32,9 @@
       }
     }
     .ant-tabs-tab-active {
+      background-color: rgba(44, 109, 249, 0.12);
       // border-bottom: 0;
       border-radius: 30px 0 0 30px;
-      background-color: rgba(44, 109, 249, 0.12);
       .ant-tabs-tab-btn {
         font-weight: 700 !important; // 500
       }
@@ -53,17 +54,17 @@
       padding: 0 24px;
     }
     .ant-tabs-tab-btn {
-      opacity: 1;
       color: #707177;
+      opacity: 1;
     }
   }
   .renderTableTitle {
     margin: 24px 0 14px 0;
     span {
-      color: #464646;
-      font-size: 18px;
-      font-weight: 700;
       margin-left: -68px;
+      color: #464646;
+      font-weight: 700;
+      font-size: 18px;
     }
   }
 }

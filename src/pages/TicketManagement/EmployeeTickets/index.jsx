@@ -82,6 +82,7 @@ class EmployeeTicket extends Component {
       type: 'ticketManagement/fetchListEmployee',
       payload: {
         department: departmentNameList,
+        status: 'ACTIVE',
       },
     });
   };
@@ -154,6 +155,7 @@ class EmployeeTicket extends Component {
             onChange={(key) => {
               this.handleChangeTable(key);
             }}
+            destroyInactiveTabPane
           >
             <TabPane tab="Ticket Queue" key="ticket-queue">
               <TicketQueue data={listOffAllTicket} countData={totalList} />

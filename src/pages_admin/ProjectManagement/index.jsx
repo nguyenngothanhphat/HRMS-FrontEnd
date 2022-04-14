@@ -36,7 +36,7 @@ const ProjectManagement = (props) => {
     dispatch,
     user,
     loading1,
-    listLocationsByCompany = [],
+    companyLocationList = [],
     companiesOfUser = [],
     loadingFetchProject = false,
   } = props;
@@ -127,7 +127,7 @@ const ProjectManagement = (props) => {
                   totalActive={totalActive}
                   user={user}
                   loading={loading1}
-                  listLocationsByCompany={listLocationsByCompany}
+                  companyLocationList={companyLocationList}
                   companiesOfUser={companiesOfUser}
                   loadingFetchProject={loadingFetchProject}
                 />
@@ -183,7 +183,7 @@ export default connect(
       totalActive = '',
       totalInactive = '',
     } = {},
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
     loading,
   }) => ({
     user,
@@ -193,7 +193,7 @@ export default connect(
     inactiveList,
     roleList,
     employeeList,
-    listLocationsByCompany,
+    companyLocationList,
     companiesOfUser: user.companiesOfUser,
     loading1: loading.effects['projectManagement/addMember'],
     loadingFetchProject: loading.effects['projectManagement/getProjectByCompany'],

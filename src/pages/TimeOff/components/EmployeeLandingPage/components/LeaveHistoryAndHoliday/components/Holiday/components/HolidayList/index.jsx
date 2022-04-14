@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import moment from 'moment';
 import { Row, Col } from 'antd';
 import styles from './index.less';
+import EmptyComponent from '@/components/Empty';
 
 export default class HolidayList extends PureComponent {
   render() {
@@ -16,24 +17,18 @@ export default class HolidayList extends PureComponent {
             <Row key={`${index + 1}`} className={styles.eachRow}>
               <Col xs={4} className={styles.dateAndMonth}>
                 <span className={styles.day}>{day}</span>
-                <span className={styles.month}>
-                  {moment.utc(monthData).locale('en').format('MMM')}
-                </span>
+                <span className={styles.month}>{moment(monthData).locale('en').format('MMM')}</span>
               </Col>
               <Col xs={16} className={styles.eventOfDay}>
                 {name}
               </Col>
               <Col xs={4} className={styles.dateName}>
-                <span>{moment.utc(monthData).locale('en').format('dddd')}</span>
+                <span>{moment(monthData).locale('en').format('dddd')}</span>
               </Col>
             </Row>
           );
         })}
-        {holidaysList.length === 0 && (
-          <Row className={styles.eachRow_noData}>
-            <span>No holiday data</span>
-          </Row>
-        )}
+        {holidaysList.length === 0 && <EmptyComponent />}
       </div>
     );
   }

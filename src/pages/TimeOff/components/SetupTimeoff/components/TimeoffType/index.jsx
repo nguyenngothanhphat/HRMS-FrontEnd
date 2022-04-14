@@ -40,13 +40,6 @@ const TimeoffType = (props) => {
   };
 
   useEffect(() => {
-    dispatch({
-      type: 'timeOff/getCountryListByCompany',
-      payload: {
-        tenantIds: [getCurrentTenant()],
-        company: getCurrentCompany(),
-      },
-    });
     return () => {
       dispatch({
         type: 'timeOff/saveTemp',
@@ -232,9 +225,9 @@ export default connect(
       timeOffTypesByCountry = [],
       itemTimeOffType = {},
       timeOffTypes,
-      countryList = [],
       tempData: { type = {}, countrySelected = '' },
     } = {},
+    location: { companyLocationList: countryList = [] } = {},
   }) => ({
     itemTimeOffType,
     type,

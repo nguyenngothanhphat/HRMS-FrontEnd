@@ -53,7 +53,7 @@ class ModalImportEmployee extends Component {
     this.state = {
       employees: [],
       company: '',
-      isValidateFile: false,
+      fileStatus: { valid: false, row: 0 },
     };
     this.formRef = React.createRef();
   }
@@ -104,7 +104,7 @@ class ModalImportEmployee extends Component {
         'First Name': item.firstName,
         'Last Name': item.lastName,
         'Middle Name': item.middleName,
-        'Gender': item.Gender,
+        Gender: item.Gender,
         'Date of Birth': item.birthDay,
         'Joined Date': item.joinDate,
         Location: item.location,
@@ -183,52 +183,47 @@ class ModalImportEmployee extends Component {
       };
     });
 
-    let isEmpty = false;
-    employees.map((item) => {
-      if (
-        item.joinDate === '' ||
-        item.title === '' ||
-        item.personalEmail === '' ||
-        item.employeeType === '' ||
-        item.location === '' ||
-        item.department === ''
-      ) {
-        isEmpty = true;
-      }
-      return isEmpty;
-    });
+    const index =
+      employees.findIndex(
+        (item) =>
+          item.joinDate === '' ||
+          item.title === '' ||
+          item.workEmail === '' ||
+          item.employeeType === '' ||
+          item.location === '' ||
+          item.department === '',
+      ) || -1;
     this.setState({
       employees,
-      isValidateFile: isEmpty,
+      fileStatus: index >= 0 ? { valid: false, index } : { valid: true },
     });
   };
 
   callAPIImportCSV = () => {
-    const { employees, company, isValidateFile } = this.state;
+    const { employees, company, fileStatus } = this.state;
     const { handleCancel = () => {}, handleRefresh = () => {} } = this.props;
     const tenantId = getCurrentTenant();
-
-    const batchSize = _.chunk(employees, 5)
     const { dispatch } = this.props;
-
-    if (!isValidateFile) {
-      batchSize.forEach((obj) => {
-        const payload = {
-          company,
-          tenantId,
-          employees: obj,
-        };
-        dispatch({
-          type: 'employeesManagement/importEmployeesTenant',
-          payload,
-        }).then(() => {
-          this.setState({ company: '', employees: [] });
-          handleCancel();
-          handleRefresh();
-        });
-      })
+    if (fileStatus.valid) {
+      const payload = {
+        company,
+        tenantId,
+        employees,
+      };
+      dispatch({
+        type: 'employeesManagement/importEmployeesTenant',
+        payload,
+      }).then(() => {
+        this.setState({ company: '', employees: [] });
+        handleCancel();
+        handleRefresh();
+      });
     } else {
-      notification.error({ message: 'Submit failed. Please make sure your file is validated !' });
+      notification.error({
+        message: `Submit failed because of not allow empty following fields: [joinDate, title, workEmail, location, department]! at row ${
+          fileStatus.index + 1
+        }`,
+      });
     }
   };
 

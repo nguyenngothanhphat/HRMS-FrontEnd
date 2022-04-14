@@ -69,8 +69,7 @@ class RequestInformation extends PureComponent {
   formatDurationTime = (fromDate, toDate) => {
     let leaveTimes = '';
     if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-      leaveTimes = `${moment.utc(fromDate).locale('en').format('MM/DD/YYYY')} - ${moment
-        .utc(toDate)
+      leaveTimes = `${moment(fromDate).locale('en').format('MM/DD/YYYY')} - ${moment(toDate)
         .locale('en')
         .format('MM/DD/YYYY')}`;
     }
@@ -144,8 +143,8 @@ class RequestInformation extends PureComponent {
   };
 
   checkWithdrawValid = (fromDate) => {
-    const now = moment.utc().format('YYYY-MM-DD');
-    const from = moment.utc(fromDate).format('YYYY-MM-DD');
+    const now = moment().format('YYYY-MM-DD');
+    const from = moment(fromDate).format('YYYY-MM-DD');
     return from > now;
   };
 

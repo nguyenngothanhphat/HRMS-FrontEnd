@@ -1,219 +1,30 @@
 /* eslint-disable no-console */
-import React, { PureComponent } from 'react';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import React, { PureComponent } from 'react';
+import Calendar from '../../../Calendar';
 import EventDetailBox from './EventDetailBox';
-
 import styles from './index.less';
 
 moment.locale('en');
 
 export default class HolidayCalendar extends PureComponent {
-  weekdays = moment.weekdays(); // ["Sunday", "Monday", "Tuesday", "Wednessday", "Thursday", "Friday", "Saturday"]
-
-  weekdaysShort = moment.weekdaysShort(); // ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-
-  months = moment.months();
-
-  constructor(props) {
-    super(props);
-    this.width = props.width || '350px';
-    this.style = props.style || {};
-    this.style.width = this.width; // add this
-    this.state = {
-      dateContext: moment.utc(),
-      currentDay: 0,
-      currentMonth: 0,
-      currentYear: 0,
-    };
-  }
-
-  componentDidMount = () => {
-    const { dateContext } = this.state;
-    this.setState({
-      currentDay: dateContext.format('D'),
-      currentMonth: dateContext.format('M'),
-      currentYear: dateContext.format('Y'),
-    });
-  };
-
-  year = () => {
-    const { dateContext } = this.state;
-    return dateContext.format('Y');
-  };
-
-  month = () => {
-    const { dateContext } = this.state;
-    return dateContext.format('MMMM');
-  };
-
-  daysInMonth = () => {
-    const { dateContext } = this.state;
-    return dateContext.daysInMonth();
-  };
-
-  currentDate = () => {
-    const { dateContext } = this.state;
-    return dateContext.get('date');
-  };
-
-  selectedMonth = () => {
-    const { dateContext } = this.state;
-    return dateContext.format('M');
-  };
-
-  selectedYear = () => {
-    const { dateContext } = this.state;
-    return dateContext.format('Y');
-  };
-
-  firstDayOfMonth = () => {
-    const { dateContext } = this.state;
-    const firstDay = moment.utc(dateContext).startOf('month').format('d'); // Day of week 0...1..5...6
-    return firstDay;
-  };
-
-  nextMonth = () => {
-    const { dateContext } = this.state;
-    let dateContext1 = { ...dateContext };
-    dateContext1 = moment.utc(dateContext1).add(1, 'month');
-    this.setState({
-      dateContext: dateContext1,
-    });
-    const { onNextMonth } = this.props;
-    if (onNextMonth) onNextMonth();
-  };
-
-  prevMonth = () => {
-    const { dateContext } = this.state;
-    let dateContext1 = { ...dateContext };
-    dateContext1 = moment.utc(dateContext1).subtract(1, 'month');
-    this.setState({
-      dateContext: dateContext1,
-    });
-    const { onPrevMonth } = this.props;
-    if (onPrevMonth) onPrevMonth();
-  };
-
-  // eslint-disable-next-line no-unused-vars
-  onChangeMonth = (e, month) => {};
-
-  MonthNav = () => {
-    return <span className={styles.labelMonth}>{this.month()}</span>;
-  };
-
-  setYear = (year) => {
-    const { dateContext } = this.state;
-    let dateContext1 = { ...dateContext };
-    dateContext1 = moment.utc(dateContext1).set('year', year);
-    this.setState({
-      dateContext: dateContext1,
-    });
-  };
-
-  onYearChange = (e) => {
-    this.setYear(e.target.value);
-    const { onYearChange } = this.props;
-    if (onYearChange) onYearChange(e, e.target.value);
-  };
-
-  onKeyUpYear = (e) => {
-    if (e.which === 13 || e.which === 27) {
-      this.setYear(e.target.value);
-    }
-  };
-
-  YearNav = () => {
-    return <span className={styles.labelYear}>{this.year()}</span>;
-  };
-
-  renderCalendar = () => {
-    const { currentMonth, currentDay, currentYear } = this.state;
-    const { holidaysList = [] } = this.props;
-    const daysInMonth = [];
-
-    for (let d = 1; d <= this.daysInMonth(); d += 1) {
-      const className = `${styles.day}`;
-      const currentDayClassName =
-        d === currentDay * 1 &&
-        currentMonth === this.selectedMonth() &&
-        currentYear === this.selectedYear()
-          ? `${styles.currentDay}`
-          : '';
-
-      let colorClassName = '';
-      let eventMarkSingleClassName = '';
-      const weekDayCheckClassName = '';
-
-      holidaysList.forEach((value) => {
-        const {
-          date: { iso = '' },
-        } = value; // parse
-        const newDate = new Date(iso).toISOString();
-        const eventDay = moment.utc(newDate).format('D');
-        const eventMonth = moment.utc(newDate).format('M');
-        const eventYear = moment.utc(newDate).format('Y');
-
-        if (
-          d * 1 === eventDay * 1 &&
-          eventMonth * 1 === this.selectedMonth() * 1 &&
-          eventYear * 1 === this.selectedYear() * 1
-        ) {
-          if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
-            colorClassName = styles.upcomingColor;
-          } else colorClassName = styles.leaveTakenColor;
-
-          eventMarkSingleClassName = styles.eventMarkSingleClassName;
-        }
-      });
-
-      daysInMonth.push(
-        <td key={d} className={`${className} ${eventMarkSingleClassName} ${colorClassName}`}>
-          <span className={`${weekDayCheckClassName} ${currentDayClassName}`}>{d}</span>
-        </td>,
-      );
-    }
-    return daysInMonth;
-  };
-
-  checkASingleDay = (day, month, year) => {
-    const { currentMonth, currentDay, currentYear } = this.state;
-    if (
-      (day * 1 > currentDay * 1 &&
-        month * 1 === currentMonth * 1 &&
-        year * 1 === currentYear * 1) ||
-      (month * 1 > currentMonth * 1 && year * 1 === currentYear * 1) ||
-      year * 1 > currentYear * 1
-    ) {
-      return 1; // upcoming date
-    }
-    return 0; // leave taken day
+  checkFutureDay = (date) => {
+    return moment(date).isAfter(moment());
   };
 
   checkWeekDay = (day, month, year) => {
-    const weekDayName = moment.utc(`${month * 1}/${day * 1}/${year * 1}`).format('ddd');
+    const weekDayName = moment(`${month * 1}/${day * 1}/${year * 1}`).format('ddd');
     return weekDayName;
-  };
-
-  checkIfUpcomingOrLeaveTaken = (value) => {
-    const { date: { iso } = {} } = value; // parse
-    const convertDate = new Date(iso).toISOString();
-    const eventFromDay = moment.utc(convertDate).format('D');
-    const eventFromMonth = moment.utc(convertDate).format('M');
-    const eventFromYear = moment.utc(convertDate).format('Y');
-    if (this.checkASingleDay(eventFromDay, eventFromMonth, eventFromYear) === 1) return 1; // upcoming
-    return 2; // leave taken
   };
 
   renderData = (id, holidaysList) => {
     const upcomingData = [];
     const leaveTakenData = [];
 
-    holidaysList.map((value) => {
-      const check = this.checkIfUpcomingOrLeaveTaken(value);
-      if (check === 1) upcomingData.push(value);
-      else if (check === 2) leaveTakenData.push(value);
-      return '';
+    holidaysList.forEach((value) => {
+      const check = this.checkFutureDay(value.date?.iso);
+      if (check) upcomingData.push(value);
+      else leaveTakenData.push(value);
     });
     if (id === 1) return upcomingData;
     return leaveTakenData;
@@ -221,77 +32,9 @@ export default class HolidayCalendar extends PureComponent {
 
   render() {
     const { holidaysList = [] } = this.props;
-
-    // Map the weekdays i.e Sun, Mon, Tue etc as <td>
-    const weekdays = this.weekdaysShort.map((day) => {
-      return (
-        <th key={day} className={`${styles.weekDay}`}>
-          {day.slice(0, 2)}
-          {/* get first letter of weekdays */}
-        </th>
-      );
-    });
-
-    const blanks = [];
-    for (let i = 0; i < this.firstDayOfMonth(); i += 1) {
-      blanks.push(<td key={i * 80} className={styles.emptySlot} />);
-    }
-
-    const daysInMonth = this.renderCalendar();
-
-    const totalSlots = [...blanks, ...daysInMonth];
-    const rows = [];
-    let cells = [];
-
-    totalSlots.forEach((row, i) => {
-      if (i % 7 !== 0) {
-        cells.push(row);
-      } else {
-        const insertRow = cells.slice();
-        rows.push(insertRow);
-        cells = [];
-        cells.push(row);
-      }
-      if (i === totalSlots.length - 1) {
-        const insertRow = cells.slice();
-        rows.push(insertRow);
-      }
-    });
-
-    const trElems = rows.map((d, i) => {
-      return <tr key={`${(i + 1) * 100}`}>{d}</tr>;
-    });
-
     return (
       <div className={styles.HolidayCalendar}>
-        <div className={styles.headerContainer}>
-          <div>
-            {this.MonthNav()}
-            {this.YearNav()}
-          </div>
-          <div className={styles.changeMonthBtn}>
-            <span
-              onClick={() => {
-                this.prevMonth();
-              }}
-            >
-              <LeftOutlined />
-            </span>
-            <span
-              onClick={() => {
-                this.nextMonth();
-              }}
-            >
-              <RightOutlined />
-            </span>
-          </div>
-        </div>
-        <div className={styles.daysTable}>
-          <table>
-            <tr className={styles.daysInMonth}>{weekdays}</tr>
-            {trElems}
-          </table>
-        </div>
+        <Calendar data={holidaysList} mode={2} />
         <div className={styles.eventDetailContainer}>
           <div className={styles.eventDetailPart}>
             <span className={styles.title}>Upcoming</span>

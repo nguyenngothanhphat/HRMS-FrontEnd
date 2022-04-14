@@ -1,15 +1,15 @@
 import React, { PureComponent } from 'react';
-import { PageContainer } from '@/layouts/layout/src';
 import { formatMessage, connect } from 'umi';
-import { getCurrentCompany, getCurrentTenant, isOwner } from '@/utils/authority';
 import { Skeleton } from 'antd';
+import { PageContainer } from '@/layouts/layout/src';
+import { getCurrentCompany, getCurrentTenant, isOwner } from '@/utils/authority';
 import styles from './index.less';
 import TableContainer from './components/TableContainer';
 
 @connect(
   ({
     loading,
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
     user: {
       companiesOfUser = [],
       currentUser: { roles = [], signInRole = [], manageTenant = [] } = {},
@@ -19,10 +19,10 @@ import TableContainer from './components/TableContainer';
     signInRole,
     manageTenant,
     companiesOfUser,
-    listLocationsByCompany,
+    companyLocationList,
     loadingFetchLocations:
-      loading.effects['locationSelection/fetchLocationsByCompany'] ||
-      loading.effects['locationSelection/fetchLocationListByParentCompany'],
+      loading.effects['location/fetchLocationsByCompany'] ||
+      loading.effects['location/fetchLocationListByParentCompany'],
   }),
 )
 class UsersManagement extends PureComponent {
@@ -49,7 +49,7 @@ class UsersManagement extends PureComponent {
 
     if (checkIsOwner) {
       await dispatch({
-        type: 'locationSelection/fetchLocationListByParentCompany',
+        type: 'location/fetchLocationListByParentCompany',
         payload: {
           company: companyId,
           tenantIds: manageTenant,
@@ -57,7 +57,7 @@ class UsersManagement extends PureComponent {
       });
     } else {
       await dispatch({
-        type: 'locationSelection/fetchLocationsByCompany',
+        type: 'location/fetchLocationsByCompany',
         payload: {
           company: companyId,
           tenantId,
@@ -88,14 +88,14 @@ class UsersManagement extends PureComponent {
   };
 
   render() {
-    const { loadingFetchLocations = false, listLocationsByCompany = [] } = this.props;
+    const { loadingFetchLocations = false, companyLocationList = [] } = this.props;
     return (
       <PageContainer>
         <div className={styles.containerUsers}>
           <div className={styles.headerText}>
             <span>{formatMessage({ id: 'pages_admin.users.title' })}</span>
           </div>
-          {loadingFetchLocations && listLocationsByCompany.length === 0 ? (
+          {loadingFetchLocations && companyLocationList.length === 0 ? (
             <div style={{ padding: '24px' }}>
               <Skeleton />
             </div>

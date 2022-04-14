@@ -17,7 +17,7 @@ const { Option } = Select;
       tenantCurrentEmployee = '',
       compensationTypes = [],
     } = {},
-    locationSelection: { listLocationsByCompany = {} } = {},
+    location: { companyLocationList = {} } = {},
   }) => ({
     employeeProfile,
     compensationTypes,
@@ -28,7 +28,7 @@ const { Option } = Select;
     loadingCompensationList: loading.effects['employeeProfile/fetchCompensationList'],
     loadingFetchEmployeeList:
       loading.effects['employeeProfile/fetchEmployeeListSingleCompanyEffect'],
-    listLocationsByCompany,
+    companyLocationList,
 
     // loadingEmployeeTypes: loading.effects['employeeProfile/fetchEmployeeTypes'],
   }),
@@ -93,7 +93,7 @@ class EditCurrentInfo extends PureComponent {
       payload: {
         isUpdateEmployment: false,
         listTitleByDepartment: [],
-        listLocationsByCompany: [],
+        companyLocationList: [],
       },
     });
   }
@@ -159,7 +159,7 @@ class EditCurrentInfo extends PureComponent {
       loadingTitleList,
       loadingLocationsList,
       handleCancel = () => {},
-      listLocationsByCompany,
+      companyLocationList,
       loadingFetchEmployeeList = false,
     } = this.props;
     // console.log(employees)
@@ -282,7 +282,7 @@ class EditCurrentInfo extends PureComponent {
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
             >
-              {listLocationsByCompany.map((item) => (
+              {companyLocationList.map((item) => (
                 <Option key={item._id}>{item.name}</Option>
               ))}
             </Select>

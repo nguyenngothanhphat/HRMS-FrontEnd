@@ -66,7 +66,7 @@ const Carousel = (props) => {
   }, [JSON.stringify(banners)]);
 
   // RENDER UI
-  if (loadingFetchBanners) return '';
+  if (loadingFetchBanners) return <div className={styles.Carousel} style={{ height: 300 }} />;
   if (!previewing && bannerState.length === 0) {
     return (
       <div className={styles.Carousel}>

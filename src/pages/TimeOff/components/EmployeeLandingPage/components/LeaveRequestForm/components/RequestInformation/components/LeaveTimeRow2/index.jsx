@@ -8,7 +8,7 @@ class LeaveTimeRow2 extends PureComponent {
     const { fromDate = '', toDate = '', noOfDays = 0 } = this.props;
 
     return (
-      <Row className={styles.LeaveTimeRow2} justify="center" align="center" gutter={[8, 8]}>
+      <Row className={styles.LeaveTimeRow2} justify="center" align="center" gutter={[0, 8]}>
         <Col span={7}>{moment(fromDate).locale('en').format('MM/DD/YYYY')}</Col>
         <Col span={7}>{moment(toDate).locale('en').format('MM/DD/YYYY')}</Col>
         <Col span={10}>{noOfDays}</Col>

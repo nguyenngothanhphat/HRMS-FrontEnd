@@ -56,13 +56,6 @@ export async function deleteQuestion(payload) {
   });
 }
 
-export async function getLocationListByParentCompany(payload) {
-  return request('/api/locationtenant/list-by-company-parent', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
 export async function searchFAQs(payload) {
   return request('/api/faqstenant/search-faqs', {
     method: 'POST',

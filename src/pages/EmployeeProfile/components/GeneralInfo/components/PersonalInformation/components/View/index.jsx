@@ -93,9 +93,7 @@ class View extends PureComponent {
       generalData,
       permissions = {},
       profileOwner = false,
-      currentUser: {
-        employee: { _id: idEmployee = '' },
-      },
+      currentUser: { employee: { _id: idEmployee = '' } = {} || {} } = {},
       idCurrentEmployee = '',
     } = this.props;
     const { isShowPersonalNumber, isShowPersonalEmail } = generalData;

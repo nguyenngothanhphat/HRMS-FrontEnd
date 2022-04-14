@@ -1,20 +1,6 @@
 import ROLES from '@/utils/roles';
 
-const {
-  HR_MANAGER,
-  HR,
-  EMPLOYEE,
-  REGION_HEAD,
-  CEO,
-  MANAGER,
-  ADMIN,
-  DEPARTMENT_HEAD,
-  OWNER,
-  PROJECT_MANAGER,
-  PEOPLE_MANAGER,
-  FINANCE,
-  CANDIDATE,
-} = ROLES;
+const { HR_MANAGER, HR, MANAGER } = ROLES;
 
 /* eslint-disable no-plusplus */
 export function groupPermissions(roles) {
@@ -112,256 +98,124 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const permissionList = [...roles];
 
   // Directory Page
-  const findIndexActive = isAuthorized(permissionList, [
-    // 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_VIEW',
-    // 'M_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW',
-    // 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW',
-    'T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW',
-  ]);
-  const findIndexMyTeam = isAuthorized(permissionList, [
-    // 'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_VIEW',
-    // 'M_DIRECTORY_T_DIRECTORY_T_MY_TEAM_EMPLOYEE_VIEW',
-    // 'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_EMPLOYEE_VIEW',
-    'T_DIRECTORY_T_MY_TEAM',
-  ]);
-  const findIndexInActive = isAuthorized(permissionList, [
-    // 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_VIEW',
-    // 'M_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_VIEW',
-    // 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_VIEW',P_DIRECTORY_T_DIRECTORY_T_INACTIVE_VIEW',
-    'T_DIRECTORY_T_INACTIVE',
-  ]);
+  const findIndexActive = isAuthorized(permissionList, ['T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW']);
+  const findIndexMyTeam = isAuthorized(permissionList, ['T_DIRECTORY_T_MY_TEAM']);
+  const findIndexInActive = isAuthorized(permissionList, ['T_DIRECTORY_T_INACTIVE']);
   const findIndexImport = isAuthorized(permissionList, [
-    // 'P_DIRECTORY_T_DIRECTORY_B_IMPORTS_VIEW',
-    // 'M_DIRECTORY_T_DIRECTORY_B_IMPORT_EMPLOYEES_VIEW',
-    // 'P_DIRECTORY_T_DIRECTORY_B_IMPORT_EMPLOYEES_VIEW',
     'T_DIRECTORY_B_IMPORTS',
     'T_DIRECTORY_B_IMPORT_EMPLOYEES',
   ]);
   const findIndexAdd = isAuthorized(permissionList, [
-    // 'P_DIRECTORY_T_DIRECTORY_B_ADD_VIEW',
-    // 'M_DIRECTORY_T_DIRECTORY_B_ADD_EMPLOYEE_VIEW',
-    // 'P_DIRECTORY_T_DIRECTORY_B_ADD_EMPLOYEE_VIEW',
     'T_DIRECTORY_B_ADD',
     'T_DIRECTORY_B_ADD_EMPLOYEE',
   ]);
 
-  const indexViewActionButton = isAuthorized(permissionList, [HR_MANAGER, HR, ADMIN]);
+  const indexViewActionButton = isAuthorized(permissionList, []);
 
   // Directory Page - Tab general info - Public/Private Personal phone/email
-  const indexEditPersonalInfo = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_EDIT',
-        // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_EMPLOYEE_EDIT',
-        'T_GENERAL_INFO_T_PERSONAL_INFORMATION',
-        HR,
-        HR_MANAGER,
-      ]);
-  const indexViewPersonalNumber = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_NUMBER_VIEW',
-        // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_NUMBER_EMPLOYEE_VIEW',
-        'T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_NUMBER',
-      ]);
-  const indexViewPersonalEmail = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL_VIEW',
-        // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL_EMPLOYEE_VIEW',
-        'T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL',
-        HR,
-        HR_MANAGER,
-      ]);
-
-  // View others personal information
-  const indexViewOtherInformation = isAdmin ? 1 : isAuthorized(permissionList, [HR, HR_MANAGER]);
+  const indexEditPersonalInfo = isAuthorized(permissionList, [
+    'T_GENERAL_INFO_T_PERSONAL_INFORMATION',
+  ]);
+  const indexViewPersonalNumber = isAuthorized(permissionList, [
+    'T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_NUMBER',
+  ]);
+  const indexViewPersonalEmail = isAuthorized(permissionList, [
+    'T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL',
+  ]);
 
   // Directory Page - Filter - Display location
   const findIndexShowLocationActive = isAuthorized(permissionList, [
-    // 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW',
-    // 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_S_FILTER_LOCATION_EMPLOYEE_VIEW',
     'T_DIRECTORY_T_ACTIVE_EMPLOYEE_S_FILTER_LOCATION',
   ]);
   const findIndexShowLocationInActive = isAuthorized(permissionList, [
-    // 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW',
-    // 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_S_FILTER_LOCATION_EMPLOYEE_VIEW',
     'T_DIRECTORY_T_INACTIVE_EMPLOYEE_S_FILTER_LOCATION',
   ]);
 
   // Edit profile tab general info
-  const findIndexWorkEmail = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        // 'P_PROFILE_T_GENERAL_INFO_WORK_EMAIL_EDIT',
-        // 'P_PROFILE_T_GENERAL_INFO_WORK_EMAIL_EMPLOYEE_EDIT',
-        'T_GENERAL_INFO_WORK_EMAIL_EDIT',
-        'T_GENERAL_INFO_WORK_EMAIL_EMPLOYEE_EDIT',
-        HR,
-        HR_MANAGER,
-      ]);
+  const findIndexWorkEmail = isAuthorized(permissionList, [
+    'T_GENERAL_INFO_WORK_EMAIL_EDIT',
+    'T_GENERAL_INFO_WORK_EMAIL_EMPLOYEE_EDIT',
+  ]);
 
-  const findIndexEmployeeID = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        // 'P_PROFILE_T_GENERAL_INFO_EMPLOYEE_ID_EDIT',
-        // 'P_PROFILE_T_GENERAL_INFO_EMPLOYEE_ID_EMPLOYEE_EDIT',
-        'T_GENERAL_INFO_EMPLOYEE_ID_EDIT',
-        'T_GENERAL_INFO_EMPLOYEE_ID_EMPLOYEE_EDIT',
-        HR,
-        HR_MANAGER,
-      ]);
+  const findIndexEmployeeID = isAuthorized(permissionList, [
+    'T_GENERAL_INFO_EMPLOYEE_ID_EDIT',
+    'T_GENERAL_INFO_EMPLOYEE_ID_EMPLOYEE_EDIT',
+  ]);
 
   // Edit profile tab employment and compensation
-  const findIndexEditEmp = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        // 'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_B_EDIT_VIEW',
-        // 'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_B_EDIT_EMPLOYEE_VIEW',
-        'T_EMPLOYMENT_AND_COMPENSATION_B_EDIT_VIEW',
-        'T_EMPLOYMENT_AND_COMPENSATION_B_EDIT_EMPLOYEE_VIEW',
-        HR,
-        HR_MANAGER,
-      ]);
-  const findIndexMakeChanges = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_B_MAKE_CHANGES_VIEW',
-        'M_DIRECTORY_SELECT_PROFILE_EMPLOYEE_T_EMPLOYMENT_&_COMPENSATION_VIEW_B_MAKE_CHANGES_VIEW',
-        HR,
-        HR_MANAGER,
-      ]);
+  const findIndexEditEmp = isAuthorized(permissionList, [
+    'T_EMPLOYMENT_AND_COMPENSATION_B_EDIT_VIEW',
+    'T_EMPLOYMENT_AND_COMPENSATION_B_EDIT_EMPLOYEE_VIEW',
+  ]);
+  const findIndexMakeChanges = isAuthorized(permissionList, [
+    'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_B_MAKE_CHANGES_VIEW',
+    'M_DIRECTORY_SELECT_PROFILE_EMPLOYEE_T_EMPLOYMENT_&_COMPENSATION_VIEW_B_MAKE_CHANGES_VIEW',
+  ]);
 
   // View tabs employee profile
-  const indexEmployment = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        // 'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_VIEW',
-        // 'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_EMPLOYEE_VIEW',
-        'T_EMPLOYMENT_AND_COMPENSATION',
-        'T_EMPLOYMENT_AND_COMPENSATION_EMPLOYEE',
-        HR,
-        HR_MANAGER,
-      ]);
-  const indexPerformance = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        // 'P_PROFILE_T_PERFORMENT_HISTORY_VIEW',
-        // 'P_PROFILE_T_PERFORMENT_HISTORY_EMPLOYEE_VIEW',
-        'T_PERFORMENT_HISTORY',
-        'T_PERFORMENT_HISTORY_EMPLOYEE',
-        HR,
-        HR_MANAGER,
-      ]);
-  const indexAccountAndPaychecks = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        // 'P_PROFILE_T_PERFORMENT_HISTORY_VIEW',
-        // 'P_PROFILE_T_PERFORMENT_HISTORY_EMPLOYEE_VIEW',
-        'T_PERFORMENT_HISTORY_VIEW',
-        'T_PERFORMENT_HISTORY_EMPLOYEE_VIEW',
-        HR,
-        HR_MANAGER,
-      ]);
-  const indexDocument = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        // 'P_PROFILE_T_DOCUMENT_VIEW',
-        // 'P_PROFILE_T_DOCUMENT_EMPLOYEE_VIEW',
-        'T_DOCUMENT_VIEW',
-        'T_DOCUMENT_EMPLOYEE_VIEW',
-        HR,
-        HR_MANAGER,
-      ]);
-  const indexTimeAndSchedule = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        // 'P_PROFILE_T_TIME_AND_SCHEDULING_VIEW',
-        // 'P_PROFILE_T_TIME_AND_SCHEDULING_EMPLOYEE_VIEW',
-        'T_TIME_AND_SCHEDULING_VIEW',
-        'T_TIME_AND_SCHEDULING_EMPLOYEE_VIEW',
-        HR,
-        HR_MANAGER,
-      ]);
-  const indexBenefitPlans = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        'T_BENEFIT_PLANS_VIEW',
-        'T_BENEFIT_PLANS_EMPLOYEE_VIEW',
-        // 'P_PROFILE_T_BENEFIT_PLANS_VIEW',
-        // 'P_PROFILE_T_BENEFIT_PLANS_EMPLOYEE_VIEW',
-        HR,
-        HR_MANAGER,
-      ]);
+  const indexEmployment = isAuthorized(permissionList, [
+    'T_EMPLOYMENT_AND_COMPENSATION',
+    'T_EMPLOYMENT_AND_COMPENSATION_EMPLOYEE',
+  ]);
+  const indexPerformance = isAuthorized(permissionList, [
+    'T_PERFORMENT_HISTORY',
+    'T_PERFORMENT_HISTORY_EMPLOYEE',
+  ]);
+  const indexAccountAndPaychecks = isAuthorized(permissionList, [
+    'T_PERFORMENT_HISTORY_VIEW',
+    'T_PERFORMENT_HISTORY_EMPLOYEE_VIEW',
+  ]);
+  const indexDocument = isAuthorized(permissionList, [
+    'T_DOCUMENT_VIEW',
+    'T_DOCUMENT_EMPLOYEE_VIEW',
+  ]);
+  const indexTimeAndSchedule = isAuthorized(permissionList, [
+    'T_TIME_AND_SCHEDULING_VIEW',
+    'T_TIME_AND_SCHEDULING_EMPLOYEE_VIEW',
+  ]);
+  const indexBenefitPlans = isAuthorized(permissionList, [
+    'T_BENEFIT_PLANS_VIEW',
+    'T_BENEFIT_PLANS_EMPLOYEE_VIEW',
+  ]);
 
   // View and edit info of general info tab
-  const indexViewPPAndVisa = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        // 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_VIEW',
-        // 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_EMPLOYEE_VIEW',
-        'T_GENERAL_INFO_T_PASSPORT_AND_VISA_VIEW',
-        'T_GENERAL_INFO_T_PASSPORT_AND_VISA_EMPLOYEE_VIEW',
-        HR,
-        HR_MANAGER,
-      ]);
-  const indexEditEmployeeInfo = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        // 'P_PROFILE_T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EDIT',
-        // 'P_PROFILE_T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EMPLOYEE_EDIT',
-        'T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EDIT',
-        'T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EMPLOYEE_EDIT',
-        HR,
-        HR_MANAGER,
-      ]);
-  const indexEditPPAndVisa = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        // 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_EDIT',
-        // 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_EMPLOYEE_EDIT',
-        'T_GENERAL_INFO_T_PASSPORT_AND_VISA_EDIT',
-        'T_GENERAL_INFO_T_PASSPORT_AND_VISA_EMPLOYEE_EDIT',
-        HR,
-        HR_MANAGER,
-      ]);
-  const indexEditContact = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        'P_PROFILE_T_GENERAL_INFO_T_EMERGENCY_CONTACT_EDIT',
-        'M_DIRECTORY_SELECT_PROFILE_EMPLOYEE_T_GENERAL_INFO_VIEW_EMERGENCY_CONTACT_DETAILS_EDIT_VIEW',
-        HR,
-        HR_MANAGER,
-      ]);
-  const indexEditProfessionalAcademic = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        // 'P_PROFILE_T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EDIT',
-        // 'P_PROFILE_T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EMPLOYEE_EDIT',
-        'T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EDIT',
-        'T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EMPLOYEE_EDIT',
-        HR,
-        HR_MANAGER,
-      ]);
+  const indexViewPPAndVisa = isAuthorized(permissionList, [
+    'T_GENERAL_INFO_T_PASSPORT_AND_VISA_VIEW',
+    'T_GENERAL_INFO_T_PASSPORT_AND_VISA_EMPLOYEE_VIEW',
+  ]);
+  const indexEditEmployeeInfo = isAuthorized(permissionList, [
+    'T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EDIT',
+    'T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EMPLOYEE_EDIT',
+  ]);
+  const indexEditPPAndVisa = isAuthorized(permissionList, [
+    'T_GENERAL_INFO_T_PASSPORT_AND_VISA_EDIT',
+    'T_GENERAL_INFO_T_PASSPORT_AND_VISA_EMPLOYEE_EDIT',
+  ]);
+  const indexEditContact = isAuthorized(permissionList, [
+    'P_PROFILE_T_GENERAL_INFO_T_EMERGENCY_CONTACT_EDIT',
+    'M_DIRECTORY_SELECT_PROFILE_EMPLOYEE_T_GENERAL_INFO_VIEW_EMERGENCY_CONTACT_DETAILS_EDIT_VIEW',
+  ]);
+  const indexEditProfessionalAcademic = isAuthorized(permissionList, [
+    'T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EDIT',
+    'T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EMPLOYEE_EDIT',
+  ]);
 
   // Update avatar employee
-  const indexUpdateAvatar = isAdmin
-    ? 1
-    : isAuthorized(permissionList, [
-        // 'P_PROFILE_T_GENERAL_INFO_B_UPLOAD_AVATAR_VIEW',
-        // 'P_PROFILE_T_GENERAL_INFO_B_UPLOAD_AVATAR_EMPLOYEE_VIEW',
-        'T_GENERAL_INFO_B_UPLOAD_AVATAR_VIEW',
-        'T_GENERAL_INFO_B_UPLOAD_AVATAR_EMPLOYEE_VIEW',
-        HR,
-        HR_MANAGER,
-      ]);
+  const indexUpdateAvatar = isAuthorized(permissionList, [
+    'T_GENERAL_INFO_B_UPLOAD_AVATAR_VIEW',
+    'T_GENERAL_INFO_B_UPLOAD_AVATAR_EMPLOYEE_VIEW',
+  ]);
 
   // View avatar employee
-  const indexViewAvatar = isAdmin ? 1 : isAuthorized(permissionList, [HR, HR_MANAGER]);
+  const indexViewAvatar = isAuthorized(permissionList, [
+    'P_PROFILE_T_GENERAL_INFO_B_UPLOAD_AVATAR_VIEW',
+  ]);
 
   // Edit show avatar employee
-  const indexEditShowAvatar = isAdmin ? 1 : isAuthorized(permissionList, [HR, HR_MANAGER]);
-  const indexAdvancedActions = isAdmin ? 1 : isAuthorized(permissionList, [HR, HR_MANAGER]);
+  const indexEditShowAvatar = isAuthorized(permissionList, [
+    'P_PROFILE_T_GENERAL_INFO_B_UPLOAD_AVATAR_VIEW',
+  ]);
+  const indexAdvancedActions = isAuthorized(permissionList, [HR, HR_MANAGER]);
 
   // ONBOARDING
   const indexOnboardingSettings = isAuthorized(permissionList, [
@@ -444,27 +298,25 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const indexViewResourceListTab = isAuthorized(permissionList, ['RESOURCE_MANAGEMENT_VIEW']);
   const indexViewResourceProjectListTab = isAuthorized(permissionList, [
     'RESOURCE_MANAGEMENT_T_PROJECT_VIEW',
-    PROJECT_MANAGER,
   ]);
   const indexViewResourceSettingTab = isAuthorized(permissionList, [
     'RESOURCE_MANAGEMENT_SETTINGS_VIEW',
-    PROJECT_MANAGER,
   ]);
   const indexViewUtilizationTab = isAuthorized(permissionList, [
     'RESOURCE_MANAGEMENT_UTILIZATION_VIEW',
   ]);
-  const indexAddResource = isAuthorized(permissionList, [
-    'RESOURCE_MANAGEMENT_ADD',
-    PROJECT_MANAGER,
+
+  const indexAddResource = isAuthorized(permissionList, ['RESOURCE_MANAGEMENT_ADD']);
+  const indexModifyResource = isAuthorized(permissionList, ['RESOURCE_MANAGEMENT_UPDATE']);
+  const indexViewsResourceAdminMode = isAuthorized(permissionList, [
+    'P_RESOURCE_MANAGEMENT_ADMIN_VIEW',
   ]);
-  const indexModifyResource = isAuthorized(permissionList, [
-    'RESOURCE_MANAGEMENT_UPDATE',
-    PROJECT_MANAGER,
+  const indexViewsResourceDivisionMode = isAuthorized(permissionList, [
+    'P_RESOURCE_MANAGEMENT_DIVISION_VIEW',
   ]);
-  // const viewsResourceModeManager = isAuthorized(permissionList, [
-  //   'P_RESOURCE_MANAGEMENT_MANAGER_VIEW',
-  // ]);
-  // const viewsResourceModeAdmin = isAuthorized(permissionList, ['P_RESOURCE_MANAGEMENT_ADMIN_VIEW']);
+  const indexViewsResourceCountryMode = isAuthorized(permissionList, [
+    'P_RESOURCE_MANAGEMENT_COUNTRY_VIEW',
+  ]);
 
   // TICKET MANAGEMENT
   const indexTicketManagementHRTicketsTab = isAuthorized(permissionList, [
@@ -487,9 +339,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const indexSettingViewPolicy = isAuthorized(permissionList, [
     'P_POLICIESREGULATIONS_T_SETTINGS_VIEW',
   ]);
-  const indexFAQSettings = isAdmin
-    ? 1
-    : isAuthorized(permissionList, ['P_FAQ_VIEW_SETTINGS', HR_MANAGER]);
+  const indexFAQSettings = isAuthorized(permissionList, ['P_FAQ_VIEW_SETTINGS']);
 
   return {
     // Directory Page
@@ -526,7 +376,6 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     updateAvatarEmployee: indexUpdateAvatar,
     viewAvatarEmployee: indexViewAvatar,
     editShowAvatarEmployee: indexEditShowAvatar,
-    viewOtherInformation: indexViewOtherInformation,
     viewAdvancedActions: indexAdvancedActions,
 
     // onboarding
@@ -575,8 +424,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewUtilizationTab: indexViewUtilizationTab,
     addResource: indexAddResource,
     modifyResource: indexModifyResource,
-    // viewModeManager: viewsResourceModeManager,
-    // viewModeAdmin: viewsResourceModeAdmin,
+    viewResourceAdminMode: indexViewsResourceAdminMode,
+    viewResourceDivisionMode: indexViewsResourceDivisionMode,
+    viewResourceCountryMode: indexViewsResourceCountryMode,
 
     // ticket management
     viewTicketHR: indexTicketManagementHRTicketsTab,
