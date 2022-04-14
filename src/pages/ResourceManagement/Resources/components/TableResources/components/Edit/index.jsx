@@ -95,23 +95,23 @@ class EditActionBTN extends Component {
             initialValues={{
               startDate: this.parseDate(dataPassRow.startDate, 'MM/DD/YYYY'),
               endDate: this.parseDate(dataPassRow.endDate, 'MM/DD/YYYY'),
-              revisedEndDate: this.parseDate(dataPassRow.endDate, 'MM/DD/YYYY'),
+              revisedEndDate: this.parseDate(dataPassRow.revisedEndDate, 'MM/DD/YYYY'),
               project: dataPassRow.projectName,
               utilization: dataPassRow.utilization,
               status: dataPassRow.billStatus,
             }}
           >
-            <Row>
+            <Row gutter={[24, 24]}>
               <Col span={12}>
                 <Form.Item label="Project" name="project">
-                  <Select style={{ width: '95%', borderRadius: '2px' }}>
+                  <Select>
                     {projectList.map((project) => (
                       <Option value={project.id}>{project.projectName}</Option>
                     ))}
                   </Select>
                 </Form.Item>
                 <Form.Item label="Status" name="status">
-                  <Select style={{ width: '95%', borderRadius: '2px' }}>
+                  <Select>
                     {statusList.map((status) => (
                       <Option value={status}>{status}</Option>
                     ))}
@@ -144,7 +144,7 @@ class EditActionBTN extends Component {
                   ]}
                   validateTrigger="onBlur"
                 >
-                  <Input style={{ width: '95%', color: 'black' }} addonAfter="%" />
+                  <Input addonAfter="%" />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -152,7 +152,6 @@ class EditActionBTN extends Component {
                   <DatePicker
                     placeholder="Start Date"
                     format="MM/DD/YYYY"
-                    style={{ width: '100%', borderRadius: '2px', color: 'blue' }}
                     suffixIcon={<img src={datePickerIcon} alt="" />}
                   />
                 </Form.Item>
@@ -160,7 +159,6 @@ class EditActionBTN extends Component {
                   <DatePicker
                     placeholder="Enter End Date"
                     format="MM/DD/YYYY"
-                    style={{ width: '100%', borderRadius: '2px', color: 'blue' }}
                     suffixIcon={<img src={datePickerIcon} alt="" />}
                   />
                 </Form.Item>
@@ -168,12 +166,6 @@ class EditActionBTN extends Component {
                   <DatePicker
                     placeholder="Enter Date"
                     format="MM/DD/YYYY"
-                    style={{
-                      width: '100%',
-                      borderRadius: '2px',
-                      color: 'blue',
-                      background: '#F4F6F7',
-                    }}
                     suffixIcon={<img src={datePickerIcon} alt="" />}
                   />
                 </Form.Item>
@@ -182,7 +174,7 @@ class EditActionBTN extends Component {
             <br />
             <br />
             <div className={styles.spaceFooter}>
-              <div className={styles.btnCancel} onClick={this.handleCancel}>
+              <div className={styles.btnCancel} onClick={onClose}>
                 Cancel
               </div>
               <Button type="primary" htmlType="submit" className={styles.btnSubmit}>
