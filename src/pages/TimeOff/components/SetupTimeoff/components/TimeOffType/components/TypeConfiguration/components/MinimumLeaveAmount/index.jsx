@@ -7,7 +7,7 @@ const MinimumLeaveAmount = (props) => {
   const { dispatch } = props;
   const onChange = () => {};
   return (
-    <Card title="Minimum Leave Amount" className={styles.LeaveType}>
+    <Card title="Minimum Leave Amount" className={styles.MinimumLeaveAmount}>
       <Row gutter={[24, 24]} align="middle">
         <Col sm={10}>
           <span className={styles.label}>Minimum amount of leave that needs to be applied.</span>

@@ -3,11 +3,10 @@ import React from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
-const NegativeLeaveBalance = (props) => {
-  const { dispatch } = props;
+const NegativeLeaveBalance = () => {
   const onChange = () => {};
   return (
-    <Card title="Negative Leave Balance" className={styles.LeaveType}>
+    <Card title="Negative Leave Balance" className={styles.NegativeLeaveBalance}>
       <Row gutter={[24, 24]} align="middle" style={{ marginBottom: '24px' }}>
         <Col sm={10}>
           <span className={styles.label}>Negative Leave Balance allowed ?</span>

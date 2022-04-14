@@ -1,4 +1,4 @@
-.LeaveApplicationStart {
+.AnnualResetPolicy {
   .label {
     display: block;
     color: #707177;
@@ -6,8 +6,11 @@
     font-size: 13px;
   }
   :global {
-    .ant-form-item-control-input {
+    .ant-input-number {
       width: 100px;
+    }
+    .ant-radio-group {
+      border: none;
     }
   }
   .prefix {
@@ -18,5 +21,15 @@
     font-weight: 400;
     font-size: 13px;
     line-height: 16px;
+  }
+  .rightPart {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .viewTypeSelector {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
   }
 }

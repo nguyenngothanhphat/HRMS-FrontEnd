@@ -12,6 +12,8 @@ import AccrualStart from './components/AccrualStart';
 import LeaveApplicationStart from './components/LeaveApplicationStart';
 import MinimumLeaveAmount from './components/MinimumLeaveAmount';
 import NegativeLeaveBalance from './components/NegativeLeaveBalance';
+import NewHireProrationPolicy from './components/NewHireProrationPolicy';
+import AnnualResetPolicy from './components/AnnualResetPolicy';
 
 const TypeConfiguration = (props) => {
   const [form] = Form.useForm();
@@ -151,6 +153,14 @@ const TypeConfiguration = (props) => {
       {
         id: 7,
         component: <NegativeLeaveBalance />,
+      },
+      {
+        id: 8,
+        component: <NewHireProrationPolicy />,
+      },
+      {
+        id: 9,
+        component: <AnnualResetPolicy />,
       },
     ];
     return (
