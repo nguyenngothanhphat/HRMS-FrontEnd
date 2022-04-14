@@ -42,7 +42,7 @@ class Types extends Component {
                     </Col>
                     <Col span={8} className={styles.colAction}>
                       <div className={styles.setup}>
-                        <span onClick={() => this.onChange(x._id, true)}>
+                        <span onClick={() => this.onChange(x)}>
                           {isDefault ? 'Configure' : 'Setup'}
                         </span>
                         {!isDefault && (
@@ -136,9 +136,9 @@ class Types extends Component {
     );
   };
 
-  onChange = (value, isEdit) => {
+  onChange = (payload) => {
     const { onChangeType } = this.props;
-    onChangeType(value, isEdit);
+    onChangeType(payload);
   };
 
   removeDuplicate = (array, key) => {

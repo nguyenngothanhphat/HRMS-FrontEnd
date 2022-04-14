@@ -39,11 +39,17 @@ const CarryForwardItem = (props) => {
           <Col sm={COL_SPAN.A}>
             <div className={styles.leftPart}>
               <span>From</span>
-              <Form.Item name={[name, 'carryForwardCap.from']}>
+              <Form.Item
+                name={[name, 'carryForwardCap.from']}
+                rules={[{ required: true, message: 'Required field!' }]}
+              >
                 <Input placeholder="0" />
               </Form.Item>
               <span>Years to Less than</span>
-              <Form.Item name={[name, 'carryForwardCap.to']}>
+              <Form.Item
+                name={[name, 'carryForwardCap.to']}
+                rules={[{ required: true, message: 'Required field!' }]}
+              >
                 <Input placeholder="0" />
               </Form.Item>
               <span>Years of Service</span>
@@ -67,7 +73,10 @@ const CarryForwardItem = (props) => {
           <Col sm={COL_SPAN.E}>
             <div className={styles.rightPart}>
               <div style={{ marginRight: 16 }}>
-                <Form.Item name={[name, 'maximumCarryForwardValue.value']}>
+                <Form.Item
+                  name={[name, 'maximumCarryForwardValue.value']}
+                  rules={[{ required: true, message: 'Required field!' }]}
+                >
                   <InputNumber prefix="days" min={0} max={100000} defaultValue={0} />
                 </Form.Item>
               </div>

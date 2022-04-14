@@ -83,11 +83,14 @@ const TimeOffType = (props) => {
     }
   }, [JSON.stringify(countryList)]);
 
-  const onChangeType = async (id) => {
+  const onChangeType = async (payload) => {
     history.push({
-      pathname: `/time-off/setup/types-rules/configure/${id}`,
+      pathname: `/time-off/setup/types-rules/configure/${payload._id}`,
       state: {
         isValid: true,
+        type: payload.type,
+        typeName: payload.typeName,
+        country: payload.country,
       },
     });
   };

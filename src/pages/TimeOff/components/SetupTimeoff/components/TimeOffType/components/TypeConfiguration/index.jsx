@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Affix, Button, Col, Form, Row, Skeleton, Typography } from 'antd';
+import { Affix, Button, Col, Form, message, Row, Skeleton, Typography } from 'antd';
 import { connect, history } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
@@ -128,10 +128,13 @@ const TypeConfiguration = (props) => {
       noticePeriodLeaveAccrualPolicy = false,
     } = values;
 
-    let payload = {
+    const payload = {
       timeoffType: typeId,
       timeoffTypeName,
       employeeType,
+      type: state.type,
+      typeName: state.typeName,
+      country: state.country,
       configs: {
         accrualPolicy: {
           accrualMethod: values['accrualPolicy.accrualMethod'],
@@ -188,12 +191,6 @@ const TypeConfiguration = (props) => {
     };
     if (action === 'add') {
       delete payload.timeoffType;
-      payload = {
-        ...payload,
-        type: state.type,
-        typeName: state.typeName,
-        country: state.country,
-      };
     }
     return payload;
   };
@@ -209,6 +206,10 @@ const TypeConfiguration = (props) => {
         goBack();
       }
     });
+  };
+
+  const onFinishFailed = () => {
+    message.error('Please complete required fields!');
   };
 
   const getFormInitialValues = () => {
@@ -353,6 +354,7 @@ const TypeConfiguration = (props) => {
                 form={form}
                 initialValues={getFormInitialValues()}
                 onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
               >
                 <Row gutter={[24, 24]}>
                   {components.map((x) => (

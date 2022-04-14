@@ -16,7 +16,7 @@ const EmploymentType = (props) => {
           </span>
         </Col>
         <Col sm={10}>
-          <Form.Item name="employeeType">
+          <Form.Item name="employeeType" rules={[{ required: true, message: 'Required field!' }]}>
             <Select showSearch showArrow mode="multiple" placeholder="Select the Employment Type">
               {employeeTypeList.map((x) => (
                 <Option value={x._id}>{x.name}</Option>

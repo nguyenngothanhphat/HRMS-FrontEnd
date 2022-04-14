@@ -9,7 +9,11 @@ const AccrualPolicy = () => {
     <Card title="Accrual Policy" className={styles.AccrualPolicy}>
       <div className={styles.accrualMethod}>
         <span className={styles.label}>Accrual Method</span>
-        <Form.Item name="accrualPolicy.accrualMethod" valuePropName="value">
+        <Form.Item
+          rules={[{ required: true, message: 'Required field!' }]}
+          name="accrualPolicy.accrualMethod"
+          valuePropName="value"
+        >
           <Radio.Group>
             <Space direction="vertical">
               <Space direction="vertical">

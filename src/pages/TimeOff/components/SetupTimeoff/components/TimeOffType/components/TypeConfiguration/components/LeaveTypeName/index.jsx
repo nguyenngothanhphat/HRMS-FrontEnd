@@ -11,7 +11,10 @@ const LeaveTypeName = () => {
           <span className={styles.label}>Enter the name of the leave type</span>
         </Col>
         <Col sm={8}>
-          <Form.Item name="timeoffTypeName">
+          <Form.Item
+            name="timeoffTypeName"
+            rules={[{ required: true, message: 'Required field!' }]}
+          >
             <Input placeholder="Enter the type name" />
           </Form.Item>
         </Col>

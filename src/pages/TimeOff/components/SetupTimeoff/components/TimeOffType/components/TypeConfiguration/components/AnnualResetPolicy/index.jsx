@@ -26,7 +26,10 @@ const AnnualResetPolicy = () => {
           <span className={styles.label}>Select Date</span>
         </Col>
         <Col sm={8}>
-          <Form.Item name="annualResetPolicy.calendarDate">
+          <Form.Item
+            name="annualResetPolicy.calendarDate"
+            rules={[{ required: true, message: 'Required field!' }]}
+          >
             <DatePicker
               suffixIcon={<img src={datePickerIcon} alt="" />}
               onChange={onChange}
