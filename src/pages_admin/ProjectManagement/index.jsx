@@ -183,7 +183,7 @@ export default connect(
       totalActive = '',
       totalInactive = '',
     } = {},
-    locationSelection: { companyLocationList = [] } = {},
+    location: { companyLocationList = [] } = {},
     loading,
   }) => ({
     user,

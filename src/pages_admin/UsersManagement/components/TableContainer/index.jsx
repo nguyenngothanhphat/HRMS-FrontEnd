@@ -11,7 +11,7 @@ import TableFilter from '../TableFilter';
   ({
     loading,
     usersManagement,
-    locationSelection: { companyLocationList = [] } = {},
+    location: { companyLocationList = [] } = {},
     employee,
     user: { currentUser = {}, permissions = {}, companiesOfUser = [] },
     usersManagement: { filterList = {}, totalActiveEmployee = '', totalInactiveEmployee = '' } = {},

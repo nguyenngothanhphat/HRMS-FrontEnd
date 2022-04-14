@@ -17,15 +17,13 @@ export default class HolidayList extends PureComponent {
             <Row key={`${index + 1}`} className={styles.eachRow}>
               <Col xs={4} className={styles.dateAndMonth}>
                 <span className={styles.day}>{day}</span>
-                <span className={styles.month}>
-                  {moment.utc(monthData).locale('en').format('MMM')}
-                </span>
+                <span className={styles.month}>{moment(monthData).locale('en').format('MMM')}</span>
               </Col>
               <Col xs={16} className={styles.eventOfDay}>
                 {name}
               </Col>
               <Col xs={4} className={styles.dateName}>
-                <span>{moment.utc(monthData).locale('en').format('dddd')}</span>
+                <span>{moment(monthData).locale('en').format('dddd')}</span>
               </Col>
             </Row>
           );

@@ -219,8 +219,7 @@ const RequestInformation = (props) => {
   const findInvalidHalfOfDay = (date) => {
     const filtered = invalidDates.filter((x) => {
       return (
-        moment.utc(x.date).format(TIMEOFF_DATE_FORMAT) ===
-        moment.utc(date).format(TIMEOFF_DATE_FORMAT)
+        moment(x.date).format(TIMEOFF_DATE_FORMAT) === moment(date).format(TIMEOFF_DATE_FORMAT)
       );
     });
 
@@ -231,8 +230,8 @@ const RequestInformation = (props) => {
   const checkIfWholeDayAvailable = (date) => {
     const find = invalidDates.some(
       (x) =>
-        moment.utc(x.date).format(TIMEOFF_DATE_FORMAT) ===
-          moment(date).format(TIMEOFF_DATE_FORMAT) && x.timeOfDay === WHOLE_DAY,
+        moment(x.date).format(TIMEOFF_DATE_FORMAT) === moment(date).format(TIMEOFF_DATE_FORMAT) &&
+        x.timeOfDay === WHOLE_DAY,
     );
     return !find;
   };
@@ -240,8 +239,7 @@ const RequestInformation = (props) => {
   const checkIfHalfDayAvailable = (date) => {
     const filtered = invalidDates.filter((x) => {
       return (
-        moment.utc(x.date).format(TIMEOFF_DATE_FORMAT) ===
-          moment(date).format(TIMEOFF_DATE_FORMAT) &&
+        moment(x.date).format(TIMEOFF_DATE_FORMAT) === moment(date).format(TIMEOFF_DATE_FORMAT) &&
         (x.timeOfDay === MORNING || x.timeOfDay === AFTERNOON)
       );
     });
@@ -252,8 +250,7 @@ const RequestInformation = (props) => {
 
     const find = invalidDates.some((x) => {
       return (
-        moment.utc(x.date).format(TIMEOFF_DATE_FORMAT) ===
-          moment(date).format(TIMEOFF_DATE_FORMAT) &&
+        moment(x.date).format(TIMEOFF_DATE_FORMAT) === moment(date).format(TIMEOFF_DATE_FORMAT) &&
         (x.timeOfDay !== MORNING || x.timeOfDay !== AFTERNOON)
       );
     });
@@ -261,21 +258,21 @@ const RequestInformation = (props) => {
   };
 
   const checkIfWeekEnd = (date) => {
-    return moment.utc(date).weekday() === 6 || moment.utc(date).weekday() === 0;
+    return moment(date).weekday() === 6 || moment(date).weekday() === 0;
   };
 
   // GET LIST OF DAYS FROM DAY A TO DAY B
   const getDateLists = (startDate, endDate, selectedTypeProp) => {
     let dates = [];
-    const endDateTemp = moment.utc(endDate).clone();
+    const endDateTemp = moment(endDate).clone();
 
     if ([C].includes(selectedTypeProp)) {
-      const now = moment.utc(startDate).clone();
-      while (now.isSameOrBefore(moment.utc(endDate), 'day')) {
+      const now = moment(startDate).clone();
+      while (now.isSameOrBefore(moment(endDate), 'day')) {
         if (checkIfWeekEnd(now)) {
-          const nextNow = moment.utc(now).add(1, 'days');
+          const nextNow = moment(now).add(1, 'days');
           // if "now" = saturday, nextNow = sunday AND endDate = sunday => add 2 days
-          if (checkIfWeekEnd(nextNow) && moment.utc(endDate).weekday() === 6) {
+          if (checkIfWeekEnd(nextNow) && moment(endDate).weekday() === 6) {
             endDateTemp.add(2, 'days');
           } else endDateTemp.add(1, 'days');
         }
@@ -284,11 +281,11 @@ const RequestInformation = (props) => {
     }
 
     if (startDate && endDate) {
-      const now = moment.utc(startDate);
-      while (now.isSameOrBefore(moment.utc(endDateTemp), 'day')) {
+      const now = moment(startDate);
+      while (now.isSameOrBefore(moment(endDateTemp), 'day')) {
         if (!checkIfWeekEnd(now)) {
           if (checkIfWholeDayAvailable(now) || checkIfHalfDayAvailable(now)) {
-            dates = [...dates, moment.utc(now)];
+            dates = [...dates, moment(now).format(TIMEOFF_DATE_FORMAT)];
           }
         }
         now.add(1, 'days');
@@ -314,8 +311,8 @@ const RequestInformation = (props) => {
   };
 
   const getAutoToDate = (allowance) => {
-    if (allowance !== 0) return moment.utc(durationFrom).add(allowance - 1, 'day');
-    return moment.utc(durationFrom).add(allowance, 'day');
+    if (allowance !== 0) return moment(durationFrom).add(allowance - 1, 'day');
+    return moment(durationFrom).add(allowance, 'day');
   };
 
   // GET TIME OFF TYPE BY ID
@@ -415,8 +412,8 @@ const RequestInformation = (props) => {
       if (selectedType !== C && selectedType !== D) {
         result = result.filter(
           (value) =>
-            moment.utc(value.date).weekday() !== 6 &&
-            moment.utc(value.date).weekday() !== 0 &&
+            moment(value.date).weekday() !== 6 &&
+            moment(value.date).weekday() !== 0 &&
             Object.keys(value).length !== 0,
         );
       } else {
@@ -450,7 +447,7 @@ const RequestInformation = (props) => {
           toDate: durationTo,
           duration,
           leaveDates: leaveDatesPayload,
-          onDate: moment.utc(),
+          onDate: moment(),
           description,
           approvalManager: managerId, // id
           cc: personCC,
@@ -502,10 +499,10 @@ const RequestInformation = (props) => {
           type: timeOffType,
           status: IN_PROGRESS,
           subject,
-          fromDate: durationFrom,
-          toDate: durationTo,
+          fromDate: moment(durationFrom),
+          toDate: moment(durationTo),
           leaveDates: leaveDatesPayload,
-          onDate: moment.utc(),
+          onDate: moment(),
           description,
           duration: Math.round(duration * 100) / 100,
           cc: personCC,
@@ -544,18 +541,12 @@ const RequestInformation = (props) => {
 
   const toDateOnChange = (value) => {
     setDurationTo(value || '');
-    form.setFieldsValue({
-      durationTo: value ? moment.utc(value) : null,
-    });
   };
 
   // DATE PICKER ON CHANGE
   const fromDateOnChange = (value) => {
     setDurationFrom(value || '');
-    form.setFieldsValue({
-      durationFrom: value ? moment.utc(value) : null,
-    });
-    if (moment.utc(value).isAfter(moment.utc(durationTo))) {
+    if (moment(value).isAfter(moment(durationTo))) {
       setDurationTo('');
       form.setFieldsValue({
         durationTo: '',
@@ -671,7 +662,7 @@ const RequestInformation = (props) => {
 
   const disabledFromDate = (current) => {
     return (
-      // (current && moment.utc(current).isAfter(moment.utc(durationTo), 'day')) ||
+      // (current && moment(current).isAfter(moment(durationTo), 'day')) ||
       moment(current).day() === 0 ||
       moment(current).day() === 6 ||
       !checkIfWholeDayAvailable(current) ||
@@ -681,7 +672,7 @@ const RequestInformation = (props) => {
 
   const disabledToDate = (current) => {
     return (
-      (current && moment(current).isBefore(moment.utc(durationFrom), 'day')) ||
+      (current && moment(current).isBefore(moment(durationFrom), 'day')) ||
       moment(current).day() === 0 ||
       moment(current).day() === 6 ||
       !checkIfWholeDayAvailable(current) ||
@@ -759,8 +750,8 @@ const RequestInformation = (props) => {
         setIsEditingDrafts(true);
       }
 
-      setDurationFrom(viewingFromDate ? moment.utc(viewingFromDate) : null);
-      setDurationTo(viewingToDate ? moment.utc(viewingToDate) : null);
+      setDurationFrom(viewingFromDate ? moment(viewingFromDate) : null);
+      setDurationTo(viewingToDate ? moment(viewingToDate) : null);
       setSelectedTypeName(viewingType.name);
       setSelectedType(viewingType.type);
 
@@ -776,8 +767,8 @@ const RequestInformation = (props) => {
         viewingLeaveDates.forEach((val2) => {
           const { date = '' } = val2;
           if (
-            moment.utc(date).locale('en').format(TIMEOFF_DATE_FORMAT) ===
-            moment.utc(val1).locale('en').format(TIMEOFF_DATE_FORMAT)
+            moment(date).locale('en').format(TIMEOFF_DATE_FORMAT) ===
+            moment(val1).locale('en').format(TIMEOFF_DATE_FORMAT)
           ) {
             resultDates.push(val2);
             check = true;
@@ -803,8 +794,8 @@ const RequestInformation = (props) => {
       form.setFieldsValue({
         timeOffType: viewingType?._id,
         subject: viewingSubject,
-        durationFrom: viewingFromDate ? moment.utc(viewingFromDate) : null,
-        durationTo: viewingToDate ? moment.utc(viewingToDate) : null,
+        durationFrom: viewingFromDate ? moment(viewingFromDate) : null,
+        durationTo: viewingToDate ? moment(viewingToDate) : null,
         description: viewingDescription,
         personCC: viewingCC,
         leaveTimeLists,
@@ -840,15 +831,11 @@ const RequestInformation = (props) => {
   // USE EFFECT
   useEffect(() => {
     if (invalidDatesProps.length > 0) {
-      const dateList = enumerateDaysBetweenDates(
-        moment.utc(viewingFromDate),
-        moment.utc(viewingToDate),
-      );
+      const dateList = enumerateDaysBetweenDates(moment(viewingFromDate), moment(viewingToDate));
       const temp = invalidDatesProps.filter((x) => {
         return !dateList.some(
           (y) =>
-            moment.utc(y).format(TIMEOFF_DATE_FORMAT) ===
-            moment.utc(x.date).format(TIMEOFF_DATE_FORMAT),
+            moment(y).format(TIMEOFF_DATE_FORMAT) === moment(x.date).format(TIMEOFF_DATE_FORMAT),
         );
       });
 
@@ -905,9 +892,9 @@ const RequestInformation = (props) => {
       const autoToDate = getAutoToDate(currentAllowanceState);
       const dateListsObj = getDateLists(durationFrom, autoToDate, selectedType);
       setDateLists(dateListsObj.dates);
-      setDurationTo(moment.utc(dateListsObj.endDate));
+      setDurationTo(moment(dateListsObj.endDate));
       form.setFieldsValue({
-        durationTo: moment.utc(dateListsObj.endDate),
+        durationTo: moment(dateListsObj.endDate),
       });
     }
   }, [durationFrom, currentAllowanceState]);
