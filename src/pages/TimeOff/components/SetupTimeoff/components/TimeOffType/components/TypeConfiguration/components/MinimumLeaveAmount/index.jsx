@@ -12,7 +12,7 @@ const MinimumLeaveAmount = () => {
         </Col>
         <Col sm={10}>
           <Form.Item name="minimumLeaveAmount.value">
-            <Input defaultValue="0" />
+            <Input defaultValue="0" suffix="days" />
           </Form.Item>
         </Col>
         <Col sm={4} />

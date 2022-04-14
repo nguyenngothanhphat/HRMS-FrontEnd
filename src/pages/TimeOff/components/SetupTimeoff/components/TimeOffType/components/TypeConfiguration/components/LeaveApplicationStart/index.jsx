@@ -1,4 +1,4 @@
-import { Card, Col, Form, InputNumber, Row } from 'antd';
+import { Card, Col, Form, Input, Row } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
@@ -14,7 +14,7 @@ const LeaveApplicationStart = () => {
         </Col>
         <Col sm={8}>
           <Form.Item name="leaveApplicationStart.value">
-            <InputNumber prefix="days" min={0} max={100000} defaultValue="0" />
+            <Input type="number" suffix="days" min={0} max={100000} defaultValue="0" />
           </Form.Item>
         </Col>
         <Col sm={6} />

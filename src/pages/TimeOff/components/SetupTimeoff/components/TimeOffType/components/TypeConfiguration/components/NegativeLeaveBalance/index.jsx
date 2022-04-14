@@ -1,4 +1,4 @@
-import { Card, Col, Form, InputNumber, Row, Radio } from 'antd';
+import { Card, Col, Form, Input, Radio, Row } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
@@ -36,7 +36,7 @@ const NegativeLeaveBalance = () => {
           <div className={styles.rightPart}>
             <div style={{ marginRight: 16 }}>
               <Form.Item name="negativeLeaveBalance.maximum.value">
-                <InputNumber prefix="days" min={0} max={100000} defaultValue="0" />
+                <Input suffix="days" type="number" min={0} max={100000} defaultValue="0" />
               </Form.Item>
             </div>
             <div className={styles.viewTypeSelector}>
