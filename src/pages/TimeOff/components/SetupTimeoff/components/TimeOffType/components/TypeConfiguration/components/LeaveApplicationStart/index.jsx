@@ -3,11 +3,10 @@ import React from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
-const LeaveApplicationStart = (props) => {
-  const { dispatch } = props;
+const LeaveApplicationStart = () => {
   const onChange = () => {};
   return (
-    <Card title="Leave Application Start" className={styles.LeaveType}>
+    <Card title="Leave Application Start" className={styles.LeaveApplicationStart}>
       <Row gutter={[24, 24]} align="middle">
         <Col sm={10}>
           <span className={styles.label}>

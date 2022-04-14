@@ -3,11 +3,10 @@ import React from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
-const AccrualStart = (props) => {
-  const { dispatch } = props;
+const AccrualStart = () => {
   const onChange = () => {};
   return (
-    <Card title="Accrual Start" className={styles.LeaveType}>
+    <Card title="Accrual Start" className={styles.AccrualStart}>
       <Row gutter={[24, 24]} align="middle">
         <Col sm={10}>
           <span className={styles.label}>
