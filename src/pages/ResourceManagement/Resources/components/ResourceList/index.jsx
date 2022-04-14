@@ -194,10 +194,12 @@ const ResourceList = (props) => {
   ]);
 
   useEffect(() => {
-    if (isSearching && pageSelected !== 1) {
-      setPageSelected(1);
-    } else if (isSearching) {
-      fetchResourceList();
+    if (isSearching) {
+      if (pageSelected !== 1) {
+        setPageSelected(1);
+      } else {
+        fetchResourceList();
+      }
     }
   }, [searchKey]);
 
