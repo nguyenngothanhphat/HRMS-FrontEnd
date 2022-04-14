@@ -86,7 +86,9 @@ const TimeOffType = (props) => {
   const onChangeType = async (id) => {
     history.push({
       pathname: `/time-off/setup/types-rules/configure/${id}`,
-      state: { action: 'edit' },
+      state: {
+        isValid: true,
+      },
     });
   };
 

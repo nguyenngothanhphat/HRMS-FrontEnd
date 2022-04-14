@@ -7,28 +7,30 @@ import styles from './index.less';
 const { Option } = Select;
 
 class Types extends Component {
-  renderItem = (render) => {
+  renderItem = (item) => {
     const { removeItem = () => {} } = this.props;
-    const { children = [] } = render;
+    const { children = [] } = item;
 
     return (
       <div className={styles.item}>
         <div className={styles.from}>
           <Row className={styles.from__rowItem} align="middle">
             <Col span={8}>
-              <div className={styles.title}>{render.type}</div>
+              <div className={styles.title}>
+                Type {item.type}: {item.typeName}
+              </div>
             </Col>
             <Col span={8} />
             <Col span={8} className={styles.colAction}>
-              <Button className={styles.buttonRequest} onClick={() => this.addNewType(render)}>
-                {render.button}
+              <Button className={styles.buttonRequest} onClick={() => this.addNewType(item)}>
+                {item.button}
               </Button>
             </Col>
           </Row>
           <div className={styles.straightLine} />
           <div>
-            {children.map((item, index) => {
-              const { name, isDefault } = item;
+            {children.map((x, index) => {
+              const { name, isDefault } = x;
               return (
                 <div key={`${index + 1}`}>
                   <Row className={styles.from__rowItem} align="middle">
@@ -40,12 +42,12 @@ class Types extends Component {
                     </Col>
                     <Col span={8} className={styles.colAction}>
                       <div className={styles.setup}>
-                        <span onClick={() => this.onChange(item._id, true)}>
+                        <span onClick={() => this.onChange(x._id, true)}>
                           {isDefault ? 'Configure' : 'Setup'}
                         </span>
                         {!isDefault && (
                           <Popconfirm
-                            onConfirm={() => removeItem(item._id)}
+                            onConfirm={() => removeItem(x._id)}
                             title="Are you sure to remove?"
                             placement="right"
                           >
@@ -67,10 +69,16 @@ class Types extends Component {
     );
   };
 
-  addNewType = () => {
+  addNewType = (payload) => {
+    const { countrySelected = '' } = this.props;
     history.push({
       pathname: `/time-off/setup/types-rules/add`,
-      state: { action: 'add' },
+      state: {
+        type: payload.type,
+        typeName: payload.typeName,
+        country: countrySelected,
+        isValid: true,
+      },
     });
   };
 
@@ -147,26 +155,26 @@ class Types extends Component {
 
     const array = [
       {
-        typeName: 'A',
-        type: 'Type A: Paid Leaves',
+        type: 'A',
+        typeName: 'Paid Leaves',
         button: 'Add a new paid leave',
         children: [],
       },
       {
-        typeName: 'B',
-        type: 'Type B: Unpaid Leaves',
+        type: 'B',
+        typeName: 'Unpaid Leaves',
         button: 'Add a new unpaid leave',
         children: [],
       },
       {
-        typeName: 'C',
-        type: 'Type C: Special Leaves',
+        type: 'C',
+        typeName: 'Special Leaves',
         button: 'Add a new special leave',
         children: [],
       },
       {
-        typeName: 'D',
-        type: 'Type D: Working out of office',
+        type: 'D',
+        typeName: 'Working out of office',
         button: 'Add a new WOO leave',
         children: [],
       },
@@ -178,7 +186,7 @@ class Types extends Component {
     // add item to array
     newArr.map((item) => {
       array.map((ele) => {
-        if (ele.typeName === item.type) {
+        if (ele.type === item.type) {
           // eslint-disable-next-line no-param-reassign
           item.change = this.onChange;
           ele.children.push(item);

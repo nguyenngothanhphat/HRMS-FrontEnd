@@ -80,6 +80,7 @@ const TypeConfiguration = (props) => {
   const {
     dispatch,
     match: { params: { action = '', typeId = '' } = {} } = {},
+    location: { state: { isValid = false } = {}, state = {} } = {},
     timeOff: { viewingLeaveType = {} || {} } = {},
     loadingFetchTypeByID = false,
   } = props;
@@ -127,7 +128,7 @@ const TypeConfiguration = (props) => {
       noticePeriodLeaveAccrualPolicy = false,
     } = values;
 
-    return {
+    let payload = {
       timeoffType: typeId,
       timeoffTypeName,
       employeeType,
@@ -185,6 +186,16 @@ const TypeConfiguration = (props) => {
         }),
       },
     };
+    if (action === 'add') {
+      delete payload.timeoffType;
+      payload = {
+        ...payload,
+        type: state.type,
+        typeName: state.typeName,
+        country: state.country,
+      };
+    }
+    return payload;
   };
 
   const onFinish = (values) => {
@@ -254,7 +265,7 @@ const TypeConfiguration = (props) => {
   };
 
   useEffect(() => {
-    if (!action) {
+    if (!isValid) {
       goBack();
     }
     goToTop();
