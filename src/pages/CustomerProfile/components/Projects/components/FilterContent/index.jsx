@@ -31,9 +31,6 @@ const FilterContent = (props) => {
     });
     dispatch({
       type: 'customerProfile/fetchDivisionListEffect',
-      payload: {
-        name: 'Engineering',
-      },
     });
     dispatch({
       type: 'customerProfile/fetchEmployeeListEffect',
