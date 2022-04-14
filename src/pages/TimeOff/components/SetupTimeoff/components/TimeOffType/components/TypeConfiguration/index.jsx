@@ -92,12 +92,14 @@ const TypeConfiguration = (props) => {
   } = viewingLeaveType || {};
 
   const fetchTypeById = () => {
-    dispatch({
-      type: 'timeOff/fetchLeaveTypeByIDEffect',
-      payload: {
-        timeoffType: typeId,
-      },
-    });
+    if (typeId) {
+      dispatch({
+        type: 'timeOff/fetchLeaveTypeByIDEffect',
+        payload: {
+          timeoffType: typeId,
+        },
+      });
+    }
   };
 
   const fetchEmployeeTypeList = () => {
@@ -346,8 +348,10 @@ const TypeConfiguration = (props) => {
         <Row gutter={[24, 24]}>
           <Col sm={24} xl={16}>
             {loadingFetchTypeByID ||
-            (viewingLeaveType !== null && Object.keys(viewingLeaveType).length === 0) ? (
-              <Skeleton />
+            (action === 'configure' &&
+              viewingLeaveType !== null &&
+              Object.keys(viewingLeaveType).length === 0) ? (
+                <Skeleton />
             ) : (
               <Form
                 name="timeOffType"
