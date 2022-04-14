@@ -60,6 +60,9 @@ import {
   getLocationByCompany,
   getLocationById,
   getAllLeaveRequests,
+  upsertLeaveType,
+  getLeaveTypeByTimeOffType,
+  getEmployeeTypeList,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -116,6 +119,8 @@ const timeOff = {
       // },
     ],
     itemTimeOffType: {},
+    viewingLeaveType: {},
+    employeeTypeList: [],
     pageStart: true,
     locationByCompany: [],
     tempData: {
@@ -218,7 +223,7 @@ const timeOff = {
       }
     },
     *fetchTimeOffTypeById({ payload }, { call, put }) {
-      let response = {}
+      let response = {};
       try {
         response = yield call(getTimeOffTypeById, {
           ...payload,
@@ -234,7 +239,7 @@ const timeOff = {
       } catch (errors) {
         dialog(errors);
       }
-      return response
+      return response;
     },
     *updateTimeOffType({ payload }, { call, put }) {
       try {
@@ -257,6 +262,62 @@ const timeOff = {
         dialog(error);
       }
     },
+
+    // LEAVE TYPE CONFIGS
+    *fetchLeaveTypeByIDEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getLeaveTypeByTimeOffType, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { viewingLeaveType: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *upsertLeaveTypeEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(upsertLeaveType, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Update successfully',
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchEmployeeTypeListEffect(_, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getEmployeeTypeList);
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        // to make the full time first
+        const employeeTypeList = data.reverse();
+        yield put({
+          type: 'save',
+          payload: { employeeTypeList },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
     *fetchLeaveBalanceOfUser({ payload }, { call, put }) {
       let response = {};
       try {

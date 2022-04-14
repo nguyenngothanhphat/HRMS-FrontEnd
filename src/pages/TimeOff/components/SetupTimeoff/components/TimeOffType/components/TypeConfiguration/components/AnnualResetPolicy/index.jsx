@@ -8,15 +8,17 @@ const AnnualResetPolicy = () => {
   const [isOpen, setIsOpen] = useState(false);
   const onChange = () => {};
   return (
-    <Card title="Negative Leave Balance" className={styles.AnnualResetPolicy}>
+    <Card title="Annual Reset Policy" className={styles.AnnualResetPolicy}>
       <div className={styles.annualResetTop}>
         <span className={styles.label}>How do you want to reset?</span>
-        <Radio.Group name="accrualMethod" defaultValue={1}>
-          <Space direction="horizontal">
-            <Radio value={1}>Anniversary Date</Radio>
-            <Radio value={2}>Calendar Date</Radio>
-          </Space>
-        </Radio.Group>
+        <Form.Item name="annualResetPolicy.resetType">
+          <Radio.Group>
+            <Space direction="horizontal">
+              <Radio value="anniversaryDate">Anniversary Date</Radio>
+              <Radio value="calendarDate">Calendar Date</Radio>
+            </Space>
+          </Radio.Group>
+        </Form.Item>
       </div>
 
       <Row>
@@ -24,7 +26,7 @@ const AnnualResetPolicy = () => {
           <span className={styles.label}>Select Date</span>
         </Col>
         <Col sm={8}>
-          <Form.Item>
+          <Form.Item name="annualResetPolicy.calendarDate">
             <DatePicker
               suffixIcon={<img src={datePickerIcon} alt="" />}
               onChange={onChange}

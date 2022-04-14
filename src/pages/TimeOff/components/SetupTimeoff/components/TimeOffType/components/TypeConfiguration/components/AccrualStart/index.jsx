@@ -4,7 +4,6 @@ import { connect } from 'umi';
 import styles from './index.less';
 
 const AccrualStart = () => {
-  const onChange = () => {};
   return (
     <Card title="Accrual Start" className={styles.AccrualStart}>
       <Row gutter={[24, 24]} align="middle">
@@ -15,9 +14,8 @@ const AccrualStart = () => {
           </span>
         </Col>
         <Col sm={8}>
-          <Form.Item>
-            <InputNumber prefix="days" min={0} max={100000} defaultValue="0" onChange={onChange} />
-            <span className={styles.prefix}>days</span>
+          <Form.Item name="accrualStart.value">
+            <InputNumber prefix="days" min={0} max={100000} defaultValue="0" />
           </Form.Item>
         </Col>
         <Col sm={6} />

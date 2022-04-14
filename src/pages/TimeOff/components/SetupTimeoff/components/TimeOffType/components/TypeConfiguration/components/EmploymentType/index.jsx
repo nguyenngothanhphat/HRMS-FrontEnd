@@ -5,7 +5,8 @@ import styles from './index.less';
 
 const { Option } = Select;
 
-const EmploymentType = () => {
+const EmploymentType = (props) => {
+  const { timeOff: { employeeTypeList = [] } = {} } = props;
   return (
     <Card title="Employment Type" className={styles.EmploymentType}>
       <Row gutter={[24, 24]} align="top">
@@ -15,13 +16,11 @@ const EmploymentType = () => {
           </span>
         </Col>
         <Col sm={10}>
-          <Form.Item>
+          <Form.Item name="employeeType">
             <Select showSearch showArrow mode="multiple" placeholder="Select the Employment Type">
-              <Option value="Full Time Employee">Full Time Employee</Option>
-              <Option value="Part Time Employee">Part Time Employee</Option>
-              <Option value="Probationary Employees">Probationary Employees</Option>
-              <Option value="Intern">Intern</Option>
-              <Option value="Contingent Worker">Contingent Worker</Option>
+              {employeeTypeList.map((x) => (
+                <Option value={x._id}>{x.name}</Option>
+              ))}
             </Select>
           </Form.Item>
         </Col>
@@ -30,4 +29,4 @@ const EmploymentType = () => {
     </Card>
   );
 };
-export default connect(() => ({}))(EmploymentType);
+export default connect(({ timeOff }) => ({ timeOff }))(EmploymentType);

@@ -1,4 +1,4 @@
-import { Card, Col, Radio, Row } from 'antd';
+import { Card, Col, Form, Radio, Row } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
@@ -14,10 +14,12 @@ const NewHireProrationPolicy = () => {
         </Col>
         <Col sm={8}>
           <div className={styles.viewTypeSelector}>
-            <Radio.Group buttonStyle="solid" defaultValue="Yes">
-              <Radio.Button value="Yes">Yes</Radio.Button>
-              <Radio.Button value="No">No</Radio.Button>
-            </Radio.Group>
+            <Form.Item name="newHireProrationPolicy" valuePropName="value">
+              <Radio.Group buttonStyle="solid">
+                <Radio.Button value>Yes</Radio.Button>
+                <Radio.Button value={false}>No</Radio.Button>
+              </Radio.Group>
+            </Form.Item>
           </div>
         </Col>
         <Col sm={6} />

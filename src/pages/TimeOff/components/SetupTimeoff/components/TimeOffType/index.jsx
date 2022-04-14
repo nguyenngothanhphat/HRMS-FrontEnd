@@ -84,7 +84,10 @@ const TimeOffType = (props) => {
   }, [JSON.stringify(countryList)]);
 
   const onChangeType = async (id) => {
-    history.push(`/time-off/setup/types-rules/configure/${id}`);
+    history.push({
+      pathname: `/time-off/setup/types-rules/configure/${id}`,
+      state: { action: 'edit' },
+    });
   };
 
   const onRemoveItem = (id) => {

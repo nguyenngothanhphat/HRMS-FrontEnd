@@ -3,16 +3,16 @@ import React from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
-const LeaveType = () => {
+const LeaveTypeName = () => {
   return (
-    <Card title="Leave Type Name" className={styles.LeaveType}>
+    <Card title="Leave Type Name" className={styles.LeaveTypeName}>
       <Row gutter={[24, 24]} align="middle">
         <Col sm={10}>
           <span className={styles.label}>Enter the name of the leave type</span>
         </Col>
         <Col sm={8}>
-          <Form.Item name="name">
-            <Input placeholder="Type Name" />
+          <Form.Item name="timeoffTypeName">
+            <Input placeholder="Enter the type name" />
           </Form.Item>
         </Col>
         <Col sm={6} />
@@ -20,4 +20,4 @@ const LeaveType = () => {
     </Card>
   );
 };
-export default connect(() => ({}))(LeaveType);
+export default connect(() => ({}))(LeaveTypeName);

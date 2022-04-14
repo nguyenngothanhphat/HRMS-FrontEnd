@@ -5,42 +5,31 @@ import AccrualRate from './components/AccrualRate';
 import styles from './index.less';
 
 const AccrualPolicy = () => {
-  const data = [
-    {
-      from: 0,
-      to: 5,
-      daysPerYear: 0,
-    },
-    {
-      from: 5,
-      to: 10,
-      daysPerYear: 0,
-    },
-  ];
-
   return (
     <Card title="Accrual Policy" className={styles.AccrualPolicy}>
       <div className={styles.accrualMethod}>
         <span className={styles.label}>Accrual Method</span>
-        <Radio.Group name="accrualMethod" defaultValue={1}>
-          <Space direction="vertical">
+        <Form.Item name="accrualPolicy.accrualMethod" valuePropName="value">
+          <Radio.Group>
             <Space direction="vertical">
-              <Radio value={1}>Unlimited</Radio>
-              <Radio value={2}>Days / Year (Frontload)</Radio>
+              <Space direction="vertical">
+                <Radio value="unlimited">Unlimited</Radio>
+                <Radio value="daysOfYear">Days / Year (Frontload)</Radio>
+              </Space>
+              <Space direction="horizontal">
+                <Radio value="daysOfQuarter">Days / Quarter Worked</Radio>
+                <Radio value="daysOfMonth">Days / Month worked</Radio>
+                <Radio value="daysOfFortnight">Days / Fortnight worked</Radio>
+              </Space>
             </Space>
-            <Space direction="horizontal">
-              <Radio value={3}>Days / Quarter Worked</Radio>
-              <Radio value={4}>Days / Month worked</Radio>
-              <Radio value={5}>Days / Fortnight worked</Radio>
-            </Space>
-          </Space>
-        </Radio.Group>
+          </Radio.Group>
+        </Form.Item>
       </div>
       <div className={styles.accrualRate}>
         <span className={styles.label}>Accrual Rate</span>
         <div className={styles.items}>
           <Row gutter={[24, 24]}>
-            <Form.List name="accrualRate">
+            <Form.List name="accrualPolicy.accrualRate">
               {(fields, { add, remove }) => (
                 <>
                   {fields.map(({ key, name }) => (

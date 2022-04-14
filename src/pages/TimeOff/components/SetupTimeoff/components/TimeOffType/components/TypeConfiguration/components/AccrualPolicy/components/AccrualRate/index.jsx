@@ -26,7 +26,7 @@ const AccrualRate = (props) => {
         </Col>
         <Col sm={8}>
           <div className={styles.rightPart}>
-            <Form.Item name={[name, 'daysPerYear']}>
+            <Form.Item name={[name, 'value']}>
               <Input placeholder="0" />
             </Form.Item>
             <span>Days per Year</span>

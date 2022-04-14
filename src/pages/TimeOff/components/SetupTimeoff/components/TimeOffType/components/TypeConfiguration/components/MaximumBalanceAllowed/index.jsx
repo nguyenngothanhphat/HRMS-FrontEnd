@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
-const NegativeLeaveBalance = () => {
+const MaximumBalanceAllowed = () => {
   const [unit, setUnit] = useState('d');
   const onUnitChange = (e) => {
     const { target: { value = '' } = {} || {} } = e;
@@ -11,36 +11,22 @@ const NegativeLeaveBalance = () => {
   };
 
   return (
-    <Card title="Negative Leave Balance" className={styles.NegativeLeaveBalance}>
-      <Row gutter={[24, 24]} align="middle" style={{ marginBottom: '24px' }}>
-        <Col sm={10}>
-          <span className={styles.label}>Negative Leave Balance allowed ?</span>
-        </Col>
-        <Col sm={8}>
-          <div className={styles.viewTypeSelector}>
-            <Form.Item name="negativeLeaveBalance.allowed" valuePropName="value">
-              <Radio.Group buttonStyle="solid" defaultValue={false}>
-                <Radio.Button value>Yes</Radio.Button>
-                <Radio.Button value={false}>No</Radio.Button>
-              </Radio.Group>
-            </Form.Item>
-          </div>
-        </Col>
-        <Col sm={6} />
-      </Row>
+    <Card title="Maximum Balance Allowed" className={styles.MaximumBalanceAllowed}>
       <Row gutter={[24, 24]} align="middle">
         <Col sm={10}>
-          <span className={styles.label}>Maximum Negative Leave Balance</span>
+          <span className={styles.label}>
+            Maximum Leave Balance allowed (Leave accrual stops if an employee reaches this value).
+          </span>
         </Col>
         <Col sm={10}>
           <div className={styles.rightPart}>
             <div style={{ marginRight: 16 }}>
-              <Form.Item name="negativeLeaveBalance.maximum.value">
+              <Form.Item name="maximumBalanceAllowed.value">
                 <InputNumber prefix="days" min={0} max={100000} defaultValue="0" />
               </Form.Item>
             </div>
             <div className={styles.viewTypeSelector}>
-              <Form.Item name="negativeLeaveBalance.maximum.unit" valuePropName="value">
+              <Form.Item name="maximumBalanceAllowed.unit" valuePropName="value">
                 <Radio.Group buttonStyle="solid" defaultValue="d" onChange={onUnitChange}>
                   <Radio.Button value="d">Days</Radio.Button>
                   <Radio.Button value="h">Hours</Radio.Button>
@@ -54,4 +40,4 @@ const NegativeLeaveBalance = () => {
     </Card>
   );
 };
-export default connect(() => ({}))(NegativeLeaveBalance);
+export default connect(() => ({}))(MaximumBalanceAllowed);

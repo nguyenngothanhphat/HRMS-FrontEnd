@@ -1,19 +1,12 @@
 import { DeleteOutlined } from '@ant-design/icons';
 import { Button, Col, Popconfirm, Row, Select, Spin } from 'antd';
 import React, { Component } from 'react';
-import AddTypeModal from './components/AddTypeModal';
+import { history } from 'umi';
 import styles from './index.less';
 
 const { Option } = Select;
 
 class Types extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isVisible: false,
-    };
-  }
-
   renderItem = (render) => {
     const { removeItem = () => {} } = this.props;
     const { children = [] } = render;
@@ -27,7 +20,7 @@ class Types extends Component {
             </Col>
             <Col span={8} />
             <Col span={8} className={styles.colAction}>
-              <Button className={styles.buttonRequest} onClick={() => this.showModal(render)}>
+              <Button className={styles.buttonRequest} onClick={() => this.addNewType(render)}>
                 {render.button}
               </Button>
             </Col>
@@ -74,26 +67,10 @@ class Types extends Component {
     );
   };
 
-  showModal = (type) => {
-    const { isVisible } = this.state;
-    const { onTypeSelected } = this.props;
-    this.setState({
-      isVisible: !isVisible,
-    });
-    onTypeSelected(type);
-  };
-
-  closeModal = () => {
-    const { isVisible } = this.state;
-    this.setState({
-      isVisible: !isVisible,
-    });
-  };
-
-  handleCancel = () => {
-    const { isVisible } = this.state;
-    this.setState({
-      isVisible: !isVisible,
+  addNewType = () => {
+    history.push({
+      pathname: `/time-off/setup/types-rules/add`,
+      state: { action: 'add' },
     });
   };
 
@@ -163,14 +140,10 @@ class Types extends Component {
   render() {
     const {
       timeOffTypes = [],
-      addNewType = () => {},
-      loadingAddType,
       loadingFetchList,
       countrySelected,
       loadingFetchCountryList = false,
     } = this.props;
-
-    const { isVisible } = this.state;
 
     const array = [
       {
@@ -247,13 +220,6 @@ class Types extends Component {
               ))}
             </Row>
           )}
-          <AddTypeModal
-            closeModal={this.closeModal}
-            isVisible={isVisible}
-            onCancel={this.handleCancel}
-            onFinish={addNewType}
-            loadingAddType={loadingAddType}
-          />
         </div>
       </>
     );
