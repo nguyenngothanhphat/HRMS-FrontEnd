@@ -10,24 +10,9 @@ const { TabPane } = Tabs;
   timeOff,
 }))
 class FilterBar extends PureComponent {
-  saveCurrentTab = (type) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'timeOff/save',
-      payload: {
-        currentFilterTab: String(type),
-      },
-    });
-  };
-
   onChangeTab = (activeKey) => {
-    const { setSelectedFilterTab, dispatch } = this.props;
+    const { setSelectedFilterTab } = this.props;
     setSelectedFilterTab(activeKey);
-    this.saveCurrentTab(activeKey);
-    dispatch({
-      type: 'timeOff/savePaging',
-      payload: { page: 1 },
-    });
   };
 
   addZeroToNumber = (number) => {

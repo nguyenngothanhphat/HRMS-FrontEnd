@@ -1,4 +1,4 @@
-import { Button, Col, Row, Spin } from 'antd';
+import { Button, Col, Row } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
@@ -180,7 +180,9 @@ class RequestInformation extends PureComponent {
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
           <span className={styles.title}>
-            [Ticket ID: {ticketID}]: {subject}
+            {loadingFetchLeaveRequestById
+              ? 'Getting data...'
+              : `[Ticket ID: ${ticketID}]: ${subject}`}
           </span>
           {(status === DRAFTS || status === IN_PROGRESS) && (
             <div className={styles.editButton} onClick={() => this.handleEdit(_id)}>
@@ -190,99 +192,83 @@ class RequestInformation extends PureComponent {
           )}
         </div>
 
-        {loadingFetchLeaveRequestById && (
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              padding: '100px 0',
-            }}
-          >
-            <Spin size="medium" />
-          </div>
-        )}
-        {!loadingFetchLeaveRequestById && (
-          <>
-            <div className={styles.formContent}>
-              <Row align="middle" gutter={[0, 12]}>
-                <Col span={6}>Timeoff Type</Col>
+        <div className={styles.formContent}>
+          <Row align="middle" gutter={[24, 12]}>
+            <Col span={6}>Timeoff Type</Col>
+            <Col span={18} className={styles.detailColumn}>
+              <span className={styles.fieldValue}>{`${name}`}</span>
+              {type === 'A' && (
+                <span className={styles.smallNotice}>
+                  <span className={styles.normalText}>
+                    {name}s are covered under{' '}
+                    <span className={styles.link} onClick={this.onLinkClick}>
+                      Standard Policy
+                    </span>
+                  </span>
+                </span>
+              )}
+            </Col>
+
+            <Col span={6}>Subject</Col>
+            <Col span={18} className={styles.detailColumn}>
+              <span>{subject}</span>
+            </Col>
+
+            <Col span={6}>Duration</Col>
+            {formatDurationTime ? (
+              <>
                 <Col span={18} className={styles.detailColumn}>
-                  <span className={styles.fieldValue}>{`${name}`}</span>
-                  {type === 'A' && (
+                  <span>{formatDurationTime}</span>{' '}
+                  <span
+                    style={{
+                      fontWeight: 'bold',
+                    }}
+                    className={styles.fieldValue}
+                  >
+                    [{duration <= 1 ? `${duration} day` : `${duration} days`}]
+                  </span>
+                  {(type === 'A' || type === 'B') && (
                     <span className={styles.smallNotice}>
-                      <span className={styles.normalText}>
-                        {name}s are covered under{' '}
-                        <span className={styles.link} onClick={this.onLinkClick}>
-                          Standard Policy
-                        </span>
-                      </span>
+                      <span className={styles.normalText}>{name}s gets credited each month.</span>
                     </span>
                   )}
                 </Col>
-
-                <Col span={6}>Subject</Col>
-                <Col span={18} className={styles.detailColumn}>
-                  <span>{subject}</span>
-                </Col>
-
-                <Col span={6}>Duration</Col>
-                {formatDurationTime ? (
-                  <>
-                    <Col span={18} className={styles.detailColumn}>
-                      <span>{formatDurationTime}</span>{' '}
-                      <span
-                        style={{
-                          fontWeight: 'bold',
-                        }}
-                        className={styles.fieldValue}
-                      >
-                        [{duration <= 1 ? `${duration} day` : `${duration} days`}]
-                      </span>
-                      {(type === 'A' || type === 'B') && (
-                        <span className={styles.smallNotice}>
-                          <span className={styles.normalText}>
-                            {name}s gets credited each month.
-                          </span>
-                        </span>
-                      )}
-                    </Col>
-                  </>
-                ) : (
-                  <Col span={18} />
-                )}
-
-                <Col span={6}>Description</Col>
-                <Col span={18} className={styles.detailColumn}>
-                  <span>{description}</span>
-                </Col>
-
-                {status === REJECTED && (
-                  <>
-                    <Col span={6}>Request Rejection Comments</Col>
-                    <Col span={18} className={styles.detailColumn}>
-                      <span>{comment}</span>
-                    </Col>
-                  </>
-                )}
-              </Row>
-            </div>
-            {(status === DRAFTS ||
-              (status === IN_PROGRESS && checkWithdrawValid) ||
-              (status === ACCEPTED && checkWithdrawValid)) && (
-              <div className={styles.footer}>
-                <span className={styles.note}>
-                  By default notifications will be sent to HR, your manager and recursively loop to
-                  your department head.
-                </span>
-                <div className={styles.formButtons}>
-                  <Button onClick={() => this.withDraw(status)}>
-                    {status === DRAFTS ? 'Discard' : 'Withdraw'}
-                  </Button>
-                </div>
-              </div>
+              </>
+            ) : (
+              <Col span={18} />
             )}
-          </>
+
+            <Col span={6}>Description</Col>
+            <Col span={18} className={styles.detailColumn}>
+              <span>{description}</span>
+            </Col>
+
+            {status === REJECTED && (
+              <>
+                <Col span={6}>Request Rejection Comments</Col>
+                <Col span={18} className={styles.detailColumn}>
+                  <span>{comment}</span>
+                </Col>
+              </>
+            )}
+          </Row>
+        </div>
+        {(status === DRAFTS ||
+          (status === IN_PROGRESS && checkWithdrawValid) ||
+          (status === ACCEPTED && checkWithdrawValid)) && (
+          <div className={styles.footer}>
+            <span className={styles.note}>
+              By default notifications will be sent to HR, your manager and recursively loop to your
+              department head.
+            </span>
+            <div className={styles.formButtons}>
+              <Button onClick={() => this.withDraw(status)}>
+                {status === DRAFTS ? 'Discard' : 'Withdraw'}
+              </Button>
+            </div>
+          </div>
         )}
+
         <WithdrawModal
           loading={loadingEmployeeWithdrawInProgress}
           visible={showWithdrawModal}

@@ -11,7 +11,7 @@ const TimeOffType = (props) => {
     countryList = [],
     loadingAddType,
     loadingFetchList,
-    countrySelected,
+    selectedCountry,
     type = '',
     loadingFetchCountryList = false,
   } = props;
@@ -22,7 +22,7 @@ const TimeOffType = (props) => {
     dispatch({
       type: 'timeOff/fetchTimeOffTypesByCountry',
       payload: {
-        country: countrySelected,
+        country: selectedCountry,
         company: getCurrentCompany(),
         tenantId: getCurrentTenant(),
       },
@@ -33,32 +33,28 @@ const TimeOffType = (props) => {
     dispatch({
       type: 'timeOff/saveTemp',
       payload: {
-        countrySelected: country,
+        selectedCountry: country,
       },
     });
   };
 
-  useEffect(() => {
-    return () => {
-      dispatch({
-        type: 'timeOff/saveTemp',
-        payload: {
-          countrySelected: '',
-          type: {},
-        },
-      });
-      dispatch({
-        type: 'timeOff/save',
-        payload: {
-          timeOffTypesByCountry: [],
-        },
-      });
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     dispatch({
+  //       type: 'timeOff/saveTemp',
+  //       payload: {
+  //         selectedCountry: '',
+  //         type: {},
+  //       },
+  //     });
+  //   };
+  // }, []);
 
   useEffect(() => {
-    fetchTimeoffType();
-  }, [countrySelected]);
+    if (selectedCountry) {
+      fetchTimeoffType();
+    }
+  }, [selectedCountry]);
 
   const removeDuplicate = (array, key) => {
     return [...new Map(array.map((x) => [key(x), x])).values()];
@@ -77,7 +73,7 @@ const TimeOffType = (props) => {
       dispatch({
         type: 'timeOff/saveTemp',
         payload: {
-          countrySelected: find?.headQuarterAddress?.country?._id,
+          selectedCountry: find?.headQuarterAddress?.country?._id,
         },
       });
     }
@@ -101,7 +97,7 @@ const TimeOffType = (props) => {
       payload: {
         _id: id,
         tenantId: getCurrentTenant(),
-        country: countrySelected,
+        country: selectedCountry,
       },
     }).then(async () => {
       fetchTimeoffType();
@@ -129,7 +125,7 @@ const TimeOffType = (props) => {
         accuralRate: newType.accrualRate,
       },
       company: getCurrentCompany(),
-      country: countrySelected,
+      country: selectedCountry,
     };
 
     await dispatch({
@@ -169,7 +165,7 @@ const TimeOffType = (props) => {
           onTypeSelected={onTypeSelected}
           loadingAddType={loadingAddType}
           removeItem={onRemoveItem}
-          countrySelected={countrySelected}
+          selectedCountry={selectedCountry}
           loadingFetchList={loadingFetchList}
           loadingFetchCountryList={loadingFetchCountryList}
         />
@@ -185,13 +181,13 @@ export default connect(
       timeOffTypesByCountry = [],
       itemTimeOffType = {},
       timeOffTypes,
-      tempData: { type = {}, countrySelected = '' },
+      tempData: { type = {}, selectedCountry = '' },
     } = {},
     location: { companyLocationList: countryList = [] } = {},
   }) => ({
     itemTimeOffType,
     type,
-    countrySelected,
+    selectedCountry,
     timeOffTypesByCountry,
     timeOffTypes,
     countryList,

@@ -3,7 +3,7 @@ import { Table, Avatar, Tooltip, Tag, Spin } from 'antd';
 import { history, connect } from 'umi';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 
@@ -63,22 +63,28 @@ class MyLeaveTable extends PureComponent {
       dataIndex: 'startDate',
       align: 'left',
       render: (_, record) => {
-        return `${moment(record.fromDate).locale('en').format('MM/DD/YYYY')} - ${moment(
+        return `${moment(record.fromDate).locale('en').format(TIMEOFF_DATE_FORMAT)} - ${moment(
           record.toDate,
         )
           .locale('en')
-          .format('MM/DD/YYYY')}`;
+          .format(TIMEOFF_DATE_FORMAT)}`;
       },
+      defaultSortOrder: ['ascend'],
+      sorter: {
+        compare: (a, b) =>
+          a.fromDate && b.fromDate ? moment(a.fromDate).isAfter(moment(b.fromDate)) : false,
+      },
+      sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
       title: `Requested on `,
       dataIndex: 'onDate',
       align: 'center',
       // width: '30%',
-      render: (onDate) => <span>{moment(onDate).locale('en').format('MM/DD/YYYY')}</span>,
-      defaultSortOrder: ['ascend'],
+      render: (onDate) => <span>{moment(onDate).locale('en').format(TIMEOFF_DATE_FORMAT)}</span>,
       sorter: {
-        compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
+        compare: (a, b) =>
+          a.onDate && b.onDate ? moment(a.onDate).isAfter(moment(b.onDate)) : false,
       },
       sortDirections: ['ascend', 'descend', 'ascend'],
     },

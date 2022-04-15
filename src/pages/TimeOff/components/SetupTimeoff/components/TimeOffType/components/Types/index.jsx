@@ -70,13 +70,13 @@ class Types extends Component {
   };
 
   addNewType = (payload) => {
-    const { countrySelected = '' } = this.props;
+    const { selectedCountry = '' } = this.props;
     history.push({
       pathname: `/time-off/setup/types-rules/add`,
       state: {
         type: payload.type,
         typeName: payload.typeName,
-        country: countrySelected,
+        country: selectedCountry,
         isValid: true,
       },
     });
@@ -149,7 +149,7 @@ class Types extends Component {
     const {
       timeOffTypes = [],
       loadingFetchList,
-      countrySelected,
+      selectedCountry,
       loadingFetchCountryList = false,
     } = this.props;
 
@@ -206,7 +206,7 @@ class Types extends Component {
               filterOption={(input, option) => {
                 return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
               }}
-              value={countrySelected}
+              value={selectedCountry}
               className={styles.selectCountry}
               onChange={(value) => this.handleChangeSelect(value)}
               loading={loadingFetchCountryList}

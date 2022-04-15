@@ -5,7 +5,12 @@ import styles from './index.less';
 
 const NoteComponent = ({ note = {} }) => {
   return (
-    <div className={styles.NoteComponent}>
+    <div
+      className={styles.NoteComponent}
+      style={{
+        borderColor: note.borderColor || '#d6dce0',
+      }}
+    >
       <Space style={{ marginBottom: '24px' }} size="middle">
         <div>
           <img src={note.icon || lightning} alt="lightning icon" />

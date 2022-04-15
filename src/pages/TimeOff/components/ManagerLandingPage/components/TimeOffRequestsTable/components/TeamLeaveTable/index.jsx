@@ -6,7 +6,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 
 import RejectCommentModal from '../RejectCommentModal';
@@ -69,11 +69,11 @@ class TeamLeaveTable extends PureComponent {
         width: COLUMN_WIDTH[TYPE].TICKET_ID,
         render: (_, record) => {
           const { ticketID = '', _id = '', onDate = '', status = '' } = record;
-          const createdDate = moment.utc(onDate).locale('en').format('YYYY/MM/DD');
-          const nowDate = moment.utc().locale('en').format('YYYY/MM/DD');
+          const createdDate = moment(onDate).locale('en').format('YYYY/MM/DD');
+          const nowDate = moment().locale('en').format('YYYY/MM/DD');
           const isNewRequest =
             status === IN_PROGRESS &&
-            moment.utc(nowDate).subtract(2, 'days').isSameOrBefore(moment.utc(createdDate));
+            moment(nowDate).subtract(2, 'days').isSameOrBefore(moment(createdDate));
           // const checkWithdraw = status === ON_HOLD;
 
           return (
@@ -109,14 +109,16 @@ class TeamLeaveTable extends PureComponent {
         dataIndex: 'leaveTimes',
         align: 'left',
         render: (_, record) => {
-          return `${moment.utc(record.fromDate).locale('en').format('MM/DD/YYYY')} - ${moment
-            .utc(record.toDate)
+          return `${moment(record.fromDate).locale('en').format(TIMEOFF_DATE_FORMAT)} - ${moment(
+            record.toDate,
+          )
             .locale('en')
-            .format('MM/DD/YYYY')}`;
+            .format(TIMEOFF_DATE_FORMAT)}`;
         },
         defaultSortOrder: ['ascend'],
         sorter: {
-          compare: (a, b) => moment.utc(a.fromDate).isAfter(moment.utc(b.fromDate)),
+          compare: (a, b) =>
+            a.fromDate && b.fromDate ? moment(a.fromDate).isAfter(moment(b.fromDate)) : false,
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
       },

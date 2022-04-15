@@ -1,4 +1,4 @@
-import { Button, Col, Input, Row, Spin } from 'antd';
+import { Button, Col, Input, Row } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
@@ -396,7 +396,7 @@ class RequestInformation extends PureComponent {
       loadingRejectRequest,
       loadingManagerApproveWithdrawRequest,
       loadingManagerRejectWithdrawRequest,
-      loadingFetchProjectsOfEmployee,
+      // loadingFetchProjectsOfEmployee,
     } = this.props;
     const {
       status = '',
@@ -463,52 +463,38 @@ class RequestInformation extends PureComponent {
                 <Col span={6}>Project Manager</Col>
                 <Col span={12}>Project Health</Col>
               </Row>
-              {loadingFetchProjectsOfEmployee && (
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    padding: '50px 0',
-                  }}
-                >
-                  <Spin size="medium" />
-                </div>
-              )}
-              {!loadingFetchProjectsOfEmployee && (
+
+              {projectsList.length === 0 ? (
                 <>
-                  {projectsList.length === 0 ? (
-                    <>
-                      <Row>
-                        <Col span={6} className={styles.detailColumn}>
-                          <span>No project</span>
-                        </Col>
-                      </Row>
-                    </>
-                  ) : (
-                    <>
-                      {projectsList.map((project) => {
-                        const {
-                          projectName: prName = '',
-                          projectManager: {
-                            // _id: pjManagerId = '',
-                            generalInfo: { legalName: pmLn = '', userId: managerUserId = '' } = {},
-                          } = {},
-                          projectHealth = 0,
-                        } = project;
-                        return (
-                          <>
-                            <Project
-                              name={prName}
-                              projectManager={pmLn}
-                              projectHealth={projectHealth}
-                              employeeId={managerUserId}
-                            />
-                            {/* {index + 1 < projects.length && <div className={styles.divider} />} */}
-                          </>
-                        );
-                      })}
-                    </>
-                  )}
+                  <Row>
+                    <Col span={6} className={styles.detailColumn}>
+                      <span>No project</span>
+                    </Col>
+                  </Row>
+                </>
+              ) : (
+                <>
+                  {projectsList.map((project) => {
+                    const {
+                      projectName: prName = '',
+                      projectManager: {
+                        // _id: pjManagerId = '',
+                        generalInfo: { legalName: pmLn = '', userId: managerUserId = '' } = {},
+                      } = {},
+                      projectHealth = 0,
+                    } = project;
+                    return (
+                      <>
+                        <Project
+                          name={prName}
+                          projectManager={pmLn}
+                          projectHealth={projectHealth}
+                          employeeId={managerUserId}
+                        />
+                        {/* {index + 1 < projects.length && <div className={styles.divider} />} */}
+                      </>
+                    );
+                  })}
                 </>
               )}
             </div>
@@ -519,50 +505,36 @@ class RequestInformation extends PureComponent {
           <div className={styles.formTitle}>
             <span className={styles.title}>Timeoff request details</span>
           </div>
-          {loadingFetchLeaveRequestById && (
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                padding: '100px 0',
-              }}
-            >
-              <Spin size="medium" />
-            </div>
-          )}
-          {!loadingFetchLeaveRequestById && (
-            <>
-              <div className={styles.formContent}>
-                <Row>
-                  <Col span={6}>Timeoff Type</Col>
-                  <Col span={18} className={styles.detailColumn}>
-                    <span className={styles.fieldValue}>{name}</span>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={6}>Subject</Col>
-                  <Col span={18} className={styles.detailColumn}>
-                    <span>{subject}</span>
-                  </Col>
-                </Row>
-                {this.renderDuration()}
-                <Row>
-                  <Col span={6}>Description</Col>
-                  <Col span={18} className={styles.detailColumn}>
-                    <span>{description}</span>
-                  </Col>
-                </Row>
-                {status === REJECTED && (
-                  <Row>
-                    <Col span={6}>Request Rejection Comments</Col>
-                    <Col span={18} className={styles.detailColumn}>
-                      <span>{comment}</span>
-                    </Col>
-                  </Row>
-                )}
-              </div>
-            </>
-          )}
+
+          <div className={styles.formContent}>
+            <Row>
+              <Col span={6}>Timeoff Type</Col>
+              <Col span={18} className={styles.detailColumn}>
+                <span className={styles.fieldValue}>{name}</span>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={6}>Subject</Col>
+              <Col span={18} className={styles.detailColumn}>
+                <span>{subject}</span>
+              </Col>
+            </Row>
+            {this.renderDuration()}
+            <Row>
+              <Col span={6}>Description</Col>
+              <Col span={18} className={styles.detailColumn}>
+                <span>{description}</span>
+              </Col>
+            </Row>
+            {status === REJECTED && (
+              <Row>
+                <Col span={6}>Request Rejection Comments</Col>
+                <Col span={18} className={styles.detailColumn}>
+                  <span>{comment}</span>
+                </Col>
+              </Row>
+            )}
+          </div>
         </div>
 
         {/* WITHDRAW REASON */}
@@ -687,6 +659,7 @@ class RequestInformation extends PureComponent {
             </div>
           </div>
         )}
+
         <TimeOffModal
           visible={showModal}
           onOk={() => this.setShowModal(false)}

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Tabs, Skeleton } from 'antd';
+import { Tabs, Skeleton, Spin } from 'antd';
 import { connect } from 'umi';
 import TimeOffRequestTab from './components/TimeOffRequestTab';
 
@@ -46,7 +46,6 @@ const TimeOffRequestsTable = (props) => {
       type: 'timeOff/saveFilter',
       payload: {
         type: arr,
-        isSearch: true,
       },
     });
     dispatch({
@@ -69,43 +68,38 @@ const TimeOffRequestsTable = (props) => {
     ),
   };
 
-  if (loadingTimeOffType)
-    return (
-      <div className={styles.TimeOffRequestsTable} style={{ padding: '24px' }}>
-        <Skeleton active />
-      </div>
-    );
-
   return (
     <div className={styles.TimeOffRequestsTable}>
-      <Tabs
-        tabPosition="left"
-        // tabBarGutter={40}
-        activeKey={currentLeaveTypeTab}
-        tabBarExtraContent={renderTableTitle}
-        onTabClick={(activeKey) => saveCurrentTypeTab(activeKey)}
-        destroyInactiveTabPane
-      >
-        <>
-          <TabPane tab="Leave Requests" key="1">
-            <TimeOffRequestTab tab={1} type={1} />
-          </TabPane>
-          <TabPane tab="Special Leave Requests" key="2">
-            <TimeOffRequestTab tab={2} type={1} />
-          </TabPane>
-          <TabPane tab="LWP Requests" key="3">
-            <TimeOffRequestTab tab={3} type={1} />
-          </TabPane>
-          <TabPane tab="WFH/CP Requests" key="4">
-            <TimeOffRequestTab tab={4} type={1} />
-          </TabPane>
-          {eligibleForCompOff && (
-            <TabPane tab="Compoff Requests" key="5">
-              <TimeOffRequestTab tab={5} type={2} />
+      <Spin spinning={loadingTimeOffType}>
+        <Tabs
+          tabPosition="left"
+          // tabBarGutter={40}
+          activeKey={currentLeaveTypeTab}
+          tabBarExtraContent={renderTableTitle}
+          onTabClick={(activeKey) => saveCurrentTypeTab(activeKey)}
+          destroyInactiveTabPane
+        >
+          <>
+            <TabPane tab="Leave Requests" key="1">
+              <TimeOffRequestTab tab={1} type={1} />
             </TabPane>
-          )}
-        </>
-      </Tabs>
+            <TabPane tab="Special Leave Requests" key="2">
+              <TimeOffRequestTab tab={2} type={1} />
+            </TabPane>
+            <TabPane tab="LWP Requests" key="3">
+              <TimeOffRequestTab tab={3} type={1} />
+            </TabPane>
+            <TabPane tab="WFH/CP Requests" key="4">
+              <TimeOffRequestTab tab={4} type={1} />
+            </TabPane>
+            {eligibleForCompOff && (
+              <TabPane tab="Compoff Requests" key="5">
+                <TimeOffRequestTab tab={5} type={2} />
+              </TabPane>
+            )}
+          </>
+        </Tabs>
+      </Spin>
     </div>
   );
 };

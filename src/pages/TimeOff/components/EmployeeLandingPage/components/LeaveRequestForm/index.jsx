@@ -1,14 +1,15 @@
 // this component is used for creating a new timeoff request
 // and for editing (updating) a exist one
 
-import { Affix, Col, Row, Spin } from 'antd';
+import { Affix, Col, Row, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { TIMEOFF_LINK_ACTION, TIMEOFF_STATUS } from '@/utils/timeOff';
 import RequestInformation from './components/RequestInformation';
-import RightContent from './components/RightContent';
+import NoteComponent from '@/components/NoteComponent';
+import Icon1 from '@/assets/timeOff/icon1.svg';
 import styles from './index.less';
 
 const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DRAFTS, WITHDRAWN } = TIMEOFF_STATUS;
@@ -116,6 +117,19 @@ const LeaveRequestForm = (props) => {
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
   }, []);
 
+  const Note = {
+    title: 'Note',
+    icon: Icon1,
+    borderColor: '#ebeff2',
+    data: (
+      <Typography.Text>
+        Timeoff requests requires approvals.
+        <br />
+        It takes anywhere around 2-4 standard working days for the entire process to complete.
+      </Typography.Text>
+    ),
+  };
+
   return (
     <PageContainer>
       <div className={styles.leaveRequest}>
@@ -138,17 +152,6 @@ const LeaveRequestForm = (props) => {
             )}
           </div>
         </Affix>
-        {loadingFetchLeaveRequestById && (
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              padding: '100px 0',
-            }}
-          >
-            <Spin size="large" />
-          </div>
-        )}
         {!loadingFetchLeaveRequestById &&
           action === EDIT_LEAVE_REQUEST &&
           status !== DRAFTS &&
@@ -180,7 +183,7 @@ const LeaveRequestForm = (props) => {
                   />
                 </Col>
                 <Col xs={24} xl={6}>
-                  <RightContent />
+                  <NoteComponent note={Note} />
                 </Col>
               </Row>
             </>

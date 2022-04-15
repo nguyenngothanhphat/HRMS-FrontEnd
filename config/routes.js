@@ -374,7 +374,15 @@ const routes = [
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
           },
           {
-            path: '/time-off/:tabName',
+            path: '/time-off/:tabName(overview)',
+            name: 'Overview',
+            component: './TimeOff',
+            authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
+            hideInMenu: true,
+          },
+          {
+            path: '/time-off/:tabName(setup)',
+            name: 'Setup Timeoff policy',
             component: './TimeOff',
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
             hideInMenu: true,
@@ -388,14 +396,16 @@ const routes = [
           {
             path: '/time-off/setup/types-rules/:action(add)',
             name: 'timeOffTypeConfiguration',
-            component: './TimeOff/components/SetupTimeoff/components/TimeOffType/components/TypeConfiguration',
+            component:
+              './TimeOff/components/SetupTimeoff/components/TimeOffType/components/TypeConfiguration',
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
             hideInMenu: true,
           },
           {
             path: '/time-off/setup/types-rules/:action(configure)/:typeId',
             name: 'timeOffTypeConfiguration',
-            component: './TimeOff/components/SetupTimeoff/components/TimeOffType/components/TypeConfiguration',
+            component:
+              './TimeOff/components/SetupTimeoff/components/TimeOffType/components/TypeConfiguration',
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
             hideInMenu: true,
           },

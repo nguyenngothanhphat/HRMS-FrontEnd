@@ -1,4 +1,4 @@
-import { Affix, Col, Row } from 'antd';
+import { Affix, Col, Row, Spin } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { TIMEOFF_COLOR, TIMEOFF_STATUS_NAME } from '@/utils/timeOff';
@@ -7,8 +7,9 @@ import RequestInformation from './components/RequestInformation';
 import RightContent from './components/RightContent';
 import styles from './index.less';
 
-@connect(({ timeOff }) => ({
+@connect(({ timeOff, loading }) => ({
   timeOff,
+  loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
 }))
 class ViewRequestForm extends PureComponent {
   constructor(props) {
@@ -43,6 +44,7 @@ class ViewRequestForm extends PureComponent {
         viewingLeaveRequest: { status = '', ticketID = '' } = {},
         viewingLeaveRequest = {},
       } = {},
+      loadingFetchLeaveRequestById = false,
     } = this.props;
 
     return (
@@ -69,14 +71,16 @@ class ViewRequestForm extends PureComponent {
               </div>
             </div>
           </Affix>
-          <Row className={styles.container} gutter={[20, 20]}>
-            <Col xs={24} lg={16}>
-              <RequestInformation />
-            </Col>
-            <Col xs={24} lg={8}>
-              <RightContent data={viewingLeaveRequest} status={status} />
-            </Col>
-          </Row>
+          <Spin spinning={loadingFetchLeaveRequestById}>
+            <Row className={styles.container} gutter={[20, 20]}>
+              <Col xs={24} lg={16}>
+                <RequestInformation />
+              </Col>
+              <Col xs={24} lg={8}>
+                <RightContent data={viewingLeaveRequest} status={status} />
+              </Col>
+            </Row>
+          </Spin>
         </div>
       </PageContainer>
     );

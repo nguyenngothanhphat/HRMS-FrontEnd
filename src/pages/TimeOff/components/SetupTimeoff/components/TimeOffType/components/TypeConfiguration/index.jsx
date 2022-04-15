@@ -5,7 +5,7 @@ import moment from 'moment';
 import styles from './index.less';
 import { PageContainer } from '@/layouts/layout/src';
 import LeaveTypeName from './components/LeaveTypeName';
-import NoteComponent from './components/NoteComponent';
+import NoteComponent from '@/components/NoteComponent';
 import Icon1 from '@/assets/timeOff/icon1.svg';
 import EmploymentType from './components/EmploymentType';
 import AccrualPolicy from './components/AccrualPolicy';
@@ -76,61 +76,6 @@ const {
   RESET_TYPE,
   CALENDAR_DATE,
 } = FORM_ITEM_NAME;
-
-const components = [
-  {
-    id: 1,
-    component: <LeaveTypeName />,
-  },
-  {
-    id: 2,
-    component: <EmploymentType />,
-  },
-  {
-    id: 3,
-    component: <AccrualPolicy />,
-  },
-  {
-    id: 4,
-    component: <AccrualStart />,
-  },
-  {
-    id: 5,
-    component: <LeaveApplicationStart />,
-  },
-  {
-    id: 6,
-    component: <MinimumLeaveAmount />,
-  },
-  {
-    id: 7,
-    component: <NegativeLeaveBalance />,
-  },
-  {
-    id: 8,
-    component: <MaximumBalanceAllowed />,
-  },
-  {
-    id: 9,
-    component: <NewHireProrationPolicy />,
-  },
-  {
-    id: 10,
-    component: <LOP />,
-  },
-  {
-    id: 11,
-    component: <NoticePeriodLeaveAccrualPolicy />,
-  },
-  {
-    id: 12,
-    component: <AnnualResetPolicy />,
-  },
-  {
-    id: 13,
-    component: <CarryForwardPolicy />,
-  },
-];
 
 const TypeConfiguration = (props) => {
   const [form] = Form.useForm();
@@ -381,7 +326,65 @@ const TypeConfiguration = (props) => {
   };
 
   const renderForm = () => {
-    if (loadingFetchTypeByID || Object.keys(viewingLeaveType).length === 0) {
+    const components = [
+      {
+        id: 1,
+        component: <LeaveTypeName />,
+      },
+      {
+        id: 2,
+        component: <EmploymentType />,
+      },
+      {
+        id: 3,
+        component: <AccrualPolicy form={form} />,
+      },
+      {
+        id: 4,
+        component: <AccrualStart />,
+      },
+      {
+        id: 5,
+        component: <LeaveApplicationStart />,
+      },
+      {
+        id: 6,
+        component: <MinimumLeaveAmount />,
+      },
+      {
+        id: 7,
+        component: <NegativeLeaveBalance />,
+      },
+      {
+        id: 8,
+        component: <MaximumBalanceAllowed />,
+      },
+      {
+        id: 9,
+        component: <NewHireProrationPolicy />,
+      },
+      {
+        id: 10,
+        component: <LOP />,
+      },
+      {
+        id: 11,
+        component: <NoticePeriodLeaveAccrualPolicy />,
+      },
+      {
+        id: 12,
+        component: <AnnualResetPolicy />,
+      },
+      {
+        id: 13,
+        component: <CarryForwardPolicy />,
+      },
+    ];
+
+    if (
+      loadingFetchTypeByID ||
+      (action === 'configure' && Object.keys(viewingLeaveType).length === 0)
+    ) {
       return <Skeleton />;
     }
     return (
@@ -402,37 +405,20 @@ const TypeConfiguration = (props) => {
     );
   };
 
-  const renderContent = () => {
-    const Note = {
-      title: 'Note',
-      icon: Icon1,
-      data: (
-        <Typography.Text>
-          <span style={{ fontWeight: 500, color: '#000' }}>Leave Accrual</span> - the rate at which
-          an employee accrues or earns paid time off.
-          <br />
-          <br />
-          <span style={{ fontWeight: 500, color: '#000' }}>Carry Forward</span> - a concept where in
-          an employee’s unutilized leaves from the current year can be carried forward to the next
-          year. Carry forward is usually done at the end of a financial year.
-        </Typography.Text>
-      ),
-    };
-
-    return (
-      <div className={styles.content}>
-        {renderHeader()}
-
-        <Row gutter={[24, 24]}>
-          <Col sm={24} xl={16}>
-            {renderForm()}
-          </Col>
-          <Col sm={24} xl={8}>
-            <NoteComponent note={Note} />
-          </Col>
-        </Row>
-      </div>
-    );
+  const Note = {
+    title: 'Note',
+    icon: Icon1,
+    data: (
+      <Typography.Text>
+        <span style={{ fontWeight: 500, color: '#000' }}>Leave Accrual</span> - the rate at which an
+        employee accrues or earns paid time off.
+        <br />
+        <br />
+        <span style={{ fontWeight: 500, color: '#000' }}>Carry Forward</span> - a concept where in
+        an employee’s unutilized leaves from the current year can be carried forward to the next
+        year. Carry forward is usually done at the end of a financial year.
+      </Typography.Text>
+    ),
   };
 
   return (
@@ -443,7 +429,17 @@ const TypeConfiguration = (props) => {
             <p className={styles.titlePage__text}>Setup Timeoff policy</p>
           </div>
         </Affix>
-        {renderContent()}
+        <div className={styles.content}>
+          {renderHeader()}
+          <Row gutter={[24, 24]}>
+            <Col sm={24} xl={16}>
+              {renderForm()}
+            </Col>
+            <Col sm={24} xl={8}>
+              <NoteComponent note={Note} />
+            </Col>
+          </Row>
+        </div>
       </div>
     </PageContainer>
   );

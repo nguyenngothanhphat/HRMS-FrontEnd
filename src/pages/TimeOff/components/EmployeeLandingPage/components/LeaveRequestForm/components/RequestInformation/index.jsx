@@ -8,6 +8,7 @@ import {
   Row,
   Select,
   Skeleton,
+  Spin,
   Tooltip,
 } from 'antd';
 import moment from 'moment';
@@ -1104,310 +1105,312 @@ const RequestInformation = (props) => {
   };
 
   // RETURN MAIN
-  if (loadingMain) return <Skeleton />;
   return (
-    <div className={styles.RequestInformation}>
-      <div className={styles.formTitle}>
-        <span>Timeoff</span>
-      </div>
-      <Form
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        {...layout}
-        name="basic"
-        id="myForm"
-        form={form}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        className={styles.form}
-        onValuesChange={onValuesChange}
-      >
-        <Row className={styles.eachRow}>
-          <Col className={styles.label} span={6}>
-            <span>Select Timeoff Type</span> <span className={styles.mandatoryField}>*</span>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="timeOffType"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please select Timeoff Type!',
-                },
-                // { validator: typeValidator },
-              ]}
-            >
-              <Select
-                onChange={(value) => {
-                  onSelectTimeOffTypeChange(value);
-                }}
-                placeholder="Timeoff Type"
-              >
-                {renderType1(renderTimeOffTypes(timeOffTypesAB))}
-                {renderType2(renderTimeOffTypes(timeOffTypesCD))}
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            {selectedTypeName && (
-              <div className={styles.smallNotice}>
-                <span className={styles.normalText}>
-                  {selectedTypeName}s are covered under{' '}
-                  <span className={styles.link} onClick={onLinkClick}>
-                    Standard Policy
-                  </span>
-                </span>
-              </div>
-            )}
-          </Col>
-        </Row>
-
-        <Row className={styles.eachRow}>
-          <Col className={styles.label} span={6}>
-            <span>Subject</span> <span className={styles.mandatoryField}>*</span>
-          </Col>
-          <Col span={12}>
-            {renderFormItem(
+    <Spin spinning={loadingMain}>
+      <div className={styles.RequestInformation}>
+        <div className={styles.formTitle}>
+          <span>Timeoff</span>
+        </div>
+        <Form
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...layout}
+          name="basic"
+          id="myForm"
+          form={form}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          className={styles.form}
+          onValuesChange={onValuesChange}
+        >
+          <Row className={styles.eachRow}>
+            <Col className={styles.label} span={6}>
+              <span>Select Timeoff Type</span> <span className={styles.mandatoryField}>*</span>
+            </Col>
+            <Col span={12}>
               <Form.Item
-                name="subject"
+                name="timeOffType"
                 rules={[
                   {
-                    required: needValidate,
-                    message: 'Please input subject!',
+                    required: true,
+                    message: 'Please select Timeoff Type!',
                   },
-                ]}
-              >
-                <Input placeholder="Enter Subject" disabled={!selectedTypeName} />
-              </Form.Item>,
-            )}
-          </Col>
-          <Col span={6} />
-        </Row>
-        <Row className={styles.eachRow}>
-          <Col className={styles.label} span={6}>
-            <span>Duration</span> <span className={styles.mandatoryField}>*</span>
-          </Col>
-          <Col span={12}>
-            <Row gutter={['20', '0']}>
-              <Col span={12}>
-                {renderFormItem(
-                  <Form.Item
-                    name="durationFrom"
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Please select a date!',
-                      },
-                    ]}
-                  >
-                    <DatePicker
-                      disabledDate={disabledFromDate}
-                      format={TIMEOFF_DATE_FORMAT}
-                      onChange={(value) => {
-                        fromDateOnChange(value);
-                      }}
-                      placeholder="From Date"
-                      disabled={!selectedTypeName}
-                    />
-                  </Form.Item>,
-                )}
-              </Col>
-              <Col span={12}>
-                {renderFormItem(
-                  <Form.Item
-                    name="durationTo"
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Please select a date!',
-                      },
-                    ]}
-                  >
-                    <DatePicker
-                      disabledDate={disabledToDate}
-                      format={TIMEOFF_DATE_FORMAT}
-                      disabled={!selectedTypeName || selectedType === C}
-                      onChange={(value) => {
-                        toDateOnChange(value);
-                      }}
-                      placeholder="To Date"
-                    />
-                  </Form.Item>,
-                )}
-              </Col>
-            </Row>
-          </Col>
-          <Col span={6}>
-            {secondNotice !== '' && (
-              <div className={styles.smallNotice}>
-                <span className={styles.normalText}>{secondNotice}</span>
-              </div>
-            )}
-          </Col>
-        </Row>
-
-        {renderLeaveTimeList()}
-
-        <Row className={styles.eachRow}>
-          <Col className={styles.label} span={6}>
-            <span>Description</span> <span className={styles.mandatoryField}>*</span>
-          </Col>
-          <Col span={12}>
-            {renderFormItem(
-              <Form.Item
-                name="description"
-                rules={[
-                  {
-                    required: needValidate,
-                    message: 'Please input description!',
-                  },
-                ]}
-              >
-                <TextArea
-                  autoSize={{ minRows: 3, maxRows: 6 }}
-                  maxLength={250}
-                  placeholder="The reason I am taking timeoff is …"
-                  disabled={!selectedTypeName}
-                />
-              </Form.Item>,
-            )}
-          </Col>
-          <Col span={6} />
-        </Row>
-
-        <Row className={styles.eachRow}>
-          <Col className={styles.label} span={6}>
-            <span>CC (only if you want to notify other than HR & your manager)</span>
-          </Col>
-          <Col span={12} className={styles.ccSelection}>
-            {renderFormItem(
-              <Form.Item
-                name="personCC"
-                rules={[
-                  {
-                    required: false,
-                  },
+                  // { validator: typeValidator },
                 ]}
               >
                 <Select
-                  mode="multiple"
-                  allowClear
-                  placeholder="Search a person you want to loop"
-                  disabled={!selectedTypeName}
-                  filterOption={(input, option) => {
-                    return (
-                      option.children[1].props.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    );
+                  onChange={(value) => {
+                    onSelectTimeOffTypeChange(value);
                   }}
+                  placeholder="Timeoff Type"
                 >
-                  {formatListEmail.map((value) => {
-                    const { _id = '', workEmail = '', avatar = '' } = value;
-
-                    return (
-                      <Option key={_id} value={_id}>
-                        <div style={{ display: 'inline', marginRight: '10px' }}>
-                          <img
-                            style={{
-                              borderRadius: '50%',
-                              width: '30px',
-                              height: '30px',
-                            }}
-                            src={avatar}
-                            alt="user"
-                            onError={(e) => {
-                              e.target.src = DefaultAvatar;
-                            }}
-                          />
-                        </div>
-                        <span
-                          style={{ fontSize: '13px', color: '#161C29' }}
-                          className={styles.ccEmail}
-                        >
-                          {workEmail}
-                        </span>
-                      </Option>
-                    );
-                  })}
+                  {renderType1(renderTimeOffTypes(timeOffTypesAB))}
+                  {renderType2(renderTimeOffTypes(timeOffTypesCD))}
                 </Select>
-              </Form.Item>,
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              {selectedTypeName && (
+                <div className={styles.smallNotice}>
+                  <span className={styles.normalText}>
+                    {selectedTypeName}s are covered under{' '}
+                    <span className={styles.link} onClick={onLinkClick}>
+                      Standard Policy
+                    </span>
+                  </span>
+                </div>
+              )}
+            </Col>
+          </Row>
+
+          <Row className={styles.eachRow}>
+            <Col className={styles.label} span={6}>
+              <span>Subject</span> <span className={styles.mandatoryField}>*</span>
+            </Col>
+            <Col span={12}>
+              {renderFormItem(
+                <Form.Item
+                  name="subject"
+                  rules={[
+                    {
+                      required: needValidate,
+                      message: 'Please input subject!',
+                    },
+                  ]}
+                >
+                  <Input placeholder="Enter Subject" disabled={!selectedTypeName} />
+                </Form.Item>,
+              )}
+            </Col>
+            <Col span={6} />
+          </Row>
+          <Row className={styles.eachRow}>
+            <Col className={styles.label} span={6}>
+              <span>Duration</span> <span className={styles.mandatoryField}>*</span>
+            </Col>
+            <Col span={12}>
+              <Row gutter={['20', '0']}>
+                <Col span={12}>
+                  {renderFormItem(
+                    <Form.Item
+                      name="durationFrom"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Please select a date!',
+                        },
+                      ]}
+                    >
+                      <DatePicker
+                        disabledDate={disabledFromDate}
+                        format={TIMEOFF_DATE_FORMAT}
+                        onChange={(value) => {
+                          fromDateOnChange(value);
+                        }}
+                        placeholder="From Date"
+                        disabled={!selectedTypeName}
+                      />
+                    </Form.Item>,
+                  )}
+                </Col>
+                <Col span={12}>
+                  {renderFormItem(
+                    <Form.Item
+                      name="durationTo"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Please select a date!',
+                        },
+                      ]}
+                    >
+                      <DatePicker
+                        disabledDate={disabledToDate}
+                        format={TIMEOFF_DATE_FORMAT}
+                        disabled={!selectedTypeName || selectedType === C}
+                        onChange={(value) => {
+                          toDateOnChange(value);
+                        }}
+                        placeholder="To Date"
+                      />
+                    </Form.Item>,
+                  )}
+                </Col>
+              </Row>
+            </Col>
+            <Col span={6}>
+              {secondNotice !== '' && (
+                <div className={styles.smallNotice}>
+                  <span className={styles.normalText}>{secondNotice}</span>
+                </div>
+              )}
+            </Col>
+          </Row>
+
+          {renderLeaveTimeList()}
+
+          <Row className={styles.eachRow}>
+            <Col className={styles.label} span={6}>
+              <span>Description</span> <span className={styles.mandatoryField}>*</span>
+            </Col>
+            <Col span={12}>
+              {renderFormItem(
+                <Form.Item
+                  name="description"
+                  rules={[
+                    {
+                      required: needValidate,
+                      message: 'Please input description!',
+                    },
+                  ]}
+                >
+                  <TextArea
+                    autoSize={{ minRows: 3, maxRows: 6 }}
+                    maxLength={250}
+                    placeholder="The reason I am taking timeoff is …"
+                    disabled={!selectedTypeName}
+                  />
+                </Form.Item>,
+              )}
+            </Col>
+            <Col span={6} />
+          </Row>
+
+          <Row className={styles.eachRow}>
+            <Col className={styles.label} span={6}>
+              <span>CC (only if you want to notify other than HR & your manager)</span>
+            </Col>
+            <Col span={12} className={styles.ccSelection}>
+              {renderFormItem(
+                <Form.Item
+                  name="personCC"
+                  rules={[
+                    {
+                      required: false,
+                    },
+                  ]}
+                >
+                  <Select
+                    mode="multiple"
+                    allowClear
+                    placeholder="Search a person you want to loop"
+                    disabled={!selectedTypeName}
+                    filterOption={(input, option) => {
+                      return (
+                        option.children[1].props.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                  >
+                    {formatListEmail.map((value) => {
+                      const { _id = '', workEmail = '', avatar = '' } = value;
+
+                      return (
+                        <Option key={_id} value={_id}>
+                          <div style={{ display: 'inline', marginRight: '10px' }}>
+                            <img
+                              style={{
+                                borderRadius: '50%',
+                                width: '30px',
+                                height: '30px',
+                              }}
+                              src={avatar}
+                              alt="user"
+                              onError={(e) => {
+                                e.target.src = DefaultAvatar;
+                              }}
+                            />
+                          </div>
+                          <span
+                            style={{ fontSize: '13px', color: '#161C29' }}
+                            className={styles.ccEmail}
+                          >
+                            {workEmail}
+                          </span>
+                        </Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>,
+              )}
+            </Col>
+            <Col span={6} />
+          </Row>
+        </Form>
+        <div className={styles.footer}>
+          <span className={styles.note}>
+            By default notifications will be sent to HR, your manager and recursively loop to your
+            department head.
+          </span>
+          <div className={styles.formButtons}>
+            {action === NEW_LEAVE_REQUEST && (
+              <Button
+                className={styles.cancelButton}
+                type="link"
+                htmlType="button"
+                onClick={onCancelLeaveRequest}
+              >
+                <span>Cancel</span>
+              </Button>
             )}
-          </Col>
-          <Col span={6} />
-        </Row>
-      </Form>
-      <div className={styles.footer}>
-        <span className={styles.note}>
-          By default notifications will be sent to HR, your manager and recursively loop to your
-          department head.
-        </span>
-        <div className={styles.formButtons}>
-          {action === NEW_LEAVE_REQUEST && (
+            {action === EDIT_LEAVE_REQUEST && (
+              <Button
+                className={styles.cancelButton}
+                type="link"
+                htmlType="button"
+                onClick={onCancelEdit}
+              >
+                <span>Cancel</span>
+              </Button>
+            )}
+            {(action === NEW_LEAVE_REQUEST ||
+              (action === EDIT_LEAVE_REQUEST && isEditingDrafts)) && (
+              <Button
+                disabled={!selectedTypeName}
+                loading={loadingSaveDraft || loadingUpdateDraft}
+                type="link"
+                form="myForm"
+                className={styles.saveDraftButton}
+                htmlType="submit"
+                onClick={() => {
+                  setButtonState(1);
+                }}
+              >
+                Save to Draft
+              </Button>
+            )}
+
             <Button
-              className={styles.cancelButton}
-              type="link"
-              htmlType="button"
-              onClick={onCancelLeaveRequest}
-            >
-              <span>Cancel</span>
-            </Button>
-          )}
-          {action === EDIT_LEAVE_REQUEST && (
-            <Button
-              className={styles.cancelButton}
-              type="link"
-              htmlType="button"
-              onClick={onCancelEdit}
-            >
-              <span>Cancel</span>
-            </Button>
-          )}
-          {(action === NEW_LEAVE_REQUEST || (action === EDIT_LEAVE_REQUEST && isEditingDrafts)) && (
-            <Button
-              disabled={!selectedTypeName}
-              loading={loadingSaveDraft || loadingUpdateDraft}
-              type="link"
+              loading={loadingAddLeaveRequest || loadingUpdatingLeaveRequest}
+              key="submit"
+              type="primary"
               form="myForm"
-              className={styles.saveDraftButton}
+              disabled={
+                !selectedTypeName ||
+                (remainingDayOfSelectedType === 0 &&
+                  (selectedType === A || selectedType === B) &&
+                  action === NEW_LEAVE_REQUEST)
+              }
               htmlType="submit"
               onClick={() => {
-                setButtonState(1);
+                setButtonState(2);
               }}
             >
-              Save to Draft
+              Submit
             </Button>
-          )}
-
-          <Button
-            loading={loadingAddLeaveRequest || loadingUpdatingLeaveRequest}
-            key="submit"
-            type="primary"
-            form="myForm"
-            disabled={
-              !selectedTypeName ||
-              (remainingDayOfSelectedType === 0 &&
-                (selectedType === A || selectedType === B) &&
-                action === NEW_LEAVE_REQUEST)
-            }
-            htmlType="submit"
-            onClick={() => {
-              setButtonState(2);
-            }}
-          >
-            Submit
-          </Button>
+          </div>
         </div>
+
+        <TimeOffModal
+          visible={showSuccessModalVisible}
+          onOk={() => setShowSuccessModal(false)}
+          content={renderModalContent()}
+          submitText="OK"
+        />
+
+        <ViewDocumentModal visible={viewDocumentModal} onClose={setViewDocumentModal} />
       </div>
-
-      <TimeOffModal
-        visible={showSuccessModalVisible}
-        onOk={() => setShowSuccessModal(false)}
-        content={renderModalContent()}
-        submitText="OK"
-      />
-
-      <ViewDocumentModal visible={viewDocumentModal} onClose={setViewDocumentModal} />
-    </div>
+    </Spin>
   );
 };
 

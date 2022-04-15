@@ -25,7 +25,6 @@ const SearchTimeOff = (props) => {
     dispatch({
       type: 'timeOff/saveFilter',
       payload: {
-        isSearch: true,
         search: searchText,
       },
     });
@@ -60,7 +59,6 @@ const SearchTimeOff = (props) => {
         type: listType,
         fromDate: dateStart,
         toDate: dateEnd,
-        isSearch: true,
       },
     });
     setOpenModal(false);

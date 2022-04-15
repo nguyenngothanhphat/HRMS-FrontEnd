@@ -1,21 +1,36 @@
 import { Button, Card, Col, Form, Radio, Row, Space } from 'antd';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { FORM_ITEM_NAME } from '@/utils/timeOff';
 import AccrualRate from './components/AccrualRate';
 import styles from './index.less';
 
-const AccrualPolicy = () => {
+const { ACCRUAL_POLICY_ACCRUAL_METHOD } = FORM_ITEM_NAME;
+
+const AccrualPolicy = (props) => {
+  const { form = {} } = props;
+
+  const [isUnlimited, setIsUnlimited] = useState(false);
+
+  const onChange = (e) => {
+    setIsUnlimited(e.target.value === 'unlimited');
+  };
+
+  useEffect(() => {
+    const values = form.getFieldsValue();
+    setIsUnlimited(values[ACCRUAL_POLICY_ACCRUAL_METHOD] === 'unlimited');
+  }, []);
+
   return (
     <Card title="Accrual Policy" className={styles.AccrualPolicy}>
       <div className={styles.accrualMethod}>
         <span className={styles.label}>Accrual Method</span>
         <Form.Item
           rules={[{ required: true, message: 'Required field!' }]}
-          name={FORM_ITEM_NAME.ACCRUAL_POLICY_ACCRUAL_METHOD}
+          name={ACCRUAL_POLICY_ACCRUAL_METHOD}
           valuePropName="value"
         >
-          <Radio.Group>
+          <Radio.Group onChange={onChange}>
             <Space direction="vertical">
               <Space direction="vertical">
                 <Radio value="unlimited">Unlimited</Radio>
@@ -30,29 +45,31 @@ const AccrualPolicy = () => {
           </Radio.Group>
         </Form.Item>
       </div>
-      <div className={styles.accrualRate}>
-        <span className={styles.label}>Accrual Rate</span>
-        <div className={styles.items}>
-          <Row gutter={[24, 24]}>
-            <Form.List name={FORM_ITEM_NAME.ACCRUAL_POLICY_ACCRUAL_RATE}>
-              {(fields, { add, remove }) => (
-                <>
-                  {fields.map(({ key, name }) => (
-                    <Col span={24} key={key}>
-                      <AccrualRate name={name} remove={remove} />
+      {!isUnlimited && (
+        <div className={styles.accrualRate}>
+          <span className={styles.label}>Accrual Rate</span>
+          <div className={styles.items}>
+            <Row gutter={[24, 24]}>
+              <Form.List name={FORM_ITEM_NAME.ACCRUAL_POLICY_ACCRUAL_RATE}>
+                {(fields, { add, remove }) => (
+                  <>
+                    {fields.map(({ key, name }) => (
+                      <Col span={24} key={key}>
+                        <AccrualRate name={name} remove={remove} />
+                      </Col>
+                    ))}
+                    <Col span={24}>
+                      <Form.Item>
+                        <Button onClick={add}>Add a new accrual rate</Button>
+                      </Form.Item>
                     </Col>
-                  ))}
-                  <Col span={24}>
-                    <Form.Item>
-                      <Button onClick={add}>Add a new accrual rate</Button>
-                    </Form.Item>
-                  </Col>
-                </>
-              )}
-            </Form.List>
-          </Row>
+                  </>
+                )}
+              </Form.List>
+            </Row>
+          </div>
         </div>
-      </div>
+      )}
     </Card>
   );
 };

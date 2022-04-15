@@ -7,34 +7,28 @@ import ManageBalance from './components/ManageBalance';
 import TimeOffType from './components/TimeOffType';
 import WorkSchedule from './components/WorkSchedule';
 
-@connect(({ timeOff: { timeOffTypes = [], pageStart } = {} }) => ({
-  timeOffTypes,
-  pageStart,
-}))
+@connect(() => ({}))
 class SetupTimeoff extends Component {
-  componentDidMount = () => {};
-
   componentWillUnmount = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/saveTemp',
       payload: {
         type: {},
-        countrySelected: '',
+        selectedCountry: '',
       },
     });
   };
 
   render() {
-    const { timeOffTypes, type = '' } = this.props;
-    console.log('🚀  ~ type', type);
+    const { type = '' } = this.props;
 
     const listMenu = [
       {
         id: 1,
         name: 'Timeoff Type & Rules',
         key: 'timeoffType',
-        component: <TimeOffType timeOffTypes={timeOffTypes} />,
+        component: <TimeOffType />,
         link: 'types-rules',
       },
       {

@@ -1,11 +1,11 @@
+import { Affix, Col, Row, Spin } from 'antd';
 import React, { PureComponent } from 'react';
-import { Affix, Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
-import { PageContainer } from '@/layouts/layout/src';
 import { TIMEOFF_COLOR, TIMEOFF_STATUS_NAME } from '@/utils/timeOff';
+import { PageContainer } from '@/layouts/layout/src';
+import styles from './index.less';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
-import styles from './index.less';
 
 @connect(({ timeOff, loading }) => ({
   timeOff,
@@ -52,7 +52,7 @@ class ManagerViewRequestForm extends PureComponent {
         } = {},
         viewingLeaveRequest = {},
       } = {},
-      loadingFetchLeaveRequestById,
+      loadingFetchLeaveRequestById = false,
     } = this.props;
 
     return (
@@ -79,18 +79,8 @@ class ManagerViewRequestForm extends PureComponent {
               </div>
             </div>
           </Affix>
-          {loadingFetchLeaveRequestById && (
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                padding: '100px 0',
-              }}
-            >
-              <Spin size="medium" />
-            </div>
-          )}
-          {!loadingFetchLeaveRequestById && employeeId !== '' && (
+
+          <Spin spinning={loadingFetchLeaveRequestById}>
             <Row className={styles.container} gutter={[20, 20]}>
               <Col xs={24} lg={16}>
                 <RequestInformation employeeId={employeeId} />
@@ -99,7 +89,7 @@ class ManagerViewRequestForm extends PureComponent {
                 <RightContent viewingLeaveRequest={viewingLeaveRequest} status={status} />
               </Col>
             </Row>
-          )}
+          </Spin>
         </div>
       </PageContainer>
     );

@@ -125,7 +125,7 @@ const timeOff = {
     locationByCompany: [],
     tempData: {
       type: {},
-      countrySelected: '',
+      selectedCountry: '',
       countryHoliday: '',
     },
     paging: {
