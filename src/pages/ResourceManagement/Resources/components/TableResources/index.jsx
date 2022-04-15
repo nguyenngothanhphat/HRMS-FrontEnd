@@ -140,7 +140,7 @@ class TableResources extends PureComponent {
   render() {
     const {
       data = [],
-      textEmpty = 'No Data',
+      // textEmpty = 'No Data',
       loading,
       total,
       pageSelected,
@@ -163,28 +163,28 @@ class TableResources extends PureComponent {
           of {total}
         </span>
       ),
-      defaultPageSize: size,
-      showSizeChanger: true,
-      pageSizeOptions: ['10', '25', '50', '100'],
-      pageSize: size,
+      // defaultPageSize: size,
+      showSizeChanger: false,
+      // pageSizeOptions: ['10', '25', '50', '100'],
+      pageSize: data.length,
       current: pageSelected,
-      onChange: (page, pageSize) => {
-        return getPageAndSize(page, pageSize);
+      onChange: (page) => {
+        return getPageAndSize(page, size);
       },
     };
 
-    const localCompare = (a, b) => {
-      if (!a && !b) {
-        return 0;
-      }
-      if (!a && b) {
-        return -1;
-      }
-      if (a && !b) {
-        return 1;
-      }
-      return a.localeCompare(b);
-    };
+    // const localCompare = (a, b) => {
+    //   if (!a && !b) {
+    //     return 0;
+    //   }
+    //   if (!a && b) {
+    //     return -1;
+    //   }
+    //   if (a && !b) {
+    //     return 1;
+    //   }
+    //   return a.localeCompare(b);
+    // };
     const resourceStatusClass = (resourceStatus) => {
       try {
         if (resourceStatus && resourceStatus.includes('Now')) {
@@ -470,15 +470,6 @@ class TableResources extends PureComponent {
     return (
       <div className={styles.TableResources}>
         <Table
-          // width="100%"
-          locale={{
-            emptyText: (
-              <div className={styles.viewEmpty}>
-                <img src={empty} alt="" />
-                <p className={styles.textEmpty}>{textEmpty}</p>
-              </div>
-            ),
-          }}
           loading={loading}
           columns={columns()}
           dataSource={data}

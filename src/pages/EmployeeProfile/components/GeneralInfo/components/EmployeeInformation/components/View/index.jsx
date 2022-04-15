@@ -79,8 +79,7 @@ class View extends PureComponent {
       }
     }
 
-    const checkVisible =
-      idCurrentEmployee === idEmployee || permissions.viewOtherInformation !== -1;
+    const checkVisible = idCurrentEmployee === idEmployee || permissions.editEmployeeInfo !== -1;
 
     const checkIndiaLocation = country === 'IN';
     const checkVietNamLocation = country === 'VN';

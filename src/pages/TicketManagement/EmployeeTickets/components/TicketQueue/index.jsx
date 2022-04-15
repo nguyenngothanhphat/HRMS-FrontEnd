@@ -25,7 +25,6 @@ class TicketQueue extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedFilterTab: '1',
       pageSelected: 1,
       size: 10,
       nameSearch: '',
@@ -39,15 +38,14 @@ class TicketQueue extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { selectedFilterTab, pageSelected, size, nameSearch } = this.state;
+    const { pageSelected, size, nameSearch } = this.state;
 
     if (
       prevState.pageSelected !== pageSelected ||
       prevState.size !== size ||
-      prevState.selectedFilterTab !== selectedFilterTab ||
       prevState.nameSearch !== nameSearch
     ) {
-      this.initDataTable(selectedFilterTab, nameSearch);
+      this.initDataTable(nameSearch);
     }
   }
 
