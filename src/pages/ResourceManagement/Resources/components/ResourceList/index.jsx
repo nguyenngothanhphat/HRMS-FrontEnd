@@ -30,6 +30,7 @@ const ResourceList = (props) => {
     currentUserRoles.length > 0 ? currentUserRoles.includes('manager') : false;
   const modifyResourcePermission = permissions.modifyResource !== -1;
   const adminMode = permissions.viewResourceAdminMode !== -1;
+  const countryMode = permissions.viewResourceCountryMode !== -1;
 
   const [pageSelected, setPageSelected] = useState(1);
   const [availableStatusState, setAvailableStatusState] = useState('ALL');
@@ -85,7 +86,8 @@ const ResourceList = (props) => {
         location: selectedLocations,
         division: selectedDivisions,
         employeeId,
-        adminMode 
+        adminMode,
+        countryMode
       },
     });
   };
@@ -118,7 +120,8 @@ const ResourceList = (props) => {
         availableStatus: availableStatusState || availableStatus,
         q: value,
         employeeId,
-        adminMode 
+        adminMode,
+        countryMode
       },
     }).then(() => {
       const array = formatData(resourceList, projectList);
