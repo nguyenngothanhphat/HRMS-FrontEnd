@@ -94,7 +94,19 @@ const ResourceList = (props) => {
     }
     dispatch({
       type: 'resourceManagement/getResources',
-      payload,
+      payload: {
+        // status: 'New',
+        page: pageSelected,
+        limit: size,
+        availableStatus: availableStatusState || availableStatus,
+        ...sort,
+        ...filterTemp,
+        location: selectedLocations,
+        division: selectedDivisions,
+        employeeId,
+        adminMode,
+        countryMode
+      },
     });
     setIsSearching(false);
   };
@@ -118,12 +130,24 @@ const ResourceList = (props) => {
     fetchResourceList();
   };
 
-  const searchTable = (searchKeyProp) => {
-    const value = searchKeyProp.searchKey || '';
-    setIsSearching(true);
-    setTimeout(() => {
-      setSearchKey(value);
-    }, 100);
+  const searchTable = (searchKey) => {
+    const value = searchKey.searchKey || '';
+    dispatch({
+      type: 'resourceManagement/getResources',
+      payload: {
+        page: pageSelected,
+        availableStatus: availableStatusState || availableStatus,
+        q: value,
+        employeeId,
+        adminMode,
+        countryMode
+      },
+    }).then(() => {
+      const array = formatData(resourceList, projectList);
+
+      setResourceListState(array);
+      setPageSelected(1);
+    });
   };
 
   const fetchDivisions = async () => {
