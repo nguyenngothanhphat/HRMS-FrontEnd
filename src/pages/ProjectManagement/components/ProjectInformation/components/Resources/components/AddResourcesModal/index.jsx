@@ -33,6 +33,7 @@ const AddResourcesModal = (props) => {
     newEndDate = '',
   } = projectDetail;
   const adminMode = permissions.viewResourceAdminMode !== -1;
+  const countryMode = permissions.viewResourceCountryMode !== -1;
   const employeeId = employee ? employee._id : ''
 
   const endDate = newEndDate || tentativeEndDate;
@@ -62,6 +63,7 @@ const AddResourcesModal = (props) => {
         ...filter,
         employeeId,
         adminMode,
+        countryMode
       },
     });
   };
