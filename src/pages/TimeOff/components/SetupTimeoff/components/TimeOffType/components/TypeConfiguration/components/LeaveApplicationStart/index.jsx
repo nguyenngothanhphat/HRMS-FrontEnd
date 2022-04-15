@@ -1,6 +1,7 @@
 import { Card, Col, Form, Input, Row } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import { FORM_ITEM_NAME } from '@/utils/timeOff';
 import styles from './index.less';
 
 const LeaveApplicationStart = () => {
@@ -13,7 +14,7 @@ const LeaveApplicationStart = () => {
           </span>
         </Col>
         <Col sm={8}>
-          <Form.Item name="leaveApplicationStart.value">
+          <Form.Item name={FORM_ITEM_NAME.LEAVE_APPLICATION_START_VALUE}>
             <Input type="number" suffix="days" min={0} max={100000} defaultValue="0" />
           </Form.Item>
         </Col>

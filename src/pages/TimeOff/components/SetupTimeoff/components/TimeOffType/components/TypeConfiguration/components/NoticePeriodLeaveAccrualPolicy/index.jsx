@@ -1,6 +1,7 @@
 import { Card, Col, Form, Radio, Row } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import { FORM_ITEM_NAME } from '@/utils/timeOff';
 import styles from './index.less';
 
 const NoticePeriodLeaveAccrualPolicy = () => {
@@ -12,7 +13,10 @@ const NoticePeriodLeaveAccrualPolicy = () => {
         </Col>
         <Col sm={8}>
           <div className={styles.viewTypeSelector}>
-            <Form.Item name="noticePeriodLeaveAccrualPolicy" valuePropName="value">
+            <Form.Item
+              name={FORM_ITEM_NAME.NOTICE_PERIOD_LEAVE_ACCRUAL_POLICY}
+              valuePropName="value"
+            >
               <Radio.Group buttonStyle="solid">
                 <Radio.Button value>Yes</Radio.Button>
                 <Radio.Button value={false}>No</Radio.Button>

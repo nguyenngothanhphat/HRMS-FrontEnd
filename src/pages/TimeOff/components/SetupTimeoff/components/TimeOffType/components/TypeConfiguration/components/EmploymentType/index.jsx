@@ -1,6 +1,7 @@
 import { Card, Col, Form, Row, Select } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import { FORM_ITEM_NAME } from '@/utils/timeOff';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -16,7 +17,10 @@ const EmploymentType = (props) => {
           </span>
         </Col>
         <Col sm={10}>
-          <Form.Item name="employeeType" rules={[{ required: true, message: 'Required field!' }]}>
+          <Form.Item
+            name={FORM_ITEM_NAME.EMPLOYEE_TYPE}
+            rules={[{ required: true, message: 'Required field!' }]}
+          >
             <Select showSearch showArrow mode="multiple" placeholder="Select the Employment Type">
               {employeeTypeList.map((x) => (
                 <Option value={x._id}>{x.name}</Option>

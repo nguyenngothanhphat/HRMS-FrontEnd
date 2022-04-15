@@ -4,6 +4,7 @@ import { connect } from 'umi';
 import styles from './index.less';
 // import EditIcon from '@/assets/timeOff/edit.svg';
 import DelIcon from '@/assets/timeOff/del.svg';
+import { FORM_ITEM_NAME } from '@/utils/timeOff';
 
 const AccrualRate = (props) => {
   const { name = '', remove = () => {} } = props;
@@ -15,13 +16,16 @@ const AccrualRate = (props) => {
           <div className={styles.leftPart}>
             <span>From</span>
             <Form.Item
-              name={[name, 'from']}
+              name={[name, FORM_ITEM_NAME.FROM]}
               rules={[{ required: true, message: 'Required field!' }]}
             >
               <Input placeholder="0" />
             </Form.Item>
             <span>Years to Less than</span>
-            <Form.Item name={[name, 'to']} rules={[{ required: true, message: 'Required field!' }]}>
+            <Form.Item
+              name={[name, FORM_ITEM_NAME.TO]}
+              rules={[{ required: true, message: 'Required field!' }]}
+            >
               <Input placeholder="0" />
             </Form.Item>
             <span>Years of Service</span>
@@ -30,7 +34,7 @@ const AccrualRate = (props) => {
         <Col sm={8}>
           <div className={styles.rightPart}>
             <Form.Item
-              name={[name, 'value']}
+              name={[name, FORM_ITEM_NAME.VALUE]}
               rules={[{ required: true, message: 'Required field!' }]}
             >
               <Input placeholder="0" />

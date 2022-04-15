@@ -1,6 +1,7 @@
 import { Card, Col, Form, Input, Row, Radio } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
+import { FORM_ITEM_NAME } from '@/utils/timeOff';
 import styles from './index.less';
 
 const MaximumBalanceAllowed = () => {
@@ -21,12 +22,12 @@ const MaximumBalanceAllowed = () => {
         <Col sm={10}>
           <div className={styles.rightPart}>
             <div style={{ marginRight: 16 }}>
-              <Form.Item name="maximumBalanceAllowed.value">
+              <Form.Item name={FORM_ITEM_NAME.MAXIMUM_BALANCE_ALLOWED_VALUE}>
                 <Input suffix="days" type="number" min={0} max={100000} defaultValue="0" />
               </Form.Item>
             </div>
             <div className={styles.viewTypeSelector}>
-              <Form.Item name="maximumBalanceAllowed.unit" valuePropName="value">
+              <Form.Item name={FORM_ITEM_NAME.MAXIMUM_BALANCE_ALLOWED_UNIT} valuePropName="value">
                 <Radio.Group buttonStyle="solid" defaultValue="d" onChange={onUnitChange}>
                   <Radio.Button value="d">Days</Radio.Button>
                   <Radio.Button value="h">Hours</Radio.Button>

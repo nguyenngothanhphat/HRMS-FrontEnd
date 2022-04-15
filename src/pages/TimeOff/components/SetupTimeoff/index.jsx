@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
+import LayoutTimeoffSetup from '@/components/LayoutTimeoffSetup';
 import AssignPolicies from './components/AssignPolicy';
 import HolidayCalendar from './components/HolidayCalendar';
 import ManageBalance from './components/ManageBalance';
-import TimeOffLayout from './components/TimeOffLayout';
 import TimeOffType from './components/TimeOffType';
 import WorkSchedule from './components/WorkSchedule';
 
@@ -27,6 +27,7 @@ class SetupTimeoff extends Component {
 
   render() {
     const { timeOffTypes, type = '' } = this.props;
+    console.log('🚀  ~ type', type);
 
     const listMenu = [
       {
@@ -34,7 +35,6 @@ class SetupTimeoff extends Component {
         name: 'Timeoff Type & Rules',
         key: 'timeoffType',
         component: <TimeOffType timeOffTypes={timeOffTypes} />,
-        progress: 70,
         link: 'types-rules',
       },
       {
@@ -42,7 +42,6 @@ class SetupTimeoff extends Component {
         name: 'Employee Work Schedule',
         key: 'workSchedule',
         component: <WorkSchedule />,
-        progress: 30,
         link: 'work-schedule',
       },
       {
@@ -67,7 +66,7 @@ class SetupTimeoff extends Component {
         link: 'assign-policies',
       },
     ];
-    return <TimeOffLayout listMenu={listMenu} tabName={type} />;
+    return <LayoutTimeoffSetup listMenu={listMenu} tabName={type} />;
   }
 }
 

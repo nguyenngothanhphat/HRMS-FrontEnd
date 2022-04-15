@@ -1,6 +1,7 @@
 import { Button, Card, Col, Form, Radio, Row, Space } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import { FORM_ITEM_NAME } from '@/utils/timeOff';
 import AccrualRate from './components/AccrualRate';
 import styles from './index.less';
 
@@ -11,7 +12,7 @@ const AccrualPolicy = () => {
         <span className={styles.label}>Accrual Method</span>
         <Form.Item
           rules={[{ required: true, message: 'Required field!' }]}
-          name="accrualPolicy.accrualMethod"
+          name={FORM_ITEM_NAME.ACCRUAL_POLICY_ACCRUAL_METHOD}
           valuePropName="value"
         >
           <Radio.Group>
@@ -33,7 +34,7 @@ const AccrualPolicy = () => {
         <span className={styles.label}>Accrual Rate</span>
         <div className={styles.items}>
           <Row gutter={[24, 24]}>
-            <Form.List name="accrualPolicy.accrualRate">
+            <Form.List name={FORM_ITEM_NAME.ACCRUAL_POLICY_ACCRUAL_RATE}>
               {(fields, { add, remove }) => (
                 <>
                   {fields.map(({ key, name }) => (

@@ -1,9 +1,9 @@
 import { Col, Form, Input, InputNumber, Popconfirm, Radio, Row } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import { FORM_ITEM_NAME } from '@/utils/timeOff';
 import DelIcon from '@/assets/timeOff/del.svg';
 import styles from './index.less';
-import TimeOffRequestsTable from '@/pages/TimeOff/components/EmployeeLandingPage/components/TimeOffRequestsTable';
 
 const COL_SPAN = {
   A: 9,
@@ -40,14 +40,14 @@ const CarryForwardItem = (props) => {
             <div className={styles.leftPart}>
               <span>From</span>
               <Form.Item
-                name={[name, 'carryForwardCap.from']}
+                name={[name, FORM_ITEM_NAME.FROM]}
                 rules={[{ required: true, message: 'Required field!' }]}
               >
                 <Input placeholder="0" />
               </Form.Item>
               <span>Years to Less than</span>
               <Form.Item
-                name={[name, 'carryForwardCap.to']}
+                name={[name, FORM_ITEM_NAME.TO]}
                 rules={[{ required: true, message: 'Required field!' }]}
               >
                 <Input placeholder="0" />
@@ -60,7 +60,7 @@ const CarryForwardItem = (props) => {
           </Col>
 
           <Col sm={COL_SPAN.C}>
-            <Form.Item name={[name, 'carryForwardAllowed']} valuePropName="value">
+            <Form.Item name={[name, FORM_ITEM_NAME.ALLOWED]} valuePropName="checked">
               <Radio.Group buttonStyle="solid" defaultValue>
                 <Radio.Button value>Yes</Radio.Button>
                 <Radio.Button value={false}>No</Radio.Button>
@@ -74,14 +74,14 @@ const CarryForwardItem = (props) => {
             <div className={styles.rightPart}>
               <div style={{ marginRight: 16 }}>
                 <Form.Item
-                  name={[name, 'maximumCarryForwardValue.value']}
+                  name={[name, FORM_ITEM_NAME.VALUE]}
                   rules={[{ required: true, message: 'Required field!' }]}
                 >
                   <InputNumber prefix="days" min={0} max={100000} defaultValue={0} />
                 </Form.Item>
               </div>
 
-              <Form.Item name={[name, 'maximumCarryForwardValue.unit']} valuePropName="value">
+              <Form.Item name={[name, FORM_ITEM_NAME.UNIT]} valuePropName="value">
                 <Radio.Group buttonStyle="solid" defaultValue="d">
                   <Radio.Button value="d">Days</Radio.Button>
                   <Radio.Button value="h">Hours</Radio.Button>

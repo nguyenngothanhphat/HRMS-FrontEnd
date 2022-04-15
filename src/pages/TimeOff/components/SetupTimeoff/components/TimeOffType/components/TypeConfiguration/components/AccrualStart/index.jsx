@@ -1,6 +1,7 @@
 import { Card, Col, Form, Input, Row } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import { FORM_ITEM_NAME } from '@/utils/timeOff';
 import styles from './index.less';
 
 const AccrualStart = () => {
@@ -14,7 +15,7 @@ const AccrualStart = () => {
           </span>
         </Col>
         <Col sm={8}>
-          <Form.Item name="accrualStart.value">
+          <Form.Item name={FORM_ITEM_NAME.ACCRUAL_START_VALUE}>
             <Input suffix="days" type="number" min={0} max={100000} defaultValue="0" />
           </Form.Item>
         </Col>

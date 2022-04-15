@@ -2,6 +2,7 @@ import { Card, Col, Form, Input, Row } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
+import { FORM_ITEM_NAME } from '@/utils/timeOff';
 
 const LeaveTypeName = () => {
   return (
@@ -12,7 +13,7 @@ const LeaveTypeName = () => {
         </Col>
         <Col sm={8}>
           <Form.Item
-            name="timeoffTypeName"
+            name={FORM_ITEM_NAME.TIMEOFF_TYPE_NAME}
             rules={[{ required: true, message: 'Required field!' }]}
           >
             <Input placeholder="Enter the type name" />

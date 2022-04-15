@@ -20,6 +20,63 @@ import LOP from './components/LOP';
 import MaximumBalanceAllowed from './components/MaximumBalanceAllowed';
 import NoticePeriodLeaveAccrualPolicy from './components/NoticePeriodLeaveAccrualPolicy';
 
+import { FORM_ITEM_NAME } from '@/utils/timeOff';
+
+const {
+  TIMEOFF_TYPE_NAME,
+
+  EMPLOYEE_TYPE,
+
+  ACCRUAL_POLICY,
+  ACCRUAL_METHOD,
+  ACCRUAL_RATE,
+  ACCRUAL_POLICY_ACCRUAL_METHOD,
+  ACCRUAL_POLICY_ACCRUAL_RATE,
+
+  ACCRUAL_START,
+  ACCRUAL_START_VALUE,
+  ACCRUAL_START_UNIT,
+
+  MINIMUM_LEAVE_AMOUNT,
+  MINIMUM_LEAVE_AMOUNT_VALUE,
+
+  LEAVE_APPLICATION_START,
+  LEAVE_APPLICATION_START_VALUE,
+
+  NEGATIVE_LEAVE_BALANCE,
+  NEGATIVE_LEAVE_BALANCE_ALLOWED,
+  NEGATIVE_LEAVE_BALANCE_MAXIMUM_UNIT,
+  NEGATIVE_LEAVE_BALANCE_MAXIMUM_VALUE,
+
+  NEW_HIRE_PRORATION_POLICY,
+
+  LOP_LEAVE_ACCRUAL_POLICY,
+
+  MAXIMUM_BALANCE_ALLOWED,
+  MAXIMUM_BALANCE_ALLOWED_UNIT,
+  MAXIMUM_BALANCE_ALLOWED_VALUE,
+
+  ANNUAL_RESET_POLICY,
+  ANNUAL_RESET_POLICY_RESET_TYPE,
+  ANNUAL_RESET_POLICY_CALENDAR_DATE,
+
+  NOTICE_PERIOD_LEAVE_ACCRUAL_POLICY,
+
+  CARRY_FORWARD_POLICY,
+  CARRY_FORWARD_CAP,
+  CARRY_FORWARD_ALLOWED,
+  MAXIMUM_CARRY_FORWARD_VALUE,
+
+  VALUE,
+  UNIT,
+  ALLOWED,
+  FROM,
+  TO,
+  MAXIMUM,
+  RESET_TYPE,
+  CALENDAR_DATE,
+} = FORM_ITEM_NAME;
+
 const components = [
   {
     id: 1,
@@ -83,13 +140,10 @@ const TypeConfiguration = (props) => {
     location: { state: { isValid = false } = {}, state = {} } = {},
     timeOff: { viewingLeaveType = {} || {} } = {},
     loadingFetchTypeByID = false,
+    loadingUpsertLeaveType = false,
   } = props;
 
-  const {
-    timeoffTypeName: timeoffTypeNameProp = '',
-    employeeType: employeeTypeProp = [],
-    configs = {},
-  } = viewingLeaveType || {};
+  const { configs = {} } = viewingLeaveType || {};
 
   const fetchTypeById = () => {
     if (typeId) {
@@ -121,76 +175,72 @@ const TypeConfiguration = (props) => {
   };
 
   const generatePayload = (values) => {
-    const {
-      carryForwardPolicy = [],
-      employeeType = [],
-      timeoffTypeName = '',
-      newHireProrationPolicy = true,
-      LOPLeaveAccrualPolicy = false,
-      noticePeriodLeaveAccrualPolicy = false,
-    } = values;
-
     const payload = {
       timeoffType: typeId,
-      timeoffTypeName,
-      employeeType,
+      [TIMEOFF_TYPE_NAME]: values[TIMEOFF_TYPE_NAME],
+      [EMPLOYEE_TYPE]: values[EMPLOYEE_TYPE],
       type: state.type,
       typeName: state.typeName,
       country: state.country,
       configs: {
-        accrualPolicy: {
-          accrualMethod: values['accrualPolicy.accrualMethod'],
-          accrualRate: values['accrualPolicy.accrualRate']
-            ? values['accrualPolicy.accrualRate'].map((x) => {
-                return { from: x.from, to: x.to, value: x.value };
+        [ACCRUAL_POLICY]: {
+          [ACCRUAL_METHOD]: values[ACCRUAL_POLICY_ACCRUAL_METHOD],
+          [ACCRUAL_RATE]: values[ACCRUAL_POLICY_ACCRUAL_RATE]
+            ? values[ACCRUAL_POLICY_ACCRUAL_RATE].map((x) => {
+                return {
+                  [FROM]: x[FROM],
+                  [TO]: x[TO],
+                  [VALUE]: x[VALUE],
+                };
               })
             : [],
         },
-        accrualStart: {
-          value: values['accrualStart.value'],
-          unit: 'd',
+        [ACCRUAL_START]: {
+          [VALUE]: values[ACCRUAL_START_VALUE],
+          [UNIT]: 'd',
         },
-        leaveApplicationStart: {
-          value: values['leaveApplicationStart.value'],
-          unit: 'd',
+        [LEAVE_APPLICATION_START]: {
+          [VALUE]: values[LEAVE_APPLICATION_START_VALUE],
+          [UNIT]: 'd',
         },
-        minimumLeaveAmount: {
-          value: values['minimumLeaveAmount.value'],
-          unit: 'd',
+        [MINIMUM_LEAVE_AMOUNT]: {
+          [VALUE]: values[MINIMUM_LEAVE_AMOUNT_VALUE],
+          [UNIT]: 'd',
         },
-        maximumBalanceAllowed: {
-          value: values['maximumBalanceAllowed.value'],
-          unit: values['maximumBalanceAllowed.unit'] || 'd',
+        [MAXIMUM_BALANCE_ALLOWED]: {
+          [VALUE]: values[MAXIMUM_BALANCE_ALLOWED_VALUE],
+          [UNIT]: values[UNIT] || 'd',
         },
-        newHireProrationPolicy,
-        LOPLeaveAccrualPolicy,
-        negativeLeaveBalance: {
-          allowed: values['negativeLeaveBalance.allowed'],
-          maximum: {
-            value: values['negativeLeaveBalance.maximum.value'],
-            unit: values['negativeLeaveBalance.maximum.unit'] || 'd',
+        [NEW_HIRE_PRORATION_POLICY]: values[NEW_HIRE_PRORATION_POLICY],
+        [LOP_LEAVE_ACCRUAL_POLICY]: values[LOP_LEAVE_ACCRUAL_POLICY],
+        [NEGATIVE_LEAVE_BALANCE]: {
+          [ALLOWED]: values[NEGATIVE_LEAVE_BALANCE_ALLOWED],
+          [MAXIMUM]: {
+            [VALUE]: values[NEGATIVE_LEAVE_BALANCE_MAXIMUM_VALUE],
+            [UNIT]: values[NEGATIVE_LEAVE_BALANCE_MAXIMUM_UNIT] || 'd',
           },
         },
-        annualResetPolicy: {
-          resetType: values['annualResetPolicy.resetType'],
-          calendarDate: values['annualResetPolicy.calendarDate'],
+        [ANNUAL_RESET_POLICY]: {
+          [RESET_TYPE]: values[ANNUAL_RESET_POLICY_RESET_TYPE],
+          [CALENDAR_DATE]: values[ANNUAL_RESET_POLICY_CALENDAR_DATE],
         },
-        noticePeriodLeaveAccrualPolicy,
-        carryForwardPolicy: carryForwardPolicy.map((x) => {
+        [NOTICE_PERIOD_LEAVE_ACCRUAL_POLICY]: values[NOTICE_PERIOD_LEAVE_ACCRUAL_POLICY],
+        [CARRY_FORWARD_POLICY]: values[CARRY_FORWARD_POLICY].map((x) => {
           return {
-            carryForwardCap: {
-              from: x['carryForwardCap.from'],
-              to: x['carryForwardCap.to'],
+            [CARRY_FORWARD_CAP]: {
+              [FROM]: x[FROM],
+              [TO]: x[TO],
             },
-            carryForwardAllowed: x.carryForwardAllowed,
-            maximumCarryForwardValue: {
-              value: x['maximumCarryForwardValue.value'],
-              unit: x['maximumCarryForwardValue.unit'] || 'd',
+            [ALLOWED]: x[ALLOWED],
+            [MAXIMUM_CARRY_FORWARD_VALUE]: {
+              [VALUE]: x[VALUE],
+              [UNIT]: x[UNIT] || 'd',
             },
           };
         }),
       },
     };
+
     if (action === 'add') {
       delete payload.timeoffType;
     }
@@ -217,53 +267,58 @@ const TypeConfiguration = (props) => {
   const getFormInitialValues = () => {
     if (action === 'configure')
       return {
-        timeoffTypeName: timeoffTypeNameProp,
-        employeeType: employeeTypeProp,
-        'accrualPolicy.accrualMethod': configs.accrualPolicy?.accrualMethod,
-        'accrualPolicy.accrualRate': configs.accrualPolicy?.accrualRate,
-        'accrualStart.value': configs.accrualStart?.value || 0,
-        'accrualStart.unit': configs.accrualStart?.unit,
-        'minimumLeaveAmount.value': configs.minimumLeaveAmount?.value || 0,
-        'leaveApplicationStart.value': configs.leaveApplicationStart?.value || 0,
-        'negativeLeaveBalance.allowed': configs.negativeLeaveBalance?.allowed || false,
-        'negativeLeaveBalance.maximum.unit': configs.negativeLeaveBalance?.maximum?.unit || 'd',
-        'negativeLeaveBalance.maximum.value': configs.negativeLeaveBalance?.maximum?.value || 0,
-        newHireProrationPolicy: configs.newHireProrationPolicy,
-        LOPLeaveAccrualPolicy: configs.LOPLeaveAccrualPolicy || false,
-        'maximumBalanceAllowed.unit': configs.maximumBalanceAllowed?.unit,
-        'maximumBalanceAllowed.value': configs.maximumBalanceAllowed?.value || 0,
-        'annualResetPolicy.resetType': configs.annualResetPolicy?.resetType || 0,
-        'annualResetPolicy.calendarDate': configs.annualResetPolicy?.calendarDate
-          ? moment(configs.annualResetPolicy?.calendarDate)
+        [TIMEOFF_TYPE_NAME]: viewingLeaveType[TIMEOFF_TYPE_NAME],
+        [EMPLOYEE_TYPE]: viewingLeaveType[EMPLOYEE_TYPE],
+        [ACCRUAL_POLICY_ACCRUAL_METHOD]: configs[ACCRUAL_POLICY]?.[ACCRUAL_METHOD],
+        [ACCRUAL_POLICY_ACCRUAL_RATE]: configs[ACCRUAL_POLICY]?.[ACCRUAL_RATE],
+        [ACCRUAL_START_VALUE]: configs[ACCRUAL_START]?.[VALUE] || 0,
+        [ACCRUAL_START_UNIT]: configs[ACCRUAL_START]?.[UNIT],
+        [MINIMUM_LEAVE_AMOUNT_VALUE]: configs[MINIMUM_LEAVE_AMOUNT]?.[VALUE] || 0,
+        [LEAVE_APPLICATION_START_VALUE]: configs[LEAVE_APPLICATION_START]?.[VALUE] || 0,
+        [NEGATIVE_LEAVE_BALANCE_ALLOWED]: configs[NEGATIVE_LEAVE_BALANCE]?.[ALLOWED] || false,
+        [NEGATIVE_LEAVE_BALANCE_MAXIMUM_UNIT]:
+          configs[NEGATIVE_LEAVE_BALANCE]?.[MAXIMUM]?.[UNIT] || 'd',
+        [NEGATIVE_LEAVE_BALANCE_MAXIMUM_VALUE]:
+          configs[NEGATIVE_LEAVE_BALANCE]?.[MAXIMUM]?.[VALUE] || 0,
+        [NEW_HIRE_PRORATION_POLICY]: configs[NEW_HIRE_PRORATION_POLICY],
+        [LOP_LEAVE_ACCRUAL_POLICY]: configs[LOP_LEAVE_ACCRUAL_POLICY] || false,
+        [MAXIMUM_BALANCE_ALLOWED_UNIT]: configs[MAXIMUM_BALANCE_ALLOWED]?.[UNIT],
+        [MAXIMUM_BALANCE_ALLOWED_VALUE]: configs[MAXIMUM_BALANCE_ALLOWED]?.[VALUE] || 0,
+        [ANNUAL_RESET_POLICY_RESET_TYPE]: configs[ANNUAL_RESET_POLICY]?.[RESET_TYPE] || 0,
+        [ANNUAL_RESET_POLICY_CALENDAR_DATE]: configs[ANNUAL_RESET_POLICY]?.[CALENDAR_DATE]
+          ? moment(configs[ANNUAL_RESET_POLICY]?.[CALENDAR_DATE])
           : null,
-        noticePeriodLeaveAccrualPolicy: configs.noticePeriodLeaveAccrualPolicy || false,
-        carryForwardPolicy: configs.carryForwardPolicy
-          ? configs.carryForwardPolicy.map((x) => {
+        [NOTICE_PERIOD_LEAVE_ACCRUAL_POLICY]: configs[NOTICE_PERIOD_LEAVE_ACCRUAL_POLICY] || false,
+        [CARRY_FORWARD_POLICY]: configs[CARRY_FORWARD_POLICY]
+          ? configs[CARRY_FORWARD_POLICY].map((x) => {
               return {
                 ...x,
-                'carryForwardCap.from': x.carryForwardCap.from,
-                'carryForwardCap.to': x.carryForwardCap.to,
-                'maximumCarryForwardValue.value': x.maximumCarryForwardValue.value,
-                'maximumCarryForwardValue.unit': x.maximumCarryForwardValue.unit,
+                [FROM]: x[CARRY_FORWARD_CAP]?.[FROM],
+                [TO]: x[CARRY_FORWARD_CAP]?.[TO],
+                [ALLOWED]: x[CARRY_FORWARD_ALLOWED],
+                [VALUE]: x[MAXIMUM_CARRY_FORWARD_VALUE]?.[VALUE],
+                [UNIT]: x[MAXIMUM_CARRY_FORWARD_VALUE]?.[UNIT],
               };
             })
           : [],
       };
     return {
-      'accrualPolicy.accrualMethod': 'unlimited',
-      'accrualStart.value': 0,
-      'accrualStart.unit': 'd',
-      'minimumLeaveAmount.value': 0,
-      'leaveApplicationStart.value': 0,
-      'negativeLeaveBalance.allowed': false,
-      'negativeLeaveBalance.maximum.unit': 'd',
-      'negativeLeaveBalance.maximum.value': 0,
-      newHireProrationPolicy: true,
-      'annualResetPolicy.type': 'calendarDate',
-      LOPLeaveAccrualPolicy: false,
-      'maximumBalanceAllowed.unit': 'd',
-      'maximumBalanceAllowed.value': 0,
-      noticePeriodLeaveAccrualPolicy: false,
+      [ACCRUAL_METHOD]: 'unlimited',
+      [ACCRUAL_RATE]: [],
+      [ACCRUAL_START_VALUE]: 0,
+      [ACCRUAL_START_UNIT]: 'd',
+      [MINIMUM_LEAVE_AMOUNT_VALUE]: 0,
+      [LEAVE_APPLICATION_START_VALUE]: 0,
+      [NEGATIVE_LEAVE_BALANCE_ALLOWED]: false,
+      [NEGATIVE_LEAVE_BALANCE_MAXIMUM_UNIT]: 'd',
+      [NEGATIVE_LEAVE_BALANCE_MAXIMUM_VALUE]: 0,
+      [NEW_HIRE_PRORATION_POLICY]: true,
+      [ANNUAL_RESET_POLICY_RESET_TYPE]: 'calendarDate',
+      [LOP_LEAVE_ACCRUAL_POLICY]: false,
+      [MAXIMUM_BALANCE_ALLOWED_UNIT]: 'd',
+      [MAXIMUM_BALANCE_ALLOWED_VALUE]: 0,
+      [NOTICE_PERIOD_LEAVE_ACCRUAL_POLICY]: false,
+      [CARRY_FORWARD_POLICY]: [],
     };
   };
 
@@ -314,6 +369,7 @@ const TypeConfiguration = (props) => {
                 form="timeOffType"
                 htmlType="submit"
                 key="submit"
+                loading={loadingUpsertLeaveType}
               >
                 Save
               </Button>
@@ -321,6 +377,28 @@ const TypeConfiguration = (props) => {
           </Col>
         </Row>
       </div>
+    );
+  };
+
+  const renderForm = () => {
+    if (loadingFetchTypeByID || Object.keys(viewingLeaveType).length === 0) {
+      return <Skeleton />;
+    }
+    return (
+      <Form
+        name="timeOffType"
+        form={form}
+        initialValues={getFormInitialValues()}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+      >
+        <Row gutter={[24, 24]}>
+          {components.map((x) => (
+            <Col span={24}>{x.component}</Col>
+          ))}
+          <Col span={24}>{renderBottomBar()}</Col>
+        </Row>
+      </Form>
     );
   };
 
@@ -347,27 +425,7 @@ const TypeConfiguration = (props) => {
 
         <Row gutter={[24, 24]}>
           <Col sm={24} xl={16}>
-            {loadingFetchTypeByID ||
-            (action === 'configure' &&
-              viewingLeaveType !== null &&
-              Object.keys(viewingLeaveType).length === 0) ? (
-                <Skeleton />
-            ) : (
-              <Form
-                name="timeOffType"
-                form={form}
-                initialValues={getFormInitialValues()}
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-              >
-                <Row gutter={[24, 24]}>
-                  {components.map((x) => (
-                    <Col span={24}>{x.component}</Col>
-                  ))}
-                  <Col span={24}>{renderBottomBar()}</Col>
-                </Row>
-              </Form>
-            )}
+            {renderForm()}
           </Col>
           <Col sm={24} xl={8}>
             <NoteComponent note={Note} />
@@ -395,4 +453,5 @@ export default connect(({ user: { permissions = {} }, timeOff, loading }) => ({
   permissions,
   timeOff,
   loadingFetchTypeByID: loading.effects['timeOff/fetchTimeOffTypeById'],
+  loadingUpsertLeaveType: loading.effects['timeOff/upsertLeaveTypeEffect'],
 }))(TypeConfiguration);

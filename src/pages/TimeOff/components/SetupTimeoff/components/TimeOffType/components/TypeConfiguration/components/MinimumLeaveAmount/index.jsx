@@ -1,6 +1,7 @@
 import { Card, Col, Form, Input, Row } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import { FORM_ITEM_NAME } from '@/utils/timeOff';
 import styles from './index.less';
 
 const MinimumLeaveAmount = () => {
@@ -11,7 +12,7 @@ const MinimumLeaveAmount = () => {
           <span className={styles.label}>Minimum amount of leave that needs to be applied.</span>
         </Col>
         <Col sm={10}>
-          <Form.Item name="minimumLeaveAmount.value">
+          <Form.Item name={FORM_ITEM_NAME.MINIMUM_LEAVE_AMOUNT_VALUE}>
             <Input defaultValue="0" suffix="days" />
           </Form.Item>
         </Col>

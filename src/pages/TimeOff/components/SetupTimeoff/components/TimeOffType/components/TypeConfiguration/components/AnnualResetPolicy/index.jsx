@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { connect } from 'umi';
 import datePickerIcon from '@/assets/timeOff/datePicker.svg';
 import styles from './index.less';
+import { FORM_ITEM_NAME } from '@/utils/timeOff';
 
 const AnnualResetPolicy = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,7 +12,7 @@ const AnnualResetPolicy = () => {
     <Card title="Annual Reset Policy" className={styles.AnnualResetPolicy}>
       <div className={styles.annualResetTop}>
         <span className={styles.label}>How do you want to reset?</span>
-        <Form.Item name="annualResetPolicy.resetType">
+        <Form.Item name={FORM_ITEM_NAME.ANNUAL_RESET_POLICY_RESET_TYPE}>
           <Radio.Group>
             <Space direction="horizontal">
               <Radio value="anniversaryDate">Anniversary Date</Radio>
@@ -27,7 +28,7 @@ const AnnualResetPolicy = () => {
         </Col>
         <Col sm={8}>
           <Form.Item
-            name="annualResetPolicy.calendarDate"
+            name={FORM_ITEM_NAME.ANNUAL_RESET_POLICY_CALENDAR_DATE}
             rules={[{ required: true, message: 'Required field!' }]}
           >
             <DatePicker

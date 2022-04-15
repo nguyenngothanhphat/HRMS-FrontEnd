@@ -276,7 +276,7 @@ const timeOff = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { viewingLeaveType: data },
+          payload: { viewingLeaveType: data || {} },
         });
       } catch (errors) {
         dialog(errors);

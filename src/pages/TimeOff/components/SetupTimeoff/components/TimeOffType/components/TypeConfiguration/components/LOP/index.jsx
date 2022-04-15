@@ -1,6 +1,7 @@
 import { Card, Col, Form, Radio, Row } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import { FORM_ITEM_NAME } from '@/utils/timeOff';
 import styles from './index.less';
 
 const LOP = () => {
@@ -12,7 +13,7 @@ const LOP = () => {
         </Col>
         <Col sm={8}>
           <div className={styles.viewTypeSelector}>
-            <Form.Item name="LOPLeaveAccrualPolicy" valuePropName="value">
+            <Form.Item name={FORM_ITEM_NAME.LOP_LEAVE_ACCRUAL_POLICY} valuePropName="value">
               <Radio.Group buttonStyle="solid">
                 <Radio.Button value>Yes</Radio.Button>
                 <Radio.Button value={false}>No</Radio.Button>
