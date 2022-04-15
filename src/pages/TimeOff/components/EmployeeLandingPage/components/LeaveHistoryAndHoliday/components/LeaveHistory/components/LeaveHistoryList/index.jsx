@@ -41,19 +41,15 @@ export default class LeaveHistoryList extends PureComponent {
                 style={{ justifyContent: 'space-evenly' }}
               >
                 <span className={styles.container}>
-                  <span className={styles.day}>
-                    {moment.utc(fromDate).locale('en').format('DD')}
-                  </span>
+                  <span className={styles.day}>{moment(fromDate).locale('en').format('DD')}</span>
                   <span className={styles.month}>
-                    {moment.utc(fromDate).locale('en').format('MMM')}
+                    {moment(fromDate).locale('en').format('MMM')}
                   </span>
                 </span>
                 <span className={styles.subtractSymbol}>-</span>
                 <span className={styles.container}>
-                  <span className={styles.day}>{moment.utc(toDate).locale('en').format('DD')}</span>
-                  <span className={styles.month}>
-                    {moment.utc(toDate).locale('en').format('MMM')}
-                  </span>
+                  <span className={styles.day}>{moment(toDate).locale('en').format('DD')}</span>
+                  <span className={styles.month}>{moment(toDate).locale('en').format('MMM')}</span>
                 </span>
               </Col>
               <Col xs={10} className={styles.eventOfDay}>

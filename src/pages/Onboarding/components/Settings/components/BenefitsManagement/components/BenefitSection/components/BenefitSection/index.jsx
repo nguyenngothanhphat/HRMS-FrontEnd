@@ -12,14 +12,14 @@ const { Option } = Select;
 
 @connect(
   ({
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
     country: { listCountry = [] } = {},
     onboardingSettings: { listBenefit = [] } = {},
     loading,
   }) => ({
     listCountry,
     listBenefit,
-    listLocationsByCompany,
+    companyLocationList,
     loadingFetchCountry: loading.effects['country/fetchListCountry'],
   }),
 )
@@ -35,10 +35,10 @@ class BenefitSection extends Component {
   };
 
   initGetCountryId = () => {
-    const { listLocationsByCompany = [], onChangeSelect = () => {} } = this.props;
+    const { companyLocationList = [], onChangeSelect = () => {} } = this.props;
     let countryId = '';
 
-    listLocationsByCompany.forEach((item) => {
+    companyLocationList.forEach((item) => {
       if (item._id === getCurrentLocation()) {
         const { headQuarterAddress: { country = {} || {} } = {} || {} } = item;
         countryId = country._id;
@@ -104,9 +104,9 @@ class BenefitSection extends Component {
     if (!countryId) return null;
     return (
       <div className={styles.benefitSection}>
-        <div className={styles.locationSelection}>
-          <div className={styles.locationSelection__text}>Choose Location</div>
-          <div className={styles.locationSelection__selectCountry}>
+        <div className={styles.location}>
+          <div className={styles.location__text}>Choose Location</div>
+          <div className={styles.location__selectCountry}>
             <Select
               showSearch
               showArrow

@@ -28,14 +28,14 @@ const TABS = {
       } = {},
       permissions = {},
     } = {},
-    locationSelection: { listLocationsByCompany = [] },
+    location: { companyLocationList = [] },
   }) => ({
     resourceList,
     divisionList,
     permissions,
     locationID,
     companyID,
-    listLocationsByCompany,
+    companyLocationList,
     currentUserId,
     total,
     headQuarterAddress,
@@ -118,18 +118,15 @@ class Resources extends Component {
   };
 
   getSelectedLocationName = () => {
-    const { listLocationsByCompany = [] } = this.props;
+    const { companyLocationList = [] } = this.props;
     const { selectedLocations } = this.state;
     if (selectedLocations.length === 1) {
-      return listLocationsByCompany.find((x) => x._id === selectedLocations[0])?.name || '';
+      return companyLocationList.find((x) => x._id === selectedLocations[0])?.name || '';
     }
-    if (selectedLocations.length > 0 && selectedLocations.length < listLocationsByCompany.length) {
+    if (selectedLocations.length > 0 && selectedLocations.length < companyLocationList.length) {
       return `${selectedLocations.length} locations selected`;
     }
-    if (
-      selectedLocations.length === listLocationsByCompany.length ||
-      selectedLocations.length === 0
-    ) {
+    if (selectedLocations.length === companyLocationList.length || selectedLocations.length === 0) {
       return 'All';
     }
     return 'All';
@@ -195,35 +192,40 @@ class Resources extends Component {
   };
 
   renderActionButton = (viewModeCountry, viewModeDivision) => {
-    const { divisionList = [], listLocationsByCompany = [], headQuarterAddress = {}, divisionInfo = {} } = this.props;
+    const {
+      divisionList = [],
+      companyLocationList = [],
+      headQuarterAddress = {},
+      divisionInfo = {},
+    } = this.props;
     const { selectedDivisions, selectedLocations } = this.state;
     // if only one selected
     const selectedLocationName = this.getSelectedLocationName();
     const selectedDivisionName = this.getSelectedDivisionName();
     const countryOfUser = headQuarterAddress ? headQuarterAddress.country._id : '';
-    const divisionOfUser = divisionInfo ? divisionInfo.name : ''
+    const divisionOfUser = divisionInfo ? divisionInfo.name : '';
     let locationOptions = [];
     let divisionOptions = [];
     if (viewModeCountry) {
-      locationOptions = listLocationsByCompany.filter((x) => {
-        const countryOfList = x.headQuarterAddress ? x.headQuarterAddress.country : ''
-        if(countryOfList._id === countryOfUser) {
+      locationOptions = companyLocationList.filter((x) => {
+        const countryOfList = x.headQuarterAddress ? x.headQuarterAddress.country : '';
+        if (countryOfList._id === countryOfUser) {
           return {
             _id: x._id,
             name: x.name,
-          }
+          };
         }
-        return false
-      })
+        return false;
+      });
     } else {
-      locationOptions = listLocationsByCompany.map((x) => {
+      locationOptions = companyLocationList.map((x) => {
         return {
           _id: x._id,
           name: x.name,
         };
-      })
-    } 
-    
+      });
+    }
+
     if (viewModeDivision) {
       divisionOptions = divisionList.filter((x) => {
         if (x.name === divisionOfUser) {
@@ -232,15 +234,15 @@ class Resources extends Component {
             name: x.name,
           };
         }
-        return false
-      })
+        return false;
+      });
     } else {
       divisionOptions = divisionList.map((x) => {
         return {
           _id: x.name,
           name: x.name,
         };
-      })
+      });
     }
 
     return (
@@ -267,6 +269,7 @@ class Resources extends Component {
             options={divisionOptions}
             onChange={this.onDivisionChange}
             default={selectedDivisions}
+            disabled
           >
             <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
               <span>{selectedDivisionName}</span>

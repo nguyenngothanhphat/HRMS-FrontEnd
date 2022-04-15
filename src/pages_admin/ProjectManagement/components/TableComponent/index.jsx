@@ -32,7 +32,7 @@ const TableComponent = (props) => {
     dispatch,
     user,
     loading,
-    listLocationsByCompany = [],
+    companyLocationList = [],
     // companiesOfUser = [],
     loadingFetchProject = false,
     getPageAndSize = () => {},
@@ -55,10 +55,10 @@ const TableComponent = (props) => {
     setOpen(true);
     setProjectInfo({ projectName, projectId, projectManager, company });
 
-    const locationPayload = listLocationsByCompany.map(
+    const locationPayload = companyLocationList.map(
       ({ headQuarterAddress: { country: countryItem1 = '' } = {} }) => {
         let stateList = [];
-        listLocationsByCompany.forEach(
+        companyLocationList.forEach(
           ({ headQuarterAddress: { country: countryItem2 = '', state: stateItem2 = '' } = {} }) => {
             if (countryItem1 === countryItem2) {
               stateList = [...stateList, stateItem2];

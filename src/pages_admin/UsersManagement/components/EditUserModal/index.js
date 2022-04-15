@@ -24,7 +24,7 @@ const layout = {
       selectedUserTenant = '',
     } = {},
     loading,
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
   }) => ({
     usersManagement,
     filterList,
@@ -36,7 +36,7 @@ const layout = {
     loadingUpdateGeneralInfo: loading.effects['usersManagement/updateGeneralInfo'],
     loadingUpdateRoles: loading.effects['usersManagement/updateRolesByEmployee'],
     loadingUserProfile: loading.effects['usersManagement/fetchEmployeeDetail'],
-    listLocationsByCompany,
+    companyLocationList,
   }),
 )
 class EditUserModal extends PureComponent {
@@ -201,12 +201,12 @@ class EditUserModal extends PureComponent {
       loadingUpdateEmployee = false,
       loadingUpdateGeneralInfo = false,
       loadingUpdateRoles = false,
-      listLocationsByCompany = [],
+      companyLocationList = [],
       loadingUserProfile = false,
     } = this.props;
 
     const { companyId, openModal, statusUser, userProfile } = this.state;
-    const listLocationByCurrentCompany = listLocationsByCompany.filter((location) => {
+    const listLocationByCurrentCompany = companyLocationList.filter((location) => {
       return location.company?._id === companyId || location.company === companyId;
     });
 

@@ -25,7 +25,7 @@ const DocumentResult = React.memo((props) => {
     totalDocuments,
     loadTableData2,
     tabName,
-    listLocationsByCompany,
+    companyLocationList,
   } = props;
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -34,7 +34,7 @@ const DocumentResult = React.memo((props) => {
 
   const fetchTimezone = () => {
     const timezoneListTemp = [];
-    listLocationsByCompany.forEach((location) => {
+    companyLocationList.forEach((location) => {
       const {
         headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
         _id = '',
@@ -138,7 +138,7 @@ const DocumentResult = React.memo((props) => {
             <Popover
               content={
                 <PopoverInfo
-                  listLocationsByCompany={listLocationsByCompany}
+                  companyLocationList={companyLocationList}
                   propsState={{ currentTime, timezoneList }}
                   data={manager}
                 />
@@ -200,7 +200,7 @@ const DocumentResult = React.memo((props) => {
             <Popover
               content={
                 <PopoverInfo
-                  listLocationsByCompany={listLocationsByCompany}
+                  companyLocationList={companyLocationList}
                   propsState={{ currentTime, timezoneList }}
                   data={manager}
                 />
@@ -272,7 +272,7 @@ const DocumentResult = React.memo((props) => {
 export default connect(
   ({
     loading,
-    locationSelection: { listLocationsByCompany = [] },
+    location: { companyLocationList = [] },
     searchAdvance: {
       keySearch = '',
       isSearch,
@@ -289,6 +289,6 @@ export default connect(
     isSearch,
     isSearchAdvance,
     keySearch,
-    listLocationsByCompany,
+    companyLocationList,
   }),
 )(DocumentResult);

@@ -37,8 +37,7 @@ const DirectoryComponent = (props) => {
     loadingListInActive,
     loadingFetchFilterList,
     filterList: { listCountry = [] } = {},
-    listLocationsByCompany = [],
-    // currentUser: { employee: { departmentInfo: { name: departmentName = '' } = {} } = {} } = {},
+    companyLocationList = [],
     totalActiveEmployee,
     totalInactiveEmployee,
     totalMyTeam,
@@ -120,7 +119,7 @@ const DirectoryComponent = (props) => {
 
     // if there are location & company, call API
     const checkCallAPI =
-      companiesOfUser.length > 0 && listLocationsByCompany.length > 0 && listCountry.length > 0;
+      companiesOfUser.length > 0 && companyLocationList.length > 0 && listCountry.length > 0;
 
     if (checkCallAPI) {
       // MULTI COMPANY & LOCATION PAYLOAD
@@ -138,84 +137,6 @@ const DirectoryComponent = (props) => {
           companyPayload = [...companyList];
         }
       } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
-
-      // let locationPayload = [];
-
-      // // for all employees & super admin that is in ALL location mode
-      // if (!currentLocation || !isOwnerCheck) {
-      //   if (country.length === 0) {
-      //     locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
-      //       let stateList = [];
-      //       listCountry.forEach(
-      //         ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
-      //           if (countryItem1 === countryItem2) {
-      //             if (state.length !== 0) {
-      //               if (state.includes(stateItem2)) {
-      //                 stateList = [...stateList, stateItem2];
-      //               }
-      //             } else {
-      //               stateList = [...stateList, stateItem2];
-      //             }
-      //           }
-      //         },
-      //       );
-      //       return {
-      //         country: countryItem1,
-      //         state: stateList,
-      //       };
-      //     });
-      //   } else {
-      //     locationPayload = country.map((item) => {
-      //       let stateList = [];
-
-      //       listCountry.forEach(
-      //         ({ country: { _id: countryItem = '' } = {}, state: stateItem = '' }) => {
-      //           if (item === countryItem) {
-      //             if (state.length !== 0) {
-      //               if (state.includes(stateItem)) {
-      //                 stateList = [...stateList, stateItem];
-      //               }
-      //             } else {
-      //               stateList = [...stateList, stateItem];
-      //             }
-      //           }
-      //         },
-      //       );
-
-      //       return {
-      //         country: item,
-      //         state: stateList,
-      //       };
-      //     });
-      //   }
-      // }
-
-      // // only super admin can see directory list by selected location in the dropdown menu
-      // if (currentLocation && isOwnerCheck) {
-      //   const currentLocationObj = listLocationsByCompany.find(
-      //     (loc) => loc?._id === currentLocation,
-      //   );
-      //   const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
-      //   const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
-      //   locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
-      //     let stateList = [];
-      //     listCountry.forEach(
-      //       ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
-      //         if (
-      //           countryItem1 === countryItem2 &&
-      //           currentLocationCountry === countryItem2 &&
-      //           currentLocationState === stateItem2
-      //         ) {
-      //           stateList = [...stateList, stateItem2];
-      //         }
-      //       },
-      //     );
-      //     return {
-      //       country: countryItem1,
-      //       state: stateList,
-      //     };
-      //   });
-      // }
 
       const payload = {
         ...params,
@@ -560,7 +481,7 @@ const DirectoryComponent = (props) => {
 export default connect(
   ({
     loading,
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
     employee,
     user: { currentUser = {}, permissions = {}, companiesOfUser = [] },
     employee: {
@@ -580,7 +501,7 @@ export default connect(
     employee,
     currentUser,
     permissions,
-    listLocationsByCompany,
+    companyLocationList,
     companiesOfUser,
     filterList,
     currentPayload,

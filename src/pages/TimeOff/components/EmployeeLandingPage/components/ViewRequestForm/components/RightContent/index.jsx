@@ -8,7 +8,7 @@ import styles from './index.less';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 
 const { Step } = Steps;
-const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DELETED } = TIMEOFF_STATUS;
+const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DELETED, WITHDRAWN } = TIMEOFF_STATUS;
 class RightContent extends PureComponent {
   constructor(props) {
     super(props);
@@ -106,7 +106,8 @@ class RightContent extends PureComponent {
                           {index === 1 && (
                             <>
                               {status === REJECTED && this.renderIcon(avatar, REJECTED)}
-                              {status === IN_PROGRESS && this.renderIcon(avatar)}
+                              {(status === IN_PROGRESS || status === WITHDRAWN) &&
+                                this.renderIcon(avatar)}
                               {(status === ACCEPTED || status === ON_HOLD) &&
                                 this.renderIcon2(avatar)}
                             </>

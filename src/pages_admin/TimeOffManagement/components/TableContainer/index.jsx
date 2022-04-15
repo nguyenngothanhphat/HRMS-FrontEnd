@@ -13,7 +13,7 @@ import styles from './index.less';
     loading,
     timeOffManagement,
     user: { companiesOfUser = [] } = {},
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
   }) => ({
     loadingList: loading.effects['timeOffManagement/fetchListTimeOff'],
     loading: loading.effects['timeOffManagement/fetchListTimeOff'],
@@ -21,7 +21,7 @@ import styles from './index.less';
     loadingDetail: loading.effects['timeOffManagement/fetchRequestById'],
     timeOffManagement,
     companiesOfUser,
-    listLocationsByCompany,
+    companyLocationList,
   }),
 )
 class TableContainer extends PureComponent {
@@ -42,9 +42,9 @@ class TableContainer extends PureComponent {
   }
 
   // componentDidUpdate = (prevProps) => {
-  //   const { listLocationsByCompany = [] } = this.props;
+  //   const { companyLocationList  = [] } = this.props;
   //   if (
-  //     JSON.stringify(listLocationsByCompany) !== JSON.stringify(prevProps.listLocationsByCompany)
+  //     JSON.stringify(companyLocationList ) !== JSON.stringify(prevProps.companyLocationList )
   //   ) {
   //     this.fetchEmployees();
   //     this.fetchListTimeOff();
@@ -57,13 +57,13 @@ class TableContainer extends PureComponent {
   };
 
   getCompanyAndLocation = () => {
-    const { companiesOfUser, listLocationsByCompany } = this.props;
+    const { companiesOfUser, companyLocationList } = this.props;
     const companyId = getCurrentCompany();
 
     let getCurrentFirm = companiesOfUser.map((item) => (item._id === companyId ? item : null));
     getCurrentFirm = getCurrentFirm.filter((item) => item !== null);
 
-    const getLocation = listLocationsByCompany.map((item) => {
+    const getLocation = companyLocationList.map((item) => {
       const { headQuarterAddress: { country: { _id = '' } = {}, state = '' } = {} } = item;
       return {
         country: _id,

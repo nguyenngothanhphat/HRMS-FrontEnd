@@ -118,10 +118,10 @@ class LeaveHistoryAndHoliday extends PureComponent {
         status === IN_PROGRESS ||
         status === IN_PROGRESS_NEXT
       ) {
-        const fromDate = moment.utc(from).locale('en').format('MM/DD/YYYY');
-        const toDate = moment.utc(to).locale('en').format('MM/DD/YYYY');
-        // const now = moment.utc().locale('en').format('MM/DD/YYYY');
-        // if (moment.utc(now).isAfter(moment.utc(toDate))) {
+        const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
+        const toDate = moment(to).locale('en').format('MM/DD/YYYY');
+        // const now = moment().locale('en').format('MM/DD/YYYY');
+        // if (moment(now).isAfter(moment(toDate))) {
         //   return {
         //     _id,
         //     name: subject,
@@ -161,8 +161,8 @@ class LeaveHistoryAndHoliday extends PureComponent {
       } = each;
 
       if (status !== DRAFTS && status !== ON_HOLD && status !== DELETED && status !== WITHDRAWN) {
-        const fromDate = moment.utc(from).locale('en').format('MM/DD/YYYY');
-        const toDate = moment.utc(to).locale('en').format('MM/DD/YYYY');
+        const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
+        const toDate = moment(to).locale('en').format('MM/DD/YYYY');
         return {
           _id,
           fromDate,
@@ -196,7 +196,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
 
     return (
       <div className={styles.LeaveHistoryAndHoliday}>
-        <Tabs destroyInactiveTabPane defaultActiveKey="1" tabBarExtraContent={this.operations()}>
+        <Tabs defaultActiveKey="1" tabBarExtraContent={this.operations()}>
           <TabPane tab="Time off Calendar" key="1">
             <Spin spinning={loadingFetch}>
               <LeaveHistory

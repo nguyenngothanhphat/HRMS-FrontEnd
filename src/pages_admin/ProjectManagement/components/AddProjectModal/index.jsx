@@ -1,8 +1,8 @@
 import { Button, DatePicker, Form, Input, Modal, Select } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { getCurrentCompany } from '@/utils/authority';
 import { connect } from 'umi';
+import { getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
 
 const dateFormat = 'MM.DD.YY';
@@ -16,7 +16,7 @@ const AddProjectModal = (props) => {
     dispatch,
     visible = false,
     companiesOfUser = [],
-    listLocationsByCompany = [],
+    companyLocationList = [],
     employeeList = [],
     loadingEmployeeList = false,
     loadingAddProject = false,
@@ -39,10 +39,10 @@ const AddProjectModal = (props) => {
 
   useEffect(() => {
     if (selectedCompany) {
-      const locationPayload = listLocationsByCompany.map(
+      const locationPayload = companyLocationList.map(
         ({ headQuarterAddress: { country: countryItem1 = '' } = {} }) => {
           let stateList = [];
-          listLocationsByCompany.forEach(
+          companyLocationList.forEach(
             ({
               headQuarterAddress: { country: countryItem2 = '', state: stateItem2 = '' } = {},
             }) => {
@@ -68,7 +68,7 @@ const AddProjectModal = (props) => {
       });
     }
     return () => {};
-  }, [selectedCompany, companiesOfUser, listLocationsByCompany]);
+  }, [selectedCompany, companiesOfUser, companyLocationList]);
 
   // DISABLE DATE OF DATE PICKER
   const disabledBeginDate = (current) => {
@@ -252,13 +252,13 @@ const AddProjectModal = (props) => {
 
 export default connect(
   ({
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
     user: { companiesOfUser = [] } = {},
     projectManagement: { employeeList = [] } = {},
     employeesManagement: { locationList = [] } = {},
     loading,
   }) => ({
-    listLocationsByCompany,
+    companyLocationList,
     companiesOfUser,
     employeeList,
     locationList,

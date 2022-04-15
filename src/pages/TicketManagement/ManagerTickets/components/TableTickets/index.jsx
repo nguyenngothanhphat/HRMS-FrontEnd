@@ -15,12 +15,12 @@ import styles from './index.less';
     loading,
     ticketManagement: { listEmployee = [], locationsList = [] } = {},
     user: { currentUser: { employee = {} } = {} } = {},
-    locationSelection: { listLocationsByCompany = [] },
+    location: { companyLocationList = [] },
   }) => ({
     listEmployee,
     locationsList,
     employee,
-    listLocationsByCompany,
+    companyLocationList,
     loadingUpdate: loading.effects['ticketManagement/updateTicket'],
   }),
 )
@@ -41,18 +41,16 @@ class TableTickets extends PureComponent {
   };
 
   componentDidUpdate(prevProps) {
-    const { listLocationsByCompany = [] } = this.props;
-    if (
-      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
-    ) {
+    const { companyLocationList = [] } = this.props;
+    if (JSON.stringify(prevProps.companyLocationList) !== JSON.stringify(companyLocationList)) {
       this.fetchTimezone();
     }
   }
 
   fetchTimezone = () => {
-    const { listLocationsByCompany = [] } = this.props;
+    const { companyLocationList = [] } = this.props;
     const timezoneList = [];
-    listLocationsByCompany.forEach((location) => {
+    companyLocationList.forEach((location) => {
       const {
         headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
         _id = '',
@@ -361,7 +359,7 @@ class TableTickets extends PureComponent {
         dataIndex: 'employeeAssignee',
         key: 'employeeAssignee',
         fixed: 'right',
-        render: (employeeAssignee) => {
+        render: (employeeAssignee, row) => {
           if (employeeAssignee) {
             return (
               <UserProfilePopover
@@ -415,7 +413,7 @@ class TableTickets extends PureComponent {
               }
               trigger={['click']}
             >
-              <div onClick={() => this.handleClickSelect(employeeAssignee.id)}>
+              <div onClick={() => this.handleClickSelect(row.id)}>
                 Select User &emsp;
                 <DownOutlined />
               </div>

@@ -263,7 +263,7 @@ const RequestInformation = (props) => {
 
   // GET LIST OF DAYS FROM DAY A TO DAY B
   const getDateLists = (startDate, endDate, selectedTypeProp) => {
-    const dates = [];
+    let dates = [];
     const endDateTemp = moment(endDate).clone();
 
     if ([C].includes(selectedTypeProp)) {
@@ -281,11 +281,11 @@ const RequestInformation = (props) => {
     }
 
     if (startDate && endDate) {
-      const now = moment(startDate).clone();
+      const now = moment(startDate);
       while (now.isSameOrBefore(moment(endDateTemp), 'day')) {
         if (!checkIfWeekEnd(now)) {
           if (checkIfWholeDayAvailable(now) || checkIfHalfDayAvailable(now)) {
-            dates.push(now.format(TIMEOFF_DATE_FORMAT));
+            dates = [...dates, moment(now).format(TIMEOFF_DATE_FORMAT)];
           }
         }
         now.add(1, 'days');
@@ -311,8 +311,8 @@ const RequestInformation = (props) => {
   };
 
   const getAutoToDate = (allowance) => {
-    if (allowance !== 0) return moment.utc(durationFrom).add(allowance - 1, 'day');
-    return moment.utc(durationFrom).add(allowance, 'day');
+    if (allowance !== 0) return moment(durationFrom).add(allowance - 1, 'day');
+    return moment(durationFrom).add(allowance, 'day');
   };
 
   // GET TIME OFF TYPE BY ID
@@ -412,8 +412,8 @@ const RequestInformation = (props) => {
       if (selectedType !== C && selectedType !== D) {
         result = result.filter(
           (value) =>
-            moment.utc(value.date).weekday() !== 6 &&
-            moment.utc(value.date).weekday() !== 0 &&
+            moment(value.date).weekday() !== 6 &&
+            moment(value.date).weekday() !== 0 &&
             Object.keys(value).length !== 0,
         );
       } else {
@@ -447,7 +447,7 @@ const RequestInformation = (props) => {
           toDate: durationTo,
           duration,
           leaveDates: leaveDatesPayload,
-          onDate: moment.utc(),
+          onDate: moment(),
           description,
           approvalManager: managerId, // id
           cc: personCC,
@@ -499,10 +499,10 @@ const RequestInformation = (props) => {
           type: timeOffType,
           status: IN_PROGRESS,
           subject,
-          fromDate: durationFrom,
-          toDate: durationTo,
+          fromDate: moment(durationFrom),
+          toDate: moment(durationTo),
           leaveDates: leaveDatesPayload,
-          onDate: moment.utc(),
+          onDate: moment(),
           description,
           duration: Math.round(duration * 100) / 100,
           cc: personCC,
@@ -766,7 +766,10 @@ const RequestInformation = (props) => {
         check = false;
         viewingLeaveDates.forEach((val2) => {
           const { date = '' } = val2;
-          if (moment(date).locale('en').format(TIMEOFF_DATE_FORMAT) === val1) {
+          if (
+            moment(date).locale('en').format(TIMEOFF_DATE_FORMAT) ===
+            moment(val1).locale('en').format(TIMEOFF_DATE_FORMAT)
+          ) {
             resultDates.push(val2);
             check = true;
           }
@@ -963,7 +966,7 @@ const RequestInformation = (props) => {
             </Col>
             <Col span={12}>
               <div className={styles.extraTimeSpent}>
-                <Row className={styles.header} gutter={[8, 8]}>
+                <Row className={styles.header} gutter={[0, 8]}>
                   <Col span={TIMEOFF_COL_SPAN_1.DATE}>From</Col>
                   <Col span={TIMEOFF_COL_SPAN_1.DAY}>To</Col>
                   <Col span={TIMEOFF_COL_SPAN_1.COUNT}>No. of Days</Col>
@@ -1006,7 +1009,7 @@ const RequestInformation = (props) => {
     const renderTableHeader = () => {
       if (showAllDateList && !BY_HOUR)
         return (
-          <Row className={styles.header} gutter={[8, 8]}>
+          <Row className={styles.header} gutter={[0, 8]}>
             <Col span={TIMEOFF_COL_SPAN_1.DATE}>Date</Col>
             <Col span={TIMEOFF_COL_SPAN_1.DAY}>Day</Col>
             <Col span={TIMEOFF_COL_SPAN_1.COUNT}>Count/Q.ty</Col>
@@ -1014,7 +1017,7 @@ const RequestInformation = (props) => {
         );
       if (showAllDateList && BY_HOUR)
         return (
-          <Row className={styles.header} gutter={[8, 8]}>
+          <Row className={styles.header} gutter={[0, 8]}>
             <Col span={TIMEOFF_COL_SPAN_2.DATE}>Date</Col>
             <Col span={TIMEOFF_COL_SPAN_2.DAY}>Day</Col>
             <Col span={TIMEOFF_COL_SPAN_2.START_TIME}>Start time</Col>
@@ -1025,7 +1028,7 @@ const RequestInformation = (props) => {
           </Row>
         );
       return (
-        <Row className={styles.header} gutter={[8, 8]}>
+        <Row className={styles.header} gutter={[0, 8]}>
           <Col span={TIMEOFF_COL_SPAN_1.DATE}>From</Col>
           <Col span={TIMEOFF_COL_SPAN_1.DAY}>To</Col>
           <Col span={TIMEOFF_COL_SPAN_1.COUNT}>No. of Days</Col>

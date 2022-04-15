@@ -18,9 +18,6 @@ const FilterResourceTypeContent = (props) => {
     });
     dispatch({
       type: 'projectDetails/fetchDivisionListEffect',
-      payload: {
-        name: 'Engineering',
-      },
     });
     dispatch({
       type: 'projectDetails/fetchBillingStatusListEffect',

@@ -13,7 +13,7 @@ export default class HolidayCalendar extends PureComponent {
   };
 
   checkWeekDay = (day, month, year) => {
-    const weekDayName = moment.utc(`${month * 1}/${day * 1}/${year * 1}`).format('ddd');
+    const weekDayName = moment(`${month * 1}/${day * 1}/${year * 1}`).format('ddd');
     return weekDayName;
   };
 

@@ -38,7 +38,7 @@ const camelize = (str) => {
       tempData: { ticketID = '' },
     },
     currentStep = '',
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
     user: { companiesOfUser = [] },
     conversation: { conversationList = [] } = {},
   }) => ({
@@ -49,7 +49,7 @@ const camelize = (str) => {
     ticketID,
     checkMandatory,
     newCandidateForm,
-    listLocationsByCompany,
+    companyLocationList,
     companiesOfUser,
     conversationList,
     loading4: loading.effects['newCandidateForm/submitPhase1Effect'],
@@ -1260,11 +1260,11 @@ class DocumentVerification extends Component {
 
   // get document list by country
   getDocumentListByCountry = (list) => {
-    const { tempData = {}, listLocationsByCompany = [] } = this.props;
+    const { tempData = {}, companyLocationList = [] } = this.props;
     const { workLocation = {} } = tempData;
     let workLocation1 = workLocation;
     if (typeof workLocation === 'string') {
-      workLocation1 = listLocationsByCompany.find((w) => w._id === workLocation);
+      workLocation1 = companyLocationList.find((w) => w._id === workLocation);
     }
     if (workLocation1) {
       return list.map((item) => {

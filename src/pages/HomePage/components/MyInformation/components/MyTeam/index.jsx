@@ -21,12 +21,12 @@ const MyTeam = (props) => {
 export default connect(
   ({
     dashboard: { myTeam = [] } = {},
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
     user: { currentUser: { roles = [], employee = {} } = {} } = {},
   }) => ({
     roles,
     employee,
     myTeam,
-    listLocationsByCompany,
+    companyLocationList,
   }),
 )(MyTeam);
