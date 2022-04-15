@@ -1,6 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { Spin } from 'antd';
 import { getIsSigninGoogle } from '@/utils/authority';
 import GoogleSync from '@/pages/Dashboard/components/Calendar/components/GoogleSync';
 import MyCalendarComponent from '@/pages/Dashboard/components/Calendar/components/MyCalendar';
@@ -39,15 +40,17 @@ const MyCalendar = (props) => {
   // MAIN
   return (
     <div className={styles.MyCalendar}>
-      {isSyncSuccess && isGoogleSignIn ? (
-        <MyCalendarComponent
-          data={googleCalendarList}
-          loading={loadingSyncGoogleCalendar}
-          selectedDate={selectedDate}
-        />
-      ) : (
-        <GoogleSync />
-      )}
+      <Spin spinning={loadingSyncGoogleCalendar}>
+        {isSyncSuccess && isGoogleSignIn ? (
+          <MyCalendarComponent
+            data={googleCalendarList}
+            loading={loadingSyncGoogleCalendar}
+            selectedDate={selectedDate}
+          />
+        ) : (
+          <GoogleSync />
+        )}
+      </Spin>
     </div>
   );
 };
