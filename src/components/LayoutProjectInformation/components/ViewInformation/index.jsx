@@ -146,7 +146,7 @@ const ViewInformation = (props) => {
         <div className={s.projectInfo__viewBottom__row}>
           {items.map((x) => {
             return (
-              <Row align="middle" className={s.item}>
+              <Row align="top" className={s.item}>
                 <Col span={12}>
                   <p className={s.label}>{x.name}</p>
                 </Col>
