@@ -29,15 +29,17 @@ cy.visit('https://stghrms.paxanimi.ai/login');
        cy.get('#basic_projectStatus').type("Active"+'{enter}',{force:true});
       // cy.get('.ant-select-item-option-content').eq(6).click({force:true})
       
-      cy.get('#basic_projectName').type('HRMS1');
+      cy.get('#basic_projectName').type('TM');
       cy.get('#basic_projectAlias').type('H1');
       let fromDate='01-27-2022';
       let toDate='02-04-2023';
       cy.get('#basic_startDate',{timeout:3000}).type(fromDate + '{enter}', {force: true});
       cy.get('#basic_tentativeEndDate',{timeout:3000}).type(toDate + '{enter}', {force: true});
-      cy.get('#basic_projectManager').click();
+      cy.get('#basic_projectManager').click()
       cy.wait(5000)
-      cy.contains('Kuntappa').click({force:true});
+      cy.get('#basic_projectManager').type('arun'+'{enter}')
+       //cy.wait(5000).type("Arun" +'{enter}')
+      // cy.contains('Kuntappa').click({force:true});
      // cy.get('.ant-select-item-option-content').eq(12).click({force:true});
       cy.get('#basic_estimation').type('13');
       cy.get('#basic_billableHeadCount').type('12');
@@ -55,7 +57,7 @@ cy.visit('https://stghrms.paxanimi.ai/login');
      // cy.get('.ant-select-open').click({force:true});
       cy.get('.ant-select-selection-overflow-item.ant-select-selection-overflow-item-suffix').type("Design"+'{enter}'+"Frontend"+'{enter}',{forcr:true});
       cy.contains('Submit').click()
-         cy.get('.ant-btn.ant-btn-link.ant-btn-circle').eq(0).click();
+         cy.get('.ant-btn.ant-btn-link.ant-btn-circle').eq(3).click();
          cy.get('button[type="submit"]').click();
   });
 });
