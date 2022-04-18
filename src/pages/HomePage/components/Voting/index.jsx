@@ -156,7 +156,9 @@ const Voting = (props) => {
   if (loadingFetchPollResult || loadingFetchPostList || loading) {
     return (
       <div className={styles.Voting}>
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div
+          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 210 }}
+        >
           <Spin />
         </div>
       </div>

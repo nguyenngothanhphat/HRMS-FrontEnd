@@ -282,7 +282,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const indexTaskDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_TASK_VIEW']);
 
   // HOME PAGE
-  const indexSettingHomePage = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
+  const indexSettingHomePage = isAuthorized(permissionList, [HR_MANAGER]);
 
   // PROJECT MANAGEMENT
   // https://docs.google.com/document/d/1RQ66VdevjGUHB3-4_VDU-DIPF0HCbcfKzKJevEwooLc/edit

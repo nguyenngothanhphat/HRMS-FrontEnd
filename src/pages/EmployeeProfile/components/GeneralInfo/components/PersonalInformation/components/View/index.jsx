@@ -117,8 +117,7 @@ class View extends PureComponent {
       } = {},
     } = dataAPI;
 
-    const checkVisible =
-      idCurrentEmployee === idEmployee || permissions.viewOtherInformation !== -1;
+    const checkVisible = idCurrentEmployee === idEmployee || permissions.editPersonalInfo !== -1;
 
     const dummyData = [
       { label: 'Personal Number', value: dataAPI.personalNumber },
