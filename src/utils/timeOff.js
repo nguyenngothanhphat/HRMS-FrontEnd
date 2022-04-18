@@ -169,3 +169,41 @@ export const FORM_ITEM_NAME = {
   RESET_TYPE: 'resetType',
   CALENDAR_DATE: 'calendarDate',
 };
+
+export const TIMEOFF_WORK_DAYS = [
+  {
+    id: 1,
+    text: 'SUNDAY',
+    name: 'Sun',
+  },
+  {
+    id: 2,
+    text: 'MONDAY',
+    name: 'Mon',
+  },
+  {
+    id: 3,
+    text: 'TUESDAY',
+    name: 'Tue',
+  },
+  {
+    id: 4,
+    text: 'WEDNESDAY',
+    name: 'Wed',
+  },
+  {
+    id: 5,
+    text: 'THURSDAY',
+    name: 'Thu',
+  },
+  {
+    id: 6,
+    text: 'FRIDAY',
+    name: 'Fri',
+  },
+  {
+    id: 7,
+    name: 'Sat',
+    text: 'SATURDAY',
+  },
+];

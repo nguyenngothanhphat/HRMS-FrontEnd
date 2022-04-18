@@ -21,6 +21,7 @@ import MaximumBalanceAllowed from './components/MaximumBalanceAllowed';
 import NoticePeriodLeaveAccrualPolicy from './components/NoticePeriodLeaveAccrualPolicy';
 
 import { FORM_ITEM_NAME } from '@/utils/timeOff';
+import { goToTop } from '@/utils/utils';
 
 const {
   TIMEOFF_TYPE_NAME,
@@ -104,14 +105,6 @@ const TypeConfiguration = (props) => {
   const fetchEmployeeTypeList = () => {
     dispatch({
       type: 'timeOff/fetchEmployeeTypeListEffect',
-    });
-  };
-
-  const goToTop = () => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
     });
   };
 

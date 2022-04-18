@@ -215,11 +215,8 @@ class Types extends Component {
               {this.renderCountry()}
             </Select>
           </div>
-          {loadingFetchList ? (
-            <div className={styles.loadingListCountry}>
-              <Spin />
-            </div>
-          ) : (
+
+          <Spin spinning={loadingFetchList}>
             <Row gutter={[0, 24]}>
               {array.map((render, index) => (
                 <Col key={`${index + 1}`} span={24}>
@@ -227,7 +224,7 @@ class Types extends Component {
                 </Col>
               ))}
             </Row>
-          )}
+          </Spin>
         </div>
       </>
     );

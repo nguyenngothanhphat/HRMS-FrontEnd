@@ -1,6 +1,7 @@
 import { Col, Row, Skeleton } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
+import { goToTop } from '@/utils/utils';
 import ItemMenu from './components/ItemMenu';
 import s from './index.less';
 
@@ -33,6 +34,7 @@ class LayoutTimeoffSetup extends Component {
       selectedItemId: findTab.id || 1,
       displayComponent: findTab.component,
     });
+    goToTop();
   };
 
   _handleClick = (item) => {

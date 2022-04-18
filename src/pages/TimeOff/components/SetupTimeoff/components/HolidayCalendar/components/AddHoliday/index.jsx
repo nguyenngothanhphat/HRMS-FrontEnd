@@ -76,7 +76,7 @@ class AddHoliday extends Component {
               form="basic"
               className={styles.btnSubmit}
             >
-              Add Holidays
+              Add
             </Button>
           </>,
         ]}

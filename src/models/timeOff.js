@@ -73,7 +73,7 @@ const timeOff = {
     currentFilterTab: '1',
     holidaysList: [],
     holidaysListByLocation: [],
-    holidaysListByCountry: {},
+    holidaysListByCountry: [],
     leaveHistory: [],
     leavingList: [],
     totalLeaveBalance: {},
@@ -436,7 +436,7 @@ const timeOff = {
       }
       return response;
     },
-    *fetchHolidaysListBylocation({ payload = {} }, { call, put }) {
+    *fetchHolidaysListByLocation({ payload = {} }, { call, put }) {
       let response;
       try {
         response = yield call(getHolidaysListByLocation, {
@@ -458,7 +458,7 @@ const timeOff = {
       let response = {};
       try {
         response = yield call(getHolidaysByCountry, { ...payload, tenantId: getCurrentTenant() });
-        const { statusCode, data: holidaysListByCountry = {} } = response;
+        const { statusCode, data: holidaysListByCountry = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -1151,24 +1151,22 @@ const timeOff = {
       }
       return response;
     },
-    *updateEmployeeSchedule({ payload = {} }, { call, put }) {
+    *updateEmployeeSchedule({ payload = {} }, { call }) {
+      let response = {};
       try {
-        const response = yield call(updateEmployeeSchedule, {
+        response = yield call(updateEmployeeSchedule, {
           ...payload,
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, data: updateSchedule = {} } = response;
+        const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message: 'Update  Successfully',
-        });
-        yield put({
-          type: 'save',
-          payload: { updateSchedule },
+          message,
         });
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
   },
   reducers: {
