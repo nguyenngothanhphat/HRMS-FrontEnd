@@ -1072,7 +1072,7 @@ const RequestInformation = (props) => {
 
   // RETURN MAIN
   return (
-    <Spin spinning={loadingMain}>
+    <Spin spinning={loadingMain && action === EDIT_LEAVE_REQUEST}>
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
           <span>Timeoff</span>

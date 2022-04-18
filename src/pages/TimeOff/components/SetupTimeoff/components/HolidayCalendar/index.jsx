@@ -1,10 +1,10 @@
-import { Affix, Button, Checkbox, Col, Divider, InputNumber, Row, Select, Spin } from 'antd';
+import { Button, Checkbox, Col, Divider, InputNumber, Row, Select, Spin } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
-import styles from './index.less';
 import AddHoliday from './components/AddHoliday';
+import styles from './index.less';
 
 const { Option } = Select;
 const CheckboxGroup = Checkbox.Group;
