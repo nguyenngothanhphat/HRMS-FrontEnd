@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Layout, Input } from 'antd';
 import { connect, formatMessage } from 'umi';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { filteredArr } from '@/utils/utils';
 import styles from './index.less';
 import CheckList from '../CheckList';
@@ -212,7 +212,7 @@ class TableFilter extends PureComponent {
                 data={filteredArr(formatDataCompany)}
               />
             )}
-            {reset || changeTab ? (
+            {reset || changeTab || getCurrentLocation() ? (
               ''
             ) : (
               <>
@@ -224,7 +224,7 @@ class TableFilter extends PureComponent {
                 />
               </>
             )}
-            {reset || changeTab ? (
+            {reset || changeTab || getCurrentLocation() ? (
               ''
             ) : (
               <>
