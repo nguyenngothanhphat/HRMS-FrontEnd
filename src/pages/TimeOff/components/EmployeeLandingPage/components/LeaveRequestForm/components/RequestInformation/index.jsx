@@ -339,35 +339,6 @@ const RequestInformation = (props) => {
     }
   };
 
-  // CALCULATE DURATION FOR API
-  const calculateNumberOfLeaveDay = (list) => {
-    let count = 0;
-    if (BY_HOUR) {
-      list.forEach((value) => {
-        count += value.hours;
-      });
-      count /= 24;
-    } else {
-      list.forEach((value) => {
-        const { timeOfDay = '' } = value;
-        switch (timeOfDay) {
-          case MORNING:
-            count += 0.5;
-            break;
-          case AFTERNOON:
-            count += 0.5;
-            break;
-          case WHOLE_DAY:
-            count += 1;
-            break;
-          default:
-            break;
-        }
-      });
-    }
-    return count;
-  };
-
   // GENERATE LEAVE DATES FOR API
   const generateLeaveDates = (leaveTimeLists) => {
     let result = [];
@@ -437,7 +408,6 @@ const RequestInformation = (props) => {
 
       if (timeOffType && durationFrom && durationTo) {
         const leaveDatesPayload = generateLeaveDates(leaveTimeLists);
-        const duration = calculateNumberOfLeaveDay(leaveDatesPayload);
 
         const data = {
           type: timeOffType,
@@ -445,7 +415,6 @@ const RequestInformation = (props) => {
           subject,
           fromDate: durationFrom,
           toDate: durationTo,
-          duration,
           leaveDates: leaveDatesPayload,
           onDate: moment(),
           description,
@@ -493,8 +462,6 @@ const RequestInformation = (props) => {
         message.error('Please select valid leave time dates!');
       } else {
         // generate data for API
-        const duration = calculateNumberOfLeaveDay(leaveDatesPayload);
-
         const payload = {
           type: timeOffType,
           status: IN_PROGRESS,
@@ -504,7 +471,6 @@ const RequestInformation = (props) => {
           leaveDates: leaveDatesPayload,
           onDate: moment(),
           description,
-          duration: Math.round(duration * 100) / 100,
           cc: personCC,
           tenantId: getCurrentTenant(),
           company: employee.company,
