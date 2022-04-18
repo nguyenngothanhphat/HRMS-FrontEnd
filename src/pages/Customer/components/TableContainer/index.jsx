@@ -267,6 +267,7 @@ class TableContainer extends PureComponent {
                     <TableCustomers listCustomer={listCustomer} loadingCustomer={loadingCustomer} />
                   </Content>
                   <ModalAdd
+                    listCustomer={listCustomer}
                     isShown={isShown}
                     listStatus={listStatus}
                     handleAddNew={this.handleAddNew}

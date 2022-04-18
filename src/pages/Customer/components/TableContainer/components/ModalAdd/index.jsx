@@ -123,6 +123,7 @@ class ModalAdd extends PureComponent {
       loadingStateList,
       employeeList = [],
       loadingAdd = false,
+      listCustomer = [],
     } = this.props;
 
     return (
@@ -231,7 +232,25 @@ class ModalAdd extends PureComponent {
               <Form.Item
                 label="Doing Bussiness As(DBA)"
                 name="dba"
-                rules={[{ required: true, message: 'Required field!' }]}
+                rules={[
+                  { required: true, message: 'Required field!' },
+                  () => ({
+                    validator(_, value) {
+                      if (
+                        listCustomer.filter(
+                          (obj) =>
+                            obj?.dba?.toLowerCase().replace(/\s+/g, '') ===
+                            value?.toLowerCase().replace(/\s+/g, ''),
+                        ).length > 0
+                      ) {
+                        // eslint-disable-next-line prefer-promise-reject-errors
+                        return Promise.reject(`Doing Bussiness As(DBA) is exist.`);
+                      }
+                      // eslint-disable-next-line compat/compat
+                      return Promise.resolve();
+                    },
+                  }),
+                ]}
               >
                 <Input placeholder="Enter Company short name" />
               </Form.Item>

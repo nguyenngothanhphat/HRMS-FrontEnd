@@ -8,7 +8,7 @@ import Settings from './components/Settings';
 import TableContainer from './components/TableContainer';
 import style from './index.less';
 
-@connect()
+@connect(({ customerManagement: { customerListPayload = {} } = {} }) => ({ customerListPayload }))
 class Customer extends PureComponent {
   componentDidMount() {
     const {
@@ -21,10 +21,12 @@ class Customer extends PureComponent {
   }
 
   exportCustomers = async () => {
-    const { dispatch } = this.props;
-
+    const { dispatch, customerListPayload = {} } = this.props;
     const getListExport = await dispatch({
       type: 'customerManagement/exportReport',
+      payload: {
+        ...customerListPayload,
+      },
     });
 
     const downloadLink = document.createElement('a');

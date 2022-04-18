@@ -1,31 +1,28 @@
-import { Table } from 'antd';
-import React, { PureComponent } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Table, Button } from 'antd';
 import { formatMessage, history } from 'umi';
 import UserProfilePopover from '../UserProfilePopover';
+import DeleteCustomerModalContent from './components/DeleteCustomerModalContent';
+import DeleteIcon from '@/assets/customerManagement/delete.svg';
 import styles from './index.less';
+import CommonModal from '@/components/CommonModal';
 
-class TableCustomers extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      pageSelected: 1,
-      selectedRowKeys: [],
-      visible: false,
-    };
-  }
+const TableCustomers = (props) => {
+  const { data, listCustomer = [], loadingCustomer = false, dispatch } = props;
 
-  componentDidUpdate(prevProps) {
-    const { data } = this.props;
-    if (prevProps.data !== data) {
-      this.setFirstPage();
-    }
-  }
+  const [pageSelected, setPageSelected] = useState(1);
+  const [selectedCustomer, setSelectedCustomer] = useState('');
+  const [isDeleteCustomer, setIsDeleteCustomer] = useState(false);
 
-  handleProfile = (account) => {
+  const setFirstPage = () => {
+    setPageSelected(1);
+  };
+
+  const handleProfile = (account) => {
     history.push(`/customer-management/customers/customer-profile/${account}`);
   };
 
-  generateColumns = () => {
+  const generateColumns = () => {
     const columns = [
       {
         title: formatMessage({ id: 'page.customermanagement.customerID' }),
@@ -37,7 +34,7 @@ class TableCustomers extends PureComponent {
           return (
             <div
               style={{ fontWeight: '700', color: '#2C6DF9' }}
-              onClick={() => this.handleProfile(customerId)}
+              onClick={() => handleProfile(customerId)}
             >
               {customerId}
             </div>
@@ -101,6 +98,28 @@ class TableCustomers extends PureComponent {
           );
         },
       },
+      {
+        title: 'Action',
+        key: 'action',
+        align: 'center',
+        width: '5%',
+        render: (record) => {
+          return (
+            <div className={styles.btnAction}>
+              <Button
+                type="link"
+                shape="circle"
+                onClick={() => {
+                  setSelectedCustomer(record);
+                  setIsDeleteCustomer(true);
+                }}
+              >
+                <img src={DeleteIcon} alt="delete" />
+              </Button>
+            </div>
+          );
+        },
+      },
     ];
 
     return columns.map((col) => ({
@@ -109,94 +128,75 @@ class TableCustomers extends PureComponent {
     }));
   };
 
-  handleCancel = () => {
-    this.setState({
-      visible: false,
+  const onChangePagination = (pageNumber) => {
+    setPageSelected(pageNumber);
+  };
+
+  // refresh list without losing filter, search
+  const onRefresh = () => {
+    dispatch({
+      type: 'projectManagement/refreshProjectList',
     });
   };
 
-  deleteEmployee = (record, e) => {
-    e.stopPropagation();
+  const rowSize = 10;
+
+  const scroll = {
+    x: 'max-content',
+    y: 'max-content',
   };
 
-  // pagination
-  onChangePagination = (pageNumber) => {
-    this.setState({
-      pageSelected: pageNumber,
-    });
+  const pagination = {
+    position: ['bottomLeft'],
+    total: listCustomer.length,
+    showTotal: (total, range) => (
+      <span>
+        {' '}
+        {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
+        <b>
+          {range[0]} - {range[1]}
+        </b>{' '}
+        {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
+      </span>
+    ),
+    pageSize: rowSize,
+    current: pageSelected,
+    onChange: onChangePagination,
   };
 
-  setFirstPage = () => {
-    this.setState({
-      pageSelected: 1,
-    });
-  };
+  useEffect(() => {
+    setFirstPage();
+  }, [data]);
 
-  // onSortChange = (pagination, filters, sorter, extra) => {
-  //   console.log('params', pagination, filters, sorter, extra);
-  // };
-
-  onSelectChange = (selectedRowKeys) => {
-    this.setState({ selectedRowKeys });
-  };
-
-  //   push to customer profile
-  handleProfileCustomer = (_id) => {
-    // history.push(`/employees/employee-profile/${_id}`);
-  };
-
-  render() {
-    const { listCustomer, loadingCustomer } = this.props;
-    const { pageSelected, selectedRowKeys, visible } = this.state;
-    const rowSize = 10;
-    const scroll = {
-      x: 'max-content',
-      y: 'max-content',
-    };
-    const pagination = {
-      position: ['bottomLeft'],
-      total: listCustomer.length,
-      showTotal: (total, range) => (
-        <span>
-          {' '}
-          {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
-          <b>
-            {range[0]} - {range[1]}
-          </b>{' '}
-          {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
-        </span>
-      ),
-      pageSize: rowSize,
-      current: pageSelected,
-      onChange: this.onChangePagination,
-    };
-
-    const rowSelection = {
-      type: 'checkbox',
-      selectedRowKeys,
-      onChange: this.onSelectChange,
-    };
-
-    return (
-      <div className={styles.tableCustomers}>
-        <Table
-          size="middle"
-          loading={loadingCustomer}
-          onRow={(record) => {
-            return {
-              onClick: () => this.handleProfileCustomer(record._id), // click row
-            };
-          }}
-          //   rowSelection={rowSelection}
-          pagination={{ ...pagination, total: listCustomer.length }}
-          columns={this.generateColumns()}
-          dataSource={listCustomer}
-          scroll={scroll}
-          rowKey={(record) => record._id}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div className={styles.tableCustomers}>
+      <Table
+        size="middle"
+        loading={loadingCustomer}
+        pagination={{ ...pagination, total: listCustomer.length }}
+        columns={generateColumns()}
+        dataSource={listCustomer}
+        scroll={scroll}
+        rowKey={(record) => record._id}
+      />
+      <CommonModal
+        visible={isDeleteCustomer}
+        onClose={() => setIsDeleteCustomer(false)}
+        firstText="Delete"
+        secondText="Cancel"
+        title="Delete Project"
+        // loading={loadingDeleteProject}
+        content={
+          <DeleteCustomerModalContent
+            onClose={() => setIsDeleteCustomer(false)}
+            selectedProject={selectedCustomer}
+            onRefresh={onRefresh}
+          />
+        }
+        width={600}
+      />
+    </div>
+  );
+};
 
 export default TableCustomers;

@@ -32,6 +32,7 @@ const customerManagement = {
     },
     employeeList: [],
     companyList: [],
+    customerListPayload: {}, // for refresh data
   },
   effects: {
     *fetchCustomerList({ payload }, { call, put }) {
@@ -43,7 +44,7 @@ const customerManagement = {
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listCustomer: data } });
+        yield put({ type: 'save', payload: { listCustomer: data, customerListPayload: payload } });
       } catch (error) {
         dialog(error);
       }
@@ -131,11 +132,12 @@ const customerManagement = {
       }
     },
 
-    *exportReport(_, { call }) {
+    *exportReport({ payload }, { call }) {
       let response = '';
       const hide = message.loading('Exporting data...', 0);
       try {
         response = yield call(exportCustomer, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
