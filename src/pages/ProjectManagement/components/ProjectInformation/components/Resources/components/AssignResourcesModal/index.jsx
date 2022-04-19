@@ -1,14 +1,13 @@
-import { Button, Modal, Row, Col } from 'antd';
-import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
+import { Button, Col, Modal, Row } from 'antd';
 import moment from 'moment';
-import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
+import React, { useState } from 'react';
+import { connect } from 'umi';
 import BackIcon from '@/assets/projectManagement/back.svg';
+import ModalImage from '@/assets/projectManagement/modalImage1.png';
+import CommonModal from '@/components/CommonModal';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import ResourceTableCard from './components/ResourceTableCard';
 import ReviewResourceTable from './components/ReviewResourceTable';
-import ActionModal from '@/pages/ProjectManagement/components/ProjectInformation/components/ActionModal';
-import ModalImage from '@/assets/projectManagement/modalImage1.png';
-
 import styles from './index.less';
 
 const AssignResourcesModal = (props) => {
@@ -31,7 +30,7 @@ const AssignResourcesModal = (props) => {
     projectDetails: { projectDetail = {}, resourceList = [], resourceListTotal = 0 } = {},
     loadingFetchResourceList = false,
     loadingAssign = false,
-    employee = ''
+    employee = '',
   } = props;
 
   const {
@@ -43,7 +42,7 @@ const AssignResourcesModal = (props) => {
     newEndDate = '',
   } = projectDetail;
 
-  const employeeId = employee ? employee._id : ''
+  const employeeId = employee ? employee._id : '';
 
   const endDate = newEndDate || tentativeEndDate;
 
@@ -76,7 +75,7 @@ const AssignResourcesModal = (props) => {
         ...filter,
         employeeId,
         adminMode,
-        countryMode
+        countryMode,
       },
     });
   };
@@ -282,7 +281,8 @@ const AssignResourcesModal = (props) => {
       >
         {renderModalContent()}
       </Modal>
-      <ActionModal
+      <CommonModal
+        firstText="Yes"
         visible={successModalVisible}
         onClose={() => {
           setSuccessModalVisible(false);
@@ -290,20 +290,38 @@ const AssignResourcesModal = (props) => {
         }}
         buttonText="Close"
         width={400}
-      >
-        <img src={ModalImage} alt="" />
-        <span style={{ fontWeight: 'bold' }}>Resources assigned!</span>
-        <br />
-        <span style={{ textAlign: 'center' }}>
-          The resources have been successfully assigned to the project
-        </span>
-      </ActionModal>
+        hasSecondaryButton={false}
+        hasHeader={false}
+        content={
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              padding: 24,
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <img src={ModalImage} alt="" />
+            <span style={{ fontWeight: 'bold' }}>Resources assigned!</span>
+            <br />
+            <span style={{ textAlign: 'center' }}>
+              The resources have been successfully assigned to the project
+            </span>
+          </div>
+        }
+      />
     </>
   );
 };
 
 export default connect(
-  ({ projectDetails, loading, user: { currentUser: { employee = {} } = {} }, permissions = {} }) => ({
+  ({
+    projectDetails,
+    loading,
+    user: { currentUser: { employee = {} } = {} },
+    permissions = {},
+  }) => ({
     employee,
     permissions,
     projectDetails,

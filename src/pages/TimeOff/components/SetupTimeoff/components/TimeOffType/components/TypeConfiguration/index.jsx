@@ -277,6 +277,11 @@ const TypeConfiguration = (props) => {
     };
   }, []);
 
+  // useEffect(() => {
+  //   const values = getFormInitialValues();
+  //   form.setFieldsValue(values);
+  // }, [JSON.stringify(viewingLeaveType)]);
+
   const renderHeader = () => {
     return (
       <div className={styles.header}>

@@ -159,8 +159,6 @@ export const goToTop = () => {
 };
 
 export const removeEmptyFields = (obj) => {
-  // remove empty fields
-  // eslint-disable-next-line no-return-assign
   return Object.entries(obj).reduce(
     // eslint-disable-next-line no-return-assign
     (a, [k, v]) =>

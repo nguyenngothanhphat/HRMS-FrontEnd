@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { connect } from 'umi';
 import datePickerIcon from '@/assets/timeOff/datePicker.svg';
 import styles from './index.less';
-import { FORM_ITEM_NAME } from '@/utils/timeOff';
+import { FORM_ITEM_NAME, TIMEOFF_DATE_FORMAT } from '@/utils/timeOff';
 
 const AnnualResetPolicy = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,7 +34,7 @@ const AnnualResetPolicy = () => {
             <DatePicker
               suffixIcon={<img src={datePickerIcon} alt="" />}
               onChange={onChange}
-              format={isOpen ? 'MM-DD-YYYY' : 'dddd Do'}
+              format={isOpen ? TIMEOFF_DATE_FORMAT : 'dddd Do'}
               onOpenChange={(status) => {
                 setIsOpen(status);
               }}
