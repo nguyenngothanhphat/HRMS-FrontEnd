@@ -8,7 +8,13 @@ import styles from './index.less';
 import CommonModal from '@/components/CommonModal';
 
 const TableCustomers = (props) => {
-  const { data, listCustomer = [], loadingCustomer = false, dispatch } = props;
+  const {
+    data,
+    listCustomer = [],
+    loadingCustomer = false,
+    loadingFilter = false,
+    dispatch,
+  } = props;
 
   const [pageSelected, setPageSelected] = useState(1);
   const [selectedCustomer, setSelectedCustomer] = useState('');
@@ -172,7 +178,7 @@ const TableCustomers = (props) => {
     <div className={styles.tableCustomers}>
       <Table
         size="middle"
-        loading={loadingCustomer}
+        loading={loadingCustomer || loadingFilter}
         pagination={{ ...pagination, total: listCustomer.length }}
         columns={generateColumns()}
         dataSource={listCustomer}

@@ -1,102 +1,63 @@
+import React from 'react';
 import { Form, Select } from 'antd';
-import React, { PureComponent } from 'react';
+import { debounce } from 'lodash';
 import style from './index.less';
 
-const { Option } = Select;
-class MenuFilter extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.refForm = React.createRef();
-  }
+const MenuFilter = (props) => {
+  const [form] = Form.useForm();
 
-  handleChange = () => {
-    console.log('acacadfadf');
+  const { listStatus = [], companyList = [], onSubmit = () => {} } = props;
+  const yesNo = [
+    <Select.Option key="yes">Yes</Select.Option>,
+    <Select.Option key="no">No</Select.Option>,
+  ];
+  const onFinishDebounce = debounce((values) => {
+    onSubmit(values);
+  }, 700);
+
+  const onValuesChange = () => {
+    const values = form.getFieldsValue();
+    onFinishDebounce(values);
   };
 
-  render() {
-    const { listStatus = [], companyList = [] } = this.props;
-    const yesNo = [
-      <Select.Option key="yes">Yes</Select.Option>,
-      <Select.Option key="no">No</Select.Option>,
-    ];
-    const { onSubmit = () => {} } = this.props;
-    return (
-      <div className={style.menuFilter}>
-        <Form
-          ref={this.refForm}
-          layout="vertical"
-          name="filter"
-          onFinish={(values) => {
-            onSubmit(values);
-          }}
-        >
-          <Form.Item label="By Status" name="byStatus">
-            <Select
-              // mode="multiple"
-              allowClear
-              style={{ width: '100%' }}
-              placeholder="Please select"
-              onChange={this.handleChange}
-            >
-              {listStatus}
-            </Select>
-          </Form.Item>
-          <Form.Item label="By Company" name="byCompany">
-            <Select
-              mode="multiple"
-              allowClear
-              style={{ width: '100%' }}
-              placeholder="Please select"
-              onChange={this.handleChange}
-            >
-              {companyList.map((company) => (
-                <Option value={company.legalName}>{company.legalName}</Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item label="By Open Leads" name="byOpenLeads">
-            <Select
-              allowClear
-              style={{ width: '100%' }}
-              placeholder="Please select"
-              onChange={this.handleChange}
-            >
-              {yesNo}
-            </Select>
-          </Form.Item>
-          <Form.Item label="By Pending Tickets" name="byPendingTickets">
-            <Select
-              allowClear
-              style={{ width: '100%' }}
-              placeholder="Please select"
-              onChange={this.handleChange}
-            >
-              {yesNo}
-            </Select>
-          </Form.Item>
-          <Form.Item label="By Pending Tasks" name="byPendingTasks">
-            <Select
-              allowClear
-              style={{ width: '100%' }}
-              placeholder="Please select"
-              onChange={this.handleChange}
-            >
-              {yesNo}
-            </Select>
-          </Form.Item>
-          <Form.Item label="By Active Projects" name="byActiveProjects">
-            <Select
-              allowClear
-              style={{ width: '100%' }}
-              placeholder="Please select"
-              onChange={this.handleChange}
-            >
-              {yesNo}
-            </Select>
-          </Form.Item>
-        </Form>
-      </div>
-    );
-  }
-}
+  return (
+    <div className={style.menuFilter}>
+      <Form form={form} layout="vertical" name="filter" onValuesChange={onValuesChange}>
+        <Form.Item label="By Status" name="byStatus">
+          <Select allowClear style={{ width: '100%' }} placeholder="Please select">
+            {listStatus}
+          </Select>
+        </Form.Item>
+        <Form.Item label="By Company" name="byCompany">
+          <Select mode="multiple" allowClear style={{ width: '100%' }} placeholder="Please select">
+            {companyList.map((company) => (
+              <Select.Option value={company.legalName}>{company.legalName}</Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item label="By Open Leads" name="byOpenLeads">
+          <Select allowClear style={{ width: '100%' }} placeholder="Please select">
+            {yesNo}
+          </Select>
+        </Form.Item>
+        <Form.Item label="By Pending Tickets" name="byPendingTickets">
+          <Select allowClear style={{ width: '100%' }} placeholder="Please select">
+            {yesNo}
+          </Select>
+        </Form.Item>
+        <Form.Item label="By Pending Tasks" name="byPendingTasks">
+          <Select allowClear style={{ width: '100%' }} placeholder="Please select">
+            {yesNo}
+          </Select>
+        </Form.Item>
+        <Form.Item label="By Active Projects" name="byActiveProjects">
+          <Select allowClear style={{ width: '100%' }} placeholder="Please select">
+            {yesNo}
+          </Select>
+        </Form.Item>
+      </Form>
+    </div>
+  );
+};
+
 export default MenuFilter;

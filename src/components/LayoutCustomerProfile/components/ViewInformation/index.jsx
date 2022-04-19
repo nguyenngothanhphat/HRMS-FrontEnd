@@ -8,11 +8,11 @@ import MockCustomerLogo from '@/assets/mockCustomerLogo.png';
 import websiteIcon from '@/assets/websiteIcon.svg';
 import plusIcon from '../../../../assets/plus-Icon.svg';
 import s from '../../index.less';
-import CommonModal from '@/components/CommonModal';
+import CommonModal from '../CommonModal';
 
 const ViewInformation = (props) => {
   const [isEditCustomer, setIsEditCustomer] = useState(false);
-  const { permissions = {}, profileOwner = false, info = {} } = props;
+  const { permissions = {}, profileOwner = false, info = {}, dispatch } = props;
   const {
     accountOwner: {
       generalInfo: { legalName: nameLegal = '', avatar = '' } = {},
@@ -27,6 +27,12 @@ const ViewInformation = (props) => {
     customerId = '',
     openLeads = '',
   } = info || {};
+
+  const onRefresh = () => {
+    dispatch({
+      type: 'customerManagement/fetchCustomerList',
+    });
+  };
 
   // const getAvatarUrl = (avatar, isShowAvatar) => {
   //   if (isShowAvatar || permissions.viewAvatarEmployee !== -1 || profileOwner)
@@ -186,10 +192,10 @@ const ViewInformation = (props) => {
             visible={isEditCustomer}
             onClose={() => setIsEditCustomer(false)}
             selectedProject={info}
-            // onRefresh={onRefresh}
+            onRefresh={onRefresh}
           />
         }
-        width={600}
+        width={700}
       />
     </div>
   );
