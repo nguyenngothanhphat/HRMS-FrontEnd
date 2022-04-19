@@ -149,3 +149,15 @@ export const checkTime = (date, time) => {
   }
   return check;
 };
+
+export const removeEmptyFields = (obj) => {
+  return Object.entries(obj).reduce(
+    // eslint-disable-next-line no-return-assign
+    (a, [k, v]) =>
+      v == null || v === '' || v.length === 0
+        ? a
+        : // eslint-disable-next-line no-param-reassign
+          ((a[k] = v), a),
+    {},
+  );
+};
