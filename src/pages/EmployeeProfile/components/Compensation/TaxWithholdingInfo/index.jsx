@@ -84,6 +84,7 @@ const TaxWithholdingInfo = (props) => {
         </Col>
       </Row>
       <CommonModal
+        width={550}
         visible={visibleSuccess}
         hasFooter={false}
         onClose={handleCancelModelSuccess}

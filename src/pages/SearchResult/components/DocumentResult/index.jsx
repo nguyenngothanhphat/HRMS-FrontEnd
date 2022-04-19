@@ -10,7 +10,7 @@ import iconPDF from '@/assets/pdf-2.svg';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { isOwner } from '@/utils/authority';
 import { getTimezoneViaCity } from '@/utils/times';
-import PopoverInfo from '@/pages/Directory/components/DirectoryTable/components/ModalTerminate/PopoverInfo';
+import PopoverInfo from '@/pages/Directory/components/Directory/components/DirectoryTable/components/ModalTerminate/PopoverInfo';
 import styles from '../../index.less';
 
 const DocumentResult = React.memo((props) => {
