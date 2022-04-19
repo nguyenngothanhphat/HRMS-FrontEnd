@@ -1,6 +1,6 @@
-import { Button, Select } from 'antd';
+import { Button, Select, Skeleton } from 'antd';
 import { debounce } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { connect } from 'umi';
 import AddIcon from '@/assets/projectManagement/add.svg';
 import ArrowDown from '@/assets/projectManagement/arrowDown.svg';
@@ -8,7 +8,8 @@ import CommonModal from '@/components/CommonModal';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterButton from '@/components/FilterButton';
 import AddProjectModalContent from '../AddProjectModalContent';
-import FilterPopover from '../FilterPopover';
+import FilterPopover from '@/components/FilterPopover';
+import FilterContent from '../FilterContent';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -33,10 +34,7 @@ const Header = (props) => {
 
   // if reselect project status or search, clear filter form
   const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
-
-  const onFilter = (payload) => {
-    fetchProjectList(payload);
-  };
+  const [isFiltering, setIsFiltering] = useState(false);
 
   const onSearchDebounce = debounce((value) => {
     fetchProjectList({ searchKey: value });
@@ -46,6 +44,15 @@ const Header = (props) => {
   const onSearch = (e = {}) => {
     const { value = '' } = e.target;
     onSearchDebounce(value);
+  };
+
+  const onFilter = (payload) => {
+    fetchProjectList(payload);
+    if (Object.keys(payload).length > 0) {
+      setIsFiltering(true);
+    } else {
+      setIsFiltering(false);
+    }
   };
 
   useEffect(() => {
@@ -92,13 +99,21 @@ const Header = (props) => {
             Add new Project
           </Button>
         )}
+
         <FilterPopover
           placement="bottomRight"
-          onSubmit={onFilter}
-          needResetFilterForm={needResetFilterForm}
-          setNeedResetFilterForm={setNeedResetFilterForm}
+          content={
+            <Suspense fallback={<Skeleton active />}>
+              <FilterContent
+                needResetFilterForm={needResetFilterForm}
+                setNeedResetFilterForm={setNeedResetFilterForm}
+                onFilter={onFilter}
+              />
+            </Suspense>
+          }
+          realTime
         >
-          <FilterButton />
+          <FilterButton showDot={isFiltering} />
         </FilterPopover>
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Project ID, customer name" />
       </div>
