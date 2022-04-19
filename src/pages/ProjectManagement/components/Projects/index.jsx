@@ -222,6 +222,7 @@ const Projects = (props) => {
       {
         title: 'Action',
         key: 'action',
+        align: 'center',
         render: (record) => {
           return (
             <div className={styles.btnAction}>

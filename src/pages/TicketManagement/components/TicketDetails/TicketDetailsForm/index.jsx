@@ -293,7 +293,7 @@ class TicketDetailsForm extends Component {
                 </Col>
                 {/** check laf nguoi assigned, raised */}
                 <Col span={8} className={styles.formContent__title}>
-                  Open by: <span>{getOpenBy()}</span>
+                  Opened by: <span>{getOpenBy()}</span>
                 </Col>
               </Row>
               <Row>
@@ -312,7 +312,7 @@ class TicketDetailsForm extends Component {
               </Row>
               <Row>
                 <Col span={8} className={styles.formContent__titleQC}>
-                  QC:
+                  CC:
                   <span>
                     {!isEmpty(ccList) ? (
                       <Avatar.Group
