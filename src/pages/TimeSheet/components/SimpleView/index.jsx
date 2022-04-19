@@ -1,14 +1,14 @@
 import { Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
+import ModalImage from '@/assets/timeSheet/modalImage1.png';
+import CommonModal from '@/components/CommonModal';
 import { PageContainer } from '@/layouts/layout/src';
+import { TAB_NAME } from '@/utils/timeSheet';
 import ManagerView from './components/ManagerView';
 import MyTimeSheet from './components/MyTimeSheet';
 import Settings from './components/Settings';
 import styles from './index.less';
-import ModalImage from '@/assets/timeSheet/modalImage1.png';
-import ActionModal from '@/pages/TimeSheet/components/ActionModal';
-import { TAB_NAME } from '@/utils/timeSheet';
 
 const { TabPane } = Tabs;
 
@@ -79,19 +79,31 @@ const SimpleView = (props) => {
             </TabPane>
           )}
         </Tabs>
-        <ActionModal
-          visible={navToTimeoffModalVisible}
+        <CommonModal
           onClose={() => setNavToTimeoffModalVisible(false)}
-          buttonText="Continue"
+          firstText="Continue"
+          visible={navToTimeoffModalVisible}
           width={400}
           onFinish={requestLeave}
-        >
-          <img src={ModalImage} alt="" />
-          <span style={{ textAlign: 'center' }}>
-            You are being taken to the timeoff page - your leave details will be automatically
-            updated on the timesheet once it has been applied
-          </span>
-        </ActionModal>
+          hasHeader={false}
+          content={
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                padding: 24,
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <img src={ModalImage} alt="" />
+              <span style={{ textAlign: 'center' }}>
+                You are being taken to the timeoff page - your leave details will be automatically
+                updated on the timesheet once it has been applied
+              </span>
+            </div>
+          }
+        />
       </PageContainer>
     </div>
   );

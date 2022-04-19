@@ -8,7 +8,7 @@ import { connect } from 'umi';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
 import styles from './index.less';
-import CommonModal from '../CommonModal';
+import CommonModal from '@/components/CommonModal';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -139,8 +139,7 @@ class AddActionBTN extends Component {
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>
-                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {projectList.map((project) => (
                   <Option value={project.id}>{project.projectName}</Option>
@@ -153,8 +152,7 @@ class AddActionBTN extends Component {
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>
-                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {statusList.map((status) => (
                   <Option value={status}>{status}</Option>

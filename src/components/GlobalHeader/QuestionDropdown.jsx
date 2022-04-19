@@ -111,6 +111,8 @@ class QuestionDropdown extends React.Component {
           onClose={this.onToggleQuickLinkModal}
           hasFooter={false}
           content={<QuickLinks />}
+          withPadding
+          width={500}
         />
         {!isOwner() && (
           <RaiseTicketModal
