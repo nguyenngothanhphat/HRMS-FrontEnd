@@ -130,6 +130,7 @@ class TableContainer extends PureComponent {
 
     if (prevState.pageSelected !== pageSelected) {
       const paramsPage = {
+        ...params,
         page: pageSelected,
       };
       this.getPageChange(paramsPage, 1);
