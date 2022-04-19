@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import ROLES from '@/utils/roles';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
-import MyCompoffTable from '@/pages/TimeOff/components/EmployeeLandingPage/components/TimeOffRequestsTable/components/MyCompoffTable';
-import MyLeaveTable from '@/pages/TimeOff/components/EmployeeLandingPage/components/TimeOffRequestsTable/components/MyLeaveTable';
+import MyCompoffTable from '@/pages/TimeOff/components/Overview/components/EmployeeRequestTable/components/MyCompoffTable';
+import MyLeaveTable from '@/pages/TimeOff/components/Overview/components/EmployeeRequestTable/components/MyLeaveTable';
 import FilterBar from '../FilterBar';
 import TeamCompoffTable from '../TeamCompoffTable';
 import TeamLeaveTable from '../TeamLeaveTable';
@@ -18,6 +18,7 @@ const TimeOffRequestTab = (props) => {
     timeOff: {
       currentFilterTab,
       filter: { search, fromDate, toDate, type: timeOffTypes },
+      filter = {},
       paging: { page, limit },
       compoffRequests = [],
       leaveRequests = [],
@@ -218,7 +219,7 @@ const TimeOffRequestTab = (props) => {
     if (timeOffTypes.length > 0) {
       fetchData();
     }
-  }, [selectedTabNumber, page, search, fromDate, toDate, JSON.stringify(timeOffTypes)]);
+  }, [selectedTabNumber, page, JSON.stringify(filter)]);
 
   const onApproveRejectHandle = (obj) => {
     setHandlePackage(obj);

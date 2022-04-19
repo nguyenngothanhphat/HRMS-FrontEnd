@@ -7,7 +7,7 @@ import styles from './index.less';
 
 const { TabPane } = Tabs;
 
-const TimeOffRequestsTable = (props) => {
+const ManagerRequestTable = (props) => {
   const {
     dispatch,
     timeOff: { currentLeaveTypeTab = '', timeOffTypesByCountry = [] } = {},
@@ -69,7 +69,7 @@ const TimeOffRequestsTable = (props) => {
   };
 
   return (
-    <div className={styles.TimeOffRequestsTable}>
+    <div className={styles.ManagerRequestTable}>
       <Spin spinning={loadingTimeOffType}>
         <Tabs
           tabPosition="left"
@@ -108,4 +108,4 @@ export default connect(({ timeOff, user, loading }) => ({
   timeOff,
   user,
   loadingTimeOffType: loading.effects['timeOff/fetchTimeOffTypesByCountry'],
-}))(TimeOffRequestsTable);
+}))(ManagerRequestTable);

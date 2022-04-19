@@ -19,7 +19,7 @@ const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DELETED, DRA
   location,
   loadingFetch:
     loading.effects['timeOff/fetchLeaveHistory'] ||
-    loading.effects['timeOff/fetchHolidaysListBylocation'],
+    loading.effects['timeOff/fetchHolidaysListByLocation'],
 }))
 class LeaveHistoryAndHoliday extends PureComponent {
   constructor(props) {
@@ -32,7 +32,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
   componentDidMount = () => {
     const { dispatch, location = {} } = this.props;
     dispatch({
-      type: 'timeOff/fetchHolidaysListBylocation',
+      type: 'timeOff/fetchHolidaysListByLocation',
       payload: {
         location: getCurrentLocation(),
         country: location.headQuarterAddress.country._id,

@@ -1,13 +1,12 @@
+import { Spin, Tabs } from 'antd';
 import React, { useEffect } from 'react';
-import { Tabs, Skeleton, Spin } from 'antd';
 import { connect } from 'umi';
 import TimeOffRequestTab from './components/TimeOffRequestTab';
-
 import styles from './index.less';
 
 const { TabPane } = Tabs;
 
-const TimeOffRequestsTable = (props) => {
+const EmployeeRequestTable = (props) => {
   const {
     dispatch,
     timeOff: { currentLeaveTypeTab = '', timeOffTypesByCountry = [] } = {},
@@ -69,7 +68,7 @@ const TimeOffRequestsTable = (props) => {
   };
 
   return (
-    <div className={styles.TimeOffRequestsTable}>
+    <div className={styles.EmployeeRequestTable}>
       <Spin spinning={loadingTimeOffType}>
         <Tabs
           tabPosition="left"
@@ -108,4 +107,4 @@ export default connect(({ timeOff, user, loading }) => ({
   timeOff,
   user,
   loadingTimeOffType: loading.effects['timeOff/fetchTimeOffTypesByCountry'],
-}))(TimeOffRequestsTable);
+}))(EmployeeRequestTable);

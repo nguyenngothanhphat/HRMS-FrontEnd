@@ -157,3 +157,17 @@ export const goToTop = () => {
     behavior: 'smooth',
   });
 };
+
+export const removeEmptyFields = (obj) => {
+  // remove empty fields
+  // eslint-disable-next-line no-return-assign
+  return Object.entries(obj).reduce(
+    // eslint-disable-next-line no-return-assign
+    (a, [k, v]) =>
+      v == null || v.length === 0 || !v
+        ? a
+        : // eslint-disable-next-line no-param-reassign
+          ((a[k] = v), a),
+    {},
+  );
+};

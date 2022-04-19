@@ -2,6 +2,7 @@ import { DeleteOutlined } from '@ant-design/icons';
 import { Button, Col, Popconfirm, Row, Select, Spin } from 'antd';
 import React, { Component } from 'react';
 import { history } from 'umi';
+import EmptyComponent from '@/components/Empty';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -27,7 +28,8 @@ class Types extends Component {
               </Button>
             </Col>
           </Row>
-          <div className={styles.straightLine} />
+          {children.length !== 0 && <div className={styles.straightLine} />}
+
           <div>
             {children.map((x, index) => {
               const { name, isDefault } = x;

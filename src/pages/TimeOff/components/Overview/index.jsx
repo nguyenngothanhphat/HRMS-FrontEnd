@@ -1,22 +1,23 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
 import { history } from 'umi';
-import LeaveInformation from '../EmployeeLandingPage/components/LeaveInformation';
-import ApplyRequest from '../EmployeeLandingPage/components/ApplyRequest';
-import LeaveHistoryAndHoliday from '../EmployeeLandingPage/components/LeaveHistoryAndHoliday';
-import QuickLinks from '../EmployeeLandingPage/components/QuickLinks';
-import TimeOffRequestsTable from './components/TimeOffRequestsTable';
-// import FeedbackBar from '../EmployeeLandingPage/components/FeedbackBar';
-import TimeOffTypesInfo from '../EmployeeLandingPage/components/TimeOffTypesInfo';
+import LeaveInformation from './components/LeaveInformation';
+import ApplyRequest from './components/ApplyRequest';
+import LeaveHistoryAndHoliday from './components/LeaveHistoryAndHoliday';
+import QuickLinks from './components/QuickLinks';
+import EmployeeRequestTable from './components/EmployeeRequestTable';
+import ManagerRequestTable from './components/ManagerRequestTable';
+import TimeOffTypesInfo from './components/TimeOffTypesInfo';
 
 import styles from './index.less';
+import FeedbackBar from './components/FeedbackBar';
 
-export default class ManagerLandingPage extends PureComponent {
+export default class EmployeeLandingPage extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       viewInformation: false,
-      // closeFeedbackBar: false,
+      closeFeedbackBar: false,
     };
   }
 
@@ -24,11 +25,11 @@ export default class ManagerLandingPage extends PureComponent {
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
   };
 
-  // onCloseFeedbackBar = () => {
-  //   this.setState({
-  //     closeFeedbackBar: true,
-  //   });
-  // };
+  onCloseFeedbackBar = () => {
+    this.setState({
+      closeFeedbackBar: true,
+    });
+  };
 
   buttonOnClickCompoff = () => {
     history.push({
@@ -51,12 +52,16 @@ export default class ManagerLandingPage extends PureComponent {
   };
 
   render() {
-    const { viewInformation } = this.state;
-    const { eligibleForCompOff = false } = this.props;
+    const { viewInformation, closeFeedbackBar } = this.state;
+    const {
+      eligibleForCompOff = false,
+      viewHRTimeoff = false,
+      viewManagerTimeoff = false,
+    } = this.props;
 
     return (
       <>
-        <div className={styles.ManagerLandingPage}>
+        <div className={styles.EmployeeLandingPage}>
           <Row gutter={[20, 20]}>
             <Col xs={24} lg={6}>
               <Row gutter={[20, 20]}>
@@ -98,16 +103,20 @@ export default class ManagerLandingPage extends PureComponent {
               </Row>
               <Row gutter={[20, 20]} style={{ marginBottom: '20px' }}>
                 <Col span={24}>
-                  <TimeOffRequestsTable eligibleForCompOff={eligibleForCompOff} />
+                  {viewHRTimeoff || viewManagerTimeoff ? (
+                    <ManagerRequestTable eligibleForCompOff={eligibleForCompOff} />
+                  ) : (
+                    <EmployeeRequestTable eligibleForCompOff={eligibleForCompOff} />
+                  )}
                 </Col>
               </Row>
-              {/* {!closeFeedbackBar && (
+              {!closeFeedbackBar && (
                 <Row gutter={[20, 20]}>
                   <Col span={24}>
                     <FeedbackBar onClose={this.onCloseFeedbackBar} />
                   </Col>
                 </Row>
-              )} */}
+              )}
               <TimeOffTypesInfo onClose={this.onInformationClick} visible={viewInformation} />
             </Col>
           </Row>

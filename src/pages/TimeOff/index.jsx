@@ -3,8 +3,7 @@ import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { PageContainer } from '@/layouts/layout/src';
-import EmployeeLandingPage from './components/EmployeeLandingPage';
-import ManagerLandingPage from './components/ManagerLandingPage';
+import Overview from './components/Overview';
 import SetupTimeoff from './components/SetupTimeoff';
 import styles from './index.less';
 
@@ -142,11 +141,7 @@ class TimeOff extends PureComponent {
     return (
       <>
         <TabPane tab={<span className={styles.employeeTabPane}>Timeoff</span>} key="overview">
-          {viewManagerTimeoff || viewHRTimeoff ? (
-            <ManagerLandingPage eligibleForCompOff={eligibleForCompOff} />
-          ) : (
-            <EmployeeLandingPage eligibleForCompOff={eligibleForCompOff} />
-          )}
+          <Overview eligibleForCompOff={eligibleForCompOff} viewHRTimeoff={viewHRTimeoff} viewManagerTimeoff={viewManagerTimeoff}  />
         </TabPane>
 
         {viewSettingTimeoff && (

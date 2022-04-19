@@ -1,18 +1,18 @@
 .FeedbackBar {
+  width: 100%;
+  padding: 13px 24px;
+  background-color: white;
   border: 1px solid rgba(0, 0, 0, 0);
   border-radius: 0 0 5px 5px;
-  width: 100%;
-  background-color: white;
-  padding: 13px 24px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.07);
   .container {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     .leftPart {
       display: flex;
-      justify-content: flex-start;
       align-items: center;
+      justify-content: flex-start;
       .heartIcon {
         margin-right: 10px;
       }
@@ -21,8 +21,8 @@
         font-weight: 700;
       }
       .doneTitle {
-        font-weight: 700;
         color: #161c29;
+        font-weight: 700;
         span {
           margin-left: 10px;
           color: #707177;
@@ -30,8 +30,8 @@
         }
       }
       .failedTitle {
-        font-weight: 700;
         color: #161c29;
+        font-weight: 700;
         span {
           margin-left: 10px;
           color: #2c6df9;
@@ -45,16 +45,16 @@
       }
       .likeButton {
         margin-left: 10px;
+        padding: 3px 8px;
         border: 1px solid #e2e3e8;
         border-radius: 16px;
-        padding: 3px 8px;
         cursor: pointer;
         &:hover {
-          transition: 0.1s;
           border-color: #ffa100;
+          transition: 0.1s;
           span {
-            transition: 0.1s;
             color: #ffa100;
+            transition: 0.1s;
           }
         }
         span {
@@ -70,9 +70,9 @@
 
     .rightPart {
       span {
+        padding: 6px;
         background: rgba(44, 109, 249, 0.08);
         border-radius: 30px;
-        padding: 6px;
         cursor: pointer;
         &:hover {
           opacity: 0.8;

@@ -5,6 +5,7 @@ import { connect } from 'umi';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import AddHoliday from './components/AddHoliday';
 import styles from './index.less';
+import EmptyComponent from '@/components/Empty';
 
 const { Option } = Select;
 const CheckboxGroup = Checkbox.Group;
@@ -328,6 +329,17 @@ const TimeOffType = (props) => {
   };
 
   const renderInfo = () => {
+    if (newData.length === 0) {
+      return (
+        <div
+          style={{
+            paddingTop: 100,
+          }}
+        >
+          <EmptyComponent />
+        </div>
+      );
+    }
     return (
       <div>
         {newData.map((itemData, index) => {

@@ -3,7 +3,7 @@ import { Tabs } from 'antd';
 import { connect } from 'umi';
 import TimeOffRequestTab from '../TimeOffRequestTab';
 import styles from './index.less';
-import SearchTimeOff from '../../../../../SearchTimeOff/index';
+import SearchContent from '../../../../../SearchContent/index';
 
 const { TabPane } = Tabs;
 
@@ -55,7 +55,7 @@ class RequestScopeTabs extends PureComponent {
       permissions = {},
     } = this.props;
     const renderTableTitle = {
-      right: <SearchTimeOff />,
+      right: <SearchContent />,
     };
 
     const viewManagerTimeoff = permissions.viewManagerTimeoff !== -1;
