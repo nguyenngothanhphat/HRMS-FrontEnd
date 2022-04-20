@@ -2,7 +2,9 @@ import { Tabs } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
+import CheckboxMenu from '@/components/CheckboxMenu';
 import AllTicket from './components/AllTickets';
+import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
 import styles from './index.less';
 import WorkInProgress from '@/components/WorkInProgress';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -10,14 +12,24 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 @connect(
   ({
     user: { permissions = {} },
+    location: { companyLocationList = [] },
+
     ticketManagement: { listOffAllTicket = [], totalList = [] } = {},
   }) => ({
     listOffAllTicket,
     totalList,
     permissions,
+    companyLocationList,
   }),
 )
 class ManagerTicket extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedLocations: [],
+    };
+  }
+
   componentDidMount() {
     const { tabName = '', permissions = {} } = this.props;
 
@@ -144,6 +156,63 @@ class ManagerTicket extends Component {
     });
   };
 
+  onLocationChange = (selection) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'ticketManagement/save',
+      payload: {
+        selectedLocations: [...selection],
+      },
+    });
+    this.setState({
+      selectedLocations: [...selection],
+    });
+  };
+
+  getSelectedLocationName = () => {
+    const { selectedLocations = [] } = this.state;
+    const { companyLocationList = [] } = this.props;
+    if (selectedLocations.length === 1) {
+      return companyLocationList.find((x) => x._id === selectedLocations[0])?.name || '';
+    }
+    if (selectedLocations.length > 0 && selectedLocations.length < companyLocationList.length) {
+      return `${selectedLocations.length} locations selected`;
+    }
+    if (selectedLocations.length === companyLocationList.length || selectedLocations.length === 0) {
+      return 'All';
+    }
+    return 'All';
+  };
+
+  renderFilterLocation = () => {
+    const selectedLocationName = this.getSelectedLocationName();
+    const { selectedLocations = [] } = this.state;
+    const { companyLocationList = [] } = this.props;
+    const locationOptions = companyLocationList.map((x) => {
+      return {
+        _id: x._id,
+        name: x.name,
+      };
+    });
+    return (
+      <div className={styles.item}>
+        <span className={styles.label}>Location</span>
+
+        <CheckboxMenu
+          options={locationOptions}
+          onChange={this.onLocationChange}
+          list={companyLocationList}
+          default={selectedLocations}
+        >
+          <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
+            <span>{selectedLocationName}</span>
+            <img src={SmallDownArrow} alt="" />
+          </div>
+        </CheckboxMenu>
+      </div>
+    );
+  };
+
   render() {
     const { TabPane } = Tabs;
     const { listOffAllTicket = [], totalList = [], tabName = '' } = this.props;
@@ -157,6 +226,7 @@ class ManagerTicket extends Component {
             onChange={(key) => {
               history.push(`/ticket-management/${key}`);
             }}
+            tabBarExtraContent={this.renderFilterLocation()}
           >
             <TabPane tab="Overview" key="overview">
               <WorkInProgress />;

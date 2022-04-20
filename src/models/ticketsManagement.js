@@ -29,6 +29,7 @@ const ticketManagement = {
     employeeRaiseList: [],
     employeeAssigneeList: [],
     filter: {},
+    selectedLocations: [],
   },
   effects: {
     *addTicket({ payload }, { call, put }) {
