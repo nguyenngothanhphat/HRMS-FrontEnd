@@ -42,6 +42,26 @@ export async function removeTimeOffType(payload) {
   });
 }
 
+// timeOffType > setup
+export async function getLeaveTypeByTimeOffType(payload) {
+  return request('/api/leavetypeconfigtenant/get-by-timeofftype', {
+    method: 'GET',
+    params: payload,
+  });
+}
+
+export async function upsertLeaveType(payload) {
+  return request('/api/leavetypeconfigtenant/upsert', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export function getEmployeeTypeList() {
+  return request('/api/employeetype/list', {
+    method: 'POST',
+  });
+}
+
 export async function getLeaveRequestOfEmployee(payload) {
   return request('/api/leaverequesttenant/get-my-request', {
     method: 'POST',
