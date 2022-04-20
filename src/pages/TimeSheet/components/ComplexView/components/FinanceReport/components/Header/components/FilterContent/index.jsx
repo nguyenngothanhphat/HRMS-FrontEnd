@@ -1,9 +1,8 @@
 /* eslint-disable react/jsx-curly-newline */
-import { Form, Select, AutoComplete, Input, Spin } from 'antd';
+import { Form, Select } from 'antd';
 import { debounce } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import SearchIcon from '@/assets/directory/search.svg';
 import { VIEW_TYPE } from '@/utils/timeSheet';
 import styles from './index.less';
 
@@ -11,31 +10,22 @@ const FilterContent = (props) => {
   const [form] = Form.useForm();
   const {
     dispatch,
-    timeSheet: { financeViewList = [], projectTypeList = [], resourceList = [] } = {},
+    timeSheet: { projectTypeList = [], projectList = [], employeeNameList = [] } = {},
     type: viewType = '',
-    loadingFetchProjectnameList = false,
+    loadingFetchEmployeeNameList = false,
+    loadingFetchProjectTypeList = false,
+    loadingFetchProjectList = false,
   } = props;
-
-  const [projectNameListState, setProjectNameListState] = useState([]);
-
-  const [searchIcons, setSearchIcons] = useState({
-    projectName: false,
-  });
-
-  useEffect(() => {
-    setProjectNameListState(
-      financeViewList.map((x) => {
-        return {
-          value: x?.projectName,
-          label: x?.projectName,
-        };
-      }),
-    );
-  }, [JSON.stringify(projectNameListState)]);
 
   useEffect(() => {
     dispatch({
       type: 'timeSheet/fetchProjectTypeListEffect',
+    });
+    dispatch({
+      type: 'timeSheet/fetchProjectListEffect',
+    });
+    dispatch({
+      type: 'timeSheet/fetchEmployeeNameListEffect',
     });
   }, []);
 
@@ -71,38 +61,6 @@ const FilterContent = (props) => {
     onFinishDebounce(values);
   };
 
-  const onSearchEmployeeDebounce = debounce((type, value) => {
-    let typeTemp = '';
-    switch (type) {
-      case 'projectName':
-        typeTemp = 'timeSheet/fetchFinanceTimesheetEffect';
-        break;
-      default:
-        break;
-    }
-    if (typeTemp && value) {
-      dispatch({
-        type: typeTemp,
-        payload: {
-          search: value,
-        },
-      });
-    }
-    if (!value) {
-      switch (type) {
-        case 'projectName':
-          setProjectNameListState([]);
-          break;
-        default:
-          break;
-      }
-    }
-  }, 1000);
-
-  const handleEmployeeSearch = (type, value) => {
-    onSearchEmployeeDebounce(type, value);
-  };
-
   return (
     <Form
       layout="vertical"
@@ -112,21 +70,27 @@ const FilterContent = (props) => {
       form={form}
       className={styles.FilterContent}
     >
-      <Form.Item label="by project name" name="projectName">
-        <AutoComplete
-          dropdownMatchSelectWidth={252}
-          notFoundContent={loadingFetchProjectnameList ? <Spin /> : 'No matches'}
-          options={projectNameListState}
-          onSearch={(val) => handleEmployeeSearch('projectName', val)}
-          onFocus={() => setSearchIcons({ ...searchIcons, id: true })}
-          onBlur={() => setSearchIcons({ ...searchIcons, id: false })}
+      <Form.Item label="By Project" name="projectName">
+        <Select
+          allowClear
+          showSearch
+          mode="multiple"
+          loading={loadingFetchProjectList}
+          style={{ width: '100%' }}
+          placeholder="Search by Project"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+          showArrow
         >
-          <Input
-            placeholder="Search by Project Name"
-            prefix={searchIcons.id ? <img src={SearchIcon} alt="search" /> : null}
-            allowClear
-          />
-        </AutoComplete>
+          {projectList.map((x) => {
+            return (
+              <Select.Option value={x.id} key={x.id}>
+                {x.projectName}
+              </Select.Option>
+            );
+          })}
+        </Select>
       </Form.Item>
 
       <Form.Item label="By type" name="engagementType">
@@ -140,6 +104,7 @@ const FilterContent = (props) => {
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
           showArrow
+          loading={loadingFetchProjectTypeList}
         >
           {projectTypeList.map((x) => (
             <Select.Option value={x.id}>{x.type_name}</Select.Option>
@@ -147,7 +112,7 @@ const FilterContent = (props) => {
         </Select>
       </Form.Item>
       {viewType === VIEW_TYPE.W && (
-        <Form.Item label="By resources" name="resources">
+        <Form.Item label="By resources" name="resourceList">
           <Select
             allowClear
             showSearch
@@ -158,11 +123,13 @@ const FilterContent = (props) => {
               option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
             showArrow
+            loading={loadingFetchEmployeeNameList}
           >
-            {resourceList.map((x) => {
+            {employeeNameList.map((x) => {
+              const { generalInfo: { legalName = '' } = {}, _id: employeeId = '' } = x;
               return (
-                <Select.Option value={x} key={x}>
-                  {x}
+                <Select.Option value={employeeId} key={employeeId}>
+                  {legalName}
                 </Select.Option>
               );
             })}
@@ -175,5 +142,7 @@ const FilterContent = (props) => {
 
 export default connect(({ loading, timeSheet }) => ({
   timeSheet,
-  loadingFetchProjectnameList: loading.effects['timeSheet/fetchFinanceTimesheetEffect'],
+  loadingFetchEmployeeNameList: loading.effects['timeSheet/fetchEmployeeNameListEffect'],
+  loadingFetchProjectList: loading.effects['timeSheet/fetchProjectListEffect'],
+  loadingFetchProjectTypeList: loading.effects['timeSheet/fetchProjectTypeListEffect'],
 }))(FilterContent);
