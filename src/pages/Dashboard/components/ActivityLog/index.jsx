@@ -2,9 +2,10 @@ import { Tabs } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { connect, history } from 'umi';
 import LeftArrow from '@/assets/dashboard/leftArrow.svg';
-import CommonModal from './components/CommonModal';
+import CommonModal from '@/components/CommonModal';
 import styles from './index.less';
 import CommonTab from './components/CommonTab';
+import ActivityLogModalContent from './components/ActivityLogModalContent';
 
 const { TabPane } = Tabs;
 
@@ -192,12 +193,13 @@ const ActivityLog = (props) => {
         </div>
       )}
       {activeKey === '3' && dataMyTicket().length === 0 && <div className={styles.addLength} />}
+
       <CommonModal
         visible={modalVisible}
-        title={renderTabName(activeKey)}
         onClose={() => setModalVisible(false)}
-        tabKey={activeKey}
-        data={getDataOfModal()}
+        title={renderTabName(activeKey)}
+        hasFooter={false}
+        content={<ActivityLogModalContent tabKey={activeKey} data={getDataOfModal()} />}
       />
     </div>
   );

@@ -139,6 +139,8 @@ const AvatarDropdown = (props) => {
       isSwitchingRole: isSwitch,
     });
 
+    localStorage.removeItem('currentLocationId');
+
     const { pathname } = window.location;
     if (pathname === '/dashboard') {
       window.location.reload();
@@ -253,7 +255,7 @@ const AvatarDropdown = (props) => {
       <>
         <Menu.Divider className={styles.secondDivider} />
         <Menu.Item className={styles.selectLocation}>Locations</Menu.Item>
-        {checkIsOwner && (
+        {(checkIsOwner || checkIsAdmin) && (
           <Menu.Item
             key="ALL"
             className={

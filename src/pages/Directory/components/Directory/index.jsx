@@ -2,9 +2,9 @@ import { Layout, Skeleton, Tabs } from 'antd';
 import React, { useEffect, useState, Suspense } from 'react';
 import { connect, formatMessage } from 'umi';
 import iconDownload from '@/assets/download-icon-yellow.svg';
-import DirectoryTable from '../DirectoryTable';
-import AddEmployeeForm from '@/pages_admin/EmployeesManagement/components/TableContainer/components/AddEmployeeForm';
-import ModalImportEmployee from '@/pages_admin/EmployeesManagement/components/TableContainer/components/ModalImportEmployee';
+import DirectoryTable from './components/DirectoryTable';
+import AddEmployeeModal from './components/AddEmployeeModal';
+import ImportEmployeeModal from './components/ImportEmployeeModal';
 import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
 import exportToCsv from '@/utils/exportToCsv';
 import FilterPopover from '@/components/FilterPopover';
@@ -13,7 +13,7 @@ import FilterButton from '@/components/FilterButton';
 
 import styles from './index.less';
 
-const FilterContent = React.lazy(() => import('../FilterContent'));
+const FilterContent = React.lazy(() => import('./components/FilterContent'));
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -458,7 +458,7 @@ const DirectoryComponent = (props) => {
         </div>
       )}
 
-      <AddEmployeeForm
+      <AddEmployeeModal
         company={getCurrentCompany()}
         titleModal="Add Employee"
         visible={visible}
@@ -466,7 +466,7 @@ const DirectoryComponent = (props) => {
         handleRefresh={refreshData}
       />
       {visibleImportEmployee && (
-        <ModalImportEmployee
+        <ImportEmployeeModal
           company={companiesOfUser}
           titleModal="Import Employees"
           visible={visibleImportEmployee}

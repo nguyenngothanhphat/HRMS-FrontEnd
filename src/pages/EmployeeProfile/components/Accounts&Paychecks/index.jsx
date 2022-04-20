@@ -209,6 +209,7 @@ class AccountsPaychecks extends PureComponent {
         </Row>
 
         <CommonModal
+          width={550}
           visible={visibleSuccess}
           hasFooter={false}
           onClose={this.handleCancelModelSuccess}

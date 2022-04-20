@@ -74,6 +74,7 @@ const initialState = {
   employeeNameList: [],
   filterFinance: {},
   filterHrView: {},
+  filterManagerReport: {},
   designationList: [],
   departmentList: [],
   projectTypeList: [],
@@ -536,7 +537,7 @@ const TimeSheet = {
           company: getCurrentCompany(),
           ...payload,
           tenantId: getCurrentTenant(),
-          status: ['ACTIVE', 'INACTIVE'],
+          status: ['ACTIVE'],
         });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;

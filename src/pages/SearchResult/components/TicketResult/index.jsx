@@ -7,7 +7,7 @@ import moment from 'moment';
 import { isOwner } from '@/utils/authority';
 import filterIcon from '@/assets/offboarding-filter.svg';
 import { getTimezoneViaCity } from '@/utils/times';
-import PopoverInfo from '@/pages/Directory/components/DirectoryTable/components/ModalTerminate/PopoverInfo';
+import PopoverInfo from '@/pages/Directory/components/Directory/components/DirectoryTable/components/ModalTerminate/PopoverInfo';
 import { LIST_STATUS_TICKET } from '@/utils/globalSearch';
 import styles from '../../index.less';
 
