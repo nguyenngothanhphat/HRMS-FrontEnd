@@ -19,7 +19,7 @@ const TableCustomers = (props) => {
   const [pageSelected, setPageSelected] = useState(1);
   const [selectedCustomer, setSelectedCustomer] = useState('');
   const [isDeleteCustomer, setIsDeleteCustomer] = useState(false);
-
+  const [size, setSize] = useState(10);
   const setFirstPage = () => {
     setPageSelected(1);
   };
@@ -134,8 +134,9 @@ const TableCustomers = (props) => {
     }));
   };
 
-  const onChangePagination = (pageNumber) => {
+  const onChangePagination = (pageNumber, pageSize) => {
     setPageSelected(pageNumber);
+    setSize(pageSize);
   };
 
   // refresh list without losing filter, search
@@ -144,8 +145,6 @@ const TableCustomers = (props) => {
       type: 'projectManagement/refreshProjectList',
     });
   };
-
-  const rowSize = 10;
 
   const scroll = {
     x: 'max-content',
@@ -165,7 +164,10 @@ const TableCustomers = (props) => {
         {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
       </span>
     ),
-    pageSize: rowSize,
+    defaultPageSize: size,
+    showSizeChanger: true,
+    pageSizeOptions: ['10', '25', '50', '100'],
+    pageSize: size,
     current: pageSelected,
     onChange: onChangePagination,
   };
@@ -179,7 +181,7 @@ const TableCustomers = (props) => {
       <Table
         size="middle"
         loading={loadingCustomer || loadingFilter}
-        pagination={{ ...pagination, total: listCustomer.length }}
+        pagination={pagination}
         columns={generateColumns()}
         dataSource={listCustomer}
         scroll={scroll}
