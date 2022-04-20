@@ -1,16 +1,16 @@
-// import { Tooltip, Tag } from 'antd';
 import { BuildOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import { isOwner } from '@/utils/authority';
+import ActivityLogModalContent from '@/pages/Dashboard/components/ActivityLog/components/ActivityLogModalContent';
 import MessageIcon from '@/assets/dashboard/message.svg';
+import CommonModal from '../CommonModal';
 import AvatarDropdown from './AvatarDropdown';
 import GlobalSearchNew from './components/GlobalSearchNew/index';
 import SelectCompanyModal from './components/SelectCompanyModal';
 import styles from './index.less';
 import QuestionDropdown from './QuestionDropdown';
-import CommonModal from '@/pages/Dashboard/components/ActivityLog/components/CommonModal';
 
 const GlobalHeaderRight = (props) => {
   const { theme, layout, currentUser, companiesOfUser } = props;
@@ -28,27 +28,10 @@ const GlobalHeaderRight = (props) => {
 
   return (
     <div className={className}>
-      {/* <HeaderSearch
-        className={`${styles.action} ${styles.search}`}
-        placeholder="Search"
-        visible={visible}
-        onSearch={(value) => {
-          if (value) {
-            handleSearch(value);
-          }
-        }}
-      /> */}
       <GlobalSearchNew />
       <QuestionDropdown />
-      <div className={`${styles.action} ${styles.notify}`}>
-        <img src={MessageIcon} alt="" onClick={() => setModalVisible(true)} />
-        <CommonModal
-          visible={modalVisible}
-          title="Notifications"
-          onClose={() => setModalVisible(false)}
-          tabKey="2"
-          data={[]}
-        />
+      <div className={`${styles.action} ${styles.notify}`} onClick={() => setModalVisible(true)}>
+        <img src={MessageIcon} alt="" />
       </div>
       {!(!checkIsOwner && companiesOfUser.length === 1) && (
         <>
@@ -65,6 +48,13 @@ const GlobalHeaderRight = (props) => {
 
       <AvatarDropdown />
       <SelectCompanyModal visible={isSwitchCompanyVisible} onClose={setIsSwitchCompanyVisible} />
+      <CommonModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        title="Notifications"
+        hasFooter={false}
+        content={<ActivityLogModalContent tabKey="2" data={[]} />}
+      />
     </div>
   );
 };

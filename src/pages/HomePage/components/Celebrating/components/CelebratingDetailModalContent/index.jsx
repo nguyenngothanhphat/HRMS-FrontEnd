@@ -6,7 +6,7 @@ import CommentIcon from '@/assets/homePage/comment.svg';
 import LikeIcon from '@/assets/homePage/like.svg';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import CommonModal from '../../../CommonModal';
+import CommonModal from '@/components/CommonModal';
 import LikedModalContent from '../LikedModalContent';
 import styles from './index.less';
 

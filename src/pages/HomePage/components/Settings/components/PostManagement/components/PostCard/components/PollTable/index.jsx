@@ -3,7 +3,7 @@ import Parser from 'html-react-parser';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect, Link } from 'umi';
-import CommonModal from '@/pages/HomePage/components/CommonModal';
+import CommonModal from '@/components/CommonModal';
 import EditIcon from '@/assets/homePage/editIcon.svg';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
 import ChartIcon from '@/assets/homePage/chartIcon.svg';

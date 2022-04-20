@@ -8,7 +8,7 @@ import CustomTag from '../CustomTag';
 import EditProjectStatusModalContent from '@/pages/ProjectManagement/components/EditProjectStatusModalContent';
 import EditProjecModalContent from '@/pages/ProjectManagement/components/EditProjectModalContent';
 
-import CommonModal from '@/pages/ProjectManagement/components/CommonModal';
+import CommonModal from '@/components/CommonModal';
 
 const ViewInformation = (props) => {
   const { projectDetail = {}, permissions = {}, dispatch, loadingUpdateProject = false } = props;

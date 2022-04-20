@@ -1,22 +1,18 @@
 import { Col, Row, Tooltip } from 'antd';
 import moment from 'moment';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import DeleteIcon from '@/assets/timeSheet/del.svg';
 import EditIcon from '@/assets/timeSheet/edit.svg';
 import ModalImage from '@/assets/timeSheet/modalImage1.png';
+import CommonModal from '@/components/CommonModal';
+import EditTaskModal from '@/pages/TimeSheet/components/ComplexView/components/EditTaskModal';
 import { getCurrentCompany } from '@/utils/authority';
 import {
   activityColor,
   convertMsToTime,
-  dateFormatAPI,
-  hourFormat,
-  EMP_MT_SECONDARY_COL_SPAN,
-  WORKING_HOURS,
-  EMP_ROW_HEIGHT,
+  dateFormatAPI, EMP_MT_SECONDARY_COL_SPAN, EMP_ROW_HEIGHT, hourFormat, WORKING_HOURS
 } from '@/utils/timeSheet';
-import ActionModal from '@/pages/TimeSheet/components/ActionModal';
-import EditTaskModal from '@/pages/TimeSheet/components/ComplexView/components/EditTaskModal';
 import styles from './index.less';
 
 const { PROJECT, TASK, DESCRIPTION, TIME, TOTAL_HOURS, ACTIONS } = EMP_MT_SECONDARY_COL_SPAN;
@@ -196,23 +192,36 @@ const ActivityCard = (props) => {
           </div>
         </Col>
       </Row>
-      <ActionModal
+
+      <CommonModal
         visible={removeModalVisible}
         onClose={() => setRemoveModalVisible(false)}
-        buttonText="Yes"
+        firstText="Yes"
         width={400}
         onFinish={onRemoveCard}
-      >
-        <img src={ModalImage} alt="" />
-        <span style={{ textAlign: 'center' }}>
-          Are you sure you want to delete
-          <br />
-          <span style={{ fontWeight: 'bold' }}>
-            {projectName} - {taskName}
-          </span>
-          ?
-        </span>
-      </ActionModal>
+        hasHeader={false}
+        content={
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              padding: 24,
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <img src={ModalImage} alt="" />
+            <span style={{ textAlign: 'center' }}>
+              Are you sure you want to delete
+              <br />
+              <span style={{ fontWeight: 'bold' }}>
+                {projectName} - {taskName}
+              </span>
+              ?
+            </span>
+          </div>
+        }
+      />
 
       <EditTaskModal
         task={card}

@@ -7,12 +7,11 @@ import AddSolidIcon from '@/assets/timeSheet/addSolid.png';
 import DelIcon from '@/assets/timeSheet/del.svg';
 import EditIcon from '@/assets/timeSheet/edit.svg';
 import ModalImage from '@/assets/timeSheet/modalImage1.png';
-import ActionModal from '@/pages/TimeSheet/components/ActionModal';
+import CommonModal from '@/components/CommonModal';
 import AddTaskModal from '@/pages/TimeSheet/components/ComplexView/components/AddTaskModal';
 import EditTaskModal from '@/pages/TimeSheet/components/ComplexView/components/EditTaskModal';
 import { getCurrentCompany } from '@/utils/authority';
 import { convertMsToTime } from '@/utils/timeSheet';
-
 import styles from './index.less';
 
 const TaskPopover = (props) => {
@@ -181,23 +180,36 @@ const TaskPopover = (props) => {
         date={date}
         task={handlingPackage}
       />
-      <ActionModal
+
+      <CommonModal
         visible={removeModalVisibe}
         onClose={() => setRemoveModalVisibe(false)}
-        buttonText="Yes"
+        firstText="Yes"
         width={400}
         onFinish={onRemoveCard}
-      >
-        <img src={ModalImage} alt="" />
-        <span style={{ textAlign: 'center' }}>
-          Are you sure you want to delete
-          <br />
-          <span style={{ fontWeight: 'bold' }}>
-            {handlingPackage?.projectName} - {handlingPackage?.taskName}
-          </span>
-          ?
-        </span>
-      </ActionModal>
+        hasHeader={false}
+        content={
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              padding: 24,
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <img src={ModalImage} alt="" />
+            <span style={{ textAlign: 'center' }}>
+              Are you sure you want to delete
+              <br />
+              <span style={{ fontWeight: 'bold' }}>
+                {handlingPackage?.projectName} - {handlingPackage?.taskName}
+              </span>
+              ?
+            </span>
+          </div>
+        }
+      />
     </>
   );
 };

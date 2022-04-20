@@ -9,7 +9,7 @@ import { isOwner } from '@/utils/authority';
 import avtDefault from '@/assets/avtDefault.jpg';
 import filterIcon from '@/assets/offboarding-filter.svg';
 import { getTimezoneViaCity } from '@/utils/times';
-import PopoverInfo from '@/pages/Directory/components/DirectoryTable/components/ModalTerminate/PopoverInfo';
+import PopoverInfo from '@/pages/Directory/components/Directory/components/DirectoryTable/components/ModalTerminate/PopoverInfo';
 import styles from '../../index.less';
 
 const EmployeeResult = React.memo((props) => {

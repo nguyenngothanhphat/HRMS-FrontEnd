@@ -2,11 +2,12 @@ import { Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
-import CommonModal from './components/CommonModal';
+import CommonModal from '@/components/CommonModal';
 import LeftArrow from '@/assets/dashboard/leftArrow.svg';
 import MyTasks from './components/MyTasks';
 import styles from './index.less';
 import MyProjects from './components/MyProjects';
+import TaskModalContent from './components/TaskModalContent';
 
 const { TabPane } = Tabs;
 const MANAGER = 'MANAGER';
@@ -73,9 +74,10 @@ const Tasks = (props) => {
       {activeKey === '2' && newProjectList.length === 0 && <div className={styles.addLength} />}
       <CommonModal
         visible={modalVisible}
-        title={activeKey === '1' ? `My Tasks` : 'My Projects'}
         onClose={() => setModalVisible(false)}
-        tabKey={activeKey}
+        title={activeKey === '1' ? `My Tasks` : 'My Projects'}
+        hasFooter={false}
+        content={<TaskModalContent tabKey={activeKey} />}
       />
     </div>
   );

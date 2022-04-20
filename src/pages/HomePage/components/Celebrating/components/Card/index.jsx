@@ -10,7 +10,7 @@ import UserProfilePopover from '@/components/UserProfilePopover';
 import styles from './index.less';
 import LikeIcon from '@/assets/homePage/like.svg';
 import CommentIcon from '@/assets/homePage/comment.svg';
-import CommonModal from '../../../CommonModal';
+import CommonModal from '@/components/CommonModal';
 import CelebratingDetailModalContent from '../CelebratingDetailModalContent';
 import LikedModalContent from '../LikedModalContent';
 

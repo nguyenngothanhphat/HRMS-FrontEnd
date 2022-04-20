@@ -1,17 +1,23 @@
 import { Button, Modal } from 'antd';
 import React from 'react';
+import { connect } from 'umi';
 import styles from './index.less';
 
 const CommonModal = (props) => {
   const {
     visible = false,
-    hasFooter = true,
-    title = '',
+    title = 'Modal',
     onClose = () => {},
+    firstText = 'Submit',
+    secondText = 'Cancel',
+    content = '',
+    width = 700,
+    loading = false,
+    hasFooter = true,
     onFinish = () => {},
     hasHeader = true,
-    content,
-    noFormCss = false,
+    withPadding = false,
+    hasSecondaryButton = true,
   } = props;
 
   const renderModalHeader = () => {
@@ -26,17 +32,19 @@ const CommonModal = (props) => {
     onClose();
   };
 
-  const handleFinish = () => {
-    onFinish();
-  };
-
   const renderModalContent = () => {
     return content;
   };
 
   const getClassName = () => {
-    if (!noFormCss) return `${styles.CommonModal} ${styles.withPadding} ${styles.CommonModalForm}`;
-    return `${styles.CommonModal} ${styles.withPadding}`;
+    if (withPadding) {
+      return `${styles.CommonModal} ${styles.withPadding}`;
+    }
+    return `${styles.CommonModal} ${styles.noPadding}`;
+  };
+
+  const handleFinish = () => {
+    onFinish();
   };
 
   return (
@@ -45,21 +53,25 @@ const CommonModal = (props) => {
         className={getClassName()}
         onCancel={handleCancel}
         destroyOnClose
+        width={width}
         footer={
           hasFooter ? (
             <>
-              <Button onClick={handleCancel} className={styles.btnCancel}>
-                Cancel
-              </Button>
+              {hasSecondaryButton && (
+                <Button className={styles.btnCancel} onClick={handleCancel}>
+                  {secondText}
+                </Button>
+              )}
               <Button
                 className={styles.btnSubmit}
                 type="primary"
                 form="myForm"
                 key="submit"
                 htmlType="submit"
+                loading={loading}
                 onClick={handleFinish}
               >
-                Okay
+                {firstText}
               </Button>
             </>
           ) : null
@@ -74,4 +86,6 @@ const CommonModal = (props) => {
   );
 };
 
-export default CommonModal;
+export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({
+  employee,
+}))(CommonModal);
