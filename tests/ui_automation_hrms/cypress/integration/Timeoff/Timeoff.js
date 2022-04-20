@@ -9,10 +9,7 @@ describe('Timeoff Automation', () => {
     let password = "12345678@Tc";
     
     it('Applying for leave request', () => {
-        cy.get('#basic_userEmail.ant-input').type(Employee_email);
-        cy.get('#basic_password.ant-input').type(password);
-        cy.get('button[type="submit"]').click();
-        cy.wait(3000);
+       cy.loginAsSomeone(Employee_email,password)
         cy.contains("Timeoff").click({force:true});
         //cy.contains("Rejected").click();
         cy.contains('Request Time Off').click();
@@ -21,8 +18,8 @@ describe('Timeoff Automation', () => {
             cy.contains('Casual Leave').click();
           });
         cy.get('#basic_subject').type('function');
-        let fromDate ="04/20/2022";         
-        let toDate ="04/20/2022";
+        let fromDate ="05/20/2022";         
+        let toDate ="05/20/2022";
         cy.get('#basic_durationFrom ',{timeout:3000}).type(fromDate + '{enter}', {force: true});
          cy.get("#basic_durationTo", {timeout:3000}).type(toDate + '{enter}', {force: true});
         // cy.get('#basic_leaveTimeLists_0_startTime').type('9:00 am'+'{enter}',{force:true})
@@ -46,24 +43,16 @@ describe('Timeoff Automation', () => {
                 let id_latest =moreparts[0];
                 cy.writeFile("latest_id_timeoff.txt",id_latest);
                 cy.wait(3000);
+                cy.logout()
               });
             });
           });
     });
 
-    it('logoff',()=>{
-       cy.get('.account___1r_Ku').trigger('mousemove').click({force:true})
-       .then(() =>{
-         cy.contains('Logout').wait(2000).click({force:true});
-        }); 
-        cy.wait(3000);
-    });
+    
 
     it('Approve Timeoff request', () => {
-        cy.get('#basic_userEmail.ant-input').type(Manager_email);
-        cy.get('#basic_password.ant-input').type(password);
-        cy.get('button[type="submit"]').click();
-        cy.wait(3000);
+      cy.loginAsSomeone(Manager_email,password)
         cy.contains("Timeoff").click({force:true});
         cy.wait(3000);
         cy.contains("Leave Requests").click();
@@ -83,23 +72,15 @@ describe('Timeoff Automation', () => {
              cy.get('.ant-btn').then((resp)=>{
                 cy.get(resp[2]).click();
                 cy.wait(3000);
+                cy.logout();
              });                            
           });
     });
 
-    it('logoff',()=>{
-      cy.get('.account___1r_Ku').trigger('mousemove').click({force:true})
-      .then(() =>{
-        cy.contains('Logout').wait(2000).click({force:true});
-       }); 
-       cy.wait(3000);
-   });   
+    
 
    it('Withdraw the leave request by employee', () => {
-    cy.get('#basic_userEmail.ant-input').type(Employee_email);
-    cy.get('#basic_password.ant-input').type(password);
-    cy.get('button[type="submit"]').click();
-    cy.wait(3000);
+    cy.loginAsSomeone(Employee_email,password);
     cy.contains("Timeoff").click({force:true});
     cy.contains("Leave Requests").click();
     cy.wait(4000)
@@ -122,23 +103,14 @@ describe('Timeoff Automation', () => {
          cy.get('.ant-btn').then((resp)=>{
             cy.get(resp[2]).click();
                cy.wait(5000);
+               cy.logout();
          });                            
       });
     });
 
-    it('logoff',()=>{
-      cy.get('.account___1r_Ku').trigger('mousemove').click({force:true})
-      .then(() =>{
-        cy.contains('Logout').wait(2000).click({force:true});
-       }); 
-       cy.wait(5000);
-   });  
     
      it('Accepting the withdrawn leave request', () => {
-     cy.get('#basic_userEmail.ant-input').type(Manager_email);
-     cy.get('#basic_password.ant-input').type(password);
-     cy.get('button[type="submit"]').click();
-     cy.wait(3000);
+      cy.loginAsSomeone(Manager_email,password)
     cy.contains("Timeoff").click({force:true});
     cy.wait(3000);
     cy.contains("Leave Requests").click();
@@ -157,24 +129,17 @@ describe('Timeoff Automation', () => {
        cy.wait(5000);   
        cy.get('.ant-btn').then((resp)=>{
           cy.get(resp[1]).click();
+          cy.wait(3000);
+          cy.logout();
           
        }); 
   });
            
     
   });
-  it('logoff',()=>{
-    cy.get('.account___1r_Ku').trigger('mousemove').click({force:true})
-    .then(() =>{
-      cy.contains('Logout').wait(2000).click({force:true});
-     }); 
-     cy.wait(3000);
- });
+  
 it('Applying for Special leave request', () => {
-  cy.get('#basic_userEmail.ant-input').type(Employee_email);
-  cy.get('#basic_password.ant-input').type(password);
-  cy.get('button[type="submit"]').click();
-  cy.wait(3000);
+  cy.loginAsSomeone(Employee_email,password);
   cy.contains("Timeoff").click({force:true});
   cy.contains('Request Time Off').click();
   cy.get('#basic_timeOffType').trigger('mousedown')
@@ -197,7 +162,9 @@ it('Applying for Special leave request', () => {
          cy.wait(10000);
       });        
     });   
+
     cy.contains('Special Leave Requests').click();
+    cy.wait(3000);
     cy.contains('View Request').click().then(()=>{
       cy.wait(3000);
       cy.get('p').then((resp)=>{
@@ -207,24 +174,16 @@ it('Applying for Special leave request', () => {
           let id_latest =moreparts[0];
           cy.writeFile("latest_id_timeoff.txt",id_latest);
           cy.wait(3000);
+          cy.logout()
         });
       });
     });
 });
 
-it('logoff',()=>{
- cy.get('.account___1r_Ku').trigger('mousemove').click({force:true})
- .then(() =>{
-   cy.contains('Logout').wait(2000).click({force:true});
-  }); 
-  cy.wait(3000);
-});
+
 
 it('Approve Timeoff request', () => {
-  cy.get('#basic_userEmail.ant-input').type(Manager_email);
-  cy.get('#basic_password.ant-input').type(password);
-  cy.get('button[type="submit"]').click();
-  cy.wait(3000);
+  cy.loginAsSomeone(Manager_email,password)
   cy.contains("Timeoff").click({force:true});
   cy.wait(3000);
   cy.contains("Special Leave Requests").click();
@@ -244,23 +203,15 @@ it('Approve Timeoff request', () => {
        cy.get('.ant-btn').then((resp)=>{
           cy.get(resp[2]).click();
           cy.wait(3000);
+          cy.logout();
        });                            
     });
 });
 
-it('logoff',()=>{
-cy.get('.account___1r_Ku').trigger('mousemove').click({force:true})
-.then(() =>{
-  cy.contains('Logout').wait(2000).click({force:true});
- }); 
- cy.wait(3000);
-});   
+ 
 
 it('Withdraw the leave request by employee', () => {
-cy.get('#basic_userEmail.ant-input').type(Employee_email);
-cy.get('#basic_password.ant-input').type(password);
-cy.get('button[type="submit"]').click();
-cy.wait(3000);
+  cy.loginAsSomeone(Employee_email,password)
 cy.contains("Timeoff").click({force:true});
 cy.contains("Special Leave Requests").click();
 cy.wait(4000)
@@ -283,23 +234,15 @@ cy.get(resp[0]).click();
    cy.get('.ant-btn').then((resp)=>{
       cy.get(resp[2]).click();
          cy.wait(5000);
+         cy.logout();
    });                            
 });
 });
 
-it('logoff',()=>{
-cy.get('.account___1r_Ku').trigger('mousemove').click({force:true})
-.then(() =>{
-  cy.contains('Logout').wait(2000).click({force:true});
- }); 
- cy.wait(5000);
-});  
+ 
 
 it('Accepting the withdrawn leave request', () => {
-cy.get('#basic_userEmail.ant-input').type(Manager_email);
-cy.get('#basic_password.ant-input').type(password);
-cy.get('button[type="submit"]').click();
-cy.wait(3000);
+  cy.loginAsSomeone(Manager_email,password)
 cy.contains("Timeoff").click({force:true});
 cy.wait(3000);
 cy.contains("Special Leave Requests").click();
@@ -318,25 +261,18 @@ cy.get(resp[1]).click();
  cy.wait(5000);   
  cy.get('.ant-btn').then((resp)=>{
     cy.get(resp[1]).click();
+    cy.wait(3000);
+    cy.logout();
     
  }); 
 });
      
 
 });
-it('logoff',()=>{
-  cy.get('.account___1r_Ku').trigger('mousemove').click({force:true})
-  .then(() =>{
-    cy.contains('Logout').wait(2000).click({force:true});
-   }); 
-   cy.wait(3000);
-});
 
-it('Applying for Work from home leave request', () => {
-  cy.get('#basic_userEmail.ant-input').type(Employee_email);
-  cy.get('#basic_password.ant-input').type(password);
-  cy.get('button[type="submit"]').click();
-  cy.wait(3000);
+
+it('Applying for unpaid leave request', () => {
+  cy.loginAsSomeone(Employee_email,password)
   cy.contains("Timeoff").click({force:true});
   cy.contains('Request Time Off').click();
   cy.get('#basic_timeOffType').trigger('mousedown')
@@ -360,6 +296,7 @@ it('Applying for Work from home leave request', () => {
       });        
     });   
     cy.contains('LWP Requests').click();
+    cy.wait(3000);
     cy.contains('View Request').click().then(()=>{
       cy.wait(3000);
       cy.get('p').then((resp)=>{
@@ -369,24 +306,16 @@ it('Applying for Work from home leave request', () => {
           let id_latest =moreparts[0];
           cy.writeFile("latest_id_timeoff.txt",id_latest);
           cy.wait(3000);
+          cy.logout();
         });
       });
     });
 });
 
-it('logoff',()=>{
- cy.get('.account___1r_Ku').trigger('mousemove').click({force:true})
- .then(() =>{
-   cy.contains('Logout').wait(2000).click({force:true});
-  }); 
-  cy.wait(3000);
-});
+
 
 it('Approve Timeoff request', () => {
-  cy.get('#basic_userEmail.ant-input').type(Manager_email);
-  cy.get('#basic_password.ant-input').type(password);
-  cy.get('button[type="submit"]').click();
-  cy.wait(3000);
+  cy.loginAsSomeone(Manager_email,password)
   cy.contains("Timeoff").click({force:true});
   cy.wait(3000);
   cy.contains("LWP Requests").click();
@@ -406,23 +335,14 @@ it('Approve Timeoff request', () => {
        cy.get('.ant-btn').then((resp)=>{
           cy.get(resp[2]).click();
           cy.wait(3000);
+          cy.logout();
        });                            
     });
 });
 
-it('logoff',()=>{
-cy.get('.account___1r_Ku').trigger('mousemove').click({force:true})
-.then(() =>{
-  cy.contains('Logout').wait(2000).click({force:true});
- }); 
- cy.wait(3000);
-});   
 
 it('Withdraw the leave request by employee', () => {
-cy.get('#basic_userEmail.ant-input').type(Employee_email);
-cy.get('#basic_password.ant-input').type(password);
-cy.get('button[type="submit"]').click();
-cy.wait(3000);
+  cy.loginAsSomeone(Employee_email,password)
 cy.contains("Timeoff").click({force:true});
 cy.contains("LWP Requests").click();
 cy.wait(4000)
@@ -445,23 +365,15 @@ cy.get(resp[0]).click();
    cy.get('.ant-btn').then((resp)=>{
       cy.get(resp[2]).click();
          cy.wait(5000);
+         cy.logout();
    });                            
 });
 });
 
-it('logoff',()=>{
-cy.get('.account___1r_Ku').trigger('mousemove').click({force:true})
-.then(() =>{
-  cy.contains('Logout').wait(2000).click({force:true});
- }); 
- cy.wait(5000);
-});  
+ 
 
 it('Accepting the withdrawn leave request', () => {
-cy.get('#basic_userEmail.ant-input').type(Manager_email);
-cy.get('#basic_password.ant-input').type(password);
-cy.get('button[type="submit"]').click();
-cy.wait(3000);
+  cy.loginAsSomeone(Manager_email,password)
 cy.contains("Timeoff").click({force:true});
 cy.wait(3000);
 cy.contains("LWP Requests").click();
@@ -480,24 +392,17 @@ cy.get(resp[1]).click();
  cy.wait(5000);   
  cy.get('.ant-btn').then((resp)=>{
     cy.get(resp[1]).click();
+    cy.wait(3000);
+    cy.logout();
     
  }); 
 });
 });
      
-it('logoff',()=>{
-       cy.get('.account___1r_Ku').trigger('mousemove').click({force:true})
-       .then(() =>{
-         cy.contains('Logout').wait(2000).click({force:true});
-        }); 
-        cy.wait(3000);
-    });
 
-it('Applying for Unpaid leave request', () => {
-  cy.get('#basic_userEmail.ant-input').type(Employee_email);
-  cy.get('#basic_password.ant-input').type(password);
-  cy.get('button[type="submit"]').click();
-  cy.wait(3000);
+
+it('Applying for work from home leave request', () => {
+  cy.loginAsSomeone(Employee_email,password)
   cy.contains("Timeoff").click({force:true});
   cy.contains('Request Time Off').click();
   cy.get('#basic_timeOffType').trigger('mousedown')
@@ -505,8 +410,8 @@ it('Applying for Unpaid leave request', () => {
       cy.contains('Work from Home').click();
     });
   cy.get('#basic_subject').type('work from home');
-  let fromDate ="04/27/2022";         
-  let toDate ="04/27/2022";
+  let fromDate ="05/27/2022";         
+  let toDate ="05/27/2022";
   cy.get('#basic_durationFrom ',{timeout:3000}).type(fromDate + '{enter}', {force: true});
   cy.get("#basic_durationTo", {timeout:3000}).type(toDate + '{enter}', {force: true});
    //cy.pause();
@@ -520,7 +425,7 @@ it('Applying for Unpaid leave request', () => {
          cy.wait(10000);
       });        
     });   
-    cy.contains('LWP Requests').click();
+    cy.contains('WFH/CP Requests').click();
     cy.wait(3000)
     cy.contains('View Request').click().then(()=>{
       cy.wait(3000);
@@ -531,27 +436,18 @@ it('Applying for Unpaid leave request', () => {
           let id_latest =moreparts[0];
           cy.writeFile("latest_id_timeoff.txt",id_latest);
           cy.wait(3000);
+          cy.logout()
         });
       });
     });
 });
 
-it('logoff',()=>{
- cy.get('.account___1r_Ku').trigger('mousemove').click({force:true})
- .then(() =>{
-   cy.contains('Logout').wait(2000).click({force:true});
-  }); 
-  cy.wait(3000);
-});
 
 it('Approve Timeoff request', () => {
-  cy.get('#basic_userEmail.ant-input').type(Manager_email);
-  cy.get('#basic_password.ant-input').type(password);
-  cy.get('button[type="submit"]').click();
-  cy.wait(3000);
+  cy.loginAsSomeone(Manager_email,password)
   cy.contains("Timeoff").click({force:true});
   cy.wait(3000);
-  cy.contains("LWP Requests").click();
+  cy.contains("WFH/CP Requests").click();
   //cy.contains('In Progress ').click();
   cy.wait(3000);
   cy.readFile("latest_id_timeoff.txt").then(function(value){
@@ -568,25 +464,16 @@ it('Approve Timeoff request', () => {
        cy.get('.ant-btn').then((resp)=>{
           cy.get(resp[2]).click();
           cy.wait(3000);
+          cy.logout();
        });                            
     });
 });
 
-it('logoff',()=>{
-cy.get('.account___1r_Ku').trigger('mousemove').click({force:true})
-.then(() =>{
-  cy.contains('Logout').wait(2000).click({force:true});
- }); 
- cy.wait(3000);
-});   
 
 it('Withdraw the leave request by employee', () => {
-cy.get('#basic_userEmail.ant-input').type(Employee_email);
-cy.get('#basic_password.ant-input').type(password);
-cy.get('button[type="submit"]').click();
-cy.wait(3000);
+  cy.loginAsSomeone(Employee_email,password)
 cy.contains("Timeoff").click({force:true});
-cy.contains("LWP Requests").click();
+cy.contains("WFH/CP Requests").click();
 cy.wait(4000)
 cy.get('.ant-tabs-tab-btn').eq(9).click({force:true})
 cy.readFile("latest_id_timeoff.txt").then(function(value){
@@ -607,26 +494,18 @@ cy.get(resp[0]).click();
    cy.get('.ant-btn').then((resp)=>{
       cy.get(resp[2]).click();
          cy.wait(5000);
+         cy.logout();
    });                            
 });
 });
 
-it('logoff',()=>{
-cy.get('.account___1r_Ku').trigger('mousemove').click({force:true})
-.then(() =>{
-  cy.contains('Logout').wait(2000).click({force:true});
- }); 
- cy.wait(6000);
-});  
+
 
 it('Accepting the withdrawn leave request', () => {
-cy.get('#basic_userEmail.ant-input').type(Manager_email);
-cy.get('#basic_password.ant-input').type(password);
-cy.get('button[type="submit"]').click();
-cy.wait(3000);
+  cy.loginAsSomeone(Manager_email,password)
 cy.contains("Timeoff").click({force:true});
 cy.wait(3000);
-cy.contains("LWP Requests").click();
+cy.contains("WFH/CP Requests").click();
 //cy.contains('Progress').click();
 cy.wait(3000);
 cy.readFile("latest_id_timeoff.txt").then(function(value){
