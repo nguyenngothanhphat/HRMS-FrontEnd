@@ -61,7 +61,7 @@ const FilterContent = (props) => {
     // dispatch action
     dispatch({
       type: 'timeSheet/save',
-      payload: { filterManagerreport: filterTemp },
+      payload: { filterManagerReport: filterTemp },
     });
   };
 

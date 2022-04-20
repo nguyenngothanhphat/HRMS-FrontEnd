@@ -23,7 +23,7 @@ const TeamView = (props) => {
     timeSheet: {
       managerTeamViewList = [],
       managerTeamViewPagination = {},
-      filterManagerreport = {},
+      filterManagerReport = {},
     } = {},
     loadingFetch = false,
     activeView = '',
@@ -39,7 +39,7 @@ const TeamView = (props) => {
       toDate: moment(endDate).format(dateFormatAPI),
       page: nameSearch ? 1 : page,
       limit,
-      ...filterManagerreport,
+      ...filterManagerReport,
     };
     if (nameSearch) {
       payload.search = nameSearch;
@@ -65,7 +65,7 @@ const TeamView = (props) => {
     if (startDate) {
       fetchManagerTimesheetOfTeamView();
     }
-  }, [startDate, endDate, page, nameSearch, JSON.stringify(filterManagerreport)]);
+  }, [startDate, endDate, page, nameSearch, JSON.stringify(filterManagerReport)]);
 
   // generate dates for week
   useEffect(() => {

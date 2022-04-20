@@ -74,7 +74,7 @@ const initialState = {
   employeeNameList: [],
   filterFinance: {},
   filterHrView: {},
-  filterManagerreport: {},
+  filterManagerReport: {},
   designationList: [],
   departmentList: [],
   projectTypeList: [],
