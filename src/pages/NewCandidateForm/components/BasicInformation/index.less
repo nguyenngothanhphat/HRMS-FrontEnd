@@ -5,10 +5,28 @@
 @commonPadding2: 24px;
 @borderColor: #d6dce0;
 
-.basicInformation {
+.BasicInformation {
   position: relative;
   width: 100%;
   font-family: 'Roboto', sans-serif;
+
+  .cardTitle {
+    p {
+      margin-bottom: 0;
+    }
+    .title {
+      margin-bottom: 10px;
+      color: #000000;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .description {
+      color: #707177;
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 15px;
+    }
+  }
 
   .bottomBar {
     padding: @commonPadding;
@@ -16,7 +34,6 @@
     border: solid 1px #d6dce0;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
-    margin-block: @commonPadding2;
 
     .normalText {
       display: flex;
@@ -86,48 +103,10 @@
     }
   }
 
-  &__bottom {
-    position: fixed;
-    bottom: 0;
-    width: inherit;
-    height: 72px;
-  }
-
-  &__top {
-    object-fit: contain;
-    background-color: #ffffff;
-    border: 1px solid #d6dce0;
-    border-radius: 5px;
-
-    hr {
-      width: 100%;
-      height: 0.5px;
-      object-fit: contain;
-      border-top: solid 0.5px #d6dce0;
-      border-bottom: none;
-    }
-  }
-
   .basicInformation__form {
     width: 100%;
     padding: 8 * @spacing-xxs;
     border-radius: 5px;
-    :global {
-      .ant-form-item-has-success {
-        .ant-input {
-          border: solid 1px #47c97f;
-        }
-      }
-
-      .ant-form-item-label {
-        padding-bottom: 0;
-
-        label {
-          color: #707177;
-          font-size: 13px;
-        }
-      }
-    }
 
     .formInput__email {
       position: relative;
@@ -140,18 +119,29 @@
         color: #707177;
       }
     }
+  }
 
-    .formInput {
+  :global {
+    .ant-form-item-has-success {
+      .ant-input {
+        border: solid 1px #47c97f;
+      }
+    }
+
+    .ant-form-item-label {
+      padding-bottom: 0;
+
+      label {
+        color: #707177;
+        font-size: 13px;
+      }
+    }
+    .ant-input {
       height: 42px;
       object-fit: contain;
       font-family: 'Roboto', sans-serif;
       background-color: #ffffff;
       border-radius: 8px;
-    }
-  }
-
-  :global {
-    .ant-input {
       box-shadow: none !important;
     }
     .ant-input-disabled {
