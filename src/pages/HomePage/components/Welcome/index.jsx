@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
-import CommonModal from '@/pages/Dashboard/components/ActivityLog/components/CommonModal';
+import ActivityLogModalContent from '@/pages/Dashboard/components/ActivityLog/components/ActivityLogModalContent';
+import CommonModal from '@/components/CommonModal';
 
 const Welcome = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -21,10 +22,10 @@ const Welcome = (props) => {
       </span>
       <CommonModal
         visible={modalVisible}
-        title="Notifications"
         onClose={() => setModalVisible(false)}
-        tabKey="2"
-        data={[]}
+        title="Notifications"
+        hasFooter={false}
+        content={<ActivityLogModalContent tabKey="2" data={[]} />}
       />
     </div>
   );

@@ -8,7 +8,8 @@ import HandbookIcon from '@/assets/homePage/handbook.svg';
 import PoliciesIcon from '@/assets/homePage/policies.svg';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import styles from './index.less';
-import HolidayModal from '@/pages/Dashboard/components/Calendar/components/CommonModal';
+import HolidayModalContent from '@/pages/Dashboard/components/Calendar/components/HolidayModalContent';
+import CommonModal from '@/components/CommonModal';
 
 const links = [
   {
@@ -106,12 +107,19 @@ const QuickLinks = (props) => {
         url={previewUrl}
         onClose={() => setPreviewModalVisible(false)}
       />
-      <HolidayModal
+      <CommonModal
         visible={holidayModal}
-        title={`Holiday Calendar ${moment().year()}`}
         onClose={() => setHolidayModal(false)}
-        tabKey="2"
-        data={filterHoliday}
+        title={`Holiday Calendar ${moment().year()}`}
+        hasFooter={false}
+        content={
+          <HolidayModalContent
+            visible={holidayModal}
+            onClose={() => setHolidayModal(false)}
+            tabKey="2"
+            data={filterHoliday}
+          />
+        }
       />
     </div>
   );

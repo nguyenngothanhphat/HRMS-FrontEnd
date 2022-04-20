@@ -9,7 +9,9 @@ import styles from './index.less';
 import MyCalendar from './components/MyCalendar';
 import HolidayCalendar from './components/HolidayCalendar';
 import GoogleSync from './components/GoogleSync';
-import CommonModal from './components/CommonModal';
+import HolidayModalContent from './components/HolidayModalContent';
+import CommonModal from '@/components/CommonModal';
+
 import { getIsSigninGoogle } from '@/utils/authority';
 
 const { TabPane } = Tabs;
@@ -168,14 +170,20 @@ const Calendar = (props) => {
       {activeKey === '2' && holidaysListByCountry.length === 0 && (
         <div className={styles.addLength} />
       )}
+
       <CommonModal
         visible={modalVisible}
-        title={activeKey === '2' ? `Holiday Calendar ${selectedYear}` : 'My Calendar'}
         onClose={() => setModalVisible(false)}
-        tabKey={activeKey}
-        data={activeKey === '2' ? filterHoliday : googleCalendarList}
-        loading={loadingSyncGoogleCalendar}
-        dateSelected={selectedDate}
+        title={activeKey === '2' ? `Holiday Calendar ${selectedYear}` : 'My Calendar'}
+        hasFooter={false}
+        content={
+          <HolidayModalContent
+            loading={loadingSyncGoogleCalendar}
+            tabKey={activeKey}
+            data={activeKey === '2' ? filterHoliday : googleCalendarList}
+            selectedDate={selectedDate}
+          />
+        }
       />
     </div>
   );

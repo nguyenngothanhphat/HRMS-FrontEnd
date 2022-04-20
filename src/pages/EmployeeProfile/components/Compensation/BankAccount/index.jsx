@@ -117,6 +117,7 @@ const BankAccount = (props) => {
         />
       </Row>
       <CommonModal
+        width={550}
         visible={visibleSuccess}
         hasFooter={false}
         onClose={handleCancelModelSuccess}
