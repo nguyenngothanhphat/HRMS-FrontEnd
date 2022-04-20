@@ -6,7 +6,7 @@ import EditIcon from '@/assets/projectManagement/edit2.svg';
 import s from '../../index.less';
 import CustomTag from '../CustomTag';
 import EditProjectStatusModalContent from '@/pages/ProjectManagement/components/EditProjectStatusModalContent';
-import EditProjecModalContent from '@/pages/ProjectManagement/components/EditProjectModalContent';
+import EditProjectModalContent from '@/pages/ProjectManagement/components/EditProjectModalContent';
 
 import CommonModal from '@/components/CommonModal';
 
@@ -188,7 +188,7 @@ const ViewInformation = (props) => {
         title="Edit Project"
         loading={loadingUpdateProject}
         content={
-          <EditProjecModalContent
+          <EditProjectModalContent
             visible={isEditProject}
             onClose={() => setIsEditProject(false)}
             selectedProject={projectDetail}

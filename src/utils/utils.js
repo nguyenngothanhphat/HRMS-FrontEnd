@@ -150,11 +150,19 @@ export const checkTime = (date, time) => {
   return check;
 };
 
+export const goToTop = () => {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: 'smooth',
+  });
+};
+
 export const removeEmptyFields = (obj) => {
   return Object.entries(obj).reduce(
     // eslint-disable-next-line no-return-assign
     (a, [k, v]) =>
-      v == null || v === '' || v.length === 0
+      v == null || v.length === 0 || !v
         ? a
         : // eslint-disable-next-line no-param-reassign
           ((a[k] = v), a),
