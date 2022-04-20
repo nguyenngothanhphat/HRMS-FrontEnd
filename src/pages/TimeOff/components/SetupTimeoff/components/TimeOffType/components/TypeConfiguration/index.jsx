@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Affix, Button, Col, Form, message, Row, Skeleton, Typography } from 'antd';
 import { connect, history } from 'umi';
 import moment from 'moment';
@@ -90,6 +90,10 @@ const TypeConfiguration = (props) => {
   } = props;
 
   const { configs = {} } = viewingLeaveType || {};
+
+  const [initialValues, setInitialValues] = useState({});
+
+  useEffect(() => form.resetFields(), [initialValues]);
 
   const fetchTypeById = () => {
     if (typeId) {
@@ -203,32 +207,33 @@ const TypeConfiguration = (props) => {
   };
 
   const getFormInitialValues = () => {
-    if (action === 'configure')
+    if (action === 'configure' && viewingLeaveType)
       return {
-        [TIMEOFF_TYPE_NAME]: viewingLeaveType[TIMEOFF_TYPE_NAME],
-        [EMPLOYEE_TYPE]: viewingLeaveType[EMPLOYEE_TYPE],
-        [ACCRUAL_POLICY_ACCRUAL_METHOD]: configs[ACCRUAL_POLICY]?.[ACCRUAL_METHOD],
-        [ACCRUAL_POLICY_ACCRUAL_RATE]: configs[ACCRUAL_POLICY]?.[ACCRUAL_RATE],
-        [ACCRUAL_START_VALUE]: configs[ACCRUAL_START]?.[VALUE] || 0,
-        [ACCRUAL_START_UNIT]: configs[ACCRUAL_START]?.[UNIT],
-        [MINIMUM_LEAVE_AMOUNT_VALUE]: configs[MINIMUM_LEAVE_AMOUNT]?.[VALUE] || 0,
-        [LEAVE_APPLICATION_START_VALUE]: configs[LEAVE_APPLICATION_START]?.[VALUE] || 0,
-        [NEGATIVE_LEAVE_BALANCE_ALLOWED]: configs[NEGATIVE_LEAVE_BALANCE]?.[ALLOWED] || false,
+        [TIMEOFF_TYPE_NAME]: viewingLeaveType?.[TIMEOFF_TYPE_NAME],
+        [EMPLOYEE_TYPE]: viewingLeaveType?.[EMPLOYEE_TYPE],
+        [ACCRUAL_POLICY_ACCRUAL_METHOD]: configs?.[ACCRUAL_POLICY]?.[ACCRUAL_METHOD],
+        [ACCRUAL_POLICY_ACCRUAL_RATE]: configs?.[ACCRUAL_POLICY]?.[ACCRUAL_RATE],
+        [ACCRUAL_START_VALUE]: configs?.[ACCRUAL_START]?.[VALUE] || 0,
+        [ACCRUAL_START_UNIT]: configs?.[ACCRUAL_START]?.[UNIT],
+        [MINIMUM_LEAVE_AMOUNT_VALUE]: configs?.[MINIMUM_LEAVE_AMOUNT]?.[VALUE] || 0,
+        [LEAVE_APPLICATION_START_VALUE]: configs?.[LEAVE_APPLICATION_START]?.[VALUE] || 0,
+        [NEGATIVE_LEAVE_BALANCE_ALLOWED]: configs?.[NEGATIVE_LEAVE_BALANCE]?.[ALLOWED] || false,
         [NEGATIVE_LEAVE_BALANCE_MAXIMUM_UNIT]:
-          configs[NEGATIVE_LEAVE_BALANCE]?.[MAXIMUM]?.[UNIT] || 'd',
+          configs?.[NEGATIVE_LEAVE_BALANCE]?.[MAXIMUM]?.[UNIT] || 'd',
         [NEGATIVE_LEAVE_BALANCE_MAXIMUM_VALUE]:
-          configs[NEGATIVE_LEAVE_BALANCE]?.[MAXIMUM]?.[VALUE] || 0,
-        [NEW_HIRE_PRORATION_POLICY]: configs[NEW_HIRE_PRORATION_POLICY],
-        [LOP_LEAVE_ACCRUAL_POLICY]: configs[LOP_LEAVE_ACCRUAL_POLICY] || false,
-        [MAXIMUM_BALANCE_ALLOWED_UNIT]: configs[MAXIMUM_BALANCE_ALLOWED]?.[UNIT],
-        [MAXIMUM_BALANCE_ALLOWED_VALUE]: configs[MAXIMUM_BALANCE_ALLOWED]?.[VALUE] || 0,
-        [ANNUAL_RESET_POLICY_RESET_TYPE]: configs[ANNUAL_RESET_POLICY]?.[RESET_TYPE] || 0,
-        [ANNUAL_RESET_POLICY_CALENDAR_DATE]: configs[ANNUAL_RESET_POLICY]?.[CALENDAR_DATE]
-          ? moment(configs[ANNUAL_RESET_POLICY]?.[CALENDAR_DATE])
+          configs?.[NEGATIVE_LEAVE_BALANCE]?.[MAXIMUM]?.[VALUE] || 0,
+        [NEW_HIRE_PRORATION_POLICY]: configs?.[NEW_HIRE_PRORATION_POLICY],
+        [LOP_LEAVE_ACCRUAL_POLICY]: configs?.[LOP_LEAVE_ACCRUAL_POLICY] || false,
+        [MAXIMUM_BALANCE_ALLOWED_UNIT]: configs?.[MAXIMUM_BALANCE_ALLOWED]?.[UNIT],
+        [MAXIMUM_BALANCE_ALLOWED_VALUE]: configs?.[MAXIMUM_BALANCE_ALLOWED]?.[VALUE] || 0,
+        [ANNUAL_RESET_POLICY_RESET_TYPE]: configs?.[ANNUAL_RESET_POLICY]?.[RESET_TYPE] || 0,
+        [ANNUAL_RESET_POLICY_CALENDAR_DATE]: configs?.[ANNUAL_RESET_POLICY]?.[CALENDAR_DATE]
+          ? moment(configs?.[ANNUAL_RESET_POLICY]?.[CALENDAR_DATE])
           : null,
-        [NOTICE_PERIOD_LEAVE_ACCRUAL_POLICY]: configs[NOTICE_PERIOD_LEAVE_ACCRUAL_POLICY] || false,
-        [CARRY_FORWARD_POLICY]: configs[CARRY_FORWARD_POLICY]
-          ? configs[CARRY_FORWARD_POLICY].map((x) => {
+        [NOTICE_PERIOD_LEAVE_ACCRUAL_POLICY]:
+          configs?.[NOTICE_PERIOD_LEAVE_ACCRUAL_POLICY] || false,
+        [CARRY_FORWARD_POLICY]: configs?.[CARRY_FORWARD_POLICY]
+          ? configs?.[CARRY_FORWARD_POLICY].map((x) => {
               return {
                 ...x,
                 [FROM]: x[CARRY_FORWARD_CAP]?.[FROM],
@@ -259,6 +264,11 @@ const TypeConfiguration = (props) => {
       [CARRY_FORWARD_POLICY]: [],
     };
   };
+
+  useEffect(() => {
+    const initialValuesTemp = getFormInitialValues();
+    setInitialValues(initialValuesTemp);
+  }, [JSON.stringify(viewingLeaveType)]);
 
   useEffect(() => {
     if (!isValid) {
@@ -335,7 +345,7 @@ const TypeConfiguration = (props) => {
       },
       {
         id: 3,
-        component: <AccrualPolicy form={form} />,
+        component: <AccrualPolicy configs={configs} />,
       },
       {
         id: 4,
@@ -379,10 +389,7 @@ const TypeConfiguration = (props) => {
       },
     ];
 
-    if (
-      loadingFetchTypeByID ||
-      (action === 'configure' && Object.keys(viewingLeaveType).length === 0)
-    ) {
+    if (loadingFetchTypeByID) {
       return <Skeleton />;
     }
     return (

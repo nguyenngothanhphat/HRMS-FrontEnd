@@ -5,11 +5,10 @@ import { FORM_ITEM_NAME } from '@/utils/timeOff';
 import AccrualRate from './components/AccrualRate';
 import styles from './index.less';
 
-const { ACCRUAL_POLICY_ACCRUAL_METHOD } = FORM_ITEM_NAME;
+const { ACCRUAL_POLICY_ACCRUAL_METHOD, ACCRUAL_POLICY, ACCRUAL_METHOD } = FORM_ITEM_NAME;
 
 const AccrualPolicy = (props) => {
-  const { form = {} } = props;
-
+  const { configs = {} } = props;
   const [isUnlimited, setIsUnlimited] = useState(false);
 
   const onChange = (e) => {
@@ -17,9 +16,8 @@ const AccrualPolicy = (props) => {
   };
 
   useEffect(() => {
-    const values = form.getFieldsValue();
-    setIsUnlimited(values[ACCRUAL_POLICY_ACCRUAL_METHOD] === 'unlimited');
-  }, []);
+    setIsUnlimited(configs?.[ACCRUAL_POLICY]?.[ACCRUAL_METHOD] === 'unlimited');
+  }, [JSON.stringify(configs)]);
 
   return (
     <Card title="Accrual Policy" className={styles.AccrualPolicy}>

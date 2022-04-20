@@ -272,11 +272,11 @@ const timeOff = {
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, data } = response;
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { viewingLeaveType: data || {} },
+          payload: { viewingLeaveType: data },
         });
       } catch (errors) {
         dialog(errors);
