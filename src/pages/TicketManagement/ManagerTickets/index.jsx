@@ -11,7 +11,10 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
 @connect(
   ({
-    user: { permissions = {} },
+    user: {
+      permissions = {},
+      currentUser: { employee: { location: { _id: locationId = '' } = {} } = {} } = {},
+    },
     location: { companyLocationList = [] },
 
     ticketManagement: { listOffAllTicket = [], totalList = [] } = {},
@@ -20,6 +23,7 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
     totalList,
     permissions,
     companyLocationList,
+    locationId,
   }),
 )
 class ManagerTicket extends Component {
@@ -31,8 +35,8 @@ class ManagerTicket extends Component {
   }
 
   componentDidMount() {
-    const { tabName = '', permissions = {} } = this.props;
-
+    const { tabName = '', permissions = {}, locationId } = this.props;
+    this.setStateSelectedLocations(locationId);
     if (!tabName) {
       history.replace(`/ticket-management/all-tickets`);
     } else {
@@ -95,6 +99,20 @@ class ManagerTicket extends Component {
       this.fetchLocationList();
     }
   }
+
+  setStateSelectedLocations = (locationId) => {
+    const { dispatch } = this.props;
+
+    this.setState({
+      selectedLocations: [locationId],
+    });
+    dispatch({
+      type: 'ticketManagement/save',
+      payload: {
+        selectedLocations: [locationId],
+      },
+    });
+  };
 
   fetchToTalList = (departmentList) => {
     const { dispatch } = this.props;
