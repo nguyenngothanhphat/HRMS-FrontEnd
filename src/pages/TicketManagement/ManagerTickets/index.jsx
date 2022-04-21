@@ -7,7 +7,7 @@ import AllTicket from './components/AllTickets';
 import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
 import styles from './index.less';
 import WorkInProgress from '@/components/WorkInProgress';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 
 @connect(
   ({
@@ -31,13 +31,12 @@ class ManagerTicket extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedLocations: [],
+      selectedLocations: [getCurrentLocation()],
     };
   }
 
   componentDidMount() {
-    const { tabName = '', permissions = {}, locationId } = this.props;
-    this.setStateSelectedLocations(locationId);
+    const { tabName = '', permissions = {} } = this.props;
     if (!tabName) {
       history.replace(`/ticket-management/all-tickets`);
     } else {
@@ -100,20 +99,6 @@ class ManagerTicket extends Component {
       this.fetchLocationList();
     }
   }
-
-  setStateSelectedLocations = (locationId) => {
-    const { dispatch } = this.props;
-
-    this.setState({
-      selectedLocations: [locationId],
-    });
-    dispatch({
-      type: 'ticketManagement/save',
-      payload: {
-        selectedLocations: [locationId],
-      },
-    });
-  };
 
   fetchToTalList = (departmentList) => {
     const { dispatch } = this.props;
@@ -198,10 +183,10 @@ class ManagerTicket extends Component {
     if (selectedLocations.length > 0 && selectedLocations.length < companyLocationList.length) {
       return `${selectedLocations.length} locations selected`;
     }
-    if (selectedLocations.length === companyLocationList.length || selectedLocations.length === 0) {
+    if (selectedLocations.length === companyLocationList.length) {
       return 'All';
     }
-    return 'All';
+    return 'None';
   };
 
   renderFilterLocation = () => {

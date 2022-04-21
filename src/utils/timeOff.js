@@ -108,3 +108,102 @@ export const WORKING_HOURS = {
   START: '08:00',
   END: '17:00',
 };
+
+// TIMEOFF SETUP
+export const FORM_ITEM_NAME = {
+  TIMEOFF_TYPE_NAME: 'timeoffTypeName',
+
+  EMPLOYEE_TYPE: 'employeeType',
+
+  ACCRUAL_POLICY: 'accrualPolicy',
+  ACCRUAL_METHOD: 'accrualMethod',
+  ACCRUAL_RATE: 'accrualRate',
+  ACCRUAL_POLICY_ACCRUAL_METHOD: 'accrualPolicy.accrualMethod',
+  ACCRUAL_POLICY_ACCRUAL_RATE: 'accrualPolicy.accrualRate',
+
+  ACCRUAL_START: 'accrualStart',
+  ACCRUAL_START_VALUE: 'accrualStart.value',
+  ACCRUAL_START_UNIT: 'accrualStart.unit',
+
+  MINIMUM_LEAVE_AMOUNT: 'minimumLeaveAmount',
+  MINIMUM_LEAVE_AMOUNT_VALUE: 'minimumLeaveAmount.value',
+
+  LEAVE_APPLICATION_START: 'leaveApplicationStart',
+  LEAVE_APPLICATION_START_VALUE: 'leaveApplicationStart.value',
+
+  NEGATIVE_LEAVE_BALANCE: 'negativeLeaveBalance',
+  NEGATIVE_LEAVE_BALANCE_ALLOWED: 'negativeLeaveBalance.allowed',
+  NEGATIVE_LEAVE_BALANCE_MAXIMUM: 'negativeLeaveBalance.maximum',
+  NEGATIVE_LEAVE_BALANCE_MAXIMUM_UNIT: 'negativeLeaveBalance.maximum.unit',
+  NEGATIVE_LEAVE_BALANCE_MAXIMUM_VALUE: 'negativeLeaveBalance.maximum.value',
+
+  NEW_HIRE_PRORATION_POLICY: 'newHireProrationPolicy',
+
+  LOP_LEAVE_ACCRUAL_POLICY: 'LOPLeaveAccrualPolicy',
+
+  MAXIMUM_BALANCE_ALLOWED: 'maximumBalanceAllowed',
+  MAXIMUM_BALANCE_ALLOWED_UNIT: 'maximumBalanceAllowed.unit',
+  MAXIMUM_BALANCE_ALLOWED_VALUE: 'maximumBalanceAllowed.value',
+
+  ANNUAL_RESET_POLICY: 'annualResetPolicy',
+  ANNUAL_RESET_POLICY_RESET_TYPE: 'annualResetPolicy.resetType',
+  ANNUAL_RESET_POLICY_CALENDAR_DATE: 'annualResetPolicy.calendarDate',
+
+  NOTICE_PERIOD_LEAVE_ACCRUAL_POLICY: 'noticePeriodLeaveAccrualPolicy',
+
+  CARRY_FORWARD_POLICY: 'carryForwardPolicy',
+  CARRY_FORWARD_CAP: 'carryForwardCap',
+  CARRY_FORWARD_CAP_FROM: 'carryForwardCap.from',
+  CARRY_FORWARD_CAP_TO: 'carryForwardCap.to',
+  CARRY_FORWARD_ALLOWED: 'carryForwardAllowed',
+  MAXIMUM_CARRY_FORWARD_VALUE: 'maximumCarryForwardValue',
+  MAXIMUM_CARRY_FORWARD_VALUE_VALUE: 'maximumCarryForwardValue.value',
+  MAXIMUM_CARRY_FORWARD_VALUE_UNIT: 'maximumCarryForwardValue.unit',
+
+  VALUE: 'value',
+  UNIT: 'unit',
+  ALLOWED: 'allowed',
+  FROM: 'from',
+  TO: 'to',
+  MAXIMUM: 'maximum',
+  RESET_TYPE: 'resetType',
+  CALENDAR_DATE: 'calendarDate',
+};
+
+export const TIMEOFF_WORK_DAYS = [
+  {
+    id: 1,
+    text: 'SUNDAY',
+    name: 'Sun',
+  },
+  {
+    id: 2,
+    text: 'MONDAY',
+    name: 'Mon',
+  },
+  {
+    id: 3,
+    text: 'TUESDAY',
+    name: 'Tue',
+  },
+  {
+    id: 4,
+    text: 'WEDNESDAY',
+    name: 'Wed',
+  },
+  {
+    id: 5,
+    text: 'THURSDAY',
+    name: 'Thu',
+  },
+  {
+    id: 6,
+    text: 'FRIDAY',
+    name: 'Fri',
+  },
+  {
+    id: 7,
+    name: 'Sat',
+    text: 'SATURDAY',
+  },
+];

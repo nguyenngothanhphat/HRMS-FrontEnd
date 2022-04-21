@@ -1,0 +1,62 @@
+.CarryForwardItem {
+  background: #ffffff;
+  .labels {
+    margin-bottom: 8px;
+    padding-inline: 16px;
+    span {
+      color: #707177;
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 20px;
+    }
+  }
+  .container {
+    box-sizing: border-box;
+    padding: 16px;
+    border: 1px solid #d6dce0;
+    border-radius: 5px;
+  }
+  .divider {
+    height: 40px;
+    border-left: 1px dashed rgba(0, 0, 0, 0.3);
+  }
+  .leftPart,
+  .rightPart,
+  .centerPart {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    span {
+      display: block;
+      color: #464646;
+      font-weight: 400;
+      font-size: 13px;
+    }
+  }
+  .prefix {
+    position: absolute;
+    top: 12.79px;
+    right: 26px;
+    color: #707177;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 16px;
+  }
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    img {
+      cursor: pointer;
+    }
+  }
+  :global {
+    .ant-input {
+      width: 50px;
+      margin-inline: 10px;
+    }
+    .ant-input-number {
+      width: 100px;
+    }
+  }
+}
