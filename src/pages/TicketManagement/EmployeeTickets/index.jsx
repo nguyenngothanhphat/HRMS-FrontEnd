@@ -4,6 +4,8 @@ import { history, connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import TicketQueue from './components/TicketQueue';
 import MyTickets from './components/MyTickets';
+import CheckboxMenu from '@/components/CheckboxMenu';
+import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
 import styles from './index.less';
@@ -142,6 +144,35 @@ class EmployeeTicket extends Component {
     }
   };
 
+  renderFilterLocation = () => {
+    const selectedLocationName = this.getSelectedLocationName();
+    const { selectedLocations = [] } = this.state;
+    const { companyLocationList = [] } = this.props;
+    const locationOptions = companyLocationList.map((x) => {
+      return {
+        _id: x._id,
+        name: x.name,
+      };
+    });
+    return (
+      <div className={styles.item}>
+        <span className={styles.label}>Location</span>
+
+        <CheckboxMenu
+          options={locationOptions}
+          onChange={this.onLocationChange}
+          list={companyLocationList}
+          default={selectedLocations}
+        >
+          <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
+            <span>{selectedLocationName}</span>
+            <img src={SmallDownArrow} alt="" />
+          </div>
+        </CheckboxMenu>
+      </div>
+    );
+  };
+
   render() {
     const { TabPane } = Tabs;
     const { listOffAllTicket = [], totalList = [] } = this.props;
@@ -156,6 +187,7 @@ class EmployeeTicket extends Component {
               this.handleChangeTable(key);
             }}
             destroyInactiveTabPane
+            tabBarExtraContent={this.renderFilterLocation()}
           >
             <TabPane tab="Ticket Queue" key="ticket-queue">
               <TicketQueue data={listOffAllTicket} countData={totalList} />

@@ -17,13 +17,14 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
     },
     location: { companyLocationList = [] },
 
-    ticketManagement: { listOffAllTicket = [], totalList = [] } = {},
+    ticketManagement: { listOffAllTicket = [], totalList = [], selectedLocations = [] } = {},
   }) => ({
     listOffAllTicket,
     totalList,
     permissions,
     companyLocationList,
     locationId,
+    selectedLocations,
   }),
 )
 class ManagerTicket extends Component {
@@ -157,10 +158,11 @@ class ManagerTicket extends Component {
   };
 
   fetchListAllTicket = (departmentList) => {
-    const { dispatch } = this.props;
+    const { dispatch, selectedLocations } = this.props;
 
     let payload = {
       status: ['New'],
+      location: selectedLocations,
     };
     if (departmentList && departmentList.length > 0) {
       payload = {
