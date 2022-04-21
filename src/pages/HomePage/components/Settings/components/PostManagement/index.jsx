@@ -4,20 +4,13 @@ import PostCard from './components/PostCard';
 import AddPost from './components/AddPost';
 import styles from './index.less';
 import { TAB_IDS } from '@/utils/homePage';
+import { goToTop } from '@/utils/utils';
 
 const PostManagement = () => {
   const [addingPost, setAddingPost] = useState(false);
   const [editingPost, setEditingPost] = useState(false);
   const [record, setRecord] = useState({});
   const [selectedTab, setSelectedTab] = useState(TAB_IDS.ANNOUNCEMENTS);
-
-  const goToTop = () => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
-    });
-  };
 
   const onAddPost = (recordTemp) => {
     setRecord(recordTemp);

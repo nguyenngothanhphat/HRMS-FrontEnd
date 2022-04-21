@@ -24,12 +24,6 @@ const Address = (props) => {
     {
       name: 'AddressLine1',
       label: 'Address Line 1',
-      rules: [
-        {
-          required: true,
-          message: 'Required field',
-        },
-      ],
       span: {
         xs: 24,
         md: 24,
@@ -48,12 +42,6 @@ const Address = (props) => {
     {
       name: 'Country',
       label: 'Country',
-      rules: [
-        {
-          required: true,
-          message: 'Required field',
-        },
-      ],
       span: {
         xs: 24,
         md: 12,
@@ -63,12 +51,6 @@ const Address = (props) => {
     {
       name: 'State',
       label: 'State',
-      rules: [
-        {
-          required: true,
-          message: 'Required field',
-        },
-      ],
       span: {
         xs: 24,
         md: 12,
@@ -78,12 +60,6 @@ const Address = (props) => {
     {
       name: 'City',
       label: 'City',
-      rules: [
-        {
-          required: true,
-          message: 'Required field',
-        },
-      ],
       span: {
         xs: 24,
         md: 12,
@@ -93,12 +69,6 @@ const Address = (props) => {
     {
       name: 'ZipCode',
       label: 'Zip/Postal Code',
-      rules: [
-        {
-          required: true,
-          message: 'Required field',
-        },
-      ],
       span: {
         xs: 24,
         md: 12,

@@ -141,7 +141,12 @@ const Policies = (props) => {
         </Col>
         <Col sm={24} md={10} xl={13} className={styles.viewCenter}>
           {getContent()}
-          <ViewDocumentModal visible={isViewDocument} onClose={handleCancel} url={linkFile} />
+          <ViewDocumentModal
+            visible={isViewDocument}
+            onClose={handleCancel}
+            url={linkFile}
+            disableDownload
+          />
         </Col>
         <Col sm={24} md={9} xl={6} style={{ padding: '24px 24px 24px 0' }}>
           <div className={styles.viewRight}>

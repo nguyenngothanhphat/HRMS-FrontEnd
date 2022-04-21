@@ -1,10 +1,27 @@
 @spacing-xxs: 4px;
 
-.basicInformation {
+.BasicInformation {
   position: relative;
   width: 100%;
   min-height: 216px;
   font-family: 'Roboto', sans-serif;
+
+  .cardTitle {
+    p {
+      margin-bottom: 0;
+    }
+    .title {
+      color: #000000;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .description {
+      color: #707177;
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 15px;
+    }
+  }
 
   .bottomBar {
     padding: 4 * @spacing-xxs 32px;
@@ -12,7 +29,6 @@
     border: solid 1px #d6dce0;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
-    margin-block: 24px;
 
     .normalText {
       display: flex;
@@ -100,65 +116,32 @@
       border-bottom: none;
     }
   }
-  .basicInformation__form {
-    width: 100%;
-    padding: 8 * @spacing-xxs;
-    :global {
-      .ant-form-item-has-success {
-        .ant-input {
-          border: solid 1px #47c97f;
-        }
-      }
-      .ant-form-item-label {
-        padding-bottom: 0;
-        label {
-          color: #707177;
-          font-size: 13px;
-        }
-      }
-    }
-
-    .formInput__email {
-      position: relative;
-      .formInput__domain {
-        position: absolute;
-        top: 10px;
-        right: 4 * @spacing-xxs;
-        z-index: 1000;
-        color: #707177;
-      }
-    }
-    .formInput {
-      height: 42px;
-      padding-right: 15px;
-      padding-left: 15px;
-      object-fit: contain;
-      font-family: 'Roboto', sans-serif;
-      background-color: #ffffff;
-      border-radius: 8px;
-    }
-
-    .verifyCheckbox {
-      :global {
-        .ant-checkbox-wrapper {
-          color: #707177;
-          font-size: 13px;
-          line-height: 20px;
-        }
-        .ant-checkbox {
-          margin-right: 10px;
-        }
-      }
-    }
-  }
 
   :global {
     .ant-input {
       box-shadow: none !important;
     }
-    .ant-input-disabled {
-      color: #161c29;
+    .ant-input-disabled,
+    .ant-input[disabled] {
+      color: #161c29 !important;
       background: rgba(226, 228, 232, 0.5) !important;
+    }
+
+    .ant-form-item-label {
+      padding-bottom: 0;
+
+      label {
+        color: #707177;
+        font-size: 13px;
+      }
+    }
+    .ant-input {
+      height: 42px;
+      object-fit: contain;
+      font-family: 'Roboto', sans-serif;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: none !important;
     }
   }
 }

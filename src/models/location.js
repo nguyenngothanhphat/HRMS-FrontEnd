@@ -4,6 +4,7 @@ import {
   getCurrentLocation,
   getCurrentTenant,
   getCurrentCompany,
+  isAdmin,
 } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { getLocationListByCompany, getLocationListByParentCompany } from '../services/location';
@@ -29,9 +30,11 @@ const Location = {
           payload: { companyLocationList: data },
         });
 
-        const currentLocation = getCurrentLocation();
-        if (!currentLocation || currentLocation === 'undefined') {
-          setCurrentLocation(data.length > 0 ? data[0]?._id : '');
+        if (!isAdmin()) {
+          const currentLocation = getCurrentLocation();
+          if (!currentLocation || currentLocation === 'undefined') {
+            setCurrentLocation(data.length > 0 ? data[0]?._id : '');
+          }
         }
 
         return data;

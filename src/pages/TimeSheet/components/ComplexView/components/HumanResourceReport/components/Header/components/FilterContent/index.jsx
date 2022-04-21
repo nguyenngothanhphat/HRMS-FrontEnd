@@ -10,8 +10,10 @@ const FilterContent = (props) => {
   const [form] = Form.useForm();
   const {
     dispatch,
-    timeSheet: { departmentList = [], employeeNameList = [], projectListState = [] } = {},
+    timeSheet: { departmentList = [], projectList = [], employeeNameList = [] } = {},
     loadingFetchEmployeeNameList = false,
+    loadingFetchDepartmentList = false,
+    loadingFetchProjectList = false,
   } = props;
 
   const [employeeNameListState, setEmployeeNameListState] = useState([]);
@@ -22,6 +24,9 @@ const FilterContent = (props) => {
   useEffect(() => {
     dispatch({
       type: 'timeSheet/fetchDepartmentListEffect',
+    });
+    dispatch({
+      type: 'timeSheet/fetchProjectListEffect',
     });
   }, []);
 
@@ -138,6 +143,7 @@ const FilterContent = (props) => {
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
           showArrow
+          loading={loadingFetchDepartmentList}
         >
           {departmentList.map((x) => {
             return (
@@ -154,17 +160,18 @@ const FilterContent = (props) => {
           allowClear
           showSearch
           mode="multiple"
+          loading={loadingFetchProjectList}
           style={{ width: '100%' }}
-          placeholder="Search by Country"
+          placeholder="Search by Project"
           filterOption={(input, option) =>
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
           showArrow
         >
-          {projectListState.map((x) => {
+          {projectList.map((x) => {
             return (
               <Select.Option value={x.id} key={x.id}>
-                {x.country}
+                {x.projectName}
               </Select.Option>
             );
           })}
@@ -176,5 +183,7 @@ const FilterContent = (props) => {
 
 export default connect(({ loading, timeSheet }) => ({
   loadingFetchEmployeeNameList: loading.effects['timeSheet/fetchEmployeeNameListEffect'],
+  loadingFetchDepartmentList: loading.effects['timeSheet/fetchDepartmentListEffect'],
+  loadingFetchProjectList: loading.effects['timeSheet/fetchProjectListEffect'],
   timeSheet,
 }))(FilterContent);
