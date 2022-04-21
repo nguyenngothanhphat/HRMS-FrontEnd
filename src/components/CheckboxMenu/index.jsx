@@ -15,10 +15,8 @@ const CheckboxMenu = (props) => {
   const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
-    if (selectedItems.length === 0 && defaultChecks.length > 0) {
-      setSelectedItems([...defaultChecks]);
-    }
-  }, []);
+    setSelectedItems([...defaultChecks]);
+  }, [JSON.stringify(defaultChecks)]);
 
   const onCheckAllChange = (e) => {
     const selectedItemsTemp = e.target.checked ? options.map((x) => x._id) : [];

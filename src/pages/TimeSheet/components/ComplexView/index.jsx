@@ -6,6 +6,7 @@ import ModalImage from '@/assets/timeSheet/modalImage1.png';
 import CheckboxMenu from '@/components/CheckboxMenu';
 import CommonModal from '@/components/CommonModal';
 import { PageContainer } from '@/layouts/layout/src';
+import { getCurrentLocation } from '@/utils/authority';
 import { TAB_NAME } from '@/utils/timeSheet';
 import FinanceReport from './components/FinanceReport';
 import HumanResourceReport from './components/HumanResourceReport';
@@ -29,7 +30,7 @@ const ComplexView = (props) => {
 
   const [navToTimeoffModalVisible, setNavToTimeoffModalVisible] = useState(false);
   const [selectedDivisions, setSelectedDivisions] = useState([]);
-  const [selectedLocations, setSelectedLocation] = useState([]);
+  const [selectedLocations, setSelectedLocation] = useState([getCurrentLocation()]);
   const [isIncompleteTimeSheet, setIsIncompleteTimeSheet] = useState(false);
 
   const requestLeave = () => {
@@ -97,6 +98,18 @@ const ComplexView = (props) => {
     // if only one selected
     const selectedLocationName = getSelectedLocationName();
     const selectedDivisionName = getSelectedDivisionName();
+    // PERMISSIONS TO VIEW LOCATION
+    const viewLocation = permissions.viewLocationTimesheet;
+    const locationUser = companyLocationList
+      .filter((x) => {
+        return x._id === getCurrentLocation();
+      })
+      .map((x) => {
+        return {
+          _id: x._id,
+          name: x.name,
+        };
+      });
 
     const divisionOptions = divisionList.map((x) => {
       return {
@@ -123,7 +136,7 @@ const ComplexView = (props) => {
           <span className={styles.label}>Location</span>
 
           <CheckboxMenu
-            options={locationOptions}
+            options={viewLocation !== -1 ? locationUser : locationOptions}
             onChange={onLocationChange}
             list={companyLocationList}
             default={selectedLocations}

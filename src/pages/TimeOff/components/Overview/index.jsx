@@ -10,14 +10,14 @@ import ManagerRequestTable from './components/ManagerRequestTable';
 import TimeOffTypesInfo from './components/TimeOffTypesInfo';
 
 import styles from './index.less';
-import FeedbackBar from './components/FeedbackBar';
+// import FeedbackBar from './components/FeedbackBar';
 
 export default class EmployeeLandingPage extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       viewInformation: false,
-      closeFeedbackBar: false,
+      // closeFeedbackBar: false,
     };
   }
 
@@ -25,11 +25,11 @@ export default class EmployeeLandingPage extends PureComponent {
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
   };
 
-  onCloseFeedbackBar = () => {
-    this.setState({
-      closeFeedbackBar: true,
-    });
-  };
+  // onCloseFeedbackBar = () => {
+  //   this.setState({
+  //     closeFeedbackBar: true,
+  //   });
+  // };
 
   buttonOnClickCompoff = () => {
     history.push({
@@ -52,7 +52,7 @@ export default class EmployeeLandingPage extends PureComponent {
   };
 
   render() {
-    const { viewInformation, closeFeedbackBar } = this.state;
+    const { viewInformation } = this.state;
     const {
       eligibleForCompOff = false,
       viewHRTimeoff = false,
@@ -110,13 +110,13 @@ export default class EmployeeLandingPage extends PureComponent {
                   )}
                 </Col>
               </Row>
-              {!closeFeedbackBar && (
+              {/* {!closeFeedbackBar && (
                 <Row gutter={[20, 20]}>
                   <Col span={24}>
                     <FeedbackBar onClose={this.onCloseFeedbackBar} />
                   </Col>
                 </Row>
-              )}
+              )} */}
               <TimeOffTypesInfo onClose={this.onInformationClick} visible={viewInformation} />
             </Col>
           </Row>

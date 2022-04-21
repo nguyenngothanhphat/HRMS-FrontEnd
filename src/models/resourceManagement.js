@@ -1,5 +1,5 @@
 import { notification, message } from 'antd';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
   getResources,
@@ -47,7 +47,7 @@ const resourceManagement = {
     resourceUtilizationList: {},
     newJoineeList: [],
     selectedDivisions: [],
-    selectedLocations: [], // empty for all
+    selectedLocations: [getCurrentLocation()], // empty for all
     currentPayload: {},
   },
   effects: {
