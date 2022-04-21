@@ -16,8 +16,7 @@
     "viewportHeight": 1024,
     "chromeWebSecurity": false,
     "reporter": "gitlab",
-    "projectId": "2892v1",
-    ""
+    "projectId": "2892v1"
 }
 
 
