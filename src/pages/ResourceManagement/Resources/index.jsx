@@ -10,6 +10,7 @@ import CheckboxMenu from '@/components/CheckboxMenu';
 import ProjectList from './components/Projects';
 import ResourceList from './components/ResourceList';
 import styles from './index.less';
+import { getCurrentLocation } from '@/utils/authority';
 
 const baseModuleUrl = '/resource-management';
 const TABS = {
@@ -49,7 +50,7 @@ class Resources extends Component {
       // resourceList: [],
       loadingSearch: false,
       selectedDivisions: [],
-      selectedLocations: [],
+      selectedLocations: [getCurrentLocation()],
     };
     this.setDebounce = debounce(() => {
       this.setState({

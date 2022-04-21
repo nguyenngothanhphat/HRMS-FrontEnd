@@ -31,7 +31,7 @@ import {
   getListEmployeeSingleCompany,
   getDivisionList,
 } from '@/services/timeSheet';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant, getCurrentLocation } from '@/utils/authority';
 import { convertMsToTime, isTheSameDay } from '@/utils/timeSheet';
 import { dialog } from '@/utils/utils';
 
@@ -82,7 +82,7 @@ const initialState = {
 
   // common
   selectedDivisions: [],
-  selectedLocations: [],
+  selectedLocations: [getCurrentLocation()],
   isIncompleteTimesheet: false,
 };
 
