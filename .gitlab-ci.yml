@@ -109,8 +109,8 @@ cypress-test-dev:
     - npm install cypress
     - npm install --save-dev cypress-file-upload
     - cd tests/ui_automation_hrms
-    #- npx cypress run --record --key 6840a7e8-277a-442b-90fb-2101274fd849 --headless
-    - npx cypress run
+    - npx cypress run --browser chrome --record --key 6840a7e8-277a-442b-90fb-2101274fd849 --headless
+    #- npx cypress run
   tags:
     - master
   only:
