@@ -225,7 +225,7 @@ class TableTickets extends PureComponent {
       },
     };
 
-    const { listEmployee, locationsList } = this.props;
+    const { locationsList } = this.props;
 
     const columns = [
       {
