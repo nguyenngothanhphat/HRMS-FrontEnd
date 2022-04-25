@@ -2,7 +2,7 @@ import { Button, Col, Row } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { roundNumber, TIMEOFF_STATUS } from '@/utils/timeOff';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import Withdraw2Modal from '../Withdraw2Modal';
@@ -174,7 +174,7 @@ class RequestInformation extends PureComponent {
 
     const checkWithdrawValid = this.checkWithdrawValid(fromDate);
 
-    const duration = Math.round(durationProp * 100) / 100;
+    const duration = roundNumber(durationProp)
 
     return (
       <div className={styles.RequestInformation}>
