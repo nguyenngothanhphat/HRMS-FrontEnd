@@ -47,6 +47,8 @@ const Latest = (props) => {
       selectedLocations = [],
       selectedDivisions = [],
     } = {},
+    employee = {},
+    permissions = {}
   } = props;
   const { summaryToday = [], summaryYesterday = [] } = resourceUtilizationList;
   const [calculatedData, setCalculatedData] = useState({
@@ -54,12 +56,19 @@ const Latest = (props) => {
     increasePercent: 0,
   });
 
+  const adminMode = permissions.viewResourceAdminMode !== -1;
+  const countryMode = permissions.viewResourceCountryMode !== -1;
+  const employeeId = employee ? employee._id : ''
+
   const fetchData = () => {
     dispatch({
       type: 'resourceManagement/fetchResourceUtilizationList',
       payload: {
         location: selectedLocations,
         division: selectedDivisions,
+        employeeId,
+        adminMode,
+        countryMode
       },
     });
   };
@@ -196,6 +205,8 @@ const Latest = (props) => {
   );
 };
 
-export default connect(({ resourceManagement }) => ({
+export default connect(({ resourceManagement, user: { currentUser: { employee = {} } = {}, permissions = {} } }) => ({
   resourceManagement,
+  employee,
+  permissions,
 }))(Latest);
