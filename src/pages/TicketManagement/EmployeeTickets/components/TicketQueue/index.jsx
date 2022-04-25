@@ -12,11 +12,12 @@ import styles from './index.less';
 @connect(
   ({
     loading,
-    ticketManagement: { listDepartment = [] } = {},
+    ticketManagement: { listDepartment = [], selectedLocations = [] } = {},
     user: { currentUser: { employee = {} } = {} } = {},
   }) => ({
     listDepartment,
     employee,
+    selectedLocations,
     loading: loading.effects['ticketManagement/fetchListAllTicket'],
     loadingFilter: loading.effects['ticketManagement/fetchListAllTicketSearch'],
   }),
@@ -39,17 +40,18 @@ class TicketQueue extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { pageSelected, size, nameSearch } = this.state;
-
+    const { selectedLocations = [] } = this.props;
     if (
       prevState.pageSelected !== pageSelected ||
       prevState.size !== size ||
-      prevState.nameSearch !== nameSearch
+      prevState.nameSearch !== nameSearch ||
+      JSON.stringify(prevProps.selectedLocations) !== JSON.stringify(selectedLocations)
     ) {
-      this.initDataTable(nameSearch);
+      this.initDataTable(nameSearch, selectedLocations);
     }
   }
 
-  initDataTable = (nameSearch) => {
+  initDataTable = (nameSearch, selectedLocations = []) => {
     const { dispatch } = this.props;
     const { pageSelected, size } = this.state;
 
@@ -57,6 +59,7 @@ class TicketQueue extends Component {
       status: ['New'],
       page: pageSelected,
       limit: size,
+      location: selectedLocations,
     };
     if (nameSearch) {
       payload = {
