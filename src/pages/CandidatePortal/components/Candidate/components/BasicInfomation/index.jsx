@@ -9,6 +9,7 @@ import NoteComponent from '../NoteComponent';
 import Address from './components/Address';
 import BasicInfo from './components/BasicInfo';
 import styles from './index.less';
+import { ADDRESS_VARIABLES } from '@/utils/candidatePortal';
 
 const BasicInformation = (props) => {
   const [form] = Form.useForm();
@@ -21,6 +22,7 @@ const BasicInformation = (props) => {
     _id: id,
     loadingUpdateCandidate = false,
   } = props;
+
   const {
     isVerifiedBasicInfo = false,
     phoneNumber,
@@ -30,11 +32,39 @@ const BasicInformation = (props) => {
     lastName,
     privateEmail,
     previousExperience,
+    totalExperience,
     _id: candidateId = '',
+    currentAddress: {
+      addressLine1: currentAddressLine1,
+      addressLine2: currentAddressLine2,
+      city: currentCity,
+      country: currentCountry,
+      state: currentState,
+      zipCode: currentZipCode,
+    } = {},
+    permanentAddress: {
+      addressLine1: permanentAddressLine1,
+      addressLine2: permanentAddressLine2,
+      city: permanentCity,
+      country: permanentCountry,
+      state: permanentState,
+      zipCode: permanentZipCode,
+    } = {},
   } = data;
 
   const { filledBasicInformation } = checkMandatory;
   const [isSameAddress, setIsSameAddress] = React.useState(false);
+
+  useEffect(() => {
+    if (
+      Object.keys(data.currentAddress || {}).length > 0 &&
+      Object.keys(data.permanentAddress || {}).length > 0
+    ) {
+      const keys = Object.keys(data.currentAddress || {});
+      const check = keys.every((x) => data.currentAddress[x] === data.permanentAddress[x]);
+      setIsSameAddress(check);
+    }
+  }, [JSON.stringify(data)]);
 
   const checkAllFieldsValidate = () => {
     const valid = settings?.map((question) => {
@@ -143,16 +173,32 @@ const BasicInformation = (props) => {
       });
     }
 
+    const currentAddressTemp = {};
+    const permanentAddressTemp = {};
+
+    const lowerFirstLetter = (string) => {
+      return string.charAt(0).toLowerCase() + string.slice(1);
+    };
+
+    ADDRESS_VARIABLES.forEach((x) => {
+      currentAddressTemp[`${lowerFirstLetter(x)}`] = values[`current${x}`];
+      permanentAddressTemp[`${lowerFirstLetter(x)}`] = values[`permanent${x}`];
+    });
+
+    const payload = {
+      firstName: values.firstName,
+      middleName: values.middleName,
+      lastName: values.lastName,
+      candidate: candidateId,
+      tenantId: getCurrentTenant(),
+      isVerifiedBasicInfo,
+      currentAddress: currentAddressTemp,
+      permanentAddress: permanentAddressTemp,
+    };
+
     await dispatch({
       type: 'candidatePortal/updateByCandidateEffect',
-      payload: {
-        firstName: values.firstName,
-        middleName: values.middleName,
-        lastName: values.lastName,
-        candidate: candidateId,
-        tenantId: getCurrentTenant(),
-        isVerifiedBasicInfo,
-      },
+      payload,
     });
     dispatch({
       type: 'candidatePortal/save',
@@ -286,7 +332,20 @@ const BasicInformation = (props) => {
                 lastName,
                 privateEmail,
                 previousExperience,
+                totalExperience,
                 phoneNumber,
+                currentAddressLine1,
+                currentAddressLine2,
+                currentCity,
+                currentCountry,
+                currentState,
+                currentZipCode,
+                permanentAddressLine1,
+                permanentAddressLine2,
+                permanentCity,
+                permanentCountry,
+                permanentState,
+                permanentZipCode,
               }
             }
             onValuesChange={onValuesChange}

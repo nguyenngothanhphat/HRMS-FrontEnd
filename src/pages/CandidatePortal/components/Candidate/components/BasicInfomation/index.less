@@ -127,6 +127,11 @@
       background: rgba(226, 228, 232, 0.5) !important;
     }
 
+    .ant-select-disabled.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+      color: #161c29 !important;
+      background: rgba(226, 228, 232, 0.5) !important;
+    }
+
     .ant-form-item-label {
       padding-bottom: 0;
 
@@ -142,6 +147,23 @@
       background-color: #ffffff;
       border-radius: 8px;
       box-shadow: none !important;
+    }
+    // SELECT
+    .ant-select {
+      width: 100% !important;
+    }
+    .ant-select-selector {
+      min-height: 42px !important;
+      border-radius: 5px !important;
+    }
+    .ant-select-single {
+      .ant-select-selection-search-input {
+        height: 42px !important;
+      }
+    }
+    .ant-select-selection-item,
+    .ant-select-selection-placeholder {
+      line-height: 42px !important;
     }
   }
 }

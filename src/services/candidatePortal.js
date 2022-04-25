@@ -62,3 +62,16 @@ export function candidateFinalOffer(payload) {
     data: payload,
   });
 }
+
+export async function getCountryList() {
+  return request('/api/country/list', {
+    method: 'POST',
+  });
+}
+
+export async function getStateListByCountry(payload) {
+  return request('/api/country/get-states', {
+    method: 'POST',
+    data: payload,
+  });
+}

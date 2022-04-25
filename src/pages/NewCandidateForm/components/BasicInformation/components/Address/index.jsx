@@ -1,24 +1,12 @@
 import { Checkbox, Col, Form, Input, Row } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import { Page } from '@/pages/NewCandidateForm/utils';
+import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import styles from './index.less';
 
 const Address = (props) => {
-  const {
-    disabled = false,
-    onSameAddress = () => {},
-    // isSameAddress = false,
-    // form,
-  } = props;
-
-  // useEffect(() => {
-  //   ['AddressLine1', 'AddressLine2', 'Country', 'City', 'State', 'ZipCode'].forEach((x) => {
-  //     const input = form.getFieldInstance(`permanent${x}`);
-  //     if (input) {
-  //       input.input.disabled = isSameAddress;
-  //     }
-  //   });
-  // }, [isSameAddress]);
+  const { disabled = false, onSameAddress = () => {}, isSameAddress = false } = props;
 
   const fields = [
     {
@@ -99,7 +87,7 @@ const Address = (props) => {
       </div>
       <div className={styles.addressTitle}>
         Permanent Address
-        <Checkbox onChange={onSameAddress} disabled={disabled}>
+        <Checkbox onChange={onSameAddress} disabled={disabled} checked={isSameAddress}>
           Same as above
         </Checkbox>
       </div>
@@ -120,6 +108,9 @@ const Address = (props) => {
             </Col>
           ))}
         </Row>
+      </div>
+      <div span={24} className={styles.form}>
+        <RenderAddQuestion page={Page.Basic_Information} />
       </div>
     </div>
   );

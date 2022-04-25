@@ -1,19 +1,48 @@
-import { Checkbox, Col, Form, Input, Row } from 'antd';
+import { Checkbox, Col, Form, Input, Row, Select } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
+const { Option } = Select;
+
 const Address = (props) => {
-  const { disabled = false, onSameAddress = () => {}, isSameAddress = false, form } = props;
+  const {
+    dispatch,
+    disabled = false,
+    onSameAddress = () => {},
+    isSameAddress = false,
+    candidatePortal: { countryList = [], stateList = [] } = {},
+    loadingFetchCountry = false,
+    loadingFetchState = false,
+    form,
+  } = props;
+
+  const fetchCountryList = () => {
+    dispatch({
+      type: 'candidatePortal/fetchCountryList',
+    });
+  };
+
+  const fetchStateListByCountry = (id, type) => {
+    dispatch({
+      type: 'candidatePortal/fetchStateByCountry',
+      payload: { id },
+    });
+
+    // if country changes, remove selected state
+    form.setFieldsValue({
+      [`${type}State`]: null,
+    });
+    if (type === 'current') {
+      form.setFieldsValue({
+        permanentState: null,
+      });
+    }
+  };
 
   useEffect(() => {
-    ['AddressLine1', 'AddressLine2', 'Country', 'City', 'State', 'ZipCode'].forEach((x) => {
-      const input = form.getFieldInstance(`permanent${x}`);
-      if (input) {
-        input.input.disabled = isSameAddress;
-      }
-    });
-  }, [isSameAddress]);
+    fetchCountryList();
+  }, []);
 
   const fields = [
     {
@@ -29,7 +58,9 @@ const Address = (props) => {
         xs: 24,
         md: 24,
       },
-      component: <Input disabled={disabled} autoComplete="off" placeholder="Address Line 1" />,
+      component: (disabled2) => (
+        <Input disabled={disabled || disabled2} autoComplete="off" placeholder="Address Line 1" />
+      ),
     },
     {
       name: 'AddressLine2',
@@ -38,7 +69,9 @@ const Address = (props) => {
         xs: 24,
         md: 24,
       },
-      component: <Input disabled={disabled} autoComplete="off" placeholder="Address Line 2" />,
+      component: (disabled2) => (
+        <Input disabled={disabled || disabled2} autoComplete="off" placeholder="Address Line 2" />
+      ),
     },
     {
       name: 'Country',
@@ -53,7 +86,25 @@ const Address = (props) => {
         xs: 24,
         md: 12,
       },
-      component: <Input disabled={disabled} autoComplete="off" placeholder="Country" />,
+      component: (disabled2, type) => (
+        <Select
+          autoComplete="off"
+          placeholder="Country"
+          onChange={(id) => fetchStateListByCountry(id, type)}
+          disabled={disabled || disabled2}
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          showArrow
+          showSearch
+          loading={loadingFetchCountry}
+        >
+          {countryList.map((x) => (
+            <Option key={x._id} value={x._id}>
+              {x.name}
+            </Option>
+          ))}
+        </Select>
+      ),
     },
     {
       name: 'State',
@@ -68,7 +119,24 @@ const Address = (props) => {
         xs: 24,
         md: 12,
       },
-      component: <Input disabled={disabled} autoComplete="off" placeholder="State" />,
+      component: (disabled2) => (
+        <Select
+          disabled={disabled || disabled2}
+          autoComplete="off"
+          placeholder="State"
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          showArrow
+          showSearch
+          loading={loadingFetchState}
+        >
+          {stateList.map((x) => (
+            <Option key={x} value={x}>
+              {x}
+            </Option>
+          ))}
+        </Select>
+      ),
     },
     {
       name: 'City',
@@ -83,7 +151,9 @@ const Address = (props) => {
         xs: 24,
         md: 12,
       },
-      component: <Input disabled={disabled} autoComplete="off" placeholder="City" />,
+      component: (disabled2) => (
+        <Input disabled={disabled || disabled2} autoComplete="off" placeholder="City" />
+      ),
     },
     {
       name: 'ZipCode',
@@ -98,7 +168,9 @@ const Address = (props) => {
         xs: 24,
         md: 12,
       },
-      component: <Input disabled={disabled} autoComplete="off" placeholder="Zip Code" />,
+      component: (disabled2) => (
+        <Input disabled={disabled || disabled2} autoComplete="off" placeholder="Zip Code" />
+      ),
     },
   ];
 
@@ -113,10 +185,10 @@ const Address = (props) => {
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
                 label={x.label}
-                name={`current${x.name}`}
+                name={`${'current'}${x.name}`}
                 rules={x.rules}
               >
-                {x.component}
+                {x.component(false, 'current')}
               </Form.Item>
             </Col>
           ))}
@@ -125,7 +197,7 @@ const Address = (props) => {
       <div className={styles.addressTitle}>
         Permanent Address
         <Form.Item name="isSameAddress" valuePropName="value">
-          <Checkbox onChange={onSameAddress} disabled={disabled}>
+          <Checkbox onChange={onSameAddress} disabled={disabled} checked={isSameAddress}>
             Same as above
           </Checkbox>
         </Form.Item>
@@ -142,7 +214,7 @@ const Address = (props) => {
                 name={`permanent${x.name}`}
                 rules={x.rules}
               >
-                {x.component}
+                {x.component(isSameAddress, 'permanent')}
               </Form.Item>
             </Col>
           ))}
@@ -152,4 +224,8 @@ const Address = (props) => {
   );
 };
 
-export default connect(() => ({}))(Address);
+export default connect(({ candidatePortal, loading }) => ({
+  candidatePortal,
+  loadingFetchCountry: loading.effects['candidatePortal/fetchCountryList'],
+  loadingFetchState: loading.effects['candidatePortal/fetchStateByState'],
+}))(Address);

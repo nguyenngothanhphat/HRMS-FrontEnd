@@ -4,8 +4,6 @@ import React, { useEffect } from 'react';
 import { connect, history } from 'umi';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import { getCurrentTenant } from '@/utils/authority';
-import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import { Page } from '../../utils';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NewNoteComponent';
 import Address from './components/Address';
@@ -21,6 +19,7 @@ const BasicInformation = (props) => {
       lastName,
       privateEmail,
       phoneNumber,
+      totalExperience,
       workEmail,
       checkStatus,
       _id,
@@ -28,6 +27,22 @@ const BasicInformation = (props) => {
       processStatus = '',
       previousExperience,
       employeeId,
+      currentAddress: {
+        addressLine1: currentAddressLine1,
+        addressLine2: currentAddressLine2,
+        city: currentCity,
+        country: currentCountry,
+        state: currentState,
+        zipCode: currentZipCode,
+      } = {},
+      permanentAddress: {
+        addressLine1: permanentAddressLine1,
+        addressLine2: permanentAddressLine2,
+        city: permanentCity,
+        country: permanentCountry,
+        state: permanentState,
+        zipCode: permanentZipCode,
+      } = {},
     } = {},
     checkMandatory,
     dispatch,
@@ -40,6 +55,17 @@ const BasicInformation = (props) => {
   const [isSameAddress, setIsSameAddress] = React.useState(false);
 
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    if (
+      Object.keys(tempData.currentAddress || {}).length > 0 &&
+      Object.keys(tempData.permanentAddress || {}).length > 0
+    ) {
+      const keys = Object.keys(tempData.currentAddress || {});
+      const check = keys.every((x) => tempData.currentAddress[x] === tempData.permanentAddress[x]);
+      setIsSameAddress(check);
+    }
+  }, [JSON.stringify(tempData)]);
 
   const disabled = ![
     NEW_PROCESS_STATUS.DRAFT,
@@ -128,6 +154,8 @@ const BasicInformation = (props) => {
         previousExperience: values.previousExperience,
         candidate: _id,
         currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 1 : currentStep,
+        totalExperience: values.totalExperience,
+        phoneNumber: values.phoneNumber,
         tenantId: getCurrentTenant(),
       },
     }).then(({ statusCode }) => {
@@ -206,10 +234,6 @@ const BasicInformation = (props) => {
       title: 'Current Address',
       description: 'This information needs to be filled out by the candidate',
     },
-    {
-      component: <RenderAddQuestion page={Page.Basic_Information} />,
-      noHeader: true,
-    },
   ];
 
   const renderCardTitle = (title, description) => {
@@ -221,58 +245,76 @@ const BasicInformation = (props) => {
     );
   };
 
-  return (
-    <Row gutter={[24, 0]} className={styles.BasicInformation}>
-      {loadingFetchCandidate ? (
+  if (loadingFetchCandidate) {
+    return (
+      <Row className={styles.BasicInformation}>
         <div className={styles.viewLoading}>
           <Skeleton />
         </div>
-      ) : (
-        <>
-          <Col xs={24} xl={16}>
-            <Form
-              wrapperCol={{ span: 24 }}
-              name="basic"
-              initialValues={{
-                firstName,
-                middleName,
-                lastName,
-                privateEmail,
-                workEmail,
-                previousExperience,
-                employeeId,
-                phoneNumber,
-              }}
-              form={form}
-              onValuesChange={onValuesChange}
-              onFinish={onFinish}
-            >
-              <Row gutter={[24, 24]}>
-                {cards.map((x) => (
-                  <Col span={24}>
-                    <Card title={x.noHeader ? null : renderCardTitle(x.title, x.description)}>
-                      <div style={x.noHeader ? { padding: 24 } : {}}>{x.component}</div>
-                    </Card>
-                  </Col>
-                ))}
+      </Row>
+    );
+  }
+  return (
+    <div className={styles.BasicInformation}>
+      <Row gutter={[24, 24]}>
+        <Col xs={24} xl={16}>
+          <Form
+            wrapperCol={{ span: 24 }}
+            name="basic"
+            initialValues={{
+              firstName,
+              middleName,
+              lastName,
+              privateEmail,
+              workEmail,
+              previousExperience,
+              totalExperience,
+              employeeId,
+              phoneNumber,
+              currentAddressLine1,
+              currentAddressLine2,
+              currentCity,
+              currentCountry,
+              currentState,
+              currentZipCode,
+              permanentAddressLine1,
+              permanentAddressLine2,
+              permanentCity,
+              permanentCountry,
+              permanentState,
+              permanentZipCode,
+            }}
+            form={form}
+            onValuesChange={onValuesChange}
+            onFinish={onFinish}
+          >
+            <Row gutter={[24, 24]}>
+              {cards.map((x) => (
+                <Col span={24}>
+                  <Card title={renderCardTitle(x.title, x.description)}>
+                    <div>{x.component}</div>
+                  </Card>
+                </Col>
+              ))}
 
-                <Col span={24}>{_renderBottomBar()}</Col>
-              </Row>
-            </Form>
-          </Col>
-          <Col className={styles.RightComponents} xs={24} xl={8}>
-            <div className={styles.rightWrapper}>
-              <Row>
+              <Col span={24}>{_renderBottomBar()}</Col>
+            </Row>
+          </Form>
+        </Col>
+        <Col className={styles.RightComponents} xs={24} xl={8}>
+          <div className={styles.rightWrapper}>
+            <Row>
+              <Col span={24}>
                 <NoteComponent />
-              </Row>
-              <Row>
+              </Col>
+              <Col span={24}>
                 <MessageBox />
-              </Row>
-            </div>
-          </Col>
-        </>
-      )}
-    </Row>
+              </Col>
+            </Row>
+          </div>
+        </Col>
+      </Row>
+    </div>
   );
 };
 
