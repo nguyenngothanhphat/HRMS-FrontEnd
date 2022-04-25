@@ -207,3 +207,5 @@ export const TIMEOFF_WORK_DAYS = [
     text: 'SATURDAY',
   },
 ];
+
+export const roundNumber = (x) => Math.round(x * 10) / 10;

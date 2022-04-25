@@ -186,11 +186,12 @@ class LeaveHistoryAndHoliday extends PureComponent {
       timeOff: { holidaysListByLocation = [], leaveHistory = [] } = {},
       loadingFetch = false,
     } = this.props;
-    const currentDate = new Date().toISOString();
+
     const newHolidaysListByLocation = holidaysListByLocation.filter(
-      (date) => date.date.iso >= currentDate,
+      (date) => date.date.dateTime.year * 1 >= moment().year(),
     );
     const formatHolidayLists = this.formatHolidayLists(newHolidaysListByLocation);
+
     const formatLeavingList = this.formatLeavingList(leaveHistory);
     const formatLeavingListCalendar = this.formatLeavingListCalendar(leaveHistory);
 
