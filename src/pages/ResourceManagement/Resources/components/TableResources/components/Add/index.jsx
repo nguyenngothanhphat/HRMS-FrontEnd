@@ -139,7 +139,8 @@ class AddActionBTN extends Component {
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>
-                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {projectList.map((project) => (
                   <Option value={project.id}>{project.projectName}</Option>
@@ -152,41 +153,44 @@ class AddActionBTN extends Component {
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>
-                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {statusList.map((status) => (
                   <Option value={status}>{status}</Option>
                 ))}
               </Select>
             </Form.Item>
-            <Form.Item
-              label="Bandwith Allocation (%)"
-              name="utilization"
-              rules={[
-                () => ({
-                  validator(_, value) {
-                    if (!value) {
-                      return Promise.reject('Utilization value could not be empty');
-                    }
-                    if (isNaN(value)) {
-                      return Promise.reject(`Value enter has to be a number.`);
-                    }
-                    if (value > maxEnterUtilization) {
-                      return Promise.reject(
-                        `Your cannot enter a value that is more than ${maxEnterUtilization}.`,
-                      );
-                    }
-                    if (value < 0) {
-                      return Promise.reject(`Your cannot enter a value that is less than 0`);
-                    }
-                    return Promise.resolve();
-                  },
-                }),
-              ]}
-              validateTrigger="onBlur"
-            >
-              <Input addonAfter="%" />
-            </Form.Item>
+            <div className={styles.utilization}>
+              <Form.Item
+                label="Bandwith Allocation (%)"
+                name="utilization"
+                rules={[
+                  () => ({
+                    validator(_, value) {
+                      if (!value) {
+                        return Promise.reject('Utilization value could not be empty');
+                      }
+                      if (isNaN(value)) {
+                        return Promise.reject(`Value enter has to be a number.`);
+                      }
+                      if (value > maxEnterUtilization) {
+                        return Promise.reject(
+                          `Your cannot enter a value that is more than ${maxEnterUtilization}.`,
+                        );
+                      }
+                      if (value < 0) {
+                        return Promise.reject(`Your cannot enter a value that is less than 0`);
+                      }
+                      return Promise.resolve();
+                    },
+                  }),
+                ]}
+                validateTrigger="onBlur"
+              >
+                <Input addonAfter="%" />
+              </Form.Item>
+            </div>
           </Col>
           <Col span={12}>
             <Form.Item label="Start Date" name="startDate">

@@ -9,6 +9,8 @@ import {
   updateWorkHistory,
   sendEmailByCandidateModel,
   updateByCandidate,
+  getCountryList,
+  getStateListByCountry,
 } from '@/services/candidatePortal';
 import { dialog } from '@/utils/utils';
 import { CANDIDATE_TASK_LINK, CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
@@ -148,6 +150,9 @@ const candidatePortal = {
         url: '',
       },
       workHistory: [],
+      currentAddress: {},
+      permanentAddress: {},
+      phoneNumber: '',
     },
     tempData: {
       checkStatus: {},
@@ -439,6 +444,36 @@ const candidatePortal = {
       } catch (error) {
         dialog(error);
       }
+    },
+    *fetchCountryList(_, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getCountryList);
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { countryList: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchStateByCountry({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getStateListByCountry, payload);
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { stateList: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
     },
   },
   reducers: {

@@ -1,86 +1,92 @@
-/* eslint-disable compat/compat */
-/* eslint-disable no-param-reassign */
-import { Button, Col, Form, Input, Row, Skeleton } from 'antd';
-import React, { PureComponent } from 'react';
-import { connect, formatMessage, history } from 'umi';
-import { getCurrentTenant } from '@/utils/authority';
+import { Button, Card, Col, Form, Row, Skeleton } from 'antd';
+import { debounce } from 'lodash';
+import React, { useEffect } from 'react';
+import { connect, history } from 'umi';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
-import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import { Page } from '../../utils';
+import { getCurrentTenant } from '@/utils/authority';
 import MessageBox from '../MessageBox';
-// import BasicInformationReminder from './components/BasicInformationReminder';
 import NoteComponent from '../NewNoteComponent';
-import BasicInformationHeader from './components/BasicInformationHeader';
+import Address from './components/Address';
+import BasicInfo from './components/BasicInfo';
 import styles from './index.less';
 
-@connect(({ newCandidateForm: { data, checkMandatory, currentStep, tempData } = {}, loading }) => ({
-  data,
-  checkMandatory,
-  currentStep,
-  tempData,
-  loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
-  loadingUpdateByHR: loading.effects['newCandidateForm/updateByHR'],
-}))
-class BasicInformation extends PureComponent {
-  formRef = React.createRef();
+const BasicInformation = (props) => {
+  const {
+    tempData,
+    tempData: {
+      firstName,
+      middleName,
+      lastName,
+      privateEmail,
+      phoneNumber,
+      totalExperience,
+      workEmail,
+      checkStatus,
+      _id,
+      ticketID = '',
+      processStatus = '',
+      previousExperience,
+      employeeId,
+      currentAddress: {
+        addressLine1: currentAddressLine1,
+        addressLine2: currentAddressLine2,
+        city: currentCity,
+        country: currentCountry,
+        state: currentState,
+        zipCode: currentZipCode,
+      } = {},
+      permanentAddress: {
+        addressLine1: permanentAddressLine1,
+        addressLine2: permanentAddressLine2,
+        city: permanentCity,
+        country: permanentCountry,
+        state: permanentState,
+        zipCode: permanentZipCode,
+      } = {},
+    } = {},
+    checkMandatory,
+    dispatch,
+    currentStep = '',
+    loadingFetchCandidate = false,
+    loadingUpdateByHR = false,
+  } = props;
 
-  constructor(props) {
-    super(props);
+  const { filledBasicInformation } = checkMandatory;
+  const [isSameAddress, setIsSameAddress] = React.useState(false);
 
-    this.state = {};
-    // this.handleChange = debounce(this.handleChange, 250);
-  }
+  const [form] = Form.useForm();
 
-  componentDidMount() {
-    window.scrollTo({ top: 77, behavior: 'smooth' });
-    const { data: { _id = '' } = {} } = this.props;
-    if (_id) {
-      this.checkFilled();
-    }
-  }
-
-  componentDidUpdate = (prevProps) => {
-    const { data = {}, tempData = {} } = this.props;
-
+  useEffect(() => {
     if (
-      JSON.stringify(prevProps.data) !== JSON.stringify(data) ||
-      JSON.stringify(prevProps.tempData) !== JSON.stringify(tempData)
+      Object.keys(tempData.currentAddress || {}).length > 0 &&
+      Object.keys(tempData.permanentAddress || {}).length > 0
     ) {
-      this.checkFilled();
+      const keys = Object.keys(tempData.currentAddress || {});
+      const check = keys.every((x) => tempData.currentAddress[x] === tempData.permanentAddress[x]);
+      setIsSameAddress(check);
     }
-  };
+  }, [JSON.stringify(tempData)]);
 
-  handleChange = (e) => {
-    const name = Object.keys(e).find((x) => x);
-    const value = Object.values(e).find((x) => x);
-    const { tempData } = this.props;
-    tempData[name] = value;
-    this.checkFilled();
-  };
+  const disabled = ![
+    NEW_PROCESS_STATUS.DRAFT,
+    NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
+    NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
+  ].includes(processStatus);
 
-  checkFilled = () => {
-    const {
-      tempData: { firstName, middleName, lastName, privateEmail, workEmail, checkStatus },
-      checkMandatory,
-      dispatch,
-    } = this.props;
-
+  const checkFilled = () => {
     const notSpace = RegExp(/[^\s-]/);
     const emailRegExp = RegExp(
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
     );
     if (
-      firstName !== null &&
-      // middleName !== null &&
-      lastName !== null &&
-      // workEmail !== null &&
-      privateEmail !== null &&
-      workEmail !== privateEmail &&
+      firstName &&
+      lastName &&
+      privateEmail &&
+      phoneNumber &&
       notSpace.test(firstName) &&
       notSpace.test(middleName) &&
       notSpace.test(lastName) &&
       emailRegExp.test(privateEmail)
-      // emailRegExp.test(workEmail)
     ) {
       checkStatus.filledBasicInformation = true;
     } else {
@@ -97,11 +103,46 @@ class BasicInformation extends PureComponent {
     });
   };
 
-  onFinish = (values) => {
-    const { tempData } = this.props;
-    const { dispatch,  currentStep = '' } = this.props;
-    const { _id, ticketID = '', processStatus = '' } = tempData;
+  useEffect(() => {
+    window.scrollTo({ top: 77, behavior: 'smooth' });
+    if (_id) {
+      checkFilled();
+    }
+  }, []);
 
+  useEffect(() => {
+    checkFilled();
+  }, [JSON.stringify(tempData)]);
+
+  const onValidate = debounce((values) => {
+    dispatch({
+      type: 'newCandidateForm/save',
+      payload: {
+        tempData: { ...tempData, ...values },
+      },
+    });
+  }, 500);
+
+  const onChangeAddress = (values) => {
+    form.setFieldsValue({
+      permanentAddressLine1: values.currentAddressLine1,
+      permanentAddressLine2: values.currentAddressLine2,
+      permanentCountry: values.currentCountry,
+      permanentState: values.currentState,
+      permanentCity: values.currentCity,
+      permanentZipCode: values.currentZipCode,
+    });
+  };
+
+  const onValuesChange = () => {
+    const values = form.getFieldsValue();
+    onValidate(values);
+    if (isSameAddress) {
+      onChangeAddress(values);
+    }
+  };
+
+  const onFinish = (values) => {
     dispatch({
       type: 'newCandidateForm/updateByHR',
       payload: {
@@ -113,6 +154,8 @@ class BasicInformation extends PureComponent {
         previousExperience: values.previousExperience,
         candidate: _id,
         currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 1 : currentStep,
+        totalExperience: values.totalExperience,
+        phoneNumber: values.phoneNumber,
         tenantId: getCurrentTenant(),
       },
     }).then(({ statusCode }) => {
@@ -128,202 +171,25 @@ class BasicInformation extends PureComponent {
     });
   };
 
-  _renderEmployeeId = () => {
-    const { tempData } = this.props;
-    const { processStatus } = tempData;
-    if (processStatus === NEW_PROCESS_STATUS.OFFER_ACCEPTED) {
-      return (
-        <Col xs={24} sm={24} md={24} lg={12} xl={12}>
-          <Form.Item
-            labelCol={{ span: 24 }}
-            wrapperCol={{ span: 24 }}
-            required={false}
-            label={formatMessage({ id: 'component.basicInformation.employeeId' })}
-            name="employeeId"
-          >
-            <Input autoComplete="off" className={styles.formInput} name="employeeId" />
-          </Form.Item>
-        </Col>
-      );
-    }
-    // return (
-    //   <>{isOpenReminder ? <BasicInformationReminder onClickClose={this.onClickClose} /> : null}</>
-    // );
-    return null;
-  };
-
-  testValidate = () => {
-    const email1 = this.formRef.current.getFieldValue('privateEmail');
-    const email2 = this.formRef.current.getFieldValue('workEmail');
+  const testValidate = () => {
+    const email1 = form.getFieldValue('privateEmail');
+    const email2 = form.getFieldValue('workEmail');
     if ((email2 && email1) || email2 === '') {
-      this.formRef.current.validateFields();
+      form.validateFields();
     }
   };
 
-  _renderForm = () => {
-    const { tempData } = this.props;
-    const { processStatus = '' } = tempData;
-    const disabled = ![
-      NEW_PROCESS_STATUS.DRAFT,
-      NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
-      NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
-    ].includes(processStatus);
-    return (
-      <div className={styles.basicInformation__form}>
-        <Row gutter={[48, 0]}>
-          <Col xs={24} sm={24} md={24} lg={8} xl={8}>
-            <Form.Item
-              labelCol={{ span: 24 }}
-              wrapperCol={{ span: 24 }}
-              required={false}
-              label={formatMessage({ id: 'component.basicInformation.firstName' })}
-              name="firstName"
-              rules={[
-                { required: true, message: `'Please input your first name!'` },
-                {
-                  pattern: /[^\s-]/,
-                  message: 'First name is invalid!',
-                },
-              ]}
-            >
-              <Input
-                disabled={disabled}
-                autoComplete="off"
-                // onChange={(e) => this.handleChange(e)}
-                placeholder="First Name"
-                className={styles.formInput}
-                name="firstName"
-              />
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={24} md={24} lg={8} xl={8}>
-            <Form.Item
-              labelCol={{ span: 24 }}
-              wrapperCol={{ span: 24 }}
-              required={false}
-              label={formatMessage({ id: 'component.basicInformation.middleName' })}
-              name="middleName"
-              rules={[
-                {
-                  pattern: /[^\s-]/,
-                  message: 'Middle name is invalid!',
-                },
-              ]}
-            >
-              <Input
-                disabled={disabled}
-                autoComplete="off"
-                // onChange={(e) => this.handleChange(e)}
-                placeholder="Middle Name"
-                className={styles.formInput}
-                name="middleName"
-              />
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={24} md={24} lg={8} xl={8}>
-            <Form.Item
-              labelCol={{ span: 24 }}
-              wrapperCol={{ span: 24 }}
-              required={false}
-              label={formatMessage({ id: 'component.basicInformation.lastName' })}
-              name="lastName"
-              rules={[
-                { required: true, message: `'Please input your last name!'` },
-                {
-                  pattern: /[^\s-]/,
-                  message: 'Last name is invalid!',
-                },
-              ]}
-            >
-              <Input
-                disabled={disabled}
-                autoComplete="off"
-                // onChange={(e) => this.handleChange(e)}
-                placeholder="Last Name"
-                className={styles.formInput}
-                name="lastName"
-              />
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
-            <Form.Item
-              labelCol={{ span: 24 }}
-              wrapperCol={{ span: 24 }}
-              required={false}
-              label={formatMessage({ id: 'component.basicInformation.privateEmail' })}
-              name="privateEmail"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input your email!',
-                },
-                {
-                  type: 'email',
-                  message: 'Email invalid!',
-                },
-                ({ getFieldValue }) => ({
-                  validator(rule, value) {
-                    if (!value || getFieldValue('workEmail') !== value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(new Error('Two emails cannot be the same!'));
-                  },
-                }),
-              ]}
-            >
-              <Input
-                disabled={disabled}
-                autoComplete="off"
-                // onChange={(e) => this.handleChange(e)}
-                placeholder="Personal Email"
-                className={styles.formInput}
-                name="privateEmail"
-                onChange={this.testValidate}
-                // defaultValue={privateEmail}
-              />
-            </Form.Item>
-          </Col>
-
-          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
-            <Form.Item
-              labelCol={{ span: 24 }}
-              wrapperCol={{ span: 24 }}
-              required={false}
-              label={formatMessage({ id: 'component.basicInformation.experienceYear' })}
-              name="previousExperience"
-              rules={[
-                {
-                  pattern: /\b([0-9]|[1-9][0-9])\b/,
-                  message: 'Years of experience is invalid!',
-                },
-                {
-                  pattern: /^\d+$/,
-                  message: 'Only digit !',
-                },
-              ]}
-            >
-              <Input
-                disabled={disabled}
-                autoComplete="off"
-                placeholder="Relevant previous experience"
-                className={styles.formInput}
-                name="previousExperience"
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <RenderAddQuestion page={Page.Basic_Information} />
-      </div>
-    );
+  const onSameAddress = (e) => {
+    const values = form.getFieldsValue();
+    if (e.target.checked) {
+      setIsSameAddress(true);
+      onChangeAddress(values);
+    } else {
+      setIsSameAddress(false);
+    }
   };
 
-  _renderBottomBar = () => {
-    const {
-      checkMandatory,
-      loadingUpdateByHR = false,
-      tempData: { processStatus = '' } = {},
-    } = this.props;
-    const { filledBasicInformation } = checkMandatory;
+  const _renderBottomBar = () => {
     const renderText = ![
       NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
       NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
@@ -354,71 +220,111 @@ class BasicInformation extends PureComponent {
     );
   };
 
-  render() {
-    const { tempData = {} } = this.props;
-    const {
-      firstName,
-      middleName,
-      lastName,
-      privateEmail,
-      workEmail,
-      previousExperience,
-      employeeId,
-    } = tempData;
+  const cards = [
+    {
+      component: <BasicInfo testValidate={testValidate} disabled={disabled} />,
 
-    const { loadingFetchCandidate = false } = this.props;
+      title: 'Basic Information',
+      description: 'Information of the new joinee goes here',
+    },
+    {
+      component: (
+        <Address disabled onSameAddress={onSameAddress} isSameAddress={isSameAddress} form={form} />
+      ),
+      title: 'Current Address',
+      description: 'This information needs to be filled out by the candidate',
+    },
+  ];
 
+  const renderCardTitle = (title, description) => {
     return (
-      <Row gutter={[24, 0]}>
-        {loadingFetchCandidate ? (
-          <div className={styles.viewLoading}>
-            <Skeleton />
-          </div>
-        ) : (
-          <>
-            <Col xs={24} xl={16}>
-              <div className={styles.basicInformation}>
-                <Form
-                  wrapperCol={{ span: 24 }}
-                  name="basic"
-                  initialValues={{
-                    firstName,
-                    middleName,
-                    lastName,
-                    privateEmail,
-                    workEmail,
-                    previousExperience,
-                    employeeId,
-                  }}
-                  ref={this.formRef}
-                  onFocus={this.onFocus}
-                  onValuesChange={this.handleChange}
-                  onFinish={this.onFinish}
-                >
-                  <div className={styles.basicInformation__top}>
-                    <BasicInformationHeader />
-                    <hr />
-                    {this._renderForm()}
-                  </div>
-                  {this._renderBottomBar()}
-                </Form>
-              </div>
-            </Col>
-            <Col className={styles.RightComponents} xs={24} xl={8}>
-              <div className={styles.rightWrapper}>
-                <Row>
-                  <NoteComponent />
-                </Row>
-                <Row>
-                  <MessageBox />
-                </Row>
-              </div>
-            </Col>
-          </>
-        )}
+      <div className={styles.cardTitle}>
+        <p className={styles.title}>{title}</p>
+        <p className={styles.description}>{description}</p>
+      </div>
+    );
+  };
+
+  if (loadingFetchCandidate) {
+    return (
+      <Row className={styles.BasicInformation}>
+        <div className={styles.viewLoading}>
+          <Skeleton />
+        </div>
       </Row>
     );
   }
-}
+  return (
+    <div className={styles.BasicInformation}>
+      <Row gutter={[24, 24]}>
+        <Col xs={24} xl={16}>
+          <Form
+            wrapperCol={{ span: 24 }}
+            name="basic"
+            initialValues={{
+              firstName,
+              middleName,
+              lastName,
+              privateEmail,
+              workEmail,
+              previousExperience,
+              totalExperience,
+              employeeId,
+              phoneNumber,
+              currentAddressLine1,
+              currentAddressLine2,
+              currentCity,
+              currentCountry,
+              currentState,
+              currentZipCode,
+              permanentAddressLine1,
+              permanentAddressLine2,
+              permanentCity,
+              permanentCountry,
+              permanentState,
+              permanentZipCode,
+            }}
+            form={form}
+            onValuesChange={onValuesChange}
+            onFinish={onFinish}
+          >
+            <Row gutter={[24, 24]}>
+              {cards.map((x) => (
+                <Col span={24}>
+                  <Card title={renderCardTitle(x.title, x.description)}>
+                    <div>{x.component}</div>
+                  </Card>
+                </Col>
+              ))}
 
-export default BasicInformation;
+              <Col span={24}>{_renderBottomBar()}</Col>
+            </Row>
+          </Form>
+        </Col>
+        <Col className={styles.RightComponents} xs={24} xl={8}>
+          <div className={styles.rightWrapper}>
+            <Row>
+              <Col span={24}>
+                <NoteComponent />
+              </Col>
+              <Col span={24}>
+                <MessageBox />
+              </Col>
+            </Row>
+          </div>
+        </Col>
+      </Row>
+    </div>
+  );
+};
+
+export default connect(
+  ({ newCandidateForm: { data, checkMandatory, currentStep, tempData } = {}, loading }) => ({
+    data,
+    checkMandatory,
+    currentStep,
+    tempData,
+    loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
+    loadingUpdateByHR: loading.effects['newCandidateForm/updateByHR'],
+  }),
+)(BasicInformation);
