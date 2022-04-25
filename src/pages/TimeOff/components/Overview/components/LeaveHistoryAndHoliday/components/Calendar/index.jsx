@@ -37,7 +37,7 @@ const CustomCalendar = (props) => {
   const getClassName = (val) => {
     let className = '';
     if (checkCurrentDay(val)) {
-      className += styles.currentDay;
+      className += `${styles.currentDay} `;
     }
     if (mode === 1) {
       const obj = {
@@ -47,13 +47,13 @@ const CustomCalendar = (props) => {
       };
       Object.keys(obj).forEach((x) => {
         if (checkLeaveRequest(val, x)) {
-          className += obj[x];
+          className += `${obj[x]} `;
         }
       });
     }
     if (mode === 2) {
       if (checkHoliday(val)) {
-        className += styles.holiday;
+        className += `${styles.holiday} `;
       }
     }
     return className;
@@ -87,19 +87,30 @@ const CustomCalendar = (props) => {
           <span>{date}</span>
           <div className={styles.smallDot} />
         </div>,
-        getTypeNames,
+        getTypeNames(),
       );
     }
 
     // holiday
-    const find = data.find((x) => checkIfSameDay(x.date?.iso, value));
+    const filter = data.filter((x) => checkIfSameDay(x.date?.iso, value));
+    const getHolidayNames = () => {
+      return [
+        ...new Set(
+          filter.map((x, i) => {
+            if (i + 1 < filter.length) return `${x.name}, `;
+            return x.name;
+          }),
+        ),
+      ];
+    };
+
     return renderDate(
-      !!find,
+      filter.length > 0,
       <div className={`${styles.dateRender} ${className}`}>
         <span>{date}</span>
         <div className={styles.smallDot} />
       </div>,
-      find?.name,
+      getHolidayNames(),
     );
   };
 

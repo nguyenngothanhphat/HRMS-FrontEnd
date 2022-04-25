@@ -6,6 +6,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 
 import styles from './index.less';
+import { roundNumber } from '@/utils/timeOff';
 
 @connect(({ dispatch, timeOff, loading, user }) => ({
   loadingFetchMyCompoffRequests: loading.effects['timeOff/fetchMyCompoffRequests'],
@@ -41,7 +42,7 @@ class MyCompoffTable extends PureComponent {
       title: 'Duration',
       dataIndex: 'duration',
       align: 'left',
-      render: (duration) => <span>{duration !== 0 ? Math.round(duration * 100) / 100 : '-'}</span>,
+      render: (duration) => <span>{duration !== 0 ? roundNumber(duration) : '-'}</span>,
     },
     {
       title: `Requested on `,

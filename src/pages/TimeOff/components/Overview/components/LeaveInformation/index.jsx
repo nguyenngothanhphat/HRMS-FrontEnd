@@ -6,7 +6,7 @@ import ShowBreakdownIcon from '@/assets/iconViewBreakdown.svg';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import LeaveProgressBar from './components/LeaveProgressBar';
 import SpecialLeaveBox from './components/SpecialLeaveBox';
-import { TIMEOFF_TYPE } from '@/utils/timeOff';
+import { roundNumber, TIMEOFF_TYPE } from '@/utils/timeOff';
 
 import styles from './index.less';
 
@@ -165,7 +165,7 @@ class LeaveInformation extends PureComponent {
 
   renderCircleProgress = (value) => (
     <div className={styles.circleProgress}>
-      <span className={styles.percentValue}>{Math.round(value * 100) / 100}</span>
+      <span className={styles.percentValue}>{roundNumber(value)}</span>
       <p className={styles.remainingText}>Remaining</p>
     </div>
   );
@@ -183,7 +183,7 @@ class LeaveInformation extends PureComponent {
           remaining += currentAllowance;
           total += time;
         }
-        result = Math.round((remaining / total) * 100);
+        result = roundNumber(remaining / total);
       }
     });
     this.setState({

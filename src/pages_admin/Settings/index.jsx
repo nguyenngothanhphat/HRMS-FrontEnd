@@ -9,26 +9,10 @@ import Position from './components/Position';
 import RolePermission from './components/RolePermission';
 import styles from './index.less';
 import Domain from './components/Domain';
+import TicketManagement from './components/TicketManagement';
 
 @connect(() => ({}))
 class Settings extends PureComponent {
-  // componentDidMount() {
-  // const { dispatch } = this.props;
-
-  // dispatch({
-  //   type: 'country/fetchListCountry',
-  // });
-  // dispatch({
-  //   type: 'employee/fetchLocation',
-  // });
-  // dispatch({
-  //   type: 'adminSetting/fetchListTitle',
-  // });
-  // dispatch({
-  //   type: 'companiesManagement/fetchCompaniesList',
-  // });
-  // }
-
   render() {
     const listMenu = [
       {
@@ -60,6 +44,12 @@ class Settings extends PureComponent {
         name: 'Domain',
         component: <Domain />,
         link: 'domain',
+      },
+      {
+        id: 6,
+        name: 'Ticket Management',
+        component: <TicketManagement />,
+        link: 'ticket-management',
       },
     ];
 
