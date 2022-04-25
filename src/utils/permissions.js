@@ -257,6 +257,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'P_TIMESHEET_T_REPORT_PEOPLE_MANAGER_VIEW',
   ]);
   const indexSettingTimesheet = isAuthorized(permissionList, ['P_TIMESHEET_T_SETTING_VIEW']);
+  const indexLocationTimesheet = isAuthorized(permissionList, ['P_TIMESHEET_LOCATION_VIEW']);
 
   // CV = COMPLEX VIEW
   const indexHRReportCVTimesheet = isAuthorized(permissionList, ['P_TIMESHEET_T_REPORT_HR_VIEW']);
@@ -398,6 +399,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewFinanceReportCVTimesheet: indexFinanceReportCVTimesheet,
     viewPeopleManagerCVTimesheet: indexPeopleManagerCVTimesheet,
     viewProjectManagerCVTimesheet: indexProjectManagerCVTimesheet,
+    viewLocationTimesheet: indexLocationTimesheet,
 
     // dashboard
     viewPendingApprovalDashboard: indexPendingApprovalDashboard,

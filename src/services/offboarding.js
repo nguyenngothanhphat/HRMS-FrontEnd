@@ -204,8 +204,15 @@ export async function removeOffBoardingPackage(payload) {
   });
 }
 
+// export async function terminateReason(payload) {
+//   return request('/api/offboardingrequesttenant/terminate-hr', {
+//     method: 'POST',
+//     data: payload,
+//   });
+// }
+
 export async function terminateReason(payload) {
-  return request('/api/offboardingrequesttenant/terminate-hr', {
+  return request('/api/employeetenant/terminate-admin', {
     method: 'POST',
     data: payload,
   });

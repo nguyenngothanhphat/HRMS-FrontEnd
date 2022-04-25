@@ -99,16 +99,18 @@ deploy-job-production:
 
 cypress-test-dev:
 
-  image: cypress/base:14.10.0
+  #image: cypress/browsers:node14.17.6-chrome100-ff98
   stage: cypress-test-dev
   script:
-    - source /etc/environment
-    - docker login -u khoa.le -p $PWD gitlab.paxanimi.ai:8150
+    - npx cypress info
+    #- source /etc/environment
+    #- docker login -u khoa.le -p $PWD gitlab.paxanimi.ai:8150
     - npm install --save-dev
     - npm install cypress
     - npm install --save-dev cypress-file-upload
     - cd tests/ui_automation_hrms
     - npx cypress run --record --key 6840a7e8-277a-442b-90fb-2101274fd849 --headless
+    #- npx cypress run
   tags:
     - master
   only:

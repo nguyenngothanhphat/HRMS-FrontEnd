@@ -1,3 +1,175 @@
+.formAdd {
+  padding: 24px;
+  font-size: 12px;
+  .utilization {
+    :global {
+      .ant-input {
+        border-radius: 5px 0 0 5px !important;
+      }
+    }
+  }
+  :global {
+    .ant-form-item-explain {
+      div {
+        font-size: 13px;
+      }
+    }
+    .ant-select-selection-item {
+      color: #161c29;
+    }
+    .ant-select-disabled {
+      .ant-select-selection-item {
+        color: #161c2980;
+      }
+    }
+    .ant-select-selection-item,
+    .ant-select-selection-placeholder {
+      font-size: 13px !important;
+      line-height: 30px !important;
+    }
+    .ant-input {
+      height: 42px !important;
+      padding: 5px 11px !important;
+      font-size: 13px;
+      border-radius: 5px !important;
+    }
+    .ant-select-selector {
+      min-height: 42px !important;
+      padding: 5px 11px !important;
+      font-size: 13px;
+      border-radius: 5px !important;
+    }
+    .ant-select-multiple {
+      .ant-select-selector {
+        padding: 5px !important;
+      }
+    }
+    .ant-select-selection-search-input {
+      height: 42px !important;
+    }
+    .ant-select-multiple {
+      .ant-select-selection-search-input {
+        height: unset !important;
+      }
+      .ant-select-selection-item {
+        font-size: 13px;
+        line-height: unset !important;
+        background: #ffffff;
+        border: 1px solid #d6dce0;
+        border-left: 4px solid #2c6df9;
+        border-radius: 5px;
+      }
+      .ant-select-selection-item-remove {
+        margin-top: 2px;
+
+        .anticon-close {
+          border: 0.75px solid #707177;
+          border-radius: 50%;
+        }
+      }
+      .ant-select-selection-item-remove > * {
+        line-height: 0;
+      }
+    }
+    .ant-picker {
+      width: 100%;
+      min-height: 42px !important;
+      font-size: 13px;
+      border-radius: 5px;
+    }
+    .ant-picker-input {
+      input {
+        font-size: 13px;
+      }
+    }
+    .ant-form-item-label
+      > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+      display: none;
+    }
+    .ant-form-item-label label {
+      height: 0;
+      color: #161c29;
+      font-size: 13px;
+    }
+
+    .ant-btn-primary {
+      height: 40px;
+      padding: 0 30px;
+      object-fit: contain;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: Roboto;
+      letter-spacing: 0.13px;
+
+      text-shadow: none;
+      background-color: #ffa100;
+      border: solid 1px #ffa100;
+      border-radius: 25px;
+      box-shadow: none;
+      &:hover {
+        color: #ffffff;
+        background-color: #ffa100;
+      }
+    }
+    .ant-btn-secondary {
+      width: 94px;
+      height: 40px;
+      padding-right: 41px;
+      object-fit: contain;
+      color: #ffa100;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: Roboto;
+      letter-spacing: 0.13px;
+      border: solid 0;
+      border-radius: 25px;
+      box-shadow: none;
+    }
+
+    .ant-form-item {
+      margin-bottom: 12px;
+    }
+    .ant-modal-footer {
+      padding: 13px 24px;
+      border-top: 1px solid #d6dce0;
+    }
+    .ant-select-selection-overflow-item .ant-select-selection-overflow-item-suffix {
+      display: none;
+    }
+
+    // alert
+    .ant-alert {
+      padding: 10px;
+      border: 1px solid #2c6df9;
+      border-radius: 5px;
+      .ant-alert-icon {
+        font-size: 16px;
+      }
+      .ant-alert-message {
+        color: #000000;
+        font-weight: 500;
+        font-size: 12px;
+      }
+      .ant-alert-description {
+        color: #808080;
+        font-size: 10px;
+        line-height: 16px;
+      }
+    }
+
+    // checkbox
+    .ant-checkbox-wrapper {
+      span {
+        font-size: 13px;
+      }
+    }
+    .ant-input-group-addon {
+      border-radius: 0 5px 5px 0;
+    }
+  }
+}
+
 .buttonAdd {
   width: 29px;
   height: 29px;
@@ -8,10 +180,7 @@
 .buttonAdd:hover {
   border: 1px solid #2c6df9;
 }
-.formAdd {
-  padding: 24px;
-  font-size: 12px;
-}
+
 .spaceFooter {
   display: flex;
   flex-flow: row nowrap;
