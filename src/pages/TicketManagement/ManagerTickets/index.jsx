@@ -100,6 +100,16 @@ class ManagerTicket extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'ticketManagement/save',
+      payload: {
+        selectedLocations: [getCurrentLocation()],
+      },
+    });
+  }
+
   fetchToTalList = (departmentList) => {
     const { dispatch } = this.props;
 

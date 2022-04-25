@@ -70,6 +70,16 @@ class EmployeeTicket extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'ticketManagement/save',
+      payload: {
+        selectedLocations: [getCurrentLocation()],
+      },
+    });
+  }
+
   fetchLocation = () => {
     const { dispatch } = this.props;
     dispatch({
