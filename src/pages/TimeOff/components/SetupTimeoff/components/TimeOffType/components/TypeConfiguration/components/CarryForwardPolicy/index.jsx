@@ -5,7 +5,9 @@ import { FORM_ITEM_NAME } from '@/utils/timeOff';
 import CarryForwardItem from './components/CarryForwardItem';
 import styles from './index.less';
 
-const CarryForwardPolicy = () => {
+const CarryForwardPolicy = (props) => {
+  const { configs = {}, form } = props;
+
   return (
     <Card title="Carry Forward Policy" className={styles.CarryForwardPolicy}>
       <div className={styles.container}>
@@ -15,7 +17,13 @@ const CarryForwardPolicy = () => {
               <>
                 {fields.map(({ key, name }, index) => (
                   <Col span={24} key={key}>
-                    <CarryForwardItem name={name} remove={remove} index={index} />
+                    <CarryForwardItem
+                      name={name}
+                      remove={remove}
+                      index={index}
+                      configs={configs}
+                      form={form}
+                    />
                   </Col>
                 ))}
                 <Col span={24}>

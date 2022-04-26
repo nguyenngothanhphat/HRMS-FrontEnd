@@ -61,6 +61,7 @@ import {
   getLocationById,
   getAllLeaveRequests,
   upsertLeaveType,
+  getTimeOffTypeByEmployee,
   getLeaveTypeByTimeOffType,
   getEmployeeTypeList,
 } from '../services/timeOff';
@@ -80,6 +81,7 @@ const timeOff = {
     leaveRequests: [],
     compoffRequests: [],
     timeOffTypes: [],
+    yourTimeOffTypes: [],
     timeOffTypesByCountry: [],
     employeeInfo: {},
     emailsList: [],
@@ -282,6 +284,25 @@ const timeOff = {
         dialog(errors);
       }
     },
+    *fetchTimeOffTypeByEmployeeEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getTimeOffTypeByEmployee, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { yourTimeOffTypes: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
     *upsertLeaveTypeEffect({ payload }, { call }) {
       let response = {};
       try {

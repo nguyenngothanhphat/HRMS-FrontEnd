@@ -138,27 +138,27 @@ const TypeConfiguration = (props) => {
             : [],
         },
         [ACCRUAL_START]: {
-          [VALUE]: values[ACCRUAL_START_VALUE],
+          [VALUE]: values[ACCRUAL_START_VALUE] || 0,
           [UNIT]: 'd',
         },
         [LEAVE_APPLICATION_START]: {
-          [VALUE]: values[LEAVE_APPLICATION_START_VALUE],
+          [VALUE]: values[LEAVE_APPLICATION_START_VALUE] || 0,
           [UNIT]: 'd',
         },
         [MINIMUM_LEAVE_AMOUNT]: {
-          [VALUE]: values[MINIMUM_LEAVE_AMOUNT_VALUE],
+          [VALUE]: values[MINIMUM_LEAVE_AMOUNT_VALUE] || 0,
           [UNIT]: 'd',
         },
         [MAXIMUM_BALANCE_ALLOWED]: {
-          [VALUE]: values[MAXIMUM_BALANCE_ALLOWED_VALUE],
-          [UNIT]: values[UNIT] || 'd',
+          [VALUE]: values[MAXIMUM_BALANCE_ALLOWED_VALUE] || 0,
+          [UNIT]: values[MAXIMUM_BALANCE_ALLOWED_UNIT] || 'd',
         },
         [NEW_HIRE_PRORATION_POLICY]: values[NEW_HIRE_PRORATION_POLICY],
         [LOP_LEAVE_ACCRUAL_POLICY]: values[LOP_LEAVE_ACCRUAL_POLICY],
         [NEGATIVE_LEAVE_BALANCE]: {
-          [ALLOWED]: values[NEGATIVE_LEAVE_BALANCE_ALLOWED],
+          [ALLOWED]: values[NEGATIVE_LEAVE_BALANCE_ALLOWED] || false,
           [MAXIMUM]: {
-            [VALUE]: values[NEGATIVE_LEAVE_BALANCE_MAXIMUM_VALUE],
+            [VALUE]: values[NEGATIVE_LEAVE_BALANCE_MAXIMUM_VALUE] || 0,
             [UNIT]: values[NEGATIVE_LEAVE_BALANCE_MAXIMUM_UNIT] || 'd',
           },
         },
@@ -175,7 +175,7 @@ const TypeConfiguration = (props) => {
             },
             [ALLOWED]: x[ALLOWED],
             [MAXIMUM_CARRY_FORWARD_VALUE]: {
-              [VALUE]: x[VALUE],
+              [VALUE]: x[VALUE] || 0,
               [UNIT]: x[UNIT] || 'd',
             },
           };
@@ -238,7 +238,7 @@ const TypeConfiguration = (props) => {
                 ...x,
                 [FROM]: x[CARRY_FORWARD_CAP]?.[FROM],
                 [TO]: x[CARRY_FORWARD_CAP]?.[TO],
-                [ALLOWED]: x[CARRY_FORWARD_ALLOWED],
+                [ALLOWED]: x[ALLOWED],
                 [VALUE]: x[MAXIMUM_CARRY_FORWARD_VALUE]?.[VALUE],
                 [UNIT]: x[MAXIMUM_CARRY_FORWARD_VALUE]?.[UNIT],
               };
@@ -257,6 +257,7 @@ const TypeConfiguration = (props) => {
       [NEGATIVE_LEAVE_BALANCE_MAXIMUM_VALUE]: 0,
       [NEW_HIRE_PRORATION_POLICY]: true,
       [ANNUAL_RESET_POLICY_RESET_TYPE]: 'calendarDate',
+      [ANNUAL_RESET_POLICY_CALENDAR_DATE]: moment().endOf('year'),
       [LOP_LEAVE_ACCRUAL_POLICY]: false,
       [MAXIMUM_BALANCE_ALLOWED_UNIT]: 'd',
       [MAXIMUM_BALANCE_ALLOWED_VALUE]: 0,
@@ -361,11 +362,11 @@ const TypeConfiguration = (props) => {
       },
       {
         id: 7,
-        component: <NegativeLeaveBalance />,
+        component: <NegativeLeaveBalance configs={configs} form={form} />,
       },
       {
         id: 8,
-        component: <MaximumBalanceAllowed />,
+        component: <MaximumBalanceAllowed configs={configs} form={form} />,
       },
       {
         id: 9,
@@ -385,7 +386,7 @@ const TypeConfiguration = (props) => {
       },
       {
         id: 13,
-        component: <CarryForwardPolicy />,
+        component: <CarryForwardPolicy configs={configs} form={form} />,
       },
     ];
 

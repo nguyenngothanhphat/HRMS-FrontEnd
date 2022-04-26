@@ -43,6 +43,13 @@ export async function removeTimeOffType(payload) {
 }
 
 // timeOffType > setup
+export async function getTimeOffTypeByEmployee(payload) {
+  return request('/api/timeofftypetenant/get-timeoff-by-employee?', {
+    method: 'GET',
+    params: payload,
+  });
+}
+
 export async function getLeaveTypeByTimeOffType(payload) {
   return request('/api/leavetypeconfigtenant/get-by-timeofftype', {
     method: 'GET',
