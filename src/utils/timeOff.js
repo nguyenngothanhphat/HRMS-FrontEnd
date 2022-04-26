@@ -110,6 +110,10 @@ export const WORKING_HOURS = {
 };
 
 // TIMEOFF SETUP
+export const TIME_TEXT = {
+  d: 'days',
+  h: 'hours',
+};
 export const FORM_ITEM_NAME = {
   TIMEOFF_TYPE_NAME: 'timeoffTypeName',
 
@@ -209,3 +213,12 @@ export const TIMEOFF_WORK_DAYS = [
 ];
 
 export const roundNumber = (x) => Math.round(x * 10) / 10;
+export const roundNumber2 = (x) => Math.round(x * 100) / 100;
+
+export const convertDaysToHours = (numberHourPerDay, value) => {
+  return numberHourPerDay * value;
+};
+
+export const convertHoursToDays = (numberHourPerDay, value) => {
+  return value / numberHourPerDay;
+};

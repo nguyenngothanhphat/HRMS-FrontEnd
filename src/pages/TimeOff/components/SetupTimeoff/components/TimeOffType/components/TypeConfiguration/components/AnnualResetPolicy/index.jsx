@@ -34,7 +34,7 @@ const AnnualResetPolicy = () => {
             <DatePicker
               suffixIcon={<img src={datePickerIcon} alt="" />}
               onChange={onChange}
-              format={isOpen ? TIMEOFF_DATE_FORMAT : 'dddd Do'}
+              format={isOpen ? TIMEOFF_DATE_FORMAT : 'MMMM Do'}
               onOpenChange={(status) => {
                 setIsOpen(status);
               }}
