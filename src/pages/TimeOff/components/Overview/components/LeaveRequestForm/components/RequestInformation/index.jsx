@@ -34,6 +34,7 @@ import {
   getHours,
   convert24To12,
   WORKING_HOURS,
+  roundNumber,
 } from '@/utils/timeOff';
 import styles from './index.less';
 import LeaveTimeRow from './components/LeaveTimeRow';
@@ -584,7 +585,7 @@ const RequestInformation = (props) => {
                           : { fontSize: 12, color: 'black' }
                       }
                     >
-                      {Math.round(remaining * 100) / 100}
+                      {roundNumber(remaining)}
                     </span>
                     /{foundType?.noOfDays || '0'} days
                   </span>

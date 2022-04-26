@@ -55,6 +55,7 @@ const adminSetting = {
       listPermissions: [],
       listDepartments: [],
       listGrades: [],
+      listSupportTeam: [],
       emailDomain: '',
     },
     tempData: {
@@ -64,10 +65,21 @@ const adminSetting = {
       listPermissions: [],
       listDepartments: [],
       listGrades: [],
+      listSupportTeam: [
+        {
+          supportTeam: 'Human Resource',
+          queryType: ['Policy Query', 'Leave Query', 'Paycheck Query'],
+        },
+        {
+          supportTeam: 'IT',
+          queryType: ['Policy Query', 'Leave Query'],
+        },
+      ],
     },
     viewingPosition: {},
     viewingDepartment: {},
     viewingRole: {},
+    viewingQueryType: {},
     listEmployees: [],
   },
   effects: {
@@ -506,35 +518,40 @@ const adminSetting = {
     },
 
     // domain
-    *saveDomain({payload}, {call, put}) {
+    *saveDomain({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(setEmailDomain, {...payload, tenantId: getCurrentTenant(), 
-        company: getCurrentCompany()});
-        const {statusCode, message} = response;
-        if(statusCode !== 200) throw response;
+        response = yield call(setEmailDomain, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
         yield put({
           type: 'getDomain',
         });
         // yield put({ type: 'save', payload: { emailDomain: data} })
-        notification.success({message});
-        
+        notification.success({ message });
       } catch (error) {
         dialog(error);
       }
     },
 
-    *getDomain(_, {call, put}){
+    *getDomain(_, { call, put }) {
       let response = {};
       try {
-        response = yield call(getCompanyById, {id: getCurrentCompany(), tenantId:getCurrentTenant()});
-        const {statusCode, data = {}} = response;
-        if(statusCode !== 200) throw response;
-        yield put({type: 'saveOrigin', payload: {emailDomain: data.emailDomain}})
+        response = yield call(getCompanyById, {
+          id: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveOrigin', payload: { emailDomain: data.emailDomain } });
       } catch (error) {
         dialog(error);
       }
-    }
+    },
   },
   reducers: {
     save(state, action) {

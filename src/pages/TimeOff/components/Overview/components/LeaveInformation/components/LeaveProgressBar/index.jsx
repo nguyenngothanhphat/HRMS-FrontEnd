@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react';
 import { Progress } from 'antd';
 import styles from './index.less';
-import { addZeroToNumber } from '@/utils/timeOff';
+import { addZeroToNumber, roundNumber } from '@/utils/timeOff';
 
 export default class LeaveProgressBar extends PureComponent {
   renderCircle = (stepNumber, limitNumber, color) => {
     return (
       <span className={styles.smallCircle}>
-        <span style={{ color, fontWeight: 'bold' }}>{Math.round(stepNumber * 100) / 100}</span>/
+        <span style={{ color, fontWeight: 'bold' }}>{roundNumber(stepNumber)}</span>/
         {addZeroToNumber(limitNumber)}
       </span>
     );
@@ -40,9 +40,7 @@ export default class LeaveProgressBar extends PureComponent {
             <span className={styles.title__shorten}> {shortType && `(${shortType})`}</span>
           </span>
           <span className={styles.progress}>
-            <span className={styles.stepNumber}>
-              Remaining: {Math.round(stepNumber * 100) / 100}
-            </span>
+            <span className={styles.stepNumber}>Remaining: {roundNumber(stepNumber)}</span>
             {/* <span className={styles.limitNumber}>/{`0${limitNumber}`.slice(-2)}</span> */}
           </span>
         </div>

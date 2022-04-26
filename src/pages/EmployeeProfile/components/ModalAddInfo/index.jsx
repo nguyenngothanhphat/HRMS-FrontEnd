@@ -9,7 +9,7 @@ import styles from './index.less';
 // import UploadCertification from './components/Upload/index';
 import { getCurrentTenant } from '../../../../utils/authority';
 import UploadCertification from './components/UploadCertification/index';
-import { removeEmptyFields } from '@/utils/utils';
+// import { removeEmptyFields } from '@/utils/utils';
 
 const { Step } = Steps;
 
@@ -298,7 +298,7 @@ const ModalAddInfo = (props) => {
       payload = { ...payload, taxDetails, uanNumber: nationalId };
     }
 
-    payload = removeEmptyFields(payload);
+    // payload = removeEmptyFields(payload);
 
     dispatch({
       type: 'employeeProfile/updateFirstGeneralInfo',
@@ -379,7 +379,8 @@ const ModalAddInfo = (props) => {
                         showArrow
                         showSearch
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                         className={styles.inputForm}
                       >
                         {listRelation.map((value, i) => {
