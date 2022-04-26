@@ -28,28 +28,30 @@ import {
 
 import { handlingResourceAvailableStatus } from '@/utils/resourceManagement';
 
+const initialState = {
+  resourceList: [],
+  totalList: [],
+  totalAll: [],
+  listEmployee: [],
+  listDepartment: [],
+  projectList: [],
+  resourceStatuses: [],
+  statusProject: [],
+  projectTable: [],
+
+  // for utilization
+  resourceUtilizationChartData: [],
+  utilizationOverviewList: [],
+  resourceUtilizationList: {},
+  newJoineeList: [],
+  selectedDivisions: [],
+  selectedLocations: [getCurrentLocation()], // empty for all
+  currentPayload: {},
+  filter: {},
+};
 const resourceManagement = {
   namespace: 'resourceManagement',
-  state: {
-    resourceList: [],
-    totalList: [],
-    totalAll: [],
-    listEmployee: [],
-    listDepartment: [],
-    projectList: [],
-    resourceStatuses: [],
-    statusProject: [],
-    projectTable: [],
-
-    // for utilization
-    resourceUtilizationChartData: [],
-    utilizationOverviewList: [],
-    resourceUtilizationList: {},
-    newJoineeList: [],
-    selectedDivisions: [],
-    selectedLocations: [getCurrentLocation()], // empty for all
-    currentPayload: {},
-  },
+  state: initialState,
   effects: {
     *getProjectList({ payload }, { call, put }) {
       try {
@@ -447,11 +449,8 @@ const resourceManagement = {
         ...action.payload,
       };
     },
-    clearState(state) {
-      return {
-        ...state,
-        filter: {},
-      };
+    clearState() {
+      return initialState;
     },
   },
 };
