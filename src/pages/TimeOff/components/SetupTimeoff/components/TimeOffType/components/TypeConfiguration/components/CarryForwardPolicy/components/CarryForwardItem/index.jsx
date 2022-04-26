@@ -17,7 +17,15 @@ const COL_SPAN = {
   F: 1,
 };
 const CarryForwardItem = (props) => {
-  const { configs = {}, name = '', remove = () => {}, index = 0, form } = props;
+  const {
+    configs = {},
+    name = '',
+    remove = () => {},
+    index = 0,
+    form,
+    workHourPerDay = 0,
+    renderErrorMessage = () => {},
+  } = props;
   const [suffixText, setSuffixText] = useState(TIME_TEXT.d);
 
   const convertValues = (type) => {
@@ -25,33 +33,38 @@ const CarryForwardItem = (props) => {
     let carryForwardArr = JSON.parse(JSON.stringify(formValues[CARRY_FORWARD_POLICY]));
     const temp = formValues[CARRY_FORWARD_POLICY][index]?.[VALUE];
 
-    let value = '';
-    switch (type) {
-      case 'd':
-        value = convertHoursToDays(8, temp);
-        break;
-      case 'h':
-        value = convertDaysToHours(8, temp);
-        break;
-
-      default:
-        break;
+    if (workHourPerDay === 0) {
+      renderErrorMessage();
     }
+    if (workHourPerDay !== 0 && temp !== 0) {
+      let value = '';
+      switch (type) {
+        case 'd':
+          value = convertHoursToDays(workHourPerDay, temp);
+          break;
+        case 'h':
+          value = convertDaysToHours(workHourPerDay, temp);
+          break;
 
-    carryForwardArr = carryForwardArr.map((x, i) => {
-      if (i === index) {
-        return {
-          ...x,
-          [UNIT]: type,
-          [VALUE]: value,
-        };
+        default:
+          break;
       }
-      return x;
-    });
 
-    form.setFieldsValue({
-      [CARRY_FORWARD_POLICY]: [...carryForwardArr],
-    });
+      carryForwardArr = carryForwardArr.map((x, i) => {
+        if (i === index) {
+          return {
+            ...x,
+            [UNIT]: type,
+            [VALUE]: value,
+          };
+        }
+        return x;
+      });
+
+      form.setFieldsValue({
+        [CARRY_FORWARD_POLICY]: [...carryForwardArr],
+      });
+    }
   };
 
   const onUnitChange = (e) => {

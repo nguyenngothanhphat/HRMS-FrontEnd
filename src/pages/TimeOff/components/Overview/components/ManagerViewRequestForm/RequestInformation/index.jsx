@@ -344,7 +344,7 @@ class RequestInformation extends PureComponent {
                     {moment.utc(date).locale('en').format('dddd')}
                   </Col>
                   <Col span={TIMEOFF_COL_SPAN_1.COUNT}>
-                    {!isEmpty(leaveDates) ? this.getTimeLabel(leaveDates[index].timeOfDay) : ''}
+                    {!isEmpty(leaveDates) ? this.getTimeLabel(leaveDates[index]?.timeOfDay) : ''}
                   </Col>
                 </Row>
               );

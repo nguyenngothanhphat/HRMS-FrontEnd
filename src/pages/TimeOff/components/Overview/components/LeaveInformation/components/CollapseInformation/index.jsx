@@ -10,18 +10,12 @@ const colorsList = ['#2C6DF9', '#FD4546', '#6236FF'];
 const colorsList1 = ['#2C6DF9', '#FFA100'];
 
 const CollapseInformation = (props) => {
-  const {
-    typesOfCommonLeaves = [],
-    typesOfSpecialLeaves = [],
-    policyCommonLeaves = {},
-    policySpecialLeaves = {},
-    timeOffTypes = [],
-  } = props;
+  const { commonLeaves = [], specialLeaves = [] } = props;
 
   const [viewDocumentModal, setViewDocumentModal] = useState(false);
 
   const renderPolicyLink = (policy) => {
-    if (policy !== null) {
+    if (policy) {
       if (Object.keys(policy).length !== 0) {
         const {
           key = '',
@@ -34,7 +28,7 @@ const CollapseInformation = (props) => {
     return <a onClick={() => setViewDocumentModal(true)}>Standard Policy</a>;
   };
 
-  const typeAList = typesOfCommonLeaves.filter((x) => x.defaultSettings?.type === TIMEOFF_TYPE.A);
+  const typeAList = commonLeaves.filter((x) => x.type === TIMEOFF_TYPE.A);
 
   return (
     <div className={styles.CollapseInformation}>
@@ -44,30 +38,21 @@ const CollapseInformation = (props) => {
           <span className={styles.secondTitle__left}>Common Leaves</span>
           <div className={styles.secondTitle__right}>
             <span>Under </span>
-            {renderPolicyLink(policyCommonLeaves)}
+            {renderPolicyLink()}
           </div>
         </div>
         <div className={styles.leaveProgressBars}>
-          {typeAList.map((type, index) => {
-            const { currentAllowance = 0, defaultSettings = {} } = type;
-            if (defaultSettings) {
-              const { name = '', shortType = '', _id = '' } = defaultSettings;
-              const foundType = timeOffTypes.find((t) => t._id === _id) || {};
-              return (
-                <div key={`${index + 1}`}>
-                  <LeaveProgressBar
-                    color={colorsList[index % 3]}
-                    title={name}
-                    shortType={shortType}
-                    stepNumber={currentAllowance}
-                    limitNumber={foundType.noOfDays}
-                  />
-                  {index + 1 < typeAList.length && <div className={styles.hr} />}
-                </div>
-              );
-            }
-            return '';
-          })}
+          {typeAList.map((type, index) => (
+            <div key={`${index + 1}`}>
+              <LeaveProgressBar
+                color={colorsList[index % 3]}
+                title={type.name}
+                stepNumber={type.total - type.taken}
+                limitNumber={type.total}
+              />
+              {index + 1 < typeAList.length && <div className={styles.hr} />}
+            </div>
+          ))}
         </div>
       </div>
       <div className={styles.hrLine} />
@@ -76,28 +61,16 @@ const CollapseInformation = (props) => {
           <span className={styles.secondTitle__left}>Special Leaves</span>
           <div className={styles.secondTitle__right}>
             <span>Under </span>
-            {renderPolicyLink(policySpecialLeaves)}
+            {renderPolicyLink()}
           </div>
         </div>
         <Row className={styles.leaveProgressBars}>
-          {typesOfSpecialLeaves.map((type, index) => {
-            const { currentAllowance = 0, defaultSettings = {} } = type;
-            if (defaultSettings) {
-              const { name = '', shortType = '' } = defaultSettings;
-              return (
-                <Col key={`${index + 1}`} span={24}>
-                  <SpecialLeaveBox
-                    color={colorsList1[index % 2]}
-                    title={name}
-                    shortType={shortType}
-                    days={currentAllowance}
-                  />
-                  {index + 1 !== typesOfSpecialLeaves.length && <div className={styles.hr} />}
-                </Col>
-              );
-            }
-            return '';
-          })}
+          {specialLeaves.map((type, index) => (
+            <Col key={`${index + 1}`} span={24}>
+              <SpecialLeaveBox color={colorsList1[index % 2]} title={type.name} days={type.total} />
+              {index + 1 !== specialLeaves.length && <div className={styles.hr} />}
+            </Col>
+          ))}
         </Row>
       </div>
       <ViewDocumentModal visible={viewDocumentModal} onClose={setViewDocumentModal} />

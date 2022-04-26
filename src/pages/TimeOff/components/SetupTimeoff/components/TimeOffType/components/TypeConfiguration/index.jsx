@@ -22,6 +22,7 @@ import NoticePeriodLeaveAccrualPolicy from './components/NoticePeriodLeaveAccrua
 
 import { FORM_ITEM_NAME } from '@/utils/timeOff';
 import { goToTop } from '@/utils/utils';
+import { getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 
 const {
   TIMEOFF_TYPE_NAME,
@@ -65,7 +66,6 @@ const {
 
   CARRY_FORWARD_POLICY,
   CARRY_FORWARD_CAP,
-  CARRY_FORWARD_ALLOWED,
   MAXIMUM_CARRY_FORWARD_VALUE,
 
   VALUE,
@@ -84,16 +84,21 @@ const TypeConfiguration = (props) => {
     dispatch,
     match: { params: { action = '', typeId = '' } = {} } = {},
     location: { state: { isValid = false } = {}, state = {} } = {},
-    timeOff: { viewingLeaveType = {} || {} } = {},
+    timeOff: { viewingLeaveType = {} || {}, employeeSchedule = {} } = {},
     loadingFetchTypeByID = false,
     loadingUpsertLeaveType = false,
   } = props;
 
   const { configs = {} } = viewingLeaveType || {};
+  const { totalHour: workHourPerDay = 0 } = employeeSchedule;
 
   const [initialValues, setInitialValues] = useState({});
 
   useEffect(() => form.resetFields(), [initialValues]);
+
+  const renderErrorMessage = () => {
+    message.error('Please setup work schedule before adding/updating time off types');
+  };
 
   const fetchTypeById = () => {
     if (typeId) {
@@ -109,6 +114,13 @@ const TypeConfiguration = (props) => {
   const fetchEmployeeTypeList = () => {
     dispatch({
       type: 'timeOff/fetchEmployeeTypeListEffect',
+    });
+  };
+
+  const fetchEmployeeSchedule = () => {
+    dispatch({
+      type: 'timeOff/getEmployeeScheduleByLocation',
+      payload: { location: getCurrentLocation(), tenantId: getCurrentTenant() },
     });
   };
 
@@ -278,6 +290,7 @@ const TypeConfiguration = (props) => {
     goToTop();
     fetchTypeById();
     fetchEmployeeTypeList();
+    fetchEmployeeSchedule();
     return () => {
       dispatch({
         type: 'timeOff/save',
@@ -362,11 +375,25 @@ const TypeConfiguration = (props) => {
       },
       {
         id: 7,
-        component: <NegativeLeaveBalance configs={configs} form={form} />,
+        component: (
+          <NegativeLeaveBalance
+            configs={configs}
+            form={form}
+            workHourPerDay={workHourPerDay}
+            renderErrorMessage={renderErrorMessage}
+          />
+        ),
       },
       {
         id: 8,
-        component: <MaximumBalanceAllowed configs={configs} form={form} />,
+        component: (
+          <MaximumBalanceAllowed
+            configs={configs}
+            form={form}
+            workHourPerDay={workHourPerDay}
+            renderErrorMessage={renderErrorMessage}
+          />
+        ),
       },
       {
         id: 9,
@@ -386,7 +413,14 @@ const TypeConfiguration = (props) => {
       },
       {
         id: 13,
-        component: <CarryForwardPolicy configs={configs} form={form} />,
+        component: (
+          <CarryForwardPolicy
+            configs={configs}
+            form={form}
+            workHourPerDay={workHourPerDay}
+            renderErrorMessage={renderErrorMessage}
+          />
+        ),
       },
     ];
 

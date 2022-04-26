@@ -10,16 +10,6 @@ const { Panel } = Collapse;
   currentUser,
 }))
 class TimeOffTypesInfo extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  renderData = () => {
-    const { timeOff: { timeOffTypesByCountry = [] } = {} } = this.props;
-    return timeOffTypesByCountry;
-  };
-
   renderExpandIcon = (isActive) =>
     isActive ? (
       <MinusOutlined className={styles.alternativeExpandIcon} />
@@ -27,23 +17,15 @@ class TimeOffTypesInfo extends PureComponent {
       <PlusOutlined className={styles.alternativeExpandIcon} />
     );
 
-  renderTimeOffTypeInfo = (value) => {
-    return this.renderData().map((data, index) => {
-      const { name = '', description = '', shortType = '', type = '' } = data;
-      const tempData = `No data`;
-      if (type === value) {
-        return (
-          <Panel
-            className={styles.eachCollapse}
-            header={`${name} ${shortType !== '' ? `(${shortType})` : ''}`}
-            key={`${index + 1}`}
-          >
-            <p>{description || tempData}</p>
-          </Panel>
-        );
-      }
-      return null;
-    });
+  renderTimeOffTypeInfo = () => {
+    const { timeOff: { yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {} } = {} } =
+      this.props;
+
+    return [...commonLeaves, ...specialLeaves].map((x, index) => (
+      <Panel className={styles.eachCollapse} header={x.name} key={`${index + 1}`}>
+        <p>{x.description || 'No data'}</p>
+      </Panel>
+    ));
   };
 
   render() {
@@ -76,10 +58,7 @@ class TimeOffTypesInfo extends PureComponent {
                 expandIconPosition="right"
                 expandIcon={({ isActive }) => this.renderExpandIcon(isActive)}
               >
-                {this.renderTimeOffTypeInfo('A')}
-                {this.renderTimeOffTypeInfo('B')}
-                {this.renderTimeOffTypeInfo('C')}
-                {this.renderTimeOffTypeInfo('D')}
+                {this.renderTimeOffTypeInfo()}
               </Collapse>
             </p>
           </div>

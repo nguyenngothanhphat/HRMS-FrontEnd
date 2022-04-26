@@ -13,7 +13,7 @@ const TimeOffFilter = (props) => {
 
   const {
     dispatch,
-    timeOffTypesByCountry,
+    yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
     filter: { search, type, fromDate, toDate },
     filter = {},
   } = props;
@@ -81,7 +81,7 @@ const TimeOffFilter = (props) => {
               option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             showArrow
           >
-            {timeOffTypesByCountry.map((x) => {
+            {[...commonLeaves, ...specialLeaves].map((x) => {
               return (
                 <Select.Option value={x._id} key={x._id}>
                   {x.name}
@@ -129,8 +129,8 @@ const TimeOffFilter = (props) => {
     </Space>
   );
 };
-export default connect(({ dispatch, timeOff: { timeOffTypesByCountry = [], filter = {} } }) => ({
+export default connect(({ dispatch, timeOff: { yourTimeOffTypes = {}, filter = {} } }) => ({
   dispatch,
-  timeOffTypesByCountry,
+  yourTimeOffTypes,
   filter,
 }))(TimeOffFilter);

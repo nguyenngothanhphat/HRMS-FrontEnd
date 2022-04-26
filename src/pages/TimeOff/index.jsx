@@ -37,7 +37,6 @@ const TimeOff = (props) => {
   useEffect(() => {
     if (!tabName) {
       history.replace(`/time-off/overview`);
-      return '';
     }
 
     fetchTimeOffTypes();

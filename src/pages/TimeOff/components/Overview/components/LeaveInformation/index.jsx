@@ -12,18 +12,11 @@ const { Panel } = Collapse;
 const LeaveInformation = (props) => {
   const {
     onInformationClick = () => {},
-    timeOff: {
-      timeOffTypesByCountry = [],
-      totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {},
-    } = {},
+    timeOff: { yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {} } = {},
     viewDocumentVisible = false,
     dispatch,
     user: { currentUser: { location = {} } = {} } = {},
   } = props;
-
-  const { timeOffTypes: typesOfCommonLeaves = [], policy: policyCommonLeaves = {} } = commonLeaves;
-  const { timeOffTypes: typesOfSpecialLeaves = [], policy: policySpecialLeaves = {} } =
-    specialLeaves;
 
   const [isShow, setIsShow] = useState(false);
   const [remaining, setRemaining] = useState(0);
@@ -34,16 +27,12 @@ const LeaveInformation = (props) => {
     let total = 0;
     let result = 0;
 
-    typesOfCommonLeaves.forEach((type) => {
-      const { currentAllowance = 0, defaultSettings = {} } = type;
-      if (defaultSettings !== null) {
-        const { type: type1 = '', baseAccrual: { time = 0 } = {} } = defaultSettings;
-        if (type1 === TIMEOFF_TYPE.A) {
-          remainingTemp += currentAllowance;
-          total += time;
-        }
-        result = roundNumber(remainingTemp / total);
+    commonLeaves.forEach((type) => {
+      if (type === TIMEOFF_TYPE.A) {
+        remainingTemp += type.total - type.taken;
+        total += type.total;
       }
+      result = roundNumber(remainingTemp / total);
     });
     setRemaining(remainingTemp);
     setPercentMainCircle(result);
@@ -57,7 +46,7 @@ const LeaveInformation = (props) => {
       },
     });
 
-    calculateValueForCircleProgress(typesOfCommonLeaves);
+    calculateValueForCircleProgress();
   }, []);
 
   const handleShow = () => {
@@ -106,13 +95,7 @@ const LeaveInformation = (props) => {
           defaultActiveKey={['']}
         >
           <Panel showArrow={false} header={renderHeader()} key="1">
-            <CollapseInformation
-              typesOfCommonLeaves={typesOfCommonLeaves}
-              typesOfSpecialLeaves={typesOfSpecialLeaves}
-              policyCommonLeaves={policyCommonLeaves}
-              policySpecialLeaves={policySpecialLeaves}
-              timeOffTypes={timeOffTypesByCountry}
-            />
+            <CollapseInformation commonLeaves={commonLeaves} specialLeaves={specialLeaves} />
           </Panel>
         </Collapse>
       </div>

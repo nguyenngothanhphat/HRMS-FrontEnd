@@ -6,7 +6,7 @@ import CarryForwardItem from './components/CarryForwardItem';
 import styles from './index.less';
 
 const CarryForwardPolicy = (props) => {
-  const { configs = {}, form } = props;
+  const { configs = {}, form, workHourPerDay = 0, renderErrorMessage = () => {} } = props;
 
   return (
     <Card title="Carry Forward Policy" className={styles.CarryForwardPolicy}>
@@ -23,6 +23,8 @@ const CarryForwardPolicy = (props) => {
                       index={index}
                       configs={configs}
                       form={form}
+                      workHourPerDay={workHourPerDay}
+                      renderErrorMessage={renderErrorMessage}
                     />
                   </Col>
                 ))}

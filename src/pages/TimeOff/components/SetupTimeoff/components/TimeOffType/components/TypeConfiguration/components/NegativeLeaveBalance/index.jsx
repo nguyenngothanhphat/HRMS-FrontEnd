@@ -14,28 +14,33 @@ const {
 } = FORM_ITEM_NAME;
 
 const NegativeLeaveBalance = (props) => {
-  const { configs = {}, form } = props;
+  const { configs = {}, form, workHourPerDay = 0, renderErrorMessage = () => {} } = props;
   const [suffixText, setSuffixText] = useState(TIME_TEXT.d);
 
   const convertValues = (type) => {
     const formValues = form.getFieldsValue();
     const temp = formValues[NEGATIVE_LEAVE_BALANCE_MAXIMUM_VALUE];
 
-    let value = '';
-    switch (type) {
-      case 'd':
-        value = convertHoursToDays(8, temp);
-        break;
-      case 'h':
-        value = convertDaysToHours(8, temp);
-        break;
-
-      default:
-        break;
+    if (workHourPerDay === 0) {
+      renderErrorMessage();
     }
-    form.setFieldsValue({
-      [NEGATIVE_LEAVE_BALANCE_MAXIMUM_VALUE]: value,
-    });
+    if (workHourPerDay !== 0 && temp !== 0) {
+      let value = '';
+      switch (type) {
+        case 'd':
+          value = convertHoursToDays(workHourPerDay, temp);
+          break;
+        case 'h':
+          value = convertDaysToHours(workHourPerDay, temp);
+          break;
+
+        default:
+          break;
+      }
+      form.setFieldsValue({
+        [NEGATIVE_LEAVE_BALANCE_MAXIMUM_VALUE]: value,
+      });
+    }
   };
 
   const onUnitChange = (e) => {
