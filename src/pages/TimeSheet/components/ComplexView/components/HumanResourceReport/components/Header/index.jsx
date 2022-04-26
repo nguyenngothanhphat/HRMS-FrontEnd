@@ -76,7 +76,8 @@ const Header = (props) => {
       const {
         legalName = '',
         leaveTaken = '',
-        project = [],
+        employeeCode = '',
+        projects = [],
         userSpentInDay = 0,
         userSpentInHours = 0,
         totalLeave = '',
@@ -87,12 +88,13 @@ const Header = (props) => {
         department: { name = '' } = {},
       } = item;
       let projectName = '';
-      project.forEach((el, index) => {
+      projects.forEach((el, index) => {
         projectName += el;
-        if (index + 1 < project.length) projectName += ', ';
+        if (index + 1 < projects.length) projectName += ', ';
       });
       const dataExport = {
         Employee: legalName,
+        'Employee ID': employeeCode,
         Department: name,
         Project: projectName,
         'Working Days': `${userSpentInDay}/${totalWorkingDay} ( ${totalWorkingDayInHours} hours)`,
