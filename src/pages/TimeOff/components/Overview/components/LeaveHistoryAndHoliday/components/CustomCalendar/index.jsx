@@ -1,21 +1,21 @@
+import NextIcon from '@/assets/timeOff/next.svg';
+import PrevIcon from '@/assets/timeOff/previous.svg';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import { Calendar, ConfigProvider, Tooltip } from 'antd';
+import enGB from 'antd/lib/locale-provider/en_GB';
 import moment from 'moment';
+import 'moment/locale/en-gb';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import enGB from 'antd/lib/locale-provider/en_GB';
+import TypeColorTag from '../TypeColorTag';
 import styles from './index.less';
-import 'moment/locale/en-gb';
-import PrevIcon from '@/assets/timeOff/previous.svg';
-import NextIcon from '@/assets/timeOff/next.svg';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
 
 const { IN_PROGRESS, ACCEPTED, REJECTED } = TIMEOFF_STATUS;
 
 moment.locale('en-gb'); // important!
 
 const CustomCalendar = (props) => {
-  const { data = [], mode = 1 } = props; // 1: leave request, 2: holiday
-  const [currentTime, setCurrentTime] = useState(moment());
+  const { holidays = [], leaveRequests = [], currentTime = '', setCurrentTime = () => {} } = props;
 
   // FUNCTION
   const checkIfSameDay = (a, b) => {
@@ -27,11 +27,11 @@ const CustomCalendar = (props) => {
   };
 
   const checkLeaveRequest = (val, status) => {
-    return data.some((x) => checkIfSameDay(x.fromDate, val) && status === x.status);
+    return leaveRequests.some((x) => checkIfSameDay(x.fromDate, val) && status === x.status);
   };
 
   const checkHoliday = (val) => {
-    return data.some((x) => checkIfSameDay(x.date.iso, val));
+    return holidays.some((x) => checkIfSameDay(x.date.iso, val));
   };
 
   const getClassName = (val) => {
@@ -39,23 +39,22 @@ const CustomCalendar = (props) => {
     if (checkCurrentDay(val)) {
       className += `${styles.currentDay} `;
     }
-    if (mode === 1) {
-      const obj = {
-        [IN_PROGRESS]: styles.inProgressDay,
-        [ACCEPTED]: styles.acceptedDay,
-        [REJECTED]: styles.rejectedDay,
-      };
-      Object.keys(obj).forEach((x) => {
-        if (checkLeaveRequest(val, x)) {
-          className += `${obj[x]} `;
-        }
-      });
-    }
-    if (mode === 2) {
-      if (checkHoliday(val)) {
-        className += `${styles.holiday} `;
+
+    const obj = {
+      [IN_PROGRESS]: styles.inProgressDay,
+      [ACCEPTED]: styles.acceptedDay,
+      [REJECTED]: styles.rejectedDay,
+    };
+    Object.keys(obj).forEach((x) => {
+      if (checkLeaveRequest(val, x)) {
+        className += `${obj[x]} `;
       }
+    });
+
+    if (checkHoliday(val)) {
+      className += `${styles.holiday} `;
     }
+
     return className;
   };
 
@@ -68,49 +67,28 @@ const CustomCalendar = (props) => {
     const date = moment(value).date();
     const className = getClassName(value);
 
-    // leave request
-    if (mode === 1) {
-      const filter = data.filter((x) => checkIfSameDay(x.fromDate, value));
-      const getTypeNames = () => {
-        return [
-          ...new Set(
-            filter.map((x, i) => {
-              if (i + 1 < filter.length) return `${x.typeName}, `;
-              return x.typeName;
-            }),
-          ),
-        ];
-      };
-      return renderDate(
-        filter.length > 0,
-        <div className={`${styles.dateRender} ${className}`}>
-          <span>{date}</span>
-          <div className={styles.smallDot} />
-        </div>,
-        getTypeNames(),
-      );
-    }
-
-    // holiday
-    const filter = data.filter((x) => checkIfSameDay(x.date?.iso, value));
-    const getHolidayNames = () => {
+    const filter = [
+      ...leaveRequests.filter((x) => checkIfSameDay(x.fromDate, value)),
+      ...holidays.filter((x) => checkIfSameDay(x.date?.iso, value)),
+    ];
+    const getNames = () => {
       return [
         ...new Set(
           filter.map((x, i) => {
-            if (i + 1 < filter.length) return `${x.name}, `;
-            return x.name;
+            const name = x.name || x.typeName;
+            if (i + 1 < filter.length) return `${name}, `;
+            return name;
           }),
         ),
       ];
     };
-
     return renderDate(
       filter.length > 0,
       <div className={`${styles.dateRender} ${className}`}>
         <span>{date}</span>
         <div className={styles.smallDot} />
       </div>,
-      getHolidayNames(),
+      getNames(),
     );
   };
 
@@ -146,6 +124,7 @@ const CustomCalendar = (props) => {
           headerRender={headerRender}
           onChange={(val) => setCurrentTime(val)}
         />
+        <TypeColorTag />
       </div>
     </ConfigProvider>
   );

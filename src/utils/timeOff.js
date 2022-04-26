@@ -62,6 +62,7 @@ export const TIMEOFF_COLOR = {
   [TIMEOFF_STATUS.DELETED]: '#000000',
   [TIMEOFF_STATUS.DRAFTS]: '#13c2c2',
   [TIMEOFF_STATUS.WITHDRAWN]: '#00aebc',
+  Holiday: '#6a0dad',
 };
 
 export const addZeroToNumber = (number) => {
@@ -110,6 +111,10 @@ export const WORKING_HOURS = {
 };
 
 // TIMEOFF SETUP
+export const TIME_TEXT = {
+  d: 'days',
+  h: 'hours',
+};
 export const FORM_ITEM_NAME = {
   TIMEOFF_TYPE_NAME: 'timeoffTypeName',
 
@@ -209,3 +214,16 @@ export const TIMEOFF_WORK_DAYS = [
 ];
 
 export const roundNumber = (x) => Math.round(x * 10) / 10;
+export const roundNumber2 = (x) => Math.round(x * 100) / 100;
+
+export const convertDaysToHours = (numberHourPerDay, value) => {
+  return numberHourPerDay * value;
+};
+
+export const convertHoursToDays = (numberHourPerDay, value) => {
+  return value / numberHourPerDay;
+};
+
+export const isFutureDay = (date) => {
+  return moment(date).isAfter(moment());
+};

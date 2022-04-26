@@ -6,12 +6,11 @@ import EmptyComponent from '@/components/Empty';
 
 export default class HolidayList extends PureComponent {
   render() {
-    const { holidaysList = [] } = this.props;
+    const { upcomingHolidayList = [] } = this.props;
     return (
       <div className={styles.HolidayList}>
-        {holidaysList.map((row, index) => {
-          const { name = '', date: { iso = '', dateTime: { day = '', month = '' } = {} } = {} } =
-            row;
+        {upcomingHolidayList.map((row, index) => {
+          const { name = '', date: { iso = '', dateTime: { day = '' } = {} } = {} } = row;
           const monthData = new Date(iso).toISOString();
           return (
             <Row key={`${index + 1}`} className={styles.eachRow}>
@@ -28,7 +27,7 @@ export default class HolidayList extends PureComponent {
             </Row>
           );
         })}
-        {holidaysList.length === 0 && <EmptyComponent />}
+        {upcomingHolidayList.length === 0 && <EmptyComponent />}
       </div>
     );
   }
