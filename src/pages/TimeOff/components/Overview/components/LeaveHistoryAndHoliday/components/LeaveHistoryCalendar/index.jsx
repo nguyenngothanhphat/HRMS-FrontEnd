@@ -1,12 +1,17 @@
 /* eslint-disable no-console */
 import moment from 'moment';
 import React from 'react';
-import Calendar from '../../../Calendar';
+import CustomCalendar from '../CustomCalendar';
 import EventDetailBox from './EventDetailBox';
 import styles from './index.less';
 
 const LeaveHistoryCalendar = (props) => {
-  const { leavingList = [] } = props;
+  const {
+    allHolidayList = [],
+    leavingList = [],
+    currentTime = '',
+    setCurrentTime = () => {},
+  } = props;
 
   const checkFutureDay = (date) => {
     return moment(date).isAfter(moment());
@@ -26,27 +31,13 @@ const LeaveHistoryCalendar = (props) => {
 
   return (
     <div className={styles.LeaveHistoryCalendar}>
-      <Calendar data={leavingList} />
-      <div className={styles.listStatus}>
-        <div className={styles.listStatus__top}>
-          <div className={`${styles.dots} ${styles.dotAll}`} />
-          <span className={styles.listStatus__text}>All Leaves</span>
-        </div>
-        <div className={styles.listStatus__bottom}>
-          <div className={styles.listStatus__status}>
-            <div className={`${styles.dots} ${styles.dotApplied}`} />
-            <span className={styles.listStatus__text}>Applied</span>
-          </div>
-          <div className={styles.listStatus__status}>
-            <div className={`${styles.dots} ${styles.dotApproved}`} />
-            <span className={styles.listStatus__text}>Approved</span>
-          </div>
-          <div className={styles.listStatus__status}>
-            <div className={`${styles.dots} ${styles.dotRejected}`} />
-            <span className={styles.listStatus__text}>Rejected</span>
-          </div>
-        </div>
-      </div>
+      <CustomCalendar
+        holidays={allHolidayList}
+        leaveRequests={leavingList}
+        currentTime={currentTime}
+        setCurrentTime={setCurrentTime}
+      />
+
       <div className={styles.eventDetailContainer}>
         <div className={styles.eventDetailPart}>
           <span className={styles.title}>Upcoming</span>
