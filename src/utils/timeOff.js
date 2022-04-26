@@ -62,6 +62,7 @@ export const TIMEOFF_COLOR = {
   [TIMEOFF_STATUS.DELETED]: '#000000',
   [TIMEOFF_STATUS.DRAFTS]: '#13c2c2',
   [TIMEOFF_STATUS.WITHDRAWN]: '#00aebc',
+  Holiday: '#6a0dad',
 };
 
 export const addZeroToNumber = (number) => {
@@ -221,4 +222,8 @@ export const convertDaysToHours = (numberHourPerDay, value) => {
 
 export const convertHoursToDays = (numberHourPerDay, value) => {
   return value / numberHourPerDay;
+};
+
+export const isFutureDay = (date) => {
+  return moment(date).isAfter(moment());
 };
