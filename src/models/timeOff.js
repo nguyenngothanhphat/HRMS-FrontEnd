@@ -3,7 +3,6 @@ import { getCurrentCompany, getCurrentTenant, getCurrentLocation } from '@/utils
 import { dialog } from '@/utils/utils';
 import {
   getHolidaysList,
-  getLeaveBalanceOfUser,
   getLeaveRequestOfEmployee,
   addLeaveRequest,
   removeLeaveRequestOnDatabase,
@@ -77,7 +76,6 @@ const timeOff = {
     holidaysListByCountry: [],
     leaveHistory: [],
     leavingList: [],
-    totalLeaveBalance: {},
     leaveRequests: [],
     compoffRequests: [],
     timeOffTypes: [],
@@ -335,27 +333,6 @@ const timeOff = {
         });
       } catch (errors) {
         dialog(errors);
-      }
-      return response;
-    },
-
-    *fetchLeaveBalanceOfUser({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getLeaveBalanceOfUser, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data: totalLeaveBalance = {} } = response;
-        // console.log('totalLeaveBalance', totalLeaveBalance);
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { totalLeaveBalance },
-        });
-      } catch (errors) {
-        // dialog(errors);
       }
       return response;
     },

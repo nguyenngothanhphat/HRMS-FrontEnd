@@ -1,13 +1,6 @@
 import request from '@/utils/request';
 import { API_KEYS } from '../../config/proxy';
 
-export function getLeaveBalanceOfUser(payload) {
-  return request('/api/leavebalancetenant/get-by-user', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
 export async function getTimeOffTypes(payload) {
   return request('/api/timeofftypetenant/list', {
     method: 'POST',
