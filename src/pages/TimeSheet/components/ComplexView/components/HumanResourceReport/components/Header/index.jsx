@@ -76,7 +76,7 @@ const Header = (props) => {
       const {
         legalName = '',
         leaveTaken = '',
-        employeeCode='',
+        employeeCode = '',
         projects = [],
         userSpentInDay = 0,
         userSpentInHours = 0,
@@ -94,7 +94,7 @@ const Header = (props) => {
       });
       const dataExport = {
         Employee: legalName,
-        "Employee ID": employeeCode,
+        'Employee ID': employeeCode,
         Department: name,
         Project: projectName,
         'Working Days': `${userSpentInDay}/${totalWorkingDay} ( ${totalWorkingDayInHours} hours)`,
