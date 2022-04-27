@@ -22,11 +22,12 @@ const FilterContent = (props) => {
       listSkill = [],
       // selectedFilter
       filter: {
+        employeeId = '',
         name = '',
         department = [],
         division = [],
-        country = [],
-        location = [],
+        countries = [],
+        locations = [],
         title = [],
         reportingManager = [],
         employeeType = [],
@@ -40,6 +41,7 @@ const FilterContent = (props) => {
     loadingFetchEmployeeIDList = false,
     loadingFetchEmployeeNameList = false,
     loadingFetchManagerList = false,
+    handleFilterCounts = () => {},
   } = props;
 
   const [countryListState, setCountryListState] = useState([]);
@@ -74,12 +76,13 @@ const FilterContent = (props) => {
     // this is needed for directly filtering when clicking on title or department on the table
     form.setFieldsValue({
       ...filter,
-      name: name || undefined,
+      employeeId,
+      name,
       department,
       division,
       title,
-      location,
-      country,
+      locations,
+      countries,
       reportingManager,
       employeeType,
       skill,
@@ -156,6 +159,7 @@ const FilterContent = (props) => {
   };
 
   const onFinishDebounce = debounce((values) => {
+    handleFilterCounts(values);
     onFinish(values);
   }, 700);
 
@@ -260,12 +264,13 @@ const FilterContent = (props) => {
           style={{ width: '100%' }}
           placeholder="Search by Department"
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
           showArrow
         >
-          {listDepartmentName.map((x) => {
+          {listDepartmentName.map((x, index) => {
             return (
-              <Select.Option value={x} key={x}>
+              <Select.Option value={x} key={index}>
                 {x}
               </Select.Option>
             );
@@ -280,12 +285,13 @@ const FilterContent = (props) => {
           style={{ width: '100%' }}
           placeholder="Search by Division Name"
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
           showArrow
         >
-          {listDepartmentName.map((x) => {
+          {listDepartmentName.map((x, index) => {
             return (
-              <Select.Option value={x} key={x}>
+              <Select.Option value={x} key={index}>
                 {x}
               </Select.Option>
             );
@@ -300,7 +306,8 @@ const FilterContent = (props) => {
           style={{ width: '100%' }}
           placeholder="Search by Job Title"
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
           showArrow
         >
           {listTitle.map((x) => {
@@ -337,7 +344,8 @@ const FilterContent = (props) => {
           style={{ width: '100%' }}
           placeholder="Search by Location"
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
           showArrow
         >
           {companyLocationList.map((x) => {
@@ -358,7 +366,8 @@ const FilterContent = (props) => {
           style={{ width: '100%' }}
           placeholder="Search by Country"
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
           showArrow
         >
           {countryListState.map((x) => {
@@ -379,14 +388,15 @@ const FilterContent = (props) => {
           style={{ width: '100%' }}
           placeholder="Search by Employment Type"
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
           showArrow
         >
           {listEmployeeType
             .filter((x) => x.name !== 'Other')
             .map((x) => {
               return (
-                <Select.Option value={x._id} key={x}>
+                <Select.Option value={x._id} key={x._id}>
                   {x.name}
                 </Select.Option>
               );
@@ -402,7 +412,8 @@ const FilterContent = (props) => {
           style={{ width: '100%' }}
           placeholder="Search by Skills"
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
           showArrow
         >
           {listSkill.map((x) => {

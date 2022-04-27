@@ -183,6 +183,12 @@ const customerManagement = {
     },
   },
   reducers: {
+    clearFilter(state) {
+      return {
+        ...state,
+        filter: {},
+      };
+    },
     save(state, action) {
       return {
         ...state,

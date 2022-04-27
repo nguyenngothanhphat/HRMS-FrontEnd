@@ -44,7 +44,7 @@ class SearchTable extends Component {
       <div className={styles.searchFilter}>
         <div>
           <FilterPopover
-            content={<FilterForm visible={visible} />}
+            content={<FilterForm visible={visible} {...this.props} />}
             title={this.renderTitle()}
             trigger="click"
             placement="bottomRight"

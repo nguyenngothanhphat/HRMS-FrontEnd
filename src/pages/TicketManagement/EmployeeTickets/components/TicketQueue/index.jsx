@@ -8,6 +8,7 @@ import TableTickets from '../TableTickets';
 import TicketInfo from '../TicketInfo';
 
 import styles from './index.less';
+import FilterCount from '../../../components/FilterCount/FilterCount';
 
 @connect(
   ({
@@ -29,6 +30,8 @@ class TicketQueue extends Component {
       pageSelected: 1,
       size: 10,
       nameSearch: '',
+      applied: 0,
+      form: '',
     };
 
     this.setDebounce = debounce((nameSearch) => {
@@ -85,6 +88,28 @@ class TicketQueue extends Component {
     this.setDebounce(formatValue);
   };
 
+  handleFilterCounts = (values) => {
+    const filteredObj = Object.entries(values).filter(
+      ([key, value]) => (value !== undefined && value.length > 0) || value?.isValid,
+    );
+    const newObj = Object.fromEntries(filteredObj);
+    this.setState({
+      applied: Object.keys(newObj).length,
+    });
+  };
+
+  setForm = (form) => {
+    this.setState({
+      form,
+    });
+  };
+
+  setApplied = () => {
+    this.setState({
+      applied: 0,
+    });
+  };
+
   render() {
     const {
       data = [],
@@ -104,7 +129,17 @@ class TicketQueue extends Component {
         </div>
         <div className={styles.containerTickets}>
           <div className={styles.tabTickets}>
-            <SearchTable onChangeSearch={this.onChangeSearch} />
+            <></>
+            <FilterCount
+              applied={this.state.applied}
+              form={this.state.form}
+              setApplied={this.setApplied}
+            />
+            <SearchTable
+              onChangeSearch={this.onChangeSearch}
+              handleFilterCounts={this.handleFilterCounts}
+              setForm={this.setForm}
+            />
           </div>
           <TableTickets
             data={dataTableDeparment}

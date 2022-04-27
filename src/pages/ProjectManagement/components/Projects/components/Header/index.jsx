@@ -1,4 +1,5 @@
-import { Button, Select, Skeleton } from 'antd';
+import { Tag, Button, Select, Skeleton } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 import { debounce } from 'lodash';
 import React, { Suspense, useEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -23,8 +24,11 @@ const Header = (props) => {
     fetchProjectList = () => {},
     permissions = {},
     loadingAddProject = false,
+    projectManagement: { filter = {} } = {},
   } = props;
   const [addProjectModalVisible, setAddProjectModalVisible] = useState(false);
+  const [applied, setApplied] = useState(0);
+  const [form, setForm] = useState('');
 
   // permissions
   const addProjectPermission = permissions.addProject !== -1;
@@ -53,6 +57,20 @@ const Header = (props) => {
     } else {
       setIsFiltering(false);
     }
+  };
+
+  const handleFilterCounts = (values) => {
+    const filteredObj = Object.entries(values).filter(
+      ([key, value]) => value !== undefined && value?.length > 0,
+    );
+    const newObj = Object.fromEntries(filteredObj);
+    setApplied(Object.keys(newObj).length);
+  };
+
+  const clearFilter = () => {
+    fetchProjectList();
+    form?.resetFields();
+    setApplied(0);
   };
 
   useEffect(() => {
@@ -90,6 +108,21 @@ const Header = (props) => {
         </div>
       </div>
 
+      <div className={styles.Header__center}>
+        {applied > 0 && (
+          <Tag
+            className={styles.tagCountFilter}
+            closable
+            closeIcon={<CloseOutlined />}
+            onClose={() => {
+              clearFilter();
+            }}
+          >
+            {applied} applied
+          </Tag>
+        )}
+      </div>
+
       <div className={styles.Header__right}>
         {addProjectPermission && (
           <Button
@@ -108,6 +141,8 @@ const Header = (props) => {
                 needResetFilterForm={needResetFilterForm}
                 setNeedResetFilterForm={setNeedResetFilterForm}
                 onFilter={onFilter}
+                handleFilterCounts={handleFilterCounts}
+                setForm={setForm}
               />
             </Suspense>
           }

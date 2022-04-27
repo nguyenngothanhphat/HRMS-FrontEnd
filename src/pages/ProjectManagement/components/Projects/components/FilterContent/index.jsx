@@ -11,6 +11,20 @@ const FilterContent = (props) => {
     dispatch,
     needResetFilterForm = false,
     setNeedResetFilterForm = () => {},
+    handleFilterCounts = () => {},
+    setForm = () => {},
+    projectManagement: {
+      filter: {
+        customerId = [],
+        division = [],
+        engagementType = [],
+        projectId = '',
+        projectManager = [],
+        projectName = [],
+        projectStatus = [],
+      } = {},
+      filter = {},
+    } = {},
   } = props;
 
   // redux
@@ -25,6 +39,19 @@ const FilterContent = (props) => {
     } = {},
     loadingFetchEmployeeList = false,
   } = props;
+
+  useEffect(() => {
+    form.setFieldsValue({
+      ...filter,
+      customerId,
+      division,
+      engagementType,
+      projectId,
+      projectManager,
+      projectName,
+      projectStatus,
+    });
+  }, [JSON.stringify(filter)]);
 
   useEffect(() => {
     dispatch({
@@ -64,10 +91,15 @@ const FilterContent = (props) => {
             ((a[k] = v), a),
       {},
     );
+    dispatch({
+      type: 'projectManagement/save',
+      payload: { filter: result },
+    });
     onFilter(result);
   };
 
   const onFinishDebounce = debounce((values) => {
+    handleFilterCounts(values);
     onFormSubmit(values);
   }, 700);
 
@@ -83,6 +115,10 @@ const FilterContent = (props) => {
       setNeedResetFilterForm(false);
     }
   }, [needResetFilterForm]);
+
+  useEffect(() => {
+    setForm(form);
+  }, []);
 
   return (
     <div className={styles.FilterContent}>
