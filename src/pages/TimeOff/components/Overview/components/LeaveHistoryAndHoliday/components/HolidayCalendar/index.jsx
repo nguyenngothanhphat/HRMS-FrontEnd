@@ -14,17 +14,8 @@ export default class HolidayCalendar extends PureComponent {
     return weekDayName;
   };
 
-  renderData = (id, list) => {
-    const upcomingData = [];
-    const leaveTakenData = [];
-
-    list.forEach((value) => {
-      const check = isFutureDay(value.date?.iso);
-      if (check) upcomingData.push(value);
-      else leaveTakenData.push(value);
-    });
-    if (id === 1) return upcomingData;
-    return leaveTakenData;
+  renderData = (list) => {
+    return list.filter((x) => isFutureDay(x.date?.iso));
   };
 
   render() {
@@ -46,16 +37,8 @@ export default class HolidayCalendar extends PureComponent {
           <div className={styles.eventDetailPart}>
             <span className={styles.title}>Upcoming</span>
             <div className={styles.eventsContainer}>
-              {this.renderData(1, allHolidayList).map((value) => (
+              {this.renderData(allHolidayList).map((value) => (
                 <EventDetailBox data={value} color={1} />
-              ))}
-            </div>
-          </div>
-          <div className={styles.eventDetailPart}>
-            <div className={styles.title}>Leave taken</div>
-            <div className={styles.eventsContainer}>
-              {this.renderData(2, allHolidayList).map((value) => (
-                <EventDetailBox data={value} color={2} />
               ))}
             </div>
           </div>
