@@ -64,7 +64,7 @@ const ComplexView = (props) => {
     if (selectedLocations.length > 0 && selectedLocations.length < companyLocationList.length) {
       return `${selectedLocations.length} locations selected`;
     }
-    if (selectedLocations.length === companyLocationList.length) {
+    if (selectedLocations.length === companyLocationList.length && selectedLocations.length > 1) {
       return 'All';
     }
     return 'None';
@@ -94,12 +94,7 @@ const ComplexView = (props) => {
     });
   };
 
-  const renderFilterBar = (isHRTab) => {
-    // if only one selected
-    const selectedLocationName = getSelectedLocationName();
-    const selectedDivisionName = getSelectedDivisionName();
-    // PERMISSIONS TO VIEW LOCATION
-    const viewLocation = permissions.viewLocationTimesheet;
+  const renderLocationOptions = () => {
     const locationUser = companyLocationList
       .filter((x) => {
         return x._id === getCurrentLocation();
@@ -111,13 +106,32 @@ const ComplexView = (props) => {
         };
       });
 
-    const divisionOptions = divisionList.map((x) => {
+    const locationOptions = companyLocationList.map((x) => {
       return {
         _id: x._id,
         name: x.name,
       };
     });
-    const locationOptions = companyLocationList.map((x) => {
+    // PERMISSIONS TO VIEW LOCATION
+
+    const viewLocationHR = permissions.viewLocationHRTimesheet === 1;
+    const viewLocationFinance = permissions.viewLocationFinanceTimesheet === 1;
+
+    if (tabName === TAB_NAME.HR_REPORTS && viewLocationHR) {
+      return locationOptions;
+    }
+    if (tabName === TAB_NAME.FINANCE_REPORTS && viewLocationFinance) {
+      return locationOptions;
+    }
+    return locationUser;
+  };
+
+  const renderFilterBar = (isHRTab) => {
+    // if only one selected
+    const selectedLocationName = getSelectedLocationName();
+    const selectedDivisionName = getSelectedDivisionName();
+
+    const divisionOptions = divisionList.map((x) => {
       return {
         _id: x._id,
         name: x.name,
@@ -136,14 +150,15 @@ const ComplexView = (props) => {
           <span className={styles.label}>Location</span>
 
           <CheckboxMenu
-            options={viewLocation !== -1 ? locationUser : locationOptions}
+            options={renderLocationOptions()}
             onChange={onLocationChange}
             list={companyLocationList}
             default={selectedLocations}
+            disabled={renderLocationOptions().length < 2}
           >
             <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
               <span>{selectedLocationName}</span>
-              <img src={SmallDownArrow} alt="" />
+              {renderLocationOptions().length < 2 ? null : <img src={SmallDownArrow} alt="" />}
             </div>
           </CheckboxMenu>
         </div>
