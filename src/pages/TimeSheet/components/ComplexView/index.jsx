@@ -64,7 +64,7 @@ const ComplexView = (props) => {
     if (selectedLocations.length > 0 && selectedLocations.length < companyLocationList.length) {
       return `${selectedLocations.length} locations selected`;
     }
-    if (selectedLocations.length === companyLocationList.length && selectedLocations.length > 1) {
+    if (selectedLocations.length === companyLocationList.length) {
       return 'All';
     }
     return 'None';
