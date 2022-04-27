@@ -115,348 +115,349 @@ const AddProjectModal = (props) => {
       refreshData();
     }
   };
-  const requiredLabel = (text) => {
-    return (
-      <span>
-        {text} <span style={{ color: '#f04b37' }}>*</span>
-      </span>
-    );
-  };
 
-
-    return (
-      <div className={styles.AddProjectModalContent}>
-        <Form
-          name="myForm"
-          form={form}
-          id="myForm"
-          onFinish={handleFinish}
-          initialValues={{
-            accountOwner: employeeId,
-          }}
-        >
-          <Row gutter={[24, 0]} className={styles.abovePart}>
-            <Col xs={24} md={12}>
-              <Form.Item
-                rules={[{ required: true, message: 'Select Customer' }]}
-                label={requiredLabel('Customer')}
-                name="customerId"
-                fieldKey="customerId"
-                labelCol={{ span: 24 }}
-              >
-                <Select
-                  loading={loadingFetchCustomerList || loadingGenId}
-                  placeholder="Select Customer"
-                  disabled={loadingGenId}
-                  onChange={(val) => setCustomerId(val)}
-                  showSearch
-                  allowClear
-                  filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >
-                  {customerList.map((x) => (
-                    <Option value={x.customerId}>{x.legalName}</Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={12}>
-              <Form.Item
-                rules={[{ required: true, message: 'Select Engagement Type' }]}
-                label={requiredLabel('Engagement Type')}
-                name="engagementType"
-                fieldKey="engagementType"
-                labelCol={{ span: 24 }}
-              >
-                <Select
-                  placeholder="Select Engagement Type"
-                  showSearch
-                  allowClear
-                  filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >
-                  {projectTypeList.map((x) => (
-                    <Option value={x.id}>{x.type_name}</Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={12}>
-              <Form.Item
-                rules={[{ required: true, message: 'Select Account Owner' }]}
-                label="Account Owner"
-                name="accountOwner"
-                fieldKey="accountOwner"
-                labelCol={{ span: 24 }}
-              >
-                <Select
-                  loading={loadingFetchEmployeeList}
-                  disabled
-                  placeholder="Select Account Owner"
-                >
-                  {employeeList.map((x) => (
-                    <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={[24, 0]} className={styles.middlePart}>
-            <Col xs={24} md={12}>
-              <Form.Item
-                rules={[{ required: true, message: 'Project ID' }]}
-                label={
-                  <span>
-                    Project ID{' '}
-                    <Tooltip placement="rightBottom" title="Some texts here">
-                      <img src={HelpIcon} alt="" />
-                    </Tooltip>
-                  </span>
+  return (
+    <div className={styles.AddProjectModalContent}>
+      <Form
+        name="myForm"
+        form={form}
+        id="myForm"
+        onFinish={handleFinish}
+        // initialValues={{
+        //   accountOwner: employeeId,
+        // }}
+      >
+        <Row gutter={[24, 0]} className={styles.abovePart}>
+          <Col xs={24} md={12}>
+            <Form.Item
+              rules={[{ required: true, message: 'Select Customer' }]}
+              label="Customer"
+              name="customerId"
+              fieldKey="customerId"
+              labelCol={{ span: 24 }}
+            >
+              <Select
+                loading={loadingFetchCustomerList || loadingGenId}
+                placeholder="Select Customer"
+                disabled={loadingGenId}
+                onChange={(val) => setCustomerId(val)}
+                showSearch
+                allowClear
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
-                name="projectId"
-                fieldKey="projectId"
-                labelCol={{ span: 24 }}
               >
-                <Input disabled placeholder="Project ID (auto generate)" />
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={12}>
-              <Form.Item
-                rules={[{ required: true, message: 'Select Project Status' }]}
-                label={
-                  <span>
-                    {requiredLabel('Project Status')}{' '}
-                    <Tooltip placement="rightBottom" title="Some texts here">
-                      <img src={HelpIcon} alt="" />
-                    </Tooltip>
-                  </span>
+                {customerList.map((x) => (
+                  <Option value={x.customerId}>{x.legalName}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              rules={[{ required: true, message: 'Select Engagement Type' }]}
+              label="Engagement Type"
+              name="engagementType"
+              fieldKey="engagementType"
+              labelCol={{ span: 24 }}
+            >
+              <Select
+                placeholder="Select Engagement Type"
+                showSearch
+                allowClear
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
-                name="projectStatus"
-                fieldKey="projectStatus"
-                labelCol={{ span: 24 }}
               >
-                <Select
-                  placeholder="Select Project Status"
-                  showSearch
-                  allowClear
-                  filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >
-                  {projectStatusList.map((x) => (
-                    <Option value={x.id}>{x.status}</Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={12}>
-              <Form.Item
-                rules={[{ required: true, message: 'Enter Project Name' }]}
-                label={requiredLabel('Project Name')}
-                name="projectName"
-                fieldKey="projectName"
-                labelCol={{ span: 24 }}
+                {projectTypeList.map((x) => (
+                  <Option value={x.id}>{x.type_name}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              rules={[{ required: true, message: 'Select Account Owner' }]}
+              label="Account Owner"
+              name="accountOwner"
+              fieldKey="accountOwner"
+              labelCol={{ span: 24 }}
+            >
+              <Select
+                loading={loadingFetchEmployeeList}
+                placeholder="Select Account Owner"
+                showSearch
+                allowClear
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
-                <Input placeholder="Enter Project Name" />
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={12}>
-              <Form.Item
-                label="Project Alias (Optional)"
-                name="projectAlias"
-                fieldKey="projectAlias"
-                labelCol={{ span: 24 }}
-              >
-                <Input placeholder="Enter Project Alias" />
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={12}>
-              <Form.Item
-                rules={[{ required: true, message: 'Select Start Date' }]}
-                label={requiredLabel('Start Date')}
-                name="startDate"
-                fieldKey="startDate"
-                labelCol={{ span: 24 }}
-              >
-                <DatePicker
-                  format={dateFormat}
-                  placeholder="Select Start Date"
-                  suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={12}>
-              <Form.Item
-                rules={[{ required: true, message: 'Select Tentative End Date' }]}
-                label={requiredLabel('Tentative End Date')}
-                name="tentativeEndDate"
-                fieldKey="tentativeEndDate"
-                labelCol={{ span: 24 }}
-              >
-                <DatePicker
-                  format={dateFormat}
-                  placeholder="Select Tentative End Date"
-                  suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={12}>
-              <Form.Item
-                rules={[{ required: true, message: 'Select Project Manager' }]}
-                label={requiredLabel('Project Manager')}
-                name="projectManager"
-                fieldKey="projectManager"
-                labelCol={{ span: 24 }}
-              >
-                <Select
-                  loading={loadingFetchEmployeeList}
-                  placeholder="Select Project Manager"
-                  showSearch
-                  allowClear
-                  filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >
-                  {employeeList.map((x) => (
-                    <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={12}>
-              <Form.Item
-                label="Estimation (Man Months)"
-                name="estimation"
-                fieldKey="estimation"
-                labelCol={{ span: 24 }}
-                rules={[
-                  {
-                    pattern: /^[0-9]*([.][0-9]{1})?$/,
-                    message: 'Value must be a number or float number',
-                  },
-                ]}
-              >
-                <Input placeholder="Enter Estimation" />
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={12}>
-              <Form.Item
-                label="Billable Head Count"
-                name="billableHeadCount"
-                fieldKey="billableHeadCount"
-                labelCol={{ span: 24 }}
-                rules={[
-                  {
-                    pattern: /^[0-9]*([.][0-9]{1})?$/,
-                    message: 'Value must be a number or float number',
-                  },
-                ]}
-              >
-                <Input placeholder="Enter Billable Head Count" />
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={12}>
-              <Form.Item
-                label="Buffer Head Count"
-                name="bufferHeadCount"
-                fieldKey="bufferHeadCount"
-                labelCol={{ span: 24 }}
-                rules={[
-                  {
-                    pattern: /^[0-9]*([.][0-9]{1})?$/,
-                    message: 'Value must be a number or float number',
-                  },
-                ]}
-              >
-                <Input placeholder="Enter Buffer Head Count" />
-              </Form.Item>
-            </Col>
+                {employeeList.map((x) => (
+                  <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
 
-            <Col xs={24}>
-              <Form.Item
-                rules={[{ required: true, message: 'Enter Project Description' }]}
-                label={requiredLabel('Project Description')}
-                name="projectDescription"
-                fieldKey="projectDescription"
-                labelCol={{ span: 24 }}
+        <Row gutter={[24, 0]} className={styles.middlePart}>
+          <Col xs={24} md={12}>
+            <Form.Item
+              rules={[{ required: true, message: 'Project ID' }]}
+              label={
+                <span>
+                  Project ID{' '}
+                  <Tooltip placement="rightBottom" title="Some texts here">
+                    <img src={HelpIcon} alt="" />
+                  </Tooltip>
+                </span>
+              }
+              name="projectId"
+              fieldKey="projectId"
+              labelCol={{ span: 24 }}
+            >
+              <Input disabled placeholder="Project ID (auto generate)" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              rules={[{ required: true, message: 'Select Project Status' }]}
+              label={
+                <span>
+                  Project Status
+                  <Tooltip placement="rightBottom" title="Some texts here">
+                    <img src={HelpIcon} alt="" />
+                  </Tooltip>
+                </span>
+              }
+              name="projectStatus"
+              fieldKey="projectStatus"
+              labelCol={{ span: 24 }}
+            >
+              <Select
+                placeholder="Select Project Status"
+                showSearch
+                allowClear
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
-                <Input.TextArea autoSize={{ minRows: 4 }} />
-              </Form.Item>
-            </Col>
-          </Row>
+                {projectStatusList.map((x) => (
+                  <Option value={x.id}>{x.status}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              rules={[{ required: true, message: 'Enter Project Name' }]}
+              label="Project Name"
+              name="projectName"
+              fieldKey="projectName"
+              labelCol={{ span: 24 }}
+            >
+              <Input placeholder="Enter Project Name" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              label="Project Alias (Optional)"
+              name="projectAlias"
+              fieldKey="projectAlias"
+              labelCol={{ span: 24 }}
+            >
+              <Input placeholder="Enter Project Alias" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              rules={[{ required: true, message: 'Select Start Date' }]}
+              label="Start Date"
+              name="startDate"
+              fieldKey="startDate"
+              labelCol={{ span: 24 }}
+            >
+              <DatePicker
+                format={dateFormat}
+                placeholder="Select Start Date"
+                suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              rules={[{ required: true, message: 'Select Tentative End Date' }]}
+              label="Tentative End Date"
+              name="tentativeEndDate"
+              fieldKey="tentativeEndDate"
+              labelCol={{ span: 24 }}
+            >
+              <DatePicker
+                format={dateFormat}
+                placeholder="Select Tentative End Date"
+                suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              rules={[{ required: true, message: 'Select Project Manager' }]}
+              label="Project Manager"
+              name="projectManager"
+              fieldKey="projectManager"
+              labelCol={{ span: 24 }}
+            >
+              <Select
+                loading={loadingFetchEmployeeList}
+                placeholder="Select Project Manager"
+                showSearch
+                allowClear
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {employeeList.map((x) => (
+                  <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              label="Estimation (Man Months)"
+              name="estimation"
+              fieldKey="estimation"
+              labelCol={{ span: 24 }}
+              rules={[
+                {
+                  pattern: /^[0-9]*([.][0-9]{1})?$/,
+                  message: 'Value must be a number or float number',
+                },
+              ]}
+            >
+              <Input placeholder="Enter Estimation" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              label="Billable Head Count"
+              name="billableHeadCount"
+              fieldKey="billableHeadCount"
+              labelCol={{ span: 24 }}
+              rules={[
+                {
+                  pattern: /^[0-9]*([.][0-9]{1})?$/,
+                  message: 'Value must be a number or float number',
+                },
+              ]}
+            >
+              <Input placeholder="Enter Billable Head Count" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              label="Buffer Head Count"
+              name="bufferHeadCount"
+              fieldKey="bufferHeadCount"
+              labelCol={{ span: 24 }}
+              rules={[
+                {
+                  pattern: /^[0-9]*([.][0-9]{1})?$/,
+                  message: 'Value must be a number or float number',
+                },
+              ]}
+            >
+              <Input placeholder="Enter Buffer Head Count" />
+            </Form.Item>
+          </Col>
 
-          <Row gutter={[24, 0]} className={styles.belowPart}>
-            <Col xs={24} md={12}>
-              <Form.Item
-                rules={[{ required: true, message: 'Select Engineering Owner' }]}
-                label={requiredLabel('Engineering Owner')}
-                name="engineeringOwner"
-                fieldKey="engineeringOwner"
-                labelCol={{ span: 24 }}
-              >
-                <Select
-                  loading={loadingFetchEmployeeList}
-                  placeholder="Select Engineering Owner"
-                  showSearch
-                  allowClear
-                  filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >
-                  {employeeList.map((x) => (
-                    <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={12}>
-              <Form.Item
-                rules={[{ required: true, message: 'Select Division' }]}
-                label={requiredLabel('Division')}
-                name="division"
-                fieldKey="division"
-                labelCol={{ span: 24 }}
-              >
-                <Select
-                  placeholder="Select Division"
-                  showSearch
-                  allowClear
-                  filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >
-                  {divisionList.map((x) => (
-                    <Option value={x.name}>{x.name}</Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={12}>
-              <Form.Item
-                rules={[{ required: true, message: 'Select Tags' }]}
-                label={requiredLabel('Tags')}
-                name="tags"
-                fieldKey="tags"
-                labelCol={{ span: 24 }}
-              >
-                <Select
-                  mode="multiple"
-                  placeholder="Select Groups"
-                  showSearch
-                  allowClear
-                  filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >
-                  {tagList.map((x) => (
-                    <Option value={x.tag_name}>{x.tag_name}</Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col xs={0} md={12} />
-          </Row>
-        </Form>
-      </div>
-    );
+          <Col xs={24}>
+            <Form.Item
+              rules={[{ required: true, message: 'Enter Project Description' }]}
+              label="Project Description"
+              name="projectDescription"
+              fieldKey="projectDescription"
+              labelCol={{ span: 24 }}
+            >
+              <Input.TextArea autoSize={{ minRows: 4 }} />
+            </Form.Item>
+          </Col>
+        </Row>
 
-
+        <Row gutter={[24, 0]} className={styles.belowPart}>
+          <Col xs={24} md={12}>
+            <Form.Item
+              rules={[{ required: true, message: 'Select Engineering Owner' }]}
+              label="Engineering Owner"
+              name="engineeringOwner"
+              fieldKey="engineeringOwner"
+              labelCol={{ span: 24 }}
+            >
+              <Select
+                loading={loadingFetchEmployeeList}
+                placeholder="Select Engineering Owner"
+                showSearch
+                allowClear
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {employeeList.map((x) => (
+                  <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              rules={[{ required: true, message: 'Select Division' }]}
+              label="Division"
+              name="division"
+              fieldKey="division"
+              labelCol={{ span: 24 }}
+            >
+              <Select
+                placeholder="Select Division"
+                showSearch
+                allowClear
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {divisionList.map((x) => (
+                  <Option value={x.name}>{x.name}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              rules={[{ required: true, message: 'Select Tags' }]}
+              label="Tags"
+              name="tags"
+              fieldKey="tags"
+              labelCol={{ span: 24 }}
+            >
+              <Select
+                mode="multiple"
+                placeholder="Select Groups"
+                showSearch
+                allowClear
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {tagList.map((x) => (
+                  <Option value={x.tag_name}>{x.tag_name}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col xs={0} md={12} />
+        </Row>
+      </Form>
+    </div>
+  );
 };
 
 export default connect(

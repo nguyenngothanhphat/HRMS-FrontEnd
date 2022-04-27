@@ -82,7 +82,7 @@ const Header = (props) => {
           }
           realTime
         >
-          <FilterButton fontSize={14} />
+          <FilterButton />
         </FilterPopover>
         <SearchBar onChangeSearch={onChangeSearch} activeView={activeView} />
       </div>

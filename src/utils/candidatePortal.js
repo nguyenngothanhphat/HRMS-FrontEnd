@@ -17,4 +17,16 @@ const CANDIDATE_TASK_STATUS = {
   REJECTED: 'REJECTED', // rejected
   RE_NEGOTIATE: 'RE-NEGOTIATE', // for salary structure
 };
-export { CANDIDATE_TASK_LINK, PORTAL_TAB_NAME, CANDIDATE_TASK_STATUS };
+const ADDRESS_VARIABLES = ['AddressLine1', 'AddressLine2', 'Country', 'State', 'City', 'ZipCode'];
+const ADDRESS_TYPE = {
+  CURRENT: 'current',
+  PERMANENT: 'permanent',
+};
+
+export {
+  CANDIDATE_TASK_LINK,
+  PORTAL_TAB_NAME,
+  CANDIDATE_TASK_STATUS,
+  ADDRESS_TYPE,
+  ADDRESS_VARIABLES,
+};

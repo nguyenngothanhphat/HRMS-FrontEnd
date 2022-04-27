@@ -7,11 +7,7 @@ class ResourceManagement extends PureComponent {
   componentWillUnmount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'resourceManagement/save',
-      payload: {
-        selectedDivisions: [],
-        selectedLocations: [],
-      },
+      type: 'resourceManagement/clearState',
     });
   }
 
