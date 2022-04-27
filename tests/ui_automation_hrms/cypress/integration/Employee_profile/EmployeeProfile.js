@@ -66,7 +66,10 @@ describe('Employee profile', () => {
       cy.get('#basic_preCompany').type('abcxyz')
       cy.wait(1000)
       cy.get('#basic_qualification').type('B.Tech')
-      cy.wait(1000)
+      cy.wait(2000)
+      const image = 'image.PNG';
+      cy.get('input[type="file"]').attachFile(image);
+      cy.wait(3000)
       cy.get('.css-1s2u09g-control').click({force:true}).type('Cypress'+'{enter}')
       cy.wait(1000)
       cy.contains('Save').click({force:true})
