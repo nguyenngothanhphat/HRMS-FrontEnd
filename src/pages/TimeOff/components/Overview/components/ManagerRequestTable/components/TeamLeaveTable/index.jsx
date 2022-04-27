@@ -50,7 +50,8 @@ class TeamLeaveTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      // pageSelected: 1,
+      pageSelected: 1,
+      rowSize: 10,
       selectedRowKeys: [],
       commentModalVisible: false,
       rejectingId: '',
@@ -263,11 +264,16 @@ class TeamLeaveTable extends PureComponent {
   };
 
   // pagination
-  onChangePagination = (pageNumber) => {
+  onChangePagination = (pageNumber, pageSize) => {
+    this.setState({
+      rowSize: pageSize,
+      // pageSelected: pageNumber,
+    });
+
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/savePaging',
-      payload: { page: pageNumber },
+      payload: { page: pageNumber, pageSize },
     });
   };
 
@@ -447,6 +453,7 @@ class TeamLeaveTable extends PureComponent {
       commentModalVisible,
       rejectingTicketID,
       rejectMultiple,
+      rowSize,
     } = this.state;
     // const rowSize = 10;
 
@@ -470,7 +477,10 @@ class TeamLeaveTable extends PureComponent {
           of {totals}{' '}
         </span>
       ),
-      pageSize: limit,
+      defaultPageSize: rowSize,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
+      pageSize: rowSize,
       current: page,
       onChange: this.onChangePagination,
     };
@@ -508,8 +518,9 @@ class TeamLeaveTable extends PureComponent {
         <Table
           // size="middle"
           loading={tableLoading}
-          rowSelection={rowSelection}
-          pagination={data.length === 0 ? null : { ...pagination, total }}
+          // rowSelection={rowSelection}
+          //if data.length > 10, pagination will appear
+          pagination={data.length === 0 ? null : { ...pagination }}
           columns={tableByRole}
           dataSource={data}
           scroll={scroll}

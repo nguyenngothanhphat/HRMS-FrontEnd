@@ -6,10 +6,13 @@ import styles from './index.less';
 class CommonTable extends Component {
   constructor(props) {
     super(props);
-    this.state = { pageSelected: 1 };
+    this.state = {
+      pageSelected: 1,
+      pageSize: 10,
+    };
   }
 
-  onChangePagination = (pageNumber) => {
+  onChangePagination = (pageNumber, pageSize) => {
     const { onChangePage = () => {}, isBackendPaging = false } = this.props;
 
     if (isBackendPaging) {
@@ -17,6 +20,7 @@ class CommonTable extends Component {
     } else {
       this.setState({
         pageSelected: pageNumber,
+        pageSize: pageSize,
       });
     }
   };
@@ -28,7 +32,7 @@ class CommonTable extends Component {
       columns,
       loading = false,
       page = 1,
-      limit = 10,
+
       total: totalProp,
       isBackendPaging = false,
     } = this.props;
@@ -46,7 +50,10 @@ class CommonTable extends Component {
           {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
         </span>
       ),
-      pageSize: limit,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
+      defaultPageSize: this.state.pageSize,
+      pageSize: this.state.pageSize,
       current: isBackendPaging ? page : pageSelected,
       onChange: this.onChangePagination,
     };

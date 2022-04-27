@@ -17,7 +17,7 @@ const TimeOffRequestTab = (props) => {
   const {
     timeOff: {
       currentFilterTab,
-      filter: { search, fromDate, toDate, type: timeOffTypes },
+      filter: { search, fromDate, toDate, type: timeOffTypes = [] },
       filter = {},
       paging: { page, limit },
       compoffRequests = [],
@@ -214,6 +214,8 @@ const TimeOffRequestTab = (props) => {
       }
     });
   };
+
+  console.log(timeOffTypes);
 
   useEffect(() => {
     if (timeOffTypes.length > 0) {

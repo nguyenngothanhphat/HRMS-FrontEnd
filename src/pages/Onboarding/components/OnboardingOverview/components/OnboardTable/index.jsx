@@ -630,7 +630,8 @@ class OnboardTable extends Component {
             <Menu.Item>
               <div
                 onClick={() =>
-                  this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate)}
+                  this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate)
+                }
               >
                 Initiate joining formalities
               </div>
@@ -656,7 +657,8 @@ class OnboardTable extends Component {
           <Menu.Item>
             <div
               onClick={() =>
-                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)}
+                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)
+              }
               className={styles.actionText}
             >
               Re-assign
@@ -825,7 +827,7 @@ class OnboardTable extends Component {
       showTotal: (total, range) => (
         <span>
           {' '}
-          {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
+          {formatMessage({ id: 'component.directory.pagination.showing' })}
           <b>
             {range[0]} - {range[1]}
           </b>{' '}

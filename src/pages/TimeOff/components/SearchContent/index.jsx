@@ -1,6 +1,6 @@
-import { Col, DatePicker, Form, Row, Select, Skeleton, Space } from 'antd';
-import { debounce } from 'lodash';
-import React, { Suspense } from 'react';
+import { Col, DatePicker, Form, Row, Select, Skeleton, Space, Tag } from 'antd';
+import { debounce, isBuffer } from 'lodash';
+import React, { Suspense, useEffect, useState } from 'react';
 import { connect } from 'umi';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterButton from '@/components/FilterButton';
@@ -39,7 +39,6 @@ const TimeOffFilter = (props) => {
   // FUNCTIONALITY
   const onFinish = (values) => {
     const filterTemp = removeEmptyFields(values);
-
     // dispatch action
     dispatch({
       type: 'timeOff/save',
@@ -53,6 +52,7 @@ const TimeOffFilter = (props) => {
 
   const onValuesChange = () => {
     const values = form.getFieldsValue();
+
     onFinishDebounce(values);
   };
 
@@ -62,11 +62,7 @@ const TimeOffFilter = (props) => {
         layout="vertical"
         name="filter"
         form={form}
-        initialValues={{
-          type,
-          fromDate,
-          toDate,
-        }}
+        initialValues={filter}
         onValuesChange={onValuesChange}
         className={styles.FilterContent}
       >
@@ -78,7 +74,8 @@ const TimeOffFilter = (props) => {
             style={{ width: '100%' }}
             placeholder="Search by Timeoff Types"
             filterOption={(input, option) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
             showArrow
           >
             {timeOffTypesByCountry.map((x) => {
@@ -113,19 +110,20 @@ const TimeOffFilter = (props) => {
 
   return (
     <Space direction="horizontal" className={styles.TimeOffFilter}>
-      <FilterPopover
-        placement="bottomRight"
-        content={
-          <Suspense fallback={<Skeleton active />}>
-            <FilterContent />
-          </Suspense>
-        }
-        realTime
-      >
-        <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} />
-      </FilterPopover>
-
-      <CustomSearchBox onSearch={onSearch} placeholder="Search by Employee ID, name..." />
+      <div className={styles.RightContentHeader}>
+        <FilterPopover
+          placement="bottomRight"
+          content={
+            <Suspense fallback={<Skeleton active />}>
+              <FilterContent />
+            </Suspense>
+          }
+          realTime
+        >
+          <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} />
+        </FilterPopover>
+        <CustomSearchBox onSearch={onSearch} placeholder="Search by Employee ID, name..." />
+      </div>
     </Space>
   );
 };

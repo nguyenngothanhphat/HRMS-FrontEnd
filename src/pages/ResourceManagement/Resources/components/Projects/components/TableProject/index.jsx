@@ -15,6 +15,7 @@ class TableProject extends Component {
     super(props);
     this.state = {
       pageSelected: 1, // popup hover name
+      pageSize: 10,
     };
   }
 
@@ -33,7 +34,7 @@ class TableProject extends Component {
     return getInfo;
   };
 
-  onChangePagination = (pageNumber) => {
+  onChangePagination = (pageNumber, pageSize) => {
     const { onChangePage = () => {}, isBackendPaging = false } = this.props;
 
     if (isBackendPaging) {
@@ -41,6 +42,7 @@ class TableProject extends Component {
     } else {
       this.setState({
         pageSelected: pageNumber,
+        pageSize: pageSize,
       });
     }
   };
@@ -82,7 +84,10 @@ class TableProject extends Component {
           {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
         </span>
       ),
-      pageSize: limit,
+      defaultPageSize: this.state.pageSize,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
+      pageSize: this.state.pageSize,
       current: isBackendPaging ? page : pageSelected,
       onChange: this.onChangePagination,
     };
