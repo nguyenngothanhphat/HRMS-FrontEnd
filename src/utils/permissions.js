@@ -1,6 +1,6 @@
 import ROLES from '@/utils/roles';
 
-const { HR_MANAGER, HR, MANAGER } = ROLES;
+const { HR_MANAGER, HR, MANAGER, HOME_PAGE } = ROLES;
 
 /* eslint-disable no-plusplus */
 export function groupPermissions(roles) {
@@ -283,7 +283,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const indexTaskDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_TASK_VIEW']);
 
   // HOME PAGE
-  const indexSettingHomePage = isAuthorized(permissionList, [HR_MANAGER]);
+  const indexSettingHomePage = isAuthorized(permissionList, [HOME_PAGE]);
 
   // PROJECT MANAGEMENT
   // https://docs.google.com/document/d/1RQ66VdevjGUHB3-4_VDU-DIPF0HCbcfKzKJevEwooLc/edit

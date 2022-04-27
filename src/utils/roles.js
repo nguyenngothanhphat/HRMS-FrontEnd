@@ -12,6 +12,7 @@ export default {
   PEOPLE_MANAGER: 'people-manager', // 2
   FINANCE: 'finance', // 2
   CANDIDATE: 'candidate', // 1
+  HOME_PAGE: 'homepages_settings',
 };
 
 // 1: ROLE

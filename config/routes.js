@@ -232,9 +232,10 @@ const routes = [
           },
           {
             path: '/home/settings',
-            // hideInMenu: true,
-            // component: './HomePage/components/Settings',
-            redirect: '/home/settings/post-management',
+            hideInMenu: true,
+            component: './HomePage/components/Settings',
+            // redirect: '/home/settings/post-management',
+            authority: ['P_HOMEPAGE_SETTINGS_GEAR_VIEW'],
           },
           {
             name: 'homeSettings',
