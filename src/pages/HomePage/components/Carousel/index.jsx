@@ -66,13 +66,13 @@ const Carousel = (props) => {
   }, [JSON.stringify(banners)]);
 
   // RENDER UI
-  // if (!previewing && bannerState.length === 0) {
-  //   return (
-  //     <div className={styles.Carousel}>
-  //       <EmptyComponent description="No banners" />
-  //     </div>
-  //   );
-  // }
+  if (!previewing && bannerState.length === 0) {
+    return (
+      <div className={styles.Carousel}>
+        <EmptyComponent description="No banners" />
+      </div>
+    );
+  }
   return (
     <Spin spinning={loadingFetchBanners}>
       <div

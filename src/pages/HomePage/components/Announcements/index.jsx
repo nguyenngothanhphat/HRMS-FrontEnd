@@ -1,13 +1,12 @@
+import { Col, Row, Spin } from 'antd';
 import React, { useEffect } from 'react';
-import { Col, Row, Skeleton, Spin } from 'antd';
-import { connect } from 'umi';
 import LazyLoad from 'react-lazyload';
+import { connect } from 'umi';
+import { TAB_IDS } from '@/utils/homePage';
+import EmbedPost from './components/EmbedPost';
 import EmployeeTag from './components/EmployeeTag';
 import PostContent from './components/PostContent';
 import styles from './index.less';
-import EmbedPost from './components/EmbedPost';
-import { TAB_IDS } from '@/utils/homePage';
-import EmptyComponent from '@/components/Empty';
 
 const Announcements = (props) => {
   const { dispatch, loadingFetchAnnouncementList = false } = props;
