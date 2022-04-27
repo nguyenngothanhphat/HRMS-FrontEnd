@@ -232,17 +232,16 @@ const routes = [
           },
           {
             path: '/home/settings',
-            hideInMenu: true,
-            component: './HomePage/components/Settings',
-            // redirect: '/home/settings/post-management',
-            authority: ['P_HOMEPAGE_SETTINGS_GEAR_VIEW'],
+            // hideInMenu: true,
+            // component: './HomePage/components/Settings',
+            redirect: '/home/settings/post-management',
           },
           {
             name: 'homeSettings',
             path: '/home/settings/:reId',
             hideInMenu: true,
             component: './HomePage/components/Settings',
-            authority: [HR_MANAGER, MANAGER], // TEMPORARY VALUES, NEED TO BE CHANGED
+            authority: [HR_MANAGER, MANAGER, 'P_HOMEPAGE_SETTINGS_GEAR_VIEW'], // TEMPORARY VALUES, NEED TO BE CHANGED
           },
           {
             path: '/dashboard',
