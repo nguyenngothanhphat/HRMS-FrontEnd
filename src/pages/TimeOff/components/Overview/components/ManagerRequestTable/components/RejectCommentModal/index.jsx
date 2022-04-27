@@ -25,7 +25,7 @@ export default class RejectCommentModal extends PureComponent {
       visible,
       onClose = () => {},
       onReject = () => {},
-      ticketID = '',
+      item = {},
       rejectMultiple = false,
       loading,
     } = this.props;
@@ -41,7 +41,7 @@ export default class RejectCommentModal extends PureComponent {
       >
         <div className={styles.container}>
           <span className={styles.title}>{header}</span>
-          {!rejectMultiple && <span className={styles.subtitle1}>Ticket ID: {ticketID}</span>}
+          {!rejectMultiple && <span className={styles.subtitle1}>Ticket ID: {item.ticketID}</span>}
           <div className={styles.formContainer}>
             <div className={styles.formInput}>
               <TextArea

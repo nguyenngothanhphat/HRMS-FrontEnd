@@ -53,8 +53,7 @@ class TeamLeaveTable extends PureComponent {
       // pageSelected: 1,
       selectedRowKeys: [],
       commentModalVisible: false,
-      rejectingId: '',
-      rejectingTicketID: '',
+      rejectingPayload: {},
       rejectMultiple: false,
     };
   }
@@ -149,7 +148,7 @@ class TeamLeaveTable extends PureComponent {
         width: COLUMN_WIDTH[TYPE].ACTION,
         // width: '20%',
         render: (_, record) => {
-          const { ticketID = '', _id = '', approvalManager = '' } = record;
+          const { approvalManager = '' } = record;
           const {
             isHR = false,
             selectedTab = '',
@@ -163,21 +162,21 @@ class TeamLeaveTable extends PureComponent {
             return (
               <div className={styles.rowAction}>
                 <Tooltip title="View">
-                  <img src={OpenIcon} onClick={() => this.onOpenClick(_id)} alt="open" />
+                  <img src={OpenIcon} onClick={() => this.onOpenClick(record._id)} alt="open" />
                 </Tooltip>
-                {isMyTicket && record.status !== ON_HOLD && (
+                {isMyTicket && (
                   <>
                     <Tooltip title="Approve">
                       <img
                         src={ApproveIcon}
-                        onClick={() => this.onApproveClick(_id)}
+                        onClick={() => this.onApproveClick(record)}
                         alt="approve"
                       />
                     </Tooltip>
                     <Tooltip title="Reject">
                       <img
                         src={CancelIcon}
-                        onClick={() => this.onCancelClick(_id, ticketID)}
+                        onClick={() => this.onRejectClick(record)}
                         alt="cancel"
                       />
                     </Tooltip>
@@ -188,7 +187,7 @@ class TeamLeaveTable extends PureComponent {
 
           return (
             <div className={styles.rowAction}>
-              <span onClick={() => this.onOpenClick(_id)}>View Request</span>
+              <span onClick={() => this.onOpenClick(record._id)}>View Request</span>
             </div>
           );
         },
@@ -213,41 +212,64 @@ class TeamLeaveTable extends PureComponent {
     onRefreshTable(onMovedTab);
   };
 
-  onApproveClick = async (_id) => {
+  onApproveClick = async (record) => {
     const { dispatch } = this.props;
+    const type =
+      record.status === ON_HOLD
+        ? 'timeOff/managerApproveWithdrawRequest'
+        : 'timeOff/reportingManagerApprove';
+
     const res = await dispatch({
-      type: 'timeOff/reportingManagerApprove',
+      type,
       payload: {
-        _id,
+        _id: record._id,
       },
     });
-    const { statusCode = 0 } = res;
-    if (statusCode === 200) {
+    if (res.statusCode === 200) {
       this.onRefreshTable('1');
     }
   };
 
-  onCancelClick = (_id, ticketID) => {
-    this.setState({
-      rejectingId: _id,
-      rejectingTicketID: ticketID,
-    });
-    this.toggleCommentModal(true);
+  onRejectClick = (record) => {
+    if (record.status === ON_HOLD) {
+      this.onRejectWithdraw(record);
+    } else {
+      this.setState({
+        rejectingPayload: record,
+      });
+      this.toggleCommentModal(true);
+    }
   };
 
   onReject = async (comment) => {
     const { dispatch } = this.props;
-    const { rejectingId } = this.state;
+    const { rejectingPayload } = this.state;
+
     const res = await dispatch({
       type: 'timeOff/reportingManagerReject',
       payload: {
-        _id: rejectingId,
+        _id: rejectingPayload._id,
         comment,
       },
     });
-    const { statusCode = 0 } = res;
-    if (statusCode === 200) {
+
+    if (res.statusCode === 200) {
       this.toggleCommentModal(false);
+      this.onRefreshTable('1');
+    }
+  };
+
+  onRejectWithdraw = async (record) => {
+    const { dispatch } = this.props;
+
+    const res = await dispatch({
+      type: 'timeOff/managerRejectWithdrawRequest',
+      payload: {
+        _id: record._id,
+      },
+    });
+
+    if (res.statusCode === 200) {
       this.onRefreshTable('1');
     }
   };
@@ -443,7 +465,7 @@ class TeamLeaveTable extends PureComponent {
       selectedRowKeys,
       // pageSelected,
       commentModalVisible,
-      rejectingTicketID,
+      rejectingPayload,
       rejectMultiple,
     } = this.state;
     // const rowSize = 10;
@@ -526,7 +548,7 @@ class TeamLeaveTable extends PureComponent {
           visible={commentModalVisible}
           onClose={() => this.toggleCommentModal(false)}
           onReject={rejectMultiple ? this.onMultipleReject : this.onReject}
-          ticketID={rejectingTicketID}
+          item={rejectingPayload}
           rejectMultiple={rejectMultiple}
           loading={loading4 || loading6}
         />

@@ -819,8 +819,11 @@ const timeOff = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data: { leaveRequest = {} } = {} } = response;
+        const { statusCode, message = '', data: { leaveRequest = {} } = {} } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
         yield put({
           type: 'saveViewingLeaveRequest',
           payload: {
@@ -841,8 +844,11 @@ const timeOff = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data: { leaveRequest = {} } = {} } = response;
+        const { statusCode, message = '', data: { leaveRequest = {} } = {} } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
         yield put({
           type: 'saveViewingLeaveRequest',
           payload: {
@@ -864,8 +870,11 @@ const timeOff = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode } = response;
+        const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
         return statusCode;
       } catch (errors) {
         dialog(errors);
@@ -879,8 +888,11 @@ const timeOff = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode } = response;
+        const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
         return statusCode;
       } catch (errors) {
         dialog(errors);
@@ -896,8 +908,11 @@ const timeOff = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode } = response;
+        const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
         return statusCode;
       } catch (errors) {
         dialog(errors);
@@ -926,8 +941,11 @@ const timeOff = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data: { leaveRequest = {} } = {} } = response;
+        const { statusCode, message = '', data: { leaveRequest = {} } = {} } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
         yield put({
           type: 'saveViewingLeaveRequest',
           payload: {
@@ -948,8 +966,11 @@ const timeOff = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data: { leaveRequest = {} } = {} } = response;
+        const { statusCode, message = '', data: { leaveRequest = {} } = {} } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
         yield put({
           type: 'saveViewingLeaveRequest',
           payload: {
@@ -1037,8 +1058,11 @@ const timeOff = {
           ...payload,
           tenantId: getCurrentTenant(),
         });
-        const { statusCode } = response;
+        const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
         return statusCode;
       } catch (errors) {
         dialog(errors);
@@ -1051,8 +1075,12 @@ const timeOff = {
           ...payload,
           tenantId: getCurrentTenant(),
         });
-        const { statusCode } = response;
+
+        const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
         return statusCode;
       } catch (errors) {
         dialog(errors);

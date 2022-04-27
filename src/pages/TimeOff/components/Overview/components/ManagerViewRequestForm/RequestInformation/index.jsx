@@ -424,7 +424,7 @@ class RequestInformation extends PureComponent {
 
     // only manager accept/reject a ticket
     // const isMyTicket = (myId === managerId && status !== ON_HOLD) || viewHRTimeoff;
-    const isMyTicket = myId === managerId || (viewHRTimeoff && status !== ON_HOLD);
+    const isMyTicket = myId === managerId || viewHRTimeoff;
 
     return (
       <div className={styles.RequestInformation}>
