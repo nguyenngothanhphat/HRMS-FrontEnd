@@ -143,7 +143,6 @@ const Card = (props) => {
         <div className={styles.content}>
           <p className={styles.caption}>{renderBirthdayContent(card)}</p>
 
-          {/* HIDE - NOT AVAILABLE YET  */}
           <div className={styles.actions}>
             <div className={styles.likes}>
               <img
@@ -210,7 +209,6 @@ const Card = (props) => {
       <Spin spinning={loadingRefresh && !celebratingDetailModalVisible}>
         <Carousel
           infinite
-          effect="fade"
           arrows
           dots
           autoplay={!celebratingDetailModalVisible}
@@ -250,5 +248,5 @@ const Card = (props) => {
 export default connect(({ loading, user: { currentUser = {}, permissions = {} } = {} }) => ({
   currentUser,
   permissions,
-  loadingRefresh: loading.effects['homePage/fetchBirthdayInWeekList'],
+  loadingRefresh: loading.effects['homePage/fetchBirthdayInWeekList1'],
 }))(Card);
