@@ -1,5 +1,5 @@
-import { DownloadOutlined } from '@ant-design/icons';
-import { Button, Col, Row } from 'antd';
+import { CloseOutlined, DownloadOutlined } from '@ant-design/icons';
+import { Button, Col, Row, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
 import { formatData } from '@/utils/resourceManagement';
@@ -38,7 +38,8 @@ const ResourceList = (props) => {
   const [resourceListState, setResourceListState] = useState([]);
   const [searchKey, setSearchKey] = useState('');
   const [isSearching, setIsSearching] = useState(false);
-
+  const [applied, setApplied] = useState(0);
+  const [form, setForm] = useState(null);
   const [filter, setFilter] = useState({
     name: undefined,
     tagDivision: [],
@@ -85,7 +86,7 @@ const ResourceList = (props) => {
       division: selectedDivisions,
       employeeId,
       adminMode,
-      countryMode
+      countryMode,
     };
     if (searchKey) {
       payload.q = searchKey;
@@ -123,7 +124,7 @@ const ResourceList = (props) => {
     setTimeout(() => {
       setSearchKey(value);
     }, 100);
-  }
+  };
 
   const fetchDivisions = async () => {
     dispatch({
@@ -205,7 +206,13 @@ const ResourceList = (props) => {
   useEffect(() => {
     updateData(resourceList);
   }, [JSON.stringify(resourceList)]);
-
+  // const clearFilter = () => {};
+  const clearTagFilter = () => {
+    setFilter({});
+    setApplied(0);
+    // clearFilter();
+    form?.resetFields();
+  };
   return (
     <div className={styles.containerTickets}>
       <div className={styles.tabTickets}>
@@ -217,6 +224,18 @@ const ResourceList = (props) => {
             />
           )}
         </span>
+        <div className={styles.poSiTionCenter}>
+          {applied > 0 && (
+            <Tag
+              className={styles.tagCountFilter}
+              closable
+              onClose={clearTagFilter}
+              closeIcon={<CloseOutlined />}
+            >
+              {applied} applied
+            </Tag>
+          )}
+        </div>
         <div className={styles.rightHeaderTable}>
           <div className={styles.download}>
             <Row gutter={[24, 0]}>
@@ -232,7 +251,13 @@ const ResourceList = (props) => {
               </Col>
             </Row>
           </div>
-          <SearchTable onFilterChange={onFilterChange} filter={filter} searchTable={searchTable} />
+          <SearchTable
+            setApplied={setApplied}
+            onFilterChange={onFilterChange}
+            filter={filter}
+            searchTable={searchTable}
+            setForm={setForm}
+          />
         </div>
       </div>
       <TableResources

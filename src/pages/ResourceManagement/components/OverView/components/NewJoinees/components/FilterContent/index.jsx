@@ -10,7 +10,7 @@ const FilterContent = (props) => {
     dispatch,
     onFilter = () => {},
     resourceManagement: { newJoineeList = [], titleList = [] } = {},
-    setapplied = () => {},
+    setApplied = () => {},
     setForm,
   } = props;
   const onFinish = (values) => {
@@ -49,7 +49,7 @@ const FilterContent = (props) => {
       ([key, value]) => value !== undefined && value.length > 0,
     );
     const newObj = Object.fromEntries(filteredObj);
-    setapplied(Object.keys(newObj).length);
+    setApplied(Object.keys(newObj).length);
     onFinishDebounce(values);
   };
 

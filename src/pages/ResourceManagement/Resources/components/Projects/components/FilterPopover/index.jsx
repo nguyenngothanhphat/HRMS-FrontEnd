@@ -14,7 +14,7 @@ const FilterPopover = (props) => {
     dispatch,
     needResetFilterForm = false,
     setNeedResetFilterForm = () => {},
-    setapplied = () => {},
+    setApplied = () => {},
   } = props;
   const [showPopover, setShowPopover] = useState(false);
 
@@ -97,7 +97,7 @@ const FilterPopover = (props) => {
       ([key, value]) => value !== undefined && value.length > 0,
     );
     const newObj = Object.fromEntries(filteredObj);
-    setapplied(Object.keys(newObj).length);
+    setApplied(Object.keys(newObj).length);
     onFinishDebounce(values);
   };
 

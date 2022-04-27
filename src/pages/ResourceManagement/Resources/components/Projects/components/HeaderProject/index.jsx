@@ -23,7 +23,7 @@ const HeaderProjectRM = (props) => {
     payloadProject = {},
   } = props;
   const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
-  const [applied, setapplied] = useState(0);
+  const [applied, setApplied] = useState(0);
   const onFilter = (payload) => {
     fetchProjectList(payload);
   };
@@ -78,7 +78,7 @@ const HeaderProjectRM = (props) => {
   const allProject = data.filter((obj) => obj.statusId === undefined);
   const listStatus = data.filter((obj) => obj.statusName !== 'All Projects');
   const clearTagFilter = () => {
-    setapplied(0);
+    setApplied(0);
     setNeedResetFilterForm(true);
     onSearchDebounce();
   };
@@ -134,7 +134,7 @@ const HeaderProjectRM = (props) => {
           </Row>
         </div>
         <FilterPopover
-          setapplied={setapplied}
+          setApplied={setApplied}
           placement="bottomRight"
           onSubmit={onFilter}
           needResetFilterForm={needResetFilterForm}

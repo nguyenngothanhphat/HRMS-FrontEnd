@@ -47,7 +47,7 @@ class SearchTable extends PureComponent {
 
   render() {
     const { visible } = this.state;
-    const { filter, onFilterChange, setapplied, setForm } = this.props;
+    const { filter, onFilterChange, setApplied, setForm } = this.props;
     return (
       <div className={styles.searchFilter}>
         <div>
@@ -57,7 +57,7 @@ class SearchTable extends PureComponent {
                 onFilterChange={onFilterChange}
                 filter={filter}
                 visible={visible}
-                setapplied={setapplied}
+                setApplied={setApplied}
                 setForm={setForm}
               />
             }

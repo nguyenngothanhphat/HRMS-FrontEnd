@@ -19,7 +19,7 @@ const NewJoinees = (props) => {
   } = props;
 
   const [searchValue, setSearchValue] = useState('');
-  const [applied, setapplied] = useState(0);
+  const [applied, setApplied] = useState(0);
   const [form, setForm] = useState(null);
   const fetchData = (payloadParams) => {
     const payload = { ...payloadParams, selectedDivisions, selectedLocations };
@@ -88,7 +88,7 @@ const NewJoinees = (props) => {
   };
   const clearTagFilter = () => {
     fetchData({});
-    setapplied(0);
+    setApplied(0);
     form?.resetFields();
   };
   const renderOption = () => {
@@ -110,7 +110,7 @@ const NewJoinees = (props) => {
           <FilterPopover
             realTime
             content={
-              <FilterContent setapplied={setapplied} setForm={setForm} onFilter={fetchData} />
+              <FilterContent setApplied={setApplied} setForm={setForm} onFilter={fetchData} />
             }
           >
             <FilterButton />
