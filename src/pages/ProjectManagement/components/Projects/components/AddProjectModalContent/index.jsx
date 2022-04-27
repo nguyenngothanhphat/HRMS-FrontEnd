@@ -115,13 +115,6 @@ const AddProjectModal = (props) => {
       refreshData();
     }
   };
-  const requiredLabel = (text) => {
-    return (
-      <span>
-        {text} <span style={{ color: '#f04b37' }}>*</span>
-      </span>
-    );
-  };
 
   return (
     <div className={styles.AddProjectModalContent}>
@@ -138,7 +131,7 @@ const AddProjectModal = (props) => {
           <Col xs={24} md={12}>
             <Form.Item
               rules={[{ required: true, message: 'Select Customer' }]}
-              label={requiredLabel('Customer')}
+              label="Customer"
               name="customerId"
               fieldKey="customerId"
               labelCol={{ span: 24 }}
@@ -163,7 +156,7 @@ const AddProjectModal = (props) => {
           <Col xs={24} md={12}>
             <Form.Item
               rules={[{ required: true, message: 'Select Engagement Type' }]}
-              label={requiredLabel('Engagement Type')}
+              label="Engagement Type"
               name="engagementType"
               fieldKey="engagementType"
               labelCol={{ span: 24 }}
@@ -185,7 +178,7 @@ const AddProjectModal = (props) => {
           <Col xs={24} md={12}>
             <Form.Item
               rules={[{ required: true, message: 'Select Account Owner' }]}
-              label={requiredLabel('Account Owner')}
+              label="Account Owner"
               name="accountOwner"
               fieldKey="accountOwner"
               labelCol={{ span: 24 }}
@@ -231,7 +224,7 @@ const AddProjectModal = (props) => {
               rules={[{ required: true, message: 'Select Project Status' }]}
               label={
                 <span>
-                  {requiredLabel('Project Status')}{' '}
+                  Project Status
                   <Tooltip placement="rightBottom" title="Some texts here">
                     <img src={HelpIcon} alt="" />
                   </Tooltip>
@@ -258,7 +251,7 @@ const AddProjectModal = (props) => {
           <Col xs={24} md={12}>
             <Form.Item
               rules={[{ required: true, message: 'Enter Project Name' }]}
-              label={requiredLabel('Project Name')}
+              label="Project Name"
               name="projectName"
               fieldKey="projectName"
               labelCol={{ span: 24 }}
@@ -279,7 +272,7 @@ const AddProjectModal = (props) => {
           <Col xs={24} md={12}>
             <Form.Item
               rules={[{ required: true, message: 'Select Start Date' }]}
-              label={requiredLabel('Start Date')}
+              label="Start Date"
               name="startDate"
               fieldKey="startDate"
               labelCol={{ span: 24 }}
@@ -294,7 +287,7 @@ const AddProjectModal = (props) => {
           <Col xs={24} md={12}>
             <Form.Item
               rules={[{ required: true, message: 'Select Tentative End Date' }]}
-              label={requiredLabel('Tentative End Date')}
+              label="Tentative End Date"
               name="tentativeEndDate"
               fieldKey="tentativeEndDate"
               labelCol={{ span: 24 }}
@@ -309,7 +302,7 @@ const AddProjectModal = (props) => {
           <Col xs={24} md={12}>
             <Form.Item
               rules={[{ required: true, message: 'Select Project Manager' }]}
-              label={requiredLabel('Project Manager')}
+              label="Project Manager"
               name="projectManager"
               fieldKey="projectManager"
               labelCol={{ span: 24 }}
@@ -381,7 +374,7 @@ const AddProjectModal = (props) => {
           <Col xs={24}>
             <Form.Item
               rules={[{ required: true, message: 'Enter Project Description' }]}
-              label={requiredLabel('Project Description')}
+              label="Project Description"
               name="projectDescription"
               fieldKey="projectDescription"
               labelCol={{ span: 24 }}
@@ -395,7 +388,7 @@ const AddProjectModal = (props) => {
           <Col xs={24} md={12}>
             <Form.Item
               rules={[{ required: true, message: 'Select Engineering Owner' }]}
-              label={requiredLabel('Engineering Owner')}
+              label="Engineering Owner"
               name="engineeringOwner"
               fieldKey="engineeringOwner"
               labelCol={{ span: 24 }}
@@ -418,7 +411,7 @@ const AddProjectModal = (props) => {
           <Col xs={24} md={12}>
             <Form.Item
               rules={[{ required: true, message: 'Select Division' }]}
-              label={requiredLabel('Division')}
+              label="Division"
               name="division"
               fieldKey="division"
               labelCol={{ span: 24 }}
@@ -440,7 +433,7 @@ const AddProjectModal = (props) => {
           <Col xs={24} md={12}>
             <Form.Item
               rules={[{ required: true, message: 'Select Tags' }]}
-              label={requiredLabel('Tags')}
+              label="Tags"
               name="tags"
               fieldKey="tags"
               labelCol={{ span: 24 }}

@@ -125,14 +125,16 @@ const Preview = (props) => {
           name: owner?.titleInfo?.name,
         },
       },
-      attachments: [
-        {
-          url:
-            announcementContent.imageUrls.length > 0
-              ? announcementContent.imageUrls[0]
-              : PreviewImage,
-        },
-      ],
+      attachments:
+        announcementContent.imageUrls.length > 0
+          ? announcementContent.imageUrls.map((x) => {
+              return { url: x };
+            })
+          : [
+              {
+                url: PreviewImage,
+              },
+            ],
       description: descriptionA || 'Description',
     };
 

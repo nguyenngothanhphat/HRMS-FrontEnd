@@ -762,6 +762,8 @@ class DocumentVerification extends Component {
         // company,
         processStatus,
         isSentEmail = false,
+        phoneNumber,
+        totalExperience,
       } = {},
     } = this.props;
 
@@ -814,6 +816,8 @@ class DocumentVerification extends Component {
       documentChecklistSetting,
       action: 'submit',
       options: 1,
+      phoneNumber,
+      totalExperience,
       company: getCurrentCompany(),
       tenantId: getCurrentTenant(),
     };
@@ -823,7 +827,7 @@ class DocumentVerification extends Component {
       this.addFirstMessage();
     }
 
-    await dispatch({
+    dispatch({
       type: 'newCandidateForm/submitPhase1Effect',
       payload,
     }).then(({ statusCode }) => {

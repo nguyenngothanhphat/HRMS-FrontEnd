@@ -55,6 +55,7 @@ const DirectoryComponent = (props) => {
   const [size, setSize] = useState(10);
   const [visible, setVisible] = useState(false);
   const [visibleImportEmployee, setVisibleImportEmployee] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
 
   // FUNCTIONALITY
   // Define tabID to filter
@@ -181,16 +182,32 @@ const DirectoryComponent = (props) => {
   };
 
   const refreshData = () => {
+    setIsFiltering(true);
+    setPageSelected(1);
     renderData({
       ...filter,
-      page: pageSelected || 1,
+      page: 1,
       limit: size,
     });
+    setTimeout(() => {
+      setIsFiltering(false);
+    }, 50);
   };
 
   useEffect(() => {
     refreshData();
-  }, [JSON.stringify(filter), JSON.stringify(listCountry), pageSelected, size, tabId]);
+  }, [JSON.stringify(filter), JSON.stringify(listCountry), size, tabId]);
+
+  // pageSelected change => only call API when not using filter (isFiltering = false)
+  useEffect(() => {
+    if (!isFiltering) {
+      renderData({
+        ...filter,
+        page: pageSelected,
+        limit: size,
+      });
+    }
+  }, [pageSelected]);
 
   const renderListEmployee = () => {
     const { active, myTeam } = tabList;

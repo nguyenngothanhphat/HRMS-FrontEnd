@@ -37,6 +37,7 @@ const FilterContent = (props) => {
       } = {},
       filter = {},
     } = {},
+    activeTab = '',
     companyLocationList = [],
     loadingFetchEmployeeIDList = false,
     loadingFetchEmployeeNameList = false,
@@ -193,15 +194,37 @@ const FilterContent = (props) => {
     }
     if (!value) {
       switch (type) {
-        case 'id':
+        case 'id': {
+          dispatch({
+            type: 'employee/save',
+            payload: {
+              employeeIDList: [],
+            },
+          });
           setEmployeeIDListState([]);
           break;
-        case 'name':
+        }
+        case 'name': {
+          dispatch({
+            type: 'employee/save',
+            payload: {
+              employeeNameList: [],
+            },
+          });
           setEmployeeNameListState([]);
           break;
-        case 'manager':
+        }
+        case 'manager': {
+          dispatch({
+            type: 'employee/save',
+            payload: {
+              managerList: [],
+            },
+          });
           setManagerListState([]);
           break;
+        }
+
         default:
           break;
       }
@@ -256,48 +279,53 @@ const FilterContent = (props) => {
         {/* <Input placeholder="Search by Name/User ID" /> */}
       </Form.Item>
 
-      <Form.Item label="By department id/name" name="department">
-        <Select
-          allowClear
-          showSearch
-          mode="multiple"
-          style={{ width: '100%' }}
-          placeholder="Search by Department"
-          filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-          showArrow
-        >
-          {listDepartmentName.map((x, index) => {
-            return (
-              <Select.Option value={x} key={index}>
-                {x}
-              </Select.Option>
-            );
-          })}
-        </Select>
-      </Form.Item>
-      <Form.Item label="By division name" name="division">
-        <Select
-          allowClear
-          showSearch
-          mode="multiple"
-          style={{ width: '100%' }}
-          placeholder="Search by Division Name"
-          filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-          showArrow
-        >
-          {listDepartmentName.map((x, index) => {
-            return (
-              <Select.Option value={x} key={index}>
-                {x}
-              </Select.Option>
-            );
-          })}
-        </Select>
-      </Form.Item>
+      {activeTab !== 'myTeam' && (
+        <>
+          <Form.Item label="By department id/name" name="department">
+            <Select
+              allowClear
+              showSearch
+              mode="multiple"
+              style={{ width: '100%' }}
+              placeholder="Search by Department"
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              showArrow
+            >
+              {listDepartmentName.map((x, index) => {
+                return (
+                  <Select.Option value={x} key={index}>
+                    {x}
+                  </Select.Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
+          <Form.Item label="By division name" name="division">
+            <Select
+              allowClear
+              showSearch
+              mode="multiple"
+              style={{ width: '100%' }}
+              placeholder="Search by Division Name"
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              showArrow
+            >
+              {listDepartmentName.map((x, index) => {
+                return (
+                  <Select.Option value={x} key={index}>
+                    {x}
+                  </Select.Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
+        </>
+      )}
+
       <Form.Item label="by job title" name="title">
         <Select
           allowClear
@@ -319,22 +347,27 @@ const FilterContent = (props) => {
           })}
         </Select>
       </Form.Item>
-      <Form.Item label="By reporting manager" name="reportingManager">
-        <AutoComplete
-          dropdownMatchSelectWidth={252}
-          notFoundContent={loadingFetchManagerList ? <Spin /> : 'No matches'}
-          options={managerListState}
-          onSearch={(val) => handleEmployeeSearch('manager', val)}
-          onFocus={() => setSearchIcons({ ...searchIcons, manager: true })}
-          onBlur={() => setSearchIcons({ ...searchIcons, manager: false })}
-        >
-          <Input
-            placeholder="Search by Reporting Manager"
-            prefix={searchIcons.manager ? <img src={SearchIcon} alt="search" /> : null}
-            allowClear
-          />
-        </AutoComplete>
-      </Form.Item>
+
+      {activeTab !== 'myTeam' && (
+        <>
+          <Form.Item label="By reporting manager" name="reportingManager">
+            <AutoComplete
+              dropdownMatchSelectWidth={252}
+              notFoundContent={loadingFetchManagerList ? <Spin /> : 'No matches'}
+              options={managerListState}
+              onSearch={(val) => handleEmployeeSearch('manager', val)}
+              onFocus={() => setSearchIcons({ ...searchIcons, manager: true })}
+              onBlur={() => setSearchIcons({ ...searchIcons, manager: false })}
+            >
+              <Input
+                placeholder="Search by Reporting Manager"
+                prefix={searchIcons.manager ? <img src={SearchIcon} alt="search" /> : null}
+                allowClear
+              />
+            </AutoComplete>
+          </Form.Item>
+        </>
+      )}
 
       <Form.Item label="By location" name="locations">
         <Select
@@ -357,94 +390,95 @@ const FilterContent = (props) => {
           })}
         </Select>
       </Form.Item>
+      {activeTab !== 'myTeam' && (
+        <>
+          <Form.Item label="By country" name="countries">
+            <Select
+              allowClear
+              showSearch
+              mode="multiple"
+              style={{ width: '100%' }}
+              placeholder="Search by Country"
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              showArrow
+            >
+              {countryListState.map((x) => {
+                return (
+                  <Select.Option value={x.id} key={x.id}>
+                    {x.country}
+                  </Select.Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
 
-      <Form.Item label="By country" name="countries">
-        <Select
-          allowClear
-          showSearch
-          mode="multiple"
-          style={{ width: '100%' }}
-          placeholder="Search by Country"
-          filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-          showArrow
-        >
-          {countryListState.map((x) => {
-            return (
-              <Select.Option value={x.id} key={x.id}>
-                {x.country}
-              </Select.Option>
-            );
-          })}
-        </Select>
-      </Form.Item>
+          <Form.Item label="By employment type" name="employeeType">
+            <Select
+              allowClear
+              showSearch
+              mode="multiple"
+              style={{ width: '100%' }}
+              placeholder="Search by Employment Type"
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              showArrow
+            >
+              {listEmployeeType
+                .filter((x) => x.name !== 'Other')
+                .map((x) => {
+                  return (
+                    <Select.Option value={x._id} key={x._id}>
+                      {x.name}
+                    </Select.Option>
+                  );
+                })}
+            </Select>
+          </Form.Item>
 
-      <Form.Item label="By employment type" name="employeeType">
-        <Select
-          allowClear
-          showSearch
-          mode="multiple"
-          style={{ width: '100%' }}
-          placeholder="Search by Employment Type"
-          filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-          showArrow
-        >
-          {listEmployeeType
-            .filter((x) => x.name !== 'Other')
-            .map((x) => {
-              return (
-                <Select.Option value={x._id} key={x._id}>
-                  {x.name}
-                </Select.Option>
-              );
-            })}
-        </Select>
-      </Form.Item>
+          <Form.Item label="By skills & certifications" name="skill">
+            <Select
+              allowClear
+              showSearch
+              mode="multiple"
+              style={{ width: '100%' }}
+              placeholder="Search by Skills"
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              showArrow
+            >
+              {listSkill.map((x) => {
+                return (
+                  <Select.Option value={x._id} key={x._id}>
+                    {x.name}
+                  </Select.Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
 
-      <Form.Item label="By skills & certifications" name="skill">
-        <Select
-          allowClear
-          showSearch
-          mode="multiple"
-          style={{ width: '100%' }}
-          placeholder="Search by Skills"
-          filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-          showArrow
-        >
-          {listSkill.map((x) => {
-            return (
-              <Select.Option value={x._id} key={x._id}>
-                {x.name}
-              </Select.Option>
-            );
-          })}
-        </Select>
-      </Form.Item>
-
-      {/* temporarily hide this one - need backend fixes */}
-
-      <Form.Item label="By yrs of experience">
-        <Row>
-          <Col span={11}>
-            <Form.Item name="fromExp">
-              <InputNumber min={0} max={100} placeholder="From" />
-            </Form.Item>
-          </Col>
-          <Col span={2} className={styles.separator}>
-            <span>to</span>
-          </Col>
-          <Col span={11}>
-            <Form.Item name="toExp">
-              <InputNumber min={0} max={100} placeholder="To" />
-            </Form.Item>
-          </Col>
-        </Row>
-      </Form.Item>
+          <Form.Item label="By yrs of experience">
+            <Row>
+              <Col span={11}>
+                <Form.Item name="fromExp">
+                  <InputNumber min={0} max={100} placeholder="From" />
+                </Form.Item>
+              </Col>
+              <Col span={2} className={styles.separator}>
+                <span>to</span>
+              </Col>
+              <Col span={11}>
+                <Form.Item name="toExp">
+                  <InputNumber min={0} max={100} placeholder="To" />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form.Item>
+        </>
+      )}
     </Form>
   );
 };

@@ -1,16 +1,4 @@
-import {
-  Button,
-  Col,
-  DatePicker,
-  Form,
-  Input,
-  message,
-  Row,
-  Select,
-  Skeleton,
-  Spin,
-  Tooltip,
-} from 'antd';
+import { Button, Col, DatePicker, Form, Input, message, Row, Select, Spin, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
@@ -19,25 +7,26 @@ import TimeOffModal from '@/components/TimeOffModal';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import {
+  convert24To12,
+  getHours,
   MAX_NO_OF_DAYS_TO_SHOW,
+  roundNumber,
+  TIMEOFF_12H_FORMAT,
+  TIMEOFF_24H_FORMAT,
+  TIMEOFF_COL_SPAN_1,
+  TIMEOFF_COL_SPAN_2,
+  TIMEOFF_DATE_FORMAT,
   TIMEOFF_INPUT_TYPE,
   TIMEOFF_INPUT_TYPE_BY_LOCATION,
   TIMEOFF_LINK_ACTION,
+  TIMEOFF_PERIOD,
   TIMEOFF_STATUS,
   TIMEOFF_TYPE,
-  TIMEOFF_PERIOD,
-  TIMEOFF_DATE_FORMAT,
-  TIMEOFF_COL_SPAN_1,
-  TIMEOFF_COL_SPAN_2,
-  TIMEOFF_12H_FORMAT,
-  TIMEOFF_24H_FORMAT,
-  getHours,
-  convert24To12,
   WORKING_HOURS,
 } from '@/utils/timeOff';
-import styles from './index.less';
 import LeaveTimeRow from './components/LeaveTimeRow';
 import LeaveTimeRow2 from './components/LeaveTimeRow2';
+import styles from './index.less';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -66,13 +55,9 @@ const RequestInformation = (props) => {
         cc: viewingCC = [],
         status: viewingStatus = '',
       } = {},
-      timeOffTypesByCountry = [],
       emailsList = [],
       employeeSchedule: { startWorkDay = {}, endWorkDay = {} } = {},
-      totalLeaveBalance: {
-        commonLeaves: { timeOffTypes: timeOffTypesAB = [] } = {},
-        specialLeaves: { timeOffTypes: timeOffTypesCD = [] } = {},
-      } = {},
+      yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
     } = {},
     user: { currentUser: { location = {}, employee = {} } = {} } = {},
     loadingAddLeaveRequest = false,
@@ -86,6 +71,7 @@ const RequestInformation = (props) => {
 
   const [form] = Form.useForm();
   const [selectedTypeName, setSelectedTypeName] = useState('');
+  console.log('🚀 ~ selectedTypeName', selectedTypeName);
   const [selectedType, setSelectedType] = useState('');
   const [showSuccessModalVisible, setShowSuccessModalVisible] = useState(false);
   const [secondNotice, setSecondNotice] = useState('');
@@ -169,34 +155,17 @@ const RequestInformation = (props) => {
     // let total = 0;
     let check = false;
 
-    timeOffTypesAB.forEach((value) => {
-      const {
-        defaultSettings: {
-          // baseAccrual: { time = 0 } = {},
-          name: name1 = '',
-          type = '',
-        } = {},
-        currentAllowance = 0,
-      } = value;
-      if (typeName === name1 && (type === A || type === B)) {
-        count = currentAllowance;
-        // total = time;
+    commonLeaves.forEach((x) => {
+      if (typeName === x.name && (x.type === A || x.type === B)) {
+        count = x.total - x.taken;
         check = true;
       }
     });
 
     if (!check)
-      timeOffTypesCD.forEach((value) => {
-        const {
-          defaultSettings: {
-            // baseAccrual: { time = 0 } = {},
-            name: name1 = '',
-          } = {},
-          currentAllowance = 0,
-        } = value;
-        if (typeName === name1) {
-          count = currentAllowance;
-          // total = time;
+      specialLeaves.forEach((x) => {
+        if (typeName === x.name) {
+          count = x.total - x.taken;
           check = true;
         }
       });
@@ -300,15 +269,13 @@ const RequestInformation = (props) => {
   };
 
   const getCurrentAllowance = (type) => {
-    let list = [];
-    if (type === C || type === D) {
-      list = [...timeOffTypesCD];
+    const foundType = [...[[C, D].includes(type) ? specialLeaves : commonLeaves]].find(
+      (x) => x.name === selectedTypeName,
+    );
+    if (foundType) {
+      return foundType.total - foundType.taken;
     }
-    if (type === A || type === B) {
-      list = [...timeOffTypesAB];
-    }
-    const foundType = list.find((value) => value.defaultSettings.name === selectedTypeName);
-    return foundType?.currentAllowance || 0;
+    return 0;
   };
 
   const getAutoToDate = (allowance) => {
@@ -318,7 +285,7 @@ const RequestInformation = (props) => {
 
   // GET TIME OFF TYPE BY ID
   const onSelectTimeOffTypeChange = (id) => {
-    const foundType = timeOffTypesByCountry.find((t) => t._id === id);
+    const foundType = [...commonLeaves, ...specialLeaves].find((t) => t._id === id);
     if (foundType) {
       const { type = '', name = '' } = foundType;
       getRemainingDay(name);
@@ -521,33 +488,10 @@ const RequestInformation = (props) => {
     }
   };
 
-  // RENDER SELECT BOX
-  // GET DATA FOR SELECT BOX TYPE 1,2
-  const renderTimeOffTypes = (data) => {
-    const result = data.map((type) => {
-      const { currentAllowance = 0, defaultSettings = {} } = type;
-      if (defaultSettings) {
-        const { _id = '', name = '', type: type1 = '' } = defaultSettings;
-        return {
-          name,
-          remaining: currentAllowance,
-          type: type1,
-          _id,
-        };
-      }
-      return '';
-    });
-    return result.filter((val) => val);
-  };
-
   // RENDER OPTIONS
   // TYPE A & B: PAID LEAVES & UNPAID LEAVES
-  const renderType1 = (data) => {
-    return data.map((value) => {
-      const { name = '', type = '', remaining = 0, _id = '' } = value;
-
-      const foundType = timeOffTypesByCountry.find((t) => t._id === _id) || {};
-
+  const renderCommonLeaves = () => {
+    return commonLeaves.map((x) => {
       const defaultCss = {
         fontSize: 12,
         color: '#6f7076',
@@ -558,15 +502,17 @@ const RequestInformation = (props) => {
         color: '#FD4546',
         fontWeight: 'bold',
       };
+
+      const remaining = x.total - x.taken;
       return (
-        <Option key={_id} value={_id}>
+        <Option key={x._id} value={x._id}>
           <div className={styles.timeOffTypeOptions}>
             {/* I don't knew why I could not CSS this block in styles.less file
           So I tried inline CSS.
           Amazing! It worked :D. (Tuan - Lewis Nguyen) */}
             <>
               <span style={{ fontSize: 13 }} className={styles.name}>
-                {`${name}`}
+                {x.name}
               </span>
 
               <span
@@ -575,18 +521,18 @@ const RequestInformation = (props) => {
                   float: 'right',
                 }}
               >
-                {(type === A || type === B) && (
-                  <span style={remaining === 0 ? invalidCss : defaultCss}>
+                {(x.type === A || x.type === B) && (
+                  <span style={remaining <= 0 ? invalidCss : defaultCss}>
                     <span
                       style={
-                        remaining === 0
+                        remaining <= 0
                           ? { fontSize: 12, color: '#FD4546' }
                           : { fontSize: 12, color: 'black' }
                       }
                     >
-                      {Math.round(remaining * 100) / 100}
+                      {roundNumber(remaining)}
                     </span>
-                    /{foundType?.noOfDays || '0'} days
+                    /{x.total || 0} days
                   </span>
                 )}
               </span>
@@ -597,22 +543,21 @@ const RequestInformation = (props) => {
     });
   };
   // TYPE C: SPECIAL LEAVES & TYPE D: WORKING OUT OF OFFICE
-  const renderType2 = (data) => {
-    return data.map((value) => {
-      const { name = '', remaining = 0, _id } = value;
-      const foundType = timeOffTypesByCountry.find((t) => t._id === _id) || {};
+  const renderSpecialLeaves = () => {
+    return specialLeaves.map((x) => {
+      const remaining = x.total - x.taken;
       return (
-        <Option value={_id}>
+        <Option value={x._id}>
           <div className={styles.timeOffTypeOptions}>
             <span style={{ fontSize: 13 }} className={styles.name}>
-              {`${name}`}
+              {x.name}
             </span>
 
-            {foundType.type === C && (
+            {x.type === C && (
               <span style={{ float: 'right', fontSize: 12, fontWeight: 'bold' }}>
                 <span
                   style={
-                    remaining === 0
+                    remaining <= 0
                       ? { fontSize: 12, color: '#FD4546' }
                       : { fontSize: 12, color: 'black' }
                   }
@@ -703,13 +648,6 @@ const RequestInformation = (props) => {
 
   // FETCH LEAVE BALANCE INFO (REMAINING, TOTAL,...)
   const fetchData = async () => {
-    dispatch({
-      type: 'timeOff/fetchLeaveBalanceOfUser',
-      payload: {
-        location: location._id,
-      },
-    });
-
     fetchEmailsListByCompany();
 
     if (action === EDIT_LEAVE_REQUEST) {
@@ -1070,6 +1008,9 @@ const RequestInformation = (props) => {
     return content;
   };
 
+  const disabledBtn = () => {
+    return !selectedTypeName || remainingDayOfSelectedType === 0;
+  };
   // RETURN MAIN
   return (
     <Spin spinning={loadingMain && action === EDIT_LEAVE_REQUEST}>
@@ -1109,8 +1050,8 @@ const RequestInformation = (props) => {
                   }}
                   placeholder="Timeoff Type"
                 >
-                  {renderType1(renderTimeOffTypes(timeOffTypesAB))}
-                  {renderType2(renderTimeOffTypes(timeOffTypesCD))}
+                  {renderCommonLeaves()}
+                  {renderSpecialLeaves()}
                 </Select>
               </Form.Item>
             </Col>
@@ -1332,7 +1273,7 @@ const RequestInformation = (props) => {
             {(action === NEW_LEAVE_REQUEST ||
               (action === EDIT_LEAVE_REQUEST && isEditingDrafts)) && (
               <Button
-                disabled={!selectedTypeName}
+                disabled={disabledBtn()}
                 loading={loadingSaveDraft || loadingUpdateDraft}
                 type="link"
                 form="myForm"
@@ -1351,12 +1292,7 @@ const RequestInformation = (props) => {
               key="submit"
               type="primary"
               form="myForm"
-              disabled={
-                !selectedTypeName ||
-                (remainingDayOfSelectedType === 0 &&
-                  (selectedType === A || selectedType === B) &&
-                  action === NEW_LEAVE_REQUEST)
-              }
+              disabled={disabledBtn()}
               htmlType="submit"
               onClick={() => {
                 setButtonState(2);
@@ -1387,8 +1323,5 @@ export default connect(({ timeOff, user, loading }) => ({
   loadingUpdatingLeaveRequest: loading.effects['timeOff/updateLeaveRequestById'],
   loadingSaveDraft: loading.effects['timeOff/saveDraftLeaveRequest'],
   loadingUpdateDraft: loading.effects['timeOff/updateDraftLeaveRequest'],
-  loadingMain:
-    loading.effects['timeOff/getTimeOffTypeByLocation'] ||
-    loading.effects['timeOff/fetchLeaveBalanceOfUser'] ||
-    loading.effects['timeOff/fetchTimeOffTypesByCountry'],
+  loadingMain: loading.effects['timeOff/fetchTimeOffTypeByEmployeeEffect'],
 }))(RequestInformation);
