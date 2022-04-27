@@ -6,7 +6,6 @@ import styles from './index.less';
 
 function FilterCount(props) {
   const {
-    dispatch,
     applied = '',
     form = '',
     setApplied = () => {},

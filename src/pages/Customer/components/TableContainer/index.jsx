@@ -206,7 +206,7 @@ class TableContainer extends PureComponent {
     const { Content } = Layout;
     const { TabPane } = Tabs;
     const { listCustomer, loadingCustomer, companyList = [], loadingFilter = false } = this.props;
-    const { visible, isShown } = this.state;
+    const { visible, isShown, applied } = this.state;
     const tabs = [{ id: 1, name: `Customers (${this.addZeroToNumber(listCustomer.length)})` }];
 
     const listStatus = [
@@ -248,7 +248,7 @@ class TableContainer extends PureComponent {
 
     const menu = (
       <div className={styles.tabExtraContent}>
-        {this.state.applied > 0 && (
+        {applied > 0 && (
           <Tag
             className={styles.tagCountFilter}
             closable
@@ -257,7 +257,7 @@ class TableContainer extends PureComponent {
               this.clearFilter();
             }}
           >
-            {this.state.applied} applied
+            {applied} applied
           </Tag>
         )}
 

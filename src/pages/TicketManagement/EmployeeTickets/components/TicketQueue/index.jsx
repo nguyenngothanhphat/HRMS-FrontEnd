@@ -121,7 +121,7 @@ class TicketQueue extends Component {
     const dataTableDeparment = data.filter((item) => {
       return item.department_assign === _id;
     });
-    const { pageSelected, size } = this.state;
+    const { pageSelected, size, form, applied } = this.state;
     return (
       <>
         <div>
@@ -129,12 +129,7 @@ class TicketQueue extends Component {
         </div>
         <div className={styles.containerTickets}>
           <div className={styles.tabTickets}>
-            <></>
-            <FilterCount
-              applied={this.state.applied}
-              form={this.state.form}
-              setApplied={this.setApplied}
-            />
+            <FilterCount applied={applied} form={form} setApplied={this.setApplied} />
             <SearchTable
               onChangeSearch={this.onChangeSearch}
               handleFilterCounts={this.handleFilterCounts}

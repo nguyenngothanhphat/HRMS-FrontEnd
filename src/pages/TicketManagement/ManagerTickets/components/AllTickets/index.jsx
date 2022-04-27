@@ -135,18 +135,18 @@ class AllTicket extends Component {
       countData = [],
       selectedLocations = [],
     } = this.props;
-    const { pageSelected, size } = this.state;
+    const { pageSelected, size, applied, form, selectedFilterTab, nameSearch } = this.state;
     return (
       <div className={styles.containerTickets}>
         <div className={styles.tabTickets}>
           <Summary setSelectedTab={this.setSelectedTab} countData={countData} />
           <FilterCount
-            applied={this.state.applied}
-            form={this.state.form}
+            applied={applied}
+            form={form}
             setApplied={this.setApplied}
             initDataTable={this.initDataTable}
-            selectedFilterTab={this.state.selectedFilterTab}
-            nameSearch={this.state.nameSearch}
+            selectedFilterTab={selectedFilterTab}
+            nameSearch={nameSearch}
             selectedLocations={selectedLocations}
           />
           <SearchTable
