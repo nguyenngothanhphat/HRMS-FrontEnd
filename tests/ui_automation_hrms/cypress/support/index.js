@@ -30,6 +30,36 @@ Cypress.on('uncaught:exception', (err) => {
   }
 });
 
+Cypress.Commands.add('loginAsSomeone',(Employee_email,password)=>{
+  cy.get('#basic_userEmail.ant-input').type(Employee_email);
+  cy.get('#basic_password.ant-input').type(password);
+  cy.get('button[type="submit"]').click();
+  cy.wait(5000);
+})
+Cypress.Commands.add('logout',()=>{
+  cy.get('.account___1r_Ku').trigger('mousemove').click({force:true})
+  .then(() =>{
+  cy.contains('Logout').wait(2000).click({force:true});
+  }); 
+  cy.wait(3000);
+})
+Cypress.Commands.add('CreatingTimesheet',(startDate,endDate)=>{
+  cy.contains("Add Task").click({force:true});
+  cy.get('#basic_tasks_0_projectId').type('TM'+'{enter}')
+  cy.get('#basic_tasks_0_taskName').type('python');
+  cy.wait(1000);
+  cy.get("#basic_tasks_0_startTime",{timeout:3000}).type(startDate + '{enter}', {force: true})
+  cy.get('#basic_tasks_0_endTime',{timeout:3000}).type(endDate + '{enter}', {force: true})
+  cy.get('#basic_tasks_0_notes').type("important");
+  cy.get("#basic_tasks_0_clientLocation").click();
+  cy.get('button[type="Submit"]').click();
+  cy.wait(10000);
+})
+Cypress.Commands.add('DeletingTimesheet',()=>{
+  cy.get('img[src="/static/del.130ca399.svg"]').eq(0).click({force:true})
+        cy.contains("Yes").click();
+        cy.wait(3000)
+})
 Cypress.Commands.add('loginAsSomeone', (email, password) => {
   cy.get('#basic_userEmail.ant-input', { timeout: 8000 }).type(email);
   cy.get('#basic_password.ant-input', { timeout: 8000 }).type(password);

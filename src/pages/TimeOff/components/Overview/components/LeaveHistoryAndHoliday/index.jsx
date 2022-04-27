@@ -1,36 +1,39 @@
-import React, { PureComponent } from 'react';
 import { Spin, Tabs, Tooltip } from 'antd';
-import { connect } from 'umi';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
-import Holiday from './components/Holiday';
-import LeaveHistory from './components/LeaveHistory';
+import { isFutureDay, TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
+import HolidayList from './components/HolidayList';
+import HolidayCalendar from './components/HolidayCalendar';
+import LeaveHistoryList from './components/LeaveHistoryList';
+import LeaveHistoryCalendar from './components/LeaveHistoryCalendar';
 
 const { TabPane } = Tabs;
 
 const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DELETED, DRAFTS, WITHDRAWN } =
   TIMEOFF_STATUS;
-@connect(({ loading, timeOff, user: { currentUser: { location = {} } = {} } = {} }) => ({
-  timeOff,
-  location,
-  loadingFetch:
-    loading.effects['timeOff/fetchLeaveHistory'] ||
-    loading.effects['timeOff/fetchHolidaysListByLocation'],
-}))
-class LeaveHistoryAndHoliday extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      activeShowType: 1, // 1: list, 2: calendar
-    };
-  }
 
-  componentDidMount = () => {
-    const { dispatch, location = {} } = this.props;
+const LeaveHistoryAndHoliday = (props) => {
+  const {
+    timeOff: { holidaysListByLocation = [], leaveHistory = [] } = {},
+    loadingFetch = false,
+    dispatch,
+    location = {},
+  } = props;
+
+  const [activeShowType, setActiveShowType] = useState(1); // 1: list, 2: calendar
+  const [allHolidayList, setAllHolidayList] = useState([]);
+  const [upcomingHolidayList, setUpcomingHolidayList] = useState([]);
+  const [leaveRequestList, setLeaveRequestList] = useState([]);
+  const [leaveRequestCalendarList, setLeaveRequestCalendarList] = useState([]);
+
+  const [currentTime, setCurrentTime] = useState(moment());
+
+  useEffect(() => {
     dispatch({
       type: 'timeOff/fetchHolidaysListByLocation',
       payload: {
@@ -43,48 +46,41 @@ class LeaveHistoryAndHoliday extends PureComponent {
       type: 'timeOff/fetchLeaveHistory',
       status: '',
     });
+  }, []);
+
+  const handleSelectShowType = (value) => {
+    setActiveShowType(value);
   };
 
-  handleSelectShowType = (value) => {
-    this.setState({
-      activeShowType: value,
-    });
-  };
-
-  operations = () => {
-    const { activeShowType } = this.state;
+  const operations = () => {
     return (
       <div className={styles.menu}>
-        {/* {activeShowType === 2 && ( */}
         <Tooltip title="List View">
           <div className={styles.iconContainer}>
             <img
               src={ListIcon}
               className={activeShowType === 1 ? styles.activeShowType : ''}
-              onClick={() => this.handleSelectShowType(1)}
+              onClick={() => handleSelectShowType(1)}
               alt="list"
             />
           </div>
         </Tooltip>
-        {/* )} */}
-        {/* {activeShowType === 1 && ( */}
         <Tooltip title="Calendar View">
           <div className={styles.iconContainer}>
             <img
               src={CalendarIcon}
               className={activeShowType === 2 ? styles.activeShowType : ''}
-              onClick={() => this.handleSelectShowType(2)}
+              onClick={() => handleSelectShowType(2)}
               alt="calendar"
             />
           </div>
         </Tooltip>
-        {/* )} */}
       </div>
     );
   };
 
   // SORT BY DATE
-  compareDates = (a, b) => {
+  const compareDates = (a, b) => {
     if (moment(a.fromDate).isBefore(moment(b.fromDate))) {
       return 1;
     }
@@ -94,14 +90,14 @@ class LeaveHistoryAndHoliday extends PureComponent {
     return 0;
   };
 
-  formatHolidayLists = (holidaysList) => {
-    return holidaysList.sort(
+  const formatHolidayLists = (list) => {
+    return list.sort(
       (a, b) => moment(a.date.iso).format('YYYYMMDD') - moment(b.date.iso).format('YYYYMMDD'),
     );
   };
 
-  formatLeavingList = (allLeaveRequests) => {
-    let result = allLeaveRequests.map((each) => {
+  const formatLeavingList = (list) => {
+    let result = list.map((each) => {
       const {
         status = '',
         duration = 0,
@@ -118,19 +114,8 @@ class LeaveHistoryAndHoliday extends PureComponent {
         status === IN_PROGRESS ||
         status === IN_PROGRESS_NEXT
       ) {
-        const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
-        const toDate = moment(to).locale('en').format('MM/DD/YYYY');
-        // const now = moment().locale('en').format('MM/DD/YYYY');
-        // if (moment(now).isAfter(moment(toDate))) {
-        //   return {
-        //     _id,
-        //     name: subject,
-        //     fromDate,
-        //     toDate,
-        //     duration,
-        //     type: shortType,
-        //   };
-        // }
+        const fromDate = moment(from).locale('en').format(TIMEOFF_DATE_FORMAT);
+        const toDate = moment(to).locale('en').format(TIMEOFF_DATE_FORMAT);
         return {
           _id,
           fromDate,
@@ -144,12 +129,12 @@ class LeaveHistoryAndHoliday extends PureComponent {
       return null;
     });
     result = result.filter((value) => value !== null);
-    result = result.sort(this.compareDates);
+    result = result.sort(compareDates);
     return result;
   };
 
-  formatLeavingListCalendar = (allLeaveRequests) => {
-    let result = allLeaveRequests.map((each) => {
+  const formatLeavingListCalendar = (list) => {
+    let result = list.map((each) => {
       const {
         status = '',
         duration = 0,
@@ -161,8 +146,8 @@ class LeaveHistoryAndHoliday extends PureComponent {
       } = each;
 
       if (status !== DRAFTS && status !== ON_HOLD && status !== DELETED && status !== WITHDRAWN) {
-        const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
-        const toDate = moment(to).locale('en').format('MM/DD/YYYY');
+        const fromDate = moment(from).locale('en').format(TIMEOFF_DATE_FORMAT);
+        const toDate = moment(to).locale('en').format(TIMEOFF_DATE_FORMAT);
         return {
           _id,
           fromDate,
@@ -176,45 +161,69 @@ class LeaveHistoryAndHoliday extends PureComponent {
       return null;
     });
     result = result.filter((value) => value !== null);
-    result = result.sort(this.compareDates);
+    result = result.sort(compareDates);
     return result;
   };
 
-  render() {
-    const { activeShowType } = this.state;
-    const {
-      timeOff: { holidaysListByLocation = [], leaveHistory = [] } = {},
-      loadingFetch = false,
-    } = this.props;
-
-    const newHolidaysListByLocation = holidaysListByLocation.filter(
-      (date) => date.date.dateTime.year * 1 >= moment().year(),
+  useEffect(() => {
+    const arr1 = formatHolidayLists(
+      holidaysListByLocation.filter((x) => isFutureDay(moment(x.date?.iso, 'YYYY-MM-DD'))),
     );
-    const formatHolidayLists = this.formatHolidayLists(newHolidaysListByLocation);
+    const arr2 = formatHolidayLists(holidaysListByLocation);
 
-    const formatLeavingList = this.formatLeavingList(leaveHistory);
-    const formatLeavingListCalendar = this.formatLeavingListCalendar(leaveHistory);
+    setUpcomingHolidayList(arr1);
+    setAllHolidayList(arr2);
+  }, [JSON.stringify(holidaysListByLocation)]);
 
-    return (
-      <div className={styles.LeaveHistoryAndHoliday}>
-        <Tabs defaultActiveKey="1" tabBarExtraContent={this.operations()}>
-          <TabPane tab="Time off Calendar" key="1">
-            <Spin spinning={loadingFetch}>
-              <LeaveHistory
-                leavingListCalendar={formatLeavingListCalendar}
-                leavingList={formatLeavingList}
-                activeShowType={activeShowType}
+  useEffect(() => {
+    const arr1 = formatLeavingList(leaveHistory);
+    const arr2 = formatLeavingListCalendar(leaveHistory);
+
+    setLeaveRequestList(arr1);
+    setLeaveRequestCalendarList(arr2);
+  }, [JSON.stringify(leaveHistory)]);
+
+  return (
+    <div className={styles.LeaveHistoryAndHoliday}>
+      <Tabs defaultActiveKey="1" tabBarExtraContent={operations()}>
+        <TabPane tab="Time off Calendar" key="1">
+          <Spin spinning={loadingFetch}>
+            {activeShowType === 1 ? (
+              <LeaveHistoryList leavingList={leaveRequestList} />
+            ) : (
+              <LeaveHistoryCalendar
+                leavingList={leaveRequestCalendarList}
+                allHolidayList={allHolidayList}
+                currentTime={currentTime}
+                setCurrentTime={setCurrentTime}
               />
-            </Spin>
-          </TabPane>
-          <TabPane tab="Holidays" key="2">
-            <Spin spinning={loadingFetch}>
-              <Holiday holidaysList={formatHolidayLists} activeShowType={activeShowType} />
-            </Spin>
-          </TabPane>
-        </Tabs>
-      </div>
-    );
-  }
-}
-export default LeaveHistoryAndHoliday;
+            )}
+          </Spin>
+        </TabPane>
+        <TabPane tab="Holidays" key="2">
+          <Spin spinning={loadingFetch}>
+            {activeShowType === 1 ? (
+              <HolidayList upcomingHolidayList={upcomingHolidayList} />
+            ) : (
+              <HolidayCalendar
+                allHolidayList={allHolidayList}
+                leavingList={leaveRequestList}
+                currentTime={currentTime}
+                setCurrentTime={setCurrentTime}
+              />
+            )}
+          </Spin>
+        </TabPane>
+      </Tabs>
+    </div>
+  );
+};
+export default connect(
+  ({ loading, timeOff, user: { currentUser: { location = {} } = {} } = {} }) => ({
+    timeOff,
+    location,
+    loadingFetch:
+      loading.effects['timeOff/fetchLeaveHistory'] ||
+      loading.effects['timeOff/fetchHolidaysListByLocation'],
+  }),
+)(LeaveHistoryAndHoliday);
