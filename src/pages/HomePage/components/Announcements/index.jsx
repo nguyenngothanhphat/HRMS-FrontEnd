@@ -32,49 +32,34 @@ const Announcements = (props) => {
   }, []);
 
   // RENDER UI
-  if (loadingFetchAnnouncementList) {
-    return (
-      <div className={styles.Announcements}>
-        <p className={styles.title}>Announcements</p>
-        <Skeleton active />
-      </div>
-    );
-  }
-  if (announcements.length === 0) {
-    return (
-      <div className={styles.Announcements}>
-        <p className={styles.title}>Announcements</p>
-        <div className={styles.card}>
-          <EmptyComponent description="No announcements" />,
-        </div>
-      </div>
-    );
-  }
+
   return (
     <div className={styles.Announcements}>
       <p className={styles.title}>Announcements</p>
 
-      <Row gutter={[24, 24]}>
-        {announcements.map((x) => (
-          <LazyLoad key={x._id} placeholder={<Spin active />}>
-            <Col span={24}>
-              {x.embedLink ? (
-                <EmbedPost embedLink={x.embedLink} />
-              ) : (
-                <div className={styles.card}>
-                  <EmployeeTag employee={x.createdBy} />
-                  <PostContent post={x} />
-                </div>
-              )}
-            </Col>
-          </LazyLoad>
-        ))}
-      </Row>
+      <Spin spinning={loadingFetchAnnouncementList}>
+        <Row gutter={[24, 24]} style={{ minHeight: 300 }}>
+          {[...announcements].reverse().map((x) => (
+            <LazyLoad key={x._id} placeholder={<Spin active />}>
+              <Col span={24}>
+                {x.embedLink ? (
+                  <EmbedPost embedLink={x.embedLink} />
+                ) : (
+                  <div className={styles.card}>
+                    <EmployeeTag employee={x.createdBy} />
+                    <PostContent post={x} />
+                  </div>
+                )}
+              </Col>
+            </LazyLoad>
+          ))}
+        </Row>
+      </Spin>
     </div>
   );
 };
 
 export default connect(({ homePage, loading }) => ({
   homePage,
-  loadingFetchAnnouncementList: loading.effects['homePage/fetchAnnouncementsEffect'],
+  loadingFetchAnnouncementList: loading.effects['homePage/fetchAnnouncementsEffect1'],
 }))(Announcements);
