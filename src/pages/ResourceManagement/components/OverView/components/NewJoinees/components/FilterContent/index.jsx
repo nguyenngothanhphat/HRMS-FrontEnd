@@ -10,8 +10,9 @@ const FilterContent = (props) => {
     dispatch,
     onFilter = () => {},
     resourceManagement: { newJoineeList = [], titleList = [] } = {},
+    setapplied = () => {},
+    setForm,
   } = props;
-
   const onFinish = (values) => {
     const newValues = { ...values };
 
@@ -29,7 +30,9 @@ const FilterContent = (props) => {
 
     onFilter(result);
   };
-
+  useEffect(() => {
+    setForm(form);
+  }, []);
   useEffect(() => {
     dispatch({
       type: 'resourceManagement/fetchTitleList',
@@ -42,6 +45,11 @@ const FilterContent = (props) => {
 
   const onValuesChange = () => {
     const values = form.getFieldsValue();
+    const filteredObj = Object.entries(values).filter(
+      ([key, value]) => value !== undefined && value.length > 0,
+    );
+    const newObj = Object.fromEntries(filteredObj);
+    setapplied(Object.keys(newObj).length);
     onFinishDebounce(values);
   };
 

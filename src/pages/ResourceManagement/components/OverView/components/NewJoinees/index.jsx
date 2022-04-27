@@ -1,8 +1,9 @@
-import { Card } from 'antd';
+import { Card, Tag } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
+import { CloseOutlined } from '@ant-design/icons';
 import CommonTable from '../CommonTable';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
@@ -18,6 +19,8 @@ const NewJoinees = (props) => {
   } = props;
 
   const [searchValue, setSearchValue] = useState('');
+  const [applied, setapplied] = useState(0);
+  const [form, setForm] = useState(null);
   const fetchData = (payloadParams) => {
     const payload = { ...payloadParams, selectedDivisions, selectedLocations };
     if (searchValue) {
@@ -83,12 +86,33 @@ const NewJoinees = (props) => {
     const formatValue = e.target.value.toLowerCase();
     onSearchDebounce(formatValue);
   };
-
+  const clearTagFilter = () => {
+    fetchData({});
+    setapplied(0);
+    form?.resetFields();
+  };
   const renderOption = () => {
     return (
       <div className={styles.optionContainer}>
+        <div>
+          {applied > 0 && (
+            <Tag
+              className={styles.tagCountFilter}
+              closable
+              onClose={clearTagFilter}
+              closeIcon={<CloseOutlined />}
+            >
+              {applied} applied
+            </Tag>
+          )}
+        </div>
         <div className={styles.options}>
-          <FilterPopover realTime content={<FilterContent onFilter={fetchData} />}>
+          <FilterPopover
+            realTime
+            content={
+              <FilterContent setapplied={setapplied} setForm={setForm} onFilter={fetchData} />
+            }
+          >
             <FilterButton />
           </FilterPopover>
         </div>

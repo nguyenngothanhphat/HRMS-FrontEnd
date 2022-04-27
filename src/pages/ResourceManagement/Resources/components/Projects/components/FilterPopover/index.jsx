@@ -14,6 +14,7 @@ const FilterPopover = (props) => {
     dispatch,
     needResetFilterForm = false,
     setNeedResetFilterForm = () => {},
+    setapplied = () => {},
   } = props;
   const [showPopover, setShowPopover] = useState(false);
 
@@ -92,6 +93,11 @@ const FilterPopover = (props) => {
 
   const onValuesChange = () => {
     const values = form.getFieldsValue();
+    const filteredObj = Object.entries(values).filter(
+      ([key, value]) => value !== undefined && value.length > 0,
+    );
+    const newObj = Object.fromEntries(filteredObj);
+    setapplied(Object.keys(newObj).length);
     onFinishDebounce(values);
   };
 
@@ -109,8 +115,7 @@ const FilterPopover = (props) => {
                 showSearch
                 showArrow
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {projectNameList.map((x) => {
                   return <Select.Option value={x.projectId}>{x.projectId}</Select.Option>;
@@ -126,8 +131,7 @@ const FilterPopover = (props) => {
                 showSearch
                 showArrow
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {divisionList.map((x) => {
                   return <Select.Option value={x.name}>{x.name}</Select.Option>;
@@ -144,8 +148,7 @@ const FilterPopover = (props) => {
                 showSearch
                 showArrow
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {projectNameList.map((item) => {
                   return (
@@ -164,8 +167,7 @@ const FilterPopover = (props) => {
                 showSearch
                 showArrow
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 style={{ width: '100%' }}
                 placeholder="Select Customer"
               >
@@ -182,8 +184,7 @@ const FilterPopover = (props) => {
                 showSearch
                 showArrow
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 style={{ width: '100%' }}
                 placeholder="Select Engagement Type"
               >
@@ -200,8 +201,7 @@ const FilterPopover = (props) => {
                 showSearch
                 showArrow
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 style={{ width: '100%' }}
                 loading={loadingFetchEmployeeList}
                 placeholder="Select Project Manager"
@@ -219,8 +219,7 @@ const FilterPopover = (props) => {
                 showSearch
                 showArrow
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 style={{ width: '100%' }}
                 placeholder="Select Status"
               >

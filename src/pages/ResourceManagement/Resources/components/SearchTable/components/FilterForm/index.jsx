@@ -25,6 +25,8 @@ const FilterForm = (props) => {
     certificationsList = [],
     loadingFetchEmployeeNameList = false,
     visible = false,
+    setapplied = () => {},
+    setForm,
   } = props;
 
   const [durationFrom, setDurationFrom] = useState('');
@@ -57,6 +59,10 @@ const FilterForm = (props) => {
     }
   }, [employeeNameState]);
 
+  useEffect(() => {
+    setForm(form);
+  }, []);
+
   // const clearFilter = () => {
   //   setFilter({
   //     filter: {
@@ -79,7 +85,6 @@ const FilterForm = (props) => {
   //   form.resetFields();
   //   onFilterChange({ ...filter, filter });
   // };
-
   const disabledDate = (currentDate, type) => {
     if (type === 'fromDate') {
       return (
@@ -133,9 +138,13 @@ const FilterForm = (props) => {
 
   const onValuesChange = () => {
     const values = form.getFieldsValue();
+    const filteredObj = Object.entries(values).filter(
+      ([key, value]) => value !== undefined && value.length > 0,
+    );
+    const newObj = Object.fromEntries(filteredObj);
+    setapplied(Object.keys(newObj).length);
     onFinishDebounce(values);
   };
-
   const onSearchEmployeeDebounce = debounce((type, value) => {
     let typeTemp = '';
     switch (type) {

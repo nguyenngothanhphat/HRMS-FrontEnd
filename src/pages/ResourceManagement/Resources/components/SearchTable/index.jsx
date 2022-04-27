@@ -47,13 +47,19 @@ class SearchTable extends PureComponent {
 
   render() {
     const { visible } = this.state;
-    const { filter, onFilterChange } = this.props;
+    const { filter, onFilterChange, setapplied, setForm } = this.props;
     return (
       <div className={styles.searchFilter}>
         <div>
           <Popover
             content={
-              <FilterForm onFilterChange={onFilterChange} filter={filter} visible={visible} />
+              <FilterForm
+                onFilterChange={onFilterChange}
+                filter={filter}
+                visible={visible}
+                setapplied={setapplied}
+                setForm={setForm}
+              />
             }
             title={this.renderTitle()}
             trigger="click"
