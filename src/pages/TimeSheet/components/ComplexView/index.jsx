@@ -156,7 +156,12 @@ const ComplexView = (props) => {
             default={selectedLocations}
             disabled={renderLocationOptions().length < 2}
           >
-            <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
+            <div
+              className={`${
+                renderLocationOptions().length < 2 ? styles.noDropdown : styles.dropdown
+              }`}
+              onClick={(e) => e.preventDefault()}
+            >
               <span>{selectedLocationName}</span>
               {renderLocationOptions().length < 2 ? null : <img src={SmallDownArrow} alt="" />}
             </div>
