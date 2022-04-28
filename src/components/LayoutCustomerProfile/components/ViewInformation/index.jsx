@@ -12,13 +12,11 @@ import CommonModal from '../CommonModal';
 
 const ViewInformation = (props) => {
   const [isEditCustomer, setIsEditCustomer] = useState(false);
-  const { permissions = {}, profileOwner = false, info = {}, dispatch } = props;
+  const { permissions = {}, profileOwner = false, info = {} } = props;
   const {
-    accountOwner: {
-      generalInfo: { legalName: nameLegal = '', avatar = '' } = {},
-      company: { name = '' } = {},
-    } = {} || {},
+    accountOwner: { generalInfo: { legalName: nameLegal = '', avatar = '' } = {} } = {} || {},
     tags = [],
+    dba = '',
     legalName = '',
     status = '',
     pendingTickets = '',
@@ -27,12 +25,6 @@ const ViewInformation = (props) => {
     customerId = '',
     openLeads = '',
   } = info || {};
-
-  const onRefresh = () => {
-    dispatch({
-      type: 'customerManagement/fetchCustomerList',
-    });
-  };
 
   // const getAvatarUrl = (avatar, isShowAvatar) => {
   //   if (isShowAvatar || permissions.viewAvatarEmployee !== -1 || profileOwner)
@@ -68,7 +60,7 @@ const ViewInformation = (props) => {
               <p className={s.label}>Company alias (DBA):</p>
             </Col>
             <Col span={6}>
-              <p className={s.value}>{name}</p>
+              <p className={s.value}>{dba}</p>
             </Col>
           </Row>
           <Row>
@@ -192,7 +184,6 @@ const ViewInformation = (props) => {
             visible={isEditCustomer}
             onClose={() => setIsEditCustomer(false)}
             selectedProject={info}
-            onRefresh={onRefresh}
           />
         }
         width={700}

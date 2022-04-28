@@ -80,7 +80,9 @@ const TableCustomers = (props) => {
         dataIndex: 'activeProjects',
         width: '10%',
         align: 'center',
-        render: (activeProjects) => <span className={styles.blueText}>{activeProjects}</span>,
+        render: (activeProjects) => (
+          <span className={styles.blueText}>{activeProjects?.length}</span>
+        ),
       },
       {
         title: formatMessage({ id: 'page.customermanagement.status' }),

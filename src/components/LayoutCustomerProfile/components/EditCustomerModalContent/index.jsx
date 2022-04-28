@@ -44,9 +44,7 @@ import { getCurrentTenant } from '@/utils/authority';
 class EditCustomerModalContent extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      isCountryChosen: true,
-    };
+    this.state = {};
     this.refForm = React.createRef();
   }
 
@@ -57,9 +55,6 @@ class EditCustomerModalContent extends PureComponent {
       payload: {
         name: 'Engineering',
       },
-    });
-    dispatch({
-      type: 'customerManagement/fetchCountryList',
     });
     dispatch({
       type: 'customerManagement/fetchEmployeeList',
@@ -82,62 +77,31 @@ class EditCustomerModalContent extends PureComponent {
     }
   }
 
-  // change Country
-  handleChangeCountry = (id) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'customerManagement/fetchStateByCountry',
-      payload: id,
-    });
-    this.setState({
-      isCountryChosen: false,
-    });
-  };
-
   handleSubmit = async (values) => {
-    const {
-      customerID,
+    const { customerID, status, legalName, dba, tags, comments, accountOwner } = values;
+    const { onClose = () => {}, dispatch } = this.props;
+
+    const payload = {
+      tenantId: getCurrentTenant(),
+      customerId: customerID,
       status,
-      legalName,
-      dba,
-      phone,
-      email,
-      addressLine1,
-      addressLine2,
-      state,
-      city,
-      zipCode,
-      website,
-      tags,
-      comments,
-      accountOwner,
-    } = values;
-    const { country, onRefresh = () => {}, onClose = () => {}, dispatch } = this.props;
-    const countryName = country?.find((item) => item._id === values.country);
+      legalName: legalName || '',
+      dba: dba || '',
+      accountOwner: accountOwner || '',
+      tags: tags || [],
+      comment: comments || '',
+    };
     const res = await dispatch({
-      type: 'customerManagement/editCustomer',
-      payload: {
-        tenantId: getCurrentTenant(),
-        customerId: customerID,
-        status,
-        legalName: legalName || '',
-        dba: dba || '',
-        contactPhone: phone || '',
-        contactEmail: email,
-        addressLine1: addressLine1 || '',
-        addressLine2: addressLine2 || '',
-        city: city || '',
-        state: state || "''",
-        country: countryName.name || '',
-        postalCode: zipCode || '',
-        accountOwner: accountOwner || '',
-        tags: tags || [],
-        comment: comments || '',
-        website: website || '',
-      },
+      type: 'customerProfile/updateCustomerEffect',
+      payload,
     });
     if (res.statusCode === 200) {
-      onRefresh();
+      dispatch({
+        type: 'customerProfile/fetchCustomerInfo',
+        payload: {
+          id: customerID,
+        },
+      });
       onClose();
       this.refForm.current.resetFields();
     }
@@ -150,14 +114,10 @@ class EditCustomerModalContent extends PureComponent {
     const contentStatus = (
       <p style={{ marginBottom: '0', color: '#fff' }}>Status is auto-generated</p>
     );
-    const { isCountryChosen } = this.state;
     const {
       listStatus,
       listTags,
-      country,
-      state,
       loadingTagList,
-      loadingStateList,
       employeeList = [],
       listCustomer = [],
       selectedProject: {
@@ -183,7 +143,7 @@ class EditCustomerModalContent extends PureComponent {
     return (
       <div className={styles.EditCustomerModalContent}>
         <Form
-          name="formAdd"
+          name="myForm"
           ref={this.refForm}
           layout="vertical"
           initialValues={{
@@ -204,9 +164,7 @@ class EditCustomerModalContent extends PureComponent {
             website,
             comments: comment,
           }}
-          onFinish={(values) => {
-            this.handleSubmit(values);
-          }}
+          onFinish={this.handleSubmit}
         >
           {/* Basic Customer Detail */}
           <div className={styles.basicInfoForm}>
@@ -303,112 +261,6 @@ class EditCustomerModalContent extends PureComponent {
           </div>
           <Divider />
 
-          {/* Contact Detail */}
-          <div className={styles.contactDetail}>
-            <div className={styles.contactDetailTitle}>
-              <p>Contact Detail</p>
-            </div>
-            <Row gutter={48}>
-              <Col span={12}>
-                <Form.Item
-                  label="Contact Phone"
-                  name="phone"
-                  rules={[{ required: true, message: 'Required field!' }]}
-                >
-                  <Input placeholder="Enter Phone Number" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="Contact Email"
-                  name="email"
-                  rules={[{ required: true, message: 'Required field!' }]}
-                >
-                  <Input placeholder="Enter Email Address" />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Form.Item
-              label="Address Line 1"
-              name="addressLine1"
-              rules={[{ required: true, message: 'Required field!' }]}
-            >
-              <Input placeholder="Enter Address Line 1" />
-            </Form.Item>
-            <Form.Item label="Address Line 2" name="addressLine2">
-              <Input placeholder="Enter Address Line 2" />
-            </Form.Item>
-            <Row gutter={48}>
-              <Col span={12}>
-                <Form.Item
-                  label="Country"
-                  name="country"
-                  rules={[{ required: true, message: 'Required field!' }]}
-                >
-                  <Select
-                    placeholder="Select Country"
-                    onChange={(value) => this.handleChangeCountry(value)}
-                    showSearch
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
-                  >
-                    {country.map((countryItem) => {
-                      return (
-                        <Select.Option value={countryItem.id} key={countryItem._id}>
-                          {countryItem.name}
-                        </Select.Option>
-                      );
-                    })}
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="State"
-                  name="state"
-                  rules={[{ required: true, message: 'Required field!' }]}
-                >
-                  <Select
-                    disabled={isCountryChosen}
-                    loading={loadingStateList}
-                    placeholder="Select State"
-                    showSearch
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
-                  >
-                    {state.map((stateItem) => {
-                      return <Select.Option key={stateItem}>{stateItem}</Select.Option>;
-                    })}
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={48}>
-              <Col span={12}>
-                <Form.Item
-                  label="City"
-                  name="city"
-                  rules={[{ required: true, message: 'Required field!' }]}
-                >
-                  <Input placeholder="Enter City name" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="Zip/Postal Code"
-                  name="zipCode"
-                  rules={[{ required: true, message: 'Required field!' }]}
-                >
-                  <Input placeholder="Enter Postal Code" />
-                </Form.Item>
-              </Col>
-            </Row>
-          </div>
-          <Divider />
           {/* Other Detail */}
           <div className={styles.otherDetail}>
             <div className={styles.otherDetailTitle}>
@@ -426,8 +278,7 @@ class EditCustomerModalContent extends PureComponent {
                     showSearch
                     optionFilterProp="children"
                     filterOption={(input, option) =>
-                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     {employeeList.map((employee) => {
                       return (
@@ -440,18 +291,15 @@ class EditCustomerModalContent extends PureComponent {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label="Website" name="website">
-                  <Input placeholder="Enter Website" />
+                <Form.Item label="Tags" name="tags">
+                  <Select mode="multiple" placeholder="Select tags">
+                    {listTags.map((tagItem) => {
+                      return <Select.Option key={tagItem}>{tagItem}</Select.Option>;
+                    })}
+                  </Select>
                 </Form.Item>
               </Col>
             </Row>
-            <Form.Item label="Tags" name="tags">
-              <Select mode="multiple" placeholder="Select tags">
-                {listTags.map((tagItem) => {
-                  return <Select.Option key={tagItem}>{tagItem}</Select.Option>;
-                })}
-              </Select>
-            </Form.Item>
             <Form.Item label="Comments (Optional)" name="comments">
               <Input.TextArea rows={4} placeholder="Enter Comments" />
             </Form.Item>
