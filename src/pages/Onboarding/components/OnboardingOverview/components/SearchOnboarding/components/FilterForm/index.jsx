@@ -93,11 +93,8 @@ class FilterForm extends Component {
     this.formRef = React.createRef();
   }
 
-  // <
-  // Need to standardize and modify all the filters
-  // >
   componentDidMount() {
-    const { callbackClose } = this.props;
+    const { callbackClose = () => {} } = this.props;
     callbackClose(this.clearFilter);
   }
 

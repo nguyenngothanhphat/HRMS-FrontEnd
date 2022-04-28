@@ -9,7 +9,9 @@ import FilterForm from './components/FilterForm';
 
 import styles from './index.less';
 
-@connect()
+@connect(({ onboarding: { onboardingOverview: { currentStatus = '' } = {} } = {} }) => ({
+  currentStatus,
+}))
 class SearchOnboarding extends Component {
   constructor(props) {
     super(props);
@@ -90,19 +92,19 @@ class SearchOnboarding extends Component {
   };
 
   render() {
-    const { onChangeSearch = () => {} } = this.props;
+    const { onChangeSearch = () => {}, currentStatus = '' } = this.props;
     const { visible, applied } = this.state;
 
     return (
       <div className={styles.search}>
-        {applied > 0 && (
+        {((applied > 0 && currentStatus === 'ALL') || applied > 1) && (
           <Tag
             className={styles.tagCountFilter}
             closable
             onClose={this.onClose}
             closeIcon={<CloseOutlined />}
           >
-            {applied} applied
+            {currentStatus === 'ALL' ? applied : applied - 1} applied
           </Tag>
         )}
         <div className="site-drawer-render-in-current-wrapper">
