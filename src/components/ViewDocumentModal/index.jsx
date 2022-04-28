@@ -1,12 +1,12 @@
 /* eslint-disable no-return-assign */
-import React, { PureComponent } from 'react';
-import { Modal, Spin, message } from 'antd';
-import axios from 'axios';
 import { LoadingOutlined } from '@ant-design/icons';
+import { message, Modal, Spin } from 'antd';
+import axios from 'axios';
+import React, { PureComponent } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import ReactToPrint from 'react-to-print';
-import DownloadIcon from '@/assets/downloadIconTimeOff.svg';
 import PrintIcon from '@/assets/printIconTimeOff.svg';
+import DownloadIcon from '@/assets/downloadIconTimeOff.svg';
 import CloseIcon from '@/assets/closeIconTimeOff.svg';
 import styles from './index.less';
 
@@ -19,15 +19,6 @@ class ViewDocumentModal extends PureComponent {
       numPages: null,
     };
   }
-
-  componentDidMount = () => {
-    const { disableDownload = false } = this.props;
-    if (disableDownload) {
-      document.addEventListener('contextmenu', (e) => {
-        e.preventDefault();
-      });
-    }
-  };
 
   onDownload = (url) => {
     const fileName = url.split('/').pop();
@@ -152,7 +143,7 @@ class ViewDocumentModal extends PureComponent {
   };
 
   render() {
-    const { visible, onClose = () => {}, url = '' } = this.props;
+    const { visible, onClose = () => {}, url = '', disableDownload = false } = this.props;
 
     const viewType = this.identifyImageOrPdf(url); // 0: images, 1: pdf
 
@@ -169,7 +160,10 @@ class ViewDocumentModal extends PureComponent {
         maskClosable
       >
         {this._renderHandleButtons()}
-        <div className={styles.container}>
+        <div
+          className={styles.container}
+          onContextMenu={disableDownload ? (e) => e.preventDefault() : null}
+        >
           <div className={viewType === 0 ? styles.contentViewImage : styles.contentViewPDF}>
             {viewType === 0 && this._renderViewImage()}
             {viewType === 1 && this._renderViewPDF()}
