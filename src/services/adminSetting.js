@@ -193,3 +193,33 @@ export async function getCompanyById(payload) {
     data: payload,
   });
 }
+
+// ticket management
+export async function getSettingTicketList(payload) {
+  return request('/api/settingtickettenant/list', {
+    method: 'GET',
+    params: payload,
+  });
+}
+
+export async function getSettingTicketById(payload) {
+  return request('/api/settingtickettenant/get-by-id', {
+    method: 'GET',
+    params: payload,
+  });
+}
+
+
+export async function removeSettingTicket(payload) {
+  return request('/api/settingtickettenant/inactive', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function upsertSettingTicket(payload) {
+  return request('/api/settingtickettenant/upsert', {
+    method: 'POST',
+    data: payload,
+  });
+}
