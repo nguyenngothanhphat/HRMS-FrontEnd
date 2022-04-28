@@ -1,5 +1,5 @@
 import { Col, DatePicker, Form, Row, Select, Skeleton, Space, Tag } from 'antd';
-import { debounce, isBuffer } from 'lodash';
+import { debounce } from 'lodash';
 import React, { Suspense, useEffect, useState } from 'react';
 import { connect } from 'umi';
 import CustomSearchBox from '@/components/CustomSearchBox';
@@ -10,12 +10,17 @@ import styles from './index.less';
 
 const TimeOffFilter = (props) => {
   const [form] = Form.useForm();
+  const [count, setCount] = useState(3);
 
   const {
     dispatch,
     timeOffTypesByCountry,
     filter: { search, type, fromDate, toDate },
     filter = {},
+    isVisible,
+    onOpenAppliedTag = () => {},
+    onClosedAppliedTag = () => {},
+    saveCurrentTypeTab = () => {},
   } = props;
 
   const onSearchDebounce = debounce((value) => {
@@ -39,6 +44,7 @@ const TimeOffFilter = (props) => {
   // FUNCTIONALITY
   const onFinish = (values) => {
     const filterTemp = removeEmptyFields(values);
+
     // dispatch action
     dispatch({
       type: 'timeOff/save',
@@ -53,8 +59,33 @@ const TimeOffFilter = (props) => {
   const onValuesChange = () => {
     const values = form.getFieldsValue();
 
+    // applied count
+
+    const typeCount = values.type.length;
+    let typeDate;
+    if (values.fromDate && values.toDate) {
+      typeDate = 1;
+    } else {
+      typeDate = 0;
+    }
+
+    if (count > 0) {
+      onOpenAppliedTag();
+    }
+
+    setCount(typeCount + typeDate);
+
     onFinishDebounce(values);
   };
+
+  const closedAppliedTag = () => {
+    saveCurrentTypeTab('1');
+    onClosedAppliedTag();
+  };
+
+  useEffect(() => {
+    form.setFieldsValue({ type, fromDate, toDate });
+  }, [filter]);
 
   const FilterContent = () => {
     return (
@@ -62,7 +93,7 @@ const TimeOffFilter = (props) => {
         layout="vertical"
         name="filter"
         form={form}
-        initialValues={filter}
+        initialValues={{ type, fromDate, toDate }}
         onValuesChange={onValuesChange}
         className={styles.FilterContent}
       >
@@ -73,8 +104,9 @@ const TimeOffFilter = (props) => {
             mode="multiple"
             style={{ width: '100%' }}
             placeholder="Search by Timeoff Types"
-            filterOption={(input, option) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            filterOption={
+              (input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              // eslint-disable-next-line react/jsx-curly-newline
             }
             showArrow
           >
@@ -110,6 +142,10 @@ const TimeOffFilter = (props) => {
 
   return (
     <Space direction="horizontal" className={styles.TimeOffFilter}>
+      <Tag className={styles.AppliedTag} closable onClose={closedAppliedTag} visible={isVisible}>
+        {count} Applied
+      </Tag>
+
       <div className={styles.RightContentHeader}>
         <FilterPopover
           placement="bottomRight"
@@ -122,6 +158,7 @@ const TimeOffFilter = (props) => {
         >
           <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} />
         </FilterPopover>
+
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Employee ID, name..." />
       </div>
     </Space>
