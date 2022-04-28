@@ -247,7 +247,7 @@ const FilterContent = (props) => {
       <Form.Item label="by employee id" name="employeeId">
         <AutoComplete
           dropdownMatchSelectWidth={252}
-          notFoundContent={loadingFetchEmployeeIDList ? <Spin /> : 'No matches'}
+          notFoundContent={loadingFetchEmployeeIDList ? <Spin /> : 'No Data'}
           options={employeeIDListState}
           onSearch={(val) => handleEmployeeSearch('id', val)}
           onFocus={() => setSearchIcons({ ...searchIcons, id: true })}
@@ -264,7 +264,7 @@ const FilterContent = (props) => {
       <Form.Item label="By name/user id" name="name">
         <AutoComplete
           dropdownMatchSelectWidth={252}
-          notFoundContent={loadingFetchEmployeeNameList ? <Spin /> : 'No matches'}
+          notFoundContent={loadingFetchEmployeeNameList ? <Spin /> : 'No Data'}
           options={employeeNameListState}
           onSearch={(val) => handleEmployeeSearch('name', val)}
           onFocus={() => setSearchIcons({ ...searchIcons, name: true })}
@@ -293,9 +293,9 @@ const FilterContent = (props) => {
               }
               showArrow
             >
-              {listDepartmentName.map((x, index) => {
+              {listDepartmentName.map((x) => {
                 return (
-                  <Select.Option value={x} key={index}>
+                  <Select.Option value={x} key={x}>
                     {x}
                   </Select.Option>
                 );
@@ -314,9 +314,9 @@ const FilterContent = (props) => {
               }
               showArrow
             >
-              {listDepartmentName.map((x, index) => {
+              {listDepartmentName.map((x) => {
                 return (
-                  <Select.Option value={x} key={index}>
+                  <Select.Option value={x} key={x}>
                     {x}
                   </Select.Option>
                 );
@@ -353,7 +353,7 @@ const FilterContent = (props) => {
           <Form.Item label="By reporting manager" name="reportingManager">
             <AutoComplete
               dropdownMatchSelectWidth={252}
-              notFoundContent={loadingFetchManagerList ? <Spin /> : 'No matches'}
+              notFoundContent={loadingFetchManagerList ? <Spin /> : 'No Data'}
               options={managerListState}
               onSearch={(val) => handleEmployeeSearch('manager', val)}
               onFocus={() => setSearchIcons({ ...searchIcons, manager: true })}

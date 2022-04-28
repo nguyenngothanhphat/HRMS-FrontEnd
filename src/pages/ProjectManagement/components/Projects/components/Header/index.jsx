@@ -24,7 +24,6 @@ const Header = (props) => {
     fetchProjectList = () => {},
     permissions = {},
     loadingAddProject = false,
-    projectManagement: { filter = {} } = {},
   } = props;
   const [addProjectModalVisible, setAddProjectModalVisible] = useState(false);
   const [applied, setApplied] = useState(0);
@@ -54,23 +53,18 @@ const Header = (props) => {
     fetchProjectList(payload);
     if (Object.keys(payload).length > 0) {
       setIsFiltering(true);
+      setApplied(Object.keys(payload).length);
     } else {
       setIsFiltering(false);
+      setApplied(0);
     }
-  };
-
-  const handleFilterCounts = (values) => {
-    const filteredObj = Object.entries(values).filter(
-      ([key, value]) => value !== undefined && value?.length > 0,
-    );
-    const newObj = Object.fromEntries(filteredObj);
-    setApplied(Object.keys(newObj).length);
   };
 
   const clearFilter = () => {
     fetchProjectList();
     form?.resetFields();
     setApplied(0);
+    setIsFiltering(false);
   };
 
   useEffect(() => {
@@ -107,8 +101,7 @@ const Header = (props) => {
           </Select>
         </div>
       </div>
-
-      <div className={styles.Header__center}>
+      <div className={styles.Header__right}>
         {applied > 0 && (
           <Tag
             className={styles.tagCountFilter}
@@ -121,9 +114,6 @@ const Header = (props) => {
             {applied} applied
           </Tag>
         )}
-      </div>
-
-      <div className={styles.Header__right}>
         {addProjectPermission && (
           <Button
             onClick={() => setAddProjectModalVisible(true)}
@@ -141,7 +131,6 @@ const Header = (props) => {
                 needResetFilterForm={needResetFilterForm}
                 setNeedResetFilterForm={setNeedResetFilterForm}
                 onFilter={onFilter}
-                handleFilterCounts={handleFilterCounts}
                 setForm={setForm}
               />
             </Suspense>

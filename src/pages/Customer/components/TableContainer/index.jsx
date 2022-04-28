@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Tag, Tabs, Layout, Popover, Button, Input, Select } from 'antd';
+import { Tag, Tabs, Layout, Popover, Input, Select, Badge } from 'antd';
 import { PlusOutlined, SearchOutlined, CloseOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
@@ -34,6 +34,7 @@ class TableContainer extends PureComponent {
       applied: 0,
       arr: [],
       form: null,
+      isFiltering: false,
     };
     this.refForm = React.createRef();
     this.onSearchDebounce = debounce(this.onSearchDebounce, 500);
@@ -98,14 +99,16 @@ class TableContainer extends PureComponent {
 
   clearFilter = () => {
     const { dispatch } = this.props;
+    const { form } = this.state;
     dispatch({
       type: 'customerManagement/fetchCustomerList',
     });
     this.setState({
       applied: 0,
       arr: [],
+      isFiltering: false,
     });
-    this.state.form.resetFields();
+    form.resetFields();
   };
 
   handleFilterCount = (values) => {
@@ -116,6 +119,7 @@ class TableContainer extends PureComponent {
     );
     this.setState({
       applied: Object.keys(filteredObj).length,
+      isFiltering: true,
     });
   };
 
@@ -206,7 +210,7 @@ class TableContainer extends PureComponent {
     const { Content } = Layout;
     const { TabPane } = Tabs;
     const { listCustomer, loadingCustomer, companyList = [], loadingFilter = false } = this.props;
-    const { visible, isShown, applied } = this.state;
+    const { visible, isShown, applied, isFiltering } = this.state;
     const tabs = [{ id: 1, name: `Customers (${this.addZeroToNumber(listCustomer.length)})` }];
 
     const listStatus = [
@@ -260,7 +264,6 @@ class TableContainer extends PureComponent {
             {applied} applied
           </Tag>
         )}
-
         <div className={styles.buttonAddImport} onClick={this.showModal}>
           <PlusOutlined />
           Add new customer
@@ -288,6 +291,11 @@ class TableContainer extends PureComponent {
           <div className={styles.filterButton}>
             <FilterIcon />
             <p className={styles.textButtonFilter}>Filter</p>
+            {isFiltering && (
+              <Badge dot offset={[-3, -8]}>
+                <div className={styles.dot} />
+              </Badge>
+            )}
           </div>
         </Popover>
         <div className={styles.searchInp}>

@@ -30,6 +30,7 @@ class MyTickets extends Component {
       nameSearch: '',
       applied: 0,
       form: '',
+      isFiltering: false,
     };
 
     this.setDebounce = debounce((nameSearch) => {
@@ -131,6 +132,13 @@ class MyTickets extends Component {
     const newObj = Object.fromEntries(filteredObj);
     this.setState({
       applied: Object.keys(newObj).length,
+      isFiltering: true,
+    });
+  };
+
+  setIsFiltering = () => {
+    this.setState({
+      isFiltering: false,
     });
   };
 
@@ -143,7 +151,8 @@ class MyTickets extends Component {
       employee: { _id = '' },
       selectedLocations = [],
     } = this.props;
-    const { pageSelected, size, applied, form, selectedFilterTab, nameSearch } = this.state;
+    const { pageSelected, size, applied, form, selectedFilterTab, nameSearch, isFiltering } =
+      this.state;
     const dataTableEmployee = data.filter((item) => {
       return item.employee_assignee === _id;
     });
@@ -155,20 +164,24 @@ class MyTickets extends Component {
         <div className={styles.containerTickets}>
           <div className={styles.tabTickets}>
             <Summary setSelectedTab={this.setSelectedTab} countData={countData} />
-            <FilterCount
-              applied={applied}
-              form={form}
-              setApplied={this.setApplied}
-              initDataTable={this.initDataTable}
-              selectedFilterTab={selectedFilterTab}
-              nameSearch={nameSearch}
-              selectedLocations={selectedLocations}
-            />
-            <SearchTable
-              onChangeSearch={this.onChangeSearch}
-              handleFilterCounts={this.handleFilterCounts}
-              setForm={this.setForm}
-            />
+            <div className={styles.filterTable}>
+              <FilterCount
+                applied={applied}
+                form={form}
+                setApplied={this.setApplied}
+                setIsFiltering={this.setIsFiltering}
+                initDataTable={this.initDataTable}
+                selectedFilterTab={selectedFilterTab}
+                nameSearch={nameSearch}
+                selectedLocations={selectedLocations}
+              />
+              <SearchTable
+                onChangeSearch={this.onChangeSearch}
+                handleFilterCounts={this.handleFilterCounts}
+                setForm={this.setForm}
+                isFiltering={isFiltering}
+              />
+            </div>
           </div>
           <TableTickets
             data={dataTableEmployee}

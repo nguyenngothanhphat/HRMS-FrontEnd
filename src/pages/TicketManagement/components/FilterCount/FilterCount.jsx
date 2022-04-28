@@ -9,6 +9,7 @@ function FilterCount(props) {
     applied = '',
     form = '',
     setApplied = () => {},
+    setIsFiltering = () => {},
     initDataTable = () => {},
     selectedFilterTab = '',
     nameSearch = '',
@@ -17,10 +18,11 @@ function FilterCount(props) {
   const clearFilter = () => {
     initDataTable(selectedFilterTab, nameSearch, selectedLocations);
     setApplied();
+    setIsFiltering();
     form?.resetFields();
   };
   return (
-    <div className={styles.filterCounts}>
+    <>
       {applied > 0 && (
         <Tag
           className={styles.tagCountFilter}
@@ -33,7 +35,7 @@ function FilterCount(props) {
           {applied} applied
         </Tag>
       )}
-    </div>
+    </>
   );
 }
 export default connect(({ ticketManagement }) => ({ ticketManagement }))(FilterCount);

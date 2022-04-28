@@ -32,6 +32,7 @@ class TicketQueue extends Component {
       nameSearch: '',
       applied: 0,
       form: '',
+      isFiltering: false,
     };
 
     this.setDebounce = debounce((nameSearch) => {
@@ -95,6 +96,7 @@ class TicketQueue extends Component {
     const newObj = Object.fromEntries(filteredObj);
     this.setState({
       applied: Object.keys(newObj).length,
+      isFiltering: true,
     });
   };
 
@@ -110,6 +112,12 @@ class TicketQueue extends Component {
     });
   };
 
+  setIsFiltering = () => {
+    this.setState({
+      isFiltering: false,
+    });
+  };
+
   render() {
     const {
       data = [],
@@ -121,7 +129,7 @@ class TicketQueue extends Component {
     const dataTableDeparment = data.filter((item) => {
       return item.department_assign === _id;
     });
-    const { pageSelected, size, form, applied } = this.state;
+    const { pageSelected, size, form, applied, isFiltering } = this.state;
     return (
       <>
         <div>
@@ -129,11 +137,17 @@ class TicketQueue extends Component {
         </div>
         <div className={styles.containerTickets}>
           <div className={styles.tabTickets}>
-            <FilterCount applied={applied} form={form} setApplied={this.setApplied} />
+            <FilterCount
+              applied={applied}
+              form={form}
+              setApplied={this.setApplied}
+              setIsFiltering={this.setIsFiltering}
+            />
             <SearchTable
               onChangeSearch={this.onChangeSearch}
               handleFilterCounts={this.handleFilterCounts}
               setForm={this.setForm}
+              isFiltering={isFiltering}
             />
           </div>
           <TableTickets

@@ -256,7 +256,7 @@ const FilterForm = (props) => {
             <Form.Item key="name" label="BY NAME" name="employeeRaise">
               <AutoComplete
                 dropdownMatchSelectWidth={252}
-                notFoundContent={loadingFetchEmployeeRaiseListEffect ? <Spin /> : 'No matches'}
+                notFoundContent={loadingFetchEmployeeRaiseListEffect ? <Spin /> : 'No Data'}
                 options={nameListState}
                 onSearch={(val) => handleEmployeeSearch('employeeRaise', val)}
               >

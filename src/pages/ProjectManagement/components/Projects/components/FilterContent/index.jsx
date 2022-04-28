@@ -11,7 +11,6 @@ const FilterContent = (props) => {
     dispatch,
     needResetFilterForm = false,
     setNeedResetFilterForm = () => {},
-    handleFilterCounts = () => {},
     setForm = () => {},
     projectManagement: {
       filter: {
@@ -99,7 +98,6 @@ const FilterContent = (props) => {
   };
 
   const onFinishDebounce = debounce((values) => {
-    handleFilterCounts(values);
     onFormSubmit(values);
   }, 700);
 
