@@ -97,7 +97,7 @@ class DetailEmployeeChart extends Component {
     this.inputRef.current.blur();
     this.formRef.current.resetFields(['search']);
     handleSelectSearch(value);
-    closeDetailEmployee();
+    // closeDetailEmployee();
   };
 
   onSearch = (value) => {

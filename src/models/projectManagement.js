@@ -13,6 +13,7 @@ import {
   addProject,
   updateProject,
   deleteProject,
+  getCustomerInfo,
 } from '@/services/projectManagement';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
@@ -31,6 +32,7 @@ const initialState = {
   divisionList: [],
   employeeList: [],
   filter: {},
+  customerInfo: {},
 };
 
 const ProjectManagement = {
@@ -335,6 +337,20 @@ const ProjectManagement = {
         dialog(errors);
       }
       return response;
+    },
+    *fetchCustomerInfo({ payload }, { call, put }) {
+      try {
+        const response = yield call(getCustomerInfo, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { customerInfo: data } });
+      } catch (error) {
+        dialog(error);
+      }
     },
   },
   reducers: {

@@ -611,6 +611,14 @@ const TimeSheet = {
         ...action.payload,
       };
     },
+    clearFilter(state) {
+      return {
+        ...state,
+        filterFinance: {},
+        filterHrView: {},
+        filterManagerReport: {},
+      };
+    },
     clearImportModalData(state) {
       return {
         ...state,

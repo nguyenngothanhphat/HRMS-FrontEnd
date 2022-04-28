@@ -25,7 +25,7 @@ export async function getDepartmentList(payload) {
     data: payload,
   });
 }
-export async function postAssignToProject(payload) {
+export async function assignToProject(payload) {
   return request(
     '/api-project/resourcetenant/add',
     {

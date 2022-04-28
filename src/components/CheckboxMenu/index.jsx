@@ -81,6 +81,7 @@ const CheckboxMenu = (props) => {
   };
 
   const CheckboxRender = checkboxRender;
+  if (options.length < 2) return children;
   return (
     <Popover
       content={<CheckboxRender />}
