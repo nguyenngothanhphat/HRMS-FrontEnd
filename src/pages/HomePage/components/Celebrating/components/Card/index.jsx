@@ -118,7 +118,7 @@ const Card = (props) => {
     const { DOB = '', gender = '' } = data?.generalInfoInfo || {};
     const isToday = isTheSameDay(moment(), moment(DOB));
     const employeeName = renderEmployeeName(data);
-    const birthday = moment(DOB).locale('en').format('MMM Do');
+    const birthday = moment.utc(DOB).locale('en').format('MMM Do');
     if (isToday)
       return (
         <span>
