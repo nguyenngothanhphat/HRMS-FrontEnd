@@ -26,9 +26,21 @@ const TimeSheet = (props) => {
   }, []);
 
   if (!timeSheetAdvancedMode) {
-    return <SimpleView tabName={tabName} showMyTimeSheet={timeSheetRequired} currentDateProp={moment(currentDateProp, TIMESHEET_DATE_FORMAT)} />;
+    return (
+      <SimpleView
+        tabName={tabName}
+        showMyTimeSheet={timeSheetRequired}
+        currentDateProp={moment(currentDateProp, TIMESHEET_DATE_FORMAT)}
+      />
+    );
   }
-  return <ComplexView tabName={tabName} showMyTimeSheet={timeSheetRequired} currentDateProp={moment(currentDateProp, TIMESHEET_DATE_FORMAT)} />;
+  return (
+    <ComplexView
+      tabName={tabName}
+      showMyTimeSheet={timeSheetRequired}
+      currentDateProp={moment(currentDateProp, TIMESHEET_DATE_FORMAT)}
+    />
+  );
 };
 export default connect(({ user: { currentUser = {}, permissions = [] } = {} }) => ({
   currentUser,

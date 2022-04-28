@@ -6,6 +6,7 @@ import ModalImage from '@/assets/timeSheet/modalImage1.png';
 import CheckboxMenu from '@/components/CheckboxMenu';
 import CommonModal from '@/components/CommonModal';
 import { PageContainer } from '@/layouts/layout/src';
+import { getCurrentLocation } from '@/utils/authority';
 import { TAB_NAME } from '@/utils/timeSheet';
 import FinanceReport from './components/FinanceReport';
 import HumanResourceReport from './components/HumanResourceReport';
@@ -29,7 +30,7 @@ const ComplexView = (props) => {
 
   const [navToTimeoffModalVisible, setNavToTimeoffModalVisible] = useState(false);
   const [selectedDivisions, setSelectedDivisions] = useState([]);
-  const [selectedLocations, setSelectedLocation] = useState([]);
+  const [selectedLocations, setSelectedLocation] = useState([getCurrentLocation()]);
   const [isIncompleteTimeSheet, setIsIncompleteTimeSheet] = useState(false);
 
   const requestLeave = () => {
@@ -63,10 +64,10 @@ const ComplexView = (props) => {
     if (selectedLocations.length > 0 && selectedLocations.length < companyLocationList.length) {
       return `${selectedLocations.length} locations selected`;
     }
-    if (selectedLocations.length === companyLocationList.length || selectedLocations.length === 0) {
+    if (selectedLocations.length === companyLocationList.length) {
       return 'All';
     }
-    return 'All';
+    return 'None';
   };
 
   const getSelectedDivisionName = () => {
@@ -93,18 +94,44 @@ const ComplexView = (props) => {
     });
   };
 
+  const renderLocationOptions = () => {
+    const locationUser = companyLocationList
+      .filter((x) => {
+        return x._id === getCurrentLocation();
+      })
+      .map((x) => {
+        return {
+          _id: x._id,
+          name: x.name,
+        };
+      });
+
+    const locationOptions = companyLocationList.map((x) => {
+      return {
+        _id: x._id,
+        name: x.name,
+      };
+    });
+    // PERMISSIONS TO VIEW LOCATION
+
+    const viewLocationHR = permissions.viewLocationHRTimesheet === 1;
+    const viewLocationFinance = permissions.viewLocationFinanceTimesheet === 1;
+
+    if (tabName === TAB_NAME.HR_REPORTS && viewLocationHR) {
+      return locationOptions;
+    }
+    if (tabName === TAB_NAME.FINANCE_REPORTS && viewLocationFinance) {
+      return locationOptions;
+    }
+    return locationUser;
+  };
+
   const renderFilterBar = (isHRTab) => {
     // if only one selected
     const selectedLocationName = getSelectedLocationName();
     const selectedDivisionName = getSelectedDivisionName();
 
     const divisionOptions = divisionList.map((x) => {
-      return {
-        _id: x._id,
-        name: x.name,
-      };
-    });
-    const locationOptions = companyLocationList.map((x) => {
       return {
         _id: x._id,
         name: x.name,
@@ -123,14 +150,20 @@ const ComplexView = (props) => {
           <span className={styles.label}>Location</span>
 
           <CheckboxMenu
-            options={locationOptions}
+            options={renderLocationOptions()}
             onChange={onLocationChange}
             list={companyLocationList}
             default={selectedLocations}
+            disabled={renderLocationOptions().length < 2}
           >
-            <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
+            <div
+              className={`${
+                renderLocationOptions().length < 2 ? styles.noDropdown : styles.dropdown
+              }`}
+              onClick={(e) => e.preventDefault()}
+            >
               <span>{selectedLocationName}</span>
-              <img src={SmallDownArrow} alt="" />
+              {renderLocationOptions().length < 2 ? null : <img src={SmallDownArrow} alt="" />}
             </div>
           </CheckboxMenu>
         </div>

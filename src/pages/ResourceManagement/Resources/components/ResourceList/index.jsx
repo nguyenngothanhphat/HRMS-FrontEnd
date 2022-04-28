@@ -22,12 +22,11 @@ const ResourceList = (props) => {
     permissions,
     currentUserId = '',
     employeeId = '',
-    currentUserRoles = [],
+    // currentUserRoles = [],
     currentPayload = {},
   } = props;
 
-  const checkRoleManager =
-    currentUserRoles.length > 0 ? currentUserRoles.includes('manager') : false;
+  const viewModeAdmin = permissions.viewResourceAdminMode !== -1;
   const modifyResourcePermission = permissions.modifyResource !== -1;
   const adminMode = permissions.viewResourceAdminMode !== -1;
   const countryMode = permissions.viewResourceCountryMode !== -1;
@@ -86,10 +85,10 @@ const ResourceList = (props) => {
       division: selectedDivisions,
       employeeId,
       adminMode,
-      countryMode
+      countryMode,
     };
     if (searchKey) {
-      payload.q = searchKey;
+      payload.name = searchKey;
       payload.page = 1;
     }
     dispatch({
@@ -124,7 +123,7 @@ const ResourceList = (props) => {
     setTimeout(() => {
       setSearchKey(value);
     }, 100);
-  }
+  };
 
   const fetchDivisions = async () => {
     dispatch({
@@ -211,7 +210,7 @@ const ResourceList = (props) => {
     <div className={styles.containerTickets}>
       <div className={styles.tabTickets}>
         <span>
-          {!checkRoleManager && (
+          {viewModeAdmin && (
             <ResourceStatus
               currentStatus={availableStatusState}
               changeAvailableStatus={changeAvailableStatus}

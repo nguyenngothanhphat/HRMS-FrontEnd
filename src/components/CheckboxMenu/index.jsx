@@ -18,7 +18,7 @@ const CheckboxMenu = (props) => {
     if (selectedItems.length === 0 && defaultChecks.length > 0) {
       setSelectedItems([...defaultChecks]);
     }
-  }, []);
+  }, [JSON.stringify(defaultChecks)]);
 
   const onCheckAllChange = (e) => {
     const selectedItemsTemp = e.target.checked ? options.map((x) => x._id) : [];
@@ -81,6 +81,7 @@ const CheckboxMenu = (props) => {
   };
 
   const CheckboxRender = checkboxRender;
+  if (options.length < 2) return children;
   return (
     <Popover
       content={<CheckboxRender />}

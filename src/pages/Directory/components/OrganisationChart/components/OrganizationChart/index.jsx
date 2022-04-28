@@ -250,6 +250,12 @@ class OrganizationChart extends Component {
     };
 
     if (listEmployees.length === 0) return null;
+    listEmployees.sort((a, b) => {
+      const nameA = a.generalInfo.legalName.toLowerCase();
+      const nameB = b.generalInfo.legalName.toLowerCase();
+      // eslint-disable-next-line no-nested-ternary
+      return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
+    });
     return (
       <Collapse isOpened={isCollapsedChild}>
         <div className={styles.nodesTree}>

@@ -167,13 +167,13 @@ const UserModel = {
 
           // LOCATION PROCESSING
           // set work locations of admin
-          if (checkIsAdmin) {
-            // for admin, auto set location
-            const currentLocation = getCurrentLocation();
-            if (!currentLocation || currentLocation === 'undefined' || isSwitchingRole) {
-              setCurrentLocation(response?.data?.manageLocation[0]?._id);
-            }
-          }
+          // if (checkIsAdmin) {
+          //   // for admin, auto set location
+          //   const currentLocation = getCurrentLocation();
+          //   if (!currentLocation || currentLocation === 'undefined' || isSwitchingRole) {
+          //     setCurrentLocation(response?.data?.manageLocation[0]?._id);
+          //   }
+          // }
 
           // set work locations of employee
           if (checkIsEmployee) {

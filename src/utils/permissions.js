@@ -257,6 +257,14 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'P_TIMESHEET_T_REPORT_PEOPLE_MANAGER_VIEW',
   ]);
   const indexSettingTimesheet = isAuthorized(permissionList, ['P_TIMESHEET_T_SETTING_VIEW']);
+  const indexLocationHRView = isAuthorized(permissionList, ['P_TIMESHEET_REPORT_HR_LOCATION_VIEW']);
+  const indexDivisionHRView = isAuthorized(permissionList, ['P_TIMESHEET_REPORT_HR_DIVISION_VIEW']);
+  const indexLocationFinanceView = isAuthorized(permissionList, [
+    'P_TIMESHEET_REPORT_FINANCE_LOCATION_VIEW',
+  ]);
+  const indexDivisionFinanceView = isAuthorized(permissionList, [
+    'P_TIMESHEET_REPORT_FINANCE_DIVISION_VIEW',
+  ]);
 
   // CV = COMPLEX VIEW
   const indexHRReportCVTimesheet = isAuthorized(permissionList, ['P_TIMESHEET_T_REPORT_HR_VIEW']);
@@ -282,7 +290,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const indexTaskDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_TASK_VIEW']);
 
   // HOME PAGE
-  const indexSettingHomePage = isAuthorized(permissionList, [HR_MANAGER]);
+  const indexSettingHomePage = isAuthorized(permissionList, ['P_HOMEPAGE_SETTINGS_GEAR_VIEW']);
 
   // PROJECT MANAGEMENT
   // https://docs.google.com/document/d/1RQ66VdevjGUHB3-4_VDU-DIPF0HCbcfKzKJevEwooLc/edit
@@ -398,6 +406,10 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewFinanceReportCVTimesheet: indexFinanceReportCVTimesheet,
     viewPeopleManagerCVTimesheet: indexPeopleManagerCVTimesheet,
     viewProjectManagerCVTimesheet: indexProjectManagerCVTimesheet,
+    viewLocationHRTimesheet: indexLocationHRView,
+    viewLocationFinanceTimesheet: indexLocationFinanceView,
+    viewDivisionHRTimesheet: indexDivisionHRView,
+    viewDivisionFinanceTimesheet: indexDivisionFinanceView,
 
     // dashboard
     viewPendingApprovalDashboard: indexPendingApprovalDashboard,

@@ -20,12 +20,13 @@
   },
   "git.ignoreLimitWarning": true,
   "cSpell.words": [
+    "admincla",
     "Compoff",
     "Req",
     "Req’ted",
+    "ted",
     "Timeoff",
     "Unmount",
-    "admincla",
-    "ted"
+    "Upsert"
   ],
 }

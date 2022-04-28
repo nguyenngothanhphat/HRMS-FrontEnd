@@ -1,11 +1,11 @@
 import { notification, message } from 'antd';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
   getResources,
   // getDepartmentList,
   getProjectList,
-  postAssignToProject,
+  assignToProject,
   updateComment,
   getListEmployee,
   fetchResourceAvailableStatus,
@@ -28,28 +28,30 @@ import {
 
 import { handlingResourceAvailableStatus } from '@/utils/resourceManagement';
 
+const initialState = {
+  resourceList: [],
+  totalList: [],
+  totalAll: [],
+  listEmployee: [],
+  listDepartment: [],
+  projectList: [],
+  resourceStatuses: [],
+  statusProject: [],
+  projectTable: [],
+
+  // for utilization
+  resourceUtilizationChartData: [],
+  utilizationOverviewList: [],
+  resourceUtilizationList: {},
+  newJoineeList: [],
+  selectedDivisions: [],
+  selectedLocations: [getCurrentLocation()], // empty for all
+  currentPayload: {},
+  filter: {},
+};
 const resourceManagement = {
   namespace: 'resourceManagement',
-  state: {
-    resourceList: [],
-    totalList: [],
-    totalAll: [],
-    listEmployee: [],
-    listDepartment: [],
-    projectList: [],
-    resourceStatuses: [],
-    statusProject: [],
-    projectTable: [],
-
-    // for utilization
-    resourceUtilizationChartData: [],
-    utilizationOverviewList: [],
-    resourceUtilizationList: {},
-    newJoineeList: [],
-    selectedDivisions: [],
-    selectedLocations: [], // empty for all
-    currentPayload: {},
-  },
+  state: initialState,
   effects: {
     *getProjectList({ payload }, { call, put }) {
       try {
@@ -90,9 +92,10 @@ const resourceManagement = {
       }
       return response;
     },
-    *fetchAssignToProject({ payload }, { call }) {
+    *assignResourceToProject({ payload }, { call }) {
+      let response = {};
       try {
-        const response = yield call(postAssignToProject, {
+        response = yield call(assignToProject, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -102,6 +105,7 @@ const resourceManagement = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
     *updateProject({ payload }, { call }) {
       try {
@@ -113,7 +117,7 @@ const resourceManagement = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message: 'Update project details Successfully',
+          message: response.message || 'Update project details Successfully',
         });
       } catch (error) {
         dialog(error);
@@ -130,7 +134,7 @@ const resourceManagement = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message: 'Add comment Successfully',
+          message: response.message || 'Add comment Successfully',
         });
         yield put({
           type: 'save',
@@ -150,9 +154,6 @@ const resourceManagement = {
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        // notification.success({
-        //   message: 'Add assign to project Successfully',
-        // });
         yield put({
           type: 'save',
           payload: { resourceStatuses: handlingResourceAvailableStatus(data) },
@@ -170,9 +171,6 @@ const resourceManagement = {
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        // notification.success({
-        //   message: 'Add assign to project Successfully',
-        // });
         yield put({
           type: 'save',
           payload: { employeeList: data },
@@ -190,10 +188,6 @@ const resourceManagement = {
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        // notification.success({
-        //   message: 'Add assign to project Successfully',
-        // });
-
         yield put({
           type: 'save',
           payload: { divisions: data },
@@ -211,9 +205,6 @@ const resourceManagement = {
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        // notification.success({
-        //   message: 'Add assign to project Successfully',
-        // });
         yield put({
           type: 'save',
           payload: { statusList: data },
@@ -231,9 +222,6 @@ const resourceManagement = {
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        // notification.success({
-        //   message: 'Add assign to project Successfully',
-        // });
         yield put({
           type: 'save',
           payload: { titleList: data },
@@ -360,7 +348,7 @@ const resourceManagement = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message: 'Add comments Successfully',
+          message: response.message || 'Add comments Successfully',
         });
         return response;
       } catch (error) {
@@ -447,11 +435,8 @@ const resourceManagement = {
         ...action.payload,
       };
     },
-    clearState(state) {
-      return {
-        ...state,
-        filter: {},
-      };
+    clearState() {
+      return initialState;
     },
   },
 };

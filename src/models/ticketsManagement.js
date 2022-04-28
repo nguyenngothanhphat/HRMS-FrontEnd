@@ -1,5 +1,5 @@
 import { notification } from 'antd';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
   addTicket,
@@ -29,6 +29,7 @@ const ticketManagement = {
     employeeRaiseList: [],
     employeeAssigneeList: [],
     filter: {},
+    selectedLocations: [getCurrentLocation()],
   },
   effects: {
     *addTicket({ payload }, { call, put }) {
