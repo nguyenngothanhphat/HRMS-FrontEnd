@@ -1,127 +1,110 @@
-import React, { PureComponent } from 'react';
-import { Row, Col } from 'antd';
-import { history } from 'umi';
-import LeaveInformation from './components/LeaveInformation';
+import { Col, Row } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { connect, history } from 'umi';
 import ApplyRequest from './components/ApplyRequest';
-import LeaveHistoryAndHoliday from './components/LeaveHistoryAndHoliday';
-import QuickLinks from './components/QuickLinks';
 import EmployeeRequestTable from './components/EmployeeRequestTable';
+import LeaveHistoryAndHoliday from './components/LeaveHistoryAndHoliday';
+import LeaveInformation from './components/LeaveInformation';
 import ManagerRequestTable from './components/ManagerRequestTable';
+import QuickLinks from './components/QuickLinks';
 import TimeOffTypesInfo from './components/TimeOffTypesInfo';
-
 import styles from './index.less';
+
 // import FeedbackBar from './components/FeedbackBar';
 
-export default class EmployeeLandingPage extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      viewInformation: false,
-      // closeFeedbackBar: false,
-    };
-  }
+const Overview = (props) => {
+  const { eligibleForCompOff = false, viewHRTimeoff = false, viewManagerTimeoff = false } = props;
 
-  componentDidMount = () => {
+  const [isViewingInformation, setIsViewingInformation] = useState(false);
+
+  useEffect(() => {
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
-  };
+  }, []);
 
-  // onCloseFeedbackBar = () => {
-  //   this.setState({
-  //     closeFeedbackBar: true,
-  //   });
-  // };
-
-  buttonOnClickCompoff = () => {
+  const buttonOnClickCompoff = () => {
     history.push({
       pathname: `/time-off/overview/personal-compoff/new`,
     });
   };
 
-  buttonOnClickLeave = () => {
+  const buttonOnClickLeave = () => {
     history.push({
       pathname: `/time-off/overview/personal-timeoff/new`,
     });
   };
 
-  onInformationClick = () => {
+  const onInformationClick = () => {
     window.scroll({ top: 150, left: 0, behavior: 'smooth' });
-    const { viewInformation } = this.state;
-    this.setState({
-      viewInformation: !viewInformation,
-    });
+    setIsViewingInformation(!isViewingInformation);
   };
 
-  render() {
-    const { viewInformation } = this.state;
-    const {
-      eligibleForCompOff = false,
-      viewHRTimeoff = false,
-      viewManagerTimeoff = false,
-    } = this.props;
+  return (
+    <>
+      <div className={styles.Overview}>
+        <Row gutter={[20, 20]}>
+          <Col xs={24} lg={6}>
+            <Row gutter={[20, 20]}>
+              <Col span={24}>
+                <LeaveInformation
+                  viewDocumentVisible={isViewingInformation}
+                  onInformationClick={onInformationClick}
+                />
+              </Col>
+              <Col span={24}>
+                <LeaveHistoryAndHoliday />
+              </Col>
+              <Col span={24}>
+                <QuickLinks />
+              </Col>
+            </Row>
+          </Col>
 
-    return (
-      <>
-        <div className={styles.EmployeeLandingPage}>
-          <Row gutter={[20, 20]}>
-            <Col xs={24} lg={6}>
-              <Row gutter={[20, 20]}>
-                <Col span={24}>
-                  <LeaveInformation
-                    viewDocumentVisible={viewInformation}
-                    onInformationClick={this.onInformationClick}
-                  />
-                </Col>
-                <Col span={24}>
-                  <LeaveHistoryAndHoliday />
-                </Col>
-                <Col span={24}>
-                  <QuickLinks />
-                </Col>
-              </Row>
-            </Col>
-
-            <Col xs={24} lg={18}>
-              <Row gutter={[20, 20]} style={{ marginBottom: '20px' }}>
-                <Col xs={24} lg={eligibleForCompOff ? 15 : 24}>
+          <Col xs={24} lg={18}>
+            <Row gutter={[20, 20]} style={{ marginBottom: '20px' }}>
+              <Col xs={24} lg={eligibleForCompOff ? 15 : 24}>
+                <ApplyRequest
+                  title="Apply for Timeoff from Office"
+                  buttonText="Request Time Off"
+                  onClick={buttonOnClickLeave}
+                  type={1}
+                />
+              </Col>
+              {eligibleForCompOff && (
+                <Col xs={24} lg={9}>
                   <ApplyRequest
-                    title="Apply for Timeoff from Office"
-                    buttonText="Request Time Off"
-                    onClick={this.buttonOnClickLeave}
-                    type={1}
+                    title="Apply for Compoff"
+                    onClick={buttonOnClickCompoff}
+                    buttonText="Request Compoff"
+                    type={2}
                   />
                 </Col>
-                {eligibleForCompOff && (
-                  <Col xs={24} lg={9}>
-                    <ApplyRequest
-                      title="Apply for Compoff"
-                      onClick={this.buttonOnClickCompoff}
-                      buttonText="Request Compoff"
-                      type={2}
-                    />
-                  </Col>
+              )}
+            </Row>
+            <Row gutter={[20, 20]} style={{ marginBottom: '20px' }}>
+              <Col span={24}>
+                {viewHRTimeoff || viewManagerTimeoff ? (
+                  <ManagerRequestTable eligibleForCompOff={eligibleForCompOff} />
+                ) : (
+                  <EmployeeRequestTable eligibleForCompOff={eligibleForCompOff} />
                 )}
-              </Row>
-              <Row gutter={[20, 20]} style={{ marginBottom: '20px' }}>
-                <Col span={24}>
-                  {viewHRTimeoff || viewManagerTimeoff ? (
-                    <ManagerRequestTable eligibleForCompOff={eligibleForCompOff} />
-                  ) : (
-                    <EmployeeRequestTable eligibleForCompOff={eligibleForCompOff} />
-                  )}
-                </Col>
-              </Row>
-              {/* {!closeFeedbackBar && (
+              </Col>
+            </Row>
+            {/* {!closeFeedbackBar && (
                 <Row gutter={[20, 20]}>
                   <Col span={24}>
-                    <FeedbackBar onClose={this.onCloseFeedbackBar} />
+                    <FeedbackBar onClose={onCloseFeedbackBar} />
                   </Col>
                 </Row>
               )} */}
-              <TimeOffTypesInfo onClose={this.onInformationClick} visible={viewInformation} />
-            </Col>
-          </Row>
-        </div>
-      </>
-    );
-  }
-}
+            <TimeOffTypesInfo onClose={onInformationClick} visible={isViewingInformation} />
+          </Col>
+        </Row>
+      </div>
+    </>
+  );
+};
+
+export default connect(({ timeOff, user }) => ({
+  timeOff,
+  user,
+}))(Overview);

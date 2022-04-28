@@ -2,7 +2,7 @@ import { Button, Col, Row } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { roundNumber, TIMEOFF_STATUS, TIMEOFF_TYPE } from '@/utils/timeOff';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import Withdraw2Modal from '../Withdraw2Modal';
@@ -10,6 +10,7 @@ import WithdrawModal from '../WithdrawModal';
 import styles from './index.less';
 
 const { IN_PROGRESS, ACCEPTED, REJECTED, DRAFTS } = TIMEOFF_STATUS;
+const { A, B } = TIMEOFF_TYPE;
 @connect(({ timeOff, loading }) => ({
   timeOff,
   loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
@@ -172,9 +173,10 @@ class RequestInformation extends PureComponent {
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate);
 
-    const checkWithdrawValid = this.checkWithdrawValid(fromDate);
+    const checkWithdrawValid =
+      status === IN_PROGRESS || (status === ACCEPTED && this.checkWithdrawValid(fromDate));
 
-    const duration = Math.round(durationProp * 100) / 100;
+    const duration = roundNumber(durationProp);
 
     return (
       <div className={styles.RequestInformation}>
@@ -197,7 +199,7 @@ class RequestInformation extends PureComponent {
             <Col span={6}>Timeoff Type</Col>
             <Col span={18} className={styles.detailColumn}>
               <span className={styles.fieldValue}>{`${name}`}</span>
-              {type === 'A' && (
+              {type === A && (
                 <span className={styles.smallNotice}>
                   <span className={styles.normalText}>
                     {name}s are covered under{' '}
@@ -227,7 +229,7 @@ class RequestInformation extends PureComponent {
                   >
                     [{duration <= 1 ? `${duration} day` : `${duration} days`}]
                   </span>
-                  {(type === 'A' || type === 'B') && (
+                  {(type === A || type === B) && (
                     <span className={styles.smallNotice}>
                       <span className={styles.normalText}>{name}s gets credited each month.</span>
                     </span>

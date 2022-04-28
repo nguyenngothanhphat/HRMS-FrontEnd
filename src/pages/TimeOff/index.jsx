@@ -1,56 +1,46 @@
 import { notification, Tabs } from 'antd';
-import React, { PureComponent } from 'react';
+import React, { useEffect } from 'react';
 import { connect, history } from 'umi';
-import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { PageContainer } from '@/layouts/layout/src';
 import Overview from './components/Overview';
 import SetupTimeoff from './components/SetupTimeoff';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
-@connect(
-  ({
-    user: { currentUserRoles, currentUser, permissions } = {},
-    timeOff,
-    location: { companyLocationList = [] },
-  }) => ({
-    timeOff,
-    permissions,
-    currentUser,
-    currentUserRoles,
-    companyLocationList,
-  }),
-)
-class TimeOff extends PureComponent {
-  viewActivityLog = () => {
-    // eslint-disable-next-line no-alert
-    alert('View activity logs');
-  };
+const TimeOff = (props) => {
+  const {
+    dispatch,
+    match: { params: { tabName = '', type = '' } = {} },
+    location: { state: { status = '', tickedId = '', typeName = '', category = '' } = {} } = {},
+    permissions = {},
+    currentUser: {
+      employee = {},
+      employee: { title: { eligibleForCompOff = false } = {} } = {},
+    } = {},
+  } = props;
 
-  componentWillUnmount = () => {
-    const { dispatch } = this.props;
+  const fetchTimeOffTypes = () => {
+    if (employee?._id) {
+      dispatch({
+        type: 'timeOff/fetchTimeOffTypeByEmployeeEffect',
+        payload: {
+          employee: employee._id,
+        },
+      });
+    }
     dispatch({
-      type: 'timeOff/save',
-      payload: {
-        currentLeaveTypeTab: '1',
-        currentScopeTab: '1',
-        currentFilterTab: '1',
-      },
+      type: 'timeOff/savePaging',
+      payload: { page: 1 },
     });
   };
 
-  componentDidMount = async () => {
-    const {
-      match: { params: { tabName = '' } = {} },
-      location: { state: { status = '', tickedId = '', typeName = '', category = '' } = {} } = {},
-      companyLocationList = [],
-    } = this.props;
-
+  useEffect(() => {
     if (!tabName) {
       history.replace(`/time-off/overview`);
-    } else if (companyLocationList.length > 0) {
-      this.fetchTimeOffTypes();
     }
+
+    fetchTimeOffTypes();
+
     if (status === 'WITHDRAW') {
       if (category === 'TIMEOFF') {
         notification.success({
@@ -82,58 +72,20 @@ class TimeOff extends PureComponent {
       }
       history.replace();
     }
-  };
 
-  componentDidUpdate = (prevProps) => {
-    const {
-      match: { params: { tabName = '' } = {} },
-      companyLocationList = [],
-    } = this.props;
-
-    if (
-      tabName &&
-      JSON.stringify(prevProps.companyLocationList) !== JSON.stringify(companyLocationList)
-    ) {
-      this.fetchTimeOffTypes();
-    }
-  };
-
-  fetchTimeOffTypes = () => {
-    const { companyLocationList = [], dispatch } = this.props;
-
-    const find = companyLocationList.find((x) => x._id === getCurrentLocation());
-    if (find) {
-      const { headQuarterAddress: { country: { _id } = {} || {} } = {} || {} } = find;
+    return () => {
       dispatch({
-        type: 'timeOff/fetchTimeOffTypesByCountry',
+        type: 'timeOff/save',
         payload: {
-          country: _id,
-          company: getCurrentCompany(),
-          tenantId: getCurrentTenant(),
+          currentLeaveTypeTab: '1',
+          currentScopeTab: '1',
+          currentFilterTab: '1',
         },
       });
-      dispatch({
-        type: 'timeOff/savePaging',
-        payload: { page: 1 },
-      });
-    }
-  };
+    };
+  }, []);
 
-  options = () => {
-    return (
-      <div className={styles.viewActivityLog} onClick={this.viewActivityLog}>
-        <span className={styles.title}>View Activity logs (15)</span>
-      </div>
-    );
-  };
-
-  getTabs = () => {
-    const {
-      match: { params: { type = '' } = {} },
-      permissions = {},
-      currentUser: { employee: { title: { eligibleForCompOff = false } = {} } = {} } = {},
-    } = this.props;
-
+  const getTabs = () => {
     const viewSettingTimeoff = permissions.viewSettingTimeoff !== -1;
     const viewHRTimeoff = permissions.viewHRTimeoff !== -1;
     const viewManagerTimeoff = permissions.viewManagerTimeoff !== -1;
@@ -141,7 +93,11 @@ class TimeOff extends PureComponent {
     return (
       <>
         <TabPane tab={<span className={styles.employeeTabPane}>Timeoff</span>} key="overview">
-          <Overview eligibleForCompOff={eligibleForCompOff} viewHRTimeoff={viewHRTimeoff} viewManagerTimeoff={viewManagerTimeoff}  />
+          <Overview
+            eligibleForCompOff={eligibleForCompOff}
+            viewHRTimeoff={viewHRTimeoff}
+            viewManagerTimeoff={viewManagerTimeoff}
+          />
         </TabPane>
 
         {viewSettingTimeoff && (
@@ -153,27 +109,33 @@ class TimeOff extends PureComponent {
     );
   };
 
-  render() {
-    const {
-      match: { params: { tabName = '' } = {} },
-    } = this.props;
-
-    if (!tabName) return '';
-    return (
-      <div className={styles.TimeOff}>
-        <PageContainer>
-          <Tabs
-            activeKey={tabName || 'overview'}
-            onChange={(key) => {
-              history.push(`/time-off/${key}`);
-            }}
-            destroyInactiveTabPane
-          >
-            {this.getTabs()}
-          </Tabs>
-        </PageContainer>
-      </div>
-    );
-  }
-}
-export default TimeOff;
+  if (!tabName) return '';
+  return (
+    <div className={styles.TimeOff}>
+      <PageContainer>
+        <Tabs
+          activeKey={tabName || 'overview'}
+          onChange={(key) => {
+            history.push(`/time-off/${key}`);
+          }}
+          destroyInactiveTabPane
+        >
+          {getTabs()}
+        </Tabs>
+      </PageContainer>
+    </div>
+  );
+};
+export default connect(
+  ({
+    user: { currentUserRoles, currentUser, permissions } = {},
+    timeOff,
+    location: { companyLocationList = [] },
+  }) => ({
+    timeOff,
+    permissions,
+    currentUser,
+    currentUserRoles,
+    companyLocationList,
+  }),
+)(TimeOff);

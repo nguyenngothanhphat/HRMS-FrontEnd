@@ -1,0 +1,82 @@
+@commonPadding: 24px;
+@blueColor: #2c6df9;
+@lightBlueColor: #e4edff;
+@borderColor: #d6dce0;
+
+.TicketManagement {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #d6dce0;
+  border-radius: 8px;
+  :global {
+    .ant-table-content {
+      padding: @commonPadding @commonPadding 0;
+    }
+    .ant-pagination {
+      margin: @commonPadding !important;
+    }
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px @commonPadding;
+    border-bottom: 1px solid #e2e4e8;
+
+    .title {
+      color: #464646;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .options {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      :global {
+        .ant-btn {
+          height: 40px;
+          object-fit: contain;
+          color: @blueColor;
+          font-weight: 500;
+          font-size: 14px;
+          text-shadow: none;
+          background: @lightBlueColor;
+          border: none;
+          border-radius: 5px;
+          outline: none;
+          box-shadow: none;
+          padding-inline: 25px;
+          &:hover {
+            opacity: 0.9;
+          }
+        }
+        .ant-select-selector {
+          border: 1px solid #d6dce0;
+          border-radius: 4px;
+        }
+      }
+      .countrySelectBox {
+        min-width: 220px;
+        margin-right: 24px;
+      }
+    }
+  }
+
+  .queryTypeTag {
+    display: inline-block;
+    margin-right: 5px;
+    padding: 6px;
+    color: #464646;
+    font-size: 11px;
+    letter-spacing: 0.121875px;
+    text-transform: capitalize !important;
+    background: #f3f6fc;
+    border-radius: 24px;
+    margin-block: 2px;
+  }
+  .actions {
+    img {
+      cursor: pointer;
+    }
+  }
+}

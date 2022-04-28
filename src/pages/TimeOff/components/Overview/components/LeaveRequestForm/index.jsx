@@ -5,7 +5,6 @@ import { Affix, Col, Row, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { TIMEOFF_LINK_ACTION, TIMEOFF_STATUS } from '@/utils/timeOff';
 import RequestInformation from './components/RequestInformation';
 import NoteComponent from '@/components/NoteComponent';
@@ -21,23 +20,21 @@ const LeaveRequestForm = (props) => {
     timeOff: {
       viewingLeaveRequest = {},
       viewingLeaveRequest: { status = '', ticketID = '' } = {},
+      yourTimeOffTypes = {},
     } = {},
     match: { params: { action = '', reId = '' } = {} },
-    user: { currentUser: { location = {} } = {} } = {},
+    user: { currentUser: { employee = {} } = {} } = {},
     loadingFetchLeaveRequestById,
   } = props;
 
   const [invalidDates, setInvalidDates] = useState([]);
 
   const fetchTimeOffTypes = () => {
-    const countryID = location?.headQuarterAddress?.country?._id;
-    if (countryID) {
+    if (employee?._id) {
       dispatch({
-        type: 'timeOff/fetchTimeOffTypesByCountry',
+        type: 'timeOff/fetchTimeOffTypeByEmployeeEffect',
         payload: {
-          country: countryID,
-          company: getCurrentCompany(),
-          tenantId: getCurrentTenant(),
+          employee: employee._id,
         },
       });
     }
@@ -82,7 +79,9 @@ const LeaveRequestForm = (props) => {
   };
 
   useEffect(() => {
-    fetchTimeOffTypes();
+    if (Object.keys(yourTimeOffTypes).length === 0) {
+      fetchTimeOffTypes();
+    }
 
     if (action === EDIT_LEAVE_REQUEST) {
       dispatch({

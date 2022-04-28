@@ -85,10 +85,10 @@ const ResourceList = (props) => {
       division: selectedDivisions,
       employeeId,
       adminMode,
-      countryMode
+      countryMode,
     };
     if (searchKey) {
-      payload.q = searchKey;
+      payload.name = searchKey;
       payload.page = 1;
     }
     dispatch({
@@ -123,7 +123,7 @@ const ResourceList = (props) => {
     setTimeout(() => {
       setSearchKey(value);
     }, 100);
-  }
+  };
 
   const fetchDivisions = async () => {
     dispatch({

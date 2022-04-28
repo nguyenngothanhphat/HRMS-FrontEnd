@@ -1,8 +1,7 @@
+import { Spin, Tabs } from 'antd';
 import React, { useEffect } from 'react';
-import { Tabs, Spin } from 'antd';
 import { connect } from 'umi';
 import RequestScopeTabs from './components/RequestScopeTabs';
-
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -10,7 +9,11 @@ const { TabPane } = Tabs;
 const ManagerRequestTable = (props) => {
   const {
     dispatch,
-    timeOff: { currentLeaveTypeTab = '', timeOffTypesByCountry = [] } = {},
+    timeOff: {
+      currentLeaveTypeTab = '',
+      yourTimeOffTypes = {},
+      yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
+    } = {},
     loadingTimeOffType = false,
     eligibleForCompOff = false,
   } = props;
@@ -26,16 +29,16 @@ const ManagerRequestTable = (props) => {
     let arr = [];
     switch (type) {
       case '1':
-        arr = timeOffTypesByCountry.filter((timeOffType) => timeOffType.type === 'A');
+        arr = commonLeaves.filter((x) => x.type === 'A');
         break;
       case '2':
-        arr = timeOffTypesByCountry.filter((timeOffType) => timeOffType.type === 'C');
+        arr = specialLeaves.filter((x) => x.type === 'C');
         break;
       case '3':
-        arr = timeOffTypesByCountry.filter((timeOffType) => timeOffType.type === 'B');
+        arr = commonLeaves.filter((x) => x.type === 'B');
         break;
       case '4':
-        arr = timeOffTypesByCountry.filter((timeOffType) => timeOffType.type === 'D');
+        arr = specialLeaves.filter((x) => x.type === 'D');
         break;
       default:
         arr = [];
@@ -58,7 +61,7 @@ const ManagerRequestTable = (props) => {
 
   useEffect(() => {
     saveCurrentTypeTab('1');
-  }, [JSON.stringify(timeOffTypesByCountry)]);
+  }, [JSON.stringify(yourTimeOffTypes)]);
 
   const renderTableTitle = {
     left: (
@@ -132,5 +135,5 @@ const ManagerRequestTable = (props) => {
 export default connect(({ timeOff, user, loading }) => ({
   timeOff,
   user,
-  loadingTimeOffType: loading.effects['timeOff/fetchTimeOffTypesByCountry'],
+  loadingTimeOffType: loading.effects['timeOff/fetchTimeOffTypeByEmployeeEffect'],
 }))(ManagerRequestTable);
