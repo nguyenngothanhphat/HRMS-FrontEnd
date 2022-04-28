@@ -139,7 +139,7 @@ const FilterForm = (props) => {
   const onValuesChange = () => {
     const values = form.getFieldsValue();
     const filteredObj = Object.entries(values).filter(
-      ([key, value]) => value !== undefined && value.length > 0,
+      ([key, value]) => (value !== undefined && value?.length > 0) || value?.isValid,
     );
     const newObj = Object.fromEntries(filteredObj);
     setApplied(Object.keys(newObj).length);
