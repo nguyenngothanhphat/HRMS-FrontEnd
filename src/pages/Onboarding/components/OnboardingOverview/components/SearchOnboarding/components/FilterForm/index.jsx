@@ -135,19 +135,22 @@ class FilterForm extends Component {
 
   clearFilter = () => {
     // press Clear button
-    this.setState({
-      filter: {
-        processStatus: undefined,
-        title: [],
-        location: [],
-        fromDate: null,
-        toDate: null,
+    this.setState(
+      {
+        filter: {
+          processStatus: undefined,
+          title: [],
+          location: [],
+          fromDate: null,
+          toDate: null,
+        },
+        isFilter: false,
+        checkAll: false,
+        durationFrom: '',
+        durationTo: '',
       },
-      isFilter: false,
-      checkAll: false,
-      durationFrom: '',
-      durationTo: '',
-    });
+      () => this.onFinish(),
+    );
 
     this.formRef.current.resetFields();
   };
