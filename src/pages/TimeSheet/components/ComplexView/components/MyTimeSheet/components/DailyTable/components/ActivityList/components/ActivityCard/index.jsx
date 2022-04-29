@@ -228,7 +228,6 @@ const ActivityCard = (props) => {
       />
 
       <EditTaskModal
-        refreshTable={refreshTable}
         task={card}
         date={cardDay}
         visible={editTaskModalVisible}
