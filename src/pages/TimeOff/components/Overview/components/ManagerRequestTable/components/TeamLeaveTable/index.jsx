@@ -6,7 +6,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
-import { TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
+import { roundNumber, TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 
 import RejectCommentModal from '../RejectCommentModal';
@@ -128,9 +128,7 @@ class TeamLeaveTable extends PureComponent {
         width: COLUMN_WIDTH[TYPE].DURATION,
         dataIndex: 'duration',
         align: 'center',
-        render: (duration) => (
-          <span>{duration !== 0 ? Math.round(duration * 100) / 100 : '-'}</span>
-        ),
+        render: (duration) => <span>{duration !== 0 ? roundNumber(duration) : '-'}</span>,
       },
       {
         title: 'Comment',

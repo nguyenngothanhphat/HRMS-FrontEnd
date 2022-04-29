@@ -35,11 +35,17 @@ class EditActionBTN extends Component {
     const { dispatch, dataPassRow = {}, refreshData, onClose = () => {} } = this.props;
     const { project, status, utilization, startDate, endDate, revisedEndDate } = values;
     if (
-      new Date(endDate).getTime() < new Date(startDate).getTime() ||
-      new Date(revisedEndDate).getTime() < new Date(startDate).getTime()
+      new Date(endDate).getTime() <= new Date(startDate).getTime() ||
+      (revisedEndDate && new Date(revisedEndDate).getTime() <= new Date(startDate).getTime())
     ) {
       notification.error({
         message: 'End date or resived end date cannot less than start date',
+      });
+      return;
+    }
+    if (revisedEndDate && new Date(revisedEndDate).getTime() <= new Date(endDate).getTime()) {
+      notification.error({
+        message: 'Resived date cannot less than end date',
       });
       return;
     }
@@ -47,12 +53,13 @@ class EditActionBTN extends Component {
       type: 'resourceManagement/updateProject',
       payload: {
         id: dataPassRow.resourceId,
+        employee: dataPassRow.employeeId,
         project,
         status,
         utilization,
-        startDate: moment(startDate).format('YYYY-MM-DD'),
-        endDate: moment(endDate).format('YYYY-MM-DD'),
-        revisedEndDate: moment(revisedEndDate).format('YYYY-MM-DD'),
+        startDate: startDate && moment(startDate).format('YYYY-MM-DD'),
+        endDate: endDate && moment(endDate).format('YYYY-MM-DD'),
+        revisedEndDate: revisedEndDate && moment(revisedEndDate).format('YYYY-MM-DD') || null,
       },
     }).then(() => {
       refreshData();
@@ -95,8 +102,10 @@ class EditActionBTN extends Component {
             initialValues={{
               startDate: this.parseDate(dataPassRow.startDate, 'MM/DD/YYYY'),
               endDate: this.parseDate(dataPassRow.endDate, 'MM/DD/YYYY'),
-              revisedEndDate: this.parseDate(dataPassRow.revisedEndDate, 'MM/DD/YYYY'),
-              project: dataPassRow.projectName,
+              revisedEndDate:
+                dataPassRow.revisedEndDate !== '-' &&
+                this.parseDate(dataPassRow.revisedEndDate, 'MM/DD/YYYY'),
+              // project: dataPassRow.id,
               utilization: dataPassRow.utilization,
               status: dataPassRow.billStatus,
             }}
@@ -104,7 +113,7 @@ class EditActionBTN extends Component {
             <Row gutter={[24, 24]}>
               <Col span={12}>
                 <Form.Item label="Project" name="project">
-                  <Select>
+                  <Select defaultValue={dataPassRow.projectName}>
                     {projectList.map((project) => (
                       <Option value={project.id}>{project.projectName}</Option>
                     ))}
@@ -148,14 +157,40 @@ class EditActionBTN extends Component {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label="Start Date" name="startDate">
+                <Form.Item 
+                  label="Start Date" 
+                  name="startDate"
+                  rules={[
+                    () => ({
+                      validator(_, value) {
+                        if (!value) {
+                          return Promise.reject('Start date value could not be empty');
+                        }
+                        return Promise.resolve();
+                      },
+                    }),
+                  ]}
+                >
                   <DatePicker
                     placeholder="Start Date"
                     format="MM/DD/YYYY"
                     suffixIcon={<img src={datePickerIcon} alt="" />}
                   />
                 </Form.Item>
-                <Form.Item label="End Date" name="endDate">
+                <Form.Item 
+                  label="End Date" 
+                  name="endDate"
+                  rules={[
+                    () => ({
+                      validator(_, value) {
+                        if (!value) {
+                          return Promise.reject('End date value could not be empty');
+                        }
+                        return Promise.resolve();
+                      },
+                    }),
+                  ]}
+                >
                   <DatePicker
                     placeholder="Enter End Date"
                     format="MM/DD/YYYY"

@@ -176,30 +176,29 @@ const Candidate = (props) => {
           </div>
         )}
       </div>
-      <div className={styles.content}>
-        <Row gutter={24}>
-          <Col xs={24} lg={7} xl={6}>
-            <div className={styles.stepContainer}>
-              <Steps current={screen - 1} direction="vertical">
-                {steps.map((item) => {
-                  const { title: title1, id, disabled } = item;
-                  return (
-                    <Steps.Step
-                      disabled={disabled}
-                      key={title}
-                      title={title1}
-                      onClick={disabled ? () => {} : () => handleStepClick(id)}
-                    />
-                  );
-                })}
-              </Steps>
-            </div>
-          </Col>
-          <Col xs={24} lg={17} xl={18} style={{ paddingBlock: '24px' }}>
-            {loadingFetchCandidate ? <Skeleton /> : _renderScreen(screen)}
-          </Col>
-        </Row>
-      </div>
+
+      <Row gutter={[24, 24]} className={styles.content}>
+        <Col xs={24} lg={7} xl={6}>
+          <div className={styles.stepContainer} style={{ marginBottom: 0 }}>
+            <Steps current={screen - 1} direction="vertical">
+              {steps.map((item) => {
+                const { title: title1, id, disabled } = item;
+                return (
+                  <Steps.Step
+                    disabled={disabled}
+                    key={title}
+                    title={title1}
+                    onClick={disabled ? () => {} : () => handleStepClick(id)}
+                  />
+                );
+              })}
+            </Steps>
+          </div>
+        </Col>
+        <Col xs={24} lg={17} xl={18} className={styles.contentBody}>
+          {loadingFetchCandidate ? <Skeleton /> : _renderScreen(screen)}
+        </Col>
+      </Row>
     </div>
   );
 };

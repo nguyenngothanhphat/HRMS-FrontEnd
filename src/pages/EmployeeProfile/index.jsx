@@ -14,6 +14,7 @@ import Documents from './components/Documents';
 import GeneralInfo from './components/GeneralInfo';
 import PerformanceHistory from './components/PerformanceHistory';
 import styles from './index.less';
+import { IS_TERRALOGIC_LOGIN } from '@/utils/login';
 
 const EmployeeProfile = (props) => {
   const {
@@ -158,16 +159,14 @@ const EmployeeProfile = (props) => {
   }, [reId]);
 
   const renderListMenu = () => {
-    const listMenu = [];
+    let listMenu = [];
     listMenu.push({
-      id: 1,
       name: 'General Info',
       component: <GeneralInfo permissions={permissions} profileOwner={isProfileOwner} />,
       link: 'general-info',
     });
     if (permissions.viewTabEmployment !== -1 || isProfileOwner) {
       listMenu.push({
-        id: 2,
         name: `Employment Info`,
         component: (
           <EmploymentTab listEmployeeActive={listEmployeeActive} profileOwner={isProfileOwner} />
@@ -176,45 +175,51 @@ const EmployeeProfile = (props) => {
       });
     }
 
-    if (permissions.viewTabEmployment !== -1 || isProfileOwner) {
-      listMenu.push({
-        id: 3,
-        name: `Compensation`,
-        component: <Compensation profileOwner={isProfileOwner} />,
-        link: 'compensation',
-      });
+    if (!IS_TERRALOGIC_LOGIN) {
+      if (permissions.viewTabEmployment !== -1 || isProfileOwner) {
+        listMenu.push({
+          name: `Compensation`,
+          component: <Compensation profileOwner={isProfileOwner} />,
+          link: 'compensation',
+        });
+      }
+
+      if (permissions.viewTabAccountPaychecks !== -1 || isProfileOwner) {
+        listMenu.push({
+          name: 'Performance History',
+          component: <PerformanceHistory />,
+          link: 'performance-history',
+        });
+      }
     }
 
-    if (permissions.viewTabAccountPaychecks !== -1 || isProfileOwner) {
-      listMenu.push({
-        id: 4,
-        name: 'Performance History',
-        component: <PerformanceHistory />,
-        link: 'performance-history',
-      });
-    }
     // if (permissions.viewTabAccountPaychecks !== -1 || isProfileOwner) {
     //   listMenu.push({
-    //     id: 5,
     //     name: 'Accounts and Paychecks',
     //     component: <AccountsPaychecks />,
     //     link: 'accounts-paychecks',
     //   });
     // }
     if (permissions.viewTabDocument !== -1 || isProfileOwner) {
-      listMenu.push({ id: 5, name: 'Documents', component: <Documents />, link: 'documents' });
+      listMenu.push({ name: 'Documents', component: <Documents />, link: 'documents' });
     }
     // if (permissions.viewTabTimeSchedule !== -1 || isProfileOwner) {
     //   listMenu.push({ id: 5, name: 'Time & Scheduling', component: <Test /> });
     // }
     if (permissions.viewTabBenefitPlans !== -1 || isProfileOwner) {
       listMenu.push({
-        id: 6,
         name: 'Benefits',
         component: <BenefitTab profileOwner={isProfileOwner} />,
         link: 'benefits',
       });
     }
+
+    listMenu = listMenu.map((x, i) => {
+      return {
+        ...x,
+        id: i + 1,
+      };
+    });
 
     return listMenu;
   };

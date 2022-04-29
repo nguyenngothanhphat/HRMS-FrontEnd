@@ -1,13 +1,6 @@
 import request from '@/utils/request';
 import { API_KEYS } from '../../config/proxy';
 
-export function getLeaveBalanceOfUser(payload) {
-  return request('/api/leavebalancetenant/get-by-user', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
 export async function getTimeOffTypes(payload) {
   return request('/api/timeofftypetenant/list', {
     method: 'POST',
@@ -43,6 +36,13 @@ export async function removeTimeOffType(payload) {
 }
 
 // timeOffType > setup
+export async function getTimeOffTypeByEmployee(payload) {
+  return request('/api/timeofftypetenant/get-timeoff-by-employee?', {
+    method: 'GET',
+    params: payload,
+  });
+}
+
 export async function getLeaveTypeByTimeOffType(payload) {
   return request('/api/leavetypeconfigtenant/get-by-timeofftype', {
     method: 'GET',

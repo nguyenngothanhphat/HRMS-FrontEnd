@@ -13,7 +13,7 @@ const TimeOffRequestTab = (props) => {
   const {
     timeOff: {
       currentFilterTab,
-      filter: { search, fromDate, toDate, type: timeOffTypes },
+      filter: { search, fromDate, toDate, type: timeOffTypes = [] },
       paging: { page, limit },
       compoffRequests = [],
       leaveRequests = [],

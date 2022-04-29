@@ -7,7 +7,7 @@ import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { roundNumber, TIMEOFF_STATUS } from '@/utils/timeOff';
 import RejectCommentModal from '../RejectCommentModal';
 
 import styles from './index.less';
@@ -63,7 +63,7 @@ class TeamCompoffTable extends PureComponent {
       title: 'Duration',
       dataIndex: 'duration',
       align: 'left',
-      render: (duration) => <span>{duration !== 0 ? Math.round(duration * 100) / 100 : '-'}</span>,
+      render: (duration) => <span>{duration !== 0 ? roundNumber(duration) : '-'}</span>,
     },
     // {
     //   title: `Req’ted on `,

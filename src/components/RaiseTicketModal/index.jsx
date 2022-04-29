@@ -181,14 +181,6 @@ const RaiseTicketModal = (props) => {
     });
   };
 
-  const renderLabel = (text) => {
-    return (
-      <span>
-        {text} <span style={{ color: 'rgb(240, 75, 55)' }}>*</span>
-      </span>
-    );
-  };
-
   const renderModalContent = () => {
     return (
       <div className={styles.content}>
@@ -207,7 +199,7 @@ const RaiseTicketModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Please select the support team' }]}
-                label={renderLabel('Support Team')}
+                label="Support Team"
                 name="supportTeam"
                 labelCol={{ span: 24 }}
               >
@@ -231,7 +223,7 @@ const RaiseTicketModal = (props) => {
             </Col>
             <Col xs={24} md={12}>
               <Form.Item
-                label={renderLabel('Query Type')}
+                label="Query Type"
                 name="queryType"
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please select the query type' }]}
@@ -248,7 +240,6 @@ const RaiseTicketModal = (props) => {
                 label="Status"
                 name="status"
                 labelCol={{ span: 24 }}
-                rules={[{ required: true, message: 'Please select the status' }]}
               >
                 <Select disabled>
                   <Option value="New">New</Option>
@@ -257,7 +248,7 @@ const RaiseTicketModal = (props) => {
             </Col>
             <Col xs={24} md={12}>
               <Form.Item
-                label={renderLabel('Priority')}
+                label="Priority"
                 name="priority"
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please select the priority' }]}
@@ -273,7 +264,7 @@ const RaiseTicketModal = (props) => {
 
             <Col xs={24}>
               <Form.Item
-                label={renderLabel('Subject')}
+                label="Subject"
                 name="subject"
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please enter the subject' }]}
@@ -284,7 +275,7 @@ const RaiseTicketModal = (props) => {
 
             <Col xs={24}>
               <Form.Item
-                label={renderLabel('Description')}
+                label="Description"
                 name="description"
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please enter the description' }]}
@@ -317,8 +308,7 @@ const RaiseTicketModal = (props) => {
                   loading={loadingFetchListEmployee}
                   disabled={loadingFetchListEmployee}
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   {listEmployee
                     ? listEmployee.map((val) => {

@@ -3,7 +3,6 @@ import { getCurrentCompany, getCurrentTenant, getCurrentLocation } from '@/utils
 import { dialog } from '@/utils/utils';
 import {
   getHolidaysList,
-  getLeaveBalanceOfUser,
   getLeaveRequestOfEmployee,
   addLeaveRequest,
   removeLeaveRequestOnDatabase,
@@ -61,6 +60,7 @@ import {
   getLocationById,
   getAllLeaveRequests,
   upsertLeaveType,
+  getTimeOffTypeByEmployee,
   getLeaveTypeByTimeOffType,
   getEmployeeTypeList,
 } from '../services/timeOff';
@@ -76,10 +76,10 @@ const timeOff = {
     holidaysListByCountry: [],
     leaveHistory: [],
     leavingList: [],
-    totalLeaveBalance: {},
     leaveRequests: [],
     compoffRequests: [],
     timeOffTypes: [],
+    yourTimeOffTypes: [],
     timeOffTypesByCountry: [],
     employeeInfo: {},
     emailsList: [],
@@ -282,6 +282,25 @@ const timeOff = {
         dialog(errors);
       }
     },
+    *fetchTimeOffTypeByEmployeeEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getTimeOffTypeByEmployee, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { yourTimeOffTypes: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
     *upsertLeaveTypeEffect({ payload }, { call }) {
       let response = {};
       try {
@@ -314,27 +333,6 @@ const timeOff = {
         });
       } catch (errors) {
         dialog(errors);
-      }
-      return response;
-    },
-
-    *fetchLeaveBalanceOfUser({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getLeaveBalanceOfUser, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data: totalLeaveBalance = {} } = response;
-        // console.log('totalLeaveBalance', totalLeaveBalance);
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { totalLeaveBalance },
-        });
-      } catch (errors) {
-        // dialog(errors);
       }
       return response;
     },

@@ -3,7 +3,7 @@ import { Table, Avatar, Tooltip, Tag, Spin } from 'antd';
 import { history, connect } from 'umi';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
-import { TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
+import { roundNumber, TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 
@@ -92,7 +92,7 @@ class MyLeaveTable extends PureComponent {
       title: 'Duration',
       dataIndex: 'duration',
       align: 'center',
-      render: (duration) => <span>{duration !== 0 ? Math.round(duration * 100) / 100 : '-'}</span>,
+      render: (duration) => <span>{duration !== 0 ? roundNumber(duration) : '-'}</span>,
     },
     {
       title: 'Assigned',

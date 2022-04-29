@@ -1,20 +1,84 @@
-import { Col, Form, Input, InputNumber, Popconfirm, Radio, Row } from 'antd';
-import React from 'react';
+import { Col, Form, Input, Popconfirm, Radio, Row } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { FORM_ITEM_NAME } from '@/utils/timeOff';
+import { convertDaysToHours, convertHoursToDays, FORM_ITEM_NAME, TIME_TEXT } from '@/utils/timeOff';
 import DelIcon from '@/assets/timeOff/del.svg';
 import styles from './index.less';
 
+const { CARRY_FORWARD_POLICY, FROM, TO, UNIT, ALLOWED, VALUE, MAXIMUM_CARRY_FORWARD_VALUE } =
+  FORM_ITEM_NAME;
+
 const COL_SPAN = {
-  A: 9,
+  A: 10,
   B: 1,
   C: 4,
   D: 1,
   E: 7,
-  F: 2,
+  F: 1,
 };
 const CarryForwardItem = (props) => {
-  const { name = '', remove = () => {}, index = 0 } = props;
+  const {
+    configs = {},
+    name = '',
+    remove = () => {},
+    index = 0,
+    form,
+    workHourPerDay = 0,
+    renderErrorMessage = () => {},
+  } = props;
+  const [suffixText, setSuffixText] = useState(TIME_TEXT.d);
+
+  const convertValues = (type) => {
+    const formValues = form.getFieldsValue();
+    let carryForwardArr = JSON.parse(JSON.stringify(formValues[CARRY_FORWARD_POLICY]));
+    const temp = formValues[CARRY_FORWARD_POLICY][index]?.[VALUE];
+
+    if (workHourPerDay === 0) {
+      renderErrorMessage();
+    }
+    if (workHourPerDay !== 0 && temp !== 0) {
+      let value = '';
+      switch (type) {
+        case 'd':
+          value = convertHoursToDays(workHourPerDay, temp);
+          break;
+        case 'h':
+          value = convertDaysToHours(workHourPerDay, temp);
+          break;
+
+        default:
+          break;
+      }
+
+      carryForwardArr = carryForwardArr.map((x, i) => {
+        if (i === index) {
+          return {
+            ...x,
+            [UNIT]: type,
+            [VALUE]: value,
+          };
+        }
+        return x;
+      });
+
+      form.setFieldsValue({
+        [CARRY_FORWARD_POLICY]: [...carryForwardArr],
+      });
+    }
+  };
+
+  const onUnitChange = (e) => {
+    const { target: { value = '' } = {} || {} } = e;
+    setSuffixText(TIME_TEXT[value]);
+    convertValues(value);
+  };
+
+  useEffect(() => {
+    setSuffixText(
+      TIME_TEXT[configs[CARRY_FORWARD_POLICY]?.[index]?.[MAXIMUM_CARRY_FORWARD_VALUE]?.[UNIT]] ||
+        TIME_TEXT.d,
+    );
+  }, [JSON.stringify(configs)]);
 
   return (
     <div className={styles.CarryForwardItem}>
@@ -40,16 +104,13 @@ const CarryForwardItem = (props) => {
             <div className={styles.leftPart}>
               <span>From</span>
               <Form.Item
-                name={[name, FORM_ITEM_NAME.FROM]}
+                name={[name, FROM]}
                 rules={[{ required: true, message: 'Required field!' }]}
               >
                 <Input placeholder="0" />
               </Form.Item>
               <span>Years to Less than</span>
-              <Form.Item
-                name={[name, FORM_ITEM_NAME.TO]}
-                rules={[{ required: true, message: 'Required field!' }]}
-              >
+              <Form.Item name={[name, TO]} rules={[{ required: true, message: 'Required field!' }]}>
                 <Input placeholder="0" />
               </Form.Item>
               <span>Years of Service</span>
@@ -60,7 +121,7 @@ const CarryForwardItem = (props) => {
           </Col>
 
           <Col sm={COL_SPAN.C}>
-            <Form.Item name={[name, FORM_ITEM_NAME.ALLOWED]} valuePropName="checked">
+            <Form.Item name={[name, ALLOWED]} valuePropName="value">
               <Radio.Group buttonStyle="solid" defaultValue>
                 <Radio.Button value>Yes</Radio.Button>
                 <Radio.Button value={false}>No</Radio.Button>
@@ -74,15 +135,15 @@ const CarryForwardItem = (props) => {
             <div className={styles.rightPart}>
               <div style={{ marginRight: 16 }}>
                 <Form.Item
-                  name={[name, FORM_ITEM_NAME.VALUE]}
+                  name={[name, VALUE]}
                   rules={[{ required: true, message: 'Required field!' }]}
                 >
-                  <InputNumber prefix="days" min={0} max={100000} defaultValue={0} />
+                  <Input suffix={suffixText} type="number" min={0} max={100000} defaultValue="0" />
                 </Form.Item>
               </div>
 
-              <Form.Item name={[name, FORM_ITEM_NAME.UNIT]} valuePropName="value">
-                <Radio.Group buttonStyle="solid" defaultValue="d">
+              <Form.Item name={[name, UNIT]} valuePropName="value">
+                <Radio.Group buttonStyle="solid" defaultValue="d" onChange={onUnitChange}>
                   <Radio.Button value="d">Days</Radio.Button>
                   <Radio.Button value="h">Hours</Radio.Button>
                 </Radio.Group>
