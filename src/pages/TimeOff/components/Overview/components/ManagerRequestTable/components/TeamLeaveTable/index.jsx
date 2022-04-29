@@ -40,10 +40,10 @@ const COLUMN_WIDTH = {
   paging,
   loading1: loading.effects['timeOff/fetchTeamLeaveRequests'],
   // loading2: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
-  loading3: loading.effects['timeOff/approveMultipleTimeoffRequest'],
-  loading4: loading.effects['timeOff/rejectMultipleTimeoffRequest'],
-  loading5: loading.effects['timeOff/reportingManagerApprove'],
-  loading6: loading.effects['timeOff/reportingManagerReject'],
+  loading3: loading.effects['timeOff/approveMultipleRequests'],
+  loading4: loading.effects['timeOff/rejectMultipleRequests'],
+  loading5: loading.effects['timeOff/approveRequest'],
+  loading6: loading.effects['timeOff/rejectRequest'],
   loading7: loading.effects['timeOff/fetchAllLeaveRequests'],
 }))
 class TeamLeaveTable extends PureComponent {
@@ -212,12 +212,20 @@ class TeamLeaveTable extends PureComponent {
     onRefreshTable(onMovedTab);
   };
 
+  onReset = () => {
+    this.setState({
+      selectedRowKeys: [],
+    });
+    const { onHandle = () => {} } = this.props;
+    const payload = {
+      length: 0,
+    };
+    onHandle(payload);
+  };
+
   onApproveClick = async (record) => {
     const { dispatch } = this.props;
-    const type =
-      record.status === ON_HOLD
-        ? 'timeOff/managerApproveWithdrawRequest'
-        : 'timeOff/reportingManagerApprove';
+    const type = record.status === ON_HOLD ? 'timeOff/approveRequest' : 'timeOff/approveRequest';
 
     const res = await dispatch({
       type,
@@ -226,6 +234,7 @@ class TeamLeaveTable extends PureComponent {
       },
     });
     if (res.statusCode === 200) {
+      this.onReset();
       this.onRefreshTable('1');
     }
   };
@@ -246,7 +255,7 @@ class TeamLeaveTable extends PureComponent {
     const { rejectingPayload } = this.state;
 
     const res = await dispatch({
-      type: 'timeOff/reportingManagerReject',
+      type: 'timeOff/rejectRequest',
       payload: {
         _id: rejectingPayload._id,
         comment,
@@ -254,6 +263,7 @@ class TeamLeaveTable extends PureComponent {
     });
 
     if (res.statusCode === 200) {
+      this.onReset();
       this.toggleCommentModal(false);
       this.onRefreshTable('1');
     }
@@ -263,13 +273,14 @@ class TeamLeaveTable extends PureComponent {
     const { dispatch } = this.props;
 
     const res = await dispatch({
-      type: 'timeOff/managerRejectWithdrawRequest',
+      type: 'timeOff/rejectRequest',
       payload: {
         _id: record._id,
       },
     });
 
     if (res.statusCode === 200) {
+      this.onReset();
       this.onRefreshTable('1');
     }
   };
@@ -333,20 +344,13 @@ class TeamLeaveTable extends PureComponent {
     const { selectedRowKeys } = this.state;
     const { dispatch } = this.props;
     const statusCode = await dispatch({
-      type: 'timeOff/approveMultipleTimeoffRequest',
+      type: 'timeOff/approveMultipleRequests',
       payload: {
         ticketList: selectedRowKeys,
       },
     });
     if (statusCode === 200) {
-      this.setState({
-        selectedRowKeys: [],
-      });
-      const { onHandle = () => {} } = this.props;
-      const payload = {
-        length: 0,
-      };
-      onHandle(payload);
+      this.onReset();
       this.onRefreshTable('1');
     }
   };
@@ -362,21 +366,14 @@ class TeamLeaveTable extends PureComponent {
     const { selectedRowKeys } = this.state;
     const { dispatch } = this.props;
     const statusCode = await dispatch({
-      type: 'timeOff/rejectMultipleTimeoffRequest',
+      type: 'timeOff/rejectMultipleRequests',
       payload: {
         ticketList: selectedRowKeys,
         comment,
       },
     });
     if (statusCode === 200) {
-      this.setState({
-        selectedRowKeys: [],
-      });
-      const { onHandle = () => {} } = this.props;
-      const payload = {
-        length: 0,
-      };
-      onHandle(payload);
+      this.onReset();
       this.toggleCommentModal(false);
       this.onRefreshTable('1');
     }
@@ -510,9 +507,7 @@ class TeamLeaveTable extends PureComponent {
         } = record;
 
         return {
-          disabled:
-            (selectedTab === IN_PROGRESS && myId !== approvalManagerId && !isHR) ||
-            record.status === ON_HOLD, // Column configuration not to be checked
+          disabled: selectedTab === IN_PROGRESS && myId !== approvalManagerId && !isHR,
           name: record.name,
         };
       },
