@@ -596,10 +596,8 @@
         .leftSide,
         .rightSide {
           width: 50%;
+          height: 100%;
           padding: 16px;
-          span {
-            line-height: 40px;
-          }
         }
         .leftSide {
           padding-left: 80px;
@@ -611,12 +609,23 @@
           }
           .itemTitle {
             display: block;
+            overflow: hidden;
+            line-height: 40px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
           }
         }
         .rightSide {
           padding-left: 100px;
           .itemValue {
             display: block;
+            overflow: hidden;
+            line-height: 40px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            .ofBasic {
+              color: rgba(22, 28, 41, 0.5);
+            }
           }
         }
       }

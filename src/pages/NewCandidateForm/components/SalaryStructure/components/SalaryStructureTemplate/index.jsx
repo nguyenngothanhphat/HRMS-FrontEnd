@@ -44,7 +44,6 @@ const SalaryStructureTemplate = (props) => {
     base_salary: { minimum = 0, maximum = 0 } = {},
     settings: salaryTempDataSetting = [],
   } = salaryTempData || {};
-  console.log('🚀 ~ salaryCountry', salaryCountry);
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -135,21 +134,11 @@ const SalaryStructureTemplate = (props) => {
   };
 
   const checkKey = (key) => {
-    let check = false;
-    settingsTempData.forEach((item) => {
-      if (item.key === key) check = true;
-    });
-    return check;
+    return settingsTempData.some((x) => x.key === key);
   };
 
   const getValueByKey = (arr, key) => {
-    let value;
-    arr.forEach((item) => {
-      if (item.key === key) {
-        value = item.value;
-      }
-    });
-    return value;
+    return arr.find((x) => x.key === key)?.value;
   };
 
   const onChangeSilde = (value = [], key) => {
@@ -181,8 +170,9 @@ const SalaryStructureTemplate = (props) => {
           key === 'petrol_allowance' ||
           key === 'mobile_internet_allowance') &&
         toNumber(newValue) > getValueByKey(salaryTempDataSetting, key)
-      )
+      ) {
         newValue = getValueByKey(salaryTempDataSetting, key);
+      }
 
       const tempTableData = JSON.parse(JSON.stringify(settingsTempData));
 
@@ -195,6 +185,12 @@ const SalaryStructureTemplate = (props) => {
         },
       });
     }
+  };
+
+  const calculationForIndia = (e, key) => {
+    const { value } = e.target;
+    const newValue = value.replace(/,/g, '');
+    console.log('🚀 ~ newValue', newValue);
   };
 
   const onBlur = (e, key) => {
@@ -497,6 +493,7 @@ const SalaryStructureTemplate = (props) => {
   };
 
   const _renderIndiaSalaryTable = () => {
+    const annualTotal = salaryTempDataSetting.find((x) => x.key === 'total_compensation') || {};
     return (
       <div className={styles.indiaContainer}>
         <div className={styles.inputs}>
@@ -532,10 +529,16 @@ const SalaryStructureTemplate = (props) => {
             <div className={styles.rightSide}>
               {isEditingSalary ? (
                 <div className={styles.inputBefore}>
-                  <Input addonBefore="INR" />
+                  <Input
+                    addonBefore="INR"
+                    value={convertVeriable(annualTotal.value)}
+                    onChange={(e) => calculationForIndia(e, annualTotal.key)}
+                  />
                 </div>
               ) : (
-                <span className={styles.value}>INR 6,00,000</span>
+                <span className={styles.value}>
+                  {renderSingle(annualTotal.value, annualTotal.unit)}
+                </span>
               )}
             </div>
           </div>
@@ -548,7 +551,9 @@ const SalaryStructureTemplate = (props) => {
             </div>
             <div className={styles.rightSide}>
               {settingsTempData.map((x) => (
-                <span className={styles.itemValue}>{x.value}</span>
+                <span className={styles.itemValue} key={x.key}>
+                  {renderSingle(x.value, x.unit)}
+                </span>
               ))}
             </div>
           </div>

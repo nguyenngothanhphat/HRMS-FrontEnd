@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Select, Table } from 'antd';
+import { Radio, Select, Table } from 'antd';
 import { connect } from 'umi';
 import { uniqBy, filter, trimStart, trim } from 'lodash';
 import ImportIcon from './images/import.svg';
@@ -355,6 +355,14 @@ const SalaryStructure = (props) => {
           </div>
         </div>
       </div>
+
+      <div className={styles.radioGroup}>
+        <Radio.Group defaultValue>
+          <Radio value={false}>Enter the Salary Components Individually</Radio>
+          <Radio value>Enter the Total Compensation</Radio>
+        </Radio.Group>
+      </div>
+
       <div className={styles.tableSalary}>
         {selectedCountry === 'VN' ? (
           <Table
