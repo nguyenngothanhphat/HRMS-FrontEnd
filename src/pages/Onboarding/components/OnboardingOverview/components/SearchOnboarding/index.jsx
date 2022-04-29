@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Input, Popover } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Input, Popover, Tag } from 'antd';
+import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 
 import filterIcon from '@/assets/offboarding-filter.svg';
@@ -9,12 +9,16 @@ import FilterForm from './components/FilterForm';
 
 import styles from './index.less';
 
-@connect()
+@connect(({ onboarding: { onboardingOverview: { currentStatus = '' } = {} } = {} }) => ({
+  currentStatus,
+}))
 class SearchOnboarding extends Component {
   constructor(props) {
     super(props);
     this.state = {
       visible: false,
+      applied: 0,
+      form: null,
     };
   }
 
@@ -68,15 +72,44 @@ class SearchOnboarding extends Component {
     );
   };
 
+  onClose = () => {
+    const { form } = this.state;
+    this.setState({ applied: 0 });
+    form();
+  };
+
+  callback = (apply) => {
+    const filteredObj = Object.entries(apply).filter(
+      ([key, value]) => (value !== undefined && value?.length > 0) || value?.isValid,
+    );
+    const newObj = Object.fromEntries(filteredObj);
+    this.setState({ applied: Object.keys(newObj).length });
+    // console.log(apply, Object.keys(newObj).length);
+  };
+
+  callbackClose = (close) => {
+    this.setState({ form: close });
+  };
+
   render() {
-    const { onChangeSearch = () => {} } = this.props;
-    const { visible } = this.state;
+    const { onChangeSearch = () => {}, currentStatus = '' } = this.props;
+    const { visible, applied } = this.state;
 
     return (
       <div className={styles.search}>
+        {((applied > 0 && currentStatus === 'ALL') || applied > 1) && (
+          <Tag
+            className={styles.tagCountFilter}
+            closable
+            onClose={this.onClose}
+            closeIcon={<CloseOutlined />}
+          >
+            {currentStatus === 'ALL' ? applied : applied - 1} applied
+          </Tag>
+        )}
         <div className="site-drawer-render-in-current-wrapper">
           <Popover
-            content={<FilterForm />}
+            content={<FilterForm callback={this.callback} callbackClose={this.callbackClose} />}
             title={this.renderTitle()}
             trigger="click"
             placement="bottomRight"
