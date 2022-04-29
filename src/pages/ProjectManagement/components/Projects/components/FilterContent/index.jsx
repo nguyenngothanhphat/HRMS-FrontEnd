@@ -11,7 +11,6 @@ const FilterContent = (props) => {
     dispatch,
     needResetFilterForm = false,
     setNeedResetFilterForm = () => {},
-    setForm = () => {},
     projectManagement: {
       filter: {
         customerId = [],
@@ -113,10 +112,6 @@ const FilterContent = (props) => {
       setNeedResetFilterForm(false);
     }
   }, [needResetFilterForm]);
-
-  useEffect(() => {
-    setForm(form);
-  }, []);
 
   return (
     <div className={styles.FilterContent}>

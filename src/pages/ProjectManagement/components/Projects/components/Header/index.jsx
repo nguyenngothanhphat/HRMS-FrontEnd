@@ -27,7 +27,6 @@ const Header = (props) => {
   } = props;
   const [addProjectModalVisible, setAddProjectModalVisible] = useState(false);
   const [applied, setApplied] = useState(0);
-  const [form, setForm] = useState('');
 
   // permissions
   const addProjectPermission = permissions.addProject !== -1;
@@ -61,10 +60,7 @@ const Header = (props) => {
   };
 
   const clearFilter = () => {
-    fetchProjectList();
-    form?.resetFields();
-    setApplied(0);
-    setIsFiltering(false);
+    onFilter({});
   };
 
   useEffect(() => {
@@ -131,7 +127,6 @@ const Header = (props) => {
                 needResetFilterForm={needResetFilterForm}
                 setNeedResetFilterForm={setNeedResetFilterForm}
                 onFilter={onFilter}
-                setForm={setForm}
               />
             </Suspense>
           }
