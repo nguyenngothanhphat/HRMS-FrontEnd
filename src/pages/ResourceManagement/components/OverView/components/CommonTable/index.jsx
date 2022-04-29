@@ -25,13 +25,13 @@ const CommonTable = (props) => {
   const [pageSelected, setPageSelected] = useState(1);
   const [pageSize, setPageSize] = useState(limit);
 
-  const onChangePagination = (pageNumber, pageSize) => {
+  const onChangePagination = (pageNumber, pageSizeTemp) => {
     if (isBackendPaging) {
       onChangePage(pageNumber);
     } else {
       setPageSelected(pageNumber);
     }
-    setPageSize(pageSize);
+    setPageSize(pageSizeTemp);
   };
 
   const onSelectChange = (values) => {
@@ -54,7 +54,7 @@ const CommonTable = (props) => {
     defaultPageSize: pageSize,
     showSizeChanger: true,
     pageSizeOptions: ['5', '10', '25', '50', '100'],
-    pageSize: pageSize,
+    pageSize,
     current: isBackendPaging ? page : pageSelected,
     onChange: onChangePagination,
   };

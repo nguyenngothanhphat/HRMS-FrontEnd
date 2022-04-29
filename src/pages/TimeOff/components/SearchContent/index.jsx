@@ -142,11 +142,11 @@ const TimeOffFilter = (props) => {
 
   return (
     <Space direction="horizontal" className={styles.TimeOffFilter}>
-      <Tag className={styles.AppliedTag} closable onClose={closedAppliedTag} visible={isVisible}>
-        {count} Applied
+      <Tag className={styles.appliedTag} closable onClose={closedAppliedTag} visible={isVisible}>
+        {count} applied
       </Tag>
 
-      <div className={styles.RightContentHeader}>
+      <div className={styles.rightContentHeader}>
         <FilterPopover
           placement="bottomRight"
           content={

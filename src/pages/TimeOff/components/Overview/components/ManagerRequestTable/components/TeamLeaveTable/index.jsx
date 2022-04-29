@@ -50,7 +50,7 @@ class TeamLeaveTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      pageSelected: 1,
+      // pageSelected: 1,
       rowSize: 10,
       selectedRowKeys: [],
       commentModalVisible: false,

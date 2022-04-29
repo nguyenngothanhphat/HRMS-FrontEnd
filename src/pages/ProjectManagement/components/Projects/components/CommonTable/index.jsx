@@ -20,19 +20,18 @@ class CommonTable extends Component {
     } else {
       this.setState({
         pageSelected: pageNumber,
-        pageSize: pageSize,
+        pageSize,
       });
     }
   };
 
   render() {
-    const { pageSelected } = this.state;
+    const { pageSelected, pageSize } = this.state;
     const {
       list = [],
       columns,
       loading = false,
       page = 1,
-
       total: totalProp,
       isBackendPaging = false,
     } = this.props;
@@ -52,8 +51,8 @@ class CommonTable extends Component {
       ),
       showSizeChanger: true,
       pageSizeOptions: ['10', '25', '50', '100'],
-      defaultPageSize: this.state.pageSize,
-      pageSize: this.state.pageSize,
+      defaultPageSize: pageSize,
+      pageSize,
       current: isBackendPaging ? page : pageSelected,
       onChange: this.onChangePagination,
     };

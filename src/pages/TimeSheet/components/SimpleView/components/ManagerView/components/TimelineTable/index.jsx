@@ -82,11 +82,11 @@ const TimelineTable = (props) => {
     defaultPageSize: pageSize,
     showSizeChanger: true,
     pageSizeOptions: ['10', '25', '50', '100'],
-    pageSize: pageSize,
+    pageSize,
     current: pageSelected,
-    onPageChange: (page, pageSize) => {
+    onPageChange: (page, pageSizeTemp) => {
       setPageSelected(page);
-      setPageSize(pageSize);
+      setPageSize(pageSizeTemp);
     },
   };
 

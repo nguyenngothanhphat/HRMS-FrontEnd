@@ -210,6 +210,8 @@ class MyLeaveTable extends PureComponent {
     } = this.props;
     // const rowSize = 10;
 
+    const { rowSize } = this.state;
+
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
     const tableLoading = {
@@ -230,10 +232,10 @@ class MyLeaveTable extends PureComponent {
           of {totals}{' '}
         </span>
       ),
-      defaultPageSize: this.state.rowSize,
+      defaultPageSize: rowSize,
       showSizeChanger: true,
       pageSizeOptions: ['10', '25', '50', '100'],
-      pageSize: this.state.rowSize,
+      pageSize: rowSize,
       current: page,
       onChange: this.onChangePagination,
     };
@@ -249,7 +251,7 @@ class MyLeaveTable extends PureComponent {
           // size="middle"
           loading={tableLoading}
           // rowSelection={rowSelection}
-          //if data.length > 10, pagination will appear
+          // if data.length > 10, pagination will appear
           pagination={data.length === 0 ? null : { ...pagination }}
           columns={this.columns}
           dataSource={data}

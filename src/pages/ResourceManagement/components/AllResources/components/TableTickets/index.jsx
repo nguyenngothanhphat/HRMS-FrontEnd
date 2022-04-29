@@ -60,9 +60,9 @@ for (let i = 0; i < 50; i += 1) {
   });
 }
 
-const onChangePagination = (pageNumber) => {
-  console.log(pageNumber);
-};
+// const onChangePagination = (pageNumber) => {
+//   // console.log(pageNumber);
+// };
 
 const rowSize = 10;
 const pagination = {

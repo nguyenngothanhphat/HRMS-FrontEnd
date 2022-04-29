@@ -124,7 +124,7 @@ class TableCustomers extends PureComponent {
   onChangePagination = (pageNumber, pageSize) => {
     this.setState({
       pageSelected: pageNumber,
-      pageSize: pageSize,
+      pageSize,
     });
   };
 
@@ -149,7 +149,7 @@ class TableCustomers extends PureComponent {
 
   render() {
     const { listCustomer, loadingCustomer } = this.props;
-    const { pageSelected, selectedRowKeys, visible } = this.state;
+    const { pageSelected, selectedRowKeys, visible, pageSize } = this.state;
     const scroll = {
       x: 'max-content',
       y: 'max-content',
@@ -166,9 +166,9 @@ class TableCustomers extends PureComponent {
           {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
         </span>
       ),
-      defaultPageSize: this.state.pageSize,
+      defaultPageSize: pageSize,
       showSizeChanger: true,
-      pageSize: this.state.pageSize,
+      pageSize,
       pageSizeOptions: ['10', '25', '50', '100'],
       current: pageSelected,
       onChange: this.onChangePagination,
