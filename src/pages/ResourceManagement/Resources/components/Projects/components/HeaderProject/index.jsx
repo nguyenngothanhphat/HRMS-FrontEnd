@@ -106,19 +106,20 @@ const HeaderProjectRM = (props) => {
           ))}
         </div>
       </div>
-      <div>
-        {applied > 0 && (
-          <Tag
-            closable
-            className={styles.tagCountFilter}
-            onClose={clearTagFilter}
-            closeIcon={<CloseOutlined />}
-          >
-            {applied} applied
-          </Tag>
-        )}
-      </div>
+
       <div className={styles.Header__right}>
+        <div>
+          {applied > 0 && (
+            <Tag
+              closable
+              className={styles.tagCountFilter}
+              onClose={clearTagFilter}
+              closeIcon={<CloseOutlined />}
+            >
+              {applied} applied
+            </Tag>
+          )}
+        </div>
         <div className={styles.download}>
           <Row gutter={[24, 0]}>
             <Col>
