@@ -50,8 +50,8 @@ const NegativeLeaveBalance = (props) => {
   };
 
   useEffect(() => {
-    const suffixTextTemp = TIME_TEXT[configs[NEGATIVE_LEAVE_BALANCE]?.[MAXIMUM]?.[UNIT]];
-    setSuffixText(suffixTextTemp || TIME_TEXT.d);
+    const suffixTextTemp = TIME_TEXT[configs?.[NEGATIVE_LEAVE_BALANCE]?.[MAXIMUM]?.[UNIT]];
+    setSuffixText(suffixTextTemp);
   }, [JSON.stringify(configs)]);
 
   return (
