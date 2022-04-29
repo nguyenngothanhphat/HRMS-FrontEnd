@@ -39,6 +39,12 @@ import {
   // domain
   setEmailDomain,
   getCompanyById,
+
+  // ticket management
+  getSettingTicketById,
+  getSettingTicketList,
+  upsertSettingTicket,
+  removeSettingTicket,
 } from '../services/adminSetting';
 
 const adminSetting = {
@@ -81,6 +87,8 @@ const adminSetting = {
     viewingRole: {},
     viewingQueryType: {},
     listEmployees: [],
+    settingTicketList: [],
+    viewingSettingTicket: null,
   },
   effects: {
     *fetchRoleList({ payload = {} }, { call, put }) {
@@ -551,6 +559,72 @@ const adminSetting = {
       } catch (error) {
         dialog(error);
       }
+    },
+
+    // ticket management
+    *fetchSettingTicketList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getSettingTicketList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { settingTicketList: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchSettingTicketByID({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getSettingTicketById, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { viewingSettingTicket: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *upsertSettingTicket({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(upsertSettingTicket, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *removeSettingTicket({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(removeSettingTicket, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
   reducers: {
