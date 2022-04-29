@@ -1,4 +1,15 @@
-import { Button, Checkbox, Col, DatePicker, Form, Input, Modal, notification, Row, Select } from 'antd';
+import {
+  Button,
+  Checkbox,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  Modal,
+  notification,
+  Row,
+  Select,
+} from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -188,8 +199,11 @@ const EditTaskModal = (props) => {
                   placeholder="Select the project"
                   loading={loadingFetchProject}
                   disabled={loadingFetchProject}
-                  filterOption={(input, option) =>
-                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  filterOption={
+                    (input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    // eslint-disable-next-line react/jsx-curly-newline
+                  }
                 >
                   {projectList.map((val) => (
                     <Option value={val.id}>{val.projectName}</Option>
