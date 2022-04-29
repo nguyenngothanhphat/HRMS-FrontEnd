@@ -23,7 +23,7 @@ const DailyTable = (props) => {
 
   const [hourList, setHourList] = useState([]);
   const [formattedData, setFormattedData] = useState({});
-
+  console.log(mockData);
   // generate data by selected date
   const generateData = (data) => {
     return (
