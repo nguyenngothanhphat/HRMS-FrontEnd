@@ -229,29 +229,30 @@ export async function uploadBalances(data) {
 }
 
 // reporting manager
-export async function reportingManagerApprove(data) {
-  return request('/api/leaverequesttenant/reporting-manager-approve', {
+// approve/reject a leave request or a withdraw request
+export async function approveRequest(data) {
+  return request('/api/leaverequesttenant/approve', {
     method: 'POST',
     data,
   });
 }
 
-export async function reportingManagerReject(data) {
-  return request('/api/leaverequesttenant/reporting-manager-reject', {
+export async function rejectRequest(data) {
+  return request('/api/leaverequesttenant/reject', {
     method: 'POST',
     data,
   });
 }
 
-export async function approveMultipleTimeoffRequest(data) {
-  return request('/api/leaverequesttenant/rm-approve-multiple-tickets', {
+export async function approveMultipleRequests(data) {
+  return request('/api/leaverequesttenant/approve-multiple', {
     method: 'POST',
     data,
   });
 }
 
-export async function rejectMultipleTimeoffRequest(data) {
-  return request('/api/leaverequesttenant/rm-reject-multiple-tickets', {
+export async function rejectMultipleRequests(data) {
+  return request('/api/leaverequesttenant/reject-multiple', {
     method: 'POST',
     data,
   });
@@ -260,29 +261,14 @@ export async function rejectMultipleTimeoffRequest(data) {
 // WITHDRAW (INCLUDING SEND EMAIL)
 // for employee
 export async function employeeWithdrawInProgress(data) {
-  return request('/api/leaverequesttenant/withdraw-progress', {
+  return request('/api/leaverequesttenant/in-progress-withdraw', {
     method: 'POST',
     data,
   });
 }
 
 export async function employeeWithdrawApproved(data) {
-  return request('/api/leaverequesttenant/withdraw-submit', {
-    method: 'POST',
-    data,
-  });
-}
-
-// for hr manager
-export async function managerApproveWithdrawRequest(data) {
-  return request('/api/leaverequesttenant/withdraw-approve', {
-    method: 'POST',
-    data,
-  });
-}
-
-export async function managerRejectWithdrawRequest(data) {
-  return request('/api/leaverequesttenant/withdraw-reject', {
+  return request('/api/leaverequesttenant/approved-withdraw', {
     method: 'POST',
     data,
   });
