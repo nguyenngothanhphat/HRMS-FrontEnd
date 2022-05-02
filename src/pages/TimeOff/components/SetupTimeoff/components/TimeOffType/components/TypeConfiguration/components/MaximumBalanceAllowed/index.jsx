@@ -48,7 +48,7 @@ const MaximumBalanceAllowed = (props) => {
   };
 
   useEffect(() => {
-    setSuffixText(TIME_TEXT[configs[MAXIMUM_BALANCE_ALLOWED]?.[UNIT]] || TIME_TEXT.d);
+    setSuffixText(TIME_TEXT[configs?.[MAXIMUM_BALANCE_ALLOWED]?.[UNIT]] || TIME_TEXT.d);
   }, [JSON.stringify(configs)]);
 
   return (

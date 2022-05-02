@@ -7,9 +7,14 @@ import CloseTagIcon from '@/assets/closeTagIcon.svg';
 
 const { Option } = Select;
 
-@connect(({ adminSetting: { viewingQueryType = {} } = {} }) => ({
-  viewingQueryType,
-}))
+@connect(
+  ({ adminSetting: { viewingSettingTicket = {}, settingTicketList = [] } = {}, loading }) => ({
+    viewingSettingTicket,
+    settingTicketList,
+    loadingFetchByID: loading.effects['adminSetting/fetchSettingTicketByID'],
+    loadingUpsert: loading.effects['adminSetting/upsertSettingTicket'],
+  }),
+)
 class EditModal extends PureComponent {
   formRef = React.createRef();
 
@@ -22,10 +27,10 @@ class EditModal extends PureComponent {
   }
 
   componentDidUpdate = (prevProps) => {
-    const { selectedQueryTypeID = '' } = this.props;
+    const { selectedSettingTicketID = '' } = this.props;
 
-    if (selectedQueryTypeID && selectedQueryTypeID !== prevProps.selectedQueryTypeID) {
-      this.fetchQueryTypeByID(selectedQueryTypeID);
+    if (selectedSettingTicketID && selectedSettingTicketID !== prevProps.selectedSettingTicketID) {
+      this.fetchQueryTypeByID(selectedSettingTicketID);
     }
   };
 
@@ -37,14 +42,21 @@ class EditModal extends PureComponent {
     });
   };
 
-  fetchQueryTypeByID = (id) => {
+  fetchQueryTypeByID = async (id) => {
     const { dispatch } = this.props;
-    dispatch({
-      type: 'adminSetting/fetchQueryTypeByID',
+    const res = await dispatch({
+      type: 'adminSetting/fetchSettingTicketByID',
       payload: {
-        id,
+        _id: id,
       },
     });
+    if (res.statusCode === 200) {
+      const find = SUPPORT_TEAM.find((x) => res.data.name === x.value);
+      this.setState({
+        queryTypeList: find?.queryTypes || [],
+        selectedQueryTypes: res.data.queryType || [],
+      });
+    }
   };
 
   renderHeaderModal = () => {
@@ -151,7 +163,34 @@ class EditModal extends PureComponent {
   };
 
   onFinish = async (values) => {
-    console.log('🚀 ~ onFinish= ~ values', values);
+    const {
+      action = '',
+      dispatch,
+      selectedSettingTicketID = '',
+      onRefresh = () => {},
+      country = '',
+    } = this.props;
+
+    const { selectedQueryTypes } = this.state;
+
+    const payload = {
+      name: values.name,
+      country,
+      queryType: selectedQueryTypes,
+    };
+
+    if (action === 'edit') {
+      payload._id = selectedSettingTicketID;
+    }
+
+    const res = await dispatch({
+      type: 'adminSetting/upsertSettingTicket',
+      payload,
+    });
+    if (res.statusCode === 200) {
+      onRefresh();
+      this.handleCancel();
+    }
   };
 
   handleCancel = () => {
@@ -160,17 +199,38 @@ class EditModal extends PureComponent {
     dispatch({
       type: 'adminSetting/save',
       payload: {
-        viewingQueryType: {},
+        viewingSettingTicket: {},
       },
+    });
+
+    this.setState({
+      selectedQueryTypes: [],
+      queryTypeList: [],
     });
 
     onClose(false);
   };
 
   render() {
-    const { visible = false, action = '', loading = false } = this.props;
+    const {
+      visible = false,
+      action = '',
+      loadingFetchByID = false,
+      loadingUpsert = false,
+      viewingSettingTicket = {},
+      settingTicketList = [],
+    } = this.props;
     const { queryTypeList } = this.state;
     const queryTypeClassName = `${styles.InputQueryTypes} ${styles.placeholderQueryType}`;
+
+    const supportTeamList =
+      action === 'edit'
+        ? SUPPORT_TEAM.filter(
+            (x) =>
+              !settingTicketList.some((y) => y.name === x.name) ||
+              x.name === viewingSettingTicket?.name,
+          )
+        : SUPPORT_TEAM.filter((x) => !settingTicketList.some((y) => y.name === x.name));
 
     return (
       <>
@@ -188,6 +248,8 @@ class EditModal extends PureComponent {
               form="myForm"
               key="submit"
               htmlType="submit"
+              loading={loadingUpsert}
+              disabled={loadingUpsert || loadingFetchByID}
             >
               {action === 'add' ? 'Add' : 'Update'}
             </Button>,
@@ -196,7 +258,7 @@ class EditModal extends PureComponent {
           centered
           visible={visible}
         >
-          {loading ? (
+          {loadingFetchByID ? (
             <Skeleton />
           ) : (
             <Form
@@ -204,12 +266,18 @@ class EditModal extends PureComponent {
               ref={this.formRef}
               id="myForm"
               onFinish={this.onFinish}
-              initialValues={action === 'add' ? {} : {}}
+              initialValues={
+                action === 'edit'
+                  ? {
+                      name: viewingSettingTicket?.name,
+                    }
+                  : {}
+              }
             >
               <Form.Item
                 rules={[{ required: true, message: 'Please select the support team!' }]}
                 label="Support Team"
-                name="supportTeam"
+                name="name"
                 labelCol={{ span: 24 }}
               >
                 <Select
@@ -217,7 +285,7 @@ class EditModal extends PureComponent {
                   placeholder="Select the support team"
                   onChange={this.onChangeSupportTeam}
                 >
-                  {SUPPORT_TEAM.map((d) => {
+                  {supportTeamList.map((d) => {
                     return <Option value={d.value}>{d.name}</Option>;
                   })}
                 </Select>

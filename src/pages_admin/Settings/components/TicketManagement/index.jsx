@@ -12,33 +12,36 @@ const { Option } = Select;
 
 const TicketManagement = (props) => {
   const {
-    adminSetting: { tempData: { listSupportTeam = [] } = {} } = {},
+    adminSetting: { settingTicketList = [] } = {},
     dispatch,
     companyLocationList = [],
-    loadingFetchSupportTeamList = false,
+    loadingFetchSettingTicketList = false,
+    loadingRemove = false,
     totalTitle = 0,
   } = props;
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedQueryTypeID, setSelectedQueryTypeID] = useState('');
+  const [selectedSettingTicketID, setSelectedSettingTicketID] = useState('');
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const [selectedLocation, setSelectedLocation] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('');
 
-  const fetchSupportTeamList = (name = '') => {
-    dispatch({
-      type: 'adminSetting/fetchListSupportTeam',
-      payload: { name, page, limit },
-    });
+  const fetchSettingTicketList = () => {
+    if (selectedCountry) {
+      dispatch({
+        type: 'adminSetting/fetchSettingTicketList',
+        payload: { page, limit, country: selectedCountry },
+      });
+    }
   };
 
   useEffect(() => {
-    fetchSupportTeamList();
-  }, [page, limit, selectedLocation]);
+    fetchSettingTicketList();
+  }, [page, limit, selectedCountry]);
 
   useEffect(() => {
     if (companyLocationList.length > 0) {
-      setSelectedLocation(companyLocationList[0].headQuarterAddress?.country?._id);
+      setSelectedCountry(companyLocationList[0].headQuarterAddress?.country?._id);
     }
   }, [JSON.stringify(companyLocationList)]);
 
@@ -46,20 +49,21 @@ const TicketManagement = (props) => {
     setIsModalVisible(value);
   };
 
-  const onEditSupportTeam = (row) => {
+  const onEdit = (row) => {
     setIsModalVisible(true);
-    setSelectedQueryTypeID(row._id);
+    setSelectedSettingTicketID(row._id);
   };
 
   const onRemoveSupportTeam = async (row) => {
     const res = await dispatch({
-      type: 'adminSetting/removeSupportTeam',
+      type: 'adminSetting/removeSettingTicket',
       payload: {
-        id: row._id,
+        _id: row._id,
+        status: 'INACTIVE',
       },
     });
     if (res.statusCode === 200) {
-      fetchSupportTeamList();
+      fetchSettingTicketList();
     }
   };
 
@@ -67,8 +71,8 @@ const TicketManagement = (props) => {
     const columns = [
       {
         title: 'Support Team',
-        dataIndex: 'supportTeam',
-        key: 'supportTeam',
+        dataIndex: 'name',
+        key: 'name',
         width: '40%',
       },
       {
@@ -98,7 +102,7 @@ const TicketManagement = (props) => {
               <Popconfirm title="Sure to remove?" onConfirm={() => onRemoveSupportTeam(row)}>
                 <img src={DeleteIcon} alt="" />
               </Popconfirm>
-              <img src={EditIcon} onClick={() => onEditSupportTeam(row)} alt="" />
+              <img src={EditIcon} onClick={() => onEdit(row)} alt="" />
             </div>
           );
         },
@@ -177,8 +181,8 @@ const TicketManagement = (props) => {
         }}
         className={styles.countrySelectBox}
         suffixIcon={<img src={DownArrowIcon} alt="" />}
-        value={selectedLocation}
-        onChange={(val) => setSelectedLocation(val)}
+        value={selectedCountry}
+        onChange={(val) => setSelectedCountry(val)}
       >
         {renderCountry()}
       </Select>
@@ -205,28 +209,29 @@ const TicketManagement = (props) => {
   return (
     <div
       className={styles.TicketManagement}
-      style={listSupportTeam.length === 0 ? {} : { paddingBottom: '0' }}
+      style={settingTicketList.length === 0 ? {} : { paddingBottom: '0' }}
     >
       {renderHeader()}
       <CommonTable
         columns={generateColumns()}
-        list={listSupportTeam}
+        list={settingTicketList}
         isBackendPaging
         page={page}
         limit={limit}
         total={totalTitle}
         onChangePage={onChangePage}
-        loading={loadingFetchSupportTeamList}
+        loading={loadingFetchSettingTicketList || loadingRemove}
       />
       <EditModal
         visible={isModalVisible}
         onClose={() => {
           handleIsModalVisible(false);
-          setSelectedQueryTypeID('');
+          setSelectedSettingTicketID('');
         }}
-        onRefresh={() => fetchSupportTeamList()}
-        selectedQueryTypeID={selectedQueryTypeID}
-        action={selectedQueryTypeID ? 'edit' : 'add'}
+        onRefresh={() => fetchSettingTicketList()}
+        selectedSettingTicketID={selectedSettingTicketID}
+        action={selectedSettingTicketID ? 'edit' : 'add'}
+        country={selectedCountry}
       />
     </div>
   );
@@ -234,5 +239,6 @@ const TicketManagement = (props) => {
 export default connect(({ loading, location: { companyLocationList = [] }, adminSetting }) => ({
   adminSetting,
   companyLocationList,
-  loadingFetchSupportTeamList: loading.effects['adminSetting/fetchListTitle'],
+  loadingFetchSettingTicketList: loading.effects['adminSetting/fetchSettingTicketList'],
+  loadingRemove: loading.effects['adminSetting/removeSettingTicket'],
 }))(TicketManagement);

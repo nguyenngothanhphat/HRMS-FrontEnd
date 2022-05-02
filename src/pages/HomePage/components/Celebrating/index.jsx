@@ -33,13 +33,13 @@ const Celebrating = (props) => {
   };
 
   const isPastDate = (date1, date2) => {
-    return moment(date1).isBefore(date2, 'day');
+    return moment(date1).isBefore(moment(date2), 'day');
   };
 
   const addCurrentYearToExistingDate = (date) => {
     const currentYear = moment().format('YYYY');
     return moment(
-      `${currentYear}/${moment(date).format('MM')}/${moment(date).format('DD')}`,
+      `${currentYear}/${moment.utc(date).format('MM')}/${moment.utc(date).format('DD')}`,
       'YYYY/MM/DD',
     );
   };
@@ -50,6 +50,7 @@ const Celebrating = (props) => {
         return !isPastDate(moment(addCurrentYearToExistingDate(x.generalInfoInfo?.DOB)), moment());
       }),
     ];
+
     result.sort((a, b) =>
       compare(
         moment(addCurrentYearToExistingDate(a.generalInfoInfo.DOB)),
