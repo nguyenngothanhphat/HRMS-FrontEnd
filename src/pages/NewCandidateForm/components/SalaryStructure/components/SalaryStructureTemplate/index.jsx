@@ -12,7 +12,7 @@ import { Page } from '../../../../utils';
 import styles from './index.less';
 import ModalWaitAccept from './ModalWaitAccept/index';
 import SalaryReference from './SalaryReference/index';
-import { roundNumber2 } from '@/utils/onboardingSetting';
+import { roundNumber2, SALARY_STRUCTURE_OPTION } from '@/utils/onboardingSetting';
 
 const SalaryStructureTemplate = (props) => {
   const {
@@ -33,7 +33,7 @@ const SalaryStructureTemplate = (props) => {
         _id: candidateId = '',
       } = {},
       tempData: {
-        salaryStructure: { salaryTemplate: salaryTempData, settings: settingsTempData = [] } = {},
+        salaryStructure: { salaryTemplate = {}, settings: settingsTempData = [] } = {},
         ticketID = '',
       } = {},
     },
@@ -45,7 +45,8 @@ const SalaryStructureTemplate = (props) => {
     country: salaryCountry = '',
     base_salary: { minimum = 0, maximum = 0 } = {},
     settings: salaryTempDataSetting = [],
-  } = salaryTempData || {};
+    option = '',
+  } = salaryTemplate || {};
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -760,7 +761,9 @@ const SalaryStructureTemplate = (props) => {
       )}
 
       <Spin spinning={loadingFetchTable}>
-        {salaryCountry !== 'IN' ? _renderSalaryTable() : _renderIndiaSalaryTable()}
+        {salaryCountry === 'IN' && option === SALARY_STRUCTURE_OPTION.TOTAL_COMPENSATION
+          ? _renderIndiaSalaryTable()
+          : _renderSalaryTable()}
       </Spin>
 
       {_renderBottomBar()}
