@@ -248,5 +248,5 @@ const Card = (props) => {
 export default connect(({ loading, user: { currentUser = {}, permissions = {} } = {} }) => ({
   currentUser,
   permissions,
-  loadingRefresh: loading.effects['homePage/fetchBirthdayInWeekList1'],
+  loadingRefresh: loading.effects['homePage/fetchBirthdayInWeekList'],
 }))(Card);
