@@ -47,3 +47,10 @@ export async function addDocument(payload) {
     data: payload,
   });
 }
+
+export async function changeSalaryStructureOption(payload) {
+  return request('/api/salarystructuretenant/change-optional', {
+    method: 'POST',
+    data: payload,
+  });
+}
