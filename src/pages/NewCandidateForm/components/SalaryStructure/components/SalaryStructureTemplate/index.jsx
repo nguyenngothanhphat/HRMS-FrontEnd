@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable react/jsx-props-no-spreading */
 import { Button, Col, Input, Row, Slider, Space, Spin } from 'antd';
 import { toNumber, toString, trim, trimStart } from 'lodash';
@@ -11,6 +12,7 @@ import { Page } from '../../../../utils';
 import styles from './index.less';
 import ModalWaitAccept from './ModalWaitAccept/index';
 import SalaryReference from './SalaryReference/index';
+import { roundNumber2 } from '@/utils/onboardingSetting';
 
 const SalaryStructureTemplate = (props) => {
   const {
@@ -189,8 +191,128 @@ const SalaryStructureTemplate = (props) => {
 
   const calculationForIndia = (e, key) => {
     const { value } = e.target;
+    const reg = /^\d*(\.\d*)?$/;
+    const tempTableData = JSON.parse(JSON.stringify(settingsTempData));
     const newValue = value.replace(/,/g, '');
-    console.log('🚀 ~ newValue', newValue);
+
+    let total_compensation = 0;
+
+    // step 0
+    let variable_pay_percentage = 0;
+    let retention_bonus_amount = 0;
+    if (key !== 'total_compensation') {
+      total_compensation = tempTableData.find((x) => x.key === 'total_compensation')?.value;
+    } else {
+      total_compensation = newValue * 1;
+    }
+
+    if (key === 'eligible_variable_pay') {
+      variable_pay_percentage = newValue * 1;
+    } else {
+      variable_pay_percentage = tempTableData.find((x) => x.key === 'eligible_variable_pay')?.value;
+    }
+
+    if (key === 'annual_retention_bonus') {
+      retention_bonus_amount = newValue * 1;
+    } else {
+      retention_bonus_amount = tempTableData.find((x) => x.key === 'annual_retention_bonus')?.value;
+    }
+
+    if (reg.test(total_compensation)) {
+      // step 2
+      let variable_pay_amount = 0;
+      let total_compensation_minus_variable_pay_amount = 0;
+      if (variable_pay_percentage !== 0 && variable_pay_percentage !== '0') {
+        variable_pay_amount = total_compensation * (variable_pay_percentage / 100);
+        total_compensation_minus_variable_pay_amount =
+          total_compensation * (1 - variable_pay_percentage / 100);
+      } else {
+        variable_pay_amount = 0;
+        total_compensation_minus_variable_pay_amount = total_compensation;
+      }
+
+      variable_pay_amount = roundNumber2(variable_pay_amount);
+      total_compensation_minus_variable_pay_amount = roundNumber2(
+        total_compensation_minus_variable_pay_amount,
+      );
+
+      // step 3
+      let pf = 0;
+      if ((total_compensation_minus_variable_pay_amount / 12) * 0.65 < 15000) {
+        pf = (total_compensation_minus_variable_pay_amount / 12) * 0.65 * 0.12 * 12;
+      } else {
+        pf = 15000 * 0.12 * 12;
+      }
+      pf = roundNumber2(pf);
+
+      const total_compensation_minus_variable_pay_minus_pf_amount =
+        total_compensation_minus_variable_pay_amount - pf;
+
+      const final = roundNumber2(total_compensation_minus_variable_pay_minus_pf_amount);
+
+      // step 4
+      const basic = roundNumber2(final * 0.5);
+
+      // step 5
+      const hra = roundNumber2(basic / 2);
+
+      // step 6
+      const total_other_allowances = roundNumber2(final - (basic + hra));
+
+      // step 7
+      const variable_pay = variable_pay_amount;
+
+      // step 8
+      const PF = pf;
+
+      // step 9
+      const insurance = 7382;
+
+      // step 10
+      const gratuity = roundNumber2(basic / 12 / 2);
+
+      const total_cost_company = roundNumber2(
+        basic +
+          hra +
+          total_other_allowances +
+          variable_pay +
+          PF +
+          insurance +
+          gratuity +
+          retention_bonus_amount,
+      );
+
+      const objValues = {
+        eligible_variable_pay: variable_pay_percentage,
+        annual_retention_bonus: retention_bonus_amount,
+        variable_pay,
+        retention_bonus: retention_bonus_amount,
+        PF,
+        basic,
+        hra,
+        total_other_allowances,
+        gratuity,
+        insurance,
+        total_cost_company,
+        total_compensation,
+      };
+
+      const objKeys = Object.keys(objValues);
+      const result = tempTableData.map((x) => {
+        const findIndex = objKeys.findIndex((y) => y === x.key);
+        return {
+          ...x,
+          value: objValues[objKeys[findIndex]],
+        };
+      });
+
+      dispatch({
+        type: 'newCandidateForm/saveSalaryStructure',
+        payload: {
+          settings: [...result],
+        },
+      });
+    }
   };
 
   const onBlur = (e, key) => {
@@ -493,7 +615,23 @@ const SalaryStructureTemplate = (props) => {
   };
 
   const _renderIndiaSalaryTable = () => {
-    const annualTotal = salaryTempDataSetting.find((x) => x.key === 'total_compensation') || {};
+    const annualTotal = settingsTempData.find((x) => x.key === 'total_compensation') || {};
+    const final = settingsTempData.find((x) => x.key === 'total_cost_company') || {};
+    const eligible_variable_pay =
+      settingsTempData.find((x) => x.key === 'eligible_variable_pay') || {};
+    const annual_retention_bonus =
+      settingsTempData.find((x) => x.key === 'annual_retention_bonus') || {};
+
+    const salaryFields = settingsTempData.filter(
+      (x) =>
+        ![
+          'total_cost_company',
+          'total_compensation',
+          'eligible_variable_pay',
+          'annual_retention_bonus',
+        ].includes(x.key),
+    );
+
     return (
       <div className={styles.indiaContainer}>
         <div className={styles.inputs}>
@@ -503,7 +641,12 @@ const SalaryStructureTemplate = (props) => {
             </Col>
             <Col span={8}>
               <div className={styles.salary__right__inputAfter}>
-                <Input addonAfter="% of basics" disabled={!isEditingSalary} />
+                <Input
+                  addonAfter="% of basics"
+                  disabled={!isEditingSalary}
+                  value={convertVeriable(eligible_variable_pay.value)}
+                  onChange={(e) => calculationForIndia(e, eligible_variable_pay.key)}
+                />
               </div>
             </Col>
             <Col span={6} />
@@ -513,7 +656,12 @@ const SalaryStructureTemplate = (props) => {
             </Col>
             <Col span={8}>
               <div className={styles.inputBefore}>
-                <Input addonBefore="INR" disabled={!isEditingSalary} />
+                <Input
+                  addonBefore="INR"
+                  disabled={!isEditingSalary}
+                  value={convertVeriable(annual_retention_bonus.value)}
+                  onChange={(e) => calculationForIndia(e, annual_retention_bonus.key)}
+                />
               </div>
             </Col>
             <Col span={6} />
@@ -545,12 +693,12 @@ const SalaryStructureTemplate = (props) => {
 
           <div className={styles.content}>
             <div className={styles.leftSide}>
-              {settingsTempData.map((x) => (
+              {salaryFields.map((x) => (
                 <span className={styles.itemTitle}>{x.title}</span>
               ))}
             </div>
             <div className={styles.rightSide}>
-              {settingsTempData.map((x) => (
+              {salaryFields.map((x) => (
                 <span className={styles.itemValue} key={x.key}>
                   {renderSingle(x.value, x.unit)}
                 </span>
@@ -563,7 +711,7 @@ const SalaryStructureTemplate = (props) => {
               <span className={styles.title}>Total Cost to Company</span>
             </div>
             <div className={styles.rightSide}>
-              <span className={styles.value}>INR 6,00,000</span>
+              <span className={styles.value}>{renderSingle(final.value, final.unit)}</span>
             </div>
           </div>
         </div>

@@ -9,6 +9,7 @@ import EditSalaryVN from './component/EditSalaryVN';
 import ImportSalary from './component/ImportSalary';
 
 import styles from './index.less';
+import { SALARY_STRUCTURE_OPTION } from '@/utils/onboardingSetting';
 
 const { Option } = Select;
 
@@ -29,6 +30,15 @@ const SalaryStructure = (props) => {
     });
   }, []);
 
+  const fetchListSalaryByLocation = (id) => {
+    dispatch({
+      type: 'employeeSetting/fetchListSalaryByLocation',
+      payload: {
+        location: id,
+      },
+    });
+  };
+
   const getListLocation = (countryId) => {
     const arrLocation = filter(
       locationList,
@@ -36,12 +46,6 @@ const SalaryStructure = (props) => {
     );
     setListLocation(arrLocation);
     setSelectedLocation(arrLocation[0]._id);
-    dispatch({
-      type: 'employeeSetting/fetchListSalaryByLocation',
-      payload: {
-        location: arrLocation[0]._id,
-      },
-    });
   };
 
   useEffect(() => {
@@ -56,6 +60,12 @@ const SalaryStructure = (props) => {
     }
   }, [locationList]);
 
+  useEffect(() => {
+    if (selectedLocation) {
+      fetchListSalaryByLocation(selectedLocation);
+    }
+  }, [selectedLocation]);
+
   const onChangeCountry = (countryId) => {
     setSelectedCountry(countryId);
     getListLocation(countryId);
@@ -63,12 +73,6 @@ const SalaryStructure = (props) => {
 
   const onChangeLocation = (value) => {
     setSelectedLocation(value);
-    dispatch({
-      type: 'employeeSetting/fetchListSalaryByLocation',
-      payload: {
-        location: value,
-      },
-    });
   };
 
   const onClickImport = (record) => {
@@ -116,6 +120,22 @@ const SalaryStructure = (props) => {
     list[0] = result;
     return list.join('.');
   };
+
+  const onChangeSalaryType = async (e) => {
+    const { value } = e.target;
+    const res = await dispatch({
+      type: 'onboardingSettings/changeSalaryStructureOption',
+      payload: {
+        country: selectedCountry,
+        location: selectedLocation,
+        option: value,
+      },
+    });
+    if (res.statusCode === 200) {
+      fetchListSalaryByLocation(selectedLocation);
+    }
+  };
+
   const renderValue = (obj) => {
     let prefix = '';
     switch (selectedCountry) {
@@ -357,9 +377,18 @@ const SalaryStructure = (props) => {
       </div>
 
       <div className={styles.radioGroup}>
-        <Radio.Group defaultValue>
-          <Radio value={false}>Enter the Salary Components Individually</Radio>
-          <Radio value>Enter the Total Compensation</Radio>
+        <Radio.Group
+          value={
+            listSalary.length > 0 ? listSalary[0].option : SALARY_STRUCTURE_OPTION.SALARY_COMPONENTS
+          }
+          onChange={onChangeSalaryType}
+        >
+          <Radio value={SALARY_STRUCTURE_OPTION.SALARY_COMPONENTS}>
+            Enter the Salary Components Individually
+          </Radio>
+          <Radio value={SALARY_STRUCTURE_OPTION.TOTAL_COMPENSATION}>
+            Enter the Total Compensation
+          </Radio>
         </Radio.Group>
       </div>
 
