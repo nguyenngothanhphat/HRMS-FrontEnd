@@ -472,10 +472,10 @@ const TypeConfiguration = (props) => {
         <div className={styles.content}>
           {renderHeader()}
           <Row gutter={[24, 24]}>
-            <Col sm={24} xl={16}>
+            <Col sm={24} xl={18}>
               {renderForm()}
             </Col>
-            <Col sm={24} xl={8}>
+            <Col sm={24} xl={6}>
               <NoteComponent note={Note} />
             </Col>
           </Row>

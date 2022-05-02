@@ -118,7 +118,7 @@ const Card = (props) => {
     const { DOB = '', gender = '' } = data?.generalInfoInfo || {};
     const isToday = isTheSameDay(moment(), moment(DOB));
     const employeeName = renderEmployeeName(data);
-    const birthday = moment(DOB).locale('en').format('MMM Do');
+    const birthday = moment.utc(DOB).locale('en').format('MMM Do');
     if (isToday)
       return (
         <span>
@@ -143,7 +143,6 @@ const Card = (props) => {
         <div className={styles.content}>
           <p className={styles.caption}>{renderBirthdayContent(card)}</p>
 
-          {/* HIDE - NOT AVAILABLE YET  */}
           <div className={styles.actions}>
             <div className={styles.likes}>
               <img
@@ -210,7 +209,6 @@ const Card = (props) => {
       <Spin spinning={loadingRefresh && !celebratingDetailModalVisible}>
         <Carousel
           infinite
-          effect="fade"
           arrows
           dots
           autoplay={!celebratingDetailModalVisible}
