@@ -29,7 +29,7 @@ const PendingApprovalTag = (props) => {
 
   const onApproveClick = async (idProp) => {
     const res = await dispatch({
-      type: 'timeOff/reportingManagerApprove',
+      type: 'timeOff/approveRequest',
       payload: {
         _id: idProp,
       },
@@ -45,7 +45,7 @@ const PendingApprovalTag = (props) => {
 
   const onReject = async (comment) => {
     const res = await dispatch({
-      type: 'timeOff/reportingManagerReject',
+      type: 'timeOff/rejectRequest',
       payload: {
         _id,
         comment,
@@ -120,5 +120,5 @@ const PendingApprovalTag = (props) => {
 };
 
 export default connect(({ loading }) => ({
-  loadingReject: loading.effects['timeOff/reportingManagerReject'],
+  loadingReject: loading.effects['timeOff/rejectRequest'],
 }))(PendingApprovalTag);

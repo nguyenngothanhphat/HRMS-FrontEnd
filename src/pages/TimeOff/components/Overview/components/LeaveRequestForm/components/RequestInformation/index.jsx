@@ -71,7 +71,6 @@ const RequestInformation = (props) => {
 
   const [form] = Form.useForm();
   const [selectedTypeName, setSelectedTypeName] = useState('');
-  console.log('🚀 ~ selectedTypeName', selectedTypeName);
   const [selectedType, setSelectedType] = useState('');
   const [showSuccessModalVisible, setShowSuccessModalVisible] = useState(false);
   const [secondNotice, setSecondNotice] = useState('');
@@ -79,7 +78,6 @@ const RequestInformation = (props) => {
   const [durationTo, setDurationTo] = useState('');
   const [buttonState, setButtonState] = useState(0); // save draft or submit
   const [isEditingDrafts, setIsEditingDrafts] = useState(false);
-  const [remainingDayOfSelectedType, setRemainingDayOfSelectedType] = useState(0);
   const [viewDocumentModal, setViewDocumentModal] = useState(false);
   const [currentAllowanceState, setCurrentAllowanceState] = useState(0);
   const [invalidDates, setInvalidDates] = useState([]);
@@ -148,43 +146,6 @@ const RequestInformation = (props) => {
       }
     }
   };
-
-  // GET REMAINING DAY
-  const getRemainingDay = (typeName) => {
-    let count = 0;
-    // let total = 0;
-    let check = false;
-
-    commonLeaves.forEach((x) => {
-      if (typeName === x.name && (x.type === A || x.type === B)) {
-        count = x.total - x.taken;
-        check = true;
-      }
-    });
-
-    if (!check)
-      specialLeaves.forEach((x) => {
-        if (typeName === x.name) {
-          count = x.total - x.taken;
-          check = true;
-        }
-      });
-
-    setRemainingDayOfSelectedType(count);
-  };
-
-  // const getRemainingDayById = (_id) => {
-  //   let count = 0;
-
-  //   [...timeOffTypesAB, ...timeOffTypesCD].forEach((value) => {
-  //     const { defaultSettings: { _id: _id1 = '' } = {}, currentAllowance = 0 } = value;
-  //     if (_id1 === _id) {
-  //       count = currentAllowance;
-  //     }
-  //   });
-
-  //   return count;
-  // };
 
   const findInvalidHalfOfDay = (date) => {
     const filtered = invalidDates.filter((x) => {
@@ -288,7 +249,6 @@ const RequestInformation = (props) => {
     const foundType = [...commonLeaves, ...specialLeaves].find((t) => t._id === id);
     if (foundType) {
       const { type = '', name = '' } = foundType;
-      getRemainingDay(name);
       setSelectedType(type);
       setSelectedTypeName(name);
     }
@@ -638,14 +598,6 @@ const RequestInformation = (props) => {
     setViewDocumentModal(true);
   };
 
-  // validator
-  // const typeValidator = (rule, value, callback) => {
-  //   const remaining = getRemainingDayById(value);
-  //   if (remaining === 'VALID' || remaining > 0) callback();
-  //   else if (selectedTypeName) callback('Leave dates reach limit.');
-  //   else callback();
-  // };
-
   // FETCH LEAVE BALANCE INFO (REMAINING, TOTAL,...)
   const fetchData = async () => {
     fetchEmailsListByCompany();
@@ -709,7 +661,6 @@ const RequestInformation = (props) => {
       if (BY_HOUR) {
         generateHours(leaveTimeLists);
       }
-      getRemainingDay(viewingType.name);
     }
   };
 
@@ -866,12 +817,12 @@ const RequestInformation = (props) => {
       return (
         <>
           <Row className={styles.eachRow}>
-            <Col className={styles.label} span={6}>
+            <Col className={styles.label} lg={6} sm={8}>
               <span>Leave time</span> <span className={styles.mandatoryField}>*</span>
             </Col>
-            <Col span={12}>
+            <Col lg={12} sm={16}>
               <div className={styles.extraTimeSpent}>
-                <Row className={styles.header} gutter={[0, 8]}>
+                <Row className={styles.header} gutter={[4, 8]}>
                   <Col span={TIMEOFF_COL_SPAN_1.DATE}>From</Col>
                   <Col span={TIMEOFF_COL_SPAN_1.DAY}>To</Col>
                   <Col span={TIMEOFF_COL_SPAN_1.COUNT}>No. of Days</Col>
@@ -885,24 +836,24 @@ const RequestInformation = (props) => {
                 )}
               </div>
             </Col>
-            <Col span={6} />
+            <Col lg={6} sm={0} />
           </Row>
 
           {durationFrom && durationTo && (
             <Form.List name="leaveTimeLists">
               {() => (
                 <Row key={1} className={styles.eachRow}>
-                  <Col className={styles.label} span={6}>
+                  <Col className={styles.label} lg={6} sm={8}>
                     <span />
                   </Col>
-                  <Col span={12} className={styles.leaveDaysContainer}>
+                  <Col lg={12} sm={16} className={styles.leaveDaysContainer}>
                     <LeaveTimeRow2
                       fromDate={durationFrom}
                       toDate={durationTo}
                       noOfDays={dateLists.length}
                     />
                   </Col>
-                  <Col span={6} />
+                  <Col lg={6} sm={0} />
                 </Row>
               )}
             </Form.List>
@@ -914,7 +865,7 @@ const RequestInformation = (props) => {
     const renderTableHeader = () => {
       if (showAllDateList && !BY_HOUR)
         return (
-          <Row className={styles.header} gutter={[0, 8]}>
+          <Row className={styles.header} gutter={[4, 8]}>
             <Col span={TIMEOFF_COL_SPAN_1.DATE}>Date</Col>
             <Col span={TIMEOFF_COL_SPAN_1.DAY}>Day</Col>
             <Col span={TIMEOFF_COL_SPAN_1.COUNT}>Count/Q.ty</Col>
@@ -922,7 +873,7 @@ const RequestInformation = (props) => {
         );
       if (showAllDateList && BY_HOUR)
         return (
-          <Row className={styles.header} gutter={[0, 8]}>
+          <Row className={styles.header} gutter={[4, 8]}>
             <Col span={TIMEOFF_COL_SPAN_2.DATE}>Date</Col>
             <Col span={TIMEOFF_COL_SPAN_2.DAY}>Day</Col>
             <Col span={TIMEOFF_COL_SPAN_2.START_TIME}>Start time</Col>
@@ -933,7 +884,7 @@ const RequestInformation = (props) => {
           </Row>
         );
       return (
-        <Row className={styles.header} gutter={[0, 8]}>
+        <Row className={styles.header} gutter={[4, 8]}>
           <Col span={TIMEOFF_COL_SPAN_1.DATE}>From</Col>
           <Col span={TIMEOFF_COL_SPAN_1.DAY}>To</Col>
           <Col span={TIMEOFF_COL_SPAN_1.COUNT}>No. of Days</Col>
@@ -943,10 +894,10 @@ const RequestInformation = (props) => {
     return (
       <>
         <Row className={styles.eachRow}>
-          <Col className={styles.label} span={6}>
+          <Col className={styles.label} lg={6} sm={8}>
             <span>Leave time</span> <span className={styles.mandatoryField}>*</span>
           </Col>
-          <Col span={12}>
+          <Col lg={12} sm={16}>
             <div className={styles.extraTimeSpent}>
               {renderTableHeader()}
               {(!durationFrom || !durationTo) && (
@@ -958,17 +909,17 @@ const RequestInformation = (props) => {
               )}
             </div>
           </Col>
-          <Col span={6} />
+          <Col lg={6} sm={0} />
         </Row>
 
         {durationFrom && durationTo && (
           <Form.List name="leaveTimeLists">
             {() => (
               <Row key={1} className={styles.eachRow}>
-                <Col className={styles.label} span={6}>
+                <Col className={styles.label} lg={6} sm={8}>
                   <span />
                 </Col>
-                <Col span={12} className={styles.leaveDaysContainer}>
+                <Col lg={12} sm={16} className={styles.leaveDaysContainer}>
                   {showAllDateList ? (
                     dateLists.map((date, index) => {
                       return (
@@ -992,7 +943,7 @@ const RequestInformation = (props) => {
                     />
                   )}
                 </Col>
-                <Col span={6} />
+                <Col lg={6} sm={0} />
               </Row>
             )}
           </Form.List>
@@ -1009,7 +960,7 @@ const RequestInformation = (props) => {
   };
 
   const disabledBtn = () => {
-    return !selectedTypeName || remainingDayOfSelectedType === 0;
+    return !selectedTypeName;
   };
   // RETURN MAIN
   return (
@@ -1030,10 +981,10 @@ const RequestInformation = (props) => {
           onValuesChange={onValuesChange}
         >
           <Row className={styles.eachRow}>
-            <Col className={styles.label} span={6}>
+            <Col className={styles.label} lg={6} sm={8}>
               <span>Select Timeoff Type</span> <span className={styles.mandatoryField}>*</span>
             </Col>
-            <Col span={12}>
+            <Col lg={12} sm={16}>
               <Form.Item
                 name="timeOffType"
                 rules={[
@@ -1055,7 +1006,7 @@ const RequestInformation = (props) => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col lg={6} sm={0}>
               {selectedTypeName && (
                 <div className={styles.smallNotice}>
                   <span className={styles.normalText}>
@@ -1070,10 +1021,10 @@ const RequestInformation = (props) => {
           </Row>
 
           <Row className={styles.eachRow}>
-            <Col className={styles.label} span={6}>
+            <Col className={styles.label} lg={6} sm={8}>
               <span>Subject</span> <span className={styles.mandatoryField}>*</span>
             </Col>
-            <Col span={12}>
+            <Col lg={12} sm={16}>
               {renderFormItem(
                 <Form.Item
                   name="subject"
@@ -1088,13 +1039,13 @@ const RequestInformation = (props) => {
                 </Form.Item>,
               )}
             </Col>
-            <Col span={6} />
+            <Col lg={6} sm={0} />
           </Row>
           <Row className={styles.eachRow}>
-            <Col className={styles.label} span={6}>
+            <Col className={styles.label} lg={6} sm={8}>
               <span>Duration</span> <span className={styles.mandatoryField}>*</span>
             </Col>
-            <Col span={12}>
+            <Col lg={12} sm={16}>
               <Row gutter={['20', '0']}>
                 <Col span={12}>
                   {renderFormItem(
@@ -1144,7 +1095,7 @@ const RequestInformation = (props) => {
                 </Col>
               </Row>
             </Col>
-            <Col span={6}>
+            <Col lg={6} sm={0}>
               {secondNotice !== '' && (
                 <div className={styles.smallNotice}>
                   <span className={styles.normalText}>{secondNotice}</span>
@@ -1156,10 +1107,10 @@ const RequestInformation = (props) => {
           {renderLeaveTimeList()}
 
           <Row className={styles.eachRow}>
-            <Col className={styles.label} span={6}>
+            <Col className={styles.label} lg={6} sm={8}>
               <span>Description</span> <span className={styles.mandatoryField}>*</span>
             </Col>
-            <Col span={12}>
+            <Col lg={12} sm={16}>
               {renderFormItem(
                 <Form.Item
                   name="description"
@@ -1183,10 +1134,10 @@ const RequestInformation = (props) => {
           </Row>
 
           <Row className={styles.eachRow}>
-            <Col className={styles.label} span={6}>
+            <Col className={styles.label} lg={6} sm={8}>
               <span>CC (only if you want to notify other than HR & your manager)</span>
             </Col>
-            <Col span={12} className={styles.ccSelection}>
+            <Col lg={12} sm={16} className={styles.ccSelection}>
               {renderFormItem(
                 <Form.Item
                   name="personCC"

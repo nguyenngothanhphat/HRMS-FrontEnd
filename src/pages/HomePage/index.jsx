@@ -118,6 +118,5 @@ export default connect(({ homePage, user, loading }) => ({
     loading.effects['homePage/fetchPollsEffect'] ||
     loading.effects['homePage/fetchPollResultEffect'] ||
     loading.effects['homePage/fetchBannersEffect'] ||
-    loading.effects['homePage/fetchAnnouncementsEffect'] ||
-    loading.effects['homePage/fetchBirthdayInWeekList'],
+    loading.effects['homePage/fetchAnnouncementsEffect']
 }))(HomePage);

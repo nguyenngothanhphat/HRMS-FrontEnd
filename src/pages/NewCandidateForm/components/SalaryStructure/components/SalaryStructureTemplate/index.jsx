@@ -1,9 +1,10 @@
+/* eslint-disable camelcase */
 /* eslint-disable react/jsx-props-no-spreading */
-import { Button, Col, Input, Row, Spin, Space, Slider } from 'antd';
+import { Button, Col, Input, Row, Slider, Space, Spin } from 'antd';
 import { toNumber, toString, trim, trimStart } from 'lodash';
-import React, { PureComponent } from 'react';
-import { connect, history } from 'umi';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { connect, history } from 'umi';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import { getCurrentTenant } from '@/utils/authority';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
@@ -11,103 +12,51 @@ import { Page } from '../../../../utils';
 import styles from './index.less';
 import ModalWaitAccept from './ModalWaitAccept/index';
 import SalaryReference from './SalaryReference/index';
+import { roundNumber2, SALARY_STRUCTURE_OPTION } from '@/utils/onboardingSetting';
 
-@connect(
-  ({
-    loading,
+const SalaryStructureTemplate = (props) => {
+  const {
+    loadingFetchTable = false,
     newCandidateForm: {
-      cancelCandidate,
-      checkMandatory = {},
       currentStep,
       isEditingSalary = false,
       data: {
-        listTitle = [],
         title = {},
         grade = {},
         department = {},
         workLocation = {},
         processStatus = '',
         salaryStructure: {
-          salaryTemplate: salaryOriginData,
           settings: settingsOriginData = [],
-          title: salaryTitleOriginData = {},
           status: salaryAcceptanceStatus = '',
         } = {},
-        candidate,
+        _id: candidateId = '',
       } = {},
-      data,
-      tempData = {},
       tempData: {
-        titleList = [],
-        locationList = [],
-        departmentList = [],
-        salaryStructure: {
-          salaryTemplate: salaryTempData,
-          settings: settingsTempData = [],
-          salaryTitle: salaryTitleTempData,
-          salaryDepartment: salaryDepartmentTempData,
-          salaryLocation: salaryWorkLocationTempData,
-        } = {},
+        salaryStructure: { salaryTemplate = {}, settings: settingsTempData = [] } = {},
+        ticketID = '',
       } = {},
     },
-    user: { currentUser: { company: { _id = '' } = {} } = {}, currentUser: { location = {} } = {} },
-  }) => ({
-    loadingTable: loading.effects['newCandidateForm/saveSalaryStructure'],
-    loadingFetchTable: loading.effects['newCandidateForm/fetchTableData'],
-    loadingEditSalary: loading.effects['newCandidateForm/updateByHR'],
-    listTitle,
-    titleList,
-    grade,
-    salaryOriginData,
-    salaryTempData,
-    cancelCandidate,
-    location,
-    checkMandatory,
-    locationList,
-    department,
-    workLocation,
-    departmentList,
-    salaryDepartmentTempData,
-    salaryWorkLocationTempData,
-    currentStep,
-    processStatus,
-    _id,
-    data,
-    settingsOriginData,
-    settingsTempData,
-    title,
-    salaryTitleOriginData,
-    salaryTitleTempData,
-    tempData,
-    candidate,
-    salaryAcceptanceStatus,
-    isEditingSalary,
-  }),
-)
-class SalaryStructureTemplate extends PureComponent {
-  constructor(props) {
-    super(props);
+    dispatch,
+    loadingEditSalary = false,
+  } = props;
 
-    this.state = {
-      openModal: '',
-    };
-  }
+  const {
+    country: salaryCountry = '',
+    base_salary: { minimum = 0, maximum = 0 } = {},
+    settings: salaryTempDataSetting = [],
+    option = '',
+  } = salaryTemplate || {};
 
-  componentDidMount = () => {
-    const {
-      dispatch,
-      settingsTempData: settings = [],
-      grade,
-      workLocation: { _id } = {},
-    } = this.props;
-    const getSetting = !!(settings.length === 0);
+  const [openModal, setOpenModal] = useState(false);
 
+  useEffect(() => {
     dispatch({
       type: 'newCandidateForm/fetchTableData',
       payload: {
         grade: grade._id,
-        location: _id,
-        getSetting,
+        location: workLocation?._id,
+        getSetting: !!(settingsTempData.length === 0),
       },
     });
 
@@ -117,22 +66,13 @@ class SalaryStructureTemplate extends PureComponent {
         filledSalaryStructure: true,
       },
     });
-  };
+  }, []);
 
-  onClickPrev = () => {
-    const { tempData } = this.props;
-    const { ticketID = '' } = tempData;
+  const onClickPrev = () => {
     history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.DOCUMENT_VERIFICATION}`);
   };
 
-  onClickNext = () => {
-    const {
-      dispatch,
-      settingsTempData: settings = [],
-      salaryAcceptanceStatus = '',
-      data: { _id, processStatus },
-      currentStep,
-    } = this.props;
+  const onClickNext = () => {
     if (currentStep === 3) {
       if (
         processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION &&
@@ -142,26 +82,24 @@ class SalaryStructureTemplate extends PureComponent {
           type: 'newCandidateForm/updateByHR',
           payload: {
             salaryStructure: {
-              settings,
+              settings: settingsTempData,
               status: 'IN-PROGRESS',
             },
-            candidate: _id,
+            candidate: candidateId,
             sentDate: moment(),
             tenantId: getCurrentTenant(),
           },
         }).then(({ statusCode }) => {
           if (statusCode === 200) {
-            this.setState({ openModal: 'ModalWaitAccept' });
+            setOpenModal('ModalWaitAccept');
           }
         });
       } else {
-        const { tempData } = this.props;
-        const { ticketID = '' } = tempData;
         dispatch({
           type: 'newCandidateForm/updateByHR',
           payload: {
             currentStep: 4,
-            candidate: _id,
+            candidate: candidateId,
             tenantId: getCurrentTenant(),
           },
         });
@@ -174,60 +112,44 @@ class SalaryStructureTemplate extends PureComponent {
         history.push(`/onboarding/list/view/${ticketID}/benefits`);
       }
     } else {
-      const { tempData } = this.props;
-      const { ticketID = '' } = tempData;
       history.push(`/onboarding/list/view/${ticketID}/benefits`);
     }
   };
 
-  handleEditSalary = (value) => {
-    const { dispatch } = this.props;
+  const handleEditSalary = (value) => {
     dispatch({
       type: 'newCandidateForm/save',
       payload: { isEditingSalary: value },
     });
   };
 
-  onCancel = async () => {
-    const { dispatch, settingsOriginData: settings = [] } = this.props;
+  const onCancel = async () => {
     await dispatch({
       type: 'newCandidateForm/saveSalaryStructure',
-      payload: { settings },
+      payload: { settings: settingsOriginData },
     });
 
-    this.handleEditSalary(false);
+    handleEditSalary(false);
   };
 
-  onClickSubmit = () => {
-    this.handleEditSalary(false);
+  const onClickSubmit = () => {
+    handleEditSalary(false);
   };
 
-  checkKey = (key) => {
-    const { settingsTempData: settings = [] } = this.props;
-    let check = false;
-    settings.forEach((item) => {
-      if (item.key === key) check = true;
-    });
-    return check;
+  const checkKey = (key) => {
+    return settingsTempData.some((x) => x.key === key);
   };
 
-  getValueByKey = (arr, key) => {
-    let value;
-    arr.forEach((item) => {
-      if (item.key === key) {
-        value = item.value;
-      }
-    });
-    return value;
+  const getValueByKey = (arr, key) => {
+    return arr.find((x) => x.key === key)?.value;
   };
 
-  onChangeSilde = (value = [], key) => {
-    const { dispatch, settingsTempData: settings = [] } = this.props;
+  const onChangeSilde = (value = [], key) => {
     if (value.length === 2) {
       const newValue = value[1];
-      const tempTableData = JSON.parse(JSON.stringify(settings));
+      const tempTableData = JSON.parse(JSON.stringify(settingsTempData));
 
-      const index = tempTableData.findIndex((data) => data.key === key);
+      const index = tempTableData.findIndex((x) => x.key === key);
       tempTableData[index].value = newValue;
       dispatch({
         type: 'newCandidateForm/saveSalaryStructure',
@@ -238,12 +160,7 @@ class SalaryStructureTemplate extends PureComponent {
     }
   };
 
-  handleChange = (e, key) => {
-    const {
-      dispatch,
-      settingsTempData = [],
-      salaryTempData: { base_salary: { maximum = 0 } = {}, settings = [] },
-    } = this.props;
+  const handleChange = (e, key) => {
     const { value } = e.target;
     let newValue = value.replace(/,/g, '');
 
@@ -255,12 +172,14 @@ class SalaryStructureTemplate extends PureComponent {
         (key === 'lunch_allowance' ||
           key === 'petrol_allowance' ||
           key === 'mobile_internet_allowance') &&
-        toNumber(newValue) > this.getValueByKey(settings, key)
-      )
-        newValue = this.getValueByKey(settings, key);
+        toNumber(newValue) > getValueByKey(salaryTempDataSetting, key)
+      ) {
+        newValue = getValueByKey(salaryTempDataSetting, key);
+      }
+
       const tempTableData = JSON.parse(JSON.stringify(settingsTempData));
 
-      const index = tempTableData.findIndex((data) => data.key === key);
+      const index = tempTableData.findIndex((x) => x.key === key);
       tempTableData[index].value = newValue;
       dispatch({
         type: 'newCandidateForm/saveSalaryStructure',
@@ -271,12 +190,133 @@ class SalaryStructureTemplate extends PureComponent {
     }
   };
 
-  onBlur = (e, key) => {
-    const {
-      dispatch,
-      settingsTempData: settings = [],
-      salaryTempData: { base_salary: { minimum = 0 } = {} },
-    } = this.props;
+  const calculationForIndia = (e, key) => {
+    const { value } = e.target;
+    const reg = /^\d*(\.\d*)?$/;
+    const tempTableData = JSON.parse(JSON.stringify(settingsTempData));
+    const newValue = value.replace(/,/g, '');
+
+    let total_compensation = 0;
+
+    // step 0
+    let variable_pay_percentage = 0;
+    let retention_bonus_amount = 0;
+    if (key !== 'total_compensation') {
+      total_compensation = tempTableData.find((x) => x.key === 'total_compensation')?.value;
+    } else {
+      total_compensation = newValue * 1;
+    }
+
+    if (key === 'eligible_variable_pay') {
+      variable_pay_percentage = newValue * 1;
+    } else {
+      variable_pay_percentage = tempTableData.find((x) => x.key === 'eligible_variable_pay')?.value;
+    }
+
+    if (key === 'annual_retention_bonus') {
+      retention_bonus_amount = newValue * 1;
+    } else {
+      retention_bonus_amount = tempTableData.find((x) => x.key === 'annual_retention_bonus')?.value;
+    }
+
+    if (reg.test(total_compensation)) {
+      // step 2
+      let variable_pay_amount = 0;
+      let total_compensation_minus_variable_pay_amount = 0;
+      if (variable_pay_percentage !== 0 && variable_pay_percentage !== '0') {
+        variable_pay_amount = total_compensation * (variable_pay_percentage / 100);
+        total_compensation_minus_variable_pay_amount =
+          total_compensation * (1 - variable_pay_percentage / 100);
+      } else {
+        variable_pay_amount = 0;
+        total_compensation_minus_variable_pay_amount = total_compensation;
+      }
+
+      variable_pay_amount = roundNumber2(variable_pay_amount);
+      total_compensation_minus_variable_pay_amount = roundNumber2(
+        total_compensation_minus_variable_pay_amount,
+      );
+
+      // step 3
+      let pf = 0;
+      if ((total_compensation_minus_variable_pay_amount / 12) * 0.65 < 15000) {
+        pf = (total_compensation_minus_variable_pay_amount / 12) * 0.65 * 0.12 * 12;
+      } else {
+        pf = 15000 * 0.12 * 12;
+      }
+      pf = roundNumber2(pf);
+
+      const total_compensation_minus_variable_pay_minus_pf_amount =
+        total_compensation_minus_variable_pay_amount - pf;
+
+      const final = roundNumber2(total_compensation_minus_variable_pay_minus_pf_amount);
+
+      // step 4
+      const basic = roundNumber2(final * 0.5);
+
+      // step 5
+      const hra = roundNumber2(basic / 2);
+
+      // step 6
+      const total_other_allowances = roundNumber2(final - (basic + hra));
+
+      // step 7
+      const variable_pay = variable_pay_amount;
+
+      // step 8
+      const PF = pf;
+
+      // step 9
+      const insurance = 7382;
+
+      // step 10
+      const gratuity = roundNumber2(basic / 12 / 2);
+
+      const total_cost_company = roundNumber2(
+        basic +
+          hra +
+          total_other_allowances +
+          variable_pay +
+          PF +
+          insurance +
+          gratuity +
+          retention_bonus_amount,
+      );
+
+      const objValues = {
+        eligible_variable_pay: variable_pay_percentage,
+        annual_retention_bonus: retention_bonus_amount,
+        variable_pay,
+        retention_bonus: retention_bonus_amount,
+        PF,
+        basic,
+        hra,
+        total_other_allowances,
+        gratuity,
+        insurance,
+        total_cost_company,
+        total_compensation,
+      };
+
+      const objKeys = Object.keys(objValues);
+      const result = tempTableData.map((x) => {
+        const findIndex = objKeys.findIndex((y) => y === x.key);
+        return {
+          ...x,
+          value: objValues[objKeys[findIndex]],
+        };
+      });
+
+      dispatch({
+        type: 'newCandidateForm/saveSalaryStructure',
+        payload: {
+          settings: [...result],
+        },
+      });
+    }
+  };
+
+  const onBlur = (e, key) => {
     const { value } = e.target;
     let newValue = value.replace(/,/g, '');
 
@@ -285,11 +325,11 @@ class SalaryStructureTemplate extends PureComponent {
     if (reg.test(newValue) || newValue === '') {
       if (key === 'basic' && toNumber(newValue) < minimum) newValue = minimum;
 
-      const tempTableData = JSON.parse(JSON.stringify(settings));
+      const tempTableData = JSON.parse(JSON.stringify(settingsTempData));
 
-      const index = tempTableData.findIndex((data) => data.key === key);
+      const index = tempTableData.findIndex((x) => x.key === key);
       tempTableData[index].value = toNumber(newValue);
-      const indexBasic = tempTableData.findIndex((data) => data.key === 'basic');
+      const indexBasic = tempTableData.findIndex((x) => x.key === 'basic');
       const basic = tempTableData[indexBasic].value;
       let sum = 0;
       tempTableData.forEach((item) => {
@@ -299,7 +339,7 @@ class SalaryStructureTemplate extends PureComponent {
           else sum += valueSalary;
         }
       });
-      const indexTotal = tempTableData.findIndex((data) => data.key === 'total_compensation');
+      const indexTotal = tempTableData.findIndex((x) => x.key === 'total_compensation');
       tempTableData[indexTotal].value = Math.round(sum);
       dispatch({
         type: 'newCandidateForm/saveSalaryStructure',
@@ -310,7 +350,7 @@ class SalaryStructureTemplate extends PureComponent {
     }
   };
 
-  formatNumber = (value) => {
+  const formatNumber = (value) => {
     // const temp = toString(value);
     const list = trim(value).split('.');
     let num = list[0] === '0' ? list[0] : trimStart(list[0], '0');
@@ -326,20 +366,9 @@ class SalaryStructureTemplate extends PureComponent {
     return list.join('.');
   };
 
-  renderValue = (obj, prefix) => {
-    if (obj) {
-      if (obj.minimum && obj.maximum && obj.minimum !== obj.maximum)
-        return `${prefix} ${this.formatNumber(obj.minimum)} - ${prefix} ${this.formatNumber(
-          obj.maximum,
-        )}`;
-      return (obj.minimum && `${prefix} ${this.formatNumber(obj.minimum)}`) || '0';
-    }
-    return '0';
-  };
-
-  renderSingle = (value, unit) => {
+  const renderSingle = (value, unit) => {
     if (!value) return '0';
-    if (unit !== '%') return `${unit} ${this.formatNumber(value)}`;
+    if (unit !== '%') return `${unit} ${formatNumber(value)}`;
     return (
       <div>
         {value}
@@ -348,23 +377,7 @@ class SalaryStructureTemplate extends PureComponent {
     );
   };
 
-  _renderFooter = () => {
-    const { footerData } = this.state;
-    return (
-      <div className={styles.salaryStructureTemplate_footer}>
-        {footerData.map((data, index) => {
-          return (
-            <div key={`${index + 1}`} className={styles.salaryStructureTemplate_footer_info}>
-              <p className={styles.title}>{data.name}</p>
-              <p className={styles.value}>{data.value}</p>
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
-
-  convertValue = (value) => {
+  const convertValue = (value) => {
     const str = toString(value);
     const list = str.split('.');
 
@@ -381,28 +394,19 @@ class SalaryStructureTemplate extends PureComponent {
     return list.join('.');
   };
 
-  convertVeriable = (value) => {
+  const convertVeriable = (value) => {
     const str = toString(value);
     const list = str.split('.');
     list[0] = list[0] !== '0' && list[0] !== '' ? trimStart(list[0], '0') : '0';
     return list.join('.');
   };
 
-  _renderVaule = (item) => {
-    const {
-      isEditingSalary,
-      settingsTempData = [],
-      salaryTempData: {
-        country = '',
-        base_salary: { minimum = 0, maximum = 0 } = {},
-        settings = [],
-      } = {},
-    } = this.props;
+  const _renderValue = (item = {}) => {
     const marks = {};
     if (!isEditingSalary)
       return (
         <div key={item.key} className={styles.salary__right__text}>
-          {this.renderSingle(item.value, item.unit)}
+          {renderSingle(item.value, item.unit)}
         </div>
       );
     if (item.unit === '%')
@@ -410,24 +414,24 @@ class SalaryStructureTemplate extends PureComponent {
         <div key={item.key} className={styles.salary__right__inputAfter}>
           <Input
             addonAfter="% of Basics"
-            value={this.convertVeriable(item.value)}
-            onChange={(e) => this.handleChange(e, item.key)}
-            onBlur={(e) => this.onBlur(e, item.key)}
+            value={convertVeriable(item.value)}
+            onChange={(e) => handleChange(e, item.key)}
+            onBlur={(e) => onBlur(e, item.key)}
           />
         </div>
       );
-    if (country === 'VN') {
+    if (salaryCountry === 'VN') {
       if (item.key === 'basic') {
-        marks[minimum] = `VND ${this.convertValue(minimum)}`;
-        marks[maximum] = `VND ${this.convertValue(maximum)}`;
+        marks[minimum] = `VND ${convertValue(minimum)}`;
+        marks[maximum] = `VND ${convertValue(maximum)}`;
         return (
           <>
             <div key={item.key} className={styles.inputBefore}>
               <Input
                 addonBefore={item.unit}
-                value={this.convertValue(item.value)}
-                onChange={(e) => this.handleChange(e, item.key)}
-                onBlur={(e) => this.onBlur(e, item.key)}
+                value={convertValue(item.value)}
+                onChange={(e) => handleChange(e, item.key)}
+                onBlur={(e) => onBlur(e, item.key)}
               />
             </div>
             <div>
@@ -435,27 +439,27 @@ class SalaryStructureTemplate extends PureComponent {
                 range
                 min={minimum}
                 max={maximum}
-                tipFormatter={this.convertValue}
+                tipFormatter={convertValue}
                 step={1000}
                 marks={marks}
-                value={[minimum, this.getValueByKey(settingsTempData, item.key)]}
-                onChange={(value) => this.onChangeSilde(value, item.key)}
+                value={[minimum, getValueByKey(settingsTempData, item.key)]}
+                onChange={(value) => onChangeSilde(value, item.key)}
               />
             </div>
           </>
         );
       }
-      const maxValue = this.getValueByKey(settings, item.key);
+      const maxValue = getValueByKey(salaryTempDataSetting, item.key);
       marks[0] = 'VND 0';
-      marks[maxValue] = `VND ${this.convertValue(maxValue)}`;
+      marks[maxValue] = `VND ${convertValue(maxValue)}`;
       return (
         <>
           <div key={item.key} className={styles.inputBefore}>
             <Input
               addonBefore={item.unit}
-              value={this.convertValue(item.value)}
-              onChange={(e) => this.handleChange(e, item.key)}
-              onBlur={(e) => this.onBlur(e, item.key)}
+              value={convertValue(item.value)}
+              onChange={(e) => handleChange(e, item.key)}
+              onBlur={(e) => onBlur(e, item.key)}
             />
           </div>
           <div>
@@ -463,11 +467,11 @@ class SalaryStructureTemplate extends PureComponent {
               range
               min={0}
               max={maxValue}
-              tipFormatter={this.convertValue}
+              tipFormatter={convertValue}
               step={1000}
               marks={marks}
-              value={[0, this.getValueByKey(settingsTempData, item.key)]}
-              onChange={(value) => this.onChangeSilde(value, item.key)}
+              value={[0, getValueByKey(settingsTempData, item.key)]}
+              onChange={(value) => onChangeSilde(value, item.key)}
             />
           </div>
         </>
@@ -477,16 +481,15 @@ class SalaryStructureTemplate extends PureComponent {
       <div key={item.key} className={styles.inputBefore}>
         <Input
           addonBefore={item.unit}
-          value={this.convertValue(item.value)}
-          onChange={(e) => this.handleChange(e, item.key)}
-          onBlur={(e) => this.onBlur(e, item.key)}
+          value={convertValue(item.value)}
+          onChange={(e) => handleChange(e, item.key)}
+          onBlur={(e) => onBlur(e, item.key)}
         />
       </div>
     );
   };
 
-  _renderBottomBar = () => {
-    const { isEditingSalary, salaryAcceptanceStatus, loadingEditSalary = false } = this.props;
+  const _renderBottomBar = () => {
     return (
       <div className={styles.bottomBar}>
         {isEditingSalary ? (
@@ -494,7 +497,7 @@ class SalaryStructureTemplate extends PureComponent {
             <Space size={24}>
               <Button
                 type="secondary"
-                onClick={this.onCancel}
+                onClick={onCancel}
                 className={styles.bottomBar__button__secondary}
               >
                 Cancel
@@ -502,7 +505,7 @@ class SalaryStructureTemplate extends PureComponent {
               <Button
                 type="primary"
                 htmlType="submit"
-                onClick={this.onClickSubmit}
+                onClick={onClickSubmit}
                 className={styles.bottomBar__button__prmary}
               >
                 Update
@@ -514,7 +517,7 @@ class SalaryStructureTemplate extends PureComponent {
             <Space>
               <Button
                 type="secondary"
-                onClick={this.onClickPrev}
+                onClick={onClickPrev}
                 className={styles.bottomBar__button__secondary}
               >
                 Previous
@@ -522,7 +525,7 @@ class SalaryStructureTemplate extends PureComponent {
               <Button
                 type="primary"
                 htmlType="submit"
-                onClick={this.onClickNext}
+                onClick={onClickNext}
                 className={styles.bottomBar__button__prmary}
                 loading={loadingEditSalary}
               >
@@ -536,147 +539,251 @@ class SalaryStructureTemplate extends PureComponent {
     );
   };
 
-  render() {
-    const {
-      // salaryTempData,
-      department = {},
-      workLocation = {},
-      loadingFetchTable,
-      salaryTempData: { country = '' } = {},
-      settingsTempData: settings = [],
-      grade = {},
-      title = {},
-      isEditingSalary,
-    } = this.props;
-    const { openModal } = this.state;
+  const _renderSalaryTable = () => {
     return (
-      <div className={styles.salaryStructureTemplate}>
-        <Row gutter={[8, 8]}>
-          <Col xs={24} sm={24} md={6} lg={6}>
-            <p className={styles.p_title_select}>Grade</p>
-            <div className={styles.salaryStructureTemplate_select}>
-              <Input value={grade.name} size="large" disabled />
-            </div>
+      <div className={styles.salaryStructureTemplate_table}>
+        <Row className={styles.salary}>
+          <Col span={12} className={styles.salary__left}>
+            {settingsTempData.map(
+              (item) =>
+                item.key !== 'total_compensation' && (
+                  <div
+                    key={item.key}
+                    className={
+                      isEditingSalary &&
+                      salaryCountry === 'VN' &&
+                      (item.key === 'basic' ||
+                        item.key === 'lunch_allowance' ||
+                        item.key === 'petrol_allowance' ||
+                        item.key === 'mobile_internet_allowance')
+                        ? styles.salary__left__textEdit
+                        : styles.salary__left__text
+                    }
+                  >
+                    {item.title}
+                  </div>
+                ),
+            )}
           </Col>
-          <Col xs={24} sm={24} md={6} lg={6}>
-            <p className={styles.p_title_select}>Department</p>
-            <div className={styles.salaryStructureTemplate_select}>
-              <Input
-                value={department ? department.name : department || null}
-                size="large"
-                disabled
-              />
-            </div>
-          </Col>
-          <Col xs={24} sm={24} md={6} lg={6}>
-            <p className={styles.p_title_select}>Location</p>
-            <div className={styles.salaryStructureTemplate_select}>
-              <Input
-                value={workLocation ? workLocation.name : workLocation || null}
-                size="large"
-                disabled
-              />
-            </div>
-          </Col>
-          <Col xs={24} sm={24} md={6} lg={6}>
-            <p className={styles.p_title_select}> Job title</p>
-            <div className={styles.salaryStructureTemplate_select}>
-              <Input value={title ? title.name : title || null} size="large" disabled />
-            </div>
+          <Col
+            span={12}
+            className={
+              isEditingSalary && salaryCountry === 'VN'
+                ? styles.salary__right && styles.salary__right__VN
+                : styles.salary__right
+            }
+          >
+            {settingsTempData.map((item) => {
+              if (item.key !== 'total_compensation') {
+                if (item.key === 'salary_13')
+                  return (
+                    <div key={item.key} className={styles.salary__right__text}>
+                      {item.value !== 0
+                        ? renderSingle(item.value, item.unit)
+                        : '(Basic/12) x The number of months work'}
+                    </div>
+                  );
+                return _renderValue(item);
+              }
+              return '';
+            })}
           </Col>
         </Row>
-        {this.checkKey('lunch_allowance') && (
-          <Row className={styles.noteAllowance}>Allowances value as per month</Row>
-        )}
-        {loadingFetchTable ? (
-          <Spin className={styles.spin} />
-        ) : (
-          <>
-            <div className={styles.salaryStructureTemplate_table}>
-              <Row className={styles.salary}>
-                <Col span={12} className={styles.salary__left}>
-                  {settings.map(
-                    (item) =>
-                      item.key !== 'total_compensation' && (
-                        <div
-                          key={item.key}
-                          className={
-                            isEditingSalary &&
-                            country === 'VN' &&
-                            (item.key === 'basic' ||
-                              item.key === 'lunch_allowance' ||
-                              item.key === 'petrol_allowance' ||
-                              item.key === 'mobile_internet_allowance')
-                              ? styles.salary__left__textEdit
-                              : styles.salary__left__text
-                          }
-                        >
-                          {item.title}
-                        </div>
-                      ),
-                  )}
-                </Col>
-                <Col
-                  span={12}
-                  className={
-                    isEditingSalary && country === 'VN'
-                      ? styles.salary__right && styles.salary__right__VN
-                      : styles.salary__right
-                  }
-                >
-                  {settings.map((item) => {
-                    if (item.key !== 'total_compensation') {
-                      if (item.key === 'salary_13')
-                        return (
-                          <div key={item.key} className={styles.salary__right__text}>
-                            {item.value !== 0
-                              ? this.renderSingle(item.value, item.unit)
-                              : '(Basic/12) x The number of months work'}
-                          </div>
-                        );
-                      return this._renderVaule(item);
-                    }
-                    return '';
-                  })}
-                </Col>
-              </Row>
-              <Row className={styles.salaryTotal}>
-                <Col span={12} className={styles.salaryTotal__left}>
-                  {settings.map(
-                    (item) =>
-                      item.key === 'total_compensation' && (
-                        <div key={item.key} className={styles.salaryTotal__left__text}>
-                          {item.title}
-                        </div>
-                      ),
-                  )}
-                </Col>
-                <Col span={12} className={styles.salaryTotal__right}>
-                  {settings.map(
-                    (item) =>
-                      item.key === 'total_compensation' && (
-                        <div key={item.key} className={styles.salaryTotal__right__text}>
-                          {this.renderSingle(item.value, item.unit)}
-                        </div>
-                      ),
-                  )}
-                </Col>
-              </Row>
-            </div>
-            {this._renderBottomBar()}
-          </>
-        )}
-        <SalaryReference
-          openModal={openModal === 'SalaryReference'}
-          onCancel={() => this.setState({ openModal: '' })}
-        />
-        <ModalWaitAccept
-          openModal={openModal === 'ModalWaitAccept'}
-          onCancel={() => this.setState({ openModal: '' })}
-        />
+        <Row className={styles.salaryTotal}>
+          <Col span={12} className={styles.salaryTotal__left}>
+            {settingsTempData.map(
+              (item) =>
+                item.key === 'total_compensation' && (
+                  <div key={item.key} className={styles.salaryTotal__left__text}>
+                    {item.title}
+                  </div>
+                ),
+            )}
+          </Col>
+          <Col span={12} className={styles.salaryTotal__right}>
+            {settingsTempData.map(
+              (item) =>
+                item.key === 'total_compensation' && (
+                  <div key={item.key} className={styles.salaryTotal__right__text}>
+                    {renderSingle(item.value, item.unit)}
+                  </div>
+                ),
+            )}
+          </Col>
+        </Row>
       </div>
     );
-  }
-}
+  };
 
-export default SalaryStructureTemplate;
+  const _renderIndiaSalaryTable = () => {
+    const annualTotal = settingsTempData.find((x) => x.key === 'total_compensation') || {};
+    const final = settingsTempData.find((x) => x.key === 'total_cost_company') || {};
+    const eligible_variable_pay =
+      settingsTempData.find((x) => x.key === 'eligible_variable_pay') || {};
+    const annual_retention_bonus =
+      settingsTempData.find((x) => x.key === 'annual_retention_bonus') || {};
+
+    const salaryFields = settingsTempData.filter(
+      (x) =>
+        ![
+          'total_cost_company',
+          'total_compensation',
+          'eligible_variable_pay',
+          'annual_retention_bonus',
+        ].includes(x.key),
+    );
+
+    return (
+      <div className={styles.indiaContainer}>
+        <div className={styles.inputs}>
+          <Row gutter={[16, 16]} align="middle">
+            <Col span={10}>
+              <span>Employee Eligible for Variable Pay</span>
+            </Col>
+            <Col span={8}>
+              <div className={styles.salary__right__inputAfter}>
+                <Input
+                  addonAfter="% of basics"
+                  disabled={!isEditingSalary}
+                  value={convertVeriable(eligible_variable_pay.value)}
+                  onChange={(e) => calculationForIndia(e, eligible_variable_pay.key)}
+                />
+              </div>
+            </Col>
+            <Col span={6} />
+
+            <Col span={10}>
+              <span>Employee One Time Annual Retention Bonus</span>
+            </Col>
+            <Col span={8}>
+              <div className={styles.inputBefore}>
+                <Input
+                  addonBefore="INR"
+                  disabled={!isEditingSalary}
+                  value={convertVeriable(annual_retention_bonus.value)}
+                  onChange={(e) => calculationForIndia(e, annual_retention_bonus.key)}
+                />
+              </div>
+            </Col>
+            <Col span={6} />
+          </Row>
+        </div>
+
+        <div className={styles.tableBody}>
+          <div className={styles.content}>
+            <div className={styles.leftSide} style={{ border: 'none' }}>
+              <span className={styles.title}>Annual Total Compensation</span>
+            </div>
+
+            <div className={styles.rightSide}>
+              {isEditingSalary ? (
+                <div className={styles.inputBefore}>
+                  <Input
+                    addonBefore="INR"
+                    value={convertVeriable(annualTotal.value)}
+                    onChange={(e) => calculationForIndia(e, annualTotal.key)}
+                  />
+                </div>
+              ) : (
+                <span className={styles.value}>
+                  {renderSingle(annualTotal.value, annualTotal.unit)}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.content}>
+            <div className={styles.leftSide}>
+              {salaryFields.map((x) => (
+                <span className={styles.itemTitle}>{x.title}</span>
+              ))}
+            </div>
+            <div className={styles.rightSide}>
+              {salaryFields.map((x) => (
+                <span className={styles.itemValue} key={x.key}>
+                  {renderSingle(x.value, x.unit)}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className={styles.content} style={{ border: 'none' }}>
+            <div className={styles.leftSide}>
+              <span className={styles.title}>Total Cost to Company</span>
+            </div>
+            <div className={styles.rightSide}>
+              <span className={styles.value}>{renderSingle(final.value, final.unit)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className={styles.salaryStructureTemplate}>
+      <Row gutter={[8, 8]}>
+        <Col xs={24} sm={24} md={6} lg={6}>
+          <p className={styles.p_title_select}>Grade</p>
+          <div className={styles.salaryStructureTemplate_select}>
+            <Input value={grade.name} size="large" disabled />
+          </div>
+        </Col>
+        <Col xs={24} sm={24} md={6} lg={6}>
+          <p className={styles.p_title_select}>Department</p>
+          <div className={styles.salaryStructureTemplate_select}>
+            <Input
+              value={department ? department.name : department || null}
+              size="large"
+              disabled
+            />
+          </div>
+        </Col>
+        <Col xs={24} sm={24} md={6} lg={6}>
+          <p className={styles.p_title_select}>Location</p>
+          <div className={styles.salaryStructureTemplate_select}>
+            <Input
+              value={workLocation ? workLocation.name : workLocation || null}
+              size="large"
+              disabled
+            />
+          </div>
+        </Col>
+        <Col xs={24} sm={24} md={6} lg={6}>
+          <p className={styles.p_title_select}> Job title</p>
+          <div className={styles.salaryStructureTemplate_select}>
+            <Input value={title ? title.name : title || null} size="large" disabled />
+          </div>
+        </Col>
+      </Row>
+      {checkKey('lunch_allowance') && (
+        <Row className={styles.noteAllowance}>Allowances value as per month</Row>
+      )}
+
+      <Spin spinning={loadingFetchTable}>
+        {salaryCountry === 'IN' && option === SALARY_STRUCTURE_OPTION.TOTAL_COMPENSATION
+          ? _renderIndiaSalaryTable()
+          : _renderSalaryTable()}
+      </Spin>
+
+      {_renderBottomBar()}
+
+      <SalaryReference
+        openModal={openModal === 'SalaryReference'}
+        onCancel={() => setOpenModal('')}
+      />
+      <ModalWaitAccept
+        openModal={openModal === 'ModalWaitAccept'}
+        onCancel={() => setOpenModal('')}
+      />
+    </div>
+  );
+};
+
+export default connect(({ loading, newCandidateForm, user }) => ({
+  loadingTable: loading.effects['newCandidateForm/saveSalaryStructure'],
+  loadingFetchTable: loading.effects['newCandidateForm/fetchTableData'],
+  loadingEditSalary: loading.effects['newCandidateForm/updateByHR'],
+  user,
+  newCandidateForm,
+}))(SalaryStructureTemplate);

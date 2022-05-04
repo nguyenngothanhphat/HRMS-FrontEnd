@@ -75,7 +75,7 @@ const CarryForwardItem = (props) => {
 
   useEffect(() => {
     setSuffixText(
-      TIME_TEXT[configs[CARRY_FORWARD_POLICY]?.[index]?.[MAXIMUM_CARRY_FORWARD_VALUE]?.[UNIT]] ||
+      TIME_TEXT[configs?.[CARRY_FORWARD_POLICY]?.[index]?.[MAXIMUM_CARRY_FORWARD_VALUE]?.[UNIT]] ||
         TIME_TEXT.d,
     );
   }, [JSON.stringify(configs)]);
