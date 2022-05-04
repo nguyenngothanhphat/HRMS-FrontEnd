@@ -30,8 +30,8 @@ const LeaveInformation = (props) => {
 
     commonLeaves.forEach((type) => {
       if (type.type === TIMEOFF_TYPE.A) {
-        taken += type.taken;
-        total += type.total;
+        taken += type.taken * 1;
+        total += type.total * 1;
       }
     });
 
