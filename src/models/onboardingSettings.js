@@ -1,5 +1,5 @@
-import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
+import { dialog } from '@/utils/utils';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import {
   addInsurance,
@@ -9,6 +9,7 @@ import {
   getListBenefit,
   deleteBenefit,
   addDocument,
+  changeSalaryStructureOption,
 } from '../services/onboardingSettings';
 
 const onboardingSettings = {
@@ -178,6 +179,25 @@ const onboardingSettings = {
         dialog(errors);
         return {};
       }
+    },
+
+    *changeSalaryStructureOption({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(changeSalaryStructureOption, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
 

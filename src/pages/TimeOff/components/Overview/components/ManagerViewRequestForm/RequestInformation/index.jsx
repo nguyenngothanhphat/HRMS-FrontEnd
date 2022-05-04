@@ -29,10 +29,8 @@ const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DELETED } = TIMEOFF_STATUS;
   permissions,
   loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
   loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
-  loadingApproveRequest: loading.effects['timeOff/reportingManagerApprove'],
-  loadingRejectRequest: loading.effects['timeOff/reportingManagerReject'],
-  loadingManagerApproveWithdrawRequest: loading.effects['timeOff/managerApproveWithdrawRequest'],
-  loadingManagerRejectWithdrawRequest: loading.effects['timeOff/managerRejectWithdrawRequest'],
+  loadingApproveRequest: loading.effects['timeOff/approveRequest'],
+  loadingRejectRequest: loading.effects['timeOff/rejectRequest'],
   loadingFetchProjectsOfEmployee: loading.effects['timeOff/fetchProjectsListByEmployee'],
 }))
 class RequestInformation extends PureComponent {
@@ -132,7 +130,7 @@ class RequestInformation extends PureComponent {
   onApproveClicked = async (_id) => {
     const { dispatch } = this.props;
     const res = await dispatch({
-      type: 'timeOff/reportingManagerApprove',
+      type: 'timeOff/approveRequest',
       payload: {
         _id,
       },
@@ -166,7 +164,7 @@ class RequestInformation extends PureComponent {
     const { commentContent } = this.state;
     const { dispatch } = this.props;
     const res = await dispatch({
-      type: 'timeOff/reportingManagerReject',
+      type: 'timeOff/rejectRequest',
       payload: {
         _id,
         comment: commentContent,
@@ -182,7 +180,7 @@ class RequestInformation extends PureComponent {
   onApproveWithdrawClicked = async (_id) => {
     const { dispatch } = this.props;
     const res = await dispatch({
-      type: 'timeOff/managerApproveWithdrawRequest',
+      type: 'timeOff/approveRequest',
       payload: {
         _id,
       },
@@ -199,7 +197,7 @@ class RequestInformation extends PureComponent {
   onRejectWithdrawClicked = async (_id) => {
     const { dispatch } = this.props;
     const res = await dispatch({
-      type: 'timeOff/managerRejectWithdrawRequest',
+      type: 'timeOff/rejectRequest',
       payload: {
         _id,
       },
@@ -391,11 +389,8 @@ class RequestInformation extends PureComponent {
       timeOff: { viewingLeaveRequest = {}, projectsList = [] } = {},
       currentUser: { employee: { _id: myId = '' } = {} } = {},
       permissions = {},
-      loadingFetchLeaveRequestById,
       loadingApproveRequest,
       loadingRejectRequest,
-      loadingManagerApproveWithdrawRequest,
-      loadingManagerRejectWithdrawRequest,
       // loadingFetchProjectsOfEmployee,
     } = this.props;
     const {
@@ -424,7 +419,7 @@ class RequestInformation extends PureComponent {
 
     // only manager accept/reject a ticket
     // const isMyTicket = (myId === managerId && status !== ON_HOLD) || viewHRTimeoff;
-    const isMyTicket = myId === managerId || (viewHRTimeoff && status !== ON_HOLD);
+    const isMyTicket = myId === managerId || viewHRTimeoff;
 
     return (
       <div className={styles.RequestInformation}>
@@ -626,14 +621,14 @@ class RequestInformation extends PureComponent {
             <span className={styles.note}>Withdrawing an approved request</span>
             <div className={styles.formButtons}>
               <Button
-                loading={loadingManagerRejectWithdrawRequest}
+                loading={loadingRejectRequest}
                 type="link"
                 onClick={() => this.onRejectWithdrawClicked(_id)}
               >
                 Reject withdrawal
               </Button>
               <Button
-                loading={loadingManagerApproveWithdrawRequest}
+                loading={loadingApproveRequest}
                 onClick={() => this.onApproveWithdrawClicked(_id)}
               >
                 Accept withdrawal

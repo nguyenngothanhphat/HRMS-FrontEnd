@@ -228,7 +228,7 @@ class EditModal extends PureComponent {
         ? SUPPORT_TEAM.filter(
             (x) =>
               !settingTicketList.some((y) => y.name === x.name) ||
-              x.name === viewingSettingTicket.name,
+              x.name === viewingSettingTicket?.name,
           )
         : SUPPORT_TEAM.filter((x) => !settingTicketList.some((y) => y.name === x.name));
 
