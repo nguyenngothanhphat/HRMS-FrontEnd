@@ -6,7 +6,10 @@ import styles from './index.less';
 
 const NoticePeriodLeaveAccrualPolicy = () => {
   return (
-    <Card title="New Hire Proration Policy" className={styles.NoticePeriodLeaveAccrualPolicy}>
+    <Card
+      title="Notice Period Leave Accrual Policy"
+      className={styles.NoticePeriodLeaveAccrualPolicy}
+    >
       <Row gutter={[24, 24]} align="middle">
         <Col sm={10}>
           <span className={styles.label}>Leave accrues during notice period ?</span>
