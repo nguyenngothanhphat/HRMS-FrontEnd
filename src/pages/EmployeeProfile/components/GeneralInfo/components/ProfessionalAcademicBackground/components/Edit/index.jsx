@@ -76,7 +76,7 @@ class Edit extends PureComponent {
     const { newSkillList } = this.state;
     const listSkill = [];
     newSkills.forEach((item) => {
-      if (!item.__isNew__ ) {
+      if (!item.__isNew__) {
         listSkill.push(item.value ? item.value : item._id);
       }
     });
