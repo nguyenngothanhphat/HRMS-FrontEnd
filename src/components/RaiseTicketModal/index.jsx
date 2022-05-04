@@ -36,6 +36,7 @@ const RaiseTicketModal = (props) => {
     currentUser: { employee: { _id: myEmployeeID = '' } = {} || {} } = {} || {},
     loadingFetchListEmployee = false,
     loadingFetchDepartments = false,
+    loadingAddTicket = false,
     listDepartment = [],
   } = props;
   const { listEmployee, loadingUploadAttachment = false } = props;
@@ -404,6 +405,12 @@ const RaiseTicketModal = (props) => {
               form="myForm"
               key="submit"
               htmlType="submit"
+              disabled={
+                loadingAddTicket ||
+                loadingFetchDepartments ||
+                loadingFetchListEmployee ||
+                loadingUploadAttachment
+              }
             >
               Submit
             </Button>
@@ -431,5 +438,6 @@ export default connect(
     loadingUploadAttachment: loading.effects['ticketManagement/uploadFileAttachments'],
     loadingFetchListEmployee: loading.effects['ticketManagement/fetchListEmployee'],
     loadingFetchDepartments: loading.effects['ticketManagement/fetchDepartments'],
+    loadingAddTicket: loading.effects['ticketManagement/addTicket'],
   }),
 )(RaiseTicketModal);

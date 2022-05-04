@@ -32,8 +32,9 @@ const ticketManagement = {
     selectedLocations: [getCurrentLocation()],
   },
   effects: {
-    *addTicket({ payload }, { call, put }) {
+    *addTicket({ payload }, { call, put, select }) {
       let response;
+      const { selectedLocations } = yield select((state) => state.ticketManagement);
       try {
         response = yield call(addTicket, {
           ...payload,
@@ -47,6 +48,7 @@ const ticketManagement = {
           type: 'refreshListAllTicket',
           payload: {
             status: ['New'],
+            location: selectedLocations,
             tenantId: getCurrentTenant(),
             company: getCurrentCompany(),
           },
