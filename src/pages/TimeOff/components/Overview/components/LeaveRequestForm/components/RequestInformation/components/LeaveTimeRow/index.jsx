@@ -62,7 +62,7 @@ const LeaveTimeRow = (props) => {
             key={`${index + 1}`}
             justify="center"
             align="center"
-            gutter={[0, 8]}
+            gutter={[4, 8]}
           >
             <Col span={TIMEOFF_COL_SPAN_2.DATE}>
               {moment(eachDate).locale('en').format(TIMEOFF_DATE_FORMAT)}
@@ -134,7 +134,7 @@ const LeaveTimeRow = (props) => {
           key={`${index + 1}`}
           justify="center"
           align="center"
-          gutter={[0, 8]}
+          gutter={[4, 8]}
         >
           <Col span={TIMEOFF_COL_SPAN_1.DATE}>
             {moment(eachDate).locale('en').format(TIMEOFF_DATE_FORMAT)}
