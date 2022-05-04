@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button } from 'antd';
+import { Table, Button, Popover, Avatar } from 'antd';
 import { formatMessage, history } from 'umi';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
 import UserProfilePopover from '../UserProfilePopover';
 import DeleteCustomerModalContent from './components/DeleteCustomerModalContent';
 import DeleteIcon from '@/assets/customerManagement/delete.svg';
@@ -33,6 +34,31 @@ const TableCustomers = (props) => {
     history.push(`/customer-management/customers/customer-profile/${customerId}/projects`);
   };
 
+  const renderDba = (dba, record) => {
+    const { generalInfo: { avatar = '' } = {} } = record;
+
+    const popupImg = () => {
+      return (
+        <div className={styles.popupImg}>
+          <img src={avatar || DefaultAvatar} alt="avatar" />
+        </div>
+      );
+    };
+
+    return (
+      <div className={styles.directoryTableName}>
+        <Popover placement="rightTop" content={popupImg} trigger="hover">
+          {avatar ? (
+            <Avatar size="medium" className={styles.avatar} src={avatar} alt="avatar" />
+          ) : (
+            <Avatar className={styles.avatar_emptySrc} alt="avatar" />
+          )}
+        </Popover>
+        <span className={styles.blueText}>{dba}</span>
+      </div>
+    );
+  };
+
   const generateColumns = () => {
     const columns = [
       {
@@ -57,7 +83,7 @@ const TableCustomers = (props) => {
         dataIndex: 'dba',
         align: 'center',
         width: '10%',
-        render: (dba) => <span className={styles.blueText}>{dba}</span>,
+        render: (dba, record) => <span className={styles.blueText}>{renderDba(dba, record)}</span>,
       },
       {
         title: formatMessage({ id: 'page.customermanagement.openLeads' }),

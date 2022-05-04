@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Col, Divider, Row, Tag, Tooltip } from 'antd';
 import { connect, Link } from 'umi';
 import avtDefault from '@/assets/avtDefault.jpg';
+import CustomModal from '@/components/CustomModal';
 import ModalUpload from '@/components/ModalUpload';
 import EditCustomerModalContent from '../EditCustomerModalContent';
 import linkedinIcon from '@/assets/linkedinIcon.svg';
@@ -10,9 +11,12 @@ import websiteIcon from '@/assets/websiteIcon.svg';
 import plusIcon from '../../../../assets/plus-Icon.svg';
 import s from '../../index.less';
 import CommonModal from '../CommonModal';
+import { getCurrentTenant } from '@/utils/authority';
 
 const ViewInformation = (props) => {
   const [isEditCustomer, setIsEditCustomer] = useState(false);
+  const [visible, setVisible] = useState(false);
+
   const { permissions = {}, profileOwner = false, info = {} } = props;
   const {
     accountOwner: { generalInfo: { legalName: nameLegal = '', avatar = '' } = {} } = {} || {},
@@ -33,6 +37,39 @@ const ViewInformation = (props) => {
   //   return avtDefault;
   // };
 
+  const openModalUpload = () => {
+    setVisible(true);
+  };
+
+  const handleCancel = () => {
+    setVisible(false);
+  };
+
+  const getResponse = (resp) => {
+    // const {
+    //   dispatch,
+    //   generalData: { _id: id = '', employee = '' } = {},
+    //   myEmployeeID = '',
+    // } = this.props;
+    // const { statusCode, data = [] } = resp;
+    // const check = employee === myEmployeeID;
+    // if (statusCode === 200) {
+    //   const [first] = data;
+    //   handleCancel();
+    //   dispatch({
+    //     type: 'employeeProfile/updateGeneralInfo',
+    //     payload: {
+    //       id,
+    //       avatar: first.url,
+    //       tenantId: getCurrentTenant(),
+    //     },
+    //     dataTempKept: {},
+    //     key: 'noKey',
+    //     isUpdateMyAvt: check,
+    //   });
+    // }
+  };
+
   return (
     <div className={s.viewRight__infoEmployee} style={{ position: 'relative' }}>
       <Button className={s.btnEdit} onClick={() => setIsEditCustomer(true)}>
@@ -47,7 +84,7 @@ const ViewInformation = (props) => {
       {/* {(permissions.updateAvatarEmployee !== -1 || profileOwner) && ( */}
       <img
         src="/assets/images/iconUploadImage.svg"
-        // onClick={openModalUpload}
+        onClick={openModalUpload}
         alt="img-upload"
         className={s.infoEmployee__imgAvt__upload}
       />
@@ -161,18 +198,13 @@ const ViewInformation = (props) => {
           </Tooltip>
         </div>
       </div>
-      {/* <ModalUpload
-          titleModal="Profile Picture Update"
-          visible={visible}
-          handleCancel={this.handleCancel}
-          widthImage="40%"
-          getResponse={this.getResponse}
-        />
-        <CustomModal
-          open={openEditBio}
-          closeModal={this.handleEditBio}
-          content={this._renderFormEditBio()}
-        /> */}
+      <ModalUpload
+        titleModal="Profile Picture Update"
+        visible={visible}
+        handleCancel={handleCancel}
+        widthImage="40%"
+        getResponse={getResponse}
+      />
       <CommonModal
         visible={isEditCustomer}
         onClose={() => setIsEditCustomer(false)}
