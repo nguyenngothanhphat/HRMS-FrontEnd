@@ -35,7 +35,7 @@ const TableCustomers = (props) => {
   };
 
   const renderDba = (dba, record) => {
-    const { generalInfo: { avatar = '' } = {} } = record;
+    const { avatar = '' } = record;
 
     const popupImg = () => {
       return (
@@ -46,13 +46,14 @@ const TableCustomers = (props) => {
     };
 
     return (
-      <div className={styles.directoryTableName}>
+      <div>
         <Popover placement="rightTop" content={popupImg} trigger="hover">
-          {avatar ? (
-            <Avatar size="medium" className={styles.avatar} src={avatar} alt="avatar" />
-          ) : (
-            <Avatar className={styles.avatar_emptySrc} alt="avatar" />
-          )}
+          <Avatar
+            size="medium"
+            style={{ marginRight: '10px' }}
+            src={avatar || DefaultAvatar}
+            alt="avatar"
+          />
         </Popover>
         <span className={styles.blueText}>{dba}</span>
       </div>
@@ -81,8 +82,8 @@ const TableCustomers = (props) => {
       {
         title: formatMessage({ id: 'page.customermanagement.companyAlias' }),
         dataIndex: 'dba',
-        align: 'center',
-        width: '10%',
+        align: 'left',
+        width: '15%',
         render: (dba, record) => <span className={styles.blueText}>{renderDba(dba, record)}</span>,
       },
       {
