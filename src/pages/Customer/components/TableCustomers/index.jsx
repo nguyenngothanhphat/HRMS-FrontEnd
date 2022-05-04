@@ -28,6 +28,11 @@ const TableCustomers = (props) => {
     history.push(`/customer-management/customers/customer-profile/${account}`);
   };
 
+  const handleViewProject = (record) => {
+    const { customerId = '' } = record;
+    history.push(`/customer-management/customers/customer-profile/${customerId}/projects`);
+  };
+
   const generateColumns = () => {
     const columns = [
       {
@@ -77,11 +82,13 @@ const TableCustomers = (props) => {
       },
       {
         title: formatMessage({ id: 'page.customermanagement.activeProjects' }),
-        dataIndex: 'activeProjects',
+        dataIndex: 'activeProject',
         width: '10%',
         align: 'center',
-        render: (activeProjects) => (
-          <span className={styles.blueText}>{activeProjects?.length}</span>
+        render: (activeProject, record) => (
+          <span className={styles.blueText} onClick={() => handleViewProject(record)}>
+            {activeProject}
+          </span>
         ),
       },
       {

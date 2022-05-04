@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Col, Divider, Row, Tag, Tooltip } from 'antd';
 import { connect, Link } from 'umi';
 import avtDefault from '@/assets/avtDefault.jpg';
+import ModalUpload from '@/components/ModalUpload';
 import EditCustomerModalContent from '../EditCustomerModalContent';
 import linkedinIcon from '@/assets/linkedinIcon.svg';
 import MockCustomerLogo from '@/assets/mockCustomerLogo.png';
