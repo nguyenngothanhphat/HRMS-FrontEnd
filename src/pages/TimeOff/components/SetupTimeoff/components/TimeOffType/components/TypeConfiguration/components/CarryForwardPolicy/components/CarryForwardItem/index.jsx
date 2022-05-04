@@ -1,4 +1,4 @@
-import { Col, Form, Input, InputNumber, Popconfirm, Radio, Row } from 'antd';
+import { Col, Form, Input, Popconfirm, Radio, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { convertDaysToHours, convertHoursToDays, FORM_ITEM_NAME, TIME_TEXT } from '@/utils/timeOff';
@@ -107,11 +107,11 @@ const CarryForwardItem = (props) => {
                 name={[name, FROM]}
                 rules={[{ required: true, message: 'Required field!' }]}
               >
-                <InputNumber placeholder="0" min={0} max={100} />
+                <Input placeholder="0" type="number" />
               </Form.Item>
               <span>Years to Less than</span>
               <Form.Item name={[name, TO]} rules={[{ required: true, message: 'Required field!' }]}>
-                <InputNumber placeholder="0" min={0} max={100} />
+                <Input placeholder="0" type="number" />
               </Form.Item>
               <span>Years of Service</span>
             </div>
@@ -138,7 +138,7 @@ const CarryForwardItem = (props) => {
                   name={[name, VALUE]}
                   rules={[{ required: true, message: 'Required field!' }]}
                 >
-                  <InputNumber suffix={suffixText} type="number" min={0} max={100000} defaultValue="0" />
+                  <Input suffix={suffixText} type="number" min={0} max={100000} defaultValue="0" />
                 </Form.Item>
               </div>
 
