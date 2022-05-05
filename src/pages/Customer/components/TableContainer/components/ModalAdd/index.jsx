@@ -233,7 +233,7 @@ class ModalAdd extends PureComponent {
                 name="dba"
                 rules={[{ required: true, message: 'Required field!' }]}
               >
-                <Input placeholder="Enter Company short name" />
+                <Input placeholder="Enter the Company's DBA" />
               </Form.Item>
             </div>
 
