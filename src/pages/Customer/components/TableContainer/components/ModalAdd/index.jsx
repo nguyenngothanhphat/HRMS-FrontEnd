@@ -77,7 +77,6 @@ class ModalAdd extends PureComponent {
       });
     }
     if (props.customerID !== customerID) {
-      console.log('customerID', customerID);
       this.refForm?.current?.setFieldsValue({ customerID });
     }
   }
@@ -304,8 +303,7 @@ class ModalAdd extends PureComponent {
                       showSearch
                       optionFilterProp="children"
                       filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                     >
                       {country.map((countryItem) => {
                         return (
@@ -330,8 +328,7 @@ class ModalAdd extends PureComponent {
                       showSearch
                       optionFilterProp="children"
                       filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                     >
                       {state.map((stateItem) => {
                         return <Select.Option key={stateItem}>{stateItem}</Select.Option>;
@@ -379,8 +376,7 @@ class ModalAdd extends PureComponent {
                       showSearch
                       optionFilterProp="children"
                       filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                     >
                       {employeeList.map((employee) => {
                         return (

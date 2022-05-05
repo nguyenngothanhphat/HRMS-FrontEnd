@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Col, Divider, Row, Tag, Tooltip, Spin } from 'antd';
 import { connect, Link } from 'umi';
-import avtDefault from '@/assets/avtDefault.jpg';
 import ModalUpload from '@/components/ModalUpload';
 import EditCustomerModalContent from '../EditCustomerModalContent';
 import linkedinIcon from '@/assets/linkedinIcon.svg';
@@ -16,17 +15,12 @@ const ViewInformation = (props) => {
   const [isEditCustomer, setIsEditCustomer] = useState(false);
   const [visible, setVisible] = useState(false);
 
+  const { info = {}, loadingInfo = false, dispatch } = props;
   const {
-    permissions = {},
-    profileOwner = false,
-    info = {},
-    loadingInfo = false,
-    dispatch,
-  } = props;
-  const {
-    accountOwner: { generalInfo: { legalName: nameLegal = '', avatar = '' } = {} } = {} || {},
+    accountOwner: { generalInfo: { legalName: nameLegal = '' } = {} } = {} || {},
     tags = [],
     dba = '',
+    avatar = '',
     legalName = '',
     status = '',
     pendingTickets = '',

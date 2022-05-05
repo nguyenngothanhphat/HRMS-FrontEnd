@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Popover, Avatar } from 'antd';
-import { formatMessage, history } from 'umi';
+import { formatMessage, history, connect } from 'umi';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import UserProfilePopover from '../UserProfilePopover';
 import DeleteCustomerModalContent from './components/DeleteCustomerModalContent';
@@ -15,7 +15,10 @@ const TableCustomers = (props) => {
     loadingCustomer = false,
     loadingFilter = false,
     dispatch,
+    permissions,
   } = props;
+
+  const viewDeleteCustomer = permissions.deleteCustomerManagement !== -1;
 
   const [pageSelected, setPageSelected] = useState(1);
   const [selectedCustomer, setSelectedCustomer] = useState('');
@@ -34,7 +37,7 @@ const TableCustomers = (props) => {
     history.push(`/customer-management/customers/customer-profile/${customerId}/projects`);
   };
 
-  const renderDba = (dba, record) => {
+  const renderCustomerId = (customerId, record) => {
     const { avatar = '' } = record;
 
     const popupImg = () => {
@@ -55,26 +58,26 @@ const TableCustomers = (props) => {
             alt="avatar"
           />
         </Popover>
-        <span className={styles.blueText}>{dba}</span>
+        <span className={styles.blueText}>{customerId}</span>
       </div>
     );
   };
 
   const generateColumns = () => {
-    const columns = [
+    let columns = [
       {
         title: formatMessage({ id: 'page.customermanagement.customerID' }),
         dataIndex: 'customerId',
         align: 'center',
         fixed: 'left',
-        width: '10%',
-        render: (customerId) => {
+        width: '15%',
+        render: (customerId, record) => {
           return (
             <div
               style={{ fontWeight: '700', color: '#2C6DF9' }}
               onClick={() => handleProfile(customerId)}
             >
-              {customerId}
+              {renderCustomerId(customerId, record)}
             </div>
           );
         },
@@ -83,8 +86,8 @@ const TableCustomers = (props) => {
         title: formatMessage({ id: 'page.customermanagement.companyAlias' }),
         dataIndex: 'dba',
         align: 'left',
-        width: '15%',
-        render: (dba, record) => <span className={styles.blueText}>{renderDba(dba, record)}</span>,
+        width: '10%',
+        render: (dba) => <span className={styles.blueText}>{dba}</span>,
       },
       {
         title: formatMessage({ id: 'page.customermanagement.openLeads' }),
@@ -143,6 +146,7 @@ const TableCustomers = (props) => {
       {
         title: 'Action',
         key: 'action',
+        dataIndex: 'action',
         align: 'center',
         width: '5%',
         render: (record) => {
@@ -164,6 +168,9 @@ const TableCustomers = (props) => {
       },
     ];
 
+    if (!viewDeleteCustomer) {
+      columns = columns.filter((column) => !['action'].includes(column.dataIndex));
+    }
     return columns.map((col) => ({
       ...col,
       title: col.title,
@@ -243,4 +250,6 @@ const TableCustomers = (props) => {
   );
 };
 
-export default TableCustomers;
+export default connect(({ user: { permissions = {} } = {} }) => ({
+  permissions,
+}))(TableCustomers);

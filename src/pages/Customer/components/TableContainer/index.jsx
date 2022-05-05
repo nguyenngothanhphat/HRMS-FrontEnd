@@ -55,6 +55,7 @@ class TableContainer extends PureComponent {
       type: 'customerManagement/filterListCustomer',
       payload: {
         status: values.byStatus,
+        dba: values.byDba,
         tenantId: getCurrentTenant(),
         company: getCurrentCompany(),
         // companyName: i.name,
@@ -173,21 +174,21 @@ class TableContainer extends PureComponent {
     return number;
   };
 
-  showDot = (obj) => !Object.values(obj).every((x) => !x);
+  showDot = (obj) => !Object.values(obj).every((o) => !o);
 
   render() {
     const { Content } = Layout;
+
     const { TabPane } = Tabs;
     const {
       listCustomer,
       loadingCustomer,
       companyList = [],
-      filter = {},
+      // filter = {},
       loadingFilter = false,
     } = this.props;
     const { isShown } = this.state;
     const tabs = [{ id: 1, name: `Customers (${this.addZeroToNumber(listCustomer.length)})` }];
-
     const listStatus = [
       <Select.Option key="Engaging">Engaging</Select.Option>,
       <Select.Option key="Active">Active</Select.Option>,
@@ -211,7 +212,8 @@ class TableContainer extends PureComponent {
           Add new customer
         </div>
         <FilterPopover realTime placement="bottomRight" content={contentFilter}>
-          <FilterButton fontSize={14} showDot={this.showDot(filter)} />
+          {/* <FilterButton fontSize={14} showDot={this.showDot(filter)} /> */}
+          <FilterButton fontSize={14} />
         </FilterPopover>
         <div className={styles.searchInp}>
           <Input

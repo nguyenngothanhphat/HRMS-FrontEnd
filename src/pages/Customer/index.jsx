@@ -35,13 +35,11 @@ class Customer extends PureComponent {
         ...customerFilterListPayload,
       },
     });
-
+    const { data = '' } = getListExport;
     const downloadLink = document.createElement('a');
     const universalBOM = '\uFEFF';
     // downloadLink.href = `data:text/csv;charset=utf-8,${escape(getListExport)}`;
-    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
-      universalBOM + getListExport,
-    )}`;
+    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(universalBOM + data)}`;
     downloadLink.download = 'customers.csv';
     document.body.appendChild(downloadLink);
     downloadLink.click();
