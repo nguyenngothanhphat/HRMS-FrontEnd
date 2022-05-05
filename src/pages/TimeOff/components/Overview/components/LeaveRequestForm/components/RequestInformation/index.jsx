@@ -284,7 +284,7 @@ const RequestInformation = (props) => {
 
       result = dateLists.map((value, index) => {
         return {
-          date: value,
+          date: moment(value).format('YYYY-MM-DD'),
           timeOfDay: WHOLE_DAY,
           startTime: getTime(showAllDateList ? leaveTimeLists[index].startTime : startTimeDefault),
           endTime: getTime(showAllDateList ? leaveTimeLists[index].endTime : endTimeDefault),
@@ -296,14 +296,14 @@ const RequestInformation = (props) => {
         // type C,D
         result = dateLists.map((value) => {
           return {
-            date: value,
+            date: moment(value).format('YYYY-MM-DD'),
             timeOfDay: WHOLE_DAY,
           };
         });
       } else {
         result = dateLists.map((value, index) => {
           return {
-            date: value,
+            date: moment(value).format('YYYY-MM-DD'),
             timeOfDay: leaveTimeLists[index].period,
           };
         });
