@@ -45,11 +45,11 @@ class TableCustomers extends PureComponent {
         },
       },
       {
-        title: formatMessage({ id: 'page.customermanagement.companyAlias' }),
-        dataIndex: 'dba',
+        title: formatMessage({ id: 'page.customermanagement.companyName' }),
+        dataIndex: 'legalName',
         align: 'center',
         width: '10%',
-        render: (dba) => <span className={styles.blueText}>{dba}</span>,
+        render: (legalName) => <span className={styles.blueText}>{legalName}</span>,
       },
       {
         title: formatMessage({ id: 'page.customermanagement.openLeads' }),
