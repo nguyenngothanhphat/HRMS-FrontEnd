@@ -24,7 +24,7 @@ export default class SpecialLeaveBox extends PureComponent {
           <Progress
             type="circle"
             percent={100}
-            width={50}
+            width={52}
             strokeColor={color}
             strokeWidth={2}
             format={() => this.renderCircle(days, color)}

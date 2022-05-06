@@ -1,59 +1,79 @@
-import { Button, Col, Divider, Row, Tag, Tooltip } from 'antd';
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import { Button, Col, Divider, Row, Tag, Tooltip, Spin } from 'antd';
 import { connect, Link } from 'umi';
-import avtDefault from '@/assets/avtDefault.jpg';
+import ModalUpload from '@/components/ModalUpload';
+import EditCustomerModalContent from '../EditCustomerModalContent';
 import linkedinIcon from '@/assets/linkedinIcon.svg';
 import MockCustomerLogo from '@/assets/mockCustomerLogo.png';
 import websiteIcon from '@/assets/websiteIcon.svg';
 import plusIcon from '../../../../assets/plus-Icon.svg';
 import s from '../../index.less';
+import CommonModal from '@/components/CommonModal';
+import { getCurrentTenant } from '@/utils/authority';
 
-// import { getCurrentTenant } from '@/utils/authority';
+const ViewInformation = (props) => {
+  const [isEditCustomer, setIsEditCustomer] = useState(false);
+  const [visible, setVisible] = useState(false);
 
-@connect(({ loading, customerProfile: { info = {} } = {} }) => ({
-  info,
-  loadingInfo: loading.effects['customerProfile/fetchCustomerInfo'],
-}))
-class ViewInformation extends Component {
-  getAvatarUrl = (avatar, isShowAvatar) => {
-    const { permissions = {}, profileOwner = false } = this.props;
-    if (isShowAvatar || permissions.viewAvatarEmployee !== -1 || profileOwner)
-      return avatar || avtDefault;
-    return avtDefault;
+  const { info = {}, loadingInfo = false, dispatch } = props;
+  const {
+    accountOwner: { generalInfo: { legalName: nameLegal = '' } = {} } = {} || {},
+    tags = [],
+    dba = '',
+    avatar = '',
+    legalName = '',
+    status = '',
+    pendingTickets = '',
+    pendingTasks = '',
+    activeProject = '',
+    customerId = '',
+    openLeads = '',
+  } = info || {};
+
+  // const getAvatarUrl = (avatar, isShowAvatar) => {
+  //   if (isShowAvatar || permissions.viewAvatarEmployee !== -1 || profileOwner)
+  //     return avatar || avtDefault;
+  //   return avtDefault;
+  // };
+
+  const openModalUpload = () => {
+    setVisible(true);
   };
 
-  render() {
-    const { info, listTag } = this.props;
-    const {
-      accountOwner: {
-        generalInfo: { legalName: nameLegal = '', avatar = '' } = {},
-        company: { name = '' } = {},
-      } = {} || {},
-      tags = [],
-      legalName = '',
-      status = '',
-      pendingTickets = '',
-      pendingTasks = '',
-      activeProject = '',
-      customerId = '',
-      openLeads = '',
-    } = info || {};
-    // const { avatar = '', linkedIn = '', workEmail = '' } = generalData;
+  const handleCancel = () => {
+    setVisible(false);
+  };
 
-    // const { tittle: { name: title = '' } = {} } = compensationData;
-    // const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
+  const getResponse = (resp) => {
+    const { statusCode, data = [] } = resp;
+    //  const check = employee === myEmployeeID;
+    if (statusCode === 200) {
+      const [first] = data;
+      handleCancel();
+      dispatch({
+        type: 'customerProfile/updateCustomerEffect',
+        payload: {
+          customerId,
+          avatar: first.url,
+          tenantId: getCurrentTenant(),
+        },
+      });
+      dispatch({
+        type: 'customerProfile/fetchCustomerInfo',
+        payload: {
+          id: customerId,
+        },
+      });
+      handleCancel();
+    }
+  };
 
-    // const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
-
-    // if (loading)
-    //   return (
-    //     <div className={s.viewLoading}>
-    //       <Spin />
-    //     </div>
-    //   );
-    return (
+  return (
+    <Spin spinning={loadingInfo}>
       <div className={s.viewRight__infoEmployee} style={{ position: 'relative' }}>
-        <Button className={s.btnEdit}>Edit</Button>
+        <Button className={s.btnEdit} onClick={() => setIsEditCustomer(true)}>
+          Edit
+        </Button>
         <img
           src="/assets/images/img-cover.jpg"
           alt="img-cover"
@@ -63,28 +83,21 @@ class ViewInformation extends Component {
         {/* {(permissions.updateAvatarEmployee !== -1 || profileOwner) && ( */}
         <img
           src="/assets/images/iconUploadImage.svg"
-          onClick={this.openModalUpload}
+          onClick={openModalUpload}
           alt="img-upload"
           className={s.infoEmployee__imgAvt__upload}
         />
-        {/* )} */}
         <div className={s.infoEmployee__textNameAndTitle}>
           <p className={s.infoEmployee__textNameAndTitle__name}>{legalName}</p>
-          {/* <p className={s.infoEmployee__textNameAndTitle__title} style={{ margin: '5px 0' }}>
-            {title ? title.name : ''}
-          </p> */}
         </div>
         <div className={s.infoEmployee__viewBottom}>
-          {/* {(permissions.editShowAvatarEmployee !== -1 || profileOwner) && ( */}
-
-          {/* <Divider /> */}
           <div className={s.infoEmployee__viewBottom__row}>
             <Row>
               <Col span={18}>
                 <p className={s.label}>Company alias (DBA):</p>
               </Col>
               <Col span={6}>
-                <p className={s.value}>{name}</p>
+                <p className={s.value}>{dba}</p>
               </Col>
             </Row>
             <Row>
@@ -164,12 +177,6 @@ class ViewInformation extends Component {
               </Col>
             </Row>
           </div>
-          {/* <p className={s.titleTag}>Skills</p>
-          <div> */}
-          {/* {formatListSkill.map((item) => ( */}
-          {/* <Tag>Tuan LUOngw</Tag> */}
-          {/* ))} */}
-          {/* </div> */}
           <Divider />
           <p>Tags</p>
           {tags.map((item) => {
@@ -190,21 +197,35 @@ class ViewInformation extends Component {
             </Tooltip>
           </div>
         </div>
-        {/* <ModalUpload
+        <ModalUpload
           titleModal="Profile Picture Update"
           visible={visible}
-          handleCancel={this.handleCancel}
+          handleCancel={handleCancel}
           widthImage="40%"
-          getResponse={this.getResponse}
+          getResponse={getResponse}
         />
-        <CustomModal
-          open={openEditBio}
-          closeModal={this.handleEditBio}
-          content={this._renderFormEditBio()}
-        /> */}
+        <CommonModal
+          visible={isEditCustomer}
+          onClose={() => setIsEditCustomer(false)}
+          firstText="Edit Customer"
+          secondText="Cancel"
+          title="Edit Customer"
+          // loading={loadingUpdateProject}
+          content={
+            <EditCustomerModalContent
+              visible={isEditCustomer}
+              onClose={() => setIsEditCustomer(false)}
+              selectedProject={info}
+            />
+          }
+          width={700}
+        />
       </div>
-    );
-  }
-}
+    </Spin>
+  );
+};
 
-export default ViewInformation;
+export default connect(({ loading, customerProfile: { info = {} } = {} }) => ({
+  info,
+  loadingInfo: loading.effects['customerProfile/fetchCustomerInfo'],
+}))(ViewInformation);

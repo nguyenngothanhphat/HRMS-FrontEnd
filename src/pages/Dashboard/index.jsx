@@ -11,6 +11,7 @@ import MyTeam from './components/MyTeam';
 import Tasks from './components/Tasks';
 import Timesheets from './components/Timesheets';
 import styles from './index.less';
+import { goToTop } from '@/utils/utils';
 
 const SortableItem = SortableElement(({ widgets, value }) => {
   const find = widgets.find((w1) => w1.id === value);
@@ -153,6 +154,10 @@ const Dashboard = (props) => {
     });
   }, [_id]);
 
+  useEffect(() => {
+    goToTop()
+  }, [])
+  
   // RENDER UI
   const renderHello = (name = '') => {
     return (

@@ -527,7 +527,7 @@ class TeamLeaveTable extends PureComponent {
           pagination={data.length === 0 ? null : { ...pagination, total }}
           columns={tableByRole}
           dataSource={data}
-          scroll={scroll}
+          scroll={data.length > 0 ? scroll : null}
           rowKey={(id) => id._id}
           locale={{
             emptyText: (
@@ -538,7 +538,6 @@ class TeamLeaveTable extends PureComponent {
             ),
           }}
         />
-        {data.length === 0 && <div className={styles.paddingContainer} />}
         <RejectCommentModal
           visible={commentModalVisible}
           onClose={() => this.toggleCommentModal(false)}

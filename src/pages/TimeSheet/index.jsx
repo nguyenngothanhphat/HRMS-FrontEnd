@@ -4,6 +4,7 @@ import { connect } from 'umi';
 import { TIMESHEET_DATE_FORMAT } from '@/utils/dashboard';
 import SimpleView from './components/SimpleView';
 import ComplexView from './components/ComplexView';
+import { goToTop } from '@/utils/utils';
 
 const TimeSheet = (props) => {
   const {
@@ -18,6 +19,7 @@ const TimeSheet = (props) => {
 
   // clear state when unmounting
   useEffect(() => {
+    goToTop()
     return () => {
       dispatch({
         type: 'timeSheet/clearState',

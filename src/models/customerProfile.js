@@ -13,6 +13,7 @@ import getCustomerInfo, {
   getDocument,
   getDocumentType,
   getNotes,
+  editCustomer,
   // project
   getProjectList,
   getTagList,
@@ -511,6 +512,22 @@ const customerProfile = {
           payload: {
             projectStatusList: data,
           },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *updateCustomerEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(editCustomer, {
+          ...payload,
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
         });
       } catch (errors) {
         dialog(errors);
