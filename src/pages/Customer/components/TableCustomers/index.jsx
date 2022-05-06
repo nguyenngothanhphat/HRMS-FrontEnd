@@ -14,6 +14,7 @@ const TableCustomers = (props) => {
     listCustomer = [],
     loadingCustomer = false,
     loadingFilter = false,
+    loadingDeleteProject = false,
     dispatch,
     permissions,
   } = props;
@@ -236,7 +237,7 @@ const TableCustomers = (props) => {
         firstText="Delete"
         secondText="Cancel"
         title="Delete Project"
-        // loading={loadingDeleteProject}
+        loading={loadingDeleteProject}
         content={
           <DeleteCustomerModalContent
             onClose={() => setIsDeleteCustomer(false)}
@@ -250,6 +251,7 @@ const TableCustomers = (props) => {
   );
 };
 
-export default connect(({ user: { permissions = {} } = {} }) => ({
+export default connect(({ loading, user: { permissions = {} } = {} }) => ({
   permissions,
+  loadingDeleteProject: loading.effects['customerManagement/removeCustomerEffect'],
 }))(TableCustomers);

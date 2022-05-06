@@ -68,7 +68,6 @@ class TableContainer extends PureComponent {
         dba: values.byDba,
         tenantId: getCurrentTenant(),
         company: getCurrentCompany(),
-        // companyName: i.name,
       },
     });
     dispatch({
@@ -136,7 +135,6 @@ class TableContainer extends PureComponent {
       email,
       addressLine1,
       addressLine2,
-      // country,
       state,
       city,
       zipCode,
@@ -172,7 +170,6 @@ class TableContainer extends PureComponent {
         type: 'customerManagement/fetchCustomerList',
       });
       const { isShown } = this.state;
-      // form.resetFields();
       this.setState({
         isShown: !isShown,
       });
@@ -211,7 +208,6 @@ class TableContainer extends PureComponent {
       <Select.Option key="Engaging">Engaging</Select.Option>,
       <Select.Option key="Active">Active</Select.Option>,
       <Select.Option key="Inactive">Inactive</Select.Option>,
-      // <Select.Option key="negotiation">Negotiation</Select.Option>,
     ];
     const contentFilter = (
       <>
@@ -231,7 +227,6 @@ class TableContainer extends PureComponent {
         </div>
         <FilterPopover realTime placement="bottomRight" content={contentFilter}>
           <FilterButton fontSize={14} showDot={this.showDot(filter)} />
-          {/* <FilterButton fontSize={14} /> */}
         </FilterPopover>
         <div className={styles.searchInp}>
           <Input
@@ -269,7 +264,6 @@ class TableContainer extends PureComponent {
                     handleAddNew={this.handleAddNew}
                     onCloseModal={this.onCloseModal}
                   />
-                  {/* <TabFilter /> */}
                 </Layout>
               </TabPane>
             ))}
