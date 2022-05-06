@@ -142,6 +142,13 @@ class MyLeaveTable extends PureComponent {
     },
   ];
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      rowSize: 10,
+    };
+  }
+
   // view request
   viewRequest = (_id) => {
     history.push({
@@ -151,7 +158,10 @@ class MyLeaveTable extends PureComponent {
   };
 
   // pagination
-  onChangePagination = (pageNumber) => {
+  onChangePagination = (pageNumber, pageSize) => {
+    this.setState({
+      rowSize: pageSize,
+    });
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/savePaging',
@@ -220,7 +230,10 @@ class MyLeaveTable extends PureComponent {
           of {totals}{' '}
         </span>
       ),
-      pageSize: limit,
+      defaultPageSize: this.state.rowSize,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
+      pageSize: this.state.rowSize,
       current: page,
       onChange: this.onChangePagination,
     };
@@ -236,7 +249,8 @@ class MyLeaveTable extends PureComponent {
           // size="middle"
           loading={tableLoading}
           // rowSelection={rowSelection}
-          pagination={{ ...pagination, total }}
+          //if data.length > 10, pagination will appear
+          pagination={data.length === 0 ? null : { ...pagination }}
           columns={this.columns}
           dataSource={data}
           scroll={scroll}

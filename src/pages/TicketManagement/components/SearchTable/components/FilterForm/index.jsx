@@ -15,6 +15,7 @@ const FilterForm = (props) => {
     employeeAssigneeList = [],
     employeeRaiseList = [],
     currentStatus = '',
+    selectedLocations = [],
     loadingFetchEmployeeRaiseListEffect,
     loadingFetchEmployeeAssigneeListEffect,
     dispatch,
@@ -182,6 +183,7 @@ const FilterForm = (props) => {
       payload: {
         ...payload,
         status: currentStatus,
+        location: selectedLocations,
       },
     });
     dispatch({
@@ -391,6 +393,7 @@ export default connect(
       listOffAllTicket = [],
       employeeAssigneeList = [],
       employeeRaiseList = [],
+      selectedLocations = [],
     } = {},
   }) => ({
     currentStatus,
@@ -398,6 +401,7 @@ export default connect(
     locationsList,
     employeeRaiseList,
     employeeAssigneeList,
+    selectedLocations,
     loadingFetchListAllTicket: loading.effects['ticketManagement/fetchListAllTicket'],
     loadingFetchEmployeeRaiseListEffect:
       loading.effects['ticketManagement/fetchEmployeeRaiseListEffect'],

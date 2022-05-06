@@ -12,10 +12,11 @@ const { Panel } = Collapse;
 const LeaveInformation = (props) => {
   const {
     onInformationClick = () => {},
-    timeOff: { yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {} } = {},
+    timeOff: {
+      yourTimeOffTypes,
+      yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
+    } = {},
     viewDocumentVisible = false,
-    dispatch,
-    user: { currentUser: { location = {} } = {} } = {},
   } = props;
 
   const [isShow, setIsShow] = useState(false);
@@ -23,31 +24,27 @@ const LeaveInformation = (props) => {
   const [percentMainCircle, setPercentMainCircle] = useState(0);
 
   const calculateValueForCircleProgress = () => {
-    let remainingTemp = 0;
     let total = 0;
+    let taken = 0;
     let result = 0;
 
     commonLeaves.forEach((type) => {
-      if (type === TIMEOFF_TYPE.A) {
-        remainingTemp += type.total - type.taken;
-        total += type.total;
+      if (type.type === TIMEOFF_TYPE.A) {
+        taken += type.taken * 1;
+        total += type.total * 1;
       }
-      result = roundNumber(remainingTemp / total);
     });
-    setRemaining(remainingTemp);
+
+    result = ((total - taken) * 100) / total;
+    setRemaining(total - taken);
     setPercentMainCircle(result);
   };
 
   useEffect(() => {
-    dispatch({
-      type: 'timeOff/fetchLeaveBalanceOfUser',
-      payload: {
-        location: location?._id || '',
-      },
-    });
-
-    calculateValueForCircleProgress();
-  }, []);
+    if (yourTimeOffTypes) {
+      calculateValueForCircleProgress();
+    }
+  }, [JSON.stringify(yourTimeOffTypes)]);
 
   const handleShow = () => {
     setIsShow(!isShow);

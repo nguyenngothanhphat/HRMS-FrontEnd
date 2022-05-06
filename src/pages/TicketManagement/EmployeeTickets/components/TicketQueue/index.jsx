@@ -5,10 +5,9 @@ import { debounce } from 'lodash';
 
 import SearchTable from '../../../components/SearchTable';
 import TableTickets from '../TableTickets';
-import TicketInfo from '../TicketInfo';
-
 import styles from './index.less';
 import FilterCount from '../../../components/FilterCount/FilterCount';
+import TicketInQueue from '../TicketInQueue';
 
 @connect(
   ({
@@ -133,7 +132,7 @@ class TicketQueue extends Component {
     return (
       <>
         <div>
-          <TicketInfo countData={countData} />
+          <TicketInQueue countData={countData} />
         </div>
         <div className={styles.containerTickets}>
           <div className={styles.tabTickets}>

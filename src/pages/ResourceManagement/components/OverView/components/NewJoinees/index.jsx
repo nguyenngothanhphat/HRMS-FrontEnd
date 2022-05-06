@@ -105,7 +105,7 @@ const NewJoinees = (props) => {
           list={newJoineeList}
           loading={loadingFetch}
           scrollable
-          limit={5}
+          // limit={5}
         />
       </div>
     </Card>
