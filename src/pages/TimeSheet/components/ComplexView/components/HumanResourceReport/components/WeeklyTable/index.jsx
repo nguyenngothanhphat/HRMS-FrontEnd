@@ -113,10 +113,9 @@ const WeeklyTable = (props) => {
     onChange: onSelectChange,
   };
 
-  const onChangePagination = (pageNumber, pageSize) => {
+  const onChangePagination = (pageNumber, pageSizeTemp) => {
     setPageSelected(pageNumber);
-    setPageSize(pageSize);
-    console.log(data);
+    setPageSize(pageSizeTemp);
   };
 
   const pagination = {
@@ -134,7 +133,7 @@ const WeeklyTable = (props) => {
     ),
     defaultPageSize: pageSize,
     showSizeChanger: true,
-    pageSize: pageSize,
+    pageSize,
     pageSizeOptions: ['10', '25', '50', '100'],
     current: pageSelected,
     onChange: onChangePagination,

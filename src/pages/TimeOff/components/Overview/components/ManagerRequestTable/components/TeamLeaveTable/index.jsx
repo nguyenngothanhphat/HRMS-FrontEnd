@@ -50,7 +50,7 @@ class TeamLeaveTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      pageSelected: 1,
+      // pageSelected: 1,
       rowSize: 10,
       selectedRowKeys: [],
       commentModalVisible: false,
@@ -304,7 +304,7 @@ class TeamLeaveTable extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/savePaging',
-      payload: { page: pageNumber, pageSize },
+      payload: { page: pageNumber, limit: pageSize },
     });
   };
 
@@ -534,7 +534,7 @@ class TeamLeaveTable extends PureComponent {
           // size="middle"
           loading={tableLoading}
           // rowSelection={rowSelection}
-          //if data.length > 10, pagination will appear
+          // if data.length > 10, pagination will appear
           pagination={data.length === 0 ? null : { ...pagination }}
           columns={tableByRole}
           dataSource={data}

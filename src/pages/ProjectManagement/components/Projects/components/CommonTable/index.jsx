@@ -32,7 +32,6 @@ class CommonTable extends Component {
       columns,
       loading = false,
       page = 1,
-
       total: totalProp,
       isBackendPaging = false,
     } = this.props;

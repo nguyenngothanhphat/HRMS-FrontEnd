@@ -84,20 +84,45 @@ const ManagerRequestTable = (props) => {
         >
           <>
             <TabPane tab="Leave Requests" key="1">
-              <RequestScopeTabs tab={1} tabName="Leave Requests" type={1} />
+              <RequestScopeTabs
+                saveCurrentTypeTab={saveCurrentTypeTab}
+                tab={1}
+                tabName="Leave Requests"
+                type={1}
+              />
             </TabPane>
             <TabPane tab="Special Leave Requests" key="2">
-              <RequestScopeTabs tab={2} tabName="Special Leave Requests" type={1} />
+              <RequestScopeTabs
+                saveCurrentTypeTab={saveCurrentTypeTab}
+                tab={2}
+                tabName="Special Leave Requests"
+                type={1}
+              />
             </TabPane>
             <TabPane tab="LWP Requests" key="3">
-              <RequestScopeTabs tab={3} tabName="LWP Requests" type={1} />
+              <RequestScopeTabs
+                saveCurrentTypeTab={saveCurrentTypeTab}
+                tab={3}
+                tabName="LWP Requests"
+                type={1}
+              />
             </TabPane>
             <TabPane tab="WFH/CP Requests" key="4">
-              <RequestScopeTabs tab={4} tabName="WFH/CP Requests" type={1} />
+              <RequestScopeTabs
+                saveCurrentTypeTab={saveCurrentTypeTab}
+                tab={4}
+                tabName="WFH/CP Requests"
+                type={1}
+              />
             </TabPane>
             {eligibleForCompOff && (
               <TabPane tab="Compoff Requests" key="5">
-                <RequestScopeTabs tab={5} tabName="Compoff Requests" type={2} />
+                <RequestScopeTabs
+                  saveCurrentTypeTab={saveCurrentTypeTab}
+                  tab={5}
+                  tabName="Compoff Requests"
+                  type={2}
+                />
               </TabPane>
             )}
           </>

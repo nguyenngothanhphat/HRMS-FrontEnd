@@ -157,7 +157,7 @@ class TeamCompoffTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      pageSelected: 1,
+      // pageSelected: 1,
       rowSize: 10,
       selectedRowKeys: [],
       commentModalVisible: false,
@@ -235,7 +235,7 @@ class TeamCompoffTable extends PureComponent {
   onChangePagination = (pageNumber, pageSize) => {
     this.setState({
       rowSize: pageSize,
-      pageSelected: pageNumber,
+      // pageSelected: pageNumber,
     });
     const { dispatch } = this.props;
     dispatch({
@@ -399,6 +399,7 @@ class TeamCompoffTable extends PureComponent {
       commentModalVisible,
       rejectingTicketID,
       rejectMultiple,
+      rowSize,
     } = this.state;
     // const rowSize = 10;
 

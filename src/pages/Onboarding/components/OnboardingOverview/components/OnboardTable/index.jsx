@@ -629,8 +629,9 @@ class OnboardTable extends Component {
             </Menu.Item>
             <Menu.Item>
               <div
-                onClick={() =>
-                  this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate)
+                onClick={
+                  () => this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate)
+                  // eslint-disable-next-line react/jsx-curly-newline
                 }
               >
                 Initiate joining formalities
@@ -656,8 +657,9 @@ class OnboardTable extends Component {
         {isHRManager && processStatusId !== OFFER_ACCEPTED && processStatusId !== JOINED && (
           <Menu.Item>
             <div
-              onClick={() =>
-                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)
+              onClick={
+                () => this.handleReassignModal(true, currentEmpId, id, processStatusId, type)
+                // eslint-disable-next-line react/jsx-curly-newline
               }
               className={styles.actionText}
             >

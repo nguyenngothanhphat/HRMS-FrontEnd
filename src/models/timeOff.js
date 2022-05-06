@@ -1188,8 +1188,8 @@ const timeOff = {
       return {
         ...state,
         paging: {
-          page: action.payload.page,
-          limit: action.payload.pageSize,
+          ...paging,
+          ...action.payload,
         },
       };
     },

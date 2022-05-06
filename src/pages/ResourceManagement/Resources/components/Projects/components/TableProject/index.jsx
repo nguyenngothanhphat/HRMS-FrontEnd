@@ -42,7 +42,7 @@ class TableProject extends Component {
     } else {
       this.setState({
         pageSelected: pageNumber,
-        pageSize: pageSize,
+        pageSize,
       });
     }
   };
@@ -60,7 +60,7 @@ class TableProject extends Component {
   };
 
   render() {
-    const { pageSelected } = this.state;
+    const { pageSelected, pageSize } = this.state;
     const {
       data = [],
       loading = false,
@@ -84,10 +84,10 @@ class TableProject extends Component {
           {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
         </span>
       ),
-      defaultPageSize: this.state.pageSize,
+      defaultPageSize: pageSize,
       showSizeChanger: true,
       pageSizeOptions: ['10', '25', '50', '100'],
-      pageSize: this.state.pageSize,
+      pageSize,
       current: isBackendPaging ? page : pageSelected,
       onChange: this.onChangePagination,
     };
