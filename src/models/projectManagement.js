@@ -31,6 +31,7 @@ const initialState = {
   tagList: [],
   divisionList: [],
   employeeList: [],
+  filter: {},
   customerInfo: {},
 };
 
@@ -353,6 +354,12 @@ const ProjectManagement = {
     },
   },
   reducers: {
+    clearFilter(state) {
+      return {
+        ...state,
+        filter: {},
+      };
+    },
     save(state, action) {
       return {
         ...state,

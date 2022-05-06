@@ -6,6 +6,7 @@ import { debounce } from 'lodash';
 import SearchTable from '../../../components/SearchTable';
 import TableTickets from '../TableTickets';
 import styles from './index.less';
+import FilterCount from '../../../components/FilterCount/FilterCount';
 import TicketInQueue from '../TicketInQueue';
 
 @connect(
@@ -28,6 +29,9 @@ class TicketQueue extends Component {
       pageSelected: 1,
       size: 10,
       nameSearch: '',
+      applied: 0,
+      form: '',
+      isFiltering: false,
     };
 
     this.setDebounce = debounce((nameSearch) => {
@@ -84,6 +88,35 @@ class TicketQueue extends Component {
     this.setDebounce(formatValue);
   };
 
+  handleFilterCounts = (values) => {
+    const filteredObj = Object.entries(values).filter(
+      ([key, value]) => (value !== undefined && value.length > 0) || value?.isValid,
+    );
+    const newObj = Object.fromEntries(filteredObj);
+    this.setState({
+      applied: Object.keys(newObj).length,
+      isFiltering: true,
+    });
+  };
+
+  setForm = (form) => {
+    this.setState({
+      form,
+    });
+  };
+
+  setApplied = () => {
+    this.setState({
+      applied: 0,
+    });
+  };
+
+  setIsFiltering = () => {
+    this.setState({
+      isFiltering: false,
+    });
+  };
+
   render() {
     const {
       data = [],
@@ -95,7 +128,7 @@ class TicketQueue extends Component {
     const dataTableDeparment = data.filter((item) => {
       return item.department_assign === _id;
     });
-    const { pageSelected, size } = this.state;
+    const { pageSelected, size, form, applied, isFiltering } = this.state;
     return (
       <>
         <div>
@@ -103,7 +136,18 @@ class TicketQueue extends Component {
         </div>
         <div className={styles.containerTickets}>
           <div className={styles.tabTickets}>
-            <SearchTable onChangeSearch={this.onChangeSearch} />
+            <FilterCount
+              applied={applied}
+              form={form}
+              setApplied={this.setApplied}
+              setIsFiltering={this.setIsFiltering}
+            />
+            <SearchTable
+              onChangeSearch={this.onChangeSearch}
+              handleFilterCounts={this.handleFilterCounts}
+              setForm={this.setForm}
+              isFiltering={isFiltering}
+            />
           </div>
           <TableTickets
             data={dataTableDeparment}

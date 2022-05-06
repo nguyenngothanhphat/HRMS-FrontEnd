@@ -9,30 +9,41 @@ class MenuFilter extends PureComponent {
     this.refForm = React.createRef();
   }
 
+  componentDidMount = () => {
+    const { setForm = () => {} } = this.props;
+    setForm(this.refForm.current);
+  };
+
   handleChange = () => {
     console.log('acacadfadf');
   };
 
   render() {
-    const { listStatus = [], companyList = [] } = this.props;
+    const { listStatus = [] } = this.props;
+    let { companyList = [] } = this.props;
     const yesNo = [
       <Select.Option key="yes">Yes</Select.Option>,
       <Select.Option key="no">No</Select.Option>,
     ];
-    const { onSubmit = () => {} } = this.props;
+    const { onSubmit = () => {}, onSearch = () => {} } = this.props;
+    companyList = companyList.map((company) => company.legalName);
+    companyList = [...new Set(companyList)];
     return (
       <div className={style.menuFilter}>
         <Form
           ref={this.refForm}
           layout="vertical"
           name="filter"
-          onFinish={(values) => {
-            onSubmit(values);
+          onValuesChange={(value) => {
+            onSearch(value);
           }}
+          // onFinish={(values) => {
+          //   onSubmit(values);
+          // }}
         >
           <Form.Item label="By Status" name="byStatus">
             <Select
-              // mode="multiple"
+              mode="multiple"
               allowClear
               style={{ width: '100%' }}
               placeholder="Please select"
@@ -49,8 +60,10 @@ class MenuFilter extends PureComponent {
               placeholder="Please select"
               onChange={this.handleChange}
             >
-              {companyList.map((company) => (
-                <Option value={company.legalName}>{company.legalName}</Option>
+              {companyList.map((company, index) => (
+                <Option key={index} value={company}>
+                  {company}
+                </Option>
               ))}
             </Select>
           </Form.Item>

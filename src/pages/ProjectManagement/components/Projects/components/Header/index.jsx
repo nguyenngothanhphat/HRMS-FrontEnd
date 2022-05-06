@@ -1,4 +1,5 @@
-import { Button, Select, Skeleton } from 'antd';
+import { Tag, Button, Select, Skeleton } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 import { debounce } from 'lodash';
 import React, { Suspense, useEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -25,6 +26,7 @@ const Header = (props) => {
     loadingAddProject = false,
   } = props;
   const [addProjectModalVisible, setAddProjectModalVisible] = useState(false);
+  const [applied, setApplied] = useState(0);
 
   // permissions
   const addProjectPermission = permissions.addProject !== -1;
@@ -50,9 +52,15 @@ const Header = (props) => {
     fetchProjectList(payload);
     if (Object.keys(payload).length > 0) {
       setIsFiltering(true);
+      setApplied(Object.keys(payload).length);
     } else {
       setIsFiltering(false);
+      setApplied(0);
     }
+  };
+
+  const clearFilter = () => {
+    onFilter({});
   };
 
   useEffect(() => {
@@ -89,8 +97,19 @@ const Header = (props) => {
           </Select>
         </div>
       </div>
-
       <div className={styles.Header__right}>
+        {applied > 0 && (
+          <Tag
+            className={styles.tagCountFilter}
+            closable
+            closeIcon={<CloseOutlined />}
+            onClose={() => {
+              clearFilter();
+            }}
+          >
+            {applied} applied
+          </Tag>
+        )}
         {addProjectPermission && (
           <Button
             onClick={() => setAddProjectModalVisible(true)}
