@@ -8,7 +8,12 @@ import Settings from './components/Settings';
 import TableContainer from './components/TableContainer';
 import style from './index.less';
 
-@connect()
+@connect(
+  ({ customerManagement: { customerListPayload = {}, customerFilterListPayload = {} } = {} }) => ({
+    customerListPayload,
+    customerFilterListPayload,
+  }),
+)
 class Customer extends PureComponent {
   componentDidMount() {
     const {
@@ -21,18 +26,20 @@ class Customer extends PureComponent {
   }
 
   exportCustomers = async () => {
-    const { dispatch } = this.props;
+    const { dispatch, customerListPayload = {}, customerFilterListPayload = {} } = this.props;
 
     const getListExport = await dispatch({
       type: 'customerManagement/exportReport',
+      payload: {
+        ...customerListPayload,
+        ...customerFilterListPayload,
+      },
     });
-
+    const { data = '' } = getListExport;
     const downloadLink = document.createElement('a');
     const universalBOM = '\uFEFF';
     // downloadLink.href = `data:text/csv;charset=utf-8,${escape(getListExport)}`;
-    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
-      universalBOM + getListExport,
-    )}`;
+    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(universalBOM + data)}`;
     downloadLink.download = 'customers.csv';
     document.body.appendChild(downloadLink);
     downloadLink.click();

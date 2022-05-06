@@ -213,3 +213,15 @@ export async function getProjectList(payload) {
     API_KEYS.PROJECT_API,
   );
 }
+
+export async function editCustomer(payload) {
+  return request(
+    `/api-customer/customertenant/update-customer-info`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.CUSTOMER_API,
+  );
+}

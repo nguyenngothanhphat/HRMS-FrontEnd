@@ -77,7 +77,6 @@ class ModalAdd extends PureComponent {
       });
     }
     if (props.customerID !== customerID) {
-      console.log('customerID', customerID);
       this.refForm?.current?.setFieldsValue({ customerID });
     }
   }
@@ -123,6 +122,7 @@ class ModalAdd extends PureComponent {
       loadingStateList,
       employeeList = [],
       loadingAdd = false,
+      listCustomer = [],
     } = this.props;
 
     return (
@@ -231,7 +231,25 @@ class ModalAdd extends PureComponent {
               <Form.Item
                 label="Doing Bussiness As(DBA)"
                 name="dba"
-                rules={[{ required: true, message: 'Required field!' }]}
+                rules={[
+                  { required: true, message: 'Required field!' },
+                  () => ({
+                    validator(_, value) {
+                      if (
+                        listCustomer.filter(
+                          (obj) =>
+                            obj?.dba?.toLowerCase().replace(/\s+/g, '') ===
+                            value?.toLowerCase().replace(/\s+/g, ''),
+                        ).length > 0
+                      ) {
+                        // eslint-disable-next-line prefer-promise-reject-errors
+                        return Promise.reject(`Doing Bussiness As(DBA) is exist.`);
+                      }
+                      // eslint-disable-next-line compat/compat
+                      return Promise.resolve();
+                    },
+                  }),
+                ]}
               >
                 <Input placeholder="Enter Company short name" />
               </Form.Item>
@@ -285,8 +303,7 @@ class ModalAdd extends PureComponent {
                       showSearch
                       optionFilterProp="children"
                       filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                     >
                       {country.map((countryItem) => {
                         return (
@@ -311,8 +328,7 @@ class ModalAdd extends PureComponent {
                       showSearch
                       optionFilterProp="children"
                       filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                     >
                       {state.map((stateItem) => {
                         return <Select.Option key={stateItem}>{stateItem}</Select.Option>;
@@ -360,8 +376,7 @@ class ModalAdd extends PureComponent {
                       showSearch
                       optionFilterProp="children"
                       filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                     >
                       {employeeList.map((employee) => {
                         return (
