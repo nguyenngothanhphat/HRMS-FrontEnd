@@ -59,7 +59,7 @@ const MaximumBalanceAllowed = (props) => {
             Maximum Leave Balance allowed (Leave accrual stops if an employee reaches this value).
           </span>
         </Col>
-        <Col sm={10}>
+        <Col sm={12}>
           <div className={styles.rightPart}>
             <div style={{ marginRight: 16 }}>
               <Form.Item name={MAXIMUM_BALANCE_ALLOWED_VALUE}>
@@ -76,7 +76,7 @@ const MaximumBalanceAllowed = (props) => {
             </div>
           </div>
         </Col>
-        <Col sm={4} />
+        <Col sm={2} />
       </Row>
     </Card>
   );
