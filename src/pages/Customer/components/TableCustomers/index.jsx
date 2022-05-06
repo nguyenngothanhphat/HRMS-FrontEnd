@@ -149,7 +149,7 @@ const TableCustomers = (props) => {
         dataIndex: 'action',
         align: 'center',
         width: '5%',
-        render: (record) => {
+        render: (a, record) => {
           return (
             <div className={styles.btnAction}>
               <Button
@@ -185,7 +185,7 @@ const TableCustomers = (props) => {
   // refresh list without losing filter, search
   const onRefresh = () => {
     dispatch({
-      type: 'projectManagement/refreshProjectList',
+      type: 'customerManagement/fetchCustomerList',
     });
   };
 
@@ -240,7 +240,7 @@ const TableCustomers = (props) => {
         content={
           <DeleteCustomerModalContent
             onClose={() => setIsDeleteCustomer(false)}
-            selectedProject={selectedCustomer}
+            selectedCustomer={selectedCustomer}
             onRefresh={onRefresh}
           />
         }

@@ -11,6 +11,7 @@ import {
   getStateListByCountry,
   getCustomerFilterList,
   exportCustomer,
+  removeCustomer,
 } from '../services/customerManagement';
 import { dialog } from '@/utils/utils';
 
@@ -182,6 +183,23 @@ const customerManagement = {
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { companyList: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *removeCustomerEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(removeCustomer, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
       } catch (errors) {
         dialog(errors);
       }

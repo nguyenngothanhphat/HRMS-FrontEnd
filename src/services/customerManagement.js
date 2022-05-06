@@ -108,3 +108,15 @@ export async function exportCustomer(payload) {
     API_KEYS.CUSTOMER_API,
   );
 }
+
+export async function removeCustomer(payload) {
+  return request(
+    `/api-customer/customertenant/remove-customer`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.CUSTOMER_API,
+  );
+}

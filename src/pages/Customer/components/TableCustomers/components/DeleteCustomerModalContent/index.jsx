@@ -9,20 +9,20 @@ const DeleteCustomerModalContent = (props) => {
     dispatch,
     onClose = () => {},
     onRefresh = () => {},
-    selectedProject: { projectName = '', id = '' } = {},
+    selectedCustomer: { customerId = '', dba = '' } = {},
   } = props;
 
   const handleFinish = async () => {
-    // const res = await dispatch({
-    //   type: 'projectManagement/deleteProjectEffect',
-    //   payload: {
-    //     id,
-    //   },
-    // });
-    // if (res.statusCode === 200) {
-    //   onRefresh();
-    //   onClose();
-    // }
+    const res = await dispatch({
+      type: 'customerManagement/removeCustomerEffect',
+      payload: {
+        customerId,
+      },
+    });
+    if (res.statusCode === 200) {
+      onRefresh();
+      onClose();
+    }
   };
 
   return (
@@ -30,7 +30,7 @@ const DeleteCustomerModalContent = (props) => {
       <Form name="basic" id="myForm" onFinish={handleFinish}>
         <Row gutter={[24, 0]} className={styles.abovePart}>
           <Col span={24}>
-            Are you sure you want to delete the item <strong>{projectName}</strong>?
+            Are you sure you want to delete the item <strong>{dba}</strong>?
           </Col>
         </Row>
       </Form>
