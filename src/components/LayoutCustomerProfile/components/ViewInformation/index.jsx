@@ -8,7 +8,7 @@ import MockCustomerLogo from '@/assets/mockCustomerLogo.png';
 import websiteIcon from '@/assets/websiteIcon.svg';
 import plusIcon from '../../../../assets/plus-Icon.svg';
 import s from '../../index.less';
-import CommonModal from '../CommonModal';
+import CommonModal from '@/components/CommonModal';
 import { getCurrentTenant } from '@/utils/authority';
 
 const ViewInformation = (props) => {
