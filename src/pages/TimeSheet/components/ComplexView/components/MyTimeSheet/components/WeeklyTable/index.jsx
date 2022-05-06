@@ -173,6 +173,7 @@ const WeeklyTable = (props) => {
                 projectName={projectName}
                 date={date}
                 tasks={value?.dailyProjectTask}
+                timeoff={value?.timeoff}
                 placement="bottomLeft"
               >
                 {!value ? (
