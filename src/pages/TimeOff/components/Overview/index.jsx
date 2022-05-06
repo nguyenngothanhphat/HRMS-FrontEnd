@@ -1,6 +1,7 @@
 import { Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
+import { goToTop } from '@/utils/utils';
 import ApplyRequest from './components/ApplyRequest';
 import EmployeeRequestTable from './components/EmployeeRequestTable';
 import LeaveHistoryAndHoliday from './components/LeaveHistoryAndHoliday';
@@ -18,7 +19,7 @@ const Overview = (props) => {
   const [isViewingInformation, setIsViewingInformation] = useState(false);
 
   useEffect(() => {
-    window.scroll({ top: 0, left: 0, behavior: 'smooth' });
+    goToTop();
   }, []);
 
   const buttonOnClickCompoff = () => {

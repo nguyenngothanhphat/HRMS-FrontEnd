@@ -1,22 +1,25 @@
 import { Button, Card, Col, Form, Radio, Row, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { FORM_ITEM_NAME } from '@/utils/timeOff';
+import { FORM_ITEM_NAME, TIMEOFF_ACCRUAL_METHOD } from '@/utils/timeOff';
 import AccrualRate from './components/AccrualRate';
 import styles from './index.less';
+
+const { UNLIMITED, DAYS_OF_YEAR, DAYS_OF_QUARTER, DAYS_OF_MONTH, DAYS_OF_FORTNIGHT } =
+  TIMEOFF_ACCRUAL_METHOD;
 
 const { ACCRUAL_POLICY_ACCRUAL_METHOD, ACCRUAL_POLICY, ACCRUAL_METHOD } = FORM_ITEM_NAME;
 
 const AccrualPolicy = (props) => {
   const { configs = {} } = props;
-  const [isUnlimited, setIsUnlimited] = useState(false);
+  const [selectedType, setSelectedType] = useState('');
 
   const onChange = (e) => {
-    setIsUnlimited(e.target.value === 'unlimited');
+    setSelectedType(e.target.value);
   };
 
   useEffect(() => {
-    setIsUnlimited(configs?.[ACCRUAL_POLICY]?.[ACCRUAL_METHOD] === 'unlimited');
+    setSelectedType(configs?.[ACCRUAL_POLICY]?.[ACCRUAL_METHOD]);
   }, [JSON.stringify(configs)]);
 
   return (
@@ -31,19 +34,19 @@ const AccrualPolicy = (props) => {
           <Radio.Group onChange={onChange}>
             <Space direction="vertical">
               <Space direction="vertical">
-                <Radio value="unlimited">Unlimited</Radio>
-                <Radio value="daysOfYear">Days / Year (Frontload)</Radio>
+                <Radio value={UNLIMITED}>Unlimited</Radio>
+                <Radio value={DAYS_OF_YEAR}>Days / Year (Frontload)</Radio>
               </Space>
               <Space direction="horizontal">
-                <Radio value="daysOfQuarter">Days / Quarter Worked</Radio>
-                <Radio value="daysOfMonth">Days / Month worked</Radio>
-                <Radio value="daysOfFortnight">Days / Fortnight worked</Radio>
+                <Radio value={DAYS_OF_QUARTER}>Days / Quarter Worked</Radio>
+                <Radio value={DAYS_OF_MONTH}>Days / Month worked</Radio>
+                <Radio value={DAYS_OF_FORTNIGHT}>Days / Fortnight worked</Radio>
               </Space>
             </Space>
           </Radio.Group>
         </Form.Item>
       </div>
-      {!isUnlimited && (
+      {selectedType && selectedType !== UNLIMITED && (
         <div className={styles.accrualRate}>
           <span className={styles.label}>Accrual Rate</span>
           <div className={styles.items}>
@@ -53,7 +56,7 @@ const AccrualPolicy = (props) => {
                   <>
                     {fields.map(({ key, name }) => (
                       <Col span={24} key={key}>
-                        <AccrualRate name={name} remove={remove} />
+                        <AccrualRate name={name} remove={remove} selectedType={selectedType} />
                       </Col>
                     ))}
                     <Col span={24}>

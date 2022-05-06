@@ -63,7 +63,7 @@ const MaximumBalanceAllowed = (props) => {
           <div className={styles.rightPart}>
             <div style={{ marginRight: 16 }}>
               <Form.Item name={MAXIMUM_BALANCE_ALLOWED_VALUE}>
-                <Input suffix={suffixText} type="number" min={0} max={100000} defaultValue="0" />
+                <Input suffix={suffixText} type="number" min={0} max={100} defaultValue="0" />
               </Form.Item>
             </div>
             <div className={styles.viewTypeSelector}>

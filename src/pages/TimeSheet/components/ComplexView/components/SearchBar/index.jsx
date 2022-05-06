@@ -1,7 +1,5 @@
-import { SearchOutlined } from '@ant-design/icons';
-import { Input } from 'antd';
 import React from 'react';
-import styles from './index.less';
+import CustomSearchBox from '@/components/CustomSearchBox';
 
 const SearchBar = (props) => {
   const { activeView = '', onChangeSearch = () => {} } = props;
@@ -26,27 +24,11 @@ const SearchBar = (props) => {
     return 'Search by Name, Task...';
   };
 
-  const searchPrefix = () => {
-    return (
-      <SearchOutlined
-        style={{
-          fontSize: 16,
-          color: 'black',
-          marginRight: '10px',
-        }}
-      />
-    );
-  };
-
   return (
-    <div className={styles.SearchBar}>
-      <Input
-        className={styles.searchInput}
-        placeholder={renderPlaceholder(activeView)}
-        prefix={searchPrefix()}
-        onChange={(e) => onChangeSearch(e.target.value)}
-      />
-    </div>
+    <CustomSearchBox
+      onSearch={(e) => onChangeSearch(e.target.value)}
+      placeholder={renderPlaceholder(activeView)}
+    />
   );
 };
 export default SearchBar;

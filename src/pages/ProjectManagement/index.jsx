@@ -5,6 +5,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import Projects from './components/Projects';
 import styles from './index.less';
 import WorkInProgress from '@/components/WorkInProgress';
+import { goToTop } from '@/utils/utils';
 
 const { TabPane } = Tabs;
 
@@ -25,6 +26,7 @@ const ProjectManagement = (props) => {
     if (!tabName) {
       history.replace(`/project-management/list`);
     }
+    goToTop();
   }, []);
 
   if (!tabName) return '';
