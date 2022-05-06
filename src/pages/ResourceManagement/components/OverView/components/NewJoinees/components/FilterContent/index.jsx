@@ -11,7 +11,7 @@ const FilterContent = (props) => {
     onFilter = () => {},
     resourceManagement: { newJoineeList = [], titleList = [] } = {},
     setApplied = () => {},
-    setForm,
+    setForm  = () => {},
   } = props;
   const onFinish = (values) => {
     const newValues = { ...values };
