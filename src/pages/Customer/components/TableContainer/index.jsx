@@ -47,6 +47,16 @@ class TableContainer extends PureComponent {
     });
   }
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'customerManagement/save',
+      payload: {
+        filter: {},
+      },
+    });
+  }
+
   // submit filter
   handleSubmit = async (values) => {
     const { dispatch } = this.props;
@@ -174,7 +184,15 @@ class TableContainer extends PureComponent {
     return number;
   };
 
-  showDot = (obj) => !Object.values(obj).every((o) => !o);
+  showDot = (obj) => {
+    return !Object.values(obj).every((o) => {
+      if (Array.isArray(o)) {
+        return o.length === 0;
+      }
+      if (!o) return true;
+      return false;
+    });
+  };
 
   render() {
     const { Content } = Layout;
@@ -184,7 +202,7 @@ class TableContainer extends PureComponent {
       listCustomer,
       loadingCustomer,
       companyList = [],
-      // filter = {},
+      filter = {},
       loadingFilter = false,
     } = this.props;
     const { isShown } = this.state;
@@ -212,8 +230,8 @@ class TableContainer extends PureComponent {
           Add new customer
         </div>
         <FilterPopover realTime placement="bottomRight" content={contentFilter}>
-          {/* <FilterButton fontSize={14} showDot={this.showDot(filter)} /> */}
-          <FilterButton fontSize={14} />
+          <FilterButton fontSize={14} showDot={this.showDot(filter)} />
+          {/* <FilterButton fontSize={14} /> */}
         </FilterPopover>
         <div className={styles.searchInp}>
           <Input
