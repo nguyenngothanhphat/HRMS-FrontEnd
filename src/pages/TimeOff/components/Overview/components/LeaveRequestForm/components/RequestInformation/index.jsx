@@ -230,9 +230,10 @@ const RequestInformation = (props) => {
   };
 
   const getCurrentAllowance = (type) => {
-    const foundType = [...[[C, D].includes(type) ? specialLeaves : commonLeaves]].find(
-      (x) => x.name === selectedTypeName,
-    );
+    const foundType =
+      type === C || type === D
+        ? specialLeaves.find((x) => x.name === selectedTypeName)
+        : commonLeaves.find((x) => x.name === selectedTypeName);
     if (foundType) {
       return foundType.total - foundType.taken;
     }
