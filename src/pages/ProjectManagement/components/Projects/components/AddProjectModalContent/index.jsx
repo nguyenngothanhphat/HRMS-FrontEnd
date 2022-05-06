@@ -6,7 +6,6 @@ import CreatableSelect from 'react-select/creatable';
 import HelpIcon from '@/assets/projectManagement/help.svg';
 import CalendarIcon from '@/assets/projectManagement/calendar.svg';
 import styles from './index.less';
-import ItemMenu from '@/components/LayoutAdminLeftMenu/components/ItemMenu';
 
 const dateFormat = 'MM-DD-YYYY';
 const { Option } = Select;
@@ -121,6 +120,9 @@ const AddProjectModal = (props) => {
 
   const handleFinish = async (values) => {
     const customer = customerList.find((x) => x.customerId === customerId);
+    const name = values.tags.map((item) => {
+      return item.label;
+    });
     const res = await dispatch({
       type: 'projectManagement/addProjectEffect',
       payload: {
@@ -129,6 +131,7 @@ const AddProjectModal = (props) => {
         tentativeEndDate: moment(values.tentativeEndDate).format('YYYY-MM-DD'),
         customerName: customer?.legalName,
         ownerName,
+        tags: name,
       },
     });
     if (res.statusCode === 200) {
@@ -466,7 +469,6 @@ const AddProjectModal = (props) => {
                     return {
                       label: item.tag_name,
                       value: item.tag_name,
-                      isNew: item.__isNew__,
                     };
                   })}
               />
