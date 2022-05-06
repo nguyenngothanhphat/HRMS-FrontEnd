@@ -116,6 +116,7 @@ class EmployeeTicket extends Component {
       employee: {
         departmentInfo: { _id: idDepart = '' },
       },
+      selectedLocations = [],
       employee: { _id = '' } = {},
     } = this.props;
     dispatch({
@@ -123,6 +124,7 @@ class EmployeeTicket extends Component {
       payload: {
         employeeAssignee: _id,
         departmentAssign: idDepart,
+        location: selectedLocations,
       },
     });
   };
@@ -148,6 +150,7 @@ class EmployeeTicket extends Component {
         payload: {
           employeeAssignee: _id,
           departmentAssign: idDepart,
+          location: selectedLocations,
         },
       });
     } else {
@@ -163,6 +166,7 @@ class EmployeeTicket extends Component {
         payload: {
           employeeAssignee: _id,
           departmentAssign: idDepart,
+          location: selectedLocations,
         },
       });
     }
@@ -174,6 +178,12 @@ class EmployeeTicket extends Component {
       type: 'ticketManagement/save',
       payload: {
         selectedLocations: [...selection],
+      },
+    });
+    dispatch({
+      type: 'ticketManagement/fetchToTalList',
+      payload: {
+        location: [...selection],
       },
     });
     this.setState({

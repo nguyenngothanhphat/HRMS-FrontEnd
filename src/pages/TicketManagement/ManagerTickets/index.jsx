@@ -111,7 +111,7 @@ class ManagerTicket extends Component {
   }
 
   fetchToTalList = (departmentList) => {
-    const { dispatch } = this.props;
+    const { dispatch, selectedLocations = [] } = this.props;
 
     let payload = {
       status: ['New'],
@@ -124,7 +124,10 @@ class ManagerTicket extends Component {
     }
     dispatch({
       type: 'ticketManagement/fetchToTalList',
-      payload,
+      payload: {
+        ...payload,
+        location: selectedLocations,
+      },
     });
   };
 
@@ -177,6 +180,12 @@ class ManagerTicket extends Component {
       type: 'ticketManagement/save',
       payload: {
         selectedLocations: [...selection],
+      },
+    });
+    dispatch({
+      type: 'ticketManagement/fetchToTalList',
+      payload: {
+        location: [...selection],
       },
     });
     this.setState({

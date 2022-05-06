@@ -19,14 +19,14 @@ const AccrualRate = (props) => {
               name={[name, FORM_ITEM_NAME.FROM]}
               rules={[{ required: true, message: 'Required field!' }]}
             >
-              <Input placeholder="0" />
+              <Input placeholder="0" type="number" />
             </Form.Item>
             <span>Years to Less than</span>
             <Form.Item
               name={[name, FORM_ITEM_NAME.TO]}
               rules={[{ required: true, message: 'Required field!' }]}
             >
-              <Input placeholder="0" />
+              <Input placeholder="0" type="number" />
             </Form.Item>
             <span>Years of Service</span>
           </div>
@@ -37,7 +37,7 @@ const AccrualRate = (props) => {
               name={[name, FORM_ITEM_NAME.VALUE]}
               rules={[{ required: true, message: 'Required field!' }]}
             >
-              <Input placeholder="0" />
+              <Input placeholder="0" type="number" />
             </Form.Item>
             <span>Days per Year</span>
           </div>

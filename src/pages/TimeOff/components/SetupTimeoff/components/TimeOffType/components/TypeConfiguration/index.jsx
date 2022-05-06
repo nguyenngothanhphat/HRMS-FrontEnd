@@ -142,27 +142,27 @@ const TypeConfiguration = (props) => {
           [ACCRUAL_RATE]: values[ACCRUAL_POLICY_ACCRUAL_RATE]
             ? values[ACCRUAL_POLICY_ACCRUAL_RATE].map((x) => {
                 return {
-                  [FROM]: x[FROM],
-                  [TO]: x[TO],
-                  [VALUE]: x[VALUE],
+                  [FROM]: x[FROM] * 1,
+                  [TO]: x[TO] * 1,
+                  [VALUE]: x[VALUE] * 1,
                 };
               })
             : [],
         },
         [ACCRUAL_START]: {
-          [VALUE]: values[ACCRUAL_START_VALUE] || 0,
+          [VALUE]: values[ACCRUAL_START_VALUE] * 1 || 0,
           [UNIT]: 'd',
         },
         [LEAVE_APPLICATION_START]: {
-          [VALUE]: values[LEAVE_APPLICATION_START_VALUE] || 0,
+          [VALUE]: values[LEAVE_APPLICATION_START_VALUE] * 1 || 0,
           [UNIT]: 'd',
         },
         [MINIMUM_LEAVE_AMOUNT]: {
-          [VALUE]: values[MINIMUM_LEAVE_AMOUNT_VALUE] || 0,
+          [VALUE]: values[MINIMUM_LEAVE_AMOUNT_VALUE] * 1 || 0,
           [UNIT]: 'd',
         },
         [MAXIMUM_BALANCE_ALLOWED]: {
-          [VALUE]: values[MAXIMUM_BALANCE_ALLOWED_VALUE] || 0,
+          [VALUE]: values[MAXIMUM_BALANCE_ALLOWED_VALUE] * 1 || 0,
           [UNIT]: values[MAXIMUM_BALANCE_ALLOWED_UNIT] || 'd',
         },
         [NEW_HIRE_PRORATION_POLICY]: values[NEW_HIRE_PRORATION_POLICY],
@@ -170,7 +170,7 @@ const TypeConfiguration = (props) => {
         [NEGATIVE_LEAVE_BALANCE]: {
           [ALLOWED]: values[NEGATIVE_LEAVE_BALANCE_ALLOWED] || false,
           [MAXIMUM]: {
-            [VALUE]: values[NEGATIVE_LEAVE_BALANCE_MAXIMUM_VALUE] || 0,
+            [VALUE]: values[NEGATIVE_LEAVE_BALANCE_MAXIMUM_VALUE] * 1 || 0,
             [UNIT]: values[NEGATIVE_LEAVE_BALANCE_MAXIMUM_UNIT] || 'd',
           },
         },
@@ -182,12 +182,12 @@ const TypeConfiguration = (props) => {
         [CARRY_FORWARD_POLICY]: values[CARRY_FORWARD_POLICY].map((x) => {
           return {
             [CARRY_FORWARD_CAP]: {
-              [FROM]: x[FROM],
-              [TO]: x[TO],
+              [FROM]: x[FROM] * 1,
+              [TO]: x[TO] * 1,
             },
             [ALLOWED]: x[ALLOWED],
             [MAXIMUM_CARRY_FORWARD_VALUE]: {
-              [VALUE]: x[VALUE] || 0,
+              [VALUE]: x[VALUE] * 1 || 0,
               [UNIT]: x[UNIT] || 'd',
             },
           };
