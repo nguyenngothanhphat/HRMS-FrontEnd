@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import EmployeeTicket from './EmployeeTickets';
 import ManagerTicket from './ManagerTickets';
+import { goToTop } from '@/utils/utils';
 
 class TicketsManagement extends PureComponent {
   findRole = (roles) => {
@@ -9,6 +10,10 @@ class TicketsManagement extends PureComponent {
     // const employee = roles.find((item) => item === 'employee');
     const role = hrManager || manager || 'employee';
     return role;
+  };
+
+  componentDidMount = () => {
+    goToTop();
   };
 
   render() {

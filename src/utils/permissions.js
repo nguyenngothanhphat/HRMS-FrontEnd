@@ -349,6 +349,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   ]);
   const indexFAQSettings = isAuthorized(permissionList, ['P_FAQ_VIEW_SETTINGS']);
 
+  // CUSTOMER MANAGEMENT
+  const indexDeleteCustomer = isAuthorized(permissionList, ['P_CUSTOMER_T_CUSTOMER_B_DELETE']);
   return {
     // Directory Page
     viewTabActive: findIndexActive,
@@ -450,5 +452,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewPolicyAllCountry: indexViewAllCountryPolicyAndRegulation,
     // faq page
     viewFAQSetting: indexFAQSettings,
+
+    // customer management
+    deleteCustomerManagement: indexDeleteCustomer,
   };
 }
