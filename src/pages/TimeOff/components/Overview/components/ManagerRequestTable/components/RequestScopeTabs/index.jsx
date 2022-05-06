@@ -54,6 +54,7 @@ class RequestScopeTabs extends PureComponent {
       timeOff: { currentScopeTab = '' } = {},
       permissions = {},
     } = this.props;
+
     const renderTableTitle = {
       right: <SearchContent />,
     };
