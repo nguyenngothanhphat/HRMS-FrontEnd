@@ -6,7 +6,12 @@ import { addZeroToNumber, roundNumber } from '@/utils/timeOff';
 export default class LeaveProgressBar extends PureComponent {
   renderCircle = (stepNumber, limitNumber, color) => {
     return (
-      <span className={styles.smallCircle}>
+      <span
+        className={styles.smallCircle}
+        style={{
+          fontSize: stepNumber % 1 !== 0 || limitNumber % 1 !== 0 ? 10 : 12,
+        }}
+      >
         <span style={{ color, fontWeight: 'bold' }}>{roundNumber(stepNumber)}</span>/
         {addZeroToNumber(limitNumber)}
       </span>
@@ -21,7 +26,7 @@ export default class LeaveProgressBar extends PureComponent {
         <Progress
           type="circle"
           percent={remaining}
-          width={50}
+          width={52}
           strokeColor={color}
           trailColor="#d6dce0"
           format={() => this.renderCircle(stepNumber, limitNumber, color)}

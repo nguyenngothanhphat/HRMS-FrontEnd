@@ -15,4 +15,12 @@
 }
 .Overview {
   margin: 24px;
+  :global {
+    .ant-table-column-title,
+    .ant-table-cell-fix-left {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
 }

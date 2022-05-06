@@ -175,6 +175,14 @@ export const FORM_ITEM_NAME = {
   CALENDAR_DATE: 'calendarDate',
 };
 
+export const TIMEOFF_ACCRUAL_METHOD = {
+  UNLIMITED: 'unlimited',
+  DAYS_OF_YEAR: 'daysOfYear',
+  DAYS_OF_QUARTER: 'daysOfQuarter',
+  DAYS_OF_MONTH: 'daysOfMonth',
+  DAYS_OF_FORTNIGHT: 'daysOfFortnight',
+};
+
 export const TIMEOFF_WORK_DAYS = [
   {
     id: 1,
