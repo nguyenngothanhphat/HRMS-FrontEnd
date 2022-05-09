@@ -1,12 +1,11 @@
 import { Table } from 'antd';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { connect } from 'umi';
-import { projectColor, convertMsToTime } from '@/utils/timeSheet';
-import TaskPopover from './components/TaskPopover';
-import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
+import { convertMsToTime, projectColor } from '@/utils/timeSheet';
 import EmptyComponent from '@/components/Empty';
-
+import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
+import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
 
 const MonthlyTable = (props) => {
@@ -22,25 +21,11 @@ const MonthlyTable = (props) => {
     } = {},
     onChangePage = () => {},
   } = props;
-  const [formattedData, setFormattedData] = useState([]);
 
   // FUNCTIONS
-  // format data
-  const formatData = () => {
-    const header = {
-      functionalArea: 'Functional Area',
-    };
-    setFormattedData([header].concat(data));
-  };
-
   const getColorByIndex = (index) => {
     return projectColor[index % projectColor.length];
   };
-
-  // USE EFFECT
-  useEffect(() => {
-    formatData();
-  }, [JSON.stringify(data)]);
 
   // RENDER UI
   const renderHeaderItem = (weekItem) => {
@@ -56,18 +41,22 @@ const MonthlyTable = (props) => {
     );
   };
 
+  const renderTitle = (title, type) => {
+    if (type === 1) return title;
+    return renderHeaderItem(title);
+  };
+
   const columns = () => {
     const columnLength = weeksOfMonth.length + 1;
     const dateColumns = weeksOfMonth.map((weekItem) => {
       return {
-        title: weekItem.week,
+        title: renderTitle(weekItem, 2),
         dataIndex: weekItem.week,
         key: weekItem.week,
         align: 'center',
         width: `${100 / columnLength}}%`,
-        render: (value, row, index) => {
+        render: (value, row) => {
           const { weeks = [] } = row;
-          if (index === 0) return renderHeaderItem(weekItem);
           const find = weeks.find((w) => w.week === weekItem.week) || {};
           return (
             <TaskPopover
@@ -93,15 +82,12 @@ const MonthlyTable = (props) => {
 
     const result = [
       {
-        title: 'All Projects',
+        title: renderTitle('All Projects', 0),
         dataIndex: 'functionalArea',
         key: 'functionalArea',
         align: 'center',
         width: `${100 / columnLength}%`,
         render: (functionalArea, _, index) => {
-          if (index === 0) {
-            return functionalArea;
-          }
           return (
             <div className={styles.functionalArea}>
               <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
@@ -144,12 +130,14 @@ const MonthlyTable = (props) => {
       <div className={styles.tableContainer}>
         <Table
           columns={columns()}
-          dataSource={formattedData}
+          dataSource={data}
           bordered
           pagination={data.length > 0 ? pagination : { position: ['none', 'none'] }}
-          footer={data.length > 0 ? null : EmptyComponent}
           // scroll={{ y: 440 }}
           loading={loadingFetch}
+          locale={{
+            emptyText: <EmptyComponent />,
+          }}
         />
       </div>
     </div>
