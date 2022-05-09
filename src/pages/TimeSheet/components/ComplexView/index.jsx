@@ -126,6 +126,19 @@ const ComplexView = (props) => {
     return locationUser;
   };
 
+  const renderDivisionOptions = () => {
+    const viewDivisionHR = permissions.viewDivisionHRTimesheet === 1;
+    const viewDivisionFinance = permissions.viewDivisionFinanceTimesheet === 1;
+
+    if (tabName === TAB_NAME.HR_REPORTS && viewDivisionHR) {
+      return true;
+    }
+    if (tabName === TAB_NAME.FINANCE_REPORTS && viewDivisionFinance) {
+      return true;
+    }
+    return false;
+  };
+
   const renderFilterBar = (isHRTab) => {
     // if only one selected
     const selectedLocationName = getSelectedLocationName();
@@ -167,21 +180,23 @@ const ComplexView = (props) => {
             </div>
           </CheckboxMenu>
         </div>
-        <div className={styles.item}>
-          <span className={styles.label}>Division</span>
+        {renderDivisionOptions() && (
+          <div className={styles.item}>
+            <span className={styles.label}>Division</span>
 
-          <CheckboxMenu
-            options={divisionOptions}
-            onChange={onDivisionChange}
-            default={selectedDivisions}
-            disabled
-          >
-            <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
-              <span>{selectedDivisionName}</span>
-              <img src={SmallDownArrow} alt="" />
-            </div>
-          </CheckboxMenu>
-        </div>
+            <CheckboxMenu
+              options={divisionOptions}
+              onChange={onDivisionChange}
+              default={selectedDivisions}
+              disabled
+            >
+              <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
+                <span>{selectedDivisionName}</span>
+                <img src={SmallDownArrow} alt="" />
+              </div>
+            </CheckboxMenu>
+          </div>
+        )}
       </div>
     );
   };

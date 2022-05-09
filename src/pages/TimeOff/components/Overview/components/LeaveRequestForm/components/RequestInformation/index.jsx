@@ -32,7 +32,7 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const { A, B, C, D } = TIMEOFF_TYPE;
-const { AFTERNOON, MORNING, WHOLE_DAY } = TIMEOFF_PERIOD;
+const { AFTERNOON, MORNING, WHOLE_DAY, HOUR } = TIMEOFF_PERIOD;
 const { IN_PROGRESS, DRAFTS } = TIMEOFF_STATUS;
 const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST } = TIMEOFF_LINK_ACTION;
 
@@ -230,9 +230,10 @@ const RequestInformation = (props) => {
   };
 
   const getCurrentAllowance = (type) => {
-    const foundType = [...[[C, D].includes(type) ? specialLeaves : commonLeaves]].find(
-      (x) => x.name === selectedTypeName,
-    );
+    const foundType =
+      type === C || type === D
+        ? specialLeaves.find((x) => x.name === selectedTypeName)
+        : commonLeaves.find((x) => x.name === selectedTypeName);
     if (foundType) {
       return foundType.total - foundType.taken;
     }
@@ -285,7 +286,7 @@ const RequestInformation = (props) => {
       result = dateLists.map((value, index) => {
         return {
           date: moment(value).format('YYYY-MM-DD'),
-          timeOfDay: WHOLE_DAY,
+          timeOfDay: HOUR,
           startTime: getTime(showAllDateList ? leaveTimeLists[index].startTime : startTimeDefault),
           endTime: getTime(showAllDateList ? leaveTimeLists[index].endTime : endTimeDefault),
           hours: showAllDateList ? leaveTimeLists[index].hours : 8,
