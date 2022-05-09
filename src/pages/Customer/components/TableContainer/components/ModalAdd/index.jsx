@@ -224,7 +224,25 @@ class ModalAdd extends PureComponent {
               <Form.Item
                 label="Legal name"
                 name="legalName"
-                rules={[{ required: true, message: 'Required field!' }]}
+                rules={[
+                  { required: true, message: 'Required field!' },
+                  () => ({
+                    validator(_, value) {
+                      if (
+                        listCustomer.filter(
+                          (obj) =>
+                            obj?.legalName?.toLowerCase().replace(/\s+/g, '') ===
+                            value?.toLowerCase().replace(/\s+/g, ''),
+                        ).length > 0
+                      ) {
+                        // eslint-disable-next-line prefer-promise-reject-errors
+                        return Promise.reject(`Legal name is exist.`);
+                      }
+                      // eslint-disable-next-line compat/compat
+                      return Promise.resolve();
+                    },
+                  }),
+                ]}
               >
                 <Input placeholder="Enter Company legal name" />
               </Form.Item>
