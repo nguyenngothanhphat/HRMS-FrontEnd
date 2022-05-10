@@ -61,6 +61,9 @@ class UploadListEmployee extends React.Component {
         'Employee Id': item.employeeId,
         'First Name': item.firstName,
         'Last Name': item.lastName,
+        'Middle Name': item.middleName,
+        Gender: item.gender,
+        'Date of Birth': item.dateOfBirth,
         'Joined Date': item.joinDate,
         Location: item.location,
         Department: item.department,
@@ -78,7 +81,7 @@ class UploadListEmployee extends React.Component {
     const keys = Object.keys(capsPopulations[0]);
     const dataExport = [];
     dataExport.push(keys);
-
+    console.log('exportData', dataExport)
     // Add the rows
     capsPopulations.forEach((obj) => {
       const value = `${keys.map((k) => obj[k]).join('_')}`.split('_');
@@ -149,6 +152,7 @@ class UploadListEmployee extends React.Component {
         employeeId: item['Employee Id'],
         firstName: `${item['First Name']} ${item['Last Name']}`,
         joinDate: item['Joined Date'] && moment(new Date(item['Joined Date'])).format('YYYY-MM-DD'),
+        dateOfBirth: item['Date of Birth'] && moment(new Date(item['Date of Birth'])).format('YYYY-MM-DD'),
         workEmail: item['Work Email'],
         location: item.Location,
         department: item.Department,
