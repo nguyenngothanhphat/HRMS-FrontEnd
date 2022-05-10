@@ -83,7 +83,7 @@ const ApprovalPage = (props) => {
   const approvalTicket = (record) => {
     const { typeTicket = '', _id = '' } = record;
     dispatch({
-      type: 'dashboard/approvalTicket',
+      type: 'dashboard/approveRequest',
       payload: {
         typeTicket,
         _id,
@@ -93,7 +93,7 @@ const ApprovalPage = (props) => {
   const rejectTicket = (record) => {
     const { typeTicket = '', _id = '' } = record;
     dispatch({
-      type: 'dashboard/rejectTicket',
+      type: 'dashboard/rejectRequest',
       payload: {
         typeTicket,
         _id,
@@ -227,7 +227,7 @@ const ApprovalPage = (props) => {
     },
 
     {
-      title: <div style={{ paddingRight: '25px' }}>Action</div>,
+      title: <div style={{ paddingRight: '40px' }}>Action</div>,
       dataIndex: 'action',
       key: 'action',
       width: 250,
@@ -236,7 +236,7 @@ const ApprovalPage = (props) => {
           <Button type="link" className={styles.btnDetail} onClick={() => viewDetail(record)}>
             View details
           </Button>
-          <div>
+          <div className={styles.containerBtn}>
             <Button type="link" className={styles.btnAction} onClick={() => rejectTicket(record)}>
               <img src={rejectIcon} alt="reject" />
             </Button>

@@ -5,8 +5,8 @@ import {
   getListMyTicket,
   getLeaveRequestOfEmployee,
   aprovalCompoffRequest,
-  aprovalLeaveRequest,
-  rejectLeaveRequest,
+  approveRequest,
+  rejectRequest,
   rejectCompoffRequest,
   getListEmployee,
   updateTicket,
@@ -111,77 +111,84 @@ const dashboard = {
       }
       return {};
     },
-    *approvalTicket(
-      { payload: { typeTicket = '', _id, comment } = {}, statusTimeoff = '' },
-      { call, put },
-    ) {
+
+    // REPORTING MANAGER
+    *approveRequest({ payload: { typeTicket = '', _id } = {}, statusTimeoff = '' }, { call, put }) {
+      let response;
       try {
-        let response;
         switch (typeTicket) {
           case 'compoffRequest':
             response = yield call(aprovalCompoffRequest, {
               _id,
-              comment,
               tenantId: getCurrentTenant(),
+              company: getCurrentCompany(),
             });
             break;
           case 'leaveRequest':
-            response = yield call(aprovalLeaveRequest, {
+            response = yield call(approveRequest, {
               _id,
-              comment,
               tenantId: getCurrentTenant(),
+              company: getCurrentCompany(),
             });
             break;
           default:
             break;
         }
-        const { statusCode } = response;
+        const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message: 'Approval ticket successfully',
+          message,
         });
-        yield put({ type: 'save', payload: { isLoadData: true, statusApproval: statusTimeoff } });
-        return response;
+        yield put({
+          type: 'save',
+          payload: { isLoadData: true, statusApproval: statusTimeoff },
+        });
       } catch (errors) {
         dialog(errors);
         return {};
       }
+      return response;
     },
-    *rejectTicket(
+    *rejectRequest(
       { payload: { typeTicket = '', _id, comment } = {}, statusTimeoff = '' },
       { call, put },
     ) {
+      let response;
       try {
-        let response;
         switch (typeTicket) {
           case 'compoffRequest':
             response = yield call(rejectCompoffRequest, {
               _id,
               comment,
               tenantId: getCurrentTenant(),
+              company: getCurrentCompany(),
             });
             break;
           case 'leaveRequest':
-            response = yield call(rejectLeaveRequest, {
+            response = yield call(rejectRequest, {
               _id,
               comment,
               tenantId: getCurrentTenant(),
+              company: getCurrentCompany(),
             });
             break;
           default:
             break;
         }
-        const { statusCode } = response;
+        const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message: 'Reject ticket successfully',
+          message,
         });
-        yield put({ type: 'save', payload: { isLoadData: true, statusApproval: statusTimeoff } });
-        return response;
+        yield put({
+          type: 'save',
+          payload: { isLoadData: true, statusApproval: statusTimeoff },
+        });
       } catch (errors) {
         dialog(errors);
         return {};
       }
+      return response;
     },
 
     *syncGoogleCalendarEffect({ payload = {} }, { call, put }) {
