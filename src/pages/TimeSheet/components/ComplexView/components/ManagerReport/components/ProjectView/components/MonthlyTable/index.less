@@ -223,9 +223,6 @@
     .ant-table-cell {
       font-size: 13px;
     }
-    .ant-table-thead {
-      display: none;
-    }
     .ant-table.ant-table-bordered > .ant-table-container {
       border: none;
     }
@@ -248,8 +245,12 @@
       letter-spacing: 0.12px;
     }
     .ant-table-thead > tr > th {
-      background-color: @blue !important;
+      height: 90px;
+      color: #000;
+      background-color: #fff !important;
+      border-radius: 0 !important;
       opacity: 1 !important;
+      font-weight: normal;
     }
 
     .ant-checkbox-inner {
@@ -270,10 +271,6 @@
     }
 
     thead {
-      tr {
-        height: 35px;
-      }
-
       .ant-table-selection {
         height: 18px;
       }

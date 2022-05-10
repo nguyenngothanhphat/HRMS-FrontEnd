@@ -15,7 +15,6 @@ import styles from './index.less';
 const WeeklyTable = (props) => {
   const { startDate = '', endDate = '', loadingFetchMyTimesheetByType = false, data = [] } = props;
   const [dateList, setDateList] = useState([]);
-  const [formattedData, setFormattedData] = useState([]);
 
   // FUNCTIONS
   // get dates between two dates
@@ -35,18 +34,6 @@ const WeeklyTable = (props) => {
     return moment(date1).format('MM/DD/YYYY') === moment(date2).format('MM/DD/YYYY');
   };
 
-  // format data
-  const formatData = () => {
-    const dates = {};
-    for (let i = 0; i < dateList.length; i += 1) dates[dateList[i]] = dateList[i];
-    const header = {
-      projectName: 'All Projects',
-      totalProjectTime: 'Total Hours',
-      ...dates,
-    };
-    setFormattedData([header].concat(data));
-  };
-
   const getColorByIndex = (index) => {
     return projectColor[index % projectColor.length];
   };
@@ -56,14 +43,6 @@ const WeeklyTable = (props) => {
     const dateListTemp = enumerateDaysBetweenDates(moment(startDate), moment(endDate));
     setDateList(dateListTemp);
   }, [startDate, endDate]);
-
-  useEffect(() => {
-    formatData();
-  }, [JSON.stringify(data)]);
-
-  useEffect(() => {
-    formatData();
-  }, [dateList]);
 
   // RENDER UI
   // BODY
@@ -141,22 +120,24 @@ const WeeklyTable = (props) => {
     return <div className={styles.holidayColumn}>{renderDateHeaderItem(date)}</div>;
   };
 
+  const renderTitle = (title, type) => {
+    if (type === 1) return title;
+    if (type === 3) return <span className={styles.totalHeader}>{title}</span>;
+    return renderDateHeaderItem(title);
+  };
+
   const columns = () => {
     const dateColumns = dateList.map((date) => {
       return {
-        title: date,
+        title: renderTitle(date, 2),
         dataIndex: date,
         key: date,
         align: 'center',
         width: `${100 / 9}%`,
-        render: (_, row, index) => {
+        render: (_, row) => {
           const { projectName = '', days = [] } = row;
           const value = days.find((d) => isTheSameDay(d.date, date));
           const getCellValue = () => {
-            if (index === 0 /* / FOR HOLIDAY & LEAVE REQUEST && date !== '10/29/2021' */) {
-              return renderDateHeaderItem(date);
-            }
-
             // FOR HOLIDAY & LEAVE REQUEST
             // // if this date has a leave request
             // if (date === '10/27/2021') {
@@ -222,15 +203,12 @@ const WeeklyTable = (props) => {
 
     const result = [
       {
-        title: 'All Projects',
+        title: renderTitle('All Projects', 1),
         dataIndex: 'projectName',
         key: 'projectName',
         align: 'center',
         width: `${100 / 9}%`,
         render: (projectName, _, index) => {
-          if (index === 0) {
-            return projectName;
-          }
           return (
             <div className={styles.projectName}>
               <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
@@ -243,13 +221,12 @@ const WeeklyTable = (props) => {
       },
       ...dateColumns,
       {
-        title: 'Total Hours',
+        title: renderTitle('Total Hours', 3),
         dataIndex: 'totalProjectTime',
         key: 'totalProjectTime',
         align: 'center',
         width: `${100 / 9}%`,
-        render: (value, _, index) => {
-          if (index === 0) return <span className={styles.totalHeader}>{value}</span>;
+        render: (value) => {
           return <span className={styles.totalValue}>{convertMsToTime(value)}</span>;
         },
       },
@@ -279,7 +256,6 @@ const WeeklyTable = (props) => {
   };
 
   const renderFooter = () => {
-    if (data.length === 0) return <EmptyComponent />;
     const durationByDate = getDurationByDate();
     return (
       <div className={styles.footer}>
@@ -313,12 +289,15 @@ const WeeklyTable = (props) => {
       <div className={styles.tableContainer}>
         <Table
           columns={columns()}
-          dataSource={formattedData}
+          dataSource={data}
           bordered
           pagination={false}
           // scroll={{ y: 440 }}
-          footer={renderFooter}
+          footer={data.length === 0 ? null : renderFooter}
           loading={loadingFetchMyTimesheetByType}
+          locale={{
+            emptyText: <EmptyComponent />,
+          }}
         />
       </div>
     </div>
