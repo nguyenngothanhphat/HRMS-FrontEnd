@@ -82,7 +82,7 @@ const MonthlyTable = (props) => {
 
     const result = [
       {
-        title: renderTitle('All Projects', 0),
+        title: renderTitle('All Projects', 1),
         dataIndex: 'functionalArea',
         key: 'functionalArea',
         align: 'center',
