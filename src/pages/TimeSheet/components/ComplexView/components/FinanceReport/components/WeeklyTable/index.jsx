@@ -78,7 +78,7 @@ const WeeklyTable = (props) => {
               <div className={styles.taskMembers}>
                 <Avatar.Group maxCount={4}>
                   {resource.map((member) => {
-                    return <Avatar size="small" src={member.avatar || MockAvatar} />;
+                    return <Avatar size="large" src={member.avatar || MockAvatar} />;
                   })}
                 </Avatar.Group>
               </div>
