@@ -13,6 +13,7 @@ import {
   getOffToTalList,
   getLocationList,
   uploadFile,
+  getSupportTeamList,
 } from '../services/ticketsManagement';
 
 const ticketManagement = {
@@ -30,6 +31,7 @@ const ticketManagement = {
     employeeAssigneeList: [],
     filter: {},
     selectedLocations: [getCurrentLocation()],
+    supportTeamList: [],
   },
   effects: {
     *addTicket({ payload }, { call, put, select }) {
@@ -340,6 +342,25 @@ const ticketManagement = {
         yield put({
           type: 'save',
           payload: { employeeAssigneeList: data, currentStatus: payload.status },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchSupportTeamList({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getSupportTeamList, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { supportTeamList: data },
         });
       } catch (error) {
         dialog(error);
