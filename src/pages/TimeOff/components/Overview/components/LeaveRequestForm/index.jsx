@@ -106,7 +106,7 @@ const LeaveRequestForm = (props) => {
               timeOfDay: y.timeOfDay,
             };
           });
-          invalidDatesTemp = [...invalidDates, ...temp];
+          invalidDatesTemp = [...invalidDatesTemp, ...temp];
         });
 
         setInvalidDates(invalidDatesTemp);
