@@ -1,9 +1,8 @@
-import { Button, Checkbox, Form, Modal, Select, Skeleton, Tag } from 'antd';
+import { Button, Form, Input, Modal, Select, Skeleton, Tag } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import styles from './index.less';
-import { SUPPORT_TEAM } from '@/utils/adminSetting';
 import CloseTagIcon from '@/assets/closeTagIcon.svg';
+import styles from './index.less';
 
 const { Option } = Select;
 
@@ -22,7 +21,6 @@ class EditModal extends PureComponent {
     super(props);
     this.state = {
       selectedQueryTypes: [],
-      queryTypeList: [],
     };
   }
 
@@ -34,14 +32,6 @@ class EditModal extends PureComponent {
     }
   };
 
-  onChangeSupportTeam = (val) => {
-    const find = SUPPORT_TEAM.find((x) => val === x.value);
-    this.setState({
-      queryTypeList: find?.queryTypes || [],
-      selectedQueryTypes: [],
-    });
-  };
-
   fetchQueryTypeByID = async (id) => {
     const { dispatch } = this.props;
     const res = await dispatch({
@@ -51,10 +41,8 @@ class EditModal extends PureComponent {
       },
     });
     if (res.statusCode === 200) {
-      const find = SUPPORT_TEAM.find((x) => res.data.name === x.value);
       this.setState({
-        queryTypeList: find?.queryTypes || [],
-        selectedQueryTypes: res.data.queryType || [],
+        selectedQueryTypes: res.data.queryType,
       });
     }
   };
@@ -72,15 +60,26 @@ class EditModal extends PureComponent {
     );
   };
 
-  onAddOption = (queryTypeName) => {
-    const { selectedQueryTypes } = this.state;
-    const listTypeNameTemp = JSON.parse(JSON.stringify(selectedQueryTypes));
+  onKeyDown = (e) => {
+    const value = e.target.value.trim();
+    if (e.keyCode === 13 && value) {
+      this.onAddOption(value);
+    }
+  };
 
-    listTypeNameTemp.push(queryTypeName);
-
-    this.setState({
-      selectedQueryTypes: listTypeNameTemp,
-    });
+  onAddOption = (value) => {
+    if (value) {
+      const { selectedQueryTypes } = this.state;
+      let listTypeNameTemp = JSON.parse(JSON.stringify(selectedQueryTypes));
+      listTypeNameTemp.push(value);
+      listTypeNameTemp = [...new Set(listTypeNameTemp)];
+      this.setState({
+        selectedQueryTypes: listTypeNameTemp,
+      });
+      this.formRef.current.setFieldsValue({
+        queryType: listTypeNameTemp,
+      });
+    }
   };
 
   onRemoveOption = (queryTypeName) => {
@@ -91,51 +90,8 @@ class EditModal extends PureComponent {
     this.setState({
       selectedQueryTypes: listTypeNameTemp,
     });
-  };
-
-  onCheckbox = (e, roles) => {
-    const { checked, value } = e.target || {};
-
-    if (checked) {
-      this.onAddOption(value, roles);
-    } else {
-      this.onRemoveOption(value);
-    }
-  };
-
-  renderQueryTypes = (queryTypes) => {
-    const { selectedQueryTypes = [] } = this.state;
-    const { loading } = this.props;
-
-    const checkedStatus = (queryTypeName) => {
-      let check = false;
-      selectedQueryTypes.forEach((itemId) => {
-        if (itemId === queryTypeName) {
-          check = true;
-        }
-      });
-
-      return check;
-    };
-
-    return queryTypes.map((type, index) => {
-      const className = index % 2 === 0 ? styles.evenClass : styles.oddClass;
-      return (
-        <Option
-          className={`${styles.optionSelect} ${className}`}
-          value={type}
-          key={`${index + 1}`}
-          disabled={loading}
-        >
-          <Checkbox
-            value={type}
-            onChange={(e) => this.onCheckbox(e, queryTypes)}
-            checked={checkedStatus(type)}
-          >
-            <div>{type}</div>
-          </Checkbox>
-        </Option>
-      );
+    this.formRef.current.setFieldsValue({
+      queryType: listTypeNameTemp,
     });
   };
 
@@ -205,7 +161,6 @@ class EditModal extends PureComponent {
 
     this.setState({
       selectedQueryTypes: [],
-      queryTypeList: [],
     });
 
     onClose(false);
@@ -218,19 +173,9 @@ class EditModal extends PureComponent {
       loadingFetchByID = false,
       loadingUpsert = false,
       viewingSettingTicket = {},
-      settingTicketList = [],
     } = this.props;
-    const { queryTypeList } = this.state;
-    const queryTypeClassName = `${styles.InputQueryTypes} ${styles.placeholderQueryType}`;
 
-    const supportTeamList =
-      action === 'edit'
-        ? SUPPORT_TEAM.filter(
-            (x) =>
-              !settingTicketList.some((y) => y.name === x.name) ||
-              x.name === viewingSettingTicket?.name,
-          )
-        : SUPPORT_TEAM.filter((x) => !settingTicketList.some((y) => y.name === x.name));
+    const { selectedQueryTypes } = this.state;
 
     return (
       <>
@@ -270,49 +215,52 @@ class EditModal extends PureComponent {
                 action === 'edit'
                   ? {
                       name: viewingSettingTicket?.name,
+                      queryType: viewingSettingTicket?.queryType,
                     }
                   : {}
               }
             >
               <Form.Item
-                rules={[{ required: true, message: 'Please select the support team!' }]}
+                rules={[{ required: true, message: 'Required field!' }]}
                 label="Support Team"
                 name="name"
                 labelCol={{ span: 24 }}
               >
-                <Select
-                  showSearch
-                  placeholder="Select the support team"
-                  onChange={this.onChangeSupportTeam}
-                >
-                  {supportTeamList.map((d) => {
-                    return <Option value={d.value}>{d.name}</Option>;
-                  })}
-                </Select>
+                <Input placeholder="Enter the support team name" disabled={loadingUpsert} />
               </Form.Item>
 
               <Form.Item
                 label="Query Type"
                 name="queryType"
                 labelCol={{ span: 24 }}
-                // rules={[{ required: true, message: 'Please select a role' }]}
+                rules={[{ required: selectedQueryTypes.length === 0, message: 'Required field!' }]}
                 className={styles.formItem}
               >
                 <Select
-                  mode="multiple"
-                  showSearch
                   allowClear
-                  className={queryTypeClassName}
-                  onSelect={(value) => {
-                    this.onAddOption(value, queryTypeList);
-                  }}
-                  onDeselect={(value) => {
-                    this.onRemoveOption(value, queryTypeList);
-                  }}
+                  mode="tags"
+                  className={styles.InputQueryTypes}
+                  placeholder="Enter new query type"
+                  onKeyDown={(e) => this.onKeyDown(e)}
+                  dropdownClassName={styles.selectDropdown}
+                  onClear={() => this.setState({ selectedQueryTypes: [] })}
+                  onDeselect={(value) => this.onRemoveOption(value)}
+                  onSelect={(value) => this.onAddOption(value)}
                 >
-                  {this.renderQueryTypes(queryTypeList)}
+                  {selectedQueryTypes.map((type) => {
+                    return (
+                      <Option
+                        className={styles.optionSelect}
+                        value={type}
+                        key={type}
+                        disabled={loadingUpsert}
+                      >
+                        {type}
+                      </Option>
+                    );
+                  })}
                 </Select>
-                {this.renderQueryTypeNames()}
+                {/* {this.renderQueryTypeNames()} */}
               </Form.Item>
             </Form>
           )}
