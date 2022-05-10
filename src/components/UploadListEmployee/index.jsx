@@ -81,7 +81,7 @@ class UploadListEmployee extends React.Component {
     const keys = Object.keys(capsPopulations[0]);
     const dataExport = [];
     dataExport.push(keys);
-    console.log('exportData', dataExport)
+
     // Add the rows
     capsPopulations.forEach((obj) => {
       const value = `${keys.map((k) => obj[k]).join('_')}`.split('_');
