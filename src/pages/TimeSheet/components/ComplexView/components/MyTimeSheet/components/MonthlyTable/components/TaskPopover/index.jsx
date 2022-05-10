@@ -4,8 +4,6 @@ import React, { useState } from 'react';
 import { connect } from 'umi';
 import AddSolidIcon from '@/assets/timeSheet/addSolid.png';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';
-import DelIcon from '@/assets/timeSheet/del.svg';
-import EditIcon from '@/assets/timeSheet/edit.svg';
 import AddTaskModal from '@/pages/TimeSheet/components/ComplexView/components/AddTaskModal';
 import { convertMsToTime } from '@/utils/timeSheet';
 import styles from './index.less';
@@ -46,12 +44,12 @@ const TaskPopover = (props) => {
                     </span>
                   </div>
                 </Col>
-                <Col span={6} className={styles.right}>
+                {/* <Col span={6} className={styles.right}>
                   <div className={styles.actionBtn}>
                     <img src={EditIcon} alt="" />
                     <img src={DelIcon} alt="" />
                   </div>
-                </Col>
+                </Col> */}
               </Row>
             );
           })}
@@ -111,6 +109,7 @@ const TaskPopover = (props) => {
   );
 };
 
-export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({ employee }))(
-  TaskPopover,
-);
+export default connect(({ user: { currentUser: { employee = {} } = {} }, timeSheet }) => ({
+  employee,
+  timeSheet,
+}))(TaskPopover);

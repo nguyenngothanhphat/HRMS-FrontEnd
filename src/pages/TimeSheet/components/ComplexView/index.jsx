@@ -268,6 +268,10 @@ const ComplexView = (props) => {
         },
       });
     }
+    dispatch({
+      type: 'timeSheet/getEmployeeScheduleByLocation',
+      payload: { location: getCurrentLocation() },
+    });
   }, [tabName]);
 
   const renderOtherTabs = () => {

@@ -281,3 +281,10 @@ export async function getDivisionList(payload) {
     params: payload,
   });
 }
+
+export async function getEmployeeScheduleByLocation(payload) {
+  return request('/api/employeescheduletenant/get-by-location', {
+    method: 'POST',
+    data: payload,
+  });
+}
