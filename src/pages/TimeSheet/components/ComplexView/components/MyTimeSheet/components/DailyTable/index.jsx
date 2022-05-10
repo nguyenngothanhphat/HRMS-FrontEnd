@@ -18,7 +18,8 @@ const DailyTable = (props) => {
   const {
     selectedDate = '',
     loadingFetchMyTimesheetByType = false,
-    data: mockData = [], // mock
+    data: dataProp = [],
+    loadingFetchEmployeeSchedule = false,
   } = props;
 
   const [hourList, setHourList] = useState([]);
@@ -36,7 +37,7 @@ const DailyTable = (props) => {
   };
 
   const refreshData = () => {
-    const formattedDataTemp = generateData(mockData);
+    const formattedDataTemp = generateData(dataProp);
     setFormattedData(formattedDataTemp);
   };
 
@@ -54,7 +55,7 @@ const DailyTable = (props) => {
 
   useEffect(() => {
     refreshData();
-  }, [JSON.stringify(mockData), selectedDate]);
+  }, [JSON.stringify(dataProp), selectedDate]);
 
   // RENDER UI
   const _renderTableHeader = () => {
@@ -102,7 +103,7 @@ const DailyTable = (props) => {
   return (
     <div className={styles.DailyTable}>
       <div className={styles.tableContainer}>
-        <Spin spinning={loadingFetchMyTimesheetByType}>
+        <Spin spinning={loadingFetchMyTimesheetByType || loadingFetchEmployeeSchedule}>
           {_renderTableHeader()}
           {_renderTableContent()}
         </Spin>
@@ -114,4 +115,5 @@ const DailyTable = (props) => {
 export default connect(({ loading, timeSheet: { myTimesheet = [] } = {} }) => ({
   myTimesheet,
   loadingFetchMyTimesheetByType: loading.effects['timeSheet/fetchMyTimesheetByTypeEffect'],
+  loadingFetchEmployeeSchedule: loading.effects['timeSheet/getEmployeeScheduleByLocation'],
 }))(DailyTable);
