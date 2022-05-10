@@ -101,7 +101,7 @@ const TaskPopover = (props) => {
             </Row>
           )}
           {showingTasks.map((task) => {
-            if (task.startTime && task.endTime) {
+            if (task.leaveId && task.timeOfDay) {
               return (
                 <Row className={styles.eachRow} justify="space-between" align="middle">
                   <Col span={18} className={styles.taskName}>
