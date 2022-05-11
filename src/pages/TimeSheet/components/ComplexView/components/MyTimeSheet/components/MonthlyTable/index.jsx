@@ -1,42 +1,24 @@
 import { Table } from 'antd';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { connect } from 'umi';
-import { projectColor, convertMsToTime } from '@/utils/timeSheet';
-import TaskPopover from './components/TaskPopover';
-import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
+import { convertMsToTime, projectColor } from '@/utils/timeSheet';
 import EmptyComponent from '@/components/Empty';
-
+import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
+import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
 
 const MonthlyTable = (props) => {
   const {
-    startDate = '',
-    endDate = '',
     loadingFetchMyTimesheetByType = false,
     weeksOfMonth = [],
     data: { weeks: weeksProp = [], summary: summaryProp = [] } = {},
-    data = {},
   } = props;
-  const [formattedData, setFormattedData] = useState([]);
 
   // FUNCTIONS
-  // format data
-  const formatData = () => {
-    const header = {
-      projectName: 'All Projects',
-    };
-    setFormattedData([header].concat(weeksProp));
-  };
-
   const getColorByIndex = (index) => {
     return projectColor[index % projectColor.length];
   };
-
-  // USE EFFECT
-  useEffect(() => {
-    formatData();
-  }, [JSON.stringify(data)]);
 
   // RENDER UI
   const renderHeaderItem = (weekItem) => {
@@ -52,27 +34,44 @@ const MonthlyTable = (props) => {
     );
   };
 
+  const renderTitle = (title, type) => {
+    if (type === 1) return title;
+    if (type === 3) return <span className={styles.totalHeader}>{title}</span>;
+    return renderHeaderItem(title);
+  };
+
   const columns = () => {
     const columnLength = weeksOfMonth.length + 1;
     const dateColumns = weeksOfMonth.map((weekItem) => {
       return {
-        title: weekItem.week,
+        title: renderTitle(weekItem, 2),
         dataIndex: weekItem.week,
         key: weekItem.week,
         align: 'center',
         width: `${100 / columnLength}}%`,
-        render: (value, row, index) => {
+        render: (value, row) => {
           const { weeks = [] } = row;
-          if (index === 0) return renderHeaderItem(weekItem);
           const find = weeks.find((w) => w.week === weekItem.week) || {};
-          if (!find || find?.weekProjectTime === 0)
-            return (
-              <span className={styles.hourValue}>
-                <img src={EmptyLine} alt="" />
-              </span>
-            );
           return (
-            <span className={styles.hourValue}>{convertMsToTime(find?.weekProjectTime || 0)}</span>
+            // <TaskPopover
+            //   week={weekItem.week}
+            //   startDate={weekItem.startDate}
+            //   endDate={weekItem.endDate}
+            //   tasks={[]}
+            //   placement="bottomLeft"
+            // >
+            <div>
+              {!find || find?.weekProjectTime === 0 ? (
+                <span className={styles.hourValue}>
+                  <img src={EmptyLine} alt="" />
+                </span>
+              ) : (
+                <span className={styles.hourValue}>
+                  {convertMsToTime(find?.weekProjectTime || 0)}
+                </span>
+              )}
+            </div>
+            // </TaskPopover>
           );
         },
       };
@@ -80,15 +79,12 @@ const MonthlyTable = (props) => {
 
     const result = [
       {
-        title: 'All Projects',
+        title: renderTitle('All Projects', 1),
         dataIndex: 'projectName',
         key: 'projectName',
         align: 'center',
         width: `${100 / columnLength}%`,
         render: (projectName, _, index) => {
-          if (index === 0) {
-            return projectName;
-          }
           return (
             <div className={styles.projectName}>
               <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
@@ -106,7 +102,7 @@ const MonthlyTable = (props) => {
 
   // FOOTER
   const renderFooter = () => {
-    if (weeksProp.length === 0) return <EmptyComponent />;
+    if (weeksProp.length === 0) return '';
     return (
       <div className={styles.footer}>
         <div className={styles.item}>
@@ -143,12 +139,15 @@ const MonthlyTable = (props) => {
       <div className={styles.tableContainer}>
         <Table
           columns={columns()}
-          dataSource={formattedData}
+          dataSource={weeksProp}
           bordered
           pagination={false}
           // scroll={{ y: 440 }}
           footer={renderFooter}
           loading={loadingFetchMyTimesheetByType}
+          locale={{
+            emptyText: <EmptyComponent />,
+          }}
         />
       </div>
     </div>

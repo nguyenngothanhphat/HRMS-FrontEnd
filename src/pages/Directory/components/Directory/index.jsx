@@ -54,6 +54,7 @@ const DirectoryComponent = (props) => {
   const [size, setSize] = useState(10);
   const [visible, setVisible] = useState(false);
   const [visibleImportEmployee, setVisibleImportEmployee] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
 
   // FUNCTIONALITY
   // Define tabID to filter
@@ -180,16 +181,32 @@ const DirectoryComponent = (props) => {
   };
 
   const refreshData = () => {
+    setIsFiltering(true);
+    setPageSelected(1);
     renderData({
       ...filter,
-      page: pageSelected || 1,
+      page: 1,
       limit: size,
     });
+    setTimeout(() => {
+      setIsFiltering(false);
+    }, 50);
   };
 
   useEffect(() => {
     refreshData();
-  }, [JSON.stringify(filter), JSON.stringify(listCountry), pageSelected, size, tabId]);
+  }, [JSON.stringify(filter), JSON.stringify(listCountry), size, tabId]);
+
+  // pageSelected change => only call API when not using filter (isFiltering = false)
+  useEffect(() => {
+    if (!isFiltering) {
+      renderData({
+        ...filter,
+        page: pageSelected,
+        limit: size,
+      });
+    }
+  }, [pageSelected]);
 
   const renderListEmployee = () => {
     const { active, myTeam } = tabList;
@@ -253,7 +270,7 @@ const DirectoryComponent = (props) => {
         'First Name': item.firstName,
         'Last Name': item.lastName,
         'Middle Name': item.middleName,
-        Gender: item.Gender,
+        Gender: item.gender,
         'Date of Birth': item.dateOfBirth,
         'Joined Date': item.joinDate,
         Location: item.location,
@@ -285,20 +302,20 @@ const DirectoryComponent = (props) => {
   const downloadTemplate = () => {
     const exportData = [
       {
-        employeeId: 'PSI 0000',
+        employeeId: 'PSI-0000',
         firstName: 'First Name',
         lastName: 'Last Name',
         middleName: 'Middle Name',
-        gender: 'Gender',
-        dateOfBirth: 'Date of Birth',
+        gender: 'Male',
+        dateOfBirth: '05/10/2022',
         joinDate: '11/30/2020',
         location: 'Vietnam',
-        department: 'Develop',
+        department: 'Engineering',
         employeeType: 'Full Time',
         title: 'Junior Frontend',
-        workEmail: 'template@terralogic.com',
-        personalEmail: 'template@gmail.com',
-        managerWorkEmail: 'manager@terralogic.com',
+        workEmail: 'template@mailinator.com',
+        personalEmail: 'template@mailinator.com',
+        managerWorkEmail: 'manager@mailinator.com',
         personalNumber: '0123456789',
       },
     ];

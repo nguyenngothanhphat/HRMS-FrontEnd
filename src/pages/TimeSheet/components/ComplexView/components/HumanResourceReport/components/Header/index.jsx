@@ -1,7 +1,8 @@
 import moment from 'moment';
-import React, { Suspense } from 'react';
-import { Button, Skeleton } from 'antd';
+import React, { Suspense, useState } from 'react';
+import { Button, Skeleton, Tag } from 'antd';
 import { connect } from 'umi';
+import { CloseOutlined } from '@ant-design/icons';
 import exportToCSV from '@/utils/exportAsExcel';
 import DownloadIcon from '@/assets/timeSheet/download.svg';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
@@ -23,6 +24,7 @@ const Header = (props) => {
     onChangeSearch = () => {},
     data = [],
     activeView = '',
+    dispatch,
   } = props;
 
   const {
@@ -32,6 +34,8 @@ const Header = (props) => {
       } = {},
     } = {},
   } = props;
+  const [applied, setApplied] = useState(0);
+  const [form, setForm] = useState(null);
 
   const locationUser = countryID === 'US';
 
@@ -113,6 +117,14 @@ const Header = (props) => {
     exportToCSV(processData(data), 'HumanResourceReportData.xlsx');
   };
 
+  const handleClearFilter = () => {
+    dispatch({
+      type: 'timeSheet/clearFilter',
+    });
+    setApplied(0);
+    form?.resetFields();
+  };
+
   // MAIN AREA
   return (
     <div className={styles.Header}>
@@ -125,8 +137,19 @@ const Header = (props) => {
           onChange={onDatePickerChange}
         />
       </div>
+
       <div className={styles.Header__middle}>{viewChangeComponent()}</div>
+
       <div className={styles.Header__right}>
+        {applied > 0 && (
+          <Tag
+            className={styles.Header__tagCountFilter}
+            closable
+            closeIcon={<CloseOutlined onClick={handleClearFilter} />}
+          >
+            {applied} applied
+          </Tag>
+        )}
         <div className={styles.downloadIcon} onClick={downloadTemplate}>
           <img src={DownloadIcon} alt="Icon Download" />
           <Button>Download</Button>
@@ -135,12 +158,12 @@ const Header = (props) => {
           placement="bottomRight"
           content={
             <Suspense fallback={<Skeleton active />}>
-              <FilterContent />
+              <FilterContent setForm={setForm} setApplied={setApplied} />
             </Suspense>
           }
           realTime
         >
-          <FilterButton fontSize={14} />
+          <FilterButton />
         </FilterPopover>
         <SearchBar onChangeSearch={onChangeSearch} activeView={activeView} />
       </div>

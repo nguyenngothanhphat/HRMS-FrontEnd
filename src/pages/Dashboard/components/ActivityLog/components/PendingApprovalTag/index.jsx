@@ -1,4 +1,4 @@
-import { Row, Col, Tooltip, notification } from 'antd';
+import { Row, Col, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
@@ -29,24 +29,23 @@ const PendingApprovalTag = (props) => {
 
   const onApproveClick = async (idProp) => {
     const res = await dispatch({
-      type: 'timeOff/reportingManagerApprove',
+      type: 'dashboard/approveRequest',
       payload: {
+        typeTicket,
         _id: idProp,
       },
     });
     const { statusCode = 0 } = res;
     if (statusCode === 200) {
       refreshData();
-      notification.success({
-        message: 'The ticket has been approved',
-      });
     }
   };
 
   const onReject = async (comment) => {
     const res = await dispatch({
-      type: 'timeOff/reportingManagerReject',
+      type: 'dashboard/rejectRequest',
       payload: {
+        typeTicket,
         _id,
         comment,
       },
@@ -55,9 +54,6 @@ const PendingApprovalTag = (props) => {
     if (statusCode === 200) {
       setCommentModalVisible(false);
       refreshData();
-      notification.success({
-        message: 'The ticket has been rejected',
-      });
     }
   };
 
@@ -120,5 +116,5 @@ const PendingApprovalTag = (props) => {
 };
 
 export default connect(({ loading }) => ({
-  loadingReject: loading.effects['timeOff/reportingManagerReject'],
+  loadingReject: loading.effects['timeOff/rejectRequest'],
 }))(PendingApprovalTag);

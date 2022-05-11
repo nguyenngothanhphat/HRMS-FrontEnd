@@ -66,18 +66,6 @@ class SalaryStructure extends PureComponent {
     }
   }
 
-  // componentDidMount() {
-  //   window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
-  // }
-
-  // _renderTable = () => {
-  //   return (
-  //     <div className={styles.tableWrapper}>
-  //       <p>{formatMessage({ id: 'component.salaryStructure.tableWrapper' })}</p>
-  //     </div>
-  //   );
-  // };
-
   onSalaryNoteChange = (e) => {
     const { target: { value = '' } = {} } = e;
     this.setState({
@@ -133,7 +121,7 @@ class SalaryStructure extends PureComponent {
 
     if (loadingFetchCandidate) return <Skeleton />;
     return (
-      <Row gutter={[24, 0]}>
+      <Row gutter={[24, 24]}>
         <Col xs={24} xl={16}>
           <div className={styles.salaryStructure}>
             <Form wrapperCol={{ span: 24 }} name="basic" onFinish={this.onFinish}>
@@ -146,15 +134,14 @@ class SalaryStructure extends PureComponent {
           </div>
         </Col>
         <Col xs={24} xl={8}>
-          <div className={styles.rightWrapper}>
-            <Row>{statusSalary ? <SalaryAcceptance /> : <NoteComponent />}</Row>
-            <Row>
+          <Row className={styles.rightWrapper}>
+            <Col span={24}>{statusSalary ? <SalaryAcceptance /> : <NoteComponent />}</Col>
+            <Col span={24}>
               <MessageBox />
-            </Row>
+            </Col>
 
-            <Row>{this._renderSalaryNote()}</Row>
-            {/* <Row>{processStatus === 'DRAFT' ? '' : <SalaryAcceptance />}</Row> */}
-          </div>
+            <Col span={24}>{this._renderSalaryNote()}</Col>
+          </Row>
         </Col>
       </Row>
     );

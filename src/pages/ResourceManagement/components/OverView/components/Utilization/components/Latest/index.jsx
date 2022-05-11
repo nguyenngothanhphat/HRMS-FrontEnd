@@ -47,6 +47,8 @@ const Latest = (props) => {
       selectedLocations = [],
       selectedDivisions = [],
     } = {},
+    employee = {},
+    permissions = {},
   } = props;
   const { summaryToday = [], summaryYesterday = [] } = resourceUtilizationList;
   const [calculatedData, setCalculatedData] = useState({
@@ -54,12 +56,19 @@ const Latest = (props) => {
     increasePercent: 0,
   });
 
+  const adminMode = permissions.viewResourceAdminMode !== -1;
+  const countryMode = permissions.viewResourceCountryMode !== -1;
+  const employeeId = employee ? employee._id : '';
+
   const fetchData = () => {
     dispatch({
       type: 'resourceManagement/fetchResourceUtilizationList',
       payload: {
         location: selectedLocations,
         division: selectedDivisions,
+        employeeId,
+        adminMode,
+        countryMode,
       },
     });
   };
@@ -110,11 +119,11 @@ const Latest = (props) => {
     return [
       {
         name: 'Total Resources',
-        value: totalToday.count,
+        value: totalToday.count || 0,
       },
       {
         name: 'Total Billable resources',
-        value: `${billableToday?.count} (${renderPercent(billableToday?.percent)}%)`,
+        value: `${billableToday?.count || 0} (${renderPercent(billableToday?.percent || 0)}%)`,
       },
       // {
       //   name: 'Total Unpaid resources',
@@ -122,11 +131,11 @@ const Latest = (props) => {
       // },
       {
         name: 'Total Buffer resources',
-        value: `${bufferToday?.count} (${renderPercent(bufferToday?.percent)}%)`,
+        value: `${bufferToday?.count || 0} (${renderPercent(bufferToday?.percent || 0)}%)`,
       },
       {
         name: 'Total Benched resources',
-        value: `${benchToday?.count} (${renderPercent(benchToday?.percent)}%)`,
+        value: `${benchToday?.count || 0} (${renderPercent(benchToday?.percent || 0)}%)`,
       },
     ];
   };
@@ -196,6 +205,10 @@ const Latest = (props) => {
   );
 };
 
-export default connect(({ resourceManagement }) => ({
-  resourceManagement,
-}))(Latest);
+export default connect(
+  ({ resourceManagement, user: { currentUser: { employee = {} } = {}, permissions = {} } }) => ({
+    resourceManagement,
+    employee,
+    permissions,
+  }),
+)(Latest);

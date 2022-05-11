@@ -15,6 +15,7 @@ import GeneralInfo from './components/GeneralInfo';
 import PerformanceHistory from './components/PerformanceHistory';
 import styles from './index.less';
 import { IS_TERRALOGIC_LOGIN } from '@/utils/login';
+import { goToTop } from '@/utils/utils';
 
 const EmployeeProfile = (props) => {
   const {
@@ -135,6 +136,7 @@ const EmployeeProfile = (props) => {
       const link = isOwner() ? 'employees' : 'directory';
       history.replace(`/${link}/employee-profile/${reId}/general-info`);
     } else {
+      goToTop()
       refreshData();
     }
     return () => {

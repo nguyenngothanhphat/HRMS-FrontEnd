@@ -9,6 +9,7 @@ import OnboardingOverview from './components/OnboardingOverview';
 import Settings from './components/Settings';
 import styles from './index.less';
 import NewJoinees from './components/NewJoinees/index';
+import { goToTop } from '@/utils/utils';
 
 @connect(({ user: { permissions = [] } = {}, onboarding: { onboardingOverview = {} } = {} }) => ({
   permissions,
@@ -22,6 +23,7 @@ class Onboarding extends PureComponent {
     if (!tabName) {
       history.replace(`/onboarding/list`);
     }
+    goToTop();
   };
 
   componentWillUnmount = () => {

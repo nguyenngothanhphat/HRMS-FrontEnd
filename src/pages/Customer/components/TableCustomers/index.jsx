@@ -1,45 +1,84 @@
-import { Table } from 'antd';
-import React, { PureComponent } from 'react';
-import { formatMessage, history } from 'umi';
+import React, { useState, useEffect } from 'react';
+import { Table, Button, Popover, Avatar } from 'antd';
+import { formatMessage, history, connect } from 'umi';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
 import UserProfilePopover from '../UserProfilePopover';
+import DeleteCustomerModalContent from './components/DeleteCustomerModalContent';
+import DeleteIcon from '@/assets/customerManagement/delete.svg';
 import styles from './index.less';
+import CommonModal from '@/components/CommonModal';
 
-class TableCustomers extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      pageSelected: 1,
-      selectedRowKeys: [],
-      visible: false,
-    };
-  }
+const TableCustomers = (props) => {
+  const {
+    data,
+    listCustomer = [],
+    loadingCustomer = false,
+    loadingFilter = false,
+    loadingDeleteProject = false,
+    dispatch,
+    permissions,
+  } = props;
 
-  componentDidUpdate(prevProps) {
-    const { data } = this.props;
-    if (prevProps.data !== data) {
-      this.setFirstPage();
-    }
-  }
+  const viewDeleteCustomer = permissions.deleteCustomerManagement !== -1;
 
-  handleProfile = (account) => {
+  const [pageSelected, setPageSelected] = useState(1);
+  const [selectedCustomer, setSelectedCustomer] = useState('');
+  const [isDeleteCustomer, setIsDeleteCustomer] = useState(false);
+  const [size, setSize] = useState(10);
+  const setFirstPage = () => {
+    setPageSelected(1);
+  };
+
+  const handleProfile = (account) => {
     history.push(`/customer-management/customers/customer-profile/${account}`);
   };
 
-  generateColumns = () => {
-    const columns = [
+  const handleViewProject = (record) => {
+    const { customerId = '' } = record;
+    history.push(`/customer-management/customers/customer-profile/${customerId}/projects`);
+  };
+
+  const renderCustomerId = (customerId, record) => {
+    const { avatar = '' } = record;
+
+    const popupImg = () => {
+      return (
+        <div className={styles.popupImg}>
+          <img src={avatar || DefaultAvatar} alt="avatar" />
+        </div>
+      );
+    };
+
+    return (
+      <div>
+        <Popover placement="rightTop" content={popupImg} trigger="hover">
+          <Avatar
+            size="medium"
+            style={{ marginRight: '10px' }}
+            src={avatar || DefaultAvatar}
+            alt="avatar"
+          />
+        </Popover>
+        <span className={styles.blueText}>{customerId}</span>
+      </div>
+    );
+  };
+
+  const generateColumns = () => {
+    let columns = [
       {
         title: formatMessage({ id: 'page.customermanagement.customerID' }),
         dataIndex: 'customerId',
         align: 'center',
         fixed: 'left',
-        width: '10%',
-        render: (customerId) => {
+        width: '15%',
+        render: (customerId, record) => {
           return (
             <div
               style={{ fontWeight: '700', color: '#2C6DF9' }}
-              onClick={() => this.handleProfile(customerId)}
+              onClick={() => handleProfile(customerId)}
             >
-              {customerId}
+              {renderCustomerId(customerId, record)}
             </div>
           );
         },
@@ -47,7 +86,7 @@ class TableCustomers extends PureComponent {
       {
         title: formatMessage({ id: 'page.customermanagement.companyAlias' }),
         dataIndex: 'dba',
-        align: 'center',
+        align: 'left',
         width: '10%',
         render: (dba) => <span className={styles.blueText}>{dba}</span>,
       },
@@ -74,10 +113,14 @@ class TableCustomers extends PureComponent {
       },
       {
         title: formatMessage({ id: 'page.customermanagement.activeProjects' }),
-        dataIndex: 'activeProjects',
+        dataIndex: 'activeProject',
         width: '10%',
         align: 'center',
-        render: (activeProjects) => <span className={styles.blueText}>{activeProjects}</span>,
+        render: (activeProject, record) => (
+          <span className={styles.blueText} onClick={() => handleViewProject(record)}>
+            {activeProject}
+          </span>
+        ),
       },
       {
         title: formatMessage({ id: 'page.customermanagement.status' }),
@@ -101,102 +144,114 @@ class TableCustomers extends PureComponent {
           );
         },
       },
+      {
+        title: 'Action',
+        key: 'action',
+        dataIndex: 'action',
+        align: 'center',
+        width: '5%',
+        render: (a, record) => {
+          return (
+            <div className={styles.btnAction}>
+              <Button
+                type="link"
+                shape="circle"
+                onClick={() => {
+                  setSelectedCustomer(record);
+                  setIsDeleteCustomer(true);
+                }}
+              >
+                <img src={DeleteIcon} alt="delete" />
+              </Button>
+            </div>
+          );
+        },
+      },
     ];
 
+    if (!viewDeleteCustomer) {
+      columns = columns.filter((column) => !['action'].includes(column.dataIndex));
+    }
     return columns.map((col) => ({
       ...col,
       title: col.title,
     }));
   };
 
-  handleCancel = () => {
-    this.setState({
-      visible: false,
+  const onChangePagination = (pageNumber, pageSize) => {
+    setPageSelected(pageNumber);
+    setSize(pageSize);
+  };
+
+  // refresh list without losing filter, search
+  const onRefresh = () => {
+    dispatch({
+      type: 'customerManagement/fetchCustomerList',
     });
   };
 
-  deleteEmployee = (record, e) => {
-    e.stopPropagation();
+  const scroll = {
+    x: 'max-content',
+    y: 'max-content',
   };
 
-  // pagination
-  onChangePagination = (pageNumber) => {
-    this.setState({
-      pageSelected: pageNumber,
-    });
+  const pagination = {
+    position: ['bottomLeft'],
+    total: listCustomer.length,
+    showTotal: (total, range) => (
+      <span>
+        {' '}
+        {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
+        <b>
+          {range[0]} - {range[1]}
+        </b>{' '}
+        {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
+      </span>
+    ),
+    defaultPageSize: size,
+    showSizeChanger: true,
+    pageSizeOptions: ['10', '25', '50', '100'],
+    pageSize: size,
+    current: pageSelected,
+    onChange: onChangePagination,
   };
 
-  setFirstPage = () => {
-    this.setState({
-      pageSelected: 1,
-    });
-  };
+  useEffect(() => {
+    setFirstPage();
+  }, [data]);
 
-  // onSortChange = (pagination, filters, sorter, extra) => {
-  //   console.log('params', pagination, filters, sorter, extra);
-  // };
+  return (
+    <div className={styles.tableCustomers}>
+      <Table
+        size="middle"
+        loading={loadingCustomer || loadingFilter}
+        pagination={pagination}
+        columns={generateColumns()}
+        dataSource={listCustomer}
+        scroll={scroll}
+        rowKey={(record) => record._id}
+      />
+      <CommonModal
+        visible={isDeleteCustomer}
+        onClose={() => setIsDeleteCustomer(false)}
+        firstText="Delete"
+        secondText="Cancel"
+        title="Delete Project"
+        loading={loadingDeleteProject}
+        content={
+          <DeleteCustomerModalContent
+            onClose={() => setIsDeleteCustomer(false)}
+            selectedCustomer={selectedCustomer}
+            onRefresh={onRefresh}
+          />
+        }
+        width={600}
+      />
+    </div>
+  );
+};
 
-  onSelectChange = (selectedRowKeys) => {
-    this.setState({ selectedRowKeys });
-  };
-
-  //   push to customer profile
-  handleProfileCustomer = (_id) => {
-    // history.push(`/employees/employee-profile/${_id}`);
-  };
-
-  render() {
-    const { listCustomer, loadingCustomer } = this.props;
-    const { pageSelected, selectedRowKeys, visible } = this.state;
-    const rowSize = 10;
-    const scroll = {
-      x: 'max-content',
-      y: 'max-content',
-    };
-    const pagination = {
-      position: ['bottomLeft'],
-      total: listCustomer.length,
-      showTotal: (total, range) => (
-        <span>
-          {' '}
-          {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
-          <b>
-            {range[0]} - {range[1]}
-          </b>{' '}
-          {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
-        </span>
-      ),
-      pageSize: rowSize,
-      current: pageSelected,
-      onChange: this.onChangePagination,
-    };
-
-    const rowSelection = {
-      type: 'checkbox',
-      selectedRowKeys,
-      onChange: this.onSelectChange,
-    };
-
-    return (
-      <div className={styles.tableCustomers}>
-        <Table
-          size="middle"
-          loading={loadingCustomer}
-          onRow={(record) => {
-            return {
-              onClick: () => this.handleProfileCustomer(record._id), // click row
-            };
-          }}
-          //   rowSelection={rowSelection}
-          pagination={{ ...pagination, total: listCustomer.length }}
-          columns={this.generateColumns()}
-          dataSource={listCustomer}
-          scroll={scroll}
-          rowKey={(record) => record._id}
-        />
-      </div>
-    );
-  }
-}
-
-export default TableCustomers;
+export default connect(({ loading, user: { permissions = {} } = {} }) => ({
+  permissions,
+  loadingDeleteProject: loading.effects['customerManagement/removeCustomerEffect'],
+}))(TableCustomers);
