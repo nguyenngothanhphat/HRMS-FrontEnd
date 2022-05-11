@@ -217,12 +217,10 @@ const ResourceList = (props) => {
     <div className={styles.containerTickets}>
       <div className={styles.tabTickets}>
         <span>
-          {viewModeAdmin && (
-            <ResourceStatus
-              currentStatus={availableStatusState}
-              changeAvailableStatus={changeAvailableStatus}
-            />
-          )}
+          <ResourceStatus
+            currentStatus={availableStatusState}
+            changeAvailableStatus={changeAvailableStatus}
+          />
         </span>
 
         <div className={styles.rightHeaderTable}>
