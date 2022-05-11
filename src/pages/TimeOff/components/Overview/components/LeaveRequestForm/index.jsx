@@ -97,7 +97,7 @@ const LeaveRequestForm = (props) => {
       },
     }).then((res) => {
       if (res.statusCode === 200) {
-        let invalidDatesTemp = [...invalidDates];
+        let invalidDatesTemp = [];
         const { items: leaveRequests = [] } = res?.data;
         leaveRequests.forEach((x) => {
           const temp = x.leaveDates.map((y) => {
