@@ -1,12 +1,20 @@
 import { Spin, Tabs } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import RequestScopeTabs from './components/RequestScopeTabs';
 import styles from './index.less';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 
 const { TabPane } = Tabs;
+const { IN_PROGRESS, ON_HOLD } = TIMEOFF_STATUS;
 
 const ManagerRequestTable = (props) => {
+  const [leaveRequests, setLeaveRequests] = useState(0);
+  const [specialLeaveRequests, setSpecialLeaveRequests] = useState(0);
+  const [lwpRequests, setLWPRequests] = useState(0);
+  const [wfhcpRequests, setWfhcpRequests] = useState(0);
+  const [category, setCategory] = useState('ALL');
+
   const {
     dispatch,
     timeOff: {
@@ -17,6 +25,83 @@ const ManagerRequestTable = (props) => {
     loadingTimeOffType = false,
     eligibleForCompOff = false,
   } = props;
+
+  const handleProgress = () => {
+    const typeA = [];
+    const typeB = [];
+    const typeC = [];
+    const typeD = [];
+
+    // Get all ID and Seperated ID follow type
+
+    const leavesTemp = [...commonLeaves, ...specialLeaves];
+
+    const typeId = leavesTemp.map((item) => {
+      switch (item.type) {
+        case 'A':
+          typeA.push(item._id);
+          break;
+        case 'B':
+          typeB.push(item._id);
+          break;
+        case 'C':
+          typeC.push(item._id);
+          break;
+        case 'D':
+          typeD.push(item._id);
+          break;
+        default:
+          break;
+      }
+      return item._id;
+    });
+
+    //
+
+    const newCount = (items) => {
+      const arrayId = items.map((item) => item?.type?._id);
+      const typeALengthTemp = arrayId.filter((i) => typeA.includes(i)).length;
+      const typeBLengthTemp = arrayId.filter((i) => typeB.includes(i)).length;
+      const typeCLengthTemp = arrayId.filter((i) => typeC.includes(i)).length;
+      const typeDLengthTemp = arrayId.filter((i) => typeD.includes(i)).length;
+
+      setLeaveRequests(typeALengthTemp);
+      setSpecialLeaveRequests(typeCLengthTemp);
+      setLWPRequests(typeBLengthTemp);
+      setWfhcpRequests(typeDLengthTemp);
+    };
+
+    // get all timeoff id by status IN_PROGRESS,ON_HOLD
+
+    let typeAPI = '';
+    switch (category) {
+      case 'MY':
+        typeAPI = 'timeOff/fetchLeaveRequestOfEmployee';
+        break;
+      case 'TEAM':
+        typeAPI = 'timeOff/fetchTeamLeaveRequests';
+        break;
+      case 'ALL':
+        typeAPI = 'timeOff/fetchAllLeaveRequests';
+        break;
+      default:
+        break;
+    }
+
+    dispatch({
+      type: typeAPI,
+      payload: {
+        status: [IN_PROGRESS, ON_HOLD],
+        type: typeId,
+        page: 1,
+      },
+    }).then((res) => {
+      const { data: { items = [] } = {}, statusCode } = res;
+      if (statusCode === 200) {
+        newCount(items);
+      }
+    });
+  };
 
   const saveCurrentTypeTab = (type) => {
     dispatch({
@@ -61,7 +146,12 @@ const ManagerRequestTable = (props) => {
 
   useEffect(() => {
     saveCurrentTypeTab('1');
+    handleProgress();
   }, [JSON.stringify(yourTimeOffTypes)]);
+
+  useEffect(() => {
+    handleProgress();
+  }, [category]);
 
   const renderTableTitle = {
     left: (
@@ -69,6 +159,12 @@ const ManagerRequestTable = (props) => {
         <span>Timeoff Requests</span>
       </div>
     ),
+  };
+
+  const addZeroToNumber = (number) => {
+    if (number === 0) return 0;
+    if (number < 10 && number > 0) return `0${number}`.slice(-2);
+    return number;
   };
 
   return (
@@ -83,33 +179,40 @@ const ManagerRequestTable = (props) => {
           destroyInactiveTabPane
         >
           <>
-            <TabPane tab="Leave Requests" key="1">
+            <TabPane tab={`Leave Requests (${addZeroToNumber(leaveRequests)})`} key="1">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
+                setCategory={setCategory}
                 tab={1}
                 tabName="Leave Requests"
                 type={1}
               />
             </TabPane>
-            <TabPane tab="Special Leave Requests" key="2">
+            <TabPane
+              tab={`Special Leave Requests (${addZeroToNumber(specialLeaveRequests)})`}
+              key="2"
+            >
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
+                setCategory={setCategory}
                 tab={2}
                 tabName="Special Leave Requests"
                 type={1}
               />
             </TabPane>
-            <TabPane tab="LWP Requests" key="3">
+            <TabPane tab={`LWP Requests (${addZeroToNumber(lwpRequests)})`} key="3">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
+                setCategory={setCategory}
                 tab={3}
                 tabName="LWP Requests"
                 type={1}
               />
             </TabPane>
-            <TabPane tab="WFH/CP Requests" key="4">
+            <TabPane tab={`WFH/CP Requests (${addZeroToNumber(wfhcpRequests)})`} key="4">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
+                setCategory={setCategory}
                 tab={4}
                 tabName="WFH/CP Requests"
                 type={1}
