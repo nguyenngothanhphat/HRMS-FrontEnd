@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-// import Warning from './components/Warning';
 import { Button, Col, notification, Row, Skeleton, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
@@ -83,13 +82,22 @@ const DocumentVerification = (props) => {
     companyLocationList = [],
   } = props;
 
-  const { PROFILE_VERIFICATION } = NEW_PROCESS_STATUS;
+  const { DRAFT, PROFILE_VERIFICATION } = NEW_PROCESS_STATUS;
 
   const [openModal, setOpenModal] = useState(false);
   const [openModalEmail, setOpenModalEmail] = useState(false);
   const [checkRadioSendMail, setCheckRadioSendMail] = useState(0);
   const [refreshBlockE, setRefreshBlockE] = useState(false);
   const [updating, setUpdating] = useState(false);
+
+  const setSettings = (settings) => {
+    dispatch({
+      type: 'newCandidateForm/saveTemp',
+      payload: {
+        documentChecklistSetting: settings,
+      },
+    });
+  };
 
   const validateFields = () => {
     let validation = true;
@@ -118,7 +126,7 @@ const DocumentVerification = (props) => {
     setUpdating(true);
 
     const arrToAdjust =
-      processStatus === NEW_PROCESS_STATUS.DRAFT
+      processStatus === DRAFT
         ? JSON.parse(JSON.stringify(data.documentChecklistSetting))
         : JSON.parse(JSON.stringify(tempData.documentChecklistSetting));
 
@@ -178,8 +186,8 @@ const DocumentVerification = (props) => {
     return tempProof;
   };
 
-  // generate documentCheckListSetting
-  const generateDocumentCheckListSettings = (
+  // generate documentChecklistSetting
+  const generatedocumentChecklistSettings = (
     docsListE,
     checkedListAProp,
     checkedListBProp,
@@ -233,19 +241,12 @@ const DocumentVerification = (props) => {
     return documentCLS;
   };
 
-  const handleUpdateByHR = (
-    docsListE,
-    checkedListAProp,
-    checkedListBProp,
-    checkedListCProp,
-    docsListD,
-  ) => {
-    const documentChecklistSettingTemp = generateDocumentCheckListSettings(
+  const handleUpdateByHR = (docsListE, checkedListAProp, checkedListBProp, checkedListCProp) => {
+    const documentChecklistSettingTemp = generatedocumentChecklistSettings(
       docsListE,
       checkedListAProp,
       checkedListBProp,
       checkedListCProp,
-      docsListD,
     );
 
     dispatch({
@@ -254,10 +255,7 @@ const DocumentVerification = (props) => {
         candidate: _id,
         documentChecklistSetting: documentChecklistSettingTemp,
         currentStep:
-          processStatus === NEW_PROCESS_STATUS.DRAFT ||
-          processStatus === NEW_PROCESS_STATUS.PROFILE_VERIFICATION
-            ? 2
-            : currentStep,
+          processStatus === DRAFT || processStatus === PROFILE_VERIFICATION ? 2 : currentStep,
         tenantId: getCurrentTenant(),
       },
     });
@@ -265,10 +263,7 @@ const DocumentVerification = (props) => {
       type: 'newCandidateForm/save',
       payload: {
         currentStep:
-          processStatus === NEW_PROCESS_STATUS.DRAFT ||
-          processStatus === NEW_PROCESS_STATUS.PROFILE_VERIFICATION
-            ? 2
-            : currentStep,
+          processStatus === DRAFT || processStatus === PROFILE_VERIFICATION ? 2 : currentStep,
       },
     });
   };
@@ -285,46 +280,44 @@ const DocumentVerification = (props) => {
     return false;
   };
 
+  const getVariableNameByType = (typeProp) => {
+    switch (typeProp) {
+      case 'A':
+        return 'identityProof';
+
+      case 'B':
+        return 'addressProof';
+
+      case 'C':
+        return 'educational';
+
+      default:
+        return '';
+    }
+  };
   // HANDLE CHANGE WHEN CLICK CHECKBOXES OF BLOCK A,B,C
   const handleChange = (checkedList, item) => {
     const { type = '' } = item;
 
-    const docsListD = documentChecklistSetting.filter((doc) => doc.type === 'D') || [];
     const docsListE = documentChecklistSetting.filter((doc) => doc.type === 'E') || [];
 
+    const typeName = getVariableNameByType(type);
+    dispatch({
+      type: 'newCandidateForm/saveTemp',
+      payload: {
+        [typeName]: {
+          ...[typeName],
+          checkedList,
+        },
+      },
+    });
+
     if (type === 'A') {
-      dispatch({
-        type: 'newCandidateForm/saveTemp',
-        payload: {
-          identityProof: {
-            ...identityProof,
-            checkedList,
-          },
-        },
-      });
-      handleUpdateByHR(docsListE, checkedList, checkedListB, checkedListC, docsListD);
+      handleUpdateByHR(docsListE, checkedList, checkedListB, checkedListC);
     } else if (type === 'B') {
-      dispatch({
-        type: 'newCandidateForm/saveTemp',
-        payload: {
-          addressProof: {
-            ...addressProof,
-            checkedList,
-          },
-        },
-      });
-      handleUpdateByHR(docsListE, checkedListA, checkedList, checkedListC, docsListD);
+      handleUpdateByHR(docsListE, checkedListA, checkedList, checkedListC);
     } else if (type === 'C') {
-      dispatch({
-        type: 'newCandidateForm/saveTemp',
-        payload: {
-          educational: {
-            ...educational,
-            checkedList,
-          },
-        },
-      });
-      handleUpdateByHR(docsListE, checkedListA, checkedListB, checkedList, docsListD);
+      handleUpdateByHR(docsListE, checkedListA, checkedListB, checkedList);
     }
   };
 
@@ -497,7 +490,7 @@ const DocumentVerification = (props) => {
     const docsListD = documentChecklistSetting.filter((doc) => doc.type === 'D') || [];
     const docsListE = documentChecklistSetting.filter((doc) => doc.type === 'E') || [];
 
-    const result = generateDocumentCheckListSettings(
+    const result = generatedocumentChecklistSettings(
       docsListE,
       checkedListA,
       checkedListB,
@@ -505,12 +498,7 @@ const DocumentVerification = (props) => {
       docsListD,
     );
 
-    dispatch({
-      type: 'newCandidateForm/saveTemp',
-      payload: {
-        documentChecklistSetting: result,
-      },
-    });
+    setSettings(result);
 
     const payload = {
       candidate: _id,
@@ -556,8 +544,7 @@ const DocumentVerification = (props) => {
           payload: {
             isMarkAsDone: type === 'generate-link',
             isSentEmail: type !== 'generate-link',
-            processStatus:
-              currentStep === 2 ? NEW_PROCESS_STATUS.PROFILE_VERIFICATION : processStatus,
+            processStatus: currentStep === 2 ? PROFILE_VERIFICATION : processStatus,
           },
         });
       }
@@ -651,7 +638,7 @@ const DocumentVerification = (props) => {
       data: fieldDataTypeE,
     };
 
-    let newDocumentList = [...JSON.parse(JSON.stringify(documentChecklistSetting))];
+    let newDocumentList = JSON.parse(JSON.stringify(documentChecklistSetting));
     const forCheckE = newDocumentList.filter((doc) => doc.type === 'E');
 
     if (forCheckE.length === 1 && forCheckE[0].data.length === 0) {
@@ -665,16 +652,11 @@ const DocumentVerification = (props) => {
       newDocumentList.push(newDoc);
     }
 
-    const docsListD = newDocumentList.filter((doc) => doc.type === 'D') || [];
     const docsListE = newDocumentList.filter((doc) => doc.type === 'E') || [];
 
-    dispatch({
-      type: 'newCandidateForm/saveTemp',
-      payload: {
-        documentChecklistSetting: newDocumentList,
-      },
-    });
-    handleUpdateByHR(docsListE, checkedListA, checkedListB, checkedListC, docsListD);
+    setSettings(newDocumentList);
+
+    handleUpdateByHR(docsListE, checkedListA, checkedListB, checkedListC);
   };
 
   const handleChangeNameBlockE = (value, index) => {
@@ -686,15 +668,8 @@ const DocumentVerification = (props) => {
 
     documentCLSTypeE[index].employer = value;
 
-    const docsListD = documentCLSTypeOthers.filter((val) => val.type === 'D') || [];
-
-    dispatch({
-      type: 'newCandidateForm/saveTemp',
-      payload: {
-        documentChecklistSetting: [...documentCLSTypeOthers, ...documentCLSTypeE],
-      },
-    });
-    handleUpdateByHR(documentCLSTypeE, checkedListA, checkedListB, checkedListC, docsListD);
+    setSettings([...documentCLSTypeOthers, ...documentCLSTypeE]);
+    handleUpdateByHR(documentCLSTypeE, checkedListA, checkedListB, checkedListC);
   };
 
   const handleCheckBlockE = (list, checkedList, index) => {
@@ -717,15 +692,8 @@ const DocumentVerification = (props) => {
 
     documentCLSTypeE[index].data = [...newList];
 
-    const docsListD = documentCLSTypeOthers.filter((val) => val.type === 'D') || [];
-
-    dispatch({
-      type: 'newCandidateForm/saveTemp',
-      payload: {
-        documentChecklistSetting: [...documentCLSTypeOthers, ...documentCLSTypeE],
-      },
-    });
-    handleUpdateByHR(documentCLSTypeE, checkedListA, checkedListB, checkedListC, docsListD);
+    setSettings([...documentCLSTypeOthers, ...documentCLSTypeE]);
+    handleUpdateByHR(documentCLSTypeE, checkedListA, checkedListB, checkedListC);
   };
 
   const removeBlockE = (index) => {
@@ -739,15 +707,8 @@ const DocumentVerification = (props) => {
 
     documentCLSTypeE.splice(index, 1);
 
-    const docsListD = documentCLSTypeOthers.filter((val) => val.type === 'D') || [];
-
-    dispatch({
-      type: 'newCandidateForm/saveTemp',
-      payload: {
-        documentChecklistSetting: [...documentCLSTypeOthers, ...documentCLSTypeE],
-      },
-    });
-    handleUpdateByHR(documentCLSTypeE, checkedListA, checkedListB, checkedListC, docsListD);
+    setSettings([...documentCLSTypeOthers, ...documentCLSTypeE]);
+    handleUpdateByHR(documentCLSTypeE, checkedListA, checkedListB, checkedListC);
     setTimeout(() => {
       setRefreshBlockE(false);
     }, 100);
@@ -777,60 +738,37 @@ const DocumentVerification = (props) => {
         new: true,
       };
 
-      const documentCLSTByCountry = getDocumentListByCountry(documentChecklistSetting);
-      const newDocumentList = [...documentCLSTByCountry];
+      const newDocumentList = [...getDocumentListByCountry(documentChecklistSetting)];
       newDocumentList.forEach((doc) => {
         if (doc.type === type) {
           doc.data.push(newDoc);
         }
       });
 
-      const docsListD = documentChecklistSetting.filter((doc) => doc.type === 'D') || [];
       const docsListE = documentChecklistSetting.filter((doc) => doc.type === 'E') || [];
 
-      let payload = {};
+      const typeName = getVariableNameByType(type);
+
+      setSettings(newDocumentList);
+      const payload = {
+        [typeName]: {
+          ...[typeName],
+          checkedList: newDocument,
+        },
+      };
+      await dispatch({
+        type: 'newCandidateForm/saveTemp',
+        payload,
+      });
 
       if (type === 'A') {
-        payload = {
-          documentChecklistSetting: newDocumentList,
-          identityProof: {
-            ...identityProof,
-            checkedList: newDocument,
-          },
-        };
-        await dispatch({
-          type: 'newCandidateForm/saveTemp',
-          payload,
-        });
-        handleUpdateByHR(docsListE, newDocument, checkedListB, checkedListC, docsListD);
+        handleUpdateByHR(docsListE, newDocument, checkedListB, checkedListC);
       }
       if (type === 'B') {
-        payload = {
-          documentChecklistSetting: newDocumentList,
-          addressProof: {
-            ...addressProof,
-            checkedList: newDocument,
-          },
-        };
-        await dispatch({
-          type: 'newCandidateForm/saveTemp',
-          payload,
-        });
-        handleUpdateByHR(docsListE, checkedListA, newDocument, checkedListC, docsListD);
+        handleUpdateByHR(docsListE, checkedListA, newDocument, checkedListC);
       }
       if (type === 'C') {
-        payload = {
-          documentChecklistSetting: newDocumentList,
-          educational: {
-            ...educational,
-            checkedList: newDocument,
-          },
-        };
-        await dispatch({
-          type: 'newCandidateForm/saveTemp',
-          payload,
-        });
-        handleUpdateByHR(docsListE, checkedListA, checkedListB, newDocument, docsListD);
+        handleUpdateByHR(docsListE, checkedListA, checkedListB, newDocument);
       }
     }
   };
@@ -854,52 +792,30 @@ const DocumentVerification = (props) => {
       }
     });
 
-    const docsListD = documentChecklistSetting.filter((doc) => doc.type === 'D') || [];
     const docsListE = documentChecklistSetting.filter((doc) => doc.type === 'E') || [];
 
     let payload = {};
+    const typeName = getVariableNameByType(type);
+    setSettings(newDocumentList);
+    payload = {
+      [typeName]: {
+        ...[typeName],
+        checkedList: newDocument,
+      },
+    };
+    await dispatch({
+      type: 'newCandidateForm/saveTemp',
+      payload,
+    });
 
     if (type === 'A') {
-      payload = {
-        documentChecklistSetting: newDocumentList,
-        identityProof: {
-          ...identityProof,
-          checkedList: newDocument,
-        },
-      };
-      await dispatch({
-        type: 'newCandidateForm/saveTemp',
-        payload,
-      });
-      handleUpdateByHR(docsListE, newDocument, checkedListB, checkedListC, docsListD);
+      handleUpdateByHR(docsListE, newDocument, checkedListB, checkedListC);
     }
     if (type === 'B') {
-      payload = {
-        documentChecklistSetting: newDocumentList,
-        addressProof: {
-          ...addressProof,
-          checkedList: newDocument,
-        },
-      };
-      await dispatch({
-        type: 'newCandidateForm/saveTemp',
-        payload,
-      });
-      handleUpdateByHR(docsListE, checkedListA, newDocument, checkedListC, docsListD);
+      handleUpdateByHR(docsListE, checkedListA, newDocument, checkedListC);
     }
     if (type === 'C') {
-      payload = {
-        documentChecklistSetting: newDocumentList,
-        educational: {
-          ...educational,
-          checkedList: newDocument,
-        },
-      };
-      await dispatch({
-        type: 'newCandidateForm/saveTemp',
-        payload,
-      });
-      handleUpdateByHR(docsListE, checkedListA, checkedListB, newDocument, docsListD);
+      handleUpdateByHR(docsListE, checkedListA, checkedListB, newDocument);
     }
   };
 
@@ -907,10 +823,11 @@ const DocumentVerification = (props) => {
     getDataFromServer();
     const listA = getDocumentListByCountry(documentChecklistSetting);
     const listB = getDocumentListByCountry(documentList);
+
+    setSettings(listA);
     dispatch({
       type: 'newCandidateForm/saveTemp',
       payload: {
-        documentChecklistSetting: listA,
         documentList: listB,
       },
     });
@@ -968,8 +885,7 @@ const DocumentVerification = (props) => {
 
             <CollapseFieldsTypeD />
 
-            {(processStatus === NEW_PROCESS_STATUS.DRAFT ||
-              documentCLSTByCountryTypeE.length > 0) && (
+            {(processStatus === DRAFT || documentCLSTByCountryTypeE.length > 0) && (
               <CollapseFieldsTypeE
                 handleChangeName={handleChangeNameBlockE}
                 handleCheck={handleCheckBlockE}
@@ -990,8 +906,7 @@ const DocumentVerification = (props) => {
         <div>
           <NoteComponent />
 
-          {(processStatus === NEW_PROCESS_STATUS.DRAFT ||
-            processStatus === NEW_PROCESS_STATUS.PROFILE_VERIFICATION) && (
+          {(processStatus === DRAFT || processStatus === PROFILE_VERIFICATION) && (
             <SendEmail
               openModalEmail={openModalEmail}
               closeModalEmail={closeModalEmail}
