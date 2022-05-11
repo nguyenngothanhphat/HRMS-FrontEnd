@@ -14,6 +14,7 @@
 .DocumentVerification {
   :global {
     .ant-collapse {
+      background-color: white;
       border: none !important;
       border-radius: 5px;
     }
@@ -30,13 +31,26 @@
     .ant-collapse > .ant-collapse-item {
       border: none;
     }
-  }
 
-  .leftWrapper {
-    .eliContainer {
-      width: 100%;
-      padding-left: 0px;
-      font-family: Roboto, sans-serif;
+    .ant-collapse-header {
+      padding: 24px !important;
+    }
+    .ant-collapse-content-box {
+      padding: 0 !important;
+      background-color: white;
+      p {
+        margin-bottom: 0;
+        color: #464646;
+        font-size: 13px;
+      }
+    }
+    // header checkbox
+    .ant-checkbox-wrapper {
+      margin-right: 24px;
+    }
+
+    .ant-checkbox-indeterminate .ant-checkbox-inner::after {
+      display: none;
     }
   }
 
@@ -55,7 +69,7 @@
   }
 
   .bottomBar {
-    padding: 15px 15px 15px 24px;
+    padding: 15px 24px;
     background-color: #ffffff;
     border: solid 1px #d6dce0;
     border-radius: 5px;

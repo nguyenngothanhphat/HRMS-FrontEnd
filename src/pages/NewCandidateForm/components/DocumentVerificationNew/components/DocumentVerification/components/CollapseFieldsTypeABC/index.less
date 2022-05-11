@@ -1,5 +1,4 @@
 .CollapseFieldsTypeABC {
-  margin-bottom: 24px;
   background-color: white;
   border: 1px solid #d6dce0;
   border-radius: 5px;
@@ -16,7 +15,6 @@
   .header {
     padding-right: 24px !important;
     .titleText {
-      padding-left: 8px;
       color: #161c29;
       font-size: 14px;
     }
@@ -27,13 +25,13 @@
     }
   }
   .checkBoxesGroup {
-    margin: 15px 24px 0 24px;
+    margin: 12px 24px;
     :global {
       // checkboxes
       .ant-checkbox-wrapper {
         // display: block;
         width: 100%;
-        margin-bottom: 18px;
+        margin-block: 12px;
       }
       .ant-checkbox-wrapper + .ant-checkbox-wrapper {
         margin-left: 0;
@@ -43,77 +41,25 @@
       }
     }
   }
-  :global {
-    .ant-collapse {
-      background-color: white;
-    }
 
-    .ant-collapse-header {
-      padding: 24px !important;
-    }
-    .ant-collapse-content-box {
-      padding: 0 !important;
-      background-color: white;
-      p {
-        margin-bottom: 0;
-        color: #464646;
-        font-size: 13px;
-      }
-    }
-    // header checkbox
-    .ant-checkbox-wrapper {
-      margin-right: 20px;
-    }
-    .ant-checkbox-indeterminate .ant-checkbox-inner::after {
-      display: none;
-    }
-    .ant-checkbox-checked {
-      &:hover {
-        border-radius: 4px;
-      }
-      .ant-checkbox-inner {
-        background: #f6f7f9;
-        border-radius: 4px;
-        &:hover {
-          border-radius: 4px;
-        }
-        &:after {
-          border: 2px solid #2c6df9;
-          border-top: 0;
-          border-left: 0;
-        }
-      }
-    }
-    .ant-checkbox {
-      .ant-checkbox-inner {
-        background: #f6f7f9;
-        border-radius: 4px;
-      }
-    }
-    .ant-checkbox-group-item {
-      display: block;
-      margin-bottom: 1rem;
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-    
-  }
-  .addNewType{
-    padding: 0 24px 24px;
+  .addNewType {
+    padding: 24px;
     .addTitle {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       span {
         font-size: 13px;
       }
+      p {
+        padding-bottom: 16px;
+      }
     }
-    :global{
-      p{
+    :global {
+      p {
+        margin-bottom: 10px;
         font-weight: 700;
         font-size: 13px;
-        margin-bottom: 10px;
       }
       .ant-input {
         height: 42px !important;
@@ -127,9 +73,9 @@
           font-size: 13px;
         }
       }
-      .ant-form{
+      .ant-form {
         .ant-form-item {
-          &:last-child{
+          &:last-child {
             margin-bottom: 0px;
           }
           .ant-form-item-label {
@@ -139,18 +85,18 @@
           .ant-form-item-control {
             .ant-form-item-control-input {
               .ant-form-item-control-input-content {
-                button{
-                  background: #FFA100;
-                  border: 1px solid #FFA100;
+                button {
                   box-sizing: border-box;
-                  border-radius: 25px;
+                  height: 42px !important;
                   margin-bottom: 0;
-                  span{
+                  padding: 0 30px;
+                  background: #ffa100;
+                  border: 1px solid #ffa100;
+                  border-radius: 25px;
+                  span {
                     color: white;
                     font-weight: 500;
                   }
-                  padding: 0 30px;
-                  height: 42px !important
                 }
               }
             }
@@ -160,19 +106,16 @@
     }
   }
   .addBtn {
-    padding-inline: 25px;
-
-    margin-bottom: 17px;
     cursor: pointer;
-    
-    &__divider{
-      border-top: 1px solid #D6DCE0;
-      margin-inline: 24px;
-      margin-top: 0;
-      margin-bottom: 17px;
+    margin-block: 16px;
+    padding-inline: 24px;
+
+    &__divider {
+      border-top: 1px solid #d6dce0;
+      // margin-inline: 24px;
     }
-    
-    &__text{
+
+    &__text {
       display: flex;
       align-content: center;
 

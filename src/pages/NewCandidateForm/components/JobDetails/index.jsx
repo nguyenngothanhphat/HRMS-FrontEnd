@@ -511,11 +511,13 @@ class JobDetails extends PureComponent {
 
     return (
       <>
-        <Row gutter={[24, 0]}>
+        <Row gutter={[24, 24]}>
           {loadingFetchCandidate || loading || loadingLocationList ? (
-            <div className={styles.viewLoading}>
-              <Skeleton />
-            </div>
+            <Col span={24}>
+              <div className={styles.viewLoading}>
+                <Skeleton />
+              </div>
+            </Col>
           ) : (
             <>
               <Col xs={24} xl={16}>

@@ -1,210 +1,123 @@
-/* eslint-disable no-nested-ternary */
-import React, { PureComponent } from 'react';
-import { Collapse, Checkbox, Input, Form, Button, Row, Col, notification, Divider } from 'antd';
-import { PlusOutlined, MinusOutlined, CloseOutlined, DeleteOutlined } from '@ant-design/icons';
+import { CloseOutlined, DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Checkbox, Col, Collapse, Form, Input, notification } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
 const { Panel } = Collapse;
 const CheckboxGroup = Checkbox.Group;
 
-@connect(({ newCandidateForm }) => ({
-  newCandidateForm,
-}))
-class CollapseFieldsTypeABC extends PureComponent {
-  formRef = React.createRef();
+const CollapseFieldsTypeABC = (props) => {
+  const {
+    newCandidateForm: {
+      tempData: { identityProof = {}, addressProof = {}, educational = {} },
+    } = {},
+    item = {},
+    item: { data = [], type = '', name = '' } = {},
+    handleChange = () => {},
+    // visible = false,
+    addNewField,
+    documentChecklistSetting = [],
+    handleRemoveDocument = () => {},
+    disabled = false,
+  } = props;
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      checkedList: [],
-      indeterminate: true,
-      checkAll: false,
-      visible: true,
-      typeSelected: '',
-    };
-  }
+  const [form] = Form.useForm();
 
-  componentDidMount = () => {
-    const {
-      newCandidateForm: {
-        tempData: { identityProof = {}, addressProof = {}, educational = {} },
-      } = {},
-      item = {},
-    } = this.props;
+  const [checkedList, setCheckedList] = useState([]);
+  const [visible, setVisible] = useState(true);
 
-    const { data = [] } = item;
-    let checkedList = [];
-    const { type = '' } = item;
+  useEffect(() => {
+    let checkedListTemp = [];
     switch (type) {
       case 'A':
-        checkedList = identityProof.checkedList;
+        checkedListTemp = identityProof.checkedList;
         break;
       case 'B':
-        checkedList = addressProof.checkedList;
+        checkedListTemp = addressProof.checkedList;
         break;
       case 'C':
-        checkedList = educational.checkedList;
+        checkedListTemp = educational.checkedList;
         break;
       default:
         break;
     }
 
-    // handle check all checkbox
-    let checkAll = false;
-    if (checkedList.length === data.length) {
-      checkAll = true;
-    }
+    setCheckedList(checkedListTemp);
+  }, []);
 
-    this.setState({
-      checkedList,
-      indeterminate: false,
-      checkAll,
-    });
-  };
-
-  onChange = (list) => {
-    const { checkBoxesData = [], handleChange = () => {}, item = {} } = this.props;
-    this.setState({
-      checkedList: list,
-      indeterminate: !!list.length && list.length < checkBoxesData.length,
-      checkAll: list.length === checkBoxesData.length,
-    });
+  const onChange = (list) => {
+    setCheckedList(list);
     handleChange(list, item);
   };
 
-  onCheckAllChange = (e) => {
-    const { checkBoxesData = [], handleCheckAll = () => {}, item = {} } = this.props;
-    const checkBoxes1 = checkBoxesData.filter(
-      (data) => data.alias.substr(data.alias.length - 1) === '*',
-    );
-    const checkBoxes2 = checkBoxesData.filter(
-      (data) => data.alias.substr(data.alias.length - 1) !== '*',
-    );
-    e.stopPropagation();
-
-    const checkedList1 = checkBoxes1.map((data) => data.alias);
-    const checkedList2 = e.target.checked ? checkBoxes2.map((data) => data.alias) : [];
-
-    const checkedList = checkedList1.concat(checkedList2);
-
-    this.setState({
-      checkedList,
-      indeterminate: false,
-      checkAll: e.target.checked,
-    });
-
-    handleCheckAll(e, checkedList, item);
-  };
-
-  renderHeader = () => {
-    const { title = '', disabled = false } = this.props;
-
-    const { indeterminate, checkAll } = this.state;
+  const renderHeader = () => {
     return (
       <div className={styles.header}>
-        <Checkbox
-          checked={checkAll}
-          indeterminate={indeterminate}
-          disabled={disabled}
-          onClick={(event) => this.onCheckAllChange(event)}
-        />
-        <span className={styles.titleText}>{title}</span>
+        <span className={styles.titleText}>
+          Type {type}: {name} ({checkedList.length} selected)
+        </span>
       </div>
     );
   };
 
-  handleClick = (type) => {
-    const { visible } = this.state;
-    this.setState({
-      visible: !visible,
-      typeSelected: type,
-    });
+  const handleClick = () => {
+    setVisible(!visible);
   };
 
-  handleCancel = () => {
-    const { visible } = this.state;
-    this.setState({
-      visible: !visible,
-    });
+  const handleCancel = () => {
+    setVisible(!visible);
   };
 
-  camelize = (str) => {
-    return str
-      .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
-        return index === 0 ? word.toLowerCase() : word.toUpperCase();
-      })
-      .replace(/\s+/g, '');
-  };
+  const onSubmit = (values) => {
+    if (values.nameOfField) {
+      setVisible(!visible);
 
-  onSubmit = (values) => {
-    const { visible, typeSelected } = this.state;
-    const { addNewField, documentChecklistSetting = [], type = '' } = this.props;
-    this.setState({
-      visible: !visible,
-    });
-
-    let check = false;
-    documentChecklistSetting.forEach((doc) => {
-      if (doc.type === type) {
-        const findObj = doc.data.filter((d) => d.alias === values.nameOfField);
-        if (findObj.length > 0) {
-          check = true;
+      let check = false;
+      documentChecklistSetting.forEach((doc) => {
+        if (doc.type === type) {
+          const findObj = doc.data.filter((d) => d.alias === values.nameOfField);
+          if (findObj.length > 0) {
+            check = true;
+          }
         }
-      }
-    });
+      });
 
-    if (check) {
-      notification.error({ message: 'This field name is duplicated' });
-    } else addNewField(values.nameOfField, typeSelected);
-    this.formRef.current.resetFields();
+      if (check) {
+        notification.error({ message: 'This field name is duplicated' });
+      } else addNewField(values.nameOfField, type);
+
+      form.resetFields();
+    }
   };
 
-  handleRemove = (key, type) => {
-    const { handleRemoveDocument = () => {} } = this.props;
+  const handleRemove = (key) => {
     handleRemoveDocument(key, type);
   };
 
-  render() {
-    const { checkedList, visible } = this.state;
-    const { item: { data = [] } = {}, disabled = false, type } = this.props;
-    // const checkBoxes1 = checkBoxesData.filter(
-    //   (data) => data.alias.substr(data.alias.length - 1) === '*',
-    // );
-    // const checkBoxes2 = checkBoxesData.filter(
-    //   (data) => data.alias.substr(data.alias.length - 1) !== '*',
-    // );
-
-    return (
+  return (
+    <Col span={24}>
       <div className={styles.CollapseFieldsTypeABC}>
         <Collapse
           accordion
           expandIconPosition="right"
-          defaultActiveKey={disabled ? '1' : ''}
-          expandIcon={(props) => {
-            return props.isActive ? (
+          defaultActiveKey="1"
+          expandIcon={({ isActive }) => {
+            return isActive ? (
               <MinusOutlined className={styles.alternativeExpandIcon} />
             ) : (
               <PlusOutlined className={styles.alternativeExpandIcon} />
             );
           }}
         >
-          <Panel header={this.renderHeader()} key="1">
+          <Panel header={renderHeader()} key="1">
             <CheckboxGroup
               direction="vertical"
-              onChange={this.onChange}
+              onChange={onChange}
               value={checkedList}
               disabled={disabled}
               className={styles.checkBoxesGroup}
             >
-              {/* {data.map((data) => (
-                <Checkbox
-                  disabled={data.alias.substr(data.alias.length - 1) === '*'}
-                  value={data.alias}
-                >
-                  {data.alias}
-                </Checkbox>
-              ))} */}
               {data.map((val) => {
                 return (
                   <Checkbox
@@ -214,7 +127,7 @@ class CollapseFieldsTypeABC extends PureComponent {
                     {val.alias}
                     {!disabled && val.new && (
                       <DeleteOutlined
-                        onClick={() => this.handleRemove(val.key, type)}
+                        onClick={() => handleRemove(val.key, type)}
                         className={styles.removeIcon}
                       />
                     )}
@@ -232,13 +145,9 @@ class CollapseFieldsTypeABC extends PureComponent {
             >
               <div className={styles.addTitle}>
                 <p>Add New Field</p>
-                <CloseOutlined onClick={this.handleCancel} />
+                <CloseOutlined onClick={handleCancel} />
               </div>
-              <Form
-                ref={this.formRef}
-                onFinish={(values) => this.onSubmit(values)}
-                layout="vertical"
-              >
+              <Form form={form} onFinish={onSubmit} layout="vertical">
                 <Form.Item label="Name of the field" name="nameOfField">
                   <Input placeholder="Enter name of the field" />
                 </Form.Item>
@@ -250,7 +159,7 @@ class CollapseFieldsTypeABC extends PureComponent {
             {!disabled && (
               <div
                 className={!visible ? `${styles.hidden}` : `${styles.addBtn}`}
-                onClick={() => this.handleClick(type)}
+                onClick={() => handleClick()}
               >
                 <div className={styles.addBtn__text}>
                   <PlusOutlined className={styles.plusIcon} />
@@ -261,8 +170,10 @@ class CollapseFieldsTypeABC extends PureComponent {
           </Panel>
         </Collapse>
       </div>
-    );
-  }
-}
+    </Col>
+  );
+};
 
-export default CollapseFieldsTypeABC;
+export default connect(({ newCandidateForm }) => ({
+  newCandidateForm,
+}))(CollapseFieldsTypeABC);

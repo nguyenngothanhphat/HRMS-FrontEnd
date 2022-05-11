@@ -1,163 +1,112 @@
 /* eslint-disable no-nested-ternary */
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { Checkbox, Collapse, Skeleton } from 'antd';
-import React, { PureComponent } from 'react';
+import { Col, Collapse, Spin } from 'antd';
+import React from 'react';
 import { connect } from 'umi';
-import EmployerComponent from './EmployerComponent';
+import EmployerComponent from './components/EmployerComponent';
 import styles from './index.less';
 
 const { Panel } = Collapse;
 
-@connect(({ newCandidateForm }) => ({
-  newCandidateForm,
-}))
-class CollapseFieldsType2 extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      indeterminate: true,
-      checkAll: false,
-    };
-  }
+const CollapseFieldsType2 = (props) => {
+  const {
+    disabled = false,
+    previousEmployment = [],
+    removeBlockE = () => {},
+    handleChangeName = () => {},
+    handleCheck = () => {},
+    refresh = false,
+    addBlockE = () => {},
+  } = props;
 
-  componentDidMount = () => {
-    this.checkAllStatus();
-  };
-
-  componentDidUpdate = (prevProps) => {
-    const { previousEmployment } = this.props;
-    if (JSON.stringify(previousEmployment) !== JSON.stringify(prevProps.previousEmployment)) {
-      this.checkAllStatus();
-    }
-  };
-
-  checkAllStatus = () => {
-    const { previousEmployment = [] } = this.props;
-    let checkAll = true;
-    previousEmployment.forEach((doc) => {
-      const { data = [] } = doc;
-      data.forEach((item) => {
-        if (!item.value) {
-          checkAll = false;
-        }
-      });
-    });
-    this.setState({
-      checkAll,
-      indeterminate: !checkAll,
-    });
-  };
-
-  onCheckAllChange = (e) => {
-    const { handleCheckAll = () => {} } = this.props;
-    e.stopPropagation();
-    this.setState({
-      indeterminate: false,
-      checkAll: e.target.checked,
-    });
-    handleCheckAll(e.target.checked);
-  };
-
-  renderHeader = () => {
-    const { disabled = false, previousEmployment = [] } = this.props;
+  const renderHeader = () => {
     const title =
       previousEmployment.length > 0
         ? `Type ${previousEmployment[0].type}: ${previousEmployment[0].name}`
         : 'Type E: Previous Employment';
-    const { indeterminate, checkAll } = this.state;
 
     return (
       <div className={styles.header}>
-        <Checkbox
-          checked={checkAll}
-          indeterminate={indeterminate}
-          onClick={(e) => this.onCheckAllChange(e)}
-          disabled={disabled}
-        />
         <span className={styles.titleText}>{title}</span>
       </div>
     );
   };
 
   // add component
-  addComponent = () => {
-    // this.renderEmployerComponent();
-    const { addBlockE = () => {} } = this.props;
+  const addComponent = () => {
     addBlockE();
   };
 
-  render() {
-    const {
-      disabled = false,
-      previousEmployment = [],
-      removeBlockE = () => {},
-      handleChangeName = () => {},
-      handleCheck = () => {},
-      refresh = false,
-    } = this.props;
-
-    return (
-      <div className={styles.CollapseFieldsType2}>
+  return (
+    <Col span={24}>
+      <div className={styles.CollapseFieldsTypeE}>
         <Collapse
           accordion
           expandIconPosition="right"
-          defaultActiveKey={disabled ? '1' : ''}
-          expandIcon={(props) => {
-            return props.isActive ? (
+          defaultActiveKey="1"
+          expandIcon={({ isActive }) => {
+            return isActive ? (
               <MinusOutlined className={styles.alternativeExpandIcon} />
             ) : (
               <PlusOutlined className={styles.alternativeExpandIcon} />
             );
           }}
         >
-          <Panel header={this.renderHeader()} className={styles.collapsePanel} key="1">
-            <div>
-              {refresh && (
-                <div style={{ padding: '24px' }}>
-                  <Skeleton />
+          <Panel header={renderHeader()} className={styles.collapsePanel} key="1">
+            <Spin spinning={refresh}>
+              {previousEmployment.length > 0 && (
+                <div className={styles.items}>
+                  {previousEmployment
+                    .filter((x) => {
+                      const { data = [] } = x;
+                      return data.length > 0 || previousEmployment.length !== 1;
+                    })
+                    .map((x = {}, index) => {
+                      const { data = [], employer = '' } = x;
+                      return (
+                        <div key={`${index + 0}`}>
+                          <EmployerComponent
+                            index={index}
+                            employer={employer}
+                            data={data}
+                            remove={removeBlockE}
+                            handleChange={handleChangeName}
+                            handleCheck={handleCheck}
+                            listLength={previousEmployment.length}
+                            disabled={disabled}
+                          />
+                        </div>
+                      );
+                    })}
                 </div>
               )}
-              {!refresh &&
-                previousEmployment.length > 0 &&
-                previousEmployment.map((child = {}, index) => {
-                  const { data = [], employer = '' } = child;
-                  if (data.length > 0 || previousEmployment.length !== 1)
-                    return (
-                      <EmployerComponent
-                        index={index}
-                        employer={employer}
-                        data={data}
-                        remove={removeBlockE}
-                        handleChange={handleChangeName}
-                        handleCheck={handleCheck}
-                        listLength={previousEmployment.length}
-                        disabled={disabled}
-                      />
-                    );
-                  return '';
-                })}
-            </div>
 
-            {!disabled && (
-              <>
+              {!disabled && (
                 <div
-                  className={
-                    disabled
-                      ? `${styles.disableButton} ${styles.addEmployerDetailBtn}`
-                      : styles.addEmployerDetailBtn
-                  }
-                  onClick={disabled ? () => {} : this.addComponent}
+                  className={styles.buttonContainer}
+                  style={previousEmployment.length > 0 ? null : { border: 'none' }}
                 >
-                  <PlusOutlined className={styles.plusIcon} />
-                  <span className={styles.title}>Add Employer Detail</span>
+                  <div
+                    className={
+                      disabled
+                        ? [styles.disableButton, styles.addEmployerDetailBtn]
+                        : styles.addEmployerDetailBtn
+                    }
+                    onClick={disabled ? () => {} : addComponent}
+                  >
+                    <PlusOutlined className={styles.plusIcon} />
+                    <span className={styles.title}>Add Employer Detail</span>
+                  </div>
                 </div>
-              </>
-            )}
+              )}
+            </Spin>
           </Panel>
         </Collapse>
       </div>
-    );
-  }
-}
+    </Col>
+  );
+};
 
-export default CollapseFieldsType2;
+export default connect(({ newCandidateForm }) => ({
+  newCandidateForm,
+}))(CollapseFieldsType2);
