@@ -93,11 +93,11 @@ const LeaveRequestForm = (props) => {
     dispatch({
       type: 'timeOff/fetchLeaveRequestOfEmployee',
       payload: {
-        status: [IN_PROGRESS, ACCEPTED, ON_HOLD, DRAFTS],
+        status: [IN_PROGRESS, ACCEPTED],
       },
     }).then((res) => {
       if (res.statusCode === 200) {
-        let invalidDatesTemp = [];
+        let invalidDatesTemp = [...invalidDates];
         const { items: leaveRequests = [] } = res?.data;
         leaveRequests.forEach((x) => {
           const temp = x.leaveDates.map((y) => {
@@ -106,7 +106,7 @@ const LeaveRequestForm = (props) => {
               timeOfDay: y.timeOfDay,
             };
           });
-          invalidDatesTemp = [...invalidDates, ...temp];
+          invalidDatesTemp = [...invalidDatesTemp, ...temp];
         });
 
         setInvalidDates(invalidDatesTemp);
@@ -170,22 +170,22 @@ const LeaveRequestForm = (props) => {
           (action === EDIT_LEAVE_REQUEST &&
             !loadingFetchLeaveRequestById &&
             (status === DRAFTS || status === IN_PROGRESS))) && (
-            <>
-              <Row className={styles.container} gutter={[20, 20]}>
-                <Col xs={24} xl={18}>
-                  <RequestInformation
-                    action={action}
-                    status={status}
-                    ticketID={ticketID}
-                    invalidDates={invalidDates}
-                    viewingLeaveRequest={viewingLeaveRequest}
-                  />
-                </Col>
-                <Col xs={24} xl={6}>
-                  <NoteComponent note={Note} />
-                </Col>
-              </Row>
-            </>
+          <>
+            <Row className={styles.container} gutter={[20, 20]}>
+              <Col xs={24} xl={18}>
+                <RequestInformation
+                  action={action}
+                  status={status}
+                  ticketID={ticketID}
+                  invalidDates={invalidDates}
+                  viewingLeaveRequest={viewingLeaveRequest}
+                />
+              </Col>
+              <Col xs={24} xl={6}>
+                <NoteComponent note={Note} />
+              </Col>
+            </Row>
+          </>
         )}
       </div>
     </PageContainer>
