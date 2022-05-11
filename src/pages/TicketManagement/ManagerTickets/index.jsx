@@ -7,13 +7,17 @@ import AllTicket from './components/AllTickets';
 import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
 import styles from './index.less';
 import WorkInProgress from '@/components/WorkInProgress';
-import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
+import { getAuthority, getCurrentLocation } from '@/utils/authority';
 
 @connect(
   ({
     user: {
       permissions = {},
-      currentUser: { employee: { location: { _id: locationId = '' } = {} } = {} } = {},
+      currentUser: {
+        employee: {
+          location: { _id: locationId = '', headQuarterAddress: { country = '' } = {} } = {},
+        } = {},
+      } = {},
     },
     location: { companyLocationList = [] },
 
@@ -22,6 +26,7 @@ import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils
     listOffAllTicket,
     totalList,
     permissions,
+    country,
     companyLocationList,
     locationId,
     selectedLocations,
@@ -36,7 +41,7 @@ class ManagerTicket extends Component {
   }
 
   componentDidMount() {
-    const { tabName = '', permissions = {} } = this.props;
+    const { tabName = '' } = this.props;
     if (!tabName) {
       history.replace(`/ticket-management/all-tickets`);
     } else {
@@ -44,58 +49,16 @@ class ManagerTicket extends Component {
       if (!dispatch) {
         return;
       }
+      const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
 
-      const viewTicketHR = permissions.viewTicketHR !== -1;
-
-      const viewTicketIT = permissions.viewTicketIT !== -1;
-
-      const viewTicketOperations = permissions.viewTicketOperations !== -1;
-
-      dispatch({
-        type: 'ticketManagement/fetchDepartments',
-        payload: {
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        },
-      }).then((res) => {
-        if (res.statusCode === 200) {
-          const { data = [] } = res;
-          let departmentNameList = [];
-          let departmentList = [];
-
-          if (viewTicketHR) {
-            const find = data.filter((x) => x.name.includes('HR'));
-            departmentList = [...departmentList, ...find.map((x) => x._id)];
-            departmentNameList = [...departmentNameList, ...find.map((x) => x.name)];
-          }
-          if (viewTicketIT) {
-            const find = data.filter((x) => x.name.includes('IT'));
-            departmentList = [...departmentList, ...find.map((x) => x._id)];
-            departmentNameList = [...departmentNameList, ...find.map((x) => x.name)];
-          }
-          if (viewTicketOperations) {
-            const find = data.filter((x) => x.name.toLowerCase().includes('operations'));
-            departmentList = [...departmentList, ...find.map((x) => x._id)];
-            departmentNameList = [...departmentNameList, ...find.map((x) => x.name)];
-          }
-
-          if (departmentList.length > 0) {
-            dispatch({
-              type: 'ticketManagement/save',
-              payload: {
-                departmentPayload: departmentList,
-              },
-            });
-          }
-          this.fetchListAllTicket(departmentList);
-          this.fetchToTalList(departmentList);
-          this.fetchListEmployee(departmentNameList);
-        } else {
-          this.fetchListAllTicket();
-          this.fetchToTalList();
-          this.fetchListEmployee();
-        }
-      });
+      if (permissions && permissions.length > 0) {
+        this.fetchListAllTicket(permissions);
+        this.fetchToTalList(permissions);
+      } else {
+        this.fetchListAllTicket();
+        this.fetchToTalList();
+      }
+      this.fetchListEmployee();
       this.fetchLocationList();
     }
   }
@@ -110,16 +73,18 @@ class ManagerTicket extends Component {
     });
   }
 
-  fetchToTalList = (departmentList) => {
-    const { dispatch } = this.props;
+  fetchToTalList = (permissions) => {
+    const { dispatch, country = '', selectedLocations = [] } = this.props;
 
     let payload = {
       status: ['New'],
+      location: selectedLocations,
     };
-    if (departmentList && departmentList.length > 0) {
+    if (permissions && permissions.length > 0) {
       payload = {
         ...payload,
-        department: departmentList,
+        permissions,
+        country,
       };
     }
     dispatch({
@@ -136,33 +101,29 @@ class ManagerTicket extends Component {
     });
   };
 
-  fetchListEmployee = (departmentNameList) => {
+  fetchListEmployee = () => {
     const { dispatch } = this.props;
-    let payload = {};
-    if (departmentNameList && departmentNameList.length > 0) {
-      payload = {
-        ...payload,
-        department: departmentNameList,
-        status: 'ACTIVE',
-      };
-    }
+
     dispatch({
       type: 'ticketManagement/fetchListEmployee',
-      payload,
+      payload: {
+        status: 'ACTIVE',
+      },
     });
   };
 
-  fetchListAllTicket = (departmentList) => {
-    const { dispatch, selectedLocations } = this.props;
+  fetchListAllTicket = (permissions) => {
+    const { dispatch, selectedLocations, country = '' } = this.props;
 
     let payload = {
       status: ['New'],
       location: selectedLocations,
     };
-    if (departmentList && departmentList.length > 0) {
+    if (permissions && permissions.length > 0) {
       payload = {
         ...payload,
-        department: departmentList,
+        permissions,
+        country,
       };
     }
     dispatch({

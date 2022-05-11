@@ -32,6 +32,7 @@ const ticketManagement = {
     filter: {},
     selectedLocations: [getCurrentLocation()],
     supportTeamList: [],
+    employeeFilterList: [],
   },
   effects: {
     *addTicket({ payload }, { call, put, select }) {
@@ -247,6 +248,23 @@ const ticketManagement = {
         yield put({
           type: 'save',
           payload: { listEmployee: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *searchEmployee({ payload }, { call, put }) {
+      try {
+        const response = yield call(getListEmployee, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { employeeFilterList: data },
         });
       } catch (error) {
         dialog(error);

@@ -1,46 +1,62 @@
-import React, { Suspense, useEffect, useState } from 'react';
-import { Table, Dropdown, Menu, Input, Empty, Popover, Spin } from 'antd';
+import React, { PureComponent } from 'react';
+import { Table, Dropdown, Menu, Input, Empty, Popover } from 'antd';
 import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { history, connect } from 'umi';
-import { isEmpty, debounce } from 'lodash';
+import { isEmpty } from 'lodash';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import UserProfilePopover from '@/pages/TicketManagement/components/UserProfilePopover';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 
 import styles from './index.less';
 
-const DropdownSearch = React.lazy(() => import('../DropdownSearch'));
-
-const TableTickets = (props) => {
-  const {
-    companyLocationList = [],
-    data = [],
-    dispatch,
-    employee: { _id: employeeId = '' },
-    locationsList = [],
-    textEmpty = 'No tickets found',
+@connect(
+  ({
     loading,
-    pageSelected,
-    size,
-    getPageAndSize = () => {},
-    employeeFilterList = [],
-  } = props;
+    ticketManagement: { listEmployee = [], locationsList = [] } = {},
+    user: { currentUser: { employee = {} } = {} } = {},
+    location: { companyLocationList = [] },
+  }) => ({
+    listEmployee,
+    locationsList,
+    employee,
+    companyLocationList,
+    loadingUpdate: loading.effects['ticketManagement/updateTicket'],
+  }),
+)
+class TableTickets extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      ticket: {},
+      // visible: false,
+      search: [],
+      currentTime: moment(),
+      timezoneList: [],
+    };
+  }
 
-  const [timezoneListState, setTimezoneListState] = useState([]);
-  const [ticket, setTicket] = useState({});
-  const [currentTimeState, setCurrentTimeState] = useState(moment());
-  const [nameSearch, setNameSearch] = useState('');
+  componentDidMount = () => {
+    this.fetchTimezone();
+  };
 
-  const fetchTimezone = () => {
+  componentDidUpdate(prevProps) {
+    const { companyLocationList = [] } = this.props;
+    if (JSON.stringify(prevProps.companyLocationList) !== JSON.stringify(companyLocationList)) {
+      this.fetchTimezone();
+    }
+  }
+
+  fetchTimezone = () => {
+    const { companyLocationList = [] } = this.props;
     const timezoneList = [];
     companyLocationList.forEach((location) => {
       const {
         headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
-        _id: locationId = '',
+        _id = '',
       } = location;
       timezoneList.push({
-        locationId,
+        locationId: _id,
         timezone:
           getTimezoneViaCity(city) ||
           getTimezoneViaCity(state) ||
@@ -48,10 +64,13 @@ const TableTickets = (props) => {
           getTimezoneViaCity(addressLine2),
       });
     });
-    setTimezoneListState(timezoneList);
+    this.setState({
+      timezoneList,
+    });
   };
 
-  const openViewTicket = (ticketID) => {
+  openViewTicket = (ticketID) => {
+    const { data = [] } = this.props;
     let id = '';
 
     data.forEach((item) => {
@@ -65,12 +84,19 @@ const TableTickets = (props) => {
     }
   };
 
-  const handleClickSelect = (value) => {
-    const result = data.find((val) => val.id === value);
-    setTicket(result);
+  handleClickSelect = (value) => {
+    const { data = [] } = this.props;
+    const ticket = data.find((val) => val.id === value);
+    // const { visible } = this.state;
+    this.setState({ ticket });
   };
 
-  const handleSelectChange = (value) => {
+  handleSelectChange = (value) => {
+    const {
+      dispatch,
+      employee: { _id },
+    } = this.props;
+    const { ticket } = this.state;
     const {
       id = '',
       employee_raise: employeeRaise = '',
@@ -97,26 +123,30 @@ const TableTickets = (props) => {
           ccList,
           attachments,
           departmentAssign,
-          employee: employeeId,
+          employee: _id,
         },
       });
     }
   };
 
-  const setCurrentTime = () => {
+  setCurrentTime = () => {
     // compare two time by hour & minute. If minute changes, get new time
     const timeFormat = 'HH:mm';
+    const { currentTime } = this.state;
     const parseTime = (timeString) => moment(timeString, timeFormat);
     const check = parseTime(moment().format(timeFormat)).isAfter(
-      parseTime(moment(currentTimeState).format(timeFormat)),
+      parseTime(moment(currentTime).format(timeFormat)),
     );
 
     if (check) {
-      setCurrentTimeState(moment());
+      this.setState({
+        currentTime: moment(),
+      });
     }
   };
 
-  const locationContent = (location) => {
+  locationContent = (location) => {
+    const { locationsList = [] } = this.props;
     const result =
       locationsList.length > 0 ? locationsList.filter((val) => val._id === location)[0] : [] || [];
     const {
@@ -130,7 +160,9 @@ const TableTickets = (props) => {
       _id = '',
     } = result;
 
-    const findTimezone = timezoneListState.find((timezone) => timezone.locationId === _id) || {};
+    const { timezoneList, currentTime } = this.state;
+
+    const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
 
     return (
       <div className={styles.locationContent}>
@@ -157,18 +189,18 @@ const TableTickets = (props) => {
         </span>
         <span style={{ display: 'block', fontSize: '13px' }}>
           {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
-            ? getCurrentTimeOfTimezone(currentTimeState, findTimezone.timezone)
+            ? getCurrentTimeOfTimezone(currentTime, findTimezone.timezone)
             : 'Not enough data in address'}
         </span>
       </div>
     );
   };
 
-  const viewProfile = (userId) => {
+  viewProfile = (userId) => {
     history.push(`/directory/employee-profile/${userId}`);
   };
 
-  const renderTag = (priority) => {
+  renderTag = (priority) => {
     if (priority === 'High') {
       return <div className={styles.priorityHigh}>{priority}</div>;
     }
@@ -181,46 +213,64 @@ const TableTickets = (props) => {
     return <div className={styles.priorityLow}>{priority}</div>;
   };
 
-  useEffect(() => {
-    fetchTimezone();
-  }, [JSON.stringify(companyLocationList)]);
+  // filterData = () => {
+  //   let filterData;
+  //   const { listEmployee } = this.props;
+  //   const { search } = this.state;
+  //   if (search.length) {
+  //     const searchPattern = new RegExp(search.map((term) => `(?=.*${term})`).join(''), 'i');
+  //     filterData = listEmployee.filter((option) =>
+  //       option.generalInfo.legalName.match(searchPattern),
+  //     );
+  //   } else {
+  //     filterData = listEmployee;
+  //   }
+  //   return filterData;
+  // };
 
-  const onSearchDebounce = debounce((value) => {
-    setNameSearch(value);
-  }, 1000);
-
-  const onChangeSearch = (value) => {
-    const formatValue = value.toLowerCase();
-    onSearchDebounce(formatValue);
-  };
-
-  useEffect(() => {
-    const payload = {
-      status: 'ACTIVE',
-    };
-    if (nameSearch) {
-      payload.name = nameSearch;
-      dispatch({
-        type: 'ticketManagement/searchEmployee',
-        payload,
-      });
-    }
-  }, [nameSearch]);
-
-  const renderMenuDropdown = () => {
-    return (
-      <Suspense fallback={<Spin />}>
-        <DropdownSearch
-          onChangeSearch={onChangeSearch}
-          employeeFilterList={employeeFilterList}
-          handleSelectChange={handleSelectChange}
-          styles={styles}
+  renderMenuDropdown = () => {
+    <Menu>
+      <div className="inputSearch">
+        <Input
+          placeholder="Search by name"
+          onChange={(e) => this.setState({ search: [e.target.value] })}
+          prefix={<SearchOutlined />}
         />
-      </Suspense>
-    );
+      </div>
+      <Menu.Divider />
+      <div style={{ overflowY: 'scroll', maxHeight: '200px' }}>
+        {!isEmpty(this.filterData()) ? (
+          this.filterData.map((val) => {
+            return (
+              <Menu.Item
+                onClick={() => this.handleSelectChange(val._id)}
+                key={val._id}
+                value={val._id}
+              >
+                {val.generalInfo?.legalName}
+              </Menu.Item>
+            );
+          })
+        ) : (
+          <Menu.Item>
+            <Empty />
+          </Menu.Item>
+        )}
+      </div>
+    </Menu>;
   };
 
-  const getColumns = () => {
+  getColumns = () => {
+    const { locationsList } = this.props;
+    // const { search } = this.state;
+    // if (search.length) {
+    //   const searchPattern = new RegExp(search.map((term) => `(?=.*${term})`).join(''), 'i');
+    //   filterData = listEmployee.filter((option) =>
+    //     option.generalInfo.legalName.match(searchPattern),
+    //   );
+    // } else {
+    //   filterData = listEmployee;
+    // }
     return [
       {
         title: 'Ticket ID',
@@ -229,7 +279,7 @@ const TableTickets = (props) => {
         width: '8%',
         render: (id) => {
           return (
-            <span className={styles.ticketID} onClick={() => openViewTicket(id)}>
+            <span className={styles.ticketID} onClick={() => this.openViewTicket(id)}>
               {id}
             </span>
           );
@@ -263,7 +313,7 @@ const TableTickets = (props) => {
         dataIndex: 'priority',
         key: 'priority',
         render: (priority) => {
-          return <div className={styles.priority}>{renderTag(priority)}</div>;
+          return <div className={styles.priority}>{this.renderTag(priority)}</div>;
         },
         sorter: (a, b) => {
           return a.priority && a.priority.localeCompare(`${b.priority}`);
@@ -296,7 +346,7 @@ const TableTickets = (props) => {
             >
               <span
                 className={styles.userID}
-                onClick={() => viewProfile(employeeRaise?.generalInfo?.userId || '')}
+                onClick={() => this.viewProfile(employeeRaise?.generalInfo?.userId || '')}
               >
                 {!isEmpty(employeeRaise?.generalInfo)
                   ? `${employeeRaise?.generalInfo?.legalName} (${employeeRaise?.generalInfo?.userId})`
@@ -324,13 +374,13 @@ const TableTickets = (props) => {
 
             return (
               <Popover
-                content={locationContent(location)}
+                content={this.locationContent(location)}
                 title={locationNew?.name}
                 trigger="hover"
               >
                 <span
                   style={{ wordWrap: 'break-word', wordBreak: 'break-word', cursor: 'pointer' }}
-                  onMouseEnter={setCurrentTime}
+                  onMouseEnter={this.setCurrentTime}
                 >
                   {locationNew?.name}
                 </span>
@@ -366,7 +416,7 @@ const TableTickets = (props) => {
                 <span
                   className={styles.userID}
                   style={{ color: '#2c6df9' }}
-                  onClick={() => viewProfile(employeeAssignee?.generalInfo?.userId || '')}
+                  onClick={() => this.viewProfile(employeeAssignee?.generalInfo?.userId || '')}
                 >
                   {employeeAssignee?.generalInfo?.legalName}
                 </span>
@@ -375,11 +425,41 @@ const TableTickets = (props) => {
           }
           return (
             <Dropdown
-              // overlayClassName={styles.dropDown__manager}
-              overlay={renderMenuDropdown()}
+              overlayClassName="dropDown__manager"
+              // overlay={
+              // <Menu>
+              //   <div className="inputSearch">
+              //     <Input
+              //       placeholder="Search by name"
+              //       onChange={(e) => this.setState({ search: [e.target.value] })}
+              //       prefix={<SearchOutlined />}
+              //     />
+              //   </div>
+              //   <Menu.Divider />
+              //   <div style={{ overflowY: 'scroll', maxHeight: '200px' }}>
+              //     {!isEmpty(this.filterData()) ? (
+              //       this.filterData.map((val) => {
+              //         return (
+              //           <Menu.Item
+              //             onClick={() => this.handleSelectChange(val._id)}
+              //             key={val._id}
+              //             value={val._id}
+              //           >
+              //             {val.generalInfo?.legalName}
+              //           </Menu.Item>
+              //         );
+              //       })
+              //     ) : (
+              //       <Menu.Item>
+              //         <Empty />
+              //       </Menu.Item>
+              //     )}
+              //   </div>
+              // </Menu>
+              // }
               trigger={['click']}
             >
-              <div onClick={() => handleClickSelect(row.id)}>
+              <div onClick={() => this.handleClickSelect(row.id)}>
                 Select User &emsp;
                 <DownOutlined />
               </div>
@@ -398,60 +478,57 @@ const TableTickets = (props) => {
     ];
   };
 
-  const pagination = {
-    position: ['bottomLeft'],
-    total: data.length,
-    showTotal: (total, range) => (
-      <span>
-        Showing{' '}
-        <b>
-          {range[0]} - {range[1]}
-        </b>{' '}
-        of {data.length}
-      </span>
-    ),
-    pageSize: size,
-    current: pageSelected,
-    onChange: (page, pageSize) => {
-      getPageAndSize(page, pageSize);
-    },
-  };
+  render() {
+    const {
+      data = [],
+      textEmpty = 'No tickets found',
+      loading,
+      pageSelected,
+      size,
+      getPageAndSize = () => {},
+    } = this.props;
+    const pagination = {
+      position: ['bottomLeft'],
+      total: data.length,
+      showTotal: (total, range) => (
+        <span>
+          Showing{' '}
+          <b>
+            {range[0]} - {range[1]}
+          </b>{' '}
+          of {data.length}
+        </span>
+      ),
+      pageSize: size,
+      current: pageSelected,
+      onChange: (page, pageSize) => {
+        getPageAndSize(page, pageSize);
+      },
+    };
 
-  return (
-    <div className={styles.TableTickets}>
-      <Table
-        locale={{
-          emptyText: (
-            <div className={styles.viewEmpty}>
-              <img src={empty} alt="empty" />
-              <p className={styles.textEmpty}>{textEmpty}</p>
-            </div>
-          ),
-        }}
-        loading={loading}
-        columns={getColumns()}
-        dataSource={data}
-        hideOnSinglePage
-        pagination={pagination}
-        rowKey="id"
-        scroll={{ x: 1500, y: 487 }}
-      />
-    </div>
-  );
-};
+    return (
+      <div className={styles.TableTickets}>
+        <Table
+          locale={{
+            emptyText: (
+              <div className={styles.viewEmpty}>
+                <img src={empty} alt="empty" />
+                <p className={styles.textEmpty}>{textEmpty}</p>
+              </div>
+            ),
+          }}
+          loading={loading}
+          columns={this.getColumns()}
+          dataSource={data}
+          hideOnSinglePage
+          pagination={pagination}
+          onChange={this.handleChangeTable}
+          rowKey="id"
+          scroll={{ x: 1500, y: 487 }}
+        />
+      </div>
+    );
+  }
+}
 
-export default connect(
-  ({
-    loading,
-    ticketManagement: { listEmployee = [], locationsList = [], employeeFilterList = [] } = {},
-    user: { currentUser: { employee = {} } = {} } = {},
-    location: { companyLocationList = [] },
-  }) => ({
-    listEmployee,
-    locationsList,
-    employeeFilterList,
-    employee,
-    companyLocationList,
-    loadingUpdate: loading.effects['ticketManagement/updateTicket'],
-  }),
-)(TableTickets);
+export default TableTickets;
