@@ -1,14 +1,14 @@
-import React, { Suspense, useEffect, useState } from 'react';
-import { Table, Dropdown, Menu, Input, Empty, Popover, Spin } from 'antd';
-import { DownOutlined, SearchOutlined } from '@ant-design/icons';
+import { DownOutlined } from '@ant-design/icons';
+import { Popover, Spin, Table } from 'antd';
+import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
-import { history, connect } from 'umi';
-import { isEmpty, debounce } from 'lodash';
+import React, { Suspense, useEffect, useState } from 'react';
+import { connect, history } from 'umi';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import UserProfilePopover from '@/pages/TicketManagement/components/UserProfilePopover';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
-
 import styles from './index.less';
+
 
 const DropdownSearch = React.lazy(() => import('../DropdownSearch'));
 
@@ -25,6 +25,7 @@ const TableTickets = (props) => {
     size,
     getPageAndSize = () => {},
     employeeFilterList = [],
+    loadingFetchEmployee = false,
   } = props;
 
   const [timezoneListState, setTimezoneListState] = useState([]);
@@ -187,10 +188,10 @@ const TableTickets = (props) => {
 
   const onSearchDebounce = debounce((value) => {
     setNameSearch(value);
-  }, 1000);
+  }, 500);
 
-  const onChangeSearch = (value) => {
-    const formatValue = value.toLowerCase();
+  const onChangeSearch = (e) => {
+    const formatValue = e.target.value.toLowerCase();
     onSearchDebounce(formatValue);
   };
 
@@ -214,7 +215,7 @@ const TableTickets = (props) => {
           onChangeSearch={onChangeSearch}
           employeeFilterList={employeeFilterList}
           handleSelectChange={handleSelectChange}
-          styles={styles}
+          loading={loadingFetchEmployee}
         />
       </Suspense>
     );
@@ -374,16 +375,23 @@ const TableTickets = (props) => {
             );
           }
           return (
-            <Dropdown
-              // overlayClassName={styles.dropDown__manager}
-              overlay={renderMenuDropdown()}
-              trigger={['click']}
+            <Popover
+              trigger="click"
+              overlayClassName={styles.dropdownPopover}
+              content={renderMenuDropdown()}
+              placement="bottomRight"
             >
-              <div onClick={() => handleClickSelect(row.id)}>
+              <div
+                onClick={() => handleClickSelect(row.id)}
+                style={{
+                  width: 'fit-content',
+                  cursor: 'pointer',
+                }}
+              >
                 Select User &emsp;
                 <DownOutlined />
               </div>
-            </Dropdown>
+            </Popover>
           );
         },
         sorter: (a, b) => {
@@ -453,5 +461,6 @@ export default connect(
     employee,
     companyLocationList,
     loadingUpdate: loading.effects['ticketManagement/updateTicket'],
+    loadingFetchEmployee: loading.effects['ticketManagement/searchEmployee'],
   }),
 )(TableTickets);

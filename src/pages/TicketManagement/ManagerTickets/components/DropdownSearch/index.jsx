@@ -1,41 +1,41 @@
-import { SearchOutlined } from '@ant-design/icons';
-import { Empty, Input, Menu } from 'antd';
-import { isEmpty } from 'lodash';
+import { Col, Empty, Row, Spin } from 'antd';
 import React from 'react';
+import CustomSearchBox from '@/components/CustomSearchBox';
+import styles from './index.less';
 
 const DropdownSearch = (props) => {
   const {
     onChangeSearch = () => {},
     employeeFilterList = [],
     handleSelectChange = () => {},
-    styles,
+    loading = false,
   } = props;
+
   return (
-    <Menu>
-      <div className={styles.inputSearch}>
-        <Input
-          placeholder="Search by name"
-          onChange={(e) => onChangeSearch(e.target.value)}
-          prefix={<SearchOutlined />}
-        />
+    <div className={styles.DropdownSearch}>
+      <div className={styles.searchContainer}>
+        <CustomSearchBox onSearch={onChangeSearch} borderRadius={6} placeholder="Search by Name" />
       </div>
-      <Menu.Divider />
-      <div style={{ overflowY: 'scroll', maxHeight: '200px' }}>
-        {!isEmpty(employeeFilterList) ? (
-          employeeFilterList.map((val) => {
-            return (
-              <Menu.Item onClick={() => handleSelectChange(val._id)} key={val._id} value={val._id}>
-                {val.generalInfo?.legalName}
-              </Menu.Item>
-            );
-          })
-        ) : (
-          <Menu.Item>
-            <Empty />
-          </Menu.Item>
-        )}
-      </div>
-    </Menu>
+      <Spin spinning={loading}>
+        <div className={styles.listEmployee}>
+          {employeeFilterList.length > 0 ? (
+            <Row>
+              {employeeFilterList.map((x) => (
+                <Col span={24}>
+                  <div className={styles.employee} onClick={handleSelectChange}>
+                    <span>{x.generalInfo?.legalName}</span>
+                  </div>
+                </Col>
+              ))}
+            </Row>
+          ) : (
+            <div className={styles.emptyContainer}>
+              <Empty />
+            </div>
+          )}
+        </div>
+      </Spin>
+    </div>
   );
 };
 export default DropdownSearch;
