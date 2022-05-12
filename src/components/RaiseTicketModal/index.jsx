@@ -37,7 +37,12 @@ const RaiseTicketModal = (props) => {
     visible = false,
     title = '',
     onClose = () => {},
-    currentUser: { employee: { _id: myEmployeeID = '' } = {} || {} } = {} || {},
+    currentUser: {
+      employee: {
+        _id: myEmployeeID = '',
+        location: { headQuarterAddress: { country = '' } = {} } = {},
+      } = {} || {},
+    } = {} || {},
     loadingFetchListEmployee = false,
     loadingFetchSupportTeam = false,
     loadingAddTicket = false,
@@ -49,6 +54,9 @@ const RaiseTicketModal = (props) => {
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
   const [queryTypeList, setQueryTypeList] = useState([]);
   const [attachment, setAttachment] = useState('');
+
+  // permission setting
+  const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
 
   const renderModalHeader = () => {
     return (
@@ -62,7 +70,6 @@ const RaiseTicketModal = (props) => {
   };
   useEffect(() => {
     if (visible) {
-      const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
       dispatch({
         type: 'ticketManagement/fetchSupportTeamList',
         payload: {
@@ -140,6 +147,27 @@ const RaiseTicketModal = (props) => {
     }
   };
 
+  const refreshData = () => {
+    let payload = {
+      status: ['New'],
+    };
+    if (permissions && permissions.length > 0) {
+      payload = {
+        ...payload,
+        country,
+        permissions,
+      };
+    }
+    dispatch({
+      type: 'ticketManagement/fetchListAllTicket',
+      payload,
+    });
+    dispatch({
+      type: 'ticketManagement/fetchToTalList',
+      payload,
+    });
+  };
+
   const handleFinish = (value) => {
     const documents = uploadedAttachments?.map((item) => {
       const { id = '', url = '', name = '' } = item;
@@ -172,6 +200,7 @@ const RaiseTicketModal = (props) => {
         form.resetFields();
         setUploadedAttachments([]);
         setAttachment('');
+        refreshData();
       }
     });
   };

@@ -9,7 +9,6 @@ import UserProfilePopover from '@/pages/TicketManagement/components/UserProfileP
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import styles from './index.less';
 
-
 const DropdownSearch = React.lazy(() => import('../DropdownSearch'));
 
 const TableTickets = (props) => {
@@ -24,6 +23,8 @@ const TableTickets = (props) => {
     pageSelected,
     size,
     getPageAndSize = () => {},
+    refreshFetchTicketList = () => {},
+    refreshFetchTotalList = () => {},
     employeeFilterList = [],
     loadingFetchEmployee = false,
   } = props;
@@ -100,6 +101,12 @@ const TableTickets = (props) => {
           departmentAssign,
           employee: employeeId,
         },
+      }).then((res) => {
+        const { statusCode = '' } = res;
+        if (statusCode === 200) {
+          refreshFetchTicketList();
+          refreshFetchTotalList();
+        }
       });
     }
   };
@@ -205,6 +212,13 @@ const TableTickets = (props) => {
         type: 'ticketManagement/searchEmployee',
         payload,
       });
+    } else {
+      dispatch({
+        type: 'ticketManagement/save',
+        payload: {
+          employeeFilterList: [],
+        },
+      });
     }
   }, [nameSearch]);
 
@@ -213,7 +227,7 @@ const TableTickets = (props) => {
       <Suspense fallback={<Spin />}>
         <DropdownSearch
           onChangeSearch={onChangeSearch}
-          employeeFilterList={employeeFilterList}
+          employeeFilterList={nameSearch ? employeeFilterList : []}
           handleSelectChange={handleSelectChange}
           loading={loadingFetchEmployee}
         />
@@ -386,6 +400,7 @@ const TableTickets = (props) => {
                 style={{
                   width: 'fit-content',
                   cursor: 'pointer',
+                  color: '#2c6df9',
                 }}
               >
                 Select User &emsp;
@@ -395,11 +410,16 @@ const TableTickets = (props) => {
           );
         },
         sorter: (a, b) => {
-          return a.employeeAssignee.generalInfo && a.employeeAssignee.generalInfo?.legalName
-            ? a.employeeAssignee.generalInfo?.legalName.localeCompare(
-                `${b.employeeAssignee.generalInfo?.legalName}`,
-              )
-            : null;
+          if (
+            a.employeeAssignee?.generalInfo?.legalName &&
+            b.employeeAssignee?.generalInfo?.legalName
+          )
+            return a.employeeAssignee.generalInfo && a.employeeAssignee.generalInfo?.legalName
+              ? a.employeeAssignee.generalInfo?.legalName.localeCompare(
+                  `${b.employeeAssignee.generalInfo?.legalName}`,
+                )
+              : null;
+          return null;
         },
         sortDirections: ['ascend', 'descend'],
       },

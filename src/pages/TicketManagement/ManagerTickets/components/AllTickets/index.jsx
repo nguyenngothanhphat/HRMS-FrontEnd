@@ -1,48 +1,35 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
 import styles from './index.less';
 import Summary from '../Summary';
 import SearchTable from '../../../components/SearchTable';
+import { getAuthority } from '@/utils/authority';
 import TableTickets from '../TableTickets';
 
-@connect(({ loading = {}, ticketManagement: { selectedLocations = [] } = {} }) => ({
-  selectedLocations,
-  loading: loading.effects['ticketManagement/fetchListAllTicket'],
-  loadingFilter: loading.effects['ticketManagement/fetchListAllTicketSearch'],
-}))
-class AllTicket extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedFilterTab: '1',
-      pageSelected: 1,
-      size: 10,
-      nameSearch: '',
-    };
+const AllTicket = (props) => {
+  const {
+    dispatch,
+    country = '',
+    data = [],
+    loading,
+    loadingFilter,
+    countData = [],
+    selectedLocations = [],
+    refreshFetchTicketList = () => {},
+    refreshFetchTotalList = () => {},
+  } = props;
 
-    this.setDebounce = debounce((nameSearch) => {
-      this.setState({
-        nameSearch,
-      });
-    }, 1000);
-  }
+  const [selectedFilterTab, setSelectedFilterTab] = useState('1');
+  const [pageSelected, setPageSelected] = useState(1);
+  const [size, setSize] = useState(10);
+  const [nameSearch, setNameSearch] = useState('');
 
-  componentDidUpdate(prevProps, prevState) {
-    const { selectedFilterTab, pageSelected, size, nameSearch } = this.state;
-    const { selectedLocations = [] } = this.props;
-    if (
-      prevState.pageSelected !== pageSelected ||
-      prevState.size !== size ||
-      prevState.selectedFilterTab !== selectedFilterTab ||
-      prevState.nameSearch !== nameSearch ||
-      JSON.stringify(prevProps.selectedLocations) !== JSON.stringify(selectedLocations)
-    ) {
-      this.initDataTable(selectedFilterTab, nameSearch, selectedLocations);
-    }
-  }
+  const onSearchDebounce = debounce((value) => {
+    setNameSearch(value);
+  }, 500);
 
-  getStatus = (selectedTab) => {
+  const getStatus = (selectedTab) => {
     switch (selectedTab) {
       case '1':
         return 'New';
@@ -62,65 +49,102 @@ class AllTicket extends Component {
     }
   };
 
-  initDataTable = (tabId, nameSearch, selectedLocations = []) => {
-    const { dispatch } = this.props;
-    const { pageSelected, size } = this.state;
+  const initDataTable = (tabId, nameSearchProps, selectedLocationsProps = []) => {
+    const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
 
     let payload = {
-      status: [this.getStatus(tabId)],
+      status: [getStatus(tabId)],
       page: pageSelected,
       limit: size,
-      location: selectedLocations,
+      location: selectedLocationsProps,
     };
-    if (nameSearch) {
+
+    let payloadFetchTotalList = {
+      status: [getStatus(tabId)],
+      location: selectedLocationsProps,
+    };
+
+    if (nameSearchProps) {
       payload = {
         ...payload,
-        search: nameSearch,
+        search: nameSearchProps,
+      };
+    }
+    if (permissions && permissions.length > 0) {
+      payload = {
+        ...payload,
+        permissions,
+        country,
+      };
+      payloadFetchTotalList = {
+        ...payloadFetchTotalList,
+        permissions,
+        country,
       };
     }
     dispatch({
       type: 'ticketManagement/fetchListAllTicket',
       payload,
     });
-  };
 
-  setSelectedTab = (id) => {
-    this.setState({
-      selectedFilterTab: id,
+    dispatch({
+      type: 'ticketManagement/fetchToTalList',
+      payload: {
+        ...payloadFetchTotalList,
+      },
     });
   };
 
-  getPageAndSize = (page, pageSize) => {
-    this.setState({
-      pageSelected: page,
-      size: pageSize,
-    });
+  const setSelectedTab = (id) => {
+    setSelectedFilterTab(id);
   };
 
-  onChangeSearch = (value) => {
+  const getPageAndSize = (page, pageSize) => {
+    setPageSelected(page);
+    setSize(pageSize);
+  };
+
+  const onChangeSearch = (value) => {
     const formatValue = value.toLowerCase();
-    this.setDebounce(formatValue);
+    onSearchDebounce(formatValue);
   };
 
-  render() {
-    const { data = [], loading, loadingFilter, countData = [] } = this.props;
-    const { pageSelected, size } = this.state;
-    return (
-      <div className={styles.containerTickets}>
-        <div className={styles.tabTickets}>
-          <Summary setSelectedTab={this.setSelectedTab} countData={countData} />
-          <SearchTable onChangeSearch={this.onChangeSearch} className={styles.searchTable} />
-        </div>
-        <TableTickets
-          data={data}
-          loading={loading || loadingFilter}
-          pageSelected={pageSelected}
-          size={size}
-          getPageAndSize={this.getPageAndSize}
-        />
-      </div>
-    );
-  }
-}
+  useEffect(() => {
+    initDataTable(selectedFilterTab, nameSearch, selectedLocations);
+  }, [pageSelected, size, selectedFilterTab, nameSearch, JSON.stringify(selectedLocations)]);
 
-export default AllTicket;
+  return (
+    <div className={styles.containerTickets}>
+      <div className={styles.tabTickets}>
+        <Summary setSelectedTab={setSelectedTab} countData={countData} />
+        <SearchTable onChangeSearch={onChangeSearch} className={styles.searchTable} />
+      </div>
+      <TableTickets
+        data={data}
+        loading={loading || loadingFilter}
+        pageSelected={pageSelected}
+        size={size}
+        getPageAndSize={getPageAndSize}
+        refreshFetchTicketList={refreshFetchTicketList}
+        refreshFetchTotalList={refreshFetchTotalList}
+      />
+    </div>
+  );
+};
+
+export default connect(
+  ({
+    loading = {},
+    user: {
+      currentUser: {
+        employee: { location: { headQuarterAddress: { country = '' } = {} } = {} } = {},
+      } = {},
+    },
+    ticketManagement: { selectedLocations = [] } = {},
+  }) => ({
+    selectedLocations,
+    country,
+    loading: loading.effects['ticketManagement/fetchListAllTicket'],
+    loadingFilter: loading.effects['ticketManagement/fetchListAllTicketSearch'],
+  }),
+)(AllTicket);
