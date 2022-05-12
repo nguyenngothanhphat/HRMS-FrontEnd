@@ -11,10 +11,11 @@ const { Option } = Select;
 const FilterForm = (props) => {
   const {
     listOffAllTicket = [],
-    locationsList = [],
+    // locationsList = [],
     employeeAssigneeList = [],
     employeeRaiseList = [],
     currentStatus = '',
+    selectedLocations = [],
     loadingFetchEmployeeRaiseListEffect,
     loadingFetchEmployeeAssigneeListEffect,
     dispatch,
@@ -40,7 +41,7 @@ const FilterForm = (props) => {
 
   const queryTypeList = getUniqueListBy(listOffAllTicket, 'query_type');
   const priorityList = getUniqueListBy(listOffAllTicket, 'priority');
-  const locationsListNew = getUniqueListBy(listOffAllTicket, 'location');
+  // const locationsListNew = getUniqueListBy(listOffAllTicket, 'location');
   const dateFormat = 'DD-MM-YYYY';
 
   useEffect(() => {
@@ -165,6 +166,7 @@ const FilterForm = (props) => {
       payload: {
         ...payload,
         status: currentStatus,
+        location: selectedLocations,
       },
     });
     dispatch({
@@ -252,8 +254,7 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select request type"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 showArrow
               >
                 {queryTypeList.map((option) => {
@@ -272,8 +273,7 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select priority"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 showArrow
               >
                 {priorityList.map((option) => {
@@ -285,7 +285,7 @@ const FilterForm = (props) => {
                 })}
               </Select>
             </Form.Item>
-            <Form.Item key="location" label="BY LOCATION" name="location">
+            {/* <Form.Item key="location" label="BY LOCATION" name="location">
               <Select
                 allowClear
                 showSearch
@@ -309,7 +309,7 @@ const FilterForm = (props) => {
                   );
                 })}
               </Select>
-            </Form.Item>
+            </Form.Item> */}
             {currentStatus && currentStatus[0] !== 'New' ? (
               <Form.Item key="employeeAssignee" label="BY ASSIGNED TO" name="employeeAssignee">
                 <AutoComplete
@@ -373,6 +373,7 @@ export default connect(
       listOffAllTicket = [],
       employeeAssigneeList = [],
       employeeRaiseList = [],
+      selectedLocations = [],
     } = {},
   }) => ({
     currentStatus,
@@ -380,6 +381,7 @@ export default connect(
     locationsList,
     employeeRaiseList,
     employeeAssigneeList,
+    selectedLocations,
     loadingFetchListAllTicket: loading.effects['ticketManagement/fetchListAllTicket'],
     loadingFetchEmployeeRaiseListEffect:
       loading.effects['ticketManagement/fetchEmployeeRaiseListEffect'],

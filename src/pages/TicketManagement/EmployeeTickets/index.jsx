@@ -4,21 +4,33 @@ import { history, connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import TicketQueue from './components/TicketQueue';
 import MyTickets from './components/MyTickets';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import CheckboxMenu from '@/components/CheckboxMenu';
+import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 
 import styles from './index.less';
 
 @connect(
   ({
-    ticketManagement: { listOffAllTicket = [], totalList = [] } = {},
+    ticketManagement: { listOffAllTicket = [], totalList = [], selectedLocations = [] } = {},
     user: { currentUser: { employee = {} } = {} } = {},
+    location: { companyLocationList = [] },
   }) => ({
     employee,
     listOffAllTicket,
     totalList,
+    companyLocationList,
+    selectedLocations,
   }),
 )
 class EmployeeTicket extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedLocations: [getCurrentLocation()],
+    };
+  }
+
   componentDidMount() {
     const { tabName = '' } = this.props;
 
@@ -58,6 +70,16 @@ class EmployeeTicket extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'ticketManagement/save',
+      payload: {
+        selectedLocations: [getCurrentLocation()],
+      },
+    });
+  }
+
   fetchLocation = () => {
     const { dispatch } = this.props;
     dispatch({
@@ -67,11 +89,12 @@ class EmployeeTicket extends Component {
   };
 
   fetchListAllTicket = () => {
-    const { dispatch } = this.props;
+    const { dispatch, selectedLocations = [] } = this.props;
     dispatch({
       type: 'ticketManagement/fetchListAllTicket',
       payload: {
         status: ['New'],
+        location: selectedLocations,
       },
     });
   };
@@ -82,6 +105,7 @@ class EmployeeTicket extends Component {
       type: 'ticketManagement/fetchListEmployee',
       payload: {
         department: departmentNameList,
+        status: 'ACTIVE',
       },
     });
   };
@@ -107,6 +131,7 @@ class EmployeeTicket extends Component {
     history.push(`/ticket-management/${key}`);
     const {
       dispatch,
+      selectedLocations = [],
       employee: { _id = '' },
       employee: { departmentInfo: { _id: idDepart = '' } = {} },
     } = this.props;
@@ -115,6 +140,7 @@ class EmployeeTicket extends Component {
         type: 'ticketManagement/fetchListAllTicket',
         payload: {
           status: ['New'],
+          location: selectedLocations,
         },
       });
       dispatch({
@@ -129,6 +155,7 @@ class EmployeeTicket extends Component {
         type: 'ticketManagement/fetchListAllTicket',
         payload: {
           status: ['Assigned'],
+          location: selectedLocations,
         },
       });
       dispatch({
@@ -139,6 +166,63 @@ class EmployeeTicket extends Component {
         },
       });
     }
+  };
+
+  onLocationChange = (selection) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'ticketManagement/save',
+      payload: {
+        selectedLocations: [...selection],
+      },
+    });
+    this.setState({
+      selectedLocations: [...selection],
+    });
+  };
+
+  getSelectedLocationName = () => {
+    const { selectedLocations = [] } = this.state;
+    const { companyLocationList = [] } = this.props;
+    if (selectedLocations.length === 1) {
+      return companyLocationList.find((x) => x._id === selectedLocations[0])?.name || '';
+    }
+    if (selectedLocations.length > 0 && selectedLocations.length < companyLocationList.length) {
+      return `${selectedLocations.length} locations selected`;
+    }
+    if (selectedLocations.length === companyLocationList.length) {
+      return 'All';
+    }
+    return 'None';
+  };
+
+  renderFilterLocation = () => {
+    const selectedLocationName = this.getSelectedLocationName();
+    const { selectedLocations = [] } = this.state;
+    const { companyLocationList = [] } = this.props;
+    const locationOptions = companyLocationList.map((x) => {
+      return {
+        _id: x._id,
+        name: x.name,
+      };
+    });
+    return (
+      <div className={styles.item}>
+        <span className={styles.label}>Location</span>
+
+        <CheckboxMenu
+          options={locationOptions}
+          onChange={this.onLocationChange}
+          list={companyLocationList}
+          default={selectedLocations}
+        >
+          <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
+            <span>{selectedLocationName}</span>
+            <img src={SmallDownArrow} alt="" />
+          </div>
+        </CheckboxMenu>
+      </div>
+    );
   };
 
   render() {
@@ -154,6 +238,8 @@ class EmployeeTicket extends Component {
             onChange={(key) => {
               this.handleChangeTable(key);
             }}
+            destroyInactiveTabPane
+            tabBarExtraContent={this.renderFilterLocation()}
           >
             <TabPane tab="Ticket Queue" key="ticket-queue">
               <TicketQueue data={listOffAllTicket} countData={totalList} />

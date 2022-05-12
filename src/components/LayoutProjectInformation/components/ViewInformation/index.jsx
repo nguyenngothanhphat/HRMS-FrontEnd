@@ -6,10 +6,12 @@ import EditIcon from '@/assets/projectManagement/edit2.svg';
 import s from '../../index.less';
 import CustomTag from '../CustomTag';
 import EditProjectStatusModalContent from '@/pages/ProjectManagement/components/EditProjectStatusModalContent';
-import CommonModal from '@/pages/ProjectManagement/components/CommonModal';
+import EditProjectModalContent from '@/pages/ProjectManagement/components/EditProjectModalContent';
+
+import CommonModal from '@/components/CommonModal';
 
 const ViewInformation = (props) => {
-  const { projectDetail, permissions = {}, dispatch, loadingUpdateProject = false } = props;
+  const { projectDetail = {}, permissions = {}, dispatch, loadingUpdateProject = false } = props;
   const {
     avatar = '',
     customerName = '',
@@ -21,16 +23,22 @@ const ViewInformation = (props) => {
     division = '',
     accountOwner = {},
     engineeringOwner = {},
+    projectManager = {},
     tags = [],
   } = projectDetail;
 
   const [isEditProjectStatus, setIsEditProjectStatus] = useState(false);
+  const [isEditProject, setIsEditProject] = useState(false);
 
   const { generalInfo: { userId: accountOwnerId = '', legalName: accountOwnerName = '' } = {} } =
     accountOwner || {};
   const {
     generalInfo: { userId: engineeringOwnerId = '', legalName: engineeringOwnerName = '' } = {},
   } = engineeringOwner || {};
+
+  const {
+    generalInfo: { userId: projectManagerId = '', legalName: projectManagerName = '' } = {},
+  } = projectManager || {};
 
   // permissions
   const modifyProjectPermission = permissions.modifyProject !== -1;
@@ -100,6 +108,14 @@ const ViewInformation = (props) => {
         </span>
       ),
     },
+    {
+      name: 'Project Manager',
+      value: (
+        <span className={s.clickable} onClick={() => viewProfile(projectManagerId)}>
+          {projectManagerName}
+        </span>
+      ),
+    },
   ];
 
   const colors = ['#006BEC', '#FF6CA1', '#6236FF', '#FE5D27'];
@@ -109,7 +125,11 @@ const ViewInformation = (props) => {
 
   return (
     <div className={s.viewRight__projectInfo} style={{ position: 'relative' }}>
-      {modifyProjectPermission && <Button className={s.btnEdit}>Edit</Button>}
+      {modifyProjectPermission && (
+        <Button className={s.btnEdit} onClick={() => setIsEditProject(true)}>
+          Edit
+        </Button>
+      )}
       <img src="/assets/images/img-cover.jpg" alt="img-cover" className={s.projectInfo__imgCover} />
       <img src={avatar || MockCustomerLogo} alt="img-avt" className={s.projectInfo__imgAvt} />
       {modifyProjectPermission && (
@@ -126,7 +146,7 @@ const ViewInformation = (props) => {
         <div className={s.projectInfo__viewBottom__row}>
           {items.map((x) => {
             return (
-              <Row align="middle" className={s.item}>
+              <Row align="top" className={s.item}>
                 <Col span={12}>
                   <p className={s.label}>{x.name}</p>
                 </Col>
@@ -154,6 +174,23 @@ const ViewInformation = (props) => {
         content={
           <EditProjectStatusModalContent
             onClose={() => setIsEditProjectStatus(false)}
+            selectedProject={projectDetail}
+            onRefresh={onRefresh}
+          />
+        }
+        width={600}
+      />
+      <CommonModal
+        visible={isEditProject}
+        onClose={() => setIsEditProject(false)}
+        firstText="Edit Project"
+        secondText="Cancel"
+        title="Edit Project"
+        loading={loadingUpdateProject}
+        content={
+          <EditProjectModalContent
+            visible={isEditProject}
+            onClose={() => setIsEditProject(false)}
             selectedProject={projectDetail}
             onRefresh={onRefresh}
           />

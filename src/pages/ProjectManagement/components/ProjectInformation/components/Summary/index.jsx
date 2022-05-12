@@ -5,7 +5,7 @@ import moment from 'moment';
 import EditIcon from '@/assets/projectManagement/edit.svg';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';
 import CommonTable from '../CommonTable';
-import CommonModal from '../../../CommonModal';
+import CommonModal from '@/components/CommonModal';
 import EditEndDateContent from './components/EditEndDateContent';
 import EditBillableHeadCountContent from './components/EditBillableHeadCountContent';
 import EditBufferHeadCountContent from './components/EditBufferHeadCountContent';

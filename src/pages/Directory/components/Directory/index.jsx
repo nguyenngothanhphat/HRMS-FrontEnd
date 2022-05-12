@@ -2,9 +2,9 @@ import { Layout, Skeleton, Tabs } from 'antd';
 import React, { useEffect, useState, Suspense } from 'react';
 import { connect, formatMessage } from 'umi';
 import iconDownload from '@/assets/download-icon-yellow.svg';
-import DirectoryTable from '../DirectoryTable';
-import AddEmployeeForm from '@/pages_admin/EmployeesManagement/components/TableContainer/components/AddEmployeeForm';
-import ModalImportEmployee from '@/pages_admin/EmployeesManagement/components/TableContainer/components/ModalImportEmployee';
+import DirectoryTable from './components/DirectoryTable';
+import AddEmployeeModal from './components/AddEmployeeModal';
+import ImportEmployeeModal from './components/ImportEmployeeModal';
 import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
 import exportToCsv from '@/utils/exportToCsv';
 import FilterPopover from '@/components/FilterPopover';
@@ -13,7 +13,7 @@ import FilterButton from '@/components/FilterButton';
 
 import styles from './index.less';
 
-const FilterContent = React.lazy(() => import('../FilterContent'));
+const FilterContent = React.lazy(() => import('./components/FilterContent'));
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -37,8 +37,7 @@ const DirectoryComponent = (props) => {
     loadingListInActive,
     loadingFetchFilterList,
     filterList: { listCountry = [] } = {},
-    listLocationsByCompany = [],
-    // currentUser: { employee: { departmentInfo: { name: departmentName = '' } = {} } = {} } = {},
+    companyLocationList = [],
     totalActiveEmployee,
     totalInactiveEmployee,
     totalMyTeam,
@@ -55,6 +54,7 @@ const DirectoryComponent = (props) => {
   const [size, setSize] = useState(10);
   const [visible, setVisible] = useState(false);
   const [visibleImportEmployee, setVisibleImportEmployee] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
 
   // FUNCTIONALITY
   // Define tabID to filter
@@ -120,7 +120,7 @@ const DirectoryComponent = (props) => {
 
     // if there are location & company, call API
     const checkCallAPI =
-      companiesOfUser.length > 0 && listLocationsByCompany.length > 0 && listCountry.length > 0;
+      companiesOfUser.length > 0 && companyLocationList.length > 0 && listCountry.length > 0;
 
     if (checkCallAPI) {
       // MULTI COMPANY & LOCATION PAYLOAD
@@ -138,84 +138,6 @@ const DirectoryComponent = (props) => {
           companyPayload = [...companyList];
         }
       } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
-
-      // let locationPayload = [];
-
-      // // for all employees & super admin that is in ALL location mode
-      // if (!currentLocation || !isOwnerCheck) {
-      //   if (country.length === 0) {
-      //     locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
-      //       let stateList = [];
-      //       listCountry.forEach(
-      //         ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
-      //           if (countryItem1 === countryItem2) {
-      //             if (state.length !== 0) {
-      //               if (state.includes(stateItem2)) {
-      //                 stateList = [...stateList, stateItem2];
-      //               }
-      //             } else {
-      //               stateList = [...stateList, stateItem2];
-      //             }
-      //           }
-      //         },
-      //       );
-      //       return {
-      //         country: countryItem1,
-      //         state: stateList,
-      //       };
-      //     });
-      //   } else {
-      //     locationPayload = country.map((item) => {
-      //       let stateList = [];
-
-      //       listCountry.forEach(
-      //         ({ country: { _id: countryItem = '' } = {}, state: stateItem = '' }) => {
-      //           if (item === countryItem) {
-      //             if (state.length !== 0) {
-      //               if (state.includes(stateItem)) {
-      //                 stateList = [...stateList, stateItem];
-      //               }
-      //             } else {
-      //               stateList = [...stateList, stateItem];
-      //             }
-      //           }
-      //         },
-      //       );
-
-      //       return {
-      //         country: item,
-      //         state: stateList,
-      //       };
-      //     });
-      //   }
-      // }
-
-      // // only super admin can see directory list by selected location in the dropdown menu
-      // if (currentLocation && isOwnerCheck) {
-      //   const currentLocationObj = listLocationsByCompany.find(
-      //     (loc) => loc?._id === currentLocation,
-      //   );
-      //   const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
-      //   const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
-      //   locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
-      //     let stateList = [];
-      //     listCountry.forEach(
-      //       ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
-      //         if (
-      //           countryItem1 === countryItem2 &&
-      //           currentLocationCountry === countryItem2 &&
-      //           currentLocationState === stateItem2
-      //         ) {
-      //           stateList = [...stateList, stateItem2];
-      //         }
-      //       },
-      //     );
-      //     return {
-      //       country: countryItem1,
-      //       state: stateList,
-      //     };
-      //   });
-      // }
 
       const payload = {
         ...params,
@@ -259,16 +181,32 @@ const DirectoryComponent = (props) => {
   };
 
   const refreshData = () => {
+    setIsFiltering(true);
+    setPageSelected(1);
     renderData({
       ...filter,
-      page: pageSelected || 1,
+      page: 1,
       limit: size,
     });
+    setTimeout(() => {
+      setIsFiltering(false);
+    }, 50);
   };
 
   useEffect(() => {
     refreshData();
-  }, [JSON.stringify(filter), JSON.stringify(listCountry), pageSelected, size, tabId]);
+  }, [JSON.stringify(filter), JSON.stringify(listCountry), size, tabId]);
+
+  // pageSelected change => only call API when not using filter (isFiltering = false)
+  useEffect(() => {
+    if (!isFiltering) {
+      renderData({
+        ...filter,
+        page: pageSelected,
+        limit: size,
+      });
+    }
+  }, [pageSelected]);
 
   const renderListEmployee = () => {
     const { active, myTeam } = tabList;
@@ -332,7 +270,7 @@ const DirectoryComponent = (props) => {
         'First Name': item.firstName,
         'Last Name': item.lastName,
         'Middle Name': item.middleName,
-        Gender: item.Gender,
+        Gender: item.gender,
         'Date of Birth': item.dateOfBirth,
         'Joined Date': item.joinDate,
         Location: item.location,
@@ -364,20 +302,20 @@ const DirectoryComponent = (props) => {
   const downloadTemplate = () => {
     const exportData = [
       {
-        employeeId: 'PSI 0000',
+        employeeId: 'PSI-0000',
         firstName: 'First Name',
         lastName: 'Last Name',
         middleName: 'Middle Name',
-        gender: 'Gender',
-        dateOfBirth: 'Date of Birth',
+        gender: 'Male',
+        dateOfBirth: '05/10/2022',
         joinDate: '11/30/2020',
         location: 'Vietnam',
-        department: 'Develop',
+        department: 'Engineering',
         employeeType: 'Full Time',
         title: 'Junior Frontend',
-        workEmail: 'template@terralogic.com',
-        personalEmail: 'template@gmail.com',
-        managerWorkEmail: 'manager@terralogic.com',
+        workEmail: 'template@mailinator.com',
+        personalEmail: 'template@mailinator.com',
+        managerWorkEmail: 'manager@mailinator.com',
         personalNumber: '0123456789',
       },
     ];
@@ -537,7 +475,7 @@ const DirectoryComponent = (props) => {
         </div>
       )}
 
-      <AddEmployeeForm
+      <AddEmployeeModal
         company={getCurrentCompany()}
         titleModal="Add Employee"
         visible={visible}
@@ -545,7 +483,7 @@ const DirectoryComponent = (props) => {
         handleRefresh={refreshData}
       />
       {visibleImportEmployee && (
-        <ModalImportEmployee
+        <ImportEmployeeModal
           company={companiesOfUser}
           titleModal="Import Employees"
           visible={visibleImportEmployee}
@@ -560,7 +498,7 @@ const DirectoryComponent = (props) => {
 export default connect(
   ({
     loading,
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
     employee,
     user: { currentUser = {}, permissions = {}, companiesOfUser = [] },
     employee: {
@@ -580,7 +518,7 @@ export default connect(
     employee,
     currentUser,
     permissions,
-    listLocationsByCompany,
+    companyLocationList,
     companiesOfUser,
     filterList,
     currentPayload,

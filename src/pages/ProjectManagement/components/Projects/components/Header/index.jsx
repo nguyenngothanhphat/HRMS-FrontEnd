@@ -1,14 +1,15 @@
-import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Select } from 'antd';
+import { Button, Select, Skeleton } from 'antd';
 import { debounce } from 'lodash';
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { connect } from 'umi';
-import FilterIcon from '@/assets/projectManagement/filter.svg';
-import ArrowDown from '@/assets/projectManagement/arrowDown.svg';
 import AddIcon from '@/assets/projectManagement/add.svg';
-import FilterPopover from '../FilterPopover';
+import ArrowDown from '@/assets/projectManagement/arrowDown.svg';
+import CommonModal from '@/components/CommonModal';
 import CustomSearchBox from '@/components/CustomSearchBox';
-import AddProjectModal from '../AddProjectModal';
+import FilterButton from '@/components/FilterButton';
+import AddProjectModalContent from '../AddProjectModalContent';
+import FilterPopover from '@/components/FilterPopover';
+import FilterContent from '../FilterContent';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -21,6 +22,7 @@ const Header = (props) => {
     setProjectStatus = () => {},
     fetchProjectList = () => {},
     permissions = {},
+    loadingAddProject = false,
   } = props;
   const [addProjectModalVisible, setAddProjectModalVisible] = useState(false);
 
@@ -32,10 +34,7 @@ const Header = (props) => {
 
   // if reselect project status or search, clear filter form
   const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
-
-  const onFilter = (payload) => {
-    fetchProjectList(payload);
-  };
+  const [isFiltering, setIsFiltering] = useState(false);
 
   const onSearchDebounce = debounce((value) => {
     fetchProjectList({ searchKey: value });
@@ -45,6 +44,15 @@ const Header = (props) => {
   const onSearch = (e = {}) => {
     const { value = '' } = e.target;
     onSearchDebounce(value);
+  };
+
+  const onFilter = (payload) => {
+    fetchProjectList(payload);
+    if (Object.keys(payload).length > 0) {
+      setIsFiltering(true);
+    } else {
+      setIsFiltering(false);
+    }
   };
 
   useEffect(() => {
@@ -91,29 +99,43 @@ const Header = (props) => {
             Add new Project
           </Button>
         )}
+
         <FilterPopover
           placement="bottomRight"
-          onSubmit={onFilter}
-          needResetFilterForm={needResetFilterForm}
-          setNeedResetFilterForm={setNeedResetFilterForm}
+          content={
+            <Suspense fallback={<Skeleton active />}>
+              <FilterContent
+                needResetFilterForm={needResetFilterForm}
+                setNeedResetFilterForm={setNeedResetFilterForm}
+                onFilter={onFilter}
+              />
+            </Suspense>
+          }
+          realTime
         >
-          <div className={styles.filterIcon}>
-            <img src={FilterIcon} alt="" />
-            <span>Filter</span>
-          </div>
+          <FilterButton showDot={isFiltering} />
         </FilterPopover>
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Project ID, customer name" />
       </div>
 
-      <AddProjectModal
+      <CommonModal
         visible={addProjectModalVisible}
+        title="Add new Project"
+        loading={loadingAddProject}
+        content={
+          <AddProjectModalContent
+            visible={addProjectModalVisible}
+            onClose={() => setAddProjectModalVisible(false)}
+          />
+        }
         onClose={() => setAddProjectModalVisible(false)}
       />
     </div>
   );
 };
 
-export default connect(({ projectManagement, user: { permissions = {} } }) => ({
+export default connect(({ projectManagement, user: { permissions = {} }, loading }) => ({
   permissions,
   projectManagement,
+  loadingAddProject: loading.effects['projectManagement/addProjectEffect'],
 }))(Header);

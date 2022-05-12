@@ -13,7 +13,7 @@ import styles from './index.less';
   ({
     employee: { dataOrgChart = {}, listEmployeeAll = [] } = {},
     loading,
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
     user: {
       currentUser: { employee: { _id: myEmployeeId = '' } = {}, employee = {} } = {},
       companiesOfUser = [],
@@ -24,7 +24,7 @@ import styles from './index.less';
     loadingFetchListAll: loading.effects['employee/fetchAllListUser'],
     myEmployeeId,
     companiesOfUser,
-    listLocationsByCompany,
+    companyLocationList,
     listEmployeeAll,
     employee,
   }),
@@ -66,10 +66,10 @@ class OrganisationChart extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { listLocationsByCompany = [], companiesOfUser = [] } = this.props;
+    const { companyLocationList = [], companiesOfUser = [] } = this.props;
     const { status, currentDate, currentTime } = this.state;
     if (
-      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany) ||
+      JSON.stringify(prevProps.companyLocationList) !== JSON.stringify(companyLocationList) ||
       JSON.stringify(prevProps.companiesOfUser) !== JSON.stringify(companiesOfUser)
     ) {
       this.fetchAllListUser();
@@ -202,9 +202,9 @@ class OrganisationChart extends Component {
 
   fetchAllListUser = async (name = '') => {
     let _status = 0;
-    const { listLocationsByCompany = [], companiesOfUser = [], dispatch } = this.props;
+    const { companyLocationList = [], companiesOfUser = [], dispatch } = this.props;
 
-    const convertLocation = listLocationsByCompany.map((item) => {
+    const convertLocation = companyLocationList.map((item) => {
       const { headQuarterAddress: { country: { _id = '' } = {}, state = '' } = {} } = item;
       return {
         country: _id,
@@ -316,9 +316,9 @@ class OrganisationChart extends Component {
   };
 
   fetchTimezone = () => {
-    const { listLocationsByCompany = [] } = this.props;
+    const { companyLocationList = [] } = this.props;
     const timezoneList = [];
-    listLocationsByCompany.forEach((location) => {
+    companyLocationList.forEach((location) => {
       const {
         headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '' } = {},
         _id = '',

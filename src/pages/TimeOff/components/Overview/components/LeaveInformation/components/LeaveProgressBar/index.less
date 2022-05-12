@@ -1,0 +1,44 @@
+.LeaveProgressBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+  margin-bottom: 16px;
+
+  // margin-top: -10px;
+  &__above {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    .title {
+      color: #707177;
+      font-weight: 700;
+      font-size: 13px;
+      &__shorten {
+        // font-size: 13px;
+      }
+    }
+    .progress {
+      .stepNumber {
+        color: #707177;
+        font-size: 12px;
+      }
+      .limitNumber {
+        color: #707177;
+        font-size: 13px;
+      }
+    }
+  }
+
+  &__below {
+    .renderProgressBar {
+      width: 90%;
+      .smallCircle {
+        color: #707177;
+        font-weight: 700;
+        font-size: 12px;
+      }
+    }
+  }
+}

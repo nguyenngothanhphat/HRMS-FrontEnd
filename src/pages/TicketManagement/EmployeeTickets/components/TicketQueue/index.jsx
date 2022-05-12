@@ -12,11 +12,12 @@ import styles from './index.less';
 @connect(
   ({
     loading,
-    ticketManagement: { listDepartment = [] } = {},
+    ticketManagement: { listDepartment = [], selectedLocations = [] } = {},
     user: { currentUser: { employee = {} } = {} } = {},
   }) => ({
     listDepartment,
     employee,
+    selectedLocations,
     loading: loading.effects['ticketManagement/fetchListAllTicket'],
     loadingFilter: loading.effects['ticketManagement/fetchListAllTicketSearch'],
   }),
@@ -25,7 +26,6 @@ class TicketQueue extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedFilterTab: '1',
       pageSelected: 1,
       size: 10,
       nameSearch: '',
@@ -39,19 +39,19 @@ class TicketQueue extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { selectedFilterTab, pageSelected, size, nameSearch } = this.state;
-
+    const { pageSelected, size, nameSearch } = this.state;
+    const { selectedLocations = [] } = this.props;
     if (
       prevState.pageSelected !== pageSelected ||
       prevState.size !== size ||
-      prevState.selectedFilterTab !== selectedFilterTab ||
-      prevState.nameSearch !== nameSearch
+      prevState.nameSearch !== nameSearch ||
+      JSON.stringify(prevProps.selectedLocations) !== JSON.stringify(selectedLocations)
     ) {
-      this.initDataTable(selectedFilterTab, nameSearch);
+      this.initDataTable(nameSearch, selectedLocations);
     }
   }
 
-  initDataTable = (nameSearch) => {
+  initDataTable = (nameSearch, selectedLocations = []) => {
     const { dispatch } = this.props;
     const { pageSelected, size } = this.state;
 
@@ -59,6 +59,7 @@ class TicketQueue extends Component {
       status: ['New'],
       page: pageSelected,
       limit: size,
+      location: selectedLocations,
     };
     if (nameSearch) {
       payload = {

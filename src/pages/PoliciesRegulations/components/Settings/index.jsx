@@ -12,17 +12,18 @@ const { Option } = Select;
 @connect(
   ({
     loading,
-    policiesRegulations: { listCategory = [], countryList = [] } = {},
+    policiesRegulations: { listCategory = [] } = {},
     user: {
       permissions = {},
       currentUser: {
         location: { headQuarterAddress: { country: { _id: countryID = '' } = {} } = {} } = {},
       } = {},
     },
+    location: { companyLocationList: locationList = [] } = {},
   }) => ({
     loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
     listCategory,
-    countryList,
+    locationList,
     countryID,
     permissions,
   }),
@@ -37,13 +38,6 @@ class Settings extends Component {
 
   componentDidMount() {
     const { dispatch, countryID = '' } = this.props;
-    dispatch({
-      type: 'policiesRegulations/getCountryListByCompany',
-      payload: {
-        tenantIds: [getCurrentTenant()],
-        company: getCurrentCompany(),
-      },
-    });
     dispatch({
       type: 'policiesRegulations/saveOrigin',
       payload: {
@@ -75,10 +69,10 @@ class Settings extends Component {
   };
 
   renderCountry = () => {
-    const { countryList = [] } = this.props;
+    const { locationList = [] } = this.props;
     let countryArr = [];
-    if (countryList.length > 0) {
-      countryArr = countryList.map((item) => {
+    if (locationList.length > 0) {
+      countryArr = locationList.map((item) => {
         return item.headQuarterAddress?.country;
       });
     }

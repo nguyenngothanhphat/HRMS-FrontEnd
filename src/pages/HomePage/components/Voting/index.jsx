@@ -156,7 +156,9 @@ const Voting = (props) => {
   if (loadingFetchPollResult || loadingFetchPostList || loading) {
     return (
       <div className={styles.Voting}>
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div
+          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 210 }}
+        >
           <Spin />
         </div>
       </div>
@@ -197,6 +199,6 @@ const Voting = (props) => {
 export default connect(({ loading, homePage, user }) => ({
   homePage,
   user,
-  loadingFetchPostList: loading.effects['homePage/fetchPollsEffect'],
-  loadingFetchPollResult: loading.effects['homePage/fetchPollResultEffect'],
+  loadingFetchPostList: loading.effects['homePage/fetchPollsEffect1'],
+  loadingFetchPollResult: loading.effects['homePage/fetchPollResultEffect1'],
 }))(Voting);

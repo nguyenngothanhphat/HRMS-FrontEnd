@@ -98,16 +98,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const permissionList = [...roles];
 
   // Directory Page
-  const findIndexActive = isAuthorized(permissionList, [
-    'T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW',
-  ]);
-  const findIndexMyTeam = isAuthorized(permissionList, [
-
-    'T_DIRECTORY_T_MY_TEAM',
-  ]);
-  const findIndexInActive = isAuthorized(permissionList, [
-    'T_DIRECTORY_T_INACTIVE',
-  ]);
+  const findIndexActive = isAuthorized(permissionList, ['T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW']);
+  const findIndexMyTeam = isAuthorized(permissionList, ['T_DIRECTORY_T_MY_TEAM']);
+  const findIndexInActive = isAuthorized(permissionList, ['T_DIRECTORY_T_INACTIVE']);
   const findIndexImport = isAuthorized(permissionList, [
     'T_DIRECTORY_B_IMPORTS',
     'T_DIRECTORY_B_IMPORT_EMPLOYEES',
@@ -264,6 +257,14 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'P_TIMESHEET_T_REPORT_PEOPLE_MANAGER_VIEW',
   ]);
   const indexSettingTimesheet = isAuthorized(permissionList, ['P_TIMESHEET_T_SETTING_VIEW']);
+  const indexLocationHRView = isAuthorized(permissionList, ['P_TIMESHEET_REPORT_HR_LOCATION_VIEW']);
+  const indexDivisionHRView = isAuthorized(permissionList, ['P_TIMESHEET_REPORT_HR_DIVISION_VIEW']);
+  const indexLocationFinanceView = isAuthorized(permissionList, [
+    'P_TIMESHEET_REPORT_FINANCE_LOCATION_VIEW',
+  ]);
+  const indexDivisionFinanceView = isAuthorized(permissionList, [
+    'P_TIMESHEET_REPORT_FINANCE_DIVISION_VIEW',
+  ]);
 
   // CV = COMPLEX VIEW
   const indexHRReportCVTimesheet = isAuthorized(permissionList, ['P_TIMESHEET_T_REPORT_HR_VIEW']);
@@ -289,7 +290,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const indexTaskDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_TASK_VIEW']);
 
   // HOME PAGE
-  const indexSettingHomePage = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
+  const indexSettingHomePage = isAuthorized(permissionList, ['P_HOMEPAGE_SETTINGS_GEAR_VIEW']);
 
   // PROJECT MANAGEMENT
   // https://docs.google.com/document/d/1RQ66VdevjGUHB3-4_VDU-DIPF0HCbcfKzKJevEwooLc/edit
@@ -312,12 +313,18 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const indexViewUtilizationTab = isAuthorized(permissionList, [
     'RESOURCE_MANAGEMENT_UTILIZATION_VIEW',
   ]);
+
   const indexAddResource = isAuthorized(permissionList, ['RESOURCE_MANAGEMENT_ADD']);
   const indexModifyResource = isAuthorized(permissionList, ['RESOURCE_MANAGEMENT_UPDATE']);
-  // const viewsResourceModeManager = isAuthorized(permissionList, [
-  //   'P_RESOURCE_MANAGEMENT_MANAGER_VIEW',
-  // ]);
-  // const viewsResourceModeAdmin = isAuthorized(permissionList, ['P_RESOURCE_MANAGEMENT_ADMIN_VIEW']);
+  const indexViewsResourceAdminMode = isAuthorized(permissionList, [
+    'P_RESOURCE_MANAGEMENT_ADMIN_VIEW',
+  ]);
+  const indexViewsResourceDivisionMode = isAuthorized(permissionList, [
+    'P_RESOURCE_MANAGEMENT_DIVISION_VIEW',
+  ]);
+  const indexViewsResourceCountryMode = isAuthorized(permissionList, [
+    'P_RESOURCE_MANAGEMENT_COUNTRY_VIEW',
+  ]);
 
   // TICKET MANAGEMENT
   const indexTicketManagementHRTicketsTab = isAuthorized(permissionList, [
@@ -342,6 +349,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   ]);
   const indexFAQSettings = isAuthorized(permissionList, ['P_FAQ_VIEW_SETTINGS']);
 
+  // CUSTOMER MANAGEMENT
+  const indexDeleteCustomer = isAuthorized(permissionList, ['P_CUSTOMER_T_CUSTOMER_B_DELETE']);
   return {
     // Directory Page
     viewTabActive: findIndexActive,
@@ -399,6 +408,10 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewFinanceReportCVTimesheet: indexFinanceReportCVTimesheet,
     viewPeopleManagerCVTimesheet: indexPeopleManagerCVTimesheet,
     viewProjectManagerCVTimesheet: indexProjectManagerCVTimesheet,
+    viewLocationHRTimesheet: indexLocationHRView,
+    viewLocationFinanceTimesheet: indexLocationFinanceView,
+    viewDivisionHRTimesheet: indexDivisionHRView,
+    viewDivisionFinanceTimesheet: indexDivisionFinanceView,
 
     // dashboard
     viewPendingApprovalDashboard: indexPendingApprovalDashboard,
@@ -425,8 +438,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewUtilizationTab: indexViewUtilizationTab,
     addResource: indexAddResource,
     modifyResource: indexModifyResource,
-    // viewModeManager: viewsResourceModeManager,
-    // viewModeAdmin: viewsResourceModeAdmin,
+    viewResourceAdminMode: indexViewsResourceAdminMode,
+    viewResourceDivisionMode: indexViewsResourceDivisionMode,
+    viewResourceCountryMode: indexViewsResourceCountryMode,
 
     // ticket management
     viewTicketHR: indexTicketManagementHRTicketsTab,
@@ -438,5 +452,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewPolicyAllCountry: indexViewAllCountryPolicyAndRegulation,
     // faq page
     viewFAQSetting: indexFAQSettings,
+
+    // customer management
+    deleteCustomerManagement: indexDeleteCustomer,
   };
 }

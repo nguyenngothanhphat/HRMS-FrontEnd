@@ -1,0 +1,33 @@
+.AccrualRate {
+  box-sizing: border-box;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #d6dce0;
+  border-radius: 5px;
+  .leftPart,
+  .rightPart {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    span {
+      display: block;
+      color: #464646;
+      font-weight: 400;
+      font-size: 13px;
+    }
+  }
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    img {
+      cursor: pointer;
+    }
+  }
+  :global {
+    .ant-input {
+      width: 70px;
+      margin-inline: 10px;
+    }
+  }
+}

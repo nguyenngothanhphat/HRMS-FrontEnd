@@ -57,7 +57,7 @@ class SearchTable extends Component {
         </div>
         <CustomSearchBox
           placeholder="Search by Name, user ID"
-          onChange={(e) => onChangeSearch(e.target.value)}
+          onSearch={(e) => onChangeSearch(e.target.value)}
         />
       </div>
     );

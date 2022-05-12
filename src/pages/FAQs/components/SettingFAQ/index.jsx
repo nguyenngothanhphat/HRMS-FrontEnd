@@ -1,27 +1,27 @@
+import { Col, Menu, Row, Select, Skeleton } from 'antd';
 import React, { PureComponent } from 'react';
-import { Row, Col, Menu, Select, Skeleton } from 'antd';
 import { connect } from 'umi';
+import { PageContainer } from '@/layouts/layout/src';
 import FaqCategory from './components/FaqCategory';
 import ListQuestionAnswer from './components/ListQuestionAnswer';
-import { PageContainer } from '@/layouts/layout/src';
 import styles from './index.less';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
 const { Option } = Select;
 
 @connect(
   ({
     loading,
-    faqs: { countryList = [], selectedCountry = '' } = {},
+    faqs: { selectedCountry = '' } = {},
     user: {
       permissions = {},
       currentUser: {
         location: { headQuarterAddress: { country: { _id: countryID = '' } = {} } = {} } = {},
       } = {},
     },
+    location: { companyLocationList = [] } = {},
   }) => ({
     loadingGetListCountry: loading.effects['faqs/fetchListLocationEffect'],
-    countryList,
+    companyLocationList,
     countryID,
     permissions,
     selectedCountry,
@@ -37,19 +37,12 @@ class Settings extends PureComponent {
 
   componentDidMount = () => {
     const { dispatch, countryID = '' } = this.props;
+
     dispatch({
-      type: 'faqs/fetchListLocationEffect',
+      type: 'faqs/save',
       payload: {
-        tenantIds: [getCurrentTenant()],
-        company: getCurrentCompany(),
+        selectedCountry: countryID,
       },
-    }).then(() => {
-      dispatch({
-        type: 'faqs/save',
-        payload: {
-          selectedCountry: countryID,
-        },
-      });
     });
   };
 
@@ -62,10 +55,10 @@ class Settings extends PureComponent {
   };
 
   renderCountry = () => {
-    const { countryList = [] } = this.props;
+    const { companyLocationList = [] } = this.props;
     let countryArr = [];
-    if (countryList.length > 0) {
-      countryArr = countryList.map((item) => {
+    if (companyLocationList.length > 0) {
+      countryArr = companyLocationList.map((item) => {
         return item.headQuarterAddress?.country;
       });
     }

@@ -1,5 +1,5 @@
 import { notification } from 'antd';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
   addTicket,
@@ -29,10 +29,12 @@ const ticketManagement = {
     employeeRaiseList: [],
     employeeAssigneeList: [],
     filter: {},
+    selectedLocations: [getCurrentLocation()],
   },
   effects: {
-    *addTicket({ payload }, { call, put }) {
+    *addTicket({ payload }, { call, put, select }) {
       let response;
+      const { selectedLocations } = yield select((state) => state.ticketManagement);
       try {
         response = yield call(addTicket, {
           ...payload,
@@ -46,6 +48,7 @@ const ticketManagement = {
           type: 'refreshListAllTicket',
           payload: {
             status: ['New'],
+            location: selectedLocations,
             tenantId: getCurrentTenant(),
             company: getCurrentCompany(),
           },

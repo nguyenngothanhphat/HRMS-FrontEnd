@@ -15,7 +15,7 @@ class PopupContentHr extends Component {
 
   render() {
     const {
-      listLocationsByCompany = [],
+      companyLocationList = [],
       propsState: { timezoneList, currentTime } = {},
       dataHR = {},
     } = this.props;
@@ -45,7 +45,7 @@ class PopupContentHr extends Component {
       } = {},
     } = dataHR;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
-    let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
+    let filterLocation = companyLocationList.map((item) => (item._id === _id ? item : null));
     filterLocation = filterLocation.filter((item) => item !== null);
 
     if (filterLocation.length === 0) {

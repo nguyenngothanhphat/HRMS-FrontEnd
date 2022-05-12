@@ -15,7 +15,15 @@ import EmptyImage from '@/assets/resourceManagement/emptyImage.png';
 import styles from './index.less';
 
 const Trend = (props) => {
-  const { dispatch, startDate = '', endDate = '', invalidDates = false, chartRef } = props;
+  const { 
+    dispatch, 
+    startDate = '', 
+    endDate = '', 
+    invalidDates = false, 
+    chartRef, 
+    employee = {}, 
+    permissions = {} 
+  } = props;
 
   // redux
   const {
@@ -28,7 +36,9 @@ const Trend = (props) => {
 
   const [data, setData] = useState([]);
   const [isEmpty, setIsEmpty] = useState([]);
-
+  const adminMode = permissions.viewResourceAdminMode !== -1;
+  const employeeId = employee ? employee._id : ''
+  const countryMode = permissions.viewResourceCountryMode !== -1;
   const fetchResourceUtilizationChart = (start, end) => {
     dispatch({
       type: 'resourceManagement/fetchResourceUtilizationChart',
@@ -37,6 +47,9 @@ const Trend = (props) => {
         endDate: end ? moment(end) : '',
         location: selectedLocations,
         division: selectedDivisions,
+        adminMode,
+        employeeId,
+        countryMode
       },
     });
   };
@@ -207,4 +220,8 @@ const Trend = (props) => {
     </div>
   );
 };
-export default connect(({ resourceManagement }) => ({ resourceManagement }))(Trend);
+export default connect(({ resourceManagement, user: { currentUser: { employee = {} } = {}, permissions = {} } }) => ({
+  resourceManagement,
+  employee,
+  permissions,
+}))(Trend);

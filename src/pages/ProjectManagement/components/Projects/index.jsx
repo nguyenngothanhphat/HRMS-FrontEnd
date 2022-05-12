@@ -8,7 +8,7 @@ import EditIcon from '@/assets/projectManagement/edit2.svg';
 import DeleteIcon from '@/assets/projectManagement/delete.svg';
 import CommonTable from './components/CommonTable';
 import Header from './components/Header';
-import CommonModal from '../CommonModal';
+import CommonModal from '@/components/CommonModal';
 import EditProjectStatusModalContent from '../EditProjectStatusModalContent';
 import DeleteProjectModalContent from '../DeleteProjectModalContent';
 import styles from './index.less';
@@ -222,6 +222,7 @@ const Projects = (props) => {
       {
         title: 'Action',
         key: 'action',
+        align: 'center',
         render: (record) => {
           return (
             <div className={styles.btnAction}>

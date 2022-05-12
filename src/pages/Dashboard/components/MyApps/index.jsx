@@ -1,17 +1,17 @@
+import { Row } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import { Row } from 'antd';
-import ShowAllApp from './components/ShowAllApp';
-import LeftArrow from '@/assets/dashboard/leftArrow.svg';
-import TimesheetIcon from '@/assets/dashboard/timesheet.svg';
-import TimeoffIcon from '@/assets/dashboard/timeoff.svg';
 import DirectoryIcon from '@/assets/dashboard/directory.svg';
+import LeftArrow from '@/assets/dashboard/leftArrow.svg';
+import TimeoffIcon from '@/assets/dashboard/timeoff.svg';
+import TimesheetIcon from '@/assets/dashboard/timesheet.svg';
+import CommonModal from '@/components/CommonModal';
+import AppCard from './components/AppCard';
+import ShowAllAppModalContent from './components/ShowAllAppModalContent';
 // import ExpensoIcon from '@/assets/dashboard/expenso.svg';
 // import ReportIcon from '@/assets/dashboard/reports.svg';
 // import TicketIcon from '@/assets/ticketManagement-assign.svg';
-
 import styles from './index.less';
-import AppCard from './components/AppCard';
 
 const myApps = [
   {
@@ -50,11 +50,14 @@ const MyApps = () => {
         <span>Show all</span>
         <img src={LeftArrow} alt="expand" />
       </div>
-      <ShowAllApp
+
+      <CommonModal
         visible={modalVisible}
-        title='My Apps'
         onClose={() => setModalVisible(false)}
-        myApps={myApps}
+        title="My Apps"
+        hasFooter={false}
+        withPadding
+        content={<ShowAllAppModalContent myApps={myApps} />}
       />
     </div>
   );

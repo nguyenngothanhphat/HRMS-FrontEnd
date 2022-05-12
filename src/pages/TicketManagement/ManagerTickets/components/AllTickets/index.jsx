@@ -6,7 +6,8 @@ import Summary from '../Summary';
 import SearchTable from '../../../components/SearchTable';
 import TableTickets from '../TableTickets';
 
-@connect(({ loading = {} }) => ({
+@connect(({ loading = {}, ticketManagement: { selectedLocations = [] } = {} }) => ({
+  selectedLocations,
   loading: loading.effects['ticketManagement/fetchListAllTicket'],
   loadingFilter: loading.effects['ticketManagement/fetchListAllTicketSearch'],
 }))
@@ -29,14 +30,15 @@ class AllTicket extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { selectedFilterTab, pageSelected, size, nameSearch } = this.state;
-
+    const { selectedLocations = [] } = this.props;
     if (
       prevState.pageSelected !== pageSelected ||
       prevState.size !== size ||
       prevState.selectedFilterTab !== selectedFilterTab ||
-      prevState.nameSearch !== nameSearch
+      prevState.nameSearch !== nameSearch ||
+      JSON.stringify(prevProps.selectedLocations) !== JSON.stringify(selectedLocations)
     ) {
-      this.initDataTable(selectedFilterTab, nameSearch);
+      this.initDataTable(selectedFilterTab, nameSearch, selectedLocations);
     }
   }
 
@@ -60,7 +62,7 @@ class AllTicket extends Component {
     }
   };
 
-  initDataTable = (tabId, nameSearch) => {
+  initDataTable = (tabId, nameSearch, selectedLocations = []) => {
     const { dispatch } = this.props;
     const { pageSelected, size } = this.state;
 
@@ -68,6 +70,7 @@ class AllTicket extends Component {
       status: [this.getStatus(tabId)],
       page: pageSelected,
       limit: size,
+      location: selectedLocations,
     };
     if (nameSearch) {
       payload = {

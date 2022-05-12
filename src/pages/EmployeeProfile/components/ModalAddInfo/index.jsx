@@ -9,6 +9,7 @@ import styles from './index.less';
 // import UploadCertification from './components/Upload/index';
 import { getCurrentTenant } from '../../../../utils/authority';
 import UploadCertification from './components/UploadCertification/index';
+// import { removeEmptyFields } from '@/utils/utils';
 
 const { Step } = Steps;
 
@@ -272,44 +273,36 @@ const ModalAddInfo = (props) => {
   // tax detail
 
   const onFinishTax = (values, country) => {
-    const { maritalStatus, noOfDependents, nationalId, panNum } = values;
+    const { maritalStatus, noOfDependents, nationalId } = values;
     let taxDetails = {};
-    let obj = {};
+
+    let payload = {
+      tenantId: getCurrentTenant(),
+      id: generalId,
+      isUpdatedProfile: true,
+      isNewComer: false,
+      incomeTaxRule: values.incomeTaxRule || '',
+      ...resultForm,
+      maritalStatus,
+    };
 
     if (country === 'IN') {
-      taxDetails = { ...values, panNum, employee: idCurrentEmployee };
-      obj = { ...resultForm, taxDetails, maritalStatus };
+      taxDetails = { ...values, employee: idCurrentEmployee };
+      payload = { ...payload, taxDetails };
     } else {
       taxDetails = {
         ...values,
         panNum: noOfDependents,
         employee: idCurrentEmployee,
       };
-      obj = { ...resultForm, taxDetails, maritalStatus, uanNumber: nationalId };
+      payload = { ...payload, taxDetails, uanNumber: nationalId };
     }
 
-    // remove empty fields
-    // eslint-disable-next-line no-return-assign
-    obj = Object.entries(obj).reduce(
-      // eslint-disable-next-line no-return-assign
-      (a, [k, v]) =>
-        v == null || v === '' || v.length === 0
-          ? a
-          : // eslint-disable-next-line no-param-reassign
-            ((a[k] = v), a),
-      {},
-    );
+    // payload = removeEmptyFields(payload);
 
     dispatch({
       type: 'employeeProfile/updateFirstGeneralInfo',
-      payload: {
-        tenantId: getCurrentTenant(),
-        id: generalId,
-        isUpdatedProfile: true,
-        isNewComer: false,
-        incomeTaxRule: values.incomeTaxRule || '',
-        ...obj,
-      },
+      payload,
     });
   };
 
@@ -386,7 +379,8 @@ const ModalAddInfo = (props) => {
                         showArrow
                         showSearch
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                         className={styles.inputForm}
                       >
                         {listRelation.map((value, i) => {
@@ -1122,18 +1116,12 @@ const ModalAddInfo = (props) => {
                   <Select.Option value="New Tax Regime">New Tax Regime</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item
-                label="PAN Number"
-                name="panNum"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please enter your pan number!',
-                  },
-                ]}
-              >
-                <Input maxLength={50} placeholder="PAN Number" />
-              </Form.Item>
+              <Tooltip title={disabledTitle}>
+                <Form.Item label="PAN Number" name="panNum">
+                  <Input maxLength={50} placeholder="PAN Number" disabled={disabledFields} />
+                </Form.Item>
+              </Tooltip>
+
               <Form.Item
                 label="Marital Status"
                 name="maritalStatus"

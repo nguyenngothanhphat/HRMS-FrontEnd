@@ -20,7 +20,7 @@ const ApprovalPage = (props) => {
     isLoadData,
     loadingReject,
     loadingApproval,
-    listLocationsByCompany,
+    companyLocationList,
   } = props;
   const [openModal, setOpenModal] = useState(false);
   const [ticket, setTicket] = useState({});
@@ -46,7 +46,7 @@ const ApprovalPage = (props) => {
 
   const fetchTimezone = () => {
     const timeZoneList = [];
-    listLocationsByCompany.forEach((location) => {
+    companyLocationList.forEach((location) => {
       const {
         headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
         _id = '',
@@ -65,7 +65,7 @@ const ApprovalPage = (props) => {
 
   useEffect(() => {
     fetchTimezone();
-  }, [listLocationsByCompany]);
+  }, [companyLocationList]);
 
   useEffect(() => {
     const arr = filter(
@@ -83,7 +83,7 @@ const ApprovalPage = (props) => {
   const approvalTicket = (record) => {
     const { typeTicket = '', _id = '' } = record;
     dispatch({
-      type: 'dashboard/approvalTicket',
+      type: 'dashboard/approveRequest',
       payload: {
         typeTicket,
         _id,
@@ -93,7 +93,7 @@ const ApprovalPage = (props) => {
   const rejectTicket = (record) => {
     const { typeTicket = '', _id = '' } = record;
     dispatch({
-      type: 'dashboard/rejectTicket',
+      type: 'dashboard/rejectRequest',
       payload: {
         typeTicket,
         _id,
@@ -175,7 +175,7 @@ const ApprovalPage = (props) => {
         <Popover
           content={
             <PopoverInfo
-              listLocationsByCompany={listLocationsByCompany}
+              companyLocationList={companyLocationList}
               propsState={{ currentTime, timezoneList }}
               data={employee}
             />
@@ -227,7 +227,7 @@ const ApprovalPage = (props) => {
     },
 
     {
-      title: <div style={{ paddingRight: '25px' }}>Action</div>,
+      title: <div style={{ paddingRight: '40px' }}>Action</div>,
       dataIndex: 'action',
       key: 'action',
       width: 250,
@@ -236,7 +236,7 @@ const ApprovalPage = (props) => {
           <Button type="link" className={styles.btnDetail} onClick={() => viewDetail(record)}>
             View details
           </Button>
-          <div>
+          <div className={styles.containerBtn}>
             <Button type="link" className={styles.btnAction} onClick={() => rejectTicket(record)}>
               <img src={rejectIcon} alt="reject" />
             </Button>
@@ -280,13 +280,13 @@ const ApprovalPage = (props) => {
 export default connect(
   ({
     loading,
-    locationSelection: { listLocationsByCompany = [] },
+    location: { companyLocationList = [] },
     dashboard: { listTicket = [], totalTicket, isLoadData },
   }) => ({
     loadingTable: loading.effects['dashboard/fetchListTicket'],
     loadingReject: loading.effects['dashboard/rejectTicket'],
     loadingApproval: loading.effects['dashboard/approvalTicket'],
-    listLocationsByCompany,
+    companyLocationList,
     listTicket,
     totalTicket,
     isLoadData,

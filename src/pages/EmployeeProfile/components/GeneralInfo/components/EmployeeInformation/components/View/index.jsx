@@ -79,8 +79,7 @@ class View extends PureComponent {
       }
     }
 
-    const checkVisible =
-      idCurrentEmployee === idEmployee || permissions.viewOtherInformation !== -1;
+    const checkVisible = idCurrentEmployee === idEmployee || permissions.editEmployeeInfo !== -1;
 
     const checkIndiaLocation = country === 'IN';
     const checkVietNamLocation = country === 'VN';
@@ -90,7 +89,7 @@ class View extends PureComponent {
       { label: 'Full Name', value: dataAPI.legalName },
       {
         label: checkVisible ? 'Date of Birth' : null,
-        value: dataAPI.DOB ? Moment(dataAPI.DOB).locale('en').format('Do MMMM YYYY') : '',
+        value: dataAPI.DOB ? Moment.utc(dataAPI.DOB).locale('en').format('Do MMMM YYYY') : '',
       },
       { label: checkVisible ? 'Gender' : null, value: dataAPI.legalGender },
       { label: 'Employee ID', value: dataAPI.employeeId },

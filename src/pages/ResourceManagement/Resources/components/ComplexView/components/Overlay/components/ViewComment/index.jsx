@@ -35,7 +35,7 @@ class ViewCommentModal extends PureComponent {
           onClick={this.openCommentView}
         />
         <Modal
-          // className={styles.modalViewComment}
+          className={styles.modalViewComment}
           title="View Comments"
           width="40%"
           visible={visible}

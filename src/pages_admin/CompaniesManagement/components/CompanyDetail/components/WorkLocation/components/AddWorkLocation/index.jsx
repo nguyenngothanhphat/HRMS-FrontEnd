@@ -115,7 +115,7 @@ class AddWorkLocationForm extends PureComponent {
       });
       // refresh locations in dropdown menu (owner)
       // dispatch({
-      //   type: 'locationSelection/fetchLocationListByParentCompany',
+      //   type: 'location/fetchLocationListByParentCompany',
       //   payload: {
       //     company: companyId,
       //     tenantIds: manageTenant,

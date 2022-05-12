@@ -2,25 +2,41 @@ import { Tabs } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
+import CheckboxMenu from '@/components/CheckboxMenu';
 import AllTicket from './components/AllTickets';
+import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
 import styles from './index.less';
 import WorkInProgress from '@/components/WorkInProgress';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 
 @connect(
   ({
-    user: { permissions = {} },
-    ticketManagement: { listOffAllTicket = [], totalList = [] } = {},
+    user: {
+      permissions = {},
+      currentUser: { employee: { location: { _id: locationId = '' } = {} } = {} } = {},
+    },
+    location: { companyLocationList = [] },
+
+    ticketManagement: { listOffAllTicket = [], totalList = [], selectedLocations = [] } = {},
   }) => ({
     listOffAllTicket,
     totalList,
     permissions,
+    companyLocationList,
+    locationId,
+    selectedLocations,
   }),
 )
 class ManagerTicket extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedLocations: [getCurrentLocation()],
+    };
+  }
+
   componentDidMount() {
     const { tabName = '', permissions = {} } = this.props;
-
     if (!tabName) {
       history.replace(`/ticket-management/all-tickets`);
     } else {
@@ -30,7 +46,9 @@ class ManagerTicket extends Component {
       }
 
       const viewTicketHR = permissions.viewTicketHR !== -1;
+
       const viewTicketIT = permissions.viewTicketIT !== -1;
+
       const viewTicketOperations = permissions.viewTicketOperations !== -1;
 
       dispatch({
@@ -82,6 +100,16 @@ class ManagerTicket extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'ticketManagement/save',
+      payload: {
+        selectedLocations: [getCurrentLocation()],
+      },
+    });
+  }
+
   fetchToTalList = (departmentList) => {
     const { dispatch } = this.props;
 
@@ -115,6 +143,7 @@ class ManagerTicket extends Component {
       payload = {
         ...payload,
         department: departmentNameList,
+        status: 'ACTIVE',
       };
     }
     dispatch({
@@ -124,10 +153,11 @@ class ManagerTicket extends Component {
   };
 
   fetchListAllTicket = (departmentList) => {
-    const { dispatch } = this.props;
+    const { dispatch, selectedLocations } = this.props;
 
     let payload = {
       status: ['New'],
+      location: selectedLocations,
     };
     if (departmentList && departmentList.length > 0) {
       payload = {
@@ -139,6 +169,63 @@ class ManagerTicket extends Component {
       type: 'ticketManagement/fetchListAllTicket',
       payload,
     });
+  };
+
+  onLocationChange = (selection) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'ticketManagement/save',
+      payload: {
+        selectedLocations: [...selection],
+      },
+    });
+    this.setState({
+      selectedLocations: [...selection],
+    });
+  };
+
+  getSelectedLocationName = () => {
+    const { selectedLocations = [] } = this.state;
+    const { companyLocationList = [] } = this.props;
+    if (selectedLocations.length === 1) {
+      return companyLocationList.find((x) => x._id === selectedLocations[0])?.name || '';
+    }
+    if (selectedLocations.length > 0 && selectedLocations.length < companyLocationList.length) {
+      return `${selectedLocations.length} locations selected`;
+    }
+    if (selectedLocations.length === companyLocationList.length) {
+      return 'All';
+    }
+    return 'None';
+  };
+
+  renderFilterLocation = () => {
+    const selectedLocationName = this.getSelectedLocationName();
+    const { selectedLocations = [] } = this.state;
+    const { companyLocationList = [] } = this.props;
+    const locationOptions = companyLocationList.map((x) => {
+      return {
+        _id: x._id,
+        name: x.name,
+      };
+    });
+    return (
+      <div className={styles.item}>
+        <span className={styles.label}>Location</span>
+
+        <CheckboxMenu
+          options={locationOptions}
+          onChange={this.onLocationChange}
+          list={companyLocationList}
+          default={selectedLocations}
+        >
+          <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
+            <span>{selectedLocationName}</span>
+            <img src={SmallDownArrow} alt="" />
+          </div>
+        </CheckboxMenu>
+      </div>
+    );
   };
 
   render() {
@@ -154,6 +241,7 @@ class ManagerTicket extends Component {
             onChange={(key) => {
               history.push(`/ticket-management/${key}`);
             }}
+            tabBarExtraContent={this.renderFilterLocation()}
           >
             <TabPane tab="Overview" key="overview">
               <WorkInProgress />;

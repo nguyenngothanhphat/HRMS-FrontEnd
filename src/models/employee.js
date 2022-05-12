@@ -3,7 +3,6 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
   LocationFilter,
-  LocationOwnerFilter,
   DepartmentFilter,
   EmployeeTypeFilter,
   getFilterList,
@@ -65,18 +64,6 @@ const employee = {
         return {};
       }
     },
-    *fetchOwnerLocation({ payload }, { call, put }) {
-      try {
-        const response = yield call(LocationOwnerFilter, payload);
-        const { statusCode, data: location = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'saveLocation', payload: { location } });
-        return response;
-      } catch (errors) {
-        dialog(errors);
-        return {};
-      }
-    },
     *fetchDepartment({ payload = {} }, { call, put }) {
       try {
         const response = yield call(DepartmentFilter, payload);
@@ -114,6 +101,7 @@ const employee = {
         const currentPayload = {
           ...payload,
           status: ['ACTIVE'],
+          tenantId: getCurrentTenant(),
         };
         const response = yield call(getListMyTeam, currentPayload);
         const { statusCode, data: listEmployeeMyTeam = [] } = response;

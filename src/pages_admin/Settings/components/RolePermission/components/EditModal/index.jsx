@@ -96,7 +96,7 @@ class EditModal extends PureComponent {
         payload: {
           _id: selectedRoleID,
           name,
-          // idSync: name,
+          idSync,
           description,
           permissions: selectedList,
         },
@@ -302,7 +302,7 @@ class EditModal extends PureComponent {
                 rules={[{ required: true, message: 'Please enter the role ID!' }]}
               >
                 <Input
-                  disabled={action === 'edit'}
+                  // disabled={action === 'edit'}
                   placeholder="Role ID"
                   // eslint-disable-next-line no-return-assign
                   onInput={(e) =>

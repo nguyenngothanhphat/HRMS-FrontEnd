@@ -1,4 +1,4 @@
-import { Col, Row } from 'antd';
+import { Col, message, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import { connect } from 'umi';
@@ -11,6 +11,7 @@ import MyTeam from './components/MyTeam';
 import Tasks from './components/Tasks';
 import Timesheets from './components/Timesheets';
 import styles from './index.less';
+import { goToTop } from '@/utils/utils';
 
 const SortableItem = SortableElement(({ widgets, value }) => {
   const find = widgets.find((w1) => w1.id === value);
@@ -81,6 +82,7 @@ const Dashboard = (props) => {
 
   const onSortStart = (_, event) => {
     event.preventDefault();
+    message.info('Drag to reorder widgets');
   };
 
   const shouldCancelStart = (e) => {
@@ -153,6 +155,10 @@ const Dashboard = (props) => {
     });
   }, [_id]);
 
+  useEffect(() => {
+    goToTop();
+  }, []);
+
   // RENDER UI
   const renderHello = (name = '') => {
     return (
@@ -168,9 +174,8 @@ const Dashboard = (props) => {
         axis="xy"
         onSortEnd={onSortEnd}
         onSortStart={onSortStart}
-        distance={35}
+        distance={15}
         widgets={widgets}
-        disableAutoscroll
         lockToContainerEdges
         lockOffset="0%"
         shouldCancelStart={shouldCancelStart}

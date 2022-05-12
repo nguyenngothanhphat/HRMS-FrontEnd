@@ -159,19 +159,21 @@ const UserModel = {
 
           // DONE
           const currentUserRoles = roles.map((role) => role.toLowerCase());
-          // formatArrRoles = [...new Set([...formatArrRoles, ...currentUserRoles])];
+          if (!checkIsAdmin) {
+            formatArrRoles = [...new Set([...formatArrRoles, ...currentUserRoles])];
+          }
           setAuthority(formatArrRoles);
           localStorage.setItem('switchRoleAbility', switchRoleAbility);
 
           // LOCATION PROCESSING
           // set work locations of admin
-          if (checkIsAdmin) {
-            // for admin, auto set location
-            const currentLocation = getCurrentLocation();
-            if (!currentLocation || currentLocation === 'undefined' || isSwitchingRole) {
-              setCurrentLocation(response?.data?.manageLocation[0]?._id);
-            }
-          }
+          // if (checkIsAdmin) {
+          //   // for admin, auto set location
+          //   const currentLocation = getCurrentLocation();
+          //   if (!currentLocation || currentLocation === 'undefined' || isSwitchingRole) {
+          //     setCurrentLocation(response?.data?.manageLocation[0]?._id);
+          //   }
+          // }
 
           // set work locations of employee
           if (checkIsEmployee) {

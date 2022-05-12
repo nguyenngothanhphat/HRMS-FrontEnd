@@ -24,14 +24,13 @@ const AvatarDropdown = (props) => {
   const {
     currentUser = {},
     dispatch,
-    manageTenant = [],
-    // , roles = []
     signInRole = [],
+    manageTenant = [],
     currentUser: {
       employee: { _id: employeeID = '', generalInfo: { userId = '' } = {} } = {},
     } = {},
     currentUser: { _id: adminOwnerID = '' } = {},
-    listLocationsByCompany = [],
+    companyLocationList = [],
     manageLocation = [],
   } = props;
   const { firstName: name = '', avatar = {} } = currentUser;
@@ -52,7 +51,7 @@ const AvatarDropdown = (props) => {
     const formatSignInRole = signInRole.map((role) => role.toLowerCase());
     if (checkIsOwner || formatSignInRole.includes('owner')) {
       dispatch({
-        type: 'locationSelection/fetchLocationListByParentCompany',
+        type: 'location/fetchLocationListByParentCompany',
         payload: {
           company: companyId,
           tenantIds: manageTenant,
@@ -60,7 +59,7 @@ const AvatarDropdown = (props) => {
       });
     } else {
       dispatch({
-        type: 'locationSelection/fetchLocationsByCompany',
+        type: 'location/fetchLocationsByCompany',
         payload: {
           company: companyId,
           tenantId,
@@ -140,6 +139,8 @@ const AvatarDropdown = (props) => {
       isSwitchingRole: isSwitch,
     });
 
+    localStorage.removeItem('currentLocationId');
+
     const { pathname } = window.location;
     if (pathname === '/dashboard') {
       window.location.reload();
@@ -188,7 +189,7 @@ const AvatarDropdown = (props) => {
     let newCompName = '';
     let newCompTenant = '';
 
-    listLocationsByCompany.forEach((value) => {
+    companyLocationList.forEach((value) => {
       const {
         _id = '',
         company: {
@@ -238,13 +239,13 @@ const AvatarDropdown = (props) => {
 
     let commonLocationsList = [];
     if (checkIsOwner) {
-      commonLocationsList = [...listLocationsByCompany];
+      commonLocationsList = [...companyLocationList];
     } else if (checkIsAdmin) {
       commonLocationsList = [...manageLocation];
     } else if (formatSignInRole.includes('owner')) {
-      commonLocationsList = [...listLocationsByCompany];
+      commonLocationsList = [...companyLocationList];
     } else {
-      const employeeLocation = listLocationsByCompany.filter(
+      const employeeLocation = companyLocationList.filter(
         (location) => location?._id === currentLocation,
       );
       commonLocationsList = [...employeeLocation];
@@ -254,7 +255,7 @@ const AvatarDropdown = (props) => {
       <>
         <Menu.Divider className={styles.secondDivider} />
         <Menu.Item className={styles.selectLocation}>Locations</Menu.Item>
-        {checkIsOwner && (
+        {(checkIsOwner || checkIsAdmin) && (
           <Menu.Item
             key="ALL"
             className={
@@ -393,7 +394,7 @@ const AvatarDropdown = (props) => {
 
 export default connect(
   ({
-    locationSelection: { listLocationsByCompany = [] } = {},
+    location: { companyLocationList = [] } = {},
     user: {
       companiesOfUser = [],
       currentUser: { roles = [], manageTenant = [], manageLocation = [], signInRole = [] } = {},
@@ -401,12 +402,12 @@ export default connect(
     } = {},
     loading,
   }) => ({
-    listLocationsByCompany, // for owner
+    companyLocationList, // for owner
     manageLocation, // for admin
     roles,
     currentUser,
     signInRole,
-    loadingFetchLocation: loading.effects['locationSelection/fetchLocationsByCompany'],
+    loadingFetchLocation: loading.effects['location/fetchLocationsByCompany'],
     companiesOfUser,
     manageTenant,
   }),

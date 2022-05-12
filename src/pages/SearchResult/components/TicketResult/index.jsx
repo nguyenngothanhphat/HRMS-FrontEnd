@@ -7,7 +7,7 @@ import moment from 'moment';
 import { isOwner } from '@/utils/authority';
 import filterIcon from '@/assets/offboarding-filter.svg';
 import { getTimezoneViaCity } from '@/utils/times';
-import PopoverInfo from '@/pages/Directory/components/DirectoryTable/components/ModalTerminate/PopoverInfo';
+import PopoverInfo from '@/pages/Directory/components/Directory/components/DirectoryTable/components/ModalTerminate/PopoverInfo';
 import { LIST_STATUS_TICKET } from '@/utils/globalSearch';
 import styles from '../../index.less';
 
@@ -22,7 +22,7 @@ const TicketResult = React.memo((props) => {
     ticketList,
     totalTickets,
     loadTableData2,
-    listLocationsByCompany,
+    companyLocationList,
     tabName,
     employee: currentUser,
   } = props;
@@ -33,7 +33,7 @@ const TicketResult = React.memo((props) => {
 
   const fetchTimezone = () => {
     const timezoneListTemp = [];
-    listLocationsByCompany.forEach((location) => {
+    companyLocationList.forEach((location) => {
       const {
         headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
         _id = '',
@@ -174,7 +174,7 @@ const TicketResult = React.memo((props) => {
             <Popover
               content={
                 <PopoverInfo
-                  listLocationsByCompany={listLocationsByCompany}
+                  companyLocationList={companyLocationList}
                   propsState={{ currentTime, timezoneList }}
                   data={manager}
                 />
@@ -247,7 +247,7 @@ export default connect(
   ({
     loading,
     user: { currentUser: { employee = {} } = {} },
-    locationSelection: { listLocationsByCompany = [] },
+    location: { companyLocationList = [] },
     searchAdvance: {
       keySearch = '',
       isSearch,
@@ -265,6 +265,6 @@ export default connect(
     isSearchAdvance,
     keySearch,
     employee,
-    listLocationsByCompany,
+    companyLocationList,
   }),
 )(TicketResult);

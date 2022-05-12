@@ -9,7 +9,7 @@ import { isOwner } from '@/utils/authority';
 import avtDefault from '@/assets/avtDefault.jpg';
 import filterIcon from '@/assets/offboarding-filter.svg';
 import { getTimezoneViaCity } from '@/utils/times';
-import PopoverInfo from '@/pages/Directory/components/DirectoryTable/components/ModalTerminate/PopoverInfo';
+import PopoverInfo from '@/pages/Directory/components/Directory/components/DirectoryTable/components/ModalTerminate/PopoverInfo';
 import styles from '../../index.less';
 
 const EmployeeResult = React.memo((props) => {
@@ -25,7 +25,7 @@ const EmployeeResult = React.memo((props) => {
     loadTableData2,
     tabName,
     permissions = {},
-    listLocationsByCompany,
+    companyLocationList,
     profileOwner = false,
   } = props;
   const [page, setPage] = useState(1);
@@ -35,7 +35,7 @@ const EmployeeResult = React.memo((props) => {
 
   const fetchTimezone = () => {
     const timezoneListTemp = [];
-    listLocationsByCompany.forEach((location) => {
+    companyLocationList.forEach((location) => {
       const {
         headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
         _id = '',
@@ -242,7 +242,7 @@ const EmployeeResult = React.memo((props) => {
           <Popover
             content={
               <PopoverInfo
-                listLocationsByCompany={listLocationsByCompany}
+                companyLocationList={companyLocationList}
                 propsState={{ currentTime, timezoneList }}
                 data={managerTemp}
               />
@@ -308,7 +308,7 @@ export default connect(
   ({
     loading,
     user: { permissions = {} },
-    locationSelection: { listLocationsByCompany = [] },
+    location: { companyLocationList = [] },
     searchAdvance: {
       keySearch = '',
       isSearch,
@@ -326,6 +326,6 @@ export default connect(
     isSearchAdvance,
     keySearch,
     permissions,
-    listLocationsByCompany,
+    companyLocationList,
   }),
 )(EmployeeResult);

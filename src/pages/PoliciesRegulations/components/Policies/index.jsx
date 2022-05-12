@@ -4,13 +4,19 @@ import { connect } from 'umi';
 import PdfIcon from '@/assets/policiesRegulations/pdf-2.svg';
 import IconContact from '@/assets/policiesRegulations/policies-icon-contact.svg';
 import UnreadIcon from '@/assets/policiesRegulations/view.svg';
-import ViewDocumentModal from '@/components/ViewDocumentModal';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import styles from './index.less';
 import ModalFeedback from '@/components/ModalFeedback';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
+import styles from './index.less';
 
 const Policies = (props) => {
-  const { dispatch, countryID = '', permissions = {}, listCategory = [], loadingGetList } = props;
+  const {
+    dispatch,
+    countryID = '',
+    permissions = {},
+    listCategory = [],
+    loadingGetList,
+    locationList = [],
+  } = props;
 
   const [activeCategoryID, setActiveCategoryID] = useState('');
   const [showingFiles, setShowingFiles] = useState([]);
@@ -32,47 +38,36 @@ const Policies = (props) => {
   };
 
   useEffect(() => {
-    dispatch({
-      type: 'policiesRegulations/getCountryListByCompany',
-      payload: {
-        tenantIds: [getCurrentTenant()],
-        company: getCurrentCompany(),
-      },
-    }).then((res) => {
-      if (res.statusCode === 200) {
-        const { data = [] } = res;
-        let countryArr = [];
-        if (viewAllCountry) {
-          countryArr = data.map((item) => {
-            return item.headQuarterAddress?.country;
-          });
-          const newArr = removeDuplicate(countryArr, (item) => item._id);
-          countryArr = newArr.map((val) => val._id);
-          if (countryArr.length > 0) {
-            dispatch({
-              type: 'policiesRegulations/save',
-              payload: {
-                countryList: countryArr,
-              },
-            });
-          }
-          dispatch({
-            type: 'policiesRegulations/fetchListCategory',
-            payload: {
-              country: countryArr,
-            },
-          });
-        } else {
-          dispatch({
-            type: 'policiesRegulations/fetchListCategory',
-            payload: {
-              country: [countryID],
-            },
-          });
-        }
+    let countryArr = [];
+    if (viewAllCountry) {
+      countryArr = locationList.map((item) => {
+        return item.headQuarterAddress?.country;
+      });
+      const newArr = removeDuplicate(countryArr, (item) => item._id);
+      countryArr = newArr.map((val) => val._id);
+      if (countryArr.length > 0) {
+        dispatch({
+          type: 'policiesRegulations/save',
+          payload: {
+            countryList: countryArr,
+          },
+        });
       }
-    });
-  }, []);
+      dispatch({
+        type: 'policiesRegulations/fetchListCategory',
+        payload: {
+          country: countryArr,
+        },
+      });
+    } else {
+      dispatch({
+        type: 'policiesRegulations/fetchListCategory',
+        payload: {
+          country: [countryID],
+        },
+      });
+    }
+  }, [JSON.stringify(locationList)]);
 
   useEffect(() => {
     if (listCategory.length > 0) {
@@ -146,7 +141,12 @@ const Policies = (props) => {
         </Col>
         <Col sm={24} md={10} xl={13} className={styles.viewCenter}>
           {getContent()}
-          <ViewDocumentModal visible={isViewDocument} onClose={handleCancel} url={linkFile} />
+          <ViewDocumentModal
+            visible={isViewDocument}
+            onClose={handleCancel}
+            url={linkFile}
+            disableDownload
+          />
         </Col>
         <Col sm={24} md={9} xl={6} style={{ padding: '24px 24px 24px 0' }}>
           <div className={styles.viewRight}>
@@ -187,10 +187,12 @@ export default connect(
         location: { headQuarterAddress: { country: { _id: countryID = '' } = {} } = {} } = {},
       } = {},
     },
+    location: { companyLocationList: locationList = [] } = {},
   }) => ({
     loadingGetList: loading.effects['policiesRegulations/fetchListCategory'],
     listCategory,
     countryID,
     permissions,
+    locationList,
   }),
 )(Policies);

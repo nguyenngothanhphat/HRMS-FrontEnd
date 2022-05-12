@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Carousel as CarouselAntd } from 'antd';
+import { Carousel as CarouselAntd, Spin } from 'antd';
 import { connect } from 'umi';
 import Banner1 from '@/assets/homePage/banner1.png';
 import NextIcon from '@/assets/homePage/next.svg';
@@ -66,7 +66,6 @@ const Carousel = (props) => {
   }, [JSON.stringify(banners)]);
 
   // RENDER UI
-  if (loadingFetchBanners) return <div className={styles.Carousel} style={{ height: 300 }} />;
   if (!previewing && bannerState.length === 0) {
     return (
       <div className={styles.Carousel}>
@@ -75,48 +74,53 @@ const Carousel = (props) => {
     );
   }
   return (
-    <div
-      className={styles.Carousel}
-      style={previewing ? { border: 'none', borderRadius: 0 } : null}
-    >
-      <CarouselAntd
-        infinite
-        arrows
-        dots
-        autoplay
-        effect="fade"
-        autoplaySpeed={10000}
-        nextArrow={<NextArrow />}
-        // lazyLoad="ondemand"
-        prevArrow={<PrevArrow />}
+    <Spin spinning={loadingFetchBanners}>
+      <div
+        className={styles.Carousel}
+        style={
+          previewing
+            ? { border: 'none', borderRadius: 0 }
+            : { minHeight: loadingFetchBanners ? 200 : 'unset' }
+        }
       >
-        {!previewing &&
-          bannerState.map((x) => (
-            <div className={styles.image}>
-              <img src={x.url} alt="" />
-            </div>
-          ))}
+        <CarouselAntd
+          infinite
+          arrows
+          dots
+          autoplay
+          autoplaySpeed={10000}
+          nextArrow={<NextArrow />}
+          lazyLoad="ondemand"
+          prevArrow={<PrevArrow />}
+        >
+          {!previewing &&
+            bannerState.map((x) => (
+              <div className={styles.image}>
+                <img src={x.url} alt="" />
+              </div>
+            ))}
 
-        {/* FOR PREVIEWING IN SETTINGS PAGE  */}
-        {previewing &&
-          contentPreview.length > 0 &&
-          contentPreview.map((x) => (
-            <div className={styles.image}>
-              <img src={x} alt="" />
-            </div>
-          ))}
+          {/* FOR PREVIEWING IN SETTINGS PAGE  */}
+          {previewing &&
+            contentPreview.length > 0 &&
+            contentPreview.map((x) => (
+              <div className={styles.image}>
+                <img src={x} alt="" />
+              </div>
+            ))}
 
-        {previewing && contentPreview.length === 0 && (
-          <div className={styles.image}>
-            <img src={Banner1} alt="" />
-          </div>
-        )}
-      </CarouselAntd>
-    </div>
+          {previewing && contentPreview.length === 0 && (
+            <div className={styles.image}>
+              <img src={Banner1} alt="" />
+            </div>
+          )}
+        </CarouselAntd>
+      </div>
+    </Spin>
   );
 };
 
 export default connect(({ homePage, loading }) => ({
   homePage,
-  loadingFetchBanners: loading.effects['homePage/fetchBannersEffect'],
+  loadingFetchBanners: loading.effects['homePage/fetchBannersEffect1'],
 }))(Carousel);

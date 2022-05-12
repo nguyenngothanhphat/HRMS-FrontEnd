@@ -1,4 +1,20 @@
 .CommentModal {
+  :global {
+    .ant-modal-close {
+      right: -57px;
+      height: 48px;
+      color: #fff;
+      background-color: #2c6df9;
+      border-radius: 0 8px 8px 0;
+      .ant-modal-close-x {
+        color: #fff;
+        line-height: 48px;
+      }
+      .ant-popover-inner {
+        background-color: #000;
+      }
+    }
+  }
   .buttonAdd {
     width: 29px;
     height: 29px;
@@ -12,21 +28,73 @@
   .formAdd {
     font-size: 12px;
   }
-  .modalAdd {
-    :global {
-      .ant-modal-close {
-        right: -57px;
-        height: 48px;
+}
+.modalAdd {
+  :global {
+    .ant-btn-primary {
+      height: 40px;
+      object-fit: contain;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: Roboto;
+      letter-spacing: 0.13px;
+      text-shadow: none;
+      background-color: #ffa100;
+      border: solid 1px #ffa100;
+      border-radius: 25px;
+      box-shadow: none;
+      &:hover {
+        color: #ffffff;
+        background-color: #ffa100;
+      }
+    }
+    .ant-btn-secondary {
+      width: 94px;
+      height: 40px;
+      padding-right: 41px;
+      object-fit: contain;
+      color: #ffa100;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: Roboto;
+      letter-spacing: 0.13px;
+      border: solid 0;
+      border-radius: 25px;
+      box-shadow: none;
+    }
+    .ant-modal-header {
+      padding: 24px;
+      border-bottom: 1px solid #d6dce0;
+      border-top-left-radius: 8px;
+    }
+    .ant-modal-content {
+      border-top-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+    .ant-form-item {
+      margin-bottom: 12px;
+    }
+    .ant-modal-footer {
+      padding: 13px 24px;
+      border-top: 1px solid #d6dce0;
+    }
+    .ant-select-selection-overflow-item .ant-select-selection-overflow-item-suffix {
+      display: none;
+    }
+    .ant-modal-close {
+      right: -57px;
+      height: 48px;
+      color: #fff;
+      background-color: #2c6df9;
+      border-radius: 0 8px 8px 0;
+      .ant-modal-close-x {
         color: #fff;
-        background-color: #2c6df9;
-        border-radius: 0 8px 8px 0;
-        .ant-modal-close-x {
-          color: #fff;
-          line-height: 48px;
-        }
-        .ant-popover-inner {
-          background-color: #000;
-        }
+        line-height: 48px;
+      }
+      .ant-popover-inner {
+        background-color: #000;
       }
     }
   }

@@ -235,6 +235,7 @@ class EmploymentTab extends Component {
           ) : null}
         </div>
         <CommonModal
+          width={550}
           visible={visibleSuccess}
           hasFooter={false}
           onClose={this.handleCancelModelSuccess}

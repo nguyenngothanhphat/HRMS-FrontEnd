@@ -3,7 +3,6 @@ import { getCurrentCompany, getCurrentTenant, getCurrentLocation } from '@/utils
 import { dialog } from '@/utils/utils';
 import {
   getHolidaysList,
-  getLeaveBalanceOfUser,
   getLeaveRequestOfEmployee,
   addLeaveRequest,
   removeLeaveRequestOnDatabase,
@@ -23,21 +22,19 @@ import {
   uploadFile,
   uploadBalances,
   withdrawCompoffRequest,
-  reportingManagerApprove,
-  reportingManagerReject,
+  approveRequest,
+  rejectRequest,
   // WITHDRAW
   employeeWithdrawInProgress,
   employeeWithdrawApproved,
-  managerApproveWithdrawRequest,
-  managerRejectWithdrawRequest,
   // compoff approval flow
   getCompoffApprovalFlow,
   approveCompoffRequest,
   removeTimeOffType,
   rejectCompoffRequest,
   // approve, reject multiple requests
-  approveMultipleTimeoffRequest,
-  rejectMultipleTimeoffRequest,
+  approveMultipleRequests,
+  rejectMultipleRequests,
   approveMultipleCompoffRequest,
   rejectMultipleCompoffRequest,
 
@@ -60,6 +57,10 @@ import {
   getLocationByCompany,
   getLocationById,
   getAllLeaveRequests,
+  upsertLeaveType,
+  getTimeOffTypeByEmployee,
+  getLeaveTypeByTimeOffType,
+  getEmployeeTypeList,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -70,13 +71,13 @@ const timeOff = {
     currentFilterTab: '1',
     holidaysList: [],
     holidaysListByLocation: [],
-    holidaysListByCountry: {},
+    holidaysListByCountry: [],
     leaveHistory: [],
     leavingList: [],
-    totalLeaveBalance: {},
     leaveRequests: [],
     compoffRequests: [],
     timeOffTypes: [],
+    yourTimeOffTypes: [],
     timeOffTypesByCountry: [],
     employeeInfo: {},
     emailsList: [],
@@ -102,7 +103,6 @@ const timeOff = {
     currentUserRole: '', // employee, manager, hr-manager
     // account settings
     defaultTimeoffTypesList: [],
-    countryList: [],
     selectedConfigCountry: null,
     setupPack: [
       // {
@@ -117,11 +117,13 @@ const timeOff = {
       // },
     ],
     itemTimeOffType: {},
+    viewingLeaveType: {},
+    employeeTypeList: [],
     pageStart: true,
     locationByCompany: [],
     tempData: {
       type: {},
-      countrySelected: '',
+      selectedCountry: '',
       countryHoliday: '',
     },
     paging: {
@@ -218,9 +220,14 @@ const timeOff = {
         dialog(errors);
       }
     },
-    *getDataTimeOffTypeById({ payload }, { call, put }) {
+    *fetchTimeOffTypeById({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getTimeOffTypeById, payload);
+        response = yield call(getTimeOffTypeById, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -230,6 +237,7 @@ const timeOff = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
     *updateTimeOffType({ payload }, { call, put }) {
       try {
@@ -252,23 +260,77 @@ const timeOff = {
         dialog(error);
       }
     },
-    *fetchLeaveBalanceOfUser({ payload }, { call, put }) {
+
+    // LEAVE TYPE CONFIGS
+    *fetchLeaveTypeByIDEffect({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getLeaveBalanceOfUser, {
+        response = yield call(getLeaveTypeByTimeOffType, {
           ...payload,
-          tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
         });
-        const { statusCode, data: totalLeaveBalance = {} } = response;
-        // console.log('totalLeaveBalance', totalLeaveBalance);
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { totalLeaveBalance },
+          payload: { viewingLeaveType: data },
         });
       } catch (errors) {
-        // dialog(errors);
+        dialog(errors);
+      }
+    },
+    *fetchTimeOffTypeByEmployeeEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getTimeOffTypeByEmployee, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { yourTimeOffTypes: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *upsertLeaveTypeEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(upsertLeaveType, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Update successfully',
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchEmployeeTypeListEffect(_, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getEmployeeTypeList);
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        // to make the full time first
+        const employeeTypeList = data.reverse();
+        yield put({
+          type: 'save',
+          payload: { employeeTypeList },
+        });
+      } catch (errors) {
+        dialog(errors);
       }
       return response;
     },
@@ -370,7 +432,7 @@ const timeOff = {
       }
       return response;
     },
-    *fetchHolidaysListBylocation({ payload = {} }, { call, put }) {
+    *fetchHolidaysListByLocation({ payload = {} }, { call, put }) {
       let response;
       try {
         response = yield call(getHolidaysListByLocation, {
@@ -392,7 +454,7 @@ const timeOff = {
       let response = {};
       try {
         response = yield call(getHolidaysByCountry, { ...payload, tenantId: getCurrentTenant() });
-        const { statusCode, data: holidaysListByCountry = {} } = response;
+        const { statusCode, data: holidaysListByCountry = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -748,15 +810,18 @@ const timeOff = {
     },
 
     // REPORTING MANAGER
-    *reportingManagerApprove({ payload = {} }, { call, put }) {
+    *approveRequest({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(reportingManagerApprove, {
+        const response = yield call(approveRequest, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data: { leaveRequest = {} } = {} } = response;
+        const { statusCode, message = '', data: { leaveRequest = {} } = {} } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
         yield put({
           type: 'saveViewingLeaveRequest',
           payload: {
@@ -770,15 +835,18 @@ const timeOff = {
         return {};
       }
     },
-    *reportingManagerReject({ payload = {} }, { call, put }) {
+    *rejectRequest({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(reportingManagerReject, {
+        const response = yield call(rejectRequest, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data: { leaveRequest = {} } = {} } = response;
+        const { statusCode, message = '', data: { leaveRequest = {} } = {} } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
         yield put({
           type: 'saveViewingLeaveRequest',
           payload: {
@@ -793,30 +861,36 @@ const timeOff = {
       }
     },
 
-    *approveMultipleTimeoffRequest({ payload = {} }, { call }) {
+    *approveMultipleRequests({ payload = {} }, { call }) {
       try {
-        const response = yield call(approveMultipleTimeoffRequest, {
+        const response = yield call(approveMultipleRequests, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode } = response;
+        const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
         return statusCode;
       } catch (errors) {
         dialog(errors);
         return {};
       }
     },
-    *rejectMultipleTimeoffRequest({ payload = {} }, { call }) {
+    *rejectMultipleRequests({ payload = {} }, { call }) {
       try {
-        const response = yield call(rejectMultipleTimeoffRequest, {
+        const response = yield call(rejectMultipleRequests, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode } = response;
+        const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
         return statusCode;
       } catch (errors) {
         dialog(errors);
@@ -832,8 +906,11 @@ const timeOff = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode } = response;
+        const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
         return statusCode;
       } catch (errors) {
         dialog(errors);
@@ -850,50 +927,6 @@ const timeOff = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         return statusCode;
-      } catch (errors) {
-        dialog(errors);
-      }
-      return 0;
-    },
-    *managerApproveWithdrawRequest({ payload = {} }, { call, put }) {
-      try {
-        const response = yield call(managerApproveWithdrawRequest, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data: { leaveRequest = {} } = {} } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'saveViewingLeaveRequest',
-          payload: {
-            status: leaveRequest.status,
-            comment: leaveRequest.comment,
-          },
-        });
-        return response;
-      } catch (errors) {
-        dialog(errors);
-      }
-      return 0;
-    },
-    *managerRejectWithdrawRequest({ payload = {} }, { call, put }) {
-      try {
-        const response = yield call(managerRejectWithdrawRequest, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data: { leaveRequest = {} } = {} } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'saveViewingLeaveRequest',
-          payload: {
-            status: leaveRequest.status,
-            comment: leaveRequest.comment,
-          },
-        });
-        return response;
       } catch (errors) {
         dialog(errors);
       }
@@ -973,8 +1006,11 @@ const timeOff = {
           ...payload,
           tenantId: getCurrentTenant(),
         });
-        const { statusCode } = response;
+        const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
         return statusCode;
       } catch (errors) {
         dialog(errors);
@@ -987,8 +1023,12 @@ const timeOff = {
           ...payload,
           tenantId: getCurrentTenant(),
         });
-        const { statusCode } = response;
+
+        const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
         return statusCode;
       } catch (errors) {
         dialog(errors);
@@ -1006,19 +1046,6 @@ const timeOff = {
         yield put({
           type: 'save',
           payload: { defaultTimeoffTypesList },
-        });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
-    *getCountryListByCompany({ payload = {} }, { call, put }) {
-      try {
-        const response = yield call(getLocationByCompany, payload);
-        const { statusCode, data } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { countryList: data },
         });
       } catch (errors) {
         dialog(errors);
@@ -1098,24 +1125,22 @@ const timeOff = {
       }
       return response;
     },
-    *updateEmployeeSchedule({ payload = {} }, { call, put }) {
+    *updateEmployeeSchedule({ payload = {} }, { call }) {
+      let response = {};
       try {
-        const response = yield call(updateEmployeeSchedule, {
+        response = yield call(updateEmployeeSchedule, {
           ...payload,
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, data: updateSchedule = {} } = response;
+        const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message: 'Update  Successfully',
-        });
-        yield put({
-          type: 'save',
-          payload: { updateSchedule },
+          message,
         });
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
   },
   reducers: {

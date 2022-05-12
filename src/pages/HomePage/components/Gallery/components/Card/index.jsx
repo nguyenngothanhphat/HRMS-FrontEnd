@@ -60,7 +60,6 @@ const Card = (props) => {
         infinite
         arrows
         dots
-        effect="fade"
         autoplay
         autoplaySpeed={10000}
         lazyLoad="ondemand"

@@ -22,19 +22,22 @@ const ResourceList = (props) => {
     permissions,
     currentUserId = '',
     employeeId = '',
-    currentUserRoles = [],
+    // currentUserRoles = [],
     currentPayload = {},
   } = props;
 
-  const checkRoleManager =
-    currentUserRoles.length > 0 ? currentUserRoles.includes('manager') : false;
+  const viewModeAdmin = permissions.viewResourceAdminMode !== -1;
   const modifyResourcePermission = permissions.modifyResource !== -1;
+  const adminMode = permissions.viewResourceAdminMode !== -1;
+  const countryMode = permissions.viewResourceCountryMode !== -1;
 
   const [pageSelected, setPageSelected] = useState(1);
   const [availableStatusState, setAvailableStatusState] = useState('ALL');
   const [size, setSize] = useState(10);
   const [sort, setSort] = useState({});
   const [resourceListState, setResourceListState] = useState([]);
+  const [searchKey, setSearchKey] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
 
   const [filter, setFilter] = useState({
     name: undefined,
@@ -71,21 +74,28 @@ const ResourceList = (props) => {
   };
   const fetchResourceList = async () => {
     const filterTemp = convertFilter();
-
+    const payload = {
+      // status: 'New',
+      page: pageSelected,
+      limit: size,
+      availableStatus: availableStatusState || availableStatus,
+      ...sort,
+      ...filterTemp,
+      location: selectedLocations,
+      division: selectedDivisions,
+      employeeId,
+      adminMode,
+      countryMode,
+    };
+    if (searchKey) {
+      payload.name = searchKey;
+      payload.page = 1;
+    }
     dispatch({
       type: 'resourceManagement/getResources',
-      payload: {
-        // status: 'New',
-        page: pageSelected,
-        limit: size,
-        availableStatus: availableStatusState || availableStatus,
-        ...sort,
-        ...filterTemp,
-        location: selectedLocations,
-        division: selectedDivisions,
-        employeeId,
-      },
+      payload,
     });
+    setIsSearching(false);
   };
 
   const fetchProjectList = async () => {
@@ -107,30 +117,17 @@ const ResourceList = (props) => {
     fetchResourceList();
   };
 
-  const searchTable = (searchKey) => {
-    const value = searchKey.searchKey || '';
-    dispatch({
-      type: 'resourceManagement/getResources',
-      payload: {
-        page: pageSelected,
-        availableStatus: availableStatusState || availableStatus,
-        q: value,
-        employeeId,
-      },
-    }).then(() => {
-      const array = formatData(resourceList, projectList);
-
-      setResourceListState(array);
-      setPageSelected(1);
-    });
+  const searchTable = (searchKeyProp) => {
+    const value = searchKeyProp.searchKey || '';
+    setIsSearching(true);
+    setTimeout(() => {
+      setSearchKey(value);
+    }, 100);
   };
 
   const fetchDivisions = async () => {
     dispatch({
       type: 'resourceManagement/fetchDivisions',
-      payload: {
-        name: 'Engineering',
-      },
     });
   };
 
@@ -162,7 +159,6 @@ const ResourceList = (props) => {
       type: 'resourceManagement/exportResourceManagement',
       payload: {
         employeeId: currentUserId,
-        limit: total,
         ...currentPayload,
       },
     });
@@ -197,6 +193,16 @@ const ResourceList = (props) => {
   ]);
 
   useEffect(() => {
+    if (isSearching) {
+      if (pageSelected !== 1) {
+        setPageSelected(1);
+      } else {
+        fetchResourceList();
+      }
+    }
+  }, [searchKey]);
+
+  useEffect(() => {
     updateData(resourceList);
   }, [JSON.stringify(resourceList)]);
 
@@ -204,7 +210,7 @@ const ResourceList = (props) => {
     <div className={styles.containerTickets}>
       <div className={styles.tabTickets}>
         <span>
-          {!checkRoleManager && (
+          {viewModeAdmin && (
             <ResourceStatus
               currentStatus={availableStatusState}
               changeAvailableStatus={changeAvailableStatus}
@@ -256,24 +262,18 @@ export default connect(
       currentPayload = {},
     } = {},
     user: {
-      currentUser: {
-        location: { _id: locationID = '' } = {},
-        company: { _id: companyID } = {},
-        employee: { _id: employeeId = '' },
-      } = {},
+      currentUser: { employee: { _id: employeeId = '' } = {} } = {},
       permissions = {},
       currentUserRoles = [],
     } = {},
     loading,
-    locationSelection: { listLocationsByCompany = [] },
+    location: { companyLocationList = [] },
   }) => ({
     loading: loading.effects['resourceManagement/getResources'],
     resourceList,
     total,
-    locationID,
-    companyID,
     projectList,
-    listLocationsByCompany,
+    companyLocationList,
     permissions,
     selectedDivisions,
     selectedLocations,

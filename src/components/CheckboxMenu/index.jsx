@@ -8,6 +8,7 @@ const CheckboxMenu = (props) => {
     onChange: onChangeProp = () => {},
     options = [],
     default: defaultChecks = [],
+    disabled = false,
   } = props;
   const [indeterminate, setIndeterminate] = React.useState(false);
   const [checkAll, setCheckAll] = React.useState(false);
@@ -17,7 +18,7 @@ const CheckboxMenu = (props) => {
     if (selectedItems.length === 0 && defaultChecks.length > 0) {
       setSelectedItems([...defaultChecks]);
     }
-  }, []);
+  }, [JSON.stringify(defaultChecks)]);
 
   const onCheckAllChange = (e) => {
     const selectedItemsTemp = e.target.checked ? options.map((x) => x._id) : [];
@@ -51,11 +52,12 @@ const CheckboxMenu = (props) => {
             onChange={onCheckAllChange}
             checked={checkAll}
             style={{ display: 'flex', margin: '8px 0' }}
+            disabled={disabled}
           >
             Select All
           </Checkbox>
         </Col>
-        <Checkbox.Group onChange={onChange} value={selectedItems}>
+        <Checkbox.Group onChange={onChange} value={selectedItems} disabled={disabled}>
           {groups.map((group, i) => {
             return (
               <Col key={`checkbox-group-${i + 1}`} span={24}>
@@ -79,6 +81,7 @@ const CheckboxMenu = (props) => {
   };
 
   const CheckboxRender = checkboxRender;
+  if (options.length < 2) return children;
   return (
     <Popover
       content={<CheckboxRender />}
