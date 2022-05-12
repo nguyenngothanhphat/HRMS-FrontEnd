@@ -10,7 +10,9 @@ const PostContent = (props) => {
 
   const onPreviewImage = (index) => {
     setCurrent(index);
-    setVisible(true);
+    setTimeout(() => {
+      setVisible(true);
+    }, 50);
   };
 
   const renderImageLayout = (images) => {
@@ -63,14 +65,14 @@ const PostContent = (props) => {
       default:
         return (
           <Row gutter={[4, 4]}>
-            <Col span={12}>
+            <Col span={14}>
               <Image
                 preview={{ visible: false }}
                 onClick={() => onPreviewImage(0)}
                 src={images[0]}
               />
             </Col>
-            <Col span={12}>
+            <Col span={10}>
               <Row gutter={[4, 4]}>{renderRestImage()}</Row>
             </Col>
           </Row>

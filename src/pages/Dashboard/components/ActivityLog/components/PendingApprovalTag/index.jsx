@@ -72,7 +72,7 @@ const PendingApprovalTag = (props) => {
                   <span>{monthTemp}</span>
                 </div>
                 <div className={styles.content}>
-                  New {typeName && typeTicket === 'leaveRequest' ? 'Timeoff' : 'Comoff'} request
+                  New {typeName && typeTicket === 'leaveRequest' ? 'Timeoff' : 'Compoff'} request
                   from{' '}
                   <span className={styles.userId}>
                     {legalName} ({userId})
@@ -116,5 +116,5 @@ const PendingApprovalTag = (props) => {
 };
 
 export default connect(({ loading }) => ({
-  loadingReject: loading.effects['timeOff/rejectRequest'],
+  loadingReject: loading.effects['dashboard/rejectRequest'],
 }))(PendingApprovalTag);
