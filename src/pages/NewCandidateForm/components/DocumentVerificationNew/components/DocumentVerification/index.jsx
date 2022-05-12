@@ -187,7 +187,7 @@ const DocumentVerification = (props) => {
   };
 
   // generate documentChecklistSetting
-  const generatedocumentChecklistSettings = (
+  const generateDocumentChecklistSettings = (
     docsListE,
     checkedListAProp,
     checkedListBProp,
@@ -242,7 +242,7 @@ const DocumentVerification = (props) => {
   };
 
   const handleUpdateByHR = (docsListE, checkedListAProp, checkedListBProp, checkedListCProp) => {
-    const documentChecklistSettingTemp = generatedocumentChecklistSettings(
+    const documentChecklistSettingTemp = generateDocumentChecklistSettings(
       docsListE,
       checkedListAProp,
       checkedListBProp,
@@ -490,7 +490,7 @@ const DocumentVerification = (props) => {
     const docsListD = documentChecklistSetting.filter((doc) => doc.type === 'D') || [];
     const docsListE = documentChecklistSetting.filter((doc) => doc.type === 'E') || [];
 
-    const result = generatedocumentChecklistSettings(
+    const result = generateDocumentChecklistSettings(
       docsListE,
       checkedListA,
       checkedListB,
@@ -849,6 +849,7 @@ const DocumentVerification = (props) => {
 
   // main
   const documentCLSTByCountry = getDocumentListByCountry(documentChecklistSetting);
+
   // type A, B, C
   const documentCLSByCountryTypeABC = documentCLSTByCountry.filter((doc) =>
     ['A', 'B', 'C'].includes(doc.type),
@@ -862,7 +863,7 @@ const DocumentVerification = (props) => {
   if (loadingFetchCandidate) return <Skeleton />;
   return (
     <Row gutter={[24, 24]} className={styles.DocumentVerification}>
-      <Col span={16} sm={24} md={24} lg={24} xl={16}>
+      <Col sm={24} xl={16}>
         <div className={styles.leftWrapper}>
           <Row className={styles.eliContainer} gutter={[24, 24]}>
             <Title />
@@ -902,7 +903,7 @@ const DocumentVerification = (props) => {
           </Row>
         </div>
       </Col>
-      <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
+      <Col sm={24} xl={8} className={styles.rightWrapper}>
         <div>
           <NoteComponent />
 

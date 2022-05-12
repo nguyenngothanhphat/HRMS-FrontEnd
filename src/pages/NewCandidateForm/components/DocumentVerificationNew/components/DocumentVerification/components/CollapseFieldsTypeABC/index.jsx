@@ -1,5 +1,5 @@
 import { CloseOutlined, DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Col, Collapse, Form, Input, notification } from 'antd';
+import { Button, Checkbox, Col, Collapse, Form, Input, notification, Popconfirm } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
@@ -126,10 +126,12 @@ const CollapseFieldsTypeABC = (props) => {
                   >
                     {val.alias}
                     {!disabled && val.new && (
-                      <DeleteOutlined
-                        onClick={() => handleRemove(val.key, type)}
-                        className={styles.removeIcon}
-                      />
+                      <Popconfirm
+                        onConfirm={() => handleRemove(val.key, type)}
+                        title="Sure to remove?"
+                      >
+                        <DeleteOutlined className={styles.removeIcon} />
+                      </Popconfirm>
                     )}
                   </Checkbox>
                 );

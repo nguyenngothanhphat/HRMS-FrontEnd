@@ -26,8 +26,8 @@ const EmployerComponent = (props) => {
   const [checkedList, setCheckedList] = React.useState([]);
 
   const handleCheckList = () => {
-    let checkedListTemp = data.filter((val) => val.alias && val.value === true);
-    checkedListTemp = checkedList.map((val) => val.alias);
+    let checkedListTemp = data.filter((val) => val.alias && val.value);
+    checkedListTemp = checkedListTemp.map((val) => val.alias);
     setCheckedList(checkedListTemp);
   };
 
@@ -40,12 +40,12 @@ const EmployerComponent = (props) => {
         },
       });
     }
-
-    handleCheckList();
   }, []);
 
   useEffect(() => {
-    handleCheckList();
+    if (data.length > 0) {
+      handleCheckList();
+    }
   }, [JSON.stringify(data)]);
 
   const onChange = (list) => {
