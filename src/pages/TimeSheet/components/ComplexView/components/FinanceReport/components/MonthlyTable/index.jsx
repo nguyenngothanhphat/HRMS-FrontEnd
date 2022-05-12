@@ -1,12 +1,11 @@
 import { Table } from 'antd';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { connect } from 'umi';
-import { projectColor, convertMsToTime } from '@/utils/timeSheet';
-import TaskPopover from './components/TaskPopover';
-import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
+import { convertMsToTime, projectColor } from '@/utils/timeSheet';
 import EmptyComponent from '@/components/Empty';
-
+import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
+import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
 
 const MonthlyTable = (props) => {
@@ -18,27 +17,11 @@ const MonthlyTable = (props) => {
     selectedProjects = [],
     setSelectedProjects = () => {},
   } = props;
-  const [formattedData, setFormattedData] = useState([]);
 
   // FUNCTIONS
-  // format data
-  const formatData = () => {
-    const header = {
-      projectName: 'All Projects',
-      totalDuration: 'Total Hours',
-      projectId: 'All',
-    };
-    setFormattedData([header].concat(data));
-  };
-
   const getColorByIndex = (index) => {
     return projectColor[index % projectColor.length];
   };
-
-  // USE EFFECT
-  useEffect(() => {
-    formatData();
-  }, [JSON.stringify(data)]);
 
   // RENDER UI
   const renderHeaderItem = (weekItem) => {
@@ -54,18 +37,23 @@ const MonthlyTable = (props) => {
     );
   };
 
+  const renderTitle = (title, type) => {
+    if (type === 1) return <div style={{ paddingLeft: '24px' }}>{title}</div>;
+    if (type === 3) return <span className={styles.totalHeader}>{title}</span>;
+    return renderHeaderItem(title);
+  };
+
   const columns = () => {
     const columnLength = weeksOfMonth.length + 1;
     const dateColumns = weeksOfMonth.map((weekItem) => {
       return {
-        title: weekItem.week,
+        title: renderTitle(weekItem, 2),
         dataIndex: weekItem.week,
         key: weekItem.week,
         align: 'center',
         width: `${100 / columnLength}}%`,
-        render: (value, row, index) => {
+        render: (value, row) => {
           const { weeks = [] } = row;
-          if (index === 0) return renderHeaderItem(weekItem);
           const find = weeks.find((w) => w.week === weekItem.week);
           return (
             <TaskPopover
@@ -89,16 +77,13 @@ const MonthlyTable = (props) => {
 
     const result = [
       {
-        title: 'All Projects',
+        title: renderTitle('All Projects', 1),
         dataIndex: 'projectName',
         key: 'projectName',
         align: 'left',
         width: `${100 / columnLength}%`,
         render: (projectName, row, index) => {
           const { engagementType = '' } = row;
-          if (index === 0) {
-            return <div style={{ paddingLeft: '24px' }}>{projectName}</div>;
-          }
           return (
             <div className={styles.projectName}>
               <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
@@ -114,13 +99,12 @@ const MonthlyTable = (props) => {
       },
       ...dateColumns,
       {
-        title: 'Total Hours',
+        title: renderTitle('Total Hours', 3),
         dataIndex: 'totalDuration',
         key: 'totalDuration',
         align: 'center',
         width: `${100 / 9}%`,
-        render: (value = 0, _, index) => {
-          if (index === 0) return <span className={styles.totalHeader}>{value}</span>;
+        render: (value = 0) => {
           if (value === 0) return '';
           return <span className={styles.totalValue}>{convertMsToTime(value)}</span>;
         },
@@ -130,30 +114,8 @@ const MonthlyTable = (props) => {
   };
 
   const onSelectChange = (selectedRowKeys) => {
-    console.log('🚀 ~ onSelectChange ~ selectedRowKeys', selectedRowKeys);
-    let temp = [...selectedRowKeys];
-    const projectListLength = data.length;
-    const selectedListLength = selectedRowKeys.length;
-
-    if (projectListLength === selectedListLength) {
-      if (!selectedRowKeys.includes('All')) {
-        temp = [...data.map((x) => x.projectId), 'All'];
-      }
-    } else if (selectedRowKeys.includes('All')) {
-      temp = [...data.map((x) => x.projectId), 'All'];
-    }
-
-    if (temp.length === 1 && temp.includes('All')) {
-      temp = [];
-    }
-    // if (
-    //   (selectedRowKeys.includes('All') && selectedRowKeys.length !== 1) ||
-    //   (projectListLength === selectedListLength && !selectedRowKeys.includes('All'))
-    // ) {
-    //   temp = [...data.map((x) => x.projectId), 'All'];
-    // }
-
-    setSelectedProjects([...temp]);
+    console.log('🚀 ~ selectedRowKeys', selectedRowKeys);
+    setSelectedProjects(selectedRowKeys);
   };
 
   const rowSelection = {
@@ -167,14 +129,16 @@ const MonthlyTable = (props) => {
       <div className={styles.tableContainer}>
         <Table
           columns={columns()}
-          dataSource={formattedData}
+          dataSource={data}
           bordered
-          // rowSelection={rowSelection} // NOT WORKING YET
+          rowSelection={rowSelection}
           pagination={false}
           // scroll={{ y: 440 }}
           loading={loadingFetch}
           rowKey={(row) => row.projectId}
-          footer={data.length > 0 ? null : EmptyComponent}
+          locale={{
+            emptyText: <EmptyComponent />,
+          }}
         />
       </div>
     </div>

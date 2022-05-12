@@ -3,17 +3,21 @@
 @blueColor: #2c6df9;
 @commonSpace: 24px;
 .CustomRangePicker {
+  display: flex;
+  flex-direction: row;
+  margin-right: 8px;
+
   :global {
     .ant-picker {
       box-sizing: border-box;
       height: 37px;
       border: 1px solid @borderColor2;
       border-radius: 5px;
+      &:hover {
+        border-color: #2c6df9;
+      }
     }
   }
-
-  display: flex;
-  flex-direction: row;
   .rangePicker {
     margin-inline: 8px;
     .minusSeparator {
@@ -36,9 +40,27 @@
     border: 1px solid @borderColor2;
     border-radius: 5px;
     cursor: pointer;
+    &:hover {
+      border-color: #2c6df9;
+      opacity: 0.9;
+    }
   }
   .prevBtn,
   .nextBtn {
     .button();
+  }
+  .prevBtn {
+    &:active {
+      img {
+        transform: translateX(-1px);
+      }
+    }
+  }
+  .nextBtn {
+    &:active {
+      img {
+        transform: translateX(1px);
+      }
+    }
   }
 }

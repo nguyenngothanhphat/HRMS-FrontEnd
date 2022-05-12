@@ -101,6 +101,7 @@ const employee = {
         const currentPayload = {
           ...payload,
           status: ['ACTIVE'],
+          tenantId: getCurrentTenant(),
         };
         const response = yield call(getListMyTeam, currentPayload);
         const { statusCode, data: listEmployeeMyTeam = [] } = response;

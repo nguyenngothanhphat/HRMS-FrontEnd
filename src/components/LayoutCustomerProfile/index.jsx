@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-curly-newline */
-import { Affix, Col, Row, Skeleton } from 'antd';
+import { Col, Row, Skeleton } from 'antd';
 // import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';

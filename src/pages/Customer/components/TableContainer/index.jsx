@@ -1,25 +1,26 @@
-import React, { PureComponent } from 'react';
-import { Tag, Tabs, Layout, Popover, Input, Select, Badge } from 'antd';
-import { PlusOutlined, SearchOutlined, CloseOutlined } from '@ant-design/icons';
-import { connect } from 'umi';
+import { CloseOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { Input, Layout, Select, Tabs, Tag } from 'antd';
 import { debounce } from 'lodash';
-import styles from './index.less';
+import React, { PureComponent } from 'react';
+import { connect } from 'umi';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import FilterPopover from '@/components/FilterPopover';
+import FilterButton from '@/components/FilterButton';
 import TableCustomers from '../TableCustomers';
 import MenuFilter from './components/MenuFilter';
-import cancelIcon from '../../../../assets/cancelIcon.svg';
 import ModalAdd from './components/ModalAdd';
-import { FilterIcon } from './components/FilterIcon';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import styles from './index.less';
 
 @connect(
   ({
     loading,
     user: { companiesOfUser = [], currentUser: { employee: { _id = '' } = {} } = {} } = {},
-    customerManagement: { listCustomer = [], companyList = [] } = {},
+    customerManagement: { listCustomer = [], companyList = [], filter = {} } = {},
   }) => ({
     listCustomer,
     companyList,
     companiesOfUser,
+    filter,
     _id,
     loadingCustomer: loading.effects['customerManagement/fetchCustomerList'],
     loadingFilter: loading.effects['customerManagement/filterListCustomer'],
@@ -50,6 +51,16 @@ class TableContainer extends PureComponent {
     });
   }
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'customerManagement/save',
+      payload: {
+        filter: {},
+      },
+    });
+  }
+
   // submit filter
   handleSubmit = async (values) => {
     const { dispatch } = this.props;
@@ -58,10 +69,14 @@ class TableContainer extends PureComponent {
       type: 'customerManagement/filterListCustomer',
       payload: {
         status: values.byStatus,
+        dba: values.byDba,
         tenantId: getCurrentTenant(),
         company: getCurrentCompany(),
-        // companyName: i.name,
       },
+    });
+    dispatch({
+      type: 'customerManagement/save',
+      payload: { filter: values },
     });
   };
 
@@ -158,7 +173,6 @@ class TableContainer extends PureComponent {
       email,
       addressLine1,
       addressLine2,
-      // country,
       state,
       city,
       zipCode,
@@ -194,7 +208,6 @@ class TableContainer extends PureComponent {
         type: 'customerManagement/fetchCustomerList',
       });
       const { isShown } = this.state;
-      // form.resetFields();
       this.setState({
         isShown: !isShown,
       });
@@ -206,20 +219,30 @@ class TableContainer extends PureComponent {
     return number;
   };
 
+  showDot = (obj) => {
+    return !Object.values(obj).every((o) => {
+      if (Array.isArray(o)) {
+        return o.length === 0;
+      }
+      if (!o) return true;
+      return false;
+    });
+  };
+
   render() {
     const { Content } = Layout;
+
     const { TabPane } = Tabs;
     const { listCustomer, loadingCustomer, companyList = [], loadingFilter = false } = this.props;
-    const { visible, isShown, applied, isFiltering } = this.state;
-    const tabs = [{ id: 1, name: `Customers (${this.addZeroToNumber(listCustomer.length)})` }];
+    const { isShown, applied, isFiltering } = this.state;
 
+    const tabs = [{ id: 1, name: `Customers (${this.addZeroToNumber(listCustomer.length)})` }];
     const listStatus = [
       <Select.Option key="Engaging">Engaging</Select.Option>,
       <Select.Option key="Active">Active</Select.Option>,
       <Select.Option key="Inactive">Inactive</Select.Option>,
-      // <Select.Option key="negotiation">Negotiation</Select.Option>,
     ];
-    const filter = (
+    const contentFilter = (
       <>
         <MenuFilter
           onSubmit={this.handleSubmit}
@@ -228,25 +251,6 @@ class TableContainer extends PureComponent {
           onSearch={this.onSearch}
           setForm={this.setForm}
         />
-        {/* <div className={styles.btnForm}>
-          <Button
-            className={styles.btnClose}
-            htmlType="reset"
-            form="filter"
-            onClick={this.handleClose}
-          >
-            Close
-          </Button>
-          <Button
-            className={styles.btnApply}
-            form="filter"
-            htmlType="submit"
-            key="submit"
-            loading={loadingFilter}
-          >
-            Apply
-          </Button>
-        </div> */}
       </>
     );
 
@@ -268,36 +272,9 @@ class TableContainer extends PureComponent {
           <PlusOutlined />
           Add new customer
         </div>
-        <Popover
-          placement="bottomRight"
-          content={filter}
-          title={() => (
-            <div className={styles.popoverHeader}>
-              <p className={styles.headTitle}>Filters</p>
-              <p
-                className={styles.closeIcon}
-                style={{ cursor: 'pointer' }}
-                onClick={this.handleClose}
-              >
-                <img src={cancelIcon} alt="close" />
-              </p>
-            </div>
-          )}
-          trigger="click"
-          visible={visible}
-          onVisibleChange={this.handleVisible}
-          overlayClassName={styles.FilterPopover}
-        >
-          <div className={styles.filterButton}>
-            <FilterIcon />
-            <p className={styles.textButtonFilter}>Filter</p>
-            {isFiltering && (
-              <Badge dot offset={[-3, -8]}>
-                <div className={styles.dot} />
-              </Badge>
-            )}
-          </div>
-        </Popover>
+        <FilterPopover realTime placement="bottomRight" content={contentFilter}>
+          <FilterButton fontSize={14} showDot={isFiltering} />
+        </FilterPopover>
         <div className={styles.searchInp}>
           <Input
             placeholder="Search by Company Name, ID, Account Owner"
@@ -321,16 +298,20 @@ class TableContainer extends PureComponent {
               <TabPane tab={tab.name} key={tab.id}>
                 <Layout className={styles.managementLayout}>
                   <Content className="site-layout-background">
-                    <TableCustomers listCustomer={listCustomer} loadingCustomer={loadingCustomer} />
+                    <TableCustomers
+                      listCustomer={listCustomer}
+                      loadingCustomer={loadingCustomer}
+                      loadingFilter={loadingFilter}
+                    />
                   </Content>
 
                   <ModalAdd
+                    listCustomer={listCustomer}
                     isShown={isShown}
                     listStatus={listStatus}
                     handleAddNew={this.handleAddNew}
                     onCloseModal={this.onCloseModal}
                   />
-                  {/* <TabFilter /> */}
                 </Layout>
               </TabPane>
             ))}

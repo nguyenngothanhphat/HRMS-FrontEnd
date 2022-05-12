@@ -206,7 +206,7 @@ class MyLeaveTable extends PureComponent {
     const {
       data = [],
       loadingFetchLeaveRequests = false,
-      paging: { page, limit, total },
+      paging: { page, total },
     } = this.props;
     // const rowSize = 10;
 
@@ -251,11 +251,10 @@ class MyLeaveTable extends PureComponent {
           // size="middle"
           loading={tableLoading}
           // rowSelection={rowSelection}
-          // if data.length > 10, pagination will appear
-          pagination={data.length === 0 ? null : { ...pagination }}
+          pagination={data.length === 0 ? null : { ...pagination, total }}
           columns={this.columns}
           dataSource={data}
-          scroll={scroll}
+          scroll={data.length > 0 ? scroll : null}
           rowKey={(id) => id.ticketID}
           locale={{
             emptyText: (
@@ -266,7 +265,6 @@ class MyLeaveTable extends PureComponent {
             ),
           }}
         />
-        {data.length === 0 && <div className={styles.paddingContainer} />}
       </div>
     );
   }

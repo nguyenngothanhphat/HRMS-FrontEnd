@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-const TAB_NAME = {
+export const TAB_NAME = {
   MY: 'my',
   REPORTS: 'reports',
   PM_REPORTS: 'pm-reports',
@@ -9,20 +9,20 @@ const TAB_NAME = {
   SETTINGS: 'settings',
 };
 
-const VIEW_TYPE = {
+export const VIEW_TYPE = {
   D: 'D', // day
   W: 'W', // week
   M: 'M', // month
 };
-const color = {
+export const color = {
   WORKING_HOURS: '#71A82B',
   LUNCH_BREAK: '#315ED2',
   PTO: '#A646C8',
 };
 
-const activityName = ['Working hours', 'Lunch Break'];
+export const activityName = ['Working hours', 'Lunch Break'];
 
-const activityColor = [
+export const activityColor = [
   {
     name: 'Working hours',
     color: color.WORKING_HOURS,
@@ -37,32 +37,40 @@ const activityColor = [
   },
 ];
 
-const projectColor = ['#A42BA8', '#7BCD00', '#FFBD14', '#F97457', '#1956DA', '#7BCDFF'];
-const employeeColor = ['#A459BE', '#6759BE', '#599ABE', '#5BBE59', '#59BE94', '#BE9C59', '#BE5F59'];
+export const projectColor = ['#A42BA8', '#7BCD00', '#FFBD14', '#F97457', '#1956DA', '#7BCDFF'];
+export const employeeColor = [
+  '#A459BE',
+  '#6759BE',
+  '#599ABE',
+  '#5BBE59',
+  '#59BE94',
+  '#BE9C59',
+  '#BE5F59',
+];
 
 // functions
-const addTimeForDate = (date, time) => {
+export const addTimeForDate = (date, time) => {
   const dateToString = moment(date).format('MM/DD/YYYY').toString();
   const timeToString = moment(time).format('h:mm a').toString();
   return moment(`${dateToString} ${timeToString}`, 'MM/DD/YYYY h:mm a');
 };
 
-const rangePickerFormat = 'ddd, MMM D, YYYY';
-const dateFormat = 'ddd, MMM Do'; // show in first column
-const hourFormat = 'h:mm a';
-const minuteStep = 30; // in time picker, only allows minute 0 and 30
+export const rangePickerFormat = 'ddd, MMM D, YYYY';
+export const dateFormat = 'ddd, MMM Do'; // show in first column
+export const hourFormat = 'h:mm a';
+export const minuteStep = 30; // in time picker, only allows minute 0 and 30
 
 // for API
-const dateFormatAPI = 'YYYY-MM-DD';
-const hourFormatAPI = 'HH:mm';
+export const dateFormatAPI = 'YYYY-MM-DD';
+export const hourFormatAPI = 'HH:mm';
 
 // MT - MY TIMESHEET SIMPLE VIEW
-const MT_MAIN_COL_SPAN = {
+export const MT_MAIN_COL_SPAN = {
   DATE: 3,
   REMAINING: 21,
 };
 
-const MT_SECONDARY_COL_SPAN = {
+export const MT_SECONDARY_COL_SPAN = {
   ACTIVITY: 4,
   START_TIME: 3,
   END_TIME: 3,
@@ -74,12 +82,12 @@ const MT_SECONDARY_COL_SPAN = {
 
 // MT - MY TIMESHEET COMPLEX VIEW
 // EMPLOYEE VIEW
-const EMP_MT_MAIN_COL_SPAN = {
+export const EMP_MT_MAIN_COL_SPAN = {
   DATE_OF_HOURS: 2,
   REMAINING: 22,
 };
 
-const EMP_MT_SECONDARY_COL_SPAN = {
+export const EMP_MT_SECONDARY_COL_SPAN = {
   PROJECT: 4,
   TASK: 4,
   DESCRIPTION: 6,
@@ -88,21 +96,21 @@ const EMP_MT_SECONDARY_COL_SPAN = {
   ACTIONS: 3,
 };
 
-const EMP_ROW_HEIGHT = 72; // px
+export const EMP_ROW_HEIGHT = 72; // px
 
 // MANAGER VIEW
-const MNG_MT_MAIN_COL_SPAN = {
+export const MNG_MT_MAIN_COL_SPAN = {
   EMPLOYEE: 4,
   REMAINING: 20,
 };
 
-const MNG_MT_SECONDARY_COL_SPAN = {
+export const MNG_MT_SECONDARY_COL_SPAN = {
   DESIGNATION: 4,
   DEPARTMENT: 4,
   PROJECT_GROUP: 16,
 };
 
-const MNG_MT_THIRD_COL_SPAN = {
+export const MNG_MT_THIRD_COL_SPAN = {
   PROJECTS: 7,
   PROJECT_MANAGER: 7,
   TOTAL_HOURS: 5,
@@ -111,7 +119,7 @@ const MNG_MT_THIRD_COL_SPAN = {
 
 // convert milisecond to time HH:mm:ss
 // source: https://stackoverflow.com/questions/19700283/how-to-convert-time-in-milliseconds-to-hours-min-sec-format-in-javascript
-const convertMsToTime = (milliseconds) => {
+export const convertMsToTime = (milliseconds) => {
   let h = Math.floor(milliseconds / 1000 / 60 / 60);
   let m = Math.floor((milliseconds / 1000 / 60 / 60 - h) * 60);
   let s = Math.floor(((milliseconds / 1000 / 60 / 60 - h) * 60 - m) * 60);
@@ -127,22 +135,22 @@ const convertMsToTime = (milliseconds) => {
   // return moment.utc(duration).format('HH:mm:ss');
 };
 
-const convertMsToHours = (milliseconds) => {
+export const convertMsToHours = (milliseconds) => {
   return milliseconds / 1000 / 60 / 60;
 };
 
 // API return time format: '07:00:00.0000'
-const parseTimeAPI = (time = '') => {
+export const parseTimeAPI = (time = '') => {
   return time ? time.slice(0, -5) : '';
 };
 
 // WORKING HOURS
-const WORKING_HOURS = {
+export const WORKING_HOURS = {
   START: 5,
   END: 24,
 };
 
-const TASKS = [
+export const TASKS = [
   'Brainstorming',
   'Client Meeting',
   'UI Feedback',
@@ -151,11 +159,11 @@ const TASKS = [
   'Feedback changes on WFs',
 ];
 
-const isTheSameDay = (date1, date2) => {
+export const isTheSameDay = (date1, date2) => {
   return moment(date1).format('MM/DD/YYYY') === moment(date2).format('MM/DD/YYYY');
 };
 
-const generateAllWeeks = (fromDate, toDate) => {
+export const generateAllWeeks = (fromDate, toDate) => {
   const weeks = [];
   let fd = new Date(fromDate);
   const weekNo = moment(fromDate, 'YYYY-MM-DD').week();
@@ -182,36 +190,4 @@ const generateAllWeeks = (fromDate, toDate) => {
     }
   }
   return weeks;
-};
-
-export {
-  TAB_NAME,
-  VIEW_TYPE,
-  activityName,
-  activityColor,
-  projectColor,
-  employeeColor,
-  addTimeForDate,
-  rangePickerFormat,
-  dateFormat,
-  hourFormat,
-  minuteStep,
-  dateFormatAPI,
-  hourFormatAPI,
-  MT_MAIN_COL_SPAN,
-  MT_SECONDARY_COL_SPAN,
-  convertMsToTime,
-  convertMsToHours,
-  parseTimeAPI,
-  WORKING_HOURS,
-  // COMPLEX VIEW
-  EMP_MT_MAIN_COL_SPAN,
-  EMP_MT_SECONDARY_COL_SPAN,
-  EMP_ROW_HEIGHT,
-  MNG_MT_MAIN_COL_SPAN,
-  MNG_MT_SECONDARY_COL_SPAN,
-  MNG_MT_THIRD_COL_SPAN,
-  TASKS,
-  isTheSameDay,
-  generateAllWeeks,
 };

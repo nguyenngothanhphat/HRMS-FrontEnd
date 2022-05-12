@@ -24,16 +24,20 @@ export async function getLeaveRequestOfEmployee(payload) {
     data: payload,
   });
 }
-export async function aprovalLeaveRequest(payload) {
-  return request('/api/leaverequesttenant/reporting-manager-approve', {
+
+// reporting manager
+// approve/reject a leave request or a withdraw request
+export async function approveRequest(data) {
+  return request('/api/leaverequesttenant/approve', {
     method: 'POST',
-    data: payload,
+    data,
   });
 }
-export async function rejectLeaveRequest(payload) {
-  return request('/api/leaverequesttenant/reporting-manager-reject', {
+
+export async function rejectRequest(data) {
+  return request('/api/leaverequesttenant/reject', {
     method: 'POST',
-    data: payload,
+    data,
   });
 }
 export async function aprovalCompoffRequest(payload) {
