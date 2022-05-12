@@ -1,11 +1,12 @@
-import { CloseOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { Input, Layout, Select, Tabs, Tag } from 'antd';
+import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
+import { Layout, Select, Tabs, Tag } from 'antd';
 import { debounce } from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentTenant } from '@/utils/authority';
 import FilterPopover from '@/components/FilterPopover';
 import FilterButton from '@/components/FilterButton';
+import CustomSearchBox from '@/components/CustomSearchBox';
 import TableCustomers from '../TableCustomers';
 import MenuFilter from './components/MenuFilter';
 import ModalAdd from './components/ModalAdd';
@@ -62,18 +63,15 @@ class TableContainer extends PureComponent {
   }
 
   // submit filter
-  handleSubmit = async (values) => {
+  onFilter = async (values) => {
     const { dispatch } = this.props;
-
     dispatch({
-      type: 'customerManagement/filterListCustomer',
+      type: 'customerManagement/fetchCustomerList',
       payload: {
-        status: values.byStatus,
-        dba: values.byDba,
-        tenantId: getCurrentTenant(),
-        company: getCurrentCompany(),
+        ...values,
       },
     });
+    this.handleFilterCount(values);
     dispatch({
       type: 'customerManagement/save',
       payload: { filter: values },
@@ -146,7 +144,7 @@ class TableContainer extends PureComponent {
 
   onSearch = (value) => {
     // const { value = '' } = e.target;
-    this.handleFilterCount(value);
+    // this.handleFilterCount(value);
     this.onSearchDebounce(value);
   };
 
@@ -158,7 +156,6 @@ class TableContainer extends PureComponent {
         searchKey: value,
       },
     });
-    this.handleSubmit(value);
   };
 
   // add new Customer
@@ -242,17 +239,6 @@ class TableContainer extends PureComponent {
       <Select.Option key="Active">Active</Select.Option>,
       <Select.Option key="Inactive">Inactive</Select.Option>,
     ];
-    const contentFilter = (
-      <>
-        <MenuFilter
-          onSubmit={this.handleSubmit}
-          listStatus={listStatus}
-          companyList={companyList}
-          onSearch={this.onSearch}
-          setForm={this.setForm}
-        />
-      </>
-    );
 
     const menu = (
       <div className={styles.tabExtraContent}>
@@ -272,16 +258,26 @@ class TableContainer extends PureComponent {
           <PlusOutlined />
           Add new customer
         </div>
-        <FilterPopover realTime placement="bottomRight" content={contentFilter}>
+        <FilterPopover
+          realTime
+          placement="bottomRight"
+          content={
+            <MenuFilter
+              onSubmit={this.onFilter}
+              listStatus={listStatus}
+              companyList={companyList}
+              onSearch={this.onSearch}
+              setForm={this.setForm}
+            />
+          }
+        >
           <FilterButton fontSize={14} showDot={isFiltering} />
         </FilterPopover>
-        <div className={styles.searchInp}>
-          <Input
-            placeholder="Search by Company Name, ID, Account Owner"
-            prefix={<SearchOutlined />}
-            onChange={(e) => this.onSearch(e)}
-          />
-        </div>
+
+        <CustomSearchBox
+          onSearch={(e) => this.onSearchDebounce(e.target.value)}
+          placeholder="Search by Company Name, ID, Account Owner"
+        />
       </div>
     );
 

@@ -17,11 +17,6 @@
     font-weight: 500;
   }
   :global {
-    .ant-table-body {
-      height: 400px;
-      overflow-x: auto !important;
-    }
-
     .ant-table.ant-table-small:after {
       position: absolute;
       bottom: -1px;
@@ -32,13 +27,14 @@
       content: '';
     }
 
-    .ant-table-body {
-      color: #000000;
-    }
-
     .ant-table-tbody {
       height: 100%;
       overflow: scroll;
+    }
+
+    .ant-table-body {
+      height: 450px;
+      color: #000000;
     }
 
     // .ant-table-tbody > tr:last-child > td {
