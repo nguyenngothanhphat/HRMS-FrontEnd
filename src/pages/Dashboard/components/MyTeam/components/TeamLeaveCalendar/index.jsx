@@ -1,4 +1,4 @@
-import { Avatar, Calendar, Tooltip } from 'antd';
+import { Avatar, Calendar, Spin, Tooltip } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
@@ -6,7 +6,13 @@ import mockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import styles from './index.less';
 
 const TeamLeaveCalendar = (props) => {
-  const { selectedMonth = '', teamLeaveRequestList = [], dispatch, listTimeOffType = [] } = props;
+  const {
+    selectedMonth = '',
+    teamLeaveRequestList = [],
+    dispatch,
+    listTimeOffType = [],
+    loadingFetch = false,
+  } = props;
   const startOfMonth = moment(selectedMonth).startOf('month').format('MM/DD/YYYY');
   const endOfMonth = moment(selectedMonth).endOf('month').format('MM/DD/YYYY');
   useEffect(() => {
@@ -109,15 +115,18 @@ const TeamLeaveCalendar = (props) => {
   };
 
   return (
-    <Calendar
-      className={styles.TeamLeaveCalendar}
-      dateCellRender={dateCellRender}
-      value={selectedMonth}
-      disabledDate={disabledDate}
-    />
+    <Spin spinning={loadingFetch}>
+      <Calendar
+        className={styles.TeamLeaveCalendar}
+        dateCellRender={dateCellRender}
+        value={selectedMonth}
+        disabledDate={disabledDate}
+      />
+    </Spin>
   );
 };
 
-export default connect(({ dashboard: { teamLeaveRequestList = [] } = {} }) => ({
+export default connect(({ dashboard: { teamLeaveRequestList = [] } = {}, loading }) => ({
   teamLeaveRequestList,
+  loadingFetch: loading.effects['dashboard/fetchTeamLeaveRequests'],
 }))(TeamLeaveCalendar);
