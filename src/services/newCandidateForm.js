@@ -70,7 +70,7 @@ export function getEmployeeTypeList() {
 }
 
 export function getManagerList(params) {
-  return request('/api/employeetenant/list-manager', {
+  return request('/api/employeetenant/list-by-single-company', {
     method: 'POST',
     data: params,
   });

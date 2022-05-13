@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 /* eslint-disable react/button-has-type */
-import { Button, Col, Row } from 'antd';
+import { Button, Col, Row, Spin } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
 import { ONBOARDING_FORM_LINK } from '@/utils/onboarding';
@@ -86,6 +86,7 @@ class LayoutAddCandidateForm extends Component {
       disablePreviewOffer = false,
       // processStatus = '',
       currentStep,
+      loading = false
     } = this.props;
 
     const { displayComponent, selectedItemId } = this.state;
@@ -126,7 +127,10 @@ class LayoutAddCandidateForm extends Component {
           </div>
         </Col>
         <Col sm={24} md={18} xl={20} style={currentPage === 'settings' ? { padding: 0 } : {}}>
-          <div className={s.viewRight}>{displayComponent}</div>
+          <Spin spinning={loading}>
+            {' '}
+            <div className={s.viewRight}>{displayComponent}</div>
+          </Spin>
         </Col>
       </Row>
     );

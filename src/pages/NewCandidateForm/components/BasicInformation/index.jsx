@@ -1,4 +1,4 @@
-import { Button, Card, Col, Form, Row, Skeleton } from 'antd';
+import { Button, Card, Col, Form, Row } from 'antd';
 import { debounce } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect, history } from 'umi';
@@ -14,18 +14,18 @@ const BasicInformation = (props) => {
   const {
     tempData,
     tempData: {
-      firstName,
-      middleName,
-      lastName,
-      privateEmail,
-      phoneNumber,
-      totalExperience,
-      workEmail,
+      firstName = '',
+      middleName = '',
+      lastName = '',
+      privateEmail = '',
+      phoneNumber = '',
+      totalExperience = '',
+      workEmail = '',
       checkStatus,
-      _id,
+      _id = '',
       ticketID = '',
       processStatus = '',
-      previousExperience,
+      previousExperience = '',
       employeeId,
       currentAddress: {
         addressLine1: currentAddressLine1,
@@ -47,7 +47,6 @@ const BasicInformation = (props) => {
     checkMandatory,
     dispatch,
     currentStep = '',
-    loadingFetchCandidate = false,
     loadingUpdateByHR = false,
   } = props;
 
@@ -78,6 +77,7 @@ const BasicInformation = (props) => {
     const emailRegExp = RegExp(
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
     );
+    let check = false;
     if (
       firstName &&
       lastName &&
@@ -88,16 +88,16 @@ const BasicInformation = (props) => {
       notSpace.test(lastName) &&
       emailRegExp.test(privateEmail)
     ) {
-      checkStatus.filledBasicInformation = true;
+      check = true;
     } else {
-      checkStatus.filledBasicInformation = false;
+      check = false;
     }
     dispatch({
       type: 'newCandidateForm/save',
       payload: {
         checkMandatory: {
           ...checkMandatory,
-          filledBasicInformation: checkStatus.filledBasicInformation,
+          filledBasicInformation: check,
         },
       },
     });
@@ -245,15 +245,6 @@ const BasicInformation = (props) => {
     );
   };
 
-  if (loadingFetchCandidate) {
-    return (
-      <Row className={styles.BasicInformation}>
-        <div className={styles.viewLoading}>
-          <Skeleton />
-        </div>
-      </Row>
-    );
-  }
   return (
     <div className={styles.BasicInformation}>
       <Row gutter={[24, 24]}>
@@ -324,7 +315,6 @@ export default connect(
     checkMandatory,
     currentStep,
     tempData,
-    loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
     loadingUpdateByHR: loading.effects['newCandidateForm/updateByHR'],
   }),
 )(BasicInformation);
