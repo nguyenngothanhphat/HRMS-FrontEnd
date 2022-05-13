@@ -1,5 +1,5 @@
 import { Spin, Tabs } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import RequestScopeTabs from './components/RequestScopeTabs';
 import styles from './index.less';
@@ -9,18 +9,14 @@ const { TabPane } = Tabs;
 const { IN_PROGRESS, ON_HOLD } = TIMEOFF_STATUS;
 
 const ManagerRequestTable = (props) => {
-  const [leaveRequests, setLeaveRequests] = useState(0);
-  const [specialLeaveRequests, setSpecialLeaveRequests] = useState(0);
-  const [lwpRequests, setLWPRequests] = useState(0);
-  const [wfhcpRequests, setWfhcpRequests] = useState(0);
-  const [category, setCategory] = useState('ALL');
-
   const {
     dispatch,
     timeOff: {
       currentLeaveTypeTab = '',
       yourTimeOffTypes = {},
       yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
+      countTotal: { typeA = 0, typeB = 0, typeC = 0, typeD = 0 } = {},
+      currentScopeTab = '1',
     } = {},
     loadingTimeOffType = false,
     eligibleForCompOff = false,
@@ -37,25 +33,18 @@ const ManagerRequestTable = (props) => {
 
     //
 
-    const newCount = (countType) => {
-      setLeaveRequests(countType.typeA);
-      setSpecialLeaveRequests(countType.typeC);
-      setLWPRequests(countType.typeB);
-      setWfhcpRequests(countType.typeD);
-    };
-
     // get all timeoff id by status IN_PROGRESS,ON_HOLD
 
     let typeAPI = '';
-    switch (category) {
-      case 'MY':
-        typeAPI = 'timeOff/fetchLeaveRequestOfEmployee';
+    switch (currentScopeTab) {
+      case '1':
+        typeAPI = 'timeOff/fetchAllLeaveRequests';
         break;
-      case 'TEAM':
+      case '2':
         typeAPI = 'timeOff/fetchTeamLeaveRequests';
         break;
-      case 'ALL':
-        typeAPI = 'timeOff/fetchAllLeaveRequests';
+      case '3':
+        typeAPI = 'timeOff/fetchLeaveRequestOfEmployee';
         break;
       default:
         break;
@@ -68,11 +57,6 @@ const ManagerRequestTable = (props) => {
         type: typeId,
         isCountTotal: true,
       },
-    }).then((res) => {
-      const { data: { countType = {} } = {}, statusCode } = res;
-      if (statusCode === 200) {
-        newCount(countType);
-      }
     });
   };
 
@@ -124,7 +108,7 @@ const ManagerRequestTable = (props) => {
 
   useEffect(() => {
     countInProgress();
-  }, [category]);
+  }, [currentScopeTab]);
 
   const renderTableTitle = {
     left: (
@@ -152,40 +136,33 @@ const ManagerRequestTable = (props) => {
           destroyInactiveTabPane
         >
           <>
-            <TabPane tab={`Leave Requests (${addZeroToNumber(leaveRequests)})`} key="1">
+            <TabPane tab={`Leave Requests (${addZeroToNumber(typeA)})`} key="1">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
-                setCategory={setCategory}
                 tab={1}
                 tabName="Leave Requests"
                 type={1}
               />
             </TabPane>
-            <TabPane
-              tab={`Special Leave Requests (${addZeroToNumber(specialLeaveRequests)})`}
-              key="2"
-            >
+            <TabPane tab={`Special Leave Requests (${addZeroToNumber(typeC)})`} key="2">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
-                setCategory={setCategory}
                 tab={2}
                 tabName="Special Leave Requests"
                 type={1}
               />
             </TabPane>
-            <TabPane tab={`LWP Requests (${addZeroToNumber(lwpRequests)})`} key="3">
+            <TabPane tab={`LWP Requests (${addZeroToNumber(typeB)})`} key="3">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
-                setCategory={setCategory}
                 tab={3}
                 tabName="LWP Requests"
                 type={1}
               />
             </TabPane>
-            <TabPane tab={`WFH/CP Requests (${addZeroToNumber(wfhcpRequests)})`} key="4">
+            <TabPane tab={`WFH/CP Requests (${addZeroToNumber(typeD)})`} key="4">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
-                setCategory={setCategory}
                 tab={4}
                 tabName="WFH/CP Requests"
                 type={1}
