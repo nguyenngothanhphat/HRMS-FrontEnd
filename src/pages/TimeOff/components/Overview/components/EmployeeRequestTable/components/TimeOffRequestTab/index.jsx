@@ -151,7 +151,7 @@ const TimeOffRequestTab = (props) => {
     if (timeOffTypes.length > 0) {
       fetchData();
     }
-  }, [selectedTabNumber, page, search, fromDate, toDate, JSON.stringify(timeOffTypes)]);
+  }, [selectedTabNumber, page, limit, search, fromDate, toDate, JSON.stringify(timeOffTypes)]);
 
   const dataNumber = {
     inProgressLength,

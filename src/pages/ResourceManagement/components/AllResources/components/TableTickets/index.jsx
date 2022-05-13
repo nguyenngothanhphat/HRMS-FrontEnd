@@ -68,15 +68,19 @@ const rowSize = 10;
 const pagination = {
   position: ['bottomLeft'],
   total: 30,
-  showTotal: (total, range) => (
+  showTotal: (totals, range) => (
     <span>
       Showing{' '}
       <b>
         {range[0]} - {range[1]}
       </b>{' '}
-      of
+      of {totals}
     </span>
   ),
+  // this panigation dont have anything, so i just put the standard here
+  defaultPageSize: 10,
+  showSizeChanger: true,
+  pageSizeOptions: ['10', '25', '50', '100'],
   pageSize: rowSize,
   current: 1,
   onChange: onChangePagination,

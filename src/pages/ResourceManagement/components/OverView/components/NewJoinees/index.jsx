@@ -91,6 +91,7 @@ const NewJoinees = (props) => {
     setApplied(0);
     form?.resetFields();
   };
+
   const renderOption = () => {
     return (
       <div className={styles.optionContainer}>

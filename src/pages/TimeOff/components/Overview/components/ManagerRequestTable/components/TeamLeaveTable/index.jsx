@@ -50,8 +50,6 @@ class TeamLeaveTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      // pageSelected: 1,
-      rowSize: 10,
       selectedRowKeys: [],
       commentModalVisible: false,
       rejectingPayload: {},
@@ -296,11 +294,6 @@ class TeamLeaveTable extends PureComponent {
 
   // pagination
   onChangePagination = (pageNumber, pageSize) => {
-    this.setState({
-      rowSize: pageSize,
-      // pageSelected: pageNumber,
-    });
-
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/savePaging',
@@ -464,15 +457,7 @@ class TeamLeaveTable extends PureComponent {
       isHR = false,
     } = this.props;
 
-    const {
-      selectedRowKeys,
-      // pageSelected,
-      commentModalVisible,
-      rejectingPayload,
-      rejectMultiple,
-      rowSize,
-    } = this.state;
-    // const rowSize = 10;
+    const { selectedRowKeys, commentModalVisible, rejectingPayload, rejectMultiple } = this.state;
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -494,10 +479,10 @@ class TeamLeaveTable extends PureComponent {
           of {totals}{' '}
         </span>
       ),
-      defaultPageSize: rowSize,
+      defaultPageSize: 10,
       showSizeChanger: true,
       pageSizeOptions: ['10', '25', '50', '100'],
-      pageSize: rowSize,
+      pageSize: limit,
       current: page,
       onChange: this.onChangePagination,
     };
