@@ -124,11 +124,8 @@ const ManagerTicket = (props) => {
   useEffect(() => {
     if (!tabName) {
       history.replace(`/ticket-management/all-tickets`);
-    } else {
-      // fetchListAllTicket();
-      // fetchToTalList();
-      fetchLocationList();
     }
+    fetchLocationList();
 
     return () => {
       dispatch({

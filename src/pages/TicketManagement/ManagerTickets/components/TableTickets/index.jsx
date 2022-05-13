@@ -298,131 +298,131 @@ const TableTickets = (props) => {
         },
         sortDirections: ['ascend', 'descend'],
       },
-      {
-        title: 'Requester Name',
-        dataIndex: 'employeeRaise',
-        key: 'requesterName',
-        render: (employeeRaise = {}) => {
-          return (
-            <UserProfilePopover
-              placement="top"
-              trigger="hover"
-              data={{ ...employeeRaise, ...employeeRaise?.generalInfo }}
-            >
-              <span
-                className={styles.userID}
-                onClick={() => viewProfile(employeeRaise?.generalInfo?.userId || '')}
-              >
-                {!isEmpty(employeeRaise?.generalInfo)
-                  ? `${employeeRaise?.generalInfo?.legalName} (${employeeRaise?.generalInfo?.userId})`
-                  : ''}
-              </span>
-            </UserProfilePopover>
-          );
-        },
-        sorter: (a, b) => {
-          return a.employeeRaise.generalInfo && a.employeeRaise.generalInfo?.legalName
-            ? a.employeeRaise.generalInfo?.legalName.localeCompare(
-                `${b.employeeRaise.generalInfo?.legalName}`,
-              )
-            : null;
-        },
-        sortDirections: ['ascend', 'descend'],
-      },
-      {
-        title: 'Location',
-        dataIndex: 'location',
-        key: 'location',
-        render: (location) => {
-          if (location) {
-            const locationNew = locationsList.find((val) => val._id === location);
+      // {
+      //   title: 'Requester Name',
+      //   dataIndex: 'employeeRaise',
+      //   key: 'requesterName',
+      //   render: (employeeRaise = {}) => {
+      //     return (
+      //       <UserProfilePopover
+      //         placement="top"
+      //         trigger="hover"
+      //         data={{ ...employeeRaise, ...employeeRaise?.generalInfo }}
+      //       >
+      //         <span
+      //           className={styles.userID}
+      //           onClick={() => viewProfile(employeeRaise?.generalInfo?.userId || '')}
+      //         >
+      //           {!isEmpty(employeeRaise?.generalInfo)
+      //             ? `${employeeRaise?.generalInfo?.legalName} (${employeeRaise?.generalInfo?.userId})`
+      //             : ''}
+      //         </span>
+      //       </UserProfilePopover>
+      //     );
+      //   },
+      //   sorter: (a, b) => {
+      //     return a.employeeRaise.generalInfo && a.employeeRaise.generalInfo?.legalName
+      //       ? a.employeeRaise.generalInfo?.legalName.localeCompare(
+      //           `${b.employeeRaise.generalInfo?.legalName}`,
+      //         )
+      //       : null;
+      //   },
+      //   sortDirections: ['ascend', 'descend'],
+      // },
+      // {
+      //   title: 'Location',
+      //   dataIndex: 'location',
+      //   key: 'location',
+      //   render: (location) => {
+      //     if (location) {
+      //       const locationNew = locationsList.find((val) => val._id === location);
 
-            return (
-              <Popover
-                content={locationContent(location)}
-                title={locationNew?.name}
-                trigger="hover"
-              >
-                <span
-                  style={{ wordWrap: 'break-word', wordBreak: 'break-word', cursor: 'pointer' }}
-                  onMouseEnter={setCurrentTime}
-                >
-                  {locationNew?.name}
-                </span>
-              </Popover>
-            );
-          }
-          return '';
-        },
-        sorter: (a, b) => {
-          const locationA = locationsList.find((val) => val._id === a.location);
-          const locationB = locationsList.find((val) => val._id === b.location);
-          if (locationA && locationB) {
-            return locationA.name.localeCompare(locationB.name);
-          }
-          return null;
-        },
-        sortDirections: ['ascend', 'descend'],
-      },
+      //       return (
+      //         <Popover
+      //           content={locationContent(location)}
+      //           title={locationNew?.name}
+      //           trigger="hover"
+      //         >
+      //           <span
+      //             style={{ wordWrap: 'break-word', wordBreak: 'break-word', cursor: 'pointer' }}
+      //             onMouseEnter={setCurrentTime}
+      //           >
+      //             {locationNew?.name}
+      //           </span>
+      //         </Popover>
+      //       );
+      //     }
+      //     return '';
+      //   },
+      //   sorter: (a, b) => {
+      //     const locationA = locationsList.find((val) => val._id === a.location);
+      //     const locationB = locationsList.find((val) => val._id === b.location);
+      //     if (locationA && locationB) {
+      //       return locationA.name.localeCompare(locationB.name);
+      //     }
+      //     return null;
+      //   },
+      //   sortDirections: ['ascend', 'descend'],
+      // },
 
-      {
-        title: 'Assigned To',
-        dataIndex: 'employeeAssignee',
-        key: 'employeeAssignee',
-        fixed: 'right',
-        render: (employeeAssignee, row) => {
-          if (employeeAssignee) {
-            return (
-              <UserProfilePopover
-                placement="top"
-                trigger="hover"
-                data={{ ...employeeAssignee, ...employeeAssignee?.generalInfo }}
-              >
-                <span
-                  className={styles.userID}
-                  style={{ color: '#2c6df9' }}
-                  onClick={() => viewProfile(employeeAssignee?.generalInfo?.userId || '')}
-                >
-                  {employeeAssignee?.generalInfo?.legalName}
-                </span>
-              </UserProfilePopover>
-            );
-          }
-          return (
-            <Popover
-              trigger="click"
-              overlayClassName={styles.dropdownPopover}
-              content={renderMenuDropdown()}
-              placement="bottomRight"
-            >
-              <div
-                onClick={() => handleClickSelect(row.id)}
-                style={{
-                  width: 'fit-content',
-                  cursor: 'pointer',
-                  color: '#2c6df9',
-                }}
-              >
-                Select User &emsp;
-                <DownOutlined />
-              </div>
-            </Popover>
-          );
-        },
-        sorter: (a, b) => {
-          if (
-            a.employeeAssignee?.generalInfo?.legalName &&
-            b.employeeAssignee?.generalInfo?.legalName
-          )
-            return a.employeeAssignee.generalInfo && a.employeeAssignee.generalInfo?.legalName
-              ? a.employeeAssignee.generalInfo?.legalName.localeCompare(
-                  `${b.employeeAssignee.generalInfo?.legalName}`,
-                )
-              : null;
-          return null;
-        },
-        sortDirections: ['ascend', 'descend'],
-      },
+      // {
+      //   title: 'Assigned To',
+      //   dataIndex: 'employeeAssignee',
+      //   key: 'employeeAssignee',
+      //   fixed: 'right',
+      //   render: (employeeAssignee, row) => {
+      //     if (employeeAssignee) {
+      //       return (
+      //         <UserProfilePopover
+      //           placement="top"
+      //           trigger="hover"
+      //           data={{ ...employeeAssignee, ...employeeAssignee?.generalInfo }}
+      //         >
+      //           <span
+      //             className={styles.userID}
+      //             style={{ color: '#2c6df9' }}
+      //             onClick={() => viewProfile(employeeAssignee?.generalInfo?.userId || '')}
+      //           >
+      //             {employeeAssignee?.generalInfo?.legalName}
+      //           </span>
+      //         </UserProfilePopover>
+      //       );
+      //     }
+      //     return (
+      //       <Popover
+      //         trigger="click"
+      //         overlayClassName={styles.dropdownPopover}
+      //         content={renderMenuDropdown()}
+      //         placement="bottomRight"
+      //       >
+      //         <div
+      //           onClick={() => handleClickSelect(row.id)}
+      //           style={{
+      //             width: 'fit-content',
+      //             cursor: 'pointer',
+      //             color: '#2c6df9',
+      //           }}
+      //         >
+      //           Select User &emsp;
+      //           <DownOutlined />
+      //         </div>
+      //       </Popover>
+      //     );
+      //   },
+      //   sorter: (a, b) => {
+      //     if (
+      //       a.employeeAssignee?.generalInfo?.legalName &&
+      //       b.employeeAssignee?.generalInfo?.legalName
+      //     )
+      //       return a.employeeAssignee.generalInfo && a.employeeAssignee.generalInfo?.legalName
+      //         ? a.employeeAssignee.generalInfo?.legalName.localeCompare(
+      //             `${b.employeeAssignee.generalInfo?.legalName}`,
+      //           )
+      //         : null;
+      //     return null;
+      //   },
+      //   sortDirections: ['ascend', 'descend'],
+      // },
     ];
   };
 

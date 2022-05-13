@@ -238,7 +238,7 @@ class TicketDetailsForm extends Component {
         }
         return (
           <Tooltip placement="top" title={legalName}>
-            <Avatar size={40} icon={<UserOutlined />} />
+            <Avatar size={30} icon={<UserOutlined />} />
           </Tooltip>
         );
       });
