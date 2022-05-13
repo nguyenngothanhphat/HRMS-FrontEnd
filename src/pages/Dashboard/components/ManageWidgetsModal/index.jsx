@@ -1,6 +1,6 @@
 import { Button, Modal, Row, notification } from 'antd';
 import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import { WIDGETS } from '@/utils/dashboard';
 import styles from './index.less';
 import WidgetCard from './components/WidgetCard';
@@ -46,7 +46,7 @@ const ManageWidgetsModal = (props) => {
 
   const onCancel = () => {
     if (employeeWidgets.length === 0) {
-      notification.error({ message: 'Please choose at least one widget' });
+      history.push('/home');
     } else {
       setVisible(false);
     }

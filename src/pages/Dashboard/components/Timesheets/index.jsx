@@ -1,6 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
+import { Spin } from 'antd';
 import { getCurrentCompany } from '@/utils/authority';
 import { dateFormatAPI } from '@/utils/timeSheet';
 import LeftArrow from '@/assets/dashboard/leftArrow.svg';
@@ -17,6 +18,7 @@ const Timesheets = (props) => {
     dispatch,
     myTimesheet = [],
     currentUser: { employee: { _id: employeeId = '' } = {} } = {},
+    loadingFetch = false,
   } = props;
 
   // FUNCTION
@@ -76,7 +78,9 @@ const Timesheets = (props) => {
           {renderTimesheetAction()}
         </div>
         <div className={styles.content}>
-          <CustomCalendar selectedMonth={selectedMonth} myTimesheet={myTimesheet} />
+          <Spin spinning={loadingFetch}>
+            <CustomCalendar selectedMonth={selectedMonth} myTimesheet={myTimesheet} />
+          </Spin>
         </div>
       </div>
       <div className={styles.fillTimesheetBtn} onClick={onFillTimesheet}>
@@ -88,8 +92,9 @@ const Timesheets = (props) => {
 };
 
 export default connect(
-  ({ user: { currentUser = {} } = {}, dashboard: { myTimesheet = [] } = {} }) => ({
+  ({ user: { currentUser = {} } = {}, dashboard: { myTimesheet = [] } = {}, loading }) => ({
     myTimesheet,
     currentUser,
+    loadingFetch: loading.effects['dashboard/fetchMyTimesheetEffect'],
   }),
 )(Timesheets);
