@@ -350,10 +350,12 @@ const timeOff = {
           type: 'save',
           payload: { leaveRequests },
         });
-        yield put({
-          type: 'savePaging',
-          payload: { total },
-        });
+        if (!payload.isCountTotal) {
+          yield put({
+            type: 'savePaging',
+            payload: { total },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }
@@ -713,10 +715,12 @@ const timeOff = {
           type: 'save',
           payload: { teamLeaveRequests },
         });
-        yield put({
-          type: 'savePaging',
-          payload: { total },
-        });
+        if (!payload.isCountTotal) {
+          yield put({
+            type: 'savePaging',
+            payload: { total },
+          });
+        }
         return response;
       } catch (errors) {
         // dialog(errors);
@@ -743,10 +747,12 @@ const timeOff = {
           type: 'save',
           payload: { allLeaveRequests },
         });
-        yield put({
-          type: 'savePaging',
-          payload: { total },
-        });
+        if (!payload.isCountTotal) {
+          yield put({
+            type: 'savePaging',
+            payload: { total },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }

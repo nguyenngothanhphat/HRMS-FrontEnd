@@ -26,49 +26,22 @@ const ManagerRequestTable = (props) => {
     eligibleForCompOff = false,
   } = props;
 
-  const handleProgress = () => {
-    const typeA = [];
-    const typeB = [];
-    const typeC = [];
-    const typeD = [];
-
-    // Get all ID and Seperated ID follow type
+  const countInProgress = () => {
+    // Get all type ID
 
     const leavesTemp = [...commonLeaves, ...specialLeaves];
 
     const typeId = leavesTemp.map((item) => {
-      switch (item.type) {
-        case 'A':
-          typeA.push(item._id);
-          break;
-        case 'B':
-          typeB.push(item._id);
-          break;
-        case 'C':
-          typeC.push(item._id);
-          break;
-        case 'D':
-          typeD.push(item._id);
-          break;
-        default:
-          break;
-      }
       return item._id;
     });
 
     //
 
-    const newCount = (items) => {
-      const arrayId = items.map((item) => item?.type?._id);
-      const typeALengthTemp = arrayId.filter((i) => typeA.includes(i)).length;
-      const typeBLengthTemp = arrayId.filter((i) => typeB.includes(i)).length;
-      const typeCLengthTemp = arrayId.filter((i) => typeC.includes(i)).length;
-      const typeDLengthTemp = arrayId.filter((i) => typeD.includes(i)).length;
-
-      setLeaveRequests(typeALengthTemp);
-      setSpecialLeaveRequests(typeCLengthTemp);
-      setLWPRequests(typeBLengthTemp);
-      setWfhcpRequests(typeDLengthTemp);
+    const newCount = (countType) => {
+      setLeaveRequests(countType.typeA);
+      setSpecialLeaveRequests(countType.typeC);
+      setLWPRequests(countType.typeB);
+      setWfhcpRequests(countType.typeD);
     };
 
     // get all timeoff id by status IN_PROGRESS,ON_HOLD
@@ -93,12 +66,12 @@ const ManagerRequestTable = (props) => {
       payload: {
         status: [IN_PROGRESS, ON_HOLD],
         type: typeId,
-        page: 1,
+        isCountTotal: true,
       },
     }).then((res) => {
-      const { data: { items = [] } = {}, statusCode } = res;
+      const { data: { countType = {} } = {}, statusCode } = res;
       if (statusCode === 200) {
-        newCount(items);
+        newCount(countType);
       }
     });
   };
@@ -146,11 +119,11 @@ const ManagerRequestTable = (props) => {
 
   useEffect(() => {
     saveCurrentTypeTab('1');
-    handleProgress();
+    countInProgress();
   }, [JSON.stringify(yourTimeOffTypes)]);
 
   useEffect(() => {
-    handleProgress();
+    countInProgress();
   }, [category]);
 
   const renderTableTitle = {
