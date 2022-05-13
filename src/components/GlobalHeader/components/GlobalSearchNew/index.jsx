@@ -1,16 +1,17 @@
 /* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
 import React, { useState, useEffect } from 'react';
-import { Dropdown, Input, Row, Col } from 'antd';
+import { Dropdown, Input, Row, Col, Spin } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { connect, history } from 'umi';
 import styles from './index.less';
 import CardItem from './components/CardItem/index';
 import Documents from './components/Documents';
 import Ticket from './components/Ticket';
+import EmptyComponent from '@/components/Empty';
 
 const GlobalSearchNew = (props) => {
-  const { dispatch, employees, employeeDoc, tickets, keySearch } = props;
+  const { dispatch, employees, employeeDoc, tickets, keySearch, loadingFetch = false } = props;
   const [visible, setVisible] = useState(false);
   const [text, setText] = useState('');
 
@@ -54,90 +55,104 @@ const GlobalSearchNew = (props) => {
   };
   const menu = (
     <div className={styles.resultSearch}>
-      {employees.length > 0 && (
-        <div className={styles.blog}>
-          <div className={styles.blog__title}>
-            <div className={styles.type}>Employee</div>
-            <div className={styles.showMore} onClick={() => onShowMore('employees')}>
-              Show more
+      <Spin spinning={loadingFetch}>
+        {employees.length === 0 && employeeDoc.length === 0 && tickets.length === 0 && (
+          <EmptyComponent />
+        )}
+        {employees.length > 0 && (
+          <div className={styles.blog}>
+            <div className={styles.blog__title}>
+              <div className={styles.type}>Employee</div>
+              <div className={styles.showMore} onClick={() => onShowMore('employees')}>
+                Show more
+              </div>
+            </div>
+            <div className={styles.blog__content}>
+              <Row gutter={[24, 24]}>
+                {employees.map((item, index) => {
+                  const {
+                    titleInfo: { name: title = '' } = {},
+                    generalInfo: {
+                      avatar = '',
+                      userId,
+                      workNumber,
+                      firstName = '',
+                      middleName = '',
+                      lastName = '',
+                      legalName,
+                    },
+                  } = item;
+                  if (index < 3)
+                    return (
+                      <Col span={8}>
+                        <CardItem
+                          avatar={avatar}
+                          userId={userId}
+                          fullName={legalName || `${firstName}${` ${middleName}`}${` ${lastName}`}`}
+                          workNumber={workNumber}
+                          title={title}
+                          onClick={onClose}
+                        />
+                      </Col>
+                    );
+                })}
+              </Row>
             </div>
           </div>
-          <div className={styles.blog__content}>
-            <Row gutter={[24, 24]}>
-              {employees.map((item, index) => {
-                const {
-                  titleInfo: { name: title = '' } = {},
-                  generalInfo: {
-                    avatar = '',
-                    userId,
-                    workNumber,
-                    firstName = '',
-                    middleName = '',
-                    lastName = '',
-                    legalName,
-                  },
-                } = item;
-                if (index < 3)
-                  return (
-                    <Col span={8}>
-                      <CardItem
-                        avatar={avatar}
-                        userId={userId}
-                        fullName={legalName || `${firstName}${` ${middleName}`}${` ${lastName}`}`}
-                        workNumber={workNumber}
-                        title={title}
-                        onClick={onClose}
-                      />
-                    </Col>
-                  );
-              })}
-            </Row>
-          </div>
-        </div>
-      )}
-      {employeeDoc.length > 0 && (
-        <div className={styles.blog}>
-          <div className={styles.blog__title}>
-            <div className={styles.type}>Documents</div>
-            <div className={styles.showMore} onClick={() => onShowMore('documents')}>
-              Show more
+        )}
+        {employeeDoc.length > 0 && (
+          <div className={styles.blog}>
+            <div className={styles.blog__title}>
+              <div className={styles.type}>Documents</div>
+              <div className={styles.showMore} onClick={() => onShowMore('documents')}>
+                Show more
+              </div>
+            </div>
+            <div className={styles.blog__content}>
+              <Documents listDocument={employeeDoc} onClick={onClose} />
             </div>
           </div>
-          <div className={styles.blog__content}>
-            <Documents listDocument={employeeDoc} onClick={onClose} />
-          </div>
-        </div>
-      )}
-      {tickets.length > 0 && (
-        <div className={styles.blog}>
-          <div className={styles.blog__title}>
-            <div className={styles.type}>Tickets</div>
-            <div className={styles.showMore} onClick={() => onShowMore('tickets')}>
-              Show more
+        )}
+        {tickets.length > 0 && (
+          <div className={styles.blog}>
+            <div className={styles.blog__title}>
+              <div className={styles.type}>Tickets</div>
+              <div className={styles.showMore} onClick={() => onShowMore('tickets')}>
+                Show more
+              </div>
+            </div>
+            <div className={styles.blog__content}>
+              <Row gutter={[24, 24]}>
+                {tickets.map((item, index) => {
+                  const { ticketID, title, id, employee } = item;
+                  if (index < 3)
+                    return (
+                      <Col span={8}>
+                        <Ticket
+                          ticketId={ticketID}
+                          title={title}
+                          id={id}
+                          employee={employee}
+                          onClick={onClose}
+                        />
+                      </Col>
+                    );
+                })}
+              </Row>
             </div>
           </div>
-          <div className={styles.blog__content}>
-            <Row gutter={[24, 24]}>
-              {tickets.map((item, index) => {
-                const { ticketID, title, id, employee } = item;
-                if (index < 3)
-                  return (
-                    <Col span={8}>
-                      <Ticket
-                        ticketId={ticketID}
-                        title={title}
-                        id={id}
-                        employee={employee}
-                        onClick={onClose}
-                      />
-                    </Col>
-                  );
-              })}
-            </Row>
-          </div>
-        </div>
-      )}
-      <div className={styles.advancedSearch}>
+        )}
+      </Spin>
+
+      <div
+        className={styles.advancedSearch}
+        style={{
+          borderTop:
+            employees.length === 0 && employeeDoc.length === 0 && tickets.length === 0
+              ? '1px solid #EAECEF'
+              : null,
+        }}
+      >
         <div className={styles.advancedSearch__text} onClick={onAdvancedSearch}>
           Advanced Search
         </div>
@@ -153,6 +168,7 @@ const GlobalSearchNew = (props) => {
         onVisibleChange={handleChangeVisible}
         // destroyPopupOnHide
         overlayClassName={styles.searchDropdown}
+        placement="bottomRight"
       >
         <Input
           placeholder="Search"
@@ -171,5 +187,12 @@ export default connect(
       keySearch,
       globalSearch: { employees, employeeDoc, tickets },
     },
-  }) => ({ keySearch, employees, employeeDoc, tickets }),
+    loading,
+  }) => ({
+    keySearch,
+    employees,
+    employeeDoc,
+    tickets,
+    loadingFetch: loading.effects['searchAdvance/searchGlobal'],
+  }),
 )(GlobalSearchNew);
