@@ -46,7 +46,7 @@ class PopoverInfoTimeSheet extends Component {
     const locationName = `${state}, ${countryName}`;
 
     return (
-      <div className={styles.popupContent}>
+      <div className={styles.PopoverInfoTimeSheet}>
         <div className={styles.generalInfo}>
           <div className={styles.avatar}>
             <Avatar src={avatar} size={55} icon={<UserOutlined />} />
@@ -127,9 +127,9 @@ class PopoverInfoTimeSheet extends Component {
             <Tooltip title="LinkedIn">
               <a
                 onClick={() => {
-                  if (linkedIn === '') message.warning('LinkedIn is empty');
+                  if (!linkedIn) message.warning('LinkedIn is empty');
                 }}
-                href={linkedIn === '' ? null : linkedIn}
+                href={linkedIn || null}
                 target="_blank"
                 rel="noopener noreferrer"
               >

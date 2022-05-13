@@ -95,7 +95,7 @@ const WeeklyTable = (props) => {
           );
         },
         sorter: (a, b) => {
-          return a.legalName.toString() && a.legalName.toString().localeCompare(`${b.legalName}`);
+          return a.legalName && b.legalName ? a.legalName.localeCompare(b.legalName) : false;
         },
 
         sortDirections: ['ascend', 'descend'],
@@ -106,7 +106,9 @@ const WeeklyTable = (props) => {
         key: 'department',
         render: (department = {}) => department.name,
         sorter: (a, b) => {
-          return a.department.name && a.department.name.localeCompare(`${b.department.name}`);
+          return a.department.name && b.department.name
+            ? a.department.name.localeCompare(b.department.name)
+            : false;
         },
         sortDirections: ['ascend', 'descend'],
       },
@@ -130,7 +132,7 @@ const WeeklyTable = (props) => {
               className={styles.managerName}
               to={() => handleProfileEmployee(manager.tenantId, manager.userId)}
             >
-              {!isEmpty(manager?.employeeId) ? `${manager.legalName}` : ''}
+              {manager?.employeeId ? manager.legalName : ''}
             </Link>
           </Popover>
         ),
@@ -152,7 +154,9 @@ const WeeklyTable = (props) => {
           });
         },
         sorter: (a, b) => {
-          return a.projects.toString() && a.projects.toString().localeCompare(`${b.projects}`);
+          return a.projects.toString() && b.projects.toString()
+            ? a.projects.toString().localeCompare(b.legalName)
+            : false;
         },
         sortDirections: ['ascend', 'descend'],
       },
@@ -177,10 +181,10 @@ const WeeklyTable = (props) => {
         align: 'center',
         render: (leaveTaken, row) => {
           const { totalLeave = 0 } = row;
-          return `${leaveTaken}`;
+          return leaveTaken;
         },
         sorter: (a, b) => {
-          return a.leaveTaken && a.leaveTaken - b.leaveTaken;
+          return a.leaveTaken && b.leaveTaken ? a.leaveTaken - b.leaveTaken : false;
         },
         sortDirections: ['ascend', 'descend'],
       },
