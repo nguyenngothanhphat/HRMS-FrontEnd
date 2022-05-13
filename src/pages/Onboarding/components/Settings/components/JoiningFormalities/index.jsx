@@ -88,9 +88,7 @@ const JoiningFormalities = (props) => {
       key: 'createdBy',
       width: 150,
       render: (createdBy) => (
-        <div className={styles.blueText}>
-          {createdBy ? createdBy.generalInfoInfo.legalName : ''}
-        </div>
+        <div className={styles.blueText}>{createdBy?.generalInfoInfo?.legalName || ''}</div>
       ),
     },
     {
