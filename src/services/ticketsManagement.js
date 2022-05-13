@@ -104,7 +104,7 @@ export async function getLocationList(payload) {
 }
 
 export async function getSupportTeamList(payload) {
-  return request('/api/settingtickettenant/get-by-condition', {
+  return request('/api/settingtickettenant/list', {
     method: 'GET',
     params: payload,
   });

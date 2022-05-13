@@ -42,26 +42,23 @@
     }
   }
 }
-:global {
-  .dropDown__employee {
-    .ant-dropdown-menu {
-      right: 40px !important;
-      width: unset !important;
-      padding: 8px;
-      overflow-y: unset !important;
-      background: #ffffff;
+.dropdownPopover {
+  :global {
+    .ant-popover-inner-content {
+      padding: 5px 0;
+    }
+    .ant-popover-inner {
       border-radius: 6px;
     }
-    .ant-table-row:hover .ant-dropdown-trigger {
-      background: #fafafa !important;
-    }
   }
-  .ant-dropdown-trigger {
-    color: #2c6df9 !important;
-    border: none !important;
-    box-shadow: none !important;
+  .employee {
+    padding: 8px 16px;
+    cursor: pointer;
+    span {
+      font-size: 13px;
+    }
     &:hover {
-      cursor: pointer;
+      background: #f5f5f5;
     }
   }
 }

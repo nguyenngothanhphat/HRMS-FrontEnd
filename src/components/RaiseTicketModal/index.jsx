@@ -56,7 +56,6 @@ const RaiseTicketModal = (props) => {
   const [attachment, setAttachment] = useState('');
 
   // permission setting
-  const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
 
   const renderModalHeader = () => {
     return (
@@ -70,10 +69,12 @@ const RaiseTicketModal = (props) => {
   };
   useEffect(() => {
     if (visible) {
+      const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
       dispatch({
         type: 'ticketManagement/fetchSupportTeamList',
         payload: {
           permissions,
+          country,
         },
       });
       dispatch({
@@ -148,6 +149,7 @@ const RaiseTicketModal = (props) => {
   };
 
   const refreshData = () => {
+    const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
     let payload = {
       status: ['New'],
     };
