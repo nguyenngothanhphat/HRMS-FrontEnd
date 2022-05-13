@@ -21,27 +21,7 @@ class RequestScopeTabs extends PureComponent {
   }
 
   saveCurrentTab = (type) => {
-    const { dispatch, timeOff: { currentScopeTab = '' } = {}, setCategory = () => {} } = this.props;
-
-    // get category by tabNumber to call API
-    switch (type) {
-      case '1':
-        setCategory('ALL');
-        break;
-
-      case '2':
-        setCategory('TEAM');
-        break;
-
-      case '3':
-        setCategory('MY');
-        break;
-
-      default:
-        break;
-    }
-
-    //
+    const { dispatch, timeOff: { currentScopeTab = '' } = {} } = this.props;
 
     if (currentScopeTab !== String(type))
       dispatch({

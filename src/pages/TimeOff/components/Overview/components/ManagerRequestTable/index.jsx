@@ -24,17 +24,14 @@ const ManagerRequestTable = (props) => {
 
   const countInProgress = () => {
     // Get all type ID
-
     const leavesTemp = [...commonLeaves, ...specialLeaves];
 
     const typeId = leavesTemp.map((item) => {
       return item._id;
     });
-
     //
 
     // get all timeoff id by status IN_PROGRESS,ON_HOLD
-
     let typeAPI = '';
     switch (currentScopeTab) {
       case '1':
