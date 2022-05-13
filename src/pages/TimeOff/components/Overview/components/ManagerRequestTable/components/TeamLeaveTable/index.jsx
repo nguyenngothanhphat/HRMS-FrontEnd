@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Table, Tag, Tooltip, Spin } from 'antd';
+import { Table, Tag, Tooltip, Spin, Popover } from 'antd';
 import { history, connect } from 'umi';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -12,6 +12,7 @@ import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import RejectCommentModal from '../RejectCommentModal';
 
 import styles from './index.less';
+import UserProfile from '../UserProfile';
 
 const { IN_PROGRESS, REJECTED, ON_HOLD } = TIMEOFF_STATUS;
 
@@ -59,6 +60,25 @@ class TeamLeaveTable extends PureComponent {
     };
   }
 
+  // getRowSpan = (children, row, index) => {
+  //   const obj = {
+  //     children,
+  //     props: {},
+  //   };
+
+  //   const { data = [] } = this.props;
+  //   const rowLength = data.filter((x) => x.employee.employeeId === row.employee.employeeId).length;
+  //   const firstIndex = data.findIndex((x) => x.employee.employeeId === row.employee.employeeId);
+  //   if (rowLength < 2) {
+  //     obj.props.rowSpan = rowLength;
+  //   } else if (firstIndex === index) {
+  //     obj.props.rowSpan = rowLength;
+  //   } else {
+  //     obj.props.rowSpan = 0;
+  //   }
+  //   return obj;
+  // };
+
   getColumns = (TYPE) => {
     return [
       {
@@ -90,7 +110,18 @@ class TeamLeaveTable extends PureComponent {
         dataIndex: 'employee',
         width: COLUMN_WIDTH[TYPE].REQUESTEE,
         align: 'left',
-        render: (employee) => <span>{employee?.generalInfo?.legalName || '-'}</span>,
+        render: (employee) => {
+          return (
+            <Popover
+              placement="bottomRight"
+              overlayClassName={styles.UserProfilePopover}
+              content={<UserProfile employeeId={employee.employeeId} />}
+              trigger="hover"
+            >
+              <span>{employee?.generalInfo?.legalName}</span>
+            </Popover>
+          );
+        },
       },
       {
         title: 'Type',
