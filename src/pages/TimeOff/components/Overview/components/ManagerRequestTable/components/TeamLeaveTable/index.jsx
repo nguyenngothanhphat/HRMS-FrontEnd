@@ -60,25 +60,6 @@ class TeamLeaveTable extends PureComponent {
     };
   }
 
-  // getRowSpan = (children, row, index) => {
-  //   const obj = {
-  //     children,
-  //     props: {},
-  //   };
-
-  //   const { data = [] } = this.props;
-  //   const rowLength = data.filter((x) => x.employee.employeeId === row.employee.employeeId).length;
-  //   const firstIndex = data.findIndex((x) => x.employee.employeeId === row.employee.employeeId);
-  //   if (rowLength < 2) {
-  //     obj.props.rowSpan = rowLength;
-  //   } else if (firstIndex === index) {
-  //     obj.props.rowSpan = rowLength;
-  //   } else {
-  //     obj.props.rowSpan = 0;
-  //   }
-  //   return obj;
-  // };
-
   getColumns = (TYPE) => {
     return [
       {
