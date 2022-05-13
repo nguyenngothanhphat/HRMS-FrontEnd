@@ -52,9 +52,7 @@ const WeeklyTable = (props) => {
   const [employeeDetailModalVisible, setEmployeeDetailModalVisible] = useState(false);
   const handleProfileEmployee = (tenantId, userId) => {
     localStorage.setItem('tenantCurrentEmployee', tenantId);
-    const pathname = isOwner()
-      ? `/employees/employee-profile/${userId}`
-      : `/directory/employee-profile/${userId}`;
+    const pathname = isOwner()`/directory/employee-profile/${userId}`;
     return pathname;
   };
   const getColorByIndex = (index) => {
@@ -137,9 +135,9 @@ const WeeklyTable = (props) => {
           </Popover>
         ),
         sorter: (a, b) => {
-          return a.manager && a.manager?.legalName
-            ? a.manager?.legalName.localeCompare(`${b.manager?.legalName}`)
-            : null;
+          return a.manager?.legalName && b.manager?.legalName
+            ? a.manager.legalName.localeCompare(b.manager.legalName)
+            : false;
         },
         sortDirections: ['ascend', 'descend'],
       },
@@ -154,9 +152,7 @@ const WeeklyTable = (props) => {
           });
         },
         sorter: (a, b) => {
-          return a.projects.toString() && b.projects.toString()
-            ? a.projects.toString().localeCompare(b.legalName)
-            : false;
+          return a.projects && b.projects ? a.projects.localeCompare(b.legalName) : false;
         },
         sortDirections: ['ascend', 'descend'],
       },
@@ -170,7 +166,9 @@ const WeeklyTable = (props) => {
           return `${userSpentInDay}/${totalWorkingDay} (${totalWorkingDayInHours} hours)`;
         },
         sorter: (a, b) => {
-          return a.totalWorkingDayInHours && a.totalWorkingDayInHours - b.totalWorkingDayInHours;
+          return a.totalWorkingDayInHours && b.totalWorkingDayInHours
+            ? a.totalWorkingDayInHours - b.totalWorkingDayInHours
+            : false;
         },
         sortDirections: ['ascend', 'descend'],
       },
@@ -195,7 +193,9 @@ const WeeklyTable = (props) => {
         align: 'center',
         render: (userSpentInHours) => `${userSpentInHours} hours`,
         sorter: (a, b) => {
-          return a.userSpentInHours && a.userSpentInHours - b.userSpentInHours;
+          return a.userSpentInHours && b.userSpentInHours
+            ? a.userSpentInHours - b.userSpentInHours
+            : false;
         },
         sortDirections: ['ascend', 'descend'],
       },
