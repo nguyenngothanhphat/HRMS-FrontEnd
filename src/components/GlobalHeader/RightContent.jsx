@@ -1,10 +1,9 @@
-import { BuildOutlined } from '@ant-design/icons';
+import { BuildOutlined, BellOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import { isOwner } from '@/utils/authority';
 import ActivityLogModalContent from '@/pages/Dashboard/components/ActivityLog/components/ActivityLogModalContent';
-import MessageIcon from '@/assets/dashboard/message.svg';
 import CommonModal from '../CommonModal';
 import AvatarDropdown from './AvatarDropdown';
 import GlobalSearchNew from './components/GlobalSearchNew/index';
@@ -31,7 +30,7 @@ const GlobalHeaderRight = (props) => {
       <GlobalSearchNew />
       <QuestionDropdown />
       <div className={`${styles.action} ${styles.notify}`} onClick={() => setModalVisible(true)}>
-        <img src={MessageIcon} alt="" />
+        <BellOutlined />
       </div>
       {!(!checkIsOwner && companiesOfUser.length === 1) && (
         <>
