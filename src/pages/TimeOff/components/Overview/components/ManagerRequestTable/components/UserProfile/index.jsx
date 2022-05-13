@@ -98,17 +98,10 @@ const UserProfile = (props) => {
     const employee = allLeaveRequests.find((x) => {
       return x.employee.employeeId === employeeId;
     });
-    const { generalInfo = { workEmail: '' } } = employee || {};
-    const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'));
-    const profileUrl = `/directory/employee-profile/${userName}/general-info`;
+    const { employee: { generalInfo: { userId = '' } } = {} } = employee || {};
+    const profileUrl = `/directory/employee-profile/${userId}/general-info`;
     return (
       <div className={styles.PopoverInfoTimeOff}>
-        {/* <img
-          className={styles.closeButton}
-          src={CloseX}
-          alt=""
-          onClick={() => setShowPopover(!showPopover)}
-        /> */}
         {renderHeader(employee)}
         <div className={styles.divider} />
         {userInfo(employee)}
