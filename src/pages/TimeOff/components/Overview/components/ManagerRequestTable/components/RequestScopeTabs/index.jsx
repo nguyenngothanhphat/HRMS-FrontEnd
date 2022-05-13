@@ -22,6 +22,7 @@ class RequestScopeTabs extends PureComponent {
 
   saveCurrentTab = (type) => {
     const { dispatch, timeOff: { currentScopeTab = '' } = {} } = this.props;
+
     if (currentScopeTab !== String(type))
       dispatch({
         type: 'timeOff/save',
