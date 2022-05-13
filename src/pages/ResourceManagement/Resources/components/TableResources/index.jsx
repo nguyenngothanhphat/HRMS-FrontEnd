@@ -140,7 +140,7 @@ class TableResources extends PureComponent {
   render() {
     const {
       data = [],
-      // textEmpty = 'No Data',
+      textEmpty = 'No Results Found',
       loading,
       total,
       pageSelected,
@@ -163,13 +163,13 @@ class TableResources extends PureComponent {
           of {total}
         </span>
       ),
-      // defaultPageSize: size,
-      showSizeChanger: false,
-      // pageSizeOptions: ['10', '25', '50', '100'],
-      pageSize: data.length,
+      defaultPageSize: size,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
+      pageSize: size,
       current: pageSelected,
-      onChange: (page) => {
-        return getPageAndSize(page, size);
+      onChange: (page, pageSize) => {
+        return getPageAndSize(page, pageSize);
       },
     };
 
@@ -476,6 +476,14 @@ class TableResources extends PureComponent {
           hideOnSinglePage
           pagination={pagination}
           onChange={this.onTableChange}
+          locale={{
+            emptyText: (
+              <div className={styles.viewEmpty}>
+                <img src={empty} alt="" />
+                <p className={styles.textEmpty}>{textEmpty}</p>
+              </div>
+            ),
+          }}
           rowKey="id"
           scroll={{ x: 'max-content' }}
         />
