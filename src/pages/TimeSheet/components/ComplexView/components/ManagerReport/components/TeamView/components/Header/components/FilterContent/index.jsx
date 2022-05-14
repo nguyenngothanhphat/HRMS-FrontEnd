@@ -12,6 +12,8 @@ const FilterContent = (props) => {
     dispatch,
     timeSheet: { designationList = [], departmentList = [], employeeNameList = [] } = {},
     loadingFetchEmployeeNameList = false,
+    setForm = () => {},
+    setApplied = () => {},
   } = props;
 
   const [employeeNameListState, setEmployeeNameListState] = useState([]);
@@ -34,6 +36,7 @@ const FilterContent = (props) => {
     dispatch({
       type: 'timeSheet/fetchDesignationListEffect',
     });
+    setForm(form);
   }, []);
 
   useEffect(() => {
@@ -66,6 +69,11 @@ const FilterContent = (props) => {
   };
 
   const onFinishDebounce = debounce((values) => {
+    const filteredObj = Object.entries(values).filter(
+      ([key, value]) => value !== undefined && value.length > 0,
+    );
+    const newObj = Object.fromEntries(filteredObj);
+    setApplied(Object.keys(newObj).length);
     onFinish(values);
   }, 700);
 
