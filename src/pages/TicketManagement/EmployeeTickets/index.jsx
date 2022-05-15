@@ -6,7 +6,7 @@ import TicketQueue from './components/TicketQueue';
 import MyTickets from './components/MyTickets';
 import CheckboxMenu from '@/components/CheckboxMenu';
 import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
-import { getAuthority, getCurrentLocation } from '@/utils/authority';
+import { getCurrentLocation } from '@/utils/authority';
 import styles from './index.less';
 
 const EmployeeTicket = (props) => {
@@ -14,16 +14,11 @@ const EmployeeTicket = (props) => {
 
   const {
     dispatch,
-    selectedLocations = [],
-    employee: {
-      _id = '',
-      departmentInfo: { _id: idDepart = '' },
-      location: { headQuarterAddress: { country = '' } = {} } = {},
-    } = {},
     companyLocationList = [],
     listOffAllTicket = [],
     totalList = [],
     tabName = '',
+    permissions = [],
   } = props;
 
   const [selectedLocationsState, setSelectedLocationsState] = useState([getCurrentLocation()]);
@@ -35,65 +30,8 @@ const EmployeeTicket = (props) => {
     });
   };
 
-  const fetchListAllTicket = (status) => {
-    const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
-
-    let payload = {
-      status: [status],
-      location: selectedLocations,
-    };
-    if (permissions && permissions.length > 0) {
-      payload = {
-        ...payload,
-        permissions,
-        country,
-      };
-    }
-
-    dispatch({
-      type: 'ticketManagement/fetchListAllTicket',
-      payload,
-    });
-  };
-
-  // const fetchListEmployee = (departmentNameList) => {
-  //   dispatch({
-  //     type: 'ticketManagement/fetchListEmployee',
-  //     payload: {
-  //       department: departmentNameList,
-  //       status: 'ACTIVE',
-  //     },
-  //   });
-  // };
-
-  const fetchTotalList = () => {
-    const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
-    let payload = {
-      employeeAssignee: _id,
-      departmentAssign: idDepart,
-      location: selectedLocations,
-    };
-    if (permissions && permissions.length > 0) {
-      payload = {
-        ...payload,
-        permissions,
-        country,
-      };
-    }
-    dispatch({
-      type: 'ticketManagement/fetchToTalList',
-      payload,
-    });
-  };
-
   const handleChangeTable = (key) => {
     history.push(`/ticket-management/${key}`);
-    if (key === 'ticket-queue') {
-      fetchListAllTicket('New');
-    } else {
-      fetchListAllTicket('Assigned');
-    }
-    fetchTotalList();
   };
 
   const onLocationChange = (selection) => {
@@ -177,10 +115,10 @@ const EmployeeTicket = (props) => {
           tabBarExtraContent={renderFilterLocation()}
         >
           <TabPane tab="Ticket Queue" key="ticket-queue">
-            <TicketQueue data={listOffAllTicket} countData={totalList} />
+            <TicketQueue data={listOffAllTicket} countData={totalList} permissions={permissions} />
           </TabPane>
           <TabPane tab="My Tickets" key="my-tickets">
-            <MyTickets data={listOffAllTicket} countData={totalList} />
+            <MyTickets data={listOffAllTicket} countData={totalList} permissions={permissions} />
           </TabPane>
         </Tabs>
       </PageContainer>

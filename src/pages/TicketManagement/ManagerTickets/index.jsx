@@ -7,64 +7,17 @@ import AllTicket from './components/AllTickets';
 import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
 import styles from './index.less';
 import WorkInProgress from '@/components/WorkInProgress';
-import { getAuthority, getCurrentLocation } from '@/utils/authority';
+import { getCurrentLocation } from '@/utils/authority';
 
 const ManagerTicket = (props) => {
   const { TabPane } = Tabs;
-  const {
-    dispatch,
-    country = '',
-    selectedLocations = [],
-    tabName = '',
-    companyLocationList = [],
-    listOffAllTicket = [],
-    totalList = [],
-  } = props;
+  const { dispatch, tabName = '', companyLocationList = [], permissions = [] } = props;
 
   const [selectedLocationsState, setSelectedLocationsState] = useState([getCurrentLocation()]);
-
-  const fetchToTalList = () => {
-    const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
-    let payload = {
-      status: ['New'],
-      location: selectedLocations,
-    };
-    if (permissions && permissions.length > 0) {
-      payload = {
-        ...payload,
-        permissions,
-        country,
-      };
-    }
-    dispatch({
-      type: 'ticketManagement/fetchToTalList',
-      payload,
-    });
-  };
-
   const fetchLocationList = () => {
     dispatch({
       type: 'ticketManagement/fetchLocationList',
       payload: {},
-    });
-  };
-
-  const fetchListAllTicket = () => {
-    const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
-    let payload = {
-      status: ['New'],
-      location: selectedLocations,
-    };
-    if (permissions && permissions.length > 0) {
-      payload = {
-        ...payload,
-        permissions,
-        country,
-      };
-    }
-    dispatch({
-      type: 'ticketManagement/fetchListAllTicket',
-      payload,
     });
   };
 
@@ -152,12 +105,7 @@ const ManagerTicket = (props) => {
             <WorkInProgress />;
           </TabPane>
           <TabPane tab="All Tickets" key="all-tickets">
-            <AllTicket
-              data={listOffAllTicket}
-              countData={totalList}
-              refreshFetchTicketList={fetchListAllTicket}
-              refreshFetchTotalList={fetchToTalList}
-            />
+            <AllTicket permissions={permissions} />
           </TabPane>
         </Tabs>
       </PageContainer>
@@ -168,7 +116,6 @@ const ManagerTicket = (props) => {
 export default connect(
   ({
     user: {
-      permissions = {},
       currentUser: {
         employee: {
           location: { _id: locationId = '', headQuarterAddress: { country = '' } = {} } = {},
@@ -181,7 +128,6 @@ export default connect(
   }) => ({
     listOffAllTicket,
     totalList,
-    permissions,
     country,
     companyLocationList,
     locationId,

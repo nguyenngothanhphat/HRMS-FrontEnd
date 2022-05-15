@@ -34,25 +34,6 @@ const TableTickets = (props) => {
   const [currentTimeState, setCurrentTimeState] = useState(moment());
   const [nameSearch, setNameSearch] = useState('');
 
-  const fetchTimezone = () => {
-    const timezoneList = [];
-    companyLocationList.forEach((location) => {
-      const {
-        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
-        _id: locationId = '',
-      } = location;
-      timezoneList.push({
-        locationId,
-        timezone:
-          getTimezoneViaCity(city) ||
-          getTimezoneViaCity(state) ||
-          getTimezoneViaCity(addressLine1) ||
-          getTimezoneViaCity(addressLine2),
-      });
-    });
-    setTimezoneListState(timezoneList);
-  };
-
   const openViewTicket = (ticketID) => {
     let id = '';
 
@@ -109,6 +90,64 @@ const TableTickets = (props) => {
         }
       });
     }
+  };
+
+  const viewProfile = (userId) => {
+    history.push(`/directory/employee-profile/${userId}`);
+  };
+
+  const renderTag = (priority) => {
+    if (priority === 'High') {
+      return <div className={styles.priorityHigh}>{priority}</div>;
+    }
+    if (priority === 'Normal') {
+      return <div className={styles.priorityMedium}>{priority}</div>;
+    }
+    if (priority === 'Urgent') {
+      return <div className={styles.priorityUrgent}>{priority}</div>;
+    }
+    return <div className={styles.priorityLow}>{priority}</div>;
+  };
+
+  const onSearchDebounce = debounce((value) => {
+    setNameSearch(value);
+  }, 500);
+
+  const onChangeSearch = (e) => {
+    const formatValue = e.target.value.toLowerCase();
+    onSearchDebounce(formatValue);
+  };
+
+  const renderMenuDropdown = () => {
+    return (
+      <Suspense fallback={<Spin />}>
+        <DropdownSearch
+          onChangeSearch={onChangeSearch}
+          employeeFilterList={nameSearch ? employeeFilterList : []}
+          handleSelectChange={handleSelectChange}
+          loading={loadingFetchEmployee}
+        />
+      </Suspense>
+    );
+  };
+
+  const fetchTimezone = () => {
+    const timezoneList = [];
+    companyLocationList.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
+        _id: locationId = '',
+      } = location;
+      timezoneList.push({
+        locationId,
+        timezone:
+          getTimezoneViaCity(city) ||
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
+    setTimezoneListState(timezoneList);
   };
 
   const setCurrentTime = () => {
@@ -169,69 +208,6 @@ const TableTickets = (props) => {
             : 'Not enough data in address'}
         </span>
       </div>
-    );
-  };
-
-  const viewProfile = (userId) => {
-    history.push(`/directory/employee-profile/${userId}`);
-  };
-
-  const renderTag = (priority) => {
-    if (priority === 'High') {
-      return <div className={styles.priorityHigh}>{priority}</div>;
-    }
-    if (priority === 'Normal') {
-      return <div className={styles.priorityMedium}>{priority}</div>;
-    }
-    if (priority === 'Urgent') {
-      return <div className={styles.priorityUrgent}>{priority}</div>;
-    }
-    return <div className={styles.priorityLow}>{priority}</div>;
-  };
-
-  useEffect(() => {
-    fetchTimezone();
-  }, [JSON.stringify(companyLocationList)]);
-
-  const onSearchDebounce = debounce((value) => {
-    setNameSearch(value);
-  }, 500);
-
-  const onChangeSearch = (e) => {
-    const formatValue = e.target.value.toLowerCase();
-    onSearchDebounce(formatValue);
-  };
-
-  useEffect(() => {
-    const payload = {
-      status: 'ACTIVE',
-    };
-    if (nameSearch) {
-      payload.name = nameSearch;
-      dispatch({
-        type: 'ticketManagement/searchEmployee',
-        payload,
-      });
-    } else {
-      dispatch({
-        type: 'ticketManagement/save',
-        payload: {
-          employeeFilterList: [],
-        },
-      });
-    }
-  }, [nameSearch]);
-
-  const renderMenuDropdown = () => {
-    return (
-      <Suspense fallback={<Spin />}>
-        <DropdownSearch
-          onChangeSearch={onChangeSearch}
-          employeeFilterList={nameSearch ? employeeFilterList : []}
-          handleSelectChange={handleSelectChange}
-          loading={loadingFetchEmployee}
-        />
-      </Suspense>
     );
   };
 
@@ -298,133 +274,157 @@ const TableTickets = (props) => {
         },
         sortDirections: ['ascend', 'descend'],
       },
-      // {
-      //   title: 'Requester Name',
-      //   dataIndex: 'employeeRaise',
-      //   key: 'requesterName',
-      //   render: (employeeRaise = {}) => {
-      //     return (
-      //       <UserProfilePopover
-      //         placement="top"
-      //         trigger="hover"
-      //         data={{ ...employeeRaise, ...employeeRaise?.generalInfo }}
-      //       >
-      //         <span
-      //           className={styles.userID}
-      //           onClick={() => viewProfile(employeeRaise?.generalInfo?.userId || '')}
-      //         >
-      //           {!isEmpty(employeeRaise?.generalInfo)
-      //             ? `${employeeRaise?.generalInfo?.legalName} (${employeeRaise?.generalInfo?.userId})`
-      //             : ''}
-      //         </span>
-      //       </UserProfilePopover>
-      //     );
-      //   },
-      //   sorter: (a, b) => {
-      //     return a.employeeRaise.generalInfo && a.employeeRaise.generalInfo?.legalName
-      //       ? a.employeeRaise.generalInfo?.legalName.localeCompare(
-      //           `${b.employeeRaise.generalInfo?.legalName}`,
-      //         )
-      //       : null;
-      //   },
-      //   sortDirections: ['ascend', 'descend'],
-      // },
-      // {
-      //   title: 'Location',
-      //   dataIndex: 'location',
-      //   key: 'location',
-      //   render: (location) => {
-      //     if (location) {
-      //       const locationNew = locationsList.find((val) => val._id === location);
+      {
+        title: 'Requester Name',
+        dataIndex: 'employeeRaise',
+        key: 'requesterName',
+        render: (employeeRaise = {}) => {
+          return (
+            <UserProfilePopover
+              placement="top"
+              trigger="hover"
+              data={{ ...employeeRaise, ...employeeRaise?.generalInfo }}
+            >
+              <span
+                className={styles.userID}
+                onClick={() => viewProfile(employeeRaise?.generalInfo?.userId || '')}
+              >
+                {!isEmpty(employeeRaise?.generalInfo)
+                  ? `${employeeRaise?.generalInfo?.legalName} (${employeeRaise?.generalInfo?.userId})`
+                  : ''}
+              </span>
+            </UserProfilePopover>
+          );
+        },
+        sorter: (a, b) => {
+          return a.employeeRaise.generalInfo && a.employeeRaise.generalInfo?.legalName
+            ? a.employeeRaise.generalInfo?.legalName.localeCompare(
+                `${b.employeeRaise.generalInfo?.legalName}`,
+              )
+            : null;
+        },
+        sortDirections: ['ascend', 'descend'],
+      },
+      {
+        title: 'Location',
+        dataIndex: 'location',
+        key: 'location',
+        render: (location) => {
+          if (location) {
+            const locationNew = locationsList.find((val) => val._id === location);
 
-      //       return (
-      //         <Popover
-      //           content={locationContent(location)}
-      //           title={locationNew?.name}
-      //           trigger="hover"
-      //         >
-      //           <span
-      //             style={{ wordWrap: 'break-word', wordBreak: 'break-word', cursor: 'pointer' }}
-      //             onMouseEnter={setCurrentTime}
-      //           >
-      //             {locationNew?.name}
-      //           </span>
-      //         </Popover>
-      //       );
-      //     }
-      //     return '';
-      //   },
-      //   sorter: (a, b) => {
-      //     const locationA = locationsList.find((val) => val._id === a.location);
-      //     const locationB = locationsList.find((val) => val._id === b.location);
-      //     if (locationA && locationB) {
-      //       return locationA.name.localeCompare(locationB.name);
-      //     }
-      //     return null;
-      //   },
-      //   sortDirections: ['ascend', 'descend'],
-      // },
+            return (
+              <Popover
+                content={locationContent(location)}
+                title={locationNew?.name}
+                trigger="hover"
+              >
+                <span
+                  style={{ wordWrap: 'break-word', wordBreak: 'break-word', cursor: 'pointer' }}
+                  onMouseEnter={setCurrentTime}
+                >
+                  {locationNew?.name}
+                </span>
+              </Popover>
+            );
+          }
+          return '';
+        },
+        sorter: (a, b) => {
+          const locationA = locationsList.find((val) => val._id === a.location);
+          const locationB = locationsList.find((val) => val._id === b.location);
+          if (locationA && locationB) {
+            return locationA.name.localeCompare(locationB.name);
+          }
+          return null;
+        },
+        sortDirections: ['ascend', 'descend'],
+      },
 
-      // {
-      //   title: 'Assigned To',
-      //   dataIndex: 'employeeAssignee',
-      //   key: 'employeeAssignee',
-      //   fixed: 'right',
-      //   render: (employeeAssignee, row) => {
-      //     if (employeeAssignee) {
-      //       return (
-      //         <UserProfilePopover
-      //           placement="top"
-      //           trigger="hover"
-      //           data={{ ...employeeAssignee, ...employeeAssignee?.generalInfo }}
-      //         >
-      //           <span
-      //             className={styles.userID}
-      //             style={{ color: '#2c6df9' }}
-      //             onClick={() => viewProfile(employeeAssignee?.generalInfo?.userId || '')}
-      //           >
-      //             {employeeAssignee?.generalInfo?.legalName}
-      //           </span>
-      //         </UserProfilePopover>
-      //       );
-      //     }
-      //     return (
-      //       <Popover
-      //         trigger="click"
-      //         overlayClassName={styles.dropdownPopover}
-      //         content={renderMenuDropdown()}
-      //         placement="bottomRight"
-      //       >
-      //         <div
-      //           onClick={() => handleClickSelect(row.id)}
-      //           style={{
-      //             width: 'fit-content',
-      //             cursor: 'pointer',
-      //             color: '#2c6df9',
-      //           }}
-      //         >
-      //           Select User &emsp;
-      //           <DownOutlined />
-      //         </div>
-      //       </Popover>
-      //     );
-      //   },
-      //   sorter: (a, b) => {
-      //     if (
-      //       a.employeeAssignee?.generalInfo?.legalName &&
-      //       b.employeeAssignee?.generalInfo?.legalName
-      //     )
-      //       return a.employeeAssignee.generalInfo && a.employeeAssignee.generalInfo?.legalName
-      //         ? a.employeeAssignee.generalInfo?.legalName.localeCompare(
-      //             `${b.employeeAssignee.generalInfo?.legalName}`,
-      //           )
-      //         : null;
-      //     return null;
-      //   },
-      //   sortDirections: ['ascend', 'descend'],
-      // },
+      {
+        title: 'Assigned To',
+        dataIndex: 'employeeAssignee',
+        key: 'employeeAssignee',
+        fixed: 'right',
+        render: (employeeAssignee, row) => {
+          if (employeeAssignee) {
+            return (
+              <UserProfilePopover
+                placement="top"
+                trigger="hover"
+                data={{ ...employeeAssignee, ...employeeAssignee?.generalInfo }}
+              >
+                <span
+                  className={styles.userID}
+                  style={{ color: '#2c6df9' }}
+                  onClick={() => viewProfile(employeeAssignee?.generalInfo?.userId || '')}
+                >
+                  {employeeAssignee?.generalInfo?.legalName}
+                </span>
+              </UserProfilePopover>
+            );
+          }
+          return (
+            <Popover
+              trigger="click"
+              overlayClassName={styles.dropdownPopover}
+              content={renderMenuDropdown()}
+              placement="bottomRight"
+            >
+              <div
+                onClick={() => handleClickSelect(row.id)}
+                style={{
+                  width: 'fit-content',
+                  cursor: 'pointer',
+                  color: '#2c6df9',
+                }}
+              >
+                Select User &emsp;
+                <DownOutlined />
+              </div>
+            </Popover>
+          );
+        },
+        sorter: (a, b) => {
+          if (
+            a.employeeAssignee?.generalInfo?.legalName &&
+            b.employeeAssignee?.generalInfo?.legalName
+          )
+            return a.employeeAssignee.generalInfo && a.employeeAssignee.generalInfo?.legalName
+              ? a.employeeAssignee.generalInfo?.legalName.localeCompare(
+                  `${b.employeeAssignee.generalInfo?.legalName}`,
+                )
+              : null;
+          return null;
+        },
+        sortDirections: ['ascend', 'descend'],
+      },
     ];
   };
+
+  useEffect(() => {
+    fetchTimezone();
+  }, [JSON.stringify(companyLocationList)]);
+
+  useEffect(() => {
+    const payload = {
+      status: 'ACTIVE',
+    };
+    if (nameSearch) {
+      payload.name = nameSearch;
+      dispatch({
+        type: 'ticketManagement/searchEmployee',
+        payload,
+      });
+    } else {
+      dispatch({
+        type: 'ticketManagement/save',
+        payload: {
+          employeeFilterList: [],
+        },
+      });
+    }
+  }, [nameSearch]);
 
   const pagination = {
     position: ['bottomLeft'],

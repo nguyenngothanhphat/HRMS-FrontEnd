@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
-import { Tabs } from 'antd';
+import { Spin, Tabs } from 'antd';
 import styles from './index.less';
-import Summary from '../Summary';
 import SearchTable from '../../../components/SearchTable';
-import { getAuthority } from '@/utils/authority';
 import TableTickets from '../TableTickets';
 
 const { TabPane } = Tabs;
@@ -13,13 +11,13 @@ const AllTicket = (props) => {
   const {
     dispatch,
     country = '',
-    data = [],
-    loading,
-    loadingFilter,
-    countData = [],
+    loadingFetchTicketList = false,
+    loadingFetchTotalList = false,
+    loadingFilter = false,
+    listOffAllTicket: data = [],
+    totalList: { totalStatus = [] } = [],
     selectedLocations = [],
-    refreshFetchTicketList = () => {},
-    refreshFetchTotalList = () => {},
+    permissions = [],
   } = props;
 
   const [selectedFilterTab, setSelectedFilterTab] = useState('1');
@@ -51,27 +49,16 @@ const AllTicket = (props) => {
     }
   };
 
-  const initDataTable = (tabId, nameSearchProps, selectedLocationsProps = []) => {
-    const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
-    let payload = {
-      status: [getStatus(tabId)],
+  const initDataTable = () => {
+    const payload = {
+      status: [getStatus(selectedFilterTab)],
+      search: nameSearch,
+      permissions,
       page: pageSelected,
       limit: size,
-      location: selectedLocationsProps,
+      location: selectedLocations,
+      country,
     };
-    if (nameSearchProps) {
-      payload = {
-        ...payload,
-        search: nameSearchProps,
-      };
-    }
-    if (permissions && permissions.length > 0) {
-      payload = {
-        ...payload,
-        permissions,
-        country,
-      };
-    }
     dispatch({
       type: 'ticketManagement/fetchListAllTicket',
       payload,
@@ -79,18 +66,11 @@ const AllTicket = (props) => {
   };
 
   const fetchTotalList = () => {
-    const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
-    let payload = {
-      status: [getStatus(selectedFilterTab)],
+    const payload = {
       location: selectedLocations,
+      permissions,
+      country,
     };
-    if (permissions && permissions.length > 0) {
-      payload = {
-        ...payload,
-        permissions,
-        country,
-      };
-    }
     dispatch({
       type: 'ticketManagement/fetchToTalList',
       payload,
@@ -112,27 +92,12 @@ const AllTicket = (props) => {
   };
 
   useEffect(() => {
-    initDataTable(selectedFilterTab, nameSearch, selectedLocations);
-    fetchTotalList();
+    initDataTable();
   }, [pageSelected, size, selectedFilterTab, nameSearch, JSON.stringify(selectedLocations)]);
 
-  // return (
-  //   <div className={styles.containerTickets}>
-  //     <div className={styles.tabTickets}>
-  //       <Summary setSelectedTab={setSelectedTab} countData={countData} />
-  //       <SearchTable onChangeSearch={onChangeSearch} className={styles.searchTable} />
-  //     </div>
-  //     <TableTickets
-  //       data={data}
-  //       loading={loading || loadingFilter}
-  //       pageSelected={pageSelected}
-  //       size={size}
-  //       getPageAndSize={getPageAndSize}
-  //       refreshFetchTicketList={refreshFetchTicketList}
-  //       refreshFetchTotalList={refreshFetchTotalList}
-  //     />
-  //   </div>
-  // );
+  useEffect(() => {
+    fetchTotalList();
+  }, [nameSearch, JSON.stringify(selectedLocations)]);
 
   const onChangeTab = (activeKey) => {
     setSelectedTab(activeKey);
@@ -143,7 +108,6 @@ const AllTicket = (props) => {
   };
 
   const getCount = (value) => {
-    const { countData: { totalStatus = [] } = {} } = props;
     const find = totalStatus.find((val) => val.status === value);
     return find?.total || 0;
   };
@@ -198,15 +162,16 @@ const AllTicket = (props) => {
       >
         {tabs.map((item) => (
           <TabPane tab={`${item.title} (${item.count})`} key={item.value}>
-            <TableTickets
-              data={data}
-              loading={loading || loadingFilter}
-              pageSelected={pageSelected}
-              size={size}
-              getPageAndSize={getPageAndSize}
-              refreshFetchTicketList={refreshFetchTicketList}
-              refreshFetchTotalList={refreshFetchTotalList}
-            />
+            <Spin spinning={loadingFetchTicketList || loadingFetchTotalList || loadingFilter}>
+              <TableTickets
+                data={data}
+                pageSelected={pageSelected}
+                size={size}
+                getPageAndSize={getPageAndSize}
+                refreshFetchTicketList={initDataTable}
+                refreshFetchTotalList={fetchTotalList}
+              />
+            </Spin>
           </TabPane>
         ))}
       </Tabs>
@@ -222,11 +187,14 @@ export default connect(
         employee: { location: { headQuarterAddress: { country = '' } = {} } = {} } = {},
       } = {},
     },
-    ticketManagement: { selectedLocations = [] } = {},
+    ticketManagement: { selectedLocations = [], listOffAllTicket = [], totalList = [] } = {},
   }) => ({
+    listOffAllTicket,
+    totalList,
     selectedLocations,
     country,
-    loading: loading.effects['ticketManagement/fetchListAllTicket'],
+    loadingFetchTicketList: loading.effects['ticketManagement/fetchListAllTicket'],
+    loadingFetchTotalList: loading.effects['ticketManagement/fetchToTalList'],
     loadingFilter: loading.effects['ticketManagement/fetchListAllTicketSearch'],
   }),
 )(AllTicket);

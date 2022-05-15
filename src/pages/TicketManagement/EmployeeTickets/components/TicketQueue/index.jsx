@@ -63,18 +63,12 @@ const TicketQueue = (props) => {
 
   const fetchTotalList = () => {
     const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
-    let payload = {
+    const payload = {
       employeeAssignee: _id,
       departmentAssign: idDepart,
       location: selectedLocations,
+      permissions,
     };
-    if (permissions && permissions.length > 0) {
-      payload = {
-        ...payload,
-        permissions,
-        country,
-      };
-    }
     dispatch({
       type: 'ticketManagement/fetchToTalList',
       payload,
