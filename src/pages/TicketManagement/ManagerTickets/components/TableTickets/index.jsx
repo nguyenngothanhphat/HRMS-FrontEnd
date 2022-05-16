@@ -1,76 +1,40 @@
-import React, { PureComponent } from 'react';
-import { Table, Dropdown, Menu, Input, Empty, Popover } from 'antd';
-import { DownOutlined, SearchOutlined } from '@ant-design/icons';
+import { DownOutlined } from '@ant-design/icons';
+import { Popover, Spin, Table } from 'antd';
+import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
-import { history, connect } from 'umi';
-import { isEmpty } from 'lodash';
+import React, { Suspense, useEffect, useState } from 'react';
+import { connect, history } from 'umi';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import UserProfilePopover from '@/pages/TicketManagement/components/UserProfilePopover';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
-
 import styles from './index.less';
 
-@connect(
-  ({
-    loading,
-    ticketManagement: { listEmployee = [], locationsList = [] } = {},
-    user: { currentUser: { employee = {} } = {} } = {},
-    location: { companyLocationList = [] },
-  }) => ({
-    listEmployee,
-    locationsList,
-    employee,
-    companyLocationList,
-    loadingUpdate: loading.effects['ticketManagement/updateTicket'],
-  }),
-)
-class TableTickets extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      ticket: {},
-      // visible: false,
-      search: [],
-      currentTime: moment(),
-      timezoneList: [],
-    };
-  }
+const DropdownSearch = React.lazy(() => import('../DropdownSearch'));
 
-  componentDidMount = () => {
-    this.fetchTimezone();
-  };
+const TableTickets = (props) => {
+  const {
+    companyLocationList = [],
+    data = [],
+    dispatch,
+    employee: { _id: employeeId = '' },
+    locationsList = [],
+    textEmpty = 'No tickets found',
+    loading = false,
+    pageSelected,
+    size,
+    getPageAndSize = () => {},
+    refreshFetchTicketList = () => {},
+    refreshFetchTotalList = () => {},
+    employeeFilterList = [],
+    loadingFetchEmployee = false,
+  } = props;
 
-  componentDidUpdate(prevProps) {
-    const { companyLocationList = [] } = this.props;
-    if (JSON.stringify(prevProps.companyLocationList) !== JSON.stringify(companyLocationList)) {
-      this.fetchTimezone();
-    }
-  }
+  const [timezoneListState, setTimezoneListState] = useState([]);
+  const [ticket, setTicket] = useState({});
+  const [currentTimeState, setCurrentTimeState] = useState(moment());
+  const [nameSearch, setNameSearch] = useState('');
 
-  fetchTimezone = () => {
-    const { companyLocationList = [] } = this.props;
-    const timezoneList = [];
-    companyLocationList.forEach((location) => {
-      const {
-        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
-        _id = '',
-      } = location;
-      timezoneList.push({
-        locationId: _id,
-        timezone:
-          getTimezoneViaCity(city) ||
-          getTimezoneViaCity(state) ||
-          getTimezoneViaCity(addressLine1) ||
-          getTimezoneViaCity(addressLine2),
-      });
-    });
-    this.setState({
-      timezoneList,
-    });
-  };
-
-  openViewTicket = (ticketID) => {
-    const { data = [] } = this.props;
+  const openViewTicket = (ticketID) => {
     let id = '';
 
     data.forEach((item) => {
@@ -84,19 +48,12 @@ class TableTickets extends PureComponent {
     }
   };
 
-  handleClickSelect = (value) => {
-    const { data = [] } = this.props;
-    const ticket = data.find((val) => val.id === value);
-    // const { visible } = this.state;
-    this.setState({ ticket });
+  const handleClickSelect = (value) => {
+    const result = data.find((val) => val.id === value);
+    setTicket(result);
   };
 
-  handleSelectChange = (value) => {
-    const {
-      dispatch,
-      employee: { _id },
-    } = this.props;
-    const { ticket } = this.state;
+  const handleSelectChange = (value) => {
     const {
       id = '',
       employee_raise: employeeRaise = '',
@@ -123,30 +80,90 @@ class TableTickets extends PureComponent {
           ccList,
           attachments,
           departmentAssign,
-          employee: _id,
+          employee: employeeId,
         },
+      }).then((res) => {
+        const { statusCode = '' } = res;
+        if (statusCode === 200) {
+          refreshFetchTicketList();
+          refreshFetchTotalList();
+        }
       });
     }
   };
 
-  setCurrentTime = () => {
+  const viewProfile = (userId) => {
+    history.push(`/directory/employee-profile/${userId}`);
+  };
+
+  const renderTag = (priority) => {
+    if (priority === 'High') {
+      return <div className={styles.priorityHigh}>{priority}</div>;
+    }
+    if (priority === 'Normal') {
+      return <div className={styles.priorityMedium}>{priority}</div>;
+    }
+    if (priority === 'Urgent') {
+      return <div className={styles.priorityUrgent}>{priority}</div>;
+    }
+    return <div className={styles.priorityLow}>{priority}</div>;
+  };
+
+  const onSearchDebounce = debounce((value) => {
+    setNameSearch(value);
+  }, 500);
+
+  const onChangeSearch = (e) => {
+    const formatValue = e.target.value.toLowerCase();
+    onSearchDebounce(formatValue);
+  };
+
+  const renderMenuDropdown = () => {
+    return (
+      <Suspense fallback={<Spin />}>
+        <DropdownSearch
+          onChangeSearch={onChangeSearch}
+          employeeFilterList={nameSearch ? employeeFilterList : []}
+          handleSelectChange={handleSelectChange}
+          loading={loadingFetchEmployee}
+        />
+      </Suspense>
+    );
+  };
+
+  const fetchTimezone = () => {
+    const timezoneList = [];
+    companyLocationList.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
+        _id: locationId = '',
+      } = location;
+      timezoneList.push({
+        locationId,
+        timezone:
+          getTimezoneViaCity(city) ||
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
+    setTimezoneListState(timezoneList);
+  };
+
+  const setCurrentTime = () => {
     // compare two time by hour & minute. If minute changes, get new time
     const timeFormat = 'HH:mm';
-    const { currentTime } = this.state;
     const parseTime = (timeString) => moment(timeString, timeFormat);
     const check = parseTime(moment().format(timeFormat)).isAfter(
-      parseTime(moment(currentTime).format(timeFormat)),
+      parseTime(moment(currentTimeState).format(timeFormat)),
     );
 
     if (check) {
-      this.setState({
-        currentTime: moment(),
-      });
+      setCurrentTimeState(moment());
     }
   };
 
-  locationContent = (location) => {
-    const { locationsList = [] } = this.props;
+  const locationContent = (location) => {
     const result =
       locationsList.length > 0 ? locationsList.filter((val) => val._id === location)[0] : [] || [];
     const {
@@ -160,9 +177,7 @@ class TableTickets extends PureComponent {
       _id = '',
     } = result;
 
-    const { timezoneList, currentTime } = this.state;
-
-    const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+    const findTimezone = timezoneListState.find((timezone) => timezone.locationId === _id) || {};
 
     return (
       <div className={styles.locationContent}>
@@ -189,42 +204,14 @@ class TableTickets extends PureComponent {
         </span>
         <span style={{ display: 'block', fontSize: '13px' }}>
           {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
-            ? getCurrentTimeOfTimezone(currentTime, findTimezone.timezone)
+            ? getCurrentTimeOfTimezone(currentTimeState, findTimezone.timezone)
             : 'Not enough data in address'}
         </span>
       </div>
     );
   };
 
-  viewProfile = (userId) => {
-    history.push(`/directory/employee-profile/${userId}`);
-  };
-
-  renderTag = (priority) => {
-    if (priority === 'High') {
-      return <div className={styles.priorityHigh}>{priority}</div>;
-    }
-    if (priority === 'Normal') {
-      return <div className={styles.priorityMedium}>{priority}</div>;
-    }
-    if (priority === 'Urgent') {
-      return <div className={styles.priorityUrgent}>{priority}</div>;
-    }
-    return <div className={styles.priorityLow}>{priority}</div>;
-  };
-
-  getColumns = () => {
-    let filterData;
-    const { listEmployee, locationsList } = this.props;
-    const { search } = this.state;
-    if (search.length) {
-      const searchPattern = new RegExp(search.map((term) => `(?=.*${term})`).join(''), 'i');
-      filterData = listEmployee.filter((option) =>
-        option.generalInfo.legalName.match(searchPattern),
-      );
-    } else {
-      filterData = listEmployee;
-    }
+  const getColumns = () => {
     return [
       {
         title: 'Ticket ID',
@@ -233,7 +220,7 @@ class TableTickets extends PureComponent {
         width: '8%',
         render: (id) => {
           return (
-            <span className={styles.ticketID} onClick={() => this.openViewTicket(id)}>
+            <span className={styles.ticketID} onClick={() => openViewTicket(id)}>
               {id}
             </span>
           );
@@ -267,7 +254,7 @@ class TableTickets extends PureComponent {
         dataIndex: 'priority',
         key: 'priority',
         render: (priority) => {
-          return <div className={styles.priority}>{this.renderTag(priority)}</div>;
+          return <div className={styles.priority}>{renderTag(priority)}</div>;
         },
         sorter: (a, b) => {
           return a.priority && a.priority.localeCompare(`${b.priority}`);
@@ -300,7 +287,7 @@ class TableTickets extends PureComponent {
             >
               <span
                 className={styles.userID}
-                onClick={() => this.viewProfile(employeeRaise?.generalInfo?.userId || '')}
+                onClick={() => viewProfile(employeeRaise?.generalInfo?.userId || '')}
               >
                 {!isEmpty(employeeRaise?.generalInfo)
                   ? `${employeeRaise?.generalInfo?.legalName} (${employeeRaise?.generalInfo?.userId})`
@@ -328,13 +315,13 @@ class TableTickets extends PureComponent {
 
             return (
               <Popover
-                content={this.locationContent(location)}
+                content={locationContent(location)}
                 title={locationNew?.name}
                 trigger="hover"
               >
                 <span
                   style={{ wordWrap: 'break-word', wordBreak: 'break-word', cursor: 'pointer' }}
-                  onMouseEnter={this.setCurrentTime}
+                  onMouseEnter={setCurrentTime}
                 >
                   {locationNew?.name}
                 </span>
@@ -370,7 +357,7 @@ class TableTickets extends PureComponent {
                 <span
                   className={styles.userID}
                   style={{ color: '#2c6df9' }}
-                  onClick={() => this.viewProfile(employeeAssignee?.generalInfo?.userId || '')}
+                  onClick={() => viewProfile(employeeAssignee?.generalInfo?.userId || '')}
                 >
                   {employeeAssignee?.generalInfo?.legalName}
                 </span>
@@ -378,111 +365,122 @@ class TableTickets extends PureComponent {
             );
           }
           return (
-            <Dropdown
-              overlayClassName="dropDown__manager"
-              overlay={
-                <Menu>
-                  <div className="inputSearch">
-                    <Input
-                      placeholder="Search by name"
-                      onChange={(e) => this.setState({ search: [e.target.value] })}
-                      prefix={<SearchOutlined />}
-                    />
-                  </div>
-                  <Menu.Divider />
-                  <div style={{ overflowY: 'scroll', maxHeight: '200px' }}>
-                    {!isEmpty(filterData) ? (
-                      filterData.map((val) => {
-                        return (
-                          <Menu.Item
-                            onClick={() => this.handleSelectChange(val._id)}
-                            key={val._id}
-                            value={val._id}
-                          >
-                            {val.generalInfo?.legalName}
-                          </Menu.Item>
-                        );
-                      })
-                    ) : (
-                      <Menu.Item>
-                        <Empty />
-                      </Menu.Item>
-                    )}
-                  </div>
-                </Menu>
-              }
-              trigger={['click']}
+            <Popover
+              trigger="click"
+              overlayClassName={styles.dropdownPopover}
+              content={renderMenuDropdown()}
+              placement="bottomRight"
             >
-              <div onClick={() => this.handleClickSelect(row.id)}>
+              <div
+                onClick={() => handleClickSelect(row.id)}
+                style={{
+                  width: 'fit-content',
+                  cursor: 'pointer',
+                  color: '#2c6df9',
+                }}
+              >
                 Select User &emsp;
                 <DownOutlined />
               </div>
-            </Dropdown>
+            </Popover>
           );
         },
         sorter: (a, b) => {
-          return a.employeeAssignee.generalInfo && a.employeeAssignee.generalInfo?.legalName
-            ? a.employeeAssignee.generalInfo?.legalName.localeCompare(
-                `${b.employeeAssignee.generalInfo?.legalName}`,
-              )
-            : null;
+          if (
+            a.employeeAssignee?.generalInfo?.legalName &&
+            b.employeeAssignee?.generalInfo?.legalName
+          )
+            return a.employeeAssignee.generalInfo && a.employeeAssignee.generalInfo?.legalName
+              ? a.employeeAssignee.generalInfo?.legalName.localeCompare(
+                  `${b.employeeAssignee.generalInfo?.legalName}`,
+                )
+              : null;
+          return null;
         },
         sortDirections: ['ascend', 'descend'],
       },
     ];
   };
 
-  render() {
-    const {
-      data = [],
-      textEmpty = 'No tickets found',
-      loading,
-      pageSelected,
-      size,
-      getPageAndSize = () => {},
-    } = this.props;
-    const pagination = {
-      position: ['bottomLeft'],
-      total: data.length,
-      showTotal: (total, range) => (
-        <span>
-          Showing{' '}
-          <b>
-            {range[0]} - {range[1]}
-          </b>{' '}
-          of {data.length}
-        </span>
-      ),
-      pageSize: size,
-      current: pageSelected,
-      onChange: (page, pageSize) => {
-        getPageAndSize(page, pageSize);
-      },
+  useEffect(() => {
+    fetchTimezone();
+  }, [JSON.stringify(companyLocationList)]);
+
+  useEffect(() => {
+    const payload = {
+      status: 'ACTIVE',
     };
+    if (nameSearch) {
+      payload.name = nameSearch;
+      dispatch({
+        type: 'ticketManagement/searchEmployee',
+        payload,
+      });
+    } else {
+      dispatch({
+        type: 'ticketManagement/save',
+        payload: {
+          employeeFilterList: [],
+        },
+      });
+    }
+  }, [nameSearch]);
 
-    return (
-      <div className={styles.TableTickets}>
-        <Table
-          locale={{
-            emptyText: (
-              <div className={styles.viewEmpty}>
-                <img src={empty} alt="empty" />
-                <p className={styles.textEmpty}>{textEmpty}</p>
-              </div>
-            ),
-          }}
-          loading={loading}
-          columns={this.getColumns()}
-          dataSource={data}
-          hideOnSinglePage
-          pagination={pagination}
-          onChange={this.handleChangeTable}
-          rowKey="id"
-          scroll={{ x: 1500, y: 487 }}
-        />
-      </div>
-    );
-  }
-}
+  const pagination = {
+    position: ['bottomLeft'],
+    total: data.length,
+    showTotal: (total, range) => (
+      <span>
+        Showing{' '}
+        <b>
+          {range[0]} - {range[1]}
+        </b>{' '}
+        of {data.length}
+      </span>
+    ),
+    pageSize: size,
+    current: pageSelected,
+    onChange: (page, pageSize) => {
+      getPageAndSize(page, pageSize);
+    },
+  };
 
-export default TableTickets;
+  return (
+    <div className={styles.TableTickets}>
+      <Table
+        locale={{
+          emptyText: (
+            <div className={styles.viewEmpty}>
+              <img src={empty} alt="empty" />
+              <p className={styles.textEmpty}>{textEmpty}</p>
+            </div>
+          ),
+        }}
+        loading={loading}
+        columns={getColumns()}
+        dataSource={data}
+        hideOnSinglePage
+        pagination={pagination}
+        rowKey="id"
+        scroll={{ x: 1500, y: 487 }}
+      />
+    </div>
+  );
+};
+
+export default connect(
+  ({
+    loading,
+    ticketManagement: { listEmployee = [], locationsList = [], employeeFilterList = [] } = {},
+    user: { currentUser: { employee = {} } = {} } = {},
+    location: { companyLocationList = [] },
+  }) => ({
+    listEmployee,
+    locationsList,
+    employeeFilterList,
+    employee,
+    companyLocationList,
+    loadingUpdate: loading.effects['ticketManagement/updateTicket'],
+    loadingFetchEmployee: loading.effects['ticketManagement/searchEmployee'],
+  }),
+)(TableTickets);
