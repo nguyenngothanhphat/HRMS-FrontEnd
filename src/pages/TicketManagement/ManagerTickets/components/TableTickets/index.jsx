@@ -2,7 +2,7 @@ import { DownOutlined } from '@ant-design/icons';
 import { Popover, Spin, Table } from 'antd';
 import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { memo, Suspense, useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import UserProfilePopover from '@/pages/TicketManagement/components/UserProfilePopover';
@@ -312,7 +312,6 @@ const TableTickets = (props) => {
         render: (location) => {
           if (location) {
             const locationNew = locationsList.find((val) => val._id === location);
-
             return (
               <Popover
                 content={locationContent(location)}
@@ -483,4 +482,4 @@ export default connect(
     loadingUpdate: loading.effects['ticketManagement/updateTicket'],
     loadingFetchEmployee: loading.effects['ticketManagement/searchEmployee'],
   }),
-)(TableTickets);
+)(memo(TableTickets));
