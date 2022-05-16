@@ -243,3 +243,11 @@ export async function getListBenefit(payload) {
     data: payload,
   });
 }
+
+// new document verification
+export async function getDocumentLayoutByCountry(payload) {
+  return request('/api/candidatetenant/get-documents-by-country', {
+    method: 'POST',
+    data: payload,
+  });
+}

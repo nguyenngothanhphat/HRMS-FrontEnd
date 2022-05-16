@@ -13,56 +13,42 @@ const EmployerComponent = (props) => {
     data = [],
     index = 0,
     employer = '',
-    remove = () => {},
-    // processStatus = '',
+    onRemove = () => {},
     disabled = false,
     listLength = 0,
-    // workDuration = {},
-    dispatch,
-    handleChange = () => {},
+    handleChangeEmployer = () => {},
     handleCheck = () => {},
   } = props;
 
   const [checkedList, setCheckedList] = React.useState([]);
 
   const handleCheckList = () => {
-    let checkedListTemp = data.filter((val) => val.alias && val.value);
+    let checkedListTemp = data.filter((val) => val.value || val.required);
     checkedListTemp = checkedListTemp.map((val) => val.alias);
     setCheckedList(checkedListTemp);
   };
 
   useEffect(() => {
-    if (employer) {
-      dispatch({
-        type: 'newCandidateForm/saveTemp',
-        payload: {
-          checkValidation: true,
-        },
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (data.length > 0) {
-      handleCheckList();
-    }
+    handleCheckList();
   }, [JSON.stringify(data)]);
 
-  const onChange = (list) => {
+  const onChangeCheckBox = (list) => {
     setCheckedList(list);
-    handleCheck(data, list, index);
+    handleCheck(list, index);
   };
 
-  const employerNameHandle = (event) => {
+  const onChangeEmployer = (event) => {
     const { value = '' } = event.target;
-    handleChange(value, index);
+    handleChangeEmployer(value, index);
   };
 
   return (
     <div className={styles.EmployerComponent} key={index}>
       <div className={styles.titleBar}>
         <span className={styles.title}>Employer {index + 1} Details</span>
-        {!disabled && <CloseOutlined className={styles.deleteIcon} onClick={() => remove(index)} />}
+        {!disabled && (
+          <CloseOutlined className={styles.deleteIcon} onClick={() => onRemove(index)} />
+        )}
       </div>
       <Form
         form={form}
@@ -75,7 +61,7 @@ const EmployerComponent = (props) => {
             <Form.Item label="Name of the employer*" name="employer">
               <Input
                 disabled={disabled}
-                onChange={employerNameHandle}
+                onChange={onChangeEmployer}
                 className={styles.input}
                 placeholder="Name of the employer"
               />
@@ -87,18 +73,14 @@ const EmployerComponent = (props) => {
         <Col span={24}>
           <div className={styles.title2}>Proof of employment</div>
           <CheckboxGroup
-            onChange={(list) => onChange(list)}
-            // options={data.map((data) => data.alias)}
+            onChange={(list) => onChangeCheckBox(list)}
             value={checkedList}
             disabled={disabled}
             className={styles.checkBoxesGroup}
           >
-            {data.map((field) => (
-              <Checkbox
-                disabled={field.alias.substr(field.alias.length - 1) === '*'}
-                value={field.alias}
-              >
-                {field.alias}
+            {data.map((x) => (
+              <Checkbox disabled={x.required} value={x.alias}>
+                {x.alias}
               </Checkbox>
             ))}
           </CheckboxGroup>

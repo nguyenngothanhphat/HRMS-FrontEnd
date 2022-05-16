@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { Button, Col, notification, Row, Skeleton, Space } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
@@ -16,14 +16,7 @@ import ModalContentComponent from './components/ModalContentComponent';
 import SendEmail from './components/SendEmail';
 import Title from './components/Title';
 import styles from './styles.less';
-
-const camelize = (str) => {
-  return str
-    .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
-      return index === 0 ? word.toLowerCase() : word.toUpperCase();
-    })
-    .replace(/\s+/g, '');
-};
+import { mapType } from '@/utils/newCandidateForm';
 
 const DocumentVerification = (props) => {
   const {
@@ -31,11 +24,9 @@ const DocumentVerification = (props) => {
       tempData,
       checkMandatory,
       checkMandatory: { filledDocumentVerification = false } = {},
-      data,
       tempData: {
         _id,
         processStatus = '',
-        documentChecklistSetting = [],
         ticketID = '',
         isSentEmail = false,
         assignTo: {
@@ -64,13 +55,19 @@ const DocumentVerification = (props) => {
         valueToFinalOffer,
         isMarkAsDone,
         documentList = [],
-        identityProof = {},
-        addressProof = {},
-        educational = {},
-        identityProof: { checkedList: checkedListA = [] } = {},
-        addressProof: { checkedList: checkedListB = [] } = {},
-        educational: { checkedList: checkedListC = [] } = {},
+        // identityProof = {},
+        // addressProof = {},
+        // educational = {},
+        // identityProof: { checkedList: checkedListA = [] } = {},
+        // addressProof: { checkedList: checkedListB = [] } = {},
+        // educational: { checkedList: checkedListC = [] } = {},
+        documentTypeA = [],
+        documentTypeB = [],
+        documentTypeC = [],
+        documentTypeD = [],
+        documentTypeE = [],
       } = {} || {},
+      documentLayout = [],
     },
     dispatch,
     currentStep = 0,
@@ -87,183 +84,12 @@ const DocumentVerification = (props) => {
   const [openModal, setOpenModal] = useState(false);
   const [openModalEmail, setOpenModalEmail] = useState(false);
   const [checkRadioSendMail, setCheckRadioSendMail] = useState(0);
-  const [refreshBlockE, setRefreshBlockE] = useState(false);
-  const [updating, setUpdating] = useState(false);
-
-  const setSettings = (settings) => {
-    dispatch({
-      type: 'newCandidateForm/saveTemp',
-      payload: {
-        documentChecklistSetting: settings,
-      },
-    });
-  };
 
   const validateFields = () => {
-    let validation = true;
-    documentChecklistSetting.forEach((item) => {
-      if (item.type === 'D' && item.data.length > 0) {
-        const aliases = item.data
-          .map((v) => v.alias)
-          .filter((f) => f !== null && f !== undefined && f !== '');
-        if (aliases.length !== item.data.length) validation = false;
-      }
-      if (item.type === 'E' && item.data.length > 0) {
-        if (!item.employer) validation = false;
-      }
-    });
-
     dispatch({
       type: 'newCandidateForm/saveCheckMandatory',
       payload: {
-        filledDocumentVerification: validation,
-      },
-    });
-  };
-
-  // GET DATA FROM SERVER
-  const getDataFromServer = () => {
-    setUpdating(true);
-
-    const arrToAdjust =
-      processStatus === DRAFT
-        ? JSON.parse(JSON.stringify(data.documentChecklistSetting))
-        : JSON.parse(JSON.stringify(tempData.documentChecklistSetting));
-
-    // -----------------------------------------------------------------------------------------
-    const arrA = arrToAdjust.length > 0 && arrToAdjust[0].data.filter((x) => x.value === true);
-    const arrB = arrToAdjust.length > 0 && arrToAdjust[1].data.filter((x) => x.value === true);
-    const arrC = arrToAdjust.length > 0 && arrToAdjust[2].data.filter((x) => x.value === true);
-
-    // FINAL LIST OF CHECKED CHECKBOXES
-    const listSelectedA = arrA.map((x) => x.alias);
-    const listSelectedB = arrB.map((x) => x.alias);
-    const listSelectedC = arrC.map((x) => x.alias);
-
-    // SAVE TO REDUX
-    dispatch({
-      type: 'newCandidateForm/saveTemp',
-      payload: {
-        identityProof: {
-          ...identityProof,
-          checkedList: listSelectedA,
-        },
-        addressProof: {
-          ...addressProof,
-          checkedList: listSelectedB,
-        },
-        educational: {
-          ...educational,
-          checkedList: listSelectedC,
-        },
-      },
-    });
-
-    // set first value for [newPoe - the final poe]
-    // setState({ newPoe: listSelectedEFinal });
-    setTimeout(() => {
-      setUpdating(false);
-    }, 50);
-  };
-
-  // generate object of each block for send email
-  const generateForSendEmail = (proof, checkedList) => {
-    const tempProof = JSON.parse(JSON.stringify(proof));
-
-    tempProof.forEach((x) => {
-      const { alias = '' } = x;
-      let check = false;
-      checkedList.forEach((value1) => {
-        if (alias === value1) {
-          check = true;
-        }
-        return null;
-      });
-      if (check) x.value = true;
-      else x.value = false;
-      return null;
-    });
-    return tempProof;
-  };
-
-  // generate documentChecklistSetting
-  const generateDocumentChecklistSettings = (
-    docsListE,
-    checkedListAProp,
-    checkedListBProp,
-    checkedListCProp,
-  ) => {
-    let identityProofTemp = [];
-    let addressProofTemp = [];
-    let educationalTemp = [];
-
-    documentChecklistSetting.forEach((doc) => {
-      if (doc.type === 'A') {
-        identityProofTemp = [...doc.data];
-      }
-      if (doc.type === 'B') {
-        addressProofTemp = [...doc.data];
-      }
-      if (doc.type === 'C') {
-        educationalTemp = [...doc.data];
-      }
-    });
-
-    // value for documentChecklistSetting field
-    const arrA = generateForSendEmail(identityProofTemp, checkedListAProp);
-    const arrB = generateForSendEmail(addressProofTemp, checkedListBProp);
-    const arrC = generateForSendEmail(educationalTemp, checkedListCProp);
-
-    let documentCLS = [
-      {
-        type: 'A',
-        name: 'Identity Proof',
-        data: arrA,
-      },
-      {
-        type: 'B',
-        name: 'Address Proof',
-        data: arrB,
-      },
-      {
-        type: 'C',
-        name: 'Educational',
-        data: arrC,
-      },
-    ];
-
-    if (docsListE.length >= 1) {
-      if (docsListE[0].data.length > 0) {
-        documentCLS = documentCLS.concat(docsListE);
-      }
-    }
-
-    return documentCLS;
-  };
-
-  const handleUpdateByHR = (docsListE, checkedListAProp, checkedListBProp, checkedListCProp) => {
-    const documentChecklistSettingTemp = generateDocumentChecklistSettings(
-      docsListE,
-      checkedListAProp,
-      checkedListBProp,
-      checkedListCProp,
-    );
-
-    dispatch({
-      type: 'newCandidateForm/updateByHR',
-      payload: {
-        candidate: _id,
-        documentChecklistSetting: documentChecklistSettingTemp,
-        currentStep:
-          processStatus === DRAFT || processStatus === PROFILE_VERIFICATION ? 2 : currentStep,
-        tenantId: getCurrentTenant(),
-      },
-    });
-    dispatch({
-      type: 'newCandidateForm/save',
-      payload: {
-        currentStep:
-          processStatus === DRAFT || processStatus === PROFILE_VERIFICATION ? 2 : currentStep,
+        filledDocumentVerification: true,
       },
     });
   };
@@ -271,54 +97,6 @@ const DocumentVerification = (props) => {
   // SEND FORM VIA EMAIL AGAIN
   const handleSendFormAgain = () => {
     setOpenModalEmail(true);
-  };
-
-  const disableEdit = () => {
-    if (processStatus === PROFILE_VERIFICATION) {
-      return true;
-    }
-    return false;
-  };
-
-  const getVariableNameByType = (typeProp) => {
-    switch (typeProp) {
-      case 'A':
-        return 'identityProof';
-
-      case 'B':
-        return 'addressProof';
-
-      case 'C':
-        return 'educational';
-
-      default:
-        return '';
-    }
-  };
-  // HANDLE CHANGE WHEN CLICK CHECKBOXES OF BLOCK A,B,C
-  const handleChange = (checkedList, item) => {
-    const { type = '' } = item;
-
-    const docsListE = documentChecklistSetting.filter((doc) => doc.type === 'E') || [];
-
-    const typeName = getVariableNameByType(type);
-    dispatch({
-      type: 'newCandidateForm/saveTemp',
-      payload: {
-        [typeName]: {
-          ...[typeName],
-          checkedList,
-        },
-      },
-    });
-
-    if (type === 'A') {
-      handleUpdateByHR(docsListE, checkedList, checkedListB, checkedListC);
-    } else if (type === 'B') {
-      handleUpdateByHR(docsListE, checkedListA, checkedList, checkedListC);
-    } else if (type === 'C') {
-      handleUpdateByHR(docsListE, checkedListA, checkedListB, checkedList);
-    }
   };
 
   const changeValueToFinalOffer = (e) => {
@@ -487,19 +265,6 @@ const DocumentVerification = (props) => {
 
   // EMAILS
   const handleSendEmail = async (type) => {
-    const docsListD = documentChecklistSetting.filter((doc) => doc.type === 'D') || [];
-    const docsListE = documentChecklistSetting.filter((doc) => doc.type === 'E') || [];
-
-    const result = generateDocumentChecklistSettings(
-      docsListE,
-      checkedListA,
-      checkedListB,
-      checkedListC,
-      docsListD,
-    );
-
-    setSettings(result);
-
     const payload = {
       candidate: _id,
       firstName,
@@ -515,13 +280,17 @@ const DocumentVerification = (props) => {
       workEmail,
       previousExperience,
       salaryStructure,
-      documentChecklistSetting,
       action: 'submit',
       options: 1,
       phoneNumber,
       totalExperience,
       company: getCurrentCompany(),
       tenantId: getCurrentTenant(),
+      documentTypeA,
+      documentTypeB,
+      documentTypeC,
+      documentTypeD,
+      documentTypeE,
     };
 
     // send welcome messages
@@ -536,9 +305,6 @@ const DocumentVerification = (props) => {
       if (statusCode === 200) {
         setOpenModal(type !== 'generate-link');
         setOpenModalEmail(type === 'generate-link');
-
-        getDataFromServer();
-
         dispatch({
           type: 'newCandidateForm/saveTemp',
           payload: {
@@ -595,242 +361,24 @@ const DocumentVerification = (props) => {
     }
   };
 
-  // get document list by country
-  const getDocumentListByCountry = (list) => {
+  const getDocumentLayoutByCountry = () => {
     let workLocation1 = workLocation;
     if (typeof workLocation === 'string') {
       workLocation1 = companyLocationList.find((w) => w._id === workLocation);
     }
     if (workLocation1) {
-      return list.map((item) => {
-        const { data: dataX = [] } = item;
-        const newData = dataX.filter(({ country = [] }) => {
-          return (
-            country.includes(workLocation1?.headQuarterAddress?.country?._id) ||
-            country.includes(workLocation1?.headQuarterAddress?.country) ||
-            country.length === 0
-          );
-        });
-
-        return {
-          ...item,
-          data: newData,
-        };
-      });
-    }
-    return list;
-  };
-
-  // for block E
-  const addBlockE = () => {
-    const documentListByCountry = getDocumentListByCountry(
-      JSON.parse(JSON.stringify(documentList)),
-    );
-    const fieldDataTypeE = documentListByCountry.find((doc) => doc.type === 'E')?.data || [];
-
-    const newDoc = {
-      type: 'E',
-      name: 'Previous Employment',
-      employer: '',
-      startDate: '',
-      endDate: '',
-      toPresent: false,
-      data: fieldDataTypeE,
-    };
-
-    let newDocumentList = JSON.parse(JSON.stringify(documentChecklistSetting));
-    const forCheckE = newDocumentList.filter((doc) => doc.type === 'E');
-
-    if (forCheckE.length === 1 && forCheckE[0].data.length === 0) {
-      newDocumentList = newDocumentList.map((doc) => {
-        if (doc.type === 'E') {
-          return newDoc;
-        }
-        return doc;
-      });
-    } else {
-      newDocumentList.push(newDoc);
-    }
-
-    const docsListE = newDocumentList.filter((doc) => doc.type === 'E') || [];
-
-    setSettings(newDocumentList);
-
-    handleUpdateByHR(docsListE, checkedListA, checkedListB, checkedListC);
-  };
-
-  const handleChangeNameBlockE = (value, index) => {
-    const documentCLS = JSON.parse(JSON.stringify(documentChecklistSetting));
-
-    // const newDocument = [...checkedListD];
-    const documentCLSTypeOthers = documentCLS.filter((doc) => doc.type !== 'E');
-    const documentCLSTypeE = documentCLS.filter((doc) => doc.type === 'E');
-
-    documentCLSTypeE[index].employer = value;
-
-    setSettings([...documentCLSTypeOthers, ...documentCLSTypeE]);
-    handleUpdateByHR(documentCLSTypeE, checkedListA, checkedListB, checkedListC);
-  };
-
-  const handleCheckBlockE = (list, checkedList, index) => {
-    const documentListByCountry = getDocumentListByCountry(
-      JSON.parse(JSON.stringify(documentList)),
-    );
-    const newList = documentListByCountry.find((doc) => doc.type === 'E')?.data || [];
-
-    newList.forEach((field) => {
-      if (checkedList.includes(field.alias)) {
-        field.value = true;
-      }
-    });
-
-    // const newDocument = [...checkedListD];
-    const documentCLS = JSON.parse(JSON.stringify(documentChecklistSetting));
-
-    const documentCLSTypeOthers = documentCLS.filter((doc) => doc.type !== 'E');
-    const documentCLSTypeE = documentCLS.filter((doc) => doc.type === 'E');
-
-    documentCLSTypeE[index].data = [...newList];
-
-    setSettings([...documentCLSTypeOthers, ...documentCLSTypeE]);
-    handleUpdateByHR(documentCLSTypeE, checkedListA, checkedListB, checkedListC);
-  };
-
-  const removeBlockE = (index) => {
-    setRefreshBlockE(true);
-
-    // const newDocument = [...checkedListD];
-    const documentCLS = JSON.parse(JSON.stringify(documentChecklistSetting));
-
-    const documentCLSTypeOthers = documentCLS.filter((doc) => doc.type !== 'E');
-    const documentCLSTypeE = documentCLS.filter((doc) => doc.type === 'E');
-
-    documentCLSTypeE.splice(index, 1);
-
-    setSettings([...documentCLSTypeOthers, ...documentCLSTypeE]);
-    handleUpdateByHR(documentCLSTypeE, checkedListA, checkedListB, checkedListC);
-    setTimeout(() => {
-      setRefreshBlockE(false);
-    }, 100);
-  };
-
-  // BLOCK A,B,C ADDING NEW FIELD
-  const addNewField = async (name, type) => {
-    if (name) {
-      let newDocument = [];
-      if (type === 'A') {
-        newDocument = [...checkedListA];
-        // newDocument = [...checkedListA, name];
-      }
-      if (type === 'B') {
-        // newDocument = [...checkedListB, name];
-        newDocument = [...checkedListB];
-      }
-      if (type === 'C') {
-        newDocument = [...checkedListC];
-        // newDocument = [...checkedListC, name];
-      }
-
-      const newDoc = {
-        key: camelize(name),
-        alias: name,
-        value: false,
-        new: true,
-      };
-
-      const newDocumentList = [...getDocumentListByCountry(documentChecklistSetting)];
-      newDocumentList.forEach((doc) => {
-        if (doc.type === type) {
-          doc.data.push(newDoc);
-        }
-      });
-
-      const docsListE = documentChecklistSetting.filter((doc) => doc.type === 'E') || [];
-
-      const typeName = getVariableNameByType(type);
-
-      setSettings(newDocumentList);
-      const payload = {
-        [typeName]: {
-          ...[typeName],
-          checkedList: newDocument,
+      dispatch({
+        type: 'newCandidateForm/fetchDocumentLayoutByCountry',
+        payload: {
+          country:
+            workLocation1?.headQuarterAddress?.country?._id ||
+            workLocation1?.headQuarterAddress?.country,
         },
-      };
-      await dispatch({
-        type: 'newCandidateForm/saveTemp',
-        payload,
       });
-
-      if (type === 'A') {
-        handleUpdateByHR(docsListE, newDocument, checkedListB, checkedListC);
-      }
-      if (type === 'B') {
-        handleUpdateByHR(docsListE, checkedListA, newDocument, checkedListC);
-      }
-      if (type === 'C') {
-        handleUpdateByHR(docsListE, checkedListA, checkedListB, newDocument);
-      }
-    }
-  };
-
-  const removeNewField = async (key, type) => {
-    let newDocument = [];
-    if (type === 'A') {
-      newDocument = checkedListA.filter((val) => val.key !== key);
-    }
-    if (type === 'B') {
-      newDocument = checkedListB.filter((val) => val.key !== key);
-    }
-    if (type === 'C') {
-      newDocument = checkedListC.filter((val) => val.key !== key);
-    }
-    const documentCLSTByCountry = getDocumentListByCountry(documentChecklistSetting);
-    const newDocumentList = [...documentCLSTByCountry];
-    newDocumentList.forEach((doc) => {
-      if (doc.type === type) {
-        doc.data = doc.data.filter((v) => v.key !== key);
-      }
-    });
-
-    const docsListE = documentChecklistSetting.filter((doc) => doc.type === 'E') || [];
-
-    let payload = {};
-    const typeName = getVariableNameByType(type);
-    setSettings(newDocumentList);
-    payload = {
-      [typeName]: {
-        ...[typeName],
-        checkedList: newDocument,
-      },
-    };
-    await dispatch({
-      type: 'newCandidateForm/saveTemp',
-      payload,
-    });
-
-    if (type === 'A') {
-      handleUpdateByHR(docsListE, newDocument, checkedListB, checkedListC);
-    }
-    if (type === 'B') {
-      handleUpdateByHR(docsListE, checkedListA, newDocument, checkedListC);
-    }
-    if (type === 'C') {
-      handleUpdateByHR(docsListE, checkedListA, checkedListB, newDocument);
     }
   };
 
   const firstInit = () => {
-    getDataFromServer();
-    const listA = getDocumentListByCountry(documentChecklistSetting);
-    const listB = getDocumentListByCountry(documentList);
-
-    setSettings(listA);
-    dispatch({
-      type: 'newCandidateForm/saveTemp',
-      payload: {
-        documentList: listB,
-      },
-    });
     validateFields();
   };
 
@@ -842,23 +390,35 @@ const DocumentVerification = (props) => {
   }, [_id]);
 
   useEffect(() => {
-    if (_id) {
-      validateFields();
+    if (documentLayout.length === 0) {
+      getDocumentLayoutByCountry();
     }
-  }, [JSON.stringify()]);
+  }, []);
 
-  // main
-  const documentCLSTByCountry = getDocumentListByCountry(documentChecklistSetting);
+  useLayoutEffect(() => {
+    dispatch({
+      type: 'newCandidateForm/updateByHR',
+      payload: {
+        candidate: _id,
+        tenantId: getCurrentTenant(),
+        documentTypeA,
+        documentTypeB,
+        documentTypeC,
+        documentTypeD,
+        documentTypeE,
+      },
+    });
+  }, [
+    JSON.stringify(documentTypeA),
+    JSON.stringify(documentTypeB),
+    JSON.stringify(documentTypeC),
+    JSON.stringify(documentTypeD),
+    JSON.stringify(documentTypeE),
+  ]);
 
-  // type A, B, C
-  const documentCLSByCountryTypeABC = documentCLSTByCountry.filter((doc) =>
-    ['A', 'B', 'C'].includes(doc.type),
-  );
-
-  // type E
-  const documentCLSTByCountryTypeE = documentCLSTByCountry.filter((doc) =>
-    ['E'].includes(doc.type),
-  );
+  const getItemByType = (type) => {
+    return tempData[mapType[type]];
+  };
 
   if (loadingFetchCandidate) return <Skeleton />;
   return (
@@ -867,37 +427,26 @@ const DocumentVerification = (props) => {
         <div className={styles.leftWrapper}>
           <Row className={styles.eliContainer} gutter={[24, 24]}>
             <Title />
-            {!updating &&
-              documentCLSByCountryTypeABC
-                .filter((x) => ['A', 'B', 'C'].includes(x.type))
-                .map((item) => {
-                  return (
-                    <CollapseFieldsTypeABC
-                      addNewField={addNewField}
-                      item={item}
-                      loading={loadingUpdateByHR}
-                      handleChange={handleChange}
-                      handleRemoveDocument={removeNewField}
-                      disabled={disableEdit()}
-                      documentChecklistSetting={documentChecklistSetting}
-                    />
-                  );
-                })}
+            {documentLayout
+              .filter((x) => ['A', 'B', 'C'].includes(x.type))
+              .map((x) => {
+                return (
+                  <CollapseFieldsTypeABC
+                    disabled={processStatus === PROFILE_VERIFICATION}
+                    layout={x}
+                    items={getItemByType(x.type)}
+                  />
+                );
+              })}
 
             <CollapseFieldsTypeD />
 
-            {(processStatus === DRAFT || documentCLSTByCountryTypeE.length > 0) && (
-              <CollapseFieldsTypeE
-                handleChangeName={handleChangeNameBlockE}
-                handleCheck={handleCheckBlockE}
-                processStatus={processStatus}
-                removeBlockE={removeBlockE}
-                addBlockE={addBlockE}
-                disabled={disableEdit()}
-                previousEmployment={documentCLSTByCountryTypeE}
-                refresh={refreshBlockE}
-              />
-            )}
+            <CollapseFieldsTypeE
+              processStatus={processStatus}
+              disabled={processStatus === PROFILE_VERIFICATION}
+              layout={documentLayout.find((x) => x.type === 'E')}
+              items={getItemByType('E')}
+            />
 
             {_renderBottomBar()}
           </Row>

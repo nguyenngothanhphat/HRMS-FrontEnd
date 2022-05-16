@@ -3,27 +3,24 @@ import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { Col, Collapse, Spin } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import { mapType } from '@/utils/newCandidateForm';
 import EmployerComponent from './components/EmployerComponent';
 import styles from './index.less';
 
 const { Panel } = Collapse;
 
-const CollapseFieldsType2 = (props) => {
+const CollapseFieldsTypeE = (props) => {
   const {
+    dispatch,
     disabled = false,
-    previousEmployment = [],
-    removeBlockE = () => {},
-    handleChangeName = () => {},
-    handleCheck = () => {},
+    layout: { type = '', name = '' } = {},
+    layout = {},
+    items = [],
     refresh = false,
-    addBlockE = () => {},
   } = props;
 
   const renderHeader = () => {
-    const title =
-      previousEmployment.length > 0
-        ? `Type ${previousEmployment[0].type}: ${previousEmployment[0].name}`
-        : 'Type E: Previous Employment';
+    const title = `Type ${type}: ${name}`;
 
     return (
       <div className={styles.header}>
@@ -32,9 +29,54 @@ const CollapseFieldsType2 = (props) => {
     );
   };
 
+  const onSaveRedux = (result) => {
+    dispatch({
+      type: 'newCandidateForm/saveTemp',
+      payload: {
+        [mapType[type]]: result,
+      },
+    });
+  };
+
   // add component
-  const addComponent = () => {
-    addBlockE();
+  const onAdd = () => {
+    const result = [
+      ...items,
+      {
+        employer: '',
+        data: layout.data,
+      },
+    ];
+    onSaveRedux(result);
+  };
+
+  const onRemove = (index) => {
+    const result = [...items];
+    result.splice(index, 1);
+    onSaveRedux(result);
+  };
+
+  const handleChangeEmployer = (value, index) => {
+    const result = [...items];
+    result[index].employer = value;
+    onSaveRedux(result);
+  };
+
+  const handleCheck = (list, index) => {
+    const result = items.map((x, i) => {
+      if (i !== index) return x;
+      const data = x.data.map((y) => {
+        return {
+          ...y,
+          value: list.includes(y.alias),
+        };
+      });
+      return {
+        ...x,
+        data,
+      };
+    });
+    onSaveRedux(result);
   };
 
   return (
@@ -54,37 +96,30 @@ const CollapseFieldsType2 = (props) => {
         >
           <Panel header={renderHeader()} className={styles.collapsePanel} key="1">
             <Spin spinning={refresh}>
-              {previousEmployment.length > 0 && (
-                <div className={styles.items}>
-                  {previousEmployment
-                    .filter((x) => {
-                      const { data = [] } = x;
-                      return data.length > 0 || previousEmployment.length !== 1;
-                    })
-                    .map((x = {}, index) => {
-                      const { data = [], employer = '' } = x;
-                      return (
-                        <div key={`${index + 0}`}>
-                          <EmployerComponent
-                            index={index}
-                            employer={employer}
-                            data={data}
-                            remove={removeBlockE}
-                            handleChange={handleChangeName}
-                            handleCheck={handleCheck}
-                            listLength={previousEmployment.length}
-                            disabled={disabled}
-                          />
-                        </div>
-                      );
-                    })}
-                </div>
-              )}
+              <div className={styles.items} style={items.length > 0 ? {} : { padding: 0 }}>
+                {items.map((x = {}, index) => {
+                  const { data = [], employer = '' } = x;
+                  return (
+                    <div key={`${index + 0}`}>
+                      <EmployerComponent
+                        index={index}
+                        employer={employer}
+                        data={data}
+                        listLength={items.length}
+                        disabled={disabled}
+                        onRemove={onRemove}
+                        handleChangeEmployer={handleChangeEmployer}
+                        handleCheck={handleCheck}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
 
               {!disabled && (
                 <div
                   className={styles.buttonContainer}
-                  style={previousEmployment.length > 0 ? null : { border: 'none' }}
+                  style={items.length > 0 ? null : { border: 'none' }}
                 >
                   <div
                     className={
@@ -92,7 +127,7 @@ const CollapseFieldsType2 = (props) => {
                         ? [styles.disableButton, styles.addEmployerDetailBtn]
                         : styles.addEmployerDetailBtn
                     }
-                    onClick={disabled ? () => {} : addComponent}
+                    onClick={disabled ? () => {} : onAdd}
                   >
                     <PlusOutlined className={styles.plusIcon} />
                     <span className={styles.title}>Add Employer Detail</span>
@@ -109,4 +144,4 @@ const CollapseFieldsType2 = (props) => {
 
 export default connect(({ newCandidateForm }) => ({
   newCandidateForm,
-}))(CollapseFieldsType2);
+}))(CollapseFieldsTypeE);

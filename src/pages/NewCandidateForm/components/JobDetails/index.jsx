@@ -1,5 +1,5 @@
 import { Button, Col, Row, Spin } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -48,12 +48,21 @@ const JobDetails = (props) => {
     loadingFetchDepartment = false,
     loadingFetchManager = false,
     loadingFetchGrade = false,
+    companyLocationList = [],
   } = props;
 
   const { filledJobDetail = false } = checkMandatory;
 
+  const [needRefreshDocument, setNeedRefreshDocument] = useState(false);
+
   const companyId = getCurrentCompany();
   const tenantId = getCurrentTenant();
+
+  useEffect(() => {
+    if (!workLocation) {
+      setNeedRefreshDocument(true);
+    }
+  }, [JSON.stringify(workLocation)]);
 
   useEffect(() => {
     goToTop();
@@ -120,22 +129,106 @@ const JobDetails = (props) => {
     ].includes(processStatus);
   };
 
-  const onClickNext = () => {
+  const getDocumentLayoutByCountry = async () => {
+    let workLocation1 = workLocation;
+    if (typeof workLocation === 'string') {
+      workLocation1 = companyLocationList.find((w) => w._id === workLocation);
+    }
+    if (workLocation1) {
+      const res = await dispatch({
+        type: 'newCandidateForm/fetchDocumentLayoutByCountry',
+        payload: {
+          country:
+            workLocation1?.headQuarterAddress?.country?._id ||
+            workLocation1?.headQuarterAddress?.country,
+        },
+      });
+      if (res.statusCode === 200) {
+        return res.data;
+      }
+      return null;
+    }
+    return null;
+  };
+
+  const onClickNext = async () => {
+    let payload = {
+      grade,
+      dateOfJoining,
+      position,
+      employeeType,
+      workLocation,
+      department,
+      title,
+      reportingManager,
+      candidate: _id,
+      currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 2 : currentStep,
+      tenantId: getCurrentTenant(),
+    };
+
+    if (needRefreshDocument) {
+      const result = await getDocumentLayoutByCountry();
+      if (result) {
+        let documentTypeA = [];
+        let documentTypeB = [];
+        let documentTypeC = [];
+        const documentTypeD = [];
+        const documentTypeE = [];
+
+        result.forEach((x) => {
+          const { type = '' } = x;
+          switch (type) {
+            case 'A':
+              documentTypeA = x.data;
+              break;
+            case 'B':
+              documentTypeB = x.data;
+              break;
+            case 'C':
+              documentTypeC = x.data;
+              break;
+            case 'D':
+              // documentTypeD = [{ data: x.data }];
+              break;
+            case 'E':
+              // documentTypeE = [{ employer: '', data: x.data }];
+              break;
+
+            default:
+              break;
+          }
+        });
+        payload = {
+          ...payload,
+          documentTypeA,
+          documentTypeB,
+          documentTypeC,
+          documentTypeD,
+          documentTypeE,
+          documentLayout: result,
+        };
+        dispatch({
+          type: 'newCandidateForm/saveTemp',
+          payload: {
+            documentTypeA,
+            documentTypeB,
+            documentTypeC,
+            documentTypeD,
+            documentTypeE,
+          },
+        });
+        dispatch({
+          type: 'newCandidateForm/save',
+          payload: {
+            documentLayout: result.data,
+          },
+        });
+      }
+    }
+
     dispatch({
       type: 'newCandidateForm/updateByHR',
-      payload: {
-        grade,
-        dateOfJoining,
-        position,
-        employeeType,
-        workLocation,
-        department,
-        title,
-        reportingManager,
-        candidate: _id,
-        currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 2 : currentStep,
-        tenantId: getCurrentTenant(),
-      },
+      payload,
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         dispatch({
@@ -204,7 +297,11 @@ const JobDetails = (props) => {
           <div className={styles.JobDetailsComponent}>
             <div className={styles.mainContainer}>
               <Header />
-              <JobDetailForm disabled={disableEdit()} validateFields={checkFilled} />
+              <JobDetailForm
+                disabled={disableEdit()}
+                validateFields={checkFilled}
+                setNeedRefreshDocument={setNeedRefreshDocument}
+              />
               <Row style={{ margin: '0 32px 32px' }}>
                 <RenderAddQuestion page={Page.Job_Details} />
               </Row>

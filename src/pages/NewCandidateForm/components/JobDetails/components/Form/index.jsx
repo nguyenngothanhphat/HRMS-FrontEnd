@@ -36,7 +36,7 @@ const JobDetailForm = (props) => {
       } = {},
     } = {},
     validateFields = () => {},
-    user: { currentUser: { location = {} } = {} } = {},
+    setNeedRefreshDocument = () => {},
   } = props;
 
   const tenantId = getCurrentTenant();
@@ -84,17 +84,6 @@ const JobDetailForm = (props) => {
       });
     }
   }, [JSON.stringify(department)]);
-
-  useEffect(() => {
-    if (!workLocation) {
-      form.setFieldsValue({
-        workLocation: location._id,
-      });
-      saveToRedux({
-        workLocation: location._id,
-      });
-    }
-  }, []);
 
   const onChangeValue = (value, type) => {
     switch (type) {
@@ -148,6 +137,7 @@ const JobDetailForm = (props) => {
           location: value,
           workLocation: selectedWorkLocation,
         });
+        setNeedRefreshDocument(true);
         break;
       }
       case 'title': {

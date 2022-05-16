@@ -31,6 +31,9 @@ import {
   getReporteesList,
   getDocumentSettingList,
   getListBenefit,
+
+  // new document verification
+  getDocumentLayoutByCountry,
 } from '@/services/newCandidateForm';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
@@ -122,15 +125,6 @@ const defaultState = {
     newArrToAdjust: [],
     company: '',
     email: '',
-    identityProof: {
-      checkedList: [],
-    },
-    addressProof: {
-      checkedList: [],
-    },
-    educational: {
-      checkedList: [],
-    },
 
     candidateSignature: {
       url: '',
@@ -217,6 +211,12 @@ const defaultState = {
       // title: '',
     },
     benefits: [],
+
+    documentTypeA: [],
+    documentTypeB: [],
+    documentTypeC: [],
+    documentTypeD: [],
+    documentTypeE: [],
   },
   data: {
     firstName: null,
@@ -297,6 +297,7 @@ const defaultState = {
   },
   isEditingSalary: false,
   documentListOnboarding: [],
+  documentLayout: [],
 };
 
 const newCandidateForm = {
@@ -1571,6 +1572,30 @@ const newCandidateForm = {
         dialog(errors);
         return {};
       }
+    },
+
+    // new document verification
+    *fetchDocumentLayoutByCountry({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getDocumentLayoutByCountry, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            documentLayout: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
 
