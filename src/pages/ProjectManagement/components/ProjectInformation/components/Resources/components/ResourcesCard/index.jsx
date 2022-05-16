@@ -1,8 +1,9 @@
-import { Card, Form, DatePicker, Popconfirm } from 'antd';
+import { Card, Form, DatePicker, Popconfirm, Tag } from 'antd';
 import { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
+import { CloseOutlined } from '@ant-design/icons';
 import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
 import EditIcon from '@/assets/projectManagement/edit2.svg';
 import CancelXIcon from '@/assets/projectManagement/cancelX.svg';
@@ -60,6 +61,10 @@ const ResourcesCard = (props) => {
   const [addResourceModalVisible, setAddResourceModalVisible] = useState('');
   const [removeResourceModalVisible, setRemoveResourceModalVisible] = useState('');
   const [removingPackage, setRemovingPackage] = useState('');
+  const [applied, setApplied] = useState(0);
+  // if reselect project status or search, clear filter form
+  const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
 
   const {
     dispatch,
@@ -215,6 +220,22 @@ const ResourcesCard = (props) => {
     onSearchDebounce(value);
   };
 
+  const onFilter = (filterPayload) => {
+    fetchResourceOfProject(filterPayload);
+    if (Object.keys(filterPayload).length > 0) {
+      setIsFiltering(true);
+      setApplied(Object.keys(filterPayload).length);
+    } else {
+      setIsFiltering(false);
+      setApplied(0);
+    }
+  }
+
+  const clearFilter = () => {
+    onFilter({});
+    setNeedResetFilterForm(true);
+  }
+
   const renderTimeTitle = (title) => {
     return (
       <span className={styles.timeTitle}>
@@ -356,11 +377,29 @@ const ResourcesCard = (props) => {
   });
 
   const renderOption = () => {
-    const content = <FilterResourcesContent />;
+    const content = <FilterResourcesContent
+      onFilter={onFilter}
+      needResetFilterForm={needResetFilterForm}
+      setNeedResetFilterForm={setNeedResetFilterForm}
+      setIsFiltering={setIsFiltering}
+      setApplied={setApplied}
+    />;
     return (
       <div className={styles.options}>
+        {applied > 0 && (
+          <Tag
+            className={styles.tagCountFilter}
+            closable
+            closeIcon={<CloseOutlined />}
+            onClose={() => {
+              clearFilter();
+            }}
+          >
+            {applied} applied
+          </Tag>
+        )}
         <FilterPopover placement="bottomRight" content={content}>
-          <FilterButton />
+          <FilterButton showDot={isFiltering} />
         </FilterPopover>
         {allowModify && (
           <OrangeAddButton text="Add Resources" onClick={() => setAddResourceModalVisible(true)} />
