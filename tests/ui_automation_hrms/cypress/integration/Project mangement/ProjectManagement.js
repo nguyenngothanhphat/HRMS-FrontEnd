@@ -318,8 +318,8 @@ describe('Project management Automation', () => {
       cy.get('#basic_reason').type('bad network')
       cy.get('button[type="submit"]', { timeout: 8000 }).click({force:true})
       cy.wait(3000);
-      // cy.get('.ant-btn.ant-btn-link.ant-btn-circle').eq(8).click();
-      // cy.get('button[type="submit"]').click();
+      cy.get('.ant-btn.ant-btn-link.ant-btn-circle').eq(9).click();
+      cy.get('button[type="submit"]').click();
     });
     
   });
