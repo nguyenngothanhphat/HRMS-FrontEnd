@@ -1,48 +1,34 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
+import { Tabs } from 'antd';
 import styles from './index.less';
-import Summary from '../Summary';
 import SearchTable from '../../../components/SearchTable';
 import TableTickets from '../TableTickets';
 
-@connect(({ loading = {}, ticketManagement: { selectedLocations = [] } = {} }) => ({
-  selectedLocations,
-  loading: loading.effects['ticketManagement/fetchListAllTicket'],
-  loadingFilter: loading.effects['ticketManagement/fetchListAllTicketSearch'],
-}))
-class AllTicket extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedFilterTab: '1',
-      pageSelected: 1,
-      size: 10,
-      nameSearch: '',
-    };
+const { TabPane } = Tabs;
+const AllTicket = (props) => {
+  const {
+    dispatch,
+    country = '',
+    loadingFetchTicketList = false,
+    loadingFetchTotalList = false,
+    listOffAllTicket: data = [],
+    totalList: { totalStatus = [] } = [],
+    selectedLocations = [],
+    permissions = [],
+  } = props;
 
-    this.setDebounce = debounce((nameSearch) => {
-      this.setState({
-        nameSearch,
-      });
-    }, 1000);
-  }
+  const [selectedFilterTab, setSelectedFilterTab] = useState('1');
+  const [pageSelected, setPageSelected] = useState(1);
+  const [size, setSize] = useState(10);
+  const [nameSearch, setNameSearch] = useState('');
 
-  componentDidUpdate(prevProps, prevState) {
-    const { selectedFilterTab, pageSelected, size, nameSearch } = this.state;
-    const { selectedLocations = [] } = this.props;
-    if (
-      prevState.pageSelected !== pageSelected ||
-      prevState.size !== size ||
-      prevState.selectedFilterTab !== selectedFilterTab ||
-      prevState.nameSearch !== nameSearch ||
-      JSON.stringify(prevProps.selectedLocations) !== JSON.stringify(selectedLocations)
-    ) {
-      this.initDataTable(selectedFilterTab, nameSearch, selectedLocations);
-    }
-  }
+  const onSearchDebounce = debounce((value) => {
+    setNameSearch(value);
+  }, 500);
 
-  getStatus = (selectedTab) => {
+  const getStatus = (selectedTab) => {
     switch (selectedTab) {
       case '1':
         return 'New';
@@ -62,15 +48,14 @@ class AllTicket extends Component {
     }
   };
 
-  initDataTable = (tabId, nameSearch, selectedLocations = []) => {
-    const { dispatch } = this.props;
-    const { pageSelected, size } = this.state;
-
+  const initDataTable = () => {
     let payload = {
-      status: [this.getStatus(tabId)],
+      status: [getStatus(selectedFilterTab)],
+      permissions,
       page: pageSelected,
       limit: size,
       location: selectedLocations,
+      country,
     };
     if (nameSearch) {
       payload = {
@@ -84,43 +69,134 @@ class AllTicket extends Component {
     });
   };
 
-  setSelectedTab = (id) => {
-    this.setState({
-      selectedFilterTab: id,
+  const fetchTotalList = () => {
+    const payload = {
+      location: selectedLocations,
+      permissions,
+      country,
+    };
+    dispatch({
+      type: 'ticketManagement/fetchToTalList',
+      payload,
     });
   };
 
-  getPageAndSize = (page, pageSize) => {
-    this.setState({
-      pageSelected: page,
-      size: pageSize,
-    });
+  const setSelectedTab = (id) => {
+    setSelectedFilterTab(id);
   };
 
-  onChangeSearch = (value) => {
+  const getPageAndSize = (page, pageSize) => {
+    setPageSelected(page);
+    setSize(pageSize);
+  };
+
+  const onChangeSearch = (value) => {
     const formatValue = value.toLowerCase();
-    this.setDebounce(formatValue);
+    onSearchDebounce(formatValue);
   };
 
-  render() {
-    const { data = [], loading, loadingFilter, countData = [] } = this.props;
-    const { pageSelected, size } = this.state;
-    return (
-      <div className={styles.containerTickets}>
-        <div className={styles.tabTickets}>
-          <Summary setSelectedTab={this.setSelectedTab} countData={countData} />
-          <SearchTable onChangeSearch={this.onChangeSearch} className={styles.searchTable} />
-        </div>
-        <TableTickets
-          data={data}
-          loading={loading || loadingFilter}
-          pageSelected={pageSelected}
-          size={size}
-          getPageAndSize={this.getPageAndSize}
-        />
-      </div>
-    );
-  }
-}
+  useEffect(() => {
+    initDataTable();
+  }, [pageSelected, size, selectedFilterTab, nameSearch, JSON.stringify(selectedLocations)]);
 
-export default AllTicket;
+  useEffect(() => {
+    fetchTotalList();
+  }, [nameSearch, JSON.stringify(selectedLocations)]);
+
+  const onChangeTab = (activeKey) => {
+    setSelectedTab(activeKey);
+  };
+
+  const renderTab = (value) => {
+    return <div>{value}</div>;
+  };
+
+  const getCount = (value) => {
+    const find = totalStatus.find((val) => val.status === value);
+    return find?.total || 0;
+  };
+
+  const tabs = [
+    {
+      value: '1',
+      title: 'New',
+      count: getCount('New'),
+      renderTab: renderTab('New'),
+    },
+    {
+      value: '2',
+      title: 'Assigned',
+      count: getCount('Assigned'),
+      renderTab: renderTab('Assigned'),
+    },
+    {
+      value: '3',
+      title: 'In Progress',
+      count: getCount('In Progress'),
+      renderTab: renderTab('In Progress'),
+    },
+    {
+      value: '4',
+      title: 'Client Pending',
+      count: getCount('Client Pending'),
+      renderTab: renderTab('Client Pending'),
+    },
+    {
+      value: '5',
+      title: 'Resolved',
+      count: getCount('Resolved'),
+      renderTab: renderTab('Resolved'),
+    },
+    {
+      value: '6',
+      title: 'Closed',
+      count: getCount('Closed'),
+      renderTab: renderTab('Closed'),
+    },
+  ];
+
+  return (
+    <div className={styles.containerTickets}>
+      <Tabs
+        defaultActiveKey="1"
+        onChange={(activeKey) => onChangeTab(activeKey)}
+        tabBarExtraContent={
+          <SearchTable onChangeSearch={onChangeSearch} className={styles.searchTable} />
+        }
+      >
+        {tabs.map((item) => (
+          <TabPane tab={`${item.title} (${item.count})`} key={item.value}>
+            <TableTickets
+              data={data}
+              pageSelected={pageSelected}
+              size={size}
+              getPageAndSize={getPageAndSize}
+              refreshFetchTicketList={initDataTable}
+              refreshFetchTotalList={fetchTotalList}
+              loading={loadingFetchTicketList || loadingFetchTotalList}
+            />
+          </TabPane>
+        ))}
+      </Tabs>
+    </div>
+  );
+};
+
+export default connect(
+  ({
+    loading = {},
+    user: {
+      currentUser: {
+        employee: { location: { headQuarterAddress: { country = '' } = {} } = {} } = {},
+      } = {},
+    },
+    ticketManagement: { selectedLocations = [], listOffAllTicket = [], totalList = [] } = {},
+  }) => ({
+    listOffAllTicket,
+    totalList,
+    selectedLocations,
+    country,
+    loadingFetchTicketList: loading.effects['ticketManagement/fetchListAllTicket'],
+    loadingFetchTotalList: loading.effects['ticketManagement/fetchToTalList'],
+  }),
+)(AllTicket);

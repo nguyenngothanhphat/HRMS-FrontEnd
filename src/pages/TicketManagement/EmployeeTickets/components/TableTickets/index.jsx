@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Table, Dropdown, Menu, Popover } from 'antd';
+import { Table, Popover, Col, Row } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { history, connect } from 'umi';
@@ -90,7 +90,12 @@ class TableTickets extends PureComponent {
 
   handleSelectChange = () => {
     const { ticket } = this.state;
-    const { dispatch, employee: { _id = '' } = {} } = this.props;
+    const {
+      dispatch,
+      employee: { _id = '' } = {},
+      refreshFetchData = () => {},
+      refreshFetchTotalList = () => {},
+    } = this.props;
     const {
       id = '',
       employee_raise: employeeRaise = '',
@@ -118,6 +123,12 @@ class TableTickets extends PureComponent {
         departmentAssign,
         employee: _id,
       },
+    }).then((res) => {
+      const { statusCode } = res;
+      if (statusCode === 200) {
+        refreshFetchData();
+        refreshFetchTotalList();
+      }
     });
   };
 
@@ -194,6 +205,18 @@ class TableTickets extends PureComponent {
 
   viewProfile = (userId) => {
     history.push(`/directory/employee-profile/${userId}`);
+  };
+
+  renderMenuDropdown = () => {
+    return (
+      <Row>
+        <Col span={24}>
+          <div className={styles.employee} onClick={this.handleSelectChange}>
+            <span>Assign to self</span>
+          </div>
+        </Col>
+      </Row>
+    );
   };
 
   render() {
@@ -336,7 +359,6 @@ class TableTickets extends PureComponent {
           const locationNew =
             locationsList.length > 0 ? locationsList.filter((val) => val._id === location) : [];
           const name = locationNew.length > 0 ? locationNew[0].name : '';
-          // return <span>{name}</span>;
           return (
             <Popover content={this.locationContent(location)} title={name} trigger="hover">
               <span
@@ -382,28 +404,37 @@ class TableTickets extends PureComponent {
             );
           }
           return (
-            <Dropdown
-              overlayClassName="dropDown__employee"
-              overlay={
-                <Menu>
-                  <Menu.Item onClick={this.handleSelectChange}>Assign to self</Menu.Item>
-                </Menu>
-              }
-              trigger={['click']}
+            <Popover
+              trigger="click"
+              overlayClassName={styles.dropdownPopover}
+              content={this.renderMenuDropdown()}
+              placement="bottomRight"
             >
-              <div onClick={() => this.handleClickSelect(row.id)}>
+              <div
+                onClick={() => this.handleClickSelect(row.id)}
+                style={{
+                  width: 'fit-content',
+                  cursor: 'pointer',
+                  color: '#2c6df9',
+                }}
+              >
                 Select User &emsp;
                 <DownOutlined />
               </div>
-            </Dropdown>
+            </Popover>
           );
         },
         sorter: (a, b) => {
-          return a.employeeAssignee.generalInfo && a.employeeAssignee.generalInfo?.legalName
-            ? a.employeeAssignee.generalInfo?.legalName.localeCompare(
-                `${b.employeeAssignee.generalInfo?.legalName}`,
-              )
-            : null;
+          if (
+            a.employeeAssignee?.generalInfo?.legalName &&
+            b.employeeAssignee?.generalInfo?.legalName
+          )
+            return a.employeeAssignee.generalInfo && a.employeeAssignee.generalInfo?.legalName
+              ? a.employeeAssignee.generalInfo?.legalName.localeCompare(
+                  `${b.employeeAssignee.generalInfo?.legalName}`,
+                )
+              : null;
+          return null;
         },
         sortDirections: ['ascend', 'descend'],
       },
