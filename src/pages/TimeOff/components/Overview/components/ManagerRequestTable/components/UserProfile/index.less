@@ -1,0 +1,78 @@
+.PopoverInfoTimeOff {
+    position: relative;
+    .closeButton {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 5;
+      display: block;
+      cursor: pointer;
+    }
+    .divider {
+      border-bottom: 1px solid #eaecef;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 20px 16px 16px;
+      .avatar {
+        img {
+          width: 64px;
+          height: 64px;
+          object-fit: cover;
+          border-radius: 50%;
+        }
+        padding-right: 16px;
+      }
+      .information {
+        span {
+          display: block;
+          line-height: 24px;
+        }
+        .name {
+          color: #161c29;
+          font-weight: 500;
+          font-size: 14px;
+        }
+        .position,
+        .department {
+          color: rgba(0, 0, 0, 0.48);
+          font-size: 13px;
+  
+          letter-spacing: 0.075px;
+        }
+      }
+    }
+  
+    .userInfo {
+      padding: 6px 16px;
+      .eachRow {
+        margin-block: 10px;
+        &__label {
+          color: #212020;
+          font-weight: 500;
+          font-size: 13px;
+        }
+        &__value {
+          color: #212020;
+          font-size: 13px;
+        }
+        .managerName {
+          color: #2c6df9;
+          font-weight: 500;
+          font-size: 13px;
+          cursor: pointer;
+        }
+      }
+    }
+    .viewFullProfile {
+      padding: 16px;
+  
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 13px;
+      text-decoration: underline;
+    }
+  }
+  // }
+  
