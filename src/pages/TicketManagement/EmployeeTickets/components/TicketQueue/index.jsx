@@ -67,6 +67,7 @@ const TicketQueue = (props) => {
       employeeAssignee: _id,
       departmentAssign: idDepart,
       location: selectedLocations,
+      country,
       permissions,
     };
     dispatch({

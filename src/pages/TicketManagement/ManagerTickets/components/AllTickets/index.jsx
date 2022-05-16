@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
-import { Spin, Tabs } from 'antd';
+import { Tabs } from 'antd';
 import styles from './index.less';
 import SearchTable from '../../../components/SearchTable';
 import TableTickets from '../TableTickets';
@@ -13,7 +13,6 @@ const AllTicket = (props) => {
     country = '',
     loadingFetchTicketList = false,
     loadingFetchTotalList = false,
-    loadingFilter = false,
     listOffAllTicket: data = [],
     totalList: { totalStatus = [] } = [],
     selectedLocations = [],
@@ -50,15 +49,20 @@ const AllTicket = (props) => {
   };
 
   const initDataTable = () => {
-    const payload = {
+    let payload = {
       status: [getStatus(selectedFilterTab)],
-      search: nameSearch,
       permissions,
       page: pageSelected,
       limit: size,
       location: selectedLocations,
       country,
     };
+    if (nameSearch) {
+      payload = {
+        ...payload,
+        search: nameSearch,
+      };
+    }
     dispatch({
       type: 'ticketManagement/fetchListAllTicket',
       payload,
@@ -162,16 +166,15 @@ const AllTicket = (props) => {
       >
         {tabs.map((item) => (
           <TabPane tab={`${item.title} (${item.count})`} key={item.value}>
-            <Spin spinning={loadingFetchTicketList || loadingFetchTotalList || loadingFilter}>
-              <TableTickets
-                data={data}
-                pageSelected={pageSelected}
-                size={size}
-                getPageAndSize={getPageAndSize}
-                refreshFetchTicketList={initDataTable}
-                refreshFetchTotalList={fetchTotalList}
-              />
-            </Spin>
+            <TableTickets
+              data={data}
+              pageSelected={pageSelected}
+              size={size}
+              getPageAndSize={getPageAndSize}
+              refreshFetchTicketList={initDataTable}
+              refreshFetchTotalList={fetchTotalList}
+              loading={loadingFetchTicketList || loadingFetchTotalList}
+            />
           </TabPane>
         ))}
       </Tabs>
@@ -195,6 +198,5 @@ export default connect(
     country,
     loadingFetchTicketList: loading.effects['ticketManagement/fetchListAllTicket'],
     loadingFetchTotalList: loading.effects['ticketManagement/fetchToTalList'],
-    loadingFilter: loading.effects['ticketManagement/fetchListAllTicketSearch'],
   }),
 )(AllTicket);

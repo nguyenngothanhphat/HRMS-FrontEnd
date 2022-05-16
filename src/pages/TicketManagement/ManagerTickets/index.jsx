@@ -14,6 +14,7 @@ const ManagerTicket = (props) => {
   const { dispatch, tabName = '', companyLocationList = [], permissions = [] } = props;
 
   const [selectedLocationsState, setSelectedLocationsState] = useState([getCurrentLocation()]);
+
   const fetchLocationList = () => {
     dispatch({
       type: 'ticketManagement/fetchLocationList',

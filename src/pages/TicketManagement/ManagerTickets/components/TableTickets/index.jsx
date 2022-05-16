@@ -19,7 +19,7 @@ const TableTickets = (props) => {
     employee: { _id: employeeId = '' },
     locationsList = [],
     textEmpty = 'No tickets found',
-    loading,
+    loading = false,
     pageSelected,
     size,
     getPageAndSize = () => {},
