@@ -14,8 +14,12 @@ const VIEW_TYPE = {
 };
 const ManagerReport = (props) => {
   // others
-  const { dispatch, timeSheet: { payloadExport = {} } = {} } = props;
+  const { dispatch, timeSheet: { payloadExport = {} } = {}, permissions = {} } = props;
   const [activeKey, setActiveKey] = useState(VIEW_TYPE.PROJECT_VIEW);
+
+  // PERMISSIONS TO VIEW PROJECT OR TEAM
+  const viewReportProject = permissions.viewReportProjectViewTimesheet === 1;
+  const viewReportTeam = permissions.viewReportTeamViewTimesheet === 1;
 
   const exportToExcel = async (type, fileName) => {
     const getListExport = await dispatch({
@@ -63,15 +67,29 @@ const ManagerReport = (props) => {
         onChange={(key) => setActiveKey(key)}
         tabBarExtraContent={options()}
       >
-        <TabPane tab="Project View" key={VIEW_TYPE.PROJECT_VIEW}>
-          <ProjectView activeView={activeKey} />
-        </TabPane>
-        <TabPane tab="Team View" key={VIEW_TYPE.TEAM_VIEW}>
-          <TeamView activeView={activeKey} />
-        </TabPane>
+        {viewReportProject &&         
+          <TabPane tab="Project View" key={VIEW_TYPE.PROJECT_VIEW}>
+            <ProjectView activeView={activeKey} />
+          </TabPane>
+        }
+
+        {viewReportTeam &&         
+          <TabPane tab="Team View" key={VIEW_TYPE.TEAM_VIEW}>
+            <TeamView activeView={activeKey} />
+          </TabPane>
+        }
       </Tabs>
     </div>
   );
 };
 
-export default connect(({ user, timeSheet }) => ({ user, timeSheet }))(ManagerReport);
+export default connect(
+  ({ 
+    user,
+    user: { permissions = [] } = {},
+    timeSheet 
+  }) => ({ 
+    user, 
+    timeSheet,
+    permissions,
+}))(ManagerReport);
