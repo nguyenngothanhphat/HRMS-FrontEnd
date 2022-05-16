@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
-import { Tabs } from 'antd';
 import styles from './index.less';
 import SearchTable from '../../../components/SearchTable';
 import TableTickets from '../TableTickets';
+import Summary from '../Summary';
 
-const { TabPane } = Tabs;
 const AllTicket = (props) => {
   const {
     dispatch,
@@ -14,7 +13,7 @@ const AllTicket = (props) => {
     loadingFetchTicketList = false,
     loadingFetchTotalList = false,
     listOffAllTicket: data = [],
-    totalList: { totalStatus = [] } = [],
+    totalList: countData = [],
     selectedLocations = [],
     permissions = [],
   } = props;
@@ -103,81 +102,19 @@ const AllTicket = (props) => {
     fetchTotalList();
   }, [nameSearch, JSON.stringify(selectedLocations)]);
 
-  const onChangeTab = (activeKey) => {
-    setSelectedTab(activeKey);
-  };
-
-  const renderTab = (value) => {
-    return <div>{value}</div>;
-  };
-
-  const getCount = (value) => {
-    const find = totalStatus.find((val) => val.status === value);
-    return find?.total || 0;
-  };
-
-  const tabs = [
-    {
-      value: '1',
-      title: 'New',
-      count: getCount('New'),
-      renderTab: renderTab('New'),
-    },
-    {
-      value: '2',
-      title: 'Assigned',
-      count: getCount('Assigned'),
-      renderTab: renderTab('Assigned'),
-    },
-    {
-      value: '3',
-      title: 'In Progress',
-      count: getCount('In Progress'),
-      renderTab: renderTab('In Progress'),
-    },
-    {
-      value: '4',
-      title: 'Client Pending',
-      count: getCount('Client Pending'),
-      renderTab: renderTab('Client Pending'),
-    },
-    {
-      value: '5',
-      title: 'Resolved',
-      count: getCount('Resolved'),
-      renderTab: renderTab('Resolved'),
-    },
-    {
-      value: '6',
-      title: 'Closed',
-      count: getCount('Closed'),
-      renderTab: renderTab('Closed'),
-    },
-  ];
-
   return (
     <div className={styles.containerTickets}>
-      <Tabs
-        defaultActiveKey="1"
-        onChange={(activeKey) => onChangeTab(activeKey)}
-        tabBarExtraContent={
-          <SearchTable onChangeSearch={onChangeSearch} className={styles.searchTable} />
-        }
-      >
-        {tabs.map((item) => (
-          <TabPane tab={`${item.title} (${item.count})`} key={item.value}>
-            <TableTickets
-              data={data}
-              pageSelected={pageSelected}
-              size={size}
-              getPageAndSize={getPageAndSize}
-              refreshFetchTicketList={initDataTable}
-              refreshFetchTotalList={fetchTotalList}
-              loading={loadingFetchTicketList || loadingFetchTotalList}
-            />
-          </TabPane>
-        ))}
-      </Tabs>
+      <div className={styles.tabTickets}>
+        <Summary setSelectedTab={setSelectedTab} countData={countData} />
+        <SearchTable onChangeSearch={onChangeSearch} className={styles.searchTable} />
+      </div>
+      <TableTickets
+        data={data}
+        loading={loadingFetchTicketList || loadingFetchTotalList}
+        pageSelected={pageSelected}
+        size={size}
+        getPageAndSize={getPageAndSize}
+      />
     </div>
   );
 };
