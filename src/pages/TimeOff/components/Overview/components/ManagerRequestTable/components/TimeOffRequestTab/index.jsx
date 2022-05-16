@@ -216,7 +216,6 @@ const TimeOffRequestTab = (props) => {
   };
 
   useEffect(() => {
-    console.log('test');
     if (timeOffTypes.length > 0) {
       fetchData();
     }
