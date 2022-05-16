@@ -97,7 +97,7 @@ describe('Project management Automation', () => {
       cy.wait(1000);
   
 
-      //documents
+    //   //documents
 
       cy.contains('Documents').click({force:true});
       cy.get('img[src="/static/add.c4e84271.svg"]').click({force:true})
@@ -162,7 +162,10 @@ describe('Project management Automation', () => {
       cy.contains('Add Resource Type').click({force:true})
       cy.get('#basic_division').click({force:true})
       cy.get('.ant-select-item-option-content').eq(5).click({force:true});
-      cy.get('#basic_resourceType').type('Process Analyst I'+'{enter}').click({force:true});
+      cy.get('#basic_resourceType').type('Account Manager').
+      then(()=>{
+        cy.contains('Account Manager').click({force:true})
+      })
       cy.get('#basic_noOfResources').type('10')
       cy.get('#basic_billingStatus').click({force:true})
       cy.get('.ant-select-item-option-content').eq(20).click({force:true})
@@ -172,12 +175,13 @@ describe('Project management Automation', () => {
       })
       cy.get('#basic_comments').click({force:true})
       cy.get('button[type="submit"]', { timeout: 8000 }).click({force:true})
+      cy.pause()
       //filter
       cy.get('img[src="/static/filter.5d3ad138.svg"]').click({force:true})
       cy.wait(2000)
       cy.get('#filter_division').type('sales'+'{enter}',{force:true})
       cy.get('#filter_resourceType').click({force:true})
-      cy.get('.ant-select-item-option-content').eq(9).click({force:true})
+      cy.get('.ant-select-item-option-content').eq(14).click({force:true})
       cy.get('#filter_billingStatus').type('buffer'+"{enter}",{force:true})
       cy.wait(3000)
       cy.get('.ant-btn.btnApply___yDHKp').click({force:true}) 
@@ -216,7 +220,7 @@ describe('Project management Automation', () => {
       cy.wait(1000)
       cy.get('.ant-modal-close-x').click({force:true})
       cy.wait(3000)
-    
+      
       //resources
       cy.get('.ant-tabs-tab-btn').eq(1).click({force:true})
       cy.contains('Add Resources').click({force:true})
@@ -314,10 +318,9 @@ describe('Project management Automation', () => {
       cy.get('#basic_reason').type('bad network')
       cy.get('button[type="submit"]', { timeout: 8000 }).click({force:true})
       cy.wait(3000);
-      cy.get('.ant-btn.ant-btn-link.ant-btn-circle').eq(8).click();
-      cy.get('button[type="submit"]').click();
-     
-
+      // cy.get('.ant-btn.ant-btn-link.ant-btn-circle').eq(8).click();
+      // cy.get('button[type="submit"]').click();
     });
     
   });
+  
