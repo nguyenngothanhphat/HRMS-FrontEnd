@@ -64,10 +64,10 @@ const ONBOARDING_FORM_LINK = {
   BENEFITS: 'benefits',
   OFFER_DETAILS: 'offer-details',
   OFFER_LETTER: 'offer-letter',
+  REFERENCES: 'references',
 };
 
-const ONBOARDING_FORM_STEP_LINK = [
-  {
+const ONBOARDING_FORM_STEP_LINK = [{
     id: 0,
     link: ONBOARDING_FORM_LINK.BASIC_INFORMATION,
   },
@@ -81,18 +81,22 @@ const ONBOARDING_FORM_STEP_LINK = [
   },
   {
     id: 3,
-    link: ONBOARDING_FORM_LINK.SALARY_STRUCTURE,
+    link: ONBOARDING_FORM_LINK.REFERENCES,
   },
   {
     id: 4,
-    link: ONBOARDING_FORM_LINK.BENEFITS,
+    link: ONBOARDING_FORM_LINK.SALARY_STRUCTURE,
   },
   {
     id: 5,
-    link: ONBOARDING_FORM_LINK.OFFER_DETAILS,
+    link: ONBOARDING_FORM_LINK.BENEFITS,
   },
   {
     id: 6,
+    link: ONBOARDING_FORM_LINK.OFFER_DETAILS,
+  },
+  {
+    id: 7,
     link: ONBOARDING_FORM_LINK.OFFER_LETTER,
   },
 ];
