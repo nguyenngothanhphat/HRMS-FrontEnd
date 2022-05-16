@@ -94,10 +94,18 @@ const UserProfile = (props) => {
   };
 
   const renderPopup = () => {
-    const { allLeaveRequests, employeeId } = props;
-    const employee = allLeaveRequests.find((x) => {
-      return x.employee.employeeId === employeeId;
-    });
+    const { allLeaveRequests = [], teamLeaveRequests = [], employeeId, category } = props;
+    let employee = {};
+    if (category === 'ALL') {
+      employee = allLeaveRequests.find((x) => {
+        return x.employee.employeeId === employeeId;
+      });
+    } else if (category === 'TEAM') {
+      employee = teamLeaveRequests.find((x) => {
+        return x.employee.employeeId === employeeId;
+      });
+    }
+
     const { employee: { generalInfo: { userId = '' } } = {} } = employee || {};
     const profileUrl = `/directory/employee-profile/${userId}/general-info`;
     return (
@@ -116,6 +124,7 @@ const UserProfile = (props) => {
   return <>{renderPopup()}</>;
 };
 
-export default connect(({ timeOff: { allLeaveRequests = [] } }) => ({ allLeaveRequests }))(
-  UserProfile,
-);
+export default connect(({ timeOff: { allLeaveRequests = [], teamLeaveRequests = [] } }) => ({
+  allLeaveRequests,
+  teamLeaveRequests,
+}))(UserProfile);

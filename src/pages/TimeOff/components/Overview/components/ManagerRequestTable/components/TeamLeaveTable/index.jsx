@@ -61,6 +61,7 @@ class TeamLeaveTable extends PureComponent {
   }
 
   getColumns = (TYPE) => {
+    const {category} = this.props;
     return [
       {
         title: 'Ticket ID',
@@ -96,7 +97,7 @@ class TeamLeaveTable extends PureComponent {
             <Popover
               placement="bottomRight"
               overlayClassName={styles.UserProfilePopover}
-              content={<UserProfile employeeId={employee.employeeId} />}
+              content={<UserProfile category={category} employeeId={employee.employeeId} />}
               trigger="hover"
             >
               <span>{employee?.generalInfo?.legalName}</span>
