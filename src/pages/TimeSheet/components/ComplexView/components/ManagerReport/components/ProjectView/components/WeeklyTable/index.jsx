@@ -26,7 +26,6 @@ const WeeklyTable = (props) => {
     onChangePage = () => {},
   } = props;
   const [dateList, setDateList] = useState([]);
-
   // FUNCTIONS
   // get dates between two dates
   const enumerateDaysBetweenDates = (startDate1, endDate1) => {
@@ -208,21 +207,20 @@ const WeeklyTable = (props) => {
         },
       };
     });
-
     const result = [
       {
-        title: renderTitle('Functional Area', 1),
-        dataIndex: 'functionalArea',
-        key: 'functionalArea',
+        title: renderTitle('Employee', 1),
+        dataIndex: 'dailyList',
+        key: 'dailyList',
         align: 'center',
         width: `${100 / 9}%`,
-        render: (functionalArea, _, index) => {
+        render: (dailyList, _, index) => {
           return (
             <div className={styles.projectName}>
               <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
-                <span>{functionalArea ? functionalArea.toString()?.charAt(0) : 'P'}</span>
+                <span>A</span>
               </div>
-              <span className={styles.name}>{functionalArea}</span>
+              <span className={styles.name}>Phát</span>
             </div>
           );
         },
@@ -241,6 +239,7 @@ const WeeklyTable = (props) => {
     ];
     return result;
   };
+
 
   const onChangePagination = (pageNumber) => {
     onChangePage(pageNumber);

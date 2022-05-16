@@ -1,6 +1,7 @@
 import { Button, Tabs } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
+import moment from 'moment';
 import DownloadIcon from '@/assets/timeSheet/download.svg';
 import ProjectView from './components/ProjectView';
 import TeamView from './components/TeamView';
@@ -14,7 +15,15 @@ const VIEW_TYPE = {
 };
 const ManagerReport = (props) => {
   // others
-  const { dispatch, timeSheet: { payloadExport = {} } = {} } = props;
+  const { dispatch, timeSheet: { payloadExport = {}, projectList = [] } = {} } = props;
+
+  // Format fromDate and toDate
+  const {fromDate, toDate, projectId} = payloadExport
+  const startDate = moment(fromDate).format('LL').replace(/[, \s]+/g, "");
+  const endDate = moment(toDate).format('LL').replace(/[, \s]+/g, "");
+
+  const project = projectList.find(list => list.id === projectId)
+
   const [activeKey, setActiveKey] = useState(VIEW_TYPE.PROJECT_VIEW);
 
   const exportToExcel = async (type, fileName) => {
@@ -36,7 +45,7 @@ const ManagerReport = (props) => {
 
   const exportTag = () => {
     if (activeKey === VIEW_TYPE.PROJECT_VIEW) {
-      return exportToExcel('timeSheet/exportReportProject', 'project-view.xlsx');
+      return exportToExcel('timeSheet/exportReportProject', `ProjectView-${project.projectName}-${startDate}-${endDate}.xlsx`);
     }
     return exportToExcel('timeSheet/exportReportTeam', 'team-view.xlsx');
   };
