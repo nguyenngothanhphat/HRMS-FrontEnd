@@ -104,7 +104,7 @@ const References = (props) => {
                       <Button
                         type="text"
                         className={styles.addBtn}
-                        onClick={() => setCard([...card, 'hihi'])}
+                        onClick={() => setCard([...card, 'add references'])}
                       >
                         <img
                           src={AddIcon}

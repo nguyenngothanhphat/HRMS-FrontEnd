@@ -8,7 +8,7 @@ import styles from './index.less';
 import ReferenceForm from './components/ReferenceForm';
 
 const References = (props) => {
-  const { isFilled = false, cards = ['hihi', 'haha', 'hoho'] } = props;
+  const { isFilled = false, cards = [] } = props;
 
   const MentionContent = () => {
     return (
