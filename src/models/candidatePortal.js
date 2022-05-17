@@ -15,6 +15,7 @@ import {
 import { dialog } from '@/utils/utils';
 import { CANDIDATE_TASK_LINK, CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { getCurrentTenant } from '@/utils/authority';
 
 const pendingTaskDefault = [
   {
@@ -266,7 +267,12 @@ const candidatePortal = {
       let response;
       try {
         const { candidate } = yield select((state) => state.candidatePortal);
-        response = yield call(updateByCandidate, { ...payload, candidate });
+
+        response = yield call(updateByCandidate, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          candidate,
+        });
 
         const { statusCode } = response;
         if (statusCode !== 200) throw response;

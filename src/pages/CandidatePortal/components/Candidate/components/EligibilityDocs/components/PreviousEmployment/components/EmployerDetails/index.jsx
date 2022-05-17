@@ -1,4 +1,3 @@
-import { CloseOutlined } from '@ant-design/icons';
 import { Checkbox, Col, DatePicker, Form, Input, Row } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';

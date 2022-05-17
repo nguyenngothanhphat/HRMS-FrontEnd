@@ -27,7 +27,7 @@ const CollapseField = (props) => {
         >
           <div className={styles.space}>
             {items.map((item, i) => (
-              <File item={item} index={i} />
+              <File item={item} index={i} type={layout.type} />
             ))}
           </div>
         </Collapse.Panel>

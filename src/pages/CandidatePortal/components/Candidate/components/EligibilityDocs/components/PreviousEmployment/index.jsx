@@ -48,7 +48,7 @@ const PreviousEmployment = (props) => {
               <EmployerDetails index={i} onValuesChange={onValuesChange} employer={item} />
               <div className={styles.someText}>Proof of employment</div>
               {item.data.map((x, j) => (
-                <File item={x} index={j} />
+                <File item={x} index={j} type={type} />
               ))}
             </div>
           ))}

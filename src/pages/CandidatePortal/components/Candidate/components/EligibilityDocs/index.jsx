@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { Button, Col, Row, Tooltip, Typography } from 'antd';
 import { every } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import AnswerQuestion from '@/components/Question/AnswerQuestion';
@@ -76,6 +76,27 @@ const EligibilityDocs = (props) => {
       setIsSentEmail(true);
     }
   }, []);
+
+  useLayoutEffect(() => {
+    if (documentTypeA.length > 0) {
+      dispatch({
+        type: 'candidatePortal/updateByCandidateEffect',
+        payload: {
+          documentTypeA,
+          documentTypeB,
+          documentTypeC,
+          documentTypeD,
+          documentTypeE,
+        },
+      });
+    }
+  }, [
+    JSON.stringify(documentTypeA),
+    JSON.stringify(documentTypeB),
+    JSON.stringify(documentTypeC),
+    JSON.stringify(documentTypeD),
+    JSON.stringify(documentTypeE),
+  ]);
 
   const initSendMail = () => {
     setIsSending(true);

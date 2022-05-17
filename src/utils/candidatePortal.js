@@ -1,15 +1,15 @@
-const CANDIDATE_TASK_LINK = {
+export const CANDIDATE_TASK_LINK = {
   REVIEW_PROFILE: 'review-profile',
   UPLOAD_DOCUMENTS: 'upload-documents',
   SALARY_NEGOTIATION: 'salary-negotiation',
   ACCEPT_OFFER: 'accept-offer',
 };
-const PORTAL_TAB_NAME = {
+export const PORTAL_TAB_NAME = {
   DASHBOARD: 'dashboard',
   MESSAGES: 'messages',
   CHANGE_PASSWORD: 'change-password',
 };
-const CANDIDATE_TASK_STATUS = {
+export const CANDIDATE_TASK_STATUS = {
   IN_PROGRESS: 'IN-PROGRESS', // doing
   DONE: 'DONE', // done
   RE_SUBMIT: 'RE-SUBMIT', // need to submit again
@@ -17,16 +17,25 @@ const CANDIDATE_TASK_STATUS = {
   REJECTED: 'REJECTED', // rejected
   RE_NEGOTIATE: 'RE-NEGOTIATE', // for salary structure
 };
-const ADDRESS_VARIABLES = ['AddressLine1', 'AddressLine2', 'Country', 'State', 'City', 'ZipCode'];
-const ADDRESS_TYPE = {
+export const ADDRESS_VARIABLES = [
+  'AddressLine1',
+  'AddressLine2',
+  'Country',
+  'State',
+  'City',
+  'ZipCode',
+];
+export const ADDRESS_TYPE = {
   CURRENT: 'current',
   PERMANENT: 'permanent',
 };
 
-export {
-  CANDIDATE_TASK_LINK,
-  PORTAL_TAB_NAME,
-  CANDIDATE_TASK_STATUS,
-  ADDRESS_TYPE,
-  ADDRESS_VARIABLES,
+export const DOCUMENT_TYPES = {
+  // UPLOAD_PENDING: 'UPLOAD-PENDING',
+  UPLOADED: 'UPLOADED',
+  VERIFYING: 'VERIFYING',
+  VERIFIED: 'VERIFIED',
+  RE_SUBMITTED_PENDING: 'RE-SUBMITTED-PENDING',
+  RE_SUBMITTED: 'RE-SUBMITTED',
+  NOT_AVAILABLE: 'NOT-AVAILABLE',
 };
