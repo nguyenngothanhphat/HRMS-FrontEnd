@@ -157,8 +157,6 @@ class TeamCompoffTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      // pageSelected: 1,
-      rowSize: 10,
       selectedRowKeys: [],
       commentModalVisible: false,
       rejectingId: '',
@@ -233,14 +231,10 @@ class TeamCompoffTable extends PureComponent {
 
   // pagination
   onChangePagination = (pageNumber, pageSize) => {
-    this.setState({
-      rowSize: pageSize,
-      // pageSelected: pageNumber,
-    });
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/savePaging',
-      payload: { page: pageNumber },
+      payload: { page: pageNumber, limit: pageSize },
     });
   };
 
@@ -393,15 +387,7 @@ class TeamCompoffTable extends PureComponent {
       selectedTab = '',
       paging: { page, limit, total },
     } = this.props;
-    const {
-      selectedRowKeys,
-      // pageSelected,
-      commentModalVisible,
-      rejectingTicketID,
-      rejectMultiple,
-      rowSize,
-    } = this.state;
-    // const rowSize = 10;
+    const { selectedRowKeys, commentModalVisible, rejectingTicketID, rejectMultiple } = this.state;
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -426,10 +412,10 @@ class TeamCompoffTable extends PureComponent {
           of {totals}{' '}
         </span>
       ),
-      defaultPageSize: rowSize,
+      defaultPageSize: 10,
       showSizeChanger: true,
       pageSizeOptions: ['10', '25', '50', '100'],
-      pageSize: rowSize,
+      pageSize: limit,
       current: page,
       onChange: this.onChangePagination,
     };
@@ -456,7 +442,7 @@ class TeamCompoffTable extends PureComponent {
           size="middle"
           loading={tableLoading}
           rowSelection={rowSelection}
-          pagination={data.length === 0 ? null : { ...pagination }}
+          pagination={data.length === 0 ? null : { ...pagination, ...total }}
           columns={tableByRole}
           dataSource={parsedData}
           scroll={scroll}

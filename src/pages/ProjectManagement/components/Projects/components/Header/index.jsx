@@ -61,6 +61,7 @@ const Header = (props) => {
 
   const clearFilter = () => {
     onFilter({});
+    setNeedResetFilterForm(true);
   };
 
   useEffect(() => {
@@ -126,6 +127,8 @@ const Header = (props) => {
               <FilterContent
                 needResetFilterForm={needResetFilterForm}
                 setNeedResetFilterForm={setNeedResetFilterForm}
+                setIsFiltering={setIsFiltering}
+                setApplied={setApplied}
                 onFilter={onFilter}
               />
             </Suspense>
