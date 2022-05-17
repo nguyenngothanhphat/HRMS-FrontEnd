@@ -15,14 +15,15 @@ describe('Project management Automation', () => {
         cy.wait(3000);
         cy.get('.ant-select-selection-item').click({force:true})
         cy.wait(3000);
-        cy.contains("Add new Project").click({force:true})
+        cy.contains("Add new Project").click({force:true}) 
         cy.get('#myForm_customerId').click();
         cy.wait(5000)
         cy.get('#myForm_customerId').type('Preetha' + '{enter}', {force: true})
+        cy.wait(1000)
         cy.get('#myForm_engagementType').type('JV' + '{enter}', {force: true})
-        cy.get('#myForm_accountOwner').click()
-        cy.wait(10000)
-        cy.get('#myForm_accountOwner').type('Arun'+'{enter}',{force:true})
+        //cy.get('#myForm_accountOwner').click()
+        //cy.wait(10000)
+        //cy.get('#myForm_accountOwner').type('Arun'+'{enter}',{force:true})
          cy.get('#myForm_projectStatus').type("Active"+'{enter}',{force:true});
         cy.get('#myForm_projectName').type('HARSHA');
         cy.get('#myForm_projectAlias').type('H1');
@@ -31,7 +32,7 @@ describe('Project management Automation', () => {
         cy.get('#myForm_startDate',{timeout:3000}).type(fromDate + '{enter}', {force: true});
         cy.get('#myForm_tentativeEndDate',{timeout:3000}).type(toDate + '{enter}', {force: true});
         cy.get('#myForm_projectManager').click()
-        cy.wait(10000)
+        cy.wait(4000)
         cy.get('#myForm_projectManager').type('arun'+'{enter}')
         cy.get('#myForm_estimation').type('13');
         cy.get('#myForm_billableHeadCount').type('12');
@@ -41,7 +42,9 @@ describe('Project management Automation', () => {
         cy.get('#myForm_division',{timeout:3000}).type('Software Services'+'{enter}', {force: true})
         cy.get('.ant-select-selection-overflow-item.ant-select-selection-overflow-item-suffix').type("Design"+'{enter}'+"Frontend"+'{enter}',{forcr:true});
         cy.contains('Submit').click()
-        cy.wait(3000)
+        cy.wait(2000)
+        
+        
     //filter
       cy.get('.FilterButton___qz7iA').click({force:true});
       cy.wait(3000);
@@ -58,21 +61,21 @@ describe('Project management Automation', () => {
       cy.get('.anticon.anticon-close-circle').eq(0).click({force:true})
       cy.wait(1000)
       cy.get('#filter_customerId').click({force:true})
-      cy.get('.ant-select-item-option-content').eq(32).click({force:true})
+      cy.get('.ant-select-item-option-content').eq(27).click({force:true})
       cy.wait(3000);
       cy.get('.anticon.anticon-close-circle').eq(0).click({force:true})
       cy.wait(1000)
       cy.get('#filter_engagementType').click({force:true})
-      cy.get('.ant-select-item-option-content').eq(37).click({force:true})
+      cy.get('.ant-select-item-option-content').eq(34).click({force:true})
       cy.wait(3000)
       cy.get('.anticon.anticon-close-circle').eq(0).click({force:true})
       cy.wait(1000)
       cy.get('#filter_projectManager').click({force:true})
-      cy.get('.ant-select-item-option-content').eq(45).click({force:true})
+      cy.get('.ant-select-item-option-content').eq(40).click({force:true})
       cy.wait(3000)
-      cy.get('.ant-select-selection-item-remove').eq(0).click({force:true})
+      cy.get('.anticon.anticon-close').eq(0).click({force:true})
       cy.get('#filter_projectStatus').click({force:true})
-      cy.get('.ant-select-item-option-content').eq(50).click({force:true})
+      cy.get('.ant-select-item-option-content').eq(49).click({force:true})
       cy.wait(3000)
       cy.get('.anticon.anticon-close-circle').eq(0).click({force:true})
       cy.wait(1000)
@@ -94,7 +97,7 @@ describe('Project management Automation', () => {
       cy.wait(1000);
   
 
-      //documents
+    //   //documents
 
       cy.contains('Documents').click({force:true});
       cy.get('img[src="/static/add.c4e84271.svg"]').click({force:true})
@@ -159,22 +162,26 @@ describe('Project management Automation', () => {
       cy.contains('Add Resource Type').click({force:true})
       cy.get('#basic_division').click({force:true})
       cy.get('.ant-select-item-option-content').eq(5).click({force:true});
-      cy.get('#basic_resourceType').type('Process Analyst I'+'{enter}').click({force:true});
+      cy.get('#basic_resourceType').type('Account Manager').
+      then(()=>{
+        cy.contains('Account Manager').click({force:true})
+      })
       cy.get('#basic_noOfResources').type('10')
       cy.get('#basic_billingStatus').click({force:true})
       cy.get('.ant-select-item-option-content').eq(20).click({force:true})
       cy.get('#basic_estimatedEffort').type(2)
       cy.get('#basic_technologies').click({force:true}).then(()=>{
-        cy.contains('cypress').click({force:true})
+        cy.get('.ant-select-item-option-content').eq(33).click({force:true})
       })
       cy.get('#basic_comments').click({force:true})
       cy.get('button[type="submit"]', { timeout: 8000 }).click({force:true})
+      cy.pause()
       //filter
       cy.get('img[src="/static/filter.5d3ad138.svg"]').click({force:true})
       cy.wait(2000)
       cy.get('#filter_division').type('sales'+'{enter}',{force:true})
       cy.get('#filter_resourceType').click({force:true})
-      cy.get('.ant-select-item-option-content').eq(9).click({force:true})
+      cy.get('.ant-select-item-option-content').eq(14).click({force:true})
       cy.get('#filter_billingStatus').type('buffer'+"{enter}",{force:true})
       cy.wait(3000)
       cy.get('.ant-btn.btnApply___yDHKp').click({force:true}) 
@@ -184,7 +191,7 @@ describe('Project management Automation', () => {
       cy.get('img[src="/static/filter.5d3ad138.svg"]').click({force:true})
       cy.get('.anticon.anticon-close-circle').eq(0).click({force:true})
       cy.get('.anticon.anticon-close-circle').eq(0).click({force:true})
-      cy.get('.anticon.anticon-close-circle').eq(0).click({force:true})
+     // cy.get('.anticon.anticon-close-circle').eq(0).click({force:true})
       cy.get('.ant-btn.btnApply___yDHKp').click({force:true}) 
       cy.get('img[src="/static/closeX.af43fcde.svg"]').click({force:true})
       cy.wait(1000)
@@ -205,7 +212,7 @@ describe('Project management Automation', () => {
       //clearing the filter
       cy.get('img[src="/static/filter.5d3ad138.svg"]').eq(1).click({force:true})
       cy.get('.anticon.anticon-close-circle').eq(0).click({force:true})
-      cy.get('.anticon.anticon-close-circle').eq(0).click({force:true})
+      //cy.get('.anticon.anticon-close-circle').eq(0).click({force:true})
       cy.contains('Submit', { timeout: 8000 }).click({force:true})
       cy.wait(1000)
       //cy.get('img[src="/static/closeX.af43fcde.svg"]').eq(0).click({force:true})
@@ -213,7 +220,7 @@ describe('Project management Automation', () => {
       cy.wait(1000)
       cy.get('.ant-modal-close-x').click({force:true})
       cy.wait(3000)
-    
+      
       //resources
       cy.get('.ant-tabs-tab-btn').eq(1).click({force:true})
       cy.contains('Add Resources').click({force:true})
@@ -311,10 +318,8 @@ describe('Project management Automation', () => {
       cy.get('#basic_reason').type('bad network')
       cy.get('button[type="submit"]', { timeout: 8000 }).click({force:true})
       cy.wait(3000);
-      cy.get('.ant-btn.ant-btn-link.ant-btn-circle').eq(8).click();
+      cy.get('.ant-btn.ant-btn-link.ant-btn-circle').eq(9).click();
       cy.get('button[type="submit"]').click();
-     
-
     });
     
   });

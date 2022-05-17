@@ -189,7 +189,11 @@ class TicketDetailsForm extends Component {
   };
 
   render() {
-    const { ticketDetail = {}, loadingUploadAttachment = false } = this.props;
+    const {
+      ticketDetail = {},
+      loadingUploadAttachment = false,
+      loadingAddChat = false,
+    } = this.props;
     const { listEmployee } = this.props;
     const {
       id = '',
@@ -201,11 +205,11 @@ class TicketDetailsForm extends Component {
       attachments = [],
       chats = [],
       employeeRaise = [],
-      cc_list: ccList = [],
+      ccList = [],
       employee_assignee: employeeAssignedTickets = '',
     } = ticketDetail;
 
-    const { fileNameList, loadingAddChat, value, arrayChats } = this.state;
+    const { fileNameList, value, arrayChats } = this.state;
 
     const getColor = () => {
       switch (priority) {
@@ -223,8 +227,7 @@ class TicketDetailsForm extends Component {
     };
 
     const avatarTicket = () => {
-      const intersection = listEmployee.filter((element) => ccList.includes(element._id));
-      return intersection.map((val) => {
+      return ccList.map((val) => {
         const { generalInfo: { avatar = '', legalName = '' } = {} } = val;
         if (avatar !== '') {
           return (
@@ -235,7 +238,7 @@ class TicketDetailsForm extends Component {
         }
         return (
           <Tooltip placement="top" title={legalName}>
-            <Avatar size={40} icon={<UserOutlined />} />
+            <Avatar size={30} icon={<UserOutlined />} />
           </Tooltip>
         );
       });
@@ -461,6 +464,7 @@ class TicketDetailsForm extends Component {
               loading={loadingAddChat}
               className={`${value === '' ? styles.btnSend__disable : styles.btnSend}`}
               onClick={this.handleSubmit}
+              disabled={loadingAddChat}
             >
               Send
             </Button>

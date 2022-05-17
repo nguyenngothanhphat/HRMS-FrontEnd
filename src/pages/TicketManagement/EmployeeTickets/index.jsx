@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs } from 'antd';
 import { history, connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
@@ -6,210 +6,62 @@ import TicketQueue from './components/TicketQueue';
 import MyTickets from './components/MyTickets';
 import CheckboxMenu from '@/components/CheckboxMenu';
 import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
-import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
-
+import { getCurrentLocation } from '@/utils/authority';
 import styles from './index.less';
 
-@connect(
-  ({
-    ticketManagement: { listOffAllTicket = [], totalList = [], selectedLocations = [] } = {},
-    user: { currentUser: { employee = {} } = {} } = {},
-    location: { companyLocationList = [] },
-  }) => ({
-    employee,
-    listOffAllTicket,
-    totalList,
-    companyLocationList,
-    selectedLocations,
-  }),
-)
-class EmployeeTicket extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedLocations: [getCurrentLocation()],
-    };
-  }
+const EmployeeTicket = (props) => {
+  const { TabPane } = Tabs;
 
-  componentDidMount() {
-    const { tabName = '' } = this.props;
+  const {
+    dispatch,
+    companyLocationList = [],
+    listOffAllTicket = [],
+    totalList = [],
+    tabName = '',
+    permissions = [],
+  } = props;
 
-    if (!tabName) {
-      history.replace(`/ticket-management/ticket-queue`);
-    } else {
-      const { dispatch } = this.props;
-      if (!dispatch) {
-        return;
-      }
-      dispatch({
-        type: 'ticketManagement/fetchDepartments',
-        payload: {
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        },
-      }).then((res) => {
-        if (res.statusCode === 200) {
-          const { data = [] } = res;
-          let departmentNameList = [];
+  const [selectedLocationsState, setSelectedLocationsState] = useState([getCurrentLocation()]);
 
-          const newData = data.filter(
-            (x) =>
-              x.name.includes('HR') ||
-              x.name.includes('IT') ||
-              x.name.toLowerCase().includes('operations'),
-          );
-          departmentNameList = [...departmentNameList, ...newData.map((x) => x.name)];
-          this.fetchListEmployee(departmentNameList);
-        } else {
-          this.fetchListEmployee();
-        }
-      });
-      this.fetchListAllTicket();
-      this.fetchLocation();
-      this.fetchTotalList();
-    }
-  }
-
-  componentWillUnmount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'ticketManagement/save',
-      payload: {
-        selectedLocations: [getCurrentLocation()],
-      },
-    });
-  }
-
-  fetchLocation = () => {
-    const { dispatch } = this.props;
+  const fetchLocation = () => {
     dispatch({
       type: 'ticketManagement/fetchLocationList',
       payload: {},
     });
   };
 
-  fetchListAllTicket = () => {
-    const { dispatch, selectedLocations = [] } = this.props;
-    dispatch({
-      type: 'ticketManagement/fetchListAllTicket',
-      payload: {
-        status: ['New'],
-        location: selectedLocations,
-      },
-    });
-  };
-
-  fetchListEmployee = (departmentNameList) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'ticketManagement/fetchListEmployee',
-      payload: {
-        department: departmentNameList,
-        status: 'ACTIVE',
-      },
-    });
-  };
-
-  fetchTotalList = () => {
-    const {
-      dispatch,
-      employee: {
-        departmentInfo: { _id: idDepart = '' },
-      },
-      selectedLocations = [],
-      employee: { _id = '' } = {},
-    } = this.props;
-    dispatch({
-      type: 'ticketManagement/fetchToTalList',
-      payload: {
-        employeeAssignee: _id,
-        departmentAssign: idDepart,
-        location: selectedLocations,
-      },
-    });
-  };
-
-  handleChangeTable = (key) => {
+  const handleChangeTable = (key) => {
     history.push(`/ticket-management/${key}`);
-    const {
-      dispatch,
-      selectedLocations = [],
-      employee: { _id = '' },
-      employee: { departmentInfo: { _id: idDepart = '' } = {} },
-    } = this.props;
-    if (key === 'ticket-queue') {
-      dispatch({
-        type: 'ticketManagement/fetchListAllTicket',
-        payload: {
-          status: ['New'],
-          location: selectedLocations,
-        },
-      });
-      dispatch({
-        type: 'ticketManagement/fetchToTalList',
-        payload: {
-          employeeAssignee: _id,
-          departmentAssign: idDepart,
-          location: selectedLocations,
-        },
-      });
-    } else {
-      dispatch({
-        type: 'ticketManagement/fetchListAllTicket',
-        payload: {
-          status: ['Assigned'],
-          location: selectedLocations,
-        },
-      });
-      dispatch({
-        type: 'ticketManagement/fetchToTalList',
-        payload: {
-          employeeAssignee: _id,
-          departmentAssign: idDepart,
-          location: selectedLocations,
-        },
-      });
-    }
   };
 
-  onLocationChange = (selection) => {
-    const { dispatch } = this.props;
+  const onLocationChange = (selection) => {
     dispatch({
       type: 'ticketManagement/save',
       payload: {
         selectedLocations: [...selection],
       },
     });
-    dispatch({
-      type: 'ticketManagement/fetchToTalList',
-      payload: {
-        location: [...selection],
-      },
-    });
-    this.setState({
-      selectedLocations: [...selection],
-    });
+    setSelectedLocationsState([...selection]);
   };
 
-  getSelectedLocationName = () => {
-    const { selectedLocations = [] } = this.state;
-    const { companyLocationList = [] } = this.props;
-    if (selectedLocations.length === 1) {
-      return companyLocationList.find((x) => x._id === selectedLocations[0])?.name || '';
+  const getSelectedLocationName = () => {
+    if (selectedLocationsState.length === 1) {
+      return companyLocationList.find((x) => x._id === selectedLocationsState[0])?.name || '';
     }
-    if (selectedLocations.length > 0 && selectedLocations.length < companyLocationList.length) {
-      return `${selectedLocations.length} locations selected`;
+    if (
+      selectedLocationsState.length > 0 &&
+      selectedLocationsState.length < companyLocationList.length
+    ) {
+      return `${selectedLocationsState.length} locations selected`;
     }
-    if (selectedLocations.length === companyLocationList.length) {
+    if (selectedLocationsState.length === companyLocationList.length) {
       return 'All';
     }
     return 'None';
   };
 
-  renderFilterLocation = () => {
-    const selectedLocationName = this.getSelectedLocationName();
-    const { selectedLocations = [] } = this.state;
-    const { companyLocationList = [] } = this.props;
+  const renderFilterLocation = () => {
+    const selectedLocationName = getSelectedLocationName();
     const locationOptions = companyLocationList.map((x) => {
       return {
         _id: x._id,
@@ -222,9 +74,9 @@ class EmployeeTicket extends Component {
 
         <CheckboxMenu
           options={locationOptions}
-          onChange={this.onLocationChange}
+          onChange={onLocationChange}
           list={companyLocationList}
-          default={selectedLocations}
+          default={selectedLocationsState}
         >
           <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
             <span>{selectedLocationName}</span>
@@ -235,33 +87,55 @@ class EmployeeTicket extends Component {
     );
   };
 
-  render() {
-    const { TabPane } = Tabs;
-    const { listOffAllTicket = [], totalList = [] } = this.props;
-    const { tabName = '' } = this.props;
-    if (!tabName) return '';
-    return (
-      <div className={styles.TicketManagement}>
-        <PageContainer>
-          <Tabs
-            activeKey={tabName || 'ticket-queue'}
-            onChange={(key) => {
-              this.handleChangeTable(key);
-            }}
-            destroyInactiveTabPane
-            tabBarExtraContent={this.renderFilterLocation()}
-          >
-            <TabPane tab="Ticket Queue" key="ticket-queue">
-              <TicketQueue data={listOffAllTicket} countData={totalList} />
-            </TabPane>
-            <TabPane tab="My Tickets" key="my-tickets">
-              <MyTickets data={listOffAllTicket} countData={totalList} />
-            </TabPane>
-          </Tabs>
-        </PageContainer>
-      </div>
-    );
-  }
-}
+  useEffect(() => {
+    if (!tabName) {
+      history.replace(`/ticket-management/ticket-queue`);
+    }
+    fetchLocation();
+    return () => {
+      dispatch({
+        type: 'ticketManagement/save',
+        payload: {
+          selectedLocations: [getCurrentLocation()],
+        },
+      });
+    };
+  }, []);
 
-export default EmployeeTicket;
+  if (!tabName) return '';
+  return (
+    <div className={styles.TicketManagement}>
+      <PageContainer>
+        <Tabs
+          activeKey={tabName || 'ticket-queue'}
+          onChange={(key) => {
+            handleChangeTable(key);
+          }}
+          destroyInactiveTabPane
+          tabBarExtraContent={renderFilterLocation()}
+        >
+          <TabPane tab="Ticket Queue" key="ticket-queue">
+            <TicketQueue data={listOffAllTicket} countData={totalList} permissions={permissions} />
+          </TabPane>
+          <TabPane tab="My Tickets" key="my-tickets">
+            <MyTickets data={listOffAllTicket} countData={totalList} permissions={permissions} />
+          </TabPane>
+        </Tabs>
+      </PageContainer>
+    </div>
+  );
+};
+
+export default connect(
+  ({
+    ticketManagement: { listOffAllTicket = [], totalList = [], selectedLocations = [] } = {},
+    user: { currentUser: { employee = {} } = {} } = {},
+    location: { companyLocationList = [] },
+  }) => ({
+    employee,
+    listOffAllTicket,
+    totalList,
+    companyLocationList,
+    selectedLocations,
+  }),
+)(EmployeeTicket);
