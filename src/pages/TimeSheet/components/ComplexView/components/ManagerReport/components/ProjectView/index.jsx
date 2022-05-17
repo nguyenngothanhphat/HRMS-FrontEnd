@@ -73,12 +73,12 @@ const ProjectView = (props) => {
     }
   };
   // set permissions
-  const ProjectViewDefault = permissions.viewReportProjectViewTimesheet === 1;
-  const ProjectLocationView = permissions.viewReportProjectLocationViewTimesheet === 1;
-  const ProjectAdminView = permissions.viewReportProjectAdminViewTimesheet === 1;
+  const projectViewDefault = permissions.viewReportProjectViewTimesheet === 1;
+  const projectLocationView = permissions.viewReportProjectLocationViewTimesheet === 1;
+  const projectAdminView = permissions.viewReportProjectAdminViewTimesheet === 1;
 
   const fetchProjectList = () => {
-    if (ProjectViewDefault) {
+    if (projectViewDefault) {
       dispatch({
         type: 'timeSheet/fetchProjectListEffect',
         payload: {
@@ -87,7 +87,7 @@ const ProjectView = (props) => {
         },
       });
     }
-    if (ProjectLocationView) {
+    if (projectLocationView) {
       dispatch({
         type: 'timeSheet/fetchProjectListEffect',
         payload: {
@@ -95,7 +95,7 @@ const ProjectView = (props) => {
         },
       });
     }
-    if (ProjectAdminView) {
+    if (projectAdminView) {
       dispatch({
         type: 'timeSheet/fetchProjectListEffect',
       });
