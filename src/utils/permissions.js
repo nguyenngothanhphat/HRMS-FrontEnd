@@ -235,7 +235,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'P_ONBOARDING_T_ONBOARDING_OVERVIEW_VIEW',
     'P_ONBOARDING_ALL',
   ]);
-  const indexNewJoinees = isRole(permissionList, [
+  const indexNewJoinees = isAuthorized(permissionList, [
     'P_ONBOARDING_T_SETTINGS_VIEW',
     'P_ONBOARDING_ALL',
   ]);

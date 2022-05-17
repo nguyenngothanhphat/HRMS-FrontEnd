@@ -57,6 +57,7 @@ const initialState = {
   myTimesheetByDay: [],
   myTimesheetByWeek: [],
   myTimesheetByMonth: [],
+  timeoffList: [],
   // store payload for refreshing
   viewingPayload: {},
   // for importing
@@ -145,18 +146,24 @@ const TimeSheet = {
           payloadTemp = viewingPayload;
         }
         const res = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId });
-        const { code, data = [] } = res;
+        const { code, data } = res;
         if (code !== 200) throw res;
         const { viewType } = payloadTemp;
         let stateVar = 'myTimesheetByDay';
-
+        let dataTemp = null;
+        let timeoffList = null;
         switch (viewType) {
           case 'D':
+            dataTemp = data;
             break;
           case 'W':
+            dataTemp = data?.projects;
             stateVar = 'myTimesheetByWeek';
+            timeoffList = data?.timeoff;
             break;
           case 'M':
+            dataTemp = data;
+            timeoffList = data?.timeoff;
             stateVar = 'myTimesheetByMonth';
             break;
           default:
@@ -167,7 +174,8 @@ const TimeSheet = {
           type: 'save',
           payload: {
             viewingPayload: payloadTemp,
-            [stateVar]: data,
+            [stateVar]: dataTemp,
+            timeoffList,
           },
         });
       } catch (errors) {

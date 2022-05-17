@@ -13,9 +13,18 @@ import EmptyComponent from '@/components/Empty';
 import styles from './index.less';
 
 const WeeklyTable = (props) => {
-  const { startDate = '', endDate = '', loadingFetchMyTimesheetByType = false, data = [] } = props;
+  const {
+    startDate = '',
+    endDate = '',
+    loadingFetchMyTimesheetByType = false,
+    data = [],
+    timeoffList = [],
+  } = props;
+  console.log('🚀 ~ timeoffList', timeoffList);
   const [dateList, setDateList] = useState([]);
   const [formattedData, setFormattedData] = useState([]);
+  console.log('🚀 ~ formattedTimOffList', timeoffList);
+  console.log('🚀 ~ formattedData', formattedData);
 
   // FUNCTIONS
   // get dates between two dates
