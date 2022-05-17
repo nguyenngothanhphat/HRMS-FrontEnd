@@ -1,7 +1,48 @@
 @spacing-xxs: 4px;
 @background-grey: #f6f7f9;
+@color-grey: #707177;
+@color-blue: #2c6df9;
 
 .EligibilityDocs {
+  :global {
+    .ant-collapse > .ant-collapse-item {
+      border: none;
+    }
+    .ant-collapse-extra {
+      display: inline;
+      float: none !important;
+      color: @color-grey;
+      font-size: 12px;
+    }
+    .ant-collapse-arrow {
+      padding: 0px !important;
+    }
+    .ant-collapse-arrow {
+      svg {
+        width: 20px;
+        height: 20px;
+        margin-right: 21px !important;
+        color: @color-blue;
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+    .ant-collapse-content > .ant-collapse-content-box {
+      padding: 0 16px;
+    }
+    .ant-collapse {
+      overflow: hidden;
+      border: none;
+      .ant-collapse-item > .ant-collapse-header {
+        display: flex;
+        align-items: center;
+        height: 70px;
+        background-color: #fff;
+        padding-inline: 32px;
+      }
+    }
+  }
   .leftWrapper {
     .eliContainer {
       width: 100%;
@@ -14,13 +55,6 @@
     .boldText {
       margin-top: 16px;
       font-weight: 700;
-    }
-  }
-
-  :global {
-    .anticon-minus,
-    .anticon-plus {
-      // top: 42px !important;
     }
   }
 

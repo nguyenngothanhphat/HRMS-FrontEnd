@@ -16,6 +16,8 @@ import ModalContentComponent from './components/ModalContentComponent';
 import PreviousEmployment from './components/PreviousEmployment';
 import Title from './components/Title';
 import styles from './index.less';
+import { mapType } from '@/utils/newCandidateForm';
+import TechnicalCertification from './components/TechnicalCertification';
 
 const Note = {
   title: 'Note',
@@ -30,6 +32,7 @@ const Note = {
 const EligibilityDocs = (props) => {
   const {
     loading,
+    data = {},
     data: {
       attachments,
       documentListToRender,
@@ -231,33 +234,25 @@ const EligibilityDocs = (props) => {
         <Col span={16} sm={24} md={24} lg={24} xl={16} className={styles.leftWrapper}>
           <div className={styles.eliContainer}>
             <Title />
+
+            {/* TYPE ABC  */}
             {documentLayout
               .filter((x) => ['A', 'B', 'C'].includes(x.type))
-              .map((item, index) => {
-                return (
-                  <CollapseFields
-                    item={item}
-                    layout={documentLayout.find((x) => x.type === 'A')}
-                    loading={loading}
-                    validateFileSize={validateFileSize}
-                    checkLength={checkLength}
-                    processStatus={processStatus}
-                  />
-                );
+              .map((x) => {
+                return <CollapseFields layout={x} items={data[mapType[x.type]]} />;
               })}
 
-            {/* type E */}
-            {documentListToRender.length > 0 && (
-              <PreviousEmployment
-                onValuesChange={onValuesChange}
-                loading={loading}
-                attachments={attachments}
-                validateFileSize={validateFileSize}
-                checkLength={checkLength}
-                processStatus={processStatus}
-                renderData={processData}
-              />
-            )}
+            {/* TYPE D */}
+            <TechnicalCertification
+              items={data[mapType.D]}
+              layout={documentLayout.find((x) => x.type === 'D')}
+            />
+
+            {/* TYPE E */}
+            <PreviousEmployment
+              items={data[mapType.E]}
+              layout={documentLayout.find((x) => x.type === 'E')}
+            />
           </div>
           {_renderBottomBar()}
         </Col>

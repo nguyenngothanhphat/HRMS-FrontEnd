@@ -1,16 +1,11 @@
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable no-nested-ternary */
-import React, { Component } from 'react';
-import { Collapse, Space, Checkbox, Typography, Row, Col } from 'antd';
-import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
-import cancelIcon from '@/assets/cancel-symbols-copy.svg';
-import undo from '@/assets/candidatePortal/undo-signs.svg';
-import doneIcon from '@/assets/candidatePortal/doneSign.svg';
-import UploadImage from '../UploadImage';
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { Collapse } from 'antd';
+import React from 'react';
+import File from '../File';
 import styles from './index.less';
 
 const CollapseField = (props) => {
-  const { item = {} } = props;
+  const { layout = {}, items = [] } = props;
 
   return (
     <div className={styles.CollapseField}>
@@ -26,13 +21,15 @@ const CollapseField = (props) => {
           key="1"
           header={
             <span style={{ display: 'inline-block', marginRight: '20px' }}>
-              Type {item.type}: {item.name}
+              Type {layout.type}: {layout.name}
             </span>
           }
         >
-          <Space direction="vertical" className={styles.Space}>
-            Hehe
-          </Space>
+          <div className={styles.space}>
+            {items.map((item, i) => (
+              <File item={item} index={i} />
+            ))}
+          </div>
         </Collapse.Panel>
       </Collapse>
     </div>
