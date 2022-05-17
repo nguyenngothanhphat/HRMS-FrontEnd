@@ -1,7 +1,6 @@
 import { Table, Popover } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
-import { isEmpty } from 'lodash';
 import moment from 'moment';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import { employeeColor } from '@/utils/timeSheet';
@@ -50,10 +49,13 @@ const WeeklyTable = (props) => {
   const [pageSize, setPageSize] = useState(10);
   const [handlingEmployee, setHandlingEmployee] = useState();
   const [employeeDetailModalVisible, setEmployeeDetailModalVisible] = useState(false);
-  const handleProfileEmployee = (tenantId, userId) => {
-    localStorage.setItem('tenantCurrentEmployee', tenantId);
-    const pathname = isOwner()`/directory/employee-profile/${userId}`;
-    return pathname;
+  // const handleProfileEmployee = (tenantId, userId) => {
+  //   localStorage.setItem('tenantCurrentEmployee', tenantId);
+  //   const pathname = isOwner()`/directory/employee-profile/${userId}`;
+  //   return pathname;
+  // };
+  const handleProfileEmployee = (userId) => {
+    return `/directory/employee-profile/${userId}`;
   };
   const getColorByIndex = (index) => {
     return employeeColor[index % employeeColor.length];
