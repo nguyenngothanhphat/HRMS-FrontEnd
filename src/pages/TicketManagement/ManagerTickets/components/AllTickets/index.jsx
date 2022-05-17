@@ -145,6 +145,8 @@ const AllTicket = (props) => {
         pageSelected={pageSelected}
         size={size}
         getPageAndSize={getPageAndSize}
+        refreshFetchTicketList={initDataTable}
+        refreshFetchTotalList={fetchTotalList}
       />
     </div>
   );
