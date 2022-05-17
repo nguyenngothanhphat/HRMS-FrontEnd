@@ -56,7 +56,7 @@ class SearchTable extends Component {
           </FilterPopover>
         </div>
         <CustomSearchBox
-          placeholder="Search by Name, user ID"
+          placeholder="Search by Requester Name"
           onSearch={(e) => onChangeSearch(e.target.value)}
         />
       </div>
