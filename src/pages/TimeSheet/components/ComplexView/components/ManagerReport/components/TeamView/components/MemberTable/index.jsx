@@ -134,7 +134,7 @@ const MemberTable = (props) => {
   };
 
   const _renderTableContent = () => {
-    if (data.length === 0) return <EmptyComponent />;
+    if (data.length === 0) return <EmptyComponent description="No Direct Reports Found" />;
     return data.map((m, i) => _renderEmployee(m, i));
   };
 
