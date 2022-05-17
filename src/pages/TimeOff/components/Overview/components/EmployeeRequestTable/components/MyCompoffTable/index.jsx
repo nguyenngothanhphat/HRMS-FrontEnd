@@ -103,7 +103,6 @@ class MyCompoffTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      // pageSelected: 1,
       selectedRowKeys: [],
     };
   }
@@ -117,12 +116,13 @@ class MyCompoffTable extends PureComponent {
   };
 
   // pagination
-  onChangePagination = (pageNumber) => {
+  onChangePagination = (pageNumber, pageSize) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/savePaging',
       payload: {
         page: pageNumber,
+        limit: pageSize,
       },
     });
   };
@@ -209,6 +209,9 @@ class MyCompoffTable extends PureComponent {
           of {totals}{' '}
         </span>
       ),
+      defaultPageSize: 10,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
       pageSize: limit,
       current: page,
       onChange: this.onChangePagination,
@@ -230,7 +233,7 @@ class MyCompoffTable extends PureComponent {
           size="middle"
           rowSelection={rowSelection}
           loading={tableLoading}
-          pagination={{ ...pagination, total }}
+          pagination={data.length === 0 ? null : { ...pagination, ...total }}
           columns={this.columns}
           dataSource={parsedData}
           scroll={scroll}
