@@ -6,8 +6,7 @@ import styles from './index.less';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 
 const { TabPane } = Tabs;
-const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DRAFTS, WITHDRAWN, DELETED } =
-  TIMEOFF_STATUS;
+const { IN_PROGRESS, ON_HOLD } = TIMEOFF_STATUS;
 
 const ManagerRequestTable = (props) => {
   const {
@@ -88,29 +87,6 @@ const ManagerRequestTable = (props) => {
     });
   };
 
-  const handleCountTotal = () => {
-    switch (currentFilterTab) {
-      // set status is a array params to get count follow every tab
-      case '1':
-        countByStatus([IN_PROGRESS, ON_HOLD]);
-        break;
-      // case '2':
-      //   countByStatus([ACCEPTED]);
-      //   break;
-      // case '3':
-      //   countByStatus([REJECTED]);
-      //   break;
-      // case '4':
-      //   countByStatus([WITHDRAWN, DRAFTS]);
-      //   break;
-      // case '5':
-      //   countByStatus([DELETED]);
-      //   break;
-      default:
-        break;
-    }
-  };
-
   const saveCurrentTypeTab = (type) => {
     dispatch({
       type: 'timeOff/save',
@@ -159,11 +135,11 @@ const ManagerRequestTable = (props) => {
 
   useEffect(() => {
     fetchCountTotal();
-    // handleCountTotal();
+    countByStatus([IN_PROGRESS, ON_HOLD]);
   }, [currentLeaveTypeTab, currentScopeTab, currentFilterTab]);
 
   useEffect(() => {
-    handleCountTotal();
+    countByStatus([IN_PROGRESS, ON_HOLD]);
   }, [countTotal]);
 
   const renderTableTitle = {
