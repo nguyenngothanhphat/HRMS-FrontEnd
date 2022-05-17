@@ -61,7 +61,7 @@ class TeamLeaveTable extends PureComponent {
   }
 
   getColumns = (TYPE) => {
-    const {category} = this.props;
+    const { category } = this.props;
     return [
       {
         title: 'Ticket ID',

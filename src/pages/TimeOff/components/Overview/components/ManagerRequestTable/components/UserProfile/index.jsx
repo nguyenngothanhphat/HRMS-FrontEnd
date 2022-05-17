@@ -121,7 +121,7 @@ const UserProfile = (props) => {
     );
   };
 
-  return <>{renderPopup()}</>;
+  return renderPopup();
 };
 
 export default connect(({ timeOff: { allLeaveRequests = [], teamLeaveRequests = [] } }) => ({
