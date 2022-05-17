@@ -61,9 +61,15 @@ const TimeOffFilter = (props) => {
 
     // applied count
 
-    const typeCount = values.type.length;
-    let typeDate;
-    if (values.fromDate && values.toDate) {
+    let typeCount = 0;
+    if (values.type.length > 0) {
+      typeCount = 1;
+    } else {
+      typeCount = 0;
+    }
+
+    let typeDate = 0;
+    if (values.fromDate || values.toDate) {
       typeDate = 1;
     } else {
       typeDate = 0;
