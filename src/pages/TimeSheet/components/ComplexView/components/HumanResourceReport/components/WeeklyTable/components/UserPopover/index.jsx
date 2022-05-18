@@ -6,7 +6,7 @@ import { history } from 'umi';
 import styles from './index.less';
 import { getCurrentTimeOfTimezoneOption } from '@/utils/times';
 
-class PopoverInfoTimeSheet extends Component {
+class UserPopover extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -147,4 +147,4 @@ class PopoverInfoTimeSheet extends Component {
   }
 }
 
-export default PopoverInfoTimeSheet;
+export default UserPopover;

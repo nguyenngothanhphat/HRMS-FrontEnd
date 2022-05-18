@@ -7,7 +7,7 @@ import { employeeColor } from '@/utils/timeSheet';
 import EmptyComponent from '@/components/Empty';
 import EmployeeDetailModal from '../../../EmployeeDetailModal';
 import styles from './index.less';
-import UserPopover from './components/PopoverInfoTimeSheet';
+import UserPopover from './components/UserPopover';
 import { isOwner } from '@/utils/authority';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 
