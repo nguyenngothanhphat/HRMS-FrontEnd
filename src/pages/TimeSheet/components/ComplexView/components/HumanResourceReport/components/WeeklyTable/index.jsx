@@ -7,7 +7,7 @@ import { employeeColor } from '@/utils/timeSheet';
 import EmptyComponent from '@/components/Empty';
 import EmployeeDetailModal from '../../../EmployeeDetailModal';
 import styles from './index.less';
-import PopoverInfo from './components/PopoverInfoTimeSheet';
+import UserPopover from './components/PopoverInfoTimeSheet';
 import { isOwner } from '@/utils/authority';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 
@@ -119,7 +119,7 @@ const WeeklyTable = (props) => {
         render: (manager = {}) => (
           <Popover
             content={
-              <PopoverInfo
+              <UserPopover
                 companyLocationList={companyLocationList}
                 propsState={{ currentTime, timezoneList }}
                 data={manager}
