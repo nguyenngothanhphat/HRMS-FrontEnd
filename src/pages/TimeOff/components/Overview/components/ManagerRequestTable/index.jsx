@@ -15,14 +15,21 @@ const ManagerRequestTable = (props) => {
       currentLeaveTypeTab = '',
       yourTimeOffTypes = {},
       yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
-      countTotal: { typeA = 0, typeB = 0, typeC = 0, typeD = 0 } = {},
+      countTotal = [],
       currentScopeTab = '1',
+      currentFilterTab = '',
+      typeLeaveCount = {
+        A: 0,
+        B: 0,
+        C: 0,
+        D: 0,
+      },
     } = {},
     loadingTimeOffType = false,
     eligibleForCompOff = false,
   } = props;
 
-  const countInProgress = () => {
+  const fetchCountTotal = () => {
     // Get all type ID
     const leavesTemp = [...commonLeaves, ...specialLeaves];
 
@@ -31,7 +38,7 @@ const ManagerRequestTable = (props) => {
     });
     //
 
-    // get all timeoff id by status IN_PROGRESS,ON_HOLD
+    // Fetch all countTotal
     let typeAPI = '';
     switch (currentScopeTab) {
       case '1':
@@ -50,9 +57,32 @@ const ManagerRequestTable = (props) => {
     dispatch({
       type: typeAPI,
       payload: {
-        status: [IN_PROGRESS, ON_HOLD],
         type: typeId,
         isCountTotal: true,
+      },
+    });
+  };
+
+  const countByStatus = (status) => {
+    const typeTotalCount = {
+      A: 0,
+      B: 0,
+      C: 0,
+      D: 0,
+    };
+    // get data of count follow status
+    countTotal.forEach((item) => {
+      if (status.includes(item._id)) {
+        item.types.forEach((ele) => {
+          typeTotalCount[`${ele.type}`] += ele.count;
+        });
+      }
+    });
+
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        typeLeaveCount: typeTotalCount,
       },
     });
   };
@@ -100,12 +130,16 @@ const ManagerRequestTable = (props) => {
 
   useEffect(() => {
     saveCurrentTypeTab('1');
-    countInProgress();
+    fetchCountTotal();
   }, [JSON.stringify(yourTimeOffTypes)]);
 
   useEffect(() => {
-    countInProgress();
-  }, [currentScopeTab]);
+    fetchCountTotal();
+  }, [currentLeaveTypeTab, currentScopeTab, currentFilterTab]);
+
+  useEffect(() => {
+    countByStatus([IN_PROGRESS, ON_HOLD]);
+  }, [countTotal]);
 
   const renderTableTitle = {
     left: (
@@ -133,7 +167,7 @@ const ManagerRequestTable = (props) => {
           destroyInactiveTabPane
         >
           <>
-            <TabPane tab={`Leave Requests (${addZeroToNumber(typeA)})`} key="1">
+            <TabPane tab={`Leave Requests (${addZeroToNumber(typeLeaveCount.A)})`} key="1">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
                 tab={1}
@@ -141,7 +175,7 @@ const ManagerRequestTable = (props) => {
                 type={1}
               />
             </TabPane>
-            <TabPane tab={`Special Leave Requests (${addZeroToNumber(typeC)})`} key="2">
+            <TabPane tab={`Special Leave Requests (${addZeroToNumber(typeLeaveCount.C)})`} key="2">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
                 tab={2}
@@ -149,7 +183,7 @@ const ManagerRequestTable = (props) => {
                 type={1}
               />
             </TabPane>
-            <TabPane tab={`LWP Requests (${addZeroToNumber(typeB)})`} key="3">
+            <TabPane tab={`LWP Requests (${addZeroToNumber(typeLeaveCount.B)})`} key="3">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
                 tab={3}
@@ -157,7 +191,7 @@ const ManagerRequestTable = (props) => {
                 type={1}
               />
             </TabPane>
-            <TabPane tab={`WFH/CP Requests (${addZeroToNumber(typeD)})`} key="4">
+            <TabPane tab={`WFH/CP Requests (${addZeroToNumber(typeLeaveCount.D)})`} key="4">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
                 tab={4}
