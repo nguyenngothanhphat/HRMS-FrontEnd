@@ -64,7 +64,6 @@ const ManagerRequestTable = (props) => {
   };
 
   const countByStatus = (status) => {
-    console.log('count');
     const typeTotalCount = {
       A: 0,
       B: 0,
