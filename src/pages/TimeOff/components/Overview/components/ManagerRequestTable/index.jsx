@@ -28,7 +28,7 @@ const ManagerRequestTable = (props) => {
     loadingTimeOffType = false,
     eligibleForCompOff = false,
   } = props;
-  console.log('test');
+
   const fetchCountTotal = () => {
     // Get all type ID
     const leavesTemp = [...commonLeaves, ...specialLeaves];
