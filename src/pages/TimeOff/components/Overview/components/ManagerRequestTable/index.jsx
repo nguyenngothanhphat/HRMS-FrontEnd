@@ -64,6 +64,7 @@ const ManagerRequestTable = (props) => {
   };
 
   const countByStatus = (status) => {
+    console.log('count');
     const typeTotalCount = {
       A: 0,
       B: 0,
@@ -135,7 +136,6 @@ const ManagerRequestTable = (props) => {
 
   useEffect(() => {
     fetchCountTotal();
-    countByStatus([IN_PROGRESS, ON_HOLD]);
   }, [currentLeaveTypeTab, currentScopeTab, currentFilterTab]);
 
   useEffect(() => {
