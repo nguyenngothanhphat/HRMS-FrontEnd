@@ -269,9 +269,7 @@ const TableTickets = (props) => {
         render: (createdAt) => {
           return <span>{moment(createdAt).format('DD-MM-YYYY')}</span>;
         },
-        sorter: (a, b) => {
-          return a.priority && a.priority.localeCompare(`${b.priority}`);
-        },
+        sorter: { compare: (a, b) => moment(a.created_at).unix() - moment(b.created_at).unix() },
         sortDirections: ['ascend', 'descend'],
       },
       {
@@ -442,6 +440,9 @@ const TableTickets = (props) => {
     onChange: (page, pageSize) => {
       getPageAndSize(page, pageSize);
     },
+    defaultPageSize: size,
+    pageSizeOptions: ['10', '25', '50', '100'],
+    showSizeChanger: true,
   };
 
   return (

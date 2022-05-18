@@ -451,7 +451,7 @@ const ModalAddInfo = (props) => {
                   message: 'Please enter relevant years of experience!',
                 },
                 {
-                  pattern: /^[0-9]{0,2}$/,
+                  pattern: /^\d{1,2}$|^\d+\.\d{0,2}$/,
                   message: 'Input only number, greater than or equal to zero and less than 99!',
                 },
               ]}

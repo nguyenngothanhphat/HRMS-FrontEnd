@@ -17,10 +17,14 @@ import styles from './index.less';
       // candidate = '',
       data: { assignTo = {}, firstName: candidateFN = '', lastName: candidateLN = '' },
     } = {},
+    candidatePortal: {
+      data
+    },
     conversation = {},
     candidatePortal = {},
     loading,
   }) => ({
+    data,
     conversation,
     conversationList,
     candidate,
@@ -141,16 +145,23 @@ class ActiveChat extends PureComponent {
 
   // chat container
   renderSender = (messages = []) => {
-    const { hrAvatar = '' } = this.props;
+    const { 
+      hrAvatar = '',
+      data: {
+        CEOInfo: {
+          generalInfoInfo: { legalName: ceoFullname = '' } = {} || {},
+        } = {} || {}
+      },
+      isReplyable = true
+    } = this.props;
     const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null;
-
     return (
       <div className={styles.senderContainer}>
         <div className={styles.avatar}>
           <img src={hrAvatar || HRIcon1} alt="message" />
         </div>
         <div className={styles.info}>
-          <span className={styles.name}>HR</span>
+          <span className={styles.name}>{!isReplyable ? ceoFullname : "HR"}</span>
           <span className={styles.time}>
             {lastMessage ? this.getTime(lastMessage?.createdAt) : ''}
           </span>

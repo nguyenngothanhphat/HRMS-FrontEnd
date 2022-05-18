@@ -219,7 +219,7 @@ const TimeOffRequestTab = (props) => {
     if (timeOffTypes.length > 0) {
       fetchData();
     }
-  }, [selectedTabNumber, page, JSON.stringify(filter)]);
+  }, [selectedTabNumber, page, limit, JSON.stringify(filter)]);
 
   const onApproveRejectHandle = (obj) => {
     setHandlePackage(obj);

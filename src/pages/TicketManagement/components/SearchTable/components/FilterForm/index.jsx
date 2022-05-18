@@ -22,6 +22,19 @@ const FilterForm = (props) => {
     loadingFetchEmployeeAssigneeListEffect,
     dispatch,
     visible = false,
+    handleFilterCounts = () => {},
+    setForm = () => {},
+    ticketManagement: {
+      filter: {
+        employeeAssignee = '',
+        employeeRaise = '',
+        fromDate,
+        priority = [],
+        queryType = [],
+        toDate,
+      } = {},
+      filter = {},
+    } = {},
   } = props;
 
   const [form] = Form.useForm();
@@ -101,6 +114,10 @@ const FilterForm = (props) => {
       });
     };
   }, [nameEmployeeAssignee]);
+
+  useEffect(() => {
+    setForm(form);
+  }, []);
 
   const disabledDate = (currentDate, type) => {
     if (type === 'fromDate') {
@@ -195,6 +212,7 @@ const FilterForm = (props) => {
   };
 
   const onFinishDebounce = debounce((values) => {
+    handleFilterCounts(values);
     onFinish(values);
   }, 1000);
 
@@ -259,7 +277,7 @@ const FilterForm = (props) => {
             <Form.Item key="name" label="BY NAME" name="employeeRaise">
               <AutoComplete
                 dropdownMatchSelectWidth={252}
-                notFoundContent={loadingFetchEmployeeRaiseListEffect ? <Spin /> : 'No matches'}
+                notFoundContent={loadingFetchEmployeeRaiseListEffect ? <Spin /> : 'No Data'}
                 options={nameListState}
                 onSearch={(val) => handleEmployeeSearch('employeeRaise', val)}
               >
@@ -273,7 +291,8 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select request type"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 showArrow
               >
                 {queryTypeList.map((option) => {
@@ -292,7 +311,8 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select priority"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 showArrow
               >
                 {priorityList.map((option) => {

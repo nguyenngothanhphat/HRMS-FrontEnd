@@ -241,6 +241,9 @@ class TableTickets extends PureComponent {
           of {data.length}
         </span>
       ),
+      defaultPageSize: 10,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
       pageSize: size,
       current: pageSelected,
       onChange: (page, pageSize) => {

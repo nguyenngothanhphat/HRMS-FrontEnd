@@ -54,7 +54,7 @@ import {
   deleteHoliday,
   addHoliday,
   updateEmployeeSchedule,
-  getLocationByCompany,
+  // getLocationByCompany,
   getLocationById,
   getAllLeaveRequests,
   upsertLeaveType,
@@ -131,6 +131,8 @@ const timeOff = {
       limit: 10,
       total: 0,
     },
+    countTotal: [],
+    typeLeaveCount: {},
   },
   effects: {
     *getTimeOffTypeByLocation(_, { call }) {
@@ -343,17 +345,30 @@ const timeOff = {
           tenantId,
           company: getCurrentCompany(),
         });
-        const { statusCode, data: { items: leaveRequests = [] } = {}, total = 0 } = response;
+        const {
+          statusCode,
+          data: { items: leaveRequests = [], countType: totalType = [] } = {},
+          total = 0,
+        } = response;
         if (statusCode !== 200) throw response;
 
-        yield put({
-          type: 'save',
-          payload: { leaveRequests },
-        });
-        yield put({
-          type: 'savePaging',
-          payload: { total },
-        });
+        if (payload.isCountTotal) {
+          yield put({
+            type: 'save',
+            payload: { countTotal: totalType },
+          });
+        }
+
+        if (!payload.isCountTotal) {
+          yield put({
+            type: 'save',
+            payload: { leaveRequests },
+          });
+          yield put({
+            type: 'savePaging',
+            payload: { total },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }
@@ -696,32 +711,42 @@ const timeOff = {
     },
 
     *fetchTeamLeaveRequests({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getTeamLeaveRequests, {
+        response = yield call(getTeamLeaveRequests, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
         const {
           statusCode,
-          data: { items: teamLeaveRequests = [] },
+          data: { items: teamLeaveRequests = [], total: totalType = [] },
           total = 0,
         } = response;
         // console.log('response', response);
         if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { teamLeaveRequests },
-        });
-        yield put({
-          type: 'savePaging',
-          payload: { total },
-        });
-        return response;
+
+        if (payload.isCountTotal) {
+          yield put({
+            type: 'save',
+            payload: { countTotal: totalType },
+          });
+        }
+
+        if (!payload.isCountTotal) {
+          yield put({
+            type: 'save',
+            payload: { teamLeaveRequests },
+          });
+          yield put({
+            type: 'savePaging',
+            payload: { total },
+          });
+        }
       } catch (errors) {
-        // dialog(errors);
+        dialog(errors);
       }
-      return {};
+      return response;
     },
 
     *fetchAllLeaveRequests({ payload }, { call, put }) {
@@ -734,19 +759,29 @@ const timeOff = {
         });
         const {
           statusCode,
-          data: { items: allLeaveRequests = [] },
+          data: { items: allLeaveRequests = [], total: totalType = [] },
           total = 0,
         } = response;
 
         if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { allLeaveRequests },
-        });
-        yield put({
-          type: 'savePaging',
-          payload: { total },
-        });
+
+        if (payload.isCountTotal) {
+          yield put({
+            type: 'save',
+            payload: { countTotal: totalType },
+          });
+        }
+
+        if (!payload.isCountTotal) {
+          yield put({
+            type: 'save',
+            payload: { allLeaveRequests },
+          });
+          yield put({
+            type: 'savePaging',
+            payload: { total },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }

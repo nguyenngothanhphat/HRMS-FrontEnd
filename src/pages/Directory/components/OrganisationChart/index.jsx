@@ -290,25 +290,25 @@ class OrganisationChart extends Component {
   };
 
   handleSelect = (value) => {
-    // const { listEmployeeAll } = this.props;
-    // const { timezoneList, currentTime } = this.state;
-    // const getData = listEmployeeAll.filter((item) => item._id === value);
-    // const convertData = getData.map((item) => {
-    //   const { _id, generalInfo, department, location, title } = item;
-    //   const findTimezone =
-    //     timezoneList.find((timezone) => timezone.locationId === location._id) || {};
-    //   const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
-    //   return {
-    //     _id,
-    //     generalInfo,
-    //     department,
-    //     title,
-    //     location,
-    //     localTime: timeData,
-    //   };
-    // });
-    // const convertFinal = { ...convertData[0] };
-    // this.setState({ chartDetails: convertFinal });
+    const { listEmployeeAll } = this.props;
+    const { timezoneList, currentTime } = this.state;
+    const getData = listEmployeeAll.filter((item) => item._id === value);
+    const convertData = getData.map((item) => {
+      const { _id, generalInfo, department, location, title } = item;
+      const findTimezone =
+        timezoneList.find((timezone) => timezone.locationId === location._id) || {};
+      const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
+      return {
+        _id,
+        generalInfo,
+        department,
+        title,
+        location,
+        localTime: timeData,
+      };
+    });
+    const convertFinal = { ...convertData[0] };
+    this.setState({ chartDetails: convertFinal });
 
     /** AFTER SEARCHING USER, THE CODE ABOVE IS TO SHOW SEARCH BOX INFORMATION  */
 

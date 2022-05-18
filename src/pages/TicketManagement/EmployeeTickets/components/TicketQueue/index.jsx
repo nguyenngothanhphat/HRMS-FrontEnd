@@ -5,10 +5,10 @@ import { debounce } from 'lodash';
 
 import SearchTable from '../../../components/SearchTable';
 import TableTickets from '../TableTickets';
-import TicketInfo from '../TicketInfo';
-
 import styles from './index.less';
+import FilterCount from '../../../components/FilterCount/FilterCount';
 import { getAuthority } from '@/utils/authority';
+import TicketInfo from '../TicketInfo';
 
 const TicketQueue = (props) => {
   const {
@@ -28,6 +28,9 @@ const TicketQueue = (props) => {
   const [pageSelected, setPageSelected] = useState(1);
   const [size, setSize] = useState(10);
   const [nameSearch, setNameSearch] = useState('');
+  const [applied, setApplied] = useState(0);
+  const [form, setForm] = useState('');
+  const [isFiltering, setIsFiltering] = useState(false);
 
   const setDebounce = debounce((value) => {
     setNameSearch(value);
@@ -86,6 +89,15 @@ const TicketQueue = (props) => {
     setDebounce(formatValue);
   };
 
+  const handleFilterCounts = (values) => {
+    const filteredObj = Object.entries(values).filter(
+      ([key, value]) => (value !== undefined && value?.length > 0) || value?.isValid,
+    );
+    const newObj = Object.fromEntries(filteredObj);
+    setApplied(Object.keys(newObj).length);
+    setIsFiltering(true);
+  };
+
   useEffect(() => {
     initDataTable(nameSearch, selectedLocations);
     fetchTotalList();
@@ -98,7 +110,18 @@ const TicketQueue = (props) => {
       </div>
       <div className={styles.containerTickets}>
         <div className={styles.tabTickets}>
-          <SearchTable onChangeSearch={onChangeSearch} />
+          <FilterCount
+            applied={applied}
+            form={form}
+            setApplied={() => setApplied(0)}
+            setIsFiltering={() => setIsFiltering(false)}
+          />
+          <SearchTable
+            onChangeSearch={onChangeSearch}
+            handleFilterCounts={handleFilterCounts}
+            setForm={setForm}
+            isFiltering={isFiltering}
+          />
         </div>
         <TableTickets
           data={data}

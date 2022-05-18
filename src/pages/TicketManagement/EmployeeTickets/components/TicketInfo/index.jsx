@@ -37,8 +37,9 @@ class TicketInfo extends Component {
             <img src={unresolvedIcon} alt="unresolvedIcon" />
           </div>
           <div className={styles.ticketInfo__name}>
-            <h1>{countData.totalUnAssignee}</h1>
-            <p>Unresolved Tickets</p>
+            {/* <h1>{countData.totalUnAssignee}</h1> */}
+            <h1>N/A</h1>
+            <p>Tickets out of SLA</p>
           </div>
         </div>
       </div>

@@ -114,7 +114,6 @@ const MonthlyTable = (props) => {
   };
 
   const onSelectChange = (selectedRowKeys) => {
-    console.log('🚀 ~ selectedRowKeys', selectedRowKeys);
     setSelectedProjects(selectedRowKeys);
   };
 

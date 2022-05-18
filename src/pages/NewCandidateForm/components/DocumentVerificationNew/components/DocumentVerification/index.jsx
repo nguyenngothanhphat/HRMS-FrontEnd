@@ -668,6 +668,10 @@ class DocumentVerification extends Component {
             {},
           _id: hrId = '',
         } = {} || {},
+        CEOInfo: {
+          generalInfoInfo: { legalName: ceoFullname = '' } = {} || {},
+          title: { name: titleCEOName = '' } = {} || {}
+        } = {} || {},
         firstName: candidateFN = '',
         middleName: candidateMN = '',
         lastName: candidateLN = '',
@@ -691,7 +695,6 @@ class DocumentVerification extends Component {
     if (!currentJobTitle)
       currentJobTitle = titleList.find((t) => t._id === title?._id || t._id === title) || {};
     const titleName = currentJobTitle?.name || '-';
-
     const messages = [
       {
         id: 1,
@@ -701,8 +704,8 @@ class DocumentVerification extends Component {
         We wish you lots of success in this new chapter of your life and can't wait to have you onboard !
         Our HR team will be in touch with you soon to help you complete the onboarding formalities.
         Regards
-        <CEO Name>
-        C.E.O, ${companyName}`,
+        ${ceoFullname}
+        ${titleCEOName}, ${companyName}`,
       },
       {
         id: 2,

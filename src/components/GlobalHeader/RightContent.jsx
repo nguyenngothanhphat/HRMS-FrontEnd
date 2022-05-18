@@ -4,12 +4,12 @@ import React, { useState } from 'react';
 import { connect } from 'umi';
 import { isOwner } from '@/utils/authority';
 import ActivityLogModalContent from '@/pages/Dashboard/components/ActivityLog/components/ActivityLogModalContent';
-import MessageIcon from '@/assets/dashboard/message.svg';
 import CommonModal from '../CommonModal';
 import AvatarDropdown from './AvatarDropdown';
 import GlobalSearchNew from './components/GlobalSearchNew/index';
 import SelectCompanyModal from './components/SelectCompanyModal';
 import styles from './index.less';
+import BellIcon from '@/assets/homePage/Bell-icon.svg';
 import QuestionDropdown from './QuestionDropdown';
 
 const GlobalHeaderRight = (props) => {
@@ -31,7 +31,7 @@ const GlobalHeaderRight = (props) => {
       <GlobalSearchNew />
       <QuestionDropdown />
       <div className={`${styles.action} ${styles.notify}`} onClick={() => setModalVisible(true)}>
-        <img src={MessageIcon} alt="" />
+        <img src={BellIcon} alt="notification-icon" />
       </div>
       {!(!checkIsOwner && companiesOfUser.length === 1) && (
         <>
