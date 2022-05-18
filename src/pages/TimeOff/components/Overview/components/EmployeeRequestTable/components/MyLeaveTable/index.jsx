@@ -151,12 +151,13 @@ class MyLeaveTable extends PureComponent {
   };
 
   // pagination
-  onChangePagination = (pageNumber) => {
+  onChangePagination = (pageNumber, pageSize) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/savePaging',
       payload: {
         page: pageNumber,
+        limit: pageSize,
       },
     });
   };
@@ -196,9 +197,8 @@ class MyLeaveTable extends PureComponent {
     const {
       data = [],
       loadingFetchLeaveRequests = false,
-      paging: { page, limit, total },
+      paging: { page, total, limit },
     } = this.props;
-    // const rowSize = 10;
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -220,6 +220,9 @@ class MyLeaveTable extends PureComponent {
           of {totals}{' '}
         </span>
       ),
+      defaultPageSize: 10,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
       pageSize: limit,
       current: page,
       onChange: this.onChangePagination,

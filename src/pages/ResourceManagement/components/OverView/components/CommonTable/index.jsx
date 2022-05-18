@@ -53,7 +53,7 @@ const CommonTable = (props) => {
     ),
     defaultPageSize: pageSize,
     showSizeChanger: true,
-    pageSizeOptions: ['5', '10', '25', '50', '100', '250'],
+    pageSizeOptions: ['5', '10', '25', '50', '100'],
     pageSize,
     current: isBackendPaging ? page : pageSelected,
     onChange: onChangePagination,

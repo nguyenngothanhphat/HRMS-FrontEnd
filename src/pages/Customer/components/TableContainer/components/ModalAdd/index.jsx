@@ -269,7 +269,7 @@ class ModalAdd extends PureComponent {
                   }),
                 ]}
               >
-                <Input placeholder="Enter Company short name" />
+                <Input placeholder="Enter the Company's DBA" />
               </Form.Item>
             </div>
 

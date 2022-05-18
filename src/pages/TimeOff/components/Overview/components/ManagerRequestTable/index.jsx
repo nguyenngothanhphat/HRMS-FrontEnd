@@ -3,8 +3,10 @@ import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import RequestScopeTabs from './components/RequestScopeTabs';
 import styles from './index.less';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 
 const { TabPane } = Tabs;
+const { IN_PROGRESS, ON_HOLD } = TIMEOFF_STATUS;
 
 const ManagerRequestTable = (props) => {
   const {
@@ -13,10 +15,47 @@ const ManagerRequestTable = (props) => {
       currentLeaveTypeTab = '',
       yourTimeOffTypes = {},
       yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
+      countTotal: { typeA = 0, typeB = 0, typeC = 0, typeD = 0 } = {},
+      currentScopeTab = '1',
     } = {},
     loadingTimeOffType = false,
     eligibleForCompOff = false,
   } = props;
+
+  const countInProgress = () => {
+    // Get all type ID
+    const leavesTemp = [...commonLeaves, ...specialLeaves];
+
+    const typeId = leavesTemp.map((item) => {
+      return item._id;
+    });
+    //
+
+    // get all timeoff id by status IN_PROGRESS,ON_HOLD
+    let typeAPI = '';
+    switch (currentScopeTab) {
+      case '1':
+        typeAPI = 'timeOff/fetchAllLeaveRequests';
+        break;
+      case '2':
+        typeAPI = 'timeOff/fetchTeamLeaveRequests';
+        break;
+      case '3':
+        typeAPI = 'timeOff/fetchLeaveRequestOfEmployee';
+        break;
+      default:
+        break;
+    }
+
+    dispatch({
+      type: typeAPI,
+      payload: {
+        status: [IN_PROGRESS, ON_HOLD],
+        type: typeId,
+        isCountTotal: true,
+      },
+    });
+  };
 
   const saveCurrentTypeTab = (type) => {
     dispatch({
@@ -61,7 +100,12 @@ const ManagerRequestTable = (props) => {
 
   useEffect(() => {
     saveCurrentTypeTab('1');
+    countInProgress();
   }, [JSON.stringify(yourTimeOffTypes)]);
+
+  useEffect(() => {
+    countInProgress();
+  }, [currentScopeTab]);
 
   const renderTableTitle = {
     left: (
@@ -69,6 +113,12 @@ const ManagerRequestTable = (props) => {
         <span>Timeoff Requests</span>
       </div>
     ),
+  };
+
+  const addZeroToNumber = (number) => {
+    if (number === 0) return 0;
+    if (number < 10 && number > 0) return `0${number}`.slice(-2);
+    return number;
   };
 
   return (
@@ -83,21 +133,46 @@ const ManagerRequestTable = (props) => {
           destroyInactiveTabPane
         >
           <>
-            <TabPane tab="Leave Requests" key="1">
-              <RequestScopeTabs tab={1} tabName="Leave Requests" type={1} />
+            <TabPane tab={`Leave Requests (${addZeroToNumber(typeA)})`} key="1">
+              <RequestScopeTabs
+                saveCurrentTypeTab={saveCurrentTypeTab}
+                tab={1}
+                tabName="Leave Requests"
+                type={1}
+              />
             </TabPane>
-            <TabPane tab="Special Leave Requests" key="2">
-              <RequestScopeTabs tab={2} tabName="Special Leave Requests" type={1} />
+            <TabPane tab={`Special Leave Requests (${addZeroToNumber(typeC)})`} key="2">
+              <RequestScopeTabs
+                saveCurrentTypeTab={saveCurrentTypeTab}
+                tab={2}
+                tabName="Special Leave Requests"
+                type={1}
+              />
             </TabPane>
-            <TabPane tab="LWP Requests" key="3">
-              <RequestScopeTabs tab={3} tabName="LWP Requests" type={1} />
+            <TabPane tab={`LWP Requests (${addZeroToNumber(typeB)})`} key="3">
+              <RequestScopeTabs
+                saveCurrentTypeTab={saveCurrentTypeTab}
+                tab={3}
+                tabName="LWP Requests"
+                type={1}
+              />
             </TabPane>
-            <TabPane tab="WFH/CP Requests" key="4">
-              <RequestScopeTabs tab={4} tabName="WFH/CP Requests" type={1} />
+            <TabPane tab={`WFH/CP Requests (${addZeroToNumber(typeD)})`} key="4">
+              <RequestScopeTabs
+                saveCurrentTypeTab={saveCurrentTypeTab}
+                tab={4}
+                tabName="WFH/CP Requests"
+                type={1}
+              />
             </TabPane>
             {eligibleForCompOff && (
               <TabPane tab="Compoff Requests" key="5">
-                <RequestScopeTabs tab={5} tabName="Compoff Requests" type={2} />
+                <RequestScopeTabs
+                  saveCurrentTypeTab={saveCurrentTypeTab}
+                  tab={5}
+                  tabName="Compoff Requests"
+                  type={2}
+                />
               </TabPane>
             )}
           </>

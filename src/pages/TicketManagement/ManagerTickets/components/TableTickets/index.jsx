@@ -442,6 +442,9 @@ const TableTickets = (props) => {
     onChange: (page, pageSize) => {
       getPageAndSize(page, pageSize);
     },
+    defaultPageSize: size,
+    pageSizeOptions: ['10', '25', '50', '100'],
+    showSizeChanger: true,
   };
 
   return (

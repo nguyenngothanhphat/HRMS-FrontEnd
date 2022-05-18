@@ -6,6 +6,7 @@ import SearchTable from '../../../components/SearchTable';
 import TableTickets from '../TableTickets';
 import TicketInfo from '../TicketInfo';
 import Summary from '../Summary';
+import FilterCount from '../../../components/FilterCount/FilterCount';
 
 const MyTickets = (props) => {
   const {
@@ -20,7 +21,6 @@ const MyTickets = (props) => {
       departmentInfo: { _id: idDepart = '' },
       location: { headQuarterAddress: { country = '' } = {} } = {},
     } = {},
-
     dispatch,
   } = props;
 
@@ -31,6 +31,10 @@ const MyTickets = (props) => {
   const [pageSelected, setPageSelected] = useState(1);
   const [size, setSize] = useState(10);
   const [nameSearch, setNameSearch] = useState('');
+  const [applied, setApplied] = useState(0);
+  const [form, setForm] = useState('');
+  const [isFiltering, setIsFiltering] = useState(false);
+
   const onSearchDebounce = debounce((value) => {
     setNameSearch(value);
   }, 500);
@@ -102,6 +106,15 @@ const MyTickets = (props) => {
     onSearchDebounce(formatValue);
   };
 
+  const handleFilterCounts = (values) => {
+    const filteredObj = Object.entries(values).filter(
+      ([key, value]) => (value !== undefined && value?.length > 0) || value?.isValid,
+    );
+    const newObj = Object.fromEntries(filteredObj);
+    setApplied(Object.keys(newObj).length);
+    setIsFiltering(true);
+  };
+
   useEffect(() => {
     initDataTable();
   }, [pageSelected, size, selectedFilterTab, nameSearch, JSON.stringify(selectedLocations)]);
@@ -118,7 +131,24 @@ const MyTickets = (props) => {
       <div className={styles.containerTickets}>
         <div className={styles.tabTickets}>
           <Summary setSelectedTab={setSelectedTab} countData={countData} />
-          <SearchTable onChangeSearch={onChangeSearch} />
+          <div className={styles.filterTable}>
+            <FilterCount
+              applied={applied}
+              form={form}
+              setApplied={() => setApplied(0)}
+              setIsFiltering={() => setIsFiltering(false)}
+              initDataTable={initDataTable}
+              selectedFilterTab={selectedFilterTab}
+              nameSearch={nameSearch}
+              selectedLocations={selectedLocations}
+            />
+            <SearchTable
+              onChangeSearch={onChangeSearch}
+              handleFilterCounts={handleFilterCounts}
+              setForm={setForm}
+              isFiltering={isFiltering}
+            />
+          </div>
         </div>
         <TableTickets
           data={dataTableEmployee}

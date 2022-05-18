@@ -258,6 +258,9 @@ const WeeklyTable = (props) => {
         of {total}{' '}
       </span>
     ),
+    defaultPageSize: 10,
+    showSizeChanger: true,
+    pageSizeOptions: ['10', '25', '50', '100'],
     pageSize,
     current: page,
     onChange: onChangePagination,

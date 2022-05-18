@@ -44,7 +44,7 @@ const TaskTable = (props) => {
       <CommonTable
         list={list}
         columns={generateColumns()}
-        showPagination={false}
+        showPagination
         selectable
         scrollable
         rowKey="date"

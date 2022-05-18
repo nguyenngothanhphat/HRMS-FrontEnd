@@ -220,7 +220,6 @@ const ComplexView = (props) => {
         return '';
     }
   };
-
   // PERMISSION TO VIEW TABS
   // const viewMyTimesheet = permissions.viewMyTimesheet === 1;
   // const viewReportTimesheet = permissions.viewReportTimesheet === 1;

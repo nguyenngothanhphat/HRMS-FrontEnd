@@ -2,6 +2,7 @@ import { Col, DatePicker, Form, Input, Row, Select, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import CreatableSelect from 'react-select/creatable';
 import HelpIcon from '@/assets/projectManagement/help.svg';
 import CalendarIcon from '@/assets/projectManagement/calendar.svg';
 import styles from './index.less';
@@ -119,6 +120,9 @@ const AddProjectModal = (props) => {
 
   const handleFinish = async (values) => {
     const customer = customerList.find((x) => x.customerId === customerId);
+    const name = values.tags.map((item) => {
+      return item.label;
+    });
     const res = await dispatch({
       type: 'projectManagement/addProjectEffect',
       payload: {
@@ -127,6 +131,7 @@ const AddProjectModal = (props) => {
         tentativeEndDate: moment(values.tentativeEndDate).format('YYYY-MM-DD'),
         customerName: customer?.legalName,
         ownerName,
+        tags: name,
       },
     });
     if (res.statusCode === 200) {
@@ -155,7 +160,8 @@ const AddProjectModal = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 onClear={() => form.setFieldsValue({ projectId: null, accountOwner: null })}
               >
                 {customerList.map((x) => (
@@ -177,7 +183,8 @@ const AddProjectModal = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {projectTypeList.map((x) => (
                   <Option value={x.id}>{x.type_name}</Option>
@@ -241,7 +248,8 @@ const AddProjectModal = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {projectStatusList.map((x) => (
                   <Option value={x.id}>{x.status}</Option>
@@ -314,7 +322,8 @@ const AddProjectModal = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {employeeList.map((x) => (
                   <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
@@ -399,7 +408,8 @@ const AddProjectModal = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {employeeList.map((x) => (
                   <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
@@ -420,7 +430,8 @@ const AddProjectModal = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {divisionList.map((x) => (
                   <Option value={x.name}>{x.name}</Option>
@@ -436,18 +447,31 @@ const AddProjectModal = (props) => {
               fieldKey="tags"
               labelCol={{ span: 24 }}
             >
-              <Select
+              {/* <Select
                 mode="multiple"
                 placeholder="Select Groups"
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {tagList.map((x) => (
                   <Option value={x.tag_name}>{x.tag_name}</Option>
                 ))}
-              </Select>
+              </Select> */}
+              <CreatableSelect
+                menuPlacement="top"
+                isMulti
+                options={tagList
+                  .sort((a, b) => a.tag_name.localeCompare(b.tag_name))
+                  .map((item) => {
+                    return {
+                      label: item.tag_name,
+                      value: item.tag_name,
+                    };
+                  })}
+              />
             </Form.Item>
           </Col>
           <Col xs={0} md={12} />
