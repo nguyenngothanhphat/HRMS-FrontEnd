@@ -1,9 +1,9 @@
 .LeaveProgressBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-top: 16px;
   margin-bottom: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 
   // margin-top: -10px;
   &__above {
@@ -12,30 +12,31 @@
     align-items: flex-start;
     justify-content: center;
     .title {
-      font-size: 13px;
       color: #707177;
       font-weight: 700;
+      font-size: 13px;
       &__shorten {
         // font-size: 13px;
       }
     }
     .progress {
       .stepNumber {
-        font-size: 12px;
         color: #707177;
+        font-size: 12px;
       }
       .limitNumber {
-        font-size: 13px;
         color: #707177;
+        font-size: 13px;
       }
     }
   }
 
   &__below {
     .renderProgressBar {
+      width: 90%;
       .smallCircle {
-        font-weight: 700;
         color: #707177;
+        font-weight: 700;
         font-size: 12px;
       }
     }

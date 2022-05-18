@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Table, Tag, Tooltip, Spin } from 'antd';
+import { Table, Tag, Tooltip, Spin, Popover } from 'antd';
 import { history, connect } from 'umi';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -12,6 +12,7 @@ import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import RejectCommentModal from '../RejectCommentModal';
 
 import styles from './index.less';
+import UserProfile from '../UserProfile';
 
 const { IN_PROGRESS, REJECTED, ON_HOLD } = TIMEOFF_STATUS;
 
@@ -40,26 +41,25 @@ const COLUMN_WIDTH = {
   paging,
   loading1: loading.effects['timeOff/fetchTeamLeaveRequests'],
   // loading2: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
-  loading3: loading.effects['timeOff/approveMultipleTimeoffRequest'],
-  loading4: loading.effects['timeOff/rejectMultipleTimeoffRequest'],
-  loading5: loading.effects['timeOff/reportingManagerApprove'],
-  loading6: loading.effects['timeOff/reportingManagerReject'],
+  loading3: loading.effects['timeOff/approveMultipleRequests'],
+  loading4: loading.effects['timeOff/rejectMultipleRequests'],
+  loading5: loading.effects['timeOff/approveRequest'],
+  loading6: loading.effects['timeOff/rejectRequest'],
   loading7: loading.effects['timeOff/fetchAllLeaveRequests'],
 }))
 class TeamLeaveTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      // pageSelected: 1,
       selectedRowKeys: [],
       commentModalVisible: false,
-      rejectingId: '',
-      rejectingTicketID: '',
+      rejectingPayload: {},
       rejectMultiple: false,
     };
   }
 
   getColumns = (TYPE) => {
+    const { category } = this.props;
     return [
       {
         title: 'Ticket ID',
@@ -90,7 +90,18 @@ class TeamLeaveTable extends PureComponent {
         dataIndex: 'employee',
         width: COLUMN_WIDTH[TYPE].REQUESTEE,
         align: 'left',
-        render: (employee) => <span>{employee?.generalInfo?.legalName || '-'}</span>,
+        render: (employee) => {
+          return (
+            <Popover
+              placement="bottomRight"
+              overlayClassName={styles.UserProfilePopover}
+              content={<UserProfile category={category} employeeId={employee.employeeId} />}
+              trigger="hover"
+            >
+              <span>{employee?.generalInfo?.legalName}</span>
+            </Popover>
+          );
+        },
       },
       {
         title: 'Type',
@@ -149,7 +160,7 @@ class TeamLeaveTable extends PureComponent {
         width: COLUMN_WIDTH[TYPE].ACTION,
         // width: '20%',
         render: (_, record) => {
-          const { ticketID = '', _id = '', approvalManager = '' } = record;
+          const { approvalManager = '' } = record;
           const {
             isHR = false,
             selectedTab = '',
@@ -163,21 +174,21 @@ class TeamLeaveTable extends PureComponent {
             return (
               <div className={styles.rowAction}>
                 <Tooltip title="View">
-                  <img src={OpenIcon} onClick={() => this.onOpenClick(_id)} alt="open" />
+                  <img src={OpenIcon} onClick={() => this.onOpenClick(record._id)} alt="open" />
                 </Tooltip>
-                {isMyTicket && record.status !== ON_HOLD && (
+                {isMyTicket && (
                   <>
                     <Tooltip title="Approve">
                       <img
                         src={ApproveIcon}
-                        onClick={() => this.onApproveClick(_id)}
+                        onClick={() => this.onApproveClick(record)}
                         alt="approve"
                       />
                     </Tooltip>
                     <Tooltip title="Reject">
                       <img
                         src={CancelIcon}
-                        onClick={() => this.onCancelClick(_id, ticketID)}
+                        onClick={() => this.onRejectClick(record)}
                         alt="cancel"
                       />
                     </Tooltip>
@@ -188,7 +199,7 @@ class TeamLeaveTable extends PureComponent {
 
           return (
             <div className={styles.rowAction}>
-              <span onClick={() => this.onOpenClick(_id)}>View Request</span>
+              <span onClick={() => this.onOpenClick(record._id)}>View Request</span>
             </div>
           );
         },
@@ -213,41 +224,75 @@ class TeamLeaveTable extends PureComponent {
     onRefreshTable(onMovedTab);
   };
 
-  onApproveClick = async (_id) => {
+  onReset = () => {
+    this.setState({
+      selectedRowKeys: [],
+    });
+    const { onHandle = () => {} } = this.props;
+    const payload = {
+      length: 0,
+    };
+    onHandle(payload);
+  };
+
+  onApproveClick = async (record) => {
     const { dispatch } = this.props;
+    const type = record.status === ON_HOLD ? 'timeOff/approveRequest' : 'timeOff/approveRequest';
+
     const res = await dispatch({
-      type: 'timeOff/reportingManagerApprove',
+      type,
       payload: {
-        _id,
+        _id: record._id,
       },
     });
-    const { statusCode = 0 } = res;
-    if (statusCode === 200) {
+    if (res.statusCode === 200) {
+      this.onReset();
       this.onRefreshTable('1');
     }
   };
 
-  onCancelClick = (_id, ticketID) => {
-    this.setState({
-      rejectingId: _id,
-      rejectingTicketID: ticketID,
-    });
-    this.toggleCommentModal(true);
+  onRejectClick = (record) => {
+    if (record.status === ON_HOLD) {
+      this.onRejectWithdraw(record);
+    } else {
+      this.setState({
+        rejectingPayload: record,
+      });
+      this.toggleCommentModal(true);
+    }
   };
 
   onReject = async (comment) => {
     const { dispatch } = this.props;
-    const { rejectingId } = this.state;
+    const { rejectingPayload } = this.state;
+
     const res = await dispatch({
-      type: 'timeOff/reportingManagerReject',
+      type: 'timeOff/rejectRequest',
       payload: {
-        _id: rejectingId,
+        _id: rejectingPayload._id,
         comment,
       },
     });
-    const { statusCode = 0 } = res;
-    if (statusCode === 200) {
+
+    if (res.statusCode === 200) {
+      this.onReset();
       this.toggleCommentModal(false);
+      this.onRefreshTable('1');
+    }
+  };
+
+  onRejectWithdraw = async (record) => {
+    const { dispatch } = this.props;
+
+    const res = await dispatch({
+      type: 'timeOff/rejectRequest',
+      payload: {
+        _id: record._id,
+      },
+    });
+
+    if (res.statusCode === 200) {
+      this.onReset();
       this.onRefreshTable('1');
     }
   };
@@ -261,11 +306,11 @@ class TeamLeaveTable extends PureComponent {
   };
 
   // pagination
-  onChangePagination = (pageNumber) => {
+  onChangePagination = (pageNumber, pageSize) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/savePaging',
-      payload: { page: pageNumber },
+      payload: { page: pageNumber, limit: pageSize },
     });
   };
 
@@ -311,20 +356,13 @@ class TeamLeaveTable extends PureComponent {
     const { selectedRowKeys } = this.state;
     const { dispatch } = this.props;
     const statusCode = await dispatch({
-      type: 'timeOff/approveMultipleTimeoffRequest',
+      type: 'timeOff/approveMultipleRequests',
       payload: {
         ticketList: selectedRowKeys,
       },
     });
     if (statusCode === 200) {
-      this.setState({
-        selectedRowKeys: [],
-      });
-      const { onHandle = () => {} } = this.props;
-      const payload = {
-        length: 0,
-      };
-      onHandle(payload);
+      this.onReset();
       this.onRefreshTable('1');
     }
   };
@@ -340,21 +378,14 @@ class TeamLeaveTable extends PureComponent {
     const { selectedRowKeys } = this.state;
     const { dispatch } = this.props;
     const statusCode = await dispatch({
-      type: 'timeOff/rejectMultipleTimeoffRequest',
+      type: 'timeOff/rejectMultipleRequests',
       payload: {
         ticketList: selectedRowKeys,
         comment,
       },
     });
     if (statusCode === 200) {
-      this.setState({
-        selectedRowKeys: [],
-      });
-      const { onHandle = () => {} } = this.props;
-      const payload = {
-        length: 0,
-      };
-      onHandle(payload);
+      this.onReset();
       this.toggleCommentModal(false);
       this.onRefreshTable('1');
     }
@@ -439,14 +470,7 @@ class TeamLeaveTable extends PureComponent {
       isHR = false,
     } = this.props;
 
-    const {
-      selectedRowKeys,
-      // pageSelected,
-      commentModalVisible,
-      rejectingTicketID,
-      rejectMultiple,
-    } = this.state;
-    // const rowSize = 10;
+    const { selectedRowKeys, commentModalVisible, rejectingPayload, rejectMultiple } = this.state;
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -468,6 +492,9 @@ class TeamLeaveTable extends PureComponent {
           of {totals}{' '}
         </span>
       ),
+      defaultPageSize: 10,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
       pageSize: limit,
       current: page,
       onChange: this.onChangePagination,
@@ -488,9 +515,7 @@ class TeamLeaveTable extends PureComponent {
         } = record;
 
         return {
-          disabled:
-            (selectedTab === IN_PROGRESS && myId !== approvalManagerId && !isHR) ||
-            record.status === ON_HOLD, // Column configuration not to be checked
+          disabled: selectedTab === IN_PROGRESS && myId !== approvalManagerId && !isHR,
           name: record.name,
         };
       },
@@ -506,11 +531,12 @@ class TeamLeaveTable extends PureComponent {
         <Table
           // size="middle"
           loading={tableLoading}
-          rowSelection={rowSelection}
-          pagination={data.length === 0 ? null : { ...pagination, total }}
+          // rowSelection={rowSelection}
+          // if data.length > 10, pagination will appear
+          pagination={data.length === 0 ? null : { ...pagination }}
           columns={tableByRole}
           dataSource={data}
-          scroll={scroll}
+          scroll={data.length > 0 ? scroll : null}
           rowKey={(id) => id._id}
           locale={{
             emptyText: (
@@ -521,12 +547,11 @@ class TeamLeaveTable extends PureComponent {
             ),
           }}
         />
-        {data.length === 0 && <div className={styles.paddingContainer} />}
         <RejectCommentModal
           visible={commentModalVisible}
           onClose={() => this.toggleCommentModal(false)}
           onReject={rejectMultiple ? this.onMultipleReject : this.onReject}
-          ticketID={rejectingTicketID}
+          item={rejectingPayload}
           rejectMultiple={rejectMultiple}
           loading={loading4 || loading6}
         />

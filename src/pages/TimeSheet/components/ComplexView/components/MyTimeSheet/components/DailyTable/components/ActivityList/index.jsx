@@ -4,11 +4,16 @@ import { connect } from 'umi';
 import { EMP_MT_MAIN_COL_SPAN } from '@/utils/timeSheet';
 import ActivityCard from './components/ActivityCard';
 import styles from './index.less';
+import TimeOffCard from './components/TimeOffCard';
 
 const { DATE_OF_HOURS, REMAINING } = EMP_MT_MAIN_COL_SPAN;
 
 const ActivityList = (props) => {
-  const { data: { timesheet = [], date = '' } = {}, hourList = [] } = props;
+  const {
+    data: { timesheet = [], timeoff = [], date = '' } = {},
+    hourList = [],
+    employeeSchedule = {},
+  } = props;
 
   // IS OLD TIME SHEET ? MIGRATED FROM THE INTRANET
   const [isOldTimeSheet, setIsOldTimeSheet] = useState(false);
@@ -56,10 +61,19 @@ const ActivityList = (props) => {
           })}
         {timesheet.map((item, index) => (
           <ActivityCard
+            key={item.id}
             card={item}
             cardDay={date}
             cardIndex={index}
             isOldTimeSheet={isOldTimeSheet}
+          />
+        ))}
+        {timeoff.map((item, index) => (
+          <TimeOffCard
+            card={item}
+            cardDay={date}
+            cardIndex={index}
+            employeeSchedule={employeeSchedule}
           />
         ))}
       </Col>
@@ -67,6 +81,7 @@ const ActivityList = (props) => {
   );
 };
 
-export default connect(({ timeSheet: { myTimesheet = [] } = {} }) => ({ myTimesheet }))(
-  ActivityList,
-);
+export default connect(({ timeSheet: { myTimesheet = [], employeeSchedule = {} } = {} }) => ({
+  myTimesheet,
+  employeeSchedule,
+}))(ActivityList);

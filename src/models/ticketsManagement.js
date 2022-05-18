@@ -13,6 +13,7 @@ import {
   getOffToTalList,
   getLocationList,
   uploadFile,
+  getSupportTeamList,
 } from '../services/ticketsManagement';
 
 const ticketManagement = {
@@ -30,9 +31,11 @@ const ticketManagement = {
     employeeAssigneeList: [],
     filter: {},
     selectedLocations: [getCurrentLocation()],
+    supportTeamList: [],
+    employeeFilterList: [],
   },
   effects: {
-    *addTicket({ payload }, { call, put }) {
+    *addTicket({ payload }, { call }) {
       let response;
       try {
         response = yield call(addTicket, {
@@ -43,14 +46,6 @@ const ticketManagement = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message: 'Raise Ticket Successfully' });
-        yield put({
-          type: 'refreshListAllTicket',
-          payload: {
-            status: ['New'],
-            tenantId: getCurrentTenant(),
-            company: getCurrentCompany(),
-          },
-        });
       } catch (error) {
         dialog(error);
       }
@@ -70,56 +65,10 @@ const ticketManagement = {
       }
       return response;
     },
-
-    // Delete Ticket
-    *deleteAll({ payload }, { call }) {
-      try {
-        const response = yield call(deleteTicketAll, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode } = response;
-        if (statusCode !== 200) throw response;
-        notification.success({ message: 'Delete successfully' });
-      } catch (error) {
-        dialog(error);
-      }
-    },
-    *refreshListAllTicket({ payload }, { call, put, select }) {
-      try {
-        const { departmentPayload } = yield select((state) => state.ticketManagement);
-
-        let tempPayload = {
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-          ...payload,
-        };
-        if (departmentPayload && departmentPayload.length > 0) {
-          tempPayload = {
-            ...tempPayload,
-            department: departmentPayload,
-          };
-        }
-
-        const response = yield call(getOffAllTicketList, tempPayload);
-        const { statusCode, data } = response;
-        if (statusCode !== 200) throw response;
-        const ticketList = data.filter((val) => val.status === 'New');
-        yield put({
-          type: 'save',
-          payload: { listOffAllTicket: ticketList },
-        });
-        yield put({
-          type: 'fetchToTalList',
-        });
-      } catch (error) {
-        dialog(error);
-      }
-    },
     *updateTicket({ payload }, { call, put }) {
+      let response;
       try {
-        const response = yield call(updateTicket, {
+        response = yield call(updateTicket, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -131,25 +80,10 @@ const ticketManagement = {
           type: 'save',
           payload: { ticketDetail: data.length > 0 ? data[0] : [] },
         });
-        yield put({
-          type: 'refreshListAllTicket',
-          payload: {
-            status: ['New'],
-            tenantId: getCurrentTenant(),
-            company: getCurrentCompany(),
-          },
-        });
-        yield put({
-          type: 'fetchTicketByID',
-          payload: {
-            id: payload.id,
-            tenantId: getCurrentTenant(),
-            company: getCurrentCompany(),
-          },
-        });
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
     *addChat({ payload }, { call, put }) {
       let response;
@@ -181,16 +115,16 @@ const ticketManagement = {
     *fetchListAllTicket({ payload }, { call, put, select }) {
       let response;
       try {
-        const { departmentPayload } = yield select((state) => state.ticketManagement);
+        const { selectedLocations } = yield select((state) => state.ticketManagement);
         let tempPayload = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
           ...payload,
         };
-        if (departmentPayload && departmentPayload.length > 0) {
+        if (selectedLocations && selectedLocations.length > 0) {
           tempPayload = {
             ...tempPayload,
-            department: departmentPayload,
+            location: selectedLocations,
           };
         }
         response = yield call(getOffAllTicketList, tempPayload);
@@ -207,16 +141,16 @@ const ticketManagement = {
     },
     *fetchToTalList({ payload }, { call, put, select }) {
       try {
-        const { departmentPayload } = yield select((state) => state.ticketManagement);
+        const { selectedLocations } = yield select((state) => state.ticketManagement);
         let tempPayload = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
           ...payload,
         };
-        if (departmentPayload && departmentPayload.length > 0) {
+        if (selectedLocations && selectedLocations.length > 0) {
           tempPayload = {
             ...tempPayload,
-            department: departmentPayload,
+            location: selectedLocations,
           };
         }
 
@@ -243,6 +177,23 @@ const ticketManagement = {
         yield put({
           type: 'save',
           payload: { listEmployee: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *searchEmployee({ payload }, { call, put }) {
+      try {
+        const response = yield call(getListEmployee, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { employeeFilterList: data },
         });
       } catch (error) {
         dialog(error);
@@ -338,6 +289,25 @@ const ticketManagement = {
         yield put({
           type: 'save',
           payload: { employeeAssigneeList: data, currentStatus: payload.status },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchSupportTeamList({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getSupportTeamList, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { supportTeamList: data },
         });
       } catch (error) {
         dialog(error);

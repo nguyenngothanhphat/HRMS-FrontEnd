@@ -75,7 +75,7 @@ const CarryForwardItem = (props) => {
 
   useEffect(() => {
     setSuffixText(
-      TIME_TEXT[configs[CARRY_FORWARD_POLICY]?.[index]?.[MAXIMUM_CARRY_FORWARD_VALUE]?.[UNIT]] ||
+      TIME_TEXT[configs?.[CARRY_FORWARD_POLICY]?.[index]?.[MAXIMUM_CARRY_FORWARD_VALUE]?.[UNIT]] ||
         TIME_TEXT.d,
     );
   }, [JSON.stringify(configs)]);
@@ -107,11 +107,11 @@ const CarryForwardItem = (props) => {
                 name={[name, FROM]}
                 rules={[{ required: true, message: 'Required field!' }]}
               >
-                <Input placeholder="0" />
+                <Input placeholder="0" type="number" min={0} max={100} />
               </Form.Item>
               <span>Years to Less than</span>
               <Form.Item name={[name, TO]} rules={[{ required: true, message: 'Required field!' }]}>
-                <Input placeholder="0" />
+                <Input placeholder="0" type="number" min={0} max={100} />
               </Form.Item>
               <span>Years of Service</span>
             </div>
@@ -138,7 +138,7 @@ const CarryForwardItem = (props) => {
                   name={[name, VALUE]}
                   rules={[{ required: true, message: 'Required field!' }]}
                 >
-                  <Input suffix={suffixText} type="number" min={0} max={100000} defaultValue="0" />
+                  <Input suffix={suffixText} type="number" min={0} max={100} defaultValue="0" />
                 </Form.Item>
               </div>
 

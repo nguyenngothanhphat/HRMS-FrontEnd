@@ -5,6 +5,7 @@ import moment from 'moment';
 import { connect } from 'umi';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import styles from './index.less';
+import { getAuthority } from '@/utils/authority';
 
 const { Option } = Select;
 
@@ -15,10 +16,25 @@ const FilterForm = (props) => {
     employeeAssigneeList = [],
     employeeRaiseList = [],
     currentStatus = '',
+    selectedLocations = [],
+    country = '',
     loadingFetchEmployeeRaiseListEffect,
     loadingFetchEmployeeAssigneeListEffect,
     dispatch,
     visible = false,
+    handleFilterCounts = () => {},
+    setForm = () => {},
+    ticketManagement: {
+      filter: {
+        employeeAssignee = '',
+        employeeRaise = '',
+        fromDate,
+        priority = [],
+        queryType = [],
+        toDate,
+      } = {},
+      filter = {},
+    } = {},
   } = props;
 
   const [form] = Form.useForm();
@@ -29,6 +45,8 @@ const FilterForm = (props) => {
 
   const [nameListState, setNameListState] = useState([]);
   const [asignedListState, setAsignedListState] = useState([]);
+
+  const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
 
   function getUniqueListBy(arr, key) {
     return [...new Map(arr.map((item) => [item[key], item])).values()];
@@ -97,6 +115,10 @@ const FilterForm = (props) => {
     };
   }, [nameEmployeeAssignee]);
 
+  useEffect(() => {
+    setForm(form);
+  }, []);
+
   const disabledDate = (currentDate, type) => {
     if (type === 'fromDate') {
       return (
@@ -161,19 +183,36 @@ const FilterForm = (props) => {
       };
     }
     dispatch({
+      type: 'ticketManagement/save',
+      payload: { filter: payload },
+    });
+    if (permissions && permissions.length > 0) {
+      payload = {
+        ...payload,
+        permissions,
+        country,
+      };
+    }
+    dispatch({
       type: 'ticketManagement/fetchListAllTicket',
       payload: {
         ...payload,
         status: currentStatus,
+        location: selectedLocations,
       },
     });
     dispatch({
-      type: 'ticketManagement/save',
-      payload: { filter: payload },
+      type: 'ticketManagement/fetchToTalList',
+      payload: {
+        ...payload,
+        status: currentStatus,
+        location: selectedLocations,
+      },
     });
   };
 
   const onFinishDebounce = debounce((values) => {
+    handleFilterCounts(values);
     onFinish(values);
   }, 1000);
 
@@ -238,7 +277,7 @@ const FilterForm = (props) => {
             <Form.Item key="name" label="BY NAME" name="employeeRaise">
               <AutoComplete
                 dropdownMatchSelectWidth={252}
-                notFoundContent={loadingFetchEmployeeRaiseListEffect ? <Spin /> : 'No matches'}
+                notFoundContent={loadingFetchEmployeeRaiseListEffect ? <Spin /> : 'No Data'}
                 options={nameListState}
                 onSearch={(val) => handleEmployeeSearch('employeeRaise', val)}
               >
@@ -252,7 +291,8 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select request type"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 showArrow
               >
                 {queryTypeList.map((option) => {
@@ -271,7 +311,8 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select priority"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
                 showArrow
               >
                 {priorityList.map((option) => {
@@ -371,13 +412,23 @@ export default connect(
       listOffAllTicket = [],
       employeeAssigneeList = [],
       employeeRaiseList = [],
+      selectedLocations = [],
     } = {},
+    user: {
+      permissions = {},
+      currentUser: {
+        employee: { location: { headQuarterAddress: { country = '' } = {} } = {} } = {},
+      } = {},
+    },
   }) => ({
+    permissions,
+    country,
     currentStatus,
     listOffAllTicket,
     locationsList,
     employeeRaiseList,
     employeeAssigneeList,
+    selectedLocations,
     loadingFetchListAllTicket: loading.effects['ticketManagement/fetchListAllTicket'],
     loadingFetchEmployeeRaiseListEffect:
       loading.effects['ticketManagement/fetchEmployeeRaiseListEffect'],

@@ -16,7 +16,7 @@ const AccrualStart = () => {
         </Col>
         <Col sm={8}>
           <Form.Item name={FORM_ITEM_NAME.ACCRUAL_START_VALUE}>
-            <Input suffix="days" type="number" min={0} max={100000} defaultValue="0" />
+            <Input suffix="days" type="number" min={0} max={100} defaultValue="0" />
           </Form.Item>
         </Col>
         <Col sm={6} />

@@ -146,3 +146,15 @@ export async function getEmployeeList(payload) {
     data: payload,
   });
 }
+
+export async function getCustomerInfo(payload) {
+  return request(
+    `/api-customer/customertenant/get-customer-info`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.CUSTOMER_API,
+  );
+}

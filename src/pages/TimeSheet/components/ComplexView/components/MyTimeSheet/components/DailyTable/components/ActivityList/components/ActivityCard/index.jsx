@@ -11,7 +11,11 @@ import { getCurrentCompany } from '@/utils/authority';
 import {
   activityColor,
   convertMsToTime,
-  dateFormatAPI, EMP_MT_SECONDARY_COL_SPAN, EMP_ROW_HEIGHT, hourFormat, WORKING_HOURS
+  dateFormatAPI,
+  EMP_MT_SECONDARY_COL_SPAN,
+  EMP_ROW_HEIGHT,
+  hourFormat,
+  WORKING_HOURS,
 } from '@/utils/timeSheet';
 import styles from './index.less';
 

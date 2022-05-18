@@ -1,4 +1,5 @@
-import { Card, Col, Row } from 'antd';
+import { Card, Col, Row, Tag } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 import { debounce } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
@@ -24,6 +25,10 @@ const ResourceTableCard = (props) => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
   const [searchValue, setSearchValue] = useState('');
+  const [applied, setApplied] = useState(0);
+  // if reselect project status or search, clear filter form
+  const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
 
   useEffect(() => {
     fetchData(searchValue, page, limit);
@@ -48,6 +53,22 @@ const ResourceTableCard = (props) => {
     const result = data.filter((x) => ids.includes(x._id));
     setSelectedResources(result);
   };
+
+  const onFilter = (filterPayload) => {
+    fetchData(searchValue, page, limit, filterPayload);
+    if (Object.keys(filterPayload).length > 0) {
+      setIsFiltering(true);
+      setApplied(Object.keys(filterPayload).length);
+    } else {
+      setIsFiltering(false);
+      setApplied(0);
+    }
+  }
+
+  const clearFilter = () => {
+    onFilter({});
+    setNeedResetFilterForm(true);
+  }
 
   const generateColumns = () => {
     const columns = [
@@ -165,13 +186,29 @@ const ResourceTableCard = (props) => {
   const renderOption = () => {
     const content = (
       <FilterResourcesListContent
-        onFilter={(values) => fetchData(searchValue, page, limit, values)}
+        onFilter={onFilter}
+        needResetFilterForm={needResetFilterForm}
+        setNeedResetFilterForm={setNeedResetFilterForm}
+        setIsFiltering={setIsFiltering}
+        setApplied={setApplied}
       />
     );
     return (
       <div className={styles.options}>
+        {applied > 0 && (
+          <Tag
+            className={styles.tagCountFilter}
+            closable
+            closeIcon={<CloseOutlined />}
+            onClose={() => {
+              clearFilter();
+            }}
+          >
+            {applied} applied
+          </Tag>
+        )}
         <FilterPopover placement="bottomRight" content={content}>
-          <FilterButton />
+          <FilterButton showDot={isFiltering} />
         </FilterPopover>
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Name" />
       </div>

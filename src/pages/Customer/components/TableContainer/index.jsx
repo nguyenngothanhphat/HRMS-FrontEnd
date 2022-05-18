@@ -1,25 +1,27 @@
-import React, { PureComponent } from 'react';
-import { Tabs, Layout, Popover, Button, Input, Select } from 'antd';
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { connect } from 'umi';
+import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
+import { Layout, Select, Tabs, Tag } from 'antd';
 import { debounce } from 'lodash';
-import styles from './index.less';
+import React, { PureComponent } from 'react';
+import { connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
+import FilterPopover from '@/components/FilterPopover';
+import FilterButton from '@/components/FilterButton';
+import CustomSearchBox from '@/components/CustomSearchBox';
 import TableCustomers from '../TableCustomers';
 import MenuFilter from './components/MenuFilter';
-import cancelIcon from '../../../../assets/cancelIcon.svg';
 import ModalAdd from './components/ModalAdd';
-import { FilterIcon } from './components/FilterIcon';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import styles from './index.less';
 
 @connect(
   ({
     loading,
     user: { companiesOfUser = [], currentUser: { employee: { _id = '' } = {} } = {} } = {},
-    customerManagement: { listCustomer = [], companyList = [] } = {},
+    customerManagement: { listCustomer = [], companyList = [], filter = {} } = {},
   }) => ({
     listCustomer,
     companyList,
     companiesOfUser,
+    filter,
     _id,
     loadingCustomer: loading.effects['customerManagement/fetchCustomerList'],
     loadingFilter: loading.effects['customerManagement/filterListCustomer'],
@@ -31,6 +33,10 @@ class TableContainer extends PureComponent {
     this.state = {
       visible: false,
       isShown: false,
+      applied: 0,
+      arr: [],
+      form: null,
+      isFiltering: false,
     };
     this.refForm = React.createRef();
     this.onSearchDebounce = debounce(this.onSearchDebounce, 500);
@@ -46,18 +52,29 @@ class TableContainer extends PureComponent {
     });
   }
 
-  // submit filter
-  handleSubmit = async (values) => {
+  componentWillUnmount() {
     const { dispatch } = this.props;
-
     dispatch({
-      type: 'customerManagement/filterListCustomer',
+      type: 'customerManagement/save',
       payload: {
-        status: values.byStatus,
-        tenantId: getCurrentTenant(),
-        company: getCurrentCompany(),
-        // companyName: i.name,
+        filter: {},
       },
+    });
+  }
+
+  // submit filter
+  onFilter = async (values) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'customerManagement/fetchCustomerList',
+      payload: {
+        ...values,
+      },
+    });
+    this.handleFilterCount(values);
+    dispatch({
+      type: 'customerManagement/save',
+      payload: { filter: values },
     });
   };
 
@@ -93,8 +110,41 @@ class TableContainer extends PureComponent {
     });
   };
 
-  onSearch = (e = {}) => {
-    const { value = '' } = e.target;
+  clearFilter = () => {
+    const { dispatch } = this.props;
+    const { form } = this.state;
+    dispatch({
+      type: 'customerManagement/fetchCustomerList',
+    });
+    this.setState({
+      applied: 0,
+      arr: [],
+      isFiltering: false,
+    });
+    form.resetFields();
+  };
+
+  handleFilterCount = (values) => {
+    const { arr } = this.state;
+    const newObj = Object.assign(arr, values);
+    const filteredObj = Object.entries(newObj).filter(
+      ([key, value]) => value !== undefined && value?.length > 0,
+    );
+    this.setState({
+      applied: Object.keys(filteredObj).length,
+      isFiltering: true,
+    });
+  };
+
+  setForm = (form) => {
+    this.setState({
+      form,
+    });
+  };
+
+  onSearch = (value) => {
+    // const { value = '' } = e.target;
+    // this.handleFilterCount(value);
     this.onSearchDebounce(value);
   };
 
@@ -120,7 +170,6 @@ class TableContainer extends PureComponent {
       email,
       addressLine1,
       addressLine2,
-      // country,
       state,
       city,
       zipCode,
@@ -156,7 +205,6 @@ class TableContainer extends PureComponent {
         type: 'customerManagement/fetchCustomerList',
       });
       const { isShown } = this.state;
-      // form.resetFields();
       this.setState({
         isShown: !isShown,
       });
@@ -168,86 +216,68 @@ class TableContainer extends PureComponent {
     return number;
   };
 
+  showDot = (obj) => {
+    return !Object.values(obj).every((o) => {
+      if (Array.isArray(o)) {
+        return o.length === 0;
+      }
+      if (!o) return true;
+      return false;
+    });
+  };
+
   render() {
     const { Content } = Layout;
+
     const { TabPane } = Tabs;
     const { listCustomer, loadingCustomer, companyList = [], loadingFilter = false } = this.props;
-    const { visible, isShown } = this.state;
-    const tabs = [{ id: 1, name: `Customers (${this.addZeroToNumber(listCustomer.length)})` }];
+    const { isShown, applied, isFiltering } = this.state;
 
+    const tabs = [{ id: 1, name: `Customers (${this.addZeroToNumber(listCustomer.length)})` }];
     const listStatus = [
       <Select.Option key="Engaging">Engaging</Select.Option>,
       <Select.Option key="Active">Active</Select.Option>,
       <Select.Option key="Inactive">Inactive</Select.Option>,
-      // <Select.Option key="negotiation">Negotiation</Select.Option>,
     ];
-    const filter = (
-      <>
-        <MenuFilter
-          onSubmit={this.handleSubmit}
-          listStatus={listStatus}
-          companyList={companyList}
-        />
-        <div className={styles.btnForm}>
-          <Button
-            className={styles.btnClose}
-            htmlType="reset"
-            form="filter"
-            onClick={this.handleClose}
-          >
-            Close
-          </Button>
-          <Button
-            className={styles.btnApply}
-            form="filter"
-            htmlType="submit"
-            key="submit"
-            loading={loadingFilter}
-          >
-            Apply
-          </Button>
-        </div>
-      </>
-    );
 
     const menu = (
       <div className={styles.tabExtraContent}>
+        {applied > 0 && (
+          <Tag
+            className={styles.tagCountFilter}
+            closable
+            closeIcon={<CloseOutlined />}
+            onClose={() => {
+              this.clearFilter();
+            }}
+          >
+            {applied} applied
+          </Tag>
+        )}
         <div className={styles.buttonAddImport} onClick={this.showModal}>
           <PlusOutlined />
           Add new customer
         </div>
-        <Popover
+        <FilterPopover
+          realTime
           placement="bottomRight"
-          content={filter}
-          title={() => (
-            <div className={styles.popoverHeader}>
-              <p className={styles.headTitle}>Filters</p>
-              <p
-                className={styles.closeIcon}
-                style={{ cursor: 'pointer' }}
-                onClick={this.handleClose}
-              >
-                <img src={cancelIcon} alt="close" />
-              </p>
-            </div>
-          )}
-          trigger="click"
-          visible={visible}
-          onVisibleChange={this.handleVisible}
-          overlayClassName={styles.FilterPopover}
+          content={
+            <MenuFilter
+              onSubmit={this.onFilter}
+              listStatus={listStatus}
+              companyList={companyList}
+              onSearch={this.onSearch}
+              setForm={this.setForm}
+            />
+          }
         >
-          <div className={styles.filterButton}>
-            <FilterIcon />
-            <p className={styles.textButtonFilter}>Filter</p>
-          </div>
-        </Popover>
-        <div className={styles.searchInp}>
-          <Input
-            placeholder="Search by Company Name, ID, Account Owner"
-            prefix={<SearchOutlined />}
-            onChange={(e) => this.onSearch(e)}
-          />
-        </div>
+          <FilterButton fontSize={14} showDot={isFiltering} />
+        </FilterPopover>
+
+        <CustomSearchBox
+          onSearch={(e) => this.onSearchDebounce(e.target.value)}
+          placeholder="Search by Company Name, ID, Account Owner"
+        />
       </div>
     );
 
@@ -264,15 +294,20 @@ class TableContainer extends PureComponent {
               <TabPane tab={tab.name} key={tab.id}>
                 <Layout className={styles.managementLayout}>
                   <Content className="site-layout-background">
-                    <TableCustomers listCustomer={listCustomer} loadingCustomer={loadingCustomer} />
+                    <TableCustomers
+                      listCustomer={listCustomer}
+                      loadingCustomer={loadingCustomer}
+                      loadingFilter={loadingFilter}
+                    />
                   </Content>
+
                   <ModalAdd
+                    listCustomer={listCustomer}
                     isShown={isShown}
                     listStatus={listStatus}
                     handleAddNew={this.handleAddNew}
                     onCloseModal={this.onCloseModal}
                   />
-                  {/* <TabFilter /> */}
                 </Layout>
               </TabPane>
             ))}

@@ -1,4 +1,5 @@
-import { Card } from 'antd';
+import { Card, Tag } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 import { debounce } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
@@ -28,9 +29,13 @@ const Documents = (props) => {
   // permissions
   const { allowModify = false } = props;
 
+  const [applied, setApplied] = useState(0);
   const [addDocumentModalVisible, setAddDocumentModalVisible] = useState(false);
   const [viewFileModalVisible, setViewFileModalVisible] = useState(false);
   const [fileUrl, setFileUrl] = useState('');
+  // if reselect project status or search, clear filter form
+  const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
 
   const viewProfile = (id) => {
     const url = `/directory/employee-profile/${id}`;
@@ -67,12 +72,29 @@ const Documents = (props) => {
 
   const onSearchDebounce = debounce((value) => {
     fetchDocumentList(value);
+    setNeedResetFilterForm(true);
   }, 1000);
 
   const onSearch = (e = {}) => {
     const { value = '' } = e.target;
     onSearchDebounce(value);
   };
+
+  const onFilter = (filterPayload) => {
+    fetchDocumentList('', filterPayload);
+    if (Object.keys(filterPayload).length > 0) {
+      setIsFiltering(true);
+      setApplied(Object.keys(filterPayload).length);
+    } else {
+      setIsFiltering(false);
+      setApplied(0);
+    }
+  }
+
+  const clearFilter = () => {
+    onFilter({});
+    setNeedResetFilterForm(true);
+  }
 
   const generateColumns = () => {
     const columns = [
@@ -144,14 +166,32 @@ const Documents = (props) => {
   };
 
   const renderOption = () => {
-    const content = <FilterContent onFilter={(values) => fetchDocumentList('', values)} />;
+    const content = <FilterContent
+      onFilter={onFilter}
+      needResetFilterForm={needResetFilterForm}
+      setNeedResetFilterForm={setNeedResetFilterForm}
+      setIsFiltering={setIsFiltering}
+      setApplied={setApplied}
+    />;
     return (
       <div className={styles.options}>
+        {applied > 0 && (
+          <Tag
+            className={styles.tagCountFilter}
+            closable
+            closeIcon={<CloseOutlined />}
+            onClose={() => {
+              clearFilter();
+            }}
+          >
+            {applied} applied
+          </Tag>
+        )}
         {allowModify && (
           <AddButton text="Add new Document" onClick={() => setAddDocumentModalVisible(true)} />
         )}
         <FilterPopover placement="bottomRight" content={content}>
-          <FilterButton />
+          <FilterButton showDot={isFiltering} />
         </FilterPopover>
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Document Type" />
       </div>

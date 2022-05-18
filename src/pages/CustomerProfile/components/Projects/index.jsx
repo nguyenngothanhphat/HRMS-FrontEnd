@@ -1,7 +1,7 @@
 import { debounce } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import CommonTable from '../CommonTable';
+import CommonTable from '@/components/CommonTable';
 import FilterButton from '../FilterButton';
 import FilterPopover from '../FilterPopover';
 import SearchBar from '../SearchBar';

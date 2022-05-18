@@ -8,6 +8,7 @@ import styles from './index.less';
 const TimelineTable = (props) => {
   const { managerTimesheet = [], loadingFetchManagerTimesheet = false, employeeList = [] } = props;
   const [pageSelected, setPageSelected] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const _renderEmployee = (record) => {
     const { employeeId = '', employee: { employeeName = '', employeeCode = '' } = {} || {} } =
@@ -78,12 +79,15 @@ const TimelineTable = (props) => {
         of {total}
       </span>
     ),
-    defaultPageSize: 10,
+    defaultPageSize: pageSize,
     showSizeChanger: true,
     pageSizeOptions: ['10', '25', '50', '100'],
-    pageSize: 10,
+    pageSize,
     current: pageSelected,
-    onPageChange: (page) => setPageSelected(page),
+    onPageChange: (page, pageSizeTemp) => {
+      setPageSelected(page);
+      setPageSize(pageSizeTemp);
+    },
   };
 
   // MAIN AREA

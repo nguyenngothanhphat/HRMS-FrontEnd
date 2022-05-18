@@ -11,6 +11,7 @@ import {
   getStateListByCountry,
   getCustomerFilterList,
   exportCustomer,
+  removeCustomer,
 } from '../services/customerManagement';
 import { dialog } from '@/utils/utils';
 
@@ -32,6 +33,8 @@ const customerManagement = {
     },
     employeeList: [],
     companyList: [],
+    customerListPayload: {}, // for refresh data
+    customerFilterListPayload: {},
   },
   effects: {
     *fetchCustomerList({ payload }, { call, put }) {
@@ -43,7 +46,7 @@ const customerManagement = {
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listCustomer: data } });
+        yield put({ type: 'save', payload: { listCustomer: data, customerListPayload: payload } });
       } catch (error) {
         dialog(error);
       }
@@ -57,7 +60,10 @@ const customerManagement = {
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listCustomer: data } });
+        yield put({
+          type: 'save',
+          payload: { listCustomer: data, customerFilterListPayload: payload },
+        });
       } catch (error) {
         dialog(error);
       }
@@ -131,11 +137,12 @@ const customerManagement = {
       }
     },
 
-    *exportReport(_, { call }) {
+    *exportReport({ payload }, { call }) {
       let response = '';
       const hide = message.loading('Exporting data...', 0);
       try {
         response = yield call(exportCustomer, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
@@ -181,8 +188,31 @@ const customerManagement = {
       }
       return response;
     },
+    *removeCustomerEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(removeCustomer, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
   },
   reducers: {
+    clearFilter(state) {
+      return {
+        ...state,
+        filter: {},
+      };
+    },
     save(state, action) {
       return {
         ...state,

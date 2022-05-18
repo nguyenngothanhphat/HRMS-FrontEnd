@@ -217,26 +217,24 @@ const ResourceList = (props) => {
     <div className={styles.containerTickets}>
       <div className={styles.tabTickets}>
         <span>
-          {viewModeAdmin && (
-            <ResourceStatus
-              currentStatus={availableStatusState}
-              changeAvailableStatus={changeAvailableStatus}
-            />
-          )}
+          <ResourceStatus
+            currentStatus={availableStatusState}
+            changeAvailableStatus={changeAvailableStatus}
+          />
         </span>
-        <div className={styles.poSiTionCenter}>
-          {applied > 0 && (
-            <Tag
-              className={styles.tagCountFilter}
-              closable
-              onClose={clearTagFilter}
-              closeIcon={<CloseOutlined />}
-            >
-              {applied} applied
-            </Tag>
-          )}
-        </div>
         <div className={styles.rightHeaderTable}>
+          <div>
+            {applied > 0 && (
+              <Tag
+                className={styles.tagCountFilter}
+                closable
+                onClose={clearTagFilter}
+                closeIcon={<CloseOutlined />}
+              >
+                {applied} applied
+              </Tag>
+            )}
+          </div>
           <div className={styles.download}>
             <Row gutter={[24, 0]}>
               <Col>

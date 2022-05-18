@@ -33,6 +33,10 @@ const ComplexView = (props) => {
   const [selectedLocations, setSelectedLocation] = useState([getCurrentLocation()]);
   const [isIncompleteTimeSheet, setIsIncompleteTimeSheet] = useState(false);
 
+  // PERMISSIONS TO VIEW LOCATION
+  const viewLocationHR = permissions.viewLocationHRTimesheet === 1;
+  const viewLocationFinance = permissions.viewLocationFinanceTimesheet === 1;
+
   const requestLeave = () => {
     history.push('/time-off/overview/personal-timeoff/new');
   };
@@ -77,10 +81,10 @@ const ComplexView = (props) => {
     if (selectedDivisions.length > 0 && selectedDivisions.length < divisionList.length) {
       return `${selectedDivisions.length} divisions selected`;
     }
-    if (selectedDivisions.length === divisionList.length || selectedDivisions.length === 0) {
+    if (selectedDivisions.length === divisionList.length) {
       return 'All';
     }
-    return 'All';
+    return 'None';
   };
 
   const onChangeIncompleteTimeSheet = (e) => {
@@ -94,12 +98,7 @@ const ComplexView = (props) => {
     });
   };
 
-  const renderFilterBar = (isHRTab) => {
-    // if only one selected
-    const selectedLocationName = getSelectedLocationName();
-    const selectedDivisionName = getSelectedDivisionName();
-    // PERMISSIONS TO VIEW LOCATION
-    const viewLocation = permissions.viewLocationTimesheet;
+  const renderLocationOptions = () => {
     const locationUser = companyLocationList
       .filter((x) => {
         return x._id === getCurrentLocation();
@@ -111,13 +110,41 @@ const ComplexView = (props) => {
         };
       });
 
-    const divisionOptions = divisionList.map((x) => {
+    const locationOptions = companyLocationList.map((x) => {
       return {
         _id: x._id,
         name: x.name,
       };
     });
-    const locationOptions = companyLocationList.map((x) => {
+
+    if (
+      (tabName === TAB_NAME.HR_REPORTS && viewLocationHR) ||
+      (tabName === TAB_NAME.FINANCE_REPORTS && viewLocationFinance)
+    ) {
+      return locationOptions;
+    }
+    return locationUser;
+  };
+
+  const renderDivisionOptions = () => {
+    const viewDivisionHR = permissions.viewDivisionHRTimesheet === 1;
+    const viewDivisionFinance = permissions.viewDivisionFinanceTimesheet === 1;
+
+    if (tabName === TAB_NAME.HR_REPORTS && viewDivisionHR) {
+      return true;
+    }
+    if (tabName === TAB_NAME.FINANCE_REPORTS && viewDivisionFinance) {
+      return true;
+    }
+    return false;
+  };
+
+  const renderFilterBar = (isHRTab) => {
+    // if only one selected
+    const selectedLocationName = getSelectedLocationName();
+    const selectedDivisionName = getSelectedDivisionName();
+
+    const divisionOptions = divisionList.map((x) => {
       return {
         _id: x._id,
         name: x.name,
@@ -136,32 +163,40 @@ const ComplexView = (props) => {
           <span className={styles.label}>Location</span>
 
           <CheckboxMenu
-            options={viewLocation !== -1 ? locationUser : locationOptions}
+            options={renderLocationOptions()}
             onChange={onLocationChange}
             list={companyLocationList}
             default={selectedLocations}
+            disabled={renderLocationOptions().length < 2}
           >
-            <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
+            <div
+              className={`${
+                renderLocationOptions().length < 2 ? styles.noDropdown : styles.dropdown
+              }`}
+              onClick={(e) => e.preventDefault()}
+            >
               <span>{selectedLocationName}</span>
-              <img src={SmallDownArrow} alt="" />
+              {renderLocationOptions().length < 2 ? null : <img src={SmallDownArrow} alt="" />}
             </div>
           </CheckboxMenu>
         </div>
-        <div className={styles.item}>
-          <span className={styles.label}>Division</span>
+        {renderDivisionOptions() && (
+          <div className={styles.item}>
+            <span className={styles.label}>Division</span>
 
-          <CheckboxMenu
-            options={divisionOptions}
-            onChange={onDivisionChange}
-            default={selectedDivisions}
-            disabled
-          >
-            <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
-              <span>{selectedDivisionName}</span>
-              <img src={SmallDownArrow} alt="" />
-            </div>
-          </CheckboxMenu>
-        </div>
+            <CheckboxMenu
+              options={divisionOptions}
+              onChange={onDivisionChange}
+              default={selectedDivisions}
+              disabled
+            >
+              <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
+                <span>{selectedDivisionName}</span>
+                <img src={SmallDownArrow} alt="" />
+              </div>
+            </CheckboxMenu>
+          </div>
+        )}
       </div>
     );
   };
@@ -185,7 +220,6 @@ const ComplexView = (props) => {
         return '';
     }
   };
-
   // PERMISSION TO VIEW TABS
   // const viewMyTimesheet = permissions.viewMyTimesheet === 1;
   // const viewReportTimesheet = permissions.viewReportTimesheet === 1;
@@ -233,6 +267,10 @@ const ComplexView = (props) => {
         },
       });
     }
+    dispatch({
+      type: 'timeSheet/getEmployeeScheduleByLocation',
+      payload: { location: getCurrentLocation() },
+    });
   }, [tabName]);
 
   const renderOtherTabs = () => {

@@ -13,6 +13,7 @@ import OfferDetail from './components/OfferDetail';
 import PreviewOffer from './components/PreviewOffer';
 import SalaryStructure from './components/SalaryStructure';
 import styles from './index.less';
+import { goToTop } from '@/utils/utils';
 
 @connect(({ newCandidateForm = {}, user, loading }) => ({
   newCandidateForm,
@@ -37,6 +38,7 @@ class NewCandidateForm extends PureComponent {
     if (!tabName) {
       history.push(`/onboarding/list/view/${reId}/${ONBOARDING_FORM_LINK.BASIC_INFORMATION}`);
     } else if (action === 'view' || action === 'candidate-detail') {
+      goToTop();
       // check action is add or review. If isReview fetch candidate by reID
       dispatch({
         type: 'newCandidateForm/fetchCandidateByRookie',

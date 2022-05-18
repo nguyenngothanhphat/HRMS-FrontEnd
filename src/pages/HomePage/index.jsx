@@ -12,6 +12,7 @@ import TimeOff from './components/TimeOff';
 import TimeSheet from './components/TimeSheet';
 import Voting from './components/Voting';
 import Welcome from './components/Welcome';
+import { goToTop } from '@/utils/utils';
 
 const Gallery = React.lazy(() => import('./components/Gallery'));
 const Celebrating = React.lazy(() => import('./components/Celebrating'));
@@ -22,6 +23,7 @@ const HomePage = (props) => {
     props;
 
   useEffect(() => {
+    goToTop();
     return () => {
       dispatch({
         type: 'homePage/clearState',
@@ -118,6 +120,5 @@ export default connect(({ homePage, user, loading }) => ({
     loading.effects['homePage/fetchPollsEffect'] ||
     loading.effects['homePage/fetchPollResultEffect'] ||
     loading.effects['homePage/fetchBannersEffect'] ||
-    loading.effects['homePage/fetchAnnouncementsEffect'] ||
-    loading.effects['homePage/fetchBirthdayInWeekList'],
+    loading.effects['homePage/fetchAnnouncementsEffect'],
 }))(HomePage);

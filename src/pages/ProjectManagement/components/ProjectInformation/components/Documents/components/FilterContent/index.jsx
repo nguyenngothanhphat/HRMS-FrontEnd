@@ -1,13 +1,19 @@
 import { Form, Select, Row, Col, DatePicker } from 'antd';
 import React, { useEffect } from 'react';
+import { debounce } from 'lodash';
 import { connect } from 'umi';
 import styles from './index.less';
 
 const FilterContent = (props) => {
+  const [form] = Form.useForm();
   const {
     dispatch,
     projectDetails: { documentTypeList = [], employeeList = [] } = {},
     onFilter = () => {},
+    needResetFilterForm = false,
+    setNeedResetFilterForm = () => {},
+    setIsFiltering = () => {},
+    setApplied = () => {}
   } = props;
 
   const fetchDocumentTypeList = () => {
@@ -21,7 +27,6 @@ const FilterContent = (props) => {
 
   const onFinish = (values) => {
     const newValues = { ...values };
-
     // remove empty fields
     // eslint-disable-next-line no-return-assign
     const result = Object.entries(newValues).reduce(
@@ -37,12 +42,31 @@ const FilterContent = (props) => {
     onFilter(result);
   };
 
+  const onFinishDebounce = debounce((values) => {
+    onFinish(values);
+  }, 700);
+
+  const onValuesChange = () => {
+    const values = form.getFieldsValue();
+    onFinishDebounce(values);
+  };
+
   useEffect(() => {
     fetchDocumentTypeList();
   }, []);
 
+   // clear values
+  useEffect(() => {
+    if (needResetFilterForm) {
+      form.resetFields();
+      setNeedResetFilterForm(false);
+      setIsFiltering(false);
+      setApplied(0);
+    }
+  }, [needResetFilterForm]);
+
   return (
-    <Form layout="vertical" name="filter" onFinish={onFinish} className={styles.FilterContent}>
+    <Form form={form} layout="vertical" name="filter" onValuesChange={onValuesChange} className={styles.FilterContent}>
       <Form.Item label="By document type" name="type">
         <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Please select">
           {documentTypeList.map((item) => {

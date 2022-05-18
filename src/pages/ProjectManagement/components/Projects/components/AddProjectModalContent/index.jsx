@@ -2,6 +2,7 @@ import { Col, DatePicker, Form, Input, Row, Select, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import CreatableSelect from 'react-select/creatable';
 import HelpIcon from '@/assets/projectManagement/help.svg';
 import CalendarIcon from '@/assets/projectManagement/calendar.svg';
 import styles from './index.less';
@@ -24,11 +25,13 @@ const AddProjectModal = (props) => {
       divisionList = [],
       employeeList = [],
       newProjectId = '',
+      customerInfo: { accountOwnerId = '' },
     } = {},
     employee: { generalInfo: { legalName: ownerName = '' } = {} } = {} || {},
     loadingGenId = false,
     loadingFetchEmployeeList = false,
     loadingFetchCustomerList = false,
+    loadingFetchCustomerInfo = false,
   } = props;
 
   useEffect(() => {
@@ -58,6 +61,12 @@ const AddProjectModal = (props) => {
   }, [newProjectId]);
 
   useEffect(() => {
+    form.setFieldsValue({
+      accountOwner: accountOwnerId || null,
+    });
+  }, [accountOwnerId]);
+
+  useEffect(() => {
     const find = customerList.find((x) => x.customerId === customerId);
     if (find) {
       dispatch({
@@ -67,16 +76,27 @@ const AddProjectModal = (props) => {
           customerName: find?.legalName,
         },
       });
+      dispatch({
+        type: 'projectManagement/fetchCustomerInfo',
+        payload: {
+          customerId,
+        },
+      });
     }
   }, [customerId]);
 
   useEffect(() => {
     return () => {
       setCustomerId('');
+      dispatch({
+        type: 'projectManagement/save',
+        payload: {
+          customerInfo: {},
+          newProjectId: '',
+        },
+      });
     };
   }, []);
-
-  const { employee: { _id: employeeId = '' } = {} || {} } = props;
 
   const handleCancel = () => {
     form.resetFields();
@@ -100,6 +120,9 @@ const AddProjectModal = (props) => {
 
   const handleFinish = async (values) => {
     const customer = customerList.find((x) => x.customerId === customerId);
+    const name = values.tags.map((item) => {
+      return item.label;
+    });
     const res = await dispatch({
       type: 'projectManagement/addProjectEffect',
       payload: {
@@ -108,6 +131,7 @@ const AddProjectModal = (props) => {
         tentativeEndDate: moment(values.tentativeEndDate).format('YYYY-MM-DD'),
         customerName: customer?.legalName,
         ownerName,
+        tags: name,
       },
     });
     if (res.statusCode === 200) {
@@ -118,15 +142,7 @@ const AddProjectModal = (props) => {
 
   return (
     <div className={styles.AddProjectModalContent}>
-      <Form
-        name="myForm"
-        form={form}
-        id="myForm"
-        onFinish={handleFinish}
-        // initialValues={{
-        //   accountOwner: employeeId,
-        // }}
-      >
+      <Form name="myForm" form={form} id="myForm" onFinish={handleFinish}>
         <Row gutter={[24, 0]} className={styles.abovePart}>
           <Col xs={24} md={12}>
             <Form.Item
@@ -137,7 +153,7 @@ const AddProjectModal = (props) => {
               labelCol={{ span: 24 }}
             >
               <Select
-                loading={loadingFetchCustomerList || loadingGenId}
+                loading={loadingFetchCustomerList || loadingGenId || loadingFetchCustomerInfo}
                 placeholder="Select Customer"
                 disabled={loadingGenId}
                 onChange={(val) => setCustomerId(val)}
@@ -146,6 +162,7 @@ const AddProjectModal = (props) => {
                 filterOption={(input, option) =>
                   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
+                onClear={() => form.setFieldsValue({ projectId: null, accountOwner: null })}
               >
                 {customerList.map((x) => (
                   <Option value={x.customerId}>{x.legalName}</Option>
@@ -177,21 +194,13 @@ const AddProjectModal = (props) => {
           </Col>
           <Col xs={24} md={12}>
             <Form.Item
-              rules={[{ required: true, message: 'Select Account Owner' }]}
               label="Account Owner"
               name="accountOwner"
               fieldKey="accountOwner"
               labelCol={{ span: 24 }}
+              rules={[{ required: true, message: 'Select Account Owner' }]}
             >
-              <Select
-                loading={loadingFetchEmployeeList}
-                placeholder="Select Account Owner"
-                showSearch
-                allowClear
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-              >
+              <Select placeholder="Account Owner" disabled loading={loadingFetchCustomerInfo}>
                 {employeeList.map((x) => (
                   <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
                 ))}
@@ -438,7 +447,7 @@ const AddProjectModal = (props) => {
               fieldKey="tags"
               labelCol={{ span: 24 }}
             >
-              <Select
+              {/* <Select
                 mode="multiple"
                 placeholder="Select Groups"
                 showSearch
@@ -450,7 +459,19 @@ const AddProjectModal = (props) => {
                 {tagList.map((x) => (
                   <Option value={x.tag_name}>{x.tag_name}</Option>
                 ))}
-              </Select>
+              </Select> */}
+              <CreatableSelect
+                menuPlacement="top"
+                isMulti
+                options={tagList
+                  .sort((a, b) => a.tag_name.localeCompare(b.tag_name))
+                  .map((item) => {
+                    return {
+                      label: item.tag_name,
+                      value: item.tag_name,
+                    };
+                  })}
+              />
             </Form.Item>
           </Col>
           <Col xs={0} md={12} />
@@ -468,5 +489,6 @@ export default connect(
     loadingAddProject: loading.effects['projectManagement/addProjectEffect'],
     loadingFetchEmployeeList: loading.effects['projectManagement/fetchEmployeeListEffect'],
     loadingFetchCustomerList: loading.effects['projectManagement/fetchCustomerListEffect'],
+    loadingFetchCustomerInfo: loading.effects['projectManagement/fetchCustomerInfo'],
   }),
 )(AddProjectModal);

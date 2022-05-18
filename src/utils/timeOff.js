@@ -39,6 +39,7 @@ export const TIMEOFF_PERIOD = {
   MORNING: 'MORNING',
   AFTERNOON: 'AFTERNOON',
   WHOLE_DAY: 'WHOLE-DAY',
+  HOUR: 'HOUR',
 };
 
 export const TIMEOFF_INPUT_TYPE = {
@@ -173,6 +174,14 @@ export const FORM_ITEM_NAME = {
   MAXIMUM: 'maximum',
   RESET_TYPE: 'resetType',
   CALENDAR_DATE: 'calendarDate',
+};
+
+export const TIMEOFF_ACCRUAL_METHOD = {
+  UNLIMITED: 'unlimited',
+  DAYS_OF_YEAR: 'daysOfYear',
+  DAYS_OF_QUARTER: 'daysOfQuarter',
+  DAYS_OF_MONTH: 'daysOfMonth',
+  DAYS_OF_FORTNIGHT: 'daysOfFortnight',
 };
 
 export const TIMEOFF_WORK_DAYS = [

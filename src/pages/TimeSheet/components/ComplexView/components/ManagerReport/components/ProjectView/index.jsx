@@ -31,12 +31,13 @@ const ProjectView = (props) => {
 
   const {
     dispatch,
+    permissions = {},
     timeSheet: {
       projectList = [],
       managerProjectViewList = [],
       managerProjectViewPagination = {},
     } = {},
-    employee: { _id: userId = '' } = {},
+    employee: { _id: userId = '', departmentInfo: { name: departmentName = '' } = {} } = {},
     loadingFetchProjectList = false,
     activeView = '',
   } = props;
@@ -71,11 +72,34 @@ const ProjectView = (props) => {
       });
     }
   };
+  // set permissions
+  const projectViewDefault = permissions.viewReportProjectViewTimesheet === 1;
+  const projectLocationView = permissions.viewReportProjectLocationViewTimesheet === 1;
+  const projectAdminView = permissions.viewReportProjectAdminViewTimesheet === 1;
 
   const fetchProjectList = () => {
-    dispatch({
-      type: 'timeSheet/fetchProjectListEffect',
-    });
+    if (projectViewDefault) {
+      dispatch({
+        type: 'timeSheet/fetchProjectListEffect',
+        payload: {
+          departmentName,
+          userId,
+        },
+      });
+    }
+    if (projectLocationView) {
+      dispatch({
+        type: 'timeSheet/fetchProjectListEffect',
+        payload: {
+          departmentName,
+        },
+      });
+    }
+    if (projectAdminView) {
+      dispatch({
+        type: 'timeSheet/fetchProjectListEffect',
+      });
+    }
   };
 
   const onChangePage = (pageNumber) => {
@@ -236,8 +260,11 @@ const ProjectView = (props) => {
   );
 };
 
-export default connect(({ timeSheet, loading, user: { currentUser: { employee = {} } = {} } }) => ({
-  employee,
-  timeSheet,
-  loadingFetchProjectList: loading.effects['timeSheet/fetchProjectListEffect'],
-}))(ProjectView);
+export default connect(
+  ({ timeSheet, loading, user: { permissions = [], currentUser: { employee = {} } = {} } }) => ({
+    employee,
+    timeSheet,
+    permissions,
+    loadingFetchProjectList: loading.effects['timeSheet/fetchProjectListEffect'],
+  }),
+)(ProjectView);

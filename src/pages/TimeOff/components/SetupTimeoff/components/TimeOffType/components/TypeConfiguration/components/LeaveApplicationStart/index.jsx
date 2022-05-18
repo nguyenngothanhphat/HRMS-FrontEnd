@@ -15,7 +15,7 @@ const LeaveApplicationStart = () => {
         </Col>
         <Col sm={8}>
           <Form.Item name={FORM_ITEM_NAME.LEAVE_APPLICATION_START_VALUE}>
-            <Input type="number" suffix="days" min={0} max={100000} defaultValue="0" />
+            <Input type="number" suffix="days" min={0} max={100} defaultValue="0" />
           </Form.Item>
         </Col>
         <Col sm={6} />

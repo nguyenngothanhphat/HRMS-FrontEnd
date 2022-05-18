@@ -12,6 +12,7 @@ import {
 import DirectoryComponent from './components/Directory';
 import OrganizationChart from './components/OrganisationChart';
 import styles from './index.less';
+import { goToTop } from '@/utils/utils';
 
 const { TabPane } = Tabs;
 
@@ -83,6 +84,7 @@ const Directory = (props) => {
     } else {
       fetchData();
     }
+    goToTop();
 
     return () => {
       dispatch({

@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import EmployeeTicket from './EmployeeTickets';
 import ManagerTicket from './ManagerTickets';
+import { goToTop } from '@/utils/utils';
+import { getAuthority } from '@/utils/authority';
 
 class TicketsManagement extends PureComponent {
   findRole = (roles) => {
@@ -11,15 +13,20 @@ class TicketsManagement extends PureComponent {
     return role;
   };
 
+  componentDidMount = () => {
+    goToTop();
+  };
+
   render() {
     const {
       match: { params: { tabName = '' } = {} },
     } = this.props;
+    const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
 
     const renderComponent = {
-      manager: <ManagerTicket tabName={tabName} />,
-      'hr-manager': <ManagerTicket tabName={tabName} />,
-      employee: <EmployeeTicket tabName={tabName} />,
+      manager: <ManagerTicket permissions={permissions} tabName={tabName} />,
+      'hr-manager': <ManagerTicket permissions={permissions} tabName={tabName} />,
+      employee: <EmployeeTicket permissions={permissions} tabName={tabName} />,
     };
 
     const listRole = localStorage.getItem('antd-pro-authority');

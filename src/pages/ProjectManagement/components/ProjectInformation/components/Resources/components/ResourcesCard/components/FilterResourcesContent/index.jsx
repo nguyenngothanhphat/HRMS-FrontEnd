@@ -1,15 +1,21 @@
 import { Col, DatePicker, Form, Row, Select } from 'antd';
 import React, { useEffect } from 'react';
+import { debounce } from 'lodash';
 import { connect } from 'umi';
 import styles from './index.less';
 
 const { Option } = Select;
 
 const FilterResourcesContent = (props) => {
+  const [form] = Form.useForm();
   const {
     dispatch,
     projectDetails: { billingStatusList = [], titleList = [] } = {},
     onFilter = () => {},
+    needResetFilterForm = false,
+    setNeedResetFilterForm = () => {},
+    setIsFiltering = () => {},
+    setApplied = () => {}
   } = props;
 
   const fetchDataList = () => {
@@ -39,15 +45,35 @@ const FilterResourcesContent = (props) => {
     onFilter(result);
   };
 
+  const onFinishDebounce = debounce((values) => {
+    onFinish(values);
+  }, 700);
+
+  const onValuesChange = () => {
+    const values = form.getFieldsValue();
+    onFinishDebounce(values);
+  };
+
   useEffect(() => {
     fetchDataList();
   }, []);
 
+  // clear values
+  useEffect(() => {
+    if (needResetFilterForm) {
+      form.resetFields();
+      setNeedResetFilterForm(false);
+      setIsFiltering(false);
+      setApplied(0)
+    }
+  }, [needResetFilterForm]);
+
   return (
     <Form
+      form={form}
       layout="vertical"
       name="filter"
-      onFinish={onFinish}
+      onValuesChange={onValuesChange}
       className={styles.FilterResourcesContent}
     >
       <Form.Item label="By designation" name="designation">

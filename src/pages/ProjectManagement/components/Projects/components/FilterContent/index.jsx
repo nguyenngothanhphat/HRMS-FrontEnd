@@ -11,6 +11,20 @@ const FilterContent = (props) => {
     dispatch,
     needResetFilterForm = false,
     setNeedResetFilterForm = () => {},
+    setIsFiltering = () => {},
+    setApplied = () => {},
+    projectManagement: {
+      filter: {
+        customerId = [],
+        division = [],
+        engagementType = [],
+        projectId = '',
+        projectManager = [],
+        projectName = [],
+        projectStatus = [],
+      } = {},
+      filter = {},
+    } = {},
   } = props;
 
   // redux
@@ -25,6 +39,19 @@ const FilterContent = (props) => {
     } = {},
     loadingFetchEmployeeList = false,
   } = props;
+
+  useEffect(() => {
+    form.setFieldsValue({
+      ...filter,
+      customerId,
+      division,
+      engagementType,
+      projectId,
+      projectManager,
+      projectName,
+      projectStatus,
+    });
+  }, [JSON.stringify(filter)]);
 
   useEffect(() => {
     dispatch({
@@ -64,6 +91,10 @@ const FilterContent = (props) => {
             ((a[k] = v), a),
       {},
     );
+    dispatch({
+      type: 'projectManagement/save',
+      payload: { filter: result },
+    });
     onFilter(result);
   };
 
@@ -81,6 +112,8 @@ const FilterContent = (props) => {
     if (needResetFilterForm) {
       form.resetFields();
       setNeedResetFilterForm(false);
+      setIsFiltering(false);
+      setApplied(0);
     }
   }, [needResetFilterForm]);
 
@@ -98,7 +131,7 @@ const FilterContent = (props) => {
             placeholder="Select Division"
           >
             {divisionList.map((x) => (
-              <Select.Option value={x.name}>{x.name}</Select.Option>
+              <Select.Option value={x.name} key={x}>{x.name}</Select.Option>
             ))}
           </Select>
         </Form.Item>
@@ -128,7 +161,7 @@ const FilterContent = (props) => {
             placeholder="Select Customer"
           >
             {customerList.map((x) => {
-              return <Select.Option value={x.customerId}>{x.legalName}</Select.Option>;
+              return <Select.Option value={x.customerId} key={x}>{x.legalName}</Select.Option>;
             })}
           </Select>
         </Form.Item>
@@ -141,7 +174,7 @@ const FilterContent = (props) => {
             placeholder="Select Engagement Type"
           >
             {projectTypeList.map((x) => (
-              <Select.Option value={x.id}>{x.type_name}</Select.Option>
+              <Select.Option value={x.id} key={x}>{x.type_name}</Select.Option>
             ))}
           </Select>
         </Form.Item>
@@ -154,7 +187,7 @@ const FilterContent = (props) => {
             placeholder="Select Project Manager"
           >
             {employeeList.map((x) => (
-              <Select.Option value={x._id}>{x?.generalInfo?.legalName}</Select.Option>
+              <Select.Option value={x._id} key={x}>{x?.generalInfo?.legalName}</Select.Option>
             ))}
           </Select>
         </Form.Item>
@@ -162,7 +195,7 @@ const FilterContent = (props) => {
         <Form.Item label="By status" name="projectStatus">
           <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Select Status">
             {projectStatusList.map((x) => (
-              <Select.Option value={x.id}>{x.status}</Select.Option>
+              <Select.Option value={x.id} key={x}>{x.status}</Select.Option>
             ))}
           </Select>
         </Form.Item>

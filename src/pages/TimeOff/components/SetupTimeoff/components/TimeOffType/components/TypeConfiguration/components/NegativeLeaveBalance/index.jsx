@@ -8,6 +8,7 @@ const {
   NEGATIVE_LEAVE_BALANCE,
   MAXIMUM,
   UNIT,
+  ALLOWED,
   NEGATIVE_LEAVE_BALANCE_MAXIMUM_UNIT,
   NEGATIVE_LEAVE_BALANCE_ALLOWED,
   NEGATIVE_LEAVE_BALANCE_MAXIMUM_VALUE,
@@ -16,6 +17,7 @@ const {
 const NegativeLeaveBalance = (props) => {
   const { configs = {}, form, workHourPerDay = 0, renderErrorMessage = () => {} } = props;
   const [suffixText, setSuffixText] = useState(TIME_TEXT.d);
+  const [allowed, setAllowed] = useState(false);
 
   const convertValues = (type) => {
     const formValues = form.getFieldsValue();
@@ -49,9 +51,14 @@ const NegativeLeaveBalance = (props) => {
     convertValues(value);
   };
 
+  const onAllowedChange = (e) => {
+    setAllowed(e.target.value);
+  };
+
   useEffect(() => {
-    const suffixTextTemp = TIME_TEXT[configs[NEGATIVE_LEAVE_BALANCE]?.[MAXIMUM]?.[UNIT]];
-    setSuffixText(suffixTextTemp || TIME_TEXT.d);
+    const suffixTextTemp = TIME_TEXT[configs?.[NEGATIVE_LEAVE_BALANCE]?.[MAXIMUM]?.[UNIT]];
+    setSuffixText(suffixTextTemp);
+    setAllowed(configs?.[NEGATIVE_LEAVE_BALANCE]?.[ALLOWED] || false);
   }, [JSON.stringify(configs)]);
 
   return (
@@ -63,7 +70,7 @@ const NegativeLeaveBalance = (props) => {
         <Col sm={8}>
           <div className={styles.viewTypeSelector}>
             <Form.Item name={NEGATIVE_LEAVE_BALANCE_ALLOWED} valuePropName="value">
-              <Radio.Group buttonStyle="solid" defaultValue={false}>
+              <Radio.Group buttonStyle="solid" defaultValue={false} onChange={onAllowedChange}>
                 <Radio.Button value>Yes</Radio.Button>
                 <Radio.Button value={false}>No</Radio.Button>
               </Radio.Group>
@@ -72,6 +79,7 @@ const NegativeLeaveBalance = (props) => {
         </Col>
         <Col sm={6} />
       </Row>
+
       <Row gutter={[24, 24]} align="middle">
         <Col sm={10}>
           <span className={styles.label}>Maximum Negative Leave Balance</span>
@@ -80,12 +88,24 @@ const NegativeLeaveBalance = (props) => {
           <div className={styles.rightPart}>
             <div style={{ marginRight: 16 }}>
               <Form.Item name={NEGATIVE_LEAVE_BALANCE_MAXIMUM_VALUE}>
-                <Input suffix={suffixText} type="number" min={0} max={100000} defaultValue="0" />
+                <Input
+                  disabled={!allowed}
+                  suffix={suffixText}
+                  type="number"
+                  min={0}
+                  max={100}
+                  defaultValue="0"
+                />
               </Form.Item>
             </div>
             <div className={styles.viewTypeSelector}>
               <Form.Item name={NEGATIVE_LEAVE_BALANCE_MAXIMUM_UNIT} valuePropName="value">
-                <Radio.Group buttonStyle="solid" defaultValue="d" onChange={onUnitChange}>
+                <Radio.Group
+                  disabled={!allowed}
+                  buttonStyle="solid"
+                  defaultValue="d"
+                  onChange={onUnitChange}
+                >
                   <Radio.Button value="d">Days</Radio.Button>
                   <Radio.Button value="h">Hours</Radio.Button>
                 </Radio.Group>

@@ -14,6 +14,8 @@ const FilterContent = (props) => {
     loadingFetchEmployeeNameList = false,
     loadingFetchDepartmentList = false,
     loadingFetchProjectList = false,
+    setForm,
+    setApplied,
   } = props;
 
   const [employeeNameListState, setEmployeeNameListState] = useState([]);
@@ -28,6 +30,7 @@ const FilterContent = (props) => {
     dispatch({
       type: 'timeSheet/fetchProjectListEffect',
     });
+    setForm(form);
   }, []);
 
   useEffect(() => {
@@ -70,6 +73,11 @@ const FilterContent = (props) => {
 
   const onValuesChange = () => {
     const values = form.getFieldsValue();
+    const filteredObj = Object.entries(values).filter(
+      ([key, value]) => value !== undefined && value.length > 0,
+    );
+    const newObj = Object.fromEntries(filteredObj);
+    setApplied(Object.keys(newObj).length);
     onFinishDebounce(values);
   };
 

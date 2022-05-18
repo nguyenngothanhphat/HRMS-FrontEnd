@@ -101,6 +101,16 @@ class RightContent extends PureComponent {
         dispatch({
           type: 'ticketManagement/updateTicket',
           payload,
+        }).then((res) => {
+          const { statusCode = '' } = res;
+          if (statusCode === 200) {
+            dispatch({
+              type: 'ticketManagement/fetchTicketByID',
+              payload: {
+                id,
+              },
+            });
+          }
         });
       }
     }

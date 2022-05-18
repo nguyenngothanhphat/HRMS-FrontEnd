@@ -30,6 +30,8 @@ import {
   getProjectTypeList,
   getListEmployeeSingleCompany,
   getDivisionList,
+  // common
+  getEmployeeScheduleByLocation,
 } from '@/services/timeSheet';
 import { getCurrentCompany, getCurrentTenant, getCurrentLocation } from '@/utils/authority';
 import { convertMsToTime, isTheSameDay } from '@/utils/timeSheet';
@@ -84,6 +86,7 @@ const initialState = {
   selectedDivisions: [],
   selectedLocations: [getCurrentLocation()],
   isIncompleteTimesheet: false,
+  employeeSchedule: {},
 };
 
 const TimeSheet = {
@@ -603,12 +606,38 @@ const TimeSheet = {
       }
       return response;
     },
+    *getEmployeeScheduleByLocation({ payload = {} }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getEmployeeScheduleByLocation, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data: employeeSchedule = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { employeeSchedule },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
   },
   reducers: {
     save(state, action) {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    clearFilter(state) {
+      return {
+        ...state,
+        filterFinance: {},
+        filterHrView: {},
+        filterManagerReport: {},
       };
     },
     clearImportModalData(state) {

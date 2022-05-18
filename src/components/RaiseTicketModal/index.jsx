@@ -1,26 +1,30 @@
 import {
   Button,
   Col,
-  Modal,
-  Row,
+  DatePicker,
   Form,
   Input,
+  message,
+  Modal,
+  Row,
   Select,
-  DatePicker,
+  Spin,
   Tooltip,
   Upload,
-  Spin,
-  message,
 } from 'antd';
-import React, { useState, useEffect } from 'react';
 import { isEmpty } from 'lodash';
-import { connect } from 'umi';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
+import { PRIORITY } from '@/utils/dashboard';
+import {
+  getAuthority,
+  getCurrentCompany,
+  getCurrentLocation,
+  getCurrentTenant,
+} from '@/utils/authority';
 import HelpIcon from '@/assets/dashboard/help.svg';
 import BlueAddIcon from '@/assets/dashboard/blueAdd.svg';
-import { SUPPORT_TEAM, PRIORITY } from '@/utils/dashboard';
-import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
-
 import styles from './index.less';
 
 const { Option } = Select;
@@ -33,10 +37,16 @@ const RaiseTicketModal = (props) => {
     visible = false,
     title = '',
     onClose = () => {},
-    currentUser: { employee: { _id: myEmployeeID = '' } = {} || {} } = {} || {},
+    currentUser: {
+      employee: {
+        _id: myEmployeeID = '',
+        location: { headQuarterAddress: { country = '' } = {} } = {},
+      } = {} || {},
+    } = {} || {},
     loadingFetchListEmployee = false,
-    loadingFetchDepartments = false,
-    listDepartment = [],
+    loadingFetchSupportTeam = false,
+    loadingAddTicket = false,
+    supportTeamList = [],
   } = props;
   const { listEmployee, loadingUploadAttachment = false } = props;
   const { maxFileSize = 2, dispatch } = props;
@@ -44,15 +54,8 @@ const RaiseTicketModal = (props) => {
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
   const [queryTypeList, setQueryTypeList] = useState([]);
   const [attachment, setAttachment] = useState('');
-  const [filteredDepartmentList, setFilteredDepartmentList] = useState([]);
 
-  useEffect(() => {
-    const departmentFilterValues = ['hr', 'it', 'operations'];
-    const temp = listDepartment.filter((x) =>
-      departmentFilterValues.some((y) => x.name.toLowerCase().includes(y)),
-    );
-    setFilteredDepartmentList(temp);
-  }, [JSON.stringify(listDepartment)]);
+  // permission setting
 
   const renderModalHeader = () => {
     return (
@@ -66,11 +69,12 @@ const RaiseTicketModal = (props) => {
   };
   useEffect(() => {
     if (visible) {
+      const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
       dispatch({
-        type: 'ticketManagement/fetchDepartments',
+        type: 'ticketManagement/fetchSupportTeamList',
         payload: {
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
+          permissions,
+          country,
         },
       });
       dispatch({
@@ -138,11 +142,32 @@ const RaiseTicketModal = (props) => {
   };
 
   const onSupportTeamChange = (value) => {
-    const find = listDepartment.find((x) => x._id === value);
+    const find = supportTeamList.find((x) => x._id === value);
     if (find) {
-      const queryTypeListTemp = SUPPORT_TEAM.find((val) => val.name === find.name);
-      setQueryTypeList(queryTypeListTemp?.queryType || []);
+      setQueryTypeList(find?.queryType || []);
     }
+  };
+
+  const refreshData = () => {
+    const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
+    let payload = {
+      status: ['New'],
+    };
+    if (permissions && permissions.length > 0) {
+      payload = {
+        ...payload,
+        country,
+        permissions,
+      };
+    }
+    dispatch({
+      type: 'ticketManagement/fetchListAllTicket',
+      payload,
+    });
+    dispatch({
+      type: 'ticketManagement/fetchToTalList',
+      payload,
+    });
   };
 
   const handleFinish = (value) => {
@@ -177,6 +202,7 @@ const RaiseTicketModal = (props) => {
         form.resetFields();
         setUploadedAttachments([]);
         setAttachment('');
+        refreshData();
       }
     });
   };
@@ -204,13 +230,13 @@ const RaiseTicketModal = (props) => {
                 labelCol={{ span: 24 }}
               >
                 <Select
-                  loading={loadingFetchDepartments}
-                  disabled={loadingFetchDepartments}
+                  loading={loadingFetchSupportTeam}
+                  disabled={loadingFetchSupportTeam}
                   showSearch
                   onChange={onSupportTeamChange}
                   placeholder="Select the support team"
                 >
-                  {filteredDepartmentList.map((val) => (
+                  {supportTeamList.map((val) => (
                     <Option value={val._id}>{val.name}</Option>
                   ))}
                 </Select>
@@ -236,11 +262,7 @@ const RaiseTicketModal = (props) => {
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
-              <Form.Item
-                label="Status"
-                name="status"
-                labelCol={{ span: 24 }}
-              >
+              <Form.Item label="Status" name="status" labelCol={{ span: 24 }}>
                 <Select disabled>
                   <Option value="New">New</Option>
                 </Select>
@@ -404,6 +426,12 @@ const RaiseTicketModal = (props) => {
               form="myForm"
               key="submit"
               htmlType="submit"
+              disabled={
+                loadingAddTicket ||
+                loadingFetchSupportTeam ||
+                loadingFetchListEmployee ||
+                loadingUploadAttachment
+              }
             >
               Submit
             </Button>
@@ -422,14 +450,15 @@ const RaiseTicketModal = (props) => {
 export default connect(
   ({
     loading,
-    ticketManagement: { listEmployee = [], listDepartment = [] } = {},
+    ticketManagement: { listEmployee = [], supportTeamList = [] } = {},
     user: { currentUser = {} } = {},
   }) => ({
     listEmployee,
-    listDepartment,
+    supportTeamList,
     currentUser,
     loadingUploadAttachment: loading.effects['ticketManagement/uploadFileAttachments'],
     loadingFetchListEmployee: loading.effects['ticketManagement/fetchListEmployee'],
-    loadingFetchDepartments: loading.effects['ticketManagement/fetchDepartments'],
+    loadingFetchSupportTeam: loading.effects['ticketManagement/fetchSupportTeamList'],
+    loadingAddTicket: loading.effects['ticketManagement/addTicket'],
   }),
 )(RaiseTicketModal);

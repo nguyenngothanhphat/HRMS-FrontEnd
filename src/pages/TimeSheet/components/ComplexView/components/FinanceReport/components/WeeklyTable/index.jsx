@@ -78,7 +78,7 @@ const WeeklyTable = (props) => {
               <div className={styles.taskMembers}>
                 <Avatar.Group maxCount={4}>
                   {resource.map((member) => {
-                    return <Avatar size="small" src={member.avatar || MockAvatar} />;
+                    return <Avatar size="large" src={member.avatar || MockAvatar} />;
                   })}
                 </Avatar.Group>
               </div>
@@ -128,6 +128,9 @@ const WeeklyTable = (props) => {
         of {total}{' '}
       </span>
     ),
+    defaultPageSize: 10,
+    showSizeChanger: true,
+    pageSizeOptions: ['10', '25', '50', '100'],
     pageSize: limit,
     current: pageSelected,
     onChange: onChangePagination,

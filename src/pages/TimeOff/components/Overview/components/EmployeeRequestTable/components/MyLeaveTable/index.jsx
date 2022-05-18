@@ -151,12 +151,13 @@ class MyLeaveTable extends PureComponent {
   };
 
   // pagination
-  onChangePagination = (pageNumber) => {
+  onChangePagination = (pageNumber, pageSize) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/savePaging',
       payload: {
         page: pageNumber,
+        limit: pageSize,
       },
     });
   };
@@ -196,9 +197,8 @@ class MyLeaveTable extends PureComponent {
     const {
       data = [],
       loadingFetchLeaveRequests = false,
-      paging: { page, limit, total },
+      paging: { page, total, limit },
     } = this.props;
-    // const rowSize = 10;
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -220,6 +220,9 @@ class MyLeaveTable extends PureComponent {
           of {totals}{' '}
         </span>
       ),
+      defaultPageSize: 10,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
       pageSize: limit,
       current: page,
       onChange: this.onChangePagination,
@@ -236,10 +239,10 @@ class MyLeaveTable extends PureComponent {
           // size="middle"
           loading={tableLoading}
           // rowSelection={rowSelection}
-          pagination={{ ...pagination, total }}
+          pagination={data.length === 0 ? null : { ...pagination, total }}
           columns={this.columns}
           dataSource={data}
-          scroll={scroll}
+          scroll={data.length > 0 ? scroll : null}
           rowKey={(id) => id.ticketID}
           locale={{
             emptyText: (
@@ -250,7 +253,6 @@ class MyLeaveTable extends PureComponent {
             ),
           }}
         />
-        {data.length === 0 && <div className={styles.paddingContainer} />}
       </div>
     );
   }

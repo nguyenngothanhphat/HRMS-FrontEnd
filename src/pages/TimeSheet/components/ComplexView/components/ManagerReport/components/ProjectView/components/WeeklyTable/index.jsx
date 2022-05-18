@@ -2,14 +2,13 @@ import { Table } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { projectColor, convertMsToTime } from '@/utils/timeSheet';
 import CompleteIcon from '@/assets/timeSheet/complete.svg';
+import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
 import FailIcon from '@/assets/timeSheet/fail.svg';
 import PendingIcon from '@/assets/timeSheet/pending.svg';
-import TaskPopover from './components/TaskPopover';
-import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
 import EmptyComponent from '@/components/Empty';
-
+import { convertMsToTime, projectColor } from '@/utils/timeSheet';
+import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
 
 const WeeklyTable = (props) => {
@@ -27,7 +26,6 @@ const WeeklyTable = (props) => {
     onChangePage = () => {},
   } = props;
   const [dateList, setDateList] = useState([]);
-  const [formattedData, setFormattedData] = useState([]);
 
   // FUNCTIONS
   // get dates between two dates
@@ -47,18 +45,6 @@ const WeeklyTable = (props) => {
     return moment(date1, 'YYYY-MM-DD').format('MM/DD/YYYY') === moment(date2).format('MM/DD/YYYY');
   };
 
-  // format data
-  const formatData = () => {
-    const dates = {};
-    for (let i = 0; i < dateList.length; i += 1) dates[dateList[i]] = dateList[i];
-    const header = {
-      functionalArea: 'Functional Area',
-      totalDuration: 'Total Hours',
-      ...dates,
-    };
-    setFormattedData([header].concat(data));
-  };
-
   const getColorByIndex = (index) => {
     return projectColor[index % projectColor.length];
   };
@@ -68,14 +54,6 @@ const WeeklyTable = (props) => {
     const dateListTemp = enumerateDaysBetweenDates(moment(startDate), moment(endDate));
     setDateList(dateListTemp);
   }, [startDate, endDate]);
-
-  useEffect(() => {
-    formatData();
-  }, [JSON.stringify(data)]);
-
-  useEffect(() => {
-    formatData();
-  }, [dateList]);
 
   // RENDER UI
   // BODY
@@ -149,6 +127,12 @@ const WeeklyTable = (props) => {
     );
   };
 
+  const renderTitle = (title, type) => {
+    if (type === 1) return title;
+    if (type === 3) return <span className={styles.totalHeader}>{title}</span>;
+    return renderDateHeaderItem(title);
+  };
+
   const renderHoliday = (date) => {
     return <div className={styles.holidayColumn}>{renderDateHeaderItem(date)}</div>;
   };
@@ -156,19 +140,15 @@ const WeeklyTable = (props) => {
   const columns = () => {
     const dateColumns = dateList.map((date) => {
       return {
-        title: date,
+        title: renderTitle(date, 2),
         dataIndex: date,
         key: date,
         align: 'center',
         width: `${100 / 9}%`,
-        render: (_, row, index) => {
+        render: (_, row) => {
           const { projectName = '', dailyList = [] } = row;
           const value = dailyList.find((d) => isTheSameDay(d.date, date));
           const getCellValue = () => {
-            if (index === 0 /* / FOR HOLIDAY & LEAVE REQUEST && date !== '10/29/2021' */) {
-              return renderDateHeaderItem(date);
-            }
-
             // FOR HOLIDAY & LEAVE REQUEST
             // // if this date has a leave request
             // if (date === '10/27/2021') {
@@ -231,15 +211,12 @@ const WeeklyTable = (props) => {
 
     const result = [
       {
-        title: 'Functional Area',
+        title: renderTitle('Functional Area', 1),
         dataIndex: 'functionalArea',
         key: 'functionalArea',
         align: 'center',
         width: `${100 / 9}%`,
         render: (functionalArea, _, index) => {
-          if (index === 0) {
-            return functionalArea;
-          }
           return (
             <div className={styles.projectName}>
               <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
@@ -252,13 +229,12 @@ const WeeklyTable = (props) => {
       },
       ...dateColumns,
       {
-        title: 'Total Hours',
+        title: renderTitle('Total Hours', 3),
         dataIndex: 'totalDuration',
         key: 'totalDuration',
         align: 'center',
         width: `${100 / 9}%`,
-        render: (value, _, index) => {
-          if (index === 0) return <span className={styles.totalHeader}>{value}</span>;
+        render: (value) => {
           return <span className={styles.totalValue}>{convertMsToTime(value)}</span>;
         },
       },
@@ -282,6 +258,9 @@ const WeeklyTable = (props) => {
         of {total}{' '}
       </span>
     ),
+    defaultPageSize: 10,
+    showSizeChanger: true,
+    pageSizeOptions: ['10', '25', '50', '100'],
     pageSize,
     current: page,
     onChange: onChangePagination,
@@ -293,12 +272,14 @@ const WeeklyTable = (props) => {
       <div className={styles.tableContainer}>
         <Table
           columns={columns()}
-          dataSource={formattedData}
+          dataSource={data}
           bordered
           pagination={data.length > 0 ? pagination : { position: ['none', 'none'] }}
-          footer={data.length > 0 ? null : EmptyComponent}
           // scroll={{ y: 440 }}
           loading={loadingFetch}
+          locale={{
+            emptyText: <EmptyComponent />,
+          }}
         />
       </div>
     </div>

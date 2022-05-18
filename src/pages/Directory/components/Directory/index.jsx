@@ -1,4 +1,5 @@
-import { Layout, Skeleton, Tabs } from 'antd';
+import { Layout, Skeleton, Tabs, Tag } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 import React, { useEffect, useState, Suspense } from 'react';
 import { connect, formatMessage } from 'umi';
 import iconDownload from '@/assets/download-icon-yellow.svg';
@@ -49,7 +50,7 @@ const DirectoryComponent = (props) => {
     inActive: 'inActive',
   });
   const [tabId, setTabId] = useState('active');
-
+  const [applied, setApplied] = useState(0);
   const [pageSelected, setPageSelected] = useState(1);
   const [size, setSize] = useState(10);
   const [visible, setVisible] = useState(false);
@@ -260,6 +261,13 @@ const DirectoryComponent = (props) => {
   const addEmployee = () => {
     openFormAddEmployee();
   };
+  const handleFilterCounts = (values) => {
+    const filteredObj = Object.entries(values).filter(
+      ([key, value]) => (value !== undefined && value?.length > 0) || typeof value === 'number',
+    );
+    const newObj = Object.fromEntries(filteredObj);
+    setApplied(Object.keys(newObj).length);
+  };
 
   const processData = (array) => {
     // Uppercase first letter
@@ -270,7 +278,7 @@ const DirectoryComponent = (props) => {
         'First Name': item.firstName,
         'Last Name': item.lastName,
         'Middle Name': item.middleName,
-        Gender: item.Gender,
+        Gender: item.gender,
         'Date of Birth': item.dateOfBirth,
         'Joined Date': item.joinDate,
         Location: item.location,
@@ -302,20 +310,20 @@ const DirectoryComponent = (props) => {
   const downloadTemplate = () => {
     const exportData = [
       {
-        employeeId: 'PSI 0000',
+        employeeId: 'PSI-0000',
         firstName: 'First Name',
         lastName: 'Last Name',
         middleName: 'Middle Name',
-        gender: 'Gender',
-        dateOfBirth: 'Date of Birth',
+        gender: 'Male',
+        dateOfBirth: '05/10/2022',
         joinDate: '11/30/2020',
         location: 'Vietnam',
-        department: 'Develop',
+        department: 'Engineering',
         employeeType: 'Full Time',
         title: 'Junior Frontend',
-        workEmail: 'template@terralogic.com',
-        personalEmail: 'template@gmail.com',
-        managerWorkEmail: 'manager@terralogic.com',
+        workEmail: 'template@mailinator.com',
+        personalEmail: 'template@mailinator.com',
+        managerWorkEmail: 'manager@mailinator.com',
         personalNumber: '0123456789',
       },
     ];
@@ -325,6 +333,7 @@ const DirectoryComponent = (props) => {
     dispatch({
       type: 'employee/clearFilter',
     });
+    setApplied(0);
   };
   const rightButton = () => {
     const findIndexImport = permissions.importEmployees !== -1;
@@ -332,6 +341,18 @@ const DirectoryComponent = (props) => {
 
     return (
       <div className={styles.tabBarExtra}>
+        {applied > 0 && (
+          <Tag
+            className={styles.tagCountFilter}
+            closable
+            closeIcon={<CloseOutlined />}
+            onClose={() => {
+              clearFilter();
+            }}
+          >
+            {applied} applied
+          </Tag>
+        )}
         {findIndexImport && (
           <div className={styles.buttonAddImport} onClick={downloadTemplate}>
             <img src={iconDownload} alt="Download Template" />
@@ -376,7 +397,7 @@ const DirectoryComponent = (props) => {
           placement="bottomRight"
           content={
             <Suspense fallback={<Skeleton active />}>
-              <FilterContent activeTab={tabId} />
+              <FilterContent activeTab={tabId} handleFilterCounts={handleFilterCounts} />
             </Suspense>
           }
           realTime

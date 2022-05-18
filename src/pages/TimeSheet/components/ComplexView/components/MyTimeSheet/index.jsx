@@ -72,7 +72,7 @@ const MyTimeSheet = (props) => {
   }, [startDateMonth, selectedView]);
 
   useEffect(() => {
-    if (moment(currentDateProp).isValid() ===  true) {
+    if (moment(currentDateProp).isValid() === true) {
       setSelectedDate(moment(currentDateProp));
     }
   }, [currentDateProp]);

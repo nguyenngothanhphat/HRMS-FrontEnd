@@ -93,6 +93,11 @@ class FilterForm extends Component {
     this.formRef = React.createRef();
   }
 
+  componentDidMount() {
+    const { callbackClose = () => {} } = this.props;
+    callbackClose(this.clearFilter);
+  }
+
   componentDidUpdate(prevProps, prevState) {
     const { filter } = this.state;
     const { isFiltering } = this.props;
@@ -127,19 +132,22 @@ class FilterForm extends Component {
 
   clearFilter = () => {
     // press Clear button
-    this.setState({
-      filter: {
-        processStatus: undefined,
-        title: [],
-        location: [],
-        fromDate: null,
-        toDate: null,
+    this.setState(
+      {
+        filter: {
+          processStatus: undefined,
+          title: [],
+          location: [],
+          fromDate: null,
+          toDate: null,
+        },
+        isFilter: false,
+        checkAll: false,
+        durationFrom: '',
+        durationTo: '',
       },
-      isFilter: false,
-      checkAll: false,
-      durationFrom: '',
-      durationTo: '',
-    });
+      () => this.onFinish(),
+    );
 
     this.formRef.current.resetFields();
   };
@@ -191,6 +199,7 @@ class FilterForm extends Component {
       default:
         break;
     }
+    // this.onFinish({ [type]: currentDate });
   };
 
   tagRender = (props) => {
@@ -226,17 +235,20 @@ class FilterForm extends Component {
   onValuesChange = (value) => {
     const { filter } = this.state;
 
-    this.setState({
-      isFilter: true,
-      filter: {
-        ...filter,
-        ...value,
+    this.setState(
+      {
+        isFilter: true,
+        filter: {
+          ...filter,
+          ...value,
+        },
       },
-    });
+      () => this.onFinish(value),
+    );
   };
 
   onFinish = (value) => {
-    const { dispatch, currentStatus = '' } = this.props;
+    const { dispatch, currentStatus = '', callback = () => {} } = this.props;
     const { filter } = this.state;
     let payload = { ...value, ...filter };
 
@@ -261,6 +273,7 @@ class FilterForm extends Component {
       payload,
       currentStatus,
     });
+    callback(payload);
   };
 
   handleCheckAll = (e) => {
@@ -271,13 +284,16 @@ class FilterForm extends Component {
       data = {
         processStatus: Object.values(NEW_PROCESS_STATUS),
       };
-      this.setState({
-        checkAll: true,
-        filter: {
-          ...filter,
-          ...data,
+      this.setState(
+        {
+          checkAll: true,
+          filter: {
+            ...filter,
+            ...data,
+          },
         },
-      });
+        () => this.onFinish(data),
+      );
     } else {
       const { checked } = e.target;
       if (checked) {
@@ -290,20 +306,22 @@ class FilterForm extends Component {
         };
       }
 
-      this.setState({
-        checkAll: checked,
-        filter: {
-          ...filter,
-          ...data,
+      this.setState(
+        {
+          checkAll: checked,
+          filter: {
+            ...filter,
+            ...data,
+          },
         },
-      });
+        () => this.onFinish(data),
+      );
     }
   };
 
   handleSelect = (value) => {
     const { filter, checkAll } = this.state;
-    const isAll = value.includes('ALL');
-
+    const isAll = value?.length && value?.includes('ALL');
     if (isAll) {
       this.handleCheckAll('ALL');
     } else {
@@ -320,14 +338,17 @@ class FilterForm extends Component {
           checkAll: arrayStatus?.length === Object.keys(NEW_PROCESS_STATUS).length,
         });
       } else {
-        this.setState({
-          isFilter: true,
-          filter: {
-            ...filter,
-            processStatus: [...value],
+        this.setState(
+          {
+            isFilter: true,
+            filter: {
+              ...filter,
+              processStatus: [...value],
+            },
+            checkAll: value?.length === Object.keys(NEW_PROCESS_STATUS).length,
           },
-          checkAll: value?.length === Object.keys(NEW_PROCESS_STATUS).length,
-        });
+          () => this.onFinish({ processStatus: [...value] }),
+        );
       }
     }
   };
@@ -343,14 +364,17 @@ class FilterForm extends Component {
       data = {
         processStatus: undefined,
       };
-      this.setState({
-        isFilter: true,
-        filter: {
-          ...filter,
-          ...data,
+      this.setState(
+        {
+          isFilter: true,
+          filter: {
+            ...filter,
+            ...data,
+          },
+          checkAll: false,
         },
-        checkAll: false,
-      });
+        () => this.onFinish(data),
+      );
     }
   };
 
@@ -379,8 +403,10 @@ class FilterForm extends Component {
         <Form
           layout="horizontal"
           className={styles.form}
-          onValuesChange={this.onValuesChange}
-          onFinish={this.onFinish}
+          onValuesChange={(value) => {
+            this.onValuesChange(value);
+          }}
+          // onFinish={this.onFinish}
           ref={this.formRef}
         >
           <div className={styles.form__top}>
@@ -389,7 +415,7 @@ class FilterForm extends Component {
                 <div className={styles.labelText}>By Status</div>
               </div>
               <Select
-                allowClear
+                allowClear={!checkAll}
                 showArrow
                 showSearch
                 filterOption={(input, option) => {
@@ -491,7 +517,7 @@ class FilterForm extends Component {
             </div>
           </div>
 
-          <Divider className={styles.divider} />
+          {/* <Divider className={styles.divider} />
           <div className={styles.footer}>
             <Button onClick={this.clearFilter} className={styles.footer__clear}>
               Clear
@@ -504,7 +530,7 @@ class FilterForm extends Component {
             >
               Apply
             </Button>
-          </div>
+          </div> */}
         </Form>
       </div>
     );
