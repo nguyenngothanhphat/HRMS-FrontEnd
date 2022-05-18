@@ -5,7 +5,13 @@ import File from '../File';
 import styles from './index.less';
 
 const CollapseField = (props) => {
-  const { layout = {}, items = [] } = props;
+  const {
+    layout = {},
+    items = [],
+    onNotAvailableClick = () => {},
+    onViewCommentClick = () => {},
+    onViewDocumentClick = () => {},
+  } = props;
 
   return (
     <div className={styles.CollapseField}>
@@ -26,9 +32,18 @@ const CollapseField = (props) => {
           }
         >
           <div className={styles.space}>
-            {items.map((item, i) => (
-              <File item={item} index={i} type={layout.type} />
-            ))}
+            {items
+              .filter((x) => x.value || x.required)
+              .map((item, i) => (
+                <File
+                  item={item}
+                  index={i}
+                  type={layout.type}
+                  onNotAvailableClick={onNotAvailableClick}
+                  onViewCommentClick={onViewCommentClick}
+                  onViewDocumentClick={onViewDocumentClick}
+                />
+              ))}
           </div>
         </Collapse.Panel>
       </Collapse>

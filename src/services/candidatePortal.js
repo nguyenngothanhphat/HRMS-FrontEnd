@@ -75,3 +75,11 @@ export async function getStateListByCountry(payload) {
     data: payload,
   });
 }
+
+// new document verification
+export async function upsertCandidateDocument(payload) {
+  return request('/api/candidatetenant/upsert-candidate-document', {
+    method: 'POST',
+    data: payload,
+  });
+}

@@ -15,7 +15,7 @@ const {
   VERIFIED,
   RE_SUBMITTED_PENDING,
   RE_SUBMITTED,
-  NOT_AVAILABLE,
+  NOT_AVAILABLE_PENDING_HR,
 } = DOCUMENT_TYPES;
 
 const File = (props) => {
@@ -23,8 +23,11 @@ const File = (props) => {
     dispatch,
     item = {},
     type = '',
-    index = 0,
     candidatePortal: { data = {}, data: { currentStep } = {} } = {},
+    onNotAvailableClick = () => {},
+    onViewCommentClick = () => {},
+    onViewDocumentClick = () => {},
+    blockIndex = 0, // for type E
   } = props;
 
   const onSaveRedux = (result) => {
@@ -36,35 +39,51 @@ const File = (props) => {
     });
   };
 
-  const getResponse = (key, res) => {
+  const getResponse = async (key, res) => {
     const [attachment] = res.data;
-    // dispatch({
-    //     type: 'candidatePortal/addAttachmentCandidate',
-    //     payload: {
-    //       attachment: attachment1.id,
-    //       document: documentId,
-    //       tenantId: getCurrentTenant(),
-    //     },
-    //   })
+    const documentRes = await dispatch({
+      type: 'candidatePortal/upsertCandidateDocumentEffect',
+      payload: {
+        attachment: attachment.id,
+        document: item.document?._id,
+      },
+    });
 
-    if (attachment) {
-      let items = [...data[mapType[type]]];
-      items = items.map((x) => {
-        if (x.key === key) {
-          return {
-            ...x,
-            attachment,
-            candidateDocumentStatus: VERIFYING,
-          };
+    if (documentRes.statusCode === 200) {
+      const { data: fetchedDocument = {} } = documentRes;
+      const onAddFetchedDocToRedux = (arr) => {
+        return arr.map((x) => {
+          if (x.key === key) {
+            return {
+              ...x,
+              document: { ...fetchedDocument, attachment },
+              status: VERIFYING,
+            };
+          }
+          return x;
+        });
+      };
+
+      if (fetchedDocument) {
+        let items = [...data[mapType[type]]];
+
+        if (type !== 'E') {
+          items = onAddFetchedDocToRedux(items);
+        } else {
+          items = items.map((x) => {
+            return {
+              ...x,
+              data: onAddFetchedDocToRedux(x.data),
+            };
+          });
         }
-        return x;
-      });
-      onSaveRedux(items);
+        onSaveRedux(items);
+      }
     }
   };
 
   const renderFileStatus = () => {
-    switch (item.candidateDocumentStatus) {
+    switch (item.status) {
       case VERIFYING:
         if (currentStep > 2) {
           return (
@@ -86,9 +105,11 @@ const File = (props) => {
         return (
           <Row justify="end">
             <Col span={12}>
-              <div className={styles.file}>
-                <img src={WarningIcon} alt="undo" />
-                <span className={styles.fileName}>{item.attachment?.name || 'File not found'}</span>
+              <div className={styles.file} onClick={() => onViewDocumentClick(item)}>
+                <img src={WarningIcon} alt="" />
+                <span className={styles.fileName}>
+                  {item.document?.attachment?.name || 'File not found'}
+                </span>
               </div>
             </Col>
             <Col span={12}>
@@ -106,9 +127,11 @@ const File = (props) => {
         return (
           <Row justify="end">
             <Col span={12}>
-              <div className={styles.file}>
-                <img src={WarningIcon} alt="undo" />
-                <span>sample_file.pdf</span>
+              <div className={styles.file} onClick={() => onViewDocumentClick(item)}>
+                <img src={WarningIcon} alt="" />
+                <span className={styles.fileName}>
+                  {item.document?.attachment?.name || 'File not found'}
+                </span>
               </div>
             </Col>
             <Col span={12}>
@@ -127,7 +150,7 @@ const File = (props) => {
           <Row>
             <Col span={12}>
               <div className={styles.comments}>
-                <span>View Comments</span>
+                <span onClick={() => onViewCommentClick(item)}>View Comments</span>
               </div>
             </Col>
             <Col span={12}>
@@ -145,9 +168,11 @@ const File = (props) => {
         return (
           <Row>
             <Col span={12}>
-              <div className={styles.file}>
-                <img src={WarningIcon} alt="undo" />
-                <span>sample_file.pdf</span>
+              <div className={styles.file} onClick={() => onViewDocumentClick(item)}>
+                <img src={WarningIcon} alt="" />
+                <span className={styles.fileName}>
+                  {item.document?.attachment?.name || 'File not found'}
+                </span>
               </div>
             </Col>
             <Col span={12}>
@@ -161,17 +186,23 @@ const File = (props) => {
           </Row>
         );
 
-      case NOT_AVAILABLE:
+      case NOT_AVAILABLE_PENDING_HR:
         return (
           <Row justify="end" align="middle">
             <Col span={12}>
               <div className={styles.comments}>
-                <span>View Comments</span>
+                <span onClick={() => onViewCommentClick(item)}>View Comments</span>
               </div>
             </Col>
             <Col span={12}>
-              <div className={styles.notAvailable}>
+              <div
+                className={styles.notAvailable}
+                style={{
+                  cursor: 'default',
+                }}
+              >
                 <span>Not Available</span>
+                <img src="data:," alt="" />
               </div>
             </Col>
           </Row>
@@ -182,14 +213,14 @@ const File = (props) => {
           <Row justify="end">
             <Col span={12}>
               <div className={styles.notAvailable}>
-                <span>Not Available</span>
+                <span onClick={() => onNotAvailableClick(type, item, blockIndex)}>
+                  Not Available
+                </span>
               </div>
             </Col>
             <Col span={12}>
               <div className={styles.upload}>
-                <span>
-                  <UploadComponent getResponse={getResponse} item={item} />
-                </span>
+                <UploadComponent getResponse={getResponse} item={item} />
                 <img src="data:," alt="" />
               </div>
             </Col>
@@ -200,13 +231,13 @@ const File = (props) => {
 
   return (
     <Row className={styles.File} justify="space-between">
-      <Col span={14}>
+      <Col span={12}>
         <span>
           {item.alias}
           {item.required && '*'}
         </span>
       </Col>
-      <Col span={10}>{renderFileStatus()}</Col>
+      <Col span={12}>{renderFileStatus()}</Col>
     </Row>
   );
 };

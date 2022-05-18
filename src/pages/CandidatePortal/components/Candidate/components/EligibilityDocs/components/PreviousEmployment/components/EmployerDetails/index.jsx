@@ -8,12 +8,13 @@ const EmployerDetails = (props) => {
     index = 0,
     employer: {
       employer = '', // name
-      currentWorking = false,
+      currentlyWorking = false,
       startDate: startDateProp = '',
       endDate: endDateProp = '',
     } = {},
     onValuesChange: onValuesChangeProp = () => {},
     disabled = false,
+    disabledCurrentlyWorking = false,
   } = props;
 
   const [isCurrentlyWorking, setIsCurrentlyWorking] = useState(false);
@@ -21,7 +22,7 @@ const EmployerDetails = (props) => {
   const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
-    setIsCurrentlyWorking(currentWorking);
+    setIsCurrentlyWorking(currentlyWorking);
     setStartDate(startDateProp ? moment(startDateProp) : null);
     setEndDate(endDateProp ? moment(endDateProp) : null);
   }, []);
@@ -48,7 +49,7 @@ const EmployerDetails = (props) => {
   const onValuesChange = (changedValues, allValues) => {
     setStartDate(allValues.startDate);
     setEndDate(allValues.endDate);
-    setIsCurrentlyWorking(allValues.currentWorking);
+    setIsCurrentlyWorking(allValues.currentlyWorking);
     onValuesChangeProp(index, allValues);
   };
 
@@ -61,7 +62,7 @@ const EmployerDetails = (props) => {
         name="basic"
         initialValues={{
           employer,
-          currentWorking,
+          currentlyWorking,
           startDate: startDateProp ? moment(startDateProp) : null,
           endDate: endDateProp ? moment(endDateProp) : null,
         }}
@@ -77,7 +78,12 @@ const EmployerDetails = (props) => {
         </Form.Item>
 
         <Form.Item name="currentlyWorking" valuePropName="checked">
-          <Checkbox disabled={disabled}>Currently working</Checkbox>
+          <Checkbox
+            disabled={disabled || disabledCurrentlyWorking}
+            onChange={(e) => setIsCurrentlyWorking(e.target.checked)}
+          >
+            Currently working
+          </Checkbox>
         </Form.Item>
 
         <Row gutter={[16, 16]}>

@@ -7,7 +7,7 @@ import styles from './index.less';
 const Certification = (props) => {
   const {
     index = 0,
-    remove = () => {},
+    onRemove = () => {},
     certification: {
       name = '', // name
       neverExpired = false,
@@ -62,7 +62,7 @@ const Certification = (props) => {
           <CloseOutlined
             // style={length === 1 ? { display: 'none' } : { display: 'block' }}
             className={styles.deleteIcon}
-            onClick={() => remove(index)}
+            onClick={() => onRemove(index)}
           />
         )}
       </div>

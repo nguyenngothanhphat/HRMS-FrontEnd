@@ -3,11 +3,19 @@ import { Collapse } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
 import { mapType } from '@/utils/newCandidateForm';
+import File from '../File';
 import Certification from './components/Certification';
 import styles from './index.less';
 
 const TechnicalCertification = (props) => {
-  const { dispatch, layout: { type = '', name = '' } = {}, layout = {}, items = [] } = props;
+  const {
+    dispatch,
+    layout: { type = '', name = '' } = {},
+    items = [],
+    onNotAvailableClick = () => {},
+    onViewCommentClick = () => {},
+    onViewDocumentClick = () => {},
+  } = props;
 
   const onSaveRedux = (result) => {
     dispatch({
@@ -27,6 +35,8 @@ const TechnicalCertification = (props) => {
         issuedDate: null,
         expiryDate: null,
         neverExpired: false,
+        alias: `Certification ${items.length}${1}`,
+        key: `certification${items.length}${1}`,
       },
     ];
     onSaveRedux(result);
@@ -64,13 +74,23 @@ const TechnicalCertification = (props) => {
           }
         >
           {items.map((cer, index) => (
-            <Certification
-              certification={cer}
-              length={items.length}
-              index={index}
-              onRemove={onRemove}
-              onValuesChange={onValuesChange}
-            />
+            <div className={styles.container}>
+              <Certification
+                certification={cer}
+                length={items.length}
+                index={index}
+                onRemove={onRemove}
+                onValuesChange={onValuesChange}
+              />
+              <File
+                item={cer}
+                index={index}
+                type={type}
+                onNotAvailableClick={onNotAvailableClick}
+                onViewCommentClick={onViewCommentClick}
+                onViewDocumentClick={onViewDocumentClick}
+              />
+            </div>
           ))}
 
           <div className={styles.addBtn} onClick={onAdd}>

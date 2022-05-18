@@ -8,7 +8,14 @@ import EmployerDetails from './components/EmployerDetails';
 import styles from './index.less';
 
 const PreviousEmployment = (props) => {
-  const { dispatch, layout: { type = '', name = '' } = {}, items = [] } = props;
+  const {
+    dispatch,
+    layout: { type = '', name = '' } = {},
+    items = [],
+    onNotAvailableClick = () => {},
+    onViewCommentClick = () => {},
+    onViewDocumentClick = () => {},
+  } = props;
 
   const onSaveRedux = (result) => {
     dispatch({
@@ -24,6 +31,12 @@ const PreviousEmployment = (props) => {
     result[index] = { ...result[index], ...values };
     onSaveRedux(result);
   };
+
+  // const getDisabledCurrentlyWorking = (obj, index) => {
+  //   const findIndex = items.findIndex((x) => x.currentlyWorking);
+  //   if (findIndex === -1) return false;
+  //   return findIndex !== index;
+  // };
 
   return (
     <div className={styles.PreviousEmployment}>
@@ -45,11 +58,25 @@ const PreviousEmployment = (props) => {
         >
           {items.map((item, i) => (
             <div className={styles.container}>
-              <EmployerDetails index={i} onValuesChange={onValuesChange} employer={item} />
+              <EmployerDetails
+                index={i}
+                onValuesChange={onValuesChange}
+                employer={item}
+                // disabledCurrentlyWorking={getDisabledCurrentlyWorking(item, i)}
+              />
               <div className={styles.someText}>Proof of employment</div>
-              {item.data.map((x, j) => (
-                <File item={x} index={j} type={type} />
-              ))}
+              {item.data
+                .filter((x) => x.value || x.required)
+                .map((x, j) => (
+                  <File
+                    item={x}
+                    index={j}
+                    type={type}
+                    onNotAvailableClick={onNotAvailableClick}
+                    onViewCommentClick={onViewCommentClick}
+                    onViewDocumentClick={onViewDocumentClick}
+                  />
+                ))}
             </div>
           ))}
         </Collapse.Panel>

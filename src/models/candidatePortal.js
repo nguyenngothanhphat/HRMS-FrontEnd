@@ -11,6 +11,7 @@ import {
   updateByCandidate,
   getCountryList,
   getStateListByCountry,
+  upsertCandidateDocument,
 } from '@/services/candidatePortal';
 import { dialog } from '@/utils/utils';
 import { CANDIDATE_TASK_LINK, CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
@@ -105,95 +106,97 @@ July 06, 2021 6PM - 7PM (IST)`,
   },
 ];
 
+const initialState = {
+  candidate: '',
+  ticketId: '',
+  // currentStep: 1,
+  localStep: 1,
+  rookieId: '',
+  checkMandatory: {
+    filledBasicInformation: true,
+    filledJobDetail: false,
+    filledSalaryStructure: false,
+    filledDocumentVerification: false,
+    isCandidateAcceptDOJ: true,
+  },
+  data: {
+    _id: '',
+    candidate: '',
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    privateEmail: '',
+    workEmail: '',
+    previousExperience: '',
+    noticePeriod: '',
+    dateOfJoining: '',
+    processStatus: '',
+    documentList: [],
+    attachments: {},
+    documentListToRender: [],
+    workLocation: {},
+    candidateSignature: {
+      fileName: '',
+      _id: '',
+      url: '',
+    },
+    salaryStructure: {
+      status: '',
+      settings: [],
+    },
+    finalOfferCandidateSignature: {
+      fileName: '',
+      _id: '',
+      url: '',
+    },
+    workHistory: [],
+    currentAddress: {},
+    permanentAddress: {},
+    phoneNumber: '',
+  },
+  tempData: {
+    checkStatus: {},
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    privateEmail: '',
+    experienceYear: '',
+    workLocation: '',
+    options: 1,
+    candidateSignature: {
+      fileName: '',
+      _id: '',
+      url: '',
+    },
+    finalOfferCandidateSignature: {
+      fileName: '',
+      _id: '',
+      url: '',
+    },
+    questionOnBoarding: [],
+  },
+  salaryStructure: [],
+  eligibilityDocs: [],
+  checkCandidateMandatory: {
+    filledCandidateBasicInformation: false,
+    filledCandidateJobDetails: false,
+    filledCandidateCustomField: false,
+    filledOfferDetails: false,
+    filledBenefits: false,
+    filledAdditionalQuestion: false,
+    salaryStatus: 2,
+  },
+  // questionOnBoarding: [],
+  isCandidateAcceptDOJ: true,
+  // pending tasks
+  pendingTasks: [],
+  nextSteps: steps,
+  upcomingEvents: events,
+};
+
 const candidatePortal = {
   namespace: 'candidatePortal',
-  state: {
-    candidate: '',
-    ticketId: '',
-    // currentStep: 1,
-    localStep: 1,
-    rookieId: '',
-    checkMandatory: {
-      filledBasicInformation: true,
-      filledJobDetail: false,
-      filledSalaryStructure: false,
-      filledDocumentVerification: false,
-      isCandidateAcceptDOJ: true,
-    },
-    data: {
-      _id: '',
-      candidate: '',
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      privateEmail: '',
-      workEmail: '',
-      previousExperience: '',
-      noticePeriod: '',
-      dateOfJoining: '',
-      processStatus: '',
-      documentList: [],
-      attachments: {},
-      documentListToRender: [],
-      workLocation: {},
-      candidateSignature: {
-        fileName: '',
-        _id: '',
-        url: '',
-      },
-      salaryStructure: {
-        status: '',
-        settings: [],
-      },
-      finalOfferCandidateSignature: {
-        fileName: '',
-        _id: '',
-        url: '',
-      },
-      workHistory: [],
-      currentAddress: {},
-      permanentAddress: {},
-      phoneNumber: '',
-    },
-    tempData: {
-      checkStatus: {},
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      privateEmail: '',
-      experienceYear: '',
-      workLocation: '',
-      options: 1,
-      candidateSignature: {
-        fileName: '',
-        _id: '',
-        url: '',
-      },
-      finalOfferCandidateSignature: {
-        fileName: '',
-        _id: '',
-        url: '',
-      },
-      questionOnBoarding: [],
-    },
-    salaryStructure: [],
-    eligibilityDocs: [],
-    checkCandidateMandatory: {
-      filledCandidateBasicInformation: false,
-      filledCandidateJobDetails: false,
-      filledCandidateCustomField: false,
-      filledOfferDetails: false,
-      filledBenefits: false,
-      filledAdditionalQuestion: false,
-      salaryStatus: 2,
-    },
-    // questionOnBoarding: [],
-    isCandidateAcceptDOJ: true,
-    // pending tasks
-    pendingTasks: [],
-    nextSteps: steps,
-    upcomingEvents: events,
-  },
+  state: initialState,
   effects: {
     *fetchCandidateById({ payload }, { call, put }) {
       let response = {};
@@ -269,6 +272,25 @@ const candidatePortal = {
         const { candidate } = yield select((state) => state.candidatePortal);
 
         response = yield call(updateByCandidate, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          candidate,
+        });
+
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *upsertCandidateDocumentEffect({ payload }, { call, select }) {
+      let response;
+      try {
+        const { candidate } = yield select((state) => state.candidatePortal);
+
+        response = yield call(upsertCandidateDocument, {
           ...payload,
           tenantId: getCurrentTenant(),
           candidate,
@@ -524,77 +546,8 @@ const candidatePortal = {
       return { ...state, currentUser: action.payload || {} };
     },
 
-    clearAll() {
-      // const {}
-      return {
-        candidate: '',
-        ticketId: '',
-        // currentStep: 1,
-        localStep: 1,
-        rookieId: '',
-        checkMandatory: {
-          filledBasicInformation: true,
-          filledJobDetail: false,
-        },
-        data: {
-          _id: '',
-          candidate: '',
-          firstName: '',
-          middleName: '',
-          lastName: '',
-          privateEmail: '',
-          workEmail: '',
-          previousExperience: '',
-          noticePeriod: '',
-          dateOfJoining: '',
-          processStatus: '',
-          documentList: [],
-          attachments: {},
-          documentListToRender: [],
-          workLocation: '',
-          candidateSignature: {
-            fileName: '',
-            _id: '',
-            url: '',
-          },
-          finalOfferCandidateSignature: {
-            fileName: '',
-            _id: '',
-            url: '',
-          },
-        },
-        tempData: {
-          questionOnBoarding: [],
-          checkStatus: {},
-          firstName: '',
-          middleName: '',
-          lastName: '',
-          privateEmail: '',
-          experienceYear: '',
-          workLocation: '',
-          options: 1,
-          candidateSignature: {
-            fileName: '',
-            _id: '',
-            url: '',
-          },
-          finalOfferCandidateSignature: {
-            fileName: '',
-            _id: '',
-            url: '',
-          },
-        },
-        salaryStructure: [],
-        eligibilityDocs: [],
-        checkCandidateMandatory: {
-          filledCandidateBasicInformation: false,
-          filledCandidateJobDetails: false,
-          filledCandidateCustomField: false,
-          filledOfferDetails: false,
-          filledBenefits: false,
-          salaryStatus: 2,
-        },
-      };
+    clearState() {
+      return initialState;
     },
   },
 };
