@@ -181,7 +181,7 @@ const EditTaskModal = (props) => {
                 fieldKey="date"
                 labelCol={{ span: 24 }}
               >
-                <DatePicker format={dateFormat} disabled />
+                <DatePicker format={dateFormat} />
               </Form.Item>
             </Col>
             <Col xs={24} md={12} />
