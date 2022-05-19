@@ -203,6 +203,7 @@ class EditUserModal extends PureComponent {
       loadingUpdateRoles = false,
       companyLocationList = [],
       loadingUserProfile = false,
+      tabId = 1,
     } = this.props;
 
     const { companyId, openModal, statusUser, userProfile } = this.state;
@@ -391,7 +392,7 @@ class EditUserModal extends PureComponent {
         </Modal>
         <TerminateModal
           // loading={loadingTerminateReason}
-          visible={openModal && statusUser === 'INACTIVE'}
+          visible={openModal && statusUser === 'INACTIVE' && tabId === 1}
           handleSubmit={this.handleSubmit}
           handleCandelModal={this.handleCandelModal}
           // valueReason={valueReason}
