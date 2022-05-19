@@ -20,7 +20,6 @@ const MonthlyTable = (props) => {
   } = props;
 
   const [formattedData, setFormattedData] = useState([]);
-  console.log('🚀 ~ formattedData', formattedData);
 
   // FUNCTIONS
   const getColorByIndex = (index) => {
@@ -69,25 +68,27 @@ const MonthlyTable = (props) => {
         align: 'center',
         width: `${100 / columnLength}}%`,
         render: (value, row) => {
-          const { weeks = [], projectName = '', days = [] } = row;
+          const { weeks = [], projectName = '' } = row;
           const find = weeks.find((w) => w.week === weekItem.week) || {};
-          const findTimeoff = days.find((w) => w.week === weekItem.week) || {};
-          console.log('🚀 ~ findTimeoff', findTimeoff);
-          if (projectName === 'Timeoff') {
+          const findTimeoff = timeoffList.find((w) => w.week === weekItem.week) || {};
+
+          if (projectName === 'Timeoff' && findTimeoff) {
             return (
               <TimeoffPopover
                 projectName={projectName}
                 date={weekItem.week}
-                timeoff={value}
+                timeoff={findTimeoff?.days}
+                startDate={findTimeoff?.startDate}
+                endDate={findTimeoff?.endDate}
                 placement="bottomLeft"
               >
-                {!value ? (
+                {!findTimeoff || findTimeoff?.totalTimeOffTime === 0 ? (
                   <span className={styles.hourValue}>
                     <img src={EmptyLine} alt="" />
                   </span>
                 ) : (
                   <span className={styles.hourValue}>
-                    {convertMsToTime(value?.totalTimeOffTime || 0)}
+                    {convertMsToTime(findTimeoff?.totalTimeOffTime || 0)}
                   </span>
                 )}
               </TimeoffPopover>
@@ -101,7 +102,7 @@ const MonthlyTable = (props) => {
                 </span>
               ) : (
                 <span className={styles.hourValue}>
-                  {convertMsToTime(find?.weekProjectTime || findTimeoff?.totalTimeOffTime)}
+                  {convertMsToTime(find?.weekProjectTime || 0)}
                 </span>
               )}
             </div>

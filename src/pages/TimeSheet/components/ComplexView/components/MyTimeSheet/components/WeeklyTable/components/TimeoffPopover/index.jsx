@@ -41,13 +41,13 @@ const TimeoffPopover = (props) => {
 
   useEffect(() => {
     generateShowingTask(4);
-  }, [JSON.stringify(tasks),JSON.stringify(timeoff)]);
+  }, [JSON.stringify(tasks), JSON.stringify(timeoff)]);
 
   const renderTaskTable = () => {
     return (
       <div className={styles.taskTable}>
         <Row className={styles.taskTable__header} justify="space-between">
-          <Col span={18}>Task</Col>
+          <Col span={18}>Timeoff</Col>
           <Col span={6} className={styles.right}>
             Time Duration
           </Col>
@@ -56,7 +56,7 @@ const TimeoffPopover = (props) => {
           {timeoff.length === 0 && (
             <Row className={styles.eachRow} justify="space-between" align="middle">
               <Col span={24} className={styles.taskName}>
-                <span>No tasks</span>
+                <span>No Timeoff</span>
               </Col>
             </Row>
           )}
@@ -95,7 +95,7 @@ const TimeoffPopover = (props) => {
           onClick={() => setShowPopover(!showPopover)}
         />
         <div className={styles.header}>
-          <span>Task Details - {moment(date).locale('en').format('DD ddd MMMM')}</span>
+          <span>Timeoff Details - {moment(date).locale('en').format('DD ddd MMMM')}</span>
         </div>
         <div className={styles.divider} />
         {renderTaskTable()}

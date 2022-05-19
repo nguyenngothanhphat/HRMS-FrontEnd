@@ -11,20 +11,15 @@ import { TIMEOFF_PERIOD } from '@/utils/timeOff';
 const TimeoffPopover = (props) => {
   const {
     children,
-    tasks = [],
     timeoff = [],
-    date = '',
+    startDate = '',
+    endDate = '',
     placement = 'top',
     timeSheet: { employeeSchedule: { totalHour = 0 } = {} } = {},
   } = props;
   const [showPopover, setShowPopover] = useState(false);
   const [showingTimeOff, setShowingTimeOff] = useState([]);
 
-  const generateShowingTask = (value) => {
-    const result = [timeoff];
-    if (!value) setShowingTimeOff(result);
-    else setShowingTimeOff(result.slice(0, value - 1));
-  };
 
   const getTimeOffTotalHours = (item) => {
     const { startTime = '', endTime = '', timeOfDay = '' } = item;
@@ -40,14 +35,14 @@ const TimeoffPopover = (props) => {
   };
 
   useEffect(() => {
-    generateShowingTask(4);
-  }, [JSON.stringify(tasks),JSON.stringify(timeoff)]);
+    setShowingTimeOff(timeoff);
+  }, [JSON.stringify(timeoff)]);
 
   const renderTaskTable = () => {
     return (
       <div className={styles.taskTable}>
         <Row className={styles.taskTable__header} justify="space-between">
-          <Col span={18}>Task</Col>
+          <Col span={18}>Timeoff</Col>
           <Col span={6} className={styles.right}>
             Time Duration
           </Col>
@@ -56,7 +51,7 @@ const TimeoffPopover = (props) => {
           {timeoff.length === 0 && (
             <Row className={styles.eachRow} justify="space-between" align="middle">
               <Col span={24} className={styles.taskName}>
-                <span>No tasks</span>
+                <span>No Timeoff</span>
               </Col>
             </Row>
           )}
@@ -95,11 +90,14 @@ const TimeoffPopover = (props) => {
           onClick={() => setShowPopover(!showPopover)}
         />
         <div className={styles.header}>
-          <span>Task Details - {moment(date).locale('en').format('DD ddd MMMM')}</span>
+          <span>
+            <span className={styles.boldText}>Timeoff Details</span> -{' '}
+            {moment(startDate).locale('en').format('MMM DD')} -{' '}
+            {moment(endDate).locale('en').format('MMM DD')}
+          </span>
         </div>
         <div className={styles.divider} />
         {renderTaskTable()}
-        <div className={styles.divider} />
       </div>
     );
   };
