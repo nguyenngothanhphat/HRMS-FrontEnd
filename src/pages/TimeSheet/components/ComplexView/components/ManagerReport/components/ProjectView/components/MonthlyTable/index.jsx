@@ -7,6 +7,8 @@ import EmptyComponent from '@/components/Empty';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
 import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
+import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
+import UserProfilePopover from '@/components/UserProfilePopover';
 
 const MonthlyTable = (props) => {
   const {
@@ -82,19 +84,44 @@ const MonthlyTable = (props) => {
 
     const result = [
       {
-        title: renderTitle('All Projects', 1),
-        dataIndex: 'functionalArea',
-        key: 'functionalArea',
+        title: renderTitle('Employee', 1),
+        dataIndex: 'employee',
+        key: 'employee',
         align: 'center',
         width: `${100 / columnLength}%`,
-        render: (functionalArea, _, index) => {
+        render: (employee, _, index) => {
+          const {
+            generalInfo: { legalName = '', userId = '', avatar },
+          } = employee;
           return (
-            <div className={styles.functionalArea}>
-              <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
-                <span>{functionalArea ? functionalArea.toString()?.charAt(0) : 'P'}</span>
+            // <div className={styles.functionalArea}>
+            //   <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
+            //     <span>{functionalArea ? functionalArea.toString()?.charAt(0) : 'P'}</span>
+            //   </div>
+            //   <span className={styles.name}>{functionalArea}</span>
+            // </div>
+            <UserProfilePopover placement="rightTop" data={employee}>
+              <div className={styles.member}>
+                <div className={styles.renderEmployee}>
+                  <div className={styles.avatar}>
+                    {avatar ? (
+                      <img src={avatar || MockAvatar} alt="" />
+                    ) : (
+                      <div
+                        className={styles.icon}
+                        style={{ backgroundColor: getColorByIndex(index) }}
+                      >
+                        <span>{legalName ? legalName.toString()?.charAt(0) : 'P'}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.right}>
+                    <span className={styles.name}>{legalName}</span>
+                    <span className={styles.id}>({userId})</span>
+                  </div>
+                </div>
               </div>
-              <span className={styles.name}>{functionalArea}</span>
-            </div>
+            </UserProfilePopover>
           );
         },
       },

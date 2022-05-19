@@ -10,6 +10,8 @@ import EmptyComponent from '@/components/Empty';
 import { convertMsToTime, projectColor } from '@/utils/timeSheet';
 import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
+import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
+import UserProfilePopover from '@/pages/Customer/components/UserProfilePopover';
 
 const WeeklyTable = (props) => {
   const {
@@ -56,19 +58,19 @@ const WeeklyTable = (props) => {
 
   // RENDER UI
   // BODY
-  const getIcon = (key) => {
-    switch (key) {
-      case 'pending':
-        return PendingIcon;
-      case 'completed':
-        return CompleteIcon;
-      case 'rejected':
-        return FailIcon;
+  // const getIcon = (key) => {
+  //   switch (key) {
+  //     case 'pending':
+  //       return PendingIcon;
+  //     case 'completed':
+  //       return CompleteIcon;
+  //     case 'rejected':
+  //       return FailIcon;
 
-      default:
-        return PendingIcon;
-    }
-  };
+  //     default:
+  //       return PendingIcon;
+  //   }
+  // };
 
   const getBackgroundColor = (key) => {
     switch (key) {
@@ -98,14 +100,14 @@ const WeeklyTable = (props) => {
     }
   };
 
-  const renderEventColumn = (type = 'completed') => {
+  const renderHoliday = (type = 'completed') => {
     return (
       <div className={styles.eventColumn} style={{ backgroundColor: getBackgroundColor(type) }}>
-        <img src={getIcon(type)} alt="" />
+        {/* <img src={getIcon(type)} alt="" /> */}
         <span className={styles.title} style={{ color: getTitleColor(type) }}>
-          Leave Applied
+          Public Holiday
         </span>
-        <span className={styles.description}>Waiting for approval</span>
+        {/* <span className={styles.description}>Waiting for approval</span> */}
       </div>
     );
   };
@@ -132,8 +134,8 @@ const WeeklyTable = (props) => {
     return renderDateHeaderItem(title);
   };
 
-  const renderHoliday = (date) => {
-    return <div className={styles.holidayColumn}>{renderDateHeaderItem(date)}</div>;
+  const renderLeaveDays = () => {
+    return <div className={styles.leaveCell}>Leave</div>;
   };
 
   const columns = () => {
@@ -144,20 +146,21 @@ const WeeklyTable = (props) => {
         key: date,
         align: 'center',
         width: `${100 / 9}%`,
-        render: (_, row) => {
+        render: (_, row, index) => {
           const { projectName = '', dailyList = [] } = row;
           const value = dailyList.find((d) => isTheSameDay(d.date, date));
+          console.log(value);
           const getCellValue = () => {
             // FOR HOLIDAY & LEAVE REQUEST
             // // if this date has a leave request
-            // if (date === '10/27/2021') {
-            //   return renderEventColumn();
-            // }
+            if (date === '05/20/2022') {
+              return renderHoliday();
+            }
 
             // if this date is holiday
-            // if (date === '10/29/2021') {
-            //   return renderHoliday(date);
-            // }
+            if (date === '05/21/2022') {
+              return renderLeaveDays(date);
+            }
 
             return (
               <TaskPopover
@@ -166,12 +169,15 @@ const WeeklyTable = (props) => {
                 tasks={value?.dailyTask}
                 placement="bottomLeft"
               >
-                {!value ? (
+                {value ? (
+                  <>
+                    <span className={styles.hourValue__morningOff}>Leave</span>
+                    <span className={styles.hourValue}>{convertMsToTime(value.spentTime)}</span>
+                  </>
+                ) : (
                   <span className={styles.hourValue}>
                     <img src={EmptyLine} alt="" />
                   </span>
-                ) : (
-                  <span className={styles.hourValue}>{convertMsToTime(value.spentTime)}</span>
                 )}
               </TaskPopover>
             );
@@ -194,15 +200,15 @@ const WeeklyTable = (props) => {
           // }
 
           // // pretend 10/29/2021 is holiday day
-          // if (index === 0 && date === '10/29/2021') {
-          //   obj.props.rowSpan = formattedData.length;
-          // }
-          // for (let i = 1; i < formattedData.length; i += 1) {
-          //   // These ones are merged into above cell
-          //   if (index === i && date === '10/29/2021') {
-          //     obj.props.rowSpan = 0;
-          //   }
-          // }
+          if (index === 0 && dailyList[0].isHoliday) {
+            obj.props.rowSpan = dailyList.length;
+          }
+          for (let i = 1; i < dailyList.length; i += 1) {
+            // These ones are merged into above cell
+            if (index === i && dailyList[i].isHoliday) {
+              obj.props.rowSpan = 0;
+            }
+          }
           return obj;
         },
       };
@@ -210,18 +216,35 @@ const WeeklyTable = (props) => {
     const result = [
       {
         title: renderTitle('Employee', 1),
-        dataIndex: 'dailyList',
-        key: 'dailyList',
+        dataIndex: 'employee',
+        key: 'employee',
         align: 'center',
         width: `${100 / 9}%`,
-        render: (dailyList, _, index) => {
+        render: (employee, _, index) => {
+          const { generalInfo: { legalName = '', userId = '', avatar } = {} } = employee;
           return (
-            <div className={styles.projectName}>
-              <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
-                <span>A</span>
+            <UserProfilePopover placement="rightTop" data={employee}>
+              <div className={styles.member}>
+                <div className={styles.renderEmployee}>
+                  <div className={styles.avatar}>
+                    {avatar ? (
+                      <img src={avatar || MockAvatar} alt="" />
+                    ) : (
+                      <div
+                        className={styles.icon}
+                        style={{ backgroundColor: getColorByIndex(index) }}
+                      >
+                        <span>{legalName ? legalName.toString()?.charAt(0) : 'P'}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.right}>
+                    <span className={styles.name}>{legalName}</span>
+                    <span className={styles.id}>({userId})</span>
+                  </div>
+                </div>
               </div>
-              <span className={styles.name}>Phát</span>
-            </div>
+            </UserProfilePopover>
           );
         },
       },
@@ -239,7 +262,6 @@ const WeeklyTable = (props) => {
     ];
     return result;
   };
-
 
   const onChangePagination = (pageNumber) => {
     onChangePage(pageNumber);

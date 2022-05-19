@@ -18,11 +18,17 @@ const ManagerReport = (props) => {
   const { dispatch, timeSheet: { payloadExport = {}, projectList = [] } = {} } = props;
 
   // Format fromDate and toDate
-  const {fromDate, toDate, projectId} = payloadExport
-  const startDate = moment(fromDate).format('LL').replace(/[, \s]+/g, "");
-  const endDate = moment(toDate).format('LL').replace(/[, \s]+/g, "");
+  const { fromDate, toDate, projectId } = payloadExport;
+  const startDate = moment(fromDate)
+    .locale('en')
+    .format('ll')
+    .replace(/[, \s]+/g, '');
+  const endDate = moment(toDate)
+    .locale('en')
+    .format('ll')
+    .replace(/[, \s]+/g, '');
 
-  const project = projectList.find(list => list.id === projectId)
+  const project = projectList.find((list) => list.id === projectId);
 
   const [activeKey, setActiveKey] = useState(VIEW_TYPE.PROJECT_VIEW);
 
@@ -45,7 +51,10 @@ const ManagerReport = (props) => {
 
   const exportTag = () => {
     if (activeKey === VIEW_TYPE.PROJECT_VIEW) {
-      return exportToExcel('timeSheet/exportReportProject', `ProjectView-${project.projectName}-${startDate}-${endDate}.xlsx`);
+      return exportToExcel(
+        'timeSheet/exportReportProject',
+        `ProjectView-${project.projectName}-${startDate}-${endDate}.xlsx`,
+      );
     }
     return exportToExcel('timeSheet/exportReportTeam', 'team-view.xlsx');
   };
