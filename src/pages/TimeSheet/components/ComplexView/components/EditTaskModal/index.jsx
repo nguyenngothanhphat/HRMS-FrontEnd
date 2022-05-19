@@ -132,7 +132,7 @@ const EditTaskModal = (props) => {
           generalInfo: employee.managerInfo.generalInfo,
         },
       },
-      date: moment(date).format(dateFormatAPI),
+      date: moment(values.date).format(dateFormatAPI),
       companyId: getCurrentCompany(),
       location,
     };
