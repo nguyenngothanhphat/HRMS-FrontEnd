@@ -1,3 +1,5 @@
+import { eq } from "lodash";
+
 describe('HR_Polices_and_Regulations', () => {
   before(() => {
     cy.visit('https://stghrms.paxanimi.ai/login');
@@ -6,50 +8,50 @@ describe('HR_Polices_and_Regulations', () => {
   let employee_email = "narmada.biradar@mailinator.com";
   let password = "12345678@Tc";
 
-  it('sign in', () => {
-      cy.get('#basic_userEmail.ant-input').type(employee_email);
-      cy.get('#basic_password.ant-input').type(password);
-      cy.get('button[type="submit"]').click();
-      cy.wait(5000);
+  it('creating the categories and policies', () => {
+      cy.loginAsSomeone(employee_email,password);
       cy.get('.action___3ut1O').eq(0).click();
       
       cy.contains('Policies & Regulations').click();
       cy.contains('Settings').click();
       cy.wait(3000);
+      cy.get('.labelText___2RPRm').eq(0).click({force:true})
       cy.contains('India').click();
+      cy.wait(3000)
       cy.contains('Add Categories').click()
-      cy.get('#basic_category').type("Company Asset");
+      cy.get('#basic_category').type("company things");
       cy.get('button[type="submit"]').click();
+      cy.wait(5000)
       cy.get('.ant-menu-title-content').eq(11).click();
       cy.get('.ant-select-selector').click();
   
       
       cy.contains('Add Policy').click()
       .then(()=>{
-        cy.get("#basic_categoryPolicy").type('Company Asset'+'{enter}')
-        .then(()=>{
-          
-          cy.wait(1000);
-          cy.get('#basic_namePolicies').type('Company Assets');
+          cy.get("#basic_categoryPolicy").type('company things'+'{enter}')
+      
+        cy.get('#basic_namePolicies').type('Company Assets');
 
-          const filepath ="hulk.jpg";
-          cy.get('input[type="file"]').attachFile(filepath)
-          cy.wait(5000)
-          cy.get('button[type="submit"]').click()
-          cy.wait(4000)
-          cy.get('.ant-table-row.ant-table-row-level-0').eq(0).click()
-          .then(()=>{
-            cy.get('.ant-dropdown-trigger').eq(3).click({force:true});
-            cy.contains('Delete').click();
-            cy.get('button[type="submit"]').click();
-            cy.contains('Policies Categories').click();
-             cy.get('.ant-btn-circle').eq(1).click();
-             cy.get('button[type="submit"]').click();
-            
-          });
-          
-        });
-        
-      });
-    });
+        const filepath ="hulk.jpg";
+        cy.get('input[type="file"]').attachFile(filepath)
+        cy.wait(5000)
+        cy.get('button[type="submit"]').click()
+        cy.wait(4000)
+        cy.get('.ant-menu-title-content').eq(10).click({force:true})
+        cy.contains('Policies & Regulations').eq(0).click({force:true})
+        cy.wait(4000);
+        // cy.contains('Settings').click({force:true});
+        // cy.contains('Policies & Regulations').eq(0).click({force:true})
+        // cy.wait(2000);
+        cy.contains('company things').click({force:true})
+        cy.get('img[src="/static/view.6aff4212.svg"]').click({force:true})
+        cy.wait(4000);
+        cy.get('img[src="/static/closeIconTimeOff.a323d33a.svg"]').click({force:true})
+        cy.wait(3000);
+        cy.contains('Settings').click({force:true})
+        cy.wait(2000)
+        cy.get('.ant-btn-circle').eq(1).click();
+        cy.get('button[type="submit"]').click();
+      })
+  })  
 });

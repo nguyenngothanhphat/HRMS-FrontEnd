@@ -39,6 +39,7 @@ export const TIMEOFF_PERIOD = {
   MORNING: 'MORNING',
   AFTERNOON: 'AFTERNOON',
   WHOLE_DAY: 'WHOLE-DAY',
+  HOUR: 'HOUR',
 };
 
 export const TIMEOFF_INPUT_TYPE = {

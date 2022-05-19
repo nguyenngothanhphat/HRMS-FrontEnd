@@ -1,12 +1,15 @@
+/* eslint-disable no-nested-ternary */
 import { Table } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { projectColor, convertMsToTime } from '@/utils/timeSheet';
 import CompleteIcon from '@/assets/timeSheet/complete.svg';
+import AirPlanIcon from '@/assets/timeSheet/airplanIcon.svg';
 import FailIcon from '@/assets/timeSheet/fail.svg';
 import PendingIcon from '@/assets/timeSheet/pending.svg';
 import TaskPopover from './components/TaskPopover';
+import TimeoffPopover from './components/TimeoffPopover';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
 import EmptyComponent from '@/components/Empty';
 
@@ -20,11 +23,8 @@ const WeeklyTable = (props) => {
     data = [],
     timeoffList = [],
   } = props;
-  console.log('🚀 ~ timeoffList', timeoffList);
   const [dateList, setDateList] = useState([]);
   const [formattedData, setFormattedData] = useState([]);
-  console.log('🚀 ~ formattedTimOffList', timeoffList);
-  console.log('🚀 ~ formattedData', formattedData);
 
   // FUNCTIONS
   // get dates between two dates
@@ -44,20 +44,16 @@ const WeeklyTable = (props) => {
     return moment(date1).format('MM/DD/YYYY') === moment(date2).format('MM/DD/YYYY');
   };
 
-  // format data
-  const formatData = () => {
-    const dates = {};
-    for (let i = 0; i < dateList.length; i += 1) dates[dateList[i]] = dateList[i];
-    const header = {
-      projectName: 'All Projects',
-      totalProjectTime: 'Total Hours',
-      ...dates,
-    };
-    setFormattedData([header].concat(data));
-  };
-
   const getColorByIndex = (index) => {
     return projectColor[index % projectColor.length];
+  };
+
+  const formatData = () => {
+    const obj =
+      timeoffList.length > 0
+        ? [Object.assign(timeoffList[0], { projectName: 'Timeoff' })]
+        : timeoffList;
+    setFormattedData(obj.concat(data));
   };
 
   // USE EFFECT
@@ -68,11 +64,7 @@ const WeeklyTable = (props) => {
 
   useEffect(() => {
     formatData();
-  }, [JSON.stringify(data)]);
-
-  useEffect(() => {
-    formatData();
-  }, [dateList]);
+  }, [JSON.stringify(data), JSON.stringify(timeoffList)]);
 
   // RENDER UI
   // BODY
@@ -150,22 +142,25 @@ const WeeklyTable = (props) => {
     return <div className={styles.holidayColumn}>{renderDateHeaderItem(date)}</div>;
   };
 
+  const renderTitle = (title, type) => {
+    if (type === 1) return title;
+    if (type === 3) return <span className={styles.totalHeader}>{title}</span>;
+    return renderDateHeaderItem(title);
+  };
+
   const columns = () => {
     const dateColumns = dateList.map((date) => {
       return {
-        title: date,
+        title: renderTitle(date, 2),
         dataIndex: date,
         key: date,
         align: 'center',
         width: `${100 / 9}%`,
-        render: (_, row, index) => {
+        render: (_, row) => {
           const { projectName = '', days = [] } = row;
           const value = days.find((d) => isTheSameDay(d.date, date));
-          const getCellValue = () => {
-            if (index === 0 /* / FOR HOLIDAY & LEAVE REQUEST && date !== '10/29/2021' */) {
-              return renderDateHeaderItem(date);
-            }
 
+          const getCellValue = () => {
             // FOR HOLIDAY & LEAVE REQUEST
             // // if this date has a leave request
             // if (date === '10/27/2021') {
@@ -182,7 +177,6 @@ const WeeklyTable = (props) => {
                 projectName={projectName}
                 date={date}
                 tasks={value?.dailyProjectTask}
-                timeoff={value?.timeoff}
                 placement="bottomLeft"
               >
                 {!value ? (
@@ -197,8 +191,29 @@ const WeeklyTable = (props) => {
               </TaskPopover>
             );
           };
+
+          const getCellTimeoffValue = () => {
+            return (
+              <TimeoffPopover
+                projectName={projectName}
+                date={date}
+                timeoff={value}
+                placement="bottomLeft"
+              >
+                {!value ? (
+                  <span className={styles.hourValue}>
+                    <img src={EmptyLine} alt="" />
+                  </span>
+                ) : (
+                  <span className={styles.hourValue}>
+                    {convertMsToTime(value?.projectDailyTime || value?.totalTimeOffTime)}
+                  </span>
+                )}
+              </TimeoffPopover>
+            );
+          };
           const obj = {
-            children: getCellValue(),
+            children: projectName === 'Timeoff' ? getCellTimeoffValue() : getCellValue(),
             props: {},
           };
 
@@ -231,19 +246,24 @@ const WeeklyTable = (props) => {
 
     const result = [
       {
-        title: 'All Projects',
+        title: renderTitle('All Projects', 1),
         dataIndex: 'projectName',
         key: 'projectName',
         align: 'center',
         width: `${100 / 9}%`,
         render: (projectName, _, index) => {
-          if (index === 0) {
-            return projectName;
-          }
           return (
             <div className={styles.projectName}>
               <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
-                <span>{projectName ? projectName.toString()?.charAt(0) : 'P'}</span>
+                <span>
+                  {projectName === 'Timeoff' ? (
+                    <img src={AirPlanIcon} alt="" />
+                  ) : projectName ? (
+                    projectName.toString()?.charAt(0)
+                  ) : (
+                    'P'
+                  )}
+                </span>
               </div>
               <span className={styles.name}>{projectName}</span>
             </div>
@@ -252,14 +272,17 @@ const WeeklyTable = (props) => {
       },
       ...dateColumns,
       {
-        title: 'Total Hours',
-        dataIndex: 'totalProjectTime',
+        title: renderTitle('Total Hours', 3),
+        dataIndex: ['totalProjectTime', 'totalTimeOffTime'],
         key: 'totalProjectTime',
         align: 'center',
         width: `${100 / 9}%`,
-        render: (value, _, index) => {
-          if (index === 0) return <span className={styles.totalHeader}>{value}</span>;
-          return <span className={styles.totalValue}>{convertMsToTime(value)}</span>;
+        render: (value, row) => {
+          return (
+            <span className={styles.totalValue}>
+              {convertMsToTime(row.totalProjectTime || row.totalTimeOffTime)}
+            </span>
+          );
         },
       },
     ];
@@ -288,7 +311,6 @@ const WeeklyTable = (props) => {
   };
 
   const renderFooter = () => {
-    if (data.length === 0) return <EmptyComponent />;
     const durationByDate = getDurationByDate();
     return (
       <div className={styles.footer}>
@@ -326,8 +348,11 @@ const WeeklyTable = (props) => {
           bordered
           pagination={false}
           // scroll={{ y: 440 }}
-          footer={renderFooter}
+          footer={data.length === 0 ? null : renderFooter}
           loading={loadingFetchMyTimesheetByType}
+          locale={{
+            emptyText: <EmptyComponent />,
+          }}
         />
       </div>
     </div>

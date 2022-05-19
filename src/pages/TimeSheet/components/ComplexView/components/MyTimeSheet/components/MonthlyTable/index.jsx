@@ -1,42 +1,43 @@
+/* eslint-disable no-nested-ternary */
 import { Table } from 'antd';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
-import { projectColor, convertMsToTime } from '@/utils/timeSheet';
-import TaskPopover from './components/TaskPopover';
-import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
+import { convertMsToTime, projectColor } from '@/utils/timeSheet';
 import EmptyComponent from '@/components/Empty';
-
+import TimeoffPopover from './components/TimeoffPopover';
+import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
+import AirPlanIcon from '@/assets/timeSheet/airplanIcon.svg';
+import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
 
 const MonthlyTable = (props) => {
   const {
-    startDate = '',
-    endDate = '',
     loadingFetchMyTimesheetByType = false,
     weeksOfMonth = [],
+    timeoffList = [],
     data: { weeks: weeksProp = [], summary: summaryProp = [] } = {},
-    data = {},
   } = props;
+
   const [formattedData, setFormattedData] = useState([]);
+  console.log('🚀 ~ formattedData', formattedData);
 
   // FUNCTIONS
-  // format data
-  const formatData = () => {
-    const header = {
-      projectName: 'All Projects',
-    };
-    setFormattedData([header].concat(weeksProp));
-  };
-
   const getColorByIndex = (index) => {
     return projectColor[index % projectColor.length];
   };
 
-  // USE EFFECT
+  const formatData = () => {
+    const obj =
+      timeoffList.length > 0
+        ? [Object.assign(timeoffList[0], { projectName: 'Timeoff' })]
+        : timeoffList;
+    setFormattedData(obj.concat(weeksProp));
+  };
+
   useEffect(() => {
     formatData();
-  }, [JSON.stringify(data)]);
+  }, [JSON.stringify(weeksProp), JSON.stringify(timeoffList)]);
 
   // RENDER UI
   const renderHeaderItem = (weekItem) => {
@@ -52,27 +53,58 @@ const MonthlyTable = (props) => {
     );
   };
 
+  const renderTitle = (title, type) => {
+    if (type === 1) return title;
+    if (type === 3) return <span className={styles.totalHeader}>{title}</span>;
+    return renderHeaderItem(title);
+  };
+
   const columns = () => {
     const columnLength = weeksOfMonth.length + 1;
     const dateColumns = weeksOfMonth.map((weekItem) => {
       return {
-        title: weekItem.week,
+        title: renderTitle(weekItem, 2),
         dataIndex: weekItem.week,
         key: weekItem.week,
         align: 'center',
         width: `${100 / columnLength}}%`,
-        render: (value, row, index) => {
-          const { weeks = [] } = row;
-          if (index === 0) return renderHeaderItem(weekItem);
+        render: (value, row) => {
+          const { weeks = [], projectName = '', days = [] } = row;
           const find = weeks.find((w) => w.week === weekItem.week) || {};
-          if (!find || find?.weekProjectTime === 0)
+          const findTimeoff = days.find((w) => w.week === weekItem.week) || {};
+          console.log('🚀 ~ findTimeoff', findTimeoff);
+          if (projectName === 'Timeoff') {
             return (
-              <span className={styles.hourValue}>
-                <img src={EmptyLine} alt="" />
-              </span>
+              <TimeoffPopover
+                projectName={projectName}
+                date={weekItem.week}
+                timeoff={value}
+                placement="bottomLeft"
+              >
+                {!value ? (
+                  <span className={styles.hourValue}>
+                    <img src={EmptyLine} alt="" />
+                  </span>
+                ) : (
+                  <span className={styles.hourValue}>
+                    {convertMsToTime(value?.totalTimeOffTime || 0)}
+                  </span>
+                )}
+              </TimeoffPopover>
             );
+          }
           return (
-            <span className={styles.hourValue}>{convertMsToTime(find?.weekProjectTime || 0)}</span>
+            <div>
+              {!find || find?.weekProjectTime === 0 ? (
+                <span className={styles.hourValue}>
+                  <img src={EmptyLine} alt="" />
+                </span>
+              ) : (
+                <span className={styles.hourValue}>
+                  {convertMsToTime(find?.weekProjectTime || findTimeoff?.totalTimeOffTime)}
+                </span>
+              )}
+            </div>
           );
         },
       };
@@ -80,19 +112,24 @@ const MonthlyTable = (props) => {
 
     const result = [
       {
-        title: 'All Projects',
+        title: renderTitle('All Projects', 1),
         dataIndex: 'projectName',
         key: 'projectName',
         align: 'center',
         width: `${100 / columnLength}%`,
         render: (projectName, _, index) => {
-          if (index === 0) {
-            return projectName;
-          }
           return (
             <div className={styles.projectName}>
               <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
-                <span>{projectName ? projectName.toString()?.charAt(0) : 'P'}</span>
+                <span>
+                  {projectName === 'Timeoff' ? (
+                    <img src={AirPlanIcon} alt="" />
+                  ) : projectName ? (
+                    projectName.toString()?.charAt(0)
+                  ) : (
+                    'P'
+                  )}
+                </span>
               </div>
               <span className={styles.name}>{projectName}</span>
             </div>
@@ -106,7 +143,7 @@ const MonthlyTable = (props) => {
 
   // FOOTER
   const renderFooter = () => {
-    if (weeksProp.length === 0) return <EmptyComponent />;
+    if (weeksProp.length === 0) return '';
     return (
       <div className={styles.footer}>
         <div className={styles.item}>
@@ -149,6 +186,9 @@ const MonthlyTable = (props) => {
           // scroll={{ y: 440 }}
           footer={renderFooter}
           loading={loadingFetchMyTimesheetByType}
+          locale={{
+            emptyText: <EmptyComponent />,
+          }}
         />
       </div>
     </div>

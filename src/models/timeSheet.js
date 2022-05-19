@@ -151,7 +151,7 @@ const TimeSheet = {
         const { viewType } = payloadTemp;
         let stateVar = 'myTimesheetByDay';
         let dataTemp = null;
-        let timeoffList = null;
+        let timeoffList = [];
         switch (viewType) {
           case 'D':
             dataTemp = data;

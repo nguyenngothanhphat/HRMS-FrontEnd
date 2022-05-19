@@ -33,6 +33,10 @@ const ComplexView = (props) => {
   const [selectedLocations, setSelectedLocation] = useState([getCurrentLocation()]);
   const [isIncompleteTimeSheet, setIsIncompleteTimeSheet] = useState(false);
 
+  // PERMISSIONS TO VIEW LOCATION
+  const viewLocationHR = permissions.viewLocationHRTimesheet === 1;
+  const viewLocationFinance = permissions.viewLocationFinanceTimesheet === 1;
+
   const requestLeave = () => {
     history.push('/time-off/overview/personal-timeoff/new');
   };
@@ -77,10 +81,10 @@ const ComplexView = (props) => {
     if (selectedDivisions.length > 0 && selectedDivisions.length < divisionList.length) {
       return `${selectedDivisions.length} divisions selected`;
     }
-    if (selectedDivisions.length === divisionList.length || selectedDivisions.length === 0) {
+    if (selectedDivisions.length === divisionList.length) {
       return 'All';
     }
-    return 'All';
+    return 'None';
   };
 
   const onChangeIncompleteTimeSheet = (e) => {
@@ -112,18 +116,27 @@ const ComplexView = (props) => {
         name: x.name,
       };
     });
-    // PERMISSIONS TO VIEW LOCATION
 
-    const viewLocationHR = permissions.viewLocationHRTimesheet === 1;
-    const viewLocationFinance = permissions.viewLocationFinanceTimesheet === 1;
-
-    if (tabName === TAB_NAME.HR_REPORTS && viewLocationHR) {
-      return locationOptions;
-    }
-    if (tabName === TAB_NAME.FINANCE_REPORTS && viewLocationFinance) {
+    if (
+      (tabName === TAB_NAME.HR_REPORTS && viewLocationHR) ||
+      (tabName === TAB_NAME.FINANCE_REPORTS && viewLocationFinance)
+    ) {
       return locationOptions;
     }
     return locationUser;
+  };
+
+  const renderDivisionOptions = () => {
+    const viewDivisionHR = permissions.viewDivisionHRTimesheet === 1;
+    const viewDivisionFinance = permissions.viewDivisionFinanceTimesheet === 1;
+
+    if (tabName === TAB_NAME.HR_REPORTS && viewDivisionHR) {
+      return true;
+    }
+    if (tabName === TAB_NAME.FINANCE_REPORTS && viewDivisionFinance) {
+      return true;
+    }
+    return false;
   };
 
   const renderFilterBar = (isHRTab) => {
@@ -167,21 +180,23 @@ const ComplexView = (props) => {
             </div>
           </CheckboxMenu>
         </div>
-        <div className={styles.item}>
-          <span className={styles.label}>Division</span>
+        {renderDivisionOptions() && (
+          <div className={styles.item}>
+            <span className={styles.label}>Division</span>
 
-          <CheckboxMenu
-            options={divisionOptions}
-            onChange={onDivisionChange}
-            default={selectedDivisions}
-            disabled
-          >
-            <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
-              <span>{selectedDivisionName}</span>
-              <img src={SmallDownArrow} alt="" />
-            </div>
-          </CheckboxMenu>
-        </div>
+            <CheckboxMenu
+              options={divisionOptions}
+              onChange={onDivisionChange}
+              default={selectedDivisions}
+              disabled
+            >
+              <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
+                <span>{selectedDivisionName}</span>
+                <img src={SmallDownArrow} alt="" />
+              </div>
+            </CheckboxMenu>
+          </div>
+        )}
       </div>
     );
   };

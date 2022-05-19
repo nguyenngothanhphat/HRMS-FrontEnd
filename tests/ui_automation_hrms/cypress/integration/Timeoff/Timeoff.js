@@ -18,8 +18,8 @@ describe('Timeoff Automation', () => {
             cy.contains('Casual Leave').click();
           });
         cy.get('#basic_subject').type('function');
-        let fromDate ="05/20/2022";         
-        let toDate ="05/20/2022";
+        let fromDate ="06/22/2022";         
+        let toDate ="06/22/2022";
         cy.get('#basic_durationFrom ',{timeout:3000}).type(fromDate + '{enter}', {force: true});
          cy.get("#basic_durationTo", {timeout:3000}).type(toDate + '{enter}', {force: true});
         // cy.get('#basic_leaveTimeLists_0_startTime').type('9:00 am'+'{enter}',{force:true})
@@ -87,7 +87,7 @@ describe('Timeoff Automation', () => {
     cy.get('.ant-tabs-tab-btn').eq(9).click({force:true})
     cy.readFile("latest_id_timeoff.txt").then(function(value){
       cy.wait(3000)
-      // cy.get('.ant-pagination-item-link').eq(1).click();
+      cy.get('.ant-pagination-item-link').eq(1).click();
       // cy.get('.ant-pagination-item-link').eq(1).click();
       cy.log(value);
       cy.wait(3000);
@@ -147,8 +147,8 @@ it('Applying for Special leave request', () => {
       cy.contains('Wedding leave').click();
     });
   cy.get('#basic_subject').type('Marriage');
-  let fromDate ="05/23/2022";         
-  let toDate ="04/20/2022";
+  let fromDate ="06/23/2022";         
+  let toDate ="06/23/2022";
   cy.get('#basic_durationFrom ',{timeout:3000}).type(fromDate + '{enter}', {force: true});
    //cy.get("#basic_durationTo", {timeout:3000}).type(toDate + '{enter}', {force: true});
    //cy.pause();
@@ -280,8 +280,8 @@ it('Applying for unpaid leave request', () => {
       cy.contains('Unpaid Leave').click();
     });
   cy.get('#basic_subject').type('health issue');
-  let fromDate ="05/02/2022";         
-  let toDate ="05/02/2022";
+  let fromDate ="06/24/2022";         
+  let toDate ="06/24/2022";
   cy.get('#basic_durationFrom ',{timeout:3000}).type(fromDate + '{enter}', {force: true});
   cy.get("#basic_durationTo", {timeout:3000}).type(toDate + '{enter}', {force: true});
    //cy.pause();
@@ -410,8 +410,8 @@ it('Applying for work from home leave request', () => {
       cy.contains('Work from Home').click();
     });
   cy.get('#basic_subject').type('work from home');
-  let fromDate ="05/27/2022";         
-  let toDate ="05/27/2022";
+  let fromDate ="06/24/2022";         
+  let toDate ="06/24/2022";
   cy.get('#basic_durationFrom ',{timeout:3000}).type(fromDate + '{enter}', {force: true});
   cy.get("#basic_durationTo", {timeout:3000}).type(toDate + '{enter}', {force: true});
    //cy.pause();
