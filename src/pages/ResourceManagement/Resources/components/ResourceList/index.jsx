@@ -38,7 +38,7 @@ const ResourceList = (props) => {
   const [resourceListState, setResourceListState] = useState([]);
   const [searchKey, setSearchKey] = useState('');
   const [isSearching, setIsSearching] = useState(false);
-  const [applied, setapplied] = useState(0);
+  const [applied, setApplied] = useState(0);
   const [form, setForm] = useState(null);
   const [filter, setFilter] = useState({
     name: undefined,
@@ -209,7 +209,7 @@ const ResourceList = (props) => {
   // const clearFilter = () => {};
   const clearTagFilter = () => {
     setFilter({});
-    setapplied(0);
+    setApplied(0);
     // clearFilter();
     form?.resetFields();
   };
@@ -250,7 +250,7 @@ const ResourceList = (props) => {
             </Row>
           </div>
           <SearchTable
-            setapplied={setapplied}
+            setApplied={setApplied}
             onFilterChange={onFilterChange}
             filter={filter}
             searchTable={searchTable}
