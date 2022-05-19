@@ -75,6 +75,7 @@ const PreviousEmployment = (props) => {
                     onNotAvailableClick={onNotAvailableClick}
                     onViewCommentClick={onViewCommentClick}
                     onViewDocumentClick={onViewDocumentClick}
+                    blockIndex={i}
                   />
                 ))}
             </div>

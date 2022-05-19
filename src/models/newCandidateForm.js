@@ -23,7 +23,6 @@ import {
   getLocationListByCompany,
   addManagerSignature,
   getDocumentByCandidate,
-  getWorkHistory,
   generateLink,
   extendOfferLetter,
   withdrawOffer,
@@ -1463,28 +1462,7 @@ const newCandidateForm = {
       }
       return response;
     },
-    *fetchWorkHistory({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getWorkHistory, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { data, statusCode } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'saveOrigin',
-          payload: {
-            workHistory: data,
-          },
-        });
-      } catch (error) {
-        dialog(error);
-      }
-      return response;
-    },
-
+    
     // Offer letter actions
     *extendOfferLetterEffect({ payload = {} }, { call, put }) {
       let response = {};

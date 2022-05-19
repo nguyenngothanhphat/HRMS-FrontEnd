@@ -9,7 +9,8 @@ const CommonModal = (props) => {
     title = 'Modal',
     onClose = () => {},
     firstText = 'Submit',
-    secondText = 'Cancel',
+    secondText = 'Button',
+    cancelText = 'Cancel',
     content = '',
     width = 700,
     loading = false,
@@ -17,7 +18,9 @@ const CommonModal = (props) => {
     onFinish = () => {},
     hasHeader = true,
     withPadding = false,
-    hasSecondaryButton = true,
+    hasCancelButton = true,
+    hasSecondButton = false,
+    onSecondButtonClick = () => {},
   } = props;
 
   const renderModalHeader = () => {
@@ -57,8 +60,13 @@ const CommonModal = (props) => {
         footer={
           hasFooter ? (
             <>
-              {hasSecondaryButton && (
+              {hasCancelButton && (
                 <Button className={styles.btnCancel} onClick={handleCancel}>
+                  {cancelText}
+                </Button>
+              )}
+              {hasSecondButton && (
+                <Button className={styles.btnCancel} onClick={onSecondButtonClick}>
                   {secondText}
                 </Button>
               )}

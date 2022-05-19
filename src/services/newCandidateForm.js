@@ -16,13 +16,6 @@ export function SendEmail(payload) {
   });
 }
 
-export function getWorkHistory(params) {
-  return request('/api/workhistorytenant/get-by-candidate', {
-    method: 'POST',
-    data: params,
-  });
-}
-
 export function getDocumentList() {
   return request('/api/document/list-default-checklist', {
     method: 'POST',

@@ -59,16 +59,15 @@ const DocumentVerification = (props) => {
         documentTypeC = [],
         documentTypeD = [],
         documentTypeE = [],
+        currentStep = 0,
       } = {} || {},
       documentLayout = [],
     },
     dispatch,
-    currentStep = 0,
     companiesOfUser = [],
     conversationList = [],
     loading4,
     loadingFetchCandidate,
-    companyLocationList = [],
   } = props;
 
   const { DRAFT, PROFILE_VERIFICATION } = NEW_PROCESS_STATUS;
@@ -353,23 +352,6 @@ const DocumentVerification = (props) => {
     }
   };
 
-  const getDocumentLayoutByCountry = () => {
-    let workLocation1 = workLocation;
-    if (typeof workLocation === 'string') {
-      workLocation1 = companyLocationList.find((w) => w._id === workLocation);
-    }
-    if (workLocation1) {
-      dispatch({
-        type: 'newCandidateForm/fetchDocumentLayoutByCountry',
-        payload: {
-          country:
-            workLocation1?.headQuarterAddress?.country?._id ||
-            workLocation1?.headQuarterAddress?.country,
-        },
-      });
-    }
-  };
-
   const firstInit = () => {
     validateFields();
   };
@@ -380,12 +362,6 @@ const DocumentVerification = (props) => {
       firstInit();
     }
   }, [_id]);
-
-  useEffect(() => {
-    if (documentLayout.length === 0) {
-      getDocumentLayoutByCountry();
-    }
-  }, []);
 
   useLayoutEffect(() => {
     dispatch({
@@ -413,6 +389,8 @@ const DocumentVerification = (props) => {
   };
 
   if (loadingFetchCandidate) return <Skeleton />;
+  const disabled = processStatus !== DRAFT;
+
   return (
     <Row gutter={[24, 24]} className={styles.DocumentVerification}>
       <Col sm={24} xl={16}>
@@ -424,7 +402,7 @@ const DocumentVerification = (props) => {
               .map((x) => {
                 return (
                   <CollapseFieldsTypeABC
-                    disabled={processStatus === PROFILE_VERIFICATION}
+                    disabled={disabled}
                     layout={x}
                     items={getItemByType(x.type)}
                   />
@@ -435,7 +413,7 @@ const DocumentVerification = (props) => {
 
             <CollapseFieldsTypeE
               processStatus={processStatus}
-              disabled={processStatus === PROFILE_VERIFICATION}
+              disabled={disabled}
               layout={documentLayout.find((x) => x.type === 'E')}
               items={getItemByType('E')}
             />
@@ -499,13 +477,11 @@ export default connect(
     newCandidateForm,
     loading,
     currentStep = '',
-    location: { companyLocationList = [] } = {},
     user: { companiesOfUser = [] },
     conversation: { conversationList = [] } = {},
   }) => ({
     currentStep,
     newCandidateForm,
-    companyLocationList,
     companiesOfUser,
     conversationList,
     loading4: loading.effects['newCandidateForm/submitPhase1Effect'],

@@ -76,6 +76,8 @@ const EligibilityDocs = (props) => {
   const [viewCommentModalVisible, setViewCommentModalVisible] = useState(false);
   const [viewDocumentModalVisible, setViewDocumentModalVisible] = useState(false);
 
+  const [validated, setValidated] = useState(false);
+
   const processData = async () => {};
 
   useEffect(() => {
@@ -120,14 +122,7 @@ const EligibilityDocs = (props) => {
     };
     // for type E
     const checkInputTypeEFilled = (arr) => {
-      let check = true;
-      arr.forEach((x) => {
-        const { data: dataArr = [] } = x;
-        check = dataArr.some(
-          (y) => !y.employer || !y.startDate || (!x.currentlyWorking && !y.endDate),
-        );
-      });
-      return check;
+      return !arr.some((x) => !x.employer || !x.startDate || (!x.currentlyWorking && !x.endDate));
     };
 
     return (
@@ -153,7 +148,7 @@ const EligibilityDocs = (props) => {
           documentTypeE: getDocumentPayloadE(documentTypeE),
         },
       });
-      validateFiles();
+      setValidated(validateFiles());
     }
   }, [
     JSON.stringify(documentTypeA),
@@ -252,6 +247,7 @@ const EligibilityDocs = (props) => {
   };
 
   const _renderBottomBar = () => {
+    if (isSentEmail) return null;
     const check = checkFull();
     const isVerifiedProfile = isVerifiedBasicInfo && isVerifiedJobDetail;
     const submitButton = (
@@ -263,7 +259,7 @@ const EligibilityDocs = (props) => {
           styles.bottomBar__button__primary,
           !check ? styles.bottomBar__button__disabled : '',
         ]}
-        disabled={!check || !isVerifiedProfile || !validateFiles()}
+        disabled={!check || !isVerifiedProfile || !validated}
         loading={loading1 || isSending}
       >
         {isSentEmail ? 'Submit Again' : 'Submit'}
@@ -432,7 +428,9 @@ const EligibilityDocs = (props) => {
           <ViewCommentModalContent
             onClose={() => setViewCommentModalVisible(false)}
             comment={
-              selectingFile?.item?.notAvailableComment || selectingFile?.item?.resubmitComment
+              selectingFile?.item?.hrNotAvailableComment ||
+              selectingFile?.item?.notAvailableComment ||
+              selectingFile?.item?.resubmitComment
             }
           />
         }
@@ -475,8 +473,5 @@ export default connect(
     loading: loading.effects['upload/uploadFile'],
     loading1: loading.effects['candidatePortal/sendEmailByCandidate'],
     loading2: loading.effects['candidatePortal/fetchCandidateById'],
-    loadingFile:
-      loading.effects['candidatePortal/fetchDocumentByCandidate'] ||
-      loading.effects['candidatePortal/fetchWorkHistory'],
   }),
 )(EligibilityDocs);

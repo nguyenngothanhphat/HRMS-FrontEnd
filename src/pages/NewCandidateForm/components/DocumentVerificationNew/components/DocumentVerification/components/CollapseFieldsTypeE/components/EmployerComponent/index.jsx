@@ -81,6 +81,7 @@ const EmployerComponent = (props) => {
             {data.map((x) => (
               <Checkbox disabled={x.required} value={x.alias}>
                 {x.alias}
+                {x.required && <span className={styles.required}>*</span>}
               </Checkbox>
             ))}
           </CheckboxGroup>

@@ -99,6 +99,7 @@ const CollapseFieldsTypeABC = (props) => {
                 return (
                   <Checkbox value={val.alias} disabled={val.required}>
                     {val.alias}
+                    {val.required && <span className={styles.starSymbol}>*</span>}
                     {!disabled && val.new && (
                       <Popconfirm onConfirm={() => handleRemove(val.key)} title="Sure to remove?">
                         <DeleteOutlined className={styles.removeIcon} />

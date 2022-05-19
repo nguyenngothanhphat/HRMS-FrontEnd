@@ -5,6 +5,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 
 const { Option } = Select;
 
@@ -33,6 +34,7 @@ const JobDetailForm = (props) => {
         reportingManager,
         dateOfJoining = '',
         employeeType,
+        processStatus = '',
       } = {},
     } = {},
     validateFields = () => {},
@@ -206,6 +208,7 @@ const JobDetailForm = (props) => {
             <Checkbox.Group
               options={x.options}
               onChange={(values) => onChangeValue(values, x.name)}
+              disabled={disabled}
             />
           </Form.Item>
         </div>
@@ -229,7 +232,7 @@ const JobDetailForm = (props) => {
           <Select
             placeholder="Select the work location"
             onChange={(value) => onChangeValue(value, 'workLocation')}
-            disabled={disabled}
+            disabled={disabled || ![NEW_PROCESS_STATUS.DRAFT].includes(processStatus)}
             showSearch
             showArrow
             allowClear

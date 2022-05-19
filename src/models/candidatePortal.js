@@ -5,8 +5,6 @@ import {
   candidateFinalOffer,
   getById,
   getDocumentByCandidate,
-  getWorkHistory,
-  updateWorkHistory,
   sendEmailByCandidateModel,
   updateByCandidate,
   getCountryList,
@@ -14,7 +12,11 @@ import {
   upsertCandidateDocument,
 } from '@/services/candidatePortal';
 import { dialog } from '@/utils/utils';
-import { CANDIDATE_TASK_LINK, CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
+import {
+  CANDIDATE_TASK_LINK,
+  CANDIDATE_TASK_STATUS,
+  DOCUMENT_TYPES,
+} from '@/utils/candidatePortal';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import { getCurrentTenant } from '@/utils/authority';
 
@@ -106,6 +108,18 @@ July 06, 2021 6PM - 7PM (IST)`,
   },
 ];
 
+const checkDocumentStatus = (documents) => {
+  return documents.some(
+    (x) =>
+      x.status === DOCUMENT_TYPES.RESUBMIT_PENDING ||
+      x.status === DOCUMENT_TYPES.NOT_AVAILABLE_REJECTED,
+  );
+};
+
+const checkDocumentStatusTypeE = (documents) => {
+  return documents.some((x) => checkDocumentStatus(x.data));
+};
+
 const initialState = {
   candidate: '',
   ticketId: '',
@@ -149,7 +163,6 @@ const initialState = {
       _id: '',
       url: '',
     },
-    workHistory: [],
     currentAddress: {},
     permanentAddress: {},
     phoneNumber: '',
@@ -321,41 +334,7 @@ const candidatePortal = {
       }
       return response;
     },
-    *fetchWorkHistory({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getWorkHistory, payload);
-        const { data, statusCode } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'saveOrigin',
-          payload: {
-            workHistory: data,
-          },
-        });
-      } catch (error) {
-        dialog(error);
-      }
-      return response;
-    },
-    *updateWorkHistory({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(updateWorkHistory, payload);
-        const { statusCode } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'fetchWorkHistory',
-          payload: {
-            candidate: payload.candidate,
-            tenantId: payload.tenantId,
-          },
-        });
-      } catch (error) {
-        dialog(error);
-      }
-      return response;
-    },
+
     *sendEmailByCandidate({ payload }, { call, select }) {
       let response = {};
       try {
@@ -403,7 +382,11 @@ const candidatePortal = {
         const {
           processStatus = '',
           expiryDate = '',
-          documentList = [],
+          documentTypeA = [],
+          documentTypeB = [],
+          documentTypeC = [],
+          documentTypeD = [],
+          documentTypeE = [],
           isVerifiedJobDetail,
           isVerifiedBasicInfo,
           salaryStructure: { status: salaryStatus = '', settings: salarySettings } = {},
@@ -412,6 +395,22 @@ const candidatePortal = {
         } = data || {};
 
         const dueDate = sentDate ? moment(sentDate).add(5, 'days') : '-';
+
+        if (
+          checkDocumentStatus(documentTypeA) ||
+          checkDocumentStatus(documentTypeB) ||
+          checkDocumentStatus(documentTypeC) ||
+          checkDocumentStatus(documentTypeD) ||
+          checkDocumentStatusTypeE(documentTypeE)
+        ) {
+          tempPendingTasks[1].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+          tempPendingTasks[1].name = 'Resubmit Documents';
+          tempPendingTasks[1].dueDate = dueDate;
+        } else {
+          // uploading documents
+          tempPendingTasks[1].status = CANDIDATE_TASK_STATUS.DONE;
+        }
+
         switch (processStatus) {
           case NEW_PROCESS_STATUS.PROFILE_VERIFICATION:
             // review profile
@@ -427,23 +426,6 @@ const candidatePortal = {
             }
             break;
 
-          case NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION:
-            // if there are any resubmit documents, show resubmit tasks
-            if (documentList.length > 0) {
-              const checkDocumentResubmit = documentList.some(
-                (x) => x.candidateDocumentStatus === 'RE-SUBMIT',
-              );
-              if (checkDocumentResubmit) {
-                tempPendingTasks[1].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
-                tempPendingTasks[1].name = 'Resubmit Documents';
-                tempPendingTasks[1].dueDate = dueDate;
-              }
-            } else {
-              // uploading documents
-              tempPendingTasks[1].status = CANDIDATE_TASK_STATUS.DONE;
-            }
-            break;
-
           case NEW_PROCESS_STATUS.SALARY_NEGOTIATION:
             if (['IN-PROGRESS'].includes(salaryStatus) && salarySettings.length) {
               // salary structure
@@ -453,9 +435,6 @@ const candidatePortal = {
             break;
 
           case NEW_PROCESS_STATUS.OFFER_RELEASED:
-            // case NEW_PROCESS_STATUS.OFFER_ACCEPTED:
-            // case NEW_PROCESS_STATUS.OFFER_REJECTED:
-            // offer letter
             tempPendingTasks[3].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
             tempPendingTasks[3].dueDate = expiryDate ? moment(expiryDate).format(dateFormat) : '';
             break;

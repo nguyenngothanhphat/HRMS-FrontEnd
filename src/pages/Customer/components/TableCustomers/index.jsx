@@ -235,7 +235,7 @@ const TableCustomers = (props) => {
         visible={isDeleteCustomer}
         onClose={() => setIsDeleteCustomer(false)}
         firstText="Delete"
-        secondText="Cancel"
+        cancelText="Cancel"
         title="Delete Project"
         loading={loadingDeleteProject}
         content={
