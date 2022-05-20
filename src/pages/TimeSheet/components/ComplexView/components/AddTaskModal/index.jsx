@@ -191,7 +191,9 @@ const AddTaskModal = (props) => {
                         }
                       >
                         {projectList.map((val) => (
-                          <Option value={val.id}>{val.projectName}</Option>
+                          <Option value={val.id}>
+                            {`${val.projectName} - ${val.customerName}`}
+                          </Option>
                         ))}
                       </Select>
                     </Form.Item>
