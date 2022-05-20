@@ -13,6 +13,7 @@ class CommentModal extends PureComponent {
     super(props);
     this.state = {
       visible: false,
+      isDisabled: true,
     };
   }
 
@@ -45,9 +46,21 @@ class CommentModal extends PureComponent {
     this.handleCancel();
   };
 
+  handleChange = (values) => {
+    if (values.comment) {
+      this.setState({
+        isDisabled: false,
+      });
+    } else {
+      this.setState({
+        isDisabled: true,
+      });
+    }
+  };
+
   render() {
     const { data } = this.props;
-    const { visible } = this.state;
+    const { visible, isDisabled } = this.state;
     return (
       <div className={styles.CommentModal}>
         <div className={styles.options}>
@@ -79,16 +92,19 @@ class CommentModal extends PureComponent {
               border: '1px solid #FFA100',
               color: 'white',
               borderRadius: '25px',
+              opacity: isDisabled && '0.5',
             },
             form: 'commentForm',
             key: 'submit',
             htmlType: 'submit',
+            disabled: isDisabled,
           }}
         >
           <Form
             id="commentForm"
             layout="vertical"
             className={styles.formComment}
+            onValuesChange={(values) => this.handleChange(values)}
             onFinish={(values) => this.onFinish(values, data)}
           >
             <Form.Item label="Comments" name="comment">
