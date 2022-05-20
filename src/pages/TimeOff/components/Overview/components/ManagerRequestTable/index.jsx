@@ -36,7 +36,6 @@ const ManagerRequestTable = (props) => {
     const typeId = leavesTemp.map((item) => {
       return item._id;
     });
-    //
 
     // Fetch all countTotal
     let typeAPI = '';
@@ -130,7 +129,6 @@ const ManagerRequestTable = (props) => {
 
   useEffect(() => {
     saveCurrentTypeTab('1');
-    fetchCountTotal();
   }, [JSON.stringify(yourTimeOffTypes)]);
 
   useEffect(() => {
