@@ -58,6 +58,14 @@ class TeamLeaveTable extends PureComponent {
     };
   }
 
+  // HANDLE TEAM REQUESTS
+  onOpenClick = (_id) => {
+    history.push({
+      pathname: `/time-off/overview/manager-timeoff/view/${_id}`,
+      // state: { location: name },
+    });
+  };
+
   getColumns = (TYPE) => {
     const { category } = this.props;
     return [
