@@ -13,6 +13,7 @@ class AddComment extends PureComponent {
     super(props);
     this.state = {
       visible: false,
+      isDisabled: true,
     };
   }
 
@@ -28,13 +29,19 @@ class AddComment extends PureComponent {
     });
   };
 
+  handleChange = (values) => {
+    this.setState({
+      isDisabled: !values.comment,
+    });
+  };
+
   onFinish = async (values, obj) => {
-    if (values.comment === undefined) {
-      notification.error({
-        message: 'Value comment cannot empty',
-      });
-      return;
-    }
+    // if (values.comment === undefined) {
+    //   notification.error({
+    //     message: 'Value comment cannot empty',
+    //   });
+    //   return;
+    // }
     if (obj.projectId === undefined) {
       notification.error({
         message: 'Project Id undefined',
@@ -59,7 +66,7 @@ class AddComment extends PureComponent {
 
   render() {
     const { data } = this.props;
-    const { visible } = this.state;
+    const { visible, isDisabled } = this.state;
     return (
       <div className={styles.AddComment}>
         <div>
@@ -88,16 +95,19 @@ class AddComment extends PureComponent {
               border: '1px solid #FFA100',
               color: 'white',
               borderRadius: '25px',
+              opacity: isDisabled && '0.5',
             },
             form: 'commentForm',
             key: 'submit',
             htmlType: 'submit',
+            disabled: isDisabled,
           }}
         >
           <Form
             id="commentForm"
             layout="vertical"
             className={styles.formComment}
+            onValuesChange={this.handleChange}
             onFinish={(values) => this.onFinish(values, data)}
           >
             <Form.Item label="Comments" name="comment">
