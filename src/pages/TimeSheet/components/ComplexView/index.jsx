@@ -282,11 +282,7 @@ const ComplexView = (props) => {
           </TabPane>
         )}
         {viewFinanceReport && (
-          <TabPane
-            tab="Finance Reports
-          "
-            key={TAB_NAME.FINANCE_REPORTS}
-          >
+          <TabPane tab="Finance Reports" key={TAB_NAME.FINANCE_REPORTS}>
             <FinanceReport />
           </TabPane>
         )}
