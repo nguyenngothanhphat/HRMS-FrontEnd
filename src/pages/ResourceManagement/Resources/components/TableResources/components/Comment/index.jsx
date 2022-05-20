@@ -47,15 +47,9 @@ class CommentModal extends PureComponent {
   };
 
   handleChange = (values) => {
-    if (values.comment) {
-      this.setState({
-        isDisabled: false,
-      });
-    } else {
-      this.setState({
-        isDisabled: true,
-      });
-    }
+    this.setState({
+      isDisabled: !values.comment,
+    });
   };
 
   render() {
@@ -104,7 +98,7 @@ class CommentModal extends PureComponent {
             id="commentForm"
             layout="vertical"
             className={styles.formComment}
-            onValuesChange={(values) => this.handleChange(values)}
+            onValuesChange={this.handleChange}
             onFinish={(values) => this.onFinish(values, data)}
           >
             <Form.Item label="Comments" name="comment">
