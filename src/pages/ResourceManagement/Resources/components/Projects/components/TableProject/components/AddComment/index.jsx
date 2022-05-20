@@ -42,7 +42,7 @@ class AddComment extends PureComponent {
     //   });
     //   return;
     // }
-    if (obj.projectId === undefined) {
+    if (!obj.projectId) {
       notification.error({
         message: 'Project Id undefined',
       });
