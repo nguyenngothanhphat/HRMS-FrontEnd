@@ -42,21 +42,30 @@ class MessageList extends PureComponent {
   renderItem = (item, listLength, index) => {
     // const { icon } = item;
     // const lastMessage = item.chat[item.chat.length - 1].content || '';
-    const { activeId = '', messages = [], listLastMessage = [] } = this.props;
+    const { activeId = '', messages = [], listLastMessage = [], ceoFullname = '' } = this.props;
     const isActive = activeId === item._id;
 
     const activeIndex = messages.findIndex((val) => val._id === activeId);
     const lastMessage = listLastMessage.find((message) => message?.conversationId === item._id);
 
     const hrAvatar = avatars[index % avatars.length];
+    const charCeoName = ceoFullname.charAt(0) + ceoFullname.charAt(6);
     return (
       <div key={index}>
         <div
           className={`${styles.eachItem} ${isActive ? styles.active : ''}`}
           onClick={() => this.onListClick(item._id, item.isReplyable, hrAvatar)}
         >
-          <div className={styles.messageIcon}>
-            <img src={hrAvatar} alt="message" />
+          <div
+            className={`${styles.messageIconOutline} ${
+              !item.isReplyable ? styles.messageBgOutline : ''
+            }`}
+          >
+            <div
+              className={`${styles.messageIcon} ${!item.isReplyable ? styles.messageBgIcon : ''}`}
+            >
+              <span className={styles.iconName}>{!item.isReplyable ? charCeoName : 'HR'}</span>
+            </div>
           </div>
           <div className={styles.messageContent}>
             <div className={styles.messageTitleContainer}>
