@@ -222,7 +222,6 @@ const ResourceList = (props) => {
             changeAvailableStatus={changeAvailableStatus}
           />
         </span>
-
         <div className={styles.rightHeaderTable}>
           <div>
             {applied > 0 && (
