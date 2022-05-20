@@ -90,7 +90,7 @@ const BasicInfo = (props) => {
                 message: 'Invalid format',
               },
               {
-                pattern: /^\d+$/,
+                pattern: /^\d{1,2}$|^\d+\.\d{0,2}$/,
                 message: 'Only digit!',
               },
             ]}
@@ -116,7 +116,7 @@ const BasicInfo = (props) => {
                 message: 'Invalid format',
               },
               {
-                pattern: /^\d+$/,
+                pattern: /^\d{1,2}$|^\d+\.\d{0,2}$/,
                 message: 'Only digit!',
               },
             ]}
