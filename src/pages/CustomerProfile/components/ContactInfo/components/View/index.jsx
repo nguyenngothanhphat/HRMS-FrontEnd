@@ -2,6 +2,7 @@ import { Col, Row } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
+import { CopyOutlined } from '@ant-design/icons';
 
 @connect(({ customerProfile: { info = {} } = {} }) => ({ info }))
 class View extends PureComponent {
@@ -24,14 +25,17 @@ class View extends PureComponent {
       {
         name: 'Contact Phone',
         value: contactPhone,
+        icons: <CopyOutlined />,
       },
       {
         name: 'Contact Email',
         value: contactEmail,
+        icons: <CopyOutlined />,
       },
       {
         name: 'Website',
         value: website,
+        icons: <CopyOutlined />,
       },
       {
         name: 'Address Line 1',
@@ -67,8 +71,11 @@ class View extends PureComponent {
                 <Col span={8}>
                   <p className={styles.label}>{val.name}</p>
                 </Col>
-                <Col span={16}>
+                <Col span={8}>
                   <p className={styles.value}>{val.value}</p>
+                </Col>
+                <Col span={8}>
+                <p style={{cursor:'pointer'}} onClick={()=> navigator.clipboard.writeText(`${val.value}`)} className={styles.icons}>{val.icons}</p>
                 </Col>
               </>
             );
