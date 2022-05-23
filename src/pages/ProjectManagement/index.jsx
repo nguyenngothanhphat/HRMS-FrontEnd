@@ -1,6 +1,7 @@
 import { Tabs } from 'antd';
 import React, { useEffect } from 'react';
 import { connect, history } from 'umi';
+import { DownloadOutlined } from '@ant-design/icons';
 import { PageContainer } from '@/layouts/layout/src';
 import Projects from './components/Projects';
 import styles from './index.less';
@@ -29,6 +30,28 @@ const ProjectManagement = (props) => {
     goToTop();
   }, []);
 
+  const exportProjects = async () => {
+    const { dispatch, projectListPayload = {} } = props;
+    const getListDataExport = await dispatch({
+      type: 'projectManagement/fetchProjectToExport',
+      payload: {
+        ...projectListPayload
+      }
+    });
+    let data = ''
+    if (getListDataExport.statusCode === 200) {
+      data = getListDataExport.data
+    }
+    // const { data = '' } = getListDataExport;
+    const downloadLink = document.createElement('a');
+    const universalBOM = '\uFEFF';
+    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(universalBOM + data)}`;
+    downloadLink.download = 'projects.csv';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
+
   if (!tabName) return '';
   return (
     <div className={styles.ProjectManagement}>
@@ -39,6 +62,22 @@ const ProjectManagement = (props) => {
             history.push(`/project-management/${key}`);
           }}
           destroyInactiveTabPane
+          tabBarExtraContent={
+            <>
+              <p
+                style={{
+                  marginBottom: '0',
+                  marginRight: '32px',
+                  color: '#ffa100',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                }}
+                onClick={() => exportProjects()}
+              >
+                <DownloadOutlined /> Export
+              </p>
+            </>
+          }
         >
           {viewProjectListPermission && (
             <TabPane tab="Projects" key="list">
@@ -58,7 +97,15 @@ const ProjectManagement = (props) => {
     </div>
   );
 };
-export default connect(({ user: { currentUser = {}, permissions = {} } = {} }) => ({
-  currentUser,
-  permissions,
-}))(ProjectManagement);
+export default connect(
+  ({
+    loading,
+    user: { currentUser = {}, permissions = {} } = {},
+    projectManagement: { projectListPayload = {} },
+  }) => ({
+    currentUser,
+    permissions,
+    projectListPayload,
+    loading: loading.effects['projectManagement/fetchProjectToExport'],
+  }),
+)(ProjectManagement);

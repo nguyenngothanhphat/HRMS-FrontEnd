@@ -347,7 +347,7 @@ const timeOff = {
         });
         const {
           statusCode,
-          data: { items: leaveRequests = [], countType: totalType = [] } = {},
+          data: { items: leaveRequests = [], total: totalType = [] } = {},
           total = 0,
         } = response;
         if (statusCode !== 200) throw response;

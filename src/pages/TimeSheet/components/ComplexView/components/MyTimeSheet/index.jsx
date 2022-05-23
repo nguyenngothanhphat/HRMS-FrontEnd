@@ -34,6 +34,7 @@ const MyTimeSheet = (props) => {
     myTimesheetByDay = [],
     myTimesheetByWeek = [],
     myTimesheetByMonth = [],
+    timeoffList = [],
     employee: { _id: employeeId = '' } = {},
     currentDateProp = '',
   } = props;
@@ -149,7 +150,12 @@ const MyTimeSheet = (props) => {
         return <DailyTable selectedDate={selectedDate} data={myTimesheetByDay} />;
       case VIEW_TYPE.W:
         return (
-          <WeeklyTable startDate={startDateWeek} endDate={endDateWeek} data={myTimesheetByWeek} />
+          <WeeklyTable
+            startDate={startDateWeek}
+            endDate={endDateWeek}
+            data={myTimesheetByWeek}
+            timeoffList={timeoffList}
+          />
         );
       case VIEW_TYPE.M:
         return (
@@ -158,6 +164,7 @@ const MyTimeSheet = (props) => {
             endDate={endDateMonth}
             weeksOfMonth={weeksOfMonth}
             data={myTimesheetByMonth}
+            timeoffList={timeoffList}
           />
         );
       default:
@@ -190,12 +197,18 @@ const MyTimeSheet = (props) => {
 
 export default connect(
   ({
-    timeSheet: { myTimesheetByDay = [], myTimesheetByWeek = [], myTimesheetByMonth = [] } = {},
+    timeSheet: {
+      myTimesheetByDay = [],
+      myTimesheetByWeek = [],
+      myTimesheetByMonth = [],
+      timeoffList = [],
+    } = {},
     user: { currentUser: { employee = {} } = {} },
   }) => ({
     employee,
     myTimesheetByDay,
     myTimesheetByWeek,
     myTimesheetByMonth,
+    timeoffList,
   }),
 )(MyTimeSheet);
