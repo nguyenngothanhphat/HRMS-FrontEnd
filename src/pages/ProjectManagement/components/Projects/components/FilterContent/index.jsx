@@ -129,6 +129,9 @@ const FilterContent = (props) => {
             mode="multiple"
             style={{ width: '100%' }}
             placeholder="Select Division"
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
           >
             {divisionList.map((x) => (
               <Select.Option value={x.name} key={x}>
@@ -144,6 +147,9 @@ const FilterContent = (props) => {
             mode="multiple"
             style={{ width: '100%' }}
             placeholder="Select Project Name"
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
           >
             {projectNameList.map((item) => {
               return (
