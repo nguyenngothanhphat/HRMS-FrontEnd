@@ -160,9 +160,9 @@ const ViewInformation = (props) => {
 
         <Divider />
         <p className={s.projectInfo__viewBottom__tagLabel}>Tags</p>
-        {tags.map((t, i) => (
-          <CustomTag color={getColor(i)}>{t}</CustomTag>
-        ))}
+        {typeof tags === 'object'
+          ? tags.map((t, i) => <CustomTag color={getColor(i)}>{t.tag_name}</CustomTag>)
+          : tags.map((t, i) => <CustomTag color={getColor(i)}>{t}</CustomTag>)}
       </div>
       <CommonModal
         visible={isEditProjectStatus}
