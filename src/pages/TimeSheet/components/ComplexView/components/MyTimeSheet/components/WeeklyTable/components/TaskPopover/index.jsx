@@ -13,18 +13,9 @@ import EditTaskModal from '@/pages/TimeSheet/components/ComplexView/components/E
 import { getCurrentCompany } from '@/utils/authority';
 import { convertMsToTime } from '@/utils/timeSheet';
 import styles from './index.less';
-// import { TIMEOFF_PERIOD } from '@/utils/timeOff';
 
 const TaskPopover = (props) => {
-  const {
-    children,
-    dispatch,
-    tasks = [],
-    date = '',
-    projectName = '',
-    placement = 'top',
-    // timeSheet: { employeeSchedule: { totalHour = 0 } = {} } = {},
-  } = props;
+  const { children, dispatch, tasks = [], date = '', projectName = '', placement = 'top' } = props;
   const [showPopover, setShowPopover] = useState(false);
   const [showingTasks, setShowingTasks] = useState([]);
 
@@ -63,19 +54,6 @@ const TaskPopover = (props) => {
       refreshData();
     }
   };
-
-  // const getTimeOffTotalHours = (item) => {
-  //   const { startTime = '', endTime = '', timeOfDay = '' } = item;
-
-  //   if (timeOfDay === TIMEOFF_PERIOD.WHOLE_DAY) {
-  //     return totalHour;
-  //   }
-  //   if (timeOfDay === TIMEOFF_PERIOD.MORNING || timeOfDay === TIMEOFF_PERIOD.AFTERNOON) {
-  //     return totalHour / 2;
-  //   }
-
-  //   return moment.duration(moment(endTime, 'HH:mm').diff(moment(startTime, 'HH:mm'))).asHours();
-  // };
 
   useEffect(() => {
     generateShowingTask(4);
@@ -131,15 +109,15 @@ const TaskPopover = (props) => {
             );
           })}
         </div>
-        {/* {showingTasks.length !== tasks.length + timeoff.length && (
+        {showingTasks.length !== tasks.length && (
           <Row className={styles.taskTable__viewMoreTask}>
             <Col span={24}>
               <div onClick={() => generateShowingTask()} className={styles.taskTable__text}>
-                View +{tasks.length + timeoff.length - showingTasks.length} more tasks
+                View +{tasks.length - showingTasks.length} more tasks
               </div>
             </Col>
           </Row>
-        )} */}
+        )}
       </div>
     );
   };
@@ -198,14 +176,20 @@ const TaskPopover = (props) => {
       />
       <EditTaskModal
         visible={editTaskModalVisible}
-        onClose={() => setEditTaskModalVisible(false)}
+        onClose={() => {
+          setEditTaskModalVisible(false);
+          setHandlingPackage({});
+        }}
         date={date}
         task={handlingPackage}
       />
 
       <CommonModal
         visible={removeModalVisible}
-        onClose={() => setRemoveModalVisible(false)}
+        onClose={() => {
+          setRemoveModalVisible(false);
+          setHandlingPackage({});
+        }}
         firstText="Yes"
         width={400}
         onFinish={onRemoveCard}
@@ -236,7 +220,6 @@ const TaskPopover = (props) => {
   );
 };
 
-export default connect(({ timeSheet, user: { currentUser: { employee = {} } = {} } }) => ({
-  employee,
-  timeSheet,
-}))(TaskPopover);
+export default connect(({ user: { currentUser: { employee = {} } = {} } }) => ({ employee }))(
+  TaskPopover,
+);
