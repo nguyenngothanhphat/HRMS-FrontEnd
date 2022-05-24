@@ -1,0 +1,138 @@
+.modalUploadFeedBack {
+  :global {
+    .ant-modal-header {
+      padding: 24px;
+      border-top-left-radius: 8px;
+    }
+    .ant-modal-content {
+      border-top-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+    .ant-modal-footer {
+      padding: 24px;
+    }
+    .ant-modal-close-x {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 54px;
+      height: 48px;
+      color: #fff;
+      background-color: #2c6df9;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+      &:active {
+        opacity: 0.5;
+      }
+    }
+
+    .ant-upload.ant-upload-drag {
+      padding: 10px 0;
+    }
+  }
+  .btnSubmit {
+    height: 40px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    background-color: #ffa100;
+    border: none;
+    border-radius: 25px;
+  }
+  .btnSubmit:disabled {
+    color: #fff;
+    opacity: 0.5;
+  }
+  .btnCancel {
+    display: inline-block;
+    margin-right: 40px;
+    color: #ffa100;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 0.13125px;
+    cursor: pointer;
+    &:active {
+      opacity: 0.5;
+    }
+  }
+  .viewImg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    &__img {
+      height: auto;
+      object-fit: contain;
+      border-radius: 5px;
+    }
+
+    .uploadTextCenter {
+      margin: 8px 0;
+      color: #707177;
+      font-weight: 400;
+      font-size: 15px;
+      font-size: 14px;
+      line-height: 22px;
+      text-align: center;
+    }
+    .uploadTextCenter__browse {
+      color: #2c6df9;
+      text-decoration: underline;
+    }
+    .uploadTextEnd {
+      color: #707177;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 22px;
+      text-align: center;
+      opacity: 0.5;
+    }
+    .titleUpload {
+      color: #000000;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 16px;
+      text-align: center;
+    }
+    span {
+      width: 100%;
+    }
+  }
+  .describe {
+    margin-bottom: 24px;
+    color: #707177;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &__text {
+      margin: 0;
+      color: #161c29;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    &__upload {
+      cursor: pointer;
+      &:active {
+        transform: translateY(-1px);
+      }
+      &__icon {
+        width: 20px;
+        height: 20px;
+      }
+      &__text {
+        margin-left: 16px;
+        color: #2c6df9;
+        font-size: 14px;
+      }
+    }
+  }
+}
