@@ -34,8 +34,9 @@ const EditProjectModalContent = (props) => {
   } = props;
 
   const formRef = React.createRef();
-
   const handleFinish = async (values) => {
+    const tagTemp = tagList.filter((item) => values.tags.includes(item.tag_name));
+
     const res = await dispatch({
       type: 'projectManagement/updateProjectEffect',
       payload: {
@@ -46,7 +47,7 @@ const EditProjectModalContent = (props) => {
         project_manager: values.projectManager,
         engineering_owner: values.engineeringOwner,
         division: values.division,
-        tags: values.tags || values.tags.tag_name,
+        tags: tagTemp,
       },
     });
     if (res.statusCode === 200) {
