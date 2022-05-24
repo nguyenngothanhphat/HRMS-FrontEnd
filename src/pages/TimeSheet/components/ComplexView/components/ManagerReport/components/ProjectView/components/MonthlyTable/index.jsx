@@ -1,6 +1,6 @@
 import { Table } from 'antd';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'umi';
 import { convertMsToTime, projectColor } from '@/utils/timeSheet';
 import EmptyComponent from '@/components/Empty';
@@ -15,15 +15,16 @@ const MonthlyTable = (props) => {
     loadingFetch = false,
     weeksOfMonth = [],
     data = [],
-    tablePagination: {
-      page = 0,
-      // pageCount = 0,
-      pageSize = 0,
-      rowCount = 0,
-    } = {},
-    onChangePage = () => {},
+    // tablePagination: {
+    //   page = 0,
+    // pageCount = 0,
+    //   pageSize = 0,
+    //   rowCount = 0,
+    // } = {},
+    // onChangePage = () => {},
   } = props;
-
+  const [pageSize, setPageSize] = useState(5);
+  const [pageSelected, setPageSelected] = useState(1);
   // FUNCTIONS
   const getColorByIndex = (index) => {
     return projectColor[index % projectColor.length];
@@ -90,9 +91,7 @@ const MonthlyTable = (props) => {
         align: 'center',
         width: `${100 / columnLength}%`,
         render: (employee, _, index) => {
-          const {
-            generalInfo: { legalName = '', userId = '', avatar },
-          } = employee;
+          const { legalName = '', userId = '', avatar } = employee;
           return (
             // <div className={styles.functionalArea}>
             //   <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
@@ -130,13 +129,14 @@ const MonthlyTable = (props) => {
     return result;
   };
 
-  const onChangePagination = (pageNumber) => {
-    onChangePage(pageNumber);
+  const onChangePagination = (pageNumber, pageSizeProp) => {
+    // onChangePage(pageNumber);
+    setPageSelected(pageNumber);
+    setPageSize(pageSizeProp);
   };
-
   const pagination = {
     position: ['bottomLeft'],
-    total: rowCount,
+    total: data.length,
     showTotal: (total, range) => (
       <span>
         Showing{' '}
@@ -146,8 +146,11 @@ const MonthlyTable = (props) => {
         of {total}{' '}
       </span>
     ),
+    defaultPageSize: pageSize,
+    showSizeChanger: true,
+    pageSizeOptions: ['5', '10', '25', '50'],
     pageSize,
-    current: page,
+    current: pageSelected,
     onChange: onChangePagination,
   };
 

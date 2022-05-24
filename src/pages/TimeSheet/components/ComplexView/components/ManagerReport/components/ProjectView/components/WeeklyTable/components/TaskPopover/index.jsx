@@ -50,7 +50,7 @@ const TaskPopover = (props) => {
               </Col>
             </Row>
           )}
-          {showingTasks.map((task) => {
+          {showingTasks?.map((task) => {
             return (
               <Row className={styles.eachRow} justify="space-between" align="middle">
                 <Col span={18} className={styles.taskName}>

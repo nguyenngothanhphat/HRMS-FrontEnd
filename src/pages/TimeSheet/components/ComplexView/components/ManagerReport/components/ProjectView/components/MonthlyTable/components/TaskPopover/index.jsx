@@ -44,14 +44,14 @@ const TaskPopover = (props) => {
           </Col>
         </Row>
         <div className={styles.taskTable__body}>
-          {showingTasks.length === 0 && (
+          {showingTasks?.length === 0 && (
             <Row className={styles.eachRow} justify="space-between" align="middle">
               <Col span={24} className={styles.taskName}>
                 <span>No tasks</span>
               </Col>
             </Row>
           )}
-          {showingTasks.map((task) => {
+          {showingTasks?.map((task) => {
             return (
               <Row className={styles.eachRow} justify="space-between" align="middle">
                 <Col span={12} className={styles.taskName}>
