@@ -1,10 +1,10 @@
-import { Row, Col } from 'antd';
+import { Col, Row } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
-import { EMP_ROW_HEIGHT, WORKING_HOURS } from '@/utils/timeSheet';
-import styles from './index.less';
+import { EMP_ROW_HEIGHT } from '@/utils/timeSheet';
 import { TIMEOFF_PERIOD } from '@/utils/timeOff';
+import styles from './index.less';
 
 const TimeOffCard = (props) => {
   const {
@@ -15,6 +15,8 @@ const TimeOffCard = (props) => {
       endWorkDay: { end = '' } = {},
       totalHour = 0,
     } = {},
+    startWorkingHour = '',
+    endWorkingHour = '',
   } = props;
 
   const [top, setTop] = useState(0);
@@ -56,7 +58,7 @@ const TimeOffCard = (props) => {
     let heightTemp = 0;
 
     if (startTimeTemp && endTimeTemp) {
-      for (let i = WORKING_HOURS.START; i <= WORKING_HOURS.END; i += 1) {
+      for (let i = startWorkingHour; i <= endWorkingHour; i += 1) {
         if (i < startTimeHourTemp) {
           topTemp += EMP_ROW_HEIGHT;
         } else if (i === startTimeHourTemp) {
@@ -79,7 +81,7 @@ const TimeOffCard = (props) => {
 
   useEffect(() => {
     getTime();
-  }, [JSON.stringify(card)]);
+  }, [JSON.stringify(card), startWorkingHour]);
 
   useEffect(() => {
     if (startTimeTemp && endTimeTemp) {

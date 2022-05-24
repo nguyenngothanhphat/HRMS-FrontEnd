@@ -41,6 +41,16 @@ const CustomTimePicker = (props) => {
         );
       });
     }
+
+    // add the last hour
+    const lastHour = moment(hours[hours.length - 1], hourFormat).hours();
+    hours.push(
+      moment({
+        hour: endHour === 24 ? lastHour : lastHour + 1,
+        minute: endHour === 24 ? 59 : 0,
+      }).format(hourFormat),
+    );
+
     setList(hours);
   };
 

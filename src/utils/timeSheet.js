@@ -146,9 +146,11 @@ export const parseTimeAPI = (time = '') => {
 
 // WORKING HOURS
 export const WORKING_HOURS = {
-  START: 5,
+  START: 0,
   END: 24,
 };
+
+export const DEFAULT_TOP_HOUR = 16; // HOUR
 
 export const TASKS = [
   'Brainstorming',
