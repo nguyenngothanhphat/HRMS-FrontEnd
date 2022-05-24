@@ -1,4 +1,4 @@
-describe('Timeoff Automation', () => {
+describe('Employee Directory', () => {
   before(() => {
     cy.visit('https://stghrms.paxanimi.ai/login');
   });

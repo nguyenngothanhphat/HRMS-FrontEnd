@@ -1,16 +1,25 @@
 describe('Employee profile', () => {
-  before(() => {
+  beforeEach(() => {
     cy.visit('https://stghrms.paxanimi.ai/login');
     cy.login('sandeep@mailinator.com','12345678@Tc')
   });
   it('VIEW PROFILE', () => {
       cy.get('.account___1r_Ku')
-      .trigger('mousemove')
+      .trigger('mousemove', {force:true})
       .click({ force:true })
       .then(() => {
         cy.contains('View profile').click({force:true});
-        cy.wait(8000);
+        cy.wait(3000);
       });
+    });
+  it('general info',()=>{
+    cy.get('.account___1r_Ku')
+    .trigger('mousemove',  {force:true})
+    .click({ force:true })
+    .then(() => {
+      cy.contains('View profile').click({force:true});
+      cy.wait(3000);
+    });
       cy.get('.EmployeeTitle___2nIc6'); // general info
       cy.wait(2000)
       cy.contains('Edit').click({force:true})                   //employee information 
@@ -19,6 +28,16 @@ describe('Employee profile', () => {
       cy.contains('Save').click({force:true});
       cy.wait(2000)
       cy.contains('Okay').click({force:true})
+      cy.wait(2000)
+      cy.contains('Edit').click({force:true})                   //employee information 
+      cy.wait(3000)
+      cy.get('#workNumber').clear();
+      cy.contains('Save').click({force:true});
+      cy.wait(2000)
+      cy.contains('Okay').click({force:true})
+      cy.wait(2000)
+
+      
       cy.get('.EmployeeTitle___3ugtk').should('have.text','Personal Information')
       cy.get('.EmployeeTitle___3ugtk');                  // personal information
       cy.get('.Edit___Tufj9').click();
@@ -39,6 +58,26 @@ describe('Employee profile', () => {
       cy.wait(2000)
       cy.contains('Okay').click({force:true})
          cy.wait(2000)
+//re editing 
+cy.get('.Edit___Tufj9').click();
+cy.get('#personal_information_personalNumber').clear();
+cy.wait(1000)
+cy.get('#personal_information_personalEmail').clear();
+cy.wait(1000)
+cy.get('#personal_information_nationality').clear()
+cy.wait(1000)
+cy.get('#personal_information_r_Addressline1').clear();
+cy.wait(1000)
+cy.get('#personal_information_r_Addressline2').clear();
+cy.wait(1000)
+cy.get('#personal_information_r_City').clear();
+cy.wait(1000)
+cy.get('[type="checkbox"]').eq(0).click({force:true})
+cy.contains('Save').click({force:true})
+cy.wait(2000)
+cy.contains('Okay').click({force:true})
+  cy.wait(2000)
+
          cy.get('.EmployeeTitle___CECYB').should('have.text','Emergency Contact Details')
          cy.get('.EmployeeTitle___CECYB');                        //emergency contact details
          cy.get('.Edit___3-jOE').click({force:true});
@@ -55,8 +94,18 @@ describe('Employee profile', () => {
              cy.wait(2000)
              cy.contains('Okay').click({force:true})
              cy.wait(2000)
+           })
+           //re-edit
+           cy.get('.Edit___3-jOE').click({force:true});
+           cy.wait(2000)
+           cy.get('[alt="remove"]').dblclick({force:true})
+           cy.wait(2000)
+           cy.contains('Save').click({force:true})
+           cy.wait(2000)
+           cy.contains('Okay').click({force:true})
+           cy.wait(2000)
+           
 
-       })
 
       cy.get('.viewTitle__text___3qRAk').should('have.text','Professional & Academic Background')
       cy.get('.viewTitle__text___3qRAk');                 // profesional and academic background
@@ -67,20 +116,45 @@ describe('Employee profile', () => {
       cy.wait(1000)
       cy.get('#basic_qualification').type('B.Tech')
       cy.wait(2000)
-      // cy.get('[placeholder="Enter name"]').type('TIO')
-      // cy.wait(5000)
       // const image = 'image.PNG';
       // cy.get('input[type="file"]').attachFile(image);
-      cy.wait(3000)
+      // cy.wait(3000)
       cy.get('.css-1s2u09g-control').click({force:true}).type('Cypress'+'{enter}')
       cy.wait(1000)
       cy.contains('Save').click({force:true})
-      cy.wait(8000)
+      cy.wait(2000)
       cy.contains('Okay').click({force:true})
+      //re edit
+      cy.get('.viewTitle__edit__text___1BESf').click({force:true})
+      cy.get('#basic_preJobTitle').clear();
+      cy.wait(1000)
+      cy.get('#basic_preCompany').clear();
+      cy.wait(1000)
+      cy.get('#basic_qualification').clear();
+      cy.wait(2000)
+      // const image = 'image.PNG';
+      // cy.get('input[type="file"]').attachFile(image);
+      // cy.wait(3000)
+      cy.get('.css-1s2u09g-control')
+      cy.get('[aria-label="Remove cypress"]').click({force:true})
+      cy.wait(1000)
+      cy.contains('Save').click({force:true})
+      cy.wait(2000)
+      cy.contains('Okay').click({force:true})
+
+      });
 
 
 
    // *****employement info */
+   it('employement info',()=>{
+    cy.get('.account___1r_Ku')
+    .trigger('mousemove')
+    .click({ force:true })
+    .then(() => {
+      cy.contains('View profile').click({force:true});
+      cy.wait(3000);
+    });
       cy.get('.itemMenu___3QSsd ').eq(0).click({force:true});
       // cy.get('.title___11auN').should('have.text','Employment Details')
       cy.get('.title___11auN');   //employement details
@@ -147,9 +221,18 @@ describe('Employee profile', () => {
       cy.get('[type="button"]').eq(0).click({force:true})
       cy.wait(3000)
     cy.contains('Cancel & Return').click({force:true})
+   });
 
 
     //**********benefits***** */
+    it('benefits',()=>{
+      cy.get('.account___1r_Ku')
+      .trigger('mousemove',{force:true})
+      .click({ force:true })
+      .then(() => {
+        cy.contains('View profile').click({force:true});
+        cy.wait(3000);
+      });
     cy.get('.textName___2dqbQ').eq(5).click({force:true})
     cy.wait(4000)
     cy.get('.headingText___36nuO') //covered individuals
@@ -170,6 +253,8 @@ describe('Employee profile', () => {
         cy.wait(800);
         cy.get('[type="submit"]').click({force:true})
     });
+    cy.wait(2000)
+    cy.get('[alt="remove"]').dblclick({force:true})
     cy.get('.ant-card-head-title')
     cy.wait(2000)
     cy.contains('Financial').click({force:true})
@@ -178,6 +263,5 @@ describe('Employee profile', () => {
     cy.wait(3000)
       
 
-
-  });
 });
+  });
