@@ -21,9 +21,8 @@ const TimeoffPopover = (props) => {
   const [showingTimeOff, setShowingTimeOff] = useState([]);
 
   const generateShowingTask = (value) => {
-    const result = [timeoff];
-    if (!value) setShowingTimeOff(result);
-    else setShowingTimeOff(result.slice(0, value - 1));
+    if (!value) setShowingTimeOff(timeoff);
+    else setShowingTimeOff(timeoff.slice(0, value - 1));
   };
 
   const getTimeOffTotalHours = (item) => {
@@ -99,7 +98,6 @@ const TimeoffPopover = (props) => {
         </div>
         <div className={styles.divider} />
         {renderTaskTable()}
-        <div className={styles.divider} />
       </div>
     );
   };

@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 /* eslint-disable react/button-has-type */
-import { Button, Col, Row } from 'antd';
+import { Button, Col, Row, Spin } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
 import { ONBOARDING_FORM_LINK } from '@/utils/onboarding';
@@ -84,15 +84,16 @@ class LayoutAddCandidateForm extends Component {
       currentPage = '',
       hidePreviewOffer = false,
       disablePreviewOffer = false,
-      processStatus = '',
+      // processStatus = '',
       currentStep,
+      loading = false
     } = this.props;
 
     const { displayComponent, selectedItemId } = this.state;
     const listMenuWithoutOfferLetter = listMenu.filter((l) => l.key !== 'offerLetter');
 
     return (
-      <Row className={s.containerLayoutAddCandidateForm}>
+      <Row className={s.containerLayoutAddCandidateForm} gutter={[0, 24]}>
         <Col xs={24} md={6} xl={4} className={s.viewLeft}>
           <div className={s.viewLeft__menu}>
             {listMenuWithoutOfferLetter.map((item, index) => (
@@ -125,14 +126,11 @@ class LayoutAddCandidateForm extends Component {
             </div>
           </div>
         </Col>
-        <Col
-          sm={24}
-          md={18}
-          xl={20}
-          className={s.viewRight}
-          style={currentPage === 'settings' ? { padding: '0' } : {}}
-        >
-          {displayComponent}
+        <Col sm={24} md={18} xl={20} style={currentPage === 'settings' ? { padding: 0 } : {}}>
+          <Spin spinning={loading}>
+            {' '}
+            <div className={s.viewRight}>{displayComponent}</div>
+          </Spin>
         </Col>
       </Row>
     );

@@ -258,7 +258,6 @@ class NewCandidateForm extends PureComponent {
     // const title = isAddNew ? `Add a team member [${reId}]` : `Review team member [${reId}]`;
     const title = `Add a team member`;
 
-    if (listMenu.length === 0) return <Skeleton />;
     return (
       <PageContainer>
         <div className={styles.containerNewCandidateForm}>
@@ -280,12 +279,18 @@ class NewCandidateForm extends PureComponent {
             </div>
           </Affix>
 
-          <LayoutAddCandidateForm
-            listMenu={listMenu}
-            tabName={tabName}
-            reId={reId}
-            loading={loadingFetchCandidate}
-          />
+          {listMenu.length === 0 ? (
+            <div style={{ padding: 24 }}>
+              <Skeleton />
+            </div>
+          ) : (
+            <LayoutAddCandidateForm
+              listMenu={listMenu}
+              tabName={tabName}
+              reId={reId}
+              loading={loadingFetchCandidate}
+            />
+          )}
         </div>
       </PageContainer>
     );

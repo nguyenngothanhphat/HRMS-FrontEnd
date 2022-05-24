@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { EMP_MT_MAIN_COL_SPAN } from '@/utils/timeSheet';
 import ActivityCard from './components/ActivityCard';
-import styles from './index.less';
 import TimeOffCard from './components/TimeOffCard';
+import styles from './index.less';
 
 const { DATE_OF_HOURS, REMAINING } = EMP_MT_MAIN_COL_SPAN;
 
@@ -13,6 +13,8 @@ const ActivityList = (props) => {
     data: { timesheet = [], timeoff = [], date = '' } = {},
     hourList = [],
     employeeSchedule = {},
+    startWorkingHour = '',
+    endWorkingHour = '',
   } = props;
 
   // IS OLD TIME SHEET ? MIGRATED FROM THE INTRANET
@@ -66,6 +68,8 @@ const ActivityList = (props) => {
             cardDay={date}
             cardIndex={index}
             isOldTimeSheet={isOldTimeSheet}
+            startWorkingHour={startWorkingHour}
+            endWorkingHour={endWorkingHour}
           />
         ))}
         {timeoff.map((item, index) => (
@@ -74,6 +78,8 @@ const ActivityList = (props) => {
             cardDay={date}
             cardIndex={index}
             employeeSchedule={employeeSchedule}
+            startWorkingHour={startWorkingHour}
+            endWorkingHour={endWorkingHour}
           />
         ))}
       </Col>

@@ -272,7 +272,7 @@ const Projects = (props) => {
         visible={isEditProjectStatus}
         onClose={() => setIsEditProjectStatus(false)}
         firstText="Save Changes"
-        secondText="Cancel"
+        cancelText="Cancel"
         title="Edit Status"
         loading={loadingUpdateProject}
         content={
@@ -289,7 +289,7 @@ const Projects = (props) => {
         visible={isDeleteProject}
         onClose={() => setIsDeleteProject(false)}
         firstText="Delete"
-        secondText="Cancel"
+        cancelText="Cancel"
         title="Delete Project"
         loading={loadingDeleteProject}
         content={

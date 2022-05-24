@@ -6,6 +6,13 @@
 @borderColor: #d6dce0;
 
 .JobDetailsComponent {
+  :global {
+    // inputs
+    .ant-checkbox-disabled + span,
+    .ant-select-disabled span {
+      color: #161c29 !important;
+    }
+  }
   .mainContainer {
     background: #fff;
     border: solid 1px #d6dce0;

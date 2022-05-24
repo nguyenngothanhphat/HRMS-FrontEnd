@@ -1,245 +1,130 @@
-/* eslint-disable no-nested-ternary */
-import React, { PureComponent } from 'react';
-import { Collapse, Checkbox, Input, Form, Button, Row, Col, notification, Divider } from 'antd';
-import { PlusOutlined, MinusOutlined, CloseOutlined, DeleteOutlined } from '@ant-design/icons';
+import { CloseOutlined, DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Checkbox, Col, Collapse, Form, Input, Popconfirm } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { camelize, mapType } from '@/utils/newCandidateForm';
 import styles from './index.less';
 
 const { Panel } = Collapse;
 const CheckboxGroup = Checkbox.Group;
 
-@connect(({ newCandidateForm }) => ({
-  newCandidateForm,
-}))
-class CollapseFieldsTypeABC extends PureComponent {
-  formRef = React.createRef();
+const CollapseFieldsTypeABC = (props) => {
+  const { dispatch, layout: { type = '', name = '' } = {}, items = [], disabled = false } = props;
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      checkedList: [],
-      indeterminate: true,
-      checkAll: false,
-      visible: true,
-      typeSelected: '',
-    };
-  }
+  const [form] = Form.useForm();
 
-  componentDidMount = () => {
-    const {
-      newCandidateForm: {
-        tempData: { identityProof = {}, addressProof = {}, educational = {} },
-      } = {},
-      item = {},
-    } = this.props;
+  const [checkedList, setCheckedList] = useState([]);
+  const [visible, setVisible] = useState(false);
 
-    const { data = [] } = item;
-    let checkedList = [];
-    const { type = '' } = item;
-    switch (type) {
-      case 'A':
-        checkedList = identityProof.checkedList;
-        break;
-      case 'B':
-        checkedList = addressProof.checkedList;
-        break;
-      case 'C':
-        checkedList = educational.checkedList;
-        break;
-      default:
-        break;
-    }
+  useEffect(() => {
+    const checkedListTemp = items.filter((x) => x.value).map((x) => x.alias);
+    setCheckedList(checkedListTemp);
+  }, [JSON.stringify(items)]);
 
-    // handle check all checkbox
-    let checkAll = false;
-    if (checkedList.length === data.length) {
-      checkAll = true;
-    }
-
-    this.setState({
-      checkedList,
-      indeterminate: false,
-      checkAll,
+  const onSaveRedux = (result) => {
+    dispatch({
+      type: 'newCandidateForm/saveTemp',
+      payload: {
+        [mapType[type]]: result,
+      },
     });
   };
 
-  onChange = (list) => {
-    const { checkBoxesData = [], handleChange = () => {}, item = {} } = this.props;
-    this.setState({
-      checkedList: list,
-      indeterminate: !!list.length && list.length < checkBoxesData.length,
-      checkAll: list.length === checkBoxesData.length,
+  const onCheckBoxChange = (list) => {
+    const result = items.map((x) => {
+      return {
+        ...x,
+        value: list.includes(x.alias),
+      };
     });
-    handleChange(list, item);
+    onSaveRedux(result);
   };
 
-  onCheckAllChange = (e) => {
-    const { checkBoxesData = [], handleCheckAll = () => {}, item = {} } = this.props;
-    const checkBoxes1 = checkBoxesData.filter(
-      (data) => data.alias.substr(data.alias.length - 1) === '*',
-    );
-    const checkBoxes2 = checkBoxesData.filter(
-      (data) => data.alias.substr(data.alias.length - 1) !== '*',
-    );
-    e.stopPropagation();
-
-    const checkedList1 = checkBoxes1.map((data) => data.alias);
-    const checkedList2 = e.target.checked ? checkBoxes2.map((data) => data.alias) : [];
-
-    const checkedList = checkedList1.concat(checkedList2);
-
-    this.setState({
-      checkedList,
-      indeterminate: false,
-      checkAll: e.target.checked,
-    });
-
-    handleCheckAll(e, checkedList, item);
-  };
-
-  renderHeader = () => {
-    const { title = '', disabled = false } = this.props;
-
-    const { indeterminate, checkAll } = this.state;
+  const renderHeader = () => {
     return (
       <div className={styles.header}>
-        <Checkbox
-          checked={checkAll}
-          indeterminate={indeterminate}
-          disabled={disabled}
-          onClick={(event) => this.onCheckAllChange(event)}
-        />
-        <span className={styles.titleText}>{title}</span>
+        <span className={styles.titleText}>
+          Type {type}: {name} ({checkedList.length} selected)
+        </span>
       </div>
     );
   };
 
-  handleClick = (type) => {
-    const { visible } = this.state;
-    this.setState({
-      visible: !visible,
-      typeSelected: type,
-    });
+  const onSubmit = (values) => {
+    const result = [
+      ...items,
+      {
+        alias: values.alias,
+        key: camelize(values.alias),
+        value: true,
+        new: true,
+      },
+    ];
+
+    onSaveRedux(result);
+
+    setVisible(!visible);
+    form.resetFields();
   };
 
-  handleCancel = () => {
-    const { visible } = this.state;
-    this.setState({
-      visible: !visible,
-    });
+  const handleRemove = (key) => {
+    const result = items.filter((x) => x.key !== key);
+    onSaveRedux(result);
   };
 
-  camelize = (str) => {
-    return str
-      .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
-        return index === 0 ? word.toLowerCase() : word.toUpperCase();
-      })
-      .replace(/\s+/g, '');
-  };
-
-  onSubmit = (values) => {
-    const { visible, typeSelected } = this.state;
-    const { addNewField, documentChecklistSetting = [], type = '' } = this.props;
-    this.setState({
-      visible: !visible,
-    });
-
-    let check = false;
-    documentChecklistSetting.forEach((doc) => {
-      if (doc.type === type) {
-        const findObj = doc.data.filter((d) => d.alias === values.nameOfField);
-        if (findObj.length > 0) {
-          check = true;
-        }
-      }
-    });
-
-    if (check) {
-      notification.error({ message: 'This field name is duplicated' });
-    } else addNewField(values.nameOfField, typeSelected);
-    this.formRef.current.resetFields();
-  };
-
-  handleRemove = (key, type) => {
-    const { handleRemoveDocument = () => {} } = this.props;
-    handleRemoveDocument(key, type);
-  };
-
-  render() {
-    const { checkedList, visible } = this.state;
-    const { item: { data = [] } = {}, disabled = false, type } = this.props;
-    // const checkBoxes1 = checkBoxesData.filter(
-    //   (data) => data.alias.substr(data.alias.length - 1) === '*',
-    // );
-    // const checkBoxes2 = checkBoxesData.filter(
-    //   (data) => data.alias.substr(data.alias.length - 1) !== '*',
-    // );
-
-    return (
+  return (
+    <Col span={24}>
       <div className={styles.CollapseFieldsTypeABC}>
         <Collapse
           accordion
           expandIconPosition="right"
-          defaultActiveKey={disabled ? '1' : ''}
-          expandIcon={(props) => {
-            return props.isActive ? (
+          defaultActiveKey="1"
+          expandIcon={({ isActive }) => {
+            return isActive ? (
               <MinusOutlined className={styles.alternativeExpandIcon} />
             ) : (
               <PlusOutlined className={styles.alternativeExpandIcon} />
             );
           }}
         >
-          <Panel header={this.renderHeader()} key="1">
+          <Panel header={renderHeader()} key="1">
             <CheckboxGroup
               direction="vertical"
-              onChange={this.onChange}
+              onChange={onCheckBoxChange}
               value={checkedList}
               disabled={disabled}
               className={styles.checkBoxesGroup}
             >
-              {/* {data.map((data) => (
-                <Checkbox
-                  disabled={data.alias.substr(data.alias.length - 1) === '*'}
-                  value={data.alias}
-                >
-                  {data.alias}
-                </Checkbox>
-              ))} */}
-              {data.map((val) => {
+              {items.map((val) => {
                 return (
-                  <Checkbox
-                    value={val.alias}
-                    disabled={val.alias.substr(val.alias.length - 1) === '*'}
-                  >
+                  <Checkbox value={val.alias} disabled={val.required}>
                     {val.alias}
+                    {val.required && <span className={styles.starSymbol}>*</span>}
                     {!disabled && val.new && (
-                      <DeleteOutlined
-                        onClick={() => this.handleRemove(val.key, type)}
-                        className={styles.removeIcon}
-                      />
+                      <Popconfirm onConfirm={() => handleRemove(val.key)} title="Sure to remove?">
+                        <DeleteOutlined className={styles.removeIcon} />
+                      </Popconfirm>
                     )}
                   </Checkbox>
                 );
               })}
             </CheckboxGroup>
-            {!disabled && data.length > 0 && <div className={styles.addBtn__divider} />}
+
+            {!disabled && items.length > 0 && <div className={styles.addBtn__divider} />}
+
             <div
               className={
-                visible || disabled
+                !visible || disabled
                   ? `${styles.addNewType} ${styles.hidden}`
                   : `${styles.addNewType}`
               }
             >
               <div className={styles.addTitle}>
                 <p>Add New Field</p>
-                <CloseOutlined onClick={this.handleCancel} />
+                <CloseOutlined onClick={() => setVisible(false)} />
               </div>
-              <Form
-                ref={this.formRef}
-                onFinish={(values) => this.onSubmit(values)}
-                layout="vertical"
-              >
-                <Form.Item label="Name of the field" name="nameOfField">
+              <Form form={form} onFinish={onSubmit} layout="vertical">
+                <Form.Item label="Name of the field" name="alias">
                   <Input placeholder="Enter name of the field" />
                 </Form.Item>
                 <Form.Item>
@@ -249,8 +134,8 @@ class CollapseFieldsTypeABC extends PureComponent {
             </div>
             {!disabled && (
               <div
-                className={!visible ? `${styles.hidden}` : `${styles.addBtn}`}
-                onClick={() => this.handleClick(type)}
+                className={visible ? `${styles.hidden}` : `${styles.addBtn}`}
+                onClick={() => setVisible(true)}
               >
                 <div className={styles.addBtn__text}>
                   <PlusOutlined className={styles.plusIcon} />
@@ -261,8 +146,10 @@ class CollapseFieldsTypeABC extends PureComponent {
           </Panel>
         </Collapse>
       </div>
-    );
-  }
-}
+    </Col>
+  );
+};
 
-export default CollapseFieldsTypeABC;
+export default connect(({ newCandidateForm }) => ({
+  newCandidateForm,
+}))(CollapseFieldsTypeABC);

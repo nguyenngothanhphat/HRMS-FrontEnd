@@ -104,9 +104,9 @@ const AddResourceTypeContent = (props) => {
             <div className={styles.item}>
               <span className={styles.label}>Tags:</span>
               <div className={styles.tags}>
-                {tags.map((t, i) => (
-                  <CustomTag color={getColor(i)}>{t}</CustomTag>
-                ))}
+                {typeof tags === 'object'
+                  ? tags.map((t, i) => <CustomTag color={getColor(i)}>{t.tag_name}</CustomTag>)
+                  : tags.map((t, i) => <CustomTag color={getColor(i)}>{t}</CustomTag>)}
               </div>
             </div>
           </Col>
