@@ -157,6 +157,7 @@ class ModalFeedback extends Component {
   handleBack = () => {
     this.setState({
       screenCapture: null,
+      feedback: null,
     });
   };
 
