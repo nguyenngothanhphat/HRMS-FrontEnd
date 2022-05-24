@@ -1,8 +1,7 @@
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { Collapse, Progress, Tooltip } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'umi';
-import { roundNumber, TIMEOFF_TYPE } from '@/utils/timeOff';
 import ShowBreakdownIcon from '@/assets/iconViewBreakdown.svg';
 import CollapseInformation from './components/CollapseInformation';
 import styles from './index.less';
@@ -13,38 +12,12 @@ const LeaveInformation = (props) => {
   const {
     onInformationClick = () => {},
     timeOff: {
-      yourTimeOffTypes,
-      yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
+      yourTimeOffTypes: { overview = {}, commonLeaves = [], specialLeaves = [] } = {},
     } = {},
     viewDocumentVisible = false,
   } = props;
 
   const [isShow, setIsShow] = useState(false);
-  const [remaining, setRemaining] = useState(0);
-  const [percentMainCircle, setPercentMainCircle] = useState(0);
-
-  const calculateValueForCircleProgress = () => {
-    let total = 0;
-    let taken = 0;
-    let result = 0;
-
-    commonLeaves.forEach((type) => {
-      if (type.type === TIMEOFF_TYPE.A) {
-        taken += type.taken * 1;
-        total += type.total * 1;
-      }
-    });
-
-    result = ((total - taken) * 100) / total;
-    setRemaining(total - taken);
-    setPercentMainCircle(result);
-  };
-
-  useEffect(() => {
-    if (yourTimeOffTypes) {
-      calculateValueForCircleProgress();
-    }
-  }, [JSON.stringify(yourTimeOffTypes)]);
 
   const handleShow = () => {
     setIsShow(!isShow);
@@ -63,9 +36,9 @@ const LeaveInformation = (props) => {
     );
   };
 
-  const renderCircleProgress = (value) => (
+  const renderCircleProgress = () => (
     <div className={styles.circleProgress}>
-      <span className={styles.percentValue}>{roundNumber(value)}</span>
+      <span className={styles.percentValue}>{overview?.remaining || 'N/A'}</span>
       <p className={styles.remainingText}>Remaining</p>
     </div>
   );
@@ -80,8 +53,8 @@ const LeaveInformation = (props) => {
               type="circle"
               strokeColor="#FFA100"
               trailColor="#EAE7E3"
-              percent={percentMainCircle}
-              format={() => renderCircleProgress(remaining)}
+              percent={overview.total ? (overview.remaining / overview.total) * 100 : 0}
+              format={renderCircleProgress}
             />
           </div>
         </div>

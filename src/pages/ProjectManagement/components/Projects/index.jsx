@@ -22,6 +22,7 @@ const Projects = (props) => {
     loadingUpdateProject = false,
     loadingDeleteProject = false,
     permissions = {},
+    filter = {},
   } = props;
   const [projectStatus, setProjectStatus] = useState('All');
 
@@ -40,6 +41,10 @@ const Projects = (props) => {
     dispatch({
       type: 'projectManagement/fetchProjectListEffect',
       payload: tempPayload,
+    });
+    dispatch({
+      type: 'projectManagement/save',
+      payload: { filter: tempPayload },
     });
     dispatch({
       type: 'projectManagement/fetchStatusSummaryEffect',

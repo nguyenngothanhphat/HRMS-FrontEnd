@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Select, Input, Button, Col, Row } from 'antd';
+import { Select, Input, Button, Col, Row, Tag } from 'antd';
 import { connect, formatMessage } from 'umi';
-import { DownloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { CloseOutlined, DownloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { debounce } from 'lodash';
 import FilterButton from '@/components/FilterButton';
 import ArrowDown from '@/assets/projectManagement/arrowDown.svg';
@@ -23,7 +23,7 @@ const HeaderProjectRM = (props) => {
     payloadProject = {},
   } = props;
   const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
-
+  const [applied, setApplied] = useState(0);
   const onFilter = (payload) => {
     fetchProjectList(payload);
   };
@@ -77,6 +77,11 @@ const HeaderProjectRM = (props) => {
 
   const allProject = data.filter((obj) => obj.statusId === undefined);
   const listStatus = data.filter((obj) => obj.statusName !== 'All Projects');
+  const clearTagFilter = () => {
+    setApplied(0);
+    setNeedResetFilterForm(true);
+    onSearchDebounce();
+  };
   return (
     <div className={styles.Header}>
       <div className={styles.Header__left}>
@@ -103,6 +108,18 @@ const HeaderProjectRM = (props) => {
       </div>
 
       <div className={styles.Header__right}>
+        <div>
+          {applied > 0 && (
+            <Tag
+              closable
+              className={styles.tagCountFilter}
+              onClose={clearTagFilter}
+              closeIcon={<CloseOutlined />}
+            >
+              {applied} applied
+            </Tag>
+          )}
+        </div>
         <div className={styles.download}>
           <Row gutter={[24, 0]}>
             <Col>
@@ -118,12 +135,14 @@ const HeaderProjectRM = (props) => {
           </Row>
         </div>
         <FilterPopover
+          setApplied={setApplied}
           placement="bottomRight"
           onSubmit={onFilter}
           needResetFilterForm={needResetFilterForm}
           setNeedResetFilterForm={setNeedResetFilterForm}
         >
-          <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} />
+          {/* <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} /> */}
+          <FilterButton fontSize={14} />
         </FilterPopover>
         <div className={styles.searchBar}>
           <Input

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Select } from 'antd';
 import { debounce } from 'lodash';
 import style from './index.less';
@@ -6,7 +6,7 @@ import style from './index.less';
 const MenuFilter = (props) => {
   const [form] = Form.useForm();
 
-  const { listStatus = [], companyList = [], onSubmit = () => {} } = props;
+  const { listStatus = [], companyList = [], onSubmit = () => {}, setForm = () => {} } = props;
   const yesNo = [
     <Select.Option key="yes">Yes</Select.Option>,
     <Select.Option key="no">No</Select.Option>,
@@ -19,6 +19,10 @@ const MenuFilter = (props) => {
     const values = form.getFieldsValue();
     onFinishDebounce(values);
   };
+
+  useEffect(() => {
+    setForm(form);
+  }, []);
 
   return (
     <div className={style.menuFilter}>

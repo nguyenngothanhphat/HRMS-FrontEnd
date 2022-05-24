@@ -22,9 +22,9 @@ const TableCustomers = (props) => {
   const viewDeleteCustomer = permissions.deleteCustomerManagement !== -1;
 
   const [pageSelected, setPageSelected] = useState(1);
-  const [selectedCustomer, setSelectedCustomer] = useState('');
+  const [selectedCustomer, setSelectedCustomer] = useState([]);
   const [isDeleteCustomer, setIsDeleteCustomer] = useState(false);
-  const [size, setSize] = useState(10);
+  const [pageSize, setPageSize] = useState(10);
   const setFirstPage = () => {
     setPageSelected(1);
   };
@@ -84,11 +84,11 @@ const TableCustomers = (props) => {
         },
       },
       {
-        title: formatMessage({ id: 'page.customermanagement.companyAlias' }),
-        dataIndex: 'dba',
-        align: 'left',
+        title: formatMessage({ id: 'page.customermanagement.companyName' }),
+        dataIndex: 'legalName',
+        align: 'center',
         width: '10%',
-        render: (dba) => <span className={styles.blueText}>{dba}</span>,
+        render: (legalName) => <span className={styles.blueText}>{legalName}</span>,
       },
       {
         title: formatMessage({ id: 'page.customermanagement.openLeads' }),
@@ -178,9 +178,9 @@ const TableCustomers = (props) => {
     }));
   };
 
-  const onChangePagination = (pageNumber, pageSize) => {
+  const onChangePagination = (pageNumber, pageSizeProp) => {
     setPageSelected(pageNumber);
-    setSize(pageSize);
+    setPageSize(pageSizeProp);
   };
 
   // refresh list without losing filter, search
@@ -208,10 +208,10 @@ const TableCustomers = (props) => {
         {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
       </span>
     ),
-    defaultPageSize: size,
+    defaultPageSize: pageSize,
     showSizeChanger: true,
     pageSizeOptions: ['10', '25', '50', '100'],
-    pageSize: size,
+    pageSize,
     current: pageSelected,
     onChange: onChangePagination,
   };

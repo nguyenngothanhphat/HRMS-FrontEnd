@@ -11,7 +11,10 @@ import { getCurrentCompany } from '@/utils/authority';
 import {
   activityColor,
   convertMsToTime,
-  dateFormatAPI, EMP_MT_SECONDARY_COL_SPAN, EMP_ROW_HEIGHT, hourFormat, WORKING_HOURS
+  dateFormatAPI,
+  EMP_MT_SECONDARY_COL_SPAN,
+  EMP_ROW_HEIGHT,
+  hourFormat,
 } from '@/utils/timeSheet';
 import styles from './index.less';
 
@@ -31,6 +34,8 @@ const ActivityCard = (props) => {
     } = {},
     card = {},
     cardDay = '',
+    startWorkingHour = '',
+    endWorkingHour = '',
     dispatch,
     isOldTimeSheet = false,
   } = props;
@@ -56,7 +61,7 @@ const ActivityCard = (props) => {
       const startTimeHourTemp = moment(startTime, 'HH:mm').hour();
       const startTimeMinuteTemp = moment(startTime, 'HH:mm').minute();
 
-      for (let i = WORKING_HOURS.START; i <= WORKING_HOURS.END; i += 1) {
+      for (let i = startWorkingHour; i <= endWorkingHour; i += 1) {
         if (i < startTimeHourTemp) {
           topTemp += EMP_ROW_HEIGHT;
         } else if (i === startTimeHourTemp) {
@@ -86,7 +91,7 @@ const ActivityCard = (props) => {
     if (!isOldTimeSheet) {
       calculateCardPosition();
     }
-  }, [JSON.stringify(card)]);
+  }, [JSON.stringify(card), startWorkingHour]);
 
   // FUNCTION AREA
   const handleLongString = (str) => {

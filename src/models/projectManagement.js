@@ -1,4 +1,4 @@
-import { notification } from 'antd';
+import { notification, message } from 'antd';
 import {
   getProjectList,
   getProjectNameList,
@@ -14,6 +14,7 @@ import {
   updateProject,
   deleteProject,
   getCustomerInfo,
+  getListProjectToExport,
 } from '@/services/projectManagement';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
@@ -31,6 +32,7 @@ const initialState = {
   tagList: [],
   divisionList: [],
   employeeList: [],
+  filter: {},
   customerInfo: {},
 };
 
@@ -292,6 +294,7 @@ const ProjectManagement = {
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
+        // eslint-disable-next-line no-shadow
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -310,6 +313,7 @@ const ProjectManagement = {
           // company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
+        // eslint-disable-next-line no-shadow
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -327,6 +331,7 @@ const ProjectManagement = {
           ...payload,
           tenantId: getCurrentTenant(),
         });
+        // eslint-disable-next-line no-shadow
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -351,8 +356,32 @@ const ProjectManagement = {
         dialog(error);
       }
     },
+    *fetchProjectToExport({ payload }, { call }) {
+      let response = {}
+      const hide = message.loading('Exporting data projects...', 0);
+      try {
+        response = yield call(getListProjectToExport, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+        return null
+      }
+      hide()
+      return response
+    },
   },
   reducers: {
+    clearFilter(state) {
+      return {
+        ...state,
+        filter: {},
+      };
+    },
     save(state, action) {
       return {
         ...state,

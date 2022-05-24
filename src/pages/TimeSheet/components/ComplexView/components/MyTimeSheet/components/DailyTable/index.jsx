@@ -6,7 +6,9 @@ import {
   dateFormatAPI,
   EMP_MT_MAIN_COL_SPAN,
   EMP_MT_SECONDARY_COL_SPAN,
+  hourFormatAPI,
   WORKING_HOURS,
+  DEFAULT_TOP_HOUR,
 } from '@/utils/timeSheet';
 import ActivityList from './components/ActivityList';
 import styles from './index.less';
@@ -20,10 +22,34 @@ const DailyTable = (props) => {
     loadingFetchMyTimesheetByType = false,
     data: dataProp = [],
     loadingFetchEmployeeSchedule = false,
+    employeeSchedule = {},
   } = props;
+
+  const { startWorkDay: { start: companyStartTime = '' } = {} } = employeeSchedule;
 
   const [hourList, setHourList] = useState([]);
   const [formattedData, setFormattedData] = useState({});
+  const [startWorkingHour, setStartWorkingHour] = useState(null);
+  const [endWorkingHour, setEndWorkingHour] = useState(null);
+
+  const getFirstHour = (timesheet = []) => {
+    // sort to get the first hour
+    const sortedArr = JSON.parse(JSON.stringify(timesheet));
+    sortedArr.sort(
+      (a, b) =>
+        moment(a.startTime, hourFormatAPI).hours() - moment(b.startTime, hourFormatAPI).hours(),
+    );
+    const firstItem = sortedArr.length > 0 ? sortedArr[0] : null;
+
+    if (firstItem) {
+      const val = moment(firstItem.startTime, hourFormatAPI).hours();
+      return val > DEFAULT_TOP_HOUR ? DEFAULT_TOP_HOUR : val;
+    }
+    if (companyStartTime) {
+      return moment(companyStartTime, hourFormatAPI).hours();
+    }
+    return 8;
+  };
 
   // generate data by selected date
   const generateData = (data) => {
@@ -43,19 +69,22 @@ const DailyTable = (props) => {
 
   // USE EFFECT AREA
   useEffect(() => {
-    if (hourList.length === 0) {
-      const hourListTemp = [];
-      // from 6 AM to 11 PM
-      for (let i = WORKING_HOURS.START; i <= WORKING_HOURS.END; i += 1) {
-        hourListTemp.push(i);
-      }
-      setHourList(hourListTemp);
+    const hourListTemp = [];
+    for (let i = startWorkingHour; i <= endWorkingHour; i += 1) {
+      hourListTemp.push(i);
     }
-  }, []);
+    setHourList(hourListTemp);
+  }, [startWorkingHour]);
 
   useEffect(() => {
     refreshData();
   }, [JSON.stringify(dataProp), selectedDate]);
+
+  useEffect(() => {
+    const startWorkingHourTemp = getFirstHour(formattedData?.timesheet || []);
+    setStartWorkingHour(startWorkingHourTemp);
+    setEndWorkingHour(WORKING_HOURS.END);
+  }, [JSON.stringify(formattedData)]);
 
   // RENDER UI
   const _renderTableHeader = () => {
@@ -96,7 +125,14 @@ const DailyTable = (props) => {
   };
 
   const _renderTableContent = () => {
-    return <ActivityList data={formattedData} hourList={hourList} />;
+    return (
+      <ActivityList
+        data={formattedData}
+        hourList={hourList}
+        startWorkingHour={startWorkingHour}
+        endWorkingHour={endWorkingHour}
+      />
+    );
   };
 
   // MAIN AREA
@@ -112,8 +148,11 @@ const DailyTable = (props) => {
   );
 };
 
-export default connect(({ loading, timeSheet: { myTimesheet = [] } = {} }) => ({
-  myTimesheet,
-  loadingFetchMyTimesheetByType: loading.effects['timeSheet/fetchMyTimesheetByTypeEffect'],
-  loadingFetchEmployeeSchedule: loading.effects['timeSheet/getEmployeeScheduleByLocation'],
-}))(DailyTable);
+export default connect(
+  ({ loading, timeSheet: { myTimesheet = [], employeeSchedule = {} } = {} }) => ({
+    myTimesheet,
+    employeeSchedule,
+    loadingFetchMyTimesheetByType: loading.effects['timeSheet/fetchMyTimesheetByTypeEffect'],
+    loadingFetchEmployeeSchedule: loading.effects['timeSheet/getEmployeeScheduleByLocation'],
+  }),
+)(DailyTable);

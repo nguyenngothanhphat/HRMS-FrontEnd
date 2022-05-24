@@ -235,7 +235,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'P_ONBOARDING_T_ONBOARDING_OVERVIEW_VIEW',
     'P_ONBOARDING_ALL',
   ]);
-  const indexNewJoinees = isRole(permissionList, [
+  const indexNewJoinees = isAuthorized(permissionList, [
     'P_ONBOARDING_T_SETTINGS_VIEW',
     'P_ONBOARDING_ALL',
   ]);
@@ -264,6 +264,18 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   ]);
   const indexDivisionFinanceView = isAuthorized(permissionList, [
     'P_TIMESHEET_REPORT_FINANCE_DIVISION_VIEW',
+  ]);
+  const indexReportProjectViewTimesheet = isAuthorized(permissionList, [
+    'P_TIMESHEET_T_REPORT_PROJECT_VIEW',
+  ]);
+  const indexReportProjectLocationViewTimesheet = isAuthorized(permissionList, [
+    'P_TIMESHEET_T_REPORT_PROJECT_LOCATION_VIEW',
+  ]);
+  const indexReportProjectAdminViewTimesheet = isAuthorized(permissionList, [
+    'P_TIMESHEET_T_REPORT_PROJECT_ADMIN_VIEW',
+  ]);
+  const indexReportTeamViewTimesheet = isAuthorized(permissionList, [
+    'P_TIMESHEET_T_REPORT_TEAM_VIEW',
   ]);
 
   // CV = COMPLEX VIEW
@@ -412,6 +424,10 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewLocationFinanceTimesheet: indexLocationFinanceView,
     viewDivisionHRTimesheet: indexDivisionHRView,
     viewDivisionFinanceTimesheet: indexDivisionFinanceView,
+    viewReportProjectViewTimesheet: indexReportProjectViewTimesheet,
+    viewReportProjectLocationViewTimesheet: indexReportProjectLocationViewTimesheet,
+    viewReportProjectAdminViewTimesheet: indexReportProjectAdminViewTimesheet,
+    viewReportTeamViewTimesheet: indexReportTeamViewTimesheet,
 
     // dashboard
     viewPendingApprovalDashboard: indexPendingApprovalDashboard,

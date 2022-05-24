@@ -75,7 +75,7 @@ export function dialog(response) {
     );
   }
   if (messageArray.length === 0) {
-    messageArray = [message || 'Unknow error'];
+    messageArray = [message || 'Unknown error'];
   }
   notification.error({
     message: 'Process fail',

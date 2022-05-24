@@ -401,8 +401,11 @@ const ModalAddInfo = (props) => {
                           message: "Please enter the emergency contact's phone number!",
                         },
                         {
-                          pattern: /^[+0-9-]{10,15}$/,
-                          message: ' Please input from 10 to 15 numeric characters!',
+                          // pattern: /^[+0-9-]{10,15}$/,
+                          pattern:
+                            // eslint-disable-next-line no-useless-escape
+                            /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?$/gm,
+                          message: 'Invalid format, please try again',
                         },
                       ]}
                     >
@@ -451,7 +454,7 @@ const ModalAddInfo = (props) => {
                   message: 'Please enter relevant years of experience!',
                 },
                 {
-                  pattern: /^[0-9]{0,2}$/,
+                  pattern: /^\d{1,2}$|^\d+\.\d{0,2}$/,
                   message: 'Input only number, greater than or equal to zero and less than 99!',
                 },
               ]}

@@ -302,9 +302,7 @@ const JobDetails = (props) => {
                 validateFields={checkFilled}
                 setNeedRefreshDocument={setNeedRefreshDocument}
               />
-              <Row style={{ margin: '0 32px 32px' }}>
-                <RenderAddQuestion page={Page.Job_Details} />
-              </Row>
+              <RenderAddQuestion page={Page.Job_Details} />
             </div>
             {_renderBottomBar()}
           </div>

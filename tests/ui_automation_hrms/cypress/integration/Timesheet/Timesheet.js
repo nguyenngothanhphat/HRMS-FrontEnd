@@ -13,7 +13,7 @@ describe('Timesheet',()=>{
    
     it('creating a timesheet and importing ', () => {
         
-        cy.loginAsSomeone(Manager_email,password);
+        cy.loginAsSomeone(Employee_email,password);
         cy.wait(3000)
         cy.contains("Timesheet").click({force:true});
         cy.get('img[src="/static/prev.70a7a235.svg"]').click({force:true});
@@ -23,11 +23,12 @@ describe('Timesheet',()=>{
             cy.CreatingTimesheet(startDate,endDate);
             cy.get('img[src="/static/next.a010f3e5.svg"]').click({force:true});
             cy.wait(1000)
+            var date =new Date();
+            var day = date.getDate();
+            var previousdate=day-1;
             cy.contains('Import').click({force:true});
+            cy.contains(previousdate).click({force:true})
             cy.wait(3000)
-            cy.pause()
-            cy.get('.icon___pFaX8').eq(0 ).click({force:true});
-            cy.wait(3000);
             cy.get('.ant-checkbox-inner').eq(0).click({force:true});
             cy.get('.ant-btn.ant-btn-primary.btnSubmit___OG7Vc').click({force:true});
             cy.wait(3000)
@@ -36,10 +37,10 @@ describe('Timesheet',()=>{
             cy.contains('Monthly').click({force:true})
             cy.wait(4000);
             cy.logout();     
-        });
-    });
+         });
+     });
      it('Deleting the timesheet',()=>{
-        cy.loginAsSomeone(Manager_email,password);
+        cy.loginAsSomeone(Employee_email,password);
         cy.contains("Timesheet").click({force:true});
         cy.wait(5000);
         cy.DeletingTimesheet();
@@ -52,7 +53,6 @@ describe('Timesheet',()=>{
         cy.wait(3000);
         cy.DeletingTimesheet();
         cy.DeletingTimesheet();
-        cy.wait(3000);
         cy.contains("Request Leave").click({force:true})
         cy.wait(1000)
         cy.contains('Continue').click({force:true})

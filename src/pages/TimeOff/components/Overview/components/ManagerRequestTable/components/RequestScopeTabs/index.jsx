@@ -13,8 +13,16 @@ const { TabPane } = Tabs;
   permissions,
 }))
 class RequestScopeTabs extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isVisible: false,
+    };
+  }
+
   saveCurrentTab = (type) => {
     const { dispatch, timeOff: { currentScopeTab = '' } = {} } = this.props;
+
     if (currentScopeTab !== String(type))
       dispatch({
         type: 'timeOff/save',
@@ -47,15 +55,38 @@ class RequestScopeTabs extends PureComponent {
     return activeTabKeys[0];
   };
 
+  // applied tag
+  onOpenAppliedTag = () => {
+    this.setState({
+      isVisible: true,
+    });
+  };
+
+  onClosedAppliedTag = () => {
+    this.setState({
+      isVisible: false,
+    });
+  };
+
   render() {
     const {
       tab = 0,
       type = 0,
       timeOff: { currentScopeTab = '' } = {},
       permissions = {},
+      saveCurrentTypeTab = () => {},
     } = this.props;
+
+    const { isVisible } = this.state;
     const renderTableTitle = {
-      right: <SearchContent />,
+      right: (
+        <SearchContent
+          isVisible={isVisible}
+          onOpenAppliedTag={this.onOpenAppliedTag}
+          onClosedAppliedTag={this.onClosedAppliedTag}
+          saveCurrentTypeTab={saveCurrentTypeTab}
+        />
+      ),
     };
 
     const viewManagerTimeoff = permissions.viewManagerTimeoff !== -1;
@@ -73,16 +104,16 @@ class RequestScopeTabs extends PureComponent {
         >
           {viewHRTimeoff && (
             <TabPane tab="Company Wide Requests" key="1">
-              <TimeOffRequestTab tab={tab} type={type} category="ALL" />
+              <TimeOffRequestTab isVisible={isVisible} tab={tab} type={type} category="ALL" />
             </TabPane>
           )}
           {viewManagerTimeoff && (
             <TabPane tab="Team Requests" key="2">
-              <TimeOffRequestTab tab={tab} type={type} category="TEAM" />
+              <TimeOffRequestTab isVisible={isVisible} tab={tab} type={type} category="TEAM" />
             </TabPane>
           )}
           <TabPane tab="My Requests" key="3">
-            <TimeOffRequestTab tab={tab} type={type} category="MY" />
+            <TimeOffRequestTab isVisible={isVisible} tab={tab} type={type} category="MY" />
           </TabPane>
         </Tabs>
       </div>

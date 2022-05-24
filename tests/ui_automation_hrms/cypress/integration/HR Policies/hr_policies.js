@@ -19,7 +19,7 @@ describe('HR_Polices_and_Regulations', () => {
       cy.contains('India').click();
       cy.wait(3000)
       cy.contains('Add Categories').click()
-      cy.get('#basic_category').type("Company Asset");
+      cy.get('#basic_category').type("company things");
       cy.get('button[type="submit"]').click();
       cy.wait(5000)
       cy.get('.ant-menu-title-content').eq(11).click();
@@ -28,7 +28,7 @@ describe('HR_Polices_and_Regulations', () => {
       
       cy.contains('Add Policy').click()
       .then(()=>{
-          cy.get("#basic_categoryPolicy").type('Company Asset'+'{enter}')
+          cy.get("#basic_categoryPolicy").type('company things'+'{enter}')
       
         cy.get('#basic_namePolicies').type('Company Assets');
 
@@ -40,11 +40,12 @@ describe('HR_Polices_and_Regulations', () => {
         cy.get('.ant-menu-title-content').eq(10).click({force:true})
         cy.contains('Policies & Regulations').eq(0).click({force:true})
         cy.wait(4000);
-        cy.contains('Settings').click({force:true});
-        cy.contains('Policies & Regulations').eq(0).click({force:true})
-        cy.wait(2000);
+        // cy.contains('Settings').click({force:true});
+        // cy.contains('Policies & Regulations').eq(0).click({force:true})
+        // cy.wait(2000);
+        cy.contains('company things').click({force:true})
         cy.get('img[src="/static/view.6aff4212.svg"]').click({force:true})
-        cy.wait(3000);
+        cy.wait(4000);
         cy.get('img[src="/static/closeIconTimeOff.a323d33a.svg"]').click({force:true})
         cy.wait(3000);
         cy.contains('Settings').click({force:true})
