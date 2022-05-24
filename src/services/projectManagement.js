@@ -163,8 +163,8 @@ export async function getListProjectToExport(payload) {
   return request(
     `/api-project/projecttenant/export-projects`,
     {
-      method: 'POST',
-      data: payload,
+      method: 'GET',
+      params: payload,
     },
     false,
     API_KEYS.PROJECT_API,
