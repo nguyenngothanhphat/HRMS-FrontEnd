@@ -78,6 +78,10 @@ const BasicInformation = (props) => {
     const emailRegExp = RegExp(
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
     );
+    const phoneRegExp = RegExp(
+      // eslint-disable-next-line no-useless-escape
+      /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?$/gm,
+    );
     if (
       firstName &&
       lastName &&
@@ -86,7 +90,8 @@ const BasicInformation = (props) => {
       notSpace.test(firstName) &&
       notSpace.test(middleName) &&
       notSpace.test(lastName) &&
-      emailRegExp.test(privateEmail)
+      emailRegExp.test(privateEmail) &&
+      phoneRegExp.test(phoneNumber)
     ) {
       checkStatus.filledBasicInformation = true;
     } else {

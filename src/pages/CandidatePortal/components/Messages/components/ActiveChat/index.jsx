@@ -17,10 +17,12 @@ import styles from './index.less';
       // candidate = '',
       data: { assignTo = {}, firstName: candidateFN = '', lastName: candidateLN = '' },
     } = {},
+    candidatePortal: { data },
     conversation = {},
     candidatePortal = {},
     loading,
   }) => ({
+    data,
     conversation,
     conversationList,
     candidate,
@@ -141,16 +143,26 @@ class ActiveChat extends PureComponent {
 
   // chat container
   renderSender = (messages = []) => {
-    const { hrAvatar = '' } = this.props;
+    const {
+      data: {
+        CEOInfo: {
+          generalInfoInfo: { legalName: ceoFullname = '', firstName = '', lastName = '' } = {} ||
+            {},
+        } = {} || {},
+      },
+      isReplyable = true,
+    } = this.props;
     const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null;
-
+    const charCeoName = firstName.charAt(0) + lastName.charAt(0);
     return (
       <div className={styles.senderContainer}>
-        <div className={styles.avatar}>
-          <img src={hrAvatar || HRIcon1} alt="message" />
+        <div className={`${styles.avatarOutline} ${!isReplyable ? styles.avatarBgOutline : ''}`}>
+          <div className={`${styles.avatar} ${!isReplyable ? styles.avatarBg : ''}`}>
+            <span className={styles.avatarName}>{!isReplyable ? charCeoName : 'HR'}</span>
+          </div>
         </div>
         <div className={styles.info}>
-          <span className={styles.name}>HR</span>
+          <span className={styles.name}>{!isReplyable ? ceoFullname : 'HR'}</span>
           <span className={styles.time}>
             {lastMessage ? this.getTime(lastMessage?.createdAt) : ''}
           </span>
@@ -160,13 +172,25 @@ class ActiveChat extends PureComponent {
   };
 
   renderChatContent = (chat = []) => {
-    const { hrAvatar = '', candidate: { _id: candidateId = '' } = {}, activeId = '' } = this.props;
+    const {
+      candidate: { _id: candidateId = '' } = {},
+      activeId = '',
+      data: {
+        CEOInfo: { generalInfoInfo: { firstName = '', lastName = '' } = {} || {} } = {} || {},
+      },
+      isReplyable = true,
+    } = this.props;
+    const charCeoName = firstName.charAt(0) + lastName.charAt(0);
     const senderMessage = (item, index) => {
       return (
         <div key={index} className={styles.senderMessage}>
           <div className={styles.above}>
-            <div className={styles.avatar}>
-              <img src={hrAvatar || HRIcon1} alt="sender-avatar" />
+            <div
+              className={`${styles.avatarOutline} ${!isReplyable ? styles.avatarBgOutline : ''}`}
+            >
+              <div className={`${styles.avatar} ${!isReplyable ? styles.avatarBg : ''}`}>
+                <span className={styles.avatarName}>{!isReplyable ? charCeoName : 'HR'}</span>
+              </div>
             </div>
             <div className={styles.messageBody}>
               <span className={styles.name}>{item.text || ''}</span>

@@ -87,8 +87,8 @@ const JoiningFormalities = (props) => {
       dataIndex: 'createdBy',
       key: 'createdBy',
       width: 150,
-      render: ({ generalInfoInfo: { legalName = '' } = {} } = {}) => (
-        <div className={styles.blueText}>{legalName}</div>
+      render: (createdBy) => (
+        <div className={styles.blueText}>{createdBy?.generalInfoInfo?.legalName || ''}</div>
       ),
     },
     {

@@ -197,11 +197,11 @@ class CustomEmailsTableField extends PureComponent {
   _renderTable = (list) => {
     const { loadingFetchList } = this.props;
     const { pageSelected, size } = this.state;
+    const length = list.length;
     // const rowSize = 5;
 
     const pagination = {
-      position: ['bottomRight'],
-      total: list.length,
+      position: ['bottomLeft'],
       showTotal: (total, range) => (
         <span>
           {' '}
@@ -212,6 +212,9 @@ class CustomEmailsTableField extends PureComponent {
           {formatMessage({ id: 'component.customEmailsTableField.pagination.of' })} {total}{' '}
         </span>
       ),
+      defaultPageSize: size,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
       pageSize: size,
       current: pageSelected,
       onChange: (page, pageSize) => this.onChangePagination(page, pageSize),

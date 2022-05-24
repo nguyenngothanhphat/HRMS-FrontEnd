@@ -269,7 +269,7 @@ class ModalAdd extends PureComponent {
                   }),
                 ]}
               >
-                <Input placeholder="Enter Company short name" />
+                <Input placeholder="Enter the Company's DBA" />
               </Form.Item>
             </div>
 
@@ -283,7 +283,15 @@ class ModalAdd extends PureComponent {
                   <Form.Item
                     label="Contact Phone"
                     name="phone"
-                    rules={[{ required: true, message: 'Required field!' }]}
+                    rules={[
+                      { required: true, message: 'Required field!' },
+                      {
+                        pattern:
+                          // eslint-disable-next-line no-useless-escape
+                          /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?$/gm,
+                        message: 'Please enter a valid phone number!',
+                      },
+                    ]}
                   >
                     <Input placeholder="Enter Phone Number" />
                   </Form.Item>
@@ -321,7 +329,8 @@ class ModalAdd extends PureComponent {
                       showSearch
                       optionFilterProp="children"
                       filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
                     >
                       {country.map((countryItem) => {
                         return (
@@ -346,7 +355,8 @@ class ModalAdd extends PureComponent {
                       showSearch
                       optionFilterProp="children"
                       filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
                     >
                       {state.map((stateItem) => {
                         return <Select.Option key={stateItem}>{stateItem}</Select.Option>;
@@ -394,7 +404,8 @@ class ModalAdd extends PureComponent {
                       showSearch
                       optionFilterProp="children"
                       filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
                     >
                       {employeeList.map((employee) => {
                         return (

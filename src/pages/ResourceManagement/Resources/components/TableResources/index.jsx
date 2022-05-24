@@ -163,13 +163,13 @@ class TableResources extends PureComponent {
           of {total}
         </span>
       ),
-      // defaultPageSize: size,
-      showSizeChanger: false,
-      // pageSizeOptions: ['10', '25', '50', '100'],
-      pageSize: data.length,
+      defaultPageSize: size,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
+      pageSize: size,
       current: pageSelected,
-      onChange: (page) => {
-        return getPageAndSize(page, size);
+      onChange: (page, pageSize) => {
+        return getPageAndSize(page, pageSize);
       },
     };
 

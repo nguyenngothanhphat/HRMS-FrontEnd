@@ -38,13 +38,13 @@ class SearchTable extends Component {
   };
 
   render() {
-    const { onChangeSearch = () => {}, filter } = this.props;
+    const { onChangeSearch = () => {}, filter, isFiltering } = this.props;
     const { visible } = this.state;
     return (
       <div className={styles.searchFilter}>
         <div>
           <FilterPopover
-            content={<FilterForm visible={visible} />}
+            content={<FilterForm visible={visible} {...this.props} />}
             title={this.renderTitle()}
             trigger="click"
             placement="bottomRight"
@@ -52,7 +52,7 @@ class SearchTable extends Component {
             onVisibleChange={this.openFilter}
             realTime
           >
-            <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} />
+            <FilterButton fontSize={14} showDot={isFiltering} />
           </FilterPopover>
         </div>
         <CustomSearchBox

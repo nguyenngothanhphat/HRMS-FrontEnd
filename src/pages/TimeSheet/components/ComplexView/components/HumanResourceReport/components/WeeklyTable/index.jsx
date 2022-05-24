@@ -10,12 +10,12 @@ import styles from './index.less';
 const WeeklyTable = (props) => {
   const {
     data = [],
-    limit = 10,
     selectedEmployees = [],
     setSelectedEmployees = () => {},
     loadingFetch = false,
   } = props;
   const [pageSelected, setPageSelected] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [handlingEmployee, setHandlingEmployee] = useState();
   const [employeeDetailModalVisible, setEmployeeDetailModalVisible] = useState(false);
 
@@ -113,8 +113,9 @@ const WeeklyTable = (props) => {
     onChange: onSelectChange,
   };
 
-  const onChangePagination = (pageNumber) => {
+  const onChangePagination = (pageNumber, pageSizeTemp) => {
     setPageSelected(pageNumber);
+    setPageSize(pageSizeTemp);
   };
 
   const pagination = {
@@ -130,7 +131,10 @@ const WeeklyTable = (props) => {
         of {total}{' '}
       </span>
     ),
-    pageSize: limit,
+    defaultPageSize: pageSize,
+    showSizeChanger: true,
+    pageSize,
+    pageSizeOptions: ['10', '25', '50', '100'],
     current: pageSelected,
     onChange: onChangePagination,
   };

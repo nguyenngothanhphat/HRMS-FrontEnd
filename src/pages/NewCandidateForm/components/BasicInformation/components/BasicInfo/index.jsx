@@ -90,7 +90,7 @@ const BasicInfo = (props) => {
                 message: 'Invalid format',
               },
               {
-                pattern: /^\d+$/,
+                pattern: /^\d{1,2}$|^\d+\.\d{0,2}$/,
                 message: 'Only digit!',
               },
             ]}
@@ -116,7 +116,7 @@ const BasicInfo = (props) => {
                 message: 'Invalid format',
               },
               {
-                pattern: /^\d+$/,
+                pattern: /^\d{1,2}$|^\d+\.\d{0,2}$/,
                 message: 'Only digit!',
               },
             ]}
@@ -173,8 +173,11 @@ const BasicInfo = (props) => {
             rules={[
               { required: true, message: 'Required field' },
               {
-                pattern: /^\d+$/,
-                message: 'Only digit !',
+                // pattern: /^\d+$/,
+                pattern:
+                  // eslint-disable-next-line no-useless-escape
+                  /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?$/gm,
+                message: 'Invalid phone number !',
               },
             ]}
           >

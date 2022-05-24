@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
+import FilterCount from '../../../components/FilterCount/FilterCount';
 import styles from './index.less';
 import SearchTable from '../../../components/SearchTable';
 import TableTickets from '../TableTickets';
@@ -22,6 +23,9 @@ const AllTicket = (props) => {
   const [pageSelected, setPageSelected] = useState(1);
   const [size, setSize] = useState(10);
   const [nameSearch, setNameSearch] = useState('');
+  const [applied, setApplied] = useState(0);
+  const [form, setForm] = useState('');
+  const [isFiltering, setIsFiltering] = useState(false);
 
   const onSearchDebounce = debounce((value) => {
     setNameSearch(value);
@@ -94,6 +98,15 @@ const AllTicket = (props) => {
     onSearchDebounce(formatValue);
   };
 
+  const handleFilterCounts = (values) => {
+    const filteredObj = Object.entries(values).filter(
+      ([key, value]) => (value !== undefined && value?.length > 0) || value?.isValid,
+    );
+    const newObj = Object.fromEntries(filteredObj);
+    setApplied(Object.keys(newObj).length);
+    setIsFiltering(true);
+  };
+
   useEffect(() => {
     initDataTable();
   }, [pageSelected, size, selectedFilterTab, nameSearch, JSON.stringify(selectedLocations)]);
@@ -106,7 +119,25 @@ const AllTicket = (props) => {
     <div className={styles.containerTickets}>
       <div className={styles.tabTickets}>
         <Summary setSelectedTab={setSelectedTab} countData={countData} />
-        <SearchTable onChangeSearch={onChangeSearch} className={styles.searchTable} />
+        <div className={styles.filterTable}>
+          <FilterCount
+            applied={applied}
+            form={form}
+            setApplied={() => setApplied(0)}
+            setIsFiltering={() => setIsFiltering(false)}
+            initDataTable={initDataTable}
+            selectedFilterTab={selectedFilterTab}
+            nameSearch={nameSearch}
+            selectedLocations={selectedLocations}
+          />
+          <SearchTable
+            onChangeSearch={onChangeSearch}
+            className={styles.searchTable}
+            handleFilterCounts={handleFilterCounts}
+            setForm={setForm}
+            isFiltering={isFiltering}
+          />
+        </div>
       </div>
       <TableTickets
         data={data}
@@ -114,6 +145,8 @@ const AllTicket = (props) => {
         pageSelected={pageSelected}
         size={size}
         getPageAndSize={getPageAndSize}
+        refreshFetchTicketList={initDataTable}
+        refreshFetchTotalList={fetchTotalList}
       />
     </div>
   );

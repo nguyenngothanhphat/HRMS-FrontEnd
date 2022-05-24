@@ -13,8 +13,10 @@ import styles from './index.less';
     user: { currentUser: { candidate: { _id: candidate = '' } = {} } } = {},
     candidatePortal: { data: { assignTo = {} } } = {},
     candidatePortal = {},
+    candidatePortal: { data },
     loading,
   }) => ({
+    data,
     conversationList,
     listLastMessage,
     candidate,
@@ -137,7 +139,11 @@ class Messages extends PureComponent {
       conversationList = [],
       listLastMessage = [],
       loadingFetchConversations = false,
+      data: {
+        CEOInfo: { generalInfoInfo: { firstName = '', lastName = '' } = {} || {} } = {} || {},
+      },
     } = this.props;
+    const charCeoName = firstName.charAt(0) + lastName.charAt(0);
     return (
       <div className={styles.Messages}>
         <Row type="flex" gutter={[24, 24]}>
@@ -149,6 +155,7 @@ class Messages extends PureComponent {
               loading={loadingFetchConversations}
               listLastMessage={listLastMessage}
               changeHrAvatar={this.changeHrAvatar}
+              charCeoName={charCeoName}
             />
           </Col>
           <Col xs={24} lg={16}>
