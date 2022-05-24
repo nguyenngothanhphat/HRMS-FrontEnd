@@ -129,9 +129,14 @@ const FilterContent = (props) => {
             mode="multiple"
             style={{ width: '100%' }}
             placeholder="Select Division"
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
           >
             {divisionList.map((x) => (
-              <Select.Option value={x.name} key={x}>{x.name}</Select.Option>
+              <Select.Option value={x.name} key={x}>
+                {x.name}
+              </Select.Option>
             ))}
           </Select>
         </Form.Item>
@@ -142,6 +147,9 @@ const FilterContent = (props) => {
             mode="multiple"
             style={{ width: '100%' }}
             placeholder="Select Project Name"
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
           >
             {projectNameList.map((item) => {
               return (
@@ -159,9 +167,16 @@ const FilterContent = (props) => {
             mode="multiple"
             style={{ width: '100%' }}
             placeholder="Select Customer"
+            filterOption={(input, option) => {
+              return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+            }}
           >
             {customerList.map((x) => {
-              return <Select.Option value={x.customerId} key={x}>{x.legalName}</Select.Option>;
+              return (
+                <Select.Option value={x.customerId} key={x.customerId}>
+                  {x.legalName}
+                </Select.Option>
+              );
             })}
           </Select>
         </Form.Item>
@@ -172,10 +187,17 @@ const FilterContent = (props) => {
             mode="multiple"
             style={{ width: '100%' }}
             placeholder="Select Engagement Type"
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
           >
-            {projectTypeList.map((x) => (
-              <Select.Option value={x.id} key={x}>{x.type_name}</Select.Option>
-            ))}
+            {projectTypeList.map((x) => {
+              return (
+                <Select.Option value={x.id} key={x.id}>
+                  {x.type_name}
+                </Select.Option>
+              );
+            })}
           </Select>
         </Form.Item>
 
@@ -185,17 +207,32 @@ const FilterContent = (props) => {
             style={{ width: '100%' }}
             loading={loadingFetchEmployeeList}
             placeholder="Select Project Manager"
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
           >
             {employeeList.map((x) => (
-              <Select.Option value={x._id} key={x}>{x?.generalInfo?.legalName}</Select.Option>
+              <Select.Option value={x._id} key={x._id}>
+                {x?.generalInfo?.legalName}
+              </Select.Option>
             ))}
           </Select>
         </Form.Item>
 
         <Form.Item label="By status" name="projectStatus">
-          <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Select Status">
+          <Select
+            allowClear
+            mode="multiple"
+            style={{ width: '100%' }}
+            placeholder="Select Status"
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
             {projectStatusList.map((x) => (
-              <Select.Option value={x.id} key={x}>{x.status}</Select.Option>
+              <Select.Option value={x.id} key={x.id}>
+                {x.status}
+              </Select.Option>
             ))}
           </Select>
         </Form.Item>
