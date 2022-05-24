@@ -530,9 +530,6 @@ const RequestInformation = (props) => {
 
   const disabledFromDate = (current) => {
     return (
-      // (current && moment(current).isAfter(moment(durationTo), 'day')) ||
-      moment(current).day() === 0 ||
-      moment(current).day() === 6 ||
       !checkIfWholeDayAvailable(current) ||
       !checkIfHalfDayAvailable(current)
     );
@@ -541,8 +538,6 @@ const RequestInformation = (props) => {
   const disabledToDate = (current) => {
     return (
       (current && moment(current).isBefore(moment(durationFrom), 'day')) ||
-      moment(current).day() === 0 ||
-      moment(current).day() === 6 ||
       !checkIfWholeDayAvailable(current) ||
       !checkIfHalfDayAvailable(current)
     );
