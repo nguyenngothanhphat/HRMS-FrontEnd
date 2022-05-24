@@ -46,6 +46,7 @@ const EditTaskModal = (props) => {
       breakTime = 0,
       overTime = 0,
     } = {},
+    task = {},
     timeSheet: { projectList = [] } = {},
   } = props;
 
@@ -83,6 +84,20 @@ const EditTaskModal = (props) => {
       setDisabledHourBefore(startTime);
     }
   }, [visible]);
+
+  useEffect(() => {
+    form.setFieldsValue({
+      date: date ? moment(date) : '',
+      taskName,
+      projectId,
+      startTime: startTime ? moment(startTime, hourFormatAPI).format(hourFormat) : '',
+      endTime: endTime ? moment(endTime, hourFormatAPI).format(hourFormat) : '',
+      notes,
+      clientLocation,
+      breakTime,
+      overTime,
+    });
+  }, [JSON.stringify(task)]);
 
   const handleCancel = () => {
     onClose();
@@ -159,18 +174,8 @@ const EditTaskModal = (props) => {
           form={form}
           id="myForm"
           onFinish={handleFinish}
-          initialValues={{
-            date: date ? moment(date) : '',
-            taskName,
-            projectId,
-            startTime: startTime ? moment(startTime, hourFormatAPI).format(hourFormat) : '',
-            endTime: endTime ? moment(endTime, hourFormatAPI).format(hourFormat) : '',
-            notes,
-            clientLocation,
-            breakTime,
-            overTime,
-          }}
           onValuesChange={onValuesChange}
+          preserve={false}
         >
           <Row gutter={[24, 0]} className={styles.abovePart}>
             <Col xs={24} md={12}>
@@ -318,36 +323,34 @@ const EditTaskModal = (props) => {
   };
 
   return (
-    <>
-      <Modal
-        className={`${styles.EditTaskModal} ${styles.noPadding}`}
-        onCancel={handleCancel}
-        destroyOnClose
-        width={650}
-        footer={
-          <>
-            <Button className={styles.btnCancel} onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button
-              className={styles.btnSubmit}
-              type="primary"
-              form="myForm"
-              key="submit"
-              htmlType="submit"
-              loading={loadingUpdateTask}
-            >
-              Update
-            </Button>
-          </>
-        }
-        title={renderModalHeader()}
-        centered
-        visible={visible}
-      >
-        {renderModalContent()}
-      </Modal>
-    </>
+    <Modal
+      className={`${styles.EditTaskModal} ${styles.noPadding}`}
+      onCancel={handleCancel}
+      destroyOnClose
+      width={650}
+      footer={
+        <>
+          <Button className={styles.btnCancel} onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Button
+            className={styles.btnSubmit}
+            type="primary"
+            form="myForm"
+            key="submit"
+            htmlType="submit"
+            loading={loadingUpdateTask}
+          >
+            Update
+          </Button>
+        </>
+      }
+      title={renderModalHeader()}
+      centered
+      visible={visible}
+    >
+      {renderModalContent()}
+    </Modal>
   );
 };
 
