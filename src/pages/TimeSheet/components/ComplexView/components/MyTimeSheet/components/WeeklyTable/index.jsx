@@ -49,11 +49,16 @@ const WeeklyTable = (props) => {
   };
 
   const formatData = () => {
-    const obj =
-      timeoffList.length > 0
-        ? [Object.assign(timeoffList[0], { projectName: 'Timeoff' })]
-        : timeoffList;
-    setFormattedData(obj.concat(data));
+    let row = [];
+
+    if (timeoffList.length > 0) {
+      const [firstRow] = timeoffList;
+      if (firstRow.days.length > 0) {
+        row = [Object.assign(firstRow, { projectName: 'Timeoff' })];
+      }
+    }
+
+    setFormattedData(row.concat(data));
   };
 
   // USE EFFECT
@@ -158,20 +163,9 @@ const WeeklyTable = (props) => {
         width: `${100 / 9}%`,
         render: (_, row) => {
           const { projectName = '', days = [] } = row;
-          const value = days.find((d) => isTheSameDay(d.date, date));
 
           const getCellValue = () => {
-            // FOR HOLIDAY & LEAVE REQUEST
-            // // if this date has a leave request
-            // if (date === '10/27/2021') {
-            //   return renderEventColumn();
-            // }
-
-            // // if this date is holiday
-            // if (date === '10/29/2021') {
-            //   return renderHoliday(date);
-            // }
-
+            const value = days.find((d) => isTheSameDay(d.date, date));
             return (
               <TaskPopover
                 projectName={projectName}
@@ -193,21 +187,21 @@ const WeeklyTable = (props) => {
           };
 
           const getCellTimeoffValue = () => {
+            const arr = days.filter((d) => isTheSameDay(d.date, date));
+            const sum = arr.reduce((accum, obj) => accum + obj.totalTimeOffTime, 0);
             return (
               <TimeoffPopover
                 projectName={projectName}
                 date={date}
-                timeoff={value}
+                timeoff={arr}
                 placement="bottomLeft"
               >
-                {!value ? (
+                {arr.length === 0 ? (
                   <span className={styles.hourValue}>
                     <img src={EmptyLine} alt="" />
                   </span>
                 ) : (
-                  <span className={styles.hourValue}>
-                    {convertMsToTime(value?.projectDailyTime || value?.totalTimeOffTime)}
-                  </span>
+                  <span className={styles.hourValue}>{convertMsToTime(sum)}</span>
                 )}
               </TimeoffPopover>
             );
