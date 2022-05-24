@@ -31,7 +31,7 @@ const TaskPopover = (props) => {
   // modals
   const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
   const [editTaskModalVisible, setEditTaskModalVisible] = useState(false);
-  const [removeModalVisibe, setRemoveModalVisibe] = useState(false);
+  const [removeModalVisible, setRemoveModalVisible] = useState(false);
   const [handlingPackage, setHandlingPackage] = useState({});
 
   const { employee: { _id: employeeId = '' } = {} } = props;
@@ -59,7 +59,7 @@ const TaskPopover = (props) => {
       },
     });
     if (res.code === 200) {
-      setRemoveModalVisibe(false);
+      setRemoveModalVisible(false);
       refreshData();
     }
   };
@@ -119,7 +119,7 @@ const TaskPopover = (props) => {
                       onClick={() => {
                         setHandlingPackage(task);
                         setShowPopover(false);
-                        setRemoveModalVisibe(true);
+                        setRemoveModalVisible(true);
                       }}
                     />
                   </div>
@@ -204,8 +204,8 @@ const TaskPopover = (props) => {
       />
 
       <CommonModal
-        visible={removeModalVisibe}
-        onClose={() => setRemoveModalVisibe(false)}
+        visible={removeModalVisible}
+        onClose={() => setRemoveModalVisible(false)}
         firstText="Yes"
         width={400}
         onFinish={onRemoveCard}

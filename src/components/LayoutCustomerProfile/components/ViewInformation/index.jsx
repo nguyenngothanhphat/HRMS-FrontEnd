@@ -208,7 +208,7 @@ const ViewInformation = (props) => {
           visible={isEditCustomer}
           onClose={() => setIsEditCustomer(false)}
           firstText="Edit Customer"
-          secondText="Cancel"
+          cancelText="Cancel"
           title="Edit Customer"
           // loading={loadingUpdateProject}
           content={

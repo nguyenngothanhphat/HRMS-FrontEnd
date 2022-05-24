@@ -219,6 +219,9 @@
     .ant-table.ant-table-bordered > .ant-table-container > .ant-table-header > table {
       border: none;
     }
+    .ant-table-container table > thead > tr th:last-child {
+      border-right: none !important;
+    }
     .ant-table-tbody > tr.ant-table-row:hover > td {
       background: unset;
     }
@@ -236,10 +239,10 @@
     .ant-table-thead > tr > th {
       height: 90px;
       color: #000;
+      font-weight: normal;
       background-color: #fff !important;
       border-radius: 0 !important;
       opacity: 1 !important;
-      font-weight: normal;
     }
     .ant-checkbox-inner {
       background-color: @checkbox-background;

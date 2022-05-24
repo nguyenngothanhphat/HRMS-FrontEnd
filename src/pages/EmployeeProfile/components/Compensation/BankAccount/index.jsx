@@ -121,7 +121,6 @@ const BankAccount = (props) => {
         visible={visibleSuccess}
         hasFooter={false}
         onClose={handleCancelModelSuccess}
-        onFinish={handleCancelModelSuccess}
         hasHeader={false}
         content={
           <>

@@ -87,6 +87,15 @@ class CandidatePortal extends PureComponent {
     }
   };
 
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    if (dispatch) {
+      dispatch({
+        type: 'candidatePortal/clearState',
+      });
+    }
+  };
+
   handleWelcomeModal = (value) => {
     this.setState({
       openWelcomeModal: value,

@@ -16,13 +16,6 @@ export function SendEmail(payload) {
   });
 }
 
-export function getWorkHistory(params) {
-  return request('/api/workhistorytenant/get-by-candidate', {
-    method: 'POST',
-    data: params,
-  });
-}
-
 export function getDocumentList() {
   return request('/api/document/list-default-checklist', {
     method: 'POST',
@@ -70,7 +63,7 @@ export function getEmployeeTypeList() {
 }
 
 export function getManagerList(params) {
-  return request('/api/employeetenant/list-manager', {
+  return request('/api/employeetenant/list-by-single-company', {
     method: 'POST',
     data: params,
   });
@@ -239,6 +232,14 @@ export async function getDocumentSettingList(payload) {
 
 export async function getListBenefit(payload) {
   return request('/api/benefittenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+// new document verification
+export async function getDocumentLayoutByCountry(payload) {
+  return request('/api/candidatetenant/get-documents-by-country', {
     method: 'POST',
     data: payload,
   });
