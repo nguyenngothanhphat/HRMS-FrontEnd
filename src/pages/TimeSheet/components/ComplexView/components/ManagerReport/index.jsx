@@ -15,8 +15,11 @@ const VIEW_TYPE = {
 };
 const ManagerReport = (props) => {
   // others
-  const { dispatch, timeSheet: { payloadExport = {}, projectList = [], permissions = {} } = {} } =
-    props;
+  const {
+    dispatch,
+    timeSheet: { payloadExport = {}, projectList = [] } = {},
+    permissions = {},
+  } = props;
 
   // Format fromDate and toDate
   const { fromDate, toDate, projectId } = payloadExport;
