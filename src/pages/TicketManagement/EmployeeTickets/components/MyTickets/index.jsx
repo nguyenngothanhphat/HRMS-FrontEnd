@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
 import styles from './index.less';
@@ -6,52 +6,40 @@ import SearchTable from '../../../components/SearchTable';
 import TableTickets from '../TableTickets';
 import TicketInfo from '../TicketInfo';
 import Summary from '../Summary';
+import FilterCount from '../../../components/FilterCount/FilterCount';
 
-@connect(
-  ({
+const MyTickets = (props) => {
+  const {
+    data = [],
     loading,
-    user: { currentUser: { employee = {} } = {} } = {},
-    ticketManagement: { selectedLocations = [] } = {},
-  }) => ({
-    employee,
-    selectedLocations,
-    loading: loading.effects['ticketManagement/fetchListAllTicket'],
-    loadingFilter: loading.effects['ticketManagement/fetchListAllTicketSearch'],
-  }),
-)
-class MyTickets extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedFilterTab: '1',
-      pageSelected: 1,
-      size: 10,
-      nameSearch: '',
-    };
+    loadingFilter,
+    countData = [],
+    permissions = [],
+    selectedLocations = [],
+    employee: {
+      _id = '',
+      departmentInfo: { _id: idDepart = '' },
+      location: { headQuarterAddress: { country = '' } = {} } = {},
+    } = {},
+    dispatch,
+  } = props;
 
-    this.setDebounce = debounce((nameSearch) => {
-      this.setState({
-        nameSearch,
-      });
-    }, 500);
-  }
+  const dataTableEmployee = data.filter((item) => {
+    return item.employee_assignee === _id;
+  });
+  const [selectedFilterTab, setSelectedFilterTab] = useState('1');
+  const [pageSelected, setPageSelected] = useState(1);
+  const [size, setSize] = useState(10);
+  const [nameSearch, setNameSearch] = useState('');
+  const [applied, setApplied] = useState(0);
+  const [form, setForm] = useState('');
+  const [isFiltering, setIsFiltering] = useState(false);
 
-  componentDidUpdate(prevProps, prevState) {
-    const { selectedFilterTab, pageSelected, size, nameSearch } = this.state;
-    const { selectedLocations = [] } = this.props;
+  const onSearchDebounce = debounce((value) => {
+    setNameSearch(value);
+  }, 500);
 
-    if (
-      prevState.pageSelected !== pageSelected ||
-      prevState.size !== size ||
-      prevState.selectedFilterTab !== selectedFilterTab ||
-      prevState.nameSearch !== nameSearch ||
-      JSON.stringify(prevProps.selectedLocations) !== JSON.stringify(selectedLocations)
-    ) {
-      this.initDataTable(selectedFilterTab, nameSearch, selectedLocations);
-    }
-  }
-
-  getStatus = (selectedTab) => {
+  const getStatus = (selectedTab) => {
     switch (selectedTab) {
       case '1':
         return 'Assigned';
@@ -69,15 +57,14 @@ class MyTickets extends Component {
     }
   };
 
-  initDataTable = (tabId, nameSearch, selectedLocations) => {
-    const { dispatch } = this.props;
-    const { pageSelected, size } = this.state;
-
+  const initDataTable = () => {
     let payload = {
-      status: [this.getStatus(tabId)],
+      status: [getStatus(selectedFilterTab)],
+      permissions,
       page: pageSelected,
       limit: size,
       location: selectedLocations,
+      country,
     };
     if (nameSearch) {
       payload = {
@@ -91,57 +78,100 @@ class MyTickets extends Component {
     });
   };
 
-  setSelectedTab = (id) => {
-    this.setState({
-      selectedFilterTab: id,
+  const fetchTotalList = () => {
+    const payload = {
+      employeeAssignee: _id,
+      departmentAssign: idDepart,
+      location: selectedLocations,
+      permissions,
+      country,
+    };
+    dispatch({
+      type: 'ticketManagement/fetchToTalList',
+      payload,
     });
   };
 
-  getPageAndSize = (page, pageSize) => {
-    this.setState({
-      pageSelected: page,
-      size: pageSize,
-    });
+  const setSelectedTab = (id) => {
+    setSelectedFilterTab(id);
   };
 
-  onChangeSearch = (value) => {
+  const getPageAndSize = (page, pageSize) => {
+    setPageSelected(page);
+    setSize(pageSize);
+  };
+
+  const onChangeSearch = (value) => {
     const formatValue = value.toLowerCase();
-    this.setDebounce(formatValue);
+    onSearchDebounce(formatValue);
   };
 
-  render() {
-    const {
-      data = [],
-      loading,
-      loadingFilter,
-      countData = [],
-      employee: { _id = '' },
-    } = this.props;
-    const { pageSelected, size } = this.state;
-    const dataTableEmployee = data.filter((item) => {
-      return item.employee_assignee === _id;
-    });
-    return (
-      <>
-        <div>
-          <TicketInfo countData={countData} />
-        </div>
-        <div className={styles.containerTickets}>
-          <div className={styles.tabTickets}>
-            <Summary setSelectedTab={this.setSelectedTab} countData={countData} />
-            <SearchTable onChangeSearch={this.onChangeSearch} />
-          </div>
-          <TableTickets
-            data={dataTableEmployee}
-            loading={loading || loadingFilter}
-            pageSelected={pageSelected}
-            size={size}
-            getPageAndSize={this.getPageAndSize}
-          />
-        </div>
-      </>
+  const handleFilterCounts = (values) => {
+    const filteredObj = Object.entries(values).filter(
+      ([key, value]) => (value !== undefined && value?.length > 0) || value?.isValid,
     );
-  }
-}
+    const newObj = Object.fromEntries(filteredObj);
+    setApplied(Object.keys(newObj).length);
+    setIsFiltering(true);
+  };
 
-export default MyTickets;
+  useEffect(() => {
+    initDataTable();
+  }, [pageSelected, size, selectedFilterTab, nameSearch, JSON.stringify(selectedLocations)]);
+
+  useEffect(() => {
+    fetchTotalList();
+  }, [nameSearch, JSON.stringify(selectedLocations)]);
+
+  return (
+    <>
+      <div>
+        <TicketInfo countData={countData} />
+      </div>
+      <div className={styles.containerTickets}>
+        <div className={styles.tabTickets}>
+          <Summary setSelectedTab={setSelectedTab} countData={countData} />
+          <div className={styles.filterTable}>
+            <FilterCount
+              applied={applied}
+              form={form}
+              setApplied={() => setApplied(0)}
+              setIsFiltering={() => setIsFiltering(false)}
+              initDataTable={initDataTable}
+              selectedFilterTab={selectedFilterTab}
+              nameSearch={nameSearch}
+              selectedLocations={selectedLocations}
+            />
+            <SearchTable
+              onChangeSearch={onChangeSearch}
+              handleFilterCounts={handleFilterCounts}
+              setForm={setForm}
+              isFiltering={isFiltering}
+            />
+          </div>
+        </div>
+        <TableTickets
+          data={dataTableEmployee}
+          loading={loading || loadingFilter}
+          pageSelected={pageSelected}
+          size={size}
+          getPageAndSize={getPageAndSize}
+        />
+      </div>
+    </>
+  );
+};
+
+export default connect(
+  ({
+    loading,
+    user: { currentUser: { employee = {} } = {} } = {},
+
+    ticketManagement: { selectedLocations = [] } = {},
+  }) => ({
+    employee,
+    selectedLocations,
+    loading: loading.effects['ticketManagement/fetchListAllTicket'],
+    loadingFilter: loading.effects['ticketManagement/fetchListAllTicketSearch'],
+  }),
+)(MyTickets);

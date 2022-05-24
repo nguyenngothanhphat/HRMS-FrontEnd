@@ -1,10 +1,13 @@
+/* eslint-disable no-nested-ternary */
 import { Table } from 'antd';
 import moment from 'moment';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import { convertMsToTime, projectColor } from '@/utils/timeSheet';
 import EmptyComponent from '@/components/Empty';
+import TimeoffPopover from './components/TimeoffPopover';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
+import AirPlanIcon from '@/assets/timeSheet/airplanIcon.svg';
 import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
 
@@ -12,13 +15,28 @@ const MonthlyTable = (props) => {
   const {
     loadingFetchMyTimesheetByType = false,
     weeksOfMonth = [],
+    timeoffList = [],
     data: { weeks: weeksProp = [], summary: summaryProp = [] } = {},
   } = props;
+
+  const [formattedData, setFormattedData] = useState([]);
 
   // FUNCTIONS
   const getColorByIndex = (index) => {
     return projectColor[index % projectColor.length];
   };
+
+  const formatData = () => {
+    const obj =
+      timeoffList.length > 0
+        ? [Object.assign(timeoffList[0], { projectName: 'Timeoff' })]
+        : timeoffList;
+    setFormattedData(obj.concat(weeksProp));
+  };
+
+  useEffect(() => {
+    formatData();
+  }, [JSON.stringify(weeksProp), JSON.stringify(timeoffList)]);
 
   // RENDER UI
   const renderHeaderItem = (weekItem) => {
@@ -50,16 +68,33 @@ const MonthlyTable = (props) => {
         align: 'center',
         width: `${100 / columnLength}}%`,
         render: (value, row) => {
-          const { weeks = [] } = row;
+          const { weeks = [], projectName = '' } = row;
           const find = weeks.find((w) => w.week === weekItem.week) || {};
+          const findTimeoff = timeoffList.find((w) => w.week === weekItem.week) || {};
+
+          if (projectName === 'Timeoff' && findTimeoff) {
+            return (
+              <TimeoffPopover
+                projectName={projectName}
+                date={weekItem.week}
+                timeoff={findTimeoff?.days}
+                startDate={findTimeoff?.startDate}
+                endDate={findTimeoff?.endDate}
+                placement="bottomLeft"
+              >
+                {!findTimeoff || findTimeoff?.totalTimeOffTime === 0 ? (
+                  <span className={styles.hourValue}>
+                    <img src={EmptyLine} alt="" />
+                  </span>
+                ) : (
+                  <span className={styles.hourValue}>
+                    {convertMsToTime(findTimeoff?.totalTimeOffTime || 0)}
+                  </span>
+                )}
+              </TimeoffPopover>
+            );
+          }
           return (
-            // <TaskPopover
-            //   week={weekItem.week}
-            //   startDate={weekItem.startDate}
-            //   endDate={weekItem.endDate}
-            //   tasks={[]}
-            //   placement="bottomLeft"
-            // >
             <div>
               {!find || find?.weekProjectTime === 0 ? (
                 <span className={styles.hourValue}>
@@ -71,7 +106,6 @@ const MonthlyTable = (props) => {
                 </span>
               )}
             </div>
-            // </TaskPopover>
           );
         },
       };
@@ -88,7 +122,15 @@ const MonthlyTable = (props) => {
           return (
             <div className={styles.projectName}>
               <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
-                <span>{projectName ? projectName.toString()?.charAt(0) : 'P'}</span>
+                <span>
+                  {projectName === 'Timeoff' ? (
+                    <img src={AirPlanIcon} alt="" />
+                  ) : projectName ? (
+                    projectName.toString()?.charAt(0)
+                  ) : (
+                    'P'
+                  )}
+                </span>
               </div>
               <span className={styles.name}>{projectName}</span>
             </div>
@@ -139,7 +181,7 @@ const MonthlyTable = (props) => {
       <div className={styles.tableContainer}>
         <Table
           columns={columns()}
-          dataSource={weeksProp}
+          dataSource={formattedData}
           bordered
           pagination={false}
           // scroll={{ y: 440 }}

@@ -3,12 +3,24 @@
   background: #ffffff;
   border: 1px solid #d6dce0;
   border-radius: 8px;
+  :global {
+    .ant-tabs-tab-btn {
+      font-size: 14px !important;
+    }
+    .ant-tabs-nav {
+      padding: 0 24px !important;
+    }
+  }
   .tabTickets {
     align-items: baseline;
     justify-content: space-between;
     padding-top: 6px;
     border-bottom: 1px solid #d6dce0;
     padding-inline: 24px;
+  }
+  .filterTable {
+    display: flex;
+    align-items: center;
   }
   @media only screen and (min-width: 992px) {
     .tabTickets {

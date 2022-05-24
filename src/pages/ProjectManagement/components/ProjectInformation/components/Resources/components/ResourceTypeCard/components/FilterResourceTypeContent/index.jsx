@@ -1,15 +1,21 @@
 import { Form, Select } from 'antd';
 import React, { useEffect } from 'react';
+import { debounce } from 'lodash';
 import { connect } from 'umi';
 import styles from './index.less';
 
 const { Option } = Select;
 
 const FilterResourceTypeContent = (props) => {
+  const [form] = Form.useForm();
   const {
     dispatch,
     projectDetails: { divisionList = [], titleList = [], billingStatusList = [] } = {},
     onFilter = () => {},
+    needResetFilterForm = false,
+    setNeedResetFilterForm = () => {},
+    setApplied = () => {},
+    setIsFiltering = () => {}
   } = props;
 
   const fetchDataList = () => {
@@ -42,15 +48,35 @@ const FilterResourceTypeContent = (props) => {
     onFilter(result);
   };
 
+  const onFinishDebounce = debounce((values) => {
+    onFinish(values);
+  }, 700);
+
+  const onValuesChange = () => {
+    const values = form.getFieldsValue();
+    onFinishDebounce(values);
+  };
+
+  // clear values
+  useEffect(() => {
+    if (needResetFilterForm) {
+      form.resetFields();
+      setNeedResetFilterForm(false);
+      setIsFiltering(false);
+      setApplied(0)
+    }
+  }, [needResetFilterForm]);
+
   useEffect(() => {
     fetchDataList();
   }, []);
 
   return (
     <Form
+      form={form}
       layout="vertical"
       name="filter"
-      onFinish={onFinish}
+      onValuesChange={onValuesChange}
       className={styles.FilterResourceTypeContent}
     >
       <Form.Item label="By division" name="division">

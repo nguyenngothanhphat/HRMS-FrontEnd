@@ -1,6 +1,6 @@
-import { Col, DatePicker, Form, Row, Select, Skeleton, Space } from 'antd';
+import { Col, DatePicker, Form, Row, Select, Skeleton, Space, Tag } from 'antd';
 import { debounce } from 'lodash';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { connect } from 'umi';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterButton from '@/components/FilterButton';
@@ -10,12 +10,17 @@ import styles from './index.less';
 
 const TimeOffFilter = (props) => {
   const [form] = Form.useForm();
+  const [count, setCount] = useState(3);
 
   const {
     dispatch,
     yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
     filter: { search, type, fromDate, toDate },
     filter = {},
+    isVisible,
+    onOpenAppliedTag = () => {},
+    onClosedAppliedTag = () => {},
+    saveCurrentTypeTab = () => {},
   } = props;
 
   const onSearchDebounce = debounce((value) => {
@@ -53,8 +58,40 @@ const TimeOffFilter = (props) => {
 
   const onValuesChange = () => {
     const values = form.getFieldsValue();
+
+    // applied count
+
+    let typeCount = 0;
+    if (values.type.length > 0) {
+      typeCount = 1;
+    } else {
+      typeCount = 0;
+    }
+
+    let typeDate = 0;
+    if (values.fromDate || values.toDate) {
+      typeDate = 1;
+    } else {
+      typeDate = 0;
+    }
+
+    if (count > 0) {
+      onOpenAppliedTag();
+    }
+
+    setCount(typeCount + typeDate);
+
     onFinishDebounce(values);
   };
+
+  const closedAppliedTag = () => {
+    saveCurrentTypeTab('1');
+    onClosedAppliedTag();
+  };
+
+  useEffect(() => {
+    form.setFieldsValue({ type, fromDate, toDate });
+  }, [filter]);
 
   const FilterContent = () => {
     return (
@@ -62,11 +99,7 @@ const TimeOffFilter = (props) => {
         layout="vertical"
         name="filter"
         form={form}
-        initialValues={{
-          type,
-          fromDate,
-          toDate,
-        }}
+        initialValues={{ type, fromDate, toDate }}
         onValuesChange={onValuesChange}
         className={styles.FilterContent}
       >
@@ -77,8 +110,10 @@ const TimeOffFilter = (props) => {
             mode="multiple"
             style={{ width: '100%' }}
             placeholder="Search by Timeoff Types"
-            filterOption={(input, option) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            filterOption={
+              (input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              // eslint-disable-next-line react/jsx-curly-newline
+            }
             showArrow
           >
             {[...commonLeaves, ...specialLeaves].map((x) => {
@@ -113,19 +148,25 @@ const TimeOffFilter = (props) => {
 
   return (
     <Space direction="horizontal" className={styles.TimeOffFilter}>
-      <FilterPopover
-        placement="bottomRight"
-        content={
-          <Suspense fallback={<Skeleton active />}>
-            <FilterContent />
-          </Suspense>
-        }
-        realTime
-      >
-        <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} />
-      </FilterPopover>
+      <Tag className={styles.appliedTag} closable onClose={closedAppliedTag} visible={isVisible}>
+        {count} applied
+      </Tag>
 
-      <CustomSearchBox onSearch={onSearch} placeholder="Search by Employee ID, name..." />
+      <div className={styles.rightContentHeader}>
+        <FilterPopover
+          placement="bottomRight"
+          content={
+            <Suspense fallback={<Skeleton active />}>
+              <FilterContent />
+            </Suspense>
+          }
+          realTime
+        >
+          <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} />
+        </FilterPopover>
+
+        <CustomSearchBox onSearch={onSearch} placeholder="Search by Employee ID, name..." />
+      </div>
     </Space>
   );
 };

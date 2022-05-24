@@ -187,10 +187,13 @@ const AddTaskModal = (props) => {
                         loading={loadingFetchProject}
                         disabled={loadingFetchProject}
                         filterOption={(input, option) =>
-                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                       >
                         {projectList.map((val) => (
-                          <Option value={val.id}>{val.projectName}</Option>
+                          <Option value={val.id}>
+                            {`${val.projectName} - ${val.customerName}`}
+                          </Option>
                         ))}
                       </Select>
                     </Form.Item>

@@ -122,52 +122,59 @@ class EditUserModal extends PureComponent {
     const { dispatch, employeeDetail, closeEditModal = () => {} } = this.props;
     const { _id = '', tenant = '', generalInfo: { _id: generalInfoId = '' } = {} } = employeeDetail;
     const { companyId, locationId } = this.state;
-    const { workEmail = '', firstName = '', lastName = '', roles = [], status = '' } = values;
+    const {
+      workEmail = '',
+      firstName = '',
+      lastName = '',
+      middleName = '',
+      roles = [],
+      status = '',
+    } = values;
     if (status) {
       this.setState({
         statusUser: status,
       });
     }
+    // Updating details in the admin portal should update the associated fields also
+    // The above 3 points should work for both the active users and inactive users portal
+    dispatch({
+      type: 'usersManagement/updateRolesByEmployee',
+      payload: {
+        employee: _id,
+        roles,
+        tenantId: tenant,
+      },
+    });
 
-    if (status === 'ACTIVE') {
-      dispatch({
-        type: 'usersManagement/updateRolesByEmployee',
-        payload: {
-          employee: _id,
-          roles,
-          tenantId: tenant,
-        },
-      });
-
-      dispatch({
-        type: 'usersManagement/updateGeneralInfo',
-        payload: {
-          id: generalInfoId,
-          workEmail,
-          firstName,
-          lastName,
-          tenantId: tenant,
-        },
-      });
-
-      dispatch({
-        type: 'usersManagement/updateEmployee',
-        payload: {
-          id: _id,
-          location: locationId,
-          company: companyId,
-          status,
-          tenantId: tenant,
-        },
-      }).then((statusCode) => {
-        if (statusCode === 200) {
-          notification.success({
-            message: 'Update user successfully',
-          });
-          closeEditModal(true);
-        }
-      });
-    }
+    dispatch({
+      type: 'usersManagement/updateGeneralInfo',
+      payload: {
+        id: generalInfoId,
+        workEmail,
+        firstName,
+        lastName,
+        middleName,
+        tenantId: tenant,
+      },
+    });
+  
+    dispatch({
+      type: 'usersManagement/updateEmployee',
+      payload: {
+        id: _id,
+        location: locationId,
+        company: companyId,
+        status,
+        tenantId: tenant,
+      },
+    }).then((statusCode) => {
+      if (statusCode === 200) {
+        notification.success({
+          message: 'Update user successfully',
+        });
+        closeEditModal(true);
+      }
+    });
 
     if (status === 'INACTIVE') {
       closeEditModal(true);
@@ -203,6 +210,7 @@ class EditUserModal extends PureComponent {
       loadingUpdateRoles = false,
       companyLocationList = [],
       loadingUserProfile = false,
+      tabId = 1,
     } = this.props;
 
     const { companyId, openModal, statusUser, userProfile } = this.state;
@@ -215,7 +223,7 @@ class EditUserModal extends PureComponent {
       joinDate = '',
       location: { _id: locationName = '' } = {},
       company: { _id: companyName = '' } = {},
-      generalInfo: { workEmail = '', firstName = '', lastName = '' } = {},
+      generalInfo: { workEmail = '', firstName = '', lastName = '', middleName = '' } = {},
       employeeId = '',
       status = '',
       managePermission: { roles: employeeRoles = [] } = {},
@@ -264,6 +272,7 @@ class EditUserModal extends PureComponent {
                   workEmail,
                   firstName,
                   lastName,
+                  middleName,
                   locationName,
                   companyName,
                   status,
@@ -299,6 +308,14 @@ class EditUserModal extends PureComponent {
                   labelAlign="left"
                   name="firstName"
                   rules={[{ required: false, message: 'Please input first name!' }]}
+                >
+                  <Input />
+                </Form.Item>
+                <Form.Item
+                  label="Middle Name"
+                  labelAlign="left"
+                  name="middleName"
+                  rules={[{ required: false, message: 'Please input middle name!' }]}
                 >
                   <Input />
                 </Form.Item>
@@ -391,7 +408,7 @@ class EditUserModal extends PureComponent {
         </Modal>
         <TerminateModal
           // loading={loadingTerminateReason}
-          visible={openModal && statusUser === 'INACTIVE'}
+          visible={openModal && statusUser === 'INACTIVE' && tabId === 1}
           handleSubmit={this.handleSubmit}
           handleCandelModal={this.handleCandelModal}
           // valueReason={valueReason}

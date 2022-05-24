@@ -1,4 +1,5 @@
-import { Button, Card, Tooltip } from 'antd';
+import {  Button, Card, Tag, Tooltip } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 import { debounce } from 'lodash';
 import React, { useState } from 'react';
 import { connect } from 'umi';
@@ -15,6 +16,7 @@ import AssignResourcesModal from '../AssignResourcesModal';
 import FilterResourceTypeContent from './components/FilterResourceTypeContent';
 import styles from './index.less';
 
+
 const ResourceTypeCard = (props) => {
   const {
     loadingFetch = false,
@@ -29,6 +31,10 @@ const ResourceTypeCard = (props) => {
   const [addResourceTypeModalVisible, setAddResourceTypeModalVisible] = useState(false);
   const [assignResourceModalVisible, setAssignResourceModalVisible] = useState(false);
   const [assigningRecord, setAssigningRecord] = useState({});
+  const [applied, setApplied] = useState(0);
+  // if reselect project status or search, clear filter form
+  const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
 
   const onSearchDebounce = debounce((value) => {
     refreshResourceType(value);
@@ -43,6 +49,22 @@ const ResourceTypeCard = (props) => {
     if (str.length <= 72) return str;
     return `${str.slice(0, 72)}...`;
   };
+
+  const onFilter = (filterPayload) => {
+    refreshResourceType('', filterPayload);
+    if (Object.keys(filterPayload).length > 0) {
+      setIsFiltering(true);
+      setApplied(Object.keys(filterPayload).length);
+    } else {
+      setIsFiltering(false);
+      setApplied(0);
+    }
+  }
+
+  const clearFilter = () => {
+    onFilter({});
+    setNeedResetFilterForm(true);
+  }
 
   const renderComment = (str = '') => {
     if (str.length <= 72) return str;
@@ -148,12 +170,30 @@ const ResourceTypeCard = (props) => {
 
   const renderOption = () => {
     const content = (
-      <FilterResourceTypeContent onFilter={(values) => refreshResourceType('', values)} />
+      <FilterResourceTypeContent 
+        onFilter={onFilter} 
+        needResetFilterForm={needResetFilterForm} 
+        setNeedResetFilterForm={setNeedResetFilterForm} 
+        setApplied={setApplied}
+        setIsFiltering={setIsFiltering}
+      />
     );
     return (
       <div className={styles.options}>
+        {applied > 0 && (
+          <Tag
+            className={styles.tagCountFilter}
+            closable
+            closeIcon={<CloseOutlined />}
+            onClose={() => {
+              clearFilter()
+            }}
+          >
+            {applied} applied
+          </Tag>
+        )}
         <FilterPopover placement="bottomRight" content={content}>
-          <FilterButton />
+          <FilterButton showDot={isFiltering} />
         </FilterPopover>
         {allowModify && (
           <OrangeAddButton

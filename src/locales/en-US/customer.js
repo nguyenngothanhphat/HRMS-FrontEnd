@@ -4,6 +4,7 @@ export default {
     'page.customermanagement.tableTitle': 'All Customers',
     'page.customermanagement.customerID': 'Customer ID',
     'page.customermanagement.companyAlias': 'Company Alias',
+    'page.customermanagement.companyName': 'Company Name',
     'page.customermanagement.openLeads': 'Open Leads',
     'page.customermanagement.pendingTickets': 'Pending Tickets',
     'page.customermanagement.pendingTasks': 'Pending Tasks',

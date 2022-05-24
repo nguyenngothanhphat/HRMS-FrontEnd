@@ -468,9 +468,6 @@ const RequestInformation = (props) => {
       return (
         <Option key={x._id} value={x._id}>
           <div className={styles.timeOffTypeOptions}>
-            {/* I don't knew why I could not CSS this block in styles.less file
-          So I tried inline CSS.
-          Amazing! It worked :D. (Tuan - Lewis Nguyen) */}
             <>
               <span style={{ fontSize: 13 }} className={styles.name}>
                 {x.name}
@@ -482,20 +479,18 @@ const RequestInformation = (props) => {
                   float: 'right',
                 }}
               >
-                {(x.type === A || x.type === B) && (
-                  <span style={remaining <= 0 ? invalidCss : defaultCss}>
-                    <span
-                      style={
-                        remaining <= 0
-                          ? { fontSize: 12, color: '#FD4546' }
-                          : { fontSize: 12, color: 'black' }
-                      }
-                    >
-                      {roundNumber(remaining)}
-                    </span>
-                    /{x.total || 0} days
+                <span style={remaining <= 0 ? invalidCss : defaultCss}>
+                  <span
+                    style={
+                      remaining <= 0
+                        ? { fontSize: 12, color: '#FD4546' }
+                        : { fontSize: 12, color: 'black' }
+                    }
+                  >
+                    {x.remainingTotalMessage}{' '}
                   </span>
-                )}
+                  days
+                </span>
               </span>
             </>
           </div>
@@ -514,7 +509,7 @@ const RequestInformation = (props) => {
               {x.name}
             </span>
 
-            {x.type === C && (
+            {x.showRemainingTotal && (
               <span style={{ float: 'right', fontSize: 12, fontWeight: 'bold' }}>
                 <span
                   style={

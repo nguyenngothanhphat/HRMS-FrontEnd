@@ -4,7 +4,7 @@ import SettingLayout from '@/components/SettingLayout';
 import CompanySignatory from './components/CompanySignatory';
 import CustomEmails from './components/CustomEmails';
 import DocumentsAndTemplates from './components/DocumentsAndTemplates';
-import NonExtempNotice from './components/NonExtempNotice';
+// import NonExtempNotice from './components/NonExtempNotice';
 import OptionalOnboardingQuestions from './components/OptionalOnboardingQuestions';
 import BenefitsManagement from './components/BenefitsManagement';
 import SalaryStructure from './components/SalaryStructure/index';
@@ -18,13 +18,13 @@ export const listMenu = [
     component: <DocumentsAndTemplates />,
     link: 'documents-templates',
   },
-  {
-    id: 2,
-    name: 'Non-Extemp Notice',
-    key: 'nonExtempNotice',
-    component: <NonExtempNotice />,
-    link: 'non-extemp-notice',
-  },
+  // {
+  //   id: 2,
+  //   name: 'Non-Extemp Notice',
+  //   key: 'nonExtempNotice',
+  //   component: <NonExtempNotice />,
+  //   link: 'non-extemp-notice',
+  // },
   // {
   //   id: 3,
   //   name: 'Background Checks',
@@ -32,42 +32,42 @@ export const listMenu = [
   //   component: <BackgroundChecks />,
   // },
   {
-    id: 3,
+    id: 2,
     name: 'Optional Onboarding Questions',
     key: 'optionalOnboardingQuestions',
     component: <OptionalOnboardingQuestions />,
     link: 'optional-onboarding-questions',
   },
   {
-    id: 4,
+    id: 3,
     name: 'Company Signatory',
     key: 'companySignatory',
     component: <CompanySignatory />,
     link: 'company-signatory',
   },
   {
-    id: 5,
+    id: 4,
     name: 'Custom Emails',
     key: 'customEmails',
     component: <CustomEmails />,
     link: 'custom-emails',
   },
   {
-    id: 6,
+    id: 5,
     name: 'Salary Structure',
     key: 'salaryStructure',
     component: <SalaryStructure />,
     link: 'salary-structure',
   },
   {
-    id: 7,
+    id: 6,
     name: 'Benefits Management',
     key: 'benefitsManagement',
     component: <BenefitsManagement />,
     link: 'benefits-management',
   },
   {
-    id: 8,
+    id: 7,
     name: 'Joining Formalities',
     key: 'joiningFormalities',
     component: <JoiningFormalities />,
