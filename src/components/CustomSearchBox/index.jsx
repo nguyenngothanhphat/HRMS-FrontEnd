@@ -4,7 +4,7 @@ import React from 'react';
 import styles from './index.less';
 
 const CustomSearchBox = (props) => {
-  const { placeholder = 'Search by Name, Task...', onSearch = () => {} } = props;
+  const { placeholder = 'Search by Name, Task...', onSearch = () => {}, borderRadius = 33 } = props;
 
   const searchPrefix = () => {
     return (
@@ -22,6 +22,7 @@ const CustomSearchBox = (props) => {
     <div className={styles.CustomSearchBox}>
       <Input
         className={styles.searchInput}
+        style={{ borderRadius }}
         placeholder={placeholder}
         prefix={searchPrefix()}
         onChange={onSearch}

@@ -47,9 +47,7 @@ class NonExtempNoticeForm extends Component {
     }
   };
 
-  onFinishFailed = (errorInfo) => {
-
-  };
+  onFinishFailed = (errorInfo) => {};
 
   setValueForForm = (data) => {
     const {
@@ -144,7 +142,10 @@ class NonExtempNoticeForm extends Component {
               name="phone"
               rules={[
                 {
-                  pattern: /^[+]*[\d]{0,10}$/,
+                  // pattern: /^[+]*[\d]{0,10}$/,
+                  pattern:
+                    // eslint-disable-next-line no-useless-escape
+                    /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?$/gm,
                   message: 'Wrong phone number format!',
                 },
               ]}

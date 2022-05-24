@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table, Tag, Tooltip, Spin, Popover } from 'antd';
-import { history, connect } from 'umi';
+import { history, connect, Link } from 'umi';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
 import ApproveIcon from '@/assets/approveTR.svg';
@@ -51,8 +51,6 @@ class TeamLeaveTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      // pageSelected: 1,
-      rowSize: 10,
       selectedRowKeys: [],
       commentModalVisible: false,
       rejectingPayload: {},
@@ -60,7 +58,16 @@ class TeamLeaveTable extends PureComponent {
     };
   }
 
+  // HANDLE TEAM REQUESTS
+  onOpenClick = (_id) => {
+    history.push({
+      pathname: `/time-off/overview/manager-timeoff/view/${_id}`,
+      // state: { location: name },
+    });
+  };
+
   getColumns = (TYPE) => {
+    const { category } = this.props;
     return [
       {
         title: 'Ticket ID',
@@ -75,14 +82,12 @@ class TeamLeaveTable extends PureComponent {
           const isNewRequest =
             status === IN_PROGRESS &&
             moment(nowDate).subtract(2, 'days').isSameOrBefore(moment(createdDate));
-          // const checkWithdraw = status === ON_HOLD;
 
           return (
-            <span className={styles.ID} onClick={() => this.onIdClick(_id)}>
+            <Link to={`/time-off/overview/manager-timeoff/view/${_id}`} className={styles.ID}>
               <span className={styles.text}>{ticketID}</span>
               {isNewRequest && <Tag color="#2C6DF9">New</Tag>}
-              {/* {checkWithdraw && <Tag color="#2C6DF9">Withdrawing</Tag>} */}
-            </span>
+            </Link>
           );
         },
       },
@@ -96,7 +101,7 @@ class TeamLeaveTable extends PureComponent {
             <Popover
               placement="bottomRight"
               overlayClassName={styles.UserProfilePopover}
-              content={<UserProfile employeeId={employee.employeeId} />}
+              content={<UserProfile category={category} employeeId={employee.employeeId} />}
               trigger="hover"
             >
               <span>{employee?.generalInfo?.legalName}</span>
@@ -208,18 +213,6 @@ class TeamLeaveTable extends PureComponent {
     ];
   };
 
-  // HANDLE TEAM REQUESTS
-  onOpenClick = (_id) => {
-    history.push({
-      pathname: `/time-off/overview/manager-timeoff/view/${_id}`,
-      // state: { location: name },
-    });
-  };
-
-  onIdClick = (_id) => {
-    this.onOpenClick(_id);
-  };
-
   onRefreshTable = (onMovedTab) => {
     const { onRefreshTable = () => {} } = this.props;
     onRefreshTable(onMovedTab);
@@ -238,10 +231,8 @@ class TeamLeaveTable extends PureComponent {
 
   onApproveClick = async (record) => {
     const { dispatch } = this.props;
-    const type = record.status === ON_HOLD ? 'timeOff/approveRequest' : 'timeOff/approveRequest';
-
     const res = await dispatch({
-      type,
+      type: 'timeOff/approveRequest',
       payload: {
         _id: record._id,
       },
@@ -298,21 +289,8 @@ class TeamLeaveTable extends PureComponent {
     }
   };
 
-  // view request
-  viewRequest = (_id) => {
-    history.push({
-      pathname: `/time-off/overview/personal-timeoff/view/${_id}`,
-      // state: { location: name },
-    });
-  };
-
   // pagination
   onChangePagination = (pageNumber, pageSize) => {
-    this.setState({
-      rowSize: pageSize,
-      // pageSelected: pageNumber,
-    });
-
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/savePaging',
@@ -476,15 +454,7 @@ class TeamLeaveTable extends PureComponent {
       isHR = false,
     } = this.props;
 
-    const {
-      selectedRowKeys,
-      // pageSelected,
-      commentModalVisible,
-      rejectingPayload,
-      rejectMultiple,
-      rowSize,
-    } = this.state;
-    // const rowSize = 10;
+    const { selectedRowKeys, commentModalVisible, rejectingPayload, rejectMultiple } = this.state;
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -506,10 +476,10 @@ class TeamLeaveTable extends PureComponent {
           of {totals}{' '}
         </span>
       ),
-      defaultPageSize: rowSize,
+      defaultPageSize: 10,
       showSizeChanger: true,
       pageSizeOptions: ['10', '25', '50', '100'],
-      pageSize: rowSize,
+      pageSize: limit,
       current: page,
       onChange: this.onChangePagination,
     };
@@ -524,12 +494,10 @@ class TeamLeaveTable extends PureComponent {
       selectedRowKeys,
       onChange: this.onSelectChange,
       getCheckboxProps: (record) => {
-        const {
-          approvalManager: { _id: approvalManagerId = '' },
-        } = record;
+        const { approvalManager: { _id: approvalManagerId = '' } = {} } = record;
 
         return {
-          disabled: selectedTab === IN_PROGRESS && myId !== approvalManagerId && !isHR,
+          disabled: myId !== approvalManagerId && !isHR,
           name: record.name,
         };
       },
@@ -545,7 +513,7 @@ class TeamLeaveTable extends PureComponent {
         <Table
           // size="middle"
           loading={tableLoading}
-          // rowSelection={rowSelection}
+          rowSelection={selectedTab === IN_PROGRESS ? rowSelection : null}
           // if data.length > 10, pagination will appear
           pagination={data.length === 0 ? null : { ...pagination }}
           columns={tableByRole}

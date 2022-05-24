@@ -7,7 +7,13 @@ import BlueArrowDownIcon from '@/assets/resourceManagement/blueArrowDown.svg';
 const { Option } = Select;
 
 // const { TabPane } = Tabs;
-@connect(({ resourceManagement: { resourceStatuses = [] } }) => ({ resourceStatuses }))
+@connect(({ resourceManagement: { 
+  resourceStatuses = [],
+  selectedLocations = [],
+} }) => ({ 
+  resourceStatuses ,
+  selectedLocations,
+}))
 class AvailableStatus extends PureComponent {
   constructor(props) {
     super(props);
@@ -23,10 +29,18 @@ class AvailableStatus extends PureComponent {
     this.fetchAvailableStatus();
   };
 
+  componentDidUpdate = async (prevProps, prevState) => {
+    if (this.props.selectedLocations !== prevProps.selectedLocations) {
+      this.fetchAvailableStatus();
+    }
+  };
+
   fetchAvailableStatus = () => {
-    const { dispatch } = this.props;
+    const { dispatch, selectedLocations = [] } = this.props;
+    const payload = { location: selectedLocations }
     dispatch({
       type: 'resourceManagement/fetchResourceAvailableStatus',
+      payload,
     }).then(() => {
       const { resourceStatuses = [] } = this.props || {};
       this.setState({

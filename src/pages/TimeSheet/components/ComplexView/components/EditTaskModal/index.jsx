@@ -132,7 +132,7 @@ const EditTaskModal = (props) => {
           generalInfo: employee.managerInfo.generalInfo,
         },
       },
-      date: moment(date).format(dateFormatAPI),
+      date: moment(values.date).format(dateFormatAPI),
       companyId: getCurrentCompany(),
       location,
     };
@@ -181,7 +181,7 @@ const EditTaskModal = (props) => {
                 fieldKey="date"
                 labelCol={{ span: 24 }}
               >
-                <DatePicker format={dateFormat} disabled />
+                <DatePicker format={dateFormat} />
               </Form.Item>
             </Col>
             <Col xs={24} md={12} />

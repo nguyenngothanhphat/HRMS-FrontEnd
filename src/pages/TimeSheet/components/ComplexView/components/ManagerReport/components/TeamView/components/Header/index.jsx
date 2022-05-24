@@ -1,16 +1,18 @@
 import moment from 'moment';
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { connect } from 'umi';
-import { Skeleton } from 'antd';
+import { Skeleton, Tag } from 'antd';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
 import styles from './index.less';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import FilterContent from './components/FilterContent';
+import { CloseOutlined } from '@ant-design/icons';
 
 const Header = (props) => {
   const {
+    dispatch,
     startDate,
     endDate,
     setStartDate = () => {},
@@ -18,6 +20,9 @@ const Header = (props) => {
     onChangeSearch = () => {},
     activeView = '',
   } = props;
+
+  const [applied, setApplied] = useState(0);
+  const [form, setForm] = useState(null);
 
   // HEADER AREA
   const onPrevClick = () => {
@@ -39,6 +44,14 @@ const Header = (props) => {
     setEndDate(dates[1]);
   };
 
+  const handleClearFilter = () => {
+    dispatch({
+      type: 'timeSheet/clearFilter',
+    });
+    setApplied(0);
+    form?.resetFields();
+  };
+
   // MAIN AREA
   return (
     <div className={styles.Header}>
@@ -52,11 +65,20 @@ const Header = (props) => {
         />
       </div>
       <div className={styles.Header__right}>
+        {applied > 0 && (
+          <Tag
+            className={styles.Header__tagCountFilter}
+            closable
+            closeIcon={<CloseOutlined onClick={handleClearFilter} />}
+          >
+            {applied} applied
+          </Tag>
+        )}
         <FilterPopover
           placement="bottomRight"
           content={
             <Suspense fallback={<Skeleton active />}>
-              <FilterContent />
+              <FilterContent setApplied={setApplied} setForm={setForm} />
             </Suspense>
           }
           realTime

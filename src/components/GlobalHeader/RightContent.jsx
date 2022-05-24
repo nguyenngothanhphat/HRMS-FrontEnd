@@ -1,4 +1,4 @@
-import { BuildOutlined, BellOutlined } from '@ant-design/icons';
+import { BuildOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
@@ -9,6 +9,7 @@ import AvatarDropdown from './AvatarDropdown';
 import GlobalSearchNew from './components/GlobalSearchNew/index';
 import SelectCompanyModal from './components/SelectCompanyModal';
 import styles from './index.less';
+import BellIcon from '@/assets/homePage/Bell-icon.svg';
 import QuestionDropdown from './QuestionDropdown';
 
 const GlobalHeaderRight = (props) => {
@@ -30,7 +31,7 @@ const GlobalHeaderRight = (props) => {
       <GlobalSearchNew />
       <QuestionDropdown />
       <div className={`${styles.action} ${styles.notify}`} onClick={() => setModalVisible(true)}>
-        <BellOutlined />
+        <img src={BellIcon} alt="notification-icon" />
       </div>
       {!(!checkIsOwner && companiesOfUser.length === 1) && (
         <>

@@ -48,6 +48,9 @@ const CommonTable = (props) => {
         {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
       </span>
     ),
+    defaultPageSize: 10,
+    showSizeChanger: true,
+    pageSizeOptions: ['10', '25', '50', '100'],
     pageSize: limit,
     current: isBackendPaging ? page : pageSelected,
     onChange: onChangePagination,
