@@ -5,16 +5,20 @@ import {
   candidateFinalOffer,
   getById,
   getDocumentByCandidate,
-  getWorkHistory,
-  updateWorkHistory,
   sendEmailByCandidateModel,
   updateByCandidate,
   getCountryList,
   getStateListByCountry,
+  upsertCandidateDocument,
 } from '@/services/candidatePortal';
 import { dialog } from '@/utils/utils';
-import { CANDIDATE_TASK_LINK, CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
+import {
+  CANDIDATE_TASK_LINK,
+  CANDIDATE_TASK_STATUS,
+  DOCUMENT_TYPES,
+} from '@/utils/candidatePortal';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { getCurrentTenant } from '@/utils/authority';
 
 const pendingTaskDefault = [
   {
@@ -104,95 +108,108 @@ July 06, 2021 6PM - 7PM (IST)`,
   },
 ];
 
+const checkDocumentStatus = (documents) => {
+  return documents.some(
+    (x) =>
+      x.status === DOCUMENT_TYPES.RESUBMIT_PENDING ||
+      x.status === DOCUMENT_TYPES.NOT_AVAILABLE_REJECTED,
+  );
+};
+
+const checkDocumentStatusTypeE = (documents) => {
+  return documents.some((x) => checkDocumentStatus(x.data));
+};
+
+const initialState = {
+  candidate: '',
+  ticketId: '',
+  // currentStep: 1,
+  localStep: 1,
+  rookieId: '',
+  checkMandatory: {
+    filledBasicInformation: true,
+    filledJobDetail: false,
+    filledSalaryStructure: false,
+    filledDocumentVerification: false,
+    isCandidateAcceptDOJ: true,
+  },
+  data: {
+    _id: '',
+    candidate: '',
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    privateEmail: '',
+    workEmail: '',
+    previousExperience: '',
+    noticePeriod: '',
+    dateOfJoining: '',
+    processStatus: '',
+    documentList: [],
+    attachments: {},
+    documentListToRender: [],
+    workLocation: {},
+    candidateSignature: {
+      fileName: '',
+      _id: '',
+      url: '',
+    },
+    salaryStructure: {
+      status: '',
+      settings: [],
+    },
+    finalOfferCandidateSignature: {
+      fileName: '',
+      _id: '',
+      url: '',
+    },
+    currentAddress: {},
+    permanentAddress: {},
+    phoneNumber: '',
+  },
+  tempData: {
+    checkStatus: {},
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    privateEmail: '',
+    experienceYear: '',
+    workLocation: '',
+    options: 1,
+    candidateSignature: {
+      fileName: '',
+      _id: '',
+      url: '',
+    },
+    finalOfferCandidateSignature: {
+      fileName: '',
+      _id: '',
+      url: '',
+    },
+    questionOnBoarding: [],
+  },
+  salaryStructure: [],
+  eligibilityDocs: [],
+  checkCandidateMandatory: {
+    filledCandidateBasicInformation: false,
+    filledCandidateJobDetails: false,
+    filledCandidateCustomField: false,
+    filledOfferDetails: false,
+    filledBenefits: false,
+    filledAdditionalQuestion: false,
+    salaryStatus: 2,
+  },
+  // questionOnBoarding: [],
+  isCandidateAcceptDOJ: true,
+  // pending tasks
+  pendingTasks: [],
+  nextSteps: steps,
+  upcomingEvents: events,
+};
+
 const candidatePortal = {
   namespace: 'candidatePortal',
-  state: {
-    candidate: '',
-    ticketId: '',
-    // currentStep: 1,
-    localStep: 1,
-    rookieId: '',
-    checkMandatory: {
-      filledBasicInformation: true,
-      filledJobDetail: false,
-      filledSalaryStructure: false,
-      filledDocumentVerification: false,
-      isCandidateAcceptDOJ: true,
-    },
-    data: {
-      _id: '',
-      candidate: '',
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      privateEmail: '',
-      workEmail: '',
-      previousExperience: '',
-      noticePeriod: '',
-      dateOfJoining: '',
-      processStatus: '',
-      documentList: [],
-      attachments: {},
-      documentListToRender: [],
-      workLocation: {},
-      candidateSignature: {
-        fileName: '',
-        _id: '',
-        url: '',
-      },
-      salaryStructure: {
-        status: '',
-        settings: [],
-      },
-      finalOfferCandidateSignature: {
-        fileName: '',
-        _id: '',
-        url: '',
-      },
-      workHistory: [],
-      currentAddress: {},
-      permanentAddress: {},
-      phoneNumber: '',
-    },
-    tempData: {
-      checkStatus: {},
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      privateEmail: '',
-      experienceYear: '',
-      workLocation: '',
-      options: 1,
-      candidateSignature: {
-        fileName: '',
-        _id: '',
-        url: '',
-      },
-      finalOfferCandidateSignature: {
-        fileName: '',
-        _id: '',
-        url: '',
-      },
-      questionOnBoarding: [],
-    },
-    salaryStructure: [],
-    eligibilityDocs: [],
-    checkCandidateMandatory: {
-      filledCandidateBasicInformation: false,
-      filledCandidateJobDetails: false,
-      filledCandidateCustomField: false,
-      filledOfferDetails: false,
-      filledBenefits: false,
-      filledAdditionalQuestion: false,
-      salaryStatus: 2,
-    },
-    // questionOnBoarding: [],
-    isCandidateAcceptDOJ: true,
-    // pending tasks
-    pendingTasks: [],
-    nextSteps: steps,
-    upcomingEvents: events,
-  },
+  state: initialState,
   effects: {
     *fetchCandidateById({ payload }, { call, put }) {
       let response = {};
@@ -266,7 +283,31 @@ const candidatePortal = {
       let response;
       try {
         const { candidate } = yield select((state) => state.candidatePortal);
-        response = yield call(updateByCandidate, { ...payload, candidate });
+
+        response = yield call(updateByCandidate, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          candidate,
+        });
+
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *upsertCandidateDocumentEffect({ payload }, { call, select }) {
+      let response;
+      try {
+        const { candidate } = yield select((state) => state.candidatePortal);
+
+        response = yield call(upsertCandidateDocument, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          candidate,
+        });
 
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
@@ -293,41 +334,7 @@ const candidatePortal = {
       }
       return response;
     },
-    *fetchWorkHistory({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getWorkHistory, payload);
-        const { data, statusCode } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'saveOrigin',
-          payload: {
-            workHistory: data,
-          },
-        });
-      } catch (error) {
-        dialog(error);
-      }
-      return response;
-    },
-    *updateWorkHistory({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(updateWorkHistory, payload);
-        const { statusCode } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'fetchWorkHistory',
-          payload: {
-            candidate: payload.candidate,
-            tenantId: payload.tenantId,
-          },
-        });
-      } catch (error) {
-        dialog(error);
-      }
-      return response;
-    },
+
     *sendEmailByCandidate({ payload }, { call, select }) {
       let response = {};
       try {
@@ -375,7 +382,11 @@ const candidatePortal = {
         const {
           processStatus = '',
           expiryDate = '',
-          documentList = [],
+          documentTypeA = [],
+          documentTypeB = [],
+          documentTypeC = [],
+          documentTypeD = [],
+          documentTypeE = [],
           isVerifiedJobDetail,
           isVerifiedBasicInfo,
           salaryStructure: { status: salaryStatus = '', settings: salarySettings } = {},
@@ -384,6 +395,22 @@ const candidatePortal = {
         } = data || {};
 
         const dueDate = sentDate ? moment(sentDate).add(5, 'days') : '-';
+
+        if (
+          checkDocumentStatus(documentTypeA) ||
+          checkDocumentStatus(documentTypeB) ||
+          checkDocumentStatus(documentTypeC) ||
+          checkDocumentStatus(documentTypeD) ||
+          checkDocumentStatusTypeE(documentTypeE)
+        ) {
+          tempPendingTasks[1].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+          tempPendingTasks[1].name = 'Resubmit Documents';
+          tempPendingTasks[1].dueDate = dueDate;
+        } else {
+          // uploading documents
+          tempPendingTasks[1].status = CANDIDATE_TASK_STATUS.DONE;
+        }
+
         switch (processStatus) {
           case NEW_PROCESS_STATUS.PROFILE_VERIFICATION:
             // review profile
@@ -399,23 +426,6 @@ const candidatePortal = {
             }
             break;
 
-          case NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION:
-            // if there are any resubmit documents, show resubmit tasks
-            if (documentList.length > 0) {
-              const checkDocumentResubmit = documentList.some(
-                (x) => x.candidateDocumentStatus === 'RE-SUBMIT',
-              );
-              if (checkDocumentResubmit) {
-                tempPendingTasks[1].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
-                tempPendingTasks[1].name = 'Resubmit Documents';
-                tempPendingTasks[1].dueDate = dueDate;
-              }
-            } else {
-              // uploading documents
-              tempPendingTasks[1].status = CANDIDATE_TASK_STATUS.DONE;
-            }
-            break;
-
           case NEW_PROCESS_STATUS.SALARY_NEGOTIATION:
             if (['IN-PROGRESS'].includes(salaryStatus) && salarySettings.length) {
               // salary structure
@@ -425,9 +435,6 @@ const candidatePortal = {
             break;
 
           case NEW_PROCESS_STATUS.OFFER_RELEASED:
-            // case NEW_PROCESS_STATUS.OFFER_ACCEPTED:
-            // case NEW_PROCESS_STATUS.OFFER_REJECTED:
-            // offer letter
             tempPendingTasks[3].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
             tempPendingTasks[3].dueDate = expiryDate ? moment(expiryDate).format(dateFormat) : '';
             break;
@@ -518,77 +525,8 @@ const candidatePortal = {
       return { ...state, currentUser: action.payload || {} };
     },
 
-    clearAll() {
-      // const {}
-      return {
-        candidate: '',
-        ticketId: '',
-        // currentStep: 1,
-        localStep: 1,
-        rookieId: '',
-        checkMandatory: {
-          filledBasicInformation: true,
-          filledJobDetail: false,
-        },
-        data: {
-          _id: '',
-          candidate: '',
-          firstName: '',
-          middleName: '',
-          lastName: '',
-          privateEmail: '',
-          workEmail: '',
-          previousExperience: '',
-          noticePeriod: '',
-          dateOfJoining: '',
-          processStatus: '',
-          documentList: [],
-          attachments: {},
-          documentListToRender: [],
-          workLocation: '',
-          candidateSignature: {
-            fileName: '',
-            _id: '',
-            url: '',
-          },
-          finalOfferCandidateSignature: {
-            fileName: '',
-            _id: '',
-            url: '',
-          },
-        },
-        tempData: {
-          questionOnBoarding: [],
-          checkStatus: {},
-          firstName: '',
-          middleName: '',
-          lastName: '',
-          privateEmail: '',
-          experienceYear: '',
-          workLocation: '',
-          options: 1,
-          candidateSignature: {
-            fileName: '',
-            _id: '',
-            url: '',
-          },
-          finalOfferCandidateSignature: {
-            fileName: '',
-            _id: '',
-            url: '',
-          },
-        },
-        salaryStructure: [],
-        eligibilityDocs: [],
-        checkCandidateMandatory: {
-          filledCandidateBasicInformation: false,
-          filledCandidateJobDetails: false,
-          filledCandidateCustomField: false,
-          filledOfferDetails: false,
-          filledBenefits: false,
-          salaryStatus: 2,
-        },
-      };
+    clearState() {
+      return initialState;
     },
   },
 };

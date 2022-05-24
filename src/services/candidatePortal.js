@@ -35,20 +35,6 @@ export function addAttachmentService(params) {
   });
 }
 
-export function getWorkHistory(params) {
-  return request('/api/workhistorytenant/get-by-candidate', {
-    method: 'POST',
-    data: params,
-  });
-}
-
-export function updateWorkHistory(params) {
-  return request('/api/workhistorytenant/update', {
-    method: 'POST',
-    data: params,
-  });
-}
-
 export function sendEmailByCandidateModel(params) {
   return request('/api/candidatetenant/phase-one-candidate', {
     method: 'POST',
@@ -71,6 +57,14 @@ export async function getCountryList() {
 
 export async function getStateListByCountry(payload) {
   return request('/api/country/get-states', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+// new document verification
+export async function upsertCandidateDocument(payload) {
+  return request('/api/candidatetenant/upsert-candidate-document', {
     method: 'POST',
     data: payload,
   });

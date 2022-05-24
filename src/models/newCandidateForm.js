@@ -23,7 +23,6 @@ import {
   getLocationListByCompany,
   addManagerSignature,
   getDocumentByCandidate,
-  getWorkHistory,
   generateLink,
   extendOfferLetter,
   withdrawOffer,
@@ -31,6 +30,9 @@ import {
   getReporteesList,
   getDocumentSettingList,
   getListBenefit,
+
+  // new document verification
+  getDocumentLayoutByCountry,
 } from '@/services/newCandidateForm';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
@@ -81,7 +83,7 @@ const defaultState = {
       benefitsCheck: false,
     },
     position: 'EMPLOYEE',
-    employeeType: {},
+    employeeType: null,
     previousExperience: null,
     candidatesNoticePeriod: '',
     prefferedDateOfJoining: '',
@@ -94,7 +96,7 @@ const defaultState = {
     managerList: [],
     joineeEmail: '',
     employer: '',
-    grade: {},
+    grade: null,
     department: null,
     workLocation: null,
     reportees: [],
@@ -122,15 +124,6 @@ const defaultState = {
     newArrToAdjust: [],
     company: '',
     email: '',
-    identityProof: {
-      checkedList: [],
-    },
-    addressProof: {
-      checkedList: [],
-    },
-    educational: {
-      checkedList: [],
-    },
 
     candidateSignature: {
       url: '',
@@ -217,6 +210,12 @@ const defaultState = {
       // title: '',
     },
     benefits: [],
+
+    documentTypeA: [],
+    documentTypeB: [],
+    documentTypeC: [],
+    documentTypeD: [],
+    documentTypeE: [],
   },
   data: {
     firstName: null,
@@ -230,7 +229,7 @@ const defaultState = {
     department: null,
     reportees: [],
     title: null,
-    grade: {},
+    grade: null,
     company: null,
     joineeEmail: '',
     previousExperience: null,
@@ -297,6 +296,7 @@ const defaultState = {
   },
   isEditingSalary: false,
   documentListOnboarding: [],
+  documentLayout: [],
 };
 
 const newCandidateForm = {
@@ -1055,6 +1055,7 @@ const newCandidateForm = {
           salaryStructure: { settings, status },
           grade,
           ticketID: rookieId = '',
+          reportingManager = {},
         } = data;
         yield put({
           type: 'save',
@@ -1069,6 +1070,8 @@ const newCandidateForm = {
             ...data,
             candidate: _id,
             _id,
+            reportingManager:
+              Object.keys(reportingManager || {}).length > 0 ? reportingManager : null,
           },
         });
 
@@ -1108,67 +1111,6 @@ const newCandidateForm = {
           },
         });
 
-        // const {
-        //   firstName = '',
-        //   middleName = '',
-        //   lastName = '',
-        //   privateEmail = '',
-        //   previousExperience = '',
-        //   salaryStructure = {},
-        //   // documentChecklistSetting = [],
-        //   amountIn,
-        //   timeOffPolicy,
-        //   currentStep,
-        // } = data;
-
-        // const filterValue = (arr) => {
-        //   let listCheck = arr.map((item) => item.value);
-        //   listCheck = listCheck.filter((item) => item === true);
-
-        //   return listCheck;
-        // };
-        // const identityProof = documentChecklistSetting[0]?.data || [];
-        // const addressProof = documentChecklistSetting[1]?.data || [];
-        // const educational = documentChecklistSetting[2]?.data || [];
-        // const technicalCertification = documentChecklistSetting[3]?.data || [];
-        // const prevEmployee = documentChecklistSetting[4]?.data || [];
-
-        // const checkStatusTypeA = filterValue(identityProof);
-        // const checkStatusTypeB = filterValue(addressProof);
-        // const checkStatusTypeC = filterValue(educational);
-        // const checkStatusTypeD = filterValue(technicalCertification);
-        // const checkStatusTypeE = filterValue(prevEmployee);
-
-        // const checkStatus = {};
-
-        // if (currentStep >= 3) {
-        //   checkStatus.filledBgCheck = true;
-        // }
-
-        // if (firstName && middleName && lastName && privateEmail && previousExperience) {
-        //   checkStatus.filledBasicInformation = true;
-        // }
-        // if ('title' in data && 'workLocation' in data && 'department' in data) {
-        //   checkStatus.filledJobDetail = true;
-        // }
-        // if ('title' in salaryStructure) {
-        //   checkStatus.filledSalaryCheck = true;
-        // }
-
-        // if (amountIn && timeOffPolicy) {
-        //   checkStatus.offerDetailCheck = true;
-        // }
-
-        // if (currentStep >= 5) {
-        //   checkStatus.payrollSettingCheck = true;
-        // } else {
-        //   checkStatus.payrollSettingCheck = false;
-        // }
-
-        // if (currentStep >= 6) {
-        //   checkStatus.benefitsCheck = true;
-        // }
-
         yield put({
           type: 'saveTemp',
           payload: {
@@ -1178,22 +1120,12 @@ const newCandidateForm = {
             offerLetter: data.offerLetter,
             candidate: data._id,
             candidateSignature: data.candidateSignature || {},
-            amountIn: data.amountIn || '',
-            timeOffPolicy: data.timeOffPolicy || '',
-            compensationType: data.compensationType || '',
             salaryTitle: data.salaryStructure?.title?._id,
-            grade,
-            // jobGradeLevelList: [grade],
-            // salaryStructure: data.salaryStructure,
-            salaryNote: data.salaryNote,
             includeOffer: data.includeOffer || 1,
-            // hidePreviewOffer: !!(data.staticOfferLetter && data.staticOfferLetter.url), // Hide preview offer screen if there's already static offer
-            // disablePreviewOffer:
-            //   (data.offerLetter && data.offerLetter.attachment) ||
-            //   (data.staticOfferLetter && data.staticOfferLetter.url),
             additionalQuestions: formatAdditionalQuestion(data.additionalQuestions) || [],
             isSentEmail: data.processStatus !== NEW_PROCESS_STATUS.DRAFT,
-            prefferedDateOfJoining: data.dateOfJoining,
+            reportingManager:
+              Object.keys(reportingManager || {}).length !== 0 ? reportingManager : null,
           },
         });
 
@@ -1530,28 +1462,7 @@ const newCandidateForm = {
       }
       return response;
     },
-    *fetchWorkHistory({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getWorkHistory, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { data, statusCode } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'saveOrigin',
-          payload: {
-            workHistory: data,
-          },
-        });
-      } catch (error) {
-        dialog(error);
-      }
-      return response;
-    },
-
+    
     // Offer letter actions
     *extendOfferLetterEffect({ payload = {} }, { call, put }) {
       let response = {};
@@ -1639,6 +1550,30 @@ const newCandidateForm = {
         dialog(errors);
         return {};
       }
+    },
+
+    // new document verification
+    *fetchDocumentLayoutByCountry({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getDocumentLayoutByCountry, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            documentLayout: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
 

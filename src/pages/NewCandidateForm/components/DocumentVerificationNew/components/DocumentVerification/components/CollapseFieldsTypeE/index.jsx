@@ -1,163 +1,147 @@
 /* eslint-disable no-nested-ternary */
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { Checkbox, Collapse, Skeleton } from 'antd';
-import React, { PureComponent } from 'react';
+import { Col, Collapse, Spin } from 'antd';
+import React from 'react';
 import { connect } from 'umi';
-import EmployerComponent from './EmployerComponent';
+import { mapType } from '@/utils/newCandidateForm';
+import EmployerComponent from './components/EmployerComponent';
 import styles from './index.less';
 
 const { Panel } = Collapse;
 
-@connect(({ newCandidateForm }) => ({
-  newCandidateForm,
-}))
-class CollapseFieldsType2 extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      indeterminate: true,
-      checkAll: false,
-    };
-  }
+const CollapseFieldsTypeE = (props) => {
+  const {
+    dispatch,
+    disabled = false,
+    layout: { type = '', name = '' } = {},
+    layout = {},
+    items = [],
+    refresh = false,
+  } = props;
 
-  componentDidMount = () => {
-    this.checkAllStatus();
-  };
-
-  componentDidUpdate = (prevProps) => {
-    const { previousEmployment } = this.props;
-    if (JSON.stringify(previousEmployment) !== JSON.stringify(prevProps.previousEmployment)) {
-      this.checkAllStatus();
-    }
-  };
-
-  checkAllStatus = () => {
-    const { previousEmployment = [] } = this.props;
-    let checkAll = true;
-    previousEmployment.forEach((doc) => {
-      const { data = [] } = doc;
-      data.forEach((item) => {
-        if (!item.value) {
-          checkAll = false;
-        }
-      });
-    });
-    this.setState({
-      checkAll,
-      indeterminate: !checkAll,
-    });
-  };
-
-  onCheckAllChange = (e) => {
-    const { handleCheckAll = () => {} } = this.props;
-    e.stopPropagation();
-    this.setState({
-      indeterminate: false,
-      checkAll: e.target.checked,
-    });
-    handleCheckAll(e.target.checked);
-  };
-
-  renderHeader = () => {
-    const { disabled = false, previousEmployment = [] } = this.props;
-    const title =
-      previousEmployment.length > 0
-        ? `Type ${previousEmployment[0].type}: ${previousEmployment[0].name}`
-        : 'Type E: Previous Employment';
-    const { indeterminate, checkAll } = this.state;
+  const renderHeader = () => {
+    const title = `Type ${type}: ${name}`;
 
     return (
       <div className={styles.header}>
-        <Checkbox
-          checked={checkAll}
-          indeterminate={indeterminate}
-          onClick={(e) => this.onCheckAllChange(e)}
-          disabled={disabled}
-        />
         <span className={styles.titleText}>{title}</span>
       </div>
     );
   };
 
-  // add component
-  addComponent = () => {
-    // this.renderEmployerComponent();
-    const { addBlockE = () => {} } = this.props;
-    addBlockE();
+  const onSaveRedux = (result) => {
+    dispatch({
+      type: 'newCandidateForm/saveTemp',
+      payload: {
+        [mapType[type]]: result,
+      },
+    });
   };
 
-  render() {
-    const {
-      disabled = false,
-      previousEmployment = [],
-      removeBlockE = () => {},
-      handleChangeName = () => {},
-      handleCheck = () => {},
-      refresh = false,
-    } = this.props;
+  // add component
+  const onAdd = () => {
+    const result = [
+      ...items,
+      {
+        employer: '',
+        data: layout.data,
+      },
+    ];
+    onSaveRedux(result);
+  };
 
-    return (
-      <div className={styles.CollapseFieldsType2}>
+  const onRemove = (index) => {
+    const result = [...items];
+    result.splice(index, 1);
+    onSaveRedux(result);
+  };
+
+  const handleChangeEmployer = (value, index) => {
+    const result = [...items];
+    result[index].employer = value;
+    onSaveRedux(result);
+  };
+
+  const handleCheck = (list, index) => {
+    const result = items.map((x, i) => {
+      if (i !== index) return x;
+      const data = x.data.map((y) => {
+        return {
+          ...y,
+          value: list.includes(y.alias),
+        };
+      });
+      return {
+        ...x,
+        data,
+      };
+    });
+    onSaveRedux(result);
+  };
+
+  return (
+    <Col span={24}>
+      <div className={styles.CollapseFieldsTypeE}>
         <Collapse
           accordion
           expandIconPosition="right"
-          defaultActiveKey={disabled ? '1' : ''}
-          expandIcon={(props) => {
-            return props.isActive ? (
+          defaultActiveKey="1"
+          expandIcon={({ isActive }) => {
+            return isActive ? (
               <MinusOutlined className={styles.alternativeExpandIcon} />
             ) : (
               <PlusOutlined className={styles.alternativeExpandIcon} />
             );
           }}
         >
-          <Panel header={this.renderHeader()} className={styles.collapsePanel} key="1">
-            <div>
-              {refresh && (
-                <div style={{ padding: '24px' }}>
-                  <Skeleton />
-                </div>
-              )}
-              {!refresh &&
-                previousEmployment.length > 0 &&
-                previousEmployment.map((child = {}, index) => {
-                  const { data = [], employer = '' } = child;
-                  if (data.length > 0 || previousEmployment.length !== 1)
-                    return (
+          <Panel header={renderHeader()} className={styles.collapsePanel} key="1">
+            <Spin spinning={refresh}>
+              <div className={styles.items} style={items.length > 0 ? {} : { padding: 0 }}>
+                {items.map((x = {}, index) => {
+                  const { data = [], employer = '' } = x;
+                  return (
+                    <div key={`${index + 0}`}>
                       <EmployerComponent
                         index={index}
                         employer={employer}
                         data={data}
-                        remove={removeBlockE}
-                        handleChange={handleChangeName}
-                        handleCheck={handleCheck}
-                        listLength={previousEmployment.length}
+                        listLength={items.length}
                         disabled={disabled}
+                        onRemove={onRemove}
+                        handleChangeEmployer={handleChangeEmployer}
+                        handleCheck={handleCheck}
                       />
-                    );
-                  return '';
+                    </div>
+                  );
                 })}
-            </div>
+              </div>
 
-            {!disabled && (
-              <>
+              {!disabled && (
                 <div
-                  className={
-                    disabled
-                      ? `${styles.disableButton} ${styles.addEmployerDetailBtn}`
-                      : styles.addEmployerDetailBtn
-                  }
-                  onClick={disabled ? () => {} : this.addComponent}
+                  className={styles.buttonContainer}
+                  style={items.length > 0 ? null : { border: 'none' }}
                 >
-                  <PlusOutlined className={styles.plusIcon} />
-                  <span className={styles.title}>Add Employer Detail</span>
+                  <div
+                    className={
+                      disabled
+                        ? [styles.disableButton, styles.addEmployerDetailBtn]
+                        : styles.addEmployerDetailBtn
+                    }
+                    onClick={disabled ? () => {} : onAdd}
+                  >
+                    <PlusOutlined className={styles.plusIcon} />
+                    <span className={styles.title}>Add Employer Detail</span>
+                  </div>
                 </div>
-              </>
-            )}
+              )}
+            </Spin>
           </Panel>
         </Collapse>
       </div>
-    );
-  }
-}
+    </Col>
+  );
+};
 
-export default CollapseFieldsType2;
+export default connect(({ newCandidateForm }) => ({
+  newCandidateForm,
+}))(CollapseFieldsTypeE);
