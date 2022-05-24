@@ -139,8 +139,11 @@ class Messages extends PureComponent {
       conversationList = [],
       listLastMessage = [],
       loadingFetchConversations = false,
-      data: { CEOInfo: { generalInfoInfo: { legalName: ceoFullname = '' } = {} || {} } = {} || {} },
+      data: {
+        CEOInfo: { generalInfoInfo: { firstName = '', lastName = '' } = {} || {} } = {} || {},
+      },
     } = this.props;
+    const charCeoName = firstName.charAt(0) + lastName.charAt(0);
     return (
       <div className={styles.Messages}>
         <Row type="flex" gutter={[24, 24]}>
@@ -152,7 +155,7 @@ class Messages extends PureComponent {
               loading={loadingFetchConversations}
               listLastMessage={listLastMessage}
               changeHrAvatar={this.changeHrAvatar}
-              ceoFullname={ceoFullname}
+              charCeoName={charCeoName}
             />
           </Col>
           <Col xs={24} lg={16}>

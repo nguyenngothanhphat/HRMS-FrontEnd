@@ -144,11 +144,16 @@ class ActiveChat extends PureComponent {
   // chat container
   renderSender = (messages = []) => {
     const {
-      data: { CEOInfo: { generalInfoInfo: { legalName: ceoFullname = '' } = {} || {} } = {} || {} },
+      data: {
+        CEOInfo: {
+          generalInfoInfo: { legalName: ceoFullname = '', firstName = '', lastName = '' } = {} ||
+            {},
+        } = {} || {},
+      },
       isReplyable = true,
     } = this.props;
     const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null;
-    const charCeoName = ceoFullname.charAt(0) + ceoFullname.charAt(6);
+    const charCeoName = firstName.charAt(0) + lastName.charAt(0);
     return (
       <div className={styles.senderContainer}>
         <div className={`${styles.avatarOutline} ${!isReplyable ? styles.avatarBgOutline : ''}`}>
@@ -170,10 +175,12 @@ class ActiveChat extends PureComponent {
     const {
       candidate: { _id: candidateId = '' } = {},
       activeId = '',
-      data: { CEOInfo: { generalInfoInfo: { legalName: ceoFullname = '' } = {} || {} } = {} || {} },
+      data: {
+        CEOInfo: { generalInfoInfo: { firstName = '', lastName = '' } = {} || {} } = {} || {},
+      },
       isReplyable = true,
     } = this.props;
-    const charCeoName = ceoFullname.charAt(0) + ceoFullname.charAt(6);
+    const charCeoName = firstName.charAt(0) + lastName.charAt(0);
     const senderMessage = (item, index) => {
       return (
         <div key={index} className={styles.senderMessage}>
