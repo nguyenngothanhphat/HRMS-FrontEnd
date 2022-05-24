@@ -135,47 +135,46 @@ class EditUserModal extends PureComponent {
         statusUser: status,
       });
     }
+    // Updating details in the admin portal should update the associated fields also
+    // The above 3 points should work for both the active users and inactive users portal
+    dispatch({
+      type: 'usersManagement/updateRolesByEmployee',
+      payload: {
+        employee: _id,
+        roles,
+        tenantId: tenant,
+      },
+    });
 
-    if (status === 'ACTIVE') {
-      dispatch({
-        type: 'usersManagement/updateRolesByEmployee',
-        payload: {
-          employee: _id,
-          roles,
-          tenantId: tenant,
-        },
-      });
-
-      dispatch({
-        type: 'usersManagement/updateGeneralInfo',
-        payload: {
-          id: generalInfoId,
-          workEmail,
-          firstName,
-          lastName,
-          middleName,
-          tenantId: tenant,
-        },
-      });
-
-      dispatch({
-        type: 'usersManagement/updateEmployee',
-        payload: {
-          id: _id,
-          location: locationId,
-          company: companyId,
-          status,
-          tenantId: tenant,
-        },
-      }).then((statusCode) => {
-        if (statusCode === 200) {
-          notification.success({
-            message: 'Update user successfully',
-          });
-          closeEditModal(true);
-        }
-      });
-    }
+    dispatch({
+      type: 'usersManagement/updateGeneralInfo',
+      payload: {
+        id: generalInfoId,
+        workEmail,
+        firstName,
+        lastName,
+        middleName,
+        tenantId: tenant,
+      },
+    });
+  
+    dispatch({
+      type: 'usersManagement/updateEmployee',
+      payload: {
+        id: _id,
+        location: locationId,
+        company: companyId,
+        status,
+        tenantId: tenant,
+      },
+    }).then((statusCode) => {
+      if (statusCode === 200) {
+        notification.success({
+          message: 'Update user successfully',
+        });
+        closeEditModal(true);
+      }
+    });
 
     if (status === 'INACTIVE') {
       closeEditModal(true);

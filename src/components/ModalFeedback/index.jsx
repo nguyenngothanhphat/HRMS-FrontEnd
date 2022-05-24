@@ -3,6 +3,7 @@ import { connect } from 'umi';
 import { Modal, Input, Form, Button, Radio, Divider } from 'antd';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import ScreenCapture from './ScreenCapture';
+import ModalUpload from './ModalUploadFeedBack';
 
 import styles from './index.less';
 
@@ -22,6 +23,7 @@ class ModalFeedback extends Component {
       screenCapture: null,
       submit: false,
       dataScreenshot: [],
+      visibleUpload: false,
     };
   }
 
@@ -40,6 +42,12 @@ class ModalFeedback extends Component {
       valueRadio: null,
     });
     handleCancelModal();
+  };
+
+  handleCancelModalUpload = () => {
+    this.setState({
+      visibleUpload: false,
+    });
   };
 
   handleFinish = (data) => {
@@ -135,15 +143,33 @@ class ModalFeedback extends Component {
     // document.body.style.overflow = 'scroll';
   };
 
+  handleUploadScreenshot = (resp) => {
+    const { openFeedback = () => {} } = this.props;
+    const { data = [] } = resp;
+    openFeedback();
+    this.setState({
+      screenCapture: data[0].url,
+      visibleUpload: false,
+      dataScreenshot: data,
+    });
+  };
+
   handleBack = () => {
     this.setState({
       screenCapture: null,
+      feedback: null,
     });
   };
 
   render() {
-    const { visible = false, handleCancelModal = () => {}, loadingSubmit, loading } = this.props;
-    const { screenCapture, on, submit, valueRadio, feedback } = this.state;
+    const {
+      visible = false,
+      handleCancelModal = () => {},
+      openFeedback = () => {},
+      loadingSubmit,
+      loading,
+    } = this.props;
+    const { screenCapture, on, visibleUpload = false, submit, valueRadio, feedback } = this.state;
     return (
       <div>
         <Modal
@@ -260,17 +286,30 @@ class ModalFeedback extends Component {
                             Back
                           </Button>
                         ) : (
-                          <Button
-                            onClick={() => {
-                              this.setState({
-                                on: true,
-                              });
-                              handleCancelModal();
-                            }}
-                            className={`${styles.btnGroup} ${styles.highlightBtn}`}
-                          >
-                            Highlight Page
-                          </Button>
+                          <div className={styles.containerBtn}>
+                            <Button
+                              onClick={() => {
+                                this.setState({
+                                  visibleUpload: true,
+                                });
+                                handleCancelModal();
+                              }}
+                              className={`${styles.btnGroup} ${styles.uploadBtn}`}
+                            >
+                              Upload Screenshot
+                            </Button>
+                            <Button
+                              onClick={() => {
+                                this.setState({
+                                  on: true,
+                                });
+                                handleCancelModal();
+                              }}
+                              className={`${styles.btnGroup} ${styles.highlightBtn}`}
+                            >
+                              Highlight Page
+                            </Button>
+                          </div>
                         )}
                       </Form.Item>
                     )}
@@ -294,6 +333,14 @@ class ModalFeedback extends Component {
           </div>
         </Modal>
         {on ? <ScreenCapture onEndCapture={this.handleScreenCapture} /> : null}
+        <ModalUpload
+          widthModal="590px"
+          visible={visibleUpload}
+          titleModal="Feedback"
+          handleCancelModalUpload={this.handleCancelModalUpload}
+          openFeedback={openFeedback}
+          handleUploadScreenshot={this.handleUploadScreenshot}
+        />
       </div>
     );
   }

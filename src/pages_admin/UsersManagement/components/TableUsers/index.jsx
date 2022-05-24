@@ -62,7 +62,9 @@ class TableUsers extends PureComponent {
         render: (generalInfo) =>
           generalInfo ? (
             <span className={styles.fullname}>
-              {`${generalInfo.firstName} ${generalInfo.lastName}`}
+              {generalInfo.legalName
+                ? `${generalInfo.legalName}`
+                : `${generalInfo.firstName} ${generalInfo.midleName} ${generalInfo.lastName}`}
             </span>
           ) : (
             ''
