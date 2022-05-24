@@ -11,18 +11,7 @@ import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import UserProfilePopover from '@/components/UserProfilePopover';
 
 const MonthlyTable = (props) => {
-  const {
-    loadingFetch = false,
-    weeksOfMonth = [],
-    data = [],
-    // tablePagination: {
-    //   page = 0,
-    // pageCount = 0,
-    //   pageSize = 0,
-    //   rowCount = 0,
-    // } = {},
-    // onChangePage = () => {},
-  } = props;
+  const { loadingFetch = false, weeksOfMonth = [], data = [] } = props;
   const [pageSize, setPageSize] = useState(5);
   const [pageSelected, setPageSelected] = useState(1);
   // FUNCTIONS
@@ -93,12 +82,6 @@ const MonthlyTable = (props) => {
         render: (employee, _, index) => {
           const { legalName = '', userId = '', avatar } = employee;
           return (
-            // <div className={styles.functionalArea}>
-            //   <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
-            //     <span>{functionalArea ? functionalArea.toString()?.charAt(0) : 'P'}</span>
-            //   </div>
-            //   <span className={styles.name}>{functionalArea}</span>
-            // </div>
             <UserProfilePopover placement="rightTop" data={employee}>
               <div className={styles.member}>
                 <div className={styles.renderEmployee}>
