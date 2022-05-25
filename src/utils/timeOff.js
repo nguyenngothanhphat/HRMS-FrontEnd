@@ -186,37 +186,37 @@ export const TIMEOFF_ACCRUAL_METHOD = {
 
 export const TIMEOFF_WORK_DAYS = [
   {
-    id: 1,
+    id: 0,
     text: 'SUNDAY',
     name: 'Sun',
   },
   {
-    id: 2,
+    id: 1,
     text: 'MONDAY',
     name: 'Mon',
   },
   {
-    id: 3,
+    id: 2,
     text: 'TUESDAY',
     name: 'Tue',
   },
   {
-    id: 4,
+    id: 3,
     text: 'WEDNESDAY',
     name: 'Wed',
   },
   {
-    id: 5,
+    id: 4,
     text: 'THURSDAY',
     name: 'Thu',
   },
   {
-    id: 6,
+    id: 5,
     text: 'FRIDAY',
     name: 'Fri',
   },
   {
-    id: 7,
+    id: 6,
     name: 'Sat',
     text: 'SATURDAY',
   },
