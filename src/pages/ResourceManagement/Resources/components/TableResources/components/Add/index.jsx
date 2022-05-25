@@ -71,9 +71,7 @@ class AddActionBTN extends Component {
       });
       return;
     }
-    if (
-      new Date(revisedEndDate).getTime() <= new Date(endDate).getTime()
-    ) {
+    if (new Date(revisedEndDate).getTime() <= new Date(endDate).getTime()) {
       notification.error({
         message: 'Resived date cannot less than end date',
       });
@@ -86,9 +84,9 @@ class AddActionBTN extends Component {
         project,
         status,
         utilization,
-        startDate: startDate && moment(startDate).format('YYYY-MM-DD') || null,
-        endDate: endDate && moment(endDate).format('YYYY-MM-DD') || null,
-        revisedEndDate: revisedEndDate && moment(revisedEndDate).format('YYYY-MM-DD') || null,
+        startDate: (startDate && moment(startDate).format('YYYY-MM-DD')) || null,
+        endDate: (endDate && moment(endDate).format('YYYY-MM-DD')) || null,
+        revisedEndDate: (revisedEndDate && moment(revisedEndDate).format('YYYY-MM-DD')) || null,
         comment,
         milestone: '',
       },
@@ -129,19 +127,10 @@ class AddActionBTN extends Component {
       >
         <Row gutter={[24, 24]}>
           <Col span={12}>
-            <Form.Item 
-              label="Project" 
+            <Form.Item
+              label="Project"
               name="project"
-              rules={[
-                () => ({
-                  validator(_, value) {
-                    if (!value) {
-                      return Promise.reject('Project value could not be empty');
-                    }
-                    return Promise.resolve();
-                  },
-                }),
-              ]}
+              rules={[{ required: true, message: 'Please select the project!' }]}
             >
               <Select
                 placeholder="Select the project"
@@ -149,35 +138,24 @@ class AddActionBTN extends Component {
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>
-                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {projectList.map((project) => (
                   <Option value={project.id}>{project.projectName}</Option>
                 ))}
               </Select>
             </Form.Item>
-            <Form.Item 
-              label="Status" 
+            <Form.Item
+              label="Status"
               name="status"
-              rules={[
-                () => ({
-                  validator(_, value) {
-                    if (!value) {
-                      return Promise.reject('Status value could not be empty');
-                    }
-                    return Promise.resolve();
-                  },
-                }),
-              ]}
+              rules={[{ required: true, message: 'Please select the status!' }]}
             >
               <Select
                 placeholder="Select the status"
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>
-                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {statusList.map((status) => (
                   <Option value={status}>{status}</Option>
@@ -189,21 +167,20 @@ class AddActionBTN extends Component {
                 label="Bandwith Allocation (%)"
                 name="utilization"
                 rules={[
+                  { required: true, message: 'Please enter the bandwith allocation (%)!' },
+
                   () => ({
                     validator(_, value) {
-                      if (!value) {
-                        return Promise.reject('Utilization value could not be empty');
-                      }
-                      if (isNaN(value)) {
-                        return Promise.reject(`Value enter has to be a number.`);
+                      if (value && isNaN(value)) {
+                        return Promise.reject(`Value enter has to be a number!`);
                       }
                       if (value > maxEnterUtilization) {
                         return Promise.reject(
-                          `Your cannot enter a value that is more than ${maxEnterUtilization}.`,
+                          `Your cannot enter a value that is more than ${maxEnterUtilization}!`,
                         );
                       }
                       if (value < 0) {
-                        return Promise.reject(`Your cannot enter a value that is less than 0`);
+                        return Promise.reject(`Your cannot enter a value that is less than 0!`);
                       }
                       return Promise.resolve();
                     },
@@ -216,19 +193,10 @@ class AddActionBTN extends Component {
             </div>
           </Col>
           <Col span={12}>
-            <Form.Item 
-              label="Start Date" 
+            <Form.Item
+              label="Start Date"
               name="startDate"
-              rules={[
-                () => ({
-                  validator(_, value) {
-                    if (!value) {
-                      return Promise.reject('Start date value could not be empty');
-                    }
-                    return Promise.resolve();
-                  },
-                }),
-              ]}
+              rules={[{ required: true, message: 'Start date value could not be empty!' }]}
             >
               <DatePicker
                 placeholder="Enter Start Date"
@@ -238,16 +206,7 @@ class AddActionBTN extends Component {
             <Form.Item
               label="End Date"
               name="endDate"
-              rules={[
-                () => ({
-                  validator(_, value) {
-                    if (!value) {
-                      return Promise.reject('End date value could not be empty');
-                    }
-                    return Promise.resolve();
-                  },
-                }),
-              ]}
+              rules={[{ required: true, message: 'End date value could not be empty!' }]}
             >
               <DatePicker
                 placeholder="Enter End Date"

@@ -1,76 +1,127 @@
-import React, { PureComponent } from 'react';
-import { Row, Col, Button, Skeleton } from 'antd';
-import { connect, formatMessage, history } from 'umi';
-import { isEmpty } from 'lodash';
+import { Button, Col, Row, Spin } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { connect, history } from 'umi';
+import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
-import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import Header from './components/Header';
-import RadioComponent from './components/RadioComponent';
-import FieldsComponent from './components/FieldsComponent';
-
-import NoteComponent from '../NewNoteComponent';
-import MessageBox from '../MessageBox';
 import { Page } from '../../utils';
+import MessageBox from '../MessageBox';
+import NoteComponent from '../NewNoteComponent';
+import JobDetailForm from './components/Form';
+import Header from './components/Header';
 import styles from './index.less';
+import { goToTop } from '@/utils/utils';
+
 // Thứ tự Fields Work Location Job Title Department Reporting Manager
-@connect(
-  ({
-    newCandidateForm: { rookieId = '', data, checkMandatory, currentStep, tempData } = {},
-    loading,
-    location: { companyLocationList = [] } = {},
-    user: { companiesOfUser = [] } = {},
-  }) => ({
-    rookieId,
+const JobDetails = (props) => {
+  const {
+    dispatch,
+    processStatus = '',
+    tempData,
+    tempData: {
+      // list
+      locationList = [],
+      departmentList = [],
+      managerList = [],
+      jobGradeLevelList = [],
+
+      // values
+      reportingManager,
+      department,
+      workLocation,
+      title,
+      grade,
+      dateOfJoining,
+      ticketID = '',
+      position,
+      employeeType,
+    },
+    data: { _id },
     data,
     checkMandatory,
-    currentStep,
-    tempData,
-    companyLocationList,
-    companiesOfUser,
-    loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
-    loadingUpdateByHR: loading.effects['newCandidateForm/updateByHR'],
-    loadingLocationList: loading.effects['newCandidateForm/fetchLocationList'],
-  }),
-)
-class JobDetails extends PureComponent {
-  componentDidMount() {
-    const { dispatch } = this.props;
+    currentStep = '',
+    loadingUpdateByHR = false,
+    loading,
+    loadingFetchCandidate = false,
+    loadingLocationList = false,
+    loadingFetchTitle = false,
+    loadingFetchDepartment = false,
+    loadingFetchManager = false,
+    loadingFetchGrade = false,
+    companyLocationList = [],
+  } = props;
 
-    const companyId = getCurrentCompany();
-    const tenantId = getCurrentTenant();
+  const { filledJobDetail = false } = checkMandatory;
 
-    window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+  const [needRefreshDocument, setNeedRefreshDocument] = useState(false);
 
-    // this.checkFilled();
+  const companyId = getCurrentCompany();
+  const tenantId = getCurrentTenant();
 
-    // get work location list
+  useEffect(() => {
+    if (!workLocation) {
+      setNeedRefreshDocument(true);
+    }
+  }, [JSON.stringify(workLocation)]);
+
+  useEffect(() => {
+    goToTop();
+    if (locationList.length === 0) {
+      dispatch({
+        type: 'newCandidateForm/fetchLocationList',
+        payload: {
+          company: companyId,
+          tenantId,
+        },
+      });
+    }
+    if (jobGradeLevelList.length === 0) {
+      dispatch({
+        type: 'newCandidateForm/getJobGradeList',
+      });
+    }
+
+    if (departmentList.length === 0) {
+      dispatch({
+        type: 'newCandidateForm/fetchManagerList',
+        payload: {
+          company: companyId,
+          status: ['ACTIVE'],
+          // location: locationPayload,
+          tenantId: getCurrentTenant(),
+        },
+      });
+    }
+    if (managerList.length === 0) {
+      dispatch({
+        type: 'newCandidateForm/fetchDepartmentList',
+        payload: {
+          company: companyId,
+          tenantId,
+        },
+      });
+    }
+  }, []);
+
+  const checkFilled = () => {
+    const check = department && workLocation && title && reportingManager && dateOfJoining;
+
     dispatch({
-      type: 'newCandidateForm/fetchLocationList',
+      type: 'newCandidateForm/save',
       payload: {
-        company: companyId,
-        tenantId,
+        checkMandatory: {
+          ...checkMandatory,
+          filledJobDetail: check,
+        },
       },
     });
-    dispatch({
-      type: 'newCandidateForm/getJobGradeList',
-    });
-  }
-
-  componentDidUpdate = (prevProps) => {
-    const { data = {}, tempData = {} } = this.props;
-
-    if (
-      JSON.stringify(prevProps.data) !== JSON.stringify(data) ||
-      JSON.stringify(prevProps.tempData) !== JSON.stringify(tempData)
-    ) {
-      this.checkFilled();
-    }
   };
 
-  disableEdit = () => {
-    const { processStatus } = this.props;
+  useEffect(() => {
+    checkFilled();
+  }, [JSON.stringify(tempData), JSON.stringify(data), currentStep]);
 
+  const disableEdit = () => {
     return ![
       NEW_PROCESS_STATUS.DRAFT,
       NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
@@ -78,265 +129,106 @@ class JobDetails extends PureComponent {
     ].includes(processStatus);
   };
 
-  checkFilled = () => {
-    const {
-      tempData: {
-        department,
-        workLocation,
-        title,
-        reportingManager,
-        checkStatus,
-        prefferedDateOfJoining,
-      },
-      checkMandatory,
-      dispatch,
-    } = this.props;
-
-    if (department && workLocation && title && reportingManager && prefferedDateOfJoining) {
-      if (reportingManager?._id) {
-        checkStatus.filledJobDetail = true;
-      } else {
-        checkStatus.filledJobDetail = true;
+  const getDocumentLayoutByCountry = async () => {
+    let workLocation1 = workLocation;
+    if (typeof workLocation === 'string') {
+      workLocation1 = companyLocationList.find((w) => w._id === workLocation);
+    }
+    if (workLocation1) {
+      const res = await dispatch({
+        type: 'newCandidateForm/fetchDocumentLayoutByCountry',
+        payload: {
+          country:
+            workLocation1?.headQuarterAddress?.country?._id ||
+            workLocation1?.headQuarterAddress?.country,
+        },
+      });
+      if (res.statusCode === 200) {
+        return res.data;
       }
-    } else {
-      checkStatus.filledJobDetail = false;
+      return null;
     }
-
-    dispatch({
-      type: 'newCandidateForm/save',
-      payload: {
-        checkMandatory: {
-          ...checkMandatory,
-          filledJobDetail: checkStatus.filledJobDetail,
-        },
-      },
-    });
+    return null;
   };
 
-  handleRadio = (e) => {
-    const { target } = e;
-    const { name, value } = target;
-    const { dispatch } = this.props;
-    const { tempData = {} } = this.props;
+  const onClickNext = async () => {
+    let payload = {
+      grade,
+      dateOfJoining,
+      position,
+      employeeType,
+      workLocation,
+      department,
+      title,
+      reportingManager,
+      candidate: _id,
+      currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 2 : currentStep,
+      tenantId: getCurrentTenant(),
+    };
 
-    if (name === 'position') {
-      tempData[name] = value;
-    } else {
-      tempData[name] = {
-        _id: value,
-      };
-    }
+    if (needRefreshDocument) {
+      const result = await getDocumentLayoutByCountry();
+      if (result) {
+        let documentTypeA = [];
+        let documentTypeB = [];
+        let documentTypeC = [];
+        const documentTypeD = [];
+        const documentTypeE = [];
 
-    dispatch({
-      type: 'newCandidateForm/save',
-      payload: {
-        tempData: {
-          ...tempData,
-        },
-      },
-    });
-  };
+        result.forEach((x) => {
+          const { type = '' } = x;
+          switch (type) {
+            case 'A':
+              documentTypeA = x.data;
+              break;
+            case 'B':
+              documentTypeB = x.data;
+              break;
+            case 'C':
+              documentTypeC = x.data;
+              break;
+            case 'D':
+              // documentTypeD = [{ data: x.data }];
+              break;
+            case 'E':
+              // documentTypeE = [{ employer: '', data: x.data }];
+              break;
 
-  _handleSelect = async (value, name) => {
-    const { dispatch } = this.props;
-    const { tempData = {} } = this.props;
-    tempData[name] = value;
-    const { department, workLocation, title, locationList = [], titleList } = tempData;
-    const companyId = getCurrentCompany();
-    const tenantId = getCurrentTenant();
-
-    if (name === 'jobGradeLevel') {
-      if (value === undefined) {
-        await dispatch({
+            default:
+              break;
+          }
+        });
+        payload = {
+          ...payload,
+          documentTypeA,
+          documentTypeB,
+          documentTypeC,
+          documentTypeD,
+          documentTypeE,
+          documentLayout: result,
+        };
+        dispatch({
+          type: 'newCandidateForm/saveTemp',
+          payload: {
+            documentTypeA,
+            documentTypeB,
+            documentTypeC,
+            documentTypeD,
+            documentTypeE,
+          },
+        });
+        dispatch({
           type: 'newCandidateForm/save',
           payload: {
-            tempData: {
-              ...tempData,
-              grade: null,
-            },
-          },
-        });
-      } else {
-        dispatch({
-          type: 'newCandidateForm/saveTemp',
-          payload: {
-            grade: value,
+            documentLayout: result.data,
           },
         });
       }
-    } else if (name === 'workLocation') {
-      const changedWorkLocation = JSON.parse(JSON.stringify(locationList));
-      const selectedWorkLocation = changedWorkLocation.find((data) => data._id === value);
-
-      if (value === undefined) {
-        await dispatch({
-          type: 'newCandidateForm/save',
-          payload: {
-            tempData: {
-              ...tempData,
-              workLocation: null,
-            },
-          },
-        });
-      } else {
-        dispatch({
-          type: 'newCandidateForm/saveTemp',
-          payload: {
-            company: companyId,
-            location: value,
-            workLocation: selectedWorkLocation,
-          },
-        });
-
-        if (!isEmpty(workLocation)) {
-          dispatch({
-            type: 'newCandidateForm/fetchDepartmentList',
-            payload: {
-              company: companyId,
-              tenantId,
-            },
-          });
-          // dispatch({
-          //   type: 'newCandidateForm/fetchAndChangeDocumentSet',
-          //   payload: {
-          //     rookieID: rookieId,
-          //     tenantId: getCurrentTenant(),
-          //   },
-          // });
-        }
-      }
-    } else if (name === 'title') {
-      if (value === undefined) {
-        await dispatch({
-          type: 'newCandidateForm/saveTemp',
-          payload: {
-            title: null,
-          },
-        });
-      } else {
-        const titleData = titleList.find((item) => item._id === value);
-        dispatch({
-          type: 'newCandidateForm/saveTemp',
-          payload: {
-            title: value,
-            grade: titleData?.gradeObj,
-            // jobGradeLevelList: [titleData?.gradeObj],
-          },
-        });
-
-        if (!isEmpty(title)) {
-          dispatch({
-            type: 'newCandidateForm/fetchManagerList',
-            payload: {
-              company: companyId,
-              status: ['ACTIVE'],
-              // location: locationPayload,
-              tenantId: getCurrentTenant(),
-            },
-          });
-        }
-      }
-    } else if (name === 'department') {
-      if (value === undefined) {
-        await dispatch({
-          type: 'newCandidateForm/saveTemp',
-          payload: {
-            department: null,
-          },
-        });
-      } else {
-        dispatch({
-          type: 'newCandidateForm/saveTemp',
-          payload: {
-            company: companyId,
-            department: value, // {}
-          },
-        });
-
-        if (!isEmpty(department)) {
-          // const departmentTemp = [department];
-          // const locationTemp = [location._id];
-          dispatch({
-            type: 'newCandidateForm/fetchTitleList',
-            payload: {
-              department,
-              tenantId,
-            },
-          });
-          await dispatch({
-            type: 'newCandidateForm/saveTemp',
-            payload: {
-              title: null,
-              department: value,
-            },
-          });
-        }
-      }
-    } else if (name === 'reportingManager') {
-      const { tempData: { managerList = [] } = {} } = this.props;
-      const reportingManager = managerList.find((m) => m._id === value) || {};
-      dispatch({
-        type: 'newCandidateForm/saveTemp',
-        payload: {
-          reportingManager,
-        },
-      });
-    } else if (name === 'prefferedDateOfJoining') {
-      const { prefferedDateOfJoining } = tempData;
-      dispatch({
-        type: 'newCandidateForm/saveTemp',
-        payload: {
-          dateOfJoining: prefferedDateOfJoining,
-        },
-      });
-    } else if (name === 'reportees') {
-      dispatch({
-        type: 'newCandidateForm/saveTemp',
-        payload: {
-          reportees: value,
-        },
-      });
     }
-    this.checkFilled();
-  };
 
-  onClickNext = () => {
-    const {
-      data: { _id },
-      tempData: {
-        processStatus = '',
-        grade,
-        position,
-        employeeType,
-        workLocation,
-        department,
-        title,
-        reportingManager,
-        dateOfJoining,
-        documentChecklistSetting,
-        ticketID = '',
-        reportees = [],
-      },
-      currentStep = '',
-    } = this.props;
-    const { dispatch } = this.props;
     dispatch({
       type: 'newCandidateForm/updateByHR',
-      payload: {
-        grade,
-        dateOfJoining,
-        position,
-        employeeType: employeeType ? employeeType._id : '',
-        workLocation: workLocation ? workLocation._id : '',
-        department,
-        title,
-        reportingManager: reportingManager ? reportingManager._id : '',
-        candidate: _id,
-        currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 2 : currentStep,
-        tenantId: getCurrentTenant(),
-        documentChecklistSetting,
-        reportees,
-      },
+      payload,
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         dispatch({
@@ -353,29 +245,11 @@ class JobDetails extends PureComponent {
     });
   };
 
-  onClickPrev = () => {
-    // const { currentStep } = this.props;
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'newCandidateForm/save',
-    //   payload: {
-    //     currentStep: currentStep - 1,
-    //   },
-    // });
-    const {
-      tempData: { ticketID = '' },
-    } = this.props;
+  const onClickPrev = () => {
     history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.BASIC_INFORMATION}`);
   };
 
-  _renderBottomBar = () => {
-    const {
-      checkMandatory,
-      loadingUpdateByHR = false,
-      tempData: { processStatus = '' } = {},
-    } = this.props;
-    const { filledJobDetail } = checkMandatory;
-
+  const _renderBottomBar = () => {
     const renderText = processStatus === NEW_PROCESS_STATUS.DRAFT ? 'Next' : 'Update';
 
     return (
@@ -384,14 +258,14 @@ class JobDetails extends PureComponent {
           <Col className={styles.bottomBar__button} span={24}>
             <Button
               type="secondary"
-              onClick={this.onClickPrev}
+              onClick={onClickPrev}
               className={styles.bottomBar__button__secondary}
             >
               Previous
             </Button>
             <Button
               type="primary"
-              onClick={this.onClickNext}
+              onClick={onClickNext}
               className={`${styles.bottomBar__button__primary} ${
                 !filledJobDetail ? styles.bottomBar__button__disabled : ''
               }`}
@@ -406,164 +280,70 @@ class JobDetails extends PureComponent {
     );
   };
 
-  render() {
-    const Tab = {
-      positionTab: {
-        title: formatMessage({ id: 'component.jobDetail.positionTab' }),
-        name: 'position',
-        arr: [
-          {
-            value: 'EMPLOYEE',
-            position: formatMessage({ id: 'component.jobDetail.positionTabRadio1' }),
-          },
-          {
-            value: 'CONTINGENT-WORKER',
-            position: formatMessage({ id: 'component.jobDetail.positionTabRadio2' }),
-          },
-        ],
-      },
-      classificationTab: {
-        title: formatMessage({ id: 'component.jobDetail.classificationTab' }),
-        name: 'employeeType',
-        arr: [
-          {
-            value: 1,
-            classification: formatMessage({ id: 'component.jobDetail.classificationRadio2' }),
-          },
-          {
-            value: 2,
-            classification: formatMessage({ id: 'component.jobDetail.classificationRadio3' }),
-          },
-          {
-            value: 3,
-            classification: formatMessage({ id: 'component.jobDetail.classificationRadio1' }),
-          },
-        ],
-      },
-    };
-    const dropdownField = [
-      {
-        title: 'workLocation',
-        name: `${formatMessage({ id: 'component.jobDetail.workLocation' })}*`,
-        id: 1,
-        placeholder: 'Select a work location',
-      },
-      {
-        title: 'department',
-        name: `${formatMessage({ id: 'component.jobDetail.department' })}*`,
-        id: 2,
-        placeholder: 'Select a department',
-      },
-      {
-        title: 'title',
-        name: 'Job Title*',
-        id: 3,
-        placeholder: 'Select a job title',
-      },
-      {
-        title: 'grade',
-        name: `${formatMessage({ id: 'component.jobDetail.jobGrade' })}*`,
-        id: 4,
-        placeholder: 'Select a grade',
-      },
-
-      {
-        title: 'reportingManager',
-        name: `${formatMessage({ id: 'component.jobDetail.reportingManager' })}*`,
-        id: 5,
-        placeholder: 'Select a reporting manager',
-      },
-      {
-        title: 'reportees',
-        name: 'Reportees',
-        id: 6,
-        placeholder: 'Please select a choice',
-      },
-    ];
-    const candidateField = [
-      {
-        title: `candidatesNoticePeriod`,
-        name: formatMessage({ id: 'component.jobDetail.candidateNoticePeriod' }),
-        id: 1,
-        placeholder: 'Time period',
-        Option: [
-          { key: 1, value: 'Test' },
-          { key: 2, value: 'ABCD' },
-          { key: 3, value: 'Testing' },
-          { key: 4, value: '10AM' },
-          { key: 5, value: '5PM' },
-          { key: 6, value: 'For Hours' },
-        ],
-      },
-      {
-        title: 'prefferedDateOfJoining',
-        name: formatMessage({ id: 'component.jobDetail.prefferedDateOfJoining' }),
-        id: 2,
-      },
-    ];
-
-    const {
-      tempData,
-      tempData: { employeeTypeList, position, employeeType },
-      data,
-    } = this.props;
-    const { loading, loadingFetchCandidate, processStatus, loadingLocationList } = this.props;
-
-    return (
-      <>
-        <Row gutter={[24, 0]}>
-          {loadingFetchCandidate || loading || loadingLocationList ? (
-            <div className={styles.viewLoading}>
-              <Skeleton />
+  return (
+    <Row gutter={[24, 24]}>
+      <Col xs={24} xl={16}>
+        <Spin
+          spinning={
+            loading ||
+            loadingFetchCandidate ||
+            loadingFetchDepartment ||
+            loadingLocationList ||
+            loadingFetchGrade ||
+            loadingFetchTitle ||
+            loadingFetchManager
+          }
+        >
+          <div className={styles.JobDetailsComponent}>
+            <div className={styles.mainContainer}>
+              <Header />
+              <JobDetailForm
+                disabled={disableEdit()}
+                validateFields={checkFilled}
+                setNeedRefreshDocument={setNeedRefreshDocument}
+              />
+              <div style={{ padding: '0 24px 24px' }}>
+                <RenderAddQuestion page={Page.Job_Details} />
+              </div>
             </div>
-          ) : (
-            <>
-              <Col xs={24} xl={16}>
-                <div className={styles.JobDetailsComponent}>
-                  <div className={styles.mainContainer}>
-                    <Header />
-                    <RadioComponent
-                      Tab={Tab}
-                      handleRadio={this.handleRadio}
-                      tempData={tempData}
-                      employeeTypeList={employeeTypeList}
-                      employeeType={employeeType}
-                      position={position}
-                      data={data}
-                      processStatus={processStatus}
-                      disabled={this.disableEdit()}
-                    />
-                    <FieldsComponent
-                      dropdownField={dropdownField}
-                      candidateField={candidateField}
-                      _handleSelect={this._handleSelect}
-                      data={data}
-                      tempData={tempData}
-                      disabled={this.disableEdit()}
-                    />
-                    <Row style={{ margin: '0 32px 32px' }}>
-                      <RenderAddQuestion page={Page.Job_Details} />
-                    </Row>
-                  </div>
-                  {this._renderBottomBar()}
-                </div>
-              </Col>
-              <Col className={styles.RightComponents} xs={24} xl={8}>
-                <div className={styles.rightWrapper}>
-                  <Row>
-                    <NoteComponent />
-                  </Row>
-                  <Row>
-                    <MessageBox />
-                  </Row>
-                </div>
-              </Col>
-            </>
-          )}
-        </Row>
-      </>
-    );
-  }
-}
+            {_renderBottomBar()}
+          </div>
+        </Spin>
+      </Col>
+      <Col className={styles.RightComponents} xs={24} xl={8}>
+        <div className={styles.rightWrapper}>
+          <Row>
+            <NoteComponent />
+          </Row>
+          <Row>
+            <MessageBox />
+          </Row>
+        </div>
+      </Col>
+    </Row>
+  );
+};
 
-export default JobDetails;
+export default connect(
+  ({
+    newCandidateForm: { rookieId = '', data, checkMandatory, currentStep, tempData } = {},
+    loading,
+    location: { companyLocationList = [] } = {},
+    user: { companiesOfUser = [] } = {},
+  }) => ({
+    rookieId,
+    data,
+    checkMandatory,
+    currentStep,
+    tempData,
+    companyLocationList,
+    companiesOfUser,
+    loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
+    loadingUpdateByHR: loading.effects['newCandidateForm/updateByHR'],
+    loadingLocationList: loading.effects['newCandidateForm/fetchLocationList'],
+    loadingFetchTitle: loading.effects['newCandidateForm/fetchTitleList'],
+    loadingFetchDepartment: loading.effects['newCandidateForm/fetchDepartmentList'],
+    loadingFetchManager: loading.effects['newCandidateForm/fetchManagerList'],
+    loadingFetchJobGrade: loading.effects['newCandidateForm/getJobGradeList'],
+  }),
+)(JobDetails);
