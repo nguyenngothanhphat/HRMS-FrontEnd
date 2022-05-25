@@ -10,7 +10,6 @@ import {
   convert24To12,
   getHours,
   MAX_NO_OF_DAYS_TO_SHOW,
-  roundNumber,
   TIMEOFF_12H_FORMAT,
   TIMEOFF_24H_FORMAT,
   TIMEOFF_COL_SPAN_1,
@@ -22,6 +21,7 @@ import {
   TIMEOFF_PERIOD,
   TIMEOFF_STATUS,
   TIMEOFF_TYPE,
+  TIMEOFF_WORK_DAYS,
   WORKING_HOURS,
 } from '@/utils/timeOff';
 import LeaveTimeRow from './components/LeaveTimeRow';
@@ -56,7 +56,7 @@ const RequestInformation = (props) => {
         status: viewingStatus = '',
       } = {},
       emailsList = [],
-      employeeSchedule: { startWorkDay = {}, endWorkDay = {} } = {},
+      employeeSchedule: { startWorkDay = {}, endWorkDay = {}, workDay = [] } = {},
       yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
     } = {},
     user: { currentUser: { location = {}, employee = {} } = {} } = {},
@@ -83,6 +83,7 @@ const RequestInformation = (props) => {
   const [invalidDates, setInvalidDates] = useState([]);
   const [dateLists, setDateLists] = useState([]);
   const [isModified, setIsModified] = useState(false); // when start editing a request, if there are any changes, isModified = true
+  const [workingDays, setWorkingDays] = useState([]);
 
   const BY_HOUR = TIMEOFF_INPUT_TYPE_BY_LOCATION[currentLocationID] === TIMEOFF_INPUT_TYPE.HOUR;
   const BY_WHOLE_DAY =
@@ -530,14 +531,15 @@ const RequestInformation = (props) => {
 
   const disabledFromDate = (current) => {
     return (
-      !checkIfWholeDayAvailable(current) ||
-      !checkIfHalfDayAvailable(current)
+      !workingDays.includes(moment(current).day()) ||
+      !checkIfWholeDayAvailable(current) || !checkIfHalfDayAvailable(current)
     );
   };
 
   const disabledToDate = (current) => {
     return (
       (current && moment(current).isBefore(moment(durationFrom), 'day')) ||
+      !workingDays.includes(moment(current).day()) ||
       !checkIfWholeDayAvailable(current) ||
       !checkIfHalfDayAvailable(current)
     );
@@ -778,15 +780,23 @@ const RequestInformation = (props) => {
   }, [selectedTypeName, currentAllowanceState, JSON.stringify(dateLists)]);
 
   useEffect(() => {
-    if (BY_HOUR) {
-      dispatch({
-        type: 'timeOff/getEmployeeScheduleByLocation',
-        payload: {
-          location: location?._id,
-        },
-      });
-    }
+    dispatch({
+      type: 'timeOff/getEmployeeScheduleByLocation',
+      payload: {
+        location: location?._id,
+      },
+    });
   }, []);
+
+  useEffect(() => {
+    const workingDaysTemp = [];
+    TIMEOFF_WORK_DAYS.forEach((x) => {
+      if (workDay.some((y) => y.date === x.text && y.checked)) {
+        workingDaysTemp.push(x.id);
+      }
+    });
+    setWorkingDays(workingDaysTemp);
+  }, [JSON.stringify(workDay)]);
 
   // MAIN
   const layout = {
