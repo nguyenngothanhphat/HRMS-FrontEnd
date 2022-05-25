@@ -104,8 +104,7 @@ const EditProjectModalContent = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {projectTypeList.map((x) => (
                   <Option value={x.id}>{x.type_name}</Option>
@@ -154,8 +153,7 @@ const EditProjectModalContent = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 disabled={loadingFetchEmployeeList}
               >
                 {employeeList.map((x) => (
@@ -182,8 +180,7 @@ const EditProjectModalContent = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {employeeList.map((x) => (
                   <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
@@ -204,8 +201,7 @@ const EditProjectModalContent = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {divisionList.map((x) => (
                   <Option value={x.name}>{x.name}</Option>
@@ -229,8 +225,7 @@ const EditProjectModalContent = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {tagList.map((x) => (
                   <Option value={x.tag_name}>{x.tag_name}</Option>
