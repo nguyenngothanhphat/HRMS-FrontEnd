@@ -32,12 +32,6 @@ const PreviousEmployment = (props) => {
     onSaveRedux(result);
   };
 
-  // const getDisabledCurrentlyWorking = (obj, index) => {
-  //   const findIndex = items.findIndex((x) => x.currentlyWorking);
-  //   if (findIndex === -1) return false;
-  //   return findIndex !== index;
-  // };
-
   return (
     <div className={styles.PreviousEmployment}>
       <Collapse
@@ -56,18 +50,13 @@ const PreviousEmployment = (props) => {
             </span>
           }
         >
-          {items.map((item, i) => (
-            <div className={styles.container}>
-              <EmployerDetails
-                index={i}
-                onValuesChange={onValuesChange}
-                employer={item}
-                // disabledCurrentlyWorking={getDisabledCurrentlyWorking(item, i)}
-              />
-              <div className={styles.someText}>Proof of employment</div>
-              {item.data
-                .filter((x) => x.value || x.required)
-                .map((x, j) => (
+          {items.map((item, i) => {
+            const files = item.data.filter((x) => x.value || x.required);
+            return (
+              <div className={styles.container}>
+                <EmployerDetails index={i} onValuesChange={onValuesChange} employer={item} />
+                {files.length > 0 && <div className={styles.someText}>Proof of employment</div>}
+                {files.map((x, j) => (
                   <File
                     item={x}
                     index={j}
@@ -78,8 +67,9 @@ const PreviousEmployment = (props) => {
                     blockIndex={i}
                   />
                 ))}
-            </div>
-          ))}
+              </div>
+            );
+          })}
         </Collapse.Panel>
       </Collapse>
     </div>

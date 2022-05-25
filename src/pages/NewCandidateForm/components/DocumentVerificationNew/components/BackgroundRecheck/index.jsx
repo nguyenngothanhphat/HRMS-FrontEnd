@@ -48,7 +48,8 @@ const BackgroundRecheck = (props) => {
 
   const validateFiles = () => {
     // for type A, B, C, D
-    const checkDocumentUploaded = (arr) => {
+    const checkDocumentUploaded = (arr = []) => {
+      if (arr.length === 0) return true;
       return arr
         .filter((x) => x.required || x.value)
         .every(
@@ -59,6 +60,7 @@ const BackgroundRecheck = (props) => {
     };
     // for type E
     const checkDocumentUploadedTypeE = (arr) => {
+      if (arr.length === 0) return true;
       let check = false;
       arr.forEach((x) => {
         const { data: dataArr = [] } = x;
@@ -142,11 +144,15 @@ const BackgroundRecheck = (props) => {
   };
 
   const _renderItems = () => {
+    const dataA = documentTypeA.filter((x) => x.value || x.required);
+    const dataB = documentTypeB.filter((x) => x.value || x.required);
+    const dataC = documentTypeC.filter((x) => x.value || x.required);
+
     const items = [
       {
-        component: (
+        component: dataA.length > 0 && (
           <CollapseField
-            items={documentTypeA || []}
+            items={dataA || []}
             layout={documentLayout.find((x) => x.type === 'A')}
             onVerifyDocument={onVerifyDocument}
             onViewCommentClick={onViewCommentClick}
@@ -154,9 +160,9 @@ const BackgroundRecheck = (props) => {
         ),
       },
       {
-        component: (
+        component: dataB.length > 0 && (
           <CollapseField
-            items={documentTypeB || []}
+            items={dataB || []}
             layout={documentLayout.find((x) => x.type === 'B')}
             onVerifyDocument={onVerifyDocument}
             onViewCommentClick={onViewCommentClick}
@@ -164,9 +170,9 @@ const BackgroundRecheck = (props) => {
         ),
       },
       {
-        component: (
+        component: dataC.length > 0 && (
           <CollapseField
-            items={documentTypeC || []}
+            items={dataC || []}
             layout={documentLayout.find((x) => x.type === 'C')}
             onVerifyDocument={onVerifyDocument}
             onViewCommentClick={onViewCommentClick}
@@ -174,7 +180,7 @@ const BackgroundRecheck = (props) => {
         ),
       },
       {
-        component: (
+        component: documentTypeD.length > 0 && (
           <TechnicalCertification
             items={documentTypeD || []}
             layout={documentLayout.find((x) => x.type === 'D')}
@@ -184,7 +190,7 @@ const BackgroundRecheck = (props) => {
         ),
       },
       {
-        component: (
+        component: documentTypeE.length > 0 && (
           <PreviousEmployment
             items={documentTypeE}
             layout={documentLayout.find((x) => x.type === 'E')}
@@ -194,7 +200,7 @@ const BackgroundRecheck = (props) => {
         ),
       },
     ];
-    return items.map((x) => <Col span={24}>{x.component}</Col>);
+    return items.map((x) => x.component && <Col span={24}>{x.component}</Col>);
   };
 
   const onClickPrev = () => {
