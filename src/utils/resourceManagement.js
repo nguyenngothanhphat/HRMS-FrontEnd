@@ -78,7 +78,7 @@ export function formatData(rawData, projectList) {
         const project = projectList.find((x) => x.id === p?.project?.id);
         const pObj = cloneObj(newObj);
         pObj.projectName = project?.projectName;
-        pObj.projectId = p?.projectId;
+        pObj.projectId = project?.projectId;
         pObj.startDate = parseDate(p?.startDate);
         pObj.endDate = parseDate(p?.endDate);
         pObj.billStatus = p?.status || '-';
