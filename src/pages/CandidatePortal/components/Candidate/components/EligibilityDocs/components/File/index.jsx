@@ -175,7 +175,7 @@ const File = (props) => {
   const renderFileStatus = () => {
     switch (item.status) {
       case VERIFYING:
-        if (currentStep > 1) {
+        if (currentStep > 2) {
           return (
             <Row justify="end">
               <Col span={24}>{renderPendingVerification()}</Col>
