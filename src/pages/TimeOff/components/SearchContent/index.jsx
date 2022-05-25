@@ -149,7 +149,7 @@ const TimeOffFilter = (props) => {
   return (
     <Space direction="horizontal" className={styles.TimeOffFilter}>
       <Tag className={styles.appliedTag} closable onClose={closedAppliedTag} visible={isVisible}>
-        {count} applied
+        {count} filters applied
       </Tag>
 
       <div className={styles.rightContentHeader}>

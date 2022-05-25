@@ -63,12 +63,12 @@ const ResourceTableCard = (props) => {
       setIsFiltering(false);
       setApplied(0);
     }
-  }
+  };
 
   const clearFilter = () => {
     onFilter({});
     setNeedResetFilterForm(true);
-  }
+  };
 
   const generateColumns = () => {
     const columns = [
@@ -204,7 +204,7 @@ const ResourceTableCard = (props) => {
               clearFilter();
             }}
           >
-            {applied} applied
+            {applied} filters applied
           </Tag>
         )}
         <FilterPopover placement="bottomRight" content={content}>

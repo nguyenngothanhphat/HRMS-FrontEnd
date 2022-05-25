@@ -229,12 +229,12 @@ const ResourcesCard = (props) => {
       setIsFiltering(false);
       setApplied(0);
     }
-  }
+  };
 
   const clearFilter = () => {
     onFilter({});
     setNeedResetFilterForm(true);
-  }
+  };
 
   const renderTimeTitle = (title) => {
     return (
@@ -377,13 +377,15 @@ const ResourcesCard = (props) => {
   });
 
   const renderOption = () => {
-    const content = <FilterResourcesContent
-      onFilter={onFilter}
-      needResetFilterForm={needResetFilterForm}
-      setNeedResetFilterForm={setNeedResetFilterForm}
-      setIsFiltering={setIsFiltering}
-      setApplied={setApplied}
-    />;
+    const content = (
+      <FilterResourcesContent
+        onFilter={onFilter}
+        needResetFilterForm={needResetFilterForm}
+        setNeedResetFilterForm={setNeedResetFilterForm}
+        setIsFiltering={setIsFiltering}
+        setApplied={setApplied}
+      />
+    );
     return (
       <div className={styles.options}>
         {applied > 0 && (
@@ -395,7 +397,7 @@ const ResourcesCard = (props) => {
               clearFilter();
             }}
           >
-            {applied} applied
+            {applied} filters applied
           </Tag>
         )}
         <FilterPopover placement="bottomRight" content={content}>

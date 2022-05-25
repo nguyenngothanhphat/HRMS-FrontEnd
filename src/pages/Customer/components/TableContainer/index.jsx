@@ -251,7 +251,7 @@ class TableContainer extends PureComponent {
               this.clearFilter();
             }}
           >
-            {applied} applied
+            {applied} filters applied
           </Tag>
         )}
         <div className={styles.buttonAddImport} onClick={this.showModal}>
