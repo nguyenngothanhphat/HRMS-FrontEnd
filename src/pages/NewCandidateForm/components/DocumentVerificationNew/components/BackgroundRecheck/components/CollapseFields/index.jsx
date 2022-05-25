@@ -32,18 +32,16 @@ const CollapseField = (props) => {
           }
         >
           <div className={styles.space}>
-            {items
-              .filter((x) => x.value || x.required)
-              .map((item, i) => (
-                <File
-                  item={item}
-                  index={i}
-                  type={layout.type}
-                  onVerifyDocument={onVerifyDocument}
-                  onViewCommentClick={onViewCommentClick}
-                  onViewDocumentClick={onViewDocumentClick}
-                />
-              ))}
+            {items.map((item, i) => (
+              <File
+                item={item}
+                index={i}
+                type={layout.type}
+                onVerifyDocument={onVerifyDocument}
+                onViewCommentClick={onViewCommentClick}
+                onViewDocumentClick={onViewDocumentClick}
+              />
+            ))}
           </div>
         </Collapse.Panel>
       </Collapse>
