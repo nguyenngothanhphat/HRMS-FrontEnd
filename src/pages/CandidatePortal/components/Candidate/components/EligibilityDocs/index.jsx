@@ -102,13 +102,15 @@ const EligibilityDocs = (props) => {
 
   const validateFiles = () => {
     // for type A, B, C, D
-    const checkDocumentUploaded = (arr) => {
+    const checkDocumentUploaded = (arr = []) => {
+      if (arr.length === 0) return true;
       return arr
         .filter((x) => (x.required || x.value) && x.status !== NOT_AVAILABLE_PENDING_HR)
         .every((x) => x.document);
     };
     // for type E
-    const checkDocumentUploadedTypeE = (arr) => {
+    const checkDocumentUploadedTypeE = (arr = []) => {
+      if (arr.length === 0) return true;
       let check = false;
       arr.forEach((x) => {
         const { data: dataArr = [] } = x;
@@ -117,11 +119,13 @@ const EligibilityDocs = (props) => {
       return check;
     };
     // for type D
-    const checkInputTypeDFilled = (arr) => {
+    const checkInputTypeDFilled = (arr = []) => {
+      if (arr.length === 0) return true;
       return !arr.some((x) => !x.issuedDate || !x.name || (!x.neverExpired && !x.expiryDate));
     };
     // for type E
     const checkInputTypeEFilled = (arr) => {
+      if (arr.length === 0) return true;
       return !arr.some((x) => !x.employer || !x.startDate || (!x.currentlyWorking && !x.endDate));
     };
 
@@ -184,10 +188,6 @@ const EligibilityDocs = (props) => {
     history.push('/candidate-portal/dashboard');
   };
 
-  const checkFull = () => {
-    return true;
-  };
-
   const checkAllFieldsValidate = () => {
     const valid = settings?.map((question) => {
       const employeeAnswers = question.employeeAnswers.filter((answer) => answer);
@@ -248,7 +248,6 @@ const EligibilityDocs = (props) => {
 
   const _renderBottomBar = () => {
     if (isSentEmail) return null;
-    const check = checkFull();
     const isVerifiedProfile = isVerifiedBasicInfo && isVerifiedJobDetail;
     const submitButton = (
       <Button
@@ -257,9 +256,9 @@ const EligibilityDocs = (props) => {
         onClick={handleSendEmail}
         className={[
           styles.bottomBar__button__primary,
-          !check ? styles.bottomBar__button__disabled : '',
+          !validated ? styles.bottomBar__button__disabled : '',
         ]}
-        disabled={!check || !isVerifiedProfile || !validated}
+        disabled={!validated || !isVerifiedProfile}
         loading={loading1 || isSending}
       >
         {isSentEmail ? 'Submit Again' : 'Submit'}
@@ -369,10 +368,13 @@ const EligibilityDocs = (props) => {
             {documentLayout
               .filter((x) => ['A', 'B', 'C'].includes(x.type))
               .map((x) => {
+                const find = data[mapType[x.type]] || [];
+                const items = find.filter((y) => y.value || y.required);
+                if (items.length === 0) return null;
                 return (
                   <CollapseFields
                     layout={x}
-                    items={data[mapType[x.type]]}
+                    items={items}
                     onNotAvailableClick={onNotAvailableClick}
                     onViewCommentClick={onViewCommentClick}
                     onViewDocumentClick={onViewDocumentClick}
@@ -382,7 +384,7 @@ const EligibilityDocs = (props) => {
 
             {/* TYPE D */}
             <TechnicalCertification
-              items={data[mapType.D]}
+              items={data[mapType.D] || []}
               layout={documentLayout.find((x) => x.type === 'D')}
               onNotAvailableClick={onNotAvailableClick}
               onViewCommentClick={onViewCommentClick}
@@ -390,13 +392,17 @@ const EligibilityDocs = (props) => {
             />
 
             {/* TYPE E */}
-            <PreviousEmployment
-              items={data[mapType.E]}
-              layout={documentLayout.find((x) => x.type === 'E')}
-              onNotAvailableClick={onNotAvailableClick}
-              onViewCommentClick={onViewCommentClick}
-              onViewDocumentClick={onViewDocumentClick}
-            />
+            {data[mapType.E]
+              ? data[mapType.E].length > 0 && (
+              <PreviousEmployment
+                items={data[mapType.E]}
+                layout={documentLayout.find((x) => x.type === 'E')}
+                onNotAvailableClick={onNotAvailableClick}
+                onViewCommentClick={onViewCommentClick}
+                onViewDocumentClick={onViewDocumentClick}
+              />
+                )
+              : null}
           </div>
           {_renderBottomBar()}
         </Col>

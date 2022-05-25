@@ -295,19 +295,17 @@ const DocumentVerification = (props) => {
     dispatch({
       type: 'newCandidateForm/submitPhase1Effect',
       payload,
-    }).then(({ statusCode }) => {
-      if (statusCode === 200) {
-        setOpenModal(type !== 'generate-link');
-        setOpenModalEmail(type === 'generate-link');
-        dispatch({
-          type: 'newCandidateForm/saveTemp',
-          payload: {
-            isMarkAsDone: type === 'generate-link',
-            isSentEmail: type !== 'generate-link',
-            processStatus: currentStep === 2 ? PROFILE_VERIFICATION : processStatus,
-          },
-        });
-      }
+    }).then(() => {
+      setOpenModal(type !== 'generate-link');
+      setOpenModalEmail(type === 'generate-link');
+      dispatch({
+        type: 'newCandidateForm/saveTemp',
+        payload: {
+          isMarkAsDone: type === 'generate-link',
+          isSentEmail: type !== 'generate-link',
+          processStatus: currentStep === 2 ? PROFILE_VERIFICATION : processStatus,
+        },
+      });
     });
     dispatch({
       type: 'newCandidateForm/saveCheckMandatory',
