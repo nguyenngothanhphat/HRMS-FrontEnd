@@ -1,3 +1,6 @@
+/* eslint-disable no-restricted-globals */
+/* eslint-disable compat/compat */
+/* eslint-disable prefer-promise-reject-errors */
 import React, { Component } from 'react';
 import { Row, Col, Button, Modal, Form, Input, Select, DatePicker, notification } from 'antd';
 import moment from 'moment';
@@ -59,7 +62,7 @@ class EditActionBTN extends Component {
         utilization,
         startDate: startDate && moment(startDate).format('YYYY-MM-DD'),
         endDate: endDate && moment(endDate).format('YYYY-MM-DD'),
-        revisedEndDate: revisedEndDate && moment(revisedEndDate).format('YYYY-MM-DD') || null,
+        revisedEndDate: (revisedEndDate && moment(revisedEndDate).format('YYYY-MM-DD')) || null,
       },
     }).then(() => {
       refreshData();
@@ -76,6 +79,7 @@ class EditActionBTN extends Component {
       visible,
       onClose = () => {},
     } = this.props;
+
     const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
     const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
     const sumUtilization = listProjectsOfEmp.reduce(
@@ -88,7 +92,7 @@ class EditActionBTN extends Component {
         <Modal
           className={styles.modalEditProjectDetail}
           title="Edit Project Details"
-          width="60%"
+          width="620px"
           visible={visible}
           footer={null}
           onCancel={onClose}
@@ -105,21 +109,39 @@ class EditActionBTN extends Component {
               revisedEndDate:
                 dataPassRow.revisedEndDate !== '-' &&
                 this.parseDate(dataPassRow.revisedEndDate, 'MM/DD/YYYY'),
-              // project: dataPassRow.id,
+              project: dataPassRow.project,
               utilization: dataPassRow.utilization,
               status: dataPassRow.billStatus,
             }}
           >
             <Row gutter={[24, 24]}>
               <Col span={12}>
-                <Form.Item label="Project" name="project">
+                <Form.Item
+                  label="Project"
+                  name="project"
+                  rules={[{ required: true, message: 'Please select the project!' }]}
+                >
                   <Select defaultValue={dataPassRow.projectName}>
                     {projectList.map((project) => (
                       <Option value={project.id}>{project.projectName}</Option>
                     ))}
                   </Select>
                 </Form.Item>
-                <Form.Item label="Status" name="status">
+                <Form.Item
+                  label="Status"
+                  name="status"
+                  rules={[
+                    { required: true, message: 'Please select the status!' },
+                    () => ({
+                      validator(_, value) {
+                        if (value && value === '-') {
+                          return Promise.reject(`Please select the status!`);
+                        }
+                        return Promise.resolve();
+                      },
+                    }),
+                  ]}
+                >
                   <Select>
                     {statusList.map((status) => (
                       <Option value={status}>{status}</Option>
@@ -130,22 +152,19 @@ class EditActionBTN extends Component {
                   label="Bandwith Allocation (%)"
                   name="utilization"
                   rules={[
+                    { required: true, message: 'Please enter the bandwith allocation (%)!' },
                     () => ({
                       validator(_, value) {
-                        if (!value) {
-                          return Promise.reject('Utilization value could not be empty');
-                        }
-
-                        if (isNaN(value)) {
-                          return Promise.reject(`Value enter has to be a number.`);
+                        if (value && isNaN(value)) {
+                          return Promise.reject(`Value enter has to be a number!`);
                         }
                         if (value > maxEnterUtilization) {
                           return Promise.reject(
-                            `Your cannot enter a value that is more than ${maxEnterUtilization}.`,
+                            `Your cannot enter a value that is more than ${maxEnterUtilization}!`,
                           );
                         }
                         if (value < 0) {
-                          return Promise.reject(`Your cannot enter a value that is less than 0`);
+                          return Promise.reject(`Your cannot enter a value that is less than 0!`);
                         }
                         return Promise.resolve();
                       },
@@ -157,19 +176,10 @@ class EditActionBTN extends Component {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item 
-                  label="Start Date" 
+                <Form.Item
+                  label="Start Date"
                   name="startDate"
-                  rules={[
-                    () => ({
-                      validator(_, value) {
-                        if (!value) {
-                          return Promise.reject('Start date value could not be empty');
-                        }
-                        return Promise.resolve();
-                      },
-                    }),
-                  ]}
+                  rules={[{ required: true, message: 'Start date value could not be empty!' }]}
                 >
                   <DatePicker
                     placeholder="Start Date"
@@ -177,19 +187,10 @@ class EditActionBTN extends Component {
                     suffixIcon={<img src={datePickerIcon} alt="" />}
                   />
                 </Form.Item>
-                <Form.Item 
-                  label="End Date" 
+                <Form.Item
+                  label="End Date"
                   name="endDate"
-                  rules={[
-                    () => ({
-                      validator(_, value) {
-                        if (!value) {
-                          return Promise.reject('End date value could not be empty');
-                        }
-                        return Promise.resolve();
-                      },
-                    }),
-                  ]}
+                  rules={[{ required: true, message: 'End date value could not be empty!' }]}
                 >
                   <DatePicker
                     placeholder="Enter End Date"
