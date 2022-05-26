@@ -78,18 +78,6 @@ const BackgroundRecheck = (props) => {
     );
   };
 
-  const getDocumentPayload = (arr) => {
-    return arr.map((x) => {
-      return { ...x, document: x.document?._id };
-    });
-  };
-
-  const getDocumentPayloadE = (arr) => {
-    return arr.map((x) => {
-      return { ...x, data: getDocumentPayload(x.data) };
-    });
-  };
-
   useEffect(() => {
     goToTop();
   }, []);
@@ -100,11 +88,11 @@ const BackgroundRecheck = (props) => {
         type: 'newCandidateForm/updateByHR',
         payload: {
           candidate,
-          documentTypeA: getDocumentPayload(documentTypeA),
-          documentTypeB: getDocumentPayload(documentTypeB),
-          documentTypeC: getDocumentPayload(documentTypeC),
-          documentTypeD: getDocumentPayload(documentTypeD),
-          documentTypeE: getDocumentPayloadE(documentTypeE),
+          documentTypeA,
+          documentTypeB,
+          documentTypeC,
+          documentTypeD,
+          documentTypeE,
         },
       });
       const check = validateFiles();

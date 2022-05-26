@@ -11,7 +11,6 @@ import { getCurrentTenant } from '@/utils/authority';
 import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
 import { mapType } from '@/utils/newCandidateForm';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
-import { goToTop } from '@/utils/utils';
 import { Page } from '../../../../../NewCandidateForm/utils';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NoteComponent';
@@ -77,24 +76,13 @@ const EligibilityDocs = (props) => {
   const [viewDocumentModalVisible, setViewDocumentModalVisible] = useState(false);
 
   const [validated, setValidated] = useState(false);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   useEffect(() => {
     if (![NEW_PROCESS_STATUS.PROFILE_VERIFICATION].includes(processStatus)) {
       setIsSentEmail(true);
     }
   }, []);
-
-  const getDocumentPayload = (arr) => {
-    return arr.map((x) => {
-      return { ...x, document: x.document?._id };
-    });
-  };
-
-  const getDocumentPayloadE = (arr) => {
-    return arr.map((x) => {
-      return { ...x, data: getDocumentPayload(x.data) };
-    });
-  };
 
   const validateFiles = () => {
     // for type A, B, C, D
@@ -137,19 +125,20 @@ const EligibilityDocs = (props) => {
   };
 
   useLayoutEffect(() => {
-    if (documentTypeA.length > 0) {
+    if (!isFirstLoad) {
       dispatch({
         type: 'candidatePortal/updateByCandidateEffect',
         payload: {
-          documentTypeA: getDocumentPayload(documentTypeA),
-          documentTypeB: getDocumentPayload(documentTypeB),
-          documentTypeC: getDocumentPayload(documentTypeC),
-          documentTypeD: getDocumentPayload(documentTypeD),
-          documentTypeE: getDocumentPayloadE(documentTypeE),
+          documentTypeA,
+          documentTypeB,
+          documentTypeC,
+          documentTypeD,
+          documentTypeE,
         },
       });
-      setValidated(validateFiles());
     }
+    setValidated(validateFiles());
+    setIsFirstLoad(false);
   }, [
     JSON.stringify(documentTypeA),
     JSON.stringify(documentTypeB),
