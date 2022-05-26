@@ -1,13 +1,44 @@
-import { Table } from 'antd';
-import React, { useState } from 'react';
-import { connect } from 'umi';
+import { Table, Popover } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { connect, Link } from 'umi';
+import moment from 'moment';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import { employeeColor } from '@/utils/timeSheet';
 import EmptyComponent from '@/components/Empty';
 import EmployeeDetailModal from '../../../EmployeeDetailModal';
 import styles from './index.less';
+import UserPopover from './components/UserPopover';
+import { isOwner } from '@/utils/authority';
+import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 
 const WeeklyTable = (props) => {
+  // const [timezoneList, setTimezoneList] = useState([]);
+  const timezoneList = [];
+  const { companyLocationList = [] } = props;
+  const [currentTime, setCurrentTime] = useState(moment());
+  const fetchTimezone = () => {
+    companyLocationList.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
+        _id = '',
+      } = location;
+      timezoneList.push({
+        locationId: _id,
+        timezone:
+          getTimezoneViaCity(city) ||
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
+    // setTimezoneList({
+    //   timezoneList,
+    // });
+  };
+  useEffect(() => {
+    fetchTimezone();
+  });
+
   const {
     data = [],
     selectedEmployees = [],
@@ -18,20 +49,27 @@ const WeeklyTable = (props) => {
   const [pageSize, setPageSize] = useState(10);
   const [handlingEmployee, setHandlingEmployee] = useState();
   const [employeeDetailModalVisible, setEmployeeDetailModalVisible] = useState(false);
-
+  // const handleProfileEmployee = (tenantId, userId) => {
+  //   localStorage.setItem('tenantCurrentEmployee', tenantId);
+  //   const pathname = isOwner()`/directory/employee-profile/${userId}`;
+  //   return pathname;
+  // };
+  const handleProfileEmployee = (userId) => {
+    return `/directory/employee-profile/${userId}`;
+  };
   const getColorByIndex = (index) => {
     return employeeColor[index % employeeColor.length];
   };
-
   const generateColumns = () => {
     const columns = [
       {
         title: 'Employee',
         dataIndex: 'user',
         key: 'user',
+        fixed: 'left',
+
         render: (user, row, index) => {
           const { avatar = '', legalName = '', userId = '', id = '' } = row;
-
           return (
             <div
               className={styles.renderEmployee}
@@ -56,12 +94,54 @@ const WeeklyTable = (props) => {
             </div>
           );
         },
+        sorter: (a, b) => {
+          return a.legalName && b.legalName ? a.legalName.localeCompare(b.legalName) : false;
+        },
+
+        sortDirections: ['ascend', 'descend'],
       },
       {
         title: 'Department',
         dataIndex: 'department',
         key: 'department',
         render: (department = {}) => department.name,
+        sorter: (a, b) => {
+          return a.department.name && b.department.name
+            ? a.department.name.localeCompare(b.department.name)
+            : false;
+        },
+        sortDirections: ['ascend', 'descend'],
+      },
+      {
+        title: 'Reporting Manager',
+        dataIndex: 'manager',
+        key: 'manager',
+        render: (manager = {}) => (
+          <Popover
+            content={
+              <UserPopover
+                companyLocationList={companyLocationList}
+                propsState={{ currentTime, timezoneList }}
+                data={manager}
+              />
+            }
+            placement="bottomRight"
+            trigger="hover"
+          >
+            <Link
+              className={styles.managerName}
+              to={() => handleProfileEmployee(manager.tenantId, manager.userId)}
+            >
+              {manager?.employeeId ? manager.legalName : ''}
+            </Link>
+          </Popover>
+        ),
+        sorter: (a, b) => {
+          return a.manager?.legalName && b.manager?.legalName
+            ? a.manager.legalName.localeCompare(b.manager.legalName)
+            : false;
+        },
+        sortDirections: ['ascend', 'descend'],
       },
       {
         title: 'Projects',
@@ -73,25 +153,40 @@ const WeeklyTable = (props) => {
             return x;
           });
         },
+        sorter: (a, b) => {
+          return a.projects && b.projects ? a.projects.localeCompare(b.legalName) : false;
+        },
+        sortDirections: ['ascend', 'descend'],
       },
       {
         title: 'Working Days',
-        dataIndex: 'workingDays',
+        dataIndex: 'totalWorkingDayInHours',
         key: 'workingDays',
         render: (workingDays, row) => {
           const { totalWorkingDay = 0, userSpentInDay = 0, totalWorkingDayInHours = 0 } = row;
           // 4/5 (30 hours)
           return `${userSpentInDay}/${totalWorkingDay} (${totalWorkingDayInHours} hours)`;
         },
+        sorter: (a, b) => {
+          return a.totalWorkingDayInHours && b.totalWorkingDayInHours
+            ? a.totalWorkingDayInHours - b.totalWorkingDayInHours
+            : false;
+        },
+        sortDirections: ['ascend', 'descend'],
       },
       {
-        title: 'Leaves Taken',
+        title: 'Timeoff (In Days)',
         dataIndex: 'leaveTaken',
         key: 'leaveTaken',
+        align: 'center',
         render: (leaveTaken, row) => {
           const { totalLeave = 0 } = row;
-          return `${leaveTaken}/${totalLeave}`;
+          return leaveTaken;
         },
+        sorter: (a, b) => {
+          return a.leaveTaken && b.leaveTaken ? a.leaveTaken - b.leaveTaken : false;
+        },
+        sortDirections: ['ascend', 'descend'],
       },
       {
         title: 'Total Hours',
@@ -99,6 +194,12 @@ const WeeklyTable = (props) => {
         key: 'userSpentInHours',
         align: 'center',
         render: (userSpentInHours) => `${userSpentInHours} hours`,
+        sorter: (a, b) => {
+          return a.userSpentInHours && b.userSpentInHours
+            ? a.userSpentInHours - b.userSpentInHours
+            : false;
+        },
+        sortDirections: ['ascend', 'descend'],
       },
     ];
     return columns;
@@ -117,7 +218,6 @@ const WeeklyTable = (props) => {
     setPageSelected(pageNumber);
     setPageSize(pageSizeTemp);
   };
-
   const pagination = {
     position: ['bottomLeft'],
     total: data.length,
@@ -165,4 +265,6 @@ const WeeklyTable = (props) => {
   );
 };
 
-export default connect(() => ({}))(WeeklyTable);
+export default connect(({ location: { companyLocationList = [] } }) => ({
+  companyLocationList,
+}))(WeeklyTable);
