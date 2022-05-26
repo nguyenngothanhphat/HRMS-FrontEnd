@@ -193,6 +193,7 @@ const ResourcesCard = (props) => {
         name,
         page: p,
         limit: l,
+        adminMode: true,
       },
     });
   };

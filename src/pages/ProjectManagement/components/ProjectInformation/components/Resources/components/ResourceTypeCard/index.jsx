@@ -219,7 +219,7 @@ const ResourceTypeCard = (props) => {
             <AddResourceTypeContent
               visible={addResourceTypeModalVisible}
               onClose={() => setAddResourceTypeModalVisible(false)}
-              refreshResourceType={refreshResourceType}
+              refreshData={refreshResourceType}
             />
           }
           title="Add Resource Type"
@@ -229,7 +229,7 @@ const ResourceTypeCard = (props) => {
           visible={assignResourceModalVisible}
           onClose={() => setAssignResourceModalVisible(false)}
           data={assigningRecord}
-          refreshResourceType={refreshResourceType}
+          refreshData={refreshResourceType}
         />
       </Card>
     </div>
