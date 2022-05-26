@@ -9,6 +9,7 @@ import NoteComponent from '../NewNoteComponent';
 import Address from './components/Address';
 import BasicInfo from './components/BasicInfo';
 import styles from './index.less';
+import { goToTop } from '@/utils/utils';
 
 const BasicInformation = (props) => {
   const {
@@ -108,7 +109,7 @@ const BasicInformation = (props) => {
   };
 
   useEffect(() => {
-    window.scrollTo({ top: 77, behavior: 'smooth' });
+    goToTop();
     if (_id) {
       checkFilled();
     }

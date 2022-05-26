@@ -1,4 +1,4 @@
-import { Button, Col, Row, Spin } from 'antd';
+import { Button, Card, Col, Row, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
@@ -8,11 +8,9 @@ import { Page } from '../../utils';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NewNoteComponent';
 import JobDetailForm from './components/Form';
-import Header from './components/Header';
 import styles from './index.less';
 import { goToTop } from '@/utils/utils';
 
-// Thứ tự Fields Work Location Job Title Department Reporting Manager
 const JobDetails = (props) => {
   const {
     dispatch,
@@ -280,6 +278,14 @@ const JobDetails = (props) => {
     );
   };
 
+  const renderCardTitle = (text, description) => {
+    return (
+      <div className={styles.cardTitle}>
+        <p className={styles.title}>{text}</p>
+        <p className={styles.description}>{description}</p>
+      </div>
+    );
+  };
   return (
     <Row gutter={[24, 24]}>
       <Col xs={24} xl={16}>
@@ -290,13 +296,17 @@ const JobDetails = (props) => {
             loadingFetchDepartment ||
             loadingLocationList ||
             loadingFetchGrade ||
-            loadingFetchTitle ||
             loadingFetchManager
           }
         >
           <div className={styles.JobDetailsComponent}>
-            <div className={styles.mainContainer}>
-              <Header />
+            <Card
+              title={renderCardTitle(
+                'Job Details',
+                'The details of the position the candidate is being recruited for',
+              )}
+              className={styles.mainContainer}
+            >
               <JobDetailForm
                 disabled={disableEdit()}
                 validateFields={checkFilled}
@@ -305,7 +315,7 @@ const JobDetails = (props) => {
               <div style={{ padding: '0 24px 24px' }}>
                 <RenderAddQuestion page={Page.Job_Details} />
               </div>
-            </div>
+            </Card>
             {_renderBottomBar()}
           </div>
         </Spin>

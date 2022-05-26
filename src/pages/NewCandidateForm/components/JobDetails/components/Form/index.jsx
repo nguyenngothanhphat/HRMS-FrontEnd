@@ -39,6 +39,7 @@ const JobDetailForm = (props) => {
     } = {},
     validateFields = () => {},
     setNeedRefreshDocument = () => {},
+    loadingFetchTitle = false,
   } = props;
 
   const tenantId = getCurrentTenant();
@@ -292,13 +293,14 @@ const JobDetailForm = (props) => {
           <Select
             placeholder="Select the job title"
             onChange={(value) => onChangeValue(value, 'title')}
-            disabled={disabled || !department}
+            disabled={disabled || !department || loadingFetchTitle}
             showSearch
             showArrow
             allowClear
             filterOption={(input, option) => {
               return option.props.children.toLowerCase().indexOf(input.toLowerCase()) > -1;
             }}
+            loading={loadingFetchTitle}
           >
             {titleList.map((x, index) => (
               <Option value={x._id} key={index}>
@@ -458,4 +460,9 @@ const JobDetailForm = (props) => {
   );
 };
 
-export default connect(({ newCandidateForm, user }) => ({ newCandidateForm, user }))(JobDetailForm);
+export default connect(({ newCandidateForm, user, loading }) => ({
+  newCandidateForm,
+  user,
+
+  loadingFetchTitle: loading.effects['newCandidateForm/fetchTitleList'],
+}))(JobDetailForm);

@@ -10,6 +10,7 @@ import SalaryNote from './components/SalaryNote';
 import SalaryStructureHeader from './components/SalaryStructureHeader';
 import SalaryStructureTemplate from './components/SalaryStructureTemplate';
 import styles from './index.less';
+import { goToTop } from '@/utils/utils';
 
 @connect(
   ({
@@ -51,8 +52,8 @@ class SalaryStructure extends PureComponent {
   }
 
   componentDidMount() {
+    goToTop();
     const { candidate = '', dispatch, processStatus } = this.props;
-
     if (processStatus === 'DRAFT') {
       if (dispatch && candidate) {
         dispatch({

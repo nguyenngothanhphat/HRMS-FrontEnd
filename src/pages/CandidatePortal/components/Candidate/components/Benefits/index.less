@@ -5,9 +5,9 @@
 
 .benefitContainer {
   .benefits {
-    border-radius: 5px;
-    border: solid 1px @border-color;
     background-color: #ffffff;
+    border: solid 1px @border-color;
+    border-radius: 5px;
 
     * {
       font-family: 'Roboto', sans-serif;
@@ -16,20 +16,20 @@
     }
 
     h2 {
-      font-size: 16px;
-      font-weight: 700;
       color: @black;
+      font-weight: 700;
+      font-size: 16px;
     }
 
     h3 {
-      font-size: 14px;
-      color: @black;
       margin-top: 24px;
+      color: @black;
+      font-size: 14px;
     }
 
     p {
-      font-size: 13px;
       color: @gray;
+      font-size: 13px;
     }
 
     header {
@@ -52,16 +52,16 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 13px 16px;
-        border-radius: 5px;
-        border: solid 1px #d6dce4;
-        margin-top: 16px;
         width: 347px;
+        margin-top: 16px;
+        padding: 13px 16px;
         overflow-x: hidden;
+        border: solid 1px #d6dce4;
+        border-radius: 5px;
 
         span {
-          font-size: 14px;
           color: #2c6df9;
+          font-size: 14px;
           text-decoration: underline;
           cursor: pointer;
         }
@@ -73,8 +73,8 @@
       }
 
       .global {
-        border-bottom: 1px solid @border-color;
         padding-bottom: 31px;
+        border-bottom: 1px solid @border-color;
       }
 
       .nation {
@@ -84,36 +84,36 @@
   }
 
   .bottomBar {
+    padding: 4 * @spacing-xxs;
+    background-color: #ffffff;
+    border: solid 1px #d6dce0;
     // position: fixed;
     // bottom: 0;
     // width: inherit;
     // height: 72px;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
-    border: solid 1px #d6dce0;
-    background-color: #ffffff;
-    padding: 4 * @spacing-xxs;
 
     .normalText {
       display: flex;
-      font-family: 'Roboto';
+      color: #707177;
+
       font-size: 13px;
       font-style: italic;
-      color: #707177;
     }
 
     .redText {
-      font-family: 'Roboto';
+      color: #ff4949;
+
       font-size: 13px;
       font-style: italic;
-      color: #ff4949;
     }
 
     .greenText {
-      font-family: 'Roboto';
+      color: #47c97f;
+
       font-size: 13px;
       font-style: italic;
-      color: #47c97f;
     }
 
     &__button {
@@ -125,39 +125,39 @@
 
       :global {
         .ant-btn-primary {
-          // display: none;
-          text-shadow: none;
-          box-shadow: none;
           width: 94px;
           height: 40px;
           object-fit: contain;
-          border-radius: 25px;
-          border: solid 1px #ffa100;
-          background-color: #ffa100;
-          font-family: 'Roboto';
-          font-size: 14px;
-          font-weight: 500;
-          letter-spacing: 0.13px;
           color: #ffffff;
+          font-weight: 500;
+
+          font-size: 14px;
+          letter-spacing: 0.13px;
+          // display: none;
+          text-shadow: none;
+          background-color: #ffa100;
+          border: solid 1px #ffa100;
+          border-radius: 25px;
+          box-shadow: none;
 
           &:hover {
-            background-color: #ffa100;
             color: #ffffff;
+            background-color: #ffa100;
           }
         }
 
         .ant-btn-secondary {
           width: 94px;
           height: 40px;
-          object-fit: contain;
-          border-radius: 25px;
-          border: solid 0;
-          font-family: 'Roboto';
-          font-size: 14px;
-          font-weight: 500;
-          letter-spacing: 0.13px;
-          color: #ffa100;
           padding-right: 41px;
+          object-fit: contain;
+          color: #ffa100;
+          font-weight: 500;
+
+          font-size: 14px;
+          letter-spacing: 0.13px;
+          border: solid 0;
+          border-radius: 25px;
         }
       }
     }

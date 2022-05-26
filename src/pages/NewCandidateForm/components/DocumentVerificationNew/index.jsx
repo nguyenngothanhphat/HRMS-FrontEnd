@@ -4,6 +4,7 @@ import { connect } from 'umi';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import BackgroundRecheck from './components/BackgroundRecheck';
 import DocumentVerification from './components/DocumentVerification';
+import { goToTop } from '@/utils/utils';
 
 const EligibilityDocuments = (props) => {
   const {
@@ -35,6 +36,7 @@ const EligibilityDocuments = (props) => {
   };
 
   useEffect(() => {
+    goToTop();
     if (documentLayout.length === 0) {
       getDocumentLayoutByCountry();
     }

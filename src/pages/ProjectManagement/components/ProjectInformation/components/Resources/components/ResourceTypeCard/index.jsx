@@ -1,4 +1,4 @@
-import {  Button, Card, Tag, Tooltip } from 'antd';
+import { Button, Card, Tag, Tooltip } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { debounce } from 'lodash';
 import React, { useState } from 'react';
@@ -15,7 +15,6 @@ import AddResourceTypeContent from '../AddResourceTypeContent';
 import AssignResourcesModal from '../AssignResourcesModal';
 import FilterResourceTypeContent from './components/FilterResourceTypeContent';
 import styles from './index.less';
-
 
 const ResourceTypeCard = (props) => {
   const {
@@ -59,12 +58,12 @@ const ResourceTypeCard = (props) => {
       setIsFiltering(false);
       setApplied(0);
     }
-  }
+  };
 
   const clearFilter = () => {
     onFilter({});
     setNeedResetFilterForm(true);
-  }
+  };
 
   const renderComment = (str = '') => {
     if (str.length <= 72) return str;
@@ -170,10 +169,10 @@ const ResourceTypeCard = (props) => {
 
   const renderOption = () => {
     const content = (
-      <FilterResourceTypeContent 
-        onFilter={onFilter} 
-        needResetFilterForm={needResetFilterForm} 
-        setNeedResetFilterForm={setNeedResetFilterForm} 
+      <FilterResourceTypeContent
+        onFilter={onFilter}
+        needResetFilterForm={needResetFilterForm}
+        setNeedResetFilterForm={setNeedResetFilterForm}
         setApplied={setApplied}
         setIsFiltering={setIsFiltering}
       />
@@ -186,10 +185,10 @@ const ResourceTypeCard = (props) => {
             closable
             closeIcon={<CloseOutlined />}
             onClose={() => {
-              clearFilter()
+              clearFilter();
             }}
           >
-            {applied} applied
+            {applied} filters applied
           </Tag>
         )}
         <FilterPopover placement="bottomRight" content={content}>
@@ -220,7 +219,7 @@ const ResourceTypeCard = (props) => {
             <AddResourceTypeContent
               visible={addResourceTypeModalVisible}
               onClose={() => setAddResourceTypeModalVisible(false)}
-              refreshResourceType={refreshResourceType}
+              refreshData={refreshResourceType}
             />
           }
           title="Add Resource Type"
@@ -230,7 +229,7 @@ const ResourceTypeCard = (props) => {
           visible={assignResourceModalVisible}
           onClose={() => setAssignResourceModalVisible(false)}
           data={assigningRecord}
-          refreshResourceType={refreshResourceType}
+          refreshData={refreshResourceType}
         />
       </Card>
     </div>

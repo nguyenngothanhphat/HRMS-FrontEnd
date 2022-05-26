@@ -2,13 +2,13 @@ import moment from 'moment';
 import React, { Suspense, useState } from 'react';
 import { connect } from 'umi';
 import { Skeleton, Tag } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
 import styles from './index.less';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import FilterContent from './components/FilterContent';
-import { CloseOutlined } from '@ant-design/icons';
 
 const Header = (props) => {
   const {
@@ -71,7 +71,7 @@ const Header = (props) => {
             closable
             closeIcon={<CloseOutlined onClick={handleClearFilter} />}
           >
-            {applied} applied
+            {applied} filters applied
           </Tag>
         )}
         <FilterPopover

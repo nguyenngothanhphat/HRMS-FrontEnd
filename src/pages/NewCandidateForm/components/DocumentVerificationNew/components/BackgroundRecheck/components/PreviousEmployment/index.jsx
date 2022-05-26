@@ -32,24 +32,30 @@ const PreviousEmployment = (props) => {
             </span>
           }
         >
-          {items.map((item, i) => (
-            <div className={styles.container}>
-              <EmployerDetails index={i} employer={item} />
-              <div className={styles.someText}>Proof of employment</div>
-              {item.data
-                .filter((x) => x.value || x.required)
-                .map((x, j) => (
-                  <File
-                    item={x}
-                    index={j}
-                    type={type}
-                    onVerifyDocument={onVerifyDocument}
-                    onViewCommentClick={onViewCommentClick}
-                    blockIndex={i}
-                  />
-                ))}
-            </div>
-          ))}
+          {items.map((item, i) => {
+            const files = item.data.filter((x) => x.value || x.required);
+
+            return (
+              <div className={styles.container}>
+                <EmployerDetails index={i} employer={item} />
+                {files.length > 0 && (
+                  <>
+                    <div className={styles.someText}>Proof of employment</div>
+                    {files.map((x, j) => (
+                      <File
+                        item={x}
+                        index={j}
+                        type={type}
+                        onVerifyDocument={onVerifyDocument}
+                        onViewCommentClick={onViewCommentClick}
+                        blockIndex={i}
+                      />
+                    ))}
+                  </>
+                )}
+              </div>
+            );
+          })}
         </Collapse.Panel>
       </Collapse>
     </div>

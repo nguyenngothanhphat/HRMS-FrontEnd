@@ -254,6 +254,9 @@ const AddResourcesModal = (props) => {
           setSuccessModalVisible(false);
           refreshResourceList();
         }}
+        onFinish={() => {
+          setSuccessModalVisible(false);
+        }}
         buttonText="Close"
         width={400}
         hasCancelButton={false}

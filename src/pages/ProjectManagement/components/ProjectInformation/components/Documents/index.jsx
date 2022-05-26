@@ -89,12 +89,12 @@ const Documents = (props) => {
       setIsFiltering(false);
       setApplied(0);
     }
-  }
+  };
 
   const clearFilter = () => {
     onFilter({});
     setNeedResetFilterForm(true);
-  }
+  };
 
   const generateColumns = () => {
     const columns = [
@@ -166,13 +166,15 @@ const Documents = (props) => {
   };
 
   const renderOption = () => {
-    const content = <FilterContent
-      onFilter={onFilter}
-      needResetFilterForm={needResetFilterForm}
-      setNeedResetFilterForm={setNeedResetFilterForm}
-      setIsFiltering={setIsFiltering}
-      setApplied={setApplied}
-    />;
+    const content = (
+      <FilterContent
+        onFilter={onFilter}
+        needResetFilterForm={needResetFilterForm}
+        setNeedResetFilterForm={setNeedResetFilterForm}
+        setIsFiltering={setIsFiltering}
+        setApplied={setApplied}
+      />
+    );
     return (
       <div className={styles.options}>
         {applied > 0 && (
@@ -184,7 +186,7 @@ const Documents = (props) => {
               clearFilter();
             }}
           >
-            {applied} applied
+            {applied} filters applied
           </Tag>
         )}
         {allowModify && (

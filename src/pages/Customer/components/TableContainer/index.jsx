@@ -66,7 +66,7 @@ class TableContainer extends PureComponent {
   onFilter = async (values) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'customerManagement/fetchCustomerList',
+      type: 'customerManagement/filterListCustomer',
       payload: {
         ...values,
       },
@@ -251,7 +251,7 @@ class TableContainer extends PureComponent {
               this.clearFilter();
             }}
           >
-            {applied} applied
+            {applied} filters applied
           </Tag>
         )}
         <div className={styles.buttonAddImport} onClick={this.showModal}>

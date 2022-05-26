@@ -5,16 +5,16 @@
 @orange: #ffa100;
 @dark-orange: #eb9500;
 .modalContent {
+  position: relative;
   display: none;
   //   width: 466px;
   //   height: 321px;
-  font-family: 'Roboto';
+
   display: flex;
   flex-direction: column;
   //   align-items: center;
   justify-content: center;
   text-align: center;
-  position: relative;
 
   * {
     margin: 0;
@@ -48,31 +48,31 @@
   .contentContainer {
     margin-bottom: 15px;
     .header {
-      font-size: 18px;
-      font-weight: 500px;
-      color: @black;
-      margin: 0 auto;
       max-width: 295px;
+      margin: 0 auto;
+      color: @black;
+      font-weight: 500px;
+      font-size: 18px;
     }
 
     .content {
-      font-size: 13px;
+      max-width: 386px;
       margin: 0 auto;
       margin-top: 8px;
       color: @gray;
-      max-width: 386px;
+      font-size: 13px;
     }
 
     .btn {
-      font-size: 14px;
-      color: white;
-      background-color: @orange;
-      border-radius: 25px;
-      font-weight: 500;
-      margin-top: 24px;
-      outline: none;
-      border: none;
       height: 40px;
+      margin-top: 24px;
+      color: white;
+      font-weight: 500;
+      font-size: 14px;
+      background-color: @orange;
+      border: none;
+      border-radius: 25px;
+      outline: none;
       cursor: pointer;
       transition: background-color 0.2s;
       padding-inline: 25px;
@@ -87,10 +87,10 @@
     }
 
     .laterBtn {
+      margin-top: 24px;
+      color: @blue;
       font-weight: 500;
       font-size: 13px;
-      color: @blue;
-      margin-top: 24px;
     }
   }
 }
