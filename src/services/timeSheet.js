@@ -164,8 +164,18 @@ export async function getManagerTimesheetOfTeamView(payload, params) {
 
 export async function getManagerTimesheetOfProjectView(payload, params) {
   // date, week, month
+  // return request(
+  //   `/api/manager/report`,
+  //   {
+  //     method: 'GET',
+  //     data: payload,
+  //     params,
+  //   },
+  //   false,
+  //   API_KEYS.TIMESHEET_API,
+  // );
   return request(
-    `/api/manager/report`,
+    `/api/manager/project-report`,
     {
       method: 'GET',
       data: payload,

@@ -20,6 +20,7 @@ const UserProfilePopover = (props) => {
     location,
     locationInfo,
     generalInfo = {},
+    manager = {},
     managerInfo = {},
     titleInfo = {},
     departmentInfo = {},
@@ -65,8 +66,12 @@ const UserProfilePopover = (props) => {
     const items = [
       {
         label: 'Reporting Manager',
-        value: <span className={styles.managerName}>{managerInfo?.generalInfo?.legalName}</span>,
-        link: managerInfo?.generalInfo?.userId,
+        value: (
+          <span className={styles.managerName}>
+            {managerInfo?.generalInfo?.legalName || manager?.legalName}
+          </span>
+        ),
+        link: managerInfo?.generalInfo?.userId || manager?.userId,
       },
       {
         label: 'Mobile',

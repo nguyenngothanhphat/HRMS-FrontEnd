@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import EventIcon from '@/assets/candidatePortal/event.svg';
 import styles from './index.less';
+import EmptyComponent from '@/components/Empty';
 
 class UpcomingEvents extends PureComponent {
   renderItem = (item, listLength, index) => {
@@ -27,7 +28,7 @@ class UpcomingEvents extends PureComponent {
 
   render() {
     const data = this.getData();
-
+    if (data.length === 0) return <EmptyComponent />;
     return (
       <div className={styles.UpcomingEvents}>
         {data.map((val, index) => this.renderItem(val, data.length, index))}

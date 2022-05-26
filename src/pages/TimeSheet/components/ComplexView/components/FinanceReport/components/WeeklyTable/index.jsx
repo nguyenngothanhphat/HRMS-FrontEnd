@@ -15,7 +15,9 @@ const WeeklyTable = (props) => {
     setSelectedProjects = () => {},
     loadingFetch = false,
   } = props;
+
   const [pageSelected, setPageSelected] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [projectDetailModalVisible, setProjectDetailModalVisible] = useState(false);
   const [handlingProject, setHandlingProject] = useState('');
 
@@ -111,8 +113,9 @@ const WeeklyTable = (props) => {
     onChange: onSelectChange,
   };
 
-  const onChangePagination = (pageNumber) => {
+  const onChangePagination = (pageNumber, pageSizeTemp) => {
     setPageSelected(pageNumber);
+    setPageSize(pageSizeTemp);
   };
 
   const pagination = {
@@ -131,7 +134,7 @@ const WeeklyTable = (props) => {
     defaultPageSize: 10,
     showSizeChanger: true,
     pageSizeOptions: ['10', '25', '50', '100'],
-    pageSize: limit,
+    pageSize,
     current: pageSelected,
     onChange: onChangePagination,
   };
@@ -144,9 +147,8 @@ const WeeklyTable = (props) => {
         dataSource={data}
         rowSelection={rowSelection}
         rowKey={(record) => record.projectId}
-        pagination={false}
         scroll={selectedProjects.length > 0 ? { y: 400 } : {}}
-        // pagination={pagination}
+        pagination={pagination}
         loading={loadingFetch}
         locale={{
           emptyText: <EmptyComponent />,

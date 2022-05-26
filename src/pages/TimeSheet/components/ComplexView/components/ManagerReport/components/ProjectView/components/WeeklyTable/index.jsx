@@ -2,14 +2,16 @@ import { Table } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import CompleteIcon from '@/assets/timeSheet/complete.svg';
+// import CompleteIcon from '@/assets/timeSheet/complete.svg';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
-import FailIcon from '@/assets/timeSheet/fail.svg';
-import PendingIcon from '@/assets/timeSheet/pending.svg';
+// import FailIcon from '@/assets/timeSheet/fail.svg';
+// import PendingIcon from '@/assets/timeSheet/pending.svg';
 import EmptyComponent from '@/components/Empty';
 import { convertMsToTime, projectColor } from '@/utils/timeSheet';
 import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
+import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
+import UserProfilePopover from '@/components/UserProfilePopover';
 
 const WeeklyTable = (props) => {
   const {
@@ -17,16 +19,18 @@ const WeeklyTable = (props) => {
     endDate = '',
     loadingFetch = false,
     data = [],
-    tablePagination: {
-      page = 0,
-      // pageCount = 0,
-      pageSize = 0,
-      rowCount = 0,
-    } = {},
-    onChangePage = () => {},
+    // tablePagination: {
+    //   page = 0,
+    // pageCount = 0,
+    //   pageSize = 0,
+    //   pageCount = 0,
+    //   rowCount = 0,
+    // } = {},
+    // onChangePage = () => {},
   } = props;
   const [dateList, setDateList] = useState([]);
-
+  const [pageSize, setPageSize] = useState(5);
+  const [pageSelected, setPageSelected] = useState(1);
   // FUNCTIONS
   // get dates between two dates
   const enumerateDaysBetweenDates = (startDate1, endDate1) => {
@@ -57,56 +61,54 @@ const WeeklyTable = (props) => {
 
   // RENDER UI
   // BODY
-  const getIcon = (key) => {
-    switch (key) {
-      case 'pending':
-        return PendingIcon;
-      case 'completed':
-        return CompleteIcon;
-      case 'rejected':
-        return FailIcon;
+  // const getIcon = (key) => {
+  //   switch (key) {
+  //     case 'pending':
+  //       return PendingIcon;
+  //     case 'completed':
+  //       return CompleteIcon;
+  //     case 'rejected':
+  //       return FailIcon;
 
-      default:
-        return PendingIcon;
-    }
-  };
+  //     default:
+  //       return PendingIcon;
+  //   }
+  // };
 
-  const getBackgroundColor = (key) => {
-    switch (key) {
-      case 'pending':
-        return '#FFFBF5';
-      case 'completed':
-        return '#F4FFFD';
-      case 'rejected':
-        return '#FFF4F4';
+  // const getBackgroundColor = (key) => {
+  //   switch (key) {
+  //     case 'pending':
+  //       return '#FFFBF5';
+  //     case 'completed':
+  //       return '#F4FFFD';
+  //     case 'rejected':
+  //       return '#FFF4F4';
 
-      default:
-        return '#fff';
-    }
-  };
+  //     default:
+  //       return '#fff';
+  //   }
+  // };
 
-  const getTitleColor = (key) => {
-    switch (key) {
-      case 'pending':
-        return '#FFA100;';
-      case 'completed':
-        return '#00C598';
-      case 'rejected':
-        return '#F44E21';
+  // const getTitleColor = (key) => {
+  //   switch (key) {
+  //     case 'pending':
+  //       return '#FFA100;';
+  //     case 'completed':
+  //       return '#00C598';
+  //     case 'rejected':
+  //       return '#F44E21';
 
-      default:
-        return '#000';
-    }
-  };
+  //     default:
+  //       return '#000';
+  //   }
+  // };
 
-  const renderEventColumn = (type = 'completed') => {
+  const renderHoliday = (holidayName = 'Public Holiday') => {
     return (
-      <div className={styles.eventColumn} style={{ backgroundColor: getBackgroundColor(type) }}>
-        <img src={getIcon(type)} alt="" />
-        <span className={styles.title} style={{ color: getTitleColor(type) }}>
-          Leave Applied
-        </span>
-        <span className={styles.description}>Waiting for approval</span>
+      <div className={styles.holidayColumn}>
+        {/* <img src={getIcon(type)} alt="" /> */}
+        <span className={styles.title}>{holidayName}</span>
+        {/* <span className={styles.description}>Waiting for approval</span> */}
       </div>
     );
   };
@@ -133,8 +135,8 @@ const WeeklyTable = (props) => {
     return renderDateHeaderItem(title);
   };
 
-  const renderHoliday = (date) => {
-    return <div className={styles.holidayColumn}>{renderDateHeaderItem(date)}</div>;
+  const renderLeaveDays = () => {
+    return <div className={styles.leaveCell}>Leave</div>;
   };
 
   const columns = () => {
@@ -145,20 +147,24 @@ const WeeklyTable = (props) => {
         key: date,
         align: 'center',
         width: `${100 / 9}%`,
-        render: (_, row) => {
+        render: (_, row, index) => {
           const { projectName = '', dailyList = [] } = row;
           const value = dailyList.find((d) => isTheSameDay(d.date, date));
           const getCellValue = () => {
             // FOR HOLIDAY & LEAVE REQUEST
             // // if this date has a leave request
-            // if (date === '10/27/2021') {
-            //   return renderEventColumn();
+            if (value?.isHoliday) {
+              return renderHoliday();
+            }
+
+            // if (date === '05/21/2022') {
+            //   return renderHoliday();
             // }
 
             // if this date is holiday
-            // if (date === '10/29/2021') {
-            //   return renderHoliday(date);
-            // }
+            if (value?.isMorning && value?.isAfternoon) {
+              return renderLeaveDays(date);
+            }
 
             return (
               <TaskPopover
@@ -167,12 +173,32 @@ const WeeklyTable = (props) => {
                 tasks={value?.dailyTask}
                 placement="bottomLeft"
               >
-                {!value ? (
+                {value ? (
+                  <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    {(value?.isMorning || value?.isAfternoon) && (
+                      <span
+                        className={
+                          (value.isMorning && styles.hourValue__morningOff) ||
+                          (value.isAfternoon && styles.hourValue__afternoonOff)
+                        }
+                      >
+                        Leave
+                      </span>
+                    )}
+                    <span
+                      className={
+                        value?.isMorning || value?.isAfternoon
+                          ? styles.hourValue__work
+                          : styles.hourValue
+                      }
+                    >
+                      {convertMsToTime(value.spentTime)}
+                    </span>
+                  </div>
+                ) : (
                   <span className={styles.hourValue}>
                     <img src={EmptyLine} alt="" />
                   </span>
-                ) : (
-                  <span className={styles.hourValue}>{convertMsToTime(value.spentTime)}</span>
                 )}
               </TaskPopover>
             );
@@ -184,46 +210,62 @@ const WeeklyTable = (props) => {
 
           // FOR HOLIDAY & LEAVE REQUEST
           // // pretend 10/27/2021 is a leave day
-          // if (index === 1 && date === '10/27/2021') {
-          //   obj.props.rowSpan = formattedData.length;
+          // if (index === 0 && date === '05/21/2022') {
+          //   obj.props.rowSpan = data.length;
           // }
-          // for (let i = 2; i < formattedData.length; i += 1) {
+          // for (let i = 1; i < data.length; i += 1) {
           //   // These ones are merged into above cell
-          //   if (index === i && date === '10/27/2021') {
+          //   if (index === i && date === '05/21/2022') {
           //     obj.props.rowSpan = 0;
           //   }
           // }
 
           // // pretend 10/29/2021 is holiday day
-          // if (index === 0 && date === '10/29/2021') {
-          //   obj.props.rowSpan = formattedData.length;
-          // }
-          // for (let i = 1; i < formattedData.length; i += 1) {
-          //   // These ones are merged into above cell
-          //   if (index === i && date === '10/29/2021') {
-          //     obj.props.rowSpan = 0;
-          //   }
-          // }
+          if (index === 0 && dailyList[0]?.isHoliday) {
+            obj.props.rowSpan = data.length;
+          }
+          for (let i = 1; i < data.length; i += 1) {
+            // These ones are merged into above cell
+            if (index === i && dailyList[i]?.isHoliday) {
+              obj.props.rowSpan = 0;
+            }
+          }
           return obj;
         },
       };
     });
-
     const result = [
       {
-        title: renderTitle('Functional Area', 1),
-        dataIndex: 'functionalArea',
-        key: 'functionalArea',
+        title: renderTitle('Employee', 1),
+        dataIndex: 'employee',
+        key: 'employee',
         align: 'center',
         width: `${100 / 9}%`,
-        render: (functionalArea, _, index) => {
+        render: (employee, _, index) => {
+          const { legalName = '', userId = '', avatar } = employee;
           return (
-            <div className={styles.projectName}>
-              <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
-                <span>{functionalArea ? functionalArea.toString()?.charAt(0) : 'P'}</span>
+            <UserProfilePopover placement="rightTop" data={employee}>
+              <div className={styles.member}>
+                <div className={styles.renderEmployee}>
+                  <div className={styles.avatar}>
+                    {avatar ? (
+                      <img src={avatar || MockAvatar} alt="" />
+                    ) : (
+                      <div
+                        className={styles.icon}
+                        style={{ backgroundColor: getColorByIndex(index) }}
+                      >
+                        <span>{legalName ? legalName.toString()?.charAt(0) : 'P'}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.right}>
+                    <span className={styles.name}>{legalName}</span>
+                    <span className={styles.id}>({userId})</span>
+                  </div>
+                </div>
               </div>
-              <span className={styles.name}>{functionalArea}</span>
-            </div>
+            </UserProfilePopover>
           );
         },
       },
@@ -242,13 +284,13 @@ const WeeklyTable = (props) => {
     return result;
   };
 
-  const onChangePagination = (pageNumber) => {
-    onChangePage(pageNumber);
+  const onChangePagination = (pageNumber, pageSizeProp) => {
+    setPageSelected(pageNumber);
+    setPageSize(pageSizeProp);
   };
-
   const pagination = {
     position: ['bottomLeft'],
-    total: rowCount,
+    total: data.length,
     showTotal: (total, range) => (
       <span>
         Showing{' '}
@@ -258,11 +300,11 @@ const WeeklyTable = (props) => {
         of {total}{' '}
       </span>
     ),
-    defaultPageSize: 10,
+    defaultPageSize: pageSize,
     showSizeChanger: true,
-    pageSizeOptions: ['10', '25', '50', '100'],
+    pageSizeOptions: ['5', '10', '25', '50'],
     pageSize,
-    current: page,
+    current: pageSelected,
     onChange: onChangePagination,
   };
 

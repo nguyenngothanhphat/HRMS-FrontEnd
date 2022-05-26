@@ -1,6 +1,7 @@
 import { Button, Tabs } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
+import moment from 'moment';
 import DownloadIcon from '@/assets/timeSheet/download.svg';
 import ProjectView from './components/ProjectView';
 import TeamView from './components/TeamView';
@@ -14,7 +15,25 @@ const VIEW_TYPE = {
 };
 const ManagerReport = (props) => {
   // others
-  const { dispatch, timeSheet: { payloadExport = {} } = {}, permissions = {} } = props;
+  const {
+    dispatch,
+    timeSheet: { payloadExport = {}, projectList = [] } = {},
+    permissions = {},
+  } = props;
+
+  // Format fromDate and toDate
+  const { fromDate, toDate, projectId } = payloadExport;
+  const startDate = moment(fromDate)
+    .locale('en')
+    .format('ll')
+    .replace(/[, \s]+/g, '');
+  const endDate = moment(toDate)
+    .locale('en')
+    .format('ll')
+    .replace(/[, \s]+/g, '');
+
+  const project = projectList.find((list) => list.id === projectId);
+
   const [activeKey, setActiveKey] = useState(VIEW_TYPE.PROJECT_VIEW);
 
   // PERMISSIONS TO VIEW PROJECT OR TEAM
@@ -40,7 +59,10 @@ const ManagerReport = (props) => {
 
   const exportTag = () => {
     if (activeKey === VIEW_TYPE.PROJECT_VIEW) {
-      return exportToExcel('timeSheet/exportReportProject', 'project-view.xlsx');
+      return exportToExcel(
+        'timeSheet/exportReportProject',
+        `ProjectView-${project.projectName}-${startDate}-${endDate}.xlsx`,
+      );
     }
     return exportToExcel('timeSheet/exportReportTeam', 'team-view.xlsx');
   };
@@ -67,29 +89,24 @@ const ManagerReport = (props) => {
         onChange={(key) => setActiveKey(key)}
         tabBarExtraContent={options()}
       >
-        {viewReportProject &&         
+        {viewReportProject && (
           <TabPane tab="Project View" key={VIEW_TYPE.PROJECT_VIEW}>
             <ProjectView activeView={activeKey} />
           </TabPane>
-        }
+        )}
 
-        {viewReportTeam &&         
+        {viewReportTeam && (
           <TabPane tab="Team View" key={VIEW_TYPE.TEAM_VIEW}>
             <TeamView activeView={activeKey} />
           </TabPane>
-        }
+        )}
       </Tabs>
     </div>
   );
 };
 
-export default connect(
-  ({ 
-    user,
-    user: { permissions = [] } = {},
-    timeSheet 
-  }) => ({ 
-    user, 
-    timeSheet,
-    permissions,
+export default connect(({ user, user: { permissions = [] } = {}, timeSheet }) => ({
+  user,
+  timeSheet,
+  permissions,
 }))(ManagerReport);

@@ -80,6 +80,8 @@ const DocumentVerification = (props) => {
   const [openModalEmail, setOpenModalEmail] = useState(false);
   const [checkRadioSendMail, setCheckRadioSendMail] = useState(0);
 
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+
   const validateFields = () => {
     dispatch({
       type: 'newCandidateForm/saveCheckMandatory',
@@ -367,18 +369,21 @@ const DocumentVerification = (props) => {
   }, [_id]);
 
   useLayoutEffect(() => {
-    dispatch({
-      type: 'newCandidateForm/updateByHR',
-      payload: {
-        candidate: _id,
-        tenantId: getCurrentTenant(),
-        documentTypeA,
-        documentTypeB,
-        documentTypeC,
-        documentTypeD,
-        documentTypeE,
-      },
-    });
+    if (!isFirstLoad) {
+      dispatch({
+        type: 'newCandidateForm/updateByHR',
+        payload: {
+          candidate: _id,
+          tenantId: getCurrentTenant(),
+          documentTypeA,
+          documentTypeB,
+          documentTypeC,
+          documentTypeD,
+          documentTypeE,
+        },
+      });
+    }
+    setIsFirstLoad(false);
   }, [
     JSON.stringify(documentTypeA),
     JSON.stringify(documentTypeB),

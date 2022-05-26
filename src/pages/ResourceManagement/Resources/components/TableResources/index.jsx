@@ -15,6 +15,7 @@ import PopoverInfo from '../ComplexView/components/PopoverProfiles/components/Us
 import CommentModal from './components/Comment';
 import CommentOverlay from '../ComplexView/components/Overlay';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
+import EmptyComponent from '@/components/Empty';
 
 @connect(
   ({
@@ -140,7 +141,7 @@ class TableResources extends PureComponent {
   render() {
     const {
       data = [],
-      // textEmpty = 'No Data',
+      // textEmpty = 'No Results Found',
       loading,
       total,
       pageSelected,
@@ -476,6 +477,9 @@ class TableResources extends PureComponent {
           hideOnSinglePage
           pagination={pagination}
           onChange={this.onTableChange}
+          locale={{
+            emptyText: <EmptyComponent description="No Results Found" />,
+          }}
           rowKey="id"
           scroll={{ x: 'max-content' }}
         />
