@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import WarningIcon from '@/assets/candidatePortal/warningIcon.svg';
 import InternalStyle from './FilledByCandidate.less';
 
-const dateFormat = 'MM.DD.YY';
+const dateFormat = 'MM/DD/YYYY';
 @connect(({ candidatePortal: { data, tempData = {}, checkMandatory } = {} }) => ({
   data,
   tempData,

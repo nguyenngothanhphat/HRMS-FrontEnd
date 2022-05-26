@@ -1,59 +1,58 @@
 .TemplateDetailsForm {
-  font-family: 'Roboto';
   :global {
     .ant-typography {
+      color: #707177;
       font-size: 13px;
       line-height: 1.31;
       letter-spacing: 0.12px;
       text-align: left;
-      color: #707177;
     }
     .ant-btn-primary {
-      box-shadow: none;
-      text-shadow: none;
       // display: none;
       width: 94px;
       height: 40px;
       object-fit: contain;
-      border-radius: 25px;
-      border: solid 1px #ffa100;
-      background-color: #ffa100;
-      font-family: 'Roboto';
-      font-size: 14px;
-      font-weight: 500;
-      letter-spacing: 0.13px;
       color: #ffffff;
+      font-weight: 500;
+
+      font-size: 14px;
+      letter-spacing: 0.13px;
+      text-shadow: none;
+      background-color: #ffa100;
+      border: solid 1px #ffa100;
+      border-radius: 25px;
+      box-shadow: none;
       &:hover {
-        background-color: #ffa100;
         color: #ffffff;
+        background-color: #ffa100;
       }
     }
     .ant-form-item-label {
       label {
+        height: 42px;
+        color: #707177;
         font-size: 13px;
         line-height: 1.15;
         text-align: left;
-        color: #707177;
-        height: 42px;
       }
     }
     .ant-input {
       height: 42px;
-      border-radius: 5px;
-      border: solid 1px #d6dce4;
       background-color: #ffffff;
+      border: solid 1px #d6dce4;
+      border-radius: 5px;
     }
   }
   &_template {
+    padding: 50px;
+    background-color: #ffffff;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.22);
-    background-color: #ffffff;
-    padding: 50px;
     hr {
       margin-top: 30px;
       margin-bottom: 30px;
-      border-bottom: solid 1px #d6dce0;
       border-top: none;
+      border-bottom: solid 1px #d6dce0;
     }
     &_button {
       &_primary {
@@ -62,14 +61,14 @@
         justify-content: center;
       }
       img {
-        margin-right: 5px;
         height: 13px;
+        margin-right: 5px;
       }
     }
     &_content {
       max-height: 210px;
-      overflow-y: auto;
       margin-bottom: 30px;
+      overflow-y: auto;
     }
     &_header {
       display: grid;
@@ -79,12 +78,12 @@
         height: 50px;
       }
       p {
-        text-align: right;
         margin: 0;
+        color: #161c29;
         font-weight: 700;
         font-size: 14px;
         line-height: 1.14;
-        color: #161c29;
+        text-align: right;
       }
     }
   }

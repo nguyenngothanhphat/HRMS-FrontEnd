@@ -1,17 +1,16 @@
 .onboardingTab {
-  font-family: 'Roboto';
   // height: 319px;
   object-fit: contain;
-  border-radius: 8px;
   overflow: auto;
-  border: solid 1px #d6dce0;
   background-color: #ffffff;
+  border: solid 1px #d6dce0;
+  border-radius: 8px;
 
   .title {
-    font-family: 'Roboto';
-    font-size: 16px;
-    font-weight: 500;
     color: #000000;
+    font-weight: 500;
+
+    font-size: 16px;
   }
 
   :global {
@@ -19,8 +18,8 @@
       text-transform: capitalize;
 
       .ant-tabs-tab-btn {
-        font-size: 14px;
         font-weight: 700;
+        font-size: 14px;
       }
     }
     .ant-tabs-nav-wrap {
@@ -28,14 +27,15 @@
     }
     .ant-tabs-extra-content {
       margin-right: 24px;
-      .ant-input-affix-wrapper{
-        border-radius: 33px;
-        border: 1px solid #D6DCE0;
+      .ant-input-affix-wrapper {
         width: 212px;
         height: 37px;
+        border: 1px solid #d6dce0;
+        border-radius: 33px;
       }
-      
-      .ant-input-affix-wrapper:focus, .ant-input-affix-wrapper-focused{
+
+      .ant-input-affix-wrapper:focus,
+      .ant-input-affix-wrapper-focused {
         box-shadow: none;
       }
     }
