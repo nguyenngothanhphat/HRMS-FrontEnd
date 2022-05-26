@@ -7,8 +7,6 @@ import CloseX from '@/assets/dashboard/closeX.svg';
 import { convertMsToTime } from '@/utils/timeSheet';
 import styles from './index.less';
 
-const members = [];
-
 const TaskPopover = (props) => {
   const { children, tasks = [], startDate = '', endDate = '', placement = 'top' } = props;
   const [showPopover, setShowPopover] = useState(false);
@@ -23,56 +21,32 @@ const TaskPopover = (props) => {
     generateShowingTask(4);
   }, [JSON.stringify(tasks)]);
 
-  const renderTooltipTitle = (list) => {
-    return (
-      <div>
-        {list.map((member) => (
-          <span style={{ display: 'block' }}>{member.name}</span>
-        ))}
-      </div>
-    );
-  };
-
   const renderTaskTable = () => {
     return (
       <div className={styles.taskTable}>
         <Row className={styles.taskTable__header} justify="space-between">
           <Col span={12}>Task</Col>
-          <Col span={6}>Resources</Col>
+          <Col span={6}>Date</Col>
           <Col span={6} className={styles.right}>
             Time Duration
           </Col>
         </Row>
         <div className={styles.taskTable__body}>
-          {showingTasks.length === 0 && (
+          {showingTasks?.length === 0 && (
             <Row className={styles.eachRow} justify="space-between" align="middle">
               <Col span={24} className={styles.taskName}>
                 <span>No tasks</span>
               </Col>
             </Row>
           )}
-          {showingTasks.map((task) => {
+          {showingTasks?.map((task) => {
             return (
               <Row className={styles.eachRow} justify="space-between" align="middle">
                 <Col span={12} className={styles.taskName}>
                   <span>{task.taskName || 'No name'}</span>
                 </Col>
                 <Col span={6} className={styles.resources}>
-                  <Tooltip
-                    title={renderTooltipTitle(members)}
-                    placement="rightTop"
-                    getPopupContainer={(trigger) => {
-                      return trigger;
-                    }}
-                  >
-                    <div className={styles.taskMembers}>
-                      <Avatar.Group maxCount={4}>
-                        {members.map((member) => {
-                          return <Avatar size="small" src={member.avatar} />;
-                        })}
-                      </Avatar.Group>
-                    </div>
-                  </Tooltip>
+                  {moment(startDate).locale('en').format('MMM DD, YYYY')}
                 </Col>
                 <Col span={6} className={styles.right}>
                   {convertMsToTime(task.duration)}
@@ -121,7 +95,7 @@ const TaskPopover = (props) => {
         placement={placement}
         content={() => renderPopup()}
         title={null}
-        trigger="click"
+        trigger="hover"
         visible={showPopover}
         overlayClassName={styles.TaskPopover}
         onVisibleChange={() => {
