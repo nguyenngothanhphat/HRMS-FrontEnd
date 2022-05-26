@@ -28,6 +28,7 @@ class Edit extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      isChange: false,
       reListStates: [],
       curListStates: [],
       residentAddress: {
@@ -147,9 +148,12 @@ class Edit extends PureComponent {
         //   },
         // }));
         this.setState((prevState) => ({
+          isChange: true,
           residentAddress: {
             ...prevState.residentAddress,
-            country: value,
+            country: {
+              _id: value,
+            },
           },
         }));
         break;
@@ -209,7 +213,9 @@ class Edit extends PureComponent {
         this.setState((prevState) => ({
           currentAddress: {
             ...prevState.currentAddress,
-            country: value,
+            country: {
+              _id: value,
+            },
           },
         }));
         break;
@@ -234,7 +240,7 @@ class Edit extends PureComponent {
 
   processDataChanges = () => {
     const { generalData: generalDataTemp, tenantCurrentEmployee = '' } = this.props;
-    const { currentAddress, residentAddress } = this.state;
+    const { currentAddress, residentAddress, isChange } = this.state;
 
     const {
       personalNumber = '',
@@ -245,6 +251,7 @@ class Edit extends PureComponent {
       linkedIn = '',
       _id: id = '',
     } = generalDataTemp;
+
     const payloadChanges = {
       id,
       personalNumber,
@@ -253,10 +260,21 @@ class Edit extends PureComponent {
       maritalStatus,
       linkedIn,
       nationality,
-      residentAddress,
-      currentAddress,
+      residentAddress: isChange
+        ? {
+            ...residentAddress,
+            country: residentAddress.country?._id,
+          }
+        : residentAddress,
+      currentAddress: isChange
+        ? {
+            ...currentAddress,
+            country: currentAddress.country?._id,
+          }
+        : currentAddress,
       tenantId: tenantCurrentEmployee,
     };
+
     return payloadChanges;
   };
 
@@ -312,7 +330,7 @@ class Edit extends PureComponent {
         addressLine1: Addressline1 = '',
         addressLine2: Addressline2 = '',
         city: City = '',
-        country: { name: countryName = '' } = {},
+        country: { _id: countryName = '' } = {},
         state = '',
         zipCode = '',
       } = {},
@@ -337,6 +355,9 @@ class Edit extends PureComponent {
         c_state: '',
         c_zipCode: '',
       };
+      this.setState({
+        currentAddress: {},
+      });
     } else {
       this.setState({
         currentAddress: residentAddress,
