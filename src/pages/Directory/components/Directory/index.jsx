@@ -350,7 +350,7 @@ const DirectoryComponent = (props) => {
               clearFilter();
             }}
           >
-            {applied} applied
+            {applied} filters applied
           </Tag>
         )}
         {findIndexImport && (

@@ -104,7 +104,7 @@ class SearchOnboarding extends Component {
             onClose={this.onClose}
             closeIcon={<CloseOutlined />}
           >
-            {currentStatus === 'ALL' ? applied : applied - 1} applied
+            {currentStatus === 'ALL' ? applied : applied - 1} filters applied
           </Tag>
         )}
         <div className="site-drawer-render-in-current-wrapper">

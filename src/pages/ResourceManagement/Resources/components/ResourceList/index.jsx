@@ -232,7 +232,7 @@ const ResourceList = (props) => {
                 onClose={clearTagFilter}
                 closeIcon={<CloseOutlined />}
               >
-                {applied} applied
+                {applied} filters applied
               </Tag>
             )}
           </div>
