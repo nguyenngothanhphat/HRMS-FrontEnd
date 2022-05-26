@@ -34,6 +34,18 @@ class CandidatePortal extends PureComponent {
     };
   }
 
+  fetchCandidate = () => {
+    const { dispatch, candidate = '' } = this.props;
+    dispatch({
+      type: 'candidatePortal/fetchCandidateById',
+      payload: {
+        candidate: candidate._id,
+        tenantId: getCurrentTenant(),
+        rookieID: candidate.ticketID,
+      },
+    });
+  };
+
   componentDidMount = async () => {
     const {
       dispatch,
@@ -44,14 +56,7 @@ class CandidatePortal extends PureComponent {
     if (!dispatch || !getCurrentTenant() || !candidate?._id) {
       return;
     }
-    await dispatch({
-      type: 'candidatePortal/fetchCandidateById',
-      payload: {
-        candidate: candidate._id,
-        tenantId: getCurrentTenant(),
-        rookieID: candidate.ticketID,
-      },
-    });
+    this.fetchCandidate();
     dispatch({
       type: 'candidatePortal/fetchDocumentByCandidate',
       payload: {
@@ -78,7 +83,7 @@ class CandidatePortal extends PureComponent {
       });
     }
 
-    // get welcome modal from localstorage
+    // get welcome modal from local storage
     const openWelcomeModal = localStorage.getItem('openWelcomeModal');
     if (openWelcomeModal !== 'false' && tabName !== CHANGE_PASSWORD) {
       this.setState({
@@ -120,6 +125,11 @@ class CandidatePortal extends PureComponent {
     );
   };
 
+  onChangeTab = (key) => {
+    history.push(`/candidate-portal/${key}`);
+    this.fetchCandidate();
+  };
+
   render() {
     const { openWelcomeModal } = this.state;
     const {
@@ -128,13 +138,7 @@ class CandidatePortal extends PureComponent {
 
     return (
       <div className={styles.CandidatePortal}>
-        <Tabs
-          activeKey={tabName || 'dashboard'}
-          onChange={(key) => {
-            history.push(`/candidate-portal/${key}`);
-          }}
-          destroyInactiveTabPane
-        >
+        <Tabs activeKey={tabName || 'dashboard'} onChange={this.onChangeTab} destroyInactiveTabPane>
           <TabPane tab="Dashboard" key={DASHBOARD}>
             <Dashboard />
           </TabPane>

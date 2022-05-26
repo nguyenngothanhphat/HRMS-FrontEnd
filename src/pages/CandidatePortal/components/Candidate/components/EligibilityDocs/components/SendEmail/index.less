@@ -2,24 +2,24 @@
 @blue-background-outside: #e9f0ff;
 .SendEmail {
   width: 100%;
-  object-fit: contain;
-  border-radius: 5px;
-  border: solid 1px #d6dce0;
-  background-color: #ffffff;
+  margin-top: 1rem;
   padding: 32px;
   padding-bottom: 0;
+  object-fit: contain;
   overflow: hidden;
-  margin-top: 1rem;
+  background-color: #ffffff;
+  border: solid 1px #d6dce0;
+  border-radius: 5px;
   .header {
     .text {
-      font-size: 14px;
-      font-size: 14px;
+      color: #161c29;
       font-weight: 500;
-      font-stretch: normal;
+      font-size: 14px;
+      font-size: 14px;
       font-style: normal;
+      font-stretch: normal;
       line-height: normal;
       letter-spacing: normal;
-      color: #161c29;
     }
   }
   .header1 {
@@ -28,36 +28,36 @@
   .body1 {
     text-align: center;
     span.coloredText {
-      font-weight: 500;
       color: #ffa100;
+      font-weight: 500;
     }
     span.boldText {
       font-weight: 700;
     }
     :global {
       .ant-typography {
-        font-family: 'Roboto';
-        font-size: 13px;
+        color: #707177;
         font-weight: normal;
-        font-stretch: normal;
+
+        font-size: 13px;
         font-style: normal;
+        font-stretch: normal;
         line-height: 1.38;
         letter-spacing: 0.12px;
         text-align: center;
-        color: #707177;
       }
       .ant-btn {
-        background-color: #fff;
-        color: #ffa100;
-        border-radius: 25px;
         height: 42px;
-        padding: 13px 24px;
-        line-height: 0.5715;
-        border-color: #ffa100;
-        font-size: 14px;
-        font-weight: 500;
-        margin-bottom: 2rem;
         margin-top: 1.5rem;
+        margin-bottom: 2rem;
+        padding: 13px 24px;
+        color: #ffa100;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 0.5715;
+        background-color: #fff;
+        border-color: #ffa100;
+        border-radius: 25px;
         &:focus {
           border-color: #ffa100;
         }
@@ -74,14 +74,14 @@
       width: 100%;
       .radioItem {
         height: 32px;
+        margin-right: 0;
+        margin-bottom: 2rem;
         font-weight: 500;
         font-size: 14px;
-        margin-bottom: 2rem;
-        margin-right: 0;
         .radioHelper {
+          color: #707177;
           font-weight: normal;
           font-size: 10px;
-          color: #707177;
           // padding-left: 25px;
           white-space: pre-wrap;
         }
@@ -97,11 +97,11 @@
       :global {
         .ant-form-item-label {
           label {
-            font-size: 13px;
             color: #707177;
             font-weight: normal;
-            font-stretch: normal;
+            font-size: 13px;
             font-style: normal;
+            font-stretch: normal;
             line-height: normal;
             letter-spacing: normal;
           }
@@ -110,11 +110,11 @@
           .ant-form-item-control-input {
             .ant-form-item-control-input-content {
               input {
-                border-radius: 5px;
-                color: #161c29;
                 height: 42px;
                 padding: 13px 0 13px 16px;
+                color: #161c29;
                 font-size: 14px;
+                border-radius: 5px;
               }
             }
           }
@@ -123,26 +123,26 @@
           position: absolute;
           top: 2px;
           right: 0;
-          font-size: 13px;
+          color: #2c6df9;
           font-weight: 500;
-          font-stretch: normal;
+          font-size: 13px;
           font-style: normal;
+          font-stretch: normal;
           line-height: normal;
           letter-spacing: 0.12px;
-          color: #2c6df9;
           cursor: pointer;
         }
         .ant-btn {
-          background-color: #ffa100;
-          color: #fff;
-          border-radius: 25px;
           height: 42px;
-          padding: 13px 24px;
-          line-height: 0.5715;
-          border-color: #ffa100;
-          font-size: 14px;
-          font-weight: 500;
           margin-bottom: 2rem;
+          padding: 13px 24px;
+          color: #fff;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 0.5715;
+          background-color: #ffa100;
+          border-color: #ffa100;
+          border-radius: 25px;
           &:focus {
             border-color: #ffa100;
           }
@@ -164,8 +164,8 @@
           top: 0;
           right: 0;
           .generateButtonItem {
-            border: 0;
             background: transparent;
+            border: 0;
             &::after {
               animation: none !important;
             }
@@ -179,16 +179,16 @@
               .ant-form-item-control-input-content {
                 input.ant-input {
                   height: 42px;
-                  padding-right: 42px;
                   margin-bottom: 32px;
-                  font-size: 14px;
+                  padding-right: 42px;
+                  overflow: hidden;
+                  color: #161c29;
                   font-weight: normal;
-                  font-stretch: normal;
+                  font-size: 14px;
                   font-style: normal;
+                  font-stretch: normal;
                   line-height: normal;
                   letter-spacing: normal;
-                  color: #161c29;
-                  overflow: hidden;
                   text-overflow: ellipsis;
                   border-radius: 5px;
                 }
@@ -207,12 +207,12 @@
       :global {
         .ant-row {
           .ant-col-2 {
-            transform: translateY(-4%);
             margin-bottom: 1rem;
+            transform: translateY(-4%);
             span {
+              padding: 5px;
               color: #2c6df9;
               background-color: #c9dafe;
-              padding: 5px;
               border-radius: 50%;
               svg {
                 width: 9px;
@@ -223,39 +223,39 @@
           .ant-col-18,
           .ant-col-22 {
             span {
-              font-size: 10px;
+              color: #707177;
               font-weight: normal;
-              font-stretch: normal;
+              font-size: 10px;
               font-style: normal;
+              font-stretch: normal;
               line-height: normal;
               letter-spacing: normal;
-              color: #707177;
             }
           }
           .ant-col-4 {
             span {
-              font-size: 11px;
+              color: #707177;
               font-weight: normal;
-              font-stretch: normal;
+              font-size: 11px;
               font-style: normal;
+              font-stretch: normal;
               line-height: normal;
               letter-spacing: normal;
-              color: #707177;
             }
           }
         }
         .ant-btn {
-          margin-top: 8px;
-          background-color: #ffa100;
-          color: #fff;
-          border-radius: 25px;
           height: 42px;
-          padding: 13px 24px;
-          line-height: 0.5715;
-          border-color: #ffa100;
-          font-size: 14px;
-          font-weight: 500;
+          margin-top: 8px;
           margin-bottom: 2rem;
+          padding: 13px 24px;
+          color: #fff;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 0.5715;
+          background-color: #ffa100;
+          border-color: #ffa100;
+          border-radius: 25px;
           &:focus {
             border-color: #ffa100;
           }
@@ -265,25 +265,25 @@
         }
       }
       .title {
-        font-weight: 700;
         display: block;
-        font-size: 14px;
+        color: #161c29;
+        font-weight: 700;
         font-weight: 500;
-        font-stretch: normal;
+        font-size: 14px;
         font-style: normal;
+        font-stretch: normal;
         line-height: normal;
         letter-spacing: normal;
-        color: #161c29;
       }
       .helper {
-        font-size: 10px;
+        margin-bottom: 16px;
+        color: #707177;
         font-weight: normal;
-        font-stretch: normal;
+        font-size: 10px;
         font-style: normal;
+        font-stretch: normal;
         line-height: normal;
         letter-spacing: normal;
-        color: #707177;
-        margin-bottom: 16px;
       }
     }
   }
@@ -293,24 +293,24 @@
   .line {
     width: 100%;
     height: 1px;
-    background-color: #dbe1e4;
     margin: auto;
     margin-bottom: 32px;
+    background-color: #dbe1e4;
   }
   .anotherBody {
     margin-top: 24px;
     margin-bottom: 32px;
     .text {
-      font-size: 13px;
+      color: #707177;
       font-weight: normal;
-      font-stretch: normal;
+      font-size: 13px;
       font-style: normal;
+      font-stretch: normal;
       line-height: 1.77;
       letter-spacing: normal;
-      color: #707177;
       .specificText {
-        font-weight: 500;
         color: #ffa100;
+        font-weight: 500;
       }
     }
 
@@ -318,13 +318,13 @@
       margin-top: 24px;
       padding: 0;
       .buttonText {
-        font-size: 13px;
+        color: #2c6df9;
         font-weight: 500;
-        font-stretch: normal;
+        font-size: 13px;
         font-style: normal;
+        font-stretch: normal;
         line-height: normal;
         letter-spacing: 0.12px;
-        color: #2c6df9;
         text-decoration: underline;
       }
     }

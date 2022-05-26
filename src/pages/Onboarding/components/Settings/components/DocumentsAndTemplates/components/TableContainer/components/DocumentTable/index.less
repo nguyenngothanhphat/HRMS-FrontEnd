@@ -16,8 +16,8 @@
   padding: 24px;
   // padding-bottom: 0;
   background-color: #ffffff;
-  border-radius: 8px;
   border: none;
+  border-radius: 8px;
 
   table {
     // border-bottom: 1px solid @border-color;
@@ -28,16 +28,16 @@
     align-items: center;
 
     span {
-      cursor: pointer;
-      text-align: left;
-      white-space: nowrap;
-      overflow: hidden;
       margin: 0;
-      letter-spacing: 0.12px;
+      overflow: hidden;
       color: @blue;
       font-weight: 500;
+      letter-spacing: 0.12px;
+      white-space: nowrap;
+      text-align: left;
       // margin-right: 10px;
       text-transform: capitalize;
+      cursor: pointer;
 
       svg {
         transform: rotate(90deg);
@@ -55,15 +55,14 @@
   }
 
   .new {
-    color: @orange;
-    font-size: 11px;
-    font-weight: 500;
-    margin-left: 8px;
-    text-transform: capitalize;
-    font-family: 'Roboto';
     display: inline-block;
-    background-color: @new-background;
+    margin-left: 8px;
     padding: 0 8px;
+    color: @orange;
+    font-weight: 500;
+    font-size: 11px;
+    text-transform: capitalize;
+    background-color: @new-background;
   }
 
   svg {
@@ -89,21 +88,21 @@
         // color: @red !important;
       }
       svg {
-        transform: initial !important;
         color: @blue !important;
+        transform: initial !important;
       }
     }
 
     td.ant-table-cell {
       width: 84px;
       height: 15px;
-      font-size: 13px;
+      color: #464646;
       font-weight: normal;
-      font-stretch: normal;
+      font-size: 13px;
       font-style: normal;
+      font-stretch: normal;
       line-height: normal;
       letter-spacing: 0.12px;
-      color: #464646;
     }
     .ant-table-tbody {
       // tr:last-child td {
@@ -158,12 +157,12 @@
       align-items: center;
 
       button {
-        font-size: 13px !important;
-        border: none !important;
-        padding: 0 !important;
-        background-color: transparent !important;
-        box-shadow: none !important;
         height: 20px;
+        padding: 0 !important;
+        font-size: 13px !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
       }
     }
 
@@ -182,8 +181,8 @@
       margin-right: 10px;
     }
     span {
-      font-weight: 700;
       color: #2c6df9;
+      font-weight: 700;
     }
   }
   .actionsButton {
@@ -191,8 +190,8 @@
     align-items: center;
     cursor: pointer;
     &:hover {
-      transition: 0.3s;
       opacity: 0.9;
+      transition: 0.3s;
     }
   }
 }

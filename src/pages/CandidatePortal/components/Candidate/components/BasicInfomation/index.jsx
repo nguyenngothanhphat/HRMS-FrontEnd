@@ -10,6 +10,7 @@ import Address from './components/Address';
 import BasicInfo from './components/BasicInfo';
 import styles from './index.less';
 import { ADDRESS_VARIABLES } from '@/utils/candidatePortal';
+import { goToTop } from '@/utils/utils';
 
 const BasicInformation = (props) => {
   const [form] = Form.useForm();
@@ -54,6 +55,10 @@ const BasicInformation = (props) => {
 
   const { filledBasicInformation } = checkMandatory;
   const [isSameAddress, setIsSameAddress] = React.useState(false);
+
+  useEffect(() => {
+    goToTop();
+  }, []);
 
   useEffect(() => {
     if (
@@ -158,6 +163,7 @@ const BasicInformation = (props) => {
     if (isSameAddress) {
       onChangeAddress(values);
     }
+    onFieldValidation(values);
   };
 
   const onFinish = async (values) => {
@@ -243,7 +249,7 @@ const BasicInformation = (props) => {
   useEffect(() => {
     const values = form.getFieldsValue();
     onFieldValidation(values);
-  }, [isSameAddress, JSON.stringify(form)]);
+  }, [isSameAddress]);
 
   const _renderBottomBar = () => {
     return (

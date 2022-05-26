@@ -1,6 +1,6 @@
 .root {
   position: relative;
-  font-family: 'Roboto';
+
   background-color: #f6f7f9;
 
   :global {
@@ -16,18 +16,18 @@
 
   .resultContent {
     margin: 24px;
-    background: #FFFFFF;
-    border: 1px solid #D6DCE0;
+    background: #ffffff;
+    border: 1px solid #d6dce0;
     border-radius: 8px;
     // min-height: 600px;
 
     .filter {
       display: flex;
-      justify-content: flex-end;
       align-items: center;
-      padding-right: 32px;
+      justify-content: flex-end;
       height: 54px;
-      border-bottom: 1px solid #D6DCE0;
+      padding-right: 32px;
+      border-bottom: 1px solid #d6dce0;
 
       img {
         width: 50px;
@@ -39,9 +39,9 @@
       margin: 20px 30px;
 
       .blueText {
-        color: #2C6DF9;
-        cursor: pointer;
+        color: #2c6df9;
         font-weight: 500;
+        cursor: pointer;
       }
 
       .document {
@@ -50,10 +50,10 @@
         cursor: pointer;
 
         .text {
+          padding-right: 20px;
+          color: #2c6df9;
           font-size: 13px;
           line-height: 15px;
-          padding-right: 20px;
-          color: #2C6DF9;
           text-decoration: underline;
         }
       }
@@ -117,37 +117,37 @@
     //advance search
     .headerFilter {
       padding: 32px 32px 24px 32px;
-      border-bottom: 1px solid #D6DCE0;
+      border-bottom: 1px solid #d6dce0;
 
       &__title {
+        color: #161c29;
+        font-weight: bold;
         font-size: 16px;
         line-height: 19px;
-        font-weight: bold;
-        color: #161C29;
       }
 
       &__description {
+        color: #707177;
         font-size: 13px;
         line-height: 15px;
-        color: #707177;
       }
     }
 
     .headerFilter2 {
       padding: 32px 32px 24px 32px;
-      border-top: 1px solid #D6DCE0;
+      border-top: 1px solid #d6dce0;
 
       &__title {
+        color: #161c29;
+        font-weight: bold;
         font-size: 16px;
         line-height: 19px;
-        font-weight: bold;
-        color: #161C29;
       }
 
       &__description {
+        color: #707177;
         font-size: 13px;
         line-height: 15px;
-        color: #707177;
       }
     }
 
@@ -163,15 +163,14 @@
         // justify-content: space-between;
 
         :global {
-
           .ant-input,
           .ant-picker,
           .ant-select-selector {
-            height: 42px;
-            width: 320px;
-            background: #FFFFFF;
-            border: 1px solid #D6DCE4;
             box-sizing: border-box;
+            width: 320px;
+            height: 42px;
+            background: #ffffff;
+            border: 1px solid #d6dce4;
             border-radius: 5px;
           }
 
@@ -225,14 +224,13 @@
         // justify-content: space-between;
 
         :global {
-
           .ant-input,
           .ant-select-selector {
-            height: 42px;
-            width: 320px;
-            background: #FFFFFF;
-            border: 1px solid #D6DCE4;
             box-sizing: border-box;
+            width: 320px;
+            height: 42px;
+            background: #ffffff;
+            border: 1px solid #d6dce4;
             border-radius: 5px;
           }
 
@@ -280,16 +278,16 @@
         }
 
         &__title {
+          color: #161c29;
+          font-weight: bold;
           font-size: 16px;
           line-height: 19px;
-          font-weight: bold;
-          color: #161C29;
         }
 
         &__description {
+          color: #707177;
           font-size: 13px;
           line-height: 15px;
-          color: #707177;
         }
       }
     }
@@ -301,27 +299,26 @@
     justify-content: flex-end;
     margin: 24px;
     padding: 16px 60px;
-    background: #FFFFFF;
-    border: 1px solid #D6DCE0;
-    border-radius: 8px;
     font-size: 14px;
+    background: #ffffff;
+    border: 1px solid #d6dce0;
+    border-radius: 8px;
 
     .btnReset {
-      border: none;
       height: 40px;
-      color: #FFA100;
+      color: #ffa100;
+      border: none;
     }
 
     .btnSubmit {
-      height: 40px;
-      background: #FFA100;
-      border: 1px solid #FFA100;
       box-sizing: border-box;
+      height: 40px;
+      color: #ffffff;
+      background: #ffa100;
+      border: 1px solid #ffa100;
       border-radius: 25px;
-      color: #FFFFFF;
     }
   }
-
 }
 
 .popupImg {

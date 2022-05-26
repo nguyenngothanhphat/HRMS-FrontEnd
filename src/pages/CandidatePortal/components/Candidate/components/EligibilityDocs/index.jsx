@@ -78,11 +78,7 @@ const EligibilityDocs = (props) => {
 
   const [validated, setValidated] = useState(false);
 
-  const processData = async () => {};
-
   useEffect(() => {
-    goToTop();
-    processData();
     if (![NEW_PROCESS_STATUS.PROFILE_VERIFICATION].includes(processStatus)) {
       setIsSentEmail(true);
     }
@@ -247,7 +243,6 @@ const EligibilityDocs = (props) => {
   };
 
   const _renderBottomBar = () => {
-    if (isSentEmail) return null;
     const isVerifiedProfile = isVerifiedBasicInfo && isVerifiedJobDetail;
     const submitButton = (
       <Button

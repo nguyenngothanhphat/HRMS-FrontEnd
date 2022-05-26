@@ -111,7 +111,7 @@ class ApplicationStatus extends PureComponent {
       },
       {
         name: 'Joining Date',
-        value: dateOfJoining ? moment(dateOfJoining).format('DD.MM.YY') : '-',
+        value: dateOfJoining ? moment(dateOfJoining).format('MM/DD/YYYY') : '-',
       },
       {
         name: 'Candidate ID',

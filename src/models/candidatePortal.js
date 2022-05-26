@@ -372,7 +372,7 @@ const candidatePortal = {
     // pending tasks
     *refreshPendingTasks(_, { put, select }) {
       try {
-        const dateFormat = 'MM.DD.YY';
+        const dateFormat = 'MM/DD/YYYY';
         const tempPendingTasks = JSON.parse(JSON.stringify(pendingTaskDefault));
         const {
           // candidate = '',

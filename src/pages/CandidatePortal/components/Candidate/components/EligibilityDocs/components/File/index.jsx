@@ -2,7 +2,7 @@ import { Col, Row, Tooltip } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
 import DoneIcon from '@/assets/candidatePortal/doneSign.svg';
-import WarningGrayIcon from '@/assets/candidatePortal/warningGrayIcon.png';
+// import WarningGrayIcon from '@/assets/candidatePortal/warningGrayIcon.png';
 import WarningIcon from '@/assets/candidatePortal/warningIcon.svg';
 import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
 import { mapType } from '@/utils/newCandidateForm';
@@ -23,7 +23,7 @@ const File = (props) => {
     dispatch,
     item = {},
     type = '',
-    candidatePortal: { data = {}, data: { currentStep } = {} } = {},
+    candidatePortal: { data = {} } = {},
     onNotAvailableClick = () => {},
     onViewCommentClick = () => {},
     onViewDocumentClick = () => {},
@@ -92,22 +92,33 @@ const File = (props) => {
       </div>
     );
   };
-  const renderPendingVerification = () => {
-    return (
-      <div className={styles.pending}>
-        <span>Pending Verification</span>
-        <Tooltip title="The document is pending for verification by the HR" placement="right">
-          <img src={WarningGrayIcon} alt="" />
-        </Tooltip>
-      </div>
-    );
-  };
+  // const renderPendingVerification = () => {
+  //   return (
+  //     <div className={styles.pending}>
+  //       <span>Pending Verification</span>
+  //       <Tooltip title="The document is pending for verification by the HR" placement="right">
+  //         <img src={WarningGrayIcon} alt="" />
+  //       </Tooltip>
+  //     </div>
+  //   );
+  // };
 
   const renderUpload = () => {
     return (
       <div className={styles.upload}>
         <span>
           <UploadComponent getResponse={getResponse} item={item} />
+        </span>
+        <img src="data:," alt="" />
+      </div>
+    );
+  };
+
+  const renderModify = () => {
+    return (
+      <div className={styles.upload}>
+        <span>
+          <UploadComponent getResponse={getResponse} item={item} content="Modify" />
         </span>
         <img src="data:," alt="" />
       </div>
@@ -175,17 +186,17 @@ const File = (props) => {
   const renderFileStatus = () => {
     switch (item.status) {
       case VERIFYING:
-        if (currentStep > 2) {
-          return (
-            <Row justify="end">
-              <Col span={24}>{renderPendingVerification()}</Col>
-            </Row>
-          );
-        }
+        // if (currentStep > 2) {
+        //   return (
+        //     <Row justify="end">
+        //       <Col span={24}>{renderPendingVerification()}</Col>
+        //     </Row>
+        //   );
+        // }
         return (
           <Row justify="end">
             <Col span={12}>{renderFile()}</Col>
-            <Col span={12}>{renderUpload()}</Col>
+            <Col span={12}>{renderModify()}</Col>
           </Row>
         );
 

@@ -13,7 +13,7 @@ class ApplicationStatus extends PureComponent {
         <div className={styles.content}>
           <span className={styles.status}>Onboarding</span>
           {/* <span className={styles.dateOfJoining}>
-            {dateOfJoining ? moment(dateOfJoining).format('DD.MM.YY') : '-'}
+            {dateOfJoining ? moment(dateOfJoining).format('MM/DD/YYYY') : '-'}
           </span> */}
         </div>
         <div className={styles.backgroundImage}>

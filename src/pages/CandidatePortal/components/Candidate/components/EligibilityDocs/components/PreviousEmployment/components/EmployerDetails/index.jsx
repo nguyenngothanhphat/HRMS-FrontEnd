@@ -88,7 +88,17 @@ const EmployerDetails = (props) => {
 
         <Row gutter={[16, 16]}>
           <Col span={12}>
-            <Form.Item label="Start Date" name="startDate" labelCol={{ span: 24 }}>
+            <Form.Item
+              label="Start Date"
+              name="startDate"
+              labelCol={{ span: 24 }}
+              rules={[
+                {
+                  required: true,
+                  message: 'Required field',
+                },
+              ]}
+            >
               <DatePicker
                 disabledDate={disabledStartDate}
                 placeholder="Start date"
@@ -99,7 +109,17 @@ const EmployerDetails = (props) => {
           </Col>
           {!isCurrentlyWorking && (
             <Col span={12}>
-              <Form.Item label="End Date" name="endDate" labelCol={{ span: 24 }}>
+              <Form.Item
+                label="End Date"
+                name="endDate"
+                labelCol={{ span: 24 }}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Required field',
+                  },
+                ]}
+              >
                 <DatePicker
                   disabledDate={disabledEndDate}
                   placeholder="End date"

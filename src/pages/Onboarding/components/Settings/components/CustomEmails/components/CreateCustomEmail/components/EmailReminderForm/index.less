@@ -1,10 +1,10 @@
 .EmailReminderForm {
-  font-family: 'Roboto';
-  border-radius: 5px;
-  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.22);
-  background-color: #ffffff;
   // padding: 24px;
   position: relative;
+  background-color: #ffffff;
+
+  border-radius: 5px;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.22);
 
   :global {
     .ql-mention-list-item {
@@ -17,22 +17,22 @@
       margin-bottom: 0;
     }
     .ant-btn-primary {
-      box-shadow: none;
-      text-shadow: none;
       width: 95px;
       height: 40px;
-      object-fit: contain;
-      border-radius: 25px;
-      border: solid 1px #ffa100;
-      background-color: #ffa100;
-      font-size: 14px;
-      font-weight: 500;
-      letter-spacing: 0.13px;
-      color: #ffffff;
       margin-left: 24px;
+      object-fit: contain;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.13px;
+      text-shadow: none;
+      background-color: #ffa100;
+      border: solid 1px #ffa100;
+      border-radius: 25px;
+      box-shadow: none;
       &:hover {
-        background-color: #ffa100;
         color: #ffffff;
+        background-color: #ffa100;
       }
     }
     .ant-btn-secondary {
@@ -42,12 +42,12 @@
       width: 94px;
       height: 40px;
       object-fit: contain;
-      border-radius: 25px;
-      border: solid 1px #ffa100;
-      font-size: 14px;
-      font-weight: 500;
-      letter-spacing: 0.13px;
       color: #ffa100;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.13px;
+      border: solid 1px #ffa100;
+      border-radius: 25px;
     }
 
     .ant-select-selector {
@@ -64,11 +64,11 @@
   }
 
   .label {
-    font-size: 14px;
+    color: #161c29;
     font-weight: 500;
+    font-size: 14px;
     line-height: 1.14;
     text-align: left;
-    color: #161c29;
   }
   .quill {
     height: 478px;
@@ -78,11 +78,11 @@
     padding: 0;
   }
   &_title {
+    padding: 24px;
+    color: #161c29;
     font-weight: bold;
     font-size: 16px;
     line-height: 19px;
-    color: #161c29;
-    padding: 24px;
     text-align: left;
     // position: relative;
   }
@@ -107,14 +107,14 @@
       :global {
         .ant-btn {
           height: 40px;
-          border-radius: 5px;
+          color: #2c6df9;
+          font-weight: 500;
+          font-size: 14px;
+          letter-spacing: 0.13px;
           background-color: white;
           border: none;
+          border-radius: 5px;
           box-shadow: none;
-          font-size: 14px;
-          font-weight: 500;
-          letter-spacing: 0.13px;
-          color: #2c6df9;
         }
       }
     }
@@ -124,15 +124,15 @@
       justify-content: flex-end;
     }
     .note {
-      height: 100%;
       display: flex;
       align-items: center;
+      height: 100%;
+      margin-top: 14px;
+      color: #707177;
       font-size: 13px;
       line-height: 1.15;
       letter-spacing: 0.12px;
       text-align: left;
-      color: #707177;
-      margin-top: 14px;
     }
 
     .onAddConditionBtn {
@@ -153,19 +153,19 @@
     }
     .ant-checkbox-wrapper {
       span {
+        color: #707177;
         font-size: 14px;
         line-height: 1.14;
         text-align: left;
-        color: #707177;
       }
     }
     .ant-form-item-label {
       label {
-        font-size: 14px;
+        color: #161c29;
         font-weight: 500;
+        font-size: 14px;
         line-height: 1.14;
         text-align: left;
-        color: #161c29;
       }
     }
     .ant-select .ant-select-single .ant-select-show-arrow {
@@ -174,18 +174,18 @@
 
     .ant-radio-wrapper {
       span {
+        color: #707177;
         font-size: 14px;
         line-height: 1.14;
         text-align: left;
-        color: #707177;
       }
     }
     .ant-radio-wrapper-checked {
       span {
+        color: #161c29;
         font-size: 14px;
         line-height: 1.14;
         text-align: left;
-        color: #161c29;
       }
     }
   }
