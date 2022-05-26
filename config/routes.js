@@ -241,7 +241,7 @@ const routes = [
             path: '/home/settings/:reId',
             hideInMenu: true,
             component: './HomePage/components/Settings',
-            authority: ['P_HOMEPAGE_SETTINGS_GEAR_VIEW'], // TEMPORARY VALUES, NEED TO BE CHANGED
+            // authority: ['P_HOMEPAGE_SETTINGS_GEAR_VIEW'], // TEMPORARY VALUES, NEED TO BE CHANGED
           },
           {
             path: '/dashboard',

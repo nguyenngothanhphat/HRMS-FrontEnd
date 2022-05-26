@@ -51,12 +51,14 @@ const AddPost = (props) => {
   // redux
   const {
     dispatch,
-    currentUser: { employee = {} } = {},
+    currentUser: { employee = {}, location: { _id: locationId = '' } = {} } = {},
     loadingAddPost = false,
     loadingEditPost = false,
+    companyLocationList = [],
   } = props;
 
   const [mode, setMode] = useState(selectedTab || TAB_IDS.ANNOUNCEMENTS);
+  const [location, setLocation] = useState([locationId]);
   const [formValues, setFormValues] = useState({});
   const [fileList, setFileList] = useState([]);
 
@@ -65,9 +67,14 @@ const AddPost = (props) => {
     setMode(val);
   };
 
+  const handleChangeLocation = (val) => {
+    setLocation(val);
+  };
+
   const onReset = () => {
     form.resetFields();
     setFormValues({});
+    setLocation([locationId]);
   };
 
   useEffect(() => {
@@ -75,10 +82,14 @@ const AddPost = (props) => {
   }, [mode]);
 
   useEffect(() => {
+    setLocation([locationId]);
+  }, [locationId]);
+
+  useEffect(() => {
     if (editing) {
       let tempFormValues = {};
+      const { attachments = [], location: locationProps = [] } = record;
       const fileListTemp = () => {
-        const { attachments = [] } = record;
         return attachments.map((x, i) => {
           return {
             uid: i,
@@ -90,11 +101,17 @@ const AddPost = (props) => {
           };
         });
       };
+      const locationTemp = () => {
+        return locationProps.map((x) => {
+          return x._id;
+        });
+      };
 
       switch (mode) {
         case TAB_IDS.ANNOUNCEMENTS: {
           tempFormValues = {
             postType: TAB_IDS.ANNOUNCEMENTS,
+            location: [...locationTemp()],
             descriptionA: record.description,
             uploadFilesA: [...fileListTemp()],
           };
@@ -129,6 +146,7 @@ const AddPost = (props) => {
           tempFormValues = {
             postType: TAB_IDS.POLL,
             questionP: record.pollDetail?.question,
+            location: [...locationTemp()],
             responsesP: [
               {
                 response: record.pollDetail?.response1,
@@ -206,6 +224,7 @@ const AddPost = (props) => {
           postType: TAB_IDS.ANNOUNCEMENTS,
           description: values.descriptionA,
           createdBy: employee?._id,
+          location,
         };
         break;
       }
@@ -244,6 +263,7 @@ const AddPost = (props) => {
         payload = {
           postType: TAB_IDS.POLL,
           createdBy: employee?._id,
+          location,
           pollDetail: {
             question: values.questionP,
             response1: values.responsesP[0]?.response,
@@ -277,6 +297,7 @@ const AddPost = (props) => {
           attachments,
           postType: TAB_IDS.ANNOUNCEMENTS,
           description: values.descriptionA,
+          location,
         };
         break;
       }
@@ -310,6 +331,7 @@ const AddPost = (props) => {
       case TAB_IDS.POLL:
         payload = {
           postType: TAB_IDS.POLL,
+          location,
           pollDetail: {
             question: values.questionP,
             response1: values.responsesP[0]?.response,
@@ -366,6 +388,7 @@ const AddPost = (props) => {
           initialValues={{
             postType: mode,
             responsesP: [{}, {}, {}],
+            location,
           }}
           onFinish={editing ? onEdit : onPost}
         >
@@ -374,6 +397,28 @@ const AddPost = (props) => {
               {TABS.map((x) => {
                 return (
                   <Select.Option value={x.id} key={x.id}>
+                    {x.name}
+                  </Select.Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="Location"
+            name="location"
+            rules={[{ required: true, message: 'Please select the location!' }]}
+            placeholder="Enter location"
+          >
+            <Select
+              mode="tags"
+              allowClear
+              showArrow
+              style={{ width: '100%' }}
+              onChange={handleChangeLocation}
+            >
+              {companyLocationList.map((x) => {
+                return (
+                  <Select.Option value={x._id} key={x._id}>
                     {x.name}
                   </Select.Option>
                 );
@@ -446,10 +491,18 @@ const AddPost = (props) => {
   );
 };
 
-export default connect(({ user: { currentUser = {}, permissions = {} } = {}, loading }) => ({
-  currentUser,
-  permissions,
-  loadingAddPost: loading.effects['homePage/addPostEffect'] || loading.effects['upload/uploadFile'],
-  loadingEditPost:
-    loading.effects['homePage/updatePostEffect'] || loading.effects['upload/uploadFile'],
-}))(AddPost);
+export default connect(
+  ({
+    user: { currentUser = {}, permissions = {} } = {},
+    loading,
+    location: { companyLocationList = [] } = {},
+  }) => ({
+    currentUser,
+    permissions,
+    companyLocationList,
+    loadingAddPost:
+      loading.effects['homePage/addPostEffect'] || loading.effects['upload/uploadFile'],
+    loadingEditPost:
+      loading.effects['homePage/updatePostEffect'] || loading.effects['upload/uploadFile'],
+  }),
+)(AddPost);
