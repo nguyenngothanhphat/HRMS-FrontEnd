@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import StepIcon from '@/assets/candidatePortal/nextStep.svg';
 import styles from './index.less';
+import EmptyComponent from '@/components/Empty';
 
 class NextSteps extends PureComponent {
   renderItem = (item, listLength, index) => {
@@ -27,6 +28,7 @@ class NextSteps extends PureComponent {
 
   render() {
     const data = this.getData();
+    if (data.length === 0) return <EmptyComponent />;
     return (
       <div className={styles.NextSteps}>
         {data.map((val, index) => this.renderItem(val, data.length, index))}
