@@ -155,13 +155,11 @@ const Projects = (props) => {
         dataIndex: 'tentativeEndDate',
         key: 'tentativeEndDate',
         align: 'center',
-        render: (tentativeEndDate = '') => {
+        render: (_, row) => {
+          const { tentativeEndDate = '', newEndDate = '' } = row;
+          const endDate = newEndDate || tentativeEndDate;
           return (
-            <span>
-              {tentativeEndDate
-                ? moment(tentativeEndDate).locale('en').format(DATE_FORMAT_LIST)
-                : '-'}
-            </span>
+            <span>{endDate ? moment(endDate).locale('en').format(DATE_FORMAT_LIST) : '-'}</span>
           );
         },
       },

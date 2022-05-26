@@ -129,6 +129,7 @@ const Summary = (props) => {
       tentativeEndDate, // origin
       billableHeadCount, // origin
       bufferHeadCount, // origin
+      newEndDate: tentativeEndDate,
     };
     if (newEndDate.value) {
       newPayload = {
