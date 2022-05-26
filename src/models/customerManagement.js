@@ -57,6 +57,8 @@ const customerManagement = {
       try {
         response = yield call(getCustomerFilterList, {
           ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;

@@ -66,7 +66,7 @@ class TableContainer extends PureComponent {
   onFilter = async (values) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'customerManagement/fetchCustomerList',
+      type: 'customerManagement/filterListCustomer',
       payload: {
         ...values,
       },
