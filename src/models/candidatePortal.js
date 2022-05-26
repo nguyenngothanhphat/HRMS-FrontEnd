@@ -108,7 +108,7 @@ July 06, 2021 6PM - 7PM (IST)`,
   },
 ];
 
-const checkDocumentStatus = (documents) => {
+const checkDocumentStatus = (documents = []) => {
   return documents.some(
     (x) =>
       x.status === DOCUMENT_TYPES.RESUBMIT_PENDING ||
@@ -116,7 +116,7 @@ const checkDocumentStatus = (documents) => {
   );
 };
 
-const checkDocumentStatusTypeE = (documents) => {
+const checkDocumentStatusTypeE = (documents = []) => {
   return documents.some((x) => checkDocumentStatus(x.data));
 };
 
