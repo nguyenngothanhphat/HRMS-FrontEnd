@@ -154,10 +154,13 @@ const WeeklyTable = (props) => {
           });
         },
         sorter: (a, b) => {
-          return a.projects.length>0 && b.projects.length>0 ? a.projects[0].localeCompare(b.projects[0]) : false;
+          return a.projects.length > 0 && b.projects.length > 0
+            ? a.projects[0].localeCompare(b.projects[0])
+            : false;
         },
         sortDirections: ['ascend', 'descend'],
       },
+
       {
         title: 'Working Days',
         dataIndex: 'userSpentInDay',
