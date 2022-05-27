@@ -10,15 +10,15 @@ const { Option } = Select;
 @connect(
   ({
     employeeProfile: {
-      idCurrentEmployee = '',
-      tenantCurrentEmployee = '',
+      employee = '',
+
       originData: { dependentDetails = [] } = {},
     } = {},
     loading,
   }) => ({
     dependentDetails,
-    idCurrentEmployee,
-    tenantCurrentEmployee,
+    employee,
+
     loadingUpdate: loading.effects['employeeProfile/updateEmployeeDependentDetails'],
     loadingAdd: loading.effects['employeeProfile/addDependentsOfEmployee'],
     loadingRemove: loading.effects['employeeProfile/removeEmployeeDependentDetails'],
@@ -74,25 +74,17 @@ class ModalAddDependant extends Component {
   handleSave = (values) => {
     const { onClose = () => {} } = this.props;
     let payload = {};
-    const {
-      dispatch,
-      dependentDetails = [],
-      data = [],
-      idCurrentEmployee = '',
-      tenantCurrentEmployee = '',
-    } = this.props;
+    const { dispatch, dependentDetails = [], data = [], employee = '' } = this.props;
     let type = 'employeeProfile/addDependentsOfEmployee';
     if (data.length > 0) {
       payload.dependents = [...this.formatData(), values];
       payload.id = dependentDetails[0]._id;
-      payload.tenantId = tenantCurrentEmployee;
-      payload.employee = idCurrentEmployee;
+      payload.employee = employee;
       type = 'employeeProfile/updateEmployeeDependentDetails';
     } else {
       payload = {
-        employee: idCurrentEmployee,
+        employee,
         dependents: values,
-        tenantId: tenantCurrentEmployee,
       };
     }
     dispatch({

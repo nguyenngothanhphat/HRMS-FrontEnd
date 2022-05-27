@@ -7,10 +7,7 @@ import styles from './index.less';
 const HealthWellbeing = (props) => {
   const {
     dispatch,
-    employeeProfile: {
-      tenantCurrentEmployee = '',
-      originData: { benefitPlans = [], employmentData = {} } = {},
-    } = {},
+    employeeProfile: { originData: { benefitPlans = [], employmentData = {} } = {} } = {},
   } = props;
   const countryId = employmentData?.location?.headQuarterAddress?.country;
 
@@ -19,7 +16,6 @@ const HealthWellbeing = (props) => {
       dispatch({
         type: 'employeeProfile/getBenefitPlans',
         payload: {
-          tenantId: tenantCurrentEmployee,
           country: countryId,
         },
       });

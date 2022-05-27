@@ -21,7 +21,6 @@ const formItemLayout = {
       tempData: { generalData = {} } = {},
       listSkill = [],
       // listTitle = [],
-      tenantCurrentEmployee = '',
     } = {},
     user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} } = {} } = {},
   }) => ({
@@ -33,7 +32,6 @@ const formItemLayout = {
     listSkill,
     // listTitle,
     compensationData,
-    tenantCurrentEmployee,
   }),
 )
 class Edit extends PureComponent {
@@ -58,11 +56,11 @@ class Edit extends PureComponent {
       payload: { isModified },
     });
     if (changedValues.certification) {
-      this.checkCeritification(changedValues.certification);
+      this.checkCertification(changedValues.certification);
     }
   };
 
-  checkCeritification = (listCertification) => {
+  checkCertification = (listCertification) => {
     const listNoName = listCertification.filter((item) => !item.name);
     if (listNoName.length > 0) {
       this.setState({ notValid: true });
@@ -72,7 +70,7 @@ class Edit extends PureComponent {
   };
 
   processDataChanges = (newSkills) => {
-    const { generalData: generalDataTemp, tenantCurrentEmployee = '' } = this.props;
+    const { generalData: generalDataTemp } = this.props;
     const { newSkillList } = this.state;
     const listSkill = [];
     newSkills.forEach((item) => {
@@ -100,8 +98,7 @@ class Edit extends PureComponent {
       totalExp,
       qualification,
       certification,
-      // otherSkills: otherSkills instanceof Array ? otherSkills : [otherSkills],
-      tenantId: tenantCurrentEmployee,
+      // otherSkills: otherSkills instanceof Array ? otherSkills : [otherSkills]
     };
     return payloadChanges;
   };
@@ -124,20 +121,18 @@ class Edit extends PureComponent {
   };
 
   handleRemoveCertification = ({ _id: id }) => {
-    const { dispatch, tenantCurrentEmployee = '' } = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'employeeProfile/removeCertification',
       payload: {
-        tenantId: tenantCurrentEmployee,
         id,
       },
     });
   };
 
   handleUpdateCertification = (list) => {
-    const { dispatch, compensationData = {}, tenantCurrentEmployee = '' } = this.props;
+    const { dispatch, compensationData = {} } = this.props;
     const { employee = {}, company = {} } = compensationData;
-    const tenantId = tenantCurrentEmployee;
 
     list.forEach((element) => {
       if (element._id) {
@@ -147,7 +142,6 @@ class Edit extends PureComponent {
             name: element?.name,
             id: element?._id,
             urlFile: element?.urlFile,
-            tenantId,
           },
         });
       } else if (element.name || element.urlFile) {
@@ -158,7 +152,6 @@ class Edit extends PureComponent {
             urlFile: element?.urlFile,
             employee,
             company,
-            tenantId,
           },
         });
       }
@@ -208,14 +201,6 @@ class Edit extends PureComponent {
       key: 'openAcademic',
       isLinkedIn: check,
     });
-    // const listOtherSkill = payload.otherSkills.length > 0 ? payload.otherSkills[0] : '';
-    // const checkDuplication = listSkill.filter((e) => e.name.toUpperCase().replace(' ','') === listOtherSkill.toUpperCase().replace(' ', '')) || [];
-    // if(checkDuplication.length > 0) {
-    //   notification.error({
-    //     message: 'This skill is available on the skill list above, please select it on skills.',
-    //   });
-    //   return;
-    // }
   };
 
   render() {

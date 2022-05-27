@@ -11,7 +11,6 @@ import styles from './index.less';
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
       countryList = [],
-      tenantCurrentEmployee = '',
     } = {},
   }) => ({
     loadingGeneral: loading.effects['employeeProfile/updateGeneralInfo'],
@@ -19,7 +18,6 @@ import styles from './index.less';
     generalDataOrigin,
     generalData,
     countryList,
-    tenantCurrentEmployee,
   }),
 )
 class Edit extends PureComponent {
@@ -233,7 +231,7 @@ class Edit extends PureComponent {
   };
 
   processDataChanges = () => {
-    const { generalData: generalDataTemp, tenantCurrentEmployee = '' } = this.props;
+    const { generalData: generalDataTemp } = this.props;
     const { currentAddress, residentAddress } = this.state;
 
     const {
@@ -255,7 +253,6 @@ class Edit extends PureComponent {
       nationality,
       residentAddress,
       currentAddress,
-      tenantId: tenantCurrentEmployee,
     };
     return payloadChanges;
   };
@@ -430,7 +427,7 @@ class Edit extends PureComponent {
                 },
               ]}
             >
-              <Input className={styles.inputForm} />
+              <Input className={styles.inputForm} placeholder="Enter the Personal Number" />
             </Form.Item>
             <Form.Item
               label="Personal Email"
@@ -442,7 +439,7 @@ class Edit extends PureComponent {
                 },
               ]}
             >
-              <Input className={styles.inputForm} />
+              <Input className={styles.inputForm} placeholder="Enter the Personal Email" />
             </Form.Item>
             <Form.Item label="Blood Group" name="Blood">
               <Select showArrow className={styles.selectForm}>
@@ -457,18 +454,23 @@ class Edit extends PureComponent {
               </Select>
             </Form.Item>
             <Form.Item label="Marital Status" name="maritalStatus">
-              <Select showArrow className={styles.selectForm}>
+              <Select
+                showArrow
+                className={styles.selectForm}
+                placeholder="Select the Marital Status"
+              >
                 <Option value="Single">Single</Option>
                 <Option value="Married">Married</Option>
                 <Option value="Rather not mention">Rather not mention</Option>
               </Select>
             </Form.Item>
             <Form.Item label="Nationality" name="nationality">
-              <Input className={styles.inputForm} />
+              <Input className={styles.inputForm} placeholder="Enter the Nationality" />
             </Form.Item>
             <div className={styles.addressTitle}>Permanent Address</div>
-            <Form.Item label="Address line 1" name="r_Addressline1">
+            <Form.Item label="Address Line 1" name="r_Addressline1">
               <Input
+                placeholder="Enter the Address Line 1"
                 className={styles.inputForm}
                 // eslint-disable-next-line camelcase
                 defaultValue={r_Addressline1}
@@ -481,8 +483,9 @@ class Edit extends PureComponent {
                 ]}
               />
             </Form.Item>
-            <Form.Item label="Address line 2" name="r_Addressline2">
+            <Form.Item label="Address Line 2" name="r_Addressline2">
               <Input
+                placeholder="Enter the Address Line 2"
                 className={styles.inputForm}
                 // eslint-disable-next-line camelcase
                 defaultValue={r_Addressline2}
@@ -491,6 +494,7 @@ class Edit extends PureComponent {
             </Form.Item>
             <Form.Item label="City name" name="r_City">
               <Input
+                placeholder="Enter the City"
                 // eslint-disable-next-line camelcase
                 defaultValue={r_City}
                 onChange={(e) => this.handleChangeAddress('r_city', e.target.value)}
@@ -502,6 +506,7 @@ class Edit extends PureComponent {
                 className={styles.selectForm}
                 // eslint-disable-next-line camelcase
                 defaultValue={r_countryName}
+                placeholder="Select the Country"
                 onChange={(value) => {
                   this.handleChangeAddress('r_countryName', value);
                 }}
@@ -533,26 +538,20 @@ class Edit extends PureComponent {
                 className={styles.selectForm}
                 // eslint-disable-next-line camelcase
                 defaultValue={r_state}
+                placeholder="Select the State"
                 onChange={(e) => this.handleChangeAddress('r_state', e)}
                 showSearch
+                loading={loadingStates}
                 filterOption={(input, option) =>
                   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
-                {loadingStates ? (
-                  <div className={styles.selectForm_loading}>
-                    <Spin size="large" />
-                  </div>
-                ) : (
-                  <>
-                    {reListStates.map((item, index) => {
-                      return (
-                        <Option key={`${index + 1}`} value={item}>
-                          {item}
-                        </Option>
-                      );
-                    })}
-                  </>
-                )}
+                {reListStates.map((item, index) => {
+                  return (
+                    <Option key={`${index + 1}`} value={item}>
+                      {item}
+                    </Option>
+                  );
+                })}
               </Select>
             </Form.Item>
 
@@ -561,6 +560,7 @@ class Edit extends PureComponent {
                 className={styles.selectForm}
                 // eslint-disable-next-line camelcase
                 defaultValue={r_zipCode}
+                placeholder="Enter the Zip/Postal Code"
                 onChange={(e) => this.handleChangeAddress('r_zipCode', e.target.value)}
               />
             </Form.Item>
@@ -573,6 +573,7 @@ class Edit extends PureComponent {
             <Form.Item label="Address line 1" name="c_Addressline1">
               <Input
                 className={styles.inputForm}
+                placeholder="Enter the Address Line 1"
                 // eslint-disable-next-line camelcase
                 defaultValue={c_Addressline1}
                 onChange={(e) => this.handleChangeAddress('c_Addressline1', e.target.value)}
@@ -581,6 +582,7 @@ class Edit extends PureComponent {
             <Form.Item label="Address line 2" name="c_Addressline2">
               <Input
                 className={styles.inputForm}
+                placeholder="Enter the Address Line 2"
                 // eslint-disable-next-line camelcase
                 defaultValue={c_Addressline2}
                 onChange={(e) => this.handleChangeAddress('c_Addressline2', e.target.value)}
@@ -588,6 +590,7 @@ class Edit extends PureComponent {
             </Form.Item>
             <Form.Item label="City name" name="c_City">
               <Input
+                placeholder="Enter the City"
                 // eslint-disable-next-line camelcase
                 defaultValue={c_City}
                 onChange={(e) => this.handleChangeAddress('c_city', e.target.value)}
@@ -601,6 +604,7 @@ class Edit extends PureComponent {
                 // eslint-disable-next-line camelcase
                 defaultValue={c_countryName}
                 onChange={(value) => this.handleChangeAddress('c_countryName', value)}
+                placeholder="Select the Country"
                 showSearch
                 filterOption={(input, option) =>
                   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -622,25 +626,19 @@ class Edit extends PureComponent {
                 // eslint-disable-next-line camelcase
                 defaultValue={c_state}
                 onChange={(value) => this.handleChangeAddress('c_state', value)}
+                placeholder="Select the State"
                 showSearch
+                loading={loadingStates}
                 filterOption={(input, option) =>
                   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
-                {loadingStates ? (
-                  <div className={styles.selectForm_loading}>
-                    <Spin size="large" />
-                  </div>
-                ) : (
-                  <>
-                    {curListStates.map((item, index) => {
-                      return (
-                        <Option key={`${index + 1}`} value={item}>
-                          {item}
-                        </Option>
-                      );
-                    })}
-                  </>
-                )}
+                {curListStates.map((item, index) => {
+                  return (
+                    <Option key={`${index + 1}`} value={item}>
+                      {item}
+                    </Option>
+                  );
+                })}
               </Select>
             </Form.Item>
 
@@ -649,6 +647,7 @@ class Edit extends PureComponent {
                 className={styles.selectForm}
                 // eslint-disable-next-line camelcase
                 defaultValue={c_zipCode}
+                placeholder="Enter the Zip/Postal Code"
                 onChange={(e) => this.handleChangeAddress('c_zipCode', e.target.value)}
               />
             </Form.Item>

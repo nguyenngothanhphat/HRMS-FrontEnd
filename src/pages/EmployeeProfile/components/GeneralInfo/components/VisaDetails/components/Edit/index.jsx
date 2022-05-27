@@ -12,11 +12,9 @@ import styles from './index.less';
     upload: { urlImage = '', visa0IDURL = '', visa1IDURL = '' },
     employeeProfile: {
       countryList,
-      idCurrentEmployee,
-      companyCurrentEmployee,
+      employee,
       originData: { visaData: visaDataOrigin = [] } = {},
       tempData: { generalData = {}, visaData = [], document = {} } = {},
-      tenantCurrentEmployee = '',
       documentCategories = [],
     } = {},
   }) => ({
@@ -31,9 +29,7 @@ import styles from './index.less';
     visa1IDURL,
 
     document,
-    idCurrentEmployee,
-    tenantCurrentEmployee,
-    companyCurrentEmployee,
+    employee,
 
     urlImage,
     documentCategories,
@@ -63,7 +59,7 @@ class Edit extends Component {
   }
 
   processDataChangesVisa = (item) => {
-    const { generalData, tenantCurrentEmployee = '' } = this.props;
+    const { generalData } = this.props;
     const { employee = '' } = generalData;
     const {
       _id: id,
@@ -85,20 +81,13 @@ class Edit extends Component {
       visaType,
       visaValidTill,
       visaEntryType,
-      tenantId: tenantCurrentEmployee,
     };
 
     return formVisa;
   };
 
   handleAddVisaAllField = (item, index) => {
-    const {
-      dispatch,
-      idCurrentEmployee,
-      companyCurrentEmployee = '',
-      tenantCurrentEmployee = '',
-      documentCategories = [],
-    } = this.props;
+    const { dispatch, employee, documentCategories = [] } = this.props;
     const { urlFile, document: documentVisa } = item;
     let getFile = '';
     if (urlFile) {
@@ -111,7 +100,6 @@ class Edit extends Component {
         id: documentVisa._id,
         attachment: getFile.id,
         key: `Visa_${index + 1}`,
-        tenantId: tenantCurrentEmployee,
         category: indentityCategory?._id,
       };
       dispatch({
@@ -125,9 +113,7 @@ class Edit extends Component {
           key: `Visa_${index + 1}`,
           attachment: getFile.id,
           category: indentityCategory?._id,
-          employee: idCurrentEmployee,
-          tenantId: tenantCurrentEmployee,
-          company: companyCurrentEmployee,
+          employee,
         },
       }).then((id) => this.handleAddVisa(id, index, item));
     }
@@ -146,7 +132,7 @@ class Edit extends Component {
   };
 
   processDataAddVisa = (id, item) => {
-    const { generalData, tenantCurrentEmployee = '' } = this.props;
+    const { generalData } = this.props;
     const { employee = '' } = generalData;
     const { visaNumber, visaIssuedCountry, visaIssuedOn, visaType, visaValidTill, visaEntryType } =
       item;
@@ -159,7 +145,6 @@ class Edit extends Component {
       visaType,
       visaValidTill,
       visaEntryType,
-      tenantId: tenantCurrentEmployee,
     };
     return formVisa;
   };

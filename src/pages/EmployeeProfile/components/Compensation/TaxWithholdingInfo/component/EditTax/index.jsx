@@ -35,7 +35,7 @@ const EditTax = (props) => {
     });
   };
   const processDataChangesHaveId = () => {
-    const { taxData: taxDataTemp, tenantCurrentEmployee = '' } = props;
+    const { taxData: taxDataTemp } = props;
     const {
       incomeTaxRule = '',
       panNum = '',
@@ -53,12 +53,11 @@ const EditTax = (props) => {
       maritalStatus,
       noOfDependents,
       residencyStatus,
-      tenantId: tenantCurrentEmployee,
     };
     return payloadChanges;
   };
   const processDataChangesNoId = () => {
-    const { taxData: taxDataTemp, idCurrentEmployee, tenantCurrentEmployee = '' } = props;
+    const { taxData: taxDataTemp, employee } = props;
     const {
       incomeTaxRule = '',
       panNum = '',
@@ -68,14 +67,13 @@ const EditTax = (props) => {
       residencyStatus = '',
     } = taxDataTemp[0];
     const payloadChanges = {
-      employee: idCurrentEmployee,
+      employee,
       incomeTaxRule,
       panNum,
       nationalId,
       maritalStatus,
       noOfDependents,
       residencyStatus,
-      tenantId: tenantCurrentEmployee,
     };
     return payloadChanges;
   };
@@ -278,20 +276,19 @@ export default connect(
   ({
     loading,
     employeeProfile: {
-      idCurrentEmployee = '',
+      employee = '',
       originData: {
         taxData: taxDataOrigin = {},
         employmentData: { location: locationProp = {} } = {},
       } = {},
       tempData: { taxData = {} } = {},
-      tenantCurrentEmployee = '',
     } = {},
   }) => ({
     loading: loading.effects['employeeProfile/fetchTax'],
-    idCurrentEmployee,
+    employee,
     taxDataOrigin,
     taxData,
-    tenantCurrentEmployee,
+
     locationProp,
   }),
 )(EditTax);

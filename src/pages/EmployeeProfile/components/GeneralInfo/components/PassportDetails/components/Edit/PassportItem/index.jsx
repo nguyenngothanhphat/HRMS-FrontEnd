@@ -1,13 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import { DatePicker, Form, Input, Select, Spin } from 'antd';
 import React, { Component } from 'react';
-import { Input, Form, DatePicker, Select, Spin } from 'antd';
 // import moment from 'moment';
-import { formatMessage, connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
-import removeIcon from '../assets/removeIcon.svg';
 import UploadImage from '../../UploadImage';
+import removeIcon from '../assets/removeIcon.svg';
 import s from '../index.less';
-import { MT_MAIN_COL_SPAN } from '@/utils/timeSheet';
 
 const { Option } = Select;
 
@@ -15,14 +14,10 @@ const { Option } = Select;
   ({
     loading,
     upload: { loadingPassportTest = [] },
-    employeeProfile: {
-      tenantCurrentEmployee = '',
-      idCurrentEmployee,
-      tempData: { passportData = [] } = {},
-    } = {},
+    employeeProfile: { employee, tempData: { passportData = [] } = {} } = {},
   }) => ({
-    idCurrentEmployee,
-    tenantCurrentEmployee,
+    employee,
+
     passportData,
     loadingPassportTest,
     loading: loading.effects['upload/uploadFile'],
@@ -64,19 +59,13 @@ class PassportItem extends Component {
   };
 
   handleRemove = (id, index) => {
-    const {
-      passportData = [],
-      dispatch,
-      onRemove,
-      tenantCurrentEmployee,
-      idCurrentEmployee,
-    } = this.props;
+    const { passportData = [], dispatch, onRemove, employee } = this.props;
     const newPassportData = [...passportData];
     newPassportData.splice(index, 1);
 
     dispatch({
       type: 'employeeProfile/removePassPort',
-      payload: { tenantId: tenantCurrentEmployee, id, employee: idCurrentEmployee },
+      payload: { id, employee },
     });
     dispatch({
       type: 'employeeProfile/saveTemp',

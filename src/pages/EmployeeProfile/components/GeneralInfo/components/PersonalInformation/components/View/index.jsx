@@ -8,30 +8,25 @@ import styles from './index.less';
 
 @connect(
   ({
-    employeeProfile: {
-      tempData: { generalData = {} } = {},
-      tenantCurrentEmployee = '',
-      idCurrentEmployee = '',
-    } = {},
+    employeeProfile: { tempData: { generalData = {} } = {}, employee = '' } = {},
     user: { currentUser = [], permissions = {} },
   }) => ({
     generalData,
-    tenantCurrentEmployee,
+
     currentUser,
     permissions,
-    idCurrentEmployee,
+    employee,
   }),
 )
 class View extends PureComponent {
   handleChangesPrivate = (e, label) => {
-    const { dispatch, generalData, tenantCurrentEmployee = '' } = this.props;
+    const { dispatch, generalData } = this.props;
     if (label === 'Personal Number') {
       dispatch({
         type: 'employeeProfile/setPrivate',
         payload: {
           id: generalData._id,
           isShowPersonalNumber: e.target.value,
-          tenantId: tenantCurrentEmployee,
         },
       });
     }
@@ -41,7 +36,6 @@ class View extends PureComponent {
         payload: {
           id: generalData._id,
           isShowPersonalEmail: e.target.value,
-          tenantId: tenantCurrentEmployee,
         },
       });
     }
@@ -55,7 +49,6 @@ class View extends PureComponent {
     isShowPersonalNumber,
     isShowPersonalEmail,
   ) => {
-    const blank = '_blank';
     if (label === 'Personal Number') {
       if (isShowPersonalNumber || permissions.viewPersonalNumber !== -1 || profileOwner) {
         return value;
@@ -94,7 +87,7 @@ class View extends PureComponent {
       permissions = {},
       profileOwner = false,
       currentUser: { employee: { _id: idEmployee = '' } = {} || {} } = {},
-      idCurrentEmployee = '',
+      employee = '',
     } = this.props;
     const { isShowPersonalNumber, isShowPersonalEmail } = generalData;
 
@@ -117,7 +110,7 @@ class View extends PureComponent {
       } = {},
     } = dataAPI;
 
-    const checkVisible = idCurrentEmployee === idEmployee || permissions.editPersonalInfo !== -1;
+    const checkVisible = employee === idEmployee || permissions.editPersonalInfo !== -1;
 
     const dummyData = [
       { label: 'Personal Number', value: dataAPI.personalNumber },
