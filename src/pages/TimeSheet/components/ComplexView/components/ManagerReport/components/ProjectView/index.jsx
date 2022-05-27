@@ -78,14 +78,11 @@ const ProjectView = (props) => {
   const projectAdminView = permissions.viewReportProjectAdminViewTimesheet === 1;
 
   const fetchProjectList = () => {
-    if (projectViewDefault) {
+    if (projectAdminView) {
       dispatch({
         type: 'timeSheet/fetchProjectListEffect',
-        payload: {
-          departmentName,
-          userId,
-        },
       });
+      return;
     }
     if (projectLocationView) {
       dispatch({
@@ -94,10 +91,15 @@ const ProjectView = (props) => {
           departmentName,
         },
       });
+      return;
     }
-    if (projectAdminView) {
+    if (projectViewDefault) {
       dispatch({
         type: 'timeSheet/fetchProjectListEffect',
+        payload: {
+          departmentName,
+          userId,
+        },
       });
     }
   };

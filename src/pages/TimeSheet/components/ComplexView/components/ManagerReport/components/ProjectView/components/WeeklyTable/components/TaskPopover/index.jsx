@@ -1,9 +1,9 @@
-import { Avatar, Col, Popover, Row, Tooltip } from 'antd';
+import { Col, Popover, Row } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import CloseX from '@/assets/dashboard/closeX.svg';
 import { convertMsToTime } from '@/utils/timeSheet';
+import CloseX from '@/assets/dashboard/closeX.svg';
 import styles from './index.less';
 
 const TaskPopover = (props) => {
@@ -88,7 +88,7 @@ const TaskPopover = (props) => {
         placement={placement}
         content={() => renderPopup()}
         title={null}
-        trigger="hover"
+        trigger="click"
         visible={showPopover}
         overlayClassName={styles.TaskPopover}
         onVisibleChange={() => {
