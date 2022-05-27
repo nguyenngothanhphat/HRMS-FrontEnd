@@ -108,8 +108,7 @@ const HomePage = (props) => {
           </Col>
         </Row>
       </Spin>
-      {/* {viewSettingHomePage !== -1 && renderSettingIcon()} */}
-      {renderSettingIcon()}
+      {viewSettingHomePage !== -1 && renderSettingIcon()}
     </div>
   );
 };
