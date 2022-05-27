@@ -356,7 +356,13 @@ class Edit extends PureComponent {
         c_zipCode: '',
       };
       this.setState({
-        currentAddress: {},
+        currentAddress: {
+          addressLine1: '',
+          addressLine2: '',
+          state: '',
+          zipCode: '',
+          city: '',
+        },
       });
     } else {
       this.setState({
