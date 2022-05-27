@@ -266,12 +266,8 @@ const employee = {
       {
         payload: {
           company = [],
-          department = [],
-          location = [],
-          employeeType = [],
-          name = '',
-          title = [],
-          skill = [],
+          status,
+          filter,
         } = {},
       },
       { call },
@@ -279,14 +275,10 @@ const employee = {
       try {
         const hide = message.loading('Exporting data...', 0);
         const response = yield call(getListExportEmployees, {
-          status: ['ACTIVE', 'INACTIVE'],
+          tenantId: getCurrentTenant(),
           company,
-          department,
-          location,
-          employeeType,
-          name,
-          title,
-          skill,
+          status,
+          filter,
         });
         hide();
         return response;
