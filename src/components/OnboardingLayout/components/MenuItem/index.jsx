@@ -5,7 +5,7 @@ const MenuItem = (props) => {
   const { name = '', component = '', quantity = 1, selectedId = 1, id = 0, link = '' } = props;
   const { handleClick } = props;
 
-  const className = id === 2 || id === 10 ? styles.divider : '';
+  const className = id === 2 || id === 11 ? styles.divider : '';
   return (
     <div className={`${styles.menuWrapper} ${className}`}>
       <p

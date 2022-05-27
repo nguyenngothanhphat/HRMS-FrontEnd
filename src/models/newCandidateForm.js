@@ -31,6 +31,8 @@ import {
   getReporteesList,
   getDocumentSettingList,
   getListBenefit,
+  getListReferences,
+  sendNoReferences,
 } from '@/services/newCandidateForm';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
@@ -1635,6 +1637,41 @@ const newCandidateForm = {
         yield put({ type: 'saveTemp', payload: { benefits } });
         yield put({ type: 'saveOrigin', payload: { benefits } });
         return benefits;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *sendNoReferenceEffect({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(sendNoReferences, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            processStatus: NEW_PROCESS_STATUS.REFERENCE_VERIFICATION,
+          },
+        });       
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },    
+    *fetchListReferences({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getListReferences, {
+          tenantId: getCurrentTenant(),
+          candidateId: payload.candidateId,
+        });
+        const { statusCode, data: references = {} } = response;
+        if (statusCode !== 200) throw response;       
+        yield put({ type: 'saveOrigin', payload: { references } });
+        return references;
       } catch (errors) {
         dialog(errors);
         return {};

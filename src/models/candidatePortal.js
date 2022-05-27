@@ -1,4 +1,6 @@
-import { history } from 'umi';
+import {
+  history
+} from 'umi';
 import moment from 'moment';
 import {
   addAttachmentService,
@@ -11,13 +13,20 @@ import {
   updateByCandidate,
   getCountryList,
   getStateListByCountry,
+  addReference,
 } from '@/services/candidatePortal';
-import { dialog } from '@/utils/utils';
-import { CANDIDATE_TASK_LINK, CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import {
+  dialog
+} from '@/utils/utils';
+import {
+  CANDIDATE_TASK_LINK,
+  CANDIDATE_TASK_STATUS
+} from '@/utils/candidatePortal';
+import {
+  NEW_PROCESS_STATUS
+} from '@/utils/onboarding';
 
-const pendingTaskDefault = [
-  {
+const pendingTaskDefault = [{
     id: CANDIDATE_TASK_LINK.REVIEW_PROFILE,
     name: 'Review Profile',
     dueDate: '',
@@ -29,6 +38,13 @@ const pendingTaskDefault = [
     name: 'Upload Documents',
     dueDate: '',
     link: CANDIDATE_TASK_LINK.UPLOAD_DOCUMENTS,
+    status: CANDIDATE_TASK_STATUS.UPCOMING,
+  },
+  {
+    id: CANDIDATE_TASK_LINK.REFERENCES,
+    name: 'References',
+    dueDate: '',
+    link: CANDIDATE_TASK_LINK.REFERENCES,
     status: CANDIDATE_TASK_STATUS.UPCOMING,
   },
   {
@@ -47,8 +63,7 @@ const pendingTaskDefault = [
   },
 ];
 
-const steps = [
-  {
+const steps = [{
     content: `Once documents are uploaded, you will have a formal induction to start off.`,
   },
   {
@@ -65,8 +80,7 @@ const steps = [
   },
 ];
 
-const events = [
-  {
+const events = [{
     content: `HR Induction 4PM @ Thursday July 05, 2021
 4PM - 5PM (IST)`,
   },
@@ -194,7 +208,12 @@ const candidatePortal = {
     upcomingEvents: events,
   },
   effects: {
-    *fetchCandidateById({ payload }, { call, put }) {
+    * fetchCandidateById({
+      payload
+    }, {
+      call,
+      put
+    }) {
       let response = {};
       const checkMandatory = {
         filledBasicInformation: true,
@@ -205,7 +224,10 @@ const candidatePortal = {
       };
       try {
         response = yield call(getById, payload);
-        const { data, statusCode } = response;
+        const {
+          data,
+          statusCode
+        } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
@@ -233,7 +255,9 @@ const candidatePortal = {
             candidate: data._id,
             ticketId: data.ticketID,
             salaryStructure: data.salaryStructure.settings,
-            checkMandatory: { ...checkMandatory },
+            checkMandatory: {
+              ...checkMandatory
+            },
           },
         });
       } catch (error) {
@@ -242,15 +266,25 @@ const candidatePortal = {
       return response;
     },
 
-    *fetchDocumentByCandidate({ payload }, { call, put }) {
+    * fetchDocumentByCandidate({
+      payload
+    }, {
+      call,
+      put
+    }) {
       let response = '';
       try {
         response = yield call(getDocumentByCandidate, payload);
-        const { data, statusCode } = response;
+        const {
+          data,
+          statusCode
+        } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
-          payload: { documentList: [...data] },
+          payload: {
+            documentList: [...data]
+          },
         });
         // if there are any resubmit documents, show resubmit tasks
         yield put({
@@ -262,13 +296,25 @@ const candidatePortal = {
       return response;
     },
 
-    *updateByCandidateEffect({ payload }, { call, select }) {
+    * updateByCandidateEffect({
+      payload
+    }, {
+      call,
+      select
+    }) {
       let response;
       try {
-        const { candidate } = yield select((state) => state.candidatePortal);
-        response = yield call(updateByCandidate, { ...payload, candidate });
+        const {
+          candidate
+        } = yield select((state) => state.candidatePortal);
+        response = yield call(updateByCandidate, {
+          ...payload,
+          candidate
+        });
 
-        const { statusCode } = response;
+        const {
+          statusCode
+        } = response;
         if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error);
@@ -276,28 +322,52 @@ const candidatePortal = {
       return response;
     },
 
-    *addAttachmentCandidate({ payload }, { call, put, select }) {
+    * addAttachmentCandidate({
+      payload
+    }, {
+      call,
+      put,
+      select
+    }) {
       let response = {};
       try {
-        const { candidate } = yield select((state) => state.candidatePortal);
+        const {
+          candidate
+        } = yield select((state) => state.candidatePortal);
 
-        response = yield call(addAttachmentService, { ...payload, candidate });
-        const { data, statusCode } = response;
+        response = yield call(addAttachmentService, {
+          ...payload,
+          candidate
+        });
+        const {
+          data,
+          statusCode
+        } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
-          payload: { attachments: data },
+          payload: {
+            attachments: data
+          },
         });
       } catch (error) {
         dialog(error);
       }
       return response;
     },
-    *fetchWorkHistory({ payload }, { call, put }) {
+    * fetchWorkHistory({
+      payload
+    }, {
+      call,
+      put
+    }) {
       let response = {};
       try {
         response = yield call(getWorkHistory, payload);
-        const { data, statusCode } = response;
+        const {
+          data,
+          statusCode
+        } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
@@ -310,11 +380,18 @@ const candidatePortal = {
       }
       return response;
     },
-    *updateWorkHistory({ payload }, { call, put }) {
+    * updateWorkHistory({
+      payload
+    }, {
+      call,
+      put
+    }) {
       let response = {};
       try {
         response = yield call(updateWorkHistory, payload);
-        const { statusCode } = response;
+        const {
+          statusCode
+        } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'fetchWorkHistory',
@@ -328,12 +405,24 @@ const candidatePortal = {
       }
       return response;
     },
-    *sendEmailByCandidate({ payload }, { call, select }) {
+    * sendEmailByCandidate({
+      payload
+    }, {
+      call,
+      select
+    }) {
       let response = {};
       try {
-        const { candidate } = yield select((state) => state.candidatePortal);
-        response = yield call(sendEmailByCandidateModel, { ...payload, candidate });
-        const { statusCode } = response;
+        const {
+          candidate
+        } = yield select((state) => state.candidatePortal);
+        response = yield call(sendEmailByCandidateModel, {
+          ...payload,
+          candidate
+        });
+        const {
+          statusCode
+        } = response;
         if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error);
@@ -341,11 +430,17 @@ const candidatePortal = {
       return response;
     },
 
-    *submitCandidateFinalOffer({ payload }, { call }) {
+    * submitCandidateFinalOffer({
+      payload
+    }, {
+      call
+    }) {
       let response = {};
       try {
         response = yield call(candidateFinalOffer, payload);
-        const { statusCode } = response;
+        const {
+          statusCode
+        } = response;
         if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error);
@@ -353,7 +448,7 @@ const candidatePortal = {
       return response;
     },
 
-    *refreshPage() {
+    * refreshPage() {
       try {
         history.push('/candidate-portal/dashboard');
         yield null;
@@ -363,7 +458,10 @@ const candidatePortal = {
     },
 
     // pending tasks
-    *refreshPendingTasks(_, { put, select }) {
+    * refreshPendingTasks(_, {
+      put,
+      select
+    }) {
       try {
         const dateFormat = 'MM.DD.YY';
         const tempPendingTasks = JSON.parse(JSON.stringify(pendingTaskDefault));
@@ -374,13 +472,16 @@ const candidatePortal = {
         } = yield select((state) => state.candidatePortal);
         const {
           processStatus = '',
-          expiryDate = '',
-          documentList = [],
-          isVerifiedJobDetail,
-          isVerifiedBasicInfo,
-          salaryStructure: { status: salaryStatus = '', settings: salarySettings } = {},
-          // isAcceptedJoiningDate,
-          sentDate = '',
+            expiryDate = '',
+            documentList = [],
+            isVerifiedJobDetail,
+            isVerifiedBasicInfo,
+            salaryStructure: {
+              status: salaryStatus = '',
+              settings: salarySettings
+            } = {},
+            // isAcceptedJoiningDate,
+            sentDate = '',
         } = data || {};
 
         const dueDate = sentDate ? moment(sentDate).add(5, 'days') : '-';
@@ -416,11 +517,16 @@ const candidatePortal = {
             }
             break;
 
+          case NEW_PROCESS_STATUS.REFERENCE_VERIFICATION: {
+            tempPendingTasks[2].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+            break;
+          }
+
           case NEW_PROCESS_STATUS.SALARY_NEGOTIATION:
             if (['IN-PROGRESS'].includes(salaryStatus) && salarySettings.length) {
               // salary structure
-              tempPendingTasks[2].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
-              tempPendingTasks[2].dueDate = dueDate;
+              tempPendingTasks[3].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+              tempPendingTasks[3].dueDate = dueDate;
             }
             break;
 
@@ -428,8 +534,8 @@ const candidatePortal = {
             // case NEW_PROCESS_STATUS.OFFER_ACCEPTED:
             // case NEW_PROCESS_STATUS.OFFER_REJECTED:
             // offer letter
-            tempPendingTasks[3].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
-            tempPendingTasks[3].dueDate = expiryDate ? moment(expiryDate).format(dateFormat) : '';
+            tempPendingTasks[4].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+            tempPendingTasks[4].dueDate = expiryDate ? moment(expiryDate).format(dateFormat) : '';
             break;
 
           default:
@@ -445,36 +551,80 @@ const candidatePortal = {
         dialog(error);
       }
     },
-    *fetchCountryList(_, { call, put }) {
+    * fetchCountryList(_, {
+      call,
+      put
+    }) {
       let response = {};
       try {
         response = yield call(getCountryList);
-        const { data, statusCode } = response;
+        const {
+          data,
+          statusCode
+        } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { countryList: data },
+          payload: {
+            countryList: data
+          },
         });
       } catch (error) {
         dialog(error);
       }
       return response;
     },
-    *fetchStateByCountry({ payload }, { call, put }) {
+    * fetchStateByCountry({
+      payload
+    }, {
+      call,
+      put
+    }) {
       let response = {};
       try {
         response = yield call(getStateListByCountry, payload);
-        const { data, statusCode } = response;
+        const {
+          data,
+          statusCode
+        } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { stateList: data },
+          payload: {
+            stateList: data
+          },
         });
       } catch (error) {
         dialog(error);
       }
       return response;
     },
+    *addReference({
+      payload
+    }, {
+      call,
+      put
+    }) {
+      let response = {};
+      try {
+        response = yield call(addReference, payload);
+        const {
+          data,
+          statusCode
+        } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            ...payload,
+            data,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    }
   },
   reducers: {
     save(state, action) {
@@ -484,7 +634,9 @@ const candidatePortal = {
       };
     },
     saveTemp(state, action) {
-      const { tempData } = state;
+      const {
+        tempData
+      } = state;
       return {
         ...state,
         tempData: {
@@ -494,7 +646,9 @@ const candidatePortal = {
       };
     },
     saveOrigin(state, action) {
-      const { data } = state;
+      const {
+        data
+      } = state;
       return {
         ...state,
         data: {
@@ -504,8 +658,12 @@ const candidatePortal = {
       };
     },
     saveAttachments(state, action) {
-      const { data } = state;
-      const { attachments } = data;
+      const {
+        data
+      } = state;
+      const {
+        attachments
+      } = data;
       return {
         ...state,
         data: {
@@ -515,7 +673,10 @@ const candidatePortal = {
       };
     },
     saveCurrentUser(state, action) {
-      return { ...state, currentUser: action.payload || {} };
+      return {
+        ...state,
+        currentUser: action.payload || {}
+      };
     },
 
     clearAll() {

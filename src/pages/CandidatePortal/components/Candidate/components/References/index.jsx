@@ -6,12 +6,39 @@ import NoteComponent from '../NoteComponent';
 import MessageBox from '../MessageBox';
 import ReferenceForm from './components/ReferenceForm';
 import AddIcon from '@/assets/add-symbols.svg';
+import { getCurrentTenant } from '@/utils/authority';
 
 const References = (props) => {
-  const { numberOfReferences = 3 } = props;
+  const {dispatch, numReferences = 4 ,processStatus='',candidate} = props;
   const [card, setCard] = useState([]);
 
-  const onFinish = () => {};
+  const objToArr=(value)=>{
+    const arr = []
+    Object.keys(value).forEach( i => {
+      const myArray = i.split("")
+      const number = Number (myArray.pop(0))
+      const name = i.split(number)[0]
+      if(!arr[number-1]) {
+        arr[number-1] = {}
+      }
+      arr[number-1][name] = value[i]
+    })
+    return arr
+  }
+
+  const onFinish = (value) => {
+    const arr= objToArr(value)
+    dispatch({
+      type: 'candidatePortal/addReference',
+      payload: {
+        candidateId: candidate,
+        tenantId: getCurrentTenant(),
+        references:arr,
+      },
+    });
+    history.push(`/candidate-portal/dashboard`);
+  };
+
 
   const _renderBottomBar = () => {
     // const handleDisabled = () => {
@@ -40,7 +67,10 @@ const References = (props) => {
                 <Col span={12}>
                   <Button
                     type="primary"
-                    onClick={onFinish}
+                    // onClick={onFinish}
+                    key='submit'
+                    htmlType='submit'
+                    form='references'
                     className={`${styles.bottomBar__button__primary}`}
                     // disabled={handleDisabled()}
                     // loading={loadingUpdateCandidate}
@@ -60,7 +90,7 @@ const References = (props) => {
     return (
       <div className={styles.cardTitle}>
         <p className={styles.title}>References</p>
-        <p className={styles.description}>Please provide upto 3 professional references</p>
+        <p className={styles.description}>Please provide upto {numReferences} professional references</p>
       </div>
     );
   };
@@ -83,7 +113,7 @@ const References = (props) => {
             name="references"
             initialValues={{}}
             // onValuesChange={onValuesChange}
-            // onFinish={onFinish}
+            onFinish={(value)=>onFinish(value)}
           >
             <Row gutter={[24, 24]}>
               <Col span={24}>
@@ -93,13 +123,13 @@ const References = (props) => {
                       return (
                         <>
                           <ReferenceForm index={index + 1} />
-                          {!(numberOfReferences - 1 === index) && (
+                          {!(numReferences - 1 === index) && (
                             <Divider className={styles.divider} />
                           )}
                         </>
                       );
                     })}
-                  {card.length < numberOfReferences && (
+                  {card.length < numReferences && (
                     <div className={card.length > 0 ? styles.addBtn__left : styles.addBtn__center}>
                       <Button
                         type="text"
@@ -118,7 +148,7 @@ const References = (props) => {
                 </Card>
               </Col>
 
-              {card.length === numberOfReferences && <Col span={24}>{_renderBottomBar()}</Col>}
+              {card.length === numReferences && <Col span={24}>{_renderBottomBar()}</Col>}
             </Row>
           </Form>
         </div>
@@ -135,4 +165,10 @@ const References = (props) => {
   );
 };
 
-export default connect(() => ({}))(References);
+export default connect((
+  {candidatePortal: {
+    data: { processStatus = '' ,numReferences} = {},
+    data = {},
+    candidate = '',
+  } = {},}
+) => ({data,candidate,processStatus,numReferences}))(References);

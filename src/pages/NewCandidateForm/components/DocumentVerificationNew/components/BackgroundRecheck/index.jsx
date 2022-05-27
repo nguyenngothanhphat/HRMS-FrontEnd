@@ -298,7 +298,7 @@ class BackgroundRecheck extends Component {
         currentStep: processStatus === NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION ? 3 : currentStep,
         processStatus:
           processStatus === NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION
-            ? NEW_PROCESS_STATUS.SALARY_NEGOTIATION
+            ? NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
             : processStatus,
       },
     }).then(({ statusCode }) => {
@@ -315,11 +315,11 @@ class BackgroundRecheck extends Component {
           payload: {
             processStatus:
               processStatus === NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION
-                ? NEW_PROCESS_STATUS.SALARY_NEGOTIATION
+                ? NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
                 : processStatus,
           },
         });
-        history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.SALARY_STRUCTURE}`);
+        history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.REFERENCES}`);
       }
     });
   };

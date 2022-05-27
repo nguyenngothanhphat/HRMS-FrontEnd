@@ -75,3 +75,10 @@ export async function getStateListByCountry(payload) {
     data: payload,
   });
 }
+
+export function addReference(payload) {
+  return request('/api/referencetenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}

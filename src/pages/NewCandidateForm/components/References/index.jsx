@@ -1,14 +1,53 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, Card, Button, Input, Divider } from 'antd';
 // import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
+import { ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NewNoteComponent';
 import styles from './index.less';
 import ReferenceForm from './components/ReferenceForm';
 
 const References = (props) => {
-  const { isFilled = false, cards = [] } = props;
+  const { data, dispatch } = props;
+  const { ticketID = '', _id: candidateId = '',references=null } = data;
+  const [numReferences, setNumReferences] = useState(3);
+  const [isFilled, setIsFilled] = useState(false);
+  const [send,setSend] = useState(false);
+
+  
+  useEffect(() => {
+    dispatch({
+      type: 'newCandidateForm/fetchListReferences',
+      payload: {
+        candidateId,
+      },
+    });
+  }, []);
+  
+  useEffect(() => {
+    if (references && references.length > 0) {
+      setNumReferences(references.length);
+      setIsFilled(true);
+    }
+  }, [references]);
+
+  const onClickPrev = () => {
+    history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.DOCUMENT_VERIFICATION}`);
+  };
+
+  const onClickNext = () => {
+    // eslint-disable-next-line no-unused-expressions
+    !isFilled
+      ? dispatch({
+          type: 'newCandidateForm/sendNoReferenceEffect',
+          payload: {
+            numReferences,
+            candidateId,
+          },
+        })&&setSend(true)
+      : history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.SALARY_STRUCTURE}`);
+  };
 
   const MentionContent = () => {
     return (
@@ -26,7 +65,12 @@ const References = (props) => {
               <Input
                 placeholder="No. of references"
                 className={styles.formInput}
-                defaultValue={3}
+                defaultValue={numReferences}
+                disabled={send}
+                onChange={(e) => {
+                  e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                  setNumReferences(e.target.value);
+                }}
               />
             </Form.Item>
           </Col>
@@ -54,7 +98,7 @@ const References = (props) => {
                 <Col span={12}>
                   <Button
                     type="secondary"
-                    // onClick={this.onClickPrev}
+                    onClick={onClickPrev}
                     className={styles.bottomBar__button__secondary}
                   >
                     Previous
@@ -63,11 +107,12 @@ const References = (props) => {
                 <Col span={12}>
                   <Button
                     type="primary"
-                    // onClick={this.onClickNext}
-                    // className={`${styles.bottomBar__button__primary} ${
-                    //   !filledJobDetail ? styles.bottomBar__button__disabled : ''
-                    // }`}
-                    className={styles.bottomBar__button__primary}
+                    onClick={onClickNext}
+                    className={`${styles.bottomBar__button__primary} ${
+                      send ? styles.bottomBar__button__disabled : ''
+                    }`}
+                    disabled={send}
+                    // className={styles.bottomBar__button__primary}
                   >
                     {isFilled ? 'Next' : 'Send'}
                   </Button>
@@ -101,10 +146,10 @@ const References = (props) => {
                   )}
                 >
                   {isFilled ? (
-                    cards.map((card, index) => (
+                    references.map((card, index) => (
                       <>
-                        <ReferenceForm index={index + 1} />
-                        {!(cards.length - 1 === index) && <Divider className={styles.divider} />}
+                        <ReferenceForm index={index + 1} data={card} />
+                        {!(references.length - 1 === index) && <Divider className={styles.divider} />}
                       </>
                     ))
                   ) : (
@@ -134,4 +179,4 @@ const References = (props) => {
   );
 };
 
-export default connect(() => ({}))(References);
+export default connect(({ newCandidateForm: { data } }) => ({ data }))(References);

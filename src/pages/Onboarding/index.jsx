@@ -50,6 +50,7 @@ class Onboarding extends PureComponent {
         withdrawnOffers = [],
         joinedOffers = [],
         currentStatus,
+        referenceVerification = [],
       } = {},
     } = this.props;
 
@@ -88,6 +89,9 @@ class Onboarding extends PureComponent {
         break;
       case NEW_PROCESS_STATUS.JOINED:
         data = joinedOffers;
+        break;
+      case NEW_PROCESS_STATUS.REFERENCE_VERIFICATION:
+        data = referenceVerification;
         break;
       default:
         // all

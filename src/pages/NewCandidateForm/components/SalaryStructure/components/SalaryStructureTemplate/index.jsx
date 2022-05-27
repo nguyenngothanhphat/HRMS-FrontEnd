@@ -69,7 +69,7 @@ const SalaryStructureTemplate = (props) => {
   }, []);
 
   const onClickPrev = () => {
-    history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.DOCUMENT_VERIFICATION}`);
+    history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.REFERENCES}`);
   };
 
   const onClickNext = () => {

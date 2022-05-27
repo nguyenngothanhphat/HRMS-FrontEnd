@@ -11,7 +11,7 @@ const ReferenceForm = (props) => {
   const fields = [
     {
       label: 'First Name',
-      name: `firstName_${index}`,
+      name: `firstName${index}`,
       span: {
         xs: 24,
         md: 12,
@@ -27,7 +27,7 @@ const ReferenceForm = (props) => {
     },
     {
       label: 'Last Name',
-      name: `lastName_${index}`,
+      name: `lastName${index}`,
       span: {
         xs: 24,
         md: 12,
@@ -43,7 +43,7 @@ const ReferenceForm = (props) => {
     },
     {
       label: 'Personal e-mail ID',
-      name: `personalEmail_${index}`,
+      name: `personEmail${index}`,
       span: {
         xs: 24,
         md: 12,
@@ -68,7 +68,7 @@ const ReferenceForm = (props) => {
     },
     {
       label: 'Phone Number',
-      name: `phoneNumber_${index}`,
+      name: `phoneNumber${index}`,
       span: {
         xs: 24,
         md: 12,
@@ -84,7 +84,7 @@ const ReferenceForm = (props) => {
     },
     {
       label: 'Company',
-      name: `company_${index}`,
+      name: `company${index}`,
       span: {
         xs: 24,
         md: 12,
@@ -100,7 +100,7 @@ const ReferenceForm = (props) => {
     },
     {
       label: 'Designation',
-      name: `designation_${index}`,
+      name: `designation${index}`,
       span: {
         xs: 24,
         md: 12,
@@ -140,7 +140,7 @@ const ReferenceForm = (props) => {
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               label="Relationship to Referee"
-              name={`Relationship_${index}`}
+              name={`relationship${index}`}
               rules={[{ required: true, message: 'Required field' }]}
             >
               <Select
@@ -163,7 +163,7 @@ const ReferenceForm = (props) => {
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
                 label="If other, please mention"
-                name={`Other_${index}`}
+                name={`other${index}`}
                 rules={[{ required: true, message: 'Required field' }]}
               >
                 <Input disabled={disabled} autoComplete="off" placeholder="Other" />

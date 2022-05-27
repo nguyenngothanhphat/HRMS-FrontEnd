@@ -243,3 +243,17 @@ export async function getListBenefit(payload) {
     data: payload,
   });
 }
+
+// references
+export function sendNoReferences(payload) {
+  return request('/api/referencetenant/number-of-references', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getListReferences(params) {
+  return request(`api/referencetenant/list-references?tenantId=${params.tenantId}&candidateId=${params.candidateId}`, {
+    method: 'GET',
+  });
+}
