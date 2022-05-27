@@ -14,23 +14,12 @@ import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import UserProfilePopover from '@/components/UserProfilePopover';
 
 const WeeklyTable = (props) => {
-  const {
-    startDate = '',
-    endDate = '',
-    loadingFetch = false,
-    data = [],
-    // tablePagination: {
-    //   page = 0,
-    // pageCount = 0,
-    //   pageSize = 0,
-    //   pageCount = 0,
-    //   rowCount = 0,
-    // } = {},
-    // onChangePage = () => {},
-  } = props;
+  const { startDate = '', endDate = '', loadingFetch = false, data = [] } = props;
+
   const [dateList, setDateList] = useState([]);
   const [pageSize, setPageSize] = useState(5);
   const [pageSelected, setPageSelected] = useState(1);
+
   // FUNCTIONS
   // get dates between two dates
   const enumerateDaysBetweenDates = (startDate1, endDate1) => {
@@ -58,50 +47,6 @@ const WeeklyTable = (props) => {
     const dateListTemp = enumerateDaysBetweenDates(moment(startDate), moment(endDate));
     setDateList(dateListTemp);
   }, [startDate, endDate]);
-
-  // RENDER UI
-  // BODY
-  // const getIcon = (key) => {
-  //   switch (key) {
-  //     case 'pending':
-  //       return PendingIcon;
-  //     case 'completed':
-  //       return CompleteIcon;
-  //     case 'rejected':
-  //       return FailIcon;
-
-  //     default:
-  //       return PendingIcon;
-  //   }
-  // };
-
-  // const getBackgroundColor = (key) => {
-  //   switch (key) {
-  //     case 'pending':
-  //       return '#FFFBF5';
-  //     case 'completed':
-  //       return '#F4FFFD';
-  //     case 'rejected':
-  //       return '#FFF4F4';
-
-  //     default:
-  //       return '#fff';
-  //   }
-  // };
-
-  // const getTitleColor = (key) => {
-  //   switch (key) {
-  //     case 'pending':
-  //       return '#FFA100;';
-  //     case 'completed':
-  //       return '#00C598';
-  //     case 'rejected':
-  //       return '#F44E21';
-
-  //     default:
-  //       return '#000';
-  //   }
-  // };
 
   const renderHoliday = (holidayName = 'Public Holiday') => {
     return (
@@ -136,7 +81,11 @@ const WeeklyTable = (props) => {
   };
 
   const renderLeaveDays = () => {
-    return <div className={styles.leaveCell}>Leave</div>;
+    return (
+      <div className={styles.leaveCell} style={{ fontWeight: 500 }}>
+        Leave
+      </div>
+    );
   };
 
   const columns = () => {
@@ -151,17 +100,10 @@ const WeeklyTable = (props) => {
           const { projectName = '', dailyList = [] } = row;
           const value = dailyList.find((d) => isTheSameDay(d.date, date));
           const getCellValue = () => {
-            // FOR HOLIDAY & LEAVE REQUEST
-            // // if this date has a leave request
             if (value?.isHoliday) {
               return renderHoliday();
             }
 
-            // if (date === '05/21/2022') {
-            //   return renderHoliday();
-            // }
-
-            // if this date is holiday
             if (value?.isMorning && value?.isAfternoon) {
               return renderLeaveDays(date);
             }
@@ -208,19 +150,6 @@ const WeeklyTable = (props) => {
             props: {},
           };
 
-          // FOR HOLIDAY & LEAVE REQUEST
-          // // pretend 10/27/2021 is a leave day
-          // if (index === 0 && date === '05/21/2022') {
-          //   obj.props.rowSpan = data.length;
-          // }
-          // for (let i = 1; i < data.length; i += 1) {
-          //   // These ones are merged into above cell
-          //   if (index === i && date === '05/21/2022') {
-          //     obj.props.rowSpan = 0;
-          //   }
-          // }
-
-          // // pretend 10/29/2021 is holiday day
           if (index === 0 && dailyList[0]?.isHoliday) {
             obj.props.rowSpan = data.length;
           }
