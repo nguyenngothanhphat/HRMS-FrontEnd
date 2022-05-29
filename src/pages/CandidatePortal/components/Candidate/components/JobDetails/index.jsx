@@ -12,6 +12,7 @@ import MessageBox from '../MessageBox';
 import FieldsComponent from './components/FieldsComponent';
 import Header from './components/Header';
 import styles from './index.less';
+import { goToTop } from '@/utils/utils';
 
 // Thứ tự Fields Work Location Job Title Department Reporting Manager
 @connect(
@@ -50,8 +51,7 @@ class JobDetails extends PureComponent {
   }
 
   componentDidMount() {
-    // window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
-
+    goToTop();
     const {
       data: { dateOfJoining = '' },
       dispatch,
@@ -254,28 +254,23 @@ class JobDetails extends PureComponent {
 
   _renderBottomBar = () => {
     const { checkMandatory, loadingUpdateCandidate = false } = this.props;
-    const { filledJobDetail, isCandidateAcceptDOJ } = checkMandatory;
+    const { isCandidateAcceptDOJ } = checkMandatory;
 
     const className = () => {
-      if (isCandidateAcceptDOJ) {
+      if (!this.handleDisabled() && isCandidateAcceptDOJ) {
         return '';
       }
-
-      if (filledJobDetail) return '';
       return styles.bottomBar__button__disabled;
     };
 
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
-          <Col span={8}>
-            {/* <div className={styles.bottomBar__status}>{this._renderStatus()}</div> */}
-          </Col>
+          <Col span={8} />
           <Col span={16}>
             <div className={styles.bottomBar__button}>
               <Button
                 type="secondary"
-                // onClick={this.onClickPrev}
                 onClick={this.onCancel}
                 className={styles.bottomBar__button__secondary}
               >
@@ -284,7 +279,7 @@ class JobDetails extends PureComponent {
               <Button
                 type="primary"
                 onClick={this.onClickSubmit}
-                className={`${styles.bottomBar__button__primary} ${className()}`}
+                className={[styles.bottomBar__button__primary, className()]}
                 disabled={this.handleDisabled()}
                 loading={loadingUpdateCandidate}
               >

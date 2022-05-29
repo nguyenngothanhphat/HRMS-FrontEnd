@@ -21,6 +21,7 @@ import SalaryStructure from './components/SalaryStructure';
 // 6: OfferLetter
 
 import styles from './index.less';
+import { goToTop } from '@/utils/utils';
 
 const Candidate = (props) => {
   const {
@@ -87,6 +88,7 @@ const Candidate = (props) => {
     if (!dispatch) {
       return;
     }
+    goToTop();
     dispatch({
       type: 'candidatePortal/fetchCandidateById',
       payload: {
@@ -144,6 +146,7 @@ const Candidate = (props) => {
     if (!dispatch) {
       return;
     }
+    goToTop();
 
     dispatch({
       type: 'candidatePortal/save',

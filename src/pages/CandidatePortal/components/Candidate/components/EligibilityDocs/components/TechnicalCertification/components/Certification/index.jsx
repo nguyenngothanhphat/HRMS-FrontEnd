@@ -76,7 +76,17 @@ const Certification = (props) => {
         }}
         onValuesChange={onValuesChange}
       >
-        <Form.Item label="Certification name" name="name" labelCol={{ span: 24 }}>
+        <Form.Item
+          label="Certification name"
+          name="name"
+          labelCol={{ span: 24 }}
+          rules={[
+            {
+              required: true,
+              message: 'Required field',
+            },
+          ]}
+        >
           <Input disabled={disabled} placeholder="Certification name" />
         </Form.Item>
 
@@ -86,7 +96,17 @@ const Certification = (props) => {
 
         <Row gutter={[16, 16]}>
           <Col span={12}>
-            <Form.Item label="Issued date" name="issuedDate" labelCol={{ span: 24 }}>
+            <Form.Item
+              label="Issued date"
+              name="issuedDate"
+              labelCol={{ span: 24 }}
+              rules={[
+                {
+                  required: true,
+                  message: 'Required field',
+                },
+              ]}
+            >
               <DatePicker
                 disabledDate={disabledStartDate}
                 placeholder="Issued date"
@@ -97,7 +117,17 @@ const Certification = (props) => {
           </Col>
           {!isNeverExpired && (
             <Col span={12}>
-              <Form.Item label="Validity date" name="expiryDate" labelCol={{ span: 24 }}>
+              <Form.Item
+                label="Validity date"
+                name="expiryDate"
+                labelCol={{ span: 24 }}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Required field',
+                  },
+                ]}
+              >
                 <DatePicker
                   disabledDate={disabledEndDate}
                   placeholder="Validity date"
