@@ -190,27 +190,13 @@ const RequestInformation = (props) => {
   };
 
   const checkIfWeekEnd = (date) => {
-    return moment(date).weekday() === 6 || moment(date).weekday() === 0;
+    return !workingDays.includes(moment(date).day());
   };
 
   // GET LIST OF DAYS FROM DAY A TO DAY B
-  const getDateLists = (startDate, endDate, selectedTypeProp) => {
+  const getDateLists = (startDate, endDate) => {
     let dates = [];
     const endDateTemp = moment(endDate).clone();
-
-    if ([C].includes(selectedTypeProp)) {
-      const now = moment(startDate).clone();
-      while (now.isSameOrBefore(moment(endDate), 'day')) {
-        if (checkIfWeekEnd(now)) {
-          const nextNow = moment(now).add(1, 'days');
-          // if "now" = saturday, nextNow = sunday AND endDate = sunday => add 2 days
-          if (checkIfWeekEnd(nextNow) && moment(endDate).weekday() === 6) {
-            endDateTemp.add(2, 'days');
-          } else endDateTemp.add(1, 'days');
-        }
-        now.add(1, 'days');
-      }
-    }
 
     if (startDate && endDate) {
       const now = moment(startDate);
@@ -239,11 +225,6 @@ const RequestInformation = (props) => {
       return foundType.total - foundType.taken;
     }
     return 0;
-  };
-
-  const getAutoToDate = (allowance) => {
-    if (allowance !== 0) return moment(durationFrom).add(allowance - 1, 'day');
-    return moment(durationFrom).add(allowance, 'day');
   };
 
   // GET TIME OFF TYPE BY ID
@@ -310,16 +291,8 @@ const RequestInformation = (props) => {
           };
         });
       }
-      if (selectedType !== C && selectedType !== D) {
-        result = result.filter(
-          (value) =>
-            moment(value.date).weekday() !== 6 &&
-            moment(value.date).weekday() !== 0 &&
-            Object.keys(value).length !== 0,
-        );
-      } else {
-        result = result.filter((value) => Object.keys(value).length !== 0);
-      }
+
+      result = result.filter((value) => Object.keys(value).length !== 0);
     }
     return result;
   };
@@ -694,13 +667,10 @@ const RequestInformation = (props) => {
   }, [JSON.stringify(invalidDatesProps)]);
 
   useEffect(() => {
-    fetchData();
-    return () => {
-      dispatch({
-        type: 'timeOff/clearViewingLeaveRequest',
-      });
-    };
-  }, [JSON.stringify(viewingLeaveRequest)]);
+    if (viewingId) {
+      fetchData();
+    }
+  }, [viewingId, JSON.stringify(workingDays)]);
 
   const generateSecondNotice = () => {
     switch (selectedType) {
@@ -731,23 +701,11 @@ const RequestInformation = (props) => {
   }, [selectedTypeName]);
 
   useEffect(() => {
-    if ([A, B, D, C].includes(selectedType) && durationTo) {
+    if (selectedType && durationTo) {
       const dateListsObj = getDateLists(durationFrom, durationTo, selectedType);
       setDateLists(dateListsObj.dates);
     }
   }, [durationFrom, durationTo, currentAllowanceState]);
-
-  // useEffect(() => {
-  //   if ([C].includes(selectedType) && durationFrom) {
-  //     const autoToDate = getAutoToDate(currentAllowanceState);
-  //     const dateListsObj = getDateLists(durationFrom, autoToDate, selectedType);
-  //     setDateLists(dateListsObj.dates);
-  //     setDurationTo(moment(dateListsObj.endDate));
-  //     form.setFieldsValue({
-  //       durationTo: moment(dateListsObj.endDate),
-  //     });
-  //   }
-  // }, [durationFrom, currentAllowanceState]);
 
   useEffect(() => {
     // only generate leave time lists when modified. If editing a ticket, no need to generate
@@ -787,6 +745,11 @@ const RequestInformation = (props) => {
         location: location?._id,
       },
     });
+    return () => {
+      dispatch({
+        type: 'timeOff/clearViewingLeaveRequest',
+      });
+    };
   }, []);
 
   useEffect(() => {
