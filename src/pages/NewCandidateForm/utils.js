@@ -6,4 +6,5 @@ export const Page = {
   Offer_Details: 'Offer Details',
   Benefits: 'Benefits',
   Salary_Structure: 'Salary Structure',
+  References: 'References',
 };

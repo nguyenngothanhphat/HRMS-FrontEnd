@@ -30,7 +30,8 @@ import {
   getReporteesList,
   getDocumentSettingList,
   getListBenefit,
-
+  getReferencesByCandidate,
+  sendNoReferences,
   // new document verification
   getDocumentLayoutByCountry,
 } from '@/services/newCandidateForm';
@@ -1462,7 +1463,7 @@ const newCandidateForm = {
       }
       return response;
     },
-    
+
     // Offer letter actions
     *extendOfferLetterEffect({ payload = {} }, { call, put }) {
       let response = {};
@@ -1546,6 +1547,44 @@ const newCandidateForm = {
         yield put({ type: 'saveTemp', payload: { benefits } });
         yield put({ type: 'saveOrigin', payload: { benefits } });
         return benefits;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *sendNoReferenceEffect({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(sendNoReferences, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            processStatus: NEW_PROCESS_STATUS.REFERENCE_VERIFICATION,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchListReferences({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getReferencesByCandidate, {
+          tenantId: getCurrentTenant(),
+          candidateId: payload.candidateId,
+        });
+        const { statusCode, data: references = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: { references, processStatus: NEW_PROCESS_STATUS.REFERENCE_VERIFICATION },
+        });
+        return references;
       } catch (errors) {
         dialog(errors);
         return {};

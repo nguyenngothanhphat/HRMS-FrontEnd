@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 // import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
 import AddDocumentModal from './components/AddDocumentModal';
 import DocumentItem from './components/DocumentItem';
 // import { Page } from '../../utils';
@@ -236,21 +236,17 @@ const OfferDetail = (props) => {
   };
 
   const onClickPrev = () => {
-    // dispatch({
-    //   type: 'newCandidateForm/save',
-    //   payload: {
-    //     currentStep: previousStep,
-    //   },
-    // });
     history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.BENEFITS}`);
   };
 
   const onNextTab = () => {
-    if (currentStep === 5) {
+    const nextStep = ONBOARDING_STEPS.OFFER_LETTER;
+
+    if (currentStep === ONBOARDING_STEPS.OFFER_DETAILS) {
       dispatch({
         type: 'newCandidateForm/save',
         payload: {
-          currentStep: 6,
+          currentStep: nextStep,
         },
       });
       const { candidate } = data;
@@ -258,7 +254,7 @@ const OfferDetail = (props) => {
         type: 'newCandidateForm/updateByHR',
         payload: {
           candidate,
-          currentStep: 6,
+          currentStep: nextStep,
           tenantId: getCurrentTenant(),
         },
       });
@@ -293,7 +289,7 @@ const OfferDetail = (props) => {
       type: 'newCandidateForm/updateByHR',
       payload: {
         candidate: _id,
-        currentStep: 6,
+        currentStep: 7,
         includeOffer: 3,
         tenantId: getCurrentTenant(),
         expiryDate: expiryDateProp || moment().add('15', 'days'),
@@ -309,7 +305,7 @@ const OfferDetail = (props) => {
           candidate: _id,
           includeOffer: 3,
         },
-        currentStep: 6,
+        currentStep: 7,
       },
     });
 
@@ -344,7 +340,7 @@ const OfferDetail = (props) => {
         type: 'newCandidateForm/updateByHR',
         payload: {
           candidate,
-          currentStep: 6,
+          currentStep: 7,
           offerLetter: templateID,
           tenantId: getCurrentTenant(),
           processStatus:
@@ -672,8 +668,6 @@ const OfferDetail = (props) => {
           </div>
 
           <div className={styles.rightCol}>
-            {/* <Template type="default" files={['Offer letter 1', 'Offer letter 2', 'Offer letter 3']} /> */}
-            {/* <Template files={['Offer letter 4', 'Offer letter 5', 'Offer letter 6']} /> */}
             <Template dispatch={dispatch} type="default" files={defaultTemplates} />
             <Template
               dispatch={dispatch}

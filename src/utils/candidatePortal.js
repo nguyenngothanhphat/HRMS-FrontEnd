@@ -3,6 +3,7 @@ export const CANDIDATE_TASK_LINK = {
   UPLOAD_DOCUMENTS: 'upload-documents',
   SALARY_NEGOTIATION: 'salary-negotiation',
   ACCEPT_OFFER: 'accept-offer',
+  REFERENCES: 'references',
 };
 export const PORTAL_TAB_NAME = {
   DASHBOARD: 'dashboard',
