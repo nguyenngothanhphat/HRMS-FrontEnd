@@ -1,51 +1,108 @@
+import { Button, Card, Col, Divider, Form, Input, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Form, Card, Button, Input, Divider, Skeleton } from 'antd';
 // import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import { connect, history } from 'umi';
-import { ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NewNoteComponent';
-import styles from './index.less';
 import ReferenceForm from './components/ReferenceForm';
+import styles from './index.less';
+import { goToTop } from '@/utils/utils';
 
 const References = (props) => {
-  const { data, dispatch, loadingFetchCandidate = false } = props;
-  const { ticketID = '', _id: candidateId = '', references = null } = data;
+  const [form] = Form.useForm();
+
+  const { data, dispatch } = props;
+  const {
+    ticketID = '',
+    _id: candidateId = '',
+    references = [],
+    processStatus = '',
+    isFilledReferences = false,
+    numReferences: numReferencesProp = 0,
+    currentStep = 0,
+  } = data;
   const [numReferences, setNumReferences] = useState(3);
-  const [isFilled, setIsFilled] = useState(false);
-  const [send, setSend] = useState(false);
+  const [isSent, setIsSent] = useState(false);
 
   useEffect(() => {
-    dispatch({
-      type: 'newCandidateForm/fetchListReferences',
-      payload: {
-        candidateId,
-      },
-    });
+    form.resetFields();
+  }, [JSON.stringify(references)]);
+
+  useEffect(() => {
+    goToTop();
+    if (isFilledReferences) {
+      dispatch({
+        type: 'newCandidateForm/fetchListReferences',
+        payload: {
+          candidateId,
+        },
+      });
+    }
   }, []);
 
   useEffect(() => {
-    if (references && references.length > 0) {
-      setNumReferences(references.length);
-      setIsFilled(true);
+    setNumReferences(numReferencesProp);
+  }, [numReferencesProp]);
+
+  useEffect(() => {
+    if (processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION) {
+      setIsSent(true);
     }
-  }, [references]);
+  }, [processStatus]);
 
   const onClickPrev = () => {
     history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.DOCUMENT_VERIFICATION}`);
   };
 
-  const onClickNext = () => {
-    // eslint-disable-next-line no-unused-expressions
-    !isFilled
-      ? dispatch({
-          type: 'newCandidateForm/sendNoReferenceEffect',
-          payload: {
-            numReferences,
-            candidateId,
-          },
-        }) && setSend(true)
-      : history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.SALARY_STRUCTURE}`);
+  const onClickNext = async () => {
+    const nextStep =
+      processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
+        ? ONBOARDING_STEPS.SALARY_STRUCTURE
+        : currentStep;
+
+    const nextStatus =
+      processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
+        ? NEW_PROCESS_STATUS.SALARY_NEGOTIATION
+        : processStatus;
+
+    if (!isFilledReferences) {
+      dispatch({
+        type: 'newCandidateForm/sendNoReferenceEffect',
+        payload: {
+          numReferences,
+          candidateId,
+        },
+      });
+      setIsSent(true);
+    } else {
+      await dispatch({
+        type: 'newCandidateForm/updateByHR',
+        payload: {
+          candidate: candidateId,
+          currentStep: nextStep,
+          processStatus: nextStatus,
+        },
+      }).then(({ statusCode }) => {
+        if (statusCode === 200) {
+          dispatch({
+            type: 'newCandidateForm/save',
+            payload: {
+              currentStep: nextStep,
+            },
+          });
+          dispatch({
+            type: 'newCandidateForm/saveTemp',
+            payload: {
+              processStatus: nextStatus,
+            },
+          });
+          history.push(
+            `/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.SALARY_STRUCTURE}`,
+          );
+        }
+      });
+    }
   };
 
   const MentionContent = () => {
@@ -65,7 +122,7 @@ const References = (props) => {
                 placeholder="No. of references"
                 className={styles.formInput}
                 defaultValue={numReferences}
-                disabled={send}
+                disabled={isSent}
                 onChange={(e) => {
                   e.target.value = e.target.value.replace(/[^0-9]/g, '');
                   setNumReferences(e.target.value);
@@ -85,6 +142,14 @@ const References = (props) => {
         <p className={styles.description}>{description}</p>
       </div>
     );
+  };
+
+  const getButtonText = () => {
+    if (!isFilledReferences) {
+      if (isSent) return 'Sent';
+      return 'Send';
+    }
+    return 'Next';
   };
 
   const _renderBottomBar = () => {
@@ -107,13 +172,13 @@ const References = (props) => {
                   <Button
                     type="primary"
                     onClick={onClickNext}
-                    className={`${styles.bottomBar__button__primary} ${
-                      send ? styles.bottomBar__button__disabled : ''
-                    }`}
-                    disabled={send}
-                    // className={styles.bottomBar__button__primary}
+                    className={[
+                      styles.bottomBar__button__primary,
+                      !isFilledReferences ? styles.bottomBar__button__disabled : '',
+                    ]}
+                    disabled={!isFilledReferences}
                   >
-                    {isFilled ? 'Next' : 'Send'}
+                    {getButtonText()}
                   </Button>
                 </Col>
               </Row>
@@ -131,10 +196,10 @@ const References = (props) => {
           <Form
             wrapperCol={{ span: 24 }}
             name="references"
-            initialValues={{}}
-            // form={form}
-            // onValuesChange={onValuesChange}
-            // onFinish={onFinish}
+            initialValues={{
+              references,
+            }}
+            form={form}
           >
             <Row gutter={[24, 24]}>
               <Col span={24}>
@@ -145,15 +210,25 @@ const References = (props) => {
                     'Candidate needs to fill in the reference details',
                   )}
                 >
-                  {isFilled ? (
-                    references.map((card, index) => (
-                      <>
-                        <ReferenceForm index={index + 1} data={card} />
-                        {!(references.length - 1 === index) && (
-                          <Divider className={styles.divider} />
+                  {isFilledReferences ? (
+                    <Row gutter={[24, 24]}>
+                      <Form.List name="references">
+                        {(fields) => (
+                          <>
+                            {fields.map(({ key, name }, index) => (
+                              <Col span={24} key={key}>
+                                <div>
+                                  <ReferenceForm name={name} index={index} />
+                                  {numReferences > index + 1 && (
+                                    <Divider className={styles.divider} />
+                                  )}
+                                </div>
+                              </Col>
+                            ))}
+                          </>
                         )}
-                      </>
-                    ))
+                      </Form.List>
+                    </Row>
                   ) : (
                     <MentionContent />
                   )}

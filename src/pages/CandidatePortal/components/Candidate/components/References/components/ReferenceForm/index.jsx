@@ -1,17 +1,16 @@
 import { Col, Form, Input, Row, Select } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-// import { Page } from '@/pages/NewCandidateForm/utils';
 import styles from './index.less';
 
 const ReferenceForm = (props) => {
-  const { disabled = false, index = 0 } = props;
+  const { disabled = false, index = 0, name = '' } = props;
   const [isOther, setIsOther] = useState(false);
 
   const fields = [
     {
       label: 'First Name',
-      name: `firstName${index}`,
+      name: [name, 'firstName'],
       span: {
         xs: 24,
         md: 12,
@@ -27,7 +26,7 @@ const ReferenceForm = (props) => {
     },
     {
       label: 'Last Name',
-      name: `lastName${index}`,
+      name: [name, 'lastName'],
       span: {
         xs: 24,
         md: 12,
@@ -43,7 +42,7 @@ const ReferenceForm = (props) => {
     },
     {
       label: 'Personal e-mail ID',
-      name: `personEmail${index}`,
+      name: [name, 'personEmail'],
       span: {
         xs: 24,
         md: 12,
@@ -68,7 +67,7 @@ const ReferenceForm = (props) => {
     },
     {
       label: 'Phone Number',
-      name: `phoneNumber${index}`,
+      name: [name, 'phoneNumber'],
       span: {
         xs: 24,
         md: 12,
@@ -84,7 +83,7 @@ const ReferenceForm = (props) => {
     },
     {
       label: 'Company',
-      name: `company${index}`,
+      name: [name, 'company'],
       span: {
         xs: 24,
         md: 12,
@@ -100,7 +99,7 @@ const ReferenceForm = (props) => {
     },
     {
       label: 'Designation',
-      name: `designation${index}`,
+      name: [name, 'designation'],
       span: {
         xs: 24,
         md: 12,
@@ -119,7 +118,7 @@ const ReferenceForm = (props) => {
   return (
     <div className={styles.ReferenceForm}>
       <div className={styles.form}>
-        <p className={styles.title}>Reference {index}</p>
+        <p className={styles.title}>Reference {index + 1}</p>
         <Row gutter={[24, 0]}>
           {fields.map((x) => (
             // eslint-disable-next-line react/jsx-props-no-spreading
@@ -140,7 +139,7 @@ const ReferenceForm = (props) => {
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               label="Relationship to Referee"
-              name={`relationship${index}`}
+              name={[name, 'relationship']}
               rules={[{ required: true, message: 'Required field' }]}
             >
               <Select
@@ -163,7 +162,7 @@ const ReferenceForm = (props) => {
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
                 label="If other, please mention"
-                name={`other${index}`}
+                name={[name, 'other']}
                 rules={[{ required: true, message: 'Required field' }]}
               >
                 <Input disabled={disabled} autoComplete="off" placeholder="Other" />

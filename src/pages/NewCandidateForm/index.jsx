@@ -36,9 +36,7 @@ class NewCandidateForm extends PureComponent {
       dispatch,
     } = this.props;
 
-    if (!tabName) {
-      history.push(`/onboarding/list/view/${reId}/${ONBOARDING_FORM_LINK.BASIC_INFORMATION}`);
-    } else if (action === 'view' || action === 'candidate-detail') {
+    if (action === 'view' || action === 'candidate-detail') {
       goToTop();
       // check action is add or review. If isReview fetch candidate by reID
       dispatch({

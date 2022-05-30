@@ -5,18 +5,18 @@ import { connect } from 'umi';
 import styles from './index.less';
 
 const ReferenceForm = (props) => {
-  const { disabled = true, index = 0 , data} = props;
+  const { disabled = true, index = 0, name = '' } = props;
   const [isOther, setIsOther] = useState(false);
 
   const fields = [
     {
       label: 'First Name',
-      name: `firstName_${index}`,
+      name: [name, 'firstName'],
       span: {
         xs: 24,
         md: 12,
       },
-      component: <Input disabled={disabled} autoComplete="off" placeholder={data.firstName} />,
+      component: <Input disabled={disabled} autoComplete="off" />,
       rules: [
         { required: true, message: 'Required field' },
         {
@@ -27,12 +27,12 @@ const ReferenceForm = (props) => {
     },
     {
       label: 'Last Name',
-      name: `lastName_${index}`,
+      name: [name, 'lastName'],
       span: {
         xs: 24,
         md: 12,
       },
-      component: <Input disabled={disabled} autoComplete="off" placeholder={data.lastName} />,
+      component: <Input disabled={disabled} autoComplete="off" />,
       rules: [
         { required: true, message: 'Required field' },
         {
@@ -43,12 +43,12 @@ const ReferenceForm = (props) => {
     },
     {
       label: 'Personal e-mail ID',
-      name: `personalEmail_${index}`,
+      name: [name, 'personEmail'],
       span: {
         xs: 24,
         md: 12,
       },
-      component: <Input disabled={disabled} autoComplete="off" placeholder={data.personEmail} />,
+      component: <Input disabled={disabled} autoComplete="off" />,
       rules: [
         { required: true, message: 'Required field' },
         {
@@ -68,12 +68,12 @@ const ReferenceForm = (props) => {
     },
     {
       label: 'Phone Number',
-      name: `phoneNumber_${index}`,
+      name: [name, 'phoneNumber'],
       span: {
         xs: 24,
         md: 12,
       },
-      component: <Input disabled={disabled} autoComplete="off" placeholder={data.phoneNumber} />,
+      component: <Input disabled={disabled} autoComplete="off" />,
       rules: [
         { required: true, message: 'Required field' },
         {
@@ -84,12 +84,12 @@ const ReferenceForm = (props) => {
     },
     {
       label: 'Company',
-      name: `company_${index}`,
+      name: [name, 'company'],
       span: {
         xs: 24,
         md: 12,
       },
-      component: <Input disabled={disabled} autoComplete="off" placeholder={data.company} />,
+      component: <Input disabled={disabled} autoComplete="off" />,
       rules: [
         { required: true, message: 'Required field' },
         {
@@ -100,12 +100,12 @@ const ReferenceForm = (props) => {
     },
     {
       label: 'Designation',
-      name: `designation_${index}`,
+      name: [name, 'designation'],
       span: {
         xs: 24,
         md: 12,
       },
-      component: <Input disabled={disabled} autoComplete="off" placeholder={data.designation} />,
+      component: <Input disabled={disabled} autoComplete="off" />,
       rules: [
         { required: true, message: 'Required field' },
         {
@@ -119,7 +119,7 @@ const ReferenceForm = (props) => {
   return (
     <div className={styles.ReferenceForm}>
       <div className={styles.form}>
-        <p className={styles.title}>Reference {index}</p>
+        <p className={styles.title}>Reference {index + 1}</p>
         <Row gutter={[24, 0]}>
           {fields.map((x) => (
             // eslint-disable-next-line react/jsx-props-no-spreading
@@ -140,14 +140,13 @@ const ReferenceForm = (props) => {
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               label="Relationship to Referee"
-              name={`relationship_${index}`}
+              name={[name, 'relationship']}
               rules={[{ required: true, message: 'Required field' }]}
             >
               <Select
                 disabled={disabled}
                 autoComplete="off"
-                placeholder={data.relationship}
-                onChange={(value) => (value === 'other' ? setIsOther(true) : setIsOther(false))}
+                onChange={(value) => setIsOther(value === 'other')}
               >
                 <Select.Option value="colleague">Colleague</Select.Option>
                 <Select.Option value="managedDirectly">Managed Directly</Select.Option>
@@ -163,10 +162,10 @@ const ReferenceForm = (props) => {
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
                 label="If other, please mention"
-                name={`other_${index}`}
+                name={[name, 'other']}
                 rules={[{ required: true, message: 'Required field' }]}
               >
-                <Input disabled={disabled} autoComplete="off" placeholder={data.other} />
+                <Input disabled={disabled} autoComplete="off" />
               </Form.Item>
             </Col>
           )}

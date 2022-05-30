@@ -8,7 +8,7 @@ import ModalDrawSignature from '@/components/ModalDrawSignature';
 import ModalGenerateSignature from '@/components/ModalGenerateSignature';
 import TextSignature from '@/components/TextSignature';
 import { getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
 // import { SendOutlined } from '@ant-design/icons';
 import ModalUpload from '../../../../components/ModalUpload';
 import NoteComponent from '../NoteComponent';
@@ -491,7 +491,7 @@ const PreviewOffer = (props) => {
         payload: {
           candidate: _id,
           hrSignature: id,
-          currentStep: 6,
+          currentStep: ONBOARDING_STEPS.OFFER_DETAILS,
           tenantId: getCurrentTenant(),
         },
       }).then(({ statusCode }) => {
@@ -506,7 +506,7 @@ const PreviewOffer = (props) => {
         payload: {
           candidate: _id,
           hrSignature: hrSignatureProp.id,
-          currentStep: 6,
+          currentStep: ONBOARDING_STEPS.OFFER_DETAILS,
           tenantId: getCurrentTenant(),
         },
       }).then(({ statusCode }) => {
@@ -610,9 +610,8 @@ const PreviewOffer = (props) => {
           type: 'newCandidateForm/updateByHR',
           payload: {
             candidate: _id,
-            currentStep: 6,
+            currentStep: ONBOARDING_STEPS.OFFER_DETAILS,
             offerLetter: newTemplateId,
-            tenantId: getCurrentTenant(),
           },
         });
       }
@@ -672,7 +671,6 @@ const PreviewOffer = (props) => {
           candidate: _id,
           hrManagerSignature: id,
           tenantId: getCurrentTenant(),
-          // currentStep: 6,
         },
       }).then(({ statusCode }) => {
         if (statusCode === 200) {
@@ -688,7 +686,6 @@ const PreviewOffer = (props) => {
           candidate: _id,
           hrManagerSignature: hrManagerSignatureProp.id,
           tenantId: getCurrentTenant(),
-          // currentStep: 6,
         },
       }).then(({ statusCode }) => {
         if (statusCode === 200) {

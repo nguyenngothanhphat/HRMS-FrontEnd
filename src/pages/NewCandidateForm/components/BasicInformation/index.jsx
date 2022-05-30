@@ -2,7 +2,7 @@ import { Button, Card, Col, Form, Row } from 'antd';
 import { debounce } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect, history } from 'umi';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
 import { getCurrentTenant } from '@/utils/authority';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NewNoteComponent';
@@ -148,6 +148,9 @@ const BasicInformation = (props) => {
   };
 
   const onFinish = (values) => {
+    const nextStep =
+      processStatus === NEW_PROCESS_STATUS.DRAFT ? ONBOARDING_STEPS.JOB_DETAILS : currentStep;
+
     dispatch({
       type: 'newCandidateForm/updateByHR',
       payload: {
@@ -158,7 +161,7 @@ const BasicInformation = (props) => {
         workEmail: values.workEmail,
         previousExperience: values.previousExperience,
         candidate: _id,
-        currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 1 : currentStep,
+        currentStep: nextStep,
         totalExperience: values.totalExperience,
         phoneNumber: values.phoneNumber,
         tenantId: getCurrentTenant(),
@@ -168,7 +171,7 @@ const BasicInformation = (props) => {
         dispatch({
           type: 'newCandidateForm/save',
           payload: {
-            currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 1 : currentStep,
+            currentStep: nextStep,
           },
         });
         history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.JOB_DETAILS}`);

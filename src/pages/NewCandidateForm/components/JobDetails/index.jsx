@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
 import { Page } from '../../utils';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NewNoteComponent';
@@ -150,6 +150,11 @@ const JobDetails = (props) => {
   };
 
   const onClickNext = async () => {
+    const nextStep =
+      processStatus === NEW_PROCESS_STATUS.DRAFT
+        ? ONBOARDING_STEPS.DOCUMENT_VERIFICATION
+        : currentStep;
+
     let payload = {
       grade,
       dateOfJoining,
@@ -160,7 +165,7 @@ const JobDetails = (props) => {
       title,
       reportingManager,
       candidate: _id,
-      currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 2 : currentStep,
+      currentStep: nextStep,
       tenantId: getCurrentTenant(),
     };
 
@@ -232,7 +237,7 @@ const JobDetails = (props) => {
         dispatch({
           type: 'newCandidateForm/save',
           payload: {
-            currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 2 : currentStep,
+            currentStep: nextStep,
           },
         });
 

@@ -5,7 +5,7 @@ import { connect, history } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
 import { Page } from '../../../../utils';
 import MessageBox from '../../../MessageBox';
 import NoteComponent from '../../../NewNoteComponent';
@@ -306,7 +306,10 @@ const DocumentVerification = (props) => {
           payload: {
             isMarkAsDone: type === 'generate-link',
             isSentEmail: type !== 'generate-link',
-            processStatus: currentStep === 2 ? PROFILE_VERIFICATION : processStatus,
+            processStatus:
+              currentStep === ONBOARDING_STEPS.DOCUMENT_VERIFICATION
+                ? PROFILE_VERIFICATION
+                : processStatus,
           },
         });
       }

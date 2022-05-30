@@ -1,54 +1,53 @@
-import { Button, Col, Form, Card, Row, Typography, Divider } from 'antd';
-import React, { useState } from 'react';
+import { Button, Card, Col, Divider, Form, Row, Typography } from 'antd';
+import React, { useEffect } from 'react';
 import { connect, formatMessage, history } from 'umi';
-import styles from './index.less';
-import NoteComponent from '../NoteComponent';
-import MessageBox from '../MessageBox';
-import ReferenceForm from './components/ReferenceForm';
-import AddIcon from '@/assets/add-symbols.svg';
 import { getCurrentTenant } from '@/utils/authority';
+import MessageBox from '../MessageBox';
+import NoteComponent from '../NoteComponent';
+import ReferenceForm from './components/ReferenceForm';
+import styles from './index.less';
 
 const References = (props) => {
-  const {dispatch, numReferences = 4 ,processStatus='',candidate} = props;
-  const [card, setCard] = useState([]);
+  const [form] = Form.useForm();
 
-  const objToArr=(value)=>{
-    const arr = []
-    Object.keys(value).forEach( i => {
-      const myArray = i.split("")
-      const number = Number (myArray.pop(0))
-      const name = i.split(number)[0]
-      if(!arr[number-1]) {
-        arr[number-1] = {}
+  const {
+    dispatch,
+    candidatePortal: { data: { numReferences } = {}, candidate = '' },
+  } = props;
+
+  useEffect(() => {
+    if (numReferences) {
+      const arr = [];
+      for (let i = 0; i < numReferences; i += 1) {
+        arr.push({});
       }
-      arr[number-1][name] = value[i]
-    })
-    return arr
-  }
+      form.setFieldsValue({
+        references: arr,
+      });
+    }
+  }, [numReferences]);
 
-  const onFinish = (value) => {
-    const arr= objToArr(value)
-    dispatch({
+  const onCancel = () => {
+    history.push('/candidate-portal/dashboard');
+  };
+
+  const onFinish = async (values) => {
+    const { references = [] } = values;
+
+    const res = await dispatch({
       type: 'candidatePortal/addReference',
       payload: {
         candidateId: candidate,
         tenantId: getCurrentTenant(),
-        references:arr,
+        references,
       },
     });
-    history.push(`/candidate-portal/dashboard`);
+    if (res.statusCode === 200) {
+      onCancel();
+    }
   };
 
-
   const _renderBottomBar = () => {
-    // const handleDisabled = () => {
-    //   return true;
-    // };
-
-    const onCancel = () => {
-      history.push('/candidate-portal/dashboard');
-    };
-
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
@@ -67,13 +66,10 @@ const References = (props) => {
                 <Col span={12}>
                   <Button
                     type="primary"
-                    // onClick={onFinish}
-                    key='submit'
-                    htmlType='submit'
-                    form='references'
+                    key="submit"
+                    htmlType="submit"
+                    form="references"
                     className={`${styles.bottomBar__button__primary}`}
-                    // disabled={handleDisabled()}
-                    // loading={loadingUpdateCandidate}
                   >
                     Submit
                   </Button>
@@ -90,7 +86,9 @@ const References = (props) => {
     return (
       <div className={styles.cardTitle}>
         <p className={styles.title}>References</p>
-        <p className={styles.description}>Please provide upto {numReferences} professional references</p>
+        <p className={styles.description}>
+          Please provide upto {numReferences} professional references
+        </p>
       </div>
     );
   };
@@ -105,55 +103,45 @@ const References = (props) => {
   };
 
   return (
-    <Row gutter={[24, 0]}>
-      <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+    <Row gutter={[24, 24]}>
+      <Col xs={24} sm={24} md={16} xl={16}>
         <div className={styles.references}>
           <Form
             wrapperCol={{ span: 24 }}
             name="references"
-            initialValues={{}}
-            // onValuesChange={onValuesChange}
-            onFinish={(value)=>onFinish(value)}
+            form={form}
+            onFinish={(value) => onFinish(value)}
           >
             <Row gutter={[24, 24]}>
               <Col span={24}>
                 <Card className={styles.card} title={<ReferencesHeader />}>
-                  {card.length > 0 &&
-                    card.map((item, index) => {
-                      return (
+                  <Row gutter={[24, 24]}>
+                    <Form.List name="references">
+                      {(fields) => (
                         <>
-                          <ReferenceForm index={index + 1} />
-                          {!(numReferences - 1 === index) && (
-                            <Divider className={styles.divider} />
-                          )}
+                          {fields.map(({ key, name }, index) => (
+                            <Col span={24} key={key}>
+                              <div>
+                                <ReferenceForm name={name} index={index} />
+                                {!(numReferences - 1 === index) && (
+                                  <Divider className={styles.divider} />
+                                )}
+                              </div>
+                            </Col>
+                          ))}
                         </>
-                      );
-                    })}
-                  {card.length < numReferences && (
-                    <div className={card.length > 0 ? styles.addBtn__left : styles.addBtn__center}>
-                      <Button
-                        type="text"
-                        className={styles.addBtn}
-                        onClick={() => setCard([...card, 'add references'])}
-                      >
-                        <img
-                          src={AddIcon}
-                          alt="Add icon"
-                          style={{ width: '16px', marginRight: '15px' }}
-                        />
-                        Add References
-                      </Button>
-                    </div>
-                  )}
+                      )}
+                    </Form.List>
+                  </Row>
                 </Card>
               </Col>
 
-              {card.length === numReferences && <Col span={24}>{_renderBottomBar()}</Col>}
+              <Col span={24}>{_renderBottomBar()}</Col>
             </Row>
           </Form>
         </div>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={8} xl={8}>
+      <Col xs={24} sm={24} md={8} xl={8}>
         <div className={styles.RightComponents}>
           <Row>
             <NoteComponent note={Note} />
@@ -165,10 +153,4 @@ const References = (props) => {
   );
 };
 
-export default connect((
-  {candidatePortal: {
-    data: { processStatus = '' ,numReferences} = {},
-    data = {},
-    candidate = '',
-  } = {},}
-) => ({data,candidate,processStatus,numReferences}))(References);
+export default connect(({ candidatePortal }) => ({ candidatePortal }))(References);

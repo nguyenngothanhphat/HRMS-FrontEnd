@@ -4,7 +4,7 @@ import { connect, history, formatMessage } from 'umi';
 // import PreviewOffer from '@/pages/NewCandidateForm/components/PreviewOffer/index';
 import { getCurrentTenant } from '@/utils/authority';
 // import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import { ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import { ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
 import Header from './components/Header';
 import GlobalEmployeeComponent from './components/GlobalEmployeeComponent';
 import LocalEmployeeComponent from './components/LocalEmployeeComponent';
@@ -335,21 +335,6 @@ class Benefits extends PureComponent {
     }
   };
 
-  // _renderStatus = () => {
-  //   // const { checkMandatory } = this.props;
-  //   // const { filledDocumentVerification } = checkMandatory;
-  //   return !filledDocumentVerification ? (
-  //     <div className={styles.normalText}>
-  //       <div className={styles.redText}>*</div>
-  //       {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
-  //     </div>
-  //   ) : (
-  //     <div className={styles.greenText}>
-  //       * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
-  //     </div>
-  //   );
-  // };
-
   onClickNext = async () => {
     const { hidePreviewOffer, dispatch, currentStep, data: { _id = '' } = {} } = this.props;
     if (hidePreviewOffer) {
@@ -358,12 +343,13 @@ class Benefits extends PureComponent {
       });
       return;
     }
+    const nextStep = ONBOARDING_STEPS.OFFER_DETAILS;
 
-    if (currentStep === 4) {
+    if (currentStep === ONBOARDING_STEPS.BENEFITS) {
       const res = await dispatch({
         type: 'newCandidateForm/updateByHR',
         payload: {
-          currentStep: 5,
+          currentStep: nextStep,
           candidate: _id,
           tenantId: getCurrentTenant(),
         },
@@ -372,7 +358,7 @@ class Benefits extends PureComponent {
         dispatch({
           type: 'newCandidateForm/save',
           payload: {
-            currentStep: 5,
+            currentStep: nextStep,
           },
         });
       }
@@ -385,13 +371,6 @@ class Benefits extends PureComponent {
   };
 
   onClickPrev = () => {
-    // const { dispatch, currentStep } = this.props;
-    // dispatch({
-    //   type: 'newCandidateForm/save',
-    //   payload: {
-    //     currentStep: currentStep - 1,
-    //   },
-    // });
     const { tempData = {} } = this.props;
     const { ticketID = '' } = tempData;
 
@@ -399,12 +378,9 @@ class Benefits extends PureComponent {
   };
 
   _renderBottomBar = () => {
-    // const { checkMandatory } = this.props;
-    // const { filledJobDetail } = checkMandatory;
-
     const { currentStep } = this.props;
 
-    const renderText = currentStep === 4 ? 'Next' : 'Update';
+    const renderText = currentStep === ONBOARDING_STEPS.SALARY_STRUCTURE ? 'Next' : 'Update';
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
@@ -424,9 +400,6 @@ class Benefits extends PureComponent {
                   <Button
                     type="primary"
                     onClick={this.onClickNext}
-                    // className={`${styles.bottomBar__button__primary} ${
-                    //   !filledJobDetail ? styles.bottomBar__button__disabled : ''
-                    // }`}
                     className={styles.bottomBar__button__primary}
                   >
                     {renderText}

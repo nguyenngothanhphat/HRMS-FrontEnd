@@ -1,5 +1,6 @@
 import moment from 'moment';
 import { history } from 'umi';
+import { notification } from 'antd';
 import {
   addAttachmentService,
   addReference,
@@ -354,6 +355,7 @@ const candidatePortal = {
           salaryStructure: { status: salaryStatus = '', settings: salarySettings } = {},
           // isAcceptedJoiningDate,
           sentDate = '',
+          isFilledReferences = false,
         } = data || {};
 
         const dueDate = sentDate ? moment(sentDate).add(5, 'days') : '-';
@@ -389,8 +391,10 @@ const candidatePortal = {
             break;
 
           case NEW_PROCESS_STATUS.REFERENCE_VERIFICATION: {
-            tempPendingTasks[2].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
-            tempPendingTasks[2].dueDate = dueDate;
+            if (!isFilledReferences) {
+              tempPendingTasks[2].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+              tempPendingTasks[2].dueDate = dueDate;
+            }
             break;
           }
 
@@ -461,8 +465,9 @@ const candidatePortal = {
       let response = {};
       try {
         response = yield call(addReference, payload);
-        const { data, statusCode } = response;
+        const { data, statusCode, message } = response;
         if (statusCode !== 200) throw response;
+        notification.success({ message });
         yield put({
           type: 'saveOrigin',
           payload: {
