@@ -94,7 +94,7 @@ const TimeoffPopover = (props) => {
           onClick={() => setShowPopover(!showPopover)}
         />
         <div className={styles.header}>
-          <span>Timeoff Details - {moment(date).locale('en').format('DD ddd MMMM')}</span>
+          <span>Timeoff Details - {moment(date).locale('en').format('MMM DD, YYYY')}</span>
         </div>
         <div className={styles.divider} />
         {renderTaskTable()}
