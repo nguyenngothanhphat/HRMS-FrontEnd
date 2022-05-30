@@ -14,6 +14,7 @@ import PreviewOffer from './components/PreviewOffer';
 import SalaryStructure from './components/SalaryStructure';
 import styles from './index.less';
 import { goToTop } from '@/utils/utils';
+import References from './components/References';
 
 @connect(({ newCandidateForm = {}, user, loading }) => ({
   newCandidateForm,
@@ -35,9 +36,7 @@ class NewCandidateForm extends PureComponent {
       dispatch,
     } = this.props;
 
-    if (!tabName) {
-      history.push(`/onboarding/list/view/${reId}/${ONBOARDING_FORM_LINK.BASIC_INFORMATION}`);
-    } else if (action === 'view' || action === 'candidate-detail') {
+    if (action === 'view' || action === 'candidate-detail') {
       goToTop();
       // check action is add or review. If isReview fetch candidate by reID
       dispatch({
@@ -154,6 +153,13 @@ class NewCandidateForm extends PureComponent {
       },
       {
         id: 4,
+        name: 'References',
+        key: 'references',
+        component: <References />,
+        link: ONBOARDING_FORM_LINK.REFERENCES,
+      },
+      {
+        id: 5,
         name: 'Salary Structure',
         key: 'salaryStructure',
         component: (
@@ -166,14 +172,14 @@ class NewCandidateForm extends PureComponent {
         link: ONBOARDING_FORM_LINK.SALARY_STRUCTURE,
       },
       {
-        id: 5,
+        id: 6,
         name: 'Benefits',
         key: 'benefits',
         component: <Benefit processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />,
         link: ONBOARDING_FORM_LINK.BENEFITS,
       },
       {
-        id: 6,
+        id: 7,
         name: 'Offer Details',
         key: 'offerDetails',
         component: (
@@ -182,7 +188,7 @@ class NewCandidateForm extends PureComponent {
         link: ONBOARDING_FORM_LINK.OFFER_DETAILS,
       },
       {
-        id: 7,
+        id: 8,
         name: 'Preview Offer Letter',
         key: 'offerLetter',
         component: <PreviewOffer />,
