@@ -7,6 +7,7 @@ import styles from './index.less';
 import Options from './components/Options';
 import EmptyComponent from '@/components/Empty';
 import { TAB_IDS } from '@/utils/homePage';
+import { getCurrentLocation } from '@/utils/authority';
 
 const Voting = (props) => {
   const { dispatch } = props;
@@ -16,7 +17,7 @@ const Voting = (props) => {
     homePage: { polls = [], selectedPollOption: { choiceSummary = [], choice = {} } = {} } = {},
     loadingFetchPollResult = '',
     loadingFetchPostList = false,
-    user: { currentUser: { employee = {}, location: { _id: locationId = '' } = {} } = {} } = {},
+    user: { currentUser: { employee = {} } = {} } = {},
   } = props;
 
   const [isVoted, setIsVoted] = useState(false);
@@ -32,6 +33,7 @@ const Voting = (props) => {
       type: 'homePage/fetchPollsEffect',
       payload: {
         postType: TAB_IDS.POLL,
+        location: [getCurrentLocation()],
       },
     });
   };
@@ -98,16 +100,10 @@ const Voting = (props) => {
       setLoading(true);
       const find = findActivePoll();
 
-      const { location = [] } = find || {};
-      let data;
-      if (location.some((x) => x._id === locationId)) {
-        data = find;
-      }
-      if (data) {
-        setActivePoll(data);
-
+      if (find) {
+        setActivePoll(find);
         // if expired
-        const isExpiredTemp = moment(data?.pollDetail?.endDate).isBefore(moment());
+        const isExpiredTemp = moment(find?.pollDetail?.endDate).isBefore(moment());
         if (isExpiredTemp) {
           setIsExpired(true);
         }
