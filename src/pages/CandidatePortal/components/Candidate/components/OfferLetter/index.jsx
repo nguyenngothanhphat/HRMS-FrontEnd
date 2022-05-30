@@ -271,7 +271,7 @@ const OfferLetter = (props) => {
           <span className={styles.title}>Offer Letter</span>
           <span className={styles.expiryDate}>
             {expiryDateProp
-              ? `Offer will Expires on ${moment(expiryDateProp).format('MM.DD.YY')}`
+              ? `Offer will Expires on ${moment(expiryDateProp).format('MM/DD/YYYY')}`
               : ''}
           </span>
         </div>

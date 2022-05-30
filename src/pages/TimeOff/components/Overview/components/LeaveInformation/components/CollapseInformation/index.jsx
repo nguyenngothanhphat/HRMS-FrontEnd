@@ -44,12 +44,7 @@ const CollapseInformation = (props) => {
         <div className={styles.leaveProgressBars}>
           {typeAList.map((type, index) => (
             <div key={`${index + 1}`}>
-              <LeaveProgressBar
-                color={colorsList[index % 3]}
-                title={type.name}
-                stepNumber={type.total - type.taken}
-                limitNumber={type.total}
-              />
+              <LeaveProgressBar color={colorsList[index % 3]} type={type} />
               {index + 1 < typeAList.length && <div className={styles.hr} />}
             </div>
           ))}
@@ -67,7 +62,7 @@ const CollapseInformation = (props) => {
         <Row className={styles.leaveProgressBars}>
           {specialLeaves.map((type, index) => (
             <Col key={`${index + 1}`} span={24}>
-              <SpecialLeaveBox color={colorsList1[index % 2]} title={type.name} days={type.total} />
+              <SpecialLeaveBox color={colorsList1[index % 2]} type={type} />
               {index + 1 !== specialLeaves.length && <div className={styles.hr} />}
             </Col>
           ))}

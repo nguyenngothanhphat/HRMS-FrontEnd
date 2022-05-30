@@ -230,10 +230,22 @@ const DirectoryComponent = (props) => {
   };
 
   const exportEmployees = async () => {
-    const getListExport = await dispatch({
+    const status = []
+    if (tabId === 'inActive') {
+      status.push('INACTIVE')
+    } else {
+      status.push('ACTIVE')
+    }
+    const getData = await dispatch({
       type: 'employee/exportEmployees',
-      payload: currentPayload,
+      payload: {
+        ...currentPayload,
+        status,
+        filter,
+      },
     });
+
+    const getListExport = getData.data || ''
 
     const downloadLink = document.createElement('a');
     const universalBOM = '\uFEFF';
@@ -241,7 +253,7 @@ const DirectoryComponent = (props) => {
     downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
       universalBOM + getListExport,
     )}`;
-    downloadLink.download = 'data.csv';
+    downloadLink.download = 'listEmployee.csv';
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
@@ -263,7 +275,7 @@ const DirectoryComponent = (props) => {
   };
   const handleFilterCounts = (values) => {
     const filteredObj = Object.entries(values).filter(
-      ([key, value]) => (value !== undefined && value?.length > 0) || typeof value === 'number',
+      ([value]) => (value !== undefined && value?.length > 0) || typeof value === 'number',
     );
     const newObj = Object.fromEntries(filteredObj);
     setApplied(Object.keys(newObj).length);
@@ -350,7 +362,7 @@ const DirectoryComponent = (props) => {
               clearFilter();
             }}
           >
-            {applied} applied
+            {applied} filters applied
           </Tag>
         )}
         {findIndexImport && (

@@ -1,38 +1,64 @@
 import { Skeleton } from 'antd';
-import React, { PureComponent } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import BackgroundRecheck from './components/BackgroundRecheck';
 import DocumentVerification from './components/DocumentVerification';
+import { goToTop } from '@/utils/utils';
 
-@connect(({ newCandidateForm: { data = {} } = {}, user, loading }) => ({
-  data,
-  user,
-  loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
-}))
-class EligibilityDocuments extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  render() {
-    const {
-      loadingFetchCandidate = false,
+const EligibilityDocuments = (props) => {
+  const {
+    dispatch,
+    loadingFetchCandidate = false,
+    newCandidateForm: {
       data: { processStatus = '' },
-    } = this.props;
+      tempData: { workLocation },
+      documentLayout = [],
+    } = {},
+    companyLocationList = [],
+  } = props;
 
-    if (loadingFetchCandidate) {
-      return <Skeleton />;
+  const getDocumentLayoutByCountry = () => {
+    let workLocation1 = workLocation;
+    if (typeof workLocation === 'string') {
+      workLocation1 = companyLocationList.find((w) => w._id === workLocation);
     }
-    if (
-      processStatus !== NEW_PROCESS_STATUS.PROFILE_VERIFICATION &&
-      processStatus !== NEW_PROCESS_STATUS.DRAFT
-    ) {
-      return <BackgroundRecheck />;
+    if (workLocation1) {
+      dispatch({
+        type: 'newCandidateForm/fetchDocumentLayoutByCountry',
+        payload: {
+          country:
+            workLocation1?.headQuarterAddress?.country?._id ||
+            workLocation1?.headQuarterAddress?.country,
+        },
+      });
     }
-    return <DocumentVerification />;
+  };
+
+  useEffect(() => {
+    goToTop();
+    if (documentLayout.length === 0) {
+      getDocumentLayoutByCountry();
+    }
+  }, []);
+
+  if (loadingFetchCandidate) {
+    return <Skeleton />;
   }
-}
+  if (
+    processStatus !== NEW_PROCESS_STATUS.PROFILE_VERIFICATION &&
+    processStatus !== NEW_PROCESS_STATUS.DRAFT
+  ) {
+    return <BackgroundRecheck />;
+  }
+  return <DocumentVerification />;
+};
 
-export default EligibilityDocuments;
+export default connect(
+  ({ newCandidateForm, user, loading, location: { companyLocationList = [] } = {} }) => ({
+    user,
+    newCandidateForm,
+    companyLocationList,
+    loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
+  }),
+)(EligibilityDocuments);

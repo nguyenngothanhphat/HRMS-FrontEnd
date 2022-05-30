@@ -37,7 +37,7 @@ const DetailTicket = (props) => {
   const [currentTime, setcurrentTime] = useState(moment());
   const onApproval = async () => {
     const response = await dispatch({
-      type: 'dashboard/approvalTicket',
+      type: 'dashboard/approveRequest',
       payload: {
         typeTicket,
         _id,
@@ -50,7 +50,7 @@ const DetailTicket = (props) => {
   };
   const onReject = async () => {
     const response = await dispatch({
-      type: 'dashboard/rejectTicket',
+      type: 'dashboard/rejectRequest',
       payload: {
         typeTicket,
         _id,

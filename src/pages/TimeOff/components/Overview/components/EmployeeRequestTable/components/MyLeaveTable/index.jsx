@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table, Avatar, Tooltip, Tag, Spin } from 'antd';
-import { history, connect } from 'umi';
+import { history, connect, Link } from 'umi';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
 import { roundNumber, TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
@@ -27,13 +27,12 @@ class MyLeaveTable extends PureComponent {
       render: (_, record) => {
         const { ticketID = '', _id = '', updated = false, status = '' } = record;
         const checkUpdated = status === IN_PROGRESS && updated;
-        // const checkWithdraw = status === ON_HOLD;
+
         return (
-          <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
+          <Link to={`/time-off/overview/personal-timeoff/view/${_id}`} className={styles.ID}>
             <span className={styles.text}>{ticketID}</span>
             {checkUpdated && <Tag color="#2C6DF9">Updated</Tag>}
-            {/* {checkWithdraw && <Tag color="#2C6DF9">Withdrawing</Tag>} */}
-          </span>
+          </Link>
         );
       },
     },
@@ -141,14 +140,6 @@ class MyLeaveTable extends PureComponent {
       ),
     },
   ];
-
-  // view request
-  viewRequest = (_id) => {
-    history.push({
-      pathname: `/time-off/overview/personal-timeoff/view/${_id}`,
-      // state: { location: name },
-    });
-  };
 
   // pagination
   onChangePagination = (pageNumber, pageSize) => {

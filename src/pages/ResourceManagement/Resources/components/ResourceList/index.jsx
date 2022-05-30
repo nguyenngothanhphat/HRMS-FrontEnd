@@ -222,7 +222,6 @@ const ResourceList = (props) => {
             changeAvailableStatus={changeAvailableStatus}
           />
         </span>
-
         <div className={styles.rightHeaderTable}>
           <div>
             {applied > 0 && (
@@ -232,7 +231,7 @@ const ResourceList = (props) => {
                 onClose={clearTagFilter}
                 closeIcon={<CloseOutlined />}
               >
-                {applied} applied
+                {applied} filters applied
               </Tag>
             )}
           </div>

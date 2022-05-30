@@ -290,7 +290,7 @@ const AssignResourcesModal = (props) => {
         }}
         buttonText="Close"
         width={400}
-        hasSecondaryButton={false}
+        hasCancelButton={false}
         hasHeader={false}
         content={
           <div

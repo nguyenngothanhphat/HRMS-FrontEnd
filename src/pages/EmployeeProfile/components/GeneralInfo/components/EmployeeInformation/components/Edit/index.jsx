@@ -414,7 +414,9 @@ class Edit extends PureComponent {
               name="workNumber"
               rules={[
                 {
-                  pattern: /^[0-9\\-]{0,12}$/,
+                  pattern:
+                    // eslint-disable-next-line no-useless-escape
+                    /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?$/gm,
                   message: formatMessage({
                     id: 'pages.employeeProfile.validateSocialSecurityNumber',
                   }),

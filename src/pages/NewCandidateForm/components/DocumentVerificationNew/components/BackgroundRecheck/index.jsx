@@ -1,295 +1,201 @@
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable no-param-reassign */
-import { Button, Checkbox, Col, Row, Skeleton, Space } from 'antd';
-import React, { Component } from 'react';
+import { Button, Col, Row, Space } from 'antd';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { connect, history } from 'umi';
+import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { getCurrentTenant } from '@/utils/authority';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
-import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import NoteComponent from '../../../NewNoteComponent';
-import MessageBox from '../../../MessageBox';
-// import CloseCandidateModal from './components/CloseCandidateModal';
-import CollapseField from './components/CollapseField';
-import PreviousEmployment from './components/PreviousEmployment';
-import styles from './index.less';
+import { goToTop } from '@/utils/utils';
 import { Page } from '../../../../utils';
+import MessageBox from '../../../MessageBox';
+import NoteComponent from '../../../NewNoteComponent';
+import styles from './index.less';
+import CollapseField from './components/CollapseFields';
+import CommonModal from '@/components/CommonModal';
+import VerifyDocumentModalContent from './components/VerifyDocumentModalContent';
+import { mapType } from '@/utils/newCandidateForm';
+import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
+import ViewCommentModalContent from './components/ViewCommentModalContent';
+import TechnicalCertification from './components/TechnicalCertification';
+import PreviousEmployment from './components/PreviousEmployment';
 
-@connect(
-  ({
+const BackgroundRecheck = (props) => {
+  const {
     newCandidateForm: {
-      tempData,
-      tempData: { documentsByCandidate = [] } = {},
-      data: { candidate = '', processStatus, workHistory = [] },
-      currentStep,
-      data = {},
-    },
-    loading,
-  }) => ({
-    tempData,
-    documentsByCandidate,
-    data,
-    workHistory,
-    candidate,
-    currentStep,
-    processStatus,
-    loadingGetById: loading.effects['newCandidateForm/fetchCandidateByRookie'],
-    loadingUpdateByHR: loading.effects['newCandidateForm/updateByHR'],
-  }),
-)
-class BackgroundRecheck extends Component {
-  static getDerivedStateFromProps(props) {
-    return {
-      currentStep: props.currentStep,
-    };
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      docsList: [],
-      checkedAllDocs: false,
-      // openModal: false,
-      // modalTitle: '',
-    };
-  }
-
-  componentDidMount = async () => {
-    window.scrollTo({ top: 77, behavior: 'smooth' });
-    const { data: { _id = '' } = {} } = this.props;
-
-    if (_id) {
-      this.firstInit();
-    }
-  };
-
-  componentDidUpdate = async (prevProps) => {
-    const { docsList } = this.state;
-    const { tempData: { documentsByCandidateRD = '' } = {}, data: { _id = '' } = {} } = this.props;
-
-    if (_id && docsList.length === 0 && documentsByCandidateRD.length > 0) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({
-        docsList: documentsByCandidateRD,
-      });
-    }
-
-    const { dispatch, candidate, tempData: { documentsByCandidate = [] } = {} } = this.props;
-    if (
-      _id &&
-      documentsByCandidate.length > 0 &&
-      JSON.stringify(documentsByCandidate) !==
-        JSON.stringify(prevProps.tempData.documentsByCandidate || [])
-    ) {
-      await dispatch({
-        type: 'newCandidateForm/fetchWorkHistory',
-        payload: {
-          candidate,
-          tenantId: getCurrentTenant(),
-        },
-      }).then((res) => {
-        if (res.statusCode === 200) {
-          this.processDocumentData(documentsByCandidate);
-        }
-      });
-    }
-
-    if (_id && _id !== prevProps.data._id) {
-      this.firstInit();
-    }
-  };
-
-  firstInit = async () => {
-    const { dispatch, candidate, documentsByCandidate = [] } = this.props;
-
-    if (documentsByCandidate.length > 0) {
-      await dispatch({
-        type: 'newCandidateForm/fetchWorkHistory',
-        payload: {
-          candidate,
-          tenantId: getCurrentTenant(),
-        },
-      }).then((res) => {
-        if (res.statusCode === 200) {
-          this.processDocumentData(documentsByCandidate);
-        }
-      });
-    }
-  };
-
-  processDocumentData = (documentList) => {
-    const { workHistory = [], dispatch } = this.props;
-    const groupA = [];
-    const groupB = [];
-    const groupC = [];
-    const groupD = [];
-
-    documentList.forEach((item) => {
-      const { candidateGroup } = item;
-      item.isValidated = true;
-      switch (candidateGroup) {
-        case 'A':
-          groupA.push(item);
-          break;
-        case 'B':
-          groupB.push(item);
-          break;
-        case 'C':
-          groupC.push(item);
-          break;
-        case 'D':
-          if (item.isCandidateUpload) item.displayName += '*';
-          groupD.push(item);
-          break;
-        default:
-          break;
-      }
-    });
-
-    // const countGroupE = documentChecklistSetting.filter((doc) => doc.type === 'E').length || 0;
-    let groupMultiE = [];
-
-    groupMultiE = workHistory.map((em) => {
-      let groupE = [];
-      documentList.forEach((item) => {
-        const { candidateGroup, employer } = item;
-        item.isValidated = true;
-        if (candidateGroup === 'E' && employer === em.employer) {
-          groupE = [...groupE, item];
-        }
-      });
-      return {
-        type: 'E',
-        name: 'Previous Employment',
-        employer: em.employer,
-        toPresent: em.toPresent,
-        startDate: em.startDate,
-        endDate: em.endDate,
-        workHistoryId: em._id,
-        data: [...groupE],
-      };
-    });
-
-    const docsList = [
-      { type: 'A', name: 'Identity Proof', data: [...groupA] },
-      { type: 'B', name: 'Address Proof', data: [...groupB] },
-      { type: 'C', name: 'Educational', data: [...groupC] },
-      { type: 'D', name: 'Technical Certifications', data: [...groupD] },
-      ...groupMultiE,
-    ];
-
-    this.setState({
-      docsList,
-    });
-
-    dispatch({
-      type: 'newCandidateForm/saveOrigin',
-      payload: {
-        documentsByCandidateRD: docsList,
+      tempData = {},
+      tempData: {
+        documentTypeA = [],
+        documentTypeB = [],
+        documentTypeC = [],
+        documentTypeD = [],
+        documentTypeE = [],
+        ticketID = '',
+        candidate,
+        processStatus = '',
       },
-    });
+      currentStep = '',
+      documentLayout = [],
+    } = {},
+    loadingUpdateByHR = false,
+    dispatch,
+  } = props;
 
-    dispatch({
-      type: 'newCandidateForm/saveTemp',
-      payload: {
-        documentsByCandidateRD: docsList,
-      },
-    });
+  const [verifyModalVisible, setVerifyModalVisible] = useState(false);
+  const [viewCommentModalVisible, setViewCommentModalVisible] = useState(false);
+  const [selectingFile, setSelectingFile] = useState(null);
+  const [action, setAction] = useState('');
 
-    dispatch({
-      type: 'newCandidateForm/updateBackgroundRecheck',
-      payload: docsList,
-    });
-  };
+  const [validated, setValidated] = useState(false);
 
-  // closeCandidate = async () => {
-  //   const { dispatch, candidate } = this.props;
-  //   if (!dispatch) {
-  //     return;
-  //   }
-  //   const res = await dispatch({
-  //     type: 'newCandidateForm/closeCandidate',
-  //     payload: {
-  //       candidate,
-  //     },
-  //   });
-  //   const { statusCode } = res;
-  //   if (statusCode !== 200) {
-  //     return;
-  //   }
-  //   this.setState({
-  //     modalTitle: 'Closed candidate',
-  //     openModal: true,
-  //   });
-  // };
-
-  // closeModal = () => {
-  //   this.setState({
-  //     openModal: false,
-  //   });
-  // };
-
-  renderCollapseFields = () => {
-    const { docsList: documentsCandidateList = [] } = this.state;
-    const { loadingGetById = false, processStatus = '' } = this.props;
-    if (loadingGetById) {
-      return <Skeleton active />;
-    }
+  const validateFiles = () => {
+    // for type A, B, C, D
+    const checkDocumentUploaded = (arr = []) => {
+      if (arr.length === 0) return true;
+      return arr
+        .filter((x) => x.required || x.value)
+        .every(
+          (x) =>
+            x.status === DOCUMENT_TYPES.VERIFIED ||
+            x.status === DOCUMENT_TYPES.NOT_AVAILABLE_ACCEPTED,
+        );
+    };
+    // for type E
+    const checkDocumentUploadedTypeE = (arr) => {
+      if (arr.length === 0) return true;
+      let check = false;
+      arr.forEach((x) => {
+        const { data: dataArr = [] } = x;
+        check = checkDocumentUploaded(dataArr);
+      });
+      return check;
+    };
 
     return (
-      <>
-        {documentsCandidateList.map((document) => {
-          if (document.type !== 'E') {
-            return <CollapseField item={document} processStatus={processStatus} />;
-          }
-          return '';
-        })}
-        <PreviousEmployment docList={documentsCandidateList} processStatus={processStatus} />
-      </>
+      checkDocumentUploaded(documentTypeA) &&
+      checkDocumentUploaded(documentTypeB) &&
+      checkDocumentUploaded(documentTypeC) &&
+      checkDocumentUploaded(documentTypeD) &&
+      checkDocumentUploadedTypeE(documentTypeE)
     );
   };
 
-  renderMarkAllDocument = () => {
-    const { checkedAllDocs } = this.state;
-    return (
-      <div className={styles.markAllDocs}>
-        <Checkbox disabled={checkedAllDocs} className={styles.checkbox} onChange={this.onCheckbox}>
-          <div className={styles.markAllDocs__text}>Mark all documents as verified</div>
-        </Checkbox>
-      </div>
-    );
-  };
+  useEffect(() => {
+    goToTop();
+  }, []);
 
-  onCheckbox = (e) => {
-    const { dispatch, candidate } = this.props;
-    const { checked } = e.target;
-    this.setState({ checkedAllDocs: checked });
-
-    if (checked) {
+  useLayoutEffect(() => {
+    if (documentTypeA.length > 0) {
       dispatch({
-        type: 'newCandidateForm/verifyAllDocuments',
+        type: 'newCandidateForm/updateByHR',
         payload: {
           candidate,
+          documentTypeA,
+          documentTypeB,
+          documentTypeC,
+          documentTypeD,
+          documentTypeE,
         },
       });
+      const check = validateFiles();
+      setValidated(check);
     }
+  }, [
+    JSON.stringify(documentTypeA),
+    JSON.stringify(documentTypeB),
+    JSON.stringify(documentTypeC),
+    JSON.stringify(documentTypeD),
+    JSON.stringify(documentTypeE),
+  ]);
+
+  const onVerifyDocument = (typeProp, itemProp) => {
+    setSelectingFile({
+      type: typeProp,
+      item: itemProp,
+    });
+    setVerifyModalVisible(true);
   };
 
-  onClickPrev = () => {
-    const {
-      tempData: { ticketID = '' },
-    } = this.props;
+  const onVerifyDocumentTypeE = (typeProp, itemProp, indexProp) => {
+    setSelectingFile({
+      type: typeProp,
+      item: itemProp,
+      index: indexProp,
+    });
+    setVerifyModalVisible(true);
+  };
+
+  const onViewCommentClick = (typeProp, itemProp) => {
+    setSelectingFile({
+      type: typeProp,
+      item: itemProp,
+    });
+    setViewCommentModalVisible(true);
+  };
+
+  const _renderItems = () => {
+    const dataA = documentTypeA.filter((x) => x.value || x.required);
+    const dataB = documentTypeB.filter((x) => x.value || x.required);
+    const dataC = documentTypeC.filter((x) => x.value || x.required);
+
+    const items = [
+      {
+        component: dataA.length > 0 && (
+          <CollapseField
+            items={dataA || []}
+            layout={documentLayout.find((x) => x.type === 'A')}
+            onVerifyDocument={onVerifyDocument}
+            onViewCommentClick={onViewCommentClick}
+          />
+        ),
+      },
+      {
+        component: dataB.length > 0 && (
+          <CollapseField
+            items={dataB || []}
+            layout={documentLayout.find((x) => x.type === 'B')}
+            onVerifyDocument={onVerifyDocument}
+            onViewCommentClick={onViewCommentClick}
+          />
+        ),
+      },
+      {
+        component: dataC.length > 0 && (
+          <CollapseField
+            items={dataC || []}
+            layout={documentLayout.find((x) => x.type === 'C')}
+            onVerifyDocument={onVerifyDocument}
+            onViewCommentClick={onViewCommentClick}
+          />
+        ),
+      },
+      {
+        component: documentTypeD.length > 0 && (
+          <TechnicalCertification
+            items={documentTypeD || []}
+            layout={documentLayout.find((x) => x.type === 'D')}
+            onVerifyDocument={onVerifyDocument}
+            onViewCommentClick={onViewCommentClick}
+          />
+        ),
+      },
+      {
+        component: documentTypeE.length > 0 && (
+          <PreviousEmployment
+            items={documentTypeE}
+            layout={documentLayout.find((x) => x.type === 'E')}
+            onVerifyDocument={onVerifyDocumentTypeE}
+            onViewCommentClick={onViewCommentClick}
+          />
+        ),
+      },
+    ];
+    return items.map((x) => x.component && <Col span={24}>{x.component}</Col>);
+  };
+
+  const onClickPrev = () => {
     history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.JOB_DETAILS}`);
   };
 
-  onClickNext = async () => {
-    const { currentStep } = this.state;
-    const {
-      dispatch,
-      candidate,
-      processStatus = '',
-      tempData: { ticketID = '' },
-    } = this.props;
-
+  const onClickNext = async () => {
     await dispatch({
       type: 'newCandidateForm/updateByHR',
       payload: {
@@ -324,130 +230,190 @@ class BackgroundRecheck extends Component {
     });
   };
 
-  _renderBottomBar = () => {
-    const { docsList } = this.state;
-    const { loadingUpdateByHR = false } = this.props;
-    const checkStatus = this.checkStatus(docsList);
+  const _renderBottomBar = () => {
     return (
-      <div className={styles.bottomBar}>
-        <Row align="middle">
-          <Col className={styles.bottomBar__button} span={24}>
-            <Space size={24}>
-              <Button
-                type="secondary"
-                onClick={this.onClickPrev}
-                className={styles.bottomBar__button__secondary}
-              >
-                Previous
-              </Button>
-              <Button
-                type="primary"
-                onClick={this.onClickNext}
-                className={`${styles.bottomBar__button__primary} ${
-                  checkStatus !== 1 ? styles.bottomBar__button__disabled : ''
-                }`}
-                disabled={checkStatus !== 1}
-                loading={loadingUpdateByHR}
-              >
-                Next
-              </Button>
-            </Space>
-            <RenderAddQuestion page={Page.Eligibility_documents} />
-          </Col>
-        </Row>
-      </div>
+      <Col span={24}>
+        <div className={styles.bottomBar}>
+          <Row align="middle">
+            <Col className={styles.bottomBar__button} span={24}>
+              <Space size={24}>
+                <Button
+                  type="secondary"
+                  onClick={onClickPrev}
+                  className={styles.bottomBar__button__secondary}
+                >
+                  Previous
+                </Button>
+                <Button
+                  type="primary"
+                  onClick={onClickNext}
+                  className={[
+                    styles.bottomBar__button__primary,
+                    !validated ? styles.bottomBar__button__disabled : '',
+                  ]}
+                  disabled={!validated}
+                  loading={loadingUpdateByHR}
+                >
+                  Next
+                </Button>
+              </Space>
+              <RenderAddQuestion page={Page.Eligibility_documents} />
+            </Col>
+          </Row>
+        </div>
+      </Col>
     );
   };
 
-  checkStatus = (docsListState) => {
-    const newVerifiedDocs = [];
-    const newResubmitDocs = [];
-    const newIneligibleDocs = [];
+  const onSaveRedux = (result, type) => {
+    dispatch({
+      type: 'newCandidateForm/saveTemp',
+      payload: {
+        [mapType[type]]: result,
+      },
+    });
+  };
 
-    const docsListFilter = docsListState.map((item) => {
-      const { data = [] } = item;
-      let newData = [];
-      data.forEach((doc) => {
-        if (doc.isCandidateUpload) {
-          newData = [...newData, doc];
+  const onCloseModal = () => {
+    setVerifyModalVisible(false);
+    setViewCommentModalVisible(false);
+    setSelectingFile(null);
+    setAction('');
+  };
+
+  const assignPayloadToData = (payload) => {
+    let items = [...tempData[mapType[selectingFile?.type]]];
+
+    const func = (arr1) => {
+      return arr1.map((x) => {
+        if (x.key === selectingFile?.item?.key) {
+          return {
+            ...x,
+            ...payload,
+          };
         }
+        return x;
       });
-      return {
-        ...item,
-        data: newData,
-      };
-    });
+    };
 
-    const newDocumentList = [];
-    docsListFilter.map((item) => {
-      const { data = [] } = item;
-      data.map((documentItem) => {
-        newDocumentList.push(documentItem);
-        return null;
+    if (selectingFile?.type !== 'E') {
+      items = func(items);
+    } else {
+      items = items.map((x, i) => {
+        if (i === selectingFile?.index) {
+          return {
+            ...x,
+            data: func(x.data),
+          };
+        }
+        return x;
       });
-      return null;
-    });
-
-    newDocumentList.forEach((doc) => {
-      const { candidateDocumentStatus: candidateDocStatus = '' } = doc;
-      if (candidateDocStatus === 'RE-SUBMIT') {
-        newResubmitDocs.push(doc);
-      }
-      if (candidateDocStatus === 'INELIGIBLE') {
-        newIneligibleDocs.push(doc);
-      }
-      if (candidateDocStatus === 'VERIFIED') {
-        newVerifiedDocs.push(doc);
-      }
-    });
-
-    if (newVerifiedDocs.length > 0 && newVerifiedDocs.length === newDocumentList.length) {
-      return 1;
     }
-    if (newIneligibleDocs.length > 0) {
-      return 3;
-    }
-    if (newResubmitDocs.length > 0) {
-      return 2;
-    }
-
-    return 4;
+    onSaveRedux(items, selectingFile?.type);
   };
 
-  render() {
-    return (
-      <div className={styles.backgroundRecheck}>
-        <Row gutter={[24, 0]}>
-          <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-            <p className={styles.backgroundRecheck__title}>Document Verification</p>
-            <p className={styles.backgroundRecheck__subTitle}>
-              All documents supporting candidate's employment eligibility will be displayed here
-            </p>
-            <div className={styles.backgroundRecheck__left}>
-              {this.renderCollapseFields()}
-              {/* Aashwij asked to hide this option in task 852 */}
-              {/* {this.renderMarkAllDocument()} */}
-            </div>
+  const onVerified = () => {
+    assignPayloadToData({ status: DOCUMENT_TYPES.VERIFIED, resubmitComment: '' });
+    onCloseModal();
+  };
 
-            {this._renderBottomBar()}
-          </Col>
-          <Col className={styles.backgroundRecheck__right} xs={24} sm={24} md={24} lg={8} xl={8}>
-            <Row>
-              <NoteComponent />
-            </Row>
-            <Row>
-              <MessageBox />
-            </Row>
-          </Col>
-        </Row>
+  const onResubmit = (values) => {
+    assignPayloadToData({
+      resubmitComment: values.resubmitComment,
+      status: DOCUMENT_TYPES.RESUBMIT_PENDING,
+    });
+    onCloseModal();
+  };
 
-        {/* <CustomModal
-          open={openModal}
-          closeModal={this.closeModal}
-          content={<CloseCandidateModal closeModal={this.closeModal} title={modalTitle} />}
-        /> */}
-      </div>
-    );
-  }
-}
-export default BackgroundRecheck;
+  const onRejectNotAvailable = (values) => {
+    assignPayloadToData({
+      hrNotAvailableComment: values.hrNotAvailableComment,
+      status: DOCUMENT_TYPES.NOT_AVAILABLE_REJECTED,
+    });
+    onCloseModal();
+  };
+
+  const onAcceptNotAvailable = () => {
+    assignPayloadToData({
+      status: DOCUMENT_TYPES.NOT_AVAILABLE_ACCEPTED,
+    });
+    onCloseModal();
+  };
+
+  return (
+    <div className={styles.backgroundRecheck}>
+      <Row gutter={[24, 0]}>
+        <Col span={24} xl={16}>
+          <p className={styles.backgroundRecheck__title}>Document Verification</p>
+          <p className={styles.backgroundRecheck__subTitle}>
+            All documents supporting candidate&apos;s employment eligibility will be displayed here
+          </p>
+          <Row gutter={[24, 24]} className={styles.backgroundRecheck__left}>
+            {_renderItems()}
+            {_renderBottomBar()}
+          </Row>
+        </Col>
+        <Col className={styles.backgroundRecheck__right} span={24} xl={8}>
+          <Row>
+            <NoteComponent />
+          </Row>
+          <Row>
+            <MessageBox />
+          </Row>
+        </Col>
+      </Row>
+
+      {/* verify and resubmit modal  */}
+      <CommonModal
+        visible={verifyModalVisible}
+        onClose={onCloseModal}
+        content={
+          <VerifyDocumentModalContent
+            onClose={onCloseModal}
+            action={action}
+            setAction={setAction}
+            item={selectingFile?.item}
+            onResubmit={action ? onResubmit : () => {}}
+          />
+        }
+        onSecondButtonClick={action ? () => setAction('') : () => setAction('resubmit')}
+        hasCancelButton={false}
+        hasSecondButton
+        firstText={action ? 'Submit' : 'Verified'}
+        secondText={action ? 'Cancel' : 'Resubmit'}
+        title={`${selectingFile?.item?.alias} ${action ? 'for Resubmission' : ''}`}
+        width={600}
+        onFinish={action ? () => {} : onVerified}
+      />
+
+      {/* view candidate comment modal  */}
+      <CommonModal
+        visible={viewCommentModalVisible}
+        title="View Comment"
+        width={500}
+        onClose={onCloseModal}
+        content={
+          <ViewCommentModalContent
+            onClose={onCloseModal}
+            selectedFile={selectingFile?.item}
+            action={action}
+            setAction={setAction}
+            item={selectingFile?.item}
+            onFinish={action ? onRejectNotAvailable : () => {}}
+          />
+        }
+        onSecondButtonClick={action ? () => setAction('') : () => setAction('notAvailableReject')}
+        hasCancelButton={false}
+        hasSecondButton
+        firstText={action ? 'Add' : 'Approve'}
+        secondText={action ? 'Cancel' : 'Reject'}
+        onFinish={action ? () => {} : onAcceptNotAvailable}
+      />
+    </div>
+  );
+};
+export default connect(({ newCandidateForm, loading }) => ({
+  newCandidateForm,
+  loadingGetById: loading.effects['newCandidateForm/fetchCandidateByRookie'],
+  loadingUpdateByHR: loading.effects['newCandidateForm/updateByHR'],
+}))(BackgroundRecheck);

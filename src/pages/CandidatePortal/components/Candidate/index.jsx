@@ -23,6 +23,7 @@ import SalaryStructure from './components/SalaryStructure';
 
 import styles from './index.less';
 import References from './components/References';
+import { goToTop } from '@/utils/utils';
 
 const Candidate = (props) => {
   const {
@@ -91,6 +92,7 @@ const Candidate = (props) => {
     if (!dispatch) {
       return;
     }
+    goToTop();
     dispatch({
       type: 'candidatePortal/fetchCandidateById',
       payload: {
@@ -151,6 +153,7 @@ const Candidate = (props) => {
     if (!dispatch) {
       return;
     }
+    goToTop();
 
     dispatch({
       type: 'candidatePortal/save',

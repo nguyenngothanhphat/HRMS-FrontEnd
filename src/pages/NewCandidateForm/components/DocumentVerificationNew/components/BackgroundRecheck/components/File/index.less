@@ -1,0 +1,114 @@
+@color-grey: #707177;
+@color-blue: #2c6df9;
+
+.File {
+  padding: 10px 0;
+  img {
+    width: 16px;
+    height: 16px;
+  }
+  span {
+    font-size: 14px;
+  }
+  .starSymbol {
+    display: inline-block;
+    margin-left: 4px;
+    color: #ff6c6c;
+  }
+  .commonItem {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+  }
+  .fileName {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .upload {
+    .commonItem();
+    span {
+      color: #2c6df9;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    img {
+      margin-left: 9px;
+    }
+  }
+  .needVerification {
+    .commonItem();
+    span {
+      color: #ffa100;
+      font-weight: 500;
+    }
+    img {
+      margin-left: 9px;
+    }
+  }
+  .resubmit {
+    .commonItem();
+    span {
+      color: #ffa100;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    img {
+      margin-left: 9px;
+    }
+  }
+  .notAvailable {
+    .commonItem();
+    span {
+      color: #464646;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    img {
+      margin-left: 9px;
+    }
+  }
+  .verified {
+    .commonItem();
+    color: #47c97f;
+    font-weight: 500;
+    img {
+      margin-left: 9px;
+    }
+  }
+  .file {
+    .commonItem();
+    img {
+      margin-right: 9px;
+    }
+    span {
+      color: #2c6df9;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+  .pending {
+    .commonItem();
+    span {
+      color: #464646;
+      text-align: right;
+    }
+    img {
+      margin-left: 9px;
+    }
+  }
+  .comments {
+    .commonItem();
+    span {
+      color: #2c6df9;
+      font-weight: 400;
+      font-size: 13px;
+      text-decoration: underline;
+      cursor: pointer;
+      opacity: 0.8;
+    }
+    img {
+      margin-left: 9px;
+    }
+  }
+}

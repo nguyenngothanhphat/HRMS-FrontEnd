@@ -30,7 +30,6 @@ const TASKS = [];
 const AddTaskModal = (props) => {
   const [form] = Form.useForm();
 
-  const [disabledHourAfter, setDisabledHourAfter] = useState([]); // for start time validation
   const [disabledHourBefore, setDisabledHourBefore] = useState([]); // for end time validation
 
   const {
@@ -90,11 +89,25 @@ const AddTaskModal = (props) => {
     });
   };
 
+  const onStartTimeChange = (index) => {
+    const { tasks = [] } = form.getFieldsValue();
+
+    form.setFieldsValue({
+      tasks: tasks.map((x, i) => {
+        if (i === index) {
+          return {
+            ...x,
+            endTime: null,
+          };
+        }
+        return x;
+      }),
+    });
+  };
+
   const onValuesChange = (changedValues, allValues) => {
     const { tasks = [] } = allValues;
-    const disabledHourAfterTemp = tasks.map((x = {}) => x.endTime);
     const disabledHourBeforeTemp = tasks.map((x = {}) => x.startTime);
-    setDisabledHourAfter(disabledHourAfterTemp);
     setDisabledHourBefore(disabledHourBeforeTemp);
   };
 
@@ -187,11 +200,12 @@ const AddTaskModal = (props) => {
                         loading={loadingFetchProject}
                         disabled={loadingFetchProject}
                         filterOption={(input, option) =>
-                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       >
                         {projectList.map((val) => (
-                          <Option value={val.id}>{val.projectName}</Option>
+                          <Option value={val.id}>
+                            {`${val.projectName} - ${val.customerName}`}
+                          </Option>
                         ))}
                       </Select>
                     </Form.Item>
@@ -232,7 +246,7 @@ const AddTaskModal = (props) => {
                       <CustomTimePicker
                         placeholder="Select the start time"
                         showSearch
-                        disabledHourAfter={disabledHourAfter[index]}
+                        onChange={() => onStartTimeChange(index)}
                       />
                     </Form.Item>
                   </Col>

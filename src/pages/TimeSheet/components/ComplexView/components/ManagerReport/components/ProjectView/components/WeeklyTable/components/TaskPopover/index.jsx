@@ -1,12 +1,10 @@
-import { Avatar, Col, Popover, Row, Tooltip } from 'antd';
+import { Col, Popover, Row } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import CloseX from '@/assets/dashboard/closeX.svg';
 import { convertMsToTime } from '@/utils/timeSheet';
+import CloseX from '@/assets/dashboard/closeX.svg';
 import styles from './index.less';
-
-const members = [];
 
 const TaskPopover = (props) => {
   const { children, tasks = [], date = '', placement = 'top' } = props;
@@ -22,22 +20,12 @@ const TaskPopover = (props) => {
     generateShowingTask(4);
   }, [JSON.stringify(tasks)]);
 
-  const renderTooltipTitle = (list) => {
-    return (
-      <div>
-        {list.map((member) => (
-          <span style={{ display: 'block' }}>{member.name}</span>
-        ))}
-      </div>
-    );
-  };
-
   const renderTaskTable = () => {
     return (
       <div className={styles.taskTable}>
         <Row className={styles.taskTable__header} justify="space-between">
-          <Col span={12}>Task</Col>
-          <Col span={6}>Resources</Col>
+          <Col span={18}>Task</Col>
+          {/* <Col span={6}>Resources</Col> */}
           <Col span={6} className={styles.right}>
             Time Duration
           </Col>
@@ -50,28 +38,11 @@ const TaskPopover = (props) => {
               </Col>
             </Row>
           )}
-          {showingTasks.map((task) => {
+          {showingTasks?.map((task) => {
             return (
               <Row className={styles.eachRow} justify="space-between" align="middle">
-                <Col span={12} className={styles.taskName}>
+                <Col span={18} className={styles.taskName}>
                   <span>{task.taskName || 'No name'}</span>
-                </Col>
-                <Col span={6} className={styles.resources}>
-                  <Tooltip
-                    title={renderTooltipTitle(members)}
-                    placement="rightTop"
-                    getPopupContainer={(trigger) => {
-                      return trigger;
-                    }}
-                  >
-                    <div className={styles.taskMembers}>
-                      <Avatar.Group maxCount={4}>
-                        {members.map((member) => {
-                          return <Avatar size="small" src={member.avatar} />;
-                        })}
-                      </Avatar.Group>
-                    </div>
-                  </Tooltip>
                 </Col>
                 <Col span={6} className={styles.right}>
                   {convertMsToTime(task.duration)}

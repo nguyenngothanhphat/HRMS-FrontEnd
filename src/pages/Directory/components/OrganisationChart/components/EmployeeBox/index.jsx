@@ -8,6 +8,7 @@ import { getCurrentCompany } from '@/utils/authority';
 import SearchIcon from '@/assets/searchOrgChart.svg';
 import avtDefault from '@/assets/avtDefault.jpg';
 import styles from './index.less';
+import { CopyOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 
@@ -312,14 +313,20 @@ class DetailEmployeeChart extends Component {
                 <Col span={7}>
                   <div className={styles.chartDetail__Bottom_label}>Mobile:</div>
                 </Col>
-                <Col span={17}>
+                <Col span={14}>
                   <div className={styles.chartDetail__Bottom_value}>{workNumber || ''}</div>
+                </Col>
+                <Col span={3}>
+                  <CopyOutlined onClick={() =>  navigator.clipboard.writeText(`${workNumber}`)} />
                 </Col>
                 <Col span={7}>
                   <div className={styles.chartDetail__Bottom_label}>Email id:</div>
                 </Col>
-                <Col span={17}>
+                <Col span={14}>
                   <div className={styles.chartDetail__Bottom_value}>{workEmail || ''}</div>
+                </Col>
+                <Col span={3}>
+                  <CopyOutlined onClick={() =>  navigator.clipboard.writeText(`${workEmail}`)} />
                 </Col>
                 <Col span={7}>
                   <div className={styles.chartDetail__Bottom_label}>Location:</div>

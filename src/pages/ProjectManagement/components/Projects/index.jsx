@@ -155,13 +155,11 @@ const Projects = (props) => {
         dataIndex: 'tentativeEndDate',
         key: 'tentativeEndDate',
         align: 'center',
-        render: (tentativeEndDate = '') => {
+        render: (_, row) => {
+          const { tentativeEndDate = '', newEndDate = '' } = row;
+          const endDate = newEndDate || tentativeEndDate;
           return (
-            <span>
-              {tentativeEndDate
-                ? moment(tentativeEndDate).locale('en').format(DATE_FORMAT_LIST)
-                : '-'}
-            </span>
+            <span>{endDate ? moment(endDate).locale('en').format(DATE_FORMAT_LIST) : '-'}</span>
           );
         },
       },
@@ -272,7 +270,7 @@ const Projects = (props) => {
         visible={isEditProjectStatus}
         onClose={() => setIsEditProjectStatus(false)}
         firstText="Save Changes"
-        secondText="Cancel"
+        cancelText="Cancel"
         title="Edit Status"
         loading={loadingUpdateProject}
         content={
@@ -289,7 +287,7 @@ const Projects = (props) => {
         visible={isDeleteProject}
         onClose={() => setIsDeleteProject(false)}
         firstText="Delete"
-        secondText="Cancel"
+        cancelText="Cancel"
         title="Delete Project"
         loading={loadingDeleteProject}
         content={

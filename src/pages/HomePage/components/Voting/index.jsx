@@ -16,7 +16,7 @@ const Voting = (props) => {
     homePage: { polls = [], selectedPollOption: { choiceSummary = [], choice = {} } = {} } = {},
     loadingFetchPollResult = '',
     loadingFetchPostList = false,
-    user: { currentUser: { employee = {} } = {} } = {},
+    user: { currentUser: { employee = {}, location: { _id: locationId = '' } = {} } = {} } = {},
   } = props;
 
   const [isVoted, setIsVoted] = useState(false);
@@ -97,11 +97,16 @@ const Voting = (props) => {
     if (polls.length > 0) {
       setLoading(true);
       const find = findActivePoll();
-      if (find) {
-        setActivePoll(find);
+      const { location = [] } = find;
+      let data;
+      if (location.some((x) => x._id === locationId)) {
+        data = find;
+      }
+      if (data) {
+        setActivePoll(data);
 
         // if expired
-        const isExpiredTemp = moment(find?.pollDetail?.endDate).isBefore(moment());
+        const isExpiredTemp = moment(data?.pollDetail?.endDate).isBefore(moment());
         if (isExpiredTemp) {
           setIsExpired(true);
         }

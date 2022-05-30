@@ -62,7 +62,9 @@ class TableUsers extends PureComponent {
         render: (generalInfo) =>
           generalInfo ? (
             <span className={styles.fullname}>
-              {`${generalInfo.firstName} ${generalInfo.lastName}`}
+              {generalInfo.legalName
+                ? `${generalInfo.legalName}`
+                : `${generalInfo.firstName} ${generalInfo.midleName} ${generalInfo.lastName}`}
             </span>
           ) : (
             ''
@@ -326,7 +328,7 @@ class TableUsers extends PureComponent {
   };
 
   render() {
-    const { data = [], loading, total: totalPage = '', size, pageSelected } = this.props;
+    const { data = [], loading, total: totalPage = '', size, pageSelected, tabId = 1 } = this.props;
     const newData = this.formatData(data);
 
     const {
@@ -379,7 +381,11 @@ class TableUsers extends PureComponent {
 
     return (
       <div className={styles.tableUsers}>
-        <EditUserModal editModalVisible={editModalVisible} closeEditModal={this.closeEditModal} />
+        <EditUserModal
+          editModalVisible={editModalVisible}
+          closeEditModal={this.closeEditModal}
+          tabId={tabId}
+        />
 
         <ConfirmRemoveModal
           titleModal="Remove User Confirm"

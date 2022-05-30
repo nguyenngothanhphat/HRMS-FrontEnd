@@ -213,7 +213,6 @@ class AccountsPaychecks extends PureComponent {
           visible={visibleSuccess}
           hasFooter={false}
           onClose={this.handleCancelModelSuccess}
-          onFinish={this.handleCancelModelSuccess}
           hasHeader={false}
           content={
             <>

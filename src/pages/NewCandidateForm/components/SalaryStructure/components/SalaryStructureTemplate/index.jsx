@@ -394,7 +394,7 @@ const SalaryStructureTemplate = (props) => {
     return list.join('.');
   };
 
-  const convertVeriable = (value) => {
+  const convertVariable = (value) => {
     const str = toString(value);
     const list = str.split('.');
     list[0] = list[0] !== '0' && list[0] !== '' ? trimStart(list[0], '0') : '0';
@@ -414,7 +414,7 @@ const SalaryStructureTemplate = (props) => {
         <div key={item.key} className={styles.salary__right__inputAfter}>
           <Input
             addonAfter="% of Basics"
-            value={convertVeriable(item.value)}
+            value={convertVariable(item.value)}
             onChange={(e) => handleChange(e, item.key)}
             onBlur={(e) => onBlur(e, item.key)}
           />
@@ -645,7 +645,7 @@ const SalaryStructureTemplate = (props) => {
                 <Input
                   addonAfter="% of basics"
                   disabled={!isEditingSalary}
-                  value={convertVeriable(eligible_variable_pay.value)}
+                  value={convertVariable(eligible_variable_pay.value)}
                   onChange={(e) => calculationForIndia(e, eligible_variable_pay.key)}
                 />
               </div>
@@ -660,7 +660,7 @@ const SalaryStructureTemplate = (props) => {
                 <Input
                   addonBefore="INR"
                   disabled={!isEditingSalary}
-                  value={convertVeriable(annual_retention_bonus.value)}
+                  value={convertVariable(annual_retention_bonus.value)}
                   onChange={(e) => calculationForIndia(e, annual_retention_bonus.key)}
                 />
               </div>
@@ -680,7 +680,7 @@ const SalaryStructureTemplate = (props) => {
                 <div className={styles.inputBefore}>
                   <Input
                     addonBefore="INR"
-                    value={convertVeriable(annualTotal.value)}
+                    value={convertVariable(annualTotal.value)}
                     onChange={(e) => calculationForIndia(e, annualTotal.key)}
                   />
                 </div>

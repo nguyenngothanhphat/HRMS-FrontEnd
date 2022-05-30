@@ -1,27 +1,19 @@
 import { Table } from 'antd';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'umi';
 import { convertMsToTime, projectColor } from '@/utils/timeSheet';
 import EmptyComponent from '@/components/Empty';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
 import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
+import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
+import UserProfilePopover from '@/components/UserProfilePopover';
 
 const MonthlyTable = (props) => {
-  const {
-    loadingFetch = false,
-    weeksOfMonth = [],
-    data = [],
-    tablePagination: {
-      page = 0,
-      // pageCount = 0,
-      pageSize = 0,
-      rowCount = 0,
-    } = {},
-    onChangePage = () => {},
-  } = props;
-
+  const { loadingFetch = false, weeksOfMonth = [], data = [] } = props;
+  const [pageSize, setPageSize] = useState(5);
+  const [pageSelected, setPageSelected] = useState(1);
   // FUNCTIONS
   const getColorByIndex = (index) => {
     return projectColor[index % projectColor.length];
@@ -82,19 +74,36 @@ const MonthlyTable = (props) => {
 
     const result = [
       {
-        title: renderTitle('All Projects', 1),
-        dataIndex: 'functionalArea',
-        key: 'functionalArea',
+        title: renderTitle('Employee', 1),
+        dataIndex: 'employee',
+        key: 'employee',
         align: 'center',
         width: `${100 / columnLength}%`,
-        render: (functionalArea, _, index) => {
+        render: (employee, _, index) => {
+          const { legalName = '', userId = '', avatar } = employee;
           return (
-            <div className={styles.functionalArea}>
-              <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
-                <span>{functionalArea ? functionalArea.toString()?.charAt(0) : 'P'}</span>
+            <UserProfilePopover placement="rightTop" data={employee}>
+              <div className={styles.member}>
+                <div className={styles.renderEmployee}>
+                  <div className={styles.avatar}>
+                    {avatar ? (
+                      <img src={avatar || MockAvatar} alt="" />
+                    ) : (
+                      <div
+                        className={styles.icon}
+                        style={{ backgroundColor: getColorByIndex(index) }}
+                      >
+                        <span>{legalName ? legalName.toString()?.charAt(0) : 'P'}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.right}>
+                    <span className={styles.name}>{legalName}</span>
+                    <span className={styles.id}>({userId})</span>
+                  </div>
+                </div>
               </div>
-              <span className={styles.name}>{functionalArea}</span>
-            </div>
+            </UserProfilePopover>
           );
         },
       },
@@ -103,13 +112,14 @@ const MonthlyTable = (props) => {
     return result;
   };
 
-  const onChangePagination = (pageNumber) => {
-    onChangePage(pageNumber);
+  const onChangePagination = (pageNumber, pageSizeProp) => {
+    // onChangePage(pageNumber);
+    setPageSelected(pageNumber);
+    setPageSize(pageSizeProp);
   };
-
   const pagination = {
     position: ['bottomLeft'],
-    total: rowCount,
+    total: data.length,
     showTotal: (total, range) => (
       <span>
         Showing{' '}
@@ -119,11 +129,11 @@ const MonthlyTable = (props) => {
         of {total}{' '}
       </span>
     ),
-    defaultPageSize: 10,
+    defaultPageSize: pageSize,
     showSizeChanger: true,
-    pageSizeOptions: ['10', '25', '50', '100'],
+    pageSizeOptions: ['5', '10', '25', '50'],
     pageSize,
-    current: page,
+    current: pageSelected,
     onChange: onChangePagination,
   };
 

@@ -158,12 +158,19 @@ const formatData = (list = []) => {
       firstName = '',
       middleName = '',
       lastName = '',
+      employeeType = { },
+      grade = {},
       // position,
       title = '',
       workLocation = '',
+      privateEmail = '',
+      previousExperience = '',
       dateOfJoining = '',
+      department = {},
       // requestDate = '',
       receiveDate = '',
+      reportingManager = {},
+      reportees = [],
       sentDate = '',
       updatedAt = '',
       createdAt = '',
@@ -190,12 +197,31 @@ const formatData = (list = []) => {
       isNew = dateDiffInDays(Date.now(), updatedAt) < 3;
     }
 
+    let reportingManagerData = '';
+    if (reportingManager.generalInfo) {
+      reportingManagerData = `${reportingManager.generalInfo.firstName} - ${reportingManager.generalInfo.userId}`
+    }
+
+    let reporteesData = reportees.map((reportee) => {
+      return `${reportee.generalInfoInfo.firstName} - ${reportee.generalInfoInfo.userId}`
+    })
+
     const rookie = {
       candidate: _id || '',
       candidateId: `#${ticketID}`,
       isNew,
       candidateName: fullName,
+      firstName: firstName,
+      middleName: middleName,
+      lastName: lastName,
+      personEmail: privateEmail,
+      previousExperience: previousExperience,
       position: title.name,
+      employeeType: employeeType.name || '',
+      grade: grade.name || '',
+      department: department.name || '',
+      reportees: reporteesData,
+      reportingManager: reportingManagerData,
       location: workLocation.name || '',
       comments: comments || '',
       dateSent: dateSent || '',

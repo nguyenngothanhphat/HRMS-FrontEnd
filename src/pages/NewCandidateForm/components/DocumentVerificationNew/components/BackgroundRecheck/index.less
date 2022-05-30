@@ -8,12 +8,14 @@
 @lightGrayColor: #707177;
 @commonPadding: 15px;
 @commonPadding2: 24px;
+@color-grey: #707177;
+@color-blue: #2c6df9;
 
 .textNote {
   color: #ffa100;
   font-weight: 500;
   font-size: 14px;
-  font-family: Roboto;
+
   font-style: normal;
   line-height: 16px;
   letter-spacing: 0.13125px;
@@ -34,79 +36,48 @@
     font-size: 13px;
   }
 
-  &__left {
-    .markAllDocs {
-      padding: 32px;
-      background-color: #fff;
-      border: solid 1px #d6dce0;
-      border-radius: 5px;
-      margin-block: @commonPadding2;
-
-      .checkbox {
-        padding-right: 1rem;
-        color: #161c29;
-        font-size: 14px;
-
-        &:hover {
-          border-radius: 5px;
-        }
-
-        :global {
-          .ant-checkbox-checked {
-            &:hover {
-              border-radius: 4px;
-            }
-
-            .ant-checkbox-inner {
-              background: #f6f7f9;
-              border-radius: 4px;
-
-              &:hover {
-                border-radius: 4px;
-              }
-
-              &:after {
-                border: 2px solid #2c6df9;
-                border-top: 0;
-                border-left: 0;
-              }
-            }
-          }
-
-          .ant-checkbox {
-            .ant-checkbox-inner {
-              background: #f6f7f9;
-              border-radius: 4px;
-            }
-          }
-
-          .ant-checkbox-disabled .ant-checkbox-inner {
-            border: 1px solid #2c6df9 !important;
-          }
-        }
-
-        span {
-          &:last-child {
-            // padding-top: 1rem;
-            padding-left: 1rem;
-          }
+  :global {
+    .ant-collapse > .ant-collapse-item {
+      border: none;
+    }
+    .ant-collapse-extra {
+      display: inline;
+      float: none !important;
+      color: @color-grey;
+      font-size: 12px;
+    }
+    .ant-collapse-arrow {
+      padding: 0px !important;
+    }
+    .ant-collapse-arrow {
+      svg {
+        width: 20px;
+        height: 20px;
+        margin-right: 21px !important;
+        color: @color-blue;
+        &:last-child {
+          margin-right: 0;
         }
       }
-
-      :global {
-        .ant-checkbox + span {
-          padding-left: 1rem;
-        }
+    }
+    .ant-collapse-content > .ant-collapse-content-box {
+      padding: 0 16px;
+    }
+    .ant-collapse {
+      overflow: hidden;
+      border: none;
+      .ant-collapse-item > .ant-collapse-header {
+        display: flex;
+        align-items: center;
+        height: 70px;
+        background-color: #fff;
+        padding-inline: 32px;
       }
-
-      &__text {
-        color: #161c29;
-        font-weight: normal;
-        font-size: 14px;
-        font-family: Roboto;
-        font-style: normal;
-        line-height: 16px;
-      }
+    }
+    .ant-input-disabled,
+    .ant-input[disabled] {
+      color: #161c29;
+      background: rgba(226, 228, 232, 0.5) !important;
     }
   }
 
@@ -152,40 +123,32 @@
     }
   }
 
-  :global {
-    .anticon-minus,
-    .anticon-plus {
-      top: 31px !important;
-    }
-  }
-
   .bottomBar {
     padding: @commonPadding;
     background-color: #ffffff;
     border: solid 1px #d6dce0;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
-    margin-block: @commonPadding2;
 
     .normalText {
       display: flex;
       color: #707177;
       font-size: 13px;
-      font-family: 'Roboto';
+
       font-style: italic;
     }
 
     .redText {
       color: #ff4949;
       font-size: 13px;
-      font-family: 'Roboto';
+
       font-style: italic;
     }
 
     .greenText {
       color: #47c97f;
       font-size: 13px;
-      font-family: 'Roboto';
+
       font-style: italic;
     }
 
@@ -206,7 +169,7 @@
           color: #ffffff;
           font-weight: 500;
           font-size: 14px;
-          font-family: 'Roboto';
+
           letter-spacing: 0.13px;
           text-shadow: none;
           background-color: #ffa100;
@@ -228,7 +191,7 @@
           color: #ffa100;
           font-weight: 500;
           font-size: 14px;
-          font-family: 'Roboto';
+
           letter-spacing: 0.13px;
           border: solid 0;
           border-radius: 25px;

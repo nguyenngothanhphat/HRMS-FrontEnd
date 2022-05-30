@@ -129,6 +129,7 @@ const Summary = (props) => {
       tentativeEndDate, // origin
       billableHeadCount, // origin
       bufferHeadCount, // origin
+      newEndDate: tentativeEndDate,
     };
     if (newEndDate.value) {
       newPayload = {
@@ -375,7 +376,7 @@ const Summary = (props) => {
             visible={editEndDateModalVisible}
             onClose={() => setEditEndDateModalVisible(false)}
             firstText="Save Changes"
-            secondText="Cancel"
+            cancelText="Cancel"
             title="Reason for Editing the End Date"
             content={
               <EditEndDateContent
@@ -394,7 +395,7 @@ const Summary = (props) => {
             visible={editBillableModalVisible}
             onClose={() => setEditBillableModalVisible(false)}
             firstText="Save Changes"
-            secondText="Cancel"
+            cancelText="Cancel"
             title="Reason for Editing Billable Head Count"
             content={
               <EditBillableHeadCountContent
@@ -413,7 +414,7 @@ const Summary = (props) => {
             visible={editBufferModalVisible}
             onClose={() => setEditBufferModalVisible(false)}
             firstText="Save Changes"
-            secondText="Cancel"
+            cancelText="Cancel"
             title="Reason for Editing Buffer Head Count"
             content={
               <EditBufferHeadCountContent

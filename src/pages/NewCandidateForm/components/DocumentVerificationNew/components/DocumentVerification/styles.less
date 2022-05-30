@@ -5,7 +5,7 @@
   color: #ffa100;
   font-weight: 500;
   font-size: 14px;
-  font-family: Roboto;
+
   font-style: normal;
   line-height: 16px;
   letter-spacing: 0.13125px;
@@ -14,6 +14,7 @@
 .DocumentVerification {
   :global {
     .ant-collapse {
+      background-color: white;
       border: none !important;
       border-radius: 5px;
     }
@@ -30,13 +31,35 @@
     .ant-collapse > .ant-collapse-item {
       border: none;
     }
-  }
 
-  .leftWrapper {
-    .eliContainer {
-      width: 100%;
-      padding-left: 0px;
-      font-family: Roboto, sans-serif;
+    .ant-collapse-header {
+      padding: 24px !important;
+    }
+    .ant-collapse-content-box {
+      padding: 0 !important;
+      background-color: white;
+      p {
+        margin-bottom: 0;
+        color: #464646;
+        font-size: 13px;
+      }
+    }
+    // header checkbox
+    .ant-checkbox-wrapper {
+      margin-right: 24px;
+    }
+
+    .ant-checkbox-indeterminate .ant-checkbox-inner::after {
+      display: none;
+    }
+
+    .ant-input-disabled,
+    .ant-input[disabled] {
+      color: #161c29;
+      background: rgba(226, 228, 232, 0.5) !important;
+    }
+    .ant-checkbox-disabled + span {
+      color: #161c29;
     }
   }
 
@@ -55,7 +78,7 @@
   }
 
   .bottomBar {
-    padding: 15px 15px 15px 24px;
+    padding: 15px 24px;
     background-color: #ffffff;
     border: solid 1px #d6dce0;
     border-radius: 5px;
@@ -65,21 +88,21 @@
       display: flex;
       color: #707177;
       font-size: 13px;
-      font-family: Roboto;
+
       font-style: italic;
     }
 
     .redText {
       color: #ff4949;
       font-size: 13px;
-      font-family: Roboto;
+
       font-style: italic;
     }
 
     .greenText {
       color: #47c97f;
       font-size: 13px;
-      font-family: Roboto;
+
       font-style: italic;
     }
 
@@ -101,7 +124,7 @@
           color: #ffffff;
           font-weight: 500;
           font-size: 14px;
-          font-family: Roboto;
+
           letter-spacing: 0.13px;
 
           text-shadow: none;
@@ -124,7 +147,7 @@
           color: #ffa100;
           font-weight: 500;
           font-size: 14px;
-          font-family: Roboto;
+
           letter-spacing: 0.13px;
           border: solid 0;
           border-radius: 25px;

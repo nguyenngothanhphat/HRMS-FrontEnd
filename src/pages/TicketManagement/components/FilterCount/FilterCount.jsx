@@ -32,7 +32,7 @@ function FilterCount(props) {
             clearFilter();
           }}
         >
-          {applied} applied
+          {applied} filters applied
         </Tag>
       )}
     </>

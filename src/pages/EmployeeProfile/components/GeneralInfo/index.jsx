@@ -94,7 +94,6 @@ class GeneralInfo extends Component {
           visible={visibleSuccess}
           hasFooter={false}
           onClose={this.handleCancelModelSuccess}
-          onFinish={this.handleCancelModelSuccess}
           hasHeader={false}
           content={
             <>

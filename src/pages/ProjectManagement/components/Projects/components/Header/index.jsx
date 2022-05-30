@@ -108,7 +108,7 @@ const Header = (props) => {
               clearFilter();
             }}
           >
-            {applied} applied
+            {applied} filters applied
           </Tag>
         )}
         {addProjectPermission && (

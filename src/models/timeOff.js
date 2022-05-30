@@ -131,12 +131,8 @@ const timeOff = {
       limit: 10,
       total: 0,
     },
-    countTotal: {
-      typeA: 0,
-      typeB: 0,
-      typeC: 0,
-      typeD: 0,
-    },
+    countTotal: [],
+    typeLeaveCount: {},
   },
   effects: {
     *getTimeOffTypeByLocation(_, { call }) {
@@ -351,23 +347,23 @@ const timeOff = {
         });
         const {
           statusCode,
-          data: { items: leaveRequests = [], countType = {} } = {},
+          data: { items: leaveRequests = [], total: totalType = [] } = {},
           total = 0,
         } = response;
         if (statusCode !== 200) throw response;
 
-        yield put({
-          type: 'save',
-          payload: { leaveRequests },
-        });
         if (payload.isCountTotal) {
           yield put({
             type: 'save',
-            payload: { countTotal: countType },
+            payload: { countTotal: totalType },
           });
         }
 
         if (!payload.isCountTotal) {
+          yield put({
+            type: 'save',
+            payload: { leaveRequests },
+          });
           yield put({
             type: 'savePaging',
             payload: { total },
@@ -724,24 +720,24 @@ const timeOff = {
         });
         const {
           statusCode,
-          data: { items: teamLeaveRequests = [], countType = {} },
+          data: { items: teamLeaveRequests = [], total: totalType = [] },
           total = 0,
         } = response;
         // console.log('response', response);
         if (statusCode !== 200) throw response;
 
-        yield put({
-          type: 'save',
-          payload: { teamLeaveRequests },
-        });
         if (payload.isCountTotal) {
           yield put({
             type: 'save',
-            payload: { countTotal: countType },
+            payload: { countTotal: totalType },
           });
         }
 
         if (!payload.isCountTotal) {
+          yield put({
+            type: 'save',
+            payload: { teamLeaveRequests },
+          });
           yield put({
             type: 'savePaging',
             payload: { total },
@@ -763,23 +759,24 @@ const timeOff = {
         });
         const {
           statusCode,
-          data: { items: allLeaveRequests = [], countType = {} },
+          data: { items: allLeaveRequests = [], total: totalType = [] },
           total = 0,
         } = response;
 
         if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { allLeaveRequests },
-        });
+
         if (payload.isCountTotal) {
           yield put({
             type: 'save',
-            payload: { countTotal: countType },
+            payload: { countTotal: totalType },
           });
         }
 
         if (!payload.isCountTotal) {
+          yield put({
+            type: 'save',
+            payload: { allLeaveRequests },
+          });
           yield put({
             type: 'savePaging',
             payload: { total },

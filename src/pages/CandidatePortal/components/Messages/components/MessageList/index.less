@@ -68,16 +68,41 @@
       &:hover {
         opacity: 0.9;
       }
-      .messageIcon {
-        width: 50px;
+      .messageBgOutline {
+        background: #00c3ff38 !important;
+      }
+      .messageIconOutline {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: #d8e4fe;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         margin-right: 10px;
+        .messageBgIcon {
+          background: #00C2FF !important;
+        }
+        .messageIcon {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          background: #417bf9;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          .iconName {
+            font-size: 13px;
+            color: #fff;
+          }
+        }
       }
       .messageContent {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         justify-content: flex-start;
-        width: 100%;
+        width: 88%;
         font-size: 13px;
         span {
           display: block;

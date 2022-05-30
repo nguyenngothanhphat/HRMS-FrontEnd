@@ -55,8 +55,18 @@
     }
     .ant-form-item-label {
       label {
-        color: #707177;
+        color: #161c29;
         font-size: 12px;
+      }
+      .ant-form-item-label
+        > label.ant-form-item-required:not(.ant-form-item-required-mark-optional):after {
+        display: inline-block;
+        margin-right: 4px;
+        color: #ff4d4f;
+        font-size: 14px;
+        font-family: SimSun, sans-serif;
+        line-height: 1;
+        content: '*';
       }
     }
 

@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react';
-import { Row, Col, Skeleton } from 'antd';
-import { Link } from 'umi';
+import { Col, Row } from 'antd';
 import moment from 'moment';
+import React, { PureComponent } from 'react';
+import { Link } from 'umi';
 import { CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
 import styles from './index.less';
 
@@ -18,7 +18,7 @@ class PendingTaskTable extends PureComponent {
             )}
           </Col>
           <Col span={8}>
-            <span>{item.dueDate ? moment(item.dueDate).format('MM.DD.YY') : '-'}</span>
+            <span>{item.dueDate ? moment(item.dueDate).format('MM/DD/YYYY') : '-'}</span>
           </Col>
         </Row>
         {index + 1 <= listLength && <div className={styles.divider} />}
@@ -27,15 +27,6 @@ class PendingTaskTable extends PureComponent {
   };
 
   renderTasks = () => {
-    const { loading = false } = this.props;
-    if (loading) {
-      return (
-        <div className={styles.taskTableContent}>
-          <Skeleton />
-        </div>
-      );
-    }
-
     const data = this.getData();
     if (data.length > 0) {
       return (

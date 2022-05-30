@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
 import ArrowDownIcon from '@/assets/candidatePortal/arrowDown.svg';
 import CommonModal from '../CommonModal';
@@ -24,16 +24,6 @@ class PendingTasks extends PureComponent {
       openModal: false,
     };
   }
-
-  // no need here, refresh in fetch candidate
-  // componentDidUpdate = (prevProps) => {
-  //   const { dispatch, processStatus = '' } = this.props;
-  //   if (processStatus !== prevProps.data.processStatus) {
-  //     dispatch({
-  //       type: 'candidatePortal/refreshPendingTasks',
-  //     });
-  //   }
-  // };
 
   renderItem = (item, listLength, index) => {
     return (
@@ -66,9 +56,11 @@ class PendingTasks extends PureComponent {
           <div className={styles.header}>
             <span>Pending Tasks</span>
           </div>
-          <div className={styles.content}>
-            <PendingTaskTable tasks={pendingTasks} loading={loadingFetchDocument} />
-          </div>
+          <Spin spinning={loadingFetchDocument}>
+            <div className={styles.content}>
+              <PendingTaskTable tasks={pendingTasks} />
+            </div>
+          </Spin>
         </div>
         <div className={styles.viewMoreBtn} onClick={() => this.openModal(true)}>
           <span>View All</span>

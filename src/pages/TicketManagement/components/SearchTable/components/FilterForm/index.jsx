@@ -5,6 +5,7 @@ import moment from 'moment';
 import { connect } from 'umi';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import styles from './index.less';
+import { getAuthority } from '@/utils/authority';
 
 const { Option } = Select;
 
@@ -16,6 +17,7 @@ const FilterForm = (props) => {
     employeeRaiseList = [],
     currentStatus = '',
     selectedLocations = [],
+    country = '',
     loadingFetchEmployeeRaiseListEffect,
     loadingFetchEmployeeAssigneeListEffect,
     dispatch,
@@ -43,6 +45,8 @@ const FilterForm = (props) => {
 
   const [nameListState, setNameListState] = useState([]);
   const [asignedListState, setAsignedListState] = useState([]);
+
+  const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
 
   function getUniqueListBy(arr, key) {
     return [...new Map(arr.map((item) => [item[key], item])).values()];
@@ -179,6 +183,17 @@ const FilterForm = (props) => {
       };
     }
     dispatch({
+      type: 'ticketManagement/save',
+      payload: { filter: payload },
+    });
+    if (permissions && permissions.length > 0) {
+      payload = {
+        ...payload,
+        permissions,
+        country,
+      };
+    }
+    dispatch({
       type: 'ticketManagement/fetchListAllTicket',
       payload: {
         ...payload,
@@ -187,8 +202,12 @@ const FilterForm = (props) => {
       },
     });
     dispatch({
-      type: 'ticketManagement/save',
-      payload: { filter: payload },
+      type: 'ticketManagement/fetchToTalList',
+      payload: {
+        ...payload,
+        status: currentStatus,
+        location: selectedLocations,
+      },
     });
   };
 
@@ -395,7 +414,15 @@ export default connect(
       employeeRaiseList = [],
       selectedLocations = [],
     } = {},
+    user: {
+      permissions = {},
+      currentUser: {
+        employee: { location: { headQuarterAddress: { country = '' } = {} } = {} } = {},
+      } = {},
+    },
   }) => ({
+    permissions,
+    country,
     currentStatus,
     listOffAllTicket,
     locationsList,

@@ -10,7 +10,6 @@ import {
   convert24To12,
   getHours,
   MAX_NO_OF_DAYS_TO_SHOW,
-  roundNumber,
   TIMEOFF_12H_FORMAT,
   TIMEOFF_24H_FORMAT,
   TIMEOFF_COL_SPAN_1,
@@ -22,6 +21,7 @@ import {
   TIMEOFF_PERIOD,
   TIMEOFF_STATUS,
   TIMEOFF_TYPE,
+  TIMEOFF_WORK_DAYS,
   WORKING_HOURS,
 } from '@/utils/timeOff';
 import LeaveTimeRow from './components/LeaveTimeRow';
@@ -56,7 +56,7 @@ const RequestInformation = (props) => {
         status: viewingStatus = '',
       } = {},
       emailsList = [],
-      employeeSchedule: { startWorkDay = {}, endWorkDay = {} } = {},
+      employeeSchedule: { startWorkDay = {}, endWorkDay = {}, workDay = [] } = {},
       yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
     } = {},
     user: { currentUser: { location = {}, employee = {} } = {} } = {},
@@ -83,6 +83,7 @@ const RequestInformation = (props) => {
   const [invalidDates, setInvalidDates] = useState([]);
   const [dateLists, setDateLists] = useState([]);
   const [isModified, setIsModified] = useState(false); // when start editing a request, if there are any changes, isModified = true
+  const [workingDays, setWorkingDays] = useState([]);
 
   const BY_HOUR = TIMEOFF_INPUT_TYPE_BY_LOCATION[currentLocationID] === TIMEOFF_INPUT_TYPE.HOUR;
   const BY_WHOLE_DAY =
@@ -468,9 +469,6 @@ const RequestInformation = (props) => {
       return (
         <Option key={x._id} value={x._id}>
           <div className={styles.timeOffTypeOptions}>
-            {/* I don't knew why I could not CSS this block in styles.less file
-          So I tried inline CSS.
-          Amazing! It worked :D. (Tuan - Lewis Nguyen) */}
             <>
               <span style={{ fontSize: 13 }} className={styles.name}>
                 {x.name}
@@ -482,20 +480,18 @@ const RequestInformation = (props) => {
                   float: 'right',
                 }}
               >
-                {(x.type === A || x.type === B) && (
-                  <span style={remaining <= 0 ? invalidCss : defaultCss}>
-                    <span
-                      style={
-                        remaining <= 0
-                          ? { fontSize: 12, color: '#FD4546' }
-                          : { fontSize: 12, color: 'black' }
-                      }
-                    >
-                      {roundNumber(remaining)}
-                    </span>
-                    /{x.total || 0} days
+                <span style={remaining <= 0 ? invalidCss : defaultCss}>
+                  <span
+                    style={
+                      remaining <= 0
+                        ? { fontSize: 12, color: '#FD4546' }
+                        : { fontSize: 12, color: 'black' }
+                    }
+                  >
+                    {x.remainingTotalMessage}{' '}
                   </span>
-                )}
+                  days
+                </span>
               </span>
             </>
           </div>
@@ -514,7 +510,7 @@ const RequestInformation = (props) => {
               {x.name}
             </span>
 
-            {x.type === C && (
+            {x.showRemainingTotal && (
               <span style={{ float: 'right', fontSize: 12, fontWeight: 'bold' }}>
                 <span
                   style={
@@ -535,9 +531,7 @@ const RequestInformation = (props) => {
 
   const disabledFromDate = (current) => {
     return (
-      // (current && moment(current).isAfter(moment(durationTo), 'day')) ||
-      moment(current).day() === 0 ||
-      moment(current).day() === 6 ||
+      !workingDays.includes(moment(current).day()) ||
       !checkIfWholeDayAvailable(current) ||
       !checkIfHalfDayAvailable(current)
     );
@@ -546,8 +540,7 @@ const RequestInformation = (props) => {
   const disabledToDate = (current) => {
     return (
       (current && moment(current).isBefore(moment(durationFrom), 'day')) ||
-      moment(current).day() === 0 ||
-      moment(current).day() === 6 ||
+      !workingDays.includes(moment(current).day()) ||
       !checkIfWholeDayAvailable(current) ||
       !checkIfHalfDayAvailable(current)
     );
@@ -738,23 +731,23 @@ const RequestInformation = (props) => {
   }, [selectedTypeName]);
 
   useEffect(() => {
-    if ([A, B, D].includes(selectedType) && durationTo) {
+    if ([A, B, D, C].includes(selectedType) && durationTo) {
       const dateListsObj = getDateLists(durationFrom, durationTo, selectedType);
       setDateLists(dateListsObj.dates);
     }
   }, [durationFrom, durationTo, currentAllowanceState]);
 
-  useEffect(() => {
-    if ([C].includes(selectedType) && durationFrom) {
-      const autoToDate = getAutoToDate(currentAllowanceState);
-      const dateListsObj = getDateLists(durationFrom, autoToDate, selectedType);
-      setDateLists(dateListsObj.dates);
-      setDurationTo(moment(dateListsObj.endDate));
-      form.setFieldsValue({
-        durationTo: moment(dateListsObj.endDate),
-      });
-    }
-  }, [durationFrom, currentAllowanceState]);
+  // useEffect(() => {
+  //   if ([C].includes(selectedType) && durationFrom) {
+  //     const autoToDate = getAutoToDate(currentAllowanceState);
+  //     const dateListsObj = getDateLists(durationFrom, autoToDate, selectedType);
+  //     setDateLists(dateListsObj.dates);
+  //     setDurationTo(moment(dateListsObj.endDate));
+  //     form.setFieldsValue({
+  //       durationTo: moment(dateListsObj.endDate),
+  //     });
+  //   }
+  // }, [durationFrom, currentAllowanceState]);
 
   useEffect(() => {
     // only generate leave time lists when modified. If editing a ticket, no need to generate
@@ -788,15 +781,23 @@ const RequestInformation = (props) => {
   }, [selectedTypeName, currentAllowanceState, JSON.stringify(dateLists)]);
 
   useEffect(() => {
-    if (BY_HOUR) {
-      dispatch({
-        type: 'timeOff/getEmployeeScheduleByLocation',
-        payload: {
-          location: location?._id,
-        },
-      });
-    }
+    dispatch({
+      type: 'timeOff/getEmployeeScheduleByLocation',
+      payload: {
+        location: location?._id,
+      },
+    });
   }, []);
+
+  useEffect(() => {
+    const workingDaysTemp = [];
+    TIMEOFF_WORK_DAYS.forEach((x) => {
+      if (workDay.some((y) => y.date === x.text && y.checked)) {
+        workingDaysTemp.push(x.id);
+      }
+    });
+    setWorkingDays(workingDaysTemp);
+  }, [JSON.stringify(workDay)]);
 
   // MAIN
   const layout = {
@@ -814,7 +815,7 @@ const RequestInformation = (props) => {
   const needValidate = buttonState === 2;
 
   const renderLeaveTimeList = () => {
-    if ([C, D].includes(selectedType)) {
+    if ([D].includes(selectedType)) {
       return (
         <>
           <Row className={styles.eachRow}>
@@ -1085,7 +1086,8 @@ const RequestInformation = (props) => {
                       <DatePicker
                         disabledDate={disabledToDate}
                         format={TIMEOFF_DATE_FORMAT}
-                        disabled={!selectedTypeName || selectedType === C}
+                        disabled={!selectedTypeName}
+                        //  disabled={!selectedTypeName || selectedType === C}
                         onChange={(value) => {
                           toDateOnChange(value);
                         }}

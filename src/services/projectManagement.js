@@ -158,3 +158,15 @@ export async function getCustomerInfo(payload) {
     API_KEYS.CUSTOMER_API,
   );
 }
+
+export async function getListProjectToExport(payload) {
+  return request(
+    `/api-project/projecttenant/export-projects`,
+    {
+      method: 'GET',
+      params: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
+}
