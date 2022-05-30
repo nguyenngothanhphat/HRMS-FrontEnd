@@ -97,7 +97,8 @@ const Voting = (props) => {
     if (polls.length > 0) {
       setLoading(true);
       const find = findActivePoll();
-      const { location = [] } = find;
+
+      const { location = [] } = find || {};
       let data;
       if (location.some((x) => x._id === locationId)) {
         data = find;
