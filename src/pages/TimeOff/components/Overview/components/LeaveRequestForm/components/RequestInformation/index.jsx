@@ -532,7 +532,8 @@ const RequestInformation = (props) => {
   const disabledFromDate = (current) => {
     return (
       !workingDays.includes(moment(current).day()) ||
-      !checkIfWholeDayAvailable(current) || !checkIfHalfDayAvailable(current)
+      !checkIfWholeDayAvailable(current) ||
+      !checkIfHalfDayAvailable(current)
     );
   };
 
@@ -730,23 +731,23 @@ const RequestInformation = (props) => {
   }, [selectedTypeName]);
 
   useEffect(() => {
-    if ([A, B, D].includes(selectedType) && durationTo) {
+    if ([A, B, D, C].includes(selectedType) && durationTo) {
       const dateListsObj = getDateLists(durationFrom, durationTo, selectedType);
       setDateLists(dateListsObj.dates);
     }
   }, [durationFrom, durationTo, currentAllowanceState]);
 
-  useEffect(() => {
-    if ([C].includes(selectedType) && durationFrom) {
-      const autoToDate = getAutoToDate(currentAllowanceState);
-      const dateListsObj = getDateLists(durationFrom, autoToDate, selectedType);
-      setDateLists(dateListsObj.dates);
-      setDurationTo(moment(dateListsObj.endDate));
-      form.setFieldsValue({
-        durationTo: moment(dateListsObj.endDate),
-      });
-    }
-  }, [durationFrom, currentAllowanceState]);
+  // useEffect(() => {
+  //   if ([C].includes(selectedType) && durationFrom) {
+  //     const autoToDate = getAutoToDate(currentAllowanceState);
+  //     const dateListsObj = getDateLists(durationFrom, autoToDate, selectedType);
+  //     setDateLists(dateListsObj.dates);
+  //     setDurationTo(moment(dateListsObj.endDate));
+  //     form.setFieldsValue({
+  //       durationTo: moment(dateListsObj.endDate),
+  //     });
+  //   }
+  // }, [durationFrom, currentAllowanceState]);
 
   useEffect(() => {
     // only generate leave time lists when modified. If editing a ticket, no need to generate
@@ -814,7 +815,7 @@ const RequestInformation = (props) => {
   const needValidate = buttonState === 2;
 
   const renderLeaveTimeList = () => {
-    if ([C, D].includes(selectedType)) {
+    if ([D].includes(selectedType)) {
       return (
         <>
           <Row className={styles.eachRow}>
@@ -1085,7 +1086,8 @@ const RequestInformation = (props) => {
                       <DatePicker
                         disabledDate={disabledToDate}
                         format={TIMEOFF_DATE_FORMAT}
-                        disabled={!selectedTypeName || selectedType === C}
+                        disabled={!selectedTypeName}
+                        //  disabled={!selectedTypeName || selectedType === C}
                         onChange={(value) => {
                           toDateOnChange(value);
                         }}

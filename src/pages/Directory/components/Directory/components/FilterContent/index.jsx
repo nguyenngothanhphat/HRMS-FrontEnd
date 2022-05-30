@@ -289,8 +289,7 @@ const FilterContent = (props) => {
               style={{ width: '100%' }}
               placeholder="Search by Department"
               filterOption={(input, option) =>
-                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               showArrow
             >
               {listDepartmentName.map((x) => {
@@ -310,8 +309,7 @@ const FilterContent = (props) => {
               style={{ width: '100%' }}
               placeholder="Search by Division Name"
               filterOption={(input, option) =>
-                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               showArrow
             >
               {listDepartmentName.map((x) => {
@@ -334,8 +332,7 @@ const FilterContent = (props) => {
           style={{ width: '100%' }}
           placeholder="Search by Job Title"
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           showArrow
         >
           {listTitle.map((x) => {
@@ -377,8 +374,7 @@ const FilterContent = (props) => {
           style={{ width: '100%' }}
           placeholder="Search by Location"
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           showArrow
         >
           {companyLocationList.map((x) => {
@@ -400,8 +396,7 @@ const FilterContent = (props) => {
               style={{ width: '100%' }}
               placeholder="Search by Country"
               filterOption={(input, option) =>
-                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               showArrow
             >
               {countryListState.map((x) => {
@@ -422,8 +417,7 @@ const FilterContent = (props) => {
               style={{ width: '100%' }}
               placeholder="Search by Employment Type"
               filterOption={(input, option) =>
-                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               showArrow
             >
               {listEmployeeType
@@ -446,8 +440,7 @@ const FilterContent = (props) => {
               style={{ width: '100%' }}
               placeholder="Search by Skills"
               filterOption={(input, option) =>
-                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               showArrow
             >
               {listSkill.map((x) => {
