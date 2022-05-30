@@ -525,14 +525,14 @@ class Benefits extends PureComponent {
                 benefits={benefits}
                 listBenefits={listBenefits}
               />
-              <LocalEmployeeComponent
+              {/* <LocalEmployeeComponent
                 IndiaEmployeesCheckbox={IndiaEmployeesCheckbox}
                 onChange={this.onChange}
                 handleCheckAll={this.handleCheckAll}
                 handleChange={this.handleChange}
                 benefits={benefits}
                 listBenefits={listBenefits}
-              />
+              /> */}
               {/* <div style={{ margin: '32px' }}>
                 <RenderAddQuestion page={Page.Benefits} />
               </div> */}
