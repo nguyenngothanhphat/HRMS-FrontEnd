@@ -73,6 +73,24 @@ const PollTable = (props) => {
         },
       },
       {
+        title: 'Location',
+        dataIndex: 'location',
+        key: 'location',
+        width: '10%',
+        render: (location) => (
+          <div style={{ lineHeight: '22px' }}>
+            {location.map((x, index) => {
+              return (
+                <span key={x._id}>
+                  {x.name}
+                  {index + 1 < location.length ? ', ' : ''}
+                </span>
+              );
+            })}
+          </div>
+        ),
+      },
+      {
         title: 'Start Date',
         dataIndex: 'pollDetail',
         key: 'startDate',
