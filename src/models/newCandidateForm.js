@@ -30,7 +30,7 @@ import {
   getReporteesList,
   getDocumentSettingList,
   getListBenefit,
-  getListReferences,
+  getReferencesByCandidate,
   sendNoReferences,
   // new document verification
   getDocumentLayoutByCountry,
@@ -1574,13 +1574,16 @@ const newCandidateForm = {
     },
     *fetchListReferences({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getListReferences, {
+        const response = yield call(getReferencesByCandidate, {
           tenantId: getCurrentTenant(),
           candidateId: payload.candidateId,
         });
         const { statusCode, data: references = {} } = response;
-        if (statusCode !== 200) throw response;       
-        yield put({ type: 'saveOrigin', payload: { references,processStatus:NEW_PROCESS_STATUS.REFERENCE_VERIFICATION } });
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: { references, processStatus: NEW_PROCESS_STATUS.REFERENCE_VERIFICATION },
+        });
         return references;
       } catch (errors) {
         dialog(errors);

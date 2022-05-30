@@ -253,9 +253,9 @@ export async function getDocumentLayoutByCountry(payload) {
   });
 }
 
-export async function getListReferences(params) {
-  return request('api/referencetenant/list-references', {
+export async function getReferencesByCandidate(params) {
+  return request('api/referencetenant/get-by-candidate', {
     method: 'GET',
-    params
+    params,
   });
 }
