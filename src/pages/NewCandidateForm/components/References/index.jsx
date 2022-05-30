@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Form, Card, Button, Input, Divider } from 'antd';
+import { Row, Col, Form, Card, Button, Input, Divider, Skeleton } from 'antd';
 // import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import { connect, history } from 'umi';
 import { ONBOARDING_FORM_LINK } from '@/utils/onboarding';
@@ -9,13 +9,12 @@ import styles from './index.less';
 import ReferenceForm from './components/ReferenceForm';
 
 const References = (props) => {
-  const { data, dispatch } = props;
-  const { ticketID = '', _id: candidateId = '',references=null } = data;
+  const { data, dispatch, loadingFetchCandidate = false } = props;
+  const { ticketID = '', _id: candidateId = '', references = null } = data;
   const [numReferences, setNumReferences] = useState(3);
   const [isFilled, setIsFilled] = useState(false);
-  const [send,setSend] = useState(false);
+  const [send, setSend] = useState(false);
 
-  
   useEffect(() => {
     dispatch({
       type: 'newCandidateForm/fetchListReferences',
@@ -24,7 +23,7 @@ const References = (props) => {
       },
     });
   }, []);
-  
+
   useEffect(() => {
     if (references && references.length > 0) {
       setNumReferences(references.length);
@@ -45,7 +44,7 @@ const References = (props) => {
             numReferences,
             candidateId,
           },
-        })&&setSend(true)
+        }) && setSend(true)
       : history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.SALARY_STRUCTURE}`);
   };
 
@@ -124,6 +123,7 @@ const References = (props) => {
       </div>
     );
   };
+  // (loadingFetchCandidate)&&<Skeleton />
   return (
     <div className={styles.References}>
       <Row gutter={[24, 24]}>
@@ -149,7 +149,9 @@ const References = (props) => {
                     references.map((card, index) => (
                       <>
                         <ReferenceForm index={index + 1} data={card} />
-                        {!(references.length - 1 === index) && <Divider className={styles.divider} />}
+                        {!(references.length - 1 === index) && (
+                          <Divider className={styles.divider} />
+                        )}
                       </>
                     ))
                   ) : (
@@ -179,4 +181,7 @@ const References = (props) => {
   );
 };
 
-export default connect(({ newCandidateForm: { data } }) => ({ data }))(References);
+export default connect(({ newCandidateForm: { data }, loading }) => ({
+  data,
+  loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
+}))(References);

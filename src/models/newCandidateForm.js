@@ -1579,8 +1579,8 @@ const newCandidateForm = {
           candidateId: payload.candidateId,
         });
         const { statusCode, data: references = {} } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'saveOrigin', payload: { references } });
+        if (statusCode !== 200) throw response;       
+        yield put({ type: 'saveOrigin', payload: { references,processStatus:NEW_PROCESS_STATUS.REFERENCE_VERIFICATION } });
         return references;
       } catch (errors) {
         dialog(errors);

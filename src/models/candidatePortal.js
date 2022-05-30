@@ -390,6 +390,7 @@ const candidatePortal = {
 
           case NEW_PROCESS_STATUS.REFERENCE_VERIFICATION: {
             tempPendingTasks[2].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+            tempPendingTasks[2].dueDate = dueDate;
             break;
           }
 
