@@ -913,7 +913,10 @@ const PreviewOffer = (props) => {
                   <Button
                     type="primary"
                     onClick={onPrimaryButtonClick}
-                    className={styles.bottomBar__button__primary}
+                    className={[
+                      styles.bottomBar__button__primary,
+                      checkDisablePrimaryButton() ? styles.bottomBar__button__disabled : '',
+                    ]}
                     disabled={checkDisablePrimaryButton()}
                     loading={loading2}
                   >

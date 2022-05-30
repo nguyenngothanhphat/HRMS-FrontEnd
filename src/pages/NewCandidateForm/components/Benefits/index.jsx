@@ -513,7 +513,7 @@ class Benefits extends PureComponent {
     return (
       <>
         <Row gutter={[24, 0]}>
-          <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+          <Col span={24} xl={16}>
             <div className={styles.Benefits}>
               <Header />
               <GlobalEmployeeComponent
@@ -541,13 +541,15 @@ class Benefits extends PureComponent {
             <div className={styles.bars}>{this._renderBottomBar()}</div>
           </Col>
 
-          <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
-            <div className={styles.rightWrapper}>
-              <Row>
+          <Col span={24} xl={8}>
+            <Row gutter={[24, 24]}>
+              <Col span={24}>
                 <NoteComponent />
+              </Col>
+              <Col span={24}>
                 <MessageBox />
-              </Row>
-            </div>
+              </Col>
+            </Row>
           </Col>
         </Row>
       </>

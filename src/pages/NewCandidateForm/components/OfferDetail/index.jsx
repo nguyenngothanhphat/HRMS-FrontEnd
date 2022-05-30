@@ -668,8 +668,6 @@ const OfferDetail = (props) => {
           </div>
 
           <div className={styles.rightCol}>
-            {/* <Template type="default" files={['Offer letter 1', 'Offer letter 2', 'Offer letter 3']} /> */}
-            {/* <Template files={['Offer letter 4', 'Offer letter 5', 'Offer letter 6']} /> */}
             <Template dispatch={dispatch} type="default" files={defaultTemplates} />
             <Template
               dispatch={dispatch}

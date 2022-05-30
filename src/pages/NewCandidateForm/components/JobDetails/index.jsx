@@ -325,15 +325,15 @@ const JobDetails = (props) => {
           </div>
         </Spin>
       </Col>
-      <Col className={styles.RightComponents} xs={24} xl={8}>
-        <div className={styles.rightWrapper}>
-          <Row>
+      <Col xs={24} xl={8}>
+        <Row gutter={[24, 24]}>
+          <Col span={24}>
             <NoteComponent />
-          </Row>
-          <Row>
+          </Col>
+          <Col span={24}>
             <MessageBox />
-          </Row>
-        </div>
+          </Col>
+        </Row>
       </Col>
     </Row>
   );

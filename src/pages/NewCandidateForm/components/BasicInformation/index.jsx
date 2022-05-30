@@ -213,9 +213,10 @@ const BasicInformation = (props) => {
               <Button
                 type="primary"
                 htmlType="submit"
-                className={`${styles.bottomBar__button__primary} ${
-                  !filledBasicInformation ? styles.bottomBar__button__disabled : ''
-                }`}
+                className={[
+                  styles.bottomBar__button__primary,
+                  !filledBasicInformation ? styles.bottomBar__button__disabled : '',
+                ]}
                 disabled={!filledBasicInformation}
                 loading={loadingUpdateByHR}
               >
@@ -300,17 +301,15 @@ const BasicInformation = (props) => {
             </Row>
           </Form>
         </Col>
-        <Col className={styles.RightComponents} xs={24} xl={8}>
-          <div className={styles.rightWrapper}>
-            <Row>
-              <Col span={24}>
-                <NoteComponent />
-              </Col>
-              <Col span={24}>
-                <MessageBox />
-              </Col>
-            </Row>
-          </div>
+        <Col xs={24} xl={8}>
+          <Row gutter={[24, 24]}>
+            <Col span={24}>
+              <NoteComponent />
+            </Col>
+            <Col span={24}>
+              <MessageBox />
+            </Col>
+          </Row>
         </Col>
       </Row>
     </div>

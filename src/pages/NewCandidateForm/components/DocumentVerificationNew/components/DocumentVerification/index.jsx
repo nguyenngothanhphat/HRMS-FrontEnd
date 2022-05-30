@@ -433,39 +433,41 @@ const DocumentVerification = (props) => {
           </Row>
         </div>
       </Col>
-      <Col sm={24} xl={8} className={styles.rightWrapper}>
-        <div>
-          <NoteComponent />
-
-          {(processStatus === DRAFT || processStatus === PROFILE_VERIFICATION) && (
-            <SendEmail
-              openModalEmail={openModalEmail}
-              closeModalEmail={closeModalEmail}
-              loading4={loading4}
-              handleSendEmail={handleSendEmail}
-              handleSendFormAgain={handleSendFormAgain}
-              isSentEmail={isSentEmail}
-              generateLink={generateLink}
-              handleMarkAsDone={handleMarkAsDone}
-              firstName={firstName}
-              middleName={middleName}
-              lastName={lastName}
-              handleValueChange={handleValueChange}
-              privateEmail={privateEmail}
-              processStatusFilled={processStatus}
-              processStatus={processStatus}
-              filledDocumentVerification={filledDocumentVerification}
-              valueToFinalOffer={valueToFinalOffer}
-              changeValueToFinalOffer={changeValueToFinalOffer}
-              dispatch={dispatch}
-              candidate={candidate}
-            />
-          )}
-
-          <Row>
+      <Col xs={24} xl={8}>
+        <Row gutter={[24, 24]}>
+          <Col span={24}>
+            <NoteComponent />
+          </Col>
+          <Col span={24}>
+            {(processStatus === DRAFT || processStatus === PROFILE_VERIFICATION) && (
+              <SendEmail
+                openModalEmail={openModalEmail}
+                closeModalEmail={closeModalEmail}
+                loading4={loading4}
+                handleSendEmail={handleSendEmail}
+                handleSendFormAgain={handleSendFormAgain}
+                isSentEmail={isSentEmail}
+                generateLink={generateLink}
+                handleMarkAsDone={handleMarkAsDone}
+                firstName={firstName}
+                middleName={middleName}
+                lastName={lastName}
+                handleValueChange={handleValueChange}
+                privateEmail={privateEmail}
+                processStatusFilled={processStatus}
+                processStatus={processStatus}
+                filledDocumentVerification={filledDocumentVerification}
+                valueToFinalOffer={valueToFinalOffer}
+                changeValueToFinalOffer={changeValueToFinalOffer}
+                dispatch={dispatch}
+                candidate={candidate}
+              />
+            )}
+          </Col>
+          <Col span={24}>
             <MessageBox />
-          </Row>
-        </div>
+          </Col>
+        </Row>
       </Col>
       <CustomModal
         open={openModal}

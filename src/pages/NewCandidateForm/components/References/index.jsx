@@ -1,4 +1,4 @@
-import { Button, Card, Col, Divider, Form, Input, Row } from 'antd';
+import { Button, Card, Col, Divider, Form, Input, Row, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 // import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import { connect, history } from 'umi';
@@ -19,11 +19,13 @@ const References = (props) => {
     references = [],
     processStatus = '',
     isFilledReferences = false,
-    numReferences: numReferencesProp = 0,
+    numReferences: numReferencesProp = null,
     currentStep = 0,
+    loadingSendNoReference = false,
+    loadingFetchReferences = false,
   } = data;
-  const [numReferences, setNumReferences] = useState(3);
-  const [isSent, setIsSent] = useState(false);
+  const [numReferences, setNumReferences] = useState(0);
+  const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
     form.resetFields();
@@ -41,15 +43,23 @@ const References = (props) => {
     }
   }, []);
 
+  const getDisabled = () => {
+    if (isFilledReferences) {
+      setDisabled(false);
+    }
+
+    if (numReferencesProp && numReferencesProp > 0 && references.length === 0) {
+      setDisabled(true);
+    }
+  };
+
   useEffect(() => {
     setNumReferences(numReferencesProp);
   }, [numReferencesProp]);
 
   useEffect(() => {
-    if (processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION) {
-      setIsSent(true);
-    }
-  }, [processStatus]);
+    getDisabled();
+  }, [processStatus, numReferencesProp, JSON.stringify(references)]);
 
   const onClickPrev = () => {
     history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.DOCUMENT_VERIFICATION}`);
@@ -74,7 +84,7 @@ const References = (props) => {
           candidateId,
         },
       });
-      setIsSent(true);
+      setDisabled(true);
     } else {
       await dispatch({
         type: 'newCandidateForm/updateByHR',
@@ -121,8 +131,7 @@ const References = (props) => {
               <Input
                 placeholder="No. of references"
                 className={styles.formInput}
-                defaultValue={numReferences}
-                disabled={isSent}
+                disabled={disabled}
                 onChange={(e) => {
                   e.target.value = e.target.value.replace(/[^0-9]/g, '');
                   setNumReferences(e.target.value);
@@ -146,7 +155,7 @@ const References = (props) => {
 
   const getButtonText = () => {
     if (!isFilledReferences) {
-      if (isSent) return 'Sent';
+      if (disabled) return 'Sent';
       return 'Send';
     }
     return 'Next';
@@ -174,9 +183,10 @@ const References = (props) => {
                     onClick={onClickNext}
                     className={[
                       styles.bottomBar__button__primary,
-                      !isFilledReferences ? styles.bottomBar__button__disabled : '',
+                      disabled ? styles.bottomBar__button__disabled : '',
                     ]}
-                    disabled={!isFilledReferences}
+                    loading={loadingSendNoReference}
+                    disabled={disabled}
                   >
                     {getButtonText()}
                   </Button>
@@ -188,68 +198,69 @@ const References = (props) => {
       </div>
     );
   };
-  // (loadingFetchCandidate)&&<Skeleton />
+
   return (
     <div className={styles.References}>
       <Row gutter={[24, 24]}>
-        <Col xs={24} xl={16}>
-          <Form
-            wrapperCol={{ span: 24 }}
-            name="references"
-            initialValues={{
-              references,
-            }}
-            form={form}
-          >
-            <Row gutter={[24, 24]}>
-              <Col span={24}>
-                <Card
-                  className={styles.card}
-                  title={renderCardTitle(
-                    'References',
-                    'Candidate needs to fill in the reference details',
-                  )}
-                >
-                  {isFilledReferences ? (
-                    <Row gutter={[24, 24]}>
-                      <Form.List name="references">
-                        {(fields) => (
-                          <>
-                            {fields.map(({ key, name }, index) => (
-                              <Col span={24} key={key}>
-                                <div>
-                                  <ReferenceForm name={name} index={index} />
-                                  {numReferences > index + 1 && (
-                                    <Divider className={styles.divider} />
-                                  )}
-                                </div>
-                              </Col>
-                            ))}
-                          </>
-                        )}
-                      </Form.List>
-                    </Row>
-                  ) : (
-                    <MentionContent />
-                  )}
-                </Card>
-              </Col>
+        <Col span={24} xl={16}>
+          <Spin spinning={loadingFetchReferences}>
+            <Form
+              wrapperCol={{ span: 24 }}
+              name="references"
+              initialValues={{
+                references,
+                noOfReferences: numReferencesProp,
+              }}
+              form={form}
+            >
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <Card
+                    className={styles.card}
+                    title={renderCardTitle(
+                      'References',
+                      'Candidate needs to fill in the reference details',
+                    )}
+                  >
+                    {isFilledReferences ? (
+                      <Row gutter={[24, 24]}>
+                        <Form.List name="references">
+                          {(fields) => (
+                            <>
+                              {fields.map(({ key, name }, index) => (
+                                <Col span={24} key={key}>
+                                  <div>
+                                    <ReferenceForm name={name} index={index} />
+                                    {numReferences > index + 1 && (
+                                      <Divider className={styles.divider} />
+                                    )}
+                                  </div>
+                                </Col>
+                              ))}
+                            </>
+                          )}
+                        </Form.List>
+                      </Row>
+                    ) : (
+                      <MentionContent />
+                    )}
+                  </Card>
+                </Col>
 
-              <Col span={24}>{_renderBottomBar()}</Col>
-            </Row>
-          </Form>
+                <Col span={24}>{_renderBottomBar()}</Col>
+              </Row>
+            </Form>
+          </Spin>
         </Col>
-        <Col className={styles.RightComponents} xs={24} xl={8}>
-          <div className={styles.rightWrapper}>
-            <Row>
-              <Col span={24}>
-                <NoteComponent />
-              </Col>
-              <Col span={24}>
-                <MessageBox />
-              </Col>
-            </Row>
-          </div>
+        <Col span={24} xl={8}>
+          <Row gutter={[24, 24]}>
+            <Col span={24}>
+              <NoteComponent />
+            </Col>
+            <Col span={24}>
+              <MessageBox />
+            </Col>
+          </Row>
         </Col>
       </Row>
     </div>
@@ -258,5 +269,6 @@ const References = (props) => {
 
 export default connect(({ newCandidateForm: { data }, loading }) => ({
   data,
-  loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
+  loadingFetchReferences: loading.effects['newCandidateForm/fetchListReferences'],
+  loadingSendNoReference: loading.effects['newCandidateForm/sendNoReferenceEffect'],
 }))(References);

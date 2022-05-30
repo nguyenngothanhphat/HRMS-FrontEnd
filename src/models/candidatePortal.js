@@ -39,7 +39,7 @@ const pendingTaskDefault = [
   },
   {
     id: CANDIDATE_TASK_LINK.REFERENCES,
-    name: 'References',
+    name: 'Add References',
     dueDate: '',
     link: CANDIDATE_TASK_LINK.REFERENCES,
     status: CANDIDATE_TASK_STATUS.UPCOMING,

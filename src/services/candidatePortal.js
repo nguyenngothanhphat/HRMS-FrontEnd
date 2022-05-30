@@ -63,7 +63,7 @@ export async function getStateListByCountry(payload) {
 }
 
 export function addReference(payload) {
-  return request('/api/candidatetenant/add-references', {
+  return request('/api/referencetenant/add', {
     method: 'POST',
     data: payload,
   });

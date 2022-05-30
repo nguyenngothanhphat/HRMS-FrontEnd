@@ -35,7 +35,7 @@ const BackgroundRecheck = (props) => {
       currentStep = '',
       documentLayout = [],
     } = {},
-    loadingUpdateByHR = false,
+    // loadingUpdateByHR = false,
     dispatch,
   } = props;
 
@@ -253,7 +253,7 @@ const BackgroundRecheck = (props) => {
                     !validated ? styles.bottomBar__button__disabled : '',
                   ]}
                   disabled={!validated}
-                  loading={loadingUpdateByHR}
+                  // loading={loadingUpdateByHR}
                 >
                   Next
                 </Button>
@@ -343,7 +343,7 @@ const BackgroundRecheck = (props) => {
 
   return (
     <div className={styles.backgroundRecheck}>
-      <Row gutter={[24, 0]}>
+      <Row gutter={[24, 24]}>
         <Col span={24} xl={16}>
           <p className={styles.backgroundRecheck__title}>Document Verification</p>
           <p className={styles.backgroundRecheck__subTitle}>
@@ -354,12 +354,14 @@ const BackgroundRecheck = (props) => {
             {_renderBottomBar()}
           </Row>
         </Col>
-        <Col className={styles.backgroundRecheck__right} span={24} xl={8}>
-          <Row>
-            <NoteComponent />
-          </Row>
-          <Row>
-            <MessageBox />
+        <Col span={24} xl={8}>
+          <Row gutter={[24, 24]}>
+            <Col span={24}>
+              <NoteComponent />
+            </Col>
+            <Col span={24}>
+              <MessageBox />
+            </Col>
           </Row>
         </Col>
       </Row>
