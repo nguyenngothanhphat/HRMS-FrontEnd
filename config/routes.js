@@ -327,6 +327,10 @@ const routes = [
             authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'P_ONBOARDING_ALL'],
           },
           {
+            path: '/onboarding/list/view/:reId',
+            redirect: '/onboarding/list/view/:reId/basic-information',
+          },
+          {
             path: '/onboarding/newJoinees/view-detail/:userId',
             name: 'candidateProfile',
             hideInMenu: true,
@@ -416,19 +420,9 @@ const routes = [
             component: '../pages_admin/UsersManagement',
             authority: ['M_USER_MANAGEMENT_VIEW', OWNER],
           },
-          // {
-          //   path: '/employees-management',
-          //   name: 'employees',
-          //   icon: '/assets/images/menuIcons/members.svg',
-          //   component: '../pages_admin/EmployeesManagement',
-          //   authority: ['M_EMPLOYEE_MANAGEMENT_VIEW', OWNER],
-          // },
           {
             path: '/employees/employee-profile/:reId',
-            name: 'employeeProfile',
-            component: './EmployeeProfile',
-            hideInMenu: true,
-            authority: [OWNER],
+            redirect: '/employees/employee-profile/:reId/general-info',
           },
           {
             path: '/employees/employee-profile/:reId/:tabName',
@@ -587,15 +581,19 @@ const routes = [
               'P_TIMEOFF_T_TEAM_REQUEST_MANAGER_VIEW',
             ],
           },
+          // {
+          //   path: '/directory/employee-profile/:reId',
+          //   name: 'employeeProfile',
+          //   component: './EmployeeProfile',
+          //   hideInMenu: true,
+          // },
           {
             path: '/directory/employee-profile/:reId',
-            name: 'employeeProfile',
-            component: './EmployeeProfile',
-            hideInMenu: true,
+            redirect: '/directory/employee-profile/:reId/general-info',
           },
           {
             path: '/directory/employee-profile/:reId/:tabName',
-            // name: 'employeeProfile',
+            name: 'employeeProfile',
             component: './EmployeeProfile',
             hideInMenu: true,
           },

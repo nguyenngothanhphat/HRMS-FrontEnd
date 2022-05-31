@@ -1,5 +1,5 @@
 import { Button, Skeleton } from 'antd';
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import CommonModal from '@/components/CommonModal';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
@@ -12,113 +12,111 @@ import ProfessionalAcademicBackground from './components/ProfessionalAcademicBac
 import VisaDetails from './components/VisaDetails';
 import styles from './index.less';
 
-@connect(
-  ({
-    loading,
-    user: { currentUser: { employee: { _id: currentUserId = '' } = {} } = {}, permissions = {} },
+const GeneralInfo = (props) => {
+  const {
+    permissions = {},
+    profileOwner = false,
+    currentUserId,
+    dispatch,
     employeeProfile: {
-      idCurrentEmployee,
+      employee = '',
       originData: { generalData: { isNewComer = false } = {} } = {},
       visibleSuccess = false,
-    },
-  }) => ({
-    loadingGeneral: loading.effects['employeeProfile/fetchGeneralInfo'],
-    currentUserId,
-    visibleSuccess,
-    idCurrentEmployee,
-    isNewComer,
-    permissions,
-  }),
-)
-class GeneralInfo extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     visible: false,
-  //   };
-  // }
+    } = {},
+  } = props;
 
-  // onCancel = () => {
-  //   this.setState({ visible: false });
-  // };
+  const checkProfessionalAcademicVisible =
+    profileOwner || permissions.editProfessionalAcademic !== -1;
 
-  handleCancelModelSuccess = () => {
-    const { dispatch } = this.props;
+  const checkEmergencyContactVisible = profileOwner || permissions.editEmergencyContact !== -1;
+
+  const visible = isNewComer && currentUserId === employee;
+
+  const handleCancelModelSuccess = () => {
     dispatch({
       type: 'employeeProfile/save',
       payload: { visibleSuccess: false },
     });
   };
 
-  render() {
-    const {
-      loadingGeneral = false,
-      permissions = {},
-      profileOwner = false,
-      currentUserId,
-      idCurrentEmployee,
-      isNewComer,
-      visibleSuccess,
-    } = this.props;
-    const checkProfessionalAcademicVisible =
-      profileOwner || permissions.editProfessionalAcademic !== -1;
-    const checkEmergencyContactVisible = profileOwner || permissions.editEmergencyContact !== -1;
+  useEffect(() => {
+    if (employee) {
+      dispatch({
+        type: 'employeeProfile/fetchCountryList',
+      });
+      dispatch({
+        type: 'employeeProfile/fetchPassPort',
+        payload: { employee },
+      });
+      dispatch({
+        type: 'employeeProfile/fetchVisa',
+        payload: { employee },
+      });
+      dispatch({
+        type: 'employeeProfile/fetchAdhaarCard',
+        payload: { employee },
+      });
+      dispatch({
+        type: 'employeeProfile/fetchListSkill',
+      });
+      dispatch({
+        type: 'employeeProfile/fetchListTitle',
+      });
+    }
+  }, [employee]);
 
-    const visible = isNewComer && currentUserId === idCurrentEmployee;
-    // const visible = currentUserId === idCurrentEmployee;
-    if (loadingGeneral)
-      return (
-        <div className={styles.viewLoading}>
-          <Skeleton loading={loadingGeneral} active />
-        </div>
-      );
-    return (
-      <div className={styles.GeneralInfo}>
-        <EmployeeInformation permissions={permissions} />
-        <PersonalInformation permissions={permissions} profileOwner={profileOwner} />
-        {(permissions.viewPassportAndVisa !== -1 || profileOwner) && (
+  return (
+    <div className={styles.GeneralInfo}>
+      <EmployeeInformation permissions={permissions} />
+      <PersonalInformation permissions={permissions} profileOwner={profileOwner} />
+      {(permissions.viewPassportAndVisa !== -1 || profileOwner) && (
+        <>
+          <PassportDetails profileOwner={profileOwner} permissions={permissions} />
+          <VisaDetails profileOwner={profileOwner} permissions={permissions} />
+        </>
+      )}
+      {checkEmergencyContactVisible && (
+        <EmergencyContact permissions={permissions} profileOwner={profileOwner} />
+      )}
+      {checkProfessionalAcademicVisible && (
+        <ProfessionalAcademicBackground permissions={permissions} profileOwner={profileOwner} />
+      )}
+      <ModalAddInfo visible={visible} />
+      <CommonModal
+        width={550}
+        visible={visibleSuccess}
+        hasFooter={false}
+        onClose={handleCancelModelSuccess}
+        hasHeader={false}
+        content={
           <>
-            <PassportDetails profileOwner={profileOwner} permissions={permissions} />
-            <VisaDetails profileOwner={profileOwner} permissions={permissions} />
+            <div style={{ textAlign: 'center' }}>
+              <img src={imageAddSuccess} alt="update success" />
+            </div>
+            <br />
+            <br />
+            <p style={{ textAlign: 'center', color: '#707177', fontWeight: 500 }}>
+              Update information successfully
+            </p>
+            <div className={styles.spaceFooterModalSuccess}>
+              <Button onClick={handleCancelModelSuccess} className={styles.btnOkModalSuccess}>
+                Okay
+              </Button>
+            </div>
           </>
-        )}
-        {checkEmergencyContactVisible && (
-          <EmergencyContact permissions={permissions} profileOwner={profileOwner} />
-        )}
-        {checkProfessionalAcademicVisible && (
-          <ProfessionalAcademicBackground permissions={permissions} profileOwner={profileOwner} />
-        )}
-        <ModalAddInfo visible={visible} />
-        <CommonModal
-          width={550}
-          visible={visibleSuccess}
-          hasFooter={false}
-          onClose={this.handleCancelModelSuccess}
-          hasHeader={false}
-          content={
-            <>
-              <div style={{ textAlign: 'center' }}>
-                <img src={imageAddSuccess} alt="update success" />
-              </div>
-              <br />
-              <br />
-              <p style={{ textAlign: 'center', color: '#707177', fontWeight: 500 }}>
-                Update information successfully
-              </p>
-              <div className={styles.spaceFooterModalSuccess}>
-                <Button
-                  onClick={this.handleCancelModelSuccess}
-                  className={styles.btnOkModalSuccess}
-                >
-                  Okay
-                </Button>
-              </div>
-            </>
-          }
-        />
-      </div>
-    );
-  }
-}
+        }
+      />
+    </div>
+  );
+};
 
-export default GeneralInfo;
+export default connect(
+  ({
+    user: { currentUser: { employee: { _id: currentUserId = '' } = {} } = {}, permissions = {} },
+    employeeProfile,
+  }) => ({
+    currentUserId,
+    employeeProfile,
+    permissions,
+  }),
+)(GeneralInfo);

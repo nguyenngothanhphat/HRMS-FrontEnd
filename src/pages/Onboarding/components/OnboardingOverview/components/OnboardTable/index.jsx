@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import { Table, Empty, Dropdown, Menu, Popover } from 'antd';
 import { formatMessage, Link, connect, history } from 'umi';
 import moment from 'moment';
-
-// import CustomModal from '@/components/CustomModal/index';
-// import ProfileModalContent from '../FinalOffers/components/ProfileModalContent';
 import MenuIcon from '@/assets/menuDots.svg';
 import {
   NEW_PROCESS_STATUS,
@@ -37,8 +34,6 @@ class OnboardTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // pageSelected: 1,
-      // currentRecord: {},
       reassignModalVisible: false,
       currentEmpId: '',
       reassignTicketId: '',
@@ -141,28 +136,6 @@ class OnboardTable extends Component {
     });
   };
 
-  // closeModal = () => {
-  //   this.setState({
-  //     openModal: false,
-  //   });
-  // };
-
-  // openModal = () => {
-  //   this.setState({
-  //     openModal: true,
-  //   });
-  // };
-
-  // getModalContent = () => {
-  //   const { dispatch } = this.props;
-  //   const { currentRecord } = this.state;
-  //   const { candidateId = '' } = currentRecord;
-  //   return (
-  //     <ProfileModalContent closeModal={this.closeModal} dispatch={dispatch} candidateId={candidateId} />
-  //   );
-  //   // return <ModalContent closeModal={this.closeModal} />;
-  // };
-
   renderCandidateId = (candidateId = '', row) => {
     const id = candidateId.replace('#', '') || '';
     const { currentStep = 0 } = row;
@@ -233,7 +206,7 @@ class OnboardTable extends Component {
       return;
     }
     dispatch({
-      type: 'onboard/inititateBackgroundCheckEffect',
+      type: 'onboard/initiateBackgroundCheckEffect',
       payload: {
         rookieID: id,
         tenantId: getCurrentTenant(),
@@ -482,20 +455,6 @@ class OnboardTable extends Component {
       dateJoin = '',
     } = payload;
 
-    // const {
-    //   FINAL_OFFERS_DRAFT,
-
-    //   RENEGOTIATE_PROVISIONAL_OFFERS,
-    //   RENEGOTIATE_FINAL_OFFERS,
-
-    //   ACCEPTED_PROVISIONAL_OFFERS,
-
-    //   APPROVED_OFFERS,
-    //   ACCEPTED_FINAL_OFFERS,
-
-    //   SENT_FINAL_OFFERS,
-    // } = PROCESS_STATUS; // old status
-
     const { DRAFT, OFFER_RELEASED, OFFER_ACCEPTED, JOINED } = NEW_PROCESS_STATUS; // new status
 
     const isRemovable = processStatusId === DRAFT;
@@ -508,94 +467,12 @@ class OnboardTable extends Component {
     let menuItem = '';
 
     switch (processStatusId) {
-      // case DRAFT:
-      //   menuItem = (
-      //     <Menu.Item>
-      //       <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData()}>
-      //         <span>Continue</span>
-      //       </Link>
-      //     </Menu.Item>
-      //   );
-      //   break;
-
-      // case RENEGOTIATE_PROVISIONAL_OFFERS:
-      // case RENEGOTIATE_FINAL_OFFERS:
-      //   menuItem = (
-      //     <>
-      //       <Menu.Item>
-      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData()}>
-      //           <span>Schedule 1-on-1</span>
-      //         </Link>
-      //       </Menu.Item>
-      //       <Menu.Item>
-      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-      //           <span className={styles.viewDraft}>View Form</span>
-      //         </Link>
-      //       </Menu.Item>
-      //     </>
-      //   );
-      //   break;
-
-      // case ACCEPTED_PROVISIONAL_OFFERS:
-      //   menuItem = (
-      //     <Menu.Item>
-      //       <Link
-      //         to={`/onboarding/list/view/${id}`}
-      //         onClick={() => {
-      //           this.initiateBackgroundCheck(id);
-      //         }}
-      //       >
-      //         <span>Initiate Background Check</span>
-      //       </Link>
-      //     </Menu.Item>
-      //   );
-      //   break;
-
-      // case FINAL_OFFERS_DRAFT:
-      //   menuItem = (
-      //     <>
-      //       <Menu.Item>
-      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-      //           Send for approval
-      //         </Link>
-      //       </Menu.Item>
-      //       <Menu.Item>
-      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-      //           <span className={styles.viewDraft}>View Form</span>
-      //         </Link>
-      //       </Menu.Item>
-      //       <Menu.Item>
-      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-      //           Discard offer
-      //         </Link>
-      //       </Menu.Item>
-      //     </>
-      //   );
-      //   break;
-
-      // case APPROVED_OFFERS:
-      //   menuItem = (
-      //     <>
-      //       <Menu.Item>
-      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-      //           Send to candidate
-      //         </Link>
-      //       </Menu.Item>
-      //       <Menu.Item>
-      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-      //           <span className={styles.viewDraft}>View Form</span>
-      //         </Link>
-      //       </Menu.Item>
-      //     </>
-      //   );
-      //   break;
-
       case OFFER_RELEASED:
         menuItem = isExpired ? (
           <>
             <Menu.Item>
-              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-                <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
+              <Link to={`/onboarding/list/view/${id}`}>
+                <span>{actionText}</span>
               </Link>
             </Menu.Item>
             <Menu.Item>
@@ -611,8 +488,8 @@ class OnboardTable extends Component {
           </>
         ) : (
           <Menu.Item>
-            <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-              <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
+            <Link to={`/onboarding/list/view/${id}`}>
+              <span>{actionText}</span>
             </Link>
           </Menu.Item>
         );
@@ -629,10 +506,8 @@ class OnboardTable extends Component {
             </Menu.Item>
             <Menu.Item>
               <div
-                onClick={
-                  () => this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate)
-                  // eslint-disable-next-line react/jsx-curly-newline
-                }
+                onClick={() =>
+                  this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate)}
               >
                 Initiate joining formalities
               </div>
@@ -657,10 +532,8 @@ class OnboardTable extends Component {
         {isHRManager && processStatusId !== OFFER_ACCEPTED && processStatusId !== JOINED && (
           <Menu.Item>
             <div
-              onClick={
-                () => this.handleReassignModal(true, currentEmpId, id, processStatusId, type)
-                // eslint-disable-next-line react/jsx-curly-newline
-              }
+              onClick={() =>
+                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)}
               className={styles.actionText}
             >
               Re-assign
@@ -875,15 +748,6 @@ class OnboardTable extends Component {
             dataSource={list}
             loading={loading || loadingFetch || loadingSearch}
             pagination={pagination}
-            onRow={(record) => {
-              return {
-                onMouseEnter: () => {
-                  this.setState({
-                    currentRecord: record,
-                  });
-                }, // Hover mouse on row
-              };
-            }}
             scroll={list.length > 0 ? { x: '90vw', y: 'max-content' } : {}}
           />
         </div>

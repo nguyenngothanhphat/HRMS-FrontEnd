@@ -123,7 +123,7 @@ class SalaryStructure extends PureComponent {
     if (loadingFetchCandidate) return <Skeleton />;
     return (
       <Row gutter={[24, 24]}>
-        <Col xs={24} xl={16}>
+        <Col span={24} xl={16}>
           <div className={styles.salaryStructure}>
             <Form wrapperCol={{ span: 24 }} name="basic" onFinish={this.onFinish}>
               <div className={styles.salaryStructure__top}>
@@ -134,13 +134,12 @@ class SalaryStructure extends PureComponent {
             </Form>
           </div>
         </Col>
-        <Col xs={24} xl={8}>
-          <Row className={styles.rightWrapper}>
+        <Col span={24} xl={8}>
+          <Row gutter={[24, 24]}>
             <Col span={24}>{statusSalary ? <SalaryAcceptance /> : <NoteComponent />}</Col>
             <Col span={24}>
               <MessageBox />
             </Col>
-
             <Col span={24}>{this._renderSalaryNote()}</Col>
           </Row>
         </Col>

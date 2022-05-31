@@ -138,7 +138,8 @@ class AddActionBTN extends Component {
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>
-                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {projectList.map((project) => (
                   <Option value={project.id}>{project.projectName}</Option>
@@ -155,7 +156,8 @@ class AddActionBTN extends Component {
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>
-                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {statusList.map((status) => (
                   <Option value={status}>{status}</Option>
@@ -258,12 +260,20 @@ class AddActionBTN extends Component {
                   <Row>
                     <Col span={12}>Current resource allocation :</Col>
                     <Col span={12}>
-                      <p>
-                        <span style={{ color: '#2C6DF9' }}>2</span>/3 UX Designers (Billable)
-                      </p>
-                      <p>
-                        <span style={{ color: '#2C6DF9' }}>1</span>/2 UI Designer (Billable)
-                      </p>
+                      {projectDetail?.resourceTypes.length > 0 ? (
+                        projectDetail?.resourceTypes.map((item) => {
+                          return (
+                            <p>
+                              <span style={{ color: '#2C6DF9' }}>{item?.number_of_applied}</span>
+                              {`/${item?.number_of_resources} ${item?.type_detail?.name} (${item?.billing_status})`}
+                            </p>
+                          );
+                        })
+                      ) : (
+                        <p>
+                          <span style={{ color: '#2C6DF9' }}>No Data</span>
+                        </p>
+                      )}
                     </Col>
                   </Row>
                 </Col>

@@ -14,16 +14,15 @@ import styles from './index.less';
     loading,
     employeeProfile: {
       AdhaarCard = {},
-      idCurrentEmployee = '',
+      employee = '',
       originData: {
         generalData: generalDataOrigin = {},
         employmentData: { location: locationProp = {} } = {},
         taxData = {},
       } = {},
       tempData: { generalData = {} } = {},
-      tenantCurrentEmployee = '',
+
       documentCategories = [],
-      companyCurrentEmployee = '',
     } = {},
     upload: { employeeInformationURL = '' },
     user: { currentUser = [] },
@@ -33,13 +32,12 @@ import styles from './index.less';
     generalDataOrigin,
     generalData,
     employeeInformationURL,
-    idCurrentEmployee,
+    employee,
     AdhaarCard,
     taxData,
     currentUser,
-    tenantCurrentEmployee,
+
     documentCategories,
-    companyCurrentEmployee,
     locationProp,
   }),
 )
@@ -81,7 +79,7 @@ class Edit extends PureComponent {
   };
 
   processDataChanges = () => {
-    const { generalData: generalDataTemp, tenantCurrentEmployee = '' } = this.props;
+    const { generalData: generalDataTemp } = this.props;
     const {
       urlFile = '',
       legalGender = '',
@@ -115,7 +113,6 @@ class Edit extends PureComponent {
       adhaarCardNumber,
       uanNumber,
       nationalId,
-      tenantId: tenantCurrentEmployee,
     };
   };
 
@@ -161,11 +158,9 @@ class Edit extends PureComponent {
   handleUpLoadAdhaarCard = () => {
     const {
       dispatch,
-      idCurrentEmployee = '',
+      employee = '',
       AdhaarCard = {},
       generalData = {},
-      tenantCurrentEmployee = '',
-      companyCurrentEmployee = '',
       documentCategories = [],
     } = this.props;
 
@@ -182,21 +177,18 @@ class Edit extends PureComponent {
         dispatch({
           type: 'employeeProfile/fetchDocumentAdd',
           payload: {
-            tenantId: tenantCurrentEmployee,
             key: 'Adhaar Card',
             attachment: file.id,
             category: indentityCategory?._id,
-            employee: idCurrentEmployee,
-            company: companyCurrentEmployee,
+            employee,
           },
         }).then((id) => {
           dispatch({
             type: 'employeeProfile/fetchAdhaarcardAdd',
             payload: {
               document: id,
-              employee: idCurrentEmployee,
+              employee,
               adhaarNumber: generalData.adhaarCardNumber,
-              tenantId: tenantCurrentEmployee,
             },
           });
         });
@@ -207,9 +199,7 @@ class Edit extends PureComponent {
             key: 'Adhaar Card',
             attachment: file?.id,
             category: indentityCategory?._id,
-            employee: idCurrentEmployee,
-            tenantId: tenantCurrentEmployee,
-            company: companyCurrentEmployee,
+            employee,
           },
         }).then((id) => this.handleUpdateAdhaarCard(id));
       } else {
@@ -218,7 +208,6 @@ class Edit extends PureComponent {
           payload: {
             attachment: file?.id,
             id: AdhaarCard?.document?._id,
-            tenantId: tenantCurrentEmployee,
             category: indentityCategory?._id,
           },
         }).then((doc) => this.handleUpdateAdhaarCard(doc));
@@ -235,13 +224,7 @@ class Edit extends PureComponent {
   };
 
   handleUpdateAdhaarCard = (doc) => {
-    const {
-      dispatch,
-      AdhaarCard,
-      generalDataOrigin,
-      generalData,
-      tenantCurrentEmployee = '',
-    } = this.props;
+    const { dispatch, AdhaarCard, generalDataOrigin, generalData } = this.props;
     const { adhaarCardNumber: adhaarCardNumberOrigin } = generalDataOrigin;
     const { adhaarCardNumber: adhaarCardNumberTemp } = generalData;
     const getNewAdhaarCard =
@@ -255,7 +238,6 @@ class Edit extends PureComponent {
         document: doc._id,
         id: AdhaarCard._id,
         adhaarNumber: getNewAdhaarCard,
-        tenantId: tenantCurrentEmployee,
       },
     });
   };
@@ -407,7 +389,11 @@ class Edit extends PureComponent {
                 },
               ]}
             >
-              <Input className={styles.inputForm} disabled={!(permissions.editWorkEmail !== -1)} />
+              <Input
+                className={styles.inputForm}
+                disabled={!(permissions.editWorkEmail !== -1)}
+                placeholder="Enter the Work Email"
+              />
             </Form.Item>
             <Form.Item
               label="Work Number"
@@ -423,7 +409,7 @@ class Edit extends PureComponent {
                 },
               ]}
             >
-              <Input className={styles.inputForm} />
+              <Input className={styles.inputForm} placeholder="Enter the Work Number" />
             </Form.Item>
 
             {checkIndiaLocation ? (
@@ -447,6 +433,7 @@ class Edit extends PureComponent {
                       <Input
                         className={isLt5M ? styles.inputForm : styles.inputFormImageValidate}
                         disabled={disabledFields}
+                        placeholder="Enter the Adhaar Card Number"
                       />
                     </Form.Item>
                   </Tooltip>
@@ -509,7 +496,11 @@ class Edit extends PureComponent {
                     },
                   ]}
                 >
-                  <Input className={styles.inputForm} disabled={disabledFields} />
+                  <Input
+                    className={styles.inputForm}
+                    disabled={disabledFields}
+                    placeholder="Enter the UAN Number"
+                  />
                 </Form.Item>
               </Tooltip>
             ) : null}
@@ -526,7 +517,11 @@ class Edit extends PureComponent {
                     },
                   ]}
                 >
-                  <Input className={styles.inputForm} disabled={disabledFields} />
+                  <Input
+                    className={styles.inputForm}
+                    disabled={disabledFields}
+                    placeholder="Enter the National Identification Number"
+                  />
                 </Form.Item>
               </Tooltip>
             ) : null}
@@ -545,7 +540,11 @@ class Edit extends PureComponent {
                     },
                   ]}
                 >
-                  <Input className={styles.inputForm} disabled={disabledFields} />
+                  <Input
+                    className={styles.inputForm}
+                    disabled={disabledFields}
+                    placeholder="Enter the Social Security Number"
+                  />
                 </Form.Item>
               </Tooltip>
             ) : null}

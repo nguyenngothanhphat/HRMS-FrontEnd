@@ -23,7 +23,7 @@ const ModalAddInfo = (props) => {
     listSkill,
     generalId,
     loading,
-    idCurrentEmployee,
+    employee,
     location,
     generalData = {},
   } = props;
@@ -35,10 +35,6 @@ const ModalAddInfo = (props) => {
       type: 'employeeProfile/fetchListRelation',
       payload: {},
     });
-    // dispatch({
-    //   type: 'employeeProfile/fetchListSkill',
-    //   payload: {},
-    // });
   }, []);
   const [resultForm, setResultForm] = useState({});
 
@@ -74,18 +70,7 @@ const ModalAddInfo = (props) => {
   // Certifications
   const [arrCertification, setArrCertification] = useState([]);
   const [numOfCertification, setNumOfCertification] = useState(0);
-  // const [newSkill] = useState(false);
-  // const tagRender = (prop) => {
-  //   const { label, onClose } = prop;
-  //   return (
-  //     <Tag
-  //       icon={<CloseCircleOutlined className={styles.iconClose} onClick={onClose} />}
-  //       color="#EAECEF"
-  //     >
-  //       {label}
-  //     </Tag>
-  //   );
-  // };
+
   const [objUrl, setObjURL] = useState({});
   const uploadFile = (item, url) => {
     const obj = { ...objUrl };
@@ -127,7 +112,7 @@ const ModalAddInfo = (props) => {
         certifications.push({
           name: certificationName[`certification${item}`] || 'certification',
           urlFile: objUrl[`url${item}`],
-          employee: idCurrentEmployee,
+          employee,
           company: getCurrentCompany(),
         });
       }
@@ -142,15 +127,6 @@ const ModalAddInfo = (props) => {
       });
     }
 
-    // const tempSkill = skills ? skills.filter((item) => item !== 'Other') : [];
-    // const checkOtherSkill = otherSkills ? otherSkills.toUpperCase().replace(' ','') : null;
-    // const checkDuplication = listSkill.filter((e) => e.name.toUpperCase().replace(' ','') === checkOtherSkill) || [];
-    // if(checkDuplication.length > 0) {
-    //   notification.error({
-    //     message: 'This skill is available on the skill list above, please select it on skills.',
-    //   });
-    //   return
-    // }
     const obj = {
       ...resultForm,
       certifications,
@@ -174,11 +150,7 @@ const ModalAddInfo = (props) => {
     tempArr.splice(key, 1);
     setArrCertification(tempArr);
   };
-  // const changeSkill = (arr) => {
-  //   if (arr.includes('Other')) {
-  //     setNewSkill(true);
-  //   } else setNewSkill(false);
-  // };
+
   // bank account
   const [arrBankAccount, setArrBankAccount] = useState([]);
   const [numOfBank, setNumOfBank] = useState(0);
@@ -209,7 +181,7 @@ const ModalAddInfo = (props) => {
             bankName: bankName[`bankName${item}`],
             branchName: branchName[`branchName${item}`],
             swiftcode: swiftcode[`swiftcode${item}`],
-            employee: idCurrentEmployee,
+            employee,
           }),
         );
         break;
@@ -222,7 +194,7 @@ const ModalAddInfo = (props) => {
             routingNumber: routingNumber[`routingNumber${item}`],
             accountType: accountType[`accountType${item}`],
 
-            employee: idCurrentEmployee,
+            employee,
           }),
         );
         break;
@@ -239,7 +211,7 @@ const ModalAddInfo = (props) => {
             ifscCode: ifscCode[`ifscCode${item}`],
             uanNumber: uanNumber[`uanNumber${item}`],
             // swiftcode: swiftcode[`swiftcode${item}`],
-            employee: idCurrentEmployee,
+            employee,
           }),
         );
         break;
@@ -287,13 +259,13 @@ const ModalAddInfo = (props) => {
     };
 
     if (country === 'IN') {
-      taxDetails = { ...values, employee: idCurrentEmployee };
+      taxDetails = { ...values, employee };
       payload = { ...payload, taxDetails };
     } else {
       taxDetails = {
         ...values,
         panNum: noOfDependents,
-        employee: idCurrentEmployee,
+        employee,
       };
       payload = { ...payload, taxDetails, uanNumber: nationalId };
     }
@@ -379,8 +351,7 @@ const ModalAddInfo = (props) => {
                         showArrow
                         showSearch
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                         className={styles.inputForm}
                       >
                         {listRelation.map((value, i) => {
@@ -1453,8 +1424,7 @@ export default connect(
       tempData: { generalData = {} } = {},
       listRelation = [],
       listSkill = [],
-      idCurrentEmployee,
-      tenantCurrentEmployee = '',
+      employee,
     } = {},
   }) => ({
     loading: loading.effects['employeeProfile/updateFirstGeneralInfo'],
@@ -1463,7 +1433,6 @@ export default connect(
     generalData,
     listSkill,
     listRelation,
-    idCurrentEmployee,
-    tenantCurrentEmployee,
+    employee,
   }),
 )(ModalAddInfo);
