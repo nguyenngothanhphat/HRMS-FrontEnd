@@ -35,7 +35,7 @@ const EditBank = (props) => {
     });
   };
   const processDataChangesHaveId = () => {
-    const { bankData: bankDataTemp, tenantCurrentEmployee = '' } = props;
+    const { bankData: bankDataTemp } = props;
     const {
       bankName = '',
       branchName = '',
@@ -59,12 +59,11 @@ const EditBank = (props) => {
       ifscCode,
       micrcCode,
       uanNumber,
-      tenantId: tenantCurrentEmployee,
     };
     return payloadChanges;
   };
   const processDataChangesNoId = () => {
-    const { bankData: bankDataTemp, idCurrentEmployee, tenantCurrentEmployee = '' } = props;
+    const { bankData: bankDataTemp, employee } = props;
     const {
       bankName = '',
       branchName = '',
@@ -77,7 +76,7 @@ const EditBank = (props) => {
       uanNumber = '',
     } = bankDataTemp[0];
     const payloadChanges = {
-      employee: idCurrentEmployee,
+      employee,
       bankName,
       branchName,
       accountNumber,
@@ -87,7 +86,6 @@ const EditBank = (props) => {
       ifscCode,
       micrcCode,
       uanNumber,
-      tenantId: tenantCurrentEmployee,
     };
     return payloadChanges;
   };
@@ -319,20 +317,19 @@ export default connect(
   ({
     loading,
     employeeProfile: {
-      idCurrentEmployee = '',
+      employee = '',
       originData: {
         bankData: bankDataOrigin = [],
         employmentData: { location: locationProp = {} } = {},
       } = {},
       tempData: { bankData = [] } = {},
-      tenantCurrentEmployee = '',
     } = {},
   }) => ({
     loading: loading.effects['employeeProfile/updateGeneralInfo'],
-    idCurrentEmployee,
+    employee,
     bankDataOrigin,
     bankData,
-    tenantCurrentEmployee,
+
     locationProp,
   }),
 )(EditBank);

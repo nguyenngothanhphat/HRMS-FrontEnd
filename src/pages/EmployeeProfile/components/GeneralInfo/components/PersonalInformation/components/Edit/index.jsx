@@ -1,292 +1,171 @@
-/* eslint-disable no-console */
-import React, { PureComponent } from 'react';
-import { Row, Checkbox, Input, Form, Select, Button, Spin } from 'antd';
+/* eslint-disable camelcase */
+import { Button, Checkbox, Form, Input, Row, Select } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
 import styles from './index.less';
 
-@connect(
-  ({
-    loading,
-    employeeProfile: {
-      originData: { generalData: generalDataOrigin = {} } = {},
-      tempData: { generalData = {} } = {},
-      countryList = [],
-      tenantCurrentEmployee = '',
-    } = {},
-  }) => ({
-    loadingGeneral: loading.effects['employeeProfile/updateGeneralInfo'],
-    loadingStates: loading.effects['employeeProfile/fetchCountryStates'],
+const Edit = (props) => {
+  const [form] = Form.useForm();
+  const {
+    dispatch,
+    generalData = {},
     generalDataOrigin,
-    generalData,
-    countryList,
-    tenantCurrentEmployee,
-  }),
-)
-class Edit extends PureComponent {
-  formRef = React.createRef();
+    countryList = [],
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isChange: false,
-      reListStates: [],
-      curListStates: [],
-      residentAddress: {
-        addressLine1: '',
-        addressLine2: '',
-        country: {
-          _id: '',
-          name: '',
-        },
-        state: '',
-        zipCode: '',
-        city: '',
+    loading,
+    handleCancel = () => {},
+    // profileOwner = false,
+    loadingStates,
+  } = props;
+
+  const {
+    personalNumber = '',
+    personalEmail = '',
+    Blood = '',
+    maritalStatus = '',
+    nationality = '',
+    residentAddress: {
+      addressLine1: r_addressLine1 = '',
+      addressLine2: r_addressLine2 = '',
+      city: r_city = '',
+      country: r_countryObj = {} || {},
+      state: r_state = '',
+      zipCode: r_zipCode = '',
+    } = {},
+    currentAddress: {
+      addressLine1: c_addressLine1 = '',
+      addressLine2: c_addressLine2 = '',
+      city: c_city = '',
+      country: c_countryObj = {} || {},
+      state: c_state = '',
+      zipCode: c_zipCode = '',
+    } = {},
+    _id: id = '',
+  } = generalData || {};
+
+  const { _id: r_country } = r_countryObj || {};
+  const { _id: c_country } = c_countryObj || {};
+
+  const [reListStates, setReListStates] = useState([]);
+  const [curListStates, setCurListStates] = useState([]);
+  const [isSameAddress, setIsSameAddress] = useState(false);
+
+  useEffect(() => {
+    // check same address
+    if (
+      Object.keys(generalData.residentAddress || {}).length > 0 &&
+      Object.keys(generalData.currentAddress || {}).length > 0
+    ) {
+      const keys = Object.keys(generalData.currentAddress || {});
+      const check = keys.every(
+        (x) =>
+          JSON.stringify(generalData.residentAddress[x]) ===
+          JSON.stringify(generalData.currentAddress[x]),
+      );
+      setIsSameAddress(check);
+    }
+  }, [JSON.stringify(generalData)]);
+
+  const onSelectCountry = (countryId, type) => {
+    dispatch({
+      type: 'employeeProfile/fetchCountryStates',
+      payload: {
+        id: countryId,
       },
-      currentAddress: {
-        addressLine1: '',
-        addressLine2: '',
-        country: {
-          _id: '',
-          name: '',
-        },
-        state: '',
-        zipCode: '',
-        city: '',
-      },
-    };
-  }
-
-  componentDidMount() {
-    const { generalData } = this.props;
-    const { residentAddress: residents = {}, currentAddress: current = {} } = generalData;
-
-    this.setState({
-      residentAddress: residents,
-      currentAddress: current,
+    }).then((data) => {
+      switch (type) {
+        case 'resident':
+          setReListStates(data);
+          break;
+        case 'current':
+          setCurListStates(data);
+          break;
+        default: {
+          break;
+        }
+      }
     });
-  }
+  };
 
-  handleChange = (changedValues) => {
-    const { dispatch, generalData, generalDataOrigin } = this.props;
+  useEffect(() => {
+    if (r_country) {
+      onSelectCountry(r_country, 'resident');
+    }
+    if (c_country) {
+      onSelectCountry(c_country, 'current');
+    }
+  }, [c_country, r_country]);
 
+  const setSameAddress = (values) => {
+    form.setFieldsValue({
+      c_addressLine1: values.r_addressLine1,
+      c_addressLine2: values.r_addressLine2,
+      c_city: values.r_city,
+      c_country: values.r_country,
+      c_state: values.r_state,
+      c_zipCode: values.r_zipCode,
+    });
+  };
+
+  useEffect(() => {
+    if (isSameAddress) {
+      const values = form.getFieldValue();
+      setSameAddress(values);
+    }
+  }, [isSameAddress]);
+
+  const onValuesChange = (changedValues, allValues) => {
     const generalInfo = {
       ...generalData,
-      ...changedValues,
+      ...allValues,
     };
     const isModified = JSON.stringify(generalInfo) !== JSON.stringify(generalDataOrigin);
 
-    dispatch({
-      type: 'employeeProfile/saveTemp',
-      payload: { generalData: generalInfo },
-    });
+    if (isSameAddress) {
+      setSameAddress(allValues);
+    }
     dispatch({
       type: 'employeeProfile/save',
       payload: { isModified },
     });
   };
 
-  getCountryObjData = (idCountry) => {
-    const { countryList } = this.props;
-    let _name = '';
-    countryList.forEach((item) => {
-      const { _id, name } = item;
-      if (_id === idCountry) {
-        _name = name;
-      }
-    });
-
-    return {
-      _id: idCountry,
-      name: _name,
-    };
-  };
-
-  handleChangeAddress = (name, value) => {
-    const { dispatch } = this.props;
-
-    switch (name) {
-      case 'r_Addressline1':
-        this.setState((prevState) => ({
-          residentAddress: {
-            ...prevState.residentAddress,
-            addressLine1: value,
-          },
-        }));
-        break;
-      case 'r_Addressline2':
-        this.setState((prevState) => ({
-          residentAddress: {
-            ...prevState.residentAddress,
-            addressLine2: value,
-          },
-        }));
-        break;
-      case 'r_city':
-        this.setState((prevState) => ({
-          residentAddress: {
-            ...prevState.residentAddress,
-            city: value,
-          },
-        }));
-        break;
-      case 'r_countryName':
-        dispatch({
-          type: 'employeeProfile/fetchCountryStates',
-          payload: {
-            id: value,
-          },
-        }).then((data) => {
-          this.setState({ reListStates: data });
-        });
-        // eslint-disable-next-line no-case-declarations
-        // const reCountry = this.getCountryObjData(value);
-
-        // this.setState((prevState) => ({
-        //   residentAddress: {
-        //     ...prevState.residentAddress,
-        //     country: reCountry,
-        //   },
-        // }));
-        this.setState((prevState) => ({
-          isChange: true,
-          residentAddress: {
-            ...prevState.residentAddress,
-            country: {
-              _id: value,
-            },
-          },
-        }));
-        break;
-      case 'r_state':
-        this.setState((prevState) => ({
-          residentAddress: {
-            ...prevState.residentAddress,
-            state: value,
-          },
-        }));
-        break;
-      case 'r_zipCode':
-        this.setState((prevState) => ({
-          residentAddress: {
-            ...prevState.residentAddress,
-            zipCode: value,
-          },
-        }));
-        break;
-      case 'c_Addressline1':
-        this.setState((prevState) => ({
-          currentAddress: {
-            ...prevState.currentAddress,
-            addressLine1: value,
-          },
-        }));
-        break;
-      case 'c_Addressline2':
-        this.setState((prevState) => ({
-          currentAddress: {
-            ...prevState.currentAddress,
-            addressLine2: value,
-          },
-        }));
-        break;
-      case 'c_city':
-        this.setState((prevState) => ({
-          currentAddress: {
-            ...prevState.currentAddress,
-            city: value,
-          },
-        }));
-        break;
-      case 'c_countryName':
-        dispatch({
-          type: 'employeeProfile/fetchCountryStates',
-          payload: {
-            id: value,
-          },
-        }).then((data) => {
-          this.setState({ curListStates: data });
-        });
-
-        // eslint-disable-next-line no-case-declarations
-        // const curCountry = this.getCountryObjData(value);
-
-        this.setState((prevState) => ({
-          currentAddress: {
-            ...prevState.currentAddress,
-            country: {
-              _id: value,
-            },
-          },
-        }));
-        break;
-      case 'c_state':
-        this.setState((prevState) => ({
-          currentAddress: {
-            ...prevState.currentAddress,
-            state: value,
-          },
-        }));
-        break;
-      default:
-        this.setState((prevState) => ({
-          currentAddress: {
-            ...prevState.currentAddress,
-            zipCode: value,
-          },
-        }));
-        break;
-    }
-  };
-
-  processDataChanges = () => {
-    const { generalData: generalDataTemp, tenantCurrentEmployee = '' } = this.props;
-    const { currentAddress, residentAddress, isChange } = this.state;
-
-    const {
-      personalNumber = '',
-      personalEmail = '',
-      Blood = '',
-      maritalStatus = '',
-      nationality = '',
-      linkedIn = '',
-      _id: id = '',
-    } = generalDataTemp;
-
+  const processDataChanges = (values) => {
     const payloadChanges = {
       id,
       personalNumber,
       personalEmail,
       Blood,
       maritalStatus,
-      linkedIn,
       nationality,
-      residentAddress: isChange
-        ? {
-            ...residentAddress,
-            country: residentAddress.country?._id,
-          }
-        : residentAddress,
-      currentAddress: isChange
-        ? {
-            ...currentAddress,
-            country: currentAddress.country?._id,
-          }
-        : currentAddress,
-      tenantId: tenantCurrentEmployee,
+      residentAddress: {
+        addressLine1: values.r_addressLine1,
+        addressLine2: values.r_addressLine2,
+        city: values.r_city,
+        country: values.r_country,
+        state: values.r_state,
+        zipCode: values.r_zipCode,
+      },
+      currentAddress: {
+        addressLine1: values.c_addressLine1,
+        addressLine2: values.c_addressLine2,
+        city: values.c_city,
+        country: values.c_country,
+        state: values.c_state,
+        zipCode: values.c_zipCode,
+      },
     };
 
     return payloadChanges;
   };
 
-  processDataKept = () => {
-    const { generalData } = this.props;
+  const processDataKept = () => {
     const newObj = { ...generalData };
     const listKey = [
       'personalNumber',
       'personalEmail',
       'Blood',
       'maritalStatus',
-      'linkedIn',
       'nationality',
       'residentAddress',
       'currentAddress',
@@ -295,10 +174,9 @@ class Edit extends PureComponent {
     return newObj;
   };
 
-  handleSave = () => {
-    const { dispatch } = this.props;
-    const payload = this.processDataChanges() || {};
-    const dataTempKept = this.processDataKept() || {};
+  const handleSave = (values) => {
+    const payload = processDataChanges(values) || {};
+    const dataTempKept = processDataKept() || {};
 
     dispatch({
       type: 'employeeProfile/updateGeneralInfo',
@@ -308,395 +186,295 @@ class Edit extends PureComponent {
     });
   };
 
-  handleFieldChange = (nameField, fieldValue) => {
-    const { dispatch } = this.props;
-    if (nameField === 'country') {
-      dispatch({
-        type: 'employeeProfile/fetchCountryStates',
-        payload: {
-          id: fieldValue,
-        },
-      });
-    }
+  const handleSameAddress = (e) => {
+    setIsSameAddress(e.target.checked);
   };
 
-  handleSameAddress = (e) => {
-    const {
-      target: { checked = false },
-    } = e;
-
-    const {
-      residentAddress: {
-        addressLine1: Addressline1 = '',
-        addressLine2: Addressline2 = '',
-        city: City = '',
-        country: { _id: countryName = '' } = {},
-        state = '',
-        zipCode = '',
-      } = {},
-      residentAddress = {},
-    } = this.state;
-
-    let payload = {
-      c_Addressline1: Addressline1,
-      c_Addressline2: Addressline2,
-      c_City: City,
-      c_countryName: countryName,
-      c_state: state,
-      c_zipCode: zipCode,
-    };
-
-    if (!checked) {
-      payload = {
-        c_Addressline1: '',
-        c_Addressline2: '',
-        c_City: '',
-        c_countryName: '',
-        c_state: '',
-        c_zipCode: '',
-      };
-      this.setState({
-        currentAddress: {
-          addressLine1: '',
-          addressLine2: '',
-          state: '',
-          zipCode: '',
-          city: '',
-        },
-      });
-    } else {
-      this.setState({
-        currentAddress: residentAddress,
-      });
-    }
-    this.formRef.current.setFieldsValue(payload);
+  const { Option } = Select;
+  const formItemLayout = {
+    labelCol: {
+      xs: { span: 6 },
+      sm: { span: 6 },
+    },
+    wrapperCol: {
+      xs: { span: 9 },
+      sm: { span: 12 },
+    },
   };
 
-  render() {
-    const { Option } = Select;
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 6 },
-        sm: { span: 6 },
-      },
-      wrapperCol: {
-        xs: { span: 9 },
-        sm: { span: 12 },
-      },
+  const formatCountryList = countryList.map((item) => {
+    const { _id: value, name } = item;
+    return {
+      value,
+      name,
     };
-    const {
-      generalData,
-      loading,
-      handleCancel = () => {},
-      countryList,
-      // listStates,
-      profileOwner = false,
-      loadingStates,
-    } = this.props;
+  });
 
-    const { reListStates, curListStates } = this.state;
-
-    const formatCountryList = countryList.map((item) => {
-      const { _id: value, name } = item;
-      return {
-        value,
-        name,
-      };
-    });
-
-    const {
-      personalNumber = '',
-      personalEmail = '',
-      Blood = '',
-      maritalStatus = '',
-      nationality = '',
-      residentAddress: {
-        addressLine1: r_Addressline1 = '',
-        addressLine2: r_Addressline2 = '',
-        city: r_City = '',
-        country: { name: r_countryName = '' } = {},
-        state: r_state = '',
-        zipCode: r_zipCode = '',
-      } = {},
-      currentAddress: {
-        addressLine1: c_Addressline1 = '',
-        addressLine2: c_Addressline2 = '',
-        city: c_City = '',
-        country: { name: c_countryName = '' } = {},
-        state: c_state = '',
-        zipCode: c_zipCode = '',
-      } = {},
-    } = generalData;
-    return (
-      <Row gutter={[0, 24]} className={styles.root}>
-        <Form
-          className={styles.Form}
-          name="personal_information"
-          ref={this.formRef}
-          id="myForm"
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...formItemLayout}
-          initialValues={{
-            personalNumber,
-            personalEmail,
-            Blood,
-            maritalStatus,
-            nationality,
-          }}
-          onValuesChange={(changedValues) => this.handleChange(changedValues)}
-          onFinish={this.handleSave}
-        >
-          <div className={styles.fieldsContainer}>
-            <Form.Item
-              label="Personal Number"
-              name="personalNumber"
+  return (
+    <Row gutter={[0, 24]} className={styles.root}>
+      <Form
+        className={styles.Form}
+        name="personal_information"
+        form={form}
+        id="myForm"
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        {...formItemLayout}
+        initialValues={{
+          personalNumber: personalNumber || null,
+          personalEmail: personalEmail || null,
+          Blood: Blood || null,
+          maritalStatus: maritalStatus || null,
+          nationality: nationality || null,
+          r_addressLine1: r_addressLine1 || null,
+          r_addressLine2: r_addressLine2 || null,
+          r_city: r_city || null,
+          r_country: r_country || null,
+          r_state: r_state || null,
+          r_zipCode: r_zipCode || null,
+          c_addressLine1: c_addressLine1 || null,
+          c_addressLine2: c_addressLine2 || null,
+          c_city: c_city || null,
+          c_country: c_country || null,
+          c_state: c_state || null,
+          c_zipCode: c_zipCode || null,
+        }}
+        onValuesChange={onValuesChange}
+        onFinish={handleSave}
+      >
+        <div className={styles.fieldsContainer}>
+          <Form.Item
+            label="Personal Number"
+            name="personalNumber"
+            rules={[
+              {
+                pattern: /^[+]*[\d]{0,10}$/,
+                message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
+              },
+            ]}
+          >
+            <Input className={styles.inputForm} placeholder="Enter the Personal Number" />
+          </Form.Item>
+          <Form.Item
+            label="Personal Email"
+            name="personalEmail"
+            rules={[
+              {
+                type: 'email',
+                message: formatMessage({ id: 'pages.employeeProfile.validateEmail' }),
+              },
+            ]}
+          >
+            <Input className={styles.inputForm} placeholder="Enter the Personal Email" />
+          </Form.Item>
+          <Form.Item label="Blood Group" name="Blood">
+            <Select showArrow className={styles.selectForm}>
+              <Option value="O-">O-</Option>
+              <Option value="O+">O+</Option>
+              <Option value="A-">A-</Option>
+              <Option value="A+">A+</Option>
+              <Option value="B+">B+</Option>
+              <Option value="B-">B-</Option>
+              <Option value="AB+">AB+</Option>
+              <Option value="AB-">AB-</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item label="Marital Status" name="maritalStatus">
+            <Select showArrow className={styles.selectForm} placeholder="Select the Marital Status">
+              <Option value="Single">Single</Option>
+              <Option value="Married">Married</Option>
+              <Option value="Rather not mention">Rather not mention</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item label="Nationality" name="nationality">
+            <Input className={styles.inputForm} placeholder="Enter the Nationality" />
+          </Form.Item>
+          <div className={styles.addressTitle}>Permanent Address</div>
+          <Form.Item label="Address Line 1" name="r_addressLine1">
+            <Input
+              placeholder="Enter the Address Line 1"
+              className={styles.inputForm}
               rules={[
                 {
-                  pattern: /^[+]*[\d]{0,10}$/,
-                  message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
+                  required: true,
+                  message: 'Please input address',
                 },
               ]}
-            >
-              <Input className={styles.inputForm} />
-            </Form.Item>
-            <Form.Item
-              label="Personal Email"
-              name="personalEmail"
+            />
+          </Form.Item>
+          <Form.Item label="Address Line 2" name="r_addressLine2">
+            <Input placeholder="Enter the Address Line 2" className={styles.inputForm} />
+          </Form.Item>
+          <Form.Item label="City name" name="r_city">
+            <Input placeholder="Enter the City" />
+          </Form.Item>
+
+          <Form.Item label="Country" name="r_country">
+            <Select
+              className={styles.selectForm}
+              placeholder="Select the Country"
               rules={[
                 {
-                  type: 'email',
-                  message: formatMessage({ id: 'pages.employeeProfile.validateEmail' }),
+                  required: true,
+                  message: 'Please choose country',
+                  type: 'array',
                 },
               ]}
+              showArrow
+              showSearch
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              onChange={(value) => {
+                onSelectCountry(value, 'resident');
+                form.setFieldsValue({
+                  r_state: null,
+                });
+              }}
             >
-              <Input className={styles.inputForm} />
-            </Form.Item>
-            <Form.Item label="Blood Group" name="Blood">
-              <Select showArrow className={styles.selectForm}>
-                <Option value="O-">O-</Option>
-                <Option value="O+">O+</Option>
-                <Option value="A-">A-</Option>
-                <Option value="A+">A+</Option>
-                <Option value="B+">B+</Option>
-                <Option value="B-">B-</Option>
-                <Option value="AB+">AB+</Option>
-                <Option value="AB-">AB-</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item label="Marital Status" name="maritalStatus">
-              <Select showArrow className={styles.selectForm}>
-                <Option value="Single">Single</Option>
-                <Option value="Married">Married</Option>
-                <Option value="Rather not mention">Rather not mention</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item label="Nationality" name="nationality">
-              <Input className={styles.inputForm} />
-            </Form.Item>
-            <div className={styles.addressTitle}>Permanent Address</div>
-            <Form.Item label="Address line 1" name="r_Addressline1">
-              <Input
-                className={styles.inputForm}
-                // eslint-disable-next-line camelcase
-                defaultValue={r_Addressline1}
-                onChange={(e) => this.handleChangeAddress('r_Addressline1', e.target.value)}
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input address',
-                  },
-                ]}
-              />
-            </Form.Item>
-            <Form.Item label="Address line 2" name="r_Addressline2">
-              <Input
-                className={styles.inputForm}
-                // eslint-disable-next-line camelcase
-                defaultValue={r_Addressline2}
-                onChange={(e) => this.handleChangeAddress('r_Addressline2', e.target.value)}
-              />
-            </Form.Item>
-            <Form.Item label="City name" name="r_City">
-              <Input
-                // eslint-disable-next-line camelcase
-                defaultValue={r_City}
-                onChange={(e) => this.handleChangeAddress('r_city', e.target.value)}
-              />
-            </Form.Item>
+              {formatCountryList.map((itemCountry) => {
+                return (
+                  <Option key={itemCountry.value} value={itemCountry.value}>
+                    {itemCountry.name}
+                  </Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
 
-            <Form.Item label="Country" name="r_countryName">
-              <Select
-                className={styles.selectForm}
-                // eslint-disable-next-line camelcase
-                defaultValue={r_countryName}
-                onChange={(value) => {
-                  this.handleChangeAddress('r_countryName', value);
-                }}
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please choose country',
-                    type: 'array',
-                  },
-                ]}
-                showArrow
-                showSearch
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >
-                {formatCountryList.map((itemCountry) => {
-                  return (
-                    <Option key={itemCountry.value} value={itemCountry.value}>
-                      {itemCountry.name}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
-
-            <Form.Item label="State" name="r_state">
-              <Select
-                showArrow
-                className={styles.selectForm}
-                // eslint-disable-next-line camelcase
-                defaultValue={r_state}
-                onChange={(e) => this.handleChangeAddress('r_state', e)}
-                showSearch
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >
-                {loadingStates ? (
-                  <div className={styles.selectForm_loading}>
-                    <Spin size="large" />
-                  </div>
-                ) : (
-                  <>
-                    {reListStates.map((item, index) => {
-                      return (
-                        <Option key={`${index + 1}`} value={item}>
-                          {item}
-                        </Option>
-                      );
-                    })}
-                  </>
-                )}
-              </Select>
-            </Form.Item>
-
-            <Form.Item label="Zip/Postal Code" name="r_zipCode">
-              <Input
-                className={styles.selectForm}
-                // eslint-disable-next-line camelcase
-                defaultValue={r_zipCode}
-                onChange={(e) => this.handleChangeAddress('r_zipCode', e.target.value)}
-              />
-            </Form.Item>
-
-            {/* ///////////////////////////////////////////////////////// */}
-            <div className={styles.addressTitle}>
-              Current Address
-              <Checkbox onChange={this.handleSameAddress}>Same as above</Checkbox>
-            </div>
-            <Form.Item label="Address line 1" name="c_Addressline1">
-              <Input
-                className={styles.inputForm}
-                // eslint-disable-next-line camelcase
-                defaultValue={c_Addressline1}
-                onChange={(e) => this.handleChangeAddress('c_Addressline1', e.target.value)}
-              />
-            </Form.Item>
-            <Form.Item label="Address line 2" name="c_Addressline2">
-              <Input
-                className={styles.inputForm}
-                // eslint-disable-next-line camelcase
-                defaultValue={c_Addressline2}
-                onChange={(e) => this.handleChangeAddress('c_Addressline2', e.target.value)}
-              />
-            </Form.Item>
-            <Form.Item label="City name" name="c_City">
-              <Input
-                // eslint-disable-next-line camelcase
-                defaultValue={c_City}
-                onChange={(e) => this.handleChangeAddress('c_city', e.target.value)}
-              />
-            </Form.Item>
-
-            <Form.Item label="Country" name="c_countryName">
-              <Select
-                showArrow
-                className={styles.selectForm}
-                // eslint-disable-next-line camelcase
-                defaultValue={c_countryName}
-                onChange={(value) => this.handleChangeAddress('c_countryName', value)}
-                showSearch
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >
-                {formatCountryList.map((itemCountry) => {
-                  return (
-                    <Option key={itemCountry.value} value={itemCountry.value}>
-                      {itemCountry.name}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
-
-            <Form.Item label="State" name="c_state">
-              <Select
-                showArrow
-                className={styles.selectForm}
-                // eslint-disable-next-line camelcase
-                defaultValue={c_state}
-                onChange={(value) => this.handleChangeAddress('c_state', value)}
-                showSearch
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >
-                {loadingStates ? (
-                  <div className={styles.selectForm_loading}>
-                    <Spin size="large" />
-                  </div>
-                ) : (
-                  <>
-                    {curListStates.map((item, index) => {
-                      return (
-                        <Option key={`${index + 1}`} value={item}>
-                          {item}
-                        </Option>
-                      );
-                    })}
-                  </>
-                )}
-              </Select>
-            </Form.Item>
-
-            <Form.Item label="Zip/Postal Code" name="c_zipCode">
-              <Input
-                className={styles.selectForm}
-                // eslint-disable-next-line camelcase
-                defaultValue={c_zipCode}
-                onChange={(e) => this.handleChangeAddress('c_zipCode', e.target.value)}
-              />
-            </Form.Item>
-          </div>
-          <div className={styles.spaceFooter}>
-            <div className={styles.cancelFooter} onClick={handleCancel}>
-              Cancel
-            </div>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className={styles.buttonFooter}
-              loading={loading}
+          <Form.Item label="State" name="r_state">
+            <Select
+              showArrow
+              className={styles.selectForm}
+              placeholder="Select the State"
+              showSearch
+              loading={loadingStates}
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
-              Save
-            </Button>
-          </div>
-        </Form>
-      </Row>
-    );
-  }
-}
+              {reListStates.map((item, index) => {
+                return (
+                  <Option key={`${index + 1}`} value={item}>
+                    {item}
+                  </Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
 
-export default Edit;
+          <Form.Item label="Zip/Postal Code" name="r_zipCode">
+            <Input className={styles.selectForm} placeholder="Enter the Zip/Postal Code" />
+          </Form.Item>
+
+          {/* ///////////////////////////////////////////////////////// */}
+          <div className={styles.addressTitle}>
+            Current Address
+            <Checkbox onChange={handleSameAddress} checked={isSameAddress}>
+              Same as above
+            </Checkbox>
+          </div>
+          <Form.Item label="Address line 1" name="c_addressLine1">
+            <Input
+              className={styles.inputForm}
+              placeholder="Enter the Address Line 1"
+              disabled={isSameAddress}
+            />
+          </Form.Item>
+          <Form.Item label="Address line 2" name="c_addressLine2">
+            <Input
+              className={styles.inputForm}
+              placeholder="Enter the Address Line 2"
+              disabled={isSameAddress}
+            />
+          </Form.Item>
+          <Form.Item label="City name" name="c_city">
+            <Input placeholder="Enter the City" disabled={isSameAddress} />
+          </Form.Item>
+
+          <Form.Item label="Country" name="c_country">
+            <Select
+              showArrow
+              className={styles.selectForm}
+              placeholder="Select the Country"
+              showSearch
+              disabled={isSameAddress}
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              onChange={(value) => {
+                onSelectCountry(value, 'current');
+                form.setFieldsValue({
+                  c_state: null,
+                });
+              }}
+            >
+              {formatCountryList.map((itemCountry) => {
+                return (
+                  <Option key={itemCountry.value} value={itemCountry.value}>
+                    {itemCountry.name}
+                  </Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
+
+          <Form.Item label="State" name="c_state">
+            <Select
+              showArrow
+              className={styles.selectForm}
+              placeholder="Select the State"
+              showSearch
+              disabled={isSameAddress}
+              loading={loadingStates}
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {curListStates.map((item, index) => {
+                return (
+                  <Option key={`${index + 1}`} value={item}>
+                    {item}
+                  </Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
+
+          <Form.Item label="Zip/Postal Code" name="c_zipCode">
+            <Input
+              className={styles.selectForm}
+              placeholder="Enter the Zip/Postal Code"
+              disabled={isSameAddress}
+            />
+          </Form.Item>
+        </div>
+        <div className={styles.spaceFooter}>
+          <div className={styles.cancelFooter} onClick={handleCancel}>
+            Cancel
+          </div>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className={styles.buttonFooter}
+            loading={loading}
+          >
+            Save
+          </Button>
+        </div>
+      </Form>
+    </Row>
+  );
+};
+
+export default connect(
+  ({
+    loading,
+    employeeProfile: {
+      originData: { generalData: generalDataOrigin = {} } = {},
+      tempData: { generalData = {} } = {},
+      countryList = [],
+    } = {},
+  }) => ({
+    loadingGeneral: loading.effects['employeeProfile/updateGeneralInfo'],
+    loadingStates: loading.effects['employeeProfile/fetchCountryStates'],
+    generalDataOrigin,
+    generalData,
+    countryList,
+  }),
+)(Edit);

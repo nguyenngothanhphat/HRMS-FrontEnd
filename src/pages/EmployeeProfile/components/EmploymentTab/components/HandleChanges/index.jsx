@@ -24,7 +24,7 @@ class HandleChanges extends PureComponent {
       radio: 2,
       changeData: {
         changedBy: currentUser ? currentUser.employee._id : '',
-        employee: employeeProfile.idCurrentEmployee,
+        employee: employeeProfile.employee,
         newTitle: '',
         newLocation: '',
         newDepartment: '',

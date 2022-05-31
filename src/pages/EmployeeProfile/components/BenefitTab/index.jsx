@@ -9,16 +9,15 @@ import styles from './styles.less';
 @connect(
   ({
     employeeProfile: {
-      tenantCurrentEmployee = '',
-      idCurrentEmployee = '',
+      employee = '',
       originData: { dependentDetails, benefitPlans },
     },
     loading,
   }) => ({
     dependentDetails,
     benefitPlans,
-    tenantCurrentEmployee,
-    idCurrentEmployee,
+
+    employee,
     loading: loading.effects['employeeProfile/fetchEmployeeDependentDetails'],
   }),
 )
@@ -31,10 +30,10 @@ class BenefitTab extends PureComponent {
   }
 
   componentDidMount = () => {
-    const { dispatch, tenantCurrentEmployee = '', idCurrentEmployee = '' } = this.props;
+    const { dispatch, employee = '' } = this.props;
     dispatch({
       type: 'employeeProfile/fetchEmployeeDependentDetails',
-      payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
+      payload: { employee },
     });
   };
 
@@ -45,7 +44,7 @@ class BenefitTab extends PureComponent {
     } else this.setEditing(true);
   };
 
-  handeAddDependant = () => {
+  handleAddDependant = () => {
     this.setState({ addDependant: true });
   };
 
@@ -68,7 +67,7 @@ class BenefitTab extends PureComponent {
             </div>
             {profileOwner && (
               <div className={styles.addIcon}>
-                <div onClick={this.handeAddDependant}>
+                <div onClick={this.handleAddDependant}>
                   <img src={IconAdd} alt="add" />
                   <span>Add Dependant</span>
                 </div>

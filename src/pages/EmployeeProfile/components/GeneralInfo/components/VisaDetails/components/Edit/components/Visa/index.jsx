@@ -15,7 +15,7 @@ import styles from '../../index.less';
     loading,
     upload: { urlImage = '', visa0URL = '', visa1URL = '', loadingVisaTest = [] },
     employeeProfile: {
-      idCurrentEmployee,
+      employee,
       countryList,
       originData: { visaData: visaDataOrigin = [] } = {},
       tempData: { generalData = {}, visaData = [] } = {},
@@ -29,7 +29,7 @@ import styles from '../../index.less';
     visa0URL,
     visa1URL,
     urlImage,
-    idCurrentEmployee,
+    employee,
     loadingVisaTest,
   }),
 )

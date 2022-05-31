@@ -18,7 +18,7 @@ import styles from './index.less';
         employmentData: { location: locationProp = {} } = {},
       } = {},
       tempData: { generalData = {} } = {},
-      idCurrentEmployee = '',
+      employee = '',
     } = {},
     user: { currentUser = [], permissions = [] },
   }) => ({
@@ -28,7 +28,7 @@ import styles from './index.less';
     AdhaarCard,
     currentUser,
     permissions,
-    idCurrentEmployee,
+    employee,
     locationProp,
   }),
 )
@@ -66,7 +66,7 @@ class View extends PureComponent {
       AdhaarCard = {},
       currentUser: { employee: { _id: idEmployee = '' } = {} || {} } = {},
       permissions = [],
-      idCurrentEmployee = '',
+      employee = '',
       locationProp: { headQuarterAddress: { country = '' } = {} } = {},
     } = this.props;
     let splitUrl = '';
@@ -79,7 +79,7 @@ class View extends PureComponent {
       }
     }
 
-    const checkVisible = idCurrentEmployee === idEmployee || permissions.editEmployeeInfo !== -1;
+    const checkVisible = employee === idEmployee || permissions.editEmployeeInfo !== -1;
 
     const checkIndiaLocation = country === 'IN';
     const checkVietNamLocation = country === 'VN';

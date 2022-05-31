@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-curly-newline */
-import React, { PureComponent } from 'react';
-import { Form, Select, Button, DatePicker, InputNumber, Skeleton, Input } from 'antd';
-import { formatMessage, connect } from 'umi';
+import { Button, DatePicker, Form, Input, Select, Skeleton } from 'antd';
 import moment from 'moment';
+import React, { PureComponent } from 'react';
+import { connect, formatMessage } from 'umi';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -12,62 +12,34 @@ const { Option } = Select;
   ({
     employeeProfile,
     loading,
-    employeeProfile: {
-      companyCurrentEmployee = '',
-      tenantCurrentEmployee = '',
-      compensationTypes = [],
-    } = {},
+    employeeProfile: { compensationTypes = [] } = {},
     location: { companyLocationList = {} } = {},
   }) => ({
     employeeProfile,
     compensationTypes,
-    tenantCurrentEmployee,
-    companyCurrentEmployee,
     loadingLocationsList: loading.effects['employeeProfile/fetchLocationsByCompany'],
     loadingTitleList: loading.effects['employeeProfile/fetchTitleByDepartment'],
     loadingCompensationList: loading.effects['employeeProfile/fetchCompensationList'],
     loadingFetchEmployeeList:
       loading.effects['employeeProfile/fetchEmployeeListSingleCompanyEffect'],
     companyLocationList,
-
-    // loadingEmployeeTypes: loading.effects['employeeProfile/fetchEmployeeTypes'],
+    loadingUpdate: loading.effects['employeeProfile/updateEmployment'],
   }),
 )
 class EditCurrentInfo extends PureComponent {
   formRef = React.createRef();
 
   componentDidMount() {
-    const {
-      employeeProfile,
-      dispatch,
-      tenantCurrentEmployee = '',
-      companyCurrentEmployee = '',
-    } = this.props;
-    const { department = '', company = '' } = employeeProfile.originData.employmentData;
-    const payload = {
-      company: company._id,
-      department: department._id,
-      tenantId: tenantCurrentEmployee,
-    };
-    // const tenantId = getCurrentTenant();
-
-    dispatch({
-      type: 'employeeProfile/fetchEmployeeTypes',
-      payload: {
-        tenantId: tenantCurrentEmployee,
-      },
-    });
-
+    const { employeeProfile, dispatch } = this.props;
+    const { department = '' } = employeeProfile.originData.employmentData;
     dispatch({
       type: 'employeeProfile/fetchTitleByDepartment',
-      payload,
+      payload: {
+        department: department._id,
+      },
     });
-
     dispatch({
       type: 'employeeProfile/fetchLocationsByCompany',
-      payload: {
-        company: company._id,
-      },
     });
     dispatch({
       type: 'employeeProfile/fetchCompensationList',
@@ -80,8 +52,6 @@ class EditCurrentInfo extends PureComponent {
       type: 'employeeProfile/fetchEmployeeListSingleCompanyEffect',
       payload: {
         status: ['ACTIVE'],
-        company: companyCurrentEmployee,
-        tenantId: tenantCurrentEmployee,
       },
     });
   }
@@ -99,15 +69,12 @@ class EditCurrentInfo extends PureComponent {
   }
 
   onChangeDepartment = (id) => {
-    const { employeeProfile, dispatch, tenantCurrentEmployee = '' } = this.props;
-    const { company = '' } = employeeProfile.originData.employmentData;
+    const { dispatch } = this.props;
 
     dispatch({
       type: 'employeeProfile/fetchTitleByDepartment',
       payload: {
-        company: company._id,
         department: id,
-        tenantId: tenantCurrentEmployee,
       },
     });
     this.formRef.current.setFieldsValue({
@@ -116,8 +83,7 @@ class EditCurrentInfo extends PureComponent {
   };
 
   handleSave = (values, id) => {
-    const { dispatch, employeeProfile, tenantCurrentEmployee = '' } = this.props;
-    const { company = '' } = employeeProfile.originData.employmentData;
+    const { dispatch } = this.props;
     const {
       title,
       joinDate,
@@ -136,8 +102,6 @@ class EditCurrentInfo extends PureComponent {
       location,
       employeeType,
       empTypeOther,
-      company: company._id,
-      tenantId: tenantCurrentEmployee,
       department,
       manager,
     };
@@ -161,9 +125,8 @@ class EditCurrentInfo extends PureComponent {
       handleCancel = () => {},
       companyLocationList,
       loadingFetchEmployeeList = false,
+      loadingUpdate = false,
     } = this.props;
-    // console.log(employees)
-    // const filteredList = employees.filter((item) => item._id !== employeeProfile.idCurrentEmployee);
     const {
       _id = '',
       title = '',
@@ -178,6 +141,7 @@ class EditCurrentInfo extends PureComponent {
       titleInfo = {},
       initialJoiningDate = '',
     } = employeeProfile.originData.employmentData;
+
     const compensationType = compensation ? compensation.compensationType : '';
 
     const dateFormat = 'Do MMMM YYYY';
@@ -327,46 +291,7 @@ class EditCurrentInfo extends PureComponent {
               ]
             </Select>
           </Form.Item>
-          {/* <Form.Item label="Compensation Type" name="compensationType">
-            <Select
-              
-              showSearch
-              optionFilterProp="children"
-              placeholder="Select an compensation type"
-              // disabled
-              filterOption={(input, option) =>
-                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {['Salaried', 'Stock options', 'Other non-cash benefits'].map((item, index) => {
-                return (
-                  <Option key={`${index + 1}`} value={item}>
-                    {item}
-                  </Option>
-                );
-              })}
-              ]
-            </Select>
-          </Form.Item> */}
-          {/* <Form.Item
-            label="Current Annual CTC"
-            name="currentAnnualCTC"
-            rules={[
-              {
-                pattern: /^[0-9]*$/,
-                message: 'Current Annual CTC is not correct',
-              },
-            ]}
-          >
-            <InputNumber
-              
-              min={0}
-              style={{ width: '100%' }}
-              formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-              placeholder="Enter an amount"
-            />
-          </Form.Item> */}
+
           {loadingFetchEmployeeList ? (
             <Form.Item label="Manager" name="managerLoading">
               <Input disabled />
@@ -395,14 +320,17 @@ class EditCurrentInfo extends PureComponent {
               </Select>
             </Form.Item>
           )}
-          {/* <Form.Item label="Time Off Policy" name="timeOffPolicy" rules={[{ required: true }]}>
-            Time Off Policy
-          </Form.Item> */}
+
           <div className={styles.spaceFooter}>
             <div className={styles.btnCancel} onClick={handleCancel}>
               Cancel
             </div>
-            <Button type="primary" htmlType="submit" className={styles.btnSubmit}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className={styles.btnSubmit}
+              loading={loadingUpdate}
+            >
               Save
             </Button>
           </div>

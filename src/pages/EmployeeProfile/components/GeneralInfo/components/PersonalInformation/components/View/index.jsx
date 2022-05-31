@@ -8,30 +8,25 @@ import styles from './index.less';
 
 @connect(
   ({
-    employeeProfile: {
-      tempData: { generalData = {} } = {},
-      tenantCurrentEmployee = '',
-      idCurrentEmployee = '',
-    } = {},
+    employeeProfile: { tempData: { generalData = {} } = {}, employee = '' } = {},
     user: { currentUser = [], permissions = {} },
   }) => ({
     generalData,
-    tenantCurrentEmployee,
+
     currentUser,
     permissions,
-    idCurrentEmployee,
+    employee,
   }),
 )
 class View extends PureComponent {
   handleChangesPrivate = (e, label) => {
-    const { dispatch, generalData, tenantCurrentEmployee = '' } = this.props;
+    const { dispatch, generalData } = this.props;
     if (label === 'Personal Number') {
       dispatch({
         type: 'employeeProfile/setPrivate',
         payload: {
           id: generalData._id,
           isShowPersonalNumber: e.target.value,
-          tenantId: tenantCurrentEmployee,
         },
       });
     }
@@ -41,7 +36,6 @@ class View extends PureComponent {
         payload: {
           id: generalData._id,
           isShowPersonalEmail: e.target.value,
-          tenantId: tenantCurrentEmployee,
         },
       });
     }
@@ -55,7 +49,6 @@ class View extends PureComponent {
     isShowPersonalNumber,
     isShowPersonalEmail,
   ) => {
-    const blank = '_blank';
     if (label === 'Personal Number') {
       if (isShowPersonalNumber || permissions.viewPersonalNumber !== -1 || profileOwner) {
         return value;
@@ -94,7 +87,7 @@ class View extends PureComponent {
       permissions = {},
       profileOwner = false,
       currentUser: { employee: { _id: idEmployee = '' } = {} || {} } = {},
-      idCurrentEmployee = '',
+      employee = '',
     } = this.props;
     const { isShowPersonalNumber, isShowPersonalEmail } = generalData;
 
@@ -103,7 +96,7 @@ class View extends PureComponent {
         addressLine1: r_Addressline1 = '',
         addressLine2: r_Addressline2 = '',
         city: r_city = '',
-        country: { name: r_countryName = '' } = {},
+        country: r_country = {},
         state: r_state = '',
         zipCode: r_zipCode = '',
       } = {},
@@ -111,13 +104,16 @@ class View extends PureComponent {
         addressLine1: c_Addressline1 = '',
         addressLine2: c_Addressline2 = '',
         city: c_city = '',
-        country: { name: c_countryName = '' } = {},
+        country: c_country = {},
         state: c_state = '',
         zipCode: c_zipCode = '',
       } = {},
     } = dataAPI;
 
-    const checkVisible = idCurrentEmployee === idEmployee || permissions.editPersonalInfo !== -1;
+    const { name: r_countryName = '' } = r_country || {};
+    const { name: c_countryName = '' } = c_country || {};
+
+    const checkVisible = employee === idEmployee || permissions.editPersonalInfo !== -1;
 
     const dummyData = [
       { label: 'Personal Number', value: dataAPI.personalNumber },

@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import { Row, Col, Tag } from 'antd';
 import { connect } from 'umi';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(({ employeeProfile: { tempData: { generalData = {} } = {}, listTitle = [] } = {} }) => ({
@@ -16,25 +15,6 @@ class View extends Component {
       visible: false,
       linkImage: '',
     };
-  }
-
-  componentDidMount() {
-    const {
-      dispatch,
-      // , tenantCurrentEmployee = ''
-    } = this.props;
-    const tenantId = getCurrentTenant();
-    const companyCurrentEmployee = getCurrentCompany();
-    dispatch({
-      type: 'employeeProfile/fetchListSkill',
-    });
-    dispatch({
-      type: 'employeeProfile/fetchListTitle',
-      payload: {
-        // tenantId: tenantCurrentEmployee,
-        payload: { company: companyCurrentEmployee, tenantId },
-      },
-    });
   }
 
   handleOpenModalReview = (linkImage) => {
@@ -158,7 +138,7 @@ class View extends Component {
         colorText: '#ff6ca1',
       },
     ];
-    // const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
+
     const formatListSkill = this.formatListSkill(skills, listColors) || [];
     return (
       <>
