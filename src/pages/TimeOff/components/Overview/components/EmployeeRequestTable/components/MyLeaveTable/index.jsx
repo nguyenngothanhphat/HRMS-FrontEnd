@@ -135,7 +135,7 @@ class MyLeaveTable extends PureComponent {
       // width: '20%',
       render: (_id) => (
         <div className={styles.rowAction}>
-          <span onClick={() => this.viewRequest(_id)}>View Request</span>
+          <Link to={`/time-off/overview/personal-timeoff/view/${_id}`}>View Request</Link>
         </div>
       ),
     },
