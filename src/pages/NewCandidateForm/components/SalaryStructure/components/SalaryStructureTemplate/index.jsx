@@ -322,7 +322,6 @@ const SalaryStructureTemplate = (props) => {
           value: objValues[objKeys[findIndex]],
         };
       });
-      // console.log('🚀 ~ result', [...result]);
 
       dispatch({
         type: 'newCandidateForm/saveSalaryStructure',
