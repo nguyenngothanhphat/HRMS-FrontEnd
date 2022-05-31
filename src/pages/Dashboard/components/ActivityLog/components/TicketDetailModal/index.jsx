@@ -17,8 +17,8 @@ const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DELETED, WITHDRAWN } = TIMEOFF
 const TicketDetailModal = (props) => {
   const {
     visible = false,
-    title = '',
     onClose = () => {},
+    title = '',
     item: {
       id: ticketID = '',
       ticketID: tickIdTimeoff = '',
@@ -87,7 +87,9 @@ const TicketDetailModal = (props) => {
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>
-        <p className={styles.header__text}>{title}</p>
+        <p className={styles.header__text}>
+          {`${typeName.length > 0 ? 'Requestee Detail' : title}`}
+        </p>
       </div>
     );
   };
@@ -178,7 +180,7 @@ const TicketDetailModal = (props) => {
   const getFlow = () => {
     const {
       item: {
-        employee: { generalInfo: { legalName: ln1 = 'Test', avatar: av1 = '' } = {} } = {},
+        employee: { generalInfo: { legalName: ln1 = '', avatar: av1 = '' } = {} } = {},
         approvalManager: { generalInfo: { legalName: ln2 = '', avatar: av2 = '' } = {} } = {},
       } = {},
     } = props;
@@ -208,7 +210,7 @@ const TicketDetailModal = (props) => {
         span: 12,
       },
       {
-        name: 'Query Type',
+        name: queryType.length > 0 ? 'Query Type' : 'Timeoff Type',
         value: queryType || typeName,
         span: 12,
       },
