@@ -19,6 +19,7 @@ const JobDetails = (props) => {
     tempData: {
       // list
       locationList = [],
+      listCustomerLocation = [],
       departmentList = [],
       managerList = [],
       jobGradeLevelList = [],
@@ -27,12 +28,15 @@ const JobDetails = (props) => {
       reportingManager,
       department,
       workLocation,
+      workFromHome,
+      clientLocation,
       title,
       grade,
       dateOfJoining,
       ticketID = '',
       position,
       employeeType,
+      currentAddress,
     },
     data: { _id },
     data,
@@ -42,6 +46,7 @@ const JobDetails = (props) => {
     loading,
     loadingFetchCandidate = false,
     loadingLocationList = false,
+    loadingLocationCustomerList = false,
     loadingFetchTitle = false,
     loadingFetchDepartment = false,
     loadingFetchManager = false,
@@ -90,6 +95,17 @@ const JobDetails = (props) => {
         },
       });
     }
+
+    if (listCustomerLocation.length === 0) {
+      dispatch({
+        type: 'newCandidateForm/fetchLocationCustomer',
+        payload: {
+          company: companyId,
+          tenantId,
+        },
+      });
+    }
+    
     if (managerList.length === 0) {
       dispatch({
         type: 'newCandidateForm/fetchDepartmentList',
@@ -102,7 +118,8 @@ const JobDetails = (props) => {
   }, []);
 
   const checkFilled = () => {
-    const check = department && workLocation && title && reportingManager && dateOfJoining;
+    const check = department && (workLocation || workFromHome || clientLocation) && title && reportingManager && dateOfJoining;
+    console.log('check', check)
 
     dispatch({
       type: 'newCandidateForm/save',
@@ -161,6 +178,8 @@ const JobDetails = (props) => {
       position,
       employeeType,
       workLocation,
+      workFromHome,
+      clientLocation,
       department,
       title,
       reportingManager,
@@ -300,6 +319,7 @@ const JobDetails = (props) => {
             loadingFetchCandidate ||
             loadingFetchDepartment ||
             loadingLocationList ||
+            loadingLocationCustomerList ||
             loadingFetchGrade ||
             loadingFetchManager
           }
@@ -356,6 +376,7 @@ export default connect(
     loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
     loadingUpdateByHR: loading.effects['newCandidateForm/updateByHR'],
     loadingLocationList: loading.effects['newCandidateForm/fetchLocationList'],
+    loadingLocationCustomerList: loading.effects['newCandidateForm/fetchLocationCustomer'],
     loadingFetchTitle: loading.effects['newCandidateForm/fetchTitleList'],
     loadingFetchDepartment: loading.effects['newCandidateForm/fetchDepartmentList'],
     loadingFetchManager: loading.effects['newCandidateForm/fetchManagerList'],

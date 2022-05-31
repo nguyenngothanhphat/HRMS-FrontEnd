@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import { Checkbox, Col, DatePicker, Form, Row, Select } from 'antd';
+import { Checkbox, Col, DatePicker, Form, Row, Select, TreeSelect } from 'antd';
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
@@ -8,6 +8,7 @@ import styles from './index.less';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 
 const { Option } = Select;
+const { TreeNode } = TreeSelect;
 
 const JobDetailForm = (props) => {
   const [form] = Form.useForm();
@@ -21,6 +22,7 @@ const JobDetailForm = (props) => {
         // list
         employeeTypeList = [],
         locationList = [],
+        listCustomerLocation = [],
         departmentList = [],
         titleList = [],
         managerList = [],
@@ -30,11 +32,14 @@ const JobDetailForm = (props) => {
         grade,
         department,
         workLocation,
+        workFromHome,
+        clientLocation,
         title,
         reportingManager,
         dateOfJoining = '',
         employeeType,
         processStatus = '',
+        currentAddress,
       } = {},
     } = {},
     validateFields = () => {},
@@ -136,10 +141,26 @@ const JobDetailForm = (props) => {
 
       case 'workLocation': {
         const selectedWorkLocation = locationList.find((x) => x._id === value);
-        saveToRedux({
-          location: value,
-          workLocation: selectedWorkLocation,
-        });
+        if (value === 'work from home') {
+          saveToRedux({
+            workFromHome: currentAddress,
+            workLocation: null,
+            clientLocation: null,
+          })
+        } else if (selectedWorkLocation) {
+          saveToRedux({
+            location: value,
+            workLocation: selectedWorkLocation,
+            workFromHome: null,
+            clientLocation: null,
+          });
+        } else {
+          saveToRedux({
+            clientLocation: value,
+            workLocation: null,
+            workFromHome: null,
+          })
+        }
         setNeedRefreshDocument(true);
         break;
       }
@@ -230,7 +251,8 @@ const JobDetailForm = (props) => {
           },
         ],
         component: (
-          <Select
+          <TreeSelect
+            treeLine={true}
             placeholder="Select the work location"
             onChange={(value) => onChangeValue(value, 'workLocation')}
             disabled={disabled || ![NEW_PROCESS_STATUS.DRAFT].includes(processStatus)}
@@ -241,12 +263,26 @@ const JobDetailForm = (props) => {
               return option.props.children.toLowerCase().indexOf(input.toLowerCase()) > -1;
             }}
           >
-            {locationList.map((x, index) => (
-              <Option value={x._id} key={index}>
-                {x.name}
-              </Option>
-            ))}
-          </Select>
+            <TreeNode title="Office Location">
+              {locationList.map((x, index) => (
+                <TreeNode title={x.name} value={x._id} key={`0${index}`} />
+              ))}
+            </TreeNode>
+            <TreeNode title="Work From Home" value="work from home"/>
+            <TreeNode title="Client Location">
+              {listCustomerLocation.map((x) => (
+                <TreeNode title={x.legalName} key={`${x.customerId}`}>
+                  {x.location.map((local, firstIndex) => (
+                    <TreeNode title={local.country} key={`${x.customerId + firstIndex}`}>
+                      {local.state.map((state, secondIndex) => (
+                        <TreeNode title={state.name} key={`${x.customerId + firstIndex + secondIndex}`} value={state.value}/>
+                      ))}
+                    </TreeNode>
+                  ))}
+                </TreeNode>
+              ))}
+            </TreeNode>
+          </TreeSelect>
         ),
       },
       {
@@ -263,7 +299,7 @@ const JobDetailForm = (props) => {
           <Select
             placeholder="Select the department"
             onChange={(value) => onChangeValue(value, 'department')}
-            disabled={disabled || !workLocation}
+            disabled={disabled || !(workLocation || workFromHome || clientLocation)}
             showSearch
             showArrow
             allowClear
@@ -444,7 +480,7 @@ const JobDetailForm = (props) => {
         initialValues={{
           position: position || 'EMPLOYEE',
           employeeType: employeeType?._id || employeeType,
-          workLocation: workLocation?._id || workLocation,
+          workLocation: workLocation ? workLocation._id : clientLocation ? clientLocation : 'Work from home',
           department: department?._id || department,
           title: title?._id || title,
           grade: grade?._id || grade,
