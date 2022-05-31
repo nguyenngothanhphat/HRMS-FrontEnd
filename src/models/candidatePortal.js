@@ -12,6 +12,7 @@ import {
   sendEmailByCandidateModel,
   updateByCandidate,
   upsertCandidateDocument,
+  getSalaryStructureByGrade,
 } from '@/services/candidatePortal';
 import {
   CANDIDATE_TASK_LINK,
@@ -20,7 +21,7 @@ import {
 } from '@/utils/candidatePortal';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import { dialog } from '@/utils/utils';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
 const pendingTaskDefault = [
   {
@@ -145,6 +146,7 @@ const initialState = {
     questionOnBoarding: [],
   },
   salaryStructure: [],
+  salaryStructureSetting: {},
   eligibilityDocs: [],
   checkCandidateMandatory: {
     filledCandidateBasicInformation: false,
@@ -454,6 +456,27 @@ const candidatePortal = {
           type: 'save',
           payload: {
             stateList: data,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchSalaryStructureByGrade({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getSalaryStructureByGrade, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            salaryStructureSetting: data,
           },
         });
       } catch (error) {
