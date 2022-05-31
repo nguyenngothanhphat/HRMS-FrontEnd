@@ -24,6 +24,7 @@ import {
   TIMEOFF_WORK_DAYS,
   WORKING_HOURS,
 } from '@/utils/timeOff';
+import AddAttachments from './components/AddAttachments';
 import LeaveTimeRow from './components/LeaveTimeRow';
 import LeaveTimeRow2 from './components/LeaveTimeRow2';
 import styles from './index.less';
@@ -355,6 +356,7 @@ const RequestInformation = (props) => {
       description = '',
       personCC = [],
       leaveTimeLists = [],
+      attachment = [],
     } = values;
 
     const leaveDatesPayload = generateLeaveDates(leaveTimeLists);
@@ -377,6 +379,7 @@ const RequestInformation = (props) => {
           cc: personCC,
           tenantId: getCurrentTenant(),
           company: employee.company,
+          attachment,
         };
 
         let type = '';
@@ -1160,6 +1163,9 @@ const RequestInformation = (props) => {
             </Col>
             <Col span={6} />
           </Row>
+          <Form.Item name="attachment">
+            <AddAttachments />
+          </Form.Item>
         </Form>
         <div className={styles.footer}>
           <span className={styles.note}>
