@@ -37,6 +37,7 @@ class ProfessionalAcademicBackground extends PureComponent {
       totalExp = 0,
       qualification = '',
       certification = [],
+      linkedIn = '',
     } = generalDataOrigin;
     const reverseFields = {
       preJobTitle,
@@ -46,6 +47,7 @@ class ProfessionalAcademicBackground extends PureComponent {
       totalExp,
       qualification,
       certification,
+      linkedIn,
     };
     const payload = { ...generalData, ...reverseFields };
     const isModified = JSON.stringify(payload) !== JSON.stringify(generalDataOrigin);

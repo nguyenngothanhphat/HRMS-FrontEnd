@@ -2,8 +2,8 @@ import React, { PureComponent } from 'react';
 import { Button, Row, Col, Select, Spin, Image, Skeleton } from 'antd';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { formatMessage, connect } from 'umi';
-import UploadImage from '@/components/UploadImage';
 import { LoadingOutlined } from '@ant-design/icons';
+import UploadImage from '@/components/UploadImage';
 import GoBackButton from '@/assets/goBack_icon.svg';
 import CustomModal from '@/components/CustomModal';
 
@@ -82,11 +82,7 @@ class ViewDocument extends PureComponent {
   // get document details
   fetchDocumentDetails = (selectedFileId) => {
     const {
-      employeeProfile: {
-        groupViewingDocuments = [],
-        tenantCurrentEmployee = '',
-        idCurrentEmployee = '',
-      },
+      employeeProfile: { groupViewingDocuments = [], employee = '' },
       dispatch,
     } = this.props;
     const { currentViewingFile } = this.state;
@@ -97,8 +93,7 @@ class ViewDocument extends PureComponent {
           type: 'employeeProfile/fetchViewingDocumentDetail',
           payload: {
             id: groupViewingDocuments[selectedFileId - 1]._id,
-            tenantId: tenantCurrentEmployee,
-            employee: idCurrentEmployee,
+            employee,
           },
         });
       }
@@ -108,14 +103,11 @@ class ViewDocument extends PureComponent {
   fetchEmailsListByCompany = () => {
     const {
       dispatch,
-      employeeProfile: {
-        tenantCurrentEmployee = '',
-        tempData: { compensationData: { company = '' } = {} } = {},
-      } = {},
+      employeeProfile: { tempData: { compensationData: { company = '' } = {} } = {} } = {},
     } = this.props;
     dispatch({
       type: 'employeeProfile/fetchEmailsListByCompany',
-      payload: { company: [company], tenantId: tenantCurrentEmployee },
+      payload: { company: [company] },
     });
   };
 
@@ -198,16 +190,12 @@ class ViewDocument extends PureComponent {
       return;
     }
 
-    const {
-      employeeProfile: { tenantCurrentEmployee = '', documentDetail: { _id } = {} } = {},
-      dispatch,
-    } = this.props;
+    const { employeeProfile: { documentDetail: { _id } = {} } = {}, dispatch } = this.props;
     const res = await dispatch({
       type: 'employeeProfile/shareDocumentEffect',
       payload: {
         shareWith,
         id: _id,
-        tenantId: tenantCurrentEmployee,
       },
     });
 
@@ -225,7 +213,7 @@ class ViewDocument extends PureComponent {
 
     const {
       dispatch,
-      employeeProfile: { groupViewingDocuments = [], tenantCurrentEmployee = '' },
+      employeeProfile: { groupViewingDocuments = [] },
     } = this.props;
     const { currentViewingFile } = this.state;
     const documentId = groupViewingDocuments[currentViewingFile - 1]._id;
@@ -237,7 +225,6 @@ class ViewDocument extends PureComponent {
         payload: {
           id: documentId,
           attachment: attachment.id,
-          tenantId: tenantCurrentEmployee,
         },
       });
     }
@@ -246,8 +233,7 @@ class ViewDocument extends PureComponent {
       type: 'employeeProfile/fetchViewingDocumentDetail',
       payload: {
         id: documentId,
-        tenantId: tenantCurrentEmployee,
-        // employee: idCurrentEmployee,
+        // employee: employee,
       },
     });
   };

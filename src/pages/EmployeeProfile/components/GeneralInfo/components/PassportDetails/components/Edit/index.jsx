@@ -22,11 +22,9 @@ import styles from './index.less';
     },
     employeeProfile: {
       countryList,
-      idCurrentEmployee,
+      employee,
       originData: { passportData: passportDataOrigin = [] } = {},
       tempData: { passportData = [], generalData = {}, document = {} } = {},
-      tenantCurrentEmployee = '',
-      companyCurrentEmployee = '',
       documentCategories = [],
     } = {},
   }) => ({
@@ -38,15 +36,14 @@ import styles from './index.less';
     passPortURL,
     passPortIDURL,
     document,
-    idCurrentEmployee,
+    employee,
     loadingPassPort,
     passport0URL,
     passport1URL,
     urlImage,
     loadingPassportTest,
-    tenantCurrentEmployee,
+
     documentCategories,
-    companyCurrentEmployee,
   }),
 )
 class Edit extends Component {
@@ -155,9 +152,7 @@ class Edit extends Component {
   handleAddPassPortAllField = (item, index) => {
     const {
       dispatch,
-      idCurrentEmployee,
-      tenantCurrentEmployee = '',
-      companyCurrentEmployee = '',
+      employee,
       documentCategories = [],
     } = this.props;
     const { document: documentPassPort, urlFile } = item;
@@ -174,7 +169,6 @@ class Edit extends Component {
         id: documentPassPort?._id,
         attachment: getFile?.id,
         key: `Passport_${index + 1}`,
-        tenantId: tenantCurrentEmployee,
         category: indentityCategory?._id,
       };
 
@@ -189,9 +183,7 @@ class Edit extends Component {
           key: `Passport_${index + 1}`,
           attachment: getFile?.id,
           category: indentityCategory?._id,
-          employee: idCurrentEmployee,
-          tenantId: tenantCurrentEmployee,
-          company: companyCurrentEmployee,
+          employee,
         },
       }).then((id) => this.handleAddPassPort(id, index, item));
     }
@@ -210,7 +202,6 @@ class Edit extends Component {
   };
 
   processDataChangesPassPort = (item) => {
-    const { tenantCurrentEmployee = '' } = this.props;
     const {
       urlFile,
       document,
@@ -229,14 +220,13 @@ class Edit extends Component {
       passportIssuedOn,
       passportValidTill,
       _id,
-      tenantId: tenantCurrentEmployee,
     };
 
     return payloadChanges;
   };
 
   processDataAddPassPort = (id, item) => {
-    const { generalData, tenantCurrentEmployee = '' } = this.props;
+    const { generalData } = this.props;
     const { employee = '' } = generalData;
     const {
       passportNumber = '',
@@ -252,7 +242,6 @@ class Edit extends Component {
       passportValidTill,
       document: id,
       employee,
-      tenantId: tenantCurrentEmployee,
     };
 
     return payloadChanges;

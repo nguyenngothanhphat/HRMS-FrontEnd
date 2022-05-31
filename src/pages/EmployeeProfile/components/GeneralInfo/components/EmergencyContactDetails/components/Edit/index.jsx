@@ -13,14 +13,12 @@ import styles from './index.less';
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
       listRelation = [],
-      tenantCurrentEmployee = '',
     } = {},
   }) => ({
     loading: loading.effects['employeeProfile/updateGeneralInfo'],
     generalDataOrigin,
     generalData,
     listRelation,
-    tenantCurrentEmployee,
   }),
 )
 class Edit extends Component {
@@ -33,15 +31,9 @@ class Edit extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-
-    // const { emergencyContactDetails = [] } = generalData;
-
     dispatch({
       type: 'employeeProfile/fetchListRelation',
-      payload: {},
     });
-
-    // this.setState({ emergencyContactDetails: emergencyContactDetails });
   }
 
   handleAddBtn = () => {
@@ -139,7 +131,7 @@ class Edit extends Component {
   };
 
   processDataChanges = () => {
-    const { generalData, generalDataOrigin, tenantCurrentEmployee = '' } = this.props;
+    const { generalData, generalDataOrigin } = this.props;
 
     const { _id } = generalDataOrigin;
     const { emergencyContactDetails: newData = [] } = generalData;
@@ -147,7 +139,6 @@ class Edit extends Component {
     const payloadChanges = {
       emergencyContactDetails: newData,
       id: _id,
-      tenantId: tenantCurrentEmployee,
     };
 
     return payloadChanges;
@@ -243,6 +234,7 @@ class Edit extends Component {
                   <Input
                     defaultValue={emergencyPersonName}
                     className={styles.inputForm}
+                    placeholder="Enter the Emergency Contact’s Name"
                     onChange={(e) => this.handleChangeField(e.target.id, e.target.value, index)}
                   />
                 </Form.Item>
@@ -296,13 +288,14 @@ class Edit extends Component {
                   <Input
                     defaultValue={emergencyContact}
                     className={styles.inputForm}
+                    placeholder="Enter the Emergency Contact’s Number"
                     onChange={(e) => this.handleChangeField(e.target.id, e.target.value, index)}
                   />
                 </Form.Item>
               </div>
             );
           })}
-          <Col span={9} className={styles.addMoreButton}>
+          <Col span={24} className={styles.addMoreButton}>
             <div onClick={this.handleAddBtn}>
               <PlusOutlined className={styles.addMoreButtonIcon} />
               Add another Emergency Contact

@@ -15,7 +15,7 @@ const CardItem = (props) => {
         className={styles.card__top}
         onClick={() => {
           onClick();
-          history.push(`/directory/employee-profile/${userId}`);
+          history.push(`/directory/employee-profile/${userId}/general-info`);
         }}
       >
         <Avatar src={avatar} size={32} icon={<UserOutlined />} />
