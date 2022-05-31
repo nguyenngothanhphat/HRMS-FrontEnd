@@ -69,23 +69,6 @@ const BannerTable = (props) => {
         render: (position) => <span className={styles.blueText}>{position}</span>,
       },
       {
-        title: 'Location',
-        dataIndex: 'location',
-        key: 'location',
-        render: (location = []) => (
-          <div style={{ lineHeight: '22px' }}>
-            {location.map((x, index) => {
-              return (
-                <span key={x._id}>
-                  {x.name}
-                  {index + 1 < location.length ? ', ' : ''}
-                </span>
-              );
-            })}
-          </div>
-        ),
-      },
-      {
         title: 'Media',
         dataIndex: 'attachments',
         key: 'attachments',
