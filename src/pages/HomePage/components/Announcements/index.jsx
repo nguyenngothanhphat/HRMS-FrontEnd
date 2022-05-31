@@ -4,7 +4,6 @@ import LazyLoad from 'react-lazyload';
 import { connect } from 'umi';
 import { TAB_IDS } from '@/utils/homePage';
 import EmptyComponent from '@/components/Empty';
-import EmptyIcon from '@/assets/homePage/imageEmpty.png';
 import EmbedPost from './components/EmbedPost';
 import EmployeeTag from './components/EmployeeTag';
 import PostContent from './components/PostContent';
@@ -37,8 +36,8 @@ const Announcements = (props) => {
     <div className={styles.Announcements}>
       <p className={styles.title}>Announcements</p>
       {announcements.length === 0 ? (
-        <div className={styles.Voting}>
-          <EmptyComponent description="No Announcements" image={EmptyIcon} />
+        <div className={styles.card}>
+          <EmptyComponent description="No Announcements" />
         </div>
       ) : (
         <Spin spinning={loadingFetchAnnouncementList}>
