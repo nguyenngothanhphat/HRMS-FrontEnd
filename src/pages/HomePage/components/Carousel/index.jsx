@@ -39,7 +39,6 @@ const Carousel = (props) => {
       type: 'homePage/fetchBannersEffect',
       payload: {
         postType: TAB_IDS.BANNER,
-        location: [getCurrentLocation()],
       },
     });
   };
