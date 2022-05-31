@@ -54,8 +54,11 @@ const References = (props) => {
   };
 
   useEffect(() => {
-    setNumReferences(numReferencesProp);
-  }, [numReferencesProp]);
+    setNumReferences(numReferencesProp || 3);
+    form.setFieldsValue({
+      noOfReferences: numReferencesProp || 3,
+    });
+  }, [ticketID]);
 
   useEffect(() => {
     getDisabled();
@@ -209,7 +212,6 @@ const References = (props) => {
               name="references"
               initialValues={{
                 references,
-                noOfReferences: numReferencesProp,
               }}
               form={form}
             >

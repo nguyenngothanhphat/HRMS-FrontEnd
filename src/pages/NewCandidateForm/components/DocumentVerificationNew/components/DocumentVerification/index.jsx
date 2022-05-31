@@ -299,8 +299,6 @@ const DocumentVerification = (props) => {
       payload,
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
-        setOpenModal(type !== 'generate-link');
-        setOpenModalEmail(type === 'generate-link');
         dispatch({
           type: 'newCandidateForm/saveTemp',
           payload: {
@@ -312,6 +310,8 @@ const DocumentVerification = (props) => {
                 : processStatus,
           },
         });
+        setOpenModal(type !== 'generate-link');
+        setOpenModalEmail(type === 'generate-link');
       }
     });
     dispatch({
