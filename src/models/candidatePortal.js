@@ -358,6 +358,7 @@ const candidatePortal = {
           // isAcceptedJoiningDate,
           sentDate = '',
           isFilledReferences = false,
+          numReferences = null,
         } = data || {};
 
         const dueDate = sentDate ? moment(sentDate).add(5, 'days') : '-';
@@ -393,7 +394,7 @@ const candidatePortal = {
             break;
 
           case NEW_PROCESS_STATUS.REFERENCE_VERIFICATION: {
-            if (!isFilledReferences) {
+            if (!isFilledReferences && numReferences) {
               tempPendingTasks[2].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
               tempPendingTasks[2].dueDate = dueDate;
             }
