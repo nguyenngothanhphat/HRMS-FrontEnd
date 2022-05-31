@@ -83,7 +83,13 @@ const BackgroundRecheck = (props) => {
   }, []);
 
   useLayoutEffect(() => {
-    if (documentTypeA.length > 0) {
+    if (
+      documentTypeA.length > 0 ||
+      documentTypeB.length > 0 ||
+      documentTypeC.length > 0 ||
+      documentTypeD.length > 0 ||
+      documentTypeE.length > 0
+    ) {
       dispatch({
         type: 'newCandidateForm/updateByHR',
         payload: {

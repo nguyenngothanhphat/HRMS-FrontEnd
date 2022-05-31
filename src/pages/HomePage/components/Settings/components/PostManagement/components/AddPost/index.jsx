@@ -253,7 +253,6 @@ const AddPost = (props) => {
           postType: TAB_IDS.BANNER,
           createdBy: employee?._id,
           position: record?.position,
-          location: values.location,
         };
         break;
       }
@@ -305,6 +304,7 @@ const AddPost = (props) => {
           attachments,
           postType: TAB_IDS.ANNIVERSARY,
           description: values.descriptionB,
+          location,
         };
         break;
       }
@@ -315,6 +315,7 @@ const AddPost = (props) => {
           postType: TAB_IDS.IMAGES,
           title: values.titleI,
           description: values.descriptionI,
+          location,
         };
         break;
       }
@@ -401,28 +402,30 @@ const AddPost = (props) => {
               })}
             </Select>
           </Form.Item>
-          <Form.Item
-            label="Show in Locations"
-            name="location"
-            rules={[{ required: true, message: 'Please select the location!' }]}
-            placeholder="Enter location"
-          >
-            <Select
-              mode="tags"
-              allowClear
-              showArrow
-              style={{ width: '100%' }}
-              onChange={handleChangeLocation}
+          {[TAB_IDS.ANNOUNCEMENTS, TAB_IDS.IMAGES, TAB_IDS.POLL].includes(mode) && (
+            <Form.Item
+              label="Show in Locations"
+              name="location"
+              rules={[{ required: true, message: 'Please select the location!' }]}
+              placeholder="Enter location"
             >
-              {companyLocationList.map((x) => {
-                return (
-                  <Select.Option value={x._id} key={x._id}>
-                    {x.name}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
+              <Select
+                mode="tags"
+                allowClear
+                showArrow
+                style={{ width: '100%' }}
+                onChange={handleChangeLocation}
+              >
+                {companyLocationList.map((x) => {
+                  return (
+                    <Select.Option value={x._id} key={x._id}>
+                      {x.name}
+                    </Select.Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+          )}
           {renderTypeContent()}
         </Form>
         <div className={styles.footer}>
