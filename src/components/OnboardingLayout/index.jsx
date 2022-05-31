@@ -15,6 +15,7 @@ import SalaryNegotiation from '@/pages/Onboarding/components/OnboardingOverview/
 import AwaitingApprovals from '@/pages/Onboarding/components/OnboardingOverview/components/AwaitingApprovals';
 import NeedsChanges from '@/pages/Onboarding/components/OnboardingOverview/components/NeedsChanges';
 import Joined from '@/pages/Onboarding/components/OnboardingOverview/components/Joined';
+import ReferenceVerification from '@/pages/Onboarding/components/OnboardingOverview/components/ReferenceVerification';
 
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import MenuItem from './components/MenuItem';
@@ -31,6 +32,8 @@ const getComponent = (name) => {
       return <ProfileVerification />;
     case 'DocumentVerification': // 4
       return <DocumentVerification />;
+    case 'ReferenceVerification': // 5
+      return <ReferenceVerification />;
     case 'SalaryNegotiation': // 5
       return <SalaryNegotiation />;
     case 'AwaitingApprovals': // 6

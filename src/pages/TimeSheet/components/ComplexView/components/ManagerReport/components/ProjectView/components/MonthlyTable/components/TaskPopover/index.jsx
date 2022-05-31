@@ -95,7 +95,7 @@ const TaskPopover = (props) => {
         placement={placement}
         content={() => renderPopup()}
         title={null}
-        trigger="hover"
+        trigger="click"
         visible={showPopover}
         overlayClassName={styles.TaskPopover}
         onVisibleChange={() => {

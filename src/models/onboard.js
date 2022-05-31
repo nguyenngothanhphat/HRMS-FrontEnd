@@ -5,7 +5,7 @@ import moment from 'moment';
 import {
   getOnboardingList,
   deleteDraft,
-  inititateBackgroundCheck,
+  initiateBackgroundCheck,
   createProfile,
   getTotalNumberOnboardingList,
   reassignTicket,
@@ -694,7 +694,7 @@ const onboard = {
       }
       return response;
     },
-    *inititateBackgroundCheckEffect({ payload }, { call, put }) {
+    *initiateBackgroundCheckEffect({ payload }, { call, put }) {
       try {
         const { ACCEPTED_PROVISIONAL_OFFERS, PENDING } = PROCESS_STATUS;
         const { rookieID = '', tenantId = '' } = payload;
@@ -702,7 +702,7 @@ const onboard = {
           rookieID,
           tenantId,
         };
-        const response = yield call(inititateBackgroundCheck, req);
+        const response = yield call(initiateBackgroundCheck, req);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
 

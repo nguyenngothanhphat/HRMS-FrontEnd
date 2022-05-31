@@ -154,13 +154,16 @@ const WeeklyTable = (props) => {
           });
         },
         sorter: (a, b) => {
-          return a.projects && b.projects ? a.projects.localeCompare(b.legalName) : false;
+          return a.projects.length > 0 && b.projects.length > 0
+            ? a.projects[0].localeCompare(b.projects[0])
+            : false;
         },
         sortDirections: ['ascend', 'descend'],
       },
+
       {
         title: 'Working Days',
-        dataIndex: 'totalWorkingDayInHours',
+        dataIndex: 'userSpentInDay',
         key: 'workingDays',
         render: (workingDays, row) => {
           const { totalWorkingDay = 0, userSpentInDay = 0, totalWorkingDayInHours = 0 } = row;
@@ -168,9 +171,7 @@ const WeeklyTable = (props) => {
           return `${userSpentInDay}/${totalWorkingDay} (${totalWorkingDayInHours} hours)`;
         },
         sorter: (a, b) => {
-          return a.totalWorkingDayInHours && b.totalWorkingDayInHours
-            ? a.totalWorkingDayInHours - b.totalWorkingDayInHours
-            : false;
+          return a.userSpentInDay && b.userSpentInDay ? a.userSpentInDay - b.userSpentInDay : false;
         },
         sortDirections: ['ascend', 'descend'],
       },

@@ -1,95 +1,267 @@
 describe('Employee profile', () => {
-  before(() => {
+  beforeEach(() => {
     cy.visit('https://stghrms.paxanimi.ai/login');
-  });
-
-  let employee_email = 'sandeep@mailinator.com';
-  let password = '12345678@Tc';
-
-  it('SIGN IN', () => {
-    cy.get('#basic_userEmail').type(employee_email);
-    cy.get('#basic_password').type(password);
-    cy.get('button[type="submit"]').click();
+    cy.login('sandeep@mailinator.com','12345678@Tc')
   });
   it('VIEW PROFILE', () => {
-    cy.get('.account___1r_Ku')
-      .trigger('mousemove')
-      .click({ force: true })
+      cy.get('.account___1r_Ku')
+      .trigger('mousemove', {force:true})
+      .click({ force:true })
       .then(() => {
-        cy.contains('View profile').click({ force: true });
-        cy.wait(10000);
-        cy.get('.EmployeeTitle___2nIc6'); // general info
-        cy.wait(2000);
-        cy.contains('Edit').click({ force: true }); //employee information
+        cy.contains('View profile').click({force:true});
         cy.wait(3000);
-        cy.get('#workNumber').type('7981809916');
-        cy.get('.cancelFooter___3aUz_').click({ force: true });
-        cy.get('.EmployeeTitle___3ugtk'); // personal information
-        cy.get('.Edit___Tufj9').click();
-        cy.get('#personal_information_r_Addressline1').type('3');
-        cy.get('#personal_information_r_Addressline2').type('104');
-        cy.get('#personal_information_r_City').type('chittoor');
-        cy.get('.ant-select-selection-item').eq(2).click();
-        cy.get('.ant-select-item-option-content')
-          .contains('Afghanistan')
-          .click({ force: true });
-        cy.get('.ant-select-selection-item').eq(3).click();
-        cy.contains('Cancel').click();
-        cy.wait(2000);
-        // cy.get('.EmployeeTitle___2_R3-');                    //passport details
-        // cy.get('.Edit___35ztf').click()
-        // cy.get('.cancelFooter___1AXFl').click({force:true});
-        // cy.get('.urlData___2VQwX').click({force:true})
-        // cy.get('[alt=download]').click({force:true})
-        // cy.wait(1000)
-        // cy.get('[alt=close]').click({force:true})
-        // cy.wait(1000)
-        // cy.get('.EmployeeTitle___3QLPA');                           //visa details
-        // cy.get('.Edit___2i1bn').click({force:true});
-        // cy.get('.cancelFooter___2xTNX').click({force:true})
-        // cy.get('.urlData___3lRdd').click({force:true})
-        // cy.get('[alt=download]').click({force:true})
-        // cy.wait(500)
-        // cy.get('[alt=close]').click({force:true})
-        cy.get('.EmployeeTitle___CECYB'); //emergency contact details
-        cy.get('.Edit___3-jOE').click({ force: true });
-
-        cy.get('.cancelFooter___3BIhi').click({ force: true });
-        cy.get('.viewTitle__text___3qRAk'); // profesional and academic background
-        cy.get('.viewTitle__edit__text___1BESf').click({ force: true });
-        cy.get('.viewFooter__cancel___3w9i6').click({ force: true });
-        cy.wait(2000);
-        cy.get('.itemMenu___3QSsd ').eq(0).click({ force: true });
-        cy.get('.title___11auN'); //employement details
-        cy.get('.editBtn___2NbVW').eq(1).click({ force: true });
-        cy.get('.cancelButton___28bjc').click({ force: true });
-        cy.wait(2000);
-        cy.get('.itemMenu___3QSsd ').eq(4).click({ force: true }); //Benefits
-        cy.get('.header___1uHjp');
-        cy.contains('Add Dependant')
-          .click({ force: true })
-          .wait(20000)
-          .then(() => {
-            cy.get('#firstName').type('preetha');
-            cy.get('#lastName').type('kumar');
-            cy.get('#gender').click({ force: true });
-            cy.get('.ant-select-item-option-content')
-              .contains('Female')
-              .click({ force: true });
-            cy.wait(800);
-            cy.get('#relationship').click({ force: true });
-            cy.wait(800);
-            cy.get('.ant-select-item-option-content')
-              .contains('Mother')
-              .click({ force: true });
-            cy.wait(800);
-            cy.get('#dob').click({ force: true });
-            cy.get('.ant-picker-today-btn')
-              .contains('Today')
-              .click({ force: true });
-            cy.wait(800);
-            cy.contains('Cancel').click({ force: true });
-          });
       });
-  });
+    });
+  it('general info',()=>{
+    cy.get('.account___1r_Ku')
+    .trigger('mousemove',  {force:true})
+    .click({ force:true })
+    .then(() => {
+      cy.contains('View profile').click({force:true});
+      cy.wait(3000);
+    });
+      cy.get('.EmployeeTitle___2nIc6'); // general info
+      cy.wait(2000)
+      cy.contains('Edit').click({force:true})                   //employee information 
+      cy.wait(3000)
+      cy.get('#workNumber').type("7981809816");
+      cy.contains('Save').click({force:true});
+      cy.wait(2000)
+      cy.contains('Okay').click({force:true})
+      cy.wait(2000)
+      cy.contains('Edit').click({force:true})                   //employee information 
+      cy.wait(3000)
+      cy.get('#workNumber').clear();
+      cy.contains('Save').click({force:true});
+      cy.wait(2000)
+      cy.contains('Okay').click({force:true})
+      cy.wait(2000)
+
+      
+      cy.get('.EmployeeTitle___3ugtk').should('have.text','Personal Information')
+      cy.get('.EmployeeTitle___3ugtk');                  // personal information
+      cy.get('.Edit___Tufj9').click();
+      cy.get('#personal_information_personalNumber').type('2345678901');
+      cy.wait(1000)
+      cy.get('#personal_information_personalEmail').type('metta@gmail.com');
+      cy.wait(1000)
+      cy.get('#personal_information_nationality').type('Indian')
+      cy.wait(1000)
+      cy.get('#personal_information_r_Addressline1').type("3")
+      cy.wait(1000)
+      cy.get('#personal_information_r_Addressline2').type("104");
+      cy.wait(1000)
+      cy.get('#personal_information_r_City').type("chittoor");
+      cy.wait(1000)
+     cy.get('[type="checkbox"]').eq(0).click({force:true})
+      cy.contains('Save').click({force:true})
+      cy.wait(2000)
+      cy.contains('Okay').click({force:true})
+         cy.wait(2000)
+//re editing 
+cy.get('.Edit___Tufj9').click();
+cy.get('#personal_information_personalNumber').clear();
+cy.wait(1000)
+cy.get('#personal_information_personalEmail').clear();
+cy.wait(1000)
+cy.get('#personal_information_nationality').clear()
+cy.wait(1000)
+cy.get('#personal_information_r_Addressline1').clear();
+cy.wait(1000)
+cy.get('#personal_information_r_Addressline2').clear();
+cy.wait(1000)
+cy.get('#personal_information_r_City').clear();
+cy.wait(1000)
+cy.get('[type="checkbox"]').eq(0).click({force:true})
+cy.contains('Save').click({force:true})
+cy.wait(2000)
+cy.contains('Okay').click({force:true})
+  cy.wait(2000)
+
+         cy.get('.EmployeeTitle___CECYB').should('have.text','Emergency Contact Details')
+         cy.get('.EmployeeTitle___CECYB');                        //emergency contact details
+         cy.get('.Edit___3-jOE').click({force:true});
+         cy.get('[aria-label="plus"]').click({force:true})
+         .then(()=>{
+             cy.get('.ant-input').eq(3).type('amma')
+             cy.wait(1000)
+             cy.get('.ant-select-selector').eq(1).click({force:true})
+             cy.get('.ant-select-item-option-content').eq(1).click({force:true})
+             cy.wait(1000)
+             cy.get('.ant-input').eq(4).type('2345167098')
+             cy.wait(1000)
+             cy.contains('Save').click({force:true})
+             cy.wait(2000)
+             cy.contains('Okay').click({force:true})
+             cy.wait(2000)
+           })
+           //re-edit
+           cy.get('.Edit___3-jOE').click({force:true});
+           cy.wait(2000)
+           cy.get('[alt="remove"]').dblclick({force:true})
+           cy.wait(2000)
+           cy.contains('Save').click({force:true})
+           cy.wait(2000)
+           cy.contains('Okay').click({force:true})
+           cy.wait(2000)
+           
+
+
+      cy.get('.viewTitle__text___3qRAk').should('have.text','Professional & Academic Background')
+      cy.get('.viewTitle__text___3qRAk');                 // profesional and academic background
+      cy.get('.viewTitle__edit__text___1BESf').click({force:true})
+      cy.get('#basic_preJobTitle').type('FED')
+      cy.wait(1000)
+      cy.get('#basic_preCompany').type('abcxyz')
+      cy.wait(1000)
+      cy.get('#basic_qualification').type('B.Tech')
+      cy.wait(2000)
+      // const image = 'image.PNG';
+      // cy.get('input[type="file"]').attachFile(image);
+      // cy.wait(3000)
+      cy.get('.css-1s2u09g-control').click({force:true}).type('Cypress'+'{enter}')
+      cy.wait(1000)
+      cy.contains('Save').click({force:true})
+      cy.wait(2000)
+      cy.contains('Okay').click({force:true})
+      //re edit
+      cy.get('.viewTitle__edit__text___1BESf').click({force:true})
+      cy.get('#basic_preJobTitle').clear();
+      cy.wait(1000)
+      cy.get('#basic_preCompany').clear();
+      cy.wait(1000)
+      cy.get('#basic_qualification').clear();
+      cy.wait(2000)
+      // const image = 'image.PNG';
+      // cy.get('input[type="file"]').attachFile(image);
+      // cy.wait(3000)
+      cy.get('.css-1s2u09g-control')
+      cy.get('[aria-label="Remove cypress"]').click({force:true})
+      cy.wait(1000)
+      cy.contains('Save').click({force:true})
+      cy.wait(2000)
+      cy.contains('Okay').click({force:true})
+
+      });
+
+
+
+   // *****employement info */
+   it('employement info',()=>{
+    cy.get('.account___1r_Ku')
+    .trigger('mousemove')
+    .click({ force:true })
+    .then(() => {
+      cy.contains('View profile').click({force:true});
+      cy.wait(3000);
+    });
+      cy.get('.itemMenu___3QSsd ').eq(0).click({force:true});
+      // cy.get('.title___11auN').should('have.text','Employment Details')
+      cy.get('.title___11auN');   //employement details
+      cy.get('.editBtn___2NbVW').eq(0).click({force:true});
+      cy.wait(2000)
+      cy.get('.ant-select-selection-item').eq(4).click({force:true})
+      cy.wait(1000)
+      cy.contains('Contingent Worker').eq(0).click({force:true})
+      cy.wait(1000)
+      cy.contains('Save').click({force:true})
+      cy.wait(2000)
+      cy.contains('Okay').click({force:true})
+      cy.wait(2000)
+      cy.get('.title___11auN')
+      cy.get('.editBtn___2NbVW').eq(1).click({force:true})
+      cy.wait(1000)
+      cy.contains('Continue').click({force:true})
+      cy.wait(2000)
+      cy.get('.ant-select-selection-search').eq(0).click({force:true})
+      cy.get('.ant-select-item-option-content').eq(0).click({force:true})
+      cy.wait(1000)
+      cy.get('.ant-select-selection-search').eq(1).click({force:true})
+      cy.wait(1000)
+      .then(()=>{
+          cy.get('.ant-select-item-option-content').eq(8).click({force:true})
+      })
+      cy.wait(2000)
+      cy.get('.ant-select-selection-search').eq(2).click({force:true})
+      cy.wait(1000)
+      cy.get('.ant-select-item-option-content').eq(9).click({force:true})
+      cy.wait(1000)
+      cy.contains('Continue').click({force:true})
+      cy.wait(3000)
+      cy.contains('Continue').click({force:true})
+      cy.wait(3000)
+      cy.get('[type="text"]').eq(1).type('3,00,000')
+      cy.wait(2000)
+      cy.get('.ant-select-selection-search').eq(0).click({force:true})
+      cy.wait(2000)
+      cy.get('.ant-select-item-option-content').eq(0).click({force:true})
+      cy.wait(1000)
+      cy.contains('Continue').click({force:true})
+      cy.wait(3000)
+      cy.get('.checkmark___2o3b6').eq(0).click({force:true})
+      cy.wait(2000)
+      cy.contains('Continue').click({force:true})
+      cy.wait(3000)
+      cy.contains('Continue').click({force:true})
+      cy.wait(3000)
+      cy.get('.ant-input').eq(1).type('to check the staTUS')
+      cy.wait(3000)
+      cy.contains('Back').click({force:true})
+      cy.wait(3000)
+      cy.contains('Back').click({force:true})
+      cy.wait(3000)
+      cy.contains('Back').click({force:true})
+      cy.wait(3000)
+      cy.contains('Back').click({force:true})
+      cy.wait(3000)
+      cy.contains('Back').click({force:true})
+      cy.wait(3000)
+      cy.contains('Back').click({force:true})
+      cy.wait(3000)
+      cy.get('[type="button"]').eq(0).click({force:true})
+      cy.wait(3000)
+    cy.contains('Cancel & Return').click({force:true})
+   });
+
+
+    //**********benefits***** */
+    it('benefits',()=>{
+      cy.get('.account___1r_Ku')
+      .trigger('mousemove',{force:true})
+      .click({ force:true })
+      .then(() => {
+        cy.contains('View profile').click({force:true});
+        cy.wait(3000);
+      });
+    cy.get('.textName___2dqbQ').eq(5).click({force:true})
+    cy.wait(4000)
+    cy.get('.headingText___36nuO') //covered individuals
+    cy.wait(2000)
+    cy.contains('Add Dependant').click({force:true}).wait(2000)
+    .then(()=>{
+        cy.get('#firstName').type("preetha");
+        cy.get('#lastName').type("kumar");
+        cy.get('#gender').click({force:true});
+        cy.get('.ant-select-item-option-content').contains("Female").click({force:true});
+        cy.wait(800);
+        cy.get('#relationship').click({force:true})
+        cy.wait(800);
+        cy.get('.ant-select-item-option-content').contains("Mother").click({force:true})
+        cy.wait(800);
+        cy.get('#dob').click({force:true})
+        cy.get('.ant-picker-today-btn').contains("Today").click({force:true})
+        cy.wait(800);
+        cy.get('[type="submit"]').click({force:true})
+    });
+    cy.wait(2000)
+    cy.get('[alt="remove"]').dblclick({force:true})
+    cy.get('.ant-card-head-title')
+    cy.wait(2000)
+    cy.contains('Financial').click({force:true})
+    cy.wait(3000)
+    cy.contains('Legal').click({force:true})
+    cy.wait(3000)
+      
+
 });
+  });

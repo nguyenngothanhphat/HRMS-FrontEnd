@@ -62,6 +62,13 @@ export async function getStateListByCountry(payload) {
   });
 }
 
+export function addReference(payload) {
+  return request('/api/referencetenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 // new document verification
 export async function upsertCandidateDocument(payload) {
   return request('/api/candidatetenant/upsert-candidate-document', {

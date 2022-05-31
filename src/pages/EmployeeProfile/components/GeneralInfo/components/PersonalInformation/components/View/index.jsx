@@ -96,7 +96,7 @@ class View extends PureComponent {
         addressLine1: r_Addressline1 = '',
         addressLine2: r_Addressline2 = '',
         city: r_city = '',
-        country: { name: r_countryName = '' } = {},
+        country: r_country = {},
         state: r_state = '',
         zipCode: r_zipCode = '',
       } = {},
@@ -104,11 +104,14 @@ class View extends PureComponent {
         addressLine1: c_Addressline1 = '',
         addressLine2: c_Addressline2 = '',
         city: c_city = '',
-        country: { name: c_countryName = '' } = {},
+        country: c_country = {},
         state: c_state = '',
         zipCode: c_zipCode = '',
       } = {},
     } = dataAPI;
+
+    const { name: r_countryName = '' } = r_country || {};
+    const { name: c_countryName = '' } = c_country || {};
 
     const checkVisible = employee === idEmployee || permissions.editPersonalInfo !== -1;
 

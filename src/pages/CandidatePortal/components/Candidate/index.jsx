@@ -19,8 +19,10 @@ import SalaryStructure from './components/SalaryStructure';
 // 4: SalaryStructure
 // 5: OfferDetails
 // 6: OfferLetter
+// 7: References
 
 import styles from './index.less';
+import References from './components/References';
 import { goToTop } from '@/utils/utils';
 
 const Candidate = (props) => {
@@ -53,7 +55,9 @@ const Candidate = (props) => {
       case CANDIDATE_TASK_LINK.ACCEPT_OFFER:
         setScreen(6);
         break;
-
+      case CANDIDATE_TASK_LINK.REFERENCES:
+        setScreen(7);
+        break;
       default:
         setScreen(1);
         break;
@@ -113,6 +117,8 @@ const Candidate = (props) => {
         return <OfferDetails />;
       case 6:
         return <OfferLetter />;
+      case 7:
+        return <References />;
       default:
         return <div />;
     }
@@ -136,7 +142,8 @@ const Candidate = (props) => {
         return [{ id: 4, title: 'Salary Proposal', disabled: true }];
       case CANDIDATE_TASK_LINK.ACCEPT_OFFER:
         return [{ id: 6, title: 'Offer Letter', disabled: true }];
-
+      case CANDIDATE_TASK_LINK.REFERENCES:
+        return [{ id: 7, title: 'References', disabled: true }];
       default:
         return defaultSet;
     }

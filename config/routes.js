@@ -327,6 +327,10 @@ const routes = [
             authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'P_ONBOARDING_ALL'],
           },
           {
+            path: '/onboarding/list/view/:reId',
+            redirect: '/onboarding/list/view/:reId/basic-information',
+          },
+          {
             path: '/onboarding/newJoinees/view-detail/:userId',
             name: 'candidateProfile',
             hideInMenu: true,
