@@ -17,7 +17,11 @@ import ViewDocumentModal from '@/components/ViewDocumentModal';
   ({
     loading,
     customerProfile: { documents = [], documentType = [], info = {} } = {},
-    user: { companiesOfUser = [], currentUser: { _id = '', firstName = '' } = {} } = {},
+    user: {
+      companiesOfUser = [],
+      currentUser: { _id = '', firstName = '' } = {},
+      permissions = {},
+    } = {},
   }) => ({
     loadingDocument: loading.effects['customerProfile/fetchDocuments'],
     loadingDocumentType: loading.effects['customerProfile/fetchDocumentsTypes'],
@@ -27,6 +31,7 @@ import ViewDocumentModal from '@/components/ViewDocumentModal';
     info,
     _id,
     firstName,
+    permissions,
     documentType,
     companiesOfUser,
   }),
@@ -260,6 +265,9 @@ class Documents extends PureComponent {
   };
 
   generateColumns = () => {
+    const { permissions = {} } = this.props;
+    const viewAddCustomerDocument = permissions.viewAddCustomerDocument !== -1;
+    const managerCustomerDocument = permissions.managerCustomerDocument !== -1;
     const columns = [
       {
         title: 'Document Name',
@@ -282,7 +290,7 @@ class Documents extends PureComponent {
       },
       {
         title: 'Uploaded On',
-        dataIndex: 'createAt',
+        dataIndex: 'createdAt',
         width: '10%',
         align: 'center',
         render: (createdAt) => {
@@ -298,16 +306,20 @@ class Documents extends PureComponent {
         render: (document) => {
           return (
             <div className={styles.action}>
-              <span style={{ cursor: 'pointer' }} onClick={() => this.viewDocument(document)}>
-                <img src={eye} alt="adf" />
-              </span>
+              {viewAddCustomerDocument && (
+                <span style={{ cursor: 'pointer' }} onClick={() => this.viewDocument(document)}>
+                  <img src={eye} alt="adf" />
+                </span>
+              )}
 
-              <span
-                onClick={() => this.removeDoc(document.id)}
-                style={{ cursor: 'pointer', display: 'inline-block', marginLeft: '8px' }}
-              >
-                <img src={bin} alt="dfa" />
-              </span>
+              {managerCustomerDocument && (
+                <span
+                  onClick={() => this.removeDoc(document.id)}
+                  style={{ cursor: 'pointer', display: 'inline-block', marginLeft: '8px' }}
+                >
+                  <img src={bin} alt="dfa" />
+                </span>
+              )}
             </div>
           );
         },
@@ -347,6 +359,7 @@ class Documents extends PureComponent {
       loadingDocument = false,
       loadingFilterDocument = false,
       loadingSearchDocument = false,
+      permissions = {},
     } = this.props;
 
     const filter = (
@@ -373,6 +386,9 @@ class Documents extends PureComponent {
       </>
     );
 
+    // const viewAddCustomerDocument = permissions.viewAddCustomerDocument !== -1;
+    const managerCustomerDocument = permissions.managerCustomerDocument !== -1;
+
     return (
       <div className={styles.Documents}>
         <div className={styles.documentHeader}>
@@ -381,11 +397,12 @@ class Documents extends PureComponent {
           </div>
           <div className={styles.documentHeaderFunction}>
             {/* Add doc */}
-
-            <div className={styles.buttonAddImport} onClick={this.showModal}>
-              <PlusOutlined />
-              Add Document
-            </div>
+            {managerCustomerDocument && (
+              <div className={styles.buttonAddImport} onClick={this.showModal}>
+                <PlusOutlined />
+                Add Document
+              </div>
+            )}
 
             <ModalAddDoc
               visible={visible}
