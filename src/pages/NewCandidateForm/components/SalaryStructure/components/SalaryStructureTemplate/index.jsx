@@ -674,7 +674,7 @@ const SalaryStructureTemplate = (props) => {
               <Col span={6} />
 
               <Col span={10}>
-                <span>Employee One Time Annual Retention Bonus</span>
+                <span>Employee One Time Annual Premium Bonus</span>
               </Col>
               <Col span={8}>
                 <div className={styles.inputBefore}>

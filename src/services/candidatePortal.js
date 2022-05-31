@@ -21,6 +21,13 @@ export function getById(params) {
   });
 }
 
+export function getSalaryStructureByGrade(params) {
+  return request('/api/salarystructuretenant/get-by-grade', {
+    method: 'POST',
+    data: params,
+  });
+}
+
 export function updateByCandidate(params) {
   return request('/api/candidatetenant/update-by-candidate', {
     method: 'POST',
