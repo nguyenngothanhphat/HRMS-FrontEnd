@@ -45,18 +45,18 @@ const PostCard = (props) => {
   const fetchTotalPostsOfType = () => {
     dispatch({
       type: 'homePage/fetchTotalPostsOfType',
+      payload: {
+        location: arrLocation,
+      },
     });
   };
 
   const fetchData = () => {
     let type = '';
-    const payload = {
-      postType: selectedTab,
-    };
+
     switch (selectedTab) {
       case TAB_IDS.ANNOUNCEMENTS:
         type = 'homePage/fetchAnnouncementsEffect';
-        payload.location = arrLocation;
         break;
       case TAB_IDS.ANNIVERSARY:
         type = 'homePage/fetchAnniversariesEffect';
@@ -69,12 +69,15 @@ const PostCard = (props) => {
         break;
       case TAB_IDS.POLL:
         type = 'homePage/fetchPollsEffect';
-        payload.location = arrLocation;
 
         break;
       default:
         break;
     }
+    const payload = {
+      postType: selectedTab,
+      location: arrLocation,
+    };
     dispatch({
       type,
       payload,
