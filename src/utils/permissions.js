@@ -363,6 +363,13 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
 
   // CUSTOMER MANAGEMENT
   const indexDeleteCustomer = isAuthorized(permissionList, ['P_CUSTOMER_T_CUSTOMER_B_DELETE']);
+  const indexViewCustomDocument = isAuthorized(permissionList, [
+    'M_DOCUMENT_MANAGEMENT_VIEW_DOCUMENT',
+  ]);
+  const indexManagerCustomDocument = isAuthorized(permissionList, [
+    'M_DOCUMENT_MANAGEMENT_CUSTOMER_DOCUMENT',
+  ]);
+
   return {
     // Directory Page
     viewTabActive: findIndexActive,
@@ -471,5 +478,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
 
     // customer management
     deleteCustomerManagement: indexDeleteCustomer,
+    viewAddCustomerDocument: indexViewCustomDocument,
+    managerCustomerDocument: indexManagerCustomDocument,
   };
 }
