@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import { Checkbox, Col, DatePicker, Form, Row, Select, TreeSelect } from 'antd';
 import moment from 'moment';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
@@ -12,7 +12,7 @@ const { TreeNode } = TreeSelect;
 
 const JobDetailForm = (props) => {
   const [form] = Form.useForm();
-
+  const [isShowClientLocation, setIsShowClientLocation] = useState(false)
   const {
     disabled = false,
     dispatch,
@@ -147,6 +147,7 @@ const JobDetailForm = (props) => {
             workLocation: null,
             clientLocation: null,
           });
+          setIsShowClientLocation(false)
         } else if (selectedWorkLocation) {
           saveToRedux({
             location: value,
@@ -154,14 +155,19 @@ const JobDetailForm = (props) => {
             workFromHome: null,
             clientLocation: null,
           });
+          setIsShowClientLocation(false)
         } else {
-          saveToRedux({
-            clientLocation: value,
-            workLocation: null,
-            workFromHome: null,
-          });
+          setIsShowClientLocation(true)
         }
         setNeedRefreshDocument(true);
+        break;
+      }
+      case 'clientLocation': {
+        saveToRedux({
+          clientLocation: value,
+          workLocation: null,
+          workFromHome: null,
+        });
         break;
       }
       case 'title': {
@@ -265,34 +271,59 @@ const JobDetailForm = (props) => {
           >
             <TreeNode title="Office Location">
               {locationList.map((x, index) => (
-                <TreeNode title={x.name} value={x._id} key={`0${index}`} />
+                <TreeNode title={x.name} value={x._id} key={index} />
               ))}
             </TreeNode>
             <TreeNode title="Work From Home" value="work from home" />
-            <TreeNode title="Client Location">
-              {listCustomerLocation.map((x) => (
-                <TreeNode title={x.legalName} key={`${x.customerId}`}>
-                  {x.location.map((local, firstIndex) => (
-                    <TreeNode title={local.country} key={`${x.customerId + firstIndex}`}>
-                      {local.state.map((state, secondIndex) => (
-                        <TreeNode
-                          title={state.name}
-                          key={`${x.customerId + firstIndex + secondIndex}`}
-                          value={state.value}
-                        />
-                      ))}
-                    </TreeNode>
-                  ))}
-                </TreeNode>
-              ))}
-            </TreeNode>
+            <TreeNode title="Client Location" value="client location" />
           </TreeSelect>
         ),
       },
       {
+        title: 'clientLocation',
+        name: 'Client Location',
+        id: 2,
+        rules: [
+          {
+            required: false,
+          },
+        ],
+        component: (
+          isShowClientLocation && 
+          <TreeSelect
+            treeLine
+            placeholder="Select the client location"
+            onChange={(value) => onChangeValue(value, 'clientLocation')}
+            disabled={disabled}
+            showSearch
+            showArrow
+            allowClear
+            filterOption={(input, option) => {
+            return option.props.children.toLowerCase().indexOf(input.toLowerCase()) > -1;
+          }}
+          >
+            {listCustomerLocation.map((x) => (
+              <TreeNode title={x.legalName} key={`${x.customerId}`}>
+                {x.location.map((local, firstIndex) => (
+                  <TreeNode title={local.country} key={`${x.customerId + firstIndex}`}>
+                    {local.state.map((state, secondIndex) => (
+                      <TreeNode
+                        title={state.name}
+                        key={`${x.customerId + firstIndex + secondIndex}`}
+                        value={state.value}
+                      />
+                      ))}
+                  </TreeNode>
+                  ))}
+              </TreeNode>
+              ))}
+          </TreeSelect> 
+        )
+      },
+      {
         title: 'department',
         name: 'Department',
-        id: 2,
+        id: 3,
         rules: [
           {
             required: true,
@@ -322,7 +353,7 @@ const JobDetailForm = (props) => {
       {
         title: 'title',
         name: 'Job Title',
-        id: 3,
+        id: 4,
         rules: [
           {
             required: true,
@@ -353,7 +384,7 @@ const JobDetailForm = (props) => {
       {
         title: 'grade',
         name: 'Job Grade',
-        id: 4,
+        id: 5,
         rules: [
           {
             required: true,
@@ -383,7 +414,7 @@ const JobDetailForm = (props) => {
       {
         title: 'reportingManager',
         name: 'Reporting Manager',
-        id: 5,
+        id: 6,
         rules: [
           {
             required: true,
@@ -417,7 +448,11 @@ const JobDetailForm = (props) => {
           {selectors.map((x, i) => {
             return (
               <Col span={24} md={12} key={i}>
-                <Form.Item rules={x.rules} name={x.title} label={x.name}>
+                <Form.Item
+                  rules={x.rules}
+                  name={x.title}
+                  label={x.name !== 'Client Location'|| isShowClientLocation ? x.name : null}
+                >
                   {x.component}
                 </Form.Item>
               </Col>
@@ -484,7 +519,7 @@ const JobDetailForm = (props) => {
         initialValues={{
           position: position || 'EMPLOYEE',
           employeeType: employeeType?._id || employeeType,
-          workLocation: workLocation ? workLocation._id : clientLocation || 'Work from home',
+          workLocation: workLocation ? workLocation._id : clientLocation || null,
           department: department?._id || department,
           title: title?._id || title,
           grade: grade?._id || grade,
