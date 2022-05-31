@@ -50,9 +50,6 @@ class EditCurrentInfo extends PureComponent {
     // fetch employees to show in "select manager" of employee
     dispatch({
       type: 'employeeProfile/fetchEmployeeListSingleCompanyEffect',
-      payload: {
-        status: ['ACTIVE'],
-      },
     });
   }
 

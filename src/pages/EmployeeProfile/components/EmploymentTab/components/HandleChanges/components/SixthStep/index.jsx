@@ -28,7 +28,7 @@ export default function SixthStep(props) {
   } = currentData;
 
   const renderChangedValue = (oldVal, newVal, label, alternativeVal) => {
-    if (oldVal !== newVal && JSON.stringify(oldVal) !== JSON.stringify(newVal))
+    if (oldVal !== newVal && JSON.stringify(oldVal) !== JSON.stringify(newVal) && newVal)
       return (
         <div className={styles.item}>
           <div>{label}:</div>
@@ -38,6 +38,13 @@ export default function SixthStep(props) {
         </div>
       );
     return '';
+  };
+
+  const checkIfChanged = (arr) => {
+    return arr.every(
+      (x) =>
+        x.oldVal !== x.newVal && JSON.stringify(x.oldVal) !== JSON.stringify(x.newVal) && x.newVal,
+    );
   };
 
   const getItems = () => {
@@ -93,9 +100,11 @@ export default function SixthStep(props) {
   return (
     <div>
       <div className={styles.headings}>Please review all the changes below</div>
-      {getItems().map((val) =>
-        renderChangedValue(val.oldVal, val.newVal, val.label, val.alternativeVal),
-      )}
+      {checkIfChanged(getItems())
+        ? getItems().map((val) =>
+            renderChangedValue(val.oldVal, val.newVal, val.label, val.alternativeVal),
+          )
+        : 'No changes made'}
     </div>
   );
 }

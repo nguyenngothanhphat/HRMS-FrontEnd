@@ -82,12 +82,6 @@ class HandleChanges extends PureComponent {
     }
   }
 
-  componentWillUnmount() {
-    const { onSubmit } = this.props;
-    const { changeData } = this.state;
-    onSubmit(changeData);
-  }
-
   onRadioChange = (e) => {
     const { changeData } = this.state;
     switch (Number(e.target.value)) {
@@ -138,71 +132,66 @@ class HandleChanges extends PureComponent {
 
   onChange = (value, type) => {
     const { changeData } = this.state;
-    const { dispatch, employeeProfile, companyLocationList = [] } = this.props;
+    const {
+      dispatch,
+      employeeProfile,
+      companyLocationList = [],
+      setChangedData = () => {},
+    } = this.props;
+    let changeDataTemp = {};
     switch (type) {
       case 'title':
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepThree: { ...changeData.stepThree, title: value },
-            newTitle: employeeProfile.listTitleByDepartment.find((x) => x._id === value)?.name,
-          },
-        });
+        changeDataTemp = {
+          ...changeData,
+          stepThree: { ...changeData.stepThree, title: value },
+          newTitle: employeeProfile.listTitleByDepartment.find((x) => x._id === value)?.name,
+        };
         break;
       case 'wLocation':
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepTwo: { ...changeData.stepTwo, wLocation: value },
-            newLocation: companyLocationList.find((x) => x._id === value)?.name,
-          },
-        });
+        changeDataTemp = {
+          ...changeData,
+          stepTwo: { ...changeData.stepTwo, wLocation: value },
+          newLocation: companyLocationList.find((x) => x._id === value)?.name,
+        };
         break;
       case 'employment':
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepTwo: { ...changeData.stepTwo, employment: value },
-            newEmploymentType: employeeProfile.employeeTypes.find((x) => x._id === value)?.name,
-          },
-        });
+        changeDataTemp = {
+          ...changeData,
+          stepTwo: { ...changeData.stepTwo, employment: value },
+          newEmploymentType: employeeProfile.employeeTypes.find((x) => x._id === value)?.name,
+        };
         break;
       case 'compensationType':
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepFour: {
-              ...changeData.stepFour,
-              compensationType: value,
-            },
+        changeDataTemp = {
+          ...changeData,
+          stepFour: {
+            ...changeData.stepFour,
+            compensationType: value,
           },
-        });
+        };
         break;
 
       case 'currentAnnualCTC':
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepFour: {
-              ...changeData.stepFour,
-              currentAnnualCTC: value,
-            },
+        changeDataTemp = {
+          ...changeData,
+          stepFour: {
+            ...changeData.stepFour,
+            currentAnnualCTC: value,
           },
-        });
+        };
         break;
-      case 'department':
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepTwo: {
-              ...changeData.stepTwo,
-              department: value,
-              newDepartment: employeeProfile.departments.find((x) => x._id === value)?.name,
-              title: '',
-            },
-            newTitle: '',
+      case 'department': {
+        changeDataTemp = {
+          ...changeData,
+          stepTwo: {
+            ...changeData.stepTwo,
+            department: value,
+            title: '',
           },
-        });
+          newTitle: '',
+          newDepartment: employeeProfile.departments.find((x) => x._id === value)?.name,
+        };
+
         dispatch({
           type: 'employeeProfile/fetchTitleByDepartment',
           payload: {
@@ -211,50 +200,47 @@ class HandleChanges extends PureComponent {
           },
         });
         break;
+      }
       case 'reportTo':
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepThree: { ...changeData.stepThree, reportTo: value },
-            newManager: employeeProfile.employees.find((x) => x._id === value)?.generalInfo
-              ?.legalName,
-          },
-        });
+        changeDataTemp = {
+          ...changeData,
+          stepThree: { ...changeData.stepThree, reportTo: value },
+          newManager: employeeProfile.employeeList.find((x) => x._id === value)?.generalInfo
+            ?.legalName,
+        };
         break;
 
       case 'reportees':
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepThree: { ...changeData.stepThree, reportees: value },
-            newReportees: employeeProfile.employees
-              .filter((x) => value.includes(x._id))
-              .map((x) => x.generalInfo?.legalName),
-          },
-        });
+        changeDataTemp = {
+          ...changeData,
+          stepThree: { ...changeData.stepThree, reportees: value },
+          newReportees: employeeProfile.employeeList
+            .filter((x) => value.includes(x._id))
+            .map((x) => x.generalInfo?.legalName),
+        };
         break;
 
       case 'notifyTo': // fifth step
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepFive: { ...changeData.stepThree, notifyTo: value },
-          },
-        });
+        changeDataTemp = {
+          ...changeData,
+          stepFive: { ...changeData.stepThree, notifyTo: value },
+        };
         break;
 
       case 'reasonChange': // seventh step
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepSeven: { ...changeData.stepSeven, reasonChange: value },
-          },
-        });
+        changeDataTemp = {
+          ...changeData,
+          stepSeven: { ...changeData.stepSeven, reasonChange: value },
+        };
         break;
 
       default:
         break;
     }
+    this.setState({
+      changeData: changeDataTemp,
+    });
+    setChangedData(changeDataTemp);
   };
 
   render() {
