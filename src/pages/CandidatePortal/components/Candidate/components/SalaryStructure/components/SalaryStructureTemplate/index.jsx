@@ -220,10 +220,9 @@ class SalaryStructureTemplate extends PureComponent {
     const { settings, loadingSalary, salaryStructureSetting = {} } = this.props;
     const { notifyModalVisible, actionType } = this.state;
 
-    const { country: salaryCountry = '', option = '' } = salaryStructureSetting || {};
+    const { option = '' } = salaryStructureSetting || {};
 
-    const isTotalCompensation =
-      salaryCountry === 'IN' && option === SALARY_STRUCTURE_OPTION.TOTAL_COMPENSATION;
+    const isTotalCompensation = option === SALARY_STRUCTURE_OPTION.TOTAL_COMPENSATION;
 
     const modalTitle =
       actionType === 'accept'
