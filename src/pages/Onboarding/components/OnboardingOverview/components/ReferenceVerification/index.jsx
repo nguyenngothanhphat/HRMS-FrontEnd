@@ -12,7 +12,7 @@ import SearchOnboarding from '../SearchOnboarding';
 const { TabPane } = Tabs;
 
 const ReferenceVerification = (props) => {
-  const { profileVerifications: data = [], total = 0, loading } = props;
+  const { referenceVerification: data = [], total = 0, loading } = props;
   const [state, setState] = useState({
     pageSelected: 1,
     size: 10,
@@ -94,9 +94,9 @@ const ReferenceVerification = (props) => {
 export default connect(
   ({
     loading,
-    onboarding: { onboardingOverview: { profileVerifications = [], total = 0 } = {} } = {},
+    onboarding: { onboardingOverview: { referenceVerification = [], total = 0 } = {} } = {},
   }) => ({
-    profileVerifications,
+    referenceVerification,
     total,
     loading: loading.effects['onboarding/fetchOnboardList'],
   }),
