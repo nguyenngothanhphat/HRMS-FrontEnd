@@ -146,7 +146,7 @@ const JobDetailForm = (props) => {
             workFromHome: currentAddress,
             workLocation: null,
             clientLocation: null,
-          })
+          });
         } else if (selectedWorkLocation) {
           saveToRedux({
             location: value,
@@ -159,7 +159,7 @@ const JobDetailForm = (props) => {
             clientLocation: value,
             workLocation: null,
             workFromHome: null,
-          })
+          });
         }
         setNeedRefreshDocument(true);
         break;
@@ -252,7 +252,7 @@ const JobDetailForm = (props) => {
         ],
         component: (
           <TreeSelect
-            treeLine={true}
+            treeLine
             placeholder="Select the work location"
             onChange={(value) => onChangeValue(value, 'workLocation')}
             disabled={disabled || ![NEW_PROCESS_STATUS.DRAFT].includes(processStatus)}
@@ -268,14 +268,18 @@ const JobDetailForm = (props) => {
                 <TreeNode title={x.name} value={x._id} key={`0${index}`} />
               ))}
             </TreeNode>
-            <TreeNode title="Work From Home" value="work from home"/>
+            <TreeNode title="Work From Home" value="work from home" />
             <TreeNode title="Client Location">
               {listCustomerLocation.map((x) => (
                 <TreeNode title={x.legalName} key={`${x.customerId}`}>
                   {x.location.map((local, firstIndex) => (
                     <TreeNode title={local.country} key={`${x.customerId + firstIndex}`}>
                       {local.state.map((state, secondIndex) => (
-                        <TreeNode title={state.name} key={`${x.customerId + firstIndex + secondIndex}`} value={state.value}/>
+                        <TreeNode
+                          title={state.name}
+                          key={`${x.customerId + firstIndex + secondIndex}`}
+                          value={state.value}
+                        />
                       ))}
                     </TreeNode>
                   ))}
@@ -480,7 +484,7 @@ const JobDetailForm = (props) => {
         initialValues={{
           position: position || 'EMPLOYEE',
           employeeType: employeeType?._id || employeeType,
-          workLocation: workLocation ? workLocation._id : clientLocation ? clientLocation : 'Work from home',
+          workLocation: workLocation ? workLocation._id : clientLocation || 'Work from home',
           department: department?._id || department,
           title: title?._id || title,
           grade: grade?._id || grade,

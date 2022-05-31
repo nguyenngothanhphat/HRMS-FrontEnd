@@ -105,7 +105,7 @@ const JobDetails = (props) => {
         },
       });
     }
-    
+
     if (managerList.length === 0) {
       dispatch({
         type: 'newCandidateForm/fetchDepartmentList',
@@ -118,9 +118,12 @@ const JobDetails = (props) => {
   }, []);
 
   const checkFilled = () => {
-    const check = department && (workLocation || workFromHome || clientLocation) && title && reportingManager && dateOfJoining;
-    console.log('check', check)
-
+    const check =
+      department &&
+      (workLocation || workFromHome || clientLocation) &&
+      title &&
+      reportingManager &&
+      dateOfJoining;
     dispatch({
       type: 'newCandidateForm/save',
       payload: {
