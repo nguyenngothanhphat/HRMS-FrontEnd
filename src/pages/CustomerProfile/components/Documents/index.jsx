@@ -265,6 +265,9 @@ class Documents extends PureComponent {
   };
 
   generateColumns = () => {
+    const { permissions = {} } = this.props;
+    // const viewAddCustomerDocument = permissions.viewAddCustomerDocument !== -1;
+    const managerCustomerDocument = permissions.managerCustomerDocument !== -1;
     const columns = [
       {
         title: 'Document Name',
@@ -306,13 +309,14 @@ class Documents extends PureComponent {
               <span style={{ cursor: 'pointer' }} onClick={() => this.viewDocument(document)}>
                 <img src={eye} alt="adf" />
               </span>
-
-              <span
-                onClick={() => this.removeDoc(document.id)}
-                style={{ cursor: 'pointer', display: 'inline-block', marginLeft: '8px' }}
-              >
-                <img src={bin} alt="dfa" />
-              </span>
+              {managerCustomerDocument && (
+                <span
+                  onClick={() => this.removeDoc(document.id)}
+                  style={{ cursor: 'pointer', display: 'inline-block', marginLeft: '8px' }}
+                >
+                  <img src={bin} alt="dfa" />
+                </span>
+              )}
             </div>
           );
         },
