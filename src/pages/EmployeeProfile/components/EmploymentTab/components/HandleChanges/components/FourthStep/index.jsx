@@ -31,7 +31,7 @@ export default function SecondStep(props) {
         <Select
           defaultValue={changeData.stepFour.compensationType || null}
           showSearch
-          placeholder="Select an compensation type"
+          placeholder="Select a compensation type"
           optionFilterProp="children"
           onChange={(value) => onChange(value, 'compensationType')}
           onSearch={onSearch}

@@ -4,11 +4,14 @@ import styles from './styles.less';
 
 export default function ThirdStep(props) {
   const { Option } = Select;
-  const { onChange, onSearch, changeData, fetchedState } = props;
+  const { onChange, onSearch, changeData, fetchedState = {} } = props;
   const { stepTwo: { department = '' } = {} } = changeData;
-  const getFilter = fetchedState.employees.filter(
+  const { employeeList = [] } = fetchedState;
+
+  const sameDeptEmployees = employeeList.filter(
     (item) => item.department._id === department || item.department._id === '',
   );
+
   const makeKey = () => {
     return Math.random().toString(36).substring(7);
   };
@@ -41,7 +44,7 @@ export default function ThirdStep(props) {
         </Select>
       </div>
       <div className={styles.select}>
-        <div className={styles.label}>Reporting to</div>
+        <div className={styles.label}>Reporting To</div>
         <Select
           defaultValue={changeData.stepThree.reportTo || null}
           showSearch
@@ -52,16 +55,13 @@ export default function ThirdStep(props) {
           filterOption={(input, option) =>
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
-          {getFilter
-            ? getFilter.map((item) => {
-                return (
-                  <Option key={makeKey()} value={item._id}>
-                    {item.generalInfo?.legalName || null}
-                  </Option>
-                );
-              })
-            : ''}
-          ]
+          {employeeList.map((item) => {
+            return (
+              <Option key={makeKey()} value={item._id}>
+                {item.generalInfo?.legalName || null}
+              </Option>
+            );
+          })}
         </Select>
       </div>
       <div className={styles.select}>
@@ -78,16 +78,13 @@ export default function ThirdStep(props) {
           filterOption={(input, option) =>
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
-          {getFilter
-            ? getFilter.map((item) => {
-                return (
-                  <Option key={makeKey()} value={item._id}>
-                    {item.generalInfo?.legalName || null}
-                  </Option>
-                );
-              })
-            : ''}
-          ]
+          {sameDeptEmployees.map((item) => {
+            return (
+              <Option key={makeKey()} value={item._id}>
+                {item.generalInfo?.legalName || null}
+              </Option>
+            );
+          })}
         </Select>
       </div>
     </div>

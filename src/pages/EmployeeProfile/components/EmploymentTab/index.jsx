@@ -40,9 +40,9 @@ const EmploymentTab = (props) => {
 
   const [isChanging, setIsChanging] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
   const [current, setCurrent] = useState(0);
   const [currentData, setCurrentData] = useState({});
+  const [changedData, setChangedData] = useState({});
 
   const visibleSuccess = employeeProfile ? employeeProfile.visibleSuccess : false;
 
@@ -82,7 +82,6 @@ const EmploymentTab = (props) => {
   const handleMakeChanges = async () => {
     setCurrent(0);
     setIsChanging(!isChanging);
-    setSubmitted(false);
   };
 
   const handleEditCurrentInfo = () => {
@@ -90,49 +89,54 @@ const EmploymentTab = (props) => {
   };
 
   const handleSubmit = async (data) => {
-    if (submitted) {
-      let takeEffect = '';
-      if (data.stepOne === 'Now') {
-        takeEffect = 'UPDATED';
-      } else if (Date.parse(data.stepOne) < Date.now()) {
-        takeEffect = 'UPDATED';
-      } else takeEffect = 'WILL_UPDATE';
-      const payload = {
-        title: data.stepThree.title || null,
-        manager: data.stepThree.reportTo || null,
-        reasonChange: data.stepSeven.reasonChange || '',
-        reportees: data.stepThree.reportees || null,
-        location: data.stepTwo.wLocation || null,
-        employeeType: data.stepTwo.employment || null,
-        department: data.stepTwo.department || null,
-        compensationType: data.stepFour.compensationType || null,
-        annualCTC: data.stepFour.currentAnnualCTC || null,
-        notifyTo: data.stepFive.notifyTo || [],
-        effectiveDate: data.stepOne === 'Now' ? new Date() : data.stepOne,
-        changeDate: new Date(),
-        takeEffect,
-        employee: data.employee,
-        changedBy: data.changedBy,
-        tenantId: getCurrentTenant(),
-      };
-      const array = Object.keys(payload);
-      for (let i = 0; i < array.length; i += 1) {
-        if (payload[array[i]] === null || payload[array[i]] === undefined) delete payload[array[i]];
-      }
-      dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
+    let takeEffect = '';
+    if (data.stepOne === 'Now') {
+      takeEffect = 'UPDATED';
+    } else if (Date.parse(data.stepOne) < Date.now()) {
+      takeEffect = 'UPDATED';
+    } else takeEffect = 'WILL_UPDATE';
+    const payload = {
+      title: data.stepThree.title || null,
+      manager: data.stepThree.reportTo || null,
+      reasonChange: data.stepSeven.reasonChange || '',
+      reportees: data.stepThree.reportees || null,
+      location: data.stepTwo.wLocation || null,
+      employeeType: data.stepTwo.employment || null,
+      department: data.stepTwo.department || null,
+      compensationType: data.stepFour.compensationType || null,
+      annualCTC: data.stepFour.currentAnnualCTC || null,
+      notifyTo: data.stepFive.notifyTo || [],
+      effectiveDate: data.stepOne === 'Now' ? new Date() : data.stepOne,
+      changeDate: new Date(),
+      takeEffect,
+      employee: data.employee,
+      changedBy: data.changedBy,
+      tenantId: getCurrentTenant(),
+    };
+    const array = Object.keys(payload);
+    for (let i = 0; i < array.length; i += 1) {
+      if (payload[array[i]] === null || payload[array[i]] === undefined) delete payload[array[i]];
     }
+    dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
   };
 
   const nextTab = (msg) => {
     if (msg === 'STOP') {
       setCurrent(0);
-    } else if (current === 6) {
-      setSubmitted(true);
+      return;
+    }
+    if (current === 6) {
       setCurrent(0);
       setIsChanging(false);
-    } else if (msg === 'TITLE_REQUIRED') {
+      handleSubmit(changedData);
+      return;
+    }
+    if (msg === 'TITLE_REQUIRED') {
       setCurrent(2);
-    } else setCurrent(current + 1);
+      return;
+    }
+
+    setCurrent(current + 1);
   };
 
   const previousTab = () => {
@@ -204,9 +208,9 @@ const EmploymentTab = (props) => {
           <HandleChanges
             nextTab={nextTab}
             isChanging={isChanging}
-            onSubmit={handleSubmit}
             data={currentData}
             current={current}
+            setChangedData={setChangedData}
           />
         ) : (
           <EmploymentHistoryTable />
