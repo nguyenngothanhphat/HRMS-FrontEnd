@@ -3,6 +3,7 @@ import { connect } from 'umi';
 import Card from './components/Card';
 import styles from './index.less';
 import { TAB_IDS } from '@/utils/homePage';
+import { getCurrentLocation } from '@/utils/authority';
 
 const Gallery = (props) => {
   const { dispatch } = props;
@@ -18,6 +19,7 @@ const Gallery = (props) => {
       type: 'homePage/fetchImagesEffect',
       payload: {
         postType: TAB_IDS.IMAGES,
+        location: [getCurrentLocation()],
       },
     });
   };

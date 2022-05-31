@@ -7,6 +7,7 @@ import PrevIcon from '@/assets/homePage/prev.svg';
 import styles from './index.less';
 import EmptyComponent from '@/components/Empty';
 import { TAB_IDS } from '@/utils/homePage';
+import { getCurrentLocation } from '@/utils/authority';
 
 const NextArrow = (props) => {
   const { className, style, onClick } = props;
@@ -38,6 +39,7 @@ const Carousel = (props) => {
       type: 'homePage/fetchBannersEffect',
       payload: {
         postType: TAB_IDS.BANNER,
+        location: [getCurrentLocation()],
       },
     });
   };
