@@ -552,7 +552,7 @@ const SalaryStructureTemplate = (props) => {
     );
   };
 
-  const _renderSalaryTable = () => {
+  const _renderCommonSalaryTable = () => {
     return (
       <div className={styles.salaryStructureTemplate_table}>
         <Row className={styles.salary}>
@@ -628,7 +628,7 @@ const SalaryStructureTemplate = (props) => {
     );
   };
 
-  const _renderIndiaSalaryTable = () => {
+  const _renderTotalSalaryTable = () => {
     const annualTotal = settingsTempData.find((x) => x.key === 'total_compensation') || {};
     const final = settingsTempData.find((x) => x.key === 'total_cost_company') || {};
     const eligible_variable_pay =
@@ -834,9 +834,9 @@ const SalaryStructureTemplate = (props) => {
       )}
 
       <Spin spinning={loadingFetchTable}>
-        {salaryCountry === 'IN' && option === SALARY_STRUCTURE_OPTION.TOTAL_COMPENSATION
-          ? _renderIndiaSalaryTable()
-          : _renderSalaryTable()}
+        {option === SALARY_STRUCTURE_OPTION.TOTAL_COMPENSATION
+          ? _renderTotalSalaryTable()
+          : _renderCommonSalaryTable()}
       </Spin>
 
       {_renderBottomBar()}
