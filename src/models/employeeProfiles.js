@@ -133,9 +133,9 @@ const employeeProfile = {
       let response = {};
       try {
         response = yield call(getGeneralInfoByUserId, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
@@ -154,9 +154,9 @@ const employeeProfile = {
     *fetchGeneralInfo({ payload, dataTempKept = {} }, { call, put }) {
       try {
         const response = yield call(getGeneralInfo, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data: generalData = {} } = response;
         if (statusCode !== 200) throw response;
@@ -197,14 +197,16 @@ const employeeProfile = {
             company: getCurrentCompany(),
             ...payload,
           });
-          const { statusCode } = response;
+          const { statusCode, message } = response;
           if (statusCode !== 200) throw response;
+          notification.success({ message });
           if (
             // payload.takeEffect === 'UPDATED' &&
             statusCode === 200
           ) {
             const updates = yield call(getChangeHistories, {
               employee: payload.employee,
+              tenantId: getCurrentTenant(),
             });
             // if (updates.statusCode !== 200) throw updates;
             yield put({ type: 'saveOrigin', payload: { changeHistories: updates.data } });
@@ -235,9 +237,9 @@ const employeeProfile = {
     *fetchCompensation({ payload }, { call, put }) {
       try {
         const response = yield call(getCompensation, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data: compensationData = [] } = response;
         if (statusCode !== 200) throw response;
@@ -269,9 +271,9 @@ const employeeProfile = {
     *fetchPayslips({ payload }, { call, put }) {
       try {
         const response = yield call(getPayslip, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data: paySlip = [] } = response;
         if (statusCode !== 200) throw response;
@@ -287,9 +289,9 @@ const employeeProfile = {
     *fetchPassPort({ payload, dataTempKept = {} }, { call, put }) {
       try {
         const response = yield call(getPassPort, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data: passportData = [] } = response;
         if (statusCode !== 200) throw response;
@@ -323,9 +325,9 @@ const employeeProfile = {
     *fetchVisa({ payload }, { call, put }) {
       try {
         const response = yield call(getVisa, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data: visaData = [] } = response;
         if (statusCode !== 200) throw response;
@@ -367,9 +369,9 @@ const employeeProfile = {
     *fetchEmployeeTypes({ payload }, { call, put }) {
       try {
         const response = yield call(getEmployeeTypeList, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data } = response;
         const temp = data.map((item) => item);
@@ -383,9 +385,9 @@ const employeeProfile = {
     *fetchDepartments({ payload }, { call, put }) {
       try {
         const response = yield call(getDepartmentList, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data } = response;
         const temp = data.map((item) => item);
@@ -399,9 +401,9 @@ const employeeProfile = {
     *addPassPort({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
         const response = yield call(getAddPassPort, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { employee } = yield select((state) => state.employeeProfile);
         const { statusCode, message } = response;
@@ -428,9 +430,9 @@ const employeeProfile = {
     *addVisa({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
         const response = yield call(getAddVisa, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { employee } = yield select((state) => state.employeeProfile);
         const { statusCode, message } = response;
@@ -456,9 +458,9 @@ const employeeProfile = {
     *updatePassPort({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
         const response = yield call(updatePassPort, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { employee } = yield select((state) => state.employeeProfile);
         const { statusCode, message } = response;
@@ -486,9 +488,9 @@ const employeeProfile = {
     *updateVisa({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
         const response = yield call(updateVisa, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { employee } = yield select((state) => state.employeeProfile);
         const { statusCode, message } = response;
@@ -515,9 +517,9 @@ const employeeProfile = {
     *removeVisa({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
         const response = yield call(removeVisa, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { employee } = yield select((state) => state.employeeProfile);
         const { statusCode, message } = response;
@@ -544,9 +546,9 @@ const employeeProfile = {
     *removePassPort({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
         const response = yield call(removePassport, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { employee } = yield select((state) => state.employeeProfile);
         const { statusCode } = response;
@@ -576,9 +578,9 @@ const employeeProfile = {
     ) {
       try {
         const response = yield call(updateGeneralInfo, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { employee } = yield select((state) => state.employeeProfile);
         const { statusCode } = response;
@@ -770,9 +772,9 @@ const employeeProfile = {
     *fetchListTitle({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getListTitle, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data: listTitle = [] } = response;
         if (statusCode !== 200) throw response;
@@ -784,9 +786,9 @@ const employeeProfile = {
     *addCertification({ payload }, { call }) {
       try {
         const response = yield call(addCertification, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
@@ -797,9 +799,9 @@ const employeeProfile = {
     *updateCertification({ payload }, { call }) {
       try {
         const response = yield call(updateCertification, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
@@ -826,9 +828,9 @@ const employeeProfile = {
     *fetchDocumentCategories({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getDocumentCategories, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
@@ -845,9 +847,9 @@ const employeeProfile = {
     *fetchDocuments({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getDocuments, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data: listDocuments = [] } = response;
         if (statusCode !== 200) throw response;
@@ -873,9 +875,9 @@ const employeeProfile = {
     *fetchViewingDocumentDetail({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getDocumentById, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data: documentDetail = {} } = response;
         if (statusCode !== 200) throw response;
@@ -910,9 +912,9 @@ const employeeProfile = {
     *updateDocument({ payload }, { call, put }) {
       try {
         const response = yield call(getDocumentUpdate, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, message, data: newDocument = {} } = response;
         if (statusCode !== 200) throw response;
@@ -932,9 +934,9 @@ const employeeProfile = {
     *fetchEmailsListByCompany({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getEmailsListByCompany, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data: emailsList = [] } = response;
         if (statusCode !== 200) throw response;
@@ -949,9 +951,9 @@ const employeeProfile = {
     *fetchChangeHistories({ payload }, { call, put }) {
       try {
         const response = yield call(getChangeHistories, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
@@ -964,9 +966,9 @@ const employeeProfile = {
       let idDocument = '';
       try {
         const response = yield call(getDocumentAdd, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const {
           statusCode,
@@ -984,9 +986,9 @@ const employeeProfile = {
       let doc = {};
       try {
         const response = yield call(getDocumentUpdate, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data } = response;
 
@@ -1001,9 +1003,9 @@ const employeeProfile = {
     *fetchAdhaarCard({ payload }, { call, put }) {
       try {
         const response = yield call(getAdhaardCard, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data: AdhaarCard = {} } = response;
         if (statusCode !== 200) throw response;
@@ -1019,9 +1021,9 @@ const employeeProfile = {
       let idAdhaarcard = '';
       try {
         const response = yield call(getAdhaarcardAdd, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { employee } = yield select((state) => state.employeeProfile);
 
@@ -1044,9 +1046,9 @@ const employeeProfile = {
       let doc = {};
       try {
         const response = yield call(getAdhaarcardUpdate, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { employee } = yield select((state) => state.employeeProfile);
 
@@ -1066,9 +1068,9 @@ const employeeProfile = {
     *removeCertification({ payload }, { call }) {
       try {
         const response = yield call(removeCertification, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
@@ -1082,9 +1084,9 @@ const employeeProfile = {
     *fetchBank({ payload }, { call, put }) {
       try {
         const response = yield call(getBank, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data: bankData = {} } = response;
         if (statusCode !== 200) throw response;
@@ -1103,9 +1105,9 @@ const employeeProfile = {
     *addBank({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
         const response = yield call(getAddBank, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { employee } = yield select((state) => state.employeeProfile);
 
@@ -1132,9 +1134,9 @@ const employeeProfile = {
     *addMultiBank({ payload = {} }, { call }) {
       try {
         const response = yield call(addMultiBank, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
@@ -1145,9 +1147,9 @@ const employeeProfile = {
     *addNewTax({ payload = {} }, { call }) {
       try {
         const response = yield call(getAddTax, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
@@ -1158,9 +1160,9 @@ const employeeProfile = {
     *updateBank({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
         const response = yield call(updateBank, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { employee } = yield select((state) => state.employeeProfile);
 
@@ -1191,9 +1193,9 @@ const employeeProfile = {
     *fetchTax({ payload }, { call, put }) {
       try {
         const response = yield call(getTax, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data: taxData = {} } = response;
         if (statusCode !== 200) throw response;
@@ -1212,9 +1214,9 @@ const employeeProfile = {
     *addTax({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
         const response = yield call(getAddTax, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { employee } = yield select((state) => state.employeeProfile);
 
@@ -1241,9 +1243,9 @@ const employeeProfile = {
     *updateTax({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
         const response = yield call(updateTax, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { employee } = yield select((state) => state.employeeProfile);
 
@@ -1294,9 +1296,9 @@ const employeeProfile = {
     *fetchLocationsByCompany({ payload }, { call, put }) {
       try {
         const res = yield call(getLocationsByCompany, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data } = res;
         if (statusCode !== 200) throw res;
@@ -1325,9 +1327,9 @@ const employeeProfile = {
       let isUpdateEmployment = false;
       try {
         const response = yield call(updateEmployment, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
@@ -1369,9 +1371,9 @@ const employeeProfile = {
       try {
         // console.log(payload);
         const response = yield call(updatePrivate, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { employee } = yield select((state) => state.employeeProfile);
         const { statusCode, message } = response;
@@ -1402,9 +1404,9 @@ const employeeProfile = {
       let response;
       try {
         response = yield call(getCountryStates, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data: listStates = [] } = response;
         if (statusCode !== 200) throw response;
@@ -1418,9 +1420,9 @@ const employeeProfile = {
     *revokeHistory({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getRevokeHistory, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data: revoke = [], message } = response;
         if (statusCode !== 200) throw response;
@@ -1467,9 +1469,9 @@ const employeeProfile = {
       let response;
       try {
         response = yield call(shareDocument, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
       } catch (errors) {
         dialog(errors);
@@ -1479,9 +1481,9 @@ const employeeProfile = {
     *fetchEmployeeDependentDetails({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getDependentsByEmployee, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
@@ -1495,9 +1497,9 @@ const employeeProfile = {
     *addDependentsOfEmployee({ payload = {} }, { call, put }) {
       try {
         const response = yield call(addDependentsOfEmployee, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
@@ -1514,9 +1516,9 @@ const employeeProfile = {
     *updateEmployeeDependentDetails({ payload = {} }, { call, put }) {
       try {
         const response = yield call(updateDependentsById, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
@@ -1533,9 +1535,9 @@ const employeeProfile = {
     *removeEmployeeDependentDetails({ payload = {} }, { call, put }) {
       try {
         const response = yield call(removeDependentsById, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
@@ -1552,9 +1554,9 @@ const employeeProfile = {
     *getBenefitPlans({ payload }, { call, put }) {
       try {
         const response = yield call(getBenefitPlanList, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
@@ -1569,7 +1571,7 @@ const employeeProfile = {
       try {
         response = yield call(getListEmployeeSingleCompany, {
           ...payload,
-          status: ['ACTIVE', 'INACTIVE'],
+          status: ['ACTIVE'],
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });

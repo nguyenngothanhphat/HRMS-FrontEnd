@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 /* eslint-disable react/jsx-props-no-spreading */
 import { Button, Col, Input, Row, Slider, Space, Spin } from 'antd';
-import { toNumber, toString, trim, trimStart } from 'lodash';
+import { toNumber, toString, trim, trimStart, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
@@ -198,6 +198,8 @@ const SalaryStructureTemplate = (props) => {
     // step 0
     let variable_pay_percentage = 0;
     let retention_bonus_amount = 0;
+    let joining_bonus_amount = 0;
+    let midterm_hike_amount = 0;
     if (key !== 'total_compensation') {
       total_compensation = tempTableData.find((x) => x.key === 'total_compensation')?.value;
     } else {
@@ -214,6 +216,18 @@ const SalaryStructureTemplate = (props) => {
       retention_bonus_amount = newValue * 1;
     } else {
       retention_bonus_amount = tempTableData.find((x) => x.key === 'annual_retention_bonus')?.value;
+    }
+
+    if (key === 'joining_bonus') {
+      joining_bonus_amount = newValue * 1;
+    } else {
+      joining_bonus_amount = tempTableData.find((x) => x.key === 'joining_bonus')?.value;
+    }
+
+    if (key === 'midterm_hike') {
+      midterm_hike_amount = newValue * 1;
+    } else {
+      midterm_hike_amount = tempTableData.find((x) => x.key === 'midterm_hike')?.value;
     }
 
     if (reg.test(total_compensation)) {
@@ -283,6 +297,8 @@ const SalaryStructureTemplate = (props) => {
       const objValues = {
         eligible_variable_pay: variable_pay_percentage,
         annual_retention_bonus: retention_bonus_amount,
+        joining_bonus: joining_bonus_amount,
+        midterm_hike: midterm_hike_amount,
         variable_pay,
         retention_bonus: retention_bonus_amount,
         PF,
@@ -619,6 +635,11 @@ const SalaryStructureTemplate = (props) => {
       settingsTempData.find((x) => x.key === 'eligible_variable_pay') || {};
     const annual_retention_bonus =
       settingsTempData.find((x) => x.key === 'annual_retention_bonus') || {};
+    const joining_bonus = settingsTempData.find((x) => x.key === 'joining_bonus') || {};
+    const midterm_hike = settingsTempData.find((x) => x.key === 'midterm_hike') || {};
+
+    const isJoiningBonus = !isEmpty(joining_bonus) ? joining_bonus.value !== 0 : false;
+    const isMidtermHike = !isEmpty(midterm_hike) ? midterm_hike.value !== 0 : false;
 
     const salaryFields = settingsTempData.filter(
       (x) =>
@@ -627,93 +648,148 @@ const SalaryStructureTemplate = (props) => {
           'total_compensation',
           'eligible_variable_pay',
           'annual_retention_bonus',
+          'joining_bonus',
+          'midterm_hike',
         ].includes(x.key),
     );
 
     return (
-      <div className={styles.indiaContainer}>
-        <div className={styles.inputs}>
-          <Row gutter={[16, 16]} align="middle">
-            <Col span={10}>
-              <span>Employee Eligible for Variable Pay</span>
-            </Col>
-            <Col span={8}>
-              <div className={styles.salary__right__inputAfter}>
-                <Input
-                  addonAfter="% of basics"
-                  disabled={!isEditingSalary}
-                  value={convertVariable(eligible_variable_pay.value)}
-                  onChange={(e) => calculationForIndia(e, eligible_variable_pay.key)}
-                />
-              </div>
-            </Col>
-            <Col span={6} />
+      <>
+        <div className={styles.indiaContainer}>
+          <div className={styles.inputs}>
+            <Row gutter={[16, 16]} align="middle">
+              <Col span={10}>
+                <span>Employee Variable Pay Target %</span>
+              </Col>
+              <Col span={8}>
+                <div className={styles.salary__right__inputAfter}>
+                  <Input
+                    addonAfter="% of basics"
+                    disabled={!isEditingSalary}
+                    value={convertVariable(eligible_variable_pay.value)}
+                    onChange={(e) => calculationForIndia(e, eligible_variable_pay.key)}
+                  />
+                </div>
+              </Col>
+              <Col span={6} />
 
-            <Col span={10}>
-              <span>Employee One Time Annual Retention Bonus</span>
-            </Col>
-            <Col span={8}>
-              <div className={styles.inputBefore}>
-                <Input
-                  addonBefore="INR"
-                  disabled={!isEditingSalary}
-                  value={convertVariable(annual_retention_bonus.value)}
-                  onChange={(e) => calculationForIndia(e, annual_retention_bonus.key)}
-                />
-              </div>
-            </Col>
-            <Col span={6} />
-          </Row>
-        </div>
-
-        <div className={styles.tableBody}>
-          <div className={styles.content}>
-            <div className={styles.leftSide} style={{ border: 'none' }}>
-              <span className={styles.title}>Annual Total Compensation</span>
-            </div>
-
-            <div className={styles.rightSide}>
-              {isEditingSalary ? (
+              <Col span={10}>
+                <span>Employee One Time Annual Premium Bonus</span>
+              </Col>
+              <Col span={8}>
                 <div className={styles.inputBefore}>
                   <Input
                     addonBefore="INR"
-                    value={convertVariable(annualTotal.value)}
-                    onChange={(e) => calculationForIndia(e, annualTotal.key)}
+                    disabled={!isEditingSalary}
+                    value={convertVariable(annual_retention_bonus.value)}
+                    onChange={(e) => calculationForIndia(e, annual_retention_bonus.key)}
                   />
                 </div>
-              ) : (
-                <span className={styles.value}>
-                  {renderSingle(annualTotal.value, annualTotal.unit)}
-                </span>
-              )}
-            </div>
+              </Col>
+              <Col span={6} />
+
+              <Col span={10}>
+                <span>Employee One Time Annual Joining Bonus</span>
+              </Col>
+              <Col span={8}>
+                <div className={styles.inputBefore}>
+                  <Input
+                    addonBefore="INR"
+                    disabled={!isEditingSalary}
+                    value={convertVariable(joining_bonus.value)}
+                    onChange={(e) => calculationForIndia(e, joining_bonus.key)}
+                  />
+                </div>
+              </Col>
+              <Col span={6} />
+
+              <Col span={10}>
+                <span>Employee One Time Mid Term Hike</span>
+              </Col>
+              <Col span={8}>
+                <div className={styles.inputBefore}>
+                  <Input
+                    addonBefore="INR"
+                    disabled={!isEditingSalary}
+                    value={convertVariable(midterm_hike.value)}
+                    onChange={(e) => calculationForIndia(e, midterm_hike.key)}
+                  />
+                </div>
+              </Col>
+              <Col span={6} />
+            </Row>
           </div>
 
-          <div className={styles.content}>
-            <div className={styles.leftSide}>
-              {salaryFields.map((x) => (
-                <span className={styles.itemTitle}>{x.title}</span>
-              ))}
-            </div>
-            <div className={styles.rightSide}>
-              {salaryFields.map((x) => (
-                <span className={styles.itemValue} key={x.key}>
-                  {renderSingle(x.value, x.unit)}
-                </span>
-              ))}
-            </div>
-          </div>
+          <div className={styles.tableBody}>
+            <div className={styles.content}>
+              <div className={styles.leftSide} style={{ border: 'none' }}>
+                <span className={styles.title}>Annual Total Compensation</span>
+              </div>
 
-          <div className={styles.content} style={{ border: 'none' }}>
-            <div className={styles.leftSide}>
-              <span className={styles.title}>Total Cost to Company</span>
+              <div className={styles.rightSide}>
+                {isEditingSalary ? (
+                  <div className={styles.inputBefore}>
+                    <Input
+                      addonBefore="INR"
+                      value={convertVariable(annualTotal.value)}
+                      onChange={(e) => calculationForIndia(e, annualTotal.key)}
+                    />
+                  </div>
+                ) : (
+                  <span className={styles.value}>
+                    {renderSingle(annualTotal.value, annualTotal.unit)}
+                  </span>
+                )}
+              </div>
             </div>
-            <div className={styles.rightSide}>
-              <span className={styles.value}>{renderSingle(final.value, final.unit)}</span>
+
+            <div className={styles.content}>
+              <div className={styles.leftSide}>
+                {salaryFields.map((x) => (
+                  <span className={styles.itemTitle}>{x.title}</span>
+                ))}
+              </div>
+              <div className={styles.rightSide}>
+                {salaryFields.map((x) => (
+                  <span className={styles.itemValue} key={x.key}>
+                    {renderSingle(x.value, x.unit)}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className={styles.content} style={{ border: 'none' }}>
+              <div className={styles.leftSide}>
+                <span className={styles.title}>Total Cost to Company</span>
+              </div>
+              <div className={styles.rightSide}>
+                <span className={styles.value}>{renderSingle(final.value, final.unit)}</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+        {(isJoiningBonus || isMidtermHike) && (
+          <div className={styles.containerNote}>
+            Note-
+            {isJoiningBonus && (
+              <div className={styles.noteField}>
+                1. As a part of this offer the candidate shall be entitled to a Joining Bonus of INR{' '}
+                {`${'<Joining Bonus Value>'}`}. Post Joining 50% of this amount shall be paid along
+                with the second month's salary (or the applicable first payroll). And on completion
+                of three months of service the balance 50% shall be paid along with the immediate
+                next payroll.
+              </div>
+            )}
+            {isMidtermHike && (
+              <div className={styles.noteField}>
+                2. As a part of this offer the candidate shall be entitled to a one time Mid Term
+                Hike of INR . Upon completion of 6 months duration of employment with full standing
+                and meeting the Project and Management expectations.
+              </div>
+            )}
+          </div>
+        )}
+      </>
     );
   };
 

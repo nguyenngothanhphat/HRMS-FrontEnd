@@ -6,6 +6,7 @@ import { connect, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import NotifyModal from '../NotifyModal';
 import styles from './index.less';
+import { SALARY_STRUCTURE_OPTION } from '@/utils/onboardingSetting';
 
 @connect(
   ({
@@ -17,6 +18,8 @@ import styles from './index.less';
       } = {},
       tempData: { options = 1 },
       tempData,
+      data,
+      salaryStructureSetting,
       // salaryStructure = [],
     },
     user: { currentUser: { company: { _id = '' } = {} } = {} },
@@ -28,7 +31,9 @@ import styles from './index.less';
     settings,
     options,
     tempData,
+    data,
     hrEmail,
+    salaryStructureSetting,
     loadingSalary: loading.effects['candidatePortal/fetchCandidateById'],
     loadingSendEmail: loading.effects['candidatePortal/sendEmailByCandidate'],
   }),
@@ -41,6 +46,18 @@ class SalaryStructureTemplate extends PureComponent {
       notifyModalVisible: false,
     };
   }
+
+  componentDidMount = () => {
+    const { dispatch, data: { grade = {}, workLocation = {} } = {} } = this.props;
+    dispatch({
+      type: 'candidatePortal/fetchSalaryStructureByGrade',
+      payload: {
+        grade: grade?._id,
+        location: workLocation?._id,
+        getSetting: false,
+      },
+    });
+  };
 
   onClickReNegotiate = () => {
     const { dispatch, hrEmail = '' } = this.props;
@@ -200,8 +217,13 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   render() {
-    const { settings, loadingSalary } = this.props;
+    const { settings, loadingSalary, salaryStructureSetting = {} } = this.props;
     const { notifyModalVisible, actionType } = this.state;
+
+    const { country: salaryCountry = '', option = '' } = salaryStructureSetting || {};
+
+    const isTotalCompensation =
+      salaryCountry === 'IN' && option === SALARY_STRUCTURE_OPTION.TOTAL_COMPENSATION;
 
     const modalTitle =
       actionType === 'accept'
@@ -215,11 +237,38 @@ class SalaryStructureTemplate extends PureComponent {
       <div className={styles.salaryStructureTemplate}>
         {!loadingSalary && (
           <div className={styles.salaryStructureTemplate_table}>
+            {isTotalCompensation && (
+              <Row className={styles.salaryTop}>
+                <Col span={12} className={styles.salaryTop__left}>
+                  {settings.map(
+                    (item) =>
+                      item.key === 'total_compensation' && (
+                        <div key={item.key} className={styles.salaryTotal__left__text}>
+                          {item.title}
+                        </div>
+                      ),
+                  )}
+                </Col>
+                <Col span={12} className={styles.salaryTop__right}>
+                  {settings.map(
+                    (item) =>
+                      item.key === 'total_compensation' && (
+                        <div key={item.key} className={styles.salaryTotal__right__text}>
+                          {this.renderSingle(item.value, item.unit)}
+                        </div>
+                      ),
+                  )}
+                </Col>
+              </Row>
+            )}
             <Row className={styles.salary}>
               <Col span={12} className={styles.salary__left}>
                 {settings.map(
                   (item) =>
-                    item.key !== 'total_compensation' && (
+                    ![
+                      'total_compensation',
+                      isTotalCompensation ? 'total_cost_company' : '',
+                    ].includes(item.key) && (
                       <div key={item.key} className={styles.salary__left__text}>
                         {item.title}
                       </div>
@@ -228,7 +277,12 @@ class SalaryStructureTemplate extends PureComponent {
               </Col>
               <Col span={12} className={styles.salary__right}>
                 {settings.map((item) => {
-                  if (item.key !== 'total_compensation') {
+                  if (
+                    ![
+                      'total_compensation',
+                      isTotalCompensation ? 'total_cost_company' : '',
+                    ].includes(item.key)
+                  ) {
                     if (item.key === 'salary_13')
                       return (
                         <div key={item.key} className={styles.salary__right__text}>
@@ -247,7 +301,9 @@ class SalaryStructureTemplate extends PureComponent {
               <Col span={12} className={styles.salaryTotal__left}>
                 {settings.map(
                   (item) =>
-                    item.key === 'total_compensation' && (
+                    [isTotalCompensation ? 'total_cost_company' : 'total_compensation'].includes(
+                      item.key,
+                    ) && (
                       <div key={item.key} className={styles.salaryTotal__left__text}>
                         {item.title}
                       </div>
@@ -257,7 +313,9 @@ class SalaryStructureTemplate extends PureComponent {
               <Col span={12} className={styles.salaryTotal__right}>
                 {settings.map(
                   (item) =>
-                    item.key === 'total_compensation' && (
+                    [isTotalCompensation ? 'total_cost_company' : 'total_compensation'].includes(
+                      item.key,
+                    ) && (
                       <div key={item.key} className={styles.salaryTotal__right__text}>
                         {this.renderSingle(item.value, item.unit)}
                       </div>
