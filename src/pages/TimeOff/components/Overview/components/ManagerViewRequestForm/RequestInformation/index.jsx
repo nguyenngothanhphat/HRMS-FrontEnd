@@ -18,6 +18,7 @@ import {
 } from '@/utils/timeOff';
 import TimeOffModal from '@/components/TimeOffModal';
 import Project from './components/Project';
+import PDFIcon from '@/assets/pdf_icon.png';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -383,6 +384,39 @@ class RequestInformation extends PureComponent {
     );
   };
 
+  attchementsContent = () => {
+    const { timeOff: { viewingLeaveRequest: { attachments = [] } = {} } = {} } = this.props;
+    return (
+      <span className={styles.attachments}>
+        {!isEmpty(attachments)
+          ? attachments.map((val) => {
+              const attachmentSlice = () => {
+                if (val.attachmentName) {
+                  if (val.attachmentName.length > 35) {
+                    return `${val.attachmentName.substr(0, 8)}...${val.attachmentName.substr(
+                      val.attachmentName.length - 6,
+                      val.attachmentName.length,
+                    )}`;
+                  }
+                  return val.attachmentName;
+                }
+                return '';
+              };
+
+              return (
+                <span className={styles.attachments__file}>
+                  <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
+                    {attachmentSlice()}
+                  </a>
+                  <img className={styles.attachmentsImg} src={PDFIcon} alt="pdf" />
+                </span>
+              );
+            })
+          : 'N/A'}
+      </span>
+    );
+  };
+
   render() {
     const { showModal, showWithdrawModal, isReject, acceptWithdraw } = this.state;
     const {
@@ -519,6 +553,12 @@ class RequestInformation extends PureComponent {
               <Col span={6}>Description</Col>
               <Col span={18} className={styles.detailColumn}>
                 <span>{description}</span>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={6}>Attachments</Col>
+              <Col span={18} className={styles.detailColumn}>
+                {this.attchementsContent()}
               </Col>
             </Row>
             {status === REJECTED && (

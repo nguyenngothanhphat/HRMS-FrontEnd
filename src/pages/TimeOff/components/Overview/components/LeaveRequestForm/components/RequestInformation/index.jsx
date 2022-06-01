@@ -356,7 +356,7 @@ const RequestInformation = (props) => {
       description = '',
       personCC = [],
       leaveTimeLists = [],
-      attachment = [],
+      attachments = [],
     } = values;
 
     const leaveDatesPayload = generateLeaveDates(leaveTimeLists);
@@ -379,7 +379,7 @@ const RequestInformation = (props) => {
           cc: personCC,
           tenantId: getCurrentTenant(),
           company: employee.company,
-          attachment,
+          attachments,
         };
 
         let type = '';
@@ -1163,8 +1163,8 @@ const RequestInformation = (props) => {
             </Col>
             <Col span={6} />
           </Row>
-          <Form.Item name="attachment">
-            <AddAttachments />
+          <Form.Item name="attachments">
+            <AddAttachments selectedTypeName={selectedTypeName} />
           </Form.Item>
         </Form>
         <div className={styles.footer}>

@@ -4,7 +4,7 @@ import { connect } from 'umi';
 import BlueAddIcon from '@/assets/dashboard/blueAdd.svg';
 import s from './index.less';
 
-const AddAttachments = ({ onChange, dispatch, loading = false }) => {
+const AddAttachments = ({ onChange, dispatch, loading = false, selectedTypeName = '' }) => {
   const [list, setList] = useState([]);
 
   const handleFieldChange = (fieldValue) => {
@@ -71,7 +71,9 @@ const AddAttachments = ({ onChange, dispatch, loading = false }) => {
             showUploadList={false}
           >
             <Button
-              className={`${s.addAttachmentButton} ${list.length === 2 && s.disableUpload} `}
+              className={`${s.addAttachmentButton} ${
+                (list.length === 2 || !selectedTypeName) && s.disableUpload
+              }`}
               icon={<img src={BlueAddIcon} alt="blueAddIcon" />}
               loading={loading}
               disabled={list.length === 2}

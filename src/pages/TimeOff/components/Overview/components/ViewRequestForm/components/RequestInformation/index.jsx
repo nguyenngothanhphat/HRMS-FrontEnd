@@ -2,11 +2,13 @@ import { Button, Col, Row } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
+import { isEmpty } from 'lodash';
 import { roundNumber, TIMEOFF_STATUS, TIMEOFF_TYPE } from '@/utils/timeOff';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import Withdraw2Modal from '../Withdraw2Modal';
 import WithdrawModal from '../WithdrawModal';
+import PDFIcon from '@/assets/pdf_icon.png';
 import styles from './index.less';
 
 const { IN_PROGRESS, ACCEPTED, REJECTED, DRAFTS } = TIMEOFF_STATUS;
@@ -149,6 +151,39 @@ class RequestInformation extends PureComponent {
     return from > now;
   };
 
+  attchementsContent = () => {
+    const { timeOff: { viewingLeaveRequest: { attachments = [] } = {} } = {} } = this.props;
+    return (
+      <span className={styles.attachments}>
+        {!isEmpty(attachments)
+          ? attachments.map((val) => {
+              const attachmentSlice = () => {
+                if (val.attachmentName) {
+                  if (val.attachmentName.length > 35) {
+                    return `${val.attachmentName.substr(0, 8)}...${val.attachmentName.substr(
+                      val.attachmentName.length - 6,
+                      val.attachmentName.length,
+                    )}`;
+                  }
+                  return val.attachmentName;
+                }
+                return '';
+              };
+
+              return (
+                <span className={styles.attachments__file}>
+                  <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
+                    {attachmentSlice()}
+                  </a>
+                  <img className={styles.attachmentsImg} src={PDFIcon} alt="pdf" />
+                </span>
+              );
+            })
+          : 'N/A'}
+      </span>
+    );
+  };
+
   render() {
     const { showWithdrawModal, showWithdraw2Modal, viewDocumentModal } = this.state;
     const {
@@ -243,6 +278,10 @@ class RequestInformation extends PureComponent {
             <Col span={6}>Description</Col>
             <Col span={18} className={styles.detailColumn}>
               <span>{description}</span>
+            </Col>
+            <Col span={6}>Attachments</Col>
+            <Col span={18} className={styles.detailColumn}>
+              {this.attchementsContent()}
             </Col>
 
             {status === REJECTED && (
