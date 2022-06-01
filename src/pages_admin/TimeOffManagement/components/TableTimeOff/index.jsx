@@ -1,8 +1,7 @@
-import React, { PureComponent } from 'react';
-import { Table } from 'antd';
-import { formatMessage, Link, history } from 'umi';
 import moment from 'moment';
-import { getCurrentPage, setCurrentPage, removeCurrentPage } from '@/utils/timeoffManagement';
+import React, { PureComponent } from 'react';
+import { Link } from 'umi';
+import CommonTable from '@/components/CommonTable';
 import styles from './index.less';
 
 class TableTimeOff extends PureComponent {
@@ -16,14 +15,9 @@ class TableTimeOff extends PureComponent {
     {
       title: 'Employee ID',
       dataIndex: 'employee',
-      // defaultSortOrder: 'ascend',
-      // sortDirections: ['ascend', 'descend', 'ascend'],
-      // sorter: {
-      //   compare: (a, b) => a._id.localeCompare(b._id),
-      // },
       render: (employee) => {
-        const { employeeId = '', generalInfo: { employeeId: emplID = '' } = {} } = employee;
-        return <span>{employeeId || emplID}</span>;
+        const { generalInfo: { employeeId = '' } = {} } = employee;
+        return <span>{employeeId}</span>;
       },
     },
     {
@@ -32,14 +26,18 @@ class TableTimeOff extends PureComponent {
       sortDirections: ['ascend', 'descend', 'ascend'],
       sorter: {
         compare: (a, b) =>
-          a.employee?.generalInfo?.firstName.localeCompare(b.employee?.generalInfo?.firstName),
+          a.employee?.generalInfo?.legalName.localeCompare(b.employee?.generalInfo?.legalName),
       },
-      render: (employee) => {
-        const { generalInfo: { firstName = '', lastName = '' } = {} } = employee || {};
+      render: (employee = {}) => {
         return (
-          <span>
-            {firstName} {lastName}
-          </span>
+          <Link
+            to={`/directory/employee-profile/${employee.generalInfo?.userId}`}
+            style={{
+              fontWeight: 500,
+            }}
+          >
+            {employee?.generalInfo?.legalName}
+          </Link>
         );
       },
     },
@@ -52,8 +50,7 @@ class TableTimeOff extends PureComponent {
         compare: (a, b) => new Date(a.fromDate) - new Date(b.fromDate),
       },
       render: (fromDate) => {
-        const formatedDate = fromDate ? moment(fromDate).format('MM.DD.YY') : '';
-        return <span>{formatedDate}</span>;
+        return <span>{fromDate ? moment(fromDate).format('MM/DD/YYYY') : ''}</span>;
       },
     },
     {
@@ -65,8 +62,7 @@ class TableTimeOff extends PureComponent {
         compare: (a, b) => new Date(a.toDate) - new Date(b.toDate),
       },
       render: (toDate) => {
-        const formatedDate = toDate ? moment(toDate).format('MM.DD.YY') : '';
-        return <span>{formatedDate}</span>;
+        return <span>{toDate ? moment(toDate).format('MM/DD/YYYY') : ''}</span>;
       },
     },
     {
@@ -92,8 +88,8 @@ class TableTimeOff extends PureComponent {
       dataIndex: '_id',
       align: 'left',
       render: (_id) => (
-        <div className={styles.documentAction} onClick={() => this.onViewClick(_id)}>
-          <Link>View Request</Link>
+        <div className={styles.documentAction}>
+          <Link to={`/time-off/overview/manager-timeoff/view/${_id}`}>View Request</Link>
         </div>
       ),
     },
@@ -102,42 +98,27 @@ class TableTimeOff extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      pageSelected: getCurrentPage() || 1,
+      pageSelected: 1,
       selectedRowKeys: [],
+      rowSize: 10,
     };
   }
 
   componentDidUpdate = (prevProps) => {
     const { listTimeOff = [] } = this.props;
     if (JSON.stringify(listTimeOff) !== JSON.stringify(prevProps.listTimeOff)) {
-      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         pageSelected: 1,
       });
     }
   };
 
-  componentWillUnmount = () => {
-    window.addEventListener('beforeunload', () => {
-      removeCurrentPage();
-    });
-  };
-
-  onViewClick = (_id) => {
-    history.push(`/time-off/overview/manager-timeoff/view/${_id}`);
-  };
-
-  handleRequestDetail = (id) => {
-    const { handleRequestDetail } = this.props;
-    return handleRequestDetail(id);
-  };
-
   // pagination
-  onChangePagination = (pageNumber) => {
+  onChangePagination = (pageNumber, pageSize) => {
     this.setState({
       pageSelected: pageNumber,
+      rowSize: pageSize,
     });
-    setCurrentPage(pageNumber);
   };
 
   setFirstPage = () => {
@@ -146,63 +127,28 @@ class TableTimeOff extends PureComponent {
     });
   };
 
-  // onSortChange = (pagination, filters, sorter, extra) => {
-  //   console.log('params', pagination, filters, sorter, extra);
-  // };
-
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
   };
 
   render() {
     const { listTimeOff = [], loading } = this.props;
-    const { pageSelected, selectedRowKeys } = this.state;
-    const rowSize = 10;
-    const scroll = {
-      x: '',
-      y: '',
-    };
-
-    const pagination = {
-      position: ['bottomLeft'],
-      total: listTimeOff.length,
-      showTotal: (total, range) => (
-        <span>
-          {' '}
-          {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
-          <b>
-            {range[0]} - {range[1]}
-          </b>{' '}
-          {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
-        </span>
-      ),
-      pageSize: rowSize,
-      current: pageSelected,
-      onChange: this.onChangePagination,
-    };
-
-    const rowSelection = {
-      type: 'checkbox',
-      selectedRowKeys,
-      onChange: this.onSelectChange,
-    };
+    const { pageSelected, selectedRowKeys, rowSize } = this.state;
 
     return (
       <div className={styles.TableTimeOff}>
-        <Table
-          size="middle"
+        <CommonTable
           loading={loading}
-          rowSelection={rowSelection}
-          pagination={{ ...pagination, total: listTimeOff.length }}
+          selectedRowKeys={selectedRowKeys}
+          setSelectedRowKeys={this.onSelectChange}
           columns={this.columns}
-          dataSource={listTimeOff}
-          scroll={scroll}
-          rowKey={(record) => record._id}
-          onRow={(item) => {
-            return {
-              onClick: () => this.handleRequestDetail(item._id),
-            };
-          }}
+          list={listTimeOff}
+          rowKey="_id"
+          scrollable
+          selectable
+          page={pageSelected}
+          limit={rowSize}
+          onChangePage={this.onChangePagination}
         />
       </div>
     );
