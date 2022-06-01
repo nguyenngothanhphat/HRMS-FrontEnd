@@ -92,6 +92,7 @@ const Projects = (props) => {
 
   // permissions
   const modifyProjectPermission = permissions.modifyProject !== -1;
+  const deleteProject = permissions.deleteProject !== -1;
 
   const generateColumns = () => {
     const columns = [
@@ -229,16 +230,18 @@ const Projects = (props) => {
         render: (record) => {
           return (
             <div className={styles.btnAction}>
-              <Button
-                type="link"
-                shape="circle"
-                onClick={() => {
-                  setSelectedProject(record);
-                  setIsDeleteProject(true);
-                }}
-              >
-                <img src={DeleteIcon} alt="delete" />
-              </Button>
+              {deleteProject && (
+                <Button
+                  type="link"
+                  shape="circle"
+                  onClick={() => {
+                    setSelectedProject(record);
+                    setIsDeleteProject(true);
+                  }}
+                >
+                  <img src={DeleteIcon} alt="delete" />
+                </Button>
+              )}
             </div>
           );
         },

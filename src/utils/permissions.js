@@ -312,6 +312,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const indexViewProjectSettingTab = isAuthorized(permissionList, [
     'PROJECT_MANAGEMENT_SETTINGS_VIEW',
   ]);
+  const indexDeleteProject = isAuthorized(permissionList, ['PROJECT_MANAGEMENT_DELETE']);
 
   // RESOURCE MANAGEMENT
   // https://docs.google.com/document/d/1cEexRGiw0NaMEtcgEZCPlnh_LmiHLwYokjjaV02itcI/edit
@@ -453,6 +454,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewProjectSettingTab: indexViewProjectSettingTab,
     addProject: indexAddProject,
     modifyProject: indexModifyProject,
+    deleteProject: indexDeleteProject,
 
     // resource management
     viewResourceListTab: indexViewResourceListTab,
