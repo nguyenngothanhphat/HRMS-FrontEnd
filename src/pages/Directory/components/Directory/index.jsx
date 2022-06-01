@@ -230,22 +230,12 @@ const DirectoryComponent = (props) => {
   };
 
   const exportEmployees = async () => {
-    const status = []
-    if (tabId === 'inActive') {
-      status.push('INACTIVE')
-    } else {
-      status.push('ACTIVE')
-    }
     const getData = await dispatch({
       type: 'employee/exportEmployees',
-      payload: {
-        ...currentPayload,
-        status,
-        filter,
-      },
+      payload: { ...currentPayload, filter },
     });
 
-    const getListExport = getData.data || ''
+    const getListExport = getData.data || '';
 
     const downloadLink = document.createElement('a');
     const universalBOM = '\uFEFF';
@@ -275,7 +265,7 @@ const DirectoryComponent = (props) => {
   };
   const handleFilterCounts = (values) => {
     const filteredObj = Object.entries(values).filter(
-      ([value]) => (value !== undefined && value?.length > 0) || typeof value === 'number',
+      ([, value]) => (value !== undefined && value?.length > 0) || typeof value === 'number',
     );
     const newObj = Object.fromEntries(filteredObj);
     setApplied(Object.keys(newObj).length);
