@@ -13,35 +13,22 @@ const FilterForm = (props) => {
   const {
     listOffAllTicket = [],
     // locationsList = [],
-    employeeAssigneeList = [],
+    employeeAssignedList = [],
     employeeRaiseList = [],
     currentStatus = '',
     selectedLocations = [],
     country = '',
     loadingFetchEmployeeRaiseListEffect,
-    loadingFetchEmployeeAssigneeListEffect,
+    loadingFetchEmployeeAssignedListEffect,
     dispatch,
     visible = false,
     handleFilterCounts = () => {},
     setForm = () => {},
-    ticketManagement: {
-      filter: {
-        employeeAssignee = '',
-        employeeRaise = '',
-        fromDate,
-        priority = [],
-        queryType = [],
-        toDate,
-      } = {},
-      filter = {},
-    } = {},
   } = props;
 
   const [form] = Form.useForm();
   const [durationFrom, setDurationFrom] = useState('');
   const [durationTo, setDurationTo] = useState('');
-  const [nameEmployeeRaise, setNameEmployeeRaise] = useState('');
-  const [nameEmployeeAssignee, setNameEmployeeAssignee] = useState('');
 
   const [nameListState, setNameListState] = useState([]);
   const [asignedListState, setAsignedListState] = useState([]);
@@ -52,13 +39,8 @@ const FilterForm = (props) => {
     return [...new Map(arr.map((item) => [item[key], item])).values()];
   }
 
-  const removeDuplicate = (array, key) => {
-    return [...new Map(array.map((x) => [key(x), x])).values()];
-  };
-
   const queryTypeList = getUniqueListBy(listOffAllTicket, 'query_type');
   const priorityList = getUniqueListBy(listOffAllTicket, 'priority');
-  // const locationsListNew = getUniqueListBy(listOffAllTicket, 'location');
   const dateFormat = 'DD-MM-YYYY';
 
   useEffect(() => {
@@ -66,54 +48,27 @@ const FilterForm = (props) => {
     setAsignedListState([]);
   }, [visible]);
 
-  // fetch option name employee raise
   useEffect(() => {
-    const newEmployeeRaiseList = removeDuplicate(
-      employeeRaiseList,
-      (item) => item.employeeRaise?.generalInfo?.legalName,
-    );
     setNameListState(
-      newEmployeeRaiseList.map((x) => {
+      employeeRaiseList.map((x) => {
         return {
-          value: x.employeeRaise?.generalInfo?.legalName,
-          label: x.employeeRaise?.generalInfo.legalName,
+          value: x.generalInfo?.legalName,
+          label: x.generalInfo.legalName,
         };
       }),
     );
-  }, [JSON.stringify(employeeRaiseList), nameEmployeeRaise]);
+  }, [JSON.stringify(employeeRaiseList)]);
 
   useEffect(() => {
-    if (!nameEmployeeRaise) {
-      setNameListState([]);
-    }
-  }, [nameEmployeeRaise]);
-
-  // fetch option name employee assignee
-  useEffect(() => {
-    const newEmployeeAssigneeList = removeDuplicate(
-      employeeAssigneeList,
-      (item) => item.employeeAssignee?.generalInfo?.legalName,
-    );
     setAsignedListState(
-      newEmployeeAssigneeList.map((x) => {
+      employeeAssignedList.map((x) => {
         return {
-          value: x.employeeAssignee?.generalInfo?.legalName,
-          label: x.employeeAssignee?.generalInfo.legalName,
+          value: x.generalInfo?.legalName,
+          label: x.generalInfo.legalName,
         };
       }),
     );
-  }, [JSON.stringify(employeeAssigneeList), nameEmployeeAssignee]);
-
-  useEffect(() => {
-    if (!nameEmployeeAssignee) {
-      setAsignedListState([]);
-    }
-    return () => {
-      dispatch({
-        type: 'ticketManagement/clearFilter',
-      });
-    };
-  }, [nameEmployeeAssignee]);
+  }, [JSON.stringify(employeeAssignedList)]);
 
   useEffect(() => {
     setForm(form);
@@ -223,17 +178,12 @@ const FilterForm = (props) => {
 
   const onSearchEmployeeDebounce = debounce((type, value) => {
     let typeTemp = '';
-    const payload = { status: currentStatus };
     switch (type) {
       case 'employeeRaise':
         typeTemp = 'ticketManagement/fetchEmployeeRaiseListEffect';
-        payload.employeeRaise = value;
-        setNameEmployeeRaise(value);
         break;
       case 'employeeAssignee':
-        typeTemp = 'ticketManagement/fetchEmployeeAssigneeListEffect';
-        payload.employeeAssignee = value;
-        setNameEmployeeAssignee(value);
+        typeTemp = 'ticketManagement/fetchEmployeeAssignedListEffect';
 
         break;
       default:
@@ -242,15 +192,29 @@ const FilterForm = (props) => {
     if (typeTemp && value) {
       dispatch({
         type: typeTemp,
-        payload,
+        payload: {
+          name: value,
+        },
       });
     }
     if (!value) {
       switch (type) {
         case 'employeeRaise':
+          dispatch({
+            type: 'ticketManagement/save',
+            payload: {
+              employeeRaiseList: [],
+            },
+          });
           setNameListState([]);
           break;
         case 'employeeAssignee':
+          dispatch({
+            type: 'ticketManagement/save',
+            payload: {
+              employeeAssignedList: [],
+            },
+          });
           setAsignedListState([]);
           break;
         default:
@@ -291,8 +255,7 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select request type"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 showArrow
               >
                 {queryTypeList.map((option) => {
@@ -311,8 +274,7 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select priority"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 showArrow
               >
                 {priorityList.map((option) => {
@@ -324,36 +286,12 @@ const FilterForm = (props) => {
                 })}
               </Select>
             </Form.Item>
-            {/* <Form.Item key="location" label="BY LOCATION" name="location">
-              <Select
-                allowClear
-                showSearch
-                mode="multiple"
-                placeholder="Select location"
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-                showArrow
-              >
-                {locationsListNew.map((option) => {
-                  const locationName =
-                    locationsList.length > 0
-                      ? locationsList.filter((val) => val._id === option.location)
-                      : [];
-                  const name = locationName.length > 0 ? locationName[0].name : null;
-                  return (
-                    <Option key={option.location} value={option.location}>
-                      {name}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item> */}
+
             {currentStatus && currentStatus[0] !== 'New' ? (
               <Form.Item key="employeeAssignee" label="BY ASSIGNED TO" name="employeeAssignee">
                 <AutoComplete
                   dropdownMatchSelectWidth={252}
-                  notFoundContent={loadingFetchEmployeeAssigneeListEffect ? <Spin /> : 'No matches'}
+                  notFoundContent={loadingFetchEmployeeAssignedListEffect ? <Spin /> : 'No matches'}
                   options={asignedListState}
                   onSearch={(val) => handleEmployeeSearch('employeeAssignee', val)}
                 >
@@ -410,7 +348,7 @@ export default connect(
       locationsList = [],
       currentStatus = [],
       listOffAllTicket = [],
-      employeeAssigneeList = [],
+      employeeAssignedList = [],
       employeeRaiseList = [],
       selectedLocations = [],
     } = {},
@@ -427,12 +365,12 @@ export default connect(
     listOffAllTicket,
     locationsList,
     employeeRaiseList,
-    employeeAssigneeList,
+    employeeAssignedList,
     selectedLocations,
     loadingFetchListAllTicket: loading.effects['ticketManagement/fetchListAllTicket'],
     loadingFetchEmployeeRaiseListEffect:
       loading.effects['ticketManagement/fetchEmployeeRaiseListEffect'],
     loadingFetchEmployeeAssigneeListEffect:
-      loading.effects['ticketManagement/fetchEmployeeAssigneeListEffect'],
+      loading.effects['ticketManagement/fetchEmployeeAssignedListEffect'],
   }),
 )(FilterForm);
