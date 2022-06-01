@@ -39,7 +39,6 @@ const JobDetailForm = (props) => {
         dateOfJoining = '',
         employeeType,
         processStatus = '',
-        currentAddress,
       } = {},
     } = {},
     validateFields = () => {},
@@ -143,7 +142,7 @@ const JobDetailForm = (props) => {
         const selectedWorkLocation = locationList.find((x) => x._id === value);
         if (value === 'work from home') {
           saveToRedux({
-            workFromHome: currentAddress,
+            workFromHome: true,
             workLocation: null,
             clientLocation: null,
           });
@@ -152,7 +151,7 @@ const JobDetailForm = (props) => {
           saveToRedux({
             location: value,
             workLocation: selectedWorkLocation,
-            workFromHome: null,
+            workFromHome: false,
             clientLocation: null,
           });
           setIsShowClientLocation(false)
@@ -166,7 +165,7 @@ const JobDetailForm = (props) => {
         saveToRedux({
           clientLocation: value,
           workLocation: null,
-          workFromHome: null,
+          workFromHome: false,
         });
         break;
       }
@@ -519,7 +518,7 @@ const JobDetailForm = (props) => {
         initialValues={{
           position: position || 'EMPLOYEE',
           employeeType: employeeType?._id || employeeType,
-          workLocation: workLocation ? workLocation._id : clientLocation || null,
+          workLocation: workLocation ? workLocation._id : clientLocation || workFromHome && 'Work From Home',
           department: department?._id || department,
           title: title?._id || title,
           grade: grade?._id || grade,
