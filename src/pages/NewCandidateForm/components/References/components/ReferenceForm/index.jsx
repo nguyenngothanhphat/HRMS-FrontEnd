@@ -1,12 +1,19 @@
 import { Col, Form, Input, Row, Select } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 // import { Page } from '@/pages/NewCandidateForm/utils';
 import styles from './index.less';
 
 const ReferenceForm = (props) => {
-  const { disabled = true, index = 0, name = '' } = props;
+  const { disabled = true, index = 0, name = '', references = [] } = props;
   const [isOther, setIsOther] = useState(false);
+
+  useEffect(() => {
+    if (JSON.stringify(references)) {
+      const item = references[index];
+      setIsOther(item?.relationship === 'other');
+    }
+  }, [JSON.stringify(references)]);
 
   const fields = [
     {
