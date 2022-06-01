@@ -63,10 +63,10 @@ export async function getPollResult(payload) {
 }
 
 // HOME PAGE
-export async function getBirthdayInWeek(data) {
+export async function getBirthdayInWeek(params) {
   return request('/api/employeetenant/list-celebration', {
-    method: 'POST',
-    data,
+    method: 'GET',
+    params,
   });
 }
 
@@ -82,5 +82,5 @@ export async function upsertBirthdayConversation(data) {
   return request('/api/birthdayconversationtenant/upsert', {
     method: 'POST',
     data,
-});
+  });
 }

@@ -36,7 +36,7 @@ export async function getListTimeOffManagement(payload) {
 }
 
 export async function getListEmployees(payload) {
-  return request('/api/employeetenant/list', {
+  return request('/api/employeetenant/list-by-single-company', {
     method: 'POST',
     data: payload,
   });

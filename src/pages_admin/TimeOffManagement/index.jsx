@@ -1,13 +1,9 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import styles from './index.less';
 import TableContainer from './components/TableContainer';
+import styles from './index.less';
 
 export default class TimeOffManagement extends PureComponent {
-  operations = () => {
-    return <div />;
-  };
-
   render() {
     return (
       <PageContainer>
