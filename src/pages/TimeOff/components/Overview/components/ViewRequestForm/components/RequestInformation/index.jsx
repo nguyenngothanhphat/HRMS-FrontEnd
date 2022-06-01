@@ -151,7 +151,7 @@ class RequestInformation extends PureComponent {
     return from > now;
   };
 
-  attchementsContent = () => {
+  attachmentsContent = () => {
     const { timeOff: { viewingLeaveRequest: { attachments = [] } = {} } = {} } = this.props;
     return (
       <span className={styles.attachments}>
@@ -281,7 +281,7 @@ class RequestInformation extends PureComponent {
             </Col>
             <Col span={6}>Attachments</Col>
             <Col span={18} className={styles.detailColumn}>
-              {this.attchementsContent()}
+              {this.attachmentsContent()}
             </Col>
 
             {status === REJECTED && (

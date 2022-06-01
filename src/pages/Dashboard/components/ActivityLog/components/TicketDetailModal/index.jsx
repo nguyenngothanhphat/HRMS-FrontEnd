@@ -118,7 +118,7 @@ const TicketDetailModal = (props) => {
         return '#ffffff';
     }
   };
-  const attchementsContent = () => {
+  const attachmentsContent = () => {
     return (
       <span className={styles.attachments}>
         {!isEmpty(attachments)
@@ -245,7 +245,7 @@ const TicketDetailModal = (props) => {
       },
       {
         name: 'Attachments',
-        value: attchementsContent(),
+        value: attachmentsContent(),
         span: 24,
       },
       {
