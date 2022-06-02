@@ -59,16 +59,14 @@ const Card = (props) => {
   };
 
   const onLikeClick = async (item) => {
-    const { likesComments: { likes = [], comments = [] } = {} } = item;
-    const likedIds = likes.map((x) => x.employeeInfo?._id);
+    const { likesComments: { likes = [] } = {} } = item;
 
     const employeeId = employee?._id;
     if (!likes.includes(employeeId)) {
       const payload = {
         employee: item._id,
         year: moment().year(),
-        likes: [...likedIds, employeeId],
-        comments,
+        likes: [employeeId],
       };
       const res = await upsertBirthdayConversationEffect(payload);
       if (res.statusCode === 200) {

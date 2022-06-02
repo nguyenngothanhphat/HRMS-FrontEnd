@@ -19,9 +19,6 @@ const Celebrating = (props) => {
   const fetchBirthdayInWeekList = () => {
     return dispatch({
       type: 'homePage/fetchBirthdayInWeekList',
-      payload: {
-        type: 'BIRTHDAY',
-      },
     });
   };
 
