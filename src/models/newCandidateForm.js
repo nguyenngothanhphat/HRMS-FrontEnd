@@ -32,6 +32,7 @@ import {
   getListBenefit,
   getReferencesByCandidate,
   sendNoReferences,
+  getLocationCustomer,
   // new document verification
   getDocumentLayoutByCountry,
 } from '@/services/newCandidateForm';
@@ -91,6 +92,7 @@ const defaultState = {
     jobGradeLevelList: [],
     employeeTypeList: [],
     locationList: [],
+    listCustomerLocation: [],
     reporteeList: [],
     departmentList: [],
     titleList: [],
@@ -100,6 +102,9 @@ const defaultState = {
     grade: null,
     department: null,
     workLocation: null,
+    workFromHome: null,
+    clientLocation: null,
+    currentAddress: {},
     reportees: [],
     title: null,
     reportingManager: null,
@@ -225,6 +230,8 @@ const defaultState = {
     privateEmail: null,
     workEmail: null,
     workLocation: null,
+    workFromHome: null,
+    clientLocation: null,
     position: 'EMPLOYEE',
     employeeType: null,
     department: null,
@@ -1603,8 +1610,9 @@ const newCandidateForm = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
 
+        // save to candidate
         yield put({
-          type: 'save',
+          type: 'saveTemp',
           payload: {
             documentLayout: data,
           },
@@ -1613,6 +1621,20 @@ const newCandidateForm = {
         dialog(errors);
       }
       return response;
+    },
+    *fetchLocationCustomer({ payload }, { call, put }) {
+      try {
+        const response = yield call(getLocationCustomer, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data: listCustomerLocation = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveTemp', payload: { listCustomerLocation } });
+      } catch (errors) {
+        dialog(errors);
+      }
     },
   },
 

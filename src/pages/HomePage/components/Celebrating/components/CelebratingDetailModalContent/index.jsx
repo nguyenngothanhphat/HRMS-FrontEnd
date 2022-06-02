@@ -9,6 +9,7 @@ import UserProfilePopover from '@/components/UserProfilePopover';
 import CommonModal from '@/components/CommonModal';
 import LikedModalContent from '../LikedModalContent';
 import styles from './index.less';
+import { CELEBRATE_TYPE } from '@/utils/homePage';
 
 const COMMENT_DEFAULT_COUNT = 3;
 const ACTION = {
@@ -33,7 +34,7 @@ const CelebratingDetailModalContent = (props) => {
   const [likedModalVisible, setLikedModalVisible] = useState(false);
   const [action, setAction] = useState('');
 
-  const likedIds = likes.map((x) => x.employeeInfo?._id);
+  const likedIds = likes.map((x) => x._id);
 
   // functions
   const onViewProfileClick = (userId) => {
@@ -146,22 +147,38 @@ const CelebratingDetailModalContent = (props) => {
         return 'his/her';
     }
   };
-  const renderBirthdayContent = (data = {}) => {
-    const { DOB = '', gender = '' } = data?.generalInfoInfo || {};
-    const isToday = isTheSameDay(moment(), moment(DOB));
+  const renderCardContent = (data = {}) => {
     const employeeName = renderEmployeeName(data);
-    const birthday = moment(DOB).locale('en').format('MMM Do');
-    if (isToday)
+
+    if (data.type === CELEBRATE_TYPE.BIRTHDAY) {
+      const { DOB = '', gender = '' } = data?.generalInfoInfo || {};
+      const isToday = isTheSameDay(moment(), moment(DOB));
+      const birthday = moment.utc(DOB).locale('en').format('MMM Do');
+      if (isToday)
+        return (
+          <span>
+            {employeeName} is celebrating {getGender(gender)} birthday today. ({birthday})
+          </span>
+        );
       return (
         <span>
-          {employeeName} is celebrating {getGender(gender)} birthday today. ({birthday})
+          Upcoming birthday: {employeeName} ({birthday})
         </span>
       );
-    return (
-      <span>
-        Upcoming birthday: {employeeName} ({birthday})
-      </span>
-    );
+    }
+    if (data.type === CELEBRATE_TYPE.ANNIVERSARY) {
+      const { joinDate = '' } = data;
+      return (
+        <span>
+          {employeeName} joined our company on{' '}
+          {moment.utc(joinDate).locale('en').format('MMM Do, YYYY')}.
+        </span>
+      );
+    }
+    if (data.type === CELEBRATE_TYPE.NEWJOINEE) {
+      return <span>Welcome to new member: {employeeName}.</span>;
+    }
+    return '';
   };
 
   const onViewProfile = (id) => {
@@ -170,20 +187,20 @@ const CelebratingDetailModalContent = (props) => {
   };
 
   const renderComment = (comment) => {
-    const { legalName = '' } = comment.employeeInfo?.generalInfoInfo;
-    const { _id = '' } = comment.employeeInfo || {};
+    const { legalName = '' } = comment.employee?.generalInfoInfo || {};
+    const { _id = '' } = comment.employee || {};
     const isMe = _id === employee?._id;
 
     return (
       <div className={styles.comment}>
         <div className={styles.author}>
-          <img src={comment.employeeInfo?.generalInfoInfo?.avatar || MockAvatar} alt="" />
+          <img src={comment.employee?.generalInfoInfo?.avatar || MockAvatar} alt="" />
         </div>
 
         <div className={styles.content}>
           <p
             className={`${styles.authorName} ${isMe ? styles.isMe : null}`}
-            onClick={() => onViewProfile(comment.employeeInfo?.generalInfoInfo?.userId)}
+            onClick={() => onViewProfile(comment.employee?.generalInfoInfo?.userId)}
           >
             {legalName}
           </p>
@@ -201,7 +218,7 @@ const CelebratingDetailModalContent = (props) => {
             <img src={card.generalInfoInfo?.avatar} alt="" />
           </div>
           <div className={styles.content}>
-            <p className={styles.caption}>{renderBirthdayContent(card)}</p>
+            <p className={styles.caption}>{renderCardContent(card)}</p>
           </div>
         </div>
         <div className={styles.actions}>

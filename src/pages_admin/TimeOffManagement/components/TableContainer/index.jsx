@@ -1,5 +1,5 @@
 // import moment from 'moment';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -11,9 +11,16 @@ import styles from './index.less';
 const TableContainer = (props) => {
   const {
     dispatch,
-    timeOffManagement: { listEmployee = [], listTimeOff = [], requestDetail },
+    timeOffManagement: {
+      listEmployee = [],
+      listTimeOff = [],
+      requestDetail,
+      selectedLocations = [],
+    },
     loadingList = false,
   } = props;
+
+  const [payload, setPayload] = useState({});
 
   const fetchEmployees = () => {
     dispatch({
@@ -42,23 +49,27 @@ const TableContainer = (props) => {
         to,
         status: newStatus,
         tenantId: getCurrentTenant(),
+        selectedLocations,
       },
     });
   };
 
   useEffect(() => {
-    getDataTable();
     fetchEmployees();
   }, []);
+
+  useEffect(() => {
+    getDataTable(payload);
+  }, [JSON.stringify(selectedLocations), JSON.stringify(payload)]);
 
   return (
     <div className={styles.TimeOffTableContainer}>
       <div className={styles.optionsHeader}>
         <OptionsHeader
-          reloadData={getDataTable}
           listEmployee={listEmployee}
           listTimeOff={listTimeOff}
           disabled={loadingList}
+          setPayload={setPayload}
         />
       </div>
       <div className={styles.contentContainer}>
