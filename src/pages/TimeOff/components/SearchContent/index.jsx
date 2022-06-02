@@ -21,6 +21,7 @@ const TimeOffFilter = (props) => {
     onOpenAppliedTag = () => {},
     onClosedAppliedTag = () => {},
     saveCurrentTypeTab = () => {},
+    currentScopeTab = '1',
   } = props;
 
   const onSearchDebounce = debounce((value) => {
@@ -92,6 +93,8 @@ const TimeOffFilter = (props) => {
   useEffect(() => {
     form.setFieldsValue({ type, fromDate, toDate });
   }, [filter]);
+
+  useEffect(() => closedAppliedTag, [currentScopeTab]);
 
   const FilterContent = () => {
     return (
@@ -170,8 +173,11 @@ const TimeOffFilter = (props) => {
     </Space>
   );
 };
-export default connect(({ dispatch, timeOff: { yourTimeOffTypes = {}, filter = {} } }) => ({
-  dispatch,
-  yourTimeOffTypes,
-  filter,
-}))(TimeOffFilter);
+export default connect(
+  ({ dispatch, timeOff: { yourTimeOffTypes = {}, filter = {}, currentScopeTab } }) => ({
+    dispatch,
+    yourTimeOffTypes,
+    filter,
+    currentScopeTab,
+  }),
+)(TimeOffFilter);
