@@ -33,7 +33,7 @@ const TableContainer = (props) => {
       newStatus = [...newStatus, TIMEOFF_STATUS.IN_PROGRESS_NEXT];
     }
     const from = values.durationFrom ? moment(values.durationFrom).format('YYYY-MM-DD') : '';
-    const to = values.durationFrom ? moment(values.durationFrom).format('YYYY-MM-DD') : '';
+    const to = values.durationTo ? moment(values.durationTo).format('YYYY-MM-DD') : '';
     dispatch({
       type: 'timeOffManagement/fetchListTimeOff',
       payload: {
