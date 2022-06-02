@@ -20,6 +20,9 @@ const TableContainer = (props) => {
     loadingList = false,
   } = props;
 
+  const [fromDate, setFromDate] = useState(moment().startOf('month'));
+  const [toDate, setToDate] = useState(moment().endOf('month'));
+
   const [payload, setPayload] = useState({});
 
   const fetchEmployees = () => {
@@ -40,8 +43,8 @@ const TableContainer = (props) => {
     if (status.includes(TIMEOFF_STATUS.IN_PROGRESS)) {
       newStatus = [...newStatus, TIMEOFF_STATUS.IN_PROGRESS_NEXT];
     }
-    const from = values.durationFrom ? moment(values.durationFrom).format('YYYY-MM-DD') : '';
-    const to = values.durationTo ? moment(values.durationTo).format('YYYY-MM-DD') : '';
+    const from = fromDate ? moment(fromDate).format('YYYY-MM-DD') : '';
+    const to = toDate ? moment(toDate).format('YYYY-MM-DD') : '';
     dispatch({
       type: 'timeOffManagement/fetchListTimeOff',
       payload: {
@@ -71,6 +74,10 @@ const TableContainer = (props) => {
           listTimeOff={listTimeOff}
           disabled={loadingList}
           setPayload={setPayload}
+          setFromDate={setFromDate}
+          setToDate={setToDate}
+          fromDate={fromDate}
+          toDate={toDate}
         />
       </div>
       <div className={styles.contentContainer}>

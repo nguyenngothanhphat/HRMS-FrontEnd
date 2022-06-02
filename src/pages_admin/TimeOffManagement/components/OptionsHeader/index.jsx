@@ -1,6 +1,6 @@
 import { Button, Checkbox, Col, DatePicker, Form, Row, Select } from 'antd';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'umi';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import exportToCsv from '@/utils/exportToCsv';
@@ -15,10 +15,11 @@ const OptionsHeader = (props) => {
     listEmployee = [],
     disabled = false,
     loadingEmployeeList = false,
+    toDate = '',
+    fromDate = '',
+    setFromDate = () => {},
+    setToDate = () => {},
   } = props;
-
-  const [fromDate, setFromDate] = useState(moment().startOf('month'));
-  const [toDate, setToDate] = useState(moment().endOf('month'));
 
   // DISABLE DATE OF DATE PICKER
   const disabledFromDate = (current) => {
