@@ -1,6 +1,7 @@
 import { Button, Checkbox, Col, DatePicker, Form, Row, Select } from 'antd';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
+import { connect } from 'umi';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import exportToCsv from '@/utils/exportToCsv';
 import styles from './index.less';
@@ -8,10 +9,16 @@ import styles from './index.less';
 const { Option } = Select;
 const OptionsHeader = (props) => {
   const [form] = Form.useForm();
-  const { setPayload = () => {}, listTimeOff = [], listEmployee = [], disabled = false } = props;
+  const {
+    setPayload = () => {},
+    listTimeOff = [],
+    listEmployee = [],
+    disabled = false,
+    loadingEmployeeList = false,
+  } = props;
 
-  const [fromDate, setFromDate] = React.useState('');
-  const [toDate, setToDate] = React.useState('');
+  const [fromDate, setFromDate] = useState(moment().startOf('month'));
+  const [toDate, setToDate] = useState(moment().endOf('month'));
 
   // DISABLE DATE OF DATE PICKER
   const disabledFromDate = (current) => {
@@ -77,7 +84,15 @@ const OptionsHeader = (props) => {
   return (
     <div className={styles.OptionsHeader}>
       <div className={styles.container}>
-        <Form name="uploadForm" form={form} onValuesChange={onValuesChange}>
+        <Form
+          name="uploadForm"
+          form={form}
+          onValuesChange={onValuesChange}
+          initialValues={{
+            durationFrom: fromDate,
+            durationTo: toDate,
+          }}
+        >
           <Row gutter={[24, 12]}>
             <Col xs={7}>
               <span className={styles.itemLabel}>User ID - Name</span>
@@ -88,7 +103,8 @@ const OptionsHeader = (props) => {
                   filterOption={(input, option) =>
                     option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   showSearch
-                  disabled={disabled}
+                  disabled={disabled || loadingEmployeeList}
+                  loading={loadingEmployeeList}
                 >
                   {listEmployee.map((item = {}) => {
                     return (
@@ -157,4 +173,7 @@ const OptionsHeader = (props) => {
     </div>
   );
 };
-export default OptionsHeader;
+export default connect(({ loading, timeOffManagement }) => ({
+  loadingEmployeeList: loading.effects['timeOffManagement/fetchEmployeeList'],
+  timeOffManagement,
+}))(OptionsHeader);
