@@ -5,25 +5,25 @@ import BirthdayImage from '@/assets/homePage/birthday.png';
 import BirthdayImage2 from '@/assets/homePage/birthday2.png';
 import BirthdayImage3 from '@/assets/homePage/birthday3.png';
 import BirthdayImage4 from '@/assets/homePage/birthday4.png';
-import styles from './index.less';
-// import LikeIcon from '@/assets/homePage/like.svg';
-// import CommentIcon from '@/assets/homePage/comment.svg';
+import CongratulationImage from '@/assets/homePage/congratulation.png';
+import { CELEBRATE_TYPE } from '@/utils/homePage';
 import Card from './components/Card';
+import styles from './index.less';
 
 const avatars = [BirthdayImage, BirthdayImage2, BirthdayImage3, BirthdayImage4];
 
 const Celebrating = (props) => {
-  const { dispatch, homePage: { birthdayInWeekList = [] } = {} } = props;
-  const [birthdayList, setBirthdayList] = useState([]);
+  const { dispatch, homePage: { celebrationList = [] } = {} } = props;
+  const [list, setList] = useState([]);
 
-  const fetchBirthdayInWeekList = () => {
+  const fetchCelebrationList = () => {
     return dispatch({
-      type: 'homePage/fetchBirthdayInWeekList',
+      type: 'homePage/fetchCelebrationList',
     });
   };
 
   useEffect(() => {
-    fetchBirthdayInWeekList();
+    fetchCelebrationList();
   }, []);
 
   const compare = (a, b) => {
@@ -45,43 +45,64 @@ const Celebrating = (props) => {
   };
 
   const formatData = () => {
-    let result = [
-      ...birthdayInWeekList.filter((x) => {
-        return !isPastDate(moment(addCurrentYearToExistingDate(x.generalInfoInfo?.DOB)), moment());
-      }),
-    ];
+    let tempList = JSON.parse(JSON.stringify(celebrationList));
 
-    result.sort((a, b) =>
-      compare(
-        moment(addCurrentYearToExistingDate(a.generalInfoInfo.DOB)),
-        moment(addCurrentYearToExistingDate(b.generalInfoInfo.DOB)),
-      ),
-    );
     let avatarIndex = 0;
-    result = result.map((x) => {
+    tempList = tempList.map((x) => {
+      const { type = '' } = x;
       if (!x.generalInfoInfo?.avatar) {
         avatarIndex += 1;
         return {
           ...x,
           generalInfoInfo: {
             ...x.generalInfoInfo,
-            avatar: avatars[avatarIndex % avatars.length],
+            avatar:
+              type === CELEBRATE_TYPE.BIRTHDAY
+                ? avatars[avatarIndex % avatars.length]
+                : CongratulationImage,
           },
         };
       }
       return x;
     });
-    setBirthdayList(result);
+
+    let birthdayList = tempList.filter((x) => x.type === CELEBRATE_TYPE.BIRTHDAY);
+    const anniversaryList = tempList.filter((x) => x.type === CELEBRATE_TYPE.ANNIVERSARY);
+    const newJoineeList = tempList.filter((x) => x.type === CELEBRATE_TYPE.NEWJOINEE);
+
+    // birthday
+    birthdayList = [
+      ...birthdayList.filter((x) => {
+        return !isPastDate(moment(addCurrentYearToExistingDate(x.generalInfoInfo?.DOB)), moment());
+      }),
+    ];
+
+    birthdayList.sort((a, b) =>
+      compare(
+        moment(addCurrentYearToExistingDate(a.generalInfoInfo.DOB)),
+        moment(addCurrentYearToExistingDate(b.generalInfoInfo.DOB)),
+      ),
+    );
+
+    // anniversary
+    anniversaryList.sort((a, b) =>
+      compare(
+        moment(addCurrentYearToExistingDate(a.joinDate)),
+        moment(addCurrentYearToExistingDate(b.joinDate)),
+      ),
+    );
+
+    setList([...birthdayList, ...anniversaryList, ...newJoineeList]);
   };
 
   useEffect(() => {
     formatData();
-  }, [JSON.stringify(birthdayInWeekList)]);
+  }, [JSON.stringify(celebrationList)]);
 
   return (
     <div className={styles.Celebrating}>
       <p className={styles.titleText}>Lets celebrate</p>
-      <Card birthdayList={birthdayList} refreshData={fetchBirthdayInWeekList} />
+      <Card list={list} refreshData={fetchCelebrationList} />
     </div>
   );
 };
