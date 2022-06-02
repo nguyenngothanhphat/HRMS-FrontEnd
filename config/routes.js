@@ -329,6 +329,7 @@ const routes = [
           {
             path: '/onboarding/list/view/:reId',
             redirect: '/onboarding/list/view/:reId/basic-information',
+            name: 'Add a team member',
           },
           {
             path: '/onboarding/newJoinees/view-detail/:userId',
