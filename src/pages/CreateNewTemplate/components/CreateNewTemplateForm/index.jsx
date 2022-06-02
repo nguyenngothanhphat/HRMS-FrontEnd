@@ -1,14 +1,10 @@
 /* eslint-disable react/no-danger */
-import React, { PureComponent } from 'react';
-import { Form, Input, Row, Col, Button, notification } from 'antd';
-import { connect, history } from 'umi';
-
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { Button, Col, Form, Input, notification, Row } from 'antd';
 import moment from 'moment';
+import React, { PureComponent } from 'react';
+import { connect, history } from 'umi';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import EditForm from '../EditForm';
-
-import formOutlined from './assets/form-outlined.svg';
-
 import styles from './index.less';
 
 @connect(
@@ -67,6 +63,7 @@ class CreateNewTemplateForm extends PureComponent {
         type: type || 'ON_BOARDING',
         title,
         tenantId,
+        default: true,
       },
     }).then((res) => {
       if (res.statusCode === 200) {

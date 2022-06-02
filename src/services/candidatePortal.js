@@ -56,6 +56,13 @@ export function candidateFinalOffer(payload) {
   });
 }
 
+export function generateOfferLetter(payload) {
+  return request('/api/templatetenant/offer-letter', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getCountryList() {
   return request('/api/country/list', {
     method: 'POST',

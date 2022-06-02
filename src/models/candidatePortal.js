@@ -5,6 +5,7 @@ import {
   addAttachmentService,
   addReference,
   candidateFinalOffer,
+  generateOfferLetter,
   getById,
   getCountryList,
   getDocumentByCandidate,
@@ -324,7 +325,17 @@ const candidatePortal = {
       }
       return response;
     },
-
+    *generateOfferLetter({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(generateOfferLetter, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
     *refreshPage() {
       try {
         history.push('/candidate-portal/dashboard');
