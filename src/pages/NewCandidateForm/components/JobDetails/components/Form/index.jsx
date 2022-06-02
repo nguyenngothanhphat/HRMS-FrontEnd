@@ -513,9 +513,7 @@ const JobDetailForm = (props) => {
         initialValues={{
           position: position || 'EMPLOYEE',
           employeeType: employeeType?._id || employeeType,
-          workLocation: workLocation
-            ? workLocation._id
-            : clientLocation || (workFromHome && 'work from home'),
+          workLocation: workLocation ? workLocation._id : clientLocation || null, // (workFromHome && 'work from home')
           department: department?._id || department,
           title: title?._id || title,
           grade: grade?._id || grade,

@@ -52,7 +52,7 @@ const ActivityCard = (props) => {
 
   // USE EFFECT AREA
   const calculateCardPosition = () => {
-    const marginBlock = 10;
+    const marginBlock = 8;
 
     let topTemp = EMP_ROW_HEIGHT / 2;
     let heightTemp = 0;
@@ -74,10 +74,8 @@ const ActivityCard = (props) => {
       heightTemp = diff.asHours() * EMP_ROW_HEIGHT;
 
       setTop(topTemp + marginBlock / 2);
-      setHeight(
-        heightTemp >= EMP_ROW_HEIGHT ? heightTemp - marginBlock : EMP_ROW_HEIGHT - marginBlock,
-      );
 
+      setHeight(heightTemp - marginBlock);
       // calculate "description" with read more button
       if (heightTemp > EMP_ROW_HEIGHT) {
         const textLongTemp =
@@ -149,7 +147,7 @@ const ActivityCard = (props) => {
   // MAIN AREA
   return (
     <div
-      className={styles.ActivityCard}
+      className={height < EMP_ROW_HEIGHT / 2 ? styles.ActivityCard_hover : styles.ActivityCard}
       style={
         isOldTimeSheet
           ? {
@@ -163,7 +161,14 @@ const ActivityCard = (props) => {
             }
       }
     >
-      <Row gutter={[12, 12]} className={styles.container} align="top">
+      <Row
+        gutter={[12, 12]}
+        className={styles.container}
+        align="top"
+        style={{
+          paddingBlock: height < EMP_ROW_HEIGHT / 2 ? 3 : 10,
+        }}
+      >
         <Col span={PROJECT} className={`${styles.flexCell} ${styles.boldText}`}>
           <div
             className={styles.activityIcon}
