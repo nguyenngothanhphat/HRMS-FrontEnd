@@ -5,14 +5,13 @@ import { toNumber, toString, trim, trimStart, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
-import { getCurrentTenant } from '@/utils/authority';
+import { roundNumber2, SALARY_STRUCTURE_OPTION } from '@/utils/onboardingSetting';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { Page } from '../../../../utils';
 import styles from './index.less';
 import ModalWaitAccept from './ModalWaitAccept/index';
 import SalaryReference from './SalaryReference/index';
-import { roundNumber2, SALARY_STRUCTURE_OPTION } from '@/utils/onboardingSetting';
 
 const SalaryStructureTemplate = (props) => {
   const {
@@ -69,11 +68,11 @@ const SalaryStructureTemplate = (props) => {
   }, []);
 
   const onClickPrev = () => {
-    history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.DOCUMENT_VERIFICATION}`);
+    history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.REFERENCES}`);
   };
 
   const onClickNext = () => {
-    if (currentStep === 3) {
+    if (currentStep === ONBOARDING_STEPS.SALARY_STRUCTURE) {
       if (
         processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION &&
         salaryAcceptanceStatus !== 'ACCEPTED'
@@ -87,7 +86,6 @@ const SalaryStructureTemplate = (props) => {
             },
             candidate: candidateId,
             sentDate: moment(),
-            tenantId: getCurrentTenant(),
           },
         }).then(({ statusCode }) => {
           if (statusCode === 200) {
@@ -98,15 +96,14 @@ const SalaryStructureTemplate = (props) => {
         dispatch({
           type: 'newCandidateForm/updateByHR',
           payload: {
-            currentStep: 4,
+            currentStep: ONBOARDING_STEPS.BENEFITS,
             candidate: candidateId,
-            tenantId: getCurrentTenant(),
           },
         });
         dispatch({
           type: 'newCandidateForm/save',
           payload: {
-            currentStep: 4,
+            currentStep: ONBOARDING_STEPS.BENEFITS,
           },
         });
         history.push(`/onboarding/list/view/${ticketID}/benefits`);
@@ -555,7 +552,7 @@ const SalaryStructureTemplate = (props) => {
     );
   };
 
-  const _renderSalaryTable = () => {
+  const _renderCommonSalaryTable = () => {
     return (
       <div className={styles.salaryStructureTemplate_table}>
         <Row className={styles.salary}>
@@ -631,7 +628,7 @@ const SalaryStructureTemplate = (props) => {
     );
   };
 
-  const _renderIndiaSalaryTable = () => {
+  const _renderTotalSalaryTable = () => {
     const annualTotal = settingsTempData.find((x) => x.key === 'total_compensation') || {};
     const final = settingsTempData.find((x) => x.key === 'total_cost_company') || {};
     const eligible_variable_pay =
@@ -677,7 +674,7 @@ const SalaryStructureTemplate = (props) => {
               <Col span={6} />
 
               <Col span={10}>
-                <span>Employee One Time Annual Retention Bonus</span>
+                <span>Employee One Time Annual Premium Bonus</span>
               </Col>
               <Col span={8}>
                 <div className={styles.inputBefore}>
@@ -836,9 +833,9 @@ const SalaryStructureTemplate = (props) => {
       )}
 
       <Spin spinning={loadingFetchTable}>
-        {salaryCountry === 'IN' && option === SALARY_STRUCTURE_OPTION.TOTAL_COMPENSATION
-          ? _renderIndiaSalaryTable()
-          : _renderSalaryTable()}
+        {option === SALARY_STRUCTURE_OPTION.TOTAL_COMPENSATION
+          ? _renderTotalSalaryTable()
+          : _renderCommonSalaryTable()}
       </Spin>
 
       {_renderBottomBar()}

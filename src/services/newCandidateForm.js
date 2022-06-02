@@ -237,10 +237,25 @@ export async function getListBenefit(payload) {
   });
 }
 
+// references
+export function sendNoReferences(payload) {
+  return request('/api/referencetenant/number-of-references', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 // new document verification
 export async function getDocumentLayoutByCountry(payload) {
   return request('/api/candidatetenant/get-documents-by-country', {
     method: 'POST',
     data: payload,
+  });
+}
+
+export async function getReferencesByCandidate(params) {
+  return request('api/referencetenant/get-by-candidate', {
+    method: 'GET',
+    params,
   });
 }

@@ -85,6 +85,7 @@ const EmployerComponent = (props) => {
               </Checkbox>
             ))}
           </CheckboxGroup>
+          {data.length === 0 && <span>No document available</span>}
         </Col>
       </Row>
 

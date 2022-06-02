@@ -88,27 +88,29 @@ const CollapseFieldsTypeABC = (props) => {
           }}
         >
           <Panel header={renderHeader()} key="1">
-            <CheckboxGroup
-              direction="vertical"
-              onChange={onCheckBoxChange}
-              value={checkedList}
-              disabled={disabled}
-              className={styles.checkBoxesGroup}
-            >
-              {items.map((val) => {
-                return (
-                  <Checkbox value={val.alias} disabled={val.required}>
-                    {val.alias}
-                    {val.required && <span className={styles.starSymbol}>*</span>}
-                    {!disabled && val.new && (
-                      <Popconfirm onConfirm={() => handleRemove(val.key)} title="Sure to remove?">
-                        <DeleteOutlined className={styles.removeIcon} />
-                      </Popconfirm>
-                    )}
-                  </Checkbox>
-                );
-              })}
-            </CheckboxGroup>
+            {items.length > 0 && (
+              <CheckboxGroup
+                direction="vertical"
+                onChange={onCheckBoxChange}
+                value={checkedList}
+                disabled={disabled}
+                className={styles.checkBoxesGroup}
+              >
+                {items.map((val) => {
+                  return (
+                    <Checkbox value={val.alias} disabled={val.required}>
+                      {val.alias}
+                      {val.required && <span className={styles.starSymbol}>*</span>}
+                      {!disabled && val.new && (
+                        <Popconfirm onConfirm={() => handleRemove(val.key)} title="Sure to remove?">
+                          <DeleteOutlined className={styles.removeIcon} />
+                        </Popconfirm>
+                      )}
+                    </Checkbox>
+                  );
+                })}
+              </CheckboxGroup>
+            )}
 
             {!disabled && items.length > 0 && <div className={styles.addBtn__divider} />}
 

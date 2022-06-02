@@ -66,8 +66,7 @@ const CelebratingDetailModalContent = (props) => {
       const payload = {
         employee: item._id,
         year: moment().year(),
-        likes: [...likedIds, employeeId],
-        comments,
+        likes: [employeeId],
       };
       const res = await upsertBirthdayConversationEffect(payload);
       if (res.statusCode === 200) {
@@ -82,19 +81,11 @@ const CelebratingDetailModalContent = (props) => {
       setCommentContent('');
 
       const employeeId = employee?._id;
-      const originalComments = comments.map((x) => {
-        return {
-          content: x.content,
-          employee: x.employee,
-        };
-      });
 
       const payload = {
         employee: item._id,
         year: moment().year(),
-        likes: likedIds,
         comments: [
-          ...originalComments,
           {
             content: commentContent,
             employee: employeeId,

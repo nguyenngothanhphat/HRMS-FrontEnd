@@ -51,6 +51,14 @@ const MENU_DATA = [
   },
   {
     id: 5,
+    name: 'Reference Verification',
+    key: 'referenceVerification',
+    component: 'ReferenceVerification',
+    quantity: 0,
+    link: 'reference-verification',
+  },
+  {
+    id: 6,
     name: 'Salary Proposal',
     key: 'salaryNegotiation',
     component: 'SalaryNegotiation',
@@ -58,7 +66,7 @@ const MENU_DATA = [
     link: 'salary-proposal',
   },
   {
-    id: 6,
+    id: 7,
     name: 'Awaiting Approvals',
     key: 'awaitingApprovals',
     component: 'AwaitingApprovals',
@@ -66,7 +74,7 @@ const MENU_DATA = [
     link: 'awaiting-approvals',
   },
   {
-    id: 7,
+    id: 8,
     name: 'Needs Changes',
     key: 'needsChanges',
     component: 'NeedsChanges',
@@ -74,7 +82,7 @@ const MENU_DATA = [
     link: 'needs-changes',
   },
   {
-    id: 8,
+    id: 9,
     name: 'Offer Released',
     key: 'offerReleased',
     component: 'OfferReleased',
@@ -82,7 +90,7 @@ const MENU_DATA = [
     link: 'offer-released',
   },
   {
-    id: 9,
+    id: 10,
     name: 'Offer Accepted',
     key: 'offerAccepted',
     component: 'OfferAccepted',
@@ -90,7 +98,7 @@ const MENU_DATA = [
     link: 'offer-accepted',
   },
   {
-    id: 10,
+    id: 11,
     name: 'Joined',
     key: 'joined',
     component: 'Joined',
@@ -98,7 +106,7 @@ const MENU_DATA = [
     link: 'joined',
   },
   {
-    id: 11,
+    id: 12,
     name: 'Rejected Offers',
     key: 'rejectedOffers',
     component: 'RejectedOffers',
@@ -106,7 +114,7 @@ const MENU_DATA = [
     link: 'rejected-offer',
   },
   {
-    id: 12,
+    id: 13,
     name: 'Withdrawn Offers',
     key: 'withdrawnOffers',
     component: 'WithdrawnOffers',
@@ -141,7 +149,7 @@ const formatData = (list = []) => {
       firstName = '',
       middleName = '',
       lastName = '',
-      employeeType = { },
+      employeeType = {},
       grade = {},
       // position,
       title = '',
@@ -182,23 +190,23 @@ const formatData = (list = []) => {
 
     let reportingManagerData = '';
     if (reportingManager.generalInfo) {
-      reportingManagerData = `${reportingManager.generalInfo.firstName} - ${reportingManager.generalInfo.userId}`
+      reportingManagerData = `${reportingManager.generalInfo.firstName} - ${reportingManager.generalInfo.userId}`;
     }
 
-    let reporteesData = reportees.map((reportee) => {
-      return `${reportee.generalInfoInfo.firstName} - ${reportee.generalInfoInfo.userId}`
-    })
+    const reporteesData = reportees.map((reportee) => {
+      return `${reportee.generalInfoInfo.firstName} - ${reportee.generalInfoInfo.userId}`;
+    });
 
     const rookie = {
       candidate: _id || '',
       candidateId: `#${ticketID}`,
       isNew,
       candidateName: fullName,
-      firstName: firstName,
-      middleName: middleName,
-      lastName: lastName,
+      firstName,
+      middleName,
+      lastName,
       personEmail: privateEmail,
-      previousExperience: previousExperience,
+      previousExperience,
       position: title.name,
       employeeType: employeeType.name || '',
       grade: grade.name || '',
@@ -251,6 +259,7 @@ const onboarding = {
       withdrawnOffers: [],
       joinedOffers: [],
       currentStatus: '',
+      referenceVerification: [],
     },
     searchOnboarding: {
       jobTitleList: [],
@@ -273,7 +282,9 @@ const onboarding = {
         // Update menu
         yield put({
           type: 'updateMenuQuantity',
-          payload: { totalNumber },
+          payload: {
+            totalNumber,
+          },
         });
       } catch (error) {
         dialog(error);
@@ -339,6 +350,7 @@ const onboarding = {
           OFFER_REJECTED,
           OFFER_WITHDRAWN,
           JOINED,
+          REFERENCE_VERIFICATION,
         } = NEW_PROCESS_STATUS;
 
         const { processStatus = [], page, limit } = payload;
@@ -371,77 +383,108 @@ const onboarding = {
           case DRAFT: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { drafts: returnedData },
+              payload: {
+                drafts: returnedData,
+              },
             });
             return response;
           }
           case PROFILE_VERIFICATION: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { profileVerifications: returnedData },
+              payload: {
+                profileVerifications: returnedData,
+              },
             });
             return response;
           }
           case DOCUMENT_VERIFICATION: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { documentVerifications: returnedData },
+              payload: {
+                documentVerifications: returnedData,
+              },
             });
             return response;
           }
           case SALARY_NEGOTIATION: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { salaryNegotiations: returnedData },
+              payload: {
+                salaryNegotiations: returnedData,
+              },
             });
             return response;
           }
           case AWAITING_APPROVALS: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { awaitingApprovals: returnedData },
+              payload: {
+                awaitingApprovals: returnedData,
+              },
             });
             return response;
           }
           case NEEDS_CHANGES: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { needsChanges: returnedData },
+              payload: {
+                needsChanges: returnedData,
+              },
             });
             return response;
           }
           case OFFER_RELEASED: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { offerReleased: returnedData },
+              payload: {
+                offerReleased: returnedData,
+              },
             });
             return response;
           }
           case OFFER_ACCEPTED: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { offerAccepted: returnedData },
+              payload: {
+                offerAccepted: returnedData,
+              },
             });
             return response;
           }
           case OFFER_REJECTED: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { rejectedOffers: returnedData },
+              payload: {
+                rejectedOffers: returnedData,
+              },
             });
             return response;
           }
           case OFFER_WITHDRAWN: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { withdrawnOffers: returnedData },
+              payload: {
+                withdrawnOffers: returnedData,
+              },
+            });
+            return response;
+          }
+          case REFERENCE_VERIFICATION: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: {
+                referenceVerification: returnedData,
+              },
             });
             return response;
           }
           case JOINED: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { joinedOffers: returnedData },
+              payload: {
+                joinedOffers: returnedData,
+              },
             });
             return response;
           }
@@ -470,6 +513,7 @@ const onboarding = {
           OFFER_REJECTED,
           OFFER_WITHDRAWN,
           JOINED,
+          REFERENCE_VERIFICATION,
         } = NEW_PROCESS_STATUS;
 
         const response = yield call(getOnboardingList, {
@@ -493,76 +537,107 @@ const onboarding = {
           case DRAFT:
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { drafts: returnedData },
+              payload: {
+                drafts: returnedData,
+              },
             });
             break;
           case PROFILE_VERIFICATION: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { profileVerifications: returnedData },
+              payload: {
+                profileVerifications: returnedData,
+              },
             });
             break;
           }
           case DOCUMENT_VERIFICATION: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { documentVerifications: returnedData },
+              payload: {
+                documentVerifications: returnedData,
+              },
             });
             break;
           }
           case SALARY_NEGOTIATION: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { salaryNegotiations: returnedData },
+              payload: {
+                salaryNegotiations: returnedData,
+              },
             });
             break;
           }
           case AWAITING_APPROVALS: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { awaitingApprovals: returnedData },
+              payload: {
+                awaitingApprovals: returnedData,
+              },
             });
             break;
           }
           case NEEDS_CHANGES: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { needsChanges: returnedData },
+              payload: {
+                needsChanges: returnedData,
+              },
             });
             break;
           }
           case OFFER_RELEASED: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { offerReleased: returnedData },
+              payload: {
+                offerReleased: returnedData,
+              },
             });
             break;
           }
           case OFFER_ACCEPTED: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { offerAccepted: returnedData },
+              payload: {
+                offerAccepted: returnedData,
+              },
             });
             break;
           }
           case OFFER_REJECTED: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { rejectedOffers: returnedData },
+              payload: {
+                rejectedOffers: returnedData,
+              },
             });
             break;
           }
           case OFFER_WITHDRAWN: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { withdrawnOffers: returnedData },
+              payload: {
+                withdrawnOffers: returnedData,
+              },
+            });
+            break;
+          }
+          case REFERENCE_VERIFICATION: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: {
+                referenceVerification: returnedData,
+              },
             });
             break;
           }
           case JOINED: {
             yield put({
               type: 'saveOnboardingOverview',
-              payload: { joinedOffers: returnedData },
+              payload: {
+                joinedOffers: returnedData,
+              },
             });
             return response;
           }
@@ -694,7 +769,9 @@ const onboarding = {
           });
         }
 
-        notification.success({ message: 'Delete ticket successfully.' });
+        notification.success({
+          message: 'Delete ticket successfully.',
+        });
       } catch (error) {
         dialog(error);
       }
@@ -759,7 +836,12 @@ const onboarding = {
         const response = yield call(getPosition, newPayload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'saveSearch', payload: { jobTitleList: data } });
+        yield put({
+          type: 'saveSearch',
+          payload: {
+            jobTitleList: data,
+          },
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -776,7 +858,9 @@ const onboarding = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveSearch',
-          payload: { locationList },
+          payload: {
+            locationList,
+          },
         });
       } catch (errors) {
         dialog(errors);
@@ -830,6 +914,7 @@ const onboarding = {
         OFFER_REJECTED,
         OFFER_WITHDRAWN,
         JOINED,
+        REFERENCE_VERIFICATION,
       } = NEW_PROCESS_STATUS;
       const { listMenu } = state.menu.onboardingOverviewTab;
       const { totalNumber } = action.payload;
@@ -847,6 +932,7 @@ const onboarding = {
         rejectedOffers: 0,
         withdrawnOffers: 0,
         joined: 0,
+        referenceVerification: 0,
       };
 
       totalNumber.forEach((status) => {
@@ -885,6 +971,9 @@ const onboarding = {
           case JOINED:
             newTotalNumber.joined += count;
             break;
+          case REFERENCE_VERIFICATION:
+            newTotalNumber.referenceVerification += count;
+            break;
           default:
             break;
         }
@@ -899,7 +988,8 @@ const onboarding = {
           newTotalNumber.offerReleased +
           newTotalNumber.offerAccepted +
           newTotalNumber.rejectedOffers +
-          newTotalNumber.withdrawnOffers;
+          newTotalNumber.withdrawnOffers +
+          newTotalNumber.referenceVerification;
       });
 
       const newListMenu = listMenu.map((item) => {
@@ -943,9 +1033,15 @@ const onboarding = {
         if (key === 'joined') {
           dataLength = newTotalNumber.joined;
         }
+        if (key === 'referenceVerification') {
+          dataLength = newTotalNumber.referenceVerification;
+        }
 
         newQuantity = dataLength;
-        newItem = { ...newItem, quantity: newQuantity };
+        newItem = {
+          ...newItem,
+          quantity: newQuantity,
+        };
         return newItem;
       });
       return {

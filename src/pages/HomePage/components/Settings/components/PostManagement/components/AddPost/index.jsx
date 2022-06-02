@@ -101,17 +101,11 @@ const AddPost = (props) => {
           };
         });
       };
-      const locationTemp = () => {
-        return locationProps.map((x) => {
-          return x._id;
-        });
-      };
 
       switch (mode) {
         case TAB_IDS.ANNOUNCEMENTS: {
           tempFormValues = {
             postType: TAB_IDS.ANNOUNCEMENTS,
-            location: [...locationTemp()],
             descriptionA: record.description,
             uploadFilesA: [...fileListTemp()],
           };
@@ -146,7 +140,6 @@ const AddPost = (props) => {
           tempFormValues = {
             postType: TAB_IDS.POLL,
             questionP: record.pollDetail?.question,
-            location: [...locationTemp()],
             responsesP: [
               {
                 response: record.pollDetail?.response1,
@@ -165,6 +158,8 @@ const AddPost = (props) => {
         default:
           break;
       }
+
+      tempFormValues.location = locationProps.map((x) => x._id);
 
       form.setFieldsValue(tempFormValues);
       setFileList(fileListTemp());
@@ -224,7 +219,7 @@ const AddPost = (props) => {
           postType: TAB_IDS.ANNOUNCEMENTS,
           description: values.descriptionA,
           createdBy: employee?._id,
-          location,
+          location: values.location,
         };
         break;
       }
@@ -235,6 +230,7 @@ const AddPost = (props) => {
           postType: TAB_IDS.ANNIVERSARY,
           description: values.descriptionB,
           createdBy: employee?._id,
+          location: values.location,
         };
         break;
       }
@@ -246,6 +242,7 @@ const AddPost = (props) => {
           title: values.titleI,
           description: values.descriptionI,
           createdBy: employee?._id,
+          location: values.location,
         };
         break;
       }
@@ -263,7 +260,6 @@ const AddPost = (props) => {
         payload = {
           postType: TAB_IDS.POLL,
           createdBy: employee?._id,
-          location,
           pollDetail: {
             question: values.questionP,
             response1: values.responsesP[0]?.response,
@@ -272,6 +268,7 @@ const AddPost = (props) => {
             startDate: moment.utc(values.startDateP).startOf('day'),
             endDate: moment.utc(values.endDateP).startOf('day'),
           },
+          location: values.location,
         };
         break;
       default:
@@ -307,6 +304,7 @@ const AddPost = (props) => {
           attachments,
           postType: TAB_IDS.ANNIVERSARY,
           description: values.descriptionB,
+          location,
         };
         break;
       }
@@ -317,6 +315,7 @@ const AddPost = (props) => {
           postType: TAB_IDS.IMAGES,
           title: values.titleI,
           description: values.descriptionI,
+          location,
         };
         break;
       }
@@ -403,28 +402,30 @@ const AddPost = (props) => {
               })}
             </Select>
           </Form.Item>
-          <Form.Item
-            label="Location"
-            name="location"
-            rules={[{ required: true, message: 'Please select the location!' }]}
-            placeholder="Enter location"
-          >
-            <Select
-              mode="tags"
-              allowClear
-              showArrow
-              style={{ width: '100%' }}
-              onChange={handleChangeLocation}
+          {[TAB_IDS.ANNOUNCEMENTS, TAB_IDS.IMAGES, TAB_IDS.POLL].includes(mode) && (
+            <Form.Item
+              label="Show in Locations"
+              name="location"
+              rules={[{ required: true, message: 'Please select the location!' }]}
+              placeholder="Enter location"
             >
-              {companyLocationList.map((x) => {
-                return (
-                  <Select.Option value={x._id} key={x._id}>
-                    {x.name}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
+              <Select
+                mode="tags"
+                allowClear
+                showArrow
+                style={{ width: '100%' }}
+                onChange={handleChangeLocation}
+              >
+                {companyLocationList.map((x) => {
+                  return (
+                    <Select.Option value={x._id} key={x._id}>
+                      {x.name}
+                    </Select.Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+          )}
           {renderTypeContent()}
         </Form>
         <div className={styles.footer}>

@@ -35,7 +35,7 @@ export async function handleExpiryTicket(payload) {
   });
 }
 
-export async function inititateBackgroundCheck(payload) {
+export async function initiateBackgroundCheck(payload) {
   return request('/api/candidatetenant/initiate-background-check', {
     method: 'POST',
     data: payload, // candidate: id

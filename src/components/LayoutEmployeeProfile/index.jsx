@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-curly-newline */
-import { Affix, Col, Row, Skeleton } from 'antd';
-import _ from 'lodash';
+import { Affix, Col, Row, Skeleton, Spin } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
 import RequestDetails from '@/pages/EmployeeProfile/components/RequestDetails';
@@ -11,6 +10,7 @@ import ItemMenu from './components/ItemMenu';
 import UploadLogoCompany from './components/UploadLogoCompany';
 import ViewInformation from './components/ViewInformation';
 import s from './index.less';
+import { goToTop } from '@/utils/utils';
 
 @connect(
   ({
@@ -58,17 +58,13 @@ class CommonLayout extends PureComponent {
   }
 
   fetchTab = () => {
+    goToTop();
     const { listMenu = [], tabName = '' } = this.props;
     const selectedTab = listMenu.find((m) => m.link === tabName) || listMenu[0];
 
     this.setState({
       selectedItemId: selectedTab.id,
       displayComponent: selectedTab.component,
-    });
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
     });
   };
 
@@ -160,11 +156,9 @@ class CommonLayout extends PureComponent {
 
         <Row xs={24} md={18} xl={20} gutter={[24, 24]} className={s.viewRight}>
           <Col xl={isCompanyProfile ? 16 : 18} xs={24}>
-            {loadingFetchEmployee ? (
-              <Skeleton />
-            ) : (
-              <>{displayComponentActions || displayComponent}</>
-            )}
+            <Spin spinning={loadingFetchEmployee}>
+              {displayComponentActions || displayComponent}
+            </Spin>
           </Col>
           <Col xl={isCompanyProfile ? 8 : 6} xs={24}>
             {isCompanyProfile ? (
