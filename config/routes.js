@@ -545,6 +545,7 @@ const routes = [
             authority: [
               'P_TIMEOFF_T_TEAM_REQUEST_HR_VIEW',
               'P_TIMEOFF_T_TEAM_REQUEST_MANAGER_VIEW',
+              OWNER
             ],
           },
 
