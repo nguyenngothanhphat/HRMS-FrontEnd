@@ -79,7 +79,6 @@ const CelebratingDetailModalContent = (props) => {
   const onCommentClick = async () => {
     if (commentContent) {
       setAction(ACTION.COMMENT);
-      setCommentContent('');
 
       const employeeId = employee?._id;
 
@@ -95,6 +94,7 @@ const CelebratingDetailModalContent = (props) => {
       };
       const res = await upsertCelebrationConversationEffect(payload);
       if (res.statusCode === 200) {
+        setCommentContent('');
         handleActiveComments(comments, comments.length + 1);
         refreshData();
       }
