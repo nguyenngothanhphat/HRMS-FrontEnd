@@ -3,7 +3,7 @@ import { dialog } from '@/utils/utils';
 import {
   // portal
   getCelebrationList,
-  upsertBirthdayConversation,
+  upsertCelebrationConversation,
   // setting page
   addPost,
   deletePost,
@@ -61,10 +61,10 @@ const homePage = {
       }
       return response;
     },
-    *upsertBirthdayConversationEffect({ payload }, { call }) {
+    *upsertCelebrationConversationEffect({ payload }, { call }) {
       let response = {};
       try {
-        response = yield call(upsertBirthdayConversation, {
+        response = yield call(upsertCelebrationConversation, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
