@@ -25,6 +25,7 @@ const timeOffManagement = {
     listTimeOff: [],
     listEmployee: [],
     requestDetail: {},
+    selectedLocations: [],
   },
   effects: {
     *fetchEmployeeList({ payload = {} }, { call, put }) {
