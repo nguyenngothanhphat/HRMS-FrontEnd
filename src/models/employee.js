@@ -262,23 +262,12 @@ const employee = {
       }
     },
 
-    *exportEmployees(
-      {
-        payload: {
-          company = [],
-          status,
-          filter,
-        } = {},
-      },
-      { call },
-    ) {
+    *exportEmployees({ payload }, { call }) {
       try {
         const hide = message.loading('Exporting data...', 0);
         const response = yield call(getListExportEmployees, {
+          ...payload,
           tenantId: getCurrentTenant(),
-          company,
-          status,
-          filter,
         });
         hide();
         return response;

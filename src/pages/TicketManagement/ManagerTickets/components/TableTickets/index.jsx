@@ -87,6 +87,12 @@ const TableTickets = (props) => {
         if (statusCode === 200) {
           refreshFetchTicketList();
           refreshFetchTotalList();
+          dispatch({
+            type: 'ticketManagement/save',
+            payload: {
+              employeeFilterList: [],
+            },
+          });
         }
       });
     }

@@ -104,7 +104,7 @@ const AllTicket = (props) => {
     );
     const newObj = Object.fromEntries(filteredObj);
     setApplied(Object.keys(newObj).length);
-    setIsFiltering(true);
+    setIsFiltering(Object.keys(newObj).length > 0);
   };
 
   useEffect(() => {
