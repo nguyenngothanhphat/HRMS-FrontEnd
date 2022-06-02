@@ -149,6 +149,7 @@ const JobDetailForm = (props) => {
             workLocation: null,
             clientLocation: null,
           });
+          setIsShowClientLocation(false);
         }
 
         if (selectedWorkLocation) {
@@ -158,7 +159,9 @@ const JobDetailForm = (props) => {
             workFromHome: false,
             clientLocation: null,
           });
+          setIsShowClientLocation(false);
         }
+
         setNeedRefreshDocument(true);
         break;
       }
