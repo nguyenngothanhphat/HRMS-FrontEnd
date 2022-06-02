@@ -78,7 +78,7 @@ export async function updateBannerPosition(data) {
 }
 
 // BIRTHDAY LIKE & COMMENT
-export async function upsertBirthdayConversation(data) {
+export async function upsertCelebrationConversation(data) {
   return request('/api/birthdayconversationtenant/upsert', {
     method: 'POST',
     data,
