@@ -199,10 +199,10 @@ const DirectoryComponent = (props) => {
       setIsFiltering(false);
     }, 50);
   };
-  
+
   useEffect(() => {
     refreshData();
-  }, [JSON.stringify(filter), JSON.stringify(listCountry), size, tabId]);  
+  }, [JSON.stringify(filter), JSON.stringify(listCountry), size, tabId]);
 
   // pageSelected change => only call API when not using filter (isFiltering = false)
   useEffect(() => {
@@ -235,9 +235,7 @@ const DirectoryComponent = (props) => {
     });
   };
 
-  useEffect(() => {
-    return clearFilter();
-  },[tabId]);
+  useEffect(() => clearFilter, [tabId]);
 
   const exportEmployees = async () => {
     const getData = await dispatch({
