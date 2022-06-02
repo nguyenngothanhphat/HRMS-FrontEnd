@@ -7,7 +7,7 @@ import { isEmpty } from 'lodash';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import UserProfilePopover from '@/pages/TicketManagement/components/UserProfilePopover';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
-
+import TicketsItem from '../TicketsItem';
 import styles from './index.less';
 
 @connect(
@@ -95,6 +95,7 @@ class TableTickets extends PureComponent {
       employee: { _id = '' } = {},
       refreshFetchData = () => {},
       refreshFetchTotalList = () => {},
+      role = '',
     } = this.props;
     const {
       id = '',
@@ -122,6 +123,7 @@ class TableTickets extends PureComponent {
         attachments,
         departmentAssign,
         employee: _id,
+        role,
       },
     }).then((res) => {
       const { statusCode } = res;
@@ -389,21 +391,21 @@ class TableTickets extends PureComponent {
         key: 'employeeAssignee',
         fixed: 'right',
         render: (employeeAssignee, row) => {
+          const { ticket = {} } = this.state;
+          const { role = '', employee: { _id = '' } = {} } = this.props;
           if (employeeAssignee) {
             return (
-              <UserProfilePopover
-                placement="top"
-                trigger="hover"
-                data={{ ...employeeAssignee, ...employeeAssignee?.generalInfo }}
-              >
-                <span
-                  className={styles.userID}
-                  style={{ color: '#2c6df9' }}
-                  onClick={() => this.viewProfile(employeeAssignee?.generalInfo?.userId || '')}
-                >
-                  {employeeAssignee?.generalInfo?.legalName}
-                </span>
-              </UserProfilePopover>
+              <TicketsItem
+                employeeAssignee={employeeAssignee}
+                row={row}
+                viewProfile={this.viewProfile}
+                refreshFetchData={this.refreshFetchData}
+                refreshFetchTotalList={this.refreshFetchTotalList}
+                handleClickSelect={this.handleClickSelect}
+                ticket={ticket}
+                role={role}
+                _id={_id}
+              />
             );
           }
           return (

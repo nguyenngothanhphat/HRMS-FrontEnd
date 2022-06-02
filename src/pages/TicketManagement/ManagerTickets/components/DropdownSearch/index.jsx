@@ -22,7 +22,10 @@ const DropdownSearch = (props) => {
             <Row>
               {employeeFilterList.map((x) => (
                 <Col span={24}>
-                  <div className={styles.employee} onClick={() => handleSelectChange(x._id)}>
+                  <div
+                    className={styles.employee}
+                    onClick={() => handleSelectChange(x._id, x.generalInfo.legalName)}
+                  >
                     <span>{x.generalInfo?.legalName}</span>
                   </div>
                 </Col>

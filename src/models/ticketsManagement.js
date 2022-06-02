@@ -4,6 +4,7 @@ import { dialog } from '@/utils/utils';
 import {
   addTicket,
   deleteTicketAll,
+  deleteOneTicket,
   addChat,
   updateTicket,
   getTicketById,
@@ -311,6 +312,24 @@ const ticketManagement = {
         });
       } catch (error) {
         dialog(error);
+      }
+      return response;
+    },
+    *deleteTicketEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(deleteOneTicket, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        // eslint-disable-next-line no-shadow
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (errors) {
+        dialog(errors);
       }
       return response;
     },

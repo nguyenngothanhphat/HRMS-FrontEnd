@@ -109,3 +109,15 @@ export async function getSupportTeamList(payload) {
     params: payload,
   });
 }
+
+export async function deleteOneTicket(payload) {
+  return request(
+    '/api-ticket/tickettenant/delete-one',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.TICKET_API,
+  );
+}
