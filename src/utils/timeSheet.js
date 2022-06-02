@@ -96,7 +96,9 @@ export const EMP_MT_SECONDARY_COL_SPAN = {
   ACTIONS: 3,
 };
 
-export const EMP_ROW_HEIGHT = 72; // px
+export const EMP_ROW_HEIGHT = 82; // px
+// this value must be equal to
+// pages/TimeSheet/components/ComplexView/components/MyTimeSheet/components/DailyTable/components/ActivityList/index.less
 
 // MANAGER VIEW
 export const MNG_MT_MAIN_COL_SPAN = {
