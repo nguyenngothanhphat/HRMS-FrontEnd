@@ -28,11 +28,9 @@ const PostCard = (props) => {
       images = [],
       totalPostsOfType = [],
     } = {},
-    companyLocationList,
     loadingFetchPostList = false,
   } = props;
 
-  const arrLocation = companyLocationList.map((item) => item._id);
   // redux
   const { dispatch } = props;
 
@@ -45,9 +43,6 @@ const PostCard = (props) => {
   const fetchTotalPostsOfType = () => {
     dispatch({
       type: 'homePage/fetchTotalPostsOfType',
-      payload: {
-        location: arrLocation,
-      },
     });
   };
 
@@ -74,13 +69,11 @@ const PostCard = (props) => {
       default:
         break;
     }
-    const payload = {
-      postType: selectedTab,
-      location: arrLocation,
-    };
     dispatch({
       type,
-      payload,
+      payload: {
+        postType: selectedTab,
+      },
     });
     fetchTotalPostsOfType();
   };
