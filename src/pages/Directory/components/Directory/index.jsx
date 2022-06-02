@@ -76,6 +76,13 @@ const DirectoryComponent = (props) => {
     setTabId(tabIdTemp);
   };
 
+  const clearFilter = () => {
+    dispatch({
+      type: 'employee/clearFilter',
+    });
+    setApplied(0);
+  };
+
   // USE EFFECT
   useEffect(() => {
     initTabId();
@@ -87,9 +94,8 @@ const DirectoryComponent = (props) => {
       setPageSelected(1);
       setSize(10);
 
-      dispatch({
-        type: 'employee/clearFilter',
-      });
+      clearFilter();
+
       dispatch({
         type: 'employee/save',
         payload: {
@@ -193,10 +199,10 @@ const DirectoryComponent = (props) => {
       setIsFiltering(false);
     }, 50);
   };
-
+  
   useEffect(() => {
     refreshData();
-  }, [JSON.stringify(filter), JSON.stringify(listCountry), size, tabId]);
+  }, [JSON.stringify(filter), JSON.stringify(listCountry), size, tabId]);  
 
   // pageSelected change => only call API when not using filter (isFiltering = false)
   useEffect(() => {
@@ -228,6 +234,10 @@ const DirectoryComponent = (props) => {
       type: 'employee/clearFilter',
     });
   };
+
+  useEffect(() => {
+    return clearFilter();
+  },[tabId]);
 
   const exportEmployees = async () => {
     const status = []
@@ -275,7 +285,7 @@ const DirectoryComponent = (props) => {
   };
   const handleFilterCounts = (values) => {
     const filteredObj = Object.entries(values).filter(
-      ([value]) => (value !== undefined && value?.length > 0) || typeof value === 'number',
+      ([,value]) => (value !== undefined && value?.length > 0) || typeof value === 'number',
     );
     const newObj = Object.fromEntries(filteredObj);
     setApplied(Object.keys(newObj).length);
@@ -341,12 +351,7 @@ const DirectoryComponent = (props) => {
     ];
     exportToCsv('Template_Import_Employees.csv', processData(exportData));
   };
-  const clearFilter = () => {
-    dispatch({
-      type: 'employee/clearFilter',
-    });
-    setApplied(0);
-  };
+
   const rightButton = () => {
     const findIndexImport = permissions.importEmployees !== -1;
     const findIndexAdd = permissions.addEmployee !== -1;

@@ -80,7 +80,7 @@ class SearchOnboarding extends Component {
 
   callback = (apply) => {
     const filteredObj = Object.entries(apply).filter(
-      ([key, value]) => (value !== undefined && value?.length > 0) || value?.isValid,
+      ([, value]) => (value !== undefined && value?.length > 0) || value?.isValid,
     );
     const newObj = Object.fromEntries(filteredObj);
     this.setState({ applied: Object.keys(newObj).length });

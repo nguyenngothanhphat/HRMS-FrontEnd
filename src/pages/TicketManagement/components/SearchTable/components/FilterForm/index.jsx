@@ -24,17 +24,7 @@ const FilterForm = (props) => {
     visible = false,
     handleFilterCounts = () => {},
     setForm = () => {},
-    ticketManagement: {
-      filter: {
-        employeeAssignee = '',
-        employeeRaise = '',
-        fromDate,
-        priority = [],
-        queryType = [],
-        toDate,
-      } = {},
-      filter = {},
-    } = {},
+    selectedFilterTab={},    
   } = props;
 
   const [form] = Form.useForm();
@@ -263,6 +253,10 @@ const FilterForm = (props) => {
     onSearchEmployeeDebounce(type, value);
   };
 
+  useEffect(() => {
+    return () => form?.resetFields();
+  }, [selectedFilterTab]);
+
   return (
     <div>
       <div className={styles.filterForm}>
@@ -291,8 +285,7 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select request type"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 showArrow
               >
                 {queryTypeList.map((option) => {
@@ -311,8 +304,7 @@ const FilterForm = (props) => {
                 mode="multiple"
                 placeholder="Select priority"
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 showArrow
               >
                 {priorityList.map((option) => {
