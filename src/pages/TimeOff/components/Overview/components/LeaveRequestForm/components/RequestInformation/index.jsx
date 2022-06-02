@@ -54,6 +54,7 @@ const RequestInformation = (props) => {
         toDate: viewingToDate = '',
         description: viewingDescription = '',
         cc: viewingCC = [],
+        attachments: viewingAttachmentList = [],
         status: viewingStatus = '',
       } = {},
       emailsList = [],
@@ -308,6 +309,7 @@ const RequestInformation = (props) => {
         description = '',
         personCC = [],
         leaveTimeLists = [],
+        attachments = [],
       } = values;
 
       if (timeOffType && durationFrom && durationTo) {
@@ -324,6 +326,7 @@ const RequestInformation = (props) => {
           description,
           approvalManager: managerId, // id
           cc: personCC,
+          attachments,
           company: getCurrentCompany(),
         };
 
@@ -625,6 +628,7 @@ const RequestInformation = (props) => {
         durationTo: viewingToDate ? moment(viewingToDate) : null,
         description: viewingDescription,
         personCC: viewingCC,
+        attachments: viewingAttachmentList,
         leaveTimeLists,
       });
 
