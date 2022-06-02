@@ -130,7 +130,7 @@ const defaultState = {
     newArrToAdjust: [],
     company: '',
     email: '',
-    
+
     candidateSignature: {
       url: '',
       fileName: '',
@@ -1610,8 +1610,9 @@ const newCandidateForm = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
 
+        // save to candidate
         yield put({
-          type: 'save',
+          type: 'saveTemp',
           payload: {
             documentLayout: data,
           },

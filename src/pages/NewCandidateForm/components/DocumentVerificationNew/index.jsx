@@ -7,39 +7,11 @@ import DocumentVerification from './components/DocumentVerification';
 import { goToTop } from '@/utils/utils';
 
 const EligibilityDocuments = (props) => {
-  const {
-    dispatch,
-    loadingFetchCandidate = false,
-    newCandidateForm: {
-      data: { processStatus = '' },
-      tempData: { workLocation },
-      documentLayout = [],
-    } = {},
-    companyLocationList = [],
-  } = props;
-
-  const getDocumentLayoutByCountry = () => {
-    let workLocation1 = workLocation;
-    if (typeof workLocation === 'string') {
-      workLocation1 = companyLocationList.find((w) => w._id === workLocation);
-    }
-    if (workLocation1) {
-      dispatch({
-        type: 'newCandidateForm/fetchDocumentLayoutByCountry',
-        payload: {
-          country:
-            workLocation1?.headQuarterAddress?.country?._id ||
-            workLocation1?.headQuarterAddress?.country,
-        },
-      });
-    }
-  };
+  const { loadingFetchCandidate = false, newCandidateForm: { data: { processStatus = '' } } = {} } =
+    props;
 
   useEffect(() => {
     goToTop();
-    if (documentLayout.length === 0) {
-      getDocumentLayoutByCountry();
-    }
   }, []);
 
   if (loadingFetchCandidate) {

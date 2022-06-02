@@ -272,7 +272,7 @@ const JobDetailForm = (props) => {
                 <TreeNode title={x.name} value={x._id} key={index} />
               ))}
             </TreeNode>
-            <TreeNode title="Work From Home" value="work from home" />
+            <TreeNode title="Work From Home" value="work from home" disabled />
             <TreeNode title="Client Location" value="client location" />
           </TreeSelect>
         ),
