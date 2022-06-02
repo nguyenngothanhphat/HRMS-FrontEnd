@@ -1,4 +1,5 @@
 import request from '@/utils/request';
+import { API_KEYS } from '../../config/proxy';
 
 // const jobGradeLevelList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
@@ -237,10 +238,37 @@ export async function getListBenefit(payload) {
   });
 }
 
+// references
+export function sendNoReferences(payload) {
+  return request('/api/referencetenant/number-of-references', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 // new document verification
 export async function getDocumentLayoutByCountry(payload) {
   return request('/api/candidatetenant/get-documents-by-country', {
     method: 'POST',
     data: payload,
   });
+}
+
+export async function getReferencesByCandidate(params) {
+  return request('api/referencetenant/get-by-candidate', {
+    method: 'GET',
+    params,
+  });
+}
+
+export async function getLocationCustomer(payload) {
+  return request(
+    `/api-customer/customertenant/get-location-no-auth`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.CUSTOMER_API
+  )
 }

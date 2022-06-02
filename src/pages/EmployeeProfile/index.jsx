@@ -1,21 +1,17 @@
 import { Affix } from 'antd';
-import React, { useEffect, useRef } from 'react';
-import { connect, history } from 'umi';
+import React, { useEffect } from 'react';
+import { connect } from 'umi';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import { PageContainer } from '@/layouts/layout/src';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
-// import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
-import { getCurrentCompany, getCurrentTenant, isOwner } from '@/utils/authority';
+import { IS_TERRALOGIC_LOGIN } from '@/utils/login';
 // import AccountsPaychecks from './components/Accounts&Paychecks';
 import Compensation from './components/Compensation';
-// import Test from './components/test';
 import Documents from './components/Documents';
 import GeneralInfo from './components/GeneralInfo';
 import PerformanceHistory from './components/PerformanceHistory';
 import styles from './index.less';
-import { IS_TERRALOGIC_LOGIN } from '@/utils/login';
-import { goToTop } from '@/utils/utils';
 
 const EmployeeProfile = (props) => {
   const {
@@ -24,141 +20,53 @@ const EmployeeProfile = (props) => {
     currentUser: { employee: { generalInfo: { userId = '' } = {} } = {} },
     permissions = {},
     location: { state: { location = '' } = {} } = {},
-    listEmployeeActive = [],
-    // loadingFetchEmployee,
-    // employeeProfile,
+    employeeProfile: { employee = '' } = {},
   } = props;
 
   const checkProfileOwner = (currentUserID, employeeID) => {
-    if (currentUserID === employeeID) {
-      return true;
-    }
-    return false;
+    return currentUserID === employeeID;
   };
 
-  // const [isProfileOwner, setIsProfileOwner] = useState(false);
   const isProfileOwner = checkProfileOwner(userId, reId);
 
-  const fetchData = async (employee) => {
-    let tenantId1 = localStorage.getItem('tenantCurrentEmployee');
-    tenantId1 = tenantId1 && tenantId1 !== 'undefined' ? tenantId1 : '';
-
-    const res = await dispatch({
+  const fetchData = async (id) => {
+    dispatch({
       type: 'employeeProfile/fetchEmploymentInfo',
-      payload: { id: employee, tenantId: tenantId1 || getCurrentTenant() },
+      payload: { id },
     });
 
-    const tenantId = getCurrentTenant();
     dispatch({
       type: 'employeeProfile/fetchGeneralInfo',
-      payload: { employee, tenantId },
+      payload: { employee: id },
     });
-
-    const { statusCode } = res;
-    if (statusCode === 200) {
-      const companyCurrentEmployee = getCurrentCompany();
-
-      dispatch({
-        type: 'employeeProfile/fetchCompensation',
-        payload: { employee, tenantId },
-      });
-      dispatch({
-        type: 'employeeProfile/fetchPassPort',
-        payload: { employee, tenantId },
-      });
-      dispatch({
-        type: 'employeeProfile/fetchVisa',
-        payload: { employee, tenantId },
-      });
-      dispatch({
-        type: 'employeeProfile/fetchAdhaardCard',
-        payload: { employee, tenantId },
-      });
-      dispatch({
-        type: 'employeeProfile/fetchCountryList',
-      });
-
-      dispatch({
-        type: 'employeeProfile/fetchPRReport',
-        payload: { employee, tenantId },
-      });
-      // dispatch({
-      //   type: 'employeeProfile/fetchDocuments',
-      //   payload: { employee },
-      // });
-      dispatch({
-        type: 'employeeProfile/fetchPayslips',
-        payload: { employee, employeeGroup: 'Payslip', tenantId },
-      });
-      dispatch({
-        type: 'employeeProfile/fetchBank',
-        payload: { employee, tenantId },
-      });
-      dispatch({
-        type: 'employeeProfile/fetchTax',
-        payload: { employee, tenantId },
-      });
-      dispatch({ type: 'employeeProfile/fetchLocations' });
-      dispatch({
-        type: 'employeeProfile/fetchEmployeeTypes',
-        payload: { tenantId },
-      });
-      dispatch({
-        type: 'employeeProfile/fetchDepartments',
-        payload: { company: companyCurrentEmployee, tenantId },
-      });
-      // dispatch({ type: 'employeeProfile/fetchEmployees'});
-      dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: { employee, tenantId } });
-      dispatch({
-        type: 'employeeProfile/fetchEmployeeDependentDetails',
-        payload: { employee, tenantId },
-      });
-    }
   };
 
-  const refreshData = () => {
+  const fetchUser = () => {
     dispatch({
       type: 'employeeProfile/fetchEmployeeIdByUserId',
       payload: {
         userId: reId,
-        company: getCurrentCompany(),
-        tenantId: getCurrentTenant(),
       },
-    }).then((res) => {
-      if (res.statusCode === 200) {
-        fetchData(res.data);
+    }).then(({ statusCode, data }) => {
+      if (statusCode === 200) {
+        fetchData(data);
       }
     });
   };
 
   useEffect(() => {
-    if (!tabName) {
-      const link = isOwner() ? 'employees' : 'directory';
-      history.replace(`/${link}/employee-profile/${reId}/general-info`);
-    } else {
-      goToTop()
-      refreshData();
+    if (tabName && reId) {
+      fetchUser();
     }
+  }, [reId]);
+
+  useEffect(() => {
     return () => {
-      localStorage.removeItem('tenantCurrentEmployee');
-      localStorage.removeItem('companyCurrentEmployee');
-      localStorage.removeItem('idCurrentEmployee');
       dispatch({
         type: 'employeeProfile/clearState',
       });
     };
   }, []);
-
-  const firstRun = useRef(true);
-
-  useEffect(() => {
-    if (firstRun.current) {
-      firstRun.current = false;
-      return;
-    }
-
-    refreshData();
-  }, [reId]);
 
   const renderListMenu = () => {
     let listMenu = [];
@@ -170,9 +78,7 @@ const EmployeeProfile = (props) => {
     if (permissions.viewTabEmployment !== -1 || isProfileOwner) {
       listMenu.push({
         name: `Employment Info`,
-        component: (
-          <EmploymentTab listEmployeeActive={listEmployeeActive} profileOwner={isProfileOwner} />
-        ),
+        component: <EmploymentTab profileOwner={isProfileOwner} />,
         link: 'employment-info',
       });
     }
@@ -195,19 +101,9 @@ const EmployeeProfile = (props) => {
       }
     }
 
-    // if (permissions.viewTabAccountPaychecks !== -1 || isProfileOwner) {
-    //   listMenu.push({
-    //     name: 'Accounts and Paychecks',
-    //     component: <AccountsPaychecks />,
-    //     link: 'accounts-paychecks',
-    //   });
-    // }
     if (permissions.viewTabDocument !== -1 || isProfileOwner) {
       listMenu.push({ name: 'Documents', component: <Documents />, link: 'documents' });
     }
-    // if (permissions.viewTabTimeSchedule !== -1 || isProfileOwner) {
-    //   listMenu.push({ id: 5, name: 'Time & Scheduling', component: <Test /> });
-    // }
     if (permissions.viewTabBenefitPlans !== -1 || isProfileOwner) {
       listMenu.push({
         name: 'Benefits',
@@ -226,9 +122,9 @@ const EmployeeProfile = (props) => {
     return listMenu;
   };
 
-  const listMenu = renderListMenu(reId, userId);
+  const listMenu = renderListMenu();
 
-  if (!tabName) return '';
+  if (!tabName) return null;
   return (
     <PageContainer>
       <div className={styles.containerEmployeeProfile}>
@@ -256,12 +152,10 @@ export default connect(
     employee: { listEmployeeActive = [] } = {},
     employeeProfile,
     user: { currentUser = {}, permissions = {} },
-    loading,
   }) => ({
     employeeProfile,
     currentUser,
     listEmployeeActive,
     permissions,
-    loadingFetchEmployee: loading.effects['employeeProfile/fetchGeneralInfo'],
   }),
 )(EmployeeProfile);

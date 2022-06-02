@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_STEPS } from '@/utils/onboarding';
 import { getCurrentTenant } from '@/utils/authority';
 import NoteComponent from '@/pages/NewCandidateForm/components/NoteComponent';
 import FileContent from '../FileContent';
@@ -36,6 +36,7 @@ const OfferLetter = (props) => {
     offerLetter: offerLetterProp = {},
     staticOfferLetter: staticOfferLetterProp = {},
     expiryDate: expiryDateProp = '',
+    offerLetterTemplate: offerLetterTemplateProp = '',
     // assignTo: assignToProp = {},
     // assigneeManager: assigneeManagerProp = {},
   } = data;
@@ -116,6 +117,7 @@ const OfferLetter = (props) => {
     if (!dispatch) {
       return;
     }
+
     dispatch({
       type: 'candidatePortal/updateByCandidateEffect',
       payload: {
@@ -123,8 +125,33 @@ const OfferLetter = (props) => {
         candidate,
         tenantId: getCurrentTenant(),
       },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        // regenerate offer letter
+        dispatch({
+          type: 'candidatePortal/generateOfferLetter',
+          payload: {
+            candidateId: candidate,
+            templateId: offerLetterTemplateProp,
+            tenantId: getCurrentTenant(),
+          },
+        }).then((res) => {
+          const { data: { _id: newTemplateId = '', attachment = {} } = {} } = res;
+          if (attachment) {
+            setOfferLetter(attachment.url);
+            dispatch({
+              type: 'candidatePortal/updateByCandidateEffect',
+              payload: {
+                candidate,
+                offerLetter: newTemplateId,
+                tenantId: getCurrentTenant(),
+              },
+            });
+          }
+        });
+      }
     });
-    setAcceptOfferModalVisible(false);
+
     const res = await dispatch({
       type: 'candidatePortal/submitCandidateFinalOffer',
       payload: {
@@ -135,14 +162,9 @@ const OfferLetter = (props) => {
       },
     });
     if (res.statusCode === 200) {
-      // dispatch({
-      //   type: 'candidatePortal/saveOrigin',
-      //   payload: {
-      //     processStatus: NEW_PROCESS_STATUS.OFFER_ACCEPTED,
-      //   },
-      // });
       setNotificationModalVisible(true);
     }
+    setAcceptOfferModalVisible(false);
   };
 
   const handleFinalReject = async (reason) => {
@@ -338,6 +360,7 @@ export default connect(
     loading1: loading.effects['candidatePortal/submitCandidateFinalOffer'],
     loadingApprove:
       loading.effects['candidatePortal/updateByCandidateEffect'] ||
-      loading.effects['candidatePortal/submitCandidateFinalOffer'],
+      loading.effects['candidatePortal/submitCandidateFinalOffer'] ||
+      loading.effects['candidatePortal/generateOfferLetter'],
   }),
 )(OfferLetter);

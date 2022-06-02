@@ -6,12 +6,7 @@ import RemoveIcon from '../Edit/assets/removeIcon.svg';
 import styles from './styles.less';
 
 const DependentTabs = (props) => {
-  const {
-    dependentDetails = [],
-    tenantCurrentEmployee = '',
-    idCurrentEmployee = '',
-    generalDataOrigin,
-  } = props;
+  const { dependentDetails = [], employeeId = '', generalDataOrigin } = props;
   const { firstName = '', lastName = '', legalGender = '', DOB = '' } = generalDataOrigin;
   const { data: viewData = [] } = props;
   const viewDataNew = viewData.length > 0 ? viewData[0] : [];
@@ -43,8 +38,7 @@ const DependentTabs = (props) => {
       payload: {
         dependents,
         id,
-        tenantId: tenantCurrentEmployee,
-        employee: idCurrentEmployee,
+        employee: employeeId,
       },
     });
   };
@@ -144,16 +138,14 @@ export default connect(
   ({
     user: { currentUser: { employee = {} } = {} } = {},
     employeeProfile: {
-      idCurrentEmployee = '',
-      tenantCurrentEmployee = '',
+      employee: employeeId = '',
       originData: { dependentDetails = [] } = {},
       originData: { generalData: generalDataOrigin = {} } = {},
     } = {},
   }) => ({
     generalDataOrigin,
-    idCurrentEmployee,
+    employeeId,
     dependentDetails,
-    tenantCurrentEmployee,
     employee,
   }),
 )(DependentTabs);

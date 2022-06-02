@@ -79,25 +79,29 @@ const EditTaskModal = (props) => {
 
   useEffect(() => {
     if (visible) {
-      fetchProjectList();
+      if (projectList.length === 0) {
+        fetchProjectList();
+      }
       setDisabledHourAfter(endTime);
       setDisabledHourBefore(startTime);
     }
   }, [visible]);
 
   useEffect(() => {
-    form.setFieldsValue({
-      date: date ? moment(date) : '',
-      taskName,
-      projectId,
-      startTime: startTime ? moment(startTime, hourFormatAPI).format(hourFormat) : '',
-      endTime: endTime ? moment(endTime, hourFormatAPI).format(hourFormat) : '',
-      notes,
-      clientLocation,
-      breakTime,
-      overTime,
-    });
-  }, [JSON.stringify(task)]);
+    if (visible) {
+      form.setFieldsValue({
+        date: date ? moment(date) : '',
+        taskName,
+        projectId,
+        startTime: startTime ? moment(startTime, hourFormatAPI).format(hourFormat) : '',
+        endTime: endTime ? moment(endTime, hourFormatAPI).format(hourFormat) : '',
+        notes,
+        clientLocation,
+        breakTime,
+        overTime,
+      });
+    }
+  }, [JSON.stringify(task), visible]);
 
   const handleCancel = () => {
     onClose();
@@ -230,7 +234,7 @@ const EditTaskModal = (props) => {
                     ))}
                   </Select>
                 ) : (
-                  <Input placeholder="Enter the task name" maxLength={150} />
+                  <Input placeholder="Enter the task name" maxLength={100} />
                 )}
               </Form.Item>
             </Col>
@@ -328,6 +332,7 @@ const EditTaskModal = (props) => {
       onCancel={handleCancel}
       destroyOnClose
       width={650}
+      maskClosable={false}
       footer={
         <>
           <Button className={styles.btnCancel} onClick={handleCancel}>

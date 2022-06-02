@@ -83,6 +83,7 @@ const BannerTable = (props) => {
           );
         },
       },
+
       {
         title: 'Created By',
         dataIndex: 'createdBy',

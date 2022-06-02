@@ -30,7 +30,9 @@ import {
   getReporteesList,
   getDocumentSettingList,
   getListBenefit,
-
+  getReferencesByCandidate,
+  sendNoReferences,
+  getLocationCustomer,
   // new document verification
   getDocumentLayoutByCountry,
 } from '@/services/newCandidateForm';
@@ -90,6 +92,7 @@ const defaultState = {
     jobGradeLevelList: [],
     employeeTypeList: [],
     locationList: [],
+    listCustomerLocation: [],
     reporteeList: [],
     departmentList: [],
     titleList: [],
@@ -99,6 +102,9 @@ const defaultState = {
     grade: null,
     department: null,
     workLocation: null,
+    workFromHome: null,
+    clientLocation: null,
+    currentAddress: {},
     reportees: [],
     title: null,
     reportingManager: null,
@@ -224,6 +230,8 @@ const defaultState = {
     privateEmail: null,
     workEmail: null,
     workLocation: null,
+    workFromHome: null,
+    clientLocation: null,
     position: 'EMPLOYEE',
     employeeType: null,
     department: null,
@@ -1462,7 +1470,7 @@ const newCandidateForm = {
       }
       return response;
     },
-    
+
     // Offer letter actions
     *extendOfferLetterEffect({ payload = {} }, { call, put }) {
       let response = {};
@@ -1551,6 +1559,44 @@ const newCandidateForm = {
         return {};
       }
     },
+    *sendNoReferenceEffect({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(sendNoReferences, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            processStatus: NEW_PROCESS_STATUS.REFERENCE_VERIFICATION,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchListReferences({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getReferencesByCandidate, {
+          tenantId: getCurrentTenant(),
+          candidateId: payload.candidateId,
+        });
+        const { statusCode, data: references = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: { references, processStatus: NEW_PROCESS_STATUS.REFERENCE_VERIFICATION },
+        });
+        return references;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
 
     // new document verification
     *fetchDocumentLayoutByCountry({ payload = {} }, { call, put }) {
@@ -1564,8 +1610,9 @@ const newCandidateForm = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
 
+        // save to candidate
         yield put({
-          type: 'save',
+          type: 'saveTemp',
           payload: {
             documentLayout: data,
           },
@@ -1574,6 +1621,20 @@ const newCandidateForm = {
         dialog(errors);
       }
       return response;
+    },
+    *fetchLocationCustomer({ payload }, { call, put }) {
+      try {
+        const response = yield call(getLocationCustomer, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data: listCustomerLocation = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveTemp', payload: { listCustomerLocation } });
+      } catch (errors) {
+        dialog(errors);
+      }
     },
   },
 

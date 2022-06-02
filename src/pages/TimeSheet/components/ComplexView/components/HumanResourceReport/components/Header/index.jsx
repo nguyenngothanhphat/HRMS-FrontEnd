@@ -147,7 +147,7 @@ const Header = (props) => {
             closable
             closeIcon={<CloseOutlined onClick={handleClearFilter} />}
           >
-            {applied} applied
+            {applied} filters applied
           </Tag>
         )}
         <div className={styles.downloadIcon} onClick={downloadTemplate}>

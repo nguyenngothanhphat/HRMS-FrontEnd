@@ -48,6 +48,7 @@ const PostCard = (props) => {
 
   const fetchData = () => {
     let type = '';
+
     switch (selectedTab) {
       case TAB_IDS.ANNOUNCEMENTS:
         type = 'homePage/fetchAnnouncementsEffect';
@@ -63,6 +64,7 @@ const PostCard = (props) => {
         break;
       case TAB_IDS.POLL:
         type = 'homePage/fetchPollsEffect';
+
         break;
       default:
         break;
@@ -182,7 +184,7 @@ const PostCard = (props) => {
     if (selectedTab !== TAB_IDS.BANNER) {
       return <AddButton text="Add Post" onClick={onAddPost} />;
     }
-    return ''
+    return '';
   };
 
   return (
@@ -204,10 +206,16 @@ const PostCard = (props) => {
 };
 
 export default connect(
-  ({ homePage = {}, loading, user: { currentUser = {}, permissions = {} } = {} }) => ({
+  ({
+    homePage = {},
+    location: { companyLocationList = [] } = {},
+    loading,
+    user: { currentUser = {}, permissions = {} } = {},
+  }) => ({
     currentUser,
     permissions,
     homePage,
+    companyLocationList,
     loadingFetchPostList:
       loading.effects['homePage/fetchAnnouncementsEffect'] ||
       loading.effects['homePage/fetchAnniversariesEffect'] ||

@@ -5,7 +5,7 @@ import { connect, history } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
 import { Page } from '../../../../utils';
 import MessageBox from '../../../MessageBox';
 import NoteComponent from '../../../NewNoteComponent';
@@ -63,9 +63,9 @@ const DocumentVerification = (props) => {
         documentTypeC = [],
         documentTypeD = [],
         documentTypeE = [],
+        documentLayout = [],
         currentStep = 0,
       } = {} || {},
-      documentLayout = [],
     },
     dispatch,
     companiesOfUser = [],
@@ -299,16 +299,19 @@ const DocumentVerification = (props) => {
       payload,
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
-        setOpenModal(type !== 'generate-link');
-        setOpenModalEmail(type === 'generate-link');
         dispatch({
           type: 'newCandidateForm/saveTemp',
           payload: {
             isMarkAsDone: type === 'generate-link',
             isSentEmail: type !== 'generate-link',
-            processStatus: currentStep === 2 ? PROFILE_VERIFICATION : processStatus,
+            processStatus:
+              currentStep === ONBOARDING_STEPS.DOCUMENT_VERIFICATION
+                ? PROFILE_VERIFICATION
+                : processStatus,
           },
         });
+        setOpenModal(type !== 'generate-link');
+        setOpenModalEmail(type === 'generate-link');
       }
     });
     dispatch({
@@ -430,39 +433,41 @@ const DocumentVerification = (props) => {
           </Row>
         </div>
       </Col>
-      <Col sm={24} xl={8} className={styles.rightWrapper}>
-        <div>
-          <NoteComponent />
-
-          {(processStatus === DRAFT || processStatus === PROFILE_VERIFICATION) && (
-            <SendEmail
-              openModalEmail={openModalEmail}
-              closeModalEmail={closeModalEmail}
-              loading4={loading4}
-              handleSendEmail={handleSendEmail}
-              handleSendFormAgain={handleSendFormAgain}
-              isSentEmail={isSentEmail}
-              generateLink={generateLink}
-              handleMarkAsDone={handleMarkAsDone}
-              firstName={firstName}
-              middleName={middleName}
-              lastName={lastName}
-              handleValueChange={handleValueChange}
-              privateEmail={privateEmail}
-              processStatusFilled={processStatus}
-              processStatus={processStatus}
-              filledDocumentVerification={filledDocumentVerification}
-              valueToFinalOffer={valueToFinalOffer}
-              changeValueToFinalOffer={changeValueToFinalOffer}
-              dispatch={dispatch}
-              candidate={candidate}
-            />
-          )}
-
-          <Row>
+      <Col xs={24} xl={8}>
+        <Row gutter={[24, 24]}>
+          <Col span={24}>
+            <NoteComponent />
+          </Col>
+          <Col span={24}>
+            {(processStatus === DRAFT || processStatus === PROFILE_VERIFICATION) && (
+              <SendEmail
+                openModalEmail={openModalEmail}
+                closeModalEmail={closeModalEmail}
+                loading4={loading4}
+                handleSendEmail={handleSendEmail}
+                handleSendFormAgain={handleSendFormAgain}
+                isSentEmail={isSentEmail}
+                generateLink={generateLink}
+                handleMarkAsDone={handleMarkAsDone}
+                firstName={firstName}
+                middleName={middleName}
+                lastName={lastName}
+                handleValueChange={handleValueChange}
+                privateEmail={privateEmail}
+                processStatusFilled={processStatus}
+                processStatus={processStatus}
+                filledDocumentVerification={filledDocumentVerification}
+                valueToFinalOffer={valueToFinalOffer}
+                changeValueToFinalOffer={changeValueToFinalOffer}
+                dispatch={dispatch}
+                candidate={candidate}
+              />
+            )}
+          </Col>
+          <Col span={24}>
             <MessageBox />
-          </Row>
-        </div>
+          </Col>
+        </Row>
       </Col>
       <CustomModal
         open={openModal}

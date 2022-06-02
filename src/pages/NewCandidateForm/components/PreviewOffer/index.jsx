@@ -8,7 +8,7 @@ import ModalDrawSignature from '@/components/ModalDrawSignature';
 import ModalGenerateSignature from '@/components/ModalGenerateSignature';
 import TextSignature from '@/components/TextSignature';
 import { getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
 // import { SendOutlined } from '@ant-design/icons';
 import ModalUpload from '../../../../components/ModalUpload';
 import NoteComponent from '../NoteComponent';
@@ -71,9 +71,6 @@ const PreviewOffer = (props) => {
   const [candidateSignature, setCandidateSignature] = useState(candidateSignatureProp || '');
 
   const [mail, setMail] = useState(candidateEmailProp || '');
-  // const [mailForm] = Form.useForm();
-
-  const [role, setRole] = useState([]);
 
   const [openModal, setOpenModal] = useState(false);
   const [openModal2, setOpenModal2] = useState(false);
@@ -491,7 +488,7 @@ const PreviewOffer = (props) => {
         payload: {
           candidate: _id,
           hrSignature: id,
-          currentStep: 6,
+          currentStep: ONBOARDING_STEPS.OFFER_DETAILS,
           tenantId: getCurrentTenant(),
         },
       }).then(({ statusCode }) => {
@@ -506,7 +503,7 @@ const PreviewOffer = (props) => {
         payload: {
           candidate: _id,
           hrSignature: hrSignatureProp.id,
-          currentStep: 6,
+          currentStep: ONBOARDING_STEPS.OFFER_DETAILS,
           tenantId: getCurrentTenant(),
         },
       }).then(({ statusCode }) => {
@@ -610,9 +607,8 @@ const PreviewOffer = (props) => {
           type: 'newCandidateForm/updateByHR',
           payload: {
             candidate: _id,
-            currentStep: 6,
+            currentStep: ONBOARDING_STEPS.OFFER_DETAILS,
             offerLetter: newTemplateId,
-            tenantId: getCurrentTenant(),
           },
         });
       }
@@ -672,7 +668,6 @@ const PreviewOffer = (props) => {
           candidate: _id,
           hrManagerSignature: id,
           tenantId: getCurrentTenant(),
-          // currentStep: 6,
         },
       }).then(({ statusCode }) => {
         if (statusCode === 200) {
@@ -688,7 +683,6 @@ const PreviewOffer = (props) => {
           candidate: _id,
           hrManagerSignature: hrManagerSignatureProp.id,
           tenantId: getCurrentTenant(),
-          // currentStep: 6,
         },
       }).then(({ statusCode }) => {
         if (statusCode === 200) {
@@ -916,7 +910,10 @@ const PreviewOffer = (props) => {
                   <Button
                     type="primary"
                     onClick={onPrimaryButtonClick}
-                    className={styles.bottomBar__button__primary}
+                    className={[
+                      styles.bottomBar__button__primary,
+                      checkDisablePrimaryButton() ? styles.bottomBar__button__disabled : '',
+                    ]}
                     disabled={checkDisablePrimaryButton()}
                     loading={loading2}
                   >
@@ -982,6 +979,17 @@ const PreviewOffer = (props) => {
     ),
   };
 
+  const OwnerNote = {
+    title: 'Notice',
+    data: (
+      <p>
+        <Typography.Text>
+          You must be ticket's assignee or assignee's manager to proceed this step.
+        </Typography.Text>
+      </p>
+    ),
+  };
+
   const SentForApprovalNote = {
     title: 'Offer Sent For Approval',
     data: <Typography.Text>The offer has been sent to HR Manager for approval.</Typography.Text>,
@@ -991,7 +999,7 @@ const PreviewOffer = (props) => {
 
   // main
   return (
-    <Row gutter={[24, 0]} className={styles.previewContainer}>
+    <Row gutter={[24, 24]} className={styles.previewContainer}>
       <Col xs={24} xl={16} className={styles.left}>
         {(isAwaitingOffer || isNewOffer || isSentOffer || isNeedsChanges) && (
           <div className={styles.header}>
@@ -1010,6 +1018,12 @@ const PreviewOffer = (props) => {
       </Col>
 
       <Col xs={24} xl={8} className={styles.right}>
+        {!isTicketManager && !isTicketAssignee && (
+          <>
+            <NoteComponent note={OwnerNote} />
+            <div style={{ marginBottom: '24px' }} />
+          </>
+        )}
         {/* SENT OFFER  */}
         {isTicketManager && isSentOffer && (
           <>

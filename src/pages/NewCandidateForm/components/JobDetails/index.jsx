@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
 import { Page } from '../../utils';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NewNoteComponent';
@@ -19,6 +19,7 @@ const JobDetails = (props) => {
     tempData: {
       // list
       locationList = [],
+      listCustomerLocation = [],
       departmentList = [],
       managerList = [],
       jobGradeLevelList = [],
@@ -27,6 +28,8 @@ const JobDetails = (props) => {
       reportingManager,
       department,
       workLocation,
+      workFromHome,
+      clientLocation,
       title,
       grade,
       dateOfJoining,
@@ -42,7 +45,7 @@ const JobDetails = (props) => {
     loading,
     loadingFetchCandidate = false,
     loadingLocationList = false,
-    loadingFetchTitle = false,
+    loadingLocationCustomerList = false,
     loadingFetchDepartment = false,
     loadingFetchManager = false,
     loadingFetchGrade = false,
@@ -90,6 +93,17 @@ const JobDetails = (props) => {
         },
       });
     }
+
+    if (listCustomerLocation.length === 0) {
+      dispatch({
+        type: 'newCandidateForm/fetchLocationCustomer',
+        payload: {
+          company: companyId,
+          tenantId,
+        },
+      });
+    }
+
     if (managerList.length === 0) {
       dispatch({
         type: 'newCandidateForm/fetchDepartmentList',
@@ -102,8 +116,12 @@ const JobDetails = (props) => {
   }, []);
 
   const checkFilled = () => {
-    const check = department && workLocation && title && reportingManager && dateOfJoining;
-
+    const check =
+      department &&
+      (workLocation || workFromHome || clientLocation) &&
+      title &&
+      reportingManager &&
+      dateOfJoining;
     dispatch({
       type: 'newCandidateForm/save',
       payload: {
@@ -128,39 +146,62 @@ const JobDetails = (props) => {
   };
 
   const getDocumentLayoutByCountry = async () => {
+    let countryID = '';
     let workLocation1 = workLocation;
     if (typeof workLocation === 'string') {
       workLocation1 = companyLocationList.find((w) => w._id === workLocation);
     }
+    if (clientLocation) {
+      listCustomerLocation.forEach((x) => {
+        const { location = [] } = x;
+        location.forEach((y) => {
+          const { state = [] } = y;
+          if (state.some((z) => z.value === clientLocation)) {
+            countryID = y._id;
+          }
+        });
+      });
+    }
+
     if (workLocation1) {
+      countryID =
+        workLocation1?.headQuarterAddress?.country?._id ||
+        workLocation1?.headQuarterAddress?.country;
+    }
+
+    if (countryID) {
       const res = await dispatch({
         type: 'newCandidateForm/fetchDocumentLayoutByCountry',
         payload: {
-          country:
-            workLocation1?.headQuarterAddress?.country?._id ||
-            workLocation1?.headQuarterAddress?.country,
+          country: countryID,
         },
       });
       if (res.statusCode === 200) {
         return res.data;
       }
-      return null;
     }
     return null;
   };
 
   const onClickNext = async () => {
+    const nextStep =
+      processStatus === NEW_PROCESS_STATUS.DRAFT
+        ? ONBOARDING_STEPS.DOCUMENT_VERIFICATION
+        : currentStep;
+
     let payload = {
       grade,
       dateOfJoining,
       position,
       employeeType,
       workLocation,
+      workFromHome,
+      clientLocation,
       department,
       title,
       reportingManager,
       candidate: _id,
-      currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 2 : currentStep,
+      currentStep: nextStep,
       tenantId: getCurrentTenant(),
     };
 
@@ -177,13 +218,13 @@ const JobDetails = (props) => {
           const { type = '' } = x;
           switch (type) {
             case 'A':
-              documentTypeA = x.data;
+              documentTypeA = x.data || [];
               break;
             case 'B':
-              documentTypeB = x.data;
+              documentTypeB = x.data || [];
               break;
             case 'C':
-              documentTypeC = x.data;
+              documentTypeC = x.data || [];
               break;
             case 'D':
               // documentTypeD = [{ data: x.data }];
@@ -205,6 +246,7 @@ const JobDetails = (props) => {
           documentTypeE,
           documentLayout: result,
         };
+
         dispatch({
           type: 'newCandidateForm/saveTemp',
           payload: {
@@ -213,12 +255,6 @@ const JobDetails = (props) => {
             documentTypeC,
             documentTypeD,
             documentTypeE,
-          },
-        });
-        dispatch({
-          type: 'newCandidateForm/save',
-          payload: {
-            documentLayout: result.data,
           },
         });
       }
@@ -232,7 +268,7 @@ const JobDetails = (props) => {
         dispatch({
           type: 'newCandidateForm/save',
           payload: {
-            currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 2 : currentStep,
+            currentStep: nextStep,
           },
         });
 
@@ -295,6 +331,7 @@ const JobDetails = (props) => {
             loadingFetchCandidate ||
             loadingFetchDepartment ||
             loadingLocationList ||
+            loadingLocationCustomerList ||
             loadingFetchGrade ||
             loadingFetchManager
           }
@@ -320,15 +357,15 @@ const JobDetails = (props) => {
           </div>
         </Spin>
       </Col>
-      <Col className={styles.RightComponents} xs={24} xl={8}>
-        <div className={styles.rightWrapper}>
-          <Row>
+      <Col xs={24} xl={8}>
+        <Row gutter={[24, 24]}>
+          <Col span={24}>
             <NoteComponent />
-          </Row>
-          <Row>
+          </Col>
+          <Col span={24}>
             <MessageBox />
-          </Row>
-        </div>
+          </Col>
+        </Row>
       </Col>
     </Row>
   );
@@ -351,6 +388,7 @@ export default connect(
     loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
     loadingUpdateByHR: loading.effects['newCandidateForm/updateByHR'],
     loadingLocationList: loading.effects['newCandidateForm/fetchLocationList'],
+    loadingLocationCustomerList: loading.effects['newCandidateForm/fetchLocationCustomer'],
     loadingFetchTitle: loading.effects['newCandidateForm/fetchTitleList'],
     loadingFetchDepartment: loading.effects['newCandidateForm/fetchDepartmentList'],
     loadingFetchManager: loading.effects['newCandidateForm/fetchManagerList'],

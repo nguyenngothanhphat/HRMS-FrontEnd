@@ -3,7 +3,7 @@ import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
 import { goToTop } from '@/utils/utils';
 import { Page } from '../../../../utils';
 import MessageBox from '../../../MessageBox';
@@ -31,11 +31,11 @@ const BackgroundRecheck = (props) => {
         ticketID = '',
         candidate,
         processStatus = '',
+        documentLayout = [],
       },
       currentStep = '',
-      documentLayout = [],
     } = {},
-    loadingUpdateByHR = false,
+    // loadingUpdateByHR = false,
     dispatch,
   } = props;
 
@@ -83,7 +83,13 @@ const BackgroundRecheck = (props) => {
   }, []);
 
   useLayoutEffect(() => {
-    if (documentTypeA.length > 0) {
+    if (
+      documentTypeA.length > 0 ||
+      documentTypeB.length > 0 ||
+      documentTypeC.length > 0 ||
+      documentTypeD.length > 0 ||
+      documentTypeE.length > 0
+    ) {
       dispatch({
         type: 'newCandidateForm/updateByHR',
         payload: {
@@ -196,36 +202,37 @@ const BackgroundRecheck = (props) => {
   };
 
   const onClickNext = async () => {
+    const nextStep =
+      processStatus === NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION
+        ? ONBOARDING_STEPS.REFERENCES
+        : currentStep;
+    const nextStatus =
+      processStatus === NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION
+        ? NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
+        : processStatus;
+
     await dispatch({
       type: 'newCandidateForm/updateByHR',
       payload: {
         candidate,
-        tenantId: getCurrentTenant(),
-        currentStep: processStatus === NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION ? 3 : currentStep,
-        processStatus:
-          processStatus === NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION
-            ? NEW_PROCESS_STATUS.SALARY_NEGOTIATION
-            : processStatus,
+        currentStep: nextStep,
+        processStatus: nextStatus,
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         dispatch({
           type: 'newCandidateForm/save',
           payload: {
-            currentStep:
-              processStatus === NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION ? 3 : currentStep,
+            currentStep: nextStep,
           },
         });
         dispatch({
           type: 'newCandidateForm/saveTemp',
           payload: {
-            processStatus:
-              processStatus === NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION
-                ? NEW_PROCESS_STATUS.SALARY_NEGOTIATION
-                : processStatus,
+            processStatus: nextStatus,
           },
         });
-        history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.SALARY_STRUCTURE}`);
+        history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.REFERENCES}`);
       }
     });
   };
@@ -252,7 +259,7 @@ const BackgroundRecheck = (props) => {
                     !validated ? styles.bottomBar__button__disabled : '',
                   ]}
                   disabled={!validated}
-                  loading={loadingUpdateByHR}
+                  // loading={loadingUpdateByHR}
                 >
                   Next
                 </Button>
@@ -342,7 +349,7 @@ const BackgroundRecheck = (props) => {
 
   return (
     <div className={styles.backgroundRecheck}>
-      <Row gutter={[24, 0]}>
+      <Row gutter={[24, 24]}>
         <Col span={24} xl={16}>
           <p className={styles.backgroundRecheck__title}>Document Verification</p>
           <p className={styles.backgroundRecheck__subTitle}>
@@ -353,12 +360,14 @@ const BackgroundRecheck = (props) => {
             {_renderBottomBar()}
           </Row>
         </Col>
-        <Col className={styles.backgroundRecheck__right} span={24} xl={8}>
-          <Row>
-            <NoteComponent />
-          </Row>
-          <Row>
-            <MessageBox />
+        <Col span={24} xl={8}>
+          <Row gutter={[24, 24]}>
+            <Col span={24}>
+              <NoteComponent />
+            </Col>
+            <Col span={24}>
+              <MessageBox />
+            </Col>
           </Row>
         </Col>
       </Row>

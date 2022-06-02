@@ -51,12 +51,14 @@ const AddPost = (props) => {
   // redux
   const {
     dispatch,
-    currentUser: { employee = {} } = {},
+    currentUser: { employee = {}, location: { _id: locationId = '' } = {} } = {},
     loadingAddPost = false,
     loadingEditPost = false,
+    companyLocationList = [],
   } = props;
 
   const [mode, setMode] = useState(selectedTab || TAB_IDS.ANNOUNCEMENTS);
+  const [location, setLocation] = useState([locationId]);
   const [formValues, setFormValues] = useState({});
   const [fileList, setFileList] = useState([]);
 
@@ -65,9 +67,14 @@ const AddPost = (props) => {
     setMode(val);
   };
 
+  const handleChangeLocation = (val) => {
+    setLocation(val);
+  };
+
   const onReset = () => {
     form.resetFields();
     setFormValues({});
+    setLocation([locationId]);
   };
 
   useEffect(() => {
@@ -75,10 +82,14 @@ const AddPost = (props) => {
   }, [mode]);
 
   useEffect(() => {
+    setLocation([locationId]);
+  }, [locationId]);
+
+  useEffect(() => {
     if (editing) {
       let tempFormValues = {};
+      const { attachments = [], location: locationProps = [] } = record;
       const fileListTemp = () => {
-        const { attachments = [] } = record;
         return attachments.map((x, i) => {
           return {
             uid: i,
@@ -148,6 +159,8 @@ const AddPost = (props) => {
           break;
       }
 
+      tempFormValues.location = locationProps.map((x) => x._id);
+
       form.setFieldsValue(tempFormValues);
       setFileList(fileListTemp());
       setFormValues(tempFormValues);
@@ -206,6 +219,7 @@ const AddPost = (props) => {
           postType: TAB_IDS.ANNOUNCEMENTS,
           description: values.descriptionA,
           createdBy: employee?._id,
+          location: values.location,
         };
         break;
       }
@@ -216,6 +230,7 @@ const AddPost = (props) => {
           postType: TAB_IDS.ANNIVERSARY,
           description: values.descriptionB,
           createdBy: employee?._id,
+          location: values.location,
         };
         break;
       }
@@ -227,6 +242,7 @@ const AddPost = (props) => {
           title: values.titleI,
           description: values.descriptionI,
           createdBy: employee?._id,
+          location: values.location,
         };
         break;
       }
@@ -252,6 +268,7 @@ const AddPost = (props) => {
             startDate: moment.utc(values.startDateP).startOf('day'),
             endDate: moment.utc(values.endDateP).startOf('day'),
           },
+          location: values.location,
         };
         break;
       default:
@@ -277,6 +294,7 @@ const AddPost = (props) => {
           attachments,
           postType: TAB_IDS.ANNOUNCEMENTS,
           description: values.descriptionA,
+          location,
         };
         break;
       }
@@ -286,6 +304,7 @@ const AddPost = (props) => {
           attachments,
           postType: TAB_IDS.ANNIVERSARY,
           description: values.descriptionB,
+          location,
         };
         break;
       }
@@ -296,6 +315,7 @@ const AddPost = (props) => {
           postType: TAB_IDS.IMAGES,
           title: values.titleI,
           description: values.descriptionI,
+          location,
         };
         break;
       }
@@ -310,6 +330,7 @@ const AddPost = (props) => {
       case TAB_IDS.POLL:
         payload = {
           postType: TAB_IDS.POLL,
+          location,
           pollDetail: {
             question: values.questionP,
             response1: values.responsesP[0]?.response,
@@ -366,6 +387,7 @@ const AddPost = (props) => {
           initialValues={{
             postType: mode,
             responsesP: [{}, {}, {}],
+            location,
           }}
           onFinish={editing ? onEdit : onPost}
         >
@@ -380,6 +402,30 @@ const AddPost = (props) => {
               })}
             </Select>
           </Form.Item>
+          {[TAB_IDS.ANNOUNCEMENTS, TAB_IDS.IMAGES, TAB_IDS.POLL].includes(mode) && (
+            <Form.Item
+              label="Show in Locations"
+              name="location"
+              rules={[{ required: true, message: 'Please select the location!' }]}
+              placeholder="Enter location"
+            >
+              <Select
+                mode="tags"
+                allowClear
+                showArrow
+                style={{ width: '100%' }}
+                onChange={handleChangeLocation}
+              >
+                {companyLocationList.map((x) => {
+                  return (
+                    <Select.Option value={x._id} key={x._id}>
+                      {x.name}
+                    </Select.Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+          )}
           {renderTypeContent()}
         </Form>
         <div className={styles.footer}>
@@ -446,10 +492,18 @@ const AddPost = (props) => {
   );
 };
 
-export default connect(({ user: { currentUser = {}, permissions = {} } = {}, loading }) => ({
-  currentUser,
-  permissions,
-  loadingAddPost: loading.effects['homePage/addPostEffect'] || loading.effects['upload/uploadFile'],
-  loadingEditPost:
-    loading.effects['homePage/updatePostEffect'] || loading.effects['upload/uploadFile'],
-}))(AddPost);
+export default connect(
+  ({
+    user: { currentUser = {}, permissions = {} } = {},
+    loading,
+    location: { companyLocationList = [] } = {},
+  }) => ({
+    currentUser,
+    permissions,
+    companyLocationList,
+    loadingAddPost:
+      loading.effects['homePage/addPostEffect'] || loading.effects['upload/uploadFile'],
+    loadingEditPost:
+      loading.effects['homePage/updatePostEffect'] || loading.effects['upload/uploadFile'],
+  }),
+)(AddPost);

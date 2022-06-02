@@ -11,8 +11,8 @@ import WorkInProgress from '@/components/WorkInProgress';
   ({
     employeeProfile: {
       documentCategories = [],
-      idCurrentEmployee = '',
-      tenantCurrentEmployee = '',
+      employee = '',
+
       listDocuments = [],
       groupViewingDocuments = [],
     } = {},
@@ -22,8 +22,8 @@ import WorkInProgress from '@/components/WorkInProgress';
     loading: loading.effects['employeeProfile/fetchDocuments'],
     loading2: loading.effects['employeeProfile/shareDocumentEffect'],
     documentCategories,
-    idCurrentEmployee,
-    tenantCurrentEmployee,
+    employee,
+
     listDocuments,
     groupViewingDocuments,
     roles,
@@ -55,10 +55,10 @@ class Documents extends Component {
   };
 
   fetchDocumentList = () => {
-    const { dispatch, idCurrentEmployee = '', tenantCurrentEmployee = '' } = this.props;
+    const { dispatch, employee = '' } = this.props;
     dispatch({
       type: 'employeeProfile/fetchDocuments',
-      payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
+      payload: { employee },
     });
   };
 

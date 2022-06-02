@@ -16,13 +16,6 @@ const BasicInfo = (props) => {
             wrapperCol={{ span: 24 }}
             label={formatMessage({ id: 'component.basicInformation.firstName' })}
             name="firstName"
-            rules={[
-              { required: true, message: 'Required field' },
-              {
-                pattern: /[^\s-]/,
-                message: 'First name is invalid!',
-              },
-            ]}
           >
             <Input
               disabled
@@ -39,12 +32,6 @@ const BasicInfo = (props) => {
             wrapperCol={{ span: 24 }}
             label={formatMessage({ id: 'component.basicInformation.middleName' })}
             name="middleName"
-            rules={[
-              {
-                pattern: /[^\s-]/,
-                message: 'Middle name is invalid!',
-              },
-            ]}
           >
             <Input
               disabled
@@ -60,13 +47,6 @@ const BasicInfo = (props) => {
             wrapperCol={{ span: 24 }}
             label={formatMessage({ id: 'component.basicInformation.lastName' })}
             name="lastName"
-            rules={[
-              { required: true, message: 'Required field' },
-              {
-                pattern: /[^\s-]/,
-                message: 'Last name is invalid!',
-              },
-            ]}
           >
             <Input
               disabled
@@ -83,16 +63,6 @@ const BasicInfo = (props) => {
             wrapperCol={{ span: 24 }}
             label="Total Experience in years"
             name="totalExperience"
-            rules={[
-              {
-                pattern: /\b([0-9]|[1-9][0-9])\b/,
-                message: 'Invalid format',
-              },
-              {
-                pattern: /^\d+$/,
-                message: 'Only digit!',
-              },
-            ]}
           >
             <Input
               disabled
@@ -109,16 +79,6 @@ const BasicInfo = (props) => {
             wrapperCol={{ span: 24 }}
             label="Relevant Experience in years"
             name="previousExperience"
-            rules={[
-              {
-                pattern: /\b([0-9]|[1-9][0-9])\b/,
-                message: 'Invalid format',
-              },
-              {
-                pattern: /^\d+$/,
-                message: 'Only digit!',
-              },
-            ]}
           >
             <Input
               disabled
@@ -135,22 +95,6 @@ const BasicInfo = (props) => {
             wrapperCol={{ span: 24 }}
             label={formatMessage({ id: 'component.basicInformation.privateEmail' })}
             name="privateEmail"
-            rules={[
-              { required: true, message: 'Required field' },
-              {
-                type: 'email',
-                message: 'Invalid email',
-              },
-              ({ getFieldValue }) => ({
-                validator(rule, value) {
-                  if (!value || getFieldValue('workEmail') !== value) {
-                    return Promise.resolve();
-                  }
-                  // eslint-disable-next-line compat/compat
-                  return Promise.reject(new Error('Two emails cannot be the same!'));
-                },
-              }),
-            ]}
           >
             <Input
               disabled
@@ -167,15 +111,6 @@ const BasicInfo = (props) => {
             wrapperCol={{ span: 24 }}
             label="Phone Number"
             name="phoneNumber"
-            rules={[
-              { required: true, message: 'Required field' },
-              {
-                pattern:
-                  // eslint-disable-next-line no-useless-escape
-                  /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?$/gm,
-                message: 'Invalid phone number',
-              },
-            ]}
           >
             <Input
               disabled

@@ -12,10 +12,7 @@ const SearchBar = (props) => {
   };
 
   const renderPlaceholder = (val) => {
-    if (val === VIEW_TYPE.PROJECT_VIEW) {
-      return 'Search by Funtional Area';
-    }
-    if (val === VIEW_TYPE.TEAM_VIEW || val === VIEW_TYPE.HR_REPORTS) {
+    if (val === VIEW_TYPE.TEAM_VIEW || val === VIEW_TYPE.HR_REPORTS || VIEW_TYPE.PROJECT_VIEW) {
       return 'Search by Employee';
     }
     if (val === VIEW_TYPE.FINANCE_REPORTS) {

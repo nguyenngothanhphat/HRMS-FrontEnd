@@ -118,7 +118,11 @@ class EmploymentHistory extends PureComponent {
                   <span className={styles.value}>{info.manager}</span>
                 </div>
               )}
-              {Object.keys(info).length === 0 ? <b>Nothing changed</b> : null}
+              {Object.keys(info).length === 0 ? (
+                <div className={styles.changeType}>
+                  <span className={styles.type}>Nothing changed</span>
+                </div>
+              ) : null}
             </div>
           );
         },

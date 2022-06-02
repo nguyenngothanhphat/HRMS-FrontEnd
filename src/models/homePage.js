@@ -2,8 +2,8 @@ import { notification } from 'antd';
 import { dialog } from '@/utils/utils';
 import {
   // portal
-  getBirthdayInWeek,
-  upsertBirthdayConversation,
+  getCelebrationList,
+  upsertCelebrationConversation,
   // setting page
   addPost,
   deletePost,
@@ -21,7 +21,7 @@ import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
 
 const defaultState = {
   // portal
-  birthdayInWeekList: [],
+  celebrationList: [],
   // setting page
   postTypeList: [],
   pollResult: [],
@@ -39,10 +39,10 @@ const homePage = {
   state: defaultState,
   effects: {
     // PORTAL
-    *fetchBirthdayInWeekList({ payload }, { call, put }) {
+    *fetchCelebrationList({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getBirthdayInWeek, {
+        response = yield call(getCelebrationList, {
           ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
@@ -52,7 +52,7 @@ const homePage = {
         yield put({
           type: 'save',
           payload: {
-            birthdayInWeekList: data,
+            celebrationList: data,
           },
         });
       } catch (errors) {
@@ -61,10 +61,10 @@ const homePage = {
       }
       return response;
     },
-    *upsertBirthdayConversationEffect({ payload }, { call }) {
+    *upsertCelebrationConversationEffect({ payload }, { call }) {
       let response = {};
       try {
-        response = yield call(upsertBirthdayConversation, {
+        response = yield call(upsertCelebrationConversation, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),

@@ -66,7 +66,7 @@ class TableContainer extends PureComponent {
   onFilter = async (values) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'customerManagement/fetchCustomerList',
+      type: 'customerManagement/filterListCustomer',
       payload: {
         ...values,
       },
@@ -128,7 +128,7 @@ class TableContainer extends PureComponent {
     const { arr } = this.state;
     const newObj = Object.assign(arr, values);
     const filteredObj = Object.entries(newObj).filter(
-      ([key, value]) => value !== undefined && value?.length > 0,
+      ([, value]) => value !== undefined && value?.length > 0,
     );
     this.setState({
       applied: Object.keys(filteredObj).length,
@@ -251,7 +251,7 @@ class TableContainer extends PureComponent {
               this.clearFilter();
             }}
           >
-            {applied} applied
+            {applied} filters applied
           </Tag>
         )}
         <div className={styles.buttonAddImport} onClick={this.showModal}>

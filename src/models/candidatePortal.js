@@ -1,24 +1,28 @@
-import { history } from 'umi';
 import moment from 'moment';
+import { history } from 'umi';
+import { notification } from 'antd';
 import {
   addAttachmentService,
+  addReference,
   candidateFinalOffer,
+  generateOfferLetter,
   getById,
+  getCountryList,
   getDocumentByCandidate,
+  getStateListByCountry,
   sendEmailByCandidateModel,
   updateByCandidate,
-  getCountryList,
-  getStateListByCountry,
   upsertCandidateDocument,
+  getSalaryStructureByGrade,
 } from '@/services/candidatePortal';
-import { dialog } from '@/utils/utils';
 import {
   CANDIDATE_TASK_LINK,
   CANDIDATE_TASK_STATUS,
   DOCUMENT_TYPES,
 } from '@/utils/candidatePortal';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
-import { getCurrentTenant } from '@/utils/authority';
+import { dialog } from '@/utils/utils';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
 const pendingTaskDefault = [
   {
@@ -33,6 +37,13 @@ const pendingTaskDefault = [
     name: 'Upload Documents',
     dueDate: '',
     link: CANDIDATE_TASK_LINK.UPLOAD_DOCUMENTS,
+    status: CANDIDATE_TASK_STATUS.UPCOMING,
+  },
+  {
+    id: CANDIDATE_TASK_LINK.REFERENCES,
+    name: 'Add References',
+    dueDate: '',
+    link: CANDIDATE_TASK_LINK.REFERENCES,
     status: CANDIDATE_TASK_STATUS.UPCOMING,
   },
   {
@@ -51,62 +62,9 @@ const pendingTaskDefault = [
   },
 ];
 
-const steps = [
-  {
-    content: `Once documents are uploaded, you will have a formal induction to start off.`,
-  },
-  {
-    content: `This will be followed by a 1-1 call with the UX Design Lead and your Manager.`,
-  },
-  {
-    content: `You will then have an Introduction call with your team. This would be with the UX team.`,
-  },
-  {
-    content: `This will be followed by a 1-1 call with the UX Design Lead and your Manager.`,
-  },
-  {
-    content: `You will then have an Introduction call with your team. This would be with the UX team.`,
-  },
-];
+const steps = [];
 
-const events = [
-  {
-    content: `HR Induction 4PM @ Thursday July 05, 2021
-4PM - 5PM (IST)`,
-  },
-  {
-    content: `Welcome to the Pop Tribe 2:30PM @ Friday
-July 06, 2021 2:30 - 3:30 (IST)`,
-  },
-  {
-    content: `Game session with Lollypop Tribe 6PM @ Friday
-July 06, 2021 6PM - 7PM (IST)`,
-  },
-  {
-    content: `HR Induction 4PM @ Thursday July 05, 2021
-4PM - 5PM (IST)`,
-  },
-  {
-    content: `Welcome to the Pop Tribe 2:30PM @ Friday
-July 06, 2021 2:30 - 3:30 (IST)`,
-  },
-  {
-    content: `Game session with Lollypop Tribe 6PM @ Friday
-July 06, 2021 6PM - 7PM (IST)`,
-  },
-  {
-    content: `HR Induction 4PM @ Thursday July 05, 2021
-4PM - 5PM (IST)`,
-  },
-  {
-    content: `Welcome to the Pop Tribe 2:30PM @ Friday
-July 06, 2021 2:30 - 3:30 (IST)`,
-  },
-  {
-    content: `Game session with Lollypop Tribe 6PM @ Friday
-July 06, 2021 6PM - 7PM (IST)`,
-  },
-];
+const events = [];
 
 const checkDocumentStatus = (documents = []) => {
   return documents.some(
@@ -189,6 +147,7 @@ const initialState = {
     questionOnBoarding: [],
   },
   salaryStructure: [],
+  salaryStructureSetting: {},
   eligibilityDocs: [],
   checkCandidateMandatory: {
     filledCandidateBasicInformation: false,
@@ -250,7 +209,9 @@ const candidatePortal = {
             candidate: data._id,
             ticketId: data.ticketID,
             salaryStructure: data.salaryStructure.settings,
-            checkMandatory: { ...checkMandatory },
+            checkMandatory: {
+              ...checkMandatory,
+            },
           },
         });
       } catch (error) {
@@ -267,7 +228,9 @@ const candidatePortal = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
-          payload: { documentList: [...data] },
+          payload: {
+            documentList: [...data],
+          },
         });
         // if there are any resubmit documents, show resubmit tasks
         yield put({
@@ -339,7 +302,10 @@ const candidatePortal = {
       let response = {};
       try {
         const { candidate } = yield select((state) => state.candidatePortal);
-        response = yield call(sendEmailByCandidateModel, { ...payload, candidate });
+        response = yield call(sendEmailByCandidateModel, {
+          ...payload,
+          candidate,
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
       } catch (error) {
@@ -359,7 +325,17 @@ const candidatePortal = {
       }
       return response;
     },
-
+    *generateOfferLetter({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(generateOfferLetter, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
     *refreshPage() {
       try {
         history.push('/candidate-portal/dashboard');
@@ -392,6 +368,8 @@ const candidatePortal = {
           salaryStructure: { status: salaryStatus = '', settings: salarySettings } = {},
           // isAcceptedJoiningDate,
           sentDate = '',
+          isFilledReferences = false,
+          numReferences = null,
         } = data || {};
 
         const dueDate = sentDate ? moment(sentDate).add(5, 'days') : '-';
@@ -426,17 +404,28 @@ const candidatePortal = {
             }
             break;
 
-          case NEW_PROCESS_STATUS.SALARY_NEGOTIATION:
-            if (['IN-PROGRESS'].includes(salaryStatus) && salarySettings.length) {
-              // salary structure
+          case NEW_PROCESS_STATUS.REFERENCE_VERIFICATION: {
+            if (!isFilledReferences && numReferences) {
               tempPendingTasks[2].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
               tempPendingTasks[2].dueDate = dueDate;
             }
             break;
+          }
+
+          case NEW_PROCESS_STATUS.SALARY_NEGOTIATION:
+            if (['IN-PROGRESS'].includes(salaryStatus) && salarySettings.length) {
+              // salary structure
+              tempPendingTasks[3].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+              tempPendingTasks[3].dueDate = dueDate;
+            }
+            break;
 
           case NEW_PROCESS_STATUS.OFFER_RELEASED:
-            tempPendingTasks[3].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
-            tempPendingTasks[3].dueDate = expiryDate ? moment(expiryDate).format(dateFormat) : '';
+            // case NEW_PROCESS_STATUS.OFFER_ACCEPTED:
+            // case NEW_PROCESS_STATUS.OFFER_REJECTED:
+            // offer letter
+            tempPendingTasks[4].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+            tempPendingTasks[4].dueDate = expiryDate ? moment(expiryDate).format(dateFormat) : '';
             break;
 
           default:
@@ -460,7 +449,9 @@ const candidatePortal = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { countryList: data },
+          payload: {
+            countryList: data,
+          },
         });
       } catch (error) {
         dialog(error);
@@ -475,7 +466,49 @@ const candidatePortal = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { stateList: data },
+          payload: {
+            stateList: data,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchSalaryStructureByGrade({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getSalaryStructureByGrade, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            salaryStructureSetting: data,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *addReference({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(addReference, payload);
+        const { data, statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            ...payload,
+            data,
+          },
         });
       } catch (error) {
         dialog(error);
@@ -522,7 +555,10 @@ const candidatePortal = {
       };
     },
     saveCurrentUser(state, action) {
-      return { ...state, currentUser: action.payload || {} };
+      return {
+        ...state,
+        currentUser: action.payload || {},
+      };
     },
 
     clearState() {

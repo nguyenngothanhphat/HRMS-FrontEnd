@@ -7,6 +7,7 @@ import styles from './index.less';
 import Options from './components/Options';
 import EmptyComponent from '@/components/Empty';
 import { TAB_IDS } from '@/utils/homePage';
+import { getCurrentLocation } from '@/utils/authority';
 
 const Voting = (props) => {
   const { dispatch } = props;
@@ -32,6 +33,7 @@ const Voting = (props) => {
       type: 'homePage/fetchPollsEffect',
       payload: {
         postType: TAB_IDS.POLL,
+        location: [getCurrentLocation()],
       },
     });
   };
@@ -97,9 +99,9 @@ const Voting = (props) => {
     if (polls.length > 0) {
       setLoading(true);
       const find = findActivePoll();
+
       if (find) {
         setActivePoll(find);
-
         // if expired
         const isExpiredTemp = moment(find?.pollDetail?.endDate).isBefore(moment());
         if (isExpiredTemp) {

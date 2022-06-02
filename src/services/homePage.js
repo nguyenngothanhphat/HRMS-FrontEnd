@@ -63,10 +63,10 @@ export async function getPollResult(payload) {
 }
 
 // HOME PAGE
-export async function getBirthdayInWeek(data) {
+export async function getCelebrationList(params) {
   return request('/api/employeetenant/list-celebration', {
-    method: 'POST',
-    data,
+    method: 'GET',
+    params,
   });
 }
 
@@ -78,9 +78,9 @@ export async function updateBannerPosition(data) {
 }
 
 // BIRTHDAY LIKE & COMMENT
-export async function upsertBirthdayConversation(data) {
+export async function upsertCelebrationConversation(data) {
   return request('/api/birthdayconversationtenant/upsert', {
     method: 'POST',
     data,
-});
+  });
 }

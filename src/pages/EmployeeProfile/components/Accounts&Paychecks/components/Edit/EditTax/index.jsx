@@ -7,17 +7,15 @@ import styles from './index.less';
   ({
     loading,
     employeeProfile: {
-      idCurrentEmployee = '',
+      employee = '',
       originData: { taxData: taxDataOrigin = {} } = {},
       tempData: { taxData = {} } = {},
-      tenantCurrentEmployee = '',
     } = {},
   }) => ({
     loading: loading.effects['employeeProfile/fetchTax'],
-    idCurrentEmployee,
+    employee,
     taxDataOrigin,
     taxData,
-    tenantCurrentEmployee,
   }),
 )
 class EditTax extends Component {
@@ -41,25 +39,23 @@ class EditTax extends Component {
   };
 
   processDataChangesHaveId = () => {
-    const { taxData: taxDataTemp, tenantCurrentEmployee = '' } = this.props;
+    const { taxData: taxDataTemp } = this.props;
     const { incomeTaxRule = '', panNum = '', _id: id = '' } = taxDataTemp[0];
     const payloadChanges = {
       id,
       incomeTaxRule,
       panNum,
-      tenantId: tenantCurrentEmployee,
     };
     return payloadChanges;
   };
 
   processDataChangesNoId = () => {
-    const { taxData: taxDataTemp, idCurrentEmployee, tenantCurrentEmployee = '' } = this.props;
+    const { taxData: taxDataTemp, employee } = this.props;
     const { incomeTaxRule = '', panNum = '' } = taxDataTemp[0];
     const payloadChanges = {
-      employee: idCurrentEmployee,
+      employee,
       incomeTaxRule,
       panNum,
-      tenantId: tenantCurrentEmployee,
     };
     return payloadChanges;
   };
