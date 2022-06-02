@@ -12,7 +12,7 @@ const { TreeNode } = TreeSelect;
 
 const JobDetailForm = (props) => {
   const [form] = Form.useForm();
-  const [isShowClientLocation, setIsShowClientLocation] = useState(false)
+  const [isShowClientLocation, setIsShowClientLocation] = useState(false);
   const {
     disabled = false,
     dispatch,
@@ -146,7 +146,7 @@ const JobDetailForm = (props) => {
             workLocation: null,
             clientLocation: null,
           });
-          setIsShowClientLocation(false)
+          setIsShowClientLocation(false);
         } else if (selectedWorkLocation) {
           saveToRedux({
             location: value,
@@ -154,9 +154,9 @@ const JobDetailForm = (props) => {
             workFromHome: false,
             clientLocation: null,
           });
-          setIsShowClientLocation(false)
+          setIsShowClientLocation(false);
         } else {
-          setIsShowClientLocation(true)
+          setIsShowClientLocation(true);
         }
         setNeedRefreshDocument(true);
         break;
@@ -264,9 +264,7 @@ const JobDetailForm = (props) => {
             showSearch
             showArrow
             allowClear
-            filterOption={(input, option) => {
-              return option.props.children.toLowerCase().indexOf(input.toLowerCase()) > -1;
-            }}
+            treeDefaultExpandAll
           >
             <TreeNode title="Office Location">
               {locationList.map((x, index) => (
@@ -287,8 +285,7 @@ const JobDetailForm = (props) => {
             required: false,
           },
         ],
-        component: (
-          isShowClientLocation && 
+        component: isShowClientLocation && (
           <TreeSelect
             treeLine
             placeholder="Select the client location"
@@ -297,9 +294,6 @@ const JobDetailForm = (props) => {
             showSearch
             showArrow
             allowClear
-            filterOption={(input, option) => {
-            return option.props.children.toLowerCase().indexOf(input.toLowerCase()) > -1;
-          }}
           >
             {listCustomerLocation.map((x) => (
               <TreeNode title={x.legalName} key={`${x.customerId}`}>
@@ -311,13 +305,13 @@ const JobDetailForm = (props) => {
                         key={`${x.customerId + firstIndex + secondIndex}`}
                         value={state.value}
                       />
-                      ))}
+                    ))}
                   </TreeNode>
-                  ))}
+                ))}
               </TreeNode>
-              ))}
-          </TreeSelect> 
-        )
+            ))}
+          </TreeSelect>
+        ),
       },
       {
         title: 'department',
@@ -450,7 +444,7 @@ const JobDetailForm = (props) => {
                 <Form.Item
                   rules={x.rules}
                   name={x.title}
-                  label={x.name !== 'Client Location'|| isShowClientLocation ? x.name : null}
+                  label={x.name !== 'Client Location' || isShowClientLocation ? x.name : null}
                 >
                   {x.component}
                 </Form.Item>
@@ -518,7 +512,9 @@ const JobDetailForm = (props) => {
         initialValues={{
           position: position || 'EMPLOYEE',
           employeeType: employeeType?._id || employeeType,
-          workLocation: workLocation ? workLocation._id : clientLocation || workFromHome && 'Work From Home',
+          workLocation: workLocation
+            ? workLocation._id
+            : clientLocation || (workFromHome && 'Work From Home'),
           department: department?._id || department,
           title: title?._id || title,
           grade: grade?._id || grade,
