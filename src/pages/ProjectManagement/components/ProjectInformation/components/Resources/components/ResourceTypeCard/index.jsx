@@ -1,9 +1,14 @@
-import { Button, Card, Tag, Tooltip } from 'antd';
+import { Button, Card, Tag, Tooltip, Popover } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { debounce } from 'lodash';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import ViewIcon from '@/assets/projectManagement/view.svg';
+import ActionIcon from '@/assets/projectManagement/actionIcon.svg';
+import ViewIcon from '@/assets/projectManagement/viewIcon.svg';
+import EditIcon from '@/assets/projectManagement/editIcon.svg';
+import DeleteIcon from '@/assets/projectManagement/deleteIcon.svg';
+import AssignIcon from '@/assets/projectManagement/assignIcon.svg';
+
 import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
 import OrangeAddButton from '../../../OrangeAddButton';
 import CommonModal from '@/components/CommonModal';
@@ -29,6 +34,7 @@ const ResourceTypeCard = (props) => {
 
   const [addResourceTypeModalVisible, setAddResourceTypeModalVisible] = useState(false);
   const [assignResourceModalVisible, setAssignResourceModalVisible] = useState(false);
+  const [isSharePopoverVisible, setIsSharePopoverVisible] = useState('');
   const [assigningRecord, setAssigningRecord] = useState({});
   const [applied, setApplied] = useState(0);
   // if reselect project status or search, clear filter form
@@ -81,6 +87,44 @@ const ResourceTypeCard = (props) => {
           <span className={styles.readMoreBtn}>Read More</span>
         </Tooltip>
       </span>
+    );
+  };
+
+  const handlePopoverVisibleChange = (show, row) => {
+    const { resourceType: { _id = '' } = {} } = row;
+    if (show === 'visible') {
+      setIsSharePopoverVisible(_id);
+    } else {
+      setIsSharePopoverVisible('');
+    }
+  };
+
+  const renderMenuDropdown = (row) => {
+    return (
+      <div className={styles.containerDropdown}>
+        <div className={styles.btnActionView}>
+          <img src={ViewIcon} alt="" />
+          <span>View</span>
+        </div>
+        <div
+          className={styles.btnActionAssign}
+          onClick={() => {
+            setAssigningRecord(row);
+            setAssignResourceModalVisible(true);
+          }}
+        >
+          <img src={AssignIcon} alt="" />
+          <span>Assign</span>
+        </div>
+        <div className={styles.btnActionEdit}>
+          <img src={EditIcon} alt="" />
+          <span>Edit</span>
+        </div>
+        <div className={styles.btnActionDelete}>
+          <img src={DeleteIcon} alt="" />
+          <span>Delete</span>
+        </div>
+      </div>
     );
   };
 
@@ -145,21 +189,40 @@ const ResourceTypeCard = (props) => {
         width: '7%',
         align: 'center',
         render: (resourceType, row) => {
-          if (!resourceType && allowModify) {
-            return (
-              <Button
-                className={styles.assignBtn}
-                icon={<img src={OrangeAddIcon} alt="" />}
-                onClick={() => {
-                  setAssigningRecord(row);
-                  setAssignResourceModalVisible(true);
+          // if (!resourceType && allowModify) {
+          //   return (
+          //     <Button
+          //       className={styles.assignBtn}
+          //       icon={<img src={OrangeAddIcon} alt="" />}
+          //       onClick={() => {
+          //         setAssigningRecord(row);
+          //         setAssignResourceModalVisible(true);
+          //       }}
+          //     >
+          //       Assign
+          //     </Button>
+          //   );
+          // }
+          // return <img src={ViewIcon} alt="" />;
+          return (
+            <Popover
+              visible={row.resourceType._id === isSharePopoverVisible}
+              onVisibleChange={() => handlePopoverVisibleChange('visible', row)}
+              trigger="click"
+              overlayClassName={styles.dropdownPopover}
+              content={renderMenuDropdown(row)}
+              placement="bottomRight"
+            >
+              <div
+                style={{
+                  cursor: 'pointer',
+                  color: '#2c6df9',
                 }}
               >
-                Assign
-              </Button>
-            );
-          }
-          return <img src={ViewIcon} alt="" />;
+                <img src={ActionIcon} alt="" />
+              </div>
+            </Popover>
+          );
         },
       },
     ];
