@@ -776,11 +776,10 @@ const SalaryStructureTemplate = (props) => {
             Note-
             {isJoiningBonus && (
               <div className={styles.noteField}>
-                1. As a part of this offer the candidate shall be entitled to a Joining Bonus of INR{' '}
-                {`${'<Joining Bonus Value>'}`}. Post Joining 50% of this amount shall be paid along
-                with the second month's salary (or the applicable first payroll). And on completion
-                of three months of service the balance 50% shall be paid along with the immediate
-                next payroll.
+                1. As a part of this offer the candidate shall be entitled to a Joining Bonus of
+                INR. Post Joining 50% of this amount shall be paid along with the second month's
+                salary (or the applicable first payroll). And on completion of three months of
+                service the balance 50% shall be paid along with the immediate next payroll.
               </div>
             )}
             {isMidtermHike && (
