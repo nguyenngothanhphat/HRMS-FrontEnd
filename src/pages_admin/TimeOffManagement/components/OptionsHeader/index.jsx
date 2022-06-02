@@ -8,7 +8,7 @@ import styles from './index.less';
 const { Option } = Select;
 const OptionsHeader = (props) => {
   const [form] = Form.useForm();
-  const { reloadData = () => {}, listTimeOff = [], listEmployee = [], disabled = false } = props;
+  const { setPayload = () => {}, listTimeOff = [], listEmployee = [], disabled = false } = props;
 
   const [fromDate, setFromDate] = React.useState('');
   const [toDate, setToDate] = React.useState('');
@@ -23,7 +23,7 @@ const OptionsHeader = (props) => {
   };
 
   const onValuesChange = (changedValues, allValues) => {
-    reloadData(allValues);
+    setPayload(allValues);
   };
 
   const processData = (array) => {
