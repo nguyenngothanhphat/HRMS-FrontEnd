@@ -29,6 +29,7 @@ const TableContainer = (props) => {
         company: getCurrentCompany(),
         tenantId: getCurrentTenant(),
         status: ['INACTIVE', 'ACTIVE'],
+        location: selectedLocations,
       },
     });
   };
@@ -55,12 +56,12 @@ const TableContainer = (props) => {
   };
 
   useEffect(() => {
-    fetchEmployees();
-  }, []);
-
-  useEffect(() => {
     getDataTable(payload);
   }, [JSON.stringify(selectedLocations), JSON.stringify(payload)]);
+
+  useEffect(() => {
+    fetchEmployees();
+  }, [JSON.stringify(selectedLocations)]);
 
   return (
     <div className={styles.TimeOffTableContainer}>
@@ -91,7 +92,6 @@ export default connect(
     location: { companyLocationList = [] } = {},
   }) => ({
     loadingList: loading.effects['timeOffManagement/fetchListTimeOff'],
-    loadingActiveList: loading.effects['timeOffManagement/fetchEmployeeList'],
     loadingDetail: loading.effects['timeOffManagement/fetchRequestById'],
     timeOffManagement,
     companiesOfUser,

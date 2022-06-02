@@ -52,9 +52,9 @@ const Card = (props) => {
     return moment(date1).format('MM/DD') === moment(date2).format('MM/DD');
   };
 
-  const upsertBirthdayConversationEffect = (payload) => {
+  const upsertCelebrationConversationEffect = (payload) => {
     return dispatch({
-      type: 'homePage/upsertBirthdayConversationEffect',
+      type: 'homePage/upsertCelebrationConversationEffect',
       payload,
     });
   };
@@ -66,10 +66,10 @@ const Card = (props) => {
     if (!likes.includes(employeeId)) {
       const payload = {
         employee: item._id,
-        year: moment().year(),
         likes: [employeeId],
+        type: item.type,
       };
-      const res = await upsertBirthdayConversationEffect(payload);
+      const res = await upsertCelebrationConversationEffect(payload);
       if (res.statusCode === 200) {
         refreshData();
       }
@@ -263,5 +263,5 @@ const Card = (props) => {
 export default connect(({ loading, user: { currentUser = {}, permissions = {} } = {} }) => ({
   currentUser,
   permissions,
-  loadingRefresh: loading.effects['homePage/fetchBirthdayInWeekList'],
+  loadingRefresh: loading.effects['homePage/fetchCelebrationList'],
 }))(Card);

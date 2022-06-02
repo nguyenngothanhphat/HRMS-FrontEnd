@@ -52,9 +52,9 @@ const CelebratingDetailModalContent = (props) => {
     setActiveComments(activeCommentsTemp);
   };
 
-  const upsertBirthdayConversationEffect = (payload) => {
+  const upsertCelebrationConversationEffect = (payload) => {
     return dispatch({
-      type: 'homePage/upsertBirthdayConversationEffect',
+      type: 'homePage/upsertCelebrationConversationEffect',
       payload,
     });
   };
@@ -66,10 +66,10 @@ const CelebratingDetailModalContent = (props) => {
     if (!likedIds.includes(employeeId)) {
       const payload = {
         employee: item._id,
-        year: moment().year(),
         likes: [employeeId],
+        type: item.type,
       };
-      const res = await upsertBirthdayConversationEffect(payload);
+      const res = await upsertCelebrationConversationEffect(payload);
       if (res.statusCode === 200) {
         refreshData();
       }
@@ -79,22 +79,22 @@ const CelebratingDetailModalContent = (props) => {
   const onCommentClick = async () => {
     if (commentContent) {
       setAction(ACTION.COMMENT);
-      setCommentContent('');
 
       const employeeId = employee?._id;
 
       const payload = {
         employee: item._id,
-        year: moment().year(),
         comments: [
           {
             content: commentContent,
             employee: employeeId,
           },
         ],
+        type: item.type,
       };
-      const res = await upsertBirthdayConversationEffect(payload);
+      const res = await upsertCelebrationConversationEffect(payload);
       if (res.statusCode === 200) {
+        setCommentContent('');
         handleActiveComments(comments, comments.length + 1);
         refreshData();
       }
@@ -298,6 +298,6 @@ const CelebratingDetailModalContent = (props) => {
 };
 export default connect(({ user: { currentUser } = {}, loading }) => ({
   currentUser,
-  loadingComment: loading.effects['homePage/upsertBirthdayConversationEffect'],
-  loadingRefresh: loading.effects['homePage/fetchBirthdayInWeekList'],
+  loadingComment: loading.effects['homePage/upsertCelebrationConversationEffect'],
+  loadingRefresh: loading.effects['homePage/fetchCelebrationList'],
 }))(CelebratingDetailModalContent);
