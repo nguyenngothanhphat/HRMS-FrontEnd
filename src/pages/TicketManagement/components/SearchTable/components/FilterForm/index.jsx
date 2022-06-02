@@ -24,6 +24,7 @@ const FilterForm = (props) => {
     visible = false,
     handleFilterCounts = () => {},
     setForm = () => {},
+    selectedFilterTab = {},
   } = props;
 
   const [form] = Form.useForm();
@@ -226,6 +227,8 @@ const FilterForm = (props) => {
   const handleEmployeeSearch = (type, value) => {
     onSearchEmployeeDebounce(type, value);
   };
+
+  useEffect(() => form?.resetFields(), [selectedFilterTab]);
 
   return (
     <div>
