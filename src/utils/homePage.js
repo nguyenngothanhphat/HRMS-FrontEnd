@@ -6,4 +6,8 @@ export const TAB_IDS = {
   POLL: 'POLL',
 };
 
-export const test = '';
+export const CELEBRATE_TYPE = {
+  ANNIVERSARY: 'ANNIVERSARY',
+  BIRTHDAY: 'BIRTHDAY',
+  NEWJOINEE: 'NEWJOINEE',
+};

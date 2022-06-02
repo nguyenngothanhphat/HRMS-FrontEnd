@@ -63,7 +63,7 @@ export async function getPollResult(payload) {
 }
 
 // HOME PAGE
-export async function getBirthdayInWeek(params) {
+export async function getCelebrationList(params) {
   return request('/api/employeetenant/list-celebration', {
     method: 'GET',
     params,
