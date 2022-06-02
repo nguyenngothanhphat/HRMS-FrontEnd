@@ -140,23 +140,24 @@ const JobDetailForm = (props) => {
 
       case 'workLocation': {
         const selectedWorkLocation = locationList.find((x) => x._id === value);
+        if (value === 'client location') {
+          setIsShowClientLocation(true);
+        }
         if (value === 'work from home') {
           saveToRedux({
             workFromHome: true,
             workLocation: null,
             clientLocation: null,
           });
-          setIsShowClientLocation(false);
-        } else if (selectedWorkLocation) {
+        }
+
+        if (selectedWorkLocation) {
           saveToRedux({
             location: value,
             workLocation: selectedWorkLocation,
             workFromHome: false,
             clientLocation: null,
           });
-          setIsShowClientLocation(false);
-        } else {
-          setIsShowClientLocation(true);
         }
         setNeedRefreshDocument(true);
         break;
@@ -282,10 +283,12 @@ const JobDetailForm = (props) => {
         id: 2,
         rules: [
           {
-            required: false,
+            required: true,
+            message: 'Required field!',
           },
         ],
-        component: isShowClientLocation && (
+        hide: !isShowClientLocation,
+        component: (
           <TreeSelect
             treeLine
             placeholder="Select the client location"
@@ -441,13 +444,11 @@ const JobDetailForm = (props) => {
           {selectors.map((x, i) => {
             return (
               <Col span={24} md={12} key={i}>
-                <Form.Item
-                  rules={x.rules}
-                  name={x.title}
-                  label={x.name !== 'Client Location' || isShowClientLocation ? x.name : null}
-                >
-                  {x.component}
-                </Form.Item>
+                {!x.hide && (
+                  <Form.Item rules={x.rules} name={x.title} label={x.name}>
+                    {x.component}
+                  </Form.Item>
+                )}
               </Col>
             );
           })}
@@ -514,7 +515,7 @@ const JobDetailForm = (props) => {
           employeeType: employeeType?._id || employeeType,
           workLocation: workLocation
             ? workLocation._id
-            : clientLocation || (workFromHome && 'Work From Home'),
+            : clientLocation || (workFromHome && 'work from home'),
           department: department?._id || department,
           title: title?._id || title,
           grade: grade?._id || grade,
