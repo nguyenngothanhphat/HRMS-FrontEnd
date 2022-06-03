@@ -29,7 +29,6 @@ const Announcements = (props) => {
   useEffect(() => {
     fetchData();
   }, []);
-
   // RENDER UI
 
   return (
@@ -49,7 +48,7 @@ const Announcements = (props) => {
                     <EmbedPost embedLink={x.embedLink} />
                   ) : (
                     <div className={styles.card}>
-                      <EmployeeTag employee={x.createdBy} />
+                      <EmployeeTag employee={x.createdBy} createDate={x.createdAt} />
                       <PostContent post={x} />
                     </div>
                   )}
