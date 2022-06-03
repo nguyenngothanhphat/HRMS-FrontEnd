@@ -6,7 +6,7 @@ import { formatMessage, connect, history, Link } from 'umi';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import { isOwner } from '@/utils/authority';
-import avtDefault from '@/assets/avtDefault.jpg';
+import avtDefault from '@/assets/defaultAvatar.png';
 import filterIcon from '@/assets/offboarding-filter.svg';
 import { getTimezoneViaCity } from '@/utils/times';
 import PopoverInfo from '@/pages/Directory/components/Directory/components/DirectoryTable/components/ModalTerminate/PopoverInfo';

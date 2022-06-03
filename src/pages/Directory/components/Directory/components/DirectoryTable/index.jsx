@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { connect, formatMessage, Link } from 'umi';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import { isOwner } from '@/utils/authority';
-import avtDefault from '@/assets/avtDefault.jpg';
+import avtDefault from '@/assets/defaultAvatar.png';
 import ModalTerminate from './components/ModalTerminate';
 import PopoverInfo from './components/ModalTerminate/PopoverInfo';
 import styles from './index.less';

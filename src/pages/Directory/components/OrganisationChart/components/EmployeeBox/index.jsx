@@ -3,12 +3,12 @@ import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { Component } from 'react';
 import { connect, Link } from 'umi';
+import { CopyOutlined } from '@ant-design/icons';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import { getCurrentCompany } from '@/utils/authority';
 import SearchIcon from '@/assets/searchOrgChart.svg';
-import avtDefault from '@/assets/avtDefault.jpg';
+import avtDefault from '@/assets/defaultAvatar.png';
 import styles from './index.less';
-import { CopyOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 
@@ -317,7 +317,7 @@ class DetailEmployeeChart extends Component {
                   <div className={styles.chartDetail__Bottom_value}>{workNumber || ''}</div>
                 </Col>
                 <Col span={3}>
-                  <CopyOutlined onClick={() =>  navigator.clipboard.writeText(`${workNumber}`)} />
+                  <CopyOutlined onClick={() => navigator.clipboard.writeText(`${workNumber}`)} />
                 </Col>
                 <Col span={7}>
                   <div className={styles.chartDetail__Bottom_label}>Email id:</div>
@@ -326,7 +326,7 @@ class DetailEmployeeChart extends Component {
                   <div className={styles.chartDetail__Bottom_value}>{workEmail || ''}</div>
                 </Col>
                 <Col span={3}>
-                  <CopyOutlined onClick={() =>  navigator.clipboard.writeText(`${workEmail}`)} />
+                  <CopyOutlined onClick={() => navigator.clipboard.writeText(`${workEmail}`)} />
                 </Col>
                 <Col span={7}>
                   <div className={styles.chartDetail__Bottom_label}>Location:</div>

@@ -1,10 +1,10 @@
 import { LogoutOutlined, SettingOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
-import avtDefault from '@/assets/avtDefault.jpg';
 import { Avatar, Button, Skeleton, Input, Tooltip, Upload, message } from 'antd';
 
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
 import { debounce } from 'lodash';
+import avtDefault from '@/assets/defaultAvatar.png';
 import ItemCompany from './components/ItemCompany';
 import s from './index.less';
 

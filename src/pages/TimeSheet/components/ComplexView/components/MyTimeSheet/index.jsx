@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { connect } from 'umi';
 import { generateAllWeeks, dateFormatAPI, VIEW_TYPE } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
@@ -54,19 +54,19 @@ const MyTimeSheet = (props) => {
   };
 
   // USE EFFECT AREA
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (selectedDate && selectedView === VIEW_TYPE.D) {
       fetchMyTimesheetEffectByType(selectedDate, selectedDate);
     }
   }, [selectedDate, selectedView]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (startDateWeek && selectedView === VIEW_TYPE.W) {
       fetchMyTimesheetEffectByType(startDateWeek, endDateWeek);
     }
   }, [startDateWeek, selectedView]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (startDateMonth && selectedView === VIEW_TYPE.M) {
       fetchMyTimesheetEffectByType(startDateMonth, endDateMonth);
     }
@@ -155,6 +155,8 @@ const MyTimeSheet = (props) => {
             endDate={endDateWeek}
             data={myTimesheetByWeek}
             timeoffList={timeoffList}
+            setSelectedDate={setSelectedDate}
+            setSelectedView={setSelectedView}
           />
         );
       case VIEW_TYPE.M:

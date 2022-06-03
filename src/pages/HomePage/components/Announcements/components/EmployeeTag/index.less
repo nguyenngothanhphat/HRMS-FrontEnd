@@ -1,11 +1,11 @@
 .EmployeeTag {
   width: -moz-fit-content;
   width: fit-content;
-  padding: 24px;
+  padding-block: 24px;
   .container {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
     box-sizing: border-box;
     width: 100%;
@@ -23,13 +23,15 @@
       margin-right: 16px;
     }
     .information {
+      margin-top: -3px;
+      span {
+        line-height: 20px;
+      }
       .name {
         color: #212020;
         font-weight: 500;
         font-size: 14px;
         font-family: Inter;
-        font-style: normal;
-        line-height: 17px;
       }
       .title {
         display: block;
@@ -37,18 +39,13 @@
         font-weight: 500;
         font-size: 12px;
         font-family: Inter;
-        font-style: normal;
-        line-height: 12px;
       }
-      .timestamp{
+      .timestamp {
         display: block;
-        color: #212020;
+        color: #707177;
         font-weight: 500;
         font-size: 12px;
         font-family: Inter;
-        font-style: normal;
-        line-height: 15px;
-        margin-top: 2%;
       }
     }
   }

@@ -29,7 +29,7 @@ const FilterContent = (props) => {
         countries = [],
         locations = [],
         title = [],
-        reportingManager = [],
+        reportingManager = '',
         employeeType = [],
         skill = [],
         fromExp,
