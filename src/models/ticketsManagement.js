@@ -3,6 +3,8 @@ import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils
 import { dialog } from '@/utils/utils';
 import {
   addTicket,
+  deleteTicketAll,
+  deleteOneTicket,
   addChat,
   updateTicket,
   getTicketById,
@@ -13,6 +15,7 @@ import {
   getLocationList,
   uploadFile,
   getSupportTeamList,
+  getListMyTeam,
 } from '../services/ticketsManagement';
 
 const ticketManagement = {
@@ -183,10 +186,9 @@ const ticketManagement = {
     },
     *searchEmployee({ payload }, { call, put }) {
       try {
-        const response = yield call(getListEmployee, {
+        const response = yield call(getListMyTeam, {
           ...payload,
           tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
@@ -306,6 +308,24 @@ const ticketManagement = {
         });
       } catch (error) {
         dialog(error);
+      }
+      return response;
+    },
+    *deleteTicketEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(deleteOneTicket, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        // eslint-disable-next-line no-shadow
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (errors) {
+        dialog(errors);
       }
       return response;
     },

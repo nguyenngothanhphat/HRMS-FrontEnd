@@ -327,7 +327,7 @@ class OnboardTable extends Component {
               className={styles.renderAssignee}
               onClick={() => this.viewProfile(assignTo?.generalInfo?.userId)}
             >
-              {assignTo?.generalInfo?.firstName + assignTo?.generalInfo?.lastName || '-'}
+              {assignTo?.generalInfo?.legalName || '-'}
             </span>
           </Popover>
         ),
@@ -356,8 +356,7 @@ class OnboardTable extends Component {
               className={styles.renderAssignee}
               onClick={() => this.viewProfile(assigneeManager?.generalInfo?.userId)}
             >
-              {assigneeManager?.generalInfo?.firstName + assigneeManager?.generalInfo?.lastName ||
-                '-'}
+              {assigneeManager?.generalInfo?.legalName || '-'}
             </span>
           </Popover>
         ),

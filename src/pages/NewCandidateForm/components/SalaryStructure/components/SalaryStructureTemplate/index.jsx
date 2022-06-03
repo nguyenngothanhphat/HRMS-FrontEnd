@@ -141,7 +141,7 @@ const SalaryStructureTemplate = (props) => {
     return arr.find((x) => x.key === key)?.value;
   };
 
-  const onChangeSilde = (value = [], key) => {
+  const onChangeSlide = (value = [], key) => {
     if (value.length === 2) {
       const newValue = value[1];
       const tempTableData = JSON.parse(JSON.stringify(settingsTempData));
@@ -165,19 +165,20 @@ const SalaryStructureTemplate = (props) => {
 
     if (reg.test(newValue) || newValue === '') {
       if (key === 'basic' && toNumber(newValue) > maximum) newValue = maximum;
-      if (
-        (key === 'lunch_allowance' ||
-          key === 'petrol_allowance' ||
-          key === 'mobile_internet_allowance') &&
-        toNumber(newValue) > getValueByKey(salaryTempDataSetting, key)
-      ) {
-        newValue = getValueByKey(salaryTempDataSetting, key);
-      }
+      // if (
+      //   (key === 'lunch_allowance' ||
+      //     key === 'petrol_allowance' ||
+      //     key === 'mobile_internet_allowance') &&
+      //   toNumber(newValue) > getValueByKey(salaryTempDataSetting, key)
+      // ) {
+      //   newValue = getValueByKey(salaryTempDataSetting, key);
+      // }
 
       const tempTableData = JSON.parse(JSON.stringify(settingsTempData));
 
       const index = tempTableData.findIndex((x) => x.key === key);
       tempTableData[index].value = newValue;
+
       dispatch({
         type: 'newCandidateForm/saveSalaryStructure',
         payload: {
@@ -456,7 +457,7 @@ const SalaryStructureTemplate = (props) => {
                 step={1000}
                 marks={marks}
                 value={[minimum, getValueByKey(settingsTempData, item.key)]}
-                onChange={(value) => onChangeSilde(value, item.key)}
+                onChange={(value) => onChangeSlide(value, item.key)}
               />
             </div>
           </>
@@ -484,7 +485,7 @@ const SalaryStructureTemplate = (props) => {
               step={1000}
               marks={marks}
               value={[0, getValueByKey(settingsTempData, item.key)]}
-              onChange={(value) => onChangeSilde(value, item.key)}
+              onChange={(value) => onChangeSlide(value, item.key)}
             />
           </div>
         </>

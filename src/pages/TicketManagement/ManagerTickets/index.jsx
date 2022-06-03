@@ -11,7 +11,7 @@ import { getCurrentLocation } from '@/utils/authority';
 
 const ManagerTicket = (props) => {
   const { TabPane } = Tabs;
-  const { dispatch, tabName = '', companyLocationList = [], permissions = [] } = props;
+  const { dispatch, tabName = '', companyLocationList = [], permissions = [], role = '' } = props;
 
   const [selectedLocationsState, setSelectedLocationsState] = useState([getCurrentLocation()]);
 
@@ -106,7 +106,7 @@ const ManagerTicket = (props) => {
             <WorkInProgress />;
           </TabPane>
           <TabPane tab="All Tickets" key="all-tickets">
-            <AllTicket permissions={permissions} />
+            <AllTicket role={role} permissions={permissions} />
           </TabPane>
         </Tabs>
       </PageContainer>
