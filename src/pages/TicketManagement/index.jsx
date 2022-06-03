@@ -27,9 +27,15 @@ class TicketsManagement extends PureComponent {
     const role = this.findRole(JSON.parse(listRole));
 
     const renderComponent = {
-      manager: <ManagerTicket role={role} permissions={permissions} tabName={tabName} />,
-      'hr-manager': <ManagerTicket role={role} permissions={permissions} tabName={tabName} />,
-      employee: <EmployeeTicket role={role} permissions={permissions} tabName={tabName} />,
+      manager: (
+        <ManagerTicket role={role.toUpperCase()} permissions={permissions} tabName={tabName} />
+      ),
+      'hr-manager': (
+        <ManagerTicket role={role.toUpperCase()} permissions={permissions} tabName={tabName} />
+      ),
+      employee: (
+        <EmployeeTicket role={role.toUpperCase()} permissions={permissions} tabName={tabName} />
+      ),
     };
 
     return renderComponent[role];

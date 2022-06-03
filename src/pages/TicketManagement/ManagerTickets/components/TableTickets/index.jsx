@@ -85,6 +85,7 @@ const TableTickets = (props) => {
           employee: employeeId,
           oldName,
           newName,
+          role,
         },
       }).then((res) => {
         const { statusCode = '' } = res;
@@ -409,6 +410,7 @@ const TableTickets = (props) => {
     const payload = {
       status: 'ACTIVE',
       role,
+      empId: employeeId,
     };
     // if (nameSearch) {
     payload.name = nameSearch;
