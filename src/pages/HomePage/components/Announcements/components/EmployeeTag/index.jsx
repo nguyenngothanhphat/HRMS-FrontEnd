@@ -34,7 +34,7 @@ const EmployeeTag = (props) => {
       getTimezoneViaCity(state || state1) || getTimezoneViaCity(countryName || countryName1) || '';
     const timezone =
       getTimezone !== '' ? getTimezone : Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const date = moment(createDate).tz(timezone).locale('en').format('MMMM/DD/YYYY, HH:mm A');
+    const date = moment(createDate).tz(timezone).locale('en').format('MMMM DD YYYY, HH:mm A');
     return <span className={styles.timestamp}>{date}</span>;
   };
 
