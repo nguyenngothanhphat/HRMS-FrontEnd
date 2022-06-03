@@ -158,6 +158,8 @@ const MyTickets = (props) => {
           size={size}
           getPageAndSize={getPageAndSize}
           role={role}
+          refreshFetchData={initDataTable}
+          refreshFetchTotalList={fetchTotalList}
         />
       </div>
     </>

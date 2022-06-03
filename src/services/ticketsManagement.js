@@ -90,6 +90,12 @@ export async function getListEmployee(payload) {
     data: payload,
   });
 }
+export async function getListMyTeam(payload) {
+  return request('/api/employeetenant/list-myteam', {
+    method: 'POST',
+    data: payload,
+  });
+}
 export async function getDepartmentList(payload) {
   return request('/api/departmenttenant/list', {
     method: 'POST',

@@ -18,6 +18,7 @@ const TableTickets = (props) => {
     data = [],
     dispatch,
     employee: { _id: employeeId = '' },
+    employee = {},
     locationsList = [],
     textEmpty = 'No tickets found',
     loading = false,
@@ -407,10 +408,13 @@ const TableTickets = (props) => {
   }, [JSON.stringify(companyLocationList)]);
 
   useEffect(() => {
+    const roleEmployee = employee && employee?.title ? employee.title.roles : [];
+    const companyInfo = employee ? employee.company : {};
     const payload = {
-      status: 'ACTIVE',
-      role,
-      empId: employeeId,
+      status: ['ACTIVE'],
+      roles: roleEmployee,
+      employee: employeeId,
+      company: [companyInfo],
     };
     // if (nameSearch) {
     payload.name = nameSearch;

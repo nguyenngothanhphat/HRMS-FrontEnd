@@ -392,15 +392,20 @@ class TableTickets extends PureComponent {
         fixed: 'right',
         render: (employeeAssignee, row) => {
           const { ticket = {} } = this.state;
-          const { role = '', employee: { _id = '' } = {} } = this.props;
+          const {
+            role = '',
+            employee: { _id = '' } = {},
+            refreshFetchData = () => {},
+            refreshFetchTotalList = () => {},
+          } = this.props;
           if (employeeAssignee) {
             return (
               <TicketsItem
                 employeeAssignee={employeeAssignee}
                 row={row}
                 viewProfile={this.viewProfile}
-                refreshFetchData={this.refreshFetchData}
-                refreshFetchTotalList={this.refreshFetchTotalList}
+                refreshFetchData={refreshFetchData}
+                refreshFetchTotalList={refreshFetchTotalList}
                 handleClickSelect={this.handleClickSelect}
                 ticket={ticket}
                 role={role}
