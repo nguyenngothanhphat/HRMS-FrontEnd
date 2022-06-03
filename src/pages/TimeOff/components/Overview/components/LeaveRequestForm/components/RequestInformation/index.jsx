@@ -628,7 +628,7 @@ const RequestInformation = (props) => {
         durationTo: viewingToDate ? moment(viewingToDate) : null,
         description: viewingDescription,
         personCC: viewingCC,
-        attachments: viewingAttachmentList,
+        // attachments: viewingAttachmentList,
         leaveTimeLists,
       });
 
@@ -1168,7 +1168,10 @@ const RequestInformation = (props) => {
             <Col span={6} />
           </Row>
           <Form.Item name="attachments">
-            <AddAttachments selectedTypeName={selectedTypeName} />
+            <AddAttachments
+              viewingAttachmentList={viewingAttachmentList}
+              selectedTypeName={selectedTypeName}
+            />
           </Form.Item>
         </Form>
         <div className={styles.footer}>

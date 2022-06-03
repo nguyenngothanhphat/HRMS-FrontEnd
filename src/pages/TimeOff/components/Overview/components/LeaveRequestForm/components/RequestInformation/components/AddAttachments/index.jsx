@@ -4,8 +4,14 @@ import { connect } from 'umi';
 import BlueAddIcon from '@/assets/dashboard/blueAdd.svg';
 import s from './index.less';
 
-const AddAttachments = ({ onChange, dispatch, loading = false, selectedTypeName = '' }) => {
-  const [list, setList] = useState([]);
+const AddAttachments = ({
+  onChange,
+  dispatch,
+  loading = false,
+  selectedTypeName = '',
+  viewingAttachmentList = [],
+}) => {
+  const [list, setList] = useState([...viewingAttachmentList]);
 
   const handleFieldChange = (fieldValue) => {
     const newItem = {
@@ -55,7 +61,7 @@ const AddAttachments = ({ onChange, dispatch, loading = false, selectedTypeName 
   };
 
   const handleDeleteBtn = (id) => {
-    const newList = list.filter((item) => item.id !== id);
+    const newList = list.filter((item) => item.attachmentId !== id);
     setList([...newList]);
   };
 
@@ -100,7 +106,7 @@ const AddAttachments = ({ onChange, dispatch, loading = false, selectedTypeName 
                   alt="remove"
                   className={s.iconDelete}
                   onClick={() => {
-                    handleDeleteBtn(item.id);
+                    handleDeleteBtn(item.attachmentId);
                   }}
                 />
               </div>

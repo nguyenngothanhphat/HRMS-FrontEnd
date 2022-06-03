@@ -171,12 +171,12 @@ class RequestInformation extends PureComponent {
               };
 
               return (
-                <span className={styles.attachments__file}>
+                <div className={styles.attachments__file}>
                   <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
                     {attachmentSlice()}
                   </a>
                   <img className={styles.attachmentsImg} src={PDFIcon} alt="pdf" />
-                </span>
+                </div>
               );
             })
           : 'N/A'}
