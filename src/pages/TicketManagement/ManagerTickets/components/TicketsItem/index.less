@@ -1,32 +1,6 @@
-.TableTickets {
-  padding: 24px 24px 0 24px;
-  .priority {
-    display: flex;
-    justify-content: flex-start;
-    .priorityTag {
-      width: fit-content;
-      padding: 4px 8px;
-      font-size: 11px;
-      text-align: center;
-      border-radius: 12px;
-    }
-    .priorityHigh {
-      .priorityTag();
-      background: #ffb6b6;
-    }
-    .priorityMedium {
-      .priorityTag();
-      background: #eefffb;
-    }
-    .priorityUrgent {
-      .priorityTag();
-      background: #ff8484;
-    }
-    .priorityLow {
-      .priorityTag();
-      background: #ffe9c5;
-    }
-  }
+.TicketsItem {
+  display: flex;
+  align-items: center;
   .ticketID,
   .userID {
     margin-right: 10px;
@@ -39,10 +13,6 @@
       cursor: pointer;
     }
   }
-  // .iconBtn {
-  //   display: flex;
-  //   align-items: center;
-  // }
   :global {
     .ant-table-thead > tr > th {
       background: #2c6df9 !important;
@@ -64,25 +34,19 @@
         cursor: pointer;
       }
     }
-    // .ant-btn {
-    //   height: 0 !important;
-    //   padding: 0 !important;
-    // }
-  }
-
-  .viewEmpty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 360px;
+    .ant-btn {
+      height: 0 !important;
+      padding: 0 !important;
+    }
   }
 }
+
 .dropdownPopover {
   :global {
     .ant-popover-inner {
       width: 270px;
-
+      height: fit-content;
+      margin-top: 20px;
       padding: 0;
       border: 1px solid #eaecef;
       border-radius: 8px;
@@ -94,6 +58,7 @@
       //   left: -2.5px !important;
       width: 18px;
       height: 18px;
+      margin-top: 20px;
       .ant-popover-arrow-content {
         width: 12px;
         height: 12px;

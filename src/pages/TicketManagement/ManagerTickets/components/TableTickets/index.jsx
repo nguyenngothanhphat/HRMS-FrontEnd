@@ -7,6 +7,7 @@ import { connect, history } from 'umi';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import UserProfilePopover from '@/pages/TicketManagement/components/UserProfilePopover';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
+import TicketsItem from '../TicketsItem';
 import styles from './index.less';
 
 const DropdownSearch = React.lazy(() => import('../DropdownSearch'));
@@ -17,6 +18,7 @@ const TableTickets = (props) => {
     data = [],
     dispatch,
     employee: { _id: employeeId = '' },
+    employee = {},
     locationsList = [],
     textEmpty = 'No tickets found',
     loading = false,
@@ -27,12 +29,13 @@ const TableTickets = (props) => {
     refreshFetchTotalList = () => {},
     employeeFilterList = [],
     loadingFetchEmployee = false,
+    role = '',
   } = props;
-
   const [timezoneListState, setTimezoneListState] = useState([]);
   const [ticket, setTicket] = useState({});
   const [currentTimeState, setCurrentTimeState] = useState(moment());
   const [nameSearch, setNameSearch] = useState('');
+  const [oldName, setOldName] = useState('');
 
   const openViewTicket = (ticketID) => {
     let id = '';
@@ -53,7 +56,7 @@ const TableTickets = (props) => {
     setTicket(result);
   };
 
-  const handleSelectChange = (value) => {
+  const handleSelectChange = (value, newName) => {
     const {
       id = '',
       employee_raise: employeeRaise = '',
@@ -81,6 +84,9 @@ const TableTickets = (props) => {
           attachments,
           departmentAssign,
           employee: employeeId,
+          oldName,
+          newName,
+          role,
         },
       }).then((res) => {
         const { statusCode = '' } = res;
@@ -129,7 +135,8 @@ const TableTickets = (props) => {
       <Suspense fallback={<Spin />}>
         <DropdownSearch
           onChangeSearch={onChangeSearch}
-          employeeFilterList={nameSearch ? employeeFilterList : []}
+          employeeFilterList={employeeFilterList}
+          // employeeFilterList={nameSearch ? employeeFilterList : []}
           handleSelectChange={handleSelectChange}
           loading={loadingFetchEmployee}
         />
@@ -352,19 +359,16 @@ const TableTickets = (props) => {
         render: (employeeAssignee, row) => {
           if (employeeAssignee) {
             return (
-              <UserProfilePopover
-                placement="top"
-                trigger="hover"
-                data={{ ...employeeAssignee, ...employeeAssignee?.generalInfo }}
-              >
-                <span
-                  className={styles.userID}
-                  style={{ color: '#2c6df9' }}
-                  onClick={() => viewProfile(employeeAssignee?.generalInfo?.userId || '')}
-                >
-                  {employeeAssignee?.generalInfo?.legalName}
-                </span>
-              </UserProfilePopover>
+              <TicketsItem
+                employeeAssignee={employeeAssignee}
+                renderMenuDropdown={renderMenuDropdown}
+                viewProfile={viewProfile}
+                handleClickSelect={handleClickSelect}
+                refreshFetchTicketList={refreshFetchTicketList}
+                refreshFetchTotalList={refreshFetchTotalList}
+                row={row}
+                setOldAssignName={setOldName}
+              />
             );
           }
           return (
@@ -410,23 +414,28 @@ const TableTickets = (props) => {
   }, [JSON.stringify(companyLocationList)]);
 
   useEffect(() => {
+    const roleEmployee = employee && employee?.title ? employee.title.roles : [];
+    const companyInfo = employee ? employee.company : {};
     const payload = {
-      status: 'ACTIVE',
+      status: ['ACTIVE'],
+      roles: roleEmployee,
+      employee: employeeId,
+      company: [companyInfo],
     };
-    if (nameSearch) {
-      payload.name = nameSearch;
-      dispatch({
-        type: 'ticketManagement/searchEmployee',
-        payload,
-      });
-    } else {
-      dispatch({
-        type: 'ticketManagement/save',
-        payload: {
-          employeeFilterList: [],
-        },
-      });
-    }
+    // if (nameSearch) {
+    payload.name = nameSearch;
+    dispatch({
+      type: 'ticketManagement/searchEmployee',
+      payload,
+    });
+    // } else {
+    //   dispatch({
+    //     type: 'ticketManagement/save',
+    //     payload: {
+    //       employeeFilterList: [],
+    //     },
+    //   });
+    // }
   }, [nameSearch]);
 
   const pagination = {
