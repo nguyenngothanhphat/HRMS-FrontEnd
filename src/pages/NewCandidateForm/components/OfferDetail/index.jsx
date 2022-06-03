@@ -50,7 +50,6 @@ const OfferDetail = (props) => {
 
   const [defaultTemplates, setDefaultTemplates] = useState(defaultTemplatesProp || []);
   const [customTemplates, setCustomTemplates] = useState(customTemplatesProp || []);
-  const [documentList, setDocumentList] = useState(documentListProps);
 
   const [templateList, setTemplateList] = useState(
     [...defaultTemplatesProp, ...customTemplatesProp] || [],
@@ -230,7 +229,7 @@ const OfferDetail = (props) => {
         includeOffer: 3,
         tenantId: getCurrentTenant(),
         offerLetterTemplate: key,
-        currentStep: 6,
+        currentStep: ONBOARDING_STEPS.OFFER_LETTER,
       },
     });
   };
@@ -289,7 +288,7 @@ const OfferDetail = (props) => {
       type: 'newCandidateForm/updateByHR',
       payload: {
         candidate: _id,
-        currentStep: 7,
+        currentStep: ONBOARDING_STEPS.OFFER_LETTER,
         includeOffer: 3,
         tenantId: getCurrentTenant(),
         expiryDate: expiryDateProp || moment().add('15', 'days'),
@@ -305,7 +304,7 @@ const OfferDetail = (props) => {
           candidate: _id,
           includeOffer: 3,
         },
-        currentStep: 7,
+        currentStep: ONBOARDING_STEPS.OFFER_LETTER,
       },
     });
 
@@ -340,7 +339,7 @@ const OfferDetail = (props) => {
         type: 'newCandidateForm/updateByHR',
         payload: {
           candidate,
-          currentStep: 7,
+          currentStep: ONBOARDING_STEPS.OFFER_LETTER,
           offerLetter: templateID,
           tenantId: getCurrentTenant(),
           processStatus:
@@ -502,7 +501,7 @@ const OfferDetail = (props) => {
         candidate,
         tenantId: getCurrentTenant(),
         offerDocuments: newOfferDocumentsProp,
-        currentStep: 6,
+        currentStep: ONBOARDING_STEPS.OFFER_LETTER,
       },
     });
     handleModalVisible(false);
@@ -530,7 +529,7 @@ const OfferDetail = (props) => {
         candidate,
         tenantId: getCurrentTenant(),
         offerDocuments: newOfferDocumentsProp,
-        currentStep: 6,
+        currentStep: ONBOARDING_STEPS.OFFER_LETTER,
       },
     });
   };
@@ -559,7 +558,7 @@ const OfferDetail = (props) => {
         candidate,
         tenantId: getCurrentTenant(),
         expiryDate: val,
-        currentStep: 6,
+        currentStep: ONBOARDING_STEPS.OFFER_LETTER,
       },
     });
   };

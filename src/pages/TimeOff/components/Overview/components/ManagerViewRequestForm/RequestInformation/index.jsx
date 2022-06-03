@@ -469,7 +469,8 @@ class RequestInformation extends PureComponent {
                 </>
               ) : (
                 <>
-                  {projectsList.map((project) => {
+                  {projectsList.map((x) => {
+                    const { project = {} } = x;
                     const {
                       projectName: prName = '',
                       projectManager: {

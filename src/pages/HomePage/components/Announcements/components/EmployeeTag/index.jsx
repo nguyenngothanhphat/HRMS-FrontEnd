@@ -1,40 +1,29 @@
 import { Col } from 'antd';
+import moment from 'moment';
 import React from 'react';
 import { connect, history } from 'umi';
-import moment from 'moment';
 import MockAvatar from '@/assets/dashboard/mockAvatar.jpg';
 import styles from './index.less';
-import { getTimezoneViaCity } from '@/utils/times';
 
 const EmployeeTag = (props) => {
   const {
     employee: {
       generalInfoInfo: { avatar = '', legalName = '', userId = '', website = '' } = {} || {},
-      location: { state = '', countryName = '' } = {},
-      locationInfo,
       titleInfo = {} || {},
     } = {} || {},
     createDate,
   } = props;
 
-  const {
-    headQuarterAddress: { state: state1 = '', country: { name: countryName1 = '' } = {} } = {},
-  } = locationInfo || {};
-
   const onViewProfileClick = () => {
     if (website) {
       window.open(website, '_blank');
     } else if (userId) {
-      history.push(`/directory/employee-profile/${userId}/general-info`);
+      history.push(`/directory/employee-profile/${userId}`);
     }
   };
 
   const Timestamp = () => {
-    const getTimezone =
-      getTimezoneViaCity(state || state1) || getTimezoneViaCity(countryName || countryName1) || '';
-    const timezone =
-      getTimezone !== '' ? getTimezone : Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const date = moment(createDate).tz(timezone).locale('en').format('MMMM DD YYYY, HH:mm A');
+    const date = moment(createDate).locale('en').format('MMMM DD YYYY, HH:mm A');
     return <span className={styles.timestamp}>{date}</span>;
   };
 

@@ -1,7 +1,7 @@
 import { Col, Form, notification, Row, Skeleton } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_STEPS } from '@/utils/onboarding';
 import { getCurrentTenant } from '@/utils/authority';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NewNoteComponent';
@@ -60,7 +60,7 @@ class SalaryStructure extends PureComponent {
           type: 'newCandidateForm/updateByHR',
           payload: {
             candidate,
-            currentStep: 2,
+            currentStep: ONBOARDING_STEPS.DOCUMENT_VERIFICATION,
           },
         });
       }

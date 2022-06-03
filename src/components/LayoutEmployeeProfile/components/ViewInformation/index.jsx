@@ -1,7 +1,7 @@
 import { Button, Checkbox, Divider, Dropdown, Input, Menu, Tag, Tooltip } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
-import avtDefault from '@/assets/avtDefault.jpg';
+import avtDefault from '@/assets/defaultAvatar.png';
 import bioSvg from '@/assets/bioActions.svg';
 import CustomModal from '@/components/CustomModal';
 import s from '@/components/LayoutEmployeeProfile/index.less';
