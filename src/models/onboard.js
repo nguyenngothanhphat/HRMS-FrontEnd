@@ -783,7 +783,7 @@ const onboard = {
         return {};
       }
     },
-    *fetchHRList(
+    *fetchEmployeeList(
       { payload: { company = [], department = [], location = [] } = {} },
       { call, put },
     ) {

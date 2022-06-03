@@ -23,6 +23,7 @@ const TicketQueue = (props) => {
       departmentInfo: { _id: idDepart = '' },
       location: { headQuarterAddress: { country = '' } = {} } = {},
     } = {},
+    role = '',
   } = props;
 
   const [pageSelected, setPageSelected] = useState(1);
@@ -131,6 +132,7 @@ const TicketQueue = (props) => {
           getPageAndSize={getPageAndSize}
           refreshFetchData={initDataTable}
           refreshFetchTotalList={fetchTotalList}
+          role={role}
         />
       </div>
     </>

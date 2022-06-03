@@ -19,6 +19,7 @@ const EmployeeTicket = (props) => {
     totalList = [],
     tabName = '',
     permissions = [],
+    role = '',
   } = props;
 
   const [selectedLocationsState, setSelectedLocationsState] = useState([getCurrentLocation()]);
@@ -115,10 +116,20 @@ const EmployeeTicket = (props) => {
           tabBarExtraContent={renderFilterLocation()}
         >
           <TabPane tab="Ticket Queue" key="ticket-queue">
-            <TicketQueue data={listOffAllTicket} countData={totalList} permissions={permissions} />
+            <TicketQueue
+              role={role}
+              data={listOffAllTicket}
+              countData={totalList}
+              permissions={permissions}
+            />
           </TabPane>
           <TabPane tab="My Tickets" key="my-tickets">
-            <MyTickets data={listOffAllTicket} countData={totalList} permissions={permissions} />
+            <MyTickets
+              role={role}
+              data={listOffAllTicket}
+              countData={totalList}
+              permissions={permissions}
+            />
           </TabPane>
         </Tabs>
       </PageContainer>

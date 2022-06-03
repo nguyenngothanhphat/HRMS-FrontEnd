@@ -90,6 +90,12 @@ export async function getListEmployee(payload) {
     data: payload,
   });
 }
+export async function getListMyTeam(payload) {
+  return request('/api/employeetenant/list-myteam', {
+    method: 'POST',
+    data: payload,
+  });
+}
 export async function getDepartmentList(payload) {
   return request('/api/departmenttenant/list', {
     method: 'POST',
@@ -108,4 +114,16 @@ export async function getSupportTeamList(payload) {
     method: 'GET',
     params: payload,
   });
+}
+
+export async function deleteOneTicket(payload) {
+  return request(
+    '/api-ticket/tickettenant/delete-one',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.TICKET_API,
+  );
 }

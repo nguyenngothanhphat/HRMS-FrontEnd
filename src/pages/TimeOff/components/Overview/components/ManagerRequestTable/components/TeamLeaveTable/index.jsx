@@ -104,7 +104,7 @@ class TeamLeaveTable extends PureComponent {
               content={<UserProfile category={category} employeeId={employee.employeeId} />}
               trigger="hover"
             >
-              <span>{employee?.generalInfo?.legalName}</span>
+              <span style={{ cursor: 'pointer' }}>{employee?.generalInfo?.legalName}</span>
             </Popover>
           );
         },
@@ -180,7 +180,12 @@ class TeamLeaveTable extends PureComponent {
             return (
               <div className={styles.rowAction}>
                 <Tooltip title="View">
-                  <img src={OpenIcon} onClick={() => this.onOpenClick(record._id)} alt="open" />
+                  <Link
+                    to={`/time-off/overview/manager-timeoff/view/${record._id}`}
+                    className={styles.ID}
+                  >
+                    <img src={OpenIcon} alt="open" />
+                  </Link>
                 </Tooltip>
                 {isMyTicket && (
                   <>

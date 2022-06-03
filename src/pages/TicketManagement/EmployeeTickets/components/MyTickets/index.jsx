@@ -22,6 +22,7 @@ const MyTickets = (props) => {
       location: { headQuarterAddress: { country = '' } = {} } = {},
     } = {},
     dispatch,
+    role = '',
   } = props;
 
   const dataTableEmployee = data.filter((item) => {
@@ -164,6 +165,9 @@ const MyTickets = (props) => {
           pageSelected={pageSelected}
           size={size}
           getPageAndSize={getPageAndSize}
+          role={role}
+          refreshFetchData={initDataTable}
+          refreshFetchTotalList={fetchTotalList}
         />
       </div>
     </>

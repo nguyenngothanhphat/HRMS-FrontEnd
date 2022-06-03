@@ -17,6 +17,7 @@ const AllTicket = (props) => {
     totalList: countData = [],
     selectedLocations = [],
     permissions = [],
+    role = '',
   } = props;
 
   const [selectedFilterTab, setSelectedFilterTab] = useState('1');
@@ -149,6 +150,7 @@ const AllTicket = (props) => {
       </div>
       <TableTickets
         data={data}
+        role={role}
         loading={loadingFetchTicketList || loadingFetchTotalList}
         pageSelected={pageSelected}
         size={size}

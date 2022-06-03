@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Modal, Form, Button, Select } from 'antd';
+import { Modal, Form, Button, Select, Input } from 'antd';
 import { connect } from 'umi';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
@@ -102,7 +102,7 @@ class ReassignModal extends PureComponent {
       });
     }
     dispatch({
-      type: 'onboard/fetchHRList',
+      type: 'onboard/fetchEmployeeList',
       payload: {
         company: companyPayload,
         department: ['HR'],
@@ -146,25 +146,26 @@ class ReassignModal extends PureComponent {
       generalInfo: {
         avatar = '',
         // workEmail = '',
-        firstName = '',
-        middleName = '',
-        lastName = '',
+        legalName = '',
       } = {},
     } = hr;
-    const fullName = `${firstName} ${middleName ? `${middleName} ` : ''}${lastName}`;
+
     return (
       <Option key={hr._id} value={hr._id} style={{ padding: '10px' }}>
         <div
           style={{
-            display: 'inline',
+            display: 'inline-block',
             marginRight: '10px',
+            width: 25,
+            height: 25,
           }}
         >
           <img
             style={{
+              width: 25,
+              height: 25,
+              objectFit: 'cover',
               borderRadius: '50%',
-              width: '25px',
-              height: '25px',
             }}
             src={avatar}
             alt="user"
@@ -174,7 +175,7 @@ class ReassignModal extends PureComponent {
           />
         </div>
         <span style={{ fontSize: '13px', color: '#161C29' }} className={styles.ccEmail}>
-          {fullName}
+          {legalName}
         </span>
       </Option>
     );
@@ -186,7 +187,7 @@ class ReassignModal extends PureComponent {
       handleReassignModal = () => {},
       hrList = [],
       currentEmpId = '',
-      // reassignTicketId = '',
+      currentEmpName = '',
       loadingReassign = false,
     } = this.props;
     const { selectedEmployee } = this.state;
@@ -224,20 +225,14 @@ class ReassignModal extends PureComponent {
             id="myForm"
             onFinish={this.onFinish}
             initialValues={{
-              from: currentEmpId,
+              from: currentEmpName,
             }}
           >
             <Form.Item label="From" name="from" labelCol={{ span: 24 }}>
-              <Select disabled>
-                {hrList.map((hr) => {
-                  return this.renderHR(hr);
-                })}
-              </Select>
+              <Input disabled />
             </Form.Item>
             <Form.Item label="To" name="to" labelCol={{ span: 24 }}>
               <Select
-                // filterOption={(input, option) =>
-                //   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 filterOption={(input, option) => {
                   return (
                     option.children[1].props.children.toLowerCase().indexOf(input.toLowerCase()) >=
