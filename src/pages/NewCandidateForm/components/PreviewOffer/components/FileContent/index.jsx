@@ -11,7 +11,6 @@ const documentWarning = (msg) => (
 );
 
 const FileContent = (props) => {
-  const [currentPage] = useState(1);
   const [numPages, setNumPages] = useState(null);
 
   // eslint-disable-next-line no-shadow
@@ -30,7 +29,7 @@ const FileContent = (props) => {
         noData={documentWarning('URL is not available.')}
       >
         {Array.from(new Array(numPages), (el, index) => (
-          <Page pageNumber={currentPage} key={`page_${index + 1}`} />
+          <Page key={`page_${index + 1}`} pageNumber={index + 1} />
         ))}
       </Document>
     </div>
