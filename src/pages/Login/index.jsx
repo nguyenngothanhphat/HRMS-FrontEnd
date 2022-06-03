@@ -27,7 +27,15 @@ class FormLogin extends Component {
   }
 
   componentDidMount = () => {
-    const { dispatch } = this.props;
+    const { location, dispatch } = this.props;
+    const query = new URLSearchParams(location.search);
+    const email = query.get('email');
+
+    if (email) {
+      this.formRef.current.setFieldsValue({
+        userEmail: email,
+      });
+    }
     removeLocalStorage();
     dispatch({ type: 'login/getURLGoogle' });
     dispatch({ type: 'login/getURLLollypop' });
