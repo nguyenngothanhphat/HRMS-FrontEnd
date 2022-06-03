@@ -39,7 +39,7 @@ const EmployeeTag = (props) => {
   };
 
   return (
-    <Col className={styles.EmployeeTag} span={12} onClick={onViewProfileClick}>
+    <Col className={styles.EmployeeTag} span={24} onClick={onViewProfileClick}>
       <div className={styles.container}>
         <div className={styles.avatar}>
           <img src={avatar || MockAvatar} alt="" />
