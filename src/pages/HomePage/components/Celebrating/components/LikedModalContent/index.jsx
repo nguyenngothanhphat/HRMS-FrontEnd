@@ -15,9 +15,9 @@ const LikedModalContent = (props) => {
   };
 
   const renderUser = (user) => {
-    const { legalName = '', avatar = '', userId = '' } = user?.employeeInfo?.generalInfoInfo || {};
-    const { name: titleName = '' } = user?.employeeInfo?.titleInfo || {};
-    const { _id = '' } = user.employeeInfo || {};
+    const { legalName = '', avatar = '', userId = '' } = user?.generalInfoInfo || {};
+    const { name: titleName = '' } = user?.titleInfo || {};
+    const { _id = '' } = user || {};
     const isMe = _id === employee?._id;
 
     return (

@@ -329,6 +329,8 @@ const routes = [
           {
             path: '/onboarding/list/view/:reId',
             redirect: '/onboarding/list/view/:reId/basic-information',
+            hideInMenu: true,
+            name: 'Add a team member',
           },
           {
             path: '/onboarding/newJoinees/view-detail/:userId',
@@ -545,6 +547,7 @@ const routes = [
             authority: [
               'P_TIMEOFF_T_TEAM_REQUEST_HR_VIEW',
               'P_TIMEOFF_T_TEAM_REQUEST_MANAGER_VIEW',
+              OWNER
             ],
           },
 

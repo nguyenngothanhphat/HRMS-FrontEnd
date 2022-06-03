@@ -70,7 +70,7 @@ const FilterContent = (props) => {
 
   const onFinishDebounce = debounce((values) => {
     const filteredObj = Object.entries(values).filter(
-      ([key, value]) => value !== undefined && value.length > 0,
+      ([, value]) => value !== undefined && value.length > 0,
     );
     const newObj = Object.fromEntries(filteredObj);
     setApplied(Object.keys(newObj).length);

@@ -61,7 +61,9 @@ const AddTaskModal = (props) => {
 
   useEffect(() => {
     if (visible) {
-      fetchProjectList();
+      if (projectList.length === 0) {
+        fetchProjectList();
+      }
       if (date) {
         form.setFieldsValue({
           date: moment(date),
@@ -230,7 +232,7 @@ const AddTaskModal = (props) => {
                           ))}
                         </Select>
                       ) : (
-                        <Input placeholder="Enter the task name" maxLength={150} />
+                        <Input placeholder="Enter the task name" maxLength={100} />
                       )}
                     </Form.Item>
                   </Col>
@@ -341,7 +343,15 @@ const AddTaskModal = (props) => {
               </>
             ))}
             {mode === 'multiple' && (
-              <div className={styles.addButton} onClick={() => add()}>
+              <div
+                className={styles.addButton}
+                onClick={() => {
+                  const values = form.getFieldsValue();
+                  add({
+                    projectId: values.tasks[fields.length - 1].projectId,
+                  });
+                }}
+              >
                 <img src={AddIcon} alt="" />
                 <span>Add another task</span>
               </div>
@@ -400,6 +410,7 @@ const AddTaskModal = (props) => {
         onCancel={handleCancel}
         destroyOnClose
         width={650}
+        maskClosable={false}
         footer={
           <>
             <Button className={styles.btnCancel} onClick={handleCancel}>

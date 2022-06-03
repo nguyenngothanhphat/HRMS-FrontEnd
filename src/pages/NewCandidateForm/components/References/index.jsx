@@ -232,7 +232,11 @@ const References = (props) => {
                               {fields.map(({ key, name }, index) => (
                                 <Col span={24} key={key}>
                                   <div>
-                                    <ReferenceForm name={name} index={index} />
+                                    <ReferenceForm
+                                      name={name}
+                                      index={index}
+                                      references={references}
+                                    />
                                     {numReferences > index + 1 && (
                                       <Divider className={styles.divider} />
                                     )}

@@ -109,7 +109,7 @@ const MyTickets = (props) => {
 
   const handleFilterCounts = (values) => {
     const filteredObj = Object.entries(values).filter(
-      ([key, value]) => (value !== undefined && value?.length > 0) || value?.isValid,
+      ([, value]) => (value !== undefined && value?.length > 0) || value?.isValid,
     );
     const newObj = Object.fromEntries(filteredObj);
     setApplied(Object.keys(newObj).length);
@@ -118,6 +118,13 @@ const MyTickets = (props) => {
 
   useEffect(() => {
     initDataTable();
+    return () => {
+      setApplied(0);
+      setIsFiltering(false);
+      dispatch({
+        type: 'ticketManagement/clearFilter',
+      });
+    };
   }, [pageSelected, size, selectedFilterTab, nameSearch, JSON.stringify(selectedLocations)]);
 
   useEffect(() => {
@@ -148,6 +155,7 @@ const MyTickets = (props) => {
               handleFilterCounts={handleFilterCounts}
               setForm={setForm}
               isFiltering={isFiltering}
+              selectedFilterTab={selectedFilterTab}
             />
           </div>
         </div>

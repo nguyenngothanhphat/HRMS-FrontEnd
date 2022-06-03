@@ -12,7 +12,7 @@ const documentWarning = (msg) => (
 
 const FileContent = (props) => {
   const [currentPage] = useState(1);
-  const [numPages, setNumPages] = useState(1);
+  const [numPages, setNumPages] = useState(null);
 
   // eslint-disable-next-line no-shadow
   const onLoadSuccess = ({ numPages }) => {
@@ -24,13 +24,14 @@ const FileContent = (props) => {
   return (
     <div className={s.viewFile}>
       <Document
-        // file="http://api-stghrms.paxanimi.ai/api/attachments/5f7d4f3825b10e8b115d3e27/PR_report1_Jenny%20Wong.pdff"
         file={url}
         onLoadSuccess={onLoadSuccess}
         loading={documentWarning('Loading document. Please wait...')}
         noData={documentWarning('URL is not available.')}
       >
-        <Page pageNumber={currentPage} />
+        {Array.from(new Array(numPages), (el, index) => (
+          <Page pageNumber={currentPage} key={`page_${index + 1}`} />
+        ))}
       </Document>
     </div>
   );

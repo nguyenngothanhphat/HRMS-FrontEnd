@@ -10,9 +10,14 @@
   border-left: 6px solid #04aa6d !important;
   border-radius: 6px;
   margin-inline: 16px;
+
   .container {
     padding-inline: 16px;
-    padding-block: 10px;
+    padding-block: 12px;
+  }
+  &:hover {
+    border: 1px solid #04aa6d57 !important;
+    border-left: 6px solid #04aa6d !important;
   }
   .alignCenter {
     display: flex;
@@ -23,20 +28,22 @@
     flex-direction: row;
     align-items: top !important;
     font-size: 13px;
+    line-height: 22px;
   }
   .flexCell {
     display: flex;
     flex-direction: row;
     align-items: center !important;
-    margin-top: -6px;
+    margin-top: -1px;
     font-size: 13px;
     .activityIcon {
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-width: 32px;
-      height: 32px;
+      min-width: 28px;
+      height: 28px;
+      margin-top: -1px;
       margin-right: 12px;
       background: #a42ba8;
       border: 1px solid rgba(255, 255, 255, 0);
@@ -66,10 +73,16 @@
   .actionsButton {
     display: flex;
     align-items: center;
+    height: 32px;
+    margin-top: -3px;
     cursor: pointer;
     &:hover {
       opacity: 0.9;
       transition: 0.3s;
+    }
+    img {
+      height: 100%;
+      object-fit: cover;
     }
   }
   :global {
@@ -96,6 +109,19 @@
       font-weight: normal;
       font-size: 13px;
       line-height: 22px;
+    }
+  }
+}
+
+.ActivityCard_hover {
+  .ActivityCard();
+  &:hover {
+    z-index: 10;
+    height: 44px !important;
+    border: 1px solid #04aa6d57 !important;
+    border-left: 6px solid #04aa6d !important;
+    .container {
+      padding-block: 10px !important;
     }
   }
 }
