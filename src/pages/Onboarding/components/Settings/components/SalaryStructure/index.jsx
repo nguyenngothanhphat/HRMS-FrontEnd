@@ -376,21 +376,26 @@ const SalaryStructure = (props) => {
         </div>
       </div>
 
-      <div className={styles.radioGroup}>
-        <Radio.Group
-          value={
-            listSalary.length > 0 ? listSalary[0].option : SALARY_STRUCTURE_OPTION.SALARY_COMPONENTS
-          }
-          onChange={onChangeSalaryType}
-        >
-          <Radio value={SALARY_STRUCTURE_OPTION.SALARY_COMPONENTS}>
-            Enter the Salary Components Individually
-          </Radio>
-          <Radio value={SALARY_STRUCTURE_OPTION.TOTAL_COMPENSATION}>
-            Enter the Total Compensation
-          </Radio>
-        </Radio.Group>
-      </div>
+      {/* only show for india  */}
+      {selectedCountry === 'IN' && (
+        <div className={styles.radioGroup}>
+          <Radio.Group
+            value={
+              listSalary.length > 0
+                ? listSalary[0].option
+                : SALARY_STRUCTURE_OPTION.SALARY_COMPONENTS
+            }
+            onChange={onChangeSalaryType}
+          >
+            <Radio value={SALARY_STRUCTURE_OPTION.SALARY_COMPONENTS}>
+              Enter the Salary Components Individually
+            </Radio>
+            <Radio value={SALARY_STRUCTURE_OPTION.TOTAL_COMPENSATION}>
+              Enter the Total Compensation
+            </Radio>
+          </Radio.Group>
+        </div>
+      )}
 
       <div className={styles.tableSalary}>
         {selectedCountry === 'VN' ? (

@@ -36,6 +36,7 @@ class OnboardTable extends Component {
     this.state = {
       reassignModalVisible: false,
       currentEmpId: '',
+      currentEmpName: '',
       reassignTicketId: '',
       reassignStatus: '',
       reassignType: '',
@@ -413,6 +414,7 @@ class OnboardTable extends Component {
           const payload = {
             id,
             assignToId: assignTo?._id,
+            assignToName: assignTo?.generalInfo?.legalName,
             type,
             actionText,
             processStatusId,
@@ -446,6 +448,7 @@ class OnboardTable extends Component {
     const {
       id = '',
       assignToId: currentEmpId = '',
+      assignToName: currentEmpName = '',
       type = '',
       actionText = '',
       processStatusId = '',
@@ -532,7 +535,14 @@ class OnboardTable extends Component {
           <Menu.Item>
             <div
               onClick={() =>
-                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)}
+                this.handleReassignModal(
+                  true,
+                  currentEmpId,
+                  currentEmpName,
+                  id,
+                  processStatusId,
+                  type,
+                )}
               className={styles.actionText}
             >
               Re-assign
@@ -617,10 +627,11 @@ class OnboardTable extends Component {
 
   // end
 
-  handleReassignModal = (value, currentEmpId, id, processStatusId, type) => {
+  handleReassignModal = (value, currentEmpId, currentEmpName, id, processStatusId, type) => {
     this.setState({
       reassignModalVisible: value,
       currentEmpId,
+      currentEmpName,
       reassignTicketId: id,
       reassignStatus: processStatusId,
       reassignType: type,
@@ -720,7 +731,7 @@ class OnboardTable extends Component {
 
     const { columnArr, type, inTab, hasCheckbox, loading, loadingFetch, loadingSearch } =
       this.props;
-    const { openModalName } = this.state;
+    const { openModalName, currentEmpName } = this.state;
 
     return (
       <>
@@ -759,6 +770,7 @@ class OnboardTable extends Component {
         <ReassignModal
           visible={reassignModalVisible}
           currentEmpId={currentEmpId}
+          currentEmpName={currentEmpName}
           reassignTicketId={reassignTicketId}
           handleReassignModal={this.handleReassignModal}
           type={reassignType}

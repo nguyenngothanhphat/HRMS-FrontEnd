@@ -1,18 +1,16 @@
+/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-nested-ternary */
 import { Table } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { projectColor, convertMsToTime } from '@/utils/timeSheet';
-import CompleteIcon from '@/assets/timeSheet/complete.svg';
+import { projectColor, convertMsToTime, VIEW_TYPE } from '@/utils/timeSheet';
 import AirPlanIcon from '@/assets/timeSheet/airplanIcon.svg';
-import FailIcon from '@/assets/timeSheet/fail.svg';
-import PendingIcon from '@/assets/timeSheet/pending.svg';
 import TaskPopover from './components/TaskPopover';
 import TimeoffPopover from './components/TimeoffPopover';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
 import EmptyComponent from '@/components/Empty';
-
+import CellMenu from './components/CellMenu';
 import styles from './index.less';
 
 const WeeklyTable = (props) => {
@@ -22,9 +20,12 @@ const WeeklyTable = (props) => {
     loadingFetchMyTimesheetByType = false,
     data = [],
     timeoffList = [],
+    setSelectedDate = () => {},
+    setSelectedView = () => {},
   } = props;
   const [dateList, setDateList] = useState([]);
   const [formattedData, setFormattedData] = useState([]);
+  const [popup, setPopup] = useState({ visible: false, x: 0, y: 0 });
 
   // FUNCTIONS
   // get dates between two dates
@@ -73,60 +74,6 @@ const WeeklyTable = (props) => {
 
   // RENDER UI
   // BODY
-  const getIcon = (key) => {
-    switch (key) {
-      case 'pending':
-        return PendingIcon;
-      case 'completed':
-        return CompleteIcon;
-      case 'rejected':
-        return FailIcon;
-
-      default:
-        return PendingIcon;
-    }
-  };
-
-  const getBackgroundColor = (key) => {
-    switch (key) {
-      case 'pending':
-        return '#FFFBF5';
-      case 'completed':
-        return '#F4FFFD';
-      case 'rejected':
-        return '#FFF4F4';
-
-      default:
-        return '#fff';
-    }
-  };
-
-  const getTitleColor = (key) => {
-    switch (key) {
-      case 'pending':
-        return '#FFA100;';
-      case 'completed':
-        return '#00C598';
-      case 'rejected':
-        return '#F44E21';
-
-      default:
-        return '#000';
-    }
-  };
-
-  const renderEventColumn = (type = 'completed') => {
-    return (
-      <div className={styles.eventColumn} style={{ backgroundColor: getBackgroundColor(type) }}>
-        <img src={getIcon(type)} alt="" />
-        <span className={styles.title} style={{ color: getTitleColor(type) }}>
-          Leave Applied
-        </span>
-        <span className={styles.description}>Waiting for approval</span>
-      </div>
-    );
-  };
-
   const renderDateHeaderItem = (date) => {
     return (
       <div className={styles.timeStamp}>
@@ -143,15 +90,35 @@ const WeeklyTable = (props) => {
     );
   };
 
-  const renderHoliday = (date) => {
-    return <div className={styles.holidayColumn}>{renderDateHeaderItem(date)}</div>;
-  };
-
   const renderTitle = (title, type) => {
     if (type === 1) return title;
     if (type === 3) return <span className={styles.totalHeader}>{title}</span>;
     return renderDateHeaderItem(title);
   };
+
+  const onViewDetail = (date) => {
+    setSelectedDate(moment(date, 'MM/DD/YYYY'));
+    setSelectedView(VIEW_TYPE.D);
+  };
+
+  const onCell = () => ({
+    // temporarily disable the cell menu
+    // onContextMenu: (event) => {
+    //   event.preventDefault();
+    //   if (!popup.visible) {
+    //     document.addEventListener(`click`, function onClickOutside() {
+    //       setPopup({ visible: false });
+    //       document.removeEventListener(`click`, onClickOutside);
+    //     });
+    //   }
+    //   setPopup({
+    //     onClick,
+    //     visible: true,
+    //     x: event.clientX - 60,
+    //     y: event.clientY - document.body.scrollTop,
+    //   });
+    // },
+  });
 
   const columns = () => {
     const dateColumns = dateList.map((date) => {
@@ -161,6 +128,7 @@ const WeeklyTable = (props) => {
         key: date,
         align: 'center',
         width: `${100 / 9}%`,
+        onCell: () => onCell(() => onViewDetail(date)),
         render: (_, row) => {
           const { projectName = '', days = [] } = row;
 
@@ -332,6 +300,7 @@ const WeeklyTable = (props) => {
       </div>
     );
   };
+
   // MAIN AREA
   return (
     <div className={styles.WeeklyTable}>
@@ -348,6 +317,7 @@ const WeeklyTable = (props) => {
             emptyText: <EmptyComponent />,
           }}
         />
+        <CellMenu {...popup} />
       </div>
     </div>
   );

@@ -38,7 +38,7 @@ const LeaveInformation = (props) => {
 
   const renderCircleProgress = () => (
     <div className={styles.circleProgress}>
-      <span className={styles.percentValue}>{overview?.remaining || 'N/A'}</span>
+      <span className={styles.percentValue}>{overview?.remaining || 0}</span>
       <p className={styles.remainingText}>Remaining</p>
     </div>
   );

@@ -55,6 +55,7 @@ const MonthlyTable = (props) => {
               week={weekItem.week}
               startDate={weekItem.startDate}
               endDate={weekItem.endDate}
+              placement="bottomLeft"
               tasks={find?.timesheet}
             >
               {!find || find?.weekProjectTime === 0 ? (

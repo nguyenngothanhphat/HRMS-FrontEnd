@@ -84,7 +84,7 @@ const NewJoinees = (props) => {
       });
     }
     dispatch({
-      type: 'onboard/fetchHRList',
+      type: 'onboard/fetchEmployeeList',
       payload: {
         company: companyPayload,
         department: ['HR'],
