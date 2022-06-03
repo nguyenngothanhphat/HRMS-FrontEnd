@@ -126,6 +126,7 @@ const EditSalaryVN = (props) => {
         maximum: toNumber(totalCompensation.maximum),
       },
       salary_13th: salary13,
+      option: salaryData.option,
     };
     onOk(data);
   };
