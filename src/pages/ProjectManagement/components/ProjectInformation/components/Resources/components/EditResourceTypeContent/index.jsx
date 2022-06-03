@@ -20,6 +20,7 @@ const EditResourceTypeContent = (props) => {
       division = '',
       comments = '',
       resourceType: { _id = '' } = {},
+      technologies = [],
       id = '',
     } = {},
     projectDetails: {
@@ -106,6 +107,7 @@ const EditResourceTypeContent = (props) => {
           noOfResources,
           billingStatus,
           estimatedEffort,
+          technologies,
           comments,
         }}
       >

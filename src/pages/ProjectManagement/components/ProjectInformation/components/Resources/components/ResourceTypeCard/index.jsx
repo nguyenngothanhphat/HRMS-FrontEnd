@@ -20,6 +20,7 @@ import DeleteResourceTypeContent from '../DeleteResourceTypeContent';
 import AssignResourcesModal from '../AssignResourcesModal';
 import FilterResourceTypeContent from './components/FilterResourceTypeContent';
 import styles from './index.less';
+import ViewResourceTable from '../ViewResourceTable';
 
 const ResourceTypeCard = (props) => {
   const {
@@ -37,10 +38,14 @@ const ResourceTypeCard = (props) => {
   const [addResourceTypeModalVisible, setAddResourceTypeModalVisible] = useState(false);
   const [editResourceTypeModalVisible, setEditResourceTypeModalVisible] = useState(false);
   const [deleteResourceType, setDeleteResourceType] = useState(false);
+  const [viewResourceType, setViewResourceType] = useState(false);
+  const [visiblePopover, setVisiblePopover] = useState(false);
   const [assignResourceModalVisible, setAssignResourceModalVisible] = useState(false);
+  const [resourceTypeId, setResourceTypeId] = useState('');
   const [assigningRecord, setAssigningRecord] = useState({});
   const [editRecord, setEditRecord] = useState({});
   const [deleteRecord, setDeleteRecord] = useState({});
+  const [viewRecord, setViewRecord] = useState({});
 
   const [applied, setApplied] = useState(0);
   // if reselect project status or search, clear filter form
@@ -99,15 +104,27 @@ const ResourceTypeCard = (props) => {
   const renderMenuDropdown = (row) => {
     return (
       <div className={styles.containerDropdown}>
-        <div className={styles.btnActionView}>
+        <div
+          className={styles.btnActionView}
+          onClick={() => {
+            setResourceTypeId('');
+            setViewRecord(row);
+            setViewResourceType(true);
+            setAssignResourceModalVisible(false);
+            setEditResourceTypeModalVisible(false);
+            setDeleteResourceType(false);
+          }}
+        >
           <img src={ViewIcon} alt="" />
           <span>View</span>
         </div>
         <div
           className={styles.btnActionAssign}
           onClick={() => {
+            setResourceTypeId('');
             setAssigningRecord(row);
             setAssignResourceModalVisible(true);
+            setViewResourceType(false);
             setEditResourceTypeModalVisible(false);
             setDeleteResourceType(false);
           }}
@@ -118,8 +135,10 @@ const ResourceTypeCard = (props) => {
         <div
           className={styles.btnActionEdit}
           onClick={() => {
+            setResourceTypeId('');
             setEditRecord(row);
             setEditResourceTypeModalVisible(true);
+            setViewResourceType(false);
             setAssignResourceModalVisible(false);
             setDeleteResourceType(false);
           }}
@@ -130,8 +149,10 @@ const ResourceTypeCard = (props) => {
         <div
           className={styles.btnActionDelete}
           onClick={() => {
+            setResourceTypeId('');
             setDeleteRecord(row);
             setDeleteResourceType(true);
+            setViewResourceType(false);
             setEditResourceTypeModalVisible(false);
             setAssignResourceModalVisible(false);
           }}
@@ -206,7 +227,13 @@ const ResourceTypeCard = (props) => {
         render: (resourceType, row) => {
           return (
             <Popover
-              trigger="hover"
+              trigger="click"
+              visible={row?.resourceType?._id === resourceTypeId}
+              onVisibleChange={
+                resourceTypeId
+                  ? () => setResourceTypeId('')
+                  : () => setVisiblePopover(!visiblePopover)
+              }
               overlayClassName={styles.dropdownPopover}
               content={renderMenuDropdown(row)}
               placement="bottomRight"
@@ -216,6 +243,8 @@ const ResourceTypeCard = (props) => {
                   cursor: 'pointer',
                   color: '#2c6df9',
                 }}
+                onClick={() => setResourceTypeId(row?.resourceType?._id)}
+                onBlur={() => setResourceTypeId('')}
               >
                 <img src={ActionIcon} alt="" />
               </div>
@@ -317,6 +346,25 @@ const ResourceTypeCard = (props) => {
           title="Delete"
           loading={loadingDelete}
         />
+
+        <CommonModal
+          visible={viewResourceType}
+          onClose={() => setViewResourceType(false)}
+          hasFooter={false}
+          withPadding
+          hasHeader={false}
+          width={800}
+          content={
+            <ViewResourceTable
+              visible={deleteResourceType}
+              onClose={() => setViewResourceType(false)}
+              refreshData={refreshResourceType}
+              viewRecord={viewRecord}
+            />
+          }
+          loading={loadingDelete}
+        />
+
         <AssignResourcesModal
           visible={assignResourceModalVisible}
           onClose={() => setAssignResourceModalVisible(false)}
