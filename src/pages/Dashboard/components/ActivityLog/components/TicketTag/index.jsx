@@ -32,17 +32,24 @@ const TicketTag = (props) => {
         <div className={styles.TicketTag}>
           <Row align="middle" justify="space-between">
             {onDate ? (
-              <Col span={24} className={styles.leftPart}>
-                <div className={styles.dateTime}>
-                  <span>{dateTempTimeoff}</span>
-                  <span>{monthTempTimeoff}</span>
-                </div>
-                <div className={styles.content}>
-                  <span className={styles.userId}>[Ticket ID #{ticketIDTimeoff}]</span> Timeoff
-                  Ticket from {moment(fromDate).locale('en').format('MMM DD YYYY')} to{' '}
-                  {moment(toDate).locale('en').format('MMM DD YYYY')} is {status}
-                </div>
-              </Col>
+              <>
+                <Col span={20} className={styles.leftPart}>
+                  <div className={styles.dateTime}>
+                    <span>{dateTempTimeoff}</span>
+                    <span>{monthTempTimeoff}</span>
+                  </div>
+                  <div className={styles.content}>
+                    <span className={styles.userId}>[Ticket ID #{ticketIDTimeoff}]</span> Timeoff
+                    Ticket from {moment(fromDate).locale('en').format('MMM DD YYYY')} to{' '}
+                    {moment(toDate).locale('en').format('MMM DD YYYY')} is {status}
+                  </div>
+                </Col>
+                <Col span={4} className={styles.rightPart} onClick={() => setOpenModal(true)}>
+                  <div className={styles.viewBtn}>
+                    <span>View</span>
+                  </div>
+                </Col>
+              </>
             ) : (
               <>
                 <Col span={20} className={styles.leftPart}>

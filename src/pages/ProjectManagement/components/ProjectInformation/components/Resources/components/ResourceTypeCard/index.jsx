@@ -1,10 +1,13 @@
-import { Button, Card, Tag, Tooltip } from 'antd';
+import { Card, Tag, Tooltip, Popover } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { debounce } from 'lodash';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import ViewIcon from '@/assets/projectManagement/view.svg';
-import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
+import ActionIcon from '@/assets/projectManagement/actionIcon.svg';
+import ViewIcon from '@/assets/projectManagement/viewIcon.svg';
+import EditIcon from '@/assets/projectManagement/editIcon.svg';
+import DeleteIcon from '@/assets/projectManagement/deleteIcon.svg';
+import AssignIcon from '@/assets/projectManagement/assignIcon.svg';
 import OrangeAddButton from '../../../OrangeAddButton';
 import CommonModal from '@/components/CommonModal';
 import CommonTable from '../../../CommonTable';
@@ -12,9 +15,11 @@ import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import AddResourceTypeContent from '../AddResourceTypeContent';
+import DeleteResourceTypeContent from '../DeleteResourceTypeContent';
 import AssignResourcesModal from '../AssignResourcesModal';
 import FilterResourceTypeContent from './components/FilterResourceTypeContent';
 import styles from './index.less';
+import ViewResourceTable from '../ViewResourceTable';
 
 const ResourceTypeCard = (props) => {
   const {
@@ -23,14 +28,25 @@ const ResourceTypeCard = (props) => {
     refreshResourceType = () => {},
     loadingAdd = false,
     setUnfilter = () => {},
+    loadingEdit = false,
+    loadingDelete = false,
   } = props;
 
   // permissions
   const { allowModify = false } = props;
+  const [action, setAction] = useState('');
 
   const [addResourceTypeModalVisible, setAddResourceTypeModalVisible] = useState(false);
+  const [deleteResourceType, setDeleteResourceType] = useState(false);
+  const [viewResourceType, setViewResourceType] = useState(false);
+  const [visiblePopover, setVisiblePopover] = useState(false);
   const [assignResourceModalVisible, setAssignResourceModalVisible] = useState(false);
+  const [resourceTypeId, setResourceTypeId] = useState('');
   const [assigningRecord, setAssigningRecord] = useState({});
+  const [editRecord, setEditRecord] = useState({});
+  const [deleteRecord, setDeleteRecord] = useState({});
+  const [viewRecord, setViewRecord] = useState({});
+
   const [applied, setApplied] = useState(0);
   // if reselect project status or search, clear filter form
   const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
@@ -84,6 +100,72 @@ const ResourceTypeCard = (props) => {
           <span className={styles.readMoreBtn}>Read More</span>
         </Tooltip>
       </span>
+    );
+  };
+
+  const handleAddResourceTypeModalVisible = () => {
+    setAddResourceTypeModalVisible(true);
+    setAction('add');
+  };
+
+  const renderMenuDropdown = (row) => {
+    return (
+      <div className={styles.containerDropdown}>
+        <div
+          className={styles.btnActionView}
+          onClick={() => {
+            setResourceTypeId('');
+            setViewRecord(row);
+            setViewResourceType(true);
+            setAssignResourceModalVisible(false);
+            setDeleteResourceType(false);
+          }}
+        >
+          <img src={ViewIcon} alt="" />
+          <span>View</span>
+        </div>
+        <div
+          className={styles.btnActionAssign}
+          onClick={() => {
+            setResourceTypeId('');
+            setAssigningRecord(row);
+            setAssignResourceModalVisible(true);
+            setViewResourceType(false);
+            setDeleteResourceType(false);
+          }}
+        >
+          <img src={AssignIcon} alt="" />
+          <span>Assign</span>
+        </div>
+        <div
+          className={styles.btnActionEdit}
+          onClick={() => {
+            setResourceTypeId('');
+            setEditRecord(row);
+            setAddResourceTypeModalVisible(true);
+            setAction('edit');
+            setViewResourceType(false);
+            setAssignResourceModalVisible(false);
+            setDeleteResourceType(false);
+          }}
+        >
+          <img src={EditIcon} alt="" />
+          <span>Edit</span>
+        </div>
+        <div
+          className={styles.btnActionDelete}
+          onClick={() => {
+            setResourceTypeId('');
+            setDeleteRecord(row);
+            setDeleteResourceType(true);
+            setViewResourceType(false);
+            setAssignResourceModalVisible(false);
+          }}
+        >
+          <img src={DeleteIcon} alt="" />
+          <span>Delete</span>
+        </div>
+      </div>
     );
   };
 
@@ -148,21 +230,31 @@ const ResourceTypeCard = (props) => {
         width: '7%',
         align: 'center',
         render: (resourceType, row) => {
-          if (!resourceType && allowModify) {
-            return (
-              <Button
-                className={styles.assignBtn}
-                icon={<img src={OrangeAddIcon} alt="" />}
-                onClick={() => {
-                  setAssigningRecord(row);
-                  setAssignResourceModalVisible(true);
+          return (
+            <Popover
+              trigger="click"
+              visible={row?.resourceType?._id === resourceTypeId}
+              onVisibleChange={
+                resourceTypeId
+                  ? () => setResourceTypeId('')
+                  : () => setVisiblePopover(!visiblePopover)
+              }
+              overlayClassName={styles.dropdownPopover}
+              content={renderMenuDropdown(row)}
+              placement="bottomRight"
+            >
+              <div
+                style={{
+                  cursor: 'pointer',
+                  color: '#2c6df9',
                 }}
+                onClick={() => setResourceTypeId(row?.resourceType?._id)}
+                onBlur={() => setResourceTypeId('')}
               >
-                Assign
-              </Button>
-            );
-          }
-          return <img src={ViewIcon} alt="" />;
+                <img src={ActionIcon} alt="" />
+              </div>
+            </Popover>
+          );
         },
       },
     ];
@@ -198,10 +290,7 @@ const ResourceTypeCard = (props) => {
           <FilterButton showDot={isFiltering} />
         </FilterPopover>
         {allowModify && (
-          <OrangeAddButton
-            text="Add Resource Type"
-            onClick={() => setAddResourceTypeModalVisible(true)}
-          />
+          <OrangeAddButton text="Add Resource Type" onClick={handleAddResourceTypeModalVisible} />
         )}
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Resource Type" />
       </div>
@@ -217,17 +306,55 @@ const ResourceTypeCard = (props) => {
         <CommonModal
           visible={addResourceTypeModalVisible}
           onClose={() => setAddResourceTypeModalVisible(false)}
-          firstText="Add Resource Type"
+          firstText={action === 'add' ? 'Add' : 'Update'}
           content={
             <AddResourceTypeContent
               visible={addResourceTypeModalVisible}
               onClose={() => setAddResourceTypeModalVisible(false)}
               refreshData={refreshResourceType}
+              action={action}
+              editRecord={editRecord}
             />
           }
-          title="Add Resource Type"
-          loading={loadingAdd}
+          title={action === 'add' ? 'Add Resource Type' : 'Edit Resource Type'}
+          loading={loadingAdd || loadingEdit}
         />
+
+        <CommonModal
+          visible={deleteResourceType}
+          onClose={() => setDeleteResourceType(false)}
+          firstText="Delete"
+          width="500px"
+          content={
+            <DeleteResourceTypeContent
+              visible={deleteResourceType}
+              onClose={() => setDeleteResourceType(false)}
+              refreshData={refreshResourceType}
+              deleteRecord={deleteRecord}
+            />
+          }
+          title="Delete"
+          loading={loadingDelete}
+        />
+
+        <CommonModal
+          visible={viewResourceType}
+          onClose={() => setViewResourceType(false)}
+          hasFooter={false}
+          withPadding
+          hasHeader={false}
+          width={800}
+          content={
+            <ViewResourceTable
+              visible={deleteResourceType}
+              onClose={() => setViewResourceType(false)}
+              refreshData={refreshResourceType}
+              viewRecord={viewRecord}
+            />
+          }
+          loading={loadingDelete}
+        />
+
         <AssignResourcesModal
           visible={assignResourceModalVisible}
           onClose={() => setAssignResourceModalVisible(false)}
@@ -241,4 +368,6 @@ const ResourceTypeCard = (props) => {
 export default connect(({ loading }) => ({
   loadingFetch: loading.effects['projectDetails/fetchResourceTypeListEffect'],
   loadingAdd: loading.effects['projectDetails/addResourceTypeEffect'],
+  loadingEdit: loading.effects['projectDetails/editResourceTypeEffect'],
+  loadingDelete: loading.effects['projectDetails/deleteResourceTypeEffect'],
 }))(ResourceTypeCard);

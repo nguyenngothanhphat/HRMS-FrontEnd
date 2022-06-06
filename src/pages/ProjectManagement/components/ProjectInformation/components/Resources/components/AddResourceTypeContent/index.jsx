@@ -13,6 +13,16 @@ const AddResourceTypeContent = (props) => {
   const {
     visible = false,
     dispatch,
+    editRecord: {
+      estimatedEffort = '',
+      billingStatus = '',
+      noOfResources = '',
+      division = '',
+      comments = '',
+      resourceType: { _id = '' } = {},
+      technologies = [],
+      id = '',
+    } = {},
     projectDetails: {
       divisionList = [],
       skillList = [],
@@ -23,6 +33,7 @@ const AddResourceTypeContent = (props) => {
     loadingFetchTitleList = false,
     onClose = () => {},
     refreshData = () => {},
+    action = '',
     employee: { generalInfo: { legalName: ownerName = '' } = {} } = {} || {},
   } = props;
 
@@ -53,6 +64,20 @@ const AddResourceTypeContent = (props) => {
     }
   }, [visible]);
 
+  const initialValues = () => {
+    if (action === 'edit') {
+      return {
+        division,
+        resourceType: _id,
+        noOfResources,
+        billingStatus,
+        estimatedEffort,
+        technologies,
+        comments,
+      };
+    }
+    return {};
+  };
   // search
   const onSearchDebounce = debounce((value) => {
     dispatch({
@@ -68,13 +93,19 @@ const AddResourceTypeContent = (props) => {
   };
 
   const handleFinish = async (values) => {
+    const payload = {
+      ...values,
+      projectId,
+      ownerName,
+    };
+    let type = 'projectDetails/addResourceTypeEffect';
+    if (action === 'edit') {
+      payload.id = id;
+      type = 'projectDetails/editResourceTypeEffect';
+    }
     const res = await dispatch({
-      type: 'projectDetails/addResourceTypeEffect',
-      payload: {
-        ...values,
-        projectId,
-        ownerName,
-      },
+      type,
+      payload,
     });
     if (res.statusCode === 200) {
       form.resetFields();
@@ -85,7 +116,13 @@ const AddResourceTypeContent = (props) => {
 
   return (
     <div className={styles.AddResourceTypeContent}>
-      <Form name="basic" form={form} id="myForm" onFinish={handleFinish} initialValues={{}}>
+      <Form
+        name="basic"
+        form={form}
+        id="myForm"
+        onFinish={handleFinish}
+        initialValues={initialValues()}
+      >
         <Row gutter={[24, 0]} className={styles.abovePart}>
           <Col xs={24} md={7}>
             <div className={styles.item}>

@@ -17,7 +17,7 @@ const AssignResourcesModal = (props) => {
     width = 850,
     data: {
       comments = '',
-      resourceType: { department = '', _id: titleId = '', name: resourceTypeName = '' } = {},
+      resourceType: { _id: titleId = '', name: resourceTypeName = '' } = {},
       noOfResources = 0,
       billingStatus = '',
     } = {},
