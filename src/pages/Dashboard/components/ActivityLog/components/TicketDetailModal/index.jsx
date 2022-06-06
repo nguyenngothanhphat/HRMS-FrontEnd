@@ -1,22 +1,27 @@
-import { Button, Col, Modal, Row, Select, Spin } from 'antd';
-import React, { useState, useEffect } from 'react';
-import moment from 'moment';
-import { connect } from 'umi';
+import { CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
+import { Button, Col, Modal, Row, Select, Spin, Steps } from 'antd';
 import { isEmpty } from 'lodash';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import PDFIcon from '@/assets/pdf_icon.png';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
 import MessageBox from '../MessageBox';
 import styles from './index.less';
 
+const { Step } = Steps;
 const { Option } = Select;
+const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DELETED, WITHDRAWN } = TIMEOFF_STATUS;
 
 const TicketDetailModal = (props) => {
   const {
     visible = false,
-    title = '',
     onClose = () => {},
+    title = '',
     item: {
       id: ticketID = '',
-      ticketID: tickIdTiemoff = '',
+      ticketID: tickIdTimeoff = '',
       created_at: requestDate = '',
       createdAt = '',
       query_type: queryType = '',
@@ -31,6 +36,9 @@ const TicketDetailModal = (props) => {
       employee_assignee: employeeAssignee = '',
       employee_raise: employeeRaise = '',
       chats = [],
+      onDate = '',
+      fromDate = '',
+      toDate = '',
     } = {},
     item = {},
     listEmployee = [],
@@ -79,7 +87,9 @@ const TicketDetailModal = (props) => {
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>
-        <p className={styles.header__text}>{title}</p>
+        <p className={styles.header__text}>
+          {`${typeName.length > 0 ? 'Requestee Detail' : title}`}
+        </p>
       </div>
     );
   };
@@ -108,7 +118,7 @@ const TicketDetailModal = (props) => {
         return '#ffffff';
     }
   };
-  const attchementsContent = () => {
+  const attachmentsContent = () => {
     return (
       <span className={styles.attachments}>
         {!isEmpty(attachments)
@@ -127,32 +137,80 @@ const TicketDetailModal = (props) => {
               };
 
               return (
-                <span className={styles.attachments__file}>
+                <div className={styles.attachments__file}>
                   <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
                     {attachmentSlice()}
                   </a>
                   <img className={styles.attachmentsImg} src={PDFIcon} alt="pdf" />
-                </span>
+                </div>
               );
             })
-          : ''}
+          : 'N/A'}
       </span>
     );
   };
+  const renderIcon = (url, statuss) => {
+    return (
+      <div className={styles.avatar}>
+        <img
+          onError={(e) => {
+            e.target.src = DefaultAvatar;
+          }}
+          src={url || DefaultAvatar}
+          alt="avatar"
+        />
+        {statuss === REJECTED && <CloseCircleTwoTone twoToneColor="#fd4546" />}
+      </div>
+    );
+  };
+  const renderIcon2 = (url) => {
+    return (
+      <div className={styles.avatar}>
+        <img
+          onError={(e) => {
+            e.target.src = DefaultAvatar;
+          }}
+          src={url || DefaultAvatar}
+          alt="avatar"
+        />
+        <CheckCircleTwoTone twoToneColor="#52c41a" />
+      </div>
+    );
+  };
+  const getFlow = () => {
+    const {
+      item: {
+        employee: { generalInfo: { legalName: ln1 = '', avatar: av1 = '' } = {} } = {},
+        approvalManager: { generalInfo: { legalName: ln2 = '', avatar: av2 = '' } = {} } = {},
+      } = {},
+    } = props;
+
+    const arr = [];
+    arr.push({
+      name: ln1,
+      avatar: av1 || DefaultAvatar,
+    });
+    arr.push({
+      name: ln2,
+      avatar: av2 || DefaultAvatar,
+    });
+    return arr;
+  };
+
   const renderModalContent = () => {
     const content = [
       {
         name: 'Ticket ID',
-        value: <span className={styles.ticketID}>{ticketID || tickIdTiemoff}</span>,
+        value: <span className={styles.ticketID}>{ticketID || tickIdTimeoff}</span>,
         span: 12,
       },
       {
         name: 'Request Date',
-        value: moment(requestDate || createdAt).format('DD/MM/YYYY'),
+        value: moment(requestDate || onDate || createdAt).format('DD/MM/YYYY'),
         span: 12,
       },
       {
-        name: 'Query Type',
+        name: queryType.length > 0 ? 'Query Type' : 'Timeoff Type',
         value: queryType || typeName,
         span: 12,
       },
@@ -164,6 +222,13 @@ const TicketDetailModal = (props) => {
           </span>
         ),
         span: 12,
+        disabled: typeName.length > 0,
+      },
+      {
+        name: 'Duration',
+        value: `${moment(fromDate).format('DD/MM/YYYY')} - ${moment(toDate).format('DD/MM/YYYY')}`,
+        span: 12,
+        disabled: queryType.length > 0,
       },
       {
         name: 'Subject',
@@ -176,10 +241,11 @@ const TicketDetailModal = (props) => {
           <span>{loadingFetchListEmployee && !isEmpty(ccList) ? <Spin /> : renderccList()}</span>
         ),
         span: 12,
+        disabled: typeName.length > 0,
       },
       {
         name: 'Attachments',
-        value: attchementsContent(),
+        value: attachmentsContent(),
         span: 24,
       },
       {
@@ -188,43 +254,84 @@ const TicketDetailModal = (props) => {
         span: 24,
       },
     ];
+    const people = getFlow();
     return (
       <div className={styles.container}>
         <div className={styles.container__details}>
           <div className={styles.abovePart}>
             <Row gutter={[16, 16]}>
-              {content.map((val) => (
-                <Col span={val.span}>
-                  <div>
-                    <span className={styles.title}>{val.name}</span>:{' '}
-                    <span className={styles.value}>{val.value}</span>
-                  </div>
-                </Col>
-              ))}
+              {content.map(
+                (val) =>
+                  !val.disabled && (
+                    <Col span={val.span}>
+                      <div>
+                        <span className={styles.title}>{val.name}</span>:{' '}
+                        <span className={styles.value}>{val.value}</span>
+                      </div>
+                    </Col>
+                  ),
+              )}
             </Row>
           </div>
           <div className={styles.belowPart}>
-            <div className={styles.status}>
-              <span>Status:</span>
-              <Select value={statusState} onChange={(value) => setStatus(value)}>
-                <Option value="Assigned">Assigned</Option>
-                <Option value="In Progress">In Progress</Option>
-                <Option value="Client Pending">Client Pending</Option>
-                <Option value="Resolved">Resolved</Option>
-                <Option value="Closed">Closed</Option>
-              </Select>
-            </div>
-            <div className={styles.actionButton}>
-              <Button
-                disabled={status === 'New' || status === 'IN-PROGRESS'}
-                onClick={handleUpdateStatus}
-              >
-                Update
-              </Button>
-            </div>
+            {queryType.length > 0 ? (
+              <>
+                <div className={styles.status}>
+                  <span>Status:</span>
+                  <Select value={statusState} onChange={(value) => setStatus(value)}>
+                    <Option value="Assigned">Assigned</Option>
+                    <Option value="In Progress">In Progress</Option>
+                    <Option value="Client Pending">Client Pending</Option>
+                    <Option value="Resolved">Resolved</Option>
+                    <Option value="Closed">Closed</Option>
+                  </Select>
+                </div>
+                <div className={styles.actionButton}>
+                  <Button
+                    disabled={status === 'New' || status === 'IN-PROGRESS'}
+                    onClick={handleUpdateStatus}
+                  >
+                    Update
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className={styles.content}>
+                <span className={styles.title}>Chain of approval</span>
+                <Steps current={status === IN_PROGRESS ? 1 : 2} labelPlacement="vertical">
+                  {people.map((value, index) => {
+                    const { avatar = '', name = '' } = value;
+                    return (
+                      <Step
+                        key={`${index + 1}`}
+                        icon={
+                          status === DELETED ? (
+                            renderIcon(avatar)
+                          ) : (
+                            <>
+                              {index === 0 && renderIcon2(avatar)}
+                              {index === 1 && (
+                                <>
+                                  {status === REJECTED && renderIcon(avatar, REJECTED)}
+                                  {(status === IN_PROGRESS || status === WITHDRAWN) &&
+                                    renderIcon(avatar)}
+                                  {(status === ACCEPTED || status === ON_HOLD) &&
+                                    renderIcon2(avatar)}
+                                </>
+                              )}
+                            </>
+                          )
+                        }
+                        title={name}
+                      />
+                    );
+                  })}
+                </Steps>
+              </div>
+            )}
           </div>
         </div>
-        <MessageBox chats={chats} item={item} />
+        {queryType.length > 0 && <MessageBox chats={chats} item={item} />}
       </div>
     );
   };

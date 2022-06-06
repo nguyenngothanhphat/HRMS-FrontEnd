@@ -1,31 +1,31 @@
 .RequestInformation {
-  border: 1px solid #ebeff2;
-  border-radius: 5px;
   width: 100%;
   background-color: white;
+  border: 1px solid #ebeff2;
+  border-radius: 5px;
 
   .formTitle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 16px 24px;
+    color: #161c29;
     border-bottom: 1px solid #e2e4e8;
     .title {
-      font-size: 16px;
       color: #464646;
       font-weight: 700;
+      font-size: 16px;
     }
-    color: #161c29;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     .editButton {
-      cursor: pointer;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
       .label {
         margin-left: 10px;
+        color: #2c6df9;
         font-weight: 700;
         font-size: 14px;
-        color: #2c6df9;
       }
       &:hover {
         opacity: 0.8;
@@ -52,17 +52,26 @@
         border-radius: 4px;
         .normalText {
           display: block;
-          color: #707177;
-          font-size: 10px;
           margin-top: 0px;
           padding: 3px;
+          color: #707177;
+          font-size: 10px;
         }
         .link {
-          cursor: pointer;
-          font-size: 10px;
           color: #ffa100;
           font-weight: 700;
+          font-size: 10px;
           text-decoration: underline;
+          cursor: pointer;
+        }
+      }
+      .attachments {
+        &__file {
+          margin-block: 10px;
+        }
+        .attachmentsImg {
+          width: 24px;
+          padding-left: 8px;
         }
       }
     }
@@ -73,16 +82,16 @@
     }
   }
   .footer {
-    padding: 16px 24px;
-    border-top: 1px solid #e2e4e8;
     display: flex;
     justify-content: space-between;
+    padding: 16px 24px;
+    border-top: 1px solid #e2e4e8;
     .note {
-      font-size: 12px;
-      padding-right: 100px;
       display: flex;
       align-items: center;
+      padding-right: 100px;
       color: #161c2980; // hex with alpha 0.5
+      font-size: 12px;
     }
     .formButtons {
       display: flex;
@@ -91,18 +100,18 @@
         .ant-btn-link {
           background-color: white !important;
           span {
-            font-weight: bold !important;
             color: #ffa100 !important;
+            font-weight: bold !important;
           }
         }
         .ant-btn {
+          height: 40px;
+          margin-left: 20px;
+          // width: 108px;
+          padding: 0 30px;
           background-color: #ffa100;
           border: none;
           border-radius: 30px;
-          height: 40px;
-          // width: 108px;
-          padding: 0 30px;
-          margin-left: 20px;
           span {
             color: white;
             font-weight: 700;

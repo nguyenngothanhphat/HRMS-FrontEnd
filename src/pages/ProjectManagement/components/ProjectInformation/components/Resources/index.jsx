@@ -19,6 +19,7 @@ const Resources = (props) => {
     loadingFetch = false,
   } = props;
   const [addResourceTypeModalVisible, setAddResourceTypeModalVisible] = useState(false);
+  const [unfilter, setUnfilter] = useState(true);
 
   // permissions
   const { allowModify = false } = props;
@@ -74,6 +75,7 @@ const Resources = (props) => {
               data={resourceTypeList}
               refreshResourceType={fetchResourceTypeList}
               allowModify={allowModify}
+              setUnfilter={(value) => setUnfilter(value)}
             />
           </TabPane>
           <TabPane tab="Resources" key="2">
@@ -84,15 +86,16 @@ const Resources = (props) => {
     );
   };
 
-  if (loadingFetch && resourceTypeList.length === 0)
+  if (loadingFetch && resourceTypeList.length === 0 && unfilter) {
     return (
       <div className={styles.Resources}>
         <Skeleton active />
       </div>
     );
+  }
   return (
     <div className={styles.Resources}>
-      {resourceTypeList.length === 0 ? renderEmptyCard() : renderDataCard()}
+      {resourceTypeList.length === 0 && unfilter ? renderEmptyCard() : renderDataCard()}
       <CommonModal
         visible={addResourceTypeModalVisible}
         onClose={() => setAddResourceTypeModalVisible(false)}
