@@ -159,7 +159,7 @@ class RequestInformation extends PureComponent {
           ? attachments.map((val) => {
               const attachmentSlice = () => {
                 if (val.attachmentName) {
-                  if (val.attachmentName.length > 35) {
+                  if (val.attachmentName.length > 70) {
                     return `${val.attachmentName.substr(0, 8)}...${val.attachmentName.substr(
                       val.attachmentName.length - 6,
                       val.attachmentName.length,
@@ -217,9 +217,7 @@ class RequestInformation extends PureComponent {
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
           <span className={styles.title}>
-            {loadingFetchLeaveRequestById
-              ? 'Getting data...'
-              : `[Ticket ID: ${ticketID}]: ${subject}`}
+            {loadingFetchLeaveRequestById ? '' : `[Ticket ID: ${ticketID}]: ${subject}`}
           </span>
           {(status === DRAFTS || status === IN_PROGRESS) && (
             <div className={styles.editButton} onClick={() => this.handleEdit(_id)}>
@@ -230,7 +228,7 @@ class RequestInformation extends PureComponent {
         </div>
 
         <div className={styles.formContent}>
-          <Row align="middle" gutter={[24, 12]}>
+          <Row align="middle" gutter={[24, 16]}>
             <Col span={6}>Timeoff Type</Col>
             <Col span={18} className={styles.detailColumn}>
               <span className={styles.fieldValue}>{`${name}`}</span>
@@ -279,6 +277,7 @@ class RequestInformation extends PureComponent {
             <Col span={18} className={styles.detailColumn}>
               <span>{description}</span>
             </Col>
+
             <Col span={6}>Attachments</Col>
             <Col span={18} className={styles.detailColumn}>
               {this.attachmentsContent()}

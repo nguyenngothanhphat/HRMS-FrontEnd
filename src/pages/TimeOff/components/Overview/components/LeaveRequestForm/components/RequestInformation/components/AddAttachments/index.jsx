@@ -2,6 +2,7 @@ import { Button, Col, message, Row, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import BlueAddIcon from '@/assets/dashboard/blueAdd.svg';
+import RemoveIcon from '@/assets/timeSheet/recycleBin.svg';
 import s from './index.less';
 
 const AddAttachments = ({
@@ -67,7 +68,7 @@ const AddAttachments = ({
 
   return (
     <div className={s.root}>
-      <Row>
+      <Row gutter={[16, 16]}>
         <Col span={24}>
           <Upload
             name="file"
@@ -75,11 +76,13 @@ const AddAttachments = ({
             beforeUpload={beforeUpload}
             action={(file) => handleUpload(file)}
             showUploadList={false}
+            disabled={list.length === 2 || !selectedTypeName}
           >
             <Button
-              className={`${s.addAttachmentButton} ${
-                (list.length === 2 || !selectedTypeName) && s.disableUpload
-              }`}
+              className={[
+                s.addAttachmentButton,
+                (list.length === 2 || !selectedTypeName) && s.disableUpload,
+              ]}
               icon={<img src={BlueAddIcon} alt="blueAddIcon" />}
               loading={loading}
               disabled={list.length === 2}
@@ -95,14 +98,15 @@ const AddAttachments = ({
           <>
             <Col span={24}>
               <div className={s.attachmentList}>
-                <span className={s.nameFile}>{item.attachmentName}</span>
                 <img
                   src="/assets/images/iconFilePNG.svg"
                   alt="iconFilePNG"
                   className={s.iconFile}
                 />
+                <span className={s.nameFile}>{item.attachmentName}</span>
+
                 <img
-                  src="/assets/images/remove.svg"
+                  src={RemoveIcon}
                   alt="remove"
                   className={s.iconDelete}
                   onClick={() => {

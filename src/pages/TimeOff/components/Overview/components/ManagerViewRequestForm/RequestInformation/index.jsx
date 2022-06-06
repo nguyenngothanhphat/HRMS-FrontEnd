@@ -392,7 +392,7 @@ class RequestInformation extends PureComponent {
           ? attachments.map((val) => {
               const attachmentSlice = () => {
                 if (val.attachmentName) {
-                  if (val.attachmentName.length > 35) {
+                  if (val.attachmentName.length > 70) {
                     return `${val.attachmentName.substr(0, 8)}...${val.attachmentName.substr(
                       val.attachmentName.length - 6,
                       val.attachmentName.length,
