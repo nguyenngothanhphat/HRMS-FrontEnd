@@ -13,13 +13,6 @@ const { TabPane } = Tabs;
   permissions,
 }))
 class RequestScopeTabs extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isVisible: false,
-    };
-  }
-
   saveCurrentTab = (type) => {
     const { dispatch, timeOff: { currentScopeTab = '' } = {} } = this.props;
 
@@ -55,19 +48,6 @@ class RequestScopeTabs extends PureComponent {
     return activeTabKeys[0];
   };
 
-  // applied tag
-  onOpenAppliedTag = () => {
-    this.setState({
-      isVisible: true,
-    });
-  };
-
-  onClosedAppliedTag = () => {
-    this.setState({
-      isVisible: false,
-    });
-  };
-
   render() {
     const {
       tab = 0,
@@ -77,16 +57,8 @@ class RequestScopeTabs extends PureComponent {
       saveCurrentTypeTab = () => {},
     } = this.props;
 
-    const { isVisible } = this.state;
     const renderTableTitle = {
-      right: (
-        <SearchContent
-          isVisible={isVisible}
-          onOpenAppliedTag={this.onOpenAppliedTag}
-          onClosedAppliedTag={this.onClosedAppliedTag}
-          saveCurrentTypeTab={saveCurrentTypeTab}
-        />
-      ),
+      right: <SearchContent saveCurrentTypeTab={saveCurrentTypeTab} />,
     };
 
     const viewManagerTimeoff = permissions.viewManagerTimeoff !== -1;
@@ -104,16 +76,16 @@ class RequestScopeTabs extends PureComponent {
         >
           {viewHRTimeoff && (
             <TabPane tab="Company Wide Requests" key="1">
-              <TimeOffRequestTab isVisible={isVisible} tab={tab} type={type} category="ALL" />
+              <TimeOffRequestTab tab={tab} type={type} category="ALL" />
             </TabPane>
           )}
           {viewManagerTimeoff && (
             <TabPane tab="Team Requests" key="2">
-              <TimeOffRequestTab isVisible={isVisible} tab={tab} type={type} category="TEAM" />
+              <TimeOffRequestTab tab={tab} type={type} category="TEAM" />
             </TabPane>
           )}
           <TabPane tab="My Requests" key="3">
-            <TimeOffRequestTab isVisible={isVisible} tab={tab} type={type} category="MY" />
+            <TimeOffRequestTab tab={tab} type={type} category="MY" />
           </TabPane>
         </Tabs>
       </div>
