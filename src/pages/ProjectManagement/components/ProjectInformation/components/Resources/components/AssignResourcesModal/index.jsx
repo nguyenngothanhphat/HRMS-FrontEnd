@@ -17,7 +17,7 @@ const AssignResourcesModal = (props) => {
     width = 850,
     data: {
       comments = '',
-      resourceType: { department = '', _id: titleId = '', name: resourceTypeName = '' } = {},
+      resourceType: { _id: titleId = '', name: resourceTypeName = '' } = {},
       noOfResources = 0,
       billingStatus = '',
     } = {},
@@ -288,6 +288,7 @@ const AssignResourcesModal = (props) => {
           setSuccessModalVisible(false);
           refreshResourceType();
         }}
+        onFinish={() => setSuccessModalVisible(false)}
         buttonText="Close"
         width={400}
         hasCancelButton={false}
