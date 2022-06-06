@@ -24,6 +24,7 @@ import {
   TIMEOFF_WORK_DAYS,
   WORKING_HOURS,
 } from '@/utils/timeOff';
+import AddAttachments from './components/AddAttachments';
 import LeaveTimeRow from './components/LeaveTimeRow';
 import LeaveTimeRow2 from './components/LeaveTimeRow2';
 import styles from './index.less';
@@ -53,6 +54,7 @@ const RequestInformation = (props) => {
         toDate: viewingToDate = '',
         description: viewingDescription = '',
         cc: viewingCC = [],
+        attachments: viewingAttachmentList = [],
         status: viewingStatus = '',
       } = {},
       emailsList = [],
@@ -307,6 +309,7 @@ const RequestInformation = (props) => {
         description = '',
         personCC = [],
         leaveTimeLists = [],
+        attachments = [],
       } = values;
 
       if (timeOffType && durationFrom && durationTo) {
@@ -323,6 +326,7 @@ const RequestInformation = (props) => {
           description,
           approvalManager: managerId, // id
           cc: personCC,
+          attachments,
           company: getCurrentCompany(),
         };
 
@@ -355,6 +359,7 @@ const RequestInformation = (props) => {
       description = '',
       personCC = [],
       leaveTimeLists = [],
+      attachments = [],
     } = values;
 
     const leaveDatesPayload = generateLeaveDates(leaveTimeLists);
@@ -377,6 +382,7 @@ const RequestInformation = (props) => {
           cc: personCC,
           tenantId: getCurrentTenant(),
           company: employee.company,
+          attachments,
         };
 
         let type = '';
@@ -622,6 +628,7 @@ const RequestInformation = (props) => {
         durationTo: viewingToDate ? moment(viewingToDate) : null,
         description: viewingDescription,
         personCC: viewingCC,
+        // attachments: viewingAttachmentList,
         leaveTimeLists,
       });
 
@@ -1160,6 +1167,12 @@ const RequestInformation = (props) => {
             </Col>
             <Col span={6} />
           </Row>
+          <Form.Item name="attachments">
+            <AddAttachments
+              viewingAttachmentList={viewingAttachmentList}
+              selectedTypeName={selectedTypeName}
+            />
+          </Form.Item>
         </Form>
         <div className={styles.footer}>
           <span className={styles.note}>
