@@ -1196,11 +1196,9 @@ const timeOff = {
       };
     },
     saveFilter(state, action) {
-      const { filter } = state;
       return {
         ...state,
         filter: {
-          ...filter,
           ...action.payload,
         },
       };
