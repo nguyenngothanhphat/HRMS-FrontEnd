@@ -4,7 +4,7 @@ import { Link, connect } from 'umi';
 import { debounce } from 'lodash';
 import { getTimezoneViaCity } from '@/utils/times';
 import TeamRequest from './TeamRequest';
-import MyRequestContent from '../../../components/TabMyRequest';
+import MyRequestContent from '../../../TabMyRequest';
 import TableSearch from './TableSearch';
 import styles from './index.less';
 
@@ -37,7 +37,7 @@ import styles from './index.less';
     companyLocationList,
   }),
 )
-class HRrequestTable extends Component {
+class HrRequestTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -186,7 +186,7 @@ class HRrequestTable extends Component {
     const { dataListTeamRequest, dataListMyRequest, loadingSearch, timezoneList } = this.state;
 
     return (
-      <Row className={styles.hrContent}>
+      <Row className={styles.HrRequestTable}>
         <Col span={24}>
           <div className={styles.header}>
             <div className={styles.header__left}>Team Requests</div>
@@ -236,4 +236,4 @@ class HRrequestTable extends Component {
   }
 }
 
-export default HRrequestTable;
+export default HrRequestTable;

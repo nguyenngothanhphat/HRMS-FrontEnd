@@ -296,7 +296,7 @@ class ViewInformation extends Component {
           key="offboarding"
           className={s.menuItem}
           onClick={this.redirectOffboarding}
-          disabled
+          // disabled
         >
           Resignation
         </Menu.Item>

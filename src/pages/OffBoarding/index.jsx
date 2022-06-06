@@ -1,11 +1,16 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { initViewOffboarding } from '@/utils/authority';
-import EmployeeOffBoading from './EmployeeOffBoarding';
-import ManagerOffBoading from './ManagerOffBoarding';
-import HrOffboarding from './HrOffboarding';
+import EmployeeView from './components/EmployeeView';
+import HRView from './components/HRView';
+import ManagerView from './components/ManagerView';
 
-class OffBoarding extends PureComponent {
-  findRole = (roles) => {
+const OffBoarding = (props) => {
+  const {
+    match: { params: { tabName = '', type = '' } = {} },
+    location: { state: { isEmployeeMode = false } = {} } = {},
+  } = props;
+
+  const findRole = (roles) => {
     const hrManager = roles.find((item) => item === 'hr-manager');
     const hr = roles.find((item) => item === 'hr');
     const manager = roles.find((item) => item === 'manager');
@@ -14,28 +19,19 @@ class OffBoarding extends PureComponent {
     return role;
   };
 
-  render() {
-    const {
-      match: { params: { tabName = '', type = '' } = {} },
-      location: { state: { isEmployeeMode = false } = {} } = {},
-    } = this.props;
+  const renderComponent = {
+    'hr-manager': <HRView tabName={tabName} type={type} />,
+    hr: <HRView tabName={tabName} type={type} />,
+    manager: <ManagerView tabName={tabName} />,
+    employee: <EmployeeView tabName={tabName} />,
+  };
 
-    const viewOffboarding = initViewOffboarding();
-    const renderComponent = {
-      'hr-manager': <HrOffboarding tabName={tabName} type={type} />,
-      hr: <HrOffboarding tabName={tabName} type={type} />,
-      manager: <ManagerOffBoading tabName={tabName} />,
-      employee: <EmployeeOffBoading tabName={tabName} />,
-    };
+  const listRole = localStorage.getItem('antd-pro-authority');
+  const role = findRole(JSON.parse(listRole));
 
-    const listRole = localStorage.getItem('antd-pro-authority');
-    const role = this.findRole(JSON.parse(listRole));
-
-    if (!isEmployeeMode && !viewOffboarding) {
-      return renderComponent[role];
-    }
-    return renderComponent.employee;
-  }
-}
+  return !isEmployeeMode && !initViewOffboarding()
+    ? renderComponent[role]
+    : renderComponent.employee;
+};
 
 export default OffBoarding;
