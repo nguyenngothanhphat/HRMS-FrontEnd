@@ -303,7 +303,7 @@ const ResourceTypeCard = (props) => {
         <CommonModal
           visible={addResourceTypeModalVisible}
           onClose={() => setAddResourceTypeModalVisible(false)}
-          firstText={action === 'add' ? 'Add' : 'Edit'}
+          firstText={action === 'add' ? 'Add' : 'Update'}
           content={
             <AddResourceTypeContent
               visible={addResourceTypeModalVisible}
