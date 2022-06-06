@@ -236,9 +236,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'P_ONBOARDING_ALL',
   ]);
   const indexNewJoinees = isAuthorized(permissionList, [
-    'P_ONBOARDING_T_SETTINGS_VIEW',
-    'P_ONBOARDING_ALL',
+    'P_ONBOARDING_T_NEW_JOINEES_VIEW',
   ]);
+
 
   // TIME OFF
   const indexMyTimeoff = 1; // everyone has time off employee page
@@ -413,7 +413,6 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     addTeamMemberOnboarding: indexAddTeamMemberOnboarding,
     viewOnboardingOverviewTab: indexOverviewViewOnboarding,
     viewOnboardingNewJoinees: indexNewJoinees,
-
     // timeoff
     viewMyTimeoff: indexMyTimeoff,
     viewManagerTimeoff: indexManagerTimeoff,
