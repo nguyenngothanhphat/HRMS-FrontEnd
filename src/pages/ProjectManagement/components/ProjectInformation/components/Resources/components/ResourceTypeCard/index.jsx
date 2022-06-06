@@ -27,6 +27,7 @@ const ResourceTypeCard = (props) => {
     data = [],
     refreshResourceType = () => {},
     loadingAdd = false,
+    setUnfilter = () => {},
     loadingEdit = false,
     loadingDelete = false,
   } = props;
@@ -58,6 +59,7 @@ const ResourceTypeCard = (props) => {
   const onSearch = (e = {}) => {
     const { value = '' } = e.target;
     onSearchDebounce(value);
+    setUnfilter(false);
   };
 
   const handleLongString = (str) => {
@@ -70,6 +72,7 @@ const ResourceTypeCard = (props) => {
     if (Object.keys(filterPayload).length > 0) {
       setIsFiltering(true);
       setApplied(Object.keys(filterPayload).length);
+      setUnfilter(false);
     } else {
       setIsFiltering(false);
       setApplied(0);

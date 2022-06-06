@@ -67,6 +67,7 @@ const AssignResourcesModal = (props) => {
     dispatch({
       type: 'projectDetails/fetchResourceListEffect',
       payload: {
+        notInProject: projectNumberId,
         page,
         limit,
         name,
@@ -115,6 +116,11 @@ const AssignResourcesModal = (props) => {
     setStep(1);
     setSelectedResources([]);
     onClose();
+  };
+
+  const handleCloseModal = () => {
+    setSuccessModalVisible(false);
+    refreshResourceType();
   };
 
   const renderStep1 = () => {
@@ -284,11 +290,8 @@ const AssignResourcesModal = (props) => {
       <CommonModal
         firstText="Yes"
         visible={successModalVisible}
-        onClose={() => {
-          setSuccessModalVisible(false);
-          refreshResourceType();
-        }}
-        onFinish={() => setSuccessModalVisible(false)}
+        onClose={handleCloseModal}
+        onFinish={handleCloseModal}
         buttonText="Close"
         width={400}
         hasCancelButton={false}
