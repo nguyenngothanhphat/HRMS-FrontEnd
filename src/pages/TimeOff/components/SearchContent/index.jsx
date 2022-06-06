@@ -10,19 +10,18 @@ import styles from './index.less';
 
 const TimeOffFilter = (props) => {
   const [form] = Form.useForm();
-  const [count, setCount] = useState(3);
 
   const {
     dispatch,
     yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
-    filter: { search, type, fromDate, toDate },
+    filter: { search, type = [], fromDate, toDate },
     filter = {},
-    isVisible,
-    onOpenAppliedTag = () => {},
-    onClosedAppliedTag = () => {},
     saveCurrentTypeTab = () => {},
-    currentScopeTab = '1',
+    currentLeaveTypeTab = '',
+    currentScopeTab = '',
   } = props;
+
+  const [isTypeChanged, setIsTypeChanged] = useState(false);
 
   const onSearchDebounce = debounce((value) => {
     dispatch({
@@ -46,6 +45,10 @@ const TimeOffFilter = (props) => {
   const onFinish = (values) => {
     const filterTemp = removeEmptyFields(values);
 
+    if (filterTemp.type.length !== type.length) {
+      setIsTypeChanged(true);
+    }
+
     // dispatch action
     dispatch({
       type: 'timeOff/save',
@@ -59,42 +62,34 @@ const TimeOffFilter = (props) => {
 
   const onValuesChange = () => {
     const values = form.getFieldsValue();
-
-    // applied count
-
-    let typeCount = 0;
-    if (values.type.length > 0) {
-      typeCount = 1;
-    } else {
-      typeCount = 0;
-    }
-
-    let typeDate = 0;
-    if (values.fromDate || values.toDate) {
-      typeDate = 1;
-    } else {
-      typeDate = 0;
-    }
-
-    if (count > 0) {
-      onOpenAppliedTag();
-    }
-
-    setCount(typeCount + typeDate);
-
     onFinishDebounce(values);
-  };
-
-  const closedAppliedTag = () => {
-    saveCurrentTypeTab('1');
-    onClosedAppliedTag();
   };
 
   useEffect(() => {
     form.setFieldsValue({ type, fromDate, toDate });
   }, [filter]);
 
-  useEffect(() => closedAppliedTag, [currentScopeTab]);
+  useEffect(() => {
+    setIsTypeChanged(false);
+  }, [currentScopeTab]);
+
+  const countFilter = () => {
+    let count = 0;
+    if (type.length > 0 && isTypeChanged) {
+      count += 1;
+    }
+    if (fromDate || toDate) {
+      count += 1;
+    }
+    return count;
+  };
+
+  const getFilterActive = (type.length > 0 && isTypeChanged) || fromDate || toDate;
+
+  const onClearFilter = () => {
+    saveCurrentTypeTab(currentLeaveTypeTab);
+    setIsTypeChanged(false);
+  };
 
   const FilterContent = () => {
     return (
@@ -151,8 +146,8 @@ const TimeOffFilter = (props) => {
 
   return (
     <Space direction="horizontal" className={styles.TimeOffFilter}>
-      <Tag className={styles.appliedTag} closable onClose={closedAppliedTag} visible={isVisible}>
-        {count} filters applied
+      <Tag className={styles.appliedTag} closable onClose={onClearFilter} visible={getFilterActive}>
+        {countFilter()} filters applied
       </Tag>
 
       <div className={styles.rightContentHeader}>
@@ -165,7 +160,7 @@ const TimeOffFilter = (props) => {
           }
           realTime
         >
-          <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} />
+          <FilterButton fontSize={14} showDot={getFilterActive} />
         </FilterPopover>
 
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Employee ID, name..." />
@@ -174,10 +169,14 @@ const TimeOffFilter = (props) => {
   );
 };
 export default connect(
-  ({ dispatch, timeOff: { yourTimeOffTypes = {}, filter = {}, currentScopeTab } }) => ({
+  ({
+    dispatch,
+    timeOff: { yourTimeOffTypes = {}, filter = {}, currentScopeTab, currentLeaveTypeTab },
+  }) => ({
     dispatch,
     yourTimeOffTypes,
     filter,
     currentScopeTab,
+    currentLeaveTypeTab,
   }),
 )(TimeOffFilter);

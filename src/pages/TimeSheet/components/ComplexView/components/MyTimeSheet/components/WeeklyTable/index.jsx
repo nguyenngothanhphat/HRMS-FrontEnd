@@ -101,23 +101,23 @@ const WeeklyTable = (props) => {
     setSelectedView(VIEW_TYPE.D);
   };
 
-  const onCell = () => ({
+  const onCell = (onClick) => ({
     // temporarily disable the cell menu
-    // onContextMenu: (event) => {
-    //   event.preventDefault();
-    //   if (!popup.visible) {
-    //     document.addEventListener(`click`, function onClickOutside() {
-    //       setPopup({ visible: false });
-    //       document.removeEventListener(`click`, onClickOutside);
-    //     });
-    //   }
-    //   setPopup({
-    //     onClick,
-    //     visible: true,
-    //     x: event.clientX - 60,
-    //     y: event.clientY - document.body.scrollTop,
-    //   });
-    // },
+    onContextMenu: (event) => {
+      event.preventDefault();
+      if (!popup.visible) {
+        document.addEventListener(`click`, function onClickOutside() {
+          setPopup({ visible: false });
+          document.removeEventListener(`click`, onClickOutside);
+        });
+      }
+      setPopup({
+        onClick,
+        visible: true,
+        x: event.clientX - 60,
+        y: event.clientY - document.body.scrollTop,
+      });
+    },
   });
 
   const columns = () => {
