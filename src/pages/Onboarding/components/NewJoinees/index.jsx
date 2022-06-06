@@ -9,6 +9,7 @@ import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils
 import Filter from './Filter';
 
 import styles from './index.less';
+import { removeEmptyFields } from '@/utils/utils';
 
 const NewJoinees = (props) => {
   const {
@@ -26,7 +27,7 @@ const NewJoinees = (props) => {
   const [keySearch, setKeySearch] = useState('');
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const [visiblePopover, setVisiablePopover] = useState(false);
+  const [visiblePopover, setVisiblePopover] = useState(false);
   const [filter, setFilter] = useState({
     fromDate: '',
     toDate: '',
@@ -37,6 +38,72 @@ const NewJoinees = (props) => {
     title: [],
   });
   const [isSearch, setIsSearch] = useState(true);
+
+  // const fetchListEmployee = () => {
+  //   const currentCompany = getCurrentCompany();
+  //   const currentLocation = getCurrentLocation();
+
+  //   const companyPayload = companiesOfUser.filter((lo) => lo?._id === currentCompany);
+  //   let locationPayload = [];
+
+  //   if (!currentLocation) {
+  //     locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
+  //       let stateList = [];
+  //       listCountry.forEach(
+  //         ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
+  //           if (countryItem1 === countryItem2) {
+  //             stateList = [...stateList, stateItem2];
+  //           }
+  //         },
+  //       );
+  //       return {
+  //         country: countryItem1,
+  //         state: stateList,
+  //       };
+  //     });
+  //   } else {
+  //     const currentLocationObj = companyLocationList.find((loc) => loc?._id === currentLocation);
+  //     const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
+  //     const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
+
+  //     locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
+  //       let stateList = [];
+  //       listCountry.forEach(
+  //         ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
+  //           if (
+  //             countryItem1 === countryItem2 &&
+  //             currentLocationCountry === countryItem2 &&
+  //             currentLocationState === stateItem2
+  //           ) {
+  //             stateList = [...stateList, stateItem2];
+  //           }
+  //         },
+  //       );
+  //       return {
+  //         country: countryItem1,
+  //         state: stateList,
+  //       };
+  //     });
+  //   }
+  //   dispatch({
+  //     type: 'onboard/fetchEmployeeList',
+  //     payload: {
+  //       company: companyPayload,
+  //       department: ['HR'],
+  //       location: locationPayload,
+  //     },
+  //   });
+  //   dispatch({
+  //     type: 'onboard/fetchHRManagerList',
+  //     payload: {
+  //       company: companyPayload,
+  //       department: ['HR'],
+  //       roles: ['HR-MANAGER'],
+  //       location: locationPayload,
+  //     },
+  //   });
+  // };
+
   const fetchListEmployee = () => {
     const currentCompany = getCurrentCompany();
     const currentLocation = getCurrentLocation();
@@ -123,7 +190,7 @@ const NewJoinees = (props) => {
         type: 'onboard/getListNewComer',
         payload: {
           searchName: keySearch,
-          ...filter,
+          ...removeEmptyFields(filter),
         },
       });
       setIsSearch(false);
@@ -239,7 +306,7 @@ const NewJoinees = (props) => {
           alt="close"
           src={closeIcon}
           onClick={() => {
-            setVisiablePopover(false);
+            setVisiblePopover(false);
           }}
         />
       </div>
@@ -247,7 +314,7 @@ const NewJoinees = (props) => {
   };
 
   const onApply = (res) => {
-    setVisiablePopover(!visiblePopover);
+    setVisiblePopover(!visiblePopover);
     setFilter(res);
     setIsSearch(true);
   };
@@ -262,7 +329,7 @@ const NewJoinees = (props) => {
             trigger="click"
             placement="bottomRight"
             visible={visiblePopover}
-            onVisibleChange={() => setVisiablePopover(!visiblePopover)}
+            onVisibleChange={() => setVisiblePopover(!visiblePopover)}
             overlayClassName={styles.filterPopover}
           >
             <img src={filterIcon} alt="" className={styles.searchFilter__icon} />
