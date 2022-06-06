@@ -15,7 +15,6 @@ import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import AddResourceTypeContent from '../AddResourceTypeContent';
-import EditResourceTypeContent from '../EditResourceTypeContent';
 import DeleteResourceTypeContent from '../DeleteResourceTypeContent';
 import AssignResourcesModal from '../AssignResourcesModal';
 import FilterResourceTypeContent from './components/FilterResourceTypeContent';
@@ -34,9 +33,9 @@ const ResourceTypeCard = (props) => {
 
   // permissions
   const { allowModify = false } = props;
+  const [action, setAction] = useState('');
 
   const [addResourceTypeModalVisible, setAddResourceTypeModalVisible] = useState(false);
-  const [editResourceTypeModalVisible, setEditResourceTypeModalVisible] = useState(false);
   const [deleteResourceType, setDeleteResourceType] = useState(false);
   const [viewResourceType, setViewResourceType] = useState(false);
   const [visiblePopover, setVisiblePopover] = useState(false);
@@ -101,6 +100,11 @@ const ResourceTypeCard = (props) => {
     );
   };
 
+  const handleAddResourceTypeModalVisible = () => {
+    setAddResourceTypeModalVisible(true);
+    setAction('add');
+  };
+
   const renderMenuDropdown = (row) => {
     return (
       <div className={styles.containerDropdown}>
@@ -111,7 +115,6 @@ const ResourceTypeCard = (props) => {
             setViewRecord(row);
             setViewResourceType(true);
             setAssignResourceModalVisible(false);
-            setEditResourceTypeModalVisible(false);
             setDeleteResourceType(false);
           }}
         >
@@ -125,7 +128,6 @@ const ResourceTypeCard = (props) => {
             setAssigningRecord(row);
             setAssignResourceModalVisible(true);
             setViewResourceType(false);
-            setEditResourceTypeModalVisible(false);
             setDeleteResourceType(false);
           }}
         >
@@ -137,7 +139,8 @@ const ResourceTypeCard = (props) => {
           onClick={() => {
             setResourceTypeId('');
             setEditRecord(row);
-            setEditResourceTypeModalVisible(true);
+            setAddResourceTypeModalVisible(true);
+            setAction('edit');
             setViewResourceType(false);
             setAssignResourceModalVisible(false);
             setDeleteResourceType(false);
@@ -153,7 +156,6 @@ const ResourceTypeCard = (props) => {
             setDeleteRecord(row);
             setDeleteResourceType(true);
             setViewResourceType(false);
-            setEditResourceTypeModalVisible(false);
             setAssignResourceModalVisible(false);
           }}
         >
@@ -285,10 +287,7 @@ const ResourceTypeCard = (props) => {
           <FilterButton showDot={isFiltering} />
         </FilterPopover>
         {allowModify && (
-          <OrangeAddButton
-            text="Add Resource Type"
-            onClick={() => setAddResourceTypeModalVisible(true)}
-          />
+          <OrangeAddButton text="Add Resource Type" onClick={handleAddResourceTypeModalVisible} />
         )}
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Resource Type" />
       </div>
@@ -304,32 +303,20 @@ const ResourceTypeCard = (props) => {
         <CommonModal
           visible={addResourceTypeModalVisible}
           onClose={() => setAddResourceTypeModalVisible(false)}
-          firstText="Add"
+          firstText={action === 'add' ? 'Add' : 'Edit'}
           content={
             <AddResourceTypeContent
               visible={addResourceTypeModalVisible}
               onClose={() => setAddResourceTypeModalVisible(false)}
               refreshData={refreshResourceType}
-            />
-          }
-          title="Add Resource Type"
-          loading={loadingAdd}
-        />
-        <CommonModal
-          visible={editResourceTypeModalVisible}
-          onClose={() => setEditResourceTypeModalVisible(false)}
-          firstText="Edit"
-          content={
-            <EditResourceTypeContent
-              visible={editResourceTypeModalVisible}
-              onClose={() => setEditResourceTypeModalVisible(false)}
-              refreshData={refreshResourceType}
+              action={action}
               editRecord={editRecord}
             />
           }
-          title="Edit Resource Type"
-          loading={loadingEdit}
+          title={action === 'add' ? 'Add Resource Type' : 'Edit Resource Type'}
+          loading={loadingAdd || loadingEdit}
         />
+
         <CommonModal
           visible={deleteResourceType}
           onClose={() => setDeleteResourceType(false)}
