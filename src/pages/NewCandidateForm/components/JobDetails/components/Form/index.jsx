@@ -12,7 +12,6 @@ const { TreeNode } = TreeSelect;
 
 const JobDetailForm = (props) => {
   const [form] = Form.useForm();
-  const [isShowClientLocation, setIsShowClientLocation] = useState(false);
   const {
     disabled = false,
     dispatch,
@@ -45,6 +44,7 @@ const JobDetailForm = (props) => {
     setNeedRefreshDocument = () => {},
     loadingFetchTitle = false,
   } = props;
+  const [isShowClientLocation, setIsShowClientLocation] = useState(Boolean(clientLocation));
 
   const tenantId = getCurrentTenant();
 
@@ -516,8 +516,11 @@ const JobDetailForm = (props) => {
         initialValues={{
           position: position || 'EMPLOYEE',
           employeeType: employeeType?._id || employeeType,
-          workLocation: workLocation ? workLocation._id : clientLocation || null, // (workFromHome && 'work from home')
+          workLocation: workLocation
+            ? workLocation._id
+            : (clientLocation && 'client location') || null, // (workFromHome && 'work from home')
           department: department?._id || department,
+          clientLocation,
           title: title?._id || title,
           grade: grade?._id || grade,
           reportingManager: reportingManager?._id || reportingManager,
