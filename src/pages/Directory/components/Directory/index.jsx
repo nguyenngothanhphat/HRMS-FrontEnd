@@ -76,6 +76,13 @@ const DirectoryComponent = (props) => {
     setTabId(tabIdTemp);
   };
 
+  const clearFilter = () => {
+    dispatch({
+      type: 'employee/clearFilter',
+    });
+    setApplied(0);
+  };
+
   // USE EFFECT
   useEffect(() => {
     initTabId();
@@ -87,9 +94,8 @@ const DirectoryComponent = (props) => {
       setPageSelected(1);
       setSize(10);
 
-      dispatch({
-        type: 'employee/clearFilter',
-      });
+      clearFilter();
+
       dispatch({
         type: 'employee/save',
         payload: {
@@ -229,23 +235,15 @@ const DirectoryComponent = (props) => {
     });
   };
 
+  useEffect(() => clearFilter, [tabId]);
+
   const exportEmployees = async () => {
-    const status = []
-    if (tabId === 'inActive') {
-      status.push('INACTIVE')
-    } else {
-      status.push('ACTIVE')
-    }
     const getData = await dispatch({
       type: 'employee/exportEmployees',
-      payload: {
-        ...currentPayload,
-        status,
-        filter,
-      },
+      payload: { ...currentPayload, filter },
     });
 
-    const getListExport = getData.data || ''
+    const getListExport = getData.data || '';
 
     const downloadLink = document.createElement('a');
     const universalBOM = '\uFEFF';
@@ -275,7 +273,7 @@ const DirectoryComponent = (props) => {
   };
   const handleFilterCounts = (values) => {
     const filteredObj = Object.entries(values).filter(
-      ([value]) => (value !== undefined && value?.length > 0) || typeof value === 'number',
+      ([, value]) => (value !== undefined && value?.length > 0) || typeof value === 'number',
     );
     const newObj = Object.fromEntries(filteredObj);
     setApplied(Object.keys(newObj).length);
@@ -341,12 +339,7 @@ const DirectoryComponent = (props) => {
     ];
     exportToCsv('Template_Import_Employees.csv', processData(exportData));
   };
-  const clearFilter = () => {
-    dispatch({
-      type: 'employee/clearFilter',
-    });
-    setApplied(0);
-  };
+
   const rightButton = () => {
     const findIndexImport = permissions.importEmployees !== -1;
     const findIndexAdd = permissions.addEmployee !== -1;

@@ -30,7 +30,7 @@ const ticketManagement = {
     locationsList: [],
     ticketDetail: {},
     employeeRaiseList: [],
-    employeeAssigneeList: [],
+    employeeAssignedList: [],
     filter: {},
     selectedLocations: [getCurrentLocation()],
     supportTeamList: [],
@@ -257,44 +257,40 @@ const ticketManagement = {
     },
 
     *fetchEmployeeRaiseListEffect({ payload }, { call, put }) {
-      let response;
       try {
-        const tempPayload = {
+        const response = yield call(getListEmployee, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
-        };
-        response = yield call(getOffAllTicketList, tempPayload);
+          status: 'ACTIVE',
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { employeeRaiseList: data, currentStatus: payload.status },
+          payload: { employeeRaiseList: data },
         });
       } catch (error) {
         dialog(error);
       }
-      return response;
     },
-    *fetchEmployeeAssigneeListEffect({ payload }, { call, put }) {
-      let response;
+    *fetchEmployeeAssignedListEffect({ payload }, { call, put }) {
       try {
-        const tempPayload = {
+        const response = yield call(getListEmployee, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          ...payload,
-        };
-        response = yield call(getOffAllTicketList, tempPayload);
+          status: 'ACTIVE',
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { employeeAssigneeList: data, currentStatus: payload.status },
+          payload: { employeeAssignedList: data },
         });
       } catch (error) {
         dialog(error);
       }
-      return response;
     },
     *fetchSupportTeamList({ payload }, { call, put }) {
       let response;

@@ -96,6 +96,12 @@ const TableTickets = (props) => {
           setSelected(true);
           refreshFetchTicketList();
           refreshFetchTotalList();
+          dispatch({
+            type: 'ticketManagement/save',
+            payload: {
+              employeeFilterList: [],
+            },
+          });
         }
       });
     }

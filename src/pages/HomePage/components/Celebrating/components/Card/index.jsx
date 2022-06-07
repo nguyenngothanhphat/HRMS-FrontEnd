@@ -13,6 +13,7 @@ import CommentIcon from '@/assets/homePage/comment.svg';
 import CommonModal from '@/components/CommonModal';
 import CelebratingDetailModalContent from '../CelebratingDetailModalContent';
 import LikedModalContent from '../LikedModalContent';
+import { CELEBRATE_TYPE } from '@/utils/homePage';
 
 const NextArrow = (props) => {
   const { className, style, onClick } = props;
@@ -27,7 +28,7 @@ const PrevArrow = (props) => {
 const Card = (props) => {
   const {
     dispatch,
-    birthdayList = [],
+    list = [],
     previewing = false,
     // FOR PREVIEWING IN SETTINGS PAGE
     contentPreview: { previewImage = '', previewDescription = '' } = {},
@@ -51,26 +52,24 @@ const Card = (props) => {
     return moment(date1).format('MM/DD') === moment(date2).format('MM/DD');
   };
 
-  const upsertBirthdayConversationEffect = (payload) => {
+  const upsertCelebrationConversationEffect = (payload) => {
     return dispatch({
-      type: 'homePage/upsertBirthdayConversationEffect',
+      type: 'homePage/upsertCelebrationConversationEffect',
       payload,
     });
   };
 
   const onLikeClick = async (item) => {
-    const { likesComments: { likes = [], comments = [] } = {} } = item;
-    const likedIds = likes.map((x) => x.employeeInfo?._id);
+    const { likesComments: { likes = [] } = {} } = item;
 
     const employeeId = employee?._id;
     if (!likes.includes(employeeId)) {
       const payload = {
         employee: item._id,
-        year: moment().year(),
-        likes: [...likedIds, employeeId],
-        comments,
+        likes: [employeeId],
+        type: item.type,
       };
-      const res = await upsertBirthdayConversationEffect(payload);
+      const res = await upsertCelebrationConversationEffect(payload);
       if (res.statusCode === 200) {
         refreshData();
       }
@@ -79,10 +78,10 @@ const Card = (props) => {
 
   useEffect(() => {
     if (viewingItem) {
-      const find = birthdayList.find((item) => item._id === viewingItem._id);
+      const find = list.find((item) => item._id === viewingItem._id);
       setViewingItem(find);
     }
-  }, [JSON.stringify(birthdayList)]);
+  }, [JSON.stringify(list)]);
 
   // render UI
   const renderEmployeeName = (data) => {
@@ -114,34 +113,50 @@ const Card = (props) => {
         return 'his/her';
     }
   };
-  const renderBirthdayContent = (data = {}) => {
-    const { DOB = '', gender = '' } = data?.generalInfoInfo || {};
-    const isToday = isTheSameDay(moment(), moment(DOB));
+  const renderCardContent = (data = {}) => {
     const employeeName = renderEmployeeName(data);
-    const birthday = moment.utc(DOB).locale('en').format('MMM Do');
-    if (isToday)
+
+    if (data.type === CELEBRATE_TYPE.BIRTHDAY) {
+      const { DOB = '', gender = '' } = data?.generalInfoInfo || {};
+      const isToday = isTheSameDay(moment(), moment(DOB));
+      const birthday = moment.utc(DOB).locale('en').format('MMM Do');
+      if (isToday)
+        return (
+          <span>
+            {employeeName} is celebrating {getGender(gender)} birthday today. ({birthday})
+          </span>
+        );
       return (
         <span>
-          {employeeName} is celebrating {getGender(gender)} birthday today. ({birthday})
+          Upcoming birthday: {employeeName} ({birthday})
         </span>
       );
-    return (
-      <span>
-        Upcoming birthday: {employeeName} ({birthday})
-      </span>
-    );
+    }
+    if (data.type === CELEBRATE_TYPE.ANNIVERSARY) {
+      const { joinDate = '' } = data;
+      return (
+        <span>
+          {employeeName} joined our company on{' '}
+          {moment.utc(joinDate).locale('en').format('MMM Do, YYYY')}.
+        </span>
+      );
+    }
+    if (data.type === CELEBRATE_TYPE.NEWJOINEE) {
+      return <span>Welcome to new member: {employeeName}.</span>;
+    }
+    return '';
   };
 
   const renderCard = (card) => {
     const { likesComments: { likes = [], comments = [] } = {} } = card;
-    const likedIds = likes.map((x) => x.employeeInfo?._id);
+    const likedIds = likes.map((x) => x._id);
     return (
       <div className={styles.cardContainer}>
         <div className={styles.image}>
           <img src={card.generalInfoInfo?.avatar || BirthdayImage} alt="" />
         </div>
         <div className={styles.content}>
-          <p className={styles.caption}>{renderBirthdayContent(card)}</p>
+          <p className={styles.caption}>{renderCardContent(card)}</p>
 
           <div className={styles.actions}>
             <div className={styles.likes}>
@@ -218,8 +233,8 @@ const Card = (props) => {
           prevArrow={<PrevArrow />}
         >
           {!previewing
-            ? birthdayList.length > 0
-              ? birthdayList.map((x) => renderCard(x))
+            ? list.length > 0
+              ? list.map((x) => renderCard(x))
               : renderEmpty()
             : renderPreview()}
           {/* FOR PREVIEWING IN SETTINGS PAGE */}
@@ -248,5 +263,5 @@ const Card = (props) => {
 export default connect(({ loading, user: { currentUser = {}, permissions = {} } = {} }) => ({
   currentUser,
   permissions,
-  loadingRefresh: loading.effects['homePage/fetchBirthdayInWeekList'],
+  loadingRefresh: loading.effects['homePage/fetchCelebrationList'],
 }))(Card);

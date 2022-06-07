@@ -71,9 +71,6 @@ const PreviewOffer = (props) => {
   const [candidateSignature, setCandidateSignature] = useState(candidateSignatureProp || '');
 
   const [mail, setMail] = useState(candidateEmailProp || '');
-  // const [mailForm] = Form.useForm();
-
-  const [role, setRole] = useState([]);
 
   const [openModal, setOpenModal] = useState(false);
   const [openModal2, setOpenModal2] = useState(false);
@@ -982,6 +979,17 @@ const PreviewOffer = (props) => {
     ),
   };
 
+  const OwnerNote = {
+    title: 'Notice',
+    data: (
+      <p>
+        <Typography.Text>
+          You must be ticket's assignee or assignee's manager to proceed this step.
+        </Typography.Text>
+      </p>
+    ),
+  };
+
   const SentForApprovalNote = {
     title: 'Offer Sent For Approval',
     data: <Typography.Text>The offer has been sent to HR Manager for approval.</Typography.Text>,
@@ -991,7 +999,7 @@ const PreviewOffer = (props) => {
 
   // main
   return (
-    <Row gutter={[24, 0]} className={styles.previewContainer}>
+    <Row gutter={[24, 24]} className={styles.previewContainer}>
       <Col xs={24} xl={16} className={styles.left}>
         {(isAwaitingOffer || isNewOffer || isSentOffer || isNeedsChanges) && (
           <div className={styles.header}>
@@ -1010,6 +1018,12 @@ const PreviewOffer = (props) => {
       </Col>
 
       <Col xs={24} xl={8} className={styles.right}>
+        {!isTicketManager && !isTicketAssignee && (
+          <>
+            <NoteComponent note={OwnerNote} />
+            <div style={{ marginBottom: '24px' }} />
+          </>
+        )}
         {/* SENT OFFER  */}
         {isTicketManager && isSentOffer && (
           <>
