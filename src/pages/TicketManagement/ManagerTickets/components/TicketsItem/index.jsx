@@ -1,6 +1,6 @@
 import { UpOutlined } from '@ant-design/icons';
 import { Button, Popover } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import DeleteIcon from '@/assets/customerManagement/delete.svg';
 import EditIcon from '@/assets/customerManagement/edit2.svg';
@@ -19,6 +19,7 @@ function TicketsItem(props) {
     refreshFetchTicketList = () => {},
     refreshFetchTotalList = () => {},
     setOldAssignName = () => {},
+    selected = true,
   } = props;
   const [isEdit, setIsEdit] = useState(false);
 
@@ -42,6 +43,13 @@ function TicketsItem(props) {
       }
     });
   };
+
+  useEffect(() => {
+    if (selected) {
+      setIsEdit(false);
+    }
+  }, [selected]);
+
   return (
     <div className={styles.TicketsItem}>
       <UserProfilePopover
