@@ -1,186 +1,246 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'umi';
-import TableManager from '../TableManager';
-import Summary from '../Summary';
+import { Avatar, Popover, Tabs, Tooltip } from 'antd';
+import { isEmpty } from 'lodash';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { connect, Link } from 'umi';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
+import ActionIcon from '@/assets/projectManagement/actionIcon.svg';
+import CommonTable from '@/components/CommonTable';
+import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterButton from '@/components/FilterButton';
+import FilterPopover from '@/components/FilterPopover';
+import UserProfilePopover from '@/components/UserProfilePopover';
+import { getCurrentLocation } from '@/utils/authority';
+import { getEmployeeName, OFFBOARDING_STATUS, OFFBOARDING_TABS } from '@/utils/offboarding';
+import { addZeroToNumber } from '@/utils/utils';
+import styles from './index.less';
 
-@connect(({ loading, offboarding: { totalAll = '' } = {} }) => ({
-  loading: loading.effects['offboarding/fetchListTeamRequest'],
-  totalAll,
-}))
-class TeamRequest extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedFilterTab: '1',
-      pageSelected: 1,
-      size: 10,
-    };
-  }
+const TeamRequest = (props) => {
+  const {
+    dispatch,
+    offboarding: { listTeamRequest = [], totalListTeamRequest = [] } = {},
+    loadingFetchListTeamRequest = false,
+  } = props;
 
-  componentDidUpdate(prevProps, prevState) {
-    const { selectedFilterTab, pageSelected, size } = this.state;
-    const { dispatch, location = [] } = this.props;
-    if (prevState.pageSelected !== pageSelected || prevState.size !== size) {
-      this.initDataTable(selectedFilterTab);
-    }
-    if (prevState.selectedFilterTab !== selectedFilterTab) {
-      if (selectedFilterTab === '1') {
-        dispatch({
-          type: 'offboarding/fetchListTeamRequest',
-          payload: {
-            page: 1,
-            limit: size,
-            location,
-          },
-        });
-      }
-      if (selectedFilterTab === '2') {
-        dispatch({
-          type: 'offboarding/fetchListTeamRequest',
-          payload: {
-            status: 'IN-PROGRESS',
-            page: 1,
-            limit: size,
-            location,
-          },
-        });
-      }
-      if (selectedFilterTab === '3') {
-        dispatch({
-          type: 'offboarding/fetchListTeamRequest',
-          payload: {
-            status: 'ON-HOLD',
-            page: 1,
-            limit: size,
-            location,
-          },
-        });
-      }
-      if (selectedFilterTab === '4') {
-        dispatch({
-          type: 'offboarding/fetchListTeamRequest',
-          payload: {
-            status: 'ACCEPTED',
-            page: 1,
-            limit: size,
-            location,
-          },
-        });
-      }
-      if (selectedFilterTab === '5') {
-        dispatch({
-          type: 'offboarding/fetchListTeamRequest',
-          payload: {
-            status: 'REJECTED',
-            page: 1,
-            limit: size,
-            location,
-          },
-        });
-      }
-    }
-  }
+  const [size, setSize] = useState(10);
+  const [page, setPage] = useState(1);
+  const [currentStatus, setCurrentStatus] = useState(OFFBOARDING_STATUS.ACCEPTED);
 
-  initDataTable = (tabId) => {
-    const { dispatch, location } = this.props;
-    const { pageSelected, size } = this.state;
-
-    if (tabId === '1') {
-      dispatch({
-        type: 'offboarding/fetchListTeamRequest',
-        payload: {
-          page: pageSelected,
-          limit: size,
-          location,
-        },
-      });
-    }
-    if (tabId === '2') {
-      dispatch({
-        type: 'offboarding/fetchListTeamRequest',
-        payload: {
-          status: 'IN-PROGRESS',
-          limit: size,
-          location,
-        },
-      });
-    }
-    if (tabId === '3') {
-      dispatch({
-        type: 'offboarding/fetchListTeamRequest',
-        payload: {
-          status: 'ON-HOLD',
-          page: pageSelected,
-          limit: size,
-          location,
-        },
-      });
-    }
-    if (tabId === '4') {
-      dispatch({
-        type: 'offboarding/fetchListTeamRequest',
-        payload: {
-          status: 'ACCEPTED',
-          page: pageSelected,
-          limit: size,
-          location,
-        },
-      });
-    }
-    if (tabId === '5') {
-      dispatch({
-        type: 'offboarding/fetchListTeamRequest',
-        payload: {
-          status: 'REJECTED',
-          page: pageSelected,
-          limit: size,
-          location,
-        },
-      });
-    }
-  };
-
-  setSelectedTab = (id) => {
-    this.setState({
-      selectedFilterTab: id,
+  useEffect(() => {
+    dispatch({
+      type: 'offboarding/fetchListTeamRequest',
+      payload: {
+        location: [getCurrentLocation()],
+        page,
+        limit: size,
+        status: currentStatus,
+      },
     });
+  }, [currentStatus, page, size]);
+
+  const getTabName = (tab) => {
+    const find = totalListTeamRequest.find((item) => item._id === tab.id);
+    return `${tab.label} (${addZeroToNumber(find?.count || 0)})`;
   };
 
-  getPageAndSize = (page, pageSize) => {
-    this.setState({
-      pageSelected: page,
-      size: pageSize,
-    });
-  };
-
-  render() {
-    const {
-      data = [],
-      countdata = [],
-      loading,
-      hrManager = {},
-      loadingSearch,
-      timezoneList,
-      totalAll = '',
-    } = this.props;
-    const { pageSelected, size } = this.state;
-
+  const filterPane = () => {
     return (
-      <>
-        <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
-        <TableManager
-          data={data}
-          timezoneList={timezoneList}
-          loading={loading || loadingSearch}
-          hrManager={hrManager}
-          pageSelected={pageSelected}
-          size={size}
-          total={totalAll}
-          getPageAndSize={this.getPageAndSize}
-        />
-      </>
+      <div className={styles.filterPane}>
+        <FilterPopover placement="bottomRight" realTime content={<p>Empty</p>}>
+          <FilterButton showDot={false} />
+        </FilterPopover>
+        <CustomSearchBox placeholder="Search for Ticket numer, resignee, request ..." />
+      </div>
     );
-  }
-}
+  };
 
-export default TeamRequest;
+  const renderMenuDropdown = () => {
+    return (
+      <div className={styles.containerDropdown}>
+        <div className={styles.btn}>
+          <span>Change assigned</span>
+        </div>
+        <div className={styles.btn}>
+          <span>Schedule 1 on 1</span>
+        </div>
+      </div>
+    );
+  };
+
+  const columns = [
+    {
+      title: <span className={styles.title}>Ticket ID </span>,
+      dataIndex: 'ticketID',
+      render: (ticketID, record) => {
+        return (
+          <Link to={`/offboarding/list/review/${record._id}`} className={styles.title__value}>
+            {ticketID}
+          </Link>
+        );
+      },
+      fixed: 'left',
+    },
+    {
+      title: <span className={styles.title}>Created Date</span>,
+      dataIndex: 'createdAt',
+      render: (createdAt = '') => {
+        return <span>{createdAt ? moment(createdAt).format('MM/DD/YYYY') : ''}</span>;
+      },
+    },
+    {
+      title: <span className={styles.title}>Employee ID</span>,
+      dataIndex: 'employee',
+      render: (employee = {}) => {
+        return <span>{employee?.employeeId}</span>;
+      },
+    },
+    {
+      title: <span className={styles.title}>Requestee Name</span>,
+      dataIndex: 'employee',
+      ellipsis: true,
+      render: (employee = {}, row) => {
+        const { generalInfo: { legalName = '', userId = '' } = {} } = employee;
+        return (
+          <UserProfilePopover
+            placement="bottomRight"
+            data={{
+              ...employee,
+              locationInfo: employee.location,
+              department: row.department,
+              manager: row.manager,
+            }}
+          >
+            <Link to={`/directory/employee-profile/${userId}`} className={styles.title__value}>
+              {legalName}
+            </Link>
+          </UserProfilePopover>
+        );
+      },
+    },
+    {
+      title: 'Manager',
+      dataIndex: 'manager',
+      render: (manager = {}) => {
+        const name = getEmployeeName(manager.generalInfo);
+        const { generalInfo: { avatar = '' } = {} || {} } = manager;
+
+        return (
+          <Tooltip title={name}>
+            <Avatar
+              src={<img alt="" src={avatar || DefaultAvatar} />}
+              style={{ width: 21, height: 21 }}
+            />
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: <span className={styles.title}>HR POC</span>,
+      dataIndex: 'assigneeHR',
+      render: (assigneeHR = {}) => {
+        if (isEmpty(assigneeHR)) {
+          return '-';
+        }
+
+        return (
+          <UserProfilePopover
+            placement="bottomRight"
+            data={{
+              ...assigneeHR,
+              locationInfo: assigneeHR.location,
+            }}
+          >
+            <Avatar
+              src={<img alt="" src={assigneeHR?.generalInfo?.avatar || DefaultAvatar} />}
+              style={{ width: 21, height: 21 }}
+            />
+          </UserProfilePopover>
+        );
+      },
+    },
+    {
+      title: <span className={styles.title}>1-on-1 date</span>,
+      render: () => {
+        return (
+          <span
+            className={styles.title__value}
+            style={{
+              textDecoration: 'underline',
+            }}
+          >
+            Schedule 1 on 1
+          </span>
+        );
+      },
+    },
+    {
+      title: <span className={styles.title}>Action</span>,
+      dataIndex: '_id',
+      render: (id) => {
+        return (
+          <div className={styles.rowAction}>
+            <Link to={`/offboarding/list/review/${id}`} className={styles.title__value}>
+              View Request
+            </Link>
+          </div>
+        );
+      },
+    },
+    {
+      title: '',
+      align: 'right',
+      width: '4%',
+      render: (_, row) => {
+        return (
+          <Popover
+            trigger="click"
+            overlayClassName={styles.dropdownPopover}
+            content={renderMenuDropdown(row)}
+            placement="bottomRight"
+          >
+            <img src={ActionIcon} alt="" style={{ cursor: 'pointer' }} />
+          </Popover>
+        );
+      },
+    },
+  ];
+
+  const onChangePagination = (pageNumber, pageSize) => {
+    setPage(pageNumber);
+    setSize(pageSize);
+  };
+
+  return (
+    <div className={styles.TeamRequest}>
+      <Tabs
+        defaultActiveKey={OFFBOARDING_STATUS.IN_PROGRESS}
+        destroyInactiveTabPane
+        onChange={(key) => setCurrentStatus(key)}
+        tabBarExtraContent={filterPane()}
+      >
+        {OFFBOARDING_TABS.map((x) => (
+          <Tabs.TabPane tab={getTabName(x)} key={x.id}>
+            <CommonTable
+              loading={loadingFetchListTeamRequest}
+              columns={columns}
+              list={listTeamRequest}
+              isBackendPaging
+              limit={size}
+              page={page}
+              onChangePage={onChangePagination}
+            />
+          </Tabs.TabPane>
+        ))}
+      </Tabs>
+    </div>
+  );
+};
+
+export default connect(
+  ({ offboarding = {}, user = {}, loading, location: { companyLocationList = [] } }) => ({
+    user,
+    offboarding,
+    companyLocationList,
+    loadingFetchListTeamRequest: loading.effects['offboarding/fetchListTeamRequest'],
+  }),
+)(TeamRequest);

@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import TicketEmployee from '../EmployeeView/Request';
-import TicketManager from '../ManagerView/components/DetailTicket';
+import TicketManager from '../ManagerView/components/TicketDetails';
 import TicketHr from '../HRView/components/HrRequestTable/Ticket';
 
 @connect()

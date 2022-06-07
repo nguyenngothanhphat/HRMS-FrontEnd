@@ -28,7 +28,11 @@ const UserProfilePopover = (props) => {
   } = data;
 
   const {
-    headQuarterAddress: { state: state1 = '', country: { name: countryName1 = '' } = {} } = {},
+    headQuarterAddress: {
+      state: state1 = '',
+      country = {},
+      country: { name: countryName1 = '' } = {},
+    } = {},
   } = locationInfo || {};
 
   const { avatar = '', personalNumber = '' } = generalInfo || {};
@@ -48,7 +52,8 @@ const UserProfilePopover = (props) => {
         </div>
         <div className={styles.information}>
           <span className={styles.name}>
-            {legalName} {userId ? `(${userId})` : ''}
+            {legalName || generalInfo?.legalName}{' '}
+            {userId || generalInfo?.userId ? `(${userId || generalInfo?.userId})` : ''}
           </span>
           <span className={styles.position}>{department?.name || departmentInfo?.name}</span>
           <span className={styles.department}>{title?.name || titleInfo?.name}</span>
@@ -58,7 +63,11 @@ const UserProfilePopover = (props) => {
   };
   const userInfo = () => {
     const getTimezone =
-      getTimezoneViaCity(state || state1) || getTimezoneViaCity(countryName || countryName1) || '';
+      getTimezoneViaCity(state || state1) ||
+      getTimezoneViaCity(
+        countryName || countryName1 || typeof country === 'string' ? country : '',
+      ) ||
+      '';
     const timezone =
       getTimezone !== '' ? getTimezone : Intl.DateTimeFormat().resolvedOptions().timeZone;
     const time = getCurrentTimeOfTimezoneOption(new Date(), timezone);
@@ -75,15 +84,20 @@ const UserProfilePopover = (props) => {
       },
       {
         label: 'Mobile',
-        value: personalNumber || workNumber,
+        value: generalInfo?.workNumber || workNumber,
       },
       {
         label: 'Email id',
-        value: workEmail,
+        value: generalInfo?.workEmail || workEmail,
       },
       {
         label: 'Location',
-        value: location || locationInfo ? `${state || state1}, ${countryName || countryName1}` : '',
+        value:
+          location || locationInfo
+            ? `${state || state1}, ${
+                countryName || countryName1 || typeof country === 'string' ? country : ''
+              }`
+            : '',
       },
       {
         label: 'Local Time',

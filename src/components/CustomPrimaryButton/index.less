@@ -1,0 +1,27 @@
+@orange: #ffa100;
+
+.CustomPrimaryButton {
+  height: 42px;
+  padding-right: 25px;
+  padding-left: 25px;
+  background-color: @orange;
+  border: none;
+  border-radius: 25px;
+  box-shadow: none;
+  opacity: 1;
+  span {
+    color: white;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  &:hover,
+  &:disabled {
+    opacity: 0.8;
+  }
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: none;
+    background: @orange;
+  }
+}

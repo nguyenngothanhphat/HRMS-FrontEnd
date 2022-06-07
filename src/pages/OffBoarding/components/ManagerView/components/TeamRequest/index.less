@@ -1,0 +1,128 @@
+@darkColour: #161c29;
+@blueColour: #2c6df9;
+@lightGrayColor: #707177;
+@commonPadding: 24px;
+@borderColor: #d6dce0;
+
+.TeamRequest {
+  box-sizing: border-box;
+  margin: 24px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #d6dce0;
+  border-radius: 8px;
+  // box-shadow: 0px 4px 40px rgba(0, 0, 0, 0.1);
+
+  :global {
+    .ant-tabs-nav {
+      height: 57px;
+      padding-right: @commonPadding;
+      padding-left: @commonPadding;
+      .ant-tabs-tab-btn {
+        font-weight: 500;
+        font-size: 14px;
+        font-style: normal;
+
+        line-height: 16px;
+      }
+      .ant-tabs-tab-active {
+        .ant-tabs-tab-btn {
+          color: @blueColour;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .ant-tabs-content-holder {
+    }
+    .ant-tabs-top > .ant-tabs-nav::before,
+    .ant-tabs-bottom > .ant-tabs-nav::before,
+    .ant-tabs-top > div > .ant-tabs-nav::before,
+    .ant-tabs-bottom > div > .ant-tabs-nav::before {
+      border-color: @borderColor;
+    }
+    .ant-table-content {
+      padding: 24px;
+    }
+    .ant-table-pagination {
+      padding: 24px !important;
+    }
+  }
+
+  .filterPane {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .title {
+    color: #fff;
+    font-weight: 500;
+    font-size: 13px;
+    font-style: normal;
+    line-height: 15.23px;
+
+    &__value {
+      overflow: hidden;
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 13px;
+      font-style: normal;
+      line-height: 20px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      cursor: pointer;
+    }
+  }
+
+  .tableText {
+    color: #464646;
+    font-size: 13px;
+    line-height: 15px;
+  }
+  .rowAction {
+    display: flex;
+    align-items: center;
+    a {
+      color: #ffa100;
+      font-weight: 700;
+      font-size: 12px;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+}
+.dropdownPopover {
+  width: 150px;
+  :global {
+    .ant-popover-inner {
+      padding: 0;
+      background: #ffffff;
+      border-radius: 4px;
+    }
+    .ant-popover-inner-content {
+      padding: 0 !important;
+    }
+  }
+  .containerDropdown {
+    .btn {
+      padding: 8px;
+      cursor: pointer;
+      &:not(:last-child) {
+        border-bottom: 1px solid #d6dce0;
+      }
+      img {
+        padding-right: 8px;
+      }
+      span {
+        color: @blueColour;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 14px;
+        text-decoration: underline;
+      }
+      &:hover {
+        background: #f5f5f54f;
+      }
+    }
+  }
+}
