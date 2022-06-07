@@ -51,10 +51,19 @@ function TicketsItem(props) {
       >
         <span
           className={styles.userID}
-          style={{ color: '#2c6df9' }}
+          style={{ color: '#2c6df9', width: '200px' }}
           onClick={() => viewProfile(employeeAssignee?.generalInfo?.userId || '')}
         >
-          {employeeAssignee?.generalInfo?.legalName} {isEdit && <UpOutlined />}
+          {employeeAssignee?.generalInfo?.legalName.length > 15
+            ? `${employeeAssignee?.generalInfo?.legalName.substr(
+                0,
+                4,
+              )}...${employeeAssignee?.generalInfo?.legalName.substr(
+                employeeAssignee?.generalInfo?.legalName.length - 8,
+                employeeAssignee?.generalInfo?.legalName.length,
+              )}`
+            : employeeAssignee?.generalInfo?.legalName}{' '}
+          {isEdit && <UpOutlined />}
         </span>
       </UserProfilePopover>
       <div style={{ display: 'flex' }}>

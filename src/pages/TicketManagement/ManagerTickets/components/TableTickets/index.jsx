@@ -301,7 +301,17 @@ const TableTickets = (props) => {
                 onClick={() => viewProfile(employeeRaise?.generalInfo?.userId || '')}
               >
                 {!isEmpty(employeeRaise?.generalInfo)
-                  ? `${employeeRaise?.generalInfo?.legalName} (${employeeRaise?.generalInfo?.userId})`
+                  ? `${
+                      employeeRaise?.generalInfo?.legalName.length > 20
+                        ? `${employeeRaise?.generalInfo?.legalName.substr(
+                            0,
+                            4,
+                          )}...${employeeRaise?.generalInfo?.legalName.substr(
+                            employeeRaise?.generalInfo?.legalName.length - 8,
+                            employeeRaise?.generalInfo?.legalName.length,
+                          )}`
+                        : employeeRaise?.generalInfo?.legalName
+                    } (${employeeRaise?.generalInfo?.userId})`
                   : ''}
               </span>
             </UserProfilePopover>
