@@ -10,16 +10,7 @@ import styles from './index.less';
 const array = [
   {
     icon: icon1,
-    decription: (
-      <p>
-        Discuss your decision with a
-        <span style={{ color: '#2C6DF9', fontWeight: '500', borderBottom: '1px solid #2C6DF9' }}>
-          {' '}
-          supervisor{' '}
-        </span>{' '}
-        and not your reporting manager
-      </p>
-    ),
+    decription: <p>Discuss your decision with your Skip-level manager</p>,
   },
   {
     icon: icon2,
