@@ -53,7 +53,7 @@ export default {
         if (statusCode !== 200) throw response;
         if (!isUploadAvatar) {
           notification.success({
-            message: 'Upload Image Successfully',
+            message: 'Upload File Successfully',
           });
         }
         yield put({

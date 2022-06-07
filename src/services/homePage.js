@@ -84,3 +84,36 @@ export async function upsertCelebrationConversation(data) {
     data,
   });
 }
+
+export async function getQuickLinkList(params) {
+  return request('api/quicklinktenant/list', {
+    method: 'GET',
+    params,
+  });
+}
+
+export async function getTotalQuickLink(params) {
+  return request('api/quicklinktenant/get-total-by-type', {
+    method: 'GET',
+    params,
+  });
+}
+
+export async function addQuickLink(data) {
+  return request('api/quicklinktenant/add', {
+    method: 'POST',
+    data,
+  });
+}
+export async function updateQuickLink(data) {
+  return request('api/quicklinktenant/update', {
+    method: 'POST',
+    data,
+  });
+}
+export async function deleteQuickLink(data) {
+  return request('api/quicklinktenant/delete', {
+    method: 'POST',
+    data,
+  });
+}
