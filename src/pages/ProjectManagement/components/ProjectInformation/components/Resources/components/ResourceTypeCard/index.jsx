@@ -230,7 +230,7 @@ const ResourceTypeCard = (props) => {
           return (
             <Popover
               trigger="click"
-              visible={row?.resourceType?._id === resourceTypeId}
+              visible={row?.id === resourceTypeId}
               onVisibleChange={
                 resourceTypeId
                   ? () => setResourceTypeId('')
@@ -245,7 +245,7 @@ const ResourceTypeCard = (props) => {
                   cursor: 'pointer',
                   color: '#2c6df9',
                 }}
-                onClick={() => setResourceTypeId(row?.resourceType?._id)}
+                onClick={() => setResourceTypeId(row?.id)}
                 onBlur={() => setResourceTypeId('')}
               >
                 <img src={ActionIcon} alt="" />
