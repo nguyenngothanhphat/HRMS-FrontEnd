@@ -2,12 +2,12 @@ import React, { PureComponent } from 'react';
 import { history } from 'umi';
 import { Tabs } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
-import HRrequestTable from './component/HrRequestTable';
-import RelievingFormalities from './component/RelievingFormalities';
-import Settings from './component/Settings';
+import HrRequestTable from './components/HrRequestTable';
+import RelievingFormalities from './components/RelievingFormalities';
+import Settings from './components/Settings';
 import styles from './index.less';
 
-class HROffboarding extends PureComponent {
+class HRView extends PureComponent {
   componentDidMount = () => {
     const { tabName = '' } = this.props;
     if (!tabName) {
@@ -21,7 +21,7 @@ class HROffboarding extends PureComponent {
     if (!tabName) return '';
     return (
       <PageContainer>
-        <div className={styles.containerEmployeeOffboarding}>
+        <div className={styles.HRView}>
           <div className={styles.tabs}>
             <Tabs
               activeKey={tabName || 'list'}
@@ -31,7 +31,7 @@ class HROffboarding extends PureComponent {
             >
               <TabPane tab="Terminate work relationship" key="list">
                 <div className={styles.paddingHR}>
-                  <HRrequestTable onChangeTab={this.onChangeTab} />
+                  <HrRequestTable onChangeTab={this.onChangeTab} />
                 </div>
               </TabPane>
               <TabPane tab="Relieving Formalities" key="hr-relieving-formalities">
@@ -48,4 +48,4 @@ class HROffboarding extends PureComponent {
   }
 }
 
-export default HROffboarding;
+export default HRView;

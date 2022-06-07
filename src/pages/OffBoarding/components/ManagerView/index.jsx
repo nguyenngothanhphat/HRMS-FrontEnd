@@ -6,9 +6,9 @@ import { debounce } from 'lodash';
 import { PageContainer } from '@/layouts/layout/src';
 // import TableAssigned from '@/components/TableAssigned';
 import { getTimezoneViaCity } from '@/utils/times';
-import TeamRequest from './component/TeamRequest';
-import MyRequestContent from '../components/TabMyRequest';
-import TableSearch from './component/TableSearch';
+import TeamRequest from './components/TeamRequest';
+import MyRequestContent from '../TabMyRequest';
+import TableSearch from './components/TableSearch';
 import styles from './index.less';
 
 @connect(
@@ -38,7 +38,7 @@ import styles from './index.less';
     companyLocationList,
   }),
 )
-class ManagerOffBoading extends Component {
+class ManagerView extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -161,7 +161,7 @@ class ManagerOffBoading extends Component {
     if (!tabName) return '';
     return (
       <PageContainer>
-        <div className={styles.managerContainer}>
+        <div className={styles.ManagerView}>
           <Affix offsetTop={30}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>
@@ -226,4 +226,4 @@ class ManagerOffBoading extends Component {
   }
 }
 
-export default ManagerOffBoading;
+export default ManagerView;

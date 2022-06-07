@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import TicketEmployee from '../EmployeeOffBoarding/Request';
-import TicketManager from '../ManagerOffBoarding/component/DetailTicket';
-import TicketHr from '../HrOffboarding/component/HrRequestTable/Ticket';
+import TicketEmployee from '../EmployeeView/Request';
+import TicketManager from '../ManagerView/components/DetailTicket';
+import TicketHr from '../HRView/components/HrRequestTable/Ticket';
 
 @connect()
 class OffBoarding extends PureComponent {

@@ -38,7 +38,7 @@ const { TabPane } = Tabs;
     hrManager,
   }),
 )
-class EmployeeOffBoading extends Component {
+class EmployeeView extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -141,10 +141,10 @@ class EmployeeOffBoading extends Component {
     } = this.props;
     const { relievingInQueue, dataDraft = [], dataRequest = [], loadingFetchList } = this.state;
 
-    if (!tabName) return ''
+    if (!tabName) return '';
     return (
       <PageContainer>
-        <div className={styles.EmployeeOffboarding}>
+        <div className={styles.EmployeeView}>
           <div className={styles.tabs}>
             <Tabs
               activeKey={tabName || 'list'}
@@ -201,4 +201,4 @@ class EmployeeOffBoading extends Component {
   }
 }
 
-export default EmployeeOffBoading;
+export default EmployeeView;

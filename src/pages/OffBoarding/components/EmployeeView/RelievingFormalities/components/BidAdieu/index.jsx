@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col, Input } from 'antd';
-import SideImage from '../../../../../../../public/assets/images/timeOffMan.svg';
+import SideImage from '../../../../../../../../public/assets/images/timeOffMan.svg';
 import styles from './index.less';
 
 const { TextArea } = Input;
