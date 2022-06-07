@@ -36,6 +36,7 @@ const TableTickets = (props) => {
   const [currentTimeState, setCurrentTimeState] = useState(moment());
   const [nameSearch, setNameSearch] = useState('');
   const [oldName, setOldName] = useState('');
+  const [selected, setSelected] = useState(true);
 
   const openViewTicket = (ticketID) => {
     let id = '';
@@ -68,6 +69,7 @@ const TableTickets = (props) => {
       attachments = [],
       department_assign: departmentAssign = '',
     } = ticket;
+    setSelected(false);
     if (value !== undefined) {
       dispatch({
         type: 'ticketManagement/updateTicket',
@@ -91,6 +93,7 @@ const TableTickets = (props) => {
       }).then((res) => {
         const { statusCode = '' } = res;
         if (statusCode === 200) {
+          setSelected(true);
           refreshFetchTicketList();
           refreshFetchTotalList();
         }
@@ -361,6 +364,7 @@ const TableTickets = (props) => {
                 refreshFetchTicketList={refreshFetchTicketList}
                 refreshFetchTotalList={refreshFetchTotalList}
                 row={row}
+                selected={selected}
                 setOldAssignName={setOldName}
               />
             );
