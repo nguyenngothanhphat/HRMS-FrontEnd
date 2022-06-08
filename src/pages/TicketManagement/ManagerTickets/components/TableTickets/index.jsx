@@ -290,28 +290,24 @@ const TableTickets = (props) => {
         dataIndex: 'employeeRaise',
         key: 'requesterName',
         render: (employeeRaise = {}) => {
+          const { generalInfo = {}, generalInfo: { legalName = '', userId = '' } = {} } =
+            employeeRaise;
           return (
             <UserProfilePopover
               placement="top"
               trigger="hover"
-              data={{ ...employeeRaise, ...employeeRaise?.generalInfo }}
+              data={{ ...employeeRaise, ...generalInfo }}
             >
-              <span
-                className={styles.userID}
-                onClick={() => viewProfile(employeeRaise?.generalInfo?.userId || '')}
-              >
-                {!isEmpty(employeeRaise?.generalInfo)
+              <span className={styles.userID} onClick={() => viewProfile(userId || '')}>
+                {!isEmpty(generalInfo)
                   ? `${
-                      employeeRaise?.generalInfo?.legalName.length > 20
-                        ? `${employeeRaise?.generalInfo?.legalName.substr(
-                            0,
-                            4,
-                          )}...${employeeRaise?.generalInfo?.legalName.substr(
-                            employeeRaise?.generalInfo?.legalName.length - 8,
-                            employeeRaise?.generalInfo?.legalName.length,
+                      legalName.length > 20
+                        ? `${legalName.substr(0, 4)}...${legalName.substr(
+                            legalName.length - 8,
+                            legalName.length,
                           )}`
-                        : employeeRaise?.generalInfo?.legalName
-                    } (${employeeRaise?.generalInfo?.userId})`
+                        : legalName
+                    } (${userId})`
                   : ''}
               </span>
             </UserProfilePopover>
