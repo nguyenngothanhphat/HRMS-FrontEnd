@@ -12,6 +12,7 @@ function TicketsItem(props) {
   const {
     dispatch,
     employeeAssignee = {},
+    employeeAssignee: { generalInfo = {}, generalInfo: { userId = '', legalName = '' } = {} } = {},
     renderMenuDropdown = () => {},
     viewProfile = () => {},
     handleClickSelect = () => {},
@@ -55,14 +56,20 @@ function TicketsItem(props) {
       <UserProfilePopover
         placement="top"
         trigger="hover"
-        data={{ ...employeeAssignee, ...employeeAssignee?.generalInfo }}
+        data={{ ...employeeAssignee, ...generalInfo }}
       >
         <span
           className={styles.userID}
-          style={{ color: '#2c6df9' }}
-          onClick={() => viewProfile(employeeAssignee?.generalInfo?.userId || '')}
+          style={{ color: '#2c6df9', width: '200px' }}
+          onClick={() => viewProfile(userId || '')}
         >
-          {employeeAssignee?.generalInfo?.legalName} {isEdit && <UpOutlined />}
+          {legalName.length > 15
+            ? `${legalName.substr(0, 4)}...${legalName.substr(
+                legalName.length - 8,
+                legalName.length,
+              )}`
+            : legalName}{' '}
+          {isEdit && <UpOutlined />}
         </span>
       </UserProfilePopover>
       <div style={{ display: 'flex' }}>
@@ -78,7 +85,7 @@ function TicketsItem(props) {
               type="link"
               shape="circle"
               onClick={() => {
-                handleEdit(row.id, employeeAssignee?.generalInfo?.legalName);
+                handleEdit(row.id, legalName);
               }}
             >
               <img width={32} height={32} src={EditIcon} alt="edit" />
