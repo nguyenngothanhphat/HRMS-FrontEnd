@@ -28,7 +28,7 @@ export const getEmployeeName = (generalInfo = {}) => {
   const { legalName = '', firstName = '', lastName = '', middleName = '' } = generalInfo;
   let name = legalName;
 
-  if (!name) {
+  if (!name && firstName) {
     name = `${firstName} ${lastName}`;
     if (middleName) {
       name = `${firstName} ${middleName} ${lastName}`;
@@ -36,3 +36,5 @@ export const getEmployeeName = (generalInfo = {}) => {
   }
   return name;
 };
+
+export const dateFormat = 'MM/DD/YYYY';

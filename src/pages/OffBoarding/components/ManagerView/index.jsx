@@ -1,9 +1,12 @@
 import { Tabs } from 'antd';
-import React from 'react';
-import { history } from 'umi';
+import React, { useState } from 'react';
+import { history, connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import TeamRequest from './components/TeamRequest';
 import styles from './index.less';
+import CustomBlueButton from '@/components/CustomBlueButton';
+import CustomDropdownSelector from '@/components/CustomDropdownSelector';
+import { getCurrentLocation } from '@/utils/authority';
 
 const TABS = {
   MY: 'my',
@@ -13,13 +16,50 @@ const TABS = {
 const { TabPane } = Tabs;
 
 const ManagerView = (props) => {
-  const { tabName = '' } = props;
+  const { dispatch, tabName = '', companyLocationList = [] } = props;
+
+  const [selectedLocations, setSelectedLocation] = useState([getCurrentLocation()]);
+
+  const onLocationChange = (selection) => {
+    dispatch({
+      type: 'offboarding/save',
+      payload: {
+        selectedLocations: [...selection],
+      },
+    });
+    setSelectedLocation([...selection]);
+  };
+
+  const renderLocationOptions = () => {
+    return companyLocationList.map((x) => {
+      return {
+        _id: x._id,
+        name: x.name,
+      };
+    });
+  };
+
+  const options = () => {
+    return (
+      <div className={styles.options}>
+        <CustomDropdownSelector
+          options={renderLocationOptions()}
+          onChange={onLocationChange}
+          disabled={renderLocationOptions().length < 2}
+          label="Location"
+          selectedList={selectedLocations}
+        />
+        <CustomBlueButton title="Generate Report" />
+      </div>
+    );
+  };
+
   return (
     <div className={styles.ManagerView}>
       <PageContainer>
         <Tabs
           activeKey={tabName || TABS.TEAM}
-          //   tabBarExtraContent={options()}
+          tabBarExtraContent={options()}
           onChange={(key) => {
             history.push(`/offboarding/${key}`);
           }}
@@ -34,4 +74,6 @@ const ManagerView = (props) => {
   );
 };
 
-export default ManagerView;
+export default connect(({ location: { companyLocationList = [] } }) => ({
+  companyLocationList,
+}))(ManagerView);

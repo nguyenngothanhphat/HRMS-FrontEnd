@@ -4,7 +4,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
-import ActionIcon from '@/assets/projectManagement/actionIcon.svg';
+import MenuIcon from '@/assets/offboarding/menuIcon.png';
 import CommonTable from '@/components/CommonTable';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterButton from '@/components/FilterButton';
@@ -18,7 +18,7 @@ import styles from './index.less';
 const TeamRequest = (props) => {
   const {
     dispatch,
-    offboarding: { listTeamRequest = [], totalListTeamRequest = [] } = {},
+    offboarding: { listTeamRequest = [], totalListTeamRequest = [], selectedLocations = [] } = {},
     loadingFetchListTeamRequest = false,
   } = props;
 
@@ -30,13 +30,13 @@ const TeamRequest = (props) => {
     dispatch({
       type: 'offboarding/fetchListTeamRequest',
       payload: {
-        location: [getCurrentLocation()],
+        location: [selectedLocations],
         page,
         limit: size,
         status: currentStatus,
       },
     });
-  }, [currentStatus, page, size]);
+  }, [currentStatus, page, size, JSON.stringify(selectedLocations)]);
 
   const getTabName = (tab) => {
     const find = totalListTeamRequest.find((item) => item._id === tab.id);
@@ -49,7 +49,10 @@ const TeamRequest = (props) => {
         <FilterPopover placement="bottomRight" realTime content={<p>Empty</p>}>
           <FilterButton showDot={false} />
         </FilterPopover>
-        <CustomSearchBox placeholder="Search for Ticket numer, resignee, request ..." />
+        <CustomSearchBox
+          placeholder="Search for Ticket number, resignee, request ..."
+          width={350}
+        />
       </div>
     );
   };
@@ -198,7 +201,7 @@ const TeamRequest = (props) => {
             content={renderMenuDropdown(row)}
             placement="bottomRight"
           >
-            <img src={ActionIcon} alt="" style={{ cursor: 'pointer' }} />
+            <img src={MenuIcon} alt="" style={{ cursor: 'pointer', padding: '4px 10px' }} />
           </Popover>
         );
       },
@@ -213,7 +216,7 @@ const TeamRequest = (props) => {
   return (
     <div className={styles.TeamRequest}>
       <Tabs
-        defaultActiveKey={OFFBOARDING_STATUS.IN_PROGRESS}
+        activeKey={currentStatus}
         destroyInactiveTabPane
         onChange={(key) => setCurrentStatus(key)}
         tabBarExtraContent={filterPane()}
@@ -228,6 +231,7 @@ const TeamRequest = (props) => {
               limit={size}
               page={page}
               onChangePage={onChangePagination}
+              scrollable
             />
           </Tabs.TabPane>
         ))}

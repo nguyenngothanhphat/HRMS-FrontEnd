@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { initViewOffboarding } from '@/utils/authority';
 import EmployeeView from './components/EmployeeView';
 import HRView from './components/HRView';
 import ManagerView from './components/ManagerView';
+import { goToTop } from '@/utils/utils';
 
 const OffBoarding = (props) => {
   const {
@@ -28,6 +29,10 @@ const OffBoarding = (props) => {
 
   const listRole = localStorage.getItem('antd-pro-authority');
   const role = findRole(JSON.parse(listRole));
+
+  useEffect(() => {
+    goToTop();
+  }, []);
 
   return !isEmployeeMode && !initViewOffboarding()
     ? renderComponent[role]

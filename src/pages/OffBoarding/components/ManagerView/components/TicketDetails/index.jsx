@@ -1,13 +1,16 @@
 import { Affix, Col, Row, Spin } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
-import styles from './index.less';
-import RequesteeDetails from './components/RequesteeDetails';
-import CurrentProjectDetails from './components/CurrentProjectDetails';
 import { getEmployeeName } from '@/utils/offboarding';
+import { goToTop } from '@/utils/utils';
+import Assignee from './components/Assignee';
+import ClosingComment from './components/ClosingComment';
+import CurrentProjectDetails from './components/CurrentProjectDetails';
+import RequesteeDetails from './components/RequesteeDetails';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import WhatNext from './components/WhatNext';
+import styles from './index.less';
 
 const TicketDetails = (props) => {
   const {
@@ -21,6 +24,8 @@ const TicketDetails = (props) => {
     loadingFetchData = false,
   } = props;
 
+  const [isEnterClosingComment, setIsEnterClosingComment] = useState(false);
+
   const fetchData = () => {
     dispatch({
       type: 'offboarding/fetchRequestById',
@@ -31,6 +36,7 @@ const TicketDetails = (props) => {
   };
 
   useEffect(() => {
+    goToTop();
     fetchData();
   }, [id]);
 
@@ -47,7 +53,7 @@ const TicketDetails = (props) => {
         </Affix>
         <Spin spinning={loadingFetchData}>
           <Row className={styles.content} gutter={[24, 24]}>
-            <Col span={16}>
+            <Col span={14} xs={24} lg={14}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
                   <RequesteeDetails employee={employee} />
@@ -59,11 +65,24 @@ const TicketDetails = (props) => {
                   <ResignationRequestDetail item={myRequest} />
                 </Col>
                 <Col span={24}>
-                  <WhatNext item={myRequest} />
+                  {isEnterClosingComment ? (
+                    <ClosingComment item={myRequest} />
+                  ) : (
+                    <WhatNext
+                      item={myRequest}
+                      setIsEnterClosingComment={setIsEnterClosingComment}
+                    />
+                  )}
                 </Col>
               </Row>
             </Col>
-            <Col span={8} />
+            <Col span={10} xs={24} lg={10}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <Assignee item={myRequest} />
+                </Col>
+              </Row>
+            </Col>
           </Row>
         </Spin>
       </div>

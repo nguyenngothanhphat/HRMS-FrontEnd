@@ -1,12 +1,16 @@
 import { Button, Card, Col, Row } from 'antd';
-import React from 'react';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import React, { useState } from 'react';
+import CommonModal from '@/components/CommonModal';
+import CustomEmployeeTag from '@/components/CustomEmployeeTag';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import { getEmployeeName } from '@/utils/offboarding';
+import SetMeetingModalContent from '../SetMeetingModalContent';
 import styles from './index.less';
 
 const WhatNext = (props) => {
-  const { status = 4, item: { employee = {} } = {} } = props;
+  const { status = 3, item: { employee = {} } = {}, setIsEnterClosingComment = () => {} } = props;
+
+  const [oneOnOneMeetingModalVisible, setOneOnOneMeetingModalVisible] = useState(false);
 
   const renderTitle = () => {
     switch (status) {
@@ -22,15 +26,18 @@ const WhatNext = (props) => {
       case 1:
         return (
           <Row gutter={[24, 16]} className={styles.content} align="middle">
-            <Col span={16}>
-              <span className={styles.text1}>
+            <Col span={16} className={styles.text1}>
+              <span>
                 Schedule a 1-on-1 call with {getEmployeeName(employee.generalInfo)} and provide your
                 closing comments for the same
               </span>
             </Col>
             <Col span={8}>
               <div className={styles.oneInOneButton}>
-                <CustomPrimaryButton title="Schedule a 1-on-1" />
+                <CustomPrimaryButton
+                  title="Schedule a 1-on-1"
+                  onClick={() => setOneOnOneMeetingModalVisible(true)}
+                />
               </div>
             </Col>
             <Col span={16}>
@@ -49,27 +56,25 @@ const WhatNext = (props) => {
       case 4:
         return (
           <Row gutter={[24, 16]} className={styles.content} align="top">
-            <Col span={8}>
+            <Col span={10} lg={8}>
               <div className={styles.leftPart}>
                 <span className={styles.label}>1-on-1 meeting with</span>
-                <div className={styles.employee}>
-                  <div className={styles.employee__avatar}>
-                    <img src={employee.generalInfo?.avatar || DefaultAvatar} alt="avatar" />
-                  </div>
-                  <div className={styles.employee__name}>
-                    <span className={styles.name}>{getEmployeeName(employee.generalInfo)}</span>
-                    <span className={styles.title}>{employee.title?.name}</span>
-                  </div>
-                </div>
+                <CustomEmployeeTag
+                  title={employee?.title?.name}
+                  name={getEmployeeName(employee?.generalInfo)}
+                  avatar={employee?.generalInfo?.avatar}
+                />
               </div>
             </Col>
-            <Col span={16}>
+            <Col span={14} lg={16}>
               <div className={styles.rightPart}>
                 <span className={styles.label}>Scheduled on</span>
                 <span className={styles.time}>22.05.20 | 12 PM</span>
-                <div className={styles.notification}>
-                  <span>Requestee scheduled 1-on-1 meeting with you</span>
-                </div>
+                {status === 3 && (
+                  <div className={styles.notification}>
+                    <span>Requestee scheduled 1-on-1 meeting with you</span>
+                  </div>
+                )}
               </div>
             </Col>
           </Row>
@@ -83,25 +88,25 @@ const WhatNext = (props) => {
   const renderButtons = () => {
     switch (status) {
       case 1:
-      case 3:
+      case 2:
         return (
           <div className={styles.actions}>
             <CustomPrimaryButton title="Join with Google Meet" />
           </div>
         );
 
-      case 2:
+      case 3:
         return (
           <div className={styles.actions}>
             <Button type="link">Reschedule</Button>
-            <CustomPrimaryButton title="Join with Google Meet" />
+            <CustomPrimaryButton title="Accept meeting" />
           </div>
         );
 
       case 4:
         return (
           <div className={styles.comment}>
-            <span>Enter Closing Comments</span>
+            <span onClick={setIsEnterClosingComment}>Enter Closing Comments</span>
           </div>
         );
 
@@ -110,10 +115,24 @@ const WhatNext = (props) => {
     }
   };
 
+  const renderModal = () => {
+    return (
+      <CommonModal
+        visible={oneOnOneMeetingModalVisible}
+        onClose={() => setOneOnOneMeetingModalVisible(false)}
+        content={<SetMeetingModalContent employee={employee} />}
+        title={`Set 1-on-1 with ${getEmployeeName(employee.generalInfo)}`}
+        width={500}
+        firstText="Set"
+      />
+    );
+  };
+
   return (
     <Card title={renderTitle()} className={styles.WhatNext}>
       {renderContent()}
       {renderButtons()}
+      {renderModal()}
     </Card>
   );
 };

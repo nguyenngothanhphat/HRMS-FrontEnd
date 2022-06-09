@@ -33,7 +33,7 @@ const CurrentProjectDetails = (props) => {
     },
   ];
   return (
-    <Card title="Requestee details" className={styles.CurrentProjectDetails}>
+    <Card title="Current Project details" className={styles.CurrentProjectDetails}>
       <div className={styles.content}>
         <CommonTable list={projectList} columns={columns} />
       </div>
