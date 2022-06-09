@@ -6,6 +6,13 @@ export const TAB_IDS = {
   POLL: 'POLL',
 };
 
+export const TAB_IDS_QUICK_LINK = {
+  GENERAL: 'GENERAL',
+  TIMEOFF: 'TIMEOFF',
+  FORTIMEOFF: 'For Timeoff',
+  GENERALTABNAME: 'General',
+};
+
 export const CELEBRATE_TYPE = {
   ANNIVERSARY: 'ANNIVERSARY',
   BIRTHDAY: 'BIRTHDAY',

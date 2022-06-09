@@ -15,7 +15,13 @@ const EmployeeRequestTable = (props) => {
       currentLeaveTypeTab = '',
       yourTimeOffTypes = {},
       yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
-      countTotal: { typeA = 0, typeB = 0, typeC = 0, typeD = 0 } = {},
+      countTotal = [],
+      typeLeaveCount = {
+        A: 0,
+        B: 0,
+        C: 0,
+        D: 0,
+      },
     } = {},
     loadingTimeOffType = false,
     eligibleForCompOff = false,
@@ -82,6 +88,29 @@ const EmployeeRequestTable = (props) => {
     });
   };
 
+  const countByStatus = (status) => {
+    const typeTotalCount = {
+      A: 0,
+      B: 0,
+      C: 0,
+      D: 0,
+    };
+    countTotal.forEach((item) => {
+      if (status.includes(item._id)) {
+        item.types.forEach((ele) => {
+          typeTotalCount[`${ele.type}`] += ele.count;
+        });
+      }
+    });
+
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        typeLeaveCount: typeTotalCount,
+      },
+    });
+  };
+
   useEffect(() => {
     saveCurrentTypeTab('1');
   }, [JSON.stringify(yourTimeOffTypes)]);
@@ -89,6 +118,10 @@ const EmployeeRequestTable = (props) => {
   useEffect(() => {
     countInProgress();
   }, []);
+
+  useEffect(() => {
+    countByStatus([IN_PROGRESS, ON_HOLD]);
+  }, [countTotal]);
 
   const renderTableTitle = {
     left: (
@@ -116,16 +149,16 @@ const EmployeeRequestTable = (props) => {
           destroyInactiveTabPane
         >
           <>
-            <TabPane tab={`Leave Requests (${addZeroToNumber(typeA)})`} key="1">
+            <TabPane tab={`Leave Requests (${addZeroToNumber(typeLeaveCount.A)})`} key="1">
               <TimeOffRequestTab tab={1} type={1} />
             </TabPane>
-            <TabPane tab={`Special Leave Requests (${addZeroToNumber(typeC)})`} key="2">
+            <TabPane tab={`Special Leave Requests (${addZeroToNumber(typeLeaveCount.C)})`} key="2">
               <TimeOffRequestTab tab={2} type={1} />
             </TabPane>
-            <TabPane tab={`LWP Requests (${addZeroToNumber(typeB)})`} key="3">
+            <TabPane tab={`LWP Requests (${addZeroToNumber(typeLeaveCount.B)})`} key="3">
               <TimeOffRequestTab tab={3} type={1} />
             </TabPane>
-            <TabPane tab={`WFH/CP Requests (${addZeroToNumber(typeD)})`} key="4">
+            <TabPane tab={`WFH/CP Requests (${addZeroToNumber(typeLeaveCount.D)})`} key="4">
               <TimeOffRequestTab tab={4} type={1} />
             </TabPane>
             {eligibleForCompOff && (
