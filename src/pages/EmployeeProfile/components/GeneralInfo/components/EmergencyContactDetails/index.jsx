@@ -50,7 +50,12 @@ class EmergencyContact extends Component {
   };
 
   render() {
-    const { generalData, openContactDetails, permissions = {}, profileOwner = false } = this.props;
+    const {
+      generalData,
+      openContactDetails,
+      permissions = {},
+      isProfileOwner = false,
+    } = this.props;
     const renderComponent = openContactDetails ? (
       <Edit refForm={this.editRef} handleCancel={this.handleCancel} />
     ) : (
@@ -62,7 +67,7 @@ class EmergencyContact extends Component {
           <p className={styles.EmployeeTitle}>Emergency Contact Details</p>
           {openContactDetails
             ? ''
-            : (permissions.editEmergencyContact !== -1 || profileOwner) && (
+            : (permissions.editEmergencyContact !== -1 || isProfileOwner) && (
                 <div className={styles.flexEdit} onClick={this.handleEdit}>
                   <img src={EditBtn} alt="" className={styles.IconEdit} />
                   <p className={styles.Edit}>Edit</p>
