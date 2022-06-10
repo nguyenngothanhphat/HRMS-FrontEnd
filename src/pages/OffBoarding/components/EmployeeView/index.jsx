@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Tabs, Spin } from 'antd';
+import { Row, Col, Tabs, Spin, Card } from 'antd';
 import { connect, history } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
-import ViewLeft from './components/ViewLeft';
-import ViewRightNote from './components/ViewRightNote';
 import ViewLeftInitial from './components/ViewLeftInitial';
-
+import ChainOfApproval from './components/ChainOfApproval';
+import RequestDraft from './components/RequestDraft';
+import ConfirmRequest from './components/ConfirmRequest';
 import RelievingFormalities from './RelievingFormalities';
 import styles from './index.less';
+import OffboardingWorkFlow from './components/OffboardingWorkFlow';
+import ViewRightQuicklLink from './components/ViewRightQuicklLink';
+import ViewRight from './components/ViewRight';
+import DidYouKnow from './components/DidYouKnow';
+import ViewRightNote from './components/ViewRightNote';
 
 const { TabPane } = Tabs;
 
@@ -19,6 +24,7 @@ const EmployeeView = (props) => {
     totalList = [],
     hrManager = {},
     employee = {},
+    status = 'In Progress',
   } = props;
   const [relievingInQueue, setRelievingInQueue] = useState(false);
   const [loadingFetchList, setLoadingFetchList] = useState(true);
@@ -89,6 +95,106 @@ const EmployeeView = (props) => {
     } else fetchData();
   }, []);
 
+  const renderContent = (statusProps) => {
+    switch (statusProps) {
+      case '':
+        return (
+          <Row className={styles.content} gutter={[24, 24]}>
+            <Col span={17}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <ViewLeftInitial
+                    data={dataRequest.length > 0 ? dataRequest : dataDraft}
+                    fetchData={fetchData}
+                    countdata={totalList}
+                    hrManager={hrManager}
+                    employee={employee}
+                  />
+                </Col>
+                <Col span={24}>
+                  <OffboardingWorkFlow employee={employee} />
+                </Col>
+              </Row>
+            </Col>
+            <Col span={7}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <ViewRight />
+                </Col>
+                <Col span={24}>
+                  <ViewRightQuicklLink />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        );
+      case 'Draft':
+        return (
+          <Row className={styles.content} gutter={[24, 24]}>
+            <Col span={17}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <RequestDraft
+                    data={dataRequest.length > 0 ? dataRequest : dataDraft}
+                    fetchData={fetchData}
+                    countdata={totalList}
+                    hrManager={hrManager}
+                    employee={employee}
+                  />
+                </Col>
+                <Col span={24}>
+                  <OffboardingWorkFlow employee={employee} />
+                </Col>
+              </Row>
+            </Col>
+            <Col span={7}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <DidYouKnow employee={employee} />
+                </Col>
+                <Col span={24}>
+                  <ViewRight />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        );
+      case 'In Progress':
+        return (
+          <Row className={styles.content} gutter={[24, 24]}>
+            <Col span={17}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <RequestDraft
+                    data={dataRequest.length > 0 ? dataRequest : dataDraft}
+                    fetchData={fetchData}
+                    countdata={totalList}
+                    hrManager={hrManager}
+                    employee={employee}
+                  />
+                </Col>
+                <Col span={24}>
+                  <ConfirmRequest />
+                </Col>
+              </Row>
+            </Col>
+            <Col span={7}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <ChainOfApproval employee={employee} />
+                </Col>
+                <Col span={24}>
+                  <ViewRightNote status={status} />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        );
+      default:
+        return '';
+    }
+  };
+
   if (!tabName) return '';
   return (
     <PageContainer>
@@ -102,35 +208,7 @@ const EmployeeView = (props) => {
           >
             <TabPane tab="Terminate work relationship" key="list">
               <div className={styles.paddingHR}>
-                <div className={styles.root}>
-                  <Row className={styles.content} gutter={[20, 20]}>
-                    <Col span={16}>
-                      {loadingFetchList ? (
-                        <Spin className={styles.spinLoading} />
-                      ) : (
-                        <>
-                          {dataDraft.length > 0 || dataRequest.length > 0 ? (
-                            <ViewLeft
-                              data={
-                                // listOffboarding.length > 0 ? listOffboarding : acceptedRequest
-                                dataRequest.length > 0 ? dataRequest : dataDraft
-                              }
-                              fetchData={fetchData}
-                              countdata={totalList}
-                              hrManager={hrManager}
-                            />
-                          ) : (
-                            <ViewLeftInitial hrManager={hrManager} employee={employee} />
-                          )}
-                        </>
-                      )}
-                    </Col>
-                    <Col span={8}>
-                      {/* {listOffboarding.length > 0 ? <RightDataTable /> : <ViewRight />} */}
-                      <ViewRightNote />
-                    </Col>
-                  </Row>
-                </div>
+                <div className={styles.root}>{renderContent(status)}</div>
               </div>
             </TabPane>
 

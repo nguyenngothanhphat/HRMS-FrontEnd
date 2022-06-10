@@ -136,7 +136,7 @@ class ViewDocumentModal extends PureComponent {
       <div className={styles.stickyFooter}>
         <span>
           For any queries, e-mail at{' '}
-          <span style={{ fontWeight: 'bold' }}>hrmanager@companyname.com</span>
+          <span style={{ fontWeight: 'bold' }}>hrmanager@terralogic.com</span>
         </span>
       </div>
     );

@@ -50,13 +50,13 @@ export default class ViewRight extends PureComponent {
   renderItem = (render) => {
     return (
       <div className={styles.rowInfo}>
-        <Row justify="space-between">
+        <Row justify="space-between" gutter={[24, 24]}>
           <Col span={4}>
             <div className={styles.icon}>
               <img src={render.icon} alt="iconCheck" />
             </div>
           </Col>
-          <Col span={19}>
+          <Col span={20}>
             <div className={styles.description}>{render.decription} </div>
           </Col>
         </Row>
@@ -77,15 +77,6 @@ export default class ViewRight extends PureComponent {
             <div className={styles.btnBottom} />
             <Button className={styles.btnBottom__btn}>Speak to manager</Button>
           </div>
-          {/* <img alt="icontop" className={styles.icon} src={icon} />
-          <div className={styles.text_Title}> Did you know?</div>
-          <div className={styles.text_Body}>
-            <p>
-              Your Manager, Sandeep, usually conducts 1-on-1s and you can speak anything to him.
-              8/10 employees have changed their mind!
-            </p>
-          </div>
-          <div className={styles.text_Schedule}>Schedule 1-on-1 Now!</div> */}
         </div>
       </div>
     );
