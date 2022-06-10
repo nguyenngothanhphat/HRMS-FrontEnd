@@ -63,6 +63,7 @@ const WhatNext = (props) => {
                   title={employee?.title?.name}
                   name={getEmployeeName(employee?.generalInfo)}
                   avatar={employee?.generalInfo?.avatar}
+                  userId={employee?.generalInfo?.userId}
                 />
               </div>
             </Col>

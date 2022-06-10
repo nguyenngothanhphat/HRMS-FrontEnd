@@ -17,6 +17,7 @@ const SetMeetingModalContent = ({ employee = {} }) => {
           name={getEmployeeName(generalInfo)}
           title={title?.name}
           avatar={generalInfo?.avatar}
+          userId={generalInfo?.userId}
         />
       </div>
       <Form layout="vertical" name="basic" form={form} id="myForm" preserve={false}>

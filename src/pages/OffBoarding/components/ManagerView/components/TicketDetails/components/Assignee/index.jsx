@@ -17,6 +17,7 @@ const Assignee = (props) => {
             type: 'Primary',
             name: getEmployeeName(assigneeHR?.generalInfo),
             title: assigneeHR?.title?.name,
+            userId: assigneeHR?.generalInfo?.userId,
           },
         ],
       },
@@ -27,6 +28,7 @@ const Assignee = (props) => {
             type: 'Secondary',
             name: getEmployeeName(manager?.generalInfo),
             title: manager?.title?.name,
+            userId: manager?.generalInfo?.userId,
           },
         ],
       },
@@ -43,7 +45,12 @@ const Assignee = (props) => {
                   {x.members.map((y) => (
                     <>
                       <Col span={19}>
-                        <CustomEmployeeTag name={y.name} title={y.title} avatar={y.avatar} />
+                        <CustomEmployeeTag
+                          name={y.name}
+                          title={y.title}
+                          avatar={y.avatar}
+                          userId={y.userId}
+                        />
                       </Col>
                       <Col span={5}>
                         <span className={styles.type}>{y.type}</span>

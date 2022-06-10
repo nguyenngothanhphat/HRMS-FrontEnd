@@ -1,10 +1,17 @@
 import React from 'react';
+import { history } from 'umi';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import styles from './index.less';
 
-const CustomEmployeeTag = ({ name = '', avatar = '', title = '' }) => {
+const CustomEmployeeTag = ({ name = '', avatar = '', title = '', userId = '' }) => {
   return (
-    <div className={styles.CustomEmployeeTag}>
+    <div
+      className={styles.CustomEmployeeTag}
+      onClick={userId ? () => history.push(`/directory/employee-profile/${userId}`) : () => {}}
+      style={{
+        cursor: userId ? 'pointer' : 'default',
+      }}
+    >
       <div className={styles.avatar}>
         <img src={avatar || DefaultAvatar} alt="avatar" />
       </div>
