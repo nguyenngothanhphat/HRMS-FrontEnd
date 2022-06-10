@@ -98,6 +98,7 @@ const EmploymentTab = (props) => {
     const payload = {
       title: data.stepThree.title || null,
       manager: data.stepThree.reportTo || null,
+      managerBefore: data.stepThree.reportToBefore || null,
       reasonChange: data.stepSeven.reasonChange || '',
       reportees: data.stepThree.reportees || null,
       location: data.stepTwo.wLocation || null,
@@ -109,6 +110,7 @@ const EmploymentTab = (props) => {
       effectiveDate: data.stepOne === 'Now' ? new Date() : data.stepOne,
       changeDate: new Date(),
       takeEffect,
+      id: data.employee,
       employee: data.employee,
       changedBy: data.changedBy,
       tenantId: getCurrentTenant(),
@@ -117,7 +119,11 @@ const EmploymentTab = (props) => {
     for (let i = 0; i < array.length; i += 1) {
       if (payload[array[i]] === null || payload[array[i]] === undefined) delete payload[array[i]];
     }
-    dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
+    await dispatch({
+      type: 'employeeProfile/updateEmployment',
+      payload,
+    });
+    await dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
   };
 
   const nextTab = (msg) => {
