@@ -11,12 +11,13 @@ import styles from './styles.less';
     employeeProfile: {
       employee = '',
       originData: { dependentDetails, benefitPlans },
+      isProfileOwner = false,
     },
     loading,
   }) => ({
     dependentDetails,
     benefitPlans,
-
+    isProfileOwner,
     employee,
     loading: loading.effects['employeeProfile/fetchEmployeeDependentDetails'],
   }),
@@ -49,7 +50,7 @@ class BenefitTab extends PureComponent {
   };
 
   render() {
-    const { dependentDetails = [], profileOwner = false } = this.props;
+    const { dependentDetails = [], isProfileOwner = false } = this.props;
     const { addDependant } = this.state;
     return (
       <div style={{ backgroundColor: '#f6f7f9' }}>
@@ -65,7 +66,7 @@ class BenefitTab extends PureComponent {
                 <DependentTabs data={dependentDetails} />
               </div>
             </div>
-            {profileOwner && (
+            {isProfileOwner && (
               <div className={styles.addIcon}>
                 <div onClick={this.handleAddDependant}>
                   <img src={IconAdd} alt="add" />

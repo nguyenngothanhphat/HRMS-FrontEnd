@@ -13,18 +13,13 @@ import HandleChanges from './components/HandleChanges';
 import styles from './index.less';
 
 const EmploymentTab = (props) => {
-  const {
-    dispatch,
-    listEmployeeActive,
-    permissions = {},
-    profileOwner = false,
-    employeeProfile = {},
-  } = props;
+  const { dispatch, listEmployeeActive, permissions = {}, employeeProfile = {} } = props;
 
   const {
     originData: { generalData = {}, employmentData = {}, compensationData = {} } = {},
     isUpdateEmployment = false,
     employee = '',
+    isProfileOwner = false,
   } = employeeProfile;
 
   const {
@@ -175,7 +170,7 @@ const EmploymentTab = (props) => {
           <EditCurrentInfo
             handleCancel={handleEditCurrentInfo}
             listEmployeeActive={listEmployeeActive}
-            profileOwner={profileOwner}
+            isProfileOwner={isProfileOwner}
           />
         ) : (
           <CurrentInfo isChanging={isChanging} dispatch={dispatch} data={currentData} />
