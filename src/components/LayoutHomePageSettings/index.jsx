@@ -19,16 +19,15 @@ class LayoutHomePageSettings extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { tabName = '' } = this.props;
-    if (prevProps.tabName !== tabName) {
+    const { reId = '' } = this.props;
+    if (prevProps.reId !== reId) {
       this.fetchTab();
     }
   }
 
   fetchTab = () => {
-    const { listMenu = [], tabName = '' } = this.props;
-
-    const findTab = listMenu.find((menu) => menu.link === tabName) || listMenu[0];
+    const { listMenu = [], reId = '' } = this.props;
+    const findTab = listMenu.find((menu) => menu.link === reId) || listMenu[0];
     this.setState({
       selectedItemId: findTab.id || 1,
       displayComponent: findTab.component,

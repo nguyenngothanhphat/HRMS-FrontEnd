@@ -21,7 +21,7 @@ class Domain extends PureComponent {
     dispatch({
       type: 'adminSetting/saveDomain',
       payload: {
-        emailDomain: values.domain,
+        emailDomain: values.emailDomain,
       },
     });
   };

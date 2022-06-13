@@ -13,6 +13,7 @@ import HandleChanges from './components/HandleChanges';
 import styles from './index.less';
 
 const EmploymentTab = (props) => {
+<<<<<<< HEAD
   const {
     dispatch,
     listEmployeeActive,
@@ -21,11 +22,15 @@ const EmploymentTab = (props) => {
     employeeProfile = {},
     dataOrgChart: { employees: reportees = [], manager = {} },
   } = props;
+=======
+  const { dispatch, listEmployeeActive, permissions = {}, employeeProfile = {} } = props;
+>>>>>>> dev
 
   const {
     originData: { generalData = {}, employmentData = {}, compensationData = {} } = {},
     isUpdateEmployment = false,
     employee = '',
+    isProfileOwner = false,
   } = employeeProfile;
 
   const { title = {}, location = {}, department = {}, employeeType = {} } = employmentData || {};
@@ -186,7 +191,7 @@ const EmploymentTab = (props) => {
           <EditCurrentInfo
             handleCancel={handleEditCurrentInfo}
             listEmployeeActive={listEmployeeActive}
-            profileOwner={profileOwner}
+            isProfileOwner={isProfileOwner}
           />
         ) : (
           <CurrentInfo isChanging={isChanging} dispatch={dispatch} data={currentData} />

@@ -5,6 +5,7 @@ import axios from 'axios';
 import React, { PureComponent } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import ReactToPrint from 'react-to-print';
+import { connect } from 'umi';
 import PrintIcon from '@/assets/printIconTimeOff.svg';
 import DownloadIcon from '@/assets/downloadIconTimeOff.svg';
 import CloseIcon from '@/assets/closeIconTimeOff.svg';
@@ -18,6 +19,13 @@ class ViewDocumentModal extends PureComponent {
     this.state = {
       numPages: null,
     };
+  }
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'adminSetting/getDomain',
+    });
   }
 
   onDownload = (url) => {
@@ -132,11 +140,12 @@ class ViewDocumentModal extends PureComponent {
   };
 
   _renderStickyFooter = () => {
+    const { emailDomain } = this.props;
     return (
       <div className={styles.stickyFooter}>
         <span>
-          For any queries, e-mail at{' '}
-          <span style={{ fontWeight: 'bold' }}>hrmanager@companyname.com</span>
+          For any queries, email at {' '}
+          <span style={{ fontWeight: 'bold' }}>{`hr@${emailDomain}`}</span>
         </span>
       </div>
     );
@@ -174,4 +183,6 @@ class ViewDocumentModal extends PureComponent {
     );
   }
 }
-export default ViewDocumentModal;
+export default connect(({ adminSetting: { originData: { emailDomain = '' } = {} } = {} }) => ({
+  emailDomain,
+}))(ViewDocumentModal);

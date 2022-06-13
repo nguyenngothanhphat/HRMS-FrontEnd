@@ -102,24 +102,6 @@ const ResourcesCard = (props) => {
     }
   };
 
-  const removeResourceOfProject = async (key) => {
-    const findRecord = data.find((x) => x._id === key);
-    if (findRecord) {
-      const res = await dispatch({
-        type: 'projectDetails/removeResourceOfProjectEffect',
-        payload: {
-          id: findRecord.resourceId,
-        },
-      });
-      if (res.statusCode === 200) {
-        setRemoveResourceModalVisible(false);
-        setRemovingPackage('');
-        const tempData = data.filter((x) => x._id !== key);
-        setData(tempData);
-      }
-    }
-  };
-
   const formatData = (originData) => {
     const tempData = JSON.parse(JSON.stringify(originData));
     return tempData.map((item) => {
@@ -235,6 +217,25 @@ const ResourcesCard = (props) => {
   const clearFilter = () => {
     onFilter({});
     setNeedResetFilterForm(true);
+  };
+
+  const removeResourceOfProject = async (key) => {
+    const findRecord = data.find((x) => x._id === key);
+    if (findRecord) {
+      const res = await dispatch({
+        type: 'projectDetails/removeResourceOfProjectEffect',
+        payload: {
+          id: findRecord.resourceId,
+        },
+      });
+      if (res.statusCode === 200) {
+        setRemoveResourceModalVisible(false);
+        setRemovingPackage('');
+        const tempData = data.filter((x) => x._id !== key);
+        setData(tempData);
+        fetchResourceOfProject(searchValue, page, limit);
+      }
+    }
   };
 
   const renderTimeTitle = (title) => {
@@ -446,16 +447,13 @@ const ResourcesCard = (props) => {
           setRemoveResourceModalVisible(false);
           setRemovingPackage('');
         }}
+        onFinish={() => removeResourceOfProject(removingPackage._id)}
         title="Delete Resource"
         firstText="Yes, Delete"
         width={500}
         loading={loadingRemove}
         content={
-          <Form
-            name="myForm"
-            id="myForm"
-            onFinish={() => removeResourceOfProject(removingPackage._id)}
-          >
+          <Form name="myForm" id="myForm">
             <div style={{ padding: '24px' }}>
               Are you sure you want to delete the resource{' '}
               <span style={{ color: '#2C6DF9', fontWeight: 500 }}>
