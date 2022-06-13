@@ -51,7 +51,7 @@ const EmploymentTab = (props) => {
     });
     dispatch({
       type: 'employee/fetchDataOrgChart',
-      payload: { employee: employeeProfile?.employee },
+      payload: { employee },
     });
   };
 
