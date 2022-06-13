@@ -20,6 +20,7 @@ const formItemLayout = {
       originData: { generalData: generalDataOrigin = {}, compensationData = {} } = {},
       tempData: { generalData = {} } = {},
       listSkill = [],
+      employee = '',
       // listTitle = [],
     } = {},
     user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} } = {} } = {},
@@ -32,6 +33,7 @@ const formItemLayout = {
     listSkill,
     // listTitle,
     compensationData,
+    employee,
   }),
 )
 class Edit extends PureComponent {
@@ -131,7 +133,7 @@ class Edit extends PureComponent {
   };
 
   handleUpdateCertification = (list) => {
-    const { dispatch, compensationData = {}, myEmployeeID = '' } = this.props;
+    const { dispatch, compensationData = {}, employee = '' } = this.props;
     const { company = {} } = compensationData;
 
     list.forEach((element) => {
@@ -150,7 +152,7 @@ class Edit extends PureComponent {
           payload: {
             name: element?.name || '',
             urlFile: element?.urlFile,
-            employee: myEmployeeID,
+            employee,
             company,
           },
         });
