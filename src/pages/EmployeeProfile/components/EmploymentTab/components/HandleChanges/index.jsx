@@ -11,14 +11,7 @@ import SixthStep from './components/SixthStep';
 import SeventhStep from './components/SeventhStep';
 
 const HandleChanges = (props) => {
-  const {
-    user,
-    current,
-    data,
-    employeeProfile,
-    companyLocationList,
-    dataOrgChart: { employees = [], manager = {} },
-  } = props;
+  const { user, current, data, employeeProfile, companyLocationList } = props;
   const { currentUser } = user || {};
   const [radio, setRadio] = useState(2);
   const [changeData, setChangeData] = useState({
@@ -38,9 +31,9 @@ const HandleChanges = (props) => {
     },
     stepThree: {
       title: '',
-      reportToBefore: '',
-      reportTo: '',
-      reportees: [],
+      reportToBefore: data.manager || '',
+      reportTo: data.manager || '',
+      reportees: data.reportees || [],
     },
     stepFour: {
       currentAnnualCTC: '',
@@ -82,21 +75,6 @@ const HandleChanges = (props) => {
       }
     }
   }, [changeData]);
-
-  useEffect(() => {
-    if (manager?._id !== changeData?.stepThree?.reportToBefore) {
-      const listIdEmployees = employees.map((emp) => emp._id);
-      setChangeData({
-        ...changeData,
-        stepThree: {
-          ...changeData.stepThree,
-          reportToBefore: manager?._id || '',
-          reportTo: manager?._id || '',
-          reportees: listIdEmployees || [],
-        },
-      });
-    }
-  }, [manager, employees]);
 
   const onRadioChange = (e) => {
     switch (Number(e.target.value)) {
@@ -295,7 +273,7 @@ const HandleChanges = (props) => {
 
 export default connect(
   ({
-    employee: { dataOrgChart = {} },
+    // employee: { dataOrgChart = {} },
     employeeProfile,
     user,
     location: { companyLocationList = [] } = {},
@@ -303,6 +281,6 @@ export default connect(
     employeeProfile,
     companyLocationList,
     user,
-    dataOrgChart,
+    // dataOrgChart,
   }),
 )(HandleChanges);

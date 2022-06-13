@@ -19,6 +19,7 @@ const EmploymentTab = (props) => {
     permissions = {},
     profileOwner = false,
     employeeProfile = {},
+    dataOrgChart: { employees: reportees = [], manager = {} },
   } = props;
 
   const {
@@ -27,13 +28,7 @@ const EmploymentTab = (props) => {
     employee = '',
   } = employeeProfile;
 
-  const {
-    title = {},
-    location = {},
-    department = {},
-    manager = {},
-    employeeType = {},
-  } = employmentData || {};
+  const { title = {}, location = {}, department = {}, employeeType = {} } = employmentData || {};
 
   const { firstName = '', legalName = '' } = generalData || {};
   const { compensationType = '', currentAnnualCTC = '' } = compensationData || {};
@@ -54,6 +49,10 @@ const EmploymentTab = (props) => {
     dispatch({
       type: 'employeeProfile/fetchDepartments',
     });
+    dispatch({
+      type: 'employee/fetchDataOrgChart',
+      payload: { employee: employeeProfile?.employee },
+    });
   };
 
   useEffect(() => {
@@ -65,6 +64,12 @@ const EmploymentTab = (props) => {
   useEffect(() => {
     if (employee) {
       fetchData();
+    }
+  }, [employee]);
+
+  useEffect(() => {
+    if (employee) {
+      const listIdEmployees = reportees.map((emp) => emp._id);
       setCurrentData({
         name: legalName || firstName || null,
         title: title?._id || null,
@@ -72,12 +77,12 @@ const EmploymentTab = (props) => {
         location: location?._id || null,
         department: department?._id || null,
         manager: manager?._id || null,
-        reportees: manager?.reportees || [],
+        reportees: listIdEmployees || [],
         employeeType: employeeType?._id || null,
         currentAnnualCTC: currentAnnualCTC || null,
       });
     }
-  }, [employee]);
+  }, [employee, reportees]);
 
   const handleMakeChanges = async () => {
     setCurrent(0);
@@ -264,8 +269,15 @@ const EmploymentTab = (props) => {
   );
 };
 
-export default connect(({ employeeProfile, user: { permissions, currentUser = {} } }) => ({
-  employeeProfile,
-  currentUser,
-  permissions,
-}))(EmploymentTab);
+export default connect(
+  ({
+    employeeProfile,
+    employee: { dataOrgChart = {} },
+    user: { permissions, currentUser = {} },
+  }) => ({
+    employeeProfile,
+    currentUser,
+    permissions,
+    dataOrgChart,
+  }),
+)(EmploymentTab);
