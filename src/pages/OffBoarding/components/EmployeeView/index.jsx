@@ -24,7 +24,7 @@ const EmployeeView = (props) => {
     totalList = [],
     hrManager = {},
     employee = {},
-    status = 'In Progress',
+    status = '',
   } = props;
   const [relievingInQueue, setRelievingInQueue] = useState(false);
   const [loadingFetchList, setLoadingFetchList] = useState(true);
