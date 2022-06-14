@@ -42,7 +42,7 @@ import {
 } from '../services/offboardingOld';
 
 const offboarding = {
-  namespace: 'offboarding',
+  namespace: 'offboardingOld',
   state: {
     acceptedRequest: [],
     listOffboarding: [],

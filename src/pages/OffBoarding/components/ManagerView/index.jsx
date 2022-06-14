@@ -6,7 +6,6 @@ import TeamRequest from './components/TeamRequest';
 import styles from './index.less';
 import CustomBlueButton from '@/components/CustomBlueButton';
 import CustomDropdownSelector from '@/components/CustomDropdownSelector';
-import { getCurrentLocation } from '@/utils/authority';
 
 const TABS = {
   MY: 'my',
@@ -16,9 +15,14 @@ const TABS = {
 const { TabPane } = Tabs;
 
 const ManagerView = (props) => {
-  const { dispatch, tabName = '', companyLocationList = [] } = props;
+  const {
+    dispatch,
+    tabName = '',
+    companyLocationList = [],
+    offboarding: { selectedLocations: selectedLocationsProp = [] },
+  } = props;
 
-  const [selectedLocations, setSelectedLocation] = useState([getCurrentLocation()]);
+  const [selectedLocations, setSelectedLocation] = useState(selectedLocationsProp);
 
   const onLocationChange = (selection) => {
     dispatch({
@@ -74,6 +78,7 @@ const ManagerView = (props) => {
   );
 };
 
-export default connect(({ location: { companyLocationList = [] } }) => ({
+export default connect(({ location: { companyLocationList = [] }, offboarding }) => ({
   companyLocationList,
+  offboarding,
 }))(ManagerView);
