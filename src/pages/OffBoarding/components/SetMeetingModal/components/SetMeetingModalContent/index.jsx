@@ -5,7 +5,7 @@ import CustomTimeRangeSelector from '@/components/CustomTimeRangeSelector';
 import { dateFormat, getEmployeeName } from '@/utils/offboarding';
 import styles from './index.less';
 
-const SetMeetingModalContent = ({ employee = {}, partnerRole = '' }) => {
+const SetMeetingModalContent = ({ employee = {}, partnerRole = '', onFinish = () => {} }) => {
   const [form] = Form.useForm();
   const { generalInfo = {}, title = {} } = employee || {};
 
@@ -20,7 +20,14 @@ const SetMeetingModalContent = ({ employee = {}, partnerRole = '' }) => {
           userId={generalInfo?.userId}
         />
       </div>
-      <Form layout="vertical" name="basic" form={form} id="myForm" preserve={false}>
+      <Form
+        layout="vertical"
+        name="basic"
+        form={form}
+        id="myForm"
+        preserve={false}
+        onFinish={onFinish}
+      >
         <Row align="middle" gutter={[16, 16]}>
           <Col span={12}>
             <Form.Item name="date" label="Date" rules={[{ required: true }]}>

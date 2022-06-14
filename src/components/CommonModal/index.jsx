@@ -48,10 +48,6 @@ const CommonModal = (props) => {
     return `${styles.CommonModal} ${styles.noPadding}`;
   };
 
-  const handleFinish = () => {
-    onFinish();
-  };
-
   return (
     <>
       <Modal
@@ -74,7 +70,7 @@ const CommonModal = (props) => {
                 htmlType="submit"
                 loading={loading}
                 title={firstText}
-                onClick={handleFinish}
+                onClick={onFinish}
               />
             </div>
           ) : null
