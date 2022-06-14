@@ -13,18 +13,13 @@ import HandleChanges from './components/HandleChanges';
 import styles from './index.less';
 
 const EmploymentTab = (props) => {
-<<<<<<< HEAD
   const {
     dispatch,
     listEmployeeActive,
     permissions = {},
-    profileOwner = false,
     employeeProfile = {},
     dataOrgChart: { employees: reportees = [], manager = {} },
   } = props;
-=======
-  const { dispatch, listEmployeeActive, permissions = {}, employeeProfile = {} } = props;
->>>>>>> dev
 
   const {
     originData: { generalData = {}, employmentData = {}, compensationData = {} } = {},
