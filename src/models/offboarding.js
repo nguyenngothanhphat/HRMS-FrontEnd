@@ -74,6 +74,9 @@ const offboarding = {
     hrManager: {},
     terminateData: {},
     listAssigneeHr: [],
+
+    // new
+    selectedLocations: [],
   },
   effects: {
     // my request
