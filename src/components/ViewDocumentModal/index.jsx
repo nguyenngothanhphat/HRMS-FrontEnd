@@ -10,7 +10,6 @@ import PrintIcon from '@/assets/printIconTimeOff.svg';
 import DownloadIcon from '@/assets/downloadIconTimeOff.svg';
 import CloseIcon from '@/assets/closeIconTimeOff.svg';
 import styles from './index.less';
-import { getCurrentCompany } from '@/utils/authority';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
