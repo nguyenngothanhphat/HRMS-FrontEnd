@@ -8,7 +8,7 @@ import { getEmployeeName } from '@/utils/offboarding';
 import styles from './index.less';
 
 const WhatNext = (props) => {
-  const { status = 3, item: { employee = {} } = {}, setIsEnterClosingComment = () => {} } = props;
+  const { status = 1, item: { employee = {} } = {}, setIsEnterClosingComment = () => {} } = props;
 
   const [oneOnOneMeetingModalVisible, setOneOnOneMeetingModalVisible] = useState(false);
 
@@ -28,16 +28,15 @@ const WhatNext = (props) => {
           <Row gutter={[24, 16]} className={styles.content} align="middle">
             <Col span={16} className={styles.text1}>
               <span>
-                Schedule a 1-on-1 call with {getEmployeeName(employee.generalInfo)} and provide your
-                closing comments for the same
+                Schedule a 1-on-1 call with {getEmployeeName(employee.generalInfoInfo)} and provide
+                your closing comments for the same
               </span>
             </Col>
             <Col span={8}>
               <div className={styles.oneInOneButton}>
-                <CustomPrimaryButton
-                  title="Schedule a 1-on-1"
-                  onClick={() => setOneOnOneMeetingModalVisible(true)}
-                />
+                <CustomPrimaryButton onClick={() => setOneOnOneMeetingModalVisible(true)}>
+                  Schedule a 1-on-1
+                </CustomPrimaryButton>
               </div>
             </Col>
             <Col span={16}>
@@ -60,10 +59,10 @@ const WhatNext = (props) => {
               <div className={styles.leftPart}>
                 <span className={styles.label}>1-on-1 meeting with</span>
                 <CustomEmployeeTag
-                  title={employee?.title?.name}
-                  name={getEmployeeName(employee?.generalInfo)}
-                  avatar={employee?.generalInfo?.avatar}
-                  userId={employee?.generalInfo?.userId}
+                  title={employee?.titleInfo?.name}
+                  name={getEmployeeName(employee?.generalInfoInfo)}
+                  avatar={employee?.generalInfoInfo?.avatar}
+                  userId={employee?.generalInfoInfo?.userId}
                 />
               </div>
             </Col>
@@ -122,7 +121,7 @@ const WhatNext = (props) => {
         employee={employee}
         visible={oneOnOneMeetingModalVisible}
         onClose={() => setOneOnOneMeetingModalVisible(false)}
-        title={`Set 1-on-1 with ${getEmployeeName(employee.generalInfo)}`}
+        title={`Set 1-on-1 with ${getEmployeeName(employee.generalInfoInfo)}`}
         partnerRole="Employee"
       />
     );

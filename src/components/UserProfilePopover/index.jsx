@@ -1,8 +1,8 @@
 import { Col, Popover, Row } from 'antd';
 import React, { useState } from 'react';
-import { connect } from 'umi';
+import { connect, Link } from 'umi';
 import CloseX from '@/assets/dashboard/closeX.svg';
-import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
 
 import styles from './index.less';
 import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/times';
@@ -48,7 +48,7 @@ const UserProfilePopover = (props) => {
     return (
       <div className={styles.header}>
         <div className={styles.avatar}>
-          <img src={avatar || avatar1 || MockAvatar} alt="" />
+          <img src={avatar || avatar1 || DefaultAvatar} alt="" />
         </div>
         <div className={styles.information}>
           <span className={styles.name}>
@@ -61,6 +61,14 @@ const UserProfilePopover = (props) => {
       </div>
     );
   };
+
+  const getCountry = () => {
+    let result = '';
+    if (typeof country === 'string') result = country;
+    result = countryName || countryName1 || '';
+    return `, ${result}`;
+  };
+
   const userInfo = () => {
     const getTimezone =
       getTimezoneViaCity(state || state1) ||
@@ -92,12 +100,7 @@ const UserProfilePopover = (props) => {
       },
       {
         label: 'Location',
-        value:
-          location || locationInfo
-            ? `${state || state1}, ${
-                countryName || countryName1 || typeof country === 'string' ? country : ''
-              }`
-            : '',
+        value: location || locationInfo ? `${state || state1}${getCountry()}` : '',
       },
       {
         label: 'Local Time',
@@ -138,8 +141,10 @@ const UserProfilePopover = (props) => {
         <div className={styles.divider} />
         {userInfo()}
         <div className={styles.divider} />
-        <div className={styles.viewFullProfile} onClick={() => onViewProfile(userId)}>
-          View full profile
+        <div className={styles.viewFullProfile}>
+          <Link to={`/directory/employee-profile/${userId || generalInfo?.userId}`}>
+            View full profile
+          </Link>
         </div>
       </div>
     );

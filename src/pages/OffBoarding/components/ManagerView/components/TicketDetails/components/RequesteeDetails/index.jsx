@@ -7,10 +7,9 @@ import styles from './index.less';
 const RequesteeDetails = (props) => {
   const {
     employee: {
-      _id = '',
-      generalInfo: { employeeId = '' } = {},
-      generalInfo = {},
-      title: { name: title = '' } = {},
+      generalInfoInfo: { employeeId = '', userId = '' } = {},
+      generalInfoInfo = {},
+      titleInfo: { name: title = '' } = {},
     } = {},
   } = props;
 
@@ -23,8 +22,8 @@ const RequesteeDetails = (props) => {
         </Col>
         <Col span={6}>Employee Name</Col>
         <Col span={18} className={styles.detailColumn}>
-          <Link to={`/directory/employee-profile/${_id}`} className={styles.employeeLink}>
-            {getEmployeeName(generalInfo)}
+          <Link to={`/directory/employee-profile/${userId}`} className={styles.employeeLink}>
+            {getEmployeeName(generalInfoInfo)}
           </Link>
         </Col>
         <Col span={6}>Position</Col>

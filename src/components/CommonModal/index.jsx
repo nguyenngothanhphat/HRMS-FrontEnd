@@ -59,19 +59,22 @@ const CommonModal = (props) => {
           hasFooter ? (
             <div className={styles.footer}>
               {hasCancelButton && (
-                <CustomSecondaryButton onClick={handleCancel} title={cancelText} />
+                <CustomSecondaryButton onClick={handleCancel}>{cancelText}</CustomSecondaryButton>
               )}
               {hasSecondButton && (
-                <CustomSecondaryButton onClick={onSecondButtonClick} title={secondText} />
+                <CustomSecondaryButton onClick={onSecondButtonClick}>
+                  {secondText}
+                </CustomSecondaryButton>
               )}
               <CustomPrimaryButton
                 form="myForm"
                 key="submit"
                 htmlType="submit"
                 loading={loading}
-                title={firstText}
                 onClick={onFinish}
-              />
+              >
+                {firstText}
+              </CustomPrimaryButton>
             </div>
           ) : null
         }
