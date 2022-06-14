@@ -9,6 +9,7 @@ import {
   setCurrentCompany,
   setCurrentLocation,
   setFirstChangePassword,
+  setIsFirstLogin,
   setIsSwitchingRole,
   setTenantId,
 } from '@/utils/authority';
@@ -48,6 +49,9 @@ const UserModel = {
         let formatArrRoles = [];
         let switchRoleAbility = false;
         const { signInRole = [], roles = [], candidate = {}, isFirstLogin = false } = data;
+
+        setIsFirstLogin(isFirstLogin);
+
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
         const candidateLinkMode = localStorage.getItem('candidate-link-mode') === 'true';

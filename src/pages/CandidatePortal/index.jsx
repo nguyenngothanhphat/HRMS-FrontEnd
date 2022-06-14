@@ -146,7 +146,12 @@ class CandidatePortal extends PureComponent {
             <Messages />
           </TabPane>
         </Tabs>
-        <WelcomeModal visible={openWelcomeModal} onClose={() => this.handleWelcomeModal(false)} />
+        <WelcomeModal
+          visible={openWelcomeModal}
+          onClose={() => {
+            this.handleWelcomeModal(false);
+          }}
+        />
       </div>
     );
   }
