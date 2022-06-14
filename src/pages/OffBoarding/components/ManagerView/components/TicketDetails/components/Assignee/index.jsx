@@ -73,7 +73,8 @@ const Assignee = (props) => {
           In case of your unavailability, you may assign this request to someone from the superior
           officers.
         </p>
-        <CustomPrimaryButton title="Delegate this request" />
+
+        <CustomPrimaryButton>Delegate this request</CustomPrimaryButton>
       </div>
     );
   };
