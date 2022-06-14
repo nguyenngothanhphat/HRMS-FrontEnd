@@ -3,13 +3,11 @@ import { Button } from 'antd';
 import React from 'react';
 import styles from './index.less';
 
-const CustomSecondaryButton = (props) => {
-  const { title = '' } = props;
-
+const CustomSecondaryButton = ({ children, ...props }) => {
   return (
     <div className={styles.CustomSecondaryButton}>
       <Button {...props} type="link">
-        {title}
+        {children}
       </Button>
     </div>
   );

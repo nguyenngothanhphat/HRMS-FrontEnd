@@ -185,8 +185,8 @@ const ClosingComment = (props) => {
         </Col>
         <Col span={12}>
           <div className={styles.actions__buttons}>
-            <CustomSecondaryButton title="Reject" disabled={disabled} />
-            <CustomPrimaryButton title="Accept Resignation" disabled={disabled} />
+            <CustomSecondaryButton disabled={disabled}>Reject</CustomSecondaryButton>
+            <CustomPrimaryButton disabled={disabled}>Accept Resignation</CustomPrimaryButton>
           </div>
         </Col>
       </Row>

@@ -1,10 +1,11 @@
-import { Button, Card, Col, Row } from 'antd';
+import { Card, Col, Row } from 'antd';
 import React, { useState } from 'react';
 import CustomEmployeeTag from '@/components/CustomEmployeeTag';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import SetMeetingModal from '@/pages/OffBoarding/components/SetMeetingModal';
 import { getEmployeeName } from '@/utils/offboarding';
 import styles from './index.less';
-import SetMeetingModal from '@/pages/OffBoarding/components/SetMeetingModal';
 
 const WhatNext = (props) => {
   const { status = 3, item: { employee = {} } = {}, setIsEnterClosingComment = () => {} } = props;
@@ -91,15 +92,15 @@ const WhatNext = (props) => {
       case 2:
         return (
           <div className={styles.actions}>
-            <CustomPrimaryButton title="Join with Google Meet" />
+            <CustomPrimaryButton>Join with Google Meet</CustomPrimaryButton>
           </div>
         );
 
       case 3:
         return (
           <div className={styles.actions}>
-            <Button type="link">Reschedule</Button>
-            <CustomPrimaryButton title="Accept meeting" />
+            <CustomSecondaryButton>Reschedule</CustomSecondaryButton>
+            <CustomPrimaryButton>Accept meeting</CustomPrimaryButton>
           </div>
         );
 
