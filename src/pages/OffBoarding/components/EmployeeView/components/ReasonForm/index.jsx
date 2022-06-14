@@ -26,7 +26,7 @@ const ReasonForm = (props) => {
       payload.status = 'DRAFT';
     }
     dispatch({
-      type: 'offboarding/offboardingRequest',
+      type: 'offboarding/createRequestEffect',
       payload,
     });
   };

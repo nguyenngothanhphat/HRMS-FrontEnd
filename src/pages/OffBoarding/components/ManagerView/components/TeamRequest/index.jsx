@@ -10,7 +10,6 @@ import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import { getCurrentLocation } from '@/utils/authority';
 import { getEmployeeName, OFFBOARDING_STATUS, OFFBOARDING_TABS } from '@/utils/offboarding';
 import { addZeroToNumber } from '@/utils/utils';
 import styles from './index.less';
@@ -20,16 +19,18 @@ const TeamRequest = (props) => {
     dispatch,
     offboarding: { listTeamRequest = [], totalListTeamRequest = [], selectedLocations = [] } = {},
     loadingFetchListTeamRequest = false,
+    user: { currentUser: { employee = {} } = {} } = {},
   } = props;
 
   const [size, setSize] = useState(10);
   const [page, setPage] = useState(1);
-  const [currentStatus, setCurrentStatus] = useState(OFFBOARDING_STATUS.ACCEPTED);
+  const [currentStatus, setCurrentStatus] = useState(OFFBOARDING_STATUS.IN_PROGRESS);
 
   useEffect(() => {
     dispatch({
-      type: 'offboarding/fetchListTeamRequest',
+      type: 'offboarding/fetchOffboardingListEffect',
       payload: {
+        employeeId: employee?._id,
         location: [selectedLocations],
         page,
         limit: size,
@@ -93,22 +94,22 @@ const TeamRequest = (props) => {
     {
       title: <span className={styles.title}>Employee ID</span>,
       dataIndex: 'employee',
-      render: (employee = {}) => {
-        return <span>{employee?.employeeId}</span>;
+      render: (obj = {}) => {
+        return <span>{obj?.employeeId}</span>;
       },
     },
     {
       title: <span className={styles.title}>Requestee Name</span>,
       dataIndex: 'employee',
       ellipsis: true,
-      render: (employee = {}, row) => {
-        const { generalInfo: { legalName = '', userId = '' } = {} } = employee;
+      render: (obj = {}, row) => {
+        const { generalInfo: { legalName = '', userId = '' } = {} } = obj;
         return (
           <UserProfilePopover
             placement="bottomRight"
             data={{
-              ...employee,
-              locationInfo: employee.location,
+              ...obj,
+              locationInfo: obj.location,
               department: row.department,
               manager: row.manager,
             }}

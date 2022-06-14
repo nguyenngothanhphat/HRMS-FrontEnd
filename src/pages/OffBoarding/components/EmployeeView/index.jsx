@@ -24,7 +24,7 @@ const EmployeeView = (props) => {
     totalList = [],
     hrManager = {},
     employee = {},
-    status = '',
+    myRequest: { status = '' } = {},
     loadingStatus = false,
   } = props;
   const [relievingInQueue, setRelievingInQueue] = useState(false);
@@ -52,22 +52,22 @@ const EmployeeView = (props) => {
     }
   };
 
-  const fetchOffboardingDetailById = () => {
+  const getRequestByIdEffect = () => {
     dispatch({
-      type: 'offboarding/fetchOffboardingDetailById',
+      type: 'offboarding/getRequestByIdEffect',
       payload: {
         status,
       },
     });
   };
 
-  const fetchStatus = () => {
+  const getMyRequestEffect = () => {
     dispatch({
-      type: 'offboarding/fetchStatus',
+      type: 'offboarding/getMyRequestEffect',
       payload: {},
     }).then((data) => {
       if (data !== null) {
-        fetchOffboardingDetailById();
+        getRequestByIdEffect();
       }
     });
   };
@@ -112,11 +112,11 @@ const EmployeeView = (props) => {
   useEffect(() => {
     if (!tabName) {
       history.replace(`/offboarding/list`);
-    } else fetchStatus();
+    } else getMyRequestEffect();
   }, []);
 
   useEffect(() => {
-    fetchStatus();
+    getMyRequestEffect();
   }, [status]);
 
   const renderContent = (statusProps) => {
@@ -278,7 +278,7 @@ export default connect(
     employee,
     listOffboarding,
     // loadingFetchList: loading.effects['offboarding/fetchList'],
-    loadingStatus: loading.effects['offboarding/fetchStatus'],
+    loadingStatus: loading.effects['offboarding/getMyRequestEffect'],
     hrManager,
   }),
 )(EmployeeView);
