@@ -6,7 +6,8 @@ import { getEmployeeName } from '@/utils/offboarding';
 import styles from './index.less';
 
 const Assignee = (props) => {
-  const { item: { assigneeHR = {}, manager = {} } = {} } = props;
+  const { item: { assigned = {} } = {} } = props;
+  const { hr = {}, manager = {} } = assigned || {};
 
   const renderContent = () => {
     const assignees = [
@@ -15,9 +16,10 @@ const Assignee = (props) => {
         members: [
           {
             type: 'Primary',
-            name: getEmployeeName(assigneeHR?.generalInfo),
-            title: assigneeHR?.title?.name,
-            userId: assigneeHR?.generalInfo?.userId,
+            name: getEmployeeName(hr?.generalInfoInfo),
+            title: hr?.titleInfo?.name,
+            userId: hr?.generalInfoInfo?.userId,
+            avatar: hr?.generalInfoInfo?.avatar,
           },
         ],
       },
@@ -26,9 +28,10 @@ const Assignee = (props) => {
         members: [
           {
             type: 'Secondary',
-            name: getEmployeeName(manager?.generalInfo),
-            title: manager?.title?.name,
-            userId: manager?.generalInfo?.userId,
+            name: getEmployeeName(manager?.generalInfoInfo),
+            title: manager?.titleInfo?.name,
+            userId: manager?.generalInfoInfo?.userId,
+            avatar: manager?.generalInfoInfo?.avatar,
           },
         ],
       },

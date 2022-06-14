@@ -7,17 +7,17 @@ import styles from './index.less';
 
 const SetMeetingModalContent = ({ employee = {}, partnerRole = '', onFinish = () => {} }) => {
   const [form] = Form.useForm();
-  const { generalInfo = {}, title = {} } = employee || {};
+  const { generalInfoInfo = {}, titleInfo = {} } = employee || {};
 
   return (
     <div className={styles.SetMeetingModalContent}>
       <div className={styles.employeeName}>
         <p>{partnerRole} Name</p>
         <CustomEmployeeTag
-          name={getEmployeeName(generalInfo)}
-          title={title?.name}
-          avatar={generalInfo?.avatar}
-          userId={generalInfo?.userId}
+          name={getEmployeeName(generalInfoInfo)}
+          title={titleInfo?.name}
+          avatar={generalInfoInfo?.avatar}
+          userId={generalInfoInfo?.userId}
         />
       </div>
       <Form
