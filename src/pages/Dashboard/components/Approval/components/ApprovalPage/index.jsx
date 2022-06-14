@@ -1,15 +1,22 @@
-import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Space, Table, Popover } from 'antd';
-import { filter, isEmpty } from 'lodash';
+import { CloseOutlined } from '@ant-design/icons';
+import { Button, Card, Popover, Table, Tag } from 'antd';
+import { debounce, filter, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
-import PopoverInfo from '../PopoverInfo';
-import { getTimezoneViaCity } from '@/utils/times';
-import filterIcon from '@/assets/offboarding-filter.svg';
-import rejectIcon from '@/assets/cancel.svg';
 import approvalIcon from '@/assets/approve.svg';
+import rejectIcon from '@/assets/cancel.svg';
+import ViewIcon from '@/assets/dashboard/open.svg';
+import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterButton from '@/components/FilterButton';
+import FilterPopover from '@/components/FilterPopover';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { TYPE_TICKET_APPROVAL } from '@/utils/dashboard';
+import { getTimezoneViaCity } from '@/utils/times';
+import RejectCommentModal from '../../../ActivityLog/components/PendingApprovalTag/components/RejectCommentModal';
 import DetailTicket from '../DetailTicket';
+import PopoverInfo from '../PopoverInfo';
+import FilterContent from './components/FilterContent';
 import styles from './index.less';
 
 const ApprovalPage = (props) => {
@@ -31,17 +38,33 @@ const ApprovalPage = (props) => {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [applied, setApplied] = useState(0);
+  const [isFiltering, setIsFiltering] = useState(false);
+  const [commentModalVisible, setCommentModalVisible] = useState(false);
+  const [recordDetail, setRecordDetail] = useState({});
+  const [viewedDetail, setViewedDetail] = useState(false);
+  const [form, setForm] = useState(null);
 
-  useEffect(() => {
+  const fetchListTicket = () => {
     dispatch({
       type: 'dashboard/fetchListTicket',
     });
+  };
+
+  useEffect(() => {
+    fetchListTicket();
+    const tenantId = getCurrentTenant();
+    const company = getCurrentCompany();
+    dispatch({
+      type: 'employee/fetchFilterList',
+      payload: {
+        id: company,
+        tenantId,
+      },
+    });
   }, []);
   useEffect(() => {
-    if (isLoadData)
-      dispatch({
-        type: 'dashboard/fetchListTicket',
-      });
+    if (isLoadData) fetchListTicket();
   }, [isLoadData]);
 
   const fetchTimezone = () => {
@@ -76,10 +99,13 @@ const ApprovalPage = (props) => {
     setListData(arr);
     setTotal(arr.length);
   }, [keySearch, listTicket]);
+
   const viewDetail = (record) => {
     setOpenModal(true);
+    setViewedDetail(true);
     setTicket(record);
   };
+
   const approvalTicket = (record) => {
     const { typeTicket = '', _id = '' } = record;
     dispatch({
@@ -90,18 +116,38 @@ const ApprovalPage = (props) => {
       },
     });
   };
-  const rejectTicket = (record) => {
-    const { typeTicket = '', _id = '' } = record;
-    dispatch({
+
+  const rejectTicket = async (comment) => {
+    const { typeTicket = '', _id = '' } = recordDetail;
+    const res = await dispatch({
       type: 'dashboard/rejectRequest',
       payload: {
         typeTicket,
         _id,
+        comment,
       },
     });
+    const { statusCode = 0 } = res;
+    if (statusCode === 200) {
+      setCommentModalVisible(false);
+      dispatch({
+        type: 'dashboard/fetchListTicket',
+      });
+    }
   };
+
+  const handleReject = (record) => {
+    setRecordDetail(record);
+    setCommentModalVisible(true);
+  };
+
+  const onSearchDebounce = debounce((value) => {
+    setKeySearch(value);
+  }, 1000);
+
   const onChangeKeySearch = (e) => {
-    setKeySearch(e.target.value);
+    const { value = '' } = e.target;
+    onSearchDebounce(value);
     setPage(1);
   };
   const pagination = {
@@ -151,13 +197,11 @@ const ApprovalPage = (props) => {
       ),
     },
     {
-      title: 'User ID',
+      title: 'Employee ID',
       dataIndex: 'employee',
       key: 'employee',
       width: 250,
-      render: ({ generalInfo: { userId = '' } = {} } = {}) => (
-        <span className={styles.blueText}>{userId || ''}</span>
-      ),
+      render: ({ employeeId = '' } = {}) => <span>{employeeId || ''}</span>,
     },
     // {
     //   title: 'Name',
@@ -210,59 +254,109 @@ const ApprovalPage = (props) => {
       align: 'left',
     },
     {
-      title: 'Request Date',
+      title: 'Date Range',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      width: 200,
+      width: 300,
       render: (createdAt) => <span>{moment(createdAt).locale('en').format('DD-MM-YYYY')}</span>,
       align: 'left',
     },
     {
       title: 'Type',
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'typeTicket',
+      key: 'typeTicket',
       width: 250,
-      render: ({ name } = {}) => <span>{name || ''}</span>,
+      render: (typeTicket = '') => (
+        <span
+          className={
+            typeTicket === TYPE_TICKET_APPROVAL.TIMEOFF ? styles.yellowText : styles.blueText
+          }
+        >
+          {typeTicket === TYPE_TICKET_APPROVAL.TIMEOFF ? 'TimeOff' : 'TimeSheet'}
+        </span>
+      ),
       align: 'left',
     },
 
     {
-      title: <div style={{ paddingRight: '40px' }}>Action</div>,
+      title: 'Action',
       dataIndex: 'action',
       key: 'action',
-      width: 250,
+      width: 200,
       render: (_, record) => (
-        <Space style={{ paddingRight: '20px' }}>
-          <Button type="link" className={styles.btnDetail} onClick={() => viewDetail(record)}>
-            View details
+        <div className={styles.containerBtn}>
+          <Button type="link" className={styles.btnAction} onClick={() => viewDetail(record)}>
+            <img src={ViewIcon} alt="View Icon" />
           </Button>
-          <div className={styles.containerBtn}>
-            <Button type="link" className={styles.btnAction} onClick={() => rejectTicket(record)}>
-              <img src={rejectIcon} alt="reject" />
-            </Button>
-            <Button type="link" className={styles.btnAction} onClick={() => approvalTicket(record)}>
-              <img src={approvalIcon} alt="approval" />
-            </Button>
-          </div>
-        </Space>
+          <Button
+            type="link"
+            className={styles.btnAction}
+            onClick={() => {
+              handleReject(record);
+            }}
+          >
+            <img src={rejectIcon} alt="reject" />
+          </Button>
+          <Button type="link" className={styles.btnAction} onClick={() => approvalTicket(record)}>
+            <img src={approvalIcon} alt="approval" />
+          </Button>
+        </div>
       ),
-      align: 'right',
+      align: 'center',
     },
   ];
+
+  const onFilter = (filterPayload) => {
+    if (Object.keys(filterPayload).length > 0) {
+      setIsFiltering(true);
+      setApplied(Object.keys(filterPayload).length);
+    } else {
+      setIsFiltering(false);
+      setApplied(0);
+    }
+  };
+
+  const clearFilter = () => {
+    onFilter({});
+    form?.resetFields();
+  };
+
+  const renderOption = () => {
+    const content = (
+      <FilterContent
+        onFilter={onFilter}
+        setForm={setForm}
+        // needResetFilterForm={needResetFilterForm}
+        // setNeedResetFilterForm={setNeedResetFilterForm}
+        setApplied={setApplied}
+        setIsFiltering={setIsFiltering}
+      />
+    );
+    return (
+      <div className={styles.searchFilter}>
+        {applied > 0 && (
+          <Tag
+            className={styles.tagCountFilter}
+            closable
+            closeIcon={<CloseOutlined />}
+            onClose={() => {
+              clearFilter();
+            }}
+          >
+            {applied} filters applied
+          </Tag>
+        )}
+        <FilterPopover placement="bottomRight" content={content}>
+          <FilterButton showDot={isFiltering} />
+        </FilterPopover>
+        <CustomSearchBox onSearch={onChangeKeySearch} placeholder="Search by Name" />
+      </div>
+    );
+  };
+
   return (
     <div className={styles.approvalPage}>
-      <div className={styles.approvalPage__table}>
-        <div className={styles.searchFilter}>
-          <img src={filterIcon} alt="" className={styles.searchFilter__icon} />
-          <Input
-            size="large"
-            placeholder="Search by Name"
-            onChange={onChangeKeySearch}
-            prefix={<SearchOutlined />}
-            // onPressEnter={(e) => console.log('e', e.target.value)}
-            className={styles.searchFilter__input}
-          />
-        </div>
+      <Card className={styles.approvalPage__table} extra={renderOption()}>
         <div className={styles.tableApproval}>
           <Table
             columns={columns}
@@ -272,8 +366,20 @@ const ApprovalPage = (props) => {
             pagination={pagination}
           />
         </div>
-      </div>
-      <DetailTicket openModal={openModal} ticket={ticket} onCancel={() => setOpenModal(false)} />
+      </Card>
+      <DetailTicket
+        openModal={openModal}
+        viewedDetail={viewedDetail}
+        ticket={ticket}
+        onCancel={() => setOpenModal(false)}
+      />
+      <RejectCommentModal
+        visible={commentModalVisible}
+        onClose={() => setCommentModalVisible(false)}
+        onReject={rejectTicket}
+        ticketID={recordDetail.ticketID}
+        loading={loadingReject}
+      />
     </div>
   );
 };

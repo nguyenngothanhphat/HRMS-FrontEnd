@@ -7,6 +7,7 @@ import RejectCommentModal from './components/RejectCommentModal';
 import ViewIcon from '@/assets/dashboard/open.svg';
 import ApproveIcon from '@/assets/dashboard/approve.svg';
 import CancelIcon from '@/assets/dashboard/cancel.svg';
+import { TYPE_TICKET_APPROVAL } from '@/utils/dashboard';
 import styles from './index.less';
 
 const PendingApprovalTag = (props) => {
@@ -26,7 +27,7 @@ const PendingApprovalTag = (props) => {
   } = props;
   const [openModal, setOpenModal] = useState(false);
   const [commentModalVisible, setCommentModalVisible] = useState(false);
-
+  const [viewedDetail, setViewedDetail] = useState(false);
   const onApproveClick = async (idProp) => {
     const res = await dispatch({
       type: 'dashboard/approveRequest',
@@ -57,6 +58,11 @@ const PendingApprovalTag = (props) => {
     }
   };
 
+  const handleViewDetail = () => {
+    setOpenModal(true);
+    setViewedDetail(true);
+  };
+
   // RENDER UI
   const renderTag = () => {
     const dateTemp = moment(date).date();
@@ -72,16 +78,25 @@ const PendingApprovalTag = (props) => {
                   <span>{monthTemp}</span>
                 </div>
                 <div className={styles.content}>
-                  New {typeName && typeTicket === 'leaveRequest' ? 'Timeoff' : 'Compoff'} request
-                  from{' '}
-                  <span className={styles.userId}>
+                  New{' '}
+                  {typeTicket === TYPE_TICKET_APPROVAL.TIMEOFF ? (
+                    <span className={styles.timeoffType}>
+                      {typeName && typeTicket === TYPE_TICKET_APPROVAL.TIMEOFF
+                        ? 'timeoff'
+                        : 'compoff'}
+                    </span>
+                  ) : (
+                    <span className={styles.timesheetType}>timesheet</span>
+                  )}{' '}
+                  request from{' '}
+                  <span>
                     {legalName} ({userId})
                   </span>{' '}
                   has been received.
                 </div>
               </Col>
               <Col span={4} className={styles.rightPart}>
-                <div className={styles.viewBtn} onClick={() => setOpenModal(true)}>
+                <div className={styles.viewBtn} onClick={handleViewDetail}>
                   <Tooltip title="View">
                     <img src={ViewIcon} alt="View Icon" />
                   </Tooltip>
@@ -100,7 +115,12 @@ const PendingApprovalTag = (props) => {
             </Row>
           </div>
         </Col>
-        <DetailTicket openModal={openModal} ticket={item} onCancel={() => setOpenModal(false)} />
+        <DetailTicket
+          openModal={openModal}
+          viewedDetail={viewedDetail}
+          ticket={item}
+          onCancel={() => setOpenModal(false)}
+        />
         <RejectCommentModal
           visible={commentModalVisible}
           onClose={() => setCommentModalVisible(false)}
