@@ -245,3 +245,24 @@ export async function assignToHr(payload) {
     data: payload,
   });
 }
+
+export async function offboardingRequest(payload) {
+  return request('/api/offboardingtenant/create', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getStatus(params) {
+  return request('/api/offboardingtenant/get', {
+    method: 'GET',
+    params,
+  });
+}
+
+export async function getOffboardingDetailById(params) {
+  return request('/api/offboardingtenant/get-by-id', {
+    method: 'GET',
+    params,
+  });
+}

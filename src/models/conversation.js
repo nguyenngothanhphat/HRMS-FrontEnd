@@ -9,6 +9,8 @@ import {
   getConversationMessage,
   getListLastMessage,
   getLastMessage,
+  getConversationUnSeen,
+  seenMessage,
 } from '@/services/conversation';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
@@ -18,6 +20,7 @@ const defaultState = {
   activeConversationMessages: [],
   unseenTotal: 0,
   listLastMessage: [],
+  activeConversationUnseen: [],
 };
 
 const country = {
@@ -68,6 +71,40 @@ const country = {
         dialog(errors);
       }
       return response;
+    },
+    *getConversationUnSeenEffect({ payload }, { call, put }) {
+      try {
+        const response = yield call(getConversationUnSeen, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = {}, total = 0 } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            activeConversationUnseen: data,
+            unseenTotal: total,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *seenMessageEffect({ payload }, { call }) {
+      try {
+        const response = yield call(seenMessage, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
     },
     *getConversationEffect({ payload }, { call, put }) {
       try {

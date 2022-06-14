@@ -23,9 +23,9 @@ const CommonTable = (props) => {
   } = props;
   const [pageSelected, setPageSelected] = useState(1);
 
-  const onChangePagination = (pageNumber) => {
+  const onChangePagination = (pageNumber, pageSize) => {
     if (isBackendPaging) {
-      onChangePage(pageNumber);
+      onChangePage(pageNumber, pageSize);
     } else {
       setPageSelected(pageNumber);
     }

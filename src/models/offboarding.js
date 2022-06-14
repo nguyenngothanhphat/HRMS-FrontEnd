@@ -2,6 +2,9 @@ import { notification } from 'antd';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
+  getOffboardingDetailById,
+  offboardingRequest,
+  getStatus,
   getOffboardingList,
   sendRequest,
   getList1On1,
@@ -785,6 +788,55 @@ const offboarding = {
           payload: {
             location: [getCurrentLocation()],
           },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *offboardingRequest({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(offboardingRequest, {
+          tenantId: getCurrentTenant(),
+          ...payload,
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchStatus({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(getStatus, {
+          ...payload,
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchOffboardingDetailById({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(getOffboardingDetailById, {
+          ...payload,
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
         });
       } catch (error) {
         dialog(error);

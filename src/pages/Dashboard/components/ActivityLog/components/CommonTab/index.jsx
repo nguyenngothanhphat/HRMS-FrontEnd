@@ -7,6 +7,7 @@ import NotificationTag from '../NotificationTag';
 import PendingApprovalTag from '../PendingApprovalTag';
 import TicketTag from '../TicketTag';
 import styles from './index.less';
+import NotificationMessageTag from '../NotificationMessageTag';
 
 const CommonTab = (props) => {
   const {
@@ -35,6 +36,11 @@ const CommonTab = (props) => {
       case '3': {
         return data.map((item) => {
           return <TicketTag item={item} />;
+        });
+      }
+      case '4': {
+        return data.map((item) => {
+          return <NotificationMessageTag item={item} {...props} />;
         });
       }
       default:

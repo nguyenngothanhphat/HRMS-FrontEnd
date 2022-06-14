@@ -1,5 +1,5 @@
-import { Button, Skeleton } from 'antd';
-import React, { useEffect } from 'react';
+import { Button } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import CommonModal from '@/components/CommonModal';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
@@ -15,22 +15,26 @@ import styles from './index.less';
 const GeneralInfo = (props) => {
   const {
     permissions = {},
-    profileOwner = false,
     currentUserId,
     dispatch,
     employeeProfile: {
       employee = '',
       originData: { generalData: { isNewComer = false } = {} } = {},
       visibleSuccess = false,
+      isProfileOwner = false,
     } = {},
   } = props;
 
+  const [newComerModalVisible, setNewComerModalVisible] = useState(false);
+
   const checkProfessionalAcademicVisible =
-    profileOwner || permissions.editProfessionalAcademic !== -1;
+    isProfileOwner || permissions.editProfessionalAcademic !== -1;
 
-  const checkEmergencyContactVisible = profileOwner || permissions.editEmergencyContact !== -1;
+  const checkEmergencyContactVisible = isProfileOwner || permissions.editEmergencyContact !== -1;
 
-  const visible = isNewComer && currentUserId === employee;
+  useEffect(() => {
+    setNewComerModalVisible(isNewComer && currentUserId === employee);
+  }, [isNewComer]);
 
   const handleCancelModelSuccess = () => {
     dispatch({
@@ -68,20 +72,20 @@ const GeneralInfo = (props) => {
   return (
     <div className={styles.GeneralInfo}>
       <EmployeeInformation permissions={permissions} />
-      <PersonalInformation permissions={permissions} profileOwner={profileOwner} />
-      {(permissions.viewPassportAndVisa !== -1 || profileOwner) && (
+      <PersonalInformation permissions={permissions} isProfileOwner={isProfileOwner} />
+      {(permissions.viewPassportAndVisa !== -1 || isProfileOwner) && (
         <>
-          <PassportDetails profileOwner={profileOwner} permissions={permissions} />
-          <VisaDetails profileOwner={profileOwner} permissions={permissions} />
+          <PassportDetails isProfileOwner={isProfileOwner} permissions={permissions} />
+          <VisaDetails isProfileOwner={isProfileOwner} permissions={permissions} />
         </>
       )}
       {checkEmergencyContactVisible && (
-        <EmergencyContact permissions={permissions} profileOwner={profileOwner} />
+        <EmergencyContact permissions={permissions} isProfileOwner={isProfileOwner} />
       )}
       {checkProfessionalAcademicVisible && (
-        <ProfessionalAcademicBackground permissions={permissions} profileOwner={profileOwner} />
+        <ProfessionalAcademicBackground permissions={permissions} isProfileOwner={isProfileOwner} />
       )}
-      <ModalAddInfo visible={visible} />
+      <ModalAddInfo visible={newComerModalVisible} />
       <CommonModal
         width={550}
         visible={visibleSuccess}

@@ -24,6 +24,7 @@ const ActivityLog = (props) => {
     status = '',
     statusApproval = '',
     leaveRequests = [],
+    activeConversationUnseen = [],
   } = props;
 
   const viewPendingApprovalDashboard = permissions.viewPendingApprovalDashboard !== -1;
@@ -160,8 +161,16 @@ const ActivityLog = (props) => {
                 <CommonTab type="1" data={listPendingApprovals} refreshData={fetchListTicket} />
               </TabPane>
             )}
-            <TabPane tab={renderTabName('2', mockNotification.length)} key="2">
-              <CommonTab type="2" data={mockNotification} />
+            <TabPane
+              tab={renderTabName('2', mockNotification.length + activeConversationUnseen.length)}
+              key="2"
+            >
+              {mockNotification.length > 0 ? <CommonTab type="2" data={mockNotification} /> : <></>}
+              {activeConversationUnseen.length > 0 ? (
+                <CommonTab type="4" data={activeConversationUnseen} />
+              ) : (
+                <></>
+              )}
             </TabPane>
             <TabPane tab={renderTabName('3', dataMyTicket().length)} key="3">
               <CommonTab type="3" data={dataMyTicket()} />
@@ -215,6 +224,7 @@ export default connect(
       leaveRequests = [],
     } = {},
     loading,
+    conversation: { activeConversationUnseen = [] },
     user: { permissions = {}, currentUser: { employee = {} } } = {},
   }) => ({
     status,
@@ -224,6 +234,7 @@ export default connect(
     leaveRequests,
     permissions,
     employee,
+    activeConversationUnseen,
     loadingFetchListTicket: loading.effects['dashboard/fetchListTicket'],
     loadingFetchListMyTicket: loading.effects['dashboard/fetchListMyTicket'],
   }),

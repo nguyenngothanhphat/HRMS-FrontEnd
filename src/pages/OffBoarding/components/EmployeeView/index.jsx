@@ -25,6 +25,7 @@ const EmployeeView = (props) => {
     hrManager = {},
     employee = {},
     status = '',
+    loadingStatus = false,
   } = props;
   const [relievingInQueue, setRelievingInQueue] = useState(false);
   const [loadingFetchList, setLoadingFetchList] = useState(true);
@@ -38,9 +39,8 @@ const EmployeeView = (props) => {
       dispatch({
         type: 'offboarding/fetchRelievingDetailsById',
         payload: {
-          id: _id,
+          offboardingId: _id,
           company: companyID,
-          packageType: '',
         },
       }).then((res) => {
         const { data = {} } = res;
@@ -52,48 +52,72 @@ const EmployeeView = (props) => {
     }
   };
 
-  const fetchData = () => {
+  const fetchOffboardingDetailById = () => {
     dispatch({
-      type: 'offboarding/fetchList',
+      type: 'offboarding/fetchOffboardingDetailById',
       payload: {
-        // status: 'IN-PROGRESS',
+        status,
       },
-    }).then((data) => {
-      if (data) {
-        setDataRequest(
-          data.filter((value) => value.status !== 'DRAFT' && value.status !== 'WITHDRAW'),
-        );
-        setLoadingFetchList(false);
-      }
     });
+  };
+
+  const fetchStatus = () => {
     dispatch({
-      type: 'offboarding/fetchList',
-      payload: {
-        status: 'DRAFT',
-      },
-    }).then((data) => {
-      if (data) {
-        setDataDraft(data);
-        setLoadingFetchList(false);
-      }
-    });
-    dispatch({
-      type: 'offboarding/fetchAcceptedRequest',
-      payload: {
-        status: 'ACCEPTED',
-      },
+      type: 'offboarding/fetchStatus',
+      payload: {},
     }).then((data) => {
       if (data !== null) {
-        checkIfExistingRequest();
+        fetchOffboardingDetailById();
       }
     });
   };
 
+  // const fetchData = () => {
+  //   dispatch({
+  //     type: 'offboarding/fetchList',
+  //     payload: {
+  //       // status: 'IN-PROGRESS',
+  //     },
+  //   }).then((data) => {
+  //     if (data) {
+  //       setDataRequest(
+  //         data.filter((value) => value.status !== 'DRAFT' && value.status !== 'WITHDRAW'),
+  //       );
+  //       setLoadingFetchList(false);
+  //     }
+  //   });
+  //   dispatch({
+  //     type: 'offboarding/fetchList',
+  //     payload: {
+  //       status: 'DRAFT',
+  //     },
+  //   }).then((data) => {
+  //     if (data) {
+  //       setDataDraft(data);
+  //       setLoadingFetchList(false);
+  //     }
+  //   });
+  //   dispatch({
+  //     type: 'offboarding/fetchAcceptedRequest',
+  //     payload: {
+  //       status: 'ACCEPTED',
+  //     },
+  //   }).then((data) => {
+  //     if (data !== null) {
+  //       checkIfExistingRequest();
+  //     }
+  //   });
+  // };
+
   useEffect(() => {
     if (!tabName) {
       history.replace(`/offboarding/list`);
-    } else fetchData();
+    } else fetchStatus();
   }, []);
+
+  useEffect(() => {
+    fetchStatus();
+  }, [status]);
 
   const renderContent = (statusProps) => {
     switch (statusProps) {
@@ -105,7 +129,7 @@ const EmployeeView = (props) => {
                 <Col span={24}>
                   <ViewLeftInitial
                     data={dataRequest.length > 0 ? dataRequest : dataDraft}
-                    fetchData={fetchData}
+                    // fetchData={fetchData}
                     countdata={totalList}
                     hrManager={hrManager}
                     employee={employee}
@@ -136,7 +160,7 @@ const EmployeeView = (props) => {
                 <Col span={24}>
                   <RequestDraft
                     data={dataRequest.length > 0 ? dataRequest : dataDraft}
-                    fetchData={fetchData}
+                    // fetchData={fetchData}
                     countdata={totalList}
                     hrManager={hrManager}
                     employee={employee}
@@ -167,7 +191,7 @@ const EmployeeView = (props) => {
                 <Col span={24}>
                   <RequestDraft
                     data={dataRequest.length > 0 ? dataRequest : dataDraft}
-                    fetchData={fetchData}
+                    // fetchData={fetchData}
                     countdata={totalList}
                     hrManager={hrManager}
                     employee={employee}
@@ -208,7 +232,9 @@ const EmployeeView = (props) => {
           >
             <TabPane tab="Terminate work relationship" key="list">
               <div className={styles.paddingHR}>
-                <div className={styles.root}>{renderContent(status)}</div>
+                <div className={styles.root}>
+                  <Spin spinning={loadingStatus}>{renderContent(status)}</Spin>
+                </div>
               </div>
             </TabPane>
 
@@ -233,6 +259,7 @@ export default connect(
       totalList = [],
       hrManager = {},
       acceptedRequest = [],
+      status = '',
     } = {},
     user: {
       currentUser: {
@@ -243,6 +270,7 @@ export default connect(
     } = {},
     loading,
   }) => ({
+    status,
     acceptedRequest,
     totalList,
     locationID,
@@ -250,7 +278,7 @@ export default connect(
     employee,
     listOffboarding,
     // loadingFetchList: loading.effects['offboarding/fetchList'],
-    loadingAcceptedRequest: loading.effects['offboarding/fetchAcceptedRequest'],
+    loadingStatus: loading.effects['offboarding/fetchStatus'],
     hrManager,
   }),
 )(EmployeeView);

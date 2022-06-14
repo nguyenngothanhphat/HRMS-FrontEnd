@@ -24,5 +24,5 @@
 
 
 
-/label ~bug
-/cc @aashwij @christine.nguyen @thang.nguyen
+/label ~bug ~"Backlog - Unscheduled"
+/cc @aashwij @christine.nguyen @thang.nguyen @atlin.joys
