@@ -39,7 +39,7 @@ import {
 
   // new
   getOffboardingList,
-} from '../services/offboarding';
+} from '../services/offboardingOld';
 
 const offboarding = {
   namespace: 'offboarding',
