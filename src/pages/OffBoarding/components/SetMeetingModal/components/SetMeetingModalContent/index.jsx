@@ -5,14 +5,14 @@ import CustomTimeRangeSelector from '@/components/CustomTimeRangeSelector';
 import { dateFormat, getEmployeeName } from '@/utils/offboarding';
 import styles from './index.less';
 
-const SetMeetingModalContent = ({ employee = {} }) => {
+const SetMeetingModalContent = ({ employee = {}, partnerRole = '' }) => {
   const [form] = Form.useForm();
   const { generalInfo = {}, title = {} } = employee || {};
 
   return (
     <div className={styles.SetMeetingModalContent}>
       <div className={styles.employeeName}>
-        <p>Employee Name</p>
+        <p>{partnerRole} Name</p>
         <CustomEmployeeTag
           name={getEmployeeName(generalInfo)}
           title={title?.name}

@@ -1,12 +1,12 @@
 import { notification } from 'antd';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { createRequest, getList, getMyRequest, getRequestById } from '../services/offboarding';
 
 const offboarding = {
   namespace: 'offboarding',
   state: {
-    selectedLocations: [],
+    selectedLocations: [getCurrentLocation()],
     list: [],
     viewingRequest: {},
     myRequest: {},
