@@ -52,32 +52,28 @@ const slides = [
   },
 ];
 const TerralogicCandidateLoginLayout = ({ children }) => {
-  useEffect(() => {
-    if (!IS_TERRALOGIC_CANDIDATE_LOGIN) {
-      history.push('/');
-    }
-  }, []);
-
-  const redirectToUrl = (url) => {
-    window.open(url, '_blank');
-  };
+  // useEffect(() => {
+  //   if (!IS_TERRALOGIC_CANDIDATE_LOGIN) {
+  //     history.push('/');
+  //   }
+  // }, []);
 
   const icons = [
     {
       icon: LinkedInIcon,
-      link: '#',
+      link: 'https://www.linkedin.com/company/terralogic',
     },
     {
       icon: TwitterIcon,
-      link: '#',
+      link: 'https://twitter.com/terralogic_?lang=en',
     },
     {
       icon: InstagramIcon,
-      link: '#',
+      link: 'https://www.instagram.com/terralogic_inc/',
     },
     {
       icon: YoutubeIcon,
-      link: '#',
+      link: 'https://www.youtube.com/channel/UC_bktWm8wMCeEh7Ht3UhE-Q/featured',
     },
   ];
 
@@ -102,7 +98,7 @@ const TerralogicCandidateLoginLayout = ({ children }) => {
             align="bottom"
           >
             <Col xs={24} lg={12} className={styles.copyright}>
-              <span>@All right reserved | T&C | Privacy Policy</span>
+              <span>@ All right reserved | T&C | Privacy Policy</span>
             </Col>
             <Col xs={24} lg={12} className={styles.socialMedia}>
               <div>
@@ -110,7 +106,9 @@ const TerralogicCandidateLoginLayout = ({ children }) => {
                 <div className={styles.icons}>
                   {icons.map((x) => (
                     <div className={styles.icon}>
-                      <img src={x.icon} alt="" onClick={() => redirectToUrl(x.link)} />
+                      <a href={x.link}>
+                        <img src={x.icon} alt="" />
+                      </a>
                     </div>
                   ))}
                 </div>

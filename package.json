@@ -93,6 +93,7 @@
     "react-helmet-async": "^1.0.4",
     "react-iframe-resizer-super": "^0.2.2",
     "react-image-crop": "^8.6.5",
+    "react-joyride": "^2.4.0",
     "react-lazyload": "^3.2.0",
     "react-orgchart": "^1.0.5",
     "react-pdf": "^5.0.0",

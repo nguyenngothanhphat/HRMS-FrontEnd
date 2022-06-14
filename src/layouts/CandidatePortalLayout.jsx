@@ -2,7 +2,7 @@ import { Breadcrumb, Button, Dropdown, Layout, Menu, Result, Skeleton } from 'an
 import React, { useEffect, useState, useRef } from 'react';
 import { connect, history, Link } from 'umi';
 import { io } from 'socket.io-client';
-import avtDefault from '@/assets/defaultAvatar.png';
+import avtDefault from '@/assets/avtDefault.jpg';
 import CalendarIcon from '@/assets/candidatePortal/leave-application.svg';
 import MessageIcon from '@/assets/candidatePortal/message-circle.svg';
 import Footer from '@/components/Footer';
