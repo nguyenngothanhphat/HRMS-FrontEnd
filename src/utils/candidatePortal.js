@@ -42,3 +42,27 @@ export const DOCUMENT_TYPES = {
   NOT_AVAILABLE_ACCEPTED: 'NOT-AVAILABLE-ACCEPTED',
   NOT_AVAILABLE_REJECTED: 'NOT-AVAILABLE-REJECTED',
 };
+
+export const NEW_COMER_STEPS = [
+  {
+    target: '.applicationStatus',
+    content: 'This is my awesome feature!',
+    placement: 'auto',
+    disableBeacon: true,
+  },
+  {
+    target: '.yourActivity',
+    content: 'This another awesome feature!',
+    placement: 'auto',
+  },
+  {
+    target: '.pendingTasks',
+    content: 'This is my awesome feature!',
+    placement: 'auto',
+  },
+  {
+    target: '.companyProfile',
+    content: 'This another awesome feature!',
+    placement: 'right',
+  },
+];

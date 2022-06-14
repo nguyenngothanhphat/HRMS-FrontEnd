@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import CommonTable from '@/pages/ProjectManagement/components/ProjectInformation/components/CommonTable';
+import CommonTable from '@/components/CommonTable';
 import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
 import styles from './index.less';
 
