@@ -1,7 +1,13 @@
 import { notification } from 'antd';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
-import { createRequest, getList, getMyRequest, getRequestById } from '../services/offboarding';
+import {
+  createRequest,
+  getList,
+  getMyRequest,
+  getRequestById,
+  withdrawRequest,
+} from '../services/offboarding';
 
 const offboarding = {
   namespace: 'offboarding',
@@ -62,7 +68,7 @@ const offboarding = {
         yield put({
           type: 'save',
           payload: {
-            myRequest: data,
+            myRequest: data || {},
           },
         });
       } catch (errors) {
@@ -86,6 +92,22 @@ const offboarding = {
             viewingRequest: data,
           },
         });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *withdrawRequestEffect({ payload }, { call }) {
+      let response;
+      try {
+        response = yield call(withdrawRequest, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message = '' } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
       } catch (errors) {
         dialog(errors);
       }

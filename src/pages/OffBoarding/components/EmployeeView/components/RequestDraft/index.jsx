@@ -1,11 +1,18 @@
 import { Card, Col, Row, Divider, Avatar, Tooltip, Popover } from 'antd';
 import React from 'react';
+import moment from 'moment';
+import { history } from 'umi';
 import avtDefault from '@/assets/defaultAvatar.png';
 import IconPopup from './assets/popupIcon.svg';
 import styles from './index.less';
+import { dateFormat } from '@/utils/offboarding';
 
-const RequestDraft = () => {
-  const status = 'Approved';
+const RequestDraft = (props) => {
+  const {
+    status = '',
+    data: { ticketId = '', updatedAt = '', reason = '', createdAt = '', LWD = '' } = {},
+    dispatch,
+  } = props;
 
   const renderTitle = (statusProps) => {
     switch (statusProps) {
@@ -60,13 +67,33 @@ const RequestDraft = () => {
     );
   };
 
+  const handleEdit = () => {
+    history.push('/offboarding/list/my-request/new');
+  };
+
+  const handleDelete = () => {
+    dispatch({
+      type: 'offboarding/withdrawRequestEffect',
+      payload: {},
+    }).then((res) => {
+      const { statusCode = '' } = res;
+      if (statusCode === 200) {
+        history.push('/offboarding/list');
+      }
+    });
+  };
+
   const renderButton = (statusProps) => {
     switch (statusProps) {
       case 'DRAFT':
         return (
           <div className={styles.containerBtn}>
-            <div className={styles.btnEdit}>Back to edit </div>
-            <div className={styles.btnDelete}>Delete </div>
+            <div className={styles.btnEdit} onClick={handleEdit}>
+              Back to edit{' '}
+            </div>
+            <div className={styles.btnDelete} onClick={handleDelete}>
+              Delete{' '}
+            </div>
           </div>
         );
       case 'In Progress':
@@ -114,13 +141,13 @@ const RequestDraft = () => {
                     Ticket ID
                   </Col>
                   <Col span={20} style={{ color: '#2c6df9' }}>
-                    16003134
+                    {ticketId}
                   </Col>
                   <Col span={4} className={styles.title}>
                     Last Edited
                   </Col>
                   <Col span={20} style={{ color: '#464646' }}>
-                    15-10-2021
+                    {moment(updatedAt).format(dateFormat)}
                   </Col>
                 </Row>
               </Col>
@@ -130,9 +157,7 @@ const RequestDraft = () => {
                     Reason
                   </Col>
                   <Col span={20} style={{ color: '#707177' }}>
-                    The reason I have decided to end my journey with Lollypop here is because…The
-                    reason I have decided to end my journey with Lollypop here is because…The reason
-                    I have decided to end my journey with Lollypop here is because…
+                    {reason}
                   </Col>
                 </Row>
               </Col>
@@ -150,7 +175,7 @@ const RequestDraft = () => {
                     Ticket ID
                   </Col>
                   <Col span={20} style={{ color: '#2c6df9' }}>
-                    16003134
+                    {ticketId}
                   </Col>
                   <Col span={4} className={styles.title}>
                     Assigned
@@ -171,13 +196,13 @@ const RequestDraft = () => {
                     Requested on
                   </Col>
                   <Col span={20} style={{ color: '#464646' }}>
-                    15-10-2021
+                    {createdAt}
                   </Col>
                   <Col span={4} className={styles.title}>
                     Tentative LWD
                   </Col>
                   <Col span={20} style={{ color: '#464646' }}>
-                    15-10-2021
+                    {LWD}
                   </Col>
                 </Row>
               </Col>
@@ -187,9 +212,7 @@ const RequestDraft = () => {
                     Reason
                   </Col>
                   <Col span={20} style={{ color: '#707177' }}>
-                    The reason I have decided to end my journey with Lollypop here is because…The
-                    reason I have decided to end my journey with Lollypop here is because…The reason
-                    I have decided to end my journey with Lollypop here is because…
+                    {reason}
                   </Col>
                 </Row>
               </Col>

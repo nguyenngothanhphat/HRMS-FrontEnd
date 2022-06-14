@@ -27,3 +27,10 @@ export async function getRequestById(params) {
     params,
   });
 }
+
+export async function withdrawRequest(payload) {
+  return request('/api/offboardingtenant/withdraw', {
+    method: 'POST',
+    data: payload,
+  });
+}

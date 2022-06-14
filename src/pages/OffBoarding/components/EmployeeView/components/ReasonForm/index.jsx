@@ -1,6 +1,7 @@
 import { Button, Col, DatePicker, Divider, Input, Row, Tabs, Form } from 'antd';
 import React, { useState } from 'react';
 import moment from 'moment';
+import { connect, history } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import CommonModal from '@/components/CommonModal';
 import ModalImage from './assets/modalImage1.png';
@@ -11,7 +12,7 @@ const { TextArea } = Input;
 const { TabPane } = Tabs;
 
 const ReasonForm = (props) => {
-  const { dispatch } = props;
+  const { dispatch, myRequest: { reason: reasonProps = '' } = {} } = props;
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [statusState, setStatusState] = useState('');
   const [value, setValue] = useState('');
@@ -28,6 +29,11 @@ const ReasonForm = (props) => {
     dispatch({
       type: 'offboarding/createRequestEffect',
       payload,
+    }).then((res) => {
+      const { statusCode = '' } = res;
+      if (statusCode === 200) {
+        history.push('/offboarding/list');
+      }
     });
   };
   const renderContent = () => {
@@ -41,6 +47,7 @@ const ReasonForm = (props) => {
               className={styles.container}
               initialValues={{
                 LWD: moment.utc().add(90, 'days'),
+                reason: reasonProps,
               }}
             >
               <div className={styles.title}>What is the reason for leaving us ?</div>
@@ -80,7 +87,7 @@ const ReasonForm = (props) => {
                     className={styles.btnDraft}
                     htmlType="submit"
                     onClick={() => setStatusState('DRAFT')}
-                    disabled={!value}
+                    disabled={!value || !reasonProps}
                   >
                     Save to Draft
                   </Button>
@@ -88,7 +95,7 @@ const ReasonForm = (props) => {
                     className={styles.btnSubmit}
                     htmlType="submit"
                     onClick={() => setStatusState('Submit')}
-                    disabled={!value}
+                    disabled={!value || !reasonProps}
                   >
                     Submit
                   </Button>
@@ -146,4 +153,7 @@ const ReasonForm = (props) => {
   );
 };
 
-export default ReasonForm;
+export default connect(({ offboarding: { myRequest = {} } = {}, loading }) => ({
+  myRequest,
+  loadingStatus: loading.effects['offboarding/getMyRequestEffect'],
+}))(ReasonForm);

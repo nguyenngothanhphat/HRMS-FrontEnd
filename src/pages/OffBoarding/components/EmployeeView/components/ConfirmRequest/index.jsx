@@ -1,7 +1,8 @@
-import { Card, Avatar, Col, Row, Button } from 'antd';
+import { Card, Avatar, Col, Row } from 'antd';
 import React from 'react';
 import avtDefault from '@/assets/defaultAvatar.png';
 import styles from './index.less';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 const ConfirmRequest = (props) => {
   const {
@@ -71,18 +72,16 @@ const ConfirmRequest = (props) => {
       case 2:
         return (
           <div className={styles.actions}>
-            <Button className={styles.btn} disabled>
-              Join with Google Meet
-            </Button>
+            <CustomPrimaryButton disabled>Join with Google Meet</CustomPrimaryButton>
           </div>
         );
 
       case 3:
         return (
           <div className={styles.actions}>
-            <Button className={styles.btn} type="link">
+            <CustomPrimaryButton className={styles.btn} type="link">
               Accept meeting
-            </Button>
+            </CustomPrimaryButton>
           </div>
         );
 

@@ -1,10 +1,12 @@
-import { Button, Card, Divider, Steps, notification } from 'antd';
+import { Button, Card, Divider, Steps } from 'antd';
 import { history } from 'umi';
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './index.less';
+import { OFFBOARDING } from '@/utils/offboarding';
 
 const { Step } = Steps;
-
+const { STEP } = OFFBOARDING;
+const current = 0;
 const steps1 = [
   {
     step: 1,
@@ -40,14 +42,25 @@ const steps2 = [
 ];
 
 const OffboardingWorkFlow = (props) => {
-  const { hrManager, handleResignationRequest = () => {} } = props;
-  const [current, setCurrent] = useState(0);
-  const onChangeSteps = (values) => {};
+  const { step = '' } = props;
 
   const handleResignation = () => {
     history.push('/offboarding/list/my-request/new');
   };
-
+  const renderCurrentStep = (stepProps) => {
+    switch (stepProps) {
+      case STEP.INIT_REQUEST:
+        return 0;
+      case STEP.SUBMIT_REQUEST:
+        return 1;
+      case STEP.VS_MANAGER:
+        return 0;
+      case STEP.APPROVE:
+        return 0;
+      default:
+        return 0;
+    }
+  };
   return (
     <Card
       className={styles.OffboardingWorkFlow}
@@ -61,7 +74,7 @@ const OffboardingWorkFlow = (props) => {
       <div className={styles.titleProcessStep}>Step 1: Offboarding</div>
       <div className={styles.offboardingProcess}>
         <div className={styles.offboardingProcess__process}>
-          <Steps current={current} onChange={onChangeSteps} labelPlacement="vertical">
+          <Steps current={renderCurrentStep(step)} labelPlacement="vertical">
             {steps1.map((item) => (
               <Step key={item.step} description={item.description} />
             ))}
@@ -73,7 +86,7 @@ const OffboardingWorkFlow = (props) => {
           (Relieving formalities will be initiated 2 days before the LWD)
         </div>
         <div className={styles.offboardingProcess__process}>
-          <Steps current={current} onChange={onChangeSteps} labelPlacement="vertical">
+          <Steps current={current} labelPlacement="vertical">
             {steps2.map((item) => (
               <Step key={item.step} description={item.description} />
             ))}

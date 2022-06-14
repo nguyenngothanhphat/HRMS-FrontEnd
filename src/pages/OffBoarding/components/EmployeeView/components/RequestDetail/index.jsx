@@ -1,21 +1,21 @@
-import { Avatar, Button, Card, Col, DatePicker, Divider, Row, Select } from 'antd';
+import { Card, Col, Divider, Row } from 'antd';
 import React, { useState } from 'react';
-import { connect } from 'umi';
-import CommonModal from '@/components/CommonModal';
-import avtDefault from '@/assets/defaultAvatar.png';
+import { connect, history } from 'umi';
+import moment from 'moment';
 import styles from './index.less';
+import SetMeetingModal from '../../../SetMeetingModal';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import { dateFormat } from '@/utils/offboarding';
 
 const RequestDetail = (props) => {
   const {
     loading = false,
-    employee: {
-      managerInfo: {
-        generalInfoInfo: { legalName: managerName = '', avatar = '' } = {},
-        titleInfo: { name: titleName = '' } = {},
-      } = {},
-    } = {},
+    employee = {},
+    dispatch,
+    data: { ticketId = '', createdAt = '', LWD = '', reason = '' } = {},
   } = props;
-  const { listMeetingTime = [] } = props;
+
   const [visible, setVisible] = useState(false);
   const status = 'In Progress';
 
@@ -38,35 +38,18 @@ const RequestDetail = (props) => {
     );
   };
 
-  const set1On1Content = () => {
-    return (
-      <div className={styles.set1On1Content}>
-        <div style={{ fontWeight: 500 }}>Reporting Manager</div>
-        <div className={styles.reporting}>
-          <Avatar src={avatar || avtDefault} />
-          <div>
-            <div className={styles.legalName}>{managerName}</div>
-            <div className={styles.titleinfo}>{titleName}</div>
-          </div>
-        </div>
-        <div className={styles.flexContent}>
-          <div>
-            <div className={styles.subText}>Meeting on</div>
-            <DatePicker format="YYYY-MM-DD" className={styles.datePicker} />
-          </div>
-          <div>
-            <div className={styles.subText}>Meeting at</div>
-            <Select className={styles.datePicker}>
-              {listMeetingTime.map((item) => (
-                <Select.Option key={item} value={item}>
-                  {item}
-                </Select.Option>
-              ))}
-            </Select>
-          </div>
-        </div>
-      </div>
-    );
+  const onFinish = (value) => {};
+
+  const handleWithdraw = () => {
+    dispatch({
+      type: 'offboarding/withdrawRequestEffect',
+      payload: {},
+    }).then((res) => {
+      const { statusCode = '' } = res;
+      if (statusCode === 200) {
+        history.push('/offboarding/list');
+      }
+    });
   };
 
   return (
@@ -77,43 +60,43 @@ const RequestDetail = (props) => {
             <div className={styles.containerInfo}>
               <div>
                 <span className={styles.title}>Ticket ID:</span>
-                <span style={{ color: '#2c6df9' }}>16003134</span>
+                <span style={{ color: '#2c6df9' }}>{ticketId}</span>
               </div>
               <div>
                 <span className={styles.title}>Assigned:</span>
-                <span style={{ color: '#464646' }}>15-10-2021</span>
+                <span style={{ color: '#464646' }}>{moment(createdAt).format(dateFormat)}</span>
               </div>
               <div>
                 <span className={styles.title}>Tentative Last Working Date:</span>
-                <span style={{ color: '#464646' }}>15-01-2022</span>
+                <span style={{ color: '#464646' }}>{moment(LWD).format(dateFormat)}</span>
               </div>
             </div>
             <Col span={24} className={styles.title}>
               Reason for leaving us?
             </Col>
             <Col span={24} style={{ color: '#707177' }}>
-              The reason I have decided to end my journey with Lollypop here is because…The reason I
-              have decided to end my journey with Lollypop here is because…The reason I have decided
-              to end my journey with Lollypop here is because…
+              {reason}
             </Col>
           </Row>
         </div>
         <Divider />
         <div className={styles.containerBtn}>
-          <Button className={styles.btnWithdraw}>Withdraw</Button>
-          <Button className={styles.btnJoin} onClick={() => setVisible(true)}>
+          <CustomSecondaryButton onClick={handleWithdraw}>Withdraw</CustomSecondaryButton>
+          <CustomPrimaryButton onClick={() => setVisible(true)}>
             Schedule 1 on 1
-          </Button>
+          </CustomPrimaryButton>
         </div>
       </Card>
-      <CommonModal
+      <SetMeetingModal
         visible={visible}
         title="Set 1-on1 with Manager"
         onClose={() => setVisible(false)}
-        content={set1On1Content()}
-        width={500}
-        loading={loading}
-        withPadding
+        partnerRole="Manager"
+        employee={{
+          generalInfo: employee?.managerInfo?.generalInfoInfo,
+          title: employee?.managerInfo?.titleInfo,
+        }}
+        onFinish={onFinish}
       />
     </div>
   );
