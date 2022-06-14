@@ -5,18 +5,20 @@ import SetMeetingModalContent from './components/SetMeetingModalContent';
 const SetMeetingModal = ({
   employee = {},
   partnerRole = 'Employee',
-  visible = false,
-  onClose = () => {},
   title = '',
+  onFinish = () => {},
+  ...restProps
 }) => {
   return (
     <CommonModal
-      visible={visible}
-      onClose={onClose}
-      content={<SetMeetingModalContent employee={employee} partnerRole={partnerRole} />}
+      content={
+        <SetMeetingModalContent employee={employee} partnerRole={partnerRole} onFinish={onFinish} />
+      }
       title={title}
       width={500}
       firstText="Set"
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...restProps}
     />
   );
 };
