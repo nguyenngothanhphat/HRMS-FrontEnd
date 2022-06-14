@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import ModalImage from '@/assets/timeSheet/modalImage1.png';
 import CommonModal from '@/components/CommonModal';
+import CustomBlueButton from '@/components/CustomBlueButton';
 import { PageContainer } from '@/layouts/layout/src';
 import { TAB_NAME } from '@/utils/timeSheet';
 import ManagerView from './components/ManagerView';
@@ -22,8 +23,8 @@ const SimpleView = (props) => {
 
   const options = () => {
     return (
-      <div className={styles.requestLeave} onClick={() => setNavToTimeoffModalVisible(true)}>
-        <span className={styles.title}>Request Leave</span>
+      <div className={styles.options}>
+        <CustomBlueButton onClick={() => setNavToTimeoffModalVisible(true)} title="Request Leave" />
       </div>
     );
   };

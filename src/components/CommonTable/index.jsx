@@ -1,6 +1,7 @@
-import { Empty, Table } from 'antd';
+import { Table } from 'antd';
 import React, { useState } from 'react';
 import { connect, formatMessage } from 'umi';
+import Empty from '@/components/Empty';
 import styles from './index.less';
 
 const CommonTable = (props) => {
