@@ -10,7 +10,7 @@ import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import { getEmployeeName, OFFBOARDING_STATUS, OFFBOARDING_TABS } from '@/utils/offboarding';
+import { getEmployeeName, OFFBOARDING, OFFBOARDING_MANAGER_TABS } from '@/utils/offboarding';
 import { addZeroToNumber } from '@/utils/utils';
 import styles from './index.less';
 
@@ -24,11 +24,11 @@ const TeamRequest = (props) => {
 
   const [size, setSize] = useState(10);
   const [page, setPage] = useState(1);
-  const [currentStatus, setCurrentStatus] = useState(OFFBOARDING_STATUS.IN_PROGRESS);
+  const [currentStatus, setCurrentStatus] = useState(OFFBOARDING.STATUS.IN_PROGRESS);
 
   useEffect(() => {
     dispatch({
-      type: 'offboarding/fetchOffboardingListEffect',
+      type: 'offboarding/fetchListEffect',
       payload: {
         employeeId: employee?._id,
         location: [selectedLocations],
@@ -222,7 +222,7 @@ const TeamRequest = (props) => {
         onChange={(key) => setCurrentStatus(key)}
         tabBarExtraContent={filterPane()}
       >
-        {OFFBOARDING_TABS.map((x) => (
+        {OFFBOARDING_MANAGER_TABS.map((x) => (
           <Tabs.TabPane tab={getTabName(x)} key={x.id}>
             <CommonTable
               loading={loadingFetchListTeamRequest}

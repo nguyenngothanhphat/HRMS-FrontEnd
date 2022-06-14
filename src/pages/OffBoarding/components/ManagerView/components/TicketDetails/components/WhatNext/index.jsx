@@ -1,11 +1,10 @@
 import { Button, Card, Col, Row } from 'antd';
 import React, { useState } from 'react';
-import CommonModal from '@/components/CommonModal';
 import CustomEmployeeTag from '@/components/CustomEmployeeTag';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import { getEmployeeName } from '@/utils/offboarding';
-import SetMeetingModalContent from '../SetMeetingModalContent';
 import styles from './index.less';
+import SetMeetingModal from '@/pages/OffBoarding/components/SetMeetingModal';
 
 const WhatNext = (props) => {
   const { status = 3, item: { employee = {} } = {}, setIsEnterClosingComment = () => {} } = props;
@@ -118,13 +117,12 @@ const WhatNext = (props) => {
 
   const renderModal = () => {
     return (
-      <CommonModal
+      <SetMeetingModal
+        employee={employee}
         visible={oneOnOneMeetingModalVisible}
         onClose={() => setOneOnOneMeetingModalVisible(false)}
-        content={<SetMeetingModalContent employee={employee} />}
         title={`Set 1-on-1 with ${getEmployeeName(employee.generalInfo)}`}
-        width={500}
-        firstText="Set"
+        partnerRole="Employee"
       />
     );
   };
