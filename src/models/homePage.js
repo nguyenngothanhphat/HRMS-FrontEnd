@@ -15,6 +15,11 @@ import {
   getSelectedPollOptionByEmployee,
   getPollResult,
   updateBannerPosition,
+  getQuickLinkList,
+  getTotalQuickLink,
+  addQuickLink,
+  updateQuickLink,
+  deleteQuickLink,
 } from '../services/homePage';
 import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
 // import { TAB_IDS } from '@/utils/homePage';
@@ -330,6 +335,107 @@ const homePage = {
           type: 'save',
           payload: { selectedPollOption: data },
         });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchQuickLinkHomePageEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getQuickLinkList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { quickLinkListHomePage: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchQuickLinkTimeOffEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getQuickLinkList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { quickLinkListTimeOff: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchTotalQuickLinkTypeEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getTotalQuickLink, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { totalQuickLinkType: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *addQuickLinkEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(addQuickLink, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *updateQuickLinkEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(updateQuickLink, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *deleteQuickLinkEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(deleteQuickLink, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
       } catch (errors) {
         dialog(errors);
       }

@@ -24,6 +24,7 @@ const AddResourcesModal = (props) => {
     employee = '',
     permissions = {},
   } = props;
+
   const {
     id: projectNumberId = '',
     projectName = '',
@@ -57,6 +58,7 @@ const AddResourcesModal = (props) => {
     dispatch({
       type: 'projectDetails/fetchResourceListEffect',
       payload: {
+        notInProject: projectNumberId,
         page,
         limit,
         name,
@@ -209,6 +211,11 @@ const AddResourcesModal = (props) => {
     }
   };
 
+  const handleCloseModal = () => {
+    setSuccessModalVisible(false);
+    refreshResourceList();
+  };
+
   return (
     <>
       <Modal
@@ -250,13 +257,8 @@ const AddResourcesModal = (props) => {
       <CommonModal
         firstText="Yes"
         visible={successModalVisible}
-        onClose={() => {
-          setSuccessModalVisible(false);
-          refreshResourceList();
-        }}
-        onFinish={() => {
-          setSuccessModalVisible(false);
-        }}
+        onClose={handleCloseModal}
+        onFinish={handleCloseModal}
         buttonText="Close"
         width={400}
         hasCancelButton={false}

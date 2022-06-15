@@ -13,11 +13,7 @@
 }
 
 .CommonTable {
-  // padding: 24px;
-  // padding-bottom: 0;
   background-color: #ffffff;
-  // border: solid 1px @border-color;
-  // border-radius: 8px;
 
   &.inTab {
     border: none;
@@ -53,7 +49,8 @@
     }
   }
 
-  p {
+  p,
+  span {
     margin: 0;
   }
 
@@ -99,17 +96,22 @@
 
     td.ant-table-cell {
       color: #464646;
+      font-weight: normal;
       font-size: 13px;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.12px;
     }
     .ant-table-content {
-      // padding: 24px;
+      padding: 24px;
     }
     .ant-table-pagination {
       margin: 0 !important;
-      padding: 24px 8px 2px 8px;
+      padding: 16px 24px;
       border-top: 1px solid #e2e4e8;
     }
-    .ant-table-small .ant-table-thead > tr > th {
+    .ant-table-thead > tr > th {
       background-color: @blue;
     }
 

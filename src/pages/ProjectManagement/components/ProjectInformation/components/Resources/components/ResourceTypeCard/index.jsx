@@ -10,7 +10,7 @@ import DeleteIcon from '@/assets/projectManagement/deleteIcon.svg';
 import AssignIcon from '@/assets/projectManagement/assignIcon.svg';
 import OrangeAddButton from '../../../OrangeAddButton';
 import CommonModal from '@/components/CommonModal';
-import CommonTable from '../../../CommonTable';
+import CommonTable from '@/components/CommonTable';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import CustomSearchBox from '@/components/CustomSearchBox';
@@ -233,7 +233,7 @@ const ResourceTypeCard = (props) => {
           return (
             <Popover
               trigger="click"
-              visible={row?.resourceType?._id === resourceTypeId}
+              visible={row?.id === resourceTypeId}
               onVisibleChange={
                 resourceTypeId
                   ? () => setResourceTypeId('')
@@ -248,7 +248,7 @@ const ResourceTypeCard = (props) => {
                   cursor: 'pointer',
                   color: '#2c6df9',
                 }}
-                onClick={() => setResourceTypeId(row?.resourceType?._id)}
+                onClick={() => setResourceTypeId(row?.id)}
                 onBlur={() => setResourceTypeId('')}
               >
                 <img src={ActionIcon} alt="" />

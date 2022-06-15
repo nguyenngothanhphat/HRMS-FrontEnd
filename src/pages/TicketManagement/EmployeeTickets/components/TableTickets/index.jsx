@@ -92,7 +92,7 @@ class TableTickets extends PureComponent {
     const { ticket } = this.state;
     const {
       dispatch,
-      employee: { _id = '' } = {},
+      employee: { _id = '', generalInfo: { legalName = '' } = {} } = {},
       refreshFetchData = () => {},
       refreshFetchTotalList = () => {},
       role = '',
@@ -124,6 +124,7 @@ class TableTickets extends PureComponent {
         departmentAssign,
         employee: _id,
         role,
+        newName: legalName,
       },
     }).then((res) => {
       const { statusCode } = res;

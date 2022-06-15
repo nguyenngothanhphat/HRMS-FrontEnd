@@ -2,9 +2,9 @@ import { Breadcrumb, Button, Dropdown, Layout, Menu, Result, Skeleton } from 'an
 import React, { useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 import { connect, history, Link } from 'umi';
+import avtDefault from '@/assets/avtDefault.jpg';
 import CalendarIcon from '@/assets/candidatePortal/leave-application.svg';
 import MessageIcon from '@/assets/candidatePortal/message-circle.svg';
-import avtDefault from '@/assets/defaultAvatar.png';
 import Footer from '@/components/Footer';
 // import BottomBar from '../components/BottomBar';
 import CommonModal from '@/pages/CandidatePortal/components/Dashboard/components/CommonModal';
@@ -46,11 +46,13 @@ const CandidatePortalLayout = React.memo((props) => {
     ticketId = '',
     // data: { title: { name: titleName = '' } = {} } = {},
     data: { firstName = '', lastName = '', middleName = '' },
-    conversation: { unseenTotal = 0 } = {},
     pendingTasks = [],
     events = [],
+    unseenTotal,
+    activeConversationUnseen,
   } = props;
 
+  const [notification, setNotification] = useState(0);
   const [openUpcomingEventModal, setOpenUpcomingEventModal] = useState(false);
   let candidateFullName = `${firstName} ${middleName} ${lastName}`;
   if (!middleName) candidateFullName = `${firstName} ${lastName}`;
@@ -63,14 +65,33 @@ const CandidatePortalLayout = React.memo((props) => {
   };
   const disablePage = getFirstChangePassword();
 
-  const fetchUnseenTotal = (candidateId) => {
-    dispatch({
-      type: 'conversation/getNumberUnseenConversationEffect',
-      payload: {
-        userId: candidateId,
-      },
-    });
+  // const fetchUnseenTotal = (candidateId) => {
+  //   dispatch({
+  //     type: 'conversation/getNumberUnseenConversationEffect',
+  //     payload: {
+  //       userId: candidateId,
+  //     },
+  //   });
+  // };
+
+  const fetchNotificationList = async () => {
+    if (candidate) {
+      await dispatch({
+        type: 'conversation/getConversationUnSeenEffect',
+        payload: {
+          userId: candidate?._id,
+        },
+      });
+    }
   };
+
+  useEffect(() => {
+    fetchNotificationList();
+  }, [candidate]);
+
+  useEffect(() => {
+    setNotification(Number(unseenTotal));
+  }, [activeConversationUnseen]);
 
   const saveNewMessage = (message) => {
     dispatch({
@@ -111,8 +132,8 @@ const CandidatePortalLayout = React.memo((props) => {
 
       socket.current.on(ChatEvent.GET_MESSAGE, (message) => {
         saveNewMessage(message);
-        setTimeout(() => {
-          fetchUnseenTotal(candidate._id);
+        setTimeout(async () => {
+          await fetchNotificationList();
           getListLastMessage();
         }, 500);
       });
@@ -252,7 +273,7 @@ const CandidatePortalLayout = React.memo((props) => {
             }
           >
             <img src={MessageIcon} alt="message" />
-            {unseenTotal > 0 && <div className={s.badgeNumber}>{unseenTotal}</div>}
+            {notification > 0 && <div className={s.badgeNumber}>{notification}</div>}
           </div>
 
           <Dropdown
@@ -326,9 +347,12 @@ export default connect(
       nextSteps: steps = [],
     } = {},
     conversation,
+    conversation: { activeConversationUnseen = [], unseenTotal = 0 },
     user: { companiesOfUser = [], currentUser: { candidate = '' } = {} } = {},
     loading,
   }) => ({
+    activeConversationUnseen,
+    unseenTotal,
     conversation,
     listPage,
     data,

@@ -1,18 +1,16 @@
-import { Empty, Table } from 'antd';
+import { Table } from 'antd';
 import React, { useState } from 'react';
 import { connect, formatMessage } from 'umi';
 import styles from './index.less';
+import EmptyComponent from '@/components/Empty';
 
 const CommonTable = (props) => {
   const {
-    onChangePage = () => {},
-    isBackendPaging = false,
     list = [],
     columns,
     loading = false,
     page = 1,
-    limit = 10,
-    total: totalProp,
+    limit = 4,
     selectable = false,
     rowKey = '',
     scrollable = false,
@@ -21,14 +19,10 @@ const CommonTable = (props) => {
     setSelectedRowKeys = () => {},
     components,
   } = props;
-  const [pageSelected, setPageSelected] = useState(1);
+  const [pageSelected, setPageSelected] = useState(page);
 
   const onChangePagination = (pageNumber) => {
-    if (isBackendPaging) {
-      onChangePage(pageNumber);
-    } else {
-      setPageSelected(pageNumber);
-    }
+    setPageSelected(pageNumber);
   };
 
   const onSelectChange = (values) => {
@@ -37,7 +31,7 @@ const CommonTable = (props) => {
 
   const pagination = {
     position: ['bottomLeft'],
-    total: isBackendPaging ? totalProp : list.length,
+    total: list.length,
     showTotal: (total, range) => (
       <span>
         {' '}
@@ -49,7 +43,7 @@ const CommonTable = (props) => {
       </span>
     ),
     pageSize: limit,
-    current: isBackendPaging ? page : pageSelected,
+    current: pageSelected,
     onChange: onChangePagination,
   };
 
@@ -66,7 +60,7 @@ const CommonTable = (props) => {
           components={components}
           size="middle"
           locale={{
-            emptyText: <Empty description="No data" />,
+            emptyText: <EmptyComponent description="No data" />,
           }}
           rowSelection={selectable ? rowSelection : null}
           columns={columns}

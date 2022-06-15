@@ -20,6 +20,7 @@ const formItemLayout = {
       originData: { generalData: generalDataOrigin = {}, compensationData = {} } = {},
       tempData: { generalData = {} } = {},
       listSkill = [],
+      employee = '',
       // listTitle = [],
     } = {},
     user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} } = {} } = {},
@@ -32,6 +33,7 @@ const formItemLayout = {
     listSkill,
     // listTitle,
     compensationData,
+    employee,
   }),
 )
 class Edit extends PureComponent {
@@ -131,11 +133,11 @@ class Edit extends PureComponent {
   };
 
   handleUpdateCertification = (list) => {
-    const { dispatch, compensationData = {} } = this.props;
-    const { employee = {}, company = {} } = compensationData;
+    const { dispatch, compensationData = {}, employee = '' } = this.props;
+    const { company = {} } = compensationData;
 
     list.forEach((element) => {
-      if (element._id) {
+      if (element._id && element.name) {
         dispatch({
           type: 'employeeProfile/updateCertification',
           payload: {
@@ -152,6 +154,13 @@ class Edit extends PureComponent {
             urlFile: element?.urlFile,
             employee,
             company,
+          },
+        });
+      } else if (element._id) {
+        dispatch({
+          type: 'employeeProfile/removeCertification',
+          payload: {
+            id: element?._id,
           },
         });
       }

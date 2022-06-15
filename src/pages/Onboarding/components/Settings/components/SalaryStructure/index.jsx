@@ -96,6 +96,7 @@ const SalaryStructure = (props) => {
     });
     if (responsive.statusCode === 200) onChangeLocation(selectedLocation);
     onCancel();
+    fetchListSalaryByLocation(selectedLocation);
   };
   const onSubmitImport = async (data) => {
     const responsive = await dispatch({

@@ -12,6 +12,12 @@ export default function ThirdStep(props) {
     (item) => item.department._id === department || item.department._id === '',
   );
 
+  const sameDeptEmployeeId = sameDeptEmployees.map((item) => item._id);
+
+  changeData.stepThree.reportees = changeData.stepThree.reportees.filter((item) =>
+    sameDeptEmployeeId.includes(item),
+  );
+
   const makeKey = () => {
     return Math.random().toString(36).substring(7);
   };
@@ -29,7 +35,8 @@ export default function ThirdStep(props) {
           onChange={(value) => onChange(value, 'title')}
           onSearch={onSearch}
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
         >
           {changeData.stepTwo.department
             ? fetchedState.listTitleByDepartment.map((item) => {
@@ -40,7 +47,6 @@ export default function ThirdStep(props) {
                 );
               })
             : null}
-          ]
         </Select>
       </div>
       <div className={styles.select}>
@@ -53,7 +59,8 @@ export default function ThirdStep(props) {
           onChange={(value) => onChange(value, 'reportTo')}
           onSearch={onSearch}
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
         >
           {employeeList.map((item) => {
             return (
@@ -74,9 +81,11 @@ export default function ThirdStep(props) {
           onChange={(value) => onChange(value, 'reportees')}
           onSearch={onSearch}
           showArrow
+          allowClear
           mode="multiple"
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
         >
           {sameDeptEmployees.map((item) => {
             return (

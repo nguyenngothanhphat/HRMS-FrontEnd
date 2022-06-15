@@ -11,7 +11,11 @@ import styles from './index.less';
 
 @connect(
   ({
-    conversation: { conversationList = [], activeConversationMessages = [] } = {},
+    conversation: {
+      conversationList = [],
+      activeConversationMessages = [],
+      activeConversationUnseen = [],
+    } = {},
     user: { currentUser: { candidate = {} } } = {},
     candidatePortal: {
       // candidate = '',
@@ -28,6 +32,7 @@ import styles from './index.less';
     candidate,
     candidateFN,
     candidateLN,
+    activeConversationUnseen,
     assignTo,
     candidatePortal,
     activeConversationMessages,
@@ -239,6 +244,32 @@ class ActiveChat extends PureComponent {
     );
   };
 
+  onSeenMessage = () => {
+    const {
+      dispatch,
+      activeId: conversationId = '',
+      activeConversationUnseen,
+      candidate: { _id: userId = '' } = {},
+    } = this.props;
+    activeConversationUnseen.forEach(async (item) => {
+      if (item._id === conversationId) {
+        await dispatch({
+          type: 'conversation/seenMessageEffect',
+          payload: {
+            userId,
+            conversationId,
+          },
+        });
+        await dispatch({
+          type: 'conversation/getConversationUnSeenEffect',
+          payload: {
+            userId,
+          },
+        });
+      }
+    });
+  };
+
   // chat input
   renderInput = () => {
     const { loadingMessages, activeId = '', isReplyable = true } = this.props;
@@ -249,6 +280,7 @@ class ActiveChat extends PureComponent {
         <Form ref={this.formRef} name="inputChat" onFinish={this.onSendClick}>
           <Form.Item name="message">
             <Input.TextArea
+              onFocus={this.onSeenMessage}
               autoSize={{ minRows: 1, maxRows: 4 }}
               maxLength={255}
               placeholder="Type a message..."
