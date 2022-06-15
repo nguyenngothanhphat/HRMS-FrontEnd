@@ -34,11 +34,13 @@ const ManagerReport = (props) => {
 
   const project = projectList.find((list) => list.id === projectId);
 
-  const [activeKey, setActiveKey] = useState(VIEW_TYPE.PROJECT_VIEW);
-
   // PERMISSIONS TO VIEW PROJECT OR TEAM
   const viewReportProject = permissions.viewReportProjectViewTimesheet === 1;
   const viewReportTeam = permissions.viewReportTeamViewTimesheet === 1;
+
+  const [activeKey, setActiveKey] = useState(
+    (viewReportProject && VIEW_TYPE.PROJECT_VIEW) || (viewReportTeam && VIEW_TYPE.TEAM_VIEW),
+  );
 
   const exportToExcel = async (type, fileName) => {
     const getListExport = await dispatch({
